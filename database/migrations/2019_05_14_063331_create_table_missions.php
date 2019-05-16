@@ -14,7 +14,6 @@ class CreateTableMissions extends Migration {
     public function up() {
         Schema::create('missions', function (Blueprint $table) {
             $table->bigIncrements('mission_id')->unsigned();
-            $table->bigInteger('organisation_id')->unsigned();
             $table->bigInteger('theme_id')->unsigned();
             $table->bigInteger('city_id')->unsigned();
             $table->bigInteger('country_id')->unsigned();
@@ -23,8 +22,7 @@ class CreateTableMissions extends Migration {
             $table->integer('total_seats');
             $table->dateTime('application_deadline');
             $table->enum('publication_status', ['0', '1'])->default(0);
-            $table->text('objective');
-            $table->text('description');
+            $table->bigInteger('organisation_id')->unsigned();
             $table->string('organisation_name',255);
             $table->timestamps();
             $table->softDeletes();

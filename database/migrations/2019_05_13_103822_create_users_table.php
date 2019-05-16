@@ -19,7 +19,7 @@ class CreateUsersTable extends Migration
             $table->string('first_name',16);
             $table->string('last_name',16);
             $table->string('email',128)->unique();
-            $table->string('password',16);
+            $table->string('password',255);
             $table->string('avatar'); 
             $table->integer('timezone_id')->unsigned();
             $table->integer('language_id')->unsigned(); //FK 

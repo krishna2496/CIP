@@ -17,6 +17,7 @@ class CreateTableFooterPagesLanguage extends Migration
         Schema::create('footer_pages_language', function (Blueprint $table) {
             $table->bigIncrements('id')->unsigned();
             $table->bigInteger('page_id')->unsigned();
+            $table->integer('language_id');
             $table->string('title',255);
             $table->text('description');
             $table->timestamps();
