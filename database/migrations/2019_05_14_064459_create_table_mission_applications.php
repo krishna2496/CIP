@@ -14,20 +14,21 @@ class CreateTableMissionApplications extends Migration
     public function up()
     {
         Schema::create('mission_applications', function (Blueprint $table) {
-            $table->bigIncrements('id');
+            
+            $table->bigIncrements('mission_application_id')->unsigned();
             $table->bigInteger('mission_id')->unsigned();
             $table->bigInteger('user_id')->unsigned();
+            
             $table->dateTime('applied_at');
             $table->text('motivation');
-            $table->enum('availabilities',['anytime','weekend only','work week only']);
+            $table->integer('availabilities');
             $table->enum('approval_status',['AUTOMATICALLY_APPROVED', 'PENDING','REFUSED']);
             $table->timestamps();
             $table->softDeletes();
-
-            // Relation defined between missions(mission_id) with missions(id)
-            $table->foreign('mission_id')->references('id')->on('missions')->onDelete('CASCADE')->onUpdate('CASCADE');
-            // Relation defined between missions(user_id) with users(id)
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('CASCADE')->onUpdate('CASCADE');
+            // Relation defined between missions(mission_id) with missions(mission_id)
+            $table->foreign('mission_id')->references('mission_id')->on('missions')->onDelete('CASCADE')->onUpdate('CASCADE');
+            // Relation defined between missions(user_id) with users(user_id)
+            $table->foreign('user_id')->references('user_id')->on('users')->onDelete('CASCADE')->onUpdate('CASCADE');
 
         });
     }

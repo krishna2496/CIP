@@ -4,21 +4,22 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateTableSkills extends Migration
+class CreateTableUserCustomFields extends Migration
 {
     /**
      * Run the migrations.
      *
      * @return void
      */
-    
     public function up()
     {
-        Schema::create('skills', function (Blueprint $table) {
-            $table->bigIncrements('skill_id')->unsigned();
-            $table->string('skill_name',64);
+        
+        Schema::create('user_custom_fields', function (Blueprint $table) {
+            $table->bigIncrements('field_id')->unsigned();
+            $table->text('name');
+            $table->enum('type', ['Text', 'Email','Drop-down','radio']);
             $table->text('translations');
-            $table->integer('parent_skill');
+            $table->integer('is_mandatory')->length(11)->default(1);
             $table->timestamps();
             $table->softDeletes();
         });
@@ -31,6 +32,6 @@ class CreateTableSkills extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('skills');
+        Schema::dropIfExists('table_user_custom_fields');
     }
 }
