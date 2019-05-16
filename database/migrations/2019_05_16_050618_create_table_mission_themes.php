@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateTableCountries extends Migration
+class CreateTableMissionThemes extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,10 @@ class CreateTableCountries extends Migration
      */
     public function up()
     {
-        Schema::create('countries', function (Blueprint $table) {
-            $table->bigIncrements('country_id')->unsigned();
-            $table->string('name',255);
-            $table->string('ISO',16);
+        Schema::create('mission_themes', function (Blueprint $table) {
+            $table->bigIncrements('mission_theme_id')->unsigned();
+            $table->string('theme_name',255);
+            $table->text('translations');
             $table->timestamps();
             $table->softDeletes();
         });
@@ -29,6 +29,6 @@ class CreateTableCountries extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('countries');
+        Schema::dropIfExists('table_mission_themes');
     }
 }

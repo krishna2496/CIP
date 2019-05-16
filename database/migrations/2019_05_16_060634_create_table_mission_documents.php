@@ -14,15 +14,14 @@ class CreateTableMissionDocuments extends Migration
     public function up()
     {
         Schema::create('mission_documents', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->bigInteger('mission_id')->unsigned();
+            $table->bigIncrements('mission_document_id')->unsinged();
+            $table->bigInteger('mission_id')->unsinged();
             $table->string('document_name',255);
-            $table->string('document_type',10);
+            $table->string('document_type',255);
+            $table->string('document_path',255);
             $table->timestamps();
             $table->softDeletes();
-
-            // Relation defined between mission_documents(mission_id) with missions(id)
-            $table->foreign('mission_id')->references('id')->on('missions')->onDelete('CASCADE')->onUpdate('CASCADE');
+            $table->foreign('mission_id')->references('mission_id')->on('missions')->onDelete('CASCADE')->onUpdate('CASCADE');
         });
     }
 
@@ -33,6 +32,6 @@ class CreateTableMissionDocuments extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('mission_documents');
+        Schema::dropIfExists('table_mission_documents');
     }
 }
