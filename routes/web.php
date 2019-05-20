@@ -37,6 +37,6 @@ $router->post('request_password_reset', ['uses' => 'AuthController@requestPasswo
 $router->post('/reset_password/{token}', ['as' => 'password.reset', 'uses' => 'ResetPasswordController@reset']);
 
 /*  get custom styling data for tenant specific */
-$router->post('/custom_data', ['uses' => 'CustomController@customData']);
+$router->post('/get-tenant-option', ['uses' => 'TenantOptionController@getTenantOption']);
 
 
