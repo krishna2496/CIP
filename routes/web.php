@@ -14,6 +14,7 @@
 $router->get('/', function () use ($router) {
     return $router->app->version();
 });
+$router->get('/connect', ['middleware' => 'connect','uses' => 'TestController@index']);
 
 /* user login routing using jwt token */
 $router->post('login', ['uses' => 'AuthController@authenticate']);

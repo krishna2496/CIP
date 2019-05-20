@@ -64,12 +64,16 @@ $app->middleware([
 
  $app->routeMiddleware([
     'auth' => App\Http\Middleware\Authenticate::class,
-    'jwt.auth' => App\Http\Middleware\JwtMiddleware::class,
+    'jwt.auth' => App\Http\Middleware\JwtMiddleware::class, //jwt auth
  ]);
  
-$app->configure('auth');
-$app->configure('mail');
+$app->configure('auth'); //default authentication
+$app->configure('mail'); //SMTP and PHP mail
+$app->configure('constants'); //constant file config
 
+/**
+ * mailer package registration
+ */
 $app->register(Illuminate\Notifications\NotificationServiceProvider::class);
 $app->register(\Illuminate\Mail\MailServiceProvider::class);
 $app->alias('mailer', \Illuminate\Contracts\Mail\Mailer::class);
