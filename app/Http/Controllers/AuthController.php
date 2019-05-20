@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Auth\Passwords\PasswordBrokerManager;
 use Illuminate\Support\Facades\Password;
 use App\Http\Controllers\ApiController;
-    
+
 class AuthController extends ApiController 
 {
     /**
@@ -136,14 +136,14 @@ class AuthController extends ApiController
         );
        
         //if reset password link sent
-        if($response == Password::RESET_LINK_SENT){
+        if($response == Password::RESET_LINK_SENT) {
             $data =array();
             $this->apiData = $data;
             $this->apiCode = app('Illuminate\Http\Response')->status();
             $this->apiStatus = true;
             $this->apiMessage = 'Reset Password link is sent to your email account,link will expire in ' .config('constants.FORGOT_PASSWORD_EXPIRY_TIME').' hour';
             return $this->response();
-        }else{
+        } else {
             $this->errorType = 'Bad Request';
             $this->apiStatus = 400;
             $this->apiCode = 61005; 

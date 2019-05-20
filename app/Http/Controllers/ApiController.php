@@ -8,13 +8,54 @@ use App\Http\Controllers\Controller;
 
 class ApiController extends Controller
 {
+    /**
+     * returned data in api response
+     *
+     * @var mixed
+     */
     protected $apiData = '';
+    
+    /**
+     * returned code in api response
+     *
+     * @var integer
+     */
     protected $apiCode = 500;
+    
+    /**
+     * returned status in api response
+     *
+     * @var string
+     */
     protected $apiStatus = false;
+    
+    /**
+     * returned message in api response
+     *
+     * @var string
+     */
     protected $apiMessage = '';
+    
+    /**
+     * pagination limit in data listing
+     *
+     * @var integer
+     */
     protected $pageLimit = 10;
+    
+    /**
+     * error type in api response
+     *
+     * @var string
+     */
     protected $errorType = '';
 
+    /**
+     * Create a new controller instance.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return void
+     */
     public function __construct()
     {
         // Init basic parameters
@@ -24,13 +65,15 @@ class ApiController extends Controller
     }
     
     /**
-     * success response format
+     * Api success response.
+     * 
+     * @return mixed
      */
     protected function response()
     {
         // Check response data have pagination or not? Pagination response parameter sets
       
-        if((is_object($this->apiData)) && ($this->apiData) && get_class($this->apiData) == "Illuminate\Pagination\LengthAwarePaginator"){            
+        if((is_object($this->apiData)) && ($this->apiData) && get_class($this->apiData) == "Illuminate\Pagination\LengthAwarePaginator") {            
             $response['data'] = $this->apiData->toArray()['data'];
             $response['pagination'] = [
                 "total" => $this->apiData->total(),
@@ -41,7 +84,7 @@ class ApiController extends Controller
             ];
             $this->apiCode = 200;
             $this->apiStatus = true;
-        }else{
+        } else {
             $response['data'] = $this->apiData;
         }
         
@@ -53,16 +96,17 @@ class ApiController extends Controller
     }
     
     /**
-     * error response format
+     * Api error response.
+     * 
+     * @return mixed
      */
     protected function errorResponse()
     {
-       
         $response['type'] = $this->errorType;
         $response['status'] = $this->apiStatus;
         $response['code'] = $this->apiCode;
         $response['message'] = $this->apiMessage;
-        $data["errors"][]=$response;
+        $data["errors"][] = $response;
        
         return response()->json($data, 400, [], JSON_NUMERIC_CHECK);
     }
