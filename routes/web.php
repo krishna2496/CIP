@@ -14,12 +14,11 @@
 $router->get('/', function () use ($router) {
     return $router->app->version();
 });
-$router->post(
-    'auth/login', 
-    [
-       'uses' => 'AuthController@authenticate'
-    ]
-);
+
+/* user login routing using jwt token */
+$router->post('login', ['uses' => 'AuthController@authenticate']);
+
+/* user listing routing using middleware to verify token */
 $router->group(
     ['middleware' => 'jwt.auth'], 
     function() use ($router) {
@@ -29,12 +28,14 @@ $router->group(
         });
     }
 );
-$router->post(
-    'auth/request_password_reset', 
-    [
-       'uses' => 'AuthController@requestPasswordReset'
-    ]
-);
 
-$router->post('/password', ['as' => 'password.reset', 'uses' => 'ResetPasswordController@reset']);
+/*  forgot password routing */
+$router->post('request_password_reset', ['uses' => 'AuthController@requestPasswordReset']);
+
+/*  password reset routing */
+$router->post('/reset_password/{token}', ['as' => 'password.reset', 'uses' => 'ResetPasswordController@reset']);
+
+/*  get custom styling data for tenant specific */
+$router->post('/custom_data', ['uses' => 'CustomController@customData']);
+
 
