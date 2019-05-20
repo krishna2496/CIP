@@ -27,7 +27,7 @@ class TenantOptionController extends ApiController
         $data = $tenantOptions->toArray();
         
         //if data exist
-        if($data) {
+        if ($data) {
             
             foreach ($data as $key =>$value) {
                 

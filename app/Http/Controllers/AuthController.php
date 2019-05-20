@@ -136,7 +136,7 @@ class AuthController extends ApiController
         );
        
         //if reset password link sent
-        if($response == Password::RESET_LINK_SENT) {
+        if ($response == Password::RESET_LINK_SENT) {
             $data =array();
             $this->apiData = $data;
             $this->apiCode = app('Illuminate\Http\Response')->status();
