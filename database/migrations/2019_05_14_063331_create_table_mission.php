@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateTableMissions extends Migration {
+class CreateTableMission extends Migration {
 
     /**
      * Run the migrations.
@@ -12,7 +12,7 @@ class CreateTableMissions extends Migration {
      * @return void
      */
     public function up() {
-        Schema::create('missions', function (Blueprint $table) {
+        Schema::create('mission', function (Blueprint $table) {
             $table->bigIncrements('mission_id')->unsigned();
             $table->bigInteger('theme_id')->unsigned();
             $table->bigInteger('city_id')->unsigned();
@@ -27,12 +27,11 @@ class CreateTableMissions extends Migration {
             $table->timestamps();
             $table->softDeletes();
             // Relation defined between missions(city_id) with cities(id)
-            $table->foreign('city_id')->references('city_id')->on('cities')->onDelete('CASCADE')->onUpdate('CASCADE');
+            $table->foreign('city_id')->references('city_id')->on('city')->onDelete('CASCADE')->onUpdate('CASCADE');
             // Relation defined between missions(country_id) with counties(id)
-            $table->foreign('country_id')->references('country_id')->on('counties')->onDelete('CASCADE')->onUpdate('CASCADE');
-            $table->foreign('theme_id')->references('mission_theme_id')->on('mission_themes')->onDelete('CASCADE')->onUpdate('CASCADE');
-//            $table->foreign('organisation_id')->references('organisation_id')->on('cities')->onDelete('CASCADE')->onUpdate('CASCADE');
-//            $table->foreign('theme_id')->references('theme_id')->on('counties')->onDelete('CASCADE')->onUpdate('CASCADE');
+            $table->foreign('country_id')->references('country_id')->on('county')->onDelete('CASCADE')->onUpdate('CASCADE');
+            $table->foreign('theme_id')->references('mission_theme_id')->on('mission_theme')->onDelete('CASCADE')->onUpdate('CASCADE');
+
         });
     }
 
@@ -42,7 +41,7 @@ class CreateTableMissions extends Migration {
      * @return void
      */
     public function down() {
-        Schema::dropIfExists('missions');
+        Schema::dropIfExists('mission');
     }
 
 }

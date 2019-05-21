@@ -4,19 +4,21 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateTableMissionThemes extends Migration
+class CreateTableSkill extends Migration
 {
     /**
      * Run the migrations.
      *
      * @return void
      */
+    
     public function up()
     {
-        Schema::create('mission_themes', function (Blueprint $table) {
-            $table->bigIncrements('mission_theme_id')->unsigned();
-            $table->string('theme_name',255);
+        Schema::create('skill', function (Blueprint $table) {
+            $table->bigIncrements('skill_id')->unsigned();
+            $table->string('skill_name',64);
             $table->text('translations');
+            $table->integer('parent_skill');
             $table->timestamps();
             $table->softDeletes();
         });
@@ -29,6 +31,6 @@ class CreateTableMissionThemes extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('table_mission_themes');
+        Schema::dropIfExists('skill');
     }
 }

@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateTableTenantOptions extends Migration
+class CreateTableTenantOption extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateTableTenantOptions extends Migration
      */
     public function up()
     {
-        Schema::create('tenant_options', function (Blueprint $table) {
+        Schema::create('tenant_option', function (Blueprint $table) {
             $table->bigIncrements('tenant_option_id')->unsigned();
             $table->string('option_name',256);
             $table->text('option_value');
@@ -28,6 +28,6 @@ class CreateTableTenantOptions extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('table_tenant_options');
+        Schema::dropIfExists('tenant_option');
     }
 }

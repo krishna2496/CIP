@@ -17,12 +17,12 @@ class CreateTableMissionLanguage extends Migration
             
             $table->bigIncrements('mission_language_id')->unsigned();
             $table->integer('mission_id')->unsigned();
-            $table->integer('language_id')->length(11)->default(1);
+            $table->integer('language_id')->length(1)->default(1);
             $table->string('title');
             $table->text('description'); 
             $table->text('objective'); 
             $table->timestamps();
-            $table->foreign('mission_id')->references('mission_id')->on('missions')->onDelete('CASCADE')->onUpdate('CASCADE');
+            $table->foreign('mission_id')->references('mission_id')->on('mission')->onDelete('CASCADE')->onUpdate('CASCADE');
         });
     }
 
@@ -33,6 +33,6 @@ class CreateTableMissionLanguage extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('table_mission_language');
+        Schema::dropIfExists('mission_language');
     }
 }

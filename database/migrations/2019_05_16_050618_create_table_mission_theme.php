@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateTableUserCustomFields extends Migration
+class CreateTableMissionTheme extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,10 @@ class CreateTableUserCustomFields extends Migration
      */
     public function up()
     {
-        
-        Schema::create('user_custom_fields', function (Blueprint $table) {
-            $table->bigIncrements('field_id')->unsigned();
-            $table->text('name');
-            $table->enum('type', ['Text', 'Email','Drop-down','radio']);
+        Schema::create('mission_theme', function (Blueprint $table) {
+            $table->bigIncrements('mission_theme_id')->unsigned();
+            $table->string('theme_name',255);
             $table->text('translations');
-            $table->integer('is_mandatory')->length(11)->default(1);
             $table->timestamps();
             $table->softDeletes();
         });
@@ -32,6 +29,6 @@ class CreateTableUserCustomFields extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('table_user_custom_fields');
+        Schema::dropIfExists('table_mission_theme');
     }
 }

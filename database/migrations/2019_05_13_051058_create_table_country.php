@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateTableAvailabilities extends Migration
+class CreateTableCountry extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,10 @@ class CreateTableAvailabilities extends Migration
      */
     public function up()
     {
-        Schema::create('availabilities', function (Blueprint $table) {
-            $table->bigIncrements('availability_id')->unsinged();
-            $table->string('type',255);
+        Schema::create('country', function (Blueprint $table) {
+            $table->bigIncrements('country_id')->unsigned();
+            $table->string('name',255);
+            $table->string('ISO',16);
             $table->timestamps();
             $table->softDeletes();
         });
@@ -28,6 +29,6 @@ class CreateTableAvailabilities extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('table_availabilities');
+        Schema::dropIfExists('country');
     }
 }
