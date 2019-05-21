@@ -44,8 +44,7 @@ class TenantOptionController extends ApiController
         }
         
         $this->apiData = $dataResponse;
-        $this->apiCode = app('Illuminate\Http\Response')->status();
-        $this->apiStatus = true;
+        $this->apiStatus = app('Illuminate\Http\Response')->status();
         $this->apiMessage = 'Tenant options listing successfully';
         return $this->response();
         
