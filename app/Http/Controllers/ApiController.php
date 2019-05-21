@@ -38,13 +38,11 @@ class ApiController extends Controller
                 "total_pages" => $this->apiData->lastPage(),
                 "next_url" => $this->apiData->nextPageUrl()
             ];
-            $this->apiCode = 200;
-            $this->apiStatus = true;
+            $this->apiStatus = 200;
         }else{
             $response['data'] = $this->apiData;
         }
         
-        $response['code'] = $this->apiCode;
         $response['status'] = $this->apiStatus;
         $response['message'] = $this->apiMessage;
 
