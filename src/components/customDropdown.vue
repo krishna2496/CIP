@@ -1,6 +1,6 @@
 <template>
 <div class="custom-dropdown" v-on:click.stop>
-  <span @click = "handleClick">{{default_text}}</span>
+  <span @click = "handleClick">{{default_text_val}}</span>
   <div class="option-list-wrap" v-if="showDropdown" data-simplebar >
     <ul class="option-list">
       <li v-for="item in optionList" :key="item"  @click="handleSelect">{{item}}</li>
@@ -18,6 +18,7 @@ export default {
   data() {
     return {
       showDropdown : false,
+      default_text_val : this.default_text,
     };
   },
   components: {},
@@ -32,7 +33,7 @@ export default {
     },
     handleSelect(e){
       var selected_val = e.target.innerHTML;
-      this.default_text = selected_val;
+      this.default_text_val = selected_val;
       this.showDropdown = false;
     }
   },
@@ -62,7 +63,7 @@ export default {
   & > span {
     display: block;
     padding: 6px 35px 6px 15px;
-    background: url("../assets/images/down-arrow.svg") no-repeat right 12px center/13px 11px;
+    background: url(/img/down-arrow.41472b83.svg) no-repeat right 12px center/13px 11px;
     border: 1px solid $border-color;
     border-radius: 3px;
     cursor: pointer;
