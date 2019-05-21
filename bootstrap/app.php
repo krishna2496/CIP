@@ -70,6 +70,7 @@ $app->middleware([
 $app->configure('auth'); //default authentication
 $app->configure('mail'); //SMTP and PHP mail
 $app->configure('constants'); //constant file config
+$app->configure('errors'); //Error Constants config
 
 /**
  * mailer package registration
