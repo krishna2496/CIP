@@ -6,8 +6,9 @@ return [
 	* API Error Types
 	*/
 	'type' => [
-		'ERROR_TYPE_404' => 'Not Found',
 		'ERROR_TYPE_400' => 'Bad Request',
+		'ERROR_TYPE_403' => 'Forbidden',
+		'ERROR_TYPE_404' => 'Not Found',
 		'ERROR_TYPE_422' => 'Unprocessable entity',
 		'ERROR_TYPE_500' => 'Internal Server Error'
 	],

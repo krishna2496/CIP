@@ -78,8 +78,8 @@ class AuthController extends ApiController {
         $user = User::where('email', $this->request->input('email'))->first();
 
         if (!$user) {
-            $this->errorType = config('errors.type.ERROR_TYPE_404');
-            $this->apiStatus = 404;
+            $this->errorType = config('errors.type.ERROR_TYPE_403');
+            $this->apiStatus = 403;
             $this->apiErrorCode = 40002;
             $this->apiMessage = config('errors.code.40002');
             return $this->errorResponse();
@@ -128,8 +128,8 @@ class AuthController extends ApiController {
         $user = User::where('email', $request->get('email'))->first();
 
         if (!$user) {
-            $this->errorType = config('errors.type.ERROR_TYPE_404');
-            $this->apiStatus = 404;
+            $this->errorType = config('errors.type.ERROR_TYPE_403');
+            $this->apiStatus = 403;
             $this->apiErrorCode = 40002;
             $this->apiMessage = config('errors.code.40002');
             return $this->errorResponse();
