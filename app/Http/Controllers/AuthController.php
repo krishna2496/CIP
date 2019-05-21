@@ -66,7 +66,7 @@ class AuthController extends ApiController {
         if ($validator->fails()) {
             $this->errorType = 'Bad Request';
             $this->apiStatus = 400;
-            $this->apiCode = 61005;
+            $this->apiErrorCode = 61005;
             $this->apiMessage = $validator->errors()->first(); // Set validation messages
             return $this->errorResponse();
         }
@@ -80,7 +80,7 @@ class AuthController extends ApiController {
             // below respose for now.
             $this->errorType = 'Bad Request';
             $this->apiStatus = 400;
-            $this->apiCode = 61005;
+            $this->apiErrorCode = 61005;
             $this->apiMessage = "Email does not exist.";
             return $this->errorResponse();
         }
@@ -88,7 +88,7 @@ class AuthController extends ApiController {
         if (!Hash::check($this->request->input('password'), $user->password)) {
             $this->errorType = 'Bad Request';
             $this->apiStatus = 400;
-            $this->apiCode = 41002;
+            $this->apiErrorCode = 41002;
             $this->apiMessage = 'Invalid Password.'; // Set validation messages
             return $this->errorResponse();
         }
@@ -114,7 +114,7 @@ class AuthController extends ApiController {
         if ($validator->fails()) {
             $this->errorType = 'Bad Request';
             $this->apiStatus = 400;
-            $this->apiCode = 61005;
+            $this->apiErrorCode = 61005;
             $this->apiMessage = $validator->errors()->first(); // Set validation messages
             return $this->errorResponse();
         }
@@ -126,7 +126,7 @@ class AuthController extends ApiController {
             //if user not exist
             $this->errorType = 'Bad Request';
             $this->apiStatus = 400;
-            $this->apiCode = 61005;
+            $this->apiErrorCode = 61005;
             $this->apiMessage = 'Email does not exist.'; // Set validation messages
             return $this->errorResponse();
         }
@@ -140,7 +140,7 @@ class AuthController extends ApiController {
         if (!$response == Password::RESET_LINK_SENT) {
             $this->errorType = 'Bad Request';
             $this->apiStatus = 400;
-            $this->apiCode = 61005;
+            $this->apiErrorCode = 61005;
             $this->apiMessage = "Something went's wrong"; // Set validation messages
             return $this->errorResponse();
         }

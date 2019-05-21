@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateTableCountries extends Migration
+class CreateTableTenantOptions extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,11 @@ class CreateTableCountries extends Migration
      */
     public function up()
     {
-        Schema::create('countries', function (Blueprint $table) {
-            $table->bigIncrements('country_id')->unsigned();
-            $table->string('name',255);
-            $table->string('ISO',16);
+        Schema::create('tenant_options', function (Blueprint $table) {
+            $table->bigIncrements('tenant_option_id')->unsigned();
+            $table->string('option_name',256);
+            $table->text('option_value');
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 
@@ -29,6 +28,6 @@ class CreateTableCountries extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('countries');
+        Schema::dropIfExists('table_tenant_options');
     }
 }

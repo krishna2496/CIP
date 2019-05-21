@@ -9,7 +9,7 @@ use App\Http\Controllers\Controller;
 class ApiController extends Controller
 {
     protected $apiData = '';
-    protected $apiCode = 500;
+    protected $apiErrorCode = 500;
     protected $apiStatus = false;
     protected $apiMessage = '';
     protected $pageLimit = 10;
@@ -57,7 +57,7 @@ class ApiController extends Controller
        
         $response['type'] = $this->errorType;
         $response['status'] = $this->apiStatus;
-        $response['code'] = $this->apiCode;
+        $response['code'] = $this->apiErrorCode;
         $response['message'] = $this->apiMessage;
         $data["errors"][]=$response;
        

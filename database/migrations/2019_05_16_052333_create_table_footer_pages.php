@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateTableLanguages extends Migration
+class CreateTableFooterPages extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,9 @@ class CreateTableLanguages extends Migration
      */
     public function up()
     {
-        Schema::create('languages', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->string('language_code',4);
-            $table->string('language_name',64);            
+        Schema::create('footer_pages', function (Blueprint $table) {
+            $table->bigIncrements('page_id')->unsigned();
+            $table->enum('status',['1', '0'])->default(1);
             $table->timestamps();
             $table->softDeletes();
         });
@@ -29,6 +28,6 @@ class CreateTableLanguages extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('languages');
+        Schema::dropIfExists('table_footer_pages');
     }
 }

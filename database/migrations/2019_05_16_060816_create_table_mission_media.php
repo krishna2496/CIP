@@ -14,15 +14,15 @@ class CreateTableMissionMedia extends Migration
     public function up()
     {
         Schema::create('mission_media', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->bigInteger('mission_id')->unsigned();
-            $table->string('media_name',255);
-            $table->string('media_type',5);            
+            
+            $table->bigIncrements('mission_media_id')->unsinged();
+            $table->bigInteger('mission_id')->unsinged();
+            $table->string('media_name',64);
+            $table->string('media_type',4);
+            $table->string('media_path',255);
+            $table->enum('status', ['0', '1'])->default(1);
             $table->timestamps();
-            $table->softDeletes();
-
-            // Relation defined between mission_media(mission_id) with mission(id)
-            $table->foreign('mission_id')->references('id')->on('missions')->onDelete('CASCADE')->onUpdate('CASCADE');
+            $table->foreign('mission_id')->references('mission_id')->on('missions')->onDelete('CASCADE')->onUpdate('CASCADE');
         });
     }
 
@@ -33,6 +33,6 @@ class CreateTableMissionMedia extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('mission_media');
+        Schema::dropIfExists('table_mission_media');
     }
 }
