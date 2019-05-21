@@ -29,7 +29,7 @@ class ApiController extends Controller
     protected function response()
     {
         // Check response data have pagination or not? Pagination response parameter sets
-        if(($this->apiData) && get_class($this->apiData) == "Illuminate\Pagination\LengthAwarePaginator"){            
+        if(is_object($this->apiData) && ($this->apiData) && get_class($this->apiData) == "Illuminate\Pagination\LengthAwarePaginator"){            
             $response['data'] = $this->apiData->toArray()['data'];
             $response['pagination'] = [
                 "total" => $this->apiData->total(),
@@ -38,13 +38,11 @@ class ApiController extends Controller
                 "total_pages" => $this->apiData->lastPage(),
                 "next_url" => $this->apiData->nextPageUrl()
             ];
-            $this->apiCode = 200;
-            $this->apiStatus = true;
+            $this->apiStatus = 200;
         }else{
             $response['data'] = $this->apiData;
         }
         
-        $response['code'] = $this->apiCode;
         $response['status'] = $this->apiStatus;
         $response['message'] = $this->apiMessage;
 

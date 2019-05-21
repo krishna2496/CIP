@@ -64,9 +64,9 @@ class AuthController extends ApiController {
         ]);
 
         if ($validator->fails()) {
-            $this->errorType = 'ValidationFailure';
+            $this->errorType = 'Bad Request';
             $this->apiStatus = 400;
-            $this->apiCode = 41001;
+            $this->apiCode = 61005;
             $this->apiMessage = $validator->errors()->first(); // Set validation messages
             return $this->errorResponse();
         }
@@ -80,7 +80,7 @@ class AuthController extends ApiController {
             // below respose for now.
             $this->errorType = 'Bad Request';
             $this->apiStatus = 400;
-            $this->apiCode = 41005;
+            $this->apiCode = 61005;
             $this->apiMessage = "Email does not exist.";
             return $this->errorResponse();
         }
@@ -94,9 +94,8 @@ class AuthController extends ApiController {
         }
 
         $data["token"] = $this->jwt($user);
-        $this->apiData = (object) $data;
-        $this->apiCode = app('Illuminate\Http\Response')->status();
-        $this->apiStatus = true;
+        $this->apiData = $data;
+        $this->apiStatus = app('Illuminate\Http\Response')->status();
         $this->apiMessage = 'You are successfully logged in';
         return $this->response();
     }
@@ -115,7 +114,7 @@ class AuthController extends ApiController {
         if ($validator->fails()) {
             $this->errorType = 'Bad Request';
             $this->apiStatus = 400;
-            $this->apiCode = 41005;
+            $this->apiCode = 61005;
             $this->apiMessage = $validator->errors()->first(); // Set validation messages
             return $this->errorResponse();
         }
@@ -127,7 +126,7 @@ class AuthController extends ApiController {
             //if user not exist
             $this->errorType = 'Bad Request';
             $this->apiStatus = 400;
-            $this->apiCode = 41005;
+            $this->apiCode = 61005;
             $this->apiMessage = 'Email does not exist.'; // Set validation messages
             return $this->errorResponse();
         }
@@ -138,20 +137,19 @@ class AuthController extends ApiController {
         );
 
         //if reset password link sent
-        if ($response == Password::RESET_LINK_SENT) {
-            $data = array();
-            $this->apiData = $data;
-            $this->apiCode = app('Illuminate\Http\Response')->status();
-            $this->apiStatus = true;
-            $this->apiMessage = 'Reset Password link is sent to your email account,link will expire in ' . config('constants.FORGOT_PASSWORD_EXPIRY_TIME') . ' hour';
-            return $this->response();
-        } else {
+        if (!$response == Password::RESET_LINK_SENT) {
             $this->errorType = 'Bad Request';
             $this->apiStatus = 400;
-            $this->apiCode = 41005;
+            $this->apiCode = 61005;
             $this->apiMessage = "Something went's wrong"; // Set validation messages
             return $this->errorResponse();
         }
+
+        $data = array();
+        $this->apiData = $data;
+        $this->apiStatus = app('Illuminate\Http\Response')->status();
+        $this->apiMessage = 'Reset Password link is sent to your email account,link will expire in ' . config('constants.FORGOT_PASSWORD_EXPIRY_TIME') . ' hour';
+        return $this->response();
     }
 
     /**
