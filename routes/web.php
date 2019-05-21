@@ -11,6 +11,9 @@
 |
 */
 
-$router->get('/', function () use ($router) {
-    return $router->app->version();
-});
+// Get tenants list
+$router->get('/tenants',['uses'=>'TenantController@index']);
+// Get tenant details from id
+$router->get('/tenants/{tenant_id}',['uses'=>'TenantController@show']);
+// Create new tenant
+$router->post('/tenant/create',['uses'=>'TenantController@store']);
