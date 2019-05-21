@@ -94,7 +94,7 @@ class AuthController extends ApiController {
         }
 
         $data["token"] = $this->jwt($user);
-        $this->apiData = (object) $data;
+        $this->apiData = $data;
         $this->apiStatus = app('Illuminate\Http\Response')->status();
         $this->apiMessage = 'You are successfully logged in';
         return $this->response();
