@@ -88,14 +88,20 @@ class AuthController extends ApiController
             return $this->errorResponse();
         }
         // Verify the password and generate the token
-        if (Hash::check($this->request->input('password'), $user->password)) {
-            $data["token"] = $this->jwt($user);
-            $this->apiData = (object)$data;
-            $this->apiCode = app('Illuminate\Http\Response')->status();
-            $this->apiStatus = true;
-            $this->apiMessage = 'You are successfully logged in';
-            return $this->response();
+        if (!Hash::check($this->request->input('password'), $user->password)) {
+            $this->errorType = 'Bad Request';
+            $this->apiStatus = 400;
+            $this->apiCode = 41002;
+            $this->apiMessage = 'Invalid Password.'; // Set validation messages
+            return $this->errorResponse();
         }
+        
+        $data["token"] = $this->jwt($user);
+        $this->apiData = (object)$data;
+        $this->apiCode = app('Illuminate\Http\Response')->status();
+        $this->apiStatus = true;
+        $this->apiMessage = 'You are successfully logged in';
+        return $this->response();
     }
     
     /**
