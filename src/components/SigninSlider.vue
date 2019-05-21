@@ -1,9 +1,9 @@
 <template>
-  <div class="login-slider">
+  <div class="signin-slider">
      <b-carousel
       id=""
       fade
-      :interval="800"
+      :interval="2000"
       indicators
     >
       <b-carousel-slide 
@@ -27,7 +27,7 @@
 </template>
 <script>
 export default {
-  name: "LoginSlider",
+  name: "SigninSlider",
   data() {
     return {
     };
@@ -38,7 +38,7 @@ export default {
 <style lang="scss" >
 // @import "../assets/scss/variables.scss";
 
-.login-slider {
+.signin-slider {
   .carousel-item {
     &:after {
       content: "";
@@ -46,16 +46,16 @@ export default {
       bottom: 0;
       left: 0;
       width: 100%;
-      height: 30%;
-      background:    -moz-linear-gradient(top, rgba(240,240,240,0) 32%, rgba(233,233,233,0) 34%, rgba(0,0,0,.7) 98%, rgba(0,0,0,.5) 100%);
+      height: 35%;
+      background:    -moz-linear-gradient(top, rgba(240,240,240,0) 32%, rgba(233,233,233,0) 34%, rgba(0,0,0,.7) 100%, rgba(0,0,0,.5) 100%);
       background: -webkit-gradient(left top, left bottom, color-stop(32%, rgba(240,240,240,0)), color-stop(34%, rgba(233,233,233,0)), color-stop(98%, rgba(0,0,0,.7)), color-stop(100%, rgba(0,0,0,.5)));
-      background: -webkit-linear-gradient(top, rgba(240,240,240,0) 32%, rgba(233,233,233,0) 34%, rgba(0,0,0,.7) 98%, rgba(0,0,0,.5) 100%);
-      background:      -o-linear-gradient(top, rgba(240,240,240,0) 32%, rgba(233,233,233,0) 34%, rgba(0,0,0,.7) 98%, rgba(0,0,0,.5) 100%);
-      background:     -ms-linear-gradient(top, rgba(240,240,240,0) 32%, rgba(233,233,233,0) 34%, rgba(0,0,0,.7) 98%, rgba(0,0,0,.5) 100%);
-      background:         linear-gradient(to bottom, rgba(240,240,240,0) 32%, rgba(233,233,233,0) 34%, rgba(0,0,0,.7) 98%, rgba(0,0,0,.5) 100%);
+      background: -webkit-linear-gradient(top, rgba(240,240,240,0) 32%, rgba(233,233,233,0) 34%, rgba(0,0,0,.7) 100%, rgba(0,0,0,.5) 100%);
+      background:      -o-linear-gradient(top, rgba(240,240,240,0) 32%, rgba(233,233,233,0) 34%, rgba(0,0,0,.7) 100%, rgba(0,0,0,.5) 100%);
+      background:     -ms-linear-gradient(top, rgba(240,240,240,0) 32%, rgba(233,233,233,0) 34%, rgba(0,0,0,.7) 100%, rgba(0,0,0,.5) 100%);
+      background:         linear-gradient(to bottom, rgba(240,240,240,0) 32%, rgba(233,233,233,0) 34%, rgba(0,0,0,.7) 100%, rgba(0,0,0,.5) 100%);
     }
     img {
-      height: 100%;
+      height: 100vh;
       object-fit: cover;
     }
   }
@@ -70,7 +70,44 @@ export default {
     }
   }
   .carousel-caption {
+    left:11%;
     text-align: left;
+    bottom:64px;
+    @include xlg-max{
+      bottom:20px;
+    }
+    h3{
+      font-size:43px;
+      line-height:52px;
+      margin-bottom:22px;
+      max-width:65%;
+      @include xlg-max{
+        font-size:30px;
+        line-height:34px;
+        max-width:100%;
+        margin-bottom:15px;
+      }
+    }
+    p{
+      font-size: 16px;
+      line-height: 28px;
+      max-width:80%;
+       @include xlg-max{
+         max-width:100%;
+         font-size:15px;
+         line-height:20px;
+       }
+    }
+  }
+  .carousel-indicators{
+    margin-bottom:30px;
+    @include xlg-max{
+      margin-bottom:15px;
+    }
+    li{
+      margin-left:5px;
+      margin-right:5px;
+    }
   }
 }
 

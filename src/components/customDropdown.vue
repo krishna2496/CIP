@@ -62,7 +62,7 @@ export default {
   & > span {
     display: block;
     padding: 6px 35px 6px 15px;
-    background: url(/img/down-arrow.41472b83.svg) no-repeat right 12px center/13px 11px;
+    background: url("../assets/images/down-arrow.svg") no-repeat right 12px center/13px 11px;
     border: 1px solid $border-color;
     border-radius: 3px;
     cursor: pointer;

@@ -1,8 +1,8 @@
 <template>
-    <div class="login-footer">
+    <div class="signin-footer">
         <div class="footer-menu">
           <b-list-group>
-            <b-list-group-item href="/landing">Privacy Policy</b-list-group-item>
+            <b-list-group-item href="#">Privacy Policy</b-list-group-item>
             <b-list-group-item href="#">Cookie Policy</b-list-group-item>
             <b-list-group-item href="#">Terms of Use</b-list-group-item>
           </b-list-group>
@@ -18,7 +18,7 @@
 export default {
 components: {},
 
-  name: 'LoginFooter.vue',
+  name: 'SigninFooter',
 
    data() {
     return {
@@ -28,14 +28,12 @@ components: {},
 </script>
 
 <style lang="scss" scoped>
-.login-footer {
+.signin-footer {
   position: relative;
-  padding: 38px 0;
 
   .list-group {
     flex-wrap: wrap;
     justify-content: center;
-    margin-bottom: 20px;
     a {
       display: inline-block;
       width: auto;
@@ -44,9 +42,6 @@ components: {},
       font-weight: 300;
       line-height: 18px;
       background: transparent;
-      &:hover {
-        color: $secondary;
-      }
     }
     .list-group-item {
       @include sm-max {
@@ -62,10 +57,13 @@ components: {},
       font-size: 14px;
       font-weight: 300;
       line-height: 18px;
+      
       a {
-        &:hover {
-          color: $primary;
-          text-decoration: underline;
+        text-decoration: underline;
+        &:hover, &:focus{
+          &:after{
+            display: none;
+          }
         }
       }
     }

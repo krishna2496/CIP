@@ -11,6 +11,7 @@ body {
   font-size: 15px;
   font-weight: 400;
   line-height: 24px;
+  overflow-x: hidden;
 }
 
 a,
@@ -23,6 +24,12 @@ button {
     text-decoration: none;
     box-shadow: none !important;
     outline: none !important;
+  }
+}
+a{
+  color: $black-primary;
+  &:hover, &:focus{
+    color: $black-primary;
   }
 }
 
@@ -102,7 +109,6 @@ img {
   min-height: 48px;
   color: $secondary;
   font-size: 17px;
-  line-height: 24px;
   background-color: $white;
   border: 2px solid $secondary;
   border-radius: 25px;
@@ -116,7 +122,6 @@ img {
   }
 
   &.icon-btn {
-
     &:active,
     &:hover,
     &:focus {
@@ -228,7 +233,6 @@ img {
     font-family: $noto-sans;
     font-size: 16px;
     font-weight: 400;
-   
   }
 
   width: 401px;
@@ -241,7 +245,7 @@ img {
 
   &:focus {
     box-shadow: none;
-    border-color: $primary;
+    border-color: $black-primary;
     outline: none;
   }
 
@@ -271,5 +275,190 @@ label {
         }
       }
     }
+  }
+}
+
+//sign pages css
+.signin-page-wrapper {
+  display: flex;
+  justify-content: center;
+  height: 100vh;
+  overflow: hidden;
+
+  @include md-max {
+    overflow-y: auto;
+  }
+
+  .signin-slider {
+    @include lg-max {
+      width: calc(100% - 350px);
+    }
+
+    @include md-max {
+      display: none;
+    }
+
+    width: calc(100% - 480px);
+
+    .carousel-item {
+      height: 100vh;
+    }
+  }
+
+  .signin-form-wrapper {
+    position: relative;
+    display: inline-flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-content: space-between;
+    align-items: center;
+    overflow-x: hidden;
+    overflow-y: auto;
+    width: 480px;
+    max-width: 100%;
+    max-height: 100vh;
+    padding: 20px 40px 37px;
+
+    @include lg-max {
+      width: 350px;
+    }
+
+    @include md-max {
+      max-height: auto !important;
+      overflow: initial;
+      width: 480px;
+    }
+
+    .signin-form-block {
+      width: 100%;
+      margin: 40px 0;
+    }
+
+    .lang-drodown-wrap {
+      display: inline-flex;
+      width: 100%;
+      justify-content: flex-end;
+
+      .custom-dropdown {
+        width: 69px !important;
+        left: 17px;
+
+        @include xlg-max {
+          left: 0;
+        }
+
+        > span {
+          padding: 9px 35px 9px 15px !important;
+        }
+      }
+    }
+
+    .logo-wrap {
+      display: block;
+      width: 150px;
+      margin: 0 auto 38px;
+
+      @include sm-max {
+        width: 115px;
+      }
+    }
+
+    .form-group {
+      margin: 0 0 22px;
+    }
+
+    .btn-bordersecondary {
+      display: flex;
+      justify-content: center;
+      flex: 1;
+      width: 100%;
+      margin-top: 6px;
+    }
+
+    .form-link {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+
+      a {
+        color: $black-primary;
+        font-size: 14px;
+        line-height: 18px;  
+        position: relative;
+        &:after{
+          position: absolute;
+          content: "";
+          left: 0;
+          width:0;
+          bottom: 0;
+          height: 1px;
+          background: $black-primary;
+          @include transition(width 0.3s);
+        }
+        &:hover{
+          &:after{
+            width: 100%;  
+          }
+        }
+      }
+    }
+
+    .form-title-block {
+      h1 {
+        font-size: 22px;
+        line-height: 27px;
+        text-align: center;
+        color: $black-primary;
+      }
+
+      p {
+        font-size: 14px;
+        line-height: 18px;
+        text-align: center;
+        color: $black-primary;
+        margin: 0 auto 31px;
+        letter-spacing: -0.23px;
+      }
+    }
+
+    .signin-form {
+      margin-bottom: 19px;
+      display: inline-flex;
+      max-width: 100%;
+      flex-wrap: wrap;
+
+      .form-control {
+        @include sm-max {
+          height: 45px;
+        }
+      }
+
+      .btn {
+        @include sm-max {
+          min-height: 42px;
+        }
+      }
+    }
+  }
+}
+
+.signin-footer{
+  a{
+    position: relative;
+        &:after{
+          position: absolute;
+          content: "";
+          left: 0;
+          width:0;
+          bottom: 0;
+          height: 1px;
+          background: $black-primary;
+          @include transition(width 0.3s);
+        }
+        &:hover{
+          &:after{
+            width: 100%;  
+          }
+        }
   }
 }
