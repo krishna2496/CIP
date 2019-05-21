@@ -18,6 +18,7 @@ class CreateTableTenantOption extends Migration
             $table->string('option_name',256);
             $table->text('option_value');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

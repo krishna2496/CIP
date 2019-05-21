@@ -22,6 +22,7 @@ class CreateTableMissionLanguage extends Migration
             $table->text('description'); 
             $table->text('objective'); 
             $table->timestamps();
+            $table->softDeletes();
             $table->foreign('mission_id')->references('mission_id')->on('mission')->onDelete('CASCADE')->onUpdate('CASCADE');
         });
     }
