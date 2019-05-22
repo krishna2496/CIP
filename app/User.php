@@ -17,6 +17,9 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     use CanResetPasswordTrait;
     use Notifiable;
 
+    protected $table = 'user';
+    protected $primaryKey = 'user_id';
+
     /**
      * The attributes that are mass assignable.
      *
