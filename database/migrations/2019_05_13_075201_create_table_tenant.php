@@ -13,14 +13,11 @@ class CreateTableTenant extends Migration
      */
     public function up()
     {
-        Schema::create('tenants', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->string('tenant_name',255)->comment('FQDN mapping');
-            $table->string('sponsor_id',64);
-            $table->enum('skills_enabled',['true','false'])->default('false');
-            $table->enum('themes_enabled',['true','false'])->default('false');
-            $table->enum('stories_enabled',['true','false'])->default('false');
-            $table->enum('news_enabled',['true','false'])->default('false');            
+        Schema::create('tenant', function (Blueprint $table) {
+            $table->bigIncrements('tenant_id');
+            $table->string('name',512)->comment('FQDN mapping');
+            $table->bigInteger('sponsor_id')->unsigned();
+            $table->enum('status',['1','0'])->default('1')->comment('0: Inactive, 1: Active');                    
             $table->timestamps();
             $table->softDeletes();
         });
@@ -33,6 +30,6 @@ class CreateTableTenant extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('tenants');
+        Schema::dropIfExists('tenant');
     }
 }

@@ -29,13 +29,13 @@ class TenantMigrationJob extends Job
     public function handle()
     {      
         // Create database
-        DB::statement("CREATE DATABASE IF NOT EXISTS `ci_tenant_{$this->tenant->id}`");
+        DB::statement("CREATE DATABASE IF NOT EXISTS `ci_tenant_{$this->tenant->tenant_id}`");
 
         // Set configuration options for the newly create tenant
         Config::set('database.connections.tenant', array(
             'driver'    => 'mysql',
             'host'      => env('DB_HOST'),
-            'database'  => 'ci_tenant_'.$this->tenant->id,
+            'database'  => 'ci_tenant_'.$this->tenant->tenant_id,
             'username'  => env('DB_USERNAME'),
             'password'  => env('DB_PASSWORD'),
         ));

@@ -10,10 +10,11 @@
 | and give it the Closure to call when that URI is requested.
 |
 */
-
-// Get tenants list
-$router->get('/tenants',['uses'=>'TenantController@index']);
-// Get tenant details from id
-$router->get('/tenants/{tenant_id}',['uses'=>'TenantController@show']);
-// Create new tenant
-$router->post('/tenant/create',['uses'=>'TenantController@store']);
+$router->group(['prefix' => 'tenants'], function($router){
+	// Get tenants list
+	$router->get('/',['uses'=>'TenantController@index']);
+	// Get tenant details from id
+	$router->get('/{tenant_id}',['uses'=>'TenantController@show']);
+	// Create new tenant
+	$router->post('/create',['uses'=>'TenantController@store']);
+});

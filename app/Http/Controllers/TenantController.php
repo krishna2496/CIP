@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Input;
 use App\Http\Controllers\ApiController;
 use App\Jobs\TenantMigrationJob;
 use App\Tenant;
@@ -17,10 +18,21 @@ class TenantController extends ApiController
      */
     public function index()
     {
-        // Get tenants with pagination                                                
-        $tenants = Tenant::select('id','tenant_name','sponsor_id','skills_enabled','themes_enabled','stories_enabled','news_enabled','created_at')
-        ->whereNull('deleted_at')
-        ->paginate(10);
+        // Get request parameter from URL
+        $search_string = Input::get('search','');
+        $order_type = Input::get('order','asc');
+
+        // Create basic query for tenant list
+        $tenant_query = Tenant::select('tenant_id','name','created_at')
+        ->whereNull('deleted_at');
+
+        // Check if search parameter passed in URL then search parameter will search in name field of tenant table.
+        if (!empty($search_string)) {
+            $tenant_query->where('name', 'like', '%' . $search_string . '%');
+        }
+
+        // Order by passed order or default order asc.
+        $tenants = $tenant_query->orderBy('tenant_id',$order_type)->paginate(10);
 
         if (count($tenants)>0) {
             // Set response data
@@ -44,10 +56,10 @@ class TenantController extends ApiController
      * @return mixed
      */
     public function store(Request $request)
-    {
+    {        
         // Server side validataions
         $validator = Validator::make($request->toArray(), [
-            'tenant_name' => 'required',
+            'name' => 'required',
             'sponsor_id'  => 'required',
         ]);
 
@@ -67,7 +79,7 @@ class TenantController extends ApiController
 
             // Set response data
             $this->apiCode    = app('Illuminate\Http\Response')->status();
-            $this->apiData    = $created_tenant;
+            $this->apiData    = ['tenant_id' => $created_tenant->tenant_id];
             $this->apiMessage = "Tenant created successfully";
 
             // Job dispatched for to create tenant's database and migrations
@@ -101,7 +113,7 @@ class TenantController extends ApiController
     public function show($tenant_id)
     {
         // Find tenant from database based on passed tenant id.
-        $tenant_details = Tenant::select('id','tenant_name','sponsor_id','skills_enabled','themes_enabled','stories_enabled','news_enabled','created_at')->find($tenant_id);
+        $tenant_details = Tenant::select('tenant_id','name','sponsor_id','created_at')->find($tenant_id);
 
         // Check tenant found or not
         if ($tenant_details) {
