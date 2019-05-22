@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateTableCountries extends Migration
+class CreateTableFooterPage extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,9 @@ class CreateTableCountries extends Migration
      */
     public function up()
     {
-        Schema::create('countries', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->string('country_code',3);
-            $table->string('countries_name',80);
+        Schema::create('footer_page', function (Blueprint $table) {
+            $table->bigIncrements('page_id')->unsigned();
+            $table->enum('status',['1', '0'])->default(1);
             $table->timestamps();
             $table->softDeletes();
         });
@@ -29,6 +28,6 @@ class CreateTableCountries extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('countries');
+        Schema::dropIfExists('footer_page');
     }
 }

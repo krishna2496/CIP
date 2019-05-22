@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateTableTimezones extends Migration
+class CreateTableTimezone extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,13 @@ class CreateTableTimezones extends Migration
      */
     public function up()
     {
-        Schema::create('timezones', function (Blueprint $table) {
-            $table->bigIncrements('id');
+        Schema::create('timezone', function (Blueprint $table) {
+            $table->bigIncrements('timezone_id')->unsinged();
             $table->string('timezone',255);
             $table->string('offset',255);
-            $table->enum('status',['0','1'])->default('1')->comment('0: in-active, 1: active');
+            $table->enum('status',['0','1'])->default(1);
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
@@ -29,6 +30,6 @@ class CreateTableTimezones extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('timezones');
+        Schema::dropIfExists('timezone');
     }
 }
