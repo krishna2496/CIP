@@ -116,29 +116,26 @@ class TenantController extends ApiController
     }
 
     /**
-     * Display specific tenant details.
+     * Show tenant details
      *
-     * @param  int  $id
+     * @param int $id
      * @return mixed
      */
     public function show($tenant_id)
     {
-        // Find tenant from database based on passed tenant id.
-        $tenant_details = Tenant::select('tenant_id','name','sponsor_id','created_at')->find($tenant_id);
+        $tenant = Tenant::select('tenant_id','name','sponsor_id','created_at')->find($tenant_id);
 
-        // Check tenant found or not
-        if ($tenant_details) {
+        if ($tenant) {
             $this->apiStatus = 200;
-            $this->apiData   = $tenant_details;
-            $this->apiMessage = "Tenant found successfully";
-        } else {               
-            $this->errorType = config('errors.code.10004');
+            $this->apiData = $tenant;
+			return $this->response();
+        } else {
+			$this->errorType = config('errors.type.ERROR_TYPE_403');
+            $this->apiStatus = 403;
             $this->apiErrorCode = 10004;
-            $this->apiStatus  = 404;
-            $this->apiMessage = "Tenant not found";
+            $this->apiMessage = config('errors.code.10004');
+			return $this->errorResponse();
         }
-
-        return $this->response();
     }
 
     /**
