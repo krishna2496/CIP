@@ -52,7 +52,7 @@ class TenantController extends ApiController
     /**
      * Store a newly created tenant into database.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return mixed
      */
     public function store(Request $request)
@@ -76,39 +76,39 @@ class TenantController extends ApiController
 
         try {
 
-            $created_tenant = Tenant::create($request->toArray());
+            $tenant = Tenant::create($request->toArray());
 
-            // Add options data into tenant_has_option table            
-            if (isset($request->options) && count($request->options)>0) {
-                foreach ($request->options as $option_name => $option_value) {
-                    $tenant_option_data['option_name'] = $option_name;
+            // Add options data into `tenant_has_option` table            
+            if (isset($request->options) && count($request->options) > 0) {
+				foreach ($request->options as $option_name => $option_value) {
+					$tenant_option_data['option_name'] = $option_name;
                     $tenant_option_data['option_value'] = $option_value;
-                    // Insert options into tenant_has_option table
-                    $created_tenant->options()->create($tenant_option_data);
+                    $tenant->options()->create($tenant_option_data);
                 }
             }
 
             // Set response data
-            $this->apiStatus    = app('Illuminate\Http\Response')->status();
-            $this->apiData    = ['tenant_id' => $created_tenant->tenant_id];
+            $this->apiStatus = app('Illuminate\Http\Response')->status();
+            $this->apiData = ['tenant_id' => $tenant->tenant_id];
             $this->apiMessage = "Tenant created successfully";
 
-            // Job dispatched for to create tenant's database and migrations
-            dispatch(new TenantMigrationJob($created_tenant));
+            // Job dispatched to create new tenant's database and migrations
+            dispatch(new TenantMigrationJob($tenant));
 
             return $this->response();
 
         } catch (\Exception $e) {            
             // Error for duplicate tenant name, trying to store in database.
-            if (isset($e->errorInfo[1]) && $e->errorInfo[1]==1062) {
-                $this->errorType  = config('errors.code.10002');
+            if (isset($e->errorInfo[1]) && $e->errorInfo[1] == 1062) {
+                $this->errorType  = config('errors.type.ERROR_TYPE_400');
+                $this->apiStatus  = 400;
                 $this->apiErrorCode = 10002;
-                $this->apiStatus  = 422;
-                $this->apiMessage = "Tenant name is already taken, Please try with different name.";
-            } else { // Any other error occured when trying to insert data into database for tenant.
-                $this->errorType  = config('errors.code.10006');
+                $this->apiMessage = config('errors.code.10002');
+            } else { 
+				// Any other error occured when trying to insert data into database for tenant.
+                $this->errorType  = config('errors.type.ERROR_TYPE_400');
+                $this->apiStatus  = 400;
                 $this->apiErrorCode = 10006;
-                $this->apiStatus  = 422;
                 $this->apiMessage = $e->getMessage();
             }
             return $this->errorResponse();
