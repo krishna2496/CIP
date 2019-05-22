@@ -14,12 +14,12 @@ class TestController extends ApiController
      * @return \Illuminate\Http\Response
      */
     public function index()
-    {
+    {        
         $this->apiCode = 200;
         $this->apiStatus = true;
         $this->apiMessage = "Connection created";
-        // dd($this);
-        return $this->successResponse();
+        
+        return $this->response();
     }
 
     /**

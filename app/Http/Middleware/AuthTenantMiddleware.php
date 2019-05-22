@@ -2,11 +2,11 @@
 
 namespace App\Http\Middleware;
 use Illuminate\Support\Facades\Config;
-// use App\Tenant;
 use Closure;
+use Firebase\JWT\JWT;
 use DB;
 
-class TenantConnection
+class AuthTenantMiddleware
 {
     /**
      * Handle an incoming request.
@@ -16,66 +16,61 @@ class TenantConnection
      * @return mixed
      */
     public function handle($request, Closure $next)
-    {
-        // dd(DB::connection()->getDatabaseName());
+    {        
         // Pre-Middleware Action
-        $domain = $request->getHost();
+        $token = $request->get('token');
+        if($token){
+            $credentials = JWT::decode($token, env('JWT_SECRET'), ['HS256']);
+            $domain = $credentials->fqdn;
+        }else{            
+            $domain = $request->fqdn;
+        }        
         if ( $domain !== env('APP_DOMAIN') ) {
+            
+            $tenant_details = DB::table('tenant')->select('tenant_id')->where('name', $domain)->first();
+            
+            if (!$tenant_details){
 
-            $domain_array = explode(".",$domain);
-            // $tenant = DB::table('tenants')->where('tenant_name',$domain_array[0])->first();
-            $tenant = DB::table('tenants')->where('tenant_name',$request->get('tenant'))->first();
-            // dd($tenant);
-            if (!$tenant){
-                // throw new SiteNotFoundException('Site with domain ' . $tenant . ' not found');
                 $response['errors'] = [];
                 array_push($response['errors'],[
                     "type"=> "Domain not found",
                     "status" => false,
-                    "code" => 1001,
-                    "message"=> "Domain '".$domain_array[0]."' not found"
-                ]);
-                // dd('Site with domain '.$tenant->tenant_name.'\'s database is not found.');
+                    "code" => 10001,
+                    "message"=> "Domain '".$domain."' not found"
+                ]);                
                 return response()->json($response, 200, [], JSON_NUMERIC_CHECK);
             }
-            $this->createConnection($tenant);
-        }
-
+            $this->createConnection($tenant_details);
+        }        
         $response = $next($request);
 
         return $response;
     }
     public function createConnection($tenant)
     {        
-        // dd('ci_tenant_'.$tenant->id);
         Config::set('database.connections.tenant', array(
             'driver'    => 'mysql',
             'host'      => env('DB_HOST'),
-            'database'  => 'ci_tenant_'.$tenant->id,
+            'database'  => 'ci_tenant_'.$tenant->tenant_id,
             'username'  => env('DB_USERNAME'),
             'password'  => env('DB_PASSWORD'),
         ));        
         try {
             // Create connection for the tenant database
-            // dd(DB::connection()->getDatabaseName());
             $pdo = DB::connection('tenant')->getPdo();
             // Set default database
             Config::set('database.default', 'tenant');
         } catch (\PDOException $e) {
             if ($e instanceof \PDOException) {
-                
                 $response['errors'] = [];
-                
                 array_push($response['errors'],[
                     "type"=> "Database Connection Error",
                     "status" => false,
                     "code" => 1000,
-                    "message"=> "Domain '".$tenant->tenant_name."' have Unknown database connection request",
+                    "message"=> "Domain '".$tenant->name."' have Unknown database connection request",
                 ]);
-
-                dd(response()->json($response),$e->getMessage());
+                return response()->json($response);
             }
-        }
-        // dd(DB::connection()->getDatabaseName());
+        }        
     }
 }

@@ -65,6 +65,7 @@ $app->middleware([
  $app->routeMiddleware([
     'auth' => App\Http\Middleware\Authenticate::class,
     'jwt.auth' => App\Http\Middleware\JwtMiddleware::class, //jwt auth
+    'tenant.auth' => App\Http\Middleware\AuthTenantMiddleware::class
  ]);
  
 $app->configure('auth'); //default authentication

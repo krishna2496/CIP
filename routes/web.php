@@ -14,14 +14,16 @@
 $router->get('/', function () use ($router) {
     return $router->app->version();
 });
-$router->get('/connect', ['middleware' => 'connect','uses' => 'TestController@index']);
+
+// Connect first time to get styling data.
+$router->post('connect', ['middleware' => 'tenant.auth', 'uses' => 'ConnectionController@index']);
 
 /* user login routing using jwt token */
-$router->post('login', ['uses' => 'AuthController@authenticate']);
+$router->post('login', ['middleware' => 'tenant.auth', 'uses' => 'AuthController@authenticate']);
 
 /* user listing routing using middleware to verify token */
 $router->group(
-    ['middleware' => 'jwt.auth'], 
+    ['middleware' => 'tenant.auth|jwt.auth'],
     function() use ($router) {
         $router->get('users', function() {
             $users = \App\User::all();
@@ -31,12 +33,10 @@ $router->group(
 );
 
 /*  forgot password routing */
-$router->post('request_password_reset', ['uses' => 'AuthController@requestPasswordReset']);
+$router->post('request_password_reset', ['middleware' => 'tenant.auth','uses' => 'AuthController@requestPasswordReset']);
 
 /*  password reset routing */
 $router->post('/reset_password/{token}', ['as' => 'password.reset', 'uses' => 'ResetPasswordController@reset']);
 
 /*  get custom styling data for tenant specific */
 $router->post('/custom_data', ['uses' => 'CustomController@customData']);
-
-
