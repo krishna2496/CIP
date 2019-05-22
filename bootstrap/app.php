@@ -59,17 +59,26 @@ $app->singleton(
 $app->register(Flipbox\LumenGenerator\LumenGeneratorServiceProvider::class);
 
 $app->middleware([
-     App\Http\Middleware\ExampleMiddleware::class
- ]);
+     App\Http\Middleware\ExampleMiddleware::class,
+     Barryvdh\Cors\HandleCors::class
+]);
 
- $app->routeMiddleware([
+$app->routeMiddleware([
     'auth' => App\Http\Middleware\Authenticate::class,
     'jwt.auth' => App\Http\Middleware\JwtMiddleware::class, //jwt auth
- ]);
+    'cros' => \Barryvdh\Cors\HandleCors::class
+]);
  
 $app->configure('auth'); //default authentication
 $app->configure('mail'); //SMTP and PHP mail
 $app->configure('constants'); //constant file config
+$app->configure('errors'); //Error Constants config
+$app->configure('cors');
+
+
+
+$app->register(Barryvdh\Cors\LumenServiceProvider::class);
+
 
 /**
  * mailer package registration

@@ -9,7 +9,7 @@ use App\Http\Controllers\Controller;
 class ApiController extends Controller
 {
     protected $apiData = '';
-    protected $apiCode = 500;
+    protected $apiErrorCode = 500;
     protected $apiStatus = false;
     protected $apiMessage = '';
     protected $pageLimit = 10;
@@ -28,8 +28,11 @@ class ApiController extends Controller
      */
     protected function response()
     {
+        if($this->apiData)
+            $response['data'] = $this->apiData;
+        
         // Check response data have pagination or not? Pagination response parameter sets
-        if(is_object($this->apiData) && ($this->apiData) && get_class($this->apiData) == "Illuminate\Pagination\LengthAwarePaginator"){            
+        if((is_object($this->apiData)) &&($this->apiData) && get_class($this->apiData) == "Illuminate\Pagination\LengthAwarePaginator"){            
             $response['data'] = $this->apiData->toArray()['data'];
             $response['pagination'] = [
                 "total" => $this->apiData->total(),
@@ -39,8 +42,6 @@ class ApiController extends Controller
                 "next_url" => $this->apiData->nextPageUrl()
             ];
             $this->apiStatus = 200;
-        }else{
-            $response['data'] = $this->apiData;
         }
         
         $response['status'] = $this->apiStatus;
@@ -57,7 +58,7 @@ class ApiController extends Controller
        
         $response['type'] = $this->errorType;
         $response['status'] = $this->apiStatus;
-        $response['code'] = $this->apiCode;
+        $response['code'] = $this->apiErrorCode;
         $response['message'] = $this->apiMessage;
         $data["errors"][]=$response;
        
