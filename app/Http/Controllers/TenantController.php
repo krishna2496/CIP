@@ -87,9 +87,9 @@ class TenantController extends ApiController
                     $created_tenant->options()->create($tenant_option_data);
                 }
             }
-            
+
             // Set response data
-            $this->apiCode    = app('Illuminate\Http\Response')->status();
+            $this->apiStatus    = app('Illuminate\Http\Response')->status();
             $this->apiData    = ['tenant_id' => $created_tenant->tenant_id];
             $this->apiMessage = "Tenant created successfully";
 
