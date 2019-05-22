@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use App\TenantHasOption;
 
 class Tenant extends Model {
 
@@ -19,5 +20,8 @@ class Tenant extends Model {
     ];
 
     // Relationships
-
+    public function options()
+    {
+    	return $this->hasMany(TenantHasOption::class,'tenant_id','tenant_id');
+    }
 }

@@ -57,6 +57,7 @@ class TenantController extends ApiController
      */
     public function store(Request $request)
     {        
+
         // Server side validataions
         $validator = Validator::make($request->toArray(), [
             'name' => 'required',
@@ -77,6 +78,16 @@ class TenantController extends ApiController
 
             $created_tenant = Tenant::create($request->toArray());
 
+            // Add options data into tenant_has_option table            
+            if (isset($request->options) && count($request->options)>0) {
+                foreach ($request->options as $option_name => $option_value) {
+                    $tenant_option_data['option_name'] = $option_name;
+                    $tenant_option_data['option_value'] = $option_value;
+                    // Insert options into tenant_has_option table
+                    $created_tenant->options()->create($tenant_option_data);
+                }
+            }
+            
             // Set response data
             $this->apiCode    = app('Illuminate\Http\Response')->status();
             $this->apiData    = ['tenant_id' => $created_tenant->tenant_id];
