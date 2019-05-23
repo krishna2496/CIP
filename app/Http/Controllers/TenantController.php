@@ -23,7 +23,7 @@ class TenantController extends ApiController
         $orderType = Input::get('order','asc');
 
         // Create basic query for tenant list
-        $tenantQuery = Tenant::select('tenant_id','name','created_at')
+        $tenantQuery = Tenant::with('options:tenant_option_id,tenant_id,option_name,option_value,created_at')->select('tenant_id','name','sponsor_id','created_at')
         ->whereNull('deleted_at');
 
         // Check if search parameter passed in URL then search parameter will search in name field of tenant table.
@@ -132,7 +132,7 @@ class TenantController extends ApiController
      */
     public function show($tenant_id)
     {
-        $tenantDetail = Tenant::select('tenant_id','name','sponsor_id','created_at')->find($tenant_id);
+        $tenantDetail = Tenant::with('options:tenant_option_id,tenant_id,option_name,option_value,created_at')->select('tenant_id','name','sponsor_id','created_at')->find($tenant_id);
 
         if ($tenantDetail) {
             $this->apiStatus = 200;
