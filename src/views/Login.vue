@@ -16,7 +16,7 @@
                     <b-form-group>
                         <label for="">Email Address</label>
                         <b-form-input id="" type="email" v-model="login.email" placeholder="Enter email" :class="{ 'is-invalid': $v.login.email.$error }"></b-form-input>
-                        <div v-if="submitted && !$v.login.email.required" class="invalid-feedback">Email is required</div>
+                        <div v-if="submitted && !$v.login.email.required" class="invalid-feedback">Email Address is required</div>
                         <div v-if="submitted && !$v.login.email.email" class="invalid-feedback">Enter valid email address</div>
                     </b-form-group>
                     <b-form-group>
