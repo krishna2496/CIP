@@ -66,7 +66,7 @@ $app->middleware([
 $app->routeMiddleware([
     'auth' => App\Http\Middleware\Authenticate::class,
     'jwt.auth' => App\Http\Middleware\JwtMiddleware::class, //jwt auth
-    'cros' => \Barryvdh\Cors\HandleCors::class
+    'cros' => \Barryvdh\Cors\HandleCors::class,
     'tenant.auth' => App\Http\Middleware\AuthTenantMiddleware::class
  ]);
  
