@@ -22,8 +22,7 @@ class StylingController extends ApiController
         $checkForSerialize = FALSE;
 
         // find custom data
-        $tenantOptions = TenantOption::get(['option_name', 'option_value'])->whereNull('deleted_at');
-        $data = $tenantOptions->toArray();
+        $data = TenantOption::get(['option_name', 'option_value'])->where('deleted_at',NULL)->toArray();
 
         //if data exist
         if ($data) {
