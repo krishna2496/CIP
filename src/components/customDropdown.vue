@@ -61,7 +61,6 @@ export default {
 .custom-dropdown {
   position: relative;
   width: 200px;
-  color: $black-primary;
   font-size: 14px;
   line-height: 18px;
   & > span {

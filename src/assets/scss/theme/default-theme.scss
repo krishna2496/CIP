@@ -1,15 +1,18 @@
 // Color variables
+$primary: #f88634;
 
-$primary: #2b64b1;
-$secondary: #f88634;
 $black: #000;
 $white: #fff;
+
 $black-primary: #414141;
-$black1: #333;
-$white-primary: #f3f7f9;
-$gray1: #757575;
+
+$gray-primary:#757575;
+
+
 $border-color: #e8e8e8;
 
 // rgba color variable
 $rgb-black: rgba(0, 0, 0, 0.6);
 $error: #dc3545;
+
+$gray-bg: $border-color;

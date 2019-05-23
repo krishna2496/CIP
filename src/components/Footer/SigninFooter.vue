@@ -61,7 +61,7 @@ export default {
     text-align: center;
     p {
       margin: 0;
-      color: $black-primary;
+      color: $gray-primary;
       font-size: 14px;
       font-weight: 300;
       line-height: 18px;
