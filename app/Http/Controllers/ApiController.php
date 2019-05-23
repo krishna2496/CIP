@@ -28,7 +28,8 @@ class ApiController extends Controller
      */
     protected function response()
     {
-        if($this->apiData)
+        $response['status'] = $this->apiStatus;
+        if(!empty((array)$this->apiData))
             $response['data'] = $this->apiData;
         
         // Check response data have pagination or not? Pagination response parameter sets
@@ -43,9 +44,8 @@ class ApiController extends Controller
             ];
             $this->apiStatus = 200;
         }
-        
-        $response['status'] = $this->apiStatus;
-        $response['message'] = $this->apiMessage;
+        if($this->apiMessage)
+			$response['message'] = $this->apiMessage;
 
         return response()->json($response, 200, [], JSON_NUMERIC_CHECK);
     }
