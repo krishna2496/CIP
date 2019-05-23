@@ -31,9 +31,18 @@ class TenantController extends ApiController
             $tenant_query->where('name', 'like', '%' . $search_string . '%');
         }
 
-        // Order by passed order or default order asc.
-        $tenants = $tenant_query->orderBy('tenant_id',$order_type)->paginate(10);
-
+        try {
+            // Order by passed order or default order asc.
+            $tenants = $tenant_query->orderBy('tenant_id',$order_type)->paginate(10);
+        } catch(\Exception $e) { 
+            // Catch database exception
+            $this->errorType  = config('errors.code.10006');
+            $this->apiErrorCode = 10006;
+            $this->apiStatus  = 422;
+            $this->apiMessage = $e->getMessage();
+            return $this->errorResponse();
+        }
+        
         if (count($tenants)>0) {
             // Set response data
             $this->apiData = $tenants;
