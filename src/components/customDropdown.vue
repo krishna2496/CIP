@@ -1,54 +1,59 @@
 <template>
-<div class="custom-dropdown" v-on:click.stop>
-  <span @click = "handleClick">{{default_text_val}}</span>
-  <div class="option-list-wrap" v-if="showDropdown" data-simplebar >
-    <ul class="option-list">
-      <li v-for="item in optionList" :key="item"  @click="handleSelect">{{item}}</li>
-    </ul>
+  <div
+    class="custom-dropdown"
+    v-on:touchend.stop
+    v-on:click.stop
+    :class="showDropdown ? 'dropdown-open' : ' '"
+  >
+    <span @click="handleClick">{{default_text_val}}</span>
+    <div class="option-list-wrap" v-if="showDropdown" data-simplebar>
+      <ul class="option-list">
+        <li v-for="item in optionList" :key="item" @click="handleSelect">{{item}}</li>
+      </ul>
+    </div>
   </div>
-</div>
 </template>
 <script>
 export default {
   name: "customDropdown",
-  props:{
-    optionList:Array,
-    default_text:String,
+  props: {
+    optionList: Array,
+    default_text: String
   },
   data() {
     return {
-      showDropdown : false,
-      default_text_val : this.default_text,
+      showDropdown: false,
+      default_text_val: this.default_text
     };
   },
   components: {},
-  computed: {
-  },
+  computed: {},
   methods: {
-     onClick(){
-       this.showDropdown = false;
+    onClick() {
+      this.showDropdown = false;
     },
-    handleClick(){
+    handleClick() {
       this.showDropdown = !this.showDropdown;
     },
-    handleSelect(e){
+    handleSelect(e) {
       var selected_val = e.target.innerHTML;
       this.default_text_val = selected_val;
       this.showDropdown = false;
     }
   },
- 
-  created() {
 
-  },
-  beforeUdate() {
-  },
+  created() {},
+  beforeUdate() {},
   mounted() {
-    document.addEventListener('click' , this.onClick);
+    if (screen.width < 1025) {
+      document.addEventListener("touchend", this.onClick);
+    } else {
+      document.addEventListener("click", this.onClick);
+    }
   },
   beforeDestroy() {
-    document.removeEventListener('click' , this.onClick);
-  },
+    document.removeEventListener("click", this.onClick);
+  }
 };
 </script>
 
@@ -56,18 +61,43 @@ export default {
 .custom-dropdown {
   position: relative;
   width: 200px;
-  margin-bottom: 30px;
-  color: $black-primary;
   font-size: 14px;
   line-height: 18px;
   & > span {
     display: block;
     padding: 6px 35px 6px 15px;
-    background: url(/img/down-arrow.41472b83.svg) no-repeat right 12px center/13px 11px;
     border: 1px solid $border-color;
     border-radius: 3px;
     cursor: pointer;
+    &:after {
+      position: absolute;
+      content: "";
+      background: url("../assets/images/down-arrow.svg") no-repeat;
+      background-size: 11px;
+      width: 11px;
+      height: 11px;
+      right: 13px;
+      top: 50%;
+      @include transformY(-50%);
+      @include transition(all 0.3s);
+    }
   }
+  &.dropdown-open {
+    span {
+      border-radius: 3px 3px 0 0;
+      &:after {
+        transform: translateY(-50%) rotate(180deg);
+        -webkit-transform: translateY(-50%) rotate(180deg);
+        -ms-transform: translateY(-50%) rotate(180deg);
+        -moz-transform: translateY(-50%) rotate(180deg);
+        -o-transform: translateY(-50%) rotate(180deg);
+      }
+    }
+    .option-list-wrap {
+      border-radius: 0 0 3px 3px;
+    }
+  }
+
   .option-list-wrap {
     @extend .dropdown_shadow;
     position: absolute;
@@ -86,7 +116,7 @@ export default {
       margin: 0;
       list-style-type: none;
       li {
-        @include transition(all .3s);
+        @include transition(all 0.3s);
         padding: 6px 15px;
         text-align: left;
         background: $white;
@@ -98,5 +128,4 @@ export default {
     }
   }
 }
-
 </style>
