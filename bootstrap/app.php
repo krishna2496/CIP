@@ -67,7 +67,8 @@ $app->routeMiddleware([
     'auth' => App\Http\Middleware\Authenticate::class,
     'jwt.auth' => App\Http\Middleware\JwtMiddleware::class, //jwt auth
     'cros' => \Barryvdh\Cors\HandleCors::class
-]);
+    'tenant.auth' => App\Http\Middleware\AuthTenantMiddleware::class
+ ]);
  
 $app->configure('auth'); //default authentication
 $app->configure('mail'); //SMTP and PHP mail

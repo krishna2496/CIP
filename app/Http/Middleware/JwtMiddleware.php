@@ -5,7 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use Firebase\JWT\JWT;
 use App\User;
-
+use DB;
 class JwtMiddleware
 {
     /**
@@ -16,7 +16,7 @@ class JwtMiddleware
      * @return mixed
      */
    public function handle($request, Closure $next, $guard = null)
-    {
+    {        
         $token = $request->get('token');
      
         if(!$token) {

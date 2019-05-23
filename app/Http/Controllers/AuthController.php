@@ -12,6 +12,7 @@ use Illuminate\Auth\Passwords\PasswordBrokerManager;
 use Illuminate\Support\Facades\Password;
 use App\Http\Controllers\ApiController;
 use App\Http\Controllers\Config;
+use DB;
 
 class AuthController extends ApiController {
 
@@ -43,8 +44,9 @@ class AuthController extends ApiController {
             'iss' => "lumen-jwt",       // Issuer of the token
             'sub' => $user->id,         // Subject of the token
             'iat' => time(),            // Time when JWT was issued. 
-            'exp' => time() + 60 * 60   // Expiration time
-        ];
+            'exp' => time() + 60 * 60,  // Expiration time
+            'fqdn' => $this->request->fqdn
+        ];        
 
         // As you can see we are passing `JWT_SECRET` as the second parameter that will 
         // be used to decode the token in the future.
@@ -58,8 +60,8 @@ class AuthController extends ApiController {
      * @param \Illuminate\Http\Request $request
      * @return mixed
      */
-    public function authenticate(User $user, Request $request) {
-        
+    public function authenticate(User $user, Request $request) {                
+        // dd(DB::connection()->getDatabaseName());
         // Server side validataions
         $validator = Validator::make($request->toArray(), [
             'email' => 'required|email',
