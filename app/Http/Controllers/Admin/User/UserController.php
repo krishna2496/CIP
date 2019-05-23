@@ -65,7 +65,7 @@ class UserController extends ApiController
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -97,11 +97,11 @@ class UserController extends ApiController
         try {
 
             // Create new user
-            $createdUser = User::create($request->toArray());
+            $user = User::create($request->toArray());
 
             // Set response data
-            $this->apiStatus    = app('Illuminate\Http\Response')->status();
-            $this->apiData    = ['user_id' => $createdUser->user_id];
+            $this->apiStatus = app('Illuminate\Http\Response')->status();
+            $this->apiData = ['user_id' => $user->user_id];
             $this->apiMessage = "User created successfully";
 
             return $this->response();
@@ -109,7 +109,7 @@ class UserController extends ApiController
         } catch (\Exception $e) {
 
             // Error for duplicate tenant name, trying to store in database.
-            if (isset($e->errorInfo[1]) && $e->errorInfo[1]==1062) {
+            if (isset($e->errorInfo[1]) && $e->errorInfo[1] == 1062) {
                 $this->errorType  = config('errors.code.10002');
                 $this->apiErrorCode = 10002;
                 $this->apiStatus  = 422;
@@ -128,7 +128,7 @@ class UserController extends ApiController
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function show($id)
@@ -139,8 +139,8 @@ class UserController extends ApiController
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param \Illuminate\Http\Request $request
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
@@ -151,7 +151,7 @@ class UserController extends ApiController
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
@@ -163,14 +163,14 @@ class UserController extends ApiController
             $user->delete();
 
             // Set response data
-            $this->apiStatus    = 204;            
+            $this->apiStatus = 204;            
             $this->apiMessage = "User deleted successfully";
 
             return $this->response();
 
         } catch(\Exception $e){
             
-            $this->errorType  = config('errors.type.ERROR_TYPE_422');
+            $this->errorType = config('errors.type.ERROR_TYPE_422');
             $this->apiStatus  = 422;
             $this->apiErrorCode = 10006;
             $this->apiMessage = config('errors.code.10006');
