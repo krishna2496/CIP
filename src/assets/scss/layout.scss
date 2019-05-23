@@ -26,9 +26,12 @@ button {
     outline: none !important;
   }
 }
-a{
+
+a {
   color: $black-primary;
-  &:hover, &:focus{
+
+  &:hover,
+  &:focus {
     color: $black-primary;
   }
 }
@@ -52,6 +55,12 @@ img {
   width: 100%;
 }
 
+ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
 #app {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -73,10 +82,9 @@ img {
 
 /**button style**/
 
-.custom-btn {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+.btn {
+  text-align: center;
+  display: block !important;
 
   &:focus {
     box-shadow: none !important;
@@ -227,6 +235,10 @@ img {
   }
 }
 
+.form-group {
+  width: 100%;
+}
+
 .form-control {
   @include placeholder {
     color: $gray1;
@@ -235,7 +247,7 @@ img {
     font-weight: 400;
   }
 
-  width: 401px;
+  width: 100%;
   max-width: 100%;
   height: 56px;
   color: $black-primary;
@@ -266,15 +278,10 @@ label {
   }
 }
 
-.simplebar-track {
-  .simplebar-vertical {
-    .simplebar-scrollbar {
-      &.simplebr-visible {
-        &:before {
-          opacity: 1;
-        }
-      }
-    }
+.simplebar-scrollbar {
+  &:before {
+    background: $border-color !important;
+    opacity: 1 !important;
   }
 }
 
@@ -287,6 +294,8 @@ label {
 
   @include md-max {
     overflow-y: auto;
+    height: 100%;
+    align-items: flex-start;
   }
 
   .signin-slider {
@@ -298,7 +307,7 @@ label {
       display: none;
     }
 
-    width: calc(100% - 480px);
+    width: 75%;
 
     .carousel-item {
       height: 100vh;
@@ -314,24 +323,32 @@ label {
     align-items: center;
     overflow-x: hidden;
     overflow-y: auto;
-    width: 480px;
+    width: 25%;
     max-width: 100%;
     max-height: 100vh;
     padding: 20px 40px 37px;
+    min-height: 100vh;
 
     @include lg-max {
       width: 350px;
     }
 
     @include md-max {
-      max-height: auto !important;
+      max-height: 100% !important;
       overflow: initial;
       width: 480px;
+      padding: 40px 20px;
+      .browser-ios & {
+        padding-top: 20px;
+      }
     }
 
     .signin-form-block {
-      width: 100%;
-      margin: 40px 0;
+      margin: 40px auto;
+      max-width: 100%;
+      .browser-ios & {
+        margin: 20px auto;
+      }
     }
 
     .lang-drodown-wrap {
@@ -358,6 +375,11 @@ label {
       width: 150px;
       margin: 0 auto 38px;
 
+      img {
+        width: 100%;
+        height: 100%;
+      }
+
       @include sm-max {
         width: 115px;
       }
@@ -383,21 +405,26 @@ label {
       a {
         color: $black-primary;
         font-size: 14px;
-        line-height: 18px;  
+        line-height: 18px;
         position: relative;
-        &:after{
+
+        &:after {
           position: absolute;
           content: "";
           left: 0;
-          width:0;
+          width: 0;
           bottom: 0;
           height: 1px;
           background: $black-primary;
           @include transition(width 0.3s);
+          .browser-ios & {
+            transition: none !important;
+          }
         }
-        &:hover{
-          &:after{
-            width: 100%;  
+
+        &:hover {
+          &:after {
+            width: 100%;
           }
         }
       }
@@ -422,10 +449,11 @@ label {
     }
 
     .signin-form {
-      margin-bottom: 19px;
-      display: inline-flex;
-      max-width: 100%;
+      margin: 0 auto 19px;
+      display: flex;
       flex-wrap: wrap;
+      width: 100%;
+      max-width: 401px;
 
       .form-control {
         @include sm-max {
@@ -442,23 +470,25 @@ label {
   }
 }
 
-.signin-footer{
-  a{
+.signin-footer {
+  a {
     position: relative;
-        &:after{
-          position: absolute;
-          content: "";
-          left: 0;
-          width:0;
-          bottom: 0;
-          height: 1px;
-          background: $black-primary;
-          @include transition(width 0.3s);
-        }
-        &:hover{
-          &:after{
-            width: 100%;  
-          }
-        }
+
+    &:after {
+      position: absolute;
+      content: "";
+      left: 0;
+      width: 0;
+      bottom: 0;
+      height: 1px;
+      background: $black-primary;
+      @include transition(width 0.3s);
+    }
+
+    &:hover {
+      &:after {
+        width: 100%;
+      }
+    }
   }
 }

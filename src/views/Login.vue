@@ -3,25 +3,25 @@
     <SigninSlider/>
     <div class="signin-form-wrapper">
       <div class="lang-drodown-wrap">
-         <customDropdown :optionList="langList" :default_text="defaut_lang" />
+        <customDropdown :optionList="langList" :default_text="defaut_lang"/>
       </div>
       <div class="signin-form-block">
-        <i class="logo-wrap">
+        <a href="/home" class="logo-wrap">
           <img src="../assets/images/optimy-logo.png">
-        </i>
+        </a>
         <b-form class="signin-form">
           <b-form-group>
-            <label for="">Email Address</label>
-            <b-form-input id="" type="email" required placeholder="Enter email"></b-form-input>
+            <label for>Email Address</label>
+            <b-form-input id type="email" required placeholder="Enter email"></b-form-input>
           </b-form-group>
           <b-form-group>
-             <label for="">Password</label>
-            <b-form-input id="" type="password" required placeholder="Enter Password"></b-form-input>
+            <label for>Password</label>
+            <b-form-input id type="password" required placeholder="Enter Password"></b-form-input>
           </b-form-group>
-          <b-button type="submit" class=" btn-bordersecondary">Login</b-button>
+          <b-button type="submit" class="btn-bordersecondary" title="Login">Login</b-button>
         </b-form>
         <div class="form-link">
-          <b-link>Lost your password?</b-link>
+          <b-link href="/forgotpassword" title="Lost your password">Lost your password?</b-link>
         </div>
       </div>
       <SigninFooter/>
@@ -29,33 +29,24 @@
   </div>
 </template>
 <script>
-import SigninSlider from '../components/SigninSlider';
-import SigninFooter from '../components/Footer/SigninFooter';
-import customDropdown from '../components/customDropdown';
+import SigninSlider from "../components/SigninSlider";
+import SigninFooter from "../components/Footer/SigninFooter";
+import customDropdown from "../components/customDropdown";
 
 export default {
   components: {
     SigninSlider,
-    SigninFooter, 
-    customDropdown, 
+    SigninFooter,
+    customDropdown
   },
   data() {
     return {
-      myValue: '',
-      defaut_lang:'EN',
-      langList:['EN', 'IND', 'FR'],
+      myValue: "",
+      defaut_lang: "EN",
+      langList: ["EN", "IND", "FR"]
     };
-  },
-  computed: {
-  },
-  methods: {
-  },
- mounted() {
- },
-  created() {
   }
 };
-
 </script>
 <style lang="scss">
 </style>

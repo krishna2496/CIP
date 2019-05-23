@@ -1,45 +1,23 @@
 // Font-variables
 
 @import url("https://fonts.googleapis.com/css?family=Noto+Sans");
-$noto-sans: "Noto Sans",
-sans-serif;
-
-
-
-// Color variables
-
-$primary: #2b64b1;
-$secondary: #f88634;
-$black: #000;
-$white: #fff;
-$black-primary: #414141;
-$black1: #333;
-$white-primary: #f3f7f9;
-$gray1: #757575;
-$border-color: #e8e8e8;
-
-
-// rgba color variable
-$rgb-black: rgba(0, 0, 0, .6);
-$error: #dc3545;
-
-
+$noto-sans: "Noto Sans", sans-serif;
 
 /**Box-shadow style**/
 .dropdown_shadow {
-          box-shadow: 0 5px 20px 0 rgba(21, 27, 38, .08);
+  box-shadow: 0 5px 20px 0 rgba(21, 27, 38, 0.08);
 
-  -webkit-box-shadow: 0 5px 20px 0 rgba(21, 27, 38, .08);
-     -moz-box-shadow: 0 5px 20px 0 rgba(21, 27, 38, .08);
-      -ms-box-shadow: 0 5px 20px 0 rgba(21, 27, 38, .08);
-       -o-box-shadow: 0 5px 20px 0 rgba(21, 27, 38, .08);
+  -webkit-box-shadow: 0 5px 20px 0 rgba(21, 27, 38, 0.08);
+  -moz-box-shadow: 0 5px 20px 0 rgba(21, 27, 38, 0.08);
+  -ms-box-shadow: 0 5px 20px 0 rgba(21, 27, 38, 0.08);
+  -o-box-shadow: 0 5px 20px 0 rgba(21, 27, 38, 0.08);
 }
 
 .card_shadow {
-          box-shadow: 0 0 25px 0 rgba(0, 0, 0, .06);
+  box-shadow: 0 0 25px 0 rgba(0, 0, 0, 0.06);
 
-  -webkit-box-shadow: 0 0 25px 0 rgba(0, 0, 0, .06);
-     -moz-box-shadow: 0 0 25px 0 rgba(0, 0, 0, .06);
-      -ms-box-shadow: 0 0 25px 0 rgba(0, 0, 0, .06);
-       -o-box-shadow: 0 0 25px 0 rgba(0, 0, 0, .06);
+  -webkit-box-shadow: 0 0 25px 0 rgba(0, 0, 0, 0.06);
+  -moz-box-shadow: 0 0 25px 0 rgba(0, 0, 0, 0.06);
+  -ms-box-shadow: 0 0 25px 0 rgba(0, 0, 0, 0.06);
+  -o-box-shadow: 0 0 25px 0 rgba(0, 0, 0, 0.06);
 }
