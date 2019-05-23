@@ -19,7 +19,9 @@ class Tenant extends Model {
         // Validation rules
     ];
 
-    // Relationships
+    /*
+    * Defined has many relation for the tenant_option table.
+    */
     public function options()
     {
     	return $this->hasMany(TenantHasOption::class,'tenant_id','tenant_id');

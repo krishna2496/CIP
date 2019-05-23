@@ -19,21 +19,21 @@ class TenantController extends ApiController
     public function index()
     {
         // Get request parameter from URL
-        $search_string = Input::get('search','');
-        $order_type = Input::get('order','asc');
+        $searchString = Input::get('search','');
+        $orderType = Input::get('order','asc');
 
         // Create basic query for tenant list
-        $tenant_query = Tenant::select('tenant_id','name','created_at')
+        $tenantQuery = Tenant::select('tenant_id','name','created_at')
         ->whereNull('deleted_at');
 
         // Check if search parameter passed in URL then search parameter will search in name field of tenant table.
-        if (!empty($search_string)) {
-            $tenant_query->where('name', 'like', '%' . $search_string . '%');
+        if (!empty($searchString)) {
+            $tenantQuery->where('name', 'like', '%' . $searchString . '%');
         }
 
         try {
             // Order by passed order or default order asc.
-            $tenants = $tenant_query->orderBy('tenant_id',$order_type)->paginate(10);
+            $tenantList = $tenantQuery->orderBy('tenant_id',$orderType)->paginate(10);
         } catch(\Exception $e) { 
             // Catch database exception
             $this->errorType  = config('errors.code.10006');
@@ -43,9 +43,9 @@ class TenantController extends ApiController
             return $this->errorResponse();
         }
         
-        if (count($tenants)>0) {
+        if (count($tenantList)>0) {
             // Set response data
-            $this->apiData = $tenants;
+            $this->apiData = $tenantList;
             $this->apiStatus = app('Illuminate\Http\Response')->status();
             $this->apiMessage = "Tenant listing successfully";
         } else {
@@ -85,24 +85,24 @@ class TenantController extends ApiController
 
         try {
 
-            $tenant = Tenant::create($request->toArray());
+            $createdTenant = Tenant::create($request->toArray());
 
             // Add options data into `tenant_has_option` table            
             if (isset($request->options) && count($request->options) > 0) {
 				foreach ($request->options as $option_name => $option_value) {
-					$tenant_option_data['option_name'] = $option_name;
-                    $tenant_option_data['option_value'] = $option_value;
-                    $tenant->options()->create($tenant_option_data);
+					$tenantOptionData['option_name'] = $option_name;
+                    $tenantOptionData['option_value'] = $option_value;
+                    $createdTenant->options()->create($tenantOptionData);
                 }
             }
 
             // Set response data
             $this->apiStatus = app('Illuminate\Http\Response')->status();
-            $this->apiData = ['tenant_id' => $tenant->tenant_id];
+            $this->apiData = ['tenant_id' => $createdTenant->tenant_id];
             $this->apiMessage = "Tenant created successfully";
 
             // Job dispatched to create new tenant's database and migrations
-            dispatch(new TenantMigrationJob($tenant));
+            dispatch(new TenantMigrationJob($createdTenant));
 
             return $this->response();
 
@@ -132,11 +132,11 @@ class TenantController extends ApiController
      */
     public function show($tenant_id)
     {
-        $tenant = Tenant::select('tenant_id','name','sponsor_id','created_at')->find($tenant_id);
+        $tenantDetail = Tenant::select('tenant_id','name','sponsor_id','created_at')->find($tenant_id);
 
-        if ($tenant) {
+        if ($tenantDetail) {
             $this->apiStatus = 200;
-            $this->apiData = $tenant;
+            $this->apiData = $tenantDetail;
 			return $this->response();
         } else {
 			$this->errorType = config('errors.type.ERROR_TYPE_403');

@@ -2,7 +2,19 @@
 
 /*
 |--------------------------------------------------------------------------
-| Application Routes
+| Default route
+|--------------------------------------------------------------------------
+| This is default route of Laravel Lumen
+|
+*/
+
+$router->get('/', function () use ($router) {
+    return $router->app->version();
+});
+
+/*
+|--------------------------------------------------------------------------
+| Tenants Routes for super admin
 |--------------------------------------------------------------------------
 |
 | Here is where you can register all of the routes for an application.
