@@ -6,7 +6,7 @@ use Closure;
 use Firebase\JWT\JWT;
 use DB;
 
-class AuthTenantMiddleware
+class TenantConnectionMiddleware
 {
     /**
      * Handle an incoming request.
@@ -19,17 +19,19 @@ class AuthTenantMiddleware
     {        
         // Pre-Middleware Action
         $token = $request->get('token');
-        if($token){
+
+        if ($token) {
             $credentials = JWT::decode($token, env('JWT_SECRET'), ['HS256']);
             $domain = $credentials->fqdn;
-        }else{            
+        } else {
             $domain = $request->fqdn;
-        }        
-        if ( $domain !== env('APP_DOMAIN') ) {
+        }
+
+        if ($domain !== env('APP_DOMAIN')) {
             
-            $tenant_details = DB::table('tenant')->select('tenant_id')->where('name', $domain)->first();
+            $tenantDetails = DB::table('tenant')->select('tenant_id')->where('name', $domain)->first();
             
-            if (!$tenant_details){
+            if (!$tenantDetails) {
 
                 $response['errors'] = [];
                 array_push($response['errors'],[
@@ -40,12 +42,19 @@ class AuthTenantMiddleware
                 ]);                
                 return response()->json($response, 200, [], JSON_NUMERIC_CHECK);
             }
-            $this->createConnection($tenant_details);
+            $this->createConnection($tenantDetails);
         }        
         $response = $next($request);
 
         return $response;
     }
+    /**
+     * Create connection with specific tenant.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \Closure  $next
+     * @return mixed
+     */
     public function createConnection($tenant)
     {        
         Config::set('database.connections.tenant', array(

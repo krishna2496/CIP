@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\App\Auth;
 
 use Validator;
 use App\User;
@@ -61,7 +61,7 @@ class AuthController extends ApiController {
      * @return mixed
      */
     public function authenticate(User $user, Request $request) {		        
-        // dd(DB::connection()->getDatabaseName());
+
 		// Server side validataions
         $validator = Validator::make($request->toArray(), [
 			'email' => 'required|email',

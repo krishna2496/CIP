@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\App\Styling;
 use App\Http\Controllers\ApiController;
 use Illuminate\Http\Request;
 use App\TenantOption;
 use DB;
 
-class ConnectionController extends ApiController
+class StylingController extends ApiController
 {
     /**
      * Display a listing of the resource.
@@ -22,7 +22,7 @@ class ConnectionController extends ApiController
         $checkForSerialize = FALSE;
 
         // find custom data
-        $tenantOptions = TenantOption::get(['option_name', 'option_value'])->where('deleted_at', NULL);
+        $tenantOptions = TenantOption::get(['option_name', 'option_value'])->whereNull('deleted_at');
         $data = $tenantOptions->toArray();
 
         //if data exist

@@ -58,15 +58,12 @@ $app->singleton(
 */
 $app->register(Flipbox\LumenGenerator\LumenGeneratorServiceProvider::class);
 
-$app->middleware([
-     App\Http\Middleware\ExampleMiddleware::class
- ]);
-
- $app->routeMiddleware([
+$app->routeMiddleware([
     'auth' => App\Http\Middleware\Authenticate::class,
     'jwt.auth' => App\Http\Middleware\JwtMiddleware::class, //jwt auth
-    'tenant.auth' => App\Http\Middleware\AuthTenantMiddleware::class
- ]);
+    'tenant.connection' => App\Http\Middleware\TenantConnectionMiddleware::class, // Middle ware that connect tenant user with their tenant
+    'auth.tenant.admin' => App\Http\Middleware\AuthTenantAdminMiddleware::class
+]);
  
 $app->configure('auth'); //default authentication
 $app->configure('mail'); //SMTP and PHP mail
