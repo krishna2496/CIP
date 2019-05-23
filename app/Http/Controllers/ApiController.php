@@ -62,7 +62,7 @@ class ApiController extends Controller
         $response['message'] = $this->apiMessage;
         $data["errors"][] = $response;
        
-        return response()->json($data, 400, [], JSON_NUMERIC_CHECK);
+        return response()->json($data, $this->apiStatus, [], JSON_NUMERIC_CHECK);
     }
     
 }
