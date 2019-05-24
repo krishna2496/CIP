@@ -87,6 +87,14 @@ class TenantController extends ApiController
 
             $createdTenant = Tenant::create($request->toArray());
 
+            // ONLY FOR TESTING START Create api_user data (PLEASE REMOVE THIS CODE IN PRODUCTION MODE)
+            $apiUserData['api_key'] = base64_encode($createdTenant->name.'_api_key');
+            $apiUserData['api_secret'] = base64_encode($createdTenant->name.'_secret_key');
+
+            // Insert api_user data into table
+            $createdTenant->apiUsers()->create($apiUserData);
+            // ONLY FOR TESTING END
+            
             // Add options data into `tenant_has_option` table            
             if (isset($request->options) && count($request->options) > 0) {
 				foreach ($request->options as $option_name => $option_value) {
@@ -106,7 +114,11 @@ class TenantController extends ApiController
 
             return $this->response();
 
-        } catch (\Exception $e) {            
+        } catch (\Exception $e) {
+
+            // If any error occure after create tenant record in database then need to remove it.
+            $createdTenant->delete();
+
             // Error for duplicate tenant name, trying to store in database.
             if (isset($e->errorInfo[1]) && $e->errorInfo[1] == 1062) {
                 $this->errorType  = config('errors.type.ERROR_TYPE_400');

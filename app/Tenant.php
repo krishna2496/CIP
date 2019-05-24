@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use App\TenantHasOption;
+use App\ApiUser;
 
 class Tenant extends Model {
 
@@ -24,6 +25,14 @@ class Tenant extends Model {
     */
     public function options()
     {
-    	return $this->hasMany(TenantHasOption::class,'tenant_id','tenant_id');
+    	return $this->hasMany(TenantHasOption::class, 'tenant_id', 'tenant_id');
+    }
+
+    /*
+    * Defined has many relation for the api_users table.
+    */
+    public function apiUsers()
+    {
+        return $this->hasMany(ApiUser::class, 'tenant_id', 'tenant_id');
     }
 }
