@@ -4,20 +4,21 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateTableTenant extends Migration
+class CreateTableSkill extends Migration
 {
     /**
      * Run the migrations.
      *
      * @return void
      */
+    
     public function up()
     {
-        Schema::create('tenant', function (Blueprint $table) {
-            $table->bigIncrements('tenant_id');
-            $table->string('name',512)->comment('FQDN mapping');
-            $table->bigInteger('sponsor_id')->unsigned();
-            $table->enum('status',['1','0'])->default('1')->comment('0: Inactive, 1: Active');                    
+        Schema::create('skill', function (Blueprint $table) {
+            $table->bigIncrements('skill_id')->unsigned();
+            $table->string('skill_name',64);
+            $table->text('translations');
+            $table->integer('parent_skill');
             $table->timestamps();
             $table->softDeletes();
         });
@@ -30,6 +31,6 @@ class CreateTableTenant extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('tenant');
+        Schema::dropIfExists('skill');
     }
 }

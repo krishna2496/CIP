@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateTableTenant extends Migration
+class CreateTableTimezone extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,11 @@ class CreateTableTenant extends Migration
      */
     public function up()
     {
-        Schema::create('tenant', function (Blueprint $table) {
-            $table->bigIncrements('tenant_id');
-            $table->string('name',512)->comment('FQDN mapping');
-            $table->bigInteger('sponsor_id')->unsigned();
-            $table->enum('status',['1','0'])->default('1')->comment('0: Inactive, 1: Active');                    
+        Schema::create('timezone', function (Blueprint $table) {
+            $table->bigIncrements('timezone_id')->unsinged();
+            $table->string('timezone',255);
+            $table->string('offset',255);
+            $table->enum('status',['0','1'])->default(1);
             $table->timestamps();
             $table->softDeletes();
         });
@@ -30,6 +30,6 @@ class CreateTableTenant extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('tenant');
+        Schema::dropIfExists('timezone');
     }
 }
