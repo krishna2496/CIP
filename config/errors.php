@@ -21,8 +21,13 @@ return [
 		'40002' => 'Email address does not exist in the system',
 		'40004' => 'Invalid password',
 		'40006' => 'Something went wrong while sending reset password link',
-		'10006' => 'Database operational error',
-		'10010' => 'API key and Secret key are required',
+		'40008' => 'Tenant domain does not found',
+		'41000' => 'Unknown database connection request for this domain',
+		
+		'20002' => 'This email address is already taken, Please try with different email address',
+		'20004' => 'Error while inserting data to database',
+		'20008' => 'Invalid API Key or Secret key',
+		'20010' => 'API key and Secret key are required',
 	]
 	
 ];

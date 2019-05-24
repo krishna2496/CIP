@@ -29,7 +29,7 @@ class ApiController extends Controller
     protected function response()
     {
         $response['status'] = $this->apiStatus;
-        if(!empty((array)$this->apiData))
+        if(!empty((array)$this->apiData) && $this->apiData != '')
             $response['data'] = $this->apiData;
         
         // Check response data have pagination or not? Pagination response parameter sets
