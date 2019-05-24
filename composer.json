@@ -12,6 +12,7 @@
         "illuminate/mail": "^5.8",
         "illuminate/notifications": "^5.8.4",
         "laravel/lumen-framework": "5.8.*",
+        "laravelista/lumen-vendor-publish": "^2.1",
         "ramsey/uuid": "^3.8",
         "vlucas/phpdotenv": "^3.3"
     },

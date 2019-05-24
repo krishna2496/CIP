@@ -19,13 +19,13 @@ class AuthTenantAdminMiddleware
         // Check basic auth passed or not
         if(!isset($_SERVER['PHP_AUTH_USER']) && !isset($_SERVER['PHP_AUTH_PW'])){
 
-            $response['type'] = config('errors.type.ERROR_TYPE_422');
-            $response['status'] = 402;
+            $response['type'] = config('errors.type.ERROR_TYPE_403');
+            $response['status'] = 403;
             $response['code'] = 10010;
             $response['message'] = config('errors.code.10010');
             $data["errors"][] = $response;
 
-            return response()->json($data); 
+            return response()->json($data, $response['status']); 
         }
         try{
             // authenticate api user based on basic auth parameters
@@ -74,6 +74,7 @@ class AuthTenantAdminMiddleware
             }
 
             return response()->json($data);
+
 
         }
     }
