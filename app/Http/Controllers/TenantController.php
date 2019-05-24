@@ -144,7 +144,9 @@ class TenantController extends ApiController
      */
     public function show($tenant_id)
     {
-        $tenantDetail = Tenant::with('options:tenant_option_id,tenant_id,option_name,option_value,created_at')->select('tenant_id','name','sponsor_id','created_at')->find($tenant_id);
+        $tenantDetail = Tenant::with('options:tenant_option_id, tenant_id, option_name, option_value, created_at')
+						->select('tenant_id','name','sponsor_id','created_at')
+						->find($tenant_id);
 
         if ($tenantDetail) {
             $this->apiStatus = 200;
