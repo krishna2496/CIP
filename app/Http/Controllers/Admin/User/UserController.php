@@ -37,12 +37,12 @@ class UserController extends ApiController
         try {
             $userQuery->orderBy('user_id',$orderType)->paginate(10);            
             $userList = $userQuery->paginate(10);
-        } catch(\Exception $e) { 
+        } catch(\Exception $e) {
             // Catch database exception
-            $this->errorType  = config('errors.code.10006');
+            $this->errorType  = config('errors.type.ERROR_TYPE_403');
+            $this->apiStatus  = 403;
             $this->apiErrorCode = 10006;
-            $this->apiStatus  = 422;
-            $this->apiMessage = $e->getMessage();
+            $this->apiMessage = config('errors.code.10006');
             return $this->errorResponse();
         }
         // Order by passed order or default order asc.
@@ -53,7 +53,7 @@ class UserController extends ApiController
             $this->apiStatus = app('Illuminate\Http\Response')->status();
             $this->apiMessage = "Tenant listing successfully";
         } else {
-            // Set response data                        
+            // Set response data
             $this->apiStatus = app('Illuminate\Http\Response')->status();
             $this->apiMessage = "No data found";
         }

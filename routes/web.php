@@ -46,12 +46,12 @@ $router->post('/custom_data', ['uses' => 'CustomController@customData']);
 | These are tenant user routes to manage their profile and other stuff
 |
 */
-$router->group(['middleware' => 'tenant.connection|jwt.auth'], function() use ($router) {
+/*$router->group(['middleware' => 'tenant.connection|jwt.auth'], function() use ($router) {
 	$router->get('users', function() {
         $users = \App\User::all();
         return response()->json($users);
     });
-});
+});*/
 
 /*
 |

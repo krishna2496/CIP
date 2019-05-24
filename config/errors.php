@@ -23,6 +23,7 @@ return [
 		'40006' => 'Something went wrong while sending reset password link',
 		'10006' => 'Database operational error',
 		'10010' => 'API and secret key not found in request',
+		'10014' => 'Unauthorized access'
 	]
 	
 ];
