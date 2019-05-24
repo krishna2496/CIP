@@ -21,8 +21,8 @@ class AuthTenantAdminMiddleware
 
             $response['type'] = config('errors.type.ERROR_TYPE_403');
             $response['status'] = 403;
-            $response['code'] = 10010;
-            $response['message'] = config('errors.code.10010');
+            $response['code'] = 20010;
+            $response['message'] = config('errors.code.20010');
             $data["errors"][] = $response;
 
             return response()->json($data, $response['status']); 
@@ -47,16 +47,16 @@ class AuthTenantAdminMiddleware
             // Send authentication error response if api user not found in master database
             $response['type'] = config('errors.type.ERROR_TYPE_403');
             $response['status'] = 403;
-            $response['code'] = 10014;
-            $response['message'] = config('errors.code.10014');
+            $response['code'] = 20008;
+            $response['message'] = config('errors.code.20008');
             $data["errors"][] = $response;
 
-            return response()->json($data);
+            return response()->json($data, $response['status']);
 
         } catch(\Exception $e){
 
-            // That is database not found, that means there is DB_DATABASE constant in env file. That must need to remove from evn.
-            if ($e->getCode()===1049) {
+            // That is database not found, that means there is DB_DATABASE constant in env file. That must need to remove from env.
+            if ($e->getCode() === 1049) {
                 
                 $response['type'] = config('errors.type.ERROR_TYPE_400');
                 $response['status'] = 400;
@@ -68,12 +68,12 @@ class AuthTenantAdminMiddleware
 
                 $response['type'] = config('errors.type.ERROR_TYPE_403');
                 $response['status'] = 403;
-                $response['code'] = 10014;
-                $response['message'] = 'Unauthorised';
+                $response['code'] = 20014;
+                $response['message'] = config('errors.code.20014');
                 $data["errors"][] = $response;
             }
 
-            return response()->json($data);
+            return response()->json($data, $response['status']);
 
 
         }
@@ -105,10 +105,10 @@ class AuthTenantAdminMiddleware
 
         } catch(\Exception $e){
 
-            $response['type'] = config('errors.type.ERROR_TYPE_400');
-            $response['status'] = 400;
-            $response['code'] = 10006;
-            $response['message'] = config('errors.code.10006');
+            $response['type'] = config('errors.type.ERROR_TYPE_403');
+            $response['status'] = 403;
+            $response['code'] = 21000;
+            $response['message'] = config('errors.code.21000');
             $data["errors"][] = $response;
 
             return $data;

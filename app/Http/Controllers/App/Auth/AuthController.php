@@ -155,7 +155,7 @@ class AuthController extends ApiController {
         }
 
         $this->apiStatus = app('Illuminate\Http\Response')->status();
-        $this->apiMessage = 'Reset Password link is sent to your email account,link will expire in ' . config('constants.FORGOT_PASSWORD_EXPIRY_TIME') . ' hour';
+        $this->apiMessage = 'Reset Password link is sent to your email account,link will expire in ' . config('constants.FORGOT_PASSWORD_EXPIRY_TIME') . ' hours';
         return $this->response();
     }
 
