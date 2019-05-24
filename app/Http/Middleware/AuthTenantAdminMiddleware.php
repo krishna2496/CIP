@@ -19,13 +19,13 @@ class AuthTenantAdminMiddleware
         // Check basic auth passed or not
         if(!isset($_SERVER['PHP_AUTH_USER']) && !isset($_SERVER['PHP_AUTH_PW'])){
 
-            $response['errorType'] = config('errors.type.ERROR_TYPE_422');
-            $response['apiStatus'] = 402;
-            $response['apiErrorCode'] = 10010;
-            $response['apiMessage'] = config('errors.code.10010');
+            $response['type'] = config('errors.type.ERROR_TYPE_403');
+            $response['status'] = 403;
+            $response['code'] = 10010;
+            $response['message'] = config('errors.code.10010');
             $data["errors"][] = $response;
 
-            return response()->json($data); 
+            return response()->json($data, $response['status']); 
         }
         
         // authenticate api user based on basic auth parameters
@@ -45,13 +45,13 @@ class AuthTenantAdminMiddleware
         }
 
         // Send authentication error response if api user not found in master database
-        $response['errorType'] = config('errors.type.ERROR_TYPE_403');
-        $response['apiStatus'] = 403;
-        $response['apiErrorCode'] = 10008;
-        $response['apiMessage'] = 'Unauthorised';
+        $response['type'] = config('errors.type.ERROR_TYPE_403');
+        $response['status'] = 403;
+        $response['code'] = 10008;
+        $response['message'] = 'Unauthorised';
         $data["errors"][] = $response;
 
-        return response()->json($data);     
+        return response()->json($data, $response['status']);     
     }
 
     /**
