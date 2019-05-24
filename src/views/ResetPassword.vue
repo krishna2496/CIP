@@ -26,11 +26,11 @@
         </b-form>
         <div class="form-link">
           <b-link href="/login" title="Login">Login</b-link>
+	</div>
+	</div>
+	<SigninFooter/>
         </div>
-      </div>
-      <SigninFooter/>
     </div>
-  </div>
 </template>
 <script>
 import SigninSlider from '../components/SigninSlider';
@@ -49,17 +49,8 @@ export default {
       defaut_lang:'EN',
       langList:['EN', 'IND', 'FR'],
     };
-  },
-  computed: {
-  },
-  methods: {
-  },
- mounted() {
- },
-  created() {
   }
-};
-
+}
 </script>
 <style lang="scss">
 

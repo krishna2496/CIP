@@ -1,3 +1,5 @@
+const host = 'tatva.optimy.com';
+const port = 8080;
 module.exports = {
   css: {
     loaderOptions: {
@@ -24,9 +26,17 @@ module.exports = {
           "b-embed": "src"
         };
 
-        return options;
-      });
-  }
+		return options
+		})
+	},
+	
+    lintOnSave: false,
+    	devServer: {
+	    host: 'tatva.optimy.com',
+	    port: 8080,
+	    https: false
+    }
+	
 };
 
 function newFunction() {
