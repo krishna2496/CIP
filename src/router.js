@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Home from './views/Home.vue'
-import Login from './views/Login.vue'
+import ForgotPassword from './views/ForgotPassword.vue'
 
 Vue.use(Router)
 
@@ -11,8 +11,8 @@ export default new Router({
   routes: [
   {
     path: '/',
-    name: Login,
-    component: () => import('./views/Login.vue')
+    name: ForgotPassword,
+    component: () => import('./views/ForgotPassword.vue')
   },
   {
     path: '/home',
@@ -28,9 +28,9 @@ export default new Router({
       component: () => import(/* webpackChunkName: "about" */ './views/About.vue')
     },
     {
-      path: '/login',
-      name: 'login',
-      component: () => import('./views/Login.vue')
+      path: '/forgotpassword',
+      name: 'forgotpassword',
+      component: () => import('./views/ForgotPassword.vue')
     }
     ]
   })
