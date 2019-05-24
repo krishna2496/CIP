@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Home from './views/Home.vue'
-import ResetPassword from './views/ResetPassword.vue'
+import ForgotPassword from './views/ForgotPassword.vue'
 
 Vue.use(Router)
 
@@ -11,8 +11,8 @@ export default new Router({
   routes: [
   {
     path: '/',
-    name: ResetPassword,
-    component: () => import('./views/ResetPassword.vue')
+    name: ForgotPassword,
+    component: () => import('./views/ForgotPassword.vue')
   },
   {
     path: '/home',
@@ -31,6 +31,11 @@ export default new Router({
       path: '/resetpassword',
       name: 'resetpassword',
       component: () => import('./views/ResetPassword.vue')
-    }
+	},
+	{
+      path: '/forgotpassword',
+      name: 'forgotpassword',
+      component: () => import('./views/ForgotPassword.vue')
+	}
     ]
   })
