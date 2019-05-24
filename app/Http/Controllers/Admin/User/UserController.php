@@ -89,7 +89,7 @@ class UserController extends ApiController
         if ($validator->fails()) {
             $this->errorType = config('errors.type.ERROR_TYPE_422');
             $this->apiStatus = 422;
-            $this->apiErrorCode = 10001;
+            $this->apiErrorCode = 20010;
             $this->apiMessage = $validator->errors()->first();
             return $this->errorResponse();
         }
@@ -111,14 +111,14 @@ class UserController extends ApiController
             // Error for duplicate tenant name, trying to store in database.
             if (isset($e->errorInfo[1]) && $e->errorInfo[1] == 1062) {
                 $this->errorType  = config('errors.code.10002');
-                $this->apiErrorCode = 10002;
                 $this->apiStatus  = 422;
-                $this->apiMessage = "Email is already taken, Please try with different email.";
+                $this->apiErrorCode = 20002;
+                $this->apiMessage = config('errors.code.20002');
             } else { // Any other error occured when trying to insert data into database for tenant.
                 $this->errorType  = config('errors.type.ERROR_TYPE_422');
-                $this->apiErrorCode = 10006;
                 $this->apiStatus  = 422;
-                $this->apiMessage = config('errors.code.10006');
+                $this->apiErrorCode = 20004;
+                $this->apiMessage = config('errors.code.20004');
             }
 
             return $this->errorResponse();
@@ -156,10 +156,8 @@ class UserController extends ApiController
      */
     public function destroy($id)
     {
-        $user = User::find($id);
-
         try {
-
+			$user = User::findorFail($id);
             $user->delete();
 
             // Set response data
@@ -170,10 +168,10 @@ class UserController extends ApiController
 
         } catch(\Exception $e){
             
-            $this->errorType = config('errors.type.ERROR_TYPE_422');
-            $this->apiStatus  = 422;
-            $this->apiErrorCode = 10006;
-            $this->apiMessage = config('errors.code.10006');
+            $this->errorType = config('errors.type.ERROR_TYPE_403');
+            $this->apiStatus  = 403;
+            $this->apiErrorCode = 20006;
+            $this->apiMessage = config('errors.code.20006');
 
             return $this->errorResponse();
         }
