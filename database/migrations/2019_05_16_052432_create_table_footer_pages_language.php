@@ -22,7 +22,7 @@ class CreateTableFooterPagesLanguage extends Migration
             $table->text('description');
             $table->timestamps();
             $table->softDeletes();
-            $table->foreign('page_id')->references('page_id')->on('footer_pages')->onDelete('CASCADE')->onUpdate('CASCADE');
+            $table->foreign('page_id')->references('page_id')->on('footer_page')->onDelete('CASCADE')->onUpdate('CASCADE');
         });
     }
 
@@ -33,6 +33,6 @@ class CreateTableFooterPagesLanguage extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('table_footer_pages_language');
+        Schema::dropIfExists('footer_pages_language');
     }
 }

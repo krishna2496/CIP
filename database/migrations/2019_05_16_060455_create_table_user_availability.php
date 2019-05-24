@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateTableTenantOptions extends Migration
+class CreateTableUserAvailability extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,11 @@ class CreateTableTenantOptions extends Migration
      */
     public function up()
     {
-        Schema::create('tenant_options', function (Blueprint $table) {
-            $table->bigIncrements('tenant_option_id')->unsigned();
-            $table->string('option_name',256);
-            $table->text('option_value');
+        Schema::create('user_availability', function (Blueprint $table) {
+            $table->bigIncrements('availability_id')->unsinged();
+            $table->string('type',255);
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
@@ -28,6 +28,6 @@ class CreateTableTenantOptions extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('table_tenant_options');
+        Schema::dropIfExists('user_availability');
     }
 }

@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateTableCities extends Migration
+class CreateTableCity extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateTableCities extends Migration
      */
     public function up()
     {
-        Schema::create('cities', function (Blueprint $table) {
+        Schema::create('city', function (Blueprint $table) {
             $table->bigIncrements('city_id')->unsinged();
             $table->string('name',255);
             $table->bigInteger('country_id')->unsinged();
@@ -21,7 +21,7 @@ class CreateTableCities extends Migration
             $table->softDeletes();
 
             // Relation defined between  cities(country_id) with countries(id)
-            $table->foreign('country_id')->references('country_id')->on('countries')->onDelete('CASCADE')->onUpdate('CASCADE');
+            $table->foreign('country_id')->references('country_id')->on('country')->onDelete('CASCADE')->onUpdate('CASCADE');
         });
     }
 
@@ -32,6 +32,6 @@ class CreateTableCities extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('cities');
+        Schema::dropIfExists('city');
     }
 }
