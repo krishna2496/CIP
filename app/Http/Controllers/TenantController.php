@@ -3,13 +3,13 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Input;
-use App\Http\Controllers\ApiController;
+use App\Http\Controllers\ApiResponseController;
 use App\Jobs\TenantMigrationJob;
 use App\Tenant;
 use Illuminate\Http\Request;
 use Validator;
 
-class TenantController extends ApiController
+class TenantController extends ApiResponseController
 {
     /**
      * Display a listing of the tenants.
@@ -76,11 +76,10 @@ class TenantController extends ApiController
         // If request parameter have any error
         if ($validator->fails()) {
 
-            $this->errorType = config('errors.type.ERROR_TYPE_422');
-            $this->apiStatus = 422;
-            $this->apiErrorCode = 10001;
-            $this->apiMessage = $validator->errors()->first();
-            return $this->errorResponse();
+            return $this->errorResponse(config('errors.status_code.HTTP_STATUS_422'), 
+										config('errors.status_type.HTTP_STATUS_TYPE_422'), 
+										config('errors.custom_error_code.ERROR_10001'), 
+										$validator->errors()->first());
         }
 
         try {
@@ -122,18 +121,17 @@ class TenantController extends ApiController
 
             // Error for duplicate tenant name, trying to store in database.
             if (isset($e->errorInfo[1]) && $e->errorInfo[1] == 1062) {
-                $this->errorType  = config('errors.type.ERROR_TYPE_400');
-                $this->apiStatus  = 400;
-                $this->apiErrorCode = 10002;
-                $this->apiMessage = config('errors.code.10002');
+                return $this->errorResponse(config('errors.status_code.HTTP_STATUS_400'), 
+										config('errors.status_type.HTTP_STATUS_TYPE_400'), 
+										config('errors.custom_error_code.ERROR_10002'), 
+										config('errors.custom_error_message.10002'));
             } else { 
 				// Any other error occured when trying to insert data into database for tenant.
-                $this->errorType  = config('errors.type.ERROR_TYPE_400');
-                $this->apiStatus  = 400;
-                $this->apiErrorCode = 10006;
-                $this->apiMessage = $e->getMessage();
+                return $this->errorResponse(config('errors.status_code.HTTP_STATUS_400'), 
+										config('errors.status_type.HTTP_STATUS_TYPE_400'), 
+										config('errors.custom_error_code.ERROR_10006'), 
+										config('errors.custom_error_message.10006'));
             }
-            return $this->errorResponse();
         }
     }
 
@@ -154,11 +152,10 @@ class TenantController extends ApiController
             $this->apiData = $tenantDetail;
 			return $this->response();
         } else {
-			$this->errorType = config('errors.type.ERROR_TYPE_403');
-            $this->apiStatus = 403;
-            $this->apiErrorCode = 10004;
-            $this->apiMessage = config('errors.code.10004');
-			return $this->errorResponse();
+			return $this->errorResponse(config('errors.status_code.HTTP_STATUS_403'), 
+										config('errors.status_type.HTTP_STATUS_TYPE_403'), 
+										config('errors.custom_error_code.ERROR_10004'), 
+										config('errors.custom_error_message.10004'));
         }
     }
 

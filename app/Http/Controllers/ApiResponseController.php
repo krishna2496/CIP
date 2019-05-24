@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Input;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
-class ApiController extends Controller
+class ApiResponseController extends Controller
 {
     protected $apiData = '';
     protected $apiErrorCode = 500;
@@ -51,18 +51,24 @@ class ApiController extends Controller
     }
     
     /**
-     * error response format
+     * Prepare error response
+     * 
+	 * @param int $status_code
+     * @param string $status_type
+     * @param int $custom_error_code
+     * @param string $custom_error_message
+	 * @return mixed
      */
-    protected function errorResponse()
+    protected function errorResponse($status_code, $status_type, $custom_error_code, $custom_error_message)
     {
        
-        $response['type'] = $this->errorType;
-        $response['status'] = $this->apiStatus;
-        $response['code'] = $this->apiErrorCode;
-        $response['message'] = $this->apiMessage;
+        $response['status'] = $status_code;
+        $response['type'] = $status_type;
+        $response['code'] = $custom_error_code;
+        $response['message'] = $custom_error_message;
         $data["errors"][] = $response;
        
-        return response()->json($data, $this->apiStatus, [], JSON_NUMERIC_CHECK);
+        return response()->json($data, $status_code, [], JSON_NUMERIC_CHECK);
     }
     
 }
