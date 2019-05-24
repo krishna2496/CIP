@@ -10,7 +10,7 @@ class ApiController extends Controller
 {
     protected $apiData = '';
     protected $apiErrorCode = 500;
-    protected $apiStatus = false;
+    protected $apiStatus = '';
     protected $apiMessage = '';
     protected $pageLimit = 10;
     protected $errorType = '';
@@ -28,10 +28,11 @@ class ApiController extends Controller
      */
     protected function response()
     {
-        if($this->apiData)
-			$response['data'] = $this->apiData;
-		
-		// Check response data have pagination or not? Pagination response parameter sets
+        $response['status'] = $this->apiStatus;
+        if(!empty((array)$this->apiData))
+            $response['data'] = $this->apiData;
+        
+        // Check response data have pagination or not? Pagination response parameter sets
         if((is_object($this->apiData)) &&($this->apiData) && get_class($this->apiData) == "Illuminate\Pagination\LengthAwarePaginator"){            
             $response['data'] = $this->apiData->toArray()['data'];
             $response['pagination'] = [
@@ -43,9 +44,8 @@ class ApiController extends Controller
             ];
             $this->apiStatus = 200;
         }
-        
-        $response['status'] = $this->apiStatus;
-        $response['message'] = $this->apiMessage;
+        if($this->apiMessage)
+            $response['message'] = $this->apiMessage;
 
         return response()->json($response, 200, [], JSON_NUMERIC_CHECK);
     }
@@ -60,9 +60,9 @@ class ApiController extends Controller
         $response['status'] = $this->apiStatus;
         $response['code'] = $this->apiErrorCode;
         $response['message'] = $this->apiMessage;
-        $data["errors"][]=$response;
+        $data["errors"][] = $response;
        
-        return response()->json($data, 400, [], JSON_NUMERIC_CHECK);
+        return response()->json($data, $this->apiStatus, [], JSON_NUMERIC_CHECK);
     }
     
 }

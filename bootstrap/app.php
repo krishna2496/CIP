@@ -59,14 +59,15 @@ $app->singleton(
 $app->register(Flipbox\LumenGenerator\LumenGeneratorServiceProvider::class);
 
 $app->middleware([
-     App\Http\Middleware\ExampleMiddleware::class,
      Barryvdh\Cors\HandleCors::class
 ]);
 
 $app->routeMiddleware([
     'auth' => App\Http\Middleware\Authenticate::class,
     'jwt.auth' => App\Http\Middleware\JwtMiddleware::class, //jwt auth
-    'cros' => \Barryvdh\Cors\HandleCors::class
+    'tenant.connection' => App\Http\Middleware\TenantConnectionMiddleware::class, // Middle ware that connect tenant user with their tenant
+    'auth.tenant.admin' => App\Http\Middleware\AuthTenantAdminMiddleware::class,
+	'cros' => \Barryvdh\Cors\HandleCors::class
 ]);
  
 $app->configure('auth'); //default authentication

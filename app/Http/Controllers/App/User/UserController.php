@@ -1,12 +1,13 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\App\User;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\ApiController;
+use App\User;
 
-class TestController extends ApiController
+class UserController extends ApiController
 {
     /**
      * Display a listing of the resource.
@@ -15,11 +16,7 @@ class TestController extends ApiController
      */
     public function index()
     {
-        $this->apiCode = 200;
-        $this->apiStatus = true;
-        $this->apiMessage = "Connection created";
-        // dd($this);
-        return $this->successResponse();
+        //      
     }
 
     /**

@@ -2,7 +2,19 @@
 
 /*
 |--------------------------------------------------------------------------
-| Application Routes
+| Default route
+|--------------------------------------------------------------------------
+| This is default route of Laravel Lumen
+|
+*/
+
+$router->get('/', function () use ($router) {
+    return $router->app->version();
+});
+
+/*
+|--------------------------------------------------------------------------
+| Authentication routes
 |--------------------------------------------------------------------------
 |
 | Here is where you can register all of the routes for an application.
@@ -10,33 +22,49 @@
 | and give it the Closure to call when that URI is requested.
 |
 */
+/* Connect first time to get styling data. */
+$router->post('connect', ['middleware' => 'tenant.connection', 'uses' => 'App\Styling\StylingController@index']);
 
-$router->get('/', function () use ($router) {
-    return $router->app->version();
-});
-$router->get('/connect', ['middleware' => 'connect','uses' => 'TestController@index']);
+/* User login routing using jwt token */
+$router->post('login', ['middleware' => 'tenant.connection', 'uses' => 'App\Auth\AuthController@authenticate']);
 
-/* user login routing using jwt token */
-$router->post('login', ['uses' => 'AuthController@authenticate']);
+/* Forgot password routing */
+$router->post('request_password_reset', ['middleware' => 'tenant.connection','uses' => 'App\Auth\AuthController@requestPasswordReset']);
 
-/* user listing routing using middleware to verify token */
-$router->group(
-    ['middleware' => 'jwt.auth'], 
-    function() use ($router) {
-        $router->get('users', function() {
-            $users = \App\User::all();
-            return response()->json($users);
-        });
-    }
-);
+/* Password reset routing */
+$router->post('/reset_password/{token}', ['as' => 'password.reset', 'uses' => 'App\Auth\ResetPasswordController@reset']);
 
-/*  forgot password routing */
-$router->post('request_password_reset', ['uses' => 'AuthController@requestPasswordReset']);
-
-/*  password reset routing */
-$router->post('/reset_password/{token}', ['as' => 'password.reset', 'uses' => 'ResetPasswordController@reset']);
-
-/*  get custom styling data for tenant specific */
+/* Get custom styling data for tenant specific */
 $router->post('/custom_data', ['uses' => 'CustomController@customData']);
 
+/*
+|
+|--------------------------------------------------------------------------
+| Tenant User Routs
+|--------------------------------------------------------------------------
+|
+| These are tenant user routes to manage their profile and other stuff
+|
+*/
+/*$router->group(['middleware' => 'tenant.connection|jwt.auth'], function() use ($router) {
+	$router->get('users', function() {
+        $users = \App\User::all();
+        return response()->json($users);
+    });
+});*/
 
+/*
+|
+|--------------------------------------------------------------------------
+| Tenant Admin Routs
+|--------------------------------------------------------------------------
+|
+| These are tenant admin routes to manage tenant users, settings, and etc.
+|
+*/
+$router->group(['prefix' => 'users', 'middleware' => 'auth.tenant.admin'], function($router){
+	/* Get all users of tenant */
+	$router->get('/', ['uses' => 'Admin\User\UserController@index']);
+	$router->post('/create', ['uses' => 'Admin\User\UserController@store']);
+	$router->delete('/{userId}', ['uses' => 'Admin\User\UserController@destroy']);
+});
