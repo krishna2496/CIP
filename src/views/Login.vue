@@ -16,14 +16,14 @@
                     <b-form-group>
                         <label for="">Email Address</label>
                         <b-form-input id="" type="email" v-model="login.email" placeholder="Enter email" :class="{ 'is-invalid': $v.login.email.$error }"></b-form-input>
-                        <div v-if="submitted && !$v.login.email.required" class="invalid-feedback">Email Address is required</div>
+                        <div v-if="submitted && !$v.login.email.required" class="invalid-feedback">Email address is required</div>
                         <div v-if="submitted && !$v.login.email.email" class="invalid-feedback">Enter valid email address</div>
                     </b-form-group>
                     <b-form-group>
                         <label for="">Password</label>
                         <b-form-input id="" type="password" v-model="login.password" required placeholder="Enter Password" :class="{ 'is-invalid': $v.login.password.$error }"></b-form-input>
                         <div v-if="submitted && !$v.login.password.required" class="invalid-feedback">Password is required</div>
-                        <div v-if="submitted && !$v.login.password.minLength" class="invalid-feedback">Password lenght should be minimum 6 digit</div>
+                        <div v-if="submitted && !$v.login.password.minLength" class="invalid-feedback">Password lenght should be minimum 6 character</div>
                     </b-form-group>
                     <b-button type="button" @click="handleSubmit" class=" btn-bordersecondary">Login</b-button>
                 </b-form>
