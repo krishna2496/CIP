@@ -6,13 +6,14 @@ $white: #fff;
 
 $black-primary: #414141;
 
-$gray-primary:#757575;
-
+$gray-primary: #757575;
 
 $border-color: #e8e8e8;
+$control-border: #d9d9d9;
 
 // rgba color variable
-$rgb-black: rgba(0, 0, 0, 0.6);
+$rgb-black: rgba(0, 0, 0, 0.4);
+$rgb-black-hover:rgba(0, 0, 0, 0.8);
 $error: #dc3545;
 
 $gray-bg: $border-color;

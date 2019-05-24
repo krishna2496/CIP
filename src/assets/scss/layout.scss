@@ -98,6 +98,7 @@ ul {
   &:focus {
     box-shadow: none !important;
   }
+
   &:disabled,
   &.disabled {
     cursor: default;
@@ -145,6 +146,7 @@ ul {
   }
 
   &.icon-btn {
+
     &:active,
     &:hover,
     &:focus {
@@ -164,6 +166,13 @@ ul {
 }
 
 .icon-btn {
+  span {
+    position: relative;
+    vertical-align: middle;
+    display: inline-block;
+    top: -2px;
+  }
+
   i {
     display: inline-block;
     width: 20px;
@@ -262,16 +271,20 @@ ul {
   font-size: 16px;
   font-weight: 400;
   line-height: normal;
-  box-shadow: none;
+  @extend .control_shadow;
+  border: 1px solid $control-border;
+
   @include placeholder {
     color: $black-primary;
     font-family: $noto-sans;
     font-size: 16px;
     font-weight: 400;
   }
+
   &:focus {
     box-shadow: none;
-    border-color: $black-primary;
+    border-color: $gray-primary;
+    color: $black-primary;
     outline: none;
   }
 
@@ -379,7 +392,7 @@ label {
           left: 0;
         }
 
-        > span {
+        >span {
           padding: 9px 35px 9px 15px !important;
         }
       }
