@@ -10,11 +10,11 @@ use Firebase\JWT\ExpiredException;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Auth\Passwords\PasswordBrokerManager;
 use Illuminate\Support\Facades\Password;
-use App\Http\Controllers\ApiController;
+use App\Http\Controllers\ApiResponseController;
 use App\Http\Controllers\Config;
 use DB;
 
-class AuthController extends ApiController {
+class AuthController extends ApiResponseController {
 
     /**
      * The request instance.
@@ -60,7 +60,7 @@ class AuthController extends ApiController {
      * @param \Illuminate\Http\Request $request
      * @return mixed
      */
-    public function authenticate(User $user, Request $request) {		        
+    public function authenticate(User $user, Request $request) {	        
 
         // Server side validataions
         $validator = Validator::make($request->toArray(), [
@@ -69,31 +69,28 @@ class AuthController extends ApiController {
         ]);
 
         if ($validator->fails()) {
-            $this->errorType = config('errors.type.ERROR_TYPE_422');
-            $this->apiStatus = 422;
-            $this->apiErrorCode = 40001;
-            $this->apiMessage = $validator->errors()->first();
-            return $this->errorResponse();
+            return $this->errorResponse(config('errors.status_code.HTTP_STATUS_422'), 
+										config('errors.status_type.HTTP_STATUS_TYPE_422'), 
+										config('errors.custom_error_code.ERROR_40001'), 
+										$validator->errors()->first());
         }
         
         // Fetch user by email address
         $user = User::where('email', $this->request->input('email'))->first();
 
         if (!$user) {
-            $this->errorType = config('errors.type.ERROR_TYPE_403');
-            $this->apiStatus = 403;
-            $this->apiErrorCode = 40002;
-            $this->apiMessage = config('errors.code.40002');
-            return $this->errorResponse();
+            return $this->errorResponse(config('errors.status_code.HTTP_STATUS_403'), 
+										config('errors.status_type.HTTP_STATUS_TYPE_403'), 
+										config('errors.custom_error_code.ERROR_40002'), 
+										config('errors.custom_error_message.40002'));
         }
         
         // Verify user's password
         if (!Hash::check($this->request->input('password'), $user->password)) {
-            $this->errorType = config('errors.type.ERROR_TYPE_422');
-            $this->apiStatus = 422;
-            $this->apiErrorCode = 40004;
-            $this->apiMessage = config('errors.code.40004');
-            return $this->errorResponse();
+            return $this->errorResponse(config('errors.status_code.HTTP_STATUS_422'), 
+										config('errors.status_type.HTTP_STATUS_TYPE_422'), 
+										config('errors.custom_error_code.ERROR_40004'), 
+										config('errors.custom_error_message.40004'));
         }
         
         // Generate JWT token
@@ -119,22 +116,20 @@ class AuthController extends ApiController {
         ]);
         
         if ($validator->fails()) {
-            $this->errorType = config('errors.type.ERROR_TYPE_422');
-            $this->apiStatus = 422;
-            $this->apiErrorCode = 40001;
-            $this->apiMessage = $validator->errors()->first();
-            return $this->errorResponse();
+            return $this->errorResponse(config('errors.status_code.HTTP_STATUS_422'), 
+										config('errors.status_type.HTTP_STATUS_TYPE_422'), 
+										config('errors.custom_error_code.ERROR_40010'), 
+										$validator->errors()->first());
         }
 
         // Fetch user by email address
         $user = User::where('email', $request->get('email'))->first();
 
         if (!$user) {
-            $this->errorType = config('errors.type.ERROR_TYPE_403');
-            $this->apiStatus = 403;
-            $this->apiErrorCode = 40002;
-            $this->apiMessage = config('errors.code.40002');
-            return $this->errorResponse();
+            return $this->errorResponse(config('errors.status_code.HTTP_STATUS_403'), 
+										config('errors.status_type.HTTP_STATUS_TYPE_403'), 
+										config('errors.custom_error_code.ERROR_40002'), 
+										config('errors.custom_error_message.40002'));
         }
         
         //forgot password link url
@@ -147,11 +142,10 @@ class AuthController extends ApiController {
 
         // If reset password link didn't sent
         if (!$response == Password::RESET_LINK_SENT) {
-            $this->errorType = config('errors.type.ERROR_TYPE_500');
-            $this->apiStatus = 500;
-            $this->apiErrorCode = 40006;
-            $this->apiMessage = config('errors.code.40006');
-            return $this->errorResponse();
+            return $this->errorResponse(config('errors.status_code.HTTP_STATUS_500'), 
+										config('errors.status_type.HTTP_STATUS_TYPE_500'), 
+										config('errors.custom_error_code.ERROR_40006'), 
+										config('errors.custom_error_message.40006'));
         }
 
         $this->apiStatus = app('Illuminate\Http\Response')->status();

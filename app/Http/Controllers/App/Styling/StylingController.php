@@ -1,12 +1,12 @@
 <?php
 
 namespace App\Http\Controllers\App\Styling;
-use App\Http\Controllers\ApiController;
+use App\Http\Controllers\ApiResponseController;
 use Illuminate\Http\Request;
 use App\TenantOption;
 use DB;
 
-class StylingController extends ApiController
+class StylingController extends ApiResponseController
 {
     /**
      * Display a listing of the resource.

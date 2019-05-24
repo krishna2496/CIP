@@ -4,12 +4,12 @@ namespace App\Http\Controllers\Admin\User;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Http\Controllers\ApiController;
+use App\Http\Controllers\ApiResponseController;
 use Illuminate\Support\Facades\Input;
 use App\User;
 use Validator;
 
-class UserController extends ApiController
+class UserController extends ApiResponseController
 {
     /**
      * Display a listing of the resource.
@@ -44,6 +44,7 @@ class UserController extends ApiController
             $this->apiErrorCode = 10006;
             $this->apiMessage = config('errors.code.10006');
             return $this->errorResponse();
+			
         }
         // Order by passed order or default order asc.
 
@@ -87,11 +88,10 @@ class UserController extends ApiController
 
         // If request parameter have any error
         if ($validator->fails()) {
-            $this->errorType = config('errors.type.ERROR_TYPE_422');
-            $this->apiStatus = 422;
-            $this->apiErrorCode = 20010;
-            $this->apiMessage = $validator->errors()->first();
-            return $this->errorResponse();
+            return $this->errorResponse(config('errors.status_code.HTTP_STATUS_422'),
+										config('errors.status_type.HTTP_STATUS_TYPE_422'),
+										config('errors.custom_error_code.ERROR_20010'),
+										$validator->errors()->first());
         }
 
         try {
@@ -110,18 +110,17 @@ class UserController extends ApiController
 
             // Error for duplicate tenant name, trying to store in database.
             if (isset($e->errorInfo[1]) && $e->errorInfo[1] == 1062) {
-                $this->errorType  = config('errors.code.10002');
-                $this->apiStatus  = 422;
-                $this->apiErrorCode = 20002;
-                $this->apiMessage = config('errors.code.20002');
+                return $this->errorResponse(config('errors.status_code.HTTP_STATUS_422'), 
+										config('errors.status_type.HTTP_STATUS_TYPE_422'), 
+										config('errors.custom_error_code.ERROR_20002'), 
+										config('errors.custom_error_message.20002'));
+				
             } else { // Any other error occured when trying to insert data into database for tenant.
-                $this->errorType  = config('errors.type.ERROR_TYPE_422');
-                $this->apiStatus  = 422;
-                $this->apiErrorCode = 20004;
-                $this->apiMessage = config('errors.code.20004');
+                return $this->errorResponse(config('errors.status_code.HTTP_STATUS_422'), 
+										config('errors.status_type.HTTP_STATUS_TYPE_422'), 
+										config('errors.custom_error_code.ERROR_20004'), 
+										config('errors.custom_error_message.20004'));
             }
-
-            return $this->errorResponse();
         }
     }
 
@@ -168,12 +167,11 @@ class UserController extends ApiController
 
         } catch(\Exception $e){
             
-            $this->errorType = config('errors.type.ERROR_TYPE_403');
-            $this->apiStatus  = 403;
-            $this->apiErrorCode = 20006;
-            $this->apiMessage = config('errors.code.20006');
+            return $this->errorResponse(config('errors.status_code.HTTP_STATUS_403'), 
+										config('errors.status_type.HTTP_STATUS_TYPE_403'), 
+										config('errors.custom_error_code.ERROR_20006'), 
+										config('errors.custom_error_message.20006'));
 
-            return $this->errorResponse();
         }
     }
 }
