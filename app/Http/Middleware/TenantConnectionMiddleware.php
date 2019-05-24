@@ -24,9 +24,8 @@ class TenantConnectionMiddleware
             $credentials = JWT::decode($token, env('JWT_SECRET'), ['HS256']);
             $domain = $credentials->fqdn;
         } else {
-            if ($request->fqdn) {
-                $domain = $request->fqdn;
-            } else {
+
+            if (!$request->fqdn) {
                 $response['errors'] = array(array(
                     "type"=> config('errors.type.ERROR_TYPE_422'),
                     "status" => 422,
@@ -35,6 +34,8 @@ class TenantConnectionMiddleware
                 ));
                 return response()->json($response, 422, [], JSON_NUMERIC_CHECK);
             }
+            
+            $domain = $request->fqdn;
         }
 
         if ($domain !== env('APP_DOMAIN')) {
