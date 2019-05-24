@@ -16,7 +16,7 @@ class TenantConnectionMiddleware
      * @return mixed
      */
     public function handle($request, Closure $next)
-    {        
+    {   
         // Pre-Middleware Action
         $token = $request->get('token');
 
@@ -24,7 +24,17 @@ class TenantConnectionMiddleware
             $credentials = JWT::decode($token, env('JWT_SECRET'), ['HS256']);
             $domain = $credentials->fqdn;
         } else {
-            $domain = $request->fqdn;
+            if ($request->fqdn) {
+                $domain = $request->fqdn;
+            } else {
+                $response['errors'] = array(array(
+                    "type"=> config('errors.type.ERROR_TYPE_422'),
+                    "status" => 422,
+                    "code" => 40009,
+                    "message"=> config('errors.code.40009')
+                ));
+                return response()->json($response, 422, [], JSON_NUMERIC_CHECK);
+            }
         }
 
         if ($domain !== env('APP_DOMAIN')) {

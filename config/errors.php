@@ -23,6 +23,7 @@ return [
 		'40006' => 'Something went wrong while sending reset password link',
 		'40008' => 'Tenant domain does not found',
 		'41000' => 'Unknown database connection request for this domain',
+		'40009' => 'Domain name is required',
 		
 		'20002' => 'This email address is already taken, Please try with different email address',
 		'20004' => 'Error while inserting data to database',
