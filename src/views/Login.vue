@@ -90,7 +90,7 @@
                 }
 
                 this.sending = true;
-                axios.post("http://localhost/ci_tenant/public/login", this.login)
+                axios.post(process.env.VUE_APP_API_ENDPOINT+"login", this.login)
                         .then((response) => {
                             this.message = null;
                             this.showDismissibleAlert = true
@@ -118,12 +118,11 @@
         },
 
         created() {
-            console.log(process);
 
             this.fqdn = window.location.host;
             this.login.fqdn = this.fqdn = (this.fqdn.split('.'))[0];
             
-            axios.post("http://api.optimy.com/connect", {fqdn: this.login.fqdn})
+            axios.post(process.env.VUE_APP_API_ENDPOINT+"/connect", {fqdn: this.login.fqdn})
                     .then((response) => {
 
                         if (response.data.data.language) {
