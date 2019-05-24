@@ -136,7 +136,10 @@ class AuthController extends ApiController {
             $this->apiMessage = config('errors.code.40002');
             return $this->errorResponse();
         }
-
+        
+        //forgot password link url
+        config(['app.mail_url' => env('APP_HTTP').$request->get('fqdn').env('APP_BASE_URL').'/reset_password/']);
+        
         // Verify email address and send reset password link        
         $response = $this->broker()->sendResetLink(
             $request->only('email')
