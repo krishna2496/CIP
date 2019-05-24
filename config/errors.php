@@ -20,7 +20,9 @@ return [
 		'40001' => 'Email address or password field is empty',
 		'40002' => 'Email address does not exist in the system',
 		'40004' => 'Invalid password',
-		'40006' => 'Something went wrong while sending reset password link'
+		'40006' => 'Something went wrong while sending reset password link',
+		'10006' => 'Database operational error',
+		'10010' => 'API key and Secret key are required',
 	]
 	
 ];
