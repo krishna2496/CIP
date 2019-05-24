@@ -161,7 +161,7 @@ class UserController extends ApiController
             $user->delete();
 
             // Set response data
-            $this->apiStatus = 204;            
+            $this->apiStatus = 200;            
             $this->apiMessage = "User deleted successfully";
 
             return $this->response();
