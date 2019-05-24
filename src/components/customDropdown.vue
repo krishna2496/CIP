@@ -66,8 +66,9 @@ export default {
   & > span {
     display: block;
     padding: 6px 35px 6px 15px;
-    border: 1px solid $border-color;
+    border: 1px solid $control-border;
     border-radius: 3px;
+    @extend .control_shadow;
     cursor: pointer;
     &:after {
       position: absolute;
@@ -99,7 +100,7 @@ export default {
   }
 
   .option-list-wrap {
-    @extend .dropdown_shadow;
+    @extend .control_shadow;
     position: absolute;
     top: 100%;
     left: 0;
@@ -109,7 +110,7 @@ export default {
     max-height: 226px;
     margin-top: -1px;
     background: #fff;
-    border: 1px solid $border-color;
+    border: 1px solid $control-border;
     border-radius: 3px;
     .option-list {
       padding: 4px 0;
