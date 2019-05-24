@@ -15,35 +15,31 @@ class StylingController extends ApiController
      */
     public function index()
     {
-        // Return style settings.
-        $data = $dataResponse = array(); 
+        // Return style settings
+        $tenantData = $responseData = array(); 
 
         //flag to check value is serialize or not
-        $checkForSerialize = FALSE;
+        $isSerialize = true;
 
-        // find custom data
-        $data = TenantOption::get(['option_name', 'option_value'])->where('deleted_at',NULL)->toArray();
+        // find tenant options data from table `tenant_option`
+        $tenantData = TenantOption::get(['option_name', 'option_value'])
+					->where('deleted_at', NULL)
+					->toArray();
 
-        //if data exist
-        if ($data) {
-
-            foreach ($data as $key =>$value) {
-
+        // If tenant data exist
+        if ($tenantData) {
+			foreach ($tenantData as $key =>$value) {
                 //check if value is serialize or not
-                $checkForSerialize = @unserialize($value['option_value']);
-
-                if ($checkForSerialize === FALSE) {      // if not serialize value
-                    $dataResponse[$value['option_name']] = $value['option_value'];
-                } else {                                 // for serialize value
-                    $dataResponse[$value['option_name']] = unserialize($value['option_value']);
-                }
-
-            }
+                $isSerialize = @unserialize($value['option_value']);
+				$responseData[$value['option_name']] = $value['option_value'];
+                if ($isSerialize == true) {
+                    $responseData[$value['option_name']] = unserialize($value['option_value']);
+				}
+			}
         }
 
-        $this->apiData = $dataResponse;
+        $this->apiData = $responseData;
         $this->apiStatus = app('Illuminate\Http\Response')->status();
-        $this->apiMessage = 'Tenant options listing successfully';
         return $this->response();
 
     }
@@ -51,7 +47,7 @@ class StylingController extends ApiController
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)

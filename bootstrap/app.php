@@ -59,27 +59,27 @@ $app->singleton(
 $app->register(Flipbox\LumenGenerator\LumenGeneratorServiceProvider::class);
 
 $app->middleware([
-     Barryvdh\Cors\HandleCors::class
+     Barryvdh\Cors\HandleCors::class //cross origin support
 ]);
 
 $app->routeMiddleware([
     'auth' => App\Http\Middleware\Authenticate::class,
     'jwt.auth' => App\Http\Middleware\JwtMiddleware::class, //jwt auth
+    'cros' => \Barryvdh\Cors\HandleCors::class, //cross origin support
     'tenant.connection' => App\Http\Middleware\TenantConnectionMiddleware::class, // Middle ware that connect tenant user with their tenant
-    'auth.tenant.admin' => App\Http\Middleware\AuthTenantAdminMiddleware::class,
-	'cros' => \Barryvdh\Cors\HandleCors::class
+    'auth.tenant.admin' => App\Http\Middleware\AuthTenantAdminMiddleware::class
 ]);
+
+/**
+ * cross origin api call support
+ */
+$app->register(Barryvdh\Cors\LumenServiceProvider::class);
  
 $app->configure('auth'); //default authentication
 $app->configure('mail'); //SMTP and PHP mail
 $app->configure('constants'); //constant file config
 $app->configure('errors'); //Error Constants config
-$app->configure('cors');
-
-
-
-$app->register(Barryvdh\Cors\LumenServiceProvider::class);
-
+$app->configure('cors');  //cross origin support
 
 /**
  * mailer package registration
@@ -89,6 +89,8 @@ $app->register(\Illuminate\Mail\MailServiceProvider::class);
 $app->alias('mailer', \Illuminate\Contracts\Mail\Mailer::class);
 $app->alias('mailer', \Illuminateminate\Mail\Mailer::class);
 $app->alias('mailer', \Illuminate\Contracts\Mail\MailQueue::class);
+
+
 
 $app->withFacades();
 /*

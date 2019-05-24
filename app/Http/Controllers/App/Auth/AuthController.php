@@ -41,10 +41,10 @@ class AuthController extends ApiController {
      */
     protected function jwt(User $user) {
         $payload = [
-            'iss' => "lumen-jwt", 		// Issuer of the token
-            'sub' => $user->id, 		// Subject of the token
-            'iat' => time(), 			// Time when JWT was issued. 
-            'exp' => time() + 60 * 60, 	// Expiration time
+            'iss' => "lumen-jwt",       // Issuer of the token
+            'sub' => $user->id,         // Subject of the token
+            'iat' => time(),            // Time when JWT was issued. 
+            'exp' => time() + 60 * 60,  // Expiration time
             'fqdn' => $this->request->fqdn
         ];        
 
@@ -62,10 +62,10 @@ class AuthController extends ApiController {
      */
     public function authenticate(User $user, Request $request) {		        
 
-		// Server side validataions
+        // Server side validataions
         $validator = Validator::make($request->toArray(), [
-			'email' => 'required|email',
-			'password' => 'required'
+            'email' => 'required|email',
+            'password' => 'required'
         ]);
 
         if ($validator->fails()) {
@@ -75,7 +75,7 @@ class AuthController extends ApiController {
             $this->apiMessage = $validator->errors()->first();
             return $this->errorResponse();
         }
-		
+        
         // Fetch user by email address
         $user = User::where('email', $this->request->input('email'))->first();
 
@@ -86,7 +86,7 @@ class AuthController extends ApiController {
             $this->apiMessage = config('errors.code.40002');
             return $this->errorResponse();
         }
-		
+        
         // Verify user's password
         if (!Hash::check($this->request->input('password'), $user->password)) {
             $this->errorType = config('errors.type.ERROR_TYPE_422');
@@ -95,15 +95,15 @@ class AuthController extends ApiController {
             $this->apiMessage = config('errors.code.40004');
             return $this->errorResponse();
         }
-		
-		// Generate JWT token
+        
+        // Generate JWT token
         $data["token"] = $this->jwt($user);
         $this->apiData = $data;
         $this->apiStatus = app('Illuminate\Http\Response')->status();
-        $this->apiMessage = 'Authentication token generated successfully.';
+        $this->apiMessage = 'You are successfully logged in';
         return $this->response();
-	}
-	
+    }
+    
     /**
      * Forgot password - Send Reset password link to user's email address
      *  
@@ -113,11 +113,11 @@ class AuthController extends ApiController {
      */
     public function requestPasswordReset(User $user, Request $request) {
         
-		// Server side validataions
-		$validator = Validator::make($request->toArray(), [
+        // Server side validataions
+        $validator = Validator::make($request->toArray(), [
                 'email' => 'required|email',
         ]);
-		
+        
         if ($validator->fails()) {
             $this->errorType = config('errors.type.ERROR_TYPE_422');
             $this->apiStatus = 422;

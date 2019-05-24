@@ -11,12 +11,12 @@ class TenantConnectionMiddleware
     /**
      * Handle an incoming request.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure  $next
+     * @param \Illuminate\Http\Request $request
+     * @param \Closure $next
      * @return mixed
      */
     public function handle($request, Closure $next)
-    {        
+    {   
         // Pre-Middleware Action
         $token = $request->get('token');
 
@@ -24,25 +24,34 @@ class TenantConnectionMiddleware
             $credentials = JWT::decode($token, env('JWT_SECRET'), ['HS256']);
             $domain = $credentials->fqdn;
         } else {
+
+            if (!$request->fqdn) {
+                $response['errors'] = array(array(
+                    "type"=> config('errors.type.ERROR_TYPE_422'),
+                    "status" => 422,
+                    "code" => 40009,
+                    "message"=> config('errors.code.40009')
+                ));
+                return response()->json($response, 422, [], JSON_NUMERIC_CHECK);
+            }
+            
             $domain = $request->fqdn;
         }
 
         if ($domain !== env('APP_DOMAIN')) {
             
-            $tenantDetails = DB::table('tenant')->select('tenant_id')->where('name', $domain)->first();
+            $tenant = DB::table('tenant')->select('tenant_id')->where('name', $domain)->first();
             
-            if (!$tenantDetails) {
-
-                $response['errors'] = [];
-                array_push($response['errors'],[
-                    "type"=> "Domain not found",
-                    "status" => false,
-                    "code" => 10001,
-                    "message"=> "Domain '".$domain."' not found"
-                ]);                
-                return response()->json($response, 200, [], JSON_NUMERIC_CHECK);
+            if (!$tenant) {
+				$response['errors'] = array(array(
+                    "type"=> config('errors.type.ERROR_TYPE_403'),
+                    "status" => 403,
+                    "code" => 40008,
+                    "message"=> config('errors.code.40008')
+                ));
+                return response()->json($response, 403, [], JSON_NUMERIC_CHECK);
             }
-            $this->createConnection($tenantDetails);
+            $this->createConnection($tenant);
         }        
         $response = $next($request);
 
@@ -51,8 +60,8 @@ class TenantConnectionMiddleware
     /**
      * Create connection with specific tenant.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure  $next
+     * @param \Illuminate\Http\Request $request
+     * @param \Closure $next
      * @return mixed
      */
     public function createConnection($tenant)
@@ -73,10 +82,10 @@ class TenantConnectionMiddleware
             if ($e instanceof \PDOException) {
                 $response['errors'] = [];
                 array_push($response['errors'],[
-                    "type"=> "Database Connection Error",
-                    "status" => false,
-                    "code" => 1000,
-                    "message"=> "Domain '".$tenant->name."' have Unknown database connection request",
+                    "type"=> config('errors.type.ERROR_TYPE_403'),
+                    "status" => 403,
+                    "code" => 41000,
+                    "message"=> config('errors.code.41000')
                 ]);
                 return response()->json($response);
             }
