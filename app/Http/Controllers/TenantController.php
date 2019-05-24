@@ -88,11 +88,12 @@ class TenantController extends ApiController
             $createdTenant = Tenant::create($request->toArray());
 
             // ONLY FOR TESTING START Create api_user data (PLEASE REMOVE THIS CODE IN PRODUCTION MODE)
-            $apiUserData['api_key'] = base64_encode($createdTenant->name.'_api_key');
-            $apiUserData['api_secret'] = base64_encode($createdTenant->name.'_secret_key');
-
-            // Insert api_user data into table
-            $createdTenant->apiUsers()->create($apiUserData);
+            if(env('APP_ENV')=='local'){
+                $apiUserData['api_key'] = base64_encode($createdTenant->name.'_api_key');
+                $apiUserData['api_secret'] = base64_encode($createdTenant->name.'_api_secret');
+                // Insert api_user data into table
+                $createdTenant->apiUsers()->create($apiUserData);
+            }
             // ONLY FOR TESTING END
             
             // Add options data into `tenant_has_option` table            
@@ -144,7 +145,7 @@ class TenantController extends ApiController
      */
     public function show($tenant_id)
     {
-        $tenantDetail = Tenant::with('options:tenant_option_id, tenant_id, option_name, option_value, created_at')
+        $tenantDetail = Tenant::with('options:tenant_option_id,tenant_id,option_name,option_value,created_at')
 						->select('tenant_id','name','sponsor_id','created_at')
 						->find($tenant_id);
 
