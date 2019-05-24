@@ -29,6 +29,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+
+@import 'src/assets/scss/theme/default-theme.scss';
+@import 'src/assets/scss/variables.scss';
+
 .signin-footer {
   position: relative;
   margin: 0 auto;

@@ -28,7 +28,7 @@
                     <b-button type="button" @click="handleSubmit" class=" btn-bordersecondary">Login</b-button>
                 </b-form>
                 <div class="form-link">
-                    <b-link>Lost your password?</b-link>
+                    <b-link to="/forgotpassword">Lost your password?</b-link>
                 </div>
             </div>
             <SigninFooter/>

@@ -25,7 +25,7 @@
           >Reset my Password</b-button>
         </b-form>
         <div class="form-link">
-          <b-link href="/login" title="Login">Login</b-link>
+          <b-link href="/" title="Login">Login</b-link>
         </div>
       </div>
       <SigninFooter/>
