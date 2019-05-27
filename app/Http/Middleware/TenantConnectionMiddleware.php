@@ -2,10 +2,10 @@
 
 namespace App\Http\Middleware;
 use Illuminate\Support\Facades\Config;
+use App\Helpers\Helpers;
 use Closure;
 use Firebase\JWT\JWT;
 use DB;
-
 class TenantConnectionMiddleware
 {
     /**
@@ -16,7 +16,14 @@ class TenantConnectionMiddleware
      * @return mixed
      */
     public function handle($request, Closure $next)
-    {   
+    {
+
+        // Uncomment below line while testing in apis with front side.
+        // $domain = Helpers::getSubDomainFromUrl($request);
+
+        // comment below line while testing in apis with front side.
+        $domain = env('DEFAULT_TENANT');
+        
         // Pre-Middleware Action
         $token = $request->get('token');
 
