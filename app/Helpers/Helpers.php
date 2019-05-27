@@ -7,8 +7,8 @@ class Helpers
 {
     public static function getSubDomainFromUrl(Request $request)
     {
-    	try{    		
-        	return parse_url($request->headers->all()['referer'][0])['host'];
+    	try{    	
+        	return explode(".",parse_url($request->headers->all()['referer'][0])['host'])[0];
         } catch (\Exception $e) {
         	return $e->getMessage();
         }

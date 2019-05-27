@@ -17,13 +17,6 @@ class TenantConnectionMiddleware
      */
     public function handle($request, Closure $next)
     {
-
-        // Uncomment below line while testing in apis with front side.
-        // $domain = Helpers::getSubDomainFromUrl($request);
-
-        // comment below line while testing in apis with front side.
-        $domain = env('DEFAULT_TENANT');
-        
         // Pre-Middleware Action
         $token = $request->get('token');
 
@@ -31,18 +24,11 @@ class TenantConnectionMiddleware
             $credentials = JWT::decode($token, env('JWT_SECRET'), ['HS256']);
             $domain = $credentials->fqdn;
         } else {
-
-            if (!$request->fqdn) {
-                $response['errors'] = array(array(
-                    "type"=> config('errors.type.ERROR_TYPE_422'),
-                    "status" => 422,
-                    "code" => 40009,
-                    "message"=> config('errors.code.40009')
-                ));
-                return response()->json($response, 422, [], JSON_NUMERIC_CHECK);
-            }
             
-            $domain = $request->fqdn;
+            // Uncomment below line while testing in apis with front side.
+            // $domain = Helpers::getSubDomainFromUrl($request);
+            // comment below line while testing in apis with front side.
+            $domain = env('DEFAULT_TENANT');
         }
 
         if ($domain !== env('APP_DOMAIN')) {
@@ -50,7 +36,7 @@ class TenantConnectionMiddleware
             $tenant = DB::table('tenant')->select('tenant_id')->where('name', $domain)->first();
             
             if (!$tenant) {
-				$response['errors'] = array(array(
+                $response['errors'] = array(array(
                     "type"=> config('errors.type.ERROR_TYPE_403'),
                     "status" => 403,
                     "code" => 40008,
