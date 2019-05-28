@@ -71,7 +71,7 @@ return [
 		'20008' => 'Invalid API Key or Secret key',
 		'20010' => 'API key and Secret key are required',
 		'20014' => 'Unauthorised access',
-		'20016' => 'Invalid data',
+		'20016' => 'Invalid input data',
 		'21000' => 'Error while creating database connection',
 	]
 	

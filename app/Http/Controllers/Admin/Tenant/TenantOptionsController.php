@@ -22,10 +22,10 @@ class TenantOptionsController extends ApiResponseController
     }
 
     /**
-     * Store slider details .
+     * Store slider details.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return mixedd response
      */
     public function storeSlider(Request $request)
     {
@@ -36,7 +36,7 @@ class TenantOptionsController extends ApiResponseController
             "sort_order" => "required"
         ]);
 
-        // If request parameter have any error
+        // If post parameter have any missing parameter
         if ($validator->fails()) {
             return $this->errorResponse(config('errors.status_code.HTTP_STATUS_422'),
                                         config('errors.status_type.HTTP_STATUS_TYPE_422'),
@@ -45,18 +45,16 @@ class TenantOptionsController extends ApiResponseController
         }        
 
         try {
-
-            // Get total count of "Login_screen_slider"
+            // Get total count of "slider"
             $tenantOptions = TenantOption::get(['option_name', 'option_value'])->where('option_name', 'slider');
 
-            // Prevent data insertion if user is trying to insert more than 4 records 
+            // Prevent data insertion if user is trying to insert more than defined slider limit records 
             if(count($tenantOptions) >= config('constants.SLIDER_LIMIT')){
                 // Set response data
                 $this->apiStatus = app('Illuminate\Http\Response')->status();
-                $this->apiMessage = config('messages.message_code.SLIDER_LIMIT_MSG');
+                $this->apiMessage = config('messages.message_code.MESSAGE_SLIDER_LIMIT');
             }
-            else{
-                
+            else{                
                 // Check file is available or not
                 if ($request->hasFile('slider_image')) {
                     // Check file is valid or not
@@ -87,12 +85,11 @@ class TenantOptionsController extends ApiResponseController
 
                 // Set response data
                 $this->apiStatus = app('Illuminate\Http\Response')->status();
-                $this->apiMessage = config('messages.message_code.SLIDER_ADD_SUCCESS');
+                $this->apiMessage = config('messages.message_code.MESSAGE_SLIDER_ADD_SUCCESS');
             }
             return $this->response();
 
         } catch (\Exception $e) {
-
             // Any other error occured when trying to insert data into database for tenant option.
             return $this->errorResponse(config('errors.status_code.HTTP_STATUS_422'), 
                                     config('errors.status_type.HTTP_STATUS_TYPE_422'), 
