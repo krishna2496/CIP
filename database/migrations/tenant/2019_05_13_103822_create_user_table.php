@@ -18,7 +18,7 @@ class CreateUserTable extends Migration
             $table->bigIncrements('user_id')->unsigned();
             $table->string('first_name',16);
             $table->string('last_name',16);
-            $table->string('email',128)->unique();
+            $table->string('email',128);
             $table->string('password',255);
             $table->string('avatar',128)->default('none'); 
             $table->integer('timezone_id')->unsigned();
