@@ -21,7 +21,7 @@ export default new Vuex.Store({
       state.token = null;
     },
     checkState(state){
-    	alert("checkState");
+    	console.log(state)
     }
   },
   getters: {

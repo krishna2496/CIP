@@ -133,7 +133,8 @@
             //database connection and fetching tenant options api
             axios.get(process.env.VUE_APP_API_ENDPOINT+"/connect")
                     .then((response) => {
-                            if (response.data.data.language) {
+
+                        if (response.data.data.language) {
 
                             //convert language object to array
                             let listOfObjects = Object.keys(response.data.data.language).map((key) => {
@@ -144,22 +145,25 @@
                             if(listOfObjects){
                                 localStorage.setItem('listOfLanguage',JSON.stringify(listOfObjects))
                                 localStorage.setItem('defaultLanguage',listOfObjects[0])
-                                this.langList = listOfObjects 
-                                this.defaut_lang = listOfObjects[0]
                             }else{
-                                //else set default option in local storage
                                 localStorage.setItem('listOfLanguage',this.langList)
                                 localStorage.setItem('defaultLanguage',this.defaut_lang)
                             }
                             
+                        }else{
+                            localStorage.setItem('listOfLanguage',JSON.stringify(this.langList))
+                            localStorage.setItem('defaultLanguage',this.defaut_lang)
                         }
 
-                       
+                        this.langList = JSON.parse(localStorage.getItem('listOfLanguage'))
+                        this.defaut_lang = localStorage.getItem('defaultLanguage') 
 
                     })
                     .catch(error => {
                         console.log(error)
                     })
+
+
         }
     };
 
