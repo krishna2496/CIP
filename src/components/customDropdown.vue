@@ -6,7 +6,7 @@
     v-if="optionList.length > 0"
     :class="showDropdown ? 'dropdown-open' : ' '"
   >
-    <span @click="handleClick">{{default_text_val}}</span>
+    <span @click="handleClick">{{default_text}}</span>
     <div class="option-list-wrap" v-if="showDropdown" data-simplebar>
       <ul class="option-list">
         <li v-for="item in optionList" :key="item" @click="handleSelect">{{item}}</li>
@@ -38,7 +38,7 @@ export default {
     },
     handleSelect(e) {
       var selected_val = e.target.innerHTML;
-      this.default_text_val = selected_val;
+      this.default_text = selected_val;
       this.showDropdown = false;
     }
   },
