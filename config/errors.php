@@ -46,6 +46,7 @@ return [
 		'ERROR_20010' => '20010',
 		'ERROR_20014' => '20014',
 		'ERROR_21000' => '21000',
+		'ERROR_20016' => '20016',
 	],
 	
 	/**
@@ -69,6 +70,7 @@ return [
 		'20008' => 'Invalid API Key or Secret key',
 		'20010' => 'API key and Secret key are required',
 		'20014' => 'Unauthorised access',
+		'20016' => 'Invalid data for insertion',
 		'21000' => 'Error while creating database connection',
 	]
 	

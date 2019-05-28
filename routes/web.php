@@ -68,3 +68,6 @@ $router->group(['prefix' => 'users', 'middleware' => 'auth.tenant.admin'], funct
 	$router->post('/create', ['uses' => 'Admin\User\UserController@store']);
 	$router->delete('/{userId}', ['uses' => 'Admin\User\UserController@destroy']);
 });
+
+/* Set custom slider data for tenant specific */
+$router->post('/create_slider', ['middleware' => 'auth.tenant.admin', 'uses' => 'Admin\Tenant\TenantOptionsController@storeSlider']);
