@@ -28,7 +28,7 @@
                         <label for="">Password</label>
                         <b-form-input id="" type="password" v-model="login.password" required placeholder="Enter Password" :class="{ 'is-invalid': $v.login.password.$error }"></b-form-input>
                         <div v-if="submitted && !$v.login.password.required" class="invalid-feedback">Password is required</div>
-                        <div v-if="submitted && !$v.login.password.minLength" class="invalid-feedback">Password lenght should be minimum 6 character</div>
+                        <div v-if="submitted && !$v.login.password.minLength" class="invalid-feedback">Password lenght should be minimum 8 character</div>
                     </b-form-group>
                     <b-button type="button" @click="handleSubmit" class=" btn-bordersecondary">Login</b-button>
                 </b-form>
@@ -77,7 +77,7 @@
         validations: {
             login: {
                 email: {required, email},
-                password: {required, minLength: minLength(6)}
+                password: {required, minLength: minLength(8)}
             }
         },
 

@@ -4,6 +4,7 @@ export default function setup() {
   // Add a request interceptor
 axios.interceptors.request.use(function (config) {
     // Do something before request is sent
+   
     document.body.classList.add("loader-enable");
     return config;
   }, function (error) {
