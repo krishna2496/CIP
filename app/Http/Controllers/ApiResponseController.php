@@ -34,7 +34,7 @@ class ApiResponseController extends Controller
             $response['data'] = $this->apiData;
         
         // Check response data have pagination or not? Pagination response parameter sets
-        if((is_object($this->apiData)) &&($this->apiData) && get_class($this->apiData) == "Illuminate\Pagination\LengthAwarePaginator"){            
+        if((is_object($this->apiData)) && ($this->apiData) && get_class($this->apiData) == "Illuminate\Pagination\LengthAwarePaginator"){            
             $response['data'] = $this->apiData->toArray()['data'];
             $response['pagination'] = [
                 "total" => $this->apiData->total(),

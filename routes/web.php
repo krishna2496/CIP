@@ -23,7 +23,7 @@ $router->get('/', function () use ($router) {
 |
 */
 /* Connect first time to get styling data. */
-$router->post('connect', ['middleware' => 'tenant.connection', 'uses' => 'App\Styling\StylingController@index']);
+$router->get('connect', ['middleware' => 'tenant.connection', 'uses' => 'App\Styling\StylingController@index']);
 
 /* User login routing using jwt token */
 $router->post('login', ['middleware' => 'tenant.connection', 'uses' => 'App\Auth\AuthController@authenticate']);
