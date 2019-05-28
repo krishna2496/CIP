@@ -3,6 +3,7 @@
     class="custom-dropdown"
     v-on:touchend.stop
     v-on:click.stop
+    v-if="optionList.length > 0"
     :class="showDropdown ? 'dropdown-open' : ' '"
   >
     <span @click="handleClick">{{default_text_val}}</span>
@@ -58,8 +59,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import 'src/assets/scss/theme/default-theme.scss';
-@import 'src/assets/scss/variables.scss';
 
 .custom-dropdown {
   position: relative;
