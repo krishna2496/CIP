@@ -62,7 +62,7 @@ export default {
   data() {
     return {
       myValue: "",
-      defaut_lang: "",
+      defaut_lang: "EN",
       langList:[],
       forgotPassword: {
         email: '',

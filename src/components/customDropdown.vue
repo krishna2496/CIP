@@ -3,6 +3,7 @@
     class="custom-dropdown"
     v-on:touchend.stop
     v-on:click.stop
+    v-if="optionList.length > 0"
     :class="showDropdown ? 'dropdown-open' : ' '"
   >
     <span @click="handleClick">{{default_text_val}}</span>

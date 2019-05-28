@@ -61,7 +61,7 @@
             return {
                 myValue: '',
                 defaut_lang: 'EN',
-                langList: ['EN'],
+                langList: [],
                 login: {
                     email: '',
                     password: '',
@@ -70,7 +70,7 @@
                 classVariant: 'danger',
                 message: null,
                 showDismissibleAlert: false,
-                fqdn: "tatva",
+                
             };
         },
 
