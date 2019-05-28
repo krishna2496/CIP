@@ -37,6 +37,7 @@ return [
 		'ERROR_41000' => '41000',
 		'ERROR_40009' => '40009',
 		'ERROR_40010' => '40010',
+		'ERROR_40012' => '40012',
 		
 		// Error codes from 2000-
 		'ERROR_20002' => '20002',
@@ -45,8 +46,8 @@ return [
 		'ERROR_20008' => '20008',
 		'ERROR_20010' => '20010',
 		'ERROR_20014' => '20014',
-		'ERROR_21000' => '21000',
 		'ERROR_20016' => '20016',
+		'ERROR_21000' => '21000',
 	],
 	
 	/**
@@ -70,7 +71,7 @@ return [
 		'20008' => 'Invalid API Key or Secret key',
 		'20010' => 'API key and Secret key are required',
 		'20014' => 'Unauthorised access',
-		'20016' => 'Invalid data for insertion',
+		'20016' => 'Invalid data',
 		'21000' => 'Error while creating database connection',
 	]
 	

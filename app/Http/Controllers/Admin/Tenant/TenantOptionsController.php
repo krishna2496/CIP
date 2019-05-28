@@ -22,7 +22,7 @@ class TenantOptionsController extends ApiResponseController
     }
 
     /**
-     * Store slider resource in storage.
+     * Store slider details .
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
@@ -40,7 +40,7 @@ class TenantOptionsController extends ApiResponseController
         if ($validator->fails()) {
             return $this->errorResponse(config('errors.status_code.HTTP_STATUS_422'),
                                         config('errors.status_type.HTTP_STATUS_TYPE_422'),
-                                        config('errors.custom_error_code.ERROR_40010'),
+                                        config('errors.custom_error_code.ERROR_20016'),
                                         $validator->errors()->first());
         }        
 
