@@ -145,6 +145,7 @@ class TenantController extends ApiResponseController
     {
         $tenantDetail = Tenant::with('options:tenant_option_id,tenant_id,option_name,option_value,created_at')
 						->select('tenant_id','name','sponsor_id','created_at')
+                        ->whereNull('deleted_at')
 						->find($tenant_id);
 
         if ($tenantDetail) {
@@ -203,6 +204,23 @@ class TenantController extends ApiResponseController
      */
     public function destroy($id)
     {
-        //
+        try {
+            $tenant = Tenant::findorFail($id);
+            $tenant->delete();
+
+            // Set response data
+            $this->apiStatus = app('Illuminate\Http\Response')->status();            
+            $this->apiMessage = config('messages.success.MESSAGE_TENANT_DELETED');
+
+            return $this->response();
+
+        } catch(\Exception $e){
+            
+            return $this->errorResponse(config('errors.status_code.HTTP_STATUS_403'), 
+                                        config('errors.status_type.HTTP_STATUS_TYPE_403'), 
+                                        config('errors.custom_error_code.ERROR_10004'), 
+                                        config('errors.custom_error_message.10004'));
+
+        }
     }
 }

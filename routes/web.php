@@ -31,4 +31,6 @@ $router->group(['prefix' => 'tenants'], function($router){
 	$router->post('/create',['uses'=>'TenantController@store']);
 	// Update tenant details
 	$router->put('/{tenant_id}',['uses'=>'TenantController@update']);
+	// Delete tenant
+	$router->delete('/{tenant_id}',['uses'=>'TenantController@destroy']);
 });
