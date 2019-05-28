@@ -28,12 +28,12 @@ export default new Router({
       component: () => import(/* webpackChunkName: "about" */ './views/About.vue')
     },
     {
-      path: '/resetpassword',
+      path: '/reset-password',
       name: 'resetpassword',
       component: () => import('./views/ResetPassword.vue')
 	},
 	{
-      path: '/forgotpassword',
+      path: '/forgot-password',
       name: 'forgotpassword',
       component: () => import('./views/ForgotPassword.vue')
 	}

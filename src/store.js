@@ -5,8 +5,11 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
- 	isLoggedIn: !!localStorage.getItem('token'),
+   	isLoggedIn: !!localStorage.getItem('token'),
     token: localStorage.getItem('token'),
+    listOfLanguage : localStorage.getItem('listOfLanguage'),
+    defaultLanguage : localStorage.getItem('defaultLanguage'),
+    isloaderSet:true
   },
   mutations: {
   	loginUser(state, token){
@@ -18,7 +21,7 @@ export default new Vuex.Store({
       state.token = null;
     },
     checkState(state){
-    	alert(state.token)
+    	alert("checkState");
     }
   },
   getters: {

@@ -9,13 +9,16 @@ import 'simplebar/dist/simplebar.css'
 import axios from "axios";
 import VueAxios from "vue-axios";
 import Vuelidate from 'vuelidate'
+import interceptorsSetup from './interceptors'
 
 Vue.use(Vuelidate,VueAxios,axios)
 
 Vue.config.productionTip = false
 
-Vue.use(VueAxios, axios, BootstrapVue);
 Vue.use(BootstrapVue)
+
+// call vue axios interceptors
+interceptorsSetup();
 
 new Vue({
 	router,
@@ -25,3 +28,4 @@ new Vue({
 	SimpleBar,
 	render: h => h(App)
 }).$mount('#app')
+
