@@ -26,6 +26,7 @@ $app->withEloquent();
 
 $app->configure('database');
 $app->configure('errors');
+$app->configure('messages');
 
 $app->register(Flipbox\LumenGenerator\LumenGeneratorServiceProvider::class);
 

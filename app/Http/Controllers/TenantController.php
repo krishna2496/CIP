@@ -107,7 +107,7 @@ class TenantController extends ApiResponseController
             // Set response data
             $this->apiStatus = app('Illuminate\Http\Response')->status();
             $this->apiData = ['tenant_id' => $createdTenant->tenant_id];
-            $this->apiMessage = "Tenant created successfully";
+            $this->apiMessage =  config('messages.success.MESSAGE_TENANT_CREATED');
 
             // Job dispatched to create new tenant's database and migrations
             dispatch(new TenantMigrationJob($createdTenant));
@@ -168,7 +168,31 @@ class TenantController extends ApiResponseController
      */
     public function update(Request $request, $id)
     {
-        //
+		try {
+			$tenant = Tenant::findOrFail($id);
+			$tenant->update($request->all());
+			
+			// Tenent options data
+			// Add options data into `tenant_has_option` table            
+            if (isset($request->options) && count($request->options) > 0) {
+				foreach ($request->options as $option_name => $option_value) {
+					$tenantOptionData['option_name'] = $option_name;
+                    $tenantOptionData['option_value'] = $option_value;
+                    $tenant->options()->update($tenantOptionData);
+                }
+            }
+			$this->apiStatus = app('Illuminate\Http\Response')->status();
+            $this->apiData = ['tenant_id' => $id];
+			$this->apiMessage = config('messages.success.MESSAGE_TENANT_UPDATED');
+			
+			return $this->response();
+		}
+		catch(\Exception $e) {
+			return $this->errorResponse(config('errors.status_code.HTTP_STATUS_404'), 
+										config('errors.status_type.HTTP_STATUS_TYPE_404'), 
+										config('errors.custom_error_code.ERROR_10004'), 
+										config('errors.custom_error_message.10004'));
+        }		
     }
 
     /**
