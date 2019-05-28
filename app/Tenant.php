@@ -5,8 +5,11 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use App\TenantHasOption;
 use App\ApiUser;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Tenant extends Model {
+
+    use SoftDeletes;
 
 	protected $table = 'tenant';
 
@@ -20,6 +23,8 @@ class Tenant extends Model {
         // Validation rules
     ];
 
+    protected $softDelete = true;
+    
     /*
     * Defined has many relation for the tenant_option table.
     */
