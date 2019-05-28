@@ -22,7 +22,7 @@ class TenantOptionsController extends ApiResponseController
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store slider resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
@@ -40,20 +40,20 @@ class TenantOptionsController extends ApiResponseController
         if ($validator->fails()) {
             return $this->errorResponse(config('errors.status_code.HTTP_STATUS_422'),
                                         config('errors.status_type.HTTP_STATUS_TYPE_422'),
-                                        config('errors.custom_error_code.ERROR_20016'),
+                                        config('errors.custom_error_code.ERROR_40010'),
                                         $validator->errors()->first());
         }        
 
         try {
 
             // Get total count of "Login_screen_slider"
-            $tenantOptions = TenantOption::get(['option_name', 'option_value'])->where('option_name', 'Login_screen_slider');
+            $tenantOptions = TenantOption::get(['option_name', 'option_value'])->where('option_name', 'slider');
 
             // Prevent data insertion if user is trying to insert more than 4 records 
-            if(count($tenantOptions) >= 4){
+            if(count($tenantOptions) >= config('constants.SLIDER_LIMIT')){
                 // Set response data
                 $this->apiStatus = app('Illuminate\Http\Response')->status();
-                $this->apiMessage = "Sorry, you cannot add more than 4 sliders!";
+                $this->apiMessage = config('messages.message_code.SLIDER_LIMIT_MSG');
             }
             else{
                 
@@ -64,7 +64,7 @@ class TenantOptionsController extends ApiResponseController
                     if ($file->isValid()) {
                         $extension = $file->getClientOriginalExtension();
                         $fileName = "slider_".time().".".$extension;
-                        $destinationPath = "images/";
+                        $destinationPath = config('constants.SLIDER_IMAGE_PATH');
 
                         // Upload file on destination path
                         $uploadedFile = $file->move($destinationPath, $fileName);
@@ -79,7 +79,7 @@ class TenantOptionsController extends ApiResponseController
 
                 // Set data for create new record
                 $insert = array();
-                $insert['option_name'] = 'Login_screen_slider';
+                $insert['option_name'] = 'slider';
                 $insert['option_value'] = json_encode($optionValue);
 
                 // Create new tenant_option
@@ -87,7 +87,7 @@ class TenantOptionsController extends ApiResponseController
 
                 // Set response data
                 $this->apiStatus = app('Illuminate\Http\Response')->status();
-                $this->apiMessage = "Slider added successfully";
+                $this->apiMessage = config('messages.message_code.SLIDER_ADD_SUCCESS');
             }
             return $this->response();
 
