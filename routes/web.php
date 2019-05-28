@@ -29,4 +29,6 @@ $router->group(['prefix' => 'tenants'], function($router){
 	$router->get('/{tenant_id}',['uses'=>'TenantController@show']);
 	// Create new tenant
 	$router->post('/create',['uses'=>'TenantController@store']);
+	// Update tenant details
+	$router->put('/{tenant_id}',['uses'=>'TenantController@update']);
 });
