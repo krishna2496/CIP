@@ -209,8 +209,8 @@ class TenantController extends ApiResponseController
             $tenant->delete();
 
             // Set response data
-            $this->apiStatus = 200;            
-            $this->apiMessage = "Tenant deleted successfully";
+            $this->apiStatus = app('Illuminate\Http\Response')->status();            
+            $this->apiMessage = config('messages.success.MESSAGE_TENANT_DELETED');
 
             return $this->response();
 
