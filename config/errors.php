@@ -48,6 +48,10 @@ return [
 		'ERROR_20014' => '20014',
 		'ERROR_20016' => '20016',
 		'ERROR_21000' => '21000',
+
+		// Error codes from 1000-
+		'ERROR_10006' => '10006',
+		
 	],
 	
 	/**
@@ -73,6 +77,9 @@ return [
 		'20014' => 'Unauthorised access',
 		'20016' => 'Invalid input data',
 		'21000' => 'Error while creating database connection',
+
+		// Error codes from 1000-
+		'10006' => 'Database operational error',
 	]
 	
 ];

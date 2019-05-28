@@ -31,9 +31,7 @@ class TenantOptionsController extends ApiResponseController
     {
         // Server side validataions
         $validator = Validator::make($request->toArray(), [
-            "slider_image" => "required|mimes:png,jpg,jpeg",
-            "slider_detail" => "required",
-            "sort_order" => "required"
+            "slider_image" => "required|mimes:png,jpg,jpeg"
         ]);
 
         // If post parameter have any missing parameter
@@ -69,11 +67,11 @@ class TenantOptionsController extends ApiResponseController
                     }
                 }
                 // Set data for option_value
-                $sliderDetails = json_decode($request->slider_detail);
+                $sliderDetails = (isset($request->slider_detail)) ? json_decode($request->slider_detail) : "";
                 $optionValue = array();
                 $optionValue['url'] = $fileName;
-                $optionValue['sort_order'] = $request->sort_order;
-                $optionValue['translations'] = $sliderDetails->translations;
+                $optionValue['sort_order'] = (isset($request->sort_order)) ? $request->sort_order : 0;
+                $optionValue['translations'] = ($sliderDetails != '') ? $sliderDetails->translations : "";
 
                 // Set data for create new record
                 $insert = array();
