@@ -24,8 +24,8 @@ class TenantOptionsController extends ApiResponseController
     /**
      * Store slider details.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return mixedd response
+     * @param \Illuminate\Http\Request  $request
+     * @return mixed response
      */
     public function storeSlider(Request $request)
     {
@@ -44,15 +44,17 @@ class TenantOptionsController extends ApiResponseController
 
         try {
             // Get total count of "slider"
-            $tenantOptions = TenantOption::get(['option_name', 'option_value'])->where('option_name', 'slider');
+            $slider = TenantOption::get(['option_name', 'option_value'])->where('option_name', config('constants.TENANT_OPTION_SLIDER'));
 
             // Prevent data insertion if user is trying to insert more than defined slider limit records 
-            if(count($tenantOptions) >= config('constants.SLIDER_LIMIT')){
+            if (count($slider) >= config('constants.SLIDER_LIMIT')) {
                 // Set response data
-                $this->apiStatus = app('Illuminate\Http\Response')->status();
-                $this->apiMessage = config('messages.message_code.MESSAGE_SLIDER_LIMIT');
-            }
-            else{                
+                return $this->errorResponse(config('errors.status_code.HTTP_STATUS_403'), 
+                                        config('errors.status_type.HTTP_STATUS_TYPE_403'), 
+                                        config('errors.custom_error_code.ERROR_40014'), 
+                                        config('errors.custom_error_message.40014'));
+                return $this->response();
+            } else {                
                 // Check file is available or not
                 if ($request->hasFile('slider_image')) {
                     // Check file is valid or not
@@ -75,7 +77,7 @@ class TenantOptionsController extends ApiResponseController
 
                 // Set data for create new record
                 $insert = array();
-                $insert['option_name'] = 'slider';
+                $insert['option_name'] = config('constants.TENANT_OPTION_SLIDER');
                 $insert['option_value'] = json_encode($optionValue);
 
                 // Create new tenant_option
@@ -84,8 +86,8 @@ class TenantOptionsController extends ApiResponseController
                 // Set response data
                 $this->apiStatus = app('Illuminate\Http\Response')->status();
                 $this->apiMessage = config('messages.message_code.MESSAGE_SLIDER_ADD_SUCCESS');
+                return $this->response();
             }
-            return $this->response();
 
         } catch (\Exception $e) {
             // Any other error occured when trying to insert data into database for tenant option.

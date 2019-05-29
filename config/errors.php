@@ -38,6 +38,7 @@ return [
 		'ERROR_40009' => '40009',
 		'ERROR_40010' => '40010',
 		'ERROR_40012' => '40012',
+		'ERROR_40014' => '40014',
 		
 		// Error codes from 2000-
 		'ERROR_20002' => '20002',
@@ -67,7 +68,8 @@ return [
 		'41000' => 'Unknown database connection request for this domain',
 		'40009' => 'Domain name is required',
 		'40010' => 'Email address is required',
-	
+		'40014' => 'Sorry, you cannot add more than '.config('constants.SLIDER_LIMIT').' sliders!',
+		
 		// Error codes from 2000-
 		'20002' => 'This email address is already taken, Please try with different email address',
 		'20004' => 'Error while inserting data to database',
