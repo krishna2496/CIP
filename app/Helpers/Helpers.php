@@ -50,7 +50,7 @@ class Helpers
         }
         if($apiMessage)
             $response['message'] = $apiMessage;
-
+            
         return response()->json($response, 200, [], JSON_NUMERIC_CHECK);
     }
 
