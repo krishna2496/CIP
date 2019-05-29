@@ -17,16 +17,16 @@ axios.interceptors.request.use(function (config) {
 axios.interceptors.response.use(function (response) {
     // Do something with response data
     document.body.classList.remove("loader-enable");
+      return response;
+    }, function (error) {
 
-    return response;
-  }, function (error) {
-
-   if(error.response.status == '401' && error.response.data.code == '120'){
-     router.push({name: 'login'})
-   }
+    //if jwt token expired
+    if(error.response.status == '401' && error.response.data.code == '120'){
+       router.push({name: 'login'})
+    }
 
     // Do something with response error
-    document.body.classList.remove("loader-enable");
-    return Promise.reject(error);
-  });
+      document.body.classList.remove("loader-enable");
+      return Promise.reject(error);
+    });
 }
