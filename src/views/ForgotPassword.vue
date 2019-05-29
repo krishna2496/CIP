@@ -86,9 +86,8 @@ export default {
      handleSubmit(e) {
 
                 this.submitted = true;
-                // stop here if form is invalid
                 this.$v.$touch();
-
+                // stop here if form is invalid
                 if (this.$v.$invalid) {
                     return;
                 }
@@ -121,7 +120,6 @@ export default {
     // set language list and default language fetching from local storage
     this.langList = JSON.parse(localStorage.getItem('listOfLanguage'))
     this.defaut_lang = localStorage.getItem('defaultLanguage') 
-  
   },
 
 };

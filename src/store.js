@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import axios from "axios";
+import router from './router'
 Vue.use(Vuex)
 
 export default new Vuex.Store({
@@ -17,8 +18,10 @@ export default new Vuex.Store({
       state.token = token;
     },
     logoutUser(state){
+      localStorage.removeItem('token')
       state.isLoggedIn = false;
       state.token = null;
+      router.push({name: 'login'})
     },
     checkState(state){
     	console.log(state)

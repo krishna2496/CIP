@@ -57,6 +57,7 @@
             SigninFooter,
             customDropdown,
         },
+        
         data() {
             return {
                 myValue: '',
@@ -88,9 +89,8 @@
         methods: {
             handleSubmit(e) {
                 this.submitted = true;
-                // stop here if form is invalid
                 this.$v.$touch();
-
+                // stop here if form is invalid
                 if (this.$v.$invalid) {
                     return;
                 }
@@ -99,16 +99,12 @@
                 axios.post(process.env.VUE_APP_API_ENDPOINT+"login", this.login,
                    )
                         .then((response) => {
-                            this.message = null;
-                            this.showDismissibleAlert = true
-                            this.classVariant = 'success'
-
                             //store token in local storage
                             localStorage.setItem('isLoggedIn', response.data.data.token)
                             localStorage.setItem('token', response.data.data.token)
                             store.commit('loginUser', response.data.data.token)
-                            //set success msg
-                            this.message = response.data.message   
+                            //redirect to landing page
+                            this.$router.replace({ name: "home" });
                         })
                         .catch(error => {
                             if(error.response.data.errors[0].message){

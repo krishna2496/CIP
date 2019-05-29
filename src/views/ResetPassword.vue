@@ -86,13 +86,12 @@ export default {
   methods:{
           handleSubmit(e) {
                   this.submitted = true;
-                  // stop here if form is invalid
                   this.$v.$touch();
-
+                  // stop here if form is invalid
                   if (this.$v.$invalid) {
                       return;
                   }
-                  // reset password api call 
+                  // reset password api call with params token,email,password,password_conformation
                   axios.put(process.env.VUE_APP_API_ENDPOINT+"password_reset",{
                     "reset_password_token":this.resetPassword.token,
                     "email" :this.resetPassword.email,
@@ -134,5 +133,4 @@ export default {
 }
 </script>
 <style lang="scss">
-
 </style>

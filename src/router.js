@@ -9,33 +9,31 @@ export default new Router({
   mode: 'history',
   base: process.env.BASE_URL,
   routes: [
-  {
-    path: '/',
-    name: Login,
-    component: () => import('./views/Login.vue')
-  },
-  {
-    path: '/home',
-    name: Home,
-    component: () => import('./views/Home.vue')
-  },
-  {
-    path: '/about',
-    name: 'about',
-      // route level code-splitting
-      // this generates a separate chunk (about.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import(/* webpackChunkName: "about" */ './views/About.vue')
+    {
+      path: '/',
+      name: 'login',
+      component: () => import('./views/Login.vue')
     },
     {
-      path: '/reset-password/:token',
-      name: 'resetpassword',
-      component: () => import('./views/ResetPassword.vue')
-  },
-  {
-      path: '/forgot-password',
-      name: 'forgotpassword',
-      component: () => import('./views/ForgotPassword.vue')
-  }
-    ]
-  })
+      path: '/home',
+      name: 'home',
+      meta: { requiresAuth: true },
+      component: () => import('./views/Home.vue')
+    },
+    {
+      path: '/about',
+      name: 'about',
+        component: () => import('./views/About.vue')
+    },
+    {
+        path: '/reset-password/:token',
+        name: 'resetPassword',
+        component: () => import('./views/ResetPassword.vue')
+    },
+    {
+        path: '/forgot-password',
+        name: 'forgotPassword',
+        component: () => import('./views/ForgotPassword.vue')
+    }
+  ]
+})
