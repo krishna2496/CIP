@@ -10,12 +10,11 @@ use Firebase\JWT\ExpiredException;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Auth\Passwords\PasswordBrokerManager;
 use Illuminate\Support\Facades\Password;
-use App\Http\Controllers\ApiResponseController;
 use App\Http\Controllers\Config;
 use App\Helpers\Helpers;
 use DB;
 
-class AuthController extends ApiResponseController {
+class AuthController extends Controller {
 
     /**
      * The request instance.
@@ -70,7 +69,7 @@ class AuthController extends ApiResponseController {
         ]);
 
         if ($validator->fails()) {
-            return $this->errorResponse(config('errors.status_code.HTTP_STATUS_422'), 
+            return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_422'), 
 										config('errors.status_type.HTTP_STATUS_TYPE_422'), 
 										config('errors.custom_error_code.ERROR_40001'), 
 										$validator->errors()->first());
@@ -80,7 +79,7 @@ class AuthController extends ApiResponseController {
         $user = User::where('email', $this->request->input('email'))->first();
 
         if (!$user) {
-            return $this->errorResponse(config('errors.status_code.HTTP_STATUS_403'), 
+            return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_403'), 
 										config('errors.status_type.HTTP_STATUS_TYPE_403'), 
 										config('errors.custom_error_code.ERROR_40002'), 
 										config('errors.custom_error_message.40002'));
@@ -88,7 +87,7 @@ class AuthController extends ApiResponseController {
         
         // Verify user's password
         if (!Hash::check($this->request->input('password'), $user->password)) {
-            return $this->errorResponse(config('errors.status_code.HTTP_STATUS_422'), 
+            return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_422'), 
 										config('errors.status_type.HTTP_STATUS_TYPE_422'), 
 										config('errors.custom_error_code.ERROR_40004'), 
 										config('errors.custom_error_message.40004'));
@@ -96,10 +95,10 @@ class AuthController extends ApiResponseController {
         
         // Generate JWT token
         $data["token"] = $this->jwt($user);
-        $this->apiData = $data;
-        $this->apiStatus = app('Illuminate\Http\Response')->status();
-        $this->apiMessage = 'You are successfully logged in';
-        return $this->response();
+        $apiData = $data;
+        $apiStatus = app('Illuminate\Http\Response')->status();
+        $apiMessage = 'You are successfully logged in';
+        return $this->response($apiData, $apiStatus, $apiMessage);
     }
     
     /**
@@ -117,7 +116,7 @@ class AuthController extends ApiResponseController {
         ]);
         
         if ($validator->fails()) {
-            return $this->errorResponse(config('errors.status_code.HTTP_STATUS_422'), 
+            return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_422'), 
 										config('errors.status_type.HTTP_STATUS_TYPE_422'), 
 										config('errors.custom_error_code.ERROR_40010'), 
 										$validator->errors()->first());
@@ -127,7 +126,7 @@ class AuthController extends ApiResponseController {
         $user = User::where('email', $request->get('email'))->first();
 
         if (!$user) {
-            return $this->errorResponse(config('errors.status_code.HTTP_STATUS_403'), 
+            return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_403'), 
 										config('errors.status_type.HTTP_STATUS_TYPE_403'), 
 										config('errors.custom_error_code.ERROR_40002'), 
 										config('errors.custom_error_message.40002'));
@@ -143,15 +142,15 @@ class AuthController extends ApiResponseController {
 
         // If reset password link didn't sent
         if (!$response == Password::RESET_LINK_SENT) {
-            return $this->errorResponse(config('errors.status_code.HTTP_STATUS_500'), 
+            return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_500'), 
 										config('errors.status_type.HTTP_STATUS_TYPE_500'), 
 										config('errors.custom_error_code.ERROR_40006'), 
 										config('errors.custom_error_message.40006'));
         }
 
-        $this->apiStatus = app('Illuminate\Http\Response')->status();
-        $this->apiMessage = 'Reset Password link is sent to your email account,link will expire in ' . config('constants.FORGOT_PASSWORD_EXPIRY_TIME') . ' hours';
-        return $this->response();
+        $apiStatus = app('Illuminate\Http\Response')->status();
+        $apiMessage = 'Reset Password link is sent to your email account,link will expire in ' . config('constants.FORGOT_PASSWORD_EXPIRY_TIME') . ' hours';
+        return $this->response('', $apiStatus, $apiMessage);
     }
 
     /**
