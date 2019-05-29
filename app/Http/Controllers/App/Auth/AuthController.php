@@ -173,6 +173,7 @@ class AuthController extends ApiResponseController {
                 'email' => 'required|email',
                 'token' => 'required',
                 'password' => 'required|min:8',
+                'password_confirmation' => 'required|min:8|same:password',
         ]);
         
         if ($validator->fails()) {
