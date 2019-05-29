@@ -28,7 +28,7 @@ class UserController extends ApiResponseController
 
         // Check if search parameter passed in URL then search parameter will search in name field of tenant table.
         if (!empty($searchString)) {
-            $userQuery->where(function($query) use($searchString){
+            $userQuery->where(function($query) use($searchString) {
                 $query->orWhere('first_name', 'like', '%' . $searchString . '%');
                 $query->orWhere('last_name', 'like', '%' . $searchString . '%');
             });
@@ -38,29 +38,24 @@ class UserController extends ApiResponseController
             $userQuery->orderBy('user_id',$orderType)->paginate(10);            
             $userList = $userQuery->paginate(10);
         } catch(\Exception $e) {
-            // Catch database exception
-            $this->errorType  = config('errors.type.ERROR_TYPE_403');
-            $this->apiStatus  = 403;
-            $this->apiErrorCode = 10006;
-            $this->apiMessage = config('errors.code.10006');
-            return $this->errorResponse();
-			
+            return $this->errorResponse(config('errors.status_code.HTTP_STATUS_403'), 
+                                        config('errors.status_type.HTTP_STATUS_TYPE_403'), 
+                                        config('errors.custom_error_code.ERROR_10006'), 
+                                        config('errors.custom_error_message.10006'));
         }
-        // Order by passed order or default order asc.
 
         if (count($userList)>0) {
             // Set response data
             $this->apiData = $userList;
             $this->apiStatus = app('Illuminate\Http\Response')->status();
-            $this->apiMessage = "Tenant listing successfully";
+            $this->apiMessage = config('messages.success_message.MESSAGE_USER_LIST_SUCCESS');
+            return $this->response();
         } else {
             // Set response data
             $this->apiStatus = app('Illuminate\Http\Response')->status();
-            $this->apiMessage = "No data found";
+            $this->apiMessage = config('messages.success_message.MESSAGE_NO_DATA_FOUND');
+            return $this->response();
         }
-
-        // Send API reponse
-        return $this->response();
     }
 
     /**
@@ -95,19 +90,15 @@ class UserController extends ApiResponseController
         }
 
         try {
-
             // Create new user
             $user = User::create($request->toArray());
 
             // Set response data
             $this->apiStatus = app('Illuminate\Http\Response')->status();
             $this->apiData = ['user_id' => $user->user_id];
-            $this->apiMessage = "User created successfully";
-
+            $this->apiMessage = config('messages.success_message.MESSAGE_USER_CREATE_SUCCESS');    
             return $this->response();
-
         } catch (\Exception $e) {
-
             // Error for duplicate tenant name, trying to store in database.
             if (isset($e->errorInfo[1]) && $e->errorInfo[1] == 1062) {
                 return $this->errorResponse(config('errors.status_code.HTTP_STATUS_422'), 
@@ -115,7 +106,8 @@ class UserController extends ApiResponseController
 										config('errors.custom_error_code.ERROR_20002'), 
 										config('errors.custom_error_message.20002'));
 				
-            } else { // Any other error occured when trying to insert data into database for tenant.
+            } else { 
+                // Any other error occured when trying to insert data into database for tenant.
                 return $this->errorResponse(config('errors.status_code.HTTP_STATUS_422'), 
 										config('errors.status_type.HTTP_STATUS_TYPE_422'), 
 										config('errors.custom_error_code.ERROR_20004'), 
@@ -161,11 +153,9 @@ class UserController extends ApiResponseController
 
             // Set response data
             $this->apiStatus = 200;            
-            $this->apiMessage = "User deleted successfully";
-
+            $this->apiMessage = config('messages.success_message.MESSAGE_USER_LIST_SUCCESS');
             return $this->response();
-
-        } catch(\Exception $e){
+        } catch(\Exception $e) {
             
             return $this->errorResponse(config('errors.status_code.HTTP_STATUS_403'), 
 										config('errors.status_type.HTTP_STATUS_TYPE_403'), 

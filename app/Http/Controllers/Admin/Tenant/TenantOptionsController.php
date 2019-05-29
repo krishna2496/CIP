@@ -30,8 +30,7 @@ class TenantOptionsController extends ApiResponseController
     public function storeSlider(Request $request)
     {
         // Server side validataions
-        $validator = Validator::make($request->toArray(), [
-            "slider_image" => "required|mimes:png,jpg,jpeg"
+        $validator = Validator::make($request->toArray(), ["slider_image" => "required|mimes:png,jpg,jpeg"
         ]);
 
         // If post parameter have any missing parameter
@@ -85,7 +84,7 @@ class TenantOptionsController extends ApiResponseController
 
                 // Set response data
                 $this->apiStatus = app('Illuminate\Http\Response')->status();
-                $this->apiMessage = config('messages.message_code.MESSAGE_SLIDER_ADD_SUCCESS');
+                $this->apiMessage = config('messages.success_message.MESSAGE_SLIDER_ADD_SUCCESS');
                 return $this->response();
             }
 
