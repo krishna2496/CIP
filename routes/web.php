@@ -71,3 +71,5 @@ $router->group(['prefix' => 'users', 'middleware' => 'auth.tenant.admin'], funct
 
 /* Set custom slider data for tenant specific */
 $router->post('/create_slider', ['middleware' => 'auth.tenant.admin', 'uses' => 'Admin\Tenant\TenantOptionsController@storeSlider']);
+/* Set cms data for tenant specific */
+$router->post('/create', ['middleware' => 'auth.tenant.admin', 'uses' => 'Admin\Tenant\CmsController@store']);

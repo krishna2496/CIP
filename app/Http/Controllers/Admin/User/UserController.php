@@ -67,8 +67,7 @@ class UserController extends ApiResponseController
     public function store(Request $request)
     {
         // Server side validataions
-        $validator = Validator::make($request->toArray(), [
-            "first_name" => "required|max:16",
+        $validator = Validator::make($request->toArray(), ["first_name" => "required|max:16",
             "last_name" => "required|max:16",
             "email" => "required|email|unique:user,email,NULL,user_id,deleted_at,NULL",
             "password" => "required",
