@@ -12,13 +12,46 @@ class Helpers
 	* @param Illuminate\Http\Request $request
 	* @return string
 	*/
-    public static function getSubDomainFromUrl(Request $request)
+    public static function getSubDomainFromRequest(Request $request)
     {
     	try{    	
         	return explode(".",parse_url($request->headers->all()['referer'][0])['host'])[0];
         } catch (\Exception $e) {
         	return $e->getMessage();
         }
+    }
+
+    /**
+     * Prepare success response
+     * 
+     * @param Model Object $apiData
+     * @param int $apiStatus
+     * @param string $apiMessage     
+     * @return mixed
+     */
+    public static function response($apiData, $apiStatus = 200, $apiMessage = '')
+    {
+
+        $response['status'] = $apiStatus;
+        
+        if(!empty((array)$apiData) && $apiData != '')
+            $response['data'] = $apiData;
+
+        // Check response data have pagination or not? Pagination response parameter sets
+        if((is_object($apiData)) && ($apiData) && get_class($apiData) == "Illuminate\Pagination\LengthAwarePaginator"){            
+            $response['data'] = $apiData->toArray()['data'];
+            $response['pagination'] = [
+                "total" => $apiData->total(),
+                "per_page" => $apiData->perPage(),
+                "current_page" => $apiData->currentPage(),
+                "total_pages" => $apiData->lastPage(),
+                "next_url" => $apiData->nextPageUrl()
+            ];
+        }
+        if($apiMessage)
+            $response['message'] = $apiMessage;
+
+        return response()->json($response, 200, [], JSON_NUMERIC_CHECK);
     }
 
     /**

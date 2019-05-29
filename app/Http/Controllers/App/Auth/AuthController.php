@@ -12,6 +12,7 @@ use Illuminate\Auth\Passwords\PasswordBrokerManager;
 use Illuminate\Support\Facades\Password;
 use App\Http\Controllers\ApiResponseController;
 use App\Http\Controllers\Config;
+use App\Helpers\Helpers;
 use DB;
 
 class AuthController extends ApiResponseController {
@@ -45,7 +46,7 @@ class AuthController extends ApiResponseController {
             'sub' => $user->id,         // Subject of the token
             'iat' => time(),            // Time when JWT was issued. 
             'exp' => time() + 60 * 60,  // Expiration time
-            'fqdn' => $this->request->fqdn
+            'fqdn' => Helpers::getSubDomainFromRequest($this->request)
         ];        
 
         // As you can see we are passing `JWT_SECRET` as the second parameter that will 

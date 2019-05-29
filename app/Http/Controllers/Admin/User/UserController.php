@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\ApiResponseController;
 use Illuminate\Support\Facades\Input;
 use App\User;
+use App\Helpers\Helpers;
 use Validator;
 
 class UserController extends ApiResponseController
@@ -39,11 +40,10 @@ class UserController extends ApiResponseController
             $userList = $userQuery->paginate(10);
         } catch(\Exception $e) {
             // Catch database exception
-            $this->errorType  = config('errors.type.ERROR_TYPE_403');
-            $this->apiStatus  = 403;
-            $this->apiErrorCode = 10006;
-            $this->apiMessage = config('errors.code.10006');
-            return $this->errorResponse();
+            return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_403'), 
+                                        config('errors.status_type.HTTP_STATUS_TYPE_403'), 
+                                        config('errors.custom_error_code.ERROR_40018'), 
+                                        config('errors.custom_error_message.40018'));
 			
         }
         // Order by passed order or default order asc.
