@@ -141,7 +141,6 @@ class AuthController extends ApiResponseController {
         
         //get referer url using helper 
         $refererUrl = Helpers::getRefererFromRequest($request);
-        dd($refererUrl);
         config(['app.mail_url' => $refererUrl.'/reset-password/']);
        
         // Verify email address and send reset password link        

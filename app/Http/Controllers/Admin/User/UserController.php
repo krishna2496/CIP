@@ -75,7 +75,7 @@ class UserController extends ApiResponseController
         $validator = Validator::make($request->toArray(), [
             "first_name" => "required|max:16",
             "last_name" => "required|max:16",
-            "email" => "required|email",
+            "email" => "required|email|unique:user,email,NULL,user_id,deleted_at,NULL",
             "password" => "required",
             "city_id" => "required",
             "country_id" => "required",
@@ -108,7 +108,7 @@ class UserController extends ApiResponseController
 
         } catch (\Exception $e) {
 
-            // Error for duplicate tenant name, trying to store in database.
+            // Error for duplicate user name, trying to store in database.
             if (isset($e->errorInfo[1]) && $e->errorInfo[1] == 1062) {
                 return $this->errorResponse(config('errors.status_code.HTTP_STATUS_422'), 
 										config('errors.status_type.HTTP_STATUS_TYPE_422'), 
