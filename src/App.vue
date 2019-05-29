@@ -25,4 +25,3 @@ export default {
 .page-loader img{width:100px;position: absolute; top: 50%; left: 50%;}
 .loader-enable .page-loader{display: block;}
 </style>
-
