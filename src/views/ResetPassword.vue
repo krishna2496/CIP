@@ -37,7 +37,7 @@
         </b-form>
 
         <div class="form-link">
-        <b-link href="/" title="Login">Login</b-link>
+        <b-link to="/" title="Login">Login</b-link>
 
   </div>
   </div>
