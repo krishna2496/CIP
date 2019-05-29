@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\ApiController;
 use Illuminate\Support\Facades\DB;
 use App\TenantOption;
+use App\Helpers\Helpers;
 
 class TenantOptionController extends ApiController
 {
@@ -16,7 +17,7 @@ class TenantOptionController extends ApiController
      * @return mixed
      */
     public function getTenantOption() 
-    { 
+    {
         $data = $dataResponse = array(); 
         
         //flag to check value is serialize or not
@@ -28,25 +29,19 @@ class TenantOptionController extends ApiController
         
         //if data exist
         if ($data) {
-            
             foreach ($data as $key =>$value) {
-                
                 //check if value is serialize or not
                 $checkForSerialize = @unserialize($value['option_value']);
                 
-                if ($checkForSerialize === FALSE) {      // if not serialize value
+                if ($checkForSerialize === FALSE) {
+                    // if not serialize value
                     $dataResponse[$value['option_name']] = $value['option_value'];
-                } else {                                 // for serialize value
+                } else {
+                    // for serialize value
                     $dataResponse[$value['option_name']] = unserialize($value['option_value']);
                 }
-                
             }
         }
-        
-        $this->apiData = $dataResponse;
-        $this->apiStatus = app('Illuminate\Http\Response')->status();
-        $this->apiMessage = 'Tenant options listing successfully';
-        return $this->response();
-        
+        return Helpers::response($dataResponse, app('Illuminate\Http\Response')->status(), 'Tenant options listing successfully');
     }
 }

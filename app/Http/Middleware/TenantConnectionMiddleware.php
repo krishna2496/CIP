@@ -27,7 +27,7 @@ class TenantConnectionMiddleware
         } else {
             
             // Uncomment below line while testing in apis with front side.
-            // $domain = Helpers::getSubDomainFromUrl($request);
+            // $domain = Helpers::getSubDomainFromRequest($request);
             
             // comment below line while testing in apis with front side.
             $domain = env('DEFAULT_TENANT');

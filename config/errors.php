@@ -40,6 +40,10 @@ return [
 		'ERROR_40011' => '40011',
 		'ERROR_40012' => '40012',
 		'ERROR_40013' => '40013',
+		'ERROR_40012' => '40012',
+		'ERROR_40014' => '40014',
+		'ERROR_40016' => '40016',
+		'ERROR_40018' => '40018',
 		
 		// Error codes from 2000-
 		'ERROR_20002' => '20002',
@@ -48,6 +52,7 @@ return [
 		'ERROR_20008' => '20008',
 		'ERROR_20010' => '20010',
 		'ERROR_20014' => '20014',
+		'ERROR_20016' => '20016',
 		'ERROR_21000' => '21000',
 	],
 	
@@ -55,7 +60,7 @@ return [
 	* API Error Codes and Message
 	*/
 	'custom_error_message' => [
-		// Error codes from 4000-
+		// Error codes from 4000- Tenant User
 		'40001' => 'Email address or password field is empty',
 		'40002' => 'Email address does not exist in the system',
 		'40004' => 'Invalid password',
@@ -69,13 +74,21 @@ return [
 		
 		
 		// Error codes from 2000-
+                '40012' => 'Token not provided',
+		'40014' => 'Provided token is expired',
+		'40016' => 'An error while decoding token',
+		'40018' => 'Database operational error',
+	
+		// Error codes from 2000- Tenant Admin
 		'20002' => 'This email address is already taken, Please try with different email address',
 		'20004' => 'Error while inserting data to database',
 		'20006' => 'User deletion failed',
 		'20008' => 'Invalid API Key or Secret key',
 		'20010' => 'API key and Secret key are required',
 		'20014' => 'Unauthorised access',
+		'20016' => 'Databse not found',
 		'21000' => 'Error while creating database connection',
+
 	]
 	
 ];
