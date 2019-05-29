@@ -12,13 +12,13 @@ class TenantOptionController extends ApiController
 {
     
     /**
-     * Custom data like style,logo and text for login screen etc..
+     * Get tenant options from table `tenant_options`
      *  
      * @return mixed
      */
     public function getTenantOption() 
     {
-        $data = $dataResponse = array(); 
+        $data = $optionData = array(); 
         
         //flag to check value is serialize or not
         $checkForSerialize = FALSE;
@@ -35,13 +35,13 @@ class TenantOptionController extends ApiController
                 
                 if ($checkForSerialize === FALSE) {
                     // if not serialize value
-                    $dataResponse[$value['option_name']] = $value['option_value'];
+                    $optionData[$value['option_name']] = $value['option_value'];
                 } else {
                     // for serialize value
-                    $dataResponse[$value['option_name']] = unserialize($value['option_value']);
+                    $optionData[$value['option_name']] = unserialize($value['option_value']);
                 }
             }
         }
-        return Helpers::response($dataResponse, app('Illuminate\Http\Response')->status(), 'Tenant options listing successfully');
+        return Helpers::response(app('Illuminate\Http\Response')->status(), '', $optionData);
     }
 }

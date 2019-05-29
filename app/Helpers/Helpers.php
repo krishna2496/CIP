@@ -24,12 +24,12 @@ class Helpers
     /**
      * Prepare success response
      * 
-     * @param Model Object $apiData
      * @param int $apiStatus
      * @param string $apiMessage     
+     * @param Model Object $apiData
      * @return mixed
      */
-    public static function response($apiData, $apiStatus = 200, $apiMessage = '')
+    public static function response($apiStatus = 200, $apiMessage = '', $apiData = '')
     {
 
         $response['status'] = $apiStatus;
