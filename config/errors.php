@@ -7,10 +7,11 @@ return [
 	*/
 	'status_code' => [
 		'HTTP_STATUS_400' => '400',
+		'HTTP_STATUS_401' => '401',
 		'HTTP_STATUS_403' => '403',
 		'HTTP_STATUS_404' => '404',
 		'HTTP_STATUS_422' => '422',
-		'HTTP_STATUS_500' => '500'
+		'HTTP_STATUS_500' => '500',
 	],
     
    /**
@@ -18,6 +19,7 @@ return [
 	*/
 	'status_type' => [
 		'HTTP_STATUS_TYPE_400' => 'Bad Request',
+		'HTTP_STATUS_TYPE_401' => 'Unauthorized',
 		'HTTP_STATUS_TYPE_403' => 'Forbidden',
 		'HTTP_STATUS_TYPE_404' => 'Not Found',
 		'HTTP_STATUS_TYPE_422' => 'Unprocessable entity',
