@@ -1,10 +1,10 @@
 import axios from 'axios';
+import router from './router'
 
 export default function setup() {
   // Add a request interceptor
 axios.interceptors.request.use(function (config) {
     // Do something before request is sent
-   
     document.body.classList.add("loader-enable");
     return config;
   }, function (error) {
@@ -19,8 +19,14 @@ axios.interceptors.response.use(function (response) {
     document.body.classList.remove("loader-enable");
     return response;
   }, function (error) {
-    // Do something with response error
-    document.body.classList.remove("loader-enable");
-	return Promise.reject(error);
+
+  //if token expired
+  if(error.response.status == '401' && error.response.data.code == '120'){
+     router.push({name: 'login'})
+  }
+
+  // Do something with response error
+  document.body.classList.remove("loader-enable");
+    return Promise.reject(error);
   });
 }

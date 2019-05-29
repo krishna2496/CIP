@@ -125,11 +125,10 @@
         },
 
         mounted() {
-
+           
         },
 
         created() {
-
             //database connection and fetching tenant options api
             axios.get(process.env.VUE_APP_API_ENDPOINT+"/connect")
                     .then((response) => {
@@ -162,8 +161,10 @@
                     .catch(error => {
                         console.log(error)
                     })
+        },
 
-
+        updated(){
+            
         }
     };
 
