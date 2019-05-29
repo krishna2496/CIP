@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 use Illuminate\Support\Facades\Config;
+use App\Helpers\Helpers;
 use Closure;
 use Firebase\JWT\JWT;
 use DB;
@@ -16,7 +17,7 @@ class TenantConnectionMiddleware
      * @return mixed
      */
     public function handle($request, Closure $next)
-    {   
+    {
         // Pre-Middleware Action
         $token = $request->get('token');
 
@@ -24,32 +25,21 @@ class TenantConnectionMiddleware
             $credentials = JWT::decode($token, env('JWT_SECRET'), ['HS256']);
             $domain = $credentials->fqdn;
         } else {
-
-            if (!$request->fqdn) {
-                $response['errors'] = array(array(
-                    "type"=> config('errors.type.ERROR_TYPE_422'),
-                    "status" => 422,
-                    "code" => 40009,
-                    "message"=> config('errors.code.40009')
-                ));
-                return response()->json($response, 422, [], JSON_NUMERIC_CHECK);
-            }
             
-            $domain = $request->fqdn;
+            // Uncomment below line while testing in apis with front side.
+            // $domain = Helpers::getSubDomainFromUrl($request);
+            
+            // comment below line while testing in apis with front side.
+            $domain = env('DEFAULT_TENANT');
         }
 
         if ($domain !== env('APP_DOMAIN')) {
-            
             $tenant = DB::table('tenant')->select('tenant_id')->where('name', $domain)->first();
-            
             if (!$tenant) {
-				$response['errors'] = array(array(
-                    "type"=> config('errors.type.ERROR_TYPE_403'),
-                    "status" => 403,
-                    "code" => 40008,
-                    "message"=> config('errors.code.40008')
-                ));
-                return response()->json($response, 403, [], JSON_NUMERIC_CHECK);
+                return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_403'), 
+                                        config('errors.status_type.HTTP_STATUS_TYPE_403'), 
+                                        config('errors.custom_error_code.ERROR_40008'), 
+                                        config('errors.custom_error_message.40008'));
             }
             $this->createConnection($tenant);
         }        
@@ -79,15 +69,11 @@ class TenantConnectionMiddleware
             // Set default database
             Config::set('database.default', 'tenant');
         } catch (\PDOException $e) {
-            if ($e instanceof \PDOException) {
-                $response['errors'] = [];
-                array_push($response['errors'],[
-                    "type"=> config('errors.type.ERROR_TYPE_403'),
-                    "status" => 403,
-                    "code" => 41000,
-                    "message"=> config('errors.code.41000')
-                ]);
-                return response()->json($response);
+            if ($e instanceof \PDOException) {            
+                return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_403'), 
+                                        config('errors.status_type.HTTP_STATUS_TYPE_403'), 
+                                        config('errors.custom_error_code.ERROR_41000'), 
+                                        config('errors.custom_error_message.41000'));
             }
         }        
     }
