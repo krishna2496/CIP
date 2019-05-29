@@ -21,8 +21,8 @@ class AuthTenantAdminMiddleware
         if (!isset($_SERVER['PHP_AUTH_USER']) && !isset($_SERVER['PHP_AUTH_PW'])
             || (empty($_SERVER['PHP_AUTH_USER']) && empty($_SERVER['PHP_AUTH_PW']))
         ) {
-            return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_403'), 
-                                        config('errors.status_type.HTTP_STATUS_TYPE_403'), 
+            return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_401'), 
+                                        config('errors.status_type.HTTP_STATUS_TYPE_401'), 
                                         config('errors.custom_error_code.ERROR_20010'), 
                                         config('errors.custom_error_message.20010'));
         }
@@ -43,8 +43,8 @@ class AuthTenantAdminMiddleware
                 return $response;
             }
             // Send authentication error response if api user not found in master database
-            return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_403'), 
-                                        config('errors.status_type.HTTP_STATUS_TYPE_403'), 
+            return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_401'), 
+                                        config('errors.status_type.HTTP_STATUS_TYPE_401'), 
                                         config('errors.custom_error_code.ERROR_20008'), 
                                         config('errors.custom_error_message.20008'));
         } catch(\Exception $e){

@@ -28,7 +28,7 @@ class UserController extends Controller
 
         // Check if search parameter passed in URL then search parameter will search in name field of tenant table.
         if (!empty($searchString)) {
-            $userQuery->where(function($query) use($searchString){
+            $userQuery->where(function($query) use($searchString) {
                 $query->orWhere('first_name', 'like', '%' . $searchString . '%');
                 $query->orWhere('last_name', 'like', '%' . $searchString . '%');
             });
@@ -42,22 +42,18 @@ class UserController extends Controller
             return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_403'), 
                                         config('errors.status_type.HTTP_STATUS_TYPE_403'), 
                                         config('errors.custom_error_code.ERROR_40018'), 
-                                        config('errors.custom_error_message.40018'));
-			
+                                        config('errors.custom_error_message.40018'));			
         }
 
         if (count($userList)>0) {
-            // Set response data
             $apiData = $userList;
             $apiStatus = app('Illuminate\Http\Response')->status();
             $apiMessage = config('messages.success_message.MESSAGE_USER_LIST_SUCCESS');
-            return Helpers::response($apiData, $apiStatus, $apiMessage);
+            return Helpers::response($apiStatus, $apiMessage, $apiData);
         } else {
-            // Set response data
             $apiStatus = app('Illuminate\Http\Response')->status();
             $apiMessage = config('messages.success_message.MESSAGE_NO_DATA_FOUND');
-
-            return Helpers::response('', $apiStatus, $apiMessage);
+            return Helpers::response($apiStatus, $apiMessage);
         }
     }
 
@@ -70,8 +66,7 @@ class UserController extends Controller
     public function store(Request $request)
     {
         // Server side validataions
-        $validator = Validator::make($request->toArray(), [
-            "first_name" => "required|max:16",
+        $validator = Validator::make($request->toArray(), ["first_name" => "required|max:16",
             "last_name" => "required|max:16",
             "email" => "required|email|unique:user,email,NULL,user_id,deleted_at,NULL",
             "password" => "required",
@@ -93,7 +88,6 @@ class UserController extends Controller
         }
 
         try {
-
             // Create new user
             $user = User::create($request->toArray());
 
@@ -101,8 +95,7 @@ class UserController extends Controller
             $apiData = ['user_id' => $user->user_id];
             $apiStatus = app('Illuminate\Http\Response')->status();
             $apiMessage = config('messages.success_message.MESSAGE_USER_CREATE_SUCCESS');    
-            return Helpers::response($apiData, $apiStatus, $apiMessage);
-
+            return Helpers::response($apiStatus, $apiMessage, $apiData);
         } catch (\Exception $e) {
 
             // Error for duplicate user name, trying to store in database.
@@ -111,12 +104,12 @@ class UserController extends Controller
 										config('errors.status_type.HTTP_STATUS_TYPE_422'), 
 										config('errors.custom_error_code.ERROR_20002'), 
 										config('errors.custom_error_message.20002'));
-				
-            } else { // Any other error occured when trying to insert data into database for tenant.
+            } else { 
+				// Any other error occured when trying to insert data into database for tenant.
                 return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_422'), 
-										config('errors.status_type.HTTP_STATUS_TYPE_422'), 
-										config('errors.custom_error_code.ERROR_20004'), 
-										config('errors.custom_error_message.20004'));
+											config('errors.status_type.HTTP_STATUS_TYPE_422'), 
+											config('errors.custom_error_code.ERROR_20004'), 
+											config('errors.custom_error_message.20004'));
             }
         }
     }
@@ -157,12 +150,11 @@ class UserController extends Controller
             $user->delete();
 
             // Set response data
-            $apiStatus = 200;            
+            $apiStatus = app('Illuminate\Http\Response')->status();            
             $apiMessage = config('messages.success_message.MESSAGE_USER_DELETE_SUCCESS');
-            return Helpers::response('', $apiStatus, $apiMessage);
-
+            return Helpers::response($apiStatus, $apiMessage);
+			
         } catch(\Exception $e){
-            
             return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_403'), 
 										config('errors.status_type.HTTP_STATUS_TYPE_403'), 
 										config('errors.custom_error_code.ERROR_20006'), 

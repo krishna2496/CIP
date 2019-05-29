@@ -44,6 +44,7 @@ return [
 		'ERROR_40014' => '40014',
 		'ERROR_40016' => '40016',
 		'ERROR_40018' => '40018',
+		'ERROR_40020' => '40020',
 		
 		// Error codes from 2000-
 		'ERROR_20002' => '20002',
@@ -53,7 +54,12 @@ return [
 		'ERROR_20010' => '20010',
 		'ERROR_20014' => '20014',
 		'ERROR_20016' => '20016',
+		'ERROR_20018' => '20018',
 		'ERROR_21000' => '21000',
+
+		// Error codes from 1000-
+		'ERROR_10006' => '10006',
+		
 	],
 	
 	/**
@@ -78,6 +84,7 @@ return [
 		'40014' => 'Provided token is expired',
 		'40016' => 'An error while decoding token',
 		'40018' => 'Database operational error',
+		'40020' => 'Sorry, you cannot add more than '.config('constants.SLIDER_LIMIT').' sliders!',
 	
 		// Error codes from 2000- Tenant Admin
 		'20002' => 'This email address is already taken, Please try with different email address',
@@ -88,7 +95,10 @@ return [
 		'20014' => 'Unauthorised access',
 		'20016' => 'Databse not found',
 		'21000' => 'Error while creating database connection',
+		'20018' => 'Invalid input data',
 
+		// Error codes from 1000-
+		'10006' => 'Database operational error',
 	]
 	
 ];
