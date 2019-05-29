@@ -37,6 +37,9 @@ return [
 		'ERROR_41000' => '41000',
 		'ERROR_40009' => '40009',
 		'ERROR_40010' => '40010',
+		'ERROR_40011' => '40011',
+		'ERROR_40012' => '40012',
+		'ERROR_40013' => '40013',
 		
 		// Error codes from 2000-
 		'ERROR_20002' => '20002',
@@ -61,7 +64,10 @@ return [
 		'41000' => 'Unknown database connection request for this domain',
 		'40009' => 'Domain name is required',
 		'40010' => 'Email address is required',
-	
+		'40011' => 'Invalid reset password token or email address',
+		'40012' => 'Reset password link is expired or invalid',
+		
+		
 		// Error codes from 2000-
 		'20002' => 'This email address is already taken, Please try with different email address',
 		'20004' => 'Error while inserting data to database',
