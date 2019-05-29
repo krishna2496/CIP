@@ -47,17 +47,13 @@ class AuthController extends ApiResponseController {
             'iss' => "lumen-jwt",       // Issuer of the token
             'sub' => $user->id,         // Subject of the token
             'iat' => time(),            // Time when JWT was issued. 
-            'exp' => time() + 20,  // Expiration time
+            'exp' => time() + 60 * 60,  // Expiration time
             'fqdn' => $this->request->fqdn
         ];        
 
         // As you can see we are passing `JWT_SECRET` as the second parameter that will 
         // be used to decode the token in the future.
         return JWT::encode($payload, env('JWT_SECRET'));
-    }
-
-    public function checkToken(Request $request){
-            dd($request->toArray());
     }
 
     /**
