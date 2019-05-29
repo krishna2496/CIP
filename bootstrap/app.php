@@ -80,6 +80,7 @@ $app->configure('mail'); //SMTP and PHP mail
 $app->configure('constants'); //constant file config
 $app->configure('errors'); //Error Constants config
 $app->configure('cors');  //cross origin support
+$app->configure('messages');  //Messages constants file
 
 /**
  * mailer package registration
