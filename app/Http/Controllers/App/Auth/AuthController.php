@@ -16,6 +16,7 @@ use App\Helpers\Helpers;
 use DB;
 use App\PasswordReset;
 use Carbon\Carbon;
+use App\Http\Controllers\App\Tenant\TenantOptionController;
 
 class AuthController extends Controller {
 
@@ -100,7 +101,7 @@ class AuthController extends Controller {
         $data["token"] = $this->jwt($user);
         $apiData = $data;
         $apiStatus = app('Illuminate\Http\Response')->status();
-        $apiMessage = 'You are successfully logged in';
+        $apiMessage = config('messages.success_message.MESSAGE_USER_LOGIN_SUCCESS');
         return Helpers::response($apiStatus, $apiMessage, $apiData);
     }
     
@@ -112,7 +113,7 @@ class AuthController extends Controller {
      * @return mixed
      */
     public function requestPasswordReset(User $user, Request $request) {
-        
+             
         // Server side validataions
         $validator = Validator::make($request->toArray(), [
                 'email' => 'required|email',
@@ -139,6 +140,11 @@ class AuthController extends Controller {
         $refererUrl = Helpers::getRefererFromRequest($request);
         config(['app.mail_url' => $refererUrl.'/reset-password/']);
 
+        //set tenant logo
+        $tenantOption = new TenantOptionController();
+        $tenantLogo = $tenantOption->getTenantLogo();
+        config(['app.tenant_logo' => $tenantLogo]);
+       
         // Verify email address and send reset password link        
         $response = $this->broker()->sendResetLink(
             $request->only('email')
@@ -153,7 +159,7 @@ class AuthController extends Controller {
         }
 
         $apiStatus = app('Illuminate\Http\Response')->status();
-        $apiMessage = 'Reset Password link is sent to your email account,link will be expire in ' . config('constants.FORGOT_PASSWORD_EXPIRY_TIME') . ' hours';
+        $apiMessage = config('messages.success_message.MESSAGE_PASSWORD_RESET_LINK_SEND_SUCCESS');
         return Helpers::response($apiStatus, $apiMessage);;
     }
 
@@ -212,7 +218,7 @@ class AuthController extends Controller {
         );
       
         $apiStatus = app('Illuminate\Http\Response')->status();
-        $apiMessage = 'Your password has been changed successfully.';
+        $apiMessage = config('messages.success_message.MESSAGE_PASSWORD_CHANGE_SUCCESS');
         return Helpers::response($apiStatus, $apiMessage);
     }
 

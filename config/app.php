@@ -56,6 +56,8 @@ return [
     
     'mail_url' => env('MAIL_URL', ''),
 
+    'tenant_logo' => '',
+
     'asset_url' => env('ASSET_URL', null),
 
     /*
