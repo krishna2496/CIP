@@ -3,13 +3,14 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Input;
-use App\Http\Controllers\ApiResponseController;
+use App\Http\Controllers\Controller;
 use App\Jobs\TenantMigrationJob;
 use App\Tenant;
+use App\Helpers\Helpers;
 use Illuminate\Http\Request;
 use Validator;
 
-class TenantController extends ApiResponseController
+class TenantController extends Controller
 {
     /**
      * Display a listing of the tenants.
@@ -36,26 +37,27 @@ class TenantController extends ApiResponseController
             $tenantList = $tenantQuery->orderBy('tenant_id',$orderType)->paginate(10);
         } catch(\Exception $e) { 
             // Catch database exception
-            $this->errorType  = config('errors.code.10006');
-            $this->apiErrorCode = 10006;
-            $this->apiStatus  = 422;
-            $this->apiMessage = $e->getMessage();
-            return $this->errorResponse();
+            return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_422'), 
+                                        config('errors.status_type.HTTP_STATUS_TYPE_422'), 
+                                        config('errors.custom_error_code.ERROR_10006'), 
+                                        config('errors.custom_error_message.10006'));
         }
         
         if (count($tenantList)>0) {
             // Set response data
-            $this->apiData = $tenantList;
-            $this->apiStatus = app('Illuminate\Http\Response')->status();
-            $this->apiMessage = "Tenant listing successfully";
+            $apiData = $tenantList;
+            $apiStatus = app('Illuminate\Http\Response')->status();
+            $apiMessage = "Tenant listing successfully";
+            // Send API reponse
+            return Helpers::response($apiStatus, $apiMessage, $apiData);
         } else {
             // Set response data                        
-            $this->apiStatus = app('Illuminate\Http\Response')->status();
-            $this->apiMessage = "No data found";
+            $apiStatus = app('Illuminate\Http\Response')->status();
+            $apiMessage = "No data found";
+            // Send API reponse
+            return Helpers::response($apiStatus, $apiMessage);
         }
 
-        // Send API reponse
-        return $this->response();
     }
 
     /**
@@ -76,7 +78,7 @@ class TenantController extends ApiResponseController
         // If request parameter have any error
         if ($validator->fails()) {
 
-            return $this->errorResponse(config('errors.status_code.HTTP_STATUS_422'), 
+            return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_422'), 
 										config('errors.status_type.HTTP_STATUS_TYPE_422'), 
 										config('errors.custom_error_code.ERROR_10001'), 
 										$validator->errors()->first());
@@ -105,14 +107,14 @@ class TenantController extends ApiResponseController
             }
 
             // Set response data
-            $this->apiStatus = app('Illuminate\Http\Response')->status();
-            $this->apiData = ['tenant_id' => $createdTenant->tenant_id];
-            $this->apiMessage =  config('messages.success.MESSAGE_TENANT_CREATED');
+            $apiStatus = app('Illuminate\Http\Response')->status();
+            $apiData = ['tenant_id' => $createdTenant->tenant_id];
+            $apiMessage =  config('messages.success.MESSAGE_TENANT_CREATED');
 
             // Job dispatched to create new tenant's database and migrations
             dispatch(new TenantMigrationJob($createdTenant));
 
-            return $this->response();
+            return Helpers::response($apiStatus, $apiMessage, $apiData);
 
         } catch (\Exception $e) {
 
@@ -121,13 +123,13 @@ class TenantController extends ApiResponseController
 
             // Error for duplicate tenant name, trying to store in database.
             if (isset($e->errorInfo[1]) && $e->errorInfo[1] == 1062) {
-                return $this->errorResponse(config('errors.status_code.HTTP_STATUS_400'), 
+                return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_400'), 
 										config('errors.status_type.HTTP_STATUS_TYPE_400'), 
 										config('errors.custom_error_code.ERROR_10002'), 
 										config('errors.custom_error_message.10002'));
             } else { 
 				// Any other error occured when trying to insert data into database for tenant.
-                return $this->errorResponse(config('errors.status_code.HTTP_STATUS_400'), 
+                return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_400'), 
 										config('errors.status_type.HTTP_STATUS_TYPE_400'), 
 										config('errors.custom_error_code.ERROR_10006'), 
 										config('errors.custom_error_message.10006'));
@@ -149,11 +151,11 @@ class TenantController extends ApiResponseController
 						->find($tenant_id);
 
         if ($tenantDetail) {
-            $this->apiStatus = 200;
-            $this->apiData = $tenantDetail;
-			return $this->response();
+            $apiStatus = app('Illuminate\Http\Response')->status();
+            $apiData = $tenantDetail;
+			return Helpers::response($apiStatus, '', $apiData);
         } else {
-			return $this->errorResponse(config('errors.status_code.HTTP_STATUS_403'), 
+			return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_403'), 
 										config('errors.status_type.HTTP_STATUS_TYPE_403'), 
 										config('errors.custom_error_code.ERROR_10004'), 
 										config('errors.custom_error_message.10004'));
@@ -182,14 +184,14 @@ class TenantController extends ApiResponseController
                     $tenant->options()->update($tenantOptionData);
                 }
             }
-			$this->apiStatus = app('Illuminate\Http\Response')->status();
-            $this->apiData = ['tenant_id' => $id];
-			$this->apiMessage = config('messages.success.MESSAGE_TENANT_UPDATED');
+			$apiStatus = app('Illuminate\Http\Response')->status();
+            $apiData = ['tenant_id' => $id];
+			$apiMessage = config('messages.success.MESSAGE_TENANT_UPDATED');
 			
-			return $this->response();
+			return Helpers::response($apiStatus, $apiMessage, $apiData);
 		}
 		catch(\Exception $e) {
-			return $this->errorResponse(config('errors.status_code.HTTP_STATUS_404'), 
+			return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_404'), 
 										config('errors.status_type.HTTP_STATUS_TYPE_404'), 
 										config('errors.custom_error_code.ERROR_10004'), 
 										config('errors.custom_error_message.10004'));
@@ -209,14 +211,14 @@ class TenantController extends ApiResponseController
             $tenant->delete();
 
             // Set response data
-            $this->apiStatus = app('Illuminate\Http\Response')->status();            
-            $this->apiMessage = config('messages.success.MESSAGE_TENANT_DELETED');
+            $apiStatus = app('Illuminate\Http\Response')->status();            
+            $apiMessage = config('messages.success.MESSAGE_TENANT_DELETED');
 
-            return $this->response();
+            return Helpers::response($apiStatus, $apiMessage);
 
         } catch(\Exception $e){
             
-            return $this->errorResponse(config('errors.status_code.HTTP_STATUS_403'), 
+            return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_403'), 
                                         config('errors.status_type.HTTP_STATUS_TYPE_403'), 
                                         config('errors.custom_error_code.ERROR_10004'), 
                                         config('errors.custom_error_message.10004'));
