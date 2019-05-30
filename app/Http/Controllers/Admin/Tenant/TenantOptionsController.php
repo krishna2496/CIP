@@ -37,7 +37,7 @@ class TenantOptionsController extends Controller
         if ($validator->fails()) {
             return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_422'),
                                         config('errors.status_type.HTTP_STATUS_TYPE_422'),
-                                        config('errors.custom_error_code.ERROR_20016'),
+                                        config('errors.custom_error_code.ERROR_20018'),
                                         $validator->errors()->first());
         }        
 
@@ -50,8 +50,8 @@ class TenantOptionsController extends Controller
                 // Set response data
                 return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_403'), 
                                         config('errors.status_type.HTTP_STATUS_TYPE_403'), 
-                                        config('errors.custom_error_code.ERROR_40014'), 
-                                        config('errors.custom_error_message.40014'));
+                                        config('errors.custom_error_code.ERROR_40020'), 
+                                        config('errors.custom_error_message.40020'));
             } else {                
                 // Check file is available or not
                 if ($request->hasFile('slider_image')) {
@@ -84,7 +84,7 @@ class TenantOptionsController extends Controller
                 // Set response data
                 $apiStatus = app('Illuminate\Http\Response')->status();
                 $apiMessage = config('messages.success_message.MESSAGE_SLIDER_ADD_SUCCESS');
-                return Helpers::response('', $apiStatus, $apiMessage);
+                return Helpers::response($apiStatus, $apiMessage);
             }
 
         } catch (\Exception $e) {

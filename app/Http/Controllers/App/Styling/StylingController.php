@@ -1,12 +1,14 @@
 <?php
 
 namespace App\Http\Controllers\App\Styling;
-use App\Http\Controllers\ApiResponseController;
+
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Helpers\Helpers;
 use App\TenantOption;
 use DB;
 
-class StylingController extends ApiResponseController
+class StylingController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -38,9 +40,9 @@ class StylingController extends ApiResponseController
 			}
         }
 
-        $this->apiData = $responseData;
-        $this->apiStatus = app('Illuminate\Http\Response')->status();
-        return $this->response();
+        $apiData = $responseData;
+        $apiStatus = app('Illuminate\Http\Response')->status();
+        return Helpers::response($apiStatus, '', $apiData);
 
     }
 

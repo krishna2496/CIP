@@ -4,10 +4,10 @@ namespace App\Http\Controllers\App\User;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Http\Controllers\ApiResponseController;
+
 use App\User;
 
-class UserController extends ApiResponseController
+class UserController extends Controller
 {
     /**
      * Display a listing of the resource.

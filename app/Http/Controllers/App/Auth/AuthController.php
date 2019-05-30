@@ -6,6 +6,7 @@ use Validator;
 use App\User;
 use Firebase\JWT\JWT;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 use Firebase\JWT\ExpiredException;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Auth\Passwords\PasswordBrokerManager;
@@ -100,7 +101,7 @@ class AuthController extends Controller {
         $apiData = $data;
         $apiStatus = app('Illuminate\Http\Response')->status();
         $apiMessage = 'You are successfully logged in';
-        return $this->response($apiData, $apiStatus, $apiMessage);
+        return Helpers::response($apiStatus, $apiMessage, $apiData);
     }
     
     /**
@@ -153,7 +154,7 @@ class AuthController extends Controller {
 
         $apiStatus = app('Illuminate\Http\Response')->status();
         $apiMessage = 'Reset Password link is sent to your email account,link will expire in ' . config('constants.FORGOT_PASSWORD_EXPIRY_TIME') . ' hours';
-        return $this->response('', $apiStatus, $apiMessage);
+        return $this->response($apiStatus, $apiMessage);
     }
 
     /**
