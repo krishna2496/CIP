@@ -125,7 +125,7 @@ export default {
     this.resetPassword.email = this.$route.query.email  
   
     // set language list and default language fetching from local storage
-    this.langList = JSON.parse(localStorage.getItem('listOfLanguage'))
+    this.langList = (localStorage.getItem('listOfLanguage') !== null) ? JSON.parse(localStorage.getItem('listOfLanguage')) : []
     this.defaut_lang = localStorage.getItem('defaultLanguage') 
   
   },

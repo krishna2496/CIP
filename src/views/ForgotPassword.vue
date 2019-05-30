@@ -108,7 +108,7 @@ export default {
 
 	created() {
 		// Set language list and default language fetch from Local Storage
-		this.langList = JSON.parse(localStorage.getItem('listOfLanguage'))
+   	this.langList = (localStorage.getItem('listOfLanguage') !== null) ? JSON.parse(localStorage.getItem('listOfLanguage')) : []
 		this.defaut_lang = localStorage.getItem('defaultLanguage') 
 	},
 };

@@ -144,18 +144,19 @@
                             if(listOfObjects){
                                 localStorage.setItem('listOfLanguage',JSON.stringify(listOfObjects))
                                 localStorage.setItem('defaultLanguage',listOfObjects[0])
+                                this.langList = JSON.parse(localStorage.getItem('listOfLanguage'))
+                                this.defaut_lang = localStorage.getItem('defaultLanguage') 
                             }else{
                                 localStorage.setItem('listOfLanguage',this.langList)
                                 localStorage.setItem('defaultLanguage',this.defaut_lang)
                             }
                             
                         }else{
+                            localStorage.removeItem('listOfLanguage');
+                            localStorage.removeItem('defaultLanguage');
                             localStorage.setItem('listOfLanguage',JSON.stringify(this.langList))
                             localStorage.setItem('defaultLanguage',this.defaut_lang)
                         }
-
-                        this.langList = JSON.parse(localStorage.getItem('listOfLanguage'))
-                        this.defaut_lang = localStorage.getItem('defaultLanguage') 
 
                     })
                     .catch(error => {
