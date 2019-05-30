@@ -23,8 +23,8 @@ class UserController extends Controller
         $orderType = Input::get('order','asc');
 
         $userQuery = User::select('user_id','first_name','last_name','email')
-        ->whereNull('deleted_at')
-        ->whereStatus('1');
+					->whereNull('deleted_at')
+					->whereStatus('1');
 
         // Check if search parameter passed in URL then search parameter will search in name field of tenant table.
         if (!empty($searchString)) {
