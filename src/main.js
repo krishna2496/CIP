@@ -9,13 +9,29 @@ import 'simplebar/dist/simplebar.css'
 import axios from "axios";
 import VueAxios from "vue-axios";
 import Vuelidate from 'vuelidate'
+import interceptorsSetup from './interceptors'
 
 Vue.use(Vuelidate,VueAxios,axios)
 
 Vue.config.productionTip = false
 
-Vue.use(VueAxios, axios, BootstrapVue);
 Vue.use(BootstrapVue)
+
+// call vue axios interceptors
+interceptorsSetup();
+
+// check requirment of authentication for path
+router.beforeEach((to, from, next) => {
+	if(to.meta.requiresAuth && !store.state.isLoggedIn){
+		next({ name: 'login' })
+        return
+	}
+	if((to.path === '/' || to.path === '/forgot-password' || to.path === '/reset-password') && store.state.isLoggedIn) {
+		next({ name: 'home' })
+        return
+    }
+    next();
+});
 
 new Vue({
 	router,
@@ -25,3 +41,4 @@ new Vue({
 	SimpleBar,
 	render: h => h(App)
 }).$mount('#app')
+
