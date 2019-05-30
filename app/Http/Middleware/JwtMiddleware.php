@@ -29,7 +29,7 @@ class JwtMiddleware
         }
         try {
             $credentials = JWT::decode($token, env('JWT_SECRET'), ['HS256']);
-        } catch(ExpiredException $e) {
+        } catch(\Firebase\JWT\ExpiredException $e) {
             return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_400'), 
                                         config('errors.status_type.HTTP_STATUS_TYPE_400'), 
                                         config('errors.custom_error_code.ERROR_40014'), 
