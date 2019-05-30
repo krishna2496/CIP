@@ -20,7 +20,7 @@
                 <b-form class="signin-form">
                     <b-form-group>
                         <label for="">Email Address</label>
-                        <b-form-input id="" type="email" v-model="login.email" placeholder="Enter email" :class="{ 'is-invalid': $v.login.email.$error }"></b-form-input>
+                        <b-form-input id="" type="email" v-model="login.email" placeholder="Enter email" :class="{ 'is-invalid': $v.login.email.$error }" ref='email' autofocus></b-form-input>
                         <div v-if="submitted && !$v.login.email.required" class="invalid-feedback">Email address is required</div>
                         <div v-if="submitted && !$v.login.email.email" class="invalid-feedback">Enter valid email address</div>
                     </b-form-group>
@@ -121,11 +121,11 @@
         },
 
         mounted() {
-
+            //Autofocus
+            this.$refs.email.focus();
         },
 
         created() {
-
             //database connection and fetching tenant options api
             axios.get(process.env.VUE_APP_API_ENDPOINT+"/connect")
                     .then((response) => {
@@ -141,25 +141,28 @@
                             if(listOfObjects){
                                 localStorage.setItem('listOfLanguage',JSON.stringify(listOfObjects))
                                 localStorage.setItem('defaultLanguage',listOfObjects[0])
+                                this.langList = JSON.parse(localStorage.getItem('listOfLanguage'))
+                                this.defaut_lang = localStorage.getItem('defaultLanguage') 
                             }else{
                                 localStorage.setItem('listOfLanguage',this.langList)
                                 localStorage.setItem('defaultLanguage',this.defaut_lang)
                             }
                             
                         }else{
+                            localStorage.removeItem('listOfLanguage');
+                            localStorage.removeItem('defaultLanguage');
                             localStorage.setItem('listOfLanguage',JSON.stringify(this.langList))
                             localStorage.setItem('defaultLanguage',this.defaut_lang)
                         }
-
-                        this.langList = JSON.parse(localStorage.getItem('listOfLanguage'))
-                        this.defaut_lang = localStorage.getItem('defaultLanguage') 
 
                     })
                     .catch(error => {
                         console.log(error)
                     })
+        },
 
-
+        updated(){
+            
         }
     };
 

@@ -1,48 +1,45 @@
 <template>
-  <div class="signin-page-wrapper">
+    <div class="signin-page-wrapper">
     <SigninSlider/>
-    <div class="signin-form-wrapper">
-      <div class="lang-drodown-wrap">
-         <customDropdown :optionList="langList" :default_text="defaut_lang" />
-      </div>
-      <div class="signin-form-block">
+        <div class="signin-form-wrapper">
+            <div class="lang-drodown-wrap">
+             <customDropdown :optionList="langList" :default_text="defaut_lang" />
+             </div>
+            <div class="signin-form-block">
+            <div class="form-title-block">
+                <h1>New Password</h1>
+                <p>Please enter a new password in the fields below.</p>
+            </div>
+            <!-- success or error msg -->
+            <b-alert show :variant="classVariant" dismissible v-model="showDismissibleAlert"> {{ message }}</b-alert>
 
-        <div class="form-title-block">
-          <h1>New Password</h1>
-          <p>Please enter a new password in the fields below.</p>
-        </div>
+            <!-- reset password form start -->
+            <b-form class="signin-form">
 
-         <!-- success or error msg -->
-        <b-alert show :variant="classVariant" dismissible v-model="showDismissibleAlert"> {{ message }}</b-alert>
+            <b-form-group :state="false">
+              <label for="">New Password</label>
+              <b-form-input id="" type="password" v-model="resetPassword.password" :class="{ 'is-invalid': $v.resetPassword.password.$error }" value="Password" placeholder="Enter Password" autofocus></b-form-input>
+              <div v-if="submitted && !$v.resetPassword.password.required" class="invalid-feedback">Password is required</div>
+              <div v-if="submitted && !$v.resetPassword.password.minLength" class="invalid-feedback">Password lenght should be minimum 8 character</div>
+            </b-form-group>
 
-        <!-- reset password form start -->
-        <b-form class="signin-form">
+            <b-form-group>
+              <label for="">Confirm New Password</label>
+              <b-form-input id="" type="password" v-model="resetPassword.confirmPassword" :class="{ 'is-invalid': $v.resetPassword.confirmPassword.$error }" placeholder="Enter Password" value="Password"></b-form-input>
+              <div v-if="submitted && !$v.resetPassword.confirmPassword.required" class="invalid-feedback">Confirm  Password is required</div>
+              <div v-if="submitted && !$v.resetPassword.confirmPassword.minLength" class="invalid-feedback">Confirm Password lenght should be minimum 8 character</div>
+              <div v-if="submitted && $v.resetPassword.confirmPassword.required &&  resetPassword.confirmPassword.minLength  && !$v.resetPassword.confirmPassword.sameAsPassword" class="invalid-feedback">Passwords must be identical.</div>
+            </b-form-group>
 
-          <b-form-group :state="false">
-            <label for="">New Password</label>
-            <b-form-input id="" type="password" v-model="resetPassword.password" :class="{ 'is-invalid': $v.resetPassword.password.$error }" value="Password" placeholder="Enter Password"></b-form-input>
-            <div v-if="submitted && !$v.resetPassword.password.required" class="invalid-feedback">Password is required</div>
-            <div v-if="submitted && !$v.resetPassword.password.minLength" class="invalid-feedback">Password lenght should be minimum 8 character</div>
-          </b-form-group>
-
-          <b-form-group>
-            <label for="">Confirm New Password</label>
-            <b-form-input id="" type="password" v-model="resetPassword.confirmPassword" :class="{ 'is-invalid': $v.resetPassword.confirmPassword.$error }" placeholder="Enter Password" value="Password"></b-form-input>
-            <div v-if="submitted && !$v.resetPassword.confirmPassword.required" class="invalid-feedback">Confirm  Password is required</div>
-            <div v-if="submitted && !$v.resetPassword.confirmPassword.minLength" class="invalid-feedback">Confirm Password lenght should be minimum 8 character</div>
-            <div v-if="submitted && !$v.resetPassword.confirmPassword.sameAsPassword" class="invalid-feedback">Passwords must be identical.</div>
-          </b-form-group>
-
-          <b-button type="button" @click="handleSubmit" class="btn btn-bordersecondary" title="Change Password">Change Password</b-button>
-        </b-form>
+            <b-button type="button" @click="handleSubmit" class="btn btn-bordersecondary" title="Change Password">Change Password</b-button>
+            </b-form>
 
         <div class="form-link">
-        <b-link to="/" title="Login">Login</b-link>
-
-  </div>
-  </div>
-  <SigninFooter/>
+            <b-link to="/" title="Login">Login</b-link>
         </div>
+        </div>
+    <SigninFooter/>
+    </div>
     </div>
 </template>
 <script>
@@ -102,7 +99,12 @@ export default {
                               this.showDismissibleAlert = true
                               this.classVariant = 'success'
                               //set success msg
-                              this.message = response.data.message   
+                              this.message = response.data.message 
+                              //Reset to blank
+                              this.submitted = false;
+                              this.resetPassword.password = ''
+                              this.resetPassword.confirmPassword = ''
+                              this.$v.$reset();  
                           })
                           .catch(error => {
                               if(error.response.data.errors[0].message){
@@ -117,6 +119,10 @@ export default {
               },
     },
 
+  mounted() {
+   
+  }, 
+
   created() {
     //get token and email from url
     let tokenData = this.$route.path.split('/');
@@ -124,7 +130,7 @@ export default {
     this.resetPassword.email = this.$route.query.email  
   
     // set language list and default language fetching from local storage
-    this.langList = JSON.parse(localStorage.getItem('listOfLanguage'))
+    this.langList = (localStorage.getItem('listOfLanguage') !== null) ? JSON.parse(localStorage.getItem('listOfLanguage')) : []
     this.defaut_lang = localStorage.getItem('defaultLanguage') 
   
   },

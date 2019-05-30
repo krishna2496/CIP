@@ -8,12 +8,17 @@
   <link rel="icon" href="<%= BASE_URL %>favicon.ico">
   <title>Optimy</title>
   <script src="//polyfill.io/v3/polyfill.min.js?features=es2015%2CMutationObserver" crossorigin="anonymous"></script>
+    <style>
+  .loader-enable{overflow: hidden;}
+  .loader-wrap{display: none; }
+  .loader-enable .loader-wrap{display: flex;}
+  </style>
 </head>
 
 <body>
-  <div class="page-loader">
-        <img src="<%= BASE_URL %>images/spin-loader.gif">
-  </div>
+  <div class="loader-wrap">
+      <div class="loader"></div>
+    </div>
   <noscript>
     <strong>We're sorry but ci_platform doesn't work properly without JavaScript enabled. Please enable it to
       continue.</strong>
