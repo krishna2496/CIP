@@ -22,8 +22,20 @@ class TenantConnectionMiddleware
         $token = $request->get('token');
 
         if ($token) {
-            $credentials = JWT::decode($token, env('JWT_SECRET'), ['HS256']);
-            $domain = $credentials->fqdn;
+           try {
+                 $credentials = JWT::decode($token, env('JWT_SECRET'), ['HS256']);
+                 $domain = $credentials->fqdn;
+            } catch(\Firebase\JWT\ExpiredException $e) {
+                return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_401'), 
+                                            config('errors.status_type.HTTP_STATUS_TYPE_401'), 
+                                            config('errors.custom_error_code.ERROR_40014'), 
+                                            config('errors.custom_error_message.40014'));
+            } catch(Exception $e) {
+                return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_400'), 
+                                            config('errors.status_type.HTTP_STATUS_TYPE_400'), 
+                                            config('errors.custom_error_code.ERROR_40016'), 
+                                            config('errors.custom_error_message.40016'));
+            }
         } else {
             
             // Uncomment below line while testing in apis with front side.

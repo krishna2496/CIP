@@ -32,11 +32,10 @@ $router->post('login', ['middleware' => 'tenant.connection', 'uses' => 'App\Auth
 $router->post('request_password_reset', ['middleware' => 'tenant.connection','uses' => 'App\Auth\AuthController@requestPasswordReset']);
 
 /* Password reset routing */
-$router->post('/reset_password/{token}', ['as' => 'password.reset', 'uses' => 'App\Auth\ResetPasswordController@reset']);
+$router->post('/reset-password/{token}', ['as' => 'password.reset', 'uses' => 'App\Auth\AuthController@reset_password']);
 
-/* Get custom styling data for tenant specific */
-$router->post('/custom_data', ['uses' => 'CustomController@customData']);
-
+/* reset password  */
+$router->put('/password_reset', ['middleware' => 'tenant.connection','uses' => 'App\Auth\AuthController@passwordReset']);
 /*
 |
 |--------------------------------------------------------------------------

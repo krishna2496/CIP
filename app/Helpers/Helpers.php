@@ -19,6 +19,7 @@ class Helpers
         } catch (\Exception $e) {
         	return $e->getMessage();
         }
+
     }
 
     /**
@@ -57,6 +58,30 @@ class Helpers
     /**
      * Prepare error response
      * 
+     * @param int $status_code
+     * @param string $status_type
+     * @param int $custom_error_code
+     * @param string $custom_error_message
+     * @return mixed
+     */ 
+    public static function getRefererFromRequest(Request $request)
+    {
+    	try{
+    		if(isset($request->headers->all()['referer'])){    	
+        		$parseUrl = parse_url($request->headers->all()['referer'][0]);
+        		return $parseUrl['scheme'].'://'.$parseUrl['host'].':'.$parseUrl['port'];
+        	}else{
+        		return env('APP_MAIL_BASE_URL');
+        	}
+        } catch (\Exception $e) {
+        	return $e->getMessage();
+        }
+    }   
+    
+
+    /**
+     * Prepare error response
+     * 
 	 * @param int $status_code
      * @param string $status_type
      * @param int $custom_error_code
@@ -74,4 +99,5 @@ class Helpers
        
         return response()->json($data, $status_code, [], JSON_NUMERIC_CHECK);
     }
+
 }

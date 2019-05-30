@@ -19,8 +19,9 @@
 {{-- Action Button --}}
 @isset($actionText)
 <?php
-$token =explode('/',$actionUrl);
+$token =explode('/',urldecode($actionUrl));
 $token = end($token);
+
 $actionUrl = config('app.mail_url').$token;
 
     switch ($level) {

@@ -14,6 +14,8 @@ use Illuminate\Support\Facades\Password;
 use App\Http\Controllers\Config;
 use App\Helpers\Helpers;
 use DB;
+use App\PasswordReset;
+use Carbon\Carbon;
 
 class AuthController extends Controller {
 
@@ -46,7 +48,7 @@ class AuthController extends Controller {
             'sub' => $user->id,         // Subject of the token
             'iat' => time(),            // Time when JWT was issued. 
             'exp' => time() + 60 * 60,  // Expiration time
-            'fqdn' => Helpers::getSubDomainFromRequest($this->request)
+            'fqdn' => 'tatva'
         ];        
 
         // As you can see we are passing `JWT_SECRET` as the second parameter that will 
@@ -61,7 +63,7 @@ class AuthController extends Controller {
      * @param \Illuminate\Http\Request $request
      * @return mixed
      */
-    public function authenticate(User $user, Request $request) {	        
+    public function authenticate(User $user, Request $request) {            
 
         // Server side validataions
         $validator = Validator::make($request->toArray(), [
@@ -71,9 +73,9 @@ class AuthController extends Controller {
 
         if ($validator->fails()) {
             return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_422'), 
-										config('errors.status_type.HTTP_STATUS_TYPE_422'), 
-										config('errors.custom_error_code.ERROR_40001'), 
-										$validator->errors()->first());
+                                        config('errors.status_type.HTTP_STATUS_TYPE_422'), 
+                                        config('errors.custom_error_code.ERROR_40001'), 
+                                        $validator->errors()->first());
         }
         
         // Fetch user by email address
@@ -81,17 +83,17 @@ class AuthController extends Controller {
 
         if (!$user) {
             return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_403'), 
-										config('errors.status_type.HTTP_STATUS_TYPE_403'), 
-										config('errors.custom_error_code.ERROR_40002'), 
-										config('errors.custom_error_message.40002'));
+                                        config('errors.status_type.HTTP_STATUS_TYPE_403'), 
+                                        config('errors.custom_error_code.ERROR_40002'), 
+                                        config('errors.custom_error_message.40002'));
         }
         
         // Verify user's password
         if (!Hash::check($this->request->input('password'), $user->password)) {
             return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_422'), 
-										config('errors.status_type.HTTP_STATUS_TYPE_422'), 
-										config('errors.custom_error_code.ERROR_40004'), 
-										config('errors.custom_error_message.40004'));
+                                        config('errors.status_type.HTTP_STATUS_TYPE_422'), 
+                                        config('errors.custom_error_code.ERROR_40004'), 
+                                        config('errors.custom_error_message.40004'));
         }
         
         // Generate JWT token
@@ -118,9 +120,9 @@ class AuthController extends Controller {
         
         if ($validator->fails()) {
             return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_422'), 
-										config('errors.status_type.HTTP_STATUS_TYPE_422'), 
-										config('errors.custom_error_code.ERROR_40010'), 
-										$validator->errors()->first());
+                                        config('errors.status_type.HTTP_STATUS_TYPE_422'), 
+                                        config('errors.custom_error_code.ERROR_40010'), 
+                                        $validator->errors()->first());
         }
 
         // Fetch user by email address
@@ -128,14 +130,15 @@ class AuthController extends Controller {
 
         if (!$user) {
             return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_403'), 
-										config('errors.status_type.HTTP_STATUS_TYPE_403'), 
-										config('errors.custom_error_code.ERROR_40002'), 
-										config('errors.custom_error_message.40002'));
+                                        config('errors.status_type.HTTP_STATUS_TYPE_403'), 
+                                        config('errors.custom_error_code.ERROR_40002'), 
+                                        config('errors.custom_error_message.40002'));
         }
         
-        //forgot password link url
-        config(['app.mail_url' => env('APP_HTTP').$request->get('fqdn').env('APP_BASE_URL').'/reset_password/']);
-        
+        //get referer url using helper 
+        $refererUrl = Helpers::getRefererFromRequest($request);
+        config(['app.mail_url' => $refererUrl.'/reset-password/']);
+
         // Verify email address and send reset password link        
         $response = $this->broker()->sendResetLink(
             $request->only('email')
@@ -144,14 +147,85 @@ class AuthController extends Controller {
         // If reset password link didn't sent
         if (!$response == Password::RESET_LINK_SENT) {
             return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_500'), 
-										config('errors.status_type.HTTP_STATUS_TYPE_500'), 
-										config('errors.custom_error_code.ERROR_40006'), 
-										config('errors.custom_error_message.40006'));
+                                        config('errors.status_type.HTTP_STATUS_TYPE_500'), 
+                                        config('errors.custom_error_code.ERROR_40006'), 
+                                        config('errors.custom_error_message.40006'));
         }
 
         $apiStatus = app('Illuminate\Http\Response')->status();
-        $apiMessage = 'Reset Password link is sent to your email account,link will expire in ' . config('constants.FORGOT_PASSWORD_EXPIRY_TIME') . ' hours';
-        return $this->response($apiStatus, $apiMessage);
+        $apiMessage = 'Reset Password link is sent to your email account,link will be expire in ' . config('constants.FORGOT_PASSWORD_EXPIRY_TIME') . ' hours';
+        return Helpers::response($apiStatus, $apiMessage);;
+    }
+
+    /**
+     * reset_password_link_expiry - check is reset password link is expired or not
+     *  
+     * @param \App\User $user
+     * @param \Illuminate\Http\Request $request
+     * @return mixed
+     */
+    public function passwordReset(Request $request) {
+       
+        $request->merge(['token'=>$request->reset_password_token]);
+      
+        // Server side validataions
+        $validator = Validator::make($request->toArray(), [
+                'email' => 'required|email',
+                'token' => 'required',
+                'password' => 'required|min:8',
+                'password_confirmation' => 'required|min:8|same:password',
+        ]);
+        
+        if ($validator->fails()) {
+            return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_422'), 
+                                        config('errors.status_type.HTTP_STATUS_TYPE_422'), 
+                                        config('errors.custom_error_code.ERROR_40011'), 
+                                        $validator->errors()->first());
+        }
+ 
+        //get record of user by checking password expiry time
+        $record = PasswordReset::where('email',$request->get('email'))->where('created_at','>',Carbon::now()->subHours(config('constants.FORGOT_PASSWORD_EXPIRY_TIME')))->first();
+       
+        //if record not found
+        if(!$record){
+            return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_422'), 
+                                        config('errors.status_type.HTTP_STATUS_TYPE_422'), 
+                                        config('errors.custom_error_code.ERROR_40013'), 
+                                        config('errors.custom_error_message.40013'));
+        }
+
+        if(!Hash::check($request->get('token'), $record->token)){
+            //invalid hash
+            return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_401'), 
+                                        config('errors.status_type.HTTP_STATUS_TYPE_401'), 
+                                        config('errors.custom_error_code.ERROR_40013'), 
+                                        config('errors.custom_error_message.40013'));
+        }
+        
+         // Reset the password
+        $response = $this->broker()->reset(
+        $this->credentials($request),
+            function ($user, $password) {
+                $user->password = $password;
+                $user->save();
+            }
+        );
+      
+        $apiStatus = app('Illuminate\Http\Response')->status();
+        $apiMessage = 'Your password has been changed successfully.';
+        return Helpers::response($apiStatus, $apiMessage);
+    }
+
+    /**
+     * Get the password reset credentials from the request.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return array
+     */
+    protected function credentials(Request $request)
+    {
+      return $request->only('email', 'password', 'password_confirmation', 'token');
+       
     }
 
     /**
@@ -163,5 +237,4 @@ class AuthController extends Controller {
         $passwordBrokerManager = new PasswordBrokerManager(app());
         return $passwordBrokerManager->broker();
     }
-
 }

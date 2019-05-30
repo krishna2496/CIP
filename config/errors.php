@@ -39,6 +39,9 @@ return [
 		'ERROR_41000' => '41000',
 		'ERROR_40009' => '40009',
 		'ERROR_40010' => '40010',
+		'ERROR_40011' => '40011',
+		'ERROR_40012' => '40012',
+		'ERROR_40013' => '40013',
 		'ERROR_40012' => '40012',
 		'ERROR_40014' => '40014',
 		'ERROR_40016' => '40016',
@@ -74,7 +77,12 @@ return [
 		'41000' => 'Unknown database connection request for this domain',
 		'40009' => 'Domain name is required',
 		'40010' => 'Email address is required',
-		'40012' => 'Token not provided',
+		'40011' => 'Invalid reset password token or email address',
+		'40013' => 'Reset password link is expired or invalid',
+		
+		
+		// Error codes from 2000-
+                '40012' => 'Token not provided',
 		'40014' => 'Provided token is expired',
 		'40016' => 'An error while decoding token',
 		'40018' => 'Database operational error',
