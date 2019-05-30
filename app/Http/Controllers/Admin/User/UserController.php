@@ -83,7 +83,7 @@ class UserController extends Controller
         if ($validator->fails()) {
             return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_422'),
 										config('errors.status_type.HTTP_STATUS_TYPE_422'),
-										config('errors.custom_error_code.ERROR_20010'),
+										config('errors.custom_error_code.ERROR_20022'),
 										$validator->errors()->first());
         }
 

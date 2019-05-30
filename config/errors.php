@@ -54,6 +54,7 @@ return [
 		'ERROR_20014' => '20014',
 		'ERROR_20016' => '20016',
 		'ERROR_20018' => '20018',
+		'ERROR_20022' => '20022',
 		'ERROR_21000' => '21000',
 
 		// Error codes from 1000-
@@ -90,6 +91,7 @@ return [
 		'20016' => 'Databse not found',
 		'21000' => 'Error while creating database connection',
 		'20018' => 'Invalid input data',
+		'20022' => 'Invalid user data',
 
 		// Error codes from 1000-
 		'10006' => 'Database operational error',
