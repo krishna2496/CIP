@@ -78,7 +78,7 @@ return [
 		'40009' => 'Domain name is required',
 		'40010' => 'Email address is required',
 		'40011' => 'Invalid reset password token or email address',
-		'40012' => 'Reset password link is expired or invalid',
+		'40013' => 'Reset password link is expired or invalid',
 		
 		
 		// Error codes from 2000-

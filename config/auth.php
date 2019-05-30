@@ -97,7 +97,7 @@ return [
             'provider' => 'users',
             'email' => 'auth.emails.password',
             'table' => 'password_reset',
-            'expire' => config('constants.FORGOT_PASSWORD_EXPIRY_TIME')*60,
+            'expire' => 240,
         ],
     ],
 
