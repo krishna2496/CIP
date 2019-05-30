@@ -36,7 +36,6 @@ $router->post('/reset-password/{token}', ['as' => 'password.reset', 'uses' => 'A
 
 /* reset password  */
 $router->put('/password_reset', ['middleware' => 'tenant.connection','uses' => 'App\Auth\AuthController@passwordReset']);
-
 /*
 |
 |--------------------------------------------------------------------------

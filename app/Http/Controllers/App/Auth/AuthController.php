@@ -237,5 +237,4 @@ class AuthController extends Controller {
         $passwordBrokerManager = new PasswordBrokerManager(app());
         return $passwordBrokerManager->broker();
     }
-
 }
