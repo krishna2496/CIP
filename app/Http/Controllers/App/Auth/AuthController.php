@@ -109,7 +109,7 @@ class AuthController extends ApiResponseController {
      * @return mixed
      */
     public function requestPasswordReset(User $user, Request $request) {
-        
+             
         // Server side validataions
         $validator = Validator::make($request->toArray(), [
                 'email' => 'required|email',

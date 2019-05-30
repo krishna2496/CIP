@@ -1,4 +1,11 @@
-
+<?php 
+$companyLogo = url('/images/optimy_logo.png');
+$resetPasswordBtn = url('/images/reset_button.png');
+$token =explode('/',$actionUrl);
+$token = end($token);
+$actionUrl = config('app.mail_url').$token;
+echo $actionUrl;exit;
+?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -50,7 +57,7 @@
 							<table width="500" cellpadding="0" cellspacing="0" border="0" bgcolor="#FFF" style="background:#FFFFFF;" class="inner-table">
 								<tr>
 									<td>
-										<img src='<img src="<?= base_path().'\resources\assets\images\optimy_logo.png' ?>" height="50" width="150"  alt="Logo" />' height="50" width="150"  alt="Logo" />
+										<img src="<?= $companyLogo ?>" height="50" width="150"  alt="Logo" />
 									</td>
 								</tr>
 								<tr>
@@ -91,7 +98,7 @@
 												</td>
 												<td>
 													<a href="https://www.optimy.com/" title="Reset my password"  style="display:inline-block; color:#f88634; font-size:17px; vertical-align: top;">
-														<img src="../images/images/arrow.png" height="42" width="30" alt="Arrow" />
+														<img src="<?= $resetPasswordBtn ?>" height="42" width="30" alt="Arrow" />
 													</a>
 												</td>
 												<td style=" width: 20px;"></td>
