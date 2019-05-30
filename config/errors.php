@@ -42,6 +42,7 @@ return [
 		'10002' => 'Tenant name is already taken, Please try with different name.',
 		'10004' => 'Tenant not found in the system',
 		'10006' => 'Database operational error',
+		'10008' => 'No data found',
 	]
 	
 ];
