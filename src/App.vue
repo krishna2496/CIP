@@ -40,10 +40,3 @@ export default {
 };
 </script>
 
-<style lang="scss">
-.loader-enable{overflow: hidden;}
-.page-loader{display: none; position: fixed; text-align: center; left: 0; right: 0; top: 0; background: rgba(51, 51, 51, 0.35); height: 100vh; z-index: 1031;}
-.page-loader img{width:100px;position: absolute; top: 50%; left: 50%;}
-.loader-enable .page-loader{display: block;}
-</style>
-
