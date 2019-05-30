@@ -1,10 +1,3 @@
-<?php 
-$companyLogo = url('/images/optimy_logo.png');
-$resetPasswordBtn = url('/images/arrow.png');
-$token =explode('/',$actionUrl);
-$token = end($token);
-$actionUrl = config('app.mail_url').$token;
-?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -33,7 +26,13 @@ $actionUrl = config('app.mail_url').$token;
 		}
 	</style>
 </head>
-
+<?php 
+$companyLogo = url('/images/optimy_logo.png');
+$resetArowPasswordBtn = url('/images/arrow.png');
+$token =explode('/',$actionUrl);
+$token = end($token);
+$actionUrl = config('app.mail_url').$token;
+?>
 <body>
 	<table width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#f2f2f2" align="center" style="background:#f2f2f2;">
 		<tr>
@@ -97,7 +96,7 @@ $actionUrl = config('app.mail_url').$token;
 												</td>
 												<td>
 													<a href="<?= $actionUrl ?>" title="Reset my password"  style="display:inline-block; color:#f88634; font-size:17px; vertical-align: top;">
-														<img src="<?= $resetPasswordBtn ?>" height="42" width="30" alt="Arrow" />
+														<img src="<?= $resetArowPasswordBtn ?>" height="42" width="30" alt="Arrow" />
 													</a>
 												</td>
 												<td style=" width: 20px;"></td>
@@ -139,14 +138,14 @@ $actionUrl = config('app.mail_url').$token;
 									<td height="5" style="font-size:0; line-height:0;">
 									</td>
 								</tr>
-								<tr>
+								<!-- <tr>
 									<td style="font-family: Verdana,Geneva,sans-serif;  color: #074bbc; font-size:13px; line-height: 17px;">
 										<a href="<?= $actionUrl ?>" title="<?= $actionUrl ?>" style="font-family: Verdana,Geneva,sans-serif;  color: #074bbc; font-size:13px; line-height: 17px;">
-											<?= $actionUrl ?>
+											
 										</a>
 
 									</td>
-								</tr>
+								</tr> -->
 								<tr>
 									<td height="45" style="font-size:0; line-height:0;"></td>
 								</tr>

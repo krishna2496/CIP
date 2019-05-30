@@ -140,9 +140,11 @@ class AuthController extends Controller {
         $refererUrl = Helpers::getRefererFromRequest($request);
         config(['app.mail_url' => $refererUrl.'/reset-password/']);
 
-        // $tenantOption = new TenantOptionController();
-        // $tenantLogo = $tenantOption->getTenantLogo();
-        // dd($tenantLogo);
+        //set tenant logo
+        $tenantOption = new TenantOptionController();
+        $tenantLogo = $tenantOption->getTenantLogo();
+        config(['app.tenant_logo' => $tenantLogo]);
+       
         // Verify email address and send reset password link        
         $response = $this->broker()->sendResetLink(
             $request->only('email')
