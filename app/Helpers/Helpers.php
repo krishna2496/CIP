@@ -7,20 +7,6 @@ use Illuminate\Http\Response;
 
 class Helpers
 {
-	/**
-	* It will return 
-	* @param Illuminate\Http\Request $request
-	* @return string
-	*/
-    public static function getSubDomainFromRequest(Request $request)
-    {
-    	try{    	
-        	return explode(".",parse_url($request->headers->all()['referer'][0])['host'])[0];
-        } catch (\Exception $e) {
-        	return $e->getMessage();
-        }
-    }
-
     /**
      * Prepare success response
      * 

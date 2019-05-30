@@ -47,13 +47,13 @@ class TenantController extends Controller
             // Set response data
             $apiData = $tenantList;
             $apiStatus = app('Illuminate\Http\Response')->status();
-            $apiMessage = "Tenant listing successfully";
+            $apiMessage = config('messages.success.MESSAGE_TENANT_LISTING');
             // Send API reponse
             return Helpers::response($apiStatus, $apiMessage, $apiData);
         } else {
             // Set response data                        
             $apiStatus = app('Illuminate\Http\Response')->status();
-            $apiMessage = "No data found";
+            $apiMessage = config('errors.custom_error_message.10008');
             // Send API reponse
             return Helpers::response($apiStatus, $apiMessage);
         }
