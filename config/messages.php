@@ -11,5 +11,7 @@ return [
 		'MESSAGE_NO_DATA_FOUND' => 'No Data Found',
 		'MESSAGE_USER_CREATE_SUCCESS' => 'User created successfully',
 		'MESSAGE_USER_DELETE_SUCCESS' => 'User deleted successfully',
+		'MESSAGE_FOOTER_PAGE_ADD_SUCCESS' => 'Footer page(s) created successfully',
+
 	],
 ];
