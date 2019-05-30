@@ -23,7 +23,7 @@ $router->get('/', function () use ($router) {
 |
 */
 /* Connect first time to get styling data. */
-$router->get('connect', ['middleware' => 'tenant.connection', 'uses' => 'App\Styling\StylingController@index']);
+$router->get('connect', ['middleware' => 'tenant.connection', 'uses' => 'App\TenantOption\TenantOptionController@getTenantOption']);
 
 /* User login routing using jwt token */
 $router->post('login', ['middleware' => 'tenant.connection', 'uses' => 'App\Auth\AuthController@authenticate']);
@@ -32,11 +32,10 @@ $router->post('login', ['middleware' => 'tenant.connection', 'uses' => 'App\Auth
 $router->post('request_password_reset', ['middleware' => 'tenant.connection','uses' => 'App\Auth\AuthController@requestPasswordReset']);
 
 /* Password reset routing */
-$router->post('/reset_password/{token}', ['as' => 'password.reset', 'uses' => 'App\Auth\ResetPasswordController@reset']);
+$router->post('/reset-password/{token}', ['as' => 'password.reset', 'uses' => 'App\Auth\AuthController@reset_password']);
 
-/* Get custom styling data for tenant specific */
-$router->post('/custom_data', ['uses' => 'CustomController@customData']);
-
+/* reset password  */
+$router->put('/password_reset', ['middleware' => 'tenant.connection','uses' => 'App\Auth\AuthController@passwordReset']);
 /*
 |
 |--------------------------------------------------------------------------
@@ -68,3 +67,8 @@ $router->group(['prefix' => 'users', 'middleware' => 'auth.tenant.admin'], funct
 	$router->post('/create', ['uses' => 'Admin\User\UserController@store']);
 	$router->delete('/{userId}', ['uses' => 'Admin\User\UserController@destroy']);
 });
+
+/* Set custom slider data for tenant specific */
+$router->post('/create_slider', ['middleware' => 'auth.tenant.admin', 'uses' => 'Admin\Tenant\TenantOptionsController@storeSlider']);
+/* Set cms data for tenant specific */
+$router->post('/create', ['middleware' => 'auth.tenant.admin', 'uses' => 'Admin\Tenant\CmsController@store']);

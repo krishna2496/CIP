@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 use Illuminate\Support\Facades\Config;
 use Closure;
+use App\Helpers\Helpers;
 use DB;
 
 class AuthTenantAdminMiddleware
@@ -15,17 +16,15 @@ class AuthTenantAdminMiddleware
      * @return mixed
      */
     public function handle($request, Closure $next)
-    {   
+    {        
         // Check basic auth passed or not
-        if(!isset($_SERVER['PHP_AUTH_USER']) && !isset($_SERVER['PHP_AUTH_PW'])){
-
-            $response['type'] = config('errors.type.ERROR_TYPE_403');
-            $response['status'] = 403;
-            $response['code'] = 20010;
-            $response['message'] = config('errors.code.20010');
-            $data["errors"][] = $response;
-
-            return response()->json($data, $response['status']); 
+        if (!isset($_SERVER['PHP_AUTH_USER']) && !isset($_SERVER['PHP_AUTH_PW'])
+            || (empty($_SERVER['PHP_AUTH_USER']) && empty($_SERVER['PHP_AUTH_PW']))
+        ) {
+            return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_401'), 
+                                        config('errors.status_type.HTTP_STATUS_TYPE_401'), 
+                                        config('errors.custom_error_code.ERROR_20010'), 
+                                        config('errors.custom_error_message.20010'));
         }
         try{
             // authenticate api user based on basic auth parameters
@@ -35,7 +34,7 @@ class AuthTenantAdminMiddleware
             ->where('status','1')
             ->whereNull('deleted_at')
             ->first();
-
+            
             // If user authenticate successfully
             if ($apiUser) {
                 // Create connection with their tenant database
@@ -43,39 +42,24 @@ class AuthTenantAdminMiddleware
                 $response = $next($request);
                 return $response;
             }
-
             // Send authentication error response if api user not found in master database
-            $response['type'] = config('errors.type.ERROR_TYPE_403');
-            $response['status'] = 403;
-            $response['code'] = 20008;
-            $response['message'] = config('errors.code.20008');
-            $data["errors"][] = $response;
-
-            return response()->json($data, $response['status']);
-
+            return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_401'), 
+                                        config('errors.status_type.HTTP_STATUS_TYPE_401'), 
+                                        config('errors.custom_error_code.ERROR_20008'), 
+                                        config('errors.custom_error_message.20008'));
         } catch(\Exception $e){
-
             // That is database not found, that means there is DB_DATABASE constant in env file. That must need to remove from env.
             if ($e->getCode() === 1049) {
-                
-                $response['type'] = config('errors.type.ERROR_TYPE_400');
-                $response['status'] = 400;
-                $response['code'] = 10006;
-                $response['message'] = config('errors.code.10006');
-                $data["errors"][] = $response;
-
-            }else{
-
-                $response['type'] = config('errors.type.ERROR_TYPE_403');
-                $response['status'] = 403;
-                $response['code'] = 20014;
-                $response['message'] = config('errors.code.20014');
-                $data["errors"][] = $response;
+                return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_TYPE_422'), 
+                                        config('errors.status_type.HTTP_STATUS_TYPE_422'), 
+                                        config('errors.custom_error_code.ERROR_20016'), 
+                                        config('errors.custom_error_message.20016'));
+            } else {
+                return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_TYPE_403'), 
+                                        config('errors.status_type.HTTP_STATUS_TYPE_403'), 
+                                        config('errors.custom_error_code.ERROR_20014'), 
+                                        config('errors.custom_error_message.20014'));
             }
-
-            return response()->json($data, $response['status']);
-
-
         }
     }
 
@@ -104,14 +88,10 @@ class AuthTenantAdminMiddleware
             return 1;
 
         } catch(\Exception $e){
-
-            $response['type'] = config('errors.type.ERROR_TYPE_403');
-            $response['status'] = 403;
-            $response['code'] = 21000;
-            $response['message'] = config('errors.code.21000');
-            $data["errors"][] = $response;
-
-            return $data;
+            return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_TYPE_403'), 
+                                        config('errors.status_type.HTTP_STATUS_TYPE_403'), 
+                                        config('errors.custom_error_code.ERROR_21000'), 
+                                        config('errors.custom_error_message.21000'));
 
         }
     }

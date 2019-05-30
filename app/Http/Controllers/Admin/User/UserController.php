@@ -4,12 +4,12 @@ namespace App\Http\Controllers\Admin\User;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Http\Controllers\ApiResponseController;
 use Illuminate\Support\Facades\Input;
 use App\User;
+use App\Helpers\Helpers;
 use Validator;
 
-class UserController extends ApiResponseController
+class UserController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -28,7 +28,7 @@ class UserController extends ApiResponseController
 
         // Check if search parameter passed in URL then search parameter will search in name field of tenant table.
         if (!empty($searchString)) {
-            $userQuery->where(function($query) use($searchString){
+            $userQuery->where(function($query) use($searchString) {
                 $query->orWhere('first_name', 'like', '%' . $searchString . '%');
                 $query->orWhere('last_name', 'like', '%' . $searchString . '%');
             });
@@ -39,28 +39,22 @@ class UserController extends ApiResponseController
             $userList = $userQuery->paginate(10);
         } catch(\Exception $e) {
             // Catch database exception
-            $this->errorType  = config('errors.type.ERROR_TYPE_403');
-            $this->apiStatus  = 403;
-            $this->apiErrorCode = 10006;
-            $this->apiMessage = config('errors.code.10006');
-            return $this->errorResponse();
-			
+            return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_403'), 
+                                        config('errors.status_type.HTTP_STATUS_TYPE_403'), 
+                                        config('errors.custom_error_code.ERROR_40018'), 
+                                        config('errors.custom_error_message.40018'));			
         }
-        // Order by passed order or default order asc.
 
         if (count($userList)>0) {
-            // Set response data
-            $this->apiData = $userList;
-            $this->apiStatus = app('Illuminate\Http\Response')->status();
-            $this->apiMessage = "Tenant listing successfully";
+            $apiData = $userList;
+            $apiStatus = app('Illuminate\Http\Response')->status();
+            $apiMessage = config('messages.success_message.MESSAGE_USER_LIST_SUCCESS');
+            return Helpers::response($apiStatus, $apiMessage, $apiData);
         } else {
-            // Set response data
-            $this->apiStatus = app('Illuminate\Http\Response')->status();
-            $this->apiMessage = "No data found";
+            $apiStatus = app('Illuminate\Http\Response')->status();
+            $apiMessage = config('messages.success_message.MESSAGE_NO_DATA_FOUND');
+            return Helpers::response($apiStatus, $apiMessage);
         }
-
-        // Send API reponse
-        return $this->response();
     }
 
     /**
@@ -72,10 +66,9 @@ class UserController extends ApiResponseController
     public function store(Request $request)
     {
         // Server side validataions
-        $validator = Validator::make($request->toArray(), [
-            "first_name" => "required|max:16",
+        $validator = Validator::make($request->toArray(), ["first_name" => "required|max:16",
             "last_name" => "required|max:16",
-            "email" => "required|email",
+            "email" => "required|email|unique:user,email,NULL,user_id,deleted_at,NULL",
             "password" => "required",
             "city_id" => "required",
             "country_id" => "required",
@@ -88,38 +81,35 @@ class UserController extends ApiResponseController
 
         // If request parameter have any error
         if ($validator->fails()) {
-            return $this->errorResponse(config('errors.status_code.HTTP_STATUS_422'),
+            return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_422'),
 										config('errors.status_type.HTTP_STATUS_TYPE_422'),
 										config('errors.custom_error_code.ERROR_20010'),
 										$validator->errors()->first());
         }
 
         try {
-
             // Create new user
             $user = User::create($request->toArray());
 
             // Set response data
-            $this->apiStatus = app('Illuminate\Http\Response')->status();
-            $this->apiData = ['user_id' => $user->user_id];
-            $this->apiMessage = "User created successfully";
-
-            return $this->response();
-
+            $apiData = ['user_id' => $user->user_id];
+            $apiStatus = app('Illuminate\Http\Response')->status();
+            $apiMessage = config('messages.success_message.MESSAGE_USER_CREATE_SUCCESS');    
+            return Helpers::response($apiStatus, $apiMessage, $apiData);
         } catch (\Exception $e) {
 
-            // Error for duplicate tenant name, trying to store in database.
+            // Error for duplicate user name, trying to store in database.
             if (isset($e->errorInfo[1]) && $e->errorInfo[1] == 1062) {
-                return $this->errorResponse(config('errors.status_code.HTTP_STATUS_422'), 
+                return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_422'), 
 										config('errors.status_type.HTTP_STATUS_TYPE_422'), 
 										config('errors.custom_error_code.ERROR_20002'), 
 										config('errors.custom_error_message.20002'));
-				
-            } else { // Any other error occured when trying to insert data into database for tenant.
-                return $this->errorResponse(config('errors.status_code.HTTP_STATUS_422'), 
-										config('errors.status_type.HTTP_STATUS_TYPE_422'), 
-										config('errors.custom_error_code.ERROR_20004'), 
-										config('errors.custom_error_message.20004'));
+            } else { 
+				// Any other error occured when trying to insert data into database for tenant.
+                return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_422'), 
+											config('errors.status_type.HTTP_STATUS_TYPE_422'), 
+											config('errors.custom_error_code.ERROR_20004'), 
+											config('errors.custom_error_message.20004'));
             }
         }
     }
@@ -160,14 +150,12 @@ class UserController extends ApiResponseController
             $user->delete();
 
             // Set response data
-            $this->apiStatus = 200;            
-            $this->apiMessage = "User deleted successfully";
-
-            return $this->response();
-
+            $apiStatus = app('Illuminate\Http\Response')->status();            
+            $apiMessage = config('messages.success_message.MESSAGE_USER_DELETE_SUCCESS');
+            return Helpers::response($apiStatus, $apiMessage);
+			
         } catch(\Exception $e){
-            
-            return $this->errorResponse(config('errors.status_code.HTTP_STATUS_403'), 
+            return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_403'), 
 										config('errors.status_type.HTTP_STATUS_TYPE_403'), 
 										config('errors.custom_error_code.ERROR_20006'), 
 										config('errors.custom_error_message.20006'));

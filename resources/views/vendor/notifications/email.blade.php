@@ -1,10 +1,9 @@
 <?php 
 $companyLogo = url('/images/optimy_logo.png');
-$resetPasswordBtn = url('/images/reset_button.png');
+$resetPasswordBtn = url('/images/arrow.png');
 $token =explode('/',$actionUrl);
 $token = end($token);
 $actionUrl = config('app.mail_url').$token;
-echo $actionUrl;exit;
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -92,12 +91,12 @@ echo $actionUrl;exit;
 											<tr>
 												<td style=" width:20px;"></td>
 												<td class="button_text" style="color:#f88634; font-size:17px; font-family: Verdana,Geneva,sans-serif;" valign="middle">
-													<a href="https://www.optimy.com/" title="Reset my password"  style="display:inline-block; color:#f88634; font-size:17px; vertical-align:middle; display: block;">
+													<a href="<?= $actionUrl ?>" title="Reset my password"  style="display:inline-block; color:#f88634; font-size:17px; vertical-align:middle; display: block;">
 														Reset my password
 													</a>
 												</td>
 												<td>
-													<a href="https://www.optimy.com/" title="Reset my password"  style="display:inline-block; color:#f88634; font-size:17px; vertical-align: top;">
+													<a href="<?= $actionUrl ?>" title="Reset my password"  style="display:inline-block; color:#f88634; font-size:17px; vertical-align: top;">
 														<img src="<?= $resetPasswordBtn ?>" height="42" width="30" alt="Arrow" />
 													</a>
 												</td>
@@ -142,8 +141,8 @@ echo $actionUrl;exit;
 								</tr>
 								<tr>
 									<td style="font-family: Verdana,Geneva,sans-serif;  color: #074bbc; font-size:13px; line-height: 17px;">
-										<a href="https://www.google.com/" title="https://www.google.com/" style="font-family: Verdana,Geneva,sans-serif;  color: #074bbc; font-size:13px; line-height: 17px;">
-											https://www.google.com/
+										<a href="<?= $actionUrl ?>" title="<?= $actionUrl ?>" style="font-family: Verdana,Geneva,sans-serif;  color: #074bbc; font-size:13px; line-height: 17px;">
+											<?= $actionUrl ?>
 										</a>
 
 									</td>

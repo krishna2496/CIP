@@ -6,6 +6,7 @@ use App\Helpers\Helpers;
 use Closure;
 use Firebase\JWT\JWT;
 use DB;
+
 class TenantConnectionMiddleware
 {
     /**
@@ -21,28 +22,36 @@ class TenantConnectionMiddleware
         $token = $request->get('token');
 
         if ($token) {
-            $credentials = JWT::decode($token, env('JWT_SECRET'), ['HS256']);
-            $domain = $credentials->fqdn;
+           try {
+                 $credentials = JWT::decode($token, env('JWT_SECRET'), ['HS256']);
+                 $domain = $credentials->fqdn;
+            } catch(\Firebase\JWT\ExpiredException $e) {
+                return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_401'), 
+                                            config('errors.status_type.HTTP_STATUS_TYPE_401'), 
+                                            config('errors.custom_error_code.ERROR_40014'), 
+                                            config('errors.custom_error_message.40014'));
+            } catch(Exception $e) {
+                return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_400'), 
+                                            config('errors.status_type.HTTP_STATUS_TYPE_400'), 
+                                            config('errors.custom_error_code.ERROR_40016'), 
+                                            config('errors.custom_error_message.40016'));
+            }
         } else {
             
             // Uncomment below line while testing in apis with front side.
-            // $domain = Helpers::getSubDomainFromUrl($request);
+            // $domain = Helpers::getSubDomainFromRequest($request);
+            
             // comment below line while testing in apis with front side.
             $domain = env('DEFAULT_TENANT');
         }
 
         if ($domain !== env('APP_DOMAIN')) {
-            
             $tenant = DB::table('tenant')->select('tenant_id')->where('name', $domain)->first();
-            
             if (!$tenant) {
-                $response['errors'] = array(array(
-                    "type"=> config('errors.type.ERROR_TYPE_403'),
-                    "status" => 403,
-                    "code" => 40008,
-                    "message"=> config('errors.code.40008')
-                ));
-                return response()->json($response, 403, [], JSON_NUMERIC_CHECK);
+                return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_403'), 
+                                        config('errors.status_type.HTTP_STATUS_TYPE_403'), 
+                                        config('errors.custom_error_code.ERROR_40008'), 
+                                        config('errors.custom_error_message.40008'));
             }
             $this->createConnection($tenant);
         }        
@@ -72,15 +81,11 @@ class TenantConnectionMiddleware
             // Set default database
             Config::set('database.default', 'tenant');
         } catch (\PDOException $e) {
-            if ($e instanceof \PDOException) {
-                $response['errors'] = [];
-                array_push($response['errors'],[
-                    "type"=> config('errors.type.ERROR_TYPE_403'),
-                    "status" => 403,
-                    "code" => 41000,
-                    "message"=> config('errors.code.41000')
-                ]);
-                return response()->json($response);
+            if ($e instanceof \PDOException) {            
+                return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_403'), 
+                                        config('errors.status_type.HTTP_STATUS_TYPE_403'), 
+                                        config('errors.custom_error_code.ERROR_41000'), 
+                                        config('errors.custom_error_message.41000'));
             }
         }        
     }
