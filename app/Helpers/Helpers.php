@@ -100,4 +100,38 @@ class Helpers
         return response()->json($data, $status_code, [], JSON_NUMERIC_CHECK);
     }
 
+    /**
+     * Sorting of multidimensional array
+     * 
+     * @param array $array
+     * @param string $subfield
+     * @param int $sort
+     */
+    public static function sortMultidimensionalArray(&$array, $subfield, $sort) {
+        $sortarray = array();
+        $arrayLength = count($array);
+        $sortOrder = 1;
+        if(!empty($array) && (isset($array))){
+
+            foreach ($array as $key => $row) {
+                
+                if((!isset($row[$subfield]) || $row[$subfield] == '')){
+                     $row[$subfield] = $array[$key][$subfield] = $arrayLength;
+                     $arrayLength++;
+                }
+
+                $sortarray[$key] =  $row[$subfield] ;
+            }
+
+            array_multisort($sortarray, $sort, $array);
+
+            foreach ($array as $key => $row) {
+                
+                $array[$key][$subfield] = $sortOrder;
+                 $sortOrder++;
+                 
+            }
+        }
+    }
+
 }
