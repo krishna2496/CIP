@@ -72,3 +72,5 @@ $router->group(['prefix' => 'users', 'middleware' => 'auth.tenant.admin'], funct
 $router->post('/create_slider', ['middleware' => 'auth.tenant.admin', 'uses' => 'Admin\Tenant\TenantOptionsController@storeSlider']);
 /* Set cms data for tenant specific */
 $router->post('/create', ['middleware' => 'auth.tenant.admin', 'uses' => 'Admin\Tenant\CmsController@store']);
+/* Set custom field data for tenant specific */
+$router->post('custom_field/create', ['middleware' => 'auth.tenant.admin', 'uses' => 'Admin\Tenant\UserCustomFieldController@store']);
