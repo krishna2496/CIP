@@ -61,6 +61,7 @@ return [
 		'ERROR_21000' => '21000',
 		'ERROR_20020' => '20020',
 		'ERROR_20022' => '20022',
+		'ERROR_20024' => '20024',
 
 		// Error codes from 1000-
 		'ERROR_10006' => '10006',
@@ -103,6 +104,7 @@ return [
 		'20018' => 'Invalid input data',
 		'20020' => 'Page deletion failed',
 		'20022' => 'No data found',
+		'20024' => 'This page is already added',
 
 		// Error codes from 1000-
 		'10006' => 'Database operational error',

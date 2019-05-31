@@ -18,7 +18,7 @@ class FooterPage extends Model
      *
      * @var array
      */
-    protected $fillable = ['status'];
+    protected $fillable = ['status', 'page_type'];
 
     public function pageLanguages()
     {
