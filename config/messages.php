@@ -15,6 +15,7 @@ return [
 		'MESSAGE_PASSWORD_RESET_LINK_SEND_SUCCESS' => 'Reset Password link is sent to your email account,link will be expire in ' . config('constants.FORGOT_PASSWORD_EXPIRY_TIME') . ' hours',
 		'MESSAGE_PASSWORD_CHANGE_SUCCESS' => 'Your password has been changed successfully.',
 		'MESSAGE_CUSTOM_FIELD_ADD_SUCCESS' => 'User custom field added successfully',
+		'MESSAGE_CUSTOM_FIELD_UPDATE_SUCCESS' => 'User custom field updated successfully',
 
 	],
 ];
