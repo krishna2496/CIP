@@ -26,13 +26,13 @@
 		}
 	</style>
 </head>
-<?php 
+@php
 $companyLogo = url('/images/optimy_logo.png');
 $resetArowPasswordBtn = url('/images/arrow.png');
 $token =explode('/',$actionUrl);
 $token = end($token);
 $actionUrl = config('app.mail_url').$token;
-?>
+@endphp
 <body>
 	<table width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#f2f2f2" align="center" style="background:#f2f2f2;">
 		<tr>
