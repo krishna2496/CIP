@@ -26,13 +26,13 @@
 		}
 	</style>
 </head>
-<?php 
+@php
 $companyLogo = url('/images/optimy_logo.png');
 $resetArowPasswordBtn = url('/images/arrow.png');
 $token =explode('/',$actionUrl);
 $token = end($token);
 $actionUrl = config('app.mail_url').$token;
-?>
+@endphp
 <body>
 	<table width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#f2f2f2" align="center" style="background:#f2f2f2;">
 		<tr>
@@ -90,12 +90,12 @@ $actionUrl = config('app.mail_url').$token;
 											<tr>
 												<td style=" width:20px;"></td>
 												<td class="button_text" style="color:#f88634; font-size:17px; font-family: Verdana,Geneva,sans-serif;" valign="middle">
-													<a href="<?= $actionUrl ?>" title="Reset my password"  style="display:inline-block; color:#f88634; font-size:17px; vertical-align:middle; display: block;">
+													<a href="{{$actionUrl}}" title="Reset my password"  style="display:inline-block; color:#f88634; font-size:17px; vertical-align:middle; display: block;">
 														Reset my password
 													</a>
 												</td>
 												<td>
-													<a href="<?= $actionUrl ?>" title="Reset my password"  style="display:inline-block; color:#f88634; font-size:17px; vertical-align: top;">
+													<a href="{{$actionUrl}}" title="Reset my password"  style="display:inline-block; color:#f88634; font-size:17px; vertical-align: top;">
 														<img src="<?= $resetArowPasswordBtn ?>" height="42" width="30" alt="Arrow" />
 													</a>
 												</td>
@@ -138,14 +138,14 @@ $actionUrl = config('app.mail_url').$token;
 									<td height="5" style="font-size:0; line-height:0;">
 									</td>
 								</tr>
-								<!-- <tr>
+								<tr>
 									<td style="font-family: Verdana,Geneva,sans-serif;  color: #074bbc; font-size:13px; line-height: 17px;">
-										<a href="<?= $actionUrl ?>" title="<?= $actionUrl ?>" style="font-family: Verdana,Geneva,sans-serif;  color: #074bbc; font-size:13px; line-height: 17px;">
-											
+										<a href="{{$actionUrl}}" title="{{$actionUrl}}" style="font-family: Verdana,Geneva,sans-serif;  color: #074bbc; font-size:13px; line-height: 17px;">
+											{{$actionUrl}}
 										</a>
 
 									</td>
-								</tr> -->
+								</tr>
 								<tr>
 									<td height="45" style="font-size:0; line-height:0;"></td>
 								</tr>
