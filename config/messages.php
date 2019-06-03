@@ -16,6 +16,7 @@ return [
 		'MESSAGE_PASSWORD_CHANGE_SUCCESS' => 'Your password has been changed successfully.',
 		'MESSAGE_CUSTOM_FIELD_ADD_SUCCESS' => 'User custom field added successfully',
 		'MESSAGE_CUSTOM_FIELD_UPDATE_SUCCESS' => 'User custom field updated successfully',
+		'MESSAGE_CUSTOM_FIELD_DELETE_SUCCESS' => 'User custom field deleted successfully',
 
 	],
 ];

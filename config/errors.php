@@ -59,6 +59,7 @@ return [
 		'ERROR_20018' => '20018',
 		'ERROR_20022' => '20022',
 		'ERROR_20026' => '20026',
+		'ERROR_20028' => '20028',
 		'ERROR_21000' => '21000',
 
 		// Error codes from 1000-
@@ -102,6 +103,7 @@ return [
 		'20018' => 'Invalid input data',
 		'20022' => 'Invalid user data',
 		'20026' => 'Please add data for values field',
+		'20028' => 'User custom field deletion failed',
 
 		// Error codes from 1000-
 		'10006' => 'Database operational error',

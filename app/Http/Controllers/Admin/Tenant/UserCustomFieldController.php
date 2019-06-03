@@ -19,7 +19,41 @@ class UserCustomFieldController extends Controller
      */
     public function index()
     {
-        //
+        $userFieldQuery = UserCustomField::select('field_id', 'name', 'type', 'is_mandatory', 'translations')
+        ->whereNull('deleted_at');
+
+        try {
+            $userFieldList = $userFieldQuery->get()->toArray();            
+        } catch(\Exception $e) {
+            // Catch database exception
+            return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_403'), 
+                                        config('errors.status_type.HTTP_STATUS_TYPE_403'), 
+                                        config('errors.custom_error_code.ERROR_40018'), 
+                                        config('errors.custom_error_message.40018'));           
+        }
+
+        if (count($userFieldList)>0) {
+            $data = array();
+            $detail = array();
+            foreach ($userFieldList as $value) {
+                $data['field_id'] = $value['field_id'];
+                $data['name'] = $value['name'];
+                $data['type'] = $value['type'];
+                $data['is_mandatory'] = $value['is_mandatory'];
+                $data['translation'] = json_decode($value['translations']);
+                $detail[] = $data;
+            }
+            // Set response data
+            $apiData = $detail;
+            $apiStatus = app('Illuminate\Http\Response')->status();
+            $apiMessage = config('messages.success_message.MESSAGE_USER_LIST_SUCCESS');
+            return Helpers::response($apiStatus, $apiMessage, $apiData);
+        } else {
+            // Set response data
+            $apiStatus = app('Illuminate\Http\Response')->status();
+            $apiMessage = config('messages.success_message.MESSAGE_NO_DATA_FOUND');
+            return Helpers::response($apiStatus, $apiMessage);
+        }
     }
 
     /**
@@ -151,6 +185,21 @@ class UserCustomFieldController extends Controller
      */
     public function destroy($id)
     {
-        //
+        try {
+            $userField = UserCustomField::findorFail($id);
+            $userField->delete();
+
+            // Set response data
+            $apiStatus = app('Illuminate\Http\Response')->status();            
+            $apiMessage = config('messages.success_message.MESSAGE_CUSTOM_FIELD_DELETE_SUCCESS');
+            return Helpers::response($apiStatus, $apiMessage);
+            
+        } catch(\Exception $e){
+            return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_403'), 
+                                        config('errors.status_type.HTTP_STATUS_TYPE_403'), 
+                                        config('errors.custom_error_code.ERROR_20028'), 
+                                        config('errors.custom_error_message.20028'));
+
+        }
     }
 }

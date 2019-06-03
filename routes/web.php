@@ -74,7 +74,8 @@ $router->post('/create_slider', ['middleware' => 'auth.tenant.admin', 'uses' => 
 $router->post('/create', ['middleware' => 'auth.tenant.admin', 'uses' => 'Admin\Tenant\CmsController@store']);
 
 /* Set custom field data for tenant specific */
-$router->group(['prefix' => 'custom_field', 'middleware' => 'auth.tenant.admin'], function($router){
+$router->group(['prefix' => 'custom_field', 'middleware' => 'auth.tenant.admin'], function($router){ 
+	$router->get('/', ['uses' => 'Admin\Tenant\UserCustomFieldController@index']);
 	$router->post('/create', ['uses' => 'Admin\Tenant\UserCustomFieldController@store']);
 	$router->post('/update/{fieldId}', ['uses' => 'Admin\Tenant\UserCustomFieldController@update']);
 	$router->delete('/{fieldId}', ['uses' => 'Admin\Tenant\UserCustomFieldController@destroy']);
