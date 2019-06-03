@@ -73,7 +73,7 @@ $router->post('/create_slider', ['middleware' => 'auth.tenant.admin', 'uses' => 
 /* Set cms data for tenant specific */
 $router->group(['prefix' => 'cms', 'middleware' => 'auth.tenant.admin'], function($router){
 	/* Get all users of tenant */
-	$router->get('/', ['uses' => 'Admin\Tenant\CmsController@index']);
+	$router->get('/', ['uses' => 'App\Tenant\CmsController@index']);
 	$router->post('/create', ['uses' => 'Admin\Tenant\CmsController@store']);
 	$router->post('/update/{pageId}', ['uses' => 'Admin\Tenant\CmsController@update']);
 	$router->delete('/{pageId}', ['uses' => 'Admin\Tenant\CmsController@destroy']);
