@@ -1,13 +1,7 @@
 <template>
-  <div
-    class="custom-dropdown"
-    v-on:touchend.stop
-    v-on:click.stop
-    v-if="optionList.length > 0"
-    :class="showDropdown ? 'dropdown-open' : ' '"
-  >
+  <div class="custom-dropdown" v-on:touchend.stop>
     <span @click="handleClick">{{default_text}}</span>
-    <div class="option-list-wrap" v-if="showDropdown" data-simplebar>
+    <div class="option-list-wrap" data-simplebar>
       <ul class="option-list">
         <li v-for="item in optionList" :key="item" @click="handleSelect">{{item}}</li>
       </ul>
@@ -17,39 +11,43 @@
 <script>
 export default {
   name: "customDropdown",
+  components: {},
   props: {
     optionList: Array,
     default_text: String
   },
   data() {
     return {
-      showDropdown: false,
-      default_text_val: this.default_text
+      default_text_val: this.default_text,
     };
   },
-  components: {},
-  computed: {},
-  methods: {
-    onClick() {
-      this.showDropdown = false;
-    },
-    handleClick() {
-      this.showDropdown = !this.showDropdown;
-    },
-    handleSelect(e) {
-      var selected_val = e.target.innerHTML;
-      this.default_text = selected_val;
-      this.showDropdown = false;
-    }
-  },
-
-  created() {},
-  beforeUdate() {},
   mounted() {
     if (screen.width < 1025) {
       document.addEventListener("touchend", this.onClick);
     } else {
       document.addEventListener("click", this.onClick);
+    }
+  },
+  methods: {
+    onClick() {
+        var dropdownList = document.querySelectorAll('.dropdown-open');
+        for(var i = 0; i < dropdownList.length ; ++i ){
+            dropdownList[i].classList.remove('dropdown-open');
+        }
+    },
+    handleClick(e) {
+      e.stopPropagation();
+      e.target.parentNode.classList.toggle('dropdown-open');
+       var dropdownList = document.querySelectorAll('.dropdown-open');
+        for(var i = 0; i < dropdownList.length ; ++i ){
+            if(dropdownList[i] != e.target.parentNode){
+            dropdownList[i].classList.remove('dropdown-open');
+            }
+        }
+    },
+    handleSelect(e) {
+      var selected_val = e.target.innerHTML;
+      this.$emit("updateCall", selected_val);
     }
   },
   beforeDestroy() {
@@ -59,7 +57,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
 .custom-dropdown {
   position: relative;
   width: 200px;
@@ -70,7 +67,11 @@ export default {
     padding: 6px 35px 6px 15px;
     border: 1px solid $control-border;
     border-radius: 3px;
+    text-overflow: ellipsis;
+    overflow: hidden;
     @extend .control_shadow;
+    max-width:100%;
+    white-space:nowrap;
     cursor: pointer;
     &:after {
       position: absolute;
@@ -98,6 +99,7 @@ export default {
     }
     .option-list-wrap {
       border-radius: 0 0 3px 3px;
+      display:block;
     }
   }
 
@@ -114,6 +116,7 @@ export default {
     background: #fff;
     border: 1px solid $control-border;
     border-radius: 3px;
+    display:none;
     .option-list {
       padding: 4px 0;
       margin: 0;

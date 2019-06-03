@@ -1,4 +1,4 @@
-const host = 'tatva.optimy.com';
+const host = 'localhost';
 const port = 8080;
 module.exports = {
   css: {
@@ -32,7 +32,7 @@ module.exports = {
 	
     lintOnSave: false,
     	devServer: {
-	    host: 'tatva.optimy.com',
+       host: 'localhost',
 	    port: 8080,
 	    https: false
     }

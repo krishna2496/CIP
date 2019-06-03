@@ -1,4 +1,5 @@
 import Vue from 'vue'
+import VueScrollTo from "vue-scrollto";
 import BootstrapVue from 'bootstrap-vue'
 import App from './App.vue'
 import router from './router'
@@ -16,6 +17,7 @@ Vue.use(Vuelidate,VueAxios,axios)
 Vue.config.productionTip = false
 
 Vue.use(BootstrapVue)
+Vue.use(VueScrollTo);
 
 // call vue axios interceptors
 interceptorsSetup();
@@ -24,13 +26,13 @@ interceptorsSetup();
 router.beforeEach((to, from, next) => {
 	if(to.meta.requiresAuth && !store.state.isLoggedIn){
 		next({ name: 'login' })
-        return
+		return
 	}
 	if((to.path === '/' || to.path === '/forgot-password' || to.path === '/reset-password') && store.state.isLoggedIn) {
 		next({ name: 'home' })
-        return
-    }
-    next();
+		return
+	}
+	next();
 });
 
 new Vue({
@@ -39,6 +41,7 @@ new Vue({
 	BootstrapVue,
 	custom,
 	SimpleBar,
+	VueScrollTo,
 	render: h => h(App)
 }).$mount('#app')
 
