@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin\Tenant;
+namespace App\Http\Controllers\Admin\CMS;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -39,43 +39,40 @@ class CmsController extends Controller
                                         config('errors.custom_error_code.ERROR_20018'),
                                         $validator->errors()->first());
         } 
-        try {           
+        try {   
+            $pageData = $request->page_detail;
+            if (count($pageData['translations']) == 0) {
+                return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_422'),
+                                                config('errors.status_type.HTTP_STATUS_TYPE_422'),
+                                                config('errors.custom_error_code.ERROR_20030'),
+                                                config('errors.custom_error_message.20030'));
+            } 
             // Set data for create new record
             $insert = array();
-            $insert['status'] = 1;
+            $insert['status'] = config('constants.ACTIVE');
             // Create new cms page
             $data = FooterPage::create($insert);
-            $pageData = $request->page_detail;
             foreach ($pageData['translations'] as $value) {                    
                 // Server side validataions
-                $validator = Validator::make($value, ["language_id" => "required" ,"title" => "required" ,"description" => "required" ]);
-
+                $validator = Validator::make($value, ["language_id" => "required" ,"title" => "required" ,"section" => "required" ]);
                 // If translations have any missing parameter
                 if ($validator->fails()) {
-                    // To delete data which are inserted before in parent table and child table
-                    $footerPage = FooterPage::find($data['page_id']);
-                    $footerPage->delete();
-                    $footerPage->pageLanguages()->delete();                    
                     return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_422'),
                                                 config('errors.status_type.HTTP_STATUS_TYPE_422'),
                                                 config('errors.custom_error_code.ERROR_20018'),
                                                 $validator->errors()->first());
                 }    
-                $desc = $value['description'];
-                $insertPage = array();
-                $insertPage['page_id'] = $data['page_id'];
-                $insertPage['language_id'] = $value['language_id'];
-                $insertPage['title'] = $value['title'];
-                $insertPage['description'] = json_encode($desc);
+                $cms = array('page_id' => $data['page_id'], 'language_id' => $value['language_id'], 'title' => $value['title'], 'description' => serialize($value['section']));
                 // Create footer language pages
-                $footerPageLanguage = FooterPagesLanguage::create($insertPage);
-                unset($insertPage);
+                $footerPageLanguage = FooterPagesLanguage::create($cms);
+                unset($cms);
             }
             // Set response data
             $apiStatus = app('Illuminate\Http\Response')->status();
             $apiMessage = config('messages.success_message.MESSAGE_CMS_PAGE_ADD_SUCCESS');
             $apiData = ['page_id' => $data['page_id']];
             return Helpers::response($apiStatus, $apiMessage, $apiData);
+                       
         } catch (\Exception $e) {
             // Any other error occured when trying to insert data into database for tenant option.
             return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_422'), 
@@ -116,63 +113,57 @@ class CmsController extends Controller
                                         $validator->errors()->first());
         }  
         $footerPage = FooterPage::find($id);
-        if ($footerPage) {
-            try {
-                $pageData = $request->page_detail;
-                foreach ($pageData['translations'] as $value) {                    
-                    // Server side validataions
-                    $validator = Validator::make($value, ["language_id" => "required" ,"title" => "required" ,"description" => "required" ]);
-                    // If translations have any missing parameter
-                    if ($validator->fails()) {
-                        return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_422'),
-                                                    config('errors.status_type.HTTP_STATUS_TYPE_422'),
-                                                    config('errors.custom_error_code.ERROR_20018'),
-                                                    $validator->errors()->first());
-                    }    
-                    $footerPageData = FooterPagesLanguage::where('page_id', $id)
-                                    ->where('language_id', $value['language_id'])
-                                    ->count();
-                    if (!empty($footerPageData)) {
-                        // Update existing record 
-                        $desc = $value['description'];
-                        $updatePage = array();
-                        $updatePage['title'] = $value['title'];
-                        $updatePage['description'] = json_encode($desc);
-                        // Create footer language pages
-                        $footerPageLanguage = FooterPagesLanguage::where('page_id', $id)->where('language_id', $value['language_id'])->update($updatePage);
-                        unset($updatePage);                            
-                    } else {
-                        // Insert new record
-                        $insertPage = array();
-                        $desc = $value['description'];
-                        $insertPage['page_id'] = $id;
-                        $insertPage['language_id'] = $value['language_id'];
-                        $insertPage['title'] = $value['title'];
-                        $insertPage['description'] = json_encode($desc);
-                        // Create footer language pages
-                        $footerPageLanguage = FooterPagesLanguage::create($insertPage);
-                        unset($insertPage);                        
-                    }                    
-                }         
-                // Set response data
-                $apiStatus = app('Illuminate\Http\Response')->status();
-                $apiMessage = config('messages.success_message.MESSAGE_CMS_PAGE_UPDATE_SUCCESS');
-                $apiData = ['page_id' => $id];
-                return Helpers::response($apiStatus, $apiMessage, $apiData);
-            } catch (\Exception $e) {
-               // Any other error occured when trying to insert data into database for tenant option.
-                return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_422'), 
-                                        config('errors.status_type.HTTP_STATUS_TYPE_422'), 
-                                        config('errors.custom_error_code.ERROR_20004'), 
-                                        config('errors.custom_error_message.20004'));
-                
-            }
-        } else {
+        if (!$footerPage) {
             return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_422'),
                                         config('errors.status_type.HTTP_STATUS_TYPE_422'),
-                                        config('errors.custom_error_code.ERROR_20022'),
-                                        config('errors.custom_error_message.20022'));
+                                        config('errors.custom_error_code.ERROR_20032'),
+                                        config('errors.custom_error_message.20032'));
         }
+        try {
+            $pageData = $request->page_detail;
+            foreach ($pageData['translations'] as $value) {                    
+                // Server side validataions
+                $validator = Validator::make($value, ["language_id" => "required" ,"title" => "required" ,"section" => "required" ]);
+                // If translations have any missing parameter
+                if ($validator->fails()) {
+                    return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_422'),
+                                                config('errors.status_type.HTTP_STATUS_TYPE_422'),
+                                                config('errors.custom_error_code.ERROR_20018'),
+                                                $validator->errors()->first());
+                }    
+                $footerPageData = FooterPagesLanguage::where('page_id', $id)
+                                ->where('language_id', $value['language_id'])
+                                ->count();
+                if (!empty($footerPageData)) {
+                    // Update existing record 
+                    $cms = array('page_id' => $footerPage['page_id'], 'language_id' => $value['language_id'], 'title' => $value['title'], 'description' => serialize($value['section']));
+
+                    // Create footer language pages
+                    $footerPageLanguage = FooterPagesLanguage::where('page_id', $id)->where('language_id', $value['language_id'])->update($cms);
+                    unset($cms);                            
+                } else {
+                    // Insert new record
+                    $cms = array('page_id' => $footerPage['page_id'], 'language_id' => $value['language_id'], 'title' => $value['title'], 'description' => serialize($value['section']));
+                    // Create footer language pages
+                    $footerPageLanguage = FooterPagesLanguage::create($cms);
+                    unset($cms);                        
+                }                    
+            }         
+            // Set response data
+            $apiStatus = app('Illuminate\Http\Response')->status();
+            $apiMessage = config('messages.success_message.MESSAGE_CMS_PAGE_UPDATE_SUCCESS');
+            $apiData = ['page_id' => $id];
+            return Helpers::response($apiStatus, $apiMessage, $apiData);
+        } catch (\Exception $e) {
+            dd($e);
+           // Any other error occured when trying to update data into database for tenant option.
+            return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_422'), 
+                                    config('errors.status_type.HTTP_STATUS_TYPE_422'), 
+                                    config('errors.custom_error_code.ERROR_20004'), 
+                                    config('errors.custom_error_message.20004'));
+            
+        }
+   
     }
 
     /**
@@ -184,7 +175,7 @@ class CmsController extends Controller
     public function destroy($id)
     {
         try {  
-            $footerPage = FooterPage::find($id);
+            $footerPage = FooterPage::findOrFail($id);
             $footerPage->delete();
             $footerPage->pageLanguages()->delete();
 

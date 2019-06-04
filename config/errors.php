@@ -62,6 +62,8 @@ return [
 		'ERROR_20020' => '20020',
 		'ERROR_20022' => '20022',
 		'ERROR_20024' => '20024',
+		'ERROR_20030' => '20030',
+		'ERROR_20032' => '20032',
 
 		// Error codes from 1000-
 		'ERROR_10006' => '10006',
@@ -105,6 +107,8 @@ return [
 		'20020' => 'Page deletion failed',
 		'20022' => 'No data found',
 		'20024' => 'This page is already added',
+		'20030' => 'Please add translations data',
+		'20032' => 'No data found for given id',
 
 		// Error codes from 1000-
 		'10006' => 'Database operational error',
