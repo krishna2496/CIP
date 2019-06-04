@@ -10,9 +10,9 @@ export default new Router({
   base: process.env.BASE_URL,
   routes: [
     {
-      path: '/lang',
-      name: 'lang',
-      component: () => import('./components/HelloI18n')
+      path: '/',
+      name: 'login',
+      component: () => import('./views/Login.vue')
     },
     {
       path: '/home',
