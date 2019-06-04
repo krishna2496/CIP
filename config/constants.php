@@ -9,4 +9,5 @@ return [
     'FORGOT_PASSWORD_EXPIRY_TIME' => '4',
     'SLIDER_LIMIT' => '4',
     'SLIDER_IMAGE_PATH' => 'images/',
+    'ACTIVE' => 1,
 ];
