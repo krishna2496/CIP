@@ -1,4 +1,4 @@
-const host = 'tatva.optimy.com';
+const host = 'localhost';
 const port = 8080;
 module.exports = {
   css: {
@@ -30,7 +30,6 @@ module.exports = {
 		return options
 		})
 	},
-
   lintOnSave: false,
 
   devServer: {
@@ -39,14 +38,6 @@ module.exports = {
   https: false
 },
 
-  pluginOptions: {
-    i18n: {
-      locale: 'en',
-      fallbackLocale: 'en',
-      localeDir: 'locales',
-      enableInSFC: true
-    }
-  }
 };
 
 function newFunction() {

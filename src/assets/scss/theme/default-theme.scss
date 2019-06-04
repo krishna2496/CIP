@@ -7,13 +7,15 @@ $white: #fff;
 $black-primary: #414141;
 
 $gray-primary: #757575;
+$gray-secondary: #cccccc;
 
 $border-color: #e8e8e8;
 $control-border: #d9d9d9;
+$gray-bg: $border-color;
+$error: #dc3545;
 
 // rgba color variable
 $rgb-black: rgba(0, 0, 0, 0.4);
-$rgb-black-hover:rgba(0, 0, 0, 0.8);
-$error: #dc3545;
-
-$gray-bg: $border-color;
+$rgb-black-dark: rgba(0, 0, 0, 0.5);
+$rgb-black-hover: rgba(0, 0, 0, 0.8);
+$rgb-white: rgba(255, 255, 255, 0.4);
