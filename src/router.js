@@ -10,33 +10,6 @@ export default new Router({
   base: process.env.BASE_URL,
   routes: [
 
-  {
-    path: '/',
-    name: 'login',
-    component: () => import('./views/Login.vue')
-  },
-  {
-    path: '/home',
-    name: 'home',
-    meta: { requiresAuth: true },
-    component: () => import('./views/Home.vue')
-  },
-  {
-    path: '/about',
-    name: 'about',
-    component: () => import('./views/About.vue')
-  },
-  {
-    path: '/reset-password/:token',
-    name: 'resetPassword',
-    component: () => import('./views/ResetPassword.vue')
-  },
-  {
-    path: '/forgot-password',
-    name: 'forgotPassword',
-    component: () => import('./views/ForgotPassword.vue')
-  },
-
     {
       path: '/',
       name: 'login',
@@ -66,7 +39,7 @@ export default new Router({
     {
         path: '/cms/:pageId',
         name: 'TermsofUse',
-        component: () => import('./views/footerCmsPage.vue')
+        component: () => import('./views/TermsOfUse.vue')
     }
 
   ]
