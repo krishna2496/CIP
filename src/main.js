@@ -10,6 +10,7 @@ import axios from "axios";
 import VueAxios from "vue-axios";
 import Vuelidate from 'vuelidate'
 import interceptorsSetup from './interceptors'
+import i18n from './i18n'
 
 Vue.use(Vuelidate,VueAxios,axios)
 
@@ -34,11 +35,12 @@ router.beforeEach((to, from, next) => {
 });
 
 new Vue({
-	router,
-	store,
-	BootstrapVue,
-	custom,
-	SimpleBar,
-	render: h => h(App)
+    router,
+    store,
+    BootstrapVue,
+    custom,
+    SimpleBar,
+    i18n,
+    render: h => h(App)
 }).$mount('#app')
 

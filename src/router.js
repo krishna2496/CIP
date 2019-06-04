@@ -10,9 +10,9 @@ export default new Router({
   base: process.env.BASE_URL,
   routes: [
     {
-      path: '/',
-      name: 'login',
-      component: () => import('./views/Login.vue')
+      path: '/lang',
+      name: 'lang',
+      component: () => import('./components/HelloI18n')
     },
     {
       path: '/home',
@@ -34,6 +34,11 @@ export default new Router({
         path: '/forgot-password',
         name: 'forgotPassword',
         component: () => import('./views/ForgotPassword.vue')
+    },
+    {
+        path: '/cms/:pageId',
+        name: 'footerCmsPage',
+        component: () => import('./views/footerCmsPage.vue')
     }
   ]
 })
