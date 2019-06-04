@@ -68,13 +68,13 @@ class CmsController extends Controller
                                                 config('errors.status_type.HTTP_STATUS_TYPE_422'),
                                                 config('errors.custom_error_code.ERROR_20018'),
                                                 $validator->errors()->first());
-                }    
+                }                    
 
                 $insertPage = array();
                 $insertPage['page_id'] = $data['page_id'];
                 $insertPage['language_id'] = $value['language_id'];
                 $insertPage['title'] = $value['title'];
-                $insertPage['description'] = $value['description'];
+                $insertPage['description'] = json_encode($value['description']);
 
                 // Create footer language pages
                 $footerPageLanguage = FooterPagesLanguage::create($insertPage);
@@ -88,6 +88,7 @@ class CmsController extends Controller
             return Helpers::response($apiStatus, $apiMessage, $apiData);        
 
         } catch (\Exception $e) {
+            dd($e);
             // Any other error occured when trying to insert data into database for tenant option.
             return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_422'), 
                                     config('errors.status_type.HTTP_STATUS_TYPE_422'), 
@@ -154,7 +155,7 @@ class CmsController extends Controller
                         // Update existing record 
                         $updatePage = array();
                         $updatePage['title'] = $value['title'];
-                        $updatePage['description'] = $value['description'];
+                        $updatePage['description'] = json_encode($value['description']);
 
                         // Create footer language pages
                         $footerPageLanguage = FooterPagesLanguage::where('page_id', $id)->where('language_id', $value['language_id'])->update($updatePage);
