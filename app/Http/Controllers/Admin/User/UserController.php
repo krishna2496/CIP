@@ -81,9 +81,9 @@ class UserController extends Controller
 
         // If request parameter have any error
         if ($validator->fails()) {
-            return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_422'),
-										config('errors.status_type.HTTP_STATUS_TYPE_422'),
-										config('errors.custom_error_code.ERROR_20022'),
+            return Helpers::errorResponse(trans('api_error_messages.status_code.HTTP_STATUS_422'),
+										trans('api_error_messages.status_type.HTTP_STATUS_TYPE_422'),
+										trans('api_error_messages.custom_error_code.ERROR_20022'),
 										$validator->errors()->first());
         }
 

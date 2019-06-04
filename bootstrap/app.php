@@ -67,7 +67,8 @@ $app->routeMiddleware([
     'jwt.auth' => App\Http\Middleware\JwtMiddleware::class, //jwt auth
     'cros' => \Barryvdh\Cors\HandleCors::class, //cross origin support
     'tenant.connection' => App\Http\Middleware\TenantConnectionMiddleware::class, // Middle ware that connect tenant user with their tenant
-    'auth.tenant.admin' => App\Http\Middleware\AuthTenantAdminMiddleware::class
+    'auth.tenant.admin' => App\Http\Middleware\AuthTenantAdminMiddleware::class,
+    'localization' => App\Http\Middleware\LocalizationMiddleware::class
 ]);
 
 /**
@@ -75,6 +76,7 @@ $app->routeMiddleware([
  */
 $app->register(Barryvdh\Cors\LumenServiceProvider::class);
  
+$app->configure('app'); //default authentication
 $app->configure('auth'); //default authentication
 $app->configure('mail'); //SMTP and PHP mail
 $app->configure('constants'); //constant file config

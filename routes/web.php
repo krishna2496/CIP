@@ -22,6 +22,7 @@ $router->get('/', function () use ($router) {
 | and give it the Closure to call when that URI is requested.
 |
 */
+$router->group(['middleware' => 'localization'], function($router){
 /* Connect first time to get styling data. */
 $router->get('connect', ['middleware' => 'tenant.connection', 'uses' => 'App\Tenant\TenantOptionController@getTenantOption']);
 
@@ -36,6 +37,8 @@ $router->post('/reset-password/{token}', ['as' => 'password.reset', 'uses' => 'A
 
 /* reset password  */
 $router->put('/password_reset', ['middleware' => 'tenant.connection','uses' => 'App\Auth\AuthController@passwordReset']);
+});
+
 /*
 |
 |--------------------------------------------------------------------------
@@ -61,7 +64,7 @@ $router->put('/password_reset', ['middleware' => 'tenant.connection','uses' => '
 | These are tenant admin routes to manage tenant users, settings, and etc.
 |
 */
-$router->group(['prefix' => 'users', 'middleware' => 'auth.tenant.admin'], function($router){
+$router->group(['prefix' => 'users', 'middleware' => 'auth.tenant.admin|localization'], function($router){
 	/* Get all users of tenant */
 	$router->get('/', ['uses' => 'Admin\User\UserController@index']);
 	$router->post('/create', ['uses' => 'Admin\User\UserController@store']);
