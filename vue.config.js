@@ -38,6 +38,15 @@ module.exports = {
     port: 8080,
     https: false
   },
+
+  pluginOptions: {
+    i18n: {
+      locale: 'en',
+      fallbackLocale: 'en',
+      localeDir: 'locales',
+      enableInSFC: true
+    }
+  }
 };
 
 function newFunction() {
