@@ -61,12 +61,12 @@ class CmsController extends Controller
                                                 config('errors.custom_error_code.ERROR_20018'),
                                                 $validator->errors()->first());
                 }    
-
+                $desc = $value['description'];
                 $insertPage = array();
                 $insertPage['page_id'] = $data['page_id'];
                 $insertPage['language_id'] = $value['language_id'];
                 $insertPage['title'] = $value['title'];
-                $insertPage['description'] = $value['description'];
+                $insertPage['description'] = json_encode($desc);
                 // Create footer language pages
                 $footerPageLanguage = FooterPagesLanguage::create($insertPage);
                 unset($insertPage);
@@ -115,8 +115,8 @@ class CmsController extends Controller
                                         config('errors.custom_error_code.ERROR_20018'),
                                         $validator->errors()->first());
         }  
-        $footerPage = FooterPage::findorFail($id);
-        if (!empty($footerPage)) {
+        $footerPage = FooterPage::find($id);
+        if ($footerPage) {
             try {
                 $pageData = $request->page_detail;
                 foreach ($pageData['translations'] as $value) {                    
@@ -134,19 +134,21 @@ class CmsController extends Controller
                                     ->count();
                     if (!empty($footerPageData)) {
                         // Update existing record 
+                        $desc = $value['description'];
                         $updatePage = array();
                         $updatePage['title'] = $value['title'];
-                        $updatePage['description'] = $value['description'];
+                        $updatePage['description'] = json_encode($desc);
                         // Create footer language pages
                         $footerPageLanguage = FooterPagesLanguage::where('page_id', $id)->where('language_id', $value['language_id'])->update($updatePage);
                         unset($updatePage);                            
                     } else {
                         // Insert new record
                         $insertPage = array();
+                        $desc = $value['description'];
                         $insertPage['page_id'] = $id;
                         $insertPage['language_id'] = $value['language_id'];
                         $insertPage['title'] = $value['title'];
-                        $insertPage['description'] = $value['description'];
+                        $insertPage['description'] = json_encode($desc);
                         // Create footer language pages
                         $footerPageLanguage = FooterPagesLanguage::create($insertPage);
                         unset($insertPage);                        
