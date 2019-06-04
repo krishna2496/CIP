@@ -1,88 +1,68 @@
 <template>
     <div class="signin-slider">
         <b-carousel  id="carousel-1" fade :interval="2000" indicators v-if="isDynamicCarsousetSet">
-
-        <b-carousel-slide 
-        v-for="item in carouselItems"
-        :key="item.sort_order"
-        :caption="getTitle(item.translations)"
-        :text="getDescription(item.translations)"
-        :img-src="item.url">     
-        </b-carousel-slide>
-
+			<b-carousel-slide 
+			v-for="item in carouselItems"
+			:key="item.sort_order"
+			:caption="getTitle(item.translations)"
+			:text="getDescription(item.translations)"
+			:img-src="item.url">     
+			</b-carousel-slide>
         </b-carousel>
-        <b-carousel id fade :interval="2000" indicators v-else>
-
-        <b-carousel-slide
-        caption="Sed ut perspiciatis unde omnis iste natus voluptatem."
-        text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
-        img-src="../assets/images/login/sliderimg1.png"
-        ></b-carousel-slide>
-
-        <b-carousel-slide
-        caption="Heading2"
-        text="Phasellus efficitur cursus sapien, non efficitur mauris interdum accumsan. In hac habitasse platea dictumst. Phasellus fringilla odio at ante interdum maximus. Vestibulum luctus lacus at ex porta consectetur. Aliquam velit diam, rhoncus eu mattis eu, mollis ac erat. Sed id sem vel lorem aliquet malesuada. Nunc lobortis suscipit lobortis. Aenean tempor efficitur neque. Nulla bibendum massa magna. Nulla luctus sapien urna, quis luctus odio blandit quis. Praesent consectetur faucibus odio, vitae maximus dolor feugiat id."
-        img-src="../assets/images/login/sliderimg2.jpg"
-        ></b-carousel-slide>
-
-        <b-carousel-slide
-        caption="Sed ut perspiciatis unde omnis iste natus voluptatem."
-        text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
-        img-src="../assets/images/login/sliderimg3.jpg"
-        ></b-carousel-slide>
-
-        <b-carousel-slide
-        caption="Sed ut perspiciatis unde omnis iste natus voluptatem."
-        text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
-        img-src="../assets/images/login/sliderimg4.jpg"
-        ></b-carousel-slide>
-
+        
+		<b-carousel id fade :interval="2000" indicators v-else>
+			<b-carousel-slide img-src="../assets/images/login/sliderimg1.png" ></b-carousel-slide>
         </b-carousel>
     </div>
 
 </template>
+
 <script>
 
 import store from '../store';
 
 export default {
-name: "SigninSlider",
-data() {
-    return {
-        carouselItems: [],
-        isDynamicCarsousetSet : false
-    };
-},
+	name: "SigninSlider",
+	data() {
+		return {
+			carouselItems: [],
+			isDynamicCarsousetSet : false
+		};
+	},
 
-created(){
-    //Set carousel dynamically 
-    if(JSON.parse(store.state.slider) != null){
-        this.carouselItems = JSON.parse(store.state.slider);
-        this.isDynamicCarsousetSet = true
-    }
-},
+	created(){
+		//Set carousel dynamically 
+		if(JSON.parse(store.state.slider) != null){
+			this.carouselItems = JSON.parse(store.state.slider);
+			this.isDynamicCarsousetSet = true
+		}
+	},
 
-methods:{
-    //Slider title by language
-    getTitle: (translations) => {
-        var filteredObj  = translations.filter(function (item,i) { 
-        if(item.lang === store.state.defaultLanguage.toLowerCase()){
-            return translations[i].slider_title;
-        }
-        });
-           return filteredObj[0].slider_title;
-    },
+	methods:{
+		getTitle: (translations) => {
+			// Fetch slider title by language
+			if(translations){
+				var filteredObj  = translations.filter(function (item, i) { 
+				if(item.lang === store.state.defaultLanguage.toLowerCase()){
+					return translations[i].slider_title;
+				}
+				});
+			   return filteredObj[0].slider_title;
+			}
+		},
 
-//Slider description by language
-    getDescription: (translations) => {
-        var filteredObj  = translations.filter(function (item,i) { 
-        if(item.lang === store.state.defaultLanguage.toLowerCase()){
-            return translations[i].slider_description;
-        }
-        });
-            return filteredObj[0].slider_description;
-    }
-}
+		getDescription: (translations) => {
+			// Fetch slider description by language
+			if(translations){
+				var filteredObj  = translations.filter(function (item, i) { 
+				if(item.lang === store.state.defaultLanguage.toLowerCase()){
+					return translations[i].slider_description;
+				}
+				});
+				return filteredObj[0].slider_description;
+			}
+		}
+	}
 
 };
 </script>

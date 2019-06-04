@@ -1,18 +1,18 @@
 import store from '../../store'
 
-export default (data,langList,defautLang) =>{
+export default (data, langList, defautLang) => {
 
-    //Store slider in Local Storage
-    if (data.slider) {
-        //Convert slider object to array
+    // Store slider in Local Storage
+	if (data.slider) {
+        // Convert slider object to array
         let listOfSliderObjects = Object.keys(data.slider).map((key) => {
-        return data.slider[key]
+			return data.slider[key]
         })
         
         store.commit('setSlider',JSON.stringify(data.slider))
     } 
 
-    //Store language in Local Storage
+    // Store language in Local Storage
     if (data.language) {
 
         let defaultLanguageDataChange = true
@@ -20,13 +20,13 @@ export default (data,langList,defautLang) =>{
         let listOfObjects = Object.entries(data.language);
 
         listOfObjects.forEach(function(listOfLangauge) {
-            if (listOfLangauge[0] == localStorage.getItem('defaultLanguageId') && listOfLangauge[1] == localStorage.getItem('defaultLanguage')){
+            if (listOfLangauge[0] == localStorage.getItem('defaultLanguageId') && listOfLangauge[1] == localStorage.getItem('defaultLanguage')) {
                 defaultLanguageDataChange = false;
             }
             
         });
 
-        //If options exist
+        // If options exist
         if (listOfObjects) {
                 localStorage.setItem('listOfLanguage',JSON.stringify(listOfObjects))
             
