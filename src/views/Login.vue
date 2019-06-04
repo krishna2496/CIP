@@ -4,7 +4,9 @@
         <div class="signin-form-wrapper">
 
             <div class="lang-drodown-wrap">
-                <customDropdown :optionList="langList" :default_text="defaut_lang" />
+                
+                  <customDropdown :optionList="langList" :default_text="defautLang" @updateCall="setLanguage"/>
+                <!-- <customDropdown :optionList="langList" :default_text="defautLang" @updateCall="setLanguage"/> -->
             </div>
 
             <div class="signin-form-block">
@@ -26,7 +28,7 @@
                     </b-form-group>
                     <b-form-group>
                         <label for="">Password</label>
-                        <b-form-input id="" type="password" v-model="login.password" required placeholder="Enter Password" :class="{ 'is-invalid': $v.login.password.$error }"></b-form-input>
+                        <b-form-input id="" type="password" v-model="login.password" required placeholder="Enter Password" :class="{ 'is-invalid': $v.login.password.$error }" @keypress.enter.prevent="handleSubmit"></b-form-input>
                         <div v-if="submitted && !$v.login.password.required" class="invalid-feedback">Password is required</div>
                         <div v-if="submitted && !$v.login.password.minLength" class="invalid-feedback">Password lenght should be minimum 8 character</div>
                     </b-form-group>
@@ -50,7 +52,8 @@
     import { required, email, minLength, between } from 'vuelidate/lib/validators';
     import store from '../store';
     import axios from "axios";
-
+    import {storeTenantOption} from '../services/RestResource';
+    import { mapActions } from 'vuex'
     export default {
         components: {
             SigninSlider,
@@ -61,7 +64,7 @@
         data() {
             return {
                 myValue: '',
-                defaut_lang: 'EN',
+                defautLang: 'EN',
                 langList: [],
                 login: {
                     email: '',
@@ -87,6 +90,10 @@
         },
 
         methods: {
+            setLanguage(language){
+                this.defautLang = language.selectedVal;
+                store.commit('setDefaultLanguage',language);
+            },
             handleSubmit(e) {
                 this.submitted = true;
                 this.$v.$touch();
@@ -99,7 +106,7 @@
                 axios.post(process.env.VUE_APP_API_ENDPOINT+"login", this.login,
                    )
                         .then((response) => {
-                            //store token in local storage
+                            //Store token in local storage
                             localStorage.setItem('isLoggedIn', response.data.data.token)
                             localStorage.setItem('token', response.data.data.token)
                             store.commit('loginUser', response.data.data.token)
@@ -124,41 +131,36 @@
             //Autofocus
             this.$refs.email.focus();
         },
-
+        beforeUpdate(){
+            
+        },
         created() {
-            //database connection and fetching tenant options api
+
+            //Database connection and fetching tenant options api
             axios.get(process.env.VUE_APP_API_ENDPOINT+"/connect")
                     .then((response) => {
 
-                        if (response.data.data.language) {
+                        localStorage.removeItem('slider');  
+                        localStorage.removeItem('listOfLanguage');
+                        if (response.data.data) {
+                            //store tenant option to Local Storage
+                            storeTenantOption(response.data.data,this.langList,this.defautLang);
 
-                            //convert language object to array
-                            let listOfObjects = Object.keys(response.data.data.language).map((key) => {
-                                return response.data.data.language[key]
-                            })
+                            //Get langauage list from Local Storage
+                            this.langList = JSON.parse(store.state.listOfLanguage)
 
-                            //if options exist
-                            if(listOfObjects){
-                                localStorage.setItem('listOfLanguage',JSON.stringify(listOfObjects))
-                                localStorage.setItem('defaultLanguage',listOfObjects[0])
-                                this.langList = JSON.parse(localStorage.getItem('listOfLanguage'))
-                                this.defaut_lang = localStorage.getItem('defaultLanguage') 
-                            }else{
-                                localStorage.setItem('listOfLanguage',this.langList)
-                                localStorage.setItem('defaultLanguage',this.defaut_lang)
-                            }
-                            
+                            this.defautLang = store.state.defaultLanguage
+
                         }else{
-                            localStorage.removeItem('listOfLanguage');
                             localStorage.removeItem('defaultLanguage');
-                            localStorage.setItem('listOfLanguage',JSON.stringify(this.langList))
-                            localStorage.setItem('defaultLanguage',this.defaut_lang)
-                        }
+                            localStorage.removeItem('defaultLanguageId');
+                        } 
 
                     })
                     .catch(error => {
                         console.log(error)
                     })
+
         },
 
         updated(){

@@ -8,6 +8,7 @@ module.exports = {
       }
     }
   },
+
   chainWebpack: config => {
     config.module
       .rule("vue")
@@ -35,8 +36,16 @@ module.exports = {
        host: 'localhost',
 	    port: 8080,
 	    https: false
+    },
+
+  pluginOptions: {
+    i18n: {
+      locale: 'en',
+      fallbackLocale: 'en',
+      localeDir: 'locales',
+      enableInSFC: true
     }
-	
+  }
 };
 
 function newFunction() {

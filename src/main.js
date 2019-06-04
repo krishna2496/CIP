@@ -11,6 +11,7 @@ import axios from "axios";
 import VueAxios from "vue-axios";
 import Vuelidate from 'vuelidate'
 import interceptorsSetup from './interceptors'
+import i18n from './i18n'
 
 Vue.use(Vuelidate,VueAxios,axios)
 
@@ -42,6 +43,7 @@ new Vue({
 	custom,
 	SimpleBar,
 	VueScrollTo,
+    i18n,
 	render: h => h(App)
 }).$mount('#app')
 

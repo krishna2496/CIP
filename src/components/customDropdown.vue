@@ -1,9 +1,9 @@
 <template>
-  <div class="custom-dropdown" v-on:touchend.stop>
+  <div class="custom-dropdown" v-on:touchend.stop  >
     <span @click="handleClick">{{default_text}}</span>
     <div class="option-list-wrap" data-simplebar>
       <ul class="option-list">
-        <li v-for="item in optionList" :key="item" @click="handleSelect">{{item}}</li>
+        <li v-for="item in optionList" v-bind:data-id="item[0]" @click="handleSelect">{{item[1]}}</li>
       </ul>
     </div>
   </div>
@@ -46,8 +46,11 @@ export default {
         }
     },
     handleSelect(e) {
-      var selected_val = e.target.innerHTML;
-      this.$emit("updateCall", selected_val);
+        var selectedData = []
+        selectedData['selectedVal']  = e.target.innerHTML;
+        selectedData['selectedId']  = e.target.dataset.id;
+         
+        this.$emit("updateCall", selectedData);
     }
   },
   beforeDestroy() {
@@ -67,11 +70,9 @@ export default {
     padding: 6px 35px 6px 15px;
     border: 1px solid $control-border;
     border-radius: 3px;
-    text-overflow: ellipsis;
     overflow: hidden;
     @extend .control_shadow;
     max-width:100%;
-    white-space:nowrap;
     cursor: pointer;
     &:after {
       position: absolute;
