@@ -33,7 +33,7 @@ class CmsController extends Controller
 
                         $detailArray['language_id'] = $languageValue['language_id'];
                         $detailArray['title'] = $languageValue['title'];
-                        $detailArray['description'] = $languageValue['description'];
+                        $detailArray['description'] = json_decode($languageValue['description']);
                         $detailArray['page_id'] = $languageValue['page_id'];
                         $detail[] = $detailArray;
                     }
