@@ -76,7 +76,7 @@ class TenantOptionsController extends Controller
                 // Set data for create new record
                 $insert = array();
                 $insert['option_name'] = config('constants.TENANT_OPTION_SLIDER');
-                $insert['option_value'] = json_encode($optionValue);
+                $insert['option_value'] = serialize(json_encode($optionValue));
 
                 // Create new tenant_option
                 $tenantOption = TenantOption::create($insert);

@@ -19,30 +19,42 @@ class TenantOptionController extends Controller
      */
     public function getTenantOption() 
     {
-        $data = $optionData = array(); 
+        $data = $optionData = $slider = array(); 
         
-        //flag to check value is serialize or not
-        $checkForSerialize = FALSE;
+        // Flag to check value is serialize or not
+        $checkForSerialize = false;
         
-        // find custom data
-        $tenantOptions = TenantOption::get(['option_name', 'option_value'])->where('deleted_at', NULL);
+        // Find custom data
+        $tenantOptions = TenantOption::get(['option_name', 'option_value']);
         $data = $tenantOptions->toArray();
         
-        //if data exist
         if ($data) {
-            foreach ($data as $key =>$value) {
-                //check if value is serialize or not
-                $checkForSerialize = @unserialize($value['option_value']);
+            foreach ($data as $key => $value) {
+				// For slider
+                if ($value['option_name'] == config('constants.TENANT_OPTION_SLIDER')) {
                 
-                if ($checkForSerialize === FALSE) {
-                    // if not serialize value
-                    $optionData[$value['option_name']] = $value['option_value'];
-                } else {
-                    // for serialize value
-                    $optionData[$value['option_name']] = unserialize($value['option_value']);
-                }
+					$slider[]= json_decode(@unserialize($value['option_value']),true);
+                
+				} else {
+					// Check if value is serialize or not
+					$checkForSerialize = @unserialize($value['option_value']);
+                
+                    if ($checkForSerialize === false) {
+                        // If not serialize value
+                        $optionData[$value['option_name']] = $value['option_value'];
+                    } else {
+                        $optionData[$value['option_name']] = unserialize($value['option_value']);
+                    }
+				}
+            }
+
+            // Sort an array by sort order of slider
+            if(!empty($slider)){
+				Helpers::sortMultidimensionalArray($slider, 'sort_order', SORT_ASC);
+				$optionData['slider'] = $slider;
             }
         }
+
         return Helpers::response(app('Illuminate\Http\Response')->status(), '', $optionData);
     }
 
@@ -58,12 +70,14 @@ class TenantOptionController extends Controller
         // find custom data
         $tenantOptions = TenantOption::get(['option_name', 'option_value'])->where('deleted_at', NULL)->where('option_name','custom_logo')->first();
        
-        if($tenantOptions && $tenantOptions->option_value){
+        if ($tenantOptions && $tenantOptions->option_value) {
             $tenantLogo = $tenantOptions->option_value;
         }
       
         return $tenantLogo;
     }
+
+
 
 
 }
