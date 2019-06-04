@@ -73,9 +73,9 @@ class AuthController extends Controller {
         ]);
 
         if ($validator->fails()) {
-            return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_422'), 
-                                        config('errors.status_type.HTTP_STATUS_TYPE_422'), 
-                                        config('errors.custom_error_code.ERROR_40001'), 
+            return Helpers::errorResponse(trans('api_error_messages.status_code.HTTP_STATUS_422'), 
+                                        trans('api_error_messages.status_type.HTTP_STATUS_TYPE_422'), 
+                                        trans('api_error_messages.custom_error_code.ERROR_40001'), 
                                         $validator->errors()->first());
         }
         
@@ -83,25 +83,25 @@ class AuthController extends Controller {
         $user = User::where('email', $this->request->input('email'))->first();
 
         if (!$user) {
-            return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_403'), 
-                                        config('errors.status_type.HTTP_STATUS_TYPE_403'), 
-                                        config('errors.custom_error_code.ERROR_40002'), 
-                                        config('errors.custom_error_message.40002'));
+            return Helpers::errorResponse(trans('api_error_messages.status_code.HTTP_STATUS_403'), 
+                                        trans('api_error_messages.status_type.HTTP_STATUS_TYPE_403'), 
+                                        trans('api_error_messages.custom_error_code.ERROR_40002'), 
+                                        trans('api_error_messages.custom_error_message.40002'));
         }
         
         // Verify user's password
         if (!Hash::check($this->request->input('password'), $user->password)) {
-            return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_422'), 
-                                        config('errors.status_type.HTTP_STATUS_TYPE_422'), 
-                                        config('errors.custom_error_code.ERROR_40004'), 
-                                        config('errors.custom_error_message.40004'));
+            return Helpers::errorResponse(trans('api_error_messages.status_code.HTTP_STATUS_422'), 
+                                        trans('api_error_messages.status_type.HTTP_STATUS_TYPE_422'), 
+                                        trans('api_error_messages.custom_error_code.ERROR_40004'), 
+                                        trans('api_error_messages.custom_error_message.40004'));
         }
         
         // Generate JWT token
         $data["token"] = $this->jwt($user);
         $apiData = $data;
         $apiStatus = app('Illuminate\Http\Response')->status();
-        $apiMessage = config('messages.success_message.MESSAGE_USER_LOGIN_SUCCESS');
+        $apiMessage = trans('api_success_messages.success_message.MESSAGE_USER_LOGIN_SUCCESS');
         return Helpers::response($apiStatus, $apiMessage, $apiData);
     }
     
@@ -120,9 +120,9 @@ class AuthController extends Controller {
         ]);
         
         if ($validator->fails()) {
-            return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_422'), 
-                                        config('errors.status_type.HTTP_STATUS_TYPE_422'), 
-                                        config('errors.custom_error_code.ERROR_40010'), 
+            return Helpers::errorResponse(trans('api_error_messages.status_code.HTTP_STATUS_422'), 
+                                        trans('api_error_messages.status_type.HTTP_STATUS_TYPE_422'), 
+                                        trans('api_error_messages.custom_error_code.ERROR_40010'), 
                                         $validator->errors()->first());
         }
 
@@ -130,10 +130,10 @@ class AuthController extends Controller {
         $user = User::where('email', $request->get('email'))->first();
 
         if (!$user) {
-            return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_403'), 
-                                        config('errors.status_type.HTTP_STATUS_TYPE_403'), 
-                                        config('errors.custom_error_code.ERROR_40002'), 
-                                        config('errors.custom_error_message.40002'));
+            return Helpers::errorResponse(trans('api_error_messages.status_code.HTTP_STATUS_403'), 
+                                        trans('api_error_messages.status_type.HTTP_STATUS_TYPE_403'), 
+                                        trans('api_error_messages.custom_error_code.ERROR_40002'), 
+                                        trans('api_error_messages.custom_error_message.40002'));
         }
         
         //get referer url using helper 
@@ -152,14 +152,14 @@ class AuthController extends Controller {
 
         // If reset password link didn't sent
         if (!$response == Password::RESET_LINK_SENT) {
-            return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_500'), 
-                                        config('errors.status_type.HTTP_STATUS_TYPE_500'), 
-                                        config('errors.custom_error_code.ERROR_40006'), 
-                                        config('errors.custom_error_message.40006'));
+            return Helpers::errorResponse(trans('api_error_messages.status_code.HTTP_STATUS_500'), 
+                                        trans('api_error_messages.status_type.HTTP_STATUS_TYPE_500'), 
+                                        trans('api_error_messages.custom_error_code.ERROR_40006'), 
+                                        trans('api_error_messages.custom_error_message.40006'));
         }
 
         $apiStatus = app('Illuminate\Http\Response')->status();
-        $apiMessage = config('messages.success_message.MESSAGE_PASSWORD_RESET_LINK_SEND_SUCCESS');
+        $apiMessage = trans('api_success_messages.success_message.MESSAGE_PASSWORD_RESET_LINK_SEND_SUCCESS');
         return Helpers::response($apiStatus, $apiMessage);;
     }
 
@@ -183,9 +183,9 @@ class AuthController extends Controller {
         ]);
         
         if ($validator->fails()) {
-            return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_422'), 
-                                        config('errors.status_type.HTTP_STATUS_TYPE_422'), 
-                                        config('errors.custom_error_code.ERROR_40011'), 
+            return Helpers::errorResponse(trans('api_error_messages.status_code.HTTP_STATUS_422'), 
+                                        trans('api_error_messages.status_type.HTTP_STATUS_TYPE_422'), 
+                                        trans('api_error_messages.custom_error_code.ERROR_40011'), 
                                         $validator->errors()->first());
         }
  
@@ -194,18 +194,18 @@ class AuthController extends Controller {
        
         //if record not found
         if(!$record){
-            return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_422'), 
-                                        config('errors.status_type.HTTP_STATUS_TYPE_422'), 
-                                        config('errors.custom_error_code.ERROR_40013'), 
-                                        config('errors.custom_error_message.40013'));
+            return Helpers::errorResponse(trans('api_error_messages.status_code.HTTP_STATUS_422'), 
+                                        trans('api_error_messages.status_type.HTTP_STATUS_TYPE_422'), 
+                                        trans('api_error_messages.custom_error_code.ERROR_40013'), 
+                                        trans('api_error_messages.custom_error_message.40013'));
         }
 
         if(!Hash::check($request->get('token'), $record->token)){
             //invalid hash
-            return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_401'), 
-                                        config('errors.status_type.HTTP_STATUS_TYPE_401'), 
-                                        config('errors.custom_error_code.ERROR_40013'), 
-                                        config('errors.custom_error_message.40013'));
+            return Helpers::errorResponse(trans('api_error_messages.status_code.HTTP_STATUS_401'), 
+                                        trans('api_error_messages.status_type.HTTP_STATUS_TYPE_401'), 
+                                        trans('api_error_messages.custom_error_code.ERROR_40013'), 
+                                        trans('api_error_messages.custom_error_message.40013'));
         }
         
          // Reset the password
@@ -218,7 +218,7 @@ class AuthController extends Controller {
         );
       
         $apiStatus = app('Illuminate\Http\Response')->status();
-        $apiMessage = config('messages.success_message.MESSAGE_PASSWORD_CHANGE_SUCCESS');
+        $apiMessage = trans('api_success_messages.success_message.MESSAGE_PASSWORD_CHANGE_SUCCESS');
         return Helpers::response($apiStatus, $apiMessage);
     }
 

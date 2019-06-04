@@ -64,7 +64,7 @@ $router->put('/password_reset', ['middleware' => 'tenant.connection','uses' => '
 | These are tenant admin routes to manage tenant users, settings, and etc.
 |
 */
-$router->group(['prefix' => 'users', 'middleware' => 'auth.tenant.admin|localization'], function($router){
+$router->group(['prefix' => 'users', 'middleware' => 'localization|auth.tenant.admin'], function($router){
 	/* Get all users of tenant */
 	$router->get('/', ['uses' => 'Admin\User\UserController@index']);
 	$router->post('/create', ['uses' => 'Admin\User\UserController@store']);
@@ -72,6 +72,6 @@ $router->group(['prefix' => 'users', 'middleware' => 'auth.tenant.admin|localiza
 });
 
 /* Set custom slider data for tenant specific */
-$router->post('/create_slider', ['middleware' => 'auth.tenant.admin', 'uses' => 'Admin\Tenant\TenantOptionsController@storeSlider']);
+$router->post('/create_slider', ['middleware' => 'localization|auth.tenant.admin', 'uses' => 'Admin\Tenant\TenantOptionsController@storeSlider']);
 /* Set cms data for tenant specific */
-$router->post('/create', ['middleware' => 'auth.tenant.admin', 'uses' => 'Admin\Tenant\CmsController@store']);
+$router->post('/create', ['middleware' => 'localization|auth.tenant.admin', 'uses' => 'Admin\Tenant\CmsController@store']);
