@@ -8,6 +8,7 @@ module.exports = {
       }
     }
   },
+
   chainWebpack: config => {
     config.module
       .rule("vue")
@@ -29,14 +30,23 @@ module.exports = {
 		return options
 		})
 	},
-	
-    lintOnSave: false,
-    	devServer: {
-	    host: 'tatva.optimy.com',
-	    port: 8080,
-	    https: false
+
+  lintOnSave: false,
+
+  devServer: {
+  host: 'tatva.optimy.com',
+  port: 8080,
+  https: false
+},
+
+  pluginOptions: {
+    i18n: {
+      locale: 'en',
+      fallbackLocale: 'en',
+      localeDir: 'locales',
+      enableInSFC: true
     }
-	
+  }
 };
 
 function newFunction() {

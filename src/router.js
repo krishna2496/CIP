@@ -34,6 +34,11 @@ export default new Router({
         path: '/forgot-password',
         name: 'forgotPassword',
         component: () => import('./views/ForgotPassword.vue')
+    },
+    {
+        path: '/cms/:pageId',
+        name: 'footerCmsPage',
+        component: () => import('./views/footerCmsPage.vue')
     }
   ]
 })

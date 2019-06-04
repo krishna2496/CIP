@@ -1,18 +1,7 @@
-<template>
-  <div class="auth-header">
-    <i class="logo-wrap">
-        <img src="../assets/images/optimy-logo.png">
-    </i>
-  </div>
-</template>
-<script>
-export default {
-  name: "AuthHeader",
-  data() {
-    return {};
-  }
-};
-</script>
+export default class RestResource {
 
-<style lang="scss" scoped>
-</style>
+  sendRequest() {
+    // Use vue-resource or any other http library to send your request
+  }
+
+}

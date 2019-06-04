@@ -34,11 +34,11 @@ router.beforeEach((to, from, next) => {
 });
 
 new Vue({
-	router,
-	store,
-	BootstrapVue,
-	custom,
-	SimpleBar,
-	render: h => h(App)
+    router,
+    store,
+    BootstrapVue,
+    custom,
+    SimpleBar,
+    render: h => h(App)
 }).$mount('#app')
 

@@ -3,7 +3,7 @@
     <SigninSlider/>
 		<div class="signin-form-wrapper">
 			<div class="lang-drodown-wrap">
-				<customDropdown :optionList="langList" :default_text="defaut_lang"/>
+				<customDropdown :optionList="langList" :default_text="defautLang" @updateCall="setLanguage"/>
 			</div>
 			<div class="signin-form-block">
 				<a href="/home" class="logo-wrap" title>
@@ -21,10 +21,14 @@
 				<b-form class="signin-form">
 					<b-form-group>
 						<label for>Email Address</label>
-						<b-form-input id type="email" v-model="forgotPassword.email" :class="{ 'is-invalid': $v.forgotPassword.email.$error }" placeholder="Enter your email address" ref='email' autofocus></b-form-input>
+						<b-form-input id type="email" v-model="forgotPassword.email" :class="{ 'is-invalid': $v.forgotPassword.email.$error }" @keypress.enter.prevent="handleSubmit" placeholder="Enter your email address"
+
+						 ref='email' autofocus></b-form-input>
 						<div v-if="submitted && !$v.forgotPassword.email.required" class="invalid-feedback">Email address is required</div>
 						<div v-if="submitted && !$v.forgotPassword.email.email" class="invalid-feedback">Enter valid email address</div>
 					</b-form-group>
+
+					
 					<b-button type="button" @click="handleSubmit" class="btn btn-bordersecondary" title="Reset my Password">Reset my Password</b-button>
 				</b-form>
 				
@@ -44,6 +48,7 @@ import SigninSlider from "../components/SigninSlider";
 import SigninFooter from "../components/Footer/SigninFooter";
 import customDropdown from "../components/customDropdown";
 import { required, email, minLength, between } from 'vuelidate/lib/validators';
+import store from '../store';
 import axios from "axios";
 
 export default {
@@ -55,7 +60,7 @@ export default {
 	data() {
 		return {
 			myValue: "",
-			defaut_lang: "EN",
+			defautLang: "EN",
 			langList:[],
 			forgotPassword: {
 				email: '',
@@ -76,6 +81,12 @@ export default {
 	computed: {},
 
 	methods: {
+		
+		setLanguage(language){
+                this.defautLang = language;
+                store.commit('setDefaultLanguage', language);
+            },
+
 		handleSubmit(e) {
 			this.submitted = true;
 			// Stop here if form is invalid
@@ -116,7 +127,7 @@ export default {
 	created() {
 		// Set language list and default language fetch from Local Storage
    	this.langList = (localStorage.getItem('listOfLanguage') !== null) ? JSON.parse(localStorage.getItem('listOfLanguage')) : []
-		this.defaut_lang = localStorage.getItem('defaultLanguage') 
+	this.defautLang = localStorage.getItem('defaultLanguage') 
 	},
 
 };
