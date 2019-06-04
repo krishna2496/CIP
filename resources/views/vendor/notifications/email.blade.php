@@ -168,7 +168,7 @@ $actionUrl = config('app.mail_url').$token;
 
 					<tr>
 						<td style="font-family: Verdana,Geneva,sans-serif;  color: #757575; font-size:13px; line-height: 17px; align:center; text-align:center">
-							© 2019 Optimy, All Rights Reserved.
+							© {{date('Y')}} Optimy, All Rights Reserved.
 						</td>
 					</tr>
 					<tr>
