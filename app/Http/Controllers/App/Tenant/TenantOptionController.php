@@ -21,41 +21,37 @@ class TenantOptionController extends Controller
     {
         $data = $optionData = $slider = array(); 
         
-        //flag to check value is serialize or not
-        $checkForSerialize = FALSE;
+        // Flag to check value is serialize or not
+        $checkForSerialize = false;
         
-        // find custom data
+        // Find custom data
         $tenantOptions = TenantOption::get(['option_name', 'option_value']);
         $data = $tenantOptions->toArray();
         
-        //if data exist
         if ($data) {
-            foreach ($data as $key =>$value) {
+            foreach ($data as $key => $value) {
+				// For slider
+                if ($value['option_name'] == config('constants.TENANT_OPTION_SLIDER')) {
                 
-                //if option is slider 
-                if ($value['option_name'] == 'slider') {
+					$slider[]= json_decode(@unserialize($value['option_value']),true);
                 
-                    $slider[]= json_decode($value['option_value'],true);
+				} else {
+					// Check if value is serialize or not
+					$checkForSerialize = @unserialize($value['option_value']);
                 
-                } else {
-                //check if value is serialize or not
-                $checkForSerialize = @unserialize($value['option_value']);
-                
-                    if ($checkForSerialize === FALSE) {
-                        // if not serialize value
+                    if ($checkForSerialize === false) {
+                        // If not serialize value
                         $optionData[$value['option_name']] = $value['option_value'];
                     } else {
-                        // for serialize value
                         $optionData[$value['option_name']] = unserialize($value['option_value']);
                     }
-
-                }
+				}
             }
 
-            //sort array by sort order id of slider
-            if(isset($slider) && !empty($slider)){
-                    Helpers::sortMultidimensionalArray($slider, 'sort_order', SORT_ASC);
-                    $optionData['slider'] = $slider;
+            // Sort an array by sort order of slider
+            if(!empty($slider)){
+				Helpers::sortMultidimensionalArray($slider, 'sort_order', SORT_ASC);
+				$optionData['slider'] = $slider;
             }
         }
 
