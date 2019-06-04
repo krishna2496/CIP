@@ -41,6 +41,7 @@ new Vue({
     BootstrapVue,
     custom,
     SimpleBar,
+    VueScrollTo,
     render: h => h(App)
 }).$mount('#app')
 
