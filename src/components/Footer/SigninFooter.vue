@@ -10,9 +10,7 @@
             </b-list-group>
         </div>
         <div class="copyright-text">
-        <p>
-            Powered by
-            <b-link title="Optimy">Optimy</b-link>
+        <p>{{ $t("label.powered_by") }} <b-link title="Optimy">Optimy</b-link>
         </p>
         </div>
     </div>
@@ -21,6 +19,7 @@
 <script>
 import axios from "axios";
 import store from '../../store';
+
 export default {
 components: {},
 
@@ -35,15 +34,15 @@ data() {
 
 created() {
     // Fetching footer CMS pages
-    axios.get(process.env.VUE_APP_API_ENDPOINT+"cms")
-    .then((response) => {
-        if (response.data.data) {
-            this.footerItems = response.data.data
-            this.isDynamicFooterItemsSet = true
-        }
-        }).catch(error => {
-            console.log(error)
-        })
+    // axios.get(process.env.VUE_APP_API_ENDPOINT+"cms")
+    // .then((response) => {
+    //     if (response.data.data) {
+    //         this.footerItems = response.data.data
+    //         this.isDynamicFooterItemsSet = true
+    //     }
+    //     }).catch(error => {
+    //         console.log(error)
+    //     })
 },
 methods:{  
     getTitle(items){
@@ -65,7 +64,7 @@ methods:{
         });
         return filteredObj[0].page_id
     }
-}
+},
 
 };
 

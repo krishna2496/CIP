@@ -1,5 +1,5 @@
 <template>
-  <div class="custom-dropdown" v-on:touchend.stop >
+  <div v-if="optionList.length > 0" class="custom-dropdown" v-on:touchend.stop>
     <span @click="handleClick">{{default_text}}</span>
     <div class="option-list-wrap" data-simplebar>
       <ul class="option-list">

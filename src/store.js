@@ -37,7 +37,20 @@ export default new Vuex.Store({
             localStorage.removeItem('slider');
             localStorage.setItem('slider', slider);
             state.slider = slider;
-        }
+        },
+        setLanguageList(state, languageList,){   
+            localStorage.removeItem('listOfLanguage');
+            localStorage.setItem('listOfLanguage',languageList);
+            state.listOfLanguage = languageList;
+        },
+        setLanguageDefault(state, defaultLanguage,defaultLanguageId){   
+            localStorage.removeItem('defaultLanguage');
+            localStorage.removeItem('defaultLanguageId');
+            localStorage.setItem('defaultLanguage',defaultLanguage)
+            localStorage.setItem('defaultLanguageId',defaultLanguageId)
+            state.defaultLanguage = defaultLanguage;
+            state.defaultLanguageId = defaultLanguageId;
+        },
     },
     getters: {
     // list: state => state.list
