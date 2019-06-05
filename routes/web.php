@@ -75,10 +75,10 @@ $router->post('/create_slider', ['middleware' => 'auth.tenant.admin', 'uses' => 
 /* Set cms data for tenant specific */
 $router->group(['prefix' => 'cms', 'middleware' => 'auth.tenant.admin'], function($router){
 	/* Get all users of tenant */
-	$router->get('/', ['uses' => 'Admin\CMS\CmsController@index']);
-	$router->post('/create', ['uses' => 'Admin\CMS\CmsController@store']);
-	$router->put('/update/{pageId}', ['uses' => 'Admin\CMS\CmsController@update']);
-	$router->put('/update/', ['uses' => 'Admin\CMS\CmsController@handleError']);
-	$router->delete('/{pageId}', ['uses' => 'Admin\CMS\CmsController@destroy']);
-	$router->delete('/', ['uses' => 'Admin\CMS\CmsController@handleError']);
+	$router->get('/', ['uses' => 'Admin\Cms\CmsController@index']);
+	$router->post('/create', ['uses' => 'Admin\Cms\CmsController@store']);
+	$router->put('/update/{pageId}', ['uses' => 'Admin\Cms\CmsController@update']);
+	$router->put('/update/', ['uses' => 'Admin\Cms\CmsController@handleError']);
+	$router->delete('/{pageId}', ['uses' => 'Admin\Cms\CmsController@destroy']);
+	$router->delete('/', ['uses' => 'Admin\Cms\CmsController@handleError']);
 });
