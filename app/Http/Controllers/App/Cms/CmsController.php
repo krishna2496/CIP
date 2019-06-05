@@ -15,7 +15,7 @@ class CmsController extends Controller
     /**
      * Display a listing of CMS pages.
      *
-     * @return \Illuminate\Http\Response
+     * @return mixed
      */
     public function index()
     {
@@ -31,14 +31,22 @@ class CmsController extends Controller
             foreach ($footerPage as $value) { 
                 // Get data from child table                   
                 $footerPageData = FooterPagesLanguage::where('page_id', $value['page_id'])->get();
-                // dd($footerPageData);
                 $detail = array();
                 $detailArray = array();
-                foreach ($footerPageData as $languageValue) {
-                    $detailArray['language_id'] = $languageValue['language_id'];
-                    $detailArray['title'] = $languageValue['title'];
-                    $detailArray['section'] = json_decode($languageValue['section']);
-                    $detailArray['page_id'] = $languageValue['page_id'];
+                foreach ($footerPageData as $language) {
+                    //flag to check value is serialize or not
+                    $checkForSerialize = false;
+                    //check if value is serialize or not
+                    $checkForSerialize = @unserialize($language['description']);
+                    if ($checkForSerialize === false) 
+                        $description = $language['description'];
+                    else 
+                        $description = unserialize($language['description']);
+                    
+                    $detailArray['language_id'] = $language['language_id'];
+                    $detailArray['title'] = $language['title'];
+                    $detailArray['section'] = $description;
+                    $detailArray['page_id'] = $language['page_id'];
                     $detail[] = $detailArray;
                 }
                 $footerPageList[] = $detail;
