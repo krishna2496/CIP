@@ -19,7 +19,43 @@ class CmsController extends Controller
      */
     public function index()
     {
-        //
+        try { 
+            // Get data for parent table
+            $footerPage = FooterPage::get()->toArray();            
+            if (empty($footerPage)) {
+                // Set response data
+                $apiStatus = app('Illuminate\Http\Response')->status();
+                $apiMessage = config('messages.success_message.MESSAGE_NO_DATA_FOUND');
+                return Helpers::response($apiStatus, $apiMessage);
+            }
+            $pageList = array();
+            foreach ($footerPage as $value) { 
+                // Get data from child table                   
+                $footerPageLanguage = FooterPagesLanguage::where('page_id', $value['page_id'])->get();
+                $footerPageList = array();
+                foreach ($footerPageLanguage as $language) {
+                    $footerPageList[] = array('page_id' => $language['page_id'],
+                                        'language_id' => $language['language_id'],
+                                        'title' => $language['title'],
+                                        'section' => (@unserialize($language['description']) === false) ? $language['description'] : unserialize($language['description']),
+                                        );
+                }
+                $pageList[] = array('slug'  => $value['slug'],
+                                    'pages' => $footerPageList
+                                    );
+            }
+            // Set response data
+            $apiData = $pageList; 
+            $apiStatus = app('Illuminate\Http\Response')->status();
+            $apiMessage = config('messages.success_message.MESSAGE_CMS_LIST_SUCCESS');
+            return Helpers::response($apiStatus, $apiMessage, $apiData);                  
+        } catch(\Exception $e) {
+            // Catch database exception
+            return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_500'), 
+                                        config('errors.status_type.HTTP_STATUS_TYPE_500'), 
+                                        config('errors.custom_error_code.ERROR_40018'), 
+                                        config('errors.custom_error_message.40018'));           
+        }
     }
 
     /**
