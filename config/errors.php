@@ -64,6 +64,7 @@ return [
 		'ERROR_20032' => '20032',
 		'ERROR_20034' => '20034',
 		'ERROR_21000' => '21000',
+		'ERROR_20102' => '20102',
 
 		// Error codes from 1000-
 		'ERROR_10006' => '10006',
@@ -105,11 +106,12 @@ return [
 		'21000' => 'Error while creating database connection',
 		'20018' => 'Invalid input data',
 		'20022' => 'Invalid user data',
-		'20026' => 'Please add data for values field',
+		'20026' => 'Please add values for this field',
 		'20028' => 'User custom field deletion failed',
 		'20020' => 'CMS page deletion failed',
 		'20032' => 'No data found for given id',
-		'20034' => 'Id cannot be blank. Please pass id in URL',
+		'20034' => 'Id cannot be blank. Please pass id in URL',		
+		'20102' => 'Invalid custom field input parameters or missing data',		
 
 		// Error codes from 1000-
 		'10006' => 'Database operational error',
