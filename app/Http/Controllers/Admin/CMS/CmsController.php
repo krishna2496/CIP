@@ -119,8 +119,14 @@ class CmsController extends Controller
                                         config('errors.custom_error_code.ERROR_20032'),
                                         config('errors.custom_error_message.20032'));
         }
-        try {
-            $pageData = $request->page_detail;
+        $pageData = $request->page_detail;
+        if (count($pageData['translations']) == 0) {
+            return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_422'),
+                                            config('errors.status_type.HTTP_STATUS_TYPE_422'),
+                                            config('errors.custom_error_code.ERROR_20030'),
+                                            config('errors.custom_error_message.20030'));
+        } 
+        try {            
             foreach ($pageData['translations'] as $value) {                    
                 // Server side validataions
                 $validator = Validator::make($value, ["language_id" => "required" ,"title" => "required" ,"section" => "required" ]);
