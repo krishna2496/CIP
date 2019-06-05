@@ -61,14 +61,15 @@ class CmsController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  string  $slug
      * @return mixed
      */
-    public function show($id)
+    public function show($slug)
     {        
         try { 
             // Get data for parent table
-            $footerPage = FooterPage::find($id);            
+            $footerPage = FooterPage::where('slug', $slug)->first();  
+
             if (empty($footerPage)) {
                 // Set response data
                 $apiStatus = app('Illuminate\Http\Response')->status();
