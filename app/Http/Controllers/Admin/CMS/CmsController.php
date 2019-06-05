@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin\CMS;
+namespace App\Http\Controllers\Admin\Cms;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -75,7 +75,7 @@ class CmsController extends Controller
                                                 config('errors.custom_error_code.ERROR_20018'),
                                                 $validator->errors()->first());
                 }    
-                $cms = array('page_id' => $data['page_id'], 'language_id' => $value['language_id'], 'title' => $value['title'], 'description' => serialize($value['section']));
+                $cms = array('page_id' => $data['page_id'], 'language_id' => $value['language_id'], 'title' => $value['title'], 'section' => serialize($value['section']));
                 // Create footer language pages
                 $footerPageLanguage = FooterPagesLanguage::create($cms);
                 unset($cms);
@@ -166,7 +166,7 @@ class CmsController extends Controller
                 $footerPageData = FooterPagesLanguage::where('page_id', $id)
                                 ->where('language_id', $value['language_id'])
                                 ->count();
-				$cms = array('page_id' => $footerPage['page_id'], 'language_id' => $value['language_id'], 'title' => $value['title'], 'description' => serialize($value['section']));
+				$cms = array('page_id' => $footerPage['page_id'], 'language_id' => $value['language_id'], 'title' => $value['title'], 'section' => serialize($value['section']));
                 if (!empty($footerPageData))
                     $footerPageLanguage = FooterPagesLanguage::where('page_id', $id)->where('language_id', $value['language_id'])->update($cms);
                 else
