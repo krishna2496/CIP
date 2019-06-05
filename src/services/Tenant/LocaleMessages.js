@@ -8,6 +8,7 @@ function setI18nLanguage (lang) {
     i18n.locale = lang
     axios.defaults.headers.common['X-localization'] = lang
     document.querySelector('html').setAttribute('lang', lang)
+    console.log(loadedLanguages);
     return lang;
 }
 
@@ -18,7 +19,7 @@ export default async (lang) => {
     } 
     
     if (!loadedLanguages.includes(lang)) {
-        axios.defaults.headers.common['X-localization'] = lang      
+            
         await axios.get(`${process.env.VUE_APP_LANGUAGE_API_ENDPOINT+lang}`, {
             method: "get",
             headers: {
@@ -31,8 +32,8 @@ export default async (lang) => {
                     res.data.locale,
                     res.data.data
                 );
-                loadedLanguages.push(res.data.locale) 
-                return Promise.resolve(setI18nLanguage(lang)) 
+                loadedLanguages.push(res.data.locale)
+                return Promise.resolve(setI18nLanguage(res.data.locale)) 
             }      
         }).catch(error => {
             alert("Something went wrong! please try again.");
