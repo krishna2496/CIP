@@ -107,8 +107,10 @@ class UserCustomFieldController extends Controller
                                         config('errors.custom_error_message.20032'));
         } 
         // Server side validataions
-        $validator = Validator::make($request->toArray(), ["name" => "required", "type" => ['required', Rule::in(['Text', 'Email', 'Drop-down', 'radio'])], "is_mandatory" => "required", "translation" => "required" 
-        ]);
+        $validator = Validator::make($request->toArray(), ["name" => "required", 
+															"type" => ['required', Rule::in(config('constants.custom_field_types'))], 
+															"is_mandatory" => "required", 
+															"translation" => "required" ]);
         // If post parameter have any missing parameter
         if ($validator->fails()) {
             return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_422'),
@@ -117,7 +119,8 @@ class UserCustomFieldController extends Controller
                                         $validator->errors()->first());
         } 
         $translation = $request->translation; 
-        if ((($request->type == 'Drop-down' ) || ($request->type == 'radio')) && ($translation['values'] == "")) {
+        if ((($request->type == config('constants.custom_field_types.DROP-DOWN') ) || ($request->type == config('constants.custom_field_types.RADIO'))) && 
+				(empty($translation[0]['values']))) {
             // Set response data if values are null for Drop-down and radio
             return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_422'),
                                 config('errors.status_type.HTTP_STATUS_TYPE_422'),
@@ -126,9 +129,9 @@ class UserCustomFieldController extends Controller
         } 
         try {                             
             // Set data for update record
-            $update = array('name' => $request->name, 'type' => $request->type, 'is_mandatory' => $request->is_mandatory, 'translations' => serialize($translation));
+            $fieldData = array('name' => $request->name, 'type' => $request->type, 'is_mandatory' => $request->is_mandatory, 'translations' => serialize($translation));
             // Update user custom field
-            $updateData = UserCustomField::where('field_id', $id)->update($update);
+            UserCustomField::where('field_id', $id)->update($fieldData);
             // Set response data
             $apiStatus = app('Illuminate\Http\Response')->status();
             $apiMessage = config('messages.success_message.MESSAGE_CUSTOM_FIELD_UPDATE_SUCCESS');
