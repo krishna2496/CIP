@@ -7,12 +7,13 @@
     <main v-if="isDynamicFooterItemsSet">
     <b-container>
     <h1>
-    {{footerItems.title}}</h1>
+    {{footerItems.title}}
+    </h1>
     <b-row>
     <b-col lg="3" md="4" class="cms-nav">
     <b-nav>
     <b-nav-item 
-    v-for="(item,key) in footerItems.description" 
+    v-for="(item,key) in footerItems.section" 
     v-scroll-to="{ el: '#block-'+key , offset : -63 , duration : 2000 }">
     {{item.title}}
     </b-nav-item>
@@ -21,7 +22,7 @@
     <b-col lg="9" md="8">
     <div class="cms-content cms-accordian" id="cms-content">    
     <div class="cms-content-block" 
-        v-for="(item,key) in footerItems.description" 
+        v-for="(item,key) in footerItems.section" 
         :id="'block-'+key">
             <h2 v-b-toggle="'content-' + key" class="accordian-title">{{item.title}}</h2>
             <b-collapse
@@ -56,7 +57,8 @@ export default {
 data() {
     return {
         footerItems: [],
-        isDynamicFooterItemsSet : false
+        isDynamicFooterItemsSet : false,
+        slug : this.$route.params.pageId
     };
 },
 mounted() {},
@@ -102,17 +104,18 @@ methods: {
 created() {
     window.addEventListener("scroll", this.handleScroll);
 
-    axios.get(process.env.VUE_APP_API_ENDPOINT+"cms")
+    axios.get(process.env.VUE_APP_API_ENDPOINT+"cms/"+this.slug)
     .then((response) => {
+
     if (response.data.data) {
     let dataList = [];
-    response.data.data.forEach(function(value,key){
-    value.forEach(function(objectValue,objectKey){
-    if (objectValue.language_id == store.state.defaultLanguageId) {
-        dataList.push(value[objectKey]);
-    }
+    response.data.data.pages.forEach(function(value,key){
+      if (value.language_id == store.state.defaultLanguageId) {
+        dataList.push(value);
+      }
+   
     })
-    })
+
     this.footerItems = dataList[0]
     this.isDynamicFooterItemsSet = true
     }

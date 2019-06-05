@@ -37,6 +37,7 @@ created() {
     // Fetching footer CMS pages
     axios.get(process.env.VUE_APP_API_ENDPOINT+"cms")
     .then((response) => {
+
         if (response.data.data) {
             this.footerItems = response.data.data
             this.isDynamicFooterItemsSet = true
@@ -47,7 +48,9 @@ created() {
 },
 methods:{  
     getTitle(items){
+        // console.log(items.pages);return false;
         //Get title according to language
+        items = items.pages;
         var filteredObj  = items.filter(function (item,i) { 
             if (item.language_id == store.state.defaultLanguageId) {
                 return item;
@@ -57,13 +60,7 @@ methods:{
     },
 
     getUrl(items){
-        //Get url according to language 
-        var filteredObj  = items.filter(function (item,i) { 
-            if (item.language_id == store.state.defaultLanguageId) {
-                return item;
-            }
-        });
-        return filteredObj[0].page_id
+        return items.slug
     }
 }
 
