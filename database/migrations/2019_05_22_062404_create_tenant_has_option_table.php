@@ -19,6 +19,7 @@ class CreateTenantHasOptionTable extends Migration
             $table->string('option_name',64);
             $table->enum('option_value',['0','1'])->default('1')->comment('0: Inactive, 1: Active');
             $table->timestamps();
+            $table->softDeletes();
 
             // Relation defined between tenant_has_option(tenant_id) with tenant(id)
             $table->foreign('tenant_id')->references('tenant_id')->on('tenant')->onDelete('CASCADE')->onUpdate('CASCADE');

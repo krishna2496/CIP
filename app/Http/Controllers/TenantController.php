@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Input;
 use App\Http\Controllers\Controller;
 use App\Jobs\TenantMigrationJob;
+use App\Jobs\TenantDefaultLanguageJob;
 use App\Tenant;
 use App\Helpers\Helpers;
 use Illuminate\Http\Request;
@@ -24,7 +25,7 @@ class TenantController extends Controller
         $orderType = Input::get('order','asc');
 
         // Create basic query for tenant list
-        $tenantQuery = Tenant::with('options:tenant_option_id,tenant_id,option_name,option_value,created_at')->select('tenant_id','name','sponsor_id','created_at')
+        $tenantQuery = Tenant::with('options:tenant_option_id,tenant_id,option_name,option_value,created_at','languages:tenant_language_id,tenant_id,language_id,default','languages.language:language_id,code')
         ->whereNull('deleted_at');
 
         // Check if search parameter passed in URL then search parameter will search in name field of tenant table.
@@ -88,6 +89,9 @@ class TenantController extends Controller
 
             $createdTenant = Tenant::create($request->toArray());
 
+            // Store default languages
+            dispatch(new TenantDefaultLanguageJob($createdTenant));
+            
             // ONLY FOR TESTING START Create api_user data (PLEASE REMOVE THIS CODE IN PRODUCTION MODE)
             if(env('APP_ENV')=='local'){
                 $apiUserData['api_key'] = base64_encode($createdTenant->name.'_api_key');
@@ -145,7 +149,7 @@ class TenantController extends Controller
      */
     public function show($tenant_id)
     {
-        $tenantDetail = Tenant::with('options:tenant_option_id,tenant_id,option_name,option_value,created_at')
+        $tenantDetail = Tenant::with('options:tenant_option_id,tenant_id,option_name,option_value,created_at','languages:tenant_language_id,tenant_id,language_id,default','languages.language:language_id,code')
 						->select('tenant_id','name','sponsor_id','created_at')
                         ->whereNull('deleted_at')
 						->find($tenant_id);

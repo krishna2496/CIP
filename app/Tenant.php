@@ -2,10 +2,11 @@
 
 namespace App;
 
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Model;
 use App\TenantHasOption;
+use App\TenantLanguage;
 use App\ApiUser;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Tenant extends Model {
 
@@ -31,6 +32,14 @@ class Tenant extends Model {
     public function options()
     {
     	return $this->hasMany(TenantHasOption::class, 'tenant_id', 'tenant_id');
+    }
+
+    /*
+    * Defined has many relation for the languages table.
+    */
+    public function languages()
+    {
+        return $this->hasMany(TenantLanguage::class, 'tenant_id', 'tenant_id');
     }
 
     /*
