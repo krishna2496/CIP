@@ -10,7 +10,7 @@ export default (data,langList,defautLang) =>{
         })
         
         store.commit('setSlider',JSON.stringify(data.slider))
-    } 
+    }
 
     //Store language in Local Storage
     if (data.language) {
