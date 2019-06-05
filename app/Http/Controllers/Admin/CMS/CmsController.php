@@ -41,6 +41,14 @@ class CmsController extends Controller
         } 
         try {   
             $postData = $request->page_detail;
+            $slugValidator = Validator::make($postData, ["slug" => "required"]);
+            // If post parameter have missing slug parameter
+            if ($slugValidator->fails()) {
+                return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_422'),
+                                            config('errors.status_type.HTTP_STATUS_TYPE_422'),
+                                            config('errors.custom_error_code.ERROR_20038'),
+                                            config('errors.custom_error_message.20038'));
+            } 
 			if (count($postData['translations']) == 0) {
                 return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_422'),
                                             config('errors.status_type.HTTP_STATUS_TYPE_422'),
@@ -61,6 +69,7 @@ class CmsController extends Controller
             // Set data for create new record
             $page = array();
             $page['status'] = config('constants.ACTIVE');
+            $page['slug'] = $postData['slug'];
             // Create new cms page
             $footer_page = FooterPage::create($page);
 			foreach ($postData['translations'] as $value) {                    
@@ -135,9 +144,12 @@ class CmsController extends Controller
                                         config('errors.custom_error_code.ERROR_20032'),
                                         config('errors.custom_error_message.20032'));
         }
-		
+
         $postData = $request->page_detail;
-        
+        $page = array();
+        $page['slug'] = $postData['slug'];
+        $footer_page = FooterPage::where('page_id', $id)->update($page);
+
 		if (count($postData['translations']) == 0) {
             return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_422'),
 										config('errors.status_type.HTTP_STATUS_TYPE_422'),

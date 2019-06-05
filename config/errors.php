@@ -66,6 +66,7 @@ return [
 		'ERROR_20032' => '20032',
 		'ERROR_20034' => '20034',
 		'ERROR_20036' => '20036',
+		'ERROR_20038' => '20038',
 
 		// Error codes from 1000-
 		'ERROR_10006' => '10006',
@@ -113,6 +114,7 @@ return [
 		'20032' => 'No data found for given id',
 		'20034' => 'Id cannot be blank. Please pass id in URL',
 		'20036' => 'Invalid translation data, please check input parameters',
+		'20038' => 'The slug field is required',
 
 		// Error codes from 1000-
 		'10006' => 'Database operational error',
