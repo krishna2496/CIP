@@ -75,7 +75,7 @@ class CmsController extends Controller
                                                 config('errors.custom_error_code.ERROR_20018'),
                                                 $validator->errors()->first());
                 }    
-                $cms = array('page_id' => $data['page_id'], 'language_id' => $value['language_id'], 'title' => $value['title'], 'section' => serialize($value['section']));
+                $cms = array('page_id' => $data['page_id'], 'language_id' => $value['language_id'], 'title' => $value['title'], 'description' => serialize($value['section']));
                 // Create footer language pages
                 $footerPageLanguage = FooterPagesLanguage::create($cms);
                 unset($cms);
@@ -87,7 +87,7 @@ class CmsController extends Controller
             return Helpers::response($apiStatus, $apiMessage, $apiData);
                        
         } catch (\Exception $e) {
-            // Any other error occured when trying to insert data into database for CMS page.
+        	// Any other error occured when trying to insert data into database for CMS page.
             return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_422'), 
                                     config('errors.status_type.HTTP_STATUS_TYPE_422'), 
                                     config('errors.custom_error_code.ERROR_20004'), 
@@ -166,7 +166,7 @@ class CmsController extends Controller
                 $footerPageData = FooterPagesLanguage::where('page_id', $id)
                                 ->where('language_id', $value['language_id'])
                                 ->count();
-				$cms = array('page_id' => $footerPage['page_id'], 'language_id' => $value['language_id'], 'title' => $value['title'], 'section' => serialize($value['section']));
+				$cms = array('page_id' => $footerPage['page_id'], 'language_id' => $value['language_id'], 'title' => $value['title'], 'description' => serialize($value['section']));
                 if (!empty($footerPageData))
                     $footerPageLanguage = FooterPagesLanguage::where('page_id', $id)->where('language_id', $value['language_id'])->update($cms);
                 else
