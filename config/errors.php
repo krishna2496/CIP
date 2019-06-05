@@ -112,7 +112,7 @@ return [
 		'20030' => 'Missing translation data',
 		'20032' => 'No data found for given id',
 		'20034' => 'Id cannot be blank. Please pass id in URL',
-		'20036' => 'Missing section data',
+		'20036' => 'Invalid translation data, please check input parameters',
 
 		// Error codes from 1000-
 		'10006' => 'Database operational error',
