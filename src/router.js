@@ -3,6 +3,7 @@ import Router from 'vue-router'
 import Home from './views/Home.vue'
 import TermsofUse from './views/TermsOfUse.vue'
 
+
 Vue.use(Router)
 
 export default new Router({
@@ -39,6 +40,11 @@ export default new Router({
         path: '/cms/:pageId',
         name: 'TermsofUse',
         component: () => import('./views/TermsOfUse.vue')
+    },
+    {
+      path: '/lang',
+      name: 'login',
+      component: () => import('./components/HelloI18n')
     }
   ]
 })

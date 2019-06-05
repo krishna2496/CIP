@@ -20,7 +20,7 @@
 				
 				<b-form class="signin-form">
 					<b-form-group>
-						<label for>Email Address</label>
+						<label for>{{ $t("label.email_address") }}</label>
 						<b-form-input id type="email" v-model="forgotPassword.email" :class="{ 'is-invalid': $v.forgotPassword.email.$error }" @keypress.enter.prevent="handleSubmit" placeholder="Enter your email address"
 
 						 ref='email' autofocus></b-form-input>
