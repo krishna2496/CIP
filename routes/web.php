@@ -22,7 +22,7 @@ $router->get('/', function () use ($router) {
 | and give it the Closure to call when that URI is requested.
 |
 */
-$router->group(['prefix' => 'tenants'], function($router){
+$router->group(['prefix' => 'tenants', 'middleware' => 'localization'], function($router){
 	// Get tenants list
 	$router->get('/',['uses'=>'TenantController@index']);
 	// Get tenant details from id

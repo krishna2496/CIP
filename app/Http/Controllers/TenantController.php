@@ -37,10 +37,10 @@ class TenantController extends Controller
             $tenantList = $tenantQuery->orderBy('tenant_id',$orderType)->paginate(10);
         } catch(\Exception $e) { 
             // Catch database exception
-            return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_422'), 
-                                        config('errors.status_type.HTTP_STATUS_TYPE_422'), 
-                                        config('errors.custom_error_code.ERROR_10006'), 
-                                        config('errors.custom_error_message.10006'));
+            return Helpers::errorResponse(trans('api_error_messages.status_code.HTTP_STATUS_422'), 
+                                        trans('api_error_messages.status_type.HTTP_STATUS_TYPE_422'), 
+                                        trans('api_error_messages.custom_error_code.ERROR_10006'), 
+                                        trans('api_error_messages.custom_error_message.10006'));
         }
         
         if (count($tenantList)>0) {
@@ -53,7 +53,7 @@ class TenantController extends Controller
         } else {
             // Set response data                        
             $apiStatus = app('Illuminate\Http\Response')->status();
-            $apiMessage = config('errors.custom_error_message.10008');
+            $apiMessage = trans('api_error_messages.custom_error_message.10008');
             // Send API reponse
             return Helpers::response($apiStatus, $apiMessage);
         }
@@ -67,7 +67,7 @@ class TenantController extends Controller
      * @return mixed
      */
     public function store(Request $request)
-    {        
+    {
 
         // Server side validataions
         $validator = Validator::make($request->toArray(), [
@@ -78,9 +78,9 @@ class TenantController extends Controller
         // If request parameter have any error
         if ($validator->fails()) {
 
-            return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_422'), 
-										config('errors.status_type.HTTP_STATUS_TYPE_422'), 
-										config('errors.custom_error_code.ERROR_10001'), 
+            return Helpers::errorResponse(trans('api_error_messages.status_code.HTTP_STATUS_422'), 
+										trans('api_error_messages.status_type.HTTP_STATUS_TYPE_422'), 
+										trans('api_error_messages.custom_error_code.ERROR_10001'), 
 										$validator->errors()->first());
         }
 
@@ -109,7 +109,7 @@ class TenantController extends Controller
             // Set response data
             $apiStatus = app('Illuminate\Http\Response')->status();
             $apiData = ['tenant_id' => $createdTenant->tenant_id];
-            $apiMessage =  config('messages.success.MESSAGE_TENANT_CREATED');
+            $apiMessage =  trans('api_success_messages.success.MESSAGE_TENANT_CREATED');
 
             // Job dispatched to create new tenant's database and migrations
             dispatch(new TenantMigrationJob($createdTenant));
@@ -123,16 +123,16 @@ class TenantController extends Controller
 
             // Error for duplicate tenant name, trying to store in database.
             if (isset($e->errorInfo[1]) && $e->errorInfo[1] == 1062) {
-                return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_400'), 
-										config('errors.status_type.HTTP_STATUS_TYPE_400'), 
-										config('errors.custom_error_code.ERROR_10002'), 
-										config('errors.custom_error_message.10002'));
+                return Helpers::errorResponse(trans('api_error_messages.status_code.HTTP_STATUS_400'), 
+										trans('api_error_messages.status_type.HTTP_STATUS_TYPE_400'), 
+										trans('api_error_messages.custom_error_code.ERROR_10002'), 
+										trans('api_error_messages.custom_error_message.10002'));
             } else { 
 				// Any other error occured when trying to insert data into database for tenant.
-                return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_400'), 
-										config('errors.status_type.HTTP_STATUS_TYPE_400'), 
-										config('errors.custom_error_code.ERROR_10006'), 
-										config('errors.custom_error_message.10006'));
+                return Helpers::errorResponse(trans('api_error_messages.status_code.HTTP_STATUS_400'), 
+										trans('api_error_messages.status_type.HTTP_STATUS_TYPE_400'), 
+										trans('api_error_messages.custom_error_code.ERROR_10006'), 
+										trans('api_error_messages.custom_error_message.10006'));
             }
         }
     }
@@ -155,10 +155,10 @@ class TenantController extends Controller
             $apiData = $tenantDetail;
 			return Helpers::response($apiStatus, '', $apiData);
         } else {
-			return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_403'), 
-										config('errors.status_type.HTTP_STATUS_TYPE_403'), 
-										config('errors.custom_error_code.ERROR_10004'), 
-										config('errors.custom_error_message.10004'));
+			return Helpers::errorResponse(trans('api_error_messages.status_code.HTTP_STATUS_403'), 
+										trans('api_error_messages.status_type.HTTP_STATUS_TYPE_403'), 
+										trans('api_error_messages.custom_error_code.ERROR_10004'), 
+										trans('api_error_messages.custom_error_message.10004'));
         }
     }
 
@@ -191,10 +191,10 @@ class TenantController extends Controller
 			return Helpers::response($apiStatus, $apiMessage, $apiData);
 		}
 		catch(\Exception $e) {
-			return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_404'), 
-										config('errors.status_type.HTTP_STATUS_TYPE_404'), 
-										config('errors.custom_error_code.ERROR_10004'), 
-										config('errors.custom_error_message.10004'));
+			return Helpers::errorResponse(trans('api_error_messages.status_code.HTTP_STATUS_404'), 
+										trans('api_error_messages.status_type.HTTP_STATUS_TYPE_404'), 
+										trans('api_error_messages.custom_error_code.ERROR_10004'), 
+										trans('api_error_messages.custom_error_message.10004'));
         }		
     }
 
@@ -218,10 +218,10 @@ class TenantController extends Controller
 
         } catch(\Exception $e){
             
-            return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_403'), 
-                                        config('errors.status_type.HTTP_STATUS_TYPE_403'), 
-                                        config('errors.custom_error_code.ERROR_10004'), 
-                                        config('errors.custom_error_message.10004'));
+            return Helpers::errorResponse(trans('api_error_messages.status_code.HTTP_STATUS_403'), 
+                                        trans('api_error_messages.status_type.HTTP_STATUS_TYPE_403'), 
+                                        trans('api_error_messages.custom_error_code.ERROR_10004'), 
+                                        trans('api_error_messages.custom_error_message.10004'));
 
         }
     }
