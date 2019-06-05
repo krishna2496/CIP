@@ -9,4 +9,6 @@ return [
     'FORGOT_PASSWORD_EXPIRY_TIME' => '4',
     'SLIDER_LIMIT' => '4',
     'SLIDER_IMAGE_PATH' => 'images/',
+    'DEFAULT_LANGUAGE' => 'EN',
+    'FRONTEND_LANGUAGE_FOLDER' => 'front_end',
 ];

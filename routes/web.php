@@ -36,6 +36,10 @@ $router->post('/reset-password/{token}', ['as' => 'password.reset', 'uses' => 'A
 
 /* reset password  */
 $router->put('/password_reset', ['middleware' => 'tenant.connection','uses' => 'App\Auth\AuthController@passwordReset']);
+
+/* Fetch Language json file */
+$router->get('language/{lang}', ['uses' => 'App\Language\LanguageController@fetchLangaugeFile']);
+
 /*
 |
 |--------------------------------------------------------------------------
