@@ -78,5 +78,7 @@ $router->group(['prefix' => 'cms', 'middleware' => 'auth.tenant.admin'], functio
 	$router->get('/', ['uses' => 'Admin\CMS\CmsController@index']);
 	$router->post('/create', ['uses' => 'Admin\CMS\CmsController@store']);
 	$router->put('/update/{pageId}', ['uses' => 'Admin\CMS\CmsController@update']);
+	$router->put('/update/', ['uses' => 'Admin\CMS\CmsController@handleError']);
 	$router->delete('/{pageId}', ['uses' => 'Admin\CMS\CmsController@destroy']);
+	$router->delete('/', ['uses' => 'Admin\CMS\CmsController@handleError']);
 });

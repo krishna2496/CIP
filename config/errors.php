@@ -64,6 +64,7 @@ return [
 		'ERROR_20024' => '20024',
 		'ERROR_20030' => '20030',
 		'ERROR_20032' => '20032',
+		'ERROR_20034' => '20034',
 
 		// Error codes from 1000-
 		'ERROR_10006' => '10006',
@@ -109,6 +110,7 @@ return [
 		'20024' => 'This page is already added',
 		'20030' => 'Please add translations data',
 		'20032' => 'No data found for given id',
+		'20034' => 'Id cannot be blank. Please pass id in URL',
 
 		// Error codes from 1000-
 		'10006' => 'Database operational error',

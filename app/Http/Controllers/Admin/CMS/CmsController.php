@@ -190,4 +190,18 @@ class CmsController extends Controller
                                         config('errors.custom_error_message.20020'));
         }
     }
+
+    /**
+     * Handle error while update.
+     *
+     * @param int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function handleError()
+    {
+        return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_403'), 
+                                    config('errors.status_type.HTTP_STATUS_TYPE_403'), 
+                                    config('errors.custom_error_code.ERROR_20034'), 
+                                    config('errors.custom_error_message.20034'));
+    }
 }
