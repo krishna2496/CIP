@@ -122,9 +122,9 @@ class CmsController extends Controller
         $pageData = $request->page_detail;
         if (count($pageData['translations']) == 0) {
             return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_422'),
-                                            config('errors.status_type.HTTP_STATUS_TYPE_422'),
-                                            config('errors.custom_error_code.ERROR_20030'),
-                                            config('errors.custom_error_message.20030'));
+										config('errors.status_type.HTTP_STATUS_TYPE_422'),
+										config('errors.custom_error_code.ERROR_20030'),
+										config('errors.custom_error_message.20030'));
         } 
         try {            
             foreach ($pageData['translations'] as $value) {                    
@@ -140,21 +140,14 @@ class CmsController extends Controller
                 $footerPageData = FooterPagesLanguage::where('page_id', $id)
                                 ->where('language_id', $value['language_id'])
                                 ->count();
-                if (!empty($footerPageData)) {
-                    // Update existing record 
-                    $cms = array('page_id' => $footerPage['page_id'], 'language_id' => $value['language_id'], 'title' => $value['title'], 'description' => serialize($value['section']));
-
-                    // Create footer language pages
+				$cms = array('page_id' => $footerPage['page_id'], 'language_id' => $value['language_id'], 'title' => $value['title'], 'description' => serialize($value['section']));
+                if (!empty($footerPageData))
                     $footerPageLanguage = FooterPagesLanguage::where('page_id', $id)->where('language_id', $value['language_id'])->update($cms);
-                    unset($cms);                            
-                } else {
-                    // Insert new record
-                    $cms = array('page_id' => $footerPage['page_id'], 'language_id' => $value['language_id'], 'title' => $value['title'], 'description' => serialize($value['section']));
-                    // Create footer language pages
-                    $footerPageLanguage = FooterPagesLanguage::create($cms);
-                    unset($cms);                        
-                }                    
-            }         
+                else
+					$footerPageLanguage = FooterPagesLanguage::create($cms);
+                    
+                unset($cms);                    
+			}      
             // Set response data
             $apiStatus = app('Illuminate\Http\Response')->status();
             $apiMessage = config('messages.success_message.MESSAGE_CMS_PAGE_UPDATE_SUCCESS');
@@ -199,13 +192,12 @@ class CmsController extends Controller
     /**
      * Handle error while update.
      *
-     * @param int  $id
      * @return \Illuminate\Http\Response
      */
     public function handleError()
     {
-        return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_403'), 
-                                    config('errors.status_type.HTTP_STATUS_TYPE_403'), 
+        return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_400'), 
+                                    config('errors.status_type.HTTP_STATUS_TYPE_400'), 
                                     config('errors.custom_error_code.ERROR_20034'), 
                                     config('errors.custom_error_message.20034'));
     }
