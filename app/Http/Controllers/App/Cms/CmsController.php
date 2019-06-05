@@ -30,26 +30,15 @@ class CmsController extends Controller
             }
             foreach ($footerPage as $value) { 
                 // Get data from child table                   
-                $footerPageData = FooterPagesLanguage::where('page_id', $value['page_id'])->get();
-                $detail = array();
-                $detailArray = array();
-                foreach ($footerPageData as $language) {
-                    //flag to check value is serialize or not
-                    $checkForSerialize = false;
-                    //check if value is serialize or not
-                    $checkForSerialize = @unserialize($language['description']);
-                    if ($checkForSerialize === false) 
-                        $description = $language['description'];
-                    else 
-                        $description = unserialize($language['description']);
-                    
-                    $detailArray['language_id'] = $language['language_id'];
-                    $detailArray['title'] = $language['title'];
-                    $detailArray['section'] = $description;
-                    $detailArray['page_id'] = $language['page_id'];
-                    $detail[] = $detailArray;
+                $footerPageLanguage = FooterPagesLanguage::where('page_id', $value['page_id'])->get();
+                $footerPageList = array();
+                foreach ($footerPageLanguage as $language) {
+                    $footerPageList[] = array('page_id' => $language['page_id'],
+										'language_id' => $language['language_id'],
+										'title' => $language['title'],
+										'section' => (@unserialize($language['description']) === false) ? $language['description'] : unserialize($language['description']),
+										);
                 }
-                $footerPageList[] = $detail;
             }
             // Set response data
             $apiData = $footerPageList; 
@@ -58,8 +47,8 @@ class CmsController extends Controller
             return Helpers::response($apiStatus, $apiMessage, $apiData);                  
         } catch(\Exception $e) {
             // Catch database exception
-            return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_403'), 
-                                        config('errors.status_type.HTTP_STATUS_TYPE_403'), 
+            return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_500'), 
+                                        config('errors.status_type.HTTP_STATUS_TYPE_500'), 
                                         config('errors.custom_error_code.ERROR_40018'), 
                                         config('errors.custom_error_message.40018'));           
         }
