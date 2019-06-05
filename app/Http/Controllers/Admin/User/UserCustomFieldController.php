@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin\Tenant;
+namespace App\Http\Controllers\Admin\User;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -19,7 +19,7 @@ class UserCustomFieldController extends Controller
      */
     public function index()
     {
-        //
+       //
     }
 
     /**
@@ -47,7 +47,7 @@ class UserCustomFieldController extends Controller
                                 config('errors.status_type.HTTP_STATUS_TYPE_422'),
                                 config('errors.custom_error_code.ERROR_20026'),
                                 config('errors.custom_error_message.20026'));
-        }
+        } 
         try {           
             // Set data for create new record
             $insert = array( 'name' => $request->name, 'type' => $request->type, 'is_mandatory' => $request->is_mandatory, 'translations' => serialize($translation));
@@ -115,7 +115,7 @@ class UserCustomFieldController extends Controller
         } 
         try {                             
             // Set data for update record
-            $update = array('name' => $request->name, 'type' => $request->type, 'is_mandatory' => $request->is_mandatory, 'translations' => serialize($request->translations));
+            $update = array('name' => $request->name, 'type' => $request->type, 'is_mandatory' => $request->is_mandatory, 'translations' => serialize($translation));
             // Update user custom field
             $updateData = UserCustomField::where('field_id', $id)->update($update);
             // Set response data
@@ -128,7 +128,8 @@ class UserCustomFieldController extends Controller
                                     config('errors.status_type.HTTP_STATUS_TYPE_422'), 
                                     config('errors.custom_error_code.ERROR_20004'), 
                                     config('errors.custom_error_message.20004'));
-        }        
+        }
+        
     }
 
     /**
@@ -155,5 +156,18 @@ class UserCustomFieldController extends Controller
                                         config('errors.custom_error_message.20028'));
 
         }
+    }
+
+    /**
+     * Handle error if id is not passed in url
+     *
+     * @return mixed
+     */
+    public function handleError()
+    {
+        return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_400'), 
+                                        config('errors.status_type.HTTP_STATUS_TYPE_400'), 
+                                        config('errors.custom_error_code.ERROR_20034'), 
+                                        config('errors.custom_error_message.20034'));
     }
 }

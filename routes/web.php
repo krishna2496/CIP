@@ -36,6 +36,9 @@ $router->post('/reset-password/{token}', ['as' => 'password.reset', 'uses' => 'A
 
 /* reset password  */
 $router->put('/password_reset', ['middleware' => 'tenant.connection','uses' => 'App\Auth\AuthController@passwordReset']);
+
+/* Get custom field data  */
+$router->get('/custom_field/', ['middleware' => 'tenant.connection','uses' => 'App\USer\UserCustomFieldController@index']);
 /*
 |
 |--------------------------------------------------------------------------
@@ -83,8 +86,9 @@ $router->group(['prefix' => 'cms', 'middleware' => 'auth.tenant.admin'], functio
 
 /* Set custom field data for tenant specific */
 $router->group(['prefix' => 'custom_field', 'middleware' => 'auth.tenant.admin'], function($router){ 
-	$router->get('/', ['uses' => 'Admin\Tenant\UserCustomFieldController@index']);
-	$router->post('/create', ['uses' => 'Admin\Tenant\UserCustomFieldController@store']);
-	$router->post('/update/{fieldId}', ['uses' => 'Admin\Tenant\UserCustomFieldController@update']);
-	$router->delete('/{fieldId}', ['uses' => 'Admin\Tenant\UserCustomFieldController@destroy']);
+	$router->post('/create', ['uses' => 'Admin\User\UserCustomFieldController@store']);
+	$router->put('/update/{fieldId}', ['uses' => 'Admin\User\UserCustomFieldController@update']);
+	$router->put('/update/', ['uses' => 'Admin\User\UserCustomFieldController@handleError']);	
+	$router->delete('/{fieldId}', ['uses' => 'Admin\User\UserCustomFieldController@destroy']);
+	$router->delete('/', ['uses' => 'Admin\User\UserCustomFieldController@handleError']);
 });

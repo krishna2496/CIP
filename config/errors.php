@@ -61,6 +61,8 @@ return [
 		'ERROR_20026' => '20026',
 		'ERROR_20028' => '20028',
 		'ERROR_20020' => '20020',
+		'ERROR_20032' => '20032',
+		'ERROR_20034' => '20034',
 		'ERROR_21000' => '21000',
 
 		// Error codes from 1000-
@@ -106,6 +108,8 @@ return [
 		'20026' => 'Please add data for values field',
 		'20028' => 'User custom field deletion failed',
 		'20020' => 'CMS page deletion failed',
+		'20032' => 'No data found for given id',
+		'20034' => 'Id cannot be blank. Please pass id in URL',
 
 		// Error codes from 1000-
 		'10006' => 'Database operational error',
