@@ -43,9 +43,22 @@ class CmsController extends Controller
             $pageData = $request->page_detail;
             if (count($pageData['translations']) == 0) {
                 return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_422'),
-                                                config('errors.status_type.HTTP_STATUS_TYPE_422'),
-                                                config('errors.custom_error_code.ERROR_20030'),
-                                                config('errors.custom_error_message.20030'));
+                                            config('errors.status_type.HTTP_STATUS_TYPE_422'),
+                                            config('errors.custom_error_code.ERROR_20030'),
+                                            config('errors.custom_error_message.20030'));
+            }  
+            $exist = false;
+            foreach ($pageData['translations'] as $value) {
+                if (array_key_exists("section",$value)) {
+                    $exist = true;
+                }
+            } 
+            // If post parameter have any missing section parameter
+            if (!$exist) {
+                return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_422'),
+                                            config('errors.status_type.HTTP_STATUS_TYPE_422'),
+                                            config('errors.custom_error_code.ERROR_20036'),
+                                            config('errors.custom_error_message.20036'));
             } 
             // Set data for create new record
             $insert = array();
@@ -74,7 +87,7 @@ class CmsController extends Controller
             return Helpers::response($apiStatus, $apiMessage, $apiData);
                        
         } catch (\Exception $e) {
-            // Any other error occured when trying to insert data into database for tenant option.
+            // Any other error occured when trying to insert data into database for CMS page.
             return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_422'), 
                                     config('errors.status_type.HTTP_STATUS_TYPE_422'), 
                                     config('errors.custom_error_code.ERROR_20004'), 
@@ -125,6 +138,19 @@ class CmsController extends Controller
 										config('errors.status_type.HTTP_STATUS_TYPE_422'),
 										config('errors.custom_error_code.ERROR_20030'),
 										config('errors.custom_error_message.20030'));
+        } 
+        $exist = false;
+        foreach ($pageData['translations'] as $value) {
+            if (array_key_exists("section",$value)) {
+                $exist = true;
+            }
+        } 
+        // If post parameter have any missing section parameter
+        if (!$exist) {
+            return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_422'),
+                                        config('errors.status_type.HTTP_STATUS_TYPE_422'),
+                                        config('errors.custom_error_code.ERROR_20036'),
+                                        config('errors.custom_error_message.20036'));
         } 
         try {            
             foreach ($pageData['translations'] as $value) {                    
