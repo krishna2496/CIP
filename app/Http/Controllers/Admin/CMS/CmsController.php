@@ -147,6 +147,16 @@ class CmsController extends Controller
 
         $postData = $request->page_detail;
         $page = array();
+		
+		$slugValidator = Validator::make($postData, ["slug" => "required"]);
+		// If post parameter have missing slug parameter
+		if ($slugValidator->fails()) {
+			return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_422'),
+                                            config('errors.status_type.HTTP_STATUS_TYPE_422'),
+                                            config('errors.custom_error_code.ERROR_20038'),
+                                            config('errors.custom_error_message.20038'));
+		}
+		
         $page['slug'] = $postData['slug'];
         $footer_page = FooterPage::where('page_id', $id)->update($page);
 
