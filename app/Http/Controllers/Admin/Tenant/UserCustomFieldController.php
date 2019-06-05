@@ -84,11 +84,7 @@ class UserCustomFieldController extends Controller
                                     config('errors.custom_error_message.20026'));
             } else {                    
                 // Set data for create new record
-                $insert = array();
-                $insert['name'] = $request->name;
-                $insert['type'] = $request->type;
-                $insert['is_mandatory'] = $request->is_mandatory;
-                $insert['translations'] = json_encode($translation);
+                $insert = array( 'name' => $request->name, 'type' => $request->type, 'is_mandatory' => $request->is_mandatory, 'translations' => json_encode($translation));
                 // Create new user custom field
                 $insertData = UserCustomField::create($insert);
                 // Set response data
@@ -163,7 +159,7 @@ class UserCustomFieldController extends Controller
                     return Helpers::response($apiStatus, $apiMessage);
                 }
             } catch (\Exception $e) {
-                // Any other error occured when trying to insert data into database.
+                // Any other error occured when trying to update data into database.
                 return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_422'), 
                                         config('errors.status_type.HTTP_STATUS_TYPE_422'), 
                                         config('errors.custom_error_code.ERROR_20004'), 
