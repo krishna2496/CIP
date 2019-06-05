@@ -161,8 +161,7 @@ class CmsController extends Controller
             $apiData = ['page_id' => $id];
             return Helpers::response($apiStatus, $apiMessage, $apiData);
         } catch (\Exception $e) {
-            dd($e);
-           // Any other error occured when trying to update data into database for tenant option.
+            // Any other error occured when trying to update data into database for tenant option.
             return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_422'), 
                                     config('errors.status_type.HTTP_STATUS_TYPE_422'), 
                                     config('errors.custom_error_code.ERROR_20004'), 
