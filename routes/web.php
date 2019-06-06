@@ -94,6 +94,7 @@ $router->group(['prefix' => 'cms', 'middleware' => 'localization|tenant.connecti
 /* Set cms data for tenant specific */
 $router->group(['prefix' => 'users', 'middleware' => 'localization|auth.tenant.admin'], function($router){
 	$router->get('/', ['uses' => 'Admin\User\UserController@index']);
+	$router->get('/{userId}', ['uses' => 'Admin\User\UserController@show']);
 	$router->post('/create', ['uses' => 'Admin\User\UserController@store']);
 	$router->delete('/{userId}', ['uses' => 'Admin\User\UserController@destroy']);
 });
