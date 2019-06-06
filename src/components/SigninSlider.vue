@@ -32,7 +32,7 @@ export default {
 	},
 
 	created(){
-       axios.get(process.env.VUE_APP_API_ENDPOINT+"/connect")
+       axios.get(process.env.VUE_APP_API_ENDPOINT+"connect")
                 .then((response) => {
                     if (response.data.data.slider) {
                         var slider = response.data.data.slider 
@@ -45,14 +45,11 @@ export default {
                             this.carouselItems = listOfSliderObjects;
                             this.isDynamicCarsousetSet =true
                         } else {
-                            var sliderData = [];
-                           
+                            var sliderData = [];        
                         }
-
                     }else{
                         var slider = []; 
                     } 
-
                 })
                 .catch(error => {
                     console.log(error)

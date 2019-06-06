@@ -31,9 +31,8 @@ data() {
          isDynamicFooterItemsSet : false
     };
 },
-
-created() {
-    // Fetching footer CMS pages
+mounted() {
+     // Fetching footer CMS pages
     axios.get(process.env.VUE_APP_API_ENDPOINT+"cms/listing")
     .then((response) => {
 
@@ -42,8 +41,10 @@ created() {
             this.isDynamicFooterItemsSet = true
         }
         }).catch(error => {
-			
-        })
+    })
+    },
+created() {
+
 },
 methods:{  
     getTitle(items){

@@ -1,6 +1,6 @@
 <template>
     <div class="signin-page-wrapper">
-        <SigninSlider/>
+        <SigninSlider :carouselItems="carouselItems"/>
         <div class="signin-form-wrapper">
 
             <div class="lang-drodown-wrap">
@@ -62,10 +62,10 @@
     import {storeTenantOption,loadLocaleMessages} from '../services/service';
     import { mapActions } from 'vuex'
     export default {
-        components: {
-            SigninSlider,
+        components: {       
             SigninFooter,
             customDropdown,
+            SigninSlider,
         },
         
         data() {
@@ -74,6 +74,7 @@
                 myValue: '',
                 defautLang: 'EN',
                 langList: [],
+                carouselItems : [],
                 login: {
                     email: '',
                     password: '',
@@ -143,36 +144,42 @@
         mounted() {
             //Autofocus
             this.$refs.email.focus();
+            
         },
         beforeUpdate(){
             
         },
         created() {
-             var _this = this;
+             // var _this = this;
             //Database connection and fetching tenant options api
-             axios.get(process.env.VUE_APP_API_ENDPOINT+"/connect")
+            axios.get(process.env.VUE_APP_API_ENDPOINT+"connect")
                     .then((response) => {
-
-                        localStorage.removeItem('slider');  
-                        localStorage.removeItem('listOfLanguage');
                         if (response.data.data) {
                             //store tenant option to Local Storage
-                            storeTenantOption(response.data.data,this.langList,this.defautLang);
+                            // storeTenantOption(response.data.data,this.langList,this.defautLang);
                             
                             //Get langauage list from Local Storage
                             this.langList = JSON.parse(store.state.listOfLanguage)
                             this.defautLang = store.state.defaultLanguage
 
                         }else{
+                            localStorage.removeItem('slider');  
+                            localStorage.removeItem('listOfLanguage');
                             localStorage.removeItem('defaultLanguage');
                             localStorage.removeItem('defaultLanguageId');
+                            var sliderData = [];
+                            store.commit('setSlider',JSON.stringify(sliderData))
                         } 
+                       
+
 
                     })
                     .catch(error => {
                         console.log(error)
                     })
-
+                    
+                    this.carouselItems = JSON.parse(store.state.slider)
+                    // .signinSlider.$forceUpdate()
         },
 
         updated(){
