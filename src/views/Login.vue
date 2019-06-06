@@ -156,7 +156,7 @@
                     .then((response) => {
                         if (response.data.data) {
                             //store tenant option to Local Storage
-                            // storeTenantOption(response.data.data,this.langList,this.defautLang);
+                            storeTenantOption(response.data.data,this.langList,this.defautLang);
                             
                             //Get langauage list from Local Storage
                             this.langList = JSON.parse(store.state.listOfLanguage)
