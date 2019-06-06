@@ -8,7 +8,6 @@ function setI18nLanguage (lang) {
     i18n.locale = lang
     axios.defaults.headers.common['X-localization'] = lang
     document.querySelector('html').setAttribute('lang', lang)
-    console.log(loadedLanguages);
     return lang;
 }
 
