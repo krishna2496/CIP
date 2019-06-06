@@ -58,7 +58,17 @@ return [
 		'ERROR_20016' => 'FR: 20016',
 		'ERROR_20018' => 'FR: 20018',
 		'ERROR_20022' => 'FR: 20022',
+		'ERROR_20026' => 'FR: 20026',
+		'ERROR_20028' => 'FR: 20028',
+		'ERROR_20020' => 'FR: 20020',
+		'ERROR_20032' => 'FR: 20032',
+		'ERROR_20034' => 'FR: 20034',
 		'ERROR_21000' => 'FR: 21000',
+		'ERROR_20024' => 'FR: 20024',
+		'ERROR_20030' => 'FR: 20030',
+		'ERROR_20036' => 'FR: 20036',
+		'ERROR_20038' => 'FR: 20038',
+		'ERROR_20102' => 'FR: 20102',
 
 		// Error codes from 1000-
 		'ERROR_10006' => 'FR: 10006',
@@ -100,7 +110,16 @@ return [
 		'21000' => 'FR: Error while creating database connection',
 		'20018' => 'FR: Invalid input data',
 		'20022' => 'FR: Invalid user data',
-
+		'20024' => 'This page is already added',
+		'20030' => 'FR: Missing translation data',
+		'20036' => 'FR: Invalid translation data, please check input parameters',
+		'20038' => 'FR: The slug field is required',
+		'20026' => 'FR: Please add values for this field',
+		'20028' => 'FR: User custom field deletion failed',
+		'20020' => 'FR: CMS page deletion failed',
+		'20032' => 'FR: No data found for given id',
+		'20034' => 'FR: Invalid request parameter',		
+		'20102' => 'FR: Invalid custom field input parameters or missing data',		
 		// Error codes from 1000-
 		'10006' => 'FR: Database operational error',
 	]

@@ -26,16 +26,16 @@ class UserCustomFieldController extends Controller
             $userFieldList = $userFieldQuery->get()->toArray();            
         } catch(\Exception $e) {
             // Catch database exception
-            return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_403'), 
-                                        config('errors.status_type.HTTP_STATUS_TYPE_403'), 
-                                        config('errors.custom_error_code.ERROR_40018'), 
-                                        config('errors.custom_error_message.40018'));           
+            return Helpers::errorResponse(trans('api_error_messages.status_code.HTTP_STATUS_403'), 
+                                        trans('api_error_messages.status_type.HTTP_STATUS_TYPE_403'), 
+                                        trans('api_error_messages.custom_error_code.ERROR_40018'), 
+                                        trans('api_error_messages.custom_error_message.40018'));           
         }
 
         if (empty($userFieldList)) {
         	// Set response data
             $apiStatus = app('Illuminate\Http\Response')->status();
-            $apiMessage = config('messages.success_message.MESSAGE_NO_DATA_FOUND');
+            $apiMessage = trans('api_success_messages.success_message.MESSAGE_NO_DATA_FOUND');
             return Helpers::response($apiStatus, $apiMessage);
         }
         $data = array();
@@ -60,7 +60,7 @@ class UserCustomFieldController extends Controller
         // Set response data
         $apiData = $detail;
         $apiStatus = app('Illuminate\Http\Response')->status();
-        $apiMessage = config('messages.success_message.MESSAGE_USER_LIST_SUCCESS');
+        $apiMessage = trans('api_success_messages.success_message.MESSAGE_USER_LIST_SUCCESS');
         return Helpers::response($apiStatus, $apiMessage, $apiData);
     }
 }
