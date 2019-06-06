@@ -10,31 +10,30 @@
 					<img src="../assets/images/optimy-logo.png">
 				</a>
 				<div class="form-title-block">
-					<h1>Forgot Password</h1>
-					<p>Enter your email address you've using for your account below and we will send you a password reset link</p>
+					<h1>{{ $t("label.forgot_password") }}</h1>
+					<p>{{ $t("label.forgot_password_message") }}</p>
 				</div>
 
 				<!-- success or error msg -->
 				<b-alert show :variant="classVariant" dismissible v-model="showDismissibleAlert"> {{ message }}</b-alert>
-				<!-- forgot password form start -->
-				
+				<!-- forgot password form start -->				
 				<b-form class="signin-form">
 					<b-form-group>
-						<label for>Email Address</label>
-						<b-form-input id type="email" v-model="forgotPassword.email" :class="{ 'is-invalid': $v.forgotPassword.email.$error }" @keypress.enter.prevent="handleSubmit" placeholder="Enter your email address"
-
-						 ref='email' autofocus></b-form-input>
-						<div v-if="submitted && !$v.forgotPassword.email.required" class="invalid-feedback">Email address is required</div>
-						<div v-if="submitted && !$v.forgotPassword.email.email" class="invalid-feedback">Enter valid email address</div>
-					</b-form-group>
-
-					
-					<b-button type="button" @click="handleSubmit" class="btn btn-bordersecondary" title="Reset my Password">Reset my Password</b-button>
+						<label for>{{ $t("label.email_address") }}</label>
+						<b-form-input id type="email" v-model="forgotPassword.email" :class="{ 'is-invalid': $v.forgotPassword.email.$error }" @keypress.enter.prevent="handleSubmit" 
+						v-bind:placeholder='$t("placeholder.email_address")'
+						ref='email' autofocus></b-form-input>
+						<div v-if="submitted && !$v.forgotPassword.email.required" class="invalid-feedback">
+						{{ $t("errors.email_required") }}</div>
+						<div v-if="submitted && !$v.forgotPassword.email.email" class="invalid-feedback">
+						{{ $t("errors.invalid_email") }}</div>
+					</b-form-group>					
+					<b-button type="button" @click="handleSubmit" class="btn btn-bordersecondary">{{ $t("label.reset_password_button") }}</b-button>
 				</b-form>
 				
 				<!-- link to login  -->
 				<div class="form-link">
-					<b-link to="/" title="Login">Login</b-link>
+					<b-link to="/">{{ $t("label.login") }}</b-link>
 				</div>
 			</div>
 		<SigninFooter/>
@@ -48,6 +47,7 @@ import SigninSlider from "../components/SigninSlider";
 import SigninFooter from "../components/Footer/SigninFooter";
 import customDropdown from "../components/customDropdown";
 import { required, email, minLength, between } from 'vuelidate/lib/validators';
+import {loadLocaleMessages} from '../services/service';
 import store from '../store';
 import axios from "axios";
 
@@ -60,7 +60,7 @@ export default {
 	data() {
 		return {
 			myValue: "",
-			defautLang: "EN",
+			defautLang: "",
 			langList:[],
 			forgotPassword: {
 				email: '',
@@ -81,11 +81,15 @@ export default {
 	computed: {},
 
 	methods: {
-		
-		setLanguage(language){
-                this.defautLang = language;
-                store.commit('setDefaultLanguage', language);
-            },
+		async setLanguage(language){
+            var _this = this;
+            this.defautLang = language.selectedVal;
+            store.commit('setDefaultLanguage',language);
+            this.$i18n.locale = language.selectedVal.toLowerCase()
+            await loadLocaleMessages(this.$i18n.locale);   
+            _this.$forceUpdate();
+            _this.$refs.signinFooter.$forceUpdate()
+    	},
 
 		handleSubmit(e) {
 			this.submitted = true;

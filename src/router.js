@@ -3,6 +3,7 @@ import Router from 'vue-router'
 import Home from './views/Home.vue'
 import TermsofUse from './views/TermsOfUse.vue'
 
+
 Vue.use(Router)
 
 export default new Router({
@@ -40,5 +41,5 @@ export default new Router({
         name: 'TermsofUse',
         component: () => import('./views/TermsOfUse.vue')
     }
-	]
+  ]
 })

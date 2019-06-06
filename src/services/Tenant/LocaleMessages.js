@@ -27,7 +27,7 @@ export default async (lang) => {
             "Content-Type": "application/json",
             "Access-Control-Allow-Origin": "*"
         }}).then(function(res) {
-                if(res.data){
+            if(res.data){
                 i18n.setLocaleMessage(
                     res.data.locale,
                     res.data.data

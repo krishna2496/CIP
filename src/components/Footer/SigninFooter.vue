@@ -10,9 +10,7 @@
             </b-list-group>
         </div>
         <div class="copyright-text">
-        <p>
-            Powered by
-            <b-link title="Optimy">Optimy</b-link>
+        <p>{{ $t("label.powered_by") }} <b-link title="Optimy">Optimy</b-link>
         </p>
         </div>
     </div>
@@ -21,6 +19,7 @@
 <script>
 import axios from "axios";
 import store from '../../store';
+
 export default {
 components: {},
 
@@ -43,7 +42,7 @@ created() {
             this.isDynamicFooterItemsSet = true
         }
         }).catch(error => {
-            console.log(error)
+			
         })
 },
 methods:{  
@@ -62,7 +61,7 @@ methods:{
     getUrl(items){
         return items.slug
     }
-}
+},
 
 };
 

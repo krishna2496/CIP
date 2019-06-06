@@ -1,6 +1,6 @@
 import store from '../../store'
 
-export default (data, langList, defautLang) => {
+export default async(data, langList, defautLang) => {
 
     // Store slider in Local Storage
 	if (data.slider) {
@@ -10,7 +10,9 @@ export default (data, langList, defautLang) => {
         })
         
         store.commit('setSlider',JSON.stringify(data.slider))
-    } 
+    } else {
+         store.commit('setSlider','')
+    }
 
     // Store language in Local Storage
     if (data.language) {
@@ -20,21 +22,18 @@ export default (data, langList, defautLang) => {
         let listOfObjects = Object.entries(data.language);
 
         listOfObjects.forEach(function(listOfLangauge) {
-            if (listOfLangauge[0] == localStorage.getItem('defaultLanguageId') && listOfLangauge[1] == localStorage.getItem('defaultLanguage')) {
+            if (listOfLangauge[0] == store.state.defaultLanguageId && listOfLangauge[1] == store.state.defaultLanguage) {
                 defaultLanguageDataChange = false;
             }
-            
         });
 
         // If options exist
         if (listOfObjects) {
-                localStorage.setItem('listOfLanguage',JSON.stringify(listOfObjects))
-            
-            if (defaultLanguageDataChange === true) {
-                localStorage.removeItem('defaultLanguage');
-                localStorage.removeItem('defaultLanguageId');
-                localStorage.setItem('defaultLanguage',listOfObjects[0][1])
-                localStorage.setItem('defaultLanguageId',listOfObjects[0][0])
+
+            store.commit('setLanguageList',JSON.stringify(listOfObjects))
+
+            if (defaultLanguageDataChange == true) {
+                store.commit('setLanguageDefault',listOfObjects[0][1],listOfObjects[0][0])
             }
 
         } else {
