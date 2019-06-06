@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class TenantHasOption extends Model
 {
@@ -17,4 +18,6 @@ class TenantHasOption extends Model
     public static $rules = [
         // Validation rules
     ];
+    
+    use SoftDeletes;
 }

@@ -24,6 +24,7 @@ $app = new Laravel\Lumen\Application(
 $app->withFacades();
 $app->withEloquent();
 
+$app->configure('app');
 $app->configure('database');
 $app->configure('errors');
 $app->configure('messages');
@@ -67,6 +68,7 @@ $app->singleton(
 // ]);
 
 $app->routeMiddleware([
+	'localization' => App\Http\Middleware\LocalizationMiddleware::class
     //'auth' => App\Http\Middleware\Authenticate::class,
 ]);
 
