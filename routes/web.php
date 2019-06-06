@@ -36,6 +36,12 @@ $router->post('/reset-password/{token}', ['as' => 'password.reset', 'uses' => 'A
 
 /* reset password  */
 $router->put('/password_reset', ['middleware' => 'tenant.connection','uses' => 'App\Auth\AuthController@passwordReset']);
+
+/* CMS footer pages  */
+$router->get('/cms', ['middleware' => 'tenant.connection','uses' => 'App\Cms\CmsController@index']);
+$router->get('/cms/detail', ['middleware' => 'tenant.connection','uses' => 'App\Cms\CmsController@cmsList']);
+$router->get('/cms/{pageId}', ['middleware' => 'tenant.connection','uses' => 'App\Cms\CmsController@show']);
+
 /*
 |
 |--------------------------------------------------------------------------
