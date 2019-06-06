@@ -70,5 +70,14 @@ $router->group(['prefix' => 'users', 'middleware' => 'auth.tenant.admin'], funct
 
 /* Set custom slider data for tenant specific */
 $router->post('/create_slider', ['middleware' => 'auth.tenant.admin', 'uses' => 'Admin\Tenant\TenantOptionsController@storeSlider']);
+
 /* Set cms data for tenant specific */
-$router->post('/create', ['middleware' => 'auth.tenant.admin', 'uses' => 'Admin\Tenant\CmsController@store']);
+$router->group(['prefix' => 'cms', 'middleware' => 'auth.tenant.admin'], function($router){
+	/* Get all users of tenant */
+	$router->get('/', ['uses' => 'Admin\Cms\CmsController@index']);
+	$router->post('/create', ['uses' => 'Admin\Cms\CmsController@store']);
+	$router->put('/update/{pageId}', ['uses' => 'Admin\Cms\CmsController@update']);
+	$router->put('/update/', ['uses' => 'Admin\Cms\CmsController@handleError']);
+	$router->delete('/{pageId}', ['uses' => 'Admin\Cms\CmsController@destroy']);
+	$router->delete('/', ['uses' => 'Admin\Cms\CmsController@handleError']);
+});

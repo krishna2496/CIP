@@ -31,21 +31,11 @@ class TenantOptionController extends Controller
         if ($data) {
             foreach ($data as $key => $value) {
 				// For slider
-                if ($value['option_name'] == config('constants.TENANT_OPTION_SLIDER')) {
-                
+                if ($value['option_name'] == config('constants.TENANT_OPTION_SLIDER'))
 					$slider[]= json_decode(@unserialize($value['option_value']),true);
-                
-				} else {
-					// Check if value is serialize or not
-					$checkForSerialize = @unserialize($value['option_value']);
-                
-                    if ($checkForSerialize === false) {
-                        // If not serialize value
-                        $optionData[$value['option_name']] = $value['option_value'];
-                    } else {
-                        $optionData[$value['option_name']] = unserialize($value['option_value']);
-                    }
-				}
+                else 
+					$optionData[$value['option_name']] = (@unserialize($value['option_value']) === false) ? $value['option_value'] : unserialize($value['option_value']);
+				
             }
 
             // Sort an array by sort order of slider
@@ -70,7 +60,11 @@ class TenantOptionController extends Controller
         // find custom data
         $tenantOptions = TenantOption::get(['option_name', 'option_value'])->where('deleted_at', NULL)->where('option_name','custom_logo')->first();
        
+<<<<<<< HEAD
         if ($tenantOptions && $tenantOptions->option_value) {
+=======
+        if($tenantOptions && $tenantOptions->option_value){
+>>>>>>> remotes/origin/feature/CIP-8
             $tenantLogo = $tenantOptions->option_value;
         }
       
@@ -78,6 +72,9 @@ class TenantOptionController extends Controller
     }
 
 
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> remotes/origin/feature/CIP-8
 }
