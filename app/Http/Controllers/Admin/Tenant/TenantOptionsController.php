@@ -52,40 +52,41 @@ class TenantOptionsController extends Controller
                                         trans('api_error_messages.status_type.HTTP_STATUS_TYPE_403'), 
                                         trans('api_error_messages.custom_error_code.ERROR_40020'), 
                                         trans('api_error_messages.custom_error_message.40020'));
-            } else {                
-                // Check file is available or not
-                if ($request->hasFile('slider_image')) {
-                    // Check file is valid or not
-                    $file = $request->file('slider_image');
-                    if ($file->isValid()) {
-                        $extension = $file->getClientOriginalExtension();
-                        $fileName = "slider_".time().".".$extension;
-                        $destinationPath = config('constants.SLIDER_IMAGE_PATH');
+            }                 
+            // Check file is available or not
+            if ($request->hasFile('slider_image')) {
+                // Check file is valid or not
+                $file = $request->file('slider_image');
+                if ($file->isValid()) {
+                    $extension = $file->getClientOriginalExtension();
+                    $fileName = "slider_".time().".".$extension;
+                    $destinationPath = config('constants.SLIDER_IMAGE_PATH');
 
-                        // Upload file on destination path
-                        $uploadedFile = $file->move($destinationPath, $fileName);
-                    }
+                    // Upload file on destination path
+                    $uploadedFile = $file->move($destinationPath, $fileName);
                 }
-                // Set data for option_value
-                $sliderDetails = (isset($request->slider_detail)) ? json_decode($request->slider_detail) : "";
-                $optionValue = array();
-                $optionValue['url'] = $fileName;
-                $optionValue['sort_order'] = (isset($request->sort_order)) ? $request->sort_order : 0;
-                $optionValue['translations'] = ($sliderDetails != '') ? $sliderDetails->translations : "";
-
-                // Set data for create new record
-                $insert = array();
-                $insert['option_name'] = config('constants.TENANT_OPTION_SLIDER');
-                $insert['option_value'] = serialize(json_encode($optionValue));
-
-                // Create new tenant_option
-                $tenantOption = TenantOption::create($insert);
-
-                // Set response data
-                $apiStatus = app('Illuminate\Http\Response')->status();
-                $apiMessage = trans('api_success_messages.success_message.MESSAGE_SLIDER_ADD_SUCCESS');
-                return Helpers::response($apiStatus, $apiMessage);
             }
+            // Set data for option_value
+            $sliderDetails = (isset($request->slider_detail)) ? json_decode($request->slider_detail) : "";
+            $sortOrder = (isset($request->sort_order)) ? $request->sort_order : 0;
+            $translations = ($sliderDetails != '') ? $sliderDetails->translations : "";
+
+            $optionValue = array('url' => $fileName,
+                                 'sort_order' => $sortOrder,
+                                 'translations' => $translations,
+                                );
+            // Set data for create new record
+            $tenantOption = array('option_name' => config('constants.TENANT_OPTION_SLIDER'),
+                                  'option_value' => serialize(json_encode($optionValue))
+                                  );
+            // Create new tenant_option
+            TenantOption::create($tenantOption);
+
+            // Set response data
+            $apiStatus = app('Illuminate\Http\Response')->status();
+            $apiMessage = trans('api_success_messages.success_message.MESSAGE_SLIDER_ADD_SUCCESS');
+            return Helpers::response($apiStatus, $apiMessage);
+       
 
         } catch (\Exception $e) {
             // Any other error occured when trying to insert data into database for tenant option.
