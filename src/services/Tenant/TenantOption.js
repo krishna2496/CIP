@@ -3,14 +3,17 @@ import store from '../../store'
 export default async(data, langList, defautLang) => {
 
     // Store slider in Local Storage
-	if (data.slider) {
+    if (data.slider) {
         // Convert slider object to array
         let listOfSliderObjects = Object.keys(data.slider).map((key) => {
-			return data.slider[key]
+            return data.slider[key]
         })
         
         store.commit('setSlider',JSON.stringify(data.slider))
-    }
+    }else{
+        var sliderData = [];
+        store.commit('setSlider',JSON.stringify(sliderData))
+    }   
 
     // Store language in Local Storage
     if (data.language) {
@@ -35,20 +38,13 @@ export default async(data, langList, defautLang) => {
             }
 
         } else {
-            localStorage.setItem('listOfLanguage',langList)
-            localStorage.setItem('defaultLanguage',defautLang)
-            let listOfObjects = '';
-            store.commit('setLanguageList',JSON.stringify(listOfObjects))
-            store.commit('setLanguageDefault','','')
+            store.commit('setLanguageList',JSON.stringify(langList))
+            store.commit('setLanguageDefault',defautLang,"")
         }
 
     } else {
-        localStorage.setItem('listOfLanguage',JSON.stringify(langList))
-        localStorage.setItem('defaultLanguage',defautLang)
-        let listOfObjects = '';
-        store.commit('setLanguageList',JSON.stringify(listOfObjects))
-        store.commit('setLanguageDefault','','')
-
+        store.commit('setLanguageList',JSON.stringify(langList))
+        store.commit('setLanguageDefault',defautLang,"")
     }
 }
 
