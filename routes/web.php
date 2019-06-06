@@ -76,8 +76,8 @@ $router->group(['prefix' => 'cms', 'middleware' => 'auth.tenant.admin'], functio
 	/* Get all users of tenant */
 	$router->get('/', ['uses' => 'Admin\Cms\CmsController@index']);
 	$router->post('/create', ['uses' => 'Admin\Cms\CmsController@store']);
-	$router->put('/update/{pageId}', ['uses' => 'Admin\Cms\CmsController@update']);
-	$router->put('/update/', ['uses' => 'Admin\Cms\CmsController@handleError']);
+	$router->patch('/update/{pageId}', ['uses' => 'Admin\Cms\CmsController@update']);
+	$router->patch('/update/', ['uses' => 'Admin\Cms\CmsController@handleError']);
 	$router->delete('/{pageId}', ['uses' => 'Admin\Cms\CmsController@destroy']);
 	$router->delete('/', ['uses' => 'Admin\Cms\CmsController@handleError']);
 });
