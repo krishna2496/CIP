@@ -85,10 +85,11 @@ $router->group(['prefix' => 'cms', 'middleware' => 'auth.tenant.admin'], functio
 });
 
 /* Set custom field data for tenant specific */
-$router->group(['prefix' => 'users/custom_field', 'middleware' => 'auth.tenant.admin'], function($router){ 
+$router->group(['prefix' => 'metadata/users/custom_fields', 'middleware' => 'auth.tenant.admin'], function($router){ 
+	$router->get('/', ['uses' => 'Admin\User\UserCustomFieldController@index']);
 	$router->post('/create', ['uses' => 'Admin\User\UserCustomFieldController@store']);
-	$router->put('/update/{fieldId}', ['uses' => 'Admin\User\UserCustomFieldController@update']);
-	$router->put('/update/', ['uses' => 'Admin\User\UserCustomFieldController@handleError']);	
+	$router->patch('/{fieldId}', ['uses' => 'Admin\User\UserCustomFieldController@update']);
+	$router->patch('/', ['uses' => 'Admin\User\UserCustomFieldController@handleError']);	
 	$router->delete('/{fieldId}', ['uses' => 'Admin\User\UserCustomFieldController@destroy']);
 	$router->delete('/', ['uses' => 'Admin\User\UserCustomFieldController@handleError']);
 });

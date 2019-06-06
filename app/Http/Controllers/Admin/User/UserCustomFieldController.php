@@ -19,7 +19,29 @@ class UserCustomFieldController extends Controller
      */
     public function index()
     {
-       //
+		$customFields = UserCustomField::all();
+		$customFieldsData = $customFields->toArray();          
+        
+        if (empty($customFieldsData)) {
+        	// Set response data
+            $apiStatus = app('Illuminate\Http\Response')->status();
+            $apiMessage = config('messages.success_message.MESSAGE_NO_DATA_FOUND');
+            return Helpers::response($apiStatus, $apiMessage);
+        }
+        $data = array();
+        $detail = array();
+        foreach ($customFieldsData as $value) {
+        	$detail[] = array('field_id' => $value['field_id'],
+							  'name' => $value['name'],
+							  'type' => $value['type'],
+							  'is_mandatory' => $value['is_mandatory'],
+							  'translation' => (@unserialize($value['translations']) === false) ? $value['translations'] : unserialize($value['translations']));
+        }
+        // Set response data
+        $apiData = $detail;
+        $apiStatus = app('Illuminate\Http\Response')->status();
+        $apiMessage = config('messages.success_message.MESSAGE_USER_LIST_SUCCESS');
+        return Helpers::response($apiStatus, $apiMessage, $apiData);
     }
 
     /**
