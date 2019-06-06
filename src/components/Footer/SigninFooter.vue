@@ -50,16 +50,20 @@ methods:{
         // console.log(items.pages);return false;
         //Get title according to language
         items = items.pages;
-        var filteredObj  = items.filter(function (item,i) { 
-            if (item.language_id == store.state.defaultLanguageId) {
-                return item;
-            }
-        });
-        return filteredObj[0].title
+        if (items) { 
+            var filteredObj  = items.filter(function (item,i) { 
+                if (item.language_id == store.state.defaultLanguageId) {
+                    return item;
+                }
+            });
+            return filteredObj[0].title
+        }
     },
 
     getUrl(items){
-        return items.slug
+        if (items) { 
+            return items.slug
+        }
     }
 },
 
