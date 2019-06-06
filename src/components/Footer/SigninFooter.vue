@@ -56,7 +56,9 @@ methods:{
                     return item;
                 }
             });
-            return filteredObj[0].title
+            if (filteredObj[0]) {
+                return filteredObj[0].title
+            }
         }
     },
 

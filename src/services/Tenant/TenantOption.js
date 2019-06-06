@@ -34,17 +34,26 @@ export default async(data, langList, defautLang) => {
             store.commit('setLanguageList',JSON.stringify(listOfObjects))
 
             if (defaultLanguageDataChange == true) {
-                store.commit('setLanguageDefault',listOfObjects[0][1],listOfObjects[0][0])
+                var defaultLanguageData = []
+                defaultLanguageData["selectedVal"] = listOfObjects[0][1];
+                defaultLanguageData["selectedId"] = listOfObjects[0][0];
+                store.commit('setDefaultLanguage',defaultLanguageData)
             }
 
         } else {
             store.commit('setLanguageList',JSON.stringify(langList))
-            store.commit('setLanguageDefault',defautLang,"")
+            var defaultLanguageData = []
+            defaultLanguageData["selectedVal"] = defautLang;
+            defaultLanguageData["selectedId"] = "";
+            store.commit('setDefaultLanguage',defaultLanguageData)
         }
 
     } else {
         store.commit('setLanguageList',JSON.stringify(langList))
-        store.commit('setLanguageDefault',defautLang,"")
+        var defaultLanguageData = []
+        defaultLanguageData["selectedVal"] = defautLang;
+        defaultLanguageData["selectedId"] = "";
+        store.commit('setDefaultLanguage',defaultLanguageData)
     }
 }
 
