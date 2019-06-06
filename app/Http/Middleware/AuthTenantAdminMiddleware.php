@@ -21,10 +21,10 @@ class AuthTenantAdminMiddleware
         if (!isset($_SERVER['PHP_AUTH_USER']) && !isset($_SERVER['PHP_AUTH_PW'])
             || (empty($_SERVER['PHP_AUTH_USER']) && empty($_SERVER['PHP_AUTH_PW']))
         ) {
-            return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_401'), 
-                                        config('errors.status_type.HTTP_STATUS_TYPE_401'), 
-                                        config('errors.custom_error_code.ERROR_20010'), 
-                                        config('errors.custom_error_message.20010'));
+            return Helpers::errorResponse(trans('api_error_messages.status_code.HTTP_STATUS_401'), 
+                                        trans('api_error_messages.status_type.HTTP_STATUS_TYPE_401'), 
+                                        trans('api_error_messages.custom_error_code.ERROR_20010'), 
+                                        trans('api_error_messages.custom_error_message.20010'));
         }
         try{
             // authenticate api user based on basic auth parameters
@@ -43,22 +43,22 @@ class AuthTenantAdminMiddleware
                 return $response;
             }
             // Send authentication error response if api user not found in master database
-            return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_401'), 
-                                        config('errors.status_type.HTTP_STATUS_TYPE_401'), 
-                                        config('errors.custom_error_code.ERROR_20008'), 
-                                        config('errors.custom_error_message.20008'));
+            return Helpers::errorResponse(trans('api_error_messages.status_code.HTTP_STATUS_401'), 
+                                        trans('api_error_messages.status_type.HTTP_STATUS_TYPE_401'), 
+                                        trans('api_error_messages.custom_error_code.ERROR_20008'), 
+                                        trans('api_error_messages.custom_error_message.20008'));
         } catch(\Exception $e){
             // That is database not found, that means there is DB_DATABASE constant in env file. That must need to remove from env.
             if ($e->getCode() === 1049) {
-                return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_TYPE_422'), 
-                                        config('errors.status_type.HTTP_STATUS_TYPE_422'), 
-                                        config('errors.custom_error_code.ERROR_20016'), 
-                                        config('errors.custom_error_message.20016'));
+                return Helpers::errorResponse(trans('api_error_messages.status_code.HTTP_STATUS_TYPE_422'), 
+                                        trans('api_error_messages.status_type.HTTP_STATUS_TYPE_422'), 
+                                        trans('api_error_messages.custom_error_code.ERROR_20016'), 
+                                        trans('api_error_messages.custom_error_message.20016'));
             } else {
-                return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_TYPE_403'), 
-                                        config('errors.status_type.HTTP_STATUS_TYPE_403'), 
-                                        config('errors.custom_error_code.ERROR_20014'), 
-                                        config('errors.custom_error_message.20014'));
+                return Helpers::errorResponse(trans('api_error_messages.status_code.HTTP_STATUS_TYPE_403'), 
+                                        trans('api_error_messages.status_type.HTTP_STATUS_TYPE_403'), 
+                                        trans('api_error_messages.custom_error_code.ERROR_20014'), 
+                                        trans('api_error_messages.custom_error_message.20014'));
             }
         }
     }
@@ -88,10 +88,10 @@ class AuthTenantAdminMiddleware
             return 1;
 
         } catch(\Exception $e){
-            return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_TYPE_403'), 
-                                        config('errors.status_type.HTTP_STATUS_TYPE_403'), 
-                                        config('errors.custom_error_code.ERROR_21000'), 
-                                        config('errors.custom_error_message.21000'));
+            return Helpers::errorResponse(trans('api_error_messages.status_code.HTTP_STATUS_TYPE_403'), 
+                                        trans('api_error_messages.status_type.HTTP_STATUS_TYPE_403'), 
+                                        trans('api_error_messages.custom_error_code.ERROR_21000'), 
+                                        trans('api_error_messages.custom_error_message.21000'));
 
         }
     }

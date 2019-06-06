@@ -35,9 +35,9 @@ class TenantOptionsController extends Controller
 
         // If post parameter have any missing parameter
         if ($validator->fails()) {
-            return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_422'),
-                                        config('errors.status_type.HTTP_STATUS_TYPE_422'),
-                                        config('errors.custom_error_code.ERROR_20018'),
+            return Helpers::errorResponse(trans('api_error_messages.status_code.HTTP_STATUS_422'),
+                                        trans('api_error_messages.status_type.HTTP_STATUS_TYPE_422'),
+                                        trans('api_error_messages.custom_error_code.ERROR_20018'),
                                         $validator->errors()->first());
         }        
 
@@ -48,10 +48,10 @@ class TenantOptionsController extends Controller
             // Prevent data insertion if user is trying to insert more than defined slider limit records 
             if (count($slider) >= config('constants.SLIDER_LIMIT')) {
                 // Set response data
-                return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_403'), 
-                                        config('errors.status_type.HTTP_STATUS_TYPE_403'), 
-                                        config('errors.custom_error_code.ERROR_40020'), 
-                                        config('errors.custom_error_message.40020'));
+                return Helpers::errorResponse(trans('api_error_messages.status_code.HTTP_STATUS_403'), 
+                                        trans('api_error_messages.status_type.HTTP_STATUS_TYPE_403'), 
+                                        trans('api_error_messages.custom_error_code.ERROR_40020'), 
+                                        trans('api_error_messages.custom_error_message.40020'));
             } else {                
                 // Check file is available or not
                 if ($request->hasFile('slider_image')) {
@@ -83,16 +83,16 @@ class TenantOptionsController extends Controller
 
                 // Set response data
                 $apiStatus = app('Illuminate\Http\Response')->status();
-                $apiMessage = config('messages.success_message.MESSAGE_SLIDER_ADD_SUCCESS');
+                $apiMessage = trans('api_success_messages.success_message.MESSAGE_SLIDER_ADD_SUCCESS');
                 return Helpers::response($apiStatus, $apiMessage);
             }
 
         } catch (\Exception $e) {
             // Any other error occured when trying to insert data into database for tenant option.
-            return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_422'), 
-                                    config('errors.status_type.HTTP_STATUS_TYPE_422'), 
-                                    config('errors.custom_error_code.ERROR_20004'), 
-                                    config('errors.custom_error_message.20004'));
+            return Helpers::errorResponse(trans('api_error_messages.status_code.HTTP_STATUS_422'), 
+                                    trans('api_error_messages.status_type.HTTP_STATUS_TYPE_422'), 
+                                    trans('api_error_messages.custom_error_code.ERROR_20004'), 
+                                    trans('api_error_messages.custom_error_message.20004'));
             
         }
     }
