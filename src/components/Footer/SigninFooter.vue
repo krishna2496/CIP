@@ -34,7 +34,7 @@ data() {
 
 created() {
     // Fetching footer CMS pages
-    axios.get(process.env.VUE_APP_API_ENDPOINT+"cms")
+    axios.get(process.env.VUE_APP_API_ENDPOINT+"cms/listing")
     .then((response) => {
 
         if (response.data.data) {
