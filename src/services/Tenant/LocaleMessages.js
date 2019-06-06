@@ -18,7 +18,7 @@ export default async (lang) => {
         lang = lang.toLowerCase();
     } 
     
-    if (!loadedLanguages.includes(lang)) {
+    if (!loadedLanguages.includes(lang) && (lang != '')) {
             
         await axios.get(`${process.env.VUE_APP_LANGUAGE_API_ENDPOINT+lang}`, {
             method: "get",

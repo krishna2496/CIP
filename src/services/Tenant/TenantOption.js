@@ -37,11 +37,18 @@ export default async(data, langList, defautLang) => {
         } else {
             localStorage.setItem('listOfLanguage',langList)
             localStorage.setItem('defaultLanguage',defautLang)
+            let listOfObjects = '';
+            store.commit('setLanguageList',JSON.stringify(listOfObjects))
+            store.commit('setLanguageDefault','','')
         }
 
     } else {
         localStorage.setItem('listOfLanguage',JSON.stringify(langList))
         localStorage.setItem('defaultLanguage',defautLang)
+        let listOfObjects = '';
+        store.commit('setLanguageList',JSON.stringify(listOfObjects))
+        store.commit('setLanguageDefault','','')
+
     }
 }
 
