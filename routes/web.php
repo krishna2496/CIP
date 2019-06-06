@@ -79,7 +79,6 @@ $router->get('/custom_field/', ['middleware' => 'localization|tenant.connection'
 
 /* Set cms data for tenant specific */
 $router->group(['prefix' => 'users', 'middleware' => 'localization|auth.tenant.admin'], function($router){
-	/* Get all users of tenant */
 	$router->get('/', ['uses' => 'Admin\User\UserController@index']);
 	$router->post('/create', ['uses' => 'Admin\User\UserController@store']);
 	$router->delete('/{userId}', ['uses' => 'Admin\User\UserController@destroy']);
@@ -90,7 +89,6 @@ $router->post('/create_slider', ['middleware' => 'localization|auth.tenant.admin
 
 /* Set cms data for tenant specific */
 $router->group(['prefix' => 'cms', 'middleware' => 'localization|auth.tenant.admin'], function($router){
-	/* Get all users of tenant */
 	$router->get('/', ['uses' => 'Admin\Cms\CmsController@index']);
 	$router->post('/create', ['uses' => 'Admin\Cms\CmsController@store']);
 	$router->patch('/update/{pageId}', ['uses' => 'Admin\Cms\CmsController@update']);
