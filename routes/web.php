@@ -78,6 +78,7 @@ $router->get('language/{lang}', ['uses' => 'App\Language\LanguageController@fetc
 $router->group(['prefix' => 'users', 'middleware' => 'localization|auth.tenant.admin'], function($router){
 	/* Get all users of tenant */
 	$router->get('/', ['uses' => 'Admin\User\UserController@index']);
+	$router->get('/{userId}', ['uses' => 'Admin\User\UserController@show']);
 	$router->post('/create', ['uses' => 'Admin\User\UserController@store']);
 	$router->delete('/{userId}', ['uses' => 'Admin\User\UserController@destroy']);
 });

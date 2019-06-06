@@ -6,6 +6,9 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Input;
 use App\User;
+use App\City;
+use App\Country;
+use App\Timezone;
 use App\Helpers\Helpers;
 use Validator;
 
@@ -105,7 +108,7 @@ class UserController extends Controller
 										trans('api_error_messages.custom_error_code.ERROR_20002'), 
 										trans('api_error_messages.custom_error_message.20002'));
             } else { 
-				// Any other error occured when trying to insert data into database for tenant.
+				        // Any other error occured when trying to insert data into database for user.
                 return Helpers::errorResponse(trans('api_error_messages.status_code.HTTP_STATUS_422'), 
 											trans('api_error_messages.status_type.HTTP_STATUS_TYPE_422'), 
 											trans('api_error_messages.custom_error_code.ERROR_20004'), 
@@ -115,14 +118,51 @@ class UserController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Display the specified user detail.
      *
      * @param int $id
-     * @return \Illuminate\Http\Response
+     * @return mixed
      */
     public function show($id)
     {
-        //
+        $userQuery = User::where('user_id', $id)
+                    ->whereNull('deleted_at')
+                    ->whereStatus('1');
+
+        try {         
+            $user = $userQuery->first();
+        } catch(\Exception $e) {
+            // Catch database exception
+            return Helpers::errorResponse(trans('api_error_messages.status_code.HTTP_STATUS_403'), 
+                                        trans('api_error_messages.status_type.HTTP_STATUS_TYPE_403'), 
+                                        trans('api_error_messages.custom_error_code.ERROR_40018'), 
+                                        trans('api_error_messages.custom_error_message.40018'));
+        }
+        if ($user) {            
+            $cityName = Helpers::getCityName($user['city_id']);
+            $countryName = Helpers::getCountryName($user['country_id']);
+            $timezone = Helpers::getTimezone($user['timezone_id']);
+
+            $userData = array('user_id' => $user['user_id'],
+                              'email' => $user['email'],
+                              'first_name' => $user['first_name'],
+                              'last_name' => $user['last_name'],
+                              'city' => $cityName,
+                              'country' => $countryName,
+                              'profile_text' => $user['profile_text'],
+                              'why_i_volunteer' => $user['why_i_volunteer'],
+                              'timezone' => $timezone,
+                              'language' => $user['language_id'],
+                        );
+            $apiData = $userData;
+            $apiStatus = app('Illuminate\Http\Response')->status();
+            $apiMessage = trans('api_success_messages.success_message.MESSAGE_USER_LIST_SUCCESS');
+            return Helpers::response($apiStatus, $apiMessage, $apiData);
+        } else {
+            $apiStatus = app('Illuminate\Http\Response')->status();
+            $apiMessage = trans('api_success_messages.success_message.MESSAGE_NO_DATA_FOUND');
+            return Helpers::response($apiStatus, $apiMessage);
+        }
     }
 
     /**

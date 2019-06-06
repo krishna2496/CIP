@@ -4,6 +4,7 @@ namespace App\Helpers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Response;
+use DB;
 
 class Helpers
 {
@@ -132,6 +133,45 @@ class Helpers
                  
             }
         }
+    }
+
+    /**
+     * Get city name from city_id
+     * 
+     * @param int $city_id
+     *
+     * @return mixed
+     */
+    public static function getCityName($city_id)
+    {
+        $city = DB::table("city")->where("city_id", $city_id)->first();
+        return $city->name;
+    }
+
+    /**
+     * Get country name from country_id
+     * 
+     * @param int $country_id
+     *
+     * @return mixed
+     */
+    public static function getCountryName($country_id)
+    {
+        $country = DB::table("country")->where("country_id", $country_id)->first();
+        return $country->name;
+    }
+
+    /**
+     * Get timezone from timezone_id
+     * 
+     * @param int $timezone_id
+     *
+     * @return mixed
+     */
+    public static function getTimezone($timezone_id)
+    {
+        $timezone = DB::table("timezone")->where("timezone_id", $timezone_id)->first();
+        return $timezone->timezone;
     }
 
 }
