@@ -28,7 +28,6 @@ class UserCustomFieldController extends Controller
             $apiMessage = trans('api_success_messages.success_message.MESSAGE_NO_DATA_FOUND');
             return Helpers::response($apiStatus, $apiMessage);
         }
-        $data = array();
         $detail = array();
         foreach ($customFieldsData as $value) {
         	$detail[] = array('field_id' => $value['field_id'],

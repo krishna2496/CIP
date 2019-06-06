@@ -47,10 +47,6 @@ $router->group(['prefix' => 'cms', 'middleware' => 'localization|tenant.connecti
 	$router->get('/{slug}', ['uses' => 'App\Cms\CmsController@show']);
 });
 
-
-/* Get custom field data  */
-$router->get('/custom_field/', ['middleware' => 'localization|tenant.connection','uses' => 'App\USer\UserCustomFieldController@index']);
-
 /*
 |
 |--------------------------------------------------------------------------
@@ -89,7 +85,7 @@ $router->post('/create_slider', ['middleware' => 'localization|auth.tenant.admin
 
 /* Set cms data for tenant specific */
 $router->group(['prefix' => 'cms', 'middleware' => 'localization|auth.tenant.admin'], function($router){
-	$router->get('/', ['uses' => 'Admin\Cms\CmsController@index']);
+	/*$router->get('/', ['uses' => 'Admin\Cms\CmsController@index']);*/
 	$router->post('/create', ['uses' => 'Admin\Cms\CmsController@store']);
 	$router->patch('/update/{pageId}', ['uses' => 'Admin\Cms\CmsController@update']);
 	$router->patch('/update/', ['uses' => 'Admin\Cms\CmsController@handleError']);
