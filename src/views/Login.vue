@@ -148,7 +148,6 @@
 
                             //Get langauage list from Local Storage
                             this.langList = JSON.parse(store.state.listOfLanguage)
-
                             this.defautLang = store.state.defaultLanguage
 
                         }else{

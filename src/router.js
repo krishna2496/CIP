@@ -37,8 +37,8 @@ export default new Router({
     },
     {
         path: '/cms/:pageId',
-        name: 'footerCmsPage',
-        component: () => import('./views/footerCmsPage.vue')
+        name: 'TermsofUse',
+        component: () => import('./views/TermsOfUse.vue')
     }
-  ]
+	]
 })
