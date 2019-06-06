@@ -37,11 +37,16 @@ $router->post('/reset-password/{token}', ['as' => 'password.reset', 'uses' => 'A
 /* reset password  */
 $router->put('/password_reset', ['middleware' => 'tenant.connection','uses' => 'App\Auth\AuthController@passwordReset']);
 
+<<<<<<< HEAD
 /* CMS footer pages  */
 $router->get('/cms', ['middleware' => 'tenant.connection','uses' => 'App\Cms\CmsController@index']);
 $router->get('/cms/detail', ['middleware' => 'tenant.connection','uses' => 'App\Cms\CmsController@cmsList']);
 $router->get('/cms/{pageId}', ['middleware' => 'tenant.connection','uses' => 'App\Cms\CmsController@show']);
 
+=======
+/* Get custom field data  */
+$router->get('/custom_field/', ['middleware' => 'tenant.connection','uses' => 'App\USer\UserCustomFieldController@index']);
+>>>>>>> remotes/origin/feature/CIP-21
 /*
 |
 |--------------------------------------------------------------------------
@@ -86,4 +91,14 @@ $router->group(['prefix' => 'cms', 'middleware' => 'auth.tenant.admin'], functio
 	$router->patch('/update/', ['uses' => 'Admin\Cms\CmsController@handleError']);
 	$router->delete('/{pageId}', ['uses' => 'Admin\Cms\CmsController@destroy']);
 	$router->delete('/', ['uses' => 'Admin\Cms\CmsController@handleError']);
+});
+
+/* Set custom field data for tenant specific */
+$router->group(['prefix' => 'metadata/users/custom_fields', 'middleware' => 'auth.tenant.admin'], function($router){ 
+	$router->get('/', ['uses' => 'Admin\User\UserCustomFieldController@index']);
+	$router->post('/create', ['uses' => 'Admin\User\UserCustomFieldController@store']);
+	$router->patch('/{fieldId}', ['uses' => 'Admin\User\UserCustomFieldController@update']);
+	$router->patch('/', ['uses' => 'Admin\User\UserCustomFieldController@handleError']);	
+	$router->delete('/{fieldId}', ['uses' => 'Admin\User\UserCustomFieldController@destroy']);
+	$router->delete('/', ['uses' => 'Admin\User\UserCustomFieldController@handleError']);
 });
