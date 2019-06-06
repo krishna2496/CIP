@@ -10,8 +10,6 @@ export default async(data, langList, defautLang) => {
         })
         
         store.commit('setSlider',JSON.stringify(data.slider))
-    } else {
-         store.commit('setSlider','')
     }
 
     // Store language in Local Storage

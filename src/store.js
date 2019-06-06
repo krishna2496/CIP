@@ -35,7 +35,7 @@ export default new Vuex.Store({
         },
         setSlider(state, slider){
             localStorage.removeItem('slider');
-            localStorage.setItem('slider', slider);
+            localStorage.setItem('slider',slider);
             state.slider = slider;
         },
         setLanguageList(state, languageList,){   
