@@ -79,12 +79,11 @@ class TenantOptionsController extends Controller
                 // Create new tenant_option
                 $tenantOption = TenantOption::create($insertData);
 
-                // Set response data
-                $apiStatus = app('Illuminate\Http\Response')->status();
-                $apiMessage = trans('api_success_messages.success_message.MESSAGE_SLIDER_ADD_SUCCESS');
-                return Helpers::response($apiStatus, $apiMessage);
-            }
-
+            // Set response data
+            $apiStatus = app('Illuminate\Http\Response')->status();
+            $apiMessage = trans('api_success_messages.success_message.MESSAGE_SLIDER_ADD_SUCCESS');
+            return Helpers::response($apiStatus, $apiMessage);
+       
         } catch (\Exception $e) {
             // Any other error occured when trying to insert data into database for tenant option.
             return Helpers::errorResponse(trans('api_error_messages.status_code.HTTP_STATUS_422'), 

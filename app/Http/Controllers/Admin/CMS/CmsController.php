@@ -25,7 +25,7 @@ class CmsController extends Controller
             if (empty($footerPage)) {
                 // Set response data
                 $apiStatus = app('Illuminate\Http\Response')->status();
-                $apiMessage = config('messages.success_message.MESSAGE_NO_DATA_FOUND');
+                $apiMessage = trans('api_success_messages.success_message.MESSAGE_NO_DATA_FOUND');
                 return Helpers::response($apiStatus, $apiMessage);
             }
             $pageList = array();
@@ -47,14 +47,14 @@ class CmsController extends Controller
             // Set response data
             $apiData = $pageList; 
             $apiStatus = app('Illuminate\Http\Response')->status();
-            $apiMessage = config('messages.success_message.MESSAGE_CMS_LIST_SUCCESS');
+            $apiMessage = trans('api_success_messages.success_message.MESSAGE_CMS_LIST_SUCCESS');
             return Helpers::response($apiStatus, $apiMessage, $apiData);                  
         } catch(\Exception $e) {
             // Catch database exception
-            return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_500'), 
-                                        config('errors.status_type.HTTP_STATUS_TYPE_500'), 
-                                        config('errors.custom_error_code.ERROR_40018'), 
-                                        config('errors.custom_error_message.40018'));           
+            return Helpers::errorResponse(trans('api_error_messages.status_code.HTTP_STATUS_500'), 
+                                        trans('api_error_messages.status_type.HTTP_STATUS_TYPE_500'), 
+                                        trans('api_error_messages.custom_error_code.ERROR_40018'), 
+                                        trans('api_error_messages.custom_error_message.40018'));           
         }
     }
 
@@ -70,9 +70,9 @@ class CmsController extends Controller
         $validator = Validator::make($request->toArray(), ["page_detail" => "required"]);
         // If post parameter have any missing parameter
         if ($validator->fails()) {
-            return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_422'),
-                                        config('errors.status_type.HTTP_STATUS_TYPE_422'),
-                                        config('errors.custom_error_code.ERROR_20018'),
+            return Helpers::errorResponse(trans('api_error_messages.status_code.HTTP_STATUS_422'),
+                                        trans('api_error_messages.status_type.HTTP_STATUS_TYPE_422'),
+                                        trans('api_error_messages.custom_error_code.ERROR_20018'),
                                         $validator->errors()->first());
         } 
         try {   
@@ -80,25 +80,25 @@ class CmsController extends Controller
             $slugValidator = Validator::make($postData, ["slug" => "required"]);
             // If post parameter have missing slug parameter
             if ($slugValidator->fails()) {
-                return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_422'),
-                                            config('errors.status_type.HTTP_STATUS_TYPE_422'),
-                                            config('errors.custom_error_code.ERROR_20038'),
-                                            config('errors.custom_error_message.20038'));
+                return Helpers::errorResponse(trans('api_error_messages.status_code.HTTP_STATUS_422'),
+                                            trans('api_error_messages.status_type.HTTP_STATUS_TYPE_422'),
+                                            trans('api_error_messages.custom_error_code.ERROR_20038'),
+                                            trans('api_error_messages.custom_error_message.20038'));
             } 
 			if (count($postData['translations']) == 0) {
-                return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_422'),
-                                            config('errors.status_type.HTTP_STATUS_TYPE_422'),
-                                            config('errors.custom_error_code.ERROR_20030'),
-                                            config('errors.custom_error_message.20030'));
+                return Helpers::errorResponse(trans('api_error_messages.status_code.HTTP_STATUS_422'),
+                                            trans('api_error_messages.status_type.HTTP_STATUS_TYPE_422'),
+                                            trans('api_error_messages.custom_error_code.ERROR_20030'),
+                                            trans('api_error_messages.custom_error_message.20030'));
             }
 			
 			// Check if section is exist in post data
             foreach ($postData['translations'] as $value) {
                 if(!array_key_exists("section", $value)) {
-					return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_422'),
-									config('errors.status_type.HTTP_STATUS_TYPE_422'),
-									config('errors.custom_error_code.ERROR_20036'),
-									config('errors.custom_error_message.20036'));
+					return Helpers::errorResponse(trans('api_error_messages.status_code.HTTP_STATUS_422'),
+									trans('api_error_messages.status_type.HTTP_STATUS_TYPE_422'),
+									trans('api_error_messages.custom_error_code.ERROR_20036'),
+									trans('api_error_messages.custom_error_message.20036'));
 				} 
             } 
              
@@ -113,9 +113,9 @@ class CmsController extends Controller
                 $validator = Validator::make($value, ["language_id" => "required" ,"title" => "required" ,"section" => "required" ]);
                 // If translations have any missing parameter
                 if ($validator->fails()) {
-                    return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_422'),
-                                                config('errors.status_type.HTTP_STATUS_TYPE_422'),
-                                                config('errors.custom_error_code.ERROR_20018'),
+                    return Helpers::errorResponse(trans('api_error_messages.status_code.HTTP_STATUS_422'),
+                                                trans('api_error_messages.status_type.HTTP_STATUS_TYPE_422'),
+                                                trans('api_error_messages.custom_error_code.ERROR_20018'),
                                                 $validator->errors()->first());
                 }    
                 $footer_page_language_data = array(	'page_id' => $footer_page['page_id'], 
@@ -127,16 +127,16 @@ class CmsController extends Controller
             }
             // Set response data
             $apiStatus = app('Illuminate\Http\Response')->status();
-            $apiMessage = config('messages.success_message.MESSAGE_CMS_PAGE_ADD_SUCCESS');
+            $apiMessage = trans('api_success_messages.success_message.MESSAGE_CMS_PAGE_ADD_SUCCESS');
             $apiData = ['page_id' => $footer_page['page_id']];
             return Helpers::response($apiStatus, $apiMessage, $apiData);
                        
         } catch (\Exception $e) {
         	// Any other error occured when trying to insert data into database for `footer_page`
-            return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_422'), 
-                                    config('errors.status_type.HTTP_STATUS_TYPE_422'), 
-                                    config('errors.custom_error_code.ERROR_20004'), 
-                                    config('errors.custom_error_message.20004'));
+            return Helpers::errorResponse(trans('api_error_messages.status_code.HTTP_STATUS_422'), 
+                                    trans('api_error_messages.status_type.HTTP_STATUS_TYPE_422'), 
+                                    trans('api_error_messages.custom_error_code.ERROR_20004'), 
+                                    trans('api_error_messages.custom_error_message.20004'));
             
         }
     }
@@ -166,19 +166,19 @@ class CmsController extends Controller
         
 		// If post parameter have any missing parameter
         if ($validator->fails()) {
-            return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_422'),
-                                        config('errors.status_type.HTTP_STATUS_TYPE_422'),
-                                        config('errors.custom_error_code.ERROR_20018'),
+            return Helpers::errorResponse(trans('api_error_messages.status_code.HTTP_STATUS_422'),
+                                        trans('api_error_messages.status_type.HTTP_STATUS_TYPE_422'),
+                                        trans('api_error_messages.custom_error_code.ERROR_20018'),
                                         $validator->errors()->first());
         }  
         
 		$footerPage = FooterPage::find($id);
         
 		if (!$footerPage) {
-            return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_422'),
-                                        config('errors.status_type.HTTP_STATUS_TYPE_422'),
-                                        config('errors.custom_error_code.ERROR_20032'),
-                                        config('errors.custom_error_message.20032'));
+            return Helpers::errorResponse(trans('api_error_messages.status_code.HTTP_STATUS_422'),
+                                        trans('api_error_messages.status_type.HTTP_STATUS_TYPE_422'),
+                                        trans('api_error_messages.custom_error_code.ERROR_20032'),
+                                        trans('api_error_messages.custom_error_message.20032'));
         }
 
         $postData = $request->page_detail;
@@ -187,20 +187,20 @@ class CmsController extends Controller
 		$slugValidator = Validator::make($postData, ["slug" => "required"]);
 		// If post parameter have missing slug parameter
 		if ($slugValidator->fails()) {
-			return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_422'),
-                                            config('errors.status_type.HTTP_STATUS_TYPE_422'),
-                                            config('errors.custom_error_code.ERROR_20038'),
-                                            config('errors.custom_error_message.20038'));
+			return Helpers::errorResponse(trans('api_error_messages.status_code.HTTP_STATUS_422'),
+                                            trans('api_error_messages.status_type.HTTP_STATUS_TYPE_422'),
+                                            trans('api_error_messages.custom_error_code.ERROR_20038'),
+                                            trans('api_error_messages.custom_error_message.20038'));
 		}
 		
         $page['slug'] = $postData['slug'];
         $footer_page = FooterPage::where('page_id', $id)->update($page);
 
 		if (count($postData['translations']) == 0) {
-            return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_422'),
-										config('errors.status_type.HTTP_STATUS_TYPE_422'),
-										config('errors.custom_error_code.ERROR_20030'),
-										config('errors.custom_error_message.20030'));
+            return Helpers::errorResponse(trans('api_error_messages.status_code.HTTP_STATUS_422'),
+										trans('api_error_messages.status_type.HTTP_STATUS_TYPE_422'),
+										trans('api_error_messages.custom_error_code.ERROR_20030'),
+										trans('api_error_messages.custom_error_message.20030'));
         } 
         
 		try {            
@@ -209,10 +209,10 @@ class CmsController extends Controller
                 $validator = Validator::make($value, ["language_id" => "required" ,"title" => "required" ,"section" => "required" ]);
                 // If translations have any missing parameter
                 if ($validator->fails()) {
-                    return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_422'),
-                                                config('errors.status_type.HTTP_STATUS_TYPE_422'),
-                                                config('errors.custom_error_code.ERROR_20036'),
-                                                config('errors.custom_error_message.20036'));
+                    return Helpers::errorResponse(trans('api_error_messages.status_code.HTTP_STATUS_422'),
+                                                trans('api_error_messages.status_type.HTTP_STATUS_TYPE_422'),
+                                                trans('api_error_messages.custom_error_code.ERROR_20036'),
+                                                trans('api_error_messages.custom_error_message.20036'));
                 }    
                 $footerPageData = FooterPagesLanguage::where('page_id', $id)
 								->where('language_id', $value['language_id'])
@@ -231,15 +231,15 @@ class CmsController extends Controller
 			}      
             // Set response data
             $apiStatus = app('Illuminate\Http\Response')->status();
-            $apiMessage = config('messages.success_message.MESSAGE_CMS_PAGE_UPDATE_SUCCESS');
+            $apiMessage = trans('api_success_messages.success_message.MESSAGE_CMS_PAGE_UPDATE_SUCCESS');
             $apiData = ['page_id' => $id];
             return Helpers::response($apiStatus, $apiMessage, $apiData);
         } catch (\Exception $e) {
             // Any other error occured when trying to update data into database for `footer_page`.
-            return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_422'), 
-                                    config('errors.status_type.HTTP_STATUS_TYPE_422'), 
-                                    config('errors.custom_error_code.ERROR_20004'), 
-                                    config('errors.custom_error_message.20004'));
+            return Helpers::errorResponse(trans('api_error_messages.status_code.HTTP_STATUS_422'), 
+                                    trans('api_error_messages.status_type.HTTP_STATUS_TYPE_422'), 
+                                    trans('api_error_messages.custom_error_code.ERROR_20004'), 
+                                    trans('api_error_messages.custom_error_message.20004'));
             
         }
    
@@ -260,13 +260,13 @@ class CmsController extends Controller
 
             // Set response data
             $apiStatus = app('Illuminate\Http\Response')->status();            
-            $apiMessage = config('messages.success_message.MESSAGE_CMS_PAGE_DELETE_SUCCESS');
+            $apiMessage = trans('api_success_messages.success_message.MESSAGE_CMS_PAGE_DELETE_SUCCESS');
             return Helpers::response($apiStatus, $apiMessage);            
         } catch(\Exception $e){
-            return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_403'), 
-                                        config('errors.status_type.HTTP_STATUS_TYPE_403'), 
-                                        config('errors.custom_error_code.ERROR_20020'), 
-                                        config('errors.custom_error_message.20020'));
+            return Helpers::errorResponse(trans('api_error_messages.status_code.HTTP_STATUS_403'), 
+                                        trans('api_error_messages.status_type.HTTP_STATUS_TYPE_403'), 
+                                        trans('api_error_messages.custom_error_code.ERROR_20020'), 
+                                        trans('api_error_messages.custom_error_message.20020'));
         }
     }
 
@@ -277,9 +277,9 @@ class CmsController extends Controller
      */
     public function handleError()
     {
-        return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_400'), 
-                                    config('errors.status_type.HTTP_STATUS_TYPE_400'), 
-                                    config('errors.custom_error_code.ERROR_20034'), 
-                                    config('errors.custom_error_message.20034'));
+        return Helpers::errorResponse(trans('api_error_messages.status_code.HTTP_STATUS_400'), 
+                                    trans('api_error_messages.status_type.HTTP_STATUS_TYPE_400'), 
+                                    trans('api_error_messages.custom_error_code.ERROR_20034'), 
+                                    trans('api_error_messages.custom_error_message.20034'));
     }
 }

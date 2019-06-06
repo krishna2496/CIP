@@ -59,9 +59,8 @@ class TenantOptionController extends Controller
         
         // find custom data
         $tenantOptions = TenantOption::get(['option_name', 'option_value'])->where('deleted_at', NULL)->where('option_name','custom_logo')->first();
-       
-        if($tenantOptions && $tenantOptions->option_value){
 
+        if ($tenantOptions && $tenantOptions->option_value) {
             $tenantLogo = $tenantOptions->option_value;
         }
       
