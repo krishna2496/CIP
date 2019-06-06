@@ -37,22 +37,19 @@ $router->post('/reset-password/{token}', ['as' => 'password.reset', 'uses' => 'A
 
 /* reset password  */
 $router->put('/password_reset', ['middleware' => 'tenant.connection','uses' => 'App\Auth\AuthController@passwordReset']);
-<<<<<<< HEAD
 
-<<<<<<< HEAD
 /* CMS footer pages  */
 $router->get('/cms', ['middleware' => 'tenant.connection','uses' => 'App\Cms\CmsController@index']);
 $router->get('/cms/detail', ['middleware' => 'tenant.connection','uses' => 'App\Cms\CmsController@cmsList']);
 $router->get('/cms/{pageId}', ['middleware' => 'tenant.connection','uses' => 'App\Cms\CmsController@show']);
 
-=======
 /* Get custom field data  */
 $router->get('/custom_field/', ['middleware' => 'tenant.connection','uses' => 'App\USer\UserCustomFieldController@index']);
->>>>>>> remotes/origin/feature/CIP-21
-=======
 });
 
->>>>>>> remotes/origin/feature/CIP-61
+
+/* Fetch Language json file */
+$router->get('language/{lang}', ['uses' => 'App\Language\LanguageController@fetchLangaugeFile']);
 /*
 |
 |--------------------------------------------------------------------------

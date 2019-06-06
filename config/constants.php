@@ -20,4 +20,11 @@ return [
 		'DROP-DOWN' => 'Drop-down',
 		'RADIO' => 'Radio'
 	 ]
+	 
+	 /*
+	  * Language constants
+	  */
+	 
+    'DEFAULT_LANGUAGE' => 'EN',
+    'FRONTEND_LANGUAGE_FOLDER' => 'front_end',
 ];

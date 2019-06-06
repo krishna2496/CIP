@@ -1,6 +1,30 @@
-{
-	"test": "server Hello in English",
+{	
 	"label": {
-		"title": "Server Testing labale in english"
+		"email_address" : "Email Address",
+		"password" : "Password",
+		"lost_password": "Lost your password?",
+		"powered_by" : "Powered by",
+		"login" :"login",
+		"forgot_password" : "Forgot Password",
+		"forgot_password_message" : "Enter your email address you've using for your account below and we will send you a password reset link",
+		"reset_password_button" : "Reset My Password",
+		"new_password" : "New Password",
+		"confirm_new_password" : "Confirm New Password",
+		"change_password" : "Change Password",
+		"new_password_messgae" : "Please enter a new password in the fields below."
+	},
+
+	"placeholder" : {
+		"email_address" : "Enter Email Address",
+		"password" : "Enter Password"
+	},
+
+	"errors" : {
+		"email_required" : "Email address is required",
+		"invalid_email" : "Enter valid email address",
+		"password_required" : "Password is required",
+		"invalid_password" : "Password lenght should be minimum 8 character",
+		"identical_password" : "Passwords must be identical."
 	}
+
 }
