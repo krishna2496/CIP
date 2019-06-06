@@ -140,7 +140,7 @@ class Helpers
      * 
      * @param int $city_id
      *
-     * @return mixed
+     * @return string
      */
     public static function getCityName($city_id)
     {
@@ -153,7 +153,7 @@ class Helpers
      * 
      * @param int $country_id
      *
-     * @return mixed
+     * @return string
      */
     public static function getCountryName($country_id)
     {
@@ -166,7 +166,7 @@ class Helpers
      * 
      * @param int $timezone_id
      *
-     * @return mixed
+     * @return string
      */
     public static function getTimezone($timezone_id)
     {
