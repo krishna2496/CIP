@@ -35,36 +35,22 @@ $router->group(['middleware' => 'localization'], function($router){
 	/* Password reset routing */
 	$router->post('/reset-password/{token}', ['as' => 'password.reset', 'uses' => 'App\Auth\AuthController@reset_password']);
 
-<<<<<<< HEAD
 /* reset password  */
-$router->put('/password_reset', ['middleware' => 'tenant.connection','uses' => 'App\Auth\AuthController@passwordReset']);
+$router->put('/password_reset', ['middleware' => 'localization|tenant.connection','uses' => 'App\Auth\AuthController@passwordReset']);
 
 /* CMS footer pages  */
-$router->get('/cms/listing', ['middleware' => 'tenant.connection','uses' => 'App\Cms\CmsController@index']);
-$router->get('/cms/detail', ['middleware' => 'tenant.connection','uses' => 'App\Cms\CmsController@cmsList']);
-$router->get('/cms/{pageId}', ['middleware' => 'tenant.connection','uses' => 'App\Cms\CmsController@show']);
+$router->get('/cms/listing', ['middleware' => 'localization|tenant.connection','uses' => 'App\Cms\CmsController@index']);
+$router->get('/cms/detail', ['middleware' => 'localization|tenant.connection','uses' => 'App\Cms\CmsController@cmsList']);
+$router->get('/cms/{pageId}', ['middleware' => 'localization|tenant.connection','uses' => 'App\Cms\CmsController@show']);
 
 /* Get custom field data  */
-$router->get('/custom_field/', ['middleware' => 'tenant.connection','uses' => 'App\USer\UserCustomFieldController@index']);
+$router->get('/custom_field/', ['middleware' => 'localization|tenant.connection','uses' => 'App\USer\UserCustomFieldController@index']);
 });
 
 
 /* Fetch Language json file */
 $router->get('language/{lang}', ['uses' => 'App\Language\LanguageController@fetchLangaugeFile']);
-=======
-	/* reset password  */
-	$router->put('/password_reset', ['middleware' => 'tenant.connection','uses' => 'App\Auth\AuthController@passwordReset']);
 
-});
-
-/* Get CMS footer pages  */
-$router->group(['prefix' => 'cms', 'middleware' => 'localization|tenant.connection'], function($router){
-	$router->get('/', ['uses' => 'App\Cms\CmsController@index']);
-	$router->get('/detail', ['uses' => 'App\Cms\CmsController@cmsList']);
-	$router->get('/{slug}', ['uses' => 'App\Cms\CmsController@show']);
-});
-
->>>>>>> remotes/origin/feature/Localization
 /*
 |
 |--------------------------------------------------------------------------
