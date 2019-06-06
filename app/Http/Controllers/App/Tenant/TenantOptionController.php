@@ -60,21 +60,11 @@ class TenantOptionController extends Controller
         // find custom data
         $tenantOptions = TenantOption::get(['option_name', 'option_value'])->where('deleted_at', NULL)->where('option_name','custom_logo')->first();
        
-<<<<<<< HEAD
-        if ($tenantOptions && $tenantOptions->option_value) {
-=======
         if($tenantOptions && $tenantOptions->option_value){
->>>>>>> remotes/origin/feature/CIP-8
+
             $tenantLogo = $tenantOptions->option_value;
         }
       
         return $tenantLogo;
     }
-
-
-<<<<<<< HEAD
-
-
-=======
->>>>>>> remotes/origin/feature/CIP-8
 }

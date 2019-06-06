@@ -19,7 +19,7 @@ return [
 		'EMAIL' => 'Email',
 		'DROP-DOWN' => 'Drop-down',
 		'RADIO' => 'Radio'
-	 ]
+	 ],
 	 
 	 /*
 	  * Language constants
