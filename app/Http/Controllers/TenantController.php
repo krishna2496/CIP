@@ -190,7 +190,7 @@ class TenantController extends Controller
             }
 			$apiStatus = app('Illuminate\Http\Response')->status();
             $apiData = ['tenant_id' => $id];
-			$apiMessage = config('messages.success.MESSAGE_TENANT_UPDATED');
+			$apiMessage = trans('api_success_messages.success.MESSAGE_TENANT_UPDATED');
 			
 			return Helpers::response($apiStatus, $apiMessage, $apiData);
 		}
@@ -216,7 +216,7 @@ class TenantController extends Controller
 
             // Set response data
             $apiStatus = app('Illuminate\Http\Response')->status();            
-            $apiMessage = config('messages.success.MESSAGE_TENANT_DELETED');
+            $apiMessage = trans('api_success_messages.success.MESSAGE_TENANT_DELETED');
 
             return Helpers::response($apiStatus, $apiMessage);
 

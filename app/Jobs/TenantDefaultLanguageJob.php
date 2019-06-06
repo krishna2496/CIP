@@ -11,8 +11,9 @@ class TenantDefaultLanguageJob extends Job
     protected $tenant;
 
     /**
-     * Create a new job instance.
+     * Create a new job instance
      *
+	 * @param App\Tenant $tenant
      * @return void
      */
     public function __construct(Tenant $tenant)
@@ -21,14 +22,14 @@ class TenantDefaultLanguageJob extends Job
     }
 
     /**
-     * Execute the job.
+     * Execute the job
      *
      * @return void
      */
     public function handle()
     {        
         try{
-            // Add default English and French language for tenant which will be created.
+            // Add default English and French language for tenant - Testing purpose
             $defaultData = array(
                 ['language_id' => 1, 'default' => '1'],
                 ['language_id' => 2, 'default' => '0']
@@ -37,11 +38,11 @@ class TenantDefaultLanguageJob extends Job
                 $this->tenant->languages()->create($data);
             }
         } catch(\Exception $e){            
-            // Send tenant language insert time error.
-            return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_422'), 
-                                        config('errors.status_type.HTTP_STATUS_TYPE_422'), 
-                                        config('errors.custom_error_code.ERROR_10010'), 
-                                        config('errors.custom_error_message.10010'));
+            // Any error occurs while operation
+            return Helpers::errorResponse(trans('api_error_messages.status_code.HTTP_STATUS_400'), 
+										trans('api_error_messages.status_type.HTTP_STATUS_TYPE_400'), 
+										trans('api_error_messages.custom_error_code.ERROR_10006'), 
+										trans('api_error_messages.custom_error_message.10006'));
         }
     }
 }
