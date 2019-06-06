@@ -32,7 +32,7 @@ export default {
 
 	created(){
 		//Set carousel dynamically 
-		if(JSON.parse(store.state.slider) != null){
+		if(JSON.parse(store.state.slider).length > 0){
 			this.carouselItems = JSON.parse(store.state.slider);
 			this.isDynamicCarsousetSet = true
 		}
