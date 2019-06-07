@@ -3,7 +3,7 @@
         <b-navbar toggleable="lg">
             <b-container>
                 <b-navbar-toggle target="nav-collapse" @click="openMenu"></b-navbar-toggle>
-                <b-navbar-brand href="#" :style="{backgroundImage: 'url('+bgImages[1]+')'}"></b-navbar-brand>
+                <b-navbar-brand href="/" :style="{backgroundImage: 'url('+bgImages[1]+')'}"></b-navbar-brand>
                 <!-- <b-collapse id="nav-collapse" is-nav> -->
                     <div class="menu-wrap">
                         <ul>
