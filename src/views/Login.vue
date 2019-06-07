@@ -1,6 +1,6 @@
 <template>
     <div class="signin-page-wrapper">
-        <SigninSlider :carouselItems="carouselItems"/>
+        <SigninSlider v-if="isShowSigninSlider"/>
         <div class="signin-form-wrapper">
 
             <div class="lang-drodown-wrap">
@@ -48,7 +48,7 @@
                 </div>
 
             </div>
-            <SigninFooter ref="signinFooter"/>
+            <SigninFooter ref="signinFooter" v-if="isShowSigninFooter"/>
         </div>
     </div>
 </template>
@@ -73,7 +73,6 @@
                 myValue: '',
                 defautLang: 'EN',
                 langList: [],
-                carouselItems : [],
                 login: {
                     email: '',
                     password: '',
@@ -82,6 +81,8 @@
                 classVariant: 'danger',
                 message: null,
                 showDismissibleAlert: false,
+                isShowSigninSlider : false,
+                isShowSigninFooter : false ,
             };
         },
         validations: {
@@ -91,8 +92,8 @@
             }
         },
         methods: {
-            createConnection(){
-                axios.get(process.env.VUE_APP_API_ENDPOINT+"connect")
+            async createConnection(){
+                await axios.get(process.env.VUE_APP_API_ENDPOINT+"connect")
                     .then((response) => {
                         if (response.data.data) {
                             //store tenant option to Local Storage
@@ -115,7 +116,8 @@
                     .catch(error => {
                         this.createConnection();
                     })
-                    this.carouselItems = JSON.parse(store.state.slider)                
+                    this.isShowSigninSlider = true
+                    this.isShowSigninFooter = true
             },
             async setLanguage(language){
                 var _this = this;

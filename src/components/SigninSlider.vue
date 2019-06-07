@@ -32,33 +32,12 @@ export default {
 	},
 
 	created(){
-		this.createConnection();
+		if(JSON.parse(store.state.slider).length > 0) { 
+		   this.carouselItems = JSON.parse(store.state.slider);
+		   this.isDynamicCarsousetSet =true
+		}
 	},
 	methods:{
-		createConnection(){
-			axios.get(process.env.VUE_APP_API_ENDPOINT+"connect")
-                .then((response) => {
-                    if (response.data.data.slider) {
-                        var slider = response.data.data.slider 
-                        if (slider) {
-                            // Convert slider object to array
-                            let listOfSliderObjects = Object.keys(slider).map((key) => {
-                            return slider[key]
-                        })
-
-                            this.carouselItems = listOfSliderObjects;
-                            this.isDynamicCarsousetSet =true
-                        } else {
-                            var sliderData = [];        
-                        }
-                    }else{
-                        var slider = []; 
-                    } 
-                })
-                .catch(error => {
-                    this.createConnection();
-                })
-		},
 		getTitle: (translations) => {
 			// Fetch slider title by language
 			if(translations){
