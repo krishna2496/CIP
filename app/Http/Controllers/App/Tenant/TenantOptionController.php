@@ -69,10 +69,9 @@ class TenantOptionController extends Controller
 
                 $optionData['language'][$value->language_id] = strtoupper($value->code);
             }
-        }    
+        }  
         
-       
-        return Helpers::response(app('Illuminate\Http\Response')->status(), '', $optionData);
+       return Helpers::response(app('Illuminate\Http\Response')->status(), '', $optionData);
     }
 
     /**
