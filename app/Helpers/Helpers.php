@@ -3,6 +3,7 @@
 namespace App\Helpers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Http\Response;
 use DB;
 
@@ -175,6 +176,54 @@ class Helpers
     {
         $timezone = DB::table("timezone")->where("timezone_id", $timezone_id)->first();
         return $timezone->timezone;
+    }
+
+    /**
+     * Switch database connection runtime
+     * 
+     * @param int $connection
+     * @param mixed $request
+     *
+     * @return string
+     */
+    public static function switchDatabaseConnection($connection, $request = '')
+    {
+        $domain = Self::getSubDomainFromRequest($request);
+        // Set master connection         
+        $pdo = DB::connection('mysql')->getPdo();
+        Config::set('database.default', 'mysql');
+
+        if($connection=="tenant"){
+            // Set tenant connection 
+            /*$tenant = DB::table('tenant')->where('name',$domain)->whereNull('deleted_at')->first();
+            $this->createConnection($tenant);*/
+            $pdo = DB::connection('tenant')->getPdo();
+            Config::set('database.default', 'tenant');
+        }
+        return;
+    }
+    public function createConnection($tenant)
+    {        
+        Config::set('database.connections.tenant', array(
+            'driver'    => 'mysql',
+            'host'      => env('DB_HOST'),
+            'database'  => 'ci_tenant_'.$tenant->tenant_id,
+            'username'  => env('DB_USERNAME'),
+            'password'  => env('DB_PASSWORD'),
+        ));        
+        try {
+            // Create connection for the tenant database
+            $pdo = DB::connection('tenant')->getPdo();
+            // Set default database
+            Config::set('database.default', 'tenant');
+        } catch (\PDOException $e) {
+            if ($e instanceof \PDOException) {            
+                return Helpers::errorResponse(trans('api_error_messages.status_code.HTTP_STATUS_403'), 
+                                        trans('api_error_messages.status_type.HTTP_STATUS_TYPE_403'), 
+                                        trans('api_error_messages.custom_error_code.ERROR_41000'), 
+                                        trans('api_error_messages.custom_error_message.41000'));
+            }
+        }        
     }
 
 }

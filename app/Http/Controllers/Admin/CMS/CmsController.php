@@ -9,6 +9,7 @@ use App\FooterPage;
 use App\FooterPagesLanguage;
 use App\Helpers\Helpers;
 use Validator;
+use DB;
 
 class CmsController extends Controller
 {
@@ -66,6 +67,13 @@ class CmsController extends Controller
      */
     public function store(Request $request)
     {
+        // Connect master database to get language details
+        Helpers::switchDatabaseConnection('mysql', $request);
+        $languages = DB::table('language')->get();    
+        
+        // Connect tenant database
+        Helpers::switchDatabaseConnection('tenant', $request);
+
         // Server side validataions
         $validator = Validator::make($request->toArray(), ["page_detail" => "required"]);
         // If post parameter have any missing parameter
@@ -110,7 +118,7 @@ class CmsController extends Controller
             $footer_page = FooterPage::create($page);
 			foreach ($postData['translations'] as $value) {                    
                 // Server side validataions
-                $validator = Validator::make($value, ["language_id" => "required" ,"title" => "required" ,"section" => "required" ]);
+                $validator = Validator::make($value, ["lang" => "required" ,"title" => "required" ,"section" => "required" ]);
                 // If translations have any missing parameter
                 if ($validator->fails()) {
                     return Helpers::errorResponse(trans('api_error_messages.status_code.HTTP_STATUS_422'),
@@ -118,8 +126,10 @@ class CmsController extends Controller
                                                 trans('api_error_messages.custom_error_code.ERROR_20018'),
                                                 $validator->errors()->first());
                 }    
+                // Get language_id from language code
+                $language = $languages->where('code', $value['lang'])->first();
                 $footer_page_language_data = array(	'page_id' => $footer_page['page_id'], 
-													'language_id' => $value['language_id'], 
+													'language_id' => $language->language_id, 
 													'title' => $value['title'], 
 													'description' => serialize($value['section']));
                 $footer_page_language = FooterPagesLanguage::create($footer_page_language_data);
@@ -161,6 +171,13 @@ class CmsController extends Controller
      */
     public function update(Request $request, $id)
     {
+        // Connect master database to get language details
+        Helpers::switchDatabaseConnection('mysql', $request);
+        $languages = DB::table('language')->get();    
+        
+        // Connect tenant database
+        Helpers::switchDatabaseConnection('tenant', $request);
+
         // Server side validataions
         $validator = Validator::make($request->toArray(), ["page_detail" => "required"]);
         
@@ -206,23 +223,27 @@ class CmsController extends Controller
 		try {            
             foreach ($postData['translations'] as $value) {                    
                 // Server side validataions
-                $validator = Validator::make($value, ["language_id" => "required" ,"title" => "required" ,"section" => "required" ]);
+                $validator = Validator::make($value, ["lang" => "required" ,"title" => "required" ,"section" => "required" ]);
                 // If translations have any missing parameter
                 if ($validator->fails()) {
                     return Helpers::errorResponse(trans('api_error_messages.status_code.HTTP_STATUS_422'),
                                                 trans('api_error_messages.status_type.HTTP_STATUS_TYPE_422'),
                                                 trans('api_error_messages.custom_error_code.ERROR_20036'),
                                                 trans('api_error_messages.custom_error_message.20036'));
-                }    
+                }  
+                $language = $languages->where('code', $value['lang'])->first();  
                 $footerPageData = FooterPagesLanguage::where('page_id', $id)
-								->where('language_id', $value['language_id'])
+								->where('language_id', $language->language_id)
                                 ->count();
 				
-				$cms = array('page_id' => $footerPage['page_id'], 'language_id' => $value['language_id'], 'title' => $value['title'], 'description' => serialize($value['section']));
+				$cms = array('page_id' => $footerPage['page_id'], 
+                            'language_id' => $language->language_id, 
+                            'title' => $value['title'], 
+                            'description' => serialize($value['section']));
                 
 				if (!empty($footerPageData))
                     $footerPageLanguage = FooterPagesLanguage::where('page_id', $id)
-										->where('language_id', $value['language_id'])
+										->where('language_id', $language->language_id)
 										->update($cms);
                 else
 					$footerPageLanguage = FooterPagesLanguage::create($cms);
@@ -234,7 +255,7 @@ class CmsController extends Controller
             $apiMessage = trans('api_success_messages.success_message.MESSAGE_CMS_PAGE_UPDATE_SUCCESS');
             $apiData = ['page_id' => $id];
             return Helpers::response($apiStatus, $apiMessage, $apiData);
-        } catch (\Exception $e) {
+        } catch (\Exception $e) {           
             // Any other error occured when trying to update data into database for `footer_page`.
             return Helpers::errorResponse(trans('api_error_messages.status_code.HTTP_STATUS_422'), 
                                     trans('api_error_messages.status_type.HTTP_STATUS_TYPE_422'), 
