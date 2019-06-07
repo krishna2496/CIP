@@ -61,7 +61,13 @@
                         <b-dropdown-item href="#">Dashboard</b-dropdown-item>
                         <b-dropdown-item href="#">My Account</b-dropdown-item>
                         <b-dropdown-item href="#">Help Center</b-dropdown-item>
-                        <b-dropdown-item href="#">Logout</b-dropdown-item>
+                        <b-dropdown-item 
+                         v-on:click.native="logout()" 
+                         replace 
+                         v-if="this.$store.state.isLoggedIn"
+                         >Logout
+                        </b-dropdown-item>
+                        
                     </b-nav-item-dropdown>
                 </b-nav>
                 <b-popover target="notificationPopover" triggers="click" placement="topleft"
@@ -239,8 +245,10 @@
 				body.forEach(function(e) {
 					e.classList.toggle("open-nav");
 				});
-
-			}
+			},           
+            logout(){
+              this.$store.commit('logoutUser');
+            }            
         }
     };
 </script>

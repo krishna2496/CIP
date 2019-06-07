@@ -2,11 +2,7 @@
   <div id="app">
    
     <div id="nav">
-      <ul class="nav justify-content-center">
-        <li class="nav-item">
-          <router-link class="nav-link" to="/" v-on:click.native="logout()" replace v-if="this.$store.state.isLoggedIn">Logout</router-link>
-        </li>
-    </ul>    
+        
     </div>
      <router-view/>
   </div>
@@ -28,13 +24,6 @@ export default {
   },
 
   methods:{
-    logout(){
-      // console.log(this.$store.);
-      // alert( this.$store.state.isLoggedIn );
-      // this.$store.state.token = null
-      // this.$store.state.isLoggedIn = false
-      this.$store.commit('logoutUser');
-    }
   }
 
 };
