@@ -1,0 +1,425 @@
+/**Button style**/
+
+.btn {
+  text-align: center;
+  display: block !important;
+
+  &:focus {
+    box-shadow: none !important;
+  }
+
+  &:disabled,
+  &.disabled {
+    cursor: default;
+  }
+}
+.btn-fillsecondary {
+  min-width: 200px;
+  min-height: 46px;
+  margin: 0 auto;
+  font-size: 18px;
+  line-height: 30px;
+  background: $primary;
+  border-color: $primary;
+  border-width: 2px;
+  border-radius: 25px;
+  transition: all 0.3s;
+
+  &:active,
+  &:hover,
+  &:focus {
+    color: $primary !important;
+    background: none !important;
+    border-color: $primary !important;
+  }
+}
+
+.btn-bordersecondary {
+  min-width: 132px;
+  min-height: 48px;
+  color: $primary;
+  font-size: 17px;
+  background-color: $white;
+  border: 2px solid $primary;
+  border-radius: 25px;
+
+  &:active,
+  &:hover,
+  &:focus,
+  &:disabled,
+  &.disabled {
+    color: $white !important;
+    background: $primary !important;
+    border-color: $primary !important;
+  }
+
+  &.icon-btn {
+    i {
+      svg {
+        fill: $primary;
+      }
+    }
+
+    &:active,
+    &:hover,
+    &:focus {
+      i {
+        svg {
+          fill: $white;
+        }
+      }
+    }
+  }
+}
+
+.btn-borderprimary {
+  min-width: 132px;
+  min-height: 48px;
+  font-size: 17px;
+  color: $gray-primary;
+  border: 2px solid $gray-primary;
+  border-radius: 25px;
+  background: transparent;
+
+  &:active,
+  &:hover,
+  &:focus,
+  &:disabled,
+  &.disabled {
+    color: $white !important;
+    background: $gray-primary !important;
+    border-color: $gray-primary !important;
+  }
+}
+
+.icon-btn {
+  span {
+    position: relative;
+    vertical-align: middle;
+    display: inline-block;
+    top: -2px;
+  }
+
+  i {
+    display: inline-block;
+    width: 20px;
+    margin-left: 10px;
+    margin-left: 20px;
+    line-height: 0;
+    @include transition(transform 0.2s ease-out);
+  }
+
+  &:hover,
+  &:focus,
+  &:active {
+    i {
+      @include transformX(4px);
+    }
+  }
+}
+
+/**Form-element**/
+
+.icon-input {
+  i {
+    @include transformY(-50%);
+    position: absolute;
+    top: 50%;
+  }
+}
+
+.form-group {
+  width: 100%;
+}
+
+.form-control {
+  width: 100%;
+  max-width: 100%;
+  height: 56px;
+  color: $black-primary;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: normal;
+  @extend .control_shadow;
+  border: 1px solid $control-border;
+
+  @include placeholder {
+    color: $black-primary;
+    font-family: $noto-sans;
+    font-size: 16px;
+    font-weight: 400;
+  }
+
+  &:focus {
+    box-shadow: none;
+    border-color: $gray-primary;
+    color: $black-primary;
+    outline: none;
+  }
+
+  &.is-invalid,
+  &.is-valid {
+    box-shadow: none !important;
+  }
+}
+
+label {
+  font-size: 16px;
+  line-height: 23px;
+
+  .required {
+    margin-left: 4px;
+    color: $error;
+  }
+}
+
+.custom-checkbox {
+  .custom-control-label {
+    font-size: 14px;
+    width: 100%;
+    &:before {
+      box-shadow: none !important;
+      border-color: $control-border !important;
+      border-radius: 2px;
+    }
+    &:after {
+      background: no-repeat 60% / 60% 60%;
+    }
+  }
+  .custom-control-input {
+    &:not(:disabled):active {
+      ~ {
+        .custom-control-label {
+          &::before {
+            background: transparent;
+            border-color: $control-border;
+            box-shadow: none;
+          }
+        }
+      }
+    }
+    &:checked {
+      ~ .custom-control-label {
+        &:before {
+          background: $primary;
+          border-color: $primary !important;
+          box-shadow: none;
+        }
+      }
+    }
+  }
+}
+
+.checkbox-select {
+  display: inline-flex;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+
+  & > span {
+    display: block;
+    padding: 6px 35px 6px 15px;
+    border: 1px solid $control-border;
+    border-radius: 3px;
+    text-overflow: ellipsis;
+    width: 100%;
+    overflow: hidden;
+    @extend .control_shadow;
+    cursor: pointer;
+    font-size: 16px;
+    line-height: normal;
+
+    &:after {
+      position: absolute;
+      content: "";
+      background: url("../images/down-arrow.svg") no-repeat;
+      background-size: 11px;
+      width: 11px;
+      height: 11px;
+      right: 13px;
+      top: 50%;
+      @include transformY(-50%);
+      @include transition(all 0.3s);
+    }
+  }
+
+  &.dropdown-open {
+    span {
+      border-radius: 3px 3px 0 0;
+
+      &:after {
+        transform: translateY(-50%) rotate(180deg);
+        -webkit-transform: translateY(-50%) rotate(180deg);
+        -ms-transform: translateY(-50%) rotate(180deg);
+        -moz-transform: translateY(-50%) rotate(180deg);
+        -o-transform: translateY(-50%) rotate(180deg);
+      }
+    }
+
+    .option-list-wrap {
+      border-radius: 0 0 3px 3px;
+    }
+
+    .chk-select-wrap {
+      display: block;
+    }
+  }
+
+  .custom-checkbox {
+    word-break: break-all;
+    padding: 0;
+  }
+
+  .custom-control-label {
+    padding: 6px 15px 6px 38px;
+    @include xl-max {
+      padding: 6px 15px 6px 33px;
+    }
+
+    &::before {
+      top: 10px;
+      left: 15px;
+      @include xl-max {
+        left: 10px;
+      }
+    }
+
+    &:after {
+      left: 14px;
+      top: 10px;
+      @include xl-max {
+        left: 10px;
+        top: 11px;
+      }
+    }
+  }
+}
+
+.chk-select-wrap {
+  display: none;
+  @extend .navdropdown_shadow;
+  position: absolute !important;
+  top: 100%;
+  left: 0;
+  z-index: 99;
+  width: 100%;
+  max-width: 100%;
+  max-height: 226px;
+  background: #fff;
+  border: 1px solid $border-color;
+  border-radius: 3px;
+
+  .chk-select-options {
+    padding: 0;
+    padding: 4px 0;
+    margin: 0;
+    list-style: none;
+
+    li {
+      padding: 0;
+
+      &:hover {
+        background: $border-color;
+      }
+    }
+  }
+}
+
+.custom-dropdown {
+  position: relative;
+  width: 200px;
+  font-size: 14px;
+  line-height: 18px;
+
+  & > span {
+    display: block;
+    padding: 6px 35px 6px 15px;
+    border: 1px solid $control-border;
+    border-radius: 3px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    @extend .control_shadow;
+    max-width: 100%;
+    white-space: nowrap;
+    cursor: pointer;
+
+    &:after {
+      position: absolute;
+      content: "";
+      background: url("../images/down-arrow.svg") no-repeat;
+      background-size: 11px;
+      width: 11px;
+      height: 11px;
+      right: 13px;
+      top: 50%;
+      @include transformY(-50%);
+      @include transition(all 0.3s);
+    }
+  }
+
+  &.dropdown-open {
+    span {
+      border-radius: 3px 3px 0 0;
+
+      &:after {
+        transform: translateY(-50%) rotate(180deg);
+        -webkit-transform: translateY(-50%) rotate(180deg);
+        -ms-transform: translateY(-50%) rotate(180deg);
+        -moz-transform: translateY(-50%) rotate(180deg);
+        -o-transform: translateY(-50%) rotate(180deg);
+      }
+    }
+
+    .option-list-wrap {
+      border-radius: 0 0 3px 3px;
+      display: block;
+    }
+  }
+
+  .option-list-wrap {
+    @extend .control_shadow;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 99;
+    width: 100%;
+    max-width: 100%;
+    max-height: 226px;
+    margin-top: -1px;
+    background: #fff;
+    border: 1px solid $control-border;
+    border-radius: 3px;
+    display: none;
+
+    .option-list {
+      padding: 4px 0;
+      margin: 0;
+      list-style-type: none;
+
+      li {
+        @include transition(all 0.3s);
+        padding: 6px 15px;
+        text-align: left;
+        background: $white;
+        cursor: pointer;
+
+        &:hover {
+          background: $border-color;
+        }
+      }
+    }
+  }
+}
+
+.simplebar-track {
+  width: 7px !important;
+
+  .simplebar-scrollbar {
+    width: 4px;
+
+    &:before {
+      background: $border-color !important;
+      opacity: 1 !important;
+    }
+  }
+}

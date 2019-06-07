@@ -9,6 +9,7 @@
     "i18n:report": "vue-cli-service i18n:report --src './src/**/*.?(js|vue)' --locales './src/locales/**/*.json'"
   },
   "dependencies": {
+    "aos": "^3.0.0-beta.6",
     "axios": "^0.18.0",
     "bootstrap": "^4.3.1",
     "bootstrap-vue": "^2.0.0-rc.20",
@@ -21,7 +22,8 @@
     "vue-router": "^3.0.3",
     "vue-scrollto": "^2.15.0",
     "vuelidate": "^0.7.4",
-    "vuex": "^3.0.1"
+    "vuex": "^3.0.1",
+    "vue-backtotop": "^1.6.1"
   },
   "devDependencies": {
     "@kazupon/vue-i18n-loader": "^0.3.0",
