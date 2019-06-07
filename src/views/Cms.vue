@@ -14,7 +14,7 @@
     <b-nav>
     <b-nav-item 
     v-for="(item,key) in footerItems.section" 
-    v-scroll-to="{ el: '#block-'+key , offset : -63 , duration : 2000 }">
+    v-scroll-to="{ el: '#block-'+key , offset :getOffset}">
     {{item.title}}
     </b-nav-item>
     </b-nav>
@@ -65,44 +65,52 @@ mounted() {},
 methods: {
 // left menu sticky function
     handleScroll() {
-        var nav_ = document.querySelector(".cms-nav"); 
+        var nav_ = document.querySelector(".cms-nav");
         var header_height = document.querySelector("header").offsetHeight;
         var nav_top = nav_.offsetTop;
-        var window_top = window.pageYOffset + header_height;
+        var window_top = window.pageYOffset + (header_height + 1);
         var nav_height = document.querySelector(".cms-nav .nav").offsetHeight;
         var nav_bottom = nav_height + nav_top;
-        var footer_top = document.querySelector("footer").getBoundingClientRect().top;
-
+        var footer_top = document.querySelector("footer").getBoundingClientRect()
+        .top;
+        if (screen.width > 767) {
         if (window_top > nav_top) {
-        if (nav_bottom >= footer_top) {
+          if (nav_bottom >= footer_top) {
             nav_.classList.add("absolute");
             nav_.classList.remove("fixed");
-        } else {
+          } else {
             nav_.classList.add("fixed");
             nav_.classList.remove("absolute");
-        }
+          }
         } else {
-            nav_.classList.remove("fixed");
+          nav_.classList.remove("fixed");
+        }
         }
 
         var link_list = document.querySelectorAll(".cms-nav .nav-item");
         var block_list = document.querySelectorAll(".cms-content-block");
         for (var i = 0; i < block_list.length; ++i) {
         if (block_list[i].getBoundingClientRect().top < header_height + 42) {
-        for (var j = 0; j < link_list.length; j++) {
-        var link_siblings = link_list[j].parentNode.childNodes;
-        for (var k = 0; k < link_siblings.length; ++k) {
-            link_siblings[k].childNodes[0].classList.remove("active");
-        }
+          for (var j = 0; j < link_list.length; j++) {
+            var link_siblings = link_list[j].parentNode.childNodes;
+            for (var k = 0; k < link_siblings.length; ++k) {
+              link_siblings[k].childNodes[0].classList.remove("active");
+            }
             link_siblings[i].childNodes[0].classList.add("active");
+          }
         }
         }
-        }
+    },
+    getOffset() {
+      var header_height = document.querySelector("header").offsetHeight;
+      return -header_height;
     }
 },
 
 created() {
     window.addEventListener("scroll", this.handleScroll);
+    window.addEventListener("resize", this.handleScroll);
+    window.addEventListener("resize", this.getOffset);
 
     axios.get(process.env.VUE_APP_API_ENDPOINT+"cms/"+this.slug)
     .then((response) => {
@@ -126,7 +134,9 @@ created() {
 },
 
 destroyed() {
-window.removeEventListener("scroll", this.handleScroll);
+    window.removeEventListener("scroll", this.handleScroll);
+    window.removeEventListener("resize", this.handleScroll);
+    window.removeEventListener("resize", this.getOffset);
 }
 };
 </script>

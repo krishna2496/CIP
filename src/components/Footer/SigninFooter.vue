@@ -22,9 +22,7 @@ import store from '../../store';
 import {loadLocaleMessages} from '../../services/service';
 export default {
 components: {},
-
 name: "SigninFooter",
-
 data() {
     return {
          footerItems: [],
@@ -53,7 +51,6 @@ methods:{
         })
     },
     getTitle(items){
-        // console.log(items.pages);return false;
         //Get title according to language
         items = items.pages;
         if (items) { 
@@ -74,8 +71,6 @@ methods:{
         }
     }
 },
-
 };
-
 </script>
 
