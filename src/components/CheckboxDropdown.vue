@@ -1,31 +1,28 @@
 <template>
-  <div v-if="optionList.length > 0" class="custom-dropdown">
-    <span class="select-text">{{default_text}}</span>
-    <div class="option-list-wrap" data-simplebar>
-      <ul class="option-list">
-        <li
-          v-for="item in optionList"
-          v-bind:data-id="item[0]"
-          @click="handleSelect"
-          @touchend="handleSelect"
-          :key="item"
-        >{{item[1]}}</li>
+  <div class="checkbox-select">
+    <span class="select-text">{{filterTitle}}</span>
+    <div class="chk-select-wrap" data-simplebar @click.stop @touchend.stop>
+      <ul class="chk-select-options">
+        <li v-for="(item , i) in checkList" :key="i">
+          <b-form-checkbox name>{{item.value}}</b-form-checkbox>
+        </li>
       </ul>
     </div>
   </div>
 </template>
 <script>
 export default {
-  name: "customDropdown",
+  name: "CheckboxDropdown",
   components: {},
   props: {
-    optionList: Array,
-    default_text: String
+    filterTitle: String,
+    checkList: {
+      type: Array,
+      default: () => []
+    }
   },
   data() {
-    return {
-      default_text_val: this.default_text
-    };
+    return {};
   },
   mounted() {
     var dropdwon_toggle = document.querySelectorAll(".select-text");
@@ -47,15 +44,7 @@ export default {
           dropdownList[i].classList.remove("dropdown-open");
         }
       }
-    },
-    handleSelect(e) {
-      var selected_val = e.target.innerHTML;
-      this.$emit("updateCall", selected_val);
     }
-  },
-  beforeDestroy() {
-    document.removeEventListener("click", this.onClick);
   }
 };
 </script>
-
