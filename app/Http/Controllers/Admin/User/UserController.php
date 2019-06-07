@@ -11,6 +11,7 @@ use App\Country;
 use App\Timezone;
 use App\Helpers\Helpers;
 use Validator;
+use DB;
 
 class UserController extends Controller
 {
@@ -68,6 +69,13 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
+        // Connect master database to get language details
+        Helpers::switchDatabaseConnection('mysql', $request);
+        $languages = DB::table('language')->get();    
+        
+        // Connect tenant database
+        Helpers::switchDatabaseConnection('tenant', $request);
+
         // Server side validataions
         $validator = Validator::make($request->toArray(), ["first_name" => "required|max:16",
             "last_name" => "required|max:16",
@@ -91,8 +99,27 @@ class UserController extends Controller
         }
 
         try {
+            // Get language_id from language code
+            $language = ($request->lang != '') ? $languages->where('code', $request->lang)->first() : '';
+            $language_id = (isset($language->language_id)) ? $language->language_id : 0; 
+
+            $userData = array('first_name' => $request->first_name, 
+                              'last_name' => $request->last_name,
+                              'email' => $request->email,
+                              'password' => $request->password,
+                              'timezone_id' => $request->timezone_id,
+                              'language_id' => $language_id,
+                              'availability_id' => $request->availability_id,
+                              'why_i_volunteer' => $request->why_i_volunteer,
+                              'employee_id' => $request->employee_id,
+                              'department' => $request->department,
+                              'manager_name' => $request->manager_name,
+                              'city_id' => $request->city_id,
+                              'country_id' => $request->country_id,
+                              'profile_text' => $request->profile_text,
+                              'linked_in_url' => $request->linked_in_url);
             // Create new user
-            $user = User::create($request->toArray());
+            $user = User::create($userData);
 
             // Set response data
             $apiData = ['user_id' => $user->user_id];
@@ -100,7 +127,6 @@ class UserController extends Controller
             $apiMessage = trans('api_success_messages.success_message.MESSAGE_USER_CREATE_SUCCESS');    
             return Helpers::response($apiStatus, $apiMessage, $apiData);
         } catch (\Exception $e) {
-
             // Error for duplicate user name, trying to store in database.
             if (isset($e->errorInfo[1]) && $e->errorInfo[1] == 1062) {
                 return Helpers::errorResponse(trans('api_error_messages.status_code.HTTP_STATUS_422'), 
