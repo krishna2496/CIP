@@ -111,6 +111,8 @@ $app->withFacades();
  $app->register(App\Providers\AppServiceProvider::class);
 // $app->register(App\Providers\AuthServiceProvider::class);
 // $app->register(App\Providers\EventServiceProvider::class);
+class_alias('Icyboy\LumenAws\Aws', 'Aws');
+class_alias('Illuminate\Support\Facades\App', 'App');
 
 /*
 |--------------------------------------------------------------------------

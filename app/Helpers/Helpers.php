@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Http\Response;
 use DB;
+use App;
 
 class Helpers
 {
@@ -225,5 +226,56 @@ class Helpers
             }
         }        
     }
+    public function downloadPdfImage($origin)
+    {
+        $filename = basename($origin);
+        $saveto   = App::basePath().'\public\tmp\\'.$filename;
 
+        $ch = curl_init ($origin);
+        
+        curl_setopt($ch, CURLOPT_HEADER, 0);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_PROXY, '192.168.10.5:8080');
+        curl_setopt($ch, CURLOPT_BINARYTRANSFER,1);
+        
+        $raw=curl_exec($ch);
+        curl_close ($ch);
+
+        if(file_exists($saveto)){
+            unlink($saveto);
+        }
+        
+        $fp = fopen($saveto,'x');
+        fwrite($fp, $raw);
+        fclose($fp);
+
+        return $filename;
+    }
+    public function uploadImageOnS3Bucket(Request $request, $tenantName)
+    {
+        $fileURL = $request->url;
+        $filename = basename($fileURL);
+        $bucketName = $tenantName;
+
+        // For this, I would generate a unqiue random string for the key name. But you can do whatever.
+        $keyName = 'tatvasoft/'.basename($fileURL);
+        $pathInS3 = 'https://s3.us-east-2.amazonaws.com/' . $bucketName . '/' . $keyName;
+
+        $this->downloadPdfImage($fileURL);
+       
+        try{
+            $s3 = App::make('aws')->createClient('s3');
+            // Upload file from local to S3
+            $data = $s3->putObject(array(
+                'Bucket'     => $bucketName,
+                'Key'        => $keyName,
+                'SourceFile' => App::basePath().'\public\tmp\\'.$filename
+            ));
+
+        return $data['ObjectURL'];
+        
+        } catch(\Exception $e) {
+            
+        }
+    }
 }
