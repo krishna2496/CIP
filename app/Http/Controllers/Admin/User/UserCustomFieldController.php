@@ -25,10 +25,9 @@ class UserCustomFieldController extends Controller
         if (empty($customFieldsData)) {
         	// Set response data
             $apiStatus = app('Illuminate\Http\Response')->status();
-            $apiMessage = config('messages.success_message.MESSAGE_NO_DATA_FOUND');
+            $apiMessage = trans('api_success_messages.success_message.MESSAGE_NO_DATA_FOUND');
             return Helpers::response($apiStatus, $apiMessage);
         }
-        $data = array();
         $detail = array();
         foreach ($customFieldsData as $value) {
         	$detail[] = array('field_id' => $value['field_id'],
@@ -40,7 +39,7 @@ class UserCustomFieldController extends Controller
         // Set response data
         $apiData = $detail;
         $apiStatus = app('Illuminate\Http\Response')->status();
-        $apiMessage = config('messages.success_message.MESSAGE_USER_LIST_SUCCESS');
+        $apiMessage = trans('api_success_messages.success_message.MESSAGE_USER_LIST_SUCCESS');
         return Helpers::response($apiStatus, $apiMessage, $apiData);
     }
 
@@ -59,9 +58,9 @@ class UserCustomFieldController extends Controller
 															"translation" => "required"]);
         // If post parameter have any missing parameter
         if ($validator->fails()) {
-            return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_422'),
-                                        config('errors.status_type.HTTP_STATUS_TYPE_422'),
-                                        config('errors.custom_error_code.ERROR_20102'),
+            return Helpers::errorResponse(trans('api_error_messages.status_code.HTTP_STATUS_422'),
+                                        trans('api_error_messages.status_type.HTTP_STATUS_TYPE_422'),
+                                        trans('api_error_messages.custom_error_code.ERROR_20102'),
                                         $validator->errors()->first());
         }   
         try {
@@ -71,10 +70,10 @@ class UserCustomFieldController extends Controller
 			if ((($request->type == config('constants.custom_field_types.DROP-DOWN') ) || ($request->type == config('constants.custom_field_types.RADIO'))) && 
 				(empty($translation[0]['values']))) {
 				// Set response data if values are null for Drop-down and radio type
-				return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_422'),
-                                config('errors.status_type.HTTP_STATUS_TYPE_422'),
-                                config('errors.custom_error_code.ERROR_20026'),
-                                config('errors.custom_error_message.20026'));
+				return Helpers::errorResponse(trans('api_error_messages.status_code.HTTP_STATUS_422'),
+                                trans('api_error_messages.status_type.HTTP_STATUS_TYPE_422'),
+                                trans('api_error_messages.custom_error_code.ERROR_20026'),
+                                trans('api_error_messages.custom_error_message.20026'));
 			} 
 			
             // Set data for create new record
@@ -88,15 +87,15 @@ class UserCustomFieldController extends Controller
 			
             // Set response data
             $apiStatus = app('Illuminate\Http\Response')->status();
-            $apiMessage = config('messages.success_message.MESSAGE_CUSTOM_FIELD_ADD_SUCCESS');
+            $apiMessage = trans('api_success_messages.success_message.MESSAGE_CUSTOM_FIELD_ADD_SUCCESS');
             return Helpers::response($apiStatus, $apiMessage);
         
         } catch (\Exception $e) {
             // Any other error occured when trying to insert data into database.
-            return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_422'), 
-                                    config('errors.status_type.HTTP_STATUS_TYPE_422'), 
-                                    config('errors.custom_error_code.ERROR_20004'), 
-                                    config('errors.custom_error_message.20004'));
+            return Helpers::errorResponse(trans('api_error_messages.status_code.HTTP_STATUS_422'), 
+                                    trans('api_error_messages.status_type.HTTP_STATUS_TYPE_422'), 
+                                    trans('api_error_messages.custom_error_code.ERROR_20004'), 
+                                    trans('api_error_messages.custom_error_message.20004'));
             
         }
     }
@@ -123,22 +122,22 @@ class UserCustomFieldController extends Controller
     {
         $fieldData = UserCustomField::find($id);
         if (!$fieldData) {
-        	return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_422'),
-                                        config('errors.status_type.HTTP_STATUS_TYPE_422'),
-                                        config('errors.custom_error_code.ERROR_20018'),
-                                        config('errors.custom_error_message.20032'));
+        	return Helpers::errorResponse(trans('api_error_messages.status_code.HTTP_STATUS_422'),
+                                        trans('api_error_messages.status_type.HTTP_STATUS_TYPE_422'),
+                                        trans('api_error_messages.custom_error_code.ERROR_20018'),
+                                        trans('api_error_messages.custom_error_message.20032'));
         } 
         // Server side validataions
         $validator = Validator::make($request->toArray(), ["name" => "required", 
-                                                            "type" => ['required', Rule::in(['Text', 'Email', 'Drop-down', 'radio'])], 
+                                                            "type" => ['required', Rule::in(config('constants.custom_field_types'))], 
                                                             "is_mandatory" => "required", 
                                                             "translation" => "required" 
         ]); 
         // If post parameter have any missing parameter
         if ($validator->fails()) {
-            return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_422'),
-                                        config('errors.status_type.HTTP_STATUS_TYPE_422'),
-                                        config('errors.custom_error_code.ERROR_20018'),
+            return Helpers::errorResponse(trans('api_error_messages.status_code.HTTP_STATUS_422'),
+                                        trans('api_error_messages.status_type.HTTP_STATUS_TYPE_422'),
+                                        trans('api_error_messages.custom_error_code.ERROR_20018'),
                                         $validator->errors()->first());
         } 
         try {   
@@ -146,10 +145,10 @@ class UserCustomFieldController extends Controller
             if ((($request->type == config('constants.custom_field_types.DROP-DOWN') ) || ($request->type == config('constants.custom_field_types.RADIO'))) && 
                     (empty($translation[0]['values']))) {
                 // Set response data if values are null for Drop-down and radio type
-                return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_422'),
-                                config('errors.status_type.HTTP_STATUS_TYPE_422'),
-                                config('errors.custom_error_code.ERROR_20026'),
-                                config('errors.custom_error_message.20026'));
+                return Helpers::errorResponse(trans('api_error_messages.status_code.HTTP_STATUS_422'),
+                                trans('api_error_messages.status_type.HTTP_STATUS_TYPE_422'),
+                                trans('api_error_messages.custom_error_code.ERROR_20026'),
+                                trans('api_error_messages.custom_error_message.20026'));
             } 
                                   
             // Set data for update record
@@ -162,14 +161,14 @@ class UserCustomFieldController extends Controller
             UserCustomField::where('field_id', $id)->update($customFieldData);
             // Set response data
             $apiStatus = app('Illuminate\Http\Response')->status();
-            $apiMessage = config('messages.success_message.MESSAGE_CUSTOM_FIELD_UPDATE_SUCCESS');
+            $apiMessage = trans('api_success_messages.success_message.MESSAGE_CUSTOM_FIELD_UPDATE_SUCCESS');
             return Helpers::response($apiStatus, $apiMessage);               
         } catch (\Exception $e) { 
             // Any other error occured when trying to update data into database.
-            return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_422'), 
-                                    config('errors.status_type.HTTP_STATUS_TYPE_422'), 
-                                    config('errors.custom_error_code.ERROR_20004'), 
-                                    config('errors.custom_error_message.20004'));
+            return Helpers::errorResponse(trans('api_error_messages.status_code.HTTP_STATUS_422'), 
+                                    trans('api_error_messages.status_type.HTTP_STATUS_TYPE_422'), 
+                                    trans('api_error_messages.custom_error_code.ERROR_20004'), 
+                                    trans('api_error_messages.custom_error_message.20004'));
         }
         
     }
@@ -188,14 +187,14 @@ class UserCustomFieldController extends Controller
 
             // Set response data
             $apiStatus = app('Illuminate\Http\Response')->status();            
-            $apiMessage = config('messages.success_message.MESSAGE_CUSTOM_FIELD_DELETE_SUCCESS');
+            $apiMessage = trans('api_success_messages.success_message.MESSAGE_CUSTOM_FIELD_DELETE_SUCCESS');
             return Helpers::response($apiStatus, $apiMessage);
             
         } catch(\Exception $e){
-            return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_403'), 
-                                        config('errors.status_type.HTTP_STATUS_TYPE_403'), 
-                                        config('errors.custom_error_code.ERROR_20028'), 
-                                        config('errors.custom_error_message.20028'));
+            return Helpers::errorResponse(trans('api_error_messages.status_code.HTTP_STATUS_403'), 
+                                        trans('api_error_messages.status_type.HTTP_STATUS_TYPE_403'), 
+                                        trans('api_error_messages.custom_error_code.ERROR_20028'), 
+                                        trans('api_error_messages.custom_error_message.20028'));
 
         }
     }
@@ -207,9 +206,9 @@ class UserCustomFieldController extends Controller
      */
     public function handleError()
     {
-        return Helpers::errorResponse(config('errors.status_code.HTTP_STATUS_400'), 
-                                        config('errors.status_type.HTTP_STATUS_TYPE_400'), 
-                                        config('errors.custom_error_code.ERROR_20034'), 
-                                        config('errors.custom_error_message.20034'));
+        return Helpers::errorResponse(trans('api_error_messages.status_code.HTTP_STATUS_400'), 
+                                        trans('api_error_messages.status_type.HTTP_STATUS_TYPE_400'), 
+                                        trans('api_error_messages.custom_error_code.ERROR_20034'), 
+                                        trans('api_error_messages.custom_error_message.20034'));
     }
 }
