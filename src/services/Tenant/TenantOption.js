@@ -35,8 +35,8 @@ export default async(data, langList, defautLang) => {
 
             if (defaultLanguageDataChange == true) {
                 var defaultLanguageData = []
-                defaultLanguageData["selectedVal"] = listOfObjects[0][1];
-                defaultLanguageData["selectedId"] = listOfObjects[0][0];
+                defaultLanguageData["selectedVal"] = (data.defaultLanguage) ? data.defaultLanguage : listOfObjects[0][1];
+                defaultLanguageData["selectedId"] = (data.defaultLanguageId) ? data.defaultLanguageId : listOfObjects[0][0];
                 store.commit('setDefaultLanguage',defaultLanguageData)
             }
 
