@@ -9,16 +9,11 @@
         <b-row>
           <b-col lg="3" md="4" class="cms-nav">
             <b-nav>
+              <b-nav-item active v-scroll-to="{ el: '#block-1' , offset :getOffset}">Introduction</b-nav-item>
               <b-nav-item
-                active
-                v-scroll-to="{ el: '#block-1' , offset : -63 , duration : 2000 }"
-              >Introduction</b-nav-item>
-              <b-nav-item
-                v-scroll-to="{ el: '#block-2', offset : -63 , duration : 2000}"
+                v-scroll-to="{ el: '#block-2',  offset :getOffset}"
               >Changes to the Agreements?</b-nav-item>
-              <b-nav-item
-                v-scroll-to="{ el: '#block-3', offset : -63 , duration : 2000}"
-              >Using our Service?</b-nav-item>
+              <b-nav-item v-scroll-to="{ el: '#block-3', offset :getOffset}">Using our Service?</b-nav-item>
             </b-nav>
           </b-col>
           <b-col lg="9" md="8">
@@ -174,28 +169,30 @@ export default {
   data() {
     return {};
   },
-  mounted() {},
+
   methods: {
     // left menu sticky function
     handleScroll() {
-      var nav_ = document.querySelector(".cms-nav"); 
+      var nav_ = document.querySelector(".cms-nav");
       var header_height = document.querySelector("header").offsetHeight;
       var nav_top = nav_.offsetTop;
-      var window_top = window.pageYOffset + header_height;
+      var window_top = window.pageYOffset + (header_height + 1);
       var nav_height = document.querySelector(".cms-nav .nav").offsetHeight;
       var nav_bottom = nav_height + nav_top;
-      var footer_top = document.querySelector("footer").getBoundingClientRect().top;
-
-      if (window_top > nav_top) {
-        if (nav_bottom >= footer_top) {
-          nav_.classList.add("absolute");
-          nav_.classList.remove("fixed");
+      var footer_top = document.querySelector("footer").getBoundingClientRect()
+        .top;
+      if (screen.width > 767) {
+        if (window_top > nav_top) {
+          if (nav_bottom >= footer_top) {
+            nav_.classList.add("absolute");
+            nav_.classList.remove("fixed");
+          } else {
+            nav_.classList.add("fixed");
+            nav_.classList.remove("absolute");
+          }
         } else {
-          nav_.classList.add("fixed");
-          nav_.classList.remove("absolute");
+          nav_.classList.remove("fixed");
         }
-      } else {
-        nav_.classList.remove("fixed");
       }
 
       var link_list = document.querySelectorAll(".cms-nav .nav-item");
@@ -211,15 +208,21 @@ export default {
           }
         }
       }
+    },
+    getOffset() {
+      var header_height = document.querySelector("header").offsetHeight;
+      return -header_height;
     }
   },
   created() {
     window.addEventListener("scroll", this.handleScroll);
+    window.addEventListener("resize", this.handleScroll);
+    window.addEventListener("resize", this.getOffset);
   },
   destroyed() {
     window.removeEventListener("scroll", this.handleScroll);
+    window.removeEventListener("resize", this.handleScroll);
+    window.removeEventListener("resize", this.getOffset);
   }
 };
 </script>
-<style lang="scss">
-</style>

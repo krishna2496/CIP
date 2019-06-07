@@ -6,12 +6,15 @@
   -webkit-transform: $transforms;
   transform: $transforms;
 }
+
 @mixin translate($x, $y) {
   @include transform(translate($x, $y));
 }
+
 @mixin rotate($deg) {
   @include transform(rotate(#{$deg}deg));
 }
+
 @mixin transformrotate($rotate) {
   -moz-transform: rotate($rotate);
   -o-transform: rotate($rotate);
@@ -35,6 +38,7 @@
   -webkit-transform: translateX($transforms);
   transform: translateX($transforms);
 }
+
 @mixin transformZ($transforms) {
   -moz-transform: translateZ($transforms);
   -o-transform: translateZ($transforms);
@@ -42,6 +46,7 @@
   -webkit-transform: translateZ($transforms);
   transform: translateZ($transforms);
 }
+
 @mixin scale($transforms) {
   -moz-transform: scale($transforms);
   -o-transform: scale($transforms);
@@ -49,6 +54,7 @@
   -webkit-transform: scale($transforms);
   transform: scale($transforms);
 }
+
 @mixin rotate($transforms) {
   -moz-transform: rotate($transforms);
   -o-transform: rotate($transforms);
@@ -56,6 +62,7 @@
   -webkit-transform: rotate($transforms);
   transform: rotate($transforms);
 }
+
 @mixin transition($transition) {
   transition: $transition;
   -o-transition: $transition;
@@ -69,12 +76,15 @@
   &.placeholder {
     @content;
   }
+
   &:-moz-placeholder {
     @content;
   }
+
   &::-moz-placeholder {
     @content;
   }
+
   &::-webkit-input-placeholder {
     @content;
   }
@@ -93,12 +103,17 @@
     @content;
   }
 }
+
 @mixin sm-min {
   @media (min-width: 768px) {
     @content;
   }
 }
-
+@mixin md-min {
+  @media (min-width: 992px) {
+    @content;
+  }
+}
 @mixin md-max {
   @media (max-width: 991px) {
     @content;
@@ -107,6 +122,12 @@
 
 @mixin lg-max {
   @media (max-width: 1199px) {
+    @content;
+  }
+}
+
+@mixin lg-min {
+  @media (min-width: 1200px) {
     @content;
   }
 }

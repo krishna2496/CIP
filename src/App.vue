@@ -1,42 +1,46 @@
 <template>
   <div id="app">
-   
-    <div id="nav">
-      <ul class="nav justify-content-center">
-        <li class="nav-item">
-          <router-link class="nav-link" to="/" v-on:click.native="logout()" replace v-if="this.$store.state.isLoggedIn">Logout</router-link>
-        </li>
-    </ul>    
-    </div>
-     <router-view/>
+    <router-view/>
   </div>
 </template>
 
 
 <script>
 export default {
-  
   data() {
     return {};
   },
-
   mounted() {
     //ios browser detection
     if (navigator.userAgent.match(/iP(hone|od|ad)/i)) {
       document.querySelector("body").classList.add("browser-ios");
     }
+    if (screen.width < 1025) {
+      document.addEventListener("touchend", this.onClick);
+    } else {
+      document.addEventListener("click", this.onClick);
+    }
   },
-
-  methods:{
-    logout(){
-      // console.log(this.$store.);
-      // alert( this.$store.state.isLoggedIn );
-      // this.$store.state.token = null
-      // this.$store.state.isLoggedIn = false
-      this.$store.commit('logoutUser');
+  methods: {
+    onClick() {
+      var dropdownList = document.querySelectorAll(".dropdown-open");
+      if (dropdownList.length > 0) {
+        for (var i = 0; i < dropdownList.length; ++i) {
+          dropdownList[i].classList.remove("dropdown-open");
+        }
+      } else {
+        if (screen.width < 992) {
+          var body = document.querySelectorAll("body, html");
+          body.forEach(function(e) {
+            e.classList.remove("open-nav");
+            e.classList.remove("open-filter");
+          });
+        }
+      }
     }
   }
-
 };
 </script>
+
+
 

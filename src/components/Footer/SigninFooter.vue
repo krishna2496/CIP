@@ -28,57 +28,5 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
-
-.signin-footer {
-  position: relative;
-  margin: 0 auto;
-  .browser-ios & {
-    margin-bottom: 20px;
-    @include sm-max {
-      margin-bottom: 30px;
-    }
-  }
-  .list-group {
-    flex-wrap: wrap;
-    justify-content: center;
-    a {
-      display: inline-block;
-      width: auto;
-      color: $black-primary;
-      font-size: 14px;
-      font-weight: 300;
-      line-height: 18px;
-      background: transparent;
-    }
-    .list-group-item {
-      @include sm-max {
-        margin: 0 12px 10px;
-      }
-      margin: 0 20px 20px;
-    }
-  }
-  .copyright-text {
-    text-align: center;
-    p {
-      margin: 0;
-      color: $gray-primary;
-      font-size: 14px;
-      font-weight: 300;
-      line-height: 18px;
-
-      a {
-        text-decoration: underline;
-        &:hover,
-        &:focus {
-          &:after {
-            display: none;
-          }
-        }
-      }
-    }
-  }
-}
-</style>
 
 
