@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use App\TenantOption;
 use App\Helpers\Helpers;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Config;
 
 class TenantOptionController extends Controller
 {
@@ -17,7 +18,7 @@ class TenantOptionController extends Controller
      *  
      * @return mixed
      */
-    public function getTenantOption() 
+    public function getTenantOption(Request $request) 
     {
         $data = $optionData = $slider = array(); 
         
@@ -45,6 +46,32 @@ class TenantOptionController extends Controller
             }
         }
 
+        $pdo = DB::connection('mysql')->getPdo();
+        Config::set('database.default', 'mysql');
+        
+        //Get tenant language and default language
+        $tenantName = Helpers::getSubDomainFromRequest($request);        
+        $tenant = DB::table('tenant')->where('name',$tenantName)->first();
+        $tenantLanguages = DB::table('tenant_language')
+        ->select('language.language_id','language.code','language.name','tenant_language.default')
+        ->leftJoin('language','language.language_id','=','tenant_language.language_id')
+        ->where('tenant_id',$tenant->tenant_id)
+        ->get();
+
+        if (count($tenantLanguages) > 0) {
+            $languageArray =  $tenantLanguages->toArray();
+
+            foreach ($languageArray as $key => $value) {
+                if($value->default == 1){
+                     $optionData['defaultLanguage'] = strtoupper($value->code);
+                     $optionData['defaultLanguageId'] = $value->language_id;
+                }
+
+                $optionData['language'][$value->language_id] = strtoupper($value->code);
+            }
+        }    
+        
+       
         return Helpers::response(app('Illuminate\Http\Response')->status(), '', $optionData);
     }
 

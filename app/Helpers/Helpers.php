@@ -17,7 +17,10 @@ class Helpers
     	try{    	
         	return explode(".",parse_url($request->headers->all()['referer'][0])['host'])[0];
         } catch (\Exception $e) {
-        	return $e->getMessage();
+            if(env('APP_ENV')=='local')
+                return env('DEFAULT_TENANT');
+            else
+        	   return $e->getMessage();
         }
 
     }
