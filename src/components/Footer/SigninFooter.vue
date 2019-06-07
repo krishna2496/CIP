@@ -4,7 +4,7 @@
             <b-list-group v-if="isDynamicFooterItemsSet">
                 <b-list-group-item  
                 v-for="item in footerItems" 
-                :to="'cms/'+getUrl(item)" 
+                :to="'/'+getUrl(item)" 
                 :title="getTitle(item)">{{getTitle(item)}}
                 </b-list-group-item>
             </b-list-group>
@@ -19,7 +19,7 @@
 <script>
 import axios from "axios";
 import store from '../../store';
-
+import {loadLocaleMessages} from '../../services/service';
 export default {
 components: {},
 
@@ -36,6 +36,8 @@ mounted() {
 created() {
      // Fetching footer CMS pages
      this.getPageListing();
+     //Fetch language json file
+     loadLocaleMessages(store.state.defaultLanguage)
 },
 methods:{  
     getPageListing(){

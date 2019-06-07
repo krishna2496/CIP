@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Home from './views/Home.vue'
-import TermsofUse from './views/TermsOfUse.vue'
+import TermsofUse from './views/Cms.vue'
 
 
 Vue.use(Router)
@@ -37,9 +37,9 @@ export default new Router({
         component: () => import('./views/ForgotPassword.vue')
     },
     {
-        path: '/cms/:pageId',
-        name: 'TermsofUse',
-        component: () => import('./views/TermsOfUse.vue')
+        path: '/:slug',
+        name: 'cms',
+        component: () => import('./views/Cms.vue')
     }
   ]
 })

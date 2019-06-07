@@ -58,7 +58,7 @@ data() {
     return {
         footerItems: [],
         isDynamicFooterItemsSet : false,
-        slug : this.$route.params.pageId
+        slug : this.$route.params.slug
     };
 },
 mounted() {},

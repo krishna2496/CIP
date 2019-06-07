@@ -23,9 +23,9 @@ export default async(data, langList, defautLang) => {
         let listOfObjects = Object.entries(data.language);
 
         listOfObjects.forEach(function(listOfLangauge) {
-            if (listOfLangauge[0] == store.state.defaultLanguageId && listOfLangauge[1] == store.state.defaultLanguage) {
-                defaultLanguageDataChange = false;
-            }
+            // if (listOfLangauge[0] == store.state.defaultLanguageId && listOfLangauge[1] == store.state.defaultLanguage) {
+            //     defaultLanguageDataChange = false;
+            // }
         });
 
         // If options exist
@@ -33,12 +33,12 @@ export default async(data, langList, defautLang) => {
 
             store.commit('setLanguageList',JSON.stringify(listOfObjects))
 
-            if (defaultLanguageDataChange == true) {
+            // if (defaultLanguageDataChange == true) {
                 var defaultLanguageData = []
                 defaultLanguageData["selectedVal"] = (data.defaultLanguage) ? data.defaultLanguage : listOfObjects[0][1];
                 defaultLanguageData["selectedId"] = (data.defaultLanguageId) ? data.defaultLanguageId : listOfObjects[0][0];
                 store.commit('setDefaultLanguage',defaultLanguageData)
-            }
+            // }
 
         } else {
             store.commit('setLanguageList',JSON.stringify(langList))
