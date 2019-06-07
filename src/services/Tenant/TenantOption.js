@@ -43,8 +43,8 @@ export default async(data, langList, defautLang) => {
         } else {
             store.commit('setLanguageList',JSON.stringify(langList))
             var defaultLanguageData = []
-            defaultLanguageData["selectedVal"] = defautLang;
-            defaultLanguageData["selectedId"] = "";
+            defaultLanguageData["selectedVal"] = (data.defaultLanguage) ? data.defaultLanguage : defautLang;
+            defaultLanguageData["selectedId"] =  (data.defaultLanguageId) ? data.defaultLanguageId : "";
             store.commit('setDefaultLanguage',defaultLanguageData)
         }
 
