@@ -31,9 +31,15 @@ data() {
          isDynamicFooterItemsSet : false
     };
 },
-mounted() {
+mounted() {    
+},
+created() {
      // Fetching footer CMS pages
-    axios.get(process.env.VUE_APP_API_ENDPOINT+"cms/listing")
+     this.getPageListing();
+},
+methods:{  
+    getPageListing(){
+        axios.get(process.env.VUE_APP_API_ENDPOINT+"cms/listing")
     .then((response) => {
 
         if (response.data.data) {
@@ -41,12 +47,9 @@ mounted() {
             this.isDynamicFooterItemsSet = true
         }
         }).catch(error => {
-    })
+            this.getPageListing();
+        })
     },
-created() {
-
-},
-methods:{  
     getTitle(items){
         // console.log(items.pages);return false;
         //Get title according to language

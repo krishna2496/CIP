@@ -67,7 +67,6 @@
             customDropdown,
             SigninSlider,
         },
-        
         data() {
             return {
                 flag: false,
@@ -83,22 +82,41 @@
                 classVariant: 'danger',
                 message: null,
                 showDismissibleAlert: false,
-                
             };
         },
-
         validations: {
             login: {
                 email: {required, email},
                 password: {required, minLength: minLength(8)}
             }
         },
-
-        computed: {
-
-        },
-
         methods: {
+            createConnection(){
+                axios.get(process.env.VUE_APP_API_ENDPOINT+"connect")
+                    .then((response) => {
+                        if (response.data.data) {
+                            //store tenant option to Local Storage
+                            storeTenantOption(response.data.data,this.langList,this.defautLang);
+                            
+                            //Get langauage list from Local Storage
+                            this.langList = JSON.parse(store.state.listOfLanguage)
+                            this.defautLang = store.state.defaultLanguage
+
+                        }else{
+                            localStorage.removeItem('slider');  
+                            localStorage.removeItem('listOfLanguage');
+                            localStorage.removeItem('defaultLanguage');
+                            localStorage.removeItem('defaultLanguageId');
+                            var sliderData = [];
+                            store.commit('setSlider',JSON.stringify(sliderData))
+                        } 
+                       
+                    })
+                    .catch(error => {
+                        this.createConnection();
+                    })
+                    this.carouselItems = JSON.parse(store.state.slider)                
+            },
             async setLanguage(language){
                 var _this = this;
                 this.defautLang = language.selectedVal;
@@ -138,53 +156,15 @@
 
                         })
             },
-
         },
-
         mounted() {
             //Autofocus
-            this.$refs.email.focus();
-            
-        },
-        beforeUpdate(){
-            
-        },
+            this.$refs.email.focus();        
+        },        
         created() {
-             // var _this = this;
             //Database connection and fetching tenant options api
-            axios.get(process.env.VUE_APP_API_ENDPOINT+"connect")
-                    .then((response) => {
-                        if (response.data.data) {
-                            //store tenant option to Local Storage
-                            storeTenantOption(response.data.data,this.langList,this.defautLang);
-                            
-                            //Get langauage list from Local Storage
-                            this.langList = JSON.parse(store.state.listOfLanguage)
-                            this.defautLang = store.state.defaultLanguage
-
-                        }else{
-                            localStorage.removeItem('slider');  
-                            localStorage.removeItem('listOfLanguage');
-                            localStorage.removeItem('defaultLanguage');
-                            localStorage.removeItem('defaultLanguageId');
-                            var sliderData = [];
-                            store.commit('setSlider',JSON.stringify(sliderData))
-                        } 
-                       
-
-
-                    })
-                    .catch(error => {
-                        console.log(error)
-                    })
-                    
-                    this.carouselItems = JSON.parse(store.state.slider)
-                    // .signinSlider.$forceUpdate()
+            this.createConnection()
         },
-
-        updated(){
-            
-        }
     };
 
 </script>

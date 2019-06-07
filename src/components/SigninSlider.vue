@@ -32,7 +32,11 @@ export default {
 	},
 
 	created(){
-       axios.get(process.env.VUE_APP_API_ENDPOINT+"connect")
+		this.createConnection();
+	},
+	methods:{
+		createConnection(){
+			axios.get(process.env.VUE_APP_API_ENDPOINT+"connect")
                 .then((response) => {
                     if (response.data.data.slider) {
                         var slider = response.data.data.slider 
@@ -52,14 +56,9 @@ export default {
                     } 
                 })
                 .catch(error => {
-                    console.log(error)
+                    this.createConnection();
                 })
-       
-
-
-	},
-
-	methods:{
+		},
 		getTitle: (translations) => {
 			// Fetch slider title by language
 			if(translations){
