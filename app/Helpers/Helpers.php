@@ -226,7 +226,7 @@ class Helpers
             }
         }        
     }
-    public function downloadPdfImage($origin)
+    public function downloadImage($origin)
     {
         $filename = basename($origin);
         $saveto   = App::basePath().'\public\tmp\\'.$filename;
@@ -261,7 +261,7 @@ class Helpers
         $keyName = 'tatvasoft/'.basename($fileURL);
         $pathInS3 = 'https://s3.us-east-2.amazonaws.com/' . $bucketName . '/' . $keyName;
 
-        $this->downloadPdfImage($fileURL);
+        $this->downloadImage($fileURL);
        
         try{
             $s3 = App::make('aws')->createClient('s3');
