@@ -12,6 +12,7 @@ export default new Vuex.Store({
         defaultLanguage : localStorage.getItem('defaultLanguage'),
         defaultLanguageId : localStorage.getItem('defaultLanguageId'),
         slider : localStorage.getItem('slider'),
+        logo : localStorage.getItem('logo'),
         isloaderSet:true
     },
     mutations: {        
@@ -43,13 +44,10 @@ export default new Vuex.Store({
             localStorage.setItem('listOfLanguage',languageList);
             state.listOfLanguage = languageList;
         },
-        setLanguageDefault(state, defaultLanguage,defaultLanguageId){   
-            localStorage.removeItem('defaultLanguage');
-            localStorage.removeItem('defaultLanguageId');
-            localStorage.setItem('defaultLanguage',defaultLanguage)
-            localStorage.setItem('defaultLanguageId',defaultLanguageId)
-            state.defaultLanguage = defaultLanguage;
-            state.defaultLanguageId = defaultLanguageId;
+        setLogo(state,logo){   
+            localStorage.removeItem('logo');
+            localStorage.setItem('logo',logo)
+            state.logo = logo;
         },
     },
     getters: {
