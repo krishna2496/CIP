@@ -37,7 +37,7 @@
         var apiUrl = '<%= VUE_APP_API_ENDPOINT %>'
         getDynamicCssUrl = apiUrl+'custom_css';    
             $.ajax({
-                type: "POST",
+                type: "GET",
                 url: getDynamicCssUrl,
                 cache: false,           
                 success: function (result)
