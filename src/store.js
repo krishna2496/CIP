@@ -12,18 +12,40 @@ export default new Vuex.Store({
         defaultLanguage : localStorage.getItem('defaultLanguage'),
         defaultLanguageId : localStorage.getItem('defaultLanguageId'),
         slider : localStorage.getItem('slider'),
+        userId : localStorage.getItem('userId'),
+        firstName : localStorage.getItem('firstName'),
+        lastName : localStorage.getItem('lastName'),
+        avatar : localStorage.getItem('avatar'),
+        isloaderSet:true,
         logo : localStorage.getItem('logo'),
-        isloaderSet:true
     },
     mutations: {        
-        loginUser(state, token){
+        loginUser(state, data){
+            localStorage.setItem('isLoggedIn',data.token)
+            localStorage.setItem('token',data.token)
+            localStorage.setItem('userId',data.user_id)
+            localStorage.setItem('firstName',data.first_name)
+            localStorage.setItem('lastName',data.last_name)
+            localStorage.setItem('avatar',data.avatar)                           
             state.isLoggedIn = true;
-            state.token = token;
+            state.token = data.token;            
+            state.userId = data.user_id;
+            state.firstName = data.first_name;
+            state.lastName = data.last_name;
+            state.avatar = data.avatar;
         },
         logoutUser(state){
             localStorage.removeItem('token')
+            localStorage.removeItem('userId')
+            localStorage.removeItem('firstName')
+            localStorage.removeItem('lastName')
+            localStorage.removeItem('avatar')
             state.isLoggedIn = false;
             state.token = null;
+            state.userId = null;
+            state.firstName = null;
+            state.lastName = null;
+            state.avatar = null;
             router.push({name: 'login'})
         },
         setDefaultLanguage(state, language){   

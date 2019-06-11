@@ -6,6 +6,9 @@
         <CustomDropdown :optionList="langList" :default_text="defautLang" @updateCall="setLanguage"/>
         </div>
         <div class="signin-form-block">
+        <router-link to="/" class="logo-wrap" v-if="this.$store.state.logo">
+            <img :src="this.$store.state.logo">
+        </router-link>
         <div class="form-title-block">
         <h1>{{ $t("label.new_password") }}</h1>
         <p>{{ $t("label.new_password_messgae") }}</p>
@@ -19,6 +22,7 @@
         <b-form-group :state="false">
         <label for="">{{ $t("label.new_password") }}</label>
         <b-form-input id="" type="password" v-model="resetPassword.password" :class="{ 'is-invalid': $v.resetPassword.password.$error }" value="Password" 
+        maxlength="120"
         v-bind:placeholder='$t("placeholder.password")' 
         autofocus></b-form-input>
         <div v-if="submitted && !$v.resetPassword.password.required" class="invalid-feedback">
@@ -31,7 +35,8 @@
 
         <b-form-group>
         <label for="">{{ $t("label.confirm_new_password") }}</label>
-        <b-form-input id="" type="password" v-model="resetPassword.confirmPassword" :class="{ 'is-invalid': $v.resetPassword.confirmPassword.$error }" 
+        <b-form-input id="" type="password" v-model="resetPassword.confirmPassword" :class="{ 'is-invalid': $v.resetPassword.confirmPassword.$error }"
+        maxlength="120" 
         v-bind:placeholder='$t("placeholder.password")' 
         @keypress.enter.prevent="handleSubmit" value="Password"></b-form-input>
         <div v-if="submitted && !$v.resetPassword.confirmPassword.required" class="invalid-feedback">

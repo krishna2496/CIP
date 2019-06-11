@@ -6,9 +6,9 @@
         <CustomDropdown :optionList="langList" :default_text="defautLang" @updateCall="setLanguage"/>
       </div>
       <div class="signin-form-block">
-        <a href="/home" class="logo-wrap" title>
-          <img src="../assets/images/optimy-logo.png">
-        </a>
+        <router-link to="/" class="logo-wrap" v-if="this.$store.state.logo">
+            <img :src="this.$store.state.logo">
+        </router-link>
         <div class="form-title-block">
           <h1>{{ $t("label.forgot_password") }}</h1>
           <p>{{ $t("label.forgot_password_message") }}</p>
