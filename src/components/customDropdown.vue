@@ -8,7 +8,6 @@
           v-bind:data-id="item[0]"
           @click="handleSelect"
           @touchend="handleSelect"
-          :key="item"
         >{{item[1]}}</li>
       </ul>
     </div>
@@ -16,7 +15,7 @@
 </template>
 <script>
 export default {
-  name: "customDropdown",
+  name: "CustomDropdown",
   components: {},
   props: {
     optionList: Array,
@@ -49,8 +48,10 @@ export default {
       }
     },
     handleSelect(e) {
-      var selected_val = e.target.innerHTML;
-      this.$emit("updateCall", selected_val);
+      var selectedData = []
+      selectedData['selectedVal']  = e.target.innerHTML;
+      selectedData['selectedId']  = e.target.dataset.id;
+      this.$emit("updateCall", selectedData);
     }
   },
   beforeDestroy() {

@@ -1,7 +1,6 @@
 import store from '../../store'
 
 export default async(data, langList, defautLang) => {
-
     // Store slider in Local Storage
     if (data.slider) {
         // Convert slider object to array

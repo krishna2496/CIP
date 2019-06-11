@@ -12,7 +12,7 @@
           <b-button class="btn-cross" @click="closeMenu">
             <img src="../../assets/images/cross-ic.svg" alt>
           </b-button>
-          <ul>
+       <!--    <ul>
             <li class="has-menu">
               <a href="#" title="Explore">Explore</a>
               <ul class="dropdown-menu sub-dropdown">
@@ -89,8 +89,8 @@
                   <a href="#">Sponsored</a>
                 </li>
               </ul>
-            </li>
-          </ul>
+            </li> -->
+          <!-- </ul> -->
         </div>
         <b-nav class="ml-auto">
           <b-nav-item right class="search-menu" @click="searchMenu">
@@ -98,22 +98,19 @@
               <img src="../../assets/images/search-ic.svg" alt>
             </i>
           </b-nav-item>
-          <b-nav-item right class="notification-menu" id="notifyPopoverWrap">
+          <!-- <b-nav-item right class="notification-menu" id="notifyPopoverWrap">
             <button id="notificationPopover" class="btn-notification">
               <i>
                 <img src="../../assets/images/bell-ic.svg" alt="Notification Icon">
               </i>
               <b-badge>2</b-badge>
             </button>
-          </b-nav-item>
-          <b-nav-item-dropdown right class="profile-menu">
+          </b-nav-item> -->
+          <b-nav-item-dropdown right class="profile-menu" v-if="this.$store.state.isLoggedIn">
             <template slot="button-content">
               <i :style="{backgroundImage: 'url('+profileImages+')'}"></i>
-              <em>Evan Donohue</em>
+              <em>{{firstName+' '+lastName}}</em>
             </template>
-            <b-dropdown-item href="#">Dashboard</b-dropdown-item>
-            <b-dropdown-item href="#">My Account</b-dropdown-item>
-            <b-dropdown-item href="#">Help Center</b-dropdown-item>
             <b-dropdown-item 
              v-on:click.native="logout()" 
              replace 
@@ -269,17 +266,21 @@
   </div>
 </template>
 <script>
+import store from '../../store';
 export default {
   components: {},
   name: "topheader",
   data() {
     return {
-      bgImages: [
-        require("@/assets/images/logo.png"),
-        require("@/assets/images/optimy-logo.png")
-      ],
-      profileImages: require("@/assets/images/user-img.png"),
-      popoverShow: false
+        bgImages: [
+            require("@/assets/images/logo.png"),
+            require("@/assets/images/optimy-logo.png")
+        ],
+        profileImages: require("@/assets/images/user-img.png"),
+        popoverShow: false,
+        firstName : store.state.firstName,
+        lastName: store.state.lastName,
+        avatar: store.state.avatar,
     };
   },
   mounted() {

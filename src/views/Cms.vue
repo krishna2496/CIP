@@ -39,7 +39,7 @@
     </b-container>
     </main>
     <footer>
-    <PrimaryFooter></PrimaryFooter>
+    <PrimaryFooter @cmsListing="cmsListing"></PrimaryFooter>
     </footer>
     </div>
 </template>
@@ -104,6 +104,24 @@ methods: {
     getOffset() {
       var header_height = document.querySelector("header").offsetHeight;
       return -header_height;
+    },
+
+    cmsListing(slug){
+    axios.get(process.env.VUE_APP_API_ENDPOINT+"cms/"+slug)
+    .then((response) => {
+    if (response.data.data) {
+    let dataList = [];
+    response.data.data.pages.forEach(function(value,key){
+      if (value.language_id == store.state.defaultLanguageId) {
+        dataList.push(value);
+      }
+    })
+    this.footerItems = dataList[0]
+    this.isDynamicFooterItemsSet = true
+    }
+    }).catch(error => {
+    console.log(error)
+    })
     }
 },
 
@@ -111,26 +129,7 @@ created() {
     window.addEventListener("scroll", this.handleScroll);
     window.addEventListener("resize", this.handleScroll);
     window.addEventListener("resize", this.getOffset);
-
-    axios.get(process.env.VUE_APP_API_ENDPOINT+"cms/"+this.slug)
-    .then((response) => {
-
-    if (response.data.data) {
-    let dataList = [];
-    response.data.data.pages.forEach(function(value,key){
-      if (value.language_id == store.state.defaultLanguageId) {
-        dataList.push(value);
-      }
-   
-    })
-
-    this.footerItems = dataList[0]
-    this.isDynamicFooterItemsSet = true
-    }
-    }).catch(error => {
-    console.log(error)
-    })
-
+    this.cmsListing(this.slug);
 },
 
 destroyed() {

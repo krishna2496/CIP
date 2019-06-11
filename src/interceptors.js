@@ -23,15 +23,16 @@ axios.interceptors.request.use(function (config) {
 axios.interceptors.response.use(function (response) {
     // Do something with response data
     document.body.classList.remove("loader-enable");
-
-    return response;
-  }, function (error) {
-
-  //if token expired
-   if(error.response.status == '401' && error.response.data.code == '40014'){
-       router.push({name: 'login'})
-    }
-
+     return response;
+    }, function (error) {
+      
+      if (error.response.status == '403' && error.response.data.errors[0].code == '40008') {
+         router.push({name: 'error'})
+      }
+      //if token expired
+      if(error.response.status == '401' && error.response.data.code == '40014'){
+         router.push({name: 'login'})
+      }
   // Do something with response error
   document.body.classList.remove("loader-enable");
     return Promise.reject(error);

@@ -3,7 +3,7 @@
         <SigninSlider/>
         <div class="signin-form-wrapper">
         <div class="lang-drodown-wrap">
-        <customDropdown :optionList="langList" :default_text="defautLang" @updateCall="setLanguage"/>
+        <CustomDropdown :optionList="langList" :default_text="defautLang" @updateCall="setLanguage"/>
         </div>
         <div class="signin-form-block">
         <div class="form-title-block">
@@ -62,7 +62,7 @@
 <script>
 import SigninSlider from '../components/SigninSlider';
 import SigninFooter from '../components/Footer/SigninFooter';
-import customDropdown from '../components/customDropdown';
+import CustomDropdown from '../components/CustomDropdown';
 import store from '../store';
 import { required, email,sameAs, minLength, between } from 'vuelidate/lib/validators';
 import {loadLocaleMessages} from '../services/service';
@@ -72,7 +72,7 @@ export default {
     components: {
     SigninSlider,
     SigninFooter, 
-    customDropdown, 
+    CustomDropdown, 
 },
 
 data() {    

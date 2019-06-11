@@ -52,11 +52,11 @@
 </template>
 
 <script>
-import CustomDropdown from "../customDropdown";
+import CustomDropdown from "../CustomDropdown";
 import CheckboxDropdown from "../CheckboxDropdown";
 
 export default {
-  components: { customDropdown, CheckboxDropdown },
+  components: { CustomDropdown, CheckboxDropdown },
 
   name: "bottomheader",
 

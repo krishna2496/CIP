@@ -136,7 +136,7 @@ import BottomHeader from "../components/Header/BottomHeader";
 import PrimaryFooter from "../components/Footer/PrimaryFooter";
 import LandingCard from "../components/LandingCard";
 import CardListBlock from "../components/CardListBlock";
-import CustomDropdown from "../components/customDropdown";
+import CustomDropdown from "../components/CustomDropdown";
 import CustomChip from "../components/CustomChip";
 
 export default {
@@ -146,7 +146,7 @@ export default {
     PrimaryFooter,
     LandingCard,
     CardListBlock,
-    customDropdown,
+    CustomDropdown,
     CustomChip
   },
 

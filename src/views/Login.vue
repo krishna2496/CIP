@@ -1,10 +1,10 @@
 <template>
     <div class="signin-page-wrapper">
-        <SigninSlider v-if="isShowSigninSlider"/>
+        <SigninSlider v-if="isShowComponent"/>
         <div class="signin-form-wrapper">
 
             <div class="lang-drodown-wrap">
-                <customDropdown :optionList="langList" :default_text="defautLang" @updateCall="setLanguage"/>
+                <CustomDropdown :optionList="langList" :default_text="defautLang" @updateCall="setLanguage" v-if="isShowComponent"/>
             </div>
 
             <div class="signin-form-block">
@@ -22,7 +22,8 @@
                         <label for="">{{ $t("label.email_address") }}</label>
                         <b-form-input id="" type="email" v-model="login.email" 
                         v-bind:placeholder='$t("placeholder.email_address")'
-                        :class="{ 'is-invalid': $v.login.email.$error }" ref='email' autofocus></b-form-input>
+                        :class="{ 'is-invalid': $v.login.email.$error }" ref='email' autofocus 
+                        maxlength="120"></b-form-input>
                         <div v-if="submitted && !$v.login.email.required" class="invalid-feedback">
                         {{ $t("errors.email_required") }}</div>
                         <div v-if="submitted && !$v.login.email.email" class="invalid-feedback">
@@ -32,7 +33,9 @@
                         <label for="">{{ $t("label.password") }}</label>
                         <b-form-input id="" type="password" v-model="login.password" required 
                         v-bind:placeholder='$t("placeholder.password")' 
-                        :class="{ 'is-invalid': $v.login.password.$error }" @keypress.enter.prevent="handleSubmit"></b-form-input>
+                        :class="{ 'is-invalid': $v.login.password.$error }" 
+                        maxlength="120"
+                        @keypress.enter.prevent="handleSubmit"></b-form-input>
                         <div v-if="submitted && !$v.login.password.required" class="invalid-feedback">
                         {{ $t("errors.password_required") }}</div>
                         <div v-if="submitted && !$v.login.password.minLength" class="invalid-feedback">
@@ -48,14 +51,14 @@
                 </div>
 
             </div>
-            <SigninFooter ref="signinFooter" v-if="isShowSigninFooter"/>
+            <SigninFooter ref="signinFooter" v-if="isShowComponent"/>
         </div>
     </div>
 </template>
 <script>
     import SigninSlider from '../components/SigninSlider';
     import SigninFooter from '../components/Footer/SigninFooter';
-    import customDropdown from '../components/customDropdown';
+    import CustomDropdown from '../components/CustomDropdown';
     import { required, email, minLength, between } from 'vuelidate/lib/validators';
     import store from '../store';
     import axios from "axios";
@@ -64,7 +67,7 @@
     export default {
         components: {       
             SigninFooter,
-            customDropdown,
+            CustomDropdown,
             SigninSlider,
         },
         data() {
@@ -81,8 +84,7 @@
                 classVariant: 'danger',
                 message: null,
                 showDismissibleAlert: false,
-                isShowSigninSlider : false,
-                isShowSigninFooter : false ,
+                isShowComponent : false,
             };
         },
         validations: {
@@ -101,6 +103,7 @@
                             //Get langauage list from Local Storage
                             this.langList = JSON.parse(store.state.listOfLanguage)
                             this.defautLang = store.state.defaultLanguage
+                           
                         }else{
                             localStorage.removeItem('slider');  
                             localStorage.removeItem('listOfLanguage');
@@ -112,10 +115,9 @@
                        
                     })
                     .catch(error => {
-                        this.createConnection();
+                        // this.createConnection();
                     })
-                    this.isShowSigninSlider = true
-                    this.isShowSigninFooter = true
+                    this.isShowComponent = true
             },
             async setLanguage(language){
                 var _this = this;
@@ -139,9 +141,8 @@
                    )
                         .then((response) => {
                             //Store token in local storage
-                            localStorage.setItem('isLoggedIn', response.data.data.token)
-                            localStorage.setItem('token', response.data.data.token)
-                            store.commit('loginUser', response.data.data.token)
+                            
+                            store.commit('loginUser',response.data.data)
                             //redirect to landing page
                             this.$router.replace({ name: "home" });
                         })

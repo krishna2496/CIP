@@ -6,8 +6,10 @@
            <b-list-group v-if="isDynamicFooterItemsSet">
                 <b-list-group-item  
                 v-for="item in footerItems" 
-                :to="'/'+getUrl(item)" 
-                :title="getTitle(item)">{{getTitle(item)}}
+                :to="item.slug" 
+                :title="getTitle(item)"
+                @click.native="clickHandler"
+                >{{getTitle(item)}}
                 </b-list-group-item>
             </b-list-group>
         </b-col>
@@ -22,7 +24,7 @@
 <script>
 import axios from "axios";
 import store from '../../store';
-
+import router from "../../router";
 export default {
   components: {},
   name: "primaryFooter",
@@ -70,7 +72,10 @@ export default {
         if (items) { 
             return items.slug
         }
-    }
+    },
+    clickHandler($event) {
+        this.$emit('cmsListing',this.$route.params.slug);
+    },
 },
 };
 </script>

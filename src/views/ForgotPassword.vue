@@ -3,7 +3,7 @@
     <SigninSlider/>
     <div class="signin-form-wrapper">
       <div class="lang-drodown-wrap">
-        <customDropdown :optionList="langList" :default_text="defautLang" @updateCall="setLanguage"/>
+        <CustomDropdown :optionList="langList" :default_text="defautLang" @updateCall="setLanguage"/>
       </div>
       <div class="signin-form-block">
         <a href="/home" class="logo-wrap" title>
@@ -21,6 +21,7 @@
           <b-form-group>
             <label for>{{ $t("label.email_address") }}</label>
             <b-form-input id type="email" v-model="forgotPassword.email" :class="{ 'is-invalid': $v.forgotPassword.email.$error }" @keypress.enter.prevent="handleSubmit" 
+            maxlength="120"
             v-bind:placeholder='$t("placeholder.email_address")'
             ref='email' autofocus></b-form-input>
             <div v-if="submitted && !$v.forgotPassword.email.required" class="invalid-feedback">
@@ -45,7 +46,7 @@
 
 import SigninSlider from "../components/SigninSlider";
 import SigninFooter from "../components/Footer/SigninFooter";
-import customDropdown from "../components/customDropdown";
+import CustomDropdown from "../components/CustomDropdown";
 import { required, email, minLength, between } from 'vuelidate/lib/validators';
 import {loadLocaleMessages} from '../services/service';
 import store from '../store';
@@ -55,7 +56,7 @@ export default {
   components: {
     SigninSlider,
     SigninFooter,
-    customDropdown
+    CustomDropdown
   },
   data() {
     return {

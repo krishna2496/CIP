@@ -4,7 +4,7 @@
       <b-list-group v-if="isDynamicFooterItemsSet">
         <b-list-group-item
           v-for="item in footerItems"
-          :to="'/'+getUrl(item)"
+          :to="item.slug"
           :title="getTitle(item)"
         >{{getTitle(item)}}</b-list-group-item>
       </b-list-group>
@@ -50,7 +50,7 @@ name: "SigninFooter",
           }
         })
         .catch(error => {
-          this.getPageListing();
+          // this.getPageListing();
         });
     },
 
