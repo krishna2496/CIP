@@ -12,39 +12,18 @@ export default new Vuex.Store({
         defaultLanguage : localStorage.getItem('defaultLanguage'),
         defaultLanguageId : localStorage.getItem('defaultLanguageId'),
         slider : localStorage.getItem('slider'),
-        userId : localStorage.getItem('userId'),
-        firstName : localStorage.getItem('firstName'),
-        lastName : localStorage.getItem('lastName'),
-        avatar : localStorage.getItem('avatar'),
+        logo : localStorage.getItem('logo'),
         isloaderSet:true
     },
     mutations: {        
-        loginUser(state, data){
-            localStorage.setItem('isLoggedIn',data.token)
-            localStorage.setItem('token',data.token)
-            localStorage.setItem('userId',data.user_id)
-            localStorage.setItem('firstName',data.first_name)
-            localStorage.setItem('lastName',data.last_name)
-            localStorage.setItem('avatar',data.avatar)                           
+        loginUser(state, token){
             state.isLoggedIn = true;
-            state.token = data.token;            
-            state.userId = data.user_id;
-            state.firstName = data.first_name;
-            state.lastName = data.last_name;
-            state.avatar = data.avatar;
+            state.token = token;
         },
         logoutUser(state){
             localStorage.removeItem('token')
-            localStorage.removeItem('userId')
-            localStorage.removeItem('firstName')
-            localStorage.removeItem('lastName')
-            localStorage.removeItem('avatar')
             state.isLoggedIn = false;
             state.token = null;
-            state.userId = null;
-            state.firstName = null;
-            state.lastName = null;
-            state.avatar = null;
             router.push({name: 'login'})
         },
         setDefaultLanguage(state, language){   
@@ -65,13 +44,10 @@ export default new Vuex.Store({
             localStorage.setItem('listOfLanguage',languageList);
             state.listOfLanguage = languageList;
         },
-        setLanguageDefault(state, defaultLanguage,defaultLanguageId){   
-            localStorage.removeItem('defaultLanguage');
-            localStorage.removeItem('defaultLanguageId');
-            localStorage.setItem('defaultLanguage',defaultLanguage)
-            localStorage.setItem('defaultLanguageId',defaultLanguageId)
-            state.defaultLanguage = defaultLanguage;
-            state.defaultLanguageId = defaultLanguageId;
+        setLogo(state,logo){   
+            localStorage.removeItem('logo');
+            localStorage.setItem('logo',logo)
+            state.logo = logo;
         },
     },
     getters: {

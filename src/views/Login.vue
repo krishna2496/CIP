@@ -9,9 +9,10 @@
 
             <div class="signin-form-block">
 
-                <i class="logo-wrap">
-                    <img src="../assets/images/optimy-logo.png">
-                </i>
+               <!--  <i class="logo-wrap">
+                    <img :src="logo">
+                </i> -->
+            
 
                 <!-- success or error msg -->
                 <b-alert show :variant="classVariant" dismissible v-model="showDismissibleAlert"> {{ message }}</b-alert>
@@ -85,6 +86,7 @@
                 message: null,
                 showDismissibleAlert: false,
                 isShowComponent : false,
+
             };
         },
         validations: {
