@@ -17,9 +17,9 @@ class CreateTableMission extends Migration {
             $table->bigInteger('theme_id')->unsigned();
             $table->bigInteger('city_id')->unsigned();
             $table->bigInteger('country_id')->unsigned();
-            $table->dateTime('start_date');
-            $table->dateTime('end_date');
-            $table->integer('total_seats');
+            $table->dateTime('start_date')->nullable();
+            $table->dateTime('end_date')->nullable();
+            $table->integer('total_seats')->nullable();
             $table->enum('mission_type', ['TIME','GOAL']);
             $table->string('goal_objective',255)->nullable();
             $table->dateTime('application_deadline');
