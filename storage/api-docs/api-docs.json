@@ -1,0 +1,875 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "",
+    "title": "CI Platform",
+    "description": ""
+  },
+  "host": "localhost/cip-api/public",
+  "paths": {
+    "/cms/update/1": {
+      "patch": {
+        "operationId": "PATCH_cip-api-public-cms-update-1",
+        "summary": "Update CMS Page - Sprint 2",
+        "consumes": [
+          "text/plain"
+        ],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "page_detail": {
+                  "type": "object",
+                  "properties": {
+                    "slug": {
+                      "type": "string"
+                    },
+                    "translations": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "language_id": {
+                            "type": "string"
+                          },
+                          "title": {
+                            "type": "string"
+                          },
+                          "section": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "title": {
+                                  "type": "string"
+                                },
+                                "description": {
+                                  "type": "string"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "example": {
+                "page_detail": {
+                  "slug": "privacy-policy",
+                  "translations": [
+                    {
+                      "language_id": "1",
+                      "title": "Privacy Policy",
+                      "section": [
+                        {
+                          "title": "What we collect",
+                          "description": "We may collect the following information: name and job title, contact information including email address, demographic information such as postcode, preferences and interests, other information relevant to customer surveys and/or offers. We require this information to understand your needs and provide you with a better service, and in particular for the following reasons:Internal record keeping. We may use the information to improve our products and services.We may periodically send promotional email about new products, special offers or other information which we think you may find interesting using the email address which you have provided. We require this information to understand your needs and provide you with a better service, and in particular for the following reasons:Internal record keeping. We may use the information to improve our products and services.We may periodically send promotional email about new products, special offers or other information which we think you may find interesting using the email address which you have provided.We require this information to understand your needs and provide you with a better service, and in particular for the following reasons:Internal record keeping. We may use the information to improve our products and services.We may periodically send promotional email about new products, special offers or other information which we think you may find interesting using the email address which you have provided.We require this information to understand your needs and provide you with a better service, and in particular for the following reasons:Internal record keeping. We may use the information to improve our products and services.We may periodically send promotional email about new products, special offers or other information which we think you may find interesting using the email address which you have provided.We require this information to understand your needs and provide you with a better service, and in particular for the following reasons:Internal record keeping. We may use the information to improve our products and services.We may periodically send promotional email about new products, special offers or other information which we think you may find interesting using the email address which you have provided.We require this information to understand your needs and provide you with a better service, and in particular for the following reasons:Internal record keeping. We may use the information to improve our products and services.We may periodically send promotional email about new products, special offers or other information which we think you may find interesting using the email address which you have provided."
+                        },
+                        {
+                          "title": "What we do with the information we gather",
+                          "description": "We require this information to understand your needs and provide you with a better service, and in particular for the following reasons:Internal record keeping. We may use the information to improve our products and services.We may periodically send promotional email about new products, special offers or other information which we think you may find interesting using the email address which you have provided.We are committed to ensuring that your information is secure. In order to prevent unauthorized access or disclosure we have put in place suitable physical, electronic and managerial procedures to safeguard and secure the information we collect online.We are committed to ensuring that your information is secure. In order to prevent unauthorized access or disclosure we have put in place suitable physical, electronic and managerial procedures to safeguard and secure the information we collect online.We are committed to ensuring that your information is secure. In order to prevent unauthorized access or disclosure we have put in place suitable physical, electronic and managerial procedures to safeguard and secure the information we collect online.We are committed to ensuring that your information is secure. In order to prevent unauthorized access or disclosure we have put in place suitable physical, electronic and managerial procedures to safeguard and secure the information we collect online.We are committed to ensuring that your information is secure. In order to prevent unauthorized access or disclosure we have put in place suitable physical, electronic and managerial procedures to safeguard and secure the information we collect online.We are committed to ensuring that your information is secure. In order to prevent unauthorized access or disclosure we have put in place suitable physical, electronic and managerial procedures to safeguard and secure the information we collect online.We are committed to ensuring that your information is secure. In order to prevent unauthorized access or disclosure we have put in place suitable physical, electronic and managerial procedures to safeguard and secure the information we collect online."
+                        },
+                        {
+                          "title": "Securityr",
+                          "description": "We are committed to ensuring that your information is secure. In order to prevent unauthorized access or disclosure we have put in place suitable physical, electronic and managerial procedures to safeguard and secure the information we collect online."
+                        }
+                      ]
+                    },
+                    {
+                      "language_id": "2",
+                      "title": "Politique de confidentialité",
+                      "section": [
+                        {
+                          "title": "Ce que nous recueillons",
+                          "description": "Nous pouvons collecter les informations suivantes: nom et intitulé du poste, informations de contact, y compris adresse électronique, informations démographiques telles que le code postal, préférences et intérêts, autres informations pertinentes pour les enquêtes et / ou les offres clients"
+                        },
+                        {
+                          "title": "Ce que nous faisons avec les informations que nous recueillons",
+                          "description": "Nous avons besoin de ces informations pour comprendre vos besoins et vous fournir un meilleur service, en particulier pour les raisons suivantes: Tenue de registres internes. Nous pouvons utiliser les informations pour améliorer nos produits et services.Nous pouvons envoyer périodiquement des courriels promotionnels concernant les nouveaux produits, des offres spéciales ou d'autres informations que nous pensons susceptibles de vous intéresser à l'aide de l'adresse e-mail fournie."
+                        },
+                        {
+                          "title": "Sécurité",
+                          "description": "Nous nous engageons à assurer la sécurité de vos informations. Afin d'empêcher tout accès ou divulgation non autorisé, nous avons mis en place des procédures physiques, électroniques et de gestion appropriées pour protéger et sécuriser les informations que nous recueillons en ligne."
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "required": false,
+            "type": "string",
+            "default": " application/json"
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": false,
+            "type": "string",
+            "default": " Basic dGF0dmFfYXBpX2tleTp0YXR2YV9hcGlfc2VjcmV0"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "",
+            "schema": {}
+          }
+        }
+      }
+    },
+    "/cms/privacy-policy": {
+      "get": {
+        "operationId": "GET_cip-api-public-cms-privacy-policy",
+        "summary": "Get CMS details - Sprint 2",
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "responses": {
+          "default": {
+            "description": "",
+            "schema": {}
+          }
+        }
+      }
+    },
+    "/request_password_reset": {
+      "post": {
+        "operationId": "POST_cip-api-public-request_password_reset",
+        "summary": "Forgot Password",
+        "consumes": [
+          "text/plain"
+        ],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "email": {
+                  "type": "string"
+                }
+              },
+              "example": {
+                "email": "dipen.suthar@tatvasoft.com"
+              }
+            }
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "required": false,
+            "type": "string",
+            "default": " application/json"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "",
+            "schema": {}
+          }
+        }
+      }
+    },
+    "/login": {
+      "post": {
+        "operationId": "POST_cip-api-public-login",
+        "summary": "Login API",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "email": {
+                  "type": "string"
+                },
+                "password": {
+                  "type": "string"
+                }
+              },
+              "example": {
+                "email": "dipen.suthar@tatvasoft.com",
+                "password": "dipen.suthar"
+              }
+            }
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "required": false,
+            "type": "string",
+            "default": " application/json"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "",
+            "schema": {}
+          }
+        }
+      }
+    },
+    "/users/2": {
+      "delete": {
+        "operationId": "DELETE_cip-api-public-users-2",
+        "summary": "Delete User",
+        "consumes": [
+          "text/plain"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": false,
+            "type": "string",
+            "default": " Basic dGF0dmFkZW1vX2FwaV9rZXk6dGF0dmFkZW1vX2FwaV9zZWNyZXQ="
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "",
+            "schema": {}
+          }
+        }
+      }
+    },
+    "/metadata/users/custom_fields/create": {
+      "post": {
+        "operationId": "POST_cip-api-public-metadata-users-custom_fields-create",
+        "summary": "Create user's custom field - Sprint 2",
+        "consumes": [
+          "text/plain"
+        ],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string"
+                },
+                "is_mandatory": {
+                  "type": "string"
+                },
+                "translation": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "lang": {
+                        "type": "string"
+                      },
+                      "name": {
+                        "type": "string"
+                      },
+                      "values": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              },
+              "example": {
+                "name": "Age",
+                "type": "Drop-down",
+                "is_mandatory": "1",
+                "translation": [
+                  {
+                    "lang": "en",
+                    "name": "Age",
+                    "values": "['10-15','16-20','21-30']"
+                  },
+                  {
+                    "lang": "fr",
+                    "name": "Âge",
+                    "values": "['10-15','16-20','21-30']"
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": false,
+            "type": "string",
+            "default": " Basic dGF0dmFfYXBpX2tleTp0YXR2YV9hcGlfc2VjcmV0"
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "required": false,
+            "type": "string",
+            "default": " application/json"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "",
+            "schema": {}
+          }
+        }
+      }
+    },
+    "/cms/create": {
+      "post": {
+        "operationId": "POST_cip-api-public-cms-create",
+        "summary": "Create CMS page - Sprint 2",
+        "description": "null",
+        "consumes": [
+          "text/plain"
+        ],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "page_detail": {
+                  "type": "object",
+                  "properties": {
+                    "slug": {
+                      "type": "string"
+                    },
+                    "translations": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "lang": {
+                            "type": "string"
+                          },
+                          "title": {
+                            "type": "string"
+                          },
+                          "section": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "title": {
+                                  "type": "string"
+                                },
+                                "description": {
+                                  "type": "string"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "example": {
+                "page_detail": {
+                  "slug": "terms-of-use",
+                  "translations": [
+                    {
+                      "lang": "en",
+                      "title": "Terms of Use",
+                      "section": [
+                        {
+                          "title": "Perceived end knowledge",
+                          "description": "Perceived end knowledge certainly day sweetness why cordially. Ask quick six seven offer see among. Handsome met debating sir dwelling age material. As style lived he worse dried. Offered related so visitor we private removed. Moderate do subjects to distance. "
+                        },
+                        {
+                          "title": "By spite about do of do allow blush",
+                          "description": "By spite about do of do allow blush. Additions in conveying or collected objection in. Suffer few desire wonder her object hardly nearer. Abroad no chatty others my silent an. Fat way appear denote who wholly narrow gay settle. Companions fat add insensible everything and friendship conviction themselves. Theirs months ten had add narrow own. Ignorant branched humanity led now marianne too strongly entrance. Rose to shew bore no ye of paid rent form. Old design are dinner better nearer silent excuse. She which are maids boy sense her shade. Considered reasonable we affronting on expression in. So cordial anxious mr delight. Shot his has must wish from sell nay. Remark fat set why are sudden depend change entire wanted. Performed remainder attending led fat residence far. "
+                        },
+                        {
+                          "title": "Bringing unlocked me an striking ye perceive",
+                          "description": "Bringing unlocked me an striking ye perceive. Mr by wound hours oh happy. Me in resolution pianoforte continuing we. Most my no spot felt by no. He he in forfeited furniture sweetness he arranging. Me tedious so to behaved written account ferrars moments. Too objection for elsewhere her preferred allowance her. Marianne shutters mr steepest to me. Up mr ignorant produced distance although is sociable blessing. Ham whom call all lain like. To shewing another demands to. Marianne property cheerful informed at striking at. Clothes parlors however by cottage on. In views it or meant drift to. Be concern parlors settled or do shyness address. Remainder northward performed out for moonlight. Yet late add name was rent park from rich. He always do do former he highly. Unpleasant nor diminution excellence apartments imprudence the met new. Draw part them he an to he roof only. Music leave say doors him. Tore bred form if sigh case as do. Staying he no looking if do opinion. Sentiments way understood end partiality and his. Possession her thoroughly remarkably terminated man continuing. Removed greater to do ability. You shy shall while but wrote marry. Call why sake has sing pure. Gay six set polite nature worthy. So matter be me we wisdom should basket moment merely. Me burst ample wrong which would mr he could. Visit arise my point timed drawn no. Can friendly laughter goodness man him appetite carriage. Any widen see gay forth alone fruit bed."
+                        }
+                      ]
+                    },
+                    {
+                      "lang": "fr",
+                      "title": "Politique de confidentialité",
+                      "section": [
+                        {
+                          "title": "Perçu la connaissance finale certainement douceur",
+                          "description": "Perçu la connaissance finale certainement douceur du jour pourquoi cordialement. Demandez rapidement six offre sept voir parmi. Beau rencontré débattre monsieur matériel âge de résidence. Comme le style a vécu, il a pire séché. Proposé relatif afin que le visiteur privé nous ait enlevé. Modérer les sujets à distance."
+                        },
+                        {
+                          "title": "En dépit de faire, permettez-nous de rougir",
+                          "description": "En dépit de faire, permettez-nous de rougir. Des ajouts dans la transmission ou l'objection recueillie dans. Souffre que peu de désir se demande son objet à peine plus proche. À l 'étranger, pas d' autres bavards mon silencieux. Voie grasse apparaissent dénotent qui se rétrécissent complètement. Les compagnons gras ajoutent tout insensible et la conviction d'amitié eux-mêmes. Les mois dix ont été très étroits.L'humanité ramifiée ignorante dirigeait désormais trop l'entrée marianne. Rose à montrer ne porte pas de forme de loyer payé. Le vieux design est meilleur dîner près excuse silencieuse. Elle qui sont filles garçon sent son ombre. Considéré comme raisonnable, nous insultons notre expression. Très cordial, inquiet, monsieur. Tourné son a doit souhaiter de vendre non. Remarque: gros ensemble pourquoi sont soudainement dépendants le changement entier voulu. Reste effectué fréquentant la résidence principale conduit loin loin."
+                        },
+                        {
+                          "title": "Bringing unlocked me an striking ye perceive",
+                          "description": "Bringing unlocked me an striking ye perceive. Mr by wound hours oh happy. Me in resolution pianoforte continuing we. Most my no spot felt by no. He he in forfeited furniture sweetness he arranging. Me tedious so to behaved written account ferrars moments. Too objection for elsewhere her preferred allowance her. Marianne shutters mr steepest to me. Up mr ignorant produced distance although is sociable blessing. Ham whom call all lain like. To shewing another demands to. Marianne property cheerful informed at striking at. Clothes parlors however by cottage on. In views it or meant drift to. Be concern parlors settled or do shyness address. Remainder northward performed out for moonlight. Yet late add name was rent park from rich. He always do do former he highly. Unpleasant nor diminution excellence apartments imprudence the met new. Draw part them he an to he roof only. Music leave say doors him. Tore bred form if sigh case as do. Staying he no looking if do opinion. Sentiments way understood end partiality and his. Possession her thoroughly remarkably terminated man continuing. Removed greater to do ability. You shy shall while but wrote marry. Call why sake has sing pure. Gay six set polite nature worthy. So matter be me we wisdom should basket moment merely. Me burst ample wrong which would mr he could. Visit arise my point timed drawn no. Can friendly laughter goodness man him appetite carriage. Any widen see gay forth alone fruit bed."
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": false,
+            "type": "string",
+            "default": " Basic dGF0dmFfYXBpX2tleTp0YXR2YV9hcGlfc2VjcmV0"
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "required": false,
+            "type": "string",
+            "default": " application/json"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "",
+            "schema": {}
+          }
+        }
+      }
+    },
+    "/cms/14": {
+      "delete": {
+        "operationId": "DELETE_cip-api-public-cms-14",
+        "summary": "Delete CMS Page - Sprint 2",
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": false,
+            "type": "string",
+            "default": " Basic dGF0dmFkZW1vX2FwaV9rZXk6dGF0dmFkZW1vX2FwaV9zZWNyZXQ="
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "",
+            "schema": {}
+          }
+        }
+      }
+    },
+    "/connect": {
+      "get": {
+        "operationId": "GET_connect",
+        "summary": "Get tenant options",
+        "consumes": [
+          "text/plain"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": false,
+            "type": "string",
+            "default": " Basic dGF0dmFfYXBpX2tleTp0YXR2YV9hcGlfc2VjcmV0"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "",
+            "schema": {}
+          }
+        }
+      }
+    },
+    "/metadata/users/custom_fields/1": {
+      "patch": {
+        "operationId": "PATCH_cip-api-public-metadata-users-custom_fields-1",
+        "summary": "Update user's custom field - Sprint 2",
+        "consumes": [
+          "text/plain"
+        ],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string"
+                },
+                "is_mandatory": {
+                  "type": "string"
+                },
+                "translation": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "lang": {
+                        "type": "string"
+                      },
+                      "name": {
+                        "type": "string"
+                      },
+                      "values": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              },
+              "example": {
+                "name": "Age 2",
+                "type": "Drop-down",
+                "is_mandatory": "1",
+                "translation": [
+                  {
+                    "lang": "en",
+                    "name": "Age 1",
+                    "values": "['10-15','16-20','21-30']"
+                  },
+                  {
+                    "lang": "fr",
+                    "name": "Âge 1",
+                    "values": "['10-15','16-20','21-30']"
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": false,
+            "type": "string",
+            "default": " Basic dGF0dmFfYXBpX2tleTp0YXR2YV9hcGlfc2VjcmV0"
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "required": false,
+            "type": "string",
+            "default": " application/json"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "",
+            "schema": {}
+          }
+        }
+      },
+      "delete": {
+        "operationId": "DELETE_cip-api-public-metadata-users-custom_fields-1",
+        "summary": "Delete user's custom field - Sprint 2",
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": false,
+            "type": "string",
+            "default": " Basic dGF0dmFfYXBpX2tleTp0YXR2YV9hcGlfc2VjcmV0"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "",
+            "schema": {}
+          }
+        }
+      }
+    },
+    "/cms/": {
+      "get": {
+        "operationId": "GET_cip-api-public-cms",
+        "summary": "Fetch CMS Pages titles - Sprint 2",
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": false,
+            "type": "string",
+            "default": " Basic dGF0dmFfYXBpX2tleTp0YXR2YV9hcGlfc2VjcmV0"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "",
+            "schema": {}
+          }
+        }
+      }
+    },
+    "/users": {
+      "get": {
+        "operationId": "GET_cip-api-public-users",
+        "summary": "Get all users - Sprint 2",
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": false,
+            "type": "string",
+            "default": " Basic dGF0dmFfYXBpX2tleTp0YXR2YV9hcGlfc2VjcmV0"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "",
+            "schema": {}
+          }
+        }
+      }
+    },
+    "/users/1": {
+      "get": {
+        "operationId": "GET_cip-api-public-users-1",
+        "summary": "Get user details - Sprint 2",
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": false,
+            "type": "string",
+            "default": " Basic dGF0dmFfYXBpX2tleTp0YXR2YV9hcGlfc2VjcmV0"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "",
+            "schema": {}
+          }
+        }
+      }
+    },
+    "/users/create": {
+      "post": {
+        "operationId": "POST_cip-api-public-users-create",
+        "summary": "Create User",
+        "consumes": [
+          "text/plain"
+        ],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "first_name": {
+                  "type": "string"
+                },
+                "last_name": {
+                  "type": "string"
+                },
+                "email": {
+                  "type": "string"
+                },
+                "password": {
+                  "type": "string"
+                },
+                "timezone_id": {
+                  "type": "string"
+                },
+                "language_id": {
+                  "type": "string"
+                },
+                "availability_id": {
+                  "type": "string"
+                },
+                "why_i_volunteer": {
+                  "type": "string"
+                },
+                "employee_id": {
+                  "type": "string"
+                },
+                "department": {
+                  "type": "string"
+                },
+                "manager_name": {
+                  "type": "string"
+                },
+                "city_id": {
+                  "type": "string"
+                },
+                "country_id": {
+                  "type": "string"
+                },
+                "profile_text": {
+                  "type": "string"
+                },
+                "linked_in_url": {
+                  "type": "string"
+                }
+              },
+              "example": {
+                "first_name": "Sid",
+                "last_name": "Patel",
+                "email": "rahul.patel@tatvasoft.com",
+                "password": "12345678",
+                "timezone_id": "1",
+                "language_id": "1",
+                "availability_id": "1",
+                "why_i_volunteer": "I love to contribute my time for the society welfare.",
+                "employee_id": "TS111",
+                "department": "IT",
+                "manager_name": "John",
+                "city_id": "1",
+                "country_id": "1",
+                "profile_text": "I am software developer, and I like to work for the society.",
+                "linked_in_url": ""
+              }
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": false,
+            "type": "string",
+            "default": " Basic dGF0dmFfYXBpX2tleTp0YXR2YV9hcGlfc2VjcmV0"
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "required": false,
+            "type": "string",
+            "default": " application/json"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "",
+            "schema": {}
+          }
+        }
+      }
+    },
+    "/create_slider": {
+      "post": {
+        "operationId": "POST_cip-api-public-create_slider",
+        "summary": "Add Slider Images - Sprint 2",
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "parameters": [
+          {
+            "name": "slider_image",
+            "in": "formData",
+            "type": "string",
+            "default": "http://new.anasource.com/team11/s3/sliderimg1.png"
+          },
+          {
+            "name": "slider_detail",
+            "in": "formData",
+            "type": "string",
+            "default": " {\n                \"translations\": [{\n                    \"lang\": \"en\",\n                    \"slider_title\": \"CI Platform Slide 2\",\n                    \"slider_description\":\"By spite about do of do allow blush. Additions in conveying or collected objection in. Suffer few desire wonder her object hardly nearer. Abroad no chatty others my silent an. Fat way appear denote who wholly narrow gay settle. Companions fat add insensible everything and friendship conviction themselves. Theirs months ten had add narrow own.  \"\n                },\n                {\n                    \"lang\": \"fr\",\n                    \"slider_title\": \"Plate-forme CI Slide 2\",\n                    \"slider_description\":\"En dépit de faire, permettez-nous de rougir. Des ajouts dans la transmission ou l'objection recueillie dans. Souffre que peu de désir se demande son objet à peine plus proche. À l 'étranger, pas d' autres bavards mon silencieux. Voie grasse apparaissent dénotent qui se rétrécissent complètement. Les compagnons gras ajoutent tout insensible et la conviction d'amitié eux-mêmes. Les mois dix ont été très étroits.\"\n                }]\n        }"
+          },
+          {
+            "name": "sort_order",
+            "in": "formData",
+            "type": "string",
+            "default": "2"
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": false,
+            "type": "string",
+            "default": " Basic dGF0dmFfYXBpX2tleTp0YXR2YV9hcGlfc2VjcmV0"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "",
+            "schema": {}
+          }
+        }
+      }
+    },
+    "/password_reset": {
+      "put": {
+        "operationId": "PUT_cip-api-public-password_reset",
+        "summary": "Reset Password - Sprint 2",
+        "consumes": [
+          "text/plain"
+        ],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "reset_password_token": {
+                  "type": "string"
+                },
+                "email": {
+                  "type": "string"
+                },
+                "password": {
+                  "type": "string"
+                },
+                "password_confirmation": {
+                  "type": "string"
+                }
+              },
+              "example": {
+                "reset_password_token": "163e3324e7a12533c4c4281fd64c08f49a975fbd1028d369147e177fcf087e45",
+                "email": "dipen.suthar@tatvasoft.com",
+                "password": "12345678",
+                "password_confirmation": "12345678"
+              }
+            }
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "required": false,
+            "type": "string",
+            "default": " application/json"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "",
+            "schema": {}
+          }
+        }
+      }
+    }
+  },
+  "definitions": {}
+}

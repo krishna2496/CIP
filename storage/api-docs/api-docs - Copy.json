@@ -1,0 +1,223 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "CI Platform - Super Admin API",
+        "description": "CI Platform Super admin API to create tenants and its operations",
+        "contact": {
+            "email": "support@optimy.com"
+        },
+        "version": "1.0"
+    },
+    "servers": [
+        {
+            "url": "http://localhost/cip-admin-api/public"
+        }
+    ],
+    "paths": {
+        "/tenants": {
+            "get": {
+                "tags": [
+                    "Tenants"
+                ],
+                "summary": "Get list of tenants",
+                "description": "Returns list of tenants",
+                "operationId": "App\\Http\\Controllers\\TenantController::index",
+                "responses": {
+                    "200": {
+                        "description": "Tenant listing successfully"
+                    },
+                    "422": {
+                        "description": "Database operational error"
+                    }
+                }
+            }
+        },
+        "/tenants/create": {
+            "post": {
+                "tags": [
+                    "Tenants"
+                ],
+                "summary": "Create a tenant",
+                "description": "Create new tenant and its database",
+                "operationId": "App\\Http\\Controllers\\TenantController::store",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string"
+                                    },
+                                    "sponsor_id": {
+                                        "type": "int"
+                                    },
+                                    "options": {
+                                        "properties": {
+                                            "theme_enabled": {
+                                                "type": "boolean"
+                                            },
+                                            "skills_enabled": {
+                                                "type": "boolean"
+                                            },
+                                            "news_enabled": {
+                                                "type": "boolean"
+                                            },
+                                            "stories_enabled": {
+                                                "type": "boolean"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                },
+                                "type": "object",
+                                "example": {
+                                    "name": "TQDN",
+                                    "sponsor_id": 123456,
+                                    "options": {
+                                        "theme_enabled": "1",
+                                        "skills_enabled": "1",
+                                        "news_enabled": "0",
+                                        "stories_enabled": "0"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Tenant created successfully"
+                    },
+                    "422": {
+                        "description": "Unprocessable entity"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    }
+                }
+            }
+        },
+        "/tenants/{id}": {
+            "get": {
+                "tags": [
+                    "Tenants"
+                ],
+                "summary": "Find tenant by ID",
+                "description": "Returns a single tenant",
+                "operationId": "App\\Http\\Controllers\\TenantController::show",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of tenant to return",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation"
+                    },
+                    "404": {
+                        "description": "tenant not found"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Tenants"
+                ],
+                "summary": "Deletes a tenant",
+                "operationId": "App\\Http\\Controllers\\TenantController::destroy",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Tenant id to delete",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int"
+                        }
+                    }
+                ],
+                "responses": {
+                    "404": {
+                        "description": "Tenant not found"
+                    }
+                }
+            },
+            "patch": {
+                "tags": [
+                    "Tenants"
+                ],
+                "summary": "Updates a tenant in the system",
+                "operationId": "App\\Http\\Controllers\\TenantController::update",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of tenant that needs to be updated",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string"
+                                    },
+                                    "sponsor_id": {
+                                        "type": "int"
+                                    },
+                                    "options": {
+                                        "properties": {
+                                            "theme_enabled": {
+                                                "type": "boolean"
+                                            },
+                                            "skills_enabled": {
+                                                "type": "boolean"
+                                            },
+                                            "news_enabled": {
+                                                "type": "boolean"
+                                            },
+                                            "stories_enabled": {
+                                                "type": "boolean"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                },
+                                "type": "object",
+                                "example": {
+                                    "name": "TQDN",
+                                    "sponsor_id": 123456,
+                                    "options": {
+                                        "theme_enabled": "1",
+                                        "skills_enabled": "1",
+                                        "news_enabled": "0",
+                                        "stories_enabled": "0"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "404": {
+                        "description": "Tenant not found"
+                    }
+                }
+            }
+        }
+    }
+}
