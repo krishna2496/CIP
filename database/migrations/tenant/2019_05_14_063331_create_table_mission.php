@@ -20,8 +20,10 @@ class CreateTableMission extends Migration {
             $table->dateTime('start_date');
             $table->dateTime('end_date');
             $table->integer('total_seats');
+            $table->enum('mission_type', ['TIME','GOAL']);
+            $table->string('goal_objective',255)->nullable();
             $table->dateTime('application_deadline');
-            $table->enum('publication_status', ['0', '1'])->default(0);
+            $table->enum('publication_status', ['DRAFT','PENDING_APPROVAL','REFUSED','APPROVED','PUBLISHED_FOR_VOTING','PUBLISHED_FOR_APPLYING','UNPUBLISHED']);
             $table->bigInteger('organisation_id')->unsigned();
             $table->string('organisation_name',255);
             $table->timestamps();

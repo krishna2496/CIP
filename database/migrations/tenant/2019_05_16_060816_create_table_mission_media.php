@@ -21,6 +21,7 @@ class CreateTableMissionMedia extends Migration
             $table->string('media_type',4);
             $table->string('media_path',255);
             $table->enum('status', ['0', '1'])->default(1);
+            $table->enum('default', ['0', '1'])->default(0);
             $table->timestamps();
             $table->softDeletes();
             $table->foreign('mission_id')->references('mission_id')->on('mission')->onDelete('CASCADE')->onUpdate('CASCADE');
