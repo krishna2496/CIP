@@ -19,6 +19,7 @@ class CreateTableMissionLanguage extends Migration
             $table->integer('mission_id')->unsigned();
             $table->integer('language_id')->length(1)->default(1);
             $table->string('title');
+            $table->string('short_description')->nullable();
             $table->text('description'); 
             $table->text('objective'); 
             $table->timestamps();
