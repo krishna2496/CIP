@@ -1,8 +1,8 @@
 <?php
 
 namespace App\Jobs;
-use App\Helpers\Helpers;
-use App\Tenant;
+use App\Helpers\ResponseHelper;
+use App\Models\Tenant;
 use App\Language;
 use DB;
 class TenantDefaultLanguageJob extends Job
@@ -35,14 +35,16 @@ class TenantDefaultLanguageJob extends Job
                 ['language_id' => 2, 'default' => '0']
             );
             foreach ($defaultData as $key => $data) {
-                $this->tenant->languages()->create($data);
+                $this->tenant->tenantLanguages()->create($data);
             }
         } catch(\Exception $e){            
             // Any error occurs while operation
-            return Helpers::errorResponse(trans('api_error_messages.status_code.HTTP_STATUS_400'), 
-										trans('api_error_messages.status_type.HTTP_STATUS_TYPE_400'), 
-										trans('api_error_messages.custom_error_code.ERROR_10006'), 
-										trans('api_error_messages.custom_error_message.10006'));
+			dd($e);
+            return ResponseHelper::error(trans('messages.status_code.HTTP_STATUS_400'), 
+										trans('messages.status_type.HTTP_STATUS_TYPE_400'), 
+										trans('messages.custom_error_code.ERROR_10006'), 
+										trans('messages.custom_error_message.10006'));
         }
+		
     }
 }

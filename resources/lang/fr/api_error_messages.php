@@ -8,7 +8,7 @@ return [
 	'status_code' => [
 		'HTTP_STATUS_400' => '400',
 		'HTTP_STATUS_403' => '403',
-		'HTTP_STATUS_404' => '404',
+		'HTTP_STATUS_NOT_FOUND' => 404,
 		'HTTP_STATUS_422' => '422',
 		'HTTP_STATUS_500' => '500'
 	],

@@ -3,7 +3,7 @@
 namespace App\Jobs;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Artisan;
-use App\Tenant;
+use App\Models\Tenant;
 use DB;
 
 class TenantMigrationJob extends Job

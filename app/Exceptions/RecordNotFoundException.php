@@ -5,26 +5,11 @@ namespace App\Exceptions;
 use Exception;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Auth\Access\AuthorizationException;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Laravel\Lumen\Exceptions\Handler as ExceptionHandler;
 use Symfony\Component\HttpKernel\Exception\HttpException;
-use App\Traits\RestExceptionHandlerTrait;
 
-class Handler extends ExceptionHandler
+class RecordNotFoundException extends ExceptionHandler
 {
-	use RestExceptionHandlerTrait;
-    /**
-     * A list of the exception types that should not be reported.
-     *
-     * @var array
-     */
-    protected $dontReport = [
-        AuthorizationException::class,
-        HttpException::class,
-        ModelNotFoundException::class,
-        ValidationException::class,
-    ];
-
     /**
      * Report or log an exception.
      *
@@ -47,6 +32,6 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
-		return $this->getJsonResponseForException($request, $exception);
+        return 'No record found';
     }
 }

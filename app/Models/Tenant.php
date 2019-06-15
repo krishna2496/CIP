@@ -1,6 +1,6 @@
 <?php 
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Model;
@@ -19,7 +19,9 @@ class Tenant extends Model {
     protected $fillable = ['name','sponsor_id'];
 
     protected $dates = ['created_at','updated_at','deleted_at'];
-
+	
+	protected $visible = ['tenant_id', 'name', 'sponsor_id', 'status', 'options', 'tenantLanguages', 'tenantLanguages.language'];
+	
     public static $rules = [
         // Validation rules
     ];
@@ -37,7 +39,7 @@ class Tenant extends Model {
     /*
     * Defined has many relation for the languages table.
     */
-    public function languages()
+    public function tenantLanguages()
     {
         return $this->hasMany(TenantLanguage::class, 'tenant_id', 'tenant_id');
     }
@@ -48,5 +50,22 @@ class Tenant extends Model {
     public function apiUsers()
     {
         return $this->hasMany(ApiUser::class, 'tenant_id', 'tenant_id');
+    }
+	
+	public function getAll()
+    {
+        return static::with('options','tenantLanguages','tenantLanguages.language')->paginate(config('constants.PER_PAGE_LIMIT'));
+    }
+
+
+    public function findTenant($id)
+    {
+        return static::find($id);
+    }
+
+
+    public function deleteTenant($id)
+    {
+        return static::findOrFail($id)->delete();
     }
 }

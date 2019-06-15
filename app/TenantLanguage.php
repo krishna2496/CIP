@@ -15,6 +15,8 @@ class TenantLanguage extends Model
     protected $fillable = ['tenant_id','language_id','default'];
 
     protected $appends = ['language_code'];
+	
+	protected $visible = ['language_id', 'default'];
 
     use SoftDeletes;
 
