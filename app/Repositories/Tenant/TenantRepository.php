@@ -12,13 +12,27 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class TenantRepository implements TenantInterface
 {
+    /**
+     * @var App\Models\Tenant
+     */
     public $tenant;
 
+     /**
+     * Create a new Tenant repository instance.
+     *
+     * @param  App\Models\Tenant $tenant
+     * @return void
+     */
     function __construct(Tenant $tenant) {
 		$this->tenant = $tenant;
     }
 
-
+    /**
+     * Get listing of the tenants.
+     * 
+     * @param \Illuminate\Http\Request $request
+     * @return mixed
+     */
     public function tenantList(Request $request)
     {
         try {
@@ -40,6 +54,12 @@ class TenantRepository implements TenantInterface
 		}
     }
 	
+    /**
+     * Store a newly created resource in storage
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return mixed
+     */
 	public function store(Request $request)
     {
         try {
@@ -81,12 +101,23 @@ class TenantRepository implements TenantInterface
 		}
     }
 
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
     public function find(int $id)
     {
         return $this->tenant->findTenant($id);
     }
 
-
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
     public function delete(int $id)
     {
 		try {
@@ -96,6 +127,13 @@ class TenantRepository implements TenantInterface
         }
     }
 	
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
 	public function update(Request $request, int $id)
     {
         return $this->tenant->findTenant($id);

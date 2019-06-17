@@ -12,9 +12,23 @@ use Illuminate\Http\Response;
 
 class TenantController extends Controller
 {
+    /**
+     * @var TenantRepository
+     */
 	private $tenant;
+
+    /**
+     * @var Illuminate\Http\Response
+     */
 	private $response;
 	
+    /**
+     * Create a new Tenant controller instance.
+     *
+     * @param  App\Repositories\Tenant\TenantRepository $tenant
+     * @param  Illuminate\Http\Response $response
+     * @return void
+     */
 	public function __construct(TenantRepository $tenant, Response $response)
     {
         $this->tenant = $tenant;

@@ -23,17 +23,6 @@ class ResponseHelper
         if(!empty($apiData))
             $response['data'] = $apiData;
 
-        // Check response data have pagination or not? Pagination response parameter sets
-        /* if((is_object($apiData)) && ($apiData) && get_class($apiData) == "Illuminate\Pagination\LengthAwarePaginator"){            
-            $response['data'] = $apiData->toArray()['data'];
-            $response['pagination'] = [
-                "total" => $apiData->total(),
-                "per_page" => $apiData->perPage(),
-                "current_page" => $apiData->currentPage(),
-                "total_pages" => $apiData->lastPage(),
-                "next_url" => $apiData->nextPageUrl()
-            ];
-        } */
         if($apiMessage)
             $response['message'] = $apiMessage;
             
