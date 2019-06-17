@@ -84,7 +84,7 @@ class TenantRepository implements TenantInterface
 			
 			dispatch(new TenantDefaultLanguageJob($tenant));
 			
-			 // ONLY FOR TESTING START Create api_user data (PLEASE REMOVE THIS CODE IN PRODUCTION MODE)
+			// ONLY FOR TESTING START Create api_user data (PLEASE REMOVE THIS CODE IN PRODUCTION MODE)
             if(env('APP_ENV')=='local'){
                 $apiUserData['api_key'] = base64_encode($tenant->name.'_api_key');
                 $apiUserData['api_secret'] = base64_encode($tenant->name.'_api_secret');

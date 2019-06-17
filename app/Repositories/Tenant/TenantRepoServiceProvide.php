@@ -18,7 +18,6 @@ class TenantRepoServiceProvide extends ServiceProvider
         
     }
 
-
     /**
      * Register the application services.
      *

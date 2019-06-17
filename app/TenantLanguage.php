@@ -46,14 +46,17 @@ class TenantLanguage extends Model
 	protected $visible = ['language_id', 'default'];
 
     /**
-     * Get the language record associated with the tenant language.
-     */
+    * Define a one-to-one relationship.
+    *
+    * @return \Illuminate\Database\Eloquent\Relations\HasOne
+    */
     public function language()
     {
     	return $this->hasOne(Language::class, 'language_id', 'language_id');
     }
     /**
      * Get the language code from language.
+     * @return string
      */
     public function getLanguageCodeAttribute()
     {

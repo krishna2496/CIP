@@ -45,7 +45,7 @@ class TenantHasOption extends Model
 	protected $visible = ['tenant_option_id', 'option_name', 'option_value'];
 
     /**
-     * The rules that are used to validate.
+     * The rules that should validate request.
      *
      * @var array
      */

@@ -8,6 +8,9 @@ use DB;
 
 class TenantMigrationJob extends Job
 {
+    /**
+     * @var App\Models\Tenant
+     */
     protected $tenant;
     
     /**
