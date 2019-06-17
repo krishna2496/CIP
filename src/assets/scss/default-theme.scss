@@ -1,3 +1,8 @@
+// Font-variables
+
+@import url("https://fonts.googleapis.com/css?family=Noto+Sans");
+$general-font: "Noto Sans", sans-serif;
+
 // Color variables
 $primary: #f88634;
 
@@ -13,6 +18,9 @@ $border-color: #e8e8e8;
 $control-border: #d9d9d9;
 $gray-bg: $border-color;
 $error: #dc3545;
+$facebook-color: #3b579d;
+$twitter-color: #2caae1;
+$linkedin-color: #007bb6;
 
 // rgba color variable
 $rgb-black: rgba(0, 0, 0, 0.4);

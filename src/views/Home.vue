@@ -6,7 +6,7 @@
     </header>
     <main>
       <b-container class="home-content-wrapper">
-        <div class="chip-container">
+        <!-- <div class="chip-container">
           <CustomChip :textVal="'Tree Plantation'"/>
           <CustomChip :textVal="'Canada'"/>
           <CustomChip :textVal="'Toronto'"/>
@@ -16,11 +16,12 @@
           <CustomChip :textVal="'Anthropology'"/>
           <CustomChip :textVal="'Environmental Science'"/>
           <b-button class="clear-btn">Clear All</b-button>
-        </div>
+        </div> -->
         <div class="heading-section">
           <h2>
-            Explore
-            <strong>{{rows}} missions</strong>
+            <template v-if="rows > 0">
+                Explore <strong>{{rows}} missions</strong>
+            </template>
           </h2>
           <div class="right-section">
             <CustomDropdown
@@ -108,12 +109,13 @@
         <!-- Tabing grid view and list view end -->
 
         <!-- Pagination start -->
-        <div class="pagination-block">
+        <div class="pagination-block" v-if="rows > 0">
           <b-pagination
             v-model="currentPage"
             :total-rows="rows"
             :per-page="perPage"
             align="center"
+            :simple="false"
             :aria-controls= "activeView"
             @change="pageChange"
           ></b-pagination>
@@ -125,7 +127,7 @@
     <footer>
       <PrimaryFooter></PrimaryFooter>
     </footer>
-    <back-to-top bottom="68px" right="40px" title="back to top">
+    <back-to-top bottom="68px" right="40px" :title="$t('label.back_to_top')">
       <i>
         <svg
           version="1.1"
@@ -138,8 +140,7 @@
           height="451.847px"
           viewBox="0 0 451.847 451.847"
           style="enable-background:new 0 0 451.847 451.847;"
-          xml:space="preserve"
-        >
+          xml:space="preserve">
           <g>
             <path
               d="M225.923,354.706c-8.098,0-16.195-3.092-22.369-9.263L9.27,151.157c-12.359-12.359-12.359-32.397,0-44.751
@@ -163,6 +164,7 @@ import CustomDropdown from "../components/CustomDropdown";
 import CustomChip from "../components/CustomChip";
 import axios from "axios";
 import store from '../store';
+import {missionListing} from '../services/service';
 
 export default {
   components: {
@@ -183,16 +185,17 @@ export default {
       perPage:10,
       currentPage: 1,
       sortByOptions: [
-        "Newest",
-        "Oldest",
-        "Lowest available seats",
-        "Highest available seats",
-        "My favourite",
-        "Deadline"
+        ["newest","Newest"],
+        ["oldest","Oldest"],
+        ["lowest_available_seats","Lowest available seats"],
+        ["highest_available_seats","Highest available seats"],
+        ["my_favourite","My favourite"],
+        ["deadline","Deadline"]
       ],
       sortByDefault: "Sort By",
       missionList : [],
       activeView:"my-girdlist",
+      filter:[]
     };
   },
   methods: {
@@ -211,28 +214,27 @@ export default {
     },
 
     //Mission listing api
-    missionListing(){
-       axios.defaults.headers.common['X-localization'] = (store.state.defaultLanguage).toLowerCase();
-       axios.defaults.headers.common['token'] = store.state.token;
-       axios.get(process.env.VUE_APP_API_ENDPOINT+"missions?page="+this.currentPage)
-                    .then((response) => {                    
-                        if (response.data.data) {
-                          this.missionList = response.data.data;    
-                        }    
-                        if(response.data.pagination){
-                          this.rows = response.data.pagination.total;
-                          this.perPage = response.data.pagination.per_page;
-                          this.currentPage = response.data.pagination.current_page;
-                        }                   
-                    })
-                    .catch(error => {
-                        // this.createConnection();
-        })
+    async getMissions(){
+
+        let filter = [
+          {'page' : this.currentPage}
+        ];
+
+        await missionListing(filter).then( response => {
+          if (response.data) {
+            this.missionList = response.data;    
+          }    
+          if (response.pagination) {
+            this.rows = response.pagination.total;
+            this.perPage = response.pagination.per_page;
+            this.currentPage = response.pagination.current_page;
+          }    
+        }); 
     },
 
     pageChange (page) {
         this.currentPage = page;
-        this.missionListing();
+        this.getMissions();
     },
 
     changeView(currentView){
@@ -241,7 +243,7 @@ export default {
   },
   created() {
     window.addEventListener("scroll", this.handleScroll);
-    this.missionListing();
+    this.getMissions();
     
   },
   destroyed() {

@@ -1,13 +1,13 @@
 const host = 'tatva.optimy.com';
 const port = 8080;
 module.exports = {
-  css: {
-    loaderOptions: {
-      sass: {
-        data: newFunction()
-      }
-    }
-  },
+  // css: {
+  //   loaderOptions: {
+  //     sass: {
+  //       data: newFunction()
+  //     }
+  //   }
+  // },
 
   chainWebpack: config => {
     config.module
@@ -50,10 +50,10 @@ module.exports = {
   }
 };
 
-function newFunction() {
-  return `
-	@import "@/../src/assets/scss/variables.scss"; 
-	@import "@/../src/assets/scss/mixin.scss";
-	@import "@/../src/assets/scss/theme/main-theme.scss";
-	`;
-}
+// function newFunction() {
+//   return `
+// 	@import "@/../src/assets/scss/variables.scss"; 
+// 	@import "@/../src/assets/scss/mixin.scss";
+// 	@import "@/../src/assets/scss/theme/main-theme.scss";
+// 	`;
+// }

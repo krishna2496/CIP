@@ -12,7 +12,7 @@
           <b-button class="btn-cross" @click="closeMenu">
             <img src="../../assets/images/cross-ic.svg" alt>
           </b-button>
-       <!--    <ul>
+        <!--   <ul>
             <li class="has-menu">
               <a href="#" title="Explore">Explore</a>
               <ul class="dropdown-menu sub-dropdown">
@@ -89,8 +89,8 @@
                   <a href="#">Sponsored</a>
                 </li>
               </ul>
-            </li> -->
-          <!-- </ul> -->
+            </li>
+          </ul> -->
         </div>
         <b-nav class="ml-auto">
           <b-nav-item right class="search-menu" @click="searchMenu">

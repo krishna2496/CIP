@@ -1,15 +1,26 @@
 <template>
-    <div class="cards-wrapper">
+    <div class="cards-wrapper" v-if="items.length > 0">
         <div class="card-grid">
             <b-row>
                 <b-col lg="4" sm="6" class="card-outer" data-aos="fade-up" v-for="mission in items">
                     <b-card no-body>
                         <b-card-header>
                             <div class="header-img-block">
-                                <b-link class="group-img" :style="{backgroundImage: 'url('+mission.default_media_path+')'}">
-                                    <img src="mission.default_media_path" alt="group-img">
+                                <b-link  v-if="checkDefaultMediaFormat(mission.default_media_type)"  class="group-img" 
+                                :style="{backgroundImage: 'url('+mission.default_media_path+')'}">
+                                    <img src="mission.default_media_path" alt="mission.default_media_path">
                                 </b-link>
-                                <b-link href="#" class="location" :title="$t('label.location')">
+                                
+                                 <b-link  v-else  class="group-img">
+                                    <b-embed
+                                        type="iframe"
+                                        aspect="16by9"
+                                        src="https://www.youtube.com/embed/zpOULjyy-n8"
+                                        allowfullscreen>        
+                                        </b-embed>
+                                </b-link>
+
+                                <b-link  class="location" :title="$t('label.location')">
                                     <i>
                                         <img src="../assets/images/landing/location.svg" 
                                         :alt="$t('label.location')">
@@ -49,6 +60,7 @@
                             <b-link target="_blank" class="group-category" 
                             v-if="mission.mission_theme != null">{{getThemeTitle(mission.mission_theme.translations)}}</b-link>
                         </b-card-header>
+                        
                         <b-card-body>
                             <div class="content-block">
                                 <b-link target="_blank" class="card-title mb-2">
@@ -69,7 +81,7 @@
                                     
                                     <span>
                                         <!-- Mission type time -->
-                                        <template v-if="mission.mission_type == 'TIME'">
+                                        <template v-if="checkMissionTypeTime(mission.mission_type)">
 
                                             <template v-if="mission.start_date != '' && mission.end_date != ''">
                                                 {{ $t("label.from")+' '+mission.start_date+' '+$t("label.until")+' '+mission.end_date }}   
@@ -82,14 +94,14 @@
                                         </template>
 
                                         <!-- Mission type goal -->
-                                        <template v-if="mission.mission_type == 'GOAL'">
+                                        <template v-else>
                                             {{mission.objective}}
                                         </template>
 
                                     </span>    
                                    
                                 </div>
-                                <template v-if="mission.mission_type == 'TIME'">
+                                <template v-if="checkMissionTypeTime(mission.mission_type)">
                                     <div class="group-details-inner">
                                         
                                         <template v-if="mission.total_seats != 0">
@@ -156,7 +168,7 @@
                                         </template>
 
                                     </div>
-                                    <div class="detail-column progress-block">
+                                   <!--  <div class="detail-column progress-block">
                                         <i class="icon-wrap">
                                             <img src="../assets/images/landing/target-ic.svg" alt="user">
                                         </i>
@@ -164,29 +176,49 @@
                                             <b-progress :value="value" :max="max" class="mb-2"></b-progress>
                                             <span class="subtitle-text">8000 achieved</span>
                                         </div>
-                                    </div>
+                                    </div> -->
                                 </div>
                                 </template>
 
                             </div>
                         </b-card-body>
                         <b-card-footer>
-                            <b-button class="btn-bordersecondary icon-btn">
-                                <template v-if="mission.set_view_detail == 0"><span>{{ $t("label.apply") }}</span></template>
-                                <template v-if="mission.set_view_detail == 1"><span>{{ $t("label.view_detail") }}</span></template>
-                                <i>
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 16" width="19" height="15">
-                                        <g id="Main Content">
-                                            <g id="1">
-                                                <g id="Button">
-                                                    <path id="Forma 1 copy 12" class="shp0"
-                                                        d="M16.49,1.22c-0.31,-0.3 -0.83,-0.3 -1.16,0c-0.31,0.29 -0.31,0.77 0,1.06l5.88,5.44h-19.39c-0.45,0 -0.81,0.33 -0.81,0.75c0,0.42 0.36,0.76 0.81,0.76h19.39l-5.88,5.43c-0.31,0.3 -0.31,0.78 0,1.07c0.32,0.3 0.85,0.3 1.16,0l7.27,-6.73c0.32,-0.29 0.32,-0.77 0,-1.06z" />
+                            <b-link v-if="mission.set_view_detail == 0" :to="'/apply/' + mission.mission_id">
+                                <b-button class="btn-bordersecondary icon-btn">
+                                    <span>{{ $t("label.apply") }}</span>
+                                    <i>
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 16" width="19" height="15">
+                                            <g id="Main Content">
+                                                <g id="1">
+                                                    <g id="Button">
+                                                        <path id="Forma 1 copy 12" class="shp0"
+                                                            d="M16.49,1.22c-0.31,-0.3 -0.83,-0.3 -1.16,0c-0.31,0.29 -0.31,0.77 0,1.06l5.88,5.44h-19.39c-0.45,0 -0.81,0.33 -0.81,0.75c0,0.42 0.36,0.76 0.81,0.76h19.39l-5.88,5.43c-0.31,0.3 -0.31,0.78 0,1.07c0.32,0.3 0.85,0.3 1.16,0l7.27,-6.73c0.32,-0.29 0.32,-0.77 0,-1.06z" />
+                                                    </g>
                                                 </g>
                                             </g>
-                                        </g>
-                                    </svg>
-                                </i>
-                            </b-button>
+                                        </svg>
+                                    </i>
+                                </b-button>
+                            </b-link>
+
+                            <b-link v-if="mission.set_view_detail == 1" :to="'/mission_detail/' + mission.mission_id">
+                                <b-button class="btn-bordersecondary icon-btn" >
+                                    <span>{{ $t("label.view_detail") }}</span>
+                                    <i>
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 16" width="19" height="15">
+                                            <g id="Main Content">
+                                                <g id="1">
+                                                    <g id="Button">
+                                                        <path id="Forma 1 copy 12" class="shp0"
+                                                            d="M16.49,1.22c-0.31,-0.3 -0.83,-0.3 -1.16,0c-0.31,0.29 -0.31,0.77 0,1.06l5.88,5.44h-19.39c-0.45,0 -0.81,0.33 -0.81,0.75c0,0.42 0.36,0.76 0.81,0.76h19.39l-5.88,5.43c-0.31,0.3 -0.31,0.78 0,1.07c0.32,0.3 0.85,0.3 1.16,0l7.27,-6.73c0.32,-0.29 0.32,-0.77 0,-1.06z" />
+                                                    </g>
+                                                </g>
+                                            </g>
+                                        </svg>
+                                    </i>
+                                </b-button>
+                            </b-link>
+
                         </b-card-footer>
                     </b-card>
                 </b-col>
@@ -195,10 +227,14 @@
             </b-row>
         </div>
     </div>
+     <div class="cards-wrapper" v-else>
+        <h2 class="justify-content-md-center"> {{ $t("label.no_record_found")}} </h2>
+     </div>
 </template>
 <script>
 import StarRating from "./StarRating";
 import store from '../store';
+import constants from '../constant';
     export default {
         name: "LandingCard",
         components:{
@@ -213,54 +249,64 @@ import store from '../store';
                 max: 100,
                 value: 80,
                 activeFav : false,
-                 grpImages: [
-                    require("@/assets/images/landing/group-img1.png"),
-                    require("@/assets/images/landing/group-img2.png"),
-                    require("@/assets/images/landing/group-img3.png"),
-                    require("@/assets/images/landing/group-img4.png"),
-                    require("@/assets/images/landing/group-img5.png"),
-                    require("@/assets/images/landing/group-img6.png"),
-                    require("@/assets/images/landing/group-img7.png"),
-                    require("@/assets/images/landing/group-img8.png"),
-                    require("@/assets/images/landing/group-img9.png"),
-                ],
-                config: {
-                    isIndicatorActive: true,
-                    style: {
-                    fullStarColor: "#F7D341",
-                    }
-                },
-                default_text_val: this.default_text
+                //  grpImages: [
+                //     require("@/assets/images/landing/group-img1.png"),
+                //     require("@/assets/images/landing/group-img2.png"),
+                //     require("@/assets/images/landing/group-img3.png"),
+                //     require("@/assets/images/landing/group-img4.png"),
+                //     require("@/assets/images/landing/group-img5.png"),
+                //     require("@/assets/images/landing/group-img6.png"),
+                //     require("@/assets/images/landing/group-img7.png"),
+                //     require("@/assets/images/landing/group-img8.png"),
+                //     require("@/assets/images/landing/group-img9.png"),
+                // ],
+                // config: {
+                //     isIndicatorActive: true,
+                //     style: {
+                //     fullStarColor: "#F7D341",
+                //     }
+                // },
+                // default_text_val: this.default_text
             };
         },
         methods: {
-            handleFav(){
+
+            handleFav() {
                 var btn_active = document.querySelector(".favourite-icon") 
                 btn_active.classList.toggle('active');
             },
-            //get theme title
-            getThemeTitle(translations){
-                if(translations){
 
+            //get theme title
+            getThemeTitle(translations) {
+                if (translations) {
                     var filteredObj  = translations.filter(function (item, i) { 
-                    if(item.lang === store.state.defaultLanguage.toLowerCase()){
+                    if (item.lang === store.state.defaultLanguage.toLowerCase()) {
                         return translations[i].title;
                     }
                     });
-                    if(filteredObj[0].title){
+                    if (filteredObj[0].title) {
                         return filteredObj[0].title;
                     }
                 }
-            }
+            },
 
+            checkDefaultMediaFormat(mediaType) {
+                return mediaType != constants.YOUTUBE_VIDEO_FORMAT
+            },
+
+            checkMissionTypeTime(missionType) {
+                return missionType == constants.MISSION_TYPE_TIME
+            }
 		},
-		mounted(){ 
-			 var btn_active = document.querySelectorAll(".favourite-icon");
+		mounted(){          
+			  var btn_active = document.querySelectorAll(".favourite-icon");
 			  btn_active.forEach(function(event){
 				  event.addEventListener("click", function(){
 					  event.classList.toggle("active");
 				  })
 			  });
-		}
+		},
+       
+
     };
 </script>

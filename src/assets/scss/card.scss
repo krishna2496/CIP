@@ -177,8 +177,13 @@
       }
 
       svg {
-        height: 100%;
-        width: 100%;
+        height: 19px;
+        width: 22px;
+
+        @include lg-max {
+          width: 18px;
+          height: 16px;
+        }
       }
 
       .normal-img {
@@ -196,11 +201,14 @@
       &:hover {
         background: $rgb-black-hover;
       }
+
       &.active {
         background: $rgb-black;
+
         .hover-img {
           display: inline-block;
         }
+
         .normal-img {
           display: none;
         }
@@ -513,7 +521,7 @@
       .card-header {
         max-width: 25%;
         flex: 0 0 25%;
-        height: auto;
+        height: 220px;
         min-height: 220px;
 
         .group-img {

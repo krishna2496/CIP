@@ -16,9 +16,8 @@ export default new Vuex.Store({
         firstName : localStorage.getItem('firstName'),
         lastName : localStorage.getItem('lastName'),
         avatar : localStorage.getItem('avatar'),
-        isloaderSet : true
-        isloaderSet:true,
-        logo : localStorage.getItem('logo'),
+        isloaderSet : true,
+        logo : localStorage.getItem('logo')
     },
     mutations: {        
         loginUser(state, data){
@@ -73,10 +72,6 @@ export default new Vuex.Store({
             state.logo = logo;
         },
     },
-    getters: {
-    // list: state => state.list
-    },
-    actions: {
-        
-    }
+    getters: {},
+    actions: {}
 });

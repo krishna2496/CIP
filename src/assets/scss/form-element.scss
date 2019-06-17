@@ -13,6 +13,7 @@
     cursor: default;
   }
 }
+
 .btn-fillsecondary {
   min-width: 200px;
   min-height: 46px;
@@ -92,6 +93,44 @@
   }
 }
 
+.btn-borderwhite {
+  min-width: 132px;
+  min-height: 48px;
+  color: $white;
+  font-size: 17px;
+  background-color: transparent;
+  border: 2px solid $white;
+  border-radius: 25px;
+
+  &:active,
+  &:hover,
+  &:focus,
+  &:disabled,
+  &.disabled {
+    color: $white !important;
+    background: transparent !important;
+    border-color: $white !important;
+  }
+
+  &.icon-btn {
+    i {
+      svg {
+        fill: $white;
+      }
+    }
+
+    &:active,
+    &:hover,
+    &:focus {
+      i {
+        svg {
+          fill: $white;
+        }
+      }
+    }
+  }
+}
+
 .icon-btn {
   span {
     position: relative;
@@ -135,9 +174,9 @@
 .form-control {
   width: 100%;
   max-width: 100%;
-  height: 56px;
+  height: 38px;
   color: $black-primary;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 400;
   line-height: normal;
   @extend .control_shadow;
@@ -145,8 +184,8 @@
 
   @include placeholder {
     color: $black-primary;
-    font-family: $noto-sans;
-    font-size: 16px;
+    font-family: $general-font;
+    font-size: 14px;
     font-weight: 400;
   }
 
@@ -173,19 +212,37 @@ label {
   }
 }
 
+.custom-file-input {
+  &:focus {
+    ~ .custom-file-label {
+      box-shadow: none;
+      border-color: $control-border;
+    }
+  }
+}
+
 .custom-checkbox {
   .custom-control-label {
     font-size: 14px;
     width: 100%;
+    white-space: nowrap;
+
+    @include md-max {
+      word-break: break-word;
+      white-space: inherit;
+    }
+
     &:before {
       box-shadow: none !important;
       border-color: $control-border !important;
       border-radius: 2px;
     }
+
     &:after {
       background: no-repeat 60% / 60% 60%;
     }
   }
+
   .custom-control-input {
     &:not(:disabled):active {
       ~ {
@@ -198,6 +255,7 @@ label {
         }
       }
     }
+
     &:checked {
       ~ .custom-control-label {
         &:before {
@@ -261,17 +319,18 @@ label {
     }
 
     .chk-select-wrap {
+      border-radius: 0 0 3px 3px;
       display: block;
     }
   }
 
   .custom-checkbox {
-    word-break: break-all;
     padding: 0;
   }
 
   .custom-control-label {
     padding: 6px 15px 6px 38px;
+
     @include xl-max {
       padding: 6px 15px 6px 33px;
     }
@@ -279,6 +338,7 @@ label {
     &::before {
       top: 10px;
       left: 15px;
+
       @include xl-max {
         left: 10px;
       }
@@ -287,6 +347,7 @@ label {
     &:after {
       left: 14px;
       top: 10px;
+
       @include xl-max {
         left: 10px;
         top: 11px;
@@ -300,14 +361,14 @@ label {
   @extend .navdropdown_shadow;
   position: absolute !important;
   top: 100%;
-  left: 0;
   z-index: 99;
-  width: 100%;
-  max-width: 100%;
+  width: auto;
   max-height: 226px;
   background: #fff;
   border: 1px solid $border-color;
   border-radius: 3px;
+  min-width: 100%;
+  right: 0;
 
   .chk-select-options {
     padding: 0;
@@ -327,7 +388,7 @@ label {
 
 .custom-dropdown {
   position: relative;
-  width: 200px;
+  width: 100%;
   font-size: 14px;
   line-height: 18px;
 
@@ -380,16 +441,18 @@ label {
     @extend .control_shadow;
     position: absolute;
     top: 100%;
-    left: 0;
+    right: 0;
     z-index: 99;
     width: 100%;
-    max-width: 100%;
+    width: auto;
+    // max-width: 100%;
     max-height: 226px;
     margin-top: -1px;
     background: #fff;
     border: 1px solid $control-border;
     border-radius: 3px;
     display: none;
+    min-width: 100%;
 
     .option-list {
       padding: 4px 0;
@@ -402,6 +465,7 @@ label {
         text-align: left;
         background: $white;
         cursor: pointer;
+        white-space: nowrap;
 
         &:hover {
           background: $border-color;
@@ -420,6 +484,86 @@ label {
     &:before {
       background: $border-color !important;
       opacity: 1 !important;
+    }
+  }
+}
+
+.select-dropdown {
+  .simplebar-offset {
+    @include md-min {
+      left: auto !important;
+      min-width: 100%;
+    }
+  }
+}
+
+.notification-popover {
+  .simplebar-offset {
+    .browser-safari & {
+      right: -17px !important;
+    }
+  }
+
+  .simplebar-content-wrapper {
+    .browser-safari & {
+      padding-right: 17px !important;
+    }
+  }
+}
+
+.multiselect-options {
+  display: flex;
+  flex-wrap: wrap;
+  ul {
+    border: 1px solid $border-color;
+    padding: 10px 0;
+    height: 100%;
+    li {
+      padding: 7px 20px;
+      font-size: 14px;
+      line-height: 18px;
+      cursor: pointer;
+      &.selected {
+        background: $border-color;
+      }
+    }
+  }
+  .options-col {
+    max-width: 46%;
+    flex: 0 0 46%;
+    @include sm-max {
+      max-width: 100%;
+      flex: 0 0 100%;
+    }
+  }
+  .action-col {
+    max-width: 8%;
+    flex: 0 0 8%;
+    display: inline-flex;
+    flex-direction: column;
+    justify-content: center;
+    @include sm-max {
+      max-width: 100%;
+      flex: 0 0 100%;
+      flex-direction: row;
+    }
+    .btn {
+      background: transparent !important;
+      border: none !important;
+      padding: 0 !important;
+      margin: 12px 0;
+      @include sm-max {
+        margin: 12px 6px;
+      }
+      i {
+        width: 15px;
+        height: 15px;
+        display: block;
+        margin: 0 auto;
+        @include sm-max {
+          @include rotate(90deg);
+        }
+      }
     }
   }
 }

@@ -1,3 +1,5 @@
+@import "src/assets/scss/default-theme.scss";
+@import "@/../src/assets/scss/mixin.scss";
 @import "node_modules/bootstrap/scss/bootstrap";
 @import "node_modules/bootstrap-vue/src/index.scss";
 
@@ -5,6 +7,7 @@
 @import "src/assets/scss/footer.scss";
 @import "src/assets/scss/header.scss";
 @import "src/assets/scss/form-element.scss";
+@import "src/assets/scss/login.scss";
 @import "src/assets/scss/cms-content.scss";
 @import "src/assets/scss/card.scss";
 @import "src/assets/scss/layout.scss";

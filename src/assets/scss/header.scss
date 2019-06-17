@@ -467,22 +467,29 @@ header {
             left: 10px !important;
         }
 
+        a {
+            &:after {
+                display: none;
+            }
+        }
+
         .arrow {
             display: none;
         }
 
         .popover-header {
             background: transparent;
-            padding: 12px 15px;
+            padding: 12px 65px;
+            position: relative;
 
             @include sm-max {
-                padding: 12px 13px;
+                padding: 12px 65px;
             }
 
             >div {
                 display: flex;
                 align-items: center;
-                justify-content: space-between;
+                justify-content: center;
             }
 
             .btn {
@@ -499,13 +506,18 @@ header {
                 }
 
                 &.btn-setting {
-                    width: 18px;
-                    height: 18px;
+                    position: absolute;
+                    top: 0;
+                    bottom: 0;
+                    height: 100%;
+                    left: 0;
+                    padding-left: 15px;
 
                     img {
                         width: 100%;
                         height: 100%;
                         vertical-align: top;
+                        max-width: 20px;
                     }
                 }
 
@@ -513,13 +525,14 @@ header {
                     font-size: 13px;
                     line-height: 17px;
                     color: $gray-primary;
+                    position: absolute;
+                    right: 13px;
                 }
             }
 
             .title {
                 font-size: 18px;
                 line-height: 22px;
-                margin-left: 30px;
             }
         }
     }
@@ -532,6 +545,7 @@ header {
 
         >div {
             height: inherit;
+            max-height: 100%;
             position: relative;
         }
 
@@ -543,11 +557,25 @@ header {
             .notification-clear {
                 display: flex;
                 height: 100%;
+                max-height: 100%;
+            }
+        }
+
+        &.show-setting {
+            .notification-details {
+                .simplebar-content-wrapper {
+                    overflow: hidden !important;
+                }
+            }
+
+            .notification-setting {
+                right: 0;
             }
         }
 
         .notification-details {
             height: 340px;
+            max-height: 62vh;
 
             .list-group {
                 flex-direction: column;
@@ -656,6 +684,11 @@ header {
                 height: 125px;
                 display: block;
                 margin: 0 auto 9px;
+
+                @include sm-max {
+                    height: 50px;
+                    width: 50px;
+                }
             }
 
             p {
@@ -664,6 +697,12 @@ header {
                 line-height: 22px;
                 color: $gray-primary;
                 margin-bottom: 50px;
+
+                @include sm-max {
+                    font-size: 13px;
+                    max-width: 90%;
+                    margin: 0 auto;
+                }
             }
         }
 
@@ -682,10 +721,6 @@ header {
 
             @include sm-max {
                 width: 250px;
-            }
-
-            &.show-setting {
-                right: 0;
             }
 
             .setting-header {
@@ -709,16 +744,18 @@ header {
 
             .setting-body {
                 overflow: hidden;
+                height: 100%;
 
                 .list-group {
                     padding: 6px 0;
-                    height: 100%;
+                    height: calc(100% - 33px);
                 }
             }
 
             .setting-footer {
                 display: flex;
                 justify-content: center;
+                align-items: center;
                 padding: 19px 0;
                 border-top: 1px solid $border-color;
 
@@ -910,6 +947,7 @@ header {
             border: none;
             outline: none;
             font-size: 20px;
+            height: 56px;
 
             @include md-max {
                 padding-left: 0;
@@ -976,21 +1014,30 @@ header {
 
     .filter-icon {
         display: none;
-        height: 25px;
-        width: 25px;
+        width: 60px;
         position: absolute;
-        top: 16px;
-        right: 18px;
-        @include rotate(90deg);
+        top: 0;
+        right: 0;
+        justify-content: center;
+        align-items: center;
+        height: 100%;
+        bottom: 0;
+
+        img {
+            @include rotate(90deg);
+            max-width: 25px;
+        }
 
         @include md-max {
-            display: block;
+            display: flex;
         }
     }
 }
 
 .filter-block {
     padding-left: 0 !important;
+    height: 78px;
+    display: flex;
 
     @include md-max {
         position: fixed;
@@ -1010,9 +1057,9 @@ header {
     }
 
     .list-group {
-        flex-direction: row;
+
         height: 100%;
-        flex-wrap: wrap;
+        width: 100%;
 
         @include md-max {
             display: block;
@@ -1075,11 +1122,14 @@ header {
             border: none;
             border-radius: 0;
             box-shadow: none;
-            height: 100%;
-            display: flex;
+            min-height: 100%;
+            display: block;
             align-items: center;
             font-size: 16px;
-            line-height: normal;
+            text-overflow: ellipsis;
+            max-width: 100%;
+            overflow: hidden;
+            line-height: 66px;
 
             @include md-max {
                 height: auto;
@@ -1087,6 +1137,7 @@ header {
                 z-index: 5;
                 font-size: 18px;
                 padding-left: 19px;
+                line-height: normal;
 
                 &:after {
                     right: 20px;
@@ -1184,9 +1235,9 @@ header {
             justify-content: space-between;
             align-items: center;
             position: absolute;
-            left: 17px;
+            left: 0;
             right: 18px;
-            top: 15px;
+            top: 0;
 
             .btn {
                 background: transparent !important;
@@ -1198,15 +1249,43 @@ header {
                 img {
                     width: 100%;
                     height: 100%;
-                    vertical-align: top;
                 }
 
                 &.btn-back {
-                    width: 12px;
-                    height: 12px;
-                    @include rotate(90deg);
+                    padding: 15px 15px 15px 18px;
+
+                    img {
+                        max-width: 11px;
+                        @include rotate(90deg);
+                    }
                 }
             }
         }
+    }
+
+    .select-dropdown {
+        .dropdown-option-wrap {
+            margin-top: -2px;
+
+            @include md-max {
+                margin: 0;
+            }
+        }
+
+        .dropdown-option-list {
+            li {
+                @include md-max {
+                    word-break: break-all;
+                    white-space: inherit !important;
+                }
+            }
+        }
+    }
+}
+
+body,
+html {
+    &.show-setting {
+        overflow: hidden;
     }
 }
