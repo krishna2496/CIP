@@ -7,7 +7,7 @@
             <img src="../../assets/images/header/menu-ic.svg" alt>
           </a>
         </div>
-        <b-navbar-brand href="/" :style="{backgroundImage: 'url('+bgImages[1]+')'}"></b-navbar-brand>
+        <b-navbar-brand href="/" :style="{backgroundImage: 'url('+this.$store.state.logo+')'}"></b-navbar-brand>
         <div class="menu-wrap" @touchend.stop>
           <b-button class="btn-cross" @click="closeMenu">
             <img src="../../assets/images/cross-ic.svg" alt>
@@ -108,8 +108,8 @@
           </b-nav-item> -->
           <b-nav-item-dropdown right class="profile-menu" v-if="this.$store.state.isLoggedIn">
             <template slot="button-content">
-              <i :style="{backgroundImage: 'url('+profileImages+')'}"></i>
-              <em>{{firstName+' '+lastName}}</em>
+              <i :style="{backgroundImage: 'url('+this.$store.state.avatar+')'}"></i>
+              <em>{{this.$store.state.firstName+' '+this.$store.state.lastName}}</em>
             </template>
             <b-dropdown-item 
              v-on:click.native="logout()" 
@@ -278,9 +278,6 @@ export default {
         ],
         profileImages: require("@/assets/images/user-img.png"),
         popoverShow: false,
-        firstName : store.state.firstName,
-        lastName: store.state.lastName,
-        avatar: store.state.avatar,
     };
   },
   mounted() {

@@ -54,5 +54,15 @@ export default async(data, langList, defautLang) => {
         defaultLanguageData["selectedId"] = "";
         store.commit('setDefaultLanguage',defaultLanguageData)
     }
+
+    //Set logo in local storage
+    var logo = '';
+    if (data.custom_logo) {
+        // Convert slider object to array
+        var logo = data.custom_logo;
+    }
+
+    store.commit('setLogo',logo)
+  
 }
 

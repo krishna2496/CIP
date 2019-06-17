@@ -8,11 +8,9 @@
             </div>
 
             <div class="signin-form-block">
-
-                <i class="logo-wrap">
-                    <img src="../assets/images/optimy-logo.png">
-                </i>
-
+                <router-link to="/" class="logo-wrap" v-if="this.$store.state.logo">
+                    <img :src="this.$store.state.logo">
+                </router-link>
                 <!-- success or error msg -->
                 <b-alert show :variant="classVariant" dismissible v-model="showDismissibleAlert"> {{ message }}</b-alert>
 
@@ -103,22 +101,19 @@
                             //Get langauage list from Local Storage
                             this.langList = JSON.parse(store.state.listOfLanguage)
                             this.defautLang = store.state.defaultLanguage
-                           
+                            this.isShowComponent = true                          
                         }else{
-                            localStorage.removeItem('slider');  
-                            localStorage.removeItem('listOfLanguage');
-                            localStorage.removeItem('defaultLanguage');
-                            localStorage.removeItem('defaultLanguageId');
-                            var sliderData = [];
-                            store.commit('setSlider',JSON.stringify(sliderData))
+                            var dataList = [];
+                            storeTenantOption(dataList,this.langList,this.defautLang);
                         } 
                        
                     })
                     .catch(error => {
                         // this.createConnection();
                     })
-                    this.isShowComponent = true
+                   
             },
+            
             async setLanguage(language){
                 var _this = this;
                 this.defautLang = language.selectedVal;
@@ -138,10 +133,8 @@
 
                 // login api call with params email address and password
                 axios.post(process.env.VUE_APP_API_ENDPOINT+"login", this.login,
-                   )
-                        .then((response) => {
-                            //Store token in local storage
-                            
+                   ).then((response) => {
+                            //Store token in local storage                            
                             store.commit('loginUser',response.data.data)
                             //redirect to landing page
                             this.$router.replace({ name: "home" });
@@ -154,7 +147,6 @@
                                 //set error msg
                                 this.message = error.response.data.errors[0].message  
                             }
-
                         })
             },
         },
@@ -165,6 +157,8 @@
         created() {
             //Database connection and fetching tenant options api
             this.createConnection()
+           
+            
         },
     };
 

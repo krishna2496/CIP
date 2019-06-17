@@ -12,7 +12,7 @@
     <div class="copyright-text">
       <p>
         {{ $t("label.powered_by") }}
-        <b-link title="Optimy">Optimy</b-link>
+        <b-link title="Optimy" href="https://www.optimy.com/">Optimy</b-link>
       </p>
     </div>
   </div>
