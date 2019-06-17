@@ -20,7 +20,7 @@
         <div class="heading-section">
           <h2>
             Explore
-            <strong>{{rows}} missions</strong>
+            <strong>72 missions</strong>
           </h2>
           <div class="right-section">
             <CustomDropdown
@@ -30,13 +30,10 @@
             />
           </div>
         </div>
-
-        <!-- Tabing grid view and list view start -->
         <b-tabs class="view-tab">
-          <!-- grid view -->
           <b-tab class="grid-tab-content">
             <template slot="title">
-              <i class="grid" @click="activeView = 'my-girdlist'">
+              <i class="grid">
                 <svg
                   version="1.1"
                   id="Capa_1"
@@ -73,19 +70,11 @@
                 </svg>
               </i>
             </template>
-            <LandingCard 
-            id="my-girdlist"
-            :items="missionList"
-            :per-page="perPage"
-            :current-page="currentPage"
-            small
-            />
+            <LandingCard id="my-cardlist"/>
           </b-tab>
-
-          <!-- list view -->
           <b-tab class="list-tab-content">
             <template slot="title">
-              <i class="list" @click="activeView = 'my-cardlist'">
+              <i class="list">
                 <svg
                   id="Layer_1"
                   data-name="Layer 1"
@@ -96,30 +85,18 @@
                 </svg>
               </i>
             </template>
-            <CardListBlock
-            id="my-cardlist"
-            :items="missionList"
-            :per-page="perPage"
-            :current-page="currentPage"
-            small
-            />
-          </b-tab>          
+            <CardListBlock/>
+          </b-tab>
         </b-tabs>
-        <!-- Tabing grid view and list view end -->
-
-        <!-- Pagination start -->
         <div class="pagination-block">
           <b-pagination
             v-model="currentPage"
             :total-rows="rows"
             :per-page="perPage"
             align="center"
-            :aria-controls= "activeView"
-            @change="pageChange"
+            aria-controls="my-cardlist"
           ></b-pagination>
         </div>
-        <!-- Pagination end -->
-
       </b-container>
     </main>
     <footer>
@@ -161,8 +138,6 @@ import LandingCard from "../components/LandingCard";
 import CardListBlock from "../components/CardListBlock";
 import CustomDropdown from "../components/CustomDropdown";
 import CustomChip from "../components/CustomChip";
-import axios from "axios";
-import store from '../store';
 
 export default {
   components: {
@@ -179,8 +154,8 @@ export default {
 
   data() {
     return {
-      rows: 0,
-      perPage:10,
+      rows: 25,
+      perPage: 5,
       currentPage: 1,
       sortByOptions: [
         "Newest",
@@ -190,9 +165,7 @@ export default {
         "My favourite",
         "Deadline"
       ],
-      sortByDefault: "Sort By",
-      missionList : [],
-      activeView:"my-girdlist",
+      sortByDefault: "Sort By"
     };
   },
   methods: {
@@ -208,41 +181,10 @@ export default {
     },
     updateSortTitle(value) {
       this.sortByDefault = value;
-    },
-
-    //Mission listing api
-    missionListing(){
-       axios.defaults.headers.common['X-localization'] = (store.state.defaultLanguage).toLowerCase();
-       axios.defaults.headers.common['token'] = store.state.token;
-       axios.get(process.env.VUE_APP_API_ENDPOINT+"missions?page="+this.currentPage)
-                    .then((response) => {                    
-                        if (response.data.data) {
-                          this.missionList = response.data.data;    
-                        }    
-                        if(response.data.pagination){
-                          this.rows = response.data.pagination.total;
-                          this.perPage = response.data.pagination.per_page;
-                          this.currentPage = response.data.pagination.current_page;
-                        }                   
-                    })
-                    .catch(error => {
-                        // this.createConnection();
-        })
-    },
-
-    pageChange (page) {
-        this.currentPage = page;
-        this.missionListing();
-    },
-
-    changeView(currentView){
-      this.activeView = currentView;
     }
   },
   created() {
     window.addEventListener("scroll", this.handleScroll);
-    this.missionListing();
-    
   },
   destroyed() {
     window.removeEventListener("scroll", this.handleScroll);

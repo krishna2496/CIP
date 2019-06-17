@@ -115,7 +115,7 @@
              v-on:click.native="logout()" 
              replace 
              v-if="this.$store.state.isLoggedIn"
-             >Logout
+             >{{ $t("label.logout")}}
             </b-dropdown-item>
           </b-nav-item-dropdown>
         </b-nav>

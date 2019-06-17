@@ -16,9 +16,8 @@ export default async (lang) => {
     if (lang) { 
         lang = lang.toLowerCase();
     } 
-
+    axios.defaults.headers.common['X-localization'] = lang
     if (!loadedLanguages.includes(lang) && (lang != 'null')) {
-        axios.defaults.headers.common['X-localization'] = lang
         await axios.get(`${process.env.VUE_APP_LANGUAGE_API_ENDPOINT+lang}`, {
             method: "get",
             headers: {

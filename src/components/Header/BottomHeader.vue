@@ -6,7 +6,7 @@
           <div class="icon-input">
             <b-form-input
               type="text"
-              placeholder="Search mission..."
+              :placeholder="$t('label.search')+' '+$t('label.mission')"
               @focus="handleFocus()"
               @blur="handleBlur()"
               onfocus="this.placeholder=''"

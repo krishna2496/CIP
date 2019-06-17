@@ -25,6 +25,8 @@
 import axios from "axios";
 import store from '../../store';
 import router from "../../router";
+import { loadLocaleMessages } from "../../services/service";
+
 export default {
   components: {},
   name: "primaryFooter",
@@ -38,6 +40,7 @@ export default {
   created() {
      // Fetching footer CMS pages
      this.getPageListing();
+     loadLocaleMessages(store.state.defaultLanguage);
   },
   methods:{  
     getPageListing(){
