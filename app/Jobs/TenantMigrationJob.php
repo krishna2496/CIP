@@ -31,28 +31,35 @@ class TenantMigrationJob extends Job
      */
     public function handle()
     {      
-        // Create database
-        DB::statement("CREATE DATABASE IF NOT EXISTS `ci_tenant_{$this->tenant->tenant_id}`");
+        try {
+			// Create database
+			DB::statement("CREATE DATABASE IF NOT EXISTS `ci_tenant_{$this->tenant->tenant_id}`");
 
-        // Set configuration options for the newly create tenant
-        Config::set('database.connections.tenant', array(
-            'driver'    => 'mysql',
-            'host'      => env('DB_HOST'),
-            'database'  => 'ci_tenant_'.$this->tenant->tenant_id,
-            'username'  => env('DB_USERNAME'),
-            'password'  => env('DB_PASSWORD'),
-        ));
+			// Set configuration options for the newly create tenant
+			Config::set('database.connections.tenant', array(
+				'driver'    => 'mysql',
+				'host'      => env('DB_HOST'),
+				'database'  => 'ci_tenant_'.$this->tenant->tenant_id,
+				'username'  => env('DB_USERNAME'),
+				'password'  => env('DB_PASSWORD'),
+			));
 
-        // Set default connection with newly created database
-        DB::setDefaultConnection('tenant');
-        $pdo = DB::connection('tenant')->getPdo();
-        
-        // Call artisan command to create table for newly created tenant's database
-        Artisan::call('migrate --path=database/migrations/tenant');
-        
-        // Disconnect and reconnect with default database
-        DB::disconnect('tenant');
-        DB::reconnect('mysql');
-        DB::setDefaultConnection('mysql');
+			// Set default connection with newly created database
+			DB::setDefaultConnection('tenant');
+			$pdo = DB::connection('tenant')->getPdo();
+			
+			// Call artisan command to create table for newly created tenant's database
+			Artisan::call('migrate --path=database/migrations/tenant');
+			
+			// Disconnect and reconnect with default database
+			DB::disconnect('tenant');
+			DB::reconnect('mysql');
+			DB::setDefaultConnection('mysql');
+			
+		} catch (\Exception $e) {
+			
+			throw new \Exception($e->getMessage());
+			
+		}
     }
 }

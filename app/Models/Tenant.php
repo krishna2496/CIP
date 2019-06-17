@@ -4,9 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\TenantHasOption;
-use App\TenantLanguage;
-use App\ApiUser;
+use App\Models\{TenantHasOption, ApiUser, TenantLanguage};
 
 class Tenant extends Model {
 
@@ -46,7 +44,7 @@ class Tenant extends Model {
      * @var array
      */
     protected $visible = ['tenant_id', 'name', 'sponsor_id', 'status', 'options', 'tenantLanguages', 'tenantLanguages.language'];
-	
+
      /**
      * The rules that should validate request.
      *
@@ -54,8 +52,8 @@ class Tenant extends Model {
      */
      public $rules = [
         // Validation rules
-		'name' => 'required|unique:tenant',
-		'sponsor_id'  => 'required',
+        'name' => 'required|unique:tenant,name,NULL,tenant_id,deleted_at,NULL',
+        'sponsor_id'  => 'required',
     ];
 
     /**

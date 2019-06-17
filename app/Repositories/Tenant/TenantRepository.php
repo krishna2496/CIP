@@ -3,11 +3,10 @@
 namespace App\Repositories\Tenant;
 
 use App\Repositories\Tenant\TenantInterface;
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
+use Illuminate\Http\{Request, Response};
 use Validator, PDOException;
 use App\Models\Tenant;
-use App\Jobs\TenantDefaultLanguageJob, App\Jobs\TenantMigrationJob;
+use App\Jobs\{TenantDefaultLanguageJob, TenantMigrationJob};
 use App\Helpers\ResponseHelper;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
@@ -113,11 +112,11 @@ class TenantRepository implements TenantInterface
 			return ResponseHelper::success($apiStatus, $apiMessage, $apiData);
 			
 		} catch(PDOException $e) {
-			
+			$this->delete($tenant->tenant_id);
 			throw new PDOException($e->getMessage());
 			
 		} catch(\Exception $e) {
-			
+			$this->delete($tenant->tenant_id);
 			throw new \Exception($e->getMessage());
 			
 		}
