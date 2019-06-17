@@ -44,15 +44,27 @@ class Tenant extends Model {
     protected $visible = ['tenant_id', 'name', 'sponsor_id', 'status', 'options', 'tenantLanguages', 'tenantLanguages.language'];
 
      /**
-     * The rules that should validate request.
+     * The rules that should validate create request.
      *
      * @var array
      */
-    public $rules = [
+    public $createRules = [
         // Validation rules
         'name' => 'required|unique:tenant,name,NULL,tenant_id,deleted_at,NULL',
         'sponsor_id'  => 'required',
     ];
+
+     /**
+     * The rules that should validate update request.
+     *
+     * @var array
+     */
+    public $updateRules = [
+        // Validation rules
+        'name' => 'required|unique:tenant,name',
+        'sponsor_id'  => 'required',
+    ];
+
 
     /**
      * Variable which contains softDelete true.

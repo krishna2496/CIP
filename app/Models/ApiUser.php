@@ -31,9 +31,9 @@ class ApiUser extends Model
     protected $fillable = ['tenant_id','api_key','api_secret','status'];
     
     /**
-	 * The attributes that should be mutated to dates.
-	 *
-	 * @var array
-	 */
+     * The attributes that should be mutated to dates.
+     *
+     * @var array
+     */
     protected $dates = ['created_at','updated_at','deleted_at'];
 }

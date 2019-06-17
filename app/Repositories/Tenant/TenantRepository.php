@@ -72,13 +72,13 @@ class TenantRepository implements TenantInterface
     public function store(Request $request)
     {
         try {
-            $validator = Validator::make($request->toArray(), $this->tenant->rules);
+            $validator = Validator::make($request->toArray(), $this->tenant->createRules);
 
             if ($validator->fails()) {
                 return ResponseHelper::error(
                     trans('messages.status_code.HTTP_STATUS_422'),
                     trans('messages.status_type.HTTP_STATUS_TYPE_422'),
-                    trans('messages.custom_error_code.ERROR_10001'),
+                    trans('messages.custom_error_code.ERROR_200001'),
                     $validator->errors()->first()
                 );
             }
@@ -106,7 +106,7 @@ class TenantRepository implements TenantInterface
             }
 
             // Set response data
-            $apiStatus = app('Illuminate\Http\Response')->status();
+            $apiStatus = $this->response->status();
             $apiData = ['tenant_id' => $tenant->tenant_id];
             $apiMessage =  trans('messages.success.MESSAGE_TENANT_CREATED');
 
@@ -132,12 +132,12 @@ class TenantRepository implements TenantInterface
         try {
             $tenantDetail = $this->tenant->findTenant($id);
 
-            $apiStatus = app('Illuminate\Http\Response')->status();
+            $apiStatus = $this->response->status();
             $apiData = $tenantDetail->toArray();
             $apiMessage =  trans('messages.success.MESSAGE_TENANT_FOUND');
             return ResponseHelper::success($apiStatus, $apiMessage, $apiData);
         } catch (ModelNotFoundException $e) {
-            throw new ModelNotFoundException(trans('messages.custom_error_message.10004'));
+            throw new ModelNotFoundException(trans('messages.custom_error_message.200003'));
         } catch (\Exception $e) {
             throw new \Exception($e->getMessage());
         }
@@ -154,12 +154,12 @@ class TenantRepository implements TenantInterface
         try {
             $this->tenant->deleteTenant($id);
             // Set response data
-            $apiStatus = app('Illuminate\Http\Response')->status();
+            $apiStatus = $this->response->status();
             $apiMessage = trans('messages.success.MESSAGE_TENANT_DELETED');
 
             return ResponseHelper::success($apiStatus, $apiMessage);
         } catch (ModelNotFoundException $e) {
-            throw new ModelNotFoundException(trans('messages.custom_error_message.10004'));
+            throw new ModelNotFoundException(trans('messages.custom_error_message.200003'));
         }
     }
 
@@ -173,13 +173,15 @@ class TenantRepository implements TenantInterface
     public function update(Request $request, int $id)
     {
         try {
-            $validator = Validator::make($request->toArray(), $this->tenant->rules);
+            $rules = $this->tenant->updateRules;
+            $rules['name'] = $rules['name'] . ', ' . $id . ', tenant_id, deleted_at, NULL';
+            $validator = Validator::make($request->toArray(), $rules);
 
             if ($validator->fails()) {
                 return ResponseHelper::error(
                     trans('messages.status_code.HTTP_STATUS_422'),
                     trans('messages.status_type.HTTP_STATUS_TYPE_422'),
-                    trans('messages.custom_error_code.ERROR_10001'),
+                    trans('messages.custom_error_code.ERROR_200001'),
                     $validator->errors()->first()
                 );
             }
@@ -192,16 +194,17 @@ class TenantRepository implements TenantInterface
                 foreach ($request->options as $option_name => $option_value) {
                     $tenantOptionData['option_name'] = $option_name;
                     $tenantOptionData['option_value'] = $option_value;
-                    $tenant->options()->where('option_name', $option_name)->update($tenantOptionData);
+                    $tenant->options()->where('option_name', $option_name)
+                        ->update($tenantOptionData);
                 }
             }
-            $apiStatus = app('Illuminate\Http\Response')->status();
+            $apiStatus = $this->response->status();
             $apiData = ['tenant_id' => $id];
             $apiMessage = trans('messages.success.MESSAGE_TENANT_UPDATED');
 
             return ResponseHelper::success($apiStatus, $apiMessage, $apiData);
         } catch (ModelNotFoundException $e) {
-            throw new ModelNotFoundException(trans('messages.custom_error_message.10004'));
+            throw new ModelNotFoundException(trans('messages.custom_error_message.200003'));
         } catch (PDOException $e) {
             $this->delete($tenant->tenant_id);
             throw new PDOException($e->getMessage());

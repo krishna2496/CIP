@@ -10,9 +10,9 @@ class ResponseHelper
 {
     /**
      * Prepare success response
-     * 
+     *
      * @param int $apiStatus
-     * @param string $apiMessage     
+     * @param string $apiMessage
      * @param Model Object $apiData
      * @return mixed
      */
@@ -20,31 +20,31 @@ class ResponseHelper
     {
         $response['status'] = $apiStatus;
         
-        if (!empty($apiData))
+        if (!empty($apiData)) {
             $response['data'] = $apiData;
+        }
 
-        if ($apiMessage)
+        if ($apiMessage) {
             $response['message'] = $apiMessage;
+        }
             
         return response()->json($response, $apiStatus, [], JSON_NUMERIC_CHECK);
     }
 
     /**
      * Prepare success response
-     * 
+     *
      * @param int $apiStatus
-     * @param string $apiMessage     
+     * @param string $apiMessage
      * @param Model Object $apiData
      * @return mixed
      */
     public static function successWithPagination(string $apiStatus = '', string $apiMessage = '', LengthAwarePaginator $apiData)
     {
         $response['status'] = $apiStatus;
-        
-        if (!empty($apiData))
-            $response['data'] = $apiData;
 
         // Check response data have pagination or not? Pagination response parameter sets
+        if ($apiData->count()) {
             $response['data'] = $apiData->toArray()['data'];
             $response['pagination'] = [
                 "total" => $apiData->total(),
@@ -53,15 +53,17 @@ class ResponseHelper
                 "total_pages" => $apiData->lastPage(),
                 "next_url" => $apiData->nextPageUrl()
             ];
-        if ($apiMessage)
+        }
+        if ($apiMessage) {
             $response['message'] = $apiMessage;
-            
+        }
+
         return response()->json($response, $apiStatus, [], JSON_NUMERIC_CHECK);
     }
 
     /**
      * Prepare error response
-     * 
+     *
      * @param int $statusCode
      * @param string $statusType
      * @param int $customErrorCode
@@ -69,10 +71,12 @@ class ResponseHelper
      * @return mixed
      */
     public static function error(string $statusCode = '', string $statusType = '', string $customErrorCode = '', string $customErrorMessage = '')
-    {       
+    {
         $response['status'] = $statusCode;
         $response['type'] = $statusType;
-        if ($customErrorCode) $response['code'] = $customErrorCode;
+        if ($customErrorCode) {
+            $response['code'] = $customErrorCode;
+        }
         $response['message'] = $customErrorMessage;
         $data["errors"][] = $response;
        
