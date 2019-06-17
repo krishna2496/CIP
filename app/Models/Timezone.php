@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -9,6 +9,7 @@ class Timezone extends Model
 {
     protected $table = 'timezone';
     protected $primaryKey = 'timezone_id';
+	protected $visible = ['timezone_id', 'timezone', 'offset', 'status'];
 
     use SoftDeletes;
      /**

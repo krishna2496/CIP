@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -9,6 +9,7 @@ class City extends Model
 {
     protected $table = 'city';
     protected $primaryKey = 'city_id';
+	protected $visible = ['city_id', 'name', 'country_id'];
 
     use SoftDeletes;
      /**

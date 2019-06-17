@@ -5,7 +5,7 @@ namespace App\Http\Controllers\App\Tenant;
 use Illuminate\Http\Request;
 use App\Http\Controllers\ApiController;
 use Illuminate\Support\Facades\DB;
-use App\TenantOption;
+use App\Models\TenantOption;
 use App\Helpers\Helpers;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Config;

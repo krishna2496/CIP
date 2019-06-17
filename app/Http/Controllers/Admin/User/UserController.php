@@ -4,61 +4,30 @@ namespace App\Http\Controllers\Admin\User;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Repositories\User\UserRepository;
 use Illuminate\Support\Facades\Input;
-use App\User;
-use App\City;
-use App\Country;
-use App\Timezone;
+use App\Models\{User, City, Country, Timezone};
 use App\Helpers\Helpers;
 use Validator;
 use DB;
 
 class UserController extends Controller
 {
-    /**
+    private $user;
+	
+	public function __construct(UserRepository $user)
+    {
+        $this->user = $user;
+	}
+	
+	/**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
-    {
-        // Get request parameter from URL
-        $searchString = Input::get('search','');
-        $orderType = Input::get('order','asc');
-
-        $userQuery = User::select('user_id','first_name','last_name','email')
-					->whereNull('deleted_at')
-					->whereStatus('1');
-
-        // Check if search parameter passed in URL then search parameter will search in name field of tenant table.
-        if (!empty($searchString)) {
-            $userQuery->where(function($query) use($searchString) {
-                $query->orWhere('first_name', 'like', '%' . $searchString . '%');
-                $query->orWhere('last_name', 'like', '%' . $searchString . '%');
-            });
-        }
-
-        try {
-            $userQuery->orderBy('user_id',$orderType)->paginate(10);            
-            $userList = $userQuery->paginate(10);
-        } catch(\Exception $e) {
-            // Catch database exception
-            return Helpers::errorResponse(trans('api_error_messages.status_code.HTTP_STATUS_403'), 
-                                        trans('api_error_messages.status_type.HTTP_STATUS_TYPE_403'), 
-                                        trans('api_error_messages.custom_error_code.ERROR_40018'), 
-                                        trans('api_error_messages.custom_error_message.40018'));			
-        }
-
-        if (count($userList)>0) {
-            $apiData = $userList;
-            $apiStatus = app('Illuminate\Http\Response')->status();
-            $apiMessage = trans('api_success_messages.success_message.MESSAGE_USER_LIST_SUCCESS');
-            return Helpers::response($apiStatus, $apiMessage, $apiData);
-        } else {
-            $apiStatus = app('Illuminate\Http\Response')->status();
-            $apiMessage = trans('api_success_messages.success_message.MESSAGE_NO_DATA_FOUND');
-            return Helpers::response($apiStatus, $apiMessage);
-        }
+    public function index(Request $request)
+    {		
+        return $this->user->userList($request);
     }
 
     /**
@@ -69,78 +38,7 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        // Connect master database to get language details
-        Helpers::switchDatabaseConnection('mysql', $request);
-        $languages = DB::table('language')->get();    
-        
-        // Connect tenant database
-        Helpers::switchDatabaseConnection('tenant', $request);
-
-        // Server side validataions
-        $validator = Validator::make($request->toArray(), ["first_name" => "required|max:16",
-            "last_name" => "required|max:16",
-            "email" => "required|email|unique:user,email,NULL,user_id,deleted_at,NULL",
-            "password" => "required",
-            "city_id" => "required",
-            "country_id" => "required",
-            "profile_text" => "required",
-            "employee_id" => "max:16",
-            "department" => "max:16",
-            "manager_name" => "max:16",
-            "linked_in_url" => "url"
-        ]);
-
-        // If request parameter have any error
-        if ($validator->fails()) {
-            return Helpers::errorResponse(trans('api_error_messages.status_code.HTTP_STATUS_422'),
-										trans('api_error_messages.status_type.HTTP_STATUS_TYPE_422'),
-										trans('api_error_messages.custom_error_code.ERROR_20022'),
-										$validator->errors()->first());
-        }
-
-        try {
-            // Get language_id from language code
-            $language = ($request->lang != '') ? $languages->where('code', $request->lang)->first() : '';
-            $language_id = (isset($language->language_id)) ? $language->language_id : 0; 
-
-            $userData = array('first_name' => $request->first_name, 
-                              'last_name' => $request->last_name,
-                              'email' => $request->email,
-                              'password' => $request->password,
-                              'timezone_id' => $request->timezone_id,
-                              'language_id' => $language_id,
-                              'availability_id' => $request->availability_id,
-                              'why_i_volunteer' => $request->why_i_volunteer,
-                              'employee_id' => $request->employee_id,
-                              'department' => $request->department,
-                              'manager_name' => $request->manager_name,
-                              'city_id' => $request->city_id,
-                              'country_id' => $request->country_id,
-                              'profile_text' => $request->profile_text,
-                              'linked_in_url' => $request->linked_in_url);
-            // Create new user
-            $user = User::create($userData);
-
-            // Set response data
-            $apiData = ['user_id' => $user->user_id];
-            $apiStatus = app('Illuminate\Http\Response')->status();
-            $apiMessage = trans('api_success_messages.success_message.MESSAGE_USER_CREATE_SUCCESS');    
-            return Helpers::response($apiStatus, $apiMessage, $apiData);
-        } catch (\Exception $e) {
-            // Error for duplicate user name, trying to store in database.
-            if (isset($e->errorInfo[1]) && $e->errorInfo[1] == 1062) {
-                return Helpers::errorResponse(trans('api_error_messages.status_code.HTTP_STATUS_422'), 
-										trans('api_error_messages.status_type.HTTP_STATUS_TYPE_422'), 
-										trans('api_error_messages.custom_error_code.ERROR_20002'), 
-										trans('api_error_messages.custom_error_message.20002'));
-            } else { 
-				        // Any other error occured when trying to insert data into database for user.
-                return Helpers::errorResponse(trans('api_error_messages.status_code.HTTP_STATUS_422'), 
-											trans('api_error_messages.status_type.HTTP_STATUS_TYPE_422'), 
-											trans('api_error_messages.custom_error_code.ERROR_20004'), 
-											trans('api_error_messages.custom_error_message.20004'));
-            }
-        }
+        return $this->user->store($request);		
     }
 
     /**
@@ -149,47 +47,10 @@ class UserController extends Controller
      * @param int $id
      * @return mixed
      */
-    public function show($id)
+    public function show(int $id)
     {
-        $userQuery = User::where('user_id', $id)
-                    ->whereNull('deleted_at')
-                    ->whereStatus('1');
-
-        try {         
-            $user = $userQuery->first();
-        } catch(\Exception $e) {
-            // Catch database exception
-            return Helpers::errorResponse(trans('api_error_messages.status_code.HTTP_STATUS_403'), 
-                                        trans('api_error_messages.status_type.HTTP_STATUS_TYPE_403'), 
-                                        trans('api_error_messages.custom_error_code.ERROR_40018'), 
-                                        trans('api_error_messages.custom_error_message.40018'));
-        }
-        if ($user) {            
-            $cityName = Helpers::getCityName($user['city_id']);
-            $countryName = Helpers::getCountryName($user['country_id']);
-            $timezone = Helpers::getTimezone($user['timezone_id']);
-
-            $userData = array('user_id' => $user['user_id'],
-                              'email' => $user['email'],
-                              'first_name' => $user['first_name'],
-                              'last_name' => $user['last_name'],
-                              'city' => $cityName,
-                              'country' => $countryName,
-                              'profile_text' => $user['profile_text'],
-                              'why_i_volunteer' => $user['why_i_volunteer'],
-                              'timezone' => $timezone,
-                              'language' => $user['language_id'],
-                        );
-            $apiData = $userData;
-            $apiStatus = app('Illuminate\Http\Response')->status();
-            $apiMessage = trans('api_success_messages.success_message.MESSAGE_USER_LIST_SUCCESS');
-            return Helpers::response($apiStatus, $apiMessage, $apiData);
-        } else {
-            $apiStatus = app('Illuminate\Http\Response')->status();
-            $apiMessage = trans('api_success_messages.success_message.MESSAGE_NO_DATA_FOUND');
-            return Helpers::response($apiStatus, $apiMessage);
-        }
-    }
+		return $this->user->find($id);
+	}
 
     /**
      * Update the specified resource in storage.
@@ -200,7 +61,7 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        return $this->user->update($request, $id);
     }
 
     /**
@@ -211,21 +72,6 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-        try {
-			$user = User::findorFail($id);
-            $user->delete();
-
-            // Set response data
-            $apiStatus = app('Illuminate\Http\Response')->status();            
-            $apiMessage = trans('api_success_messages.success_message.MESSAGE_USER_DELETE_SUCCESS');
-            return Helpers::response($apiStatus, $apiMessage);
-			
-        } catch(\Exception $e){
-            return Helpers::errorResponse(trans('api_error_messages.status_code.HTTP_STATUS_403'), 
-										trans('api_error_messages.status_type.HTTP_STATUS_TYPE_403'), 
-										trans('api_error_messages.custom_error_code.ERROR_20006'), 
-										trans('api_error_messages.custom_error_message.20006'));
-
-        }
+        return $this->user->delete($id);
     }
 }

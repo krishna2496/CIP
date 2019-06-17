@@ -3,15 +3,40 @@
 return [
 
 	/**
+	* API success messages
+	*/
+	'success' => [
+		'MESSAGE_SLIDER_ADD_SUCCESS' => 'Slider image added successfully',
+		'MESSAGE_USER_FOUND' => 'User found successfully',
+		'MESSAGE_NO_DATA_FOUND' => 'No Data Found',
+		'MESSAGE_USER_CREATED' => 'User created successfully',
+		'MESSAGE_USER_DELETED' => 'User deleted successfully',
+		'MESSAGE_CMS_PAGE_ADD_SUCCESS' => 'Page created successfully',
+		'MESSAGE_CMS_PAGE_UPDATE_SUCCESS' => 'Page updated successfully',
+		'MESSAGE_CMS_PAGE_DELETE_SUCCESS' => 'Page deleted successfully',
+		'MESSAGE_USER_LOGGED_IN' => 'You are successfully logged in',
+		'MESSAGE_PASSWORD_RESET_LINK_SEND_SUCCESS' => 'Reset Password link is sent to your email account,link will be expire in ' . config('constants.FORGOT_PASSWORD_EXPIRY_TIME') . ' hours',
+		'MESSAGE_PASSWORD_CHANGE_SUCCESS' => 'Your password has been changed successfully.',
+		'MESSAGE_CMS_LIST_SUCCESS' => 'CMS page listing successfully.',
+		'MESSAGE_CUSTOM_FIELD_ADD_SUCCESS' => 'User custom field added successfully',
+		'MESSAGE_CUSTOM_FIELD_UPDATE_SUCCESS' => 'User custom field updated successfully',
+		'MESSAGE_CUSTOM_FIELD_DELETE_SUCCESS' => 'User custom field deleted successfully',
+		'MESSAGE_NO_RECORD_FOUND' => 'No records found',
+		'MESSAGE_USER_LISTING' => 'User listing successfully'
+	],
+	
+	/**
 	* HTTP status code
 	*/
 	'status_code' => [
-		'HTTP_STATUS_400' => '400',
+		'HTTP_STATUS_BAD_REQUEST' => '400',
 		'HTTP_STATUS_401' => '401',
-		'HTTP_STATUS_403' => '403',
-		'HTTP_STATUS_404' => '404',
-		'HTTP_STATUS_422' => '422',
-		'HTTP_STATUS_500' => '500',
+		'HTTP_STATUS_FORBIDDEN' => '403',
+		'HTTP_STATUS_NOT_FOUND' => '404',
+		'HTTP_STATUS_UNPROCESSABLE_ENTITY' => '422',
+		'HTTP_STATUS_INTERNAL_SERVER_ERROR' => '500',
+		'HTTP_STATUS_BAD_GATEWAY' => '502',
+		'HTTP_STATUS_METHOD_NOT_ALLOWED' => '405',
 	],
     
    /**
@@ -23,7 +48,9 @@ return [
 		'HTTP_STATUS_TYPE_403' => 'Forbidden',
 		'HTTP_STATUS_TYPE_404' => 'Not Found',
 		'HTTP_STATUS_TYPE_422' => 'Unprocessable entity',
-		'HTTP_STATUS_TYPE_500' => 'Internal Server Error'
+		'HTTP_STATUS_TYPE_500' => 'Internal Server Error',
+		'HTTP_STATUS_TYPE_502' => 'Backend service failure (data store failure)',
+		'HTTP_STATUS_TYPE_405' => 'Method Not Allowed',
 	],
 	
 	/**
@@ -57,7 +84,7 @@ return [
 		'ERROR_20014' => '20014',
 		'ERROR_20016' => '20016',
 		'ERROR_20018' => '20018',
-		'ERROR_20022' => '20022',
+		'ERROR_20022' => '20022',		
 		'ERROR_20026' => '20026',
 		'ERROR_20028' => '20028',
 		'ERROR_20020' => '20020',
@@ -72,6 +99,9 @@ return [
 
 		// Error codes from 1000-
 		'ERROR_10006' => '10006',
+		
+		// Custom error code for User Module - 100000 - 109999
+		'ERROR_100000' => '100000',
 		
 	],
 	
@@ -120,9 +150,10 @@ return [
 		'20032' => 'No data found for given id',
 		'20034' => 'Invalid request parameter',		
 		'20102' => 'Invalid custom field input parameters or missing data',		
-
 		// Error codes from 1000-
 		'10006' => 'Database operational error',
+		
+		// Custom error code for User Module - 100000 - 109999
+		'100000' => 'User does not found in system',
 	]
-	
 ];

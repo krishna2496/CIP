@@ -46,12 +46,12 @@ class TenantConnectionMiddleware
         }
 
         if ($domain !== env('APP_DOMAIN')) {
-            $tenant = DB::table('tenant')->select('tenant_id')->where('name', $domain)->first();
+            $tenant = DB::table('tenant')->select('tenant_id')->where('name', $domain)->whereNull('deleted_at')->first();			
             if (!$tenant) {
-                return Helpers::errorResponse(trans('api_error_messages.status_code.HTTP_STATUS_403'), 
-                                        trans('api_error_messages.status_type.HTTP_STATUS_TYPE_403'), 
-                                        trans('api_error_messages.custom_error_code.ERROR_40008'), 
-                                        trans('api_error_messages.custom_error_message.40008'));
+                return Helpers::errorResponse(trans('messages.status_code.HTTP_STATUS_FORBIDDEN'), 
+                                        trans('messages.status_type.HTTP_STATUS_TYPE_403'), 
+                                        trans('messages.custom_error_code.ERROR_40008'), 
+                                        trans('messages.custom_error_message.40008'));
             }
             $this->createConnection($tenant);
         }        
@@ -82,10 +82,10 @@ class TenantConnectionMiddleware
             Config::set('database.default', 'tenant');
         } catch (\PDOException $e) {
             if ($e instanceof \PDOException) {            
-                return Helpers::errorResponse(trans('api_error_messages.status_code.HTTP_STATUS_403'), 
-                                        trans('api_error_messages.status_type.HTTP_STATUS_TYPE_403'), 
-                                        trans('api_error_messages.custom_error_code.ERROR_41000'), 
-                                        trans('api_error_messages.custom_error_message.41000'));
+                return Helpers::errorResponse(trans('messages.status_code.HTTP_STATUS_FORBIDDEN'), 
+                                        trans('messages.status_type.HTTP_STATUS_TYPE_403'), 
+                                        trans('messages.custom_error_code.ERROR_41000'), 
+                                        trans('messages.custom_error_message.41000'));
             }
         }        
     }

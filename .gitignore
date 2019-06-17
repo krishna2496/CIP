@@ -7,3 +7,5 @@ Homestead.yaml
 /.env
 /public/uploads
 /.htaccess
+/node_modules
+package-lock.json

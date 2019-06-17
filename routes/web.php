@@ -67,6 +67,13 @@ $router->get('language/{lang}', ['uses' => 'App\Language\LanguageController@fetc
     });
 });*/
 
+
+
+
+
+
+
+
 /*
 |
 |--------------------------------------------------------------------------
@@ -81,7 +88,7 @@ $router->get('language/{lang}', ['uses' => 'App\Language\LanguageController@fetc
 $router->group(['prefix' => 'users', 'middleware' => 'localization|auth.tenant.admin'], function($router){
 	$router->get('/', ['uses' => 'Admin\User\UserController@index']);
 	$router->get('/{userId}', ['uses' => 'Admin\User\UserController@show']);
-	$router->post('/create', ['uses' => 'Admin\User\UserController@store']);
+	$router->post('/', ['uses' => 'Admin\User\UserController@store']);
 	$router->delete('/{userId}', ['uses' => 'Admin\User\UserController@destroy']);
 });
 
@@ -91,7 +98,7 @@ $router->post('/create_slider', ['middleware' => 'localization|auth.tenant.admin
 /* Set cms data for tenant specific */
 $router->group(['prefix' => 'cms', 'middleware' => 'localization|auth.tenant.admin'], function($router){
 	/*$router->get('/', ['uses' => 'Admin\Cms\CmsController@index']);*/
-	$router->post('/create', ['uses' => 'Admin\Cms\CmsController@store']);
+	$router->post('/', ['uses' => 'Admin\Cms\CmsController@store']);
 	$router->patch('/update/{pageId}', ['uses' => 'Admin\Cms\CmsController@update']);
 	$router->patch('/update/', ['uses' => 'Admin\Cms\CmsController@handleError']);
 	$router->delete('/{pageId}', ['uses' => 'Admin\Cms\CmsController@destroy']);
