@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use InvalidArgumentException;
 use Illuminate\Database\QueryException;
 use PDOException;
+use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 
 trait RestExceptionHandlerTrait
 {
@@ -21,6 +22,7 @@ trait RestExceptionHandlerTrait
      */
     protected function getJsonResponseForException(Request $request, Exception $e)
     {
+		// dd($e);
 		switch(true) {
             case $e instanceof ModelNotFoundException:
                 $retval = $this->modelNotFound($e->getMessage());
@@ -30,6 +32,9 @@ trait RestExceptionHandlerTrait
                 break;
 			case $e instanceof PDOException:
                 $retval = $this->PDO();
+                break;
+			case $e instanceof MethodNotAllowedHttpException:
+                $retval = $this->MethodNotAllowedHttp();
                 break;
             default:
                 $retval = $this->badRequest();
@@ -81,6 +86,17 @@ trait RestExceptionHandlerTrait
     protected function PDO($message = 'Database operational error')
     {
 		return $this->jsonResponse(trans('messages.status_code.HTTP_STATUS_BAD_GATEWAY'), trans('messages.status_type.HTTP_STATUS_TYPE_502'), $message);
+    }
+	
+	/**
+     * Returns json response for Methos not allowed http exception
+     *
+     * @param string $message
+     * @return \Illuminate\Http\JsonResponse
+     */
+    protected function MethodNotAllowedHttp($message = 'Method not allowed')
+    {
+		return $this->jsonResponse(trans('messages.status_code.HTTP_STATUS_METHOD_NOT_ALLOWED'), trans('messages.status_type.HTTP_STATUS_TYPE_405'), $message);
     }
 
     /**

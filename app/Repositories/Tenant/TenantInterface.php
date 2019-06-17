@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Repositories\Tenant;
+
 use Illuminate\Http\Request;
 
 interface TenantInterface {
@@ -9,7 +10,7 @@ interface TenantInterface {
     
     public function store(Request $request);
 	
-	 public function update(Request $request, int $id);
+	public function update(Request $request, int $id);
 	
 	public function tenantList(Request $request);
 

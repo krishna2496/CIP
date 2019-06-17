@@ -1,21 +1,25 @@
 <?php
 
 namespace App\Repositories\Tenant;
+
 use App\Repositories\Tenant\TenantInterface;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Validator, PDOException;
 use App\Models\Tenant;
-use App\Jobs\TenantDefaultLanguageJob;
-use App\Jobs\TenantMigrationJob;
+use App\Jobs\TenantDefaultLanguageJob, App\Jobs\TenantMigrationJob;
 use App\Helpers\ResponseHelper;
-use PDOException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class TenantRepository implements TenantInterface
 {
     public $tenant;
+	
+	private $response;
 
-    function __construct(Tenant $tenant) {
+    function __construct(Tenant $tenant, Response $response) {
 		$this->tenant = $tenant;
+		$this->response = $response;
     }
 
 
@@ -33,8 +37,9 @@ class TenantRepository implements TenantInterface
 			}
 			
 			$tenantList = $tenantQuery->paginate(config('constants.PER_PAGE_LIMIT'));
+			$responseMessage = (count($tenantList) > 0) ? trans('messages.success.MESSAGE_TENANT_LISTING') : trans('messages.success.MESSAGE_NO_RECORD_FOUND');
+			return ResponseHelper::successWithPagination($this->response->status(), $responseMessage, $tenantList);
 			
-			return $tenantList;
 		} catch(\InvalidArgumentException $e) {
 			throw new \InvalidArgumentException($e->getMessage());
 		}
@@ -43,7 +48,17 @@ class TenantRepository implements TenantInterface
 	public function store(Request $request)
     {
         try {
+			$validator = Validator::make($request->toArray(), $this->tenant->rules);
+			
+			if ($validator->fails()) {
+				return ResponseHelper::error(trans('messages.status_code.HTTP_STATUS_422'), 
+										trans('messages.status_type.HTTP_STATUS_TYPE_422'), 
+										trans('messages.custom_error_code.ERROR_10001'), 
+										$validator->errors()->first());
+			} 
+			
 			$tenant = $this->tenant->create($request->toArray());
+			
 			dispatch(new TenantDefaultLanguageJob($tenant));
 			
 			 // ONLY FOR TESTING START Create api_user data (PLEASE REMOVE THIS CODE IN PRODUCTION MODE)
@@ -75,29 +90,97 @@ class TenantRepository implements TenantInterface
 			return ResponseHelper::success($apiStatus, $apiMessage, $apiData);
 			
 		} catch(PDOException $e) {
+			
 			throw new PDOException($e->getMessage());
+			
 		} catch(\Exception $e) {
+			
 			throw new \Exception($e->getMessage());
+			
 		}
     }
 
     public function find(int $id)
     {
-        return $this->tenant->findTenant($id);
+        try {
+			$tenantDetail = $this->tenant->findTenant($id);
+			
+			$apiStatus = app('Illuminate\Http\Response')->status();
+			$apiData = $tenantDetail->toArray();
+			$apiMessage =  trans('messages.success.MESSAGE_TENANT_FOUND');
+			return ResponseHelper::success($apiStatus, $apiMessage, $apiData);
+			
+		} catch(ModelNotFoundException $e){
+			
+			throw new ModelNotFoundException(trans('messages.custom_error_message.10004'));
+			
+        } catch(\Exception $e) {
+			
+			throw new \Exception($e->getMessage());
+			
+		}	
     }
 
 
     public function delete(int $id)
     {
 		try {
-			return $this->tenant->deleteTenant($id);			
+			$this->tenant->deleteTenant($id);
+			// Set response data
+			$apiStatus = app('Illuminate\Http\Response')->status();            
+			$apiMessage = trans('messages.success.MESSAGE_TENANT_DELETED');
+
+			return ResponseHelper::success($apiStatus, $apiMessage);
+			
 		} catch(ModelNotFoundException $e){
+			
 			throw new ModelNotFoundException(trans('messages.custom_error_message.10004'));
+			
         }
     }
 	
 	public function update(Request $request, int $id)
     {
-        return $this->tenant->findTenant($id);
+        try {
+			
+			$validator = Validator::make($request->toArray(), $this->tenant->rules);
+			
+			if ($validator->fails()) {
+				return ResponseHelper::error(trans('messages.status_code.HTTP_STATUS_422'), 
+										trans('messages.status_type.HTTP_STATUS_TYPE_422'), 
+										trans('messages.custom_error_code.ERROR_10001'), 
+										$validator->errors()->first());
+			} 
+			
+			$tenant = Tenant::findOrFail($id);
+			$tenant->update($request->toArray());
+			
+			// Add options data into `tenant_has_option` table            
+            if (isset($request->options) && count($request->options) > 0) {
+				foreach ($request->options as $option_name => $option_value) {
+					$tenantOptionData['option_name'] = $option_name;
+                    $tenantOptionData['option_value'] = $option_value;
+                    $tenant->options()->where('option_name', $option_name)->update($tenantOptionData);
+                }
+            }
+			$apiStatus = app('Illuminate\Http\Response')->status();
+            $apiData = ['tenant_id' => $id];
+			$apiMessage = trans('messages.success.MESSAGE_TENANT_UPDATED');
+			
+			return ResponseHelper::success($apiStatus, $apiMessage, $apiData);
+			
+		} catch(ModelNotFoundException $e){
+			
+			throw new ModelNotFoundException(trans('messages.custom_error_message.10004'));
+			
+        } catch(PDOException $e) {
+			
+			throw new PDOException($e->getMessage());
+			
+		}  catch(\Exception $e) {
+			
+			throw new \Exception($e->getMessage());
+			
+		}
     }
 }

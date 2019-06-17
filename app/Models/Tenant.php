@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Model;
-use App\TenantHasOption;
+use App\Models\TenantHasOption;
 use App\TenantLanguage;
 use App\ApiUser;
 
@@ -22,8 +22,11 @@ class Tenant extends Model {
 	
 	protected $visible = ['tenant_id', 'name', 'sponsor_id', 'status', 'options', 'tenantLanguages', 'tenantLanguages.language'];
 	
-    public static $rules = [
+    public $rules = [
         // Validation rules
+		// 'name' => 'required|unique:tenant',
+		'name' => 'required',
+		'sponsor_id'  => 'required',
     ];
 
     protected $softDelete = true;
@@ -58,13 +61,13 @@ class Tenant extends Model {
     }
 
 
-    public function findTenant($id)
+    public function findTenant(int $id)
     {
-        return static::find($id);
+        return static::with('options','tenantLanguages','tenantLanguages.language')->findOrFail($id);
     }
 
 
-    public function deleteTenant($id)
+    public function deleteTenant(int $id)
     {
         return static::findOrFail($id)->delete();
     }
