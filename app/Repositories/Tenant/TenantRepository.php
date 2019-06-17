@@ -89,11 +89,11 @@ class TenantRepository implements TenantInterface
 			return ResponseHelper::success($apiStatus, $apiMessage, $apiData);
 			
 		} catch(PDOException $e) {
-			
+			$this->delete($tenant->tenant_id);
 			throw new PDOException($e->getMessage());
 			
 		} catch(\Exception $e) {
-			
+			$this->delete($tenant->tenant_id);
 			throw new \Exception($e->getMessage());
 			
 		}

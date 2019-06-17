@@ -23,7 +23,6 @@ trait RestExceptionHandlerTrait
      */
     protected function getJsonResponseForException(Request $request, Exception $e)
     {
-		//dd($e);
 		switch(true) {
             case $e instanceof ModelNotFoundException:
                 $retval = $this->modelNotFound($e->getMessage());

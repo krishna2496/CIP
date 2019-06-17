@@ -4,9 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\TenantHasOption;
-use App\TenantLanguage;
-use App\ApiUser;
+use App\Models\{TenantHasOption, ApiUser, TenantLanguage};
 
 class Tenant extends Model {
 
@@ -24,7 +22,7 @@ class Tenant extends Model {
 	
     public $rules = [
         // Validation rules
-		'name' => 'required|unique:tenant',
+		'name' => 'required|unique:tenant,name,NULL,tenant_id,deleted_at,NULL',
 		'sponsor_id'  => 'required',
     ];
 
