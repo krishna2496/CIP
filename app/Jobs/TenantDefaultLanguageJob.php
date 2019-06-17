@@ -30,14 +30,13 @@ class TenantDefaultLanguageJob extends Job
      */
     public function handle()
     {        
-            // Add default English and French language for tenant - Testing purpose
-            $defaultData = array(
-                ['language_id' => 1, 'default' => '1'],
-                ['language_id' => 2, 'default' => '0']
-            );
-            foreach ($defaultData as $key => $data) {
-				$this->tenant->tenantLanguages()->create($data);
-            }
-        
+		// Add default English and French language for tenant - Testing purpose
+		$defaultData = array(
+			['language_id' => 1, 'default' => '1'],
+			['language_id' => 2, 'default' => '0']
+		);
+		foreach ($defaultData as $key => $data) {
+			$this->tenant->tenantLanguages()->create($data);
+		}        
     }
 }

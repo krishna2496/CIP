@@ -10,6 +10,7 @@ use InvalidArgumentException;
 use Illuminate\Database\QueryException;
 use PDOException;
 use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
+use Symfony\Console\Exception\CommandNotFoundException;
 
 trait RestExceptionHandlerTrait
 {
@@ -22,7 +23,7 @@ trait RestExceptionHandlerTrait
      */
     protected function getJsonResponseForException(Request $request, Exception $e)
     {
-		// dd($e);
+		//dd($e);
 		switch(true) {
             case $e instanceof ModelNotFoundException:
                 $retval = $this->modelNotFound($e->getMessage());
@@ -37,7 +38,7 @@ trait RestExceptionHandlerTrait
                 $retval = $this->MethodNotAllowedHttp();
                 break;
             default:
-                $retval = $this->badRequest();
+                $retval = $this->badRequest($e->getMessage());
         }
 
         return $retval;
