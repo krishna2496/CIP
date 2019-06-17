@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\Helpers\ResponseHelper;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use InvalidArgumentException;
+use Illuminate\Database\QueryException;
+use PDOException;
 
 trait RestExceptionHandlerTrait
 {
@@ -19,13 +21,15 @@ trait RestExceptionHandlerTrait
      */
     protected function getJsonResponseForException(Request $request, Exception $e)
     {
-		dd($e);
 		switch(true) {
             case $e instanceof ModelNotFoundException:
                 $retval = $this->modelNotFound($e->getMessage());
                 break;
 			case $e instanceof InvalidArgumentException:
                 $retval = $this->invalidArgument($e->getMessage());
+                break;
+			case $e instanceof PDOException:
+                $retval = $this->PDO();
                 break;
             default:
                 $retval = $this->badRequest();
@@ -43,7 +47,7 @@ trait RestExceptionHandlerTrait
      */
     protected function badRequest($message='Bad request')
     {
-		return $this->jsonResponse(['error' => $message], $statusCode);
+		return $this->jsonResponse(trans('messages.status_code.HTTP_STATUS_BAD_REQUEST'), trans('messages.status_type.HTTP_STATUS_TYPE_400'), $message);
 	}
 
     /**
@@ -67,6 +71,17 @@ trait RestExceptionHandlerTrait
     {
 		return $this->jsonResponse(trans('messages.status_code.HTTP_STATUS_BAD_REQUEST'), trans('messages.status_type.HTTP_STATUS_TYPE_400'), $message);
     }
+	
+	/**
+     * Returns json response for Query exception
+     *
+     * @param string $message
+     * @return \Illuminate\Http\JsonResponse
+     */
+    protected function PDO($message = 'Database operational error')
+    {
+		return $this->jsonResponse(trans('messages.status_code.HTTP_STATUS_BAD_GATEWAY'), trans('messages.status_type.HTTP_STATUS_TYPE_502'), $message);
+    }
 
     /**
      * Returns json response.
@@ -79,6 +94,7 @@ trait RestExceptionHandlerTrait
     {
         return ResponseHelper::error($statusCode, $statusType, '', $message);
     }
+	
 
 
 }

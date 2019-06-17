@@ -28,9 +28,9 @@ $router->group(['prefix' => 'tenants', 'middleware' => 'localization'], function
 	// Get tenant details from id
 	$router->get('/{tenant_id}',['uses'=>'TenantController@show']);
 	// Create new tenant
-	$router->post('/create',['uses'=>'TenantController@store']);
+	$router->post('/',['uses'=>'TenantController@store']);
 	// Update tenant details
-	$router->put('/{tenant_id}',['uses'=>'TenantController@update']);
+	$router->patch('/{tenant_id}',['uses'=>'TenantController@update']);
 	// Delete tenant
 	$router->delete('/{tenant_id}',['uses'=>'TenantController@destroy']);
 });

@@ -15,7 +15,7 @@ class ResponseHelper
      * @param Model Object $apiData
      * @return mixed
      */
-    public static function success($apiStatus = '', $apiMessage = '', $apiData = [])
+    public static function success(string $apiStatus = '', string $apiMessage = '', array $apiData = [])
     {
 
         $response['status'] = $apiStatus;

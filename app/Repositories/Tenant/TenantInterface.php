@@ -7,12 +7,14 @@ interface TenantInterface {
 
 	// public function save(array $data);
     
+    public function store(Request $request);
+	
+	 public function update(Request $request, int $id);
+	
 	public function tenantList(Request $request);
 
-    public function find($id);
+    public function find(int $id);
 	
-    public function store(Request $request);
-
-    public function delete($id);
+    public function delete(int $id);
 	
 }

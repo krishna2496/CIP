@@ -20,7 +20,8 @@ return [
 		'HTTP_STATUS_403' => '403',
 		'HTTP_STATUS_NOT_FOUND' => '404',
 		'HTTP_STATUS_422' => '422',
-		'HTTP_STATUS_500' => '500'
+		'HTTP_STATUS_500' => '500',
+		'HTTP_STATUS_BAD_GATEWAY' => '502'
 	],
     
    /**
@@ -31,7 +32,8 @@ return [
 		'HTTP_STATUS_TYPE_403' => 'Forbidden',
 		'HTTP_STATUS_TYPE_404' => 'Not Found',
 		'HTTP_STATUS_TYPE_422' => 'Unprocessable entity',
-		'HTTP_STATUS_TYPE_500' => 'Internal Server Error'
+		'HTTP_STATUS_TYPE_500' => 'Internal Server Error',
+		'HTTP_STATUS_TYPE_502' => 'Backend service failure (data store failure)'
 	],
 	
 	/**
