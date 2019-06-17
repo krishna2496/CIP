@@ -27,7 +27,7 @@ class ResponseHelper
         if ($apiMessage) {
             $response['message'] = $apiMessage;
         }
-            
+       
         return response()->json($response, $apiStatus, [], JSON_NUMERIC_CHECK);
     }
 

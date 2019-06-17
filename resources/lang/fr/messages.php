@@ -17,6 +17,8 @@ return [
     * HTTP status code
     */
     'status_code' => [
+        'HTTP_CREATED' => '201',
+        'HTTP_NO_CONTENT' => '204',
         'HTTP_STATUS_BAD_REQUEST' => '400',
         'HTTP_STATUS_403' => '403',
         'HTTP_STATUS_NOT_FOUND' => '404',

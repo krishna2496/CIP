@@ -106,7 +106,7 @@ class TenantRepository implements TenantInterface
             }
 
             // Set response data
-            $apiStatus = $this->response->status();
+            $apiStatus = trans('messages.status_code.HTTP_CREATED');
             $apiData = ['tenant_id' => $tenant->tenant_id];
             $apiMessage =  trans('messages.success.MESSAGE_TENANT_CREATED');
 
@@ -154,7 +154,7 @@ class TenantRepository implements TenantInterface
         try {
             $this->tenant->deleteTenant($id);
             // Set response data
-            $apiStatus = $this->response->status();
+            $apiStatus = trans('messages.status_code.HTTP_NO_CONTENT');
             $apiMessage = trans('messages.success.MESSAGE_TENANT_DELETED');
 
             return ResponseHelper::success($apiStatus, $apiMessage);
