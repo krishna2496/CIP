@@ -1,10 +1,9 @@
 <?php
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use App\Language;
+use App\Models\Language;
 
 class TenantLanguage extends Model
 {
@@ -38,12 +37,12 @@ class TenantLanguage extends Model
      */
     protected $appends = ['language_code'];
 
-	/**
+    /**
      * The attributes that are visible.
      *
      * @var array
      */
-	protected $visible = ['language_id', 'default'];
+    protected $visible = ['language_id', 'default'];
 
     /**
     * Define a one-to-one relationship.
@@ -52,7 +51,7 @@ class TenantLanguage extends Model
     */
     public function language()
     {
-    	return $this->hasOne(Language::class, 'language_id', 'language_id');
+        return $this->hasOne(Language::class, 'language_id', 'language_id');
     }
     /**
      * Get the language code from language.
@@ -60,6 +59,6 @@ class TenantLanguage extends Model
      */
     public function getLanguageCodeAttribute()
     {
-    	return $this->language->code;
+        return $this->language->code;
     }
 }

@@ -2,10 +2,8 @@
 namespace App\Jobs;
 
 use App\Helpers\ResponseHelper;
-use App\Models\Tenant;
-use App\Language;
+use App\Models\{Tenant, Language};
 use DB;
-
 
 class TenantDefaultLanguageJob extends Job
 {
