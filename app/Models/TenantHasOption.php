@@ -1,16 +1,14 @@
 <?php
-
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\{Model, SoftDeletes};
 
 class TenantHasOption extends Model
 {
     use SoftDeletes;
 
     /**
-     * The table associated with the model.
+    * The table associated with the model.
      *
      * @var string
      */
@@ -21,8 +19,8 @@ class TenantHasOption extends Model
      *
      * @var string
      */
-	protected $primaryKey = 'tenant_option_id';
-	
+    protected $primaryKey = 'tenant_option_id';
+
     /**
      * The attributes that are mass assignable.
      *
@@ -36,13 +34,13 @@ class TenantHasOption extends Model
      * @var array
      */
     protected $dates = ['created_at','updated_at','deleted_at'];
-	
+
     /**
      * The attributes that should be visible in arrays.
      *
      * @var array
      */
-	protected $visible = ['tenant_option_id', 'option_name', 'option_value'];
+    protected $visible = ['tenant_option_id', 'option_name', 'option_value'];
 
     /**
      * The rules that should validate request.

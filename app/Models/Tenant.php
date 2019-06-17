@@ -1,29 +1,27 @@
 <?php 
-
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Model;
 use App\Models\{TenantHasOption, ApiUser, TenantLanguage};
+use Illuminate\Database\Eloquent\{SoftDeletes, Model};
 
 class Tenant extends Model {
 
-   use SoftDeletes;
+    use SoftDeletes;
 
     /**
      * The table associated with the model.
      *
      * @var string
      */
-	protected $table = 'tenant';
+    protected $table = 'tenant';
 
     /**
      * The primary key for the model.
      *
      * @var string
      */
-	protected $primaryKey = 'tenant_id';
-	
+    protected $primaryKey = 'tenant_id';
+
     /**
      * The attributes that are mass assignable.
      *
@@ -37,8 +35,8 @@ class Tenant extends Model {
      * @var array
      */
     protected $dates = ['created_at','updated_at','deleted_at'];
-	
-	/**
+
+    /**
      * The attributes that should be visible in arrays.
      *
      * @var array
@@ -50,7 +48,7 @@ class Tenant extends Model {
      *
      * @var array
      */
-     public $rules = [
+    public $rules = [
         // Validation rules
         'name' => 'required|unique:tenant,name,NULL,tenant_id,deleted_at,NULL',
         'sponsor_id'  => 'required',
@@ -61,19 +59,19 @@ class Tenant extends Model {
      *
      * @var bool
      */
-     protected $softDelete = true;
+    protected $softDelete = true;
     
-    /*
+    /** 
     * Defined has many relation for the tenant_option table.
     *
     * @return \Illuminate\Database\Eloquent\Relations\HasMany
     */
     public function options()
     {
-    	return $this->hasMany(TenantHasOption::class, 'tenant_id', 'tenant_id');
+        return $this->hasMany(TenantHasOption::class, 'tenant_id', 'tenant_id');
     }
 
-    /*
+    /**
     * Defined has many relation for the languages table.
     *
     * @return \Illuminate\Database\Eloquent\Relations\HasMany
@@ -83,7 +81,7 @@ class Tenant extends Model {
         return $this->hasMany(TenantLanguage::class, 'tenant_id', 'tenant_id');
     }
 
-    /*
+    /**
     * Defined has many relation for the api_users table.
     *
     * @return \Illuminate\Database\Eloquent\Relations\HasMany
@@ -92,13 +90,13 @@ class Tenant extends Model {
     {
         return $this->hasMany(ApiUser::class, 'tenant_id', 'tenant_id');
     }
-	
+
     /**
      * Get the language record associated with the tenant language.
      */
-	public function getAll()
+    public function getAll()
     {
-        return static::with('options','tenantLanguages','tenantLanguages.language')->paginate(config('constants.PER_PAGE_LIMIT'));
+        return static::with('options', 'tenantLanguages', 'tenantLanguages.language')->paginate(config('constants.PER_PAGE_LIMIT'));
     }
 
     /**
@@ -109,7 +107,7 @@ class Tenant extends Model {
      */
     public function findTenant(int $id)
     {
-        return static::with('options','tenantLanguages','tenantLanguages.language')->findOrFail($id);
+        return static::with('options', 'tenantLanguages', 'tenantLanguages.language')->findOrFail($id);
     }
 
     /**

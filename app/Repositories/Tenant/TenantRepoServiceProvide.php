@@ -1,10 +1,7 @@
 <?php
-
 namespace App\Repositories\Tenant;
 
-
 use Illuminate\Support\ServiceProvider;
-
 
 class TenantRepoServiceProvide extends ServiceProvider
 {

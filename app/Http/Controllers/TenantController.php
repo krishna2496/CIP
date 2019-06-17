@@ -9,27 +9,21 @@ use App\Repositories\Tenant\TenantRepository;
 class TenantController extends Controller
 {
     /**
-     * @var TenantRepository
+     * @var App\Repositories\Tenant\TenantRepository
      */
-	private $tenant;
+    private $tenant;
 
-    /**
-     * @var Illuminate\Http\Response
-     */
-	private $response;
-	
     /**
      * Create a new Tenant controller instance.
      *
-     * @param  App\Repositories\Tenant\TenantRepository $tenant
+     * @param  App\Repositories\Tenant\TenantRepository $tenant 
      * @return void
-     */
-	
-	public function __construct(TenantRepository $tenant)
+     */    
+    public function __construct(TenantRepository $tenant)
     {
-        $this->tenant = $tenant;
-	}
-	
+         $this->tenant = $tenant;
+    }
+    
     /**
      * Display a listing of the tenants.
      *
@@ -38,8 +32,8 @@ class TenantController extends Controller
      */
     public function index(Request $request)
     {
-       return $this->tenant->tenantList($request);
-	}
+        return  $this->tenant->tenantList($request);
+    }
 
     /**
      * Store a newly created tenant into database
@@ -49,8 +43,8 @@ class TenantController extends Controller
      */
     public function store(Request $request)
     {
-		return $this->tenant->store($request);
-     }
+        return  $this->tenant->store($request);
+    }
 
     /**
      * Show tenant details
@@ -60,7 +54,7 @@ class TenantController extends Controller
      */
     public function show(int $tenant_id)
     {
-        return $this->tenant->find($tenant_id);		
+        return  $this->tenant->find($tenant_id);
     }
 
     /**
@@ -72,8 +66,7 @@ class TenantController extends Controller
      */
     public function update(Request $request, int $id)
     {
-		return $this->tenant->update($request, $id);
-			
+        return  $this->tenant->update($request, $id);
     }
 
     /**
@@ -84,6 +77,6 @@ class TenantController extends Controller
      */
     public function destroy(int $id)
     {
-		return $this->tenant->delete($id);		
+        return  $this->tenant->delete($id);
     }
 }

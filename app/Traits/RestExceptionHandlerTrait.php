@@ -14,7 +14,7 @@ use Symfony\Console\Exception\CommandNotFoundException;
 
 trait RestExceptionHandlerTrait
 {
-	/**
+    /**
      * Creates a new JSON response based on exception type.
      *
      * @param Request $request
@@ -23,21 +23,22 @@ trait RestExceptionHandlerTrait
      */
     protected function getJsonResponseForException(Request $request, Exception $e)
     {
-		switch(true) {
-            case $e instanceof ModelNotFoundException:
-                $retval = $this->modelNotFound($e->getMessage());
-                break;
-			case $e instanceof InvalidArgumentException:
-                $retval = $this->invalidArgument($e->getMessage());
-                break;
-			case $e instanceof PDOException:
-                $retval = $this->PDO();
-                break;
-			case $e instanceof MethodNotAllowedHttpException:
-                $retval = $this->MethodNotAllowedHttp();
-                break;
-            default:
-                $retval = $this->badRequest($e->getMessage());
+        // dd($e);
+        switch (true) {
+          case $e instanceof ModelNotFoundException:
+              $retval = $this->modelNotFound($e->getMessage());
+              break;
+          case $e instanceof InvalidArgumentException:
+              $retval = $this->invalidArgument($e->getMessage());
+              break;
+          case $e instanceof PDOException:
+              $retval = $this->PDO();
+              break;
+          case $e instanceof MethodNotAllowedHttpException:
+              $retval = $this->MethodNotAllowedHttp();
+              break;
+          default:
+              $retval = $this->badRequest($e->getMessage());
         }
 
         return $retval;
@@ -52,8 +53,8 @@ trait RestExceptionHandlerTrait
      */
     protected function badRequest($message='Bad request')
     {
-		return $this->jsonResponse(trans('messages.status_code.HTTP_STATUS_BAD_REQUEST'), trans('messages.status_type.HTTP_STATUS_TYPE_400'), $message);
-	}
+        return $this->jsonResponse(trans('messages.status_code.HTTP_STATUS_BAD_REQUEST'), trans('messages.status_type.HTTP_STATUS_TYPE_400'), $message);
+    }
 
     /**
      * Returns json response for Eloquent model not found exception.
@@ -63,10 +64,10 @@ trait RestExceptionHandlerTrait
      */
     protected function modelNotFound($message = 'Record not found')
     {
-		return $this->jsonResponse(trans('messages.status_code.HTTP_STATUS_NOT_FOUND'), trans('messages.status_type.HTTP_STATUS_TYPE_404'), $message);
+        return $this->jsonResponse(trans('messages.status_code.HTTP_STATUS_NOT_FOUND'), trans('messages.status_type.HTTP_STATUS_TYPE_404'), $message);
     }
-	
-	/**
+    
+    /**
      * Returns json response for Invalid argument exception.
      *
      * @param string $message
@@ -74,10 +75,10 @@ trait RestExceptionHandlerTrait
      */
     protected function invalidArgument($message = 'Invalid argument')
     {
-		return $this->jsonResponse(trans('messages.status_code.HTTP_STATUS_BAD_REQUEST'), trans('messages.status_type.HTTP_STATUS_TYPE_400'), $message);
+        return $this->jsonResponse(trans('messages.status_code.HTTP_STATUS_BAD_REQUEST'), trans('messages.status_type.HTTP_STATUS_TYPE_400'), $message);
     }
-	
-	/**
+    
+    /**
      * Returns json response for Query exception
      *
      * @param string $message
@@ -85,10 +86,10 @@ trait RestExceptionHandlerTrait
      */
     protected function PDO($message = 'Database operational error')
     {
-		return $this->jsonResponse(trans('messages.status_code.HTTP_STATUS_BAD_GATEWAY'), trans('messages.status_type.HTTP_STATUS_TYPE_502'), $message);
+        return $this->jsonResponse(trans('messages.status_code.HTTP_STATUS_BAD_GATEWAY'), trans('messages.status_type.HTTP_STATUS_TYPE_502'), $message);
     }
-	
-	/**
+    
+    /**
      * Returns json response for Methos not allowed http exception
      *
      * @param string $message
@@ -96,7 +97,7 @@ trait RestExceptionHandlerTrait
      */
     protected function MethodNotAllowedHttp($message = 'Method not allowed')
     {
-		return $this->jsonResponse(trans('messages.status_code.HTTP_STATUS_METHOD_NOT_ALLOWED'), trans('messages.status_type.HTTP_STATUS_TYPE_405'), $message);
+        return $this->jsonResponse(trans('messages.status_code.HTTP_STATUS_METHOD_NOT_ALLOWED'), trans('messages.status_type.HTTP_STATUS_TYPE_405'), $message);
     }
 
     /**
@@ -110,7 +111,4 @@ trait RestExceptionHandlerTrait
     {
         return ResponseHelper::error($statusCode, $statusType, '', $message);
     }
-	
-
-
 }

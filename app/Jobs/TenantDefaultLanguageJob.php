@@ -1,6 +1,6 @@
 <?php
-
 namespace App\Jobs;
+
 use App\Helpers\ResponseHelper;
 use App\Models\Tenant;
 use App\Language;
@@ -17,7 +17,7 @@ class TenantDefaultLanguageJob extends Job
     /**
      * Create a new job instance
      *
-	 * @param App\Tenant $tenant
+     * @param App\Tenant $tenant
      * @return void
      */
     public function __construct(Tenant $tenant)
