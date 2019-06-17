@@ -24,8 +24,7 @@ class Tenant extends Model {
 	
     public $rules = [
         // Validation rules
-		// 'name' => 'required|unique:tenant',
-		'name' => 'required',
+		'name' => 'required|unique:tenant',
 		'sponsor_id'  => 'required',
     ];
 
