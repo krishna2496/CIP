@@ -9,7 +9,8 @@ return [
 		'MESSAGE_TENANT_UPDATED' => 'Tenant details updated successfully',
 		'MESSAGE_TENANT_DELETED' => 'Tenant deleted successfully',
 		'MESSAGE_TENANT_LISTING' => 'Tenant listing successfully',
-		'MESSAGE_NO_RECORD_FOUND' => 'No records found'
+		'MESSAGE_NO_RECORD_FOUND' => 'No records found',
+		'MESSAGE_TENANT_FOUND' => 'Tenant found successfully',
 	],
 	
 	/**
@@ -21,7 +22,8 @@ return [
 		'HTTP_STATUS_NOT_FOUND' => '404',
 		'HTTP_STATUS_422' => '422',
 		'HTTP_STATUS_500' => '500',
-		'HTTP_STATUS_BAD_GATEWAY' => '502'
+		'HTTP_STATUS_BAD_GATEWAY' => '502',
+		'HTTP_STATUS_METHOD_NOT_ALLOWED' => '405',
 	],
     
    /**
@@ -33,7 +35,8 @@ return [
 		'HTTP_STATUS_TYPE_404' => 'Not Found',
 		'HTTP_STATUS_TYPE_422' => 'Unprocessable entity',
 		'HTTP_STATUS_TYPE_500' => 'Internal Server Error',
-		'HTTP_STATUS_TYPE_502' => 'Backend service failure (data store failure)'
+		'HTTP_STATUS_TYPE_502' => 'Backend service failure (data store failure)',
+		'HTTP_STATUS_TYPE_405' => 'Method Not Allowed',
 	],
 	
 	/**

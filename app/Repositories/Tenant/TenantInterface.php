@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Repositories\Tenant;
+
 use Illuminate\Http\Request;
 
 interface TenantInterface {
