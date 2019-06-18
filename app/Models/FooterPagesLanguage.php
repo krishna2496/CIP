@@ -1,10 +1,9 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use App\FooterPage;
+use Illuminate\Database\Eloquent\{Model, SoftDeletes};
+use App\Models\FooterPage;
 
 class FooterPagesLanguage extends Model
 {
@@ -19,6 +18,8 @@ class FooterPagesLanguage extends Model
      * @var array
      */
     protected $fillable = ['page_id', 'language_id', 'title', 'description'];
+	
+    protected $visible = ['page_id', 'language_id', 'title', 'description'];
 
     public function page()
     {

@@ -95,14 +95,12 @@ $router->group(['prefix' => 'users', 'middleware' => 'localization|auth.tenant.a
 /* Set custom slider data for tenant specific */
 $router->post('/create_slider', ['middleware' => 'localization|auth.tenant.admin', 'uses' => 'Admin\Tenant\TenantOptionsController@storeSlider']);
 
-/* Set cms data for tenant specific */
+/* Set Footer Page data for tenant specific */
 $router->group(['prefix' => 'cms', 'middleware' => 'localization|auth.tenant.admin'], function($router){
-	/*$router->get('/', ['uses' => 'Admin\Cms\CmsController@index']);*/
-	$router->post('/', ['uses' => 'Admin\Cms\CmsController@store']);
-	$router->patch('/update/{pageId}', ['uses' => 'Admin\Cms\CmsController@update']);
-	$router->patch('/update/', ['uses' => 'Admin\Cms\CmsController@handleError']);
-	$router->delete('/{pageId}', ['uses' => 'Admin\Cms\CmsController@destroy']);
-	$router->delete('/', ['uses' => 'Admin\Cms\CmsController@handleError']);
+	$router->get('/', ['uses' => 'Admin\FooterPage\FooterPageController@index']);
+	$router->post('/', ['uses' => 'Admin\FooterPage\FooterPageController@store']);
+	$router->patch('/{pageId}', ['uses' => 'Admin\FooterPage\FooterPageController@update']);
+	$router->delete('/{pageId}', ['uses' => 'Admin\FooterPage\FooterPageController@destroy']);
 });
 
 /* Set custom field data for tenant specific */

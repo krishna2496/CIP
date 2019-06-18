@@ -11,9 +11,9 @@ return [
 		'MESSAGE_NO_DATA_FOUND' => 'No Data Found',
 		'MESSAGE_USER_CREATED' => 'User created successfully',
 		'MESSAGE_USER_DELETED' => 'User deleted successfully',
-		'MESSAGE_CMS_PAGE_ADD_SUCCESS' => 'Page created successfully',
-		'MESSAGE_CMS_PAGE_UPDATE_SUCCESS' => 'Page updated successfully',
-		'MESSAGE_CMS_PAGE_DELETE_SUCCESS' => 'Page deleted successfully',
+		'MESSAGE_FOOTER_PAGE_CREATED' => 'Page created successfully',
+		'MESSAGE_FOOTER_PAGE_UPDATED' => 'Page updated successfully',
+		'MESSAGE_FOOTER_PAGE_DELETED' => 'Page deleted successfully',
 		'MESSAGE_USER_LOGGED_IN' => 'You are successfully logged in',
 		'MESSAGE_PASSWORD_RESET_LINK_SEND_SUCCESS' => 'Reset Password link is sent to your email account,link will be expire in ' . config('constants.FORGOT_PASSWORD_EXPIRY_TIME') . ' hours',
 		'MESSAGE_PASSWORD_CHANGE_SUCCESS' => 'Your password has been changed successfully.',
@@ -37,6 +37,7 @@ return [
 		'HTTP_STATUS_INTERNAL_SERVER_ERROR' => '500',
 		'HTTP_STATUS_BAD_GATEWAY' => '502',
 		'HTTP_STATUS_METHOD_NOT_ALLOWED' => '405',
+		'HTTP_STATUS_NO_CONTENT' => '204',
 	],
     
    /**
@@ -51,6 +52,7 @@ return [
 		'HTTP_STATUS_TYPE_500' => 'Internal Server Error',
 		'HTTP_STATUS_TYPE_502' => 'Backend service failure (data store failure)',
 		'HTTP_STATUS_TYPE_405' => 'Method Not Allowed',
+		'HTTP_STATUS_TYPE_204' => 'No Content',
 	],
 	
 	/**
@@ -102,6 +104,13 @@ return [
 		
 		// Custom error code for User Module - 100000 - 109999
 		'ERROR_100000' => '100000',
+		
+		// Custom error code for CMS Module - 300000 - 309999
+		'ERROR_300000' => '300000',
+		'ERROR_300001' => '300001',
+		'ERROR_300002' => '300002',
+		'ERROR_300003' => '300003',
+		'ERROR_300004' => '300004',
 		
 	],
 	
@@ -155,5 +164,13 @@ return [
 		
 		// Custom error code for User Module - 100000 - 109999
 		'100000' => 'User does not found in system',
+		
+		// Custom error code for CMS Module - 300000 - 309999
+		'300000' => 'Page creation failed. Please check input parameters',
+		'300001' => 'The slug field is required',
+		'300002' => 'Missing translation data',
+		'300003' => 'Invalid translation data, please check input parameters',
+		'300004' => 'Page creation faild. Invalid input data for sections',
+		'300005' => 'Requested page does not exist',
 	]
 ];
