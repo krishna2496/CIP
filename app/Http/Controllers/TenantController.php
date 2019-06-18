@@ -52,9 +52,9 @@ class TenantController extends Controller
      * @param int $id
      * @return mixed
      */
-    public function show(int $tenant_id)
+    public function show(int $tenantId)
     {
-        return  $this->tenant->find($tenant_id);
+        return  $this->tenant->find($tenantId);
     }
 
     /**
