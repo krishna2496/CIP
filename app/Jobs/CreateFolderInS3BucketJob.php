@@ -11,12 +11,7 @@ class CreateFolderInS3BucketJob extends Job
     /**
      * @var App\Models\Tenant
      */
-    protected $tenant;
-    
-    /**
-     * @var Illuminate\Http\Response
-     */
-    protected $response;
+    private $tenant;
     
     /**
      * Create a new job instance.

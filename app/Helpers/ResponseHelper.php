@@ -8,9 +8,9 @@ class ResponseHelper
     /**
      * Prepare success response
      *
-     * @param int $apiStatus
+     * @param string $apiStatus
      * @param string $apiMessage
-     * @param Model Object $apiData
+     * @param array $apiData
      * @return mixed
      */
     public static function success(string $apiStatus = '', string $apiMessage = '', array $apiData = [])
@@ -31,9 +31,9 @@ class ResponseHelper
     /**
      * Prepare success response
      *
-     * @param int $apiStatus
+     * @param string $apiStatus
      * @param string $apiMessage
-     * @param Model Object $apiData
+     * @param Illuminate\Pagination\LengthAwarePaginator $apiData
      * @return mixed
      */
     public static function successWithPagination(string $apiStatus = '', string $apiMessage = '', LengthAwarePaginator $apiData)
@@ -61,9 +61,9 @@ class ResponseHelper
     /**
      * Prepare error response
      *
-     * @param int $statusCode
+     * @param string $statusCode
      * @param string $statusType
-     * @param int $customErrorCode
+     * @param string $customErrorCode
      * @param string $customErrorMessage
      * @return mixed
      */
