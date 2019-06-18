@@ -1,10 +1,7 @@
 <?php
-
 namespace App\Repositories\User;
 
-
 use Illuminate\Support\ServiceProvider;
-
 
 class UserRepoServiceProvide extends ServiceProvider
 {
@@ -15,7 +12,6 @@ class UserRepoServiceProvide extends ServiceProvider
      */
     public function boot()
     {
-        
     }
 
 

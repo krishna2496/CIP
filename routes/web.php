@@ -22,29 +22,29 @@ $router->get('/', function () use ($router) {
 | and give it the Closure to call when that URI is requested.
 |
 */
-$router->group(['middleware' => 'localization'], function($router){
-	/* Connect first time to get styling data. */
-	$router->get('connect', ['middleware' => 'tenant.connection', 'uses' => 'App\Tenant\TenantOptionController@getTenantOption']);
+$router->group(['middleware' => 'localization'], function ($router) {
+    /* Connect first time to get styling data. */
+    $router->get('connect', ['middleware' => 'tenant.connection', 'uses' => 'App\Tenant\TenantOptionController@getTenantOption']);
 
-	/* User login routing using jwt token */
-	$router->post('login', ['middleware' => 'tenant.connection', 'uses' => 'App\Auth\AuthController@authenticate']);
+    /* User login routing using jwt token */
+    $router->post('login', ['middleware' => 'tenant.connection', 'uses' => 'App\Auth\AuthController@authenticate']);
 
-	/* Forgot password routing */
-	$router->post('request_password_reset', ['middleware' => 'tenant.connection','uses' => 'App\Auth\AuthController@requestPasswordReset']);
+    /* Forgot password routing */
+    $router->post('request_password_reset', ['middleware' => 'tenant.connection','uses' => 'App\Auth\AuthController@requestPasswordReset']);
 
-	/* Password reset routing */
-	$router->post('/reset-password/{token}', ['as' => 'password.reset', 'uses' => 'App\Auth\AuthController@reset_password']);
+    /* Password reset routing */
+    $router->post('/reset-password/{token}', ['as' => 'password.reset', 'uses' => 'App\Auth\AuthController@reset_password']);
 
-/* reset password  */
-$router->put('/password_reset', ['middleware' => 'localization|tenant.connection','uses' => 'App\Auth\AuthController@passwordReset']);
+    /* reset password  */
+    $router->put('/password_reset', ['middleware' => 'localization|tenant.connection','uses' => 'App\Auth\AuthController@passwordReset']);
 
-/* CMS footer pages  */
-$router->get('/cms/listing', ['middleware' => 'localization|tenant.connection','uses' => 'App\Cms\CmsController@index']);
-$router->get('/cms/detail', ['middleware' => 'localization|tenant.connection','uses' => 'App\Cms\CmsController@cmsList']);
-$router->get('/cms/{pageId}', ['middleware' => 'localization|tenant.connection','uses' => 'App\Cms\CmsController@show']);
+    /* CMS footer pages  */
+    $router->get('/cms/listing', ['middleware' => 'localization|tenant.connection','uses' => 'App\Cms\CmsController@index']);
+    $router->get('/cms/detail', ['middleware' => 'localization|tenant.connection','uses' => 'App\Cms\CmsController@cmsList']);
+    $router->get('/cms/{pageId}', ['middleware' => 'localization|tenant.connection','uses' => 'App\Cms\CmsController@show']);
 
-/* Get custom field data  */
-$router->get('/custom_field/', ['middleware' => 'localization|tenant.connection','uses' => 'App\USer\UserCustomFieldController@index']);
+    /* Get custom field data  */
+    $router->get('/custom_field/', ['middleware' => 'localization|tenant.connection','uses' => 'App\USer\UserCustomFieldController@index']);
 });
 
 
@@ -61,7 +61,7 @@ $router->get('language/{lang}', ['uses' => 'App\Language\LanguageController@fetc
 |
 */
 /*$router->group(['middleware' => 'tenant.connection|jwt.auth'], function() use ($router) {
-	$router->get('users', function() {
+    $router->get('users', function() {
         $users = \App\User::all();
         return response()->json($users);
     });
@@ -84,33 +84,40 @@ $router->get('language/{lang}', ['uses' => 'App\Language\LanguageController@fetc
 |
 */
 
-/* Set cms data for tenant specific */
-$router->group(['prefix' => 'users', 'middleware' => 'localization|auth.tenant.admin'], function($router){
-	$router->get('/', ['uses' => 'Admin\User\UserController@index']);
-	$router->get('/{userId}', ['uses' => 'Admin\User\UserController@show']);
-	$router->post('/', ['uses' => 'Admin\User\UserController@store']);
-	$router->delete('/{userId}', ['uses' => 'Admin\User\UserController@destroy']);
+/* Set user data for tenant specific */
+$router->group(['prefix' => 'users', 'middleware' => 'localization|auth.tenant.admin'], function ($router) {
+    $router->get('/', ['uses' => 'Admin\User\UserController@index']);
+    $router->get('/{userId}', ['uses' => 'Admin\User\UserController@show']);
+    $router->post('/', ['uses' => 'Admin\User\UserController@store']);
+    $router->delete('/{userId}', ['uses' => 'Admin\User\UserController@destroy']);
 });
 
 /* Set custom slider data for tenant specific */
 $router->post('/create_slider', ['middleware' => 'localization|auth.tenant.admin', 'uses' => 'Admin\Tenant\TenantOptionsController@storeSlider']);
 
 /* Set cms data for tenant specific */
-$router->group(['prefix' => 'cms', 'middleware' => 'localization|auth.tenant.admin'], function($router){
-	/*$router->get('/', ['uses' => 'Admin\Cms\CmsController@index']);*/
-	$router->post('/', ['uses' => 'Admin\Cms\CmsController@store']);
-	$router->patch('/update/{pageId}', ['uses' => 'Admin\Cms\CmsController@update']);
-	$router->patch('/update/', ['uses' => 'Admin\Cms\CmsController@handleError']);
-	$router->delete('/{pageId}', ['uses' => 'Admin\Cms\CmsController@destroy']);
-	$router->delete('/', ['uses' => 'Admin\Cms\CmsController@handleError']);
+$router->group(['prefix' => 'cms', 'middleware' => 'localization|auth.tenant.admin'], function ($router) {
+    /*$router->get('/', ['uses' => 'Admin\Cms\CmsController@index']);*/
+    $router->post('/', ['uses' => 'Admin\Cms\CmsController@store']);
+    $router->patch('/update/{pageId}', ['uses' => 'Admin\Cms\CmsController@update']);
+    $router->patch('/update/', ['uses' => 'Admin\Cms\CmsController@handleError']);
+    $router->delete('/{pageId}', ['uses' => 'Admin\Cms\CmsController@destroy']);
+    $router->delete('/', ['uses' => 'Admin\Cms\CmsController@handleError']);
 });
 
 /* Set custom field data for tenant specific */
-$router->group(['prefix' => 'metadata/users/custom_fields', 'middleware' => 'localization|auth.tenant.admin'], function($router){ 
-	$router->get('/', ['uses' => 'Admin\User\UserCustomFieldController@index']);
-	$router->post('/create', ['uses' => 'Admin\User\UserCustomFieldController@store']);
-	$router->patch('/{fieldId}', ['uses' => 'Admin\User\UserCustomFieldController@update']);
-	$router->patch('/', ['uses' => 'Admin\User\UserCustomFieldController@handleError']);	
-	$router->delete('/{fieldId}', ['uses' => 'Admin\User\UserCustomFieldController@destroy']);
-	$router->delete('/', ['uses' => 'Admin\User\UserCustomFieldController@handleError']);
+$router->group(['prefix' => 'metadata/users/custom_fields', 'middleware' => 'localization|auth.tenant.admin'], function ($router) {
+    $router->get('/', ['uses' => 'Admin\User\UserCustomFieldController@index']);
+    $router->post('/create', ['uses' => 'Admin\User\UserCustomFieldController@store']);
+    $router->patch('/{fieldId}', ['uses' => 'Admin\User\UserCustomFieldController@update']);
+    $router->patch('/', ['uses' => 'Admin\User\UserCustomFieldController@handleError']);
+    $router->delete('/{fieldId}', ['uses' => 'Admin\User\UserCustomFieldController@destroy']);
+    $router->delete('/', ['uses' => 'Admin\User\UserCustomFieldController@handleError']);
+});
+
+
+/* Set skill data for tenant user specific */
+$router->group(['prefix' => 'entities/', 'middleware' => 'localization|auth.tenant.admin'], function ($router) {
+    $router->post('link_skills/', ['uses' => 'Admin\User\UserController@linkSkill']);
+    $router->delete('unlink_skills/', ['uses' => 'Admin\User\UserController@unlinkSkill']);
 });

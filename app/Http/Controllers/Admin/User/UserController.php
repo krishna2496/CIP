@@ -1,32 +1,40 @@
 <?php
-
 namespace App\Http\Controllers\Admin\User;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Repositories\User\UserRepository;
 use Illuminate\Support\Facades\Input;
-use App\Models\{User, City, Country, Timezone};
+use App\Models\{City, Country, Timezone};
 use App\Helpers\Helpers;
-use Validator;
-use DB;
+use App\User;
+use Validator, DB;
 
 class UserController extends Controller
 {
+    /**
+     * @var App\Models\User
+     */
     private $user;
-	
-	public function __construct(UserRepository $user)
+    
+    /**
+     * Create a new User controller instance.
+     *
+     * @param  App\Repositories\User\UserRepository $user
+     * @return void
+     */
+    public function __construct(UserRepository $user)
     {
         $this->user = $user;
-	}
-	
-	/**
+    }
+    
+    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request)
-    {		
+    {
         return $this->user->userList($request);
     }
 
@@ -38,7 +46,7 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        return $this->user->store($request);		
+        return $this->user->store($request);
     }
 
     /**
@@ -49,8 +57,8 @@ class UserController extends Controller
      */
     public function show(int $id)
     {
-		return $this->user->find($id);
-	}
+        return $this->user->find($id);
+    }
 
     /**
      * Update the specified resource in storage.
@@ -74,4 +82,16 @@ class UserController extends Controller
     {
         return $this->user->delete($id);
     }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\Response
+     */
+    public function linkSkill(Request $request)
+    {
+        return $this->user->linkSkill($request);
+    }
+
 }
