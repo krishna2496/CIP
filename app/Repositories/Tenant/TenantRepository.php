@@ -2,13 +2,10 @@
 namespace App\Repositories\Tenant;
 
 use App\Repositories\Tenant\TenantInterface;
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
-use Validator;
-use PDOException;
+use Illuminate\Http\{Request, Response};
+use Validator, PDOException;
 use App\Models\Tenant;
-use App\Jobs\TenantDefaultLanguageJob;
-use App\Jobs\TenantMigrationJob;
+use App\Jobs\{TenantDefaultLanguageJob, TenantMigrationJob};
 use App\Helpers\ResponseHelper;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 

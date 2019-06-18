@@ -49,7 +49,6 @@ class Tenant extends Model {
      * @var array
      */
     public $createRules = [
-        // Validation rules
         'name' => 'required|unique:tenant,name,NULL,tenant_id,deleted_at,NULL',
         'sponsor_id'  => 'required',
     ];
@@ -60,7 +59,6 @@ class Tenant extends Model {
      * @var array
      */
     public $updateRules = [
-        // Validation rules
         'name' => 'required|unique:tenant,name',
         'sponsor_id'  => 'required',
     ];
