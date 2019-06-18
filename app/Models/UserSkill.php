@@ -1,8 +1,7 @@
 <?php
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\{Model, SoftDeletes};
 
 class UserSkill extends Model
 {
@@ -30,10 +29,10 @@ class UserSkill extends Model
     protected $visible = ['user_skill_id', 'user_id', 'skill_id'];
 
     /**
-    * The attributes that are mass assignable.
-    *
-    * @var array
-    */
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
     protected $fillable = ['user_id', 'skill_id'];
 
     /**
@@ -62,7 +61,8 @@ class UserSkill extends Model
     /**
      * Delete the specified resource.
      *
-     * @param  int  $id
+     * @param  int  $user_id
+     * @param  int  $skill_id
      * @return array
      */
     public function deleteUserSkill(int $user_id, int $skill_id)

@@ -1,18 +1,34 @@
 <?php
-
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\{Model, SoftDeletes};
 
 class Timezone extends Model
 {
-    protected $table = 'timezone';
-    protected $primaryKey = 'timezone_id';
-	protected $visible = ['timezone_id', 'timezone', 'offset', 'status'];
-
     use SoftDeletes;
-     /**
+
+    /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
+    protected $table = 'timezone';
+
+    /**
+     * The primary key for the model.
+     *
+     * @var string
+     */
+    protected $primaryKey = 'timezone_id';
+
+    /**
+     * The attributes that should be visible in arrays.
+     *
+     * @var array
+     */
+    protected $visible = ['timezone_id', 'timezone', 'offset', 'status'];
+
+    /**
      * The attributes that are mass assignable.
      *
      * @var array

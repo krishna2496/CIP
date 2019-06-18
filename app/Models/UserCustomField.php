@@ -1,21 +1,29 @@
 <?php
+namespace App\Models;
 
-namespace App;
-
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\{Model, SoftDeletes};
 
 class UserCustomField extends Model
 {
+    use SoftDeletes;
+    /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
     protected $table = 'user_custom_field';
+    
+    /**
+     * The primary key for the model.
+     *
+     * @var string
+     */
     protected $primaryKey = 'field_id';
 
-    use SoftDeletes;
-     /**
+    /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = ['name', 'type', 'translations', 'is_mandatory'];
-
 }

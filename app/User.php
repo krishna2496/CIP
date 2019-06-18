@@ -3,17 +3,14 @@ namespace App;
 
 use Illuminate\Auth\Authenticatable;
 use Laravel\Lumen\Auth\Authorizable;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\{Model, SoftDeletes};
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use Illuminate\Auth\Passwords\CanResetPassword as CanResetPasswordTrait;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordInterface;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Hash;
-use App\Models\City;
-use App\Models\Country;
-use App\Models\Timezone;
+use App\Models\{City, Country, Timezone};
 
 class User extends Model implements AuthenticatableContract, AuthorizableContract, CanResetPasswordInterface
 {
