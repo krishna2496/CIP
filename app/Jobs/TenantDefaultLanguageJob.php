@@ -1,9 +1,7 @@
 <?php
 namespace App\Jobs;
 
-use App\Helpers\ResponseHelper;
-use App\Models\{Tenant, Language};
-use DB;
+use App\Models\Tenant;
 
 class TenantDefaultLanguageJob extends Job
 {

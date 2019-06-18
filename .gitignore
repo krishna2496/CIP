@@ -10,3 +10,4 @@ Homestead.yaml
 /public/uploads
 /.htaccess
 composer.lock
+/node_modules

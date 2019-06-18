@@ -29,6 +29,7 @@ $app->configure('database');
 $app->configure('errors');
 $app->configure('messages');
 $app->configure('constants'); //constant file config
+$app->configure('filesystems');
 
 $app->register(Flipbox\LumenGenerator\LumenGeneratorServiceProvider::class);
 

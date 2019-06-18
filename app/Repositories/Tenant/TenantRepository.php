@@ -5,7 +5,7 @@ use App\Repositories\Tenant\TenantInterface;
 use Illuminate\Http\{Request, Response};
 use Validator, PDOException;
 use App\Models\Tenant;
-use App\Jobs\{TenantDefaultLanguageJob, TenantMigrationJob};
+use App\Jobs\{TenantDefaultLanguageJob, TenantMigrationJob, CreateFolderInS3BucketJob};
 use App\Helpers\ResponseHelper;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
@@ -82,16 +82,17 @@ class TenantRepository implements TenantInterface
 
             $tenant = $this->tenant->create($request->toArray());
 
-            dispatch(new TenantDefaultLanguageJob($tenant));
-
-            // ONLY FOR TESTING START Create api_user data (PLEASE REMOVE THIS CODE IN PRODUCTION MODE)
+            // ONLY FOR DEVELOPMENT MODE. (PLEASE REMOVE THIS CODE IN PRODUCTION MODE)
             if (env('APP_ENV')=='local') {
+            
+                dispatch(new TenantDefaultLanguageJob($tenant));
+            
                 $apiUserData['api_key'] = base64_encode($tenant->name.'_api_key');
                 $apiUserData['api_secret'] = base64_encode($tenant->name.'_api_secret');
                 // Insert api_user data into table
                 $tenant->apiUsers()->create($apiUserData);
             }
-            // ONLY FOR TESTING END
+            // ONLY FOR DEVELOPMENT MODE END
 
             // Add options data into `tenant_has_option` table
             if (isset($request->options) && count($request->options) > 0) {
@@ -110,9 +111,14 @@ class TenantRepository implements TenantInterface
             // Job dispatched to create new tenant's database and migrations
             dispatch(new TenantMigrationJob($tenant));
 
+            // Create assets folder for tenant on AWS s3 bucket
+            dispatch(new CreateFolderInS3BucketJob($tenant));
+
             return ResponseHelper::success($apiStatus, $apiMessage, $apiData);
         } catch (PDOException $e) {
             throw new PDOException($e->getMessage());
+        } catch (\InvalidArgumentException $e) {
+            throw new \InvalidArgumentException($e->getMessage());
         } catch (\Exception $e) {
             throw new \Exception($e->getMessage());
         }
