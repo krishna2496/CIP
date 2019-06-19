@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Input;
 use Validator, DB, PDOException;
 use App\Helpers\ResponseHelper;
+use Illuminate\Validation\Rule;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class FooterPageController extends Controller
@@ -118,11 +119,9 @@ class FooterPageController extends Controller
         try {
 			// Server side validataions
 			$validator = Validator::make($request->all(), ["page_details" => "required", 
-															"page_details.slug" => "required",
-															"page_details.translations" => "required",
-															"page_details.translations.*.lang" => "required",
-															"page_details.translations.*.title" => "required",
-															"page_details.translations.*.sections" => "required",
+															"page_details.translations.*.lang" => "required_with:page_details.translations",
+															"page_details.translations.*.title" => "required_with:page_details.translations",
+															"page_details.translations.*.sections" => "required_with:page_details.translations",
 															]);
 			
 			// If post parameter have any missing parameter
