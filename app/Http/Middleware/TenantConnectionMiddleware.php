@@ -2,7 +2,7 @@
 
 namespace App\Http\Middleware;
 use Illuminate\Support\Facades\Config;
-use App\Helpers\Helpers;
+use App\Helpers\{Helpers, DatabaseHelper};
 use Closure;
 use Firebase\JWT\JWT;
 use DB;
@@ -53,40 +53,10 @@ class TenantConnectionMiddleware
                                         trans('messages.custom_error_code.ERROR_40008'), 
                                         trans('messages.custom_error_message.40008'));
             }
-            $this->createConnection($tenant);
-        }        
+            DatabaseHelper::createConnection($tenant->tenant_id);
+        }
         $response = $next($request);
 
         return $response;
-    }
-    /**
-     * Create connection with specific tenant.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @param \Closure $next
-     * @return mixed
-     */
-    public function createConnection($tenant)
-    {        
-        Config::set('database.connections.tenant', array(
-            'driver'    => 'mysql',
-            'host'      => env('DB_HOST'),
-            'database'  => 'ci_tenant_'.$tenant->tenant_id,
-            'username'  => env('DB_USERNAME'),
-            'password'  => env('DB_PASSWORD'),
-        ));        
-        try {
-            // Create connection for the tenant database
-            $pdo = DB::connection('tenant')->getPdo();
-            // Set default database
-            Config::set('database.default', 'tenant');
-        } catch (\PDOException $e) {
-            if ($e instanceof \PDOException) {            
-                return Helpers::errorResponse(trans('messages.status_code.HTTP_STATUS_FORBIDDEN'), 
-                                        trans('messages.status_type.HTTP_STATUS_TYPE_403'), 
-                                        trans('messages.custom_error_code.ERROR_41000'), 
-                                        trans('messages.custom_error_message.41000'));
-            }
-        }        
     }
 }

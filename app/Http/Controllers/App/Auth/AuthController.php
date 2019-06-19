@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\App\Auth;
 
 use Validator;
-use App\Models\User;
+use App\User;
 use Firebase\JWT\JWT;
 use Illuminate\Http\{Request, Response};
 use App\Http\Controllers\Controller;
@@ -141,6 +141,7 @@ class AuthController extends Controller {
         
         //get referer url using helper 
         $refererUrl = Helpers::getRefererFromRequest($request);
+        dd($refererUrl);
         config(['app.mail_url' => $refererUrl.'/reset-password/']);
 
         //set tenant logo

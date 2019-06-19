@@ -1,32 +1,33 @@
 <?php
-
 namespace App\Http\Controllers\Admin\User;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Repositories\User\UserRepository;
 use Illuminate\Support\Facades\Input;
-use App\Models\{User, City, Country, Timezone};
+use App\User;
+use App\Models\City;
+use App\Models\Country;
+use App\Models\Timezone;
 use App\Helpers\Helpers;
-use Validator;
-use DB;
+use Validator, DB;
 
 class UserController extends Controller
 {
     private $user;
-	
-	public function __construct(UserRepository $user)
+    
+    public function __construct(UserRepository $user)
     {
         $this->user = $user;
-	}
-	
-	/**
+    }
+    
+    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request)
-    {		
+    {
         return $this->user->userList($request);
     }
 
@@ -38,7 +39,7 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        return $this->user->store($request);		
+        return $this->user->store($request);
     }
 
     /**
@@ -49,8 +50,8 @@ class UserController extends Controller
      */
     public function show(int $id)
     {
-		return $this->user->find($id);
-	}
+        return $this->user->find($id);
+    }
 
     /**
      * Update the specified resource in storage.

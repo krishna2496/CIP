@@ -5,7 +5,7 @@ namespace App\Repositories\User;
 use App\Repositories\User\UserInterface;
 use Illuminate\Http\{Request, Response};
 use Validator, PDOException, DB;
-use App\Models\User;
+use App\User;
 use App\Helpers\{Helpers, ResponseHelper};
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
