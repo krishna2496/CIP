@@ -22,7 +22,9 @@ return [
 		'MESSAGE_CUSTOM_FIELD_UPDATE_SUCCESS' => 'User custom field updated successfully',
 		'MESSAGE_CUSTOM_FIELD_DELETE_SUCCESS' => 'User custom field deleted successfully',
 		'MESSAGE_NO_RECORD_FOUND' => 'No records found',
-		'MESSAGE_USER_LISTING' => 'User listing successfully'
+		'MESSAGE_USER_LISTING' => 'User listing successfully',
+		'MESSAGE_CUSTOM_STYLE_UPLOADED_SUCCESS' => 'Custom styling data uploaded successfully',
+		'MESSAGE_CUSTOM_STYLE_RESET_SUCCESS' => 'Custom styling reset successfully'
 	],
 	
 	/**
