@@ -117,7 +117,8 @@ $router->group(['prefix' => 'metadata/users/custom_fields', 'middleware' => 'loc
 
 
 /* Set skill data for tenant user specific */
-$router->group(['prefix' => 'entities/', 'middleware' => 'localization|auth.tenant.admin'], function ($router) {
-    $router->post('link_skills/', ['uses' => 'Admin\User\UserController@linkSkill']);
-    $router->delete('unlink_skills/', ['uses' => 'Admin\User\UserController@unlinkSkill']);
+$router->group(['prefix' => 'entities/skills', 'middleware' => 'localization|auth.tenant.admin'], function ($router) {
+    $router->get('/{userId}', ['uses' => 'Admin\User\UserController@userSkills']);
+    $router->post('/', ['uses' => 'Admin\User\UserController@linkSkill']);
+    $router->delete('/', ['uses' => 'Admin\User\UserController@unlinkSkill']);
 });

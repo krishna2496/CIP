@@ -122,6 +122,16 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     }
     
     /**
+     * Defined has one relation for the user_skill table.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function userSkills()
+    {
+        return $this->hasMany(UserSkill::class, 'user_id', 'user_id');
+    }
+
+    /**
      * The is set attribute method for password. This will make has of entered password, before insert.
      *
      * @param string $password

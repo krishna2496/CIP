@@ -2,6 +2,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\{Model, SoftDeletes};
+use App\Models\Skill;
 
 class UserSkill extends Model
 {
@@ -26,7 +27,7 @@ class UserSkill extends Model
      *
      * @var array
      */
-    protected $visible = ['user_skill_id', 'user_id', 'skill_id'];
+    protected $visible = ['user_skill_id', 'skill_id,', 'skill'];
 
     /**
      * The attributes that are mass assignable.
@@ -34,17 +35,6 @@ class UserSkill extends Model
      * @var array
      */
     protected $fillable = ['user_id', 'skill_id'];
-
-    /**
-     * The rules that should validate reset password request.
-     *
-     * @var array
-     */
-    public $rules = [
-        'user_id' => 'required',
-        'skills' => 'required',
-        'skills.*.skill_id' => 'required|string',
-    ];
 
     /**
      * Find the specified resource.
@@ -69,4 +59,30 @@ class UserSkill extends Model
     {
         return static::where(['user_id' => $user_id, 'skill_id' => $skill_id])->delete();
     }
+
+    /**
+     * Defined relation for the skill table.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function skill()
+    {
+        return $this->belongsTo(Skill::class, 'skill_id', 'skill_id');
+    }
+
+     /**
+     * Find the specified resource.
+     *
+     * @param  int  $user_id
+     * @return array
+     */
+    public function find(int $user_id)
+    {
+        $skillQuery =static::with('skill');                     
+        $userSkill = $skillQuery->where('user_id', $user_id)
+                ->paginate(config('constants.PER_PAGE_LIMIT'));
+        return $userSkill;
+    }
+
+     
 }

@@ -27,7 +27,7 @@ class UserRepository implements UserInterface
     private $response;
 
     /**
-     * Create a new User controller instance.
+     * Create a new User repository instance.
      *
      * @param  App\User $user
      * @param  Illuminate\Http\Response $response
@@ -197,42 +197,46 @@ class UserRepository implements UserInterface
      */
     public function linkSkill(Request $request)
     {
-        try {
-            // Server side validataions
-            $validator = Validator::make($request->toArray(), $this->userSkill->rules);
-
-            // If request parameter have any error
-            if ($validator->fails()) {
-                return ResponseHelper::error(
-                    trans('messages.status_code.HTTP_STATUS_UNPROCESSABLE_ENTITY'),
-                    trans('messages.status_type.HTTP_STATUS_TYPE_422'),
-                    trans('messages.custom_error_code.ERROR_200002'),
-                    $validator->errors()->first()
-                );
-            }
-
-            foreach ($request->skills as $value) {
-                $skill = array(
-                    'user_id' => $request->user_id,
-                    'skill_id' => $value['skill_id'],
-                );
-                
-                $skillData = $this->userSkill->findUserSkill($request->user_id, $value['skill_id']);
-                if (count($skillData) < 1) {
-                    $this->userSkill->create($skill);
-                }
-                unset($skill);
-            }
-            // Set response data
-            $apiStatus = trans('messages.status_code.HTTP_STATUS_CREATED');
-            $apiMessage = trans('messages.success.MESSAGE_USER_SKILLS_CREATED');
+        $userSkill = $this->userSkill;
+        foreach ($request->skills as $value) {
+            $skill = array(
+                'user_id' => $request->user_id,
+                'skill_id' => $value['skill_id'],
+            );
             
-            return ResponseHelper::success($apiStatus, $apiMessage);
-        } catch (PDOException $e) {
-            throw new PDOException($e->getMessage());
-        } catch (\Exception $e) {
-            throw new \Exception($e->getMessage());
+            $skillData = $this->userSkill->findUserSkill($request->user_id, $value['skill_id']);
+            if (count($skillData) < 1) {
+                $userSkill = $this->userSkill->create($skill);
+            }
+            unset($skill);
         }
+        return $userSkill;
     }
     
+    /**
+     * Remove the specified resource from storage
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return mixed
+     */
+    public function unlinkSkill(Request $request)
+    {
+        $userSkill = $this->userSkill; 
+        foreach ($request->skills as $value) {
+            $userSkill = $this->userSkill->deleteUserSkill($request->user_id, $value['skill_id']);
+        }
+        return $userSkill;
+    }
+
+    /**
+     * Display a listing of specified resources.
+     *
+     * @param int $user_id
+     * @return mixed
+     */
+    public function userSkills(int $user_id)
+    {
+        $userSkill = $this->userSkill->find($user_id);   
+        return $userSkill;
+    }
 }

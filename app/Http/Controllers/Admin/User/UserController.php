@@ -1,12 +1,12 @@
 <?php
 namespace App\Http\Controllers\Admin\User;
 
-use Illuminate\Http\Request;
+use Illuminate\Http\{Request, Response};
+use App\Helpers\{Helpers, ResponseHelper};
 use App\Http\Controllers\Controller;
 use App\Repositories\User\UserRepository;
 use Illuminate\Support\Facades\Input;
 use App\Models\{City, Country, Timezone};
-use App\Helpers\Helpers;
 use App\User;
 use Validator, DB;
 
@@ -23,9 +23,10 @@ class UserController extends Controller
      * @param  App\Repositories\User\UserRepository $user
      * @return void
      */
-    public function __construct(UserRepository $user)
+    public function __construct(UserRepository $user, Response $response)
     {
         $this->user = $user;
+        $this->response = $response;
     }
     
     /**
@@ -91,7 +92,91 @@ class UserController extends Controller
      */
     public function linkSkill(Request $request)
     {
-        return $this->user->linkSkill($request);
+        try {
+            $validator = Validator::make($request->toArray(), [
+                'user_id' => 'required',
+                'skills' => 'required',
+                'skills.*.skill_id' => 'required|string',
+            ]);
+
+            // If request parameter have any error
+            if ($validator->fails()) {
+                return ResponseHelper::error(
+                    trans('messages.status_code.HTTP_STATUS_UNPROCESSABLE_ENTITY'),
+                    trans('messages.status_type.HTTP_STATUS_TYPE_422'),
+                    trans('messages.custom_error_code.ERROR_200002'),
+                    $validator->errors()->first()
+                );
+            }
+
+            $userSkill = $this->user->linkSkill($request);
+
+            // Set response data
+            $apiStatus = trans('messages.status_code.HTTP_STATUS_CREATED');
+            $apiMessage = trans('messages.success.MESSAGE_USER_SKILLS_CREATED');
+            
+            return ResponseHelper::success($apiStatus, $apiMessage);
+        } catch (PDOException $e) {
+            throw new PDOException($e->getMessage());
+        } catch (\Exception $e) {
+            throw new \Exception($e->getMessage());
+        }
     }
 
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\Response
+     */
+    public function unlinkSkill(Request $request)
+    {
+        try {
+            // Server side validataions
+            $validator = Validator::make($request->toArray(), [
+                'user_id' => 'required',
+                'skills' => 'required',
+                'skills.*.skill_id' => 'required|string',
+            ]);
+
+            // If request parameter have any error
+            if ($validator->fails()) {
+                return ResponseHelper::error(
+                    trans('messages.status_code.HTTP_STATUS_UNPROCESSABLE_ENTITY'),
+                    trans('messages.status_type.HTTP_STATUS_TYPE_422'),
+                    trans('messages.custom_error_code.ERROR_200002'),
+                    $validator->errors()->first()
+                );
+            }
+
+            $userSkill = $this->user->unlinkSkill($request);
+            // Set response data
+            $apiStatus = $this->response->status();
+            $apiMessage = trans('messages.success.MESSAGE_USER_SKILLS_DELETED');
+            
+            return ResponseHelper::success($apiStatus, $apiMessage);
+        } catch (PDOException $e) {
+            throw new PDOException($e->getMessage());
+        } catch (\Exception $e) {
+            throw new \Exception($e->getMessage());
+        }
+    }
+
+    /**
+     * Display a listing of the resource.
+     * @param int $user_id
+     * @return \Illuminate\Http\Response
+     */
+    public function userSkills(int $user_id)
+    {
+         try {            
+            $skillList = $this->user->userSkills($user_id);
+
+            $responseMessage = (count($skillList) > 0) ? trans('messages.success.MESSAGE_USER_LISTING') : trans('messages.success.MESSAGE_NO_RECORD_FOUND');
+            
+            return ResponseHelper::successWithPagination($this->response->status(), $responseMessage, $skillList);
+        } catch (\InvalidArgumentException $e) {
+            throw new \InvalidArgumentException($e->getMessage());
+        }
+    }
 }
