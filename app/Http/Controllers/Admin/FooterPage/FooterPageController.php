@@ -30,36 +30,35 @@ class FooterPageController extends Controller
     {
         try { 
 			
-			$footerPage = $this->page->footerPageList($request);
-			print_R($footerPage);exit;
-			if (empty($pageList)) {
+			$footerPages = $this->page->footerPageList($request)->toArray();
+			if (empty($footerPages)) {
                 // Set response data
                 $apiStatus = trans('messages.status_code.HTTP_STATUS_NOT_FOUND');
                 $apiMessage = trans('messages.custom_error_message.MESSAGE_NO_RECORD_FOUND');
                 return ResponseHelper::error($apiStatus, $apiMessage);
             }
 			
-            $pageList = array();
-            foreach ($footerPage as $value) { 
-                // Get data from child table                   
-                $footerPageLanguage = FooterPagesLanguage::where('page_id', $value['page_id'])->get();
-                $footerPageList = array();
-                foreach ($footerPageLanguage as $language) {
-                    $footerPageList[] = array('page_id' => $language['page_id'],
-                                        'language_id' => $language['language_id'],
-                                        'title' => $language['title'],
-                                        'section' => (@unserialize($language['description']) === false) ? $language['description'] : unserialize($language['description']),
+			$pageList = array();
+            foreach ($footerPages['data'] as $page) {
+				$footerPageLanguageData = array();
+                foreach ($page['page_languages'] as $pageLanguageData) {
+                    $footerPageLanguageData[] = array('language_id' => $pageLanguageData['language_id'],
+											'page_title' => $pageLanguageData['title'],
+											'sections' => (@unserialize($pageLanguageData['description']) === false) ? $pageLanguageData['description'] : unserialize($pageLanguageData['description']),
                                         );
                 }
-                $pageList[] = array('slug'  => $value['slug'],
-                                    'pages' => $footerPageList
+                $pageList[] = array('page_id' => $page['page_id'],
+									'status' => $page['status'],
+									'slug'  => $page['slug'],
+                                    'translations' => $footerPageLanguageData
                                     );
             }
-            // Set response data
+			
+			// Set response data
             $apiData = $pageList; 
             $apiStatus = app('Illuminate\Http\Response')->status();
-            $apiMessage = trans('api_success_messages.success_message.MESSAGE_CMS_LIST_SUCCESS');
-            return Helpers::response($apiStatus, $apiMessage, $apiData);                  
+            $apiMessage = trans('messages.success.MESSAGE_FOOTER_PAGE_LISTING');
+            return ResponseHelper::success($apiStatus, $apiMessage, $apiData);                  
         } catch(\Exception $e) {
 			dd($e);
             // Catch database exception
