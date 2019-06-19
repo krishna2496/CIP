@@ -7,12 +7,12 @@ export default async(data, langList, defautLang) => {
         let listOfSliderObjects = Object.keys(data.slider).map((key) => {
             return data.slider[key]
         })
-        
-        store.commit('setSlider',JSON.stringify(data.slider))
-    }else{
+
+        store.commit('setSlider', JSON.stringify(data.slider))
+    } else {
         var sliderData = [];
-        store.commit('setSlider',JSON.stringify(sliderData))
-    }   
+        store.commit('setSlider', JSON.stringify(sliderData))
+    }
 
     // Store language in Local Storage
     if (data.language) {
@@ -30,39 +30,37 @@ export default async(data, langList, defautLang) => {
         // If options exist
         if (listOfObjects) {
 
-            store.commit('setLanguageList',JSON.stringify(listOfObjects))
+            store.commit('setLanguageList', JSON.stringify(listOfObjects))
 
             if (defaultLanguageDataChange == true) {
                 var defaultLanguageData = []
                 defaultLanguageData["selectedVal"] = (data.defaultLanguage) ? data.defaultLanguage : listOfObjects[0][1];
                 defaultLanguageData["selectedId"] = (data.defaultLanguageId) ? data.defaultLanguageId : listOfObjects[0][0];
-                store.commit('setDefaultLanguage',defaultLanguageData)
+                store.commit('setDefaultLanguage', defaultLanguageData)
             }
 
         } else {
-            store.commit('setLanguageList',JSON.stringify(langList))
+            store.commit('setLanguageList', JSON.stringify(langList))
             var defaultLanguageData = []
             defaultLanguageData["selectedVal"] = (data.defaultLanguage) ? data.defaultLanguage : defautLang;
-            defaultLanguageData["selectedId"] =  (data.defaultLanguageId) ? data.defaultLanguageId : "";
-            store.commit('setDefaultLanguage',defaultLanguageData)
+            defaultLanguageData["selectedId"] = (data.defaultLanguageId) ? data.defaultLanguageId : "";
+            store.commit('setDefaultLanguage', defaultLanguageData)
         }
 
     } else {
-        store.commit('setLanguageList',JSON.stringify(langList))
+        store.commit('setLanguageList', JSON.stringify(langList))
         var defaultLanguageData = []
         defaultLanguageData["selectedVal"] = defautLang;
         defaultLanguageData["selectedId"] = "";
-        store.commit('setDefaultLanguage',defaultLanguageData)
+        store.commit('setDefaultLanguage', defaultLanguageData)
     }
 
     //Set logo in local storage
     var logo = '';
     if (data.custom_logo) {
-        // Convert slider object to array
         var logo = data.custom_logo;
     }
 
-    store.commit('setLogo',logo)
-  
-}
+    store.commit('setLogo', logo)
 
+}

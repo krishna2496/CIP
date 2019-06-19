@@ -24,42 +24,40 @@ Vue.use(BootstrapVue);
 Vue.use(VueScrollTo);
 Vue.use(BackToTop);
 AOS.init({
-  once: true,
-  easing: "ease-in-out",
-  duration: 700,
-  offset: 0
+    once: true,
+    easing: "ease-in-out",
+    duration: 700,
+    offset: 0
 });
-
 // call vue axios interceptors
 interceptorsSetup();
-
 // check requirment of authentication for path
 router.beforeEach((to, from, next) => {
-  if (to.meta.requiresAuth && !store.state.isLoggedIn) {
-    next({ name: "login" });
-    return;
-  }
-  if (
-    (to.path === "/" ||
-      to.path === "/forgot-password" ||
-      to.path === "/reset-password") &&
-    store.state.isLoggedIn
-  ) {
-    next({ name: "home" });
-    return;
-  }
-  next();
+    if (to.meta.requiresAuth && !store.state.isLoggedIn) {
+        next({
+            name: "login"
+        });
+        return;
+    }
+    if ((to.path === "/" || to.path === "/forgot-password" || to.path === "/reset-password") &&
+        store.state.isLoggedIn) {
+        next({
+            name: "home"
+        });
+        return;
+    }
+    next();
 });
 
 new Vue({
-  router,
-  store,
-  BootstrapVue,
-  custom,
-  SimpleBar,
-  VueScrollTo,
-  i18n,
-  AOS,
-  BackToTop,
-  render: h => h(App)
+    router,
+    store,
+    BootstrapVue,
+    custom,
+    SimpleBar,
+    VueScrollTo,
+    i18n,
+    AOS,
+    BackToTop,
+    render: h => h(App)
 }).$mount("#app");

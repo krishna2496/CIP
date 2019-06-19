@@ -23,16 +23,15 @@ import store from '../store';
 import axios from "axios";
 
 export default {
-	name: "SigninSlider",
+	name: "Slider",
 	data() {
 		return {
 			carouselItems: [],
 			isDynamicCarsousetSet : false
 		};
 	},
-
 	created(){
-		if(JSON.parse(store.state.slider).length > 0) { 
+		if (JSON.parse(store.state.slider).length > 0) { 
 		   this.carouselItems = JSON.parse(store.state.slider);
 		   this.isDynamicCarsousetSet =true
 		}
@@ -40,13 +39,13 @@ export default {
 	methods:{
 		getTitle: (translations) => {
 			// Fetch slider title by language
-			if(translations){
+			if (translations) {
 				var filteredObj  = translations.filter(function (item, i) { 
-				if(item.lang === store.state.defaultLanguage.toLowerCase()){
+				if (item.lang === store.state.defaultLanguage.toLowerCase()) {
 					return translations[i].slider_title;
 				}
 				});
-				if(filteredObj[0].slider_title){
+				if (filteredObj[0].slider_title) {
 			   		return filteredObj[0].slider_title;
 			   	}
 			}
@@ -54,13 +53,13 @@ export default {
 
 		getDescription: (translations) => {
 			// Fetch slider description by language
-			if(translations){
+			if (translations) {
 				var filteredObj  = translations.filter(function (item, i) { 
-				if(item.lang === store.state.defaultLanguage.toLowerCase()){
+				if (item.lang === store.state.defaultLanguage.toLowerCase()) {
 					return translations[i].slider_description;
 				}
 				});
-				if(filteredObj[0].slider_description){
+				if (filteredObj[0].slider_description) {
 					return filteredObj[0].slider_description;
 				}
 			}

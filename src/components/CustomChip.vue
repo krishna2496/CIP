@@ -6,7 +6,7 @@
             </i>
             {{textVal}}
             <i class="chip-close">
-            <img src="../assets/images/cross-ic.svg" alt="close"/>
+                <img src="../assets/images/cross-ic.svg" alt="close"/>
             </i>
         </span>
     </div>
@@ -14,13 +14,12 @@
 <script>
     export default {
         name: "CustomChip",
-         props: {
+        props: {
             textVal : String,
             url: String,
         },
         data() {
-            return {
-            };
+            return {};
         },
         methods: {},
     };
