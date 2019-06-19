@@ -39,7 +39,7 @@
                                         {{mission.title}}
                                     </h2>
                                     <b-card-text>
-                                        {{mission.short_description}}
+                                        {{shortDescriptionSubString(mission.short_description)}}
                                     </b-card-text>
                                     <div class="group-ratings">
                                         <span class="group-name">{{mission.organisation_name}}</span>
@@ -121,6 +121,7 @@
                                                     <span class="subtitle-text">{{ $t("label.already_volunteered") }}</span>
                                                 </div>
                                             </template>
+
                                             </div>
                                         </div>
                                     </template>
@@ -208,13 +209,21 @@ export default {
                 }
             }
         },
-
+        // Is default media is video or not
         checkDefaultMediaFormat(mediaType) {
             return mediaType != constants.YOUTUBE_VIDEO_FORMAT
         },
-
+        // Check mission type
         checkMissionTypeTime(missionType) {
             return missionType == constants.MISSION_TYPE_TIME
+        },
+        // Get sub string of short description
+        shortDescriptionSubString(shortDescription) {
+            if (shortDescription.length <= constants.MISSION_GRID_VIEW_SHORT_DESCRIPTION_CHARACTER) {
+                return shortDescription
+            } else {
+                return shortDescription.substring(0,constants.MISSION_GRID_VIEW_SHORT_DESCRIPTION_CHARACTER)+"...";
+            }
         }
     },
     mounted(){          

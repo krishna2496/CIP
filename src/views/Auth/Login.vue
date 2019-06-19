@@ -58,8 +58,7 @@ import CustomDropdown from '../../components/CustomDropdown';
 import { required, email, minLength, between } from 'vuelidate/lib/validators';
 import store from '../../store';
 import axios from "axios";
-import {storeTenantOption,loadLocaleMessages} from '../../services/service';
-import { mapActions } from 'vuex';
+import {loadLocaleMessages,login,databaseConnection} from '../../services/service';
 
 export default {
     components: {       
@@ -71,7 +70,7 @@ export default {
         return {
             flag: false,
             myValue: '',
-            defautLang: 'EN',
+            defautLang: '',
             langList: [],
             login: {
                 email: '',
@@ -92,25 +91,12 @@ export default {
     },
     methods: {
         async createConnection(){
-            await axios.get(process.env.VUE_APP_API_ENDPOINT+"connect")
-                .then((response) => {
-                    if (response.data.data) {
-                        //store tenant option to Local Storage
-                        storeTenantOption(response.data.data,this.langList,this.defautLang);                           
-                        //Get langauage list from Local Storage
-                        this.langList = JSON.parse(store.state.listOfLanguage)
-                        this.defautLang = store.state.defaultLanguage
-                        this.isShowComponent = true                          
-                    }else{
-                        var dataList = [];
-                        storeTenantOption(dataList,this.langList,this.defautLang);
-                    } 
-                   
-                })
-                .catch(error => {
-                    // this.createConnection();
-                })
-               
+            await databaseConnection(this.langList,this.defautLang).then(response => {
+                    this.isShowComponent = true
+                    //Get langauage list from Local Storage
+                    this.langList = JSON.parse(store.state.listOfLanguage)
+                    this.defautLang = store.state.defaultLanguage   
+            })       
         },
         
         async setLanguage(language){
@@ -120,7 +106,7 @@ export default {
             this.$i18n.locale = language.selectedVal.toLowerCase()
             await loadLocaleMessages(this.$i18n.locale);   
             _this.$forceUpdate();
-            _this.$refs.Footer.$forceUpdate()
+            _this.$refs.PrimaryFooter.$forceUpdate()
         },
 
         handleSubmit(e) {
@@ -130,23 +116,21 @@ export default {
             if (this.$v.$invalid) {
                 return;
             }
-            // login api call with params email address and password
-            axios.post(process.env.VUE_APP_API_ENDPOINT+"login", this.login,
-               ).then((response) => {
-                        //Store token in local storage                            
-                        store.commit('loginUser',response.data.data)
-                        //redirect to landing page
-                        this.$router.replace({ name: "home" });
-                    })
-                    .catch(error => {
-                        if(error.response.data.errors[0].message){
-                            this.message = null;
-                            this.showDismissibleAlert = true
-                            this.classVariant = 'danger'
-                            //set error msg
-                            this.message = error.response.data.errors[0].message  
-                        }
-                    })
+            // Call to login service with params email address and password
+            login(this.login).then( response => {
+                if (response.error === true) { 
+                    this.message = null;
+                    this.showDismissibleAlert = true
+                    this.classVariant = 'danger'
+                    //set error msg
+                    this.message = response.message
+                } else {
+                    //redirect to landing page
+                    this.$router.replace({
+                        name: "home"
+                    });
+                }
+            });
         },
     },
     mounted() {

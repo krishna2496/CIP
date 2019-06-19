@@ -67,7 +67,7 @@ import PrimaryFooter from "../../components/Layouts/PrimaryFooter";
 import CustomDropdown from '../../components/CustomDropdown';
 import store from '../../store';
 import { required, email,sameAs, minLength, between } from 'vuelidate/lib/validators';
-import {loadLocaleMessages} from '../../services/service';
+import {loadLocaleMessages,resetPassword} from '../../services/service';
 import axios from "axios";
 
 export default {
@@ -121,32 +121,60 @@ methods:{
         return;
     }
     // reset password api call with params token,email,password,password_conformation
-    axios.put(process.env.VUE_APP_API_ENDPOINT+"password_reset",{
-        "reset_password_token":this.resetPassword.token,
-        "email" :this.resetPassword.email,
-        "password":this.resetPassword.password,
-        "password_confirmation":this.resetPassword.confirmPassword
-    }).then((response) => {
-        this.message = null;
-        this.showDismissibleAlert = true
-        this.classVariant = 'success'
-        //set success msg
-        this.message = response.data.message 
-        //Reset to blank
-        this.submitted = false;
-        this.resetPassword.password = ''
-        this.resetPassword.confirmPassword = ''
-        this.$v.$reset();  
-    }) .catch(error => {
-        if (error.response.data.errors[0].message) {
-            this.message = null;
-            this.showDismissibleAlert = true
-            this.classVariant = 'danger'
-            //set error msg
-            this.message = error.response.data.errors[0].message  
-        }
+//     axios.put(process.env.VUE_APP_API_ENDPOINT+"password_reset",{
+//         "reset_password_token":this.resetPassword.token,
+//         "email" :this.resetPassword.email,
+//         "password":this.resetPassword.password,
+//         "password_confirmation":this.resetPassword.confirmPassword
+//     }).then((response) => {
+//         this.message = null;
+//         this.showDismissibleAlert = true
+//         this.classVariant = 'success'
+//         //set success msg
+//         this.message = response.data.message 
+//         //Reset to blank
+//         this.submitted = false;
+//         this.resetPassword.password = ''
+//         this.resetPassword.confirmPassword = ''
+//         this.$v.$reset();  
+//     }) .catch(error => {
+//         if (error.response.data.errors[0].message) {
+//             this.message = null;
+//             this.showDismissibleAlert = true
+//             this.classVariant = 'danger'
+//             //set error msg
+//             this.message = error.response.data.errors[0].message  
+//         }
 
-})
+// })
+let resetPasswordData = {};
+resetPasswordData.reset_password_token = this.resetPassword.token;
+resetPasswordData.email = this.resetPassword.email;
+resetPasswordData.password = this.resetPassword.password;
+resetPasswordData.password_confirmation = this.resetPassword.confirmPassword;
+
+    // Call to Reset Password service with params token,email,password,password_conformation
+            resetPassword(resetPasswordData).then( response => {
+                if (response.error === true) { 
+                    this.message = null;
+                    this.showDismissibleAlert = true
+                    this.classVariant = 'danger'
+                    //set error msg
+                    this.message = response.message
+                } else {
+                    this.message = null;
+                    this.showDismissibleAlert = true
+                    this.classVariant = 'success'
+                    //set success msg
+                    this.message = response.message 
+                    //Reset to blank
+                    this.submitted = false;
+                    this.resetPassword.password = ''
+                    this.resetPassword.confirmPassword = ''
+                    this.$v.$reset();  
+                }
+            });
+
 },
 },
 created() {

@@ -47,7 +47,7 @@ import Slider from "../../components/Slider";
 import PrimaryFooter from "../../components/Layouts/PrimaryFooter";
 import CustomDropdown from "../../components/CustomDropdown";
 import { required, email, minLength, between } from 'vuelidate/lib/validators';
-import {loadLocaleMessages} from '../../services/service';
+import {loadLocaleMessages,forgotPassword} from '../../services/service';
 import store from '../../store';
 import axios from "axios";
 
@@ -94,27 +94,27 @@ export default {
             this.$v.$touch();
             if (this.$v.$invalid) {
                 return;
-        }
-        // Forgot Password API call with params email address
-        axios.post(process.env.VUE_APP_API_ENDPOINT + "request_password_reset", this.forgotPassword).then(response => {
-            this.message = null;
-            this.showDismissibleAlert = true
-            this.classVariant = 'success'
-            // Set success message
-            this.message = response.data.message  
-            //Reset to blank
-            this.submitted = false;
-            this.forgotPassword.email = '';
-            this.$v.$reset();
-            }).catch(error => {
-            if (error.response.data.errors[0].message) {
-                this.message = null;
-                this.showDismissibleAlert = true
-                this.classVariant = 'danger'
-                // Set error message
-                this.message = error.response.data.errors[0].message
             }
-        })
+            // Call to Forgot Password service with params email address and password
+            forgotPassword(this.forgotPassword).then( response => {
+                if (response.error === true) { 
+                    this.message = null;
+                    this.showDismissibleAlert = true
+                    this.classVariant = 'danger'
+                    // Set error message
+                    this.message = response.message
+                } else {
+                    this.message = null;
+                    this.showDismissibleAlert = true
+                    this.classVariant = 'success'
+                    // Set success message
+                    this.message = response.message  
+                    //Reset to blank
+                    this.submitted = false;
+                    this.forgotPassword.email = '';
+                    this.$v.$reset();
+                }
+            });
         },
     },
     mounted() {

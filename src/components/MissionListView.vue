@@ -179,6 +179,14 @@ export default {
         // Check mission type
         checkMissionTypeTime(missionType) {
             return missionType == constants.MISSION_TYPE_TIME
+        },
+        // Get sub string of short description
+        shortDescriptionSubString(shortDescription) {
+            if (shortDescription.length <= constants.MISSION_LIST_VIEW_SHORT_DESCRIPTION_CHARACTER) {
+                return shortDescription
+            } else {
+                return shortDescription.substring(0,constants.MISSION_LIST_VIEW_SHORT_DESCRIPTION_CHARACTER)+"...";
+            }
         }
     }
 };
