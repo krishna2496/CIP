@@ -26,6 +26,7 @@ return [
         'MESSAGE_USER_SKILLS_CREATED' => 'FR: User skills linked successfully',
         'MESSAGE_USER_SKILLS_DELETED' => 'FR: User skills unlinked successfully',
         'MESSAGE_APPLICATION_LISTING' => 'FR: Mission application listing successfully',
+        'MESSAGE_APPLICATION_UPDATED' => 'FR: Mission application updated successfully',
     ],
     
     /**
@@ -108,6 +109,9 @@ return [
         'ERROR_100000' => '100000',
         'ERROR_100001' => '100001',
         'ERROR_100002' => '100002',
+
+        // Custom error code for Mission Module - 200000 - 209999
+        'ERROR_200000' => '200000',
         
     ],
     
@@ -162,5 +166,8 @@ return [
         '100000' => 'FR: User does not found in system',
         '100001' => 'FR: Invalid user data',
         '100002' => 'FR: Invalid skill data',
+
+        // Custom error code for Mission Module - 200000 - 209999
+        '200000' => 'FR: Invalid application data or missing parameter',
     ]
 ];

@@ -45,4 +45,28 @@ interface UserInterface
      * @return void
      */
     public function delete(int $id);
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @param  Illuminate\Http\Request $userId
+     * @return void
+     */
+    public function userSkills(int $userId);
+
+    /**
+     * Store a new resource.
+     *
+     * @param  \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\Response
+     */
+    public function linkSkill(Request $request);
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\Response
+     */
+    public function unlinkSkill(Request $request);
 }

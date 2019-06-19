@@ -4,7 +4,7 @@ namespace App\Repositories\Mission;
 use App\Repositories\Mission\MissionInterface;
 use Illuminate\Http\{Request, Response};
 use App\Helpers\{Helpers, ResponseHelper};
-use App\Mission;
+use App\Models\Mission;
 use App\Models\MissionApplication;
 use Validator, PDOException, DB;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -63,37 +63,6 @@ class MissionRepository implements MissionInterface
     }
     
     /**
-     * Display a listing of all resources.
-     *
-     * Illuminate\Http\Request $request
-     * @return mixed
-     */
-    public function missionApplicationList(Request $request)
-    {
-        try {
-            $missionQuery = $this->user->with('mission');
-            
-            if ($request->has('search')) {
-                $missionQuery->where(function ($query) use ($request) {
-                    $query->orWhere('first_name', 'like', '%' . $request->input('search') . '%');
-                    $query->orWhere('last_name', 'like', '%' . $request->input('search') . '%');
-                });
-            }
-            if ($request->has('order')) {
-                $orderDirection = $request->input('order', 'asc');
-                $missionQuery->orderBy('user_id', $orderDirection);
-            }
-            
-            $applicationList = $missionQuery->paginate(config('constants.PER_PAGE_LIMIT'));
-            $responseMessage = (count($applicationList) > 0) ? trans('messages.success.MESSAGE_APPLICATION_LISTING') : trans('messages.success.MESSAGE_NO_RECORD_FOUND');
-            
-            return ResponseHelper::successWithPagination($this->response->status(), $responseMessage, $applicationList);
-        } catch (\InvalidArgumentException $e) {
-            throw new \InvalidArgumentException($e->getMessage());
-        }
-    }
-
-    /**
      * Find the specified resource from database
      *
      * @param int $id
@@ -114,5 +83,48 @@ class MissionRepository implements MissionInterface
     {
         
     }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param int $mission_id
+     * @return \Illuminate\Http\Response
+     */
+    public function missionApplications(Request $request, int $missionId)
+    {
+        $missionApplications = $this->missionApplication->find($request, $missionId);   
+        return $missionApplications;
+    }
+
+    /**
+     * Display specified resource.
+     *
+     * @param int $missionId
+     * @param int $applicationId
+     * @return \Illuminate\Http\Response
+     */
+    public function missionApplication(int $missionId, int $applicationId)
+    {
+        $missionApplication = $this->missionApplication->findDetail($missionId, $applicationId);   
+        return $missionApplication;
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param int $missionId
+     * @param int $applicationId
+     * @return \Illuminate\Http\Response
+     */
+    public function updateApplication(Request $request, int $missionId, int $applicationId)
+    {
+        $missionApplication = $this->missionApplication->findOrFail($applicationId);
+        $missionApplication->update($request->toArray());
+        
+        return $missionApplication;
+    }
+    
 
 }

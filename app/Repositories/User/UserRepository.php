@@ -231,12 +231,12 @@ class UserRepository implements UserInterface
     /**
      * Display a listing of specified resources.
      *
-     * @param int $user_id
+     * @param int $userId
      * @return mixed
      */
-    public function userSkills(int $user_id)
+    public function userSkills(int $userId)
     {
-        $userSkill = $this->userSkill->find($user_id);   
+        $userSkill = $this->userSkill->find($userId);   
         return $userSkill;
     }
 }

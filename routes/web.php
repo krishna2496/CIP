@@ -118,7 +118,9 @@ $router->group(['prefix' => 'missions', 'middleware' => 'localization|auth.tenan
     $router->get('/', ['uses' => 'Admin\Mission\MissionController@index']); 
     $router->post('/create', ['uses' => 'Admin\Mission\MissionController@store']);  
     $router->patch('/{missionId}', ['uses' => 'Admin\Mission\MissionController@update']); 
-    $router->get('/{missionId}/applications', ['uses' => 'Admin\Mission\MissionController@getApplications']); 
+    $router->get('/{missionId}/applications', ['uses' => 'Admin\Mission\MissionController@missionApplications']); 
+    $router->get('/{missionId}/applications/{applicationId}', ['uses' => 'Admin\Mission\MissionController@missionApplication']); 
+    $router->patch('/{missionId}/applications/{applicationId}', ['uses' => 'Admin\Mission\MissionController@updateApplication']); 
 
 });
 

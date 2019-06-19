@@ -164,14 +164,14 @@ class UserController extends Controller
 
     /**
      * Display a listing of the resource.
-     * @param int $user_id
+     *
+     * @param int $userId
      * @return \Illuminate\Http\Response
      */
-    public function userSkills(int $user_id)
+    public function userSkills(int $userId)
     {
-         try {            
-            $skillList = $this->user->userSkills($user_id);
-
+        try {            
+            $skillList = $this->user->userSkills($userId);
             $responseMessage = (count($skillList) > 0) ? trans('messages.success.MESSAGE_USER_LISTING') : trans('messages.success.MESSAGE_NO_RECORD_FOUND');
             
             return ResponseHelper::successWithPagination($this->response->status(), $responseMessage, $skillList);

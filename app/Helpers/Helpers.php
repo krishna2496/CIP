@@ -1,9 +1,11 @@
 <?php
 
 namespace App\Helpers;
+use App\Helpers\ResponseHelper;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Response;
 use DB;
 use App;
@@ -127,10 +129,10 @@ class Helpers
             Config::set('database.default', 'tenant');
         } catch (\PDOException $e) {
             if ($e instanceof \PDOException) {            
-                return Helpers::errorResponse(trans('api_error_messages.status_code.HTTP_STATUS_403'), 
-                                        trans('api_error_messages.status_type.HTTP_STATUS_TYPE_403'), 
-                                        trans('api_error_messages.custom_error_code.ERROR_41000'), 
-                                        trans('api_error_messages.custom_error_message.41000'));
+                return Helpers::errorResponse(trans('messages.status_code.HTTP_STATUS_FORBIDDEN'), 
+                                        trans('messages.status_type.HTTP_STATUS_TYPE_403'), 
+                                        trans('messages.custom_error_code.ERROR_41000'), 
+                                        trans('messages.custom_error_message.41000'));
             }
         }        
     }
@@ -158,32 +160,83 @@ class Helpers
         fclose($fp);
 
         return $filename;
-    }
-    public function uploadImageOnS3Bucket(Request $request, $tenantName)
+    }    
+
+    /**
+     * Upload file on AWS s3 bucket
+     * 
+     * @param string $url
+     * @param string $tenantName
+     *
+     * @return string
+     */
+    public static function uploadFileOnS3Bucket($url, $tenantName)
     {
-        $fileURL = $request->url;
-        $filename = basename($fileURL);
-        $bucketName = $tenantName;
-
-        // For this, I would generate a unqiue random string for the key name. But you can do whatever.
-        $keyName = 'tatvasoft/'.basename($fileURL);
-        $pathInS3 = 'https://s3.us-east-2.amazonaws.com/' . $bucketName . '/' . $keyName;
-
-        $this->downloadImage($fileURL);
-       
         try{
-            $s3 = App::make('aws')->createClient('s3');
-            // Upload file from local to S3
-            $data = $s3->putObject(array(
-                'Bucket'     => $bucketName,
-                'Key'        => $keyName,
-                'SourceFile' => App::basePath().'\public\tmp\\'.$filename
-            ));
+            $disk = Storage::disk('s3');
+            // Comment $context_array and $context code before going live
+            $context_array = array('http'=>array('proxy'=>'192.168.10.5:8080','request_fulluri'=>true));
+            $context = stream_context_create($context_array);            
+            // Comment below line before going live
+            $disk->put($tenantName.'/'.basename($url), file_get_contents($url, false, $context));
+            // Uncomment below line before going live
+            // $disk->put($tenantName.'/'.basename($url), file_get_contents($url));          
+            $file = $disk->get($tenantName.'/'.basename($url));
+           
+            $pathInS3 = 'https://s3.'.env("AWS_REGION").'.amazonaws.com/' . env("AWS_S3_BUCKET_NAME") . '/'.$tenantName.'/'.basename($url);
+            return $pathInS3;
 
-        return $data['ObjectURL'];
-        
         } catch(\Exception $e) {
-            
+            return ResponseHelper::error(trans('messages.status_code.HTTP_STATUS_FORBIDDEN'), 
+                                        trans('messages.status_type.HTTP_STATUS_TYPE_403'), 
+                                        trans('messages.custom_error_code.ERROR_40022'), 
+                                        trans('messages.custom_error_message.40022'));
         }
+    }
+
+    /**
+     * Get country id from country_code
+     * 
+     * @param string $country_code
+     *
+     * @return string
+     */
+    public static function getCountryId(string $country_code)
+    {
+        $country = DB::table("country")->where("ISO", $country_code)->first();
+        return $country->country_id;
+    }
+
+    /**
+     * Get country detail from country_id
+     * 
+     * @param string $country_id
+     *
+     * @return mixed
+     */
+    public static function getCountry($country_id)
+    {
+        $country = DB::table("country")->where("country_id", $country_id)->first();
+        $countryData = array('country_id' => $country->country_id,
+                             'country_code' => $country->ISO,
+                             'name' => $country->name,
+                            );
+         return $countryData;
+    }
+
+    /**
+     * Get city data from city_id
+     * 
+     * @param string $city_id
+     *
+     * @return string
+     */
+    public static function getCity($city_id)
+    {
+        $city = DB::table("city")->where("city_id", $city_id)->first();
+        $cityData = array('city_id' => $city->city_id,
+                         'name' => $city->name
+                        );
+        return $cityData;
     }
 }

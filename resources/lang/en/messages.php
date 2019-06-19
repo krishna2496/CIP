@@ -26,6 +26,7 @@ return [
         'MESSAGE_USER_SKILLS_CREATED' => 'User skills linked successfully',
         'MESSAGE_USER_SKILLS_DELETED' => 'User skills unlinked successfully',
 		'MESSAGE_APPLICATION_LISTING' => 'Mission application listing successfully',
+        'MESSAGE_APPLICATION_UPDATED' => 'Mission application updated successfully',
 
 	],
 	
@@ -112,6 +113,9 @@ return [
 		'ERROR_100000' => '100000',
         'ERROR_100001' => '100001',
         'ERROR_100002' => '100002',
+
+        // Custom error code for Mission Module - 200000 - 209999
+		'ERROR_200000' => '200000',
 		
 		// Custom error code for CMS Module - 300000 - 309999
 		'ERROR_300000' => '300000',
@@ -175,6 +179,9 @@ return [
         '100001' => 'Invalid user data',
         '100002' => 'Invalid skill data',
 		
+		// Custom error code for Mission Module - 200000 - 209999
+        '200000' => 'FR: Invalid application data or missing parameter',
+
 		// Custom error code for CMS Module - 300000 - 309999
 		'300000' => 'Page creation failed. Please check input parameters',
 		'300001' => 'The slug field is required',

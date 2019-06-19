@@ -70,16 +70,16 @@ class UserSkill extends Model
         return $this->belongsTo(Skill::class, 'skill_id', 'skill_id');
     }
 
-     /**
+    /**
      * Find the specified resource.
      *
-     * @param  int  $user_id
+     * @param  int  $userId
      * @return array
      */
-    public function find(int $user_id)
+    public function find(int $userId)
     {
-        $skillQuery =static::with('skill');                     
-        $userSkill = $skillQuery->where('user_id', $user_id)
+        $skillQuery = static::with('skill');                     
+        $userSkill = $skillQuery->where('user_id', $userId)
                 ->paginate(config('constants.PER_PAGE_LIMIT'));
         return $userSkill;
     }

@@ -8,7 +8,18 @@ class Mission extends Model
 {
     use SoftDeletes;
 
+    /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
     protected $table = 'mission';
+
+    /**
+     * The primary key for the model.
+     *
+     * @var string
+     */
     protected $primaryKey = 'mission_id';
 
     /**
@@ -16,11 +27,12 @@ class Mission extends Model
      *
      * @var array
      */
-
 	protected $fillable = ['theme_id', 'city_id', 'country_id', 'start_date', 'end_date', 'total_seats', 'available_seats', 'application_deadline', 'publication_status', 'organisation_id', 'organisation_name', 'mission_type', 'goal_objective'];
 
 	/**
      * Get the document record associated with the mission.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
 	public function missionDocument()
     {
@@ -29,6 +41,8 @@ class Mission extends Model
 
     /**
      * Get the media record associated with the mission.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
 	public function missionMedia()
     {
@@ -37,6 +51,8 @@ class Mission extends Model
 
     /**
      * Get the language title record associated with the mission.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
 	public function missionLanguage()
     {
@@ -45,6 +61,8 @@ class Mission extends Model
 
     /**
      * Get the mission theme associated with the mission.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function missionTheme()
     {
@@ -53,6 +71,8 @@ class Mission extends Model
 
     /**
      * Get city associated with the mission.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
     public function city()
     {
@@ -62,6 +82,8 @@ class Mission extends Model
 
     /**
      * Get country associated with the mission.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
     public function country()
     {

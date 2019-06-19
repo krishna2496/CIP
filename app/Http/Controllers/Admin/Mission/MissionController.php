@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Admin\Mission;
 
-use Illuminate\Http\Request;
+use Illuminate\Http\{Request, Response};
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\{Input, Config};
 use Illuminate\Support\Carbon;
@@ -14,6 +14,23 @@ use Validator, DB;
 
 class MissionController extends Controller
 {   
+    /**
+     * @var App\Models\Mission
+     */
+    private $user;
+    
+    /**
+     * Create a new Mission controller instance.
+     *
+     * @param  App\Repositories\Mission\MissionRepository $mission
+     * @return void
+     */
+    public function __construct(MissionRepository $mission, Response $response)
+    {
+        $this->mission = $mission;
+        $this->response = $response;
+    }
+
     /**
      * Display a listing of Mission.
      *
@@ -42,8 +59,8 @@ class MissionController extends Controller
             if (empty($mission)) {
                 // Set response data
                 $apiStatus = app('Illuminate\Http\Response')->status();
-                $apiMessage = trans('api_success_messages.success_message.MESSAGE_NO_DATA_FOUND');
-                return Helpers::response($apiStatus, $apiMessage);
+                $apiMessage = trans('messages.success_message.MESSAGE_NO_DATA_FOUND');
+                return ResponseHelper::success($apiStatus, $apiMessage);
             }
 
             foreach ($mission as $key => $value) {
@@ -68,14 +85,14 @@ class MissionController extends Controller
             // Set response data
             $apiData = $mission; 
             $apiStatus = app('Illuminate\Http\Response')->status();
-            $apiMessage = trans('api_success_messages.success_message.MESSAGE_MISSION_LIST_SUCCESS');
-            return Helpers::response($apiStatus, $apiMessage, $apiData);                  
+            $apiMessage = trans('messages.success_message.MESSAGE_MISSION_LIST_SUCCESS');
+            return ResponseHelper::success($apiStatus, $apiMessage, $apiData);                  
         } catch(\Exception $e) {
             // Catch database exception
-            return Helpers::errorResponse(trans('api_error_messages.status_code.HTTP_STATUS_500'), 
-                                        trans('api_error_messages.status_type.HTTP_STATUS_TYPE_500'), 
-                                        trans('api_error_messages.custom_error_code.ERROR_40018'), 
-                                        trans('api_error_messages.custom_error_message.40018'));           
+            return ResponseHelper::error(trans('messages.status_code.HTTP_STATUS_500'), 
+                                        trans('messages.status_type.HTTP_STATUS_TYPE_500'), 
+                                        trans('messages.custom_error_code.ERROR_40018'), 
+                                        trans('messages.custom_error_message.40018'));           
         }
     }
 
@@ -104,9 +121,9 @@ class MissionController extends Controller
                             "location" => "required",
                             "goal_objective" => "required_if:mission_type,GOAL"]);
         if ($validator->fails()) {
-            return Helpers::errorResponse(trans('api_error_messages.status_code.HTTP_STATUS_422'),
-                                        trans('api_error_messages.status_type.HTTP_STATUS_TYPE_422'),
-                                        trans('api_error_messages.custom_error_code.ERROR_20106'),
+            return ResponseHelper::error(trans('messages.status_code.HTTP_STATUS_UNPROCESSABLE_ENTITY'),
+                                        trans('messages.status_type.HTTP_STATUS_TYPE_422'),
+                                        trans('messages.custom_error_code.ERROR_20106'),
                                         $validator->errors()->first());
         } 
 
@@ -115,9 +132,9 @@ class MissionController extends Controller
                             "city_id" => "required", 
                             "country_code" => "required"]);
         if ($validator->fails()) {
-            return Helpers::errorResponse(trans('api_error_messages.status_code.HTTP_STATUS_422'),
-                                        trans('api_error_messages.status_type.HTTP_STATUS_TYPE_422'),
-                                        trans('api_error_messages.custom_error_code.ERROR_20106'),
+            return ResponseHelper::error(trans('messages.status_code.HTTP_STATUS_UNPROCESSABLE_ENTITY'),
+                                        trans('messages.status_type.HTTP_STATUS_TYPE_422'),
+                                        trans('messages.custom_error_code.ERROR_20106'),
                                         $validator->errors()->first());
         }  
 
@@ -125,9 +142,9 @@ class MissionController extends Controller
         foreach ($request->mission_detail as $value) {  
             $languageValidator = Validator::make($value, ["lang" => "required", "title" => "required" ]);
             if ($languageValidator->fails()) {
-                return Helpers::errorResponse(trans('api_error_messages.status_code.HTTP_STATUS_422'),
-                                            trans('api_error_messages.status_type.HTTP_STATUS_TYPE_422'),
-                                            trans('api_error_messages.custom_error_code.ERROR_20106'),
+                return ResponseHelper::error(trans('messages.status_code.HTTP_STATUS_UNPROCESSABLE_ENTITY'),
+                                            trans('messages.status_type.HTTP_STATUS_TYPE_422'),
+                                            trans('messages.custom_error_code.ERROR_20106'),
                                             $languageValidator->errors()->first());
             } 
         }
@@ -138,9 +155,9 @@ class MissionController extends Controller
                                                   "media_type" => [Rule::in(config('constants.image_types'))], 
                                                   "media_path" => "required"]);
             if ($validator->fails()) {
-                return Helpers::errorResponse(trans('api_error_messages.status_code.HTTP_STATUS_422'),
-                                            trans('api_error_messages.status_type.HTTP_STATUS_TYPE_422'),
-                                            trans('api_error_messages.custom_error_code.ERROR_20106'),
+                return ResponseHelper::error(trans('messages.status_code.HTTP_STATUS_UNPROCESSABLE_ENTITY'),
+                                            trans('messages.status_type.HTTP_STATUS_TYPE_422'),
+                                            trans('messages.custom_error_code.ERROR_20106'),
                                             $validator->errors()->first());
             }  
         }
@@ -150,9 +167,9 @@ class MissionController extends Controller
             $validator = Validator::make($value, ["media_name" => "required", 
                                                   "media_path" => "required" ]);
             if ($validator->fails()) {
-                return Helpers::errorResponse(trans('api_error_messages.status_code.HTTP_STATUS_422'),
-                                            trans('api_error_messages.status_type.HTTP_STATUS_TYPE_422'),
-                                            trans('api_error_messages.custom_error_code.ERROR_20106'),
+                return ResponseHelper::error(trans('messages.status_code.HTTP_STATUS_UNPROCESSABLE_ENTITY'),
+                                            trans('messages.status_type.HTTP_STATUS_TYPE_422'),
+                                            trans('messages.custom_error_code.ERROR_20106'),
                                             $validator->errors()->first());
             }
         }
@@ -163,9 +180,9 @@ class MissionController extends Controller
                                                   "document_type" => [Rule::in(config('constants.document_types'))],
                                                   "document_path" => "required" ]);
             if ($validator->fails()) {
-                return Helpers::errorResponse(trans('api_error_messages.status_code.HTTP_STATUS_422'),
-                                            trans('api_error_messages.status_type.HTTP_STATUS_TYPE_422'),
-                                            trans('api_error_messages.custom_error_code.ERROR_20106'),
+                return ResponseHelper::error(trans('messages.status_code.HTTP_STATUS_UNPROCESSABLE_ENTITY'),
+                                            trans('messages.status_type.HTTP_STATUS_TYPE_422'),
+                                            trans('messages.custom_error_code.ERROR_20106'),
                                             $validator->errors()->first());
             }   
         }
@@ -261,17 +278,17 @@ class MissionController extends Controller
             }
            
             // Set response data
-            $apiStatus = trans('api_success_messages.status_code.HTTP_STATUS_201');
-            $apiMessage = trans('api_success_messages.success_message.MESSAGE_MISSION_ADD_SUCCESS');
+            $apiStatus = trans('messages.status_code.HTTP_STATUS_CREATED');
+            $apiMessage = trans('messages.success_message.MESSAGE_MISSION_ADD_SUCCESS');
             $apiData = ['mission_id' => $mission->mission_id];
-            return Helpers::response($apiStatus, $apiMessage, $apiData);
+            return ResponseHelper::success($apiStatus, $apiMessage, $apiData);
 
         } catch (\Exception $e) {
 			// Any other error occured when trying to insert data into database.
-            return Helpers::errorResponse(trans('api_error_messages.status_code.HTTP_STATUS_422'), 
-                                    trans('api_error_messages.status_type.HTTP_STATUS_TYPE_422'), 
-                                    trans('api_error_messages.custom_error_code.ERROR_20004'), 
-                                    trans('api_error_messages.custom_error_message.20004'));
+            return ResponseHelper::error(trans('messages.status_code.HTTP_STATUS_UNPROCESSABLE_ENTITY'), 
+                                    trans('messages.status_type.HTTP_STATUS_TYPE_422'), 
+                                    trans('messages.custom_error_code.ERROR_20004'), 
+                                    trans('messages.custom_error_message.20004'));
             
         }
     }
@@ -305,10 +322,10 @@ class MissionController extends Controller
 
         $missionData = Mission::find($id);
         if (!$missionData) {
-            return Helpers::errorResponse(trans('api_error_messages.status_code.HTTP_STATUS_422'),
-                                        trans('api_error_messages.status_type.HTTP_STATUS_TYPE_422'),
-                                        trans('api_error_messages.custom_error_code.ERROR_20032'),
-                                        trans('api_error_messages.custom_error_message.20032'));
+            return ResponseHelper::error(trans('messages.status_code.HTTP_STATUS_UNPROCESSABLE_ENTITY'),
+                                        trans('messages.status_type.HTTP_STATUS_TYPE_422'),
+                                        trans('messages.custom_error_code.ERROR_20032'),
+                                        trans('messages.custom_error_message.20032'));
         } 
         // Server side validataions for mission
         $validator = Validator::make($request->toArray(), [
@@ -320,9 +337,9 @@ class MissionController extends Controller
                             "location" => "required",
                             "goal_objective" => "required_if:mission_type,GOAL"]);
         if ($validator->fails()) {
-            return Helpers::errorResponse(trans('api_error_messages.status_code.HTTP_STATUS_422'),
-                                        trans('api_error_messages.status_type.HTTP_STATUS_TYPE_422'),
-                                        trans('api_error_messages.custom_error_code.ERROR_20106'),
+            return ResponseHelper::error(trans('messages.status_code.HTTP_STATUS_UNPROCESSABLE_ENTITY'),
+                                        trans('messages.status_type.HTTP_STATUS_TYPE_422'),
+                                        trans('messages.custom_error_code.ERROR_20106'),
                                         $validator->errors()->first());
         }   
         // Server side validataions for location
@@ -330,9 +347,9 @@ class MissionController extends Controller
                             "city_id" => "required", 
                             "country_code" => "required"]);
         if ($validator->fails()) {
-            return Helpers::errorResponse(trans('api_error_messages.status_code.HTTP_STATUS_422'),
-                                        trans('api_error_messages.status_type.HTTP_STATUS_TYPE_422'),
-                                        trans('api_error_messages.custom_error_code.ERROR_20106'),
+            return ResponseHelper::error(trans('messages.status_code.HTTP_STATUS_UNPROCESSABLE_ENTITY'),
+                                        trans('messages.status_type.HTTP_STATUS_TYPE_422'),
+                                        trans('messages.custom_error_code.ERROR_20106'),
                                         $validator->errors()->first());
         }   
 
@@ -341,9 +358,9 @@ class MissionController extends Controller
             $languageValidator = Validator::make($value, ["lang" => "required", 
             											"title" => "required"]);
             if ($languageValidator->fails()) {
-                return Helpers::errorResponse(trans('api_error_messages.status_code.HTTP_STATUS_422'),
-                                            trans('api_error_messages.status_type.HTTP_STATUS_TYPE_422'),
-                                            trans('api_error_messages.custom_error_code.ERROR_20106'),
+                return ResponseHelper::error(trans('messages.status_code.HTTP_STATUS_UNPROCESSABLE_ENTITY'),
+                                            trans('messages.status_type.HTTP_STATUS_TYPE_422'),
+                                            trans('messages.custom_error_code.ERROR_20106'),
                                             $languageValidator->errors()->first());
             } 
         }
@@ -354,9 +371,9 @@ class MissionController extends Controller
                                                   "media_type" => [Rule::in(config('constants.image_types'))], 
                                                   "media_path" => "required_without:media_id"]);
             if ($validator->fails()) {
-                return Helpers::errorResponse(trans('api_error_messages.status_code.HTTP_STATUS_422'),
-                                            trans('api_error_messages.status_type.HTTP_STATUS_TYPE_422'),
-                                            trans('api_error_messages.custom_error_code.ERROR_20106'),
+                return ResponseHelper::error(trans('messages.status_code.HTTP_STATUS_UNPROCESSABLE_ENTITY'),
+                                            trans('messages.status_type.HTTP_STATUS_TYPE_422'),
+                                            trans('messages.custom_error_code.ERROR_20106'),
                                             $validator->errors()->first());
             }  
         }
@@ -367,9 +384,9 @@ class MissionController extends Controller
                                                   "media_type" => "required", 
                                                   "media_path" => "required_without:media_id" ]);
             if ($validator->fails()) {
-                return Helpers::errorResponse(trans('api_error_messages.status_code.HTTP_STATUS_422'),
-                                            trans('api_error_messages.status_type.HTTP_STATUS_TYPE_422'),
-                                            trans('api_error_messages.custom_error_code.ERROR_20106'),
+                return ResponseHelper::error(trans('messages.status_code.HTTP_STATUS_UNPROCESSABLE_ENTITY'),
+                                            trans('messages.status_type.HTTP_STATUS_TYPE_422'),
+                                            trans('messages.custom_error_code.ERROR_20106'),
                                             $validator->errors()->first());
             }
         }
@@ -380,9 +397,9 @@ class MissionController extends Controller
                                                   "document_type" => [Rule::in(config('constants.document_types'))],
                                                   "document_path" => "required_without:document_id" ]);
            if ($validator->fails()) {
-                return Helpers::errorResponse(trans('api_error_messages.status_code.HTTP_STATUS_422'),
-                                            trans('api_error_messages.status_type.HTTP_STATUS_TYPE_422'),
-                                            trans('api_error_messages.custom_error_code.ERROR_20106'),
+                return ResponseHelper::error(trans('messages.status_code.HTTP_STATUS_UNPROCESSABLE_ENTITY'),
+                                            trans('messages.status_type.HTTP_STATUS_TYPE_422'),
+                                            trans('messages.custom_error_code.ERROR_20106'),
                                             $validator->errors()->first());
             }   
         }
@@ -520,15 +537,15 @@ class MissionController extends Controller
            
             // Set response data
             $apiStatus = app('Illuminate\Http\Response')->status();
-            $apiMessage = trans('api_success_messages.success_message.MESSAGE_MISSION_UPDATE_SUCCESS');
-            return Helpers::response($apiStatus, $apiMessage);     
+            $apiMessage = trans('messages.success_message.MESSAGE_MISSION_UPDATE_SUCCESS');
+            return ResponseHelper::success($apiStatus, $apiMessage);     
 
         } catch (\Exception $e) { 
             // Any other error occured when trying to update data into database.
-            return Helpers::errorResponse(trans('api_error_messages.status_code.HTTP_STATUS_400'), 
-                                    trans('api_error_messages.status_type.HTTP_STATUS_TYPE_400'), 
-                                    trans('api_error_messages.custom_error_code.ERROR_20104'), 
-                                    trans('api_error_messages.custom_error_message.20104'));
+            return ResponseHelper::error(trans('messages.status_code.HTTP_STATUS_400'), 
+                                    trans('messages.status_type.HTTP_STATUS_TYPE_400'), 
+                                    trans('messages.custom_error_code.ERROR_20104'), 
+                                    trans('messages.custom_error_message.20104'));
             
         }
     }
@@ -548,14 +565,91 @@ class MissionController extends Controller
             $mission->missionLanguage()->delete();
             $mission->missionDocument()->delete();
 
-            $apiStatus = trans('api_success_messages.status_code.HTTP_STATUS_204');
-            $apiMessage = trans('api_success_messages.success_message.MESSAGE_MISSION_DELETE_SUCCESS');
-            return Helpers::response($apiStatus, $apiMessage);            
+            $apiStatus = trans('messages.status_code.HTTP_STATUS_204');
+            $apiMessage = trans('messages.success_message.MESSAGE_MISSION_DELETE_SUCCESS');
+            return ResponseHelper::success($apiStatus, $apiMessage);            
         } catch(\Exception $e){
-            return Helpers::errorResponse(trans('api_error_messages.status_code.HTTP_STATUS_403'), 
-                                        trans('api_error_messages.status_type.HTTP_STATUS_TYPE_403'), 
-                                        trans('api_error_messages.custom_error_code.ERROR_20108'), 
-                                        trans('api_error_messages.custom_error_message.20108'));
+            return ResponseHelper::error(trans('messages.status_code.HTTP_STATUS_403'), 
+                                        trans('messages.status_type.HTTP_STATUS_TYPE_403'), 
+                                        trans('messages.custom_error_code.ERROR_20108'), 
+                                        trans('messages.custom_error_message.20108'));
+        }
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param int $missionId
+     * @return \Illuminate\Http\Response
+     */
+    public function missionApplications(Request $request, int $missionId)
+    {
+        try {            
+            $applicationList = $this->mission->missionApplications($request, $missionId);
+            $responseMessage = (count($applicationList) > 0) ? trans('messages.success.MESSAGE_APPLICATION_LISTING') : trans('messages.success.MESSAGE_NO_RECORD_FOUND');
+            
+            return ResponseHelper::successWithPagination($this->response->status(), $responseMessage, $applicationList);
+        } catch (\InvalidArgumentException $e) {
+            throw new \InvalidArgumentException($e->getMessage());
+        }
+    }
+
+    /**
+     * Display specified resource.
+     *
+     * @param int $missionId
+     * @param int $applicationId
+     * @return \Illuminate\Http\Response
+     */
+    public function missionApplication(int $missionId, int $applicationId)
+    {
+        try {            
+            $applicationList = $this->mission->missionApplication($missionId, $applicationId);
+            $responseMessage = (count($applicationList) > 0) ? trans('messages.success.MESSAGE_APPLICATION_LISTING') : trans('messages.success.MESSAGE_NO_RECORD_FOUND');
+            
+            return ResponseHelper::success($this->response->status(), $responseMessage, $applicationList);
+        } catch (\InvalidArgumentException $e) {
+            throw new \InvalidArgumentException($e->getMessage());
+        }
+    }
+
+    /**
+     * Update resource.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param int $missionId
+     * @param int $applicationId
+     * @return \Illuminate\Http\Response
+     */
+    public function updateApplication(Request $request, int $missionId, int $applicationId)
+    {
+         try {
+            $validator = Validator::make($request->toArray(), [
+                'approval_status' => Rule::in(config('constants.application_status')),
+            ]);
+
+            // If request parameter have any error
+            if ($validator->fails()) {
+                return ResponseHelper::error(
+                    trans('messages.status_code.HTTP_STATUS_UNPROCESSABLE_ENTITY'),
+                    trans('messages.status_type.HTTP_STATUS_TYPE_422'),
+                    trans('messages.custom_error_code.ERROR_200000'),
+                    $validator->errors()->first()
+                );
+            }
+
+            $application = $this->mission->updateApplication($request, $missionId, $applicationId);
+
+            // Set response data
+            $apiStatus = $this->response->status();
+            $apiMessage = trans('messages.success.MESSAGE_APPLICATION_UPDATED');
+            
+            return ResponseHelper::success($apiStatus, $apiMessage);
+        } catch (PDOException $e) {
+            throw new PDOException($e->getMessage());
+        } catch (\Exception $e) {
+            throw new \Exception($e->getMessage());
         }
     }
 }

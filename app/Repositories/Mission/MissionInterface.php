@@ -21,15 +21,7 @@ interface MissionInterface
      * @return void
      */
     public function update(Request $request, int $id);
-    
-    /**
-     * Listing of all resources.
-     *
-     * @param  Illuminate\Http\Request $request
-     * @return void
-     */
-    public function missionList(Request $request);
-
+  
     /**
      * Find a specified resource.
      *
@@ -39,10 +31,40 @@ interface MissionInterface
     public function find(int $id);
     
     /**
-     * Delete a specified resource.
+     * Delete specified resource.
      *
      * @param  int $id
      * @return void
      */
     public function delete(int $id);
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param int $missionId
+     * @return \Illuminate\Http\Response
+     */
+    public function missionApplications(Request $request, int $missionId);
+
+    /**
+     * Display specified resource.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param int $missionId
+     * @param int $applicationId
+     * @return \Illuminate\Http\Response
+     */
+    public function missionApplication(int $missionId, int $applicationId);
+
+    /**
+     * Update resource.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param int $missionId
+     * @param int $applicationId
+     * @return \Illuminate\Http\Response
+     */
+    public function updateApplication(Request $request, int $missionId, int $applicationId);
+
 }
