@@ -66,6 +66,7 @@ $router->group(['prefix' => 'users', 'middleware' => 'localization|auth.tenant.a
     $router->get('/', ['uses' => 'Admin\User\UserController@index']);
     $router->get('/{userId}', ['uses' => 'Admin\User\UserController@show']);
     $router->post('/', ['uses' => 'Admin\User\UserController@store']);
+    $router->patch('/{userId}', ['uses' => 'Admin\User\UserController@update']);
     $router->delete('/{userId}', ['uses' => 'Admin\User\UserController@destroy']);
 });
 

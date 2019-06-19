@@ -35,10 +35,9 @@ class UserCustomFieldController extends Controller
 			$customFields = $this->field->UserCustomFieldList($request);
 			
 			// Set response data
-            $apiData = $customFields;
             $apiStatus = $this->response->status();
             $apiMessage = ($customFields->isEmpty()) ? trans('messages.success.MESSAGE_NO_RECORD_FOUND') : trans('messages.success.MESSAGE_CUSTOM_FIELD_LISTING');
-            return ResponseHelper::successWithPagination($apiStatus, $apiMessage, $apiData);                  
+            return ResponseHelper::successWithPagination($apiStatus, $apiMessage, $customFields);                  
         } catch (PDOException $e) {
             throw new PDOException($e->getMessage());
         } catch (\Exception $e) {

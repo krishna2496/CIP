@@ -4,10 +4,8 @@ namespace App\Repositories\User;
 
 use App\Repositories\User\UserInterface;
 use Illuminate\Http\{Request, Response};
-use Validator, PDOException, DB;
+use PDOException;
 use App\User;
-use App\Helpers\{Helpers, ResponseHelper};
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class UserRepository implements UserInterface
 {
@@ -22,69 +20,21 @@ class UserRepository implements UserInterface
 	
 	public function store(Request $request)
     {
-		try {
-			// Connect master database to get language details
-			Helpers::switchDatabaseConnection('mysql', $request);
-			$languages = DB::table('language')->get();    
-			
-			// Connect tenant database
-			Helpers::switchDatabaseConnection('tenant', $request);
-
-			// Server side validataions
-			$validator = Validator::make($request->toArray(), $this->user->rules);
-
-			// If request parameter have any error
-			if ($validator->fails()) {
-				return ResponseHelper::error(trans('messages.status_code.HTTP_STATUS_UNPROCESSABLE_ENTITY'),
-											trans('messages.status_type.HTTP_STATUS_TYPE_422'),
-											trans('messages.custom_error_code.ERROR_20022'),
-											$validator->errors()->first());
-			}
-			
-			$userData = array('first_name' => $request->first_name, 
-							  'last_name' => $request->last_name,
-							  'email' => $request->email,
-							  'password' => $request->password,
-							  'timezone_id' => $request->timezone_id,
-							  'availability_id' => $request->availability_id,
-							  'why_i_volunteer' => $request->why_i_volunteer,
-							  'employee_id' => $request->employee_id,
-							  'department' => $request->department,
-							  'manager_name' => $request->manager_name,
-							  'city_id' => $request->city_id,
-							  'country_id' => $request->country_id,
-							  'profile_text' => $request->profile_text,
-							  'linked_in_url' => $request->linked_in_url);
-			
-			// Create new user
-			$user = $this->user->create($userData);
-
-			// Set response data
-			$apiData = ['user_id' => $user->user_id];
-			$apiStatus = $this->response->status();
-			$apiMessage = trans('messages.success.MESSAGE_USER_CREATED');    
-			
-			return ResponseHelper::success($apiStatus, $apiMessage, $apiData);
-			
-        } catch(PDOException $e) {
-			
-			throw new PDOException($e->getMessage());
-			
-		} catch(\Exception $e) {
-			
-			throw new \Exception($e->getMessage());
-			
-		}
+		$user = $this->user->create($request->all());
+		return $user;
 	}
 	
-	public function update(Request $request, int $id) {
-		
+	public function update(Request $request, int $id) 
+	{
+		$user = $this->user->findOrFail($id);
+		$user->update($request->toArray());
+
+		return $user;
 	}
 	
-	public function userList(Request $request) {
-		
+	public function userList(Request $request) 
+	{
 		try {
-			
 			$userQuery = $this->user->with('city', 'country', 'timezone');
 			
 			if ($request->has('search')) {
@@ -98,39 +48,15 @@ class UserRepository implements UserInterface
 				$userQuery->orderBy('user_id', $orderDirection);
 			}
 			
-			$userList = $userQuery->paginate(config('constants.PER_PAGE_LIMIT'));
-			$responseMessage = (count($userList) > 0) ? trans('messages.success.MESSAGE_USER_LISTING') : trans('messages.success.MESSAGE_NO_RECORD_FOUND');
-			
-			return ResponseHelper::successWithPagination($this->response->status(), $responseMessage, $userList);
-			
+			return $userQuery->paginate(config('constants.PER_PAGE_LIMIT'));
 		} catch(\InvalidArgumentException $e) {
-			
 			throw new \InvalidArgumentException($e->getMessage());
-			
 		}
 	}
 
-    public function find(int $id) {
-		
-		try {         
-            
-			$userDetail = $this->user->findUser($id);
-			
-			$apiData = $userDetail->toArray();
-			$apiStatus = $this->response->status();
-			$apiMessage = trans('messages.success.MESSAGE_USER_FOUND');
-			
-			return ResponseHelper::success($apiStatus, $apiMessage, $apiData);
-			
-		} catch(ModelNotFoundException $e){
-			
-			throw new ModelNotFoundException(trans('messages.custom_error_message.100000'));
-			
-        } catch(\Exception $e) {
-			
-			throw new \Exception($e->getMessage());
-			
-		}	
+    public function find(int $id) 
+	{
+		return $this->user->findUser($id);
 	}
 	
     public function delete(int $id) {

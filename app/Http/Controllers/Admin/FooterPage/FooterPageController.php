@@ -39,10 +39,9 @@ class FooterPageController extends Controller
             }
 			
 			// Set response data
-            $apiData = $footerPages;
             $apiStatus = app('Illuminate\Http\Response')->status();
             $apiMessage = trans('messages.success.MESSAGE_FOOTER_PAGE_LISTING');
-            return ResponseHelper::successWithPagination($apiStatus, $apiMessage, $apiData);                  
+            return ResponseHelper::successWithPagination($apiStatus, $apiMessage, $footerPages);                  
         } catch (PDOException $e) {
             throw new PDOException($e->getMessage());
         } catch (\Exception $e) {

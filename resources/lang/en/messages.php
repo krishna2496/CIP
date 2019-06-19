@@ -26,6 +26,7 @@ return [
 		'MESSAGE_CUSTOM_STYLE_UPLOADED_SUCCESS' => 'Custom styling data uploaded successfully',
 		'MESSAGE_CUSTOM_STYLE_RESET_SUCCESS' => 'Custom styling reset successfully',
 		'MESSAGE_CUSTOM_FIELD_LISTING' => 'User custom field listing successfully',
+		'MESSAGE_USER_UPDATED' => 'User updated successfully',
 	],
 	
 	/**
@@ -109,6 +110,7 @@ return [
 		'ERROR_100000' => '100000',
 		'ERROR_100003' => '100003',
 		'ERROR_100004' => '100004',
+		'ERROR_100010' => '100010',
 		
 		// Custom error code for CMS Module - 300000 - 309999
 		'ERROR_300000' => '300000',
@@ -171,6 +173,7 @@ return [
 		'100000' => 'User does not found in system',
 		'100003' => 'Custom field creation failed. Please check input parameters',
 		'100004' => 'Requested user custom field does not exist',
+		'100010' => 'User creation failed. Please check input parameters',
 		
 		// Custom error code for CMS Module - 300000 - 309999
 		'300000' => 'Page creation failed. Please check input parameters',
