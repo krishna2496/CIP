@@ -10,9 +10,9 @@ return [
     'SLIDER_LIMIT' => '4',
     'SLIDER_IMAGE_PATH' => 'images/',
     'ACTIVE' => 1,
-    'PER_PAGE_LIMIT' => '1',
-    
-    /*
+	'PER_PAGE_LIMIT' => '5',
+	
+	/*
      * User custom field types
      */
      'custom_field_types' => [

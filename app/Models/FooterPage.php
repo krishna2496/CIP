@@ -29,6 +29,8 @@ class FooterPage extends Model
      */
     protected $fillable = ['status', 'slug'];
 
+    protected $visible = ['page_id', 'status', 'slug', 'pageLanguages'];
+
     /**
      * Defined has many relation for the footer_page_language table.
      *
@@ -37,5 +39,16 @@ class FooterPage extends Model
     public function pageLanguages()
     {
         return $this->hasMany(FooterPagesLanguage::class, 'page_id', 'page_id');
+    }
+
+    /**
+     * Delete the specified resource.
+     *
+     * @param  int  $id
+     * @return array
+     */
+    public function deleteFooterPage(int $id)
+    {
+        return static::findOrFail($id)->delete();
     }
 }
