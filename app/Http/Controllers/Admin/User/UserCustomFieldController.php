@@ -2,46 +2,49 @@
 
 namespace App\Http\Controllers\Admin\User;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Repositories\UserCustomField\UserCustomFieldRepository;
 use Illuminate\Support\Facades\Input;
-use App\UserCustomField;
-use App\Helpers\Helpers;
+use App\Models\UserCustomField;
+use Illuminate\Http\{Request, Response};
+use App\Helpers\ResponseHelper;
 use Illuminate\Validation\Rule;
-use Validator;
+use Validator, PDOException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class UserCustomFieldController extends Controller
 {
+	private $field;
+	
+	private $response;
+	
+	public function __construct(UserCustomFieldRepository $field, Response $response)
+    {
+		 $this->field = $field;
+		 $this->response = $response;
+	}
+	
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-		$customFields = UserCustomField::all();
-		$customFieldsData = $customFields->toArray();          
-        
-        if (empty($customFieldsData)) {
-        	// Set response data
-            $apiStatus = app('Illuminate\Http\Response')->status();
-            $apiMessage = trans('api_success_messages.success_message.MESSAGE_NO_DATA_FOUND');
-            return Helpers::response($apiStatus, $apiMessage);
+		try { 
+			$customFields = $this->field->UserCustomFieldList($request);
+			
+			// Set response data
+            $apiData = $customFields;
+            $apiStatus = $this->response->status();
+            $apiMessage = ($customFields->isEmpty()) ? trans('messages.success.MESSAGE_NO_RECORD_FOUND') : trans('messages.success.MESSAGE_CUSTOM_FIELD_LISTING');
+            return ResponseHelper::successWithPagination($apiStatus, $apiMessage, $apiData);                  
+        } catch (PDOException $e) {
+            throw new PDOException($e->getMessage());
+        } catch (\Exception $e) {
+            throw new \Exception($e->getMessage());
         }
-        $detail = array();
-        foreach ($customFieldsData as $value) {
-        	$detail[] = array('field_id' => $value['field_id'],
-							  'name' => $value['name'],
-							  'type' => $value['type'],
-							  'is_mandatory' => $value['is_mandatory'],
-							  'translation' => (@unserialize($value['translations']) === false) ? $value['translations'] : unserialize($value['translations']));
-        }
-        // Set response data
-        $apiData = $detail;
-        $apiStatus = app('Illuminate\Http\Response')->status();
-        $apiMessage = trans('api_success_messages.success_message.MESSAGE_USER_LIST_SUCCESS');
-        return Helpers::response($apiStatus, $apiMessage, $apiData);
-    }
+	}
 
     /**
      * Store user custom field
@@ -50,54 +53,41 @@ class UserCustomFieldController extends Controller
      * @return mixed
      */
     public function store(Request $request)
-    {       
-        // Server side validataions
-        $validator = Validator::make($request->toArray(), ["name" => "required", 
-															"type" => ['required', Rule::in(config('constants.custom_field_types'))], 
-															"is_mandatory" => "required", 
-															"translation" => "required"]);
-        // If post parameter have any missing parameter
-        if ($validator->fails()) {
-            return Helpers::errorResponse(trans('api_error_messages.status_code.HTTP_STATUS_422'),
-                                        trans('api_error_messages.status_type.HTTP_STATUS_TYPE_422'),
-                                        trans('api_error_messages.custom_error_code.ERROR_20102'),
-                                        $validator->errors()->first());
-        }   
-        try {
+    {   
+		try {
+			// Server side validataions
+			$validator = Validator::make($request->toArray(), ["name" => "required", 
+																"type" => ['required', Rule::in(config('constants.custom_field_types'))], 
+																"is_mandatory" => "required", 
+																"translations" => "required",
+																"translations.*.values" => Rule::requiredIf($request->type == config('constants.custom_field_types.DROP-DOWN') || $request->type == config('constants.custom_field_types.RADIO')),
+																]);
+			// If post parameter have any missing parameter
+			if ($validator->fails()) {
+				return ResponseHelper::error(trans('messages.status_code.HTTP_STATUS_UNPROCESSABLE_ENTITY'),
+											trans('messages.status_type.HTTP_STATUS_TYPE_422'),
+											trans('messages.custom_error_code.ERROR_100003'),
+											$validator->errors()->first());
+			}   
 			
-			$translation = $request->translation;      
-	
-			if ((($request->type == config('constants.custom_field_types.DROP-DOWN') ) || ($request->type == config('constants.custom_field_types.RADIO'))) && 
-				(empty($translation[0]['values']))) {
-				// Set response data if values are null for Drop-down and radio type
-				return Helpers::errorResponse(trans('api_error_messages.status_code.HTTP_STATUS_422'),
-                                trans('api_error_messages.status_type.HTTP_STATUS_TYPE_422'),
-                                trans('api_error_messages.custom_error_code.ERROR_20026'),
-                                trans('api_error_messages.custom_error_message.20026'));
-			} 
-			
-            // Set data for create new record
-            $customFieldData = array('name' => $request->name, 
-									 'type' => $request->type, 
-									 'is_mandatory' => $request->is_mandatory, 
-									 'translations' => serialize($translation));
-            
 			// Create new user custom field record 
-            UserCustomField::create($customFieldData);
+            $customField = $this->field->store($request);
 			
             // Set response data
-            $apiStatus = app('Illuminate\Http\Response')->status();
-            $apiMessage = trans('api_success_messages.success_message.MESSAGE_CUSTOM_FIELD_ADD_SUCCESS');
-            return Helpers::response($apiStatus, $apiMessage);
+            $apiStatus = $this->response->status();
+            $apiMessage = trans('messages.success.MESSAGE_CUSTOM_FIELD_ADDED');
+			$apiData = ['field_id' => $customField['field_id']];
+            return ResponseHelper::success($apiStatus, $apiMessage, $apiData);
         
-        } catch (\Exception $e) {
-            // Any other error occured when trying to insert data into database.
-            return Helpers::errorResponse(trans('api_error_messages.status_code.HTTP_STATUS_422'), 
-                                    trans('api_error_messages.status_type.HTTP_STATUS_TYPE_422'), 
-                                    trans('api_error_messages.custom_error_code.ERROR_20004'), 
-                                    trans('api_error_messages.custom_error_message.20004'));
-            
-        }
+        } catch(PDOException $e) {
+			
+			throw new PDOException($e->getMessage());
+			
+		} catch(\Exception $e) {
+			
+			throw new \Exception($e->getMessage());
+			
+		}
     }
 
     /**
@@ -120,57 +110,34 @@ class UserCustomFieldController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $fieldData = UserCustomField::find($id);
-        if (!$fieldData) {
-        	return Helpers::errorResponse(trans('api_error_messages.status_code.HTTP_STATUS_422'),
-                                        trans('api_error_messages.status_type.HTTP_STATUS_TYPE_422'),
-                                        trans('api_error_messages.custom_error_code.ERROR_20018'),
-                                        trans('api_error_messages.custom_error_message.20032'));
-        } 
-        // Server side validataions
-        $validator = Validator::make($request->toArray(), ["name" => "required", 
-                                                            "type" => ['required', Rule::in(config('constants.custom_field_types'))], 
-                                                            "is_mandatory" => "required", 
-                                                            "translation" => "required" 
-        ]); 
-        // If post parameter have any missing parameter
-        if ($validator->fails()) {
-            return Helpers::errorResponse(trans('api_error_messages.status_code.HTTP_STATUS_422'),
-                                        trans('api_error_messages.status_type.HTTP_STATUS_TYPE_422'),
-                                        trans('api_error_messages.custom_error_code.ERROR_20018'),
-                                        $validator->errors()->first());
-        } 
-        try {   
-            $translation = $request->translation; 
-            if ((($request->type == config('constants.custom_field_types.DROP-DOWN') ) || ($request->type == config('constants.custom_field_types.RADIO'))) && 
-                    (empty($translation[0]['values']))) {
-                // Set response data if values are null for Drop-down and radio type
-                return Helpers::errorResponse(trans('api_error_messages.status_code.HTTP_STATUS_422'),
-                                trans('api_error_messages.status_type.HTTP_STATUS_TYPE_422'),
-                                trans('api_error_messages.custom_error_code.ERROR_20026'),
-                                trans('api_error_messages.custom_error_message.20026'));
-            } 
-                                  
-            // Set data for update record
-            $customFieldData = array('name' => $request->name, 
-                                    'type' => $request->type, 
-                                    'is_mandatory' => $request->is_mandatory, 
-                                    'translations' => serialize($translation)
-                                );
-            // Update user custom field
-            UserCustomField::where('field_id', $id)->update($customFieldData);
-            // Set response data
-            $apiStatus = app('Illuminate\Http\Response')->status();
-            $apiMessage = trans('api_success_messages.success_message.MESSAGE_CUSTOM_FIELD_UPDATE_SUCCESS');
-            return Helpers::response($apiStatus, $apiMessage);               
-        } catch (\Exception $e) { 
-            // Any other error occured when trying to update data into database.
-            return Helpers::errorResponse(trans('api_error_messages.status_code.HTTP_STATUS_422'), 
-                                    trans('api_error_messages.status_type.HTTP_STATUS_TYPE_422'), 
-                                    trans('api_error_messages.custom_error_code.ERROR_20004'), 
-                                    trans('api_error_messages.custom_error_message.20004'));
-        }
-        
+        try {
+			// Server side validataions
+			$validator = Validator::make($request->toArray(), ["type" => [Rule::in(config('constants.custom_field_types'))], 
+																"translations.*.values" => Rule::requiredIf($request->type == config('constants.custom_field_types.DROP-DOWN') || $request->type == config('constants.custom_field_types.RADIO')),
+																]);
+			// If post parameter have any missing parameter
+			if ($validator->fails()) {
+				return ResponseHelper::error(trans('messages.status_code.HTTP_STATUS_UNPROCESSABLE_ENTITY'),
+											trans('messages.status_type.HTTP_STATUS_TYPE_422'),
+											trans('messages.custom_error_code.ERROR_100003'),
+											$validator->errors()->first());
+			}   
+			
+			$customField = $this->field->update($request, $id);
+			
+			// Set response data
+			$apiStatus = $this->response->status();
+			$apiMessage = trans('messages.success.MESSAGE_CUSTOM_FIELD_UPDATED');
+			$apiData = ['field_id' => $customField['field_id']];
+			return ResponseHelper::success($apiStatus, $apiMessage, $apiData);
+			
+		} catch (ModelNotFoundException $e) {
+			throw new ModelNotFoundException(trans('messages.custom_error_message.100004'));
+        } catch (PDOException $e) {
+			throw new PDOException($e->getMessage());
+        } catch (\Exception $e) {
+            throw new \Exception($e->getMessage());
+        }		
     }
 
     /**
@@ -181,21 +148,15 @@ class UserCustomFieldController extends Controller
      */
     public function destroy($id)
     {
-        try {
-            $userField = UserCustomField::findorFail($id);
-            $userField->delete();
-
-            // Set response data
-            $apiStatus = app('Illuminate\Http\Response')->status();            
-            $apiMessage = trans('api_success_messages.success_message.MESSAGE_CUSTOM_FIELD_DELETE_SUCCESS');
-            return Helpers::response($apiStatus, $apiMessage);
+        try {  
+            $customField = $this->field->delete($id);
             
-        } catch(\Exception $e){
-            return Helpers::errorResponse(trans('api_error_messages.status_code.HTTP_STATUS_403'), 
-                                        trans('api_error_messages.status_type.HTTP_STATUS_TYPE_403'), 
-                                        trans('api_error_messages.custom_error_code.ERROR_20028'), 
-                                        trans('api_error_messages.custom_error_message.20028'));
-
+            // Set response data
+            $apiStatus = trans('messages.status_code.HTTP_STATUS_NO_CONTENT');
+            $apiMessage = trans('messages.success.MESSAGE_CUSTOM_FIELD_DELETED');
+            return ResponseHelper::success($apiStatus, $apiMessage);            
+        } catch (ModelNotFoundException $e) {
+            throw new ModelNotFoundException(trans('messages.custom_error_message.100004'));
         }
     }
 

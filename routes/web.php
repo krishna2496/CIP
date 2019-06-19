@@ -83,11 +83,9 @@ $router->group(['prefix' => 'cms', 'middleware' => 'localization|auth.tenant.adm
 /* Set custom field data for tenant specific */
 $router->group(['prefix' => 'metadata/users/custom_fields', 'middleware' => 'localization|auth.tenant.admin'], function ($router) {
     $router->get('/', ['uses' => 'Admin\User\UserCustomFieldController@index']);
-    $router->post('/create', ['uses' => 'Admin\User\UserCustomFieldController@store']);
+    $router->post('/', ['uses' => 'Admin\User\UserCustomFieldController@store']);
     $router->patch('/{fieldId}', ['uses' => 'Admin\User\UserCustomFieldController@update']);
-    $router->patch('/', ['uses' => 'Admin\User\UserCustomFieldController@handleError']);
     $router->delete('/{fieldId}', ['uses' => 'Admin\User\UserCustomFieldController@destroy']);
-    $router->delete('/', ['uses' => 'Admin\User\UserCustomFieldController@handleError']);
 });
 
 /*Admin style routes*/
