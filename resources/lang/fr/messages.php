@@ -25,6 +25,7 @@ return [
         'MESSAGE_USER_LISTING' => 'FR: User listing successfully',
         'MESSAGE_USER_SKILLS_CREATED' => 'FR: User skills linked successfully',
         'MESSAGE_USER_SKILLS_DELETED' => 'FR: User skills unlinked successfully',
+        'MESSAGE_APPLICATION_LISTING' => 'FR: Mission application listing successfully',
     ],
     
     /**
@@ -99,14 +100,14 @@ return [
         'ERROR_20036' => '20036',
         'ERROR_20038' => '20038',
         'ERROR_20102' => '20102',
-        'ERROR_200001' => '200001',
-        'ERROR_200002' => '200002',
 
         // Error codes from 1000-
         'ERROR_10006' => '10006',
         
         // Custom error code for User Module - 100000 - 109999
         'ERROR_100000' => '100000',
+        'ERROR_100001' => '100001',
+        'ERROR_100002' => '100002',
         
     ],
     
@@ -154,12 +155,12 @@ return [
         '20032' => 'FR: No data found for given id',
         '20034' => 'FR: Invalid request parameter',
         '20102' => 'FR: Invalid custom field input parameters or missing data',
-        '200001' => 'Invalid user data',
-        '200002' => 'Invalid skill data',
         // Error codes from 1000-
         '10006' => 'FR: Database operational error',
         
         // Custom error code for User Module - 100000 - 109999
         '100000' => 'FR: User does not found in system',
+        '100001' => 'FR: Invalid user data',
+        '100002' => 'FR: Invalid skill data',
     ]
 ];

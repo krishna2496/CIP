@@ -64,7 +64,7 @@ class UserRepository implements UserInterface
                 return ResponseHelper::error(
                     trans('messages.status_code.HTTP_STATUS_UNPROCESSABLE_ENTITY'),
                     trans('messages.status_type.HTTP_STATUS_TYPE_422'),
-                    trans('messages.custom_error_code.ERROR_200001'),
+                    trans('messages.custom_error_code.ERROR_100001'),
                     $validator->errors()->first()
                 );
             }

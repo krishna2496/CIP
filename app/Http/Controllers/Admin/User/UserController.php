@@ -104,7 +104,7 @@ class UserController extends Controller
                 return ResponseHelper::error(
                     trans('messages.status_code.HTTP_STATUS_UNPROCESSABLE_ENTITY'),
                     trans('messages.status_type.HTTP_STATUS_TYPE_422'),
-                    trans('messages.custom_error_code.ERROR_200002'),
+                    trans('messages.custom_error_code.ERROR_100002'),
                     $validator->errors()->first()
                 );
             }
@@ -144,7 +144,7 @@ class UserController extends Controller
                 return ResponseHelper::error(
                     trans('messages.status_code.HTTP_STATUS_UNPROCESSABLE_ENTITY'),
                     trans('messages.status_type.HTTP_STATUS_TYPE_422'),
-                    trans('messages.custom_error_code.ERROR_200002'),
+                    trans('messages.custom_error_code.ERROR_100002'),
                     $validator->errors()->first()
                 );
             }

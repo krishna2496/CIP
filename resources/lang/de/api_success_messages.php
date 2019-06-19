@@ -89,6 +89,8 @@ return [
 		'ERROR_20036' => '20036',
 		'ERROR_20038' => '20038',
 		'ERROR_20102' => '20102',
+        'ERROR_100001' => '100001',
+        'ERROR_100002' => '100002',
 		
 
 		// Error codes from 1000-
@@ -140,8 +142,8 @@ return [
 		'20032' => 'No data found for given id',
 		'20034' => 'Invalid request parameter',		
 		'20102' => 'Invalid custom field input parameters or missing data',	
-		'200001' => 'Invalid user data',
-        '200002' => 'Invalid skill data',	
+		'100001' => 'Invalid user data',
+        '100002' => 'Invalid skill data',	
 		// Error codes from 1000-
 		'10006' => 'Database operational error',
 	]

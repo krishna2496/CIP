@@ -104,14 +104,14 @@ return [
 		'ERROR_20036' => '20036',
 		'ERROR_20038' => '20038',
 		'ERROR_20102' => '20102',
-        'ERROR_200001' => '200001',
-        'ERROR_200002' => '200002',
 
 		// Error codes from 1000-
 		'ERROR_10006' => '10006',
 		
 		// Custom error code for User Module - 100000 - 109999
 		'ERROR_100000' => '100000',
+        'ERROR_100001' => '100001',
+        'ERROR_100002' => '100002',
 		
 		// Custom error code for CMS Module - 300000 - 309999
 		'ERROR_300000' => '300000',
@@ -172,10 +172,8 @@ return [
 		
 		// Custom error code for User Module - 100000 - 109999
 		'100000' => 'User does not found in system',
-
-		// Custom error code for User-Skills Module - 200000 - 209999
-        '200001' => 'Invalid user data',
-        '200002' => 'Invalid skill data',
+        '100001' => 'Invalid user data',
+        '100002' => 'Invalid skill data',
 		
 		// Custom error code for CMS Module - 300000 - 309999
 		'300000' => 'Page creation failed. Please check input parameters',
