@@ -6,7 +6,7 @@ use App\Repositories\FooterPage\FooterPageInterface;
 use Illuminate\Http\{Request, Response};
 use DB;
 use App\Models\{FooterPage, FooterPagesLanguage};
-use App\Helpers\Helpers;
+use App\Helpers\{Helpers, LanguageHelper};
 
 class FooterPageRepository implements FooterPageInterface
 {
@@ -29,12 +29,7 @@ class FooterPageRepository implements FooterPageInterface
 		// Create new cms page
 		$footerPage = $this->page->create($page);
 		
-		// Connect master database to get language details
-		Helpers::switchDatabaseConnection('mysql', $request);
-		$languages = DB::table('language')->get();    
-		
-		// Connect tenant database
-		Helpers::switchDatabaseConnection('tenant', $request);
+		$languages = LanguageHelper::getLanguages($request);
 		
 		foreach ($postData['translations'] as $value) {                    
                 
@@ -44,7 +39,7 @@ class FooterPageRepository implements FooterPageInterface
 			$footerPageLanguageData = array('page_id' => $footerPage['page_id'], 
 									  'language_id' => $language->language_id, 
 									  'title' => $value['title'], 
-									  'description' => serialize($value['sections']));
+									  'description' => $value['sections']);
 									  
 			$this->footerPageLanguage->create($footerPageLanguageData);
 			
@@ -66,12 +61,7 @@ class FooterPageRepository implements FooterPageInterface
 		$footerPage = $this->page->findOrFail($id);
 		$footerPage->update($page);
 		
-		// Connect master database to get language details
-        Helpers::switchDatabaseConnection('mysql', $request);
-        $languages = DB::table('language')->get();    
-        
-        // Connect tenant database
-        Helpers::switchDatabaseConnection('tenant', $request);
+		$languages = LanguageHelper::getLanguages($request);
     	         
 		foreach ($postData['translations'] as $value) {                    
 			$language = $languages->where('code', $value['lang'])->first(); 
@@ -80,9 +70,8 @@ class FooterPageRepository implements FooterPageInterface
 							->where('language_id', $language->language_id)
 							->count();
 			
-			$pageLanguageData = array('titlSe' => $value['title'], 
-										'description' => serialize($value['sections'])); 
-						
+			$pageLanguageData = ['title' => $value['title'], 'description' => serialize($value['sections'])]; 
+		
 			// If record exist then update it otherwise create new record
 			if ($footerPageData > 0) {
 				$footerPageLanguage = $this->footerPageLanguage->where('page_id', $id)
@@ -102,10 +91,13 @@ class FooterPageRepository implements FooterPageInterface
 	public function footerPageList(Request $request) {
 		
 		try {
-            $pageQuery = $this->page->with('pageLanguages');
-
+            $pageQuery = $this->page->with('pageTranslations');
+			
             if ($request->has('search')) {
-                $pageQuery->where('title', 'like', '%' . $request->input('search') . '%');
+                $pageQuery->wherehas('pageTranslations', function($q) use($request) {
+						$q->where('title', 'like', '%' . $request->input('search') . '%');
+						$q->orWhere('description', 'like', '%' . $request->input('search') . '%');
+				});
             }
             if ($request->has('order')) {
                 $orderDirection = $request->input('order', 'asc');

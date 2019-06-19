@@ -21,9 +21,9 @@ class FooterPage extends Model
 
 	protected $fillable = ['status', 'slug'];
 	
-	protected $visible = ['page_id', 'status', 'slug', 'pageLanguages'];
+	protected $visible = ['page_id', 'status', 'slug', 'pageTranslations'];
 	
-    public function pageLanguages()
+    public function pageTranslations()
     {
     	return $this->hasMany(FooterPagesLanguage::class, 'page_id', 'page_id');
     }

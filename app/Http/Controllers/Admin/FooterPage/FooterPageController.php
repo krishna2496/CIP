@@ -28,9 +28,8 @@ class FooterPageController extends Controller
      */
     public function index(Request $request)
     {
-        try { 
-			
-			$footerPages = $this->page->footerPageList($request)->toArray();
+		try { 
+			$footerPages = $this->page->footerPageList($request);
 			if (empty($footerPages)) {
                 // Set response data
                 $apiStatus = trans('messages.status_code.HTTP_STATUS_NOT_FOUND');
@@ -38,34 +37,15 @@ class FooterPageController extends Controller
                 return ResponseHelper::error($apiStatus, $apiMessage);
             }
 			
-			$pageList = array();
-            foreach ($footerPages['data'] as $page) {
-				$footerPageLanguageData = array();
-                foreach ($page['page_languages'] as $pageLanguageData) {
-                    $footerPageLanguageData[] = array('language_id' => $pageLanguageData['language_id'],
-											'page_title' => $pageLanguageData['title'],
-											'sections' => (@unserialize($pageLanguageData['description']) === false) ? $pageLanguageData['description'] : unserialize($pageLanguageData['description']),
-                                        );
-                }
-                $pageList[] = array('page_id' => $page['page_id'],
-									'status' => $page['status'],
-									'slug'  => $page['slug'],
-                                    'translations' => $footerPageLanguageData
-                                    );
-            }
-			
 			// Set response data
-            $apiData = $pageList; 
+            $apiData = $footerPages;
             $apiStatus = app('Illuminate\Http\Response')->status();
             $apiMessage = trans('messages.success.MESSAGE_FOOTER_PAGE_LISTING');
-            return ResponseHelper::success($apiStatus, $apiMessage, $apiData);                  
-        } catch(\Exception $e) {
-			dd($e);
-            // Catch database exception
-            return Helpers::errorResponse(trans('api_error_messages.status_code.HTTP_STATUS_500'), 
-                                        trans('api_error_messages.status_type.HTTP_STATUS_TYPE_500'), 
-                                        trans('api_error_messages.custom_error_code.ERROR_40018'), 
-                                        trans('api_error_messages.custom_error_message.40018'));           
+            return ResponseHelper::successWithPagination($apiStatus, $apiMessage, $apiData);                  
+        } catch (PDOException $e) {
+            throw new PDOException($e->getMessage());
+        } catch (\Exception $e) {
+            throw new \Exception($e->getMessage());
         }
     }
 
@@ -77,7 +57,6 @@ class FooterPageController extends Controller
      */
     public function store(Request $request)
     {
-		// return $this->page->store($request);
 		try {
 			// Server side validataions
 			$validator = Validator::make($request->all(), ["page_details" => "required", 

@@ -19,10 +19,20 @@ class FooterPagesLanguage extends Model
      */
     protected $fillable = ['page_id', 'language_id', 'title', 'description'];
 	
-    protected $visible = ['page_id', 'language_id', 'title', 'description'];
-
-    public function page()
+    protected $visible = ['language_id', 'title', 'description'];
+	
+	public function page()
     {
     	return $this->belongsTo(FooterPage::class, 'page_id', 'page_id');
+    }
+	
+	public function setDescriptionAttribute($value)
+    {
+		$this->attributes['description'] = serialize($value);
+    }
+	
+	public function getDescriptionAttribute($value)
+    {
+        return unserialize($value);
     }
 }
