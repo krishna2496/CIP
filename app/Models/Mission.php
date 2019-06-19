@@ -71,6 +71,8 @@ class Mission extends Model
 
     /**
      * Get the mission application associated with the mission.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function missionApplication()
     {

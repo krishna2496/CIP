@@ -113,6 +113,14 @@ $router->group(['prefix' => 'metadata/users/custom_fields', 'middleware' => 'loc
     $router->delete('/', ['uses' => 'Admin\User\UserCustomFieldController@handleError']);
 });
 
+/* Set mission data for tenant specific */
+$router->group(['prefix' => 'missions', 'middleware' => 'localization|auth.tenant.admin'], function($router){ 
+    $router->get('/', ['uses' => 'Admin\Mission\MissionController@index']); 
+    $router->post('/create', ['uses' => 'Admin\Mission\MissionController@store']);  
+    $router->patch('/{missionId}', ['uses' => 'Admin\Mission\MissionController@update']); 
+    $router->get('/{missionId}/applications', ['uses' => 'Admin\Mission\MissionController@getApplications']); 
+
+});
 
 /* Set skill data for tenant user specific */
 $router->group(['prefix' => 'entities/skills', 'middleware' => 'localization|auth.tenant.admin'], function ($router) {

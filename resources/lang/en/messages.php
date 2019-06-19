@@ -25,6 +25,8 @@ return [
 		'MESSAGE_USER_LISTING' => 'User listing successfully',
         'MESSAGE_USER_SKILLS_CREATED' => 'User skills linked successfully',
         'MESSAGE_USER_SKILLS_DELETED' => 'User skills unlinked successfully',
+		'MESSAGE_APPLICATION_LISTING' => 'Mission application listing successfully',
+
 	],
 	
 	/**

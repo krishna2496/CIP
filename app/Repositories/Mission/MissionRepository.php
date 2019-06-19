@@ -12,12 +12,12 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 class MissionRepository implements MissionInterface
 {
     /**
-     * @var App\Mission
+     * @var App\Models\Mission
      */
     public $mission;
 
     /**
-     * @var App\Model\MissionApplication
+     * @var App\Models\MissionApplication
      */
     public $missionApplication;
     
@@ -68,9 +68,29 @@ class MissionRepository implements MissionInterface
      * Illuminate\Http\Request $request
      * @return mixed
      */
-    public function userList(Request $request)
+    public function missionApplicationList(Request $request)
     {
-        
+        try {
+            $missionQuery = $this->user->with('mission');
+            
+            if ($request->has('search')) {
+                $missionQuery->where(function ($query) use ($request) {
+                    $query->orWhere('first_name', 'like', '%' . $request->input('search') . '%');
+                    $query->orWhere('last_name', 'like', '%' . $request->input('search') . '%');
+                });
+            }
+            if ($request->has('order')) {
+                $orderDirection = $request->input('order', 'asc');
+                $missionQuery->orderBy('user_id', $orderDirection);
+            }
+            
+            $applicationList = $missionQuery->paginate(config('constants.PER_PAGE_LIMIT'));
+            $responseMessage = (count($applicationList) > 0) ? trans('messages.success.MESSAGE_APPLICATION_LISTING') : trans('messages.success.MESSAGE_NO_RECORD_FOUND');
+            
+            return ResponseHelper::successWithPagination($this->response->status(), $responseMessage, $applicationList);
+        } catch (\InvalidArgumentException $e) {
+            throw new \InvalidArgumentException($e->getMessage());
+        }
     }
 
     /**
