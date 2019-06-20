@@ -1,12 +1,11 @@
 <?php
-
 namespace App\Http\Controllers\Admin\User;
 
 use App\Http\Controllers\Controller;
 use App\Repositories\UserCustomField\UserCustomFieldRepository;
 use Illuminate\Support\Facades\Input;
 use App\Models\UserCustomField;
-use Illuminate\Http\{Request, Response};
+use Illuminate\Http\{Request, Response, JsonResponse};
 use App\Helpers\ResponseHelper;
 use Illuminate\Validation\Rule;
 use Validator, PDOException;
@@ -14,10 +13,26 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class UserCustomFieldController extends Controller
 {
+	/**
+     * User custom field
+     *
+     * @var UserCustomFieldRepository
+     */
 	private $field;
 	
+	/**
+     * Response
+     *
+     * @var Response
+     */
 	private $response;
 	
+	
+	/**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
 	public function __construct(UserCustomFieldRepository $field, Response $response)
     {
 		 $this->field = $field;
@@ -27,6 +42,7 @@ class UserCustomFieldController extends Controller
     /**
      * Display a listing of the resource.
      *
+     * @param Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request)
@@ -40,6 +56,8 @@ class UserCustomFieldController extends Controller
             return ResponseHelper::successWithPagination($apiStatus, $apiMessage, $customFields);                  
         } catch (PDOException $e) {
             throw new PDOException($e->getMessage());
+        } catch (\InvalidArgumentException $e) {
+            throw new \InvalidArgumentException($e->getMessage());
         } catch (\Exception $e) {
             throw new \Exception($e->getMessage());
         }
@@ -51,7 +69,7 @@ class UserCustomFieldController extends Controller
      * @param \Illuminate\Http\Request  $request
      * @return mixed
      */
-    public function store(Request $request)
+    public function store(Request $request): JsonResponse
     {   
 		try {
 			// Server side validataions
@@ -77,15 +95,10 @@ class UserCustomFieldController extends Controller
             $apiMessage = trans('messages.success.MESSAGE_CUSTOM_FIELD_ADDED');
 			$apiData = ['field_id' => $customField['field_id']];
             return ResponseHelper::success($apiStatus, $apiMessage, $apiData);
-        
         } catch(PDOException $e) {
-			
 			throw new PDOException($e->getMessage());
-			
 		} catch(\Exception $e) {
-			
 			throw new \Exception($e->getMessage());
-			
 		}
     }
 
@@ -107,7 +120,7 @@ class UserCustomFieldController extends Controller
      * @param int  $id
      * @return mixed
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $id): JsonResponse
     {
         try {
 			// Server side validataions
@@ -150,25 +163,12 @@ class UserCustomFieldController extends Controller
         try {  
             $customField = $this->field->delete($id);
             
-            // Set response data
+			// Set response data
             $apiStatus = trans('messages.status_code.HTTP_STATUS_NO_CONTENT');
             $apiMessage = trans('messages.success.MESSAGE_CUSTOM_FIELD_DELETED');
             return ResponseHelper::success($apiStatus, $apiMessage);            
         } catch (ModelNotFoundException $e) {
             throw new ModelNotFoundException(trans('messages.custom_error_message.100004'));
         }
-    }
-
-    /**
-     * Handle error if id is not passed in url
-     *
-     * @return mixed
-     */
-    public function handleError()
-    {
-        return Helpers::errorResponse(trans('api_error_messages.status_code.HTTP_STATUS_400'), 
-                                        trans('api_error_messages.status_type.HTTP_STATUS_TYPE_400'), 
-                                        trans('api_error_messages.custom_error_code.ERROR_20034'), 
-                                        trans('api_error_messages.custom_error_message.20034'));
-    }
+    }  
 }

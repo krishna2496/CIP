@@ -107,6 +107,7 @@ return [
 		'page_details.translations.*.lang' => 'lang', 
 		'page_details.translations.*.title' => 'title',
 		'page_details.translations.*.sections' => 'sections',
+		'translations.*.values' => 'values',
 		],
 
 ];

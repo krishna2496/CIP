@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
@@ -7,10 +6,21 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class UserCustomField extends Model
 {
-    protected $table = 'user_custom_field';
+    use SoftDeletes;
+    /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
+	protected $table = 'user_custom_field';
+	
+	/**
+     * The primary key for the model.
+     *
+     * @var string
+     */
     protected $primaryKey = 'field_id';
 
-    use SoftDeletes;
      /**
      * The attributes that are mass assignable.
      *
@@ -18,14 +28,31 @@ class UserCustomField extends Model
      */
     protected $fillable = ['name', 'type', 'translations', 'is_mandatory'];
 	
+	/**
+     * The attributes that should be visible in arrays.
+     *
+     * @var array
+     */
 	protected $visible = ['field_id', 'name', 'type', 'translations', 'is_mandatory'];
 	
-	public function setTranslationsAttribute($value)
+	/**
+	 * Set translations attribute on the model.
+	 *
+	 * @param  mixed   $value
+	 * @return void
+	 */
+	public function setTranslationsAttribute(array $value): void
     {
 		$this->attributes['translations'] = serialize($value);
     }
 	
-	public function getTranslationsAttribute($value)
+	/**
+	 * Get an attribute from the model.
+	 *
+	 * @param  string  $value
+	 * @return array
+	 */
+	public function getTranslationsAttribute(string $value): array
     {
         return unserialize($value);
     }
@@ -34,7 +61,7 @@ class UserCustomField extends Model
      * Delete the specified resource.
      *
      * @param  int  $id
-     * @return array
+     * @return void
      */
     public function deleteCustomField(int $id)
     {
