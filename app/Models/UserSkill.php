@@ -43,9 +43,9 @@ class UserSkill extends Model
      * @param  int  $skill_id
      * @return array
      */
-    public function findUserSkill(int $user_id, int $skill_id)
+    public function linkUserSkill(int $user_id, int $skill_id)
     {
-        return static::where(['user_id' => $user_id, 'skill_id' => $skill_id])->get();
+        return static::firstOrNew(array('user_id' => $user_id, 'skill_id' => $skill_id))->save();
     }
 
     /**
@@ -78,10 +78,7 @@ class UserSkill extends Model
      */
     public function find(int $user_id)
     {
-        $skillQuery =static::with('skill');                     
-        $userSkill = $skillQuery->where('user_id', $user_id)
-                ->paginate(config('constants.PER_PAGE_LIMIT'));
-        return $userSkill;
+        return static::with('skill')->find($user_id);
     }
 
      

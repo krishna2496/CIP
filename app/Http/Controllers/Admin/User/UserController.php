@@ -109,7 +109,7 @@ class UserController extends Controller
                 );
             }
 
-            $userSkill = $this->user->linkSkill($request);
+            $this->user->linkSkill($request);
 
             // Set response data
             $apiStatus = trans('messages.status_code.HTTP_STATUS_CREATED');
@@ -171,12 +171,13 @@ class UserController extends Controller
     {
          try {            
             $skillList = $this->user->userSkills($user_id);
-
-            $responseMessage = (count($skillList) > 0) ? trans('messages.success.MESSAGE_USER_LISTING') : trans('messages.success.MESSAGE_NO_RECORD_FOUND');
-            
-            return ResponseHelper::successWithPagination($this->response->status(), $responseMessage, $skillList);
-        } catch (\InvalidArgumentException $e) {
-            throw new \InvalidArgumentException($e->getMessage());
+			
+			// Set response data
+			$apiData = (count($skillList) > 0) ? $skillList->toArray() : [];
+			$responseMessage = (count($skillList) > 0) ? trans('messages.success.MESSAGE_USER_LISTING') : trans('messages.success.MESSAGE_NO_RECORD_FOUND');
+            return ResponseHelper::success($this->response->status(), $responseMessage, $apiData);
+        } catch (\Exception $e) {
+            throw new \Exception($e->getMessage());
         }
     }
 }
