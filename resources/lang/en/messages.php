@@ -129,6 +129,7 @@ return [
 
         // Custom error code for Mission Module - 400000 - 409999
 		'ERROR_400000' => '400000',
+		'ERROR_400001' => '400001',
 		
 	],
 	
@@ -197,7 +198,8 @@ return [
 		'300005' => 'Requested page does not exist',
 
 		// Custom error code for Mission Module - 400000 - 409999
-        '400000' => 'FR: Invalid application data or missing parameter',
+        '400000' => 'Invalid application data or missing parameter',
+        '400001' => 'Invalid mission data or missing parameter',
 
 	]
 ];

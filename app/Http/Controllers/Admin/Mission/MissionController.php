@@ -9,7 +9,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Validation\Rule;
 use App\Repositories\Mission\MissionRepository;
 use App\Models\{Mission, MissionLanguage, MissionDocument, MissionMedia, MissionTheme, MissionApplication};
-use App\Helpers\{Helpers, ResponseHelper};
+use App\Helpers\{Helpers, ResponseHelper, LanguageHelper};
 use Validator, DB;
 
 class MissionController extends Controller
@@ -103,15 +103,46 @@ class MissionController extends Controller
      * @return mixed
      */
     public function store(Request $request)
-    {  
-        // Connect master database to get language details
-        Helpers::switchDatabaseConnection('mysql', $request);
-        $languages = DB::table('language')->get();    
-       
-        // Connect tenant database
-        Helpers::switchDatabaseConnection('tenant', $request);
+    {
+        $languages = LanguageHelper::getLanguages($request);       
 
-        // Server side validataion for mission
+        // Server side validataions
+        $validator = Validator::make($request->all(), 
+                [
+                    "theme_id" => "required", 
+                    "mission_type" => ['required', Rule::in(config('constants.mission_type'))],
+                    "location" => "required", 
+                    "location.city_id" => "required",
+                    "location.country_code" => "required",
+                    "mission_detail" => "required",
+                    "mission_detail.*.lang" => "required",
+                    "mission_detail.*.title" => "required", 
+                    "organisation" => "required", 
+                    "publication_status" => ['required', Rule::in(config('constants.publication_status'))],
+                    "goal_objective" => "required_if:mission_type,GOAL",
+                    "media_images.*.media_name" => "required", 
+                    "media_images.*.media_type" => ['required', Rule::in(config('constants.image_types'))], 
+                    "media_images.*.media_path" => "required", 
+                    "media_videos.*.media_name" => "required", 
+                    "media_videos.*.media_path" => "required", 
+                    "documents.*.document_name" => "required", 
+                    "documents.*.document_type" => ['required', Rule::in(config('constants.document_types'))],
+                    "documents.*.document_path" => "required"
+                ]
+            );
+
+        dd($validator->errors()->first());
+
+        // If request parameter have any error
+        if ($validator->fails()) {
+            return ResponseHelper::error(trans('messages.status_code.HTTP_STATUS_UNPROCESSABLE_ENTITY'),
+                                        trans('messages.status_type.HTTP_STATUS_TYPE_422'),
+                                        trans('messages.custom_error_code.ERROR_300000'),
+                                        $validator->errors()->first());
+        }
+
+        //////////////////////////////////////////////////////////////////////
+        /*// Server side validataion for mission
         $validator = Validator::make($request->toArray(), [
                             "theme_id" => "required", 
                             "mission_detail" => "required", 
@@ -185,7 +216,7 @@ class MissionController extends Controller
                                             trans('messages.custom_error_code.ERROR_20106'),
                                             $validator->errors()->first());
             }   
-        }
+        }*/
         try { 
             // Set data for create new record
             $start_date = $end_date = NULL;
@@ -313,12 +344,7 @@ class MissionController extends Controller
      */
     public function update(Request $request, $id)
     {        
-        // Connect master database to get language details
-        Helpers::switchDatabaseConnection('mysql', $request);
-        $languages = DB::table('language')->get();    
-        
-        // Connect tenant database
-        Helpers::switchDatabaseConnection('tenant', $request);
+        $languages = LanguageHelper::getLanguages($request);       
 
         $missionData = Mission::find($id);
         if (!$missionData) {
@@ -634,7 +660,7 @@ class MissionController extends Controller
                 return ResponseHelper::error(
                     trans('messages.status_code.HTTP_STATUS_UNPROCESSABLE_ENTITY'),
                     trans('messages.status_type.HTTP_STATUS_TYPE_422'),
-                    trans('messages.custom_error_code.ERROR_200000'),
+                    trans('messages.custom_error_code.ERROR_400000'),
                     $validator->errors()->first()
                 );
             }
