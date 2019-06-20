@@ -37,6 +37,7 @@ class MissionLanguage extends Model
      * @var array
      */
     protected $visible = ['mission_language_id', 'lang', 'language_id', 'title', 'objective', 'short_description', 'description'];
+
     /**
      * Get the mission that has language titles.
      *
@@ -45,5 +46,27 @@ class MissionLanguage extends Model
     public function mission(): BelongsTo
     {
         return $this->belongsTo(Mission::class, 'mission_id', 'mission_id');
+    }
+
+    /**
+     * Set description attribute on the model.
+     *
+     * @param  mixed   $value
+     * @return void
+     */
+    public function setDescriptionAttribute($value)
+    {
+        $this->attributes['description'] = serialize($value);
+    }
+    
+    /**
+     * Get an attribute from the model.
+     *
+     * @param  string  $value
+     * @return mixed
+     */
+    public function getDescriptionAttribute($value)
+    {
+        return unserialize($value);
     }
 }

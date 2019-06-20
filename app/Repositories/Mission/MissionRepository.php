@@ -98,7 +98,7 @@ class MissionRepository implements MissionInterface
                     'language_id' => $language->language_id, 
                     'title' => $value['title'], 
                     'short_description' => (isset($value['short_description'])) ? $value['short_description'] : NULL, 
-                    'description' => (array_key_exists('section', $value)) ? serialize($value['section']) : '',
+                    'description' => (array_key_exists('section', $value)) ? $value['section'] : '',
                     'objective' => $value['objective']
                 );
 
@@ -371,4 +371,117 @@ class MissionRepository implements MissionInterface
         return $missionApplication;
     }
     
+    /**
+     * Display a listing of mission.
+     *
+     * Illuminate\Http\Request $request
+     * @return mixed
+     */
+    public function missionList(Request $request)
+    {           
+        $languages = LanguageHelper::getLanguages($request); 
+
+        $mission = Mission::select('mission.mission_id', 'mission.theme_id', 'mission.city_id', 'mission.country_id', 'mission.start_date', 'mission.end_date', 'mission.total_seats', 'mission.mission_type', 'mission.goal_objective', 'mission.end_date', 'mission.total_seats', 
+                'mission.mission_type', 'mission.goal_objective', 'mission.application_deadline', 
+                'mission.publication_status', 'mission.organisation_id', 'mission.organisation_name'
+            )
+            ->with(['city', 'country','missionTheme', 'missionLanguage', 'missionMedia', 'missionDocument'])
+            ->withCount('missionApplication')
+            ->orderBy('mission.mission_id', 'ASC')->paginate(config('constants.LIMIT'));
+
+        foreach ($mission as $key => $value) {
+            foreach ($value->missionLanguage as $languageValue) {
+                $languageData = $languages->where('language_id', $languageValue->language_id)->first();
+                $languageValue->lang = $languageData->code;
+            }            
+            foreach ($value->missionMedia as $mediaValue) {
+                if ($mediaValue->default == 1) {
+                    $value->default_media_name = $mediaValue->media_name;
+                    $value->default_media_type = $mediaValue->media_type;
+                    $value->default_media_path = $mediaValue->media_path;
+                }
+            }
+        }
+        return $mission;
+    }
+
+    /**
+     * Display a listing of mission.
+     *
+     * Illuminate\Http\Request $request
+     * @return mixed
+     */
+    public function appMissions(Request $request)
+    {
+        $languages = LanguageHelper::getLanguages($request); 
+        $local = ($request->hasHeader('X-localization')) ? $request->header('X-localization') : env('TENANT_DEFAULT_LANGUAGE_CODE');
+        $language = $languages->where('code', $local)->first();
+        $language_id = $language->language_id;
+
+        // Get data for parent table
+        $mission = $this->mission->select(
+            'mission.mission_id','mission.theme_id','mission.city_id','mission.country_id',
+            'mission.start_date','mission.end_date','mission.total_seats','mission.mission_type',
+            'mission.goal_objective','mission.end_date','mission.total_seats',
+            'mission.mission_type','mission.goal_objective','mission.application_deadline',
+            'mission.publication_status','mission.organisation_id','mission.organisation_name'
+            )->with(['missionTheme','missionMedia'
+            ])->with(['missionMedia' => function ($query) {
+                $query->where('status','1');
+                $query->where('default','1');
+            }])
+            ->with(['missionLanguage' => function ($query) use ($language_id) {
+                $query->select('mission_language_id','mission_id','title','short_description','objective')
+                ->where('language_id',$language_id);
+            }])
+            ->withCount(['missionApplication as user_application_count' => function ($query) use ($request) {
+                $query->where('user_id',1)
+                ->where('approval_status',config("constants.application_status")["AUTOMATICALLY_APPROVED"]);      
+            }])
+            ->withCount(['missionApplication as mission_application_count' => function ($query) use ($request) {
+                $query->where('approval_status',config("constants.application_status")["AUTOMATICALLY_APPROVED"]);         
+            }])
+            ->where('publication_status',config("constants.publication_status")["APPROVED"])
+            ->orderBy('mission.mission_id', 'ASC')->paginate(config("constants.PER_PAGE_LIMIT"));
+
+        foreach ($mission as $key => $value) {
+            
+            if ($value->mission_type == config("constants.MISSION_TYPE['GOAL']")) {
+                //Progress bar for goal
+            }
+
+            if ($value->total_seats != 0) { //With limited seats
+                $value->seats_left = ($value->total_seats) - ($value->mission_application_count);
+            } else { //Unlimeted seats
+                $value->already_volunteered = $value->mission_application_count;
+            }
+
+            // Get defalut media image
+            $value->default_media_type = $value->missionMedia[0]->media_type ?? '';
+            $value->default_media_path = $value->missionMedia[0]->media_path ?? '';
+            unset($value->missionMedia);  
+
+            // Set title and description
+            $value->title = $value->missionLanguage[0]->title ?? '';
+            $value->short_description = $value->missionLanguage[0]->short_description ?? ''; 
+            $value->objective = $value->missionLanguage[0]->objective ?? '';
+            unset($value->missionLanguage);   
+
+            // Check for apply in mission validity
+            $value->set_view_detail = 0;
+            $today = date(config("constants.FRONT_DATE_FORMAT"));
+
+            if (($value->user_application_count > 0) || 
+                ($value->application_deadline != '' && $value->application_deadline < $today) || 
+                ($value->total_seats != 0 && $value->total_seats == $value->mission_application_count) || 
+                ($value->end_date != '' && $value->end_date < $today) 
+                // || ($value->mission_type != 'GOAL' && $value->goal_objective ==  $today)
+            ) {
+                $value->set_view_detail = 1;
+            } 
+            //If media type is youtube link
+            // default_media_type
+        }
+        return $mission;
+    }
 }

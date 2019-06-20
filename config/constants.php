@@ -12,6 +12,7 @@ return [
     'ACTIVE' => 1,
     'DB_DATE_FORMAT' => 'Y-m-d H:i:s',
 	'PER_PAGE_LIMIT' => '5',
+    'FRONT_DATE_FORMAT' => 'd/m/Y',   
 	
 	/*
      * User custom field types
@@ -82,4 +83,5 @@ return [
         'REFUSED' => 'REFUSED'
     ],
 
+    
 ];

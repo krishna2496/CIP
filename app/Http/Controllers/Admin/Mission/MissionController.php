@@ -15,7 +15,7 @@ class MissionController extends Controller
     /**
      * @var App\Models\Mission
      */
-    private $user;
+    private $mission;
     
     /**
      * Create a new Mission controller instance.
@@ -36,63 +36,22 @@ class MissionController extends Controller
      * @return mixed
      */
     public function index(Request $request): JsonResponse
-    {
-        // Connect master database to get language details
-        Helpers::switchDatabaseConnection('mysql', $request);
-        $languages = DB::table('language')->get();    
-    
-        // Connect tenant database
-        Helpers::switchDatabaseConnection('tenant', $request);
-       
+    {       
         try { 
             // Get mission
-            $mission = Mission::select('mission.mission_id', 'mission.theme_id', 'mission.city_id', 'mission.country_id', 'mission.start_date', 'mission.end_date', 'mission.total_seats', 'mission.mission_type', 'mission.goal_objective', 'mission.end_date', 'mission.total_seats', 
-                'mission.mission_type', 'mission.goal_objective', 'mission.application_deadline', 
-                'mission.publication_status', 'mission.organisation_id', 'mission.organisation_name'
-            )
-            ->with(['city', 'country','missionTheme', 'missionLanguage', 'missionMedia', 'missionDocument'])
-            ->withCount('missionApplication')
-            ->orderBy('mission.mission_id', 'ASC')->paginate(config('constants.LIMIT'));
-
-            if (empty($mission)) {
-                // Set response data
-                $apiStatus = app('Illuminate\Http\Response')->status();
-                $apiMessage = trans('messages.success.MESSAGE_NO_DATA_FOUND');
-                return ResponseHelper::success($apiStatus, $apiMessage);
-            }
-
-            foreach ($mission as $key => $value) {
-
-                foreach ($value->missionLanguage as $languageValue) {
-
-                    $languageData = $languages->where('language_id', $languageValue->language_id)->first();
-                    $languageValue->description = (@unserialize($languageValue->description) === false) ? $languageValue->description : unserialize($languageValue->description);
-                    $languageValue->lang = $languageData->code;
-                }
-                
-                foreach ($value->missionMedia as $mediaValue) {
-
-                    if ($mediaValue->default == 1) {
-                        $value->default_media_name = $mediaValue->media_name;
-                        $value->default_media_type = $mediaValue->media_type;
-                        $value->default_media_path = $mediaValue->media_path;
-                    }
-                }
-            }
+            $missions = $this->mission->missionList($request);
 
             // Set response data
-            $apiData = $mission; 
-            $apiStatus = app('Illuminate\Http\Response')->status();
-            $apiMessage = trans('messages.success.MESSAGE_MISSION_LIST_SUCCESS');
-            return ResponseHelper::success($apiStatus, $apiMessage, $apiData);                  
-        } catch(\Exception $e) {
-            // Catch database exception
-            return ResponseHelper::error(
-                trans('messages.status_code.HTTP_STATUS_500'), 
-                trans('messages.status_type.HTTP_STATUS_TYPE_500'), 
-                trans('messages.custom_error_code.ERROR_40018'), 
-                trans('messages.custom_error_message.40018')
-            );           
+            $apiData = $missions; 
+            $apiStatus = $this->response->status();
+            $apiMessage = ($missions->isEmpty()) ? trans('messages.success.MESSAGE_NO_RECORD_FOUND') : trans('messages.success.MESSAGE_MISSION_LIST_SUCCESS');
+            return ResponseHelper::successWithPagination($apiStatus, $apiMessage, $apiData);                  
+        } catch (PDOException $e) {
+            throw new PDOException($e->getMessage());
+        } catch (\InvalidArgumentException $e) {
+            throw new \InvalidArgumentException($e->getMessage());
+        } catch (\Exception $e) {
+            throw new \Exception($e->getMessage());
         }
     }
 
@@ -219,7 +178,7 @@ class MissionController extends Controller
             
             $this->mission->update($request, $id);
             // Set response data
-            $apiStatus = app('Illuminate\Http\Response')->status();
+            $apiStatus = $this->response->status();
             $apiMessage = trans('messages.success.MESSAGE_MISSION_UPDATE_SUCCESS');
             return ResponseHelper::success($apiStatus, $apiMessage);     
 

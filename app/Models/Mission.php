@@ -4,6 +4,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\{Model, SoftDeletes};
 use App\Models\{MissionDocument, MissionMedia, MissionLanguage, MissionApplication};
 use Illuminate\Database\Eloquent\Relations\{HasOne, HasMany, BelongsTo};
+use Carbon\Carbon;
 
 class Mission extends Model
 {
@@ -30,6 +31,7 @@ class Mission extends Model
      */
     protected $fillable = ['theme_id', 'city_id', 'country_id', 'start_date', 'end_date', 'total_seats', 'available_seats', 'application_deadline', 'publication_status', 'organisation_id', 'organisation_name', 'mission_type', 'goal_objective'];
 
+    protected $appends = ['city_name'];
     /**
      * Get the document record associated with the mission.
      *
@@ -116,4 +118,19 @@ class Mission extends Model
         // static::missionDocument()->delete();
         return $mission;
     }
+
+    /**
+     * Get an attribute from the model.
+     *
+     * @return string
+     */
+    public function getCityNameAttribute()
+    {
+       return $this->city()->select('name')->first()->name;        
+    }
+
+    /*public function getStartDateAttribute($value)
+    {
+        return Carbon::parse($value)->format(config("constants.FRONT_DATE_FORMAT"));
+    }*/
 }

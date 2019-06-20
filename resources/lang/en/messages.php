@@ -34,6 +34,7 @@ return [
         'MESSAGE_MISSION_ADD_SUCCESS' => 'Mission created successfully',
         'MESSAGE_MISSION_UPDATE_SUCCESS' => 'Mission updated successfully',
         'MESSAGE_MISSION_DELETE_SUCCESS' => 'Mission deleted successfully',
+        'MESSAGE_MISSION_LIST_SUCCESS' => 'Mission listing successfully',
     ],
     
     /**
