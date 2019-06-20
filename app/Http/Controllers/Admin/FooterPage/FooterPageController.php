@@ -1,20 +1,32 @@
 <?php
 namespace App\Http\Controllers\Admin\FooterPage;
 
-use App\Repositories\FooterPage\FooterPageRepository;
-use Illuminate\Http\{Request, Response};
 use App\Http\Controllers\Controller;
+use App\Repositories\FooterPage\FooterPageRepository;
+use Illuminate\Http\{Request, Response, JsonResponse};
 use Illuminate\Support\Facades\Input;
 use Validator, DB, PDOException;
 use App\Helpers\ResponseHelper;
+use Illuminate\Validation\Rule;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class FooterPageController extends Controller
 {
+	/**
+     * @var App\Repositories\FooterPage\FooterPageRepository 
+     */
 	private $page;
 	
+	/**
+     * @var Illuminate\Http\Response
+     */
 	private $response;
 	
+	/**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
 	public function __construct(FooterPageRepository $page, Response $response)
     {
 		 $this->page = $page;
@@ -22,51 +34,27 @@ class FooterPageController extends Controller
 	}
 	
     /**
-     * Display a listing of the resource.
+     * Display listing of footer pages
      *
-     * @return \Illuminate\Http\Response
+     * @param Illuminate\Http\Request $request
+     * @return mixed
      */
-    public function index(Request $request)
+    public function index(Request $request): JsonResponse
     {
-        try { 
+		try { 
+			$footerPages = $this->page->footerPageList($request);
 			
-			$footerPage = $this->page->footerPageList($request);
-			print_R($footerPage);exit;
-			if (empty($pageList)) {
-                // Set response data
-                $apiStatus = trans('messages.status_code.HTTP_STATUS_NOT_FOUND');
-                $apiMessage = trans('messages.custom_error_message.MESSAGE_NO_RECORD_FOUND');
-                return ResponseHelper::error($apiStatus, $apiMessage);
-            }
-			
-            $pageList = array();
-            foreach ($footerPage as $value) { 
-                // Get data from child table                   
-                $footerPageLanguage = FooterPagesLanguage::where('page_id', $value['page_id'])->get();
-                $footerPageList = array();
-                foreach ($footerPageLanguage as $language) {
-                    $footerPageList[] = array('page_id' => $language['page_id'],
-                                        'language_id' => $language['language_id'],
-                                        'title' => $language['title'],
-                                        'section' => (@unserialize($language['description']) === false) ? $language['description'] : unserialize($language['description']),
-                                        );
-                }
-                $pageList[] = array('slug'  => $value['slug'],
-                                    'pages' => $footerPageList
-                                    );
-            }
-            // Set response data
-            $apiData = $pageList; 
-            $apiStatus = app('Illuminate\Http\Response')->status();
-            $apiMessage = trans('api_success_messages.success_message.MESSAGE_CMS_LIST_SUCCESS');
-            return Helpers::response($apiStatus, $apiMessage, $apiData);                  
-        } catch(\Exception $e) {
-			dd($e);
-            // Catch database exception
-            return Helpers::errorResponse(trans('api_error_messages.status_code.HTTP_STATUS_500'), 
-                                        trans('api_error_messages.status_type.HTTP_STATUS_TYPE_500'), 
-                                        trans('api_error_messages.custom_error_code.ERROR_40018'), 
-                                        trans('api_error_messages.custom_error_message.40018'));           
+			// Set response data
+            $apiStatus = $this->response->status();
+            $apiMessage = trans('messages.success.MESSAGE_FOOTER_PAGE_LISTING');
+			$apiMessage = ($footerPages->isEmpty()) ? trans('messages.success.MESSAGE_NO_RECORD_FOUND') : trans('messages.success.MESSAGE_FOOTER_PAGE_LISTING');
+            return ResponseHelper::successWithPagination($apiStatus, $apiMessage, $footerPages);                  
+        } catch (PDOException $e) {
+            throw new PDOException($e->getMessage());
+        } catch (\InvalidArgumentException $e) {
+            throw new \InvalidArgumentException($e->getMessage());
+        } catch (\Exception $e) {
+            throw new \Exception($e->getMessage());
         }
     }
 
@@ -76,9 +64,8 @@ class FooterPageController extends Controller
      * @param \Illuminate\Http\Request $request
      * @return mixed
      */
-    public function store(Request $request)
+    public function store(Request $request): JsonResponse
     {
-		// return $this->page->store($request);
 		try {
 			// Server side validataions
 			$validator = Validator::make($request->all(), ["page_details" => "required", 
@@ -102,7 +89,7 @@ class FooterPageController extends Controller
 			$footerPage = $this->page->store($request);
 			
 			// Set response data
-            $apiStatus = $this->response->status();
+            $apiStatus = trans('messages.status_code.HTTP_STATUS_CREATED');
             $apiMessage = trans('messages.success.MESSAGE_FOOTER_PAGE_CREATED');
             $apiData = ['page_id' => $footerPage['page_id']];
             return ResponseHelper::success($apiStatus, $apiMessage, $apiData);
@@ -123,7 +110,7 @@ class FooterPageController extends Controller
      * @param int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(int $id)
     {
         //
     }
@@ -135,16 +122,14 @@ class FooterPageController extends Controller
      * @param int  $id
      * @return mixed
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, int $id): JsonResponse
     {
         try {
 			// Server side validataions
 			$validator = Validator::make($request->all(), ["page_details" => "required", 
-															"page_details.slug" => "required",
-															"page_details.translations" => "required",
-															"page_details.translations.*.lang" => "required",
-															"page_details.translations.*.title" => "required",
-															"page_details.translations.*.sections" => "required",
+															"page_details.translations.*.lang" => "required_with:page_details.translations",
+															"page_details.translations.*.title" => "required_with:page_details.translations",
+															"page_details.translations.*.sections" => "required_with:page_details.translations",
 															]);
 			
 			// If post parameter have any missing parameter
@@ -178,7 +163,7 @@ class FooterPageController extends Controller
      * @param int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(int $id): JsonResponse
     {
         try {  
             $footerPage = $this->page->delete($id);

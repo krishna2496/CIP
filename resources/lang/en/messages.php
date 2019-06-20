@@ -17,14 +17,16 @@ return [
 		'MESSAGE_USER_LOGGED_IN' => 'You are successfully logged in',
 		'MESSAGE_PASSWORD_RESET_LINK_SEND_SUCCESS' => 'Reset Password link is sent to your email account,link will be expire in ' . config('constants.FORGOT_PASSWORD_EXPIRY_TIME') . ' hours',
 		'MESSAGE_PASSWORD_CHANGE_SUCCESS' => 'Your password has been changed successfully.',
-		'MESSAGE_CMS_LIST_SUCCESS' => 'CMS page listing successfully.',
-		'MESSAGE_CUSTOM_FIELD_ADD_SUCCESS' => 'User custom field added successfully',
-		'MESSAGE_CUSTOM_FIELD_UPDATE_SUCCESS' => 'User custom field updated successfully',
-		'MESSAGE_CUSTOM_FIELD_DELETE_SUCCESS' => 'User custom field deleted successfully',
+		'MESSAGE_FOOTER_PAGE_LISTING' => 'Footer pages listing successfully.',
+		'MESSAGE_CUSTOM_FIELD_ADDED' => 'User custom field added successfully',
+		'MESSAGE_CUSTOM_FIELD_UPDATED' => 'User custom field updated successfully',
+		'MESSAGE_CUSTOM_FIELD_DELETED' => 'User custom field deleted successfully',
 		'MESSAGE_NO_RECORD_FOUND' => 'No records found',
 		'MESSAGE_USER_LISTING' => 'User listing successfully',
 		'MESSAGE_CUSTOM_STYLE_UPLOADED_SUCCESS' => 'Custom styling data uploaded successfully',
-		'MESSAGE_CUSTOM_STYLE_RESET_SUCCESS' => 'Custom styling reset successfully'
+		'MESSAGE_CUSTOM_STYLE_RESET_SUCCESS' => 'Custom styling reset successfully',
+		'MESSAGE_CUSTOM_FIELD_LISTING' => 'User custom field listing successfully',
+		'MESSAGE_USER_UPDATED' => 'User updated successfully',
 	],
 	
 	/**
@@ -40,6 +42,7 @@ return [
 		'HTTP_STATUS_BAD_GATEWAY' => '502',
 		'HTTP_STATUS_METHOD_NOT_ALLOWED' => '405',
 		'HTTP_STATUS_NO_CONTENT' => '204',
+		'HTTP_STATUS_CREATED' => '201',
 	],
     
    /**
@@ -55,6 +58,7 @@ return [
 		'HTTP_STATUS_TYPE_502' => 'Backend service failure (data store failure)',
 		'HTTP_STATUS_TYPE_405' => 'Method Not Allowed',
 		'HTTP_STATUS_TYPE_204' => 'No Content',
+		'HTTP_STATUS_TYPE_201' => 'Created',
 	],
 	
 	/**
@@ -107,6 +111,9 @@ return [
 		
 		// Custom error code for User Module - 100000 - 109999
 		'ERROR_100000' => '100000',
+		'ERROR_100003' => '100003',
+		'ERROR_100004' => '100004',
+		'ERROR_100010' => '100010',
 		
 		// Custom error code for CMS Module - 300000 - 309999
 		'ERROR_300000' => '300000',
@@ -168,6 +175,9 @@ return [
 		
 		// Custom error code for User Module - 100000 - 109999
 		'100000' => 'User does not found in system',
+		'100003' => 'Custom field creation failed. Please check input parameters',
+		'100004' => 'Requested user custom field does not exist',
+		'100010' => 'User creation failed. Please check input parameters',
 		
 		// Custom error code for CMS Module - 300000 - 309999
 		'300000' => 'Page creation failed. Please check input parameters',

@@ -1,9 +1,9 @@
 <?php
-namespace App\Repositories\FooterPage;
+namespace App\Repositories\UserCustomField;
 
 use Illuminate\Support\ServiceProvider;
 
-class FooterPageRepoServiceProvide extends ServiceProvider
+class UserCustomFieldRepoServiceProvide extends ServiceProvider
 {
     /**
      * Bootstrap the application services.
@@ -15,7 +15,6 @@ class FooterPageRepoServiceProvide extends ServiceProvider
         
     }
 
-
     /**
      * Register the application services.
      *
@@ -23,6 +22,6 @@ class FooterPageRepoServiceProvide extends ServiceProvider
      */
     public function register()
     {
-        $this->app->bind('App\Repositories\FooterPage\FooterPageInterface', 'App\Repositories\FooterPage\FooterPageRepository');
+        $this->app->bind('App\Repositories\UserCustomField\UserCustomFieldInterface', 'App\Repositories\UserCustomField\UserCustomFieldRepository');
     }
 }

@@ -1,16 +1,27 @@
 <?php
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use App\Models\FooterPagesLanguage;
 
 class FooterPage extends Model
 {
 	use SoftDeletes;
-
+	
+	/**
+     * The table associated with the model.
+     *
+     * @var string
+     */
     protected $table = 'footer_page';
+	
+	/**
+     * The primary key for the model.
+     *
+     * @var string
+     */
     protected $primaryKey = 'page_id';
 
      /**
@@ -18,21 +29,28 @@ class FooterPage extends Model
      *
      * @var array
      */
-
 	protected $fillable = ['status', 'slug'];
 	
-	protected $visible = ['page_id', 'status', 'slug', 'pageLanguages'];
+	/**
+     * The attributes that should be visible in arrays.
+     *
+     * @var array
+     */
+	protected $visible = ['page_id', 'status', 'slug', 'pageTranslations'];
 	
-    public function pageLanguages()
+	/**
+     * Return the page's translations
+     */
+    public function pageTranslations(): HasMany
     {
     	return $this->hasMany(FooterPagesLanguage::class, 'page_id', 'page_id');
     }
 	
 	/**
-     * Delete the specified resource.
+     * Soft delete the model from the database.
      *
      * @param  int  $id
-     * @return array
+     * @return void
      */
     public function deleteFooterPage(int $id)
     {
