@@ -1,12 +1,12 @@
 <?php
 namespace App\Http\Controllers\Admin\Tenant;
 
-use Illuminate\Http\Request;
+use Illuminate\Http\{Request, Response};
 use App\Http\Controllers\Controller;
 use App\Repositories\TenantOption\TenantOptionRepository;
 use Illuminate\Support\Facades\Storage;
 use App\Helpers\{ResponseHelper, S3Helper, Helpers};
-use Validator;
+use Validator, PDOException;
 use App\Jobs\{DownloadAssestFromS3ToLocalStorageJob, CreateFolderInS3BucketJob};
 
 class TenantOptionsController extends Controller
@@ -72,74 +72,63 @@ class TenantOptionsController extends Controller
      * @return mixed response
      */
     public function storeSlider(Request $request)
-    {
+    {        
         // Server side validataions
-        $validator = Validator::make($request->toArray(), ["slider_image" => "required"]);
+        $validator = Validator::make($request->toArray(), ["url" => "required"]);
 
         // If post parameter have any missing parameter
         if ($validator->fails()) {
             return ResponseHelper::error(
-                trans('api_error_messages.status_code.HTTP_STATUS_422'),
-                trans('api_error_messages.status_type.HTTP_STATUS_TYPE_422'),
-                trans('api_error_messages.custom_error_code.ERROR_20018'),
+                trans('messages.status_code.HTTP_STATUS_UNPROCESSABLE_ENTITY'),
+                trans('messages.status_type.HTTP_STATUS_TYPE_422'),
+                trans('messages.custom_error_code.ERROR_20018'),
                 $validator->errors()->first()
             );
         }
 
         try {
-            // Get total count of "slider"
-            $slider = $this->tenantOption->where('option_name', config('constants.TENANT_OPTION_SLIDER'));
+            // Get total count of "slider"                        
+            $sliderCount = $this->tenantOption->getAllSlider()->count();
 
             // Prevent data insertion if user is trying to insert more than defined slider limit records
-            if (count($slider) >= config('constants.SLIDER_LIMIT')) {
+            if ($sliderCount >= config('constants.SLIDER_LIMIT')) {
                 // Set response data
                 return ResponseHelper::error(
-                    trans('api_error_messages.status_code.HTTP_STATUS_403'),
-                    trans('api_error_messages.status_type.HTTP_STATUS_TYPE_403'),
-                    trans('api_error_messages.custom_error_code.ERROR_40020'),
-                    trans('api_error_messages.custom_error_message.40020')
+                    trans('messages.status_code.HTTP_STATUS_FORBIDDEN'),
+                    trans('messages.status_type.HTTP_STATUS_TYPE_403'),
+                    trans('messages.custom_error_code.ERROR_40020'),
+                    trans('messages.custom_error_message.40020')
                 );
             } else {
-                /* // Check file is available or not
-                if ($request->hasFile('slider_image')) {
-                    // Check file is valid or not
-                    $file = $request->file('slider_image');
-                    if ($file->isValid()) {
-                        $extension = $file->getClientOriginalExtension();
-                        $fileName = "slider_".time().".".$extension;
-                        $destinationPath = config('constants.SLIDER_IMAGE_PATH');
+                // Upload slider image on S3 server
+                $tenantName = Helpers::getSubDomainFromRequest($request);
+                if ($request->url = S3Helper::uploadFileOnS3Bucket($request->url, $tenantName)) {
+                    // Set data for create new record
+                    $insertData = array();
+                    $insertData['option_name'] = config('constants.TENANT_OPTION_SLIDER');
+                    $insertData['option_value'] = serialize(json_encode($request->toArray()));
 
-                        // Upload file on destination path
-                        $uploadedFile = $file->move($destinationPath, $fileName);
-                    }
-                } */
-                // Set data for option_value
-                $sliderDetails = (isset($request->slider_detail)) ? json_decode($request->slider_detail) : "";
-                $optionValue = array('url' => $request->slider_image,
-                                     'sort_order' => (isset($request->sort_order)) ? $request->sort_order : 0,
-                                     'translations' => ($sliderDetails != '') ? $sliderDetails->translations : "");
+                    // Create new tenant_option
+                    $tenantOption = $this->tenantOption->storeSlider($insertData);
 
-                // Set data for create new record
-                $insertData = array();
-                $insertData['option_name'] = config('constants.TENANT_OPTION_SLIDER');
-                $insertData['option_value'] = serialize(json_encode($optionValue));
-
-                // Create new tenant_option
-                $tenantOption = TenantOption::create($insertData);
-
-                // Set response data
-                $apiStatus = $this->response->status();
-                $apiMessage = trans('messages.success.MESSAGE_SLIDER_ADD_SUCCESS');
-                return ResponseHelper::success($apiStatus, $apiMessage);
+                    // Set response data
+                    $apiStatus = $this->response->status();
+                    $apiMessage = trans('messages.success.MESSAGE_SLIDER_ADD_SUCCESS');
+                    return ResponseHelper::success($apiStatus, $apiMessage);
+                } else {
+                    // Response error unable to upload file on S3
+                    return ResponseHelper::error(
+                        trans('messages.status_code.HTTP_STATUS_UNPROCESSABLE_ENTITY'),
+                        trans('messages.status_type.HTTP_STATUS_TYPE_422'),
+                        trans('messages.custom_error_code.ERROR_40022'),
+                        trans('messages.custom_error_message.40022')
+                    );
+                }
             }
+        } catch (PDOException $e) {
+            throw new PDOException($e->getMessage());
         } catch (\Exception $e) {
-            // Any other error occured when trying to insert data into database for tenant option.
-            return ResponseHelper::error(
-                trans('api_error_messages.status_code.HTTP_STATUS_422'),
-                trans('api_error_messages.status_type.HTTP_STATUS_TYPE_422'),
-                trans('api_error_messages.custom_error_code.ERROR_20004'),
-                trans('api_error_messages.custom_error_message.20004')
-            );
+            throw new \Exception($e->getMessage());
         }
     }
 
@@ -151,19 +140,22 @@ class TenantOptionsController extends Controller
      */
     public function resetStyleSettings(Request $request)
     {
-        // Get domain name from request and use as tenant name.
-        $tenantName = ResponseHelper::getSubDomainFromRequest($request);
+        try {
+            // Get domain name from request and use as tenant name.
+            $tenantName = Helpers::getSubDomainFromRequest($request);
+            
+            // Copy default theme folder to tenant folder on s3
+            dispatch(new CreateFolderInS3BucketJob($tenantName));
 
-        // Copy default theme folder to tenant folder on s3
-        dispatch(new CreateFolderInS3BucketJob($tenantName));
+            // Copy tenant folder to local
+            dispatch(new DownloadAssestFromS3ToLocalStorageJob($tenantName));
 
-        // Copy tenant folder to local
-        dispatch(new DownloadAssestFromS3ToLocalStorageJob($tenantName));
-
-        // Set response data
-        $apiStatus = $this->response->status();
-        $apiMessage = trans('messages.success.MESSAGE_CUSTOM_STYLE_RESET_SUCCESS');
-        return ResponseHelper::success($apiStatus, $apiMessage);
+            // Set response data
+            $apiStatus = $this->response->status();
+            $apiMessage = trans('messages.success.MESSAGE_CUSTOM_STYLE_RESET_SUCCESS');
+            return ResponseHelper::success($apiStatus, $apiMessage);
+        } catch (\Exception $e) {
+        }
     }
 
     /**
@@ -214,10 +206,10 @@ class TenantOptionsController extends Controller
                 } else {
                     // Error: Return like uploaded file name doesn't match with structure.
                     return ResponseHelper::error(
-                        trans('api_error_messages.status_code.HTTP_STATUS_422'),
-                        trans('api_error_messages.status_type.HTTP_STATUS_TYPE_422'),
-                        trans('api_error_messages.custom_error_code.ERROR_20040'),
-                        trans('api_error_messages.custom_error_message.20040')
+                        trans('messages.status_code.HTTP_STATUS_UNPROCESSABLE_ENTITY'),
+                        trans('messages.status_type.HTTP_STATUS_TYPE_422'),
+                        trans('messages.custom_error_code.ERROR_20040'),
+                        trans('messages.custom_error_message.20040')
                     );
                 }
 
@@ -225,6 +217,7 @@ class TenantOptionsController extends Controller
                     '/'.$tenantName.'/assets/scss/'.$fileName,
                     file_get_contents($file->getRealPath())
                 )) {
+                    // Error unable to download file to server
                 }
             }
         }
