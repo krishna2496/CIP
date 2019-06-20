@@ -24,28 +24,24 @@ class TenantRepository implements TenantInterface
     }
 
     /**
-     * Get listing of the tenants.
+     * Get listing of tenants
      *
      * @param \Illuminate\Http\Request $request
      * @return App\Models\Tenant Tenant
      */
     public function tenantList(Request $request)
     {
-        try {
-            $tenantQuery = $this->tenant->with('options', 'tenantLanguages', 'tenantLanguages.language');
+		$tenantQuery = $this->tenant->with('options', 'tenantLanguages', 'tenantLanguages.language');
 
-            if ($request->has('search')) {
-                $tenantQuery->where('name', 'like', '%' . $request->input('search') . '%');
-            }
-            if ($request->has('order')) {
-                $orderDirection = $request->input('order', 'asc');
-                $tenantQuery->orderBy('tenant_id', $orderDirection);
-            }
+		if ($request->has('search')) {
+			$tenantQuery->where('name', 'like', '%' . $request->input('search') . '%');
+		}
+		if ($request->has('order')) {
+			$orderDirection = $request->input('order', 'asc');
+			$tenantQuery->orderBy('tenant_id', $orderDirection);
+		}
 
-            return $tenantQuery->paginate(config('constants.PER_PAGE_LIMIT'));
-        } catch (\InvalidArgumentException $e) {
-            throw new \InvalidArgumentException($e->getMessage());
-        }
+		return $tenantQuery->paginate(config('constants.PER_PAGE_LIMIT'));        
     }
 
     /**
@@ -54,7 +50,7 @@ class TenantRepository implements TenantInterface
      * @param \Illuminate\Http\Request $request
      * @return App\Models\Tenant Tenant
      */
-    public function store(Request $request)
+    public function store(Request $request): Tenant
     {
        	$tenant = $this->tenant->create($request->toArray());
 
@@ -86,7 +82,7 @@ class TenantRepository implements TenantInterface
      * @param  int  $id
      * @return App\Models\Tenant $tenant
      */
-    public function find(int $id)
+    public function find(int $id): Tenant
     {
         return $this->tenant->findTenant($id);
     }
@@ -109,7 +105,7 @@ class TenantRepository implements TenantInterface
      * @param  int  $id
      * @return App\Models\Tenant $tenant
      */
-    public function update(Request $request, int $id)
+    public function update(Request $request, int $id): Tenant
     {
 		$tenant = $this->tenant->findOrFail($id);
 		$tenant->update($request->toArray());

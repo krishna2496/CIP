@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\{Request, Response};
+use Illuminate\Http\{Request, Response, JsonResponse};
 use App\Repositories\Tenant\TenantRepository;
 use App\Helpers\ResponseHelper;
 use App\Jobs\{TenantDefaultLanguageJob, TenantMigrationJob, CreateFolderInS3BucketJob};
@@ -42,10 +42,14 @@ class TenantController extends Controller
      */
     public function index(Request $request)
     {
-        $tenantList = $this->tenant->tenantList($request);
-		
-		$responseMessage = (count($tenantList) > 0) ? trans('messages.success.MESSAGE_TENANT_LISTING') : trans('messages.success.MESSAGE_NO_RECORD_FOUND');
-		return ResponseHelper::successWithPagination($this->response->status(), $responseMessage, $tenantList);
+        try {
+			$tenantList = $this->tenant->tenantList($request);
+			
+			$responseMessage = (count($tenantList) > 0) ? trans('messages.success.MESSAGE_TENANT_LISTING') : trans('messages.success.MESSAGE_NO_RECORD_FOUND');
+			return ResponseHelper::successWithPagination($this->response->status(), $responseMessage, $tenantList);
+		} catch (\InvalidArgumentException $e) {
+            throw new \InvalidArgumentException($e->getMessage());
+        }
     }
 
     /**
@@ -54,7 +58,7 @@ class TenantController extends Controller
      * @param \Illuminate\Http\Request $request
      * @return mixed
      */
-    public function store(Request $request)
+    public function store(Request $request): JsonResponse
     {
 		try {
             $validator = Validator::make($request->toArray(), [ 
@@ -104,7 +108,7 @@ class TenantController extends Controller
      * @param int $id
      * @return mixed
      */
-    public function show(int $tenantId)
+    public function show(int $tenantId): JsonResponse
     {
         // return  $this->tenant->find($tenantId);
 		try {
@@ -128,11 +132,10 @@ class TenantController extends Controller
      * @param  int  $id
      * @return mixed
      */
-    public function update(Request $request, int $id)
+    public function update(Request $request, int $id): JsonResponse
     {
        try {
-            $rules = ['name' => 'required|unique:tenant,name,'. $id . ',tenant_id,deleted_at,NULL',
-					  'sponsor_id'  => 'required'];
+            $rules = ['name' => 'unique:tenant,name,'. $id . ',tenant_id,deleted_at,NULL'];
             $validator = Validator::make($request->toArray(), $rules);
 
             if ($validator->fails()) {

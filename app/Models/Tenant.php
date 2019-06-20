@@ -3,6 +3,7 @@ namespace App\Models;
 
 use App\Models\{TenantHasOption, ApiUser, TenantLanguage};
 use Illuminate\Database\Eloquent\{SoftDeletes, Model};
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Tenant extends Model {
 
@@ -56,7 +57,7 @@ class Tenant extends Model {
     *
     * @return \Illuminate\Database\Eloquent\Relations\HasMany
     */
-    public function options()
+    public function options(): HasMany
     {
         return $this->hasMany(TenantHasOption::class, 'tenant_id', 'tenant_id');
     }
@@ -66,7 +67,7 @@ class Tenant extends Model {
     *
     * @return \Illuminate\Database\Eloquent\Relations\HasMany
     */
-    public function tenantLanguages()
+    public function tenantLanguages(): HasMany
     {
         return $this->hasMany(TenantLanguage::class, 'tenant_id', 'tenant_id');
     }
@@ -76,7 +77,7 @@ class Tenant extends Model {
     *
     * @return \Illuminate\Database\Eloquent\Relations\HasMany
     */
-    public function apiUsers()
+    public function apiUsers(): HasMany
     {
         return $this->hasMany(ApiUser::class, 'tenant_id', 'tenant_id');
     }
