@@ -1,10 +1,7 @@
 <?php
-
 namespace App\Repositories\FooterPage;
 
-
 use Illuminate\Support\ServiceProvider;
-
 
 class FooterPageRepoServiceProvide extends ServiceProvider
 {
