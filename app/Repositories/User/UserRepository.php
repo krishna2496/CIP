@@ -48,78 +48,18 @@ class UserRepository implements UserInterface
      */
     public function store(Request $request)
     {
-        try {
-            // Connect master database to get language details
-            Helpers::switchDatabaseConnection('mysql', $request);
-            $languages = DB::table('language')->get();
-            
-            // Connect tenant database
-            Helpers::switchDatabaseConnection('tenant', $request);
-
-            // Server side validataions
-            $validator = Validator::make($request->toArray(), $this->user->rules);
-
-            // If request parameter have any error
-            if ($validator->fails()) {
-                return ResponseHelper::error(
-                    trans('messages.status_code.HTTP_STATUS_UNPROCESSABLE_ENTITY'),
-                    trans('messages.status_type.HTTP_STATUS_TYPE_422'),
-                    trans('messages.custom_error_code.ERROR_100001'),
-                    $validator->errors()->first()
-                );
-            }
-            
-            $userData = array(
-                'first_name' => $request->first_name,
-                'last_name' => $request->last_name,
-                'email' => $request->email,
-                'password' => $request->password,
-                'timezone_id' => $request->timezone_id,
-                'availability_id' => $request->availability_id,
-                'why_i_volunteer' => $request->why_i_volunteer,
-                'employee_id' => $request->employee_id,
-                'department' => $request->department,
-                'manager_name' => $request->manager_name,
-                'city_id' => $request->city_id,
-                'country_id' => $request->country_id,
-                'profile_text' => $request->profile_text,
-                'linked_in_url' => $request->linked_in_url,
-                'language_id' => $request->language_id
-            );
-            
-            // Create new user
-            $user = $this->user->create($userData);
-
-            // Set response data
-            $apiData = ['user_id' => $user->user_id];
-            $apiStatus = $this->response->status();
-            $apiMessage = trans('messages.success.MESSAGE_USER_CREATED');
-            
-            return ResponseHelper::success($apiStatus, $apiMessage, $apiData);
-        } catch (PDOException $e) {
-            throw new PDOException($e->getMessage());
-        } catch (\Exception $e) {
-            throw new \Exception($e->getMessage());
-        }
+        $user = $this->user->create($request->all());
+        return $user;
     }
     
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function update(Request $request, int $id)
     {
+        $user = $this->user->findOrFail($id);
+        $user->update($request->toArray());
+
+        return $user;
     }
     
-    /**
-     * Display a listing of all resources.
-     *
-     * Illuminate\Http\Request $request
-     * @return mixed
-     */
     public function userList(Request $request)
     {
         try {
@@ -136,57 +76,20 @@ class UserRepository implements UserInterface
                 $userQuery->orderBy('user_id', $orderDirection);
             }
             
-            $userList = $userQuery->paginate(config('constants.PER_PAGE_LIMIT'));
-            $responseMessage = (count($userList) > 0) ? trans('messages.success.MESSAGE_USER_LISTING') : trans('messages.success.MESSAGE_NO_RECORD_FOUND');
-            
-            return ResponseHelper::successWithPagination($this->response->status(), $responseMessage, $userList);
+            return $userQuery->paginate(config('constants.PER_PAGE_LIMIT'));
         } catch (\InvalidArgumentException $e) {
             throw new \InvalidArgumentException($e->getMessage());
         }
     }
 
-    /**
-     * Find the specified resource from database
-     *
-     * @param int $id
-     * @return mixed
-     */
     public function find(int $id)
     {
-        try {
-            $userDetail = $this->user->findUser($id);
-            
-            $apiData = $userDetail->toArray();
-            $apiStatus = $this->response->status();
-            $apiMessage = trans('messages.success.MESSAGE_USER_FOUND');
-            
-            return ResponseHelper::success($apiStatus, $apiMessage, $apiData);
-        } catch (ModelNotFoundException $e) {
-            throw new ModelNotFoundException(trans('messages.custom_error_message.100000'));
-        } catch (\Exception $e) {
-            throw new \Exception($e->getMessage());
-        }
+        return $this->user->findUser($id);
     }
     
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function delete(int $id)
     {
-        try {
-            $this->user->deleteUser($id);
-            
-            // Set response data
-            $apiStatus = $this->response->status();
-            $apiMessage = trans('messages.success.MESSAGE_USER_DELETED');
-
-            return ResponseHelper::success($apiStatus, $apiMessage);
-        } catch (ModelNotFoundException $e) {
-            throw new ModelNotFoundException(trans('messages.custom_error_message.100000'));
-        }
+        return $this->user->deleteUser($id);
     }
 
     /**
@@ -221,7 +124,7 @@ class UserRepository implements UserInterface
      */
     public function unlinkSkill(Request $request)
     {
-        $userSkill = $this->userSkill; 
+        $userSkill = $this->userSkill;
         foreach ($request->skills as $value) {
             $userSkill = $this->userSkill->deleteUserSkill($request->user_id, $value['skill_id']);
         }
@@ -236,7 +139,7 @@ class UserRepository implements UserInterface
      */
     public function userSkills(int $userId)
     {
-        $userSkill = $this->userSkill->find($userId);   
+        $userSkill = $this->userSkill->find($userId);
         return $userSkill;
     }
 }

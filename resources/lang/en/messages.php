@@ -18,16 +18,19 @@ return [
 		'MESSAGE_PASSWORD_RESET_LINK_SEND_SUCCESS' => 'Reset Password link is sent to your email account,link will be expire in ' . config('constants.FORGOT_PASSWORD_EXPIRY_TIME') . ' hours',
 		'MESSAGE_PASSWORD_CHANGE_SUCCESS' => 'Your password has been changed successfully.',
 		'MESSAGE_FOOTER_PAGE_LISTING' => 'Footer pages listing successfully.',
-		'MESSAGE_CUSTOM_FIELD_ADD_SUCCESS' => 'User custom field added successfully',
-		'MESSAGE_CUSTOM_FIELD_UPDATE_SUCCESS' => 'User custom field updated successfully',
-		'MESSAGE_CUSTOM_FIELD_DELETE_SUCCESS' => 'User custom field deleted successfully',
+		'MESSAGE_CUSTOM_FIELD_ADDED' => 'User custom field added successfully',
+		'MESSAGE_CUSTOM_FIELD_UPDATED' => 'User custom field updated successfully',
+		'MESSAGE_CUSTOM_FIELD_DELETED' => 'User custom field deleted successfully',
 		'MESSAGE_NO_RECORD_FOUND' => 'No records found',
 		'MESSAGE_USER_LISTING' => 'User listing successfully',
         'MESSAGE_USER_SKILLS_CREATED' => 'User skills linked successfully',
         'MESSAGE_USER_SKILLS_DELETED' => 'User skills unlinked successfully',
 		'MESSAGE_APPLICATION_LISTING' => 'Mission application listing successfully',
         'MESSAGE_APPLICATION_UPDATED' => 'Mission application updated successfully',
-
+		'MESSAGE_CUSTOM_STYLE_UPLOADED_SUCCESS' => 'Custom styling data uploaded successfully',
+		'MESSAGE_CUSTOM_STYLE_RESET_SUCCESS' => 'Custom styling reset successfully',
+		'MESSAGE_CUSTOM_FIELD_LISTING' => 'User custom field listing successfully',
+		'MESSAGE_USER_UPDATED' => 'User updated successfully',
 	],
 	
 	/**
@@ -113,9 +116,9 @@ return [
 		'ERROR_100000' => '100000',
         'ERROR_100001' => '100001',
         'ERROR_100002' => '100002',
-
-        // Custom error code for Mission Module - 200000 - 209999
-		'ERROR_200000' => '200000',
+		'ERROR_100003' => '100003',
+		'ERROR_100004' => '100004',
+		'ERROR_100010' => '100010',
 		
 		// Custom error code for CMS Module - 300000 - 309999
 		'ERROR_300000' => '300000',
@@ -123,6 +126,9 @@ return [
 		'ERROR_300002' => '300002',
 		'ERROR_300003' => '300003',
 		'ERROR_300004' => '300004',
+
+        // Custom error code for Mission Module - 400000 - 409999
+		'ERROR_400000' => '400000',
 		
 	],
 	
@@ -178,10 +184,10 @@ return [
 		'100000' => 'User does not found in system',
         '100001' => 'Invalid user data',
         '100002' => 'Invalid skill data',
+		'100003' => 'Custom field creation failed. Please check input parameters',
+		'100004' => 'Requested user custom field does not exist',
+		'100010' => 'User creation failed. Please check input parameters',
 		
-		// Custom error code for Mission Module - 200000 - 209999
-        '200000' => 'FR: Invalid application data or missing parameter',
-
 		// Custom error code for CMS Module - 300000 - 309999
 		'300000' => 'Page creation failed. Please check input parameters',
 		'300001' => 'The slug field is required',
@@ -189,5 +195,9 @@ return [
 		'300003' => 'Invalid translation data, please check input parameters',
 		'300004' => 'Page creation faild. Invalid input data for sections',
 		'300005' => 'Requested page does not exist',
+
+		// Custom error code for Mission Module - 400000 - 409999
+        '400000' => 'FR: Invalid application data or missing parameter',
+
 	]
 ];

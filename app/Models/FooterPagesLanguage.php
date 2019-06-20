@@ -28,16 +28,21 @@ class FooterPagesLanguage extends Model
      * @var array
      */
     protected $fillable = ['page_id', 'language_id', 'title', 'description'];
-	
-    protected $visible = ['page_id', 'language_id', 'title', 'description'];
-
-    /**
-     * Defined relation for the footer_page table.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
+    
+    protected $visible = ['language_id', 'title', 'description'];
+    
     public function page()
     {
         return $this->belongsTo(FooterPage::class, 'page_id', 'page_id');
+    }
+    
+    public function setDescriptionAttribute($value)
+    {
+        $this->attributes['description'] = serialize($value);
+    }
+    
+    public function getDescriptionAttribute($value)
+    {
+        return unserialize($value);
     }
 }

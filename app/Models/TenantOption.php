@@ -27,4 +27,13 @@ class TenantOption extends Model
      * @var array
      */
     protected $fillable = ['option_name','option_value'];
+
+    protected $visible = ['option_name','option_value'];
+    
+    public function addOrUpdateColor(array $colorData)
+    {
+        $styleData['option_name'] = $colorData['option_name'];
+        $tenantOption = static::updateOrCreate($styleData);
+        return $tenantOption->update(['option_value' => $colorData['option_value']]);
+    }
 }

@@ -28,15 +28,10 @@ class FooterPage extends Model
      * @var array
      */
     protected $fillable = ['status', 'slug'];
-
-    protected $visible = ['page_id', 'status', 'slug', 'pageLanguages'];
-
-    /**
-     * Defined has many relation for the footer_page_language table.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function pageLanguages()
+        
+    protected $visible = ['page_id', 'status', 'slug', 'pageTranslations'];
+    
+    public function pageTranslations()
     {
         return $this->hasMany(FooterPagesLanguage::class, 'page_id', 'page_id');
     }

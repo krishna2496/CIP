@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Input;
 use Validator, DB, PDOException;
 use App\Helpers\ResponseHelper;
+use Illuminate\Validation\Rule;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class FooterPageController extends Controller
@@ -28,9 +29,8 @@ class FooterPageController extends Controller
      */
     public function index(Request $request)
     {
-        try { 
-			
-			$footerPages = $this->page->footerPageList($request)->toArray();
+		try { 
+			$footerPages = $this->page->footerPageList($request);
 			if (empty($footerPages)) {
                 // Set response data
                 $apiStatus = trans('messages.status_code.HTTP_STATUS_NOT_FOUND');
@@ -38,34 +38,14 @@ class FooterPageController extends Controller
                 return ResponseHelper::error($apiStatus, $apiMessage);
             }
 			
-			$pageList = array();
-            foreach ($footerPages['data'] as $page) {
-				$footerPageLanguageData = array();
-                foreach ($page['page_languages'] as $pageLanguageData) {
-                    $footerPageLanguageData[] = array('language_id' => $pageLanguageData['language_id'],
-											'page_title' => $pageLanguageData['title'],
-											'sections' => (@unserialize($pageLanguageData['description']) === false) ? $pageLanguageData['description'] : unserialize($pageLanguageData['description']),
-                                        );
-                }
-                $pageList[] = array('page_id' => $page['page_id'],
-									'status' => $page['status'],
-									'slug'  => $page['slug'],
-                                    'translations' => $footerPageLanguageData
-                                    );
-            }
-			
 			// Set response data
-            $apiData = $pageList; 
             $apiStatus = app('Illuminate\Http\Response')->status();
             $apiMessage = trans('messages.success.MESSAGE_FOOTER_PAGE_LISTING');
-            return ResponseHelper::success($apiStatus, $apiMessage, $apiData);                  
-        } catch(\Exception $e) {
-			dd($e);
-            // Catch database exception
-            return Helpers::errorResponse(trans('api_error_messages.status_code.HTTP_STATUS_500'), 
-                                        trans('api_error_messages.status_type.HTTP_STATUS_TYPE_500'), 
-                                        trans('api_error_messages.custom_error_code.ERROR_40018'), 
-                                        trans('api_error_messages.custom_error_message.40018'));           
+            return ResponseHelper::successWithPagination($apiStatus, $apiMessage, $footerPages);                  
+        } catch (PDOException $e) {
+            throw new PDOException($e->getMessage());
+        } catch (\Exception $e) {
+            throw new \Exception($e->getMessage());
         }
     }
 
@@ -77,7 +57,6 @@ class FooterPageController extends Controller
      */
     public function store(Request $request)
     {
-		// return $this->page->store($request);
 		try {
 			// Server side validataions
 			$validator = Validator::make($request->all(), ["page_details" => "required", 
@@ -139,11 +118,9 @@ class FooterPageController extends Controller
         try {
 			// Server side validataions
 			$validator = Validator::make($request->all(), ["page_details" => "required", 
-															"page_details.slug" => "required",
-															"page_details.translations" => "required",
-															"page_details.translations.*.lang" => "required",
-															"page_details.translations.*.title" => "required",
-															"page_details.translations.*.sections" => "required",
+															"page_details.translations.*.lang" => "required_with:page_details.translations",
+															"page_details.translations.*.title" => "required_with:page_details.translations",
+															"page_details.translations.*.sections" => "required_with:page_details.translations",
 															]);
 			
 			// If post parameter have any missing parameter

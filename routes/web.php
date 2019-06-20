@@ -54,29 +54,6 @@ $router->get('language/{lang}', ['uses' => 'App\Language\LanguageController@fetc
 /*
 |
 |--------------------------------------------------------------------------
-| Tenant User Routs
-|--------------------------------------------------------------------------
-|
-| These are tenant user routes to manage their profile and other stuff
-|
-*/
-/*$router->group(['middleware' => 'tenant.connection|jwt.auth'], function() use ($router) {
-    $router->get('users', function() {
-        $users = \App\User::all();
-        return response()->json($users);
-    });
-});*/
-
-
-
-
-
-
-
-
-/*
-|
-|--------------------------------------------------------------------------
 | Tenant Admin Routs
 |--------------------------------------------------------------------------
 |
@@ -89,6 +66,7 @@ $router->group(['prefix' => 'users', 'middleware' => 'localization|auth.tenant.a
     $router->get('/', ['uses' => 'Admin\User\UserController@index']);
     $router->get('/{userId}', ['uses' => 'Admin\User\UserController@show']);
     $router->post('/', ['uses' => 'Admin\User\UserController@store']);
+    $router->patch('/{userId}', ['uses' => 'Admin\User\UserController@update']);
     $router->delete('/{userId}', ['uses' => 'Admin\User\UserController@destroy']);
 });
 
@@ -106,11 +84,9 @@ $router->group(['prefix' => 'cms', 'middleware' => 'localization|auth.tenant.adm
 /* Set custom field data for tenant specific */
 $router->group(['prefix' => 'metadata/users/custom_fields', 'middleware' => 'localization|auth.tenant.admin'], function ($router) {
     $router->get('/', ['uses' => 'Admin\User\UserCustomFieldController@index']);
-    $router->post('/create', ['uses' => 'Admin\User\UserCustomFieldController@store']);
+    $router->post('/', ['uses' => 'Admin\User\UserCustomFieldController@store']);
     $router->patch('/{fieldId}', ['uses' => 'Admin\User\UserCustomFieldController@update']);
-    $router->patch('/', ['uses' => 'Admin\User\UserCustomFieldController@handleError']);
     $router->delete('/{fieldId}', ['uses' => 'Admin\User\UserCustomFieldController@destroy']);
-    $router->delete('/', ['uses' => 'Admin\User\UserCustomFieldController@handleError']);
 });
 
 /* Set mission data for tenant specific */
@@ -130,3 +106,25 @@ $router->group(['prefix' => 'entities/skills', 'middleware' => 'localization|aut
     $router->post('/', ['uses' => 'Admin\User\UserController@linkSkill']);
     $router->delete('/', ['uses' => 'Admin\User\UserController@unlinkSkill']);
 });
+
+/*Admin style routes*/
+$router->group(['prefix' => 'style', 'middleware' => 'localization|auth.tenant.admin'], function ($router) {
+    $router->post('/update-style', ['uses' => 'Admin\Tenant\TenantOptionsController@updateStyleSettings']);
+    $router->get('/reset-style', ['uses' => 'Admin\Tenant\TenantOptionsController@resetStyleSettings']);
+});
+
+/*
+|
+|--------------------------------------------------------------------------
+| Tenant User Routs
+|--------------------------------------------------------------------------
+|
+| These are tenant user routes to manage their profile and other stuff
+|
+*/
+/*$router->group(['middleware' => 'tenant.connection|jwt.auth'], function() use ($router) {
+    $router->get('users', function() {
+        $users = \App\User::all();
+        return response()->json($users);
+    });
+});*/
