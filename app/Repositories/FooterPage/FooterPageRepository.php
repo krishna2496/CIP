@@ -15,7 +15,7 @@ class FooterPageRepository implements FooterPageInterface
 	private $page;
 	
 	/**
-	 * @var App\Repositories\FooterPage\FooterPageRepository 
+	 * @var App\Repositories\FooterPage\FooterPagesLanguage 
 	 */
 	private $footerPageLanguage;
 	
