@@ -1,9 +1,9 @@
 <?php
 namespace App\Http\Controllers\Admin\FooterPage;
 
-use App\Repositories\FooterPage\FooterPageRepository;
-use Illuminate\Http\{Request, Response};
 use App\Http\Controllers\Controller;
+use App\Repositories\FooterPage\FooterPageRepository;
+use Illuminate\Http\{Request, Response, JsonResponse};
 use Illuminate\Support\Facades\Input;
 use Validator, DB, PDOException;
 use App\Helpers\ResponseHelper;
@@ -12,10 +12,22 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class FooterPageController extends Controller
 {
+	/**
+     * @var App\Repositories\FooterPage\FooterPageRepository 
+     */
 	private $page;
 	
+	/**
+     * @var Illuminate\Http\Response
+     */
 	private $response;
 	
+	
+	/**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
 	public function __construct(FooterPageRepository $page, Response $response)
     {
 		 $this->page = $page;
@@ -23,27 +35,25 @@ class FooterPageController extends Controller
 	}
 	
     /**
-     * Display a listing of the resource.
+     * Display listing of footer pages
      *
-     * @return \Illuminate\Http\Response
+     * @param Illuminate\Http\Request $request
+     * @return mixed
      */
-    public function index(Request $request)
+    public function index(Request $request): JsonResponse
     {
 		try { 
 			$footerPages = $this->page->footerPageList($request);
-			if (empty($footerPages)) {
-                // Set response data
-                $apiStatus = trans('messages.status_code.HTTP_STATUS_NOT_FOUND');
-                $apiMessage = trans('messages.custom_error_message.MESSAGE_NO_RECORD_FOUND');
-                return ResponseHelper::error($apiStatus, $apiMessage);
-            }
 			
 			// Set response data
-            $apiStatus = app('Illuminate\Http\Response')->status();
+            $apiStatus = $this->response->status();
             $apiMessage = trans('messages.success.MESSAGE_FOOTER_PAGE_LISTING');
+			$apiMessage = ($footerPages->isEmpty()) ? trans('messages.success.MESSAGE_NO_RECORD_FOUND') : trans('messages.success.MESSAGE_FOOTER_PAGE_LISTING');
             return ResponseHelper::successWithPagination($apiStatus, $apiMessage, $footerPages);                  
         } catch (PDOException $e) {
             throw new PDOException($e->getMessage());
+        } catch (\InvalidArgumentException $e) {
+            throw new \InvalidArgumentException($e->getMessage());
         } catch (\Exception $e) {
             throw new \Exception($e->getMessage());
         }
@@ -55,7 +65,7 @@ class FooterPageController extends Controller
      * @param \Illuminate\Http\Request $request
      * @return mixed
      */
-    public function store(Request $request)
+    public function store(Request $request): JsonResponse
     {
 		try {
 			// Server side validataions
@@ -80,7 +90,7 @@ class FooterPageController extends Controller
 			$footerPage = $this->page->store($request);
 			
 			// Set response data
-            $apiStatus = $this->response->status();
+            $apiStatus = trans('messages.status_code.HTTP_STATUS_CREATED');
             $apiMessage = trans('messages.success.MESSAGE_FOOTER_PAGE_CREATED');
             $apiData = ['page_id' => $footerPage['page_id']];
             return ResponseHelper::success($apiStatus, $apiMessage, $apiData);
@@ -101,7 +111,7 @@ class FooterPageController extends Controller
      * @param int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(int $id)
     {
         //
     }
@@ -113,7 +123,7 @@ class FooterPageController extends Controller
      * @param int  $id
      * @return mixed
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, int $id): JsonResponse
     {
         try {
 			// Server side validataions
@@ -154,7 +164,7 @@ class FooterPageController extends Controller
      * @param int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(int $id): JsonResponse
     {
         try {  
             $footerPage = $this->page->delete($id);

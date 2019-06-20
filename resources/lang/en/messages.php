@@ -48,6 +48,7 @@ return [
 		'HTTP_STATUS_BAD_GATEWAY' => '502',
 		'HTTP_STATUS_METHOD_NOT_ALLOWED' => '405',
 		'HTTP_STATUS_NO_CONTENT' => '204',
+		'HTTP_STATUS_CREATED' => '201',
 	],
     
    /**
@@ -63,6 +64,7 @@ return [
 		'HTTP_STATUS_TYPE_502' => 'Backend service failure (data store failure)',
 		'HTTP_STATUS_TYPE_405' => 'Method Not Allowed',
 		'HTTP_STATUS_TYPE_204' => 'No Content',
+		'HTTP_STATUS_TYPE_201' => 'Created',
 	],
 	
 	/**

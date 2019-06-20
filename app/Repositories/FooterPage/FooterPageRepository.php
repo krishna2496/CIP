@@ -1,25 +1,42 @@
 <?php
-
 namespace App\Repositories\FooterPage;
 
 use App\Repositories\FooterPage\FooterPageInterface;
 use Illuminate\Http\{Request, Response};
-use DB;
 use App\Models\{FooterPage, FooterPagesLanguage};
 use App\Helpers\{Helpers, LanguageHelper};
+use DB;
 
 class FooterPageRepository implements FooterPageInterface
 {
-    private $page;
+	/**
+	 * @var App\Models\FooterPage 
+	 */
+	private $page;
 	
+	/**
+	 * @var App\Models\FooterPagesLanguage 
+	 */
 	private $footerPageLanguage;
-
-    function __construct(FooterPage $page, FooterPagesLanguage $footerPageLanguage) {
+	
+	/**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    function __construct(FooterPage $page, FooterPagesLanguage $footerPageLanguage) 
+	{
 		$this->page = $page;
 		$this->footerPageLanguage = $footerPageLanguage;
     }
 	
-	public function store(Request $request)
+	/**
+     * Store a newly created resource in storage
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return mixed
+     */
+	public function store(Request $request): FooterPage
     {
 		$postData = $request->page_details;
 		// Set data for create new record
@@ -48,7 +65,14 @@ class FooterPageRepository implements FooterPageInterface
 		return $footerPage;
 	}
 	
-	public function update(Request $request, int $id) 
+	 /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return mixed
+     */
+	public function update(Request $request, int $id): FooterPage
 	{	
 		$postData = $request->page_details;
 		
@@ -92,52 +116,37 @@ class FooterPageRepository implements FooterPageInterface
 		return $footerPage;
 	}
 	
-	public function footerPageList(Request $request) 
+	 /**
+     * Display a listing of footer pages.
+     *
+     * Illuminate\Http\Request $request
+     * @return mixed
+     */
+	public function footerPageList(Request $request)
 	{	
-		try {
-            $pageQuery = $this->page->with('pageTranslations');
-			
-            if ($request->has('search')) {
-                $pageQuery->wherehas('pageTranslations', function($q) use($request) {
-						$q->where('title', 'like', '%' . $request->input('search') . '%');
-						$q->orWhere('description', 'like', '%' . $request->input('search') . '%');
-				});
-            }
-            if ($request->has('order')) {
-                $orderDirection = $request->input('order', 'asc');
-                $pageQuery->orderBy('page_id', $orderDirection);
-            }
-
-            return $pageQuery->paginate(config('constants.PER_PAGE_LIMIT'));
-        } catch (\InvalidArgumentException $e) {
-            throw new \InvalidArgumentException($e->getMessage());
-        }
+		$pageQuery = $this->page->with('pageTranslations');
 		
-	}
+		if ($request->has('search')) {
+			$pageQuery->wherehas('pageTranslations', function($q) use($request) {
+					$q->where('title', 'like', '%' . $request->input('search') . '%');
+					$q->orWhere('description', 'like', '%' . $request->input('search') . '%');
+			});
+		}
+		if ($request->has('order')) {
+			$orderDirection = $request->input('order', 'asc');
+			$pageQuery->orderBy('page_id', $orderDirection);
+		}
+
+		return $pageQuery->paginate(config('constants.PER_PAGE_LIMIT'));
+    }
 	
-    public function find(int $id) 
-	{
-		try {         
-            
-			$userDetail = $this->user->findUser($id);
-			
-			$apiData = $userDetail->toArray();
-			$apiStatus = $this->response->status();
-			$apiMessage = trans('messages.success.MESSAGE_USER_FOUND');
-			
-			return ResponseHelper::success($apiStatus, $apiMessage, $apiData);
-			
-		} catch(ModelNotFoundException $e){
-			
-			throw new ModelNotFoundException(trans('messages.custom_error_message.100000'));
-			
-        } catch(\Exception $e) {
-			
-			throw new \Exception($e->getMessage());
-			
-		}	
-	}
-	
+    
+	/**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return mixed
+     */
     public function delete(int $id) 
 	{
 		return $this->page->deleteFooterPage($id);

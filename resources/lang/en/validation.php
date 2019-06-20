@@ -101,6 +101,12 @@ return [
     |
     */
 
-    'attributes' => [],
+    'attributes' => [
+		'page_details.slug' => 'slug',
+		'page_details.translations' => 'translations', 
+		'page_details.translations.*.lang' => 'lang', 
+		'page_details.translations.*.title' => 'title',
+		'page_details.translations.*.sections' => 'sections',
+		],
 
 ];
