@@ -1,22 +1,33 @@
 <?php
 namespace App\Http\Controllers\Admin\User;
 
-use Illuminate\Http\{Request, Response};
+use Illuminate\Http\{Request, Response, JsonResponse};
 use App\Http\Controllers\Controller;
 use App\Repositories\User\UserRepository;
 use Illuminate\Support\Facades\Input;
-use App\User;
 use App\Models\{City, Country, Timezone};
 use App\Helpers\ResponseHelper;
 use Validator, DB;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\User;
 
 class UserController extends Controller
 {
-    private $user;
+    /**
+     * @var UserRepository
+     */
+	private $user;
     
+	/**
+     * @var Response
+     */
 	private $response;
 	
+	/**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
     public function __construct(UserRepository $user, Response $response)
     {
         $this->user = $user;
@@ -46,12 +57,11 @@ class UserController extends Controller
      * Store a newly created resource in storage.
      *
      * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function store(Request $request)
+    public function store(Request $request): JsonResponse
     {
-        // return $this->user->store($request);
-		try {
+        try {
 			// Server side validataions
 			$validator = Validator::make($request->toArray(), ["first_name" => "required|max:16",
 																"last_name" => "required|max:16",
@@ -100,7 +110,7 @@ class UserController extends Controller
      * @param int $id
      * @return mixed
      */
-    public function show(int $id)
+    public function show(int $id): JsonResponse
     {
        try {         
 			$userDetail = $this->user->find($id);
@@ -127,9 +137,9 @@ class UserController extends Controller
      *
      * @param \Illuminate\Http\Request $request
      * @param int $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function update(Request $request, int $id)
+    public function update(Request $request, int $id): JsonResponse
     {
         try {
 			// Update user
@@ -161,10 +171,19 @@ class UserController extends Controller
      * Remove the specified resource from storage.
      *
      * @param int $id
-     * @return \Illuminate\Http\Response
+     * @return mixed
      */
-    public function destroy($id)
+    public function destroy(int $id)
     {
-        return $this->user->delete($id);
+        try {  
+            $user = $this->user->delete($id);
+            
+			// Set response data
+            $apiStatus = trans('messages.status_code.HTTP_STATUS_NO_CONTENT');
+            $apiMessage = trans('messages.success.MESSAGE_USER_DELETED');
+            return ResponseHelper::success($apiStatus, $apiMessage);            
+        } catch (ModelNotFoundException $e) {
+            throw new ModelNotFoundException(trans('messages.custom_error_message.100000'));
+        }
     }
 }
