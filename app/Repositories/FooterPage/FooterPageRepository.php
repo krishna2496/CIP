@@ -10,12 +10,12 @@ use DB;
 class FooterPageRepository implements FooterPageInterface
 {
 	/**
-	 * @var App\Repositories\FooterPage\FooterPageRepository 
+	 * @var App\Models\FooterPage 
 	 */
 	private $page;
 	
 	/**
-	 * @var App\Repositories\FooterPage\FooterPagesLanguage 
+	 * @var App\Models\FooterPagesLanguage 
 	 */
 	private $footerPageLanguage;
 	
