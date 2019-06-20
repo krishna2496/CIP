@@ -5,12 +5,12 @@ namespace App\Http\Controllers\Admin\Mission;
 use Illuminate\Http\{Request, Response};
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\{Input, Config};
-use Illuminate\Support\Carbon;
 use Illuminate\Validation\Rule;
 use App\Repositories\Mission\MissionRepository;
 use App\Models\{Mission, MissionLanguage, MissionDocument, MissionMedia, MissionTheme, MissionApplication};
 use App\Helpers\{Helpers, ResponseHelper, LanguageHelper};
-use Validator, DB;
+use Validator;
+use DB;
 
 class MissionController extends Controller
 {   
@@ -127,12 +127,13 @@ class MissionController extends Controller
                     "media_videos.*.media_path" => "required", 
                     "documents.*.document_name" => "required", 
                     "documents.*.document_type" => ['required', Rule::in(config('constants.document_types'))],
-                    "documents.*.document_path" => "required"
+                    "documents.*.document_path" => "required",
+                    "start_date" => "before:end_date",
+                    "end_date" => "after:start_date",
+                    "total_seats" => "numeric"
                 ]
             );
-
-        dd($validator->errors()->first());
-
+        //dd($validator->errors()->first());
         // If request parameter have any error
         if ($validator->fails()) {
             return ResponseHelper::error(trans('messages.status_code.HTTP_STATUS_UNPROCESSABLE_ENTITY'),
@@ -141,173 +142,10 @@ class MissionController extends Controller
                                         $validator->errors()->first());
         }
 
-        //////////////////////////////////////////////////////////////////////
-        /*// Server side validataion for mission
-        $validator = Validator::make($request->toArray(), [
-                            "theme_id" => "required", 
-                            "mission_detail" => "required", 
-                            "mission_type" => ['required', Rule::in(config('constants.mission_type'))], 
-                            "organisation" => "required", 
-                            "publication_status" => ['required', Rule::in(config('constants.publication_status'))],
-                            "location" => "required",
-                            "goal_objective" => "required_if:mission_type,GOAL"]);
-        if ($validator->fails()) {
-            return ResponseHelper::error(trans('messages.status_code.HTTP_STATUS_UNPROCESSABLE_ENTITY'),
-                                        trans('messages.status_type.HTTP_STATUS_TYPE_422'),
-                                        trans('messages.custom_error_code.ERROR_20106'),
-                                        $validator->errors()->first());
-        } 
-
-        // Server side validataion for location
-        $validator = Validator::make($request->location, [
-                            "city_id" => "required", 
-                            "country_code" => "required"]);
-        if ($validator->fails()) {
-            return ResponseHelper::error(trans('messages.status_code.HTTP_STATUS_UNPROCESSABLE_ENTITY'),
-                                        trans('messages.status_type.HTTP_STATUS_TYPE_422'),
-                                        trans('messages.custom_error_code.ERROR_20106'),
-                                        $validator->errors()->first());
-        }  
-
-        // Server side validataion for mission language
-        foreach ($request->mission_detail as $value) {  
-            $languageValidator = Validator::make($value, ["lang" => "required", "title" => "required" ]);
-            if ($languageValidator->fails()) {
-                return ResponseHelper::error(trans('messages.status_code.HTTP_STATUS_UNPROCESSABLE_ENTITY'),
-                                            trans('messages.status_type.HTTP_STATUS_TYPE_422'),
-                                            trans('messages.custom_error_code.ERROR_20106'),
-                                            $languageValidator->errors()->first());
-            } 
-        }
-
-        // Server side validataions for media images
-        foreach ($request->media_images as $value) { 
-            $validator = Validator::make($value, ["media_name" => "required", 
-                                                  "media_type" => [Rule::in(config('constants.image_types'))], 
-                                                  "media_path" => "required"]);
-            if ($validator->fails()) {
-                return ResponseHelper::error(trans('messages.status_code.HTTP_STATUS_UNPROCESSABLE_ENTITY'),
-                                            trans('messages.status_type.HTTP_STATUS_TYPE_422'),
-                                            trans('messages.custom_error_code.ERROR_20106'),
-                                            $validator->errors()->first());
-            }  
-        }
-
-        // Server side validataion for media videos
-        foreach ($request->media_videos as $value) { 
-            $validator = Validator::make($value, ["media_name" => "required", 
-                                                  "media_path" => "required" ]);
-            if ($validator->fails()) {
-                return ResponseHelper::error(trans('messages.status_code.HTTP_STATUS_UNPROCESSABLE_ENTITY'),
-                                            trans('messages.status_type.HTTP_STATUS_TYPE_422'),
-                                            trans('messages.custom_error_code.ERROR_20106'),
-                                            $validator->errors()->first());
-            }
-        }
-
-        // Server side validataion for documents
-        foreach ($request->documents as $value) {  
-            $validator = Validator::make($value, ["document_name" => "required", 
-                                                  "document_type" => [Rule::in(config('constants.document_types'))],
-                                                  "document_path" => "required" ]);
-            if ($validator->fails()) {
-                return ResponseHelper::error(trans('messages.status_code.HTTP_STATUS_UNPROCESSABLE_ENTITY'),
-                                            trans('messages.status_type.HTTP_STATUS_TYPE_422'),
-                                            trans('messages.custom_error_code.ERROR_20106'),
-                                            $validator->errors()->first());
-            }   
-        }*/
         try { 
-            // Set data for create new record
-            $start_date = $end_date = NULL;
-            if (isset($request->start_date))
-                $start_date = ($request->start_date != '') ? Carbon::parse($request->start_date)->format(config('constants.DB_DATE_FORMAT')) : NULL;
-            if (isset($request->end_date))
-                $end_date = ($request->end_date != '') ? Carbon::parse($request->end_date)->format(config('constants.DB_DATE_FORMAT')) : NULL;
-            $application_deadline = (isset($request->application_deadline) && ($request->application_deadline != '')) ? Carbon::parse($request->application_deadline)->format(config('constants.DB_DATE_FORMAT')) : NULL;
 
-            $country_id = Helpers::getCountryId($request->location['country_code']);
-            $missionData = array('theme_id' => $request->theme_id, 
-                                 'city_id' => $request->location['city_id'], 
-                                 'country_id' => $country_id, 
-                                 'start_date' => $start_date, 
-                                 'end_date' => $end_date, 
-                                 'total_seats' => (isset($request->total_seats) && ($request->total_seats != '')) ? $request->total_seats : NULL, 
-                                 'application_deadline' => $application_deadline, 
-                                 'publication_status' => $request->publication_status, 
-                                 'organisation_id' => $request->organisation['organisation_id'], 
-                                 'organisation_name' => $request->organisation['organisation_name'],
-                                 'mission_type' => $request->mission_type,
-                                 'goal_objective' => $request->goal_objective);
-            
-            // Create new record 
-            $mission = Mission::create($missionData);
-			
-            // Add mission title 
-			foreach ($request->mission_detail as $value) {      		
-                $language = $languages->where('code', $value['lang'])->first();
-                $missionLanguage = array('mission_id' => $mission->mission_id, 
-                                        'language_id' => $language->language_id, 
-                                        'title' => $value['title'], 
-                                        'short_description' => (isset($value['short_description'])) ? $value['short_description'] : NULL, 
-                                        'description' => (array_key_exists('section', $value)) ? serialize($value['section']) : '',
-                                        'objective' => $value['objective']);
-                MissionLanguage::create($missionLanguage);
-                unset($missionLanguage);
-            }
-
-            $tenantName = Helpers::getSubDomainFromRequest($request);
-            $isDefault = 0;
-            // Add mission media images
-            foreach ($request->media_images as $value) {                    
-                
-                $filePath = Helpers::uploadFileOnS3Bucket($value['media_path'], $tenantName);  
-                // Check for default image in mission_media
-                $default = (isset($value['default']) && ($value['default'] != '')) ? $value['default'] : '0';
-                if ($default == '1') {
-                	$isDefault = 1;
-                    $media = array('default' => '0');
-                    MissionMedia::where('mission_id', $mission->mission_id)->update($media);
-                }
-                
-                $missionMedia = array('mission_id' => $mission->mission_id, 
-                                      'media_name' => $value['media_name'], 
-                                      'media_type' => pathinfo($value['media_name'], PATHINFO_EXTENSION), 
-                                      'media_path' => $filePath,
-                                      'default' => $default);
-                MissionMedia::create($missionMedia);
-                unset($missionMedia);
-            }
-
-            if ($isDefault == 0) {
-            	$mediaData = MissionMedia::where('mission_id', $mission->mission_id)->orderBy('mission_media_id', 'ASC')->first();
-            	$missionMedia = array('default' => '1');
-                MissionMedia::where('mission_media_id', $mediaData->mission_media_id)->update($missionMedia);
-            }
-
-            // Add mission media videos
-            foreach ($request->media_videos as $value) {                    
-                
-                $missionMedia = array('mission_id' => $mission->mission_id, 
-                                      'media_name' => $value['media_name'], 
-                                      'media_type' => pathinfo($value['media_name'], PATHINFO_EXTENSION),
-                                      'media_path' => $value['media_path']);
-                MissionMedia::create($missionMedia);
-                unset($missionMedia);
-            }
-
-            // Add mission documents 
-            foreach ($request->documents as $value) {                    
-                
-                $filePath = Helpers::uploadFileOnS3Bucket($value['document_path'], $tenantName); 
-                $missionDocument = array('mission_id' => $mission->mission_id, 
-                                        'document_name' => $value['document_name'], 
-                                        'document_type' => pathinfo($value['document_name'], PATHINFO_EXTENSION),
-                                        'document_path' => $filePath);
-                MissionDocument::create($missionDocument);
-                unset($missionDocument);
-            }
-           
+            $mission = $this->mission->store($request);
+                       
             // Set response data
             $apiStatus = trans('messages.status_code.HTTP_STATUS_CREATED');
             $apiMessage = trans('messages.success_message.MESSAGE_MISSION_ADD_SUCCESS');
@@ -432,19 +270,19 @@ class MissionController extends Controller
 
         try { 
             // Set data for update record
-            $start_date = $end_date = NULL;
+            $startDate = $endDate = NULL;
             if (isset($request->start_date))
-                $start_date = ($request->start_date != '') ? Carbon::parse($request->start_date)->format(config('constants.DB_DATE_FORMAT')) : NULL;
+                $startDate = ($request->start_date != '') ? Carbon::parse($request->start_date)->format(config('constants.DB_DATE_FORMAT')) : NULL;
             if (isset($request->end_date))
-                $end_date = ($request->end_date != '') ? Carbon::parse($request->end_date)->format(config('constants.DB_DATE_FORMAT')) : NULL;
+                $endDate = ($request->end_date != '') ? Carbon::parse($request->end_date)->format(config('constants.DB_DATE_FORMAT')) : NULL;
             $application_deadline = (isset($request->application_deadline) && ($request->application_deadline != '')) ? Carbon::parse($request->application_deadline)->format(config('constants.DB_DATE_FORMAT')) : NULL;
 
             $country_id = Helpers::getCountryId($request->location['country_code']);
             $missionData = array('theme_id' => $request->theme_id, 
                                  'city_id' => $request->location['city_id'], 
                                  'country_id' => $country_id, 
-                                 'start_date' => $start_date, 
-                                 'end_date' => $end_date, 
+                                 'start_date' => $startDate, 
+                                 'end_date' => $endDate, 
                                  'total_seats' => (isset($request->total_seats) && ($request->total_seats != '')) ? $request->total_seats : NULL,
                                  'application_deadline' => $application_deadline, 
                                  'publication_status' => $request->publication_status, 
