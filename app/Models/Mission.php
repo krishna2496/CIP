@@ -3,6 +3,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\{Model, SoftDeletes};
 use App\Models\{MissionDocument, MissionMedia, MissionLanguage, MissionApplication};
+use Illuminate\Database\Eloquent\Relations\{HasOne, HasMany, BelongsTo};
 
 class Mission extends Model
 {
@@ -27,16 +28,16 @@ class Mission extends Model
      *
      * @var array
      */
-	protected $fillable = ['theme_id', 'city_id', 'country_id', 'start_date', 'end_date', 'total_seats', 'available_seats', 'application_deadline', 'publication_status', 'organisation_id', 'organisation_name', 'mission_type', 'goal_objective'];
+    protected $fillable = ['theme_id', 'city_id', 'country_id', 'start_date', 'end_date', 'total_seats', 'available_seats', 'application_deadline', 'publication_status', 'organisation_id', 'organisation_name', 'mission_type', 'goal_objective'];
 
-	/**
+    /**
      * Get the document record associated with the mission.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-	public function missionDocument()
+    public function missionDocument(): HasMany
     {
-    	return $this->hasMany(MissionDocument::class, 'mission_id', 'mission_id');
+        return $this->hasMany(MissionDocument::class, 'mission_id', 'mission_id');
     }
 
     /**
@@ -44,9 +45,9 @@ class Mission extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-	public function missionMedia()
+    public function missionMedia(): HasMany
     {
-    	return $this->hasMany(MissionMedia::class, 'mission_id', 'mission_id');
+        return $this->hasMany(MissionMedia::class, 'mission_id', 'mission_id');
     }
 
     /**
@@ -54,9 +55,9 @@ class Mission extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
-	public function missionLanguage()
+    public function missionLanguage(): HasMany
     {
-    	return $this->hasMany(MissionLanguage::class, 'mission_id', 'mission_id');
+        return $this->hasMany(MissionLanguage::class, 'mission_id', 'mission_id');
     }
 
     /**
@@ -64,7 +65,7 @@ class Mission extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function missionTheme()
+    public function missionTheme(): BelongsTo
     {
         return $this->belongsTo(MissionTheme::class, 'theme_id', 'mission_theme_id');
     }
@@ -74,7 +75,7 @@ class Mission extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
-    public function city()
+    public function city(): HasOne
     {
         return $this->hasOne(City::class, 'city_id', 'city_id')
          ->select('city_id', 'name');
@@ -85,7 +86,7 @@ class Mission extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
-    public function country()
+    public function country(): HasOne
     {
         return $this->hasOne(Country::class, 'country_id', 'country_id')
          ->select('country_id', 'name');
@@ -96,9 +97,23 @@ class Mission extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function missionApplication()
+    public function missionApplication(): HasMany
     {
         return $this->hasMany(MissionApplication::class, 'mission_id', 'mission_id');
+    }
 
+    /**
+     * Soft delete from the database.
+     *
+     * @param  int  $id
+     * @return void
+     */
+    public function deleteMission(int $id)
+    {
+        $mission = static::findOrFail($id)->delete();
+        // static::missionMedia()->delete();
+        // static::missionLanguage()->delete();
+        // static::missionDocument()->delete();
+        return $mission;
     }
 }

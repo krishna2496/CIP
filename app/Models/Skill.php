@@ -3,6 +3,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\{Model, SoftDeletes};
 use App\Models\UserSkill;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Skill extends Model
 {
@@ -41,7 +42,7 @@ class Skill extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function userSkills()
+    public function userSkills(): HasMany
     {
         return $this->hasMany(UserSkill::class, 'skill_id', 'skill_id');
     }

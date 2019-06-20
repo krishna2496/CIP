@@ -91,9 +91,10 @@ $router->group(['prefix' => 'metadata/users/custom_fields', 'middleware' => 'loc
 
 /* Set mission data for tenant specific */
 $router->group(['prefix' => 'missions', 'middleware' => 'localization|auth.tenant.admin'], function($router){ 
-    $router->get('/', ['uses' => 'Admin\Mission\MissionController@index']); 
-    $router->post('/create', ['uses' => 'Admin\Mission\MissionController@store']);  
+    $router->get('', ['uses' => 'Admin\Mission\MissionController@index']); 
+    $router->post('/', ['uses' => 'Admin\Mission\MissionController@store']);  
     $router->patch('/{missionId}', ['uses' => 'Admin\Mission\MissionController@update']); 
+    $router->delete('/{missionId}', ['uses' => 'Admin\Mission\MissionController@destroy']); 
     $router->get('/{missionId}/applications', ['uses' => 'Admin\Mission\MissionController@missionApplications']); 
     $router->get('/{missionId}/applications/{applicationId}', ['uses' => 'Admin\Mission\MissionController@missionApplication']); 
     $router->patch('/{missionId}/applications/{applicationId}', ['uses' => 'Admin\Mission\MissionController@updateApplication']); 

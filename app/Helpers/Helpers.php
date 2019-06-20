@@ -1,8 +1,17 @@
 <?php
 namespace App\Helpers;
 
+use App\Helpers\ResponseHelper;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Http\Response;
 use DB;
+use App;
+
+/*use Illuminate\Http\Request;
+use DB;*/
 
 class Helpers
 {
@@ -12,7 +21,7 @@ class Helpers
     * @param Illuminate\Http\Request $request
     * @return string
     */
-    public static function getSubDomainFromRequest(Request $request)
+    public static function getSubDomainFromRequest(Request $request) : string
     {
         try {
             return explode(".", parse_url($request->headers->all()['referer'][0])['host'])[0];
@@ -83,7 +92,7 @@ class Helpers
      *
      * @return string
      */
-    public static function getCountryId(string $country_code)
+    public static function getCountryId(string $country_code) : int
     {
         $country = DB::table("country")->where("ISO", $country_code)->first();
         return $country->country_id;
@@ -96,7 +105,7 @@ class Helpers
      *
      * @return mixed
      */
-    public static function getCountry($country_id)
+    public static function getCountry($country_id) : array
     {
         $country = DB::table("country")->where("country_id", $country_id)->first();
         $countryData = array('country_id' => $country->country_id,
@@ -113,7 +122,7 @@ class Helpers
      *
      * @return string
      */
-    public static function getCity($city_id)
+    public static function getCity($city_id) : array
     {
         $city = DB::table("city")->where("city_id", $city_id)->first();
         $cityData = array('city_id' => $city->city_id,
@@ -121,4 +130,37 @@ class Helpers
                         );
         return $cityData;
     }
+
+    /**
+     * Upload file on AWS s3 bucket
+     * 
+     * @param string $url
+     * @param string $tenantName
+     *
+     * @return string
+     */
+    public static function uploadFileOnS3Bucket($url, $tenantName)
+    {
+        try{
+            $disk = Storage::disk('s3');
+            // Comment $context_array and $context code before going live
+            $context_array = array('http'=>array('proxy'=>'192.168.10.5:8080','request_fulluri'=>true));
+            $context = stream_context_create($context_array);            
+            // Comment below line before going live
+            $disk->put($tenantName.'/'.basename($url), file_get_contents($url, false, $context));
+            // Uncomment below line before going live
+            // $disk->put($tenantName.'/'.basename($url), file_get_contents($url));          
+            $file = $disk->get($tenantName.'/'.basename($url));
+           
+            $pathInS3 = 'https://s3.'.env("AWS_REGION").'.amazonaws.com/' . env("AWS_S3_BUCKET_NAME") . '/'.$tenantName.'/'.basename($url);
+            return $pathInS3;
+
+        } catch(\Exception $e) {
+            return ResponseHelper::error(trans('messages.status_code.HTTP_STATUS_FORBIDDEN'), 
+                                        trans('messages.status_type.HTTP_STATUS_TYPE_403'), 
+                                        trans('messages.custom_error_code.ERROR_40022'), 
+                                        trans('messages.custom_error_message.40022'));
+        }
+    }
+
 }

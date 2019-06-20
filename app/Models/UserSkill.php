@@ -3,6 +3,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\{Model, SoftDeletes};
 use App\Models\Skill;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class UserSkill extends Model
 {
@@ -65,7 +66,7 @@ class UserSkill extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function skill()
+    public function skill(): BelongsTo
     {
         return $this->belongsTo(Skill::class, 'skill_id', 'skill_id');
     }

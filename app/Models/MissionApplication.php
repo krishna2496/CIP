@@ -4,6 +4,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\{Model, SoftDeletes};
 use Illuminate\Http\{Request, Response};
 use App\Models\Mission;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class MissionApplication extends Model
 {
@@ -49,7 +50,7 @@ class MissionApplication extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function mission()
+    public function mission(): BelongsTo
     {
         return $this->belongsTo(Mission::class, 'mission_id', 'mission_id');
     }
@@ -57,15 +58,16 @@ class MissionApplication extends Model
     /**
      * Find listing of a resource.
      *
-     * @param  int  $userId
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $missionId
      * @return array
      */
     public function find(Request $request, int $missionId)
     {
-        $applicationQuery = $this;  
+        $applicationQuery = $this;
 
         if ($request->has('search')) {
-                $applicationQuery = $applicationQuery->where('motivation', 'like', '%' . $request->input('search') . '%');
+            $applicationQuery = $applicationQuery->where('motivation', 'like', '%' . $request->input('search') . '%');
         }
         if ($request->has('order')) {
             $orderDirection = $request->input('order', 'asc');
@@ -80,18 +82,19 @@ class MissionApplication extends Model
     /**
      * Find the specified resource.
      *
-     * @param  int  $userId
+     * @param  int  $missionId
+     * @param  int  $applicationId
      * @return array
      */
     public function findDetail(int $missionId, int $applicationId)
     {
-        $applicationQuery = $this;  
+        $applicationQuery = $this;
         $applicationQuery = $applicationQuery->orderBy('mission_application_id', 'asc');
 
         $missionApplication = $applicationQuery->where(
-            ['mission_id' => $missionId, 'mission_application_id' => $applicationId])
+            ['mission_id' => $missionId, 'mission_application_id' => $applicationId]
+        )
             ->get()->toArray();
         return $missionApplication;
     }
-
 }

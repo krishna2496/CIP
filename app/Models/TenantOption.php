@@ -28,8 +28,19 @@ class TenantOption extends Model
      */
     protected $fillable = ['option_name','option_value'];
 
+    /**
+     * The attributes that should be visible in arrays.
+     *
+     * @var array
+     */
     protected $visible = ['option_name','option_value'];
     
+    /**
+     * Update resource.
+     *
+     * @param  array  $colorData
+     * @return array
+     */
     public function addOrUpdateColor(array $colorData)
     {
         $styleData['option_name'] = $colorData['option_name'];

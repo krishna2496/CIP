@@ -54,8 +54,6 @@ class S3Helper
                 }*/
             }
         } catch (\Exception $e) {
-            dd($e);
-
             return Helpers::errorResponse(
                 trans('messages.status_code.HTTP_STATUS_422'),
                 trans('messages.status_type.HTTP_STATUS_TYPE_422'),
