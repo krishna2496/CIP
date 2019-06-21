@@ -15,7 +15,7 @@ class CreateTableMissionDocument extends Migration
     {
         Schema::create('mission_document', function (Blueprint $table) {
             $table->bigIncrements('mission_document_id')->unsinged();
-            $table->bigInteger('mission_id')->unsinged();
+            $table->unsignedBigInteger('mission_id');
             $table->string('document_name',255);
             $table->string('document_type',255);
             $table->string('document_path',255);

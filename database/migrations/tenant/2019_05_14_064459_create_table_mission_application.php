@@ -16,12 +16,12 @@ class CreateTableMissionApplication extends Migration
         Schema::create('mission_application', function (Blueprint $table) {
             
             $table->bigIncrements('mission_application_id')->unsigned();
-            $table->bigInteger('mission_id')->unsigned();
-            $table->bigInteger('user_id')->unsigned();
+            $table->unsignedBigInteger('mission_id');
+            $table->unsignedBigInteger('user_id');
             
             $table->dateTime('applied_at');
             $table->text('motivation');
-            $table->integer('availability_id')->unsigned();;
+            $table->unsignedBigInteger('availability_id');
             $table->enum('approval_status',['AUTOMATICALLY_APPROVED', 'PENDING','REFUSED']);
             $table->timestamps();
             $table->softDeletes();

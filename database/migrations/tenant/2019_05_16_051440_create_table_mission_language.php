@@ -16,7 +16,7 @@ class CreateTableMissionLanguage extends Migration
         Schema::create('mission_language', function (Blueprint $table) {
             
             $table->bigIncrements('mission_language_id')->unsigned();
-            $table->integer('mission_id')->unsigned();
+            $table->unsignedBigInteger('mission_id');
             $table->integer('language_id')->length(1)->default(1);
             $table->string('title');
             $table->string('short_description')->nullable();

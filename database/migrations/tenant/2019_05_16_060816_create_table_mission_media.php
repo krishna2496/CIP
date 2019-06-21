@@ -16,7 +16,7 @@ class CreateTableMissionMedia extends Migration
         Schema::create('mission_media', function (Blueprint $table) {
             
             $table->bigIncrements('mission_media_id')->unsinged();
-            $table->bigInteger('mission_id')->unsinged();
+            $table->unsignedBigInteger('mission_id');
             $table->string('media_name',64);
             $table->string('media_type',4);
             $table->string('media_path',255);

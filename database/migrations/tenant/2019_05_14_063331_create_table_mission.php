@@ -14,9 +14,9 @@ class CreateTableMission extends Migration {
     public function up() {
         Schema::create('mission', function (Blueprint $table) {
             $table->bigIncrements('mission_id')->unsigned();
-            $table->bigInteger('theme_id')->unsigned();
-            $table->bigInteger('city_id')->unsigned();
-            $table->bigInteger('country_id')->unsigned();
+            $table->unsignedBigInteger('theme_id');
+            $table->unsignedBigInteger('city_id');
+            $table->unsignedBigInteger('country_id');
             $table->dateTime('start_date')->nullable();
             $table->dateTime('end_date')->nullable();
             $table->integer('total_seats')->nullable();
@@ -31,7 +31,7 @@ class CreateTableMission extends Migration {
             // Relation defined between missions(city_id) with cities(id)
             $table->foreign('city_id')->references('city_id')->on('city')->onDelete('CASCADE')->onUpdate('CASCADE');
             // Relation defined between missions(country_id) with counties(id)
-            $table->foreign('country_id')->references('country_id')->on('county')->onDelete('CASCADE')->onUpdate('CASCADE');
+            $table->foreign('country_id')->references('country_id')->on('country')->onDelete('CASCADE')->onUpdate('CASCADE');
             $table->foreign('theme_id')->references('mission_theme_id')->on('mission_theme')->onDelete('CASCADE')->onUpdate('CASCADE');
 
         });

@@ -16,7 +16,7 @@ class CreateTableCity extends Migration
         Schema::create('city', function (Blueprint $table) {
             $table->bigIncrements('city_id')->unsinged();
             $table->string('name',255);
-            $table->bigInteger('country_id')->unsinged();
+            $table->unsignedBigInteger('country_id');
             $table->timestamps();
             $table->softDeletes();
 
