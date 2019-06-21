@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 23 23" width="23" height="23">
+	<style>
+		tspan { white-space:pre }
+		.shp0 { fill: #757575 } 
+	</style>
+	<g id="Main Content">
+		<g id="Sorting">
+			<path id="List" class="shp0" d="M1,3h22v-2h-22zM1,13h22v-2h-22zM1,23h22v-2h-22z" />
+		</g>
+	</g>
+</svg>
