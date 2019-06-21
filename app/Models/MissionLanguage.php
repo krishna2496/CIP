@@ -2,51 +2,52 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\{Model, SoftDeletes};
-use App\Models\FooterPage;
+use App\Models\Mission;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class FooterPagesLanguage extends Model
+class MissionLanguage extends Model
 {
     use SoftDeletes;
-    
+
     /**
      * The table associated with the model.
      *
      * @var string
      */
-    protected $table = 'footer_pages_language';
-    
+    protected $table = 'mission_language';
+
     /**
      * The primary key for the model.
      *
      * @var string
      */
-    protected $primaryKey = 'id';
+    protected $primaryKey = 'mission_language_id';
 
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
-    protected $fillable = ['page_id', 'language_id', 'title', 'description'];
-    
+
+    protected $fillable = ['mission_id', 'language_id', 'title', 'description', 'objective', 'short_description'];
+
     /**
      * The attributes that should be visible in arrays.
      *
      * @var array
      */
-    protected $visible = ['page_id', 'language_id', 'title', 'description', 'sections'];
-	
-	/**
-	 * Define an inverse one-to-one or many relationship.
-	 * 
-	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-	 */
-	public function page(): BelongsTo
+    protected $visible = ['mission_language_id', 'lang', 'language_id', 'title', 'objective', 'short_description', 'description'];
+
+    /**
+     * Get the mission that has language titles.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function mission(): BelongsTo
     {
-        return $this->belongsTo(FooterPage::class, 'page_id', 'page_id');
+        return $this->belongsTo(Mission::class, 'mission_id', 'mission_id');
     }
-    
+
     /**
      * Set description attribute on the model.
      *
@@ -70,14 +71,14 @@ class FooterPagesLanguage extends Model
     }
 
     /**
-	 * Get an attribute from the model.
-	 *
-	 * @param  string  $value
-	 * @return mixed
-	 */
-    public function getSectionsAttribute($value)
+     * Store/update specified resource.
+     *
+     * @param  array $condition
+     * @param  array $data
+     * @return array
+     */
+    public function createOrUpdateLanguage(array $condition, array $data)
     {
-        return unserialize($value);
+        return static::updateOrCreate($condition, $data);
     }
-    
 }

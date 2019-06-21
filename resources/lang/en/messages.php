@@ -1,7 +1,6 @@
 <?php
 
 return [
-
 	/**
 	* API success messages
 	*/
@@ -23,11 +22,19 @@ return [
 		'MESSAGE_CUSTOM_FIELD_DELETED' => 'User custom field deleted successfully',
 		'MESSAGE_NO_RECORD_FOUND' => 'No records found',
 		'MESSAGE_USER_LISTING' => 'User listing successfully',
+		'MESSAGE_USER_SKILLS_CREATED' => 'User skills linked successfully',
+        'MESSAGE_USER_SKILLS_DELETED' => 'User skills unlinked successfully',
+        'MESSAGE_APPLICATION_LISTING' => 'Mission application listing successfully',
+        'MESSAGE_APPLICATION_UPDATED' => 'Mission application updated successfully',
 		'MESSAGE_CUSTOM_STYLE_UPLOADED_SUCCESS' => 'Custom styling data uploaded successfully',
 		'MESSAGE_CUSTOM_STYLE_RESET_SUCCESS' => 'Custom styling reset successfully',
 		'MESSAGE_CUSTOM_FIELD_LISTING' => 'User custom field listing successfully',
 		'MESSAGE_USER_UPDATED' => 'User updated successfully',
-		'MESSAGE_CMS_LIST_SUCCESS' => 'CMS page listing successfully'
+		'MESSAGE_CMS_LIST_SUCCESS' => 'CMS page listing successfully',
+		'MESSAGE_MISSION_ADD_SUCCESS' => 'Mission created successfully',
+        'MESSAGE_MISSION_UPDATE_SUCCESS' => 'Mission updated successfully',
+        'MESSAGE_MISSION_DELETE_SUCCESS' => 'Mission deleted successfully',
+        'MESSAGE_MISSION_LIST_SUCCESS' => 'Mission listing successfully',
 	],
 	
 	/**
@@ -50,16 +57,16 @@ return [
 	* HTTP status Types
 	*/
 	'status_type' => [
+		'HTTP_STATUS_TYPE_204' => 'No Content',
+		'HTTP_STATUS_TYPE_201' => 'Created',
 		'HTTP_STATUS_TYPE_400' => 'Bad Request',
 		'HTTP_STATUS_TYPE_401' => 'Unauthorized',
 		'HTTP_STATUS_TYPE_403' => 'Forbidden',
 		'HTTP_STATUS_TYPE_404' => 'Not Found',
+		'HTTP_STATUS_TYPE_405' => 'Method Not Allowed',
 		'HTTP_STATUS_TYPE_422' => 'Unprocessable entity',
 		'HTTP_STATUS_TYPE_500' => 'Internal Server Error',
-		'HTTP_STATUS_TYPE_502' => 'Backend service failure (data store failure)',
-		'HTTP_STATUS_TYPE_405' => 'Method Not Allowed',
-		'HTTP_STATUS_TYPE_204' => 'No Content',
-		'HTTP_STATUS_TYPE_201' => 'Created',
+		'HTTP_STATUS_TYPE_502' => 'Backend service failure (data store failure)'
 	],
 	
 	/**
@@ -112,6 +119,8 @@ return [
 		
 		// Custom error code for User Module - 100000 - 109999
 		'ERROR_100000' => '100000',
+		'ERROR_100001' => '100001',
+        'ERROR_100002' => '100002',
 		'ERROR_100003' => '100003',
 		'ERROR_100004' => '100004',
 		'ERROR_100010' => '100010',
@@ -123,8 +132,12 @@ return [
 		'ERROR_300003' => '300003',
 		'ERROR_300004' => '300004',
 
-		// Custom error code for Tenant Module - 400000 - 409999
-		'ERROR_400000' => '400000',
+		// Custom error code for Mission Module - 400000 - 409999
+        'ERROR_400000' => '400000',
+        'ERROR_400001' => '400001',
+        'ERROR_400002' => '400002',
+        'ERROR_400003' => '400003',
+        'ERROR_400004' => '400004',
 		
 	],
 	
@@ -179,6 +192,8 @@ return [
 		
 		// Custom error code for User Module - 100000 - 109999
 		'100000' => 'User does not found in system',
+		'100001' => 'Invalid user data',
+        '100002' => 'Invalid skill data',
 		'100003' => 'Custom field creation failed. Please check input parameters',
 		'100004' => 'Requested user custom field does not exist',
 		'100010' => 'User creation failed. Please check input parameters',
@@ -191,7 +206,11 @@ return [
 		'300004' => 'Page creation faild. Invalid input data for sections',
 		'300005' => 'Requested page does not exist',
 
-		// Custom error code for Tenant Module - 400000 - 409999
-		'400000' => 'Tenant domain does not found'
+		// Custom error code for Mission Module - 400000 - 409999
+        '400000' => 'Invalid application data or missing parameter',
+        '400001' => 'Invalid mission data or missing parameter',
+        '400002' => 'Error while inserting data to database',
+        '400003' => 'Requested mission does not exist',
+        '400004' => 'Mission deletion failed',
 	]
 ];

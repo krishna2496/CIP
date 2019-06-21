@@ -47,6 +47,9 @@ $router->group(['middleware' => 'localization'], function ($router) {
     $router->get('custom_css', ['middleware' => 'tenant.connection','uses' => 'App\Tenant\TenantOptionController@getCustomCss']);
     /* Get custom field data  */
     $router->get('/custom_field/', ['middleware' => 'localization|tenant.connection','uses' => 'App\USer\UserCustomFieldController@index']);
+
+    /* Get mission listing  */
+    $router->get('/app/missions/', ['middleware' => 'localization|tenant.connection|jwt.auth','uses' => 'App\Mission\MissionController@appMissionList']);
 });
 
 
@@ -63,7 +66,7 @@ $router->get('language/{lang}', ['uses' => 'App\Language\LanguageController@fetc
 |
 */
 
-/* Set cms data for tenant specific */
+/* Set user data for tenant specific */
 $router->group(['prefix' => 'users', 'middleware' => 'localization|auth.tenant.admin'], function ($router) {
     $router->get('/', ['uses' => 'Admin\User\UserController@index']);
     $router->get('/{userId}', ['uses' => 'Admin\User\UserController@show']);
@@ -89,6 +92,25 @@ $router->group(['prefix' => 'metadata/users/custom_fields', 'middleware' => 'loc
     $router->post('/', ['uses' => 'Admin\User\UserCustomFieldController@store']);
     $router->patch('/{fieldId}', ['uses' => 'Admin\User\UserCustomFieldController@update']);
     $router->delete('/{fieldId}', ['uses' => 'Admin\User\UserCustomFieldController@destroy']);
+});
+
+/* Set mission data for tenant specific */
+$router->group(['prefix' => 'missions', 'middleware' => 'localization|auth.tenant.admin'], function($router){ 
+    $router->get('', ['uses' => 'Admin\Mission\MissionController@index']); 
+    $router->post('/', ['uses' => 'Admin\Mission\MissionController@store']);  
+    $router->patch('/{missionId}', ['uses' => 'Admin\Mission\MissionController@update']); 
+    $router->delete('/{missionId}', ['uses' => 'Admin\Mission\MissionController@destroy']); 
+    $router->get('/{missionId}/applications', ['uses' => 'Admin\Mission\MissionController@missionApplications']); 
+    $router->get('/{missionId}/applications/{applicationId}', ['uses' => 'Admin\Mission\MissionController@missionApplication']); 
+    $router->patch('/{missionId}/applications/{applicationId}', ['uses' => 'Admin\Mission\MissionController@updateApplication']); 
+
+});
+
+/* Set skill data for tenant user specific */
+$router->group(['prefix' => 'entities/skills', 'middleware' => 'localization|auth.tenant.admin'], function ($router) {
+    $router->get('/{userId}', ['uses' => 'Admin\User\UserController@userSkills']);
+    $router->post('/', ['uses' => 'Admin\User\UserController@linkSkill']);
+    $router->delete('/', ['uses' => 'Admin\User\UserController@unlinkSkill']);
 });
 
 /*Admin style routes*/

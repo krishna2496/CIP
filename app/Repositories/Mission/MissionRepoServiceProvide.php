@@ -1,9 +1,9 @@
 <?php
-namespace App\Repositories\User;
+namespace App\Repositories\Mission;
 
 use Illuminate\Support\ServiceProvider;
 
-class UserRepoServiceProvide extends ServiceProvider
+class MissionRepoServiceProvide extends ServiceProvider
 {
     /**
      * Bootstrap the application services.
@@ -22,6 +22,6 @@ class UserRepoServiceProvide extends ServiceProvider
      */
     public function register()
     {
-        $this->app->bind('App\Repositories\User\UserInterface', 'App\Repositories\User\UserRepository');
+        $this->app->bind('App\Repositories\Mission\MissionInterface', 'App\Repositories\Mission\MissionRepository');
     }
 }

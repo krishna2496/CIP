@@ -1,37 +1,36 @@
 <?php
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\{Model, SoftDeletes};
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use App\Models\FooterPagesLanguage;
 
 class FooterPage extends Model
 {
-	use SoftDeletes;
-	
-	/**
+    use SoftDeletes;
+    
+    /**
      * The table associated with the model.
      *
      * @var string
      */
     protected $table = 'footer_page';
-	
-	/**
+    
+    /**
      * The primary key for the model.
      *
      * @var string
      */
     protected $primaryKey = 'page_id';
 
-     /**
+    /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
-	protected $fillable = ['status', 'slug'];
-	
-	/**
+    protected $fillable = ['status', 'slug'];
+    
+    /**
      * The attributes that should be visible in arrays.
      *
      * @var array
@@ -43,10 +42,10 @@ class FooterPage extends Model
      */
     public function pageTranslations(): HasMany
     {
-    	return $this->hasMany(FooterPagesLanguage::class, 'page_id', 'page_id');
+        return $this->hasMany(FooterPagesLanguage::class, 'page_id', 'page_id');
     }
-	
-	/**
+    
+    /**
      * Soft delete the model from the database.
      *
      * @param  int  $id
@@ -56,10 +55,14 @@ class FooterPage extends Model
     {
         return static::findOrFail($id)->delete();
     }
-
-    public function pages()
+	
+	/**
+     * Get the translations associated with the footer page.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function pages(): HasMany
     {
          return $this->hasMany(FooterPagesLanguage::class, 'page_id', 'page_id');
     }
-
 }

@@ -81,7 +81,8 @@ $app->configure('auth'); //default authentication
 $app->configure('mail'); //SMTP and PHP mail
 $app->configure('constants'); //constant file config
 $app->configure('cors');  //cross origin support
-$app->configure('filesystems');  
+$app->configure('messages');  //Message Constants config
+$app->configure('filesystems');
 
 /**
  * mailer package registration

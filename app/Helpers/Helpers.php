@@ -1,6 +1,7 @@
 <?php
 namespace App\Helpers;
 
+use App\Helpers\ResponseHelper;
 use Illuminate\Http\Request;
 use DB;
 
@@ -12,7 +13,7 @@ class Helpers
     * @param Illuminate\Http\Request $request
     * @return string
     */
-    public static function getSubDomainFromRequest(Request $request)
+    public static function getSubDomainFromRequest(Request $request) : string
     {
         try {
             return explode(".", parse_url($request->headers->all()['referer'][0])['host'])[0];
@@ -29,7 +30,7 @@ class Helpers
      * Get base URL from request object
      *
      * @param Illuminate\Http\Request $request
-     * @return string
+     * @return mixed
      */
     public static function getRefererFromRequest(Request $request)
     {
@@ -81,6 +82,7 @@ class Helpers
      *
      * @param array $array
      * @param Illuminate\Http\Request $request
+     * @return Tenant
      */
     public static function getTenantDetail(Request $request)
     {
@@ -94,5 +96,48 @@ class Helpers
         DatabaseHelper::switchDatabaseConnection('tenant', $request);
                 
         return $tenant;
+    }
+	
+    /** 
+	 * Get country id from country_code
+     * 
+     * @param string $country_code
+     * @return int
+     */
+    public static function getCountryId(string $country_code) : int
+    {
+        $country = DB::table("country")->where("ISO", $country_code)->first();
+        return $country->country_id;
+    }
+
+    /**
+     * Get country detail from country_id
+     * 
+     * @param string $country_id
+     * @return array
+     */
+    public static function getCountry($country_id) : array
+    {
+        $country = DB::table("country")->where("country_id", $country_id)->first();
+        $countryData = array('country_id' => $country->country_id,
+                             'country_code' => $country->ISO,
+                             'name' => $country->name,
+                            );
+         return $countryData;
+    }
+
+    /**
+     * Get city data from city_id
+     * 
+     * @param string $city_id
+     * @return array
+     */
+    public static function getCity($city_id) : array
+    {
+        $city = DB::table("city")->where("city_id", $city_id)->first();
+        $cityData = array('city_id' => $city->city_id,
+                         'name' => $city->name
+                        );
+        return $cityData;
     }
 }

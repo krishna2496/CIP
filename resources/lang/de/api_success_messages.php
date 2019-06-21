@@ -77,8 +77,7 @@ return [
 		'ERROR_20010' => '20010',
 		'ERROR_20014' => '20014',
 		'ERROR_20016' => '20016',
-		'ERROR_20018' => '20018',
-		'ERROR_20022' => '20022',		
+		'ERROR_20018' => '20018',	
 		'ERROR_20026' => '20026',
 		'ERROR_20028' => '20028',
 		'ERROR_20020' => '20020',
@@ -90,6 +89,9 @@ return [
 		'ERROR_20036' => '20036',
 		'ERROR_20038' => '20038',
 		'ERROR_20102' => '20102',
+        'ERROR_100001' => '100001',
+        'ERROR_100002' => '100002',
+		
 
 		// Error codes from 1000-
 		'ERROR_10006' => '10006',
@@ -130,7 +132,6 @@ return [
 		'20016' => 'Databse not found',
 		'21000' => 'Error while creating database connection',
 		'20018' => 'Invalid input data',
-		'20022' => 'Invalid user data',
 		'20024' => 'This page is already added',
 		'20030' => 'Missing translation data',
 		'20036' => 'Invalid translation data, please check input parameters',
@@ -140,7 +141,9 @@ return [
 		'20020' => 'CMS page deletion failed',
 		'20032' => 'No data found for given id',
 		'20034' => 'Invalid request parameter',		
-		'20102' => 'Invalid custom field input parameters or missing data',		
+		'20102' => 'Invalid custom field input parameters or missing data',	
+		'100001' => 'Invalid user data',
+        '100002' => 'Invalid skill data',	
 		// Error codes from 1000-
 		'10006' => 'Database operational error',
 	]
