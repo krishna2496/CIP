@@ -1,15 +1,15 @@
 <template>
     <div class="home-page inner-pages filter-header">
         <header @scroll="handleScroll">
-             <PrimaryHeader></PrimaryHeader>
-             <SecondaryHeader></SecondaryHeader>
+             <ThePrimaryHeader></ThePrimaryHeader>
+             <TheSecondaryHeader></TheSecondaryHeader>
         </header>
         <main>
             <b-container class="home-content-wrapper">
                 <div class="heading-section">
                     <h2><template v-if="rows > 0">{{ $t("label.explore")}} <strong>{{rows}} {{ $t("label.missions")}}</strong></template></h2>
                     <div class="right-section">
-                        <CustomDropdown
+                        <AppCustomDropdown
                         :optionList="sortByOptions"
                         :defaultText="sortByDefault"
                         translationEnable= "true"
@@ -94,7 +94,7 @@
             </b-container>
         </main>
         <footer>
-            <SecondaryFooter></SecondaryFooter>
+            <TheSecondaryFooter></TheSecondaryFooter>
         </footer>
         <back-to-top bottom="68px" right="40px" :title="$t('label.back_to_top')">
         <i>
@@ -124,26 +124,26 @@
 </template>
 
 <script>
-import PrimaryHeader from "../components/Layouts/PrimaryHeader";
-import SecondaryHeader from "../components/Layouts/SecondaryHeader";
-import SecondaryFooter from "../components/Layouts/SecondaryFooter";
+import ThePrimaryHeader from "../components/Layouts/ThePrimaryHeader";
+import TheSecondaryHeader from "../components/Layouts/TheSecondaryHeader";
+import TheSecondaryFooter from "../components/Layouts/TheSecondaryFooter";
 import GridView from "../components/MissionGridView";
 import ListView from "../components/MissionListView";
-import CustomDropdown from "../components/CustomDropdown";
-import CustomChip from "../components/CustomChip";
+import AppCustomDropdown from "../components/AppCustomDropdown";
+import AppCustomChip from "../components/AppCustomChip";
 import axios from "axios";
 import store from '../store';
 import {missionListing} from '../services/service';
 
 export default {
     components: {
-        PrimaryHeader,
-        SecondaryHeader,
-        SecondaryFooter,
+        ThePrimaryHeader,
+        TheSecondaryHeader,
+        TheSecondaryFooter,
         GridView,
         ListView,
-        CustomDropdown,
-        CustomChip
+        AppCustomDropdown,
+        AppCustomChip
     },
 
     name: "home",
@@ -184,6 +184,7 @@ export default {
         },
         //Mission listing
         async getMissions(){
+
             let filter = [
             {'page' : this.currentPage}
             ];
@@ -199,7 +200,7 @@ export default {
             }    
             }); 
         },
-        
+
         pageChange (page) {
             //Change pagination
             this.currentPage = page;
@@ -213,12 +214,12 @@ export default {
     },
     created() {
         var _this = this;
+        // Mission listing
+        this.getMissions();
         setTimeout(function(){ 
             _this.sortByDefault = _this.$i18n.t("label.sort_by");
-         },400);
+        },400);
         window.addEventListener("scroll", this.handleScroll);
-        //Mission listing
-        this.getMissions();
     },
     destroyed() {
         window.removeEventListener("scroll", this.handleScroll);

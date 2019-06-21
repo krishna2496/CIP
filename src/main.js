@@ -15,6 +15,7 @@ import i18n from "./i18n";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import BackToTop from "vue-backtotop";
+import moment from 'moment'
 
 Vue.use(Vuelidate, VueAxios, axios);
 
@@ -48,7 +49,11 @@ router.beforeEach((to, from, next) => {
     }
     next();
 });
-
+ Vue.filter('formatDate', function(value) {
+      if (value) {
+        return moment(String(value)).format('DD/MM/YYYY')
+      }
+})
 new Vue({
     router,
     store,

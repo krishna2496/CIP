@@ -1,10 +1,10 @@
 <template>
     <div class="signin-footer">
-        <div class="footer-menu">
-            <b-list-group v-if="isDynamicFooterItemsSet">
+        <div class="footer-menu" v-if="isDynamicFooterItemsSet">
+            <b-list-group>
                 <b-list-group-item
                     v-for="item in footerItems"
-                    :to="item.slug"
+                    :to="'/'+item.slug"
                     :title="getTitle(item)"
                     >{{getTitle(item)}}
                 </b-list-group-item>
@@ -23,11 +23,11 @@
 <script>
 import axios from "axios";
 import store from "../../store";
-import { loadLocaleMessages } from "../../services/service";
+import { loadLocaleMessages,cmsPages} from "../../services/service";
 
 export default {
     components: {},
-    name: "Footer",
+    name: "ThePrimaryFooter",
     data() {
         return {
             footerItems: [],
@@ -42,13 +42,11 @@ export default {
         loadLocaleMessages(store.state.defaultLanguage);
     },
     methods: {
-        getPageListing() {
-        axios.get(process.env.VUE_APP_API_ENDPOINT + "cms/listing").then(response => {
-            if (response.data.data) {
-                this.footerItems = response.data.data;
-                this.isDynamicFooterItemsSet = true;
-            }
-        }) .catch(error => {});
+        async getPageListing(){
+            await cmsPages().then(response => {
+                    this.footerItems = response;
+                    this.isDynamicFooterItemsSet = true;  
+            })       
         },
 
         getTitle(items){
@@ -65,6 +63,7 @@ export default {
                 }
             }
         },
+        
     }
 };
 </script>

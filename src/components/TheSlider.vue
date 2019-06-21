@@ -2,11 +2,11 @@
     <div class="signin-slider">
         <b-carousel  id="carousel-1" fade :interval="2000" indicators v-if="isDynamicCarsousetSet">
 			<b-carousel-slide 
-			v-for="item in carouselItems"
-			:key="item.sort_order"
-			:caption="getTitle(item.translations)"
-			:text="getDescription(item.translations)"
-			:img-src="item.url">     
+				v-for="item in carouselItems"
+				:key="item.sort_order"
+				:caption="getTitle(item.translations)"
+				:text="getDescription(item.translations)"
+				:img-src="item.url">     
 			</b-carousel-slide>
         </b-carousel>
         
@@ -23,7 +23,7 @@ import store from '../store';
 import axios from "axios";
 
 export default {
-	name: "Slider",
+	name: "TheSlider",
 	data() {
 		return {
 			carouselItems: [],

@@ -1,5 +1,5 @@
 <template>
-    <div v-if="optionList.length > 0" class="custom-dropdown">
+    <div v-if="optionList != null && optionList.length > 0" class="custom-dropdown">
         <span class="select-text">{{defaultText}}</span>
         <div class="option-list-wrap" data-simplebar>
             <ul class="option-list" v-if="translationEnable == 'false'">
@@ -23,7 +23,7 @@
 
 <script>
 export default {
-    name: "CustomDropdown",
+    name: "AppCustomDropdown",
     components: {},
     props: {
         optionList: Array,

@@ -2,13 +2,13 @@ import store from '../../store'
 import axios from 'axios'
 
 export default async(data) => {
-    // Forgot Password API call with params email address
+    // Reset Password API call with params token,email,password,password_conformation
     let responseData = {}
     responseData.error = false;
 
     await axios({
-            url: process.env.VUE_APP_API_ENDPOINT+"password_reset",
-            data,   
+            url: process.env.VUE_APP_API_ENDPOINT + "password_reset",
+            data,
             method: 'put',
             headers: {
                 'X-localization': (store.state.defaultLanguage).toLowerCase()

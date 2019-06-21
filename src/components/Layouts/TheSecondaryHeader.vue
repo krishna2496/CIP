@@ -27,21 +27,21 @@
                     </div>
                 <b-list-group>
                     <b-list-group-item>
-                        <CustomDropdown
+                        <AppCustomDropdown
                             :optionList="countryList"
-                            :defaultText="defaut_country"
-                            translationEnable= "true" 
+                            :defaultText="defautCountry"
+                            translationEnable= "false" 
                             @updateCall="updateCountry"
                         />
                     </b-list-group-item>
                     <b-list-group-item>
-                        <CheckboxDropdown :filterTitle="'City'" :checkList="CityList"/>
+                        <AppCheckboxDropdown :filterTitle="defautCity" :checkList="cityList"/>
                             </b-list-group-item>
                             <b-list-group-item>
-                        <CheckboxDropdown :filterTitle="'Theme'" :checkList="ThemeList"/>
+                        <AppCheckboxDropdown :filterTitle="defautTheme" :checkList="themeList"/>
                             </b-list-group-item>
                             <b-list-group-item>
-                        <CheckboxDropdown :filterTitle="'Skills'" :checkList="SkillsList"/>
+                        <AppCheckboxDropdown :filterTitle="defautSkill" :checkList="skillList"/>
                     </b-list-group-item>
                 </b-list-group>
                 </b-col>
@@ -55,80 +55,25 @@
 </template>
 
 <script>
-import CustomDropdown from "../CustomDropdown";
-import CheckboxDropdown from "../CheckboxDropdown";
+import AppCustomDropdown from "../AppCustomDropdown";
+import AppCheckboxDropdown from "../AppCheckboxDropdown";
+import {countryList,cityList,skillList,themeList} from "../../services/service";
 
 export default {
-    components: { CustomDropdown, CheckboxDropdown },
-    name: "SecondaryHeader",
+    components: { AppCustomDropdown, AppCheckboxDropdown },
+    name: "TheSecondaryHeader",
     data() {
         return {
-            defaut_country: "Country",
-            countryList: [
-                "Afghanistan",
-                "Albania",
-                "Algeria",
-                "Andorra",
-                "Angola",
-                "Antigua",
-                "Argentina",
-                "Armenia",
-                "Australia",
-                "Austria",
-                "Azerbaijan",
-                "Bahrain",
-                "Bangladesh",
-                "Barbados",
-                "Belarus",
-                "Belgium",
-                "Belize",
-                "Benin",
-                "Bhutan",
-                "Bolivia",
-                "Cambodia",
-                "Cameroon",
-                "Canada",
-                "Dominica",
-                "Eritrea",
-                "Estonia",
-                "Fiji",
-                "Finland",
-                "France",
-                "Gabon",
-                "India",
-                "Indonesia",
-                "Iran",
-                "Iraq"
-            ],
-            CityList: [
-                { value: " Tirana " },
-                { value: "Durrës " },
-                { value: "Vlorë " },
-                { value: "Elbasan " },
-                { value: "Shkodër" },
-                { value: "Fier" }
-            ],
-            ThemeList: [
-                { value: "Education " },
-                { value: "Children " },
-                { value: "Health" },
-                { value: "Animals " },
-                { value: "Nutritions" },
-                { value: "Environment" }
-            ],
-            SkillsList: [
-                { value: " Anthropology " },
-                { value: "Archeolgy" },
-                { value: "Astronomy" },
-                { value: "Computer Science" },
-                { value: "History" },
-                { value: "Reserch" }
-            ],
-            showDropdown: false,
-            showDropdown1: false,
-            showDropdown2: false,
+            defautCountry: "Country",
+            defautCity: "",
+            defautTheme: "",
+            defautSkill: "",
+            countryList: [],
+            cityList: [],
+            themeList: [],
+            skillList: [],
             form: {
-            text: ""
+                text: ""
             },
             show: false
         };
@@ -151,7 +96,7 @@ export default {
         },
 
         updateCountry(value) {
-            this.defaut_country = value;
+            this.defautCountry = value.selectedVal;
         },
 
         handleFilter() {
@@ -166,7 +111,56 @@ export default {
             body.forEach(function(e) {
                 e.classList.remove("open-filter");
             });
-        }
+        },
+
+        getCountry(){
+            countryList().then( response => {
+                if (response) {                    
+                    this.countryList = response
+                     //fetch city
+                    this.getCity();   
+                }            
+            });   
+        },
+
+        getCity(){
+            cityList().then( response => {
+                if (response) {                    
+                    this.cityList = response
+                    // Fetch theme
+                    this.getTheme();   
+                }            
+            });   
+        },
+
+        getTheme(){
+            themeList().then( response => {
+                if (response) {                    
+                    this.themeList = response
+                    // Fetch skill
+                    this.getSkill();   
+                }            
+            });   
+        },
+
+        getSkill(){
+                skillList().then( response => {
+                if (response) {                    
+                    this.skillList = response   
+                }            
+            });   
+        },
+    },
+    created() {
+        // Fetch country
+        this.getCountry();
+        var _this = this;
+        setTimeout(function(){ 
+            _this.defautCountry = _this.$i18n.t("label.country");
+            _this.defautCity =  _this.$i18n.t("label.city"),
+            _this.defautTheme =  _this.$i18n.t("label.theme"),
+            _this.defautSkill = _this.$i18n.t("label.skills")
+        },400);
     }
 };
 </script>

@@ -2,8 +2,8 @@
     <div class="primary-footer">
         <b-container>
             <b-row>
-                <b-col md="6" class="footer-menu">
-                    <b-list-group v-if="isDynamicFooterItemsSet">
+                <b-col md="6" class="footer-menu" v-if="isDynamicFooterItemsSet">
+                    <b-list-group>
                         <b-list-group-item  
                             v-for="item in footerItems" 
                             :to="item.slug" 
@@ -25,11 +25,11 @@
 import axios from "axios";
 import store from '../../store';
 import router from "../../router";
-import { loadLocaleMessages } from "../../services/service";
+import { loadLocaleMessages,cmsPages} from "../../services/service";
 
 export default {
     components: {},
-    name: "SecondaryFooter",
+    name: "TheSecondaryFooter",
     data() {
         return {
             footerItems: [],
@@ -43,15 +43,11 @@ export default {
         loadLocaleMessages(store.state.defaultLanguage);
     },
     methods:{  
-        getPageListing(){
-            axios.get(process.env.VUE_APP_API_ENDPOINT+"cms/listing").then((response) => {
-                if (response.data.data) {
-                    this.footerItems = response.data.data
-                    this.isDynamicFooterItemsSet = true
-                }
-            }).catch(error => {
-                this.getPageListing();
-            })
+        async getPageListing(){
+            await cmsPages().then(response => {
+                    this.footerItems = response;
+                    this.isDynamicFooterItemsSet = true;  
+            })       
         },
 
         getTitle(items){

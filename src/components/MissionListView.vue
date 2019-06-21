@@ -1,7 +1,8 @@
 <template>
     <div class="cards-wrapper" v-if="items.length > 0">
         <div class="card-listing">
-            <div class="card-outer" v-for="mission in items">
+            <div class="card-outer" 
+                v-for="mission in items">
                 <b-card no-body>
                     <b-card-header>
                         <div class="header-img-block">
@@ -9,13 +10,8 @@
                                 :style="{backgroundImage: 'url('+mission.default_media_path+')'}">
                                 <img src="mission.default_media_path" alt="mission.default_media_path">
                             </div>                                
-                            <div  v-else  class="group-img">
-                                <b-embed
-                                    type="iframe"
-                                    aspect="16by9"
-                                    :src="mission.default_media_path"
-                                    allowfullscreen>        
-                                </b-embed>
+                            <div  v-else  class="group-img" 
+                            :style="{backgroundImage: 'url('+youtubeThumbImage(mission.default_media_path)+')'}">
                             </div>
                             <div  class="location">
                                 <i>
@@ -81,8 +77,11 @@
                                    <span>
                                         <!-- Mission type time -->
                                         <template v-if="checkMissionTypeTime(mission.mission_type)">
-                                            <template v-if="mission.end_date != ''">
-                                                {{ $t("label.from")+' '+mission.start_date+' '+$t("label.until")+' '+mission.end_date }}   
+                                            <template v-if="mission.end_date !== null">
+                                                {{ $t("label.from") }} 
+                                                {{mission.start_date | formatDate }} 
+                                                {{ $t("label.until")}}
+                                                {{ mission.end_date | formatDate }}   
                                             </template>
                                             <template v-else>
                                                 {{ $t("label.on_going_opportunities") }}  
@@ -118,13 +117,14 @@
                                             </div>
                                         </template>
 
-                                        <template v-if="mission.application_deadline != ''">
+                                        <template v-if="mission.application_deadline !== null">
                                             <div class="detail-column info-block">
                                                 <i class="icon-wrap">
                                                     <img src="../assets/images/landing/clock.svg" alt="user">
                                                 </i>
                                                 <div class="text-wrap">
-                                                    <span class="title-text mb-1">{{mission.application_deadline}}</span>
+                                                    <span class="title-text mb-1">
+                                                    {{mission.application_deadline | formatDate}}</span>
                                                     <span class="subtitle-text">{{ $t("label.deadline") }}</span>
                                                 </div>
                                             </div>
@@ -138,22 +138,19 @@
         </div>
     </div>
     <div class="cards-wrapper" v-else>
-        <h2 class="justify-content-md-center">{{ $t("label.no_record_found")}} </h2>
+        <h2 class="text-center">{{ $t("label.no_record_found")}} </h2>
     </div>
 </template>
 <script>
-import StarRating from "./StarRating";
 import store from '../store';
 import constants from '../constant';
 
 export default {
-    name: "ListView",
+    name: "MissionListView",
     props: {
         items: Array,
     },
-    components:{
-        StarRating
-    },
+    components:{},
     data() {
         return {
         };
@@ -187,6 +184,11 @@ export default {
             } else {
                 return shortDescription.substring(0,constants.MISSION_LIST_VIEW_SHORT_DESCRIPTION_CHARACTER)+"...";
             }
+        },
+        // Get Youtube Thumb images
+        youtubeThumbImage(videoPath) {
+            let data = videoPath.split("=");
+            return  "https://img.youtube.com/vi/"+data.slice(-1)[0]+"/mqdefault.jpg";
         }
     }
 };

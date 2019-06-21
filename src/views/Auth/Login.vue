@@ -1,9 +1,9 @@
 <template>
     <div class="signin-page-wrapper">
-        <Slider v-if="isShowComponent"/>
+        <TheSlider v-if="isShowComponent"/>
         <div class="signin-form-wrapper">
             <div class="lang-drodown-wrap">
-                <CustomDropdown :optionList="langList" :defaultText="defautLang" 
+                <AppCustomDropdown :optionList="langList" :defaultText="defautLang" 
                 translationEnable= "false" 
                 @updateCall="setLanguage" v-if="isShowComponent" />
             </div>
@@ -46,25 +46,25 @@
                     <b-link to="/forgot-password">{{ $t("label.lost_password") }}</b-link>
                 </div>
             </div>
-            <PrimaryFooter ref="PrimaryFooter" v-if="isShowComponent"/>
+            <ThePrimaryFooter ref="ThePrimaryFooter" v-if="isShowComponent"/>
         </div>
     </div>
 </template>
 
 <script>
-import Slider from '../../components/Slider';
-import PrimaryFooter from "../../components/Layouts/PrimaryFooter";
-import CustomDropdown from '../../components/CustomDropdown';
+import TheSlider from '../../components/TheSlider';
+import ThePrimaryFooter from "../../components/Layouts/ThePrimaryFooter";
+import AppCustomDropdown from '../../components/AppCustomDropdown';
 import { required, email, minLength, between } from 'vuelidate/lib/validators';
 import store from '../../store';
-import axios from "axios";
 import {loadLocaleMessages,login,databaseConnection} from '../../services/service';
+import constants from '../../constant';
 
 export default {
     components: {       
-        PrimaryFooter,
-        CustomDropdown,
-        Slider,
+        ThePrimaryFooter,
+        AppCustomDropdown,
+        TheSlider,
     },
     data() {
         return {
@@ -86,7 +86,7 @@ export default {
     validations: {
         login: {
             email: {required, email},
-            password: {required, minLength: minLength(8)}
+            password: {required, minLength: minLength(constants.PASSWORD_MIN_LENGTH)}
         }
     },
     methods: {
@@ -106,7 +106,7 @@ export default {
             this.$i18n.locale = language.selectedVal.toLowerCase()
             await loadLocaleMessages(this.$i18n.locale);   
             _this.$forceUpdate();
-            _this.$refs.PrimaryFooter.$forceUpdate()
+            _this.$refs.ThePrimaryFooter.$forceUpdate()
         },
 
         handleSubmit(e) {

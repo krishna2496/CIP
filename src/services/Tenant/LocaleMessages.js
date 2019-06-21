@@ -20,11 +20,6 @@ export default async(lang) => {
     if (!loadedLanguages.includes(lang) && (lang != 'null')) {
         await axios.get(`${process.env.VUE_APP_LANGUAGE_API_ENDPOINT+lang}`, {
             method: "get",
-            headers: {
-                "Accept": "application/json",
-                "Content-Type": "application/json",
-                "Access-Control-Allow-Origin": "*"
-            }
         }).then(function(res) {
             if (res.data) {
                 i18n.setLocaleMessage(

@@ -13,7 +13,7 @@
 </template>
 <script>
     export default {
-        name: "CustomChip",
+        name: "AppCustomChip",
         props: {
             textVal : String,
             url: String,

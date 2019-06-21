@@ -1,7 +1,7 @@
 <template>
     <div class="cms-page inner-pages">
         <header @scroll="handleScroll">
-            <PrimaryHeader></PrimaryHeader>
+            <ThePrimaryHeader></ThePrimaryHeader>
         </header>
 
     <main v-if="isDynamicFooterItemsSet">
@@ -35,20 +35,20 @@
         </b-container>
     </main>
     <footer>
-        <SecondaryFooter @cmsListing="cmsListing"></SecondaryFooter>
+        <TheSecondaryFooter @cmsListing="cmsListing"></TheSecondaryFooter>
     </footer>
     </div>
 </template>
 <script>
-import PrimaryHeader from "../components/Layouts/PrimaryHeader";
-import SecondaryFooter from "../components/Layouts/SecondaryFooter";
+import ThePrimaryHeader from "../components/Layouts/ThePrimaryHeader";
+import TheSecondaryFooter from "../components/Layouts/TheSecondaryFooter";
 import axios from "axios";
 import store from '../store';
 
 export default {
     components: {
-        PrimaryHeader,
-        SecondaryFooter
+        ThePrimaryHeader,
+        TheSecondaryFooter
     },
     data() {
         return {

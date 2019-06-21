@@ -1,9 +1,9 @@
 <template>
     <div class="signin-page-wrapper">
-        <Slider/>
+        <TheSlider/>
         <div class="signin-form-wrapper">
             <div class="lang-drodown-wrap">
-                <CustomDropdown :optionList="langList" :defaultText="defautLang" 
+                <AppCustomDropdown :optionList="langList" :defaultText="defautLang" 
                 translationEnable= "false"  
                 @updateCall="setLanguage"/>
             </div>
@@ -37,15 +37,15 @@
                 <b-link to="/">{{ $t("label.login") }}</b-link>
                 </div>
             </div>
-            <PrimaryFooter ref="PrimaryFooter"/>
+            <ThePrimaryFooter ref="ThePrimaryFooter"/>
         </div>
     </div>
 </template>
 
 <script>
-import Slider from "../../components/Slider";
-import PrimaryFooter from "../../components/Layouts/PrimaryFooter";
-import CustomDropdown from "../../components/CustomDropdown";
+import TheSlider from "../../components/TheSlider";
+import ThePrimaryFooter from "../../components/Layouts/ThePrimaryFooter";
+import AppCustomDropdown from "../../components/AppCustomDropdown";
 import { required, email, minLength, between } from 'vuelidate/lib/validators';
 import {loadLocaleMessages,forgotPassword} from '../../services/service';
 import store from '../../store';
@@ -53,9 +53,9 @@ import axios from "axios";
 
 export default {
     components: {
-        Slider,
-        PrimaryFooter,
-        CustomDropdown
+        TheSlider,
+        ThePrimaryFooter,
+        AppCustomDropdown
     },
     data() {
         return {
@@ -86,7 +86,7 @@ export default {
             this.$i18n.locale = language.selectedVal.toLowerCase()
             await loadLocaleMessages(this.$i18n.locale);   
                 _this.$forceUpdate();
-                _this.$refs.PrimaryFooter.$forceUpdate()
+                _this.$refs.ThePrimaryFooter.$forceUpdate()
         },
         handleSubmit(e) {
             this.submitted = true;

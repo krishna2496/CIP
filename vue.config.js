@@ -1,4 +1,4 @@
-const host = 'tatva.optimy.com';
+const host = 'test.optimy.com';
 const port = 8080;
 module.exports = {
     chainWebpack: config => {
@@ -26,7 +26,7 @@ module.exports = {
     lintOnSave: false,
 
     devServer: {
-        host: 'tatva.optimy.com',
+        host: 'test.optimy.com',
         port: 8080,
         https: false
     },
