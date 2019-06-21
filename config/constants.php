@@ -18,10 +18,10 @@ return [
      * User custom field types
      */
      'custom_field_types' => [
-        'TEXT' => 'Text',
-        'EMAIL' => 'Email',
-        'DROP-DOWN' => 'Drop-down',
-        'RADIO' => 'Radio'
+        'TEXT' => 'text',
+        'EMAIL' => 'email',
+        'DROP-DOWN' => 'drop-down',
+        'RADIO' => 'radio'
      ],
      
      /*

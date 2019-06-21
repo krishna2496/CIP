@@ -46,4 +46,26 @@ class Skill extends Model
     {
         return $this->hasMany(UserSkill::class, 'skill_id', 'skill_id');
     }
+	
+	/**
+     * Set translations attribute on the model.
+     *
+     * @param  mixed   $value
+     * @return void
+     */
+    public function setTranslationsAttribute($value)
+    {
+        $this->attributes['translations'] = serialize($value);
+    }
+    
+    /**
+     * Get an attribute from the model.
+     *
+     * @param  string  $value
+     * @return mixed
+     */
+    public function getTranslationsAttribute($value)
+    {
+        return unserialize($value);
+    }
 }
