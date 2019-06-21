@@ -24,7 +24,8 @@
 		"email_required" : "Adresse e-mail est nécessaire",
 		"invalid_email" : "Entrez une adresse email valide",
 		"password_required" : "Mot de passe requis",
-		"invalid_password" : "La longueur du mot de passe doit être d'au moins 8 caractères"
+		"invalid_password" : "La longueur du mot de passe doit être d'au moins 8 caractères",
+		"identical_password" : "Les mots de passe doivent être identiques."
 	}
 
 }
