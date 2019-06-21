@@ -93,9 +93,9 @@ class UserController extends Controller
 			
 			return ResponseHelper::success($apiStatus, $apiMessage, $apiData);
 			
-        } catch(PDOException $e) {
+        } catch(\PDOException $e) {
 			
-			throw new PDOException($e->getMessage());
+			throw new \PDOException($e->getMessage());
 			
 		} catch(\Exception $e) {
 			
@@ -156,9 +156,9 @@ class UserController extends Controller
 			
 			throw new ModelNotFoundException(trans('messages.custom_error_message.100000'));
 			
-        } catch(PDOException $e) {
+        } catch(\PDOException $e) {
 			
-			throw new PDOException($e->getMessage());
+			throw new \PDOException($e->getMessage());
 			
 		} catch(\Exception $e) {
 			

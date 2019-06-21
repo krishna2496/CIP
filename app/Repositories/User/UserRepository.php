@@ -5,6 +5,9 @@ use App\Repositories\User\UserInterface;
 use Illuminate\Http\{Request, Response};
 use PDOException;
 use App\User;
+use App\Helpers\{Helpers, ResponseHelper, DatabaseHelper};
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Symfony\Component\Debug\Exception\FatalThrowableError;
 
 class UserRepository implements UserInterface
 {

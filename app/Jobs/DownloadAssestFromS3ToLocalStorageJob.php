@@ -1,11 +1,10 @@
 <?php
-
 namespace App\Jobs;
+
 use Illuminate\Support\Facades\Storage;
 
 class DownloadAssestFromS3ToLocalStorageJob extends Job
 {
-    
     protected $tenantName;
 
     /**
@@ -25,8 +24,7 @@ class DownloadAssestFromS3ToLocalStorageJob extends Job
      */
     public function handle()
     {
-    
-        if(Storage::disk('local')->exists($this->tenantName)){
+        if (Storage::disk('local')->exists($this->tenantName)) {
             Storage::disk('local')->delete($this->tenantName);
         }
 
@@ -34,13 +32,13 @@ class DownloadAssestFromS3ToLocalStorageJob extends Job
 
         $allFiles = Storage::disk('s3')->allFiles($this->tenantName.'/assets/scss');
 
-        foreach ($allFiles as $key => $file) {            
-            $sourcePath = str_replace($this->tenantName, '', $file);            
-            if(Storage::disk('local')->exists($file)){
+        foreach ($allFiles as $key => $file) {
+            $sourcePath = str_replace($this->tenantName, '', $file);
+            if (Storage::disk('local')->exists($file)) {
                 // Delete existing one
                 Storage::disk('local')->delete($file);
             }
             Storage::disk('local')->put($file, Storage::disk('s3')->get($file));
-        }        
+        }
     }
 }

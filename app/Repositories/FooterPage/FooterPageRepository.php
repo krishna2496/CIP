@@ -6,6 +6,7 @@ use Illuminate\Http\{Request, Response};
 use App\Models\{FooterPage, FooterPagesLanguage};
 use App\Helpers\{Helpers, LanguageHelper};
 use DB;
+use Illuminate\Support\Collection;
 
 class FooterPageRepository implements FooterPageInterface
 {
@@ -140,7 +141,6 @@ class FooterPageRepository implements FooterPageInterface
 		return $pageQuery->paginate(config('constants.PER_PAGE_LIMIT'));
     }
 	
-    
 	/**
      * Remove the specified resource from storage.
      *
@@ -150,5 +150,17 @@ class FooterPageRepository implements FooterPageInterface
     public function delete(int $id) 
 	{
 		return $this->page->deleteFooterPage($id);
+	}
+
+	public function getPageList() : Collection
+	{
+		return $this->page->with(['pages:page_id,language_id,title'])->get();
+	}
+	public function getPageDetailList() {
+		return $this->page->with(['pages:page_id,language_id,title,description as sections'])->get();
+	}
+	public function getPageDetail($slug)
+	{
+		return $this->page->with(['pages:page_id,language_id,title,description as sections'])->whereSlug($slug)->first();
 	}
 }

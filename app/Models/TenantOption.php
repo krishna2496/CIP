@@ -29,5 +29,11 @@ class TenantOption extends Model
         $styleData['option_name'] = $colorData['option_name'];
         $tenantOption = static::updateOrCreate($styleData);
         return $tenantOption->update(['option_value' => $colorData['option_value']]);
+    
+    }
+
+    public function getOptionValueAttribute($value)
+    {
+        return (@unserialize($value) === false) ? $value : unserialize($value);
     }
 }

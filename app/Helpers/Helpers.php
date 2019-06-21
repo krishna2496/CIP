@@ -2,6 +2,7 @@
 namespace App\Helpers;
 
 use Illuminate\Http\Request;
+use DB;
 
 class Helpers
 {
@@ -73,5 +74,25 @@ class Helpers
                 $sortOrder++;
             }
         }
+    }
+
+    /**
+     * It will retrive tenant details from tenant table
+     *
+     * @param array $array
+     * @param Illuminate\Http\Request $request
+     */
+    public static function getTenantDetail(Request $request)
+    {
+        // Connect master database to get language details
+        DatabaseHelper::switchDatabaseConnection('mysql', $request);
+
+        $tenantName = Self::getSubDomainFromRequest($request);
+        $tenant = DB::table('tenant')->where('name', $tenantName)->first();
+
+        // Connect tenant database
+        DatabaseHelper::switchDatabaseConnection('tenant', $request);
+                
+        return $tenant;
     }
 }

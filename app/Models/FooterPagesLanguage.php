@@ -35,7 +35,7 @@ class FooterPagesLanguage extends Model
      *
      * @var array
      */
-    protected $visible = ['language_id', 'title', 'description'];
+    protected $visible = ['page_id', 'language_id', 'title', 'description', 'sections'];
 	
 	/**
 	 * Define an inverse one-to-one or many relationship.
@@ -68,4 +68,16 @@ class FooterPagesLanguage extends Model
     {
         return unserialize($value);
     }
+
+    /**
+	 * Get an attribute from the model.
+	 *
+	 * @param  string  $value
+	 * @return mixed
+	 */
+    public function getSectionsAttribute($value)
+    {
+        return unserialize($value);
+    }
+    
 }

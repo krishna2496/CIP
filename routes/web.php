@@ -39,10 +39,12 @@ $router->group(['middleware' => 'localization'], function ($router) {
     $router->put('/password_reset', ['middleware' => 'localization|tenant.connection','uses' => 'App\Auth\AuthController@passwordReset']);
 
     /* CMS footer pages  */
-    $router->get('/cms/listing', ['middleware' => 'localization|tenant.connection','uses' => 'App\Cms\CmsController@index']);
-    $router->get('/cms/detail', ['middleware' => 'localization|tenant.connection','uses' => 'App\Cms\CmsController@cmsList']);
-    $router->get('/cms/{pageId}', ['middleware' => 'localization|tenant.connection','uses' => 'App\Cms\CmsController@show']);
-
+    $router->get('/cms/listing', ['middleware' => 'localization|tenant.connection','uses' => 'App\FooterPage\FooterPageController@index']);
+    $router->get('/cms/detail', ['middleware' => 'localization|tenant.connection','uses' => 'App\FooterPage\FooterPageController@cmsList']);
+    $router->get('/cms/{pageId}', ['middleware' => 'localization|tenant.connection','uses' => 'App\FooterPage\FooterPageController@show']);
+    
+    /* Get custom css url  */
+    $router->get('custom_css', ['middleware' => 'tenant.connection','uses' => 'App\Tenant\TenantOptionController@getCustomCss']);
     /* Get custom field data  */
     $router->get('/custom_field/', ['middleware' => 'localization|tenant.connection','uses' => 'App\USer\UserCustomFieldController@index']);
 });
@@ -74,11 +76,11 @@ $router->group(['prefix' => 'users', 'middleware' => 'localization|auth.tenant.a
 $router->post('/create_slider', ['middleware' => 'localization|auth.tenant.admin', 'uses' => 'Admin\Tenant\TenantOptionsController@storeSlider']);
 
 /* Set Footer Page data for tenant specific */
-$router->group(['prefix' => 'cms', 'middleware' => 'localization|auth.tenant.admin'], function($router){
-	$router->get('/', ['uses' => 'Admin\FooterPage\FooterPageController@index']);
-	$router->post('/', ['uses' => 'Admin\FooterPage\FooterPageController@store']);
-	$router->patch('/{pageId}', ['uses' => 'Admin\FooterPage\FooterPageController@update']);
-	$router->delete('/{pageId}', ['uses' => 'Admin\FooterPage\FooterPageController@destroy']);
+$router->group(['prefix' => 'cms', 'middleware' => 'localization|auth.tenant.admin'], function ($router) {
+    $router->get('/', ['uses' => 'Admin\FooterPage\FooterPageController@index']);
+    $router->post('/', ['uses' => 'Admin\FooterPage\FooterPageController@store']);
+    $router->patch('/{pageId}', ['uses' => 'Admin\FooterPage\FooterPageController@update']);
+    $router->delete('/{pageId}', ['uses' => 'Admin\FooterPage\FooterPageController@destroy']);
 });
 
 /* Set custom field data for tenant specific */

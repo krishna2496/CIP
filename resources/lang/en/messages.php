@@ -27,6 +27,7 @@ return [
 		'MESSAGE_CUSTOM_STYLE_RESET_SUCCESS' => 'Custom styling reset successfully',
 		'MESSAGE_CUSTOM_FIELD_LISTING' => 'User custom field listing successfully',
 		'MESSAGE_USER_UPDATED' => 'User updated successfully',
+		'MESSAGE_CMS_LIST_SUCCESS' => 'CMS page listing successfully'
 	],
 	
 	/**
@@ -34,7 +35,7 @@ return [
 	*/
 	'status_code' => [
 		'HTTP_STATUS_BAD_REQUEST' => '400',
-		'HTTP_STATUS_401' => '401',
+		'HTTP_STATUS_UNAUTHORIZED' => '401',
 		'HTTP_STATUS_FORBIDDEN' => '403',
 		'HTTP_STATUS_NOT_FOUND' => '404',
 		'HTTP_STATUS_UNPROCESSABLE_ENTITY' => '422',
@@ -82,6 +83,7 @@ return [
 		'ERROR_40016' => '40016',
 		'ERROR_40018' => '40018',
 		'ERROR_40020' => '40020',
+		'ERROR_40022' => '40022',
 		
 		// Error codes from 2000-
 		'ERROR_20002' => '20002',
@@ -120,6 +122,9 @@ return [
 		'ERROR_300002' => '300002',
 		'ERROR_300003' => '300003',
 		'ERROR_300004' => '300004',
+
+		// Custom error code for Tenant Module - 400000 - 409999
+		'ERROR_400000' => '400000',
 		
 	],
 	
@@ -141,12 +146,13 @@ return [
 		
 		
 		// Error codes from 2000-
-                '40012' => 'Token not provided',
+        '40012' => 'Token not provided',
 		'40014' => 'Provided token is expired',
 		'40016' => 'An error while decoding token',
 		'40018' => 'Database operational error',
 		'40020' => 'Sorry, you cannot add more than '.config('constants.SLIDER_LIMIT').' sliders!',
-	
+		'40022' => 'Unable to upload slider image',
+
 		// Error codes from 2000- Tenant Admin
 		'20002' => 'This email address is already taken, Please try with different email address',
 		'20004' => 'Error while inserting data to database',
@@ -184,5 +190,8 @@ return [
 		'300003' => 'Invalid translation data, please check input parameters',
 		'300004' => 'Page creation faild. Invalid input data for sections',
 		'300005' => 'Requested page does not exist',
+
+		// Custom error code for Tenant Module - 400000 - 409999
+		'400000' => 'Tenant domain does not found'
 	]
 ];
