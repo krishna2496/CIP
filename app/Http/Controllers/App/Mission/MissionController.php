@@ -42,7 +42,7 @@ class MissionController extends Controller
             
             $apiData = $missions;
             $apiStatus = app('Illuminate\Http\Response')->status();
-            $apiMessage = trans('messages.success.MESSAGE_MISSION_LIST_SUCCESS');
+            $apiMessage = trans('messages.success.MESSAGE_MISSION_LISTING');
             return ResponseHelper::successWithPagination($apiStatus, $apiMessage,$apiData);
 
         } catch (PDOException $e) {
@@ -67,7 +67,7 @@ class MissionController extends Controller
             
             $apiData = $missions;
             $apiStatus = app('Illuminate\Http\Response')->status();
-            $apiMessage = trans('messages.success.MESSAGE_MISSION_LIST_SUCCESS');
+            $apiMessage = trans('messages.success.MESSAGE_MISSION_LISTING');
             return ResponseHelper::successWithPagination($apiStatus, $apiMessage,$apiData);
 
         } catch (PDOException $e) {

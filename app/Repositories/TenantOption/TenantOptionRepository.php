@@ -72,7 +72,6 @@ class TenantOptionRepository implements TenantOptionInterface
 
     public function getOptionWithCondition(array $conditions = [])
     {
-        // dd($conditions);
         $optionQuery = $this->tenantOption;
 
         if (!empty($conditions)) {

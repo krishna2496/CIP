@@ -31,10 +31,10 @@ return [
 		'MESSAGE_CUSTOM_FIELD_LISTING' => 'User custom field listing successfully',
 		'MESSAGE_USER_UPDATED' => 'User updated successfully',
 		'MESSAGE_CMS_LIST_SUCCESS' => 'CMS page listing successfully',
-		'MESSAGE_MISSION_ADD_SUCCESS' => 'Mission created successfully',
-        'MESSAGE_MISSION_UPDATE_SUCCESS' => 'Mission updated successfully',
-        'MESSAGE_MISSION_DELETE_SUCCESS' => 'Mission deleted successfully',
-        'MESSAGE_MISSION_LIST_SUCCESS' => 'Mission listing successfully',
+		'MESSAGE_MISSION_ADDED' => 'Mission created successfully',
+        'MESSAGE_MISSION_UPDATED' => 'Mission updated successfully',
+        'MESSAGE_MISSION_DELETED' => 'Mission deleted successfully',
+        'MESSAGE_MISSION_LISTING' => 'Mission listing successfully',
 	],
 	
 	/**
