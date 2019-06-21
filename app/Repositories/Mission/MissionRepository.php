@@ -206,18 +206,11 @@ class MissionRepository implements MissionInterface
             $missionLanguage = array('mission_id' => $id, 
                                     'language_id' => $language->language_id, 
                                     'title' => $value['title'], 
-                                    'short_description' => (isset($value['short_description'])) ? $value['short_description'] : NULL,                                        'description' => serialize($value['section']),
+                                    'short_description' => (isset($value['short_description'])) ? $value['short_description'] : NULL,                                        
+                                    'description' => ($value['section']),
                                     'objective' => $value['objective']);
 
-            $languageData = $this->missionLanguage->where('mission_id', $id)
-                                    ->where('language_id', $language->language_id)
-                                    ->count();
-            if ($languageData > 0)
-                $this->missionLanguage->where('mission_id', $id)
-                                      ->where('language_id', $language->language_id)
-                                      ->update($missionLanguage);
-            else
-                $this->missionLanguage->create($missionLanguage);
+            $this->missionLanguage->createOrUpdateLanguage(['mission_id' => $id, 'language_id' => $language->language_id], $missionLanguage);
                 
             unset($missionLanguage);
         }
@@ -241,16 +234,7 @@ class MissionRepository implements MissionInterface
                                   'media_path' => $filePath,
                                   'default' => $default);
             
-            $mediaData = $this->missionMedia->where('mission_id', $id)
-                                    ->where('mission_media_id', $value['media_id'])
-                                    ->count();
-            if (!empty($mediaData))
-                $this->missionMedia->where('mission_id', $id)
-                                    ->where('mission_media_id', $value['media_id'])
-                                    ->update($missionMedia);
-            else
-                $this->missionMedia->create($missionMedia);
-
+            $this->missionMedia->createOrUpdateMedia(['mission_id' => $id, 'mission_media_id' => $value['media_id']], $missionMedia);
             unset($missionMedia);
         }
 
@@ -269,16 +253,8 @@ class MissionRepository implements MissionInterface
                                   'media_name' => $value['media_name'], 
                                   'media_type' => pathinfo($value['media_name'], PATHINFO_EXTENSION),
                                   'media_path' => $value['media_path']);
-            $mediaData = $this->missionMedia->where('mission_id', $id)
-                                    ->where('mission_media_id', $value['media_id'])
-                                    ->count();
-            if ($mediaData > 0)
-                $this->missionMedia->where('mission_id', $id)
-                                    ->where('mission_media_id', $value['media_id'])
-                                    ->update($missionMedia);
-            else
-                $this->missionMedia->create($missionMedia);
 
+            $this->missionMedia->createOrUpdateMedia(['mission_id' => $id, 'mission_media_id' => $value['media_id']], $missionMedia);
             unset($missionMedia);
         }
 
@@ -292,16 +268,8 @@ class MissionRepository implements MissionInterface
                 $filePath = Helpers::uploadFileOnS3Bucket($value['document_path'], $tenantName); 
                 $missionDocument['document_path'] = $filePath;
             }
-
-            $documentData = $this->missionDocument->where('mission_id', $id)
-                ->where('mission_document_id', $value['document_id'])
-                ->count();
-            if ($documentData > 0)
-                $this->missionDocument->where('mission_id', $id)
-                ->where('mission_document_id', $value['document_id'])
-                ->update($missionDocument);
-            else
-                $this->missionDocument->create($missionDocument);
+            
+            $this->missionDocument->createOrUpdateDocument(['mission_id' => $id, 'mission_document_id' => $value['document_id']], $missionDocument);
             unset($missionDocument);
         }
         return $mission;

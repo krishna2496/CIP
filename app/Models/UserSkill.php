@@ -38,7 +38,7 @@ class UserSkill extends Model
     protected $fillable = ['user_id', 'skill_id'];
 
     /**
-     * Find the specified resource.
+     * Store/update specified resource.
      *
      * @param  int  $user_id
      * @param  int  $skill_id

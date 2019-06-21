@@ -187,6 +187,7 @@ class MissionController extends Controller
         } catch (PDOException $e) {
             throw new PDOException($e->getMessage());
         } catch (\Exception $e) {
+            dd($e);
             throw new \Exception($e->getMessage());
         }
     }

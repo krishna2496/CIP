@@ -69,4 +69,16 @@ class MissionLanguage extends Model
     {
         return unserialize($value);
     }
+
+    /**
+     * Store/update specified resource.
+     *
+     * @param  array $condition
+     * @param  array $data
+     * @return array
+     */
+    public function createOrUpdateLanguage(array $condition, array $data)
+    {
+        return static::updateOrCreate($condition, $data);
+    }
 }

@@ -128,9 +128,4 @@ class Mission extends Model
     {
        return $this->city()->select('name')->first()->name;        
     }
-
-    /*public function getStartDateAttribute($value)
-    {
-        return Carbon::parse($value)->format(config("constants.FRONT_DATE_FORMAT"));
-    }*/
 }
