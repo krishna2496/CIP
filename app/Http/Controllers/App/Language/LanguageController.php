@@ -18,16 +18,15 @@ class LanguageController extends Controller
     public function fetchLangaugeFile($language) 
     {
         $response = array ();
-        $frontEndFolder = config('constants.FRONTEND_LANGUAGE_FOLDER');
-        $file_path = realpath(resource_path(). '\lang\\'.$language."\\".$frontEndFolder."\\".$language.".json");
-       
-        if (!$file_path) {
+        $frontEndFolder = config('constants.FRONTEND_LANGUAGE_FOLDER');        
+		$filePath = realpath(resource_path(). '/lang/'.$language."/".$frontEndFolder."/".$language.".json");
+	    if (!$filePath) {
            $language = strtolower(config('constants.DEFAULT_LANGUAGE'));
-           $file_path = realpath(resource_path(). '\lang\\'.$language."\\".$frontEndFolder."\\".$language.".json");
+           $filePath = realpath(resource_path(). '/lang/'.$language."/".$frontEndFolder."/".$language.".json");
         } 
 
         $response['locale'] = $language;
-        $response['data'] = json_decode(file_get_contents($file_path), true);
+        $response['data'] = json_decode(file_get_contents($filePath), true);
         return $response;
     }
 
