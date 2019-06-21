@@ -36,7 +36,7 @@ class FooterPage extends Model
      *
      * @var array
      */
-	protected $visible = ['page_id', 'status', 'slug', 'pageTranslations'];
+	protected $visible = ['page_id', 'status', 'slug', 'sections', 'pageTranslations', 'pages'];
 	
 	/**
      * Return the page's translations
@@ -55,6 +55,11 @@ class FooterPage extends Model
     public function deleteFooterPage(int $id)
     {
         return static::findOrFail($id)->delete();
+    }
+
+    public function pages()
+    {
+         return $this->hasMany(FooterPagesLanguage::class, 'page_id', 'page_id');
     }
 
 }

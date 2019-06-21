@@ -21,7 +21,7 @@ class DatabaseHelper
     public static function switchDatabaseConnection(string $connection, Request $request)
     {
         try {
-            $domain == Helpers::getSubDomainFromRequest($request);
+            $domain = Helpers::getSubDomainFromRequest($request);
             // Set master connection
             $pdo = DB::connection('mysql')->getPdo();
             Config::set('database.default', 'mysql');

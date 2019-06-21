@@ -6,6 +6,7 @@ use App\Helpers\{ResponseHelpers, DatabaseHelper};
 use Closure, DB;
 use Firebase\JWT\JWT;
 use Firebase\JWT\ExpiredException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class TenantConnectionMiddleware
 {
@@ -41,12 +42,7 @@ class TenantConnectionMiddleware
         if ($domain !== env('APP_DOMAIN')) {
             $tenant = DB::table('tenant')->select('tenant_id')->where('name', $domain)->whereNull('deleted_at')->first();
             if (!$tenant) {
-                return ResponseHelpers::error(
-                    trans('messages.status_code.HTTP_STATUS_FORBIDDEN'),
-                    trans('messages.status_type.HTTP_STATUS_TYPE_403'),
-                    trans('messages.custom_error_code.ERROR_40008'),
-                    trans('messages.custom_error_message.40008')
-                );
+                throw new ModelNotFoundException(trans('messages.custom_error_message.400000'));
             }
             DatabaseHelper::createConnection($tenant->tenant_id);
         }

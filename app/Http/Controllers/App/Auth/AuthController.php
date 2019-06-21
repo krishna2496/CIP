@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\App\Auth;
 
-use Validator;
+use Validator, DB;
 use App\User;
 use Firebase\JWT\JWT;
 use Illuminate\Http\{Request, Response};
@@ -13,10 +13,9 @@ use Illuminate\Auth\Passwords\PasswordBrokerManager;
 use Illuminate\Support\Facades\Password;
 use App\Http\Controllers\Config;
 use App\Helpers\{Helpers, ResponseHelper};
-use DB;
-use App\PasswordReset;
+use App\Models\PasswordReset;
 use Carbon\Carbon;
-use App\Http\Controllers\App\Tenant\TenantOptionController;
+use App\Repositories\TenantOption\TenantOptionRepository;
 
 class AuthController extends Controller {
 
@@ -35,14 +34,22 @@ class AuthController extends Controller {
     private $response;
 
     /**
+     * The response instance.
+     *
+     * @var App\Repositories\TenantOption\TenantOptionRepository
+     */
+    private $tenantOption;
+    
+    /**
      * Create a new controller instance.
      *
      * @param \Illuminate\Http\Request $request
      * @return void
      */
-    public function __construct(Request $request, Response $response) {
+    public function __construct(Request $request, Response $response, TenantOptionRepository $tenantOption) {
         $this->request = $request;
         $this->response = $response;
+        $this->tenantOption = $tenantOption;
     }
 
     /**
@@ -141,13 +148,12 @@ class AuthController extends Controller {
         
         //get referer url using helper 
         $refererUrl = Helpers::getRefererFromRequest($request);
-        dd($refererUrl);
+
         config(['app.mail_url' => $refererUrl.'/reset-password/']);
 
         //set tenant logo
-        $tenantOption = new TenantOptionController();
-        $tenantLogo = $tenantOption->getTenantLogo();
-        config(['app.tenant_logo' => $tenantLogo]);
+        $tenantLogo = $this->tenantOption->getOptionWithCondition(['option_name' => 'custom_logo']);
+        config(['app.tenant_logo' => $tenantLogo->option_value]);
        
         // Verify email address and send reset password link        
         $response = $this->broker()->sendResetLink(
@@ -187,9 +193,9 @@ class AuthController extends Controller {
         ]);
         
         if ($validator->fails()) {
-            return Helpers::errorResponse(trans('api_error_messages.status_code.HTTP_STATUS_422'), 
-                                        trans('api_error_messages.status_type.HTTP_STATUS_TYPE_422'), 
-                                        trans('api_error_messages.custom_error_code.ERROR_40011'), 
+            return ResponseHelper::error(trans('messages.status_code.HTTP_STATUS_UNPROCESSABLE_ENTITY'), 
+                                        trans('messages.status_type.HTTP_STATUS_TYPE_422'), 
+                                        trans('messages.custom_error_code.ERROR_40011'), 
                                         $validator->errors()->first());
         }
  
@@ -198,18 +204,18 @@ class AuthController extends Controller {
        
         //if record not found
         if(!$record){
-            return Helpers::errorResponse(trans('api_error_messages.status_code.HTTP_STATUS_422'), 
-                                        trans('api_error_messages.status_type.HTTP_STATUS_TYPE_422'), 
-                                        trans('api_error_messages.custom_error_code.ERROR_40013'), 
-                                        trans('api_error_messages.custom_error_message.40013'));
+            return ResponseHelper::error(trans('messages.status_code.HTTP_STATUS_UNPROCESSABLE_ENTITY'), 
+                                        trans('messages.status_type.HTTP_STATUS_TYPE_422'), 
+                                        trans('messages.custom_error_code.ERROR_40013'), 
+                                        trans('messages.custom_error_message.40013'));
         }
 
         if(!Hash::check($request->get('token'), $record->token)){
             //invalid hash
-            return Helpers::errorResponse(trans('api_error_messages.status_code.HTTP_STATUS_401'), 
-                                        trans('api_error_messages.status_type.HTTP_STATUS_TYPE_401'), 
-                                        trans('api_error_messages.custom_error_code.ERROR_40013'), 
-                                        trans('api_error_messages.custom_error_message.40013'));
+            return ResponseHelper::error(trans('messages.status_code.HTTP_STATUS_401'), 
+                                        trans('messages.status_type.HTTP_STATUS_TYPE_401'), 
+                                        trans('messages.custom_error_code.ERROR_40013'), 
+                                        trans('messages.custom_error_message.40013'));
         }
         
          // Reset the password
@@ -221,9 +227,9 @@ class AuthController extends Controller {
             }
         );
       
-        $apiStatus = app('Illuminate\Http\Response')->status();
-        $apiMessage = trans('api_success_messages.success_message.MESSAGE_PASSWORD_CHANGE_SUCCESS');
-        return Helpers::response($apiStatus, $apiMessage);
+        $apiStatus = $this->response->status();
+        $apiMessage = trans('messages.success.MESSAGE_PASSWORD_CHANGE_SUCCESS');
+        return ResponseHelper::success($apiStatus, $apiMessage);
     }
 
     /**

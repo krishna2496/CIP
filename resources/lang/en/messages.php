@@ -27,6 +27,7 @@ return [
 		'MESSAGE_CUSTOM_STYLE_RESET_SUCCESS' => 'Custom styling reset successfully',
 		'MESSAGE_CUSTOM_FIELD_LISTING' => 'User custom field listing successfully',
 		'MESSAGE_USER_UPDATED' => 'User updated successfully',
+		'MESSAGE_CMS_LIST_SUCCESS' => 'CMS page listing successfully'
 	],
 	
 	/**
@@ -121,6 +122,9 @@ return [
 		'ERROR_300002' => '300002',
 		'ERROR_300003' => '300003',
 		'ERROR_300004' => '300004',
+
+		// Custom error code for Tenant Module - 400000 - 409999
+		'ERROR_400000' => '400000',
 		
 	],
 	
@@ -186,5 +190,8 @@ return [
 		'300003' => 'Invalid translation data, please check input parameters',
 		'300004' => 'Page creation faild. Invalid input data for sections',
 		'300005' => 'Requested page does not exist',
+
+		// Custom error code for Tenant Module - 400000 - 409999
+		'400000' => 'Tenant domain does not found'
 	]
 ];

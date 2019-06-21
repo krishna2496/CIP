@@ -53,10 +53,33 @@ class TenantOptionRepository implements TenantOptionInterface
      * Store tenant slider data.
      *
      * @param  array $data
-     * @return void
+     * @return App\Models\TenantOption
      */
     public function storeSlider(array $data)
     {
         return $this->tenantOption->create($data);
+    }
+
+    /**
+     * Store tenant option data
+     *     
+     * @return Illuminate\Support\Collection 
+     */
+    public function getOptions()
+    {
+        return $this->tenantOption->get(['option_name', 'option_value']);
+    }
+
+    public function getOptionWithCondition(array $conditions = [])
+    {
+        // dd($conditions);
+        $optionQuery = $this->tenantOption;
+
+        if (!empty($conditions)) {
+            foreach ($conditions as $column => $value){
+                $optionQuery = $optionQuery->where($column, $value);                
+            }
+        }        
+        return $optionQuery->first();
     }
 }
