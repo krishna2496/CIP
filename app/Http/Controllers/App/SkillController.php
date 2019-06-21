@@ -4,11 +4,8 @@ namespace App\Http\Controllers\App;
 use App\Http\Controllers\Controller;
 use App\Repositories\Skill\SkillRepository;
 use Illuminate\Http\{Request, Response, JsonResponse};
-use Illuminate\Support\Facades\Input;
-use Validator, DB, PDOException;
+use PDOException;
 use App\Helpers\ResponseHelper;
-use Illuminate\Validation\Rule;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class SkillController extends Controller
 {
@@ -26,6 +23,8 @@ class SkillController extends Controller
     /**
      * Create a new controller instance.
      *
+     * @param App\Repositories\Skill\SkillRepository $skill
+     * @param Illuminate\Http\Response $response
      * @return void
      */
     public function __construct(SkillRepository $skill, Response $response)
@@ -40,19 +39,17 @@ class SkillController extends Controller
      * @param Illuminate\Http\Request $request
      * @return mixed
      */
-    public function index(Request $request)
-    {
-       
+    public function index(Request $request): JsonResponse
+    {       
         try {
-
             $skillArray = [];
             $local = ($request->hasHeader('X-localization')) ? $request->header('X-localization') : 
                         env('TENANT_DEFAULT_LANGUAGE_CODE'); 
 
             $skill = $this->skill->skillList($request);
-
-            if ($skill) {
-                foreach ($skill as $key => $value) {    
+            $skillData = $skill->toArray();
+            if ($skillData) {
+                foreach ($skillData as $key => $value) {    
                     $key = array_search($local, array_column($value['translations'], 'lang')); 
                     $skillArray[$value["skill_id"]] = $value["translations"][$key]["title"];    
                 }
@@ -63,8 +60,6 @@ class SkillController extends Controller
             return ResponseHelper::success($apiStatus, $apiMessage, $skillArray);                  
         } catch (PDOException $e) {
             throw new PDOException($e->getMessage());
-        } catch (\InvalidArgumentException $e) {
-            throw new \InvalidArgumentException($e->getMessage());
         } catch (\Exception $e) {
             throw new \Exception($e->getMessage());
         }

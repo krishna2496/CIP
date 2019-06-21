@@ -28,7 +28,7 @@ class Skill extends Model
      *
      * @var array
      */
-    protected $visible = ['skill_id', 'skill_name'];
+    protected $visible = ['skill_id', 'skill_name', 'translations'];
 
     /**
      * The attributes that are mass assignable.

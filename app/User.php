@@ -124,7 +124,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     /**
      * Defined has one relation for the user_skill table.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function userSkills()
     {

@@ -35,6 +35,11 @@ return [
         'MESSAGE_MISSION_UPDATED' => 'FR: Mission updated successfully',
         'MESSAGE_MISSION_DELETED' => 'FR: Mission deleted successfully',
         'MESSAGE_MISSION_LISTING' => 'FR: Mission listing successfully',
+        'MESSAGE_MISSION_LISTING' => 'Mission listing successfully',
+        'MESSAGE_SKILL_LISTING' => 'Skill listing successfully',
+        'MESSAGE_THEME_LISTING' => 'Mission theme listing successfully',
+        'MESSAGE_CITY_LISTING' => 'City listing successfully',
+        'MESSAGE_COUNTRY_LISTING' => 'Country listing successfully',
     ],
     
     /**

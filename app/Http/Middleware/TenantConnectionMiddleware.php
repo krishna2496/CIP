@@ -2,7 +2,7 @@
 namespace App\Http\Middleware;
 
 use Illuminate\Support\Facades\Config;
-use App\Helpers\{ResponseHelpers, DatabaseHelper};
+use App\Helpers\{ResponseHelper, DatabaseHelper};
 use Closure, DB;
 use Firebase\JWT\JWT;
 use Firebase\JWT\ExpiredException;

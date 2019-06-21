@@ -268,15 +268,17 @@ class UserController extends Controller
      */
     public function userSkills(int $userId)
     {
-         try {            
-            $skillList = $this->user->userSkills($user_id);
+        try {            
+            $skillList = $this->user->userSkills($userId);
 
             // Set response data
             $apiData = (count($skillList) > 0) ? $skillList->toArray() : [];
             $responseMessage = (count($skillList) > 0) ? trans('messages.success.MESSAGE_USER_LISTING') : trans('messages.success.MESSAGE_NO_RECORD_FOUND');
             return ResponseHelper::success($this->response->status(), $responseMessage, $apiData);
+        } catch (ModelNotFoundException $e) {
+            throw new ModelNotFoundException(trans('messages.custom_error_message.100011'));
         } catch (\Exception $e) {
             throw new \Exception($e->getMessage());
-        }
+        } 
     }
 }

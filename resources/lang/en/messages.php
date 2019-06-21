@@ -35,6 +35,11 @@ return [
         'MESSAGE_MISSION_UPDATED' => 'Mission updated successfully',
         'MESSAGE_MISSION_DELETED' => 'Mission deleted successfully',
         'MESSAGE_MISSION_LISTING' => 'Mission listing successfully',
+        'MESSAGE_SKILL_LISTING' => 'Skill listing successfully',
+        'MESSAGE_THEME_LISTING' => 'Mission theme listing successfully',
+        'MESSAGE_CITY_LISTING' => 'City listing successfully',
+		'MESSAGE_COUNTRY_LISTING' => 'Country listing successfully',
+
 	],
 	
 	/**
@@ -197,6 +202,7 @@ return [
 		'100003' => 'Custom field creation failed. Please check input parameters',
 		'100004' => 'Requested user custom field does not exist',
 		'100010' => 'User creation failed. Please check input parameters',
+		'100011' => 'Requested skills for user does not exist',
 		
 		// Custom error code for CMS Module - 300000 - 309999
 		'300000' => 'Page creation failed. Please check input parameters',

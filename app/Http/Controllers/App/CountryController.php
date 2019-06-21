@@ -5,10 +5,8 @@ use App\Http\Controllers\Controller;
 use App\Repositories\Country\CountryRepository;
 use Illuminate\Http\{Request, Response, JsonResponse};
 use Illuminate\Support\Facades\Input;
-use Validator, DB, PDOException;
+use  PDOException;
 use App\Helpers\ResponseHelper;
-use Illuminate\Validation\Rule;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class CountryController extends Controller
 {
@@ -40,19 +38,18 @@ class CountryController extends Controller
      * @param Illuminate\Http\Request $request
      * @return mixed
      */
-    public function index(Request $request)
+    public function index(Request $request):JsonResponse
     {
        
         try { 
             $country = $this->country->countryList($request);
+            $countryData = $country->toArray();
             // Set response data
             $apiStatus = $this->response->status();
-            $apiMessage = (empty($country)) ? trans('messages.success.MESSAGE_NO_RECORD_FOUND') : trans('messages.success.MESSAGE_COUNTRY_LISTING');
-            return ResponseHelper::success($apiStatus, $apiMessage, $country);                  
+            $apiMessage = (empty($countryData)) ? trans('messages.success.MESSAGE_NO_RECORD_FOUND') : trans('messages.success.MESSAGE_COUNTRY_LISTING');
+            return ResponseHelper::success($apiStatus, $apiMessage, $countryData);                  
         } catch (PDOException $e) {
             throw new PDOException($e->getMessage());
-        } catch (\InvalidArgumentException $e) { 
-            throw new \InvalidArgumentException($e->getMessage());
         } catch (\Exception $e) {
             throw new \Exception($e->getMessage());
         }

@@ -50,6 +50,19 @@ $router->group(['middleware' => 'localization'], function ($router) {
 
     /* Get mission listing  */
     $router->get('/app/missions/', ['middleware' => 'localization|tenant.connection|jwt.auth','uses' => 'App\Mission\MissionController@appMissionList']);
+
+    /* Get country list  */
+    $router->get('/country', ['middleware' => 'tenant.connection','uses' => 'App\CountryController@index']);
+
+    /* Get city list  */
+    $router->get('/city', ['middleware' => 'tenant.connection','uses' => 'App\CityController@index']);
+
+    /* Get theme list  */
+    $router->get('/theme', ['middleware' => 'tenant.connection','uses' => 'App\ThemeController@index']);
+
+    /* Get skill list  */
+    $router->get('/skill', ['middleware' => 'tenant.connection','uses' => 'App\SkillController@index']);
+
 });
 
 

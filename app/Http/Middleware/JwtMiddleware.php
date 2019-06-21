@@ -4,7 +4,7 @@ namespace App\Http\Middleware;
 use Closure;
 use Firebase\JWT\JWT;
 use App\User;
-use App\Helpers\ResponseHelpers;
+use App\Helpers\ResponseHelper;
 use Firebase\JWT\ExpiredException;
 
 class JwtMiddleware
@@ -22,19 +22,19 @@ class JwtMiddleware
      
         if (!$token) {
             // Unauthorized response if token not there
-            return ResponseHelpers::error(
+            return ResponseHelper::error(
                 trans('messages.status_code.HTTP_STATUS_UNPROCESSABLE_ENTITY'),
                 trans('messages.status_type.HTTP_STATUS_TYPE_422'),
                 trans('messages.custom_error_code.ERROR_40012'),
                 trans('messages.custom_error_message.40012')
-            );
+            ); 
         }
         try {
             $credentials = JWT::decode($token, env('JWT_SECRET'), ['HS256']);
         } catch (ExpiredException $e) {
             throw new ExpiredException();
         } catch (Exception $e) {
-            return ResponseHelpers::error(
+            return ResponseHelper::error(
                 trans('messages.status_code.HTTP_STATUS_BAD_REQUEST'),
                 trans('messages.status_type.HTTP_STATUS_TYPE_400'),
                 trans('messages.custom_error_code.ERROR_40016'),

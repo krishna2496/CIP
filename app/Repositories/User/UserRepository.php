@@ -152,6 +152,6 @@ class UserRepository implements UserInterface
      */
     public function userSkills(int $userId)
     {
-        return $this->userSkill->find($user_id);   
+        return $this->userSkill->findOrFail($userId);   
     }
 }

@@ -79,7 +79,7 @@ class UserSkill extends Model
      */
     public function find(int $userId)
     {
-        return static::with('skill')->find($user_id);
+        return static::with('skill')->find($userId);
     }
 
      

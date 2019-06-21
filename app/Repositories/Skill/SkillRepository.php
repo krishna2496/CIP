@@ -1,36 +1,36 @@
 <?php
-
 namespace App\Repositories\Skill;
 
 use App\Repositories\Skill\SkillInterface;
-use Illuminate\Http\{Request, Response};
-use PDOException;
+use Illuminate\Http\Request;
 use App\Models\Skill;
 
 class SkillRepository implements SkillInterface
 {
+	/**
+     * @var App\Models\Skill
+     */
     public $skill;
-	
-	private $response;
 
-    function __construct(Skill $skill, Response $response) {
+	/**
+     * Create a new Mission repository instance.
+     *
+     * @param  App\Models\Skill $skill
+     * @param  Illuminate\Http\Response $response
+     * @return void
+     */
+    function __construct(Skill $skill) {
 		$this->skill = $skill;
-		$this->response = $response;
     }		
 	
-	public function SkillList(Request $request) 
+	/**
+     * Display a listing of the resource.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\Response
+     */
+	public function SkillList(Request $request)
 	{
-		try {
-			$skillQuery = $this->skill->select('skill_name','skill_id','translations')->get();
-			return $skillQuery->toArray();
-		} catch(\InvalidArgumentException $e) {
-			throw new \InvalidArgumentException($e->getMessage());
-		}
+		return $this->skill->select('skill_name','skill_id','translations')->get();
 	}
-
-    public function find(int $id) 
-	{
-		return $this->country->findSkill($id);
-	}
-
 }

@@ -3,34 +3,23 @@
 namespace App\Repositories\City;
 
 use App\Repositories\City\CityInterface;
-use Illuminate\Http\{Request, Response};
-use PDOException;
+use Illuminate\Http\{Request};
 use App\Models\City;
 
 class CityRepository implements CityInterface
 {
+	/**
+	 * @var App\Models\City 
+	 */
     public $city;
-	
-	private $response;
 
-    function __construct(City $city, Response $response) {
+    function __construct(City $city) {
 		$this->city = $city;
-		$this->response = $response;
     }		
 	
 	public function CityList(Request $request) 
 	{
-		try {
-			$cityQuery = $this->city->pluck('name','city_id');
-			return $cityQuery->toArray();
-		} catch(\InvalidArgumentException $e) {
-			throw new \InvalidArgumentException($e->getMessage());
-		}
-	}
-
-    public function find(int $id) 
-	{
-		return $this->country->findCity($id);
+		return $this->city->pluck('name','city_id');
 	}
 
 }
