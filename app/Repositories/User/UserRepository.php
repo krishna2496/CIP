@@ -118,20 +118,16 @@ class UserRepository implements UserInterface
      */
     public function linkSkill(Request $request)
     {
-        $userSkill = $this->userSkill;
         foreach ($request->skills as $value) {
             $skill = array(
                 'user_id' => $request->user_id,
                 'skill_id' => $value['skill_id'],
             );
             
-            $skillData = $this->userSkill->findUserSkill($request->user_id, $value['skill_id']);
-            if (count($skillData) < 1) {
-                $userSkill = $this->userSkill->create($skill);
-            }
+			$this->userSkill->linkUserSkill($request->user_id, $value['skill_id']);
             unset($skill);
         }
-        return $userSkill;
+		return true;
     }
     
     /**
@@ -157,7 +153,6 @@ class UserRepository implements UserInterface
      */
     public function userSkills(int $userId)
     {
-        $userSkill = $this->userSkill->find($userId);
-        return $userSkill;
+        return $this->userSkill->find($user_id);   
     }
 }
