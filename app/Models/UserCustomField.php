@@ -21,10 +21,10 @@ class UserCustomField extends Model
     protected $primaryKey = 'field_id';
 
     /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
+    * The attributes that are mass assignable.
+    *
+    * @var array
+    */
     protected $fillable = ['name', 'type', 'translations', 'is_mandatory'];
     
     /**
@@ -35,21 +35,23 @@ class UserCustomField extends Model
     protected $visible = ['field_id', 'name', 'type', 'translations', 'is_mandatory'];
     
     /**
-     * Set attribute value in resource.
+     * Set translations attribute on the model.
      *
-     * @var string
+     * @param  mixed   $value
+     * @return void
      */
-    public function setTranslationsAttribute($value)
+    public function setTranslationsAttribute(array $value): void
     {
         $this->attributes['translations'] = serialize($value);
     }
     
     /**
-     * Get attribute value from resource.
+     * Get an attribute from the model.
      *
-     * @var string
+     * @param  string  $value
+     * @return array
      */
-    public function getTranslationsAttribute($value)
+    public function getTranslationsAttribute(string $value): array
     {
         return unserialize($value);
     }
@@ -58,7 +60,7 @@ class UserCustomField extends Model
      * Delete the specified resource.
      *
      * @param  int  $id
-     * @return array
+     * @return void
      */
     public function deleteCustomField(int $id)
     {

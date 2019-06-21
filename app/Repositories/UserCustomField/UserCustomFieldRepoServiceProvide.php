@@ -1,10 +1,7 @@
 <?php
-
 namespace App\Repositories\UserCustomField;
 
-
 use Illuminate\Support\ServiceProvider;
-
 
 class UserCustomFieldRepoServiceProvide extends ServiceProvider
 {
@@ -17,7 +14,6 @@ class UserCustomFieldRepoServiceProvide extends ServiceProvider
     {
         
     }
-
 
     /**
      * Register the application services.

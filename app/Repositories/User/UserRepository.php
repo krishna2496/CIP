@@ -41,57 +41,75 @@ class UserRepository implements UserInterface
     }
     
     /**
-     * Store a newly created resource into database
+     * Store a newly created resource in storage.
      *
      * @param \Illuminate\Http\Request $request
-     * @return mixed
+     * @return User
      */
-    public function store(Request $request)
+    public function store(Request $request): User
     {
-        $user = $this->user->create($request->all());
-        return $user;
+        return $this->user->create($request->all());
     }
     
-    public function update(Request $request, int $id)
+    /**
+     * Get listing of users
+     *
+     * @param Illuminate\Http\Request $request
+     * @return mixed
+     */
+    public function userList(Request $request)
+    {
+        $userQuery = $this->user->with('city', 'country', 'timezone');
+        
+        if ($request->has('search')) {
+            $userQuery->where(function ($query) use ($request) {
+                $query->orWhere('first_name', 'like', '%' . $request->input('search') . '%');
+                $query->orWhere('last_name', 'like', '%' . $request->input('search') . '%');
+            });
+        }
+        if ($request->has('order')) {
+            $orderDirection = $request->input('order', 'asc');
+            $userQuery->orderBy('user_id', $orderDirection);
+        }
+        return $userQuery->paginate(config('constants.PER_PAGE_LIMIT'));
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return User
+     */
+    public function update(Request $request, int $id): User
     {
         $user = $this->user->findOrFail($id);
         $user->update($request->toArray());
-
         return $user;
     }
     
-    public function userList(Request $request)
-    {
-        try {
-            $userQuery = $this->user->with('city', 'country', 'timezone');
-            
-            if ($request->has('search')) {
-                $userQuery->where(function ($query) use ($request) {
-                    $query->orWhere('first_name', 'like', '%' . $request->input('search') . '%');
-                    $query->orWhere('last_name', 'like', '%' . $request->input('search') . '%');
-                });
-            }
-            if ($request->has('order')) {
-                $orderDirection = $request->input('order', 'asc');
-                $userQuery->orderBy('user_id', $orderDirection);
-            }
-            
-            return $userQuery->paginate(config('constants.PER_PAGE_LIMIT'));
-        } catch (\InvalidArgumentException $e) {
-            throw new \InvalidArgumentException($e->getMessage());
-        }
-    }
-
-    public function find(int $id)
+    /**
+     * Find specified resource in storage.
+     *
+     * @param  int  $id
+     * @return User
+     */
+    public function find(int $id): User
     {
         return $this->user->findUser($id);
     }
     
+    /**
+     * Remove specified resource in storage.
+     *
+     * @param  int  $id
+     * @return mixed
+     */
     public function delete(int $id)
     {
         return $this->user->deleteUser($id);
     }
-
+    
     /**
      * Store a newly created resource into database
      *

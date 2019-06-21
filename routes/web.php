@@ -47,7 +47,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
     $router->get('/custom_field/', ['middleware' => 'localization|tenant.connection','uses' => 'App\USer\UserCustomFieldController@index']);
 
     /* Get mission listing  */
-    $router->get('/app/missions/', ['middleware' => 'localization|tenant.connection','uses' => 'App\Mission\MissionController@appMissionList']);
+    $router->get('/app/missions/', ['middleware' => 'localization|tenant.connection|jwt.auth','uses' => 'App\Mission\MissionController@appMissionList']);
 });
 
 

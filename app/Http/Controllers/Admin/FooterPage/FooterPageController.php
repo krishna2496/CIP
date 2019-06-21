@@ -22,7 +22,6 @@ class FooterPageController extends Controller
      */
 	private $response;
 	
-	
 	/**
      * Create a new controller instance.
      *

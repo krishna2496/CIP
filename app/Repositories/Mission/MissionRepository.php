@@ -385,7 +385,7 @@ class MissionRepository implements MissionInterface
                 'mission.mission_type', 'mission.goal_objective', 'mission.application_deadline', 
                 'mission.publication_status', 'mission.organisation_id', 'mission.organisation_name'
             )
-            ->with(['city', 'country','missionTheme', 'missionLanguage', 'missionMedia', 'missionDocument'])
+            ->with(['city', 'country', 'missionTheme', 'missionLanguage', 'missionMedia', 'missionDocument'])
             ->withCount('missionApplication')
             ->orderBy('mission.mission_id', 'ASC')->paginate(config('constants.LIMIT'));
 
@@ -420,22 +420,22 @@ class MissionRepository implements MissionInterface
 
         // Get data for parent table
         $mission = $this->mission->select(
-            'mission.mission_id','mission.theme_id','mission.city_id','mission.country_id',
-            'mission.start_date','mission.end_date','mission.total_seats','mission.mission_type',
-            'mission.goal_objective','mission.end_date','mission.total_seats',
-            'mission.mission_type','mission.goal_objective','mission.application_deadline',
-            'mission.publication_status','mission.organisation_id','mission.organisation_name'
-            )->with(['missionTheme','missionMedia'
+            'mission.mission_id', 'mission.theme_id', 'mission.city_id', 'mission.country_id',
+            'mission.start_date', 'mission.end_date', 'mission.total_seats', 'mission.mission_type',
+            'mission.goal_objective', 'mission.end_date', 'mission.total_seats',
+            'mission.mission_type', 'mission.goal_objective', 'mission.application_deadline',
+            'mission.publication_status', 'mission.organisation_id', 'mission.organisation_name'
+            )->with(['missionTheme', 'missionMedia'
             ])->with(['missionMedia' => function ($query) {
-                $query->where('status','1');
-                $query->where('default','1');
+                $query->where('status', '1');
+                $query->where('default', '1');
             }])
             ->with(['missionLanguage' => function ($query) use ($language_id) {
-                $query->select('mission_language_id','mission_id','title','short_description','objective')
-                ->where('language_id',$language_id);
+                $query->select('mission_language_id', 'mission_id', 'title', 'short_description', 'objective')
+                ->where('language_id', $language_id);
             }])
             ->withCount(['missionApplication as user_application_count' => function ($query) use ($request) {
-                $query->where('user_id',1)
+                $query->where('user_id', $request->auth->user_id)
                 ->where('approval_status',config("constants.application_status")["AUTOMATICALLY_APPROVED"]);      
             }])
             ->withCount(['missionApplication as mission_application_count' => function ($query) use ($request) {
@@ -446,6 +446,7 @@ class MissionRepository implements MissionInterface
 
         foreach ($mission as $key => $value) {
             
+            unset($value->city);
             if ($value->mission_type == config("constants.MISSION_TYPE['GOAL']")) {
                 //Progress bar for goal
             }

@@ -1,14 +1,11 @@
 <?php
-
 namespace App\Repositories\UserCustomField;
 
 use Illuminate\Http\Request;
 
 interface UserCustomFieldInterface {
 
-	// public function save(array $data);
-    
-    public function store(Request $request);
+	public function store(Request $request);
 	
 	public function update(Request $request, int $id);
 	

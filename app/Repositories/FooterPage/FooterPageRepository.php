@@ -20,7 +20,7 @@ class FooterPageRepository implements FooterPageInterface
 	private $footerPageLanguage;
 	
 	/**
-     * Create a new controller instance.
+     * Create a new repository instance.
      *
      * @return void
      */
