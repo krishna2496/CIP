@@ -17,7 +17,7 @@ class CreateTableUserCustomField extends Migration
         Schema::create('user_custom_field', function (Blueprint $table) {
             $table->bigIncrements('field_id')->unsigned();
             $table->text('name');
-            $table->enum('type', ['Text', 'Email','Drop-down','radio']);
+            $table->enum('type', ['text', 'email','drop-down','radio']);
             $table->text('translations');
             $table->integer('is_mandatory')->length(1)->default(1);
             $table->timestamps();
