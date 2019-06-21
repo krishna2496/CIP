@@ -75,7 +75,7 @@ class S3Helper
         try {
             $disk = Storage::disk('s3');
             // Comment $context_array and $context code before going live
-            $context_array = array('http'=>array('proxy'=>'192.168.10.5:8080','request_fulluri'=>true));
+            $context_array = array('http'=>array('proxy'=>env('AWS_WEBPROXY_HOST').":".env('AWS_WEBPROXY_PORT'),'request_fulluri'=>true));
             $context = stream_context_create($context_array);
             // Comment below line before going live
             $disk->put($tenantName.'/'.basename($url), file_get_contents($url, false, $context));

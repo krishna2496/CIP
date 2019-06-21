@@ -3,7 +3,7 @@ namespace App\Repositories\Mission;
 
 use App\Repositories\Mission\MissionInterface;
 use Illuminate\Http\{Request, Response};
-use App\Helpers\{Helpers, ResponseHelper, LanguageHelper};
+use App\Helpers\{Helpers, ResponseHelper, LanguageHelper, S3Helper};
 use App\Models\{Mission, MissionLanguage, MissionDocument, MissionMedia, MissionApplication};
 use Validator, PDOException, DB;
 use Illuminate\Support\Carbon;
@@ -112,7 +112,7 @@ class MissionRepository implements MissionInterface
         // Add mission media images
         foreach ($request->media_images as $value) {                    
             
-            $filePath = Helpers::uploadFileOnS3Bucket($value['media_path'], $tenantName);  
+            $filePath = S3Helper::uploadFileOnS3Bucket($value['media_path'], $tenantName);  
             // Check for default image in mission_media
             $default = (isset($value['default']) && ($value['default'] != '')) ? $value['default'] : '0';
             if ($default == '1') {
@@ -152,7 +152,7 @@ class MissionRepository implements MissionInterface
         // Add mission documents 
         foreach ($request->documents as $value) {                    
             
-            $filePath = Helpers::uploadFileOnS3Bucket($value['document_path'], $tenantName); 
+            $filePath = S3Helper::uploadFileOnS3Bucket($value['document_path'], $tenantName); 
             $missionDocument = array('mission_id' => $mission->mission_id, 
                                     'document_name' => $value['document_name'], 
                                     'document_type' => pathinfo($value['document_name'], PATHINFO_EXTENSION),
@@ -219,7 +219,7 @@ class MissionRepository implements MissionInterface
         // Add/Update  mission media images
         $isDefault = 0;
         foreach ($request->media_images as $value) {  
-            $filePath = Helpers::uploadFileOnS3Bucket($value['media_path'], $tenantName);  
+            $filePath = S3Helper::uploadFileOnS3Bucket($value['media_path'], $tenantName);  
             // Check for default image in mission_media
             $default = (isset($value['default']) && ($value['default'] != '')) ? $value['default'] : '0';
             if($default == '1') {
@@ -265,7 +265,7 @@ class MissionRepository implements MissionInterface
                                     'document_type' => pathinfo($value['document_name'], PATHINFO_EXTENSION)
                                   );
             if($value['document_path'] != '') {
-                $filePath = Helpers::uploadFileOnS3Bucket($value['document_path'], $tenantName); 
+                $filePath = S3Helper::uploadFileOnS3Bucket($value['document_path'], $tenantName); 
                 $missionDocument['document_path'] = $filePath;
             }
             

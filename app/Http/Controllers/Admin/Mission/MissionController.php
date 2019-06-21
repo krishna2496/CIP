@@ -44,7 +44,7 @@ class MissionController extends Controller
             // Set response data
             $apiData = $missions; 
             $apiStatus = $this->response->status();
-            $apiMessage = ($missions->isEmpty()) ? trans('messages.success.MESSAGE_NO_RECORD_FOUND') : trans('messages.success.MESSAGE_MISSION_LIST_SUCCESS');
+            $apiMessage = ($missions->isEmpty()) ? trans('messages.success.MESSAGE_NO_RECORD_FOUND') : trans('messages.success.MESSAGE_MISSION_LISTING');
             return ResponseHelper::successWithPagination($apiStatus, $apiMessage, $apiData);                  
         } catch (PDOException $e) {
             throw new PDOException($e->getMessage());
@@ -179,7 +179,7 @@ class MissionController extends Controller
             $this->mission->update($request, $id);
             // Set response data
             $apiStatus = $this->response->status();
-            $apiMessage = trans('messages.success.MESSAGE_MISSION_UPDATE_SUCCESS');
+            $apiMessage = trans('messages.success.MESSAGE_MISSION_UPDATED');
             return ResponseHelper::success($apiStatus, $apiMessage);     
 
         } catch (ModelNotFoundException $e) {
@@ -204,7 +204,7 @@ class MissionController extends Controller
             $mission = $this->mission->delete($id); 
 
             $apiStatus = trans('messages.status_code.HTTP_STATUS_NO_CONTENT');
-            $apiMessage = trans('messages.success.MESSAGE_MISSION_DELETE_SUCCESS');
+            $apiMessage = trans('messages.success.MESSAGE_MISSION_DELETED');
             return ResponseHelper::success($apiStatus, $apiMessage);            
         } catch(\Exception $e){ 
             return ResponseHelper::error(
