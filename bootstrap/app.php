@@ -28,6 +28,8 @@ $app->configure('app');
 $app->configure('database');
 $app->configure('errors');
 $app->configure('messages');
+$app->configure('constants'); //constant file config
+$app->configure('filesystems');
 
 $app->register(Flipbox\LumenGenerator\LumenGeneratorServiceProvider::class);
 
@@ -86,6 +88,7 @@ $app->routeMiddleware([
 $app->register(App\Providers\AppServiceProvider::class);
 // $app->register(App\Providers\AuthServiceProvider::class);
 // $app->register(App\Providers\EventServiceProvider::class);
+// $app->register(Urameshibr\Providers\FormRequestServiceProvider::class);
 
 /*
 |--------------------------------------------------------------------------
