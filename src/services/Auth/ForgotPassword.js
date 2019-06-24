@@ -5,13 +5,16 @@ export default async(data) => {
     // Forgot Password API call with params email address
     let responseData = {}
     responseData.error = false;
-
+    defaultLanguage = '';
+    if (store.state.defaultLanguage !== null) {
+        defaultLanguage = (store.state.defaultLanguage).toLowerCase();
+    }
     await axios({
             url: process.env.VUE_APP_API_ENDPOINT + "request_password_reset",
             data,
             method: 'post',
             headers: {
-                'X-localization': (store.state.defaultLanguage).toLowerCase()
+                'X-localization': defaultLanguage
             }
         }).then(response => {
             responseData.message = response.data.message;

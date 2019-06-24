@@ -5,12 +5,16 @@ export default async(data) => {
     // login api call with params email address and password
     let responseData = {}
     responseData.error = false;
+    defaultLanguage = '';
+    if (store.state.defaultLanguage !== null) {
+        defaultLanguage = (store.state.defaultLanguage).toLowerCase();
+    }
     await axios({
             url: process.env.VUE_APP_API_ENDPOINT + "login",
             data,
             method: 'post',
             headers: {
-                'X-localization': (store.state.defaultLanguage).toLowerCase()
+                'X-localization': defaultLanguage
             }
         }).then((response) => {
             //Store login data in local storage

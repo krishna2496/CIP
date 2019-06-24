@@ -3,11 +3,15 @@ import store from '../store'
 
 export default async() => {
     let responseData;
+    defaultLanguage = '';
+    if (store.state.defaultLanguage !== null) {
+        defaultLanguage = (store.state.defaultLanguage).toLowerCase();
+    }
     await axios({
             url: process.env.VUE_APP_API_ENDPOINT + "theme",
             method: 'get',
             headers: {
-                'X-localization': (store.state.defaultLanguage).toLowerCase(),
+                'X-localization': defaultLanguage,
                 'token': store.state.token,
             }
         })
