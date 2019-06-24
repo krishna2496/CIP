@@ -4,18 +4,19 @@ import axios from 'axios'
 export default async(langList,defautLang) => {
     let responseData = {}
     responseData.error = false;
+    defautLang = "en";
     await axios.get(process.env.VUE_APP_API_ENDPOINT + "connect")
         .then((response) => {
             if (response.data.data) {
                 let data = response.data.data;
                 // Store slider in Local Storage
-                if (data.slider) {
+                if (data.sliders) {
                     // Convert slider object to array
-                    let listOfSliderObjects = Object.keys(data.slider).map((key) => {
-                        return data.slider[key]
+                    let listOfSliderObjects = Object.keys(data.sliders).map((key) => {
+                        return data.sliders[key]
                     })
 
-                    store.commit('setSlider', JSON.stringify(data.slider))
+                    store.commit('setSlider', JSON.stringify(data.sliders))
                 } else {
                     var sliderData = [];
                     store.commit('setSlider', JSON.stringify(sliderData))
@@ -75,6 +76,13 @@ export default async(langList,defautLang) => {
                 localStorage.removeItem('defaultLanguage');
                 localStorage.removeItem('defaultLanguageId');
                 localStorage.removeItem('logo');
+                let listOfObjects = {};
+                store.commit('setLanguageList', JSON.stringify(listOfObjects))
+                defaultLanguageData["selectedVal"] = defautLang;
+                defaultLanguageData["selectedId"] = "";
+                store.commit('setDefaultLanguage', defaultLanguageData)
+                var logo = '';
+                store.commit('setLogo', logo)
                 var sliderData = [];
                 store.commit('setSlider', JSON.stringify(sliderData))
             }

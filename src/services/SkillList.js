@@ -3,7 +3,7 @@ import store from '../store'
 
 export default async() => {
     let responseData;
-    defaultLanguage = '';
+    var defaultLanguage = '';
     if (store.state.defaultLanguage !== null) {
         defaultLanguage = (store.state.defaultLanguage).toLowerCase();
     }

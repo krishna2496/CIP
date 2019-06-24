@@ -5,7 +5,7 @@ export default async(data) => {
     // Reset Password API call with params token,email,password,password_conformation
     let responseData = {}
     responseData.error = false;
-    defaultLanguage = '';
+    var defaultLanguage = '';
     if (store.state.defaultLanguage !== null) {
         defaultLanguage = (store.state.defaultLanguage).toLowerCase();
     }

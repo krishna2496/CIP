@@ -3,7 +3,7 @@ import axios from 'axios'
 
 export default async(data) => {
     let responseData;
-    defaultLanguage = '';
+    var defaultLanguage = '';
     if (store.state.defaultLanguage !== null) {
         defaultLanguage = (store.state.defaultLanguage).toLowerCase();
     }

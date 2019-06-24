@@ -5,7 +5,7 @@ export default async(data) => {
     // login api call with params email address and password
     let responseData = {}
     responseData.error = false;
-    defaultLanguage = '';
+    var defaultLanguage = '';
     if (store.state.defaultLanguage !== null) {
         defaultLanguage = (store.state.defaultLanguage).toLowerCase();
     }
