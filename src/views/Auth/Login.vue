@@ -91,7 +91,7 @@ export default {
     },
     methods: {
         async createConnection(){
-            await databaseConnection(this.langList,this.defautLang).then(response => {
+            await databaseConnection(this.langList).then(response => {
                     this.isShowComponent = true
                     //Get langauage list from Local Storage
                     this.langList = JSON.parse(store.state.listOfLanguage)

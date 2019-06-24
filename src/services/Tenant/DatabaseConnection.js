@@ -4,6 +4,8 @@ import axios from 'axios'
 export default async(langList) => {
     let responseData = {}
     responseData.error = false;
+    defautLang = 'en';
+    defautLangId =1;
     await axios.get(process.env.VUE_APP_API_ENDPOINT + "connect")
         .then((response) => {
             if (response.data.data) {
@@ -50,7 +52,7 @@ export default async(langList) => {
                         store.commit('setLanguageList', JSON.stringify(langList))
                         var defaultLanguageData = []
                         defaultLanguageData["selectedVal"] = (data.defaultLanguage) ? data.defaultLanguage : defautLang;
-                        defaultLanguageData["selectedId"] = (data.defaultLanguageId) ? data.defaultLanguageId : "";
+                        defaultLanguageData["selectedId"] = (data.defaultLanguageId) ? data.defaultLanguageId :defautLangId;
                         store.commit('setDefaultLanguage', defaultLanguageData)
                     }
 
@@ -70,6 +72,9 @@ export default async(langList) => {
                 store.commit('setLogo', logo)
 
             } else {
+                defaultLanguageData["selectedVal"] = defautLang;
+                defaultLanguageData["selectedId"] = defautLangId;
+                store.commit('setDefaultLanguage', defaultLanguageData)
                 localStorage.removeItem('slider');
                 localStorage.removeItem('listOfLanguage');
                 localStorage.removeItem('defaultLanguage');
