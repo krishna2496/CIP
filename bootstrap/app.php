@@ -80,9 +80,9 @@ $app->configure('app'); //default authentication
 $app->configure('auth'); //default authentication
 $app->configure('mail'); //SMTP and PHP mail
 $app->configure('constants'); //constant file config
-$app->configure('errors'); //Error Constants config
 $app->configure('cors');  //cross origin support
 $app->configure('messages');  //Message Constants config
+$app->configure('filesystems');
 
 /**
  * mailer package registration
@@ -111,6 +111,7 @@ $app->withFacades();
  $app->register(App\Providers\AppServiceProvider::class);
 // $app->register(App\Providers\AuthServiceProvider::class);
 // $app->register(App\Providers\EventServiceProvider::class);
+
 class_alias('Icyboy\LumenAws\Aws', 'Aws');
 class_alias('Illuminate\Support\Facades\App', 'App');
 

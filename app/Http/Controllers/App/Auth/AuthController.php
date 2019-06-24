@@ -2,21 +2,20 @@
 
 namespace App\Http\Controllers\App\Auth;
 
-use Validator;
+use Validator, DB;
 use App\User;
 use Firebase\JWT\JWT;
-use Illuminate\Http\Request;
+use Illuminate\Http\{Request, Response};
 use App\Http\Controllers\Controller;
 use Firebase\JWT\ExpiredException;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Auth\Passwords\PasswordBrokerManager;
 use Illuminate\Support\Facades\Password;
 use App\Http\Controllers\Config;
-use App\Helpers\Helpers;
-use DB;
-use App\PasswordReset;
+use App\Helpers\{Helpers, ResponseHelper};
+use App\Models\PasswordReset;
 use Carbon\Carbon;
-use App\Http\Controllers\App\Tenant\TenantOptionController;
+use App\Repositories\TenantOption\TenantOptionRepository;
 
 class AuthController extends Controller {
 
@@ -26,15 +25,31 @@ class AuthController extends Controller {
      * @var \Illuminate\Http\Request
      */
     private $request;
+	
+	/**
+     * The response instance.
+     *
+     * @var \Illuminate\Http\Response
+     */
+    private $response;
 
+    /**
+     * The response instance.
+     *
+     * @var App\Repositories\TenantOption\TenantOptionRepository
+     */
+    private $tenantOption;
+    
     /**
      * Create a new controller instance.
      *
      * @param \Illuminate\Http\Request $request
      * @return void
      */
-    public function __construct(Request $request) {
+    public function __construct(Request $request, Response $response, TenantOptionRepository $tenantOption) {
         $this->request = $request;
+        $this->response = $response;
+        $this->tenantOption = $tenantOption;
     }
 
     /**
@@ -46,7 +61,7 @@ class AuthController extends Controller {
     protected function jwt(User $user) {
         $payload = [
             'iss' => "lumen-jwt",       // Issuer of the token
-            'sub' => $user->id,         // Subject of the token
+            'sub' => $user->user_id,    // Subject of the token
             'iat' => time(),            // Time when JWT was issued. 
             'exp' => time() + 60 * 60,  // Expiration time
             'fqdn' => 'tatva'
@@ -67,42 +82,44 @@ class AuthController extends Controller {
     public function authenticate(User $user, Request $request) {            
 
         // Server side validataions
-        $validator = Validator::make($request->toArray(), [
-            'email' => 'required|email',
-            'password' => 'required'
-        ]);
+        $validator = Validator::make($request->toArray(), $user->loginRules);
 
         if ($validator->fails()) {
-            return Helpers::errorResponse(trans('api_error_messages.status_code.HTTP_STATUS_422'), 
-                                        trans('api_error_messages.status_type.HTTP_STATUS_TYPE_422'), 
-                                        trans('api_error_messages.custom_error_code.ERROR_40001'), 
+            return ResponseHelper::error(trans('messages.status_code.HTTP_STATUS_UNPROCESSABLE_ENTITY'), 
+                                        trans('messages.status_type.HTTP_STATUS_TYPE_422'), 
+                                        trans('messages.custom_error_code.ERROR_40001'), 
                                         $validator->errors()->first());
         }
         
         // Fetch user by email address
-        $user = User::where('email', $this->request->input('email'))->first();
+        $userDetail = $user->where('email', $this->request->input('email'))->first();
 
-        if (!$user) {
-            return Helpers::errorResponse(trans('api_error_messages.status_code.HTTP_STATUS_403'), 
-                                        trans('api_error_messages.status_type.HTTP_STATUS_TYPE_403'), 
-                                        trans('api_error_messages.custom_error_code.ERROR_40002'), 
-                                        trans('api_error_messages.custom_error_message.40002'));
+        if (!$userDetail) {
+            return ResponseHelper::error(trans('messages.status_code.HTTP_STATUS_FORBIDDEN'), 
+                                        trans('messages.status_type.HTTP_STATUS_TYPE_403'), 
+                                        trans('messages.custom_error_code.ERROR_40002'), 
+                                        trans('messages.custom_error_message.40002'));
         }
         
         // Verify user's password
-        if (!Hash::check($this->request->input('password'), $user->password)) {
-            return Helpers::errorResponse(trans('api_error_messages.status_code.HTTP_STATUS_422'), 
-                                        trans('api_error_messages.status_type.HTTP_STATUS_TYPE_422'), 
-                                        trans('api_error_messages.custom_error_code.ERROR_40004'), 
-                                        trans('api_error_messages.custom_error_message.40004'));
+        if (!Hash::check($this->request->input('password'), $userDetail->password)) {
+            return ResponseHelper::error(trans('messages.status_code.HTTP_STATUS_UNPROCESSABLE_ENTITY'), 
+                                        trans('messages.status_type.HTTP_STATUS_TYPE_422'), 
+                                        trans('messages.custom_error_code.ERROR_40004'), 
+                                        trans('messages.custom_error_message.40004'));
         }
         
         // Generate JWT token
-        $data["token"] = $this->jwt($user);
+        $data["token"] = $this->jwt($userDetail);
+		$data['user_id'] = isset($userDetail->user_id) ? $userDetail->user_id : '';
+        $data['first_name'] = isset($userDetail->first_name) ? $userDetail->first_name : '';
+        $data['last_name'] = isset($userDetail->last_name) ? $userDetail->last_name : '';
+        $data['avatar'] = isset($userDetail->avatar) ? $userDetail->avatar :'';
+		
         $apiData = $data;
-        $apiStatus = app('Illuminate\Http\Response')->status();
-        $apiMessage = trans('api_success_messages.success_message.MESSAGE_USER_LOGIN_SUCCESS');
-        return Helpers::response($apiStatus, $apiMessage, $apiData);
+        $apiStatus = $this->response->status();
+        $apiMessage = trans('messages.success.MESSAGE_USER_LOGGED_IN');
+        return ResponseHelper::success($apiStatus, $apiMessage, $apiData);
     }
     
     /**
@@ -115,35 +132,33 @@ class AuthController extends Controller {
     public function requestPasswordReset(User $user, Request $request) {
              
         // Server side validataions
-        $validator = Validator::make($request->toArray(), [
-                'email' => 'required|email',
-        ]);
+        $validator = Validator::make($request->toArray(), $user->resetPasswordRules);
         
         if ($validator->fails()) {
-            return Helpers::errorResponse(trans('api_error_messages.status_code.HTTP_STATUS_422'), 
-                                        trans('api_error_messages.status_type.HTTP_STATUS_TYPE_422'), 
-                                        trans('api_error_messages.custom_error_code.ERROR_40010'), 
+            return ResponseHelper::error(trans('messages.status_code.HTTP_STATUS_UNPROCESSABLE_ENTITY'), 
+                                        trans('messages.status_type.HTTP_STATUS_TYPE_422'), 
+                                        trans('messages.custom_error_code.ERROR_40010'), 
                                         $validator->errors()->first());
         }
 
         // Fetch user by email address
-        $user = User::where('email', $request->get('email'))->first();
-
-        if (!$user) {
-            return Helpers::errorResponse(trans('api_error_messages.status_code.HTTP_STATUS_403'), 
-                                        trans('api_error_messages.status_type.HTTP_STATUS_TYPE_403'), 
-                                        trans('api_error_messages.custom_error_code.ERROR_40002'), 
-                                        trans('api_error_messages.custom_error_message.40002'));
+        $userDetail = $user->where('email', $request->get('email'))->first();
+		
+        if (!$userDetail) {
+            return ResponseHelper::error(trans('messages.status_code.HTTP_STATUS_FORBIDDEN'), 
+                                        trans('messages.status_type.HTTP_STATUS_TYPE_403'), 
+                                        trans('messages.custom_error_code.ERROR_40002'), 
+                                        trans('messages.custom_error_message.40002'));
         }
         
         //get referer url using helper 
         $refererUrl = Helpers::getRefererFromRequest($request);
+
         config(['app.mail_url' => $refererUrl.'/reset-password/']);
 
         //set tenant logo
-        $tenantOption = new TenantOptionController();
-        $tenantLogo = $tenantOption->getTenantLogo();
-        config(['app.tenant_logo' => $tenantLogo]);
+        $tenantLogo = $this->tenantOption->getOptionWithCondition(['option_name' => 'custom_logo']);
+        config(['app.tenant_logo' => $tenantLogo->option_value]);
        
         // Verify email address and send reset password link        
         $response = $this->broker()->sendResetLink(
@@ -152,15 +167,15 @@ class AuthController extends Controller {
 
         // If reset password link didn't sent
         if (!$response == Password::RESET_LINK_SENT) {
-            return Helpers::errorResponse(trans('api_error_messages.status_code.HTTP_STATUS_500'), 
-                                        trans('api_error_messages.status_type.HTTP_STATUS_TYPE_500'), 
-                                        trans('api_error_messages.custom_error_code.ERROR_40006'), 
-                                        trans('api_error_messages.custom_error_message.40006'));
+            return ResponseHelper::error(trans('messages.status_code.HTTP_STATUS_INTERNAL_SERVER_ERROR'), 
+                                        trans('messages.status_type.HTTP_STATUS_TYPE_500'), 
+                                        trans('messages.custom_error_code.ERROR_40006'), 
+                                        trans('messages.custom_error_message.40006'));
         }
 
-        $apiStatus = app('Illuminate\Http\Response')->status();
-        $apiMessage = trans('api_success_messages.success_message.MESSAGE_PASSWORD_RESET_LINK_SEND_SUCCESS');
-        return Helpers::response($apiStatus, $apiMessage);;
+        $apiStatus = $this->response->status();
+        $apiMessage = trans('messages.success.MESSAGE_PASSWORD_RESET_LINK_SEND_SUCCESS');
+        return ResponseHelper::success($apiStatus, $apiMessage);;
     }
 
     /**
@@ -183,9 +198,9 @@ class AuthController extends Controller {
         ]);
         
         if ($validator->fails()) {
-            return Helpers::errorResponse(trans('api_error_messages.status_code.HTTP_STATUS_422'), 
-                                        trans('api_error_messages.status_type.HTTP_STATUS_TYPE_422'), 
-                                        trans('api_error_messages.custom_error_code.ERROR_40011'), 
+            return ResponseHelper::error(trans('messages.status_code.HTTP_STATUS_UNPROCESSABLE_ENTITY'), 
+                                        trans('messages.status_type.HTTP_STATUS_TYPE_422'), 
+                                        trans('messages.custom_error_code.ERROR_40011'), 
                                         $validator->errors()->first());
         }
  
@@ -194,18 +209,18 @@ class AuthController extends Controller {
        
         //if record not found
         if(!$record){
-            return Helpers::errorResponse(trans('api_error_messages.status_code.HTTP_STATUS_422'), 
-                                        trans('api_error_messages.status_type.HTTP_STATUS_TYPE_422'), 
-                                        trans('api_error_messages.custom_error_code.ERROR_40013'), 
-                                        trans('api_error_messages.custom_error_message.40013'));
+            return ResponseHelper::error(trans('messages.status_code.HTTP_STATUS_UNPROCESSABLE_ENTITY'), 
+                                        trans('messages.status_type.HTTP_STATUS_TYPE_422'), 
+                                        trans('messages.custom_error_code.ERROR_40013'), 
+                                        trans('messages.custom_error_message.40013'));
         }
 
         if(!Hash::check($request->get('token'), $record->token)){
             //invalid hash
-            return Helpers::errorResponse(trans('api_error_messages.status_code.HTTP_STATUS_401'), 
-                                        trans('api_error_messages.status_type.HTTP_STATUS_TYPE_401'), 
-                                        trans('api_error_messages.custom_error_code.ERROR_40013'), 
-                                        trans('api_error_messages.custom_error_message.40013'));
+            return ResponseHelper::error(trans('messages.status_code.HTTP_STATUS_401'), 
+                                        trans('messages.status_type.HTTP_STATUS_TYPE_401'), 
+                                        trans('messages.custom_error_code.ERROR_40013'), 
+                                        trans('messages.custom_error_message.40013'));
         }
         
          // Reset the password
@@ -217,9 +232,9 @@ class AuthController extends Controller {
             }
         );
       
-        $apiStatus = app('Illuminate\Http\Response')->status();
-        $apiMessage = trans('api_success_messages.success_message.MESSAGE_PASSWORD_CHANGE_SUCCESS');
-        return Helpers::response($apiStatus, $apiMessage);
+        $apiStatus = $this->response->status();
+        $apiMessage = trans('messages.success.MESSAGE_PASSWORD_CHANGE_SUCCESS');
+        return ResponseHelper::success($apiStatus, $apiMessage);
     }
 
     /**
