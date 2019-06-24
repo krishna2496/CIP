@@ -61,7 +61,7 @@ class AuthController extends Controller {
     protected function jwt(User $user) {
         $payload = [
             'iss' => "lumen-jwt",       // Issuer of the token
-            'sub' => $user->id,         // Subject of the token
+            'sub' => $user->user_id,    // Subject of the token
             'iat' => time(),            // Time when JWT was issued. 
             'exp' => time() + 60 * 60,  // Expiration time
             'fqdn' => 'tatva'
@@ -111,6 +111,11 @@ class AuthController extends Controller {
         
         // Generate JWT token
         $data["token"] = $this->jwt($userDetail);
+		$data['user_id'] = isset($userDetail->user_id) ? $userDetail->user_id : '';
+        $data['first_name'] = isset($userDetail->first_name) ? $userDetail->first_name : '';
+        $data['last_name'] = isset($userDetail->last_name) ? $userDetail->last_name : '';
+        $data['avatar'] = isset($userDetail->avatar) ? $userDetail->avatar :'';
+		
         $apiData = $data;
         $apiStatus = $this->response->status();
         $apiMessage = trans('messages.success.MESSAGE_USER_LOGGED_IN');

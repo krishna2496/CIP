@@ -37,8 +37,7 @@ class LanguageHelper
     public static function getTenantLanguages(Request $request)
     {
         try {
-            $tenant = Helpers::getTenantDetail($request);
-
+            $tenant = Helpers::getTenantDetail($request);		
             // Connect master database to get language details
             DatabaseHelper::switchDatabaseConnection('mysql', $request);
             

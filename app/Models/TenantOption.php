@@ -43,8 +43,8 @@ class TenantOption extends Model
      */
     public function addOrUpdateColor(array $colorData)
     {
-        $styleData['option_name'] = $colorData['option_name'];
-        $tenantOption = static::updateOrCreate($styleData);
+        $styleData['option_name'] = $colorData['option_name'];        
+        $tenantOption = static::updateOrCreate($styleData);        
         return $tenantOption->update(['option_value' => $colorData['option_value']]);
     
     }

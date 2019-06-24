@@ -438,12 +438,12 @@ class MissionRepository implements MissionInterface
 
             // Check for apply in mission validity
             $value->set_view_detail = 0;
-            $today = date(config("constants.FRONT_DATE_FORMAT"));
+            $today = date(config("constants.DATE_FORMAT"));
 
             if (($value->user_application_count > 0) || 
-                ($value->application_deadline != '' && $value->application_deadline < $today) || 
+                ($value->application_deadline !== null && $value->application_deadline < $today) || 
                 ($value->total_seats != 0 && $value->total_seats == $value->mission_application_count) || 
-                ($value->end_date != '' && $value->end_date < $today) 
+                ($value->end_date !== null && $value->end_date < $today) 
                 // || ($value->mission_type != 'GOAL' && $value->goal_objective ==  $today)
             ) {
                 $value->set_view_detail = 1;

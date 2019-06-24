@@ -66,7 +66,7 @@ class MissionController extends Controller
             $missions = $this->mission->appMissions($request);
             
             $apiData = $missions;
-            $apiStatus = app('Illuminate\Http\Response')->status();
+            $apiStatus = $this->response->status();
             $apiMessage = trans('messages.success.MESSAGE_MISSION_LISTING');
             return ResponseHelper::successWithPagination($apiStatus, $apiMessage,$apiData);
 

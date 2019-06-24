@@ -165,7 +165,7 @@ class TenantOptionsController extends Controller
      * @return mix
      */
     public function updateStyleSettings(Request $request)
-    {
+    {        
         $isVariableScss = 0;
 
         $this->tenantOption->updateStyleSettings($request);

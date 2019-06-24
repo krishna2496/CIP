@@ -10,8 +10,8 @@
 | is ready to receive HTTP / Console requests from the environment.
 |
 */
-ini_set("display_errors", "1");
-  error_reporting(E_ALL);
+/* ini_set("display_errors", "1");
+  error_reporting(E_ALL); */
 $app = require __DIR__.'/bootstrap/app.php';
 
 /*

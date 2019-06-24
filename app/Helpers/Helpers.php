@@ -16,7 +16,11 @@ class Helpers
     public static function getSubDomainFromRequest(Request $request) : string
     {
         try {
-            return explode(".", parse_url($request->headers->all()['referer'][0])['host'])[0];
+			if (env('APP_ENV')=='local') {
+                return env('DEFAULT_TENANT');
+            } else {			
+				return explode(".", parse_url($request->headers->all()['referer'][0])['host'])[0];
+			}
         } catch (\Exception $e) {
             if (env('APP_ENV')=='local') {
                 return env('DEFAULT_TENANT');
@@ -37,7 +41,7 @@ class Helpers
         try {
             if (isset($request->headers->all()['referer'])) {
                 $parseUrl = parse_url($request->headers->all()['referer'][0]);
-                return $parseUrl['scheme'].'://'.$parseUrl['host'].':'.$parseUrl['port'];
+				return $parseUrl['scheme'].'://'.$parseUrl['host'].env('APP_PATH');
             } else {
                 return env('APP_MAIL_BASE_URL');
             }
