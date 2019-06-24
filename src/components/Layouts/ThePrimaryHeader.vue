@@ -2,7 +2,8 @@
     <div class="top-header">
         <b-navbar toggleable="lg">
             <b-container>
-			
+			    <b-navbar-toggle target="nav-collapse" @click="openMenu" v-if="this.$store.state.isLoggedIn">
+                </b-navbar-toggle>
 				<b-navbar-brand :to="{ name: 'home' }" :style="{backgroundImage: 'url('+this.$store.state.logo+')'}"
                  v-if="this.$store.state.isLoggedIn"
                  ></b-navbar-brand>
@@ -17,84 +18,84 @@
                         <img src="../../assets/images/cross-ic.svg" alt>
                     </b-button>
 					<ul v-if="this.$store.state.isLoggedIn">
-            <li class="has-menu">
-              <a href="#" title="Explore">Explore</a>
-              <ul class="dropdown-menu sub-dropdown">
-                <li class="has-submenu">
-                  <a href="#">Top Themes</a>
-                  <ul class="subdropdown-menu">
-                    <li>
-                      <a href="#">Education</a>
-                    </li>
-                    <li>
-                      <a href="#">Children</a>
-                    </li>
-                    <li>
-                      <a href="#">Health</a>
-                    </li>
-                    <li>
-                      <a href="#">Animals</a>
-                    </li>
-                    <li>
-                      <a href="#">Nutritions</a>
-                    </li>
-                  </ul>
-                </li>
-                <li class="has-submenu">
-                  <a href="#">Top Countries</a>
-                  <ul class="subdropdown-menu">
-                    <li>
-                      <a href="#">Education</a>
-                    </li>
-                    <li>
-                      <a href="#">Children</a>
-                    </li>
-                    <li>
-                      <a href="#">Health</a>
-                    </li>
-                    <li>
-                      <a href="#">Animals</a>
-                    </li>
-                    <li>
-                      <a href="#">Nutritions</a>
-                    </li>
-                  </ul>
-                </li>
-                <li class="no-dropdown">
-                  <a href="#">Top Organisation</a>
-                </li>
-                <li class="no-dropdown">
-                  <a href="#">Most Ranked</a>
-                </li>
-                <li class="no-dropdown">
-                  <a href="#">Top Favourite</a>
-                </li>
-                <li class="no-dropdown">
-                  <a href="#">Recommended</a>
-                </li>
-                <li class="no-dropdown">
-                  <a href="#">Random</a>
-                </li>
-              </ul>
-            </li>
-            <li class="has-menu no-dropdown">
-              <a href="#" title="Stories">Stories</a>
-            </li>
-            <li class="has-menu no-dropdown">
-              <a href="#" title="News">News</a>
-            </li>
-            <li class="has-menu">
-              <a href="#" title="Policy">Policy</a>
-              <ul class="dropdown-menu">
-                <li>
-                  <a href="#">Volunteering</a>
-                </li>
-                <li>
-                  <a href="#">Sponsored</a>
-                </li>
-              </ul>
-            </li>
-          </ul>
+                        <li class="has-menu">
+                          <a href="#" title="Explore">{{ $t("label.explore")}}</a>
+                          <ul class="dropdown-menu sub-dropdown">
+                            <li class="has-submenu">
+                              <a href="#">{{ $t("label.top_themes")}}</a>
+                              <ul class="subdropdown-menu">
+                                <li>
+                                  <a href="#">{{ $t("label.education")}}</a>
+                                </li>
+                                <li>
+                                  <a href="#">{{ $t("label.children")}}</a>
+                                </li>
+                                <li>
+                                  <a href="#">{{ $t("label.health")}}</a>
+                                </li>
+                                <li>
+                                  <a href="#">{{ $t("label.animals")}}</a>
+                                </li>
+                                <li>
+                                  <a href="#">{{ $t("label.nutritions")}}</a>
+                                </li>
+                              </ul>
+                            </li>
+                            <li class="has-submenu">
+                              <a href="#">{{ $t("label.top_themes")}}</a>
+                              <ul class="subdropdown-menu">
+                                <li>
+                                  <a href="#">{{ $t("label.education")}}</a>
+                                </li>
+                                <li>
+                                  <a href="#">{{ $t("label.children")}}</a>
+                                </li>
+                                <li>
+                                  <a href="#">{{ $t("label.health")}}</a>
+                                </li>
+                                <li>
+                                  <a href="#">{{ $t("label.animals")}}</a>
+                                </li>
+                                <li>
+                                  <a href="#">{{ $t("label.nutritions")}}</a>
+                                </li>
+                              </ul>
+                            </li>
+                            <li class="no-dropdown">
+                              <a href="#">{{ $t("label.top_organisation")}}</a>
+                            </li>
+                            <li class="no-dropdown">
+                              <a href="#">{{ $t("label.most_ranked")}}</a>
+                            </li>
+                            <li class="no-dropdown">
+                              <a href="#">{{ $t("label.top_favourite")}}</a>
+                            </li>
+                            <li class="no-dropdown">
+                              <a href="#">{{ $t("label.recommended")}}</a>
+                            </li>
+                            <li class="no-dropdown">
+                              <a href="#">{{ $t("label.random")}}</a>
+                            </li>
+                          </ul>
+                        </li>
+                        <li class="has-menu no-dropdown">
+                          <a href="#" title="Stories">{{ $t("label.stories")}}</a>
+                        </li>
+                        <li class="has-menu no-dropdown">
+                          <a href="#" title="News">{{ $t("label.news")}}</a>
+                        </li>
+                        <li class="has-menu">
+                          <a href="#" title="Policy">{{ $t("label.policy")}}</a>
+                          <ul class="dropdown-menu">
+                            <li>
+                              <a href="#">{{ $t("label.volunteering")}}</a>
+                            </li>
+                            <li>
+                              <a href="#">{{ $t("label.sponsored")}}</a>
+                            </li>
+                          </ul>
+                        </li>
+                    </ul>
                 </div>
                 <b-nav class="ml-auto">
                     <b-nav-item right class="search-menu" @click="searchMenu">
