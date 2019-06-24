@@ -8,7 +8,7 @@
                 @updateCall="setLanguage"/>
             </div>
             <div class="signin-form-block">
-                <router-link to="/" class="logo-wrap" v-if="this.$store.state.logo">
+                <router-link :to="{ name: 'login' }" class="logo-wrap" v-if="this.$store.state.logo">
                     <img :src="this.$store.state.logo">
                 </router-link>
                 <div class="form-title-block">

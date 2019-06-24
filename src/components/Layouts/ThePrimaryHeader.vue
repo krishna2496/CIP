@@ -2,11 +2,99 @@
     <div class="top-header">
         <b-navbar toggleable="lg">
             <b-container>
-                <b-navbar-brand href="/" :style="{backgroundImage: 'url('+this.$store.state.logo+')'}"></b-navbar-brand>
+			
+				<b-navbar-brand :to="{ name: 'home' }" :style="{backgroundImage: 'url('+this.$store.state.logo+')'}"
+                 v-if="this.$store.state.isLoggedIn"
+                 ></b-navbar-brand>
+                <b-navbar-brand 
+                    :to="{ name: 'login' }"
+                    :style="{backgroundImage: 'url('+this.$store.state.logo+')'}"
+                    v-else>
+                </b-navbar-brand>
+				
                 <div class="menu-wrap" @touchend.stop>
                     <b-button class="btn-cross" @click="closeMenu">
                         <img src="../../assets/images/cross-ic.svg" alt>
                     </b-button>
+					<ul v-if="this.$store.state.isLoggedIn">
+            <li class="has-menu">
+              <a href="#" title="Explore">Explore</a>
+              <ul class="dropdown-menu sub-dropdown">
+                <li class="has-submenu">
+                  <a href="#">Top Themes</a>
+                  <ul class="subdropdown-menu">
+                    <li>
+                      <a href="#">Education</a>
+                    </li>
+                    <li>
+                      <a href="#">Children</a>
+                    </li>
+                    <li>
+                      <a href="#">Health</a>
+                    </li>
+                    <li>
+                      <a href="#">Animals</a>
+                    </li>
+                    <li>
+                      <a href="#">Nutritions</a>
+                    </li>
+                  </ul>
+                </li>
+                <li class="has-submenu">
+                  <a href="#">Top Countries</a>
+                  <ul class="subdropdown-menu">
+                    <li>
+                      <a href="#">Education</a>
+                    </li>
+                    <li>
+                      <a href="#">Children</a>
+                    </li>
+                    <li>
+                      <a href="#">Health</a>
+                    </li>
+                    <li>
+                      <a href="#">Animals</a>
+                    </li>
+                    <li>
+                      <a href="#">Nutritions</a>
+                    </li>
+                  </ul>
+                </li>
+                <li class="no-dropdown">
+                  <a href="#">Top Organisation</a>
+                </li>
+                <li class="no-dropdown">
+                  <a href="#">Most Ranked</a>
+                </li>
+                <li class="no-dropdown">
+                  <a href="#">Top Favourite</a>
+                </li>
+                <li class="no-dropdown">
+                  <a href="#">Recommended</a>
+                </li>
+                <li class="no-dropdown">
+                  <a href="#">Random</a>
+                </li>
+              </ul>
+            </li>
+            <li class="has-menu no-dropdown">
+              <a href="#" title="Stories">Stories</a>
+            </li>
+            <li class="has-menu no-dropdown">
+              <a href="#" title="News">News</a>
+            </li>
+            <li class="has-menu">
+              <a href="#" title="Policy">Policy</a>
+              <ul class="dropdown-menu">
+                <li>
+                  <a href="#">Volunteering</a>
+                </li>
+                <li>
+                  <a href="#">Sponsored</a>
+                </li>
+              </ul>
+            </li>
+          </ul>
                 </div>
                 <b-nav class="ml-auto">
                     <b-nav-item right class="search-menu" @click="searchMenu">
@@ -20,7 +108,6 @@
                             <em>{{this.$store.state.firstName+' '+this.$store.state.lastName}}</em>
                         </template>
                         <b-dropdown-item 
-                            href="/"
                             v-on:click.native="logout()" 
                             replace 
                             v-if="this.$store.state.isLoggedIn"

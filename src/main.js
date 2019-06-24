@@ -18,7 +18,7 @@ import BackToTop from "vue-backtotop";
 import moment from 'moment'
 
 Vue.use(Vuelidate, VueAxios, axios);
-
+Vue.config.devtools = true
 Vue.config.productionTip = false;
 
 Vue.use(BootstrapVue);

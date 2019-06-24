@@ -12,14 +12,14 @@
             <b-row>
                 <b-col lg="3" md="4" class="cms-nav">
                     <b-nav>
-                        <b-nav-item v-for="(item,key) in footerItems.section" v-scroll-to="{ el: '#block-'+key , offset :getOffset}">
+                        <b-nav-item v-for="(item,key) in footerItems.sections" v-scroll-to="{ el: '#block-'+key , offset :getOffset}">
                             {{item.title}}
                         </b-nav-item>
                     </b-nav>
                 </b-col>
                 <b-col lg="9" md="8">
                     <div class="cms-content cms-accordian" id="cms-content">    
-                    <div class="cms-content-block" v-for="(item,key) in footerItems.section" :id="'block-'+key">
+                    <div class="cms-content-block" v-for="(item,key) in footerItems.sections" :id="'block-'+key">
                         <h2 v-b-toggle="'content-' + key" class="accordian-title">{{item.title}}</h2>
                         <b-collapse
                             :id="'content-'+key"
