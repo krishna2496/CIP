@@ -23,48 +23,47 @@
 <script>
 import axios from "axios";
 import store from "../../store";
-import { loadLocaleMessages,cmsPages} from "../../services/service";
+import { loadLocaleMessages, cmsPages } from "../../services/service";
 
 export default {
-    components: {},
-    name: "ThePrimaryFooter",
-    data() {
-        return {
-            footerItems: [],
-            isDynamicFooterItemsSet: false
-        };
+  components: {},
+  name: "ThePrimaryFooter",
+  data() {
+    return {
+      footerItems: [],
+      isDynamicFooterItemsSet: false
+    };
+  },
+  mounted() {},
+  created() {
+    // Fetching footer CMS pages
+    this.getPageListing();
+    //Fetch language json file
+    loadLocaleMessages(store.state.defaultLanguage);
+  },
+  methods: {
+    async getPageListing() {
+      await cmsPages().then(response => {
+        this.footerItems = response;
+        this.isDynamicFooterItemsSet = true;
+      });
     },
-    mounted() {},
-    created() {
-        // Fetching footer CMS pages
-        this.getPageListing();
-        //Fetch language json file
-        loadLocaleMessages(store.state.defaultLanguage);
-    },
-    methods: {
-        async getPageListing(){
-            await cmsPages().then(response => {
-                    this.footerItems = response;
-                    this.isDynamicFooterItemsSet = true;  
-            })       
-        },
 
-        getTitle(items){
-            //Get title according to language
-            items = items.pages;
-            if (items) { 
-                var filteredObj  = items.filter(function (item,i) { 
-                    if (item.language_id == store.state.defaultLanguageId) {
-                        return item;
-                    }
-                });
-                if (filteredObj[0]) {
-                    return filteredObj[0].title
-                }
-            }
-        },
-        
+    getTitle(items) {
+      //Get title according to language
+      items = items.pages;
+      if (items) {
+        var filteredObj = items.filter(function(item, i) {
+          if (item.language_id == store.state.defaultLanguageId) {
+            return item;
+          }
+        });
+        if (filteredObj[0]) {
+          return filteredObj[0].title;
+        }
+      }
     }
+  }
 };
 </script>
 

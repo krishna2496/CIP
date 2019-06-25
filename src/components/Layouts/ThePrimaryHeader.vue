@@ -41,26 +41,6 @@
                                 </li>
                               </ul>
                             </li>
-                            <li class="has-submenu">
-                              <a href="#">{{ $t("label.top_themes")}}</a>
-                              <ul class="subdropdown-menu">
-                                <li>
-                                  <a href="#">{{ $t("label.education")}}</a>
-                                </li>
-                                <li>
-                                  <a href="#">{{ $t("label.children")}}</a>
-                                </li>
-                                <li>
-                                  <a href="#">{{ $t("label.health")}}</a>
-                                </li>
-                                <li>
-                                  <a href="#">{{ $t("label.animals")}}</a>
-                                </li>
-                                <li>
-                                  <a href="#">{{ $t("label.nutritions")}}</a>
-                                </li>
-                              </ul>
-                            </li>
                             <li class="no-dropdown">
                               <a href="#">{{ $t("label.top_organisation")}}</a>
                             </li>

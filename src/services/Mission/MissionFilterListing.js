@@ -5,18 +5,11 @@ export default async(data) => {
     let responseData;
     var defaultLanguage = '';
 
-    if (store.state.defaultLanguage !== null) {
-        defaultLanguage = (store.state.defaultLanguage).toLowerCase();
-    }
-
-    // store.commit('userFilter', JSON.stringify(sliderData))
-
     await axios({
-            url: process.env.VUE_APP_API_ENDPOINT + "app/missions?page=" + data[0].page,
+            url: process.env.VUE_APP_API_ENDPOINT + "mission_filters,
             method: 'get',
             headers: {
-                'X-localization': defaultLanguage,
-                'token': store.state.token,
+               'token': store.state.token,
             }
         })
         .then((response) => {

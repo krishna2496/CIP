@@ -6,10 +6,13 @@
                     <div class="icon-input">
                         <b-form-input
                             type="text"
+                            @keypress.enter.prevent="searchMission"
                             :placeholder="$t('label.search')+' '+$t('label.mission')"
                             @focus="handleFocus()"
                             @blur="handleBlur()"
                             onfocus="this.placeholder=''"
+                            id="search"
+                            v-model="search"
                             onblur="this.placeholder='Search mission...'">                           
                         </b-form-input>
                         <i>
@@ -75,7 +78,8 @@ export default {
             form: {
                 text: ""
             },
-            show: false
+            show: false,
+            search:''
         };
     },
     methods: {
@@ -113,7 +117,7 @@ export default {
             });
         },
 
-        getCountry(){
+        getCountry() {
             countryList().then( response => {
                 if (response) {                    
                     this.countryList = response
@@ -123,7 +127,7 @@ export default {
             });   
         },
 
-        getCity(){
+        getCity() {
             cityList().then( response => {
                 if (response) {                    
                     this.cityList = response
@@ -133,7 +137,7 @@ export default {
             });   
         },
 
-        getTheme(){
+        getTheme() {
             themeList().then( response => {
                 if (response) {                    
                     this.themeList = response
@@ -143,17 +147,30 @@ export default {
             });   
         },
 
-        getSkill(){
+        getSkill() {
                 skillList().then( response => {
                 if (response) {                    
                     this.skillList = response   
                 }            
             });   
         },
+
+        searchMission() {
+            if (this.search != ''){
+                this.$emit('searchMission',this.$route.params.slug);
+            }
+        },
+
+        fetchFilters() {
+
+        }
     },
     created() {
         // Fetch country
-        this.getCountry();
+        // this.getCountry();
+        //Fetch users filter
+        this.fetchFilters();
+
         var _this = this;
         setTimeout(function(){ 
             _this.defautCountry = _this.$i18n.t("label.country");

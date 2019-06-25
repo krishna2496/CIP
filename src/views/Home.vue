@@ -6,6 +6,17 @@
         </header>
         <main>
             <b-container class="home-content-wrapper">
+                <div class="chip-container">
+                    <AppCustomChip :textVal="'Tree Plantation'"/>
+                    <AppCustomChip :textVal="'Canada'"/>
+                    <AppCustomChip :textVal="'Toronto'"/>
+                    <AppCustomChip :textVal="'Montreal'"/>
+                    <AppCustomChip :textVal="'Environment'"/>
+                    <AppCustomChip :textVal="'Nutrition'"/>
+                    <AppCustomChip :textVal="'Anthropology'"/>
+                    <AppCustomChip :textVal="'Environmental Science'"/>
+                    <b-button class="clear-btn">Clear All</b-button>
+                </div>
                 <div class="heading-section">
                     <h2><template v-if="rows > 0">{{ $t("label.explore")}} <strong>{{rows}} {{ $t("label.missions")}}</strong></template></h2>
                     <div class="right-section">
@@ -186,7 +197,9 @@ export default {
         async getMissions(){
 
             let filter = [
-            {'page' : this.currentPage}
+                {
+                    'page' : this.currentPage
+                }
             ];
 
             await missionListing(filter).then( response => {
@@ -207,6 +220,10 @@ export default {
             this.getMissions();
         },
 
+        searchMission () {
+            
+        },
+        
         changeView(currentView){
             //Change View 
             this.activeView = currentView;
