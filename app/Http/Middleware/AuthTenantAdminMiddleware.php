@@ -3,8 +3,11 @@ namespace App\Http\Middleware;
 
 use Illuminate\Support\Facades\Config;
 use Illuminate\Database\QueryException;
-use App\Helpers\{Helpers, ResponseHelper, DatabaseHelper};
-use DB, Closure;
+use App\Helpers\Helpers;
+use App\Helpers\ResponseHelper;
+use App\Helpers\DatabaseHelper;
+use DB;
+use Closure;
 use Illuminate\Http\Request;
 
 class AuthTenantAdminMiddleware

@@ -2,11 +2,16 @@
 namespace App\Repositories\User;
 
 use App\Repositories\User\UserInterface;
-use Illuminate\Http\{Request, Response};
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use App\User;
-use App\Helpers\{Helpers, ResponseHelper, DatabaseHelper};
+use App\Helpers\Helpers;
+use App\Helpers\ResponseHelper;
+use App\Helpers\DatabaseHelper;
 use App\Models\UserSkill;
-use Validator, PDOException, DB;
+use Validator;
+use PDOException;
+use DB;
 
 class UserRepository implements UserInterface
 {
@@ -21,21 +26,21 @@ class UserRepository implements UserInterface
     public $userSkill;
     
     /**
-     * @var Illuminate\Http\Response
+     * @var App\Helpers\ResponseHelper
      */
-    private $response;
+    private $responseHelper;
 
     /**
      * Create a new User repository instance.
      *
      * @param  App\User $user
-     * @param  Illuminate\Http\Response $response
+     * @param  Illuminate\Http\ResponseHelper $responseHelper
      * @return void
      */
-    public function __construct(User $user, UserSkill $userSkill, Response $response)
+    public function __construct(User $user, UserSkill $userSkill, ResponseHelper $responseHelper)
     {
         $this->user = $user;
-        $this->response = $response;
+        $this->responseHelper = $responseHelper;
         $this->userSkill = $userSkill;
     }
     
@@ -123,10 +128,10 @@ class UserRepository implements UserInterface
                 'skill_id' => $value['skill_id'],
             );
             
-			$this->userSkill->linkUserSkill($request->user_id, $value['skill_id']);
+            $this->userSkill->linkUserSkill($request->user_id, $value['skill_id']);
             unset($skill);
         }
-		return true;
+        return true;
     }
     
     /**
@@ -152,6 +157,6 @@ class UserRepository implements UserInterface
      */
     public function userSkills(int $userId)
     {
-        return $this->userSkill->findOrFail($userId);   
+        return $this->userSkill->findOrFail($userId);
     }
 }

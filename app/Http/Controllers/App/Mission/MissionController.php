@@ -1,50 +1,63 @@
 <?php
-
 namespace App\Http\Controllers\App\Mission;
 
-use Illuminate\Http\{Request, Response};
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use App\Repositories\Mission\MissionRepository;
-use Illuminate\Support\Facades\{DB, Config};
-use App\Models\{Mission, MissionLanguage, MissionDocument, MissionMedia, MissionTheme, MissionApplication};
-use App\Helpers\{Helpers, LanguageHelper, ResponseHelper};
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Config;
+use App\Models\Mission;
+use App\Models\MissionLanguage;
+use App\Models\MissionDocument;
+use App\Models\MissionMedia;
+use App\Models\MissionTheme;
+use App\Models\MissionApplication;
+use App\Helpers\Helpers;
+use App\Helpers\LanguageHelper;
+use App\Helpers\ResponseHelper;
 use App\Http\Controllers\Controller;
 use Carbon\Carbon;
 
 class MissionController extends Controller
 {
     /**
-     * @var App\Models\Mission
+     * @var MissionRepository
      */
-    private $mission;
+    private $missionRepository;
+    
+    /**
+     * @var App\Helpers\ResponseHelper
+     */
+    private $responseHelper;
     
     /**
      * Create a new Mission controller instance.
      *
-     * @param  App\Repositories\Mission\MissionRepository $mission
+     * @param App\Repositories\Mission\MissionRepository $missionRepository
+     * @param Illuminate\Http\ResponseHelper $responseHelper
      * @return void
      */
-    public function __construct(MissionRepository $mission, Response $response)
+    public function __construct(MissionRepository $missionRepository, ResponseHelper $responseHelper)
     {
-        $this->mission = $mission;
-        $this->response = $response;
+        $this->missionRepository = $missionRepository;
+        $this->responseHelper = $responseHelper;
     }
 
     /**
      * Get missions listing
-     *  
+     *
      * @param Request $request
      * @return mixed
      */
-    public function missionList(Request $request) 
-    {   
-        try { 
-            $missions = $this->mission->missionDetail($request);
+    public function missionList(Request $request)
+    {
+        try {
+            $missions = $this->missionRepository->missionDetail($request);
             
             $apiData = $missions;
             $apiStatus = app('Illuminate\Http\Response')->status();
             $apiMessage = trans('messages.success.MESSAGE_MISSION_LISTING');
-            return ResponseHelper::successWithPagination($apiStatus, $apiMessage,$apiData);
-
+            return $this->responseHelper->successWithPagination($apiStatus, $apiMessage, $apiData);
         } catch (PDOException $e) {
             throw new PDOException($e->getMessage());
         } catch (\InvalidArgumentException $e) {
@@ -56,20 +69,19 @@ class MissionController extends Controller
 
     /**
      * Get missions listing
-     *  
+     *
      * @param Request $request
      * @return mixed
      */
-    public function appMissionList(Request $request) 
-    {   
-        try { 
-            $missions = $this->mission->appMissions($request);
+    public function appMissionList(Request $request)
+    {
+        try {
+            $missions = $this->missionRepository->appMissions($request);
             
             $apiData = $missions;
-            $apiStatus = $this->response->status();
+            $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_MISSION_LISTING');
-            return ResponseHelper::successWithPagination($apiStatus, $apiMessage,$apiData);
-
+            return $this->responseHelper->successWithPagination($apiStatus, $apiMessage, $apiData);
         } catch (PDOException $e) {
             throw new PDOException($e->getMessage());
         } catch (\InvalidArgumentException $e) {

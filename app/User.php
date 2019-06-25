@@ -3,14 +3,17 @@ namespace App;
 
 use Illuminate\Auth\Authenticatable;
 use Laravel\Lumen\Auth\Authorizable;
-use Illuminate\Database\Eloquent\{Model, SoftDeletes};
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use Illuminate\Auth\Passwords\CanResetPassword as CanResetPasswordTrait;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordInterface;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Hash;
-use App\Models\{City, Country, Timezone};
+use App\Models\City;
+use App\Models\Country;
+use App\Models\Timezone;
 
 class User extends Model implements AuthenticatableContract, AuthorizableContract, CanResetPasswordInterface
 {
@@ -35,14 +38,20 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      *
      * @var array
      */
-    protected $fillable = ['first_name', 'last_name', 'email', 'password', 'avatar', 'timezone_id', 'availability_id', 'why_i_volunteer', 'employee_id', 'department', 'manager_name', 'city_id', 'country_id', 'profile_text', 'linked_in_url', 'status', 'language_id'];
+    protected $fillable = ['first_name', 'last_name', 'email', 'password', 'avatar',
+     'timezone_id', 'availability_id', 'why_i_volunteer', 'employee_id', 'department',
+      'manager_name', 'city_id', 'country_id', 'profile_text', 'linked_in_url', 'status',
+       'language_id'];
     
     /**
      * The attributes that should be visible in arrays.
      *
      * @var array
      */
-    protected $visible = ['user_id', 'first_name', 'last_name', 'email', 'password', 'avatar', 'timezone_id', 'availability_id', 'why_i_volunteer', 'employee_id', 'department', 'manager_name', 'city_id', 'country_id', 'profile_text', 'linked_in_url', 'status', 'city', 'country', 'timezone'];
+    protected $visible = ['user_id', 'first_name', 'last_name', 'email',
+     'password', 'avatar', 'timezone_id', 'availability_id', 'why_i_volunteer',
+     'employee_id', 'department', 'manager_name', 'city_id', 'country_id',
+     'profile_text', 'linked_in_url', 'status', 'city', 'country', 'timezone'];
     
     /**
      * The attributes excluded from the model's JSON form.

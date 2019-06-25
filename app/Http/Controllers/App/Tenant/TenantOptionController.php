@@ -1,10 +1,13 @@
 <?php
 namespace App\Http\Controllers\App\Tenant;
 
-use Illuminate\Http\{Response, Request};
+use Illuminate\Http\Response;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\TenantOption;
-use App\Helpers\{Helpers, LanguageHelper, ResponseHelper};
+use App\Helpers\Helpers;
+use App\Helpers\LanguageHelper;
+use App\Helpers\ResponseHelper;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Config;
 use App\Repositories\TenantOption\TenantOptionRepository;
@@ -12,14 +15,27 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class TenantOptionController extends Controller
 {
+    /**
+     * @var TenantOptionRepository
+     */
     private $tenantOption;
 
-    private $response;
+    /**
+     * @var App\Helpers\ResponseHelper
+     */
+    private $responseHelper;
     
-    public function __construct(TenantOptionRepository $tenantOption, Response $response)
+    /**
+     * Create a new controller instance.
+     *
+     * @param App\Repositories\TenantOption\TenantOptionRepository $tenantOptionRepository
+     * @param Illuminate\Http\ResponseHelper $responseHelper
+     * @return void
+     */
+    public function __construct(TenantOptionRepository $tenantOptionRepository, ResponseHelper $responseHelper)
     {
-        $this->tenantOption = $tenantOption;
-        $this->response = $response;
+        $this->tenantOptionRepository = $tenantOptionRepository;
+        $this->responseHelper = $responseHelper;
     }
     
     /**
@@ -33,7 +49,7 @@ class TenantOptionController extends Controller
 
         try {
             // Find custom data
-            $data = $this->tenantOption->getOptions();
+            $data = $this->tenantOptionRepository->getOptions();
             
             if ($data) {
                 foreach ($data as $key => $value) {
@@ -63,10 +79,10 @@ class TenantOptionController extends Controller
                 }
             }
 
-			$apiStatus = $this->response->status();
-			$apiMessage = trans('messages.success.MESSAGE_USER_CREATED');    
-			
-			return ResponseHelper::success($apiStatus, '', $optionData);
+            $apiStatus = Response::HTTP_OK;
+            $apiMessage = trans('messages.success.MESSAGE_USER_CREATED');
+            
+            return $this->responseHelper->success($apiStatus, '', $optionData);
         } catch (ModelNotFoundException $e) {
             throw new ModelNotFoundException(trans('messages.custom_error_message.100000'));
         } catch (\PDOException $e) {
@@ -89,7 +105,7 @@ class TenantOptionController extends Controller
 
         try {
             // find custom data
-            $tenantOptions = $this->tenantOption->getOptionWithCondition(['option_name', 'custom_logo']);
+            $tenantOptions = $this->tenantOptionRepository->getOptionWithCondition(['option_name', 'custom_logo']);
             if ($tenantOptions && $tenantOptions->option_value) {
                 $tenantLogo = $tenantOptions->option_value;
             }
@@ -113,15 +129,15 @@ class TenantOptionController extends Controller
         $tenantCustomCss = '';
         // find custom css
         try {
-            $tenantOptions = $this->tenantOption->getOptionWithCondition(['option_name' => 'custom_css']);
+            $tenantOptions = $this->tenantOptionRepository->getOptionWithCondition(['option_name' => 'custom_css']);
             if ($tenantOptions) {
                 $tenantCustomCss = $tenantOptions->option_value;
             }
 
             $apiData = ['custom_css' => $tenantCustomCss];
-            $apiStatus = $this->response->status();
+            $apiStatus = Response::HTTP_OK;
 
-            return ResponseHelper::success($apiStatus, '', $apiData);
+            return $this->responseHelper->success($apiStatus, '', $apiData);
         } catch (\PDOException $e) {
             throw new \PDOException($e->getMessage());
         } catch (\InvalidArgumentException $e) {

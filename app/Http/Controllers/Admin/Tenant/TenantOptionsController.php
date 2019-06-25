@@ -1,24 +1,42 @@
 <?php
 namespace App\Http\Controllers\Admin\Tenant;
 
-use Illuminate\Http\{Request, Response};
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use App\Http\Controllers\Controller;
 use App\Repositories\TenantOption\TenantOptionRepository;
 use Illuminate\Support\Facades\Storage;
-use App\Helpers\{ResponseHelper, S3Helper, Helpers};
-use Validator, PDOException;
-use App\Jobs\{DownloadAssestFromS3ToLocalStorageJob, CreateFolderInS3BucketJob};
+use App\Helpers\ResponseHelper;
+use App\Helpers\S3Helper;
+use App\Helpers\Helpers;
+use Validator;
+use PDOException;
+use App\Jobs\DownloadAssestFromS3ToLocalStorageJob;
+use App\Jobs\CreateFolderInS3BucketJob;
 
 class TenantOptionsController extends Controller
 {
-    private $tenantOption;
+    /**
+     * @var App\Repositories\TenantOption\TenantOptionRepository
+     */
+    private $tenantOptionRepository;
 
-    private $response;
+    /**
+     * @var App\Helpers\ResponseHelper
+     */
+    private $responseHelper;
     
-    public function __construct(TenantOptionRepository $tenantOption, Response $response)
+    /**
+     * Create a new controller instance.
+     *
+     * @param  App\Repositories\TenantOption\TenantOptionRepository $tenantOptionRepository
+     * @param  App\Helpers\ResponseHelper $responseHelper
+     * @return void
+     */
+    public function __construct(TenantOptionRepository $tenantOptionRepository, ResponseHelper $responseHelper)
     {
-        $this->tenantOption = $tenantOption;
-        $this->response = $response;
+        $this->tenantOptionRepository = $tenantOptionRepository;
+        $this->responseHelper = $responseHelper;
     }
 
     /**
@@ -72,13 +90,13 @@ class TenantOptionsController extends Controller
      * @return mixed response
      */
     public function storeSlider(Request $request)
-    {        
+    {
         // Server side validataions
         $validator = Validator::make($request->toArray(), ["url" => "required"]);
 
         // If post parameter have any missing parameter
         if ($validator->fails()) {
-            return ResponseHelper::error(
+            return $this->responseHelper->error(
                 trans('messages.status_code.HTTP_STATUS_UNPROCESSABLE_ENTITY'),
                 trans('messages.status_type.HTTP_STATUS_TYPE_422'),
                 trans('messages.custom_error_code.ERROR_20018'),
@@ -87,13 +105,13 @@ class TenantOptionsController extends Controller
         }
 
         try {
-            // Get total count of "slider"                        
-            $sliderCount = $this->tenantOption->getAllSlider()->count();
+            // Get total count of "slider"
+            $sliderCount = $this->tenantOptionRepository->getAllSlider()->count();
 
             // Prevent data insertion if user is trying to insert more than defined slider limit records
             if ($sliderCount >= config('constants.SLIDER_LIMIT')) {
                 // Set response data
-                return ResponseHelper::error(
+                return $this->responseHelper->error(
                     trans('messages.status_code.HTTP_STATUS_FORBIDDEN'),
                     trans('messages.status_type.HTTP_STATUS_TYPE_403'),
                     trans('messages.custom_error_code.ERROR_40020'),
@@ -109,15 +127,15 @@ class TenantOptionsController extends Controller
                     $insertData['option_value'] = serialize(json_encode($request->toArray()));
 
                     // Create new tenant_option
-                    $tenantOption = $this->tenantOption->storeSlider($insertData);
+                    $tenantOption = $this->tenantOptionRepository->storeSlider($insertData);
 
                     // Set response data
-                    $apiStatus = $this->response->status();
+                    $apiStatus = Response::HTTP_OK;
                     $apiMessage = trans('messages.success.MESSAGE_SLIDER_ADD_SUCCESS');
-                    return ResponseHelper::success($apiStatus, $apiMessage);
+                    return $this->responseHelper->success($apiStatus, $apiMessage);
                 } else {
                     // Response error unable to upload file on S3
-                    return ResponseHelper::error(
+                    return $this->responseHelper->error(
                         trans('messages.status_code.HTTP_STATUS_UNPROCESSABLE_ENTITY'),
                         trans('messages.status_type.HTTP_STATUS_TYPE_422'),
                         trans('messages.custom_error_code.ERROR_40022'),
@@ -151,9 +169,9 @@ class TenantOptionsController extends Controller
             dispatch(new DownloadAssestFromS3ToLocalStorageJob($tenantName));
 
             // Set response data
-            $apiStatus = $this->response->status();
+            $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_CUSTOM_STYLE_RESET_SUCCESS');
-            return ResponseHelper::success($apiStatus, $apiMessage);
+            return $this->responseHelper->success($apiStatus, $apiMessage);
         } catch (\Exception $e) {
         }
     }
@@ -165,10 +183,10 @@ class TenantOptionsController extends Controller
      * @return mix
      */
     public function updateStyleSettings(Request $request)
-    {        
+    {
         $isVariableScss = 0;
 
-        $this->tenantOption->updateStyleSettings($request);
+        $this->tenantOptionRepository->updateStyleSettings($request);
         
         $file = $request->file('custom_scss_files');
 
@@ -182,10 +200,9 @@ class TenantOptionsController extends Controller
         }
 
         if ($request->hasFile('custom_scss_files')) {
-
             // If request parameter have any error
             if ($file->getClientOriginalExtension() !== "scss") {
-                return ResponseHelper::error(
+                return $this->responseHelper->error(
                     trans('messages.status_code.HTTP_STATUS_UNPROCESSABLE_ENTITY'),
                     trans('messages.status_type.HTTP_STATUS_TYPE_422'),
                     trans('messages.custom_error_code.ERROR_20044'),
@@ -205,7 +222,7 @@ class TenantOptionsController extends Controller
                     Storage::disk('local')->delete($file);
                 } else {
                     // Error: Return like uploaded file name doesn't match with structure.
-                    return ResponseHelper::error(
+                    return $this->responseHelper->error(
                         trans('messages.status_code.HTTP_STATUS_UNPROCESSABLE_ENTITY'),
                         trans('messages.status_type.HTTP_STATUS_TYPE_422'),
                         trans('messages.custom_error_code.ERROR_20040'),
@@ -236,8 +253,8 @@ class TenantOptionsController extends Controller
         S3Helper::compileLocalScss($tenantName, $options);
 
         // Set response data
-        $apiStatus = $this->response->status();
+        $apiStatus = Response::HTTP_OK;
         $apiMessage = trans('messages.success.MESSAGE_CUSTOM_STYLE_UPLOADED_SUCCESS');
-        return ResponseHelper::success($apiStatus, $apiMessage);
+        return $this->responseHelper->success($apiStatus, $apiMessage);
     }
 }
