@@ -6,7 +6,7 @@
                     <div class="icon-input">
                         <b-form-input
                             type="text"
-                            @keypress.enter.prevent="searchMission"
+                            @keyup="searchMission"
                             :placeholder="$t('label.search')+' '+$t('label.mission')"
                             @focus="handleFocus()"
                             @blur="handleBlur()"
@@ -155,22 +155,18 @@ export default {
             });   
         },
 
-        searchMission() {
-            if (this.search != ''){
-                this.$emit('searchMission',this.$route.params.slug);
-            }
+        searchMission($event) {
+            this.$parent.searchMissions(this.search);
         },
 
         fetchFilters() {
-
+            this.$emit('cmsListing',this.$route.params.slug);
         }
     },
     created() {
         // Fetch country
-        // this.getCountry();
-        //Fetch users filter
-        this.fetchFilters();
-
+        this.getCountry();
+        
         var _this = this;
         setTimeout(function(){ 
             _this.defautCountry = _this.$i18n.t("label.country");

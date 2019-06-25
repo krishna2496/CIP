@@ -174,7 +174,8 @@ export default {
         sortByDefault: '',
         missionList : [],
         activeView:"gridView",
-        filter:[]
+        filter:[],
+        search : ""
         };
     },
 
@@ -195,22 +196,27 @@ export default {
         },
         //Mission listing
         async getMissions(){
-
-            let filter = [
-                {
-                    'page' : this.currentPage
-                }
-            ];
-
+            let filter = {};
+            filter.page = this.currentPage
+            filter.search = this.search    
+            
             await missionListing(filter).then( response => {
             if (response.data) {
                 this.missionList = response.data;    
-            }    
+            } else {
+                this.missionList = [];
+            }  
             if (response.pagination) {
                 this.rows = response.pagination.total;
                 this.perPage = response.pagination.per_page;
                 this.currentPage = response.pagination.current_page;
-            }    
+            } else {
+                this.rows = 0;
+                if (this.currentPage != 1) {
+                    this.currentPage = 1;
+                    this.getMissions();
+                }
+            }   
             }); 
         },
 
@@ -220,8 +226,9 @@ export default {
             this.getMissions();
         },
 
-        searchMission () {
-            
+        searchMissions(searchParams) {
+            this.search = searchParams;
+            this.getMissions(); 
         },
         
         changeView(currentView){
