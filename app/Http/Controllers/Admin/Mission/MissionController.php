@@ -69,7 +69,7 @@ class MissionController extends Controller
         } catch (\InvalidArgumentException $e) {
             throw new \InvalidArgumentException($e->getMessage());
         } catch (\Exception $e) {
-            throw new \Exception($e->getMessage());
+            throw new \Exception(trans('messages.custom_error_message.999999'));
         }
     }
 
@@ -113,7 +113,7 @@ class MissionController extends Controller
         // If request parameter have any error
         if ($validator->fails()) {
             return $this->responseHelper->error(
-                trans('messages.status_code.HTTP_STATUS_UNPROCESSABLE_ENTITY'),
+                Response::HTTP_UNPROCESSABLE_ENTITY,
                 trans('messages.status_type.HTTP_STATUS_TYPE_422'),
                 trans('messages.custom_error_code.ERROR_300000'),
                 $validator->errors()->first()
@@ -124,14 +124,14 @@ class MissionController extends Controller
             $mission = $this->missionRepository->store($request);
                        
             // Set response data
-            $apiStatus = trans('messages.status_code.HTTP_STATUS_CREATED');
+            $apiStatus = Response::HTTP_CREATED;
             $apiMessage = trans('messages.success.MESSAGE_MISSION_ADD_SUCCESS');
             $apiData = ['mission_id' => $mission->mission_id];
             return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
         } catch (PDOException $e) {
             throw new PDOException($e->getMessage());
         } catch (\Exception $e) {
-            throw new \Exception($e->getMessage());
+            throw new \Exception(trans('messages.custom_error_message.999999'));
         }
     }
 
@@ -186,7 +186,7 @@ class MissionController extends Controller
         // If request parameter have any error
         if ($validator->fails()) {
             return $this->responseHelper->error(
-                trans('messages.status_code.HTTP_STATUS_UNPROCESSABLE_ENTITY'),
+                Response::HTTP_UNPROCESSABLE_ENTITY,
                 trans('messages.status_type.HTTP_STATUS_TYPE_422'),
                 trans('messages.custom_error_code.ERROR_300000'),
                 $validator->errors()->first()
@@ -204,7 +204,7 @@ class MissionController extends Controller
         } catch (PDOException $e) {
             throw new PDOException($e->getMessage());
         } catch (\Exception $e) {
-            throw new \Exception($e->getMessage());
+            throw new \Exception(trans('messages.custom_error_message.999999'));
         }
     }
 
@@ -294,7 +294,7 @@ class MissionController extends Controller
             // If request parameter have any error
             if ($validator->fails()) {
                 return $this->responseHelper->error(
-                    trans('messages.status_code.HTTP_STATUS_UNPROCESSABLE_ENTITY'),
+                    Response::HTTP_UNPROCESSABLE_ENTITY,
                     trans('messages.status_type.HTTP_STATUS_TYPE_422'),
                     trans('messages.custom_error_code.ERROR_400000'),
                     $validator->errors()->first()
@@ -311,7 +311,7 @@ class MissionController extends Controller
         } catch (PDOException $e) {
             throw new PDOException($e->getMessage());
         } catch (\Exception $e) {
-            throw new \Exception($e->getMessage());
+            throw new \Exception(trans('messages.custom_error_message.999999'));
         }
     }
 }

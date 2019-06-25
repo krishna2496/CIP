@@ -97,7 +97,7 @@ class TenantOptionsController extends Controller
         // If post parameter have any missing parameter
         if ($validator->fails()) {
             return $this->responseHelper->error(
-                trans('messages.status_code.HTTP_STATUS_UNPROCESSABLE_ENTITY'),
+                Response::HTTP_UNPROCESSABLE_ENTITY,
                 trans('messages.status_type.HTTP_STATUS_TYPE_422'),
                 trans('messages.custom_error_code.ERROR_20018'),
                 $validator->errors()->first()
@@ -136,7 +136,7 @@ class TenantOptionsController extends Controller
                 } else {
                     // Response error unable to upload file on S3
                     return $this->responseHelper->error(
-                        trans('messages.status_code.HTTP_STATUS_UNPROCESSABLE_ENTITY'),
+                        Response::HTTP_UNPROCESSABLE_ENTITY,
                         trans('messages.status_type.HTTP_STATUS_TYPE_422'),
                         trans('messages.custom_error_code.ERROR_40022'),
                         trans('messages.custom_error_message.40022')
@@ -146,7 +146,7 @@ class TenantOptionsController extends Controller
         } catch (PDOException $e) {
             throw new PDOException($e->getMessage());
         } catch (\Exception $e) {
-            throw new \Exception($e->getMessage());
+            throw new \Exception(trans('messages.custom_error_message.999999'));
         }
     }
 
@@ -203,7 +203,7 @@ class TenantOptionsController extends Controller
             // If request parameter have any error
             if ($file->getClientOriginalExtension() !== "scss") {
                 return $this->responseHelper->error(
-                    trans('messages.status_code.HTTP_STATUS_UNPROCESSABLE_ENTITY'),
+                    Response::HTTP_UNPROCESSABLE_ENTITY,
                     trans('messages.status_type.HTTP_STATUS_TYPE_422'),
                     trans('messages.custom_error_code.ERROR_20044'),
                     trans('messages.custom_error_message.20044')
@@ -223,7 +223,7 @@ class TenantOptionsController extends Controller
                 } else {
                     // Error: Return like uploaded file name doesn't match with structure.
                     return $this->responseHelper->error(
-                        trans('messages.status_code.HTTP_STATUS_UNPROCESSABLE_ENTITY'),
+                        Response::HTTP_UNPROCESSABLE_ENTITY,
                         trans('messages.status_type.HTTP_STATUS_TYPE_422'),
                         trans('messages.custom_error_code.ERROR_20040'),
                         trans('messages.custom_error_message.20040')

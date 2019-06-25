@@ -96,7 +96,7 @@ class AuthController extends Controller
 
         if ($validator->fails()) {
             return $this->responseHelper->error(
-                trans('messages.status_code.HTTP_STATUS_UNPROCESSABLE_ENTITY'),
+                Response::HTTP_UNPROCESSABLE_ENTITY,
                 trans('messages.status_type.HTTP_STATUS_TYPE_422'),
                 trans('messages.custom_error_code.ERROR_40001'),
                 $validator->errors()->first()
@@ -118,7 +118,7 @@ class AuthController extends Controller
         // Verify user's password
         if (!Hash::check($this->request->input('password'), $userDetail->password)) {
             return $this->responseHelper->error(
-                trans('messages.status_code.HTTP_STATUS_UNPROCESSABLE_ENTITY'),
+                Response::HTTP_UNPROCESSABLE_ENTITY,
                 trans('messages.status_type.HTTP_STATUS_TYPE_422'),
                 trans('messages.custom_error_code.ERROR_40004'),
                 trans('messages.custom_error_message.40004')
@@ -153,7 +153,7 @@ class AuthController extends Controller
         
         if ($validator->fails()) {
             return $this->responseHelper->error(
-                trans('messages.status_code.HTTP_STATUS_UNPROCESSABLE_ENTITY'),
+                Response::HTTP_UNPROCESSABLE_ENTITY,
                 trans('messages.status_type.HTTP_STATUS_TYPE_422'),
                 trans('messages.custom_error_code.ERROR_40010'),
                 $validator->errors()->first()
@@ -223,7 +223,7 @@ class AuthController extends Controller
         
         if ($validator->fails()) {
             return $this->responseHelper->error(
-                trans('messages.status_code.HTTP_STATUS_UNPROCESSABLE_ENTITY'),
+                Response::HTTP_UNPROCESSABLE_ENTITY,
                 trans('messages.status_type.HTTP_STATUS_TYPE_422'),
                 trans('messages.custom_error_code.ERROR_40011'),
                 $validator->errors()->first()
@@ -241,7 +241,7 @@ class AuthController extends Controller
         //if record not found
         if (!$record) {
             return $this->responseHelper->error(
-                trans('messages.status_code.HTTP_STATUS_UNPROCESSABLE_ENTITY'),
+                Response::HTTP_UNPROCESSABLE_ENTITY,
                 trans('messages.status_type.HTTP_STATUS_TYPE_422'),
                 trans('messages.custom_error_code.ERROR_40013'),
                 trans('messages.custom_error_message.40013')

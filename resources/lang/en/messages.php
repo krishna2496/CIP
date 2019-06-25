@@ -144,6 +144,9 @@ return [
         'ERROR_400003' => '400003',
         'ERROR_400004' => '400004',
 		
+		// Custom error code for  Tenant Authorization - 210000 - 219999
+        'ERROR_210000' => '210000',
+		
 	],
 	
 	/**
@@ -217,6 +220,13 @@ return [
         '400001' => 'Invalid mission data or missing parameter',
         '400002' => 'Error while inserting data to database',
         '400003' => 'Requested mission does not exist',
-        '400004' => 'Mission deletion failed',
+		'400004' => 'Mission deletion failed',
+		
+		// Custom error code for Tenant Authorization - 210000 - 219999
+        '210000' => 'Invalid API Key or Secret key',
+        		
+		// Custom error code for common exception
+		'999999' => 'An error has occured', 
+		
 	]
 ];

@@ -64,7 +64,7 @@ class FooterPageController extends Controller
         } catch (\PDOException $e) {
             throw new \PDOException($e->getMessage());
         } catch (\Exception $e) {
-            throw new \Exception($e->getMessage());
+            throw new \Exception(trans('messages.custom_error_message.999999'));
         }
     }
 
@@ -92,7 +92,7 @@ class FooterPageController extends Controller
         } catch (ModelNotFoundException $e) {
             throw new ModelNotFoundException(trans('messages.custom_error_message.300005'));
         } catch (\Exception $e) {
-            throw new \Exception($e->getMessage());
+            throw new \Exception(trans('messages.custom_error_message.999999'));
         }
     }
 
@@ -120,7 +120,7 @@ class FooterPageController extends Controller
         } catch (\PDOException $e) {
             throw new \PDOException($e->getMessage());
         } catch (\Exception $e) {
-            throw new \Exception($e->getMessage());
+            throw new \Exception(trans('messages.custom_error_message.999999'));
         }
     }
 }

@@ -12,23 +12,16 @@ class MissionThemeRepository implements MissionThemeInterface
      * @var App\Models\MissionTheme
      */
     public $missionTheme;
-    
-    /**
-     * @var Illuminate\Http\Response
-     */
-    private $response;
-
+ 
     /**
      * Create a new MissionTheme repository instance.
      *
      * @param  App\Models\MissionTheme $missionTheme
-     * @param  Illuminate\Http\ResponseHelper $responseHelper
      * @return void
      */
-    public function __construct(MissionTheme $missionTheme, ResponseHelper $responseHelper)
+    public function __construct(MissionTheme $missionTheme)
     {
         $this->missionTheme = $missionTheme;
-        $this->responseHelper = $responseHelper;
     }
     
     /**

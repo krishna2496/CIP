@@ -19,12 +19,12 @@ use App\User;
 class UserController extends Controller
 {
     /**
-     * @var UserRepository
+     * @var App\Repositories\User\UserRepository
      */
     private $userRepository;
     
     /**
-     * @var ResponseHelper
+     * @var App\Helpers\ResponseHelper
      */
     private $responseHelper;
     
@@ -71,23 +71,26 @@ class UserController extends Controller
     {
         try {
             // Server side validataions
-            $validator = Validator::make($request->toArray(), ["first_name" => "required|max:16",
-                                                                "last_name" => "required|max:16",
-                                                                "email" => "required|email|unique:user,
-                                                                email, NULL, user_id, deleted_at, NULL",
-                                                                "password" => "required",
-                                                                "city_id" => "required",
-                                                                "country_id" => "required",
-                                                                "profile_text" => "required",
-                                                                "employee_id" => "max:16",
-                                                                "department" => "max:16",
-                                                                "manager_name" => "max:16",
-                                                                "linked_in_url" => "url"]);
+            $validator = Validator::make(
+                $request->toArray(),
+                ["first_name" => "required|max:16",
+                "last_name" => "required|max:16",
+                "email" => "required|email|unique:user,
+                email, NULL, user_id, deleted_at, NULL",
+                "password" => "required",
+                "city_id" => "required",
+                "country_id" => "required",
+                "profile_text" => "required",
+                "employee_id" => "max:16",
+                "department" => "max:16",
+                "manager_name" => "max:16",
+                "linked_in_url" => "url"]
+            );
 
             // If request parameter have any error
             if ($validator->fails()) {
                 return $this->responseHelper->error(
-                    trans('messages.status_code.HTTP_STATUS_UNPROCESSABLE_ENTITY'),
+                    Response::HTTP_UNPROCESSABLE_ENTITY,
                     trans('messages.status_type.HTTP_STATUS_TYPE_422'),
                     trans('messages.custom_error_code.ERROR_100010'),
                     $validator->errors()->first()
@@ -106,7 +109,7 @@ class UserController extends Controller
         } catch (\PDOException $e) {
             throw new \PDOException($e->getMessage());
         } catch (\Exception $e) {
-            throw new \Exception($e->getMessage());
+            throw new \Exception(trans('messages.custom_error_message.999999'));
         }
     }
 
@@ -129,7 +132,7 @@ class UserController extends Controller
         } catch (ModelNotFoundException $e) {
             throw new ModelNotFoundException(trans('messages.custom_error_message.100000'));
         } catch (\Exception $e) {
-            throw new \Exception($e->getMessage());
+            throw new \Exception(trans('messages.custom_error_message.999999'));
         }
     }
 
@@ -157,7 +160,7 @@ class UserController extends Controller
         } catch (\PDOException $e) {
             throw new \PDOException($e->getMessage());
         } catch (\Exception $e) {
-            throw new \Exception($e->getMessage());
+            throw new \Exception(trans('messages.custom_error_message.999999'));
         }
     }
 
@@ -199,7 +202,7 @@ class UserController extends Controller
             // If request parameter have any error
             if ($validator->fails()) {
                 return $this->responseHelper->error(
-                    trans('messages.status_code.HTTP_STATUS_UNPROCESSABLE_ENTITY'),
+                    Response::HTTP_UNPROCESSABLE_ENTITY,
                     trans('messages.status_type.HTTP_STATUS_TYPE_422'),
                     trans('messages.custom_error_code.ERROR_100002'),
                     $validator->errors()->first()
@@ -209,14 +212,14 @@ class UserController extends Controller
             $this->userRepository->linkSkill($request);
 
             // Set response data
-            $apiStatus = trans('messages.status_code.HTTP_STATUS_CREATED');
+            $apiStatus = Response::HTTP_CREATED;
             $apiMessage = trans('messages.success.MESSAGE_USER_SKILLS_CREATED');
             
             return $this->responseHelper->success($apiStatus, $apiMessage);
         } catch (PDOException $e) {
             throw new PDOException($e->getMessage());
         } catch (\Exception $e) {
-            throw new \Exception($e->getMessage());
+            throw new \Exception(trans('messages.custom_error_message.999999'));
         }
     }
 
@@ -239,7 +242,7 @@ class UserController extends Controller
             // If request parameter have any error
             if ($validator->fails()) {
                 return $this->responseHelper->error(
-                    trans('messages.status_code.HTTP_STATUS_UNPROCESSABLE_ENTITY'),
+                    Response::HTTP_UNPROCESSABLE_ENTITY,
                     trans('messages.status_type.HTTP_STATUS_TYPE_422'),
                     trans('messages.custom_error_code.ERROR_100002'),
                     $validator->errors()->first()
@@ -255,7 +258,7 @@ class UserController extends Controller
         } catch (PDOException $e) {
             throw new PDOException($e->getMessage());
         } catch (\Exception $e) {
-            throw new \Exception($e->getMessage());
+            throw new \Exception(trans('messages.custom_error_message.999999'));
         }
     }
 
@@ -278,7 +281,7 @@ class UserController extends Controller
         } catch (ModelNotFoundException $e) {
             throw new ModelNotFoundException(trans('messages.custom_error_message.100011'));
         } catch (\Exception $e) {
-            throw new \Exception($e->getMessage());
+            throw new \Exception(trans('messages.custom_error_message.999999'));
         }
     }
 }

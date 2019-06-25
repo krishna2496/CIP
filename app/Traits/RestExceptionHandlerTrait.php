@@ -15,6 +15,17 @@ use Firebase\JWT\ExpiredException;
 trait RestExceptionHandlerTrait
 {
     /**
+     * Create a new trait instance.
+     *
+     * @param Illuminate\Http\ResponseHelper $responseHelper
+     * @return void
+     */
+    public function __construct(ResponseHelper $responseHelper)
+    {
+        $this->responseHelper = $responseHelper;
+    }
+
+    /**
      * Creates a new JSON response based on exception type.
      *
      * @param Request $request
@@ -23,7 +34,7 @@ trait RestExceptionHandlerTrait
      */
     protected function getJsonResponseForException(Request $request, Exception $e)
     {
-        dd($e);
+        // dd($e);
         switch (true) {
             case $e instanceof ModelNotFoundException:
                 $retval = $this->modelNotFound($e->getMessage());

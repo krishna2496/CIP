@@ -13,6 +13,17 @@ use Illuminate\Http\Request;
 class AuthTenantAdminMiddleware
 {
     /**
+     * Create a new middleware instance.
+     *
+     * @param Illuminate\Http\ResponseHelper $responseHelper
+     * @return void
+     */
+    public function __construct(ResponseHelper $responseHelper)
+    {
+        $this->responseHelper = $responseHelper;
+    }
+    
+    /**
      * Handle an incoming request.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -26,7 +37,7 @@ class AuthTenantAdminMiddleware
             if (!isset($_SERVER['PHP_AUTH_USER']) && !isset($_SERVER['PHP_AUTH_PW'])
                 || (empty($_SERVER['PHP_AUTH_USER']) && empty($_SERVER['PHP_AUTH_PW']))
             ) {
-                return ResponseHelper::error(
+                return $this->responseHelper->error(
                     trans('messages.status_code.HTTP_STATUS_UNAUTHORIZED'),
                     trans('messages.status_type.HTTP_STATUS_TYPE_401'),
                     trans('messages.custom_error_code.ERROR_20010'),
@@ -48,16 +59,16 @@ class AuthTenantAdminMiddleware
                 return $next($request);
             }
             // Send authentication error response if api user not found in master database
-            return ResponseHelper::error(
+            return $this->responseHelper->error(
                 trans('messages.status_code.HTTP_STATUS_UNAUTHORIZED'),
                 trans('messages.status_type.HTTP_STATUS_TYPE_401'),
-                trans('messages.custom_error_code.ERROR_20008'),
-                trans('messages.custom_error_message.20008')
+                trans('messages.custom_error_code.ERROR_210000'),
+                trans('messages.custom_error_message.210000')
             );
         } catch (\PDOException $e) {
             throw new \PDOException($e->getMessage());
         } catch (\Exception $e) {
-            throw new \Exception($e->getMessage());
+            throw new \Exception(trans('messages.custom_error_message.999999'));
         }
     }
 }

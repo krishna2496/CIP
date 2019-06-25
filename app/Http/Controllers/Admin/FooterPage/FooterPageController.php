@@ -61,7 +61,7 @@ class FooterPageController extends Controller
         } catch (\InvalidArgumentException $e) {
             throw new \InvalidArgumentException($e->getMessage());
         } catch (\Exception $e) {
-            throw new \Exception($e->getMessage());
+            throw new \Exception(trans('messages.custom_error_message.999999'));
         }
     }
 
@@ -91,8 +91,8 @@ class FooterPageController extends Controller
             // If request parameter have any error
             if ($validator->fails()) {
                 return $this->responseHelper->error(
-                    trans('messages.status_code.HTTP_STATUS_UNPROCESSABLE_ENTITY'),
-                    trans('messages.status_type.HTTP_STATUS_TYPE_422'),
+                    Response::HTTP_UNPROCESSABLE_ENTITY,
+                    Response::$statusTexts['422'],
                     trans('messages.custom_error_code.ERROR_300000'),
                     $validator->errors()->first()
                 );
@@ -103,14 +103,14 @@ class FooterPageController extends Controller
             $footerPage = $this->footerPageRepository->store($request);
             
             // Set response data
-            $apiStatus = trans('messages.status_code.HTTP_STATUS_CREATED');
+            $apiStatus = Response::HTTP_CREATED;
             $apiMessage = trans('messages.success.MESSAGE_FOOTER_PAGE_CREATED');
             $apiData = ['page_id' => $footerPage['page_id']];
             return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
         } catch (PDOException $e) {
             throw new PDOException($e->getMessage());
         } catch (\Exception $e) {
-            throw new \Exception($e->getMessage());
+            throw new \Exception(trans('messages.custom_error_message.999999'));
         }
     }
 
@@ -149,7 +149,7 @@ class FooterPageController extends Controller
             // If post parameter have any missing parameter
             if ($validator->fails()) {
                 return $this->responseHelper->error(
-                    trans('messages.status_code.HTTP_STATUS_UNPROCESSABLE_ENTITY'),
+                    Response::HTTP_UNPROCESSABLE_ENTITY,
                     trans('messages.status_type.HTTP_STATUS_TYPE_422'),
                     trans('messages.custom_error_code.ERROR_300000'),
                     $validator->errors()->first()
@@ -168,7 +168,7 @@ class FooterPageController extends Controller
         } catch (PDOException $e) {
             throw new PDOException($e->getMessage());
         } catch (\Exception $e) {
-            throw new \Exception($e->getMessage());
+            throw new \Exception(trans('messages.custom_error_message.999999'));
         }
     }
 

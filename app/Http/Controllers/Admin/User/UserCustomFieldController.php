@@ -62,7 +62,7 @@ class UserCustomFieldController extends Controller
         } catch (\InvalidArgumentException $e) {
             throw new \InvalidArgumentException($e->getMessage());
         } catch (\Exception $e) {
-            throw new \Exception($e->getMessage());
+            throw new \Exception(trans('messages.custom_error_message.999999'));
         }
     }
 
@@ -92,7 +92,7 @@ class UserCustomFieldController extends Controller
             // If post parameter have any missing parameter
             if ($validator->fails()) {
                 return $this->responseHelper->error(
-                    trans('messages.status_code.HTTP_STATUS_UNPROCESSABLE_ENTITY'),
+                    Response::HTTP_UNPROCESSABLE_ENTITY,
                     trans('messages.status_type.HTTP_STATUS_TYPE_422'),
                     trans('messages.custom_error_code.ERROR_100003'),
                     $validator->errors()->first()
@@ -110,7 +110,7 @@ class UserCustomFieldController extends Controller
         } catch (PDOException $e) {
             throw new PDOException($e->getMessage());
         } catch (\Exception $e) {
-            throw new \Exception($e->getMessage());
+            throw new \Exception(trans('messages.custom_error_message.999999'));
         }
     }
 
@@ -147,7 +147,7 @@ class UserCustomFieldController extends Controller
             // If post parameter have any missing parameter
             if ($validator->fails()) {
                 return $this->responseHelper->error(
-                    trans('messages.status_code.HTTP_STATUS_UNPROCESSABLE_ENTITY'),
+                    Response::HTTP_UNPROCESSABLE_ENTITY,
                     trans('messages.status_type.HTTP_STATUS_TYPE_422'),
                     trans('messages.custom_error_code.ERROR_100003'),
                     $validator->errors()->first()
@@ -166,7 +166,7 @@ class UserCustomFieldController extends Controller
         } catch (PDOException $e) {
             throw new PDOException($e->getMessage());
         } catch (\Exception $e) {
-            throw new \Exception($e->getMessage());
+            throw new \Exception(trans('messages.custom_error_message.999999'));
         }
     }
 
