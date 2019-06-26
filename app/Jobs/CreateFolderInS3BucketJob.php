@@ -35,15 +35,13 @@ class CreateFolderInS3BucketJob extends Job
 
         // Copy default_theme folder which is already present on S3
         if (Storage::disk('s3')->exists(env('AWS_S3_DEFAULT_THEME_FOLDER_NAME'))) {
-            
             $files = Storage::disk('s3')->allFiles(env('AWS_S3_DEFAULT_THEME_FOLDER_NAME'));
 
             // Fetched files copy to created s3 folder
             foreach ($files as $key => $file) {
-
                 $sourcePath = str_replace(env('AWS_S3_DEFAULT_THEME_FOLDER_NAME'), '', $file);
 
-                // Delete if folder already exists                    
+                // Delete if folder already exists
                 if (Storage::disk('s3')->exists($this->tenant->name.'/'.$sourcePath)) {
                     Storage::disk('s3')->delete($this->tenant->name.'/'.$sourcePath);
                 }
@@ -52,7 +50,8 @@ class CreateFolderInS3BucketJob extends Job
                 Storage::disk('s3')->copy($file, $this->tenant->name.'/'.$sourcePath);
 
                 if (basename($file)==env('S3_CUSTOME_CSS_NAME')) {
-                    $pathInS3 = 'https://s3.'.env('AWS_REGION').'.amazonaws.com/'.env('AWS_S3_BUCKET_NAME').'/'.$this->tenant->name.''.$sourcePath;
+                    $pathInS3 = 'https://s3.'.env('AWS_REGION').'.amazonaws.com/'.
+                    env('AWS_S3_BUCKET_NAME').'/'.$this->tenant->name.''.$sourcePath;
                     
                     // Connect with tenant database
                     $tenantOptionData['option_name'] = "custom_css";

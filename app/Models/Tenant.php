@@ -1,12 +1,15 @@
-<?php 
+<?php
 namespace App\Models;
 
-use App\Models\{TenantHasOption, ApiUser, TenantLanguage};
-use Illuminate\Database\Eloquent\{SoftDeletes, Model};
+use App\Models\TenantHasOption;
+use App\Models\ApiUser;
+use App\Models\TenantLanguage;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Tenant extends Model {
-
+class Tenant extends Model
+{
     use SoftDeletes;
 
     /**
@@ -42,7 +45,8 @@ class Tenant extends Model {
      *
      * @var array
      */
-    protected $visible = ['tenant_id', 'name', 'sponsor_id', 'status', 'options', 'tenantLanguages', 'tenantLanguages.language'];
+    protected $visible = ['tenant_id', 'name', 'sponsor_id', 'status',
+    'options', 'tenantLanguages', 'tenantLanguages.language'];
 
      
     /**
@@ -52,7 +56,7 @@ class Tenant extends Model {
      */
     protected $softDelete = true;
     
-    /** 
+    /**
     * Defined has many relation for the tenant_option table.
     *
     * @return \Illuminate\Database\Eloquent\Relations\HasMany
@@ -83,20 +87,12 @@ class Tenant extends Model {
     }
 
     /**
-     * Get the language record associated with the tenant language.
-     */
-    public function getAll()
-    {
-        return static::with('options', 'tenantLanguages', 'tenantLanguages.language')->paginate(config('constants.PER_PAGE_LIMIT'));
-    }
-
-    /**
      * Find the specified resource.
      *
      * @param  int  $id
-     * @return array
+     * @return self
      */
-    public function findTenant(int $id)
+    public function findTenant(int $id): self
     {
         return static::with('options', 'tenantLanguages', 'tenantLanguages.language')->findOrFail($id);
     }
@@ -105,9 +101,9 @@ class Tenant extends Model {
      * Delete the specified resource.
      *
      * @param  int  $id
-     * @return array
+     * @return bool
      */
-    public function deleteTenant(int $id)
+    public function deleteTenant(int $id): bool
     {
         return static::findOrFail($id)->delete();
     }
