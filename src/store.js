@@ -81,8 +81,8 @@ export default new Vuex.Store({
             state.logo = logo;
         },
 
-        userFilter(state,filters){
-            localStorage.getItem('filters.search') 
+        userFilter(state,filters) {
+            localStorage.setItem('search',filters.search) 
             state.search = filters.search
         }
     },

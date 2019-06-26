@@ -8,9 +8,13 @@ export default async(data) => {
     if (store.state.defaultLanguage !== null) {
         defaultLanguage = (store.state.defaultLanguage).toLowerCase();
     }
+    var url =process.env.VUE_APP_API_ENDPOINT + "app/missions?page=" + data.page
 
+    if(data.search != ''){
+        url = url+"&search=" + data.search
+    }
     await axios({
-            url: process.env.VUE_APP_API_ENDPOINT + "app/missions?page=" + data.page+"&search=" + data.search,
+            url: url,
             method: 'get',
             headers: {
                 'X-localization': defaultLanguage,
@@ -19,7 +23,18 @@ export default async(data) => {
         })
         .then((response) => {
             responseData = response.data;
-            store.commit('userFilter', JSON.stringify(sliderData))
+
+            if (response.data.meta_data) {
+                store.commit('userFilter',response.data.meta_data)
+            } else {
+                let filterData = {};
+                filterData.search = '';
+                filterData.country = '';
+                filterData.city = '';
+                filterData.theme = '';
+                filterData.skill = '';
+                store.commit('userFilter',filterData)
+            }
         })
         .catch(function(error) {});
     return responseData;

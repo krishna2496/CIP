@@ -6,7 +6,7 @@
                     <div class="icon-input">
                         <b-form-input
                             type="text"
-                            @keyup="searchMission"
+                            @keypress.enter="searchMission"
                             :placeholder="$t('label.search')+' '+$t('label.mission')"
                             @focus="handleFocus()"
                             @blur="handleBlur()"
@@ -61,10 +61,11 @@
 import AppCustomDropdown from "../AppCustomDropdown";
 import AppCheckboxDropdown from "../AppCheckboxDropdown";
 import {countryList,cityList,skillList,themeList} from "../../services/service";
+import store from "../../store";
 
 export default {
     components: { AppCustomDropdown, AppCheckboxDropdown },
-    name: "TheSecondaryHeader",
+    name: "TheSecondaryHeader", 
     data() {
         return {
             defautCountry: "Country",
@@ -79,7 +80,7 @@ export default {
                 text: ""
             },
             show: false,
-            search:''
+            search: ''
         };
     },
     methods: {
@@ -164,10 +165,12 @@ export default {
         }
     },
     created() {
+        var _this = this;
         // Fetch country
         this.getCountry();
-        
-        var _this = this;
+        if(store.state.search != null) {
+            this.search = store.state.search;
+        }
         setTimeout(function(){ 
             _this.defautCountry = _this.$i18n.t("label.country");
             _this.defautCity =  _this.$i18n.t("label.city"),

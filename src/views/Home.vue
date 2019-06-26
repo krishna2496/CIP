@@ -2,7 +2,7 @@
     <div class="home-page inner-pages filter-header">
         <header @scroll="handleScroll">
              <ThePrimaryHeader></ThePrimaryHeader>
-             <TheSecondaryHeader></TheSecondaryHeader>
+             <TheSecondaryHeader v-if="isShownComponent"></TheSecondaryHeader>
         </header>
         <main>
             <b-container class="home-content-wrapper">
@@ -144,7 +144,7 @@ import AppCustomDropdown from "../components/AppCustomDropdown";
 import AppCustomChip from "../components/AppCustomChip";
 import axios from "axios";
 import store from '../store';
-import {missionListing} from '../services/service';
+import {missionListing,missionFilterListing} from '../services/service';
 
 export default {
     components: {
@@ -175,7 +175,15 @@ export default {
         missionList : [],
         activeView:"gridView",
         filter:[],
-        search : ""
+        search : "",
+        isShownComponent :false,
+        filterData : {
+            "search" : "",
+            "country": "",
+            "city": "",
+            "theme": "",
+            "skill": ""
+        }
         };
     },
 
@@ -198,7 +206,7 @@ export default {
         async getMissions(){
             let filter = {};
             filter.page = this.currentPage
-            filter.search = this.search    
+            filter.search = store.state.search    
             
             await missionListing(filter).then( response => {
             if (response.data) {
@@ -216,7 +224,14 @@ export default {
                     this.currentPage = 1;
                     this.getMissions();
                 }
-            }   
+            }          
+            this.isShownComponent = true; 
+            }); 
+        },
+
+        async missionFilter(){
+            await missionFilterListing().then( response => {
+                this.getMissions();
             }); 
         },
 
@@ -227,7 +242,8 @@ export default {
         },
 
         searchMissions(searchParams) {
-            this.search = searchParams;
+            this.filterData.search =  searchParams
+            store.commit('userFilter',this.filterData)
             this.getMissions(); 
         },
         
@@ -239,7 +255,7 @@ export default {
     created() {
         var _this = this;
         // Mission listing
-        this.getMissions();
+        this.missionFilter();
         setTimeout(function(){ 
             _this.sortByDefault = _this.$i18n.t("label.sort_by");
         },400);
