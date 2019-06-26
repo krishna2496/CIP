@@ -93,7 +93,7 @@ class FooterPageController extends Controller
             if ($validator->fails()) {
                 return $this->responseHelper->error(
                     Response::HTTP_UNPROCESSABLE_ENTITY,
-                    Response::$statusTexts['422'],
+                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
                     trans('messages.custom_error_code.ERROR_300000'),
                     $validator->errors()->first()
                 );
@@ -161,7 +161,7 @@ class FooterPageController extends Controller
             if ($validator->fails()) {
                 return $this->responseHelper->error(
                     Response::HTTP_UNPROCESSABLE_ENTITY,
-                    Response::$statusTexts['422'],
+                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
                     trans('messages.custom_error_code.ERROR_300000'),
                     $validator->errors()->first()
                 );

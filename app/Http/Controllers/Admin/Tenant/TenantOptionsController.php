@@ -7,15 +7,18 @@ use App\Http\Controllers\Controller;
 use App\Repositories\TenantOption\TenantOptionRepository;
 use Illuminate\Support\Facades\Storage;
 use App\Helpers\ResponseHelper;
+use Illuminate\Http\JsonResponse;
 use App\Helpers\S3Helper;
 use App\Helpers\Helpers;
 use Validator;
 use PDOException;
 use App\Jobs\DownloadAssestFromS3ToLocalStorageJob;
 use App\Jobs\CreateFolderInS3BucketJob;
+use App\Traits\RestExceptionHandlerTrait;
 
 class TenantOptionsController extends Controller
 {
+    use RestExceptionHandlerTrait;
     /**
      * @var App\Repositories\TenantOption\TenantOptionRepository
      */
@@ -87,9 +90,9 @@ class TenantOptionsController extends Controller
      * Store slider details.
      *
      * @param \Illuminate\Http\Request  $request
-     * @return mixed response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function storeSlider(Request $request)
+    public function storeSlider(Request $request): JsonResponse
     {
         // Server side validataions
         $validator = Validator::make($request->toArray(), ["url" => "required"]);
@@ -98,8 +101,8 @@ class TenantOptionsController extends Controller
         if ($validator->fails()) {
             return $this->responseHelper->error(
                 Response::HTTP_UNPROCESSABLE_ENTITY,
-                Response::$statusTexts['422'],
-                trans('messages.custom_error_code.ERROR_20018'),
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                config('constants.error_codes.ERROR_SLIDER_INVALID_DATA'),
                 $validator->errors()->first()
             );
         }
@@ -112,10 +115,10 @@ class TenantOptionsController extends Controller
             if ($sliderCount >= config('constants.SLIDER_LIMIT')) {
                 // Set response data
                 return $this->responseHelper->error(
-                    trans('messages.status_code.HTTP_STATUS_FORBIDDEN'),
-                    trans('messages.status_type.HTTP_STATUS_TYPE_403'),
-                    trans('messages.custom_error_code.ERROR_40020'),
-                    trans('messages.custom_error_message.40020')
+                    Response::HTTP_FORBIDDEN,
+                    Response::$statusTexts[Response::HTTP_FORBIDDEN],
+                    config('constants.error_codes.ERROR_SLIDER_LIMIT'),
+                    trans('messages.custom_error_message.100014')
                 );
             } else {
                 // Upload slider image on S3 server
@@ -137,14 +140,19 @@ class TenantOptionsController extends Controller
                     // Response error unable to upload file on S3
                     return $this->responseHelper->error(
                         Response::HTTP_UNPROCESSABLE_ENTITY,
-                        Response::$statusTexts['422'],
+                        Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
                         trans('messages.custom_error_code.ERROR_40022'),
-                        trans('messages.custom_error_message.40022')
+                        trans('messages.custom_error_message.100012')
                     );
                 }
             }
         } catch (PDOException $e) {
-            throw new PDOException($e->getMessage());
+            return $this->PDO(
+                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
+                trans(
+                    'messages.custom_error_message.'.config('constants.error_codes.ERROR_DATABASE_OPERATIONAL')
+                )
+            );
         } catch (\Exception $e) {
             throw new \Exception(trans('messages.custom_error_message.999999'));
         }
@@ -204,7 +212,7 @@ class TenantOptionsController extends Controller
             if ($file->getClientOriginalExtension() !== "scss") {
                 return $this->responseHelper->error(
                     Response::HTTP_UNPROCESSABLE_ENTITY,
-                    Response::$statusTexts['422'],
+                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
                     trans('messages.custom_error_code.ERROR_20044'),
                     trans('messages.custom_error_message.20044')
                 );
@@ -224,7 +232,7 @@ class TenantOptionsController extends Controller
                     // Error: Return like uploaded file name doesn't match with structure.
                     return $this->responseHelper->error(
                         Response::HTTP_UNPROCESSABLE_ENTITY,
-                        Response::$statusTexts['422'],
+                        Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
                         trans('messages.custom_error_code.ERROR_20040'),
                         trans('messages.custom_error_message.20040')
                     );

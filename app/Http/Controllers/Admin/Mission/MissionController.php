@@ -20,9 +20,11 @@ use App\Helpers\ResponseHelper;
 use App\Helpers\LanguageHelper;
 use Validator;
 use DB;
+use App\Traits\RestExceptionHandlerTrait;
 
 class MissionController extends Controller
 {
+    use RestExceptionHandlerTrait;
     /**
      * @var App\Repositories\Mission\MissionRepository
      */
@@ -114,7 +116,7 @@ class MissionController extends Controller
         if ($validator->fails()) {
             return $this->responseHelper->error(
                 Response::HTTP_UNPROCESSABLE_ENTITY,
-                Response::$statusTexts['422'],
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
                 trans('messages.custom_error_code.ERROR_300000'),
                 $validator->errors()->first()
             );
@@ -187,7 +189,7 @@ class MissionController extends Controller
         if ($validator->fails()) {
             return $this->responseHelper->error(
                 Response::HTTP_UNPROCESSABLE_ENTITY,
-                Response::$statusTexts['422'],
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
                 trans('messages.custom_error_code.ERROR_300000'),
                 $validator->errors()->first()
             );
@@ -247,7 +249,7 @@ class MissionController extends Controller
              : trans('messages.success.MESSAGE_NO_RECORD_FOUND');
             
             return $this->responseHelper->successWithPagination(
-                $this->response->status(),
+                Response::HTTP_OK,
                 $responseMessage,
                 $applicationList
             );
@@ -270,7 +272,7 @@ class MissionController extends Controller
             $responseMessage = (count($applicationList) > 0) ? trans('messages.success.MESSAGE_APPLICATION_LISTING')
              : trans('messages.success.MESSAGE_NO_RECORD_FOUND');
             
-            return $this->responseHelper->success($this->response->status(), $responseMessage, $applicationList);
+            return $this->responseHelper->success(Response::HTTP_OK, $responseMessage, $applicationList);
         } catch (\InvalidArgumentException $e) {
             throw new \InvalidArgumentException($e->getMessage());
         }
@@ -295,7 +297,7 @@ class MissionController extends Controller
             if ($validator->fails()) {
                 return $this->responseHelper->error(
                     Response::HTTP_UNPROCESSABLE_ENTITY,
-                    Response::$statusTexts['422'],
+                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
                     trans('messages.custom_error_code.ERROR_400000'),
                     $validator->errors()->first()
                 );

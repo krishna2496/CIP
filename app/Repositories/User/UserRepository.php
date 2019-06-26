@@ -1,9 +1,11 @@
 <?php
 namespace App\Repositories\User;
 
+use Illuminate\Database\Eloquent\Collection;
 use App\Repositories\User\UserInterface;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Pagination\LengthAwarePaginator;
 use App\User;
 use App\Helpers\Helpers;
 use App\Helpers\ResponseHelper;
@@ -50,7 +52,7 @@ class UserRepository implements UserInterface
      * @param array $request
      * @return App\User
      */
-    public function store($request): User
+    public function store(array $request): User
     {
         return $this->user->create($request);
     }
@@ -85,7 +87,7 @@ class UserRepository implements UserInterface
      * @param  int  $id
      * @return App\User
      */
-    public function update($request, int $id): User
+    public function update(array $request, int $id): User
     {
         $user = $this->user->findOrFail($id);
         $user->update($request);
@@ -153,10 +155,10 @@ class UserRepository implements UserInterface
      * Display a listing of specified resources.
      *
      * @param int $userId
-     * @return App\User
+     * @return Illuminate\Database\Eloquent\Collection
      */
-    public function userSkills(int $userId): User
+    public function userSkills(int $userId): Collection
     {
-        return $this->userSkill->findOrFail($userId);
+        return $this->userSkill->with('skill')->where('user_id', $userId)->get();
     }
 }

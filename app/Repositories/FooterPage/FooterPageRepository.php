@@ -38,7 +38,7 @@ class FooterPageRepository implements FooterPageInterface
      * Store a newly created resource in storage
      *
      * @param \Illuminate\Http\Request $request
-     * @return mixed
+     * @return App\Models\FooterPage
      */
     public function store(Request $request): FooterPage
     {
@@ -73,7 +73,7 @@ class FooterPageRepository implements FooterPageInterface
     *
     * @param  \Illuminate\Http\Request  $request
     * @param  int  $id
-    * @return mixed
+    * @return App\Models\FooterPage
     */
     public function update(Request $request, int $id): FooterPage
     {
@@ -124,10 +124,10 @@ class FooterPageRepository implements FooterPageInterface
     /**
     * Display a listing of footer pages.
     *
-    * Illuminate\Http\Request $request
-    * @return mixed
+    * @param Illuminate\Http\Request $request
+    * @return App\Models\FooterPage
     */
-    public function footerPageList(Request $request)
+    public function footerPageList(Request $request): FooterPage
     {
         $pageQuery = $this->page->with('pageTranslations');
         
@@ -149,22 +149,39 @@ class FooterPageRepository implements FooterPageInterface
      * Remove the specified resource from storage.
      *
      * @param  int  $id
-     * @return mixed
+     * @return bool
      */
-    public function delete(int $id)
+    public function delete(int $id): bool
     {
         return $this->page->deleteFooterPage($id);
     }
 
-    public function getPageList() : Collection
+    /**
+    * Get a listing of resource.
+    *
+    * @return Illuminate\Support\Collection
+    */
+    public function getPageList(): Collection
     {
         return $this->page->with(['pages:page_id,language_id,title'])->get();
     }
-    public function getPageDetailList()
+
+    /**
+    * Get a listing of resource.
+    *
+    * @return Illuminate\Support\Collection
+    */
+    public function getPageDetailList(): Collection
     {
         return $this->page->with(['pages:page_id,language_id,title,description as sections'])->get();
     }
-    public function getPageDetail($slug)
+
+    /**
+    * Get a listing of resource.
+    *
+    * @return Illuminate\Support\Collection
+    */
+    public function getPageDetail($slug): Collection
     {
         return $this->page->with(['pages:page_id,language_id,title,description as sections'])
         ->whereSlug($slug)->first();

@@ -13,9 +13,11 @@ use Illuminate\Validation\Rule;
 use Validator;
 use PDOException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Traits\RestExceptionHandlerTrait;
 
 class UserCustomFieldController extends Controller
 {
+    use RestExceptionHandlerTrait;
     /**
      * User custom field
      *
@@ -45,22 +47,23 @@ class UserCustomFieldController extends Controller
      * Display a listing of the resource.
      *
      * @param Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function index(Request $request)
     {
         try {
-            $customFields = $this->userCustomFieldRepository->UserCustomFieldList($request);
+            $customFields = $this->userCustomFieldRepository->userCustomFieldList($request);
             
             // Set response data
             $apiStatus = Response::HTTP_OK;
             $apiMessage = ($customFields->isEmpty()) ? trans('messages.success.MESSAGE_NO_RECORD_FOUND')
              : trans('messages.success.MESSAGE_CUSTOM_FIELD_LISTING');
             return $this->responseHelper->successWithPagination($apiStatus, $apiMessage, $customFields);
-        } catch (PDOException $e) {
-            throw new PDOException($e->getMessage());
-        } catch (\InvalidArgumentException $e) {
-            throw new \InvalidArgumentException($e->getMessage());
+        } catch (InvalidArgumentException $e) {
+            return $this->invalidArgument(
+                config('constants.error_codes.ERROR_INVALID_ARGUMENT'),
+                trans('messages.custom_error_message.'.config('constants.error_codes.ERROR_INVALID_ARGUMENT'))
+            );
         } catch (\Exception $e) {
             throw new \Exception(trans('messages.custom_error_message.999999'));
         }
@@ -70,7 +73,7 @@ class UserCustomFieldController extends Controller
      * Store user custom field
      *
      * @param \Illuminate\Http\Request  $request
-     * @return mixed
+     * @return \Illuminate\Http\JsonResponse
      */
     public function store(Request $request): JsonResponse
     {
@@ -93,23 +96,35 @@ class UserCustomFieldController extends Controller
             if ($validator->fails()) {
                 return $this->responseHelper->error(
                     Response::HTTP_UNPROCESSABLE_ENTITY,
-                    Response::$statusTexts['422'],
+                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
                     trans('messages.custom_error_code.ERROR_100003'),
                     $validator->errors()->first()
                 );
             }
             
             // Create new user custom field record
-            $customField = $this->userCustomFieldRepository->store($request);
+            $customField = $this->userCustomFieldRepository->store($request->toArray());
             
             // Set response data
-            $apiStatus = Response::HTTP_OK;
+            $apiStatus = Response::HTTP_CREATED;
             $apiMessage = trans('messages.success.MESSAGE_CUSTOM_FIELD_ADDED');
             $apiData = ['field_id' => $customField['field_id']];
             return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
+        } catch (InvalidArgumentException $e) {
+            return $this->invalidArgument(
+                config('constants.error_codes.ERROR_USER_CUSTOM_FIELD_INVALID_DATA'),
+                trans('messages.custom_error_message.'
+                .config('constants.error_codes.ERROR_USER_CUSTOM_FIELD_INVALID_DATA'))
+            );
         } catch (PDOException $e) {
-            throw new PDOException($e->getMessage());
+            return $this->PDO(
+                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
+                trans(
+                    'messages.custom_error_message.'.config('constants.error_codes.ERROR_DATABASE_OPERATIONAL')
+                )
+            );
         } catch (\Exception $e) {
+            dd($e);
             throw new \Exception(trans('messages.custom_error_message.999999'));
         }
     }
@@ -130,7 +145,7 @@ class UserCustomFieldController extends Controller
      *
      * @param \Illuminate\Http\Request  $request
      * @param int  $id
-     * @return mixed
+     * @return \Illuminate\Http\JsonResponse
      */
     public function update(Request $request, $id): JsonResponse
     {
@@ -148,23 +163,38 @@ class UserCustomFieldController extends Controller
             if ($validator->fails()) {
                 return $this->responseHelper->error(
                     Response::HTTP_UNPROCESSABLE_ENTITY,
-                    Response::$statusTexts['422'],
+                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
                     trans('messages.custom_error_code.ERROR_100003'),
                     $validator->errors()->first()
                 );
             }
             
-            $customField = $this->userCustomFieldRepository->update($request, $id);
+            $customField = $this->userCustomFieldRepository->update($request->toArray(), $id);
             
             // Set response data
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_CUSTOM_FIELD_UPDATED');
             $apiData = ['field_id' => $customField['field_id']];
             return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
+        } catch (InvalidArgumentException $e) {
+            return $this->invalidArgument(
+                config('constants.error_codes.ERROR_USER_CUSTOM_FIELD_INVALID_DATA'),
+                trans('messages.custom_error_message.'
+                .config('constants.error_codes.ERROR_USER_CUSTOM_FIELD_INVALID_DATA'))
+            );
         } catch (ModelNotFoundException $e) {
-            throw new ModelNotFoundException(trans('messages.custom_error_message.100004'));
+            return $this->modelNotFound(
+                config('constants.error_codes.ERROR_USER_CUSTOM_FIELD_NOT_FOUND'),
+                trans('messages.custom_error_message.'
+                .config('constants.error_codes.ERROR_USER_CUSTOM_FIELD_NOT_FOUND'))
+            );
         } catch (PDOException $e) {
-            throw new PDOException($e->getMessage());
+            return $this->PDO(
+                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
+                trans(
+                    'messages.custom_error_message.'.config('constants.error_codes.ERROR_DATABASE_OPERATIONAL')
+                )
+            );
         } catch (\Exception $e) {
             throw new \Exception(trans('messages.custom_error_message.999999'));
         }
@@ -174,19 +204,25 @@ class UserCustomFieldController extends Controller
      * Remove the specified resource from storage.
      *
      * @param int  $id
-     * @return mixed
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function destroy($id)
+    public function destroy($id): JsonResponse
     {
         try {
             $customField = $this->userCustomFieldRepository->delete($id);
             
             // Set response data
-            $apiStatus = trans('messages.status_code.HTTP_STATUS_NO_CONTENT');
+            $apiStatus = Response::HTTP_NO_CONTENT;
             $apiMessage = trans('messages.success.MESSAGE_CUSTOM_FIELD_DELETED');
             return $this->responseHelper->success($apiStatus, $apiMessage);
         } catch (ModelNotFoundException $e) {
-            throw new ModelNotFoundException(trans('messages.custom_error_message.100004'));
+            return $this->modelNotFound(
+                config('constants.error_codes.ERROR_USER_CUSTOM_FIELD_NOT_FOUND'),
+                trans('messages.custom_error_message.'
+                .config('constants.error_codes.ERROR_USER_CUSTOM_FIELD_NOT_FOUND'))
+            );
+        } catch (\Exception $e) {
+            throw new \Exception(trans('messages.custom_error_message.999999'));
         }
     }
 }

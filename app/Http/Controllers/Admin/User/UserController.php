@@ -64,7 +64,6 @@ class UserController extends Controller
                 trans('messages.custom_error_message.'.config('constants.error_codes.ERROR_INVALID_ARGUMENT'))
             );
         } catch (\Exception $e) {
-            dd($e);
             throw new \Exception(trans('messages.custom_error_message.999999'));
         }
     }
@@ -98,7 +97,7 @@ class UserController extends Controller
             if ($validator->fails()) {
                 return $this->responseHelper->error(
                     Response::HTTP_UNPROCESSABLE_ENTITY,
-                    Response::$statusTexts['422'],
+                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
                     config('constants.error_codes.ERROR_USER_INVALID_DATA'),
                     $validator->errors()->first()
                 );
@@ -182,7 +181,7 @@ class UserController extends Controller
             if ($validator->fails()) {
                 return $this->responseHelper->error(
                     Response::HTTP_UNPROCESSABLE_ENTITY,
-                    Response::$statusTexts['422'],
+                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
                     config('constants.error_codes.ERROR_USER_INVALID_DATA'),
                     $validator->errors()->first()
                 );
@@ -258,7 +257,7 @@ class UserController extends Controller
             if ($validator->fails()) {
                 return $this->responseHelper->error(
                     Response::HTTP_UNPROCESSABLE_ENTITY,
-                    Response::$statusTexts['422'],
+                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
                     trans('messages.custom_error_code.ERROR_100002'),
                     $validator->errors()->first()
                 );
@@ -271,6 +270,12 @@ class UserController extends Controller
             $apiMessage = trans('messages.success.MESSAGE_USER_SKILLS_CREATED');
             
             return $this->responseHelper->success($apiStatus, $apiMessage);
+        } catch (InvalidArgumentException $e) {
+            return $this->invalidArgument(
+                config('constants.error_codes.ERROR_USER_CUSTOM_FIELD_INVALID_DATA'),
+                trans('messages.custom_error_message.'
+                .config('constants.error_codes.ERROR_USER_CUSTOM_FIELD_INVALID_DATA'))
+            );
         } catch (PDOException $e) {
             return $this->PDO(
                 config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
@@ -303,7 +308,7 @@ class UserController extends Controller
             if ($validator->fails()) {
                 return $this->responseHelper->error(
                     Response::HTTP_UNPROCESSABLE_ENTITY,
-                    Response::$statusTexts['422'],
+                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
                     trans('messages.custom_error_code.ERROR_100002'),
                     $validator->errors()->first()
                 );
@@ -342,7 +347,7 @@ class UserController extends Controller
             $apiData = (count($skillList) > 0) ? $skillList->toArray() : [];
             $responseMessage = (count($skillList) > 0) ? trans('messages.success.MESSAGE_USER_LISTING')
              : trans('messages.success.MESSAGE_NO_RECORD_FOUND');
-            return $this->responseHelper->success($this->response->status(), $responseMessage, $apiData);
+            return $this->responseHelper->success(Response::HTTP_OK, $responseMessage, $apiData);
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
                 config('constants.error_codes.ERROR_USER_SKILL_NOT_FOUND'),
