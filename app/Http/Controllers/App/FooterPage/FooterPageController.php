@@ -12,10 +12,12 @@ use App\Models\FooterPagesLanguage;
 use App\Helpers\Helpers;
 use App\Helpers\ResponseHelper;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Traits\RestExceptionHandlerTrait;
 use Validator;
 
 class FooterPageController extends Controller
 {
+    use RestExceptionHandlerTrait;
     /**
      * @var App\Repositories\FooterPage\FooterPageRepository
      */
@@ -49,20 +51,16 @@ class FooterPageController extends Controller
         try {
             // Get data for parent table
             $pageList = $this->footerPageRepository->getPageList();
-            
-            // No datafound
-            if ($pageList->count() == 0) {
-                // Set response data
-                $apiStatus = app('Illuminate\Http\Response')->status();
-                $apiMessage = trans('messages.success.MESSAGE_NO_DATA_FOUND');
-                return $this->responseHelper->success($apiStatus, $apiMessage);
-            }
-
             $apiStatus = Response::HTTP_OK;
-            $apiMessage = trans('messages.success.MESSAGE_CMS_LIST_SUCCESS');
+            $apiMessage = trans('messages.success.MESSAGE_FOOTER_PAGE_LISTING');
+            $apiMessage = ($pageList->isEmpty()) ? trans('messages.success.MESSAGE_NO_RECORD_FOUND') :
+             trans('messages.success.MESSAGE_FOOTER_PAGE_LISTING');
             return $this->responseHelper->success($apiStatus, $apiMessage, $pageList->toArray());
-        } catch (\PDOException $e) {
-            throw new \PDOException($e->getMessage());
+        } catch (InvalidArgumentException $e) {
+            return $this->invalidArgument(
+                config('constants.error_codes.ERROR_INVALID_ARGUMENT'),
+                trans('messages.custom_error_message.'.config('constants.error_codes.ERROR_INVALID_ARGUMENT'))
+            );
         } catch (\Exception $e) {
             throw new \Exception(trans('messages.custom_error_message.999999'));
         }
@@ -85,12 +83,20 @@ class FooterPageController extends Controller
             }
 
             $apiStatus = app('Illuminate\Http\Response')->status();
-            $apiMessage = trans('messages.success.MESSAGE_CMS_LIST_SUCCESS');
+            $apiMessage = trans('messages.success.MESSAGE_FOOTER_PAGE_LISTING');
             return $this->responseHelper->success($apiStatus, $apiMessage, $footerPage->toArray());
-        } catch (\PDOException $e) {
-            throw new \PDOException($e->getMessage());
+        } catch (PDOException $e) {
+            return $this->PDO(
+                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
+                trans(
+                    'messages.custom_error_message.'.config('constants.error_codes.ERROR_DATABASE_OPERATIONAL')
+                )
+            );
         } catch (ModelNotFoundException $e) {
-            throw new ModelNotFoundException(trans('messages.custom_error_message.300005'));
+            return $this->modelNotFound(
+                config('constants.error_codes.ERROR_NO_DATA_FOUND'),
+                trans('messages.custom_error_message.'.config('constants.error_codes.ERROR_NO_DATA_FOUND'))
+            );
         } catch (\Exception $e) {
             throw new \Exception(trans('messages.custom_error_message.999999'));
         }
@@ -113,12 +119,16 @@ class FooterPageController extends Controller
                 $apiMessage = trans('messages.success.MESSAGE_NO_DATA_FOUND');
                 return $this->responseHelper->success($apiStatus, $apiMessage);
             }
-            
             $apiStatus = app('Illuminate\Http\Response')->status();
-            $apiMessage = trans('messages.success.MESSAGE_CMS_LIST_SUCCESS');
+            $apiMessage = trans('messages.success.MESSAGE_FOOTER_PAGE_LISTING');
             return $this->responseHelper->success($apiStatus, $apiMessage, $pageDetailList->toArray());
-        } catch (\PDOException $e) {
-            throw new \PDOException($e->getMessage());
+        } catch (PDOException $e) {
+            return $this->PDO(
+                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
+                trans(
+                    'messages.custom_error_message.'.config('constants.error_codes.ERROR_DATABASE_OPERATIONAL')
+                )
+            );
         } catch (\Exception $e) {
             throw new \Exception(trans('messages.custom_error_message.999999'));
         }

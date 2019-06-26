@@ -63,6 +63,8 @@ class FooterPageController extends Controller
                 config('constants.error_codes.ERROR_INVALID_ARGUMENT'),
                 trans('messages.custom_error_message.'.config('constants.error_codes.ERROR_INVALID_ARGUMENT'))
             );
+        } catch (\Exception $e) {
+            throw new \Exception(trans('messages.custom_error_message.999999'));
         }
     }
 
@@ -94,7 +96,7 @@ class FooterPageController extends Controller
                 return $this->responseHelper->error(
                     Response::HTTP_UNPROCESSABLE_ENTITY,
                     Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                    trans('messages.custom_error_code.ERROR_300000'),
+                    config('constants.error_codes.ERROR_FOOTER_PAGE_REQUIRED_FIELDS_EMPTY'),
                     $validator->errors()->first()
                 );
             }

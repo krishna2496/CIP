@@ -179,9 +179,9 @@ class FooterPageRepository implements FooterPageInterface
     /**
     * Get a listing of resource.
     *
-    * @return Illuminate\Support\Collection
+    * @return App\Models\FooterPage
     */
-    public function getPageDetail($slug): Collection
+    public function getPageDetail($slug): FooterPage
     {
         return $this->page->with(['pages:page_id,language_id,title,description as sections'])
         ->whereSlug($slug)->first();

@@ -105,6 +105,7 @@ return [
         'ERROR_SEND_RESET_PASSWORD_LINK' => '210005',
         'ERROR_INVALID_DETAIL' => '210006',
         'ERROR_INVALID_PASSWORD' => '210007',
+        'ERROR_INVALID_PASSWORD' => '210007',
         
 
         

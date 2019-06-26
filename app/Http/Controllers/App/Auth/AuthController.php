@@ -87,9 +87,9 @@ class AuthController extends Controller
      *
      * @param \App\User $user
      * @param \Illuminate\Http\Request $request
-     * @return mixed
+     * @return Illuminate\Http\JsonResponse
      */
-    public function authenticate(User $user, Request $request)
+    public function authenticate(User $user, Request $request): JsonResponse
     {
         try {
             // Server side validataions
@@ -99,7 +99,7 @@ class AuthController extends Controller
                 return $this->responseHelper->error(
                     Response::HTTP_UNPROCESSABLE_ENTITY,
                     Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                    trans('messages.custom_error_code.ERROR_40001'),
+                    config('constants.error_codes.ERROR_INVALID_DETAIL'),
                     $validator->errors()->first()
                 );
             }
@@ -149,9 +149,9 @@ class AuthController extends Controller
      *
      * @param \App\User $user
      * @param \Illuminate\Http\Request $request
-     * @return mixed
+     * @return Illuminate\Http\JsonResponse
      */
-    public function requestPasswordReset(User $user, Request $request)
+    public function requestPasswordReset(User $user, Request $request): JsonResponse
     {
         try {
             // Server side validataions
@@ -226,9 +226,9 @@ class AuthController extends Controller
      *
      * @param \App\User $user
      * @param \Illuminate\Http\Request $request
-     * @return mixed
+     * @return Illuminate\Http\JsonResponse
      */
-    public function passwordReset(Request $request)
+    public function passwordReset(Request $request): JsonResponse
     {
         try {
             $request->merge(['token'=>$request->reset_password_token]);
@@ -316,7 +316,7 @@ class AuthController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return array
      */
-    protected function credentials(Request $request)
+    protected function credentials(Request $request): array
     {
         return $request->only('email', 'password', 'password_confirmation', 'token');
     }
