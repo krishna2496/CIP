@@ -44,9 +44,9 @@ class FooterPageController extends Controller
     /**
      * Display a listing of CMS pages.
      *
-     * @return mixed
+     * @return Illuminate\Http\JsonResponse
      */
-    public function index()
+    public function index(): JsonResponse
     {
         try {
             // Get data for parent table
@@ -70,9 +70,9 @@ class FooterPageController extends Controller
      * Display the specified resource.
      *
      * @param  string  $slug
-     * @return mixed
+     * @return Illuminate\Http\JsonResponse
      */
-    public function show(string $slug)
+    public function show(string $slug): JsonResponse
     {
         try {
             // Get data for parent table

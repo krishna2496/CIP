@@ -9,6 +9,7 @@ use App\Helpers\DatabaseHelper;
 use DB;
 use Closure;
 use Illuminate\Http\Request;
+use PDOException;
 
 class AuthTenantAdminMiddleware
 {
@@ -38,10 +39,11 @@ class AuthTenantAdminMiddleware
                 || (empty($_SERVER['PHP_AUTH_USER']) && empty($_SERVER['PHP_AUTH_PW']))
             ) {
                 return $this->responseHelper->error(
-                    trans('messages.status_code.HTTP_STATUS_UNAUTHORIZED'),
-                    trans('messages.status_type.HTTP_STATUS_TYPE_401'),
-                    trans('messages.custom_error_code.ERROR_210001'),
-                    trans('messages.custom_error_message.210001')
+                    Response::HTTP_UNAUTHORIZED,
+                    Response::$statusTexts[Response::HTTP_UNAUTHORIZED],
+                    config('constants.error_codes.ERROR_API_AND_SECRET_KEY_REQUIRED'),
+                    trans('messages.custom_error_message.'
+                    .config('constants.error_codes.ERROR_API_AND_SECRET_KEY_REQUIRED'))
                 );
             }
             // authenticate api user based on basic auth parameters
@@ -60,13 +62,19 @@ class AuthTenantAdminMiddleware
             }
             // Send authentication error response if api user not found in master database
             return $this->responseHelper->error(
-                trans('messages.status_code.HTTP_STATUS_UNAUTHORIZED'),
-                trans('messages.status_type.HTTP_STATUS_TYPE_401'),
-                trans('messages.custom_error_code.ERROR_210000'),
-                trans('messages.custom_error_message.210000')
+                Response::HTTP_UNAUTHORIZED,
+                Response::$statusTexts[Response::HTTP_UNAUTHORIZED],
+                config('constants.error_codes.ERROR_INVALID_API_AND_SECRET_KEY'),
+                trans('messages.custom_error_message.'
+                .config('constants.error_codes.ERROR_INVALID_API_AND_SECRET_KEY'))
             );
-        } catch (\PDOException $e) {
-            throw new \PDOException($e->getMessage());
+        } catch (PDOException $e) {
+            return $this->PDO(
+                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
+                trans(
+                    'messages.custom_error_message.'.config('constants.error_codes.ERROR_DATABASE_OPERATIONAL')
+                )
+            );
         } catch (\Exception $e) {
             throw new \Exception(trans('messages.custom_error_message.999999'));
         }

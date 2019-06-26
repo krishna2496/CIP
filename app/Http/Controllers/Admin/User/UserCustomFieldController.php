@@ -14,6 +14,7 @@ use Validator;
 use PDOException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Traits\RestExceptionHandlerTrait;
+use InvalidArgumentException;
 
 class UserCustomFieldController extends Controller
 {
@@ -97,7 +98,7 @@ class UserCustomFieldController extends Controller
                 return $this->responseHelper->error(
                     Response::HTTP_UNPROCESSABLE_ENTITY,
                     Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                    trans('messages.custom_error_code.ERROR_100003'),
+                    config('constants.error_codes.ERROR_USER_CUSTOM_FIELD_INVALID_DATA'),
                     $validator->errors()->first()
                 );
             }
@@ -124,7 +125,6 @@ class UserCustomFieldController extends Controller
                 )
             );
         } catch (\Exception $e) {
-            dd($e);
             throw new \Exception(trans('messages.custom_error_message.999999'));
         }
     }
@@ -164,7 +164,7 @@ class UserCustomFieldController extends Controller
                 return $this->responseHelper->error(
                     Response::HTTP_UNPROCESSABLE_ENTITY,
                     Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                    trans('messages.custom_error_code.ERROR_100003'),
+                    config('constants.error_codes.ERROR_USER_CUSTOM_FIELD_INVALID_DATA'),
                     $validator->errors()->first()
                 );
             }

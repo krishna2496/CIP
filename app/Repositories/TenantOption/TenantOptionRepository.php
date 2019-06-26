@@ -75,7 +75,7 @@ class TenantOptionRepository implements TenantOptionInterface
      *
      * @return Illuminate\Support\Collection
      */
-    public function getOptions(): TenantOption
+    public function getOptions(): Collection
     {
         return $this->tenantOption->get(['option_name', 'option_value']);
     }

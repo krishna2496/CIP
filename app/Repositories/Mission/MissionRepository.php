@@ -18,6 +18,7 @@ use PDOException;
 use DB;
 use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class MissionRepository implements MissionInterface
 {
@@ -67,7 +68,7 @@ class MissionRepository implements MissionInterface
      * Store a newly created resource into database
      *
      * @param \Illuminate\Http\Request $request
-     * @return mixed
+     * @return App\Models\Mission
      */
     public function store(Request $request): Mission
     {
@@ -183,7 +184,7 @@ class MissionRepository implements MissionInterface
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return App\Models\Mission
      */
     public function update(Request $request, int $id): Mission
     {
@@ -326,9 +327,9 @@ class MissionRepository implements MissionInterface
      *
      * @param \Illuminate\Http\Request $request
      * @param int $mission_id
-     * @return \Illuminate\Http\Response
+     * @return Illuminate\Pagination\LengthAwarePaginator
      */
-    public function missionApplications(Request $request, int $missionId)
+    public function missionApplications(Request $request, int $missionId): LengthAwarePaginator
     {
         $missionApplicationDetails = $this->missionApplication->find($request, $missionId);
         return $missionApplicationDetails;
@@ -366,10 +367,10 @@ class MissionRepository implements MissionInterface
     /**
      * Display a listing of mission.
      *
-     * Illuminate\Http\Request $request
-     * @return mixed
+     * @param Illuminate\Http\Request $request
+     * @return \Illuminate\Pagination\LengthAwarePaginator
      */
-    public function missionList(Request $request)
+    public function missionList(Request $request): LengthAwarePaginator
     {
         $languages = LanguageHelper::getLanguages($request);
 
@@ -394,7 +395,7 @@ class MissionRepository implements MissionInterface
         )
         ->with(['city', 'country', 'missionTheme', 'missionLanguage', 'missionMedia', 'missionDocument'])
         ->withCount('missionApplication')
-        ->orderBy('mission.mission_id', 'ASC')->paginate(config('constants.LIMIT'));
+        ->orderBy('mission.mission_id', 'ASC')->paginate(config('constants.PER_PAGE_LIMIT'));
 
         foreach ($mission as $key => $value) {
             foreach ($value->missionLanguage as $languageValue) {

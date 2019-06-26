@@ -21,6 +21,9 @@ use App\Helpers\LanguageHelper;
 use Validator;
 use DB;
 use App\Traits\RestExceptionHandlerTrait;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use PDOException;
+use InvalidArgumentException;
 
 class MissionController extends Controller
 {
@@ -66,10 +69,11 @@ class MissionController extends Controller
             $apiMessage = ($missions->isEmpty()) ? trans('messages.success.MESSAGE_NO_RECORD_FOUND')
              : trans('messages.success.MESSAGE_MISSION_LISTING');
             return $this->responseHelper->successWithPagination($apiStatus, $apiMessage, $apiData);
-        } catch (PDOException $e) {
-            throw new PDOException($e->getMessage());
-        } catch (\InvalidArgumentException $e) {
-            throw new \InvalidArgumentException($e->getMessage());
+        } catch (InvalidArgumentException $e) {
+            return $this->invalidArgument(
+                config('constants.error_codes.ERROR_INVALID_ARGUMENT'),
+                trans('messages.custom_error_message.'.config('constants.error_codes.ERROR_INVALID_ARGUMENT'))
+            );
         } catch (\Exception $e) {
             throw new \Exception(trans('messages.custom_error_message.999999'));
         }
@@ -117,7 +121,7 @@ class MissionController extends Controller
             return $this->responseHelper->error(
                 Response::HTTP_UNPROCESSABLE_ENTITY,
                 Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                trans('messages.custom_error_code.ERROR_300000'),
+                config('constants.error_codes.ERROR_INVALID_MISSION_DATA'),
                 $validator->errors()->first()
             );
         }
@@ -127,11 +131,16 @@ class MissionController extends Controller
                        
             // Set response data
             $apiStatus = Response::HTTP_CREATED;
-            $apiMessage = trans('messages.success.MESSAGE_MISSION_ADD_SUCCESS');
+            $apiMessage = trans('messages.success.MESSAGE_MISSION_ADDED');
             $apiData = ['mission_id' => $mission->mission_id];
             return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
         } catch (PDOException $e) {
-            throw new PDOException($e->getMessage());
+            return $this->PDO(
+                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
+                trans(
+                    'messages.custom_error_message.'.config('constants.error_codes.ERROR_DATABASE_OPERATIONAL')
+                )
+            );
         } catch (\Exception $e) {
             throw new \Exception(trans('messages.custom_error_message.999999'));
         }
@@ -190,11 +199,11 @@ class MissionController extends Controller
             return $this->responseHelper->error(
                 Response::HTTP_UNPROCESSABLE_ENTITY,
                 Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                trans('messages.custom_error_code.ERROR_300000'),
+                config('constants.error_codes.ERROR_MISSION_REQUIRED_FIELDS_EMPTY'),
                 $validator->errors()->first()
             );
         }
-
+        
         try {
             $this->missionRepository->update($request, $id);
             // Set response data
@@ -202,14 +211,22 @@ class MissionController extends Controller
             $apiMessage = trans('messages.success.MESSAGE_MISSION_UPDATED');
             return $this->responseHelper->success($apiStatus, $apiMessage);
         } catch (ModelNotFoundException $e) {
-            throw new ModelNotFoundException(trans('messages.custom_error_message.400003'));
+            return $this->modelNotFound(
+                config('constants.error_codes.ERROR_MISSION_NOT_FOUND'),
+                trans('messages.custom_error_message.'.config('constants.error_codes.ERROR_MISSION_NOT_FOUND'))
+            );
         } catch (PDOException $e) {
-            throw new PDOException($e->getMessage());
+            return $this->PDO(
+                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
+                trans(
+                    'messages.custom_error_message.'.config('constants.error_codes.ERROR_DATABASE_OPERATIONAL')
+                )
+            );
         } catch (\Exception $e) {
             throw new \Exception(trans('messages.custom_error_message.999999'));
         }
     }
-
+    
     /**
      * Remove the specified resource from storage.
      *
@@ -221,15 +238,15 @@ class MissionController extends Controller
         try {
             $mission = $this->missionRepository->delete($id);
 
-            $apiStatus = trans('messages.status_code.HTTP_STATUS_NO_CONTENT');
+            $apiStatus = Response::HTTP_NO_CONTENT;
             $apiMessage = trans('messages.success.MESSAGE_MISSION_DELETED');
             return $this->responseHelper->success($apiStatus, $apiMessage);
         } catch (\Exception $e) {
             return $this->responseHelper->error(
-                trans('messages.status_code.HTTP_STATUS_FORBIDDEN'),
-                trans('messages.status_type.HTTP_STATUS_TYPE_403'),
-                trans('messages.custom_error_code.ERROR_400004'),
-                trans('messages.custom_error_message.400004')
+                Response::HTTP_FORBIDDEN,
+                Response::$statusTexts[Response::HTTP_FORBIDDEN],
+                config('constants.error_codes.ERROR_MISSION_DELETION'),
+                trans('messages.custom_error_message.'.config('constants.error_codes.ERROR_MISSION_DELETION'))
             );
         }
     }
@@ -253,8 +270,13 @@ class MissionController extends Controller
                 $responseMessage,
                 $applicationList
             );
-        } catch (\InvalidArgumentException $e) {
-            throw new \InvalidArgumentException($e->getMessage());
+        } catch (InvalidArgumentException $e) {
+            return $this->invalidArgument(
+                config('constants.error_codes.ERROR_INVALID_ARGUMENT'),
+                trans('messages.custom_error_message.'.config('constants.error_codes.ERROR_INVALID_ARGUMENT'))
+            );
+        } catch (\Exception $e) {
+            throw new \Exception(trans('messages.custom_error_message.999999'));
         }
     }
 
@@ -273,8 +295,20 @@ class MissionController extends Controller
              : trans('messages.success.MESSAGE_NO_RECORD_FOUND');
             
             return $this->responseHelper->success(Response::HTTP_OK, $responseMessage, $applicationList);
-        } catch (\InvalidArgumentException $e) {
-            throw new \InvalidArgumentException($e->getMessage());
+        } catch (PDOException $e) {
+            return $this->PDO(
+                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
+                trans(
+                    'messages.custom_error_message.'.config('constants.error_codes.ERROR_DATABASE_OPERATIONAL')
+                )
+            );
+        } catch (InvalidArgumentException $e) {
+            return $this->invalidArgument(
+                config('constants.error_codes.ERROR_INVALID_ARGUMENT'),
+                trans('messages.custom_error_message.'.config('constants.error_codes.ERROR_INVALID_ARGUMENT'))
+            );
+        } catch (\Exception $e) {
+            throw new \Exception(trans('messages.custom_error_message.999999'));
         }
     }
 
@@ -298,7 +332,7 @@ class MissionController extends Controller
                 return $this->responseHelper->error(
                     Response::HTTP_UNPROCESSABLE_ENTITY,
                     Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                    trans('messages.custom_error_code.ERROR_400000'),
+                    config('constants.error_codes.ERROR_INVALID_MISSION_APPLICATION_DATA'),
                     $validator->errors()->first()
                 );
             }
@@ -310,8 +344,18 @@ class MissionController extends Controller
             $apiMessage = trans('messages.success.MESSAGE_APPLICATION_UPDATED');
             
             return $this->responseHelper->success($apiStatus, $apiMessage);
+        } catch (InvalidArgumentException $e) {
+            return $this->invalidArgument(
+                config('constants.error_codes.ERROR_INVALID_ARGUMENT'),
+                trans('messages.custom_error_message.'.config('constants.error_codes.ERROR_INVALID_ARGUMENT'))
+            );
         } catch (PDOException $e) {
-            throw new PDOException($e->getMessage());
+            return $this->PDO(
+                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
+                trans(
+                    'messages.custom_error_message.'.config('constants.error_codes.ERROR_DATABASE_OPERATIONAL')
+                )
+            );
         } catch (\Exception $e) {
             throw new \Exception(trans('messages.custom_error_message.999999'));
         }

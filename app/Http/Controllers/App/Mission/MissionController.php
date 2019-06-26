@@ -17,9 +17,15 @@ use App\Helpers\LanguageHelper;
 use App\Helpers\ResponseHelper;
 use App\Http\Controllers\Controller;
 use Carbon\Carbon;
+use InvalidArgumentException;
+use PDOException;
+use Illuminate\Http\JsonResponse;
+use App\Traits\RestExceptionHandlerTrait;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class MissionController extends Controller
 {
+    use RestExceptionHandlerTrait;
     /**
      * @var MissionRepository
      */
@@ -46,10 +52,10 @@ class MissionController extends Controller
     /**
      * Get missions listing
      *
-     * @param Request $request
-     * @return mixed
+     * @param Illuminate\Http\Request $request
+     * @return Illuminate\Http\JsonResponse
      */
-    public function missionList(Request $request)
+    public function missionList(Request $request): JsonResponse
     {
         try {
             $missions = $this->missionRepository->missionDetail($request);
@@ -59,9 +65,17 @@ class MissionController extends Controller
             $apiMessage = trans('messages.success.MESSAGE_MISSION_LISTING');
             return $this->responseHelper->successWithPagination($apiStatus, $apiMessage, $apiData);
         } catch (PDOException $e) {
-            throw new PDOException($e->getMessage());
-        } catch (\InvalidArgumentException $e) {
-            throw new \InvalidArgumentException($e->getMessage());
+            return $this->PDO(
+                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
+                trans(
+                    'messages.custom_error_message.'.config('constants.error_codes.ERROR_DATABASE_OPERATIONAL')
+                )
+            );
+        } catch (InvalidArgumentException $e) {
+            return $this->invalidArgument(
+                config('constants.error_codes.ERROR_INVALID_ARGUMENT'),
+                trans('messages.custom_error_message.'.config('constants.error_codes.ERROR_INVALID_ARGUMENT'))
+            );
         } catch (\Exception $e) {
             throw new \Exception(trans('messages.custom_error_message.999999'));
         }
@@ -70,10 +84,10 @@ class MissionController extends Controller
     /**
      * Get missions listing
      *
-     * @param Request $request
-     * @return mixed
+     * @param Illuminate\Http\Request $request
+     * @return Illuminate\Http\JsonResponse
      */
-    public function appMissionList(Request $request)
+    public function appMissionList(Request $request): JsonResponse
     {
         try {
             $missions = $this->missionRepository->appMissions($request);
@@ -82,10 +96,18 @@ class MissionController extends Controller
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_MISSION_LISTING');
             return $this->responseHelper->successWithPagination($apiStatus, $apiMessage, $apiData);
+        } catch (ModelNotFoundException $e) {
+            return $this->modelNotFound(
+                config('constants.error_codes.ERROR_MISSION_NOT_FOUND'),
+                trans('messages.custom_error_message.'.config('constants.error_codes.ERROR_MISSION_NOT_FOUND'))
+            );
         } catch (PDOException $e) {
-            throw new PDOException($e->getMessage());
-        } catch (\InvalidArgumentException $e) {
-            throw new \InvalidArgumentException($e->getMessage());
+            return $this->PDO(
+                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
+                trans(
+                    'messages.custom_error_message.'.config('constants.error_codes.ERROR_DATABASE_OPERATIONAL')
+                )
+            );
         } catch (\Exception $e) {
             throw new \Exception(trans('messages.custom_error_message.999999'));
         }

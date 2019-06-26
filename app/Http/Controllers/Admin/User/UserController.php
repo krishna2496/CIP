@@ -16,6 +16,8 @@ use Validator;
 use DB;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\User;
+use InvalidArgumentException;
+use PDOException;
 
 class UserController extends Controller
 {
@@ -46,9 +48,9 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Illuminate\Http\JsonResponse
      */
-    public function index(Request $request)
+    public function index(Request $request): JsonResponse
     {
         try {
             $users = $this->userRepository->userList($request);
@@ -217,9 +219,9 @@ class UserController extends Controller
      * Remove the specified resource from storage.
      *
      * @param int $id
-     * @return mixed
+     * @return Illuminate\Http\JsonResponse
      */
-    public function destroy(int $id)
+    public function destroy(int $id): JsonResponse
     {
         try {
             $user = $this->userRepository->delete($id);
@@ -242,9 +244,9 @@ class UserController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
+     * @return Illuminate\Http\JsonResponse
      */
-    public function linkSkill(Request $request)
+    public function linkSkill(Request $request): JsonResponse
     {
         try {
             $validator = Validator::make($request->toArray(), [
@@ -258,7 +260,7 @@ class UserController extends Controller
                 return $this->responseHelper->error(
                     Response::HTTP_UNPROCESSABLE_ENTITY,
                     Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                    trans('messages.custom_error_code.ERROR_100002'),
+                    config('constants.error_codes.ERROR_SKILL_INVALID_DATA'),
                     $validator->errors()->first()
                 );
             }
@@ -268,7 +270,6 @@ class UserController extends Controller
             // Set response data
             $apiStatus = Response::HTTP_CREATED;
             $apiMessage = trans('messages.success.MESSAGE_USER_SKILLS_CREATED');
-            
             return $this->responseHelper->success($apiStatus, $apiMessage);
         } catch (InvalidArgumentException $e) {
             return $this->invalidArgument(
@@ -292,9 +293,9 @@ class UserController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
+     * @return Illuminate\Http\JsonResponse
      */
-    public function unlinkSkill(Request $request)
+    public function unlinkSkill(Request $request): JsonResponse
     {
         try {
             // Server side validataions
@@ -309,7 +310,7 @@ class UserController extends Controller
                 return $this->responseHelper->error(
                     Response::HTTP_UNPROCESSABLE_ENTITY,
                     Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                    trans('messages.custom_error_code.ERROR_100002'),
+                    config('constants.error_codes.ERROR_SKILL_INVALID_DATA'),
                     $validator->errors()->first()
                 );
             }
@@ -336,9 +337,9 @@ class UserController extends Controller
      * Display a listing of the resource.
      *
      * @param int $userId
-     * @return \Illuminate\Http\Response
+     * @return Illuminate\Http\JsonResponse
      */
-    public function userSkills(int $userId)
+    public function userSkills(int $userId): JsonResponse
     {
         try {
             $skillList = $this->userRepository->userSkills($userId);

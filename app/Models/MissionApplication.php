@@ -1,8 +1,10 @@
 <?php
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\{Model, SoftDeletes};
-use Illuminate\Http\{Request, Response};
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use App\Models\Mission;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -43,7 +45,8 @@ class MissionApplication extends Model
      *
      * @var array
      */
-    protected $visible = ['mission_application_id', 'mission_id', 'user_id', 'applied_at', 'motivation', 'availability_id', 'approval_status'];
+    protected $visible = ['mission_application_id', 'mission_id',
+    'user_id', 'applied_at', 'motivation', 'availability_id', 'approval_status'];
 
     /**
      * Defined relation for the mission table.

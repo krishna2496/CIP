@@ -20,6 +20,8 @@ use App\Models\PasswordReset;
 use Carbon\Carbon;
 use App\Repositories\TenantOption\TenantOptionRepository;
 use App\Traits\RestExceptionHandlerTrait;
+use InvalidArgumentException;
+use PDOException;
 
 class AuthController extends Controller
 {
@@ -192,8 +194,8 @@ class AuthController extends Controller
             // If reset password link didn't sent
             if (!$response == Password::RESET_LINK_SENT) {
                 return $this->responseHelper->error(
-                    trans('messages.status_code.HTTP_STATUS_INTERNAL_SERVER_ERROR'),
-                    trans('messages.status_type.HTTP_STATUS_TYPE_500'),
+                    Response::HTTP_INTERNAL_SERVER_ERROR,
+                    Response::$statusTexts[Response::HTTP_INTERNAL_SERVER_ERROR],
                     config('constants.error_codes.ERROR_SEND_RESET_PASSWORD_LINK'),
                     trans('messages.custom_error_message.'
                     .config('constants.error_codes.ERROR_SEND_RESET_PASSWORD_LINK'))

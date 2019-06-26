@@ -25,14 +25,11 @@ return [
 		'MESSAGE_CUSTOM_FIELD_ADDED' => 'User custom field added successfully',
 		'MESSAGE_CUSTOM_FIELD_UPDATED' => 'User custom field updated successfully',
 		'MESSAGE_CUSTOM_FIELD_DELETED' => 'User custom field deleted successfully',
-
         'MESSAGE_APPLICATION_LISTING' => 'Mission application listing successfully',
         'MESSAGE_APPLICATION_UPDATED' => 'Mission application updated successfully',
 		'MESSAGE_CUSTOM_STYLE_UPLOADED_SUCCESS' => 'Custom styling data uploaded successfully',
 		'MESSAGE_CUSTOM_STYLE_RESET_SUCCESS' => 'Custom styling reset successfully',
-		'MESSAGE_CUSTOM_FIELD_LISTING' => 'User custom field listing successfully',
-		
-		'MESSAGE_CMS_LIST_SUCCESS' => 'CMS page listing successfully',
+		'MESSAGE_CUSTOM_FIELD_LISTING' => 'User custom field listing successfully',		
 		'MESSAGE_MISSION_ADDED' => 'Mission created successfully',
         'MESSAGE_MISSION_UPDATED' => 'Mission updated successfully',
         'MESSAGE_MISSION_DELETED' => 'Mission deleted successfully',
@@ -41,7 +38,6 @@ return [
         'MESSAGE_THEME_LISTING' => 'Mission theme listing successfully',
         'MESSAGE_CITY_LISTING' => 'City listing successfully',
 		'MESSAGE_COUNTRY_LISTING' => 'Country listing successfully',
-
 	],
 	
 	/**
@@ -225,6 +221,8 @@ return [
         '400002' => 'Error while inserting data to database',
         '400003' => 'Requested mission does not exist',
 		'400004' => 'Mission deletion failed',
+		'400006' => 'Mission creation failed. Please check input parameters',
+
 		
 		// Custom error code for Tenant Authorization - 210000 - 219999
         '210000' => 'Invalid API Key or Secret key',
@@ -235,6 +233,11 @@ return [
 		'210005' => 'Something went wrong while sending reset password link',
 		'210006' => 'Invalid reset password token or email address',
 		'210007' => 'Invalid password',
+		'210008' => 'Tenant domain does not found',
+		'210009' => 'Provided token is expired',
+		'210010' => 'An error while decoding token',
+		'210012' => 'Token not provided',
+		
 
 		// Custom error code for common exception
 		'999999' => 'An error has occured', 

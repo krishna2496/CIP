@@ -105,7 +105,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     *
     * @return \Illuminate\Database\Eloquent\Relations\HasOne
     */
-    public function city()
+    public function city(): HasOne
     {
         return $this->hasOne(City::class, 'city_id', 'city_id');
     }
@@ -115,7 +115,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     *
     * @return \Illuminate\Database\Eloquent\Relations\HasOne
     */
-    public function country()
+    public function country(): HasOne
     {
         return $this->hasOne(Country::class, 'country_id', 'country_id');
     }
@@ -125,7 +125,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     *
     * @return \Illuminate\Database\Eloquent\Relations\HasOne
     */
-    public function timezone()
+    public function timezone(): HasOne
     {
         return $this->hasOne(Timezone::class, 'timezone_id', 'timezone_id');
     }
@@ -135,7 +135,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function userSkills()
+    public function userSkills(): HasMany
     {
         return $this->hasMany(UserSkill::class, 'user_id', 'user_id');
     }
@@ -166,9 +166,9 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      * Delete the specified resource.
      *
      * @param  int  $id
-     * @return array
+     * @return bool
      */
-    public function deleteUser(int $id)
+    public function deleteUser(int $id): bool
     {
         return static::findOrFail($id)->delete();
     }

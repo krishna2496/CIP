@@ -40,7 +40,7 @@ class CountryController extends Controller
      * Display listing of footer pages
      *
      * @param Illuminate\Http\Request $request
-     * @return mixed
+     * @return Illuminate\Http\JsonResponse
      */
     public function index(Request $request):JsonResponse
     {

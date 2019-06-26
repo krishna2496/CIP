@@ -31,7 +31,7 @@ class ThemeController extends Controller
      */
     public function __construct(MissionThemeRepository $missionThemeRepository, ResponseHelper $responseHelper)
     {
-        $this->missionThemeRepository = $missionTheme;
+        $this->missionThemeRepository = $missionThemeRepository;
         $this->responseHelper = $responseHelper;
     }
     
@@ -39,7 +39,7 @@ class ThemeController extends Controller
      * Display listing of footer pages
      *
      * @param Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
+     * @return Illuminate\Http\JsonResponse
      */
     public function index(Request $request): JsonResponse
     {
@@ -63,7 +63,12 @@ class ThemeController extends Controller
              trans('messages.success.MESSAGE_THEME_LISTING');
             return $this->responseHelper->success($apiStatus, $apiMessage, $themeArray);
         } catch (PDOException $e) {
-            throw new PDOException($e->getMessage());
+            return $this->PDO(
+                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
+                trans(
+                    'messages.custom_error_message.'.config('constants.error_codes.ERROR_DATABASE_OPERATIONAL')
+                )
+            );
         } catch (\Exception $e) {
             throw new \Exception(trans('messages.custom_error_message.999999'));
         }

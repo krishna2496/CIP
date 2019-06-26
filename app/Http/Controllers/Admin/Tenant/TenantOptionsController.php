@@ -141,8 +141,9 @@ class TenantOptionsController extends Controller
                     return $this->responseHelper->error(
                         Response::HTTP_UNPROCESSABLE_ENTITY,
                         Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                        trans('messages.custom_error_code.ERROR_40022'),
-                        trans('messages.custom_error_message.100012')
+                        config('constants.error_codes.ERROR_SLIDER_IMAGE_UPLOAD'),
+                        trans('messages.custom_error_message.'
+                        .config('constants.error_codes.ERROR_SLIDER_IMAGE_UPLOAD'))
                     );
                 }
             }

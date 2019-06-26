@@ -9,11 +9,12 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Input;
 use App\Helpers\ResponseHelper;
 use Illuminate\Validation\Rule;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Traits\RestExceptionHandlerTrait;
 use Validator;
 use DB;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use PDOException;
+use InvalidArgumentException;
 
 class FooterPageController extends Controller
 {
@@ -164,7 +165,7 @@ class FooterPageController extends Controller
                 return $this->responseHelper->error(
                     Response::HTTP_UNPROCESSABLE_ENTITY,
                     Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                    trans('messages.custom_error_code.ERROR_300000'),
+                    config('constants.error_codes.ERROR_FOOTER_PAGE_REQUIRED_FIELDS_EMPTY'),
                     $validator->errors()->first()
                 );
             }
@@ -205,7 +206,7 @@ class FooterPageController extends Controller
             $footerPage = $this->footerPageRepository->delete($id);
             
             // Set response data
-            $apiStatus = trans('messages.status_code.HTTP_STATUS_NO_CONTENT');
+            $apiStatus = Response::HTTP_NO_CONTENT;
             $apiMessage = trans('messages.success.MESSAGE_FOOTER_PAGE_DELETED');
             return $this->responseHelper->success($apiStatus, $apiMessage);
         } catch (ModelNotFoundException $e) {

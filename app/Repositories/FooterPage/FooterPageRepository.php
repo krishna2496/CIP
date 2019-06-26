@@ -26,6 +26,8 @@ class FooterPageRepository implements FooterPageInterface
     /**
      * Create a new repository instance.
      *
+     * @param App\Models\FooterPage
+     * @param App\Models\FooterPagesLanguage
      * @return void
      */
     public function __construct(FooterPage $page, FooterPagesLanguage $footerPageLanguage)

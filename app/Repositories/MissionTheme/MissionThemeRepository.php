@@ -5,6 +5,7 @@ use App\Repositories\MissionTheme\MissionThemeInterface;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Models\MissionTheme;
+use Illuminate\Support\Collection;
 
 class MissionThemeRepository implements MissionThemeInterface
 {
@@ -28,9 +29,9 @@ class MissionThemeRepository implements MissionThemeInterface
      * Display a listing of the resource.
      *
      * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
+     * @return Illuminate\Support\Collection
      */
-    public function missionThemeList(Request $request)
+    public function missionThemeList(Request $request): Collection
     {
         return $this->missionTheme->select('theme_name', 'mission_theme_id', 'translations')->get();
     }

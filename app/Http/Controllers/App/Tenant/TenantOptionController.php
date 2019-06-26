@@ -12,9 +12,14 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Config;
 use App\Repositories\TenantOption\TenantOptionRepository;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Traits\RestExceptionHandlerTrait;
+use InvalidArgumentException;
+use PDOException;
+use Illuminate\Http\JsonResponse;
 
 class TenantOptionController extends Controller
 {
+    use RestExceptionHandlerTrait;
     /**
      * @var TenantOptionRepository
      */
@@ -41,9 +46,10 @@ class TenantOptionController extends Controller
     /**
      * Get tenant options from table `tenant_options`
      *
-     * @return mixed
+     * @param Illuminate\Http\Request $request
+     * @return Illuminate\Http\JsonResponse
      */
-    public function getTenantOption(Request $request)
+    public function getTenantOption(Request $request): JsonResponse
     {
         $data = $optionData = $slider = array();
 
@@ -84,11 +90,22 @@ class TenantOptionController extends Controller
             
             return $this->responseHelper->success($apiStatus, '', $optionData);
         } catch (ModelNotFoundException $e) {
-            throw new ModelNotFoundException(trans('messages.custom_error_message.100000'));
-        } catch (\PDOException $e) {
-            throw new \PDOException($e->getMessage());
-        } catch (\InvalidArgumentException $e) {
-            throw new \InvalidArgumentException($e->getMessage());
+            return $this->modelNotFound(
+                config('constants.error_codes.ERROR_TENANT_DOMAIN_NOT_FOUND'),
+                trans('messages.custom_error_message.'.config('constants.error_codes.ERROR_TENANT_DOMAIN_NOT_FOUND'))
+            );
+        } catch (PDOException $e) {
+            return $this->PDO(
+                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
+                trans(
+                    'messages.custom_error_message.'.config('constants.error_codes.ERROR_DATABASE_OPERATIONAL')
+                )
+            );
+        } catch (InvalidArgumentException $e) {
+            return $this->invalidArgument(
+                config('constants.error_codes.ERROR_INVALID_ARGUMENT'),
+                trans('messages.custom_error_message.'.config('constants.error_codes.ERROR_INVALID_ARGUMENT'))
+            );
         } catch (\Exception $e) {
             throw new \Exception(trans('messages.custom_error_message.999999'));
         }
@@ -110,10 +127,18 @@ class TenantOptionController extends Controller
                 $tenantLogo = $tenantOptions->option_value;
             }
             return $tenantLogo;
-        } catch (\PDOException $e) {
-            throw new \PDOException($e->getMessage());
-        } catch (\InvalidArgumentException $e) {
-            throw new \InvalidArgumentException($e->getMessage());
+        } catch (PDOException $e) {
+            return $this->PDO(
+                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
+                trans(
+                    'messages.custom_error_message.'.config('constants.error_codes.ERROR_DATABASE_OPERATIONAL')
+                )
+            );
+        } catch (InvalidArgumentException $e) {
+            return $this->invalidArgument(
+                config('constants.error_codes.ERROR_INVALID_ARGUMENT'),
+                trans('messages.custom_error_message.'.config('constants.error_codes.ERROR_INVALID_ARGUMENT'))
+            );
         } catch (\Exception $e) {
             throw new \Exception(trans('messages.custom_error_message.999999'));
         }
@@ -138,10 +163,18 @@ class TenantOptionController extends Controller
             $apiStatus = Response::HTTP_OK;
 
             return $this->responseHelper->success($apiStatus, '', $apiData);
-        } catch (\PDOException $e) {
-            throw new \PDOException($e->getMessage());
-        } catch (\InvalidArgumentException $e) {
-            throw new \InvalidArgumentException($e->getMessage());
+        } catch (PDOException $e) {
+            return $this->PDO(
+                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
+                trans(
+                    'messages.custom_error_message.'.config('constants.error_codes.ERROR_DATABASE_OPERATIONAL')
+                )
+            );
+        } catch (InvalidArgumentException $e) {
+            return $this->invalidArgument(
+                config('constants.error_codes.ERROR_INVALID_ARGUMENT'),
+                trans('messages.custom_error_message.'.config('constants.error_codes.ERROR_INVALID_ARGUMENT'))
+            );
         } catch (\Exception $e) {
             throw new \Exception(trans('messages.custom_error_message.999999'));
         }

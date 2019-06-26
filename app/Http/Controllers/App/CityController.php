@@ -21,8 +21,7 @@ class CityController extends Controller
      * @var App\Helpers\ResponseHelper
      */
     private $responseHelper;
-    
-    
+        
     /**
      * Create a new controller instance.
      *
@@ -40,7 +39,7 @@ class CityController extends Controller
      * Display listing of footer pages
      *
      * @param Illuminate\Http\Request $request
-     * @return mixed
+     * @return Illuminate\Http\JsonResponse
      */
     public function index(Request $request):JsonResponse
     {
@@ -53,7 +52,12 @@ class CityController extends Controller
              trans('messages.success.MESSAGE_CITY_LISTING');
             return $this->responseHelper->success($apiStatus, $apiMessage, $cityData);
         } catch (PDOException $e) {
-            throw new PDOException($e->getMessage());
+            return $this->PDO(
+                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
+                trans(
+                    'messages.custom_error_message.'.config('constants.error_codes.ERROR_DATABASE_OPERATIONAL')
+                )
+            );
         } catch (\Exception $e) {
             throw new \Exception(trans('messages.custom_error_message.999999'));
         }
