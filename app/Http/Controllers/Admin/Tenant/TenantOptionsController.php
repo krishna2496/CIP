@@ -98,7 +98,7 @@ class TenantOptionsController extends Controller
         if ($validator->fails()) {
             return $this->responseHelper->error(
                 Response::HTTP_UNPROCESSABLE_ENTITY,
-                trans('messages.status_type.HTTP_STATUS_TYPE_422'),
+                Response::$statusTexts['422'],
                 trans('messages.custom_error_code.ERROR_20018'),
                 $validator->errors()->first()
             );
@@ -137,7 +137,7 @@ class TenantOptionsController extends Controller
                     // Response error unable to upload file on S3
                     return $this->responseHelper->error(
                         Response::HTTP_UNPROCESSABLE_ENTITY,
-                        trans('messages.status_type.HTTP_STATUS_TYPE_422'),
+                        Response::$statusTexts['422'],
                         trans('messages.custom_error_code.ERROR_40022'),
                         trans('messages.custom_error_message.40022')
                     );
@@ -204,7 +204,7 @@ class TenantOptionsController extends Controller
             if ($file->getClientOriginalExtension() !== "scss") {
                 return $this->responseHelper->error(
                     Response::HTTP_UNPROCESSABLE_ENTITY,
-                    trans('messages.status_type.HTTP_STATUS_TYPE_422'),
+                    Response::$statusTexts['422'],
                     trans('messages.custom_error_code.ERROR_20044'),
                     trans('messages.custom_error_message.20044')
                 );
@@ -224,7 +224,7 @@ class TenantOptionsController extends Controller
                     // Error: Return like uploaded file name doesn't match with structure.
                     return $this->responseHelper->error(
                         Response::HTTP_UNPROCESSABLE_ENTITY,
-                        trans('messages.status_type.HTTP_STATUS_TYPE_422'),
+                        Response::$statusTexts['422'],
                         trans('messages.custom_error_code.ERROR_20040'),
                         trans('messages.custom_error_message.20040')
                     );

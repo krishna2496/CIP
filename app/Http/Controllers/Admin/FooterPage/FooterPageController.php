@@ -7,15 +7,17 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Input;
-use Validator;
-use DB;
-use PDOException;
 use App\Helpers\ResponseHelper;
 use Illuminate\Validation\Rule;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Traits\RestExceptionHandlerTrait;
+use Validator;
+use DB;
+use PDOException;
 
 class FooterPageController extends Controller
 {
+    use RestExceptionHandlerTrait;
     /**
      * @var App\Repositories\FooterPage\FooterPageRepository
      */
@@ -43,7 +45,7 @@ class FooterPageController extends Controller
      * Display listing of footer pages
      *
      * @param Illuminate\Http\Request $request
-     * @return mixed
+     * @return Illuminate\Http\JsonResponse
      */
     public function index(Request $request): JsonResponse
     {
@@ -56,12 +58,11 @@ class FooterPageController extends Controller
             $apiMessage = ($footerPages->isEmpty()) ? trans('messages.success.MESSAGE_NO_RECORD_FOUND') :
              trans('messages.success.MESSAGE_FOOTER_PAGE_LISTING');
             return $this->responseHelper->successWithPagination($apiStatus, $apiMessage, $footerPages);
-        } catch (PDOException $e) {
-            throw new PDOException($e->getMessage());
-        } catch (\InvalidArgumentException $e) {
-            throw new \InvalidArgumentException($e->getMessage());
-        } catch (\Exception $e) {
-            throw new \Exception(trans('messages.custom_error_message.999999'));
+        } catch (InvalidArgumentException $e) {
+            return $this->invalidArgument(
+                config('constants.error_codes.ERROR_INVALID_ARGUMENT'),
+                trans('messages.custom_error_message.'.config('constants.error_codes.ERROR_INVALID_ARGUMENT'))
+            );
         }
     }
 
@@ -69,7 +70,7 @@ class FooterPageController extends Controller
      * Store a newly created footer page in storage.
      *
      * @param \Illuminate\Http\Request $request
-     * @return mixed
+     * @return Illuminate\Http\JsonResponse
      */
     public function store(Request $request): JsonResponse
     {
@@ -108,7 +109,17 @@ class FooterPageController extends Controller
             $apiData = ['page_id' => $footerPage['page_id']];
             return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
         } catch (PDOException $e) {
-            throw new PDOException($e->getMessage());
+            return $this->PDO(
+                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
+                trans(
+                    'messages.custom_error_message.'.config('constants.error_codes.ERROR_DATABASE_OPERATIONAL')
+                )
+            );
+        } catch (InvalidArgumentException $e) {
+            return $this->invalidArgument(
+                config('constants.error_codes.ERROR_INVALID_ARGUMENT'),
+                trans('messages.custom_error_message.'.config('constants.error_codes.ERROR_INVALID_ARGUMENT'))
+            );
         } catch (\Exception $e) {
             throw new \Exception(trans('messages.custom_error_message.999999'));
         }
@@ -130,7 +141,7 @@ class FooterPageController extends Controller
      *
      * @param \Illuminate\Http\Request  $request
      * @param int  $id
-     * @return mixed
+     * @return Illuminate\Http\JsonResponse
      */
     public function update(Request $request, int $id): JsonResponse
     {
@@ -150,7 +161,7 @@ class FooterPageController extends Controller
             if ($validator->fails()) {
                 return $this->responseHelper->error(
                     Response::HTTP_UNPROCESSABLE_ENTITY,
-                    trans('messages.status_type.HTTP_STATUS_TYPE_422'),
+                    Response::$statusTexts['422'],
                     trans('messages.custom_error_code.ERROR_300000'),
                     $validator->errors()->first()
                 );
@@ -163,10 +174,18 @@ class FooterPageController extends Controller
             $apiMessage = trans('messages.success.MESSAGE_FOOTER_PAGE_UPDATED');
             $apiData = ['page_id' => $id];
             return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
-        } catch (ModelNotFoundException $e) {
-            throw new ModelNotFoundException(trans('messages.custom_error_message.300005'));
         } catch (PDOException $e) {
-            throw new PDOException($e->getMessage());
+            return $this->PDO(
+                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
+                trans(
+                    'messages.custom_error_message.'.config('constants.error_codes.ERROR_DATABASE_OPERATIONAL')
+                )
+            );
+        } catch (ModelNotFoundException $e) {
+            return $this->modelNotFound(
+                config('constants.error_codes.ERROR_INVALID_ARGUMENT'),
+                trans('messages.custom_error_message.'.config('constants.error_codes.ERROR_INVALID_ARGUMENT'))
+            );
         } catch (\Exception $e) {
             throw new \Exception(trans('messages.custom_error_message.999999'));
         }
@@ -176,7 +195,7 @@ class FooterPageController extends Controller
      * Remove the specified resource from storage.
      *
      * @param int  $id
-     * @return \Illuminate\Http\Response
+     * @return Illuminate\Http\JsonResponse
      */
     public function destroy(int $id): JsonResponse
     {
@@ -188,7 +207,12 @@ class FooterPageController extends Controller
             $apiMessage = trans('messages.success.MESSAGE_FOOTER_PAGE_DELETED');
             return $this->responseHelper->success($apiStatus, $apiMessage);
         } catch (ModelNotFoundException $e) {
-            throw new ModelNotFoundException(trans('messages.custom_error_message.300005'));
+            return $this->modelNotFound(
+                config('constants.error_codes.ERROR_FOOTER_PAGE_NOT_FOUND'),
+                trans('messages.custom_error_message.'.config('constants.error_codes.ERROR_FOOTER_PAGE_NOT_FOUND'))
+            );
+        } catch (\Exception $e) {
+            throw new \Exception(trans('messages.custom_error_message.999999'));
         }
     }
 }

@@ -11,10 +11,10 @@ return [
     'SLIDER_IMAGE_PATH' => 'images/',
     'ACTIVE' => 1,
     'DB_DATE_FORMAT' => 'Y-m-d H:i:s',
-	'PER_PAGE_LIMIT' => '10',
-    'FRONT_DATE_FORMAT' => 'd/m/Y',   
-	
-	/*
+    'PER_PAGE_LIMIT' => '10',
+    'FRONT_DATE_FORMAT' => 'd/m/Y',
+    
+    /*
      * User custom field types
      */
      'custom_field_types' => [
@@ -51,7 +51,7 @@ return [
         'PUBLISHED_FOR_VOTING' => 'PUBLISHED_FOR_VOTING',
         'PUBLISHED_FOR_APPLYING' => 'PUBLISHED_FOR_APPLYING',
         'UNPUBLISHED' => 'UNPUBLISHED'
-    ],    
+    ],
 
     /*
      * Image types
@@ -83,5 +83,17 @@ return [
         'REFUSED' => 'REFUSED'
     ],
 
+    'error_codes' => [
+        'ERROR_FOOTER_PAGE_REQUIRED_FIELDS_EMPTY' => '300000',
+        'ERROR_INVALID_ARGUMENT' => '300002',
+        'ERROR_FOOTER_PAGE_NOT_FOUND' => '300003',
+        'ERROR_DATABASE_OPERATIONAL' => '300004',
+        'ERROR_NO_DATA_FOUND' => '300005',
+        'ERROR_USER_NOT_FOUND' => '100000',
+        'ERROR_USER_SKILL_NOT_FOUND' => '100011',
+
+        'ERROR_USER_INVALID_DATA' => '100010',
+
+    ]
     
 ];

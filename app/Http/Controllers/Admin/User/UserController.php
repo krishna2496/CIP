@@ -11,6 +11,7 @@ use App\Models\City;
 use App\Models\Country;
 use App\Models\Timezone;
 use App\Helpers\ResponseHelper;
+use App\Traits\RestExceptionHandlerTrait;
 use Validator;
 use DB;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -18,6 +19,7 @@ use App\User;
 
 class UserController extends Controller
 {
+    use RestExceptionHandlerTrait;
     /**
      * @var App\Repositories\User\UserRepository
      */
@@ -55,9 +57,15 @@ class UserController extends Controller
             $apiStatus = Response::HTTP_OK;
             $apiMessage = ($users->isEmpty()) ? trans('messages.success.MESSAGE_NO_RECORD_FOUND')
              : trans('messages.success.MESSAGE_USER_LISTING');
-            return $this->responseHelper->successWithPagination($this->response->status(), $apiMessage, $users);
-        } catch (\InvalidArgumentException $e) {
-            throw new \InvalidArgumentException($e->getMessage());
+            return $this->responseHelper->successWithPagination(Response::HTTP_OK, $apiMessage, $users);
+        } catch (InvalidArgumentException $e) {
+            return $this->invalidArgument(
+                config('constants.error_codes.ERROR_INVALID_ARGUMENT'),
+                trans('messages.custom_error_message.'.config('constants.error_codes.ERROR_INVALID_ARGUMENT'))
+            );
+        } catch (\Exception $e) {
+            dd($e);
+            throw new \Exception(trans('messages.custom_error_message.999999'));
         }
     }
 
@@ -72,11 +80,10 @@ class UserController extends Controller
         try {
             // Server side validataions
             $validator = Validator::make(
-                $request->toArray(),
+                $request->all(),
                 ["first_name" => "required|max:16",
                 "last_name" => "required|max:16",
-                "email" => "required|email|unique:user,
-                email, NULL, user_id, deleted_at, NULL",
+                "email" => "required|email|unique:user,email,NULL,user_id,deleted_at,NULL",
                 "password" => "required",
                 "city_id" => "required",
                 "country_id" => "required",
@@ -91,14 +98,14 @@ class UserController extends Controller
             if ($validator->fails()) {
                 return $this->responseHelper->error(
                     Response::HTTP_UNPROCESSABLE_ENTITY,
-                    trans('messages.status_type.HTTP_STATUS_TYPE_422'),
-                    trans('messages.custom_error_code.ERROR_100010'),
+                    Response::$statusTexts['422'],
+                    config('constants.error_codes.ERROR_USER_INVALID_DATA'),
                     $validator->errors()->first()
                 );
             }
             
             // Create new user
-            $user = $this->userRepository->store($request);
+            $user = $this->userRepository->store($request->all());
 
             // Set response data
             $apiData = ['user_id' => $user->user_id];
@@ -106,8 +113,18 @@ class UserController extends Controller
             $apiMessage = trans('messages.success.MESSAGE_USER_CREATED');
             
             return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
-        } catch (\PDOException $e) {
-            throw new \PDOException($e->getMessage());
+        } catch (PDOException $e) {
+            return $this->PDO(
+                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
+                trans(
+                    'messages.custom_error_message.'.config('constants.error_codes.ERROR_DATABASE_OPERATIONAL')
+                )
+            );
+        } catch (InvalidArgumentException $e) {
+            return $this->invalidArgument(
+                config('constants.error_codes.ERROR_INVALID_ARGUMENT'),
+                trans('messages.custom_error_message.'.config('constants.error_codes.ERROR_INVALID_ARGUMENT'))
+            );
         } catch (\Exception $e) {
             throw new \Exception(trans('messages.custom_error_message.999999'));
         }
@@ -117,7 +134,7 @@ class UserController extends Controller
      * Display the specified user detail.
      *
      * @param int $id
-     * @return mixed
+     * @return Illuminate\Http\JsonResponse
      */
     public function show(int $id): JsonResponse
     {
@@ -130,7 +147,10 @@ class UserController extends Controller
             
             return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
         } catch (ModelNotFoundException $e) {
-            throw new ModelNotFoundException(trans('messages.custom_error_message.100000'));
+            return $this->modelNotFound(
+                config('constants.error_codes.ERROR_USER_NOT_FOUND'),
+                trans('messages.custom_error_message.'.config('constants.error_codes.ERROR_USER_NOT_FOUND'))
+            );
         } catch (\Exception $e) {
             throw new \Exception(trans('messages.custom_error_message.999999'));
         }
@@ -146,8 +166,30 @@ class UserController extends Controller
     public function update(Request $request, int $id): JsonResponse
     {
         try {
+            // Server side validataions
+            $validator = Validator::make(
+                $request->all(),
+                ["first_name" => "max:16",
+                "last_name" => "max:16",
+                "email" => "email|unique:user,email,'. $id . ',user_id,deleted_at,NULL",
+                "employee_id" => "max:16",
+                "department" => "max:16",
+                "manager_name" => "max:16",
+                "linked_in_url" => "url"]
+            );
+
+            // If request parameter have any error
+            if ($validator->fails()) {
+                return $this->responseHelper->error(
+                    Response::HTTP_UNPROCESSABLE_ENTITY,
+                    Response::$statusTexts['422'],
+                    config('constants.error_codes.ERROR_USER_INVALID_DATA'),
+                    $validator->errors()->first()
+                );
+            }
+
             // Update user
-            $user = $this->userRepository->update($request, $id);
+            $user = $this->userRepository->update($request->toArray(), $id);
 
             // Set response data
             $apiData = ['user_id' => $user->user_id];
@@ -156,9 +198,17 @@ class UserController extends Controller
             
             return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
         } catch (ModelNotFoundException $e) {
-            throw new ModelNotFoundException(trans('messages.custom_error_message.100000'));
-        } catch (\PDOException $e) {
-            throw new \PDOException($e->getMessage());
+            return $this->modelNotFound(
+                config('constants.error_codes.ERROR_USER_NOT_FOUND'),
+                trans('messages.custom_error_message.'.config('constants.error_codes.ERROR_USER_NOT_FOUND'))
+            );
+        } catch (PDOException $e) {
+            return $this->PDO(
+                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
+                trans(
+                    'messages.custom_error_message.'.config('constants.error_codes.ERROR_DATABASE_OPERATIONAL')
+                )
+            );
         } catch (\Exception $e) {
             throw new \Exception(trans('messages.custom_error_message.999999'));
         }
@@ -176,11 +226,16 @@ class UserController extends Controller
             $user = $this->userRepository->delete($id);
             
             // Set response data
-            $apiStatus = trans('messages.status_code.HTTP_STATUS_NO_CONTENT');
+            $apiStatus = Response::HTTP_NO_CONTENT;
             $apiMessage = trans('messages.success.MESSAGE_USER_DELETED');
             return $this->responseHelper->success($apiStatus, $apiMessage);
         } catch (ModelNotFoundException $e) {
-            throw new ModelNotFoundException(trans('messages.custom_error_message.100000'));
+            return $this->modelNotFound(
+                config('constants.error_codes.ERROR_USER_NOT_FOUND'),
+                trans('messages.custom_error_message.'.config('constants.error_codes.ERROR_USER_NOT_FOUND'))
+            );
+        } catch (\Exception $e) {
+            throw new \Exception(trans('messages.custom_error_message.999999'));
         }
     }
 
@@ -203,13 +258,13 @@ class UserController extends Controller
             if ($validator->fails()) {
                 return $this->responseHelper->error(
                     Response::HTTP_UNPROCESSABLE_ENTITY,
-                    trans('messages.status_type.HTTP_STATUS_TYPE_422'),
+                    Response::$statusTexts['422'],
                     trans('messages.custom_error_code.ERROR_100002'),
                     $validator->errors()->first()
                 );
             }
 
-            $this->userRepository->linkSkill($request);
+            $this->userRepository->linkSkill($request->toArray());
 
             // Set response data
             $apiStatus = Response::HTTP_CREATED;
@@ -217,7 +272,12 @@ class UserController extends Controller
             
             return $this->responseHelper->success($apiStatus, $apiMessage);
         } catch (PDOException $e) {
-            throw new PDOException($e->getMessage());
+            return $this->PDO(
+                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
+                trans(
+                    'messages.custom_error_message.'.config('constants.error_codes.ERROR_DATABASE_OPERATIONAL')
+                )
+            );
         } catch (\Exception $e) {
             throw new \Exception(trans('messages.custom_error_message.999999'));
         }
@@ -243,20 +303,25 @@ class UserController extends Controller
             if ($validator->fails()) {
                 return $this->responseHelper->error(
                     Response::HTTP_UNPROCESSABLE_ENTITY,
-                    trans('messages.status_type.HTTP_STATUS_TYPE_422'),
+                    Response::$statusTexts['422'],
                     trans('messages.custom_error_code.ERROR_100002'),
                     $validator->errors()->first()
                 );
             }
 
-            $userSkill = $this->userRepository->unlinkSkill($request);
+            $userSkill = $this->userRepository->unlinkSkill($request->toArray());
             // Set response data
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_USER_SKILLS_DELETED');
             
             return $this->responseHelper->success($apiStatus, $apiMessage);
         } catch (PDOException $e) {
-            throw new PDOException($e->getMessage());
+            return $this->PDO(
+                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
+                trans(
+                    'messages.custom_error_message.'.config('constants.error_codes.ERROR_DATABASE_OPERATIONAL')
+                )
+            );
         } catch (\Exception $e) {
             throw new \Exception(trans('messages.custom_error_message.999999'));
         }
@@ -279,7 +344,10 @@ class UserController extends Controller
              : trans('messages.success.MESSAGE_NO_RECORD_FOUND');
             return $this->responseHelper->success($this->response->status(), $responseMessage, $apiData);
         } catch (ModelNotFoundException $e) {
-            throw new ModelNotFoundException(trans('messages.custom_error_message.100011'));
+            return $this->modelNotFound(
+                config('constants.error_codes.ERROR_USER_SKILL_NOT_FOUND'),
+                trans('messages.custom_error_message.'.config('constants.error_codes.ERROR_USER_SKILL_NOT_FOUND'))
+            );
         } catch (\Exception $e) {
             throw new \Exception(trans('messages.custom_error_message.999999'));
         }

@@ -93,7 +93,7 @@ class UserCustomFieldController extends Controller
             if ($validator->fails()) {
                 return $this->responseHelper->error(
                     Response::HTTP_UNPROCESSABLE_ENTITY,
-                    trans('messages.status_type.HTTP_STATUS_TYPE_422'),
+                    Response::$statusTexts['422'],
                     trans('messages.custom_error_code.ERROR_100003'),
                     $validator->errors()->first()
                 );
@@ -148,7 +148,7 @@ class UserCustomFieldController extends Controller
             if ($validator->fails()) {
                 return $this->responseHelper->error(
                     Response::HTTP_UNPROCESSABLE_ENTITY,
-                    trans('messages.status_type.HTTP_STATUS_TYPE_422'),
+                    Response::$statusTexts['422'],
                     trans('messages.custom_error_code.ERROR_100003'),
                     $validator->errors()->first()
                 );

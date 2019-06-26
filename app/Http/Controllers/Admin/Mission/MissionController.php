@@ -50,7 +50,7 @@ class MissionController extends Controller
      * Display a listing of Mission.
      *
      * @param \Illuminate\Http\Request $request
-     * @return mixed
+     * @return Illuminate\Http\JsonResponse
      */
     public function index(Request $request): JsonResponse
     {
@@ -77,7 +77,7 @@ class MissionController extends Controller
      * Store a newly created resource in storage.
      *
      * @param \Illuminate\Http\Request $request
-     * @return mixed
+     * @return Illuminate\Http\JsonResponse
      */
     public function store(Request $request): JsonResponse
     {
@@ -114,7 +114,7 @@ class MissionController extends Controller
         if ($validator->fails()) {
             return $this->responseHelper->error(
                 Response::HTTP_UNPROCESSABLE_ENTITY,
-                trans('messages.status_type.HTTP_STATUS_TYPE_422'),
+                Response::$statusTexts['422'],
                 trans('messages.custom_error_code.ERROR_300000'),
                 $validator->errors()->first()
             );
@@ -151,7 +151,7 @@ class MissionController extends Controller
      *
      * @param \Illuminate\Http\Request $request
      * @param int $id
-     * @return mixed
+     * @return Illuminate\Http\JsonResponse
      */
     public function update(Request $request, $id): JsonResponse
     {
@@ -187,7 +187,7 @@ class MissionController extends Controller
         if ($validator->fails()) {
             return $this->responseHelper->error(
                 Response::HTTP_UNPROCESSABLE_ENTITY,
-                trans('messages.status_type.HTTP_STATUS_TYPE_422'),
+                Response::$statusTexts['422'],
                 trans('messages.custom_error_code.ERROR_300000'),
                 $validator->errors()->first()
             );
@@ -212,7 +212,7 @@ class MissionController extends Controller
      * Remove the specified resource from storage.
      *
      * @param int $id
-     * @return mixed
+     * @return Illuminate\Http\JsonResponse
      */
     public function destroy($id): JsonResponse
     {
@@ -237,7 +237,7 @@ class MissionController extends Controller
      *
      * @param \Illuminate\Http\Request $request
      * @param int $missionId
-     * @return \Illuminate\Http\Response
+     * @return Illuminate\Http\JsonResponse
      */
     public function missionApplications(Request $request, int $missionId): JsonResponse
     {
@@ -261,7 +261,7 @@ class MissionController extends Controller
      *
      * @param int $missionId
      * @param int $applicationId
-     * @return \Illuminate\Http\Response
+     * @return Illuminate\Http\JsonResponse
      */
     public function missionApplication(int $missionId, int $applicationId): JsonResponse
     {
@@ -282,7 +282,7 @@ class MissionController extends Controller
      * @param \Illuminate\Http\Request $request
      * @param int $missionId
      * @param int $applicationId
-     * @return \Illuminate\Http\Response
+     * @return Illuminate\Http\JsonResponse
      */
     public function updateApplication(Request $request, int $missionId, int $applicationId): JsonResponse
     {
@@ -295,7 +295,7 @@ class MissionController extends Controller
             if ($validator->fails()) {
                 return $this->responseHelper->error(
                     Response::HTTP_UNPROCESSABLE_ENTITY,
-                    trans('messages.status_type.HTTP_STATUS_TYPE_422'),
+                    Response::$statusTexts['422'],
                     trans('messages.custom_error_code.ERROR_400000'),
                     $validator->errors()->first()
                 );

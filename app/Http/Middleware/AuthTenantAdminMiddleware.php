@@ -40,8 +40,8 @@ class AuthTenantAdminMiddleware
                 return $this->responseHelper->error(
                     trans('messages.status_code.HTTP_STATUS_UNAUTHORIZED'),
                     trans('messages.status_type.HTTP_STATUS_TYPE_401'),
-                    trans('messages.custom_error_code.ERROR_20010'),
-                    trans('messages.custom_error_message.20010')
+                    trans('messages.custom_error_code.ERROR_210001'),
+                    trans('messages.custom_error_message.210001')
                 );
             }
             // authenticate api user based on basic auth parameters
