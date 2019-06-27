@@ -4,6 +4,7 @@ namespace App\Repositories\Tenant;
 use App\Repositories\Tenant\TenantInterface;
 use Illuminate\Http\Request;
 use App\Models\Tenant;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class TenantRepository implements TenantInterface
 {
@@ -27,21 +28,21 @@ class TenantRepository implements TenantInterface
      * Get listing of tenants
      *
      * @param \Illuminate\Http\Request $request
-     * @return App\Models\Tenant Tenant
+     * @return \Illuminate\Pagination\LengthAwarePaginator
      */
-    public function tenantList(Request $request)
+    public function tenantList(Request $request): LengthAwarePaginator
     {
-		$tenantQuery = $this->tenant->with('options', 'tenantLanguages', 'tenantLanguages.language');
+        $tenantQuery = $this->tenant->with('options', 'tenantLanguages', 'tenantLanguages.language');
 
-		if ($request->has('search')) {
-			$tenantQuery->where('name', 'like', '%' . $request->input('search') . '%');
-		}
-		if ($request->has('order')) {
-			$orderDirection = $request->input('order', 'asc');
-			$tenantQuery->orderBy('tenant_id', $orderDirection);
-		}
+        if ($request->has('search')) {
+            $tenantQuery->where('name', 'like', '%' . $request->input('search') . '%');
+        }
+        if ($request->has('order')) {
+            $orderDirection = $request->input('order', 'asc');
+            $tenantQuery->orderBy('tenant_id', $orderDirection);
+        }
 
-		return $tenantQuery->paginate(config('constants.PER_PAGE_LIMIT'));        
+        return $tenantQuery->paginate(config('constants.PER_PAGE_LIMIT'));
     }
 
     /**
@@ -52,28 +53,26 @@ class TenantRepository implements TenantInterface
      */
     public function store(Request $request): Tenant
     {
-       	$tenant = $this->tenant->create($request->toArray());
+        $tenant = $this->tenant->create($request->toArray());
 
-		// ONLY FOR DEVELOPMENT MODE. (PLEASE REMOVE THIS CODE IN PRODUCTION MODE)
-		if (env('APP_ENV')=='local') {
-		
-			$apiUserData['api_key'] = base64_encode($tenant->name.'_api_key');
-			$apiUserData['api_secret'] = base64_encode($tenant->name.'_api_secret');
-			// Insert api_user data into table
-			$tenant->apiUsers()->create($apiUserData);
-		}
-		// ONLY FOR DEVELOPMENT MODE END
+        // ONLY FOR DEVELOPMENT MODE. (PLEASE REMOVE THIS CODE IN PRODUCTION MODE)
+        if (env('APP_ENV')=='local') {
+            $apiUserData['api_key'] = base64_encode($tenant->name.'_api_key');
+            $apiUserData['api_secret'] = base64_encode($tenant->name.'_api_secret');
+            // Insert api_user data into table
+            $tenant->apiUsers()->create($apiUserData);
+        }
+        // ONLY FOR DEVELOPMENT MODE END
 
-		// Add options data into `tenant_has_option` table
-		if (isset($request->options) && count($request->options) > 0) {
-			foreach ($request->options as $option_name => $option_value) {
-				$tenantOptionData['option_name'] = $option_name;
-				$tenantOptionData['option_value'] = $option_value;
-				$tenant->options()->create($tenantOptionData);
-			}
-		}
-		
-		return $tenant;
+        // Add options data into `tenant_has_option` table
+        if (isset($request->options) && count($request->options) > 0) {
+            foreach ($request->options as $optionName => $optionValue) {
+                $tenantOptionData['option_name'] = $optionName;
+                $tenantOptionData['option_value'] = $optionValue;
+                $tenant->options()->create($tenantOptionData);
+            }
+        }
+        return $tenant;
     }
 
     /**
@@ -91,34 +90,34 @@ class TenantRepository implements TenantInterface
      * Remove the specified resource from storage.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return bool
      */
-    public function delete(int $id)
+    public function delete(int $id): bool
     {
-		return $this->tenant->deleteTenant($id);
+        return $this->tenant->deleteTenant($id);
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  array  $requestArray
      * @param  int  $id
      * @return App\Models\Tenant $tenant
      */
-    public function update(Request $request, int $id): Tenant
+    public function update(array $requestArray, int $id): Tenant
     {
-		$tenant = $this->tenant->findOrFail($id);
-		$tenant->update($request->toArray());
+        $tenant = $this->tenant->findOrFail($id);
+        $tenant->update($requestArray);
 
-		// Add options data into `tenant_has_option` table
-		if (isset($request->options) && count($request->options) > 0) {
-			foreach ($request->options as $option_name => $option_value) {
-				$tenantOptionData['option_name'] = $option_name;
-				$tenantOptionData['option_value'] = $option_value;
-				$tenant->options()->where('option_name', $option_name)
-					->update($tenantOptionData);
-			}
-		}
-		return $tenant;
+        // Add options data into `tenant_has_option` table
+        if (isset($request->options) && count($request->options) > 0) {
+            foreach ($request->options as $optionName => $optionValue) {
+                $tenantOptionData['option_name'] = $optionName;
+                $tenantOptionData['option_value'] = $optionValue;
+                $tenant->options()->where('option_name', $optionName)
+                    ->update($tenantOptionData);
+            }
+        }
+        return $tenant;
     }
 }

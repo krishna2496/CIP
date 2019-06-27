@@ -17,7 +17,7 @@ class TenantDefaultLanguageJob extends Job
      * @return void
      */
     public function __construct(Tenant $tenant)
-    {        
+    {
         $this->tenant = $tenant;
     }
 
@@ -27,7 +27,7 @@ class TenantDefaultLanguageJob extends Job
      * @return void
      */
     public function handle()
-    {        
+    {
         // Add default English and French language for tenant - Testing purpose
         $defaultData = array(
             ['language_id' => 1, 'default' => '1'],
@@ -35,6 +35,6 @@ class TenantDefaultLanguageJob extends Job
         );
         foreach ($defaultData as $key => $data) {
             $this->tenant->tenantLanguages()->create($data);
-        }        
+        }
     }
 }

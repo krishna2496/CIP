@@ -8,14 +8,16 @@ class DatabaseHelper
 {
     /**
      * Create connection with tenant database based on passed tenant id.
-     * 
+     *
      * @param  int $tenantId Identify it's database
      * @return boolean
      */
     public static function connectWithTenantDatabase(int $tenantId)
     {
         // Set configuration options for the newly create tenant
-        Config::set('database.connections.tenant', array(
+        Config::set(
+            'database.connections.tenant',
+            array(
                 'driver'    => 'mysql',
                 'host'      => env('DB_HOST'),
                 'database'  => 'ci_tenant_'.$tenantId,
