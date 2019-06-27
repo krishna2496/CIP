@@ -12,7 +12,7 @@ use App\Traits\RestExceptionHandlerTrait;
 
 class Handler extends ExceptionHandler
 {
-	use RestExceptionHandlerTrait;
+    use RestExceptionHandlerTrait;
     /**
      * A list of the exception types that should not be reported.
      *
@@ -47,6 +47,9 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
-		return $this->getJsonResponseForException($request, $exception);
+        if ($exception instanceof MethodNotAllowedHttpException) {
+            return $this->methodNotAllowedHttp();
+        }
+        return $this->badRequest();
     }
 }

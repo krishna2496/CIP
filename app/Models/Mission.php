@@ -1,9 +1,15 @@
 <?php
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\{Model, SoftDeletes};
-use App\Models\{MissionDocument, MissionMedia, MissionLanguage, MissionApplication};
-use Illuminate\Database\Eloquent\Relations\{HasOne, HasMany, BelongsTo};
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Models\MissionDocument;
+use App\Models\MissionMedia;
+use App\Models\MissionLanguage;
+use App\Models\MissionApplication;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Carbon\Carbon;
 
 class Mission extends Model
@@ -29,7 +35,9 @@ class Mission extends Model
      *
      * @var array
      */
-    protected $fillable = ['theme_id', 'city_id', 'country_id', 'start_date', 'end_date', 'total_seats', 'available_seats', 'application_deadline', 'publication_status', 'organisation_id', 'organisation_name', 'mission_type', 'goal_objective'];
+    protected $fillable = ['theme_id', 'city_id',
+    'country_id', 'start_date', 'end_date', 'total_seats', 'available_seats', 'application_deadline',
+    'publication_status', 'organisation_id', 'organisation_name', 'mission_type', 'goal_objective'];
 
     protected $appends = ['city_name'];
     /**
@@ -126,6 +134,6 @@ class Mission extends Model
      */
     public function getCityNameAttribute()
     {
-       return $this->city()->select('name')->first()->name;        
+        return $this->city()->select('name')->first()->name;
     }
 }

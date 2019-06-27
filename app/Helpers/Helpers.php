@@ -16,11 +16,11 @@ class Helpers
     public static function getSubDomainFromRequest(Request $request) : string
     {
         try {
-			if (env('APP_ENV')=='local') {
+            if (env('APP_ENV')=='local') {
                 return env('DEFAULT_TENANT');
-            } else {			
-				return explode(".", parse_url($request->headers->all()['referer'][0])['host'])[0];
-			}
+            } else {
+                return explode(".", parse_url($request->headers->all()['referer'][0])['host'])[0];
+            }
         } catch (\Exception $e) {
             if (env('APP_ENV')=='local') {
                 return env('DEFAULT_TENANT');
@@ -41,7 +41,7 @@ class Helpers
         try {
             if (isset($request->headers->all()['referer'])) {
                 $parseUrl = parse_url($request->headers->all()['referer'][0]);
-				return $parseUrl['scheme'].'://'.$parseUrl['host'].env('APP_PATH');
+                return $parseUrl['scheme'].'://'.$parseUrl['host'].env('APP_PATH');
             } else {
                 return env('APP_MAIL_BASE_URL');
             }
@@ -93,7 +93,7 @@ class Helpers
         // Connect master database to get language details
         DatabaseHelper::switchDatabaseConnection('mysql', $request);
 
-        $tenantName = Self::getSubDomainFromRequest($request);
+        $tenantName = self::getSubDomainFromRequest($request);
         $tenant = DB::table('tenant')->where('name', $tenantName)->first();
 
         // Connect tenant database
@@ -101,10 +101,10 @@ class Helpers
                 
         return $tenant;
     }
-	
-    /** 
-	 * Get country id from country_code
-     * 
+    
+    /**
+     * Get country id from country_code
+     *
      * @param string $country_code
      * @return int
      */
@@ -116,7 +116,7 @@ class Helpers
 
     /**
      * Get country detail from country_id
-     * 
+     *
      * @param string $country_id
      * @return array
      */
@@ -127,12 +127,12 @@ class Helpers
                              'country_code' => $country->ISO,
                              'name' => $country->name,
                             );
-         return $countryData;
+        return $countryData;
     }
 
     /**
      * Get city data from city_id
-     * 
+     *
      * @param string $city_id
      * @return array
      */

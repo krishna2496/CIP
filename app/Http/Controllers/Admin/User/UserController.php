@@ -1,55 +1,72 @@
 <?php
 namespace App\Http\Controllers\Admin\User;
 
-use Illuminate\Http\{Request, Response, JsonResponse};
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
 use App\Repositories\User\UserRepository;
 use Illuminate\Support\Facades\Input;
-use App\Models\{City, Country, Timezone};
+use App\Models\City;
+use App\Models\Country;
+use App\Models\Timezone;
 use App\Helpers\ResponseHelper;
-use Validator, DB;
+use App\Traits\RestExceptionHandlerTrait;
+use Validator;
+use DB;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\User;
+use InvalidArgumentException;
+use PDOException;
 
 class UserController extends Controller
 {
+    use RestExceptionHandlerTrait;
     /**
-     * @var UserRepository
+     * @var App\Repositories\User\UserRepository
      */
-    private $user;
+    private $userRepository;
     
     /**
-     * @var Response
+     * @var App\Helpers\ResponseHelper
      */
-    private $response;
+    private $responseHelper;
     
     /**
      * Create a new controller instance.
      *
+     * @param App\Repositories\User\UserRepository $userRepository
+     * @param Illuminate\Http\ResponseHelper $responseHelper
      * @return void
      */
-    public function __construct(UserRepository $user, Response $response)
+    public function __construct(UserRepository $userRepository, ResponseHelper $responseHelper)
     {
-        $this->user = $user;
-        $this->response = $response;
+        $this->userRepository = $userRepository;
+        $this->responseHelper = $responseHelper;
     }
     
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Illuminate\Http\JsonResponse
      */
-    public function index(Request $request)
+    public function index(Request $request): JsonResponse
     {
         try {
-            $users = $this->user->userList($request);
+            $users = $this->userRepository->userList($request);
             
             // Set response data
-            $apiStatus = $this->response->status();
-            $apiMessage = ($users->isEmpty()) ? trans('messages.success.MESSAGE_NO_RECORD_FOUND') : trans('messages.success.MESSAGE_USER_LISTING');
-            return ResponseHelper::successWithPagination($this->response->status(), $apiMessage, $users);
-        } catch (\InvalidArgumentException $e) {
-            throw new \InvalidArgumentException($e->getMessage());
+            $apiStatus = Response::HTTP_OK;
+            $apiMessage = ($users->isEmpty()) ? trans('messages.success.MESSAGE_NO_RECORD_FOUND')
+             : trans('messages.success.MESSAGE_USER_LISTING');
+            return $this->responseHelper->successWithPagination(Response::HTTP_OK, $apiMessage, $users);
+        } catch (InvalidArgumentException $e) {
+            return $this->invalidArgument(
+                config('constants.error_codes.ERROR_INVALID_ARGUMENT'),
+                trans('messages.custom_error_message.'.config('constants.error_codes.ERROR_INVALID_ARGUMENT'))
+            );
+        } catch (\Exception $e) {
+            throw new \Exception(trans('messages.custom_error_message.999999'));
         }
     }
 
@@ -62,68 +79,81 @@ class UserController extends Controller
     public function store(Request $request): JsonResponse
     {
         try {
-			// Server side validataions
-			$validator = Validator::make($request->toArray(), ["first_name" => "required|max:16",
-																"last_name" => "required|max:16",
-																"email" => "required|email|unique:user,email,NULL,user_id,deleted_at,NULL",
-																"password" => "required",
-																"city_id" => "required",
-																"country_id" => "required",
-																"profile_text" => "required",
-																"employee_id" => "max:16",
-																"department" => "max:16",
-																"manager_name" => "max:16",
-																"linked_in_url" => "url"]);
+            // Server side validataions
+            $validator = Validator::make(
+                $request->all(),
+                ["first_name" => "required|max:16",
+                "last_name" => "required|max:16",
+                "email" => "required|email|unique:user,email,NULL,user_id,deleted_at,NULL",
+                "password" => "required",
+                "city_id" => "required",
+                "country_id" => "required",
+                "profile_text" => "required",
+                "employee_id" => "max:16",
+                "department" => "max:16",
+                "manager_name" => "max:16",
+                "linked_in_url" => "url"]
+            );
 
-			// If request parameter have any error
-			if ($validator->fails()) {
-				return ResponseHelper::error(trans('messages.status_code.HTTP_STATUS_UNPROCESSABLE_ENTITY'),
-											trans('messages.status_type.HTTP_STATUS_TYPE_422'),
-											trans('messages.custom_error_code.ERROR_100010'),
-											$validator->errors()->first());
-			}
-			
-			// Create new user
-			$user = $this->user->store($request);
+            // If request parameter have any error
+            if ($validator->fails()) {
+                return $this->responseHelper->error(
+                    Response::HTTP_UNPROCESSABLE_ENTITY,
+                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                    config('constants.error_codes.ERROR_USER_INVALID_DATA'),
+                    $validator->errors()->first()
+                );
+            }
+            
+            // Create new user
+            $user = $this->userRepository->store($request->all());
 
-			// Set response data
-			$apiData = ['user_id' => $user->user_id];
-			$apiStatus = $this->response->status();
-			$apiMessage = trans('messages.success.MESSAGE_USER_CREATED');    
-			
-			return ResponseHelper::success($apiStatus, $apiMessage, $apiData);
-			
-        } catch(\PDOException $e) {
-			
-			throw new \PDOException($e->getMessage());
-			
-		} catch(\Exception $e) {
-			
-			throw new \Exception($e->getMessage());
-			
-		}
+            // Set response data
+            $apiData = ['user_id' => $user->user_id];
+            $apiStatus = Response::HTTP_OK;
+            $apiMessage = trans('messages.success.MESSAGE_USER_CREATED');
+            
+            return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
+        } catch (PDOException $e) {
+            return $this->PDO(
+                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
+                trans(
+                    'messages.custom_error_message.'.config('constants.error_codes.ERROR_DATABASE_OPERATIONAL')
+                )
+            );
+        } catch (InvalidArgumentException $e) {
+            return $this->invalidArgument(
+                config('constants.error_codes.ERROR_INVALID_ARGUMENT'),
+                trans('messages.custom_error_message.'.config('constants.error_codes.ERROR_INVALID_ARGUMENT'))
+            );
+        } catch (\Exception $e) {
+            throw new \Exception(trans('messages.custom_error_message.999999'));
+        }
     }
 
     /**
      * Display the specified user detail.
      *
      * @param int $id
-     * @return mixed
+     * @return Illuminate\Http\JsonResponse
      */
     public function show(int $id): JsonResponse
     {
         try {
-            $userDetail = $this->user->find($id);
+            $userDetail = $this->userRepository->find($id);
                 
             $apiData = $userDetail->toArray();
-            $apiStatus = $this->response->status();
+            $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_USER_FOUND');
             
-            return ResponseHelper::success($apiStatus, $apiMessage, $apiData);
+            return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
         } catch (ModelNotFoundException $e) {
-            throw new ModelNotFoundException(trans('messages.custom_error_message.100000'));
+            return $this->modelNotFound(
+                config('constants.error_codes.ERROR_USER_NOT_FOUND'),
+                trans('messages.custom_error_message.'.config('constants.error_codes.ERROR_USER_NOT_FOUND'))
+            );
         } catch (\Exception $e) {
-            throw new \Exception($e->getMessage());
+            throw new \Exception(trans('messages.custom_error_message.999999'));
         }
     }
 
@@ -137,48 +167,76 @@ class UserController extends Controller
     public function update(Request $request, int $id): JsonResponse
     {
         try {
-			// Update user
-			$user = $this->user->update($request, $id);
+            // Server side validataions
+            $validator = Validator::make(
+                $request->all(),
+                ["first_name" => "max:16",
+                "last_name" => "max:16",
+                "email" => "email|unique:user,email,'. $id . ',user_id,deleted_at,NULL",
+                "employee_id" => "max:16",
+                "department" => "max:16",
+                "manager_name" => "max:16",
+                "linked_in_url" => "url"]
+            );
 
-			// Set response data
-			$apiData = ['user_id' => $user->user_id];
-			$apiStatus = $this->response->status();
-			$apiMessage = trans('messages.success.MESSAGE_USER_UPDATED');    
-			
-			return ResponseHelper::success($apiStatus, $apiMessage, $apiData);
-			
-        } catch(ModelNotFoundException $e){
-			
-			throw new ModelNotFoundException(trans('messages.custom_error_message.100000'));
-			
-        } catch(\PDOException $e) {
-			
-			throw new \PDOException($e->getMessage());
-			
-		} catch(\Exception $e) {
-			
-			throw new \Exception($e->getMessage());
-			
-		}
+            // If request parameter have any error
+            if ($validator->fails()) {
+                return $this->responseHelper->error(
+                    Response::HTTP_UNPROCESSABLE_ENTITY,
+                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                    config('constants.error_codes.ERROR_USER_INVALID_DATA'),
+                    $validator->errors()->first()
+                );
+            }
+
+            // Update user
+            $user = $this->userRepository->update($request->toArray(), $id);
+
+            // Set response data
+            $apiData = ['user_id' => $user->user_id];
+            $apiStatus = Response::HTTP_OK;
+            $apiMessage = trans('messages.success.MESSAGE_USER_UPDATED');
+            
+            return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
+        } catch (ModelNotFoundException $e) {
+            return $this->modelNotFound(
+                config('constants.error_codes.ERROR_USER_NOT_FOUND'),
+                trans('messages.custom_error_message.'.config('constants.error_codes.ERROR_USER_NOT_FOUND'))
+            );
+        } catch (PDOException $e) {
+            return $this->PDO(
+                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
+                trans(
+                    'messages.custom_error_message.'.config('constants.error_codes.ERROR_DATABASE_OPERATIONAL')
+                )
+            );
+        } catch (\Exception $e) {
+            throw new \Exception(trans('messages.custom_error_message.999999'));
+        }
     }
 
     /**
      * Remove the specified resource from storage.
      *
      * @param int $id
-     * @return mixed
+     * @return Illuminate\Http\JsonResponse
      */
-    public function destroy(int $id)
+    public function destroy(int $id): JsonResponse
     {
         try {
-            $user = $this->user->delete($id);
+            $user = $this->userRepository->delete($id);
             
             // Set response data
-            $apiStatus = trans('messages.status_code.HTTP_STATUS_NO_CONTENT');
+            $apiStatus = Response::HTTP_NO_CONTENT;
             $apiMessage = trans('messages.success.MESSAGE_USER_DELETED');
-            return ResponseHelper::success($apiStatus, $apiMessage);
+            return $this->responseHelper->success($apiStatus, $apiMessage);
         } catch (ModelNotFoundException $e) {
-            throw new ModelNotFoundException(trans('messages.custom_error_message.100000'));
+            return $this->modelNotFound(
+                config('constants.error_codes.ERROR_USER_NOT_FOUND'),
+                trans('messages.custom_error_message.'.config('constants.error_codes.ERROR_USER_NOT_FOUND'))
+            );
+        } catch (\Exception $e) {
+            throw new \Exception(trans('messages.custom_error_message.999999'));
         }
     }
 
@@ -186,9 +244,9 @@ class UserController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
+     * @return Illuminate\Http\JsonResponse
      */
-    public function linkSkill(Request $request)
+    public function linkSkill(Request $request): JsonResponse
     {
         try {
             $validator = Validator::make($request->toArray(), [
@@ -199,25 +257,35 @@ class UserController extends Controller
 
             // If request parameter have any error
             if ($validator->fails()) {
-                return ResponseHelper::error(
-                    trans('messages.status_code.HTTP_STATUS_UNPROCESSABLE_ENTITY'),
-                    trans('messages.status_type.HTTP_STATUS_TYPE_422'),
-                    trans('messages.custom_error_code.ERROR_100002'),
+                return $this->responseHelper->error(
+                    Response::HTTP_UNPROCESSABLE_ENTITY,
+                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                    config('constants.error_codes.ERROR_SKILL_INVALID_DATA'),
                     $validator->errors()->first()
                 );
             }
 
-            $this->user->linkSkill($request);
+            $this->userRepository->linkSkill($request->toArray());
 
             // Set response data
-            $apiStatus = trans('messages.status_code.HTTP_STATUS_CREATED');
+            $apiStatus = Response::HTTP_CREATED;
             $apiMessage = trans('messages.success.MESSAGE_USER_SKILLS_CREATED');
-            
-            return ResponseHelper::success($apiStatus, $apiMessage);
+            return $this->responseHelper->success($apiStatus, $apiMessage);
+        } catch (InvalidArgumentException $e) {
+            return $this->invalidArgument(
+                config('constants.error_codes.ERROR_USER_CUSTOM_FIELD_INVALID_DATA'),
+                trans('messages.custom_error_message.'
+                .config('constants.error_codes.ERROR_USER_CUSTOM_FIELD_INVALID_DATA'))
+            );
         } catch (PDOException $e) {
-            throw new PDOException($e->getMessage());
+            return $this->PDO(
+                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
+                trans(
+                    'messages.custom_error_message.'.config('constants.error_codes.ERROR_DATABASE_OPERATIONAL')
+                )
+            );
         } catch (\Exception $e) {
-            throw new \Exception($e->getMessage());
+            throw new \Exception(trans('messages.custom_error_message.999999'));
         }
     }
 
@@ -225,9 +293,9 @@ class UserController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
+     * @return Illuminate\Http\JsonResponse
      */
-    public function unlinkSkill(Request $request)
+    public function unlinkSkill(Request $request): JsonResponse
     {
         try {
             // Server side validataions
@@ -239,24 +307,29 @@ class UserController extends Controller
 
             // If request parameter have any error
             if ($validator->fails()) {
-                return ResponseHelper::error(
-                    trans('messages.status_code.HTTP_STATUS_UNPROCESSABLE_ENTITY'),
-                    trans('messages.status_type.HTTP_STATUS_TYPE_422'),
-                    trans('messages.custom_error_code.ERROR_100002'),
+                return $this->responseHelper->error(
+                    Response::HTTP_UNPROCESSABLE_ENTITY,
+                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                    config('constants.error_codes.ERROR_SKILL_INVALID_DATA'),
                     $validator->errors()->first()
                 );
             }
 
-            $userSkill = $this->user->unlinkSkill($request);
+            $userSkill = $this->userRepository->unlinkSkill($request->toArray());
             // Set response data
-            $apiStatus = $this->response->status();
+            $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_USER_SKILLS_DELETED');
             
-            return ResponseHelper::success($apiStatus, $apiMessage);
+            return $this->responseHelper->success($apiStatus, $apiMessage);
         } catch (PDOException $e) {
-            throw new PDOException($e->getMessage());
+            return $this->PDO(
+                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
+                trans(
+                    'messages.custom_error_message.'.config('constants.error_codes.ERROR_DATABASE_OPERATIONAL')
+                )
+            );
         } catch (\Exception $e) {
-            throw new \Exception($e->getMessage());
+            throw new \Exception(trans('messages.custom_error_message.999999'));
         }
     }
 
@@ -264,21 +337,25 @@ class UserController extends Controller
      * Display a listing of the resource.
      *
      * @param int $userId
-     * @return \Illuminate\Http\Response
+     * @return Illuminate\Http\JsonResponse
      */
-    public function userSkills(int $userId)
+    public function userSkills(int $userId): JsonResponse
     {
-        try {            
-            $skillList = $this->user->userSkills($userId);
+        try {
+            $skillList = $this->userRepository->userSkills($userId);
 
             // Set response data
             $apiData = (count($skillList) > 0) ? $skillList->toArray() : [];
-            $responseMessage = (count($skillList) > 0) ? trans('messages.success.MESSAGE_USER_LISTING') : trans('messages.success.MESSAGE_NO_RECORD_FOUND');
-            return ResponseHelper::success($this->response->status(), $responseMessage, $apiData);
+            $responseMessage = (count($skillList) > 0) ? trans('messages.success.MESSAGE_USER_LISTING')
+             : trans('messages.success.MESSAGE_NO_RECORD_FOUND');
+            return $this->responseHelper->success(Response::HTTP_OK, $responseMessage, $apiData);
         } catch (ModelNotFoundException $e) {
-            throw new ModelNotFoundException(trans('messages.custom_error_message.100011'));
+            return $this->modelNotFound(
+                config('constants.error_codes.ERROR_USER_SKILL_NOT_FOUND'),
+                trans('messages.custom_error_message.'.config('constants.error_codes.ERROR_USER_SKILL_NOT_FOUND'))
+            );
         } catch (\Exception $e) {
-            throw new \Exception($e->getMessage());
-        } 
+            throw new \Exception(trans('messages.custom_error_message.999999'));
+        }
     }
 }
