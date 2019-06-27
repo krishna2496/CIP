@@ -1,7 +1,8 @@
 <?php
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\{Model, SoftDeletes};
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\Skill;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -81,6 +82,4 @@ class UserSkill extends Model
     {
         return static::with('skill')->find($userId);
     }
-
-     
 }

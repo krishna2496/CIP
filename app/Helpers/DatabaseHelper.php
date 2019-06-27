@@ -5,12 +5,14 @@ use Illuminate\Support\Facades\Config;
 use App\Helpers\ResponseHelper;
 use App\Helpers\Helpers;
 use Illuminate\Http\Request;
+use App\Traits\RestExceptionHandlerTrait;
 use PDOException;
 use DB;
 use Throwable;
 
 class DatabaseHelper
 {
+    use RestExceptionHandlerTrait;
     /**
      * Switch database connection runtime
      *
@@ -34,9 +36,14 @@ class DatabaseHelper
                 Config::set('database.default', 'tenant');
             }
         } catch (PDOException $e) {
-            throw new PDOException($e->geMessage());
+            return $this->PDO(
+                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
+                trans(
+                    'messages.custom_error_message.'.config('constants.error_codes.ERROR_DATABASE_OPERATIONAL')
+                )
+            );
         } catch (\Exception $e) {
-            throw new \Exception($e->getMessage());
+            throw new \Exception(trans('messages.custom_error_message.999999'));
         }
     }
 
@@ -60,9 +67,14 @@ class DatabaseHelper
             // Set default database
             Config::set('database.default', 'tenant');
         } catch (PDOException $e) {
-            throw new PDOException($e->geMessage());
+            return $this->PDO(
+                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
+                trans(
+                    'messages.custom_error_message.'.config('constants.error_codes.ERROR_DATABASE_OPERATIONAL')
+                )
+            );
         } catch (\Exception $e) {
-            throw new \Exception($e->getMessage());
+            throw new \Exception(trans('messages.custom_error_message.999999'));
         }
     }
 }

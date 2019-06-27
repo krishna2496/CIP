@@ -1,7 +1,8 @@
 <?php
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\{Model, SoftDeletes};
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\Mission;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -36,7 +37,8 @@ class MissionLanguage extends Model
      *
      * @var array
      */
-    protected $visible = ['mission_language_id', 'lang', 'language_id', 'title', 'objective', 'short_description', 'description'];
+    protected $visible = ['mission_language_id', 'lang', 'language_id', 'title', 'objective', 'short_description',
+    'description'];
 
     /**
      * Get the mission that has language titles.

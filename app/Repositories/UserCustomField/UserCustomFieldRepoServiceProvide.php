@@ -12,7 +12,6 @@ class UserCustomFieldRepoServiceProvide extends ServiceProvider
      */
     public function boot()
     {
-        
     }
 
     /**
@@ -22,6 +21,9 @@ class UserCustomFieldRepoServiceProvide extends ServiceProvider
      */
     public function register()
     {
-        $this->app->bind('App\Repositories\UserCustomField\UserCustomFieldInterface', 'App\Repositories\UserCustomField\UserCustomFieldRepository');
+        $this->app->bind(
+            'App\Repositories\UserCustomField\UserCustomFieldInterface',
+            'App\Repositories\UserCustomField\UserCustomFieldRepository'
+        );
     }
 }

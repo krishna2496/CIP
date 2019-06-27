@@ -13,7 +13,7 @@ class ResponseHelper
      * @param array $apiData
      * @return mixed
      */
-    public static function success(string $apiStatus = '', string $apiMessage = '', array $apiData = [])
+    public function success(string $apiStatus = '', string $apiMessage = '', array $apiData = [])
     {
         $response['status'] = $apiStatus;
         
@@ -36,8 +36,11 @@ class ResponseHelper
      * @param Illuminate\Pagination\LengthAwarePaginator $apiData
      * @return mixed
      */
-    public static function successWithPagination(string $apiStatus = '', string $apiMessage = '', LengthAwarePaginator $apiData)
-    {
+    public function successWithPagination(
+        string $apiStatus = '',
+        string $apiMessage = '',
+        LengthAwarePaginator $apiData = null
+    ) {
         $response['status'] = $apiStatus;
 
         // Check response data have pagination or not? Pagination response parameter sets
@@ -67,8 +70,12 @@ class ResponseHelper
      * @param string $customErrorMessage
      * @return mixed
      */
-    public static function error(string $statusCode = '', string $statusType = '', string $customErrorCode = '', string $customErrorMessage = '')
-    {
+    public function error(
+        string $statusCode = '',
+        string $statusType = '',
+        string $customErrorCode = '',
+        string $customErrorMessage = ''
+    ) {
         $response['status'] = $statusCode;
         $response['type'] = $statusType;
         if ($customErrorCode) {

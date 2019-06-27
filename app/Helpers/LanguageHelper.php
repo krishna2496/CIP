@@ -2,10 +2,13 @@
 namespace App\Helpers;
 
 use Illuminate\Http\Request;
-use DB, PDOException;
+use DB;
+use PDOException;
+use App\Traits\RestExceptionHandlerTrait;
 
 class LanguageHelper
 {
+    use RestExceptionHandlerTrait;
     /**
      * Get languages from `ci_admin` table
      *
@@ -24,7 +27,7 @@ class LanguageHelper
             
             return $languages;
         } catch (\Exception $e) {
-            throw new \Exception($e->getMessage());
+            throw new \Exception(trans('messages.custom_error_message.999999'));
         }
     }
 
@@ -37,7 +40,7 @@ class LanguageHelper
     public static function getTenantLanguages(Request $request)
     {
         try {
-            $tenant = Helpers::getTenantDetail($request);		
+            $tenant = Helpers::getTenantDetail($request);
             // Connect master database to get language details
             DatabaseHelper::switchDatabaseConnection('mysql', $request);
             
@@ -51,11 +54,15 @@ class LanguageHelper
             DatabaseHelper::switchDatabaseConnection('tenant', $request);
             
             return $tenantLanguages;
-        } catch (\PDOException $e) {
-            throw new \PDOException($e->getMessage());
+        } catch (PDOException $e) {
+            return $this->PDO(
+                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
+                trans(
+                    'messages.custom_error_message.'.config('constants.error_codes.ERROR_DATABASE_OPERATIONAL')
+                )
+            );
         } catch (\Exception $e) {
-            throw new \Exception($e->getMessage());
+            throw new \Exception(trans('messages.custom_error_message.999999'));
         }
-        
     }
 }

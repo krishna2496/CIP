@@ -12,7 +12,6 @@ class FooterPageRepoServiceProvide extends ServiceProvider
      */
     public function boot()
     {
-        
     }
 
 
@@ -23,6 +22,9 @@ class FooterPageRepoServiceProvide extends ServiceProvider
      */
     public function register()
     {
-        $this->app->bind('App\Repositories\FooterPage\FooterPageInterface', 'App\Repositories\FooterPage\FooterPageRepository');
+        $this->app->bind(
+            'App\Repositories\FooterPage\FooterPageInterface',
+            'App\Repositories\FooterPage\FooterPageRepository'
+        );
     }
 }

@@ -11,13 +11,24 @@ use App;
 class S3Helper
 {
     /**
+     * Create a new middleware instance.
+     *
+     * @param Illuminate\Http\ResponseHelper $responseHelper
+     * @return void
+     */
+    public function __construct(ResponseHelper $responseHelper)
+    {
+        $this->responseHelper = $responseHelper;
+    }
+    
+    /**
      * Compiled local scss file and generate style.css file
      *
      * @param string $tenantName
      * @param array $options
      * @return mix
      */
-    public static function compileLocalScss(string $tenantName, array $options = [])
+    public function compileLocalScss(string $tenantName, array $options = [])
     {
         try {
             $scss = new Compiler();
@@ -30,7 +41,8 @@ class S3Helper
                 $importScss .= '$primary: '.$options['primary_color'].';';
             }
 
-            if (file_exists(base_path()."/node_modules/bootstrap/scss/bootstrap.scss") && file_exists(base_path()."/node_modules/bootstrap-vue/src/index.js")) {
+            if (file_exists(base_path()."/node_modules/bootstrap/scss/bootstrap.scss")
+             && file_exists(base_path()."/node_modules/bootstrap-vue/src/index.js")) {
                 // Send error like bootstrap.scss not found while compile files
             }
 
@@ -52,14 +64,14 @@ class S3Helper
                 dispatch(new UploadAssetsFromLocalToS3StorageJob($tenantName));
             }
         } catch (\Exception $e) {
-            throw new \Exception($e->getMessage());
+            throw new \Exception(trans('messages.custom_error_message.999999'));
         }
 
         // Set response data
         $apiStatus = app('Illuminate\Http\Response')->status();
         $apiMessage = trans('api_success_messages.success.CSS_COMPILED_SUCESSFULLY');
 
-        return ResponseHelper::success($apiStatus, $apiMessage);
+        return $this->responseHelper->success($apiStatus, $apiMessage);
     }
 
     /**
@@ -75,20 +87,27 @@ class S3Helper
         try {
             $disk = Storage::disk('s3');
             // Comment $context_array and $context code before going live
-            $context_array = array('http'=>array('proxy'=>env('AWS_WEBPROXY_HOST').":".env('AWS_WEBPROXY_PORT'),'request_fulluri'=>true));
+            $context_array = array('http'=>array('proxy'=>env('AWS_WEBPROXY_HOST').":".env('AWS_WEBPROXY_PORT'),
+            'request_fulluri'=>true));
             $context = stream_context_create($context_array);
             // Comment below line before going live
             $disk->put($tenantName.'/'.basename($url), file_get_contents($url, false, $context));
             // Uncomment below line before going live
-            if ($disk->put($tenantName.'/'.env('AWS_S3_ASSETS_FOLDER_NAME').'/'.env('AWS_S3_IMAGES_FOLDER_NAME').'/'.basename($url), file_get_contents($url))) {
+            if ($disk->put(
+                $tenantName.'/'.env('AWS_S3_ASSETS_FOLDER_NAME').'/'.env('AWS_S3_IMAGES_FOLDER_NAME')
+                .'/'.basename($url),
+                file_get_contents($url)
+            )) {
                 $file = $disk->get($tenantName.'/'.basename($url));
-                $pathInS3 = 'https://'.env('AWS_S3_BUCKET_NAME').'.s3.'.env("AWS_REGION").'.amazonaws.com/'.$tenantName.'/'.env('AWS_S3_ASSETS_FOLDER_NAME').'/'.env('AWS_S3_IMAGES_FOLDER_NAME').'/'.basename($url);
+                $pathInS3 = 'https://'.env('AWS_S3_BUCKET_NAME').'.s3.'
+                .env("AWS_REGION").'.amazonaws.com/'.$tenantName.'/'.env('AWS_S3_ASSETS_FOLDER_NAME')
+                .'/'.env('AWS_S3_IMAGES_FOLDER_NAME').'/'.basename($url);
                 return $pathInS3;
             } else {
                 return 0;
             }
-        } catch (\Exception $e) {            
-            throw new \Exception($e->getMessage());
+        } catch (\Exception $e) {
+            throw new \Exception(trans('messages.custom_error_message.999999'));
         }
     }
 }
