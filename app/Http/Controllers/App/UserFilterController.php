@@ -29,9 +29,10 @@ class UserFilterController extends Controller
      *
      * @return void
      */
-    public function __construct(UserFilterRepository $filters, 
-        ResponseHelper $responseHelper)
-    {
+    public function __construct(
+        UserFilterRepository $filters,
+        ResponseHelper $responseHelper
+    ) {
         $this->filters = $filters;
         $this->responseHelper = $responseHelper;
     }
@@ -49,7 +50,7 @@ class UserFilterController extends Controller
             $filters = $this->filters->userFilter($request);
             $filterData = $filters->toArray();
             $apiStatus = Response::HTTP_OK;
-            return $this->responseHelper->success($apiStatus,'', $filterData);
+            return $this->responseHelper->success($apiStatus, '', $filterData);
         } catch (\PDOException $e) {
             return $this->PDO(
                 config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
