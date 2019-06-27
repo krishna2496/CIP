@@ -66,7 +66,6 @@ class TenantOptionRepository implements TenantOptionInterface
      */
     public function storeSlider(array $data): TenantOption
     {
-        dd($data);
         return $this->tenantOption->create($data);
     }
 
