@@ -4,9 +4,11 @@ namespace App\Helpers;
 use Illuminate\Http\Request;
 use DB;
 use PDOException;
+use App\Traits\RestExceptionHandlerTrait;
 
 class LanguageHelper
 {
+    use RestExceptionHandlerTrait;
     /**
      * Get languages from `ci_admin` table
      *
@@ -52,8 +54,13 @@ class LanguageHelper
             DatabaseHelper::switchDatabaseConnection('tenant', $request);
             
             return $tenantLanguages;
-        } catch (\PDOException $e) {
-            throw new \PDOException($e->getMessage());
+        } catch (PDOException $e) {
+            return $this->PDO(
+                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
+                trans(
+                    'messages.custom_error_message.'.config('constants.error_codes.ERROR_DATABASE_OPERATIONAL')
+                )
+            );
         } catch (\Exception $e) {
             throw new \Exception(trans('messages.custom_error_message.999999'));
         }
