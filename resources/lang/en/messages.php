@@ -23,6 +23,7 @@ return [
         '200004' => 'Database operational error',
         '200005' => 'No data found',
         '200006' => 'Invalid argument',
+        '200008' => 'Error while creating folder on S3 bucket',
         '999999' => 'An error has occured'
     ]
     

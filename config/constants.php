@@ -6,6 +6,7 @@
             'ERROR_TENANT_ALREADY_EXIST' => '200002',
             'ERROR_TENANT_NOT_FOUND' => '200003',
             'ERROR_DATABASE_OPERATIONAL' => '200004',
-            'ERROR_INVALID_ARGUMENT' => '200006'
+            'ERROR_INVALID_ARGUMENT' => '200006',
+            'FAILED_TO_CREATE_FOLDER_ON_S3' => '200008',
         ]
     ];
