@@ -23,7 +23,6 @@ trait RestExceptionHandlerTrait
      */
     protected function badRequest(string $message = 'Bad request')
     {
-        
         return $this->jsonResponse(
             Response::HTTP_BAD_REQUEST,
             Response::$statusTexts[Response::HTTP_BAD_REQUEST],

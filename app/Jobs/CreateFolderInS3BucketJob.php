@@ -44,7 +44,8 @@ class CreateFolderInS3BucketJob extends Job
                         // copy and paste file into tenant's folders
                         Storage::disk('s3')->copy($file, $this->tenantName . '/' . $sourcePath);
                         if (basename($file) == env('S3_CUSTOME_CSS_NAME')) {
-                            $pathInS3 = 'https://s3.' . env('AWS_REGION') . '.amazonaws.com/' . env('AWS_S3_BUCKET_NAME') . '/' . $this->tenantName . '' . $sourcePath;
+                            $pathInS3 = 'https://s3.' . env('AWS_REGION') . '.amazonaws.com/'
+                                . env('AWS_S3_BUCKET_NAME') . '/' . $this->tenantName . '' . $sourcePath;
 
                             // Create or update custom css record on database
                             $tenantOptionData['option_name'] = "custom_css";
