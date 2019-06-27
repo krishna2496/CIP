@@ -55,6 +55,8 @@ return [
         '100012' => 'Unable to upload slider image',
         '100013' => 'Invalid input data',
         '100014' => 'Sorry, you cannot add more than '.config('constants.SLIDER_LIMIT').' slides!',
+        '100015' => 'File must have .scss type',
+        '100016' => 'File name doesn`t match with structure',
         
         // Custom error code for CMS Module - 300000 - 309999
         '300000' => 'Page creation failed. Please check input parameters',

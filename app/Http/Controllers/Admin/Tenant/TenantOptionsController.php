@@ -189,7 +189,7 @@ class TenantOptionsController extends Controller
      * Update tenant custom styling data: primary color, secondary color and custom css
      *
      * @param \Illuminate\Http\Request $request
-     * @return mix
+     * @return mixed
      */
     public function updateStyleSettings(Request $request)
     {
@@ -214,8 +214,10 @@ class TenantOptionsController extends Controller
                 return $this->responseHelper->error(
                     Response::HTTP_UNPROCESSABLE_ENTITY,
                     Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                    trans('messages.custom_error_code.ERROR_20044'),
-                    trans('messages.custom_error_message.20044')
+                    config('constants.error_codes.ERROR_NOT_VALID_EXTENSION'),
+                    trans(
+                        'messages.custom_error_message.'.config('constants.error_codes.ERROR_NOT_VALID_EXTENSION')
+                    )
                 );
             }
             
@@ -234,8 +236,11 @@ class TenantOptionsController extends Controller
                     return $this->responseHelper->error(
                         Response::HTTP_UNPROCESSABLE_ENTITY,
                         Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                        trans('messages.custom_error_code.ERROR_20040'),
-                        trans('messages.custom_error_message.20040')
+                        config('constants.error_codes.ERROR_FILE_NAME_NOT_MATCHED_WITH_STRUCTURE'),
+                        trans(
+                            'messages.custom_error_message.'
+                            .config('constants.error_codes.ERROR_FILE_NAME_NOT_MATCHED_WITH_STRUCTURE')
+                        )
                     );
                 }
 
