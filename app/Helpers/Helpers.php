@@ -3,17 +3,34 @@ namespace App\Helpers;
 
 use App\Helpers\ResponseHelper;
 use Illuminate\Http\Request;
+use App\Helpers\DatabaseHelper;
 use DB;
 
 class Helpers
 {
+    /**
+     * @var App\Helpers\DatabaseHelper
+     */
+    private $databaseHelper;
+
+    /**
+     * Create a new helper instance.
+     *
+     * @param App\Helpers\DatabaseHelper $databaseHelper
+     * @return void
+     */
+    public function __construct(DatabaseHelper $databaseHelper)
+    {
+        $this->databaseHelper = $databaseHelper;
+    }
+
 
     /**
     * It will return
     * @param Illuminate\Http\Request $request
     * @return string
     */
-    public static function getSubDomainFromRequest(Request $request) : string
+    public function getSubDomainFromRequest(Request $request) : string
     {
         try {
             if (env('APP_ENV')=='local') {
@@ -36,7 +53,7 @@ class Helpers
      * @param Illuminate\Http\Request $request
      * @return mixed
      */
-    public static function getRefererFromRequest(Request $request)
+    public function getRefererFromRequest(Request $request)
     {
         try {
             if (isset($request->headers->all()['referer'])) {
@@ -57,7 +74,7 @@ class Helpers
      * @param string $subfield
      * @param int $sort
      */
-    public static function sortMultidimensionalArray(&$array, string $subfield, int $sort)
+    public function sortMultidimensionalArray(&$array, string $subfield, int $sort)
     {
         $sortarray = array();
         $arrayLength = count($array);
@@ -88,16 +105,16 @@ class Helpers
      * @param Illuminate\Http\Request $request
      * @return Tenant
      */
-    public static function getTenantDetail(Request $request)
+    public function getTenantDetail(Request $request)
     {
         // Connect master database to get language details
-        DatabaseHelper::switchDatabaseConnection('mysql', $request);
+        $this->databaseHelper->switchDatabaseConnection('mysql', $request);
 
-        $tenantName = self::getSubDomainFromRequest($request);
+        $tenantName = $this->getSubDomainFromRequest($request);
         $tenant = DB::table('tenant')->where('name', $tenantName)->first();
 
         // Connect tenant database
-        DatabaseHelper::switchDatabaseConnection('tenant', $request);
+        $this->databaseHelper->switchDatabaseConnection('tenant', $request);
                 
         return $tenant;
     }
@@ -108,7 +125,7 @@ class Helpers
      * @param string $country_code
      * @return int
      */
-    public static function getCountryId(string $country_code) : int
+    public function getCountryId(string $country_code) : int
     {
         $country = DB::table("country")->where("ISO", $country_code)->first();
         return $country->country_id;
@@ -120,7 +137,7 @@ class Helpers
      * @param string $country_id
      * @return array
      */
-    public static function getCountry($country_id) : array
+    public function getCountry($country_id) : array
     {
         $country = DB::table("country")->where("country_id", $country_id)->first();
         $countryData = array('country_id' => $country->country_id,
@@ -136,7 +153,7 @@ class Helpers
      * @param string $city_id
      * @return array
      */
-    public static function getCity($city_id) : array
+    public function getCity($city_id) : array
     {
         $city = DB::table("city")->where("city_id", $city_id)->first();
         $cityData = array('city_id' => $city->city_id,

@@ -30,16 +30,26 @@ class TenantOptionsController extends Controller
     private $responseHelper;
     
     /**
+     * @var App\Helpers\Helpers
+     */
+    private $helpers;
+
+    /**
      * Create a new controller instance.
      *
      * @param  App\Repositories\TenantOption\TenantOptionRepository $tenantOptionRepository
      * @param  App\Helpers\ResponseHelper $responseHelper
+     * @param  App\Helpers\Helpers $helpers
      * @return void
      */
-    public function __construct(TenantOptionRepository $tenantOptionRepository, ResponseHelper $responseHelper)
-    {
+    public function __construct(
+        TenantOptionRepository $tenantOptionRepository,
+        ResponseHelper $responseHelper,
+        Helpers $helpers
+    ) {
         $this->tenantOptionRepository = $tenantOptionRepository;
         $this->responseHelper = $responseHelper;
+        $this->helpers = $helpers;
     }
 
     /**
@@ -118,11 +128,11 @@ class TenantOptionsController extends Controller
                     Response::HTTP_FORBIDDEN,
                     Response::$statusTexts[Response::HTTP_FORBIDDEN],
                     config('constants.error_codes.ERROR_SLIDER_LIMIT'),
-                    trans('messages.custom_error_message.100014')
+                    trans('messages.custom_error_message.ERROR_SLIDER_LIMIT')
                 );
             } else {
                 // Upload slider image on S3 server
-                $tenantName = Helpers::getSubDomainFromRequest($request);
+                $tenantName = $this->helpers->getSubDomainFromRequest($request);
                 if ($request->url = S3Helper::uploadFileOnS3Bucket($request->url, $tenantName)) {
                     // Set data for create new record
                     $insertData = array();
@@ -142,8 +152,7 @@ class TenantOptionsController extends Controller
                         Response::HTTP_UNPROCESSABLE_ENTITY,
                         Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
                         config('constants.error_codes.ERROR_SLIDER_IMAGE_UPLOAD'),
-                        trans('messages.custom_error_message.'
-                        .config('constants.error_codes.ERROR_SLIDER_IMAGE_UPLOAD'))
+                        trans('messages.custom_error_message.ERROR_SLIDER_IMAGE_UPLOAD')
                     );
                 }
             }
@@ -151,11 +160,11 @@ class TenantOptionsController extends Controller
             return $this->PDO(
                 config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
                 trans(
-                    'messages.custom_error_message.'.config('constants.error_codes.ERROR_DATABASE_OPERATIONAL')
+                    'messages.custom_error_message.ERROR_DATABASE_OPERATIONAL'
                 )
             );
         } catch (\Exception $e) {
-            throw new \Exception(trans('messages.custom_error_message.999999'));
+            throw new \Exception(trans('messages.custom_error_message.ERROR_OCCURED'));
         }
     }
 
@@ -169,7 +178,7 @@ class TenantOptionsController extends Controller
     {
         try {
             // Get domain name from request and use as tenant name.
-            $tenantName = Helpers::getSubDomainFromRequest($request);
+            $tenantName = $this->helpers->getSubDomainFromRequest($request);
             
             // Copy default theme folder to tenant folder on s3
             dispatch(new CreateFolderInS3BucketJob($tenantName));
@@ -200,7 +209,7 @@ class TenantOptionsController extends Controller
         $file = $request->file('custom_scss_files');
 
         // Get domain name from request and use as tenant name.
-        $tenantName = Helpers::getSubDomainFromRequest($request);
+        $tenantName = $this->helpers->getSubDomainFromRequest($request);
 
         // Need to check local copy for tenant assest is there or not?
         if (!Storage::disk('local')->exists($tenantName)) {
@@ -215,9 +224,7 @@ class TenantOptionsController extends Controller
                     Response::HTTP_UNPROCESSABLE_ENTITY,
                     Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
                     config('constants.error_codes.ERROR_NOT_VALID_EXTENSION'),
-                    trans(
-                        'messages.custom_error_message.'.config('constants.error_codes.ERROR_NOT_VALID_EXTENSION')
-                    )
+                    trans('messages.custom_error_message.ERROR_NOT_VALID_EXTENSION')
                 );
             }
             
@@ -237,10 +244,7 @@ class TenantOptionsController extends Controller
                         Response::HTTP_UNPROCESSABLE_ENTITY,
                         Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
                         config('constants.error_codes.ERROR_FILE_NAME_NOT_MATCHED_WITH_STRUCTURE'),
-                        trans(
-                            'messages.custom_error_message.'
-                            .config('constants.error_codes.ERROR_FILE_NAME_NOT_MATCHED_WITH_STRUCTURE')
-                        )
+                        trans('messages.custom_error_message.ERROR_FILE_NAME_NOT_MATCHED_WITH_STRUCTURE')
                     );
                 }
 

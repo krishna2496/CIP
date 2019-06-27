@@ -31,16 +31,33 @@ class TenantOptionController extends Controller
     private $responseHelper;
     
     /**
+     * @var App\Helpers\LanguageHelper
+     */
+    private $languageHelper;
+
+    /**
+     * @var App\Helpers\Helpers
+     */
+    private $helpers;
+
+    /**
      * Create a new controller instance.
      *
      * @param App\Repositories\TenantOption\TenantOptionRepository $tenantOptionRepository
      * @param Illuminate\Http\ResponseHelper $responseHelper
+     * @param App\Helpers\LanguageHelper
      * @return void
      */
-    public function __construct(TenantOptionRepository $tenantOptionRepository, ResponseHelper $responseHelper)
-    {
+    public function __construct(
+        TenantOptionRepository $tenantOptionRepository,
+        ResponseHelper $responseHelper,
+        LanguageHelper $languageHelper,
+        Helpers $helpers
+    ) {
         $this->tenantOptionRepository = $tenantOptionRepository;
         $this->responseHelper = $responseHelper;
+        $this->languageHelper = $languageHelper;
+        $this->helpers = $helpers;
     }
     
     /**
@@ -68,12 +85,12 @@ class TenantOptionController extends Controller
                 }
                 // Sort an array by sort order of slider
                 if (!empty($slider)) {
-                    Helpers::sortMultidimensionalArray($slider, 'sort_order', SORT_ASC);
+                    $this->helpers->sortMultidimensionalArray($slider, 'sort_order', SORT_ASC);
                     $optionData['sliders'] = $slider;
                 }
             }
 
-            $tenantLanguages = LanguageHelper::getTenantLanguages($request);
+            $tenantLanguages = $this->languageHelper->getTenantLanguages($request);
 
             if ($tenantLanguages->count() > 0) {
                 foreach ($tenantLanguages as $key => $value) {
@@ -92,22 +109,22 @@ class TenantOptionController extends Controller
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
                 config('constants.error_codes.ERROR_TENANT_DOMAIN_NOT_FOUND'),
-                trans('messages.custom_error_message.'.config('constants.error_codes.ERROR_TENANT_DOMAIN_NOT_FOUND'))
+                trans('messages.custom_error_message.ERROR_TENANT_DOMAIN_NOT_FOUND')
             );
         } catch (PDOException $e) {
             return $this->PDO(
                 config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
                 trans(
-                    'messages.custom_error_message.'.config('constants.error_codes.ERROR_DATABASE_OPERATIONAL')
+                    'messages.custom_error_message.ERROR_DATABASE_OPERATIONAL'
                 )
             );
         } catch (InvalidArgumentException $e) {
             return $this->invalidArgument(
                 config('constants.error_codes.ERROR_INVALID_ARGUMENT'),
-                trans('messages.custom_error_message.'.config('constants.error_codes.ERROR_INVALID_ARGUMENT'))
+                trans('messages.custom_error_message.ERROR_INVALID_ARGUMENT')
             );
         } catch (\Exception $e) {
-            throw new \Exception(trans('messages.custom_error_message.999999'));
+            throw new \Exception(trans('messages.custom_error_message.ERROR_OCCURED'));
         }
     }
 
@@ -131,16 +148,16 @@ class TenantOptionController extends Controller
             return $this->PDO(
                 config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
                 trans(
-                    'messages.custom_error_message.'.config('constants.error_codes.ERROR_DATABASE_OPERATIONAL')
+                    'messages.custom_error_message.ERROR_DATABASE_OPERATIONAL'
                 )
             );
         } catch (InvalidArgumentException $e) {
             return $this->invalidArgument(
                 config('constants.error_codes.ERROR_INVALID_ARGUMENT'),
-                trans('messages.custom_error_message.'.config('constants.error_codes.ERROR_INVALID_ARGUMENT'))
+                trans('messages.custom_error_message.ERROR_INVALID_ARGUMENT')
             );
         } catch (\Exception $e) {
-            throw new \Exception(trans('messages.custom_error_message.999999'));
+            throw new \Exception(trans('messages.custom_error_message.ERROR_OCCURED'));
         }
     }
 
@@ -167,16 +184,16 @@ class TenantOptionController extends Controller
             return $this->PDO(
                 config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
                 trans(
-                    'messages.custom_error_message.'.config('constants.error_codes.ERROR_DATABASE_OPERATIONAL')
+                    'messages.custom_error_message.ERROR_DATABASE_OPERATIONAL'
                 )
             );
         } catch (InvalidArgumentException $e) {
             return $this->invalidArgument(
                 config('constants.error_codes.ERROR_INVALID_ARGUMENT'),
-                trans('messages.custom_error_message.'.config('constants.error_codes.ERROR_INVALID_ARGUMENT'))
+                trans('messages.custom_error_message.ERROR_INVALID_ARGUMENT')
             );
         } catch (\Exception $e) {
-            throw new \Exception(trans('messages.custom_error_message.999999'));
+            throw new \Exception(trans('messages.custom_error_message.ERROR_OCCURED'));
         }
     }
 }

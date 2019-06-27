@@ -63,10 +63,10 @@ class UserCustomFieldController extends Controller
         } catch (InvalidArgumentException $e) {
             return $this->invalidArgument(
                 config('constants.error_codes.ERROR_INVALID_ARGUMENT'),
-                trans('messages.custom_error_message.'.config('constants.error_codes.ERROR_INVALID_ARGUMENT'))
+                trans('messages.custom_error_message.ERROR_INVALID_ARGUMENT')
             );
         } catch (\Exception $e) {
-            throw new \Exception(trans('messages.custom_error_message.999999'));
+            throw new \Exception(trans('messages.custom_error_message.ERROR_OCCURED'));
         }
     }
 
@@ -114,18 +114,17 @@ class UserCustomFieldController extends Controller
         } catch (InvalidArgumentException $e) {
             return $this->invalidArgument(
                 config('constants.error_codes.ERROR_USER_CUSTOM_FIELD_INVALID_DATA'),
-                trans('messages.custom_error_message.'
-                .config('constants.error_codes.ERROR_USER_CUSTOM_FIELD_INVALID_DATA'))
+                trans('messages.custom_error_message.ERROR_USER_CUSTOM_FIELD_INVALID_DATA')
             );
         } catch (PDOException $e) {
             return $this->PDO(
                 config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
                 trans(
-                    'messages.custom_error_message.'.config('constants.error_codes.ERROR_DATABASE_OPERATIONAL')
+                    'messages.custom_error_message.ERROR_DATABASE_OPERATIONAL'
                 )
             );
         } catch (\Exception $e) {
-            throw new \Exception(trans('messages.custom_error_message.999999'));
+            throw new \Exception(trans('messages.custom_error_message.ERROR_OCCURED'));
         }
     }
 
@@ -179,24 +178,22 @@ class UserCustomFieldController extends Controller
         } catch (InvalidArgumentException $e) {
             return $this->invalidArgument(
                 config('constants.error_codes.ERROR_USER_CUSTOM_FIELD_INVALID_DATA'),
-                trans('messages.custom_error_message.'
-                .config('constants.error_codes.ERROR_USER_CUSTOM_FIELD_INVALID_DATA'))
+                trans('messages.custom_error_message.ERROR_USER_CUSTOM_FIELD_INVALID_DATA')
             );
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
                 config('constants.error_codes.ERROR_USER_CUSTOM_FIELD_NOT_FOUND'),
-                trans('messages.custom_error_message.'
-                .config('constants.error_codes.ERROR_USER_CUSTOM_FIELD_NOT_FOUND'))
+                trans('messages.custom_error_message.ERROR_USER_CUSTOM_FIELD_NOT_FOUND')
             );
         } catch (PDOException $e) {
             return $this->PDO(
                 config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
                 trans(
-                    'messages.custom_error_message.'.config('constants.error_codes.ERROR_DATABASE_OPERATIONAL')
+                    'messages.custom_error_message.ERROR_DATABASE_OPERATIONAL'
                 )
             );
         } catch (\Exception $e) {
-            throw new \Exception(trans('messages.custom_error_message.999999'));
+            throw new \Exception(trans('messages.custom_error_message.ERROR_OCCURED'));
         }
     }
 
@@ -218,11 +215,10 @@ class UserCustomFieldController extends Controller
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
                 config('constants.error_codes.ERROR_USER_CUSTOM_FIELD_NOT_FOUND'),
-                trans('messages.custom_error_message.'
-                .config('constants.error_codes.ERROR_USER_CUSTOM_FIELD_NOT_FOUND'))
+                trans('messages.custom_error_message.ERROR_USER_CUSTOM_FIELD_NOT_FOUND')
             );
         } catch (\Exception $e) {
-            throw new \Exception(trans('messages.custom_error_message.999999'));
+            throw new \Exception(trans('messages.custom_error_message.ERROR_OCCURED'));
         }
     }
 }

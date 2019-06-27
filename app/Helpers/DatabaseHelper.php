@@ -13,6 +13,17 @@ use Throwable;
 class DatabaseHelper
 {
     use RestExceptionHandlerTrait;
+
+    /**
+     * @var App\Helpers\Helpers
+     */
+    private $helpers;
+
+    public function __construct(Helpers $helpers)
+    {
+        $this->helpers = $helpers;
+    }
+
     /**
      * Switch database connection runtime
      *
@@ -20,10 +31,10 @@ class DatabaseHelper
      * @param \Illuminate\Http\Request $request
      * @return string
      */
-    public static function switchDatabaseConnection(string $connection, Request $request)
+    public function switchDatabaseConnection(string $connection, Request $request)
     {
         try {
-            $domain = Helpers::getSubDomainFromRequest($request);
+            $domain = $this->helpers->getSubDomainFromRequest($request);
             // Set master connection
             $pdo = DB::connection('mysql')->getPdo();
             Config::set('database.default', 'mysql');
@@ -36,14 +47,11 @@ class DatabaseHelper
                 Config::set('database.default', 'tenant');
             }
         } catch (PDOException $e) {
-            return $this->PDO(
-                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
-                trans(
-                    'messages.custom_error_message.'.config('constants.error_codes.ERROR_DATABASE_OPERATIONAL')
-                )
-            );
+            throw new \Exception(trans(
+                'messages.custom_error_message.ERROR_DATABASE_OPERATIONAL'
+            ));
         } catch (\Exception $e) {
-            throw new \Exception(trans('messages.custom_error_message.999999'));
+            throw new \Exception(trans('messages.custom_error_message.ERROR_OCCURED'));
         }
     }
 
@@ -67,14 +75,11 @@ class DatabaseHelper
             // Set default database
             Config::set('database.default', 'tenant');
         } catch (PDOException $e) {
-            return $this->PDO(
-                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
-                trans(
-                    'messages.custom_error_message.'.config('constants.error_codes.ERROR_DATABASE_OPERATIONAL')
-                )
-            );
+            throw new \Exception(trans(
+                'messages.custom_error_message.ERROR_DATABASE_OPERATIONAL'
+            ));
         } catch (\Exception $e) {
-            throw new \Exception(trans('messages.custom_error_message.999999'));
+            throw new \Exception(trans('messages.custom_error_message.ERROR_OCCURED'));
         }
     }
 }
