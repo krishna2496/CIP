@@ -9,7 +9,8 @@
 */
 
 $router->get(
-    '/', function () use ($router) {
+    '/',
+    function () use ($router) {
         return $router->app->version();
     }
 );
@@ -25,7 +26,8 @@ $router->get(
 |
 */
 $router->group(
-    ['prefix' => 'tenants', 'middleware' => 'localization'], function ($router) {
+    ['prefix' => 'tenants', 'middleware' => 'localization'],
+    function ($router) {
         // Get tenants list
         $router->get('/', ['as' => 'tenants.detail', 'uses'=>'TenantController@index']);
         // Get tenant details from id
