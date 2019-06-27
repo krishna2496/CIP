@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Repositories\Mission;
 
 use App\Repositories\Mission\MissionInterface;
@@ -432,10 +433,11 @@ class MissionRepository implements MissionInterface
     /**
      * Display a listing of mission.
      *
-     * Illuminate\Http\Request $request
+     * Illuminate\Http\Request $request'
+     * Array $userFilterData
      * @return mixed
      */
-    public function appMissions(Request $request)
+    public function appMissions(Request $request, array $userFilterData)
     {
         $missionData = [];
         $languages = LanguageHelper::getLanguages($request);
@@ -443,23 +445,6 @@ class MissionRepository implements MissionInterface
         $request->header('X-localization') : env('TENANT_DEFAULT_LANGUAGE_CODE');
         $language = $languages->where('code', $local)->first();
         $language_id = $language->language_id;
-
-        // Save user data to db
-        $userFilterSaveData["search"] = $request->has('search') ? $request->input('search') : '';
-        $userFilterSaveData["country"] = $request->has('country') ? $request->input('country') : '';
-        $userFilterSaveData["city"] = $request->has('city') ? $request->input('city') : '';
-        $userFilterSaveData["theme"] = $request->has('theme') ? $request->input('theme') : '';
-        $userFilterSaveData["skill"] = $request->has('skill') ? $request->input('skill') : '';
-
-        // $missionMedia = array('filters' => $id);
-        $this->userFilter->createOrUpdateUserFilter(
-            ['user_id' => $request->auth->user_id],
-            array('filters' => $userFilterSaveData)
-        );
-
-        // Get users filter
-        $userFilter = $this->userFilterRepository->userFilter($request);
-        $userFilterData = $userFilter->toArray()["filters"];
 
         // Get  mission data
         $missionQuery = $this->mission->select(
@@ -513,44 +498,6 @@ class MissionRepository implements MissionInterface
 
         $mission =  $missionQuery->orderBy('mission.mission_id', 'ASC')->paginate(config("constants.PER_PAGE_LIMIT"));
 
-        foreach ($mission as $key => $value) {
-            unset($value->city);
-            if ($value->mission_type == config("constants.MISSION_TYPE['GOAL']")) {
-                //Progress bar for goal
-            }
-
-            if ($value->total_seats != 0) { //With limited seats
-                $value->seats_left = ($value->total_seats) - ($value->mission_application_count);
-            } else { //Unlimeted seats
-                $value->already_volunteered = $value->mission_application_count;
-            }
-
-            // Get defalut media image
-            $value->default_media_type = $value->missionMedia[0]->media_type ?? '';
-            $value->default_media_path = $value->missionMedia[0]->media_path ?? '';
-            unset($value->missionMedia);
-
-            // Set title and description
-            $value->title = $value->missionLanguage[0]->title ?? '';
-            $value->short_description = $value->missionLanguage[0]->short_description ?? '';
-            $value->objective = $value->missionLanguage[0]->objective ?? '';
-            unset($value->missionLanguage);
-
-            // Check for apply in mission validity
-            $value->set_view_detail = 0;
-            $today = date(config("constants.DATE_FORMAT"));
-
-            if (($value->user_application_count > 0) ||
-                ($value->application_deadline !== null && $value->application_deadline < $today) ||
-                ($value->total_seats != 0 && $value->total_seats == $value->mission_application_count) ||
-                ($value->end_date !== null && $value->end_date < $today)
-                // || ($value->mission_type != 'GOAL' && $value->goal_objective ==  $today)
-            ) {
-                $value->set_view_detail = 1;
-            }
-        }
-        $missionData["missions"] = $mission;
-        $missionData["filters"] = $userFilterData;
-        return $missionData;
+        return $mission;
     }
 }
