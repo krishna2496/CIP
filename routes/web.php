@@ -77,6 +77,10 @@ $router->group(['middleware' => 'localization'], function ($router) {
     /* Get skill list  */
     $router->get('/skill', ['middleware' => 'tenant.connection',
      'uses' => 'App\SkillController@index']);
+
+    /* Get user filter  */
+    $router->get('/user_filter', ['middleware' => 'tenant.connection|jwt.auth',
+     'uses' => 'App\UserFilterController@index']);
 });
 
 

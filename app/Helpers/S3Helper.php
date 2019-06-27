@@ -20,7 +20,7 @@ class S3Helper
     {
         $this->responseHelper = $responseHelper;
     }
-    
+
     /**
      * Compiled local scss file and generate style.css file
      *
@@ -35,23 +35,23 @@ class S3Helper
             $scss->addImportPath(realpath(storage_path().'\app\\'.$tenantName.'\assets\scss'));
 
             $importScss = '@import "_variables";';
-            
+        
             // Color set & other file || Color set & no file
             if ((isset($options['primary_color']) && $options['isVariableScss'] == 0)) {
                 $importScss .= '$primary: '.$options['primary_color'].';';
             }
 
             if (file_exists(base_path()."/node_modules/bootstrap/scss/bootstrap.scss")
-             && file_exists(base_path()."/node_modules/bootstrap-vue/src/index.js")) {
+            && file_exists(base_path()."/node_modules/bootstrap-vue/src/index.js")) {
                 // Send error like bootstrap.scss not found while compile files
             }
 
             $importScss .= '@import "custom";
-            @import "../../../../node_modules/bootstrap/scss/bootstrap";
-            @import "../../../../node_modules/bootstrap-vue/src/index";';
+        @import "../../../../node_modules/bootstrap/scss/bootstrap";
+        @import "../../../../node_modules/bootstrap-vue/src/index";';
 
             $css = $scss->compile($importScss);
-            
+        
             // Delete if folder is already there
             if (Storage::disk('local')->exists($tenantName.'\assets\css\style.css')) {
                 // Delete existing one

@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
@@ -38,7 +39,7 @@ class MissionLanguage extends Model
      * @var array
      */
     protected $visible = ['mission_language_id', 'lang', 'language_id', 'title', 'objective', 'short_description',
-    'description'];
+                         'description'];
 
     /**
      * Get the mission that has language titles.
