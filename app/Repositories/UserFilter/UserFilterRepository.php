@@ -51,7 +51,7 @@ class UserFilterRepository implements UserFilterInterface
      */
     public function saveFilter(Request $request): UserFilter
     {
-        // Save user data to db
+        // Save user filter data to db
         $userFilterData["search"] = $request->has('search') ? $request->input('search') : '';
         $userFilterData["country"] = $request->has('country') ? $request->input('country') : '';
         $userFilterData["city"] = $request->has('city') ? $request->input('city') : '';
