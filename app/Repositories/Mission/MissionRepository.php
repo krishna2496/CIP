@@ -2,6 +2,7 @@
 namespace App\Repositories\Mission;
 
 use App\Repositories\Mission\MissionInterface;
+use App\Repositories\UserFilter\UserFilterRepository;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Helpers\Helpers;
@@ -13,6 +14,7 @@ use App\Models\MissionLanguage;
 use App\Models\MissionDocument;
 use App\Models\MissionMedia;
 use App\Models\MissionApplication;
+use App\Models\UserFilter;
 use Validator;
 use PDOException;
 use DB;
@@ -38,6 +40,16 @@ class MissionRepository implements MissionInterface
     private $responseHelper;
 
     /**
+     * @var App\Repositories\UserFilter\UserFilterRepository
+     */
+    private $userFilterRepository;
+
+    /**
+     * @var App\Models\UserFilter
+     */
+    public $userFilter;
+
+    /**
      * Create a new Mission repository instance.
      *
      * @param  App\Models\Mission $mission
@@ -54,7 +66,9 @@ class MissionRepository implements MissionInterface
         MissionLanguage $missionLanguage,
         MissionMedia $missionMedia,
         MissionDocument $missionDocument,
-        ResponseHelper $responseHelper
+        ResponseHelper $responseHelper,
+        UserFilterRepository $userFilterRepository,
+        UserFilter $userFilter
     ) {
         $this->mission = $mission;
         $this->missionLanguage = $missionLanguage;
@@ -62,6 +76,8 @@ class MissionRepository implements MissionInterface
         $this->missionDocument = $missionDocument;
         $this->missionApplication = $missionApplication;
         $this->responseHelper = $responseHelper;
+        $this->userFilterRepository = $userFilterRepository;
+        $this->userFilter = $userFilter;
     }
     
     /**
@@ -421,14 +437,32 @@ class MissionRepository implements MissionInterface
      */
     public function appMissions(Request $request)
     {
+        $missionData = [];
         $languages = LanguageHelper::getLanguages($request);
         $local = ($request->hasHeader('X-localization')) ?
-         $request->header('X-localization') : env('TENANT_DEFAULT_LANGUAGE_CODE');
+        $request->header('X-localization') : env('TENANT_DEFAULT_LANGUAGE_CODE');
         $language = $languages->where('code', $local)->first();
         $language_id = $language->language_id;
 
-        // Get data for parent table
-        $mission = $this->mission->select(
+        // Save user data to db
+        $userFilterSaveData["search"] = $request->has('search') ? $request->input('search') : '';
+        $userFilterSaveData["country"] = $request->has('country') ? $request->input('country') : '';
+        $userFilterSaveData["city"] = $request->has('city') ? $request->input('city') : '';
+        $userFilterSaveData["theme"] = $request->has('theme') ? $request->input('theme') : '';
+        $userFilterSaveData["skill"] = $request->has('skill') ? $request->input('skill') : '';
+
+        // $missionMedia = array('filters' => $id);
+        $this->userFilter->createOrUpdateUserFilter(
+            ['user_id' => $request->auth->user_id],
+            array('filters' => $userFilterSaveData)
+        );
+
+        // Get users filter
+        $userFilter = $this->userFilterRepository->userFilter($request);
+        $userFilterData = $userFilter->toArray()["filters"];
+
+        // Get  mission data
+        $missionQuery = $this->mission->select(
             'mission.mission_id',
             'mission.theme_id',
             'mission.city_id',
@@ -446,24 +480,38 @@ class MissionRepository implements MissionInterface
             'mission.publication_status',
             'mission.organisation_id',
             'mission.organisation_name'
-        )->with(['missionTheme', 'missionMedia'
-        ])->with(['missionMedia' => function ($query) {
-            $query->where('status', '1');
-            $query->where('default', '1');
-        }])
-        ->with(['missionLanguage' => function ($query) use ($language_id) {
-            $query->select('mission_language_id', 'mission_id', 'title', 'short_description', 'objective')
-            ->where('language_id', $language_id);
-        }])
-        ->withCount(['missionApplication as user_application_count' => function ($query) use ($request) {
-            $query->where('user_id', $request->auth->user_id)
-            ->where('approval_status', config("constants.application_status")["AUTOMATICALLY_APPROVED"]);
-        }])
-        ->withCount(['missionApplication as mission_application_count' => function ($query) use ($request) {
-            $query->where('approval_status', config("constants.application_status")["AUTOMATICALLY_APPROVED"]);
-        }])
-        ->where('publication_status', config("constants.publication_status")["APPROVED"])
-        ->orderBy('mission.mission_id', 'ASC')->paginate(config("constants.PER_PAGE_LIMIT"));
+        )
+            ->with(['missionTheme', 'missionMedia'
+            ])->with(['missionMedia' => function ($query) {
+                $query->where('status', '1');
+                $query->where('default', '1');
+            }])
+            ->with(['missionLanguage' => function ($query) use ($language_id) {
+                $query->select('mission_language_id', 'mission_id', 'title', 'short_description', 'objective')
+                ->where('language_id', $language_id);
+            }])
+            ->withCount(['missionApplication as user_application_count' => function ($query) use ($request) {
+                $query->where('user_id', $request->auth->user_id)
+                ->where('approval_status', config("constants.application_status")["AUTOMATICALLY_APPROVED"]);
+            }])
+            ->withCount(['missionApplication as mission_application_count' => function ($query) use ($request) {
+                $query->where('approval_status', config("constants.application_status")["AUTOMATICALLY_APPROVED"]);
+            }]);
+            
+
+        if ($userFilterData['search'] && $userFilterData['search'] != '') {
+            $missionQuery->wherehas('missionLanguage', function ($q) use ($userFilterData) {
+                $q->Where('title', 'like', '%' . $userFilterData['search'] . '%');
+                $q->orWhere('short_description', 'like', '%' . $userFilterData['search'] . '%');
+            });
+            $missionQuery->orWhere(function ($qry) use ($userFilterData) {
+                $qry->orWhere('organisation_name', 'like', '%' . $userFilterData['search'] . '%');
+            });
+        }
+
+        $missionQuery->where('publication_status', config("constants.publication_status")["APPROVED"]);
+
+        $mission =  $missionQuery->orderBy('mission.mission_id', 'ASC')->paginate(config("constants.PER_PAGE_LIMIT"));
 
         foreach ($mission as $key => $value) {
             unset($value->city);
@@ -500,9 +548,9 @@ class MissionRepository implements MissionInterface
             ) {
                 $value->set_view_detail = 1;
             }
-            //If media type is youtube link
-            // default_media_type
         }
-        return $mission;
+        $missionData["missions"] = $mission;
+        $missionData["filters"] = $userFilterData;
+        return $missionData;
     }
 }

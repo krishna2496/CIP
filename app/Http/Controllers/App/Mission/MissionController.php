@@ -92,10 +92,15 @@ class MissionController extends Controller
         try {
             $missions = $this->missionRepository->appMissions($request);
             
-            $apiData = $missions;
+            $apiData = $missions["missions"];
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_MISSION_LISTING');
-            return $this->responseHelper->successWithPagination($apiStatus, $apiMessage, $apiData);
+            return $this->responseHelper->successWithPagination(
+                $apiStatus,
+                $apiMessage,
+                $apiData,
+                $missions["filters"]
+            );
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
                 config('constants.error_codes.ERROR_MISSION_NOT_FOUND'),

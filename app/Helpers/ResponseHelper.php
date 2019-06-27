@@ -39,7 +39,8 @@ class ResponseHelper
     public function successWithPagination(
         string $apiStatus = '',
         string $apiMessage = '',
-        LengthAwarePaginator $apiData = null
+        LengthAwarePaginator $apiData = null,
+        array $metaData = []
     ) {
         $response['status'] = $apiStatus;
 
@@ -54,6 +55,11 @@ class ResponseHelper
                 "next_url" => $apiData->nextPageUrl()
             ];
         }
+
+        if (!empty($metaData)) {
+            $response['meta_data'] = $metaData;
+        }
+
         if ($apiMessage) {
             $response['message'] = $apiMessage;
         }

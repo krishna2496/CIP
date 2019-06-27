@@ -35,7 +35,6 @@ class UserFilterRepository implements UserFilterInterface
      * Display a listing of User filter.
      *
      * Illuminate\Http\Request $request
-     * @param int $userId
      * @return mixed
      */
     public function userFilter(Request $request)
