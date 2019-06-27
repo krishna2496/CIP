@@ -17,7 +17,8 @@ export default new Vuex.Store({
         lastName: localStorage.getItem('lastName'),
         avatar: localStorage.getItem('avatar'),
         isloaderSet: true,
-        logo: localStorage.getItem('logo')
+        logo: localStorage.getItem('logo'),
+        search : localStorage.getItem('search') 
     },
     mutations: {
         // Set login data in state and local storage       
@@ -79,6 +80,11 @@ export default new Vuex.Store({
             localStorage.setItem('logo', logo)
             state.logo = logo;
         },
+
+        userFilter(state,filters) {
+            localStorage.setItem('search',filters.search) 
+            state.search = filters.search
+        }
     },
     getters: {},
     actions: {}

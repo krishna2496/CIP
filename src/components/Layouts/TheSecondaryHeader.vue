@@ -6,10 +6,13 @@
                     <div class="icon-input">
                         <b-form-input
                             type="text"
+                            @keypress.enter="searchMission"
                             :placeholder="$t('label.search')+' '+$t('label.mission')"
                             @focus="handleFocus()"
                             @blur="handleBlur()"
                             onfocus="this.placeholder=''"
+                            id="search"
+                            v-model="search"
                             onblur="this.placeholder='Search mission...'">                           
                         </b-form-input>
                         <i>
@@ -58,10 +61,11 @@
 import AppCustomDropdown from "../AppCustomDropdown";
 import AppCheckboxDropdown from "../AppCheckboxDropdown";
 import {countryList,cityList,skillList,themeList} from "../../services/service";
+import store from "../../store";
 
 export default {
     components: { AppCustomDropdown, AppCheckboxDropdown },
-    name: "TheSecondaryHeader",
+    name: "TheSecondaryHeader", 
     data() {
         return {
             defautCountry: "Country",
@@ -75,7 +79,8 @@ export default {
             form: {
                 text: ""
             },
-            show: false
+            show: false,
+            search: ''
         };
     },
     methods: {
@@ -113,7 +118,7 @@ export default {
             });
         },
 
-        getCountry(){
+        getCountry() {
             countryList().then( response => {
                 if (response) {                    
                     this.countryList = response
@@ -123,7 +128,7 @@ export default {
             });   
         },
 
-        getCity(){
+        getCity() {
             cityList().then( response => {
                 if (response) {                    
                     this.cityList = response
@@ -133,7 +138,7 @@ export default {
             });   
         },
 
-        getTheme(){
+        getTheme() {
             themeList().then( response => {
                 if (response) {                    
                     this.themeList = response
@@ -143,18 +148,29 @@ export default {
             });   
         },
 
-        getSkill(){
+        getSkill() {
                 skillList().then( response => {
                 if (response) {                    
                     this.skillList = response   
                 }            
             });   
         },
+
+        searchMission($event) {
+            this.$parent.searchMissions(this.search);
+        },
+
+        fetchFilters() {
+            this.$emit('cmsListing',this.$route.params.slug);
+        }
     },
     created() {
+        var _this = this;
         // Fetch country
         this.getCountry();
-        var _this = this;
+        if(store.state.search != null) {
+            this.search = store.state.search;
+        }
         setTimeout(function(){ 
             _this.defautCountry = _this.$i18n.t("label.country");
             _this.defautCity =  _this.$i18n.t("label.city"),

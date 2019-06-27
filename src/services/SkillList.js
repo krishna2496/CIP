@@ -13,6 +13,7 @@ export default async() => {
             headers: {
                 'X-localization': defaultLanguage,
                 'token': store.state.token,
+                'Access-Control-Allow-Origin': '*',
             }
         })
         .then((response) => {

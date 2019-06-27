@@ -19,80 +19,45 @@
                     </b-button>
 					<ul v-if="this.$store.state.isLoggedIn">
                         <li class="has-menu">
-                          <a href="#" title="Explore">{{ $t("label.explore")}}</a>
+                          <a href="#" :title='$t("label.explore")'>{{ $t("label.explore")}}</a>
                           <ul class="dropdown-menu sub-dropdown">
-                            <li class="has-submenu">
-                              <a href="#">{{ $t("label.top_themes")}}</a>
+                            <li class="has-submenu"><a href="#">{{ $t("label.top_themes")}}</a>
                               <ul class="subdropdown-menu">
-                                <li>
-                                  <a href="#">{{ $t("label.education")}}</a>
-                                </li>
-                                <li>
-                                  <a href="#">{{ $t("label.children")}}</a>
-                                </li>
-                                <li>
-                                  <a href="#">{{ $t("label.health")}}</a>
-                                </li>
-                                <li>
-                                  <a href="#">{{ $t("label.animals")}}</a>
-                                </li>
-                                <li>
-                                  <a href="#">{{ $t("label.nutritions")}}</a>
-                                </li>
+                                <li><a href="#">{{ $t("label.education")}}</a></li>
+                                <li><a href="#">{{ $t("label.children")}}</a></li>
+                                <li><a href="#">{{ $t("label.health")}}</a></li>
+                                <li><a href="#">{{ $t("label.animals")}}</a></li>
+                                <li><a href="#">{{ $t("label.nutritions")}}</a></li>
                               </ul>
                             </li>
-                            <li class="has-submenu">
-                              <a href="#">{{ $t("label.top_themes")}}</a>
-                              <ul class="subdropdown-menu">
-                                <li>
-                                  <a href="#">{{ $t("label.education")}}</a>
-                                </li>
-                                <li>
-                                  <a href="#">{{ $t("label.children")}}</a>
-                                </li>
-                                <li>
-                                  <a href="#">{{ $t("label.health")}}</a>
-                                </li>
-                                <li>
-                                  <a href="#">{{ $t("label.animals")}}</a>
-                                </li>
-                                <li>
-                                  <a href="#">{{ $t("label.nutritions")}}</a>
-                                </li>
-                              </ul>
+                            <li class="has-submenu"><a href="#">{{ $t("label.top_country")}}</a>
+                                <ul class="subdropdown-menu">
+                                    <li><a href="#">{{ $t("label.education")}}</a></li>
+                                    <li><a href="#">{{ $t("label.children")}}</a></li>
+                                    <li><a href="#">{{ $t("label.health")}}</a></li>
+                                    <li><a href="#">{{ $t("label.animals")}}</a></li>
+                                    <li><a href="#">{{ $t("label.nutritions")}}</a></li>
+                                </ul>
                             </li>
-                            <li class="no-dropdown">
-                              <a href="#">{{ $t("label.top_organisation")}}</a>
+                            <li class="no-dropdown"><a href="#">{{ $t("label.top_organisation")}}</a>
                             </li>
-                            <li class="no-dropdown">
-                              <a href="#">{{ $t("label.most_ranked")}}</a>
-                            </li>
-                            <li class="no-dropdown">
-                              <a href="#">{{ $t("label.top_favourite")}}</a>
-                            </li>
-                            <li class="no-dropdown">
-                              <a href="#">{{ $t("label.recommended")}}</a>
-                            </li>
-                            <li class="no-dropdown">
-                              <a href="#">{{ $t("label.random")}}</a>
-                            </li>
+                            <li class="no-dropdown"><a href="#">{{ $t("label.most_ranked")}}</a></li>
+                            <li class="no-dropdown"><a href="#">{{ $t("label.top_favourite")}}</a></li>
+                            <li class="no-dropdown"><a href="#">{{ $t("label.recommended")}}</a></li>
+                            <li class="no-dropdown"><a href="#">{{ $t("label.random")}}</a></li>
                           </ul>
                         </li>
                         <li class="has-menu no-dropdown">
-                          <a href="#" title="Stories">{{ $t("label.stories")}}</a>
+                          <a href="#" :title='$t("label.stories")'>{{ $t("label.stories")}}</a>
                         </li>
                         <li class="has-menu no-dropdown">
-                          <a href="#" title="News">{{ $t("label.news")}}</a>
+                          <a href="#" :title='$t("label.news")'>{{ $t("label.news")}}</a>
                         </li>
                         <li class="has-menu">
-                          <a href="#" title="Policy">{{ $t("label.policy")}}</a>
+                          <a href="#" :title='$t("label.policy")'>{{ $t("label.policy")}}</a>
                           <ul class="dropdown-menu">
-                            <li>
-                              <a href="#">{{ $t("label.volunteering")}}</a>
-                            </li>
-                            <li>
-                              <a href="#">{{ $t("label.sponsored")}}</a>
-                            </li>
+                            <li><a href="#">{{ $t("label.volunteering")}}</a></li>
+                            <li><a href="#">{{ $t("label.sponsored")}}</a></li>
                           </ul>
                         </li>
                     </ul>

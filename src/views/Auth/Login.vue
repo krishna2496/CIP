@@ -12,7 +12,7 @@
                     <img :src="this.$store.state.logo">
                 </router-link>
                 <!-- success or error msg -->
-                <b-alert show :variant="classVariant" dismissible v-model="showDismissibleAlert"> {{ message }}</b-alert>
+                <b-alert show :variant="classVariant" dismissible v-model="showDismissibleAlert">{{ message }}</b-alert>
                 <!-- login form start -->
                 <b-form class="signin-form">
                     <b-form-group>

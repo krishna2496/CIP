@@ -9,6 +9,7 @@ import countryList from "./CountryList";
 import cityList from "./CityList";
 import themeList from "./ThemeList";
 import skillList from "./SkillList";
+import missionFilterListing from "./Mission/MissionFilterListing";
 
 export {
     loadLocaleMessages,
@@ -21,5 +22,6 @@ export {
     countryList,
     cityList,
     themeList,
-    skillList
+    skillList,
+    missionFilterListing
 }

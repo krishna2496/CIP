@@ -2,10 +2,21 @@
     <div class="home-page inner-pages filter-header">
         <header @scroll="handleScroll">
              <ThePrimaryHeader></ThePrimaryHeader>
-             <TheSecondaryHeader></TheSecondaryHeader>
+             <TheSecondaryHeader v-if="isShownComponent"></TheSecondaryHeader>
         </header>
         <main>
             <b-container class="home-content-wrapper">
+                <div class="chip-container">
+                    <AppCustomChip :textVal="'Tree Plantation'"/>
+                    <AppCustomChip :textVal="'Canada'"/>
+                    <AppCustomChip :textVal="'Toronto'"/>
+                    <AppCustomChip :textVal="'Montreal'"/>
+                    <AppCustomChip :textVal="'Environment'"/>
+                    <AppCustomChip :textVal="'Nutrition'"/>
+                    <AppCustomChip :textVal="'Anthropology'"/>
+                    <AppCustomChip :textVal="'Environmental Science'"/>
+                    <b-button class="clear-btn">Clear All</b-button>
+                </div>
                 <div class="heading-section">
                     <h2><template v-if="rows > 0">{{ $t("label.explore")}} <strong>{{rows}} {{ $t("label.missions")}}</strong></template></h2>
                     <div class="right-section">
@@ -133,7 +144,7 @@ import AppCustomDropdown from "../components/AppCustomDropdown";
 import AppCustomChip from "../components/AppCustomChip";
 import axios from "axios";
 import store from '../store';
-import {missionListing} from '../services/service';
+import {missionListing,missionFilterListing} from '../services/service';
 
 export default {
     components: {
@@ -163,7 +174,16 @@ export default {
         sortByDefault: '',
         missionList : [],
         activeView:"gridView",
-        filter:[]
+        filter:[],
+        search : "",
+        isShownComponent :false,
+        filterData : {
+            "search" : "",
+            "country": "",
+            "city": "",
+            "theme": "",
+            "skill": ""
+        }
         };
     },
 
@@ -184,20 +204,34 @@ export default {
         },
         //Mission listing
         async getMissions(){
-
-            let filter = [
-            {'page' : this.currentPage}
-            ];
-
+            let filter = {};
+            filter.page = this.currentPage
+            filter.search = store.state.search    
+            
             await missionListing(filter).then( response => {
             if (response.data) {
                 this.missionList = response.data;    
-            }    
+            } else {
+                this.missionList = [];
+            }  
             if (response.pagination) {
                 this.rows = response.pagination.total;
                 this.perPage = response.pagination.per_page;
                 this.currentPage = response.pagination.current_page;
-            }    
+            } else {
+                this.rows = 0;
+                if (this.currentPage != 1) {
+                    this.currentPage = 1;
+                    this.getMissions();
+                }
+            }          
+            this.isShownComponent = true; 
+            }); 
+        },
+
+        async missionFilter(){
+            await missionFilterListing().then( response => {
+                this.getMissions();
             }); 
         },
 
@@ -207,6 +241,12 @@ export default {
             this.getMissions();
         },
 
+        searchMissions(searchParams) {
+            this.filterData.search =  searchParams
+            store.commit('userFilter',this.filterData)
+            this.getMissions(); 
+        },
+        
         changeView(currentView){
             //Change View 
             this.activeView = currentView;
@@ -215,7 +255,7 @@ export default {
     created() {
         var _this = this;
         // Mission listing
-        this.getMissions();
+        this.missionFilter();
         setTimeout(function(){ 
             _this.sortByDefault = _this.$i18n.t("label.sort_by");
         },400);

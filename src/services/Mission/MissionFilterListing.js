@@ -5,27 +5,16 @@ export default async(data) => {
     let responseData;
     var defaultLanguage = '';
 
-    if (store.state.defaultLanguage !== null) {
-        defaultLanguage = (store.state.defaultLanguage).toLowerCase();
-    }
-    var url =process.env.VUE_APP_API_ENDPOINT + "app/missions?page=" + data.page
-
-    if(data.search != ''){
-        url = url+"&search=" + data.search
-    }
     await axios({
-            url: url,
+            url: process.env.VUE_APP_API_ENDPOINT + "user_filter",
             method: 'get',
             headers: {
-                'X-localization': defaultLanguage,
-                'token': store.state.token,
+               'token': store.state.token,
             }
         })
         .then((response) => {
-            responseData = response.data;
-
-            if (response.data.meta_data) {
-                store.commit('userFilter',response.data.meta_data)
+            if (response.data && response.data.data.filters) {
+                store.commit('userFilter',response.data.data.filters)
             } else {
                 let filterData = {};
                 filterData.search = '';
