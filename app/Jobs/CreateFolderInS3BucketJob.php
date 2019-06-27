@@ -12,6 +12,11 @@ class CreateFolderInS3BucketJob extends Job
      * @var App\Models\Tenant
      */
     private $tenant;
+	
+	/**
+     * @var App\Helpers\DatabaseHelper;
+     */
+    private $databaseHelper;
     
     /**
      * Create a new job instance.
@@ -21,6 +26,7 @@ class CreateFolderInS3BucketJob extends Job
     public function __construct(Tenant $tenant)
     {
         $this->tenant = $tenant;
+		$this->databaseHelper = new DatabaseHelper();
     }
 
     /**
@@ -58,7 +64,7 @@ class CreateFolderInS3BucketJob extends Job
                     $tenantOptionData['option_value'] = $pathInS3;
 
                     // Create connection with tenant database
-                    DatabaseHelper::connectWithTenantDatabase($this->tenant->tenant_id);
+                    $this->databaseHelper->connectWithTenantDatabase($this->tenant->tenant_id);
                     DB::table('tenant_option')->insert($tenantOptionData);
 
                     // Disconnect tenant database and reconnect with default database

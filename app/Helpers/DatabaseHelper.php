@@ -12,7 +12,7 @@ class DatabaseHelper
      * @param  int $tenantId Identify it's database
      * @return boolean
      */
-    public static function connectWithTenantDatabase(int $tenantId)
+    public function connectWithTenantDatabase(int $tenantId)
     {
         // Set configuration options for the newly create tenant
         Config::set(
