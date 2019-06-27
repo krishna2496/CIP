@@ -7,31 +7,34 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Input;
+use App\Traits\RestExceptionHandlerTrait;
 use PDOException;
 use App\Helpers\ResponseHelper;
 
 class UserFilterController extends Controller
 {
+    use RestExceptionHandlerTrait;
     /**
      * @var App\Repositories\UserFilter\UserFilterRepository
      */
     private $filters;
-    
+
     /**
-     * @var Illuminate\Http\Response
+     * @var App\Helpers\ResponseHelper
      */
-    private $response;
-    
-    
+    private $responseHelper;
+
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct(UserFilterRepository $filters, Response $response)
-    {
+    public function __construct(
+        UserFilterRepository $filters,
+        ResponseHelper $responseHelper
+    ) {
         $this->filters = $filters;
-        $this->response = $response;
+        $this->responseHelper = $responseHelper;
     }
     
     /**
@@ -45,21 +48,18 @@ class UserFilterController extends Controller
         try {
             // Get data of user's filter
             $filters = $this->filters->userFilter($request);
-
-            if ($filters->count() == 0) {
-                // Set response data
-                $apiStatus = app('Illuminate\Http\Response')->status();
-                $apiMessage = trans('messages.success.MESSAGE_NO_DATA_FOUND');
-                return ResponseHelper::success($apiStatus, $apiMessage);
-            }
-
-            $apiStatus = $this->response->status();
-            $apiMessage = trans('messages.success.MESSAGE_CMS_LIST_SUCCESS');
-            return ResponseHelper::success($apiStatus, $apiMessage, $filters->toArray());
+            $filterData = $filters->toArray();
+            $apiStatus = Response::HTTP_OK;
+            return $this->responseHelper->success($apiStatus, '', $filterData);
         } catch (\PDOException $e) {
-            throw new \PDOException($e->getMessage());
+            return $this->PDO(
+                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
+                trans(
+                    'messages.custom_error_message.'.config('constants.error_codes.ERROR_DATABASE_OPERATIONAL')
+                )
+            );
         } catch (\Exception $e) {
-            throw new \Exception($e->getMessage());
+            throw new \Exception(trans('messages.custom_error_message.999999'));
         }
     }
 }

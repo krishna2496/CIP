@@ -27,7 +27,7 @@
 	</style>
 </head>
 @php
-$companyLogo = url('/images/optimy_logo.png');
+$companyLogo =  (config('app.tenant_logo') != '') ? config('app.tenant_logo') : url('/images/optimy_logo.png');
 $resetArowPasswordBtn = url('/images/arrow.png');
 $token =explode('/',$actionUrl);
 $token = end($token);

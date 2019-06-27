@@ -1,12 +1,13 @@
 <?php
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\{Model, SoftDeletes};
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class TenantOption extends Model
 {
     use SoftDeletes;
-
+ 
     /**
      * The table associated with the model.
      *
@@ -43,10 +44,9 @@ class TenantOption extends Model
      */
     public function addOrUpdateColor(array $colorData)
     {
-        $styleData['option_name'] = $colorData['option_name'];        
-        $tenantOption = static::updateOrCreate($styleData);        
+        $styleData['option_name'] = $colorData['option_name'];
+        $tenantOption = static::updateOrCreate($styleData);
         return $tenantOption->update(['option_value' => $colorData['option_value']]);
-    
     }
 
     public function getOptionValueAttribute($value)

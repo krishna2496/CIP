@@ -13,7 +13,6 @@ class TenantOptionRepoServiceProvide extends ServiceProvider
      */
     public function boot()
     {
-        
     }
 
 
@@ -24,6 +23,9 @@ class TenantOptionRepoServiceProvide extends ServiceProvider
      */
     public function register()
     {
-        $this->app->bind('App\Repositories\TenantOption\TenantOptionInterface', 'App\Repositories\TenantOption\TenantOptionRepository');
+        $this->app->bind(
+            'App\Repositories\TenantOption\TenantOptionInterface',
+            'App\Repositories\TenantOption\TenantOptionRepository'
+        );
     }
 }

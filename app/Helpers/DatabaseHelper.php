@@ -36,7 +36,7 @@ class DatabaseHelper
         } catch (PDOException $e) {
             throw new PDOException($e->geMessage());
         } catch (\Exception $e) {
-            throw new \Exception($e->getMessage());
+            throw new \Exception(trans('messages.custom_error_message.999999'));
         }
     }
 
@@ -62,7 +62,7 @@ class DatabaseHelper
         } catch (PDOException $e) {
             throw new PDOException($e->geMessage());
         } catch (\Exception $e) {
-            throw new \Exception($e->getMessage());
+            throw new \Exception(trans('messages.custom_error_message.999999'));
         }
     }
 }

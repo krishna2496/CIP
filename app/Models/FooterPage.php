@@ -1,7 +1,8 @@
 <?php
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\{Model, SoftDeletes};
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use App\Models\FooterPagesLanguage;
 
@@ -35,9 +36,9 @@ class FooterPage extends Model
      *
      * @var array
      */
-	protected $visible = ['page_id', 'status', 'slug', 'sections', 'pageTranslations', 'pages'];
-	
-	/**
+    protected $visible = ['page_id', 'status', 'slug', 'sections', 'pageTranslations', 'pages'];
+
+    /**
      * Return the page's translations
      */
     public function pageTranslations(): HasMany
@@ -55,14 +56,14 @@ class FooterPage extends Model
     {
         return static::findOrFail($id)->delete();
     }
-	
-	/**
+    
+    /**
      * Get the translations associated with the footer page.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function pages(): HasMany
     {
-         return $this->hasMany(FooterPagesLanguage::class, 'page_id', 'page_id');
+        return $this->hasMany(FooterPagesLanguage::class, 'page_id', 'page_id');
     }
 }

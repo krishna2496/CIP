@@ -1,12 +1,19 @@
 <?php
 namespace App\Repositories\User;
 
+use Illuminate\Database\Eloquent\Collection;
 use App\Repositories\User\UserInterface;
-use Illuminate\Http\{Request, Response};
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Pagination\LengthAwarePaginator;
 use App\User;
-use App\Helpers\{Helpers, ResponseHelper, DatabaseHelper};
+use App\Helpers\Helpers;
+use App\Helpers\ResponseHelper;
+use App\Helpers\DatabaseHelper;
 use App\Models\UserSkill;
-use Validator, PDOException, DB;
+use Validator;
+use PDOException;
+use DB;
 
 class UserRepository implements UserInterface
 {
@@ -21,42 +28,42 @@ class UserRepository implements UserInterface
     public $userSkill;
     
     /**
-     * @var Illuminate\Http\Response
+     * @var App\Helpers\ResponseHelper
      */
-    private $response;
+    private $responseHelper;
 
     /**
      * Create a new User repository instance.
      *
      * @param  App\User $user
-     * @param  Illuminate\Http\Response $response
+     * @param  Illuminate\Http\ResponseHelper $responseHelper
      * @return void
      */
-    public function __construct(User $user, UserSkill $userSkill, Response $response)
+    public function __construct(User $user, UserSkill $userSkill, ResponseHelper $responseHelper)
     {
         $this->user = $user;
-        $this->response = $response;
+        $this->responseHelper = $responseHelper;
         $this->userSkill = $userSkill;
     }
     
     /**
      * Store a newly created resource in storage.
      *
-     * @param \Illuminate\Http\Request $request
-     * @return User
+     * @param array $request
+     * @return App\User
      */
-    public function store(Request $request): User
+    public function store(array $request): User
     {
-        return $this->user->create($request->all());
+        return $this->user->create($request);
     }
     
     /**
      * Get listing of users
      *
      * @param Illuminate\Http\Request $request
-     * @return mixed
+     * @return \Illuminate\Pagination\LengthAwarePaginator
      */
-    public function userList(Request $request)
+    public function userList(Request $request): LengthAwarePaginator
     {
         $userQuery = $this->user->with('city', 'country', 'timezone');
         
@@ -76,14 +83,14 @@ class UserRepository implements UserInterface
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  array  $request
      * @param  int  $id
-     * @return User
+     * @return App\User
      */
-    public function update(Request $request, int $id): User
+    public function update(array $request, int $id): User
     {
         $user = $this->user->findOrFail($id);
-        $user->update($request->toArray());
+        $user->update($request);
         return $user;
     }
     
@@ -91,7 +98,7 @@ class UserRepository implements UserInterface
      * Find specified resource in storage.
      *
      * @param  int  $id
-     * @return User
+     * @return App\User
      */
     public function find(int $id): User
     {
@@ -102,9 +109,9 @@ class UserRepository implements UserInterface
      * Remove specified resource in storage.
      *
      * @param  int  $id
-     * @return mixed
+     * @return bool
      */
-    public function delete(int $id)
+    public function delete(int $id): bool
     {
         return $this->user->deleteUser($id);
     }
@@ -113,33 +120,33 @@ class UserRepository implements UserInterface
      * Store a newly created resource into database
      *
      * @param \Illuminate\Http\Request $request
-     * @return mixed
+     * @return bool
      */
-    public function linkSkill(Request $request)
+    public function linkSkill($request): bool
     {
-        foreach ($request->skills as $value) {
+        foreach ($request['skills'] as $value) {
             $skill = array(
-                'user_id' => $request->user_id,
+                'user_id' => $request['user_id'],
                 'skill_id' => $value['skill_id'],
             );
             
-			$this->userSkill->linkUserSkill($request->user_id, $value['skill_id']);
+            $this->userSkill->linkUserSkill($request['user_id'], $value['skill_id']);
             unset($skill);
         }
-		return true;
+        return true;
     }
     
     /**
      * Remove the specified resource from storage
      *
-     * @param \Illuminate\Http\Request $request
+     * @param array $request
      * @return mixed
      */
-    public function unlinkSkill(Request $request)
+    public function unlinkSkill($request)
     {
         $userSkill = $this->userSkill;
-        foreach ($request->skills as $value) {
-            $userSkill = $this->userSkill->deleteUserSkill($request->user_id, $value['skill_id']);
+        foreach ($request['skills'] as $value) {
+            $userSkill = $this->userSkill->deleteUserSkill($request['user_id'], $value['skill_id']);
         }
         return $userSkill;
     }
@@ -148,10 +155,10 @@ class UserRepository implements UserInterface
      * Display a listing of specified resources.
      *
      * @param int $userId
-     * @return mixed
+     * @return Illuminate\Database\Eloquent\Collection
      */
-    public function userSkills(int $userId)
+    public function userSkills(int $userId): Collection
     {
-        return $this->userSkill->findOrFail($userId);   
+        return $this->userSkill->with('skill')->where('user_id', $userId)->get();
     }
 }

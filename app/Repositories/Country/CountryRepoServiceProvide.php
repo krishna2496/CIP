@@ -2,9 +2,7 @@
 
 namespace App\Repositories\Country;
 
-
 use Illuminate\Support\ServiceProvider;
-
 
 class CountryRepoServiceProvide extends ServiceProvider
 {
@@ -15,7 +13,6 @@ class CountryRepoServiceProvide extends ServiceProvider
      */
     public function boot()
     {
-        
     }
 
 

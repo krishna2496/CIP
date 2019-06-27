@@ -2,9 +2,7 @@
 
 namespace App\Repositories\Skill;
 
-
 use Illuminate\Support\ServiceProvider;
-
 
 class SkillRepoServiceProvide extends ServiceProvider
 {
@@ -15,7 +13,6 @@ class SkillRepoServiceProvide extends ServiceProvider
      */
     public function boot()
     {
-        
     }
 
 

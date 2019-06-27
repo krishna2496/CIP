@@ -2,7 +2,8 @@
 namespace App\Helpers;
 
 use Illuminate\Http\Request;
-use DB, PDOException;
+use DB;
+use PDOException;
 
 class LanguageHelper
 {
@@ -24,7 +25,7 @@ class LanguageHelper
             
             return $languages;
         } catch (\Exception $e) {
-            throw new \Exception($e->getMessage());
+            throw new \Exception(trans('messages.custom_error_message.999999'));
         }
     }
 
@@ -37,7 +38,7 @@ class LanguageHelper
     public static function getTenantLanguages(Request $request)
     {
         try {
-            $tenant = Helpers::getTenantDetail($request);		
+            $tenant = Helpers::getTenantDetail($request);
             // Connect master database to get language details
             DatabaseHelper::switchDatabaseConnection('mysql', $request);
             
@@ -54,8 +55,7 @@ class LanguageHelper
         } catch (\PDOException $e) {
             throw new \PDOException($e->getMessage());
         } catch (\Exception $e) {
-            throw new \Exception($e->getMessage());
+            throw new \Exception(trans('messages.custom_error_message.999999'));
         }
-        
     }
 }
