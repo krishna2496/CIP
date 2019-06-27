@@ -11,5 +11,5 @@ interface UserFilterInterface
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
-    public function UserFilter(Request $request);
+    public function userFilter(Request $request);
 }

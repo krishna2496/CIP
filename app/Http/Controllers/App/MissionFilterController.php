@@ -3,7 +3,9 @@ namespace App\Http\Controllers\App;
 
 use App\Http\Controllers\Controller;
 use App\Repositories\UserFilter\UserFilterRepository;
-use Illuminate\Http\{Request, Response, JsonResponse};
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Input;
 use PDOException;
 use App\Helpers\ResponseHelper;
@@ -11,7 +13,7 @@ use App\Helpers\ResponseHelper;
 class UserFilterController extends Controller
 {
     /**
-     * @var App\Repositories\City\CityRepository 
+     * @var App\Repositories\City\CityRepository
      */
     private $filters;
     
@@ -28,8 +30,8 @@ class UserFilterController extends Controller
      */
     public function __construct(UserFilterRepository $filters, Response $response)
     {
-         $this->filters = $filters;
-         $this->response = $response;
+        $this->filters = $filters;
+        $this->response = $response;
     }
     
     /**
@@ -41,7 +43,7 @@ class UserFilterController extends Controller
     public function index(Request $request):JsonResponse
     {
         try {
-            // Get data of user's filter 
+            // Get data of user's filter
             $filters = $this->filters->userFilter($request);
 
             if ($filters->count() == 0) {
@@ -53,12 +55,11 @@ class UserFilterController extends Controller
 
             $apiStatus = $this->response->status();
             $apiMessage = trans('messages.success.MESSAGE_CMS_LIST_SUCCESS');
-            return ResponseHelper::success($apiStatus, $apiMessage,$filters->toArray());
+            return ResponseHelper::success($apiStatus, $apiMessage, $filters->toArray());
         } catch (\PDOException $e) {
             throw new \PDOException($e->getMessage());
         } catch (\Exception $e) {
             throw new \Exception($e->getMessage());
         }
     }
-
 }

@@ -2,8 +2,9 @@
 namespace App\Repositories\UserFilter;
 
 use App\Repositories\UserFilter\UserFilterInterface;
-use Illuminate\Http\{Request, Response};
-use App\Models\{UserFilter};
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use App\Models\UserFilter;
 
 class UserFilterRepository implements UserFilterInterface
 {
@@ -37,8 +38,8 @@ class UserFilterRepository implements UserFilterInterface
      * @param int $userId
      * @return mixed
      */
-    public function UserFilter(Request $request)
+    public function userFilter(Request $request)
     {
-       return $this->filters->get()->where("user_id",$request->auth->user_id)->first();
+        return $this->filters->get()->where("user_id", $request->auth->user_id)->first();
     }
 }

@@ -22,6 +22,7 @@ class UserFilterRepoServiceProvide extends ServiceProvider
      */
     public function register()
     {
-        $this->app->bind('App\Repositories\UserFilter\UserFilterInterface', 'App\Repositories\UserFilter\UserFilterRepository');
+        $this->app->bind('App\Repositories\UserFilter\UserFilterInterface', '
+                        App\Repositories\UserFilter\UserFilterRepository');
     }
 }
