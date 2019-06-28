@@ -11,7 +11,6 @@ class TenantTest extends TestCase
      * @test
      * 
      * Get all tenants list api
-     *
      * @return void
      */
     public function it_should_return_all_tenants()
@@ -50,10 +49,9 @@ class TenantTest extends TestCase
     }
     
     /**
-     * 
+     * @test
      * 
      * No tenant found
-     * 
      * @return void
      */
     public function it_should_return_no_tenant_found()
@@ -70,7 +68,6 @@ class TenantTest extends TestCase
      * @test
      * 
      * Create tenant api
-     * 
      * @return void
      */
     public function it_should_create_tenant()
@@ -93,39 +90,14 @@ class TenantTest extends TestCase
             ],
             'message',
             'status',
-            ]);
-    }
-
-
-    /**
-     *
-     * 
-     * Create tenant api, throw S3exception
-     * 
-     * @return void
-     */
-    public function it_errors_should_throw_s3_exception_on_tenant_create()
-    {
-        // $this->expectException(S3Exception::class);
-        // $this->expectExceptionCode(500);
-
-        $params = [
-            'name' => 'tatva_'.rand(500, 1000),
-            'sponsor_id' => '456123',
-            'options' => 
-            [
-              'theme_enabled' => '1',
-              'skills_enabled' => '1',
-            ],
-        ];
-
-        $this->post(route("tenants"), $params, [])
-        ->seeStatusCode(500);
+        ]);
     }
 
     /**
      * @test
+     * 
      * Get tenant details api
+     * @return void
      */
     public function it_should_return_tenant_detail()
     {
@@ -158,12 +130,12 @@ class TenantTest extends TestCase
      * @test
      * 
      * Delete tenant api
-     * 
      * @return void
      */
     public function it_shoud_delete_tenant()
     {
-        $tenant = Tenant::get()->random();
+        // Create faker and delete it
+        $tenant = factory(Tenant::class)->create();
         $this->delete(route("tenants.destroy", ["tenant_id" => $tenant->tenant_id]), [], [])
         ->seeStatusCode(204);
     }
@@ -172,12 +144,41 @@ class TenantTest extends TestCase
      * @test
      * 
      * Delete tenant api with already deleted or not available tenant id
-     * 
      * @return void
      */
-    public function it_errors_should_return_tenant_not_found_on_delete()
+    public function it_should_return_tenant_not_found_on_delete()
     {
-        $this->delete(route("tenants.destroy", ["tenant_id" => rand(10000,50000)]), [], [])
+        $this->delete(route("tenants.destroy", ["tenant_id" => rand(99999999,999999999)]), [], [])
         ->seeStatusCode(404);
+    }
+
+    /**
+     * @test
+     * 
+     * It will test update tenant api
+     * @return void
+     */
+    public function it_should_update_tenant_data()
+    {
+        $tenant = factory(Tenant::class)->create();
+
+        $data = [
+            'name' => "testing_".str_random(10),
+            'sponsor_id' => rand(1000,50000),
+            'options' => [
+                "theme_enabled" => 1,
+                "skills_enabled" => 0
+            ]
+        ];
+
+        $this->patch(route("tenants.update", ["tenant_id" => $tenant->tenant_id]), $data)
+        ->seeStatusCode(200)
+        ->seeJsonStructure([
+            'data' => [
+                'tenant_id',
+            ],
+            'message',
+            'status',
+        ]);
     }
 }

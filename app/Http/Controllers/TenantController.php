@@ -133,7 +133,7 @@ class TenantController extends Controller
         } catch (\Exception $e) {
             // Delete created tenant
             $this->destroy($tenant->tenant_id);
-            throw new \Exception(trans('messages.custom_error_message.999999'));
+            return $this->badRequest(trans('messages.custom_error_message.999999'));
         }
     }
 
@@ -159,7 +159,7 @@ class TenantController extends Controller
                 trans('messages.custom_error_message.'.config('constants.error_codes.ERROR_TENANT_NOT_FOUND'))
             );
         } catch (\Exception $e) {
-            throw new \Exception(trans('messages.custom_error_message.999999'));
+            return $this->badRequest(trans('messages.custom_error_message.999999'));
         }
     }
 
@@ -204,7 +204,7 @@ class TenantController extends Controller
                 )
             );
         } catch (\Exception $e) {
-            throw new \Exception(trans('messages.custom_error_message.999999'));
+            return $this->badRequest(trans('messages.custom_error_message.999999'));
         }
     }
 
@@ -230,7 +230,7 @@ class TenantController extends Controller
                 trans('messages.custom_error_message.'.config('constants.error_codes.ERROR_TENANT_NOT_FOUND'))
             );
         } catch (\Exception $e) {
-            throw new \Exception(trans('messages.custom_error_message.999999'));
+            return $this->badRequest(trans('messages.custom_error_message.999999'));
         }
     }
 }

@@ -16,9 +16,9 @@ class FunctionsTest extends TestCase
      * @test
      * @return bool
      */
-    public function it_should_tenant_database_connection_test()
+    public function it_should_test_tenant_database_connection()
     {
-        $tenant = Tenant::get()->random();
+        $tenant = Tenant::get()->first();
 
         // Set configuration options for the newly create tenant
         Config::set(
@@ -39,14 +39,14 @@ class FunctionsTest extends TestCase
 
     /**
      * Database connection testing
+     * 
      * @test
      * @return bool
      */
     public function it_should_create_directory_on_s3_for_tenant_assets()
     {
         // Create folder on S3 using tenant's FQDN
-        $tenant = Tenant::get()->random();        
-        $tenantName = Str::random(5).'_'.$tenant->tenant_id;
+        $tenantName = "testing_".Str::random(5).'_'.rand(10000,2000000);
 
         Storage::disk('s3')->makeDirectory($tenantName);
 
@@ -65,31 +65,9 @@ class FunctionsTest extends TestCase
             
                 // Copy and paste file into tenant's folders
                 Storage::disk('s3')->copy($file, $tenantName.'/'.$sourcePath);
-
-                if (basename($file)==env('S3_CUSTOME_CSS_NAME')) {
-                    $pathInS3 = 'https://s3.'.env('AWS_REGION').'.amazonaws.com/'.
-                    env('AWS_S3_BUCKET_NAME').'/'.$tenantName.''.$sourcePath;
-                    
-                    // Connect with tenant database
-                    $tenantOptionData['option_name'] = "custom_css";
-                    $tenantOptionData['option_value'] = $pathInS3;
-
-                    // Create connection with tenant database
-                    DatabaseHelper::connectWithTenantDatabase($tenant->tenant_id);
-                    
-                    $this->assertSame('ci_tenant_'.$tenant->tenant_id, DB::connection()->getDatabaseName());
-
-                    $this->assertTrue(DB::table('tenant_option')->insert($tenantOptionData));
-
-                    // Disconnect tenant database and reconnect with default database
-                    DB::disconnect('tenant');
-                    DB::reconnect('mysql');
-                    DB::setDefaultConnection('mysql');
-
-                    $this->assertSame(env('DB_MASTER'), DB::connection()->getDatabaseName());
-                }
             }
         }
+        $this->assertTrue(Storage::disk('s3')->exists($tenantName), $tenantName);
     }
 
     /**
@@ -101,13 +79,13 @@ class FunctionsTest extends TestCase
     public function it_should_create_database_and_migrations()
     {
         // Create database
-        $tenantId = rand(1,1000);
-        $databaseName = "ci_tenant_".$tenantId;
+        $tenant = factory(Tenant::class)->create();
+        $databaseName = "ci_tenant_".$tenant->tenant_id;
 
         $this->assertTrue(DB::statement("CREATE DATABASE IF NOT EXISTS `{$databaseName}`"));
 
         // Connect with newly created database
-        $this->assertTrue(DatabaseHelper::connectWithTenantDatabase($tenantId));
+        $this->assertTrue(DatabaseHelper::connectWithTenantDatabase($tenant->tenant_id));
         
         $this->assertSame($databaseName, DB::connection()->getDatabaseName());
 

@@ -17,3 +17,10 @@ $factory->define(App\User::class, function (Faker\Generator $faker) {
         'email' => $faker->email,
     ];
 });
+
+$factory->define(App\Models\Tenant::class, function (Faker\Generator $faker) {
+    return [
+        'name' => str_random(10),
+        'sponsor_id' => rand(100,5000)        
+    ];
+});
