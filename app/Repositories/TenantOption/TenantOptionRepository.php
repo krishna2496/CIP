@@ -8,9 +8,7 @@ use Validator;
 use PDOException;
 use DB;
 use App\Models\TenantOption;
-use App\Helpers\Helpers;
 use App\Helpers\ResponseHelper;
-use App\Helpers\DatabaseHelper;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class TenantOptionRepository implements TenantOptionInterface

@@ -3,32 +3,22 @@ namespace App\Helpers;
 
 use App\Helpers\ResponseHelper;
 use Illuminate\Http\Request;
-use App\Helpers\DatabaseHelper;
+use Illuminate\Support\Facades\Config;
 use DB;
+use App\Traits\RestExceptionHandlerTrait;
+use PDOException;
+use Throwable;
 
 class Helpers
 {
-    /**
-     * @var App\Helpers\DatabaseHelper
-     */
-    private $databaseHelper;
-
+    use RestExceptionHandlerTrait;
     /**
      * Create a new helper instance.
      *
-     * @param App\Helpers\DatabaseHelper $databaseHelper
      * @return void
      */
     public function __construct()
     {
-    }
-
-    /**
-     * Set DatabaseHelper class instance.
-     */
-    public function setDatabaseHelper(DatabaseHelper $databaseHelper)
-    {
-        $this->databaseHelper = $databaseHelper;
     }
 
     /**
@@ -114,13 +104,13 @@ class Helpers
     public function getTenantDetail(Request $request)
     {
         // Connect master database to get language details
-        $this->databaseHelper->switchDatabaseConnection('mysql', $request);
+        $this->switchDatabaseConnection('mysql', $request);
 
         $tenantName = $this->getSubDomainFromRequest($request);
         $tenant = DB::table('tenant')->where('name', $tenantName)->first();
 
         // Connect tenant database
-        $this->databaseHelper->switchDatabaseConnection('tenant', $request);
+        $this->switchDatabaseConnection('tenant', $request);
                 
         return $tenant;
     }
@@ -166,5 +156,71 @@ class Helpers
                          'name' => $city->name
                         );
         return $cityData;
+    }
+
+    /**
+     * Switch database connection runtime
+     *
+     * @param string $connection
+     * @param \Illuminate\Http\Request $request
+     * @return void
+     * @throws Exception
+     */
+    public function switchDatabaseConnection(string $connection, Request $request)
+    {
+        try {
+            $domain = $this->getSubDomainFromRequest($request);
+            // Set master connection
+            $pdo = DB::connection('mysql')->getPdo();
+            Config::set('database.default', 'mysql');
+
+            if ($connection=="tenant") {
+                // Uncomment code for production
+                /*$tenant = DB::table('tenant')->where('name',$domain)->whereNull('deleted_at')->first();
+                $this->createConnection($tenant->tenant_id);*/
+                $pdo = DB::connection('tenant')->getPdo();
+                Config::set('database.default', 'tenant');
+            }
+        } catch (PDOException $e) {
+            return $this->PDO(
+                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
+                trans(
+                    'messages.custom_error_message.ERROR_DATABASE_OPERATIONAL'
+                )
+            );
+        } catch (\Exception $e) {
+            throw new \Exception(trans('messages.custom_error_message.ERROR_OCCURED'));
+        }
+    }
+    
+    /**
+     * Create database connection runtime
+     *
+     * @param int $tenantId
+     */
+    public function createConnection(int $tenantId)
+    {
+        try {
+            Config::set('database.connections.tenant', array(
+                'driver'    => 'mysql',
+                'host'      => env('DB_HOST'),
+                'database'  => 'ci_tenant_'.$tenantId,
+                'username'  => env('DB_USERNAME'),
+                'password'  => env('DB_PASSWORD'),
+            ));
+            // Create connection for the tenant database
+            $pdo = DB::connection('tenant')->getPdo();
+            // Set default database
+            Config::set('database.default', 'tenant');
+        } catch (PDOException $e) {
+            return $this->PDO(
+                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
+                trans(
+                    'messages.custom_error_message.ERROR_DATABASE_OPERATIONAL'
+                )
+            );
+        } catch (\Exception $e) {
+            throw new \Exception(trans('messages.custom_error_message.ERROR_OCCURED'));
+        }
     }
 }

@@ -9,7 +9,6 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use App\User;
 use App\Helpers\Helpers;
 use App\Helpers\ResponseHelper;
-use App\Helpers\DatabaseHelper;
 use App\Models\UserSkill;
 use Validator;
 use PDOException;
