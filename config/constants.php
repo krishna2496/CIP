@@ -11,7 +11,7 @@ return [
     'SLIDER_IMAGE_PATH' => 'images/',
     'ACTIVE' => 1,
     'DB_DATE_FORMAT' => 'Y-m-d H:i:s',
-    'PER_PAGE_LIMIT' => '2',
+    'PER_PAGE_LIMIT' => '10',
     'FRONT_DATE_FORMAT' => 'd/m/Y',
     
     /*
