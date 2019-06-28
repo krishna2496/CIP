@@ -45,51 +45,51 @@ return [
     * API Error Codes and Message
     */
     'custom_error_message' => [
-        
         // Custom error code for User Module - 100000 - 109999
-        '100000' => 'FR: User does not found in system',
-        '100002' => 'FR: Invalid skill data',
-        '100003' => 'FR: Custom field creation failed. Please check input parameters',
-        '100004' => 'FR: Requested user custom field does not exist',
-        '100010' => 'FR: User creation failed. Please check input parameters',
-        '100011' => 'FR: Requested skills for user does not exist',
-        '100012' => 'FR: Unable to upload slider image',
-        '100013' => 'FR: Invalid input data',
-        '100014' => 'FR: Sorry, you cannot add more than '.config('constants.SLIDER_LIMIT').' slides!',
+        'ERROR_USER_NOT_FOUND' => 'FR: User does not found in system',
+        'ERROR_SKILL_INVALID_DATA' => 'FR: Invalid skill data',
+        'ERROR_USER_CUSTOM_FIELD_INVALID_DATA' => 'FR: Custom field creation failed. Please check input parameters',
+        'ERROR_USER_CUSTOM_FIELD_NOT_FOUND' => 'FR: Requested user custom field does not exist',
+        'ERROR_USER_INVALID_DATA' => 'FR: User creation failed. Please check input parameters',
+        'ERROR_USER_SKILL_NOT_FOUND' => 'FR: Requested skills for user does not exist',
+        'ERROR_SLIDER_IMAGE_UPLOAD' => 'FR: Unable to upload slider image',
+        'ERROR_SLIDER_INVALID_DATA' => 'FR: Invalid input data',
+        'ERROR_SLIDER_LIMIT' => 'FR: Sorry, you cannot add more than '.config('constants.SLIDER_LIMIT').' slides!',
+        'ERROR_NOT_VALID_EXTENSION' => 'FR: File must have .scss type',
+        'ERROR_FILE_NAME_NOT_MATCHED_WITH_STRUCTURE' => 'FR: File name doesn`t match with structure',
         
         // Custom error code for CMS Module - 300000 - 309999
-        '300000' => 'FR: Page creation failed. Please check input parameters',
-        '300002' => 'FR: Invalid argument',
-        '300003' => 'FR: Footer page not found in the system',
-        '300004' => 'FR: Database operational error',
-        '300005' => 'FR: No data found',
+        'ERROR_MISSION_REQUIRED_FIELDS_EMPTY' => 'FR: Page creation failed. Please check input parameters',
+        'ERROR_INVALID_ARGUMENT' => 'FR: Invalid argument',
+        'ERROR_FOOTER_PAGE_NOT_FOUND' => 'FR: Footer page not found in the system',
+        'ERROR_DATABASE_OPERATIONAL' => 'FR: Database operational error',
+        'ERROR_NO_DATA_FOUND' => 'FR: No data found',
 
         // Custom error code for Mission Module - 400000 - 409999
-        '400000' => 'FR: Invalid application data or missing parameter',
-        '400001' => 'FR: Invalid mission data or missing parameter',
-        '400002' => 'FR: Error while inserting data to database',
-        '400003' => 'FR: Requested mission does not exist',
-        '400004' => 'FR: Mission deletion failed',
-        '400006' => 'FR: Mission creation failed. Please check input parameters',
+        'ERROR_INVALID_MISSION_APPLICATION_DATA' => 'FR: Invalid application data or missing parameter',
+        'ERROR_INVALID_MISSION_DATA' => 'FR: Invalid mission data or missing parameter',
+        'ERROR_MISSION_NOT_FOUND' => 'FR: Requested mission does not exist',
+        'ERROR_MISSION_DELETION' => 'FR: Mission deletion failed',
+        'ERROR_MISSION_REQUIRED_FIELDS_EMPTY' => 'FR: Mission creation failed. Please check input parameters',
 
         
         // Custom error code for Tenant Authorization - 210000 - 219999
-        '210000' => 'FR: Invalid API Key or Secret key',
-        '210001' => 'FR: API key and Secret key are required',
-        '210002' => 'FR: Email address does not exist in the system',
-        '210003' => 'FR: Reset password link is expired or invalid',
-        '210004' => 'FR: Invalid input data',
-        '210005' => 'FR: Something went wrong while sending reset password link',
-        '210006' => 'FR: Invalid reset password token or email address',
-        '210007' => 'FR: Invalid password',
-        '210008' => 'FR: Tenant domain does not found',
-        '210009' => 'FR: Provided token is expired',
-        '210010' => 'FR: An error while decoding token',
-        '210012' => 'FR: Token not provided',
+        'ERROR_INVALID_API_AND_SECRET_KEY' => 'FR: Invalid API Key or Secret key',
+        'ERROR_API_AND_SECRET_KEY_REQUIRED' => 'FR: API key and Secret key are required',
+        'ERROR_EMAIL_NOT_EXIST' => 'FR: Email address does not exist in the system',
+        'ERROR_INVALID_RESET_PASSWORD_LINK' => 'FR: Reset password link is expired or invalid',
+        'ERROR_RESET_PASSWORD_INVALID_DATA' => 'FR: Invalid input data',
+        'ERROR_SEND_RESET_PASSWORD_LINK' => 'FR: Something went wrong while sending reset password link',
+        'ERROR_INVALID_DETAIL' => 'FR: Invalid reset password token or email address',
+        'ERROR_INVALID_PASSWORD' => 'FR: Invalid password',
+        'ERROR_TENANT_DOMAIN_NOT_FOUND' => 'FR: Tenant domain does not found',
+        'ERROR_TOKEN_EXPIRED' => 'FR: Provided token is expired',
+        'ERROR_IN_TOKEN_DECODE' => 'FR: An error while decoding token',
+        'ERROR_TOKEN_NOT_PROVIDED' => 'FR: Token not provided',
         
 
         // Custom error code for common exception
-        '999999' => 'FR: An error has occured',
+        'ERROR_OCCURED' => 'FR: An error has occured',
         
     ]
 ];

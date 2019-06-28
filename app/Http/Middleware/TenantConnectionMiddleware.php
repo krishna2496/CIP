@@ -2,7 +2,6 @@
 namespace App\Http\Middleware;
 
 use Illuminate\Support\Facades\Config;
-use App\Helpers\ResponseHelper;
 use App\Helpers\DatabaseHelper;
 use Closure;
 use DB;
@@ -12,6 +11,22 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class TenantConnectionMiddleware
 {
+    /**
+     * @var App\Helpers\DatabaseHelper
+     */
+    private $databaseHelper;
+
+    /**
+     * Create a new middleware instance.
+     *
+     * @param App\Helpers\DatabaseHelper $databaseHelper
+     * @return void
+     */
+    public function __construct(DatabaseHelper $databaseHelper)
+    {
+        $this->databaseHelper = $databaseHelper;
+    }
+
     /**
      * Handle an incoming request.
      *
@@ -47,7 +62,7 @@ class TenantConnectionMiddleware
             if (!$tenant) {
                 throw new ModelNotFoundException(trans('messages.custom_error_message.400000'));
             }
-            DatabaseHelper::createConnection($tenant->tenant_id);
+            $this->databaseHelper->createConnection($tenant->tenant_id);
         }
         return $next($request);
     }

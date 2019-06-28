@@ -140,9 +140,9 @@ class UserRepository implements UserInterface
      * Remove the specified resource from storage
      *
      * @param array $request
-     * @return mixed
+     * @return bool
      */
-    public function unlinkSkill($request)
+    public function unlinkSkill($request): bool
     {
         $userSkill = $this->userSkill;
         foreach ($request['skills'] as $value) {

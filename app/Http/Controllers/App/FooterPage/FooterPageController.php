@@ -59,10 +59,10 @@ class FooterPageController extends Controller
         } catch (InvalidArgumentException $e) {
             return $this->invalidArgument(
                 config('constants.error_codes.ERROR_INVALID_ARGUMENT'),
-                trans('messages.custom_error_message.'.config('constants.error_codes.ERROR_INVALID_ARGUMENT'))
+                trans('messages.custom_error_message.ERROR_INVALID_ARGUMENT')
             );
         } catch (\Exception $e) {
-            throw new \Exception(trans('messages.custom_error_message.999999'));
+            throw new \Exception(trans('messages.custom_error_message.ERROR_OCCURED'));
         }
     }
 
@@ -89,16 +89,16 @@ class FooterPageController extends Controller
             return $this->PDO(
                 config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
                 trans(
-                    'messages.custom_error_message.'.config('constants.error_codes.ERROR_DATABASE_OPERATIONAL')
+                    'messages.custom_error_message.ERROR_DATABASE_OPERATIONAL'
                 )
             );
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
                 config('constants.error_codes.ERROR_NO_DATA_FOUND'),
-                trans('messages.custom_error_message.'.config('constants.error_codes.ERROR_NO_DATA_FOUND'))
+                trans('messages.custom_error_message.ERROR_NO_DATA_FOUND')
             );
         } catch (\Exception $e) {
-            throw new \Exception(trans('messages.custom_error_message.999999'));
+            throw new \Exception(trans('messages.custom_error_message.ERROR_OCCURED'));
         }
     }
 
@@ -126,11 +126,11 @@ class FooterPageController extends Controller
             return $this->PDO(
                 config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
                 trans(
-                    'messages.custom_error_message.'.config('constants.error_codes.ERROR_DATABASE_OPERATIONAL')
+                    'messages.custom_error_message.ERROR_DATABASE_OPERATIONAL'
                 )
             );
         } catch (\Exception $e) {
-            throw new \Exception(trans('messages.custom_error_message.999999'));
+            throw new \Exception(trans('messages.custom_error_message.ERROR_OCCURED'));
         }
     }
 }

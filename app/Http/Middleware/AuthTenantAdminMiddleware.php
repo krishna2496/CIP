@@ -9,10 +9,21 @@ use App\Helpers\DatabaseHelper;
 use DB;
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use PDOException;
 
 class AuthTenantAdminMiddleware
 {
+    /**
+     * @var App\Helpers\ResponseHelper
+     */
+    private $responseHelper;
+
+    /**
+     * @var App\Helpers\DatabaseHelper
+     */
+    private $databaseHelper;
+
     /**
      * Create a new middleware instance.
      *
@@ -22,8 +33,14 @@ class AuthTenantAdminMiddleware
     public function __construct(ResponseHelper $responseHelper)
     {
         $this->responseHelper = $responseHelper;
+        $this->databaseHelper = new DatabaseHelper;
     }
     
+    // public function setDatabaseHelper(DatabaseHelper $databaseHelper)
+    // {
+    //     $this->databaseHelper = new DatabaseHelper;
+    // }
+
     /**
      * Handle an incoming request.
      *
@@ -42,8 +59,7 @@ class AuthTenantAdminMiddleware
                     Response::HTTP_UNAUTHORIZED,
                     Response::$statusTexts[Response::HTTP_UNAUTHORIZED],
                     config('constants.error_codes.ERROR_API_AND_SECRET_KEY_REQUIRED'),
-                    trans('messages.custom_error_message.'
-                    .config('constants.error_codes.ERROR_API_AND_SECRET_KEY_REQUIRED'))
+                    trans('messages.custom_error_message.ERROR_API_AND_SECRET_KEY_REQUIRED')
                 );
             }
             // authenticate api user based on basic auth parameters
@@ -57,7 +73,7 @@ class AuthTenantAdminMiddleware
             // If user authenticates successfully
             if ($apiUser) {
                 // Create connection with their tenant database
-                DatabaseHelper::createConnection($apiUser->tenant_id);
+                $this->databaseHelper->createConnection($apiUser->tenant_id);
                 return $next($request);
             }
             // Send authentication error response if api user not found in master database
@@ -65,18 +81,17 @@ class AuthTenantAdminMiddleware
                 Response::HTTP_UNAUTHORIZED,
                 Response::$statusTexts[Response::HTTP_UNAUTHORIZED],
                 config('constants.error_codes.ERROR_INVALID_API_AND_SECRET_KEY'),
-                trans('messages.custom_error_message.'
-                .config('constants.error_codes.ERROR_INVALID_API_AND_SECRET_KEY'))
+                trans('messages.custom_error_message.ERROR_INVALID_API_AND_SECRET_KEY')
             );
         } catch (PDOException $e) {
             return $this->PDO(
                 config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
                 trans(
-                    'messages.custom_error_message.'.config('constants.error_codes.ERROR_DATABASE_OPERATIONAL')
+                    'messages.custom_error_message.ERROR_DATABASE_OPERATIONAL'
                 )
             );
         } catch (\Exception $e) {
-            throw new \Exception(trans('messages.custom_error_message.999999'));
+            throw new \Exception(trans('messages.custom_error_message.ERROR_OCCURED'));
         }
     }
 }

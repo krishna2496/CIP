@@ -10,6 +10,7 @@ use App\Helpers\Helpers;
 use App\Helpers\LanguageHelper;
 use DB;
 use Illuminate\Support\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class FooterPageRepository implements FooterPageInterface
 {
@@ -22,18 +23,28 @@ class FooterPageRepository implements FooterPageInterface
      * @var App\Models\FooterPagesLanguage
      */
     private $footerPageLanguage;
+
+    /**
+     * @var App\Helpers\LanguageHelper
+     */
+    private $languageHelper;
     
     /**
      * Create a new repository instance.
      *
      * @param App\Models\FooterPage
      * @param App\Models\FooterPagesLanguage
+     * @param App\Helpers\LanguageHelper
      * @return void
      */
-    public function __construct(FooterPage $page, FooterPagesLanguage $footerPageLanguage)
-    {
+    public function __construct(
+        FooterPage $page,
+        FooterPagesLanguage $footerPageLanguage,
+        LanguageHelper $languageHelper
+    ) {
         $this->page = $page;
         $this->footerPageLanguage = $footerPageLanguage;
+        $this->languageHelper = $languageHelper;
     }
     
     /**
@@ -52,8 +63,7 @@ class FooterPageRepository implements FooterPageInterface
         // Create new cms page
         $footerPage = $this->page->create($page);
         
-        $languages = LanguageHelper::getLanguages($request);
-        
+        $languages = $this->languageHelper->getLanguages($request);
         foreach ($postData['translations'] as $value) {
             // Get language_id from language code - It will fetch data from `ci_admin` database
             $language = $languages->where('code', $value['lang'])->first();
@@ -94,7 +104,7 @@ class FooterPageRepository implements FooterPageInterface
         $footerPage = $this->page->findOrFail($id);
         $footerPage->update($page);
         
-        $languages = LanguageHelper::getLanguages($request);
+        $languages = $this->languageHelper->getLanguages($request);
                  
         if (isset($postData['translations'])) {
             foreach ($postData['translations'] as $value) {
@@ -127,9 +137,9 @@ class FooterPageRepository implements FooterPageInterface
     * Display a listing of footer pages.
     *
     * @param Illuminate\Http\Request $request
-    * @return App\Models\FooterPage
+    * @return Illuminate\Pagination\LengthAwarePaginator
     */
-    public function footerPageList(Request $request): FooterPage
+    public function footerPageList(Request $request): LengthAwarePaginator
     {
         $pageQuery = $this->page->with('pageTranslations');
         
