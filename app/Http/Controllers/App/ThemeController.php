@@ -9,6 +9,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Input;
 use PDOException;
 use App\Helpers\ResponseHelper;
+use App\Traits\RestExceptionHandlerTrait;
 
 class ThemeController extends Controller
 {
@@ -70,7 +71,7 @@ class ThemeController extends Controller
                 )
             );
         } catch (\Exception $e) {
-            throw new \Exception(trans('messages.custom_error_message.ERROR_OCCURED'));
+            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURED'));
         }
     }
 }

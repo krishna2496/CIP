@@ -8,6 +8,7 @@ use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
 use PDOException;
 use App\Helpers\ResponseHelper;
+use App\Traits\RestExceptionHandlerTrait;
 
 class SkillController extends Controller
 {
@@ -68,7 +69,7 @@ class SkillController extends Controller
                 )
             );
         } catch (\Exception $e) {
-            throw new \Exception(trans('messages.custom_error_message.ERROR_OCCURED'));
+            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURED'));
         }
     }
 }

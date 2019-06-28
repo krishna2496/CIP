@@ -40,24 +40,32 @@ class TenantOptionController extends Controller
      */
     private $helpers;
 
+     /**
+     * @var App\Helpers\S3Helper
+     */
+    private $s3helper;
+
     /**
      * Create a new controller instance.
      *
      * @param App\Repositories\TenantOption\TenantOptionRepository $tenantOptionRepository
      * @param Illuminate\Http\ResponseHelper $responseHelper
      * @param App\Helpers\LanguageHelper
+     * @param App\Helpers\S3Helper
      * @return void
      */
     public function __construct(
         TenantOptionRepository $tenantOptionRepository,
         ResponseHelper $responseHelper,
         LanguageHelper $languageHelper,
-        Helpers $helpers
+        Helpers $helpers,
+        Helpers $s3helper
     ) {
         $this->tenantOptionRepository = $tenantOptionRepository;
         $this->responseHelper = $responseHelper;
         $this->languageHelper = $languageHelper;
         $this->helpers = $helpers;
+        $this->s3helper = $s3helper;
     }
     
     /**
@@ -124,7 +132,7 @@ class TenantOptionController extends Controller
                 trans('messages.custom_error_message.ERROR_INVALID_ARGUMENT')
             );
         } catch (\Exception $e) {
-            throw new \Exception(trans('messages.custom_error_message.ERROR_OCCURED'));
+            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURED'));
         }
     }
 
@@ -157,7 +165,7 @@ class TenantOptionController extends Controller
                 trans('messages.custom_error_message.ERROR_INVALID_ARGUMENT')
             );
         } catch (\Exception $e) {
-            throw new \Exception(trans('messages.custom_error_message.ERROR_OCCURED'));
+            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURED'));
         }
     }
 
@@ -193,7 +201,7 @@ class TenantOptionController extends Controller
                 trans('messages.custom_error_message.ERROR_INVALID_ARGUMENT')
             );
         } catch (\Exception $e) {
-            throw new \Exception(trans('messages.custom_error_message.ERROR_OCCURED'));
+            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURED'));
         }
     }
 }
