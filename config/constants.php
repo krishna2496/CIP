@@ -83,6 +83,14 @@ return [
         'REFUSED' => 'REFUSED'
     ],
 
+    /*
+     * Top theme
+     */
+    'TOP_THEME' => "TOP_THEME",
+    'TOP_COUNTRY' => "TOP_COUNTRY",
+    'TOP_COUNTRY' => "TOP_COUNTRY",
+    'TOP_ORGANISATION' => "TOP_ORGANISATION",
+
     'error_codes' => [
         'ERROR_FOOTER_PAGE_REQUIRED_FIELDS_EMPTY' => '300000',
         'ERROR_INVALID_ARGUMENT' => '300002',

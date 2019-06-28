@@ -437,14 +437,9 @@ class MissionRepository implements MissionInterface
      * Array $userFilterData
      * @return mixed
      */
-    public function appMissions(Request $request, array $userFilterData)
+    public function appMissions(Request $request, array $userFilterData, int $languageId)
     {
         $missionData = [];
-        $languages = LanguageHelper::getLanguages($request);
-        $local = ($request->hasHeader('X-localization')) ?
-        $request->header('X-localization') : env('TENANT_DEFAULT_LANGUAGE_CODE');
-        $language = $languages->where('code', $local)->first();
-        $language_id = $language->language_id;
 
         // Get  mission data
         $missionQuery = $this->mission->select(
@@ -471,9 +466,9 @@ class MissionRepository implements MissionInterface
                 $query->where('status', '1');
                 $query->where('default', '1');
             }])
-            ->with(['missionLanguage' => function ($query) use ($language_id) {
+            ->with(['missionLanguage' => function ($query) use ($languageId) {
                 $query->select('mission_language_id', 'mission_id', 'title', 'short_description', 'objective')
-                ->where('language_id', $language_id);
+                ->where('language_id', $languageId);
             }])
             ->withCount(['missionApplication as user_application_count' => function ($query) use ($request) {
                 $query->where('user_id', $request->auth->user_id)
@@ -498,6 +493,35 @@ class MissionRepository implements MissionInterface
 
         $mission =  $missionQuery->orderBy('mission.mission_id', 'ASC')->paginate(config("constants.PER_PAGE_LIMIT"));
 
+        return $mission;
+    }
+
+    /**
+     * Display a top mission data.
+     *
+     * Illuminate\Http\Request $request
+     * string $topFilterData
+     * @return mixed
+     */
+    public function topMission(Request $request, string $topFilterParams)
+    {
+        // Get  mission data
+        $missionQuery = $this->mission->select('*')
+        ->where('publication_status', config("constants.publication_status")["APPROVED"]);
+        if ($topFilterParams == config('constants.TOP_THEME')) {
+            $missionQuery
+            ->selectRaw('COUNT(mission.theme_id) as mission_theme_count')
+            ->with(['missionTheme'])
+            ->groupBy('mission.theme_id')
+            ->orderBY('mission_theme_count', 'desc');
+        }
+        if ($topFilterParams == config('constants.TOP_COUNTRY')) {
+            $missionQuery->with(['country'])
+            ->selectRaw('COUNT(mission.country_id) as mission_country_count')
+            ->groupBy('mission.country_id')
+            ->orderBY('mission_country_count', 'desc');
+        }
+        $mission = $missionQuery->limit(5)->get();
         return $mission;
     }
 }

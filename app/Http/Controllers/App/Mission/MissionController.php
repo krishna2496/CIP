@@ -100,14 +100,31 @@ class MissionController extends Controller
     public function appMissionList(Request $request): JsonResponse
     {
         try {
+            $languages = LanguageHelper::getLanguages($request);
+            $local = ($request->hasHeader('X-localization')) ?
+            $request->header('X-localization') : env('TENANT_DEFAULT_LANGUAGE_CODE');
+            $language = $languages->where('code', $local)->first();
+            $languageId = $language->language_id;
+
             //Save User search data
             $this->userFilterRepository->saveFilter($request);
+
             // Get users filter
             $userFilters = $this->userFilterRepository->userFilter($request);
             $userFilterData = $userFilters->toArray()["filters"];
 
-            $mission = $this->missionRepository->appMissions($request, $userFilterData);
+            // Get Data by top theme
+            $topTheme = $this->missionRepository->topMission($request, config('constants.TOP_THEME'));
+            // Get Data by top country
+            $topCountry = $this->missionRepository->topMission($request, config('constants.TOP_COUNTRY'));
 
+            $topMissionData = Helpers::missionTopData(
+                $topTheme,
+                $topCountry,
+                $local
+            );
+           
+            $mission = $this->missionRepository->appMissions($request, $userFilterData, $languageId);
             foreach ($mission as $key => $value) {
                 unset($value->city);
                 if ($value->mission_type == config("constants.MISSION_TYPE['GOAL']")) {
@@ -145,6 +162,9 @@ class MissionController extends Controller
                 }
             }
 
+            $metaData['filters'] = $userFilterData;
+            $metaData[config('constants.TOP_THEME')] = $topMissionData[config('constants.TOP_THEME')];
+            $metaData[config('constants.TOP_COUNTRY')] = $topMissionData[config('constants.TOP_COUNTRY')];
             $apiData = $mission;
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_MISSION_LISTING');
@@ -152,14 +172,16 @@ class MissionController extends Controller
                 $apiStatus,
                 $apiMessage,
                 $apiData,
-                $userFilterData
+                $metaData
             );
         } catch (ModelNotFoundException $e) {
+            dd($e);
             return $this->modelNotFound(
                 config('constants.error_codes.ERROR_MISSION_NOT_FOUND'),
                 trans('messages.custom_error_message.'.config('constants.error_codes.ERROR_MISSION_NOT_FOUND'))
             );
         } catch (PDOException $e) {
+            dd($e);
             return $this->PDO(
                 config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
                 trans(
