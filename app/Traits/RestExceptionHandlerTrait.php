@@ -96,6 +96,22 @@ trait RestExceptionHandlerTrait
     }
 
     /**
+     * Returns json response for AWS S3 exception
+     *
+     * @param string $message
+     * @return \Illuminate\Http\JsonResponse
+     */
+    protected function s3Exception(string $customErrorCode = '', string $message = 'Internal Server Error')
+    {
+        return $this->jsonResponse(
+            Response::HTTP_INTERNAL_SERVER_ERROR,
+            Response::$statusTexts[Response::HTTP_INTERNAL_SERVER_ERROR],
+            $customErrorCode,
+            $message
+        );
+    }
+
+    /**
      * Returns json response.
      *
      * @param array|null $payload

@@ -9,7 +9,8 @@
 */
 
 $router->get(
-    '/', function () use ($router) {
+    '/',
+    function () use ($router) {
         return $router->app->version();
     }
 );
@@ -25,16 +26,17 @@ $router->get(
 |
 */
 $router->group(
-    ['prefix' => 'tenants', 'middleware' => 'localization'], function ($router) {
+    ['prefix' => 'tenants', 'middleware' => 'localization'],
+    function ($router) {
         // Get tenants list
-        $router->get('/', ['uses'=>'TenantController@index']);
+        $router->get('/', ['as' => 'tenants', 'uses'=>'TenantController@index']);
         // Get tenant details from id
-        $router->get('/{tenant_id}', ['uses'=>'TenantController@show']);
+        $router->get('/{tenant_id}', ['as' => 'tenants.detail', 'uses'=>'TenantController@show']);
         // Create new tenant
-        $router->post('/', ['uses'=>'TenantController@store']);
+        $router->post('/', ['as' => 'tenants.store', 'uses'=>'TenantController@store']);
         // Update tenant details
-        $router->patch('/{tenant_id}', ['uses'=>'TenantController@update']);
+        $router->patch('/{tenant_id}', ['as' => 'tenants.update', 'uses'=>'TenantController@update']);
         // Delete tenant
-        $router->delete('/{tenant_id}', ['uses'=>'TenantController@destroy']);
+        $router->delete('/{tenant_id}', ['as' => 'tenants.destroy', 'uses'=>'TenantController@destroy']);
     }
 );

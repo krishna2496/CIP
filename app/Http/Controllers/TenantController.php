@@ -16,6 +16,7 @@ use App\Traits\RestExceptionHandlerTrait;
 use Validator;
 use PDOException;
 use InvalidArgumentException;
+use Aws\S3\Exception\S3Exception;
 
 class TenantController extends Controller
 {
@@ -90,14 +91,14 @@ class TenantController extends Controller
             $tenant = $this->tenantRepository->store($request);
             
             // ONLY FOR DEVELOPMENT MODE. (PLEASE REMOVE THIS CODE IN PRODUCTION MODE)
-            if (env('APP_ENV')=='local') {
+            if (env('APP_ENV')=='local' || env('APP_ENV')=='testing') {
                 dispatch(new TenantDefaultLanguageJob($tenant));
             }
             
             // Job dispatched to create new tenant's database and migrations
             dispatch(new TenantMigrationJob($tenant));
 
-            // Create assets folder for tenant on AWS s3 bucket
+            // // Create assets folder for tenant on AWS s3 bucket
             dispatch(new CreateFolderInS3BucketJob($tenant));
 
             // Set response data
@@ -107,6 +108,8 @@ class TenantController extends Controller
             
             return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
         } catch (PDOException $e) {
+            // Delete created tenant
+            $this->destroy($tenant->tenant_id);
             return $this->PDO(
                 config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
                 trans(
@@ -114,12 +117,23 @@ class TenantController extends Controller
                 )
             );
         } catch (InvalidArgumentException $e) {
+            // Delete created tenant
+            $this->destroy($tenant->tenant_id);
             return $this->invalidArgument(
                 config('constants.error_codes.ERROR_INVALID_ARGUMENT'),
                 trans('messages.custom_error_message.'.config('constants.error_codes.ERROR_INVALID_ARGUMENT'))
             );
+        } catch (S3Exception $e) {
+            // Delete created tenant
+            $this->destroy($tenant->tenant_id);
+            return $this->s3Exception(
+                config('constants.error_codes.FAILED_TO_CREATE_FOLDER_ON_S3'),
+                trans('messages.custom_error_message.'.config('constants.error_codes.FAILED_TO_CREATE_FOLDER_ON_S3'))
+            );
         } catch (\Exception $e) {
-            throw new \Exception(trans('messages.custom_error_message.999999'));
+            // Delete created tenant
+            $this->destroy($tenant->tenant_id);
+            return $this->badRequest(trans('messages.custom_error_message.999999'));
         }
     }
 
@@ -145,7 +159,7 @@ class TenantController extends Controller
                 trans('messages.custom_error_message.'.config('constants.error_codes.ERROR_TENANT_NOT_FOUND'))
             );
         } catch (\Exception $e) {
-            throw new \Exception(trans('messages.custom_error_message.999999'));
+            return $this->badRequest(trans('messages.custom_error_message.999999'));
         }
     }
 
@@ -190,7 +204,7 @@ class TenantController extends Controller
                 )
             );
         } catch (\Exception $e) {
-            throw new \Exception(trans('messages.custom_error_message.999999'));
+            return $this->badRequest(trans('messages.custom_error_message.999999'));
         }
     }
 
@@ -216,7 +230,7 @@ class TenantController extends Controller
                 trans('messages.custom_error_message.'.config('constants.error_codes.ERROR_TENANT_NOT_FOUND'))
             );
         } catch (\Exception $e) {
-            throw new \Exception(trans('messages.custom_error_message.999999'));
+            return $this->badRequest(trans('messages.custom_error_message.999999'));
         }
     }
 }
