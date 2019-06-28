@@ -39,6 +39,11 @@ class AuthController extends Controller
     private $responseHelper;
 
     /**
+     * @var App\Helpers\Helpers
+     */
+    private $helpers;
+
+    /**
      * The response instance.
      *
      * @var App\Repositories\TenantOption\TenantOptionRepository
@@ -51,16 +56,19 @@ class AuthController extends Controller
      * @param \Illuminate\Http\Request $request
      * @param Illuminate\Http\ResponseHelper $responseHelper
      * @param App\Repositories\TenantOption\TenantOptionRepository $tenantOptionRepository
+     * @param App\Helpers\Helpers $helpers
      * @return void
      */
     public function __construct(
         Request $request,
         ResponseHelper $responseHelper,
-        TenantOptionRepository $tenantOptionRepository
+        TenantOptionRepository $tenantOptionRepository,
+        Helpers $helpers
     ) {
         $this->request = $request;
         $this->responseHelper = $responseHelper;
         $this->tenantOptionRepository = $tenantOptionRepository;
+        $this->helpers = $helpers;
     }
 
     /**
@@ -114,8 +122,7 @@ class AuthController extends Controller
                     Response::HTTP_FORBIDDEN,
                     Response::$statusTexts[Response::HTTP_FORBIDDEN],
                     config('constants.error_codes.ERROR_EMAIL_NOT_EXIST'),
-                    trans('messages.custom_error_message.'
-                    .config('constants.error_codes.ERROR_EMAIL_NOT_EXIST'))
+                    trans('messages.custom_error_message.ERROR_EMAIL_NOT_EXIST')
                 );
             }
             
@@ -125,8 +132,7 @@ class AuthController extends Controller
                     Response::HTTP_UNPROCESSABLE_ENTITY,
                     Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
                     config('constants.error_codes.ERROR_INVALID_PASSWORD'),
-                    trans('messages.custom_error_message.'
-                    .config('constants.error_codes.ERROR_INVALID_PASSWORD'))
+                    trans('messages.custom_error_message.ERROR_INVALID_PASSWORD')
                 );
             }
             
@@ -142,7 +148,7 @@ class AuthController extends Controller
             $apiMessage = trans('messages.success.MESSAGE_USER_LOGGED_IN');
             return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
         } catch (\Exception $e) {
-            throw new \Exception(trans('messages.custom_error_message.999999'));
+            throw new \Exception(trans('messages.custom_error_message.ERROR_OCCURED'));
         }
     }
     
@@ -175,11 +181,10 @@ class AuthController extends Controller
                     Response::HTTP_FORBIDDEN,
                     Response::$statusTexts[Response::HTTP_FORBIDDEN],
                     config('constants.error_codes.ERROR_EMAIL_NOT_EXIST'),
-                    trans('messages.custom_error_message.'
-                    .config('constants.error_codes.ERROR_EMAIL_NOT_EXIST'))
+                    trans('messages.custom_error_message.ERROR_EMAIL_NOT_EXIST')
                 );
             }
-            $refererUrl = Helpers::getRefererFromRequest($request);
+            $refererUrl = $this->helpers->getRefererFromRequest($request);
             config(['app.mail_url' => $refererUrl.'/reset-password/']);
 
             //set tenant logo
@@ -197,8 +202,7 @@ class AuthController extends Controller
                     Response::HTTP_INTERNAL_SERVER_ERROR,
                     Response::$statusTexts[Response::HTTP_INTERNAL_SERVER_ERROR],
                     config('constants.error_codes.ERROR_SEND_RESET_PASSWORD_LINK'),
-                    trans('messages.custom_error_message.'
-                    .config('constants.error_codes.ERROR_SEND_RESET_PASSWORD_LINK'))
+                    trans('messages.custom_error_message.ERROR_SEND_RESET_PASSWORD_LINK')
                 );
             }
 
@@ -215,11 +219,11 @@ class AuthController extends Controller
             return $this->PDO(
                 config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
                 trans(
-                    'messages.custom_error_message.'.config('constants.error_codes.ERROR_DATABASE_OPERATIONAL')
+                    'messages.custom_error_message.ERROR_DATABASE_OPERATIONAL'
                 )
             );
         } catch (\Exception $e) {
-            throw new \Exception(trans('messages.custom_error_message.999999'));
+            throw new \Exception(trans('messages.custom_error_message.ERROR_OCCURED'));
         }
     }
 
@@ -266,8 +270,7 @@ class AuthController extends Controller
                     Response::HTTP_UNPROCESSABLE_ENTITY,
                     Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
                     config('constants.error_codes.ERROR_INVALID_RESET_PASSWORD_LINK'),
-                    trans('messages.custom_error_message.'
-                        .config('constants.error_codes.ERROR_INVALID_RESET_PASSWORD_LINK'))
+                    trans('messages.custom_error_message.ERROR_INVALID_RESET_PASSWORD_LINK')
                 );
             }
 
@@ -277,8 +280,7 @@ class AuthController extends Controller
                     Response::HTTP_UNAUTHORIZED,
                     Response::$statusTexts[Response::HTTP_UNAUTHORIZED],
                     config('constants.error_codes.ERROR_INVALID_RESET_PASSWORD_LINK'),
-                    trans('messages.custom_error_message.'
-                        .config('constants.error_codes.ERROR_INVALID_RESET_PASSWORD_LINK'))
+                    trans('messages.custom_error_message.ERROR_INVALID_RESET_PASSWORD_LINK')
                 );
             }
             
@@ -304,11 +306,11 @@ class AuthController extends Controller
             return $this->PDO(
                 config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
                 trans(
-                    'messages.custom_error_message.'.config('constants.error_codes.ERROR_DATABASE_OPERATIONAL')
+                    'messages.custom_error_message.ERROR_DATABASE_OPERATIONAL'
                 )
             );
         } catch (\Exception $e) {
-            throw new \Exception(trans('messages.custom_error_message.999999'));
+            throw new \Exception(trans('messages.custom_error_message.ERROR_OCCURED'));
         }
     }
 
