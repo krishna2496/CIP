@@ -2,6 +2,7 @@
 namespace App\Helpers;
 
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Http\JsonResponse;
 
 class ResponseHelper
 {
@@ -11,9 +12,9 @@ class ResponseHelper
      * @param string $apiStatus
      * @param string $apiMessage
      * @param array $apiData
-     * @return mixed
+     * @return Illuminate\Http\JsonResponse
      */
-    public function success(string $apiStatus = '', string $apiMessage = '', array $apiData = [])
+    public function success(string $apiStatus = '', string $apiMessage = '', array $apiData = []): JsonResponse
     {
         $response['status'] = $apiStatus;
         
@@ -34,14 +35,14 @@ class ResponseHelper
      * @param string $apiStatus
      * @param string $apiMessage
      * @param Illuminate\Pagination\LengthAwarePaginator $apiData
-     * @return mixed
+     * @return Illuminate\Http\JsonResponse
      */
     public function successWithPagination(
         string $apiStatus = '',
         string $apiMessage = '',
         LengthAwarePaginator $apiData = null,
         array $metaData = []
-    ) {
+    ): JsonResponse {
         $response['status'] = $apiStatus;
 
         // Check response data have pagination or not? Pagination response parameter sets
@@ -74,14 +75,14 @@ class ResponseHelper
      * @param string $statusType
      * @param string $customErrorCode
      * @param string $customErrorMessage
-     * @return mixed
+     * @return Illuminate\Http\JsonResponse
      */
     public function error(
         string $statusCode = '',
         string $statusType = '',
         string $customErrorCode = '',
         string $customErrorMessage = ''
-    ) {
+    ): JsonResponse {
         $response['status'] = $statusCode;
         $response['type'] = $statusType;
         if ($customErrorCode) {

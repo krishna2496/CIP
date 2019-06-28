@@ -49,6 +49,17 @@ class MissionRepository implements MissionInterface
      * @var App\Models\UserFilter
      */
     public $userFilter;
+    
+    /*
+     * @var App\Helpers\LanguageHelper
+     */
+
+    private $languageHelper;
+
+    /**
+     * @var App\Helpers\Helpers
+     */
+    private $helpers;
 
     /**
      * Create a new Mission repository instance.
@@ -59,6 +70,7 @@ class MissionRepository implements MissionInterface
      * @param  App\Models\MissionMedia $missionMedia
      * @param  App\Models\MissionDocument $missionDocument
      * @param  Illuminate\Http\ResponseHelper $responseHelper
+     * @param  Illuminate\Http\LanguageHelper $languageHelper
      * @return void
      */
     public function __construct(
@@ -69,7 +81,9 @@ class MissionRepository implements MissionInterface
         MissionDocument $missionDocument,
         ResponseHelper $responseHelper,
         UserFilterRepository $userFilterRepository,
-        UserFilter $userFilter
+        UserFilter $userFilter,
+        LanguageHelper $languageHelper,
+        Helpers $helpers
     ) {
         $this->mission = $mission;
         $this->missionLanguage = $missionLanguage;
@@ -79,6 +93,8 @@ class MissionRepository implements MissionInterface
         $this->responseHelper = $responseHelper;
         $this->userFilterRepository = $userFilterRepository;
         $this->userFilter = $userFilter;
+        $this->languageHelper = $languageHelper;
+        $this->helpers = $helpers;
     }
     
     /**
@@ -89,7 +105,7 @@ class MissionRepository implements MissionInterface
      */
     public function store(Request $request): Mission
     {
-        $languages = LanguageHelper::getLanguages($request);
+        $languages = $this->languageHelper->getLanguages($request);
 
         // Set data for create new record
         $startDate = $endDate = null;
@@ -104,7 +120,7 @@ class MissionRepository implements MissionInterface
         $applicationDeadline = (isset($request->application_deadline) && ($request->application_deadline != '')) ?
          Carbon::parse($request->application_deadline)->format(config('constants.DB_DATE_FORMAT')) : null;
 
-        $countryId = Helpers::getCountryId($request->location['country_code']);
+        $countryId = $this->helpers->getCountryId($request->location['country_code']);
         $missionData = array(
                 'theme_id' => $request->theme_id,
                 'city_id' => $request->location['city_id'],
@@ -140,7 +156,7 @@ class MissionRepository implements MissionInterface
             unset($missionLanguage);
         }
 
-        $tenantName = Helpers::getSubDomainFromRequest($request);
+        $tenantName = $this->helpers->getSubDomainFromRequest($request);
         $isDefault = 0;
 
         // Add mission media images
@@ -205,7 +221,7 @@ class MissionRepository implements MissionInterface
      */
     public function update(Request $request, int $id): Mission
     {
-        $languages = LanguageHelper::getLanguages($request);
+        $languages = $this->languageHelper->getLanguages($request);
         // Set data for update record
         $startDate = $endDate = null;
         if (isset($request->start_date)) {
@@ -219,7 +235,7 @@ class MissionRepository implements MissionInterface
         $applicationDeadline = (isset($request->application_deadline) && ($request->application_deadline != '')) ?
          Carbon::parse($request->application_deadline)->format(config('constants.DB_DATE_FORMAT')) : null;
 
-        $countryId = Helpers::getCountryId($request->location['country_code']);
+        $countryId = $this->helpers->getCountryId($request->location['country_code']);
         $missionData = array('theme_id' => $request->theme_id,
                              'city_id' => $request->location['city_id'],
                              'country_id' => $countryId,
@@ -255,7 +271,7 @@ class MissionRepository implements MissionInterface
             unset($missionLanguage);
         }
 
-        $tenantName = Helpers::getSubDomainFromRequest($request);
+        $tenantName = $this->helpers->getSubDomainFromRequest($request);
         // Add/Update  mission media images
         $isDefault = 0;
         foreach ($request->media_images as $value) {
@@ -389,7 +405,7 @@ class MissionRepository implements MissionInterface
      */
     public function missionList(Request $request): LengthAwarePaginator
     {
-        $languages = LanguageHelper::getLanguages($request);
+        $languages = $this->languageHelper->getLanguages($request);
 
         $mission = Mission::select(
             'mission.mission_id',

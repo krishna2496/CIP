@@ -64,7 +64,7 @@ class S3Helper
                 dispatch(new UploadAssetsFromLocalToS3StorageJob($tenantName));
             }
         } catch (\Exception $e) {
-            throw new \Exception(trans('messages.custom_error_message.999999'));
+            throw new \Exception(trans('messages.custom_error_message.ERROR_OCCURED'));
         }
 
         // Set response data
@@ -107,7 +107,7 @@ class S3Helper
                 return 0;
             }
         } catch (\Exception $e) {
-            throw new \Exception(trans('messages.custom_error_message.999999'));
+            throw new \Exception(trans('messages.custom_error_message.ERROR_OCCURED'));
         }
     }
 }
