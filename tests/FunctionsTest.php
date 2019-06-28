@@ -98,5 +98,7 @@ class FunctionsTest extends TestCase
         DB::setDefaultConnection('mysql');
 
         $this->assertSame(env('DB_MASTER'), DB::connection()->getDatabaseName());
+
+        $this->assertTrue($tenant->delete());
     }
 }

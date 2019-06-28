@@ -180,5 +180,7 @@ class TenantTest extends TestCase
             'message',
             'status',
         ]);
+
+        $this->assertTrue($tenant->delete());
     }
 }
