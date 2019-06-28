@@ -36,9 +36,9 @@ class UserFilterRepository implements UserFilterInterface
      * Display a listing of User filter.
      *
      * Illuminate\Http\Request $request
-     * @return mixed
+     * @return App\Models\UserFilter
      */
-    public function userFilter(Request $request)
+    public function userFilter(Request $request): UserFilter
     {
         return $this->filters->get()->where("user_id", $request->auth->user_id)->first();
     }

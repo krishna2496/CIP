@@ -451,12 +451,11 @@ class MissionRepository implements MissionInterface
      *
      * Illuminate\Http\Request $request'
      * Array $userFilterData
-     * @return mixed
+     * @return \Illuminate\Pagination\LengthAwarePaginator
      */
-    public function appMissions(Request $request, array $userFilterData)
+    public function appMissions(Request $request, array $userFilterData):LengthAwarePaginator
     {
         $missionData = [];
-        $languages = LanguageHelper::getLanguages($request);
         $languages = $this->languageHelper->getLanguages($request);
         $local = ($request->hasHeader('X-localization')) ?
         $request->header('X-localization') : env('TENANT_DEFAULT_LANGUAGE_CODE');

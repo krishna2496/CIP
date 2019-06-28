@@ -156,8 +156,8 @@ class MissionController extends Controller
             );
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
-                config('constants.error_codes.ERROR_MISSION_NOT_FOUND'),
-                trans('messages.custom_error_message.ERROR_MISSION_NOT_FOUND')
+                config('constants.error_codes.ERROR_NO_DATA_FOUND'),
+                trans('messages.custom_error_message.ERROR_NO_DATA_FOUND')
             );
         } catch (PDOException $e) {
             return $this->PDO(

@@ -41,7 +41,7 @@ class UserFilterController extends Controller
      * Display listing of footer pages
      *
      * @param Illuminate\Http\Request $request
-     * @return mixed
+     * @return Illuminate\Http\JsonResponse
      */
     public function index(Request $request):JsonResponse
     {
@@ -55,11 +55,11 @@ class UserFilterController extends Controller
             return $this->PDO(
                 config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
                 trans(
-                    'messages.custom_error_message.'.config('constants.error_codes.ERROR_DATABASE_OPERATIONAL')
+                    'messages.custom_error_message.ERROR_DATABASE_OPERATIONAL'
                 )
             );
         } catch (\Exception $e) {
-            throw new \Exception(trans('messages.custom_error_message.999999'));
+            throw new \Exception(trans('messages.custom_error_message.ERROR_OCCURED'));
         }
     }
 }
