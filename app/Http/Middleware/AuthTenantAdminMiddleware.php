@@ -5,7 +5,6 @@ use Illuminate\Support\Facades\Config;
 use Illuminate\Database\QueryException;
 use App\Helpers\Helpers;
 use App\Helpers\ResponseHelper;
-use App\Helpers\DatabaseHelper;
 use DB;
 use Closure;
 use Illuminate\Http\Request;
@@ -20,9 +19,9 @@ class AuthTenantAdminMiddleware
     private $responseHelper;
 
     /**
-     * @var App\Helpers\DatabaseHelper
+     * @var App\Helpers\Helpers
      */
-    private $databaseHelper;
+    private $helpers;
 
     /**
      * Create a new middleware instance.
@@ -33,14 +32,9 @@ class AuthTenantAdminMiddleware
     public function __construct(ResponseHelper $responseHelper)
     {
         $this->responseHelper = $responseHelper;
-        $this->databaseHelper = new DatabaseHelper;
+        $this->helpers = new Helpers;
     }
-    
-    // public function setDatabaseHelper(DatabaseHelper $databaseHelper)
-    // {
-    //     $this->databaseHelper = new DatabaseHelper;
-    // }
-
+ 
     /**
      * Handle an incoming request.
      *
@@ -73,7 +67,7 @@ class AuthTenantAdminMiddleware
             // If user authenticates successfully
             if ($apiUser) {
                 // Create connection with their tenant database
-                $this->databaseHelper->createConnection($apiUser->tenant_id);
+                $this->helpers->createConnection($apiUser->tenant_id);
                 return $next($request);
             }
             // Send authentication error response if api user not found in master database

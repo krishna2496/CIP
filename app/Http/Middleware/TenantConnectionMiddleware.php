@@ -2,7 +2,7 @@
 namespace App\Http\Middleware;
 
 use Illuminate\Support\Facades\Config;
-use App\Helpers\DatabaseHelper;
+use App\Helpers\Helpers;
 use Closure;
 use DB;
 use Firebase\JWT\JWT;
@@ -12,19 +12,19 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 class TenantConnectionMiddleware
 {
     /**
-     * @var App\Helpers\DatabaseHelper
+     * @var App\Helpers\Helpers
      */
-    private $databaseHelper;
+    private $helpers;
 
     /**
      * Create a new middleware instance.
      *
-     * @param App\Helpers\DatabaseHelper $databaseHelper
+     * @param App\Helpers\Helpers $helpers
      * @return void
      */
-    public function __construct(DatabaseHelper $databaseHelper)
+    public function __construct(Helpers $helpers)
     {
-        $this->databaseHelper = $databaseHelper;
+        $this->helpers = $helpers;
     }
 
     /**
@@ -50,7 +50,7 @@ class TenantConnectionMiddleware
             }
         } else {
             // Uncomment below line while testing in apis with front side.
-            // $domain = Helpers::getSubDomainFromRequest($request);
+            // $domain = $this->helpers->getSubDomainFromRequest($request);
             
             // comment below line while testing in apis with front side.
             $domain = env('DEFAULT_TENANT');
@@ -62,7 +62,7 @@ class TenantConnectionMiddleware
             if (!$tenant) {
                 throw new ModelNotFoundException(trans('messages.custom_error_message.400000'));
             }
-            $this->databaseHelper->createConnection($tenant->tenant_id);
+            $this->helpers->createConnection($tenant->tenant_id);
         }
         return $next($request);
     }

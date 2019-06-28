@@ -53,7 +53,12 @@ class CountryController extends Controller
              trans('messages.success.MESSAGE_COUNTRY_LISTING');
             return $this->responseHelper->success($apiStatus, $apiMessage, $countryData);
         } catch (PDOException $e) {
-            throw new PDOException($e->getMessage());
+            return $this->PDO(
+                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
+                trans(
+                    'messages.custom_error_message.ERROR_DATABASE_OPERATIONAL'
+                )
+            );
         } catch (\Exception $e) {
             throw new \Exception(trans('messages.custom_error_message.ERROR_OCCURED'));
         }
