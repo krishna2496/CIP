@@ -43,7 +43,7 @@ interface MissionInterface
      *
      * @param \Illuminate\Http\Request $request
      * @param int $missionId
-     * @return \Illuminate\Http\Response
+     * @return App\Models\MissionApplication
      */
     public function missionApplications(Request $request, int $missionId);
 
@@ -66,5 +66,4 @@ interface MissionInterface
      * @return \Illuminate\Http\Response
      */
     public function updateApplication(Request $request, int $missionId, int $applicationId);
-
 }

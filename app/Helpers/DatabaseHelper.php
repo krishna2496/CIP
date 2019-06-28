@@ -5,12 +5,31 @@ use Illuminate\Support\Facades\Config;
 use App\Helpers\ResponseHelper;
 use App\Helpers\Helpers;
 use Illuminate\Http\Request;
+use App\Traits\RestExceptionHandlerTrait;
 use PDOException;
 use DB;
 use Throwable;
 
 class DatabaseHelper
 {
+    use RestExceptionHandlerTrait;
+
+    /**
+     * @var App\Helpers\Helpers
+     */
+    private $helpers;
+
+    /**
+     * Create a new helper instance.
+     *
+     * @param App\Helpers\DatabaseHelper $databaseHelper
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->helpers = new Helpers;
+    }
+
     /**
      * Switch database connection runtime
      *
@@ -18,10 +37,10 @@ class DatabaseHelper
      * @param \Illuminate\Http\Request $request
      * @return string
      */
-    public static function switchDatabaseConnection(string $connection, Request $request)
+    public function switchDatabaseConnection(string $connection, Request $request)
     {
         try {
-            $domain = Helpers::getSubDomainFromRequest($request);
+            $domain = $this->helpers->getSubDomainFromRequest($request);
             // Set master connection
             $pdo = DB::connection('mysql')->getPdo();
             Config::set('database.default', 'mysql');
@@ -34,9 +53,11 @@ class DatabaseHelper
                 Config::set('database.default', 'tenant');
             }
         } catch (PDOException $e) {
-            throw new PDOException($e->geMessage());
+            throw new \Exception(trans(
+                'messages.custom_error_message.ERROR_DATABASE_OPERATIONAL'
+            ));
         } catch (\Exception $e) {
-            throw new \Exception($e->getMessage());
+            throw new \Exception(trans('messages.custom_error_message.ERROR_OCCURED'));
         }
     }
 
@@ -45,7 +66,7 @@ class DatabaseHelper
      *
      * @param int $tenantId
      */
-    public static function createConnection(int $tenantId)
+    public function createConnection(int $tenantId)
     {
         try {
             Config::set('database.connections.tenant', array(
@@ -60,9 +81,11 @@ class DatabaseHelper
             // Set default database
             Config::set('database.default', 'tenant');
         } catch (PDOException $e) {
-            throw new PDOException($e->geMessage());
+            throw new \Exception(trans(
+                'messages.custom_error_message.ERROR_DATABASE_OPERATIONAL'
+            ));
         } catch (\Exception $e) {
-            throw new \Exception($e->getMessage());
+            throw new \Exception(trans('messages.custom_error_message.ERROR_OCCURED'));
         }
     }
 }

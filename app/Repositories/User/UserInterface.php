@@ -8,19 +8,19 @@ interface UserInterface
     /**
      * Store a new resource.
      *
-     * @param  Illuminate\Http\Request $request
+     * @param array $request
      * @return void
      */
-    public function store(Request $request);
+    public function store(array $request);
     
     /**
      * Update resource.
      *
-     * @param  Illuminate\Http\Request $request
-     * @param  int $id
+     * @param array $request
+     * @param int $id
      * @return void
      */
-    public function update(Request $request, int $id);
+    public function update(array $request, int $id);
     
     /**
      * Listing of all resources.

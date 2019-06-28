@@ -3,14 +3,18 @@ namespace App;
 
 use Illuminate\Auth\Authenticatable;
 use Laravel\Lumen\Auth\Authorizable;
-use Illuminate\Database\Eloquent\{Model, SoftDeletes};
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use Illuminate\Auth\Passwords\CanResetPassword as CanResetPasswordTrait;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordInterface;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Hash;
-use App\Models\{City, Country, Timezone};
+use App\Models\City;
+use App\Models\Country;
+use App\Models\Timezone;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class User extends Model implements AuthenticatableContract, AuthorizableContract, CanResetPasswordInterface
 {
@@ -35,14 +39,20 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      *
      * @var array
      */
-    protected $fillable = ['first_name', 'last_name', 'email', 'password', 'avatar', 'timezone_id', 'availability_id', 'why_i_volunteer', 'employee_id', 'department', 'manager_name', 'city_id', 'country_id', 'profile_text', 'linked_in_url', 'status', 'language_id'];
+    protected $fillable = ['first_name', 'last_name', 'email', 'password', 'avatar',
+     'timezone_id', 'availability_id', 'why_i_volunteer', 'employee_id', 'department',
+      'manager_name', 'city_id', 'country_id', 'profile_text', 'linked_in_url', 'status',
+       'language_id'];
     
     /**
      * The attributes that should be visible in arrays.
      *
      * @var array
      */
-    protected $visible = ['user_id', 'first_name', 'last_name', 'email', 'password', 'avatar', 'timezone_id', 'availability_id', 'why_i_volunteer', 'employee_id', 'department', 'manager_name', 'city_id', 'country_id', 'profile_text', 'linked_in_url', 'status', 'city', 'country', 'timezone'];
+    protected $visible = ['user_id', 'first_name', 'last_name', 'email',
+     'password', 'avatar', 'timezone_id', 'availability_id', 'why_i_volunteer',
+     'employee_id', 'department', 'manager_name', 'city_id', 'country_id',
+     'profile_text', 'linked_in_url', 'status', 'city', 'country', 'timezone'];
     
     /**
      * The attributes excluded from the model's JSON form.
@@ -96,7 +106,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     *
     * @return \Illuminate\Database\Eloquent\Relations\HasOne
     */
-    public function city()
+    public function city(): HasOne
     {
         return $this->hasOne(City::class, 'city_id', 'city_id');
     }
@@ -106,7 +116,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     *
     * @return \Illuminate\Database\Eloquent\Relations\HasOne
     */
-    public function country()
+    public function country(): HasOne
     {
         return $this->hasOne(Country::class, 'country_id', 'country_id');
     }
@@ -116,7 +126,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     *
     * @return \Illuminate\Database\Eloquent\Relations\HasOne
     */
-    public function timezone()
+    public function timezone(): HasOne
     {
         return $this->hasOne(Timezone::class, 'timezone_id', 'timezone_id');
     }
@@ -126,7 +136,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function userSkills()
+    public function userSkills(): HasMany
     {
         return $this->hasMany(UserSkill::class, 'user_id', 'user_id');
     }
@@ -157,9 +167,9 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      * Delete the specified resource.
      *
      * @param  int  $id
-     * @return array
+     * @return bool
      */
-    public function deleteUser(int $id)
+    public function deleteUser(int $id): bool
     {
         return static::findOrFail($id)->delete();
     }

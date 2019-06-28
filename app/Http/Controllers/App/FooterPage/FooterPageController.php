@@ -2,63 +2,67 @@
 namespace App\Http\Controllers\App\FooterPage;
 
 use App\Repositories\FooterPage\FooterPageRepository;
-use Illuminate\Http\{Request, Response, JsonResponse};
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Input;
-use App\Models\{FooterPage, FooterPagesLanguage};
-use App\Helpers\{Helpers, ResponseHelper};
+use App\Models\FooterPage;
+use App\Models\FooterPagesLanguage;
+use App\Helpers\Helpers;
+use App\Helpers\ResponseHelper;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Traits\RestExceptionHandlerTrait;
 use Validator;
 
 class FooterPageController extends Controller
 {
+    use RestExceptionHandlerTrait;
     /**
      * @var App\Repositories\FooterPage\FooterPageRepository
      */
-    private $page;
+    private $footerPageRepository;
     
     /**
-     * @var Illuminate\Http\Response
+     * @var App\Helpers\ResponseHelper
      */
-    private $response;
+    private $responseHelper;
     
     /**
      * Create a new controller instance.
      *
+     * @param  App\Repositories\FooterPage\FooterPageRepository $footerPageRepository
+     * @param  App\Helpers\ResponseHelper $responseHelper
      * @return void
      */
-    public function __construct(FooterPageRepository $page, Response $response)
+    public function __construct(FooterPageRepository $footerPageRepository, ResponseHelper $responseHelper)
     {
-        $this->page = $page;
-        $this->response = $response;
+        $this->footerPageRepository = $footerPageRepository;
+        $this->responseHelper = $responseHelper;
     }
     
     /**
      * Display a listing of CMS pages.
      *
-     * @return mixed
+     * @return Illuminate\Http\JsonResponse
      */
-    public function index()
+    public function index(): JsonResponse
     {
         try {
             // Get data for parent table
-            $pageList = $this->page->getPageList();
-            
-            // No datafound
-            if ($pageList->count() == 0) {
-                // Set response data
-                $apiStatus = app('Illuminate\Http\Response')->status();
-                $apiMessage = trans('messages.success.MESSAGE_NO_DATA_FOUND');
-                return ResponseHelper::success($apiStatus, $apiMessage);
-            }
-
-            $apiStatus = $this->response->status();
-            $apiMessage = trans('messages.success.MESSAGE_CMS_LIST_SUCCESS');
-            return ResponseHelper::success($apiStatus, $apiMessage, $pageList->toArray());
-        } catch (\PDOException $e) {
-            throw new \PDOException($e->getMessage());
+            $pageList = $this->footerPageRepository->getPageList();
+            $apiStatus = Response::HTTP_OK;
+            $apiMessage = trans('messages.success.MESSAGE_FOOTER_PAGE_LISTING');
+            $apiMessage = ($pageList->isEmpty()) ? trans('messages.success.MESSAGE_NO_RECORD_FOUND') :
+             trans('messages.success.MESSAGE_FOOTER_PAGE_LISTING');
+            return $this->responseHelper->success($apiStatus, $apiMessage, $pageList->toArray());
+        } catch (InvalidArgumentException $e) {
+            return $this->invalidArgument(
+                config('constants.error_codes.ERROR_INVALID_ARGUMENT'),
+                trans('messages.custom_error_message.ERROR_INVALID_ARGUMENT')
+            );
         } catch (\Exception $e) {
-            throw new \Exception($e->getMessage());
+            throw new \Exception(trans('messages.custom_error_message.ERROR_OCCURED'));
         }
     }
 
@@ -66,28 +70,35 @@ class FooterPageController extends Controller
      * Display the specified resource.
      *
      * @param  string  $slug
-     * @return mixed
+     * @return Illuminate\Http\JsonResponse
      */
-    public function show(string $slug)
+    public function show(string $slug): JsonResponse
     {
         try {
             // Get data for parent table
-            $footerPage = $this->page->getPageDetail($slug);
+            $footerPage = $this->footerPageRepository->getPageDetail($slug);
             // Check data found or not
             if ($footerPage->count() == 0) {
                 throw new ModelNotFoundException(trans('messages.custom_error_message.300005'));
             }
 
             $apiStatus = app('Illuminate\Http\Response')->status();
-            $apiMessage = trans('messages.success.MESSAGE_CMS_LIST_SUCCESS');
-            return ResponseHelper::success($apiStatus, $apiMessage, $footerPage->toArray());
-        } catch (\PDOException $e) {
-            throw new \PDOException($e->getMessage());
+            $apiMessage = trans('messages.success.MESSAGE_FOOTER_PAGE_LISTING');
+            return $this->responseHelper->success($apiStatus, $apiMessage, $footerPage->toArray());
+        } catch (PDOException $e) {
+            return $this->PDO(
+                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
+                trans(
+                    'messages.custom_error_message.ERROR_DATABASE_OPERATIONAL'
+                )
+            );
         } catch (ModelNotFoundException $e) {
-            throw new ModelNotFoundException(trans('messages.custom_error_message.300005'));
-        }
-        catch (\Exception $e) {
-            throw new \Exception($e->getMessage());
+            return $this->modelNotFound(
+                config('constants.error_codes.ERROR_NO_DATA_FOUND'),
+                trans('messages.custom_error_message.ERROR_NO_DATA_FOUND')
+            );
+        } catch (\Exception $e) {
+            throw new \Exception(trans('messages.custom_error_message.ERROR_OCCURED'));
         }
     }
 
@@ -100,22 +111,26 @@ class FooterPageController extends Controller
     {
         try {
             // Get data for parent table
-            $pageDetailList = $this->page->getPageDetailList();
+            $pageDetailList = $this->footerPageRepository->getPageDetailList();
             // Check data found or not
             if ($pageDetailList->count() == 0) {
                 // Set response data
                 $apiStatus = app('Illuminate\Http\Response')->status();
                 $apiMessage = trans('messages.success.MESSAGE_NO_DATA_FOUND');
-                return ResponseHelper::success($apiStatus, $apiMessage);
+                return $this->responseHelper->success($apiStatus, $apiMessage);
             }
-            
             $apiStatus = app('Illuminate\Http\Response')->status();
-            $apiMessage = trans('messages.success.MESSAGE_CMS_LIST_SUCCESS');
-            return ResponseHelper::success($apiStatus, $apiMessage, $pageDetailList->toArray());
-        } catch (\PDOException $e) {
-            throw new \PDOException($e->getMessage());
+            $apiMessage = trans('messages.success.MESSAGE_FOOTER_PAGE_LISTING');
+            return $this->responseHelper->success($apiStatus, $apiMessage, $pageDetailList->toArray());
+        } catch (PDOException $e) {
+            return $this->PDO(
+                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
+                trans(
+                    'messages.custom_error_message.ERROR_DATABASE_OPERATIONAL'
+                )
+            );
         } catch (\Exception $e) {
-            throw new \Exception($e->getMessage());
+            throw new \Exception(trans('messages.custom_error_message.ERROR_OCCURED'));
         }
     }
 }

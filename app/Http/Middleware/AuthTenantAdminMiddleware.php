@@ -3,12 +3,44 @@ namespace App\Http\Middleware;
 
 use Illuminate\Support\Facades\Config;
 use Illuminate\Database\QueryException;
-use App\Helpers\{Helpers, ResponseHelper, DatabaseHelper};
-use DB, Closure;
+use App\Helpers\Helpers;
+use App\Helpers\ResponseHelper;
+use App\Helpers\DatabaseHelper;
+use DB;
+use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use PDOException;
 
 class AuthTenantAdminMiddleware
 {
+    /**
+     * @var App\Helpers\ResponseHelper
+     */
+    private $responseHelper;
+
+    /**
+     * @var App\Helpers\DatabaseHelper
+     */
+    private $databaseHelper;
+
+    /**
+     * Create a new middleware instance.
+     *
+     * @param Illuminate\Http\ResponseHelper $responseHelper
+     * @return void
+     */
+    public function __construct(ResponseHelper $responseHelper)
+    {
+        $this->responseHelper = $responseHelper;
+        $this->databaseHelper = new DatabaseHelper;
+    }
+    
+    // public function setDatabaseHelper(DatabaseHelper $databaseHelper)
+    // {
+    //     $this->databaseHelper = new DatabaseHelper;
+    // }
+
     /**
      * Handle an incoming request.
      *
@@ -23,11 +55,11 @@ class AuthTenantAdminMiddleware
             if (!isset($_SERVER['PHP_AUTH_USER']) && !isset($_SERVER['PHP_AUTH_PW'])
                 || (empty($_SERVER['PHP_AUTH_USER']) && empty($_SERVER['PHP_AUTH_PW']))
             ) {
-                return ResponseHelper::error(
-                    trans('messages.status_code.HTTP_STATUS_UNAUTHORIZED'),
-                    trans('messages.status_type.HTTP_STATUS_TYPE_401'),
-                    trans('messages.custom_error_code.ERROR_20010'),
-                    trans('messages.custom_error_message.20010')
+                return $this->responseHelper->error(
+                    Response::HTTP_UNAUTHORIZED,
+                    Response::$statusTexts[Response::HTTP_UNAUTHORIZED],
+                    config('constants.error_codes.ERROR_API_AND_SECRET_KEY_REQUIRED'),
+                    trans('messages.custom_error_message.ERROR_API_AND_SECRET_KEY_REQUIRED')
                 );
             }
             // authenticate api user based on basic auth parameters
@@ -41,20 +73,25 @@ class AuthTenantAdminMiddleware
             // If user authenticates successfully
             if ($apiUser) {
                 // Create connection with their tenant database
-                DatabaseHelper::createConnection($apiUser->tenant_id);
+                $this->databaseHelper->createConnection($apiUser->tenant_id);
                 return $next($request);
             }
             // Send authentication error response if api user not found in master database
-            return ResponseHelper::error(
-                trans('messages.status_code.HTTP_STATUS_UNAUTHORIZED'),
-                trans('messages.status_type.HTTP_STATUS_TYPE_401'),
-                trans('messages.custom_error_code.ERROR_20008'),
-                trans('messages.custom_error_message.20008')
+            return $this->responseHelper->error(
+                Response::HTTP_UNAUTHORIZED,
+                Response::$statusTexts[Response::HTTP_UNAUTHORIZED],
+                config('constants.error_codes.ERROR_INVALID_API_AND_SECRET_KEY'),
+                trans('messages.custom_error_message.ERROR_INVALID_API_AND_SECRET_KEY')
             );
-        } catch (\PDOException $e) {
-            throw new \PDOException($e->getMessage());
+        } catch (PDOException $e) {
+            return $this->PDO(
+                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
+                trans(
+                    'messages.custom_error_message.ERROR_DATABASE_OPERATIONAL'
+                )
+            );
         } catch (\Exception $e) {
-            throw new \Exception($e->getMessage());
+            throw new \Exception(trans('messages.custom_error_message.ERROR_OCCURED'));
         }
     }
 }

@@ -1,39 +1,78 @@
 <?php
 namespace App\Http\Controllers\App\Tenant;
 
-use Illuminate\Http\{Response, Request};
+use Illuminate\Http\Response;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\TenantOption;
-use App\Helpers\{Helpers, LanguageHelper, ResponseHelper};
+use App\Helpers\Helpers;
+use App\Helpers\LanguageHelper;
+use App\Helpers\ResponseHelper;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Config;
 use App\Repositories\TenantOption\TenantOptionRepository;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Traits\RestExceptionHandlerTrait;
+use InvalidArgumentException;
+use PDOException;
+use Illuminate\Http\JsonResponse;
 
 class TenantOptionController extends Controller
 {
+    use RestExceptionHandlerTrait;
+    /**
+     * @var TenantOptionRepository
+     */
     private $tenantOption;
 
-    private $response;
+    /**
+     * @var App\Helpers\ResponseHelper
+     */
+    private $responseHelper;
     
-    public function __construct(TenantOptionRepository $tenantOption, Response $response)
-    {
-        $this->tenantOption = $tenantOption;
-        $this->response = $response;
+    /**
+     * @var App\Helpers\LanguageHelper
+     */
+    private $languageHelper;
+
+    /**
+     * @var App\Helpers\Helpers
+     */
+    private $helpers;
+
+    /**
+     * Create a new controller instance.
+     *
+     * @param App\Repositories\TenantOption\TenantOptionRepository $tenantOptionRepository
+     * @param Illuminate\Http\ResponseHelper $responseHelper
+     * @param App\Helpers\LanguageHelper
+     * @return void
+     */
+    public function __construct(
+        TenantOptionRepository $tenantOptionRepository,
+        ResponseHelper $responseHelper,
+        LanguageHelper $languageHelper,
+        Helpers $helpers
+    ) {
+        $this->tenantOptionRepository = $tenantOptionRepository;
+        $this->responseHelper = $responseHelper;
+        $this->languageHelper = $languageHelper;
+        $this->helpers = $helpers;
     }
     
     /**
      * Get tenant options from table `tenant_options`
      *
-     * @return mixed
+     * @param Illuminate\Http\Request $request
+     * @return Illuminate\Http\JsonResponse
      */
-    public function getTenantOption(Request $request)
+    public function getTenantOption(Request $request): JsonResponse
     {
         $data = $optionData = $slider = array();
 
         try {
             // Find custom data
-            $data = $this->tenantOption->getOptions();
+            $data = $this->tenantOptionRepository->getOptions();
             
             if ($data) {
                 foreach ($data as $key => $value) {
@@ -46,12 +85,12 @@ class TenantOptionController extends Controller
                 }
                 // Sort an array by sort order of slider
                 if (!empty($slider)) {
-                    Helpers::sortMultidimensionalArray($slider, 'sort_order', SORT_ASC);
+                    $this->helpers->sortMultidimensionalArray($slider, 'sort_order', SORT_ASC);
                     $optionData['sliders'] = $slider;
                 }
             }
 
-            $tenantLanguages = LanguageHelper::getTenantLanguages($request);
+            $tenantLanguages = $this->languageHelper->getTenantLanguages($request);
 
             if ($tenantLanguages->count() > 0) {
                 foreach ($tenantLanguages as $key => $value) {
@@ -63,18 +102,29 @@ class TenantOptionController extends Controller
                 }
             }
 
-			$apiStatus = $this->response->status();
-			$apiMessage = trans('messages.success.MESSAGE_USER_CREATED');    
-			
-			return ResponseHelper::success($apiStatus, '', $optionData);
+            $apiStatus = Response::HTTP_OK;
+            $apiMessage = trans('messages.success.MESSAGE_USER_CREATED');
+            
+            return $this->responseHelper->success($apiStatus, '', $optionData);
         } catch (ModelNotFoundException $e) {
-            throw new ModelNotFoundException(trans('messages.custom_error_message.100000'));
-        } catch (\PDOException $e) {
-            throw new \PDOException($e->getMessage());
-        } catch (\InvalidArgumentException $e) {
-            throw new \InvalidArgumentException($e->getMessage());
+            return $this->modelNotFound(
+                config('constants.error_codes.ERROR_TENANT_DOMAIN_NOT_FOUND'),
+                trans('messages.custom_error_message.ERROR_TENANT_DOMAIN_NOT_FOUND')
+            );
+        } catch (PDOException $e) {
+            return $this->PDO(
+                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
+                trans(
+                    'messages.custom_error_message.ERROR_DATABASE_OPERATIONAL'
+                )
+            );
+        } catch (InvalidArgumentException $e) {
+            return $this->invalidArgument(
+                config('constants.error_codes.ERROR_INVALID_ARGUMENT'),
+                trans('messages.custom_error_message.ERROR_INVALID_ARGUMENT')
+            );
         } catch (\Exception $e) {
-            throw new \Exception($e->getMessage());
+            throw new \Exception(trans('messages.custom_error_message.ERROR_OCCURED'));
         }
     }
 
@@ -89,17 +139,25 @@ class TenantOptionController extends Controller
 
         try {
             // find custom data
-            $tenantOptions = $this->tenantOption->getOptionWithCondition(['option_name', 'custom_logo']);
+            $tenantOptions = $this->tenantOptionRepository->getOptionWithCondition(['option_name', 'custom_logo']);
             if ($tenantOptions && $tenantOptions->option_value) {
                 $tenantLogo = $tenantOptions->option_value;
             }
             return $tenantLogo;
-        } catch (\PDOException $e) {
-            throw new \PDOException($e->getMessage());
-        } catch (\InvalidArgumentException $e) {
-            throw new \InvalidArgumentException($e->getMessage());
+        } catch (PDOException $e) {
+            return $this->PDO(
+                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
+                trans(
+                    'messages.custom_error_message.ERROR_DATABASE_OPERATIONAL'
+                )
+            );
+        } catch (InvalidArgumentException $e) {
+            return $this->invalidArgument(
+                config('constants.error_codes.ERROR_INVALID_ARGUMENT'),
+                trans('messages.custom_error_message.ERROR_INVALID_ARGUMENT')
+            );
         } catch (\Exception $e) {
-            throw new \Exception($e->getMessage());
+            throw new \Exception(trans('messages.custom_error_message.ERROR_OCCURED'));
         }
     }
 
@@ -113,21 +171,29 @@ class TenantOptionController extends Controller
         $tenantCustomCss = '';
         // find custom css
         try {
-            $tenantOptions = $this->tenantOption->getOptionWithCondition(['option_name' => 'custom_css']);
+            $tenantOptions = $this->tenantOptionRepository->getOptionWithCondition(['option_name' => 'custom_css']);
             if ($tenantOptions) {
                 $tenantCustomCss = $tenantOptions->option_value;
             }
 
             $apiData = ['custom_css' => $tenantCustomCss];
-            $apiStatus = $this->response->status();
+            $apiStatus = Response::HTTP_OK;
 
-            return ResponseHelper::success($apiStatus, '', $apiData);
-        } catch (\PDOException $e) {
-            throw new \PDOException($e->getMessage());
-        } catch (\InvalidArgumentException $e) {
-            throw new \InvalidArgumentException($e->getMessage());
+            return $this->responseHelper->success($apiStatus, '', $apiData);
+        } catch (PDOException $e) {
+            return $this->PDO(
+                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
+                trans(
+                    'messages.custom_error_message.ERROR_DATABASE_OPERATIONAL'
+                )
+            );
+        } catch (InvalidArgumentException $e) {
+            return $this->invalidArgument(
+                config('constants.error_codes.ERROR_INVALID_ARGUMENT'),
+                trans('messages.custom_error_message.ERROR_INVALID_ARGUMENT')
+            );
         } catch (\Exception $e) {
-            throw new \Exception($e->getMessage());
+            throw new \Exception(trans('messages.custom_error_message.ERROR_OCCURED'));
         }
     }
 }

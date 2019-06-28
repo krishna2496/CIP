@@ -2,14 +2,31 @@
 namespace App\Http\Middleware;
 
 use Illuminate\Support\Facades\Config;
-use App\Helpers\{ResponseHelper, DatabaseHelper};
-use Closure, DB;
+use App\Helpers\DatabaseHelper;
+use Closure;
+use DB;
 use Firebase\JWT\JWT;
 use Firebase\JWT\ExpiredException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class TenantConnectionMiddleware
 {
+    /**
+     * @var App\Helpers\DatabaseHelper
+     */
+    private $databaseHelper;
+
+    /**
+     * Create a new middleware instance.
+     *
+     * @param App\Helpers\DatabaseHelper $databaseHelper
+     * @return void
+     */
+    public function __construct(DatabaseHelper $databaseHelper)
+    {
+        $this->databaseHelper = $databaseHelper;
+    }
+
     /**
      * Handle an incoming request.
      *
@@ -31,7 +48,7 @@ class TenantConnectionMiddleware
             } catch (\Exception $e) {
                 throw new \Exception();
             }
-        } else {            
+        } else {
             // Uncomment below line while testing in apis with front side.
             // $domain = Helpers::getSubDomainFromRequest($request);
             
@@ -40,11 +57,12 @@ class TenantConnectionMiddleware
         }
 
         if ($domain !== env('APP_DOMAIN')) {
-            $tenant = DB::table('tenant')->select('tenant_id')->where('name', $domain)->whereNull('deleted_at')->first();
+            $tenant = DB::table('tenant')->select('tenant_id')
+            ->where('name', $domain)->whereNull('deleted_at')->first();
             if (!$tenant) {
                 throw new ModelNotFoundException(trans('messages.custom_error_message.400000'));
             }
-            DatabaseHelper::createConnection($tenant->tenant_id);
+            $this->databaseHelper->createConnection($tenant->tenant_id);
         }
         return $next($request);
     }
