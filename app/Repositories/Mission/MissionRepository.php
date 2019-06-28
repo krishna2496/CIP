@@ -451,9 +451,9 @@ class MissionRepository implements MissionInterface
      *
      * Illuminate\Http\Request $request'
      * Array $userFilterData
-     * @return mixed
+     * @return \Illuminate\Pagination\LengthAwarePaginator
      */
-    public function appMissions(Request $request, array $userFilterData, int $languageId)
+    public function appMissions(Request $request, array $userFilterData, int $languageId):LengthAwarePaginator
     {
         $missionData = [];
 

@@ -42,21 +42,31 @@ class MissionController extends Controller
      */
     private $userFilterRepository;
 
+    /*
+     * @var App\Helpers\LanguageHelper
+     */
+
+    private $languageHelper;
+
     /**
      * Create a new Mission controller instance.
      *
      * @param App\Repositories\Mission\MissionRepository $missionRepository
      * @param Illuminate\Http\ResponseHelper $responseHelper
+     * @param Illuminate\Http\UserFilterRepository $userFilterRepository
+     * @param  Illuminate\Http\LanguageHelper $languageHelper
      * @return void
      */
     public function __construct(
         MissionRepository $missionRepository,
         ResponseHelper $responseHelper,
-        UserFilterRepository $userFilterRepository
+        UserFilterRepository $userFilterRepository,
+        LanguageHelper $languageHelper
     ) {
         $this->missionRepository = $missionRepository;
         $this->responseHelper = $responseHelper;
         $this->userFilterRepository = $userFilterRepository;
+        $this->languageHelper = $languageHelper;
     }
 
     /**
@@ -100,7 +110,7 @@ class MissionController extends Controller
     public function appMissionList(Request $request): JsonResponse
     {
         try {
-            $languages = LanguageHelper::getLanguages($request);
+            $languages = $this->languageHelper->getLanguages($request);
             $local = ($request->hasHeader('X-localization')) ?
             $request->header('X-localization') : env('TENANT_DEFAULT_LANGUAGE_CODE');
             $language = $languages->where('code', $local)->first();
@@ -177,8 +187,8 @@ class MissionController extends Controller
         } catch (ModelNotFoundException $e) {
             dd($e);
             return $this->modelNotFound(
-                config('constants.error_codes.ERROR_MISSION_NOT_FOUND'),
-                trans('messages.custom_error_message.ERROR_MISSION_NOT_FOUND')
+                config('constants.error_codes.ERROR_NO_DATA_FOUND'),
+                trans('messages.custom_error_message.ERROR_NO_DATA_FOUND')
             );
         } catch (PDOException $e) {
             dd($e);
@@ -189,6 +199,7 @@ class MissionController extends Controller
                 )
             );
         } catch (\Exception $e) {
+            dd($e);
             throw new \Exception(trans('messages.custom_error_message.ERROR_OCCURED'));
         }
     }
