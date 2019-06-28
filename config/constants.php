@@ -86,9 +86,8 @@ return [
     /*
      * Top theme
      */
-    'TOP_THEME' => "TOP_THEME",
-    'TOP_COUNTRY' => "TOP_COUNTRY",
-    'TOP_COUNTRY' => "TOP_COUNTRY",
+    'TOP_THEME' => "top_theme",
+    'TOP_COUNTRY' => "top_country",
     'TOP_ORGANISATION' => "TOP_ORGANISATION",
 
     'error_codes' => [
