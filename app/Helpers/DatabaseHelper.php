@@ -20,13 +20,6 @@ class DatabaseHelper
     private $helpers;
 
     /**
-     * Set Helpers class instance.
-     */
-    // public function setHelpers(Helpers $helpers) {
-    //     $this->helpers = $helpers;
-    // }
-    
-    /**
      * Create a new helper instance.
      *
      * @param App\Helpers\DatabaseHelper $databaseHelper

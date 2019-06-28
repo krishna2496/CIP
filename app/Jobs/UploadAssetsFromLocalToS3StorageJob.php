@@ -32,7 +32,6 @@ class UploadAssetsFromLocalToS3StorageJob extends Job
                 Storage::disk('s3')->put($file, Storage::disk('local')->get($file));
             }
         } catch (\Exception $e) {
-            // dd($e->getMessage());
         }
     }
 }

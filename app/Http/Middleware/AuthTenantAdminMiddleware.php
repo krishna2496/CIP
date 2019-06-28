@@ -9,6 +9,7 @@ use App\Helpers\DatabaseHelper;
 use DB;
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use PDOException;
 
 class AuthTenantAdminMiddleware
