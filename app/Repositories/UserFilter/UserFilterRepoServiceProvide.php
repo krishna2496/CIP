@@ -1,9 +1,9 @@
 <?php
-namespace App\Repositories\UserCustomField;
+namespace App\Repositories\UserFilter;
 
 use Illuminate\Support\ServiceProvider;
 
-class UserCustomFieldRepoServiceProvide extends ServiceProvider
+class UserFilterRepoServiceProvide extends ServiceProvider
 {
     /**
      * Bootstrap the application services.
@@ -14,6 +14,7 @@ class UserCustomFieldRepoServiceProvide extends ServiceProvider
     {
     }
 
+
     /**
      * Register the application services.
      *
@@ -21,9 +22,7 @@ class UserCustomFieldRepoServiceProvide extends ServiceProvider
      */
     public function register()
     {
-        $this->app->bind(
-            'App\Repositories\UserCustomField\UserCustomFieldInterface',
-            'App\Repositories\UserCustomField\UserCustomFieldRepository'
-        );
+        $this->app->bind('App\Repositories\UserFilter\UserFilterInterface', '
+                        App\Repositories\UserFilter\UserFilterRepository');
     }
 }

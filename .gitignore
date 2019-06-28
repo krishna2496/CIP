@@ -10,3 +10,4 @@ Homestead.yaml
 /node_modules
 /package-lock.json
 /composer.lock
+composer.lock

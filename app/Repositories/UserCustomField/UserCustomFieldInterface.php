@@ -3,16 +3,15 @@ namespace App\Repositories\UserCustomField;
 
 use Illuminate\Http\Request;
 
-interface UserCustomFieldInterface {
+interface UserCustomFieldInterface
+{
+    public function store(array $request);
 
-	public function store(Request $request);
-	
-	public function update(Request $request, int $id);
-	
-	public function UserCustomFieldList(Request $request);
+    public function update(array $request, int $id);
+
+    public function userCustomFieldList(Request $request);
 
     public function find(int $id);
-	
+    
     public function delete(int $id);
-	
 }

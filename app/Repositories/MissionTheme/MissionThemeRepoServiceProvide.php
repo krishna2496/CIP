@@ -2,9 +2,7 @@
 
 namespace App\Repositories\MissionTheme;
 
-
 use Illuminate\Support\ServiceProvider;
-
 
 class MissionThemeRepoServiceProvide extends ServiceProvider
 {
@@ -15,7 +13,6 @@ class MissionThemeRepoServiceProvide extends ServiceProvider
      */
     public function boot()
     {
-        
     }
 
 
@@ -26,6 +23,9 @@ class MissionThemeRepoServiceProvide extends ServiceProvider
      */
     public function register()
     {
-        $this->app->bind('App\Repositories\MissionTheme\MissionThemeInterface', 'App\Repositories\MissionTheme\MissionThemeRepository');
+        $this->app->bind(
+            'App\Repositories\MissionTheme\MissionThemeInterface',
+            'App\Repositories\MissionTheme\MissionThemeRepository'
+        );
     }
 }

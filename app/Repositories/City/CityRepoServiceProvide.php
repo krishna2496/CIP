@@ -2,9 +2,7 @@
 
 namespace App\Repositories\City;
 
-
 use Illuminate\Support\ServiceProvider;
-
 
 class CityRepoServiceProvide extends ServiceProvider
 {
@@ -15,7 +13,6 @@ class CityRepoServiceProvide extends ServiceProvider
      */
     public function boot()
     {
-        
     }
 
 

@@ -2,36 +2,38 @@
 namespace App\Http\Controllers\App;
 
 use App\Http\Controllers\Controller;
-use App\Repositories\City\CityRepository;
+use App\Repositories\UserFilter\UserFilterRepository;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Input;
+use App\Traits\RestExceptionHandlerTrait;
 use PDOException;
 use App\Helpers\ResponseHelper;
 
-class CityController extends Controller
+class UserFilterController extends Controller
 {
+    use RestExceptionHandlerTrait;
     /**
-     * @var CityRepository
+     * @var App\Repositories\UserFilter\UserFilterRepository
      */
-    private $cityRepository;
-    
+    private $filters;
+
     /**
      * @var App\Helpers\ResponseHelper
      */
     private $responseHelper;
-        
+
     /**
      * Create a new controller instance.
      *
-     * @param App\Repositories\City\CityRepository $cityRepository
-     * @param Illuminate\Http\ResponseHelper $responseHelper
      * @return void
      */
-    public function __construct(CityRepository $cityRepository, ResponseHelper $responseHelper)
-    {
-        $this->cityRepository = $cityRepository;
+    public function __construct(
+        UserFilterRepository $filters,
+        ResponseHelper $responseHelper
+    ) {
+        $this->filters = $filters;
         $this->responseHelper = $responseHelper;
     }
     
@@ -39,19 +41,17 @@ class CityController extends Controller
      * Display listing of footer pages
      *
      * @param Illuminate\Http\Request $request
-     * @return Illuminate\Http\JsonResponse
+     * @return mixed
      */
     public function index(Request $request):JsonResponse
     {
         try {
-            $city = $this->cityRepository->cityList($request);
-            $cityData = $city->toArray();
-            // Set response data
+            // Get data of user's filter
+            $filters = $this->filters->userFilter($request);
+            $filterData = $filters->toArray();
             $apiStatus = Response::HTTP_OK;
-            $apiMessage = (empty($cityData)) ? trans('messages.success.MESSAGE_NO_RECORD_FOUND') :
-             trans('messages.success.MESSAGE_CITY_LISTING');
-            return $this->responseHelper->success($apiStatus, $apiMessage, $cityData);
-        } catch (PDOException $e) {
+            return $this->responseHelper->success($apiStatus, '', $filterData);
+        } catch (\PDOException $e) {
             return $this->PDO(
                 config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
                 trans(
