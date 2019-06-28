@@ -29,7 +29,7 @@ $router->group(
     ['prefix' => 'tenants', 'middleware' => 'localization'],
     function ($router) {
         // Get tenants list
-        $router->get('/', ['as' => 'tenants.detail', 'uses'=>'TenantController@index']);
+        $router->get('/', ['as' => 'tenants', 'uses'=>'TenantController@index']);
         // Get tenant details from id
         $router->get('/{tenant_id}', ['as' => 'tenants.detail', 'uses'=>'TenantController@show']);
         // Create new tenant

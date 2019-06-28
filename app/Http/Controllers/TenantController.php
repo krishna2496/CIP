@@ -108,6 +108,8 @@ class TenantController extends Controller
             
             return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
         } catch (PDOException $e) {
+            // Delete created tenant
+            $this->destroy($tenant->tenant_id);
             return $this->PDO(
                 config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
                 trans(
@@ -115,16 +117,22 @@ class TenantController extends Controller
                 )
             );
         } catch (InvalidArgumentException $e) {
+            // Delete created tenant
+            $this->destroy($tenant->tenant_id);
             return $this->invalidArgument(
                 config('constants.error_codes.ERROR_INVALID_ARGUMENT'),
                 trans('messages.custom_error_message.'.config('constants.error_codes.ERROR_INVALID_ARGUMENT'))
             );
         } catch (S3Exception $e) {
+            // Delete created tenant
+            $this->destroy($tenant->tenant_id);
             return $this->s3Exception(
                 config('constants.error_codes.FAILED_TO_CREATE_FOLDER_ON_S3'),
                 trans('messages.custom_error_message.'.config('constants.error_codes.FAILED_TO_CREATE_FOLDER_ON_S3'))
             );
         } catch (\Exception $e) {
+            // Delete created tenant
+            $this->destroy($tenant->tenant_id);
             throw new \Exception(trans('messages.custom_error_message.999999'));
         }
     }
