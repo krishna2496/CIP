@@ -19,9 +19,22 @@ class DatabaseHelper
      */
     private $helpers;
 
-    public function __construct(Helpers $helpers)
+    /**
+     * Set Helpers class instance.
+     */
+    // public function setHelpers(Helpers $helpers) {
+    //     $this->helpers = $helpers;
+    // }
+    
+    /**
+     * Create a new helper instance.
+     *
+     * @param App\Helpers\DatabaseHelper $databaseHelper
+     * @return void
+     */
+    public function __construct()
     {
-        $this->helpers = $helpers;
+        $this->helpers = new Helpers;
     }
 
     /**
@@ -60,7 +73,7 @@ class DatabaseHelper
      *
      * @param int $tenantId
      */
-    public static function createConnection(int $tenantId)
+    public function createConnection(int $tenantId)
     {
         try {
             Config::set('database.connections.tenant', array(

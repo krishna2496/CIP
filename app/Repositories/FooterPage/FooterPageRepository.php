@@ -10,6 +10,7 @@ use App\Helpers\Helpers;
 use App\Helpers\LanguageHelper;
 use DB;
 use Illuminate\Support\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class FooterPageRepository implements FooterPageInterface
 {
@@ -136,9 +137,9 @@ class FooterPageRepository implements FooterPageInterface
     * Display a listing of footer pages.
     *
     * @param Illuminate\Http\Request $request
-    * @return App\Models\FooterPage
+    * @return Illuminate\Pagination\LengthAwarePaginator
     */
-    public function footerPageList(Request $request): FooterPage
+    public function footerPageList(Request $request): LengthAwarePaginator
     {
         $pageQuery = $this->page->with('pageTranslations');
         

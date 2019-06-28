@@ -19,11 +19,17 @@ class Helpers
      * @param App\Helpers\DatabaseHelper $databaseHelper
      * @return void
      */
-    public function __construct(DatabaseHelper $databaseHelper)
+    public function __construct()
+    {
+    }
+
+    /**
+     * Set DatabaseHelper class instance.
+     */
+    public function setDatabaseHelper(DatabaseHelper $databaseHelper)
     {
         $this->databaseHelper = $databaseHelper;
     }
-
 
     /**
     * It will return
