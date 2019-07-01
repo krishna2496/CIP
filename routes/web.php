@@ -16,7 +16,7 @@ $router->group(
         // Get tenants list
         $router->get('/', ['as' => 'tenants', 'uses'=>'TenantController@index']);
         // Get tenant details from id
-        $router->get('/{tenant_id}', ['as' => 'tenants.detail', 'uses'=>'TenantController@show']);
+        $router->get('/{tenant_id:[0-9]+}', ['as' => 'tenants.detail', 'uses'=>'TenantController@show']);
         // Create new tenant
         $router->post('/', ['as' => 'tenants.store', 'uses'=>'TenantController@store']);
         // Update tenant details
