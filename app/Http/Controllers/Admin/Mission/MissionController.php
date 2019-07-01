@@ -225,7 +225,7 @@ class MissionController extends Controller
         }
         
         try {
-            $this->missionRepository->update($request, $id);
+            $this->missionRepository->update($request->toArray(), $id);
             // Set response data
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_MISSION_UPDATED');

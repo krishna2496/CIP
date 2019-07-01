@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Repositories\Mission;
 
 use App\Repositories\Mission\MissionInterface;
@@ -53,7 +52,6 @@ class MissionRepository implements MissionInterface
     /*
      * @var App\Helpers\LanguageHelper
      */
-
     private $languageHelper;
 
     /**
@@ -168,58 +166,63 @@ class MissionRepository implements MissionInterface
         $isDefault = 0;
 
         // Add mission media images
-        foreach ($request->media_images as $value) {
-            $filePath = $this->s3helper->uploadFileOnS3Bucket($value['media_path'], $tenantName);
-            // Check for default image in mission_media
-            $default = (isset($value['default']) && ($value['default'] != '')) ? $value['default'] : '0';
-            if ($default == '1') {
-                $isDefault = 1;
-                $media = array('default' => '0');
-                $this->missionMedia->where('mission_id', $mission->mission_id)->update($media);
+        if (isset($request->media_images) && count($request->media_images) > 0) {
+            foreach ($request->media_images as $value) {
+                $filePath = $this->s3helper->uploadFileOnS3Bucket($value['media_path'], $tenantName);
+                // Check for default image in mission_media
+                $default = (isset($value['default']) && ($value['default'] != '')) ? $value['default'] : '0';
+                if ($default == '1') {
+                    $isDefault = 1;
+                    $media = array('default' => '0');
+                    $this->missionMedia->where('mission_id', $mission->mission_id)->update($media);
+                }
+                
+                $missionMedia = array(
+                        'mission_id' => $mission->mission_id,
+                        'media_name' => $value['media_name'],
+                        'media_type' => pathinfo($value['media_name'], PATHINFO_EXTENSION),
+                        'media_path' => $filePath,
+                        'default' => $default
+                    );
+                $this->missionMedia->create($missionMedia);
+                unset($missionMedia);
             }
-            
-            $missionMedia = array(
-                    'mission_id' => $mission->mission_id,
-                    'media_name' => $value['media_name'],
-                    'media_type' => pathinfo($value['media_name'], PATHINFO_EXTENSION),
-                    'media_path' => $filePath,
-                    'default' => $default
-                );
-            $this->missionMedia->create($missionMedia);
-            unset($missionMedia);
-        }
 
-        if ($isDefault == 0) {
-            $mediaData = $this->missionMedia->where('mission_id', $mission->mission_id)
-            ->orderBy('mission_media_id', 'ASC')->first();
-            $missionMedia = array('default' => '1');
-            $this->missionMedia->where('mission_media_id', $mediaData->mission_media_id)->update($missionMedia);
+            if ($isDefault == 0) {
+                $mediaData = $this->missionMedia->where('mission_id', $mission->mission_id)
+                ->orderBy('mission_media_id', 'ASC')->first();
+                $missionMedia = array('default' => '1');
+                $this->missionMedia->where('mission_media_id', $mediaData->mission_media_id)->update($missionMedia);
+            }
         }
-
         // Add mission media videos
-		if (!empty($request->media_videos)) {
-			foreach ($request->media_videos as $value) {
-				$missionMedia = array('mission_id' => $mission->mission_id,
-									  'media_name' => $value['media_name'],
-									  'media_type' => pathinfo($value['media_name'], PATHINFO_EXTENSION),
-									  'media_path' => $value['media_path']);
-				$this->missionMedia->create($missionMedia);
-				unset($missionMedia);
-			}
-		}
-		
+        if (isset($request->media_videos) && count($request->media_videos) > 0) {
+            if (!empty($request->media_videos)) {
+                foreach ($request->media_videos as $value) {
+                    $missionMedia = array('mission_id' => $mission->mission_id,
+                                          'media_name' => $value['media_name'],
+                                          'media_type' => pathinfo($value['media_name'], PATHINFO_EXTENSION),
+                                          'media_path' => $value['media_path']);
+                    $this->missionMedia->create($missionMedia);
+                    unset($missionMedia);
+                }
+            }
+        }
+            
         // Add mission documents
-		if (!empty($request->documents)) {
-			foreach ($request->documents as $value) {
-				$filePath = $this->s3helper->uploadFileOnS3Bucket($value['document_path'], $tenantName);
-				$missionDocument = array('mission_id' => $mission->mission_id,
-										'document_name' => $value['document_name'],
-										'document_type' => pathinfo($value['document_name'], PATHINFO_EXTENSION),
-										'document_path' => $filePath);
-				$this->missionDocument->create($missionDocument);
-				unset($missionDocument);
-			}
-		}
+        if (isset($request->documents) && count($request->documents) > 0) {
+            if (!empty($request->documents)) {
+                foreach ($request->documents as $value) {
+                    $filePath = $this->s3helper->uploadFileOnS3Bucket($value['document_path'], $tenantName);
+                    $missionDocument = array('mission_id' => $mission->mission_id,
+                                            'document_name' => $value['document_name'],
+                                            'document_type' => pathinfo($value['document_name'], PATHINFO_EXTENSION),
+                                            'document_path' => $filePath);
+                    $this->missionDocument->create($missionDocument);
+                    unset($missionDocument);
+                }
+            }
+        }
 
         return $mission;
     }
@@ -231,7 +234,7 @@ class MissionRepository implements MissionInterface
      * @param  int  $id
      * @return App\Models\Mission
      */
-    public function update(Request $request, int $id): Mission
+    public function update($request, int $id): Mission
     {
         $languages = $this->languageHelper->getLanguages($request);
         // Set data for update record
@@ -286,62 +289,66 @@ class MissionRepository implements MissionInterface
         $tenantName = $this->helpers->getSubDomainFromRequest($request);
         // Add/Update  mission media images
         $isDefault = 0;
-        foreach ($request->media_images as $value) {
-            $filePath = $this->s3helper->uploadFileOnS3Bucket($value['media_path'], $tenantName);
-            // Check for default image in mission_media
-            $default = (isset($value['default']) && ($value['default'] != '')) ? $value['default'] : '0';
-            if ($default == '1') {
-                $isDefault = 1;
-                $media = array('default' => '0');
-                $this->missionMedia->where('mission_id', $id)->update($media);
+        if (isset($request->media_images) && count($request->media_images) > 0) {
+            foreach ($request->media_images as $value) {
+                $filePath = $this->s3helper->uploadFileOnS3Bucket($value['media_path'], $tenantName);
+                // Check for default image in mission_media
+                $default = (isset($value['default']) && ($value['default'] != '')) ? $value['default'] : '0';
+                if ($default == '1') {
+                    $isDefault = 1;
+                    $media = array('default' => '0');
+                    $this->missionMedia->where('mission_id', $id)->update($media);
+                }
+                
+                $missionMedia = array('mission_id' => $id,
+                                      'media_name' => $value['media_name'],
+                                      'media_type' => pathinfo($value['media_name'], PATHINFO_EXTENSION),
+                                      'media_path' => $filePath,
+                                      'default' => $default);
+                
+                $this->missionMedia->createOrUpdateMedia(['mission_id' => $id,
+                 'mission_media_id' => $value['media_id']], $missionMedia);
+                unset($missionMedia);
             }
-            
-            $missionMedia = array('mission_id' => $id,
-                                  'media_name' => $value['media_name'],
-                                  'media_type' => pathinfo($value['media_name'], PATHINFO_EXTENSION),
-                                  'media_path' => $filePath,
-                                  'default' => $default);
-            
-            $this->missionMedia->createOrUpdateMedia(['mission_id' => $id,
-             'mission_media_id' => $value['media_id']], $missionMedia);
-            unset($missionMedia);
-        }
-
-        $defaultData = $this->missionMedia->where('mission_id', $id)
-                                    ->where('default', '1')->count();
-
-        if (($isDefault == 0) && ($defaultData == 0)) {
-            $mediaData = $this->missionMedia->where('mission_id', $id)->orderBy('mission_media_id', 'ASC')->first();
-            $missionMedia = array('default' => '1');
-            $this->missionMedia->where('mission_media_id', $mediaData->mission_media_id)->update($missionMedia);
+            $defaultData = $this->missionMedia->where('mission_id', $id)
+                                        ->where('default', '1')->count();
+                                        
+            if (($isDefault == 0) && ($defaultData == 0)) {
+                $mediaData = $this->missionMedia->where('mission_id', $id)->orderBy('mission_media_id', 'ASC')->first();
+                $missionMedia = array('default' => '1');
+                $this->missionMedia->where('mission_media_id', $mediaData->mission_media_id)->update($missionMedia);
+            }
         }
 
         // Add/Update mission media videos
-        foreach ($request->media_videos as $value) {
-            $missionMedia = array('mission_id' => $id,
-                                  'media_name' => $value['media_name'],
-                                  'media_type' => pathinfo($value['media_name'], PATHINFO_EXTENSION),
-                                  'media_path' => $value['media_path']);
+        if (isset($request->media_videos) && count($request->media_videos) > 0) {
+            foreach ($request->media_videos as $value) {
+                $missionMedia = array('mission_id' => $id,
+                                      'media_name' => $value['media_name'],
+                                      'media_type' => pathinfo($value['media_name'], PATHINFO_EXTENSION),
+                                      'media_path' => $value['media_path']);
 
-            $this->missionMedia->createOrUpdateMedia(['mission_id' => $id,
-             'mission_media_id' => $value['media_id']], $missionMedia);
-            unset($missionMedia);
-        }
-
-        // Add/Update mission documents
-        foreach ($request->documents as $value) {
-            $missionDocument = array('mission_id' => $id,
-                                    'document_name' => $value['document_name'],
-                                    'document_type' => pathinfo($value['document_name'], PATHINFO_EXTENSION)
-                                  );
-            if ($value['document_path'] != '') {
-                $filePath = $this->s3helper->uploadFileOnS3Bucket($value['document_path'], $tenantName);
-                $missionDocument['document_path'] = $filePath;
+                $this->missionMedia->createOrUpdateMedia(['mission_id' => $id,
+                 'mission_media_id' => $value['media_id']], $missionMedia);
+                unset($missionMedia);
             }
-            
-            $this->missionDocument->createOrUpdateDocument(['mission_id' => $id,
-             'mission_document_id' => $value['document_id']], $missionDocument);
-            unset($missionDocument);
+        }
+        // Add/Update mission documents
+        if (isset($request->documents) && count($request->documents) > 0) {
+            foreach ($request->documents as $value) {
+                $missionDocument = array('mission_id' => $id,
+                                        'document_name' => $value['document_name'],
+                                        'document_type' => pathinfo($value['document_name'], PATHINFO_EXTENSION)
+                                      );
+                if ($value['document_path'] != '') {
+                    $filePath = $this->s3helper->uploadFileOnS3Bucket($value['document_path'], $tenantName);
+                    $missionDocument['document_path'] = $filePath;
+                }
+                
+                $this->missionDocument->createOrUpdateDocument(['mission_id' => $id,
+                 'mission_document_id' => $value['document_id']], $missionDocument);
+                unset($missionDocument);
+            }
         }
         return $mission;
     }
@@ -354,7 +361,8 @@ class MissionRepository implements MissionInterface
      */
     public function find(int $id): Mission
     {
-		return $this->mission->with('missionMedia', 'missionDocument', 'missionTheme', 'city', 'country', 'missionLanguage')->findOrFail($id);
+        return $this->mission->
+        with('missionMedia', 'missionDocument', 'missionTheme', 'city', 'country', 'missionLanguage')->findOrFail($id);
     }
     
     /**
