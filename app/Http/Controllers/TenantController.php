@@ -173,7 +173,7 @@ class TenantController extends Controller
     public function update(Request $request, int $id): JsonResponse
     {
         try {
-            $rules = ['name' => 'unique:tenant,name,'. $id . ',tenant_id,deleted_at,NULL'];
+            $rules = ['name' => 'sometimes|required|unique:tenant,name,'. $id . ',tenant_id,deleted_at,NULL'];
             $validator = Validator::make($request->toArray(), $rules);
 
             if ($validator->fails()) {

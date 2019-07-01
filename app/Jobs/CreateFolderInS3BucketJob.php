@@ -12,12 +12,12 @@ class CreateFolderInS3BucketJob extends Job
      * @var App\Models\Tenant
      */
     private $tenant;
-	
-	/**
-     * @var App\Helpers\DatabaseHelper;
-     */
-    private $databaseHelper;
     
+    /**
+     * @var App\Helpers\DatabaseHelper
+     */
+    protected $databaseHelper;
+
     /**
      * Create a new job instance.
      *
@@ -26,7 +26,7 @@ class CreateFolderInS3BucketJob extends Job
     public function __construct(Tenant $tenant)
     {
         $this->tenant = $tenant;
-		$this->databaseHelper = new DatabaseHelper();
+        $this->databaseHelper = new DatabaseHelper;
     }
 
     /**

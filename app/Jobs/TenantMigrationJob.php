@@ -13,6 +13,11 @@ class TenantMigrationJob extends Job
      * @var App\Models\Tenant
      */
     protected $tenant;
+
+    /**
+     * @var App\Helpers\DatabaseHelper
+     */
+    protected $databaseHelper;
     
     /**
      * Create a new job instance.
@@ -23,6 +28,7 @@ class TenantMigrationJob extends Job
     public function __construct(Tenant $tenant)
     {
         $this->tenant = $tenant;
+        $this->databaseHelper = new DatabaseHelper;
     }
 
     /**
@@ -36,7 +42,7 @@ class TenantMigrationJob extends Job
         DB::statement("CREATE DATABASE IF NOT EXISTS `ci_tenant_{$this->tenant->tenant_id}`");
 
         // Connect with newly created database
-        DatabaseHelper::connectWithTenantDatabase($this->tenant->tenant_id);
+        $this->databaseHelper->connectWithTenantDatabase($this->tenant->tenant_id);
         
         // Call artisan command to create table for newly created tenant's database
         Artisan::call('migrate --path=database/migrations/tenant');
