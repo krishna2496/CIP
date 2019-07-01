@@ -119,7 +119,7 @@ return [
         'ERROR_MISSION_REQUIRED_FIELDS_EMPTY' => '400006',
         'ERROR_NO_MISSION_FOUND' => '400007',
 
-        'ERROR_OCCURED' => '999999',
+        'ERROR_OCCURRED' => '999999',
         'ERROR_INVALID_JSON' => '900000',
         
     ]

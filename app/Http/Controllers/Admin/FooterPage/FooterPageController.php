@@ -65,7 +65,7 @@ class FooterPageController extends Controller
                 trans('messages.custom_error_message.ERROR_INVALID_ARGUMENT')
             );
         } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURED'));
+            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
 
@@ -124,7 +124,7 @@ class FooterPageController extends Controller
                 trans('messages.custom_error_message.ERROR_INVALID_ARGUMENT')
             );
         } catch (\Exception $e) {
-			return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURED'));
+            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
 
@@ -139,7 +139,7 @@ class FooterPageController extends Controller
         try {
             // Get data for parent table
             $mission = $this->footerPageRepository->find($id);
-			
+            
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_PAGE_FOUND');
             return $this->responseHelper->success($apiStatus, $apiMessage, $mission->toArray());
@@ -156,7 +156,7 @@ class FooterPageController extends Controller
                 trans('messages.custom_error_message.ERROR_NO_DATA_FOUND')
             );
         } catch (\Exception $e) {
-			return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURED'));
+            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
 
@@ -211,7 +211,7 @@ class FooterPageController extends Controller
                 trans('messages.custom_error_message.ERROR_INVALID_ARGUMENT')
             );
         } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURED'));
+            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
 
@@ -236,7 +236,7 @@ class FooterPageController extends Controller
                 trans('messages.custom_error_message.ERROR_FOOTER_PAGE_NOT_FOUND')
             );
         } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURED'));
+            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
 }

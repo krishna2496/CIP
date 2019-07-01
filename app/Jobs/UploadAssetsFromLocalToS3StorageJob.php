@@ -32,7 +32,7 @@ class UploadAssetsFromLocalToS3StorageJob extends Job
                 Storage::disk('s3')->put($file, Storage::disk('local')->get($file));
             }
         } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURED'));
+            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
 }

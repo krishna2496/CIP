@@ -59,7 +59,7 @@ class UserFilterController extends Controller
                 )
             );
         } catch (\Exception $e) {
-            throw new \Exception(trans('messages.custom_error_message.ERROR_OCCURED'));
+            throw new \Exception(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
 }

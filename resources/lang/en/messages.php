@@ -91,7 +91,7 @@ return [
         
 
         // Custom error code for common exception
-        'ERROR_OCCURED' => 'An error has occurred',
+        'ERROR_OCCURRED' => 'An error has occurred',
         'ERROR_INVALID_JSON' => 'Invalid Json format',
         
     ]

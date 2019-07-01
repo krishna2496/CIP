@@ -89,7 +89,7 @@ return [
         
 
         // Custom error code for common exception
-        'ERROR_OCCURED' => 'DE: An error has occurred',
+        'ERROR_OCCURRED' => 'DE: An error has occurred',
         
     ]
 ];

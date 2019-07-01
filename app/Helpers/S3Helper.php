@@ -12,7 +12,7 @@ use App;
 class S3Helper
 {
     use RestExceptionHandlerTrait;
-	/**
+    /**
      * Create a new middleware instance.
      *
      * @param Illuminate\Http\ResponseHelper $responseHelper
@@ -66,7 +66,7 @@ class S3Helper
                 dispatch(new UploadAssetsFromLocalToS3StorageJob($tenantName));
             }
         } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURED'));
+            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
 
         // Set response data
@@ -109,7 +109,7 @@ class S3Helper
                 return 0;
             }
         } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURED'));
+            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
 }

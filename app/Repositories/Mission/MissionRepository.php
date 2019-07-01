@@ -234,7 +234,7 @@ class MissionRepository implements MissionInterface
      * @param  int  $id
      * @return App\Models\Mission
      */
-    public function update($request, int $id): Mission
+    public function update(Request $request, int $id): Mission
     {
         $languages = $this->languageHelper->getLanguages($request);
         // Set data for update record
