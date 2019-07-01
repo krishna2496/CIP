@@ -157,7 +157,7 @@ class MissionController extends Controller
         try {
             // Get data for parent table
             $mission = $this->missionRepository->find($id);
-			
+            
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_MISSION_FOUND');
             return $this->responseHelper->success($apiStatus, $apiMessage, $mission->toArray());
@@ -174,7 +174,7 @@ class MissionController extends Controller
                 trans('messages.custom_error_message.ERROR_NO_MISSION_FOUND')
             );
         } catch (\Exception $e) {
-			return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURED'));
+            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURED'));
         }
     }
 
@@ -243,7 +243,6 @@ class MissionController extends Controller
                 )
             );
         } catch (\Exception $e) {
-			dd($e);
             return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURED'));
         }
     }
