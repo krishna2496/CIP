@@ -62,6 +62,11 @@ class MissionRepository implements MissionInterface
     private $helpers;
 
     /**
+     * @var App\Helpers\S3Helper
+     */
+    private $s3helper;
+
+    /**
      * Create a new Mission repository instance.
      *
      * @param  App\Models\Mission $mission
@@ -71,6 +76,7 @@ class MissionRepository implements MissionInterface
      * @param  App\Models\MissionDocument $missionDocument
      * @param  Illuminate\Http\ResponseHelper $responseHelper
      * @param  Illuminate\Http\LanguageHelper $languageHelper
+     * @param  Illuminate\Http\S3Helper $s3helper
      * @return void
      */
     public function __construct(
@@ -83,7 +89,8 @@ class MissionRepository implements MissionInterface
         UserFilterRepository $userFilterRepository,
         UserFilter $userFilter,
         LanguageHelper $languageHelper,
-        Helpers $helpers
+        Helpers $helpers,
+        S3Helper $s3helper
     ) {
         $this->mission = $mission;
         $this->missionLanguage = $missionLanguage;
@@ -95,6 +102,7 @@ class MissionRepository implements MissionInterface
         $this->userFilter = $userFilter;
         $this->languageHelper = $languageHelper;
         $this->helpers = $helpers;
+        $this->s3helper = $s3helper;
     }
     
     /**
@@ -161,7 +169,7 @@ class MissionRepository implements MissionInterface
 
         // Add mission media images
         foreach ($request->media_images as $value) {
-            $filePath = S3Helper::uploadFileOnS3Bucket($value['media_path'], $tenantName);
+            $filePath = $this->s3helper->uploadFileOnS3Bucket($value['media_path'], $tenantName);
             // Check for default image in mission_media
             $default = (isset($value['default']) && ($value['default'] != '')) ? $value['default'] : '0';
             if ($default == '1') {
@@ -200,7 +208,7 @@ class MissionRepository implements MissionInterface
 
         // Add mission documents
         foreach ($request->documents as $value) {
-            $filePath = S3Helper::uploadFileOnS3Bucket($value['document_path'], $tenantName);
+            $filePath = $this->s3helper->uploadFileOnS3Bucket($value['document_path'], $tenantName);
             $missionDocument = array('mission_id' => $mission->mission_id,
                                     'document_name' => $value['document_name'],
                                     'document_type' => pathinfo($value['document_name'], PATHINFO_EXTENSION),
@@ -275,7 +283,7 @@ class MissionRepository implements MissionInterface
         // Add/Update  mission media images
         $isDefault = 0;
         foreach ($request->media_images as $value) {
-            $filePath = S3Helper::uploadFileOnS3Bucket($value['media_path'], $tenantName);
+            $filePath = $this->s3helper->uploadFileOnS3Bucket($value['media_path'], $tenantName);
             // Check for default image in mission_media
             $default = (isset($value['default']) && ($value['default'] != '')) ? $value['default'] : '0';
             if ($default == '1') {
@@ -323,7 +331,7 @@ class MissionRepository implements MissionInterface
                                     'document_type' => pathinfo($value['document_name'], PATHINFO_EXTENSION)
                                   );
             if ($value['document_path'] != '') {
-                $filePath = S3Helper::uploadFileOnS3Bucket($value['document_path'], $tenantName);
+                $filePath = $this->s3helper->uploadFileOnS3Bucket($value['document_path'], $tenantName);
                 $missionDocument['document_path'] = $filePath;
             }
             
