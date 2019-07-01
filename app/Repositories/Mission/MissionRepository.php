@@ -197,25 +197,29 @@ class MissionRepository implements MissionInterface
         }
 
         // Add mission media videos
-        foreach ($request->media_videos as $value) {
-            $missionMedia = array('mission_id' => $mission->mission_id,
-                                  'media_name' => $value['media_name'],
-                                  'media_type' => pathinfo($value['media_name'], PATHINFO_EXTENSION),
-                                  'media_path' => $value['media_path']);
-            $this->missionMedia->create($missionMedia);
-            unset($missionMedia);
-        }
-
+		if (!empty($request->media_videos)) {
+			foreach ($request->media_videos as $value) {
+				$missionMedia = array('mission_id' => $mission->mission_id,
+									  'media_name' => $value['media_name'],
+									  'media_type' => pathinfo($value['media_name'], PATHINFO_EXTENSION),
+									  'media_path' => $value['media_path']);
+				$this->missionMedia->create($missionMedia);
+				unset($missionMedia);
+			}
+		}
+		
         // Add mission documents
-        foreach ($request->documents as $value) {
-            $filePath = $this->s3helper->uploadFileOnS3Bucket($value['document_path'], $tenantName);
-            $missionDocument = array('mission_id' => $mission->mission_id,
-                                    'document_name' => $value['document_name'],
-                                    'document_type' => pathinfo($value['document_name'], PATHINFO_EXTENSION),
-                                    'document_path' => $filePath);
-            $this->missionDocument->create($missionDocument);
-            unset($missionDocument);
-        }
+		if (!empty($request->documents)) {
+			foreach ($request->documents as $value) {
+				$filePath = $this->s3helper->uploadFileOnS3Bucket($value['document_path'], $tenantName);
+				$missionDocument = array('mission_id' => $mission->mission_id,
+										'document_name' => $value['document_name'],
+										'document_type' => pathinfo($value['document_name'], PATHINFO_EXTENSION),
+										'document_path' => $filePath);
+				$this->missionDocument->create($missionDocument);
+				unset($missionDocument);
+			}
+		}
 
         return $mission;
     }
@@ -346,10 +350,11 @@ class MissionRepository implements MissionInterface
      * Find the specified resource from database
      *
      * @param int $id
-     * @return mixed
+     * @return App\Models\Mission
      */
-    public function find(int $id)
+    public function find(int $id): Mission
     {
+		return $this->mission->with('missionMedia', 'missionDocument', 'missionTheme', 'city', 'country', 'missionLanguage')->findOrFail($id);
     }
     
     /**

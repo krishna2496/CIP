@@ -157,6 +157,17 @@ class FooterPageRepository implements FooterPageInterface
         return $pageQuery->paginate(config('constants.PER_PAGE_LIMIT'));
     }
     
+	/**
+     * Find the specified resource from database
+     *
+     * @param int $id
+     * @return App\Models\FooterPage
+     */
+    public function find(int $id): FooterPage
+    {
+		return $this->page->with('pages')->findOrFail($id);
+    }
+	
     /**
      * Remove the specified resource from storage.
      *

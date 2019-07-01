@@ -117,8 +117,10 @@ return [
         'ERROR_MISSION_NOT_FOUND' => '400003',
         'ERROR_MISSION_DELETION' => '400004',
         'ERROR_MISSION_REQUIRED_FIELDS_EMPTY' => '400006',
+        'ERROR_NO_MISSION_FOUND' => '400007',
 
-        'ERROR_OCCURED' => '99999',
+        'ERROR_OCCURED' => '999999',
+        'ERROR_INVALID_JSON' => '900000',
         
     ]
     

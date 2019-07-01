@@ -38,6 +38,8 @@ return [
         'MESSAGE_THEME_LISTING' => 'Mission theme listing successfully',
         'MESSAGE_CITY_LISTING' => 'City listing successfully',
         'MESSAGE_COUNTRY_LISTING' => 'Country listing successfully',
+		'MESSAGE_MISSION_FOUND' => 'Mission found successfully',
+		'MESSAGE_PAGE_FOUND' => 'Page found successfully',
     ],
 
         
@@ -59,7 +61,6 @@ return [
         'ERROR_FILE_NAME_NOT_MATCHED_WITH_STRUCTURE' => 'File name doesn`t match with structure',
         
         // Custom error code for CMS Module - 300000 - 309999
-        'ERROR_MISSION_REQUIRED_FIELDS_EMPTY' => 'Page creation failed. Please check input parameters',
         'ERROR_INVALID_ARGUMENT' => 'Invalid argument',
         'ERROR_FOOTER_PAGE_NOT_FOUND' => 'Footer page not found in the system',
         'ERROR_DATABASE_OPERATIONAL' => 'Database operational error',
@@ -71,6 +72,7 @@ return [
         'ERROR_MISSION_NOT_FOUND' => 'Requested mission does not exist',
         'ERROR_MISSION_DELETION' => 'Mission deletion failed',
         'ERROR_MISSION_REQUIRED_FIELDS_EMPTY' => 'Mission creation failed. Please check input parameters',
+        'ERROR_NO_MISSION_FOUND' => 'Mission does not found in system',
 
         
         // Custom error code for Tenant Authorization - 210000 - 219999
@@ -90,6 +92,7 @@ return [
 
         // Custom error code for common exception
         'ERROR_OCCURED' => 'An error has occured',
+        'ERROR_INVALID_JSON' => 'Invalid Json format',
         
     ]
 ];

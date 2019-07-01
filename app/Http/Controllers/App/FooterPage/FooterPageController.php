@@ -82,7 +82,7 @@ class FooterPageController extends Controller
                 throw new ModelNotFoundException(trans('messages.custom_error_message.300005'));
             }
 
-            $apiStatus = app('Illuminate\Http\Response')->status();
+            $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_FOOTER_PAGE_LISTING');
             return $this->responseHelper->success($apiStatus, $apiMessage, $footerPage->toArray());
         } catch (PDOException $e) {
@@ -105,9 +105,9 @@ class FooterPageController extends Controller
     /**
      * Display a listing of CMS pages.
      *
-     * @return mixed
+     * @return Illuminate\Http\JsonResponse
      */
-    public function cmsList()
+    public function cmsList(): JsonResponse
     {
         try {
             // Get data for parent table

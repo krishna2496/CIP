@@ -124,7 +124,7 @@ class FooterPageController extends Controller
                 trans('messages.custom_error_message.ERROR_INVALID_ARGUMENT')
             );
         } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURED'));
+			return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURED'));
         }
     }
 
@@ -132,11 +132,32 @@ class FooterPageController extends Controller
      * Display the specified resource.
      *
      * @param int  $id
-     * @return \Illuminate\Http\Response
+     * @return Illuminate\Http\JsonResponse
      */
-    public function show(int $id)
+    public function show(int $id): JsonResponse
     {
-        //
+        try {
+            // Get data for parent table
+            $mission = $this->footerPageRepository->find($id);
+			
+            $apiStatus = Response::HTTP_OK;
+            $apiMessage = trans('messages.success.MESSAGE_PAGE_FOUND');
+            return $this->responseHelper->success($apiStatus, $apiMessage, $mission->toArray());
+        } catch (PDOException $e) {
+            return $this->PDO(
+                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
+                trans(
+                    'messages.custom_error_message.ERROR_DATABASE_OPERATIONAL'
+                )
+            );
+        } catch (ModelNotFoundException $e) {
+            return $this->modelNotFound(
+                config('constants.error_codes.ERROR_NO_DATA_FOUND'),
+                trans('messages.custom_error_message.ERROR_NO_DATA_FOUND')
+            );
+        } catch (\Exception $e) {
+			return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURED'));
+        }
     }
 
     /**

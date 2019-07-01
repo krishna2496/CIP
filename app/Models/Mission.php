@@ -38,6 +38,15 @@ class Mission extends Model
     protected $fillable = ['theme_id', 'city_id',
     'country_id', 'start_date', 'end_date', 'total_seats', 'available_seats', 'application_deadline',
     'publication_status', 'organisation_id', 'organisation_name', 'mission_type', 'goal_objective'];
+	
+	/**
+     * The attributes that should be visible in arrays.
+     *
+     * @var array
+     */
+	protected $visible = ['mission_id', 'theme_id', 'city_id',
+    'country_id', 'start_date', 'end_date', 'total_seats', 'available_seats', 'application_deadline',
+    'publication_status', 'organisation_id', 'organisation_name', 'mission_type', 'goal_objective', 'missionDocument', 'missionMedia', 'missionLanguage', 'missionTheme', 'city'];
 
     protected $appends = ['city_name'];
     /**
