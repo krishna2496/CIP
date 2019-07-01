@@ -110,7 +110,7 @@ class UserController extends Controller
 
             // Set response data
             $apiData = ['user_id' => $user->user_id];
-            $apiStatus = Response::HTTP_OK;
+            $apiStatus = Response::HTTP_CREATED;
             $apiMessage = trans('messages.success.MESSAGE_USER_CREATED');
             
             return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);

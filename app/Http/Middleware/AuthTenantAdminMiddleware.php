@@ -47,8 +47,8 @@ class AuthTenantAdminMiddleware
     {
         try {
             // Check basic auth passed or not
-            if (!isset($_SERVER['PHP_AUTH_USER']) && !isset($_SERVER['PHP_AUTH_PW'])
-                || (empty($_SERVER['PHP_AUTH_USER']) && empty($_SERVER['PHP_AUTH_PW']))
+            if ($request->header('php-auth-user') == null && $request->header('php-auth-pw') == null
+                || (empty($request->header('php-auth-user')) && empty($request->header('php-auth-pw')))
             ) {
                 return $this->responseHelper->error(
                     Response::HTTP_UNAUTHORIZED,
@@ -59,8 +59,8 @@ class AuthTenantAdminMiddleware
             }
             // authenticate api user based on basic auth parameters
             $apiUser = DB::table('api_user')
-                        ->where('api_key', base64_encode($_SERVER['PHP_AUTH_USER']))
-                        ->where('api_secret', base64_encode($_SERVER['PHP_AUTH_PW']))
+                        ->where('api_key', base64_encode($request->header('php-auth-user')))
+                        ->where('api_secret', base64_encode($request->header('php-auth-pw')))
                         ->where('status', '1')
                         ->whereNull('deleted_at')
                         ->first();
@@ -79,6 +79,7 @@ class AuthTenantAdminMiddleware
                 trans('messages.custom_error_message.ERROR_INVALID_API_AND_SECRET_KEY')
             );
         } catch (PDOException $e) {
+            dd($e);
             return $this->PDO(
                 config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
                 trans(
