@@ -95,7 +95,6 @@ class UserCustomFieldController extends Controller
             );
             // If post parameter have any missing parameter
             if ($validator->fails()) {
-                // dd($validator->errors()->first());
                 return $this->responseHelper->error(
                     Response::HTTP_UNPROCESSABLE_ENTITY,
                     Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],

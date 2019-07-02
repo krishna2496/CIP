@@ -79,7 +79,6 @@ class AuthTenantAdminMiddleware
                 trans('messages.custom_error_message.ERROR_INVALID_API_AND_SECRET_KEY')
             );
         } catch (PDOException $e) {
-            dd($e);
             return $this->PDO(
                 config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
                 trans(

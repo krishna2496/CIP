@@ -9,57 +9,6 @@ class TenantOptionsTest extends TestCase
     /**
      * @test
      *
-     * Get all footer pages
-     *
-     * @return void
-     */
-    public function it_should_return_all_tenant_options()
-    {
-        /*$this->get(route('cms'), ['Authorization' => 'Basic dGF0dmFzb2Z0X2FwaV9rZXk6dGF0dmFzb2Z0X2FwaV9zZWNyZXQ='])
-          ->seeStatusCode(200)
-          ->seeJsonStructure([
-            "status",
-            "data" => [
-                "*" => [
-                    "page_id",
-                    "slug",
-                    "status",
-                    "page_translations" => [
-                        "*" => [
-                            "page_id",
-                            "language_id",
-                            "title",
-                            "description" => [
-                                
-                            ]
-                        ]
-                    ]
-                ]
-            ],
-            "message"
-        ]);*/
-    }
-
-    /**
-     * @test
-     *
-     * No footer page found
-     *
-     * @return void
-     */
-    public function it_should_return_no_tenant_option_found()
-    {
-       /* $this->get(route("cms"), ['Authorization' => 'Basic dGF0dmFzb2Z0X2FwaV9rZXk6dGF0dmFzb2Z0X2FwaV9zZWNyZXQ='])
-        ->seeStatusCode(200)
-        ->seeJsonStructure([
-            "status",
-            "message"
-        ]);*/
-    }
-
-    /**
-     * @test
-     *
      * Create footer page api
      *
      * @return void
@@ -84,23 +33,30 @@ class TenantOptionsTest extends TestCase
         $connection = 'tenant';
         $tenant = factory(\App\Models\TenantOption::class)->make();
         $tenant->setConnection($connection);
-        
-        $tenantOptionRepository = new TenantOptionRepository();
+        $count = $tenant->where('option_name', config('constants.TENANT_OPTION_SLIDER'))->count();
 
-        $slides = $tenantOptionRepository->getAllSliderCount();
-        dd($slides);
-
-        $this->post("create_slider/", $params, ['Authorization' => 'Basic dGF0dmFzb2Z0X2FwaV9rZXk6dGF0dmFzb2Z0X2FwaV9zZWNyZXQ='])
-        ->seeStatusCode(200)
-        ->seeJsonStructure([
-            'status',
-            'message',
-            ]);
-
-       
-
-        
-        // TenantOption::where("option_name", "slider")->orderBy("tenant_option_id", "DESC")->take(1)->delete();
+        if ($count >= config('constants.SLIDER_LIMIT')) {
+            $this->post("create_slider/", $params, ['Authorization' => 'Basic dGF0dmFzb2Z0X2FwaV9rZXk6dGF0dmFzb2Z0X2FwaV9zZWNyZXQ='])
+            ->seeStatusCode(403)
+            ->seeJsonStructure([
+                'errors' => [
+                        [
+                            'status',
+                            'type',
+                            'code',
+                            'message'
+                        ]
+                    ]
+                ]);
+        } else {
+            $this->post("create_slider/", $params, ['Authorization' => 'Basic dGF0dmFzb2Z0X2FwaV9rZXk6dGF0dmFzb2Z0X2FwaV9zZWNyZXQ='])
+            ->seeStatusCode(200)
+            ->seeJsonStructure([
+                'status',
+                'message',
+                ]);
+        }
+        TenantOption::where("option_name", "slider")->orderBy("tenant_option_id", "DESC")->take(1)->delete();
     }
 
 }

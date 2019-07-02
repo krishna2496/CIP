@@ -29,13 +29,13 @@ class Helpers
     public function getSubDomainFromRequest(Request $request) : string
     {
         try {
-            if (env('APP_ENV')=='local') {
+            if (env('APP_ENV')=='local' || env('APP_ENV')=='testing') {
                 return env('DEFAULT_TENANT');
             } else {
                 return explode(".", parse_url($request->headers->all()['referer'][0])['host'])[0];
             }
         } catch (\Exception $e) {
-            if (env('APP_ENV')=='local') {
+            if (env('APP_ENV')=='local' || env('APP_ENV')=='testing') {
                 return env('DEFAULT_TENANT');
             } else {
                 return $e->getMessage();
