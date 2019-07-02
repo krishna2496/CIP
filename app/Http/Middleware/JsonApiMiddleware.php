@@ -7,8 +7,8 @@ use App\Traits\RestExceptionHandlerTrait;
 class JsonApiMiddleware
 {
     use RestExceptionHandlerTrait;
-	
-	const PARSED_METHODS = [
+    
+    const PARSED_METHODS = [
         'POST', 'PUT', 'PATCH'
     ];
 
@@ -24,8 +24,8 @@ class JsonApiMiddleware
     {
         if (in_array($request->getMethod(), self::PARSED_METHODS)) {
             if (json_decode($request->getContent(), true) == null) {
-				return $this->badRequest(trans('messages.custom_error_message.ERROR_INVALID_JSON'));
-			}
+                return $this->badRequest(trans('messages.custom_error_message.ERROR_INVALID_JSON'));
+            }
         }
         return $next($request);
     }

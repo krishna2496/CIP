@@ -11,17 +11,17 @@ interface FooterPageInterface
      * @param  Illuminate\Http\Request $request
      * @return void
      */
-	public function store(Request $request);
-	
-	/**
+    public function store(Request $request);
+    
+    /**
      * Find a specified resource.
      *
      * @param  int $id
      * @return void
      */
-	public function find(int $id);
+    public function find(int $id);
     
-	/**
+    /**
      * Update resource.
      *
      * @param  Illuminate\Http\Request $request
@@ -30,7 +30,7 @@ interface FooterPageInterface
      */
     public function update(Request $request, int $id);
     
-	/**
+    /**
      * Get page listing.
      *
      * @param  Illuminate\Http\Request $request
@@ -38,7 +38,7 @@ interface FooterPageInterface
      */
     public function footerPageList(Request $request);
     
-	/**
+    /**
      * Delete specified resource.
      *
      * @param  int $id

@@ -40,9 +40,9 @@ class TenantOptionController extends Controller
      */
     private $helpers;
 
-     /**
-     * @var App\Helpers\S3Helper
-     */
+    /**
+    * @var App\Helpers\S3Helper
+    */
     private $s3helper;
 
     /**
