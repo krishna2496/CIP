@@ -496,12 +496,14 @@ class MissionRepository implements MissionInterface
             
 
         if ($userFilterData['search'] && $userFilterData['search'] != '') {
-            $missionQuery->wherehas('missionLanguage', function ($q) use ($userFilterData) {
-                $q->Where('title', 'like', '%' . $userFilterData['search'] . '%');
-                $q->orWhere('short_description', 'like', '%' . $userFilterData['search'] . '%');
-            });
-            $missionQuery->orWhere(function ($qry) use ($userFilterData) {
-                $qry->orWhere('organisation_name', 'like', '%' . $userFilterData['search'] . '%');
+            $missionQuery->Where(function ($query) use ($userFilterData) {
+                $query->wherehas('missionLanguage', function ($query) use ($userFilterData) {
+                    $query->Where('title', 'like', '%' . $userFilterData['search'] . '%');
+                    $query->orWhere('short_description', 'like', '%' . $userFilterData['search'] . '%');
+                });
+                $query->orWhere(function ($query) use ($userFilterData) {
+                    $query->orWhere('organisation_name', 'like', '%' . $userFilterData['search'] . '%');
+                });
             });
         }
 
@@ -537,7 +539,7 @@ class MissionRepository implements MissionInterface
             ->groupBy('mission.country_id')
             ->orderBY('mission_country_count', 'desc');
         }
-        $mission = $missionQuery->limit(5)->get();
+        $mission = $missionQuery->limit(20)->get();
         return $mission;
     }
 }
