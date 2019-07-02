@@ -112,30 +112,17 @@ class MissionRepository implements MissionInterface
     public function store(Request $request): Mission
     {
         $languages = $this->languageHelper->getLanguages($request);
-
-        // Set data for create new record
-        $startDate = $endDate = null;
-        if (isset($request->start_date)) {
-            $startDate = ($request->start_date != '') ?
-             Carbon::parse($request->start_date)->format(config('constants.DB_DATE_FORMAT')) : null;
-        }
-        if (isset($request->end_date)) {
-            $endDate = ($request->end_date != '') ?
-             Carbon::parse($request->end_date)->format(config('constants.DB_DATE_FORMAT')) : null;
-        }
-        $applicationDeadline = (isset($request->application_deadline) && ($request->application_deadline != '')) ?
-         Carbon::parse($request->application_deadline)->format(config('constants.DB_DATE_FORMAT')) : null;
-
         $countryId = $this->helpers->getCountryId($request->location['country_code']);
         $missionData = array(
                 'theme_id' => $request->theme_id,
                 'city_id' => $request->location['city_id'],
                 'country_id' => $countryId,
-                'start_date' => $startDate,
-                'end_date' => $endDate,
+                'start_date' => (isset($request->start_date)) ? $request->start_date : null,
+                'end_date' => (isset($request->end_date)) ? $request->end_date : null,
                 'total_seats' => (isset($request->total_seats) && ($request->total_seats != '')) ?
                  $request->total_seats : null,
-                'application_deadline' => $applicationDeadline,
+                'application_deadline' => (isset($request->application_deadline))
+                ? $request->application_deadline : null,
                 'publication_status' => $request->publication_status,
                 'organisation_id' => $request->organisation['organisation_id'],
                 'organisation_name' => $request->organisation['organisation_name'],
@@ -238,27 +225,16 @@ class MissionRepository implements MissionInterface
     {
         $languages = $this->languageHelper->getLanguages($request);
         // Set data for update record
-        $startDate = $endDate = null;
-        if (isset($request->start_date)) {
-            $startDate = ($request->start_date != '') ?
-             Carbon::parse($request->start_date)->format(config('constants.DB_DATE_FORMAT')) : null;
-        }
-        if (isset($request->end_date)) {
-            $endDate = ($request->end_date != '') ?
-             Carbon::parse($request->end_date)->format(config('constants.DB_DATE_FORMAT')) : null;
-        }
-        $applicationDeadline = (isset($request->application_deadline) && ($request->application_deadline != '')) ?
-         Carbon::parse($request->application_deadline)->format(config('constants.DB_DATE_FORMAT')) : null;
-
         $countryId = $this->helpers->getCountryId($request->location['country_code']);
         $missionData = array('theme_id' => $request->theme_id,
                              'city_id' => $request->location['city_id'],
                              'country_id' => $countryId,
-                             'start_date' => $startDate,
-                             'end_date' => $endDate,
+                             'start_date' => (isset($request->start_date)) ? $request->start_date : null,
+                             'end_date' => (isset($request->end_date)) ? $request->end_date : null,
                              'total_seats' => (isset($request->total_seats) && ($request->total_seats != '')) ?
                               $request->total_seats : null,
-                             'application_deadline' => $applicationDeadline,
+                              'application_deadline' => (isset($request->application_deadline))
+                              ? $request->application_deadline : null,
                              'publication_status' => $request->publication_status,
                              'organisation_id' => $request->organisation['organisation_id'],
                              'organisation_name' => $request->organisation['organisation_name'],
