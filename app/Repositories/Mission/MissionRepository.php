@@ -232,7 +232,6 @@ class MissionRepository implements MissionInterface
             $request->request->add(['city_id' => $request->location['city_id']]);
         }
         if (isset($request->organisation['organisation_id'])) {
-            // $request->organisation_id = $request->organisation['organisation_id'];
             $request->request->add(['organisation_id' => $request->organisation['organisation_id']]);
         }
         if (isset($request->organisation['organisation_name'])) {
