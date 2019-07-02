@@ -6,10 +6,12 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
 use Leafo\ScssPhp\Compiler;
 use App\Helpers\ResponseHelper;
+use App\Traits\RestExceptionHandlerTrait;
 use App;
 
 class S3Helper
 {
+    use RestExceptionHandlerTrait;
     /**
      * Create a new middleware instance.
      *
@@ -64,7 +66,7 @@ class S3Helper
                 dispatch(new UploadAssetsFromLocalToS3StorageJob($tenantName));
             }
         } catch (\Exception $e) {
-            throw new \Exception(trans('messages.custom_error_message.ERROR_OCCURED'));
+            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
 
         // Set response data
@@ -82,7 +84,7 @@ class S3Helper
      *
      * @return string
      */
-    public static function uploadFileOnS3Bucket(string $url, string $tenantName)
+    public function uploadFileOnS3Bucket(string $url, string $tenantName)
     {
         try {
             $disk = Storage::disk('s3');
@@ -107,7 +109,7 @@ class S3Helper
                 return 0;
             }
         } catch (\Exception $e) {
-            throw new \Exception(trans('messages.custom_error_message.ERROR_OCCURED'));
+            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
 }

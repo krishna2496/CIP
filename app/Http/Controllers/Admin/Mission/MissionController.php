@@ -75,7 +75,7 @@ class MissionController extends Controller
                 trans('messages.custom_error_message.ERROR_INVALID_ARGUMENT')
             );
         } catch (\Exception $e) {
-            throw new \Exception(trans('messages.custom_error_message.ERROR_OCCURED'));
+            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
 
@@ -103,12 +103,12 @@ class MissionController extends Controller
                 "publication_status" => ['required', Rule::in(config('constants.publication_status'))],
                 "goal_objective" => "required_if:mission_type,GOAL",
                 "media_images.*.media_name" => "required",
-                "media_images.*.media_type" => ['required', Rule::in(config('constants.image_types'))],
+                "media_images.*.media_type" => Rule::in(config('constants.image_types')),
                 "media_images.*.media_path" => "required",
                 "media_videos.*.media_name" => "required",
                 "media_videos.*.media_path" => "required",
                 "documents.*.document_name" => "required",
-                "documents.*.document_type" => ['required', Rule::in(config('constants.document_types'))],
+                "documents.*.document_type" => Rule::in(config('constants.document_types')),
                 "documents.*.document_path" => "required",
                 "start_date" => "before:end_date",
                 "end_date" => "after:start_date",
@@ -142,7 +142,7 @@ class MissionController extends Controller
                 )
             );
         } catch (\Exception $e) {
-            throw new \Exception(trans('messages.custom_error_message.ERROR_OCCURED'));
+            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
 
@@ -150,11 +150,32 @@ class MissionController extends Controller
      * Display the specified mission detail.
      *
      * @param int $id
-     * @return mixed
+     * @return Illuminate\Http\JsonResponse
      */
-    public function show($id)
+    public function show(int $id): JsonResponse
     {
-        //
+        try {
+            // Get data for parent table
+            $mission = $this->missionRepository->find($id);
+            
+            $apiStatus = Response::HTTP_OK;
+            $apiMessage = trans('messages.success.MESSAGE_MISSION_FOUND');
+            return $this->responseHelper->success($apiStatus, $apiMessage, $mission->toArray());
+        } catch (PDOException $e) {
+            return $this->PDO(
+                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
+                trans(
+                    'messages.custom_error_message.ERROR_DATABASE_OPERATIONAL'
+                )
+            );
+        } catch (ModelNotFoundException $e) {
+            return $this->modelNotFound(
+                config('constants.error_codes.ERROR_NO_MISSION_FOUND'),
+                trans('messages.custom_error_message.ERROR_NO_MISSION_FOUND')
+            );
+        } catch (\Exception $e) {
+            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
+        }
     }
 
     /**
@@ -173,7 +194,6 @@ class MissionController extends Controller
                 "mission_type" => [Rule::in(config('constants.mission_type'))],
                 "location.city_id" => "required_with:location",
                 "location.country_code" => "required_with:location",
-                "mission_detail" => "required",
                 "mission_detail.*.lang" => "required_with:mission_detail",
                 "mission_detail.*.title" => "required_with:mission_detail",
                 "publication_status" => [Rule::in(config('constants.publication_status'))],
@@ -223,7 +243,7 @@ class MissionController extends Controller
                 )
             );
         } catch (\Exception $e) {
-            throw new \Exception(trans('messages.custom_error_message.ERROR_OCCURED'));
+            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
     
@@ -276,7 +296,7 @@ class MissionController extends Controller
                 trans('messages.custom_error_message.ERROR_INVALID_ARGUMENT')
             );
         } catch (\Exception $e) {
-            throw new \Exception(trans('messages.custom_error_message.ERROR_OCCURED'));
+            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
 
@@ -308,7 +328,7 @@ class MissionController extends Controller
                 trans('messages.custom_error_message.ERROR_INVALID_ARGUMENT')
             );
         } catch (\Exception $e) {
-            throw new \Exception(trans('messages.custom_error_message.ERROR_OCCURED'));
+            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
 
@@ -357,7 +377,7 @@ class MissionController extends Controller
                 )
             );
         } catch (\Exception $e) {
-            throw new \Exception(trans('messages.custom_error_message.ERROR_OCCURED'));
+            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
 }

@@ -62,7 +62,7 @@ class FooterPageController extends Controller
                 trans('messages.custom_error_message.ERROR_INVALID_ARGUMENT')
             );
         } catch (\Exception $e) {
-            throw new \Exception(trans('messages.custom_error_message.ERROR_OCCURED'));
+            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
 
@@ -82,7 +82,7 @@ class FooterPageController extends Controller
                 throw new ModelNotFoundException(trans('messages.custom_error_message.300005'));
             }
 
-            $apiStatus = app('Illuminate\Http\Response')->status();
+            $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_FOOTER_PAGE_LISTING');
             return $this->responseHelper->success($apiStatus, $apiMessage, $footerPage->toArray());
         } catch (PDOException $e) {
@@ -98,16 +98,16 @@ class FooterPageController extends Controller
                 trans('messages.custom_error_message.ERROR_NO_DATA_FOUND')
             );
         } catch (\Exception $e) {
-            throw new \Exception(trans('messages.custom_error_message.ERROR_OCCURED'));
+            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
 
     /**
      * Display a listing of CMS pages.
      *
-     * @return mixed
+     * @return Illuminate\Http\JsonResponse
      */
-    public function cmsList()
+    public function cmsList(): JsonResponse
     {
         try {
             // Get data for parent table
@@ -130,7 +130,7 @@ class FooterPageController extends Controller
                 )
             );
         } catch (\Exception $e) {
-            throw new \Exception(trans('messages.custom_error_message.ERROR_OCCURED'));
+            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
 }

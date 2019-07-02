@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Repositories\Mission;
 
 use App\Repositories\Mission\MissionInterface;
@@ -53,13 +52,17 @@ class MissionRepository implements MissionInterface
     /*
      * @var App\Helpers\LanguageHelper
      */
-
     private $languageHelper;
 
     /**
      * @var App\Helpers\Helpers
      */
     private $helpers;
+
+    /**
+     * @var App\Helpers\S3Helper
+     */
+    private $s3helper;
 
     /**
      * Create a new Mission repository instance.
@@ -71,6 +74,7 @@ class MissionRepository implements MissionInterface
      * @param  App\Models\MissionDocument $missionDocument
      * @param  Illuminate\Http\ResponseHelper $responseHelper
      * @param  Illuminate\Http\LanguageHelper $languageHelper
+     * @param  Illuminate\Http\S3Helper $s3helper
      * @return void
      */
     public function __construct(
@@ -83,7 +87,8 @@ class MissionRepository implements MissionInterface
         UserFilterRepository $userFilterRepository,
         UserFilter $userFilter,
         LanguageHelper $languageHelper,
-        Helpers $helpers
+        Helpers $helpers,
+        S3Helper $s3helper
     ) {
         $this->mission = $mission;
         $this->missionLanguage = $missionLanguage;
@@ -95,6 +100,7 @@ class MissionRepository implements MissionInterface
         $this->userFilter = $userFilter;
         $this->languageHelper = $languageHelper;
         $this->helpers = $helpers;
+        $this->s3helper = $s3helper;
     }
     
     /**
@@ -106,30 +112,17 @@ class MissionRepository implements MissionInterface
     public function store(Request $request): Mission
     {
         $languages = $this->languageHelper->getLanguages($request);
-
-        // Set data for create new record
-        $startDate = $endDate = null;
-        if (isset($request->start_date)) {
-            $startDate = ($request->start_date != '') ?
-             Carbon::parse($request->start_date)->format(config('constants.DB_DATE_FORMAT')) : null;
-        }
-        if (isset($request->end_date)) {
-            $endDate = ($request->end_date != '') ?
-             Carbon::parse($request->end_date)->format(config('constants.DB_DATE_FORMAT')) : null;
-        }
-        $applicationDeadline = (isset($request->application_deadline) && ($request->application_deadline != '')) ?
-         Carbon::parse($request->application_deadline)->format(config('constants.DB_DATE_FORMAT')) : null;
-
         $countryId = $this->helpers->getCountryId($request->location['country_code']);
         $missionData = array(
                 'theme_id' => $request->theme_id,
                 'city_id' => $request->location['city_id'],
                 'country_id' => $countryId,
-                'start_date' => $startDate,
-                'end_date' => $endDate,
+                'start_date' => (isset($request->start_date)) ? $request->start_date : null,
+                'end_date' => (isset($request->end_date)) ? $request->end_date : null,
                 'total_seats' => (isset($request->total_seats) && ($request->total_seats != '')) ?
                  $request->total_seats : null,
-                'application_deadline' => $applicationDeadline,
+                'application_deadline' => (isset($request->application_deadline))
+                ? $request->application_deadline : null,
                 'publication_status' => $request->publication_status,
                 'organisation_id' => $request->organisation['organisation_id'],
                 'organisation_name' => $request->organisation['organisation_name'],
@@ -160,53 +153,62 @@ class MissionRepository implements MissionInterface
         $isDefault = 0;
 
         // Add mission media images
-        foreach ($request->media_images as $value) {
-            $filePath = S3Helper::uploadFileOnS3Bucket($value['media_path'], $tenantName);
-            // Check for default image in mission_media
-            $default = (isset($value['default']) && ($value['default'] != '')) ? $value['default'] : '0';
-            if ($default == '1') {
-                $isDefault = 1;
-                $media = array('default' => '0');
-                $this->missionMedia->where('mission_id', $mission->mission_id)->update($media);
+        if (isset($request->media_images) && count($request->media_images) > 0) {
+            foreach ($request->media_images as $value) {
+                $filePath = $this->s3helper->uploadFileOnS3Bucket($value['media_path'], $tenantName);
+                // Check for default image in mission_media
+                $default = (isset($value['default']) && ($value['default'] != '')) ? $value['default'] : '0';
+                if ($default == '1') {
+                    $isDefault = 1;
+                    $media = array('default' => '0');
+                    $this->missionMedia->where('mission_id', $mission->mission_id)->update($media);
+                }
+                
+                $missionMedia = array(
+                        'mission_id' => $mission->mission_id,
+                        'media_name' => $value['media_name'],
+                        'media_type' => pathinfo($value['media_name'], PATHINFO_EXTENSION),
+                        'media_path' => $filePath,
+                        'default' => $default
+                    );
+                $this->missionMedia->create($missionMedia);
+                unset($missionMedia);
             }
-            
-            $missionMedia = array(
-                    'mission_id' => $mission->mission_id,
-                    'media_name' => $value['media_name'],
-                    'media_type' => pathinfo($value['media_name'], PATHINFO_EXTENSION),
-                    'media_path' => $filePath,
-                    'default' => $default
-                );
-            $this->missionMedia->create($missionMedia);
-            unset($missionMedia);
-        }
 
-        if ($isDefault == 0) {
-            $mediaData = $this->missionMedia->where('mission_id', $mission->mission_id)
-            ->orderBy('mission_media_id', 'ASC')->first();
-            $missionMedia = array('default' => '1');
-            $this->missionMedia->where('mission_media_id', $mediaData->mission_media_id)->update($missionMedia);
+            if ($isDefault == 0) {
+                $mediaData = $this->missionMedia->where('mission_id', $mission->mission_id)
+                ->orderBy('mission_media_id', 'ASC')->first();
+                $missionMedia = array('default' => '1');
+                $this->missionMedia->where('mission_media_id', $mediaData->mission_media_id)->update($missionMedia);
+            }
         }
-
         // Add mission media videos
-        foreach ($request->media_videos as $value) {
-            $missionMedia = array('mission_id' => $mission->mission_id,
-                                  'media_name' => $value['media_name'],
-                                  'media_type' => pathinfo($value['media_name'], PATHINFO_EXTENSION),
-                                  'media_path' => $value['media_path']);
-            $this->missionMedia->create($missionMedia);
-            unset($missionMedia);
+        if (isset($request->media_videos) && count($request->media_videos) > 0) {
+            if (!empty($request->media_videos)) {
+                foreach ($request->media_videos as $value) {
+                    $missionMedia = array('mission_id' => $mission->mission_id,
+                                          'media_name' => $value['media_name'],
+                                          'media_type' => pathinfo($value['media_name'], PATHINFO_EXTENSION),
+                                          'media_path' => $value['media_path']);
+                    $this->missionMedia->create($missionMedia);
+                    unset($missionMedia);
+                }
+            }
         }
-
+            
         // Add mission documents
-        foreach ($request->documents as $value) {
-            $filePath = S3Helper::uploadFileOnS3Bucket($value['document_path'], $tenantName);
-            $missionDocument = array('mission_id' => $mission->mission_id,
-                                    'document_name' => $value['document_name'],
-                                    'document_type' => pathinfo($value['document_name'], PATHINFO_EXTENSION),
-                                    'document_path' => $filePath);
-            $this->missionDocument->create($missionDocument);
-            unset($missionDocument);
+        if (isset($request->documents) && count($request->documents) > 0) {
+            if (!empty($request->documents)) {
+                foreach ($request->documents as $value) {
+                    $filePath = $this->s3helper->uploadFileOnS3Bucket($value['document_path'], $tenantName);
+                    $missionDocument = array('mission_id' => $mission->mission_id,
+                                            'document_name' => $value['document_name'],
+                                            'document_type' => pathinfo($value['document_name'], PATHINFO_EXTENSION),
+                                            'document_path' => $filePath);
+                    $this->missionDocument->create($missionDocument);
+                    unset($missionDocument);
+                }
+            }
         }
 
         return $mission;
@@ -223,27 +225,16 @@ class MissionRepository implements MissionInterface
     {
         $languages = $this->languageHelper->getLanguages($request);
         // Set data for update record
-        $startDate = $endDate = null;
-        if (isset($request->start_date)) {
-            $startDate = ($request->start_date != '') ?
-             Carbon::parse($request->start_date)->format(config('constants.DB_DATE_FORMAT')) : null;
-        }
-        if (isset($request->end_date)) {
-            $endDate = ($request->end_date != '') ?
-             Carbon::parse($request->end_date)->format(config('constants.DB_DATE_FORMAT')) : null;
-        }
-        $applicationDeadline = (isset($request->application_deadline) && ($request->application_deadline != '')) ?
-         Carbon::parse($request->application_deadline)->format(config('constants.DB_DATE_FORMAT')) : null;
-
         $countryId = $this->helpers->getCountryId($request->location['country_code']);
         $missionData = array('theme_id' => $request->theme_id,
                              'city_id' => $request->location['city_id'],
                              'country_id' => $countryId,
-                             'start_date' => $startDate,
-                             'end_date' => $endDate,
+                             'start_date' => (isset($request->start_date)) ? $request->start_date : null,
+                             'end_date' => (isset($request->end_date)) ? $request->end_date : null,
                              'total_seats' => (isset($request->total_seats) && ($request->total_seats != '')) ?
                               $request->total_seats : null,
-                             'application_deadline' => $applicationDeadline,
+                              'application_deadline' => (isset($request->application_deadline))
+                              ? $request->application_deadline : null,
                              'publication_status' => $request->publication_status,
                              'organisation_id' => $request->organisation['organisation_id'],
                              'organisation_name' => $request->organisation['organisation_name'],
@@ -274,62 +265,66 @@ class MissionRepository implements MissionInterface
         $tenantName = $this->helpers->getSubDomainFromRequest($request);
         // Add/Update  mission media images
         $isDefault = 0;
-        foreach ($request->media_images as $value) {
-            $filePath = S3Helper::uploadFileOnS3Bucket($value['media_path'], $tenantName);
-            // Check for default image in mission_media
-            $default = (isset($value['default']) && ($value['default'] != '')) ? $value['default'] : '0';
-            if ($default == '1') {
-                $isDefault = 1;
-                $media = array('default' => '0');
-                $this->missionMedia->where('mission_id', $id)->update($media);
+        if (isset($request->media_images) && count($request->media_images) > 0) {
+            foreach ($request->media_images as $value) {
+                $filePath = $this->s3helper->uploadFileOnS3Bucket($value['media_path'], $tenantName);
+                // Check for default image in mission_media
+                $default = (isset($value['default']) && ($value['default'] != '')) ? $value['default'] : '0';
+                if ($default == '1') {
+                    $isDefault = 1;
+                    $media = array('default' => '0');
+                    $this->missionMedia->where('mission_id', $id)->update($media);
+                }
+                
+                $missionMedia = array('mission_id' => $id,
+                                      'media_name' => $value['media_name'],
+                                      'media_type' => pathinfo($value['media_name'], PATHINFO_EXTENSION),
+                                      'media_path' => $filePath,
+                                      'default' => $default);
+                
+                $this->missionMedia->createOrUpdateMedia(['mission_id' => $id,
+                 'mission_media_id' => $value['media_id']], $missionMedia);
+                unset($missionMedia);
             }
-            
-            $missionMedia = array('mission_id' => $id,
-                                  'media_name' => $value['media_name'],
-                                  'media_type' => pathinfo($value['media_name'], PATHINFO_EXTENSION),
-                                  'media_path' => $filePath,
-                                  'default' => $default);
-            
-            $this->missionMedia->createOrUpdateMedia(['mission_id' => $id,
-             'mission_media_id' => $value['media_id']], $missionMedia);
-            unset($missionMedia);
-        }
-
-        $defaultData = $this->missionMedia->where('mission_id', $id)
-                                    ->where('default', '1')->count();
-
-        if (($isDefault == 0) && ($defaultData == 0)) {
-            $mediaData = $this->missionMedia->where('mission_id', $id)->orderBy('mission_media_id', 'ASC')->first();
-            $missionMedia = array('default' => '1');
-            $this->missionMedia->where('mission_media_id', $mediaData->mission_media_id)->update($missionMedia);
+            $defaultData = $this->missionMedia->where('mission_id', $id)
+                                        ->where('default', '1')->count();
+                                        
+            if (($isDefault == 0) && ($defaultData == 0)) {
+                $mediaData = $this->missionMedia->where('mission_id', $id)->orderBy('mission_media_id', 'ASC')->first();
+                $missionMedia = array('default' => '1');
+                $this->missionMedia->where('mission_media_id', $mediaData->mission_media_id)->update($missionMedia);
+            }
         }
 
         // Add/Update mission media videos
-        foreach ($request->media_videos as $value) {
-            $missionMedia = array('mission_id' => $id,
-                                  'media_name' => $value['media_name'],
-                                  'media_type' => pathinfo($value['media_name'], PATHINFO_EXTENSION),
-                                  'media_path' => $value['media_path']);
+        if (isset($request->media_videos) && count($request->media_videos) > 0) {
+            foreach ($request->media_videos as $value) {
+                $missionMedia = array('mission_id' => $id,
+                                      'media_name' => $value['media_name'],
+                                      'media_type' => pathinfo($value['media_name'], PATHINFO_EXTENSION),
+                                      'media_path' => $value['media_path']);
 
-            $this->missionMedia->createOrUpdateMedia(['mission_id' => $id,
-             'mission_media_id' => $value['media_id']], $missionMedia);
-            unset($missionMedia);
-        }
-
-        // Add/Update mission documents
-        foreach ($request->documents as $value) {
-            $missionDocument = array('mission_id' => $id,
-                                    'document_name' => $value['document_name'],
-                                    'document_type' => pathinfo($value['document_name'], PATHINFO_EXTENSION)
-                                  );
-            if ($value['document_path'] != '') {
-                $filePath = S3Helper::uploadFileOnS3Bucket($value['document_path'], $tenantName);
-                $missionDocument['document_path'] = $filePath;
+                $this->missionMedia->createOrUpdateMedia(['mission_id' => $id,
+                 'mission_media_id' => $value['media_id']], $missionMedia);
+                unset($missionMedia);
             }
-            
-            $this->missionDocument->createOrUpdateDocument(['mission_id' => $id,
-             'mission_document_id' => $value['document_id']], $missionDocument);
-            unset($missionDocument);
+        }
+        // Add/Update mission documents
+        if (isset($request->documents) && count($request->documents) > 0) {
+            foreach ($request->documents as $value) {
+                $missionDocument = array('mission_id' => $id,
+                                        'document_name' => $value['document_name'],
+                                        'document_type' => pathinfo($value['document_name'], PATHINFO_EXTENSION)
+                                      );
+                if ($value['document_path'] != '') {
+                    $filePath = $this->s3helper->uploadFileOnS3Bucket($value['document_path'], $tenantName);
+                    $missionDocument['document_path'] = $filePath;
+                }
+                
+                $this->missionDocument->createOrUpdateDocument(['mission_id' => $id,
+                 'mission_document_id' => $value['document_id']], $missionDocument);
+                unset($missionDocument);
+            }
         }
         return $mission;
     }
@@ -338,10 +333,12 @@ class MissionRepository implements MissionInterface
      * Find the specified resource from database
      *
      * @param int $id
-     * @return mixed
+     * @return App\Models\Mission
      */
-    public function find(int $id)
+    public function find(int $id): Mission
     {
+        return $this->mission->
+        with('missionMedia', 'missionDocument', 'missionTheme', 'city', 'country', 'missionLanguage')->findOrFail($id);
     }
     
     /**
@@ -511,6 +508,7 @@ class MissionRepository implements MissionInterface
                 });
             });
         }
+    
 
         $missionQuery->where('publication_status', config("constants.publication_status")["APPROVED"]);
 

@@ -38,6 +38,16 @@ class Mission extends Model
     protected $fillable = ['theme_id', 'city_id',
     'country_id', 'start_date', 'end_date', 'total_seats', 'available_seats', 'application_deadline',
     'publication_status', 'organisation_id', 'organisation_name', 'mission_type', 'goal_objective'];
+    
+    /**
+     * The attributes that should be visible in arrays.
+     *
+     * @var array
+     */
+    protected $visible = ['mission_id', 'theme_id', 'city_id',
+    'country_id', 'start_date', 'end_date', 'total_seats', 'available_seats', 'application_deadline',
+    'publication_status', 'organisation_id', 'organisation_name', 'mission_type', 'goal_objective',
+    'missionDocument', 'missionMedia', 'missionLanguage', 'missionTheme', 'city'];
 
     protected $appends = ['city_name'];
     /**
@@ -135,5 +145,51 @@ class Mission extends Model
     public function getCityNameAttribute()
     {
         return $this->city()->select('name')->first()->name;
+    }
+
+    /**
+     * Set start date attribute on the model.
+     *
+     * @param  mixed   $value
+     * @return void
+     */
+    public function setStartDateAttribute($value)
+    {
+        if ($value != null) {
+            $this->attributes['start_date'] = Carbon::parse($value)->format(config('constants.DB_DATE_FORMAT'));
+        } else {
+            $this->attributes['start_date'] = null;
+        }
+    }
+
+    /**
+     * Set end date attribute on the model.
+     *
+     * @param  mixed   $value
+     * @return void
+     */
+    public function setEndDateAttribute($value)
+    {
+        if ($value != null) {
+            $this->attributes['end_date'] = Carbon::parse($value)->format(config('constants.DB_DATE_FORMAT'));
+        } else {
+            $this->attributes['end_date'] = null;
+        }
+    }
+
+    /**
+     * Set application deadline attribute on the model.
+     *
+     * @param  mixed   $value
+     * @return void
+     */
+    public function setApplicationDeadlineAttribute($value)
+    {
+        if ($value != null) {
+            $this->attributes['application_deadline'] = Carbon::parse($value)
+            ->format(config('constants.DB_DATE_FORMAT'));
+        } else {
+            $this->attributes['application_deadline'] = null;
+        }
     }
 }

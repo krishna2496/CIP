@@ -9,6 +9,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Input;
 use PDOException;
 use App\Helpers\ResponseHelper;
+use App\Traits\RestExceptionHandlerTrait;
 
 class CityController extends Controller
 {
@@ -59,7 +60,7 @@ class CityController extends Controller
                 )
             );
         } catch (\Exception $e) {
-            throw new \Exception(trans('messages.custom_error_message.ERROR_OCCURED'));
+            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
 }

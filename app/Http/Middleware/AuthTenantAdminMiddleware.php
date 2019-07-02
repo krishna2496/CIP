@@ -10,6 +10,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use PDOException;
+use App\Traits\RestExceptionHandlerTrait;
 
 class AuthTenantAdminMiddleware
 {
@@ -85,7 +86,7 @@ class AuthTenantAdminMiddleware
                 )
             );
         } catch (\Exception $e) {
-            throw new \Exception(trans('messages.custom_error_message.ERROR_OCCURED'));
+            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
 }

@@ -1,8 +1,8 @@
 <?php
-
 namespace App\Jobs;
 
 use Illuminate\Support\Facades\Storage;
+use App\Traits\RestExceptionHandlerTrait;
 
 class UploadAssetsFromLocalToS3StorageJob extends Job
 {
@@ -32,7 +32,7 @@ class UploadAssetsFromLocalToS3StorageJob extends Job
                 Storage::disk('s3')->put($file, Storage::disk('local')->get($file));
             }
         } catch (\Exception $e) {
-            throw new \Exception(trans('messages.custom_error_message.ERROR_OCCURED'));
+            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
 }

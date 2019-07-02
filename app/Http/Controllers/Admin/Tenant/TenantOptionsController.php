@@ -35,21 +35,29 @@ class TenantOptionsController extends Controller
     private $helpers;
 
     /**
+     * @var App\Helpers\S3Helper
+     */
+    private $s3helper;
+    
+    /**
      * Create a new controller instance.
      *
      * @param  App\Repositories\TenantOption\TenantOptionRepository $tenantOptionRepository
      * @param  App\Helpers\ResponseHelper $responseHelper
      * @param  App\Helpers\Helpers $helpers
+     * @param  App\Helpers\S3Helper $s3helper
      * @return void
      */
     public function __construct(
         TenantOptionRepository $tenantOptionRepository,
         ResponseHelper $responseHelper,
-        Helpers $helpers
+        Helpers $helpers,
+        S3Helper $s3helper
     ) {
         $this->tenantOptionRepository = $tenantOptionRepository;
         $this->responseHelper = $responseHelper;
         $this->helpers = $helpers;
+        $this->s3helper = $s3helper;
     }
 
     /**
@@ -133,7 +141,7 @@ class TenantOptionsController extends Controller
             } else {
                 // Upload slider image on S3 server
                 $tenantName = $this->helpers->getSubDomainFromRequest($request);
-                if ($request->url = S3Helper::uploadFileOnS3Bucket($request->url, $tenantName)) {
+                if ($request->url = $this->s3helper->uploadFileOnS3Bucket($request->url, $tenantName)) {
                     // Set data for create new record
                     $insertData = array();
                     $insertData['option_name'] = config('constants.TENANT_OPTION_SLIDER');
@@ -164,7 +172,7 @@ class TenantOptionsController extends Controller
                 )
             );
         } catch (\Exception $e) {
-            throw new \Exception(trans('messages.custom_error_message.ERROR_OCCURED'));
+            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
 
@@ -268,7 +276,7 @@ class TenantOptionsController extends Controller
             $options['secondary_color'] = $request->secondary_color;
         }
                     
-        S3Helper::compileLocalScss($tenantName, $options);
+        $this->compileLocalScss($tenantName, $options);
 
         // Set response data
         $apiStatus = Response::HTTP_OK;

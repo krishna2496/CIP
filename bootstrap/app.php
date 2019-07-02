@@ -68,7 +68,8 @@ $app->routeMiddleware([
     'cros' => \Barryvdh\Cors\HandleCors::class, //cross origin support
     'tenant.connection' => App\Http\Middleware\TenantConnectionMiddleware::class, // Middle ware that connect tenant user with their tenant
     'auth.tenant.admin' => App\Http\Middleware\AuthTenantAdminMiddleware::class,
-    'localization' => App\Http\Middleware\LocalizationMiddleware::class
+    'localization' => App\Http\Middleware\LocalizationMiddleware::class,
+    'JsonApiMiddleware' => App\Http\Middleware\JsonApiMiddleware::class
 ]);
 
 /**

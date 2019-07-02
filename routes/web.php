@@ -1,17 +1,4 @@
 <?php
-
-/*
-|--------------------------------------------------------------------------
-| Default route
-|--------------------------------------------------------------------------
-| This is default route of Laravel Lumen
-|
-*/
-
-$router->get('/', function () use ($router) {
-    return $router->app->version();
-});
-
 /*
 |--------------------------------------------------------------------------
 | Authentication routes
@@ -98,29 +85,36 @@ $router->get('language/{lang}', ['uses' => 'App\Language\LanguageController@fetc
 */
 
 /* Set user data for tenant specific */
-$router->group(['prefix' => 'users', 'middleware' => 'localization|auth.tenant.admin'], function ($router) {
-    $router->get('/', ['uses' => 'Admin\User\UserController@index']);
-    $router->get('/{userId}', ['uses' => 'Admin\User\UserController@show']);
-    $router->post('/', ['uses' => 'Admin\User\UserController@store']);
-    $router->patch('/{userId}', ['uses' => 'Admin\User\UserController@update']);
-    $router->delete('/{userId}', ['uses' => 'Admin\User\UserController@destroy']);
-});
+$router->group(
+    ['prefix' => 'users', 'middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware'],
+    function ($router) {
+        $router->get('/', ['uses' => 'Admin\User\UserController@index']);
+        $router->get('/{userId}', ['uses' => 'Admin\User\UserController@show']);
+        $router->post('/', ['uses' => 'Admin\User\UserController@store']);
+        $router->patch('/{userId}', ['uses' => 'Admin\User\UserController@update']);
+        $router->delete('/{userId}', ['uses' => 'Admin\User\UserController@destroy']);
+    }
+);
 
 /* Set custom slider data for tenant specific */
 $router->post('/create_slider', ['middleware' => 'localization|auth.tenant.admin',
  'uses' => 'Admin\Tenant\TenantOptionsController@storeSlider']);
 
 /* Set Footer Page data for tenant specific */
-$router->group(['prefix' => 'cms', 'middleware' => 'localization|auth.tenant.admin'], function ($router) {
-    $router->get('/', ['uses' => 'Admin\FooterPage\FooterPageController@index']);
-    $router->post('/', ['uses' => 'Admin\FooterPage\FooterPageController@store']);
-    $router->patch('/{pageId}', ['uses' => 'Admin\FooterPage\FooterPageController@update']);
-    $router->delete('/{pageId}', ['uses' => 'Admin\FooterPage\FooterPageController@destroy']);
-});
+$router->group(
+    ['prefix' => 'cms', 'middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware'],
+    function ($router) {
+        $router->get('/', ['uses' => 'Admin\FooterPage\FooterPageController@index']);
+        $router->get('/{pageId}', ['uses' => 'Admin\FooterPage\FooterPageController@show']);
+        $router->post('/', ['uses' => 'Admin\FooterPage\FooterPageController@store']);
+        $router->patch('/{pageId}', ['uses' => 'Admin\FooterPage\FooterPageController@update']);
+        $router->delete('/{pageId}', ['uses' => 'Admin\FooterPage\FooterPageController@destroy']);
+    }
+);
 
 /* Set custom field data for tenant specific */
 $router->group(
-    ['prefix' => 'metadata/users/custom_fields', 'middleware' => 'localization|auth.tenant.admin'],
+    ['prefix' => 'metadata/users/custom_fields', 'middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware'],
     function ($router) {
         $router->get('/', ['uses' => 'Admin\User\UserCustomFieldController@index']);
         $router->post('/', ['uses' => 'Admin\User\UserCustomFieldController@store']);
@@ -130,34 +124,44 @@ $router->group(
 );
 
 /* Set mission data for tenant specific */
-$router->group(['prefix' => 'missions', 'middleware' => 'localization|auth.tenant.admin'], function ($router) {
-    $router->get('', ['uses' => 'Admin\Mission\MissionController@index']);
-    $router->post('/', ['uses' => 'Admin\Mission\MissionController@store']);
-    $router->patch('/{missionId}', ['uses' => 'Admin\Mission\MissionController@update']);
-    $router->delete('/{missionId}', ['uses' => 'Admin\Mission\MissionController@destroy']);
-    $router->get('/{missionId}/applications', ['uses' => 'Admin\Mission\MissionController@missionApplications']);
-    $router->get(
-        '/{missionId}/applications/{applicationId}',
-        ['uses' => 'Admin\Mission\MissionController@missionApplication']
-    );
-    $router->patch(
-        '/{missionId}/applications/{applicationId}',
-        ['uses' => 'Admin\Mission\MissionController@updateApplication']
-    );
-});
+$router->group(
+    ['prefix' => 'missions', 'middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware'],
+    function ($router) {
+        $router->get('', ['uses' => 'Admin\Mission\MissionController@index']);
+        $router->get('/{missionId}', ['uses' => 'Admin\Mission\MissionController@show']);
+        $router->post('/', ['uses' => 'Admin\Mission\MissionController@store']);
+        $router->patch('/{missionId}', ['uses' => 'Admin\Mission\MissionController@update']);
+        $router->delete('/{missionId}', ['uses' => 'Admin\Mission\MissionController@destroy']);
+        $router->get('/{missionId}/applications', ['uses' => 'Admin\Mission\MissionController@missionApplications']);
+        $router->get(
+            '/{missionId}/applications/{applicationId}',
+            ['uses' => 'Admin\Mission\MissionController@missionApplication']
+        );
+        $router->patch(
+            '/{missionId}/applications/{applicationId}',
+            ['uses' => 'Admin\Mission\MissionController@updateApplication']
+        );
+    }
+);
 
 /* Set skill data for tenant user specific */
-$router->group(['prefix' => 'entities/skills', 'middleware' => 'localization|auth.tenant.admin'], function ($router) {
-    $router->get('/{userId}', ['uses' => 'Admin\User\UserController@userSkills']);
-    $router->post('/', ['uses' => 'Admin\User\UserController@linkSkill']);
-    $router->delete('/', ['uses' => 'Admin\User\UserController@unlinkSkill']);
-});
+$router->group(
+    ['prefix' => 'entities/skills', 'middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware'],
+    function ($router) {
+        $router->get('/{userId}', ['uses' => 'Admin\User\UserController@userSkills']);
+        $router->post('/', ['uses' => 'Admin\User\UserController@linkSkill']);
+        $router->delete('/', ['uses' => 'Admin\User\UserController@unlinkSkill']);
+    }
+);
 
 /*Admin style routes*/
-$router->group(['prefix' => 'style', 'middleware' => 'localization|auth.tenant.admin'], function ($router) {
-    $router->post('/update-style', ['uses' => 'Admin\Tenant\TenantOptionsController@updateStyleSettings']);
-    $router->get('/reset-style', ['uses' => 'Admin\Tenant\TenantOptionsController@resetStyleSettings']);
-});
+$router->group(
+    ['prefix' => 'style', 'middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware'],
+    function ($router) {
+        $router->post('/update-style', ['uses' => 'Admin\Tenant\TenantOptionsController@updateStyleSettings']);
+        $router->get('/reset-style', ['uses' => 'Admin\Tenant\TenantOptionsController@resetStyleSettings']);
+    }
+);
 
 /*
 |
