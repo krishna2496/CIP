@@ -507,8 +507,8 @@ class MissionRepository implements MissionInterface
                     $missionLanguageQuery->Where('title', 'like', '%' . $userFilterData['search'] . '%');
                     $missionLanguageQuery->orWhere('short_description', 'like', '%' . $userFilterData['search'] . '%');
                 });
-                $query->orWhere(function ($organizationQry) use ($userFilterData) {
-                    $organizationQry->orWhere('organisation_name', 'like', '%' . $userFilterData['search'] . '%');
+                $query->orWhere(function ($organizationQuery) use ($userFilterData) {
+                    $organizationQuery->orWhere('organisation_name', 'like', '%' . $userFilterData['search'] . '%');
                 });
             });
         }
