@@ -11,6 +11,7 @@ use App;
 
 class S3Helper
 {
+    use RestExceptionHandlerTrait;
     /**
      * Create a new middleware instance.
      *

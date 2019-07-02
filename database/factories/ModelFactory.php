@@ -38,34 +38,23 @@ $factory->define(App\Models\FooterPage::class, function (Faker\Generator $faker)
 });
 
 
-$factory->define(App\Models\FooterPage::class, function (Faker\Generator $faker) {
+$factory->define(App\Models\UserCustomField::class, function (Faker\Generator $faker) {
+    $typeArray = array("radio","drop-down");
+    $randomTypes = array_rand($typeArray,1);  
     return [ 
-        'slug' => str_random(10),
-        'type' => random('radio', 'drop-down'),
+        'name' => str_random(10),
+        'type' => $typeArray[$randomTypes],
         'is_mandatory' => 1,
         'translations' => [
             'lang' => "en",
             'name' => str_random(10),
-            'values' => "['10-15','16-20','21-30']"
+            'values' => "[".rand(1,5).",".rand(5,10)."]"
         ]
     ];
 });
 
-
-{  
-    "name":"Age",
-    "type":"radio",
-    "is_mandatory":"1",
-    "translations":[  
-          {  
-             "lang":"en",
-             "name":"Age",
-             "values":"['10-15','16-20','21-30']"
-          },
-          {  
-             "lang":"de",
-             "name":"Alter",
-             "values":"['10-15','16-20','21-30']"
-          }
-       ]
- }
+$factory->define(App\Models\TenantOption::class, function (Faker\Generator $faker) {
+    return [
+        'option_name' => 'slider'
+    ];
+});

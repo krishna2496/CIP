@@ -64,37 +64,33 @@ class UserCustomFieldTest extends TestCase
      */
     public function it_should_create_user_custom_field()
     {
-        $slug = str_random(20);
+        $typeArray = array("radio","drop-down");
+        $randomTypes = array_rand($typeArray,1);       
+        $name = str_random(20);
         $params = [
-            'page_details' =>
+            'name' => $name,
+            'type' => $typeArray[$randomTypes],
+            'is_mandatory' => 1,
+            'translations' => [
                 [
-                'slug' => $slug,
-                'translations' =>  [
-                    [
-                        'lang' => 'en',
-                        'title' => str_random(20),
-                        'sections' =>  [
-                            [
-                                'title' => str_random(20),
-                                'description' => str_random(255),
-                            ]
-                        ],
-                    ]
-                ],
-            ],
+                    'lang' => "en",
+                    'name' => str_random(10),
+                    'values' => "[".rand(1, 5).",".rand(5, 10)."]"
+                ]
+            ]
         ];
 
-        $this->post("metadata.users.custom_fields/", $params, ['Authorization' => 'Basic dGF0dmFzb2Z0X2FwaV9rZXk6dGF0dmFzb2Z0X2FwaV9zZWNyZXQ='])
+        $this->post("metadata/users/custom_fields/", $params, ['Authorization' => 'Basic dGF0dmFzb2Z0X2FwaV9rZXk6dGF0dmFzb2Z0X2FwaV9zZWNyZXQ='])
         ->seeStatusCode(201)
         ->seeJsonStructure([
             'data' => [
-                'page_id',
+                'field_id',
             ],
             'message',
             'status',
             ]);
         
-        UserCustomField::where('slug', $slug)->delete();
+        UserCustomField::where('name', $name)->delete();
     }
 
     /**
@@ -106,41 +102,38 @@ class UserCustomFieldTest extends TestCase
      */
     public function it_should_update_user_custom_field()
     {
+        $typeArray = array("radio","drop-down");
+        $randomTypes = array_rand($typeArray,1);       
+        $name = str_random(20);
         $params = [
-            'page_details' =>
+            'name' => $name,
+            'type' => $typeArray[$randomTypes],
+            'is_mandatory' => 1,
+            'translations' => [
                 [
-                'slug' => str_random(20),
-                'translations' =>  [
-                    [
-                        'lang' => 'en',
-                        'title' => str_random(20),
-                        'sections' =>  [
-                            [
-                                'title' => str_random(20),
-                                'description' => str_random(255),
-                            ]
-                        ],
-                    ]
-                ],
-            ],
+                    'lang' => "en",
+                    'name' => str_random(10),
+                    'values' => "[".rand(1, 5).",".rand(5, 10)."]"
+                ]
+            ]
         ];
 
         $connection = 'tenant';
-        $footerPage = factory(\App\Models\UserCustomField::class)->make();
-        $footerPage->setConnection($connection);
-        $footerPage->save();
-        $page_id = $footerPage->page_id;
+        $userCustomField = factory(\App\Models\UserCustomField::class)->make();
+        $userCustomField->setConnection($connection);
+        $userCustomField->save();
+        $field_id = $userCustomField->field_id;
 
-        $this->patch("metadata.users.custom_fields/".$page_id, $params, ['Authorization' => 'Basic dGF0dmFzb2Z0X2FwaV9rZXk6dGF0dmFzb2Z0X2FwaV9zZWNyZXQ='])
+        $this->patch("metadata/users/custom_fields/".$field_id, $params, ['Authorization' => 'Basic dGF0dmFzb2Z0X2FwaV9rZXk6dGF0dmFzb2Z0X2FwaV9zZWNyZXQ='])
         ->seeStatusCode(200)
         ->seeJsonStructure([
             'data' => [
-                'page_id',
+                'field_id',
             ],
             'message',
             'status',
             ]);
-        $footerPage->delete();
+        $userCustomField->delete();
     }
     
     /**
@@ -153,12 +146,12 @@ class UserCustomFieldTest extends TestCase
     public function it_should_delete_user_custom_field()
     {
         $connection = 'tenant';
-        $footerPage = factory(\App\Models\UserCustomField::class)->make();
-        $footerPage->setConnection($connection);
-        $footerPage->save();
+        $userCustomField = factory(\App\Models\UserCustomField::class)->make();
+        $userCustomField->setConnection($connection);
+        $userCustomField->save();
 
         $this->delete(
-            "metadata.users.custom_fields/".$footerPage->page_id,
+            "metadata/users/custom_fields/".$userCustomField->field_id,
             [],
             ['Authorization' => 'Basic dGF0dmFzb2Z0X2FwaV9rZXk6dGF0dmFzb2Z0X2FwaV9zZWNyZXQ=']
         )
@@ -174,7 +167,7 @@ class UserCustomFieldTest extends TestCase
     public function it_should_return_user_custom_field_not_found_on_delete()
     {
         $this->delete(
-            "metadata.users.custom_fields/".rand(1000000, 50000000),
+            "metadata/users/custom_fields/".rand(1000000, 50000000),
             [],
             ['Authorization' => 'Basic dGF0dmFzb2Z0X2FwaV9rZXk6dGF0dmFzb2Z0X2FwaV9zZWNyZXQ=']
         )
@@ -207,7 +200,7 @@ class UserCustomFieldTest extends TestCase
         ];
         
         $this->patch(
-            "metadata.users.custom_fields/".rand(1000000, 50000000),
+            "metadata/users/custom_fields/".rand(1000000, 50000000),
             $params,
             ['Authorization' => 'Basic dGF0dmFzb2Z0X2FwaV9rZXk6dGF0dmFzb2Z0X2FwaV9zZWNyZXQ=']
         )

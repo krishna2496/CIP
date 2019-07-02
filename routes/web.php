@@ -103,7 +103,7 @@ $router->group(['prefix' => 'users', 'middleware' => 'localization|auth.tenant.a
 });
 
 /* Set custom slider data for tenant specific */
-$router->post('/create_slider', ['middleware' => 'localization|auth.tenant.admin',
+$router->post('/create_slider', ['as' => 'create_slider', 'middleware' => 'localization|auth.tenant.admin',
  'uses' => 'Admin\Tenant\TenantOptionsController@storeSlider']);
 
 /* Set Footer Page data for tenant specific */
