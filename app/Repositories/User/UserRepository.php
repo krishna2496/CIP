@@ -134,7 +134,7 @@ class UserRepository implements UserInterface
      * Remove the specified resource from storage
      *
      * @param array $request
-	 * @param int $id
+     * @param int $id
      * @return bool
      */
     public function unlinkSkill(array $request, int $id): bool

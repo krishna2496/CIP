@@ -292,7 +292,7 @@ class UserController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  \Illuminate\Http\Request $request
-	 * @param  int $id
+     * @param  int $id
      * @return Illuminate\Http\JsonResponse
      */
     public function unlinkSkill(Request $request, int $id): JsonResponse

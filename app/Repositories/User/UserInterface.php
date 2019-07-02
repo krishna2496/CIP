@@ -67,7 +67,7 @@ interface UserInterface
      * Remove the specified resource from storage.
      *
      * @param  array $request
-	 * @param  int $id
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
     public function unlinkSkill(array $request, int $id);
