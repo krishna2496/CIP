@@ -10,7 +10,7 @@ class ThemeTest extends TestCase
      *
      * @return void
      */
-    public function testShouldReturnAllTheme()
+    public function it_should_return_all_theme()
     {
         $this->get("theme", []);
         $this->seeStatusCode(200);
@@ -18,6 +18,21 @@ class ThemeTest extends TestCase
         $this->seeJsonStructure([
             "status",
             'data',
+            "message"
+        ]);
+    }
+
+    /**
+     * @test
+     *
+     * No mission theme found
+     */
+    public function it_should_return_no_theme_found()
+    {
+        $this->get("theme", []);
+        $this->seeStatusCode(200);
+        $this->seeJsonStructure([
+            "status",
             "message"
         ]);
     }

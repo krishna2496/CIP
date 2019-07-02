@@ -156,23 +156,24 @@ class UserTest extends TestCase
      */
     public function it_should_create_user()
     {
+        $name = str_random(10);
         $params = [
-                    'first_name' => str_random(10),
-                    'last_name' => str_random(10),
-                    'email' => str_random(10).'@email.com',
-                    'password' => str_random(10),
-                    'timezone_id' => rand(1, 1),
-                    'language_id' => rand(1, 1),
-                    'availability_id' => rand(1, 50),
-                    'why_i_volunteer' => str_random(10),
-                    'employee_id' => str_random(10),
-                    'department' => str_random(10),
-                    'manager_name' => str_random(10),
-                    'city_id' => rand(1, 1),
-                    'country_id' => rand(1, 1),
-                    'profile_text' => str_random(10),
-                    'linked_in_url' => 'https://www.'.str_random(10).'.com'
-                ];
+                'first_name' => $name,
+                'last_name' => str_random(10),
+                'email' => str_random(10).'@email.com',
+                'password' => str_random(10),
+                'timezone_id' => rand(1, 1),
+                'language_id' => rand(1, 1),
+                'availability_id' => rand(1, 50),
+                'why_i_volunteer' => str_random(10),
+                'employee_id' => str_random(10),
+                'department' => str_random(10),
+                'manager_name' => str_random(10),
+                'city_id' => rand(1, 1),
+                'country_id' => rand(1, 1),
+                'profile_text' => str_random(10),
+                'linked_in_url' => 'https://www.'.str_random(10).'.com'
+            ];
 
         $this->post("users/", $params, ['Authorization' => 'Basic dGF0dmFzb2Z0X2FwaV9rZXk6dGF0dmFzb2Z0X2FwaV9zZWNyZXQ='])
         ->seeStatusCode(201)
@@ -183,6 +184,8 @@ class UserTest extends TestCase
             'message',
             'status',
         ]);
+        
+        User::where("first_name", $name)->orderBy("user_id", "DESC")->take(1)->delete();
     }
 
     /**

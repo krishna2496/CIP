@@ -137,39 +137,6 @@ class TenantOptionController extends Controller
     }
 
     /**
-     * Get tenant logo from table `tenant_options`
-     *
-     * @return string
-     */
-    public function getTenantLogo()
-    {
-        $tenantLogo = '';
-
-        try {
-            // find custom data
-            $tenantOptions = $this->tenantOptionRepository->getOptionWithCondition(['option_name', 'custom_logo']);
-            if ($tenantOptions && $tenantOptions->option_value) {
-                $tenantLogo = $tenantOptions->option_value;
-            }
-            return $tenantLogo;
-        } catch (PDOException $e) {
-            return $this->PDO(
-                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
-                trans(
-                    'messages.custom_error_message.ERROR_DATABASE_OPERATIONAL'
-                )
-            );
-        } catch (InvalidArgumentException $e) {
-            return $this->invalidArgument(
-                config('constants.error_codes.ERROR_INVALID_ARGUMENT'),
-                trans('messages.custom_error_message.ERROR_INVALID_ARGUMENT')
-            );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURED'));
-        }
-    }
-
-    /**
      * Get tenant custom css from table `tenant_options`
      *
      * @return string

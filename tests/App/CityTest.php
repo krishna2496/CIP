@@ -6,11 +6,13 @@ use Laravel\Lumen\Testing\DatabaseTransactions;
 class CityTest extends TestCase
 {
     /**
+     * @test
+     *
      * Get all city
      *
      * @return void
      */
-    public function testShouldReturnAllCity()
+    public function it_should_return_all_city()
     {
         $this->get("city", []);
         $this->seeStatusCode(200);
@@ -23,9 +25,11 @@ class CityTest extends TestCase
     }
 
     /**
+     * @test
+     *
      * No city found
      */
-    public function testShouldReturnNoCityFound()
+    public function it_should_return_no_city_found()
     {
         $this->get("city", []);
         $this->seeStatusCode(200);

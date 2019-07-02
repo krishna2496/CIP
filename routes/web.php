@@ -24,15 +24,15 @@ $router->get('/', function () use ($router) {
 */
 $router->group(['middleware' => 'localization'], function ($router) {
     /* Connect first time to get styling data. */
-    $router->get('connect', ['middleware' => 'tenant.connection',
+    $router->get('connect', ['as' => 'connect', 'middleware' => 'tenant.connection',
      'uses' => 'App\Tenant\TenantOptionController@getTenantOption']);
 
     /* User login routing using jwt token */
-    $router->post('login', ['middleware' => 'tenant.connection',
+    $router->post('login', ['as' =>'login', 'middleware' => 'tenant.connection',
      'uses' => 'App\Auth\AuthController@authenticate']);
 
     /* Forgot password routing */
-    $router->post('request_password_reset', ['middleware' => 'tenant.connection',
+    $router->post('request_password_reset', ['as' => 'request_password_reset', 'middleware' => 'tenant.connection',
      'uses' => 'App\Auth\AuthController@requestPasswordReset']);
 
     /* Password reset routing */
@@ -44,22 +44,19 @@ $router->group(['middleware' => 'localization'], function ($router) {
      'uses' => 'App\Auth\AuthController@passwordReset']);
 
     /* CMS footer pages  */
-    $router->get('/cms/listing', ['middleware' => 'localization|tenant.connection',
+    $router->get('/cms/listing', ['as' => 'cms.listing', 'middleware' => 'localization|tenant.connection',
      'uses' => 'App\FooterPage\FooterPageController@index']);
-    $router->get('/cms/detail', ['middleware' => 'localization|tenant.connection',
+    $router->get('/cms/detail', ['as' => 'cms.detail', 'middleware' => 'localization|tenant.connection',
      'uses' => 'App\FooterPage\FooterPageController@cmsList']);
-    $router->get('/cms/{pageId}', ['middleware' => 'localization|tenant.connection',
+    $router->get('/cms/{slug}', ['as' => 'cms.show', 'middleware' => 'localization|tenant.connection',
      'uses' => 'App\FooterPage\FooterPageController@show']);
     
     /* Get custom css url  */
-    $router->get('custom_css', ['middleware' => 'tenant.connection',
+    $router->get('custom_css', ['as' => 'custom_css', 'middleware' => 'tenant.connection',
      'uses' => 'App\Tenant\TenantOptionController@getCustomCss']);
-    /* Get custom field data  */
-    $router->get('/custom_field/', ['middleware' => 'localization|tenant.connection',
-     'uses' => 'App\USer\UserCustomFieldController@index']);
-
+    
     /* Get mission listing  */
-    $router->get('/app/missions/', ['middleware' => 'localization|tenant.connection|jwt.auth',
+    $router->get('/app/missions/', ['as' => 'app.missions', 'middleware' => 'localization|tenant.connection|jwt.auth',
      'uses' => 'App\Mission\MissionController@appMissionList']);
 
     /* Get country list  */
