@@ -502,12 +502,12 @@ class MissionRepository implements MissionInterface
 
         if ($userFilterData['search'] && $userFilterData['search'] != '') {
             $missionQuery->Where(function ($query) use ($userFilterData) {
-                $query->wherehas('missionLanguage', function ($query) use ($userFilterData) {
-                    $query->Where('title', 'like', '%' . $userFilterData['search'] . '%');
-                    $query->orWhere('short_description', 'like', '%' . $userFilterData['search'] . '%');
+                $query->wherehas('missionLanguage', function ($q) use ($userFilterData) {
+                    $q->Where('title', 'like', '%' . $userFilterData['search'] . '%');
+                    $q->orWhere('short_description', 'like', '%' . $userFilterData['search'] . '%');
                 });
-                $query->orWhere(function ($query) use ($userFilterData) {
-                    $query->orWhere('organisation_name', 'like', '%' . $userFilterData['search'] . '%');
+                $query->orWhere(function ($qry) use ($userFilterData) {
+                    $qry->orWhere('organisation_name', 'like', '%' . $userFilterData['search'] . '%');
                 });
             });
         }
