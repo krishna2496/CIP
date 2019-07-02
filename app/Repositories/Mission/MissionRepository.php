@@ -476,7 +476,8 @@ class MissionRepository implements MissionInterface
             'mission.publication_status',
             'mission.organisation_id',
             'mission.organisation_name'
-        )
+        );
+        $missionQuery->where('publication_status', config("constants.publication_status")["APPROVED"])
             ->with(['missionTheme', 'missionMedia'
             ])->with(['missionMedia' => function ($query) {
                 $query->where('status', '1');
@@ -497,21 +498,17 @@ class MissionRepository implements MissionInterface
 
         if ($userFilterData['search'] && $userFilterData['search'] != '') {
             $missionQuery->Where(function ($query) use ($userFilterData) {
-                $query->wherehas('missionLanguage', function ($q) use ($userFilterData) {
-                    $q->Where('title', 'like', '%' . $userFilterData['search'] . '%');
-                    $q->orWhere('short_description', 'like', '%' . $userFilterData['search'] . '%');
+                $query->wherehas('missionLanguage', function ($missionLanguageQuery) use ($userFilterData) {
+                    $missionLanguageQuery->Where('title', 'like', '%' . $userFilterData['search'] . '%');
+                    $missionLanguageQuery->orWhere('short_description', 'like', '%' . $userFilterData['search'] . '%');
                 });
-                $query->orWhere(function ($qry) use ($userFilterData) {
-                    $qry->orWhere('organisation_name', 'like', '%' . $userFilterData['search'] . '%');
+                $query->orWhere(function ($organizationQuery) use ($userFilterData) {
+                    $organizationQuery->orWhere('organisation_name', 'like', '%' . $userFilterData['search'] . '%');
                 });
             });
         }
-    
-
-        $missionQuery->where('publication_status', config("constants.publication_status")["APPROVED"]);
-
-        $mission =  $missionQuery->orderBy('mission.mission_id', 'ASC')->paginate(config("constants.PER_PAGE_LIMIT"));
-
+        
+        $mission =  $missionQuery->orderBy('mission.mission_id', 'ASC')->paginate(20);
         return $mission;
     }
 }
