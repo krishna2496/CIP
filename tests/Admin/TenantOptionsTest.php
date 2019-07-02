@@ -2,6 +2,7 @@
 use Laravel\Lumen\Testing\DatabaseMigrations;
 use Laravel\Lumen\Testing\DatabaseTransactions;
 use App\Models\TenantOption;
+use App\Repositories\TenantOption\TenantOptionRepository;
 
 class TenantOptionsTest extends TestCase
 {
@@ -82,9 +83,11 @@ class TenantOptionsTest extends TestCase
 
         $connection = 'tenant';
         $tenant = factory(\App\Models\TenantOption::class)->make();
-        $this->setConnection($connection);
+        $tenant->setConnection($connection);
         
-        $slides = TenantOption::where("option_name", "slider")->get();
+        $tenantOptionRepository = new TenantOptionRepository();
+
+        $slides = $tenantOptionRepository->getAllSliderCount();
         dd($slides);
 
         $this->post("create_slider/", $params, ['Authorization' => 'Basic dGF0dmFzb2Z0X2FwaV9rZXk6dGF0dmFzb2Z0X2FwaV9zZWNyZXQ='])
