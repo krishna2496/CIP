@@ -244,13 +244,13 @@ class UserController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request $request
+     * @param  int $id
      * @return Illuminate\Http\JsonResponse
      */
-    public function linkSkill(Request $request): JsonResponse
+    public function linkSkill(Request $request, int $id): JsonResponse
     {
         try {
             $validator = Validator::make($request->toArray(), [
-                'user_id' => 'required',
                 'skills' => 'required',
                 'skills.*.skill_id' => 'required|string',
             ]);
@@ -265,7 +265,7 @@ class UserController extends Controller
                 );
             }
 
-            $this->userRepository->linkSkill($request->toArray());
+            $this->userRepository->linkSkill($request->toArray(), $id);
 
             // Set response data
             $apiStatus = Response::HTTP_CREATED;
@@ -292,14 +292,14 @@ class UserController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  \Illuminate\Http\Request $request
+	 * @param  int $id
      * @return Illuminate\Http\JsonResponse
      */
-    public function unlinkSkill(Request $request): JsonResponse
+    public function unlinkSkill(Request $request, int $id): JsonResponse
     {
         try {
             // Server side validataions
             $validator = Validator::make($request->toArray(), [
-                'user_id' => 'required',
                 'skills' => 'required',
                 'skills.*.skill_id' => 'required|string',
             ]);
@@ -314,7 +314,7 @@ class UserController extends Controller
                 );
             }
 
-            $userSkill = $this->userRepository->unlinkSkill($request->toArray());
+            $userSkill = $this->userRepository->unlinkSkill($request->toArray(), $id);
             // Set response data
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_USER_SKILLS_DELETED');

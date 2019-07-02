@@ -146,11 +146,11 @@ $router->group(
 
 /* Set skill data for tenant user specific */
 $router->group(
-    ['prefix' => 'entities/skills', 'middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware'],
+    ['prefix' => 'user/skills', 'middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware'],
     function ($router) {
         $router->get('/{userId}', ['uses' => 'Admin\User\UserController@userSkills']);
-        $router->post('/', ['uses' => 'Admin\User\UserController@linkSkill']);
-        $router->delete('/', ['uses' => 'Admin\User\UserController@unlinkSkill']);
+        $router->post('/{userId}', ['uses' => 'Admin\User\UserController@linkSkill']);
+        $router->delete('/{userId}', ['uses' => 'Admin\User\UserController@unlinkSkill']);
     }
 );
 

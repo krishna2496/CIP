@@ -65,7 +65,7 @@ class Skill extends Model
      * @param  string  $value
      * @return mixed
      */
-    public function getTranslationsAttribute($value)
+    public function getTranslationsAttribute(string $value)
     {
         return unserialize($value);
     }

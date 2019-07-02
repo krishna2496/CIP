@@ -118,19 +118,14 @@ class UserRepository implements UserInterface
     /**
      * Store a newly created resource into database
      *
-     * @param \Illuminate\Http\Request $request
+     * @param array $request
+     * @param int $id
      * @return bool
      */
-    public function linkSkill($request): bool
+    public function linkSkill(array $request, int $id): bool
     {
         foreach ($request['skills'] as $value) {
-            $skill = array(
-                'user_id' => $request['user_id'],
-                'skill_id' => $value['skill_id'],
-            );
-            
-            $this->userSkill->linkUserSkill($request['user_id'], $value['skill_id']);
-            unset($skill);
+            $this->userSkill->linkUserSkill($id, $value['skill_id']);
         }
         return true;
     }
@@ -139,13 +134,14 @@ class UserRepository implements UserInterface
      * Remove the specified resource from storage
      *
      * @param array $request
+	 * @param int $id
      * @return bool
      */
-    public function unlinkSkill($request): bool
+    public function unlinkSkill(array $request, int $id): bool
     {
         $userSkill = $this->userSkill;
         foreach ($request['skills'] as $value) {
-            $userSkill = $this->userSkill->deleteUserSkill($request['user_id'], $value['skill_id']);
+            $userSkill = $this->userSkill->deleteUserSkill($id, $value['skill_id']);
         }
         return $userSkill;
     }

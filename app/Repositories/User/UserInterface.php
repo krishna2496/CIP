@@ -57,16 +57,18 @@ interface UserInterface
     /**
      * Store a new resource.
      *
-     * @param  \Illuminate\Http\Request $request
+     * @param  array $request
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
-    public function linkSkill(Request $request);
+    public function linkSkill(array $request, int $id);
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \Illuminate\Http\Request $request
+     * @param  array $request
+	 * @param  int $id
      * @return \Illuminate\Http\Response
      */
-    public function unlinkSkill(Request $request);
+    public function unlinkSkill(array $request, int $id);
 }
