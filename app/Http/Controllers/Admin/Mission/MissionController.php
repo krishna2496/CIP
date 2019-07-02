@@ -110,8 +110,8 @@ class MissionController extends Controller
                 "documents.*.document_name" => "required",
                 "documents.*.document_type" => Rule::in(config('constants.document_types')),
                 "documents.*.document_path" => "required",
-                "start_date" => "before:end_date",
-                "end_date" => "after:start_date",
+                "start_date" => "sometimes|required_with:end_date",
+                "end_date" => "sometimes|after:start_date",
                 "total_seats" => "numeric"
             ]
         );
@@ -208,8 +208,8 @@ class MissionController extends Controller
                 "documents.*.document_type" => ['required_with:documents',
                  Rule::in(config('constants.document_types'))],
                 "documents.*.document_path" => "required_with:documents",
-                "start_date" => "before:end_date",
-                "end_date" => "after:start_date",
+                "start_date" => "sometimes|required_with:end_date",
+                "end_date" => "sometimes|after:start_date",
                 "total_seats" => "numeric"
             ]
         );

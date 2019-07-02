@@ -210,7 +210,6 @@ class MissionRepository implements MissionInterface
                 }
             }
         }
-
         return $mission;
     }
     
@@ -225,41 +224,41 @@ class MissionRepository implements MissionInterface
     {
         $languages = $this->languageHelper->getLanguages($request);
         // Set data for update record
-        $countryId = $this->helpers->getCountryId($request->location['country_code']);
-        $missionData = array('theme_id' => $request->theme_id,
-                             'city_id' => $request->location['city_id'],
-                             'country_id' => $countryId,
-                             'start_date' => (isset($request->start_date)) ? $request->start_date : null,
-                             'end_date' => (isset($request->end_date)) ? $request->end_date : null,
-                             'total_seats' => (isset($request->total_seats) && ($request->total_seats != '')) ?
-                              $request->total_seats : null,
-                              'application_deadline' => (isset($request->application_deadline))
-                              ? $request->application_deadline : null,
-                             'publication_status' => $request->publication_status,
-                             'organisation_id' => $request->organisation['organisation_id'],
-                             'organisation_name' => $request->organisation['organisation_name'],
-                             'mission_type' => $request->mission_type,
-                             'goal_objective' => $request->goal_objective);
-        
-        // Update record
-        $mission = $this->mission->findOrFail($id);
-        $mission->update($missionData);
-       
-        // Add/Update mission title
-        foreach ($request->mission_detail as $value) {
-            $language = $languages->where('code', $value['lang'])->first();
-            $missionLanguage = array('mission_id' => $id,
-                                    'language_id' => $language->language_id,
-                                    'title' => $value['title'],
-                                    'short_description' => (isset($value['short_description'])) ?
-                                     $value['short_description'] : null,
-                                    'description' => ($value['section']),
-                                    'objective' => $value['objective']);
+        if (isset($request->location['country_code'])) {
+            $countryId = $this->helpers->getCountryId($request->location['country_code']);
+            $request->request->add(['country_id' => $countryId]);
+        }
+        if (isset($request->location['city_id'])) {
+            $request->request->add(['city_id' => $request->location['city_id']]);
+        }
+        if (isset($request->organisation['organisation_id'])) {
+            // $request->organisation_id = $request->organisation['organisation_id'];
+            $request->request->add(['organisation_id' => $request->organisation['organisation_id']]);
+        }
+        if (isset($request->organisation['organisation_name'])) {
+            $request->request->add(['organisation_name' => $request->organisation['organisation_name']]);
+        }
 
-            $this->missionLanguage->createOrUpdateLanguage(['mission_id' => $id,
-             'language_id' => $language->language_id], $missionLanguage);
-                
-            unset($missionLanguage);
+        $mission = $this->mission->findOrFail($id);
+        $mission->update($request->toArray());
+      
+        // Add/Update mission title
+        if (isset($request->mission_detail)) {
+            foreach ($request->mission_detail as $value) {
+                $language = $languages->where('code', $value['lang'])->first();
+                $missionLanguage = array('mission_id' => $id,
+                                        'language_id' => $language->language_id,
+                                        'title' => $value['title'],
+                                        'short_description' => (isset($value['short_description'])) ?
+                                        $value['short_description'] : null,
+                                        'description' => ($value['section']),
+                                        'objective' => $value['objective']);
+
+                $this->missionLanguage->createOrUpdateLanguage(['mission_id' => $id,
+                'language_id' => $language->language_id], $missionLanguage);
+                    
+                unset($missionLanguage);
+            }
         }
 
         $tenantName = $this->helpers->getSubDomainFromRequest($request);
