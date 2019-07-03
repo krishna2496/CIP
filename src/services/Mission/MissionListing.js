@@ -33,14 +33,7 @@ export default async(data) => {
         .then((response) => {
 
             responseData = response.data;
-            // Set header menu data
-            if (response.data.meta_data) {
-                headerMenuData.top_theme = response.data.meta_data.top_themes;
-                headerMenuData.top_country = response.data.meta_data.top_countries;
-                headerMenuData.top_organization = response.data.meta_data.top_organization;
-            }
-
-            store.commit('headerMenu',headerMenuData);
+            
             // Set filter data
             if (response.data.meta_data.filters) {
                 let filterData = {};

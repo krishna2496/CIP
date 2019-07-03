@@ -261,7 +261,7 @@
 
 <script>
 import store from '../../store';
-import {missionListing} from '../../services/service';
+import {exploreMission} from '../../services/service';
 export default {
     components: {},
     name: "PrimaryHeader",
@@ -374,23 +374,28 @@ export default {
                 this.filterData['parmas'] = this.$route.params.searchParams;
             }
             this.$emit('exploreMisison',this.filterData);
-        }   
+        },
+        async exploreMissions(){
+            await exploreMission().then( response => {
+                let menuBar = JSON.parse(store.state.menubar);
+                this.topTheme =  menuBar.top_theme;
+                this.topCountry =  menuBar.top_country;
+                this.topOrganization =  menuBar.top_organization;
+                if (this.topTheme != null && this.topTheme.length > 0 ) {
+                    this.topThemeClass = 'has-submenu';
+                }
+                if (this.topCountry != null && this.topCountry.length > 0 ) {
+                    this.topCountryClass = 'has-submenu';
+                }
+                if (this.topOrganization != null && this.topOrganization.length > 0 ) {
+                    this.topOrganizationClass = 'has-submenu';
+                }  
+            }); 
+        },   
     },
     created() {
         document.addEventListener("scroll", this.handscroller);
-        let menuBar = JSON.parse(store.state.menubar);
-        this.topTheme =  menuBar.top_theme;
-        this.topCountry =  menuBar.top_country;
-        this.topOrganization =  menuBar.top_organization;
-        if (this.topTheme != null && this.topTheme.length > 0 ) {
-            this.topThemeClass = 'has-submenu';
-        }
-        if (this.topCountry != null && this.topCountry.length > 0 ) {
-            this.topCountryClass = 'has-submenu';
-        }
-        if (this.topOrganization != null && this.topOrganization.length > 0 ) {
-            this.topOrganizationClass = 'has-submenu';
-        }
+        this.exploreMissions();
     }
     };
 </script>
