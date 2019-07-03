@@ -163,6 +163,13 @@ $router->group(
     }
 );
 
+/* Admin setting routes */
+$router->group(
+    ['prefix' => 'setting', 'middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware'],
+    function ($router) {
+        $router->patch('/{settingId}', ['uses' => 'Admin\Tenant\SettingController@update']);
+    }
+);
 /*
 |
 |--------------------------------------------------------------------------
