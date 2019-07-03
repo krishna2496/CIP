@@ -10,7 +10,8 @@ let routes = [{
     name: 'login',
     component: () =>
         import ('./views/Auth/Login.vue')
-}, {
+},
+{
     path: '/home',
     name: 'home',
     meta: {
@@ -18,7 +19,17 @@ let routes = [{
     },
     component: () =>
         import ('./views/Home.vue')
-}, {
+},
+{
+    path: '/home/:searchParamsType/:searchParams',
+    name: 'exploreMission',
+    meta: {
+        requiresAuth: true
+    },
+    component: () =>
+        import ('./views/Home.vue')
+},
+{
     path: '/reset-password/:token',
     name: 'resetPassword',
     component: () =>
@@ -33,7 +44,18 @@ let routes = [{
     name: 'cms',
     component: () =>
         import ('./views/Cms.vue')
-}];
+},
+{
+    path: '/home/:searchParamsType',
+    name: 'exploreMissions',
+    meta: {
+        requiresAuth: true
+    },
+    component: () =>
+        import ('./views/Home.vue')
+},
+
+];
 
 export default new Router({
     mode: 'history',

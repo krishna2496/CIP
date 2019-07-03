@@ -66,6 +66,7 @@ import store from "../../store";
 export default {
     components: { AppCustomDropdown, AppCheckboxDropdown },
     name: "TheSecondaryHeader", 
+    props: ['search'],
     data() {
         return {
             defautCountry: "Country",
@@ -80,7 +81,6 @@ export default {
                 text: ""
             },
             show: false,
-            search: ''
         };
     },
     methods: {
@@ -162,7 +162,7 @@ export default {
 
         fetchFilters() {
             this.$emit('cmsListing',this.$route.params.slug);
-        }
+        },
     },
     created() {
         var _this = this;

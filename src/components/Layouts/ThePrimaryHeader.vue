@@ -20,31 +20,77 @@
 					<ul v-if="this.$store.state.isLoggedIn">
                         <li class="has-menu">
                           <a href="#" :title='$t("label.explore")'>{{ $t("label.explore")}}</a>
+
                           <ul class="dropdown-menu sub-dropdown">
-                            <li class="has-submenu"><a href="#">{{ $t("label.top_themes")}}</a>
-                              <ul class="subdropdown-menu">
-                                <li><a href="#">{{ $t("label.education")}}</a></li>
-                                <li><a href="#">{{ $t("label.children")}}</a></li>
-                                <li><a href="#">{{ $t("label.health")}}</a></li>
-                                <li><a href="#">{{ $t("label.animals")}}</a></li>
-                                <li><a href="#">{{ $t("label.nutritions")}}</a></li>
+                            <li 
+                            v-bind:class="topThemeClass"
+                            >
+                              <a href="#">{{ $t("label.top_themes")}}</a>
+                              <ul class="subdropdown-menu" v-if="topTheme != null && topTheme.length > 0">
+                                <li v-for = "items in topTheme">
+                                    <router-link 
+                                    :to="{ path: '/home/themes/'+items.id}" @click.native="menuBarclickHandler"
+                                    >
+                                    {{ items.title}}
+                                    </router-link>
+                                </li>
                               </ul>
                             </li>
-                            <li class="has-submenu"><a href="#">{{ $t("label.top_country")}}</a>
-                                <ul class="subdropdown-menu">
-                                    <li><a href="#">{{ $t("label.education")}}</a></li>
-                                    <li><a href="#">{{ $t("label.children")}}</a></li>
-                                    <li><a href="#">{{ $t("label.health")}}</a></li>
-                                    <li><a href="#">{{ $t("label.animals")}}</a></li>
-                                    <li><a href="#">{{ $t("label.nutritions")}}</a></li>
+                            <li
+                            v-bind:class="topCountryClass"
+                            >
+                            <a href="#">{{$t("label.top_country")}}</a>
+                                <ul class="subdropdown-menu" v-if="topCountry != null && topCountry.length > 0">
+                                    <li v-for = "items in topCountry">
+                                    <router-link 
+                                    :to="{ path: '/home/country/'+items.title.toLowerCase().trim()}"
+                                    @click.native="menuBarclickHandler"
+                                    >
+                                    {{ items.title}}
+                                    </router-link>
+                                    </li>
                                 </ul>
                             </li>
-                            <li class="no-dropdown"><a href="#">{{ $t("label.top_organisation")}}</a>
+                            <li v-bind:class="topOrganizationClass">
+                                <a href="#">{{ $t("label.top_organisation")}}</a>
+                                <ul class="subdropdown-menu" v-if="topOrganization != null && topOrganization.length > 0">
+                                <li v-for = "items in topOrganization">
+                                    <router-link 
+                                    :to="{ path: '/home/organization/'+items.title}" @click.native="menuBarclickHandler"
+                                    >
+                                    {{ items.title}}
+                                    </router-link>
+                                </li>
+                              </ul>
                             </li>
-                            <li class="no-dropdown"><a href="#">{{ $t("label.most_ranked")}}</a></li>
-                            <li class="no-dropdown"><a href="#">{{ $t("label.top_favourite")}}</a></li>
-                            <li class="no-dropdown"><a href="#">{{ $t("label.recommended")}}</a></li>
-                            <li class="no-dropdown"><a href="#">{{ $t("label.random")}}</a></li>
+                            <li class="no-dropdown">
+                                <router-link 
+                                    :to="{ path: '/home/most_ranked_missions'}" @click.native="menuBarclickHandler"
+                                    >
+                                    {{$t("label.most_ranked")}}
+                                </router-link>
+                            </li>
+                            <li class="no-dropdown">
+                                <router-link 
+                                    :to="{ path: '/home/favourite_missions'}" @click.native="menuBarclickHandler"
+                                    >
+                                    {{$t("label.top_favourite")}}
+                                </router-link>
+                            </li>
+                            <li class="no-dropdown">
+                                <router-link 
+                                    :to="{ path: '/home/recommended_missions'}" @click.native="menuBarclickHandler"
+                                    >
+                                    {{$t("label.recommended")}}
+                                </router-link>
+                            </li>
+                            <li class="no-dropdown">
+                                <router-link 
+                                    :to="{ path: '/home/random_missios'}" @click.native="menuBarclickHandler"
+                                    >
+                                    {{$t("label.random")}}
+                                </router-link>
+                            </li>
                           </ul>
                         </li>
                         <li class="has-menu no-dropdown">
@@ -215,13 +261,20 @@
 
 <script>
 import store from '../../store';
-
+import {missionListing} from '../../services/service';
 export default {
     components: {},
     name: "PrimaryHeader",
     data() {
         return {
             popoverShow: false,
+            topTheme :[],
+            topCountry :[],
+            topCountryClass: 'no-dropdown',
+            topThemeClass : 'no-dropdown',
+            topOrganizationClass : 'no-dropdown',
+            filterData : [],
+            topOrganization:[],
         };
     },
     mounted() {
@@ -292,7 +345,7 @@ export default {
             e.classList.add("open-nav");
         });
         },
-            closeMenu() {
+        closeMenu() {
             var body = document.querySelectorAll("body, html");
             body.forEach(function(e) {
             e.classList.remove("open-nav");
@@ -311,10 +364,33 @@ export default {
         },
         logout(){
             this.$store.commit('logoutUser');
-        }   
         },
-        created() {
-            document.addEventListener("scroll", this.handscroller);
+        menuBarclickHandler($event) {
+           
+            if(this.$route.params.searchParamsType) {
+                this.filterData['parmasType'] = this.$route.params.searchParamsType;
+            }
+            if(this.$route.params.searchParams) {
+                this.filterData['parmas'] = this.$route.params.searchParams;
+            }
+            this.$emit('exploreMisison',this.filterData);
+        }   
+    },
+    created() {
+        document.addEventListener("scroll", this.handscroller);
+        let menuBar = JSON.parse(store.state.menubar);
+        this.topTheme =  menuBar.top_theme;
+        this.topCountry =  menuBar.top_country;
+        this.topOrganization =  menuBar.top_organization;
+        if (this.topTheme != null && this.topTheme.length > 0 ) {
+            this.topThemeClass = 'has-submenu';
         }
+        if (this.topCountry != null && this.topCountry.length > 0 ) {
+            this.topCountryClass = 'has-submenu';
+        }
+        if (this.topOrganization != null && this.topOrganization.length > 0 ) {
+            this.topOrganizationClass = 'has-submenu';
+        }
+    }
     };
 </script>
