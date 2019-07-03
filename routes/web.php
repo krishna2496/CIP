@@ -156,7 +156,7 @@ $router->group(
 
 /*Admin style routes*/
 $router->group(
-    ['prefix' => 'style', 'middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware'],
+    ['prefix' => 'style', 'middleware' => 'localization|auth.tenant.admin'],
     function ($router) {
         $router->post('/update-style', ['uses' => 'Admin\Tenant\TenantOptionsController@updateStyleSettings']);
         $router->get('/reset-style', ['uses' => 'Admin\Tenant\TenantOptionsController@resetStyleSettings']);
