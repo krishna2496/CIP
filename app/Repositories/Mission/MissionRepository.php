@@ -450,9 +450,9 @@ class MissionRepository implements MissionInterface
     /**
      * Display a listing of mission.
      *
-     * Illuminate\Http\Request $request'
-     * Array $userFilterData
-     * int $languageId
+     * @param Illuminate\Http\Request $request'
+     * @param Array $userFilterData
+     * @param int $languageId
      * @return \Illuminate\Pagination\LengthAwarePaginator
      */
     public function appMissions(Request $request, array $userFilterData, int $languageId):LengthAwarePaginator
@@ -549,8 +549,8 @@ class MissionRepository implements MissionInterface
     /**
      * Display a top mission data.
      *
-     * Illuminate\Http\Request $request
-     * string $topFilterData
+     * @param Illuminate\Http\Request $request
+     * @param string $topFilterData
      * @return Illuminate\Database\Eloquent\Collection
      */
     public function exploreMission(Request $request, string $topFilterParams): Collection
