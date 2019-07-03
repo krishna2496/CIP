@@ -66,6 +66,6 @@ class Handler extends ExceptionHandler
         if ($exception instanceof FileNotFoundException) {
             return $this->filenotFound($exception->getCode(), $exception->getMessage());
         }
-        return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURED'));
+        return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
     }
 }

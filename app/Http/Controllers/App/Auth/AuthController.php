@@ -103,10 +103,14 @@ class AuthController extends Controller
     {
         try {
             // Server side validataions
-            $validator = Validator::make($request->toArray(), $user->loginRules);
+            $validator = Validator::make($request->toArray(), [
+                'email' => 'required|email',
+                'password' => 'required'
+            ]);
 
             if ($validator->fails()) {
                 return $this->responseHelper->error(
+                    dd($validator->errors()->first());
                     Response::HTTP_UNPROCESSABLE_ENTITY,
                     Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
                     config('constants.error_codes.ERROR_INVALID_DETAIL'),
@@ -163,7 +167,9 @@ class AuthController extends Controller
     {
         try {
             // Server side validataions
-            $validator = Validator::make($request->toArray(), $user->resetPasswordRules);
+            $validator = Validator::make($request->toArray(), [
+                'email' => 'required|email'
+            ]);
             
             if ($validator->fails()) {
                 return $this->responseHelper->error(

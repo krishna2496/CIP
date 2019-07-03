@@ -109,24 +109,15 @@ class FooterPageRepository implements FooterPageInterface
         if (isset($postData['translations'])) {
             foreach ($postData['translations'] as $value) {
                 $language = $languages->where('code', $value['lang'])->first();
-                
-                $footerPageData = $this->footerPageLanguage->where('page_id', $id)
-                                ->where('language_id', $language->language_id)
-                                ->count();
-                
-                $pageLanguageData = ['title' => $value['title'], 'description' => serialize($value['sections'])];
-            
-                // If record exist then update it otherwise create new record
-                if ($footerPageData > 0) {
-                    $footerPageLanguage = $this->footerPageLanguage->where('page_id', $id)
-                                        ->where('language_id', $language->language_id)
-                                        ->update($pageLanguageData);
-                } else {
-                    $pageLanguageData['page_id'] = $footerPage['page_id'];
-                    $pageLanguageData['language_id'] = $language->language_id;
-                    $footerPageLanguage = FooterPagesLanguage::create($pageLanguageData);
-                }
-                    
+                $pageLanguageData = [
+                    'title' => $value['title'],
+                    'description' => serialize($value['sections']),
+                    'page_id' => $footerPage['page_id'],
+                    'language_id' => $language->language_id
+                ];
+
+                $this->footerPageLanguage->createOrUpdateFooterPagesLanguage(['page_id' => $id,
+                 'language_id' => $language->language_id], $pageLanguageData);
                 unset($pageLanguageData);
             }
         }

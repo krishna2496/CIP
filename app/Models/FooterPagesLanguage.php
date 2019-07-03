@@ -80,4 +80,16 @@ class FooterPagesLanguage extends Model
     {
         return unserialize($value);
     }
+
+    /**
+     * Store/update specified resource.
+     *
+     * @param  array $condition
+     * @param  array $data
+     * @return array
+     */
+    public function createOrUpdateFooterPagesLanguage(array $condition, array $data)
+    {
+        return static::updateOrCreate($condition, $data);
+    }
 }
