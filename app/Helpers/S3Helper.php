@@ -40,8 +40,8 @@ class S3Helper
     {
         
             $scss = new Compiler();
-            $scss->addImportPath(realpath(storage_path().'\app\\'.$tenantName.'\assets\scss'));
-
+            $scss->addImportPath(realpath(storage_path().'/app/'.$tenantName.'/assets/scss'));
+			
             $importScss = '@import "_variables";';
         
             // Color set & other file || Color set & no file
