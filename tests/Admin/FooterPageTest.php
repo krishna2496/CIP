@@ -3,6 +3,7 @@ use Laravel\Lumen\Testing\DatabaseMigrations;
 use Laravel\Lumen\Testing\DatabaseTransactions;
 use App\Models\FooterPage;
 use App\Models\FooterPagesLanguage;
+use App\Repositories\User\UserRepository;
 
 class FooterPageTest extends TestCase
 {
@@ -15,25 +16,7 @@ class FooterPageTest extends TestCase
      */
     public function it_should_return_all_footer_pages()
     {
-        // $params = [
-        //     'name' => 'test_'.rand(1, 100),
-        //     'sponsor_id' => '456123',
-        //     'options' =>
-        //         [
-        //             'theme_enabled' => '1',
-        //             'skills_enabled' => '1',
-        //         ],
-        //     ];
-
-        //     $response = $this->call('POST', env('CIP_ADMIN_API_URL')."tenants", $params);
-        //     // $response =  $this->post(env('CIP_ADMIN_API_URL')."tenants", $params, []);
-
-        /*"*" => [
-                "title",
-                "description",
-            ]
-                                */
-        $this->get(route('cms'), ['Authorization' => 'Basic dGF0dmFzb2Z0X2FwaV9rZXk6dGF0dmFzb2Z0X2FwaV9zZWNyZXQ='])
+        $this->get(route('cms'), ['Authorization' => 'Basic '.base64_encode(env('DEFAULT_TENANT').'_api_key:'.env('DEFAULT_TENANT').'_api_secret')])
           ->seeStatusCode(200)
           ->seeJsonStructure([
             "status",
@@ -67,7 +50,8 @@ class FooterPageTest extends TestCase
      */
     public function it_should_return_no_footer_page_found()
     {
-        $this->get(route("cms"), ['Authorization' => 'Basic dGF0dmFzb2Z0X2FwaV9rZXk6dGF0dmFzb2Z0X2FwaV9zZWNyZXQ='])
+        $this->get(route("cms"), 
+        ['Authorization' => 'Basic '.base64_encode(env('DEFAULT_TENANT').'_api_key:'.env('DEFAULT_TENANT').'_api_secret')])
         ->seeStatusCode(200)
         ->seeJsonStructure([
             "status",
@@ -104,7 +88,7 @@ class FooterPageTest extends TestCase
             ],
         ];
 
-        $this->post("cms/", $params, ['Authorization' => 'Basic dGF0dmFzb2Z0X2FwaV9rZXk6dGF0dmFzb2Z0X2FwaV9zZWNyZXQ='])
+        $this->post("cms/", $params, ['Authorization' => 'Basic '.base64_encode(env('DEFAULT_TENANT').'_api_key:'.env('DEFAULT_TENANT').'_api_secret')])
         ->seeStatusCode(201)
         ->seeJsonStructure([
             'data' => [
@@ -151,7 +135,7 @@ class FooterPageTest extends TestCase
         $footerPage->save();
         $page_id = $footerPage->page_id;
 
-        $this->patch("cms/".$page_id, $params, ['Authorization' => 'Basic dGF0dmFzb2Z0X2FwaV9rZXk6dGF0dmFzb2Z0X2FwaV9zZWNyZXQ='])
+        $this->patch("cms/".$page_id, $params, ['Authorization' => 'Basic '.base64_encode(env('DEFAULT_TENANT').'_api_key:'.env('DEFAULT_TENANT').'_api_secret')])
         ->seeStatusCode(200)
         ->seeJsonStructure([
             'data' => [
@@ -180,7 +164,7 @@ class FooterPageTest extends TestCase
         $this->delete(
             "cms/".$footerPage->page_id,
             [],
-            ['Authorization' => 'Basic dGF0dmFzb2Z0X2FwaV9rZXk6dGF0dmFzb2Z0X2FwaV9zZWNyZXQ=']
+            ['Authorization' => 'Basic '.base64_encode(env('DEFAULT_TENANT').'_api_key:'.env('DEFAULT_TENANT').'_api_secret')]
         )
         ->seeStatusCode(204);
     }
@@ -196,7 +180,7 @@ class FooterPageTest extends TestCase
         $this->delete(
             "cms/".rand(1000000, 50000000),
             [],
-            ['Authorization' => 'Basic dGF0dmFzb2Z0X2FwaV9rZXk6dGF0dmFzb2Z0X2FwaV9zZWNyZXQ=']
+            ['Authorization' => 'Basic '.base64_encode(env('DEFAULT_TENANT').'_api_key:'.env('DEFAULT_TENANT').'_api_secret')]
         )
         ->seeStatusCode(404);
     }
@@ -229,7 +213,7 @@ class FooterPageTest extends TestCase
         $this->patch(
             "cms/".rand(1000000, 50000000),
             $params,
-            ['Authorization' => 'Basic dGF0dmFzb2Z0X2FwaV9rZXk6dGF0dmFzb2Z0X2FwaV9zZWNyZXQ=']
+            ['Authorization' => 'Basic '.base64_encode(env('DEFAULT_TENANT').'_api_key:'.env('DEFAULT_TENANT').'_api_secret')]
         )
         ->seeStatusCode(404);
     }

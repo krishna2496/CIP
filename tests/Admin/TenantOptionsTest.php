@@ -36,7 +36,7 @@ class TenantOptionsTest extends TestCase
         $count = $tenant->where('option_name', config('constants.TENANT_OPTION_SLIDER'))->count();
 
         if ($count >= config('constants.SLIDER_LIMIT')) {
-            $this->post("create_slider/", $params, ['Authorization' => 'Basic dGF0dmFzb2Z0X2FwaV9rZXk6dGF0dmFzb2Z0X2FwaV9zZWNyZXQ='])
+            $this->post("create_slider/", $params, ['Authorization' => 'Basic '.base64_encode(env('DEFAULT_TENANT').'_api_key:'.env('DEFAULT_TENANT').'_api_secret')])
             ->seeStatusCode(403)
             ->seeJsonStructure([
                 'errors' => [
@@ -49,7 +49,7 @@ class TenantOptionsTest extends TestCase
                     ]
                 ]);
         } else {
-            $this->post("create_slider/", $params, ['Authorization' => 'Basic dGF0dmFzb2Z0X2FwaV9rZXk6dGF0dmFzb2Z0X2FwaV9zZWNyZXQ='])
+            $this->post("create_slider/", $params, ['Authorization' => 'Basic '.base64_encode(env('DEFAULT_TENANT').'_api_key:'.env('DEFAULT_TENANT').'_api_secret')])
             ->seeStatusCode(200)
             ->seeJsonStructure([
                 'status',
@@ -57,6 +57,48 @@ class TenantOptionsTest extends TestCase
                 ]);
         }
         TenantOption::where("option_name", "slider")->orderBy("tenant_option_id", "DESC")->take(1)->delete();
+    }
+
+    /**
+     * @test
+     *
+     * Update style
+     *
+     * @return void
+     */
+    // public function it_should_update_style()
+    // {
+    //     // $this->post('style/update-style', ['Authorization' => 'Basic dGF0dmFfYXBpX2tleTp0YXR2YV9hcGlfc2VjcmV0'])
+    //     //  ->type('#999', 'primary_color')
+    //     //  ->type('#ccc', 'secondary_color');
+
+    //     $values = [
+    //         'primary_color' => '#999',
+    //         'secondary_color' => '#ccc'
+    //     ];
+    //     $uploadedFile = '';
+    //     $response = $this->call(
+    //         'POST',
+    //         'style/update-style',
+    //         ['Authorization' => 'Basic '.base64_encode(env('DEFAULT_TENANT').'_api_key:'.env('DEFAULT_TENANT').'_api_secret')],
+    //         $values,
+    //         [],
+    //         ['file' => $uploadedFile]
+    //     );
+    //     $response->assertStatus(200);
+    // }
+
+    /**
+     * @test
+     *
+     * Reset style to default
+     *
+     * @return void
+     */
+    public function it_should_reset_style_to_default()
+    {
+        $this->get('style/reset-style',  ['Authorization' => 'Basic '.base64_encode(env('DEFAULT_TENANT').'_api_key:'.env('DEFAULT_TENANT').'_api_secret')])
+        ->seeStatusCode(200);
     }
 
 }

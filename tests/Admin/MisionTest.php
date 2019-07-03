@@ -14,7 +14,7 @@ class MissionTest extends TestCase
      */
     public function it_should_return_all_mission()
     {
-        $this->get(route('missions'), ['Authorization' => 'Basic dGF0dmFzb2Z0X2FwaV9rZXk6dGF0dmFzb2Z0X2FwaV9zZWNyZXQ='])
+        $this->get(route('missions'), ['Authorization' => 'Basic '.base64_encode(env('DEFAULT_TENANT').'_api_key:'.env('DEFAULT_TENANT').'_api_secret')])
           ->seeStatusCode(200)
           ->seeJsonStructure([
             "status",
@@ -105,7 +105,7 @@ class MissionTest extends TestCase
      */
     public function it_should_return_no_mission_found()
     {
-        $this->get(route("missions"), ['Authorization' => 'Basic dGF0dmFzb2Z0X2FwaV9rZXk6dGF0dmFzb2Z0X2FwaV9zZWNyZXQ='])
+        $this->get(route("missions"), ['Authorization' => 'Basic '.base64_encode(env('DEFAULT_TENANT').'_api_key:'.env('DEFAULT_TENANT').'_api_secret')])
         ->seeStatusCode(200)
         ->seeJsonStructure([
             "status",
@@ -193,7 +193,7 @@ class MissionTest extends TestCase
                     "theme_id" => rand(1, 1)
                 ];
 
-        $this->post("missions", $params, ['Authorization' => 'Basic dGF0dmFzb2Z0X2FwaV9rZXk6dGF0dmFzb2Z0X2FwaV9zZWNyZXQ='])
+        $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('DEFAULT_TENANT').'_api_key:'.env('DEFAULT_TENANT').'_api_secret')])
         ->seeStatusCode(201)
         ->seeJsonStructure([
             'data' => [
@@ -298,7 +298,7 @@ class MissionTest extends TestCase
         $mission->save();
         $mission_id = $mission->mission_id;
 
-        $this->patch("missions/".$mission_id, $params, ['Authorization' => 'Basic dGF0dmFzb2Z0X2FwaV9rZXk6dGF0dmFzb2Z0X2FwaV9zZWNyZXQ='])
+        $this->patch("missions/".$mission_id, $params, ['Authorization' => 'Basic '.base64_encode(env('DEFAULT_TENANT').'_api_key:'.env('DEFAULT_TENANT').'_api_secret')])
         ->seeStatusCode(200)
         ->seeJsonStructure([
             'message',
@@ -370,7 +370,7 @@ class MissionTest extends TestCase
         $this->patch(
             "missions/".rand(1000000, 50000000),
             $params,
-            ['Authorization' => 'Basic dGF0dmFzb2Z0X2FwaV9rZXk6dGF0dmFzb2Z0X2FwaV9zZWNyZXQ=']
+            ['Authorization' => 'Basic '.base64_encode(env('DEFAULT_TENANT').'_api_key:'.env('DEFAULT_TENANT').'_api_secret')]
         )
         ->seeStatusCode(404);
     }
@@ -392,7 +392,7 @@ class MissionTest extends TestCase
         $this->delete(
             "missions/".$mission->mission_id,
             [],
-            ['Authorization' => 'Basic dGF0dmFzb2Z0X2FwaV9rZXk6dGF0dmFzb2Z0X2FwaV9zZWNyZXQ=']
+            ['Authorization' => 'Basic '.base64_encode(env('DEFAULT_TENANT').'_api_key:'.env('DEFAULT_TENANT').'_api_secret')]
         )
         ->seeStatusCode(204);
     }
@@ -408,7 +408,7 @@ class MissionTest extends TestCase
         $this->delete(
             "missions/".rand(1000000, 50000000),
             [],
-            ['Authorization' => 'Basic dGF0dmFzb2Z0X2FwaV9rZXk6dGF0dmFzb2Z0X2FwaV9zZWNyZXQ=']
+            ['Authorization' => 'Basic '.base64_encode(env('DEFAULT_TENANT').'_api_key:'.env('DEFAULT_TENANT').'_api_secret')]
         )
         ->seeStatusCode(404);
     }

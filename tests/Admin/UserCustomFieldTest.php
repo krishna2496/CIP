@@ -15,7 +15,7 @@ class UserCustomFieldTest extends TestCase
      */
     public function it_should_return_all_user_custom_fields()
     {
-        $this->get(route('metadata.users.custom_fields'), ['Authorization' => 'Basic dGF0dmFzb2Z0X2FwaV9rZXk6dGF0dmFzb2Z0X2FwaV9zZWNyZXQ='])
+        $this->get(route('metadata.users.custom_fields'), ['Authorization' => 'Basic '.base64_encode(env('DEFAULT_TENANT').'_api_key:'.env('DEFAULT_TENANT').'_api_secret')])
           ->seeStatusCode(200)
           ->seeJsonStructure([
             "status",
@@ -47,7 +47,7 @@ class UserCustomFieldTest extends TestCase
      */
     public function it_should_return_no_user_custom_field_found()
     {
-        $this->get(route("metadata.users.custom_fields"), ['Authorization' => 'Basic dGF0dmFzb2Z0X2FwaV9rZXk6dGF0dmFzb2Z0X2FwaV9zZWNyZXQ='])
+        $this->get(route("metadata.users.custom_fields"), ['Authorization' => 'Basic '.base64_encode(env('DEFAULT_TENANT').'_api_key:'.env('DEFAULT_TENANT').'_api_secret')])
         ->seeStatusCode(200)
         ->seeJsonStructure([
             "status",
@@ -80,7 +80,7 @@ class UserCustomFieldTest extends TestCase
             ]
         ];
 
-        $this->post("metadata/users/custom_fields/", $params, ['Authorization' => 'Basic dGF0dmFzb2Z0X2FwaV9rZXk6dGF0dmFzb2Z0X2FwaV9zZWNyZXQ='])
+        $this->post("metadata/users/custom_fields/", $params, ['Authorization' => 'Basic '.base64_encode(env('DEFAULT_TENANT').'_api_key:'.env('DEFAULT_TENANT').'_api_secret')])
         ->seeStatusCode(201)
         ->seeJsonStructure([
             'data' => [
@@ -124,7 +124,7 @@ class UserCustomFieldTest extends TestCase
         $userCustomField->save();
         $field_id = $userCustomField->field_id;
 
-        $this->patch("metadata/users/custom_fields/".$field_id, $params, ['Authorization' => 'Basic dGF0dmFzb2Z0X2FwaV9rZXk6dGF0dmFzb2Z0X2FwaV9zZWNyZXQ='])
+        $this->patch("metadata/users/custom_fields/".$field_id, $params, ['Authorization' => 'Basic '.base64_encode(env('DEFAULT_TENANT').'_api_key:'.env('DEFAULT_TENANT').'_api_secret')])
         ->seeStatusCode(200)
         ->seeJsonStructure([
             'data' => [
@@ -153,7 +153,7 @@ class UserCustomFieldTest extends TestCase
         $this->delete(
             "metadata/users/custom_fields/".$userCustomField->field_id,
             [],
-            ['Authorization' => 'Basic dGF0dmFzb2Z0X2FwaV9rZXk6dGF0dmFzb2Z0X2FwaV9zZWNyZXQ=']
+            ['Authorization' => 'Basic '.base64_encode(env('DEFAULT_TENANT').'_api_key:'.env('DEFAULT_TENANT').'_api_secret')]
         )
         ->seeStatusCode(204);
     }
@@ -169,7 +169,7 @@ class UserCustomFieldTest extends TestCase
         $this->delete(
             "metadata/users/custom_fields/".rand(1000000, 50000000),
             [],
-            ['Authorization' => 'Basic dGF0dmFzb2Z0X2FwaV9rZXk6dGF0dmFzb2Z0X2FwaV9zZWNyZXQ=']
+            ['Authorization' => 'Basic '.base64_encode(env('DEFAULT_TENANT').'_api_key:'.env('DEFAULT_TENANT').'_api_secret')]
         )
         ->seeStatusCode(404);
     }
@@ -202,7 +202,7 @@ class UserCustomFieldTest extends TestCase
         $this->patch(
             "metadata/users/custom_fields/".rand(1000000, 50000000),
             $params,
-            ['Authorization' => 'Basic dGF0dmFzb2Z0X2FwaV9rZXk6dGF0dmFzb2Z0X2FwaV9zZWNyZXQ=']
+            ['Authorization' => 'Basic '.base64_encode(env('DEFAULT_TENANT').'_api_key:'.env('DEFAULT_TENANT').'_api_secret')]
         )
         ->seeStatusCode(404);
     }

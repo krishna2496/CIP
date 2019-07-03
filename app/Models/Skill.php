@@ -1,7 +1,8 @@
 <?php
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\{Model, SoftDeletes};
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\UserSkill;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
@@ -46,8 +47,8 @@ class Skill extends Model
     {
         return $this->hasMany(UserSkill::class, 'skill_id', 'skill_id');
     }
-	
-	/**
+    
+    /**
      * Set translations attribute on the model.
      *
      * @param  mixed   $value

@@ -14,7 +14,7 @@ class UserTest extends TestCase
      */
     public function it_should_return_all_users()
     {
-        $this->get(route('users'), ['Authorization' => 'Basic dGF0dmFzb2Z0X2FwaV9rZXk6dGF0dmFzb2Z0X2FwaV9zZWNyZXQ='])
+        $this->get(route('users'), ['Authorization' => 'Basic '.base64_encode(env('DEFAULT_TENANT').'_api_key:'.env('DEFAULT_TENANT').'_api_secret')])
           ->seeStatusCode(200)
           ->seeJsonStructure([
             "status",
@@ -67,7 +67,7 @@ class UserTest extends TestCase
      */
     public function it_should_return_no_user_found()
     {
-        $this->get(route("users"), ['Authorization' => 'Basic dGF0dmFzb2Z0X2FwaV9rZXk6dGF0dmFzb2Z0X2FwaV9zZWNyZXQ='])
+        $this->get(route("users"), ['Authorization' => 'Basic '.base64_encode(env('DEFAULT_TENANT').'_api_key:'.env('DEFAULT_TENANT').'_api_secret')])
         ->seeStatusCode(200)
         ->seeJsonStructure([
             "status",
@@ -90,7 +90,7 @@ class UserTest extends TestCase
         $user->save();
 
         $userId = $user->user_id;
-        $this->get('users/'.$userId, ['Authorization' => 'Basic dGF0dmFzb2Z0X2FwaV9rZXk6dGF0dmFzb2Z0X2FwaV9zZWNyZXQ='])
+        $this->get('users/'.$userId, ['Authorization' => 'Basic '.base64_encode(env('DEFAULT_TENANT').'_api_key:'.env('DEFAULT_TENANT').'_api_secret')])
           ->seeStatusCode(200)
           ->seeJsonStructure([
             "status",
@@ -143,7 +143,7 @@ class UserTest extends TestCase
     public function it_should_return_no_user_found_by_id()
     {
         $userId = rand(1000000, 50000000);
-        $this->get("users/".$userId, ['Authorization' => 'Basic dGF0dmFzb2Z0X2FwaV9rZXk6dGF0dmFzb2Z0X2FwaV9zZWNyZXQ='])
+        $this->get("users/".$userId, ['Authorization' => 'Basic '.base64_encode(env('DEFAULT_TENANT').'_api_key:'.env('DEFAULT_TENANT').'_api_secret')])
         ->seeStatusCode(404);
     }
 
@@ -175,7 +175,7 @@ class UserTest extends TestCase
                 'linked_in_url' => 'https://www.'.str_random(10).'.com'
             ];
 
-        $this->post("users/", $params, ['Authorization' => 'Basic dGF0dmFzb2Z0X2FwaV9rZXk6dGF0dmFzb2Z0X2FwaV9zZWNyZXQ='])
+        $this->post("users/", $params, ['Authorization' => 'Basic '.base64_encode(env('DEFAULT_TENANT').'_api_key:'.env('DEFAULT_TENANT').'_api_secret')])
         ->seeStatusCode(201)
         ->seeJsonStructure([
             'data' => [
@@ -221,7 +221,7 @@ class UserTest extends TestCase
         $user->save();
         $user_id = $user->user_id;
 
-        $this->patch("users/".$user_id, $params, ['Authorization' => 'Basic dGF0dmFzb2Z0X2FwaV9rZXk6dGF0dmFzb2Z0X2FwaV9zZWNyZXQ='])
+        $this->patch("users/".$user_id, $params, ['Authorization' => 'Basic '.base64_encode(env('DEFAULT_TENANT').'_api_key:'.env('DEFAULT_TENANT').'_api_secret')])
         ->seeStatusCode(200)
         ->seeJsonStructure([
             'data' => [
@@ -262,7 +262,7 @@ class UserTest extends TestCase
         $this->patch(
             "users/".rand(1000000, 50000000),
             $params,
-            ['Authorization' => 'Basic dGF0dmFzb2Z0X2FwaV9rZXk6dGF0dmFzb2Z0X2FwaV9zZWNyZXQ=']
+            ['Authorization' => 'Basic '.base64_encode(env('DEFAULT_TENANT').'_api_key:'.env('DEFAULT_TENANT').'_api_secret')]
         )
         ->seeStatusCode(404);
     }
@@ -284,7 +284,7 @@ class UserTest extends TestCase
         $this->delete(
             "users/".$user->user_id,
             [],
-            ['Authorization' => 'Basic dGF0dmFzb2Z0X2FwaV9rZXk6dGF0dmFzb2Z0X2FwaV9zZWNyZXQ=']
+            ['Authorization' => 'Basic '.base64_encode(env('DEFAULT_TENANT').'_api_key:'.env('DEFAULT_TENANT').'_api_secret')]
         )
         ->seeStatusCode(204);
     }
@@ -300,7 +300,7 @@ class UserTest extends TestCase
         $this->delete(
             "users/".rand(1000000, 50000000),
             [],
-            ['Authorization' => 'Basic dGF0dmFzb2Z0X2FwaV9rZXk6dGF0dmFzb2Z0X2FwaV9zZWNyZXQ=']
+            ['Authorization' => 'Basic '.base64_encode(env('DEFAULT_TENANT').'_api_key:'.env('DEFAULT_TENANT').'_api_secret')]
         )
         ->seeStatusCode(404);
     }

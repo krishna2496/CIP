@@ -15,7 +15,7 @@ class AppUserCustomFieldTest extends TestCase
      */
     public function it_should_return_all_user_custom_fields()
     {
-        $this->get(route('metadata.users.custom_fields'), ['Authorization' => 'Basic dGF0dmFzb2Z0X2FwaV9rZXk6dGF0dmFzb2Z0X2FwaV9zZWNyZXQ='])
+        $this->get(route('metadata.users.custom_fields'), ['Authorization' => 'Basic '.base64_encode(env('DEFAULT_TENANT').'_api_key:'.env('DEFAULT_TENANT').'_api_secret')])
           ->seeStatusCode(200)
           ->seeJsonStructure([
             "status",
@@ -47,7 +47,7 @@ class AppUserCustomFieldTest extends TestCase
      */
     public function it_should_return_no_user_custom_field_found()
     {
-        $this->get(route("metadata.users.custom_fields"), ['Authorization' => 'Basic dGF0dmFzb2Z0X2FwaV9rZXk6dGF0dmFzb2Z0X2FwaV9zZWNyZXQ='])
+        $this->get(route("metadata.users.custom_fields"), ['Authorization' => 'Basic '.base64_encode(env('DEFAULT_TENANT').'_api_key:'.env('DEFAULT_TENANT').'_api_secret')])
         ->seeStatusCode(200)
         ->seeJsonStructure([
             "status",

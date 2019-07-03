@@ -276,7 +276,7 @@ class TenantOptionsController extends Controller
             $options['secondary_color'] = $request->secondary_color;
         }
                     
-        $this->compileLocalScss($tenantName, $options);
+        $this->s3helper->compileLocalScss($tenantName, $options);
 
         // Set response data
         $apiStatus = Response::HTTP_OK;

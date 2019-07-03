@@ -78,7 +78,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
 
 
 /* Fetch Language json file */
-$router->get('language/{lang}', ['uses' => 'App\Language\LanguageController@fetchLangaugeFile']);
+$router->get('language/{lang}', ['as' => 'language', 'uses' => 'App\Language\LanguageController@fetchLangaugeFile']);
 
 /*
 |
