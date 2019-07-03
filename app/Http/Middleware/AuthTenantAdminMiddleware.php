@@ -14,7 +14,8 @@ use App\Traits\RestExceptionHandlerTrait;
 
 class AuthTenantAdminMiddleware
 {
-    /**
+    use RestExceptionHandlerTrait;
+	/**
      * @var App\Helpers\ResponseHelper
      */
     private $responseHelper;
