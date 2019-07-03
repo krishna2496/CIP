@@ -106,7 +106,8 @@ return [
         'DEFAULT_THEME_FOLDER_NOT_FOUND' => 'Default theme folder not found on server',
         'NO_FILES_FOUND_TO_DOWNLOAD' => 'No assets file found on S3 for tenant',
         'TENANT_ASSET_FOLDER_NOT_FOUND_ON_S3' => 'Tenant asset folder not found',
-        'NO_FILES_FOUND_IN_ASSETS_FOLDER' => 'No files found on S3 assets folder for this tenant'
+        'NO_FILES_FOUND_IN_ASSETS_FOLDER' => 'No files found on S3 assets folder for this tenant',
+        'BOOSTRAP_SCSS_NOT_FOUND' => 'Boostrap SCSS file not found while compiling SCSS files'
 
     ]
 ];
