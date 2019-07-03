@@ -149,10 +149,12 @@ class S3Helper
                 foreach ($allFiles as $key => $file) {
                     // Only scss and css copy
                     if (!strpos($file, "/images") && strpos($file, "/scss") && !strpos($file, "custom.scss")) {
-                        $scssFilesArray['scss_files'][$i++] = 'https://s3.' . env('AWS_REGION') . '.amazonaws.com/' . env('AWS_S3_BUCKET_NAME') . '/'.$file;
+                        $scssFilesArray['scss_files'][$i++] = 'https://s3.' . env('AWS_REGION') . '.amazonaws.com/'
+                        . env('AWS_S3_BUCKET_NAME') . '/'.$file;
                     }
                     if (strpos($file, "/images") && !strpos($file, "/scss") && !strpos($file, "custom.scss")) {
-                        $scssFilesArray['image_files'][$j++] = 'https://s3.' . env('AWS_REGION') . '.amazonaws.com/' . env('AWS_S3_BUCKET_NAME') . '/'.$file;
+                        $scssFilesArray['image_files'][$j++] = 'https://s3.' . env('AWS_REGION') . '.amazonaws.com/'
+                        . env('AWS_S3_BUCKET_NAME') . '/'.$file;
                     }
                 }
             }
