@@ -101,6 +101,39 @@ class FooterPageTest extends TestCase
         FooterPage::where('slug', $slug)->delete();
     }
 
+        /**
+     * @test
+     *
+     * Create footer page validate data
+     *
+     * @return void
+     */
+    public function it_should_show_error_for_create_footer_page_invalid_data()
+    {
+        $slug = str_random(20);
+        $params = [
+            'page_details' =>
+                [
+                'slug' => '',
+                'translations' =>  [
+                    [
+                        'lang' => 'en',
+                        'title' => str_random(20),
+                        'sections' =>  [
+                            [
+                                'title' => str_random(20),
+                                'description' => str_random(255),
+                            ]
+                        ],
+                    ]
+                ],
+            ],
+        ];
+
+        $this->post("cms/", $params, ['Authorization' => 'Basic '.base64_encode(env('DEFAULT_TENANT').'_api_key:'.env('DEFAULT_TENANT').'_api_secret')])
+        ->seeStatusCode(422);
+    }
+
     /**
      * @test
      *
