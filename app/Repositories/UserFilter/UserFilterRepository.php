@@ -35,7 +35,7 @@ class UserFilterRepository implements UserFilterInterface
     /**
      * Display a listing of User filter.
      *
-     * Illuminate\Http\Request $request
+     * @param Illuminate\Http\Request $request
      * @return App\Models\UserFilter
      */
     public function userFilter(Request $request): UserFilter
@@ -46,7 +46,7 @@ class UserFilterRepository implements UserFilterInterface
     /**
      * Store or Update created resource.
      *
-     * @param array $request
+     * @param  Illuminate\Http\Request
      * @return App\Models\UserFilter
      */
     public function saveFilter(Request $request): UserFilter
