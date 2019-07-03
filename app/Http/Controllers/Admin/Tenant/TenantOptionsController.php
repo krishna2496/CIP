@@ -235,7 +235,7 @@ class TenantOptionsController extends Controller
                 )
             );
         } catch (\Exception $e) {
-            return $this->badRequest('messages.custom_error_message.ERROR_OCCURED');
+            return $this->badRequest('messages.custom_error_message.ERROR_OCCURRED');
         }
 
         $file = $request->file('custom_scss_files');
