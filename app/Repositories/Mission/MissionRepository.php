@@ -547,7 +547,7 @@ class MissionRepository implements MissionInterface
     }
 
     /**
-     * Display a top mission data.
+     * Display a Explore mission data.
      *
      * @param Illuminate\Http\Request $request
      * @param string $topFilterData
