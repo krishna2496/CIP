@@ -25,7 +25,7 @@
                             <li 
                             v-bind:class="topThemeClass"
                             >
-                              <a href="#">{{ $t("label.top_themes")}}</a>
+                              <a href="Javascript:void(0)">{{ $t("label.top_themes")}}</a>
                               <ul class="subdropdown-menu" v-if="topTheme != null && topTheme.length > 0">
                                 <li v-for = "items in topTheme">
                                     <router-link 
@@ -39,7 +39,7 @@
                             <li
                             v-bind:class="topCountryClass"
                             >
-                            <a href="#">{{$t("label.top_country")}}</a>
+                            <a href="Javascript:void(0)">{{$t("label.top_country")}}</a>
                                 <ul class="subdropdown-menu" v-if="topCountry != null && topCountry.length > 0">
                                     <li v-for = "items in topCountry">
                                     <router-link 
@@ -52,7 +52,7 @@
                                 </ul>
                             </li>
                             <li v-bind:class="topOrganizationClass">
-                                <a href="#">{{ $t("label.top_organisation")}}</a>
+                                <a href="Javascript:void(0)">{{ $t("label.top_organisation")}}</a>
                                 <ul class="subdropdown-menu" v-if="topOrganization != null && topOrganization.length > 0">
                                 <li v-for = "items in topOrganization">
                                     <router-link 
@@ -86,7 +86,7 @@
                             </li>
                             <li class="no-dropdown">
                                 <router-link 
-                                    :to="{ path: '/home/random_missios'}" @click.native="menuBarclickHandler"
+                                    :to="{ path: '/home/random_missions'}" @click.native="menuBarclickHandler"
                                     >
                                     {{$t("label.random")}}
                                 </router-link>
