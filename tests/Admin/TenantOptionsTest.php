@@ -66,27 +66,29 @@ class TenantOptionsTest extends TestCase
      *
      * @return void
      */
-    // public function it_should_update_style()
-    // {
-    //     // $this->post('style/update-style', ['Authorization' => 'Basic dGF0dmFfYXBpX2tleTp0YXR2YV9hcGlfc2VjcmV0'])
-    //     //  ->type('#999', 'primary_color')
-    //     //  ->type('#ccc', 'secondary_color');
+    /*
+    public function it_should_update_style()
+    {
+        // $this->post('style/update-style', ['Authorization' => 'Basic dGF0dmFfYXBpX2tleTp0YXR2YV9hcGlfc2VjcmV0'])
+        //  ->type('#999', 'primary_color')
+        //  ->type('#ccc', 'secondary_color');
 
-    //     $values = [
-    //         'primary_color' => '#999',
-    //         'secondary_color' => '#ccc'
-    //     ];
-    //     $uploadedFile = '';
-    //     $response = $this->call(
-    //         'POST',
-    //         'style/update-style',
-    //         ['Authorization' => 'Basic '.base64_encode(env('DEFAULT_TENANT').'_api_key:'.env('DEFAULT_TENANT').'_api_secret')],
-    //         $values,
-    //         [],
-    //         ['file' => $uploadedFile]
-    //     );
-    //     $response->assertStatus(200);
-    // }
+        $values = [
+            'primary_color' => '#999',
+            'secondary_color' => '#ccc'
+        ];
+        $uploadedFile = '';
+        $response = $this->call(
+            'POST',
+            'style/update-style',
+            ['Authorization' => 'Basic '.base64_encode(env('DEFAULT_TENANT').'_api_key:'.env('DEFAULT_TENANT').'_api_secret')],
+            $values,
+            [],
+            ['file' => $uploadedFile]
+        );
+        $response->assertStatus(200);
+    }
+    */
 
     /**
      * @test
