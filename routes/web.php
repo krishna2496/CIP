@@ -31,11 +31,11 @@ $router->group(['middleware' => 'localization'], function ($router) {
      'uses' => 'App\Auth\AuthController@passwordReset']);
 
     /* CMS footer pages  */
-    $router->get('/cms/listing', ['middleware' => 'localization|tenant.connection',
+    $router->get('/app/cms/listing', ['middleware' => 'localization|tenant.connection',
      'uses' => 'App\FooterPage\FooterPageController@index']);
-    $router->get('/cms/detail', ['middleware' => 'localization|tenant.connection',
+    $router->get('/app/cms/detail', ['middleware' => 'localization|tenant.connection',
      'uses' => 'App\FooterPage\FooterPageController@cmsList']);
-    $router->get('/cms/{pageId}', ['middleware' => 'localization|tenant.connection',
+    $router->get('/app/cms/{pageId}', ['middleware' => 'localization|tenant.connection',
      'uses' => 'App\FooterPage\FooterPageController@show']);
     
     /* Get custom css url  */
