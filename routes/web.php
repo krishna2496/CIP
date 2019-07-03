@@ -19,7 +19,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
      'uses' => 'App\Auth\AuthController@authenticate']);
 
     /* Forgot password routing */
-    $router->post('request_password_reset', ['middleware' => 'tenant.connection',
+    $router->post('request_password_reset', ['middleware' => 'tenant.connection|JsonApiMiddleware',
      'uses' => 'App\Auth\AuthController@requestPasswordReset']);
 
     /* Password reset routing */
