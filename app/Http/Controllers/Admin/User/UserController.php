@@ -301,7 +301,7 @@ class UserController extends Controller
             // Server side validataions
             $validator = Validator::make($request->toArray(), [
                 'skills' => 'required',
-                'skills.*.skill_id' => 'required|string',
+                'skills.*.skill_id' => 'required',
             ]);
 
             // If request parameter have any error
