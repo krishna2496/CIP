@@ -13,6 +13,7 @@ use Leafo\ScssPhp\Exception\ParserException;
 use App\Exceptions\FileDownloadException;
 use App\Exceptions\BucketNotFoundException;
 use Aws\S3\Exception\S3Exception;
+use App\Exceptions\FileNotFoundException;
 
 class S3Helper
 {
@@ -37,7 +38,7 @@ class S3Helper
      */
     public function compileLocalScss(string $tenantName, array $options = [])
     {
-        try {
+        
             $scss = new Compiler();
             $scss->addImportPath(realpath(storage_path().'\app\\'.$tenantName.'\assets\scss'));
 
@@ -48,14 +49,19 @@ class S3Helper
                 $importScss .= '$primary: '.$options['primary_color'].';';
             }
 
-            if (file_exists(base_path()."/node_modules/bootstrap/scss/bootstrap.scss")
-            && file_exists(base_path()."/node_modules/bootstrap-vue/src/index.js")) {
+            if (!file_exists(base_path()."/node_modules/bootstrap/scss/bootstrap.scss")
+            || !file_exists(base_path()."/node_modules/bootstrap-vue/src/index.js")) {
                 // Send error like bootstrap.scss not found while compile files
+                throw new FileNotFoundException(
+                    trans('messages.custom_error_message.BOOSTRAP_SCSS_NOT_FOUND'),
+                    config('constants.error_codes.BOOSTRAP_SCSS_NOT_FOUND')
+                );
             }
 
+        try {
             $importScss .= '@import "custom";
-        @import "../../../../node_modules/bootstrap/scss/bootstrap";
-        @import "../../../../node_modules/bootstrap-vue/src/index";';
+            @import "../../../../../node_modules/bootstrap/scss/bootstrap";
+            @import "../../../../../node_modules/bootstrap-vue/src/index";';
 
             $css = $scss->compile($importScss);
         
