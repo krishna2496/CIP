@@ -458,12 +458,6 @@ class MissionRepository implements MissionInterface
     public function appMissions(Request $request, array $userFilterData, int $languageId):LengthAwarePaginator
     {
         $missionData = [];
-        $languages = $this->languageHelper->getLanguages($request);
-        $local = ($request->hasHeader('X-localization')) ?
-        $request->header('X-localization') : env('TENANT_DEFAULT_LANGUAGE_CODE');
-        $language = $languages->where('code', $local)->first();
-        $language_id = $language->language_id;
-
         // Get  mission data
         $missionQuery = $this->mission->select('*');
         $missionQuery->where('publication_status', config("constants.publication_status")["APPROVED"])
@@ -472,9 +466,9 @@ class MissionRepository implements MissionInterface
                 $query->where('status', '1');
                 $query->where('default', '1');
             }])
-            ->with(['missionLanguage' => function ($query) use ($language_id) {
+            ->with(['missionLanguage' => function ($query) use ($languageId) {
                 $query->select('mission_language_id', 'mission_id', 'title', 'short_description', 'objective')
-                ->where('language_id', $language_id);
+                ->where('language_id', $languageId);
             }])
             ->withCount(['missionApplication as user_application_count' => function ($query) use ($request) {
                 $query->where('user_id', $request->auth->user_id)

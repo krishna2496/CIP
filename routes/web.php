@@ -81,6 +81,10 @@ $router->group(['middleware' => 'localization'], function ($router) {
     /* Get user filter  */
     $router->get('/user_filter', ['middleware' => 'tenant.connection|jwt.auth',
      'uses' => 'App\UserFilterController@index']);
+
+    /* Get user filter  */
+    $router->get('/explore_mission', ['middleware' => 'tenant.connection|jwt.auth',
+    'uses' => 'App\Mission\MissionController@exploreMission']);
 });
 
 
