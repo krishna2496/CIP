@@ -8,6 +8,11 @@ use Leafo\ScssPhp\Compiler;
 use App\Helpers\ResponseHelper;
 use App\Traits\RestExceptionHandlerTrait;
 use App;
+use DB;
+use Leafo\ScssPhp\Exception\ParserException;
+use App\Exceptions\FileDownloadException;
+use App\Exceptions\BucketNotFoundException;
+use Aws\S3\Exception\S3Exception;
 
 class S3Helper
 {
@@ -63,8 +68,25 @@ class S3Helper
             // Put compiled css file into local storage
             if (Storage::disk('local')->put($tenantName.'\assets\css\style.css', $css)) {
                 // Copy default theme folder to tenant folder on s3
-                dispatch(new UploadAssetsFromLocalToS3StorageJob($tenantName));
+                try {
+                    dispatch(new UploadAssetsFromLocalToS3StorageJob($tenantName));
+                } catch (S3Exception $e) {
+                    return $this->s3Exception(
+                        config('constants.error_codes.FAILD_TO_UPLOAD_COMPILE_FILE_ON_S3'),
+                        trans('messages.custom_error_message.FAILD_TO_UPLOAD_COMPILE_FILE_ON_S3')
+                    );
+                }
+            } else {
+                throw new FileDownloadException(
+                    trans('messages.custom_error_message.ERROR_WHILE_STORE_COMPILED_CSS_FILE_TO_LOCAL'),
+                    config('constants.error_codes.ERROR_WHILE_STORE_COMPILED_CSS_FILE_TO_LOCAL')
+                );
             }
+        } catch (ParserException $e) {
+            throw new ParserException(
+                trans('messages.custom_error_message.ERROR_WHILE_COMPILING_SCSS_FILES'),
+                config('constants.error_codes.ERROR_WHILE_COMPILING_SCSS_FILES')
+            );
         } catch (\Exception $e) {
             return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
@@ -84,7 +106,7 @@ class S3Helper
      *
      * @return string
      */
-    public function uploadFileOnS3Bucket(string $url, string $tenantName)
+    public function uploadFileOnS3Bucket(string $url, string $tenantName): string
     {
         try {
             $disk = Storage::disk('s3');
@@ -111,5 +133,39 @@ class S3Helper
         } catch (\Exception $e) {
             return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
+    }
+
+    /**
+     * Get all SCSS files list from S3 bucket
+     *
+     * @param string $tenantName
+     */
+    public function getAllScssFiles(string $tenantName)
+    {
+        if (Storage::disk('s3')->exists($tenantName)) {
+            $allFiles = Storage::disk('s3')->allFiles($tenantName);
+            $scssFilesArray = [];
+            $i = $j = 0;
+
+            if (count($allFiles) > 0) {
+                foreach ($allFiles as $key => $file) {
+                    // Only scss and css copy
+                    if (!strpos($file, "/images") && strpos($file, "/scss") && !strpos($file, "custom.scss")) {
+                        $scssFilesArray['scss_files'][$i++] = 'https://s3.' . env('AWS_REGION') . '.amazonaws.com/'
+                        . env('AWS_S3_BUCKET_NAME') . '/'.$file;
+                    }
+                    if (strpos($file, "/images") && !strpos($file, "/scss") && !strpos($file, "custom.scss")) {
+                        $scssFilesArray['image_files'][$j++] = 'https://s3.' . env('AWS_REGION') . '.amazonaws.com/'
+                        . env('AWS_S3_BUCKET_NAME') . '/'.$file;
+                    }
+                }
+            }
+        } else {
+            throw new BucketNotFoundException(
+                trans('messages.custom_error_message.TENANT_ASSET_FOLDER_NOT_FOUND_ON_S3'),
+                config('constants.error_codes.TENANT_ASSET_FOLDER_NOT_FOUND_ON_S3')
+            );
+        }
+        return $scssFilesArray;
     }
 }

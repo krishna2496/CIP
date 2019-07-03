@@ -96,6 +96,109 @@ trait RestExceptionHandlerTrait
     }
 
     /**
+     * Returns json response for internal server error.
+     *
+     * @param string $customErrorCode
+     * @param string $message
+     * @return \Illuminate\Http\JsonResponse
+     */
+    protected function internaServerError(string $customErrorCode = '', string $message = 'Internal server error')
+    {
+        return $this->jsonResponse(
+            Response::HTTP_INTERNAL_SERVER_ERROR,
+            Response::$statusTexts[Response::HTTP_INTERNAL_SERVER_ERROR],
+            $customErrorCode,
+            $message
+        );
+    }
+
+    /**
+     * Returns json response for file download error.
+     *
+     * @param string $customErrorCode
+     * @param string $message
+     * @return \Illuminate\Http\JsonResponse
+     */
+    protected function fileDownloadError(string $customErrorCode = '', string $message = 'Failed to download files')
+    {
+        return $this->jsonResponse(
+            Response::HTTP_UNPROCESSABLE_ENTITY,
+            Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+            $customErrorCode,
+            $message
+        );
+    }
+
+    /**
+     * Returns json response for failed to compile scss files
+     *
+     * @param string $customErrorCode
+     * @param string $message
+     * @return \Illuminate\Http\JsonResponse
+     */
+    protected function parserError(string $customErrorCode = '', string $message = 'Failed to compile SCSS files')
+    {
+        return $this->jsonResponse(
+            Response::HTTP_UNPROCESSABLE_ENTITY,
+            Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+            $customErrorCode,
+            $message
+        );
+    }
+    
+    /**
+     * Returns json response for failed to perform S3 opration
+     *
+     * @param string $customErrorCode
+     * @param string $message
+     * @return \Illuminate\Http\JsonResponse
+     */
+    protected function s3Exception(string $customErrorCode = '', string $message = 'S3 exception')
+    {
+        return $this->jsonResponse(
+            Response::HTTP_UNPROCESSABLE_ENTITY,
+            Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+            $customErrorCode,
+            $message
+        );
+    }
+
+    /**
+     * Returns json response for bucket not found on s3
+     *
+     * @param string $customErrorCode
+     * @param string $message
+     * @return \Illuminate\Http\JsonResponse
+     */
+    protected function bucketNotFound(string $customErrorCode = '', string $message = 'Assets bucket not found on S3')
+    {
+        return $this->jsonResponse(
+            Response::HTTP_NOT_FOUND,
+            Response::$statusTexts[Response::HTTP_NOT_FOUND],
+            $customErrorCode,
+            $message
+        );
+    }
+
+    /**
+     * Returns json response for files not found on s3 for bucket folder
+     *
+     * @param string $customErrorCode
+     * @param string $message
+     * @return \Illuminate\Http\JsonResponse
+     */
+    protected function fileNotFound(string $customErrorCode = '', string $message = 'Assets bucket not found on S3')
+    {
+        return $this->jsonResponse(
+            Response::HTTP_NOT_FOUND,
+            Response::$statusTexts[Response::HTTP_NOT_FOUND],
+            $customErrorCode,
+            $message
+        );
+    }
+    
+    
+    /**
      * Returns json response.
      *
      * @param array|null $payload

@@ -9,6 +9,10 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Laravel\Lumen\Exceptions\Handler as ExceptionHandler;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use App\Traits\RestExceptionHandlerTrait;
+use App\Exceptions\FileDownloadException;
+use Leafo\ScssPhp\Exception\ParserException;
+use App\Exceptions\BucketNotFoundException;
+use App\Exceptions\FileNotFoundException;
 
 class Handler extends ExceptionHandler
 {
@@ -50,6 +54,18 @@ class Handler extends ExceptionHandler
         if ($exception instanceof MethodNotAllowedHttpException) {
             return $this->methodNotAllowedHttp();
         }
-        return $this->badRequest();
+        if ($exception instanceof FileDownloadException) {
+            return $this->fileDownloadError($exception->getCode(), $exception->getMessage());
+        }
+        if ($exception instanceof ParserException) {
+            return $this->parserError($exception->getCode(), $exception->getMessage());
+        }
+        if ($exception instanceof BucketNotFoundException) {
+            return $this->bucketNotFound($exception->getCode(), $exception->getMessage());
+        }
+        if ($exception instanceof FileNotFoundException) {
+            return $this->filenotFound($exception->getCode(), $exception->getMessage());
+        }
+        return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURED'));
     }
 }

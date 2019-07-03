@@ -5,6 +5,7 @@ namespace App\Jobs;
 use App;
 use App\Models\TenantOption;
 use Illuminate\Support\Facades\Storage;
+use Aws\S3\Exception\S3Exception;
 
 class CreateFolderInS3BucketJob extends Job
 {
@@ -54,9 +55,19 @@ class CreateFolderInS3BucketJob extends Job
                         }
                     }
                 }
+            } else {
+                return $this->s3Exception(
+                    config('constants.error_codes.DEFAULT_THEME_FOLDER_NOT_FOUND'),
+                    trans('messages.custom_error_message.DEFAULT_THEME_FOLDER_NOT_FOUND')
+                );
             }
+        } catch (S3Exception $e) {
+            return $this->s3Exception(
+                config('constants.error_codes.FAILED_TO_RESET_STYLING'),
+                trans('messages.custom_error_message.FAILED_TO_RESET_STYLING')
+            );
         } catch (\Exception $e) {
-            return false;
+            throw new \Exception(trans('messages.custom_error_message.FAILED_TO_RESET_STYLING'));
         }
     }
 }

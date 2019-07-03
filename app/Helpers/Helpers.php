@@ -29,16 +29,17 @@ class Helpers
     public function getSubDomainFromRequest(Request $request) : string
     {
         try {
-            if (env('APP_ENV')=='local') {
+            if (env('APP_ENV')=='local' || env('APP_ENV')=='testing') {
                 return env('DEFAULT_TENANT');
             } else {
                 return explode(".", parse_url($request->headers->all()['referer'][0])['host'])[0];
             }
         } catch (\Exception $e) {
-            if (env('APP_ENV')=='local') {
+            if (env('APP_ENV')=='local' || env('APP_ENV')=='testing') {
                 return env('DEFAULT_TENANT');
             } else {
-                return $e->getMessage();
+                // error unable to find referer
+                throw new \Exception(trans('messages.custom_error_message.ERROR_TENANT_DOMAIN_NOT_FOUND'));
             }
         }
     }
@@ -59,7 +60,8 @@ class Helpers
                 return env('APP_MAIL_BASE_URL');
             }
         } catch (\Exception $e) {
-            return $e->getMessage();
+            // error unable to find domain referer
+            throw new \Exception(trans('messages.custom_error_message.ERROR_TENANT_DOMAIN_NOT_FOUND'));
         }
     }
 

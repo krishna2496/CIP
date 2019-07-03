@@ -40,6 +40,7 @@ return [
         'MESSAGE_COUNTRY_LISTING' => 'Country listing successfully',
 		'MESSAGE_MISSION_FOUND' => 'Mission found successfully',
 		'MESSAGE_PAGE_FOUND' => 'Page found successfully',
+        'MESSAGE_ASSETS_FILES_LISTING' => "Assets files listing successfully"
     ],
 
         
@@ -94,5 +95,18 @@ return [
         'ERROR_OCCURRED' => 'An error has occurred',
         'ERROR_INVALID_JSON' => 'Invalid Json format',
         
+        // Custom erro code for other errors - 800000 - 809999
+        'ERROR_ON_UPDATING_STYLING_VARIBLE_IN_DATABASE' => "An error has occured, while updating colors in database",
+        'ERROR_WHILE_DOWNLOADING_FILES_FROM_S3_TO_LOCAL' => "File is failed to download from S3 to local",
+        'ERROR_WHILE_COMPILING_SCSS_FILES' => 'An error has occured, while compiling SCSS files to update SCSS changes',
+        'ERROR_WHILE_STORE_COMPILED_CSS_FILE_TO_LOCAL' => 'An error has occured, while storing compiled css file to local storage',
+        'NO_FILES_FOUND_TO_UPLOAD_ON_S3_BUCKET' => 'No files found to upload on s3 bucket',
+        'FAILD_TO_UPLOAD_COMPILE_FILE_ON_S3' => 'Failed to upload files on S3',
+        'FAILED_TO_RESET_STYLING' => 'Failed to reset styling settings',
+        'DEFAULT_THEME_FOLDER_NOT_FOUND' => 'Default theme folder not found on server',
+        'NO_FILES_FOUND_TO_DOWNLOAD' => 'No assets file found on S3 for tenant',
+        'TENANT_ASSET_FOLDER_NOT_FOUND_ON_S3' => 'Tenant asset folder not found',
+        'NO_FILES_FOUND_IN_ASSETS_FOLDER' => 'No files found on S3 assets folder for this tenant'
+
     ]
 ];
