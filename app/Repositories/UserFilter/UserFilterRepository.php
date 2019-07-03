@@ -57,7 +57,6 @@ class UserFilterRepository implements UserFilterInterface
         $userFilterData["city"] = $request->has('city') ? $request->input('city') : '';
         $userFilterData["theme"] = $request->has('theme') ? $request->input('theme') : '';
         $userFilterData["skill"] = $request->has('skill') ? $request->input('skill') : '';
-
         $userFilter= $this->filters->createOrUpdateUserFilter(
             ['user_id' => $request->auth->user_id],
             array('filters' => $userFilterData)

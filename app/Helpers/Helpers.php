@@ -173,9 +173,10 @@ class Helpers
     *
     * @param object $topMisisonData
     * @param string $local
+    * @param object $topOrganisation
     * @return Illuminate\Http\JsonResponse
     */
-    public static function missionTopData($topTheme, $topCountry, $local)
+    public static function missionTopData($topTheme, $topCountry, $local, $topOrganisation)
     {
         $returnData = [];
         foreach ($topTheme as $key => $value) {
@@ -187,6 +188,8 @@ class Helpers
                     $value->missionTheme->translations[$arrayKey]['title'];
                     $returnData[config('constants.TOP_THEME')][$key]['id'] =
                     $value->missionTheme->mission_theme_id;
+                    $returnData[config('constants.TOP_THEME')][$key]['theme_name'] =
+                    $value->missionTheme->theme_name;
                 }
             }
         }
@@ -198,6 +201,16 @@ class Helpers
                 $value->country->country_id;
             }
         }
+
+        foreach ($topOrganisation as $key => $value) {
+            if ($value->country) {
+                $returnData[config('constants.TOP_ORGANISATION')][$key]['title'] =
+                $value->organisation_name;
+                $returnData[config('constants.TOP_ORGANISATION')][$key]['id'] =
+                $value->organisation_id;
+            }
+        }
+
         return $returnData;
     }
 }

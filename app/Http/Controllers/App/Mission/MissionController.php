@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers\App\Mission;
 
 use Illuminate\Http\Request;
@@ -115,23 +116,23 @@ class MissionController extends Controller
             $request->header('X-localization') : env('TENANT_DEFAULT_LANGUAGE_CODE');
             $language = $languages->where('code', $local)->first();
             $languageId = $language->language_id;
-
             //Save User search data
             $this->userFilterRepository->saveFilter($request);
-
             // Get users filter
             $userFilters = $this->userFilterRepository->userFilter($request);
             $userFilterData = $userFilters->toArray()["filters"];
-
             // Get Data by top theme
-            $topTheme = $this->missionRepository->topMission($request, config('constants.TOP_THEME'));
+            $topTheme = $this->missionRepository->exploreMission($request, config('constants.TOP_THEME'));
             // Get Data by top country
-            $topCountry = $this->missionRepository->topMission($request, config('constants.TOP_COUNTRY'));
+            $topCountry = $this->missionRepository->exploreMission($request, config('constants.TOP_COUNTRY'));
+            // Get Data by top organization
+            $topOrganisation = $this->missionRepository->exploreMission($request, config('constants.TOP_ORGANISATION'));
 
             $topMissionData = Helpers::missionTopData(
                 $topTheme,
                 $topCountry,
-                $local
+                $local,
+                $topOrganisation
             );
            
             $mission = $this->missionRepository->appMissions($request, $userFilterData, $languageId);
@@ -175,6 +176,7 @@ class MissionController extends Controller
             $metaData['filters'] = $userFilterData;
             $metaData[config('constants.TOP_THEME')] = $topMissionData[config('constants.TOP_THEME')];
             $metaData[config('constants.TOP_COUNTRY')] = $topMissionData[config('constants.TOP_COUNTRY')];
+            $metaData[config('constants.TOP_ORGANISATION')] = $topMissionData[config('constants.TOP_ORGANISATION')];
             $apiData = $mission;
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_MISSION_LISTING');
@@ -185,13 +187,11 @@ class MissionController extends Controller
                 $metaData
             );
         } catch (ModelNotFoundException $e) {
-            dd($e);
             return $this->modelNotFound(
                 config('constants.error_codes.ERROR_NO_DATA_FOUND'),
                 trans('messages.custom_error_message.ERROR_NO_DATA_FOUND')
             );
         } catch (PDOException $e) {
-            dd($e);
             return $this->PDO(
                 config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
                 trans(
@@ -199,7 +199,6 @@ class MissionController extends Controller
                 )
             );
         } catch (\Exception $e) {
-            dd($e);
             throw new \Exception(trans('messages.custom_error_message.ERROR_OCCURED'));
         }
     }

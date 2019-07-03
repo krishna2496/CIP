@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers\App\Auth;
 
 use Validator;

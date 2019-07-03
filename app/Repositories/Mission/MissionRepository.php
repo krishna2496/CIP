@@ -22,6 +22,7 @@ use DB;
 use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Collection;
 
 class MissionRepository implements MissionInterface
 {
@@ -451,40 +452,29 @@ class MissionRepository implements MissionInterface
      *
      * Illuminate\Http\Request $request'
      * Array $userFilterData
+     * int $languageId
      * @return \Illuminate\Pagination\LengthAwarePaginator
      */
     public function appMissions(Request $request, array $userFilterData, int $languageId):LengthAwarePaginator
     {
         $missionData = [];
+        $languages = $this->languageHelper->getLanguages($request);
+        $local = ($request->hasHeader('X-localization')) ?
+        $request->header('X-localization') : env('TENANT_DEFAULT_LANGUAGE_CODE');
+        $language = $languages->where('code', $local)->first();
+        $language_id = $language->language_id;
 
         // Get  mission data
-        $missionQuery = $this->mission->select(
-            'mission.mission_id',
-            'mission.theme_id',
-            'mission.city_id',
-            'mission.country_id',
-            'mission.start_date',
-            'mission.end_date',
-            'mission.total_seats',
-            'mission.mission_type',
-            'mission.goal_objective',
-            'mission.end_date',
-            'mission.total_seats',
-            'mission.mission_type',
-            'mission.goal_objective',
-            'mission.application_deadline',
-            'mission.publication_status',
-            'mission.organisation_id',
-            'mission.organisation_name'
-        )
+        $missionQuery = $this->mission->select('*');
+        $missionQuery->where('publication_status', config("constants.publication_status")["APPROVED"])
             ->with(['missionTheme', 'missionMedia'
             ])->with(['missionMedia' => function ($query) {
                 $query->where('status', '1');
                 $query->where('default', '1');
             }])
-            ->with(['missionLanguage' => function ($query) use ($languageId) {
+            ->with(['missionLanguage' => function ($query) use ($language_id) {
                 $query->select('mission_language_id', 'mission_id', 'title', 'short_description', 'objective')
-                ->where('language_id', $languageId);
+                ->where('language_id', $language_id);
             }])
             ->withCount(['missionApplication as user_application_count' => function ($query) use ($request) {
                 $query->where('user_id', $request->auth->user_id)
@@ -493,24 +483,66 @@ class MissionRepository implements MissionInterface
             ->withCount(['missionApplication as mission_application_count' => function ($query) use ($request) {
                 $query->where('approval_status', config("constants.application_status")["AUTOMATICALLY_APPROVED"]);
             }]);
-            
+        //Explore mission by top favourite
+        if ($request->has('explore_mission_type') &&
+        ($request->input('explore_mission_type') == config('constants.TOP_FAVOURITE'))) {
+            $missionQuery->withCount(['favouriteMission as favourite_mission_count']);
+            $missionQuery->orderBY('favourite_mission_count', 'desc');
+        }
 
+        //Explore mission by most ranked
+        if ($request->has('explore_mission_type') &&
+        ($request->input('explore_mission_type') == config('constants.MOST_RANKED'))) {
+            $missionQuery->withCount(['missionRating as mission_rationg_count']);
+            $missionQuery->orderBY('mission_rationg_count', 'desc');
+        }
+
+        //Explore mission recommended to user
+        if ($request->has('explore_mission_type') &&
+        ($request->input('explore_mission_type') == config('constants.TOP_RECOMMENDED'))) {
+            $missionQuery->withCount(['missionInvite as mission_invite_count' => function ($query) use ($request) {
+                $query->where('to_user_id', $request->auth->user_id);
+            }]);
+            $missionQuery->orderBY('mission_invite_count', 'desc');
+            $missionQuery->whereHas('missionInvite', function ($countryQuery) use ($request) {
+                $countryQuery->where('to_user_id', $request->auth->user_id);
+            });
+        }
+        
+        // Explore mission by country
+        if ($request->has('explore_mission_type') && $request->input('explore_mission_type') != '') {
+            if ($request->input('explore_mission_type') == config('constants.THEME')) {
+                $missionQuery->Where("mission.theme_id", $request->input('explore_mission_params'));
+            }
+            if ($request->input('explore_mission_type') == config('constants.COUNTRY')) {
+                $missionQuery->Where(function ($query) use ($request) {
+                    $query->wherehas('country', function ($countryQuery) use ($request) {
+                        $countryQuery->where('name', 'like', '%' . $request->input('explore_mission_params') . '%');
+                    });
+                });
+            }
+            if ($request->input('explore_mission_type') == config('constants.ORGANIZATION')) {
+                $missionQuery->Where(
+                    'organisation_name',
+                    'like',
+                    '%' . $request->input('explore_mission_params') . '%'
+                );
+            }
+        }
+        
+        //Explore mission by theme
         if ($userFilterData['search'] && $userFilterData['search'] != '') {
             $missionQuery->Where(function ($query) use ($userFilterData) {
-                $query->wherehas('missionLanguage', function ($query) use ($userFilterData) {
-                    $query->Where('title', 'like', '%' . $userFilterData['search'] . '%');
-                    $query->orWhere('short_description', 'like', '%' . $userFilterData['search'] . '%');
+                $query->wherehas('missionLanguage', function ($missionLanguageQuery) use ($userFilterData) {
+                    $missionLanguageQuery->Where('title', 'like', '%' . $userFilterData['search'] . '%');
+                    $missionLanguageQuery->orWhere('short_description', 'like', '%' . $userFilterData['search'] . '%');
                 });
-                $query->orWhere(function ($query) use ($userFilterData) {
-                    $query->orWhere('organisation_name', 'like', '%' . $userFilterData['search'] . '%');
+                $query->orWhere(function ($organizationQry) use ($userFilterData) {
+                    $organizationQry->orWhere('organisation_name', 'like', '%' . $userFilterData['search'] . '%');
                 });
             });
         }
-
-        $missionQuery->where('publication_status', config("constants.publication_status")["APPROVED"]);
-
-        $mission =  $missionQuery->orderBy('mission.mission_id', 'ASC')->paginate(config("constants.PER_PAGE_LIMIT"));
-
+        $mission =  $missionQuery->paginate(config('constants.PER_PAGE_LIMIT'));
         return $mission;
     }
 
@@ -519,9 +551,9 @@ class MissionRepository implements MissionInterface
      *
      * Illuminate\Http\Request $request
      * string $topFilterData
-     * @return mixed
+     * @return Illuminate\Database\Eloquent\Collection
      */
-    public function topMission(Request $request, string $topFilterParams)
+    public function exploreMission(Request $request, string $topFilterParams): Collection
     {
         // Get  mission data
         $missionQuery = $this->mission->select('*')
@@ -539,7 +571,12 @@ class MissionRepository implements MissionInterface
             ->groupBy('mission.country_id')
             ->orderBY('mission_country_count', 'desc');
         }
-        $mission = $missionQuery->limit(20)->get();
+        if ($topFilterParams == config('constants.TOP_ORGANISATION')) {
+            $missionQuery->selectRaw('COUNT(mission.organisation_id) as mission_organisation_count')
+            ->groupBy('mission.organisation_id')
+            ->orderBY('mission_organisation_count', 'desc');
+        }
+        $mission = $missionQuery->limit(config('constants.EXPLORE_MISSION_LIMIT'))->get();
         return $mission;
     }
 }
