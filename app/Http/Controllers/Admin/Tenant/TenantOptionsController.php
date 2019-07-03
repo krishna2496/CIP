@@ -140,7 +140,12 @@ class TenantOptionsController extends Controller
                 );
             } else {
                 // Upload slider image on S3 server
-                $tenantName = $this->helpers->getSubDomainFromRequest($request);
+                try {
+                    // Get domain name from request and use as tenant name.
+                    $tenantName = $this->helpers->getSubDomainFromRequest($request);
+                } catch (\Exception $e) {
+                    return $this->badRequest($e->getMessage());
+                }
                 if ($request->url = $this->s3helper->uploadFileOnS3Bucket($request->url, $tenantName)) {
                     // Set data for create new record
                     $insertData = array();
@@ -180,44 +185,67 @@ class TenantOptionsController extends Controller
      * Reset to default style
      *
      * @param \Illuminate\Http\Request $request
-     * @return mix
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function resetStyleSettings(Request $request)
+    public function resetStyleSettings(Request $request): JsonResponse
     {
         try {
             // Get domain name from request and use as tenant name.
             $tenantName = $this->helpers->getSubDomainFromRequest($request);
-            
-            // Copy default theme folder to tenant folder on s3
-            dispatch(new CreateFolderInS3BucketJob($tenantName));
-
-            // Copy tenant folder to local
-            dispatch(new DownloadAssestFromS3ToLocalStorageJob($tenantName));
-
-            // Set response data
-            $apiStatus = Response::HTTP_OK;
-            $apiMessage = trans('messages.success.MESSAGE_CUSTOM_STYLE_RESET_SUCCESS');
-            return $this->responseHelper->success($apiStatus, $apiMessage);
         } catch (\Exception $e) {
+            return $this->badRequest($e->getMessage());
         }
+        
+        // Copy default theme folder to tenant folder on s3
+        dispatch(new CreateFolderInS3BucketJob($tenantName));
+
+        // Copy tenant folder to local
+        dispatch(new DownloadAssestFromS3ToLocalStorageJob($tenantName));
+        
+        // Set response data
+        $apiStatus = Response::HTTP_OK;
+        $apiMessage = trans('messages.success.MESSAGE_CUSTOM_STYLE_RESET_SUCCESS');
+        return $this->responseHelper->success($apiStatus, $apiMessage);
     }
 
     /**
      * Update tenant custom styling data: primary color, secondary color and custom css
      *
      * @param \Illuminate\Http\Request $request
-     * @return mixed
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function updateStyleSettings(Request $request)
+    public function updateStyleSettings(Request $request): JsonResponse
     {
         $isVariableScss = 0;
 
-        $this->tenantOptionRepository->updateStyleSettings($request);
-        
+        try {
+            $this->tenantOptionRepository->updateStyleSettings($request);
+        } catch (PDOException $e) {
+            return $this->PDO(
+                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
+                trans(
+                    'messages.custom_error_message.ERROR_DATABASE_OPERATIONAL'
+                )
+            );
+        } catch (\ErrorException $e) {
+            return $this->internaServerError(
+                config('constants.error_codes.ERROR_ON_UPDATING_STYLING_VARIBLE_IN_DATABASE'),
+                trans(
+                    'messages.custom_error_message.ERROR_ON_UPDATING_STYLING_VARIBLE_IN_DATABASE'
+                )
+            );
+        } catch (\Exception $e) {
+            return $this->badRequest('messages.custom_error_message.ERROR_OCCURED');
+        }
+
         $file = $request->file('custom_scss_files');
 
-        // Get domain name from request and use as tenant name.
-        $tenantName = $this->helpers->getSubDomainFromRequest($request);
+        try {
+            // Get domain name from request and use as tenant name.
+            $tenantName = $this->helpers->getSubDomainFromRequest($request);
+        } catch (\Exception $e) {
+            return $this->badRequest($e->getMessage());
+        }
 
         // Need to check local copy for tenant assest is there or not?
         if (!Storage::disk('local')->exists($tenantName)) {
@@ -239,6 +267,9 @@ class TenantOptionsController extends Controller
             if ($file->isValid()) {
                 $fileName = $file->getClientOriginalName();
 
+                /* Check user uploading custom style variable file,
+                then we need to make it as high priority instead of passed colors. */
+                
                 if ($fileName === env('CUSTOM_STYLE_VARIABLE_FILE_NAME')) {
                     $isVariableScss = 1;
                 }
@@ -275,12 +306,42 @@ class TenantOptionsController extends Controller
         if (isset($request->secondary_color) && $request->secondary_color!='') {
             $options['secondary_color'] = $request->secondary_color;
         }
-                    
-        $this->compileLocalScss($tenantName, $options);
+        
+        $this->s3helper->compileLocalScss($tenantName, $options);
 
         // Set response data
         $apiStatus = Response::HTTP_OK;
         $apiMessage = trans('messages.success.MESSAGE_CUSTOM_STYLE_UPLOADED_SUCCESS');
         return $this->responseHelper->success($apiStatus, $apiMessage);
+    }
+
+    /**
+     * It will give list of all assets files from s3 to download it.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function downloadStyleFiles(Request $request): JsonResponse
+    {
+        try {
+            // Get domain name from request and use as tenant name.
+            $tenantName = $this->helpers->getSubDomainFromRequest($request);
+        } catch (\Exception $e) {
+            return $this->badRequest($e->getMessage());
+        }
+        
+        $assetFilesArray = $this->s3helper->getAllScssFiles($tenantName);
+        if (count($assetFilesArray) > 0) {
+            $apiStatus = Response::HTTP_OK;
+            $apiMessage = trans('messages.success.MESSAGE_ASSETS_FILES_LISTING');
+            return $this->responseHelper->success($apiStatus, $apiMessage, $assetFilesArray);
+        } else {
+            return $this->responseHelper->error(
+                Response::HTTP_NOT_FOUND,
+                Response::$statusTexts[Response::HTTP_NOT_FOUND],
+                config('constants.error_codes.NO_FILES_FOUND_IN_ASSETS_FOLDER'),
+                trans('messages.custom_error_message.NO_FILES_FOUND_IN_ASSETS_FOLDER')
+            );
+        }
     }
 }

@@ -2,6 +2,7 @@
 namespace App\Jobs;
 
 use Illuminate\Support\Facades\Storage;
+use App\Exceptions\FileDownloadException;
 
 class DownloadAssestFromS3ToLocalStorageJob extends Job
 {
@@ -32,13 +33,25 @@ class DownloadAssestFromS3ToLocalStorageJob extends Job
 
         $allFiles = Storage::disk('s3')->allFiles($this->tenantName.'/assets/scss');
 
-        foreach ($allFiles as $key => $file) {
-            $sourcePath = str_replace($this->tenantName, '', $file);
-            if (Storage::disk('local')->exists($file)) {
-                // Delete existing one
-                Storage::disk('local')->delete($file);
+        if (count($allFiles) > 0) {
+            foreach ($allFiles as $key => $file) {
+                $sourcePath = str_replace($this->tenantName, '', $file);
+                if (Storage::disk('local')->exists($file)) {
+                    // Delete existing one
+                    Storage::disk('local')->delete($file);
+                }
+                if (!Storage::disk('local')->put($file, Storage::disk('s3')->get($file))) {
+                    throw new FileDownloadException(
+                        trans('messages.custom_error_message.ERROR_WHILE_DOWNLOADING_FILES_FROM_S3_TO_LOCAL'),
+                        config('constants.error_codes.ERROR_WHILE_DOWNLOADING_FILES_FROM_S3_TO_LOCAL')
+                    );
+                }
             }
-            Storage::disk('local')->put($file, Storage::disk('s3')->get($file));
+        } else {
+            throw new FileDownloadException(
+                trans('messages.custom_error_message.NO_FILES_FOUND_TO_DOWNLOAD'),
+                config('constants.error_codes.NO_FILES_FOUND_TO_DOWNLOAD')
+            );
         }
     }
 }

@@ -157,6 +157,7 @@ $router->group(['prefix' => 'entities/skills', 'middleware' => 'localization|aut
 $router->group(['prefix' => 'style', 'middleware' => 'localization|auth.tenant.admin'], function ($router) {
     $router->post('/update-style', ['uses' => 'Admin\Tenant\TenantOptionsController@updateStyleSettings']);
     $router->get('/reset-style', ['uses' => 'Admin\Tenant\TenantOptionsController@resetStyleSettings']);
+    $router->get('/download-style', ['uses' => 'Admin\Tenant\TenantOptionsController@downloadStyleFiles']);
 });
 
 /*

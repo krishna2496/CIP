@@ -3,6 +3,8 @@ namespace App\Jobs;
 
 use Illuminate\Support\Facades\Storage;
 use App\Traits\RestExceptionHandlerTrait;
+use App\Exceptions\FileUploadException;
+use Aws\S3\Exception\S3Exception;
 
 class UploadAssetsFromLocalToS3StorageJob extends Job
 {
@@ -25,14 +27,17 @@ class UploadAssetsFromLocalToS3StorageJob extends Job
      */
     public function handle()
     {
-        try {
-            $allFiles = Storage::disk('local')->allFiles($this->tenantName.'/assets');
+        $allFiles = Storage::disk('local')->allFiles($this->tenantName.'/assets');
+        if (count($allFiles)) {
             foreach ($allFiles as $key => $file) {
                 $sourcePath = str_replace($this->tenantName, '', $file);
                 Storage::disk('s3')->put($file, Storage::disk('local')->get($file));
             }
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURED'));
+        } else {
+            throw new FileUploadException(
+                trans('messages.custom_error_message.NO_FILES_FOUND_TO_UPLOAD_ON_S3_BUCKET'),
+                config('constants.error_codes.NO_FILES_FOUND_TO_UPLOAD_ON_S3_BUCKET')
+            );
         }
     }
 }
