@@ -15,7 +15,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
      'uses' => 'App\Tenant\TenantOptionController@getTenantOption']);
 
     /* User login routing using jwt token */
-    $router->post('login', ['middleware' => 'tenant.connection',
+    $router->post('login', ['middleware' => 'tenant.connection|JsonApiMiddleware',
      'uses' => 'App\Auth\AuthController@authenticate']);
 
     /* Forgot password routing */
