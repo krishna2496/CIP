@@ -15,7 +15,7 @@ class CreateTableAvailabilities extends Migration
     {
         Schema::create('availabilities', function (Blueprint $table) {
             $table->bigIncrements('availability_id')->unsinged();
-            $table->string('type',255);
+            $table->string('type', 255);
             $table->timestamps();
             $table->softDeletes();
         });

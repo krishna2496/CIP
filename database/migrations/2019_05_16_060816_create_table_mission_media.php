@@ -14,12 +14,11 @@ class CreateTableMissionMedia extends Migration
     public function up()
     {
         Schema::create('mission_media', function (Blueprint $table) {
-            
             $table->bigIncrements('mission_media_id')->unsinged();
             $table->bigInteger('mission_id')->unsinged();
-            $table->string('media_name',64);
-            $table->string('media_type',4);
-            $table->string('media_path',255);
+            $table->string('media_name', 64);
+            $table->string('media_type', 4);
+            $table->string('media_path', 255);
             $table->enum('status', ['0', '1'])->default(1);
             $table->timestamps();
             $table->softDeletes();

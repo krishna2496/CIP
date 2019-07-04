@@ -65,6 +65,10 @@ $router->group(['middleware' => 'localization'], function ($router) {
     /* Get user filter  */
     $router->get('/user_filter', ['middleware' => 'tenant.connection|jwt.auth',
      'uses' => 'App\UserFilterController@index']);
+
+    /* Get explore mission  */
+    $router->get('/explore_mission', ['middleware' => 'tenant.connection|jwt.auth',
+    'uses' => 'App\Mission\MissionController@exploreMission']);
 });
 
 
@@ -167,6 +171,14 @@ $router->group(
     }
 );
 
+/* Admin setting routes */
+$router->group(
+    ['prefix' => 'settings', 'middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware'],
+    function ($router) {
+        $router->get('/', ['uses' => 'Admin\Tenant\TenantSettingsController@index']);
+        $router->patch('/{settingId}', ['uses' => 'Admin\Tenant\TenantSettingsController@update']);
+    }
+);
 /*
 |
 |--------------------------------------------------------------------------

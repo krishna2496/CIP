@@ -35,8 +35,8 @@ class UploadAssetsFromLocalToS3StorageJob extends Job
             }
         } else {
             throw new FileUploadException(
-                trans('messages.custom_error_message.NO_FILES_FOUND_TO_UPLOAD_ON_S3_BUCKET'),
-                config('constants.error_codes.NO_FILES_FOUND_TO_UPLOAD_ON_S3_BUCKET')
+                trans('messages.custom_error_message.ERROR_NO_FILES_FOUND_TO_UPLOAD_ON_S3_BUCKET'),
+                config('constants.error_codes.ERROR_NO_FILES_FOUND_TO_UPLOAD_ON_S3_BUCKET')
             );
         }
     }

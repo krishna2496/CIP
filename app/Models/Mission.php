@@ -7,6 +7,10 @@ use App\Models\MissionDocument;
 use App\Models\MissionMedia;
 use App\Models\MissionLanguage;
 use App\Models\MissionApplication;
+use App\Models\Country;
+use App\Models\FavouriteMission;
+use App\Models\MissionInvite;
+use App\Models\MissionRating;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -48,6 +52,13 @@ class Mission extends Model
     'country_id', 'start_date', 'end_date', 'total_seats', 'available_seats', 'application_deadline',
     'publication_status', 'organisation_id', 'organisation_name', 'mission_type', 'goal_objective',
     'missionDocument', 'missionMedia', 'missionLanguage', 'missionTheme', 'city'];
+
+    protected $visible = ['mission_id', 'theme_id', 'city_id',
+    'country_id', 'start_date', 'end_date', 'total_seats', 'available_seats', 'application_deadline',
+    'publication_status', 'organisation_id', 'organisation_name', 'mission_type', 'goal_objective',
+    'missionDocument', 'missionMedia', 'missionLanguage', 'missionTheme', 'city',
+    'default_media_type','default_media_path','title','short_description','objective','set_view_detail','city_name',
+    'seats_left','user_application_count','mission_application_count'];
 
     protected $appends = ['city_name'];
     /**
@@ -112,6 +123,36 @@ class Mission extends Model
          ->select('country_id', 'name');
     }
 
+    /**
+     * Get favourite mission associated with the mission.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function favouriteMission(): HasMany
+    {
+        return $this->hasMany(FavouriteMission::class, 'mission_id', 'mission_id');
+    }
+
+    /**
+     * Get invite mission associated with the mission.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function missionInvite(): HasMany
+    {
+        return $this->hasMany(MissionInvite::class, 'mission_id', 'mission_id');
+    }
+
+    /**
+     * Get rating associated with the mission.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function missionRating(): HasMany
+    {
+        return $this->hasMany(MissionRating::class, 'mission_id', 'mission_id');
+    }
+    
     /**
      * Get the mission application associated with the mission.
      *

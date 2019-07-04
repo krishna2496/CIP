@@ -38,25 +38,24 @@ class S3Helper
      */
     public function compileLocalScss(string $tenantName, array $options = [])
     {
+		$scss = new Compiler();
+		$scss->addImportPath(realpath(storage_path().'/app/'.$tenantName.'/assets/scss'));
+		
+		$importScss = '@import "_variables";';
         
-            $scss = new Compiler();
-            $scss->addImportPath(realpath(storage_path().'\app\\'.$tenantName.'\assets\scss'));
+        // Color set & other file || Color set & no file
+        if ((isset($options['primary_color']) && $options['isVariableScss'] == 0)) {
+            $importScss .= '$primary: '.$options['primary_color'].';';
+        }
 
-            $importScss = '@import "_variables";';
-        
-            // Color set & other file || Color set & no file
-            if ((isset($options['primary_color']) && $options['isVariableScss'] == 0)) {
-                $importScss .= '$primary: '.$options['primary_color'].';';
-            }
-
-            if (!file_exists(base_path()."/node_modules/bootstrap/scss/bootstrap.scss")
+        if (!file_exists(base_path()."/node_modules/bootstrap/scss/bootstrap.scss")
             || !file_exists(base_path()."/node_modules/bootstrap-vue/src/index.js")) {
-                // Send error like bootstrap.scss not found while compile files
-                throw new FileNotFoundException(
-                    trans('messages.custom_error_message.BOOSTRAP_SCSS_NOT_FOUND'),
-                    config('constants.error_codes.BOOSTRAP_SCSS_NOT_FOUND')
-                );
-            }
+            // Send error like bootstrap.scss not found while compile files
+            throw new FileNotFoundException(
+                trans('messages.custom_error_message.ERROR_BOOSTRAP_SCSS_NOT_FOUND'),
+                config('constants.error_codes.ERROR_BOOSTRAP_SCSS_NOT_FOUND')
+            );
+        }
 
         try {
             $importScss .= '@import "custom";
@@ -78,8 +77,8 @@ class S3Helper
                     dispatch(new UploadAssetsFromLocalToS3StorageJob($tenantName));
                 } catch (S3Exception $e) {
                     return $this->s3Exception(
-                        config('constants.error_codes.FAILD_TO_UPLOAD_COMPILE_FILE_ON_S3'),
-                        trans('messages.custom_error_message.FAILD_TO_UPLOAD_COMPILE_FILE_ON_S3')
+                        config('constants.error_codes.ERROR_FAILD_TO_UPLOAD_COMPILE_FILE_ON_S3'),
+                        trans('messages.custom_error_message.ERROR_FAILD_TO_UPLOAD_COMPILE_FILE_ON_S3')
                     );
                 }
             } else {
@@ -168,8 +167,8 @@ class S3Helper
             }
         } else {
             throw new BucketNotFoundException(
-                trans('messages.custom_error_message.TENANT_ASSET_FOLDER_NOT_FOUND_ON_S3'),
-                config('constants.error_codes.TENANT_ASSET_FOLDER_NOT_FOUND_ON_S3')
+                trans('messages.custom_error_message.ERROR_TENANT_ASSET_FOLDER_NOT_FOUND_ON_S3'),
+                config('constants.error_codes.ERROR_TENANT_ASSET_FOLDER_NOT_FOUND_ON_S3')
             );
         }
         return $scssFilesArray;

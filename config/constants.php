@@ -11,7 +11,7 @@ return [
     'SLIDER_IMAGE_PATH' => 'images/',
     'ACTIVE' => 1,
     'DB_DATE_FORMAT' => 'Y-m-d H:i:s',
-    'PER_PAGE_LIMIT' => '10',
+    'PER_PAGE_LIMIT' => '9',
     'FRONT_DATE_FORMAT' => 'd/m/Y',
     
     /*
@@ -83,6 +83,21 @@ return [
         'REFUSED' => 'REFUSED'
     ],
 
+    /*
+     * Top theme
+     */
+    'TOP_THEME' => "top_themes",
+    'TOP_COUNTRY' => "top_countries",
+    'TOP_ORGANISATION' => "top_organization",
+    'TOP_ORGANISATION' => "top_organization",
+    'MOST_RANKED' => "most_ranked_missions",
+    'TOP_FAVOURITE' => "favourite_missions",
+    'TOP_RECOMMENDED' => "recommended_missions",
+    'THEME' => "themes",
+    'COUNTRY' => "country",
+    'ORGANIZATION' => "organization",
+    'EXPLORE_MISSION_LIMIT' => "5",
+
     'error_codes' => [
         'ERROR_FOOTER_PAGE_REQUIRED_FIELDS_EMPTY' => '300000',
         'ERROR_INVALID_ARGUMENT' => '300002',
@@ -126,14 +141,17 @@ return [
         'ERROR_WHILE_DOWNLOADING_FILES_FROM_S3_TO_LOCAL' => '800001',
         'ERROR_WHILE_COMPILING_SCSS_FILES' => '800002',
         'ERROR_WHILE_STORE_COMPILED_CSS_FILE_TO_LOCAL' => '800003',
-        'NO_FILES_FOUND_TO_UPLOAD_ON_S3_BUCKET' => '800004',
-        'FAILD_TO_UPLOAD_COMPILE_FILE_ON_S3' => '800005',
-        'FAILED_TO_RESET_STYLING' => '800006',
-        'DEFAULT_THEME_FOLDER_NOT_FOUND' => '800007',
-        'NO_FILES_FOUND_TO_DOWNLOAD' => '800008',
-        'TENANT_ASSET_FOLDER_NOT_FOUND_ON_S3' => '800009',
-        'NO_FILES_FOUND_IN_ASSETS_FOLDER' => '800010',
-        'BOOSTRAP_SCSS_NOT_FOUND' => '800011'
+        'ERROR_NO_FILES_FOUND_TO_UPLOAD_ON_S3_BUCKET' => '800004',
+        'ERROR_FAILD_TO_UPLOAD_COMPILE_FILE_ON_S3' => '800005',
+        'ERROR_FAILED_TO_RESET_STYLING' => '800006',
+        'ERROR_DEFAULT_THEME_FOLDER_NOT_FOUND' => '800007',
+        'ERROR_NO_FILES_FOUND_TO_DOWNLOAD' => '800008',
+        'ERROR_TENANT_ASSET_FOLDER_NOT_FOUND_ON_S3' => '800009',
+        'ERROR_NO_FILES_FOUND_IN_ASSETS_FOLDER' => '800010',
+        'ERROR_BOOSTRAP_SCSS_NOT_FOUND' => '800011',
+        'ERROR_TENANT_SETTING_REQUIRED_FIELDS_EMPTY' => '800012',
+        'ERROR_SETTING_FOUND' => '800013'
+        
     ]
     
 ];
