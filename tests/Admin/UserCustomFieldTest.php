@@ -20,7 +20,7 @@ class UserCustomFieldTest extends TestCase
           ->seeJsonStructure([
             "status",
             "data" => [
-                "*" => [
+                [
                     "field_id",
                     "name",
                     "type",

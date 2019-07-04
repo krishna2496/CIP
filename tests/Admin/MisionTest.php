@@ -199,6 +199,35 @@ class MissionTest extends TestCase
     /**
      * @test
      *
+     * Show error for invalid data
+     *
+     * @return void
+     */
+    public function it_should_show_error_for_invalid_data_while_create_mission()
+    {
+        $params = [
+                    "organisation" => [
+                        "organisation_id" => rand(1, 1),
+                        "organisation_name" => str_random(10)
+                    ],
+                    "start_date" => "2019-05-15 10:40:00",
+                    "end_date" => "2019-10-15 10:40:00",
+                    "mission_type" => "GOAL",
+                    "goal_objective" => rand(1, 1000),
+                    "total_seats" => rand(1, 1000),
+                    "application_deadline" => "2019-07-28 11:40:00",
+                    "publication_status" => "DRAFT",
+                    "theme_id" => rand(1, 1)
+                ];
+
+        $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('DEFAULT_TENANT').'_api_key:'.env('DEFAULT_TENANT').'_api_secret')])
+        ->seeStatusCode(422);
+        Mission::orderBy("mission_id", "DESC")->take(1)->delete();
+    }
+    
+    /**
+     * @test
+     *
      * Show error for create mission api invalid data
      *
      * @return void

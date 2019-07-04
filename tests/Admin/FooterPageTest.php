@@ -49,8 +49,10 @@ class FooterPageTest extends TestCase
      */
     public function it_should_return_no_footer_page_found()
     {
-        $this->get(route("cms"), 
-        ['Authorization' => 'Basic '.base64_encode(env('DEFAULT_TENANT').'_api_key:'.env('DEFAULT_TENANT').'_api_secret')])
+        $this->get(
+            route("cms"),
+            ['Authorization' => 'Basic '.base64_encode(env('DEFAULT_TENANT').'_api_key:'.env('DEFAULT_TENANT').'_api_secret')]
+        )
         ->seeStatusCode(200)
         ->seeJsonStructure([
             "status",
@@ -100,7 +102,7 @@ class FooterPageTest extends TestCase
         FooterPage::where('slug', $slug)->delete();
     }
 
-        /**
+    /**
      * @test
      *
      * Create footer page validate data

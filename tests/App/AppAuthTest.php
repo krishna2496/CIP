@@ -147,6 +147,7 @@ class AppAuthTest extends TestCase
 
         $this->put('password_reset', $params, [])
           ->seeStatusCode(422);
+        $user->delete();
     }
 
     /**
