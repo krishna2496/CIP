@@ -52,9 +52,9 @@ class S3Helper
             || !file_exists(base_path()."/node_modules/bootstrap-vue/src/index.js")) {
             // Send error like bootstrap.scss not found while compile files
             throw new FileNotFoundException(
-                    trans('messages.custom_error_message.BOOSTRAP_SCSS_NOT_FOUND'),
-                    config('constants.error_codes.BOOSTRAP_SCSS_NOT_FOUND')
-                );
+                trans('messages.custom_error_message.BOOSTRAP_SCSS_NOT_FOUND'),
+                config('constants.error_codes.BOOSTRAP_SCSS_NOT_FOUND')
+            );
         }
 
         try {
