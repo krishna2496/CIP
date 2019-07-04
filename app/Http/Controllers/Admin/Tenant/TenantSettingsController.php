@@ -108,7 +108,11 @@ class TenantSettingsController extends Controller
             
             // If post parameter have any missing parameter
             if ($validator->fails()) {
-                return $this->responseHelper->error(Response::HTTP_UNPROCESSABLE_ENTITY, Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY], config('constants.error_codes.ERROR_TENANT_SETTING_REQUIRED_FIELDS_EMPTY'), $validator->errors()->first()
+                return $this->responseHelper->error(
+                    Response::HTTP_UNPROCESSABLE_ENTITY,
+                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                    config('constants.error_codes.ERROR_TENANT_SETTING_REQUIRED_FIELDS_EMPTY'),
+                    $validator->errors()->first()
                 );
             }
             
