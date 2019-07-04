@@ -339,8 +339,8 @@ class TenantOptionsController extends Controller
             return $this->responseHelper->error(
                 Response::HTTP_NOT_FOUND,
                 Response::$statusTexts[Response::HTTP_NOT_FOUND],
-                config('constants.error_codes.NO_FILES_FOUND_IN_ASSETS_FOLDER'),
-                trans('messages.custom_error_message.NO_FILES_FOUND_IN_ASSETS_FOLDER')
+                config('constants.error_codes.ERROR_NO_FILES_FOUND_IN_ASSETS_FOLDER'),
+                trans('messages.custom_error_message.ERROR_NO_FILES_FOUND_IN_ASSETS_FOLDER')
             );
         }
     }
