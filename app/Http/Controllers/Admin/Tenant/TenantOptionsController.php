@@ -306,6 +306,7 @@ class TenantOptionsController extends Controller
         if (isset($request->secondary_color) && $request->secondary_color!='') {
             $options['secondary_color'] = $request->secondary_color;
         }
+                    
         $this->s3helper->compileLocalScss($tenantName, $options);
 
         // Set response data

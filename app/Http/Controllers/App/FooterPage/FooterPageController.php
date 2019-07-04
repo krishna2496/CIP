@@ -79,7 +79,10 @@ class FooterPageController extends Controller
             $footerPage = $this->footerPageRepository->getPageDetail($slug);
             // Check data found or not
             if ($footerPage->count() == 0) {
-                throw new ModelNotFoundException(trans('messages.custom_error_message.300005'));
+                return $this->modelNotFound(
+                    config('constants.error_codes.ERROR_NO_DATA_FOUND'),
+                    trans('messages.custom_error_message.ERROR_NO_DATA_FOUND')
+                );
             }
 
             $apiStatus = Response::HTTP_OK;

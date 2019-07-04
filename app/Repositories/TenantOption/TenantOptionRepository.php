@@ -94,4 +94,14 @@ class TenantOptionRepository implements TenantOptionInterface
         }
         return $optionQuery->first();
     }
+
+    /**
+    * Get a count of slider.
+    *
+    * @return int
+    */
+    public function getAllSliderCount(): int
+    {
+        $count = $this->tenantOption->where('option_name', config('constants.TENANT_OPTION_SLIDER'))->count();
+    }
 }
