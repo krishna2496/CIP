@@ -38,9 +38,12 @@ return [
         'MESSAGE_THEME_LISTING' => 'Mission theme listing successfully',
         'MESSAGE_CITY_LISTING' => 'City listing successfully',
         'MESSAGE_COUNTRY_LISTING' => 'Country listing successfully',
-		'MESSAGE_MISSION_FOUND' => 'Mission found successfully',
-		'MESSAGE_PAGE_FOUND' => 'Page found successfully',
-        'MESSAGE_ASSETS_FILES_LISTING' => "Assets files listing successfully"
+        'MESSAGE_MISSION_FOUND' => 'Mission found successfully',
+        'MESSAGE_PAGE_FOUND' => 'Page found successfully',
+        'MESSAGE_ASSETS_FILES_LISTING' => "Assets files listing successfully",
+        'MESSAGE_PAGE_FOUND' => 'Page found successfully',
+        'MESSAGE_TENANT_SETTING_UPDATE_SUCCESSFULLY' => 'Settings has been update successfully',
+        'MESSAGE_TENANT_SETTINGS_LISTING' => 'Settings listing successfully'
     ],
 
         
