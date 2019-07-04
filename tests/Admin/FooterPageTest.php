@@ -3,7 +3,6 @@ use Laravel\Lumen\Testing\DatabaseMigrations;
 use Laravel\Lumen\Testing\DatabaseTransactions;
 use App\Models\FooterPage;
 use App\Models\FooterPagesLanguage;
-use App\Repositories\User\UserRepository;
 
 class FooterPageTest extends TestCase
 {

@@ -19,7 +19,7 @@ class MissionTest extends TestCase
           ->seeJsonStructure([
             "status",
             "data" => [
-                "*" => [
+                [
                     "mission_id",
                     "theme_id",
                     "city_id",
@@ -37,14 +37,9 @@ class MissionTest extends TestCase
                     "default_media_name",
                     "default_media_type",
                     "default_media_path",
-
                     "city_name",
                     "city" => [
                         "city_id",
-                        "name"
-                    ],
-                    "country" => [
-                        "country_id",
                         "name"
                     ],
                     "mission_theme" => [

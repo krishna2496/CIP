@@ -6,9 +6,11 @@ use App\Repositories\UserFilter\UserFilterInterface;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Models\UserFilter;
+use App\Traits\RestExceptionHandlerTrait;
 
 class UserFilterRepository implements UserFilterInterface
 {
+    use RestExceptionHandlerTrait;
     /**
      * @var App\Models\UserFilter
      */
@@ -58,11 +60,15 @@ class UserFilterRepository implements UserFilterInterface
         $userFilterData["theme"] = $request->has('theme') ? $request->input('theme') : '';
         $userFilterData["skill"] = $request->has('skill') ? $request->input('skill') : '';
 
-        $userFilter= $this->filters->createOrUpdateUserFilter(
-            ['user_id' => $request->auth->user_id],
-            array('filters' => $userFilterData)
-        );
-
-        return $userFilter;
+        try {
+            $userFilter= $this->filters->createOrUpdateUserFilter(
+                ['user_id' => $request->auth->user_id],
+                array('filters' => $userFilterData)
+            );
+            
+            return $userFilter;
+        } catch (\Exception $e) {
+            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
+        }
     }
 }

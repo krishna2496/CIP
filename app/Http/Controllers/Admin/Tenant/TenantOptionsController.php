@@ -196,8 +196,17 @@ class TenantOptionsController extends Controller
             return $this->badRequest($e->getMessage());
         }
         
-        // Copy default theme folder to tenant folder on s3
-        dispatch(new CreateFolderInS3BucketJob($tenantName));
+        try {
+            // Copy default theme folder to tenant folder on s3
+            dispatch(new CreateFolderInS3BucketJob($tenantName));
+        } catch (S3Exception $e) {
+            return $this->s3Exception(
+                config('constants.error_codes.FAILED_TO_RESET_STYLING'),
+                trans('messages.custom_error_message.FAILED_TO_RESET_STYLING')
+            );
+        } catch (\Exception $e) {
+            throw new \Exception(trans('messages.custom_error_message.FAILED_TO_RESET_STYLING'));
+        }
 
         // Copy tenant folder to local
         dispatch(new DownloadAssestFromS3ToLocalStorageJob($tenantName));

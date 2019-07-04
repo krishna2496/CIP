@@ -15,7 +15,7 @@ class AppMissionTest extends TestCase
      *
      * @return void
      */
-    public function it_should_return_all_missions()
+    public function it_should_return_all_app_missions()
     {
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
@@ -44,15 +44,7 @@ class AppMissionTest extends TestCase
                     "publication_status",
                     "organisation_id",
                     "organisation_name",
-                    "user_application_count",
-                    "mission_application_count",
-                    "default_media_type",
-                    "default_media_path",
-                    "title",
-                    "short_description",
-                    "objective",
-                    "set_view_detail",
-                    "city_name",
+                    
                     "mission_theme" => [
                         "mission_theme_id",
                         "theme_name",

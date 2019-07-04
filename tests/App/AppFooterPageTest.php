@@ -101,7 +101,7 @@ class AppFooterPageTest extends TestCase
 
         $slug = $footer_page->slug;
 
-        $this->get('cms/'.$slug, [])
+        $this->get('/app/cms/'.$slug, [])
           ->seeStatusCode(200)
           ->seeJsonStructure([
             "status",

@@ -24,14 +24,8 @@ class UserCustomFieldTest extends TestCase
                     "field_id",
                     "name",
                     "type",
-                    "translations" => [
-                        "*" => [
-                            "lang",
-                            "name",
-                            "values"
-                        ]
-                    ],
-                    "type",
+                    "translations",
+                    "is_mandatory",
                 ]
             ],
             "message"

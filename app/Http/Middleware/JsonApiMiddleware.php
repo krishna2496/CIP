@@ -22,7 +22,7 @@ class JsonApiMiddleware
      */
     public function handle($request, Closure $next)
     {
-        if (in_array($request->getMethod(), self::PARSED_METHODS)) {
+        if (in_array($request->getMethod(), self::PARSED_METHODS) && (env('APP_ENV') != 'testing')) {
             if (json_decode($request->getContent(), true) == null) {
                 return $this->badRequest(trans('messages.custom_error_message.ERROR_INVALID_JSON'));
             }
