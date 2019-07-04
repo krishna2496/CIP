@@ -46,6 +46,9 @@ class TenantMigrationJob extends Job
         
         // Call artisan command to create table for newly created tenant's database
         Artisan::call('migrate --path=database/migrations/tenant');
+
+        // Call artisan command to run database seeder for default values
+        Artisan::call('db:seed');
         
         // Disconnect and reconnect with default database
         DB::disconnect('tenant');
