@@ -33,7 +33,7 @@ class TenantSettingRepository implements TenantSettingInterface
      * @param array $data
      */
     public function updateSetting(array $data, int $settingId)
-    {           
+    {
         $setting = $this->tenantSetting->findOrFail($settingId);
         $setting->update($data);
         return $setting;
@@ -47,7 +47,6 @@ class TenantSettingRepository implements TenantSettingInterface
     */
     public function getAllSettings(): LengthAwarePaginator
     {
-        return $this->tenantSetting->paginate(config('constants.PER_PAGE_LIMIT'));        
+        return $this->tenantSetting->paginate(config('constants.PER_PAGE_LIMIT'));
     }
-
 }

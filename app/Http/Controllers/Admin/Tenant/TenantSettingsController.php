@@ -34,7 +34,8 @@ class TenantSettingsController extends Controller
      * @param   App\Repositories\TenantSetting\TenantSettingRepository $tenantSettingRepository
      * @return void
      */
-    public function __construct(TenantSettingRepository $tenantSettingRepository, ResponseHelper $responseHelper) {
+    public function __construct(TenantSettingRepository $tenantSettingRepository, ResponseHelper $responseHelper)
+    {
         $this->tenantSettingRepository = $tenantSettingRepository;
         $this->responseHelper = $responseHelper;
     }
@@ -56,7 +57,7 @@ class TenantSettingsController extends Controller
              trans('messages.success.MESSAGE_TENANT_SETTINGS_LISTING');
 
             return $this->responseHelper->successWithPagination($apiStatus, $apiMessage, $settings);
-        }  catch (InvalidArgumentException $e) {
+        } catch (InvalidArgumentException $e) {
             return $this->invalidArgument(
                 config('constants.error_codes.ERROR_INVALID_ARGUMENT'),
                 trans('messages.custom_error_message.ERROR_INVALID_ARGUMENT')
@@ -92,7 +93,7 @@ class TenantSettingsController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $settingId     
+     * @param  int  $settingId
      * @return \Illuminate\Http\JsonResponse
      */
     public function update(Request $request, int $settingId): JsonResponse
@@ -123,7 +124,6 @@ class TenantSettingsController extends Controller
             $apiData = $setting->toArray();
 
             return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
-
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
                 config('constants.error_codes.ERROR_NO_DATA_FOUND'),

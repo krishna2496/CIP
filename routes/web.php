@@ -15,7 +15,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
      'uses' => 'App\Tenant\TenantOptionController@getTenantOption']);
 
     /* User login routing using jwt token */
-	$router->post('login', ['as' =>'login', 'middleware' => 'tenant.connection',
+    $router->post('login', ['as' =>'login', 'middleware' => 'tenant.connection',
      'uses' => 'App\Auth\AuthController@authenticate']);
 
     /* Forgot password routing */
@@ -65,6 +65,10 @@ $router->group(['middleware' => 'localization'], function ($router) {
     /* Get user filter  */
     $router->get('/user_filter', ['middleware' => 'tenant.connection|jwt.auth',
      'uses' => 'App\UserFilterController@index']);
+
+    /* Get explore mission  */
+    $router->get('/explore_mission', ['middleware' => 'tenant.connection|jwt.auth',
+    'uses' => 'App\Mission\MissionController@exploreMission']);
 });
 
 
@@ -83,14 +87,14 @@ $router->get('language/{lang}', ['as' => 'language', 'uses' => 'App\Language\Lan
 
 /* Set user data for tenant specific */
 $router->group(
-	['prefix' => 'users', 'middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware'], 
-	function ($router) {
-		$router->get('/', ['as' => 'users', 'uses' => 'Admin\User\UserController@index']);
-		$router->get('/{userId}', ['as' => 'users.show', 'uses' => 'Admin\User\UserController@show']);
-		$router->post('/', ['as' => 'users.store', 'uses' => 'Admin\User\UserController@store']);
-		$router->patch('/{userId}', ['as' => 'users.update', 'uses' => 'Admin\User\UserController@update']);
-		$router->delete('/{userId}', ['as' => 'usersdelete', 'uses' => 'Admin\User\UserController@destroy']);
-	}
+    ['prefix' => 'users', 'middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware'],
+    function ($router) {
+        $router->get('/', ['as' => 'users', 'uses' => 'Admin\User\UserController@index']);
+        $router->get('/{userId}', ['as' => 'users.show', 'uses' => 'Admin\User\UserController@show']);
+        $router->post('/', ['as' => 'users.store', 'uses' => 'Admin\User\UserController@store']);
+        $router->patch('/{userId}', ['as' => 'users.update', 'uses' => 'Admin\User\UserController@update']);
+        $router->delete('/{userId}', ['as' => 'usersdelete', 'uses' => 'Admin\User\UserController@destroy']);
+    }
 );
 
 /* Set custom slider data for tenant specific */
@@ -132,8 +136,10 @@ $router->group(
         $router->get('/{missionId}', ['as' => 'missions.show', 'uses' => 'Admin\Mission\MissionController@show']);
         $router->post('/', ['as' => 'missions.store', 'uses' => 'Admin\Mission\MissionController@store']);
         $router->patch('/{missionId}', ['as' => 'missions.update', 'uses' => 'Admin\Mission\MissionController@update']);
-        $router->delete('/{missionId}', ['as' => 'missions.delete', 'uses' => 'Admin\Mission\MissionController@destroy']);
-        $router->get('/{missionId}/applications', ['as' => 'missions.applications', 'uses' => 'Admin\Mission\MissionController@missionApplications']);
+        $router->delete('/{missionId}', ['as' => 'missions.delete',
+        'uses' => 'Admin\Mission\MissionController@destroy']);
+        $router->get('/{missionId}/applications', ['as' => 'missions.applications',
+        'uses' => 'Admin\Mission\MissionController@missionApplications']);
         $router->get(
             '/{missionId}/applications/{applicationId}',
             ['uses' => 'Admin\Mission\MissionController@missionApplication']
@@ -161,7 +167,7 @@ $router->group(
     function ($router) {
         $router->post('/update-style', ['uses' => 'Admin\Tenant\TenantOptionsController@updateStyleSettings']);
         $router->get('/reset-style', ['uses' => 'Admin\Tenant\TenantOptionsController@resetStyleSettings']);
-		$router->get('/download-style', ['uses' => 'Admin\Tenant\TenantOptionsController@downloadStyleFiles']);
+        $router->get('/download-style', ['uses' => 'Admin\Tenant\TenantOptionsController@downloadStyleFiles']);
     }
 );
 
