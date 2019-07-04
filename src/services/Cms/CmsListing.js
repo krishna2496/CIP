@@ -8,7 +8,7 @@ export default async(data) => {
         defaultLanguage = (store.state.defaultLanguage).toLowerCase();
     }
     await axios({
-            url: process.env.VUE_APP_API_ENDPOINT + "cms/listing",
+            url: process.env.VUE_APP_API_ENDPOINT + "app/cms/listing",
             method: 'get',
             headers: {
                 'X-localization': defaultLanguage

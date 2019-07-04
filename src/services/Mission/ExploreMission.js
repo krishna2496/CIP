@@ -26,7 +26,6 @@ export default async() => {
                 headerMenuData.top_country = response.data.data.top_countries;
                 headerMenuData.top_organization = response.data.data.top_organization;
             }
-            console.log(headerMenuData);
             store.commit('headerMenu',headerMenuData);   
         })
         .catch(function(error) {});
