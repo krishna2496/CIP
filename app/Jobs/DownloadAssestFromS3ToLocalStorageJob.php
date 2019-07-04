@@ -49,8 +49,8 @@ class DownloadAssestFromS3ToLocalStorageJob extends Job
             }
         } else {
             throw new FileDownloadException(
-                trans('messages.custom_error_message.NO_FILES_FOUND_TO_DOWNLOAD'),
-                config('constants.error_codes.NO_FILES_FOUND_TO_DOWNLOAD')
+                trans('messages.custom_error_message.ERROR_NO_FILES_FOUND_TO_DOWNLOAD'),
+                config('constants.error_codes.ERROR_NO_FILES_FOUND_TO_DOWNLOAD')
             );
         }
     }
