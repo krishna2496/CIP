@@ -14,7 +14,13 @@ export default async(data) => {
         })
         .then((response) => {
             if (response.data && response.data.data.filters) {
-                store.commit('userFilter',response.data.data.filters)
+                let filterData = {};
+                filterData.search = response.data.data.filters.search;
+                filterData.country = response.data.data.filters.country;
+                filterData.city = response.data.data.filters.city;
+                filterData.theme = response.data.data.filters.theme;
+                filterData.skill = response.data.data.filters.skill;
+                store.commit('userFilter',filterData)
             } else {
                 let filterData = {};
                 filterData.search = '';

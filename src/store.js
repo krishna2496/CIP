@@ -18,7 +18,10 @@ export default new Vuex.Store({
         avatar: localStorage.getItem('avatar'),
         isloaderSet: true,
         logo: localStorage.getItem('logo'),
-        search : localStorage.getItem('search') 
+        search : localStorage.getItem('search'),
+        exploreMissionType : '',
+        exploreMissionParams : '',
+        menubar : localStorage.getItem('menubar'),
     },
     mutations: {
         // Set login data in state and local storage       
@@ -80,10 +83,23 @@ export default new Vuex.Store({
             localStorage.setItem('logo', logo)
             state.logo = logo;
         },
-
+        // User filter data
         userFilter(state,filters) {
-            localStorage.setItem('search',filters.search) 
+            localStorage.setItem('search',filters.search)
             state.search = filters.search
+        },
+        // Explore data
+        exploreFilter(state,filters) {
+            localStorage.setItem('exploreMissionType',filters.exploreMissionType)
+            localStorage.setItem('exploreMissionParams',filters.exploreMissionParams)   
+            state.exploreMissionType = filters.exploreMissionType
+            state.exploreMissionParams = filters.exploreMissionParams
+        },
+        // User filter data
+        headerMenu(state,headerMenuData)
+         {
+            localStorage.setItem('menubar',JSON.stringify(headerMenuData)) 
+            state.menubar = JSON.stringify(headerMenuData)
         }
     },
     getters: {},

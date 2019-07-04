@@ -1,8 +1,8 @@
 <template>
     <div class="home-page inner-pages filter-header">
         <header @scroll="handleScroll">
-             <ThePrimaryHeader></ThePrimaryHeader>
-             <TheSecondaryHeader v-if="isShownComponent"></TheSecondaryHeader>
+             <ThePrimaryHeader @exploreMisison="exploreMisison" v-if="isShownComponent"></ThePrimaryHeader>
+             <TheSecondaryHeader :search="search" ref="secondaryHeader" v-if="isShownComponent"></TheSecondaryHeader>
         </header>
         <main>
             <b-container class="home-content-wrapper">
@@ -62,6 +62,7 @@
                         :items="missionList"
                         :per-page="perPage"
                         :current-page="currentPage"
+                        v-if="isShownComponent"
                         small
                         />
                     </b-tab>
@@ -84,6 +85,7 @@
                         :items="missionList"
                         :per-page="perPage"
                         :current-page="currentPage"
+                        v-if="isShownComponent"
                         small
                         />
                     </b-tab>          
@@ -182,7 +184,9 @@ export default {
             "country": "",
             "city": "",
             "theme": "",
-            "skill": ""
+            "skill": "",
+            "exploreMissionType" : "",
+            "exploreMissionParams" : "",
         }
         };
     },
@@ -206,7 +210,9 @@ export default {
         async getMissions(){
             let filter = {};
             filter.page = this.currentPage
-            filter.search = store.state.search    
+            filter.search = store.state.search   
+            filter.exploreMissionType = store.state.exploreMissionType
+            filter.exploreMissionParams = store.state.exploreMissionParams       
             
             await missionListing(filter).then( response => {
             if (response.data) {
@@ -225,7 +231,10 @@ export default {
                     this.getMissions();
                 }
             }          
-            this.isShownComponent = true; 
+            this.isShownComponent = true;
+            if(store.state.search != null) {
+                this.search = store.state.search;
+            }
             }); 
         },
 
@@ -250,9 +259,45 @@ export default {
         changeView(currentView){
             //Change View 
             this.activeView = currentView;
+        },
+
+        exploreMisison(filters) {
+            let filteExplore = {};
+            filteExplore.exploreMissionType = '';
+            filteExplore.exploreMissionParams  = '';
+
+            this.filterData.search =  '';
+            this.filterData.country = '';
+            this.filterData.city =  '';
+            this.filterData.theme = '';
+            this.filterData.skill = '';
+            if(filters.parmasType) {
+                filteExplore.exploreMissionType = filters.parmasType;
+            }
+            if(filters.parmas) {
+                filteExplore.exploreMissionParams = filters.parmas;
+            }
+            store.commit('userFilter',this.filterData)
+            store.commit('exploreFilter',filteExplore);
+            this.getMissions(); 
         }
     },
     created() {
+        if (this.$route.params.searchParamsType){
+            let filteExplore = {};
+            filteExplore.exploreMissionParams  = '';
+            filteExplore.exploreMissionType = this.$route.params.searchParamsType;
+            if(this.$route.params.searchParams) {
+                filteExplore.exploreMissionParams = this.$route.params.searchParams;
+            }
+            store.commit('exploreFilter',filteExplore);
+
+        } else {
+            let filteExplore = {};
+            filteExplore.exploreMissionType = '';
+            filteExplore.exploreMissionParams = '';
+            store.commit('exploreFilter',filteExplore);
+        }
         var _this = this;
         // Mission listing
         this.missionFilter();
