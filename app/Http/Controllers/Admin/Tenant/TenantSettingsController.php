@@ -121,13 +121,13 @@ class TenantSettingsController extends Controller
 
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_TENANT_SETTING_UPDATE_SUCCESSFULLY');
-            $apiData = $setting->toArray();
+            $apiData = ['tenant_setting_id' => $setting->tenant_setting_id];
 
             return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
-                config('constants.error_codes.ERROR_NO_DATA_FOUND'),
-                trans('messages.custom_error_message.ERROR_NO_DATA_FOUND')
+                config('constants.error_codes.ERROR_SETTING_FOUND'),
+                trans('messages.custom_error_message.ERROR_SETTING_FOUND')
             );
         } catch (\Exception $e) {
             return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
