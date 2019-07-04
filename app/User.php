@@ -81,26 +81,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         "manager_name" => "max:16",
         "linked_in_url" => "url"
     ];
-    
-    /**
-     * The rules that should validate login request.
-     *
-     * @var array
-     */
-    public $loginRules = [
-        'email' => 'required|email',
-        'password' => 'required'
-    ];
-    
-    /**
-     * The rules that should validate reset password request.
-     *
-     * @var array
-     */
-    public $resetPasswordRules = [
-        'email' => 'required|email',
-    ];
-        
+          
     /**
     * Defined has one relation for the city table.
     *
