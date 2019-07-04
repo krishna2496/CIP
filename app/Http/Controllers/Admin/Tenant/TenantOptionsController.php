@@ -201,11 +201,11 @@ class TenantOptionsController extends Controller
             dispatch(new CreateFolderInS3BucketJob($tenantName));
         } catch (S3Exception $e) {
             return $this->s3Exception(
-                config('constants.error_codes.FAILED_TO_RESET_STYLING'),
-                trans('messages.custom_error_message.FAILED_TO_RESET_STYLING')
+                config('constants.error_codes.ERROR_FAILED_TO_RESET_STYLING'),
+                trans('messages.custom_error_message.ERROR_FAILED_TO_RESET_STYLING')
             );
         } catch (\Exception $e) {
-            throw new \Exception(trans('messages.custom_error_message.FAILED_TO_RESET_STYLING'));
+            throw new \Exception(trans('messages.custom_error_message.ERROR_FAILED_TO_RESET_STYLING'));
         }
 
         // Copy tenant folder to local

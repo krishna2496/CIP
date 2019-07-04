@@ -55,8 +55,8 @@ class CreateFolderInS3BucketJob extends Job
             }
         } else {
             return $this->s3Exception(
-                config('constants.error_codes.DEFAULT_THEME_FOLDER_NOT_FOUND'),
-                trans('messages.custom_error_message.DEFAULT_THEME_FOLDER_NOT_FOUND')
+                config('constants.error_codes.ERROR_DEFAULT_THEME_FOLDER_NOT_FOUND'),
+                trans('messages.custom_error_message.ERROR_DEFAULT_THEME_FOLDER_NOT_FOUND')
             );
         }
     }

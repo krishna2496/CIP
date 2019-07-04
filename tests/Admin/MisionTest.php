@@ -34,10 +34,6 @@ class MissionTest extends TestCase
                     "organisation_id",
                     "organisation_name",
                     "mission_application_count",
-                    "default_media_name",
-                    "default_media_type",
-                    "default_media_path",
-                    "city_name",
                     "city" => [
                         "city_id",
                         "name"

@@ -43,8 +43,7 @@ class AppMissionTest extends TestCase
                     "application_deadline",
                     "publication_status",
                     "organisation_id",
-                    "organisation_name",
-                    
+                    "organisation_name",                   
                     "mission_theme" => [
                         "mission_theme_id",
                         "theme_name",

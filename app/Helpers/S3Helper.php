@@ -38,10 +38,10 @@ class S3Helper
      */
     public function compileLocalScss(string $tenantName, array $options = [])
     {
-		$scss = new Compiler();
-		$scss->addImportPath(realpath(storage_path().'/app/'.$tenantName.'/assets/scss'));
-		
-		$importScss = '@import "_variables";';
+        $scss = new Compiler();
+        $scss->addImportPath(realpath(storage_path().'/app/'.$tenantName.'/assets/scss'));
+        
+        $importScss = '@import "_variables";';
         
         // Color set & other file || Color set & no file
         if ((isset($options['primary_color']) && $options['isVariableScss'] == 0)) {
