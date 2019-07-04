@@ -205,13 +205,6 @@ class MissionController extends Controller
             $topCountry = $this->missionRepository->exploreMission($request, config('constants.TOP_COUNTRY'));
             // Get Data by top organization
             $topOrganisation = $this->missionRepository->exploreMission($request, config('constants.TOP_ORGANISATION'));
-
-            $topMissionData = Helpers::missionTopData(
-                $topTheme,
-                $topCountry,
-                $local,
-                $topOrganisation
-            );
             
             foreach ($topTheme as $key => $value) {
                 if ($value->missionTheme && $value->missionTheme->translations) {
