@@ -45,7 +45,7 @@ class TenantSettingsController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function index()
+    public function index(): JsonResponse
     {
         try {
             $settings = $this->tenantSettingRepository->getAllSettings();
@@ -103,7 +103,7 @@ class TenantSettingsController extends Controller
             $validator = Validator::make(
                 $request->all(),
                 [
-                    "value" => "required|numeric",
+                    "value" => "required|in:1,0",
                 ]
             );
             
