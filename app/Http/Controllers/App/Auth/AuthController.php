@@ -110,7 +110,6 @@ class AuthController extends Controller
 
             if ($validator->fails()) {
                 return $this->responseHelper->error(
-                    dd($validator->errors()->first());
                     Response::HTTP_UNPROCESSABLE_ENTITY,
                     Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
                     config('constants.error_codes.ERROR_INVALID_DETAIL'),

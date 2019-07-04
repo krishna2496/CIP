@@ -32,6 +32,13 @@ class MissionTheme extends Model
     protected $visible = ['mission_theme_id', 'theme_name', 'translations'];
 
     /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = ['theme_name', 'translations'];
+
+    /**
      * Get the mission that has theme
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
@@ -61,5 +68,27 @@ class MissionTheme extends Model
     public function getTranslationsAttribute($value)
     {
         return unserialize($value);
+    }
+
+     /**
+     * Find the specified resource.
+     *
+     * @param  int  $id
+     * @return array
+     */
+    public function findMissionTheme(int $id)
+    {
+        return static::findOrFail($id);
+    }
+    
+    /**
+     * Delete the specified resource.
+     *
+     * @param  int  $id
+     * @return bool
+     */
+    public function deleteMissionTheme(int $id): bool
+    {
+        return static::findOrFail($id)->delete();
     }
 }

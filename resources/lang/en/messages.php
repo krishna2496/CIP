@@ -40,7 +40,11 @@ return [
         'MESSAGE_COUNTRY_LISTING' => 'Country listing successfully',
 		'MESSAGE_MISSION_FOUND' => 'Mission found successfully',
 		'MESSAGE_PAGE_FOUND' => 'Page found successfully',
-        'MESSAGE_ASSETS_FILES_LISTING' => "Assets files listing successfully"
+        'MESSAGE_ASSETS_FILES_LISTING' => "Assets files listing successfully",
+        'MESSAGE_THEME_CREATED' => 'Mission theme created successfully',
+        'MESSAGE_THEME_UPDATED' => 'Mission theme updated successfully',
+        'MESSAGE_THEME_DELETED' => 'Mission theme deleted successfully',
+        'MESSAGE_THEME_FOUND' => 'Mission theme found successfully',
     ],
 
         
@@ -74,7 +78,9 @@ return [
         'ERROR_MISSION_DELETION' => 'Mission deletion failed',
         'ERROR_MISSION_REQUIRED_FIELDS_EMPTY' => 'Mission creation failed. Please check input parameters',
         'ERROR_NO_MISSION_FOUND' => 'Mission does not found in system',
-
+        'ERROR_THEME_INVALID_DATA' => 'Mission theme creation failed. Please check input parameters',
+        'ERROR_THEME_NOT_FOUND' => 'Mission Theme does not found in system',
+        
         
         // Custom error code for Tenant Authorization - 210000 - 219999
         'ERROR_INVALID_API_AND_SECRET_KEY' => 'Invalid API Key or Secret key',
