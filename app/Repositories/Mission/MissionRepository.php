@@ -531,8 +531,8 @@ class MissionRepository implements MissionInterface
                     $missionLanguageQuery->Where('title', 'like', '%' . $userFilterData['search'] . '%');
                     $missionLanguageQuery->orWhere('short_description', 'like', '%' . $userFilterData['search'] . '%');
                 });
-                $query->orWhere(function ($organizationQry) use ($userFilterData) {
-                    $organizationQry->orWhere('organisation_name', 'like', '%' . $userFilterData['search'] . '%');
+                $query->orWhere(function ($organizationQuery) use ($userFilterData) {
+                    $organizationQuery->orWhere('organisation_name', 'like', '%' . $userFilterData['search'] . '%');
                 });
             });
         }
@@ -552,23 +552,25 @@ class MissionRepository implements MissionInterface
         // Get  mission data
         $missionQuery = $this->mission->select('*')
         ->where('publication_status', config("constants.publication_status")["APPROVED"]);
-        if ($topFilterParams == config('constants.TOP_THEME')) {
-            $missionQuery
-            ->selectRaw('COUNT(mission.theme_id) as mission_theme_count')
-            ->with(['missionTheme'])
-            ->groupBy('mission.theme_id')
-            ->orderBY('mission_theme_count', 'desc');
-        }
-        if ($topFilterParams == config('constants.TOP_COUNTRY')) {
-            $missionQuery->with(['country'])
-            ->selectRaw('COUNT(mission.country_id) as mission_country_count')
-            ->groupBy('mission.country_id')
-            ->orderBY('mission_country_count', 'desc');
-        }
-        if ($topFilterParams == config('constants.TOP_ORGANISATION')) {
-            $missionQuery->selectRaw('COUNT(mission.organisation_id) as mission_organisation_count')
-            ->groupBy('mission.organisation_id')
-            ->orderBY('mission_organisation_count', 'desc');
+        switch ($topFilterParams) {
+            case config('constants.TOP_THEME'):
+                $missionQuery
+                ->selectRaw('COUNT(mission.theme_id) as mission_theme_count')
+                ->with(['missionTheme'])
+                ->groupBy('mission.theme_id')
+                ->orderBY('mission_theme_count', 'desc');
+                break;
+            case config('constants.TOP_COUNTRY'):
+                $missionQuery->with(['country'])
+                ->selectRaw('COUNT(mission.country_id) as mission_country_count')
+                ->groupBy('mission.country_id')
+                ->orderBY('mission_country_count', 'desc');
+                break;
+            case config('constants.TOP_ORGANISATION'):
+                $missionQuery->selectRaw('COUNT(mission.organisation_id) as mission_organisation_count')
+                ->groupBy('mission.organisation_id')
+                ->orderBY('mission_organisation_count', 'desc');
+                break;
         }
         $mission = $missionQuery->limit(config('constants.EXPLORE_MISSION_LIMIT'))->get();
         return $mission;
