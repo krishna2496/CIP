@@ -121,6 +121,8 @@ return [
 
         'ERROR_OCCURRED' => '999999',
         'ERROR_INVALID_JSON' => '900000',
+
+        'ERROR_TENANT_SETTING_REQUIRED_FIELDS_EMPTY' => '400008'
         
     ]
     
