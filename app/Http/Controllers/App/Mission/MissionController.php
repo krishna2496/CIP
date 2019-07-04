@@ -268,4 +268,98 @@ class MissionController extends Controller
             throw new \Exception(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
+
+    public function filters(Request $request): JsonResponse
+    {
+        try {
+            $returnData = [];
+            $language = ($request->hasHeader('X-localization')) ?
+            $request->header('X-localization') : env('TENANT_DEFAULT_LANGUAGE_CODE');
+            // Get Data by country
+            $missionCountry = $this->missionRepository->missionFilter($request, config('constants.COUNTRY'));
+            // Get Data by top theme
+            $missionCity = $this->missionRepository->missionFilter($request, config('constants.CITY'));
+            // Get Data by top organization
+            $missionTheme = $this->missionRepository->missionFilter($request, config('constants.THEME'));
+            // Get Data by top organization
+            $missionSkill = $this->missionRepository->missionFilter($request, config('constants.SKILL'));
+            
+            if (!empty($missionCountry->toArray())) {
+                foreach ($missionCountry as $key => $value) {
+                    if ($value->country) {
+                        $returnData[config('constants.COUNTRY')][$key]['title'] =
+                        $value->country->name;
+                        $returnData[config('constants.COUNTRY')][$key]['id'] =
+                        $value->country->country_id;
+                    }
+                }
+                $apiData[config('constants.COUNTRY')] = $returnData[config('constants.COUNTRY')];
+            }
+
+            if (!empty($missionCity->toArray())) {
+                foreach ($missionCity as $key => $value) {
+                    $returnData[config('constants.CITY')][$key]['title'] =
+                        $value->city_name;
+                    $returnData[config('constants.CITY')][$key]['id'] =
+                        $value->city_id;
+                }
+                $apiData[config('constants.CITY')] = $returnData[config('constants.CITY')];
+            }
+            
+            if (!empty($missionTheme->toArray())) {
+                foreach ($missionTheme as $key => $value) {
+                    if ($value->missionTheme && $value->missionTheme->translations) {
+                        $arrayKey = array_search($language, array_column($value->missionTheme->translations, 'lang'));
+                        if ($arrayKey  !== '') {
+                            $returnData[config('constants.THEME')][$key]['title'] =
+                            $value->missionTheme->translations[$arrayKey]['title'];
+                            $returnData[config('constants.THEME')][$key]['id'] =
+                            $value->missionTheme->mission_theme_id;
+                        }
+                    }
+                }
+                $apiData[config('constants.THEME')] = $returnData[config('constants.THEME')];
+            }
+
+            if (!empty($missionSkill->toArray())) {
+                foreach ($missionSkill as $key => $value) {
+                    if ($value->skill && $value->skill->translations) {
+                        $arrayKey = array_search($language, array_column($value->skill->translations, 'lang'));
+                        if ($arrayKey  !== '') {
+                            $returnData[config('constants.SKILL')][$key]['title'] =
+                            $value->skill->translations[$arrayKey]['title'];
+                            $returnData[config('constants.SKILL')][$key]['id'] =
+                            $value->skill->skill_id;
+                        }
+                    }
+                }
+                $apiData[config('constants.SKILL')] = $returnData[config('constants.SKILL')];
+            }
+            
+            $apiData[config('constants.COUNTRY')] = $returnData[config('constants.COUNTRY')];
+            $apiData[config('constants.CITY')] = $returnData[config('constants.CITY')];
+            $apiData[config('constants.THEME')] = $returnData[config('constants.THEME')];
+            $apiData[config('constants.SKILL')] = $returnData[config('constants.SKILL')];
+            $apiStatus = Response::HTTP_OK;
+            return $this->responseHelper->success(
+                $apiStatus,
+                '',
+                $apiData
+            );
+        } catch (ModelNotFoundException $e) {
+            return $this->modelNotFound(
+                config('constants.error_codes.ERROR_NO_DATA_FOUND'),
+                trans('messages.custom_error_message.ERROR_NO_DATA_FOUND')
+            );
+        } catch (PDOException $e) {
+            return $this->PDO(
+                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
+                trans(
+                    'messages.custom_error_message.ERROR_DATABASE_OPERATIONAL'
+                )
+            );
+        } catch (\Exception $e) {
+            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
+        }
+    }
 }

@@ -53,6 +53,13 @@ class Mission extends Model
     'publication_status', 'organisation_id', 'organisation_name', 'mission_type', 'goal_objective',
     'missionDocument', 'missionMedia', 'missionLanguage', 'missionTheme', 'city'];
 
+    protected $visible = ['mission_id', 'theme_id', 'city_id',
+    'country_id', 'start_date', 'end_date', 'total_seats', 'available_seats', 'application_deadline',
+    'publication_status', 'organisation_id', 'organisation_name', 'mission_type', 'goal_objective',
+    'missionDocument', 'missionMedia', 'missionLanguage', 'missionTheme', 'city',
+    'default_media_type','default_media_path','title','short_description','objective','set_view_detail','city_name',
+    'seats_left','user_application_count','mission_application_count'];
+
     protected $appends = ['city_name'];
     /**
      * Get the document record associated with the mission.
