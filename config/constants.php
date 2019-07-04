@@ -11,7 +11,7 @@ return [
     'SLIDER_IMAGE_PATH' => 'images/',
     'ACTIVE' => 1,
     'DB_DATE_FORMAT' => 'Y-m-d H:i:s',
-    'PER_PAGE_LIMIT' => '10',
+    'PER_PAGE_LIMIT' => '9',
     'FRONT_DATE_FORMAT' => 'd/m/Y',
     
     /*
@@ -82,6 +82,21 @@ return [
         'PENDING' => 'PENDING',
         'REFUSED' => 'REFUSED'
     ],
+
+    /*
+     * Top theme
+     */
+    'TOP_THEME' => "top_themes",
+    'TOP_COUNTRY' => "top_countries",
+    'TOP_ORGANISATION' => "top_organization",
+    'TOP_ORGANISATION' => "top_organization",
+    'MOST_RANKED' => "most_ranked_missions",
+    'TOP_FAVOURITE' => "favourite_missions",
+    'TOP_RECOMMENDED' => "recommended_missions",
+    'THEME' => "themes",
+    'COUNTRY' => "country",
+    'ORGANIZATION' => "organization",
+    'EXPLORE_MISSION_LIMIT' => "5",
 
     'error_codes' => [
         'ERROR_FOOTER_PAGE_REQUIRED_FIELDS_EMPTY' => '300000',

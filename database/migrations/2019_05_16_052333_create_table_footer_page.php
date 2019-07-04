@@ -16,7 +16,7 @@ class CreateTableFooterPage extends Migration
     {
         Schema::create('footer_page', function (Blueprint $table) {
             $table->bigIncrements('page_id')->unsigned();
-            $table->enum('status',['1', '0'])->default(1);
+            $table->enum('status', ['1', '0'])->default(1);
             $table->timestamps();
             $table->softDeletes();
         });

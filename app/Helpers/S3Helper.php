@@ -38,25 +38,24 @@ class S3Helper
      */
     public function compileLocalScss(string $tenantName, array $options = [])
     {
-        
-            $scss = new Compiler();
-            $scss->addImportPath(realpath(storage_path().'\app\\'.$tenantName.'\assets\scss'));
+        $scss = new Compiler();
+        $scss->addImportPath(realpath(storage_path().'\app\\'.$tenantName.'\assets\scss'));
 
-            $importScss = '@import "_variables";';
+        $importScss = '@import "_variables";';
         
-            // Color set & other file || Color set & no file
-            if ((isset($options['primary_color']) && $options['isVariableScss'] == 0)) {
-                $importScss .= '$primary: '.$options['primary_color'].';';
-            }
+        // Color set & other file || Color set & no file
+        if ((isset($options['primary_color']) && $options['isVariableScss'] == 0)) {
+            $importScss .= '$primary: '.$options['primary_color'].';';
+        }
 
-            if (!file_exists(base_path()."/node_modules/bootstrap/scss/bootstrap.scss")
+        if (!file_exists(base_path()."/node_modules/bootstrap/scss/bootstrap.scss")
             || !file_exists(base_path()."/node_modules/bootstrap-vue/src/index.js")) {
-                // Send error like bootstrap.scss not found while compile files
-                throw new FileNotFoundException(
+            // Send error like bootstrap.scss not found while compile files
+            throw new FileNotFoundException(
                     trans('messages.custom_error_message.BOOSTRAP_SCSS_NOT_FOUND'),
                     config('constants.error_codes.BOOSTRAP_SCSS_NOT_FOUND')
                 );
-            }
+        }
 
         try {
             $importScss .= '@import "custom";
