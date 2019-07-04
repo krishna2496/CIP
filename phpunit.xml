@@ -22,5 +22,7 @@
         <env name="APP_ENV" value="testing"/>
         <env name="CACHE_DRIVER" value="array"/>
         <env name="QUEUE_CONNECTION" value="sync"/>
+        <env name="TENANT_DB_DATABASE" value="ci_tenant_1"/>        
+        <env name="CIP_ADMIN_API_URL" value="http://admin-api.optimy.local/"/>        
     </php>
 </phpunit>

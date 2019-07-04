@@ -273,6 +273,8 @@ class MissionController extends Controller
                 config('constants.error_codes.ERROR_MISSION_DELETION'),
                 trans('messages.custom_error_message.ERROR_MISSION_DELETION')
             );
+        } catch (\Exception $e) {
+            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURED'));
         }
     }
 
