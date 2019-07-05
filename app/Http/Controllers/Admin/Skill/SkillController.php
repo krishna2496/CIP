@@ -10,7 +10,6 @@ use Illuminate\Support\Facades\Input;
 use App\Helpers\ResponseHelper;
 use App\Traits\RestExceptionHandlerTrait;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use App\Models\Theme;
 use InvalidArgumentException;
 use PDOException;
 use Validator;
@@ -55,7 +54,7 @@ class SkillController extends Controller
             // Set response data
             $apiStatus = Response::HTTP_OK;
             $apiMessage = ($skills->isEmpty()) ? trans('messages.success.MESSAGE_NO_RECORD_FOUND')
-             : trans('messages.success.MESSAGE_THEME_LISTING');
+             : trans('messages.success.MESSAGE_SKILL_LISTING');
             return $this->responseHelper->successWithPagination(Response::HTTP_OK, $apiMessage, $skills);
         } catch (InvalidArgumentException $e) {
             return $this->invalidArgument(
@@ -79,7 +78,7 @@ class SkillController extends Controller
             // Server side validataions
             $validator = Validator::make(
                 $request->all(),
-                ["theme_name" => "required",
+                ["skill_name" => "required",
                 "translations" => "required"]
             );
 
@@ -88,18 +87,18 @@ class SkillController extends Controller
                 return $this->responseHelper->error(
                     Response::HTTP_UNPROCESSABLE_ENTITY,
                     Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                    config('constants.error_codes.ERROR_THEME_INVALID_DATA'),
+                    config('constants.error_codes.ERROR_SKILL_INVALID_DATA'),
                     $validator->errors()->first()
                 );
             }
             
-            // Create new mission theme
+            // Create new skill
             $skill = $this->skillRepository->store($request->all());
 
             // Set response data
-            $apiData = ['mission_theme_id' => $skill->mission_theme_id];
+            $apiData = ['skill_id' => $skill->skill_id];
             $apiStatus = Response::HTTP_CREATED;
-            $apiMessage = trans('messages.success.MESSAGE_THEME_CREATED');
+            $apiMessage = trans('messages.success.MESSAGE_SKILL_CREATED');
             
             return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
         } catch (PDOException $e) {
@@ -130,7 +129,7 @@ class SkillController extends Controller
             // Server side validataions
             $validator = Validator::make(
                 $request->all(),
-                ["theme_name" => "sometimes|required",
+                ["skill_name" => "sometimes|required",
                 "translations" => "sometimes|required"]
             );
 
@@ -139,24 +138,24 @@ class SkillController extends Controller
                 return $this->responseHelper->error(
                     Response::HTTP_UNPROCESSABLE_ENTITY,
                     Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                    config('constants.error_codes.ERROR_THEME_INVALID_DATA'),
+                    config('constants.error_codes.ERROR_SKILL_INVALID_DATA'),
                     $validator->errors()->first()
                 );
             }
          
-            // Update mission theme
+            // Update skill
             $skill = $this->skillRepository->update($request->toArray(), $id);
 
             // Set response data
-            $apiData = ['mission_theme_id' => $skill->mission_theme_id];
+            $apiData = ['skill_id' => $skill->skill_id];
             $apiStatus = Response::HTTP_OK;
-            $apiMessage = trans('messages.success.MESSAGE_THEME_UPDATED');
+            $apiMessage = trans('messages.success.MESSAGE_SKILL_UPDATED');
             
             return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
-                config('constants.error_codes.ERROR_THEME_NOT_FOUND'),
-                trans('messages.custom_error_message.ERROR_THEME_NOT_FOUND')
+                config('constants.error_codes.ERROR_SKILL_NOT_FOUND'),
+                trans('messages.custom_error_message.ERROR_SKILL_NOT_FOUND')
             );
         } catch (PDOException $e) {
             return $this->PDO(
@@ -178,16 +177,16 @@ class SkillController extends Controller
     {
         try {
             $skillDetail = $this->skillRepository->find($id);
-                
+
             $apiData = $skillDetail->toArray();
             $apiStatus = Response::HTTP_OK;
-            $apiMessage = trans('messages.success.MESSAGE_THEME_FOUND');
+            $apiMessage = trans('messages.success.MESSAGE_SKILL_FOUND');
             
             return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
-                config('constants.error_codes.ERROR_THEME_NOT_FOUND'),
-                trans('messages.custom_error_message.ERROR_THEME_NOT_FOUND')
+                config('constants.error_codes.ERROR_SKILL_NOT_FOUND'),
+                trans('messages.custom_error_message.ERROR_SKILL_NOT_FOUND')
             );
         } catch (\Exception $e) {
             return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
@@ -207,12 +206,12 @@ class SkillController extends Controller
             
             // Set response data
             $apiStatus = Response::HTTP_NO_CONTENT;
-            $apiMessage = trans('messages.success.MESSAGE_USER_DELETED');
+            $apiMessage = trans('messages.success.MESSAGE_SKILL_DELETED');
             return $this->responseHelper->success($apiStatus, $apiMessage);
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
-                config('constants.error_codes.ERROR_THEME_NOT_FOUND'),
-                trans('messages.custom_error_message.ERROR_THEME_NOT_FOUND')
+                config('constants.error_codes.ERROR_SKILL_NOT_FOUND'),
+                trans('messages.custom_error_message.ERROR_SKILL_NOT_FOUND')
             );
         } catch (\Exception $e) {
             return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));

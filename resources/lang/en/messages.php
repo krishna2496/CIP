@@ -43,7 +43,11 @@ return [
         'MESSAGE_ASSETS_FILES_LISTING' => "Assets files listing successfully",
         'MESSAGE_PAGE_FOUND' => 'Page found successfully',
         'MESSAGE_TENANT_SETTING_UPDATE_SUCCESSFULLY' => 'Settings has been update successfully',
-        'MESSAGE_TENANT_SETTINGS_LISTING' => 'Settings listing successfully'
+        'MESSAGE_TENANT_SETTINGS_LISTING' => 'Settings listing successfully',
+        'MESSAGE_SKILL_CREATED' => 'Skill created successfully',
+        'MESSAGE_SKILL_UPDATED' => 'Skill updated successfully',
+        'MESSAGE_SKILL_DELETED' => 'Skill deleted successfully',
+        'MESSAGE_SKILL_FOUND' => 'Skill found successfully',
     ],
 
         
@@ -77,7 +81,8 @@ return [
         'ERROR_MISSION_DELETION' => 'Mission deletion failed',
         'ERROR_MISSION_REQUIRED_FIELDS_EMPTY' => 'Mission creation failed. Please check input parameters',
         'ERROR_NO_MISSION_FOUND' => 'Mission does not found in system',
-
+        'ERROR_SKILL_NOT_FOUND' => 'Skill does not found in system',
+        
         
         // Custom error code for Tenant Authorization - 210000 - 219999
         'ERROR_INVALID_API_AND_SECRET_KEY' => 'Invalid API Key or Secret key',
