@@ -394,11 +394,13 @@ export default {
             }); 
         },   
         clearFilter($event) {
-            let filters = {};
-            filters.exploreMissionType = '';
-            filters.exploreMissionParams = '';
-            store.commit("exploreFilter",filters);
-            this.$emit('getMissions');
+            if(store.state.isLoggedIn) {
+                let filters = {};
+                filters.exploreMissionType = '';
+                filters.exploreMissionParams = '';
+                store.commit("exploreFilter",filters);
+                this.$emit('getMissions');
+            }
         },
     },
     created() {
