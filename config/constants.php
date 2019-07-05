@@ -83,9 +83,6 @@ return [
         'REFUSED' => 'REFUSED'
     ],
 
-    /*
-     * Top theme
-     */
     'TOP_THEME' => "top_themes",
     'TOP_COUNTRY' => "top_countries",
     'TOP_ORGANISATION' => "top_organization",
@@ -95,6 +92,10 @@ return [
     'TOP_RECOMMENDED' => "recommended_missions",
     'THEME' => "themes",
     'COUNTRY' => "country",
+    'CITY' => "city",
+    'SKILL' => "skill",
+    'RANDOM' => 'random_missions',
+
     'ORGANIZATION' => "organization",
     'EXPLORE_MISSION_LIMIT' => "5",
 

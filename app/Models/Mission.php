@@ -48,7 +48,8 @@ class Mission extends Model
     'publication_status', 'organisation_id', 'organisation_name', 'mission_type', 'goal_objective',
     'missionDocument', 'missionMedia', 'missionLanguage', 'missionTheme', 'city',
     'default_media_type','default_media_path','title','short_description','objective','set_view_detail','city_name',
-    'seats_left','user_application_count','mission_application_count'];
+    'seats_left','user_application_count','mission_application_count','missionSkill','city_name','missionApplication',
+    'country','favouriteMission','missionInvite','missionRating'];
 
     protected $appends = ['city_name'];
     /**
@@ -153,6 +154,16 @@ class Mission extends Model
         return $this->hasMany(MissionApplication::class, 'mission_id', 'mission_id');
     }
 
+    /**
+     * Get the mission skill associated with the mission.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\hasMany
+     */
+    public function missionSkill(): HasMany
+    {
+        return $this->hasMany(MissionSkill::class, 'mission_id', 'mission_id');
+    }
+    
     /**
      * Soft delete from the database.
      *

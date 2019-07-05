@@ -269,6 +269,12 @@ class MissionController extends Controller
         }
     }
 
+    /**
+     * Get filter mission data
+     *
+     * @param Illuminate\Http\Request $request
+     * @return Illuminate\Http\JsonResponse
+     */
     public function filters(Request $request): JsonResponse
     {
         try {
@@ -281,9 +287,9 @@ class MissionController extends Controller
             $missionCity = $this->missionRepository->missionFilter($request, config('constants.CITY'));
             // Get Data by top organization
             $missionTheme = $this->missionRepository->missionFilter($request, config('constants.THEME'));
-            // Get Data by top organization
+            // Get Data by skills
             $missionSkill = $this->missionRepository->missionFilter($request, config('constants.SKILL'));
-            
+       
             if (!empty($missionCountry->toArray())) {
                 foreach ($missionCountry as $key => $value) {
                     if ($value->country) {
@@ -322,14 +328,24 @@ class MissionController extends Controller
             }
 
             if (!empty($missionSkill->toArray())) {
+                $missionSkill = $missionSkill->toArray();
                 foreach ($missionSkill as $key => $value) {
-                    if ($value->skill && $value->skill->translations) {
-                        $arrayKey = array_search($language, array_column($value->skill->translations, 'lang'));
-                        if ($arrayKey  !== '') {
-                            $returnData[config('constants.SKILL')][$key]['title'] =
-                            $value->skill->translations[$arrayKey]['title'];
-                            $returnData[config('constants.SKILL')][$key]['id'] =
-                            $value->skill->skill_id;
+                    $missionSkillArray = $value['mission_skill'];
+                    if (!empty($missionSkillArray)) {
+                        foreach ($missionSkillArray as $missionSkillKey => $missionSkillValue) {
+                            if ($missionSkillValue['skill']['translations']) {
+                                $arrayKey = array_search($language, array_column(
+                                    $missionSkillValue['skill']['translations'],
+                                    'lang'
+                                ));
+                              
+                                if ($arrayKey  !== '') {
+                                    $returnData[config('constants.SKILL')][$missionSkillValue['skill']['skill_id']]
+                                    ['title']=$missionSkillValue['skill']['translations'][$arrayKey]['title'];
+                                    $returnData[config('constants.SKILL')][$missionSkillValue['skill']['skill_id']]
+                                    ['id']= $missionSkillValue['skill']['skill_id'];
+                                }
+                            }
                         }
                     }
                 }
@@ -345,11 +361,6 @@ class MissionController extends Controller
                 $apiStatus,
                 '',
                 $apiData
-            );
-        } catch (ModelNotFoundException $e) {
-            return $this->modelNotFound(
-                config('constants.error_codes.ERROR_NO_DATA_FOUND'),
-                trans('messages.custom_error_message.ERROR_NO_DATA_FOUND')
             );
         } catch (PDOException $e) {
             return $this->PDO(
