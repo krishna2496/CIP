@@ -53,13 +53,14 @@ class ApiUserRepository implements ApiUserInterface
      * Create API user for tenant
      *
      * @param  int  $id
+     * @param  array $apiKeys
      * @return App\Models\ApiUser $apiUser
      */
-    public function store(int $id): ApiUser
+    public function store(int $id, array $apiKeys): ApiUser
     {
         $data['tenant_id'] = $id;
-        $data['api_key'] = base64_encode(str_random(16));
-        $data['api_secret'] = base64_encode(str_random(16));
+        $data['api_key'] = $apiKeys['api_key'];
+        $data['api_secret'] = $apiKeys['api_secret'];
         return $this->apiUser->create($data);
     }
 
@@ -92,9 +93,10 @@ class ApiUserRepository implements ApiUserInterface
      *
      * @param int $tenantId
      * @param  int  $id
+     * @param  string $apiSecret
      * @return App\Models\ApiUser $apiUser
      */
-    public function update(int $tenantId, int $id): ApiUser
+    public function update(int $tenantId, int $id, string $apiSecret): ApiUser
     {
         $apiUser = $this->apiUser->select('api_user_id', 'tenant_id', 'api_key', 'status')
         ->where('tenant_id', $tenantId)
@@ -102,7 +104,7 @@ class ApiUserRepository implements ApiUserInterface
         ->first();
 
         if ($apiUser) {
-            $data['api_secret'] = base64_encode(str_random(16));
+            $data['api_secret'] = $apiSecret;
             $apiUser->update($data);
             return $apiUser;
         } else {
