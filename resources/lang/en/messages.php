@@ -111,6 +111,10 @@ return [
         'ERROR_TENANT_ASSET_FOLDER_NOT_FOUND_ON_S3' => 'Tenant asset folder not found',
         'ERROR_NO_FILES_FOUND_IN_ASSETS_FOLDER' => 'No files found on S3 assets folder for this tenant',
         'ERROR_BOOSTRAP_SCSS_NOT_FOUND' => 'Boostrap SCSS file not found while compiling SCSS files',
-        'ERROR_SETTING_FOUND' => 'Setting not found'
+        'ERROR_SETTING_FOUND' => 'Setting not found',
+        'ERROR_IMAGE_FILE_NOT_FOUND_ON_S3' => 'Image file not found on S3 server',
+        'ERROR_WHILE_UPLOADING_IMAGE_ON_S3' => 'An error while uploading image on S3',
+        'ERROR_DOWNLOADING_IMAGE_TO_LOCAL' => 'An error while downloading image from S3 to server',
+        'ERROR_IMAGE_UPLOAD_INVALID_DATA' => 'Invalid input file'
     ]
 ];

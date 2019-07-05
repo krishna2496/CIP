@@ -168,6 +168,7 @@ $router->group(
         $router->post('/update-style', ['uses' => 'Admin\Tenant\TenantOptionsController@updateStyleSettings']);
         $router->get('/reset-style', ['uses' => 'Admin\Tenant\TenantOptionsController@resetStyleSettings']);
         $router->get('/download-style', ['uses' => 'Admin\Tenant\TenantOptionsController@downloadStyleFiles']);
+        $router->post('/update-image', ['uses' => 'Admin\Tenant\TenantOptionsController@updateImage']);
     }
 );
 

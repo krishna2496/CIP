@@ -15,6 +15,9 @@ use PDOException;
 use App\Jobs\DownloadAssestFromS3ToLocalStorageJob;
 use App\Jobs\CreateFolderInS3BucketJob;
 use App\Traits\RestExceptionHandlerTrait;
+use App\Exceptions\BucketNotFoundException;
+use App\Exceptions\FileNotFoundException;
+use App\Exceptions\FileUploadException;
 
 class TenantOptionsController extends Controller
 {
@@ -301,6 +304,10 @@ class TenantOptionsController extends Controller
                     file_get_contents($file->getRealPath())
                 )) {
                     // Error unable to download file to server
+                    throw new FileUploadException(
+                        trans('messages.custom_error_message.ERROR_DOWNLOADING_IMAGE_TO_LOCAL'),
+                        config('constants.error_codes.ERROR_DOWNLOADING_IMAGE_TO_LOCAL')
+                    );
                 }
             }
         }
@@ -352,5 +359,68 @@ class TenantOptionsController extends Controller
                 trans('messages.custom_error_message.ERROR_NO_FILES_FOUND_IN_ASSETS_FOLDER')
             );
         }
+    }
+
+    /**
+     * It will update image on S3
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function updateImage(Request $request): JsonResponse
+    {    
+        // Server side validataions
+        $validator = Validator::make($request->toArray(), ["image_file" => "required"]);
+
+        // If post parameter have any missing parameter
+        if ($validator->fails()) {
+            return $this->responseHelper->error(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                config('constants.error_codes.ERROR_IMAGE_UPLOAD_INVALID_DATA'),
+                $validator->errors()->first()
+            );
+        }
+
+        $file = $request->file('image_file');
+        $fileName = $file->getClientOriginalName();
+        
+        try {
+            // Get domain name from request and use as tenant name.
+            $tenantName = $this->helpers->getSubDomainFromRequest($request);                
+        } catch (\Exception $e) {
+            return $this->badRequest($e->getMessage());
+        }
+        try {
+            if (Storage::disk('s3')->exists($tenantName)) {
+                if(!Storage::disk('s3')->exists($tenantName.'/assets/images/'.$fileName))
+                {
+                    throw new FileNotFoundException(
+                        trans('messages.custom_error_message.ERROR_IMAGE_FILE_NOT_FOUND_ON_S3'),
+                        config('constants.error_codes.ERROR_IMAGE_FILE_NOT_FOUND_ON_S3')
+                    );
+                }
+                // Upload file on s3
+                if (!Storage::disk('s3')->put(
+                    '/'.$tenantName.'/assets/images/'.$fileName,
+                    file_get_contents($file->getRealPath())
+                )) {
+                    throw new FileUploadException(
+                        trans('messages.custom_error_message.ERROR_WHILE_UPLOADING_IMAGE_ON_S3'),
+                        config('constants.error_codes.ERROR_WHILE_UPLOADING_IMAGE_ON_S3')
+                    );
+                } 
+            } else {                    
+                throw new BucketNotFoundException(
+                    trans('messages.custom_error_message.ERROR_TENANT_ASSET_FOLDER_NOT_FOUND_ON_S3'),
+                    config('constants.error_codes.ERROR_TENANT_ASSET_FOLDER_NOT_FOUND_ON_S3')
+                );
+            }
+        } catch (\Exception $e) {
+            return $this->badRequest('messages.custom_error_message.ERROR_OCCURRED');
+        }            
+        $apiStatus = Response::HTTP_OK;
+        $apiMessage = "Image uploaded successfully";
+        return $this->responseHelper->success($apiStatus, $apiMessage);
     }
 }
