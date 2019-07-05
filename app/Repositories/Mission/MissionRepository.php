@@ -487,7 +487,12 @@ class MissionRepository implements MissionInterface
         //Explore mission by most ranked
         if ($request->has('explore_mission_type') &&
         ($request->input('explore_mission_type') == config('constants.MOST_RANKED'))) {
-            $missionQuery->withCount(['missionRating as mission_rationg_count']);
+            $missionQuery->withCount([
+                'missionRating as mission_rationg_count' => function ($query) {
+                    $query->select(DB::raw("AVG(rating) as rating"));
+                }
+            ]);
+            $missionQuery->with(['missionRating']);
             $missionQuery->orderBY('mission_rationg_count', 'desc');
         }
 
@@ -497,10 +502,17 @@ class MissionRepository implements MissionInterface
             $missionQuery->withCount(['missionInvite as mission_invite_count' => function ($query) use ($request) {
                 $query->where('to_user_id', $request->auth->user_id);
             }]);
+
             $missionQuery->orderBY('mission_invite_count', 'desc');
             $missionQuery->whereHas('missionInvite', function ($countryQuery) use ($request) {
                 $countryQuery->where('to_user_id', $request->auth->user_id);
             });
+        }
+
+        //Explore mission by random
+        if ($request->has('explore_mission_type') &&
+        ($request->input('explore_mission_type') == config('constants.RANDOM'))) {
+            $missionQuery->inRandomOrder();
         }
         
         // Explore mission by country
@@ -531,8 +543,8 @@ class MissionRepository implements MissionInterface
                     $missionLanguageQuery->Where('title', 'like', '%' . $userFilterData['search'] . '%');
                     $missionLanguageQuery->orWhere('short_description', 'like', '%' . $userFilterData['search'] . '%');
                 });
-                $query->orWhere(function ($organizationQuery) use ($userFilterData) {
-                    $organizationQuery->orWhere('organisation_name', 'like', '%' . $userFilterData['search'] . '%');
+                $query->orWhere(function ($organizationQry) use ($userFilterData) {
+                    $organizationQry->orWhere('organisation_name', 'like', '%' . $userFilterData['search'] . '%');
                 });
             });
         }
