@@ -3,6 +3,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use App\Models\Tenant;
 
 class ApiUser extends Model
 {
@@ -35,4 +37,14 @@ class ApiUser extends Model
      * @var array
      */
     protected $dates = ['created_at','updated_at','deleted_at'];
+
+    /**
+    * Defined has one relation for the tenant table.
+    *
+    * @return \Illuminate\Database\Eloquent\Relations\HasOne
+    */
+    public function tenant(): HasOne
+    {
+        return $this->hasOne(Tenant::class, 'tenant_id', 'tenant_id');
+    }
 }
