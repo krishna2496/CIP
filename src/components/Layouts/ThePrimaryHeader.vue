@@ -6,6 +6,7 @@
                 </b-navbar-toggle>
 				<b-navbar-brand :to="{ name: 'home' }" :style="{backgroundImage: 'url('+this.$store.state.logo+')'}"
                  v-if="this.$store.state.isLoggedIn"
+                 @click.native="clearFilter"
                  ></b-navbar-brand>
                 <b-navbar-brand 
                     :to="{ name: 'login' }"
@@ -392,6 +393,15 @@ export default {
                 }  
             }); 
         },   
+        clearFilter($event) {
+            if(store.state.isLoggedIn) {
+                let filters = {};
+                filters.exploreMissionType = '';
+                filters.exploreMissionParams = '';
+                store.commit("exploreFilter",filters);
+                this.$emit('getMissions');
+            }
+        },
     },
     created() {
         document.addEventListener("scroll", this.handscroller);

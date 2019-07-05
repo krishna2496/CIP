@@ -1,7 +1,9 @@
 <template>
     <div class="home-page inner-pages filter-header">
         <header @scroll="handleScroll">
-             <ThePrimaryHeader @exploreMisison="exploreMisison" v-if="isShownComponent"></ThePrimaryHeader>
+             <ThePrimaryHeader @exploreMisison="exploreMisison" 
+             @getMissions = "getMissions"
+             v-if="isShownComponent"></ThePrimaryHeader>
              <TheSecondaryHeader :search="search" ref="secondaryHeader" v-if="isShownComponent"></TheSecondaryHeader>
         </header>
         <main>
