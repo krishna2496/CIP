@@ -368,12 +368,15 @@ class TenantController extends Controller
             $apiUser = $this->apiUserRepository->update($tenantId, $apiUserId, $apiSecret);
             $apiUser->api_secret = $apiSecret;
 
+            $response['api_user_id'] = $apiUser->api_user_id;
+            $response['api_key'] = $apiUser->api_key;
+            $response['api_secret'] = $apiSecret;
+
             // Set response data
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_API_USER_UPDATED_SUCCESSFULLY');
-            $apiData = $apiUser->toArray();
 
-            return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
+            return $this->responseHelper->success($apiStatus, $apiMessage, $response);
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
                 config('constants.error_codes.ERROR_API_USER_NOT_FOUND'),
