@@ -104,15 +104,17 @@ export default {
         },
         //List cms pages
         cmsListing(slug){
-            axios.get(process.env.VUE_APP_API_ENDPOINT+"cms/"+slug)
+            axios.get(process.env.VUE_APP_API_ENDPOINT+"app/cms/"+slug)
             .then((response) => {
             if (response.data.data) {
                 let dataList = [];
                 response.data.data.pages.forEach(function(value,key){
+
                     if (value.language_id == store.state.defaultLanguageId) {
                         dataList.push(value);
                     }
                 })
+
                 this.footerItems = dataList[0]
                 this.isDynamicFooterItemsSet = true
             }
@@ -122,10 +124,11 @@ export default {
     },
 
     created() {
+         this.cmsListing(this.slug);
         window.addEventListener("scroll", this.handleScroll);
         window.addEventListener("resize", this.handleScroll);
         window.addEventListener("resize", this.getOffset);
-        this.cmsListing(this.slug);
+       
     },
 
     destroyed() {

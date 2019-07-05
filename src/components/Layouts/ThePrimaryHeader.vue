@@ -395,7 +395,9 @@ export default {
     },
     created() {
         document.addEventListener("scroll", this.handscroller);
-        this.exploreMissions();
+        if(store.state.isLoggedIn) {
+            this.exploreMissions();
+        }   
     }
     };
 </script>
