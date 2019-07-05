@@ -1,16 +1,15 @@
 <?php
 namespace App\Http\Controllers\Admin\MissionTheme;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
-use App\Http\Controllers\Controller;
-use App\Repositories\MissionTheme\MissionThemeRepository;
 use Illuminate\Support\Facades\Input;
+use App\Repositories\MissionTheme\MissionThemeRepository;
 use App\Helpers\ResponseHelper;
 use App\Traits\RestExceptionHandlerTrait;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use App\Models\Theme;
 use InvalidArgumentException;
 use PDOException;
 use Validator;
@@ -207,7 +206,7 @@ class MissionThemeController extends Controller
             
             // Set response data
             $apiStatus = Response::HTTP_NO_CONTENT;
-            $apiMessage = trans('messages.success.MESSAGE_USER_DELETED');
+            $apiMessage = trans('messages.success.MESSAGE_THEME_DELETED');
             return $this->responseHelper->success($apiStatus, $apiMessage);
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
