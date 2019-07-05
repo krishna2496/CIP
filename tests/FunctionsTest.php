@@ -81,11 +81,12 @@ class FunctionsTest extends TestCase
         // Create database
         $tenant = factory(Tenant::class)->create();
         $databaseName = "ci_tenant_".$tenant->tenant_id;
-
+        $databaseHelper = new DatabaseHelper;
+        
         $this->assertTrue(DB::statement("CREATE DATABASE IF NOT EXISTS `{$databaseName}`"));
 
         // Connect with newly created database
-        $this->assertTrue(DatabaseHelper::connectWithTenantDatabase($tenant->tenant_id));
+        $this->assertTrue($databaseHelper->connectWithTenantDatabase($tenant->tenant_id));
         
         $this->assertSame($databaseName, DB::connection()->getDatabaseName());
 
