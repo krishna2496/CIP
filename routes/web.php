@@ -179,6 +179,20 @@ $router->group(
         $router->patch('/{settingId}', ['uses' => 'Admin\Tenant\TenantSettingsController@update']);
     }
 );
+
+/* Set mission theme data for tenant specific */
+$router->group(
+    ['prefix' => '/entities/themes', 'middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware'],
+    function ($router) {
+        $router->get('/', ['uses' => 'Admin\MissionTheme\MissionThemeController@index']);
+        $router->get('/{themeId}', ['uses' => 'Admin\MissionTheme\MissionThemeController@show']);
+        $router->post('/', ['uses' => 'Admin\MissionTheme\MissionThemeController@store']);
+        $router->patch('/{themeId}', ['uses' => 'Admin\MissionTheme\MissionThemeController@update']);
+        $router->delete('/{themeId}', ['uses' => 'Admin\MissionTheme\MissionThemeController@destroy']);
+    }
+);
+
+
 /*
 |
 |--------------------------------------------------------------------------
