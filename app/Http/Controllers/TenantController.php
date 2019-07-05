@@ -326,14 +326,19 @@ class TenantController extends Controller
         }
 
         try {
-            $apiUser = $this->apiUserRepository->store($tenantId);
-
+            $apiKeys['api_key'] = str_random(16);
+            $apiKeys['api_secret'] = str_random(16);
+            $apiUser = $this->apiUserRepository->store($tenantId, $apiKeys);
+            
+            $response['api_user_id'] = $apiUser->api_user_id;
+            $response['api_key'] = $apiUser->api_key;
+            $response['api_secret'] = $apiKeys['api_secret'];
+            
             // Set response data
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_API_USER_CREATED_SUCCESSFULLY');
-            $apiData = $apiUser->toArray();
 
-            return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
+            return $this->responseHelper->success($apiStatus, $apiMessage, $response);
         } catch (\Exception $e) {
             return $this->badRequest(trans('messages.custom_error_message.999999'));
         }
@@ -358,7 +363,10 @@ class TenantController extends Controller
         }
 
         try {
-            $apiUser = $this->apiUserRepository->update($tenantId, $apiUserId);
+            $apiSecret = str_random(16);
+            
+            $apiUser = $this->apiUserRepository->update($tenantId, $apiUserId, $apiSecret);
+            $apiUser->api_secret = $apiSecret;
 
             // Set response data
             $apiStatus = Response::HTTP_OK;

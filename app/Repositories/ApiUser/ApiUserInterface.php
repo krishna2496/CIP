@@ -9,18 +9,20 @@ interface ApiUserInterface
      * Store a new resource.
      *
      * @param  int $id
+     * @param  array $apiKeys
      * @return void
      */
-    public function store(int $id);
+    public function store(int $id, array $apiKeys);
 
     /**
      * Update resource.
      *
      * @param  int $tenantId
      * @param  int $id
+     * @param  string $apiSecret
      * @return void
      */
-    public function update(int $tenantId, int $id);
+    public function update(int $tenantId, int $id, string $apiSecret);
 
     /**
      * Listing of a all resources.
