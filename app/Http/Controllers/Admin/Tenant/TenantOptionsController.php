@@ -391,34 +391,32 @@ class TenantOptionsController extends Controller
         } catch (\Exception $e) {
             return $this->badRequest($e->getMessage());
         }
-        try {
-            if (Storage::disk('s3')->exists($tenantName)) {
-                if(!Storage::disk('s3')->exists($tenantName.'/assets/images/'.$fileName))
-                {
-                    throw new FileNotFoundException(
-                        trans('messages.custom_error_message.ERROR_IMAGE_FILE_NOT_FOUND_ON_S3'),
-                        config('constants.error_codes.ERROR_IMAGE_FILE_NOT_FOUND_ON_S3')
-                    );
-                }
-                // Upload file on s3
-                if (!Storage::disk('s3')->put(
-                    '/'.$tenantName.'/assets/images/'.$fileName,
-                    file_get_contents($file->getRealPath())
-                )) {
-                    throw new FileUploadException(
-                        trans('messages.custom_error_message.ERROR_WHILE_UPLOADING_IMAGE_ON_S3'),
-                        config('constants.error_codes.ERROR_WHILE_UPLOADING_IMAGE_ON_S3')
-                    );
-                } 
-            } else {                    
-                throw new BucketNotFoundException(
-                    trans('messages.custom_error_message.ERROR_TENANT_ASSET_FOLDER_NOT_FOUND_ON_S3'),
-                    config('constants.error_codes.ERROR_TENANT_ASSET_FOLDER_NOT_FOUND_ON_S3')
+        
+        if (Storage::disk('s3')->exists($tenantName)) {
+            if(!Storage::disk('s3')->exists($tenantName.'/assets/images/'.$fileName))
+            {
+                throw new FileNotFoundException(
+                    trans('messages.custom_error_message.ERROR_IMAGE_FILE_NOT_FOUND_ON_S3'),
+                    config('constants.error_codes.ERROR_IMAGE_FILE_NOT_FOUND_ON_S3')
                 );
             }
-        } catch (\Exception $e) {
-            return $this->badRequest('messages.custom_error_message.ERROR_OCCURRED');
-        }            
+            // Upload file on s3
+            if (!Storage::disk('s3')->put(
+                '/'.$tenantName.'/assets/images/'.$fileName,
+                file_get_contents($file->getRealPath())
+            )) {
+                throw new FileUploadException(
+                    trans('messages.custom_error_message.ERROR_WHILE_UPLOADING_IMAGE_ON_S3'),
+                    config('constants.error_codes.ERROR_WHILE_UPLOADING_IMAGE_ON_S3')
+                );
+            } 
+        } else {                    
+            throw new BucketNotFoundException(
+                trans('messages.custom_error_message.ERROR_TENANT_ASSET_FOLDER_NOT_FOUND_ON_S3'),
+                config('constants.error_codes.ERROR_TENANT_ASSET_FOLDER_NOT_FOUND_ON_S3')
+            );
+        }
+                  
         $apiStatus = Response::HTTP_OK;
         $apiMessage = "Image uploaded successfully";
         return $this->responseHelper->success($apiStatus, $apiMessage);
