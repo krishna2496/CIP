@@ -340,7 +340,7 @@ class TenantController extends Controller
     }
 
     /**
-     * Renew api_key for api user
+     * Renew api_secret for api user
      *
      * @param int $tenantId
      * @param int $apiUserId
