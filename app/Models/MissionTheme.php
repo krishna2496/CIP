@@ -70,7 +70,7 @@ class MissionTheme extends Model
         return unserialize($value);
     }
 
-     /**
+    /**
      * Find the specified resource.
      *
      * @param  int  $id
