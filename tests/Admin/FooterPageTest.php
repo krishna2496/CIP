@@ -9,60 +9,6 @@ class FooterPageTest extends TestCase
     /**
      * @test
      *
-     * Get all footer pages
-     *
-     * @return void
-     */
-    public function it_should_return_all_footer_pages()
-    {
-        $this->get(route('cms'), ['Authorization' => 'Basic '.base64_encode(env('DEFAULT_TENANT').'_api_key:'.env('DEFAULT_TENANT').'_api_secret')])
-          ->seeStatusCode(200)
-          ->seeJsonStructure([
-            "status",
-            "data" => [
-                "*" => [
-                    "page_id",
-                    "slug",
-                    "status",
-                    "page_translations" => [
-                        "*" => [
-                            "page_id",
-                            "language_id",
-                            "title",
-                            "description" => [
-                                
-                            ]
-                        ]
-                    ]
-                ]
-            ],
-            "message"
-        ]);
-    }
-
-    /**
-     * @test
-     *
-     * No footer page found
-     *
-     * @return void
-     */
-    public function it_should_return_no_footer_page_found()
-    {
-        $this->get(
-            route("cms"),
-            ['Authorization' => 'Basic '.base64_encode(env('DEFAULT_TENANT').'_api_key:'.env('DEFAULT_TENANT').'_api_secret')]
-        )
-        ->seeStatusCode(200)
-        ->seeJsonStructure([
-            "status",
-            "message"
-        ]);
-    }
-
-    /**
-     * @test
-     *
      * Create footer page api
      *
      * @return void
@@ -97,9 +43,24 @@ class FooterPageTest extends TestCase
             ],
             'message',
             'status',
-            ]);
-        
-        FooterPage::where('slug', $slug)->delete();
+        ]);        
+    }
+
+    /**
+     * @test
+     *
+     * Get all footer pages
+     *
+     * @return void
+     */
+    public function it_should_return_all_footer_pages()
+    {
+        $this->get(route('cms'), ['Authorization' => 'Basic '.base64_encode(env('DEFAULT_TENANT').'_api_key:'.env('DEFAULT_TENANT').'_api_secret')])
+          ->seeStatusCode(200)
+          ->seeJsonStructure([
+            "status",
+            "message"
+        ]);
     }
 
     /**
@@ -177,8 +138,7 @@ class FooterPageTest extends TestCase
             ],
             'message',
             'status',
-            ]);
-        $footerPage->delete();
+        ]);
     }
     
     /**

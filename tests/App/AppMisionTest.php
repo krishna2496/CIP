@@ -29,26 +29,13 @@ class AppMissionTest extends TestCase
           ->seeStatusCode(200)
           ->seeJsonStructure([
             "status",
-            "data" => [
-                [
-                    "mission_id",
-                    "theme_id",
-                    "city_id",
-                    "country_id",
-                    "start_date",
-                    "end_date",
-                    "total_seats",
-                    "mission_type",
-                    "goal_objective",
-                    "application_deadline",
-                    "publication_status",
-                    "organisation_id",
-                    "organisation_name",                   
-                    "mission_theme" => [
-                        "mission_theme_id",
-                        "theme_name",
-                        "translations"
-                    ]
+            "meta_data" => [
+                "filters" => [
+                    "search",
+                    "country",
+                    "city",
+                    "theme",
+                    "skill"
                 ]
             ],
             "message"

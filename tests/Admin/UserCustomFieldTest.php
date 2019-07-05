@@ -9,6 +9,42 @@ class UserCustomFieldTest extends TestCase
     /**
      * @test
      *
+     * Create user custom field api
+     *
+     * @return void
+     */
+    public function it_should_create_user_custom_field()
+    {
+        $typeArray = config('constants.custom_field_types');
+        $randomTypes = array_rand($typeArray,1);       
+        $name = str_random(20);
+        $params = [
+            'name' => $name,
+            'type' => $typeArray[$randomTypes],
+            'is_mandatory' => 1,
+            'translations' => [
+                [
+                    'lang' => "en",
+                    'name' => str_random(10),
+                    'values' => "[".rand(1, 5).",".rand(5, 10)."]"
+                ]
+            ]
+        ];
+
+        $this->post("metadata/users/custom_fields/", $params, ['Authorization' => 'Basic '.base64_encode(env('DEFAULT_TENANT').'_api_key:'.env('DEFAULT_TENANT').'_api_secret')])
+        ->seeStatusCode(201)
+        ->seeJsonStructure([
+            'data' => [
+                'field_id',
+            ],
+            'message',
+            'status',
+            ]);
+    }
+    
+    /**
+     * @test
+     *
      * Get all user custom fields
      *
      * @return void
@@ -48,45 +84,7 @@ class UserCustomFieldTest extends TestCase
             "message"
         ]);
     }
-
-    /**
-     * @test
-     *
-     * Create user custom field api
-     *
-     * @return void
-     */
-    public function it_should_create_user_custom_field()
-    {
-        $typeArray = array("radio","drop-down");
-        $randomTypes = array_rand($typeArray,1);       
-        $name = str_random(20);
-        $params = [
-            'name' => $name,
-            'type' => $typeArray[$randomTypes],
-            'is_mandatory' => 1,
-            'translations' => [
-                [
-                    'lang' => "en",
-                    'name' => str_random(10),
-                    'values' => "[".rand(1, 5).",".rand(5, 10)."]"
-                ]
-            ]
-        ];
-
-        $this->post("metadata/users/custom_fields/", $params, ['Authorization' => 'Basic '.base64_encode(env('DEFAULT_TENANT').'_api_key:'.env('DEFAULT_TENANT').'_api_secret')])
-        ->seeStatusCode(201)
-        ->seeJsonStructure([
-            'data' => [
-                'field_id',
-            ],
-            'message',
-            'status',
-            ]);
-        
-        UserCustomField::where('name', $name)->delete();
-    }
-
+    
     /**
      * @test
      *
@@ -96,8 +94,8 @@ class UserCustomFieldTest extends TestCase
      */
     public function it_should_update_user_custom_field()
     {
-        $typeArray = array("radio","drop-down");
-        $randomTypes = array_rand($typeArray,1);       
+        $typeArray = config('constants.custom_field_types');
+        $randomTypes = array_rand($typeArray,1);    
         $name = str_random(20);
         $params = [
             'name' => $name,

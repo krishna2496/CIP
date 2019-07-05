@@ -8,6 +8,45 @@ class UserTest extends TestCase
     /**
      * @test
      *
+     * Create user api
+     *
+     * @return void
+     */
+    public function it_should_create_user()
+    {
+        $name = str_random(10);
+        $params = [
+                'first_name' => $name,
+                'last_name' => str_random(10),
+                'email' => str_random(10).'@email.com',
+                'password' => str_random(10),
+                'timezone_id' => rand(1, 1),
+                'language_id' => rand(1, 1),
+                'availability_id' => rand(1, 1),
+                'why_i_volunteer' => str_random(10),
+                'employee_id' => str_random(10),
+                'department' => str_random(10),
+                'manager_name' => str_random(10),
+                'city_id' => rand(1, 1),
+                'country_id' => rand(1, 1),
+                'profile_text' => str_random(10),
+                'linked_in_url' => 'https://www.'.str_random(10).'.com'
+            ];
+
+        $this->post("users/", $params, ['Authorization' => 'Basic '.base64_encode(env('DEFAULT_TENANT').'_api_key:'.env('DEFAULT_TENANT').'_api_secret')])
+        ->seeStatusCode(201)
+        ->seeJsonStructure([
+            'data' => [
+                'user_id',
+            ],
+            'message',
+            'status',
+        ]);
+    }
+
+    /**
+     * @test
+     *
      * Get all users
      *
      * @return void
@@ -145,47 +184,6 @@ class UserTest extends TestCase
         $userId = rand(1000000, 50000000);
         $this->get("users/".$userId, ['Authorization' => 'Basic '.base64_encode(env('DEFAULT_TENANT').'_api_key:'.env('DEFAULT_TENANT').'_api_secret')])
         ->seeStatusCode(404);
-    }
-
-    /**
-     * @test
-     *
-     * Create user api
-     *
-     * @return void
-     */
-    public function it_should_create_user()
-    {
-        $name = str_random(10);
-        $params = [
-                'first_name' => $name,
-                'last_name' => str_random(10),
-                'email' => str_random(10).'@email.com',
-                'password' => str_random(10),
-                'timezone_id' => rand(1, 1),
-                'language_id' => rand(1, 1),
-                'availability_id' => rand(1, 1),
-                'why_i_volunteer' => str_random(10),
-                'employee_id' => str_random(10),
-                'department' => str_random(10),
-                'manager_name' => str_random(10),
-                'city_id' => rand(1, 1),
-                'country_id' => rand(1, 1),
-                'profile_text' => str_random(10),
-                'linked_in_url' => 'https://www.'.str_random(10).'.com'
-            ];
-
-        $this->post("users/", $params, ['Authorization' => 'Basic '.base64_encode(env('DEFAULT_TENANT').'_api_key:'.env('DEFAULT_TENANT').'_api_secret')])
-        ->seeStatusCode(201)
-        ->seeJsonStructure([
-            'data' => [
-                'user_id',
-            ],
-            'message',
-            'status',
-        ]);
-        
-        User::where("first_name", $name)->orderBy("user_id", "DESC")->take(1)->delete();
     }
 
     /**

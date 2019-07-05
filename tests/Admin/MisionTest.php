@@ -4,89 +4,7 @@ use Laravel\Lumen\Testing\DatabaseTransactions;
 use App\Models\Mission;
 
 class MissionTest extends TestCase
-{
-    /**
-     * @test
-     *
-     * Get all mission
-     *
-     * @return void
-     */
-    public function it_should_return_all_mission()
-    {
-        $this->get(route('missions'), ['Authorization' => 'Basic '.base64_encode(env('DEFAULT_TENANT').'_api_key:'.env('DEFAULT_TENANT').'_api_secret')])
-          ->seeStatusCode(200)
-          ->seeJsonStructure([
-            "status",
-            "data" => [
-                [
-                    "mission_id",
-                    "theme_id",
-                    "city_id",
-                    "country_id",
-                    "start_date",
-                    "end_date",
-                    "total_seats",
-                    "mission_type",
-                    "goal_objective",
-                    "application_deadline",
-                    "publication_status",
-                    "organisation_id",
-                    "organisation_name",
-                    "mission_application_count",
-                    "city" => [
-                        "city_id",
-                        "name"
-                    ],
-                    "mission_theme" => [
-                        "mission_theme_id",
-                        "theme_name",
-                        "translations" => [
-                            "*" => [
-                                "lang",
-                                "title"
-                           ]
-                        ]
-                    ],
-                    "mission_language" => [
-                        [
-                            "mission_language_id",
-                            "language_id",
-                            "title",
-                            "short_description",
-                            "description" => [
-                                "*" => [
-                                    "title",
-                                    "description"
-                                ]
-                            ],
-                            "objective",
-                            "lang"
-                        ]
-                    ],
-                    "mission_media" => [
-                        "*" => [
-                            "mission_media_id",
-                            "media_name",
-                            "media_type",
-                            "media_path",
-                            "default"
-                        ]
-                    ],
-                    "mission_document" => [
-                        "*" => [
-                            "mission_document_id",
-                            "document_name",
-                            "document_type",
-                            "document_path"
-                        ]
-                    ]
-                ]
-            ],
-            "message"
-        ]);
-    }
-
+{    
     /**
      * @test
      *
@@ -159,20 +77,20 @@ class MissionTest extends TestCase
                         [
                             "document_name" => "pdf-test.pdf",
                             "document_type" => "pdf",
-                            "document_path" => "http://www.orimi.com/pdf-test.pdf"
+                            "document_path" => "http://web8.anasource.com/team4/cip-api-swagger/pdf-test.pdf"
                         ]
                     ],
                     "media_images" => [[
                             "media_name" => "TatvaSoft-Software-Development-Company.png",
                             "media_type" => "png",
-                            "media_path" => "https://www.tatvasoft.com/images/TatvaSoft-Software-Development-Company.png",
+                            "media_path" => "http://web8.anasource.com/team4/cip-api-swagger/group-img1.png",
                             "default" => "1"
                         ]
                     ],
                     "media_videos" => [[
                         "media_name" => "youtube_small.mp4",
                         "media_type" => "mp4",
-                        "media_path" => "http://techslides.com/demos/sample-videos/small.mp4"
+                        "media_path" => "https://www.youtube.com/watch?v=WfjO17X9hOo"
                     ]],
                     "start_date" => "2019-05-15 10:40:00",
                     "end_date" => "2019-10-15 10:40:00",
@@ -228,6 +146,29 @@ class MissionTest extends TestCase
     /**
      * @test
      *
+     * Get all mission
+     *
+     * @return void
+     */
+    public function it_should_return_all_mission()
+    {
+        $connection = 'tenant';
+        $mission = factory(\App\Models\Mission::class)->make();
+        $mission->setConnection($connection);
+        $mission->save();
+
+        $this->get(route('missions'), ['Authorization' => 'Basic '.base64_encode(env('DEFAULT_TENANT').'_api_key:'.env('DEFAULT_TENANT').'_api_secret')])
+          ->seeStatusCode(200)
+          ->seeJsonStructure([
+            "status",
+            "data",
+            "message"
+        ]);
+    }
+
+    /**
+     * @test
+     *
      * Show error for create mission api invalid data
      *
      * @return void
@@ -264,81 +205,8 @@ class MissionTest extends TestCase
     public function it_should_update_mission()
     {
         $params = [
-                    "organisation" => [
-                        "organisation_id" => rand(1, 1),
-                        "organisation_name" => str_random(10)
-                    ],
-                    "location" => [
-                        "city_id" => rand(1, 1),
-                        "country_code" => "IND"
-                    ],
-                    "mission_detail" => [[
-                            "lang" => "en",
-                            "title" => str_random(10),
-                            "short_description" => str_random(20),
-                            "objective" => str_random(20),
-                            "section" => [
-                                [
-                                    "title" => str_random(10),
-                                    "description" => str_random(100),
-                                ],
-                                [
-                                    "title" => str_random(10),
-                                    "description" => str_random(100),
-                                ]
-                            ]
-                        ],
-                        [
-                            "lang" => "fr",
-                            "title" => str_random(10),
-                            "short_description" => str_random(20),
-                            "objective" => str_random(20),
-                            "section" => [
-                                [
-                                    "title" => str_random(10),
-                                    "description" => str_random(100),
-                                ],
-                                [
-                                    "title" => str_random(10),
-                                    "description" => str_random(100),
-                                ]
-                            ]
-                        ]
-                    ],
-                    "documents" => [
-                        [
-                            "document_id" => "",
-                            "document_name" => "pdf-test.pdf",
-                            "document_type" => "pdf",
-                            "document_path" => "http://www.orimi.com/pdf-test.pdf"
-                        ]
-                    ],
-                    "media_images" => [
-                        [
-                            "media_id" => "",
-                            "media_name" => "TatvaSoft-Software-Development-Company.png",
-                            "media_type" => "png",
-                            "media_path" => "https://www.tatvasoft.com/images/TatvaSoft-Software-Development-Company.png",
-                            "default" => "1"
-                        ]
-                    ],
-                    "media_videos" => [
-                        [
-                            "media_id" => "",
-                            "media_name" => "youtube_small.mp4",
-                            "media_type" => "mp4",
-                            "media_path" => "http://techslides.com/demos/sample-videos/small.mp4"
-                        ]
-                    ],
-                    "start_date" => "2019-05-15 10:40:00",
-                    "end_date" => "2019-10-15 10:40:00",
-                    "mission_type" => "GOAL",
-                    "goal_objective" => rand(1, 1000),
-                    "total_seats" => rand(1, 1000),
-                    "application_deadline" => "2019-07-28 11:40:00",
                     "publication_status" => "DRAFT",
-                    "theme_id" => rand(1, 1)
-            ];
+                ];
 
         $connection = 'tenant';
         $mission = factory(\App\Models\Mission::class)->make();
@@ -364,55 +232,7 @@ class MissionTest extends TestCase
     public function it_should_return_mission_not_found_on_update()
     {
         $params = [
-                    "organisation" => [
-                        "organisation_id" => rand(1, 1),
-                        "organisation_name" => str_random(10)
-                    ],
-                    "location" => [
-                        "city_id" => rand(1, 1),
-                        "country_code" => "IND"
-                    ],
-                    "mission_detail" => [[
-                            "lang" => "en",
-                            "title" => str_random(10),
-                            "short_description" => str_random(20),
-                            "objective" => str_random(20),
-                            "section" => [
-                                [
-                                    "title" => str_random(10),
-                                    "description" => str_random(100),
-                                ],
-                                [
-                                    "title" => str_random(10),
-                                    "description" => str_random(100),
-                                ]
-                            ]
-                        ],
-                        [
-                            "lang" => "fr",
-                            "title" => str_random(10),
-                            "short_description" => str_random(20),
-                            "objective" => str_random(20),
-                            "section" => [
-                                [
-                                    "title" => str_random(10),
-                                    "description" => str_random(100),
-                                ],
-                                [
-                                    "title" => str_random(10),
-                                    "description" => str_random(100),
-                                ]
-                            ]
-                        ]
-                    ],
-                    "start_date" => "2019-05-15 10:40:00",
-                    "end_date" => "2019-10-15 10:40:00",
-                    "mission_type" => "GOAL",
-                    "goal_objective" => rand(1, 1000),
-                    "total_seats" => rand(1, 1000),
-                    "application_deadline" => "2019-07-28 11:40:00",
-                    "publication_status" => "DRAFT",
-                    "theme_id" => rand(1, 1)
+                "publication_status" => "DRAFT",
             ];
 
         $this->patch(
