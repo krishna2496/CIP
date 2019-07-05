@@ -338,7 +338,15 @@ class TenantController extends Controller
             return $this->badRequest(trans('messages.custom_error_message.999999'));
         }
     }
-    public function renewApiUser(int $tenantId, int $apiUserId)
+
+    /**
+     * Renew api_key for api user
+     *
+     * @param int $tenantId
+     * @param int $apiUserId
+     * @return \Illuminate\Http\JsonResponse;
+     */
+    public function renewApiUser(int $tenantId, int $apiUserId): JsonResponse
     {
         try {
             $this->tenantRepository->find($tenantId);
@@ -367,7 +375,15 @@ class TenantController extends Controller
             return $this->badRequest(trans('messages.custom_error_message.999999'));
         }
     }
-    public function deleteApiUser(int $tenantId, int $apiUserId)
+
+    /**
+     * Delete api user
+     *
+     * @param int $tenantId
+     * @param int $apiUserId
+     * @return \Illuminate\Http\JsonResponse;
+     */
+    public function deleteApiUser(int $tenantId, int $apiUserId): JsonResponse
     {
         try {
             $this->tenantRepository->find($tenantId);
