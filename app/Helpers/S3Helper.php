@@ -58,7 +58,8 @@ class S3Helper
         }
 
         try {
-            $importScss .= '@import "custom";
+            $importScss .= '@import "_assets";
+            @import "custom";            
             @import "../../../../../node_modules/bootstrap/scss/bootstrap";
             @import "../../../../../node_modules/bootstrap-vue/src/index";';
 
