@@ -273,7 +273,7 @@ class TenantController extends Controller
     }
 
     /**
-     * Get all api users
+     * Get api user detail
      *
      * @param int $tenantId
      * @param int $apiUserId
@@ -362,7 +362,7 @@ class TenantController extends Controller
 
             // Set response data
             $apiStatus = Response::HTTP_OK;
-            $apiMessage = trans('messages.success.MESSAGE_API_USER_CREATED_SUCCESSFULLY');
+            $apiMessage = trans('messages.success.MESSAGE_API_USER_UPDATED_SUCCESSFULLY');
             $apiData = $apiUser->toArray();
 
             return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);

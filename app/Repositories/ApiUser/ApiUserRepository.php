@@ -102,7 +102,7 @@ class ApiUserRepository implements ApiUserInterface
         ->first();
 
         if ($apiUser) {
-            $data['api_key'] = base64_encode(str_random(16));
+            $data['api_secret'] = base64_encode(str_random(16));
             $apiUser->update($data);
             return $apiUser;
         } else {

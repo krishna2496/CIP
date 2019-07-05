@@ -11,10 +11,11 @@ return [
         'MESSAGE_TENANT_LISTING' => 'Tenant listing successfully',
         'MESSAGE_NO_RECORD_FOUND' => 'No records found',
         'MESSAGE_TENANT_FOUND' => 'Tenant found successfully',
-        'MESSAGE_TENANT_API_USER_LISTING' => 'Tenant api users listing successfully',        
+        'MESSAGE_TENANT_API_USER_LISTING' => 'Tenant\'s api users listing successfully',        
         'MESSAGE_API_USER_FOUND' => 'Api user found successfully',
         'MESSAGE_API_USER_CREATED_SUCCESSFULLY' => 'Api user created successfully',
-        'MESSAGE_API_USER_DELETED' => 'Api user deleted successfully'
+        'MESSAGE_API_USER_DELETED' => 'Api user deleted successfully',
+        'MESSAGE_API_USER_UPDATED_SUCCESSFULLY' => 'Api user\'s secret key update successfully'
     ],
     
     /**

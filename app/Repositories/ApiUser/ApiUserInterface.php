@@ -25,6 +25,7 @@ interface ApiUserInterface
     /**
      * Listing of a all resources.
      *
+     * @param  int $tenantId
      * @return void
      */
     public function apiUserList(int $tenantId);
