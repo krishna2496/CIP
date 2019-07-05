@@ -39,8 +39,8 @@ $factory->define(App\Models\FooterPage::class, function (Faker\Generator $faker)
 
 
 $factory->define(App\Models\UserCustomField::class, function (Faker\Generator $faker) {
-    $typeArray = array("radio","drop-down");
-    $randomTypes = array_rand($typeArray, 1);
+    $typeArray = config('constants.custom_field_types');
+    $randomTypes = array_rand($typeArray,1);
     return [
         'name' => str_random(10),
         'type' => $typeArray[$randomTypes],
