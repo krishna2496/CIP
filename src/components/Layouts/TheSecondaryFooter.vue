@@ -6,7 +6,7 @@
                     <b-list-group>
                         <b-list-group-item  
                             v-for="item in footerItems" 
-                            :to="{ path: '/app/'+item.slug}"
+                            :to="{ path: '/'+item.slug}"
                             :title="getTitle(item)"
                             @click.native="clickHandler"
                             >{{getTitle(item)}}
