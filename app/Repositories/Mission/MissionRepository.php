@@ -582,4 +582,67 @@ class MissionRepository implements MissionInterface
         $mission = $missionQuery->limit(config('constants.EXPLORE_MISSION_LIMIT'))->get();
         return $mission;
     }
+
+    /**
+     * Display mission filter data.
+     *
+     * @param Illuminate\Http\Request $request
+     * @param string $filterParams
+     * @return Illuminate\Database\Eloquent\Collection
+     */
+    public function missionFilter(Request $request, string $filterParams): Collection
+    {
+        // Get  mission filter data
+        $missionQuery = $this->mission->select('*')->where(
+            'publication_status',
+            config("constants.publication_status")["APPROVED"]
+        );
+        switch ($filterParams) {
+            case config('constants.COUNTRY'):
+                $missionQuery->with(['country'])
+                ->selectRaw('COUNT(mission.mission_id) as mission_count')
+                ->groupBy('mission.country_id');
+                break;
+
+            case config('constants.CITY'):
+                $missionQuery->with(['city'])
+                ->selectRaw('COUNT(mission.mission_id) as mission_count');
+                if ($request->has('country_id') && $request->input('country_id') != '') {
+                    $missionQuery->Where("mission.country_id", $request->input('country_id'));
+                }
+                $missionQuery->groupBy('mission.city_id');
+                break;
+
+            case config('constants.THEME'):
+                $missionQuery->with(['missionTheme'])
+                ->selectRaw('COUNT(mission.mission_id) as mission_count');
+                if ($request->has('country_id') && $request->input('country_id') != '') {
+                    $missionQuery->Where("mission.country_id", $request->input('country_id'));
+                }
+                if ($request->has('city_id') && $request->input('city_id') != '') {
+                    $missionQuery->whereIn("mission.city_id", explode(",", $request->input('city_id')));
+                }
+                $missionQuery->groupBy('mission.theme_id');
+                break;
+
+            case config('constants.SKILL'):
+                $missionQuery->whereHas('missionSkill');
+                $missionQuery->with('missionSkill', 'missionSkill.skill');
+                $missionQuery->withCount(['missionSkill as mission_count']);
+                if ($request->has('country_id') && $request->input('country_id') != '') {
+                    $missionQuery->Where("mission.country_id", $request->input('country_id'));
+                }
+                if ($request->has('city_id') && $request->input('city_id') != '') {
+                    $missionQuery->whereIn("mission.city_id", explode(",", $request->input('city_id')));
+                }
+                if ($request->has('theme_id') && $request->input('theme_id') != '') {
+                    $missionQuery->whereIn("mission.theme_id", explode(",", $request->input('theme_id')));
+                }
+                $missionQuery->orderBy('mission_count', 'desc');
+                break;
+        }
+     
+        $mission = $missionQuery->get();
+        return $mission;
+    }
 }
