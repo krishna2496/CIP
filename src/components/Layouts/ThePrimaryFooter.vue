@@ -4,7 +4,7 @@
             <b-list-group>
                 <b-list-group-item
                     v-for="item in footerItems"
-                    :to="'/'+item.slug"
+                    :to="{ path: '/app/cms/'+item.slug}"
                     :title="getTitle(item)"
                     >{{getTitle(item)}}
                 </b-list-group-item>
