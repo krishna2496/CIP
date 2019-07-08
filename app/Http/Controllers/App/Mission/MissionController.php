@@ -386,6 +386,11 @@ class MissionController extends Controller
             $apiStatus = app('Illuminate\Http\Response')->status();
             $apiMessage = trans('messages.success.MESSAGE_MISSION_RATING_LISTING');
             return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
+        } catch (ModelNotFoundException $e) {
+            return $this->modelNotFound(
+                config('constants.error_codes.ERROR_MISSION_NOT_FOUND'),
+                trans('messages.custom_error_message.ERROR_MISSION_NOT_FOUND')
+            );
         } catch (PDOException $e) {
             return $this->PDO(
                 config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
