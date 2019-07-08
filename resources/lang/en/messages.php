@@ -46,7 +46,10 @@ return [
 		'MESSAGE_THEME_CREATED' => 'Mission theme created successfully',
         'MESSAGE_THEME_UPDATED' => 'Mission theme updated successfully',
         'MESSAGE_THEME_DELETED' => 'Mission theme deleted successfully',
-        'MESSAGE_THEME_FOUND' => 'Mission theme found successfully'
+        'MESSAGE_THEME_FOUND' => 'Mission theme found successfully',
+        'MESSAGE_TENANT_OPTION_CREATED' => 'Tenant option created successfully',
+        'MESSAGE_TENANT_OPTION_UPDATED' => 'Tenant option update successfully',
+        'MESSAGE_TENANT_OPTIONS_LIST' => 'Tenant options listing successfully'
     ],
 
         
@@ -120,6 +123,7 @@ return [
         'ERROR_IMAGE_FILE_NOT_FOUND_ON_S3' => 'Image file not found on S3 server',
         'ERROR_WHILE_UPLOADING_IMAGE_ON_S3' => 'An error while uploading image on S3',
         'ERROR_DOWNLOADING_IMAGE_TO_LOCAL' => 'An error while downloading image from S3 to server',
-        'ERROR_IMAGE_UPLOAD_INVALID_DATA' => 'Invalid input file'
+        'ERROR_IMAGE_UPLOAD_INVALID_DATA' => 'Invalid input file',
+        'ERROR_TENANT_OPTION_NOT_FOUND' => 'No tenant option found'
     ]
 ];

@@ -16,6 +16,7 @@ use App\Traits\RestExceptionHandlerTrait;
 use InvalidArgumentException;
 use PDOException;
 use Illuminate\Http\JsonResponse;
+use Validator;
 
 class TenantOptionController extends Controller
 {
@@ -111,7 +112,7 @@ class TenantOptionController extends Controller
             }
 
             $apiStatus = Response::HTTP_OK;
-            $apiMessage = trans('messages.success.MESSAGE_USER_CREATED');
+            $apiMessage = trans('messages.success.MESSAGE_TENANT_OPTIONS_LIST');
             
             return $this->responseHelper->success($apiStatus, '', $optionData);
         } catch (ModelNotFoundException $e) {
@@ -169,6 +170,100 @@ class TenantOptionController extends Controller
             );
         } catch (\Exception $e) {
             return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
+        }
+    }
+
+    /**
+     * Store tenant option values
+     * 
+     * @param Illuminate\Http\Request $request
+     * @return Illuminate\Http\JsonResponse
+     */
+    public function storeTenantOption(Request $request): JsonResponse
+    {
+        // Server side validataions
+        $validator = Validator::make(
+            $request->all(),
+            [
+                "option_name" => "required|unique:tenant_option,option_name,NULL,tenant_option_id,deleted_at,NULL",
+                "option_value" => "required"
+            ]
+        );
+
+        // If request parameter have any error
+        if ($validator->fails()) {
+            return $this->responseHelper->error(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                config('constants.error_codes.ERROR_TENANT_OPTION_REQUIRED_FIELDS_EMPTY'),
+                $validator->errors()->first()
+            );
+        }
+        try {
+            $tenantOption = $this->tenantOptionRepository->store($request->toArray());
+            $apiStatus = Response::HTTP_OK;
+            $apiMessage = trans('messages.success.MESSAGE_USER_CREATED');
+            
+            return $this->responseHelper->success($apiStatus, $apiMessage, $tenantOption->toArray());
+        } catch (PDOException $e) {
+            return $this->PDO(
+                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
+                trans(
+                    'messages.custom_error_message.ERROR_DATABASE_OPERATIONAL'
+                )
+            );
+        } catch (InvalidArgumentException $e) {
+            return $this->invalidArgument(
+                config('constants.error_codes.ERROR_INVALID_ARGUMENT'),
+                trans('messages.custom_error_message.ERROR_INVALID_ARGUMENT')
+            );
+        } catch (\Exception $e) {
+            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
+        }
+    }
+
+    /**
+     * Update tenant option value
+     * 
+     * @param Illuminate\Http\Request $request
+     * @return Illuminate\Http\JsonResponse
+     */
+    public function updateTenantOption(Request $request)
+    {
+        $validator = Validator::make(
+            $request->all(),
+            [
+                "option_name" => "required",
+                "option_value" => "required"
+            ]
+        );
+
+        // If request parameter have any error
+        if ($validator->fails()) {
+            return $this->responseHelper->error(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                config('constants.error_codes.ERROR_TENANT_OPTION_REQUIRED_FIELDS_EMPTY'),
+                $validator->errors()->first()
+            );
+        }
+        try {
+            $data['option_name'] = $request->option_name;
+            $tenantOption = $this->tenantOptionRepository->getOptionWithCondition($data);
+
+            $updateData['option_value'] = $request->option_value;
+            $tenantOption->update($updateData);
+
+            $apiStatus = Response::HTTP_OK;
+            $apiMessage = trans('messages.success.MESSAGE_TENANT_OPTION_UPDATED');
+            
+            return $this->responseHelper->success($apiStatus, $apiMessage, $tenantOption->toArray());
+
+        } catch (ModelNotFoundException $e) {            
+            return $this->modelNotFound(
+                config('constants.error_codes.ERROR_TENANT_OPTION_NOT_FOUND'),
+                trans('messages.custom_error_message.ERROR_TENANT_OPTION_NOT_FOUND')
+            );            
         }
     }
 }
