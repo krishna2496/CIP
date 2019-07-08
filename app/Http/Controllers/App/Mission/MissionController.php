@@ -352,10 +352,6 @@ class MissionController extends Controller
                 $apiData[config('constants.SKILL')] = $returnData[config('constants.SKILL')];
             }
             
-            $apiData[config('constants.COUNTRY')] = $returnData[config('constants.COUNTRY')];
-            $apiData[config('constants.CITY')] = $returnData[config('constants.CITY')];
-            $apiData[config('constants.THEME')] = $returnData[config('constants.THEME')];
-            $apiData[config('constants.SKILL')] = $returnData[config('constants.SKILL')];
             $apiStatus = Response::HTTP_OK;
             return $this->responseHelper->success(
                 $apiStatus,

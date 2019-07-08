@@ -205,6 +205,17 @@ $router->group(
     }
 );
 
+/* Set skills data for tenant specific */
+$router->group(
+    ['prefix' => '/entities/skills', 'middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware'],
+    function ($router) {
+        $router->get('/', ['uses' => 'Admin\Skill\SkillController@index']);
+        $router->get('/{skillId}', ['uses' => 'Admin\Skill\SkillController@show']);
+        $router->post('/', ['uses' => 'Admin\Skill\SkillController@store']);
+        $router->patch('/{skillId}', ['uses' => 'Admin\Skill\SkillController@update']);
+        $router->delete('/{skillId}', ['uses' => 'Admin\Skill\SkillController@destroy']);
+    }
+);
 /*
 |
 |--------------------------------------------------------------------------
