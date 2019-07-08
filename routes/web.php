@@ -200,8 +200,8 @@ $router->group(
 $router->group(
     ['prefix' => 'tenant-option', 'middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware'],
     function ($router) {
-        $router->post('/', ['uses' => 'App\Tenant\TenantOptionController@storeTenantOption']);
-        $router->patch('/', ['uses' => 'App\Tenant\TenantOptionController@updateTenantOption']);
+        $router->post('/', ['uses' => 'Admin\Tenant\TenantOptionsController@storeTenantOption']);
+        $router->patch('/', ['uses' => 'Admin\Tenant\TenantOptionsController@updateTenantOption']);
     }
 );
 
