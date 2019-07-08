@@ -156,11 +156,11 @@ class S3Helper
             if (count($allFiles) > 0) {
                 foreach ($allFiles as $key => $file) {
                     // Only scss and css copy
-                    if (!strpos($file, "/images") && strpos($file, "/scss") && !strpos($file, "custom.scss")) {
+                    if (!strpos($file, "/images") && strpos($file, "/scss") && !strpos($file, "custom.scss") && !strpos($file, "assets.scss")) {
                         $scssFilesArray['scss_files'][$i++] = 'https://s3.' . env('AWS_REGION') . '.amazonaws.com/'
                         . env('AWS_S3_BUCKET_NAME') . '/'.$file;
                     }
-                    if (strpos($file, "/images") && !strpos($file, "/scss") && !strpos($file, "custom.scss")) {
+                    if (strpos($file, "/images") && !strpos($file, "/scss") && !strpos($file, "custom.scss") && !strpos($file, "assets.scss")) {
                         $scssFilesArray['image_files'][$j++] = 'https://s3.' . env('AWS_REGION') . '.amazonaws.com/'
                         . env('AWS_S3_BUCKET_NAME') . '/'.$file;
                     }

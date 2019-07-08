@@ -250,7 +250,7 @@ class TenantOptionsController extends Controller
             return $this->badRequest('messages.custom_error_message.ERROR_OCCURRED');
         }
 
-        $file = $request->file('custom_scss_files');
+        $file = $request->file('custom_scss_file');
 
         try {
             // Get domain name from request and use as tenant name.
@@ -265,7 +265,26 @@ class TenantOptionsController extends Controller
             dispatch(new DownloadAssestFromS3ToLocalStorageJob($tenantName));
         }
 
-        if ($request->hasFile('custom_scss_files')) {
+        if ($request->hasFile('custom_scss_file')) {
+            
+            // Server side validataions
+            $validator = Validator::make(
+                $request->toArray(),
+                [
+                    "custom_scss_file_name" => "required",
+                ]
+            );
+
+            // If post parameter have any missing parameter
+            if ($validator->fails()) {
+                return $this->responseHelper->error(
+                    Response::HTTP_UNPROCESSABLE_ENTITY,
+                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                    config('constants.error_codes.ERROR_IMAGE_UPLOAD_INVALID_DATA'),
+                    $validator->errors()->first()
+                );
+            }
+
             // If request parameter have any error
             if ($file->getClientOriginalExtension() !== "scss") {
                 return $this->responseHelper->error(
@@ -370,7 +389,13 @@ class TenantOptionsController extends Controller
     public function updateImage(Request $request): JsonResponse
     {    
         // Server side validataions
-        $validator = Validator::make($request->toArray(), ["image_file" => "required"]);
+        $validator = Validator::make(
+            $request->toArray(),
+            [
+                "image_file" => "required",
+                "image_name" => "required"
+            ]
+        );
 
         // If post parameter have any missing parameter
         if ($validator->fails()) {
@@ -383,7 +408,7 @@ class TenantOptionsController extends Controller
         }
 
         $file = $request->file('image_file');
-        $fileName = $file->getClientOriginalName();
+        $fileName = $request->image_name;
         
         try {
             // Get domain name from request and use as tenant name.
