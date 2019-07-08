@@ -46,7 +46,7 @@ return [
 		'MESSAGE_THEME_CREATED' => 'Mission theme created successfully',
         'MESSAGE_THEME_UPDATED' => 'Mission theme updated successfully',
         'MESSAGE_THEME_DELETED' => 'Mission theme deleted successfully',
-        'MESSAGE_THEME_FOUND' => 'Mission theme found successfully'
+        'MESSAGE_THEME_FOUND' => 'Mission theme found successfully',
         'MESSAGE_SKILL_CREATED' => 'Skill created successfully',
         'MESSAGE_SKILL_UPDATED' => 'Skill updated successfully',
         'MESSAGE_SKILL_DELETED' => 'Skill deleted successfully',
