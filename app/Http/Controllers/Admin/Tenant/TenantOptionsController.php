@@ -250,7 +250,7 @@ class TenantOptionsController extends Controller
             return $this->badRequest('messages.custom_error_message.ERROR_OCCURRED');
         }
 
-        $file = $request->file('custom_scss_files');
+        $file = $request->file('custom_scss_file');
 
         try {
             // Get domain name from request and use as tenant name.
@@ -265,7 +265,26 @@ class TenantOptionsController extends Controller
             dispatch(new DownloadAssestFromS3ToLocalStorageJob($tenantName));
         }
 
-        if ($request->hasFile('custom_scss_files')) {
+        if ($request->hasFile('custom_scss_file')) {
+            
+            // Server side validataions
+            $validator = Validator::make(
+                $request->toArray(),
+                [
+                    "custom_scss_file_name" => "required",
+                ]
+            );
+
+            // If post parameter have any missing parameter
+            if ($validator->fails()) {
+                return $this->responseHelper->error(
+                    Response::HTTP_UNPROCESSABLE_ENTITY,
+                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                    config('constants.error_codes.ERROR_IMAGE_UPLOAD_INVALID_DATA'),
+                    $validator->errors()->first()
+                );
+            }
+
             // If request parameter have any error
             if ($file->getClientOriginalExtension() !== "scss") {
                 return $this->responseHelper->error(
@@ -277,7 +296,7 @@ class TenantOptionsController extends Controller
             }
             
             if ($file->isValid()) {
-                $fileName = $file->getClientOriginalName();
+                $fileName = $request->custom_scss_file_name;
 
                 /* Check user uploading custom style variable file,
                 then we need to make it as high priority instead of passed colors. */
@@ -370,7 +389,13 @@ class TenantOptionsController extends Controller
     public function updateImage(Request $request): JsonResponse
     {    
         // Server side validataions
-        $validator = Validator::make($request->toArray(), ["image_file" => "required"]);
+        $validator = Validator::make(
+            $request->toArray(),
+            [
+                "image_file" => "required",
+                "image_name" => "required"
+            ]
+        );
 
         // If post parameter have any missing parameter
         if ($validator->fails()) {
@@ -383,7 +408,7 @@ class TenantOptionsController extends Controller
         }
 
         $file = $request->file('image_file');
-        $fileName = $file->getClientOriginalName();
+        $fileName = $request->image_name;
         
         try {
             // Get domain name from request and use as tenant name.
@@ -420,5 +445,103 @@ class TenantOptionsController extends Controller
         $apiStatus = Response::HTTP_OK;
         $apiMessage = "Image uploaded successfully";
         return $this->responseHelper->success($apiStatus, $apiMessage);
+    }
+    
+    /**
+     * Store tenant option values
+     * 
+     * @param Illuminate\Http\Request $request
+     * @return Illuminate\Http\JsonResponse
+     */
+    public function storeTenantOption(Request $request): JsonResponse
+    {        
+        // Server side validataions
+        $validator = Validator::make(
+            $request->all(),
+            [
+                "option_name" => "required|unique:tenant_option,option_name,NULL,tenant_option_id,deleted_at,NULL",
+                "option_value" => "required"
+            ]
+        );
+
+        // If request parameter have any error
+        if ($validator->fails()) {
+            return $this->responseHelper->error(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                config('constants.error_codes.ERROR_TENANT_OPTION_REQUIRED_FIELDS_EMPTY'),
+                $validator->errors()->first()
+            );
+        }
+        try {
+            $data = $request->toArray();
+            $data['option_value'] = (gettype($request->option_value)=="array") ? serialize($request->option_value) : $request->option_value;
+
+            $tenantOption = $this->tenantOptionRepository->store($data);
+            $apiStatus = Response::HTTP_OK;
+            $apiMessage = trans('messages.success.MESSAGE_TENANT_OPTION_CREATED');
+            
+            return $this->responseHelper->success($apiStatus, $apiMessage);
+        } catch (PDOException $e) {
+            return $this->PDO(
+                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
+                trans(
+                    'messages.custom_error_message.ERROR_DATABASE_OPERATIONAL'
+                )
+            );
+        } catch (InvalidArgumentException $e) {
+            return $this->invalidArgument(
+                config('constants.error_codes.ERROR_INVALID_ARGUMENT'),
+                trans('messages.custom_error_message.ERROR_INVALID_ARGUMENT')
+            );
+        } catch (\Exception $e) {
+            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
+        }
+    }
+
+    /**
+     * Update tenant option value
+     * 
+     * @param Illuminate\Http\Request $request
+     * @return Illuminate\Http\JsonResponse
+     */
+    public function updateTenantOption(Request $request)
+    {
+        $validator = Validator::make(
+            $request->all(),
+            [
+                "option_name" => "required",
+                "option_value" => "required"
+            ]
+        );
+
+        // If request parameter have any error
+        if ($validator->fails()) {
+            return $this->responseHelper->error(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                config('constants.error_codes.ERROR_TENANT_OPTION_REQUIRED_FIELDS_EMPTY'),
+                $validator->errors()->first()
+            );
+        }
+        try {
+            $data['option_name'] = $request->option_name;
+            
+            $tenantOption = $this->tenantOptionRepository->getOptionWithCondition($data);
+
+            $updateData['option_value'] = (gettype($request->option_value)=="array") ? serialize($request->option_value) : $request->option_value;
+            $tenantOption->update($updateData);
+
+            $apiStatus = Response::HTTP_OK;
+            $apiMessage = trans('messages.success.MESSAGE_TENANT_OPTION_UPDATED');
+            
+            return $this->responseHelper->success($apiStatus, $apiMessage);
+
+        } catch (ModelNotFoundException $e) {            
+            return $this->modelNotFound(
+                config('constants.error_codes.ERROR_TENANT_OPTION_NOT_FOUND'),
+                trans('messages.custom_error_message.ERROR_TENANT_OPTION_NOT_FOUND')
+            );            
+        }
     }
 }

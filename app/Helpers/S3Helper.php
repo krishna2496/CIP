@@ -41,6 +41,9 @@ class S3Helper
         $scss = new Compiler();
         $scss->addImportPath(realpath(storage_path().'/app/'.$tenantName.'/assets/scss'));
         
+        $assetUrl = 'https://'.env("AWS_S3_BUCKET_NAME").'.s3.'
+        .env("AWS_REGION", "eu-central-1").'.amazonaws.com/'.$tenantName.'/assets/images';
+
         $importScss = '@import "_variables";';
         
         // Color set & other file || Color set & no file
@@ -59,6 +62,7 @@ class S3Helper
 
         try {
             $importScss .= '@import "_assets";
+            $assetUrl: "'.$assetUrl.'";
             @import "custom";            
             @import "../../../../../node_modules/bootstrap/scss/bootstrap";
             @import "../../../../../node_modules/bootstrap-vue/src/index";';
@@ -156,11 +160,11 @@ class S3Helper
             if (count($allFiles) > 0) {
                 foreach ($allFiles as $key => $file) {
                     // Only scss and css copy
-                    if (!strpos($file, "/images") && strpos($file, "/scss") && !strpos($file, "custom.scss")) {
+                    if (!strpos($file, "/images") && strpos($file, "/scss") && !strpos($file, "custom.scss") && !strpos($file, "assets.scss")) {
                         $scssFilesArray['scss_files'][$i++] = 'https://s3.' . env('AWS_REGION') . '.amazonaws.com/'
                         . env('AWS_S3_BUCKET_NAME') . '/'.$file;
                     }
-                    if (strpos($file, "/images") && !strpos($file, "/scss") && !strpos($file, "custom.scss")) {
+                    if (strpos($file, "/images") && !strpos($file, "/scss") && !strpos($file, "custom.scss") && !strpos($file, "assets.scss")) {
                         $scssFilesArray['image_files'][$j++] = 'https://s3.' . env('AWS_REGION') . '.amazonaws.com/'
                         . env('AWS_S3_BUCKET_NAME') . '/'.$file;
                     }
