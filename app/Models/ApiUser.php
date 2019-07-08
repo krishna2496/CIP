@@ -3,6 +3,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Support\Facades\Hash;
+use App\Models\Tenant;
 
 class ApiUser extends Model
 {
@@ -35,4 +38,46 @@ class ApiUser extends Model
      * @var array
      */
     protected $dates = ['created_at','updated_at','deleted_at'];
+
+    /**
+    * Defined has one relation for the tenant table.
+    *
+    * @return \Illuminate\Database\Eloquent\Relations\HasOne
+    */
+    public function tenant(): HasOne
+    {
+        return $this->hasOne(Tenant::class, 'tenant_id', 'tenant_id');
+    }
+
+    /**
+    * Getter method to retrun decode value of api_key
+    * @param  string $apiKey
+    * @return string
+    */
+    public function getApiKeyAttribute(string $apiKey): string
+    {
+        return base64_decode($apiKey);
+    }
+
+    /**
+     * Setter method to set api_key as in base64 format
+     *
+     * @param  string $apiKey
+     * @return string
+     */
+    public function setApiKeyAttribute(string $apiKey): string
+    {
+        return $this->attributes['api_key'] = base64_encode($apiKey);
+    }
+
+    /**
+     * Setter method to set api_secret as in hashed format
+     *
+     * @param  string $apiSecret
+     * @return string
+     */
+    public function setApiSecretAttribute(string $apiSecret): string
+    {
+        return  $this->attributes['api_secret'] = Hash::make($apiSecret);
+    }
 }

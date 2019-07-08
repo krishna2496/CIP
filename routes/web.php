@@ -23,5 +23,35 @@ $router->group(
         $router->patch('/{tenant_id}', ['as' => 'tenants.update', 'uses'=>'TenantController@update']);
         // Delete tenant
         $router->delete('/{tenant_id}', ['as' => 'tenants.destroy', 'uses'=>'TenantController@destroy']);
+        // Get api user list
+        $router->get(
+            '/{tenant_id}/api_users',
+            ['as' => 'tenants.api-users',
+            'uses' => 'TenantController@getAllApiUser']
+        );
+        // Get api user detail from id
+        $router->get(
+            '/{tenant_id}/api_users/{api_user_id}',
+            ['as' => 'tenants.get-api-user',
+            'uses' => 'TenantController@getApiUserDetail']
+        );
+        // create api user
+        $router->post(
+            '/{tenant_id}/api_users',
+            ['as' => 'tenants.create-api-user',
+            'uses' => 'TenantController@createApiUser']
+        );
+        // Regenarate api keys
+        $router->patch(
+            '/{tenant_id}/api_users/{api_user_id}',
+            ['as' => 'tenants.renew-api-user',
+            'uses' => 'TenantController@renewApiUser']
+        );
+        // Delete api user
+        $router->delete(
+            '/{tenant_id}/api_users/{api_user_id}',
+            ['as' => 'tenants.delete-api-user',
+            'uses' => 'TenantController@deleteApiUser']
+        );
     }
 );
