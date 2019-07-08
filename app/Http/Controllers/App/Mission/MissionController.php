@@ -13,6 +13,7 @@ use App\Models\MissionLanguage;
 use App\Models\MissionDocument;
 use App\Models\MissionMedia;
 use App\Models\MissionTheme;
+use App\Models\MissionRating;
 use App\Models\MissionApplication;
 use App\Helpers\Helpers;
 use App\Helpers\LanguageHelper;
@@ -358,6 +359,33 @@ class MissionController extends Controller
                 '',
                 $apiData
             );
+        } catch (PDOException $e) {
+            return $this->PDO(
+                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
+                trans(
+                    'messages.custom_error_message.ERROR_DATABASE_OPERATIONAL'
+                )
+            );
+        } catch (\Exception $e) {
+            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
+        }
+    }
+
+    /**
+     * Get mission ratings
+     *
+     * @param int $id
+     * @return Illuminate\Http\JsonResponse
+     */
+    public function missionRatings(int $id): JsonResponse
+    {
+        try {
+            $rating = $this->missionRepository->missionRatings($id);
+            
+            $apiData = ['rating' => $rating ];
+            $apiStatus = app('Illuminate\Http\Response')->status();
+            $apiMessage = trans('messages.success.MESSAGE_MISSION_RATING_LISTING');
+            return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
         } catch (PDOException $e) {
             return $this->PDO(
                 config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),

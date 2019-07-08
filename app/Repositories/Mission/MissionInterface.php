@@ -66,4 +66,12 @@ interface MissionInterface
      * @return \Illuminate\Http\Response
      */
     public function updateApplication(Request $request, int $missionId, int $applicationId);
+    
+    /**
+     * Display a mission ratings.
+     *
+     * @param int $missionId
+     * @return App\Models\MissionRatings
+     */
+    public function missionRatings(int $missionId);
 }
