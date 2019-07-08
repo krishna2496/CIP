@@ -54,6 +54,10 @@ class CreateFolderInS3BucketJob extends Job
             
                 // Copy and paste file into tenant's folders
                 Storage::disk('s3')->copy($file, $this->tenant->name.'/'.$sourcePath);
+                
+                if (!strpos($file, env('AWS_S3_IMAGES_FOLDER_NAME', "/images"))) {
+                    Storage::disk('local')->put($this->tenant->name.'/'.$sourcePath, Storage::disk('s3')->get($file));
+                }
 
                 if (basename($file)==env('S3_CUSTOME_CSS_NAME')) {
                     $pathInS3 = 'https://s3.'.env('AWS_REGION').'.amazonaws.com/'.

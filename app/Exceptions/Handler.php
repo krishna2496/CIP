@@ -9,6 +9,8 @@ use Laravel\Lumen\Exceptions\Handler as ExceptionHandler;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use App\Traits\RestExceptionHandlerTrait;
 use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
+use App\Exceptions\FileNotFoundException;
+use App\Exceptions\FileDownloadException;
 
 class Handler extends ExceptionHandler
 {
@@ -47,6 +49,12 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
+        if ($exception instanceof FileNotFoundException) {
+            return $this->filenotFound($exception->getCode(), $exception->getMessage());
+        }
+        if ($exception instanceof FileDownloadException) {
+            return $this->fileDownloadError($exception->getCode(), $exception->getMessage());
+        }
         if ($exception instanceof MethodNotAllowedHttpException) {
             return $this->methodNotAllowedHttp();
         }

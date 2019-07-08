@@ -10,6 +10,7 @@ use App\Repositories\Tenant\TenantRepository;
 use App\Helpers\ResponseHelper;
 use App\Jobs\TenantDefaultLanguageJob;
 use App\Jobs\TenantMigrationJob;
+use App\Jobs\CompileScssFiles;
 use App\Jobs\CreateFolderInS3BucketJob;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Traits\RestExceptionHandlerTrait;
@@ -17,6 +18,7 @@ use Validator;
 use PDOException;
 use InvalidArgumentException;
 use Aws\S3\Exception\S3Exception;
+use App\Jobs\DownloadAssestFromS3ToLocalStorageJob;
 
 class TenantController extends Controller
 {
@@ -100,6 +102,9 @@ class TenantController extends Controller
 
             // // Create assets folder for tenant on AWS s3 bucket
             dispatch(new CreateFolderInS3BucketJob($tenant));
+
+            // Compile CSS file and upload on s3
+            dispatch(new CompileScssFiles($tenant->name));
 
             // Set response data
             $apiStatus = Response::HTTP_CREATED;
