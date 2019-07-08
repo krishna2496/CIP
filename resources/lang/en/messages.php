@@ -47,6 +47,10 @@ return [
         'MESSAGE_THEME_UPDATED' => 'Mission theme updated successfully',
         'MESSAGE_THEME_DELETED' => 'Mission theme deleted successfully',
         'MESSAGE_THEME_FOUND' => 'Mission theme found successfully'
+        'MESSAGE_SKILL_CREATED' => 'Skill created successfully',
+        'MESSAGE_SKILL_UPDATED' => 'Skill updated successfully',
+        'MESSAGE_SKILL_DELETED' => 'Skill deleted successfully',
+        'MESSAGE_SKILL_FOUND' => 'Skill found successfully',
     ],
 
         
@@ -82,6 +86,7 @@ return [
         'ERROR_NO_MISSION_FOUND' => 'Mission does not found in system',
         'ERROR_THEME_INVALID_DATA' => 'Mission theme creation failed. Please check input parameters',
         'ERROR_THEME_NOT_FOUND' => 'Mission Theme does not found in system',
+        'ERROR_SKILL_NOT_FOUND' => 'Skill does not found in system',
         
         
         // Custom error code for Tenant Authorization - 210000 - 219999

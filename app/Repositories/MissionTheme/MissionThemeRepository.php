@@ -34,7 +34,7 @@ class MissionThemeRepository implements MissionThemeInterface
      */
     public function missionThemeList(Request $request): Collection
     {
-        return $this->missionTheme->select('theme_name', 'mission_theme_id', 'translations')->get();
+        return $this->missionTheme->select('mission_theme_id', 'theme_name', 'translations')->get();
     }
 
     /**
