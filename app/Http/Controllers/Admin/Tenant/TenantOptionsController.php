@@ -454,7 +454,7 @@ class TenantOptionsController extends Controller
      * @return Illuminate\Http\JsonResponse
      */
     public function storeTenantOption(Request $request): JsonResponse
-    {
+    {        
         // Server side validataions
         $validator = Validator::make(
             $request->all(),
@@ -474,11 +474,14 @@ class TenantOptionsController extends Controller
             );
         }
         try {
-            $tenantOption = $this->tenantOptionRepository->store($request->toArray());
+            $data = $request->toArray();
+            $data['option_value'] = (gettype($request->option_value)=="array") ? serialize($request->option_value) : $request->option_value;
+
+            $tenantOption = $this->tenantOptionRepository->store($data);
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_TENANT_OPTION_CREATED');
             
-            return $this->responseHelper->success($apiStatus, $apiMessage, $tenantOption->toArray());
+            return $this->responseHelper->success($apiStatus, $apiMessage);
         } catch (PDOException $e) {
             return $this->PDO(
                 config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
@@ -523,15 +526,16 @@ class TenantOptionsController extends Controller
         }
         try {
             $data['option_name'] = $request->option_name;
+            
             $tenantOption = $this->tenantOptionRepository->getOptionWithCondition($data);
 
-            $updateData['option_value'] = $request->option_value;
+            $updateData['option_value'] = (gettype($request->option_value)=="array") ? serialize($request->option_value) : $request->option_value;
             $tenantOption->update($updateData);
 
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_TENANT_OPTION_UPDATED');
             
-            return $this->responseHelper->success($apiStatus, $apiMessage, $tenantOption->toArray());
+            return $this->responseHelper->success($apiStatus, $apiMessage);
 
         } catch (ModelNotFoundException $e) {            
             return $this->modelNotFound(
