@@ -296,7 +296,7 @@ class TenantOptionsController extends Controller
             }
             
             if ($file->isValid()) {
-                $fileName = $file->getClientOriginalName();
+                $fileName = $request->custom_scss_file_name;
 
                 /* Check user uploading custom style variable file,
                 then we need to make it as high priority instead of passed colors. */
