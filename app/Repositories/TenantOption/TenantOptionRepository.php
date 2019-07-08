@@ -81,9 +81,9 @@ class TenantOptionRepository implements TenantOptionInterface
     * Get a listing of resource.
     *
     * @param array $conditions
-    * @return App\Models\TenantOption
+    * @return App\Models\TenantOption | Null
     */
-    public function getOptionWithCondition(array $conditions = []): TenantOption
+    public function getOptionWithCondition(array $conditions = [])
     {
         $optionQuery = $this->tenantOption;
 
@@ -91,6 +91,9 @@ class TenantOptionRepository implements TenantOptionInterface
             foreach ($conditions as $column => $value) {
                 $optionQuery = $optionQuery->where($column, $value);
             }
+        }
+        if(is_null($optionQuery->first())){
+            throw new ModelNotFoundException(trans('messages.custom_error_message.ERROR_TENANT_OPTION_NOT_FOUND'));
         }
         return $optionQuery->first();
     }
@@ -103,5 +106,16 @@ class TenantOptionRepository implements TenantOptionInterface
     public function getAllSliderCount(): int
     {
         $count = $this->tenantOption->where('option_name', config('constants.TENANT_OPTION_SLIDER'))->count();
+    }
+
+    /**
+     * Create new option
+     * 
+     * @param array $option
+     * @return App\Models\TenantOption
+     */
+    public function store(array $option): TenantOption
+    {
+        return $this->tenantOption->create($option);
     }
 }
