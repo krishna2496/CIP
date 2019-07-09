@@ -24,6 +24,7 @@ use PDOException;
 use Illuminate\Http\JsonResponse;
 use App\Traits\RestExceptionHandlerTrait;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Validator;
 
 class MissionController extends Controller
 {
@@ -364,6 +365,39 @@ class MissionController extends Controller
                 trans(
                     'messages.custom_error_message.ERROR_DATABASE_OPERATIONAL'
                 )
+            );
+        } catch (\Exception $e) {
+            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
+        }
+    }
+
+     /**
+     * Add/remove mission to favourite.
+     *
+     * @param int $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function missionFavourite(int $missionId): JsonResponse
+    {
+        try {
+            // Update mission theme
+            $missionFavourite = $this->missionRepository->missionFavourite($missionId);
+
+            // Set response data
+            $apiData = ['favourite_mission_id' => $missionFavourite->favourite_mission_id];
+            $apiStatus = Response::HTTP_OK;
+            $apiMessage = trans('messages.success.MESSAGE_MISSION_UPDATED');
+            
+            return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
+        } catch (ModelNotFoundException $e) {
+            return $this->modelNotFound(
+                config('constants.error_codes.ERROR_MISSION_NOT_FOUND'),
+                trans('messages.custom_error_message.ERROR_MISSION_NOT_FOUND')
+            );
+        } catch (PDOException $e) {
+            return $this->PDO(
+                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
+                trans('messages.custom_error_message.ERROR_DATABASE_OPERATIONAL')
             );
         } catch (\Exception $e) {
             return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));

@@ -66,4 +66,12 @@ interface MissionInterface
      * @return \Illuminate\Http\Response
      */
     public function updateApplication(Request $request, int $missionId, int $applicationId);
+
+    /**
+     * Add/remove mission to favourite.
+     *
+     * @param int $missionId
+     * @return \Illuminate\Http\Response
+     */
+    public function missionFavourite(int $missionId);
 }

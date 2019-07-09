@@ -33,16 +33,16 @@ class FavouriteMission extends Model
     {
         return $this->belongsTo(Mission::class, 'mission_id', 'mission_id');
     }
-
+    
     /**
-     * Store/update specified resource.
+     * Soft delete from the database.
      *
-     * @param  array $condition
-     * @param  array $data
-     * @return array
+     * @param  int  $id
+     * @return void
      */
-    public function createOrUpdateMedia(array $condition, array $data)
+    public function deleteFavouriteMission(int $id)
     {
-        return static::updateOrCreate($condition, $data);
+        $favouriteMission = static::findOrFail($id)->delete();
+        return $favouriteMission;
     }
 }

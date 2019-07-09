@@ -14,6 +14,7 @@ use App\Models\MissionLanguage;
 use App\Models\MissionDocument;
 use App\Models\MissionMedia;
 use App\Models\MissionApplication;
+use App\Models\FavouriteMission;
 use App\Models\UserFilter;
 use Validator;
 use PDOException;
@@ -22,6 +23,8 @@ use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
+use Firebase\JWT\JWT;
+use Auth;
 
 class MissionRepository implements MissionInterface
 {
@@ -66,6 +69,11 @@ class MissionRepository implements MissionInterface
     private $s3helper;
 
     /**
+     * @var App\Models\FavouriteMission
+     */
+    public $favouriteMission;
+
+    /**
      * Create a new Mission repository instance.
      *
      * @param  App\Models\Mission $mission
@@ -76,6 +84,7 @@ class MissionRepository implements MissionInterface
      * @param  Illuminate\Http\ResponseHelper $responseHelper
      * @param  Illuminate\Http\LanguageHelper $languageHelper
      * @param  Illuminate\Http\S3Helper $s3helper
+     * @param  App\Models\FavouriteMission $favouriteMission
      * @return void
      */
     public function __construct(
@@ -89,7 +98,8 @@ class MissionRepository implements MissionInterface
         UserFilter $userFilter,
         LanguageHelper $languageHelper,
         Helpers $helpers,
-        S3Helper $s3helper
+        S3Helper $s3helper,
+        FavouriteMission $favouriteMission
     ) {
         $this->mission = $mission;
         $this->missionLanguage = $missionLanguage;
@@ -102,6 +112,7 @@ class MissionRepository implements MissionInterface
         $this->languageHelper = $languageHelper;
         $this->helpers = $helpers;
         $this->s3helper = $s3helper;
+        $this->favouriteMission = $favouriteMission;
     }
     
     /**
@@ -644,5 +655,41 @@ class MissionRepository implements MissionInterface
      
         $mission = $missionQuery->get();
         return $mission;
+    }
+
+    /**
+     * Add/remove mission to favourite.
+     *
+     * @param int $missionId
+     * @return \Illuminate\Http\Response
+     */
+    public function missionFavourite(int $missionId)
+    {
+        $mission = $this->mission->findOrFail($missionId);
+        // dd("Qeqweqwe");
+       
+        // $userId = Auth::user_id;
+        // $favouriteMission = $this->favouriteMission->where(['mission_id' => $missionId, 'user_id' => $userId]);
+        
+        // $user = JWTAuth::parseToken()->authenticate();
+        // $userId = $user->id;
+
+        // $user = User::find($credentials->sub);
+        // // Now let's put the user in the request class so that you can grab it from there
+        // $request->auth = $user;
+
+        $user = JWT::parseToken()->toUser();
+        print_r($user);
+        exit;
+
+
+        // dd($request->auth);
+        // dd($favouriteMission);
+
+        //deleteFavouriteMission
+        dd($favouriteMission);
+        $favouriteMission->update($request->toArray());
+        
+        return $favouriteMission;
     }
 }
