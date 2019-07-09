@@ -71,7 +71,7 @@ interface MissionInterface
      * Display a mission ratings.
      *
      * @param int $missionId
-     * @return App\Models\MissionRatings
+     * @return int
      */
     public function missionRatings(int $missionId);
 }

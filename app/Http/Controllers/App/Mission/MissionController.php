@@ -83,15 +83,13 @@ class MissionController extends Controller
             $missions = $this->missionRepository->missionDetail($request);
             
             $apiData = $missions;
-            $apiStatus = app('Illuminate\Http\Response')->status();
+            $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_MISSION_LISTING');
             return $this->responseHelper->successWithPagination($apiStatus, $apiMessage, $apiData);
         } catch (PDOException $e) {
             return $this->PDO(
                 config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
-                trans(
-                    'messages.custom_error_message.ERROR_DATABASE_OPERATIONAL'
-                )
+                trans('messages.custom_error_message.ERROR_DATABASE_OPERATIONAL')
             );
         } catch (InvalidArgumentException $e) {
             return $this->invalidArgument(
@@ -383,7 +381,7 @@ class MissionController extends Controller
             $rating = $this->missionRepository->missionRatings($id);
             
             $apiData = ['rating' => $rating ];
-            $apiStatus = app('Illuminate\Http\Response')->status();
+            $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_MISSION_RATING_LISTING');
             return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
         } catch (ModelNotFoundException $e) {

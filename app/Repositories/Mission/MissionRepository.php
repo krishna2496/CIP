@@ -650,7 +650,7 @@ class MissionRepository implements MissionInterface
     }
 
     /**
-     * Display a listing of mission.
+     * Display rating of mission.
      *
      * @param Illuminate\Http\Request $request
      * @return int
