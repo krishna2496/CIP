@@ -659,6 +659,6 @@ class MissionRepository implements MissionInterface
     {
         $mission = $this->mission->findOrFail($id);
         $ratings = $this->missionRating->where('mission_id', $id)->avg('rating');
-        return $ratings ?? 0;
+        return $ratings ? round($ratings * 2) / 2 : 0;
     }
 }
