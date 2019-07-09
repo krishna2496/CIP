@@ -18,6 +18,7 @@ use App\Traits\RestExceptionHandlerTrait;
 use App\Exceptions\BucketNotFoundException;
 use App\Exceptions\FileNotFoundException;
 use App\Exceptions\FileUploadException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class TenantOptionsController extends Controller
 {
