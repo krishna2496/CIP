@@ -13,6 +13,7 @@ use App\Models\MissionLanguage;
 use App\Models\MissionDocument;
 use App\Models\MissionMedia;
 use App\Models\MissionTheme;
+use App\Models\MissionRating;
 use App\Models\MissionApplication;
 use App\Helpers\Helpers;
 use App\Helpers\LanguageHelper;
@@ -82,15 +83,13 @@ class MissionController extends Controller
             $missions = $this->missionRepository->missionDetail($request);
             
             $apiData = $missions;
-            $apiStatus = app('Illuminate\Http\Response')->status();
+            $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_MISSION_LISTING');
             return $this->responseHelper->successWithPagination($apiStatus, $apiMessage, $apiData);
         } catch (PDOException $e) {
             return $this->PDO(
                 config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
-                trans(
-                    'messages.custom_error_message.ERROR_DATABASE_OPERATIONAL'
-                )
+                trans('messages.custom_error_message.ERROR_DATABASE_OPERATIONAL')
             );
         } catch (InvalidArgumentException $e) {
             return $this->invalidArgument(
@@ -357,6 +356,38 @@ class MissionController extends Controller
                 $apiStatus,
                 '',
                 $apiData
+            );
+        } catch (PDOException $e) {
+            return $this->PDO(
+                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
+                trans(
+                    'messages.custom_error_message.ERROR_DATABASE_OPERATIONAL'
+                )
+            );
+        } catch (\Exception $e) {
+            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
+        }
+    }
+
+    /**
+     * Get mission ratings
+     *
+     * @param int $id
+     * @return Illuminate\Http\JsonResponse
+     */
+    public function missionRatings(int $id): JsonResponse
+    {
+        try {
+            $rating = $this->missionRepository->missionRatings($id);
+            
+            $apiData = ['rating' => $rating ];
+            $apiStatus = Response::HTTP_OK;
+            $apiMessage = trans('messages.success.MESSAGE_MISSION_RATING_LISTING');
+            return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
+        } catch (ModelNotFoundException $e) {
+            return $this->modelNotFound(
+                config('constants.error_codes.ERROR_MISSION_NOT_FOUND'),
+                trans('messages.custom_error_message.ERROR_MISSION_NOT_FOUND')
             );
         } catch (PDOException $e) {
             return $this->PDO(

@@ -13,6 +13,7 @@ use App\Models\Mission;
 use App\Models\MissionLanguage;
 use App\Models\MissionDocument;
 use App\Models\MissionMedia;
+use App\Models\MissionRating;
 use App\Models\MissionApplication;
 use App\Models\UserFilter;
 use Validator;
@@ -89,7 +90,8 @@ class MissionRepository implements MissionInterface
         UserFilter $userFilter,
         LanguageHelper $languageHelper,
         Helpers $helpers,
-        S3Helper $s3helper
+        S3Helper $s3helper,
+        MissionRating $missionRating
     ) {
         $this->mission = $mission;
         $this->missionLanguage = $missionLanguage;
@@ -100,6 +102,7 @@ class MissionRepository implements MissionInterface
         $this->userFilterRepository = $userFilterRepository;
         $this->userFilter = $userFilter;
         $this->languageHelper = $languageHelper;
+        $this->missionRating = $missionRating;
         $this->helpers = $helpers;
         $this->s3helper = $s3helper;
     }
@@ -644,5 +647,18 @@ class MissionRepository implements MissionInterface
      
         $mission = $missionQuery->get();
         return $mission;
+    }
+
+    /**
+     * Display rating of mission.
+     *
+     * @param Illuminate\Http\Request $request
+     * @return int
+     */
+    public function missionRatings(int $id): int
+    {
+        $mission = $this->mission->findOrFail($id);
+        $ratings = $this->missionRating->where('mission_id', $id)->avg('rating');
+        return $ratings ?? 0;
     }
 }

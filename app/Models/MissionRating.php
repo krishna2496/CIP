@@ -33,16 +33,4 @@ class MissionRating extends Model
     {
         return $this->belongsTo(Mission::class, 'mission_id', 'mission_id');
     }
-
-    /**
-     * Store/update specified resource.
-     *
-     * @param  array $condition
-     * @param  array $data
-     * @return array
-     */
-    public function createOrUpdateMedia(array $condition, array $data)
-    {
-        return static::updateOrCreate($condition, $data);
-    }
 }
