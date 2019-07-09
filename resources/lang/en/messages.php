@@ -57,6 +57,7 @@ return [
         'MESSAGE_TENANT_OPTIONS_LIST' => 'Tenant options listing successfully',
         'MESSAGE_MISSION_ADDED_TO_FAVOURITE' => 'Mission added to favourite',
         'MESSAGE_MISSION_DELETED_FROM_FAVOURITE' => 'Mission deleted from favourite',
+        'MESSAGE_MISSION_RATING_LISTING' => 'Get mission rating successfully',
     ],
 
         

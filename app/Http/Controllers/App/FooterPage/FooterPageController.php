@@ -115,14 +115,13 @@ class FooterPageController extends Controller
         try {
             // Get data for parent table
             $pageDetailList = $this->footerPageRepository->getPageDetailList();
+            $apiStatus = Response::HTTP_OK;
             // Check data found or not
             if ($pageDetailList->count() == 0) {
                 // Set response data
-                $apiStatus = app('Illuminate\Http\Response')->status();
                 $apiMessage = trans('messages.success.MESSAGE_NO_DATA_FOUND');
                 return $this->responseHelper->success($apiStatus, $apiMessage);
             }
-            $apiStatus = app('Illuminate\Http\Response')->status();
             $apiMessage = trans('messages.success.MESSAGE_FOOTER_PAGE_LISTING');
             return $this->responseHelper->success($apiStatus, $apiMessage, $pageDetailList->toArray());
         } catch (PDOException $e) {

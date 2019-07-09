@@ -13,6 +13,7 @@ use App\Models\Mission;
 use App\Models\MissionLanguage;
 use App\Models\MissionDocument;
 use App\Models\MissionMedia;
+use App\Models\MissionRating;
 use App\Models\MissionApplication;
 use App\Models\FavouriteMission;
 use App\Models\UserFilter;
@@ -23,8 +24,6 @@ use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
-use Firebase\JWT\JWT;
-use Auth;
 
 class MissionRepository implements MissionInterface
 {
@@ -74,6 +73,11 @@ class MissionRepository implements MissionInterface
     public $favouriteMission;
 
     /**
+     * @var App\Models\MissionRating
+     */
+    public $missionRating;
+
+    /**
      * Create a new Mission repository instance.
      *
      * @param  App\Models\Mission $mission
@@ -83,8 +87,9 @@ class MissionRepository implements MissionInterface
      * @param  App\Models\MissionDocument $missionDocument
      * @param  Illuminate\Http\ResponseHelper $responseHelper
      * @param  Illuminate\Http\LanguageHelper $languageHelper
+     * @param  Illuminate\Http\LanguageHelper $languageHelper
      * @param  Illuminate\Http\S3Helper $s3helper
-     * @param  App\Models\FavouriteMission $favouriteMission
+     * @param  App\Models\MissionRating $missionRating
      * @return void
      */
     public function __construct(
@@ -99,7 +104,8 @@ class MissionRepository implements MissionInterface
         LanguageHelper $languageHelper,
         Helpers $helpers,
         S3Helper $s3helper,
-        FavouriteMission $favouriteMission
+        FavouriteMission $favouriteMission,
+        MissionRating $missionRating
     ) {
         $this->mission = $mission;
         $this->missionLanguage = $missionLanguage;
@@ -110,6 +116,7 @@ class MissionRepository implements MissionInterface
         $this->userFilterRepository = $userFilterRepository;
         $this->userFilter = $userFilter;
         $this->languageHelper = $languageHelper;
+        $this->missionRating = $missionRating;
         $this->helpers = $helpers;
         $this->s3helper = $s3helper;
         $this->favouriteMission = $favouriteMission;
@@ -676,5 +683,18 @@ class MissionRepository implements MissionInterface
         }
         $favouriteMission = $this->favouriteMission->findFavourite($userId, $request['mission_id']);
         return $favouriteMission;
+    }
+
+    /*
+     * Display rating of mission.
+     *
+     * @param Illuminate\Http\Request $request
+     * @return float
+     */
+    public function missionRatings(int $id): float
+    {
+        $mission = $this->mission->findOrFail($id);
+        $ratings = $this->missionRating->where('mission_id', $id)->avg('rating');
+        return $ratings ? ceil($ratings) : 0;
     }
 }

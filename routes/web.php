@@ -77,6 +77,10 @@ $router->group(['middleware' => 'localization'], function ($router) {
     /* Add/remove favourite */
     $router->post('/app/missions/favourite', ['middleware' => 'localization|tenant.connection|jwt.auth',
      'uses' => 'App\Mission\MissionController@missionFavourite']);
+    /* Get mission listing  */
+    $router->get('/app/missions/ratings/{missionId}', ['as' => 'app.missions',
+    'middleware' => 'localization|tenant.connection|jwt.auth',
+    'uses' => 'App\Mission\MissionController@missionRatings']);
 });
 
 
@@ -204,8 +208,8 @@ $router->group(
 $router->group(
     ['prefix' => 'tenant-option', 'middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware'],
     function ($router) {
-        $router->post('/', ['uses' => 'App\Tenant\TenantOptionController@storeTenantOption']);
-        $router->patch('/', ['uses' => 'App\Tenant\TenantOptionController@updateTenantOption']);
+        $router->post('/', ['uses' => 'Admin\Tenant\TenantOptionsController@storeTenantOption']);
+        $router->patch('/', ['uses' => 'Admin\Tenant\TenantOptionsController@updateTenantOption']);
     }
 );
 

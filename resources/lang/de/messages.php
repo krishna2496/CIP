@@ -36,10 +36,28 @@ return [
         'MESSAGE_MISSION_LISTING' => 'DE: Mission listing successfully',
         'MESSAGE_SKILL_LISTING' => 'DE: Skill listing successfully',
         'MESSAGE_THEME_LISTING' => 'DE: Mission theme listing successfully',
-        'MESSAGE_CITY_LISTING' => 'DE: City listing successfully',
-        'MESSAGE_COUNTRY_LISTING' => 'DE: Country listing successfully',        
+        'MESSAGE_CITY_LISTING' => 'DE: City listing successfully',      
         'MESSAGE_MISSION_ADDED_TO_FAVOURITE' => 'DE: Mission added to favourite',
         'MESSAGE_MISSION_DELETED_FROM_FAVOURITE' => 'DE: Mission deleted from favourite',
+        'MESSAGE_COUNTRY_LISTING' => 'DE: Country listing successfully',
+        'MESSAGE_MISSION_FOUND' => 'DE: Mission found successfully',
+        'MESSAGE_PAGE_FOUND' => 'DE: Page found successfully',
+        'MESSAGE_ASSETS_FILES_LISTING' => 'DE: Assets files listing successfully',
+        'MESSAGE_TENANT_SETTING_UPDATE_SUCCESSFULLY' => 'DE: Settings has been update successfully',
+        'MESSAGE_TENANT_SETTINGS_LISTING' => 'DE: Settings listing successfully',
+		'MESSAGE_THEME_CREATED' => 'DE: Mission theme created successfully',
+        'MESSAGE_THEME_UPDATED' => 'DE: Mission theme updated successfully',
+        'MESSAGE_THEME_DELETED' => 'DE: Mission theme deleted successfully',
+        'MESSAGE_THEME_FOUND' => 'DE: Mission theme found successfully',
+        'MESSAGE_SKILL_CREATED' => 'DE: Skill created successfully',
+        'MESSAGE_SKILL_UPDATED' => 'DE: Skill updated successfully',
+        'MESSAGE_SKILL_DELETED' => 'DE: Skill deleted successfully',
+        'MESSAGE_SKILL_FOUND' => 'DE: Skill found successfully',
+        'MESSAGE_THEME_FOUND' => 'DE: Mission theme found successfully',
+        'MESSAGE_TENANT_OPTION_CREATED' => 'DE: Tenant option created successfully',
+        'MESSAGE_TENANT_OPTION_UPDATED' => 'DE: Tenant option update successfully',
+        'MESSAGE_TENANT_OPTIONS_LIST' => 'DE: Tenant options listing successfully',
+        'MESSAGE_MISSION_RATING_LISTING' => 'DE: Get mission rating successfully',
     ],
 
         
@@ -61,7 +79,6 @@ return [
         'ERROR_FILE_NAME_NOT_MATCHED_WITH_STRUCTURE' => 'DE: File name doesn`t match with structure',
         
         // Custom error code for CMS Module - 300000 - 309999
-        'ERROR_MISSION_REQUIRED_FIELDS_EMPTY' => 'DE: Page creation failed. Please check input parameters',
         'ERROR_INVALID_ARGUMENT' => 'DE: Invalid argument',
         'ERROR_FOOTER_PAGE_NOT_FOUND' => 'DE: Footer page not found in the system',
         'ERROR_DATABASE_OPERATIONAL' => 'DE: Database operational error',
@@ -73,7 +90,11 @@ return [
         'ERROR_MISSION_NOT_FOUND' => 'DE: Requested mission does not exist',
         'ERROR_MISSION_DELETION' => 'DE: Mission deletion failed',
         'ERROR_MISSION_REQUIRED_FIELDS_EMPTY' => 'DE: Mission creation failed. Please check input parameters',
-
+        'ERROR_NO_MISSION_FOUND' => 'DE: Mission does not found in system',
+        'ERROR_THEME_INVALID_DATA' => 'DE: Mission theme creation failed. Please check input parameters',
+        'ERROR_THEME_NOT_FOUND' => 'DE: Mission Theme does not found in system',
+        'ERROR_SKILL_NOT_FOUND' => 'DE: Skill does not found in system',
+        
         
         // Custom error code for Tenant Authorization - 210000 - 219999
         'ERROR_INVALID_API_AND_SECRET_KEY' => 'DE: Invalid API Key or Secret key',
@@ -92,6 +113,26 @@ return [
 
         // Custom error code for common exception
         'ERROR_OCCURRED' => 'DE: An error has occurred',
+        'ERROR_INVALID_JSON' => 'DE: Invalid Json format',
         
+        // Custom erro code for other errors - 800000 - 809999
+        'ERROR_ON_UPDATING_STYLING_VARIBLE_IN_DATABASE' => 'DE: An error has occured, while updating colors in database',
+        'ERROR_WHILE_DOWNLOADING_FILES_FROM_S3_TO_LOCAL' => 'DE: File is failed to download from S3 to local',
+        'ERROR_WHILE_COMPILING_SCSS_FILES' => 'DE: An error has occured, while compiling SCSS files to update SCSS changes',
+        'ERROR_WHILE_STORE_COMPILED_CSS_FILE_TO_LOCAL' => 'DE: An error has occured, while storing compiled css file to local storage',
+        'ERROR_NO_FILES_FOUND_TO_UPLOAD_ON_S3_BUCKET' => 'DE: No files found to upload on s3 bucket',
+        'ERROR_FAILD_TO_UPLOAD_COMPILE_FILE_ON_S3' => 'DE: Failed to upload files on S3',
+        'ERROR_FAILED_TO_RESET_STYLING' => 'DE: Failed to reset styling settings',
+        'ERROR_DEFAULT_THEME_FOLDER_NOT_FOUND' => 'DE: Default theme folder not found on server',
+        'ERROR_NO_FILES_FOUND_TO_DOWNLOAD' => 'DE: No assets file found on S3 for tenant',
+        'ERROR_TENANT_ASSET_FOLDER_NOT_FOUND_ON_S3' => 'DE: Tenant asset folder not found',
+        'ERROR_NO_FILES_FOUND_IN_ASSETS_FOLDER' => 'DE: No files found on S3 assets folder for this tenant',
+        'ERROR_BOOSTRAP_SCSS_NOT_FOUND' => 'DE: Boostrap SCSS file not found while compiling SCSS files',
+        'ERROR_SETTING_FOUND' => 'DE: Setting not found',
+        'ERROR_IMAGE_FILE_NOT_FOUND_ON_S3' => 'DE: Image file not found on S3 server',
+        'ERROR_WHILE_UPLOADING_IMAGE_ON_S3' => 'DE: An error while uploading image on S3',
+        'ERROR_DOWNLOADING_IMAGE_TO_LOCAL' => 'DE: An error while downloading image from S3 to server',
+        'ERROR_IMAGE_UPLOAD_INVALID_DATA' => 'DE: Invalid input file',
+        'ERROR_TENANT_OPTION_NOT_FOUND' => 'DE: No tenant option found'
     ]
 ];
