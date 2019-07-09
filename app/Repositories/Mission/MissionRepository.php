@@ -661,9 +661,9 @@ class MissionRepository implements MissionInterface
      * Add/remove mission to favourite.
      *
      * @param int $missionId
-     * @return \Illuminate\Http\Response
+     * @return mixed
      */
-    public function missionFavourite(int $userId, int $missionId)
+    public function missionFavourite(int $userId, int $missionId):
     {
         $mission = $this->mission->findOrFail($missionId);
         $favouriteMission = $this->favouriteMission->where('mission_id', $missionId)
