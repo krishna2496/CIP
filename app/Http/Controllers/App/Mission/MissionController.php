@@ -377,16 +377,19 @@ class MissionController extends Controller
      * @param int $id
      * @return \Illuminate\Http\JsonResponse
      */
-    public function missionFavourite(int $missionId): JsonResponse
+    public function missionFavourite(Request $request, int $missionId): JsonResponse
     {
         try {
             // Update mission theme
-            $missionFavourite = $this->missionRepository->missionFavourite($missionId);
-
+            $missionFavourite = $this->missionRepository->missionFavourite($request->auth->user_id, $missionId);
+// dd($missionFavourite);
             // Set response data
-            $apiData = ['favourite_mission_id' => $missionFavourite->favourite_mission_id];
+            $apiData = ($missionFavourite != 'true')
+            ? ['favourite_mission_id' => $missionFavourite->favourite_mission_id] : [];
             $apiStatus = Response::HTTP_OK;
-            $apiMessage = trans('messages.success.MESSAGE_MISSION_UPDATED');
+            $apiMessage = ($missionFavourite != 'true') ?
+            trans('messages.success.MESSAGE_MISSION_ADDED_TO_FAVOURITE') :
+            trans('messages.success.MESSAGE_MISSION_DELETED_FROM_FAVOURITE');
             
             return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
         } catch (ModelNotFoundException $e) {

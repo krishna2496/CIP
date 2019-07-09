@@ -663,33 +663,21 @@ class MissionRepository implements MissionInterface
      * @param int $missionId
      * @return \Illuminate\Http\Response
      */
-    public function missionFavourite(int $missionId)
+    public function missionFavourite(int $userId, int $missionId)
     {
         $mission = $this->mission->findOrFail($missionId);
-        // dd("Qeqweqwe");
-       
-        // $userId = Auth::user_id;
-        // $favouriteMission = $this->favouriteMission->where(['mission_id' => $missionId, 'user_id' => $userId]);
-        
-        // $user = JWTAuth::parseToken()->authenticate();
-        // $userId = $user->id;
+        $favouriteMission = $this->favouriteMission->where('mission_id', $missionId)
+        ->where('user_id', $userId)->first();
 
-        // $user = User::find($credentials->sub);
-        // // Now let's put the user in the request class so that you can grab it from there
-        // $request->auth = $user;
-
-        $user = JWT::parseToken()->toUser();
-        print_r($user);
-        exit;
-
-
-        // dd($request->auth);
-        // dd($favouriteMission);
-
-        //deleteFavouriteMission
-        dd($favouriteMission);
-        $favouriteMission->update($request->toArray());
-        
-        return $favouriteMission;
+        if ($favouriteMission) {
+            $favouriteMissionData =  $favouriteMission->delete();
+        } else {
+            $favourite = array(
+                'mission_id' => $missionId,
+                'user_id' => $userId
+            );
+            $favouriteMissionData = $this->favouriteMission->create($favourite);
+        }
+        return $favouriteMissionData;
     }
 }

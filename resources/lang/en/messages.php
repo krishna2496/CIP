@@ -54,7 +54,9 @@ return [
         'MESSAGE_THEME_FOUND' => 'Mission theme found successfully',
         'MESSAGE_TENANT_OPTION_CREATED' => 'Tenant option created successfully',
         'MESSAGE_TENANT_OPTION_UPDATED' => 'Tenant option update successfully',
-        'MESSAGE_TENANT_OPTIONS_LIST' => 'Tenant options listing successfully'
+        'MESSAGE_TENANT_OPTIONS_LIST' => 'Tenant options listing successfully',
+        'MESSAGE_MISSION_ADDED_TO_FAVOURITE' => 'Mission added to favourite',
+        'MESSAGE_MISSION_DELETED_FROM_FAVOURITE' => 'Mission deleted from to favourite',
     ],
 
         
