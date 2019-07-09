@@ -18,6 +18,7 @@ use App\Traits\RestExceptionHandlerTrait;
 use App\Exceptions\BucketNotFoundException;
 use App\Exceptions\FileNotFoundException;
 use App\Exceptions\FileUploadException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class TenantOptionsController extends Controller
 {
@@ -542,6 +543,8 @@ class TenantOptionsController extends Controller
                 config('constants.error_codes.ERROR_TENANT_OPTION_NOT_FOUND'),
                 trans('messages.custom_error_message.ERROR_TENANT_OPTION_NOT_FOUND')
             );            
+        } catch (\Exception $e) {
+            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
 }
