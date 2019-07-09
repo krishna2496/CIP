@@ -39,7 +39,7 @@ return [
         'MESSAGE_CITY_LISTING' => 'FR: City listing successfully',
         'MESSAGE_COUNTRY_LISTING' => 'FR: Country listing successfully',        
         'MESSAGE_MISSION_ADDED_TO_FAVOURITE' => 'FR: Mission added to favourite',
-        'MESSAGE_MISSION_DELETED_FROM_FAVOURITE' => 'FR: Mission deleted from to favourite',
+        'MESSAGE_MISSION_DELETED_FROM_FAVOURITE' => 'FR: Mission deleted from favourite',
     ],
 
         

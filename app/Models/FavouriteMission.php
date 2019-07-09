@@ -52,4 +52,44 @@ class FavouriteMission extends Model
         $favouriteMission = static::findOrFail($id)->delete();
         return $favouriteMission;
     }
+
+    /**
+     * Store/update specified resource.
+     *
+     * @param  int  $userId
+     * @param  int  $missionId
+     * @return bool
+     */
+    public function addToFavourite(int $userId, int $missionId)
+    {
+        return static::withTrashed()->updateOrCreate(
+            ['user_id' => $userId, 'mission_id' => $missionId]
+        )->restore();
+    }
+
+    /**
+     * Delete the specified resource.
+     *
+     * @param  int  $userId
+     * @param  int  $missionId
+     * @return bool
+     */
+    public function removeFromFavourite(int $userId, int $missionId): bool
+    {
+        return static::where(['user_id' => $userId, 'mission_id' => $missionId])->delete();
+    }
+
+    /**
+     * Find specified resource.
+     *
+     * @param  int  $userId
+     * @param  int  $missionId
+     * @return array
+     */
+    public function findFavourite(int $userId, int $missionId)
+    {
+        return static::where('mission_id', $missionId)->where('user_id', $userId)->first();
+    }
+
+    // where('mission_id', $missionId)->where('user_id', $userId)->first()
 }

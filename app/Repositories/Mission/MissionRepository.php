@@ -660,24 +660,21 @@ class MissionRepository implements MissionInterface
     /**
      * Add/remove mission to favourite.
      *
-     * @param int $missionId
+     * @param int $userId
+     * @param array $request
      * @return mixed
      */
-    public function missionFavourite(int $userId, int $missionId):
+    public function missionFavourite(int $userId, array $request)
     {
-        $mission = $this->mission->findOrFail($missionId);
-        $favouriteMission = $this->favouriteMission->where('mission_id', $missionId)
-        ->where('user_id', $userId)->first();
-
-        if ($favouriteMission) {
-            $favouriteMissionData =  $favouriteMission->delete();
+        $mission = $this->mission->findOrFail($request['mission_id']);
+        $favouriteMission = $this->favouriteMission->findFavourite($userId, $request['mission_id']);
+        
+        if (is_null($favouriteMission)) {
+            $favouriteMissions = $this->favouriteMission->addToFavourite($userId, $request['mission_id']);
         } else {
-            $favourite = array(
-                'mission_id' => $missionId,
-                'user_id' => $userId
-            );
-            $favouriteMissionData = $this->favouriteMission->create($favourite);
+            $favouriteMissions =  $favouriteMission->removeFromFavourite($userId, $request['mission_id']);
         }
-        return $favouriteMissionData;
+        $favouriteMission = $this->favouriteMission->findFavourite($userId, $request['mission_id']);
+        return $favouriteMission;
     }
 }

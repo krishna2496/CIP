@@ -371,23 +371,24 @@ class MissionController extends Controller
         }
     }
 
-     /**
+    /**
      * Add/remove mission to favourite.
      *
-     * @param int $id
+     * @param Illuminate\Http\Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function missionFavourite(Request $request, int $missionId): JsonResponse
+    public function missionFavourite(Request $request): JsonResponse
     {
         try {
             // Update mission theme
-            $missionFavourite = $this->missionRepository->missionFavourite($request->auth->user_id, $missionId);
-// dd($missionFavourite);
+            $missionFavourite = $this->missionRepository
+            ->missionFavourite($request->auth->user_id, $request->toArray());
+
             // Set response data
-            $apiData = ($missionFavourite != 'true')
+            $apiData = ($missionFavourite != null)
             ? ['favourite_mission_id' => $missionFavourite->favourite_mission_id] : [];
             $apiStatus = Response::HTTP_OK;
-            $apiMessage = ($missionFavourite != 'true') ?
+            $apiMessage = ($missionFavourite != null) ?
             trans('messages.success.MESSAGE_MISSION_ADDED_TO_FAVOURITE') :
             trans('messages.success.MESSAGE_MISSION_DELETED_FROM_FAVOURITE');
             
