@@ -543,6 +543,8 @@ class TenantOptionsController extends Controller
                 config('constants.error_codes.ERROR_TENANT_OPTION_NOT_FOUND'),
                 trans('messages.custom_error_message.ERROR_TENANT_OPTION_NOT_FOUND')
             );            
+        } catch (\Exception $e) {
+            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
 }
