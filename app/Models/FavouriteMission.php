@@ -60,7 +60,7 @@ class FavouriteMission extends Model
      * @param  int  $missionId
      * @return bool
      */
-    public function addToFavourite(int $userId, int $missionId)
+    public function addToFavourite(int $userId, int $missionId): bool
     {
         return static::withTrashed()->updateOrCreate(
             ['user_id' => $userId, 'mission_id' => $missionId]
