@@ -25,6 +25,7 @@ use PDOException;
 use Illuminate\Http\JsonResponse;
 use App\Traits\RestExceptionHandlerTrait;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Validator;
 
 class MissionController extends Controller
 {
@@ -370,6 +371,42 @@ class MissionController extends Controller
     }
 
     /**
+     * Add/remove mission to favourite.
+     *
+     * @param Illuminate\Http\Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function missionFavourite(Request $request): JsonResponse
+    {
+        try {
+            $missionFavourite = $this->missionRepository
+            ->missionFavourite($request->auth->user_id, $request->toArray());
+
+            // Set response data
+            $apiData = ($missionFavourite != null)
+            ? ['favourite_mission_id' => $missionFavourite->favourite_mission_id] : [];
+            $apiStatus = Response::HTTP_OK;
+            $apiMessage = ($missionFavourite != null) ?
+            trans('messages.success.MESSAGE_MISSION_ADDED_TO_FAVOURITE') :
+            trans('messages.success.MESSAGE_MISSION_DELETED_FROM_FAVOURITE');
+            return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
+        } catch (ModelNotFoundException $e) {
+            return $this->modelNotFound(
+                config('constants.error_codes.ERROR_MISSION_NOT_FOUND'),
+                trans('messages.custom_error_message.ERROR_MISSION_NOT_FOUND')
+            );
+        } catch (PDOException $e) {
+            return $this->PDO(
+                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
+                trans('messages.custom_error_message.ERROR_DATABASE_OPERATIONAL'),
+                trans('messages.custom_error_message.ERROR_DATABASE_OPERATIONAL')
+            );
+        } catch (\Exception $e) {
+            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
+        }
+    }
+            
+    /*
      * Get mission ratings
      *
      * @param int $id
@@ -392,9 +429,8 @@ class MissionController extends Controller
         } catch (PDOException $e) {
             return $this->PDO(
                 config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
-                trans(
-                    'messages.custom_error_message.ERROR_DATABASE_OPERATIONAL'
-                )
+                trans('messages.custom_error_message.ERROR_DATABASE_OPERATIONAL'),
+                trans('messages.custom_error_message.ERROR_DATABASE_OPERATIONAL')
             );
         } catch (\Exception $e) {
             return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));

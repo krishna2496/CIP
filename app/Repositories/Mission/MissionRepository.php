@@ -15,6 +15,7 @@ use App\Models\MissionDocument;
 use App\Models\MissionMedia;
 use App\Models\MissionRating;
 use App\Models\MissionApplication;
+use App\Models\FavouriteMission;
 use App\Models\UserFilter;
 use Validator;
 use PDOException;
@@ -67,6 +68,16 @@ class MissionRepository implements MissionInterface
     private $s3helper;
 
     /**
+     * @var App\Models\FavouriteMission
+     */
+    public $favouriteMission;
+
+    /**
+     * @var App\Models\MissionRating
+     */
+    public $missionRating;
+
+    /**
      * Create a new Mission repository instance.
      *
      * @param  App\Models\Mission $mission
@@ -76,7 +87,9 @@ class MissionRepository implements MissionInterface
      * @param  App\Models\MissionDocument $missionDocument
      * @param  Illuminate\Http\ResponseHelper $responseHelper
      * @param  Illuminate\Http\LanguageHelper $languageHelper
+     * @param  Illuminate\Http\LanguageHelper $languageHelper
      * @param  Illuminate\Http\S3Helper $s3helper
+     * @param  App\Models\MissionRating $missionRating
      * @return void
      */
     public function __construct(
@@ -91,6 +104,7 @@ class MissionRepository implements MissionInterface
         LanguageHelper $languageHelper,
         Helpers $helpers,
         S3Helper $s3helper,
+        FavouriteMission $favouriteMission,
         MissionRating $missionRating
     ) {
         $this->mission = $mission;
@@ -105,6 +119,7 @@ class MissionRepository implements MissionInterface
         $this->missionRating = $missionRating;
         $this->helpers = $helpers;
         $this->s3helper = $s3helper;
+        $this->favouriteMission = $favouriteMission;
     }
     
     /**
@@ -650,6 +665,26 @@ class MissionRepository implements MissionInterface
     }
 
     /**
+     * Add/remove mission to favourite.
+     *
+     * @param int $userId
+     * @param array $request
+     * @return App\Models\FavouriteMission
+     */
+    public function missionFavourite(int $userId, array $request): FavouriteMission
+    {
+        $mission = $this->mission->findOrFail($request['mission_id']);
+        $favouriteMission = $this->favouriteMission->findFavourite($userId, $request['mission_id']);
+        
+        if (is_null($favouriteMission)) {
+            $favouriteMissions = $this->favouriteMission->addToFavourite($userId, $request['mission_id']);
+        } else {
+            $favouriteMissions =  $favouriteMission->removeFromFavourite($userId, $request['mission_id']);
+        }
+        return $this->favouriteMission->findFavourite($userId, $request['mission_id']);
+    }
+
+    /*
      * Display rating of mission.
      *
      * @param Illuminate\Http\Request $request
