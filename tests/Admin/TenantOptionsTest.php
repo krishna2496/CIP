@@ -36,7 +36,7 @@ class TenantOptionsTest extends TestCase
         $count = $tenant->where('option_name', config('constants.TENANT_OPTION_SLIDER'))->count();
 
         if ($count >= config('constants.SLIDER_LIMIT')) {
-            $this->post("create_slider/", $params, ['Authorization' => 'Basic '.base64_encode(env('DEFAULT_TENANT').'_api_key:'.env('DEFAULT_TENANT').'_api_secret')])
+            $this->post("create_slider/", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
             ->seeStatusCode(403)
             ->seeJsonStructure([
                 'errors' => [
@@ -49,7 +49,7 @@ class TenantOptionsTest extends TestCase
                     ]
                 ]);
         } else {
-            $this->post("create_slider/", $params, ['Authorization' => 'Basic '.base64_encode(env('DEFAULT_TENANT').'_api_key:'.env('DEFAULT_TENANT').'_api_secret')])
+            $this->post("create_slider/", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
             ->seeStatusCode(200)
             ->seeJsonStructure([
                 'status',
@@ -68,7 +68,7 @@ class TenantOptionsTest extends TestCase
      */
     public function it_should_reset_style_to_default()
     {
-        $this->get('style/reset-style',  ['Authorization' => 'Basic '.base64_encode(env('DEFAULT_TENANT').'_api_key:'.env('DEFAULT_TENANT').'_api_secret')])
+        $this->get('style/reset-style',  ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
         ->seeStatusCode(200);
     }
 
