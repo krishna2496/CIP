@@ -72,13 +72,18 @@ class SkillRepository implements SkillInterface
      */
     public function update(array $request, int $id): Skill
     {
-        if ($request['parent_skill'] != 0) {
-            try {
-                $this->skill->findOrFail($request['parent_skill']);
-            } catch (ModelNotFoundException $e) {
-                throw new ModelNotFoundException(trans('messages.custom_error_message.ERROR_PARENT_SKILL_NOT_FOUND'));
+        if (isset($request['parent_skill'])) {
+            if ($request['parent_skill'] != 0) {
+                try {
+                    $this->skill->findOrFail($request['parent_skill']);
+                } catch (ModelNotFoundException $e) {
+                    throw new ModelNotFoundException(
+                        trans('messages.custom_error_message.ERROR_PARENT_SKILL_NOT_FOUND')
+                    );
+                }
             }
         }
+        
         try {
             $skill = $this->skill->findOrFail($id);
         } catch (ModelNotFoundException $e) {
