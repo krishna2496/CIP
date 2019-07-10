@@ -1,0 +1,370 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "",
+    "title": "CI Platform Admin",
+    "description": ""
+  },
+  "host":"web8.anasource.com",
+  "basePath":"/team4/cip-admin-api",
+  "tags":[  
+      {  
+         "name":"Tenant"
+      },
+	  {  
+         "name":"API user"
+      }
+   ],
+  "paths": {
+    "/tenants": {
+      "post": {
+        "operationId": "POST_team4-cip-admin-api-tenants",
+        "summary": "Create tenent",
+		"tags":[  
+               "Tenant"
+            ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+			"required": true,
+            "schema": {
+              "$ref":"#/definitions/Tenant"
+            }
+          }
+        ],
+        "responses": {
+            "400":{  
+			  "description":"Bad request"
+			},
+			"422":{  
+			  "description":"Unprocessable entity - Invalid input"
+			}
+        }
+      },
+      "get": {
+        "operationId": "GET_team4-cip-admin-api-tenants",
+        "summary": "Listing Tenant",
+        "tags":[  
+               "Tenant"
+            ],
+        "consumes": [
+          "application/json"
+        ],
+        "responses": {
+            "400":{  
+			  "description":"Bad request"
+			}
+        }
+      }
+    },
+    "/tenants/{tenantId}": {
+      "get": {
+        "operationId": "GET_team4-cip-admin-api-tenants-1",
+        "summary": "Get tenant detail by id ",
+        "tags":[  
+               "Tenant"
+            ],
+        "consumes": [
+          "application/json"
+        ],
+		"parameters": [
+          {  
+			  "name":"tenantId",
+			  "in":"path",
+			  "description":"Tenant id to get details",
+			  "required":true,
+			  "type":"integer",
+			  "format":"int64"
+		  }
+        ],
+        "responses": {
+            "400":{  
+			  "description":"Bad request"
+			},
+			"404":{  
+			  "description":"Tenant not found in the system"
+			}
+        }
+      },
+      "patch": {
+        "operationId": "PATCH_team4-cip-admin-api-tenants-1",
+        "summary": "Update tenant details",
+        "tags":[  
+               "Tenant"
+            ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+			"required": true,
+            "schema": {
+              "$ref":"#/definitions/Tenant"
+            }
+          },
+		  {  
+			  "name":"tenantId",
+			  "in":"path",
+			  "description":"Tenant id to update",
+			  "required":true,
+			  "type":"integer",
+			  "format":"int64"
+		  }
+        ],
+        "responses": {
+            "400":{  
+			  "description":"Bad request"
+			},
+			"422":{  
+			  "description":"Unprocessable entity - Invalid input"
+			},
+			"404":{  
+			  "description":"Tenant not found in the system"
+			}
+        }
+      },
+	  "delete": {
+        "operationId": "DELETE_team4-cip-admin-api-tenants-2",
+        "summary": "Delete tenant",
+		"tags":[  
+               "Tenant"
+            ],
+        "consumes": [
+          "multipart/form-data"
+        ],
+		"parameters": [
+          {  
+			  "name":"tenantId",
+			  "in":"path",
+			  "description":"Tenant id to delete",
+			  "required":true,
+			  "type":"integer",
+			  "format":"int64"
+		  }
+        ],
+        "responses": {
+           "400":{  
+			  "description":"Bad request"
+			},
+			"404":{  
+			  "description":"Tenant not found in the system"
+			}
+        }
+      }
+	},
+    "/tenants/{tenantId}/api_users/": {
+      "post": {
+        "operationId": "POST_team4-cip-admin-api-tenants-create-api-user",
+        "summary": "Create API User",
+		"tags":[  
+               "API user"
+            ],
+        "consumes": [
+          "multipart/form-data"
+        ],
+		"parameters": [
+          {  
+			  "name":"tenantId",
+			  "in":"path",
+			  "description":"Tenant id",
+			  "required":true,
+			  "type":"integer",
+			  "format":"int64"
+		  }
+        ],
+        "responses": {
+            "400":{  
+			  "description":"Bad request"
+			},
+			"404":{  
+			  "description":"Tenant not found in the system"
+			}
+        }
+      },
+      "get": {
+        "operationId": "POST_team4-cip-admin-api-tenants-list-api-user",
+        "summary": "Listing API users of a tenant",
+        "tags":[  
+               "API user"
+            ],
+        "consumes": [
+          "multipart/form-data"
+        ],
+		"parameters": [
+          {  
+			  "name":"tenantId",
+			  "in":"path",
+			  "description":"Tenant id",
+			  "required":true,
+			  "type":"integer",
+			  "format":"int64"
+		  }
+        ],
+        "responses": {
+            "400":{  
+			  "description":"Bad request"
+			},
+			"404":{  
+			  "description":"Tenant not found in the system"
+			}
+        }
+      }
+    },
+	"/tenants/{tenantId}/api_users/{api_user_id}/": {
+      "get": {
+        "operationId": "POST_team4-cip-admin-api-tenants-api-user-detail",
+        "summary": "Get API User detail",
+		"tags":[  
+               "API user"
+            ],
+        "consumes": [
+          "multipart/form-data"
+        ],
+		"parameters": [
+          {  
+			  "name":"tenantId",
+			  "in":"path",
+			  "description":"Tenant id",
+			  "required":true,
+			  "type":"integer",
+			  "format":"int64"
+		  },
+		  {  
+			  "name":"api_user_id",
+			  "in":"path",
+			  "description":"API user id",
+			  "required":true,
+			  "type":"integer",
+			  "format":"int64"
+		  }
+        ],
+        "responses": {
+            "400":{  
+			  "description":"Bad request"
+			},
+			"404":{  
+			  "description":"API user not found in the system"
+			}
+        }
+      },
+      "patch": {
+        "operationId": "POST_team4-cip-admin-api-tenants-api-user-update",
+        "summary": "Renew API user's secret key",
+		"tags":[  
+               "API user"
+            ],
+        "consumes": [
+          "multipart/form-data"
+        ],
+		"parameters": [
+          {  
+			  "name":"tenantId",
+			  "in":"path",
+			  "description":"Tenant id",
+			  "required":true,
+			  "type":"integer",
+			  "format":"int64"
+		  },
+		  {  
+			  "name":"api_user_id",
+			  "in":"path",
+			  "description":"API user id",
+			  "required":true,
+			  "type":"integer",
+			  "format":"int64"
+		  }
+        ],
+        "responses": {
+            "400":{  
+			  "description":"Bad request"
+			},
+			"404":{  
+			  "description":"API user not found in the system"
+			}
+        }
+      },
+	  "delete": {
+        "operationId": "POST_team4-cip-admin-api-tenants-api-user-delete",
+        "summary": "Delete API user",
+		"tags":[  
+               "API user"
+            ],
+        "consumes": [
+          "multipart/form-data"
+        ],
+		"parameters": [
+          {  
+			  "name":"tenantId",
+			  "in":"path",
+			  "description":"Tenant id",
+			  "required":true,
+			  "type":"integer",
+			  "format":"int64"
+		  },
+		  {  
+			  "name":"api_user_id",
+			  "in":"path",
+			  "description":"API user id",
+			  "required":true,
+			  "type":"integer",
+			  "format":"int64"
+		  }
+        ],
+        "responses": {
+            "400":{  
+			  "description":"Bad request"
+			},
+			"404":{  
+			  "description":"API user not found in the system"
+			}
+        }
+      }
+    },
+  },
+  "definitions": {
+	"Tenant":{
+		"type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "sponsor_id": {
+                  "type":"integer",
+                  "format":"int64"
+                },
+                "options": {
+                  "type": "object",
+                  "properties": {
+                    "theme_enabled": {
+                      "type": "integer",
+					  "enum":[  
+						"1",
+						"0",
+					  ]
+                    },
+                    "skills_enabled": {
+                      "type": "integer",
+					  "enum":[  
+						"1",
+						"0",
+					  ]
+                    },
+					"news_enabled": {
+                      "type": "integer",
+					  "enum":[  
+						"1",
+						"0",
+					  ]
+                    }
+                  }
+                }
+              }
+        }
+  }
+}
