@@ -56,9 +56,9 @@ class CompileScssFiles extends Job
             '@import "_assets";
             $assetUrl: "'.$assetUrl.'";
             @import "_variables";
-            @import "custom";           
             @import "../../../../../node_modules/bootstrap/scss/bootstrap";
-            @import "../../../../../node_modules/bootstrap-vue/src/index";';
+            @import "../../../../../node_modules/bootstrap-vue/src/index";
+            @import "custom";';
 
             $css = $scss->compile($importScss);
         
@@ -77,7 +77,6 @@ class CompileScssFiles extends Job
                         Storage::disk('local')->get($this->tenantName.'\assets\css\style.css')
                     );
                 } catch (S3Exception $e) {
-                    dd($e);
                     return $this->s3Exception(
                         config('constants.error_codes.ERROR_FAILD_TO_UPLOAD_COMPILE_FILE_ON_S3'),
                         trans('messages.custom_error_message.ERROR_FAILD_TO_UPLOAD_COMPILE_FILE_ON_S3')
@@ -90,13 +89,11 @@ class CompileScssFiles extends Job
                 );
             }
         } catch (ParserException $e) {
-            dd($e);
             throw new ParserException(
                 trans('messages.custom_error_message.ERROR_WHILE_COMPILING_SCSS_FILES'),
                 config('constants.error_codes.ERROR_WHILE_COMPILING_SCSS_FILES')
             );
         } catch (\Exception $e) {
-            dd($e);
             return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
