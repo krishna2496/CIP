@@ -38,8 +38,8 @@ class LanguageHelper
         try {
             // Connect master database to get language details
             $this->helpers->switchDatabaseConnection('mysql', $request);
-            $languages = DB::table('language')->get();
-
+            $languages = DB::table('language')->whereNull('deleted_at')->get();
+            
             // Connect tenant database
             $this->helpers->switchDatabaseConnection('tenant', $request);
             
