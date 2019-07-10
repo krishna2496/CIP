@@ -75,14 +75,19 @@ $router->group(['middleware' => 'localization'], function ($router) {
     'uses' => 'App\Mission\MissionController@filters']);
 
     /* Add/remove favourite */
-    $router->post('/app/missions/favourite', [
+    $router->post('/app/mission/favourite', [
         'middleware' => 'localization|tenant.connection|jwt.auth|JsonApiMiddleware',
         'uses' => 'App\Mission\MissionController@missionFavourite']);
+    
     /* Get mission listing  */
-
-    $router->get('/app/missions/ratings/{missionId}', ['as' => 'app.missions',
+    $router->get('/app/mission/ratings/{missionId}', ['as' => 'app.missions.ratings',
     'middleware' => 'localization|tenant.connection|jwt.auth',
     'uses' => 'App\Mission\MissionController@missionRatings']);
+
+    /* Mission Invite  */
+    $router->post('/app/mission/invite', ['as' => 'app.missions.invite',
+    'middleware' => 'localization|tenant.connection|jwt.auth',
+    'uses' => 'App\Mission\MissionController@missionInvite']);
 
     /* Fetch tenant option */
     $router->post('fetch-tenant-option', ['as' =>'fetch-tenant-option',

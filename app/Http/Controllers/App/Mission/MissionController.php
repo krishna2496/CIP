@@ -468,4 +468,15 @@ class MissionController extends Controller
             return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
+
+    /*
+     * Invite to mission
+     *
+     * @param Illuminate\Http\Request $request
+     * @return Illuminate\Http\JsonResponse
+     */
+    public function missionInvite(Request $request)
+    {
+        dd($request);
+    }
 }
