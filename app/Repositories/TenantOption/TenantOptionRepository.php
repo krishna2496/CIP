@@ -92,7 +92,7 @@ class TenantOptionRepository implements TenantOptionInterface
                 $optionQuery = $optionQuery->where($column, $value);
             }
         }
-        if(is_null($optionQuery->first())){
+        if (is_null($optionQuery->first())) {
             throw new ModelNotFoundException(trans('messages.custom_error_message.ERROR_TENANT_OPTION_NOT_FOUND'));
         }
         return $optionQuery->first();
@@ -110,12 +110,23 @@ class TenantOptionRepository implements TenantOptionInterface
 
     /**
      * Create new option
-     * 
+     *
      * @param array $option
      * @return App\Models\TenantOption
      */
     public function store(array $option): TenantOption
     {
         return $this->tenantOption->create($option);
+    }
+
+    /**
+     * Select by option name
+     *
+     * @param String $data
+     * @return Illuminate\Support\Collection
+     */
+    public function getOptionValue(string $data): Collection
+    {
+        return $this->tenantOption->whereOption_name($data)->get();
     }
 }

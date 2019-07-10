@@ -477,7 +477,6 @@ class MissionRepository implements MissionInterface
     public function missionList(Request $request): LengthAwarePaginator
     {
         $languages = $this->languageHelper->getLanguages($request);
-
         $mission = Mission::select(
             'mission.mission_id',
             'mission.theme_id',

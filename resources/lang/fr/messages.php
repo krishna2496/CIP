@@ -58,6 +58,7 @@ return [
         'MESSAGE_TENANT_OPTION_UPDATED' => 'FR: Tenant option update successfully',
         'MESSAGE_TENANT_OPTIONS_LIST' => 'FR: Tenant options listing successfully',
         'MESSAGE_MISSION_RATING_LISTING' => 'FR: Get mission rating successfully',
+        'MESSAGE_TENANT_OPTION_FOUND' => 'FR: Tenant option found', 
     ],
 
         
