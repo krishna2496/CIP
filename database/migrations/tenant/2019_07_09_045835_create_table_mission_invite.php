@@ -22,9 +22,9 @@ class CreateTableMissionInvite extends Migration
             $table->softDeletes();
 
             // Set references with user table
-            $table->foreign('from_user_id')->references('from_user_id')->on('user')->onDelete('CASCADE')->onUpdate('CASCADE');
+            $table->foreign('from_user_id')->references('user_id')->on('user')->onDelete('CASCADE')->onUpdate('CASCADE');
             // Set references with user table
-            $table->foreign('to_user_id')->references('to_user_id')->on('user')->onDelete('CASCADE')->onUpdate('CASCADE');
+            $table->foreign('to_user_id')->references('user_id')->on('user')->onDelete('CASCADE')->onUpdate('CASCADE');
             // Set references with mission table
             $table->foreign('mission_id')->references('mission_id')->on('mission')->onDelete('CASCADE')->onUpdate('CASCADE'); 
         });
