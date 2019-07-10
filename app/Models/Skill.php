@@ -102,9 +102,4 @@ class Skill extends Model
     {
         return $this->belongsTo(static::class, 'parent_skill');
     }
-
-    public function children()
-    {
-        return $this->hasMany(static::class, 'parent_skill');
-    }
 }
