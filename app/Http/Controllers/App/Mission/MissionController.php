@@ -124,6 +124,23 @@ class MissionController extends Controller
            
             $mission = $this->missionRepository->appMissions($request, $userFilterData, $languageId);
             foreach ($mission as $key => $value) {
+
+                if (isset($value->goalMission)) {
+                    $value->goal_objective  = $value->goalMission->goal_objective;
+                    unset($value->goalMission);
+                }
+
+                if (isset($value->timeMission)) {                    
+                    $value->application_deadline = $value->timeMission->application_deadline;
+                    $value->application_start_date = $value->timeMission->application_start_date;
+                    $value->application_end_date = $value->timeMission->application_end_date;
+                    $value->application_start_time = $value->timeMission->application_start_time;
+                    $value->application_end_time = $value->timeMission->application_end_time;
+
+                    unset($value->timeMission);
+                    unset($value->goalMission);
+                }
+
                 unset($value->city);
                 if ($value->mission_type == config("constants.MISSION_TYPE['GOAL']")) {
                     //Progress bar for goal
@@ -159,7 +176,6 @@ class MissionController extends Controller
                     $value->set_view_detail = 1;
                 }
             }
-
             $metaData['filters'] = $userFilterData;
             $apiData = $mission;
             $apiStatus = Response::HTTP_OK;
