@@ -94,7 +94,7 @@ return [
         'ERROR_THEME_INVALID_DATA' => 'Mission theme creation failed. Please check input parameters',
         'ERROR_THEME_NOT_FOUND' => 'Mission Theme does not found in system',
         'ERROR_SKILL_NOT_FOUND' => 'Skill does not found in system',
-        
+        'ERROR_PARENT_SKILL_NOT_FOUND' => 'Parent skill does not found in system',
         
         // Custom error code for Tenant Authorization - 210000 - 219999
         'ERROR_INVALID_API_AND_SECRET_KEY' => 'Invalid API Key or Secret key',
