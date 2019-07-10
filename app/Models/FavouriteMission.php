@@ -40,19 +40,7 @@ class FavouriteMission extends Model
     {
         return $this->belongsTo(Mission::class, 'mission_id', 'mission_id');
     }
-    
-    /**
-     * Soft delete from the database.
-     *
-     * @param  int  $id
-     * @return void
-     */
-    public function deleteFavouriteMission(int $id)
-    {
-        $favouriteMission = static::findOrFail($id)->delete();
-        return $favouriteMission;
-    }
-
+   
     /**
      * Store/update specified resource.
      *
@@ -90,6 +78,4 @@ class FavouriteMission extends Model
     {
         return static::where('mission_id', $missionId)->where('user_id', $userId)->first();
     }
-
-    // where('mission_id', $missionId)->where('user_id', $userId)->first()
 }

@@ -379,7 +379,6 @@ class MissionController extends Controller
     public function missionFavourite(Request $request): JsonResponse
     {
         try {
-            // Update mission theme
             $missionFavourite = $this->missionRepository
             ->missionFavourite($request->auth->user_id, $request->toArray());
 
