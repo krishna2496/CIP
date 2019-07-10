@@ -5,6 +5,7 @@ use App\Repositories\Skill\SkillInterface;
 use Illuminate\Http\Request;
 use App\Models\Skill;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class SkillRepository implements SkillInterface
 {
@@ -56,6 +57,9 @@ class SkillRepository implements SkillInterface
      */
     public function store(array $request): Skill
     {
+        if ($request['parent_skill'] != 0) {
+            $this->skill->findOrFail($request['parent_skill']);
+        }
         return $this->skill->create($request);
     }
 
@@ -68,7 +72,23 @@ class SkillRepository implements SkillInterface
      */
     public function update(array $request, int $id): Skill
     {
-        $skill = $this->skill->findOrFail($id);
+        if (isset($request['parent_skill'])) {
+            if ($request['parent_skill'] != 0) {
+                try {
+                    $this->skill->findOrFail($request['parent_skill']);
+                } catch (ModelNotFoundException $e) {
+                    throw new ModelNotFoundException(
+                        trans('messages.custom_error_message.ERROR_PARENT_SKILL_NOT_FOUND')
+                    );
+                }
+            }
+        }
+        
+        try {
+            $skill = $this->skill->findOrFail($id);
+        } catch (ModelNotFoundException $e) {
+            throw new ModelNotFoundException(trans('messages.custom_error_message.ERROR_SKILL_NOT_FOUND'));
+        }
         $skill->update($request);
         return $skill;
     }

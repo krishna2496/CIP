@@ -25,6 +25,13 @@ class FavouriteMission extends Model
     protected $primaryKey = 'favourite_mission_id';
     
     /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = ['mission_id', 'user_id'];
+    
+    /**
      * Get the mission that has media.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
@@ -33,16 +40,42 @@ class FavouriteMission extends Model
     {
         return $this->belongsTo(Mission::class, 'mission_id', 'mission_id');
     }
-
+   
     /**
      * Store/update specified resource.
      *
-     * @param  array $condition
-     * @param  array $data
+     * @param  int  $userId
+     * @param  int  $missionId
+     * @return bool
+     */
+    public function addToFavourite(int $userId, int $missionId): bool
+    {
+        return static::withTrashed()->updateOrCreate(
+            ['user_id' => $userId, 'mission_id' => $missionId]
+        )->restore();
+    }
+
+    /**
+     * Delete the specified resource.
+     *
+     * @param  int  $userId
+     * @param  int  $missionId
+     * @return bool
+     */
+    public function removeFromFavourite(int $userId, int $missionId): bool
+    {
+        return static::where(['user_id' => $userId, 'mission_id' => $missionId])->delete();
+    }
+
+    /**
+     * Find specified resource.
+     *
+     * @param  int  $userId
+     * @param  int  $missionId
      * @return array
      */
-    public function createOrUpdateMedia(array $condition, array $data)
+    public function findFavourite(int $userId, int $missionId)
     {
-        return static::updateOrCreate($condition, $data);
+        return static::where('mission_id', $missionId)->where('user_id', $userId)->first();
     }
 }

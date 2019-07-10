@@ -106,6 +106,11 @@ class SkillController extends Controller
                 config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
                 trans('messages.custom_error_message.ERROR_DATABASE_OPERATIONAL')
             );
+        } catch (ModelNotFoundException $e) {
+            return $this->modelNotFound(
+                config('constants.error_codes.ERROR_PARENT_SKILL_NOT_FOUND'),
+                trans('messages.custom_error_message.ERROR_PARENT_SKILL_NOT_FOUND')
+            );
         } catch (InvalidArgumentException $e) {
             return $this->invalidArgument(
                 config('constants.error_codes.ERROR_INVALID_ARGUMENT'),
@@ -144,7 +149,14 @@ class SkillController extends Controller
             }
          
             // Update skill
-            $skill = $this->skillRepository->update($request->toArray(), $id);
+            try {
+                $skill = $this->skillRepository->update($request->toArray(), $id);
+            } catch (ModelNotFoundException $e) {
+                return $this->modelNotFound(
+                    config('constants.error_codes.ERROR_SKILL_NOT_FOUND'),
+                    $e->getMessage()
+                );
+            }
 
             // Set response data
             $apiData = ['skill_id' => $skill->skill_id];

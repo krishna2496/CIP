@@ -267,7 +267,6 @@ class TenantOptionsController extends Controller
         }
 
         if ($request->hasFile('custom_scss_file')) {
-            
             // Server side validataions
             $validator = Validator::make(
                 $request->toArray(),
@@ -388,7 +387,7 @@ class TenantOptionsController extends Controller
      * @return \Illuminate\Http\JsonResponse
      */
     public function updateImage(Request $request): JsonResponse
-    {    
+    {
         // Server side validataions
         $validator = Validator::make(
             $request->toArray(),
@@ -413,14 +412,13 @@ class TenantOptionsController extends Controller
         
         try {
             // Get domain name from request and use as tenant name.
-            $tenantName = $this->helpers->getSubDomainFromRequest($request);                
+            $tenantName = $this->helpers->getSubDomainFromRequest($request);
         } catch (\Exception $e) {
             return $this->badRequest($e->getMessage());
         }
         
         if (Storage::disk('s3')->exists($tenantName)) {
-            if(!Storage::disk('s3')->exists($tenantName.'/assets/images/'.$fileName))
-            {
+            if (!Storage::disk('s3')->exists($tenantName.'/assets/images/'.$fileName)) {
                 throw new FileNotFoundException(
                     trans('messages.custom_error_message.ERROR_IMAGE_FILE_NOT_FOUND_ON_S3'),
                     config('constants.error_codes.ERROR_IMAGE_FILE_NOT_FOUND_ON_S3')
@@ -435,8 +433,8 @@ class TenantOptionsController extends Controller
                     trans('messages.custom_error_message.ERROR_WHILE_UPLOADING_IMAGE_ON_S3'),
                     config('constants.error_codes.ERROR_WHILE_UPLOADING_IMAGE_ON_S3')
                 );
-            } 
-        } else {                    
+            }
+        } else {
             throw new BucketNotFoundException(
                 trans('messages.custom_error_message.ERROR_TENANT_ASSET_FOLDER_NOT_FOUND_ON_S3'),
                 config('constants.error_codes.ERROR_TENANT_ASSET_FOLDER_NOT_FOUND_ON_S3')
@@ -450,12 +448,12 @@ class TenantOptionsController extends Controller
     
     /**
      * Store tenant option values
-     * 
+     *
      * @param Illuminate\Http\Request $request
      * @return Illuminate\Http\JsonResponse
      */
     public function storeTenantOption(Request $request): JsonResponse
-    {        
+    {
         // Server side validataions
         $validator = Validator::make(
             $request->all(),
@@ -476,7 +474,8 @@ class TenantOptionsController extends Controller
         }
         try {
             $data = $request->toArray();
-            $data['option_value'] = (gettype($request->option_value)=="array") ? serialize($request->option_value) : $request->option_value;
+            $data['option_value'] = (gettype($request->option_value)=="array") ? serialize($request->option_value)
+            : $request->option_value;
 
             $tenantOption = $this->tenantOptionRepository->store($data);
             $apiStatus = Response::HTTP_OK;
@@ -502,7 +501,7 @@ class TenantOptionsController extends Controller
 
     /**
      * Update tenant option value
-     * 
+     *
      * @param Illuminate\Http\Request $request
      * @return Illuminate\Http\JsonResponse
      */
@@ -530,19 +529,19 @@ class TenantOptionsController extends Controller
             
             $tenantOption = $this->tenantOptionRepository->getOptionWithCondition($data);
 
-            $updateData['option_value'] = (gettype($request->option_value)=="array") ? serialize($request->option_value) : $request->option_value;
+            $updateData['option_value'] = (gettype($request->option_value)=="array") ? serialize($request->option_value)
+            : $request->option_value;
             $tenantOption->update($updateData);
 
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_TENANT_OPTION_UPDATED');
             
             return $this->responseHelper->success($apiStatus, $apiMessage);
-
-        } catch (ModelNotFoundException $e) {            
+        } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
                 config('constants.error_codes.ERROR_TENANT_OPTION_NOT_FOUND'),
                 trans('messages.custom_error_message.ERROR_TENANT_OPTION_NOT_FOUND')
-            );            
+            );
         } catch (\Exception $e) {
             return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }

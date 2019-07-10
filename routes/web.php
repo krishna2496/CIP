@@ -74,6 +74,9 @@ $router->group(['middleware' => 'localization'], function ($router) {
     $router->get('/filter_data', ['middleware' => 'tenant.connection|jwt.auth',
     'uses' => 'App\Mission\MissionController@filters']);
 
+    /* Add/remove favourite */
+    $router->post('/app/missions/favourite', ['middleware' => 'localization|tenant.connection|jwt.auth',
+     'uses' => 'App\Mission\MissionController@missionFavourite']);
     /* Get mission listing  */
     $router->get('/app/missions/ratings/{missionId}', ['as' => 'app.missions',
     'middleware' => 'localization|tenant.connection|jwt.auth',

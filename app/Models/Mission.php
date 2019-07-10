@@ -15,6 +15,8 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Carbon\Carbon;
+use App\Models\GoalMission;
+use App\Models\TimeMission;
 
 class Mission extends Model
 {
@@ -40,8 +42,8 @@ class Mission extends Model
      * @var array
      */
     protected $fillable = ['theme_id', 'city_id',
-    'country_id', 'start_date', 'end_date', 'total_seats', 'available_seats', 'application_deadline',
-    'publication_status', 'organisation_id', 'organisation_name', 'mission_type', 'goal_objective'];
+    'country_id', 'start_date', 'end_date', 'total_seats', 'available_seats',
+    'publication_status', 'organisation_id', 'organisation_name', 'mission_type'];
     
     /**
      * The attributes that should be visible in arrays.
@@ -49,12 +51,13 @@ class Mission extends Model
      * @var array
      */
     protected $visible = ['mission_id', 'theme_id', 'city_id',
-    'country_id', 'start_date', 'end_date', 'total_seats', 'available_seats', 'application_deadline',
-    'publication_status', 'organisation_id', 'organisation_name', 'mission_type', 'goal_objective',
+    'country_id', 'start_date', 'end_date', 'total_seats', 'available_seats',
+    'publication_status', 'organisation_id', 'organisation_name', 'mission_type',
     'missionDocument', 'missionMedia', 'missionLanguage', 'missionTheme', 'city',
     'default_media_type','default_media_path','title','short_description','objective','set_view_detail','city_name',
     'seats_left','user_application_count','mission_application_count','missionSkill','city_name','missionApplication',
-    'country','favouriteMission','missionInvite','missionRating'];
+    'country','favouriteMission','missionInvite','missionRating', 'goalMission', 'timeMission', 'application_deadline',
+    'application_start_date', 'application_end_date', 'application_start_time', 'application_end_time', 'goal_objective'];
 
     protected $appends = ['city_name'];
     /**
@@ -168,6 +171,26 @@ class Mission extends Model
     {
         return $this->hasMany(MissionSkill::class, 'mission_id', 'mission_id');
     }
+
+    /**
+     * Defined for goal mission.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\hasMany
+     */
+    public function goalMission(): HasOne
+    {
+        return $this->hasOne(GoalMission::class, 'mission_id', 'mission_id');
+    }
+
+    /**
+     * Defined for time mission.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\hasMany
+     */
+    public function timeMission(): HasOne
+    {
+        return $this->hasOne(TimeMission::class, 'mission_id', 'mission_id');
+    }
     
     /**
      * Soft delete from the database.
@@ -216,17 +239,5 @@ class Mission extends Model
     {
         $this->attributes['end_date'] = ($value != null) ?
         Carbon::parse($value)->format(config('constants.DB_DATE_FORMAT')) : null;
-    }
-
-    /**
-     * Set application deadline attribute on the model.
-     *
-     * @param  mixed   $value
-     * @return void
-     */
-    public function setApplicationDeadlineAttribute($value)
-    {
-        $this->attributes['application_deadline'] = ($value != null) ?
-        Carbon::parse($value)->format(config('constants.DB_DATE_FORMAT')) : null;
-    }
+    }    
 }

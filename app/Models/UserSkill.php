@@ -41,25 +41,25 @@ class UserSkill extends Model
     /**
      * Store/update specified resource.
      *
-     * @param  int  $user_id
-     * @param  int  $skill_id
+     * @param  int  $userId
+     * @param  int  $skillId
      * @return array
      */
-    public function linkUserSkill(int $user_id, int $skill_id)
+    public function linkUserSkill(int $userId, int $skillId)
     {
-        return static::firstOrNew(array('user_id' => $user_id, 'skill_id' => $skill_id, 'deleted_at' => null))->save();
+        return static::firstOrNew(array('user_id' => $userId, 'skill_id' => $skillId, 'deleted_at' => null))->save();
     }
 
     /**
      * Delete the specified resource.
      *
-     * @param  int  $user_id
-     * @param  int  $skill_id
+     * @param  int  $userId
+     * @param  int  $skillId
      * @return array
      */
-    public function deleteUserSkill(int $user_id, int $skill_id)
+    public function deleteUserSkill(int $userId, int $skillId)
     {
-        return static::where(['user_id' => $user_id, 'skill_id' => $skill_id])->delete();
+        return static::where(['user_id' => $userId, 'skill_id' => $skillId])->delete();
     }
 
     /**

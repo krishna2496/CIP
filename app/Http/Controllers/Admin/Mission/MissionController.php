@@ -74,7 +74,7 @@ class MissionController extends Controller
                 config('constants.error_codes.ERROR_INVALID_ARGUMENT'),
                 trans('messages.custom_error_message.ERROR_INVALID_ARGUMENT')
             );
-        } catch (\Exception $e) {
+        } catch (\Exception $e) {            
             return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
@@ -87,6 +87,7 @@ class MissionController extends Controller
      */
     public function store(Request $request): JsonResponse
     {
+       
         // Server side validataions
         $validator = Validator::make(
             $request->all(),
@@ -101,7 +102,6 @@ class MissionController extends Controller
                 "mission_detail.*.title" => "required",
                 "organisation" => "required",
                 "publication_status" => ['required', Rule::in(config('constants.publication_status'))],
-                "goal_objective" => "required_if:mission_type,GOAL",
                 "media_images.*.media_name" => "required",
                 "media_images.*.media_type" => Rule::in(config('constants.image_types')),
                 "media_images.*.media_path" => "required",
@@ -112,7 +112,8 @@ class MissionController extends Controller
                 "documents.*.document_path" => "required",
                 "start_date" => "sometimes|required_with:end_date",
                 "end_date" => "sometimes|after:start_date",
-                "total_seats" => "numeric"
+                "total_seats" => "numeric",
+                "goal_objective" => "required_if:mission_type,GOAL"
             ]
         );
 
@@ -141,7 +142,12 @@ class MissionController extends Controller
                     'messages.custom_error_message.ERROR_DATABASE_OPERATIONAL'
                 )
             );
-        } catch (\Exception $e) {
+        } catch (ModelNotFoundException $e) {
+            return $this->modelNotFound(
+                config('constants.error_codes.ERROR_NO_MISSION_FOUND'),
+                trans('messages.custom_error_message.ERROR_NO_MISSION_FOUND')
+            );
+        } catch (\Exception $e) {  
             return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
@@ -235,7 +241,7 @@ class MissionController extends Controller
                 config('constants.error_codes.ERROR_MISSION_NOT_FOUND'),
                 trans('messages.custom_error_message.ERROR_MISSION_NOT_FOUND')
             );
-        } catch (PDOException $e) {
+        } catch (PDOException $e) {            
             return $this->PDO(
                 config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
                 trans(
