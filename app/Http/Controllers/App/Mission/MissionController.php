@@ -124,13 +124,12 @@ class MissionController extends Controller
            
             $mission = $this->missionRepository->appMissions($request, $userFilterData, $languageId);
             foreach ($mission as $key => $value) {
-
                 if (isset($value->goalMission)) {
                     $value->goal_objective  = $value->goalMission->goal_objective;
                     unset($value->goalMission);
                 }
 
-                if (isset($value->timeMission)) {                    
+                if (isset($value->timeMission)) {
                     $value->application_deadline = $value->timeMission->application_deadline;
                     $value->application_start_date = $value->timeMission->application_start_date;
                     $value->application_end_date = $value->timeMission->application_end_date;

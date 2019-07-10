@@ -159,13 +159,17 @@ class MissionRepository implements MissionInterface
 
         // Entry into time_mission table
         if ($request->mission_type == "TIME") {
-
             $timeMissionArray = array(
-                'application_deadline' => (isset($request->application_deadline)) ? $request->application_deadline : null,
-                'application_start_date' => (isset($request->application_start_date)) ? $request->application_start_date : null,
-                'application_end_date' => (isset($request->application_end_date)) ? $request->application_end_date : null,
-                'application_start_time' => (isset($request->application_start_time)) ? $request->application_start_time : null,
-                'application_end_time' => (isset($request->application_end_time)) ? $request->application_end_time : null,
+                'application_deadline' => (isset($request->application_deadline)) ?
+                $request->application_deadline : null,
+                'application_start_date' => (isset($request->application_start_date))
+                ? $request->application_start_date : null,
+                'application_end_date' => (isset($request->application_end_date))
+                ? $request->application_end_date : null,
+                'application_start_time' => (isset($request->application_start_time))
+                ? $request->application_start_time : null,
+                'application_end_time' => (isset($request->application_end_time))
+                ? $request->application_end_time : null,
             );
 
             $mission->timeMission()->create($timeMissionArray);
@@ -287,14 +291,18 @@ class MissionRepository implements MissionInterface
         }
         // update into time_mission details
         if ($request->mission_type == "TIME") {
-
             $missionDetail = $mission->timeMission()->first();
             if (!is_null($missionDetail)) {
-                $missionDetail->application_deadline = (isset($request->application_deadline)) ? $request->application_deadline : null;
-                $missionDetail->application_start_date = (isset($request->application_start_date)) ? $request->application_start_date : null;
-                $missionDetail->application_end_date = (isset($request->application_end_date)) ? $request->application_end_date : null;
-                $missionDetail->application_start_time = (isset($request->application_start_time)) ? $request->application_start_time : null;
-                $missionDetail->application_end_time = (isset($request->application_end_time)) ? $request->application_end_time : null;
+                $missionDetail->application_deadline = (isset($request->application_deadline))
+                ? $request->application_deadline : null;
+                $missionDetail->application_start_date = (isset($request->application_start_date))
+                ? $request->application_start_date : null;
+                $missionDetail->application_end_date = (isset($request->application_end_date))
+                ? $request->application_end_date : null;
+                $missionDetail->application_start_time = (isset($request->application_start_time))
+                ? $request->application_start_time : null;
+                $missionDetail->application_end_time = (isset($request->application_end_time))
+                ? $request->application_end_time : null;
 
                 $missionDetail->save();
             }
@@ -395,7 +403,16 @@ class MissionRepository implements MissionInterface
     public function find(int $id): Mission
     {
         return $this->mission->
-        with('missionMedia', 'missionDocument', 'missionTheme', 'city', 'country', 'missionLanguage', 'timeMission', 'goalMission')->findOrFail($id);
+        with(
+            'missionMedia',
+            'missionDocument',
+            'missionTheme',
+            'city',
+            'country',
+            'missionLanguage',
+            'timeMission',
+            'goalMission'
+        )->findOrFail($id);
     }
     
     /**
@@ -475,11 +492,12 @@ class MissionRepository implements MissionInterface
             'mission.mission_type',
             'mission.publication_status',
             'mission.organisation_id',
-            'mission.organisation_name',
+            'mission.organisation_name'
         )
-        ->with(['city', 'country', 'missionTheme', 'missionLanguage', 'missionMedia', 'missionDocument', 'goalMission', 'timeMission'])
+        ->with(['city', 'country', 'missionTheme',
+        'missionLanguage', 'missionMedia', 'missionDocument', 'goalMission', 'timeMission'])
         ->withCount('missionApplication')
-        ->orderBy('mission.mission_id', 'ASC')->paginate(config('constants.PER_PAGE_LIMIT'));
+        ->paginate(config('constants.PER_PAGE_LIMIT'));
 
         foreach ($mission as $key => $value) {
             foreach ($value->missionLanguage as $languageValue) {
