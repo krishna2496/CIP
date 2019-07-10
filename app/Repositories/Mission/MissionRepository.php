@@ -706,9 +706,9 @@ class MissionRepository implements MissionInterface
      *
      * @param int $userId
      * @param array $request
-     * @return App\Models\FavouriteMission
+     * @return mixed
      */
-    public function missionFavourite(int $userId, array $request): FavouriteMission
+    public function missionFavourite(int $userId, array $request)
     {
         $mission = $this->mission->findOrFail($request['mission_id']);
         $favouriteMission = $this->favouriteMission->findFavourite($userId, $request['mission_id']);
