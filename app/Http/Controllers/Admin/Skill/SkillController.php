@@ -158,6 +158,7 @@ class SkillController extends Controller
             
             return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
         } catch (ModelNotFoundException $e) {
+            dd($e);
             return $this->modelNotFound(
                 config('constants.error_codes.ERROR_SKILL_NOT_FOUND'),
                 trans('messages.custom_error_message.ERROR_SKILL_NOT_FOUND')
@@ -168,6 +169,7 @@ class SkillController extends Controller
                 trans('messages.custom_error_message.ERROR_DATABASE_OPERATIONAL')
             );
         } catch (\Exception $e) {
+            dd($e);
             return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }

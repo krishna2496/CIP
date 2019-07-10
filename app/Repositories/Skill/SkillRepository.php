@@ -56,7 +56,9 @@ class SkillRepository implements SkillInterface
      */
     public function store(array $request): Skill
     {
-        $this->skill->findOrFail($request['parent_skill']);
+        if ($request['parent_skill'] != 0) {
+            $this->skill->findOrFail($request['parent_skill']);
+        }
         return $this->skill->create($request);
     }
 
@@ -69,6 +71,9 @@ class SkillRepository implements SkillInterface
      */
     public function update(array $request, int $id): Skill
     {
+        if ($request['parent_skill'] != 0) {
+            $this->skill->with('children')->findOrFail($request['parent_skill']);
+        }
         $skill = $this->skill->findOrFail($id);
         $skill->update($request);
         return $skill;
