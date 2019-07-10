@@ -477,7 +477,6 @@ class MissionRepository implements MissionInterface
     public function missionList(Request $request): LengthAwarePaginator
     {
         $languages = $this->languageHelper->getLanguages($request);
-
         $mission = Mission::select(
             'mission.mission_id',
             'mission.theme_id',
@@ -723,20 +722,20 @@ class MissionRepository implements MissionInterface
      * Add/remove mission to favourite.
      *
      * @param int $userId
-     * @param array $request
+     * @param int $missionId
      * @return mixed
      */
-    public function missionFavourite(int $userId, array $request)
+    public function missionFavourite(int $userId, int $missionId)
     {
-        $mission = $this->mission->findOrFail($request['mission_id']);
-        $favouriteMission = $this->favouriteMission->findFavourite($userId, $request['mission_id']);
+        $mission = $this->mission->findOrFail($missionId);
+        $favouriteMission = $this->favouriteMission->findFavourite($userId, $missionId);
         
         if (is_null($favouriteMission)) {
-            $favouriteMissions = $this->favouriteMission->addToFavourite($userId, $request['mission_id']);
+            $favouriteMissions = $this->favouriteMission->addToFavourite($userId, $missionId);
         } else {
-            $favouriteMissions =  $favouriteMission->removeFromFavourite($userId, $request['mission_id']);
+            $favouriteMissions =  $favouriteMission->removeFromFavourite($userId, $missionId);
         }
-        return $this->favouriteMission->findFavourite($userId, $request['mission_id']);
+        return $this->favouriteMission->findFavourite($userId, $missionId);
     }
 
     /*
