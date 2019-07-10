@@ -142,6 +142,7 @@ return [
         'ERROR_NO_SKILL_FOUND' => '400013',
         'ERROR_SKILL_NOT_FOUND' => '400014',
         'ERROR_PARENT_SKILL_NOT_FOUND' => '400015',
+        'ERROR_INVALID_MISSION_ID' => '400018',
         
         'ERROR_OCCURRED' => '999999',
         'ERROR_INVALID_JSON' => '900000',

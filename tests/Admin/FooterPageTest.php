@@ -35,7 +35,7 @@ class FooterPageTest extends TestCase
             ],
         ];
 
-        $this->post("cms/", $params, ['Authorization' => 'Basic '.base64_encode(env('DEFAULT_TENANT').'_api_key:'.env('DEFAULT_TENANT').'_api_secret')])
+        $this->post("cms/", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
         ->seeStatusCode(201)
         ->seeJsonStructure([
             'data' => [
@@ -55,7 +55,7 @@ class FooterPageTest extends TestCase
      */
     public function it_should_return_all_footer_pages()
     {
-        $this->get(route('cms'), ['Authorization' => 'Basic '.base64_encode(env('DEFAULT_TENANT').'_api_key:'.env('DEFAULT_TENANT').'_api_secret')])
+        $this->get(route('cms'), ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
           ->seeStatusCode(200)
           ->seeJsonStructure([
             "status",
@@ -92,7 +92,7 @@ class FooterPageTest extends TestCase
             ],
         ];
 
-        $this->post("cms/", $params, ['Authorization' => 'Basic '.base64_encode(env('DEFAULT_TENANT').'_api_key:'.env('DEFAULT_TENANT').'_api_secret')])
+        $this->post("cms/", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
         ->seeStatusCode(422);
     }
 
@@ -130,7 +130,7 @@ class FooterPageTest extends TestCase
         $footerPage->save();
         $page_id = $footerPage->page_id;
 
-        $this->patch("cms/".$page_id, $params, ['Authorization' => 'Basic '.base64_encode(env('DEFAULT_TENANT').'_api_key:'.env('DEFAULT_TENANT').'_api_secret')])
+        $this->patch("cms/".$page_id, $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
         ->seeStatusCode(200)
         ->seeJsonStructure([
             'data' => [
@@ -158,7 +158,7 @@ class FooterPageTest extends TestCase
         $this->delete(
             "cms/".$footerPage->page_id,
             [],
-            ['Authorization' => 'Basic '.base64_encode(env('DEFAULT_TENANT').'_api_key:'.env('DEFAULT_TENANT').'_api_secret')]
+            ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))]
         )
         ->seeStatusCode(204);
     }
@@ -174,7 +174,7 @@ class FooterPageTest extends TestCase
         $this->delete(
             "cms/".rand(1000000, 50000000),
             [],
-            ['Authorization' => 'Basic '.base64_encode(env('DEFAULT_TENANT').'_api_key:'.env('DEFAULT_TENANT').'_api_secret')]
+            ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))]
         )
         ->seeStatusCode(404);
     }
@@ -207,7 +207,7 @@ class FooterPageTest extends TestCase
         $this->patch(
             "cms/".rand(1000000, 50000000),
             $params,
-            ['Authorization' => 'Basic '.base64_encode(env('DEFAULT_TENANT').'_api_key:'.env('DEFAULT_TENANT').'_api_secret')]
+            ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))]
         )
         ->seeStatusCode(404);
     }
