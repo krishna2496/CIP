@@ -71,10 +71,10 @@ interface MissionInterface
      * Add/remove mission to favourite.
      *
      * @param int $userId
-     * @param array $request
+     * @param int $missionId
      * @return \Illuminate\Http\Response
      */
-    public function missionFavourite(int $userId, array $request);
+    public function missionFavourite(int $userId, int $missionId);
     
     /**
      * Display a mission ratings.

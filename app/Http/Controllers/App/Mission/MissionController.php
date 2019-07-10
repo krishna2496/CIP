@@ -394,8 +394,25 @@ class MissionController extends Controller
     public function missionFavourite(Request $request): JsonResponse
     {
         try {
+            $validator = Validator::make(
+                $request->all(),
+                [
+                    "mission_id" => "numeric",
+                ]
+            );
+    
+            // If request parameter have any error
+            if ($validator->fails()) {
+                return $this->responseHelper->error(
+                    Response::HTTP_UNPROCESSABLE_ENTITY,
+                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                    config('constants.error_codes.ERROR_INVALID_MISSION_ID'),
+                    $validator->errors()->first()
+                );
+            }
+            $missionId = $request->mission_id;
             $missionFavourite = $this->missionRepository
-            ->missionFavourite($request->auth->user_id, $request->toArray());
+            ->missionFavourite($request->auth->user_id, $missionId);
 
             // Set response data
             $apiData = ($missionFavourite != null)
