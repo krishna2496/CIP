@@ -83,9 +83,10 @@ $router->group(['middleware' => 'localization'], function ($router) {
     'middleware' => 'localization|tenant.connection|jwt.auth',
     'uses' => 'App\Mission\MissionController@missionRatings']);
 
-    /* Get tenant option */
-    $router->post('/app/tenant-option', ['middleware' => 'localization|tenant.connection|jwt.auth|JsonApiMiddleware',
-     'uses' => 'App\Tenant\TenantOptionsController@getTenantOption']);
+    /* Fetch tenant option */
+    $router->post('fetch-tenant-option', ['as' =>'fetch-tenant-option',
+    'middleware' => 'tenant.connection|jwt.auth|JsonApiMiddleware',
+    'uses' => 'App\Tenant\TenantOptionController@fetchTenantOptionValue']);
 });
 
 

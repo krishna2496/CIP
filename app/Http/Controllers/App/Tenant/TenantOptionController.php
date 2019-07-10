@@ -172,4 +172,49 @@ class TenantOptionController extends Controller
             return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
+    
+    /**
+     * Display tenant option value
+     *
+     * @param Illuminate\Http\Request $request
+     * @return Illuminate\Http\JsonResponse
+     */
+    public function fetchTenantOptionValue(Request $request): JsonResponse
+    {
+        // Server side validataions
+        $validator = Validator::make(
+            $request->all(),
+            [
+                "option_name" => "required"
+            ]
+        );
+
+        // If request parameter have any error
+        if ($validator->fails()) {
+            return $this->responseHelper->error(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                config('constants.error_codes.ERROR_TENANT_OPTION_REQUIRED_FIELDS_EMPTY'),
+                $validator->errors()->first()
+            );
+        }
+        
+        // Fetch tenant option value
+        try {
+            $tenantOptionDetail = $this->tenantOptionRepository->getOptionValue($request->option_name);
+            $apiMessage = ($tenantOptionDetail->isEmpty())
+            ? trans('messages.custom_error_message.ERROR_TENANT_OPTION_NOT_FOUND')
+            : trans('messages.success.MESSAGE_TENANT_OPTION_FOUND');
+            $apiStatus = Response::HTTP_OK;
+            
+            return $this->responseHelper->success($apiStatus, $apiMessage, $tenantOptionDetail->toArray());
+        } catch (ModelNotFoundException $e) {
+            return $this->modelNotFound(
+                config('constants.error_codes.ERROR_TENANT_OPTION_NOT_FOUND'),
+                trans('messages.custom_error_message.ERROR_TENANT_OPTION_NOT_FOUND')
+            );
+        } catch (\Exception $e) {
+            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
+        }
+    }
 }
