@@ -690,12 +690,12 @@ class MissionRepository implements MissionInterface
      * Display rating of mission.
      *
      * @param Illuminate\Http\Request $request
-     * @return int
+     * @return float
      */
-    public function missionRatings(int $id): int
+    public function missionRatings(int $id): float
     {
         $mission = $this->mission->findOrFail($id);
         $ratings = $this->missionRating->where('mission_id', $id)->avg('rating');
-        return $ratings ?? 0;
+        return $ratings ? ceil($ratings) : 0;
     }
 }
