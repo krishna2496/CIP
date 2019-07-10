@@ -16,18 +16,20 @@ export default async(data) => {
             if (response.data && response.data.data.filters) {
                 let filterData = {};
                 filterData.search = response.data.data.filters.search;
-                filterData.country = response.data.data.filters.country;
-                filterData.city = response.data.data.filters.city;
-                filterData.theme = response.data.data.filters.theme;
-                filterData.skill = response.data.data.filters.skill;
+                filterData.countryId = response.data.data.filters.country_id;
+                filterData.cityId = response.data.data.filters.city_id;
+                filterData.themeId = response.data.data.filters.theme_id;
+                filterData.skillId = response.data.data.filters.skill_id;
+                filterData.tags = response.data.data.filters.tags;
                 store.commit('userFilter',filterData)
             } else {
                 let filterData = {};
                 filterData.search = '';
-                filterData.country = '';
-                filterData.city = '';
-                filterData.theme = '';
-                filterData.skill = '';
+                filterData.countryId = '';
+                filterData.cityId = '';
+                filterData.themeId = '';
+                filterData.skillId = '';
+                filterData.tags = '';
                 store.commit('userFilter',filterData)
             }
         })

@@ -9,6 +9,7 @@ import countryList from "./CountryList";
 import cityList from "./CityList";
 import themeList from "./ThemeList";
 import skillList from "./SkillList";
+import filterList from "./filterList";
 import missionFilterListing from "./Mission/MissionFilterListing";
 import exploreMission from "./Mission/ExploreMission";
 
@@ -25,5 +26,6 @@ export {
     themeList,
     skillList,
     missionFilterListing,
-    exploreMission
+    exploreMission,
+    filterList
 }
