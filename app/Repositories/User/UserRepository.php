@@ -161,11 +161,13 @@ class UserRepository implements UserInterface
      * Get listing of users
      *
      * @param string $search
+     * @param int $userId
      * @return Illuminate\Database\Eloquent\Collection
      */
-    public function searchUser(string $search): Collection
+    public function searchUser(string $search, int $userId): Collection
     {
-        $userQuery = $this->user->select('user_id', 'first_name', 'last_name', 'email', 'avatar');
+        $userQuery = $this->user->select('user_id', 'first_name', 'last_name', 'email', 'avatar')
+        ->where('user_id', '<>', $userId);
         if ($search) {
             $userQuery->where(function ($query) use ($search) {
                 $query->orWhere('first_name', 'like', '%' . $search . '%');

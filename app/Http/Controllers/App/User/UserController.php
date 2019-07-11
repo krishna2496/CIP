@@ -54,7 +54,7 @@ class UserController extends Controller
     public function index(Request $request): JsonResponse
     {
         try {
-            $users = $this->userRepository->searchUser($request->search);
+            $users = $this->userRepository->searchUser($request->search, $request->auth->user_id);
             
             // Set response data
             $apiStatus = Response::HTTP_OK;

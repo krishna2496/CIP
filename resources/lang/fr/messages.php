@@ -59,6 +59,7 @@ return [
         'MESSAGE_TENANT_OPTIONS_LIST' => 'FR: Tenant options listing successfully',
         'MESSAGE_MISSION_RATING_LISTING' => 'FR: Get mission rating successfully',
         'MESSAGE_TENANT_OPTION_FOUND' => 'FR: Tenant option found', 
+        'MESSAGE_INVITED_FOR_MISSION' => 'User invited to mission successfully',
     ],
 
         
@@ -96,6 +97,8 @@ return [
         'ERROR_THEME_NOT_FOUND' => 'FR: Mission Theme does not found in system',
         'ERROR_SKILL_NOT_FOUND' => 'FR: Skill does not found in system',
         'ERROR_INVALID_MISSION_ID' => 'FR: Invalid mission id',
+        'ERROR_INVALID_INVITE_MISSION_DATA' => 'FR: Invalid invite mission detail',
+        'ERROR_INVITE_MISSION_ALREADY_EXIST' => 'FR: User is already invited for this mission',
         
         // Custom error code for Tenant Authorization - 210000 - 219999
         'ERROR_INVALID_API_AND_SECRET_KEY' => 'FR: Invalid API Key or Secret key',

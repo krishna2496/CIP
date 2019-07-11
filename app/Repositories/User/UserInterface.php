@@ -76,7 +76,8 @@ interface UserInterface
      * Listing of all resources.
      *
      * @param string $search
+     * @param int $userId
      * @return void
      */
-    public function searchUser(string $search);
+    public function searchUser(string $search, int $userId);
 }

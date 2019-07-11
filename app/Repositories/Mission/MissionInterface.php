@@ -83,4 +83,24 @@ interface MissionInterface
      * @return float
      */
     public function missionRatings(int $missionId);
+
+    /**
+     * Display a mission ratings.
+     *
+     * @param int $missionId
+     * @param int $inviteUserId
+     * @param int $fromUserId
+     * @return float
+     */
+    public function checkInviteMission(int $missionId, int $inviteUserId, int $fromUserId);
+
+    /**
+     * Display a mission ratings.
+     *
+     * @param int $missionId
+     * @param int $inviteUserId
+     * @param int $fromUserId
+     * @return MissionInvite
+     */
+    public function inviteMission(int $missionId, int $inviteUserId, int $fromUserId);
 }

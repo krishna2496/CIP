@@ -16,6 +16,7 @@ use App\Models\MissionMedia;
 use App\Models\MissionRating;
 use App\Models\MissionApplication;
 use App\Models\FavouriteMission;
+use App\Models\MissionInvite;
 use App\Models\UserFilter;
 use Validator;
 use PDOException;
@@ -78,6 +79,11 @@ class MissionRepository implements MissionInterface
     public $missionRating;
 
     /**
+     * @var App\Models\MissionInvite
+     */
+    public $missionInvite;
+
+    /**
      * Create a new Mission repository instance.
      *
      * @param  App\Models\Mission $mission
@@ -90,6 +96,7 @@ class MissionRepository implements MissionInterface
      * @param  Illuminate\Http\LanguageHelper $languageHelper
      * @param  Illuminate\Http\S3Helper $s3helper
      * @param  App\Models\MissionRating $missionRating
+     * @param  App\Models\MissionInvite $missionInvite
      * @return void
      */
     public function __construct(
@@ -105,7 +112,8 @@ class MissionRepository implements MissionInterface
         Helpers $helpers,
         S3Helper $s3helper,
         FavouriteMission $favouriteMission,
-        MissionRating $missionRating
+        MissionRating $missionRating,
+        MissionInvite $missionInvite
     ) {
         $this->mission = $mission;
         $this->missionLanguage = $missionLanguage;
@@ -120,6 +128,7 @@ class MissionRepository implements MissionInterface
         $this->helpers = $helpers;
         $this->s3helper = $s3helper;
         $this->favouriteMission = $favouriteMission;
+        $this->missionInvite = $missionInvite;
     }
     
     /**
@@ -749,5 +758,37 @@ class MissionRepository implements MissionInterface
         $mission = $this->mission->findOrFail($id);
         $ratings = $this->missionRating->where('mission_id', $id)->avg('rating');
         return $ratings ? ceil($ratings) : 0;
+    }
+    
+    /*
+     * Check mission is already added or not.
+     *
+     * @param int $missionId
+     * @param int $inviteUserId
+     * @param int $fromUserId
+     * @return int
+     */
+    public function checkInviteMission(int $missionId, int $inviteUserId, int $fromUserId): int
+    {
+        $inviteCount = $this->missionInvite
+        ->where(['mission_id' => $missionId, 'to_user_id' => $inviteUserId, 'from_user_id' => $fromUserId])
+        ->count();
+        return $inviteCount;
+    }
+    
+    /*
+     * Store a newly created resource into database
+     *
+     * @param int $missionId
+     * @param int $inviteUserId
+     * @param int $fromUserId
+     * @return App\Models\MissionInvite
+     */
+    public function inviteMission(int $missionId, int $inviteUserId, int $fromUserId): MissionInvite
+    {
+        $mission = $this->mission->findOrFail($missionId);
+        $invite = $this->missionInvite
+        ->create(['mission_id' => $missionId, 'to_user_id' => $inviteUserId, 'from_user_id' => $fromUserId]);
+        return $invite;
     }
 }
