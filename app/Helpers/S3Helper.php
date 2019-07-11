@@ -62,10 +62,10 @@ class S3Helper
 
         try {
             $importScss .= '@import "_assets";
-            $assetUrl: "'.$assetUrl.'";
-            @import "custom";            
+            $assetUrl: "'.$assetUrl.'";                        
             @import "../../../../../node_modules/bootstrap/scss/bootstrap";
-            @import "../../../../../node_modules/bootstrap-vue/src/index";';
+            @import "../../../../../node_modules/bootstrap-vue/src/index";
+            @import "custom";';
 
             $css = $scss->compile($importScss);
         
