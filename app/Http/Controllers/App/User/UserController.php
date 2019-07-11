@@ -48,18 +48,19 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      *
+     * @param Illuminate\Http\Request $request
      * @return Illuminate\Http\JsonResponse
      */
     public function index(Request $request): JsonResponse
     {
         try {
-            $users = $this->userRepository->userList($request);
+            $users = $this->userRepository->searchUser($request->search);
             
             // Set response data
             $apiStatus = Response::HTTP_OK;
             $apiMessage = ($users->isEmpty()) ? trans('messages.success.MESSAGE_NO_RECORD_FOUND')
              : trans('messages.success.MESSAGE_USER_LISTING');
-            return $this->responseHelper->successWithPagination(Response::HTTP_OK, $apiMessage, $users);
+            return $this->responseHelper->success(Response::HTTP_OK, $apiMessage, $users->toArray());
         } catch (InvalidArgumentException $e) {
             return $this->invalidArgument(
                 config('constants.error_codes.ERROR_INVALID_ARGUMENT'),

@@ -90,9 +90,14 @@ $router->group(['middleware' => 'localization'], function ($router) {
     'uses' => 'App\Mission\MissionController@missionInvite']);
 
     /* Fetch tenant option */
-    $router->post('fetch-tenant-option', ['as' =>'fetch-tenant-option',
+    $router->post('/app/tenant-option', ['as' =>'app.tenant-option',
     'middleware' => 'tenant.connection|jwt.auth|JsonApiMiddleware',
     'uses' => 'App\Tenant\TenantOptionController@fetchTenantOptionValue']);
+
+    /* Fetch user */
+    $router->post('/app/user', ['as' =>'app.user',
+    'middleware' => 'tenant.connection|jwt.auth|JsonApiMiddleware',
+    'uses' => 'App\User\UserController@index']);
 });
 
 
