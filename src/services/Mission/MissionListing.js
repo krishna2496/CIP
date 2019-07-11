@@ -11,20 +11,20 @@ export default async(data) => {
     }
     var url =process.env.VUE_APP_API_ENDPOINT + "app/missions?page=" + data.page
 
-    if(data.search != ''){
+    if(data.search != '' && data.search != null){
         url = url+"&search=" + data.search
     }
 
-    if(data.countryId != ''){
+    if(data.countryId != '' && data.countryId != null){
         url = url+"&country_id=" + data.countryId
     }
-    if(data.cityId != ''){
+    if(data.cityId != '' && data.cityId != null){
         url = url+"&city_id=" + data.cityId
     }
-    if(data.themeId != ''){
+    if(data.themeId != '' && data.themeId != null){
         url = url+"&theme_id=" + data.themeId
     }
-    if(data.skillId != ''){
+    if(data.skillId != '' && data.skillId != null){
         url = url+"&skill_id=" + data.skillId
     }
 

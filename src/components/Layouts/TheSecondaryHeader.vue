@@ -81,7 +81,7 @@ import AppFilterDropdown from "../AppFilterDropdown";
 import AppCheckboxDropdown from "../AppCheckboxDropdown";
 import {filterList} from "../../services/service";
 import store from "../../store";
-
+import {eventBus} from "../../main";
 export default {
     components: { AppFilterDropdown, AppCheckboxDropdown },
     name: "TheSecondaryHeader", 
@@ -177,7 +177,8 @@ export default {
         changeCountry(country) {
             this.selectedfilterParams.countryId = country.selectedId;
             if(country.selectedId != ''){
-                this.defautCountry = country.selectedVal;
+                this.defautCountry = country.selectedVal.replace(/<\/?("[^"]*"|'[^']*'|[^>])*(>|$)/g,""); 
+                this.defautCountry = this.defautCountry.replace(/[^a-zA-Z]+/g,'');
             } else {
                 this.defautCountry = this.$i18n.t("label.country");
             }
@@ -225,7 +226,7 @@ export default {
             store.commit("exploreFilter",filters);
             this.$router.push({ name: 'home' })
             filterList(this.selectedfilterParams).then( response => {
-                if (response) { 
+                if (response) {
                     if(response.themes) {                   
                         this.themeList = Object.entries(response.themes);
                         this.selectedTheme = [];
@@ -277,6 +278,7 @@ export default {
                 'theme' :[],
                 'skill' :[]
             }
+ 
             this.selectedfilterParams.countryId = store.state.countryId;
             this.selectedfilterParams.cityId = store.state.cityId;
             this.selectedfilterParams.themeId = store.state.themeId;
@@ -340,10 +342,37 @@ export default {
 
         fetchFilters() {
             this.$emit('cmsListing',this.$route.params.slug);
-        }
+        },
+
+        clearFilter() {
+            var _this = this; 
+            this.selectedfilterParams.countryId = '';
+            this.defautCountry = this.$i18n.t("label.country");
+            this.selectedfilterParams.cityId = '';
+            this.selectedfilterParams.themeId = '';
+            this.selectedfilterParams.skillId = '';
+            this.selectedCity = [];
+            this.selectedSkill = [];
+            this.selectedTheme = [];
+            filterList(this.selectedfilterParams).then( response => {
+                if (response) {
+                    if(response.city) {             
+                        this.cityList = Object.entries(response.city);
+                        this.selectedCity = [];
+                    } 
+                }
+            });  
+            
+        } 
     },
     created() {
         var _this = this;
+        eventBus.$on('clearAllFilters', (message) => {
+            this.clearFilter();
+        });
+        eventBus.$on('setDefaultText', (message) => {
+            this.defautCountry = this.$i18n.t("label.country");
+        });
         // Fetch Filters
         this.filterListing();
         if(store.state.search != null) {

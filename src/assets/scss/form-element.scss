@@ -346,6 +346,18 @@ label {
             &:hover {
                 background: $border-color;
             }
+            label{
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+            }
+        }
+        .no-checkbox{
+            font-size: 14px;
+            width: 100%;
+            white-space: nowrap;
+            padding: 6px 15px;
+            margin:0;
         }
     }
 }
@@ -519,4 +531,5 @@ label {
         }
     }
 }
+
 

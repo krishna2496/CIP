@@ -8,12 +8,12 @@
             v-bind:data-id="item[1].id"
             :key="i"           
             >
-            <b-form-checkbox name  v-model="items" v-bind:value="item[1].id">{{item[1].title}}</b-form-checkbox>
+            <b-form-checkbox name  v-model="items" v-bind:value="item[1].id">{{item[1].title}}<span class="counter">{{item[1].mission_count}}</span></b-form-checkbox>
         </li>
     </ul>
     <ul class="chk-select-options" v-else>
         <li>
-            {{ $t("label.no_record_found")}}
+            <label class="no-checkbox">{{ $t("label.no_record_found")}}</label>
         </li>
     </ul>
     </div>

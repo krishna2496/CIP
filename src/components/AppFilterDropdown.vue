@@ -9,6 +9,7 @@
                     @click="handleSelect"
                     @touchend="handleSelect"
                     >{{item[1].title}}
+                    <span class="counter">{{item[1].mission_count}}</span>
                 </li>
             </ul>
             <ul class="option-list" v-else>
@@ -46,9 +47,14 @@ export default {
     methods: {
         handleSelect(e) {
             var selectedData = []
-            selectedData['selectedVal']  = e.target.innerHTML;
+            // var span = document.getElementsByTagName("span");
+            // console.log(span);
+            selectedData['selectedVal']  = e.target.innerHTML
+            // .removeChild(node);
             selectedData['selectedId']  = e.target.dataset.id;
             this.$emit("updateCall", selectedData);
+
+           
         }
     },
     beforeDestroy() {

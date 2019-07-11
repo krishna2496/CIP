@@ -32,7 +32,7 @@
                         @updateCall="changeTag"
                         />
                     </span>
-                    <b-button class="clear-btn">Clear All</b-button>
+                    <b-button class="clear-btn" @click="clearMissionFilter">Clear All</b-button>
                 </div>
                 </div>
                 <div class="heading-section">
@@ -318,6 +318,9 @@ export default {
         },
         changeTag(data){
             this.$refs.secondaryHeader.removeItems(data);
+        },
+        clearMissionFilter(){
+          this.$refs.secondaryHeader.clearFilter();  
         }
     },
     created() { 
