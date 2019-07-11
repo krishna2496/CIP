@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use PDOException;
 use App\Traits\RestExceptionHandlerTrait;
+use Illuminate\Support\Facades\Hash;
 
 class AuthTenantAdminMiddleware
 {
@@ -61,13 +62,12 @@ class AuthTenantAdminMiddleware
             // authenticate api user based on basic auth parameters
             $apiUser = DB::table('api_user')
                         ->where('api_key', base64_encode($request->header('php-auth-user')))
-                        ->where('api_secret', base64_encode($request->header('php-auth-pw')))
                         ->where('status', '1')
                         ->whereNull('deleted_at')
                         ->first();
             
-            // If user authenticates successfully
-            if ($apiUser) {
+			// If user authenticates successfully
+            if ($apiUser && Hash::check($request->header('php-auth-pw'), $apiUser->api_secret)) {
                 // Create connection with their tenant database
                 $this->helpers->createConnection($apiUser->tenant_id);
                 return $next($request);
