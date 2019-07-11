@@ -215,6 +215,9 @@ class TenantOptionsController extends Controller
         // Copy tenant folder to local
         dispatch(new DownloadAssestFromS3ToLocalStorageJob($tenantName));
         
+        // Compile downloaded files and update css on s3
+        $this->s3helper->compileLocalScss($tenantName);
+        
         // Set response data
         $apiStatus = Response::HTTP_OK;
         $apiMessage = trans('messages.success.MESSAGE_CUSTOM_STYLE_RESET_SUCCESS');
