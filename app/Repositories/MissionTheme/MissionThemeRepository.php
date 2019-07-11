@@ -30,11 +30,17 @@ class MissionThemeRepository implements MissionThemeInterface
      * Display a listing of the resource.
      *
      * @param \Illuminate\Http\Request $request
+     * @param string $theme_id
      * @return Illuminate\Support\Collection
      */
-    public function missionThemeList(Request $request): Collection
+    public function missionThemeList(Request $request, String $theme_id = ''): Collection
     {
-        return $this->missionTheme->select('mission_theme_id', 'theme_name', 'translations')->get();
+        $themeQuery = $this->missionTheme->select('mission_theme_id', 'theme_name', 'translations');
+        if ($theme_id != '') {
+            $themeQuery->whereIn("mission_theme_id", explode(",", $theme_id));
+        }
+        $theme = $themeQuery->get();
+        return $theme;
     }
 
     /**

@@ -54,7 +54,7 @@ class Mission extends Model
     'missionDocument', 'missionMedia', 'missionLanguage', 'missionTheme', 'city',
     'default_media_type','default_media_path','title','short_description','objective','set_view_detail','city_name',
     'seats_left','user_application_count','mission_application_count','missionSkill','city_name','missionApplication',
-    'country','favouriteMission','missionInvite','missionRating'];
+    'country','favouriteMission','missionInvite','missionRating','mission_count'];
 
     protected $appends = ['city_name'];
     /**

@@ -368,7 +368,7 @@ class TenantOptionsController extends Controller
      * @return \Illuminate\Http\JsonResponse
      */
     public function updateImage(Request $request): JsonResponse
-    {    
+    {
         // Server side validataions
         $validator = Validator::make($request->toArray(), ["image_file" => "required"]);
 
@@ -387,14 +387,13 @@ class TenantOptionsController extends Controller
         
         try {
             // Get domain name from request and use as tenant name.
-            $tenantName = $this->helpers->getSubDomainFromRequest($request);                
+            $tenantName = $this->helpers->getSubDomainFromRequest($request);
         } catch (\Exception $e) {
             return $this->badRequest($e->getMessage());
         }
         
         if (Storage::disk('s3')->exists($tenantName)) {
-            if(!Storage::disk('s3')->exists($tenantName.'/assets/images/'.$fileName))
-            {
+            if (!Storage::disk('s3')->exists($tenantName.'/assets/images/'.$fileName)) {
                 throw new FileNotFoundException(
                     trans('messages.custom_error_message.ERROR_IMAGE_FILE_NOT_FOUND_ON_S3'),
                     config('constants.error_codes.ERROR_IMAGE_FILE_NOT_FOUND_ON_S3')
@@ -409,8 +408,8 @@ class TenantOptionsController extends Controller
                     trans('messages.custom_error_message.ERROR_WHILE_UPLOADING_IMAGE_ON_S3'),
                     config('constants.error_codes.ERROR_WHILE_UPLOADING_IMAGE_ON_S3')
                 );
-            } 
-        } else {                    
+            }
+        } else {
             throw new BucketNotFoundException(
                 trans('messages.custom_error_message.ERROR_TENANT_ASSET_FOLDER_NOT_FOUND_ON_S3'),
                 config('constants.error_codes.ERROR_TENANT_ASSET_FOLDER_NOT_FOUND_ON_S3')

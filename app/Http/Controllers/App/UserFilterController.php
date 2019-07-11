@@ -3,6 +3,11 @@ namespace App\Http\Controllers\App;
 
 use App\Http\Controllers\Controller;
 use App\Repositories\UserFilter\UserFilterRepository;
+use App\Repositories\Country\CountryRepository;
+use App\Repositories\Skill\SkillRepository;
+use App\Repositories\MissionTheme\MissionThemeRepository;
+use App\Repositories\City\CityRepository;
+use App\Helpers\Helpers;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
@@ -20,6 +25,31 @@ class UserFilterController extends Controller
     private $filters;
 
     /**
+     * @var App\Repositories\Country\CountryRepository
+     */
+    private $country;
+
+    /**
+     * @var App\Repositories\MissionTheme\MissionThemeRepository
+     */
+    private $theme;
+
+    /**
+     * @var App\Repositories\City\CityRepository
+     */
+    private $city;
+
+    /**
+     * @var App\Repositories\Skill\SkillRepository
+     */
+    private $skill;
+
+    /**
+     * @var App\Repositories\Skill\SkillRepository
+     */
+    private $helper;
+
+    /**
      * @var App\Helpers\ResponseHelper
      */
     private $responseHelper;
@@ -31,10 +61,20 @@ class UserFilterController extends Controller
      */
     public function __construct(
         UserFilterRepository $filters,
-        ResponseHelper $responseHelper
+        CountryRepository $country,
+        CityRepository $city,
+        MissionThemeRepository $theme,
+        SkillRepository $skill,
+        ResponseHelper $responseHelper,
+        Helpers $helper
     ) {
         $this->filters = $filters;
         $this->responseHelper = $responseHelper;
+        $this->country = $country;
+        $this->city = $city;
+        $this->theme = $theme;
+        $this->skill = $skill;
+        $this->helper = $helper;
     }
     
     /**
@@ -47,8 +87,62 @@ class UserFilterController extends Controller
     {
         try {
             // Get data of user's filter
+            $filterTagArray = [];
+            $language = ($request->hasHeader('X-localization')) ?
+            $request->header('X-localization') : env('TENANT_DEFAULT_LANGUAGE_CODE');
             $filters = $this->filters->userFilter($request);
             $filterData = $filters->toArray();
+
+            if (!empty($filterData["filters"])) {
+                if ($filterData["filters"]["country_id"] && $filterData["filters"]["country_id"] != "") {
+                    $countryTag = $this->helper->getCountry($filterData["filters"]["country_id"]);
+                    if ($countryTag["name"]) {
+                        $filterTagArray["country"][$countryTag["country_id"]] = $countryTag["name"];
+                    }
+                }
+
+                if ($filterData["filters"]["city_id"] && $filterData["filters"]["city_id"] != "") {
+                    $cityTag = $this->helper->getCity($filterData["filters"]["city_id"]);
+                    if ($cityTag) {
+                        foreach ($cityTag as $key => $value) {
+                            $filterTagArray["city"][$key] = $value;
+                        }
+                    }
+                }
+
+                if ($filterData["filters"]["theme_id"] && $filterData["filters"]["theme_id"] != "") {
+                    $themeTag = $this->theme->missionThemeList($request, $filterData["filters"]["theme_id"]);
+                    
+                    if ($themeTag) {
+                        foreach ($themeTag as $value) {
+                            if ($value->translations) {
+                                $arrayKey = array_search($language, array_column($value->translations, 'lang'));
+                                if ($arrayKey  !== '') {
+                                    $filterTagArray["theme"][$value->mission_theme_id] =
+                                    $value->translations[$arrayKey]['title'];
+                                }
+                            }
+                        }
+                    }
+                }
+
+                if ($filterData["filters"]["skill_id"] && $filterData["filters"]["skill_id"] != "") {
+                    $skillTag = $this->skill->skillList($request, $filterData["filters"]["skill_id"]);
+                    if ($skillTag) {
+                        foreach ($skillTag as $value) {
+                            if ($value->translations) {
+                                $arrayKey = array_search($language, array_column($value->translations, 'lang'));
+                                if ($arrayKey  !== '') {
+                                    $filterTagArray["skill"][$value->skill_id] =
+                                    $value->translations[$arrayKey]['title'];
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            
+            $filterData["filters"]["tags"] = $filterTagArray;
             $apiStatus = Response::HTTP_OK;
             return $this->responseHelper->success($apiStatus, '', $filterData);
         } catch (\PDOException $e) {
@@ -59,6 +153,7 @@ class UserFilterController extends Controller
                 )
             );
         } catch (\Exception $e) {
+            dd($e);
             throw new \Exception(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
