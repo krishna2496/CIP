@@ -57,8 +57,8 @@ class TenantRepository implements TenantInterface
 
         // ONLY FOR DEVELOPMENT MODE. (PLEASE REMOVE THIS CODE IN PRODUCTION MODE)
         if (env('APP_ENV')=='local') {
-            $apiUserData['api_key'] = base64_encode($tenant->name.'_api_key');
-            $apiUserData['api_secret'] = base64_encode($tenant->name.'_api_secret');
+            $apiUserData['api_key'] = $tenant->name.'_api_key';
+            $apiUserData['api_secret'] = $tenant->name.'_api_secret';
             // Insert api_user data into table
             $tenant->apiUsers()->create($apiUserData);
         }
