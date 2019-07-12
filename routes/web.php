@@ -88,6 +88,10 @@ $router->group(['middleware' => 'localization'], function ($router) {
     $router->post('/app/tenant-option', ['as' =>'app.tenant-option',
     'middleware' => 'tenant.connection|jwt.auth|JsonApiMiddleware',
     'uses' => 'App\Tenant\TenantOptionController@fetchTenantOptionValue']);
+
+    /* Fetch tenant settings */
+    $router->get('/app/fetch-tenant-settings', ['as' =>'fetch-tenant-settings', 'middleware' => 'tenant.connection|jwt.auth|JsonApiMiddleware',
+    'uses' => 'App\Tenant\TenantSettingsController@index']);
 });
 
 

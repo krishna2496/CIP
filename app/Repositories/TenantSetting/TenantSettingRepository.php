@@ -49,4 +49,14 @@ class TenantSettingRepository implements TenantSettingInterface
     {
         return $this->tenantSetting->paginate(config('constants.PER_PAGE_LIMIT'));
     }
+
+    /**
+    * Get all tenant's settings data. Used for front end api.
+    * 
+    * @return Illuminate\Database\Eloquent\Collection
+    */
+    public function fetchAllTenantSettings(): Collection
+    {
+        return $this->tenantSetting->select('tenant_setting_id', 'key', 'value')->get();
+    }
 }
