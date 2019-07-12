@@ -166,7 +166,7 @@ class UserRepository implements UserInterface
      */
     public function searchUser(string $search, int $userId): Collection
     {
-        $userQuery = $this->user->select('user_id', 'first_name', 'last_name', 'email', 'avatar')
+        $userQuery = $this->user->select('user_id', 'first_name', 'last_name', 'email')
         ->where('user_id', '<>', $userId);
         if ($search) {
             $userQuery->where(function ($query) use ($search) {

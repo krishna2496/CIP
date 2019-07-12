@@ -83,6 +83,20 @@ return [
         'REFUSED' => 'REFUSED'
     ],
 
+    /*
+     * User notification types
+     */
+    'notification_types' => [
+        'RECOMMENDED-MISSIONS' => '1',
+        'VOLUNTEERING-HOURS' => '2',
+        'VOLUNTEERING-GOALS' => '3',
+        'MY-COMMENTS' => '4',
+        'MY-STORIES' => '5',
+        'NEW-STORIES-HOURS' => '6',
+        'NEW-MISSIONS' => '7',
+        'NEW-MESSAGES' => '8'
+    ],
+     
     'TOP_THEME' => "top_themes",
     'TOP_COUNTRY' => "top_countries",
     'TOP_ORGANISATION' => "top_organization",
@@ -139,7 +153,6 @@ return [
         'ERROR_NO_SKILL_FOUND' => '400010',
         'ERROR_SKILL_DELETION' => '400011',
         'ERROR_SKILL_REQUIRED_FIELDS_EMPTY' => '400012',
-        'ERROR_NO_SKILL_FOUND' => '400013',
         'ERROR_SKILL_NOT_FOUND' => '400014',
         'ERROR_PARENT_SKILL_NOT_FOUND' => '400015',
         'ERROR_INVALID_MISSION_ID' => '400018',

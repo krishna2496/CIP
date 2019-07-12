@@ -17,6 +17,9 @@ use App\Models\MissionRating;
 use App\Models\MissionApplication;
 use App\Models\FavouriteMission;
 use App\Models\MissionInvite;
+use App\Models\Notification;
+use App\Models\NotificationType;
+use App\Models\UserNotification;
 use App\Models\UserFilter;
 use Validator;
 use PDOException;
@@ -84,6 +87,21 @@ class MissionRepository implements MissionInterface
     public $missionInvite;
 
     /**
+     * @var App\Models\Notification
+     */
+    public $notification;
+
+    /**
+     * @var App\Models\NotificationType
+     */
+    public $notificationType;
+
+    /**
+     * @var App\Models\UserNotification
+     */
+    public $userNotification;
+    
+    /**
      * Create a new Mission repository instance.
      *
      * @param  App\Models\Mission $mission
@@ -97,6 +115,9 @@ class MissionRepository implements MissionInterface
      * @param  Illuminate\Http\S3Helper $s3helper
      * @param  App\Models\MissionRating $missionRating
      * @param  App\Models\MissionInvite $missionInvite
+     * @param  App\Models\Notification $notification
+     * @param  App\Models\NotificationType $notificationType
+     * @param  App\Models\UserNotification $userNotification
      * @return void
      */
     public function __construct(
@@ -113,7 +134,10 @@ class MissionRepository implements MissionInterface
         S3Helper $s3helper,
         FavouriteMission $favouriteMission,
         MissionRating $missionRating,
-        MissionInvite $missionInvite
+        MissionInvite $missionInvite,
+        Notification $notification,
+        NotificationType $notificationType,
+        UserNotification $userNotification
     ) {
         $this->mission = $mission;
         $this->missionLanguage = $missionLanguage;
@@ -129,6 +153,9 @@ class MissionRepository implements MissionInterface
         $this->s3helper = $s3helper;
         $this->favouriteMission = $favouriteMission;
         $this->missionInvite = $missionInvite;
+        $this->notification = $notification;
+        $this->notificationType = $notificationType;
+        $this->userNotification = $userNotification;
     }
     
     /**
@@ -789,6 +816,20 @@ class MissionRepository implements MissionInterface
         $mission = $this->mission->findOrFail($missionId);
         $invite = $this->missionInvite
         ->create(['mission_id' => $missionId, 'to_user_id' => $inviteUserId, 'from_user_id' => $fromUserId]);
+        
+        $notify = $this->userNotification->where(['user_id' => $fromUserId, 'notification_type_id' => 1])->first();
+        if ($notify) {
+            $notificationData = array(
+                'notification_type_id' => config('constants.notification_types.RECOMMENDED-MISSIONS'),
+                'from_user_id' => $fromUserId,
+                'user_id' => $inviteUserId,
+                'mission_id' => $missionId,
+            );
+            // Create new record
+            $mission = $this->notification->create($notificationData);
+        }
+        // Code to sent an email
+        
         return $invite;
     }
 }
