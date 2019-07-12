@@ -11,8 +11,21 @@ export default async(data) => {
     }
     var url =process.env.VUE_APP_API_ENDPOINT + "app/missions?page=" + data.page
 
-    if(data.search != ''){
+    if(data.search != '' && data.search != null){
         url = url+"&search=" + data.search
+    }
+
+    if(data.countryId != '' && data.countryId != null){
+        url = url+"&country_id=" + data.countryId
+    }
+    if(data.cityId != '' && data.cityId != null){
+        url = url+"&city_id=" + data.cityId
+    }
+    if(data.themeId != '' && data.themeId != null){
+        url = url+"&theme_id=" + data.themeId
+    }
+    if(data.skillId != '' && data.skillId != null){
+        url = url+"&skill_id=" + data.skillId
     }
 
     if(data.exploreMissionType != ''){
@@ -37,19 +50,21 @@ export default async(data) => {
             // Set filter data
             if (response.data.meta_data.filters) {
                 let filterData = {};
-                filterData.search = data.meta_data.search;
-                filterData.country = data.meta_data.country;
-                filterData.city = data.meta_data.city;
-                filterData.theme = data.meta_data.theme;
-                filterData.skill = data.meta_data.skill;
+                filterData.search = response.data.meta_data.filters.search;
+                filterData.countryId = response.data.meta_data.filters.country_id;
+                filterData.cityId = response.data.meta_data.filters.city_id;
+                filterData.themeId = response.data.meta_data.filters.theme_id;
+                filterData.skillId = response.data.meta_data.filters.skill_id;
+                filterData.tags = response.data.meta_data.filters.tags;
                 store.commit('userFilter',filterData)
             } else {
                 let filterData = {};
                 filterData.search = '';
-                filterData.country = '';
-                filterData.city = '';
-                filterData.theme = '';
-                filterData.skill = '';
+                filterData.countryId = '';
+                filterData.cityId = '';
+                filterData.themeId = '';
+                filterData.skillId = '';
+                filterData.tags = '';
                 store.commit('userFilter',filterData)
             }         
 

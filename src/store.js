@@ -22,7 +22,12 @@ export default new Vuex.Store({
         exploreMissionType : '',
         exploreMissionParams : '',
         menubar : localStorage.getItem('menubar'),
-        imagePath: localStorage.getItem('imagePath')
+        imagePath: localStorage.getItem('imagePath'),
+        countryId : localStorage.getItem('countryId'),
+        cityId : localStorage.getItem('cityId'),
+        themeId : localStorage.getItem('themeId'),
+        skillId : localStorage.getItem('skillId'),
+        tags : localStorage.getItem('tags'),
     },
     mutations: {
         // Set login data in state and local storage       
@@ -87,8 +92,20 @@ export default new Vuex.Store({
         // User filter data
         userFilter(state,filters) {
             localStorage.setItem('search',filters.search)
+            localStorage.setItem('countryId',filters.countryId)
+            localStorage.setItem('cityId',filters.cityId)
+            localStorage.setItem('themeId',filters.themeId)
+            localStorage.setItem('skillId',filters.skillId)
+            localStorage.getItem('tags',JSON.stringify(filters.tags))
+            
             state.search = filters.search
+            state.countryId = filters.countryId
+            state.cityId = filters.cityId
+            state.themeId = filters.themeId
+            state.skillId = filters.skillId
+            state.tags = JSON.stringify(filters.tags)
         },
+        
         // Explore data
         exploreFilter(state,filters) {
             localStorage.setItem('exploreMissionType',filters.exploreMissionType)

@@ -1059,6 +1059,19 @@ header {
             right: 0;
         }
     }
+    ul{
+        li{
+            .counter{
+                display: inline-block;
+                background: $control-border;
+                color: $black-primary;
+                padding: 1px 6px;
+                border-radius: 100%;
+                line-height: 17px;
+                font-size: 12px;
+            }
+        }
+    }
 
     .list-group {
 
@@ -1167,6 +1180,9 @@ header {
                 li {
                     padding: 8px 15px;
                     line-height: 20px;
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
                 }
             }
         }
