@@ -11,7 +11,7 @@
                 @click="handleSelect"
             >
                 <img v-bind:data-id="tagId"
-                v-bind:data-type="type" :src="`${this.$store.state.imagePath}/assets/images/cross-ic.svg`" alt="close"/>
+                v-bind:data-type="type" :src="this.$store.state.imagePath+'/assets/images/cross-ic.svg'" alt="close"/>
             </i>
         </span>
     </div>

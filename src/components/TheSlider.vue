@@ -11,7 +11,7 @@
         </b-carousel>
         
 		<b-carousel id fade :interval="2000" indicators v-else>
-			<b-carousel-slide :img-src="`${this.$store.state.imagePath}/assets/images/sliderimg1.png`" ></b-carousel-slide>			
+			<b-carousel-slide :img-src="this.$store.state.imagePath+'/assets/images/sliderimg1.png'" ></b-carousel-slide>
         </b-carousel>
     </div>
 
