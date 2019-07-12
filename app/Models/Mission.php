@@ -57,7 +57,8 @@ class Mission extends Model
     'default_media_type','default_media_path','title','short_description','objective','set_view_detail','city_name',
     'seats_left','user_application_count','mission_application_count','missionSkill','city_name','missionApplication',
     'country','favouriteMission','missionInvite','missionRating', 'goalMission', 'timeMission', 'application_deadline',
-    'application_start_date', 'application_end_date', 'application_start_time', 'application_end_time', 'goal_objective', 'mission_count'];
+    'application_start_date', 'application_end_date', 'application_start_time', 'application_end_time',
+    'goal_objective', 'mission_count', 'mission_rating_count'];
 
     protected $appends = ['city_name'];
     /**
@@ -239,5 +240,5 @@ class Mission extends Model
     {
         $this->attributes['end_date'] = ($value != null) ?
         Carbon::parse($value)->format(config('constants.DB_DATE_FORMAT')) : null;
-    }    
+    }
 }

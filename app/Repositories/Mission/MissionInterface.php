@@ -75,12 +75,4 @@ interface MissionInterface
      * @return \Illuminate\Http\Response
      */
     public function missionFavourite(int $userId, int $missionId);
-    
-    /**
-     * Display a mission ratings.
-     *
-     * @param int $missionId
-     * @return float
-     */
-    public function missionRatings(int $missionId);
 }

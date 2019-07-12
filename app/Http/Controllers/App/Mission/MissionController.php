@@ -198,6 +198,7 @@ class MissionController extends Controller
                 ) {
                     $value->set_view_detail = 1;
                 }
+                $value->mission_rating_count = $value->mission_rating_count ?? 0;
             }
             $metaData['filters'] = $userFilterData;
             $metaData['filters']["tags"] = $filterTagArray;
@@ -223,6 +224,7 @@ class MissionController extends Controller
                 )
             );
         } catch (\Exception $e) {
+            dd($e);
             throw new \Exception(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
@@ -461,39 +463,8 @@ class MissionController extends Controller
             return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
-            
+    
     /**
-     * Get mission ratings
-     *
-     * @param int $id
-     * @return Illuminate\Http\JsonResponse
-     */
-    public function missionRatings(int $id): JsonResponse
-    {
-        try {
-            $rating = $this->missionRepository->missionRatings($id);
-            
-            $apiData = ['rating' => $rating ];
-            $apiStatus = Response::HTTP_OK;
-            $apiMessage = trans('messages.success.MESSAGE_MISSION_RATING_LISTING');
-            return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
-        } catch (ModelNotFoundException $e) {
-            return $this->modelNotFound(
-                config('constants.error_codes.ERROR_MISSION_NOT_FOUND'),
-                trans('messages.custom_error_message.ERROR_MISSION_NOT_FOUND')
-            );
-        } catch (PDOException $e) {
-            return $this->PDO(
-                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
-                trans('messages.custom_error_message.ERROR_DATABASE_OPERATIONAL'),
-                trans('messages.custom_error_message.ERROR_DATABASE_OPERATIONAL')
-            );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
-		}
-	}
-	
-	/**
      * Get Mission Filter Tags
      *
      * @param Illuminate\Http\Request $request
@@ -558,7 +529,7 @@ class MissionController extends Controller
 
             return $filterTagArray;
         } catch (\Exception $e) {
-             return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
+            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
 }
