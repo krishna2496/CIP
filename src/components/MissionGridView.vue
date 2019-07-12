@@ -18,7 +18,7 @@
 
                                     <div class="location">
                                         <i>
-                                            <img :src="this.$store.state.imagePath+'/assets/images/location.svg'" 
+                                            <img :src="$store.state.imagePath+'/assets/images/location.svg'" 
                                             :alt="$t('label.location')">
                                         </i>
                                         {{mission.city_name}}
@@ -67,7 +67,7 @@
                                             <template v-if="mission.total_seats != 0">
                                                 <div class="detail-column info-block">
                                                     <i class="icon-wrap">
-                                                        <img :src="this.$store.state.imagePath+'/assets/images/user-icon.svg'" alt="user">
+                                                        <img :src="$store.state.imagePath+'/assets/images/user-icon.svg'" alt="user">
                                                         
                                                     </i>
                                                     <div class="text-wrap">
@@ -79,7 +79,7 @@
                                             <template v-else>
                                                 <div class="detail-column info-block">
                                                     <i class="icon-wrap">
-                                                        <img :src="this.$store.state.imagePath+'/assets/images/user-icon1.svg'" alt="user">
+                                                        <img :src="$store.state.imagePath+'/assets/images/user-icon1.svg'" alt="user">
                                                     </i>
                                                     <div class="text-wrap">
                                                         <span class="title-text mb-1">{{mission.mission_application_count}}</span>
@@ -90,7 +90,7 @@
                                             <template v-if="mission.application_deadline != null">
                                                 <div class="detail-column info-block">
                                                     <i class="icon-wrap">
-                                                        <img :src="this.$store.state.imagePath+'/assets/images/clock.svg'" alt="user">
+                                                        <img :src="$store.state.imagePath+'/assets/images/clock.svg'" alt="user">
                                                     </i>
                                                     <div class="text-wrap">
                                                         <span class="title-text mb-1">{{mission.application_deadline | formatDate}}</span>
@@ -105,7 +105,7 @@
                                             <div class="detail-column info-block">
                                             <template v-if="mission.total_seats != 0">
                                                 <i class="icon-wrap">
-                                                    <img :src="this.$store.state.imagePath+'/assets/images/user-icon.svg'" alt="user">
+                                                    <img :src="$store.state.imagePath+'/assets/images/user-icon.svg'" alt="user">
                                                 </i>
                                                 <div class="text-wrap">
                                                     <span class="title-text mb-1">{{mission.seats_left}}</span>
@@ -114,7 +114,7 @@
                                             </template>
                                             <template v-else>
                                                 <i class="icon-wrap">
-                                                    <img :src="this.$store.state.imagePath+'/assets/images/user-icon1.svg'" alt="user">
+                                                    <img :src="$store.state.imagePath+'/assets/images/user-icon1.svg'" alt="user">
                                                 </i>
                                                 <div class="text-wrap">
                                                     <span class="title-text mb-1">{{mission.mission_application_count}}</span>

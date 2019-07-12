@@ -15,7 +15,7 @@
                             </div>
                             <div  class="location">
                                 <i>
-                                    <img :src="this.$store.state.imagePath+'/assets/images/location.svg'" :alt="$t('label.location')">
+                                    <img :src="$store.state.imagePath+'/assets/images/location.svg'" :alt="$t('label.location')">
                                 </i>{{mission.city_name}}
                             </div>
                         </div>
@@ -97,7 +97,7 @@
                                     <template v-if="mission.total_seats != 0">
                                         <div class="detail-column info-block">
                                             <i class="icon-wrap">
-                                                <img :src="this.$store.state.imagePath+'/assets/images/user-icon.svg'" alt="user">
+                                                <img :src="$store.state.imagePath+'/assets/images/user-icon.svg'" alt="user">
                                             </i>
                                             <div class="text-wrap">
                                                 <span class="title-text mb-1">{{mission.seats_left}}</span>
@@ -108,7 +108,7 @@
                                         <template v-else>
                                             <div class="detail-column info-block">
                                                 <i class="icon-wrap">
-                                                    <img :src="this.$store.state.imagePath+'/assets/images/user-icon1.svg'" alt="user">
+                                                    <img :src="$store.state.imagePath+'/assets/images/user-icon1.svg'" alt="user">
                                                 </i>
                                                 <div class="text-wrap">
                                                     <span class="title-text mb-1">{{mission.mission_application_count}}</span>
@@ -120,7 +120,7 @@
                                         <template v-if="mission.application_deadline !== null">
                                             <div class="detail-column info-block">
                                                 <i class="icon-wrap">
-                                                    <img :src="this.$store.state.imagePath+'/assets/images/clock.svg'" alt="user">
+                                                    <img :src="$store.state.imagePath+'/assets/images/clock.svg'" alt="user">
                                                 </i>
                                                 <div class="text-wrap">
                                                     <span class="title-text mb-1">

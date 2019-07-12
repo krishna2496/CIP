@@ -16,7 +16,7 @@
 				
                 <div class="menu-wrap" @touchend.stop>
                     <b-button class="btn-cross" @click="closeMenu">                        
-                        <img :src="`${this.$store.state.imagePath}/assets/images/cross-ic.svg`" alt>                        
+                        <img :src="$store.state.imagePath+'/assets/images/cross-ic.svg'" alt>                        
                     </b-button>
 					<ul v-if="this.$store.state.isLoggedIn">
                         <li class="has-menu">
@@ -112,7 +112,7 @@
                 <b-nav class="ml-auto">
                     <b-nav-item right class="search-menu" @click="searchMenu">
                         <i>
-                            <img :src="`${this.$store.state.imagePath}/assets/images/search-ic.svg`" alt>
+                            <img :src="$store.state.imagePath+'/assets/images/search-ic.svg'" alt>
                         </i>
                     </b-nav-item>
                     <b-nav-item-dropdown right class="profile-menu" v-if="this.$store.state.isLoggedIn">
@@ -138,7 +138,7 @@
                     :show="popoverShow">
                     <template slot="title">
                         <b-button class="btn-setting" title="Setting" @click="showsetting">
-                            <img :src="`${this.$store.state.imagePath}/assets/images/settings-ic.svg`" alt="Setting icon">
+                            <img :src="$store.state.imagePath+'/assets/images/settings-ic.svg'" alt="Setting icon">
                             
                         </b-button>
                         <span class="title">Notification</span>
@@ -148,7 +148,7 @@
                         <b-list-group>
                             <b-list-group-item href="#" class="unread-item">
                                 <i>
-                                    <img :src="`${this.$store.state.imagePath}/assets/images/user.png`" alt>                                    
+                                    <img :src="$store.state.imagePath+'/assets/images/user.png'" alt>                                    
                                 </i>
                                 <p>
                                     John Doe: Recommend this mission -<b>Grow Trees</b>
@@ -157,7 +157,7 @@
                             </b-list-group-item>
                             <b-list-group-item href="#" class="read-item">
                                 <i>
-                                    <img :src="`${this.$store.state.imagePath}/assets/images/circle-plus.png`" alt>
+                                    <img :src="$store.state.imagePath+'/assets/images/circle-plus.png'" alt>
                                     
                                 </i>
                                 <p>
@@ -168,14 +168,14 @@
                             </b-list-group-item>
                             <b-list-group-item href="#" class="read-item">
                                 <i>
-                                    <img :src="`${this.$store.state.imagePath}/assets/images/circle-plus.png`" alt>
+                                    <img :src="$store.state.imagePath+'/assets/images/circle-plus.png'" alt>
                                 </i>
                                 <p>New Mission -<b>Save the world</b></p>
                                 <span class="status"></span>
                             </b-list-group-item>
                             <b-list-group-item href="#" class="unread-item">
                                 <i>
-                                    <img :src="`${this.$store.state.imagePath}/assets/images/warning.pngg`" alt>
+                                    <img :src="$store.state.imagePath+'/assets/images/warning.pngg'" alt>
                                     
                                 </i>
                                 <p>New Message -<b>Message title goes here</b></p>
@@ -188,7 +188,7 @@
                             <b-list-group>
                             <b-list-group-item href="#" class="unread-item">
                                 <i>
-                                    <img :src="`${this.$store.state.imagePath}/assets/images/warning.pngg`" alt>
+                                    <img :src="$store.state.imagePath+'/assets/images/warning.pngg'" alt>
                                 </i>
                                 <p>
                                     Volunteering hours<b>submitted the 17/05/2019 approved</b>
@@ -197,14 +197,14 @@
                             </b-list-group-item>
                             <b-list-group-item href="#" class="unread-item">
                                 <i>
-                                    <img :src="`${this.$store.state.imagePath}/assets/images/warning.pngg`" alt>
+                                    <img :src="$store.state.imagePath+'/assets/images/warning.pngg'" alt>
                                 </i>
                                 <p>Volunteering hours<b>submitted the 17/05/2019 approved</b></p>
                                 <span class="status"></span>
                             </b-list-group-item>
                             <b-list-group-item href="#" class="unread-item">
                                 <i>
-                                    <img :src="`${this.$store.state.imagePath}/assets/images/warning.pngg`" alt>
+                                    <img :src="$store.state.imagePath+'/assets/images/warning.pngg'" alt>
                                 </i>
                                 <p>Volunteering hours<b>submitted the 17/05/2019 approved</b></p>
                                 <span class="status"></span>
@@ -214,7 +214,7 @@
                     <div class="notification-clear">
                         <div class="clear-content">
                             <i>
-                                <img :src="`${this.$store.state.imagePath}/assets/images/gray-bell-ic.svg`" alt>
+                                <img :src="$store.state.imagePath+'/assets/images/gray-bell-ic.svg'" alt>
                             </i>
                         <p>You do not have any new notifications</p>
                         </div>
