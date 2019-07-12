@@ -1,0 +1,49 @@
+import axios from 'axios'
+import store from '../store'
+
+export default async(data) => {
+
+    let responseData;
+    var defaultLanguage = '';
+    if (store.state.defaultLanguage !== null) {
+        defaultLanguage = (store.state.defaultLanguage).toLowerCase();
+    }
+
+    var url =process.env.VUE_APP_API_ENDPOINT + "filter_data";
+
+    if(data.countryId != ''){
+        url = url+"?country_id=" + data.countryId
+    }
+
+    if(data.cityId != ''){
+        if(data.countryId != ''){
+            url = url+"&city_id=" + data.cityId
+        } else {
+            url = url+"?city_id=" + data.cityId
+        }
+    }
+
+    if(data.themeId != ''){
+        if(data.countryId != '' || data.city_id != '') {
+            url = url+"&theme_id=" + data.themeId
+        } else {
+            url = url+"?theme_id=" + data.themeId
+        }
+    }
+
+    await axios({
+            url: url,
+            method: 'get',
+            headers: {
+                'X-localization': defaultLanguage,
+                'token': store.state.token,
+            }
+        })
+        .then((response) => {
+            if(response.data.data) { 
+                responseData = response.data.data;
+            }
+        })
+        .catch(function(error) {});
+    return responseData;
+}

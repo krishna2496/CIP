@@ -2,12 +2,18 @@
     <div class="checkbox-select">
         <span class="select-text">{{filterTitle}}</span>
     <div class="chk-select-wrap" data-simplebar @click.stop @touchend.stop>
-    <ul class="chk-select-options">
+    <ul class="chk-select-options" v-if="checkList.length > 0">
         <li 
             v-for="(item , i) in checkList" 
-            v-bind:data-id="item[0]"
-            :key="i">
-            <b-form-checkbox name>{{item[1]}}</b-form-checkbox>
+            v-bind:data-id="item[1].id"
+            :key="i"           
+            >
+            <b-form-checkbox name  v-model="items" v-bind:value="item[1].id">{{item[1].title}}<span class="counter">{{item[1].mission_count}}</span></b-form-checkbox>
+        </li>
+    </ul>
+    <ul class="chk-select-options" v-else>
+        <li>
+            <label class="no-checkbox">{{ $t("label.no_record_found")}}</label>
         </li>
     </ul>
     </div>
@@ -15,6 +21,7 @@
 </template>
 
 <script>
+import Vue from "vue";
 export default {
     name: "AppCheckboxDropdown",
     components: {},
@@ -23,12 +30,27 @@ export default {
         checkList: {
         type: Array,
             default: () => []
-        }
+        },
+        selectedItem: Array,
     },
+
     data() {
-        return {};
+        return {
+            items: this.selectedItem,
+        };
     },
     mounted() {},
-    methods: {}
+    methods: {
+    },
+    watch: {
+        items: function(val){            
+            this.$emit("updateCall",val.join(','));
+        },
+        selectedItem:function(val){
+            this.items = this.selectedItem;
+        },
+    },
+    created() {
+    },
 };
 </script>

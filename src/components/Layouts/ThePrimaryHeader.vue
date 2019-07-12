@@ -20,7 +20,7 @@
                     </b-button>
 					<ul v-if="this.$store.state.isLoggedIn">
                         <li class="has-menu">
-                          <a href="#" :title='$t("label.explore")'>{{ $t("label.explore")}}</a>
+                          <a href="Javascript:void(0)" :title='$t("label.explore")'>{{ $t("label.explore")}}</a>
 
                           <ul class="dropdown-menu sub-dropdown">
                             <li 
@@ -263,6 +263,7 @@
 <script>
 import store from '../../store';
 import {exploreMission} from '../../services/service';
+import {eventBus} from "../../main";
 export default {
     components: {},
     name: "PrimaryHeader",
@@ -374,8 +375,14 @@ export default {
             if(this.$route.params.searchParams) {
                 this.filterData['parmas'] = this.$route.params.searchParams;
             }
+           
+            const doSomething = async () => {
+               await eventBus.$emit('clearAllFilters');
+            }
+            eventBus.$emit('setDefaultText');
             this.$emit('exploreMisison',this.filterData);
         },
+        
         async exploreMissions(){
             await exploreMission().then( response => {
                 let menuBar = JSON.parse(store.state.menubar);

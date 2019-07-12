@@ -4,20 +4,36 @@
              <ThePrimaryHeader @exploreMisison="exploreMisison" 
              @getMissions = "getMissions"
              v-if="isShownComponent"></ThePrimaryHeader>
-             <TheSecondaryHeader :search="search" ref="secondaryHeader" v-if="isShownComponent"></TheSecondaryHeader>
+             <TheSecondaryHeader :search="search" ref="secondaryHeader" 
+              v-if="isShownComponent"></TheSecondaryHeader>
         </header>
         <main>
             <b-container class="home-content-wrapper">
-                <div class="chip-container">
-                    <AppCustomChip :textVal="'Tree Plantation'"/>
-                    <AppCustomChip :textVal="'Canada'"/>
-                    <AppCustomChip :textVal="'Toronto'"/>
-                    <AppCustomChip :textVal="'Montreal'"/>
-                    <AppCustomChip :textVal="'Environment'"/>
-                    <AppCustomChip :textVal="'Nutrition'"/>
-                    <AppCustomChip :textVal="'Anthropology'"/>
-                    <AppCustomChip :textVal="'Environmental Science'"/>
-                    <b-button class="clear-btn">Clear All</b-button>
+                <div>
+
+                <div class="chip-container" v-if="tags != ''">
+                    <span v-for="(item , i) in tags.country" >
+                        <AppCustomChip :textVal="item" :tagId ="i" type ="country" 
+                        @updateCall="changeTag"
+                        />
+                    </span>
+                    <span v-for="(item , i) in tags.city" >
+                        <AppCustomChip :textVal="item" :tagId ="i" type ="city"
+                        @updateCall="changeTag"
+                        />
+                    </span>
+                    <span v-for="(item , i) in tags.theme" >
+                        <AppCustomChip :textVal="item" :tagId ="i" type ="theme"
+                        @updateCall="changeTag"
+                        />
+                    </span>
+                    <span v-for="(item , i) in tags.skill" >
+                        <AppCustomChip :textVal="item" :tagId ="i" type ="skill"
+                        @updateCall="changeTag"
+                        />
+                    </span>
+                    <b-button class="clear-btn" @click="clearMissionFilter">Clear All</b-button>
+                </div>
                 </div>
                 <div class="heading-section">
                     <h2><template v-if="rows > 0">{{ $t("label.explore")}} <strong>{{rows}} {{ $t("label.missions")}}</strong></template></h2>
@@ -180,16 +196,22 @@ export default {
         activeView:"gridView",
         filter:[],
         search : "",
+        selectedfilterParams: {
+                countryId : "",
+                cityId : "",
+                themeId : "",
+            },
         isShownComponent :false,
         filterData : {
             "search" : "",
-            "country": "",
-            "city": "",
-            "theme": "",
-            "skill": "",
+            "countryId": "",
+            "cityId": "",
+            "themeId": "",
+            "skillId": "",
             "exploreMissionType" : "",
             "exploreMissionParams" : "",
-        }
+        },
+        tags:"",
         };
     },
 
@@ -212,31 +234,38 @@ export default {
         async getMissions(){
             let filter = {};
             filter.page = this.currentPage
-            filter.search = store.state.search   
+            filter.search = store.state.search 
+            filter.countryId = store.state.countryId
+            filter.cityId = store.state.cityId 
+            filter.themeId = store.state.themeId
+            filter.skillId = store.state.skillId 
             filter.exploreMissionType = store.state.exploreMissionType
             filter.exploreMissionParams = store.state.exploreMissionParams       
             
             await missionListing(filter).then( response => {
-            if (response.data) {
-                this.missionList = response.data;    
-            } else {
-                this.missionList = [];
-            }  
-            if (response.pagination) {
-                this.rows = response.pagination.total;
-                this.perPage = response.pagination.per_page;
-                this.currentPage = response.pagination.current_page;
-            } else {
-                this.rows = 0;
-                if (this.currentPage != 1) {
-                    this.currentPage = 1;
-                    this.getMissions();
+                if (response.data) {
+                    this.missionList = response.data;    
+                } else {
+                    this.missionList = [];
+                }  
+                if (response.pagination) {
+                    this.rows = response.pagination.total;
+                    this.perPage = response.pagination.per_page;
+                    this.currentPage = response.pagination.current_page;
+                } else {
+                    this.rows = 0;
+                    if (this.currentPage != 1) {
+                        this.currentPage = 1;
+                        this.getMissions();
+                    }
+                }          
+                this.isShownComponent = true;
+                if(store.state.search != null) {
+                    this.search = store.state.search;
                 }
-            }          
-            this.isShownComponent = true;
-            if(store.state.search != null) {
-                this.search = store.state.search;
-            }
+                if(store.state.tags != null) {
+                    this.tags = JSON.parse(store.state.tags);
+                }
             }); 
         },
 
@@ -252,8 +281,12 @@ export default {
             this.getMissions();
         },
 
-        searchMissions(searchParams) {
-            this.filterData.search =  searchParams
+        searchMissions(searchParams,filterParmas) {
+            this.filterData.search =  searchParams;
+            this.filterData.countryId = filterParmas.countryId;
+            this.filterData.cityId =  filterParmas.cityId;
+            this.filterData.themeId = filterParmas.themeId;
+            this.filterData.skillId = filterParmas.skillId;
             store.commit('userFilter',this.filterData)
             this.getMissions(); 
         },
@@ -269,10 +302,10 @@ export default {
             filteExplore.exploreMissionParams  = '';
 
             this.filterData.search =  '';
-            this.filterData.country = '';
-            this.filterData.city =  '';
-            this.filterData.theme = '';
-            this.filterData.skill = '';
+            this.filterData.countryId = '';
+            this.filterData.cityId =  '';
+            this.filterData.themeId = '';
+            this.filterData.skillId = '';
             if(filters.parmasType) {
                 filteExplore.exploreMissionType = filters.parmasType;
             }
@@ -282,9 +315,15 @@ export default {
             store.commit('userFilter',this.filterData)
             store.commit('exploreFilter',filteExplore);
             this.getMissions(); 
+        },
+        changeTag(data){
+            this.$refs.secondaryHeader.removeItems(data);
+        },
+        clearMissionFilter(){
+          this.$refs.secondaryHeader.clearFilter();  
         }
     },
-    created() {
+    created() { 
         if (this.$route.params.searchParamsType){
             let filteExplore = {};
             filteExplore.exploreMissionParams  = '';

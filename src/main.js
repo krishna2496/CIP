@@ -30,6 +30,7 @@ AOS.init({
     duration: 700,
     offset: 0
 });
+export const eventBus = new Vue();
 // call vue axios interceptors
 interceptorsSetup();
 // check requirment of authentication for path
