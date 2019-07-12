@@ -21,6 +21,7 @@ export default async(data) => {
                 filterData.themeId = response.data.data.filters.theme_id;
                 filterData.skillId = response.data.data.filters.skill_id;
                 filterData.tags = response.data.data.filters.tags;
+                filterData.sortBy = response.data.data.filters.sort_by;
                 store.commit('userFilter',filterData)
             } else {
                 let filterData = {};
@@ -30,6 +31,7 @@ export default async(data) => {
                 filterData.themeId = '';
                 filterData.skillId = '';
                 filterData.tags = '';
+                filterData.sortBy = '';
                 store.commit('userFilter',filterData)
             }
         })

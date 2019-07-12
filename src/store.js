@@ -27,6 +27,7 @@ export default new Vuex.Store({
         themeId : localStorage.getItem('themeId'),
         skillId : localStorage.getItem('skillId'),
         tags : localStorage.getItem('tags'),
+        sortBy : localStorage.getItem('sortBy'),
     },
     mutations: {
         // Set login data in state and local storage       
@@ -96,13 +97,14 @@ export default new Vuex.Store({
             localStorage.setItem('themeId',filters.themeId)
             localStorage.setItem('skillId',filters.skillId)
             localStorage.getItem('tags',JSON.stringify(filters.tags))
-            
+            localStorage.getItem('sortBy',JSON.stringify(filters.sortBy)),
             state.search = filters.search
             state.countryId = filters.countryId
             state.cityId = filters.cityId
             state.themeId = filters.themeId
             state.skillId = filters.skillId
             state.tags = JSON.stringify(filters.tags)
+            state.sortBy = filters.sortBy
         },
         
         // Explore data

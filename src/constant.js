@@ -3,5 +3,11 @@ export default Object.freeze({
     MISSION_TYPE_TIME: 'TIME',
     MISSION_GRID_VIEW_SHORT_DESCRIPTION_CHARACTER : 98,
     MISSION_LIST_VIEW_SHORT_DESCRIPTION_CHARACTER : 150,
-    PASSWORD_MIN_LENGTH : 8
+    PASSWORD_MIN_LENGTH : 8,
+    NEWEST : 'newest',
+    OLDEST : 'oldest',
+    LOWEST_AVAILABLE_SEATS : 'lowest_available_seats',
+    HIGHEST_AVAILABLE_SEATS : 'highest_available_seats',
+    MY_FAVOURITE : 'my_favourite',
+    DEADLINE : 'deadline',
 })
