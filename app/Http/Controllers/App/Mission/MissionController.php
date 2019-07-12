@@ -475,7 +475,7 @@ class MissionController extends Controller
      * @param Illuminate\Http\Request $request
      * @return Illuminate\Http\JsonResponse
      */
-    public function missionInvite(Request $request)
+    public function missionInvite(Request $request): JsonResponse
     {
         try {
             $validator = Validator::make(

@@ -841,16 +841,14 @@ class MissionRepository implements MissionInterface
                 'user_id' => $inviteUserId,
                 'mission_id' => $missionId,
             );
-            // Create new record
             $mission = $this->notification->create($notificationData);
         }
-        // Code to sent an email
         $data = array(
                 'missionName'=> $missionName,
                 'fromUserName'=> $fromUserName
             );
         $this->mailer->send('invite', $data, function ($message) {
-            $message->to('surbhi.ladhava@tatvasoft.com')
+            $message->to($inviteUser->email)
             ->subject('Mission Recommonded');
             $message->from('ciplatform@example.com', 'CI Platform');
         });
