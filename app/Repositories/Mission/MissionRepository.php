@@ -16,10 +16,6 @@ use App\Models\MissionMedia;
 use App\Models\MissionRating;
 use App\Models\MissionApplication;
 use App\Models\FavouriteMission;
-use App\Models\MissionInvite;
-use App\Models\Notification;
-use App\Models\NotificationType;
-use App\Models\UserNotification;
 use App\Models\UserFilter;
 use App\User;
 use Validator;
@@ -29,7 +25,6 @@ use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Contracts\Mail\Mailer;
 
 class MissionRepository implements MissionInterface
 {
@@ -797,61 +792,5 @@ class MissionRepository implements MissionInterface
         $mission = $this->mission->findOrFail($id);
         $ratings = $this->missionRating->where('mission_id', $id)->avg('rating');
         return $ratings ? ceil($ratings) : 0;
-    }
-    
-    /*
-     * Check mission is already added or not.
-     *
-     * @param int $missionId
-     * @param int $inviteUserId
-     * @param int $fromUserId
-     * @return int
-     */
-    public function checkInviteMission(int $missionId, int $inviteUserId, int $fromUserId): int
-    {
-        $inviteCount = $this->missionInvite
-        ->where(['mission_id' => $missionId, 'to_user_id' => $inviteUserId, 'from_user_id' => $fromUserId])
-        ->count();
-        return $inviteCount;
-    }
-    
-    /*
-     * Store a newly created resource into database
-     *
-     * @param int $missionId
-     * @param int $inviteUserId
-     * @param int $fromUserId
-     * @return App\Models\MissionInvite
-     */
-    public function inviteMission(int $missionId, int $inviteUserId, int $fromUserId): MissionInvite
-    {
-        $mission = $this->mission->findOrFail($missionId);
-        $inviteUser = $this->user->find($inviteUserId);
-        $fromUserName = $this->user->getUserName($fromUserId);
-       
-        $missionName = $this->missionLanguage->getMissionName($missionId, $inviteUser->language_id);
-        $invite = $this->missionInvite
-        ->create(['mission_id' => $missionId, 'to_user_id' => $inviteUserId, 'from_user_id' => $fromUserId]);
-   
-        $notify = $this->userNotification->where(['user_id' => $fromUserId, 'notification_type_id' => 1])->first();
-        if ($notify) {
-            $notificationData = array(
-                'notification_type_id' => config('constants.notification_types.RECOMMENDED-MISSIONS'),
-                'from_user_id' => $fromUserId,
-                'user_id' => $inviteUserId,
-                'mission_id' => $missionId,
-            );
-            $mission = $this->notification->create($notificationData);
-        }
-        $data = array(
-                'missionName'=> $missionName,
-                'fromUserName'=> $fromUserName
-            );
-        $this->mailer->send('invite', $data, function ($message) {
-            $message->to($inviteUser->email)
-            ->subject('Mission Recommonded');
-            $message->from('ciplatform@example.com', 'CI Platform');
-        });
-        return $invite;
     }
 }

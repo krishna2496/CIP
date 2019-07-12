@@ -27,7 +27,7 @@
 	</style>
 </head>
 @php
-$companyLogo =  (config('app.tenant_logo') != '') ? config('app.tenant_logo') : url('/images/optimy_logo.png');
+$companyLogo =  (config('app.tenant_logo') != '') ? config('app.tenant_logo') : 'https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/tatva/assets/images/optimy-logo.png';
 @endphp
 <body>
 	<table width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#f2f2f2" align="center" style="background:#f2f2f2;">
@@ -70,7 +70,7 @@ $companyLogo =  (config('app.tenant_logo') != '') ? config('app.tenant_logo') : 
 								</tr>
 								
 								<tr>
-									<td style="font-family: Verdana,Geneva,sans-serif;  color: #3a3a3a; font-size:30px; line-height: 46px;" class="title_text">
+									<td style="font-family: Verdana,Geneva,sans-serif;  color: #3a3a3a; font-size:20px; line-height: 36px;" class="title_text">
 										Mission :  {{ $missionName }} <br/>
 									</td>
 								</tr>

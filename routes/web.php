@@ -87,7 +87,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
     /* Mission Invite  */
     $router->post('/app/mission/invite', ['as' => 'app.missions.invite',
     'middleware' => 'localization|tenant.connection|jwt.auth',
-    'uses' => 'App\Mission\MissionController@missionInvite']);
+    'uses' => 'App\Mission\MissionInviteController@missionInvite']);
 
     /* Fetch tenant option */
     $router->post('/app/tenant-option', ['as' =>'app.tenant-option',
