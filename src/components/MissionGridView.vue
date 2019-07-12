@@ -39,6 +39,9 @@
                                     </b-card-text>
                                     <div class="group-ratings">
                                         <span class="group-name">{{mission.organisation_name}}</span>
+                                        <span class="ratings">
+                                            <StarRating :config="config" :ratings="3"></StarRating>
+                                        </span>
                                     </div>
                                 </div>
                                 <div class="group-details">
@@ -177,10 +180,12 @@
 <script>
 import store from '../store';
 import constants from '../constant';
-
+import StarRating from "./StarRating";
 export default {
     name: "MissionGridView",
-    components:{},
+    components:{
+        StarRating
+    },
     props: {
         items: Array,
     },
