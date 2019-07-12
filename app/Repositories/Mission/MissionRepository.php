@@ -17,6 +17,7 @@ use App\Models\MissionRating;
 use App\Models\MissionApplication;
 use App\Models\FavouriteMission;
 use App\Models\UserFilter;
+use App\Models\MissionSkill;
 use Validator;
 use PDOException;
 use DB;
@@ -76,6 +77,11 @@ class MissionRepository implements MissionInterface
      * @var App\Models\MissionRating
      */
     public $missionRating;
+	
+	/**
+     * @var App\models\MissionSkill
+     */
+    private $missionSkill;
 
     /**
      * Create a new Mission repository instance.
@@ -90,6 +96,7 @@ class MissionRepository implements MissionInterface
      * @param  Illuminate\Http\LanguageHelper $languageHelper
      * @param  Illuminate\Http\S3Helper $s3helper
      * @param  App\Models\MissionRating $missionRating
+     * @param App\Models\MissionSkill
      * @return void
      */
     public function __construct(
@@ -106,6 +113,7 @@ class MissionRepository implements MissionInterface
         S3Helper $s3helper,
         FavouriteMission $favouriteMission,
         MissionRating $missionRating
+        MissionSkill $missionSkill
     ) {
         $this->mission = $mission;
         $this->missionLanguage = $missionLanguage;
@@ -120,6 +128,7 @@ class MissionRepository implements MissionInterface
         $this->helpers = $helpers;
         $this->s3helper = $s3helper;
         $this->favouriteMission = $favouriteMission;
+        $this->missionSkill = $missionSkill;
     }
     
     /**
@@ -517,7 +526,7 @@ class MissionRepository implements MissionInterface
     /**
      * Display a listing of mission.
      *
-     * @param Illuminate\Http\Request $request'
+     * @param Illuminate\Http\Request $request
      * @param Array $userFilterData
      * @param int $languageId
      * @return \Illuminate\Pagination\LengthAwarePaginator
@@ -610,12 +619,31 @@ class MissionRepository implements MissionInterface
                     $missionLanguageQuery->Where('title', 'like', '%' . $userFilterData['search'] . '%');
                     $missionLanguageQuery->orWhere('short_description', 'like', '%' . $userFilterData['search'] . '%');
                 });
-                $query->orWhere(function ($organizationQry) use ($userFilterData) {
-                    $organizationQry->orWhere('organisation_name', 'like', '%' . $userFilterData['search'] . '%');
+                $query->orWhere(function ($organizationQuery) use ($userFilterData) {
+                    $organizationQuery->orWhere('organisation_name', 'like', '%' . $userFilterData['search'] . '%');
                 });
             });
         }
-        $mission =  $missionQuery->orderBy('mission_id', 'desc')->paginate(config('constants.PER_PAGE_LIMIT'));
+
+        if ($userFilterData['country_id'] && $userFilterData['country_id'] != '') {
+            $missionQuery->Where("mission.country_id", $userFilterData['country_id']);
+        }
+
+        if ($userFilterData['city_id'] && $userFilterData['city_id'] != '') {
+            $missionQuery->whereIn("mission.city_id", explode(",", $userFilterData['city_id']));
+        }
+
+        if ($userFilterData['theme_id'] && $userFilterData['theme_id'] != '') {
+            $missionQuery->whereIn("mission.theme_id", explode(",", $userFilterData['theme_id']));
+        }
+
+        if ($userFilterData['skill_id'] && $userFilterData['skill_id'] != '') {
+            $missionQuery->wherehas('missionSkill', function ($skillQuery) use ($userFilterData) {
+                $skillQuery->whereIn("skill_id", explode(",", $userFilterData['skill_id']));
+            });
+        }
+
+        $mission =  $missionQuery->paginate(config('constants.PER_PAGE_LIMIT'));
         return $mission;
     }
 
@@ -665,27 +693,39 @@ class MissionRepository implements MissionInterface
     public function missionFilter(Request $request, string $filterParams): Collection
     {
         // Get  mission filter data
-        $missionQuery = $this->mission->select('*')->where(
-            'publication_status',
-            config("constants.publication_status")["APPROVED"]
-        );
         switch ($filterParams) {
             case config('constants.COUNTRY'):
+                $missionQuery = $this->mission->select('*')->where(
+                    'publication_status',
+                    config("constants.publication_status")["APPROVED"]
+                );
                 $missionQuery->with(['country'])
                 ->selectRaw('COUNT(mission.mission_id) as mission_count')
                 ->groupBy('mission.country_id');
+                $mission = $missionQuery->get();
+                return $mission;
                 break;
 
             case config('constants.CITY'):
+                $missionQuery = $this->mission->select('*')->where(
+                    'publication_status',
+                    config("constants.publication_status")["APPROVED"]
+                );
                 $missionQuery->with(['city'])
                 ->selectRaw('COUNT(mission.mission_id) as mission_count');
                 if ($request->has('country_id') && $request->input('country_id') != '') {
                     $missionQuery->Where("mission.country_id", $request->input('country_id'));
                 }
                 $missionQuery->groupBy('mission.city_id');
+                $mission = $missionQuery->get();
+                return $mission;
                 break;
 
             case config('constants.THEME'):
+                $missionQuery = $this->mission->select('*')->where(
+                    'publication_status',
+                    config("constants.publication_status")["APPROVED"]
+                );
                 $missionQuery->with(['missionTheme'])
                 ->selectRaw('COUNT(mission.mission_id) as mission_count');
                 if ($request->has('country_id') && $request->input('country_id') != '') {
@@ -695,27 +735,32 @@ class MissionRepository implements MissionInterface
                     $missionQuery->whereIn("mission.city_id", explode(",", $request->input('city_id')));
                 }
                 $missionQuery->groupBy('mission.theme_id');
+                $mission = $missionQuery->get();
+                return $mission;
                 break;
 
             case config('constants.SKILL'):
-                $missionQuery->whereHas('missionSkill');
-                $missionQuery->with('missionSkill', 'missionSkill.skill');
-                $missionQuery->withCount(['missionSkill as mission_count']);
-                if ($request->has('country_id') && $request->input('country_id') != '') {
-                    $missionQuery->Where("mission.country_id", $request->input('country_id'));
-                }
-                if ($request->has('city_id') && $request->input('city_id') != '') {
-                    $missionQuery->whereIn("mission.city_id", explode(",", $request->input('city_id')));
-                }
-                if ($request->has('theme_id') && $request->input('theme_id') != '') {
-                    $missionQuery->whereIn("mission.theme_id", explode(",", $request->input('theme_id')));
-                }
-                $missionQuery->orderBy('mission_count', 'desc');
+                $skillQuery = $this->missionSkill->select('*');
+                $skillQuery->selectRaw('COUNT(mission_id) as mission_count');
+                $skillQuery->wherehas('mission', function ($query) use ($request) {
+                    if ($request->has('country_id') && $request->input('country_id') != '') {
+                        $query->Where("mission.country_id", $request->input('country_id'));
+                    }
+                    if ($request->has('city_id') && $request->input('city_id') != '') {
+                        $query->whereIn("mission.city_id", explode(",", $request->input('city_id')));
+                    }
+                    if ($request->has('theme_id') && $request->input('theme_id') != '') {
+                        $query->whereIn("mission.theme_id", explode(",", $request->input('theme_id')));
+                    }
+                });
+
+                $skillQuery->with('mission', 'skill');
+                $skillQuery->groupBy('skill_id');
+                $skillQuery->orderBy('mission_count', 'desc');
+                $skill = $skillQuery->get();
+                return $skill;
                 break;
         }
-     
-        $mission = $missionQuery->get();
-        return $mission;
     }
 
     /**

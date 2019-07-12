@@ -153,10 +153,13 @@ class Helpers
      */
     public function getCity($city_id) : array
     {
-        $city = DB::table("city")->where("city_id", $city_id)->first();
-        $cityData = array('city_id' => $city->city_id,
-                         'name' => $city->name
-                        );
+        $city = DB::table("city")->whereIn("city_id", explode(",", $city_id))->get()->toArray();
+        $cityData = [];
+        if (!empty($city)) {
+            foreach ($city as $key => $value) {
+                $cityData[$value->city_id] = $value->name;
+            }
+        }
         return $cityData;
     }
 

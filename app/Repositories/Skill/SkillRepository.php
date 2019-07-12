@@ -30,11 +30,17 @@ class SkillRepository implements SkillInterface
      * Display a listing of the resource.
      *
      * @param \Illuminate\Http\Request $request
+     * @param string $skill_id
      * @return \Illuminate\Http\Response
      */
-    public function skillList(Request $request)
+    public function skillList(Request $request, String $skill_id = '')
     {
-        return $this->skill->select('skill_name', 'skill_id', 'translations')->get();
+        $skillQuery = $this->skill->select('skill_name', 'skill_id', 'translations');
+        if ($skill_id != '') {
+            $skillQuery->whereIn("skill_id", explode(",", $skill_id));
+        }
+        $skill = $skillQuery->get();
+        return $skill;
     }
     
     /**

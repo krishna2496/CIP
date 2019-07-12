@@ -54,10 +54,10 @@ class UserFilterRepository implements UserFilterInterface
     {
         // Save user filter data to database
         $userFilterData["search"] = $request->has('search') ? $request->input('search') : '';
-        $userFilterData["country"] = $request->has('country') ? $request->input('country') : '';
-        $userFilterData["city"] = $request->has('city') ? $request->input('city') : '';
-        $userFilterData["theme"] = $request->has('theme') ? $request->input('theme') : '';
-        $userFilterData["skill"] = $request->has('skill') ? $request->input('skill') : '';
+        $userFilterData["country_id"] = $request->has('country_id') ? $request->input('country_id') : '';
+        $userFilterData["city_id"] = $request->has('city_id') ? $request->input('city_id') : '';
+        $userFilterData["theme_id"] = $request->has('theme_id') ? $request->input('theme_id') : '';
+        $userFilterData["skill_id"] = $request->has('skill_id') ? $request->input('skill_id') : '';
         $userFilter= $this->filters->createOrUpdateUserFilter(
             ['user_id' => $request->auth->user_id],
             array('filters' => $userFilterData)
