@@ -6,7 +6,7 @@
             </i>
             {{textVal}}
             <i class="chip-close">
-                <img src="../assets/images/cross-ic.svg" alt="close"/>
+                <img :src="`${this.$store.state.imagePath}/assets/images/cross-ic.svg`" alt="close"/>
             </i>
         </span>
     </div>

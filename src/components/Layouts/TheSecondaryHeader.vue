@@ -16,7 +16,7 @@
                             onblur="this.placeholder='Search mission...'">                           
                         </b-form-input>
                         <i>
-                            <img src="../../assets/images/search-ic.svg" alt="Search">
+                            <img :src="`${this.$store.state.imagePath}/assets/images/search-ic.svg`" alt="Search">
                         </i>
                     </div>
                 </b-col>
@@ -24,7 +24,7 @@
                 <b-col xl="6" lg="7" class="filter-block">
                     <div class="mobile-top-block">
                         <b-button class="btn btn-back" @click="handleBack">
-                            <img src="../../assets/images/down-arrow.svg" alt="Back Icon">
+                            <img :src="`${this.$store.state.imagePath}/assets/images/down-arrow.svg`" alt="Back Icon">
                         </b-button>
                         <b-button class="btn btn-clear">{{$t("label.clear_all")}}</b-button>
                     </div>
@@ -50,7 +50,7 @@
                 </b-col>
 
                 <div class="filter-icon" @click="handleFilter" @touchend.stop>
-                    <img src="../../assets/images/header/filter-ic.svg" alt="filter">
+                    <img :src="`${this.$store.state.imagePath}/assets/images/filter-ic.svg`" alt="filter">
                 </div>
             </b-row>
         </b-container>

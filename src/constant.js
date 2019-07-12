@@ -3,5 +3,6 @@ export default Object.freeze({
     MISSION_TYPE_TIME: 'TIME',
     MISSION_GRID_VIEW_SHORT_DESCRIPTION_CHARACTER : 98,
     MISSION_LIST_VIEW_SHORT_DESCRIPTION_CHARACTER : 150,
-    PASSWORD_MIN_LENGTH : 8
+    PASSWORD_MIN_LENGTH : 8,
+    IMAGE_PATH : "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/"
 })
