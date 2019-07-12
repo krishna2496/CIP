@@ -18,7 +18,7 @@ class TenantSettingsController extends Controller
     use RestExceptionHandlerTrait;
 
     /**
-     * @var  App\Repositories\TenantSetting\TenantOptionRepository
+     * @var  App\Repositories\TenantSetting\tenantSettingRepository
      */
     private $tenantSettingRepository;
 
@@ -49,13 +49,13 @@ class TenantSettingsController extends Controller
     {
        // Fetch data from tenant setting data  
        try {
-        $settings = $this->tenantSettingRepository->fetchAllTenantSettings();
-        $apiData = $settings->toArray();
+        $tenantSettings = $this->tenantSettingRepository->fetchAllTenantSettings();
+        $apiData = $tenantSettings->toArray();
 
         // Set response data
         $apiStatus = Response::HTTP_OK;
         $apiMessage = trans('messages.success.MESSAGE_TENANT_SETTINGS_LISTING');
-        $apiMessage = ($settings->isEmpty()) ? trans('messages.success.MESSAGE_NO_RECORD_FOUND') :
+        $apiMessage = ($tenantSettings->isEmpty()) ? trans('messages.success.MESSAGE_NO_RECORD_FOUND') :
          trans('messages.success.MESSAGE_TENANT_SETTINGS_LISTING');
 
          return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
@@ -67,50 +67,5 @@ class TenantSettingsController extends Controller
         } catch (\Exception $e) {
             return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $settingId
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function update(Request $request, int $settingId): JsonResponse
-    {
-        //Update code
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //Delete code
     }
 }
