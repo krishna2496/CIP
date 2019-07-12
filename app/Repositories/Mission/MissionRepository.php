@@ -112,7 +112,7 @@ class MissionRepository implements MissionInterface
         Helpers $helpers,
         S3Helper $s3helper,
         FavouriteMission $favouriteMission,
-        MissionRating $missionRating
+        MissionRating $missionRating,
         MissionSkill $missionSkill
     ) {
         $this->mission = $mission;
@@ -159,7 +159,7 @@ class MissionRepository implements MissionInterface
         $mission = $this->mission->create($missionData);
 
         // Entry into goal_mission table
-        if ($request->mission_type == "GOAL") {
+        if ($request->mission_type == config('constants.mission_type.GOAL')) {
             $goalMissionArray = array(
                 'goal_objective' => $request->goal_objective
             );
@@ -292,14 +292,14 @@ class MissionRepository implements MissionInterface
         $mission->update($request->toArray());
 
         // update goal_mission details
-        if ($request->mission_type == "GOAL") {
+        if ($request->mission_type == config('constants.mission_type.GOAL')) {
             $goalMissionArray = array(
                 'goal_objective' => $request->goal_objective
             );
             $mission->goalMission()->update($goalMissionArray);
         }
         // update into time_mission details
-        if ($request->mission_type == "TIME") {
+        if ($request->mission_type == config('constants.mission_type.TIME')) {
             $missionDetail = $mission->timeMission()->first();
             if (!is_null($missionDetail)) {
                 $missionDetail->application_deadline = (isset($request->application_deadline))
