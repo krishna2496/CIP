@@ -27,5 +27,6 @@ class Notification extends Model
      *
      * @var array
      */
-    protected $fillable = ['notification_id', 'notification_type_id', 'user_id', 'status', 'from_user_id', 'mission_id', 'comment_id', 'message_id', 'story_id'];
+    protected $fillable = ['notification_id', 'notification_type_id',
+    'user_id', 'status', 'from_user_id', 'mission_id', 'comment_id', 'message_id', 'story_id'];
 }

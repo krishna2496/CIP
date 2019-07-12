@@ -21,6 +21,7 @@ use App\Models\Notification;
 use App\Models\NotificationType;
 use App\Models\UserNotification;
 use App\Models\UserFilter;
+use App\User;
 use Validator;
 use PDOException;
 use DB;
@@ -28,6 +29,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Contracts\Mail\Mailer;
 
 class MissionRepository implements MissionInterface
 {
@@ -100,6 +102,11 @@ class MissionRepository implements MissionInterface
      * @var App\Models\UserNotification
      */
     public $userNotification;
+
+    /**
+     * @var App\User
+     */
+    public $user;
     
     /**
      * Create a new Mission repository instance.
@@ -118,6 +125,7 @@ class MissionRepository implements MissionInterface
      * @param  App\Models\Notification $notification
      * @param  App\Models\NotificationType $notificationType
      * @param  App\Models\UserNotification $userNotification
+     * @param  App\User $user
      * @return void
      */
     public function __construct(
@@ -137,7 +145,9 @@ class MissionRepository implements MissionInterface
         MissionInvite $missionInvite,
         Notification $notification,
         NotificationType $notificationType,
-        UserNotification $userNotification
+        UserNotification $userNotification,
+        Mailer $mailer,
+        User $user
     ) {
         $this->mission = $mission;
         $this->missionLanguage = $missionLanguage;
@@ -156,6 +166,8 @@ class MissionRepository implements MissionInterface
         $this->notification = $notification;
         $this->notificationType = $notificationType;
         $this->userNotification = $userNotification;
+        $this->mailer = $mailer;
+        $this->user = $user;
     }
     
     /**
@@ -579,7 +591,13 @@ class MissionRepository implements MissionInterface
             }])
             ->withCount(['missionApplication as mission_application_count' => function ($query) use ($request) {
                 $query->where('approval_status', config("constants.application_status")["AUTOMATICALLY_APPROVED"]);
-            }]);
+            }])
+            ->withCount([
+                'missionRating as mission_rating_count' => function ($query) {
+                    $query->select(DB::raw("AVG(rating) as rating"));
+                }
+            ]);
+        $missionQuery->with(['missionRating']);
         //Explore mission by top favourite
         if ($request->has('explore_mission_type') &&
         ($request->input('explore_mission_type') == config('constants.TOP_FAVOURITE'))) {
@@ -590,13 +608,7 @@ class MissionRepository implements MissionInterface
         //Explore mission by most ranked
         if ($request->has('explore_mission_type') &&
         ($request->input('explore_mission_type') == config('constants.MOST_RANKED'))) {
-            $missionQuery->withCount([
-                'missionRating as mission_rationg_count' => function ($query) {
-                    $query->select(DB::raw("AVG(rating) as rating"));
-                }
-            ]);
-            $missionQuery->with(['missionRating']);
-            $missionQuery->orderBY('mission_rationg_count', 'desc');
+            $missionQuery->orderBY('mission_rating_count', 'desc');
         }
 
         //Explore mission recommended to user
@@ -814,9 +826,13 @@ class MissionRepository implements MissionInterface
     public function inviteMission(int $missionId, int $inviteUserId, int $fromUserId): MissionInvite
     {
         $mission = $this->mission->findOrFail($missionId);
+        $inviteUser = $this->user->find($inviteUserId);
+        $fromUserName = $this->user->getUserName($fromUserId);
+       
+        $missionName = $this->missionLanguage->getMissionName($missionId, $inviteUser->language_id);
         $invite = $this->missionInvite
         ->create(['mission_id' => $missionId, 'to_user_id' => $inviteUserId, 'from_user_id' => $fromUserId]);
-        
+   
         $notify = $this->userNotification->where(['user_id' => $fromUserId, 'notification_type_id' => 1])->first();
         if ($notify) {
             $notificationData = array(
@@ -829,7 +845,15 @@ class MissionRepository implements MissionInterface
             $mission = $this->notification->create($notificationData);
         }
         // Code to sent an email
-        
+        $data = array(
+                'missionName'=> $missionName,
+                'fromUserName'=> $fromUserName
+            );
+        $this->mailer->send('invite', $data, function ($message) {
+            $message->to('surbhi.ladhava@tatvasoft.com')
+            ->subject('Mission Recommonded');
+            $message->from('ciplatform@example.com', 'CI Platform');
+        });
         return $invite;
     }
 }
