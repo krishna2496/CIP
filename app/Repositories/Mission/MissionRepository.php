@@ -74,11 +74,6 @@ class MissionRepository implements MissionInterface
     public $favouriteMission;
 
     /**
-     * @var App\Models\MissionRating
-     */
-    public $missionRating;
-	
-	/**
      * @var App\models\MissionSkill
      */
     private $missionSkill;
@@ -95,7 +90,6 @@ class MissionRepository implements MissionInterface
      * @param  Illuminate\Http\LanguageHelper $languageHelper
      * @param  Illuminate\Http\LanguageHelper $languageHelper
      * @param  Illuminate\Http\S3Helper $s3helper
-     * @param  App\Models\MissionRating $missionRating
      * @param App\Models\MissionSkill
      * @return void
      */
@@ -112,7 +106,6 @@ class MissionRepository implements MissionInterface
         Helpers $helpers,
         S3Helper $s3helper,
         FavouriteMission $favouriteMission,
-        MissionRating $missionRating,
         MissionSkill $missionSkill
     ) {
         $this->mission = $mission;
@@ -124,7 +117,6 @@ class MissionRepository implements MissionInterface
         $this->userFilterRepository = $userFilterRepository;
         $this->userFilter = $userFilter;
         $this->languageHelper = $languageHelper;
-        $this->missionRating = $missionRating;
         $this->helpers = $helpers;
         $this->s3helper = $s3helper;
         $this->favouriteMission = $favouriteMission;
@@ -553,6 +545,12 @@ class MissionRepository implements MissionInterface
             ->withCount(['missionApplication as mission_application_count' => function ($query) use ($request) {
                 $query->where('approval_status', config("constants.application_status")["AUTOMATICALLY_APPROVED"]);
             }]);
+            $missionQuery->withCount([
+                'missionRating as mission_rating_count' => function ($query) {
+                    $query->select(DB::raw("AVG(rating) as rating"));
+                }
+            ]);
+            
         //Explore mission by top favourite
         if ($request->has('explore_mission_type') &&
         ($request->input('explore_mission_type') == config('constants.TOP_FAVOURITE'))) {
@@ -563,13 +561,8 @@ class MissionRepository implements MissionInterface
         //Explore mission by most ranked
         if ($request->has('explore_mission_type') &&
         ($request->input('explore_mission_type') == config('constants.MOST_RANKED'))) {
-            $missionQuery->withCount([
-                'missionRating as mission_rationg_count' => function ($query) {
-                    $query->select(DB::raw("AVG(rating) as rating"));
-                }
-            ]);
             $missionQuery->with(['missionRating']);
-            $missionQuery->orderBY('mission_rationg_count', 'desc');
+            $missionQuery->orderBY('mission_rating_count', 'desc');
         }
 
         //Explore mission recommended to user
@@ -781,18 +774,5 @@ class MissionRepository implements MissionInterface
             $favouriteMissions =  $favouriteMission->removeFromFavourite($userId, $missionId);
         }
         return $this->favouriteMission->findFavourite($userId, $missionId);
-    }
-
-    /*
-     * Display rating of mission.
-     *
-     * @param Illuminate\Http\Request $request
-     * @return float
-     */
-    public function missionRatings(int $id): float
-    {
-        $mission = $this->mission->findOrFail($id);
-        $ratings = $this->missionRating->where('mission_id', $id)->avg('rating');
-        return $ratings ? ceil($ratings) : 0;
     }
 }

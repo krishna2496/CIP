@@ -90,8 +90,8 @@ $router->group(['middleware' => 'localization'], function ($router) {
     'uses' => 'App\Tenant\TenantOptionController@fetchTenantOptionValue']);
 
     /* Fetch tenant settings */
-    $router->get('/app/tenant-settings', ['as' =>'tenant-settings', 
-	'middleware' => 'tenant.connection|jwt.auth|JsonApiMiddleware',
+    $router->get('/app/tenant-settings', ['as' =>'tenant-settings',
+    'middleware' => 'tenant.connection|jwt.auth|JsonApiMiddleware',
     'uses' => 'App\Tenant\TenantSettingsController@index']);
 });
 
