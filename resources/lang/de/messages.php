@@ -96,6 +96,7 @@ return [
         'ERROR_THEME_NOT_FOUND' => 'DE: Mission Theme does not found in system',
         'ERROR_SKILL_NOT_FOUND' => 'DE: Skill does not found in system',
         'ERROR_INVALID_MISSION_ID' => 'DE: Invalid mission id',
+        'ERROR_INVALID_MISSION_APPLICATION_DATA' => 'DE: Invalid mission application data',
         
         // Custom error code for Tenant Authorization - 210000 - 219999
         'ERROR_INVALID_API_AND_SECRET_KEY' => 'DE: Invalid API Key or Secret key',

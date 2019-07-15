@@ -67,7 +67,7 @@ class MissionController extends Controller
     private $skill;
 
     /**
-     * Create a new Mission controller instance.
+     * Create a new Mission controller instance
      *
      * @param App\Repositories\Mission\MissionRepository $missionRepository
      * @param Illuminate\Http\ResponseHelper $responseHelper
@@ -411,7 +411,7 @@ class MissionController extends Controller
     }
 
     /**
-     * Add/remove mission to favourite.
+     * Add/remove mission to favourite
      *
      * @param Illuminate\Http\Request $request
      * @return \Illuminate\Http\JsonResponse
@@ -527,6 +527,65 @@ class MissionController extends Controller
             }
 
             return $filterTagArray;
+        } catch (\Exception $e) {
+            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
+        }
+    }
+
+    /**
+     * Apply to a mission
+     *
+     * @param Illuminate\Http\Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function missionApplication(Request $request): JsonResponse
+    {
+        /*
+        validate data
+        validate mission
+        check mission deadline
+        check total seats available or not
+        */
+        try {
+            // Server side validataions
+            $validator = Validator::make(
+                $request->all(),
+                [
+                    "mission_id" => "required|exists:mission,mission_id",
+                    "availability_id" => "required|exists:user_availability,availability_id"
+                ]
+            );
+            
+            // If request parameter have any error
+            if ($validator->fails()) {
+                return $this->responseHelper->error(
+                    Response::HTTP_UNPROCESSABLE_ENTITY,
+                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                    config('constants.error_codes.ERROR_INVALID_MISSION_APPLICATION_DATA'),
+                    $validator->errors()->first()
+                );
+            }
+            dd($request);
+            // Create new mission application
+            $missionApplication = $this->missionRepository->store($request->all());
+
+            // Set response data
+            $apiData = ['mission_application_id' => $missionApplication->mission_application_id];
+            $apiStatus = Response::HTTP_CREATED;
+            $apiMessage = trans('messages.success.MESSAGE_APPLICATION_CREATED');
+            
+            return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
+        } catch (PDOException $e) {
+            dd($e);
+            return $this->PDO(
+                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
+                trans('messages.custom_error_message.ERROR_DATABASE_OPERATIONAL')
+            );
+        } catch (InvalidArgumentException $e) {
+            return $this->invalidArgument(
+                config('constants.error_codes.ERROR_INVALID_ARGUMENT'),
+                trans('messages.custom_error_message.ERROR_INVALID_ARGUMENT')
+            );
         } catch (\Exception $e) {
             return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }

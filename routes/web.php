@@ -93,6 +93,13 @@ $router->group(['middleware' => 'localization'], function ($router) {
     $router->get('/app/tenant-settings', ['as' =>'tenant-settings',
     'middleware' => 'tenant.connection|jwt.auth|JsonApiMiddleware',
     'uses' => 'App\Tenant\TenantSettingsController@index']);
+
+    /* Apply to a mission */
+    $router->post(
+        'missions/{missionId}/applications',
+        ['middleware' => 'tenant.connection|jwt.auth|JsonApiMiddleware',
+        'uses' => 'App\Mission\MissionController@missionApplication']
+    );
 });
 
 
