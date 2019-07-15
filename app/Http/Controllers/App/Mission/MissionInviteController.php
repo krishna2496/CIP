@@ -6,7 +6,6 @@ use Illuminate\Http\Response;
 use App\Repositories\MissionInvite\MissionInviteRepository;
 use App\Helpers\ResponseHelper;
 use App\Http\Controllers\Controller;
-use InvalidArgumentException;
 use PDOException;
 use Illuminate\Http\JsonResponse;
 use App\Traits\RestExceptionHandlerTrait;
@@ -92,11 +91,6 @@ class MissionInviteController extends Controller
             return $this->PDO(
                 config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
                 trans('messages.custom_error_message.ERROR_DATABASE_OPERATIONAL')
-            );
-        } catch (InvalidArgumentException $e) {
-            return $this->invalidArgument(
-                config('constants.error_codes.ERROR_INVALID_ARGUMENT'),
-                trans('messages.custom_error_message.ERROR_INVALID_ARGUMENT')
             );
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
