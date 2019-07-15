@@ -2,7 +2,6 @@
 namespace App\Repositories\Mission;
 
 use App\Repositories\Mission\MissionInterface;
-use App\Repositories\UserFilter\UserFilterRepository;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Helpers\Helpers;
@@ -13,16 +12,12 @@ use App\Models\Mission;
 use App\Models\MissionLanguage;
 use App\Models\MissionDocument;
 use App\Models\MissionMedia;
-use App\Models\MissionRating;
 use App\Models\MissionApplication;
 use App\Models\FavouriteMission;
-use App\Models\UserFilter;
 use App\User;
 use Validator;
 use PDOException;
 use DB;
-use Illuminate\Support\Carbon;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
 
@@ -43,16 +38,6 @@ class MissionRepository implements MissionInterface
      */
     private $responseHelper;
 
-    /**
-     * @var App\Repositories\UserFilter\UserFilterRepository
-     */
-    private $userFilterRepository;
-
-    /**
-     * @var App\Models\UserFilter
-     */
-    public $userFilter;
-    
     /*
      * @var App\Helpers\LanguageHelper
      */
@@ -74,16 +59,6 @@ class MissionRepository implements MissionInterface
     public $favouriteMission;
 
     /**
-     * @var App\Models\MissionRating
-     */
-    public $missionRating;
-
-    /**
-     * @var App\Models\MissionInvite
-     */
-    public $missionInvite;
-
-    /**
      * @var App\User
      */
     public $user;
@@ -98,11 +73,8 @@ class MissionRepository implements MissionInterface
      * @param  App\Models\MissionDocument $missionDocument
      * @param  Illuminate\Http\ResponseHelper $responseHelper
      * @param  Illuminate\Http\LanguageHelper $languageHelper
-     * @param  Illuminate\Http\LanguageHelper $languageHelper
      * @param  Illuminate\Http\S3Helper $s3helper
      * @param  App\Models\FavouriteMission $favouriteMission
-     * @param  App\Models\MissionRating $missionRating
-     * @param  App\Models\MissionInvite $missionInvite
      * @param  App\User $user
      * @return void
      */
@@ -113,14 +85,10 @@ class MissionRepository implements MissionInterface
         MissionMedia $missionMedia,
         MissionDocument $missionDocument,
         ResponseHelper $responseHelper,
-        UserFilterRepository $userFilterRepository,
-        UserFilter $userFilter,
         LanguageHelper $languageHelper,
         Helpers $helpers,
         S3Helper $s3helper,
         FavouriteMission $favouriteMission,
-        MissionRating $missionRating,
-        MissionInvite $missionInvite,
         User $user
     ) {
         $this->mission = $mission;
@@ -129,14 +97,10 @@ class MissionRepository implements MissionInterface
         $this->missionDocument = $missionDocument;
         $this->missionApplication = $missionApplication;
         $this->responseHelper = $responseHelper;
-        $this->userFilterRepository = $userFilterRepository;
-        $this->userFilter = $userFilter;
         $this->languageHelper = $languageHelper;
-        $this->missionRating = $missionRating;
         $this->helpers = $helpers;
         $this->s3helper = $s3helper;
         $this->favouriteMission = $favouriteMission;
-        $this->missionInvite = $missionInvite;
         $this->user = $user;
     }
     

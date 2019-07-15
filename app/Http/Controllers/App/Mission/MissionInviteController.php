@@ -66,17 +66,17 @@ class MissionInviteController extends Controller
                     $validator->errors()->first()
                 );
             }
-            $inviteCount = $this->missionInviteRepository->checkInviteMission(
-                $request->mission_id,
-                $request->to_user_id,
-                $request->auth->user_id
-            );
-            if ($inviteCount > 0) {
-                return $this->invalidArgument(
-                    config('constants.error_codes.ERROR_INVITE_MISSION_ALREADY_EXIST'),
-                    trans('messages.custom_error_message.ERROR_INVITE_MISSION_ALREADY_EXIST')
-                );
-            }
+            // $inviteCount = $this->missionInviteRepository->checkInviteMission(
+            //     $request->mission_id,
+            //     $request->to_user_id,
+            //     $request->auth->user_id
+            // );
+            // if ($inviteCount > 0) {
+            //     return $this->invalidArgument(
+            //         config('constants.error_codes.ERROR_INVITE_MISSION_ALREADY_EXIST'),
+            //         trans('messages.custom_error_message.ERROR_INVITE_MISSION_ALREADY_EXIST')
+            //     );
+            // }
             $inviteMission = $this->missionInviteRepository->inviteMission(
                 $request->mission_id,
                 $request->to_user_id,
