@@ -71,4 +71,13 @@ interface UserInterface
      * @return \Illuminate\Http\Response
      */
     public function unlinkSkill(array $request, int $id);
+
+    /**
+     * Listing of all resources.
+     *
+     * @param string $search
+     * @param int $userId
+     * @return Illuminate\Http\JsonResponse
+     */
+    public function searchUser(string $search, int $userId);
 }

@@ -59,6 +59,7 @@ return [
         'MESSAGE_TENANT_OPTIONS_LIST' => 'DE: Tenant options listing successfully',
         'MESSAGE_MISSION_RATING_LISTING' => 'DE: Get mission rating successfully',
         'MESSAGE_TENANT_OPTION_FOUND' => 'DE: Tenant option found', 
+        'MESSAGE_INVITED_FOR_MISSION' => 'DE: User invited to mission successfully',
     ],
 
         
@@ -96,6 +97,8 @@ return [
         'ERROR_THEME_NOT_FOUND' => 'DE: Mission Theme does not found in system',
         'ERROR_SKILL_NOT_FOUND' => 'DE: Skill does not found in system',
         'ERROR_INVALID_MISSION_ID' => 'DE: Invalid mission id',
+        'ERROR_INVALID_INVITE_MISSION_DATA' => 'DE: Invalid invite mission detail',
+        'ERROR_INVITE_MISSION_ALREADY_EXIST' => 'DE: User is already invited for this mission',
         
         // Custom error code for Tenant Authorization - 210000 - 219999
         'ERROR_INVALID_API_AND_SECRET_KEY' => 'DE: Invalid API Key or Secret key',
@@ -135,5 +138,15 @@ return [
         'ERROR_DOWNLOADING_IMAGE_TO_LOCAL' => 'DE: An error while downloading image from S3 to server',
         'ERROR_IMAGE_UPLOAD_INVALID_DATA' => 'DE: Invalid input file',
         'ERROR_TENANT_OPTION_NOT_FOUND' => 'DE: No tenant option found'
+    ],
+
+    /**
+    * API custom text
+    */
+    'custom_text' => [
+        'HAS_RECOMMENDED_A_MISSION_TO_YOU' => 'DE: has recommended a mission to you',
+        'MISSION' => 'DE: MISSION :',
+        'ALL_RIGHTS_RESERVED' => 'DE: All Rights Reserved.',
+        'MAIL_MISSION_RECOMMENDATION' => 'DE: Mission Recommendation'
     ]
 ];
