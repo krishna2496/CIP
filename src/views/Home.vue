@@ -3,8 +3,9 @@
         <header @scroll="handleScroll">
              <ThePrimaryHeader @exploreMisison="exploreMisison" 
              @getMissions = "getMissions"
-             v-if="isShownComponent"></ThePrimaryHeader>
+             v-if="isShownComponent" ></ThePrimaryHeader>
              <TheSecondaryHeader :search="search" ref="secondaryHeader" 
+             @getMissions="getMissions"
               v-if="isShownComponent"></TheSecondaryHeader>
         </header>
         <main>
@@ -320,7 +321,7 @@ export default {
             this.$refs.secondaryHeader.removeItems(data);
         },
         clearMissionFilter(){
-          this.$refs.secondaryHeader.clearFilter();  
+          this.$refs.secondaryHeader.clearAllFilter();  
         }
     },
     created() { 

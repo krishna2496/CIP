@@ -178,10 +178,12 @@
 <script>
 import store from '../store';
 import constants from '../constant';
-
+import StarRating from "./StarRating";
 export default {
     name: "MissionGridView",
-    components:{},
+    components:{
+        StarRating
+    },
     props: {
         items: Array,
     },

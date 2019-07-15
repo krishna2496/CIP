@@ -144,13 +144,15 @@
 <script>
 import store from '../store';
 import constants from '../constant';
-
+import StarRating from "./StarRating";
 export default {
     name: "MissionListView",
     props: {
         items: Array,
     },
-    components:{},
+    components:{
+        StarRating
+    },
     data() {
         return {
         };
