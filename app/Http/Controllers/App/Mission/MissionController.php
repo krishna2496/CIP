@@ -569,7 +569,7 @@ class MissionController extends Controller
            
             // dd($request);
             // Create new mission application
-            $missionApplication = $this->missionRepository->storeApplication($missionId, $request->all());
+            $missionApplication = $this->missionRepository->storeApplication($request->all());
 
             // Set response data
             $apiData = ['mission_application_id' => $missionApplication->mission_application_id];

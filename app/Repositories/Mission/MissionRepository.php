@@ -779,14 +779,13 @@ class MissionRepository implements MissionInterface
     /**
      * Add mission application.
      *
-     * @param int $missionId
      * @param Illuminate\Http\Request $request
      * @return App\Models\MissionApplication
      */
-    public function storeApplication(int $missionId, array $request): MissionApplication
+    public function storeApplication(array $request): MissionApplication
     {
         $mission = $this->mission->select('*')
-        ->where('mission.mission_id', $missionId)
+        ->where('mission.mission_id', $request->missionId)
         ->withCount(['missionApplication as mission_application_count' => function ($query) use ($request) {
             $query->where('approval_status', config("constants.application_status")["AUTOMATICALLY_APPROVED"]);
         }])->first();

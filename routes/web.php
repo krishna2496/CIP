@@ -96,7 +96,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
 
     /* Apply to a mission */
     $router->post(
-        'missions/{missionId}/applications',
+        'app/missions/applications',
         ['middleware' => 'tenant.connection|jwt.auth|JsonApiMiddleware',
         'uses' => 'App\Mission\MissionController@missionApplication']
     );
