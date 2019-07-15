@@ -14,6 +14,7 @@ use App\Models\MissionDocument;
 use App\Models\MissionMedia;
 use App\Models\MissionApplication;
 use App\Models\FavouriteMission;
+use App\Models\MissionSkill;
 use DB;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
