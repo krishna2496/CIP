@@ -545,7 +545,7 @@ class MissionRepository implements MissionInterface
             ->withCount(['missionApplication as mission_application_count' => function ($query) use ($request) {
                 $query->where('approval_status', config("constants.application_status")["AUTOMATICALLY_APPROVED"]);
             }]);
-            $missionQuery->withCount([
+        $missionQuery->withCount([
                 'missionRating as mission_rating_count' => function ($query) {
                     $query->select(DB::raw("AVG(rating) as rating"));
                 }
@@ -634,6 +634,22 @@ class MissionRepository implements MissionInterface
             $missionQuery->wherehas('missionSkill', function ($skillQuery) use ($userFilterData) {
                 $skillQuery->whereIn("skill_id", explode(",", $userFilterData['skill_id']));
             });
+        }
+
+        if ($userFilterData['sort_by'] && $userFilterData['sort_by'] != '') {
+            if ($userFilterData['sort_by'] == config('constants.NEWEST')) {
+                $missionQuery->orderBY('mission.created_at', 'desc');
+            }
+            if ($userFilterData['sort_by'] == config('constants.OLDEST')) {
+            }
+            if ($userFilterData['sort_by'] == config('constants.LOWEST_AVAILABLE_SEATS')) {
+            }
+            if ($userFilterData['sort_by'] == config('constants.HIGHEST_AVAILABLE_SEATS')) {
+            }
+            if ($userFilterData['sort_by'] == config('constants.MY_FAVOURITE')) {
+            }
+            if ($userFilterData['sort_by'] == config('constants.DEADLINE')) {
+            }
         }
 
         $mission =  $missionQuery->paginate(config('constants.PER_PAGE_LIMIT'));

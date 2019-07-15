@@ -58,7 +58,7 @@ class Mission extends Model
     'seats_left','user_application_count','mission_application_count','missionSkill','city_name','missionApplication',
     'country','favouriteMission','missionInvite','missionRating', 'goalMission', 'timeMission', 'application_deadline',
     'application_start_date', 'application_end_date', 'application_start_time', 'application_end_time',
-    'goal_objective', 'mission_count', 'mission_rating_count'];
+    'goal_objective', 'mission_count', 'mission_rating_count', 'created_at'];
 
     protected $appends = ['city_name'];
     /**

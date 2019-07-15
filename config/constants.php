@@ -96,6 +96,14 @@ return [
     'SKILL' => "skill",
     'RANDOM' => 'random_missions',
 
+    /* sort by */
+    "NEWEST" => "newest",
+    "OLDEST" => "oldest",
+    "LOWEST_AVAILABLE_SEATS" => "lowest_available_seats",
+    "HIGHEST_AVAILABLE_SEATS" => "highest_available_seats",
+    "MY_FAVOURITE" => "my_favourite",
+    "DEADLINE" => "deadline",
+
     'ORGANIZATION' => "organization",
     'EXPLORE_MISSION_LIMIT' => "5",
 
