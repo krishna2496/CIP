@@ -84,21 +84,6 @@ class MissionRepository implements MissionInterface
     public $missionInvite;
 
     /**
-     * @var App\Models\Notification
-     */
-    public $notification;
-
-    /**
-     * @var App\Models\NotificationType
-     */
-    public $notificationType;
-
-    /**
-     * @var App\Models\UserNotification
-     */
-    public $userNotification;
-
-    /**
      * @var App\User
      */
     public $user;
@@ -115,11 +100,9 @@ class MissionRepository implements MissionInterface
      * @param  Illuminate\Http\LanguageHelper $languageHelper
      * @param  Illuminate\Http\LanguageHelper $languageHelper
      * @param  Illuminate\Http\S3Helper $s3helper
+     * @param  App\Models\FavouriteMission $favouriteMission
      * @param  App\Models\MissionRating $missionRating
      * @param  App\Models\MissionInvite $missionInvite
-     * @param  App\Models\Notification $notification
-     * @param  App\Models\NotificationType $notificationType
-     * @param  App\Models\UserNotification $userNotification
      * @param  App\User $user
      * @return void
      */
@@ -138,10 +121,6 @@ class MissionRepository implements MissionInterface
         FavouriteMission $favouriteMission,
         MissionRating $missionRating,
         MissionInvite $missionInvite,
-        Notification $notification,
-        NotificationType $notificationType,
-        UserNotification $userNotification,
-        Mailer $mailer,
         User $user
     ) {
         $this->mission = $mission;
@@ -158,10 +137,6 @@ class MissionRepository implements MissionInterface
         $this->s3helper = $s3helper;
         $this->favouriteMission = $favouriteMission;
         $this->missionInvite = $missionInvite;
-        $this->notification = $notification;
-        $this->notificationType = $notificationType;
-        $this->userNotification = $userNotification;
-        $this->mailer = $mailer;
         $this->user = $user;
     }
     
