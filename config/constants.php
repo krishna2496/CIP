@@ -87,14 +87,14 @@ return [
      * User notification types
      */
     'notification_types' => [
-        'RECOMMENDED-MISSIONS' => '1',
-        'VOLUNTEERING-HOURS' => '2',
-        'VOLUNTEERING-GOALS' => '3',
+        'RECOMMENDED_MISSIONS' => '1',
+        'VOLUNTEERING_HOURS' => '2',
+        'VOLUNTEERING_GOALS' => '3',
         'MY-COMMENTS' => '4',
         'MY-STORIES' => '5',
-        'NEW-STORIES-HOURS' => '6',
-        'NEW-MISSIONS' => '7',
-        'NEW-MESSAGES' => '8'
+        'NEW_STORIES_HOURS' => '6',
+        'NEW_MISSIONS' => '7',
+        'NEW_MESSAGES' => '8'
     ],
      
     'TOP_THEME' => "top_themes",

@@ -77,7 +77,7 @@ interface UserInterface
      *
      * @param string $search
      * @param int $userId
-     * @return void
+     * @return Illuminate\Http\JsonResponse
      */
     public function searchUser(string $search, int $userId);
 }
