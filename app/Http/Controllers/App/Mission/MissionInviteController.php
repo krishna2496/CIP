@@ -41,7 +41,7 @@ class MissionInviteController extends Controller
     }
 
     /*
-     * Invite to mission
+     * Invite to a mission
      *
      * @param Illuminate\Http\Request $request
      * @return Illuminate\Http\JsonResponse

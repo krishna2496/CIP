@@ -138,8 +138,8 @@ class MissionInviteRepository implements MissionInviteInterface
             );
         $this->mailer->send('invite', $data, function ($message) use ($toEmail) {
             $message->to($toEmail)
-            ->subject('Mission Recommendation');
-            $message->from('ciplatform@example.com', 'CI Platform');
+            ->subject(trans('messages.custom_text.MAIL_MISSION_RECOMMENDATION'));
+            $message->from(env('MAIL_FROM_ADDRESS'), env('MAIL_FROM_NAME'));
         });
         return $invite;
     }
