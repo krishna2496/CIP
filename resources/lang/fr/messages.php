@@ -59,6 +59,7 @@ return [
         'MESSAGE_TENANT_OPTIONS_LIST' => 'FR: Tenant options listing successfully',
         'MESSAGE_MISSION_RATING_LISTING' => 'FR: Get mission rating successfully',
         'MESSAGE_TENANT_OPTION_FOUND' => 'FR: Tenant option found', 
+        'MESSAGE_INVITED_FOR_MISSION' => 'User invited to mission successfully',
     ],
 
         
@@ -98,6 +99,9 @@ return [
         'ERROR_INVALID_MISSION_ID' => 'FR: Invalid mission id',
         'ERROR_MISSION_APPLICATION_SEATS_NOT_AVAILABLE' => 'FR: No seats available for this mission',
 
+        'ERROR_INVALID_INVITE_MISSION_DATA' => 'FR: Invalid invite mission detail',
+        'ERROR_INVITE_MISSION_ALREADY_EXIST' => 'FR: User is already invited for this mission',
+        
         // Custom error code for Tenant Authorization - 210000 - 219999
         'ERROR_INVALID_API_AND_SECRET_KEY' => 'FR: Invalid API Key or Secret key',
         'ERROR_API_AND_SECRET_KEY_REQUIRED' => 'FR: API key and Secret key are required',
@@ -136,5 +140,15 @@ return [
         'ERROR_DOWNLOADING_IMAGE_TO_LOCAL' => 'FR: An error while downloading image from S3 to server',
         'ERROR_IMAGE_UPLOAD_INVALID_DATA' => 'FR: Invalid input file',
         'ERROR_TENANT_OPTION_NOT_FOUND' => 'FR: No tenant option found'
+    ],
+
+    /**
+    * API custom text
+    */
+    'custom_text' => [
+        'HAS_RECOMMENDED_A_MISSION_TO_YOU' => 'FR: has recommended a mission to you',
+        'MISSION' => 'FR: MISSION :',
+        'ALL_RIGHTS_RESERVED' => 'FR: All Rights Reserved.',
+        'MAIL_MISSION_RECOMMENDATION' => 'FR: Mission Recommendation'
     ]
 ];

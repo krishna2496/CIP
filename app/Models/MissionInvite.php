@@ -25,6 +25,13 @@ class MissionInvite extends Model
     protected $primaryKey = 'mission_invite_id';
     
     /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = ['mission_id', 'from_user_id', 'to_user_id'];
+
+    /**
      * Get the mission that has media.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

@@ -156,4 +156,26 @@ class UserRepository implements UserInterface
     {
         return $this->userSkill->with('skill')->where('user_id', $userId)->get();
     }
+
+    /**
+     * Get listing of users
+     *
+     * @param string $search
+     * @param int $userId
+     * @return Illuminate\Database\Eloquent\Collection
+     */
+    public function searchUser(string $search, int $userId): Collection
+    {
+        $userQuery = $this->user->select('user_id', 'first_name', 'last_name', 'email')
+        ->where('user_id', '<>', $userId);
+        if ($search) {
+            $userQuery->where(function ($query) use ($search) {
+                $query->orWhere('first_name', 'like', '%' . $search . '%');
+                $query->orWhere('last_name', 'like', '%' . $search . '%');
+                $query->orWhere('email', 'like', '%' . $search . '%');
+            });
+        }
+        $userQuery->orderBy('user_id', 'ASC');
+        return $userQuery->get();
+    }
 }

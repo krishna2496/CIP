@@ -2,7 +2,6 @@
 namespace App\Repositories\Mission;
 
 use App\Repositories\Mission\MissionInterface;
-use App\Repositories\UserFilter\UserFilterRepository;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Helpers\Helpers;
@@ -13,16 +12,10 @@ use App\Models\Mission;
 use App\Models\MissionLanguage;
 use App\Models\MissionDocument;
 use App\Models\MissionMedia;
-use App\Models\MissionRating;
 use App\Models\MissionApplication;
 use App\Models\FavouriteMission;
-use App\Models\UserFilter;
 use App\Models\MissionSkill;
-use Validator;
-use PDOException;
 use DB;
-use Illuminate\Support\Carbon;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
 
@@ -43,16 +36,6 @@ class MissionRepository implements MissionInterface
      */
     private $responseHelper;
 
-    /**
-     * @var App\Repositories\UserFilter\UserFilterRepository
-     */
-    private $userFilterRepository;
-
-    /**
-     * @var App\Models\UserFilter
-     */
-    public $userFilter;
-    
     /*
      * @var App\Helpers\LanguageHelper
      */
@@ -88,9 +71,9 @@ class MissionRepository implements MissionInterface
      * @param  App\Models\MissionDocument $missionDocument
      * @param  Illuminate\Http\ResponseHelper $responseHelper
      * @param  Illuminate\Http\LanguageHelper $languageHelper
-     * @param  Illuminate\Http\LanguageHelper $languageHelper
      * @param  Illuminate\Http\S3Helper $s3helper
      * @param App\Models\MissionSkill
+     * @param  App\Models\FavouriteMission $favouriteMission
      * @return void
      */
     public function __construct(
@@ -100,8 +83,6 @@ class MissionRepository implements MissionInterface
         MissionMedia $missionMedia,
         MissionDocument $missionDocument,
         ResponseHelper $responseHelper,
-        UserFilterRepository $userFilterRepository,
-        UserFilter $userFilter,
         LanguageHelper $languageHelper,
         Helpers $helpers,
         S3Helper $s3helper,
@@ -114,8 +95,6 @@ class MissionRepository implements MissionInterface
         $this->missionDocument = $missionDocument;
         $this->missionApplication = $missionApplication;
         $this->responseHelper = $responseHelper;
-        $this->userFilterRepository = $userFilterRepository;
-        $this->userFilter = $userFilter;
         $this->languageHelper = $languageHelper;
         $this->helpers = $helpers;
         $this->s3helper = $s3helper;
@@ -487,9 +466,6 @@ class MissionRepository implements MissionInterface
             'mission.end_date',
             'mission.total_seats',
             'mission.mission_type',
-            'mission.end_date',
-            'mission.total_seats',
-            'mission.mission_type',
             'mission.publication_status',
             'mission.organisation_id',
             'mission.organisation_name'
@@ -544,13 +520,13 @@ class MissionRepository implements MissionInterface
             }])
             ->withCount(['missionApplication as mission_application_count' => function ($query) use ($request) {
                 $query->where('approval_status', config("constants.application_status")["AUTOMATICALLY_APPROVED"]);
-            }]);
-            $missionQuery->withCount([
+            }])
+            ->withCount([
                 'missionRating as mission_rating_count' => function ($query) {
                     $query->select(DB::raw("AVG(rating) as rating"));
                 }
             ]);
-            
+        $missionQuery->with(['missionRating']);
         //Explore mission by top favourite
         if ($request->has('explore_mission_type') &&
         ($request->input('explore_mission_type') == config('constants.TOP_FAVOURITE'))) {
@@ -561,7 +537,6 @@ class MissionRepository implements MissionInterface
         //Explore mission by most ranked
         if ($request->has('explore_mission_type') &&
         ($request->input('explore_mission_type') == config('constants.MOST_RANKED'))) {
-            $missionQuery->with(['missionRating']);
             $missionQuery->orderBY('mission_rating_count', 'desc');
         }
 

@@ -83,6 +83,20 @@ return [
         'REFUSED' => 'REFUSED'
     ],
 
+    /*
+     * User notification types
+     */
+    'notification_types' => [
+        'RECOMMENDED_MISSIONS' => '1',
+        'VOLUNTEERING_HOURS' => '2',
+        'VOLUNTEERING_GOALS' => '3',
+        'MY-COMMENTS' => '4',
+        'MY-STORIES' => '5',
+        'NEW_STORIES_HOURS' => '6',
+        'NEW_MISSIONS' => '7',
+        'NEW_MESSAGES' => '8'
+    ],
+     
     'TOP_THEME' => "top_themes",
     'TOP_COUNTRY' => "top_countries",
     'TOP_ORGANISATION' => "top_organization",
@@ -139,11 +153,12 @@ return [
         'ERROR_NO_SKILL_FOUND' => '400010',
         'ERROR_SKILL_DELETION' => '400011',
         'ERROR_SKILL_REQUIRED_FIELDS_EMPTY' => '400012',
-        'ERROR_NO_SKILL_FOUND' => '400013',
         'ERROR_SKILL_NOT_FOUND' => '400014',
         'ERROR_PARENT_SKILL_NOT_FOUND' => '400015',
         'ERROR_INVALID_MISSION_ID' => '400018',
         'ERROR_MISSION_APPLICATION_SEATS_NOT_AVAILABLE' => '400021',
+        'ERROR_INVALID_INVITE_MISSION_DATA' => '400019',
+        'ERROR_INVITE_MISSION_ALREADY_EXIST' => '400020',
         
         'ERROR_OCCURRED' => '999999',
         'ERROR_INVALID_JSON' => '900000',
