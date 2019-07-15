@@ -775,4 +775,43 @@ class MissionRepository implements MissionInterface
         }
         return $this->favouriteMission->findFavourite($userId, $missionId);
     }
+
+    /**
+     * Add mission application.
+     *
+     * @param int $missionId
+     * @param Illuminate\Http\Request $request
+     * @return App\Models\MissionApplication
+     */
+    public function storeApplication(int $missionId, array $request): MissionApplication
+    {
+        $mission = $this->mission->select('*')
+        ->where('mission.mission_id', $missionId)
+        ->withCount(['missionApplication as mission_application_count' => function ($query) use ($request) {
+            $query->where('approval_status', config("constants.application_status")["AUTOMATICALLY_APPROVED"]);
+        }])->first();
+
+        if ($mission['total_seats'] != 0) {
+            $seatsLeft = ($mission['total_seats']) - ($mission['mission_application_count']);
+            if ($seatsLeft == 0 || $mission['total_seats'] == $mission['mission_application_count']) {
+            }
+        }
+
+        dd($seatsLeft);
+
+        // echo "<pre>";
+        // print_r($missionQuery['mission_application_count']);
+        // dd($missionQuery);
+
+
+        $mission = $this->missionApplication->findOrFail($missionId);
+        $favouriteMission = $this->favouriteMission->findFavourite($userId, $missionId);
+        
+        if (is_null($favouriteMission)) {
+            $favouriteMissions = $this->favouriteMission->addToFavourite($userId, $missionId);
+        } else {
+            $favouriteMissions =  $favouriteMission->removeFromFavourite($userId, $missionId);
+        }
+        return $this->favouriteMission->findFavourite($userId, $missionId);
+    }
 }

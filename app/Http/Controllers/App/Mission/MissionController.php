@@ -535,10 +535,11 @@ class MissionController extends Controller
     /**
      * Apply to a mission
      *
+     * @param int $missionId
      * @param Illuminate\Http\Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function missionApplication(Request $request): JsonResponse
+    public function missionApplication(int $missionId, Request $request): JsonResponse
     {
         /*
         validate data
@@ -565,9 +566,10 @@ class MissionController extends Controller
                     $validator->errors()->first()
                 );
             }
-            dd($request);
+           
+            // dd($request);
             // Create new mission application
-            $missionApplication = $this->missionRepository->store($request->all());
+            $missionApplication = $this->missionRepository->storeApplication($missionId, $request->all());
 
             // Set response data
             $apiData = ['mission_application_id' => $missionApplication->mission_application_id];
@@ -587,6 +589,7 @@ class MissionController extends Controller
                 trans('messages.custom_error_message.ERROR_INVALID_ARGUMENT')
             );
         } catch (\Exception $e) {
+            dd($e);
             return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
