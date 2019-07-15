@@ -535,11 +535,10 @@ class MissionController extends Controller
     /**
      * Apply to a mission
      *
-     * @param int $missionId
      * @param Illuminate\Http\Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function missionApplication(int $missionId, Request $request): JsonResponse
+    public function missionApplication(Request $request): JsonResponse
     {
         /*
         validate data
@@ -556,7 +555,6 @@ class MissionController extends Controller
                     "availability_id" => "required|exists:user_availability,availability_id"
                 ]
             );
-            
             // If request parameter have any error
             if ($validator->fails()) {
                 return $this->responseHelper->error(
@@ -566,10 +564,33 @@ class MissionController extends Controller
                     $validator->errors()->first()
                 );
             }
+
+            $available = $this->missionRepository->checkAvailableSeats($request->mission_id);
+            if ($available == false) {
+                return $this->responseHelper->error(
+                    Response::HTTP_UNPROCESSABLE_ENTITY,
+                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                    config('constants.error_codes.ERROR_MISSION_APPLICATION_SEATS_NOT_AVAILABLE'),
+                    trans('messages.custom_error_message.ERROR_MISSION_APPLICATION_SEATS_NOT_AVAILABLE')
+                );
+            }
+
+            $deadline = $this->missionRepository->checkMissionDeadline($request->mission_id);
+            dd($deadline);
+            if ($available == true) {
+                return $this->responseHelper->error(
+                    Response::HTTP_UNPROCESSABLE_ENTITY,
+                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                    config('constants.error_codes.ERROR_MISSION_APPLICATION_SEATS_NOT_AVAILABLE'),
+                    trans('messages.custom_error_message.ERROR_MISSION_APPLICATION_SEATS_NOT_AVAILABLE')
+                );
+            }
+
+            // checkAvailableSeats
            
             // dd($request);
             // Create new mission application
-            $missionApplication = $this->missionRepository->storeApplication($request->all());
+            // $missionApplication = $this->missionRepository->storeApplication($request->all());
 
             // Set response data
             $apiData = ['mission_application_id' => $missionApplication->mission_application_id];
