@@ -138,5 +138,14 @@ return [
         'ERROR_DOWNLOADING_IMAGE_TO_LOCAL' => 'FR: An error while downloading image from S3 to server',
         'ERROR_IMAGE_UPLOAD_INVALID_DATA' => 'FR: Invalid input file',
         'ERROR_TENANT_OPTION_NOT_FOUND' => 'FR: No tenant option found'
+    ],
+
+    /**
+    * API custom text
+    */
+    'custom_text' => [
+        'HAS_RECOMMENDED_A_MISSION_TO_YOU' => 'FR: has recommended a mission to you',
+        'MISSION' => 'FR: MISSION :',
+        'ALL_RIGHTS_RESERVED' => 'FR: All Rights Reserved.'
     ]
 ];

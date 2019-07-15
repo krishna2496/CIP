@@ -125,7 +125,7 @@ class MissionInviteRepository implements MissionInviteInterface
         $notify = $this->userNotification->where(['user_id' => $fromUserId, 'notification_type_id' => 1])->first();
         if ($notify) {
             $notificationData = array(
-                'notification_type_id' => config('constants.notification_types.RECOMMENDED-MISSIONS'),
+                'notification_type_id' => config('constants.notification_types.RECOMMENDED_MISSIONS'),
                 'from_user_id' => $fromUserId,
                 'user_id' => $inviteUserId,
                 'mission_id' => $missionId,

@@ -61,7 +61,7 @@ $companyLogo =  (config('app.tenant_logo') != '') ? config('app.tenant_logo') : 
 								</tr>
 								<tr>
 									<td style="font-family: Verdana,Geneva,sans-serif;  color: #414141; font-size:15px; line-height: 19px;">
-										{{ $fromUserName }} has recommended a mission to you
+										{{ $fromUserName }} {{ trans('messages.custom_text.HAS_RECOMMENDED_A_MISSION_TO_YOU') }} 
 									</td>
 								</tr>
 								<tr>
@@ -71,7 +71,7 @@ $companyLogo =  (config('app.tenant_logo') != '') ? config('app.tenant_logo') : 
 								
 								<tr>
 									<td style="font-family: Verdana,Geneva,sans-serif;  color: #3a3a3a; font-size:20px; line-height: 36px;" class="title_text">
-										Mission :  {{ $missionName }} <br/>
+										{{ trans('messages.custom_text.MISSION') }}  {{ $missionName }} <br/>
 									</td>
 								</tr>
 								
@@ -117,7 +117,7 @@ $companyLogo =  (config('app.tenant_logo') != '') ? config('app.tenant_logo') : 
 
 					<tr>
 						<td style="font-family: Verdana,Geneva,sans-serif;  color: #757575; font-size:13px; line-height: 17px; align:center; text-align:center">
-							© {{date('Y')}} Optimy, All Rights Reserved.
+							© {{date('Y')}} Optimy, {{ trans('messages.custom_text.ALL_RIGHTS_RESERVED') }}
 						</td>
 					</tr>
 					<tr>
