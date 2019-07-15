@@ -807,8 +807,10 @@ class MissionRepository implements MissionInterface
      */
     public function checkMissionDeadline(int $missionId): string
     {
-        return "21212";
-        // return $this->mission->where('mission.mission_id', $missionId)->pluck('application_deadline');
+        $mission = $this->mission->findOrFail($missionId);
+        if ($mission->mission_type == config('constants.mission_type.TIME')) {
+            $this->mission->where('mission.mission_id', $missionId)->pluck('application_deadline');
+        }
     }
     /**
      * Add mission application.
