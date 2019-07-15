@@ -4,19 +4,20 @@
             <i class="document-icon">
                 <img :src="url"  alt="document"/>
             </i>
-            {{textVal}}
+            {{textVal}}                            
             <i class="chip-close" 
                 v-bind:data-id="tagId"
                 v-bind:data-type="type"
                 @click="handleSelect"
             >
                 <img v-bind:data-id="tagId"
-                v-bind:data-type="type" src="../assets/images/cross-ic.svg" alt="close"/>
+                v-bind:data-type="type" :src="$store.state.imagePath+'/assets/images/cross-ic.svg'" alt="close"/>
             </i>
         </span>
     </div>
 </template>
 <script>
+    import store from '../store';
     export default {
         name: "AppCustomChip",
         props: {

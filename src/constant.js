@@ -10,4 +10,5 @@ export default Object.freeze({
     HIGHEST_AVAILABLE_SEATS : 'highest_available_seats',
     MY_FAVOURITE : 'my_favourite',
     DEADLINE : 'deadline',
+    IMAGE_PATH : "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/"
 })

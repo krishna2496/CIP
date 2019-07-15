@@ -22,6 +22,7 @@ export default new Vuex.Store({
         exploreMissionType : '',
         exploreMissionParams : '',
         menubar : localStorage.getItem('menubar'),
+        imagePath: localStorage.getItem('imagePath'),
         countryId : localStorage.getItem('countryId'),
         cityId : localStorage.getItem('cityId'),
         themeId : localStorage.getItem('themeId'),
@@ -119,6 +120,10 @@ export default new Vuex.Store({
          {
             localStorage.setItem('menubar',JSON.stringify(headerMenuData)) 
             state.menubar = JSON.stringify(headerMenuData)
+        },
+        setImagePath(state, path) {
+            localStorage.setItem('imagePath', path);
+            state.imagePath = path;
         }
     },
     getters: {},

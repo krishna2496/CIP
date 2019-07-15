@@ -140,6 +140,18 @@ export default {
     created() {
         //Database connection and fetching tenant options api
         this.createConnection()
+
+        var domain = '';
+        var imagePath = '';
+        var currentUrl = (((window.location.origin).split('.')));
+        if (currentUrl[0]) {
+            domain = ((currentUrl[0]).split('//'));
+            if(domain[1]) {
+                // imagePath = constants.IMAGE_PATH + domain[1];
+                imagePath = constants.IMAGE_PATH + "tatva";
+                store.commit('setImagePath', imagePath);
+            }
+        }
     },
 };
 </script>
