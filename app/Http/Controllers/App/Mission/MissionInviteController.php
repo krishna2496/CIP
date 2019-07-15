@@ -105,7 +105,6 @@ class MissionInviteController extends Controller
                 trans('messages.custom_error_message.ERROR_MISSION_NOT_FOUND')
             );
         } catch (\Exception $e) {
-            dd($e);
             return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
