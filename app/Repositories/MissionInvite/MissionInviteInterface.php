@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 interface MissionInviteInterface
 {
     /**
-     * Display a mission ratings.
+     * Check already invited for mission or not.
      *
      * @param int $missionId
      * @param int $inviteUserId
@@ -16,7 +16,7 @@ interface MissionInviteInterface
     public function checkInviteMission(int $missionId, int $inviteUserId, int $fromUserId);
 
     /**
-     * Display a mission ratings.
+     * Invite for a mission.
      *
      * @param int $missionId
      * @param int $inviteUserId

@@ -15,9 +15,11 @@ use App\Models\MissionMedia;
 use App\Models\MissionApplication;
 use App\Models\FavouriteMission;
 use App\Models\MissionSkill;
+use App\Models\TimeMission;
 use DB;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
+use Carbon\Carbon;
 
 class MissionRepository implements MissionInterface
 {
@@ -741,67 +743,6 @@ class MissionRepository implements MissionInterface
     public function missionFavourite(int $userId, int $missionId)
     {
         $mission = $this->mission->findOrFail($missionId);
-        $favouriteMission = $this->favouriteMission->findFavourite($userId, $missionId);
-        
-        if (is_null($favouriteMission)) {
-            $favouriteMissions = $this->favouriteMission->addToFavourite($userId, $missionId);
-        } else {
-            $favouriteMissions =  $favouriteMission->removeFromFavourite($userId, $missionId);
-        }
-        return $this->favouriteMission->findFavourite($userId, $missionId);
-    }
-
-    /*
-     * Check seats are available or not.
-     *
-     * @param int $missionId
-     * @return bool
-     */
-    public function checkAvailableSeats(int $missionId): bool
-    {
-        $mission = $this->mission->select('*')
-        ->where('mission.mission_id', $missionId)
-        ->withCount(['missionApplication as mission_application_count' => function ($query) use ($missionId) {
-            $query->where('approval_status', config("constants.application_status")["AUTOMATICALLY_APPROVED"]);
-        }])->first();
-
-        if ($mission['total_seats'] != 0) {
-            $seatsLeft = ($mission['total_seats']) - ($mission['mission_application_count']);
-            if ($seatsLeft == 0 || $mission['total_seats'] == $mission['mission_application_count']) {
-                return false;
-            }
-        }
-        return true;
-    }
-    
-    /*
-     * Check seats are available or not.
-     *
-     * @param int $missionId
-     * @return string
-     */
-    public function checkMissionDeadline(int $missionId): string
-    {
-        $mission = $this->mission->findOrFail($missionId);
-        if ($mission->mission_type == config('constants.mission_type.TIME')) {
-            $this->mission->where('mission.mission_id', $missionId)->pluck('application_deadline');
-        }
-    }
-    /**
-     * Add mission application.
-     *
-     * @param Illuminate\Http\Request $request
-     * @return App\Models\MissionApplication
-     */
-    public function storeApplication(array $request): MissionApplication
-    {
-        
-        // echo "<pre>";
-        // print_r($missionQuery['mission_application_count']);
-        // dd($missionQuery);
-
-
-        $mission = $this->missionApplication->findOrFail($missionId);
         $favouriteMission = $this->favouriteMission->findFavourite($userId, $missionId);
         
         if (is_null($favouriteMission)) {

@@ -98,8 +98,9 @@ $router->group(['middleware' => 'localization'], function ($router) {
     $router->post(
         'app/missions/applications',
         ['middleware' => 'tenant.connection|jwt.auth|JsonApiMiddleware',
-        'uses' => 'App\Mission\MissionController@missionApplication']
+        'uses' => 'App\Mission\MissionApplicationController@missionApplication']
     );
+    
     /* Fetch user */
     $router->post('/app/user', ['as' =>'app.user',
     'middleware' => 'tenant.connection|jwt.auth|JsonApiMiddleware',
