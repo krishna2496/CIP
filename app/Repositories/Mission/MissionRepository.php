@@ -505,7 +505,6 @@ class MissionRepository implements MissionInterface
             'mission.total_seats',
             'mission.mission_type',
             'mission.end_date',
-            'mission.total_seats',
             'mission.mission_type',
             'mission.publication_status',
             'mission.organisation_id',
