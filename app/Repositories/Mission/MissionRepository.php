@@ -14,9 +14,6 @@ use App\Models\MissionDocument;
 use App\Models\MissionMedia;
 use App\Models\MissionApplication;
 use App\Models\FavouriteMission;
-use App\User;
-use Validator;
-use PDOException;
 use DB;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
@@ -75,7 +72,6 @@ class MissionRepository implements MissionInterface
      * @param  Illuminate\Http\LanguageHelper $languageHelper
      * @param  Illuminate\Http\S3Helper $s3helper
      * @param  App\Models\FavouriteMission $favouriteMission
-     * @param  App\User $user
      * @return void
      */
     public function __construct(
@@ -88,8 +84,7 @@ class MissionRepository implements MissionInterface
         LanguageHelper $languageHelper,
         Helpers $helpers,
         S3Helper $s3helper,
-        FavouriteMission $favouriteMission,
-        User $user
+        FavouriteMission $favouriteMission
     ) {
         $this->mission = $mission;
         $this->missionLanguage = $missionLanguage;
@@ -101,7 +96,6 @@ class MissionRepository implements MissionInterface
         $this->helpers = $helpers;
         $this->s3helper = $s3helper;
         $this->favouriteMission = $favouriteMission;
-        $this->user = $user;
     }
     
     /**
