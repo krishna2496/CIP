@@ -39,9 +39,6 @@
                                     </b-card-text>
                                     <div class="group-ratings">
                                         <span class="group-name">{{mission.organisation_name}}</span>
-                                        <span class="ratings">
-                                            <StarRating :config="config" :ratings="3"></StarRating>
-                                        </span>
                                     </div>
                                 </div>
                                 <div class="group-details">
