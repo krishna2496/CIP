@@ -35,6 +35,21 @@
                         </div>
                         <div class="group-wrap">
                             <div class="rating-with-button">
+                                <div class="group-ratings">
+                                    <span class="ratings">
+                                        <!-- <StarRating :config="config" :ratings="1"></StarRating> -->
+                                        <star-rating
+										v-bind:increment="0.5"
+										v-bind:max-rating="5"
+										inactive-color="#dddddd"
+										active-color="#F7D341"
+										v-bind:star-size="23"
+                                        :rating = "mission.mission_rating_count"
+                                        :read-only="true"
+										>
+									</star-rating>
+                                    </span>
+                                </div>
                                 <div class="bottom-block">
                                     <b-link v-if="mission.set_view_detail == 0" :to="'/apply/' + mission.mission_id">
                                         <b-button class="btn-bordersecondary icon-btn">
@@ -144,13 +159,16 @@
 <script>
 import store from '../store';
 import constants from '../constant';
+import StarRating from 'vue-star-rating'
 
 export default {
     name: "MissionListView",
     props: {
         items: Array,
     },
-    components:{},
+    components:{
+        StarRating
+    },
     data() {
         return {
         };
