@@ -36,8 +36,8 @@
                         <div class="group-wrap">
                             <div class="rating-with-button">
                                 <div class="group-ratings">
-                                    <span class="ratings">
-                                        <!-- <StarRating :config="config" :ratings="1"></StarRating> -->
+                                    <span class="group-name">{{mission.organisation_name}}</span>
+                                    <span class="ratings">                                        
                                         <star-rating
 										v-bind:increment="0.5"
 										v-bind:max-rating="5"
