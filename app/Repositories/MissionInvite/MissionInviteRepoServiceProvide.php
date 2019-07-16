@@ -22,6 +22,9 @@ class MissionInviteRepoServiceProvide extends ServiceProvider
      */
     public function register()
     {
-        $this->app->bind('App\Repositories\Mission\MissionInterface', 'App\Repositories\Mission\MissionRepository');
+        $this->app->bind(
+            'App\Repositories\MissionInvite\MissionInviteInterface',
+            'App\Repositories\MissionInvite\MissionInviteRepository'
+        );
     }
 }
