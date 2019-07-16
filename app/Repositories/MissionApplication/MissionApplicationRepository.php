@@ -66,7 +66,7 @@ class MissionApplicationRepository implements MissionApplicationInterface
     }
     
     /*
-     * Check seats are available or not.
+     * Check mission deadline
      *
      * @param int $missionId
      * @return bool
