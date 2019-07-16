@@ -19,6 +19,7 @@ use App\Exceptions\BucketNotFoundException;
 use App\Exceptions\FileNotFoundException;
 use App\Exceptions\FileUploadException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Jobs\AppMailerJob;
 
 class TenantOptionsController extends Controller
 {
@@ -545,6 +546,31 @@ class TenantOptionsController extends Controller
                 config('constants.error_codes.ERROR_TENANT_OPTION_NOT_FOUND'),
                 trans('messages.custom_error_message.ERROR_TENANT_OPTION_NOT_FOUND')
             );
+        } catch (\Exception $e) {
+            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
+        }
+    }
+
+    /**
+     * Update tenant option value
+     *
+     * @param Illuminate\Http\Request $request
+     */
+    public function sendEmail(Request $request)
+    {
+        try {
+            $tenantName = $this->helpers->getSubDomainFromRequest($request);
+        } catch (\Exception $e) {
+            return $this->badRequest($e->getMessage());
+        }
+                    
+        try {
+            $params['tenant_name'] = $tenantName;
+            $params['to'] = 'siddharajsinh.zala@tatvasoft.com'; //required
+            $params['template'] = 'email.notification.welcome'; //path to the email template
+            $params['subject'] = 'Some Awesome Subject'; //optional
+
+            dispatch(new AppMailerJob($params));
         } catch (\Exception $e) {
             return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
