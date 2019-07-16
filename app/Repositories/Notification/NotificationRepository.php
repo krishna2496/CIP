@@ -33,11 +33,6 @@ class NotificationRepository implements NotificationInterface
     public $userNotification;
 
     /**
-     * @var Illuminate\Contracts\Mail\Mailer
-     */
-    public $mailer;
-
-    /**
      * @var App\Repositories\User\UserRepository
      */
     public $userRepository;
@@ -54,13 +49,11 @@ class NotificationRepository implements NotificationInterface
      * @param  App\Models\Notification $notification
      * @param  App\Models\NotificationType $notificationType
      * @param  App\Models\UserNotification $userNotification
-     * @param  Illuminate\Contracts\Mail\Mailer $mailer
      * @param  App\Repositories\User\UserRepository $userRepository
      * @return void
      */
     public function __construct(
         ResponseHelper $responseHelper,
-        Mailer $mailer,
         Notification $notification,
         NotificationType $notificationType,
         UserNotification $userNotification,
@@ -68,7 +61,6 @@ class NotificationRepository implements NotificationInterface
         MissionRepository $missionRepository
     ) {
         $this->responseHelper = $responseHelper;
-        $this->mailer = $mailer;
         $this->notification = $notification;
         $this->notificationType = $notificationType;
         $this->userNotification = $userNotification;
@@ -124,11 +116,11 @@ class NotificationRepository implements NotificationInterface
                         'missionName'=> $missionName,
                         'fromUserName'=> $fromUserName
                     );
-                $this->mailer->send('invite', $data, function ($message) use ($toEmail) {
-                    $message->to($toEmail)
-                    ->subject(trans('messages.custom_text.MAIL_MISSION_RECOMMENDATION'));
-                    $message->from(env('MAIL_FROM_ADDRESS'), env('MAIL_FROM_NAME'));
-                });
+                    Mailer::send('invite', $data, function ($message) use ($toEmail) {
+                        $message->to($toEmail)
+                        ->subject(trans('messages.custom_text.MAIL_MISSION_RECOMMENDATION'));
+                        $message->from(env('MAIL_FROM_ADDRESS'), env('MAIL_FROM_NAME'));
+                    });
                 break;
         }
     }
