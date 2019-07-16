@@ -39,6 +39,16 @@
                                     </b-card-text>
                                     <div class="group-ratings">
                                         <span class="group-name">{{mission.organisation_name}}</span>
+											<star-rating
+												v-bind:increment="0.5"
+												v-bind:max-rating="5"
+												inactive-color="#dddddd"
+												active-color="#F7D341"
+												v-bind:star-size="23"
+												:rating = "mission.mission_rating_count"
+												:read-only="true"
+											>
+                                        </star-rating>
                                     </div>
                                 </div>
                                 <div class="group-details">
@@ -178,10 +188,13 @@
 <script>
 import store from '../store';
 import constants from '../constant';
+import StarRating from 'vue-star-rating'
 
 export default {
     name: "MissionGridView",
-    components:{},
+    components:{
+		StarRating
+	},
     props: {
         items: Array,
     },

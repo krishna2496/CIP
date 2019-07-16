@@ -14,6 +14,7 @@
     "bootstrap": "^4.3.1",
     "bootstrap-vue": "^2.0.0-rc.20",
     "core-js": "^2.6.5",
+    "jquery": "^3.4.1",
     "moment": "^2.24.0",
     "simplebar": "^4.0.0-alpha.9",
     "vue": "^2.6.10",
@@ -23,6 +24,7 @@
     "vue-i18n": "^8.0.0",
     "vue-router": "^3.0.3",
     "vue-scrollto": "^2.15.0",
+    "vue-star-rating": "^1.6.1",
     "vuelidate": "^0.7.4",
     "vuex": "^3.0.1"
   },
