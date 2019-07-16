@@ -11,7 +11,7 @@ interface NotificationInterface
      * @param string $type
      * @return int
      */
-    public function getNotificationType(string $type);
+    public function getNotificationTypeID(string $type);
 
     /*
      * Send notification
@@ -19,5 +19,5 @@ interface NotificationInterface
      * @param array $notificationData
      * @return void
      */
-    public function sendNotification(array $notificationData);
+    public function createNotification(array $notificationData);
 }

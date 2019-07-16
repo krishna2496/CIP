@@ -12,6 +12,9 @@ use Illuminate\Http\JsonResponse;
 use App\Traits\RestExceptionHandlerTrait;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Validator;
+use App\Repositories\User\UserRepository;
+use App\Repositories\Mission\MissionRepository;
+use Illuminate\Support\Facades\Mail;
 
 class MissionInviteController extends Controller
 {
@@ -42,10 +45,14 @@ class MissionInviteController extends Controller
     public function __construct(
         MissionInviteRepository $missionInviteRepository,
         NotificationRepository $notificationRepository,
+		UserRepository $userRepository,
+		MissionRepository $missionRepository,
         ResponseHelper $responseHelper
     ) {
         $this->missionInviteRepository = $missionInviteRepository;
         $this->notificationRepository = $notificationRepository;
+		$this->userRepository = $userRepository;
+		$this->missionRepository = $missionRepository;
         $this->responseHelper = $responseHelper;
     }
 
@@ -75,12 +82,13 @@ class MissionInviteController extends Controller
                     $validator->errors()->first()
                 );
             }
-            $inviteCount = $this->missionInviteRepository->checkInviteMission(
+			// Check if user is already invited for this mission
+            $getMissionInvite = $this->missionInviteRepository->checkInviteMission(
                 $request->mission_id,
                 $request->to_user_id,
                 $request->auth->user_id
             );
-            if ($inviteCount > 0) {
+			if (!$getMissionInvite->isEmpty()) {
                 return $this->responseHelper->error(
                     Response::HTTP_UNPROCESSABLE_ENTITY,
                     Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
@@ -94,16 +102,38 @@ class MissionInviteController extends Controller
                 $request->auth->user_id
             );
             
-            $notificationTypeId = $this->notificationRepository->getNotificationType('Recommended missions');
-            // Send notification
-            $notificationData = array(
-                'notification_type_id' => $notificationTypeId,
-                'user_id' => $request->auth->user_id,
-                'mission_id' => $request->mission_id,
-                'to_user_id' =>  $request->to_user_id
-            );
-            $notification = $this->notificationRepository->sendNotification($notificationData);
-
+            $notificationTypeId = $this->notificationRepository->getNotificationTypeID(config('constants.notification_types.RECOMMENDED_MISSIONS'));
+			
+			// Check if to_user_id (colleague) has enabled notification for Recommended missions
+			$notifyColleague = $this->notificationRepository->userNotificationSetting($request->to_user_id, $notificationTypeId);
+                
+			if ($notifyColleague) {
+				$colleague = $this->userRepository->find($request->to_user_id);
+				$colleagueEmail = $colleague->email;
+				$fromUserName = $this->userRepository->getUserName($request->auth->user_id);
+				$missionName = $this->missionRepository->getMissionName(
+                    $request->mission_id,
+                    $colleague->language_id
+                );
+				$notificationData = array(
+					'notification_type_id' => $notificationTypeId,
+					'user_id' => $request->auth->user_id,
+					'to_user_id' => $request->to_user_id,
+					'mission_id' => $request->mission_id,
+				);
+				$notification = $this->notificationRepository->createNotification($notificationData);
+				
+				$data = array(
+                    'missionName'=> $missionName,
+                    'fromUserName'=> $fromUserName
+                );
+				Mail::send('invite', $data, function ($message) use ($colleagueEmail) {
+                    $message->to($colleagueEmail)
+                    ->subject(trans('messages.custom_text.MAIL_MISSION_RECOMMENDATION'));
+                    $message->from(env('MAIL_FROM_ADDRESS'), env('MAIL_FROM_NAME'));
+                });
+			}	
+			
             // Set response data
             $apiStatus = Response::HTTP_CREATED;
             $apiMessage = trans('messages.success.MESSAGE_INVITED_FOR_MISSION');

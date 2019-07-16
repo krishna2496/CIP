@@ -5,6 +5,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\Mission;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Collection;
 
 class MissionInvite extends Model
 {
@@ -40,16 +41,15 @@ class MissionInvite extends Model
     {
         return $this->belongsTo(Mission::class, 'mission_id', 'mission_id');
     }
-
-    /**
-     * Store/update specified resource.
+	
+	/**
+     * Get mission invite record for a user
      *
-     * @param  array $condition
-     * @param  array $data
-     * @return array
+     * @return MissionInvite
      */
-    public function createOrUpdateMedia(array $condition, array $data)
+    public function getMissionInvite(int $missionId, int $inviteUserId, int $fromUserId): Collection
     {
-        return static::updateOrCreate($condition, $data);
+        return static::where(['mission_id' => $missionId, 'to_user_id' => $inviteUserId, 'from_user_id' => $fromUserId])->get();
     }
+
 }
