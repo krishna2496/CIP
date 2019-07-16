@@ -8,7 +8,7 @@ use App\Models\NotificationType;
 use App\Models\UserNotification;
 use App\Repositories\User\UserRepository;
 use App\Repositories\Mission\MissionRepository;
-use Illuminate\Contracts\Mail\Mailer;
+use Illuminate\Support\Facades\Mail;
 
 class NotificationRepository implements NotificationInterface
 {
@@ -90,7 +90,7 @@ class NotificationRepository implements NotificationInterface
     public function sendNotification(array $notificationData)
     {
         switch ($notificationData['notification_type_id']) {
-            case 1:
+            case config('constants.notification_types.RECOMMENDED_MISSIONS'):
                 $inviteUser = $this->userRepository->find($notificationData['to_user_id']);
                 $toEmail = $inviteUser->email;
                 $fromUserName = $this->userRepository->getUserName($notificationData['user_id']);
@@ -113,14 +113,14 @@ class NotificationRepository implements NotificationInterface
                     $notification = $this->notification->create($notificationData);
                 }
                 $data = array(
-                        'missionName'=> $missionName,
-                        'fromUserName'=> $fromUserName
-                    );
-                    Mailer::send('invite', $data, function ($message) use ($toEmail) {
-                        $message->to($toEmail)
-                        ->subject(trans('messages.custom_text.MAIL_MISSION_RECOMMENDATION'));
-                        $message->from(env('MAIL_FROM_ADDRESS'), env('MAIL_FROM_NAME'));
-                    });
+                    'missionName'=> $missionName,
+                    'fromUserName'=> $fromUserName
+                );
+                Mail::send('invite', $data, function ($message) use ($toEmail) {
+                    $message->to($toEmail)
+                    ->subject(trans('messages.custom_text.MAIL_MISSION_RECOMMENDATION'));
+                    $message->from(env('MAIL_FROM_ADDRESS'), env('MAIL_FROM_NAME'));
+                });
                 break;
         }
     }
