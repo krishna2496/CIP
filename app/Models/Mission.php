@@ -58,9 +58,10 @@ class Mission extends Model
     'seats_left','user_application_count','mission_application_count','missionSkill','city_name','missionApplication',
     'country','favouriteMission','missionInvite','missionRating', 'goalMission', 'timeMission', 'application_deadline',
     'application_start_date', 'application_end_date', 'application_start_time', 'application_end_time',
-    'goal_objective', 'mission_count', 'mission_rating_count', 'created_at'];
+    'goal_objective', 'mission_count', 'mission_rating_count','already_volunteered','total_available_seat',
+    'available_seat','deadline'];
 
-    protected $appends = ['city_name'];
+    protected $appends = ['city_name','available_seat','deadline'];
     /**
      * Get the document record associated with the mission.
      *
@@ -240,5 +241,15 @@ class Mission extends Model
     {
         $this->attributes['end_date'] = ($value != null) ?
         Carbon::parse($value)->format(config('constants.DB_DATE_FORMAT')) : null;
+    }
+    public function getAvailableSeatAttribute()
+    {
+        return $this->total_seats - $this->missionApplication()
+        ->where('approval_status', config("constants.application_status")["AUTOMATICALLY_APPROVED"])
+        ->count();
+    }
+    public function getDeadlineAttribute()
+    {
+        return "test";
     }
 }

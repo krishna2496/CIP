@@ -525,6 +525,7 @@ class MissionRepository implements MissionInterface
      */
     public function appMissions(Request $request, array $userFilterData, int $languageId): LengthAwarePaginator
     {
+        DB::enableQueryLog();
         $missionData = [];
         // Get  mission data
         $missionQuery = $this->mission->select('*');
@@ -641,18 +642,28 @@ class MissionRepository implements MissionInterface
                 $missionQuery->orderBY('mission.created_at', 'desc');
             }
             if ($userFilterData['sort_by'] == config('constants.OLDEST')) {
+                $missionQuery->orderBY('mission.created_at', 'asc');
             }
             if ($userFilterData['sort_by'] == config('constants.LOWEST_AVAILABLE_SEATS')) {
             }
             if ($userFilterData['sort_by'] == config('constants.HIGHEST_AVAILABLE_SEATS')) {
             }
             if ($userFilterData['sort_by'] == config('constants.MY_FAVOURITE')) {
+                $missionQuery->withCount(['favouriteMission as favourite_mission_count'
+                    => function ($query) use ($request) {
+                        $query->Where('user_id', $request->auth->user_id);
+                    }]);
+                $missionQuery->orderBY('favourite_mission_count', 'desc');
             }
             if ($userFilterData['sort_by'] == config('constants.DEADLINE')) {
+                $missionQuery->with(['timeMission' => function ($query) {
+                    $query->orderBy("application_deadline");
+                }]);
             }
         }
-
+        
         $mission =  $missionQuery->paginate(config('constants.PER_PAGE_LIMIT'));
+        // dd(DB::getQueryLog());
         return $mission;
     }
 

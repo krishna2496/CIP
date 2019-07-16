@@ -160,7 +160,7 @@ class MissionController extends Controller
                     $value->application_start_time = $value->timeMission->application_start_time;
                     $value->application_end_time = $value->timeMission->application_end_time;
 
-                    unset($value->timeMission);
+                    // unset($value->timeMission);
                     unset($value->goalMission);
                 }
 
@@ -169,7 +169,7 @@ class MissionController extends Controller
                     //Progress bar for goal
                 }
     
-                if ($value->total_seats != 0) { //With limited seats
+                if ($value->total_seats != 0 && $value->total_seats !== null) { //With limited seats
                     $value->seats_left = ($value->total_seats) - ($value->mission_application_count);
                 } else { //Unlimeted seats
                     $value->already_volunteered = $value->mission_application_count;
