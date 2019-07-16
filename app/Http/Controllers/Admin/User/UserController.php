@@ -85,7 +85,7 @@ class UserController extends Controller
                 ["first_name" => "required|max:16",
                 "last_name" => "required|max:16",
                 "email" => "required|email|unique:user,email,NULL,user_id,deleted_at,NULL",
-                "password" => "required",
+                "password" => "required|min:8",
                 "city_id" => "required",
                 "country_id" => "required",
                 "profile_text" => "required",
