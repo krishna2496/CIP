@@ -41,7 +41,7 @@ class MissionApplicationController extends Controller
     }
 
     /**
-     * Apply to a mission
+     * Apply to mission
      *
      * @param Illuminate\Http\Request $request
      * @return \Illuminate\Http\JsonResponse
