@@ -750,4 +750,16 @@ class MissionRepository implements MissionInterface
         }
         return $this->favouriteMission->findFavourite($userId, $missionId);
     }
+
+    /*
+     * Get mission name.
+     *
+     * @param int $missionId
+     * @param int $languageId
+     * @return string
+     */
+    public function getMissionName(int $missionId, $languageId): string
+    {
+        return $this->missionLanguage->getMissionName($missionId, $languageId);
+    }
 }

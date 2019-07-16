@@ -178,4 +178,15 @@ class UserRepository implements UserInterface
         $userQuery->orderBy('user_id', 'ASC');
         return $userQuery->get();
     }
+
+    /**
+     * Get username
+     *
+     * @param int $missionId
+     * @return string
+     */
+    public function getUserName(int $userId): string
+    {
+        return $this->user->getUserName($userId);
+    }
 }

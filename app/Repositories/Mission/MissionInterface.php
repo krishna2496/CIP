@@ -75,4 +75,13 @@ interface MissionInterface
      * @return \Illuminate\Http\Response
      */
     public function missionFavourite(int $userId, int $missionId);
+    
+    /*
+     * Get mission name.
+     *
+     * @param int $missionId
+     * @param int $languageId
+     * @return string
+     */
+    public function getMissionName(int $missionId, $languageId): string;
 }
