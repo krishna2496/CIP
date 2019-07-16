@@ -264,7 +264,7 @@
         }
       }
     },
-	"/app/missions/ratings/{missionId}": {
+	"/app/mission/ratings/{missionId}": {
       "get": {
         "operationId": "GET_team4-cip-api-missions-rating",
         "summary": "App - Get mission rating by id",
@@ -304,7 +304,7 @@
         }
       }
     },
-	"/app/missions/favourite": {
+	"/app/mission/favourite": {
       "post": {
         "operationId": "GET_team4-cip-api-missions-favourite",
         "summary": "App - Add/Remove favourite mission",
@@ -1498,6 +1498,11 @@
             "name": "image_file",
             "in": "formData",
             "type": "file"
+          },
+		  {
+            "name": "image_name",
+            "in": "formData",
+            "type": "string",
           }
         ],
         "responses": {
@@ -1954,6 +1959,83 @@
       "get": {
         "operationId": "GET_team4-cip-api-filter-data",
         "summary": "App - Filter missions by country, city, theme, skill",
+		"tags":[  
+               "Tenant - App"
+            ],
+        "consumes": [
+          "multipart/form-data"
+        ],
+		"parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": ""
+          }
+        ],
+		"responses": {
+            "400":{  
+			  "description":"Bad request"
+			},
+			"401":{  
+			  "description":"Unauthorized - Invalid token"
+			}
+        }
+      }
+    },
+	"/app/tenant-option": {
+      "post": {
+        "operationId": "GET_team4-cip-api-get-tenant-option",
+        "summary": "App - Get tenant option value by option name",
+		"tags":[  
+               "Tenant - App"
+            ],
+        "consumes": [
+          "application/json"
+        ],
+		"parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": ""
+          },
+		  {
+            "name": "body",
+            "in": "body",
+            "required": true,
+			"schema": {
+			  "type": "object",
+              "properties": {
+				"option_name": {
+                  "type": "string"
+                }
+              }
+			}
+          }
+        ],
+		"responses": {
+            "400":{  
+			  "description":"Bad request"
+			},
+			"401":{  
+			  "description":"Unauthorized - Invalid token"
+			},
+			"404":{  
+			  "description":"Option name not found in system"
+			},
+			"422":{  
+			  "description":"The option name field is required"
+			}
+        }
+      }
+    },
+	"/app/tenant-settings": {
+      "get": {
+        "operationId": "GET_team4-cip-api-get-tenant-setting",
+        "summary": "App - Get tenant settings",
 		"tags":[  
                "Tenant - App"
             ],
@@ -2589,6 +2671,26 @@
 				  "format":"int64"
                 },
                 "application_deadline": {
+                  "type": "string",
+				  "format":"date-time",
+				  "description":"dd-mm-yyyy h:i:s",
+                },
+				"application_start_date": {
+                  "type": "string",
+				  "format":"date-time",
+				  "description":"dd-mm-yyyy h:i:s",
+                },
+				"application_start_time": {
+                  "type": "string",
+				  "format":"date-time",
+				  "description":"dd-mm-yyyy h:i:s",
+                },
+				"application_end_date": {
+                  "type": "string",
+				  "format":"date-time",
+				  "description":"dd-mm-yyyy h:i:s",
+                },
+				"application_end_time": {
                   "type": "string",
 				  "format":"date-time",
 				  "description":"dd-mm-yyyy h:i:s",
