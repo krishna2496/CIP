@@ -159,7 +159,6 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      * Get specified resource.
      *
      * @param int $missionId
-     * @param int $languageId
      * @return string
      */
     public function getUserName(int $userId): string

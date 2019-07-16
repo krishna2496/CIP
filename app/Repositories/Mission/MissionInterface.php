@@ -76,11 +76,12 @@ interface MissionInterface
      */
     public function missionFavourite(int $userId, int $missionId);
     
-    /**
-     * Display a mission ratings.
+    /*
+     * Get mission name.
      *
      * @param int $missionId
-     * @return float
+     * @param int $languageId
+     * @return string
      */
-    public function missionRatings(int $missionId);
+    public function getMissionName(int $missionId, $languageId);
 }

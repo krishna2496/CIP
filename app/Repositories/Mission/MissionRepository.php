@@ -723,4 +723,16 @@ class MissionRepository implements MissionInterface
         $ratings = $this->missionRating->where('mission_id', $id)->avg('rating');
         return $ratings ? ceil($ratings) : 0;
     }
+
+    /*
+     * Get mission name.
+     *
+     * @param int $missionId
+     * @param int $languageId
+     * @return string
+     */
+    public function getMissionName(int $missionId, $languageId): string
+    {
+        return $this->missionLanguage->getMissionName($missionId, $languageId);
+    }
 }
