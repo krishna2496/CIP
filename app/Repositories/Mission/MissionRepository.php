@@ -12,7 +12,6 @@ use App\Models\Mission;
 use App\Models\MissionLanguage;
 use App\Models\MissionDocument;
 use App\Models\MissionMedia;
-use App\Models\MissionApplication;
 use App\Models\FavouriteMission;
 use App\Models\MissionSkill;
 use App\Models\TimeMission;
@@ -28,11 +27,6 @@ class MissionRepository implements MissionInterface
      */
     public $mission;
 
-    /**
-     * @var App\Models\MissionApplication
-     */
-    public $missionApplication;
-    
     /**
      * @var App\Helpers\ResponseHelper
      */
@@ -67,7 +61,6 @@ class MissionRepository implements MissionInterface
      * Create a new Mission repository instance.
      *
      * @param  App\Models\Mission $mission
-     * @param  App\Models\MissionApplication $missionApplication
      * @param  App\Models\MissionLanguage $missionLanguage
      * @param  App\Models\MissionMedia $missionMedia
      * @param  App\Models\MissionDocument $missionDocument
@@ -80,7 +73,6 @@ class MissionRepository implements MissionInterface
      */
     public function __construct(
         Mission $mission,
-        MissionApplication $missionApplication,
         MissionLanguage $missionLanguage,
         MissionMedia $missionMedia,
         MissionDocument $missionDocument,
@@ -95,7 +87,6 @@ class MissionRepository implements MissionInterface
         $this->missionLanguage = $missionLanguage;
         $this->missionMedia = $missionMedia;
         $this->missionDocument = $missionDocument;
-        $this->missionApplication = $missionApplication;
         $this->responseHelper = $responseHelper;
         $this->languageHelper = $languageHelper;
         $this->helpers = $helpers;
@@ -408,48 +399,6 @@ class MissionRepository implements MissionInterface
         return $this->mission->deleteMission($id);
     }
 
-    /**
-     * Display a listing of the resource.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @param int $mission_id
-     * @return Illuminate\Pagination\LengthAwarePaginator
-     */
-    public function missionApplications(Request $request, int $missionId): LengthAwarePaginator
-    {
-        $missionApplicationDetails = $this->missionApplication->find($request, $missionId);
-        return $missionApplicationDetails;
-    }
-
-    /**
-     * Display specified resource.
-     *
-     * @param int $missionId
-     * @param int $applicationId
-     * @return \Illuminate\Http\Response
-     */
-    public function missionApplication(int $missionId, int $applicationId)
-    {
-        $missionApplicationDetail = $this->missionApplication->findDetail($missionId, $applicationId);
-        return $missionApplicationDetail;
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param int $missionId
-     * @param int $applicationId
-     * @return \Illuminate\Http\Response
-     */
-    public function updateApplication(Request $request, int $missionId, int $applicationId)
-    {
-        $missionApplication = $this->missionApplication->findOrFail($applicationId);
-        $missionApplication->update($request->toArray());
-        
-        return $missionApplication;
-    }
-    
     /**
      * Display a listing of mission.
      *

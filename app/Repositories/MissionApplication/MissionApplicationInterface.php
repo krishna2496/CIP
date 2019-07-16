@@ -14,7 +14,7 @@ interface MissionApplicationInterface
     public function checkAvailableSeats(int $missionId);
 
     /*
-     * Check seats are available or not.
+     * Check mission deadline.
      *
      * @param int $missionId
      * @return bool
@@ -29,6 +29,7 @@ interface MissionApplicationInterface
      * @return int
      */
     public function checkApplyMission(int $missionId, int $userId);
+    
     /**
      * Add mission application.
      *
@@ -36,4 +37,33 @@ interface MissionApplicationInterface
      * @return App\Models\MissionApplication
      */
     public function storeApplication(array $request, int $userId);
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param int $mission_id
+     * @return Illuminate\Pagination\LengthAwarePaginator
+     */
+    public function missionApplications(Request $request, int $missionId);
+
+    /**
+     * Display specified resource.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param int $missionId
+     * @param int $applicationId
+     * @return array
+     */
+    public function missionApplication(int $missionId, int $applicationId);
+
+    /**
+     * Update resource.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param int $missionId
+     * @param int $applicationId
+     * @return App\Models\MissionApplication
+     */
+    public function updateApplication(Request $request, int $missionId, int $applicationId);
 }

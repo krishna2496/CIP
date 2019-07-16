@@ -1,12 +1,15 @@
 <?php
 namespace App\Repositories\MissionApplication;
 
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use App\Repositories\MissionApplication\MissionApplicationInterface;
 use App\Helpers\ResponseHelper;
 use App\Models\MissionApplication;
 use App\Models\TimeMission;
 use App\Models\Mission;
 use Carbon\Carbon;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class MissionApplicationRepository implements MissionApplicationInterface
 {
@@ -106,5 +109,45 @@ class MissionApplicationRepository implements MissionApplicationInterface
             'availability_id' => $request['availability_id']
         );
         return $this->missionApplication->create($application);
+    }
+    
+    /**
+     * Display a listing of the resource.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param int $mission_id
+     * @return Illuminate\Pagination\LengthAwarePaginator
+     */
+    public function missionApplications(Request $request, int $missionId): LengthAwarePaginator
+    {
+        $missionApplicationDetails = $this->missionApplication->find($request, $missionId);
+        return $missionApplicationDetails;
+    }
+
+    /**
+     * Display specified resource.
+     *
+     * @param int $missionId
+     * @param int $applicationId
+     * @return array
+     */
+    public function missionApplication(int $missionId, int $applicationId): array
+    {
+        return $this->missionApplication->findDetail($missionId, $applicationId);
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param int $missionId
+     * @param int $applicationId
+     * @return App\Models\MissionApplication
+     */
+    public function updateApplication(Request $request, int $missionId, int $applicationId): MissionApplication
+    {
+        $missionApplication = $this->missionApplication->findOrFail($applicationId);
+        $missionApplication->update($request->toArray());
+        return $missionApplication;
     }
 }

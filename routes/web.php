@@ -175,14 +175,14 @@ $router->group(
         $router->delete('/{missionId}', ['as' => 'missions.delete',
         'uses' => 'Admin\Mission\MissionController@destroy']);
         $router->get('/{missionId}/applications', ['as' => 'missions.applications',
-        'uses' => 'Admin\Mission\MissionController@missionApplications']);
+        'uses' => 'Admin\Mission\MissionApplicationController@missionApplications']);
         $router->get(
             '/{missionId}/applications/{applicationId}',
-            ['uses' => 'Admin\Mission\MissionController@missionApplication']
+            ['uses' => 'Admin\Mission\MissionApplicationController@missionApplication']
         );
         $router->patch(
             '/{missionId}/applications/{applicationId}',
-            ['uses' => 'Admin\Mission\MissionController@updateApplication']
+            ['uses' => 'Admin\Mission\MissionApplicationController@updateApplication']
         );
     }
 );

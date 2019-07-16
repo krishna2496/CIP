@@ -11,6 +11,7 @@ use Illuminate\Http\JsonResponse;
 use App\Traits\RestExceptionHandlerTrait;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Validator;
+use Illuminate\Validation\Rule;
 
 class MissionApplicationController extends Controller
 {
@@ -51,7 +52,7 @@ class MissionApplicationController extends Controller
     public function missionApplications(Request $request, int $missionId): JsonResponse
     {
         try {
-            $applicationList = $this->missionRepository->missionApplications($request, $missionId);
+            $applicationList = $this->missionApplicationRepository->missionApplications($request, $missionId);
             $responseMessage = (count($applicationList) > 0) ? trans('messages.success.MESSAGE_APPLICATION_LISTING')
              : trans('messages.success.MESSAGE_NO_RECORD_FOUND');
             
@@ -80,7 +81,7 @@ class MissionApplicationController extends Controller
     public function missionApplication(int $missionId, int $applicationId): JsonResponse
     {
         try {
-            $applicationList = $this->missionRepository->missionApplication($missionId, $applicationId);
+            $applicationList = $this->missionApplicationRepository->missionApplication($missionId, $applicationId);
             $responseMessage = (count($applicationList) > 0) ? trans('messages.success.MESSAGE_APPLICATION_LISTING')
              : trans('messages.success.MESSAGE_NO_RECORD_FOUND');
             
@@ -127,7 +128,7 @@ class MissionApplicationController extends Controller
                 );
             }
 
-            $application = $this->missionRepository->updateApplication($request, $missionId, $applicationId);
+            $application = $this->missionApplicationRepository->updateApplication($request, $missionId, $applicationId);
 
             // Set response data
             $apiStatus = Response::HTTP_OK;
