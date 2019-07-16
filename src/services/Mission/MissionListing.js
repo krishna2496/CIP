@@ -28,6 +28,10 @@ export default async(data) => {
         url = url+"&skill_id=" + data.skillId
     }
 
+    if(data.sortBy != '' && data.sortBy != null){
+        url = url+"&sort_by=" + data.sortBy
+    }
+
     if(data.exploreMissionType != ''){
         url = url+"&explore_mission_type=" + data.exploreMissionType
     }

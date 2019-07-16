@@ -6,7 +6,7 @@ export default async(data) => {
     var defaultLanguage = '';
 
     await axios({
-            url: process.env.VUE_APP_API_ENDPOINT + "user_filter",
+            url: process.env.VUE_APP_API_ENDPOINT + "app/user-filter",
             method: 'get',
             headers: {
                'token': store.state.token,

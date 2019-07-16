@@ -5,7 +5,7 @@ export default async(langList,defautLang) => {
     let responseData = {}
     responseData.error = false;
     defautLang = "en";
-    await axios.get(process.env.VUE_APP_API_ENDPOINT + "connect")
+    await axios.get(process.env.VUE_APP_API_ENDPOINT + "app/connect")
         .then((response) => {
             if (response.data.data) {
                 let data = response.data.data;

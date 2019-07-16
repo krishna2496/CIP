@@ -27,14 +27,18 @@
                     <b-card-body>
                         <div class="content-block">
                             <h2 class="card-title mb-2">
-                                {{mission.title}}
+                                {{mission.title | substring(40)}}
                             </h2>
                             <b-card-text>
-                               {{mission.short_description}}
+                               {{mission.short_description | substring(150)}}
                             </b-card-text>
                         </div>
                         <div class="group-wrap">
                             <div class="rating-with-button">
+                                <div class="group-ratings">
+                                    <span class="group-name">{{mission.organisation_name}}
+                                    </span>
+                                </div>
                                 <div class="bottom-block">
                                     <b-link v-if="mission.set_view_detail == 0" :to="'/apply/' + mission.mission_id">
                                         <b-button class="btn-bordersecondary icon-btn">
@@ -94,7 +98,7 @@
                                     </span>  
                                 </div>
                                 <div class="group-details-inner">
-                                    <template v-if="mission.total_seats != 0">
+                                    <template v-if="mission.total_seats != 0 && mission.total_seats !== null">
                                         <div class="detail-column info-block">
                                             <i class="icon-wrap">
                                                 <img :src="$store.state.imagePath+'/assets/images/user-icon.svg'" alt="user">

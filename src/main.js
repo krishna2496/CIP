@@ -16,6 +16,7 @@ import AOS from "aos";
 import "aos/dist/aos.css";
 import BackToTop from "vue-backtotop";
 import moment from 'moment'
+import constants from './constant'
 
 Vue.use(Vuelidate, VueAxios, axios);
 Vue.config.devtools = true
@@ -55,6 +56,15 @@ router.beforeEach((to, from, next) => {
         return moment(String(value)).format('DD/MM/YYYY')
       }
 })
+
+Vue.filter('substring', function (value,data) {
+    if (value.length <= data) {
+        return value
+    } else {
+        return value.substring(0,data)+"...";
+    }
+});
+
 new Vue({
     router,
     store,

@@ -29,6 +29,7 @@ export default new Vuex.Store({
         skillId : localStorage.getItem('skillId'),
         tags : localStorage.getItem('tags'),
         sortBy : localStorage.getItem('sortBy'),
+        tenantSetting : localStorage.getItem('tenantSetting'),
     },
     mutations: {
         // Set login data in state and local storage       
@@ -98,8 +99,8 @@ export default new Vuex.Store({
             localStorage.setItem('cityId',filters.cityId)
             localStorage.setItem('themeId',filters.themeId)
             localStorage.setItem('skillId',filters.skillId)
-            localStorage.getItem('tags',JSON.stringify(filters.tags))
-            localStorage.getItem('sortBy',JSON.stringify(filters.sortBy)),
+            localStorage.setItem('tags',JSON.stringify(filters.tags))
+            localStorage.setItem('sortBy',filters.sortBy),
             state.search = filters.search
             state.countryId = filters.countryId
             state.cityId = filters.cityId
@@ -125,6 +126,16 @@ export default new Vuex.Store({
         setImagePath(state, path) {
             localStorage.setItem('imagePath', path);
             state.imagePath = path;
+        },
+        // Set Sort by
+        sortByFilter(state,data){
+            localStorage.setItem("sortBy",data);
+            state.sortBy = data;
+        },
+        // Set tenant option
+        setTenantSetting(state,data) {
+            localStorage.setItem("tenantSetting",JSON.stringify(data));
+            state.tenantSetting = JSON.stringify(data);
         }
     },
     getters: {},
