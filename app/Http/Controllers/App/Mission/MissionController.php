@@ -161,7 +161,7 @@ class MissionController extends Controller
                     $value->application_start_time = $value->timeMission->application_start_time;
                     $value->application_end_time = $value->timeMission->application_end_time;
 
-                    unset($value->timeMission);
+                    // unset($value->timeMission);
                     unset($value->goalMission);
                 }
 
@@ -213,11 +213,13 @@ class MissionController extends Controller
                 $metaData
             );
         } catch (ModelNotFoundException $e) {
+            dd($e);
             return $this->modelNotFound(
                 config('constants.error_codes.ERROR_MISSION_NOT_FOUND'),
                 trans('messages.custom_error_message.ERROR_MISSION_NOT_FOUND')
             );
         } catch (PDOException $e) {
+            dd($e);
             return $this->PDO(
                 config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
                 trans(
@@ -225,6 +227,7 @@ class MissionController extends Controller
                 )
             );
         } catch (\Exception $e) {
+            dd($e);
             throw new \Exception(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }

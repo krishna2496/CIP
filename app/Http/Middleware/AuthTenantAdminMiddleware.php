@@ -66,7 +66,7 @@ class AuthTenantAdminMiddleware
                         ->whereNull('deleted_at')
                         ->first();
             
-			// If user authenticates successfully
+            // If user authenticates successfully
             if ($apiUser && Hash::check($request->header('php-auth-pw'), $apiUser->api_secret)) {
                 // Create connection with their tenant database
                 $this->helpers->createConnection($apiUser->tenant_id);

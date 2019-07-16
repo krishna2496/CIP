@@ -29,14 +29,16 @@ class TimeMission extends Model
      *
      * @var array
      */
-    protected $fillable = ['mission_id', 'application_deadline', 'application_start_date', 'application_end_date', 'application_start_time', 'application_end_time'];
+    protected $fillable = ['mission_id', 'application_deadline', 'application_start_date', 'application_end_date',
+     'application_start_time','application_end_time'];
 
     /**
      * The attributes that should be visible in arrays.
      *
      * @var array
      */
-    protected $visible = ['mission_id', 'application_deadline', 'application_start_date', 'application_end_date', 'application_start_time', 'application_end_time'];
+    protected $visible = ['mission_id', 'application_deadline', 'application_start_date',
+    'application_end_date', 'application_start_time', 'application_end_time'];
 
     /**
      * Set application deadline date attribute on the model.
@@ -45,7 +47,7 @@ class TimeMission extends Model
      * @return void
      */
     public function setApplicationDeadlineAttribute($value)
-    {        
+    {
         $this->attributes['application_deadline'] = ($value != null) ?
         Carbon::parse($value)->format(config('constants.DB_DATE_FORMAT')) : null;
     }
@@ -98,4 +100,3 @@ class TimeMission extends Model
         Carbon::parse($value)->format(config('constants.DB_DATE_FORMAT')) : null;
     }
 }
-

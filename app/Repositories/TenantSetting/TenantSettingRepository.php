@@ -52,7 +52,7 @@ class TenantSettingRepository implements TenantSettingInterface
 
     /**
     * Get all tenant's settings data. Used for front end api.
-    * 
+    *
     * @return Illuminate\Database\Eloquent\Collection
     */
     public function fetchAllTenantSettings(): Collection

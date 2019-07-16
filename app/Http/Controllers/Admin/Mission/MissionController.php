@@ -74,7 +74,7 @@ class MissionController extends Controller
                 config('constants.error_codes.ERROR_INVALID_ARGUMENT'),
                 trans('messages.custom_error_message.ERROR_INVALID_ARGUMENT')
             );
-        } catch (\Exception $e) {            
+        } catch (\Exception $e) {
             return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
@@ -147,7 +147,7 @@ class MissionController extends Controller
                 config('constants.error_codes.ERROR_NO_MISSION_FOUND'),
                 trans('messages.custom_error_message.ERROR_NO_MISSION_FOUND')
             );
-        } catch (\Exception $e) {  
+        } catch (\Exception $e) {
             return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
@@ -241,7 +241,7 @@ class MissionController extends Controller
                 config('constants.error_codes.ERROR_MISSION_NOT_FOUND'),
                 trans('messages.custom_error_message.ERROR_MISSION_NOT_FOUND')
             );
-        } catch (PDOException $e) {            
+        } catch (PDOException $e) {
             return $this->PDO(
                 config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
                 trans(
