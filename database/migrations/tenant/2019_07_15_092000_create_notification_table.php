@@ -18,11 +18,11 @@ class CreateNotificationTable extends Migration
             $table->unsignedBigInteger('notification_type_id');
             $table->enum('is_read',['0','1'])->default('0')->comment('0: Unread, 1: Read');
             $table->unsignedBigInteger('user_id');
-            $table->unsignedBigInteger('to_user_id');
-            $table->unsignedBigInteger('mission_id');
-            $table->unsignedBigInteger('comment_id');
-            $table->unsignedBigInteger('message_id');
-            $table->unsignedBigInteger('story_id');
+            $table->unsignedBigInteger('to_user_id')->nullable();
+            $table->unsignedBigInteger('mission_id')->nullable();
+            $table->unsignedBigInteger('comment_id')->nullable();
+            $table->unsignedBigInteger('message_id')->nullable();
+            $table->unsignedBigInteger('story_id')->nullable();
             $table->timestamps();
             $table->softDeletes();
 
