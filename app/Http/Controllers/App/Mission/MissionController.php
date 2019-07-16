@@ -67,7 +67,7 @@ class MissionController extends Controller
     private $skill;
 
     /**
-     * Create a new Mission controller instance.
+     * Create a new Mission controller instance
      *
      * @param App\Repositories\Mission\MissionRepository $missionRepository
      * @param Illuminate\Http\ResponseHelper $responseHelper
@@ -411,7 +411,7 @@ class MissionController extends Controller
     }
 
     /**
-     * Add/remove mission to favourite.
+     * Add/remove mission to favourite
      *
      * @param Illuminate\Http\Request $request
      * @return \Illuminate\Http\JsonResponse

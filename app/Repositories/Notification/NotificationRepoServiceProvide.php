@@ -1,9 +1,9 @@
 <?php
-namespace App\Repositories\MissionInvite;
+namespace App\Repositories\Notification;
 
 use Illuminate\Support\ServiceProvider;
 
-class MissionInviteRepoServiceProvide extends ServiceProvider
+class NotificationServiceProvide extends ServiceProvider
 {
     /**
      * Bootstrap the application services.
@@ -23,8 +23,8 @@ class MissionInviteRepoServiceProvide extends ServiceProvider
     public function register()
     {
         $this->app->bind(
-            'App\Repositories\MissionInvite\MissionInviteInterface',
-            'App\Repositories\MissionInvite\MissionInviteRepository'
+            'App\Repositories\Notification\NotificationInterface',
+            'App\Repositories\Notification\NotificationRepository'
         );
     }
 }

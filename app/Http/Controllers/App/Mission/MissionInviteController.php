@@ -4,6 +4,7 @@ namespace App\Http\Controllers\App\Mission;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Repositories\MissionInvite\MissionInviteRepository;
+use App\Repositories\Notification\NotificationRepository;
 use App\Helpers\ResponseHelper;
 use App\Http\Controllers\Controller;
 use PDOException;
@@ -19,6 +20,11 @@ class MissionInviteController extends Controller
      * @var MissionInviteRepository
      */
     private $missionInviteRepository;
+
+    /**
+     * @var NotificationRepository
+     */
+    private $notificationRepository;
     
     /**
      * @var App\Helpers\ResponseHelper
@@ -29,14 +35,17 @@ class MissionInviteController extends Controller
      * Create a new Mission controller instance.
      *
      * @param App\Repositories\Mission\MissionInviteRepository $missionInviteRepository
+     * @param App\Repositories\Notification\NotificationRepository $notificationRepository
      * @param Illuminate\Http\ResponseHelper $responseHelper
      * @return void
      */
     public function __construct(
         MissionInviteRepository $missionInviteRepository,
+        NotificationRepository $notificationRepository,
         ResponseHelper $responseHelper
     ) {
         $this->missionInviteRepository = $missionInviteRepository;
+        $this->notificationRepository = $notificationRepository;
         $this->responseHelper = $responseHelper;
     }
 
@@ -52,8 +61,8 @@ class MissionInviteController extends Controller
             $validator = Validator::make(
                 $request->all(),
                 [
-                    "mission_id" => "numeric|required",
-                    "to_user_id" => "numeric|required",
+                    "mission_id" => "numeric|required|exists:mission,mission_id",
+                    "to_user_id" => "numeric|required|exists:user,user_id",
                 ]
             );
     
@@ -72,7 +81,9 @@ class MissionInviteController extends Controller
                 $request->auth->user_id
             );
             if ($inviteCount > 0) {
-                return $this->invalidArgument(
+                return $this->responseHelper->error(
+                    Response::HTTP_UNPROCESSABLE_ENTITY,
+                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
                     config('constants.error_codes.ERROR_INVITE_MISSION_ALREADY_EXIST'),
                     trans('messages.custom_error_message.ERROR_INVITE_MISSION_ALREADY_EXIST')
                 );
@@ -82,6 +93,17 @@ class MissionInviteController extends Controller
                 $request->to_user_id,
                 $request->auth->user_id
             );
+            
+            $notificationTypeId = $this->notificationRepository->getNotificationType('Recommended missions');
+            // Send notification
+            $notificationData = array(
+                'notification_type_id' => $notificationTypeId,
+                'user_id' => $request->auth->user_id,
+                'mission_id' => $request->mission_id,
+                'to_user_id' =>  $request->to_user_id
+            );
+            $notification = $this->notificationRepository->sendNotification($notificationData);
+
             // Set response data
             $apiStatus = Response::HTTP_CREATED;
             $apiMessage = trans('messages.success.MESSAGE_INVITED_FOR_MISSION');

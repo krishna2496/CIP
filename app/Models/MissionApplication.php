@@ -31,7 +31,7 @@ class MissionApplication extends Model
      *
      * @var array
      */
-    protected $fillable = ['approval_status', 'motivation', 'availability_id'];
+    protected $fillable = ['mission_id', 'user_id', 'applied_at', 'approval_status', 'motivation', 'availability_id'];
 
     /**
      * The attributes that should be mutated to dates.

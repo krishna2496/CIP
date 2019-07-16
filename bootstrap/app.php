@@ -84,6 +84,7 @@ $app->configure('constants'); //constant file config
 $app->configure('cors');  //cross origin support
 $app->configure('messages');  //Message Constants config
 $app->configure('filesystems');
+$app->configure('services');
 
 /**
  * mailer package registration

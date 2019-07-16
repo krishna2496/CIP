@@ -39,35 +39,6 @@ interface MissionInterface
     public function delete(int $id);
 
     /**
-     * Display a listing of the resource.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @param int $missionId
-     * @return App\Models\MissionApplication
-     */
-    public function missionApplications(Request $request, int $missionId);
-
-    /**
-     * Display specified resource.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @param int $missionId
-     * @param int $applicationId
-     * @return \Illuminate\Http\Response
-     */
-    public function missionApplication(int $missionId, int $applicationId);
-
-    /**
-     * Update resource.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @param int $missionId
-     * @param int $applicationId
-     * @return \Illuminate\Http\Response
-     */
-    public function updateApplication(Request $request, int $missionId, int $applicationId);
-
-    /**
      * Add/remove mission to favourite.
      *
      * @param int $userId
@@ -75,4 +46,13 @@ interface MissionInterface
      * @return \Illuminate\Http\Response
      */
     public function missionFavourite(int $userId, int $missionId);
+    
+    /*
+     * Get mission name.
+     *
+     * @param int $missionId
+     * @param int $languageId
+     * @return string
+     */
+    public function getMissionName(int $missionId, $languageId): string;
 }

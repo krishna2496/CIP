@@ -59,7 +59,8 @@ return [
         'MESSAGE_TENANT_OPTIONS_LIST' => 'FR: Tenant options listing successfully',
         'MESSAGE_MISSION_RATING_LISTING' => 'FR: Get mission rating successfully',
         'MESSAGE_TENANT_OPTION_FOUND' => 'FR: Tenant option found', 
-        'MESSAGE_INVITED_FOR_MISSION' => 'User invited to mission successfully',
+        'MESSAGE_INVITED_FOR_MISSION' => 'FR: User invited to mission successfully',
+        'MESSAGE_APPLICATION_CREATED' => 'FR: Applied for a mission successfully',
     ],
 
         
@@ -97,6 +98,10 @@ return [
         'ERROR_THEME_NOT_FOUND' => 'FR: Mission Theme does not found in system',
         'ERROR_SKILL_NOT_FOUND' => 'FR: Skill does not found in system',
         'ERROR_INVALID_MISSION_ID' => 'FR: Invalid mission id',
+        'ERROR_MISSION_APPLICATION_SEATS_NOT_AVAILABLE' => 'FR: No seats available for this mission',
+        'ERROR_MISSION_APPLICATION_DEADLINE_PASSED' => 'FR: Application deadline is passed. You cannot apply for this mission',
+        'ERROR_MISSION_APPLICATION_ALREADY_ADDED' => 'FR: You have already applied for this mission',
+
         'ERROR_INVALID_INVITE_MISSION_DATA' => 'FR: Invalid invite mission detail',
         'ERROR_INVITE_MISSION_ALREADY_EXIST' => 'FR: User is already invited for this mission',
         

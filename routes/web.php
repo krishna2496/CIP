@@ -94,6 +94,13 @@ $router->group(['middleware' => 'localization'], function ($router) {
     'middleware' => 'tenant.connection|jwt.auth|JsonApiMiddleware',
     'uses' => 'App\Tenant\TenantSettingsController@index']);
 
+    /* Apply to a mission */
+    $router->post(
+        'app/mission/application',
+        ['middleware' => 'tenant.connection|jwt.auth|JsonApiMiddleware',
+        'uses' => 'App\Mission\MissionApplicationController@missionApplication']
+    );
+    
     /* Fetch user */
     $router->post('/app/user', ['as' =>'app.user',
     'middleware' => 'tenant.connection|jwt.auth|JsonApiMiddleware',
@@ -168,14 +175,14 @@ $router->group(
         $router->delete('/{missionId}', ['as' => 'missions.delete',
         'uses' => 'Admin\Mission\MissionController@destroy']);
         $router->get('/{missionId}/applications', ['as' => 'missions.applications',
-        'uses' => 'Admin\Mission\MissionController@missionApplications']);
+        'uses' => 'Admin\Mission\MissionApplicationController@missionApplications']);
         $router->get(
             '/{missionId}/applications/{applicationId}',
-            ['uses' => 'Admin\Mission\MissionController@missionApplication']
+            ['uses' => 'Admin\Mission\MissionApplicationController@missionApplication']
         );
         $router->patch(
             '/{missionId}/applications/{applicationId}',
-            ['uses' => 'Admin\Mission\MissionController@updateApplication']
+            ['uses' => 'Admin\Mission\MissionApplicationController@updateApplication']
         );
     }
 );
@@ -241,6 +248,7 @@ $router->group(
         $router->delete('/{skillId}', ['uses' => 'Admin\Skill\SkillController@destroy']);
     }
 );
+$router->get('send-testing-email', ['uses' => 'Admin\Tenant\TenantOptionsController@sendEmail']);
 /*
 |
 |--------------------------------------------------------------------------
