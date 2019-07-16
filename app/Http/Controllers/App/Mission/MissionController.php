@@ -147,6 +147,7 @@ class MissionController extends Controller
             $userFilterData = $userFilters->toArray()["filters"];
            
             $mission = $this->missionRepository->appMissions($request, $userFilterData, $languageId);
+
             foreach ($mission as $key => $value) {
                 if (isset($value->goalMission)) {
                     $value->goal_objective  = $value->goalMission->goal_objective;
@@ -160,7 +161,7 @@ class MissionController extends Controller
                     $value->application_start_time = $value->timeMission->application_start_time;
                     $value->application_end_time = $value->timeMission->application_end_time;
 
-                    // unset($value->timeMission);
+                    unset($value->timeMission);
                     unset($value->goalMission);
                 }
 

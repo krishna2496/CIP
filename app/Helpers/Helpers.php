@@ -228,4 +228,20 @@ class Helpers
             return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
+
+    /**
+    * Get timezone from timezone
+    *
+    * @param int $timezoneId
+    * @return string
+    */
+    public function getTimeZone(int $timezoneId) : string
+    {
+        $timezone = DB::table("timezone");
+        if ($timezoneId) {
+            $timezone->where("timezone_id", $timezoneId);
+        }
+        $timezone = $timezone->first();
+        return $timezone->timezone;
+    }
 }

@@ -13,6 +13,7 @@ return [
     'DB_DATE_FORMAT' => 'Y-m-d H:i:s',
     'PER_PAGE_LIMIT' => '9',
     'FRONT_DATE_FORMAT' => 'd/m/Y',
+    'TIMEZONE' => '',
     
     /*
      * User custom field types

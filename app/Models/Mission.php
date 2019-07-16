@@ -61,7 +61,7 @@ class Mission extends Model
     'goal_objective', 'mission_count', 'mission_rating_count','already_volunteered','total_available_seat',
     'available_seat','deadline'];
 
-    protected $appends = ['city_name','available_seat','deadline'];
+    protected $appends = ['city_name','available_seat'];
     /**
      * Get the document record associated with the mission.
      *
@@ -231,6 +231,122 @@ class Mission extends Model
         Carbon::parse($value)->format(config('constants.DB_DATE_FORMAT')) : null;
     }
 
+    
+    /**
+     * Get start date attribute from the model.
+     *
+     * @return string
+     */
+    public function getStartDateAttribute()
+    {
+        $date = $this->attributes['start_date'];
+        if (config('constants.TIMEZONE') != '') {
+            if (!($date instanceof Carbon)) {
+                if (is_numeric($date)) {
+                    // Assume Timestamp
+                    $date = Carbon::createFromTimestamp($date);
+                } else {
+                    $date = Carbon::parse($date);
+                }
+            }
+            return $date->setTimezone(config('constants.TIMEZONE'))->format(config('constants.DB_DATE_FORMAT'));
+        }
+
+        return $date;
+    }
+
+    /**
+     * Get end date attribute from the model.
+     *
+     * @return string
+     */
+    public function getEndDateAttribute()
+    {
+        $date = $this->attributes['end_date'];
+        if (config('constants.TIMEZONE') != '' && $date !== null) {
+            if (!($date instanceof Carbon)) {
+                if (is_numeric($date)) {
+                    // Assume Timestamp
+                    $date = Carbon::createFromTimestamp($date);
+                } else {
+                    $date = Carbon::parse($date);
+                }
+            }
+            return $date->setTimezone(config('constants.TIMEZONE'))->format(config('constants.DB_DATE_FORMAT'));
+        }
+
+        return $date;
+    }
+
+    /**
+     * Get application deadline attribute from the model.
+     *
+     * @return string
+     */
+    public function getApplicationDeadlineAttribute()
+    {
+        $date = $this->attributes['application_deadline'];
+        if (config('constants.TIMEZONE') != '' && $date !== null) {
+            if (!($date instanceof Carbon)) {
+                if (is_numeric($date)) {
+                    // Assume Timestamp
+                    $date = Carbon::createFromTimestamp($date);
+                } else {
+                    $date = Carbon::parse($date);
+                }
+            }
+            return $date->setTimezone(config('constants.TIMEZONE'))->format(config('constants.DB_DATE_FORMAT'));
+        }
+
+        return $date;
+    }
+
+    /**
+     * Get application start date attribute from the model.
+     *
+     * @return string
+     */
+    public function getApplicationStartDateAttribute()
+    {
+        $date = $this->attributes['application_start_date'];
+        if (config('constants.TIMEZONE') != '' && $date !== null) {
+            if (!($date instanceof Carbon)) {
+                if (is_numeric($date)) {
+                    // Assume Timestamp
+                    $date = Carbon::createFromTimestamp($date);
+                } else {
+                    $date = Carbon::parse($date);
+                }
+            }
+            return $date->setTimezone(config('constants.TIMEZONE'))->format(config('constants.DB_DATE_FORMAT'));
+        }
+
+        return $date;
+    }
+
+    /**
+     * Get application end date attribute from the model.
+     *
+     * @return string
+     */
+    public function getApplicationEndDateAttribute()
+    {
+        $date = $this->attributes['application_end_date'];
+        if (config('constants.TIMEZONE') != '' && $date !== null) {
+            if (!($date instanceof Carbon)) {
+                if (is_numeric($date)) {
+                    // Assume Timestamp
+                    $date = Carbon::createFromTimestamp($date);
+                } else {
+                    $date = Carbon::parse($date);
+                }
+            }
+            return $date->setTimezone(config('constants.TIMEZONE'))->format(config('constants.DB_DATE_FORMAT'));
+        }
+
+        return $date;
+    }
+
     /**
      * Set end date attribute on the model.
      *
@@ -247,9 +363,5 @@ class Mission extends Model
         return $this->total_seats - $this->missionApplication()
         ->where('approval_status', config("constants.application_status")["AUTOMATICALLY_APPROVED"])
         ->count();
-    }
-    public function getDeadlineAttribute()
-    {
-        return "test";
     }
 }
