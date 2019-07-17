@@ -1,6 +1,9 @@
 <template>
+
     <div class="cards-wrapper" v-if="items.length > 0">
+
         <div class="card-grid">
+                
             <b-row>
                 <b-col lg="4" sm="6" class="card-outer" data-aos="fade-up" 
                     v-for="mission in items">
@@ -22,7 +25,40 @@
                                             :alt="$t('label.location')">
                                         </i>
                                         {{mission.city_name}}
-                                    </div>      
+                                    </div>   
+                                    <b-button 
+                                        v-bind:class="{ 'favourite-icon' : true,
+                                            active : mission.favourite_mission_count == 1
+                                        }"  
+                                        v-b-tooltip.hover title="Add to favourite" @click="favoriteMission(mission.mission_id)">
+                                    <i class="normal-img">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 21" width="24" height="21">
+                                        <g id="Main Content">
+                                            <g id="1">
+                                                <g id="Image content">
+                                                    <path id="Forma 1" d="M22.1 2.86C20.9 1.66 19.3 1 17.59 1C15.89 1 14.29 1.66 13.08 2.86L12.49 3.45L11.89 2.86C10.69 1.66 9.08 1 7.38 1C5.67 1 4.07 1.66 2.87 2.86C0.38 5.34 0.38 9.36 2.87 11.84L11.78 20.71C11.93 20.86 12.11 20.95 12.3 20.98C12.36 20.99 12.43 21 12.49 21C12.74 21 13 20.9 13.19 20.71L22.1 11.84C24.59 9.36 24.59 5.34 22.1 2.86ZM20.71 10.45L12.49 18.64L4.26 10.45C2.54 8.74 2.54 5.96 4.26 4.25C5.09 3.42 6.2 2.96 7.38 2.96C8.56 2.96 9.66 3.42 10.5 4.25L11.79 5.53C12.16 5.9 12.81 5.9 13.18 5.53L14.47 4.25C15.31 3.42 16.41 2.96 17.59 2.96C18.77 2.96 19.88 3.42 20.71 4.25C22.43 5.96 22.43 8.74 20.71 10.45Z" />
+                                                </g>
+                                            </g>
+                                        </g>
+                                    </svg>
+                                    </i>
+                                     <i class="hover-img">
+                                       <svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+                                            viewBox="0 0 492.7 426.8" style="enable-background:new 0 0 492.7 426.8;" xml:space="preserve">
+                                        <g>
+                                            <g id="Icons_18_">
+                                                <path d="M492.7,133.1C492.7,59.6,433.1,0,359.7,0c-48,0-89.9,25.5-113.3,63.6C222.9,25.5,181,0,133,0
+                                                    C59.6,0,0,59.6,0,133.1c0,40,17.7,75.8,45.7,100.2l188.5,188.6c3.2,3.2,7.6,5,12.1,5s8.9-1.8,12.1-5L447,233.2
+                                                    C475,208.9,492.7,173.1,492.7,133.1z"/>
+                                            </g>
+                                        </g>
+                                        </svg>
+                                    </i>       
+                                </b-button>
+                                <b-button class="add-icon" title="add" @click="$refs.userDetailModal.show()">
+                                    <img src="../assets/images/add-group-ic.svg" alt="add">
+                                </b-button>
+                                
                                 </div>
                                 <div class="group-category" 
                                 v-if="mission.mission_theme != null">{{getThemeTitle(mission.mission_theme.translations)}}
@@ -179,28 +215,87 @@
                 </b-col>
             </b-row>
         </div>
+        <b-modal centered title="Search User" ref="userDetailModal" 
+            :modal-class="myclass" hide-footer>
+                    <div class="demo">
+                        <div class="autosuggest-container">
+                <vue-autosuggest
+                    v-model="query"
+                    :suggestions="filteredOptions"
+                    @focus="focusMe"
+                    @click="clickHandler"
+                    @input="onInputChange"
+                    @selected="onSelected"
+                    :get-suggestion-value="getSuggestionValue"
+                    :input-props="{id:'autosuggest__input', placeholder:'Do you feel lucky, punk?'}">
+                    <div slot-scope="{suggestion}" style="display: flex; align-items: center;">
+                    <img :style="{ display: 'flex', width: '25px', height: '25px', borderRadius: '15px', marginRight: '10px'}" :src="suggestion.item.avatar" />
+                    <div style="{ display: 'flex', color: 'navyblue'}">
+                    {{suggestion.item.name}}
+                    </div>
+                    </div>
+                </vue-autosuggest>
+                    </div>
+                </div>
+            <b-form>
+                 <div class="btn-wrap">
+                    <b-button @click="$refs.userDetailModal.hide()" class="btn-borderprimary">Close</b-button>
+                    <b-button class="btn-bordersecondary">Submit</b-button>
+                </div>
+            </b-form>
+        </b-modal>
     </div>
     <div class="cards-wrapper" v-else>
         <h2 class="text-center">{{ $t("label.no_record_found")}}</h2>
     </div>
+    
 </template>
 
 <script>
 import store from '../store';
 import constants from '../constant';
 import StarRating from 'vue-star-rating'
+import {favoriteMission} from "../services/service";
+import { VueAutosuggest } from 'vue-autosuggest';
 
 export default {
     name: "MissionGridView",
     components:{
-		StarRating
-	},
+        StarRating,
+        VueAutosuggest
+    },
     props: {
         items: Array,
     },
     data() {
-        return { };
+        return {
+            isActive : true,
+            query: "",
+            selected: "",
+            suggestions: [
+            {
+              data: [
+                { id: 1, name: "Frodo", race: "Hobbit", avatar: "https://upload.wikimedia.org/wikipedia/en/thumb/4/4e/Elijah_Wood_as_Frodo_Baggins.png/220px-Elijah_Wood_as_Frodo_Baggins.png" },
+                { id: 2, name: "Samwise", race: "Hobbit", avatar: "https://upload.wikimedia.org/wikipedia/en/thumb/7/7b/Sean_Astin_as_Samwise_Gamgee.png/200px-Sean_Astin_as_Samwise_Gamgee.png" },
+                { id: 3, name: "Gandalf", race: "Maia", avatar: "https://upload.wikimedia.org/wikipedia/en/thumb/e/e9/Gandalf600ppx.jpg/220px-Gandalf600ppx.jpg" },
+                { id: 4, name: "Aragorn", race: "Human", avatar: "https://upload.wikimedia.org/wikipedia/en/thumb/3/35/Aragorn300ppx.png/150px-Aragorn300ppx.png" }
+              ]
+            }
+          ],
+            myclass:["userdetail-modal"],
+        };
     },
+    computed: {
+    filteredOptions() {
+      return [
+        { 
+          data: this.suggestions[0].data.filter(option => {
+            return option.name.toLowerCase().indexOf(this.query.toLowerCase()) > -1;
+          })
+        }
+      ];
+    }
+  },
     methods: {
         handleFav() {
             var btn_active = document.querySelector(".favourite-icon") 
@@ -239,15 +334,76 @@ export default {
         youtubeThumbImage(videoPath) {
             let data = videoPath.split("=");
             return  "https://img.youtube.com/vi/"+data.slice(-1)[0]+"/mqdefault.jpg";
-        }
-    },
-    mounted(){          
-        var btn_active = document.querySelectorAll(".favourite-icon");
-        btn_active.forEach(function(event){
-            event.addEventListener("click", function(){
-                event.classList.toggle("active");
-            })
-        });
+        },
+        // Add mission to favorite
+        favoriteMission(missionId){
+            let missionData = {
+                mission_id : ''
+            };
+            missionData.mission_id = missionId;
+            favoriteMission(missionData);
+        },
+            clickHandler(item) {
+                // event fired when clicking on the input
+            },
+            onSelected(item) {
+              this.selected = item.item;
+            },
+            onInputChange(text) {
+              // event fired when the input changes
+              console.log(text)
+            },
+            /**
+             * This is what the <input/> value is set to when you are selecting a suggestion.
+             */
+            getSuggestionValue(suggestion) {
+              return suggestion.item.name;
+            },
+            focusMe(e) {
+              console.log(e) // FocusEvent
+            }
+        },
+   updated(){   
+
     },
 };
 </script>
+<style>
+.demo { 
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+.demo input {
+  width: 260px;
+  padding: 0.5rem;
+}
+
+.demo ul {
+  width: 100%;
+  color: rgba(30, 39, 46,1.0);
+  list-style: none;
+  margin: 0;
+  padding: 0.5rem 0 .5rem 0;
+}
+.demo li {
+  margin: 0 0 0 0;
+  border-radius: 5px;
+  padding: 0.75rem 0 0.75rem 0.75rem;
+  display: flex;
+  align-items: center;
+}
+.demo li:hover {
+  cursor: pointer;
+}
+
+.autosuggest-container {
+  display: flex;
+  justify-content: center;
+  width: 280px;
+}
+
+#autosuggest { width: 100%; display: block;}
+.autosuggest__results-item--highlighted {
+  background-color: rgba(51, 217, 178,0.2);
+}
+</style>

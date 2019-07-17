@@ -192,6 +192,15 @@ export default {
           }
     },1000);
 
+           
+        var btn_active = document.querySelectorAll(".favourite-icon");
+        btn_active.forEach(function(event){
+            event.addEventListener("click", function(){
+                event.classList.toggle("active");
+            })
+        });
+        
+
 
   },
   destroyed() {

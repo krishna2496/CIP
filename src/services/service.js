@@ -9,7 +9,7 @@ import filterList from "./filterList";
 import missionFilterListing from "./Mission/MissionFilterListing";
 import exploreMission from "./Mission/ExploreMission";
 import tenantSetting from "./TenantSetting";
-
+import favoriteMission from "./Mission/FavoriteMission";
 export {
     loadLocaleMessages,
     missionListing,
@@ -21,5 +21,6 @@ export {
     missionFilterListing,
     exploreMission,
     filterList,
-    tenantSetting
+    tenantSetting,
+    favoriteMission
 }

@@ -348,9 +348,9 @@ export default {
     },
     created() { 
         let filterSetting = JSON.parse(store.state.tenantSetting);
-        if(filterSetting.sorting_missions != 1){
-            this.sortByFilterSet = false;
-        }
+        // if(filterSetting.sorting_missions != 1){
+        //     this.sortByFilterSet = false;
+        // }
         if (this.$route.params.searchParamsType){
             let filteExplore = {};
             filteExplore.exploreMissionParams  = '';

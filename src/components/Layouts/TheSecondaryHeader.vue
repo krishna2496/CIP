@@ -435,9 +435,9 @@ export default {
     },
     created() {
         let filterSetting = JSON.parse(store.state.tenantSetting);
-        if(filterSetting.quick_access_filters != 1){
-            this.quickAccessFilterSet = false;
-        }
+        // if(filterSetting.quick_access_filters != 1){
+        //     this.quickAccessFilterSet = false;
+        // }
         var _this = this;
         eventBus.$on('clearAllFilters', (message) => {
             this.clearFilter();
