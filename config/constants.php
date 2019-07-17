@@ -13,6 +13,15 @@ return [
     'DB_DATE_FORMAT' => 'Y-m-d H:i:s',
     'PER_PAGE_LIMIT' => '9',
     'FRONT_DATE_FORMAT' => 'd/m/Y',
+
+    'EMAIL_TEMPLATE_FOLDER' => 'emails',
+    'EMAIL_TEMPLATE_USER_INVITE' => 'invite',
+
+    'AWS_S3_ASSETS_FOLDER_NAME' => 'assets',
+    'AWS_S3_IMAGES_FOLDER_NAME' => 'images',
+    'AWS_S3_LOGO_IMAGE_NAME' => 'logo.png',
+    'AWS_S3_CUSTOME_CSS_NAME' => 'style.css',
+    'AWS_CUSTOM_STYLE_VARIABLE_FILE_NAME' => '_variables.scss',
     'TIMEZONE' => '',
     
     /*

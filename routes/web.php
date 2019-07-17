@@ -237,7 +237,7 @@ $router->group(
         $router->delete('/{skillId}', ['uses' => 'Admin\Skill\SkillController@destroy']);
     }
 );
-$router->get('send-testing-email', ['uses' => 'Admin\Tenant\TenantOptionsController@sendEmail']);
+
 /*
 |
 |--------------------------------------------------------------------------

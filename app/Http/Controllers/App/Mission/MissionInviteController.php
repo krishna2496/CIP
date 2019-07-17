@@ -165,7 +165,7 @@ class MissionInviteController extends Controller
                 try {
                     $params['tenant_name'] = $tenantName;
                     $params['to'] = $colleagueEmail; //required
-                    $params['template'] = 'emails.invite'; //path to the email template
+                    $params['template'] = config('constants.EMAIL_TEMPLATE_FOLDER').'.'.config('constants.EMAIL_TEMPLATE_USER_INVITE'); //path to the email template
                     $params['subject'] = trans('mail.recommonded_mission.MAIL_MISSION_RECOMMENDATION', [], $colleagueLanguage); //optional
                     $params['data'] = $data;
 
