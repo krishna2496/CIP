@@ -76,7 +76,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
 
     /* Fetch tenant settings */
     $router->get('/app/tenant-settings', ['as' =>'tenant-settings',
-    'middleware' => 'tenant.connection|jwt.auth|JsonApiMiddleware|PaginationMiddleware',
+    'middleware' => 'tenant.connection',
     'uses' => 'App\Tenant\TenantSettingsController@index']);
 
     /* Apply to a mission */
