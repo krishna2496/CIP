@@ -67,11 +67,11 @@ class MissionApplicationController extends Controller
                 );
             }
 
-            $applyCount = $this->missionApplicationRepository->checkApplyMission(
+            $applicationCount = $this->missionApplicationRepository->checkApplyMission(
                 $request->mission_id,
                 $request->auth->user_id
             );
-            if ($applyCount > 0) {
+            if ($applicationCount > 0) {
                 return $this->responseHelper->error(
                     Response::HTTP_UNPROCESSABLE_ENTITY,
                     Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
@@ -80,8 +80,8 @@ class MissionApplicationController extends Controller
                 );
             }
 
-            $available = $this->missionApplicationRepository->checkAvailableSeats($request->mission_id);
-            if ($available == false) {
+            $seatAvailable = $this->missionApplicationRepository->checkAvailableSeats($request->mission_id);
+            if (!$seatAvailable) {
                 return $this->responseHelper->error(
                     Response::HTTP_UNPROCESSABLE_ENTITY,
                     Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
@@ -90,8 +90,8 @@ class MissionApplicationController extends Controller
                 );
             }
 
-            $deadline = $this->missionApplicationRepository->checkMissionDeadline($request->mission_id);
-            if ($deadline == false) {
+            $applicationDeadline = $this->missionApplicationRepository->checkMissionDeadline($request->mission_id);
+            if (!$applicationDeadline) {
                 return $this->responseHelper->error(
                     Response::HTTP_UNPROCESSABLE_ENTITY,
                     Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
