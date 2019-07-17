@@ -71,21 +71,19 @@ class NotificationRepository implements NotificationInterface
      */
     public function createNotification(array $notificationData): Notification
     {
-		return $this->notification->create($notificationData);
+        return $this->notification->create($notificationData);
     }
-	
-	/*
+    
+    /*
      * Check if user notification is enabled or not
      *
      * @param int $userId
      * @param int $notificationTypeId
      * @return App\Models\UserNotification
      */
-    public function userNotificationSetting(int $userId, int $notificationTypeId): UserNotification
+    public function userNotificationSetting(int $userId, int $notificationTypeId)
     {
-		return $this->userNotification->where(['user_id' => $userId,
+        return $this->userNotification->where(['user_id' => $userId,
                 'notification_type_id' => $notificationTypeId])->first();
     }
-	
-	
 }

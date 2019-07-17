@@ -22,5 +22,4 @@ class PaginationMiddleware
         $request->merge(['perPage' => $request->get('perPage', config('constants.PER_PAGE_LIMIT'))]);
         return $next($request);
     }
-    
 }
