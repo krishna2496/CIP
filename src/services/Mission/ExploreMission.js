@@ -9,7 +9,7 @@ export default async() => {
     if (store.state.defaultLanguage !== null) {
         defaultLanguage = (store.state.defaultLanguage).toLowerCase();
     }
-    var url =process.env.VUE_APP_API_ENDPOINT + "/explore_mission";
+    var url =process.env.VUE_APP_API_ENDPOINT + "app/explore-mission";
 
     await axios({
             url: url,

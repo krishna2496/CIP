@@ -32,10 +32,10 @@
                             <b-card-body>
                                 <div class="content-block">
                                     <h2 class="card-title mb-2">
-                                        {{mission.title}}
+                                        {{mission.title | substring(40)}}
                                     </h2>
                                     <b-card-text>
-                                        {{shortDescriptionSubString(mission.short_description)}}
+                                        {{mission.short_description | substring(98)}}
                                     </b-card-text>
                                     <div class="group-ratings">
                                         <span class="group-name">{{mission.organisation_name}}</span>
@@ -74,7 +74,7 @@
                                     </div>
                                     <template v-if="checkMissionTypeTime(mission.mission_type)">
                                         <div class="group-details-inner">
-                                            <template v-if="mission.total_seats != 0">
+                                            <template v-if="mission.total_seats != 0 && mission.total_seats !== null">
                                                 <div class="detail-column info-block">
                                                     <i class="icon-wrap">
                                                         <img :src="$store.state.imagePath+'/assets/images/user-icon.svg'" alt="user">
@@ -113,7 +113,7 @@
                                     <template v-else>
                                         <div class="group-details-inner">
                                             <div class="detail-column info-block">
-                                            <template v-if="mission.total_seats != 0">
+                                            <template v-if="mission.total_seats != 0 && mission.total_seats !== null">
                                                 <i class="icon-wrap">
                                                     <img :src="$store.state.imagePath+'/assets/images/user-icon.svg'" alt="user">
                                                 </i>

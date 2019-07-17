@@ -6,7 +6,7 @@ export default async(data) => {
     var defaultLanguage = '';
 
     await axios({
-            url: process.env.VUE_APP_API_ENDPOINT + "user_filter",
+            url: process.env.VUE_APP_API_ENDPOINT + "app/user-filter",
             method: 'get',
             headers: {
                'token': store.state.token,
@@ -21,6 +21,7 @@ export default async(data) => {
                 filterData.themeId = response.data.data.filters.theme_id;
                 filterData.skillId = response.data.data.filters.skill_id;
                 filterData.tags = response.data.data.filters.tags;
+                filterData.sortBy = response.data.data.filters.sort_by;
                 store.commit('userFilter',filterData)
             } else {
                 let filterData = {};
@@ -30,6 +31,7 @@ export default async(data) => {
                 filterData.themeId = '';
                 filterData.skillId = '';
                 filterData.tags = '';
+                filterData.sortBy = '';
                 store.commit('userFilter',filterData)
             }
         })

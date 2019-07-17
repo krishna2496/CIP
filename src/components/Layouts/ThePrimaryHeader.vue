@@ -378,12 +378,11 @@ export default {
             if(this.$route.params.searchParams) {
                 this.filterData['parmas'] = this.$route.params.searchParams;
             }
-           
             const doSomething = async () => {
                await eventBus.$emit('clearAllFilters');
             }
             eventBus.$emit('setDefaultText');
-            this.$emit('exploreMisison',this.filterData);
+            this.$emit('exploreMisison',this.filterData);  
         },
         
         async exploreMissions(){
@@ -400,16 +399,12 @@ export default {
                 }
                 if (this.topOrganization != null && this.topOrganization.length > 0 ) {
                     this.topOrganizationClass = 'has-submenu';
-                }  
+                } 
             }); 
         },   
-        clearFilter($event) {
+        async clearFilter($event) {
             if(store.state.isLoggedIn) {
-                let filters = {};
-                filters.exploreMissionType = '';
-                filters.exploreMissionParams = '';
-                store.commit("exploreFilter",filters);
-                this.$emit('getMissions');
+                location.reload()                    
             }
         },
     },

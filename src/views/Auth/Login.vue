@@ -57,7 +57,7 @@ import ThePrimaryFooter from "../../components/Layouts/ThePrimaryFooter";
 import AppCustomDropdown from '../../components/AppCustomDropdown';
 import { required, email, minLength, between } from 'vuelidate/lib/validators';
 import store from '../../store';
-import {loadLocaleMessages,login,databaseConnection} from '../../services/service';
+import {loadLocaleMessages,login,databaseConnection,tenantSetting} from '../../services/service';
 import constants from '../../constant';
 
 export default {
@@ -95,7 +95,9 @@ export default {
                     this.isShowComponent = true
                     //Get langauage list from Local Storage
                     this.langList = JSON.parse(store.state.listOfLanguage)
-                    this.defautLang = store.state.defaultLanguage   
+                    this.defautLang = store.state.defaultLanguage
+                    // Get tenant setting
+                    tenantSetting(); 
             })       
         },
         
