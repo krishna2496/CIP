@@ -17,6 +17,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Carbon\Carbon;
 use App\Models\GoalMission;
 use App\Models\TimeMission;
+use App\Helpers\Helpers;
 
 class Mission extends Model
 {
@@ -35,6 +36,13 @@ class Mission extends Model
      * @var string
      */
     protected $primaryKey = 'mission_id';
+
+    /*
+     * @var App\Helpers\Helpers
+     */
+
+    private $helpers;
+
 
     /**
      * The attributes that are mass assignable.
@@ -62,6 +70,17 @@ class Mission extends Model
     'available_seat','deadline'];
 
     protected $appends = ['city_name','available_seat'];
+
+    /**
+     * Create a new Mission modeltroller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->helpers = app()->make('App\Helpers\Helpers');
+    }
+
     /**
      * Get the document record associated with the mission.
      *
@@ -239,20 +258,10 @@ class Mission extends Model
      */
     public function getStartDateAttribute()
     {
-        $date = $this->attributes['start_date'];
-        if (config('constants.TIMEZONE') != '') {
-            if (!($date instanceof Carbon)) {
-                if (is_numeric($date)) {
-                    // Assume Timestamp
-                    $date = Carbon::createFromTimestamp($date);
-                } else {
-                    $date = Carbon::parse($date);
-                }
-            }
-            return $date->setTimezone(config('constants.TIMEZONE'))->format(config('constants.DB_DATE_FORMAT'));
+        if (isset($this->attributes['start_date'])) {
+            $date = $this->attributes['start_date'];
+            return $this->helpers->getTimeZoneDate($date);
         }
-
-        return $date;
     }
 
     /**
@@ -262,20 +271,10 @@ class Mission extends Model
      */
     public function getEndDateAttribute()
     {
-        $date = $this->attributes['end_date'];
-        if (config('constants.TIMEZONE') != '' && $date !== null) {
-            if (!($date instanceof Carbon)) {
-                if (is_numeric($date)) {
-                    // Assume Timestamp
-                    $date = Carbon::createFromTimestamp($date);
-                } else {
-                    $date = Carbon::parse($date);
-                }
-            }
-            return $date->setTimezone(config('constants.TIMEZONE'))->format(config('constants.DB_DATE_FORMAT'));
+        if (isset($this->attributes['end_date'])) {
+            $date = $this->attributes['end_date'];
+            return $this->helpers->getTimeZoneDate($date);
         }
-
-        return $date;
     }
 
     /**
@@ -287,19 +286,7 @@ class Mission extends Model
     {
         if (isset($this->attributes['application_deadline'])) {
             $date = $this->attributes['application_deadline'];
-            if (config('constants.TIMEZONE') != '' && $date !== null) {
-                if (!($date instanceof Carbon)) {
-                    if (is_numeric($date)) {
-                        // Assume Timestamp
-                        $date = Carbon::createFromTimestamp($date);
-                    } else {
-                        $date = Carbon::parse($date);
-                    }
-                }
-                return $date->setTimezone(config('constants.TIMEZONE'))->format(config('constants.DB_DATE_FORMAT'));
-            }
-
-            return $date;
+            return $this->helpers->getTimeZoneDate($date);
         }
     }
 
@@ -312,19 +299,7 @@ class Mission extends Model
     {
         if (isset($this->attributes['application_start_date'])) {
             $date = $this->attributes['application_start_date'];
-            if (config('constants.TIMEZONE') != '' && $date !== null) {
-                if (!($date instanceof Carbon)) {
-                    if (is_numeric($date)) {
-                        // Assume Timestamp
-                        $date = Carbon::createFromTimestamp($date);
-                    } else {
-                        $date = Carbon::parse($date);
-                    }
-                }
-                return $date->setTimezone(config('constants.TIMEZONE'))->format(config('constants.DB_DATE_FORMAT'));
-            }
-
-            return $date;
+            return $this->helpers->getTimeZoneDate($date);
         }
     }
 
@@ -337,19 +312,7 @@ class Mission extends Model
     {
         if (isset($this->attributes['application_end_date'])) {
             $date = $this->attributes['application_end_date'];
-            if (config('constants.TIMEZONE') != '' && $date !== null) {
-                if (!($date instanceof Carbon)) {
-                    if (is_numeric($date)) {
-                        // Assume Timestamp
-                        $date = Carbon::createFromTimestamp($date);
-                    } else {
-                        $date = Carbon::parse($date);
-                    }
-                }
-                return $date->setTimezone(config('constants.TIMEZONE'))->format(config('constants.DB_DATE_FORMAT'));
-            }
-
-            return $date;
+            return $this->helpers->getTimeZoneDate($date);
         }
     }
 

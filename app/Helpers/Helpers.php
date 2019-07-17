@@ -8,6 +8,7 @@ use DB;
 use App\Traits\RestExceptionHandlerTrait;
 use PDOException;
 use Throwable;
+use Carbon\Carbon;
 
 class Helpers
 {
@@ -243,5 +244,27 @@ class Helpers
         }
         $timezone = $timezone->first();
         return $timezone->timezone;
+    }
+
+    /**
+     * Get date according to user timezone
+     *
+     * @param string $date
+     * @return string
+     */
+    public function getTimeZoneDate($date)
+    {
+        if (config('constants.TIMEZONE') != '' && $date !== null) {
+            if (!($date instanceof Carbon)) {
+                if (is_numeric($date)) {
+                    // Assume Timestamp
+                    $date = Carbon::createFromTimestamp($date);
+                } else {
+                    $date = Carbon::parse($date);
+                }
+            }
+            return $date->setTimezone(config('constants.TIMEZONE'))->format(config('constants.DB_DATE_FORMAT'));
+        }
+        return $date;
     }
 }
