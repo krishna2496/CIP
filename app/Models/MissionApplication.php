@@ -78,7 +78,7 @@ class MissionApplication extends Model
         }
 
         $missionApplication = $applicationQuery->where('mission_id', $missionId)
-                ->paginate(config('constants.PER_PAGE_LIMIT'));
+                ->paginate($request->perPage);
         return $missionApplication;
     }
 

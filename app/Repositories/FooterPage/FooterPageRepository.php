@@ -145,7 +145,7 @@ class FooterPageRepository implements FooterPageInterface
             $pageQuery->orderBy('page_id', $orderDirection);
         }
 
-        return $pageQuery->paginate(config('constants.PER_PAGE_LIMIT'));
+        return $pageQuery->paginate($request->perPage);
     }
     
     /**

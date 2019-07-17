@@ -52,7 +52,7 @@ class MissionThemeRepository implements MissionThemeInterface
     public function missionThemeDetails(Request $request): LengthAwarePaginator
     {
         return $this->missionTheme->select('theme_name', 'mission_theme_id', 'translations')
-        ->paginate(config('constants.PER_PAGE_LIMIT'));
+        ->paginate($request->perPage);
     }
 
     /**

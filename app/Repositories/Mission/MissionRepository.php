@@ -562,7 +562,7 @@ class MissionRepository implements MissionInterface
             });
         }
 
-        $mission =  $missionQuery->paginate(config('constants.PER_PAGE_LIMIT'));
+        $mission =  $missionQuery->paginate($request->perPage);
         return $mission;
     }
 

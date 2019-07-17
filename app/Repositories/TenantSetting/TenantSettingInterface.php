@@ -17,7 +17,8 @@ interface TenantSettingInterface
     /**
      *  Get all setting
      *
+     * @param Illuminate\Http\Request $request
      * @return void
      */
-    public function getAllSettings();
+    public function getAllSettings(Request $request);
 }
