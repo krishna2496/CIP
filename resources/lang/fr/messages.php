@@ -101,6 +101,7 @@ return [
         'ERROR_MISSION_APPLICATION_SEATS_NOT_AVAILABLE' => 'FR: No seats available for this mission',
         'ERROR_MISSION_APPLICATION_DEADLINE_PASSED' => 'FR: Application deadline is passed. You cannot apply for this mission',
         'ERROR_MISSION_APPLICATION_ALREADY_ADDED' => 'FR: You have already applied for this mission',
+        'ERROR_MISSION_APPLICATION_NOT_FOUND' => 'FR: Requested mission application does not exist',
 
         'ERROR_INVALID_INVITE_MISSION_DATA' => 'FR: Invalid invite mission detail',
         'ERROR_INVITE_MISSION_ALREADY_EXIST' => 'FR: User is already invited for this mission',

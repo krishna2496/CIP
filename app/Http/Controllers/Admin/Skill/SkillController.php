@@ -188,7 +188,14 @@ class SkillController extends Controller
     public function show(int $id): JsonResponse
     {
         try {
-            $skillDetail = $this->skillRepository->find($id);
+            try {
+                $skillDetail = $this->skillRepository->find($id);
+            } catch (ModelNotFoundException $e) {
+                return $this->modelNotFound(
+                    config('constants.error_codes.ERROR_USER_NOT_FOUND'),
+                    $e->getMessage()
+                );
+            }
 
             $apiData = $skillDetail->toArray();
             $apiStatus = Response::HTTP_OK;

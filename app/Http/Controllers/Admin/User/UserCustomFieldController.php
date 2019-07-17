@@ -152,7 +152,10 @@ class UserCustomFieldController extends Controller
             // Server side validataions
             $validator = Validator::make(
                 $request->toArray(),
-                ["type" => [Rule::in(config('constants.custom_field_types'))],
+                ["type" => [
+                    "sometimes",
+                    "required",
+                    Rule::in(config('constants.custom_field_types'))],
                 "translations.*.values" =>
                 Rule::requiredIf($request->type == config('constants.custom_field_types.DROP-DOWN')
                     || $request->type == config('constants.custom_field_types.RADIO')),

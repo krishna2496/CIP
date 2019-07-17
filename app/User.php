@@ -64,25 +64,6 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     ];
     
     /**
-     * The rules that should validate create request.
-     *
-     * @var array
-     */
-    public $rules = [
-        "first_name" => "required|max:16",
-        "last_name" => "required|max:16",
-        "email" => "required|email|unique:user,email,NULL,user_id,deleted_at,NULL",
-        "password" => "required",
-        "city_id" => "required",
-        "country_id" => "required",
-        "profile_text" => "required",
-        "employee_id" => "max:16",
-        "department" => "max:16",
-        "manager_name" => "max:16",
-        "linked_in_url" => "url"
-    ];
-          
-    /**
     * Defined has one relation for the city table.
     *
     * @return \Illuminate\Database\Eloquent\Relations\HasOne

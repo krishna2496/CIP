@@ -18,6 +18,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\User;
 use InvalidArgumentException;
 use PDOException;
+use Illuminate\Validation\Rule;
 
 class UserController extends Controller
 {
@@ -170,15 +171,20 @@ class UserController extends Controller
             // Server side validataions
             $validator = Validator::make(
                 $request->all(),
-                ["first_name" => "max:16",
-                "last_name" => "max:16",
-                "email" => "email|unique:user,email,'. $id . ',user_id,deleted_at,NULL",
-                "employee_id" => "max:16",
-                "department" => "max:16",
-                "manager_name" => "max:16",
-                "linked_in_url" => "url"]
+                ["first_name" => "sometimes|required|max:16",
+                "last_name" => "sometimes|required|max:16",
+                "email" => [
+                    "sometimes",
+                    "required",
+                    "email",
+                    Rule::unique('user')->ignore($id, 'user_id')],
+                "password" => "sometimes|required|min:8",
+                "employee_id" => "sometimes|required|max:16",
+                "department" => "sometimes|required|max:16",
+                "manager_name" => "sometimes|required|max:16",
+                "linked_in_url" => "sometimes|required|url"]
             );
-
+                        
             // If request parameter have any error
             if ($validator->fails()) {
                 return $this->responseHelper->error(
@@ -313,6 +319,14 @@ class UserController extends Controller
                     $validator->errors()->first()
                 );
             }
+
+            // try {
+            //     $this->userRepository->find($id);
+            // } catch (ModelNotFoundException $e) {
+            //     throw new ModelNotFoundException(
+            //         trans('messages.custom_error_message.ERROR_USER_NOT_FOUND')
+            //     );
+            // }
 
             $userSkill = $this->userRepository->unlinkSkill($request->toArray(), $id);
             // Set response data

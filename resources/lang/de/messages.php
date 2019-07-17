@@ -103,6 +103,7 @@ return [
         'ERROR_INVITE_MISSION_ALREADY_EXIST' => 'DE: User is already invited for this mission',
         'ERROR_MISSION_APPLICATION_DEADLINE_PASSED' => 'DE: Application deadline is passed. You cannot apply for this mission',
         'ERROR_MISSION_APPLICATION_ALREADY_ADDED' => 'DE: You have already applied for this mission',
+        'ERROR_MISSION_APPLICATION_NOT_FOUND' => 'DE: Requested mission application does not exist',
 
         // Custom error code for Tenant Authorization - 210000 - 219999
         'ERROR_INVALID_API_AND_SECRET_KEY' => 'DE: Invalid API Key or Secret key',

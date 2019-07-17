@@ -36,7 +36,7 @@ class TenantOptionRepository implements TenantOptionInterface
     }
 
     /**
-     * Store tenant slider data.
+     * Update style settings.
      *
      * @param  Illuminate\Http\Request $request
      * @return void
