@@ -6,7 +6,6 @@ use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
 use App\Repositories\Skill\SkillRepository;
-use Illuminate\Support\Facades\Input;
 use App\Helpers\ResponseHelper;
 use App\Traits\RestExceptionHandlerTrait;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -44,6 +43,7 @@ class SkillController extends Controller
     /**
      * Display a listing of the resource.
      *
+     * @param \Illuminate\Http\Request $request
      * @return Illuminate\Http\JsonResponse
      */
     public function index(Request $request): JsonResponse

@@ -3,7 +3,6 @@ namespace App\Http\Controllers\App\Tenant;
 
 use Illuminate\Http\Response;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use App\Models\TenantOption;
 use App\Helpers\Helpers;
 use App\Helpers\LanguageHelper;
@@ -51,8 +50,9 @@ class TenantOptionController extends Controller
      *
      * @param App\Repositories\TenantOption\TenantOptionRepository $tenantOptionRepository
      * @param Illuminate\Http\ResponseHelper $responseHelper
-     * @param App\Helpers\LanguageHelper
-     * @param App\Helpers\S3Helper
+     * @param App\Helpers\LanguageHelper $languageHelper
+     * @param App\Helpers\S3Helper $s3helper
+     * @param App\Helpers\Helpers $helpers
      * @return void
      */
     public function __construct(

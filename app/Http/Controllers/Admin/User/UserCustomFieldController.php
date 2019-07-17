@@ -3,7 +3,6 @@ namespace App\Http\Controllers\Admin\User;
 
 use App\Http\Controllers\Controller;
 use App\Repositories\UserCustomField\UserCustomFieldRepository;
-use Illuminate\Support\Facades\Input;
 use App\Models\UserCustomField;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -50,7 +49,7 @@ class UserCustomFieldController extends Controller
      * @param Illuminate\Http\Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function index(Request $request)
+    public function index(Request $request): JsonResponse
     {
         try {
             $customFields = $this->userCustomFieldRepository->userCustomFieldList($request);
@@ -129,24 +128,13 @@ class UserCustomFieldController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
      * Update user custom field
      *
      * @param \Illuminate\Http\Request  $request
-     * @param int  $id
+     * @param int $id
      * @return \Illuminate\Http\JsonResponse
      */
-    public function update(Request $request, $id): JsonResponse
+    public function update(Request $request, int $id): JsonResponse
     {
         try {
             // Server side validataions
@@ -208,7 +196,7 @@ class UserCustomFieldController extends Controller
      * @param int  $id
      * @return \Illuminate\Http\JsonResponse
      */
-    public function destroy($id): JsonResponse
+    public function destroy(int $id): JsonResponse
     {
         try {
             $customField = $this->userCustomFieldRepository->delete($id);

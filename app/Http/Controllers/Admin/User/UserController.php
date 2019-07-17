@@ -6,10 +6,6 @@ use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
 use App\Repositories\User\UserRepository;
-use Illuminate\Support\Facades\Input;
-use App\Models\City;
-use App\Models\Country;
-use App\Models\Timezone;
 use App\Helpers\ResponseHelper;
 use App\Traits\RestExceptionHandlerTrait;
 use Validator;
@@ -49,6 +45,7 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      *
+     * @param \Illuminate\Http\Request $request
      * @return Illuminate\Http\JsonResponse
      */
     public function index(Request $request): JsonResponse

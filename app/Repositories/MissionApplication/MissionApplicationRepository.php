@@ -146,6 +146,13 @@ class MissionApplicationRepository implements MissionApplicationInterface
      */
     public function updateApplication(Request $request, int $missionId, int $applicationId): MissionApplication
     {
+        try {
+            $this->mission->findOrFail($missionId);
+        } catch (ModelNotFoundException $e) {
+            throw new ModelNotFoundException(
+                trans('messages.custom_error_message.ERROR_MISSION_NOT_FOUND')
+            );
+        }
         $missionApplication = $this->missionApplication->findOrFail($applicationId);
         $missionApplication->update($request->toArray());
         return $missionApplication;

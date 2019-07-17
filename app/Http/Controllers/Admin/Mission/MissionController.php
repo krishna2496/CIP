@@ -5,7 +5,6 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Validation\Rule;
 use App\Repositories\Mission\MissionRepository;
@@ -16,7 +15,6 @@ use App\Models\MissionMedia;
 use App\Models\MissionTheme;
 use App\Helpers\Helpers;
 use App\Helpers\ResponseHelper;
-use App\Helpers\LanguageHelper;
 use Validator;
 use DB;
 use App\Traits\RestExceptionHandlerTrait;
@@ -86,7 +84,6 @@ class MissionController extends Controller
      */
     public function store(Request $request): JsonResponse
     {
-       
         // Server side validataions
         $validator = Validator::make(
             $request->all(),
@@ -189,7 +186,7 @@ class MissionController extends Controller
      * @param int $id
      * @return Illuminate\Http\JsonResponse
      */
-    public function update(Request $request, $id): JsonResponse
+    public function update(Request $request, int $id): JsonResponse
     {
         // Server side validataions
         $validator = Validator::make(
@@ -257,7 +254,7 @@ class MissionController extends Controller
      * @param int $id
      * @return Illuminate\Http\JsonResponse
      */
-    public function destroy($id): JsonResponse
+    public function destroy(int $id): JsonResponse
     {
         try {
             $mission = $this->missionRepository->delete($id);
