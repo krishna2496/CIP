@@ -69,7 +69,8 @@ $app->routeMiddleware([
     'tenant.connection' => App\Http\Middleware\TenantConnectionMiddleware::class, // Middle ware that connect tenant user with their tenant
     'auth.tenant.admin' => App\Http\Middleware\AuthTenantAdminMiddleware::class,
     'localization' => App\Http\Middleware\LocalizationMiddleware::class,
-    'JsonApiMiddleware' => App\Http\Middleware\JsonApiMiddleware::class
+    'JsonApiMiddleware' => App\Http\Middleware\JsonApiMiddleware::class,
+    'PaginationMiddleware' => App\Http\Middleware\PaginationMiddleware::class
 ]);
 
 /**
@@ -83,6 +84,7 @@ $app->configure('mail'); //SMTP and PHP mail
 $app->configure('constants'); //constant file config
 $app->configure('cors');  //cross origin support
 $app->configure('messages');  //Message Constants config
+$app->configure('mail');  //Mail Constants config
 $app->configure('filesystems');
 $app->configure('services');
 

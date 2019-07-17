@@ -11,10 +11,11 @@ use App\Traits\RestExceptionHandlerTrait;
 use Validator;
 use App\User;
 use InvalidArgumentException;
+use App\Transformations\UserTransformable;
 
 class UserController extends Controller
 {
-    use RestExceptionHandlerTrait;
+    use RestExceptionHandlerTrait, UserTransformable;
     /**
      * @var App\Repositories\User\UserRepository
      */
@@ -47,13 +48,20 @@ class UserController extends Controller
     public function index(Request $request): JsonResponse
     {
         try {
-            $users = $this->userRepository->searchUser($request->search, $request->auth->user_id);
-            
+            $userList = $this->userRepository->listUsers($request->auth->user_id);
+            if ($request->has('search')) {
+                $userList = $this->userRepository->searchUsers($request->input('search'), $request->auth->user_id);
+            }
+
+            $users = $userList->map(function (User $user) {
+                return $this->transformUser($user);
+            })->all();
+
             // Set response data
             $apiStatus = Response::HTTP_OK;
-            $apiMessage = ($users->isEmpty()) ? trans('messages.success.MESSAGE_NO_RECORD_FOUND')
+            $apiMessage = (empty($users)) ? trans('messages.success.MESSAGE_NO_RECORD_FOUND')
              : trans('messages.success.MESSAGE_USER_LISTING');
-            return $this->responseHelper->success(Response::HTTP_OK, $apiMessage, $users->toArray());
+            return $this->responseHelper->success(Response::HTTP_OK, $apiMessage, $users);
         } catch (InvalidArgumentException $e) {
             return $this->invalidArgument(
                 config('constants.error_codes.ERROR_INVALID_ARGUMENT'),

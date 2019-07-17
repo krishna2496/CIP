@@ -15,10 +15,11 @@ use App\Models\City;
 use App\Models\Country;
 use App\Models\Timezone;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Nicolaslopezj\Searchable\SearchableTrait;
 
 class User extends Model implements AuthenticatableContract, AuthorizableContract, CanResetPasswordInterface
 {
-    use Authenticatable, Authorizable, CanResetPasswordTrait, Notifiable, SoftDeletes;
+    use Authenticatable, Authorizable, CanResetPasswordTrait, Notifiable, SoftDeletes, SearchableTrait;
 
     /**
      * The table associated with the model.
@@ -62,7 +63,20 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     protected $hidden = [
         'password',
     ];
-    
+  
+    /**
+     * Searchable rules.
+     *
+     * @var array
+     */
+    protected $searchable = [
+        'columns' => [
+            'user.first_name' => 10,
+            'user.last_name' => 10,
+            'user.email' => 10
+        ]
+    ];
+
     /**
     * Defined has one relation for the city table.
     *
@@ -145,5 +159,18 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     public function getUserName(int $userId): string
     {
         return static::select('first_name')->where(['user_id' => $userId])->value('first_name');
+    }
+
+    /**
+     * Search user
+     *
+     * @param string $term
+     * @param int $userId
+     *
+     * @return mixed
+     */
+    public function searchUser($term, $userId)
+    {
+        return self::where('user_id', '<>', $userId)->search($term);
     }
 }

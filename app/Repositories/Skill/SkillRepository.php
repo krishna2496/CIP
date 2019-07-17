@@ -59,7 +59,7 @@ class SkillRepository implements SkillInterface
     public function skillDetails(Request $request): LengthAwarePaginator
     {
         return $this->skill->select('skill_id', 'skill_name', 'translations', 'parent_skill')
-        ->paginate(config('constants.PER_PAGE_LIMIT'));
+        ->paginate($request->perPage);
     }
     
     /**

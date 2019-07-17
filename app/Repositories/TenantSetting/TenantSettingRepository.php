@@ -45,14 +45,14 @@ class TenantSettingRepository implements TenantSettingInterface
     * @param Illuminate\Http\Request $request
     * @return Illuminate\Pagination\LengthAwarePaginator
     */
-    public function getAllSettings(): LengthAwarePaginator
+    public function getAllSettings(Request $request): LengthAwarePaginator
     {
-        return $this->tenantSetting->paginate(config('constants.PER_PAGE_LIMIT'));
+        return $this->tenantSetting->paginate($request->perPage);
     }
 
     /**
     * Get all tenant's settings data. Used for front end api.
-    * 
+    *
     * @return Illuminate\Database\Eloquent\Collection
     */
     public function fetchAllTenantSettings(): Collection

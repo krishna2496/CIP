@@ -424,7 +424,7 @@ class MissionRepository implements MissionInterface
         ->with(['city', 'country', 'missionTheme',
         'missionLanguage', 'missionMedia', 'missionDocument', 'goalMission', 'timeMission'])
         ->withCount('missionApplication')
-        ->paginate(config('constants.PER_PAGE_LIMIT'));
+        ->paginate($request->perPage);
 
         foreach ($mission as $key => $value) {
             foreach ($value->missionLanguage as $languageValue) {
@@ -472,7 +472,10 @@ class MissionRepository implements MissionInterface
             ->withCount(['missionApplication as mission_application_count' => function ($query) use ($request) {
                 $query->where('approval_status', config("constants.application_status")["AUTOMATICALLY_APPROVED"]);
             }])
-            ->withCount([
+            ->withCount(['favouriteMission as favourite_mission_count' => function ($query) use ($request) {
+                $query->Where('user_id', $request->auth->user_id);
+            }]);
+            $missionQuery->withCount([
                 'missionRating as mission_rating_count' => function ($query) {
                     $query->select(DB::raw("AVG(rating) as rating"));
                 }
@@ -562,7 +565,32 @@ class MissionRepository implements MissionInterface
             });
         }
 
-        $mission =  $missionQuery->paginate(config('constants.PER_PAGE_LIMIT'));
+        if ($userFilterData['sort_by'] && $userFilterData['sort_by'] != '') {
+            if ($userFilterData['sort_by'] == config('constants.NEWEST')) {
+                $missionQuery->orderBY('mission.created_at', 'desc');
+            }
+            if ($userFilterData['sort_by'] == config('constants.OLDEST')) {
+                $missionQuery->orderBY('mission.created_at', 'asc');
+            }
+            if ($userFilterData['sort_by'] == config('constants.LOWEST_AVAILABLE_SEATS')) {
+            }
+            if ($userFilterData['sort_by'] == config('constants.HIGHEST_AVAILABLE_SEATS')) {
+            }
+            if ($userFilterData['sort_by'] == config('constants.MY_FAVOURITE')) {
+                $missionQuery->withCount(['favouriteMission as favourite_mission_count'
+                    => function ($query) use ($request) {
+                        $query->Where('user_id', $request->auth->user_id);
+                    }]);
+                $missionQuery->orderBY('favourite_mission_count', 'desc');
+            }
+            if ($userFilterData['sort_by'] == config('constants.DEADLINE')) {
+                $missionQuery->with(['timeMission' => function ($query) {
+                    $query->orderBy("application_deadline");
+                }]);
+            }
+        }
+        
+        $mission =  $missionQuery->paginate($request->perPage);
         return $mission;
     }
 

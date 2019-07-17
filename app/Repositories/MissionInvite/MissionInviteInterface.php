@@ -2,6 +2,8 @@
 namespace App\Repositories\MissionInvite;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
+use App\Models\MissionInvite;
 
 interface MissionInviteInterface
 {
@@ -11,9 +13,9 @@ interface MissionInviteInterface
      * @param int $missionId
      * @param int $inviteUserId
      * @param int $fromUserId
-     * @return float
+     * @return Illuminate\Support\Collection
      */
-    public function checkInviteMission(int $missionId, int $inviteUserId, int $fromUserId);
+    public function getInviteMission(int $missionId, int $inviteUserId, int $fromUserId): Collection;
 
     /**
      * Invite for a mission.
@@ -23,5 +25,5 @@ interface MissionInviteInterface
      * @param int $fromUserId
      * @return MissionInvite
      */
-    public function inviteMission(int $missionId, int $inviteUserId, int $fromUserId);
+    public function inviteMission(int $missionId, int $inviteUserId, int $fromUserId): MissionInvite;
 }

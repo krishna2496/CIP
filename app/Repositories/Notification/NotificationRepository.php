@@ -6,9 +6,6 @@ use App\Helpers\ResponseHelper;
 use App\Models\Notification;
 use App\Models\NotificationType;
 use App\Models\UserNotification;
-use App\Repositories\User\UserRepository;
-use App\Repositories\Mission\MissionRepository;
-use Illuminate\Support\Facades\Mail;
 
 class NotificationRepository implements NotificationInterface
 {
@@ -33,39 +30,24 @@ class NotificationRepository implements NotificationInterface
     public $userNotification;
 
     /**
-     * @var App\Repositories\User\UserRepository
-     */
-    public $userRepository;
-
-    /**
-     * @var App\Repositories\Mission\MissionRepository
-     */
-    public $missionRepository;
-
-    /**
      * Create a new Notification repository instance.
      *
      * @param  Illuminate\Http\ResponseHelper $responseHelper
      * @param  App\Models\Notification $notification
      * @param  App\Models\NotificationType $notificationType
      * @param  App\Models\UserNotification $userNotification
-     * @param  App\Repositories\User\UserRepository $userRepository
      * @return void
      */
     public function __construct(
         ResponseHelper $responseHelper,
         Notification $notification,
         NotificationType $notificationType,
-        UserNotification $userNotification,
-        UserRepository $userRepository,
-        MissionRepository $missionRepository
+        UserNotification $userNotification
     ) {
         $this->responseHelper = $responseHelper;
         $this->notification = $notification;
         $this->notificationType = $notificationType;
         $this->userNotification = $userNotification;
-        $this->userRepository = $userRepository;
-        $this->missionRepository = $missionRepository;
     }
 
     /*
@@ -74,7 +56,7 @@ class NotificationRepository implements NotificationInterface
      * @param string $type
      * @return int
      */
-    public function getNotificationType(string $type): int
+    public function getNotificationTypeID(string $type): int
     {
         return $this->notificationType
         ->where(['notification_type' => $type])
@@ -85,43 +67,23 @@ class NotificationRepository implements NotificationInterface
      * Send notification
      *
      * @param array $notificationData
-     * @return void
+     * @return App\Models\Notification
      */
-    public function sendNotification(array $notificationData)
+    public function createNotification(array $notificationData): Notification
     {
-        switch ($notificationData['notification_type_id']) {
-            case config('constants.notification_types.RECOMMENDED_MISSIONS'):
-                $inviteUser = $this->userRepository->find($notificationData['to_user_id']);
-                $toEmail = $inviteUser->email;
-                $fromUserName = $this->userRepository->getUserName($notificationData['user_id']);
-                $missionName = $this->missionRepository->getMissionName(
-                    $notificationData['mission_id'],
-                    $inviteUser->language_id
-                );
-        
-                $notify = $this->userNotification
-                ->where(['user_id' => $notificationData['user_id'],
-                'notification_type_id' => $notificationData['notification_type_id']])->first();
-            
-                if ($notify) {
-                    $notificationData = array(
-                        'notification_type_id' => $notificationData['notification_type_id'],
-                        'user_id' => $notificationData['user_id'],
-                        'to_user_id' => $notificationData['to_user_id'],
-                        'mission_id' => $notificationData['mission_id'],
-                    );
-                    $notification = $this->notification->create($notificationData);
-                }
-                $data = array(
-                    'missionName'=> $missionName,
-                    'fromUserName'=> $fromUserName
-                );
-                Mail::send('invite', $data, function ($message) use ($toEmail) {
-                    $message->to($toEmail)
-                    ->subject(trans('messages.custom_text.MAIL_MISSION_RECOMMENDATION'));
-                    $message->from(env('MAIL_FROM_ADDRESS'), env('MAIL_FROM_NAME'));
-                });
-                break;
-        }
+        return $this->notification->create($notificationData);
+    }
+    
+    /*
+     * Check if user notification is enabled or not
+     *
+     * @param int $userId
+     * @param int $notificationTypeId
+     * @return App\Models\UserNotification
+     */
+    public function userNotificationSetting(int $userId, int $notificationTypeId)
+    {
+        return $this->userNotification->where(['user_id' => $userId,
+                'notification_type_id' => $notificationTypeId])->first();
     }
 }

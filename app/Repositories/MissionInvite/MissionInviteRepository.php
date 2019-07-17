@@ -4,6 +4,7 @@ namespace App\Repositories\MissionInvite;
 use App\Repositories\MissionInvite\MissionInviteInterface;
 use App\Helpers\ResponseHelper;
 use App\Models\MissionInvite;
+use Illuminate\Support\Collection;
 
 class MissionInviteRepository implements MissionInviteInterface
 {
@@ -33,19 +34,16 @@ class MissionInviteRepository implements MissionInviteInterface
     }
 
     /*
-     * Check mission is already added or not.
+     * Check user is already invited for a mission
      *
      * @param int $missionId
      * @param int $inviteUserId
      * @param int $fromUserId
-     * @return int
+     * @return Illuminate\Support\Collection
      */
-    public function checkInviteMission(int $missionId, int $inviteUserId, int $fromUserId): int
+    public function getInviteMission(int $missionId, int $inviteUserId, int $fromUserId): Collection
     {
-        $inviteCount = $this->missionInvite
-        ->where(['mission_id' => $missionId, 'to_user_id' => $inviteUserId, 'from_user_id' => $fromUserId])
-        ->count();
-        return $inviteCount;
+        return $this->missionInvite->getMissionInvite($missionId, $inviteUserId, $fromUserId);
     }
     
     /*
@@ -58,8 +56,7 @@ class MissionInviteRepository implements MissionInviteInterface
      */
     public function inviteMission(int $missionId, int $inviteUserId, int $fromUserId): MissionInvite
     {
-        $invite = $this->missionInvite
+        return $this->missionInvite
         ->create(['mission_id' => $missionId, 'to_user_id' => $inviteUserId, 'from_user_id' => $fromUserId]);
-        return $invite;
     }
 }

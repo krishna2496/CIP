@@ -6,12 +6,18 @@ use Illuminate\Http\Response;
 use App\Repositories\MissionInvite\MissionInviteRepository;
 use App\Repositories\Notification\NotificationRepository;
 use App\Helpers\ResponseHelper;
+use App\Helpers\LanguageHelper;
+use App\Helpers\Helpers;
 use App\Http\Controllers\Controller;
 use PDOException;
 use Illuminate\Http\JsonResponse;
 use App\Traits\RestExceptionHandlerTrait;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Validator;
+use App\Repositories\User\UserRepository;
+use App\Repositories\Mission\MissionRepository;
+use Illuminate\Support\Facades\Mail;
+use App\Jobs\AppMailerJob;
 
 class MissionInviteController extends Controller
 {
@@ -30,23 +36,45 @@ class MissionInviteController extends Controller
      * @var App\Helpers\ResponseHelper
      */
     private $responseHelper;
+    
+    /*
+     * @var App\Helpers\LanguageHelper
+     */
+    private $languageHelper;
+
+    /**
+     * @var App\Helpers\Helpers
+     */
+    private $helpers;
 
     /**
      * Create a new Mission controller instance.
      *
      * @param App\Repositories\Mission\MissionInviteRepository $missionInviteRepository
      * @param App\Repositories\Notification\NotificationRepository $notificationRepository
+     * @param App\Repositories\User\UserRepository $userRepository
+     * @param App\Repositories\Mission\MissionRepository $missionRepository
      * @param Illuminate\Http\ResponseHelper $responseHelper
+     * @param  Illuminate\Http\LanguageHelper $languageHelper
+     * @param  App\Helpers\Helpers $helpers
      * @return void
      */
     public function __construct(
         MissionInviteRepository $missionInviteRepository,
         NotificationRepository $notificationRepository,
-        ResponseHelper $responseHelper
+        UserRepository $userRepository,
+        MissionRepository $missionRepository,
+        ResponseHelper $responseHelper,
+        LanguageHelper $languageHelper,
+        Helpers $helpers
     ) {
         $this->missionInviteRepository = $missionInviteRepository;
         $this->notificationRepository = $notificationRepository;
+        $this->userRepository = $userRepository;
+        $this->missionRepository = $missionRepository;
         $this->responseHelper = $responseHelper;
+        $this->languageHelper = $languageHelper;
+        $this->helpers = $helpers;
     }
 
     /*
@@ -75,12 +103,13 @@ class MissionInviteController extends Controller
                     $validator->errors()->first()
                 );
             }
-            $inviteCount = $this->missionInviteRepository->checkInviteMission(
+            // Check if user is already invited for this mission
+            $getMissionInvite = $this->missionInviteRepository->getInviteMission(
                 $request->mission_id,
                 $request->to_user_id,
                 $request->auth->user_id
             );
-            if ($inviteCount > 0) {
+            if (!$getMissionInvite->isEmpty()) {
                 return $this->responseHelper->error(
                     Response::HTTP_UNPROCESSABLE_ENTITY,
                     Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
@@ -94,16 +123,58 @@ class MissionInviteController extends Controller
                 $request->auth->user_id
             );
             
-            $notificationTypeId = $this->notificationRepository->getNotificationType('Recommended missions');
-            // Send notification
-            $notificationData = array(
-                'notification_type_id' => $notificationTypeId,
-                'user_id' => $request->auth->user_id,
-                'mission_id' => $request->mission_id,
-                'to_user_id' =>  $request->to_user_id
-            );
-            $notification = $this->notificationRepository->sendNotification($notificationData);
+            $notificationTypeId = $this->notificationRepository
+            ->getNotificationTypeID(config('constants.notification_types.RECOMMENDED_MISSIONS'));
+            
+            // Check if to_user_id (colleague) has enabled notification for Recommended missions
+            $notifyColleague = $this->notificationRepository
+            ->userNotificationSetting($request->to_user_id, $notificationTypeId);
+                
+            if ($notifyColleague) {
+                $colleague = $this->userRepository->find($request->to_user_id);
+                $colleagueEmail = $colleague->email;
+                $colleagueLanguageId = $colleague->language_id;
+                $languages = $this->languageHelper->getLanguages($request);
+                $language = $languages->where('language_id', $colleagueLanguageId)->first();
+                $colleagueLanguage = $language->code;
+                $fromUserName = $this->userRepository->getUserName($request->auth->user_id);
+                $missionName = $this->missionRepository->getMissionName(
+                    $request->mission_id,
+                    $colleague->language_id
+                );
+                $notificationData = array(
+                    'notification_type_id' => $notificationTypeId,
+                    'user_id' => $request->auth->user_id,
+                    'to_user_id' => $request->to_user_id,
+                    'mission_id' => $request->mission_id,
+                );
+                $notification = $this->notificationRepository->createNotification($notificationData);
+                
+                $data = array(
+                    'missionName'=> $missionName,
+                    'fromUserName'=> $fromUserName,
+                    'colleagueLanguage'=> $colleagueLanguage
+                );
 
+                try {
+                    $tenantName = $this->helpers->getSubDomainFromRequest($request);
+                } catch (\Exception $e) {
+                    return $this->badRequest($e->getMessage());
+                }
+                            
+                try {
+                    $params['tenant_name'] = $tenantName;
+                    $params['to'] = $colleagueEmail; //required
+                    $params['template'] = 'emails.invite'; //path to the email template
+                    $params['subject'] = trans('mail.recommonded_mission.MAIL_MISSION_RECOMMENDATION', [], $colleagueLanguage); //optional
+                    $params['data'] = $data;
+
+                    dispatch(new AppMailerJob($params));
+                } catch (\Exception $e) {
+                    return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
+                }
+            }
+            
             // Set response data
             $apiStatus = Response::HTTP_CREATED;
             $apiMessage = trans('messages.success.MESSAGE_INVITED_FOR_MISSION');

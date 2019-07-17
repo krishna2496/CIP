@@ -13,6 +13,7 @@ return [
     'DB_DATE_FORMAT' => 'Y-m-d H:i:s',
     'PER_PAGE_LIMIT' => '9',
     'FRONT_DATE_FORMAT' => 'd/m/Y',
+    'TIMEZONE' => '',
     
     /*
      * User custom field types
@@ -87,14 +88,14 @@ return [
      * User notification types
      */
     'notification_types' => [
-        'RECOMMENDED_MISSIONS' => 1,
-        'VOLUNTEERING_HOURS' => 2,
-        'VOLUNTEERING_GOALS' => 3,
-        'MY-COMMENTS' => 4,
-        'MY-STORIES' => 5,
-        'NEW_STORIES_HOURS' => 6,
-        'NEW_MISSIONS' => 7,
-        'NEW_MESSAGES' => 8
+        'RECOMMENDED_MISSIONS' => 'Recommended missions',
+        'VOLUNTEERING_HOURS' => 'Volunteering hours',
+        'VOLUNTEERING_GOALS' => 'Volunteering goals',
+        'MY-COMMENTS' => 'My comments',
+        'MY-STORIES' => 'My stories',
+        'NEW_STORIES_HOURS' => 'New stories hours',
+        'NEW_MISSIONS' => 'New missions',
+        'NEW_MESSAGES' => 'New messages'
     ],
      
     'TOP_THEME' => "top_themes",
@@ -109,6 +110,14 @@ return [
     'CITY' => "city",
     'SKILL' => "skill",
     'RANDOM' => 'random_missions',
+
+    /* sort by */
+    "NEWEST" => "newest",
+    "OLDEST" => "oldest",
+    "LOWEST_AVAILABLE_SEATS" => "lowest_available_seats",
+    "HIGHEST_AVAILABLE_SEATS" => "highest_available_seats",
+    "MY_FAVOURITE" => "my_favourite",
+    "DEADLINE" => "deadline",
 
     'ORGANIZATION' => "organization",
     'EXPLORE_MISSION_LIMIT' => "5",

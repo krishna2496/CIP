@@ -26,9 +26,6 @@
 		}
 	</style>
 </head>
-@php
-$companyLogo =  (config('app.tenant_logo') != '') ? config('app.tenant_logo') : 'https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/tatva/assets/images/optimy-logo.png';
-@endphp
 <body>
 	<table width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#f2f2f2" align="center" style="background:#f2f2f2;">
 		<tr>
@@ -51,7 +48,7 @@ $companyLogo =  (config('app.tenant_logo') != '') ? config('app.tenant_logo') : 
 							<table width="500" cellpadding="0" cellspacing="0" border="0" bgcolor="#FFF" style="background:#FFFFFF;" class="inner-table">
 								<tr>
 									<td>
-										<img src="{{ $companyLogo }}" height="50" width="150"  alt="Logo" />
+										<img src="{{ $data['logo'] }}" height="50" width="150"  alt="Logo" />
 									</td>
 								</tr>
 								<tr>
@@ -61,7 +58,7 @@ $companyLogo =  (config('app.tenant_logo') != '') ? config('app.tenant_logo') : 
 								</tr>
 								<tr>
 									<td style="font-family: Verdana,Geneva,sans-serif;  color: #414141; font-size:15px; line-height: 19px;">
-										{{ $fromUserName }} {{ trans('messages.custom_text.HAS_RECOMMENDED_A_MISSION_TO_YOU') }} 
+										{{ $data['fromUserName'] }} {{ trans('mail.recommonded_mission.HAS_RECOMMENDED_A_MISSION_TO_YOU', [], $data['colleagueLanguage']) }} 
 									</td>
 								</tr>
 								<tr>
@@ -71,7 +68,7 @@ $companyLogo =  (config('app.tenant_logo') != '') ? config('app.tenant_logo') : 
 								
 								<tr>
 									<td style="font-family: Verdana,Geneva,sans-serif;  color: #3a3a3a; font-size:20px; line-height: 36px;" class="title_text">
-										{{ trans('messages.custom_text.MISSION') }}  {{ $missionName }} <br/>
+										{{ trans('mail.recommonded_mission.MISSION', [], $data['colleagueLanguage']) }}  {{ $data['missionName'] }} <br/>
 									</td>
 								</tr>
 								
@@ -117,7 +114,7 @@ $companyLogo =  (config('app.tenant_logo') != '') ? config('app.tenant_logo') : 
 
 					<tr>
 						<td style="font-family: Verdana,Geneva,sans-serif;  color: #757575; font-size:13px; line-height: 17px; align:center; text-align:center">
-							© {{date('Y')}} Optimy, {{ trans('messages.custom_text.ALL_RIGHTS_RESERVED') }}
+							© {{date('Y')}} Optimy, {{ trans('mail.recommonded_mission.ALL_RIGHTS_RESERVED', [], $data['colleagueLanguage']) }}
 						</td>
 					</tr>
 					<tr>

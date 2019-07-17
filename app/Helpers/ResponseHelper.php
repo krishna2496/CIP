@@ -47,6 +47,8 @@ class ResponseHelper
 
         // Check response data have pagination or not? Pagination response parameter sets
         if ($apiData->count()) {
+            $apiData->appends(['perPage' => $apiData->perPage()]);
+            
             $response['data'] = $apiData->toArray()['data'];
             $response['pagination'] = [
                 "total" => $apiData->total(),
