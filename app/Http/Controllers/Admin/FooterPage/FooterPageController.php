@@ -175,6 +175,7 @@ class FooterPageController extends Controller
                 $request->all(),
                 [
                 "page_details" => "required",
+                "page_details.slug" => "sometimes|required",
                 "page_details.translations.*.lang" => "required_with:page_details.translations",
                 "page_details.translations.*.title" => "required_with:page_details.translations",
                 "page_details.translations.*.sections" => "required_with:page_details.translations",
