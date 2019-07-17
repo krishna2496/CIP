@@ -76,7 +76,8 @@ class UserRepository implements UserInterface
             $orderDirection = $request->input('order', 'asc');
             $userQuery->orderBy('user_id', $orderDirection);
         }
-        return $userQuery->paginate(config('constants.PER_PAGE_LIMIT'));
+        
+        return $userQuery->paginate($request->perPage);
     }
 
     /**

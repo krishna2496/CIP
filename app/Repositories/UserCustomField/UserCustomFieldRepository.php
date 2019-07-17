@@ -44,7 +44,7 @@ class UserCustomFieldRepository implements UserCustomFieldInterface
             $customFields = $customFields->orderBy('field_id', $orderDirection);
         }
 
-        return $customFields->paginate(config('constants.PER_PAGE_LIMIT'));
+        return $customFields->paginate($request->perPage);
     }
     
     /**

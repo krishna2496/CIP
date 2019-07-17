@@ -45,10 +45,10 @@ class TenantSettingsController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function index(): JsonResponse
+    public function index(Request $request): JsonResponse
     {
         try {
-            $settings = $this->tenantSettingRepository->getAllSettings();
+            $settings = $this->tenantSettingRepository->getAllSettings($request);
 
             // Set response data
             $apiStatus = Response::HTTP_OK;
