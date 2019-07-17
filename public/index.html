@@ -34,7 +34,7 @@
         <script type="text/javascript">
             $(document ).ready(function() {
                 var apiUrl = '<%= VUE_APP_API_ENDPOINT %>'
-                getDynamicCssUrl = apiUrl+'custom_css';    
+                getDynamicCssUrl = apiUrl+'app/custom-css';    
                 $.ajax({
                     type: "GET",
                     url: getDynamicCssUrl,
