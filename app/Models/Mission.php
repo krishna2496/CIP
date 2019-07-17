@@ -259,8 +259,7 @@ class Mission extends Model
     public function getStartDateAttribute()
     {
         if (isset($this->attributes['start_date'])) {
-            $date = $this->attributes['start_date'];
-            return $this->helpers->getUserTimeZoneDate($date);
+            return $this->helpers->getUserTimeZoneDate($this->attributes['start_date']);
         }
     }
 
@@ -272,8 +271,7 @@ class Mission extends Model
     public function getEndDateAttribute()
     {
         if (isset($this->attributes['end_date'])) {
-            $date = $this->attributes['end_date'];
-            return $this->helpers->getUserTimeZoneDate($date);
+            return $this->helpers->getUserTimeZoneDate($this->attributes['end_date']);
         }
     }
 
@@ -285,8 +283,7 @@ class Mission extends Model
     public function getApplicationDeadlineAttribute()
     {
         if (isset($this->attributes['application_deadline'])) {
-            $date = $this->attributes['application_deadline'];
-            return $this->helpers->getUserTimeZoneDate($date);
+            return $this->helpers->getUserTimeZoneDate($this->attributes['application_deadline']);
         }
     }
 
@@ -298,8 +295,7 @@ class Mission extends Model
     public function getApplicationStartDateAttribute()
     {
         if (isset($this->attributes['application_start_date'])) {
-            $date = $this->attributes['application_start_date'];
-            return $this->helpers->getUserTimeZoneDate($date);
+            return $this->helpers->getUserTimeZoneDate($this->attributes['application_start_date']);
         }
     }
 
@@ -311,8 +307,7 @@ class Mission extends Model
     public function getApplicationEndDateAttribute()
     {
         if (isset($this->attributes['application_end_date'])) {
-            $date = $this->attributes['application_end_date'];
-            return $this->helpers->getUserTimeZoneDate($date);
+            return $this->helpers->getUserTimeZoneDate($this->attributes['application_end_date']);
         }
     }
 

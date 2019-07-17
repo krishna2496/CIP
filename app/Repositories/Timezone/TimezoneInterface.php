@@ -10,7 +10,7 @@ interface TimezoneInterface
      *
      * @param \Illuminate\Http\Request $request
      * @param int $timezone_id
-     * @return \Illuminate\Http\Response
+     * @return App\Models\Timezone
      */
     public function timezoneList(Request $request, int $timezone_id);
 }
