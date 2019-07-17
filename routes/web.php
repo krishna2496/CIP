@@ -103,7 +103,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
     
     /* Fetch user */
     $router->get('/app/user', ['as' =>'app.user',
-    'middleware' => 'tenant.connection|jwt.auth|JsonApiMiddleware',
+    'middleware' => 'tenant.connection|jwt.auth',
     'uses' => 'App\User\UserController@index']);
 });
 
