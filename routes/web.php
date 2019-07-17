@@ -11,15 +11,15 @@
 */
 $router->group(['middleware' => 'localization'], function ($router) {
     /* Connect first time to get styling data. */
-    $router->get('app/connect', ['as' => 'connect', 'middleware' => 'tenant.connection',
+    $router->get('/app/connect', ['as' => 'connect', 'middleware' => 'tenant.connection',
      'uses' => 'App\Tenant\TenantOptionController@getTenantOption']);
 
     /* User login routing using jwt token */
-    $router->post('app/login', ['as' =>'login', 'middleware' => 'tenant.connection',
+    $router->post('/app/login', ['as' =>'login', 'middleware' => 'tenant.connection',
      'uses' => 'App\Auth\AuthController@authenticate']);
 
     /* Forgot password routing */
-    $router->post('app/request-password-reset', ['middleware' => 'tenant.connection|JsonApiMiddleware',
+    $router->post('/app/request-password-reset', ['middleware' => 'tenant.connection|JsonApiMiddleware',
      'uses' => 'App\Auth\AuthController@requestPasswordReset']);
 
     /* Password reset routing */
@@ -27,7 +27,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
      'uses' => 'App\Auth\AuthController@reset_password']);
 
     /* reset password  */
-    $router->put('app/password-reset', ['middleware' => 'localization|tenant.connection',
+    $router->put('/app/password-reset', ['middleware' => 'localization|tenant.connection',
      'uses' => 'App\Auth\AuthController@passwordReset']);
 
     /* CMS footer pages  */
@@ -39,7 +39,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
      'uses' => 'App\FooterPage\FooterPageController@show']);
     
     /* Get custom css url  */
-    $router->get('app/custom-css', ['as' => 'custom_css', 'middleware' => 'tenant.connection',
+    $router->get('/app/custom-css', ['as' => 'custom_css', 'middleware' => 'tenant.connection',
      'uses' => 'App\Tenant\TenantOptionController@getCustomCss']);
     
     /* Get mission listing  */
@@ -47,15 +47,15 @@ $router->group(['middleware' => 'localization'], function ($router) {
      'uses' => 'App\Mission\MissionController@appMissionList']);
 
     /* Get user filter  */
-    $router->get('app/user-filter', ['middleware' => 'tenant.connection|jwt.auth',
+    $router->get('/app/user-filter', ['middleware' => 'tenant.connection|jwt.auth',
      'uses' => 'App\UserFilterController@index']);
 
     /* Get explore mission  */
-    $router->get('app/explore-mission', ['middleware' => 'tenant.connection|jwt.auth',
+    $router->get('/app/explore-mission', ['middleware' => 'tenant.connection|jwt.auth',
     'uses' => 'App\Mission\MissionController@exploreMission']);
 
     /* Get user filter  */
-    $router->get('app/filter-data', ['middleware' => 'tenant.connection|jwt.auth',
+    $router->get('/app/filter-data', ['middleware' => 'tenant.connection|jwt.auth',
     'uses' => 'App\Mission\MissionController@filters']);
 
     /* Add/remove favourite */

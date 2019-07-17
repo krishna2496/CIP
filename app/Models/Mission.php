@@ -69,7 +69,7 @@ class Mission extends Model
     'goal_objective', 'mission_count', 'mission_rating_count','already_volunteered','total_available_seat',
     'available_seat','deadline','favourite_mission_count'];
 
-    protected $appends = ['city_name','available_seat'];
+    protected $appends = ['city_name'];
 
     /**
      * Create a new Mission modeltroller instance.
@@ -256,7 +256,7 @@ class Mission extends Model
      *
      * @return string
      */
-    public function getStartDateAttribute()
+    public function getStartDateAttribute() :string
     {
         if (isset($this->attributes['start_date'])) {
             return $this->helpers->getUserTimeZoneDate($this->attributes['start_date']);
@@ -268,7 +268,7 @@ class Mission extends Model
      *
      * @return string
      */
-    public function getEndDateAttribute()
+    public function getEndDateAttribute():string
     {
         if (isset($this->attributes['end_date'])) {
             return $this->helpers->getUserTimeZoneDate($this->attributes['end_date']);
@@ -321,17 +321,5 @@ class Mission extends Model
     {
         $this->attributes['end_date'] = ($value != null) ?
         Carbon::parse($value)->format(config('constants.DB_DATE_FORMAT')) : null;
-    }
-
-    /**
-     * Set end datavailble seat attribute on the model.
-     *
-     * @return void
-     */
-    public function getAvailableSeatAttribute()
-    {
-        return $this->total_seats - $this->missionApplication()
-        ->where('approval_status', config("constants.application_status")["AUTOMATICALLY_APPROVED"])
-        ->count();
     }
 }
