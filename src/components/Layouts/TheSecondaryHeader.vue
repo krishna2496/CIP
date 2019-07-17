@@ -79,7 +79,7 @@
 <script>
 import AppFilterDropdown from "../AppFilterDropdown";
 import AppCheckboxDropdown from "../AppCheckboxDropdown";
-import {filterList} from "../../services/service";
+import {filterList,missionFilterListing} from "../../services/service";
 import store from "../../store";
 import {eventBus} from "../../main";
 export default {
@@ -178,7 +178,7 @@ export default {
             this.selectedfilterParams.countryId = country.selectedId;
             if(country.selectedId != ''){
                 this.defautCountry = country.selectedVal.replace(/<\/?("[^"]*"|'[^']*'|[^>])*(>|$)/g,""); 
-                this.defautCountry = this.defautCountry.replace(/[^a-zA-Z]+/g,'');
+                this.defautCountry = this.defautCountry.replace(/[^a-zA-Z\s]+/g,'');
             } else {
                 this.defautCountry = this.$i18n.t("label.country");
             }
@@ -278,12 +278,16 @@ export default {
                 'theme' :[],
                 'skill' :[]
             }
- 
+
             this.selectedfilterParams.countryId = store.state.countryId;
             this.selectedfilterParams.cityId = store.state.cityId;
             this.selectedfilterParams.themeId = store.state.themeId;
             this.selectedfilterParams.skillId = store.state.skillId;
+            this.selectedCity = [];
+            this.selectedTheme = [];
+            this.selectedSkill = [];
             var i=0;
+                       
             filterList(this.selectedfilterParams).then( response => {
                     if (response) { 
                         if(response.country) {
@@ -356,13 +360,77 @@ export default {
             this.selectedTheme = [];
             filterList(this.selectedfilterParams).then( response => {
                 if (response) {
-                    if(response.city) {             
+                    if(response.city) {  
                         this.cityList = Object.entries(response.city);
                         this.selectedCity = [];
                     } 
                 }
             });  
             
+        },
+        clearAllFilter(){
+            this.selectedfilterParams.countryId = '';
+            this.selectedfilterParams.cityId = '';
+            this.selectedfilterParams.themeId = '';
+            this.selectedfilterParams.skillId = '';
+            this.cityList = [];
+            this.themeList = [];
+            this.skillList = [];
+            let filters = {};
+            filters.exploreMissionType = '';
+            filters.exploreMissionParams = '';
+            store.commit("exploreFilter",filters);
+            let userFilter = {};
+            userFilter.search = '';
+            userFilter.countryId = '';
+            userFilter.cityId = '';
+            userFilter.themeId = '';
+            userFilter.skillId = '';
+            userFilter.tags = [];
+            store.commit("userFilter",userFilter);
+            this.$router.push({ name: 'home' })
+            
+            this.$parent.getMissions();
+            
+            setTimeout(() => {
+            this.selectedfilterParams.countryId = store.state.countryId;
+            this.selectedfilterParams.cityId = store.state.cityId;
+            filterList(this.selectedfilterParams).then( response => {
+                    if (response) { 
+                        if(response.country) {
+                            this.countryList = Object.entries(response.country);
+                        }
+
+                        if(response.city) {
+                            this.cityList = Object.entries(response.city);
+                        }
+                        if(response.themes) {
+                            this.themeList = Object.entries(response.themes);
+                        }
+
+                        if(response.skill) {
+                            this.skillList = Object.entries(response.skill);
+                        }
+                        if(store.state.countryId != '') {
+                                if(this.countryList) {
+                                    let selectedCountryData = this.countryList.filter(function(country) {
+                                        if(store.state.countryId == country[1].id){
+                                            return country;
+                                        }
+                                    });
+                                    this.defautCountry = selectedCountryData[0][1].title;
+                                }
+                        } else {
+                                this.defautCountry = this.$i18n.t("label.country");
+                        }
+
+                        if(store.state.cityId != ''){
+                            this.selectedCity = store.state.cityId.toString().split(',')
+                            console.log( this.selectedCity);
+                        }
+                    }            
+            }); 
+            }, 500); 
         } 
     },
     created() {
@@ -372,6 +440,9 @@ export default {
         });
         eventBus.$on('setDefaultText', (message) => {
             this.defautCountry = this.$i18n.t("label.country");
+        });
+        eventBus.$on('setDefaultData', (message) => {        
+            this.filterListing();
         });
         // Fetch Filters
         this.filterListing();

@@ -157,10 +157,10 @@
     </div>
 </template>
 <script>
+
 import store from '../store';
 import constants from '../constant';
 import StarRating from 'vue-star-rating'
-
 export default {
     name: "MissionListView",
     props: {

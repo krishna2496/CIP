@@ -91,6 +91,7 @@ export default new Vuex.Store({
         },
         // User filter data
         userFilter(state,filters) {
+            
             localStorage.setItem('search',filters.search)
             localStorage.setItem('countryId',filters.countryId)
             localStorage.setItem('cityId',filters.cityId)
