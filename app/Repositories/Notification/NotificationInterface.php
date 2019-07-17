@@ -2,6 +2,8 @@
 namespace App\Repositories\Notification;
 
 use Illuminate\Http\Request;
+use App\Models\Notification;
+use App\Models\UserNotification;
 
 interface NotificationInterface
 {
@@ -11,13 +13,22 @@ interface NotificationInterface
      * @param string $type
      * @return int
      */
-    public function getNotificationTypeID(string $type);
+    public function getNotificationTypeID(string $type): int;
 
     /*
      * Send notification
      *
      * @param array $notificationData
-     * @return void
+     * @return App\Models\Notification
      */
-    public function createNotification(array $notificationData);
+    public function createNotification(array $notificationData): Notification;
+	
+	/*
+     * Check if user notification is enabled or not
+     *
+     * @param int $userId
+     * @param int $notificationTypeId
+     * @return App\Models\UserNotification
+     */
+	public function userNotificationSetting(int $userId, int $notificationTypeId): UserNotification;
 }

@@ -39,6 +39,8 @@ class MissionInviteController extends Controller
      *
      * @param App\Repositories\Mission\MissionInviteRepository $missionInviteRepository
      * @param App\Repositories\Notification\NotificationRepository $notificationRepository
+     * @param App\Repositories\User\UserRepository $userRepository
+     * @param App\Repositories\Mission\MissionRepository $missionRepository
      * @param Illuminate\Http\ResponseHelper $responseHelper
      * @return void
      */
@@ -83,7 +85,7 @@ class MissionInviteController extends Controller
                 );
             }
 			// Check if user is already invited for this mission
-            $getMissionInvite = $this->missionInviteRepository->checkInviteMission(
+            $getMissionInvite = $this->missionInviteRepository->getInviteMission(
                 $request->mission_id,
                 $request->to_user_id,
                 $request->auth->user_id

@@ -39,9 +39,9 @@ class MissionInviteRepository implements MissionInviteInterface
      * @param int $missionId
      * @param int $inviteUserId
      * @param int $fromUserId
-     * @return App\Models\MissionInvite
+     * @return Illuminate\Support\Collection
      */
-    public function checkInviteMission(int $missionId, int $inviteUserId, int $fromUserId): Collection
+    public function getInviteMission(int $missionId, int $inviteUserId, int $fromUserId): Collection
     {
         return $this->missionInvite->getMissionInvite($missionId, $inviteUserId, $fromUserId);
     }
