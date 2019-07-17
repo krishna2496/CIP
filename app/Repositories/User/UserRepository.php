@@ -158,28 +158,6 @@ class UserRepository implements UserInterface
     }
 
     /**
-     * Get listing of users
-     *
-     * @param string $search
-     * @param int $userId
-     * @return Illuminate\Database\Eloquent\Collection
-     */
-    public function searchUser(string $search, int $userId): Collection
-    {
-        $userQuery = $this->user->select('user_id', 'first_name', 'last_name', 'email')
-        ->where('user_id', '<>', $userId);
-        if ($search) {
-            $userQuery->where(function ($query) use ($search) {
-                $query->orWhere('first_name', 'like', '%' . $search . '%');
-                $query->orWhere('last_name', 'like', '%' . $search . '%');
-                $query->orWhere('email', 'like', '%' . $search . '%');
-            });
-        }
-        $userQuery->orderBy('user_id', 'ASC');
-        return $userQuery->get();
-    }
-
-    /**
      * Get username
      *
      * @param int $missionId
@@ -188,5 +166,30 @@ class UserRepository implements UserInterface
     public function getUserName(int $userId): string
     {
         return $this->user->getUserName($userId);
+    }
+
+    /**
+     * List all the users
+     *
+     * @param int $userId
+     * @return \Illuminate\Support\Collection
+     */
+    public function listUsers(int $userId) : Collection
+    {
+        return $this->user->where('user_id', '<>', $userId)->get();
+    }
+
+    /**
+     * Search user
+     *
+     * @param string $text
+     * @return \Illuminate\Support\Collection
+     */
+    public function searchUsers(string $text = null, int $userId): Collection
+    {
+        if (is_null($text)) {
+            return $this->all();
+        }
+        return $this->user->searchUser($text, $userId)->get();
     }
 }

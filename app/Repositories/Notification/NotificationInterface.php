@@ -22,13 +22,13 @@ interface NotificationInterface
      * @return App\Models\Notification
      */
     public function createNotification(array $notificationData): Notification;
-	
-	/*
+    
+    /*
      * Check if user notification is enabled or not
      *
      * @param int $userId
      * @param int $notificationTypeId
      * @return App\Models\UserNotification
      */
-	public function userNotificationSetting(int $userId, int $notificationTypeId): UserNotification;
+    public function userNotificationSetting(int $userId, int $notificationTypeId);
 }

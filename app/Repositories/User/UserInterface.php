@@ -73,11 +73,18 @@ interface UserInterface
     public function unlinkSkill(array $request, int $id);
 
     /**
-     * Listing of all resources.
+     * List all the users
      *
-     * @param string $search
      * @param int $userId
-     * @return Illuminate\Http\JsonResponse
+     * @return \Illuminate\Support\Collection
      */
-    public function searchUser(string $search, int $userId);
+    public function listUsers(int $userId);
+
+    /**
+     * Search user
+     *
+     * @param string $text
+     * @return \Illuminate\Support\Collection
+     */
+    public function searchUsers(string $text = null, int $userId);
 }
