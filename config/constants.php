@@ -22,6 +22,7 @@ return [
     'AWS_S3_LOGO_IMAGE_NAME' => 'logo.png',
     'AWS_S3_CUSTOME_CSS_NAME' => 'style.css',
     'AWS_CUSTOM_STYLE_VARIABLE_FILE_NAME' => '_variables.scss',
+    'TIMEZONE' => '',
     
     /*
      * User custom field types
@@ -118,6 +119,14 @@ return [
     'CITY' => "city",
     'SKILL' => "skill",
     'RANDOM' => 'random_missions',
+
+    /* sort by */
+    "NEWEST" => "newest",
+    "OLDEST" => "oldest",
+    "LOWEST_AVAILABLE_SEATS" => "lowest_available_seats",
+    "HIGHEST_AVAILABLE_SEATS" => "highest_available_seats",
+    "MY_FAVOURITE" => "my_favourite",
+    "DEADLINE" => "deadline",
 
     'ORGANIZATION' => "organization",
     'EXPLORE_MISSION_LIMIT' => "5",

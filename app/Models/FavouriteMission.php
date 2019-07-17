@@ -15,7 +15,7 @@ class FavouriteMission extends Model
      *
      * @var string
      */
-    protected $table = 'favourite_mission';
+    protected $table = 'favorite_mission';
 
     /**
      * The primary key for the model.

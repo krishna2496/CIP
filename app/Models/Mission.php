@@ -17,6 +17,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Carbon\Carbon;
 use App\Models\GoalMission;
 use App\Models\TimeMission;
+use App\Helpers\Helpers;
 
 class Mission extends Model
 {
@@ -35,6 +36,13 @@ class Mission extends Model
      * @var string
      */
     protected $primaryKey = 'mission_id';
+
+    /*
+     * @var App\Helpers\Helpers
+     */
+
+    private $helpers;
+
 
     /**
      * The attributes that are mass assignable.
@@ -58,9 +66,21 @@ class Mission extends Model
     'seats_left','user_application_count','mission_application_count','missionSkill','city_name','missionApplication',
     'country','favouriteMission','missionInvite','missionRating', 'goalMission', 'timeMission', 'application_deadline',
     'application_start_date', 'application_end_date', 'application_start_time', 'application_end_time',
-    'goal_objective', 'mission_count', 'mission_rating_count'];
+    'goal_objective', 'mission_count', 'mission_rating_count','already_volunteered','total_available_seat',
+    'available_seat','deadline','favourite_mission_count'];
 
     protected $appends = ['city_name'];
+
+    /**
+     * Create a new Mission modeltroller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->helpers = app()->make('App\Helpers\Helpers');
+    }
+
     /**
      * Get the document record associated with the mission.
      *
@@ -228,6 +248,67 @@ class Mission extends Model
     {
         $this->attributes['start_date'] = ($value != null) ?
         Carbon::parse($value)->format(config('constants.DB_DATE_FORMAT')) : null;
+    }
+
+    
+    /**
+     * Get start date attribute from the model.
+     *
+     * @return string
+     */
+    public function getStartDateAttribute() :string
+    {
+        if (isset($this->attributes['start_date'])) {
+            return $this->helpers->getUserTimeZoneDate($this->attributes['start_date']);
+        }
+    }
+
+    /**
+     * Get end date attribute from the model.
+     *
+     * @return string
+     */
+    public function getEndDateAttribute():string
+    {
+        if (isset($this->attributes['end_date'])) {
+            return $this->helpers->getUserTimeZoneDate($this->attributes['end_date']);
+        }
+    }
+
+    /**
+     * Get application deadline attribute from the model.
+     *
+     * @return string
+     */
+    public function getApplicationDeadlineAttribute()
+    {
+        if (isset($this->attributes['application_deadline'])) {
+            return $this->helpers->getUserTimeZoneDate($this->attributes['application_deadline']);
+        }
+    }
+
+    /**
+     * Get application start date attribute from the model.
+     *
+     * @return string
+     */
+    public function getApplicationStartDateAttribute()
+    {
+        if (isset($this->attributes['application_start_date'])) {
+            return $this->helpers->getUserTimeZoneDate($this->attributes['application_start_date']);
+        }
+    }
+
+    /**
+     * Get application end date attribute from the model.
+     *
+     * @return string
+     */
+    public function getApplicationEndDateAttribute()
+    {
+        if (isset($this->attributes['application_end_date'])) {
+            return $this->helpers->getUserTimeZoneDate($this->attributes['application_end_date']);
+        }
     }
 
     /**

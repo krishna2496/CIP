@@ -47,18 +47,18 @@ class TenantSettingsController extends Controller
      */
     public function index(): JsonResponse
     {
-       // Fetch data from tenant setting data  
-       try {
-        $tenantSettings = $this->tenantSettingRepository->fetchAllTenantSettings();
-        $apiData = $tenantSettings->toArray();
+        // Fetch data from tenant setting data
+        try {
+            $tenantSettings = $this->tenantSettingRepository->fetchAllTenantSettings();
+            $apiData = $tenantSettings->toArray();
 
-        // Set response data
-        $apiStatus = Response::HTTP_OK;
-        $apiMessage = trans('messages.success.MESSAGE_TENANT_SETTINGS_LISTING');
-        $apiMessage = ($tenantSettings->isEmpty()) ? trans('messages.success.MESSAGE_NO_RECORD_FOUND') :
-         trans('messages.success.MESSAGE_TENANT_SETTINGS_LISTING');
+            // Set response data
+            $apiStatus = Response::HTTP_OK;
+            $apiMessage = trans('messages.success.MESSAGE_TENANT_SETTINGS_LISTING');
+            $apiMessage = ($tenantSettings->isEmpty()) ? trans('messages.success.MESSAGE_NO_RECORD_FOUND') :
+            trans('messages.success.MESSAGE_TENANT_SETTINGS_LISTING');
 
-         return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
+            return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
         } catch (InvalidArgumentException $e) {
             return $this->invalidArgument(
                 config('constants.error_codes.ERROR_INVALID_ARGUMENT'),
