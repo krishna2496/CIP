@@ -69,7 +69,8 @@ $app->routeMiddleware([
     'tenant.connection' => App\Http\Middleware\TenantConnectionMiddleware::class, // Middle ware that connect tenant user with their tenant
     'auth.tenant.admin' => App\Http\Middleware\AuthTenantAdminMiddleware::class,
     'localization' => App\Http\Middleware\LocalizationMiddleware::class,
-    'JsonApiMiddleware' => App\Http\Middleware\JsonApiMiddleware::class
+    'JsonApiMiddleware' => App\Http\Middleware\JsonApiMiddleware::class,
+    'PaginationMiddleware' => App\Http\Middleware\PaginationMiddleware::class
 ]);
 
 /**

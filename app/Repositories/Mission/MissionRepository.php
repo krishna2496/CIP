@@ -424,7 +424,7 @@ class MissionRepository implements MissionInterface
         ->with(['city', 'country', 'missionTheme',
         'missionLanguage', 'missionMedia', 'missionDocument', 'goalMission', 'timeMission'])
         ->withCount('missionApplication')
-        ->paginate(config('constants.PER_PAGE_LIMIT'));
+        ->paginate($request->perPage);
 
         foreach ($mission as $key => $value) {
             foreach ($value->missionLanguage as $languageValue) {
@@ -562,7 +562,7 @@ class MissionRepository implements MissionInterface
             });
         }
 
-        $mission =  $missionQuery->paginate(config('constants.PER_PAGE_LIMIT'));
+        $mission =  $missionQuery->paginate($request->perPage);
         return $mission;
     }
 
