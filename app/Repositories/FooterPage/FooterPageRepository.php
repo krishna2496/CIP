@@ -198,6 +198,6 @@ class FooterPageRepository implements FooterPageInterface
     public function getPageDetail($slug): FooterPage
     {
         return $this->page->with(['pages:page_id,language_id,title,description as sections'])
-        ->whereSlug($slug)->first();
+        ->whereSlug($slug)->firstorfail();
     }
 }

@@ -138,9 +138,7 @@ class MissionController extends Controller
         } catch (PDOException $e) {
             return $this->PDO(
                 config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
-                trans(
-                    'messages.custom_error_message.ERROR_DATABASE_OPERATIONAL'
-                )
+                trans('messages.custom_error_message.ERROR_DATABASE_OPERATIONAL')
             );
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(

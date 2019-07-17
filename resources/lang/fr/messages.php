@@ -86,6 +86,7 @@ return [
         'ERROR_FOOTER_PAGE_NOT_FOUND' => 'FR: Footer page not found in the system',
         'ERROR_DATABASE_OPERATIONAL' => 'FR: Database operational error',
         'ERROR_NO_DATA_FOUND' => 'FR: No data found',
+        'ERROR_NO_DATA_FOUND_FOR_SLUG' => 'FR: No data found for slug',
 
         // Custom error code for Mission Module - 400000 - 409999
         'ERROR_INVALID_MISSION_APPLICATION_DATA' => 'FR: Invalid application data or missing parameter',
