@@ -94,19 +94,19 @@ class MissionInviteController extends Controller
                 );
             }
             // Check if user is already invited for this mission
-            // $getMissionInvite = $this->missionInviteRepository->getInviteMission(
-            //     $request->mission_id,
-            //     $request->to_user_id,
-            //     $request->auth->user_id
-            // );
-            // if (!$getMissionInvite->isEmpty()) {
-            //     return $this->responseHelper->error(
-            //         Response::HTTP_UNPROCESSABLE_ENTITY,
-            //         Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-            //         config('constants.error_codes.ERROR_INVITE_MISSION_ALREADY_EXIST'),
-            //         trans('messages.custom_error_message.ERROR_INVITE_MISSION_ALREADY_EXIST')
-            //     );
-            // }
+            $getMissionInvite = $this->missionInviteRepository->getInviteMission(
+                $request->mission_id,
+                $request->to_user_id,
+                $request->auth->user_id
+            );
+            if (!$getMissionInvite->isEmpty()) {
+                return $this->responseHelper->error(
+                    Response::HTTP_UNPROCESSABLE_ENTITY,
+                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                    config('constants.error_codes.ERROR_INVITE_MISSION_ALREADY_EXIST'),
+                    trans('messages.custom_error_message.ERROR_INVITE_MISSION_ALREADY_EXIST')
+                );
+            }
             $inviteMission = $this->missionInviteRepository->inviteMission(
                 $request->mission_id,
                 $request->to_user_id,
