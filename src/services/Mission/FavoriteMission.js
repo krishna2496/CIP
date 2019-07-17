@@ -1,25 +1,23 @@
+import store from '../../store'
 import axios from 'axios'
-import store from '../store'
 
-export default async() => {
-    let responseData;
+export default async(data) => {
+    // Mission add to favorite or remove
+    let responseData = {}
+    responseData.error = false;
     var defaultLanguage = '';
     if (store.state.defaultLanguage !== null) {
         defaultLanguage = (store.state.defaultLanguage).toLowerCase();
     }
     await axios({
-            url: process.env.VUE_APP_API_ENDPOINT + "theme",
-            method: 'get',
+            url: process.env.VUE_APP_API_ENDPOINT + "app/mission/favourite",
+            data,
+            method: 'post',
             headers: {
                 'X-localization': defaultLanguage,
                 'token': store.state.token,
             }
+        }).then((response) => {
         })
-        .then((response) => {
-            if(response.data.data) { 
-                responseData = Object.entries(response.data.data);
-            }
-        })
-        .catch(function(error) {});
     return responseData;
 }

@@ -34,7 +34,14 @@ let routes = [{
     name: 'resetPassword',
     component: () =>
         import ('./views/Auth/ResetPassword.vue')
-}, {
+},
+{
+    path: '/abc',
+    name: 'abc',
+    component: () =>
+        import ('./views/ProfilePage.vue')
+},
+ {
     path: '/forgot-password',
     name: 'forgotPassword',
     component: () =>
@@ -45,6 +52,7 @@ let routes = [{
     component: () =>
         import ('./views/Cms.vue')
 },
+
 {
     path: '/home/:searchParamsType',
     name: 'exploreMissions',

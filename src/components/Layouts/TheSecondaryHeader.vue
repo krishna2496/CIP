@@ -28,7 +28,7 @@
                         </b-button>
                         <b-button class="btn btn-clear">{{$t("label.clear_all")}}</b-button>
                     </div>
-                <b-list-group>
+                <b-list-group v-if="quickAccessFilterSet">
                     <b-list-group-item>
                         <AppFilterDropdown
                             :optionList="countryList"
@@ -108,11 +108,13 @@ export default {
                 cityId : "",
                 themeId : "",
                 skillId : "",
+                tags : [],
+                sortBy : ""
             },
             show: false,
             isComponentVisible:false,
             tagsFilter : [],
-
+            quickAccessFilterSet:true
         };
     },
     methods: {
@@ -286,7 +288,6 @@ export default {
             this.selectedCity = [];
             this.selectedTheme = [];
             this.selectedSkill = [];
-            var i=0;
                        
             filterList(this.selectedfilterParams).then( response => {
                     if (response) { 
@@ -381,17 +382,17 @@ export default {
             filters.exploreMissionParams = '';
             store.commit("exploreFilter",filters);
             let userFilter = {};
-            userFilter.search = '';
+            userFilter.search = store.state.search;
+            userFilter.sortBy = store.state.sortBy;
             userFilter.countryId = '';
             userFilter.cityId = '';
             userFilter.themeId = '';
             userFilter.skillId = '';
             userFilter.tags = [];
+            userFilter.sortBy = store.state.sortBy;
             store.commit("userFilter",userFilter);
-            this.$router.push({ name: 'home' })
-            
-            this.$parent.getMissions();
-            
+            this.$router.push({ name: 'home' })    
+            this.$parent.getMissions();    
             setTimeout(() => {
             this.selectedfilterParams.countryId = store.state.countryId;
             this.selectedfilterParams.cityId = store.state.cityId;
@@ -426,7 +427,6 @@ export default {
 
                         if(store.state.cityId != ''){
                             this.selectedCity = store.state.cityId.toString().split(',')
-                            console.log( this.selectedCity);
                         }
                     }            
             }); 
@@ -434,6 +434,10 @@ export default {
         } 
     },
     created() {
+        let filterSetting = JSON.parse(store.state.tenantSetting);
+        // if(filterSetting.quick_access_filters != 1){
+        //     this.quickAccessFilterSet = false;
+        // }
         var _this = this;
         eventBus.$on('clearAllFilters', (message) => {
             this.clearFilter();

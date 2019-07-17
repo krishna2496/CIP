@@ -9,7 +9,7 @@ export default async(data) => {
         defaultLanguage = (store.state.defaultLanguage).toLowerCase();
     }
 
-    var url =process.env.VUE_APP_API_ENDPOINT + "filter_data";
+    var url =process.env.VUE_APP_API_ENDPOINT + "app/filter-data";
 
     if(data.countryId != ''){
         url = url+"?country_id=" + data.countryId

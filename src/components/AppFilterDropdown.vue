@@ -47,14 +47,9 @@ export default {
     methods: {
         handleSelect(e) {
             var selectedData = []
-            // var span = document.getElementsByTagName("span");
-            // console.log(span);
             selectedData['selectedVal']  = e.target.innerHTML
-            // .removeChild(node);
             selectedData['selectedId']  = e.target.dataset.id;
             this.$emit("updateCall", selectedData);
-
-           
         }
     },
     beforeDestroy() {

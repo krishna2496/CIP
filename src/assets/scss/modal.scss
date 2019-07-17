@@ -1,0 +1,229 @@
+/*General-modal*/
+.modal {
+  .modal-header {
+    position: relative;
+    border-bottom: none;
+    .close {
+      font-size: 0;
+      background: url(../images/cross-ic.svg) no-repeat;
+      padding: 0;
+      margin: 0;
+      width: 17px;
+      height: 17px;
+      background-size: 17px;
+      opacity: 1;
+      float: none;
+      position: absolute;
+      right: 30px;
+      top: 50%;
+      @include transformY(-50%);
+      line-height: normal;
+      margin-top: 10px;
+      @include sm-max {
+        width: 15px;
+        height: 15px;
+        background-size: 15px;
+        right: 20px;
+        margin-top: 12px;
+      }
+    }
+  }
+  .modal-title {
+    font-size: 22px;
+    line-height: 28px;
+    @include sm-max {
+      font-size: 20px;
+      line-height: 26px;
+    }
+  }
+  .modal-content {
+    border: none;
+    border-radius: 3px;
+  }
+}
+
+.btn-cross {
+  position: absolute;
+  background: transparent !important;
+  height: 20px;
+  width: 20px;
+  border: none !important;
+
+  img {
+    height: 16px;
+    width: 16px;
+    @include sm-max {
+      height: 14px;
+      width: 14px;
+    }
+  }
+}
+
+/*Skill-modal*/
+
+.skill-modal {
+  .modal-header {
+    padding: 24px 30px 0;
+    @include sm-max {
+      padding: 20px 20px 0;
+    }
+    .close {
+      right: 30px;
+      margin-top: 12px;
+      @include sm-max {
+        right: 23px;
+        margin-top: 10px;
+      }
+    }
+  }
+
+  .modal-dialog {
+    @include sm-min {
+      max-width: 940px;
+      padding: 0 15px;
+    }
+  }
+
+  .modal-body {
+    padding: 26px 30px;
+    @include sm-max {
+      padding: 20px;
+    }
+  }
+
+  .btn-wrap {
+    display: block;
+    margin-top: 30px;
+    @include sm-max {
+      margin-top: 25px;
+    }
+    .btn {
+      display: inline-block !important;
+      margin-right: 20px;
+      &:last-child {
+        margin-right: 0;
+      }
+      @include sm-max {
+        min-width: 115px;
+        height: 43px;
+        margin-right: 10px;
+      }
+    }
+  }
+
+  .multiselect-options {
+    .options-col {
+      border: 1px solid $border-color;
+      max-height: 40vh;
+      margin: 0;
+      @include sm-max {
+        min-height: 30vh;
+      }
+    }
+  }
+}
+
+/*Story-modal*/
+.story-modal {
+  .modal-dialog {
+    @include sm-min {
+      max-width: 740px;
+      padding: 0 15px;
+    }
+    .modal-header {
+      padding: 20px 60px 0 30px;
+    }
+    .modal-body {
+      padding: 20px 30px 30px;
+    }
+    .step-wrap {
+      .form-group {
+        &:last-child {
+          margin-bottom: 0;
+        }
+        .custom-file {
+          height: 120px;
+          cursor: pointer;
+          outline: none;
+          .custom-file-input {
+            height: 0;
+          }
+          .custom-file-label {
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 60px 20px 20px;
+            border: 1px dashed $input-border;
+            cursor: pointer;
+            outline: none;
+            box-shadow: none;
+            &:focus {
+              border-color: $gray-primary;
+            }
+            &::after {
+              border: none;
+              content: "";
+              background: transparent url(../images/plus-ic.svg) no-repeat;
+              padding: 0;
+              background-size: 32px;
+              width: 32px;
+              height: 32px;
+              left: 0;
+              margin: 0 auto;
+              top: 25px;
+            }
+          }
+        }
+      }
+    }
+    .btn-group {
+      display: flex;
+      justify-content: space-between;
+      padding-top: 30px;
+      .right-btn {
+        display: inline-flex;
+      }
+    }
+  }
+}
+
+/*user-detail-modal*/
+.userdetail-modal {
+  .modal-dialog {
+    @include sm-min {
+      max-width: 740px;
+      padding: 0 15px;
+    }
+  }
+  .modal-header {
+    padding: 24px 30px 0;
+    @include sm-max {
+      padding: 24px 20px 0;
+    }
+  }
+  .modal-body {
+    padding: 26px 30px 30px;
+    @include sm-max {
+      padding: 22px 20px 30px;
+    }
+  }
+  .btn-wrap {
+    display: flex;
+    justify-content: flex-end;
+    padding-top: 20px;
+    @include sm-max {
+      padding-top: 15px;
+    }
+    .btn {
+      margin-left: 15px;
+      @include sm-max {
+        min-height: 43px;
+        min-width: 115px;
+      }
+      &:first-child {
+        margin-left: 0;
+      }
+    }
+  }
+}

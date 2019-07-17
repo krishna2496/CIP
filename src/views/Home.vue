@@ -182,37 +182,40 @@ export default {
 
     data() {
         return {
-        rows: 0,
-        perPage:10,
-        currentPage: 1,
-        sortByOptions: [
-            ["newest","newest"],
-            ["oldest","oldest"],
-            ["lowest_available_seats","lowest_available_seats"],
-            ["highest_available_seats","highest_available_seats"],
-            ["my_favourite","my_favourite"],
-            ["deadline","deadline"]],
-        sortByDefault: '',
-        missionList : [],
-        activeView:"gridView",
-        filter:[],
-        search : "",
-        selectedfilterParams: {
-                countryId : "",
-                cityId : "",
-                themeId : "",
+            rows: 0,
+            perPage:10,
+            currentPage: 1,
+            sortByOptions: [
+                ["newest","newest"],
+                ["oldest","oldest"],
+                ["lowest_available_seats","lowest_available_seats"],
+                ["highest_available_seats","highest_available_seats"],
+                ["my_favourite","my_favourite"],
+                ["deadline","deadline"]],
+            sortByDefault: '',
+            missionList : [],
+            activeView:"gridView",
+            filter:[],
+            search : "",
+            selectedfilterParams: {
+                    countryId : "",
+                    cityId : "",
+                    themeId : "",
+                },
+            isShownComponent :false,
+            filterData : {
+                "search" : "",
+                "countryId": "",
+                "cityId": "",
+                "themeId": "",
+                "skillId": "",
+                "exploreMissionType" : "",
+                "exploreMissionParams" : "",
+                "tags" : [],
+                "sortBy" : "",
             },
-        isShownComponent :false,
-        filterData : {
-            "search" : "",
-            "countryId": "",
-            "cityId": "",
-            "themeId": "",
-            "skillId": "",
-            "exploreMissionType" : "",
-            "exploreMissionParams" : "",
-        },
-        tags:"",
+            tags:"",
+            sortByFilterSet : true
         };
     },
 
@@ -229,7 +232,9 @@ export default {
         },
 
         updateSortTitle(value) {
+            store.commit("sortByFilter",value.selectedId)
             this.sortByDefault = value.selectedVal;
+            this.getMissions();
         },
         //Mission listing
         async getMissions(){
@@ -241,7 +246,8 @@ export default {
             filter.themeId = store.state.themeId
             filter.skillId = store.state.skillId 
             filter.exploreMissionType = store.state.exploreMissionType
-            filter.exploreMissionParams = store.state.exploreMissionParams       
+            filter.exploreMissionParams = store.state.exploreMissionParams
+            filter.sortBy = store.state.sortBy       
             
             await missionListing(filter).then( response => {
                 if (response.data) {
@@ -267,6 +273,14 @@ export default {
                 if(store.state.tags != null) {
                     this.tags = JSON.parse(store.state.tags);
                 }
+                if(store.state.sortBy != null) {
+                    var sortBy = store.state.sortBy;
+                    var sortByFilter = sortBy[0].toUpperCase() + sortBy.slice(1);
+                    var _this = this;
+                    setTimeout(function(){ 
+                        _this.sortByDefault =  sortByFilter.split('_').join(' ');
+                    },300);
+                }
             }); 
         },
 
@@ -288,6 +302,11 @@ export default {
             this.filterData.cityId =  filterParmas.cityId;
             this.filterData.themeId = filterParmas.themeId;
             this.filterData.skillId = filterParmas.skillId;
+            this.filterData.tags = filterParmas.tags;
+             this.filterData.sortBy = '';
+            if(store.state.sortBy != null){
+                this.filterData.sortBy = store.state.sortBy;
+            }
             store.commit('userFilter',this.filterData)
             this.getMissions(); 
         },
@@ -307,6 +326,9 @@ export default {
             this.filterData.cityId =  '';
             this.filterData.themeId = '';
             this.filterData.skillId = '';
+            this.filterData.tags = '';
+            this.filterData.sortBy = store.state.sortBy;
+
             if(filters.parmasType) {
                 filteExplore.exploreMissionType = filters.parmasType;
             }
@@ -325,6 +347,10 @@ export default {
         }
     },
     created() { 
+        let filterSetting = JSON.parse(store.state.tenantSetting);
+        // if(filterSetting.sorting_missions != 1){
+        //     this.sortByFilterSet = false;
+        // }
         if (this.$route.params.searchParamsType){
             let filteExplore = {};
             filteExplore.exploreMissionParams  = '';
@@ -345,7 +371,7 @@ export default {
         this.missionFilter();
         setTimeout(function(){ 
             _this.sortByDefault = _this.$i18n.t("label.sort_by");
-        },400);
+        },200);
         window.addEventListener("scroll", this.handleScroll);
     },
     destroyed() {

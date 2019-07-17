@@ -1,24 +1,31 @@
 // Font-variables
+
 @import url("https://fonts.googleapis.com/css?family=Noto+Sans");
-$general-font: "Noto Sans",
-sans-serif;
+$general-font: "Noto Sans", sans-serif;
+
 // Color variables
 $primary: #f88634;
+
 $black: #000;
 $white: #fff;
+
 $black-primary: #414141;
+
 $gray-primary: #757575;
 $gray-secondary: #cccccc;
+$light-gray: #f7f7f7;
+
 $border-color: #e8e8e8;
+$input-border: #b7b7b7;
 $control-border: #d9d9d9;
 $gray-bg: $border-color;
 $error: #dc3545;
 $facebook-color: #3b579d;
 $twitter-color: #2caae1;
 $linkedin-color: #007bb6;
-// rgba color variable
-$rgb-black: rgba(0,0,0,0.4);
-$rgb-black-dark: rgba(0,0,0,0.5);
-$rgb-black-hover: rgba(0,0,0,0.8);
-$rgb-white: rgba(255,255,255,0.4);
 
+// rgba color variable
+$rgb-black: rgba(0, 0, 0, 0.4);
+$rgb-black-dark: rgba(0, 0, 0, 0.5);
+$rgb-black-hover: rgba(0, 0, 0, 0.8);
+$rgb-white: rgba(255, 255, 255, 0.4);
