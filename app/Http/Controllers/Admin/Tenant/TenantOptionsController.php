@@ -567,7 +567,7 @@ class TenantOptionsController extends Controller
         try {
             $params['tenant_name'] = $tenantName;
             $params['to'] = 'siddharajsinh.zala@tatvasoft.com'; //required
-            $params['template'] = 'email.notification.welcome'; //path to the email template
+            $params['template'] = 'emails.notification.welcome'; //path to the email template
             $params['subject'] = 'Some Awesome Subject'; //optional
 
             dispatch(new AppMailerJob($params));

@@ -15,10 +15,11 @@ use App\Models\City;
 use App\Models\Country;
 use App\Models\Timezone;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Nicolaslopezj\Searchable\SearchableTrait;
 
 class User extends Model implements AuthenticatableContract, AuthorizableContract, CanResetPasswordInterface
 {
-    use Authenticatable, Authorizable, CanResetPasswordTrait, Notifiable, SoftDeletes;
+    use Authenticatable, Authorizable, CanResetPasswordTrait, Notifiable, SoftDeletes, SearchableTrait;
 
     /**
      * The table associated with the model.
@@ -62,26 +63,21 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     protected $hidden = [
         'password',
     ];
-    
+  
     /**
-     * The rules that should validate create request.
+     * Searchable rules.
      *
      * @var array
      */
-    public $rules = [
-        "first_name" => "required|max:16",
-        "last_name" => "required|max:16",
-        "email" => "required|email|unique:user,email,NULL,user_id,deleted_at,NULL",
-        "password" => "required",
-        "city_id" => "required",
-        "country_id" => "required",
-        "profile_text" => "required",
-        "employee_id" => "max:16",
-        "department" => "max:16",
-        "manager_name" => "max:16",
-        "linked_in_url" => "url"
+    protected $searchable = [
+        'columns' => [
+            'user.first_name' => 10,
+            'user.last_name' => 10,
+            'user.email' => 10
+        ]
     ];
-          
+
+
     /**
     * Defined has one relation for the city table.
     *
@@ -164,5 +160,18 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     public function getUserName(int $userId): string
     {
         return static::select('first_name')->where(['user_id' => $userId])->value('first_name');
+    }
+
+    /**
+     * Search user
+     *
+     * @param string $term
+     * @param int $userId
+     *
+     * @return mixed
+     */
+    public function searchUser($term, $userId)
+    {
+        return self::where('user_id', '<>', $userId)->search($term);
     }
 }
