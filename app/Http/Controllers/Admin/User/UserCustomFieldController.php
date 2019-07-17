@@ -152,7 +152,9 @@ class UserCustomFieldController extends Controller
             // Server side validataions
             $validator = Validator::make(
                 $request->toArray(),
-                ["type" => [
+                ["name" => "sometimes|required",
+                "is_mandatory" => "sometimes|required",
+                "type" => [
                     "sometimes",
                     "required",
                     Rule::in(config('constants.custom_field_types'))],
