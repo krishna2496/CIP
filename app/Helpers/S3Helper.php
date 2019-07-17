@@ -128,14 +128,14 @@ class S3Helper
             $disk->put($tenantName.'/'.basename($url), file_get_contents($url, false, $context));
             // Uncomment below line before going live
             if ($disk->put(
-                $tenantName.'/'.env('AWS_S3_ASSETS_FOLDER_NAME').'/'.env('AWS_S3_IMAGES_FOLDER_NAME')
+                $tenantName.'/'.config('constants.AWS_S3_ASSETS_FOLDER_NAME').'/'.config('constants.AWS_S3_IMAGES_FOLDER_NAME')
                 .'/'.basename($url),
                 file_get_contents($url)
             )) {
                 $file = $disk->get($tenantName.'/'.basename($url));
                 $pathInS3 = 'https://'.env('AWS_S3_BUCKET_NAME').'.s3.'
-                .env("AWS_REGION").'.amazonaws.com/'.$tenantName.'/'.env('AWS_S3_ASSETS_FOLDER_NAME')
-                .'/'.env('AWS_S3_IMAGES_FOLDER_NAME').'/'.basename($url);
+                .env("AWS_REGION").'.amazonaws.com/'.$tenantName.'/'.config('constants.AWS_S3_ASSETS_FOLDER_NAME')
+                .'/'.config('constants.AWS_S3_IMAGES_FOLDER_NAME').'/'.basename($url);
                 return $pathInS3;
             } else {
                 return 0;
