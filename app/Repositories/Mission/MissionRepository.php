@@ -525,7 +525,6 @@ class MissionRepository implements MissionInterface
      */
     public function appMissions(Request $request, array $userFilterData, int $languageId): LengthAwarePaginator
     {
-        DB::enableQueryLog();
         $missionData = [];
         // Get  mission data
         $missionQuery = $this->mission->select('*');
@@ -663,7 +662,6 @@ class MissionRepository implements MissionInterface
         }
         
         $mission =  $missionQuery->paginate(config('constants.PER_PAGE_LIMIT'));
-        // dd(DB::getQueryLog());
         return $mission;
     }
 
