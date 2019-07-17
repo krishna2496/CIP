@@ -7,6 +7,7 @@ use App\Repositories\MissionInvite\MissionInviteRepository;
 use App\Repositories\Notification\NotificationRepository;
 use App\Helpers\ResponseHelper;
 use App\Helpers\LanguageHelper;
+use App\Helpers\Helpers;
 use App\Http\Controllers\Controller;
 use PDOException;
 use Illuminate\Http\JsonResponse;
@@ -16,6 +17,7 @@ use Validator;
 use App\Repositories\User\UserRepository;
 use App\Repositories\Mission\MissionRepository;
 use Illuminate\Support\Facades\Mail;
+use App\Jobs\AppMailerJob;
 
 class MissionInviteController extends Controller
 {
@@ -38,8 +40,13 @@ class MissionInviteController extends Controller
     /*
      * @var App\Helpers\LanguageHelper
      */
-
     private $languageHelper;
+
+    /**
+     * @var App\Helpers\Helpers
+     */
+    private $helpers;
+
     /**
      * Create a new Mission controller instance.
      *
@@ -49,6 +56,7 @@ class MissionInviteController extends Controller
      * @param App\Repositories\Mission\MissionRepository $missionRepository
      * @param Illuminate\Http\ResponseHelper $responseHelper
      * @param  Illuminate\Http\LanguageHelper $languageHelper
+     * @param  App\Helpers\Helpers $helpers
      * @return void
      */
     public function __construct(
@@ -57,7 +65,8 @@ class MissionInviteController extends Controller
         UserRepository $userRepository,
         MissionRepository $missionRepository,
         ResponseHelper $responseHelper,
-        LanguageHelper $languageHelper
+        LanguageHelper $languageHelper,
+        Helpers $helpers
     ) {
         $this->missionInviteRepository = $missionInviteRepository;
         $this->notificationRepository = $notificationRepository;
@@ -65,6 +74,7 @@ class MissionInviteController extends Controller
         $this->missionRepository = $missionRepository;
         $this->responseHelper = $responseHelper;
         $this->languageHelper = $languageHelper;
+        $this->helpers = $helpers;
     }
 
     /*
@@ -145,11 +155,25 @@ class MissionInviteController extends Controller
                     'fromUserName'=> $fromUserName,
                     'colleagueLanguage'=> $colleagueLanguage
                 );
-                Mail::send('invite', $data, function ($message) use ($colleagueEmail, $colleagueLanguage) {
-                    $message->to($colleagueEmail)
-                    ->subject(trans('mail.recommonded_mission.MAIL_MISSION_RECOMMENDATION', [], $colleagueLanguage));
-                    $message->from(env('MAIL_FROM_ADDRESS'), env('MAIL_FROM_NAME'));
-                });
+
+                try {
+                    $tenantName = $this->helpers->getSubDomainFromRequest($request);
+                } catch (\Exception $e) {
+                    return $this->badRequest($e->getMessage());
+                }
+                            
+                try {
+                    $params['tenant_name'] = $tenantName;
+                    $params['to'] = $colleagueEmail; //required
+                    $params['template'] = 'emails.invite'; //path to the email template
+                    $params['subject'] = trans('mail.recommonded_mission.MAIL_MISSION_RECOMMENDATION', [], $colleagueLanguage); //optional
+                    $params['data'] = $data;
+
+                    dispatch(new AppMailerJob($params));
+                } catch (\Exception $e) {
+                    dd($e);
+                    return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
+                }
             }
             
             // Set response data
@@ -168,6 +192,7 @@ class MissionInviteController extends Controller
                 trans('messages.custom_error_message.ERROR_MISSION_NOT_FOUND')
             );
         } catch (\Exception $e) {
+            dd($e);
             return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
