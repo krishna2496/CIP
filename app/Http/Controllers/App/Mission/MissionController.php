@@ -189,8 +189,8 @@ class MissionController extends Controller
     
                 // Check for apply in mission validity
                 $value->set_view_detail = 0;
-                $today = date(config("constants.DATE_FORMAT"));
-    
+                $today = $this->helpers->getUserTimeZoneDate(date(config("constants.DB_DATE_FORMAT")));
+                
                 if (($value->user_application_count > 0) ||
                     ($value->application_deadline !== null && $value->application_deadline < $today) ||
                     ($value->total_seats != 0 && $value->total_seats == $value->mission_application_count) ||

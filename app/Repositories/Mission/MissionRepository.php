@@ -544,8 +544,11 @@ class MissionRepository implements MissionInterface
             }])
             ->withCount(['missionApplication as mission_application_count' => function ($query) use ($request) {
                 $query->where('approval_status', config("constants.application_status")["AUTOMATICALLY_APPROVED"]);
+            }])
+            ->withCount(['favouriteMission as favourite_mission_count' => function ($query) use ($request) {
+                $query->Where('user_id', $request->auth->user_id);
             }]);
-        $missionQuery->withCount([
+            $missionQuery->withCount([
                 'missionRating as mission_rating_count' => function ($query) {
                     $query->select(DB::raw("AVG(rating) as rating"));
                 }
