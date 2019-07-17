@@ -8,6 +8,7 @@ use App\Helpers\ResponseHelper;
 use Firebase\JWT\ExpiredException;
 use Illuminate\Http\Response;
 use App\Helpers\Helpers;
+use App\Repositories\Timezone\TimezoneRepository;
 
 class JwtMiddleware
 {
@@ -17,9 +18,9 @@ class JwtMiddleware
     private $responseHelper;
 
     /**
-     * @var App\Helpers\Helpers
+     * @var App\Repositories\Timezone\TimezoneRepository
      */
-    private $helper;
+    private $timezoneRepository;
 
     /**
      * Create a new middleware instance.
@@ -27,10 +28,10 @@ class JwtMiddleware
      * @param Illuminate\Http\ResponseHelper $responseHelper
      * @return void
      */
-    public function __construct(ResponseHelper $responseHelper, Helpers $helper)
+    public function __construct(ResponseHelper $responseHelper, TimezoneRepository $timezoneRepository)
     {
         $this->responseHelper = $responseHelper;
-        $this->helper = $helper;
+        $this->timezoneRepository = $timezoneRepository;
     }
 
     /**
@@ -79,9 +80,11 @@ class JwtMiddleware
         }
 
         $user = User::find($credentials->sub);
-        // Now let's put the user in the request class so that you can grab it from there
         $timezone = '';
-        $timezone = $this->helper->getTimeZone($user->timezone_id);
+        $timezone = $this->timezoneRepository->timezoneList($request, $user->timezone_id);
+        if ($timezone) {
+            $timezone = $timezone->timezone;
+        }
         config(['constants.TIMEZONE' => $timezone]);
         $request->auth = $user;
         return $next($request);

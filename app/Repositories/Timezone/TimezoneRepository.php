@@ -1,0 +1,42 @@
+<?php
+namespace App\Repositories\Timezone;
+
+use App\Repositories\Timezone\TimezoneInterface;
+use Illuminate\Http\Request;
+use App\Models\Timezone;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use DB;
+
+class TimezoneRepository implements TimezoneInterface
+{
+    /**
+     * @var App\Models\Timezone
+     */
+    public $timezone;
+
+    /**
+     * Create a new Timezone repository instance.
+     *
+     * @param  App\Models\Timezone $timezone
+     * @param  Illuminate\Http\ResponseHelper $responseHelper
+     * @return void
+     */
+    public function __construct(Timezone $timezone)
+    {
+        $this->timezone = $timezone;
+    }
+    
+    /**
+     * Display timezone
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param int $timezone_id
+     * @return \Illuminate\Http\Response
+     */
+    public function timezoneList(Request $request, int $timezone_id = null)
+    {
+        $timezone = $this->timezone->where("timezone_id", $timezone_id)->first();
+        return $timezone;
+    }
+}

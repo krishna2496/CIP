@@ -231,28 +231,12 @@ class Helpers
     }
 
     /**
-    * Get timezone from timezone
-    *
-    * @param int $timezoneId
-    * @return string
-    */
-    public function getTimeZone(int $timezoneId) : string
-    {
-        $timezone = DB::table("timezone");
-        if ($timezoneId) {
-            $timezone->where("timezone_id", $timezoneId);
-        }
-        $timezone = $timezone->first();
-        return $timezone->timezone;
-    }
-
-    /**
      * Get date according to user timezone
      *
      * @param string $date
      * @return string
      */
-    public function getTimeZoneDate($date)
+    public function getUserTimeZoneDate(string $date) : string
     {
         if (config('constants.TIMEZONE') != '' && $date !== null) {
             if (!($date instanceof Carbon)) {

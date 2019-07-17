@@ -260,7 +260,7 @@ class Mission extends Model
     {
         if (isset($this->attributes['start_date'])) {
             $date = $this->attributes['start_date'];
-            return $this->helpers->getTimeZoneDate($date);
+            return $this->helpers->getUserTimeZoneDate($date);
         }
     }
 
@@ -273,7 +273,7 @@ class Mission extends Model
     {
         if (isset($this->attributes['end_date'])) {
             $date = $this->attributes['end_date'];
-            return $this->helpers->getTimeZoneDate($date);
+            return $this->helpers->getUserTimeZoneDate($date);
         }
     }
 
@@ -286,7 +286,7 @@ class Mission extends Model
     {
         if (isset($this->attributes['application_deadline'])) {
             $date = $this->attributes['application_deadline'];
-            return $this->helpers->getTimeZoneDate($date);
+            return $this->helpers->getUserTimeZoneDate($date);
         }
     }
 
@@ -299,7 +299,7 @@ class Mission extends Model
     {
         if (isset($this->attributes['application_start_date'])) {
             $date = $this->attributes['application_start_date'];
-            return $this->helpers->getTimeZoneDate($date);
+            return $this->helpers->getUserTimeZoneDate($date);
         }
     }
 
@@ -312,7 +312,7 @@ class Mission extends Model
     {
         if (isset($this->attributes['application_end_date'])) {
             $date = $this->attributes['application_end_date'];
-            return $this->helpers->getTimeZoneDate($date);
+            return $this->helpers->getUserTimeZoneDate($date);
         }
     }
 
