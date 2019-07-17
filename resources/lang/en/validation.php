@@ -117,6 +117,7 @@ return [
         'documents.*.document_name' => 'document name',
         'documents.*.document_type' => 'document type',
         'documents.*.document_path' => 'document path',
+        'skills.*.skill_id' => 'skill id',        
         ],
 
 ];

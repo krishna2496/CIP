@@ -277,17 +277,17 @@ class UserController extends Controller
             $apiStatus = Response::HTTP_CREATED;
             $apiMessage = trans('messages.success.MESSAGE_USER_SKILLS_CREATED');
             return $this->responseHelper->success($apiStatus, $apiMessage);
-        } catch (InvalidArgumentException $e) {
-            return $this->invalidArgument(
-                config('constants.error_codes.ERROR_USER_CUSTOM_FIELD_INVALID_DATA'),
-                trans('messages.custom_error_message.ERROR_USER_CUSTOM_FIELD_INVALID_DATA')
-            );
         } catch (PDOException $e) {
             return $this->PDO(
                 config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
                 trans(
                     'messages.custom_error_message.ERROR_DATABASE_OPERATIONAL'
                 )
+            );
+        } catch (ModelNotFoundException $e) {
+            return $this->modelNotFound(
+                config('constants.error_codes.ERROR_USER_NOT_FOUND'),
+                trans('messages.custom_error_message.ERROR_USER_NOT_FOUND')
             );
         } catch (\Exception $e) {
             return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
@@ -320,20 +320,17 @@ class UserController extends Controller
                 );
             }
 
-            // try {
-            //     $this->userRepository->find($id);
-            // } catch (ModelNotFoundException $e) {
-            //     throw new ModelNotFoundException(
-            //         trans('messages.custom_error_message.ERROR_USER_NOT_FOUND')
-            //     );
-            // }
-
             $userSkill = $this->userRepository->unlinkSkill($request->toArray(), $id);
             // Set response data
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_USER_SKILLS_DELETED');
             
             return $this->responseHelper->success($apiStatus, $apiMessage);
+        } catch (ModelNotFoundException $e) {
+            return $this->modelNotFound(
+                config('constants.error_codes.ERROR_USER_NOT_FOUND'),
+                trans('messages.custom_error_message.ERROR_USER_NOT_FOUND')
+            );
         } catch (PDOException $e) {
             return $this->PDO(
                 config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),

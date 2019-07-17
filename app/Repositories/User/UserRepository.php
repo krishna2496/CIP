@@ -125,6 +125,7 @@ class UserRepository implements UserInterface
      */
     public function linkSkill(array $request, int $id): bool
     {
+        $this->user->findOrFail($id);
         foreach ($request['skills'] as $value) {
             $this->userSkill->linkUserSkill($id, $value['skill_id']);
         }
@@ -140,6 +141,7 @@ class UserRepository implements UserInterface
      */
     public function unlinkSkill(array $request, int $id): bool
     {
+        $this->user->findOrFail($id);
         $userSkill = $this->userSkill;
         foreach ($request['skills'] as $value) {
             $userSkill = $this->userSkill->deleteUserSkill($id, $value['skill_id']);
