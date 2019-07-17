@@ -36,5 +36,4 @@ class GoalMission extends Model
      * @var array
      */
     protected $visible = ['mission_id', 'goal_objective'];
-
 }

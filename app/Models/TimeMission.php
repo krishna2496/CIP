@@ -29,15 +29,15 @@ class TimeMission extends Model
      * @var array
      */
     protected $fillable = ['mission_id', 'application_deadline', 'application_start_date', 'application_end_date',
-    'application_start_time', 'application_end_time'];
+     'application_start_time','application_end_time'];
 
     /**
      * The attributes that should be visible in arrays.
      *
      * @var array
      */
-    protected $visible = ['mission_id', 'application_deadline', 'application_start_date', 'application_end_date',
-    'application_start_time', 'application_end_time'];
+    protected $visible = ['mission_id', 'application_deadline', 'application_start_date',
+    'application_end_date', 'application_start_time', 'application_end_time'];
 
     /**
      * Set application deadline date attribute on the model.

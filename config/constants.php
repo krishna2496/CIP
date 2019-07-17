@@ -13,6 +13,7 @@ return [
     'DB_DATE_FORMAT' => 'Y-m-d H:i:s',
     'PER_PAGE_LIMIT' => '9',
     'FRONT_DATE_FORMAT' => 'd/m/Y',
+    'TIMEZONE' => '',
     
     /*
      * User custom field types
@@ -109,6 +110,14 @@ return [
     'CITY' => "city",
     'SKILL' => "skill",
     'RANDOM' => 'random_missions',
+
+    /* sort by */
+    "NEWEST" => "newest",
+    "OLDEST" => "oldest",
+    "LOWEST_AVAILABLE_SEATS" => "lowest_available_seats",
+    "HIGHEST_AVAILABLE_SEATS" => "highest_available_seats",
+    "MY_FAVOURITE" => "my_favourite",
+    "DEADLINE" => "deadline",
 
     'ORGANIZATION' => "organization",
     'EXPLORE_MISSION_LIMIT' => "5",
