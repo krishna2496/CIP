@@ -98,4 +98,15 @@ class TimeMission extends Model
         $this->attributes['application_end_time'] = ($value != null) ?
         Carbon::parse($value)->format(config('constants.DB_DATE_FORMAT')) : null;
     }
+
+    /*
+    * Get deadline for mission.
+    *
+    * @param int $missionId
+    * @return string
+    */
+    public function getDeadLine(int $missionId): string
+    {
+        return $this->where('mission_id', $missionId)->value('application_deadline');
+    }
 }

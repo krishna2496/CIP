@@ -22,21 +22,29 @@ class MissionApplicationRepository implements MissionApplicationInterface
      * @var App\Models\MissionApplication
      */
     public $missionApplication;
+
+    /**
+     * @var App\Models\TimeMission
+     */
+    public $timeMission;
    
     /**
      * Create a new MissionApplication repository instance.
      *
      * @param  App\Models\Mission $mission
+     * @param  App\Models\TimeMission $timeMission
      * @param  Illuminate\Http\ResponseHelper $responseHelper
      * @param  App\Models\MissionApplication $missionApplication
      * @return void
      */
     public function __construct(
         Mission $mission,
+        TimeMission $timeMission,
         ResponseHelper $responseHelper,
         MissionApplication $missionApplication
     ) {
         $this->mission = $mission;
+        $this->timeMission = $timeMission;
         $this->responseHelper = $responseHelper;
         $this->missionApplication = $missionApplication;
     }
@@ -71,7 +79,7 @@ class MissionApplicationRepository implements MissionApplicationInterface
     {
         $mission = $this->mission->findOrFail($missionId);
         if ($mission->mission_type == config('constants.mission_type.TIME')) {
-            $applicationDeadline = TimeMission::where('mission_id', $missionId)->value('application_deadline');
+            $applicationDeadline = $this->timeMission->getDeadLine($missionId);
             return ($applicationDeadline > Carbon::now()) ? true : false;
         }
     }
