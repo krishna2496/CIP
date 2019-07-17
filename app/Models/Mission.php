@@ -241,4 +241,19 @@ class Mission extends Model
         $this->attributes['end_date'] = ($value != null) ?
         Carbon::parse($value)->format(config('constants.DB_DATE_FORMAT')) : null;
     }
+
+    /*
+    * Check seats are available or not.
+    *
+    * @param int $missionId
+    * @return App\Models\Mission
+    */
+    public function checkAvailableSeats(int $missionId): Mission
+    {
+        return $this->select('*')
+        ->where('mission.mission_id', $missionId)
+        ->withCount(['missionApplication as mission_application_count' => function ($query) use ($missionId) {
+            $query->where('approval_status', config("constants.application_status")["AUTOMATICALLY_APPROVED"]);
+        }])->first();
+    }
 }

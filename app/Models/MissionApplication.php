@@ -100,4 +100,17 @@ class MissionApplication extends Model
             ->get()->toArray();
         return $missionApplication;
     }
+
+    /*
+     * Check already applied for a mission or not.
+     *
+     * @param int $missionId
+     * @param int $userId
+     * @return int
+     */
+    public function checkApplyMission(int $missionId, int $userId): int
+    {
+        return $this->where(['mission_id' => $missionId, 'user_id' => $userId])
+        ->count();
+    }
 }
