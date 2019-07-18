@@ -53,8 +53,7 @@ class MissionApplicationController extends Controller
             $validator = Validator::make(
                 $request->all(),
                 [
-                    "mission_id" => "required|exists:mission,mission_id",
-                    "availability_id" => "required|exists:user_availability,availability_id"
+                    "mission_id" => "required|exists:mission,mission_id"
                 ]
             );
             // If request parameter have any error
