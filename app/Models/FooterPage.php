@@ -50,9 +50,9 @@ class FooterPage extends Model
      * Soft delete the model from the database.
      *
      * @param  int  $id
-     * @return void
+     * @return bool
      */
-    public function deleteFooterPage(int $id)
+    public function deleteFooterPage(int $id): bool
     {
         return static::findOrFail($id)->delete();
     }

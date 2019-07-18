@@ -6,10 +6,6 @@ use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
 use App\Repositories\User\UserRepository;
-use Illuminate\Support\Facades\Input;
-use App\Models\City;
-use App\Models\Country;
-use App\Models\Timezone;
 use App\Helpers\ResponseHelper;
 use App\Traits\RestExceptionHandlerTrait;
 use Validator;
@@ -18,6 +14,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\User;
 use InvalidArgumentException;
 use PDOException;
+use Illuminate\Validation\Rule;
 
 class UserController extends Controller
 {
@@ -48,6 +45,7 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      *
+     * @param \Illuminate\Http\Request $request
      * @return Illuminate\Http\JsonResponse
      */
     public function index(Request $request): JsonResponse
@@ -85,7 +83,7 @@ class UserController extends Controller
                 ["first_name" => "required|max:16",
                 "last_name" => "required|max:16",
                 "email" => "required|email|unique:user,email,NULL,user_id,deleted_at,NULL",
-                "password" => "required",
+                "password" => "required|min:8",
                 "city_id" => "required",
                 "country_id" => "required",
                 "profile_text" => "required",
@@ -170,15 +168,20 @@ class UserController extends Controller
             // Server side validataions
             $validator = Validator::make(
                 $request->all(),
-                ["first_name" => "max:16",
-                "last_name" => "max:16",
-                "email" => "email|unique:user,email,'. $id . ',user_id,deleted_at,NULL",
-                "employee_id" => "max:16",
-                "department" => "max:16",
-                "manager_name" => "max:16",
-                "linked_in_url" => "url"]
+                ["first_name" => "sometimes|required|max:16",
+                "last_name" => "sometimes|required|max:16",
+                "email" => [
+                    "sometimes",
+                    "required",
+                    "email",
+                    Rule::unique('user')->ignore($id, 'user_id')],
+                "password" => "sometimes|required|min:8",
+                "employee_id" => "sometimes|required|max:16",
+                "department" => "sometimes|required|max:16",
+                "manager_name" => "sometimes|required|max:16",
+                "linked_in_url" => "sometimes|required|url"]
             );
-
+                        
             // If request parameter have any error
             if ($validator->fails()) {
                 return $this->responseHelper->error(
@@ -271,17 +274,17 @@ class UserController extends Controller
             $apiStatus = Response::HTTP_CREATED;
             $apiMessage = trans('messages.success.MESSAGE_USER_SKILLS_CREATED');
             return $this->responseHelper->success($apiStatus, $apiMessage);
-        } catch (InvalidArgumentException $e) {
-            return $this->invalidArgument(
-                config('constants.error_codes.ERROR_USER_CUSTOM_FIELD_INVALID_DATA'),
-                trans('messages.custom_error_message.ERROR_USER_CUSTOM_FIELD_INVALID_DATA')
-            );
         } catch (PDOException $e) {
             return $this->PDO(
                 config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
                 trans(
                     'messages.custom_error_message.ERROR_DATABASE_OPERATIONAL'
                 )
+            );
+        } catch (ModelNotFoundException $e) {
+            return $this->modelNotFound(
+                config('constants.error_codes.ERROR_USER_NOT_FOUND'),
+                trans('messages.custom_error_message.ERROR_USER_NOT_FOUND')
             );
         } catch (\Exception $e) {
             return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
@@ -320,6 +323,11 @@ class UserController extends Controller
             $apiMessage = trans('messages.success.MESSAGE_USER_SKILLS_DELETED');
             
             return $this->responseHelper->success($apiStatus, $apiMessage);
+        } catch (ModelNotFoundException $e) {
+            return $this->modelNotFound(
+                config('constants.error_codes.ERROR_USER_NOT_FOUND'),
+                trans('messages.custom_error_message.ERROR_USER_NOT_FOUND')
+            );
         } catch (PDOException $e) {
             return $this->PDO(
                 config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),

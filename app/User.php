@@ -77,7 +77,6 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         ]
     ];
 
-
     /**
     * Defined has one relation for the city table.
     *

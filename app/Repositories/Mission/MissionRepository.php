@@ -721,7 +721,7 @@ class MissionRepository implements MissionInterface
     {
         $mission = $this->mission->findOrFail($missionId);
         $favouriteMission = $this->favouriteMission->findFavourite($userId, $missionId);
-        
+
         if (is_null($favouriteMission)) {
             $favouriteMissions = $this->favouriteMission->addToFavourite($userId, $missionId);
         } else {

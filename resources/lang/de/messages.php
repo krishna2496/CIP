@@ -86,6 +86,7 @@ return [
         'ERROR_FOOTER_PAGE_NOT_FOUND' => 'DE: Footer page not found in the system',
         'ERROR_DATABASE_OPERATIONAL' => 'DE: Database operational error',
         'ERROR_NO_DATA_FOUND' => 'DE: No data found',
+        'ERROR_NO_DATA_FOUND_FOR_SLUG' => 'DE: No data found for slug',
 
         // Custom error code for Mission Module - 400000 - 409999
         'ERROR_INVALID_MISSION_APPLICATION_DATA' => 'DE: Invalid application data or missing parameter',
@@ -103,6 +104,7 @@ return [
         'ERROR_INVITE_MISSION_ALREADY_EXIST' => 'DE: User is already invited for this mission',
         'ERROR_MISSION_APPLICATION_DEADLINE_PASSED' => 'DE: Application deadline is passed. You cannot apply for this mission',
         'ERROR_MISSION_APPLICATION_ALREADY_ADDED' => 'DE: You have already applied for this mission',
+        'ERROR_MISSION_APPLICATION_NOT_FOUND' => 'DE: Requested mission application does not exist',
 
         // Custom error code for Tenant Authorization - 210000 - 219999
         'ERROR_INVALID_API_AND_SECRET_KEY' => 'DE: Invalid API Key or Secret key',

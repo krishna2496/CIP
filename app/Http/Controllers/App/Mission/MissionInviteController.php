@@ -77,7 +77,7 @@ class MissionInviteController extends Controller
         $this->helpers = $helpers;
     }
 
-    /*
+    /**
      * Invite to a mission
      *
      * @param Illuminate\Http\Request $request
