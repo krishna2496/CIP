@@ -395,7 +395,7 @@ class TenantOptionsController extends Controller
         $validator = Validator::make(
             $request->toArray(),
             [
-                "image_file" => "required|mimes:jpeg,jpg,svg,png",
+                "image_file.*" => "required|mimes:jpeg,jpg,svg,png",
                 "image_name" => "required"
             ]
         );
