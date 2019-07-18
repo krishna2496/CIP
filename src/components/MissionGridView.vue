@@ -1,6 +1,9 @@
 <template>
+
     <div class="cards-wrapper" v-if="items.length > 0">
+
         <div class="card-grid">
+                
             <b-row>
                 <b-col lg="4" sm="6" class="card-outer" data-aos="fade-up" 
                     v-for="mission in items">
@@ -22,7 +25,45 @@
                                             :alt="$t('label.location')">
                                         </i>
                                         {{mission.city_name}}
-                                    </div>      
+                                    </div>   
+                                    <b-button 
+                                        v-bind:class="{ 'favourite-icon' : true,
+                                            active : mission.favourite_mission_count == 1
+                                        }"  
+                                        v-b-tooltip.hover 
+                                        :title="mission.favourite_mission_count == 1 ?  $t('label.remove_from_favourite') :$t('label.add_to_favourite')"
+                                     
+                                        @click="favoriteMission(mission.mission_id)">
+                                    <i class="normal-img">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 21" width="24" height="21">
+                                        <g id="Main Content">
+                                            <g id="1">
+                                                <g id="Image content">
+                                                    <path id="Forma 1" d="M22.1 2.86C20.9 1.66 19.3 1 17.59 1C15.89 1 14.29 1.66 13.08 2.86L12.49 3.45L11.89 2.86C10.69 1.66 9.08 1 7.38 1C5.67 1 4.07 1.66 2.87 2.86C0.38 5.34 0.38 9.36 2.87 11.84L11.78 20.71C11.93 20.86 12.11 20.95 12.3 20.98C12.36 20.99 12.43 21 12.49 21C12.74 21 13 20.9 13.19 20.71L22.1 11.84C24.59 9.36 24.59 5.34 22.1 2.86ZM20.71 10.45L12.49 18.64L4.26 10.45C2.54 8.74 2.54 5.96 4.26 4.25C5.09 3.42 6.2 2.96 7.38 2.96C8.56 2.96 9.66 3.42 10.5 4.25L11.79 5.53C12.16 5.9 12.81 5.9 13.18 5.53L14.47 4.25C15.31 3.42 16.41 2.96 17.59 2.96C18.77 2.96 19.88 3.42 20.71 4.25C22.43 5.96 22.43 8.74 20.71 10.45Z" />
+                                                </g>
+                                            </g>
+                                        </g>
+                                    </svg>
+                                    </i>
+                                     <i class="hover-img">
+                                       <svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+                                            viewBox="0 0 492.7 426.8" style="enable-background:new 0 0 492.7 426.8;" xml:space="preserve">
+                                        <g>
+                                            <g id="Icons_18_">
+                                                <path d="M492.7,133.1C492.7,59.6,433.1,0,359.7,0c-48,0-89.9,25.5-113.3,63.6C222.9,25.5,181,0,133,0
+                                                    C59.6,0,0,59.6,0,133.1c0,40,17.7,75.8,45.7,100.2l188.5,188.6c3.2,3.2,7.6,5,12.1,5s8.9-1.8,12.1-5L447,233.2
+                                                    C475,208.9,492.7,173.1,492.7,133.1z"/>
+                                            </g>
+                                        </g>
+                                        </svg>
+                                    </i>       
+                                </b-button>
+                                <b-button class="add-icon" :title="$t('label.invite_colleague')" @click="handleModal(mission.mission_id)">
+                                    <img 
+                                    :src="$store.state.imagePath+'/assets/images/add-group-ic.svg'"
+                                    :alt="$t('label.invite_colleague')"
+                                    >
+                                </b-button>
                                 </div>
                                 <div class="group-category" 
                                 v-if="mission.mission_theme != null">{{getThemeTitle(mission.mission_theme.translations)}}
@@ -139,7 +180,7 @@
                             </b-card-body>
 
                             <b-card-footer>
-                                <b-link v-if="mission.set_view_detail == 0" :to="'/apply/' + mission.mission_id">
+                                <b-link v-if="mission.set_view_detail == 0" @click="applyForMission(mission.mission_id)">
                                     <b-button class="btn-bordersecondary icon-btn">
                                         <span>{{ $t("label.apply") }}</span>
                                     <i>
@@ -179,27 +220,91 @@
                 </b-col>
             </b-row>
         </div>
+        <b-modal centered :title="$t('label.search_user')" ref="userDetailModal" 
+            :modal-class="myclass" hide-footer>
+            <b-alert show :variant="classVariant" dismissible v-model="showErrorDiv"
+            >{{ message }}</b-alert>
+                    <div class="autocomplete-control">
+                        <div class="autosuggest-container">
+                <vue-autosuggest
+                    v-model="query"
+                    :suggestions="filteredOptions"
+                    @selected="onSelected"
+                    :get-suggestion-value="getSuggestionValue"
+                    :input-props="{id:'autosuggest__input', placeholder:autoSuggestPlaceholder}" >
+                    <div slot-scope="{suggestion}">
+                    <img :src="suggestion.item.avatar" />
+                    <div>
+                    {{suggestion.item.first_name}}  {{suggestion.item.last_name}}
+                    </div>
+                    </div>
+                </vue-autosuggest>
+                    </div>
+                </div>
+            <b-form>
+                 <div class="btn-wrap">
+                    <b-button @click="$refs.userDetailModal.hide()" class="btn-borderprimary">
+                    {{ $t("label.close") }}</b-button>
+                    <b-button class="btn-bordersecondary" @click="inviteColleagues">
+                    {{ $t("label.submit") }}</b-button>
+                </div>
+            </b-form>
+        </b-modal>
     </div>
     <div class="cards-wrapper" v-else>
         <h2 class="text-center">{{ $t("label.no_record_found")}}</h2>
     </div>
+    
 </template>
 
 <script>
 import store from '../store';
 import constants from '../constant';
 import StarRating from 'vue-star-rating'
+import {favoriteMission,inviteColleague ,applyMission} from "../services/service";
+import { VueAutosuggest } from 'vue-autosuggest';
+import SimpleBar from 'simplebar';
 
 export default {
     name: "MissionGridView",
     components:{
-		StarRating
-	},
+		StarRating,
+        VueAutosuggest,
+        SimpleBar
+    },
     props: {
         items: Array,
+        userList :Array
     },
     data() {
-        return { };
+        return {
+            query: "",
+            selected: "",
+            myclass:["userdetail-modal"],
+            currentMissionId : 0,
+            invitedUserId : 0,
+            showErrorDiv : false,
+            message : null,
+            classVariant :"success",
+            autoSuggestPlaceholder : '',
+        };
+    },
+    computed: {
+        filteredOptions() {
+            if(this.userList){
+                return [
+                { 
+                  data: this.userList.filter(option => {
+                    var firstName = option.first_name.toLowerCase();
+                    var lastName = option.last_name.toLowerCase();
+                    var email = option.email.toLowerCase();
+                    var searchString = firstName+''+lastName+''+email;
+                    return searchString.indexOf(this.query.toLowerCase()) > -1;
+                  })
+                }
+                ];
+            }
+        }
     },
     methods: {
         handleFav() {
@@ -227,27 +332,97 @@ export default {
         checkMissionTypeTime(missionType) {
             return missionType == constants.MISSION_TYPE_TIME
         },
-        // Get sub string of short description
-        shortDescriptionSubString(shortDescription) {
-            if (shortDescription.length <= constants.MISSION_GRID_VIEW_SHORT_DESCRIPTION_CHARACTER) {
-                return shortDescription
-            } else {
-                return shortDescription.substring(0,constants.MISSION_GRID_VIEW_SHORT_DESCRIPTION_CHARACTER)+"...";
-            }
-        },
         // Get Youtube Thumb images
         youtubeThumbImage(videoPath) {
             let data = videoPath.split("=");
             return  "https://img.youtube.com/vi/"+data.slice(-1)[0]+"/mqdefault.jpg";
-        }
-    },
-    mounted(){          
-        var btn_active = document.querySelectorAll(".favourite-icon");
-        btn_active.forEach(function(event){
-            event.addEventListener("click", function(){
-                event.classList.toggle("active");
+        },
+        // Add mission to favorite
+        favoriteMission(missionId){
+            let missionData = {
+                mission_id : ''
+            };
+            missionData.mission_id = missionId;
+            favoriteMission(missionData).then(response => {
+                if(response.error == true){
+                    this.makeToast("danger",response.message);
+                } else {
+                    this.makeToast("success",response.message);
+                    this.$emit("getMissions","removeLoader");
+                } 
+            });
+            
+        },
+        // For selected user id.
+        onSelected(item) {
+            this.selected = item.item;
+            this.invitedUserId = item.item.user_id;
+        },
+        //This is what the <input/> value is set to when you are selecting a suggestion.
+        getSuggestionValue(suggestion) {
+           var firstName = suggestion.item.first_name;
+           var lastName = suggestion.item.last_name;
+           return firstName+' '+lastName;
+        },
+        // Open auto suggest modal
+        handleModal(missionId){
+            this.autoSuggestPlaceholder = this.$i18n.t("label.search_user")
+            this.showErrorDiv = false;
+            this.message = null;
+            this.$refs.userDetailModal.show();
+            this.currentMission = missionId;
+            setTimeout(() => {
+                var onFocus = document.getElementById('autosuggest');
+                    onFocus.addEventListener("click", function(){
+                        var myElement = document.querySelector('.autosuggest__results');
+                        new SimpleBar(myElement, { autoHide: true });   
+                    });
+            });
+        },
+        // invite collegues api call
+        inviteColleagues(){
+            let inviteData = {};
+            inviteData.mission_id=this.currentMission;
+            inviteData.to_user_id=this.invitedUserId;
+            inviteColleague(inviteData).then(response => {
+                if (response.error == true) {
+                    this.classVariant = "danger";
+                    this.message = response.message;
+                    this.showErrorDiv = true;
+                } else {
+                    this.classVariant = "success";
+                    this.message = response.message;
+                    this.showErrorDiv = true;
+                    this.query ="";
+                    this.selected = "";
+                    this.currentMissionId = 0;
+                    this.invitedUserId = 0;
+                }
             })
-        });
+        },
+        // Apply for mission
+        applyForMission(missionId) {
+            let missionData = {};
+            missionData.mission_id = missionId;
+            missionData.availability_id = 1;
+            applyMission(missionData).then(response => {
+                if(response.error == true){
+                    this.makeToast("danger",response.message);
+                } else {
+                    this.makeToast("success",response.message);
+                    this.$emit("getMissions"); 
+                }
+            })
+        },
+        makeToast(variant = null,message) {
+            this.$bvToast.toast(message, {
+                variant: variant,
+                solid: true,
+                autoHideDelay: 5000
+            })
+        },
+    },
+    created(){   
     },
 };
 </script>

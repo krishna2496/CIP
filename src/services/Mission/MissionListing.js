@@ -5,7 +5,7 @@ export default async(data) => {
     let responseData;
     var defaultLanguage = '';
     let headerMenuData = {}
-    
+    var addLoader = "addLoader";
     if (store.state.defaultLanguage !== null) {
         defaultLanguage = (store.state.defaultLanguage).toLowerCase();
     }
@@ -39,12 +39,17 @@ export default async(data) => {
     if(data.exploreMissionParams != ''){
         url = url+"&explore_mission_params=" + data.exploreMissionParams
     }
+
+    if(data.addLoader && data.addLoader != ''){
+        addLoader = data.addLoader
+    }
     await axios({
             url: url,
             method: 'get',
             headers: {
                 'X-localization': defaultLanguage,
                 'token': store.state.token,
+                'addLoader' :addLoader
             }
         })
         .then((response) => {

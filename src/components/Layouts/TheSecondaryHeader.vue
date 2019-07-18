@@ -392,7 +392,7 @@ export default {
             userFilter.sortBy = store.state.sortBy;
             store.commit("userFilter",userFilter);
             this.$router.push({ name: 'home' })    
-            this.$parent.getMissions();    
+            this.$parent.getMissions("removeLoader");    
             setTimeout(() => {
             this.selectedfilterParams.countryId = store.state.countryId;
             this.selectedfilterParams.cityId = store.state.cityId;
