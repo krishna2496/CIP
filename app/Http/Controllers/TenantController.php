@@ -88,7 +88,7 @@ class TenantController extends Controller
     {
         try {
             $validator = Validator::make($request->toArray(), [
-                'name' => 'required|unique:tenant,name,NULL,tenant_id,deleted_at,NULL',
+                'name' => 'required|max:512|unique:tenant,name,NULL,tenant_id,deleted_at,NULL',
                 'sponsor_id'  => 'required']);
 
             if ($validator->fails()) {
