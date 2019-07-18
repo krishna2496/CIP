@@ -82,6 +82,7 @@ class MissionApplicationRepository implements MissionApplicationInterface
             $applicationDeadline = $this->timeMission->getDeadLine($missionId);
             return ($applicationDeadline > Carbon::now()) ? true : false;
         }
+        return true;
     }
     
     /*
@@ -107,7 +108,7 @@ class MissionApplicationRepository implements MissionApplicationInterface
         $application = array(
             'mission_id' => $request['mission_id'],
             'user_id' => $userId,
-            'motivation' => $request['motivation'],
+            'motivation' => $request['motivation'] ?? '',
             'availability_id' => $request['availability_id']
         );
         return $this->missionApplication->create($application);

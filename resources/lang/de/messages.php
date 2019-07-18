@@ -80,6 +80,7 @@ return [
         'ERROR_SLIDER_LIMIT' => 'DE: Sorry, you cannot add more than '.config('constants.SLIDER_LIMIT').' slides!',
         'ERROR_NOT_VALID_EXTENSION' => 'DE: File must have .scss type',
         'ERROR_FILE_NAME_NOT_MATCHED_WITH_STRUCTURE' => 'DE: File name doesn`t match with structure',
+        'ERROR_INVALID_IMAGE_URL' => 'DE: The url must be a file of type: jpeg, png, jpg',
         
         // Custom error code for CMS Module - 300000 - 309999
         'ERROR_INVALID_ARGUMENT' => 'DE: Invalid argument',

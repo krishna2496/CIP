@@ -117,7 +117,7 @@ class TenantOptionsController extends Controller
     public function storeSlider(Request $request): JsonResponse
     {
         // Server side validataions
-        $validator = Validator::make($request->toArray(), ["url" => "required|url|mimes:jpeg,png,jpg"]);
+        $validator = Validator::make($request->toArray(), ["url" => "required|url"]);
 
         // If post parameter have any missing parameter
         if ($validator->fails()) {
@@ -128,7 +128,15 @@ class TenantOptionsController extends Controller
                 $validator->errors()->first()
             );
         }
-
+        
+        if (!$this->helpers->checkUrlExtension($request->url, config('constants.IMAGE'))) {
+            return $this->responseHelper->error(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                config('constants.error_codes.ERROR_INVALID_IMAGE_URL'),
+                trans('messages.custom_error_message.ERROR_INVALID_IMAGE_URL')
+            );
+        }
         try {
             // Get total count of "slider"
             $sliderCount = $this->tenantOptionRepository->getAllSlider()->count();
