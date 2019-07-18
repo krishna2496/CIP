@@ -118,7 +118,7 @@ class TenantOptionsController extends Controller
     public function storeSlider(Request $request): JsonResponse
     {
         // Server side validataions
-        $validator = Validator::make($request->toArray(), ["url" => "required|url"]);
+        $validator = Validator::make($request->toArray(), ["url" => "required|url|mimes:jpeg,png,jpg"]);
 
         // If post parameter have any missing parameter
         if ($validator->fails()) {
