@@ -10,22 +10,23 @@ export default async(data) => {
         defaultLanguage = (store.state.defaultLanguage).toLowerCase();
     }
     await axios({
-            url: process.env.VUE_APP_API_ENDPOINT + "app/mission/favourite",
+            url: process.env.VUE_APP_API_ENDPOINT + "app/mission/application",
             data,
             method: 'post',
             headers: {
                 'X-localization': defaultLanguage,
                 'token': store.state.token,
             }
-        }).then((response) => { 
+            }).then((response) => { 
                 responseData.error = false;
                 responseData.message = response.data.message;
             })
-        .catch(function(error) {
-            if (error.response.data.errors[0].message) {
-                responseData.error = true;
-                responseData.message = error.response.data.errors[0].message;
-            }  
-        });
+            .catch(function(error) {
+                if (error.response.data.errors[0].message) {
+                    responseData.error = true;
+                    responseData.message = error.response.data.errors[0].message;
+                }  
+            });
+            
     return responseData;
 }

@@ -16,7 +16,6 @@ export default async(data) => {
                     var key = module.key;
                     settingArray[key] = module.value
                 });
-                console.log(settingArray);
                 store.commit("setTenantSetting",settingArray);
                 responseData = response.data.data;
             }

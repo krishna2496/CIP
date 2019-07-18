@@ -171,12 +171,12 @@ export default {
       });
 
       // favourite-icon clickable
-      var btn_active = document.querySelectorAll(".favourite-icon");
-      btn_active.forEach(function(event) {
-        event.addEventListener("click", function() {
-          event.classList.toggle("active");
-        });
-      });
+      // var btn_active = document.querySelectorAll(".favourite-icon");
+      // btn_active.forEach(function(event) {
+      //   event.addEventListener("click", function() {
+      //     event.classList.toggle("active");
+      //   });
+      // });
     },500);
 
     var _this = this;

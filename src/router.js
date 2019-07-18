@@ -36,12 +36,6 @@ let routes = [{
         import ('./views/Auth/ResetPassword.vue')
 },
 {
-    path: '/abc',
-    name: 'abc',
-    component: () =>
-        import ('./views/ProfilePage.vue')
-},
- {
     path: '/forgot-password',
     name: 'forgotPassword',
     component: () =>

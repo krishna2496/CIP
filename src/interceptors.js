@@ -5,8 +5,26 @@ import store from './store'
 export default function setup() {
     // Add a request interceptor
     axios.interceptors.request.use(function(config) {
+        var getRequestEndPoint = ''
+        var addLoader = "true";
+        var url = config.url;
+        var domain =url.split('/');
+        var lastPosition =  domain.length -1;
+        var getRequest = domain[lastPosition].split('?');
+        var getRequestEndPoint = getRequest[0];
         // Do something before request is sent
-        document.body.classList.add("loader-enable");
+        if(domain[lastPosition] == "favourite"){
+            addLoader = "false";
+        }
+
+        if(getRequestEndPoint == "missions") {
+            if(config.headers.addLoader == "removeLoader"){
+                addLoader = "false";
+            }
+        }
+        if(addLoader == "true") {
+            document.body.classList.add("loader-enable");
+        }
         return config;
     }, function(error) {
 
