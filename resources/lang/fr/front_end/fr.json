@@ -60,7 +60,12 @@
 		"news" : "Nouvelles",
 		"policy" : "Politique",
 		"volunteering" : "Faire du bénévolat",
-		"sponsored" : "Sponsorisé"
+		"sponsored" : "Sponsorisé",
+		"submit" : "Soumettre",
+		"close" : "Fermer",
+		"search_user" : "Rechercher un utilisateur ..",
+		"invite_colleague" : "Invite Collègue",
+		"remove_from_favourite" : "Supprimer du favoris"
 	},
 
 	"placeholder" : {
