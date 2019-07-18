@@ -38,7 +38,7 @@ class MissionTest extends TestCase
                     ],
                     "location" => [
                         "city_id" => rand(1, 1),
-                        "country_code" => "IND"
+                        "country_code" => "IN"
                     ],
                     "mission_detail" => [[
                             "lang" => "en",
@@ -157,7 +157,7 @@ class MissionTest extends TestCase
         $mission->setConnection($connection);
         $mission->save();
 
-        $this->get(route('missions'), ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->get('missions', ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
           ->seeStatusCode(200)
           ->seeJsonStructure([
             "status",

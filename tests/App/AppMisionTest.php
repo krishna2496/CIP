@@ -31,11 +31,7 @@ class AppMissionTest extends TestCase
             "status",
             "meta_data" => [
                 "filters" => [
-                    "search",
-                    "country",
-                    "city",
-                    "theme",
-                    "skill"
+                    "search"
                 ]
             ],
             "message"

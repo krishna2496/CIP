@@ -72,7 +72,7 @@ class FavouriteMission extends Model
      *
      * @param  int  $userId
      * @param  int  $missionId
-     * @return array
+     * @return mixed
      */
     public function findFavourite(int $userId, int $missionId)
     {
