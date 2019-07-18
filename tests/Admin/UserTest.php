@@ -2,6 +2,7 @@
 use Laravel\Lumen\Testing\DatabaseMigrations;
 use Laravel\Lumen\Testing\DatabaseTransactions;
 use App\User;
+use Illuminate\Support\Facades\DB;
 
 class UserTest extends TestCase
 {
@@ -437,55 +438,196 @@ class UserTest extends TestCase
      */
     public function it_should_return_user_skills()
     {
-        \DB::setDefaultConnection('tenant');
-       
-        $user1 = User::get()->random();
-
-        dd($user1);
-
-        $this->get('user/skills/', ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $connection = 'tenant';
+        $user = factory(\App\User::class)->make();
+        $user->setConnection($connection);
+        $user->save();
+        
+        $this->get('user/skills/'.$user->user_id, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
           ->seeStatusCode(200)
           ->seeJsonStructure([
             "status",
-            "data" => [
-                "*" => [
-                    "user_id",
-                    "first_name",
-                    "last_name",
-                    "email",
-                    "avatar",
-                    "timezone_id",
-                    "availability_id",
-                    "why_i_volunteer",
-                    "employee_id",
-                    "department",
-                    "manager_name",
-                    "city_id",
-                    "country_id",
-                    "profile_text",
-                    "linked_in_url",
-                    "status",
-                    "city" => [
-                        "city_id",
-                        "name",
-                        "country_id"
-                    ],
-                    "country" => [
-                        "country_id",
-                        "name",
-                        "ISO"
-                    ],
-                    "timezone" => [
-                        "timezone_id",
-                        "timezone",
-                        "offset",
-                        "status"
-                    ]
-                ]
-            ],
             "message"
         ]);
+        $user->delete();
     }
 
+    /**
+     * @test
+     *
+     * Check if user not exist in system
+     *
+     * @return void
+     */
+    public function it_should_return_error_if_user_is_not_exist()
+    {        
+        $this->post('user/skills/'.rand(100000, 500000), ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+          ->seeStatusCode(401);
+    }
     
+    /**
+     * @test
+     *
+     * If no user skills registered
+     *
+     * @return void
+     */
+    public function it_should_return_no_user_skills_registered()
+    {
+        $connection = 'tenant';
+        $user = factory(\App\User::class)->make();
+        $user->setConnection($connection);
+        $user->save();
+        
+        $this->get('user/skills/'.$user->user_id, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+          ->seeStatusCode(200)
+          ->seeJsonStructure([
+            "status",
+            "message"
+        ]);
+        $user->delete();
+    }
+
+    /**
+     * @test
+     *
+     * Link skill to user
+     *
+     * @return void
+     */
+    public function it_should_link_skill_to_user()
+    {
+        $connection = 'tenant';
+        $skill = factory(\App\Models\Skill::class)->make();
+        $skill->setConnection($connection);
+        $skill->save();
+ 
+        $user = factory(\App\User::class)->make();
+        $user->setConnection($connection);
+        $user->save();
+
+        $params = [
+            'skills' => [
+                [
+                    "skill_id" => $skill->skill_id
+                ]
+            ]
+        ];
+
+        $this->post('user/skills/'.$user->user_id, $params,['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+          ->seeStatusCode(201)
+          ->seeJsonStructure([
+            "status",
+            "message"
+        ]);
+        $user->delete();
+        $skill->delete();
+    }
+
+    /**
+     * @test
+     *
+     * Link skill to user validate user
+     *
+     * @return void
+     */
+    public function it_should_validate_user_for_link_skill_to_user()
+    {
+        $connection = 'tenant';
+        $skill = factory(\App\Models\Skill::class)->make();
+        $skill->setConnection($connection);
+        $skill->save();
+ 
+        $params = [
+            'skills' => [
+                [
+                    "skill_id" => $skill->skill_id
+                ]
+            ]
+        ];
+
+        $this->post('user/skills/'.rand(100000, 5000000), $params,['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+          ->seeStatusCode(404)
+          ->seeJsonStructure([
+              "errors" => [
+                  [
+                    "status",
+                    "message"
+                  ]
+              ]            
+            ]);
+        $skill->delete();
+    }
+
+    /**
+     * @test
+     *
+     * Unlink skill from user
+     *
+     * @return void
+     */
+    public function it_should_unlink_skill_from_user()
+    {
+        $connection = 'tenant';
+        $skill = factory(\App\Models\Skill::class)->make();
+        $skill->setConnection($connection);
+        $skill->save();
+ 
+        $user = factory(\App\User::class)->make();
+        $user->setConnection($connection);
+        $user->save();
+
+        $params = [
+            'skills' => [
+                [
+                    "skill_id" => $skill->skill_id
+                ]
+            ]
+        ];
+
+        $this->delete('user/skills/'.$user->user_id, $params,['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+          ->seeStatusCode(200)
+          ->seeJsonStructure([
+            "status",
+            "message"
+        ]);
+        $user->delete();
+        $skill->delete();
+    }
+
+        /**
+     * @test
+     *
+     * Unlink skill to user validate user
+     *
+     * @return void
+     */
+    public function it_should_validate_user_for_unlink_skill_from_user()
+    {
+        $connection = 'tenant';
+        $skill = factory(\App\Models\Skill::class)->make();
+        $skill->setConnection($connection);
+        $skill->save();
+ 
+        $params = [
+            'skills' => [
+                [
+                    "skill_id" => $skill->skill_id
+                ]
+            ]
+        ];
+
+        $this->delete('user/skills/'.rand(100000, 5000000), $params,['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+          ->seeStatusCode(404)
+          ->seeJsonStructure([
+              "errors" => [
+                  [
+                    "status",
+                    "message"
+                  ]
+              ]            
+            ]);
+        $skill->delete();
+    }
+
 }

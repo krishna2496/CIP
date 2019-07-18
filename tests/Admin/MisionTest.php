@@ -150,21 +150,21 @@ class MissionTest extends TestCase
      *
      * @return void
      */
-    public function it_should_return_all_mission()
-    {
-        $connection = 'tenant';
-        $mission = factory(\App\Models\Mission::class)->make();
-        $mission->setConnection($connection);
-        $mission->save();
+    // public function it_should_return_all_mission()
+    // {
+    //     $connection = 'tenant';
+    //     $mission = factory(\App\Models\Mission::class)->make();
+    //     $mission->setConnection($connection);
+    //     $mission->save();
 
-        $this->get('missions', ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
-          ->seeStatusCode(200)
-          ->seeJsonStructure([
-            "status",
-            "data",
-            "message"
-        ]);
-    }
+    //     $this->get('missions', ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+    //       ->seeStatusCode(200)
+    //       ->seeJsonStructure([
+    //         "status",
+    //         "data",
+    //         "message"
+    //     ]);
+    // }
 
     /**
      * @test
