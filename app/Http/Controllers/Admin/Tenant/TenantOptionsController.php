@@ -129,10 +129,8 @@ class TenantOptionsController extends Controller
                 $validator->errors()->first()
             );
         }
-
-        $sliderImageExtension = pathinfo($request->url, PATHINFO_EXTENSION);
-  
-        if (!in_array($sliderImageExtension, config('constants.image_types'))) {
+        
+        if (!$this->helpers->checkUrlExtension($request->url, config('constants.IMAGE'))) {
             return $this->responseHelper->error(
                 Response::HTTP_UNPROCESSABLE_ENTITY,
                 Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],

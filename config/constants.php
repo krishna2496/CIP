@@ -121,6 +121,7 @@ return [
 
     'ORGANIZATION' => "organization",
     'EXPLORE_MISSION_LIMIT' => "5",
+    'IMAGE' => "image",
 
     'error_codes' => [
         'ERROR_FOOTER_PAGE_REQUIRED_FIELDS_EMPTY' => '300000',

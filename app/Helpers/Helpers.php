@@ -251,4 +251,19 @@ class Helpers
         }
         return $date;
     }
+
+    /**
+     * Check url extension
+     *
+     * @param string $url
+     * @param string $type
+     * @return bool
+     */
+    public function checkUrlExtension(string $url, string $type) : bool
+    {
+        $urlExtension = pathinfo($url, PATHINFO_EXTENSION);
+        $constants = ($type == config('constants.IMAGE')) ? config('constants.image_types')
+        : config('constants.document_types');
+        return (!in_array($urlExtension, $constants)) ? false : true;
+    }
 }
