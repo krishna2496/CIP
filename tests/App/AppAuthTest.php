@@ -184,7 +184,7 @@ class AppAuthTest extends TestCase
     //     DB::connection('mysql')->getPdo();
     //     Config::set('database.default', 'mysql');
 
-    //     $response = $this->put('/password_reset', [
+    //     $response = $this->put('app/password-reset', [
     //         'reset_password_token' => $token,
     //         'email' => $user->email,
     //         'password' => 'password',
@@ -193,4 +193,23 @@ class AppAuthTest extends TestCase
         
     //     $this->assertTrue(Hash::check('password', $user->fresh()->password));
     // }
+
+
+    /**
+     * @test
+     *
+     * Show error if email is invalid
+     *
+     * @return void
+     */
+    public function it_should_show_error_if_email_is_invalid()
+    {
+        $params = [
+            'email' => 'test@gmail.com',
+            'password' => 'test',
+        ];
+
+        $this->post('app/login', $params, [])
+          ->seeStatusCode(403);
+    }
 }
