@@ -30,9 +30,11 @@ export default {
 			isDynamicCarsousetSet : false
 		};
 	},
-	created(){		
-		this.carouselItems = JSON.parse(store.state.slider);
-		this.isDynamicCarsousetSet =true
+	created(){				
+		if (store.state.slider != null && JSON.parse(store.state.slider).length > 0) { 
+		   this.carouselItems = JSON.parse(store.state.slider);
+		   this.isDynamicCarsousetSet =true
+		}
 	},
 	methods:{
 		getTitle: (sliderDetail) => {
