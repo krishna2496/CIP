@@ -236,7 +236,7 @@ class Mission extends Model
     public function setStartDateAttribute($value)
     {
         $this->attributes['start_date'] = ($value != null) ?
-        Carbon::parse($value)->format(config('constants.DB_DATE_FORMAT')) : null;
+        Carbon::parse($value, config('constants.TIMEZONE'))->setTimezone(config('app.TIMEZONE')) : null;
     }
 
     
@@ -248,59 +248,11 @@ class Mission extends Model
     public function getStartDateAttribute() :string
     {
         if (isset($this->attributes['start_date'])) {
-            return app()->make('App\Helpers\Helpers')->getUserTimeZoneDate($this->attributes['start_date']);
-        }
+            return Carbon::parse($this->attributes['start_date'])->setTimezone(config('constants.TIMEZONE'));
+		}
     }
-
-    /**
-     * Get end date attribute from the model.
-     *
-     * @return string
-     */
-    public function getEndDateAttribute():string
-    {
-        if (isset($this->attributes['end_date'])) {
-            return app()->make('App\Helpers\Helpers')->getUserTimeZoneDate($this->attributes['end_date']);
-        }
-    }
-
-    /**
-     * Get application deadline attribute from the model.
-     *
-     * @return string
-     */
-    public function getApplicationDeadlineAttribute()
-    {
-        if (isset($this->attributes['application_deadline'])) {
-            return app()->make('App\Helpers\Helpers')->getUserTimeZoneDate($this->attributes['application_deadline']);
-        }
-    }
-
-    /**
-     * Get application start date attribute from the model.
-     *
-     * @return string
-     */
-    public function getApplicationStartDateAttribute()
-    {
-        if (isset($this->attributes['application_start_date'])) {
-            return app()->make('App\Helpers\Helpers')->getUserTimeZoneDate($this->attributes['application_start_date']);
-        }
-    }
-
-    /**
-     * Get application end date attribute from the model.
-     *
-     * @return string
-     */
-    public function getApplicationEndDateAttribute()
-    {
-        if (isset($this->attributes['application_end_date'])) {
-            return app()->make('App\Helpers\Helpers')->getUserTimeZoneDate($this->attributes['application_end_date']);
-        }
-    }
-
-    /**
+	
+	/**
      * Set end date attribute on the model.
      *
      * @param  mixed   $value
@@ -309,9 +261,21 @@ class Mission extends Model
     public function setEndDateAttribute($value)
     {
         $this->attributes['end_date'] = ($value != null) ?
-        Carbon::parse($value)->format(config('constants.DB_DATE_FORMAT')) : null;
+        Carbon::parse($value, config('constants.TIMEZONE'))->setTimezone(config('app.TIMEZONE')) : null;
     }
-
+	
+    /**
+     * Get end date attribute from the model.
+     *
+     * @return string
+     */
+    public function getEndDateAttribute():string
+    {
+        if (isset($this->attributes['end_date'])) {
+            return Carbon::parse($this->attributes['end_date'])->setTimezone(config('constants.TIMEZONE'));
+        }
+    }
+	
     /*
     * Check seats are available or not.
     *
