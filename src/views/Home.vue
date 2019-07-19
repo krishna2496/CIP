@@ -11,7 +11,6 @@
         <main>
             <b-container class="home-content-wrapper">
                 <div>
-
                 <div class="chip-container" v-if="tags != ''">
                     <span v-for="(item , i) in tags.country" >
                         <AppCustomChip :textVal="item" :tagId ="i" type ="country" 
@@ -33,7 +32,7 @@
                         @updateCall="changeTag"
                         />
                     </span>
-                    <b-button class="clear-btn" @click="clearMissionFilter">Clear All</b-button>
+                    <b-button class="clear-btn" @click="clearMissionFilter">{{$t("label.clear_all")}}</b-button>
                 </div>
                 </div>
                 <div class="heading-section">
@@ -82,6 +81,8 @@
                         :per-page="perPage"
                         :current-page="currentPage"
                         v-if="isShownComponent"
+                        :userList = "userList"
+                        @getMissions = "getMissions"
                         small
                         />
                     </b-tab>
@@ -105,6 +106,8 @@
                         :per-page="perPage"
                         :current-page="currentPage"
                         v-if="isShownComponent"
+                        :userList = "userList"
+                        @getMissions = "getMissions"
                         small
                         />
                     </b-tab>          
@@ -165,7 +168,7 @@ import AppCustomDropdown from "../components/AppCustomDropdown";
 import AppCustomChip from "../components/AppCustomChip";
 import axios from "axios";
 import store from '../store';
-import {missionListing,missionFilterListing} from '../services/service';
+import {missionListing,missionFilterListing,searchUser} from '../services/service';
 
 export default {
     components: {
@@ -215,11 +218,13 @@ export default {
                 "sortBy" : "",
             },
             tags:"",
-            sortByFilterSet : true
+            sortByFilterSet : true,
+            userList :[],
         };
     },
 
     methods: {
+
         handleScroll() {
             var body = document.querySelector("body");
             var bheader = document.querySelector("header");
@@ -237,7 +242,8 @@ export default {
             this.getMissions();
         },
         //Mission listing
-        async getMissions(){
+        async getMissions(parmas = ""){
+
             let filter = {};
             filter.page = this.currentPage
             filter.search = store.state.search 
@@ -247,7 +253,8 @@ export default {
             filter.skillId = store.state.skillId 
             filter.exploreMissionType = store.state.exploreMissionType
             filter.exploreMissionParams = store.state.exploreMissionParams
-            filter.sortBy = store.state.sortBy       
+            filter.sortBy = store.state.sortBy 
+            filter.addLoader = parmas       
             
             await missionListing(filter).then( response => {
                 if (response.data) {
@@ -273,7 +280,7 @@ export default {
                 if(store.state.tags != null) {
                     this.tags = JSON.parse(store.state.tags);
                 }
-                if(store.state.sortBy != null) {
+                if(store.state.sortBy != null && store.state.sortBy != '') {
                     var sortBy = store.state.sortBy;
                     var sortByFilter = sortBy[0].toUpperCase() + sortBy.slice(1);
                     var _this = this;
@@ -281,6 +288,7 @@ export default {
                         _this.sortByDefault =  sortByFilter.split('_').join(' ');
                     },300);
                 }
+              
             }); 
         },
 
@@ -348,9 +356,9 @@ export default {
     },
     created() { 
         let filterSetting = JSON.parse(store.state.tenantSetting);
-        // if(filterSetting.sorting_missions != 1){
-        //     this.sortByFilterSet = false;
-        // }
+        if(filterSetting.sorting_missions != 1){
+            this.sortByFilterSet = false;
+        }
         if (this.$route.params.searchParamsType){
             let filteExplore = {};
             filteExplore.exploreMissionParams  = '';
@@ -369,6 +377,10 @@ export default {
         var _this = this;
         // Mission listing
         this.missionFilter();
+        searchUser().then(response => {
+            this.userList = response;
+         });
+               
         setTimeout(function(){ 
             _this.sortByDefault = _this.$i18n.t("label.sort_by");
         },200);

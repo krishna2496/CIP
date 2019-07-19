@@ -23,7 +23,8 @@
                                     'favourite-icon' : true,
                                     active : mission.favourite_mission_count == 1
                                 }"  
-                                v-b-tooltip.hover title="Add to favourite"
+                                v-b-tooltip.hover
+                                :title="mission.favourite_mission_count == 1 ?  $t('label.remove_from_favourite') :$t('label.add_to_favourite')"
                                 @click="favoriteMission(mission.mission_id)"
                             >
                                 <i class="normal-img">
@@ -50,6 +51,14 @@
                                     </svg>
                                 </i>       
                              </b-button>
+                            <b-button class="add-icon" 
+                                :title="$t('label.invite_colleague')"
+                                @click="handleModal(mission.mission_id)">
+                                <img 
+                                    :src="$store.state.imagePath+'/assets/images/add-group-ic.svg'"
+                                    :alt="$t('label.invite_colleague')"
+                                >
+                            </b-button>
                         </div>
                         <div  class="group-category" 
                             v-if="mission.mission_theme != null">{{getThemeTitle(mission.mission_theme.translations)}}
@@ -83,7 +92,7 @@
                                     </span>
                                 </div>
                                 <div class="bottom-block">
-                                    <b-link v-if="mission.set_view_detail == 0" :to="'/apply/' + mission.mission_id">
+                                    <b-link v-if="mission.set_view_detail == 0" @click="applyForMission(mission.mission_id)">
                                         <b-button class="btn-bordersecondary icon-btn">
                                             <span>{{ $t("label.apply") }}</span>
                                             <i>
@@ -183,6 +192,36 @@
                 </b-card>
             </div>   
         </div>
+        <b-modal centered :title="$t('label.search_user')" ref="userDetailModal" 
+            :modal-class="myclass" hide-footer>
+            <b-alert show :variant="classVariant" dismissible v-model="showErrorDiv"
+            >{{ message }}</b-alert>
+                    <div class="autocomplete-control">
+                        <div class="autosuggest-container">
+                <vue-autosuggest
+                    v-model="query"
+                    :suggestions="filteredOptions"
+                    @selected="onSelected"
+                    :get-suggestion-value="getSuggestionValue"
+                    :input-props="{id:'autosuggest__input', placeholder:autoSuggestPlaceholder}" >
+                    <div slot-scope="{suggestion}">
+                    <img :src="suggestion.item.avatar" />
+                    <div>
+                    {{suggestion.item.first_name}}  {{suggestion.item.last_name}}
+                    </div>
+                    </div>
+                </vue-autosuggest>
+                    </div>
+                </div>
+            <b-form>
+                 <div class="btn-wrap">
+                    <b-button @click="$refs.userDetailModal.hide()" class="btn-borderprimary">
+                    {{ $t("label.close") }}</b-button>
+                    <b-button class="btn-bordersecondary" @click="inviteColleagues">
+                    {{ $t("label.submit") }}</b-button>
+                </div>
+            </b-form>
+        </b-modal>
     </div>
     <div class="cards-wrapper" v-else>
         <h2 class="text-center">{{ $t("label.no_record_found")}} </h2>
@@ -193,19 +232,51 @@
 import store from '../store';
 import constants from '../constant';
 import StarRating from 'vue-star-rating';
-import {favoriteMission} from "../services/service";
+import {favoriteMission ,inviteColleague ,applyMission} from "../services/service";
+import { VueAutosuggest } from 'vue-autosuggest';
+import SimpleBar from 'simplebar';
 
 export default {
     name: "MissionListView",
     props: {
         items: Array,
+        userList :Array
     },
     components:{
-        StarRating
+        StarRating,
+        VueAutosuggest,
+        SimpleBar
     },
     data() {
         return {
+            query: "",
+            selected: "",
+            myclass:["userdetail-modal"],
+            currentMissionId : 0,
+            invitedUserId : 0,
+            showErrorDiv : false,
+            message : null,
+            classVariant :"success",
+            autoSuggestPlaceholder : '',
+            addToFavourite : '',
         };
+    },
+    computed: {
+        filteredOptions() {
+            if(this.userList){
+                return [
+                { 
+                  data: this.userList.filter(option => {
+                    var firstName = option.first_name.toLowerCase();
+                    var lastName = option.last_name.toLowerCase();
+                    var email = option.email.toLowerCase();
+                    var searchString = firstName+''+lastName+''+email;
+                    return searchString.indexOf(this.query.toLowerCase()) > -1;
+                  })
+                }
+                ];
+            }
+        }
     },
     methods: {
         // Get theme title
@@ -229,14 +300,6 @@ export default {
         checkMissionTypeTime(missionType) {
             return missionType == constants.MISSION_TYPE_TIME
         },
-        // Get sub string of short description
-        shortDescriptionSubString(shortDescription) {
-            if (shortDescription.length <= constants.MISSION_LIST_VIEW_SHORT_DESCRIPTION_CHARACTER) {
-                return shortDescription
-            } else {
-                return shortDescription.substring(0,constants.MISSION_LIST_VIEW_SHORT_DESCRIPTION_CHARACTER)+"...";
-            }
-        },
         // Get Youtube Thumb images
         youtubeThumbImage(videoPath) {
             let data = videoPath.split("=");
@@ -248,8 +311,81 @@ export default {
                 mission_id : ''
             };
             missionData.mission_id = missionId;
-            favoriteMission(missionData);
-        }
+            favoriteMission(missionData).then(response => {
+                this.$emit("getMissions","removeLoader"); 
+            });
+        },
+        // For selected user id.
+        onSelected(item) {
+            this.selected = item.item;
+            this.invitedUserId = item.item.user_id;
+        },
+        //This is what the <input/> value is set to when you are selecting a suggestion.
+        getSuggestionValue(suggestion) {
+           var firstName = suggestion.item.first_name;
+           var lastName = suggestion.item.last_name;
+           return firstName+' '+lastName;
+        },
+        // Open auto suggest modal
+        handleModal(missionId){
+            this.autoSuggestPlaceholder = this.$i18n.t("label.search_user")
+            this.showErrorDiv = false;
+            this.message = null;
+            this.$refs.userDetailModal.show();
+            this.currentMission = missionId;
+            setTimeout(() => {
+                var onFocus = document.getElementById('autosuggest');
+                    onFocus.addEventListener("click", function(){
+                        var myElement = document.querySelector('.autosuggest__results');
+                        new SimpleBar(myElement, { autoHide: true });   
+                    });
+            });
+        },
+        // invite collegues api call
+        inviteColleagues(){
+            let inviteData = {};
+            inviteData.mission_id=this.currentMission;
+            inviteData.to_user_id=this.invitedUserId;
+            inviteColleague(inviteData).then(response => {
+                if (response.error == true) {
+                    this.classVariant = "danger";
+                    this.message = response.message;
+                    this.showErrorDiv = true;
+                } else {
+                    this.classVariant = "success";
+                    this.message = response.message;
+                    this.showErrorDiv = true;
+                    this.query ="";
+                    this.selected = "";
+                    this.currentMissionId = 0;
+                    this.invitedUserId = 0;
+                }
+            })
+        },
+        // Apply for mission
+        applyForMission(missionId) {
+            let missionData = {};
+            missionData.mission_id = missionId;
+            missionData.availability_id = 1;
+            applyMission(missionData).then(response => {
+                if(response.error == true){
+                    this.makeToast("danger",response.message);
+                } else {
+                    this.makeToast("success",response.message);
+                    this.$emit("getMissions"); 
+                }
+            })
+        },
+        makeToast(variant = null,message) {
+            this.$bvToast.toast(message, {
+                variant: variant,
+                solid: true,
+                autoHideDelay: 5000
+            })
+        },
+    },
+    created() {
+
     }
 };
 </script>

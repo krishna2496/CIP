@@ -392,7 +392,7 @@ export default {
             userFilter.sortBy = store.state.sortBy;
             store.commit("userFilter",userFilter);
             this.$router.push({ name: 'home' })    
-            this.$parent.getMissions();    
+            this.$parent.getMissions("removeLoader");    
             setTimeout(() => {
             this.selectedfilterParams.countryId = store.state.countryId;
             this.selectedfilterParams.cityId = store.state.cityId;
@@ -435,9 +435,9 @@ export default {
     },
     created() {
         let filterSetting = JSON.parse(store.state.tenantSetting);
-        // if(filterSetting.quick_access_filters != 1){
-        //     this.quickAccessFilterSet = false;
-        // }
+        if(filterSetting.quick_access_filters != 1){
+            this.quickAccessFilterSet = false;
+        }
         var _this = this;
         eventBus.$on('clearAllFilters', (message) => {
             this.clearFilter();

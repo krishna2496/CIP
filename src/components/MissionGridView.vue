@@ -30,7 +30,10 @@
                                         v-bind:class="{ 'favourite-icon' : true,
                                             active : mission.favourite_mission_count == 1
                                         }"  
-                                        v-b-tooltip.hover title="Add to favourite" @click="favoriteMission(mission.mission_id)">
+                                        v-b-tooltip.hover 
+                                        :title="mission.favourite_mission_count == 1 ?  $t('label.remove_from_favourite') :$t('label.add_to_favourite')"
+                                     
+                                        @click="favoriteMission(mission.mission_id)">
                                     <i class="normal-img">
                                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 21" width="24" height="21">
                                         <g id="Main Content">
@@ -55,10 +58,12 @@
                                         </svg>
                                     </i>       
                                 </b-button>
-                                <b-button class="add-icon" title="add" @click="$refs.userDetailModal.show()">
-                                    <img src="../assets/images/add-group-ic.svg" alt="add">
+                                <b-button class="add-icon" :title="$t('label.invite_colleague')" @click="handleModal(mission.mission_id)">
+                                    <img 
+                                    :src="$store.state.imagePath+'/assets/images/add-group-ic.svg'"
+                                    :alt="$t('label.invite_colleague')"
+                                    >
                                 </b-button>
-                                
                                 </div>
                                 <div class="group-category" 
                                 v-if="mission.mission_theme != null">{{getThemeTitle(mission.mission_theme.translations)}}
@@ -175,7 +180,7 @@
                             </b-card-body>
 
                             <b-card-footer>
-                                <b-link v-if="mission.set_view_detail == 0" :to="'/apply/' + mission.mission_id">
+                                <b-link v-if="mission.set_view_detail == 0" @click="applyForMission(mission.mission_id)">
                                     <b-button class="btn-bordersecondary icon-btn">
                                         <span>{{ $t("label.apply") }}</span>
                                     <i>
@@ -215,23 +220,22 @@
                 </b-col>
             </b-row>
         </div>
-        <b-modal centered title="Search User" ref="userDetailModal" 
+        <b-modal centered :title="$t('label.search_user')" ref="userDetailModal" 
             :modal-class="myclass" hide-footer>
-                    <div class="demo">
+            <b-alert show :variant="classVariant" dismissible v-model="showErrorDiv"
+            >{{ message }}</b-alert>
+                    <div class="autocomplete-control">
                         <div class="autosuggest-container">
                 <vue-autosuggest
                     v-model="query"
                     :suggestions="filteredOptions"
-                    @focus="focusMe"
-                    @click="clickHandler"
-                    @input="onInputChange"
                     @selected="onSelected"
                     :get-suggestion-value="getSuggestionValue"
-                    :input-props="{id:'autosuggest__input', placeholder:'Do you feel lucky, punk?'}">
-                    <div slot-scope="{suggestion}" style="display: flex; align-items: center;">
-                    <img :style="{ display: 'flex', width: '25px', height: '25px', borderRadius: '15px', marginRight: '10px'}" :src="suggestion.item.avatar" />
-                    <div style="{ display: 'flex', color: 'navyblue'}">
-                    {{suggestion.item.name}}
+                    :input-props="{id:'autosuggest__input', placeholder:autoSuggestPlaceholder}" >
+                    <div slot-scope="{suggestion}">
+                    <img :src="suggestion.item.avatar" />
+                    <div>
+                    {{suggestion.item.first_name}}  {{suggestion.item.last_name}}
                     </div>
                     </div>
                 </vue-autosuggest>
@@ -239,8 +243,10 @@
                 </div>
             <b-form>
                  <div class="btn-wrap">
-                    <b-button @click="$refs.userDetailModal.hide()" class="btn-borderprimary">Close</b-button>
-                    <b-button class="btn-bordersecondary">Submit</b-button>
+                    <b-button @click="$refs.userDetailModal.hide()" class="btn-borderprimary">
+                    {{ $t("label.close") }}</b-button>
+                    <b-button class="btn-bordersecondary" @click="inviteColleagues">
+                    {{ $t("label.submit") }}</b-button>
                 </div>
             </b-form>
         </b-modal>
@@ -255,47 +261,51 @@
 import store from '../store';
 import constants from '../constant';
 import StarRating from 'vue-star-rating'
-import {favoriteMission} from "../services/service";
+import {favoriteMission,inviteColleague ,applyMission} from "../services/service";
 import { VueAutosuggest } from 'vue-autosuggest';
+import SimpleBar from 'simplebar';
 
 export default {
     name: "MissionGridView",
     components:{
-        StarRating,
-        VueAutosuggest
+		StarRating,
+        VueAutosuggest,
+        SimpleBar
     },
     props: {
         items: Array,
+        userList :Array
     },
     data() {
         return {
-            isActive : true,
             query: "",
             selected: "",
-            suggestions: [
-            {
-              data: [
-                { id: 1, name: "Frodo", race: "Hobbit", avatar: "https://upload.wikimedia.org/wikipedia/en/thumb/4/4e/Elijah_Wood_as_Frodo_Baggins.png/220px-Elijah_Wood_as_Frodo_Baggins.png" },
-                { id: 2, name: "Samwise", race: "Hobbit", avatar: "https://upload.wikimedia.org/wikipedia/en/thumb/7/7b/Sean_Astin_as_Samwise_Gamgee.png/200px-Sean_Astin_as_Samwise_Gamgee.png" },
-                { id: 3, name: "Gandalf", race: "Maia", avatar: "https://upload.wikimedia.org/wikipedia/en/thumb/e/e9/Gandalf600ppx.jpg/220px-Gandalf600ppx.jpg" },
-                { id: 4, name: "Aragorn", race: "Human", avatar: "https://upload.wikimedia.org/wikipedia/en/thumb/3/35/Aragorn300ppx.png/150px-Aragorn300ppx.png" }
-              ]
-            }
-          ],
             myclass:["userdetail-modal"],
+            currentMissionId : 0,
+            invitedUserId : 0,
+            showErrorDiv : false,
+            message : null,
+            classVariant :"success",
+            autoSuggestPlaceholder : '',
         };
     },
     computed: {
-    filteredOptions() {
-      return [
-        { 
-          data: this.suggestions[0].data.filter(option => {
-            return option.name.toLowerCase().indexOf(this.query.toLowerCase()) > -1;
-          })
+        filteredOptions() {
+            if(this.userList){
+                return [
+                { 
+                  data: this.userList.filter(option => {
+                    var firstName = option.first_name.toLowerCase();
+                    var lastName = option.last_name.toLowerCase();
+                    var email = option.email.toLowerCase();
+                    var searchString = firstName+''+lastName+''+email;
+                    return searchString.indexOf(this.query.toLowerCase()) > -1;
+                  })
+                }
+                ];
+            }
         }
-      ];
-    }
-  },
+    },
     methods: {
         handleFav() {
             var btn_active = document.querySelector(".favourite-icon") 
@@ -322,14 +332,6 @@ export default {
         checkMissionTypeTime(missionType) {
             return missionType == constants.MISSION_TYPE_TIME
         },
-        // Get sub string of short description
-        shortDescriptionSubString(shortDescription) {
-            if (shortDescription.length <= constants.MISSION_GRID_VIEW_SHORT_DESCRIPTION_CHARACTER) {
-                return shortDescription
-            } else {
-                return shortDescription.substring(0,constants.MISSION_GRID_VIEW_SHORT_DESCRIPTION_CHARACTER)+"...";
-            }
-        },
         // Get Youtube Thumb images
         youtubeThumbImage(videoPath) {
             let data = videoPath.split("=");
@@ -341,67 +343,86 @@ export default {
                 mission_id : ''
             };
             missionData.mission_id = missionId;
-            favoriteMission(missionData);
+            favoriteMission(missionData).then(response => {
+                if(response.error == true){
+                    this.makeToast("danger",response.message);
+                } else {
+                    this.makeToast("success",response.message);
+                    this.$emit("getMissions","removeLoader");
+                } 
+            });
+            
         },
-            clickHandler(item) {
-                // event fired when clicking on the input
-            },
-            onSelected(item) {
-              this.selected = item.item;
-            },
-            onInputChange(text) {
-              // event fired when the input changes
-            },
-            /**
-             * This is what the <input/> value is set to when you are selecting a suggestion.
-             */
-            getSuggestionValue(suggestion) {
-              return suggestion.item.name;
-            },
-            focusMe(e) {
-            }
+        // For selected user id.
+        onSelected(item) {
+            this.selected = item.item;
+            this.invitedUserId = item.item.user_id;
         },
-   updated(){   
-
+        //This is what the <input/> value is set to when you are selecting a suggestion.
+        getSuggestionValue(suggestion) {
+           var firstName = suggestion.item.first_name;
+           var lastName = suggestion.item.last_name;
+           return firstName+' '+lastName;
+        },
+        // Open auto suggest modal
+        handleModal(missionId){
+            this.autoSuggestPlaceholder = this.$i18n.t("label.search_user")
+            this.showErrorDiv = false;
+            this.message = null;
+            this.$refs.userDetailModal.show();
+            this.currentMission = missionId;
+            setTimeout(() => {
+                var onFocus = document.getElementById('autosuggest');
+                    onFocus.addEventListener("click", function(){
+                        var myElement = document.querySelector('.autosuggest__results');
+                        new SimpleBar(myElement, { autoHide: true });   
+                    });
+            });
+        },
+        // invite collegues api call
+        inviteColleagues(){
+            let inviteData = {};
+            inviteData.mission_id=this.currentMission;
+            inviteData.to_user_id=this.invitedUserId;
+            inviteColleague(inviteData).then(response => {
+                if (response.error == true) {
+                    this.classVariant = "danger";
+                    this.message = response.message;
+                    this.showErrorDiv = true;
+                } else {
+                    this.classVariant = "success";
+                    this.message = response.message;
+                    this.showErrorDiv = true;
+                    this.query ="";
+                    this.selected = "";
+                    this.currentMissionId = 0;
+                    this.invitedUserId = 0;
+                }
+            })
+        },
+        // Apply for mission
+        applyForMission(missionId) {
+            let missionData = {};
+            missionData.mission_id = missionId;
+            missionData.availability_id = 1;
+            applyMission(missionData).then(response => {
+                if(response.error == true){
+                    this.makeToast("danger",response.message);
+                } else {
+                    this.makeToast("success",response.message);
+                    this.$emit("getMissions"); 
+                }
+            })
+        },
+        makeToast(variant = null,message) {
+            this.$bvToast.toast(message, {
+                variant: variant,
+                solid: true,
+                autoHideDelay: 5000
+            })
+        },
+    },
+    created(){   
     },
 };
 </script>
-<style>
-.demo { 
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-}
-
-.demo input {
-  width: 260px;
-  padding: 0.5rem;
-}
-
-.demo ul {
-  width: 100%;
-  color: rgba(30, 39, 46,1.0);
-  list-style: none;
-  margin: 0;
-  padding: 0.5rem 0 .5rem 0;
-}
-.demo li {
-  margin: 0 0 0 0;
-  border-radius: 5px;
-  padding: 0.75rem 0 0.75rem 0.75rem;
-  display: flex;
-  align-items: center;
-}
-.demo li:hover {
-  cursor: pointer;
-}
-
-.autosuggest-container {
-  display: flex;
-  justify-content: center;
-  width: 280px;
-}
-
-#autosuggest { width: 100%; display: block;}
-.autosuggest__results-item--highlighted {
-  background-color: rgba(51, 217, 178,0.2);
-}
-</style>

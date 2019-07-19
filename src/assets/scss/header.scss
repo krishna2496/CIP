@@ -1,16 +1,33 @@
-header {
-    right: 0;
-    left: 0;
-    z-index: 999;
-    background: $white;
-    width: 100%;
-    position: fixed;
-    @include transition(all 0.4s);
-    top: 0;
+.filter-header{
+	header {
+		.small-header & {
+			top: -73px;
 
-    @include md-max {
-        .open-nav & {
-            left: 300px;
+			@include md-max {
+				top: 0;
+				box-shadow: 0 2px 4px -1px rgba(0,0,0,0.25);
+				-webkit-box-shadow: 0 2px 4px -1px rgba(0,0,0,0.25);
+				-ms-box-shadow: 0 2px 4px -1px rgba(0,0,0,0.25);
+				-moz-box-shadow: 0 2px 4px -1px rgba(0,0,0,0.25);
+			}
+		}
+	}
+}
+header {
+    &:not(.modal-header) {
+        right: 0;
+        left: 0;
+        z-index: 999;
+        background: $white;
+        width: 100%;
+        position: fixed;
+        @include transition(all 0.4s);
+        top: 0;
+
+        @include md-max {
+            .open-nav & {
+                left: 300px;
+            }
         }
     }
 }
@@ -20,7 +37,9 @@ header {
 .top-header {
     padding: 6px 0;
     border-bottom: 1px solid $border-color;
-
+	@include md-max{
+		border: none;
+	}
     .navbar {
         padding: 0;
 
@@ -121,7 +140,7 @@ header {
                 &:after {
                     position: absolute;
                     content: "";
-                    background: url("../images/down-arrow.svg") no-repeat;
+                    background: url("../images//down-arrow.svg") no-repeat;
                     border: none !important;
                     background-size: 11px;
                     width: 11px;
@@ -129,8 +148,8 @@ header {
                     right: -17px;
                     top: 50%;
                     @include transformY(-50%);
-					margin: 0;
-					@include transition(all 0.3s);
+                    margin: 0;
+                    @include transition(all 0.3s);
                 }
             }
 
@@ -272,10 +291,10 @@ header {
         &.show {
             .nav-link {
                 &:after {
-				   transform: translateY(-50%) rotate(180deg);
-				   -webkit-transform: translateY(-50%) rotate(180deg);
-				   -ms-transform: translateY(-50%) rotate(180deg);
-				   -moz-transform: translateY(-50%) rotate(180deg);
+                    transform: translateY(-50%) rotate(180deg);
+                    -webkit-transform: translateY(-50%) rotate(180deg);
+                    -ms-transform: translateY(-50%) rotate(180deg);
+                    -moz-transform: translateY(-50%) rotate(180deg);
                 }
             }
         }
@@ -1058,19 +1077,19 @@ header {
         .open-filter & {
             right: 0;
         }
-    }
-    ul{
-        li{
-            .counter{
-                display: inline-block;
-                background: $control-border;
-                color: $black-primary;
-                padding: 1px 6px;
-                border-radius: 100%;
-                line-height: 17px;
-                font-size: 12px;
-            }
-        }
+	}
+	 ul{		
+        li{		
+            .counter{		
+                display: inline-block;		
+                background: $control-border;		
+                color: $black-primary;		
+                padding: 1px 6px;		
+                border-radius: 100%;		
+                line-height: 17px;		
+                font-size: 12px;		
+            }		
+        }		
     }
 
     .list-group {
@@ -1179,9 +1198,9 @@ header {
             .option-list {
                 li {
                     padding: 8px 15px;
-                    line-height: 20px;
-                    display: flex;
-                    justify-content: space-between;
+					line-height: 20px;
+					display: flex;		
+                    justify-content: space-between;		
                     align-items: center;
                 }
             }

@@ -139,6 +139,27 @@ ul {
     }
 }
 
+/** Toast style**/
+.toast{
+    padding-right:36px;
+    header{
+        &.toast-header{
+            position:relative; 
+            background: transparent;
+            border: none;
+            position: absolute;  
+            height:auto;
+            padding:0;
+            .close{
+                position: absolute;
+                right: 15px;
+                top: 12px;
+                color:$gray-primary;
+                opacity:1;
+            }
+        }   
+    }
+}
 
 /** Toast style**/
 .toast{

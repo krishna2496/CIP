@@ -11,6 +11,7 @@ import axios from "axios";
 import VueAxios from "vue-axios";
 import Vuelidate from "vuelidate";
 import interceptorsSetup from "./interceptors";
+import toast from "./toast";
 import i18n from "./i18n";
 import AOS from "aos";
 import "aos/dist/aos.css";
@@ -25,6 +26,7 @@ Vue.config.productionTip = false;
 Vue.use(BootstrapVue);
 Vue.use(VueScrollTo);
 Vue.use(BackToTop);
+Vue.use(toast);
 AOS.init({
     once: true,
     easing: "ease-in-out",
@@ -74,6 +76,7 @@ new Vue({
     VueScrollTo,
     i18n,
     AOS,
+    toast,
     BackToTop,
     render: h => h(App)
 }).$mount("#app");
