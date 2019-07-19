@@ -28,7 +28,7 @@ export {
     filterList,
     tenantSetting,
     favoriteMission,
-    getUserLanguage
+    getUserLanguage,
     searchUser,
     inviteColleague,
     applyMission
