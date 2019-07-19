@@ -24,7 +24,8 @@
                         <b-form-input id="" type="password" v-model="resetPassword.password" :class="{ 'is-invalid': $v.resetPassword.password.$error }" value="Password" 
                         maxlength="120"
                         v-bind:placeholder='$t("placeholder.password")' 
-                        autofocus></b-form-input>
+                        autofocus
+                        @keydown.space.prevent></b-form-input>
                         <div v-if="submitted && !$v.resetPassword.password.required" class="invalid-feedback">
                             {{ $t("errors.password_required") }}
                         </div>
@@ -37,7 +38,8 @@
                         <b-form-input id="" type="password" v-model="resetPassword.confirmPassword" :class="{ 'is-invalid': $v.resetPassword.confirmPassword.$error }"
                         maxlength="120" 
                         v-bind:placeholder='$t("placeholder.password")' 
-                        @keypress.enter.prevent="handleSubmit" value="Password"></b-form-input>
+                        @keypress.enter.prevent="handleSubmit" value="Password"
+                        @keydown.space.prevent></b-form-input>
                         <div v-if="submitted && !$v.resetPassword.confirmPassword.required" class="invalid-feedback">
                             {{ $t("errors.password_required") }}
                         </div>

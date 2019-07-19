@@ -24,7 +24,8 @@
                     <b-form-input id type="email" v-model="forgotPassword.email" :class="{ 'is-invalid': $v.forgotPassword.email.$error }" @keypress.enter.prevent="handleSubmit" 
                     maxlength="120"
                     v-bind:placeholder='$t("placeholder.email_address")'
-                    ref='email' autofocus></b-form-input>
+                    ref='email' autofocus
+                    @keydown.space.prevent></b-form-input>
                     <div v-if="submitted && !$v.forgotPassword.email.required" class="invalid-feedback">
                         {{ $t("errors.email_required") }}</div>
                     <div v-if="submitted && !$v.forgotPassword.email.email" class="invalid-feedback">
