@@ -10,10 +10,10 @@ class LanguageController extends Controller
     /**
     * Fetch language file
     *
-    * @param $language
-    * @return mixed
+    * @param string $language
+    * @return Array
     */
-    public function fetchLangaugeFile($language)
+    public function fetchLangaugeFile(String $language) : array
     {
         $response = array();
         $frontEndFolder = config('constants.FRONTEND_LANGUAGE_FOLDER');

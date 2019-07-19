@@ -8,7 +8,6 @@ use App\Http\Controllers\Controller;
 use App\Repositories\User\UserRepository;
 use App\Helpers\ResponseHelper;
 use App\Traits\RestExceptionHandlerTrait;
-use Validator;
 use App\User;
 use InvalidArgumentException;
 use App\Transformations\UserTransformable;
