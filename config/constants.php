@@ -130,6 +130,7 @@ return [
 
     'ORGANIZATION' => "organization",
     'EXPLORE_MISSION_LIMIT' => "5",
+    'IMAGE' => "image",
 
     'error_codes' => [
         'ERROR_FOOTER_PAGE_REQUIRED_FIELDS_EMPTY' => '300000',
@@ -149,6 +150,7 @@ return [
         'ERROR_SLIDER_LIMIT' => '100014',
         'ERROR_NOT_VALID_EXTENSION' => '100015',
         'ERROR_FILE_NAME_NOT_MATCHED_WITH_STRUCTURE' => '100016',
+        'ERROR_INVALID_IMAGE_URL' => '100017',
         'ERROR_INVALID_API_AND_SECRET_KEY' => '210000',
         'ERROR_API_AND_SECRET_KEY_REQUIRED' => '210001',
         'ERROR_EMAIL_NOT_EXIST' => '210002',

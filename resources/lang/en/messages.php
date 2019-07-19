@@ -80,7 +80,8 @@ return [
         'ERROR_SLIDER_LIMIT' => 'Sorry, you cannot add more than '.config('constants.SLIDER_LIMIT').' slides!',
         'ERROR_NOT_VALID_EXTENSION' => 'File must have .scss type',
         'ERROR_FILE_NAME_NOT_MATCHED_WITH_STRUCTURE' => 'File name doesn`t match with structure',
-        
+        'ERROR_INVALID_IMAGE_URL' => 'The url must be a file of type: jpeg, png, jpg',
+                
         // Custom error code for CMS Module - 300000 - 309999
         'ERROR_INVALID_ARGUMENT' => 'Invalid argument',
         'ERROR_FOOTER_PAGE_NOT_FOUND' => 'Footer page not found in the system',

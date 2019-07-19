@@ -128,7 +128,15 @@ class TenantOptionsController extends Controller
                 $validator->errors()->first()
             );
         }
-
+        
+        if (!$this->helpers->checkUrlExtension($request->url, config('constants.IMAGE'))) {
+            return $this->responseHelper->error(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                config('constants.error_codes.ERROR_INVALID_IMAGE_URL'),
+                trans('messages.custom_error_message.ERROR_INVALID_IMAGE_URL')
+            );
+        }
         try {
             // Get total count of "slider"
             $sliderCount = $this->tenantOptionRepository->getAllSlider()->count();
@@ -395,7 +403,7 @@ class TenantOptionsController extends Controller
         $validator = Validator::make(
             $request->toArray(),
             [
-                "image_file" => "required|mimes:jpeg,jpg,svg,png",
+                "image_file" => "required|image|mimes:jpeg,jpg,svg,png",
                 "image_name" => "required"
             ]
         );
