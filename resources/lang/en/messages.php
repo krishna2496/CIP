@@ -60,7 +60,7 @@ return [
         'MESSAGE_MISSION_RATING_LISTING' => 'Get mission rating successfully',
         'MESSAGE_TENANT_OPTION_FOUND' => 'Tenant option found', 
         'MESSAGE_INVITED_FOR_MISSION' => 'User invited to mission successfully',
-        'MESSAGE_APPLICATION_CREATED' => 'Applied for a mission successfully',
+        'MESSAGE_APPLICATION_CREATED' => 'You have successfully applied for this mission',
     ],
 
         
