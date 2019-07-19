@@ -10,6 +10,7 @@ import missionFilterListing from "./Mission/MissionFilterListing";
 import exploreMission from "./Mission/ExploreMission";
 import tenantSetting from "./TenantSetting";
 import favoriteMission from "./Mission/FavoriteMission";
+import getUserLanguage from "./User/GetUserLanguage";
 import searchUser from "./SearchUser";
 import inviteColleague from "./InviteColleague";
 import applyMission from "./Mission/ApplyMission";
@@ -27,6 +28,7 @@ export {
     filterList,
     tenantSetting,
     favoriteMission,
+    getUserLanguage
     searchUser,
     inviteColleague,
     applyMission
