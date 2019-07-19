@@ -485,7 +485,8 @@ class MissionRepository implements MissionInterface
                 ->where('approval_status', config("constants.application_status")["AUTOMATICALLY_APPROVED"]);
             }])
             ->withCount(['missionApplication as mission_application_count' => function ($query) use ($request) {
-                $query->where('approval_status', config("constants.application_status")["AUTOMATICALLY_APPROVED"]);
+                $query->whereIn('approval_status', [config("constants.application_status")["AUTOMATICALLY_APPROVED"],
+				config("constants.application_status")["PENDING"]]);
             }])
             ->withCount(['favouriteMission as favourite_mission_count' => function ($query) use ($request) {
                 $query->Where('user_id', $request->auth->user_id);
