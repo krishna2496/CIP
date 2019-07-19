@@ -61,7 +61,7 @@
                             </b-button>
                         </div>
                         <div  class="group-category" 
-                            v-if="mission.mission_theme != null">{{getThemeTitle(mission.mission_theme.translations)}}
+                            v-if="mission.mission_theme != null"><span class="category-text">{{getThemeTitle(mission.mission_theme.translations)}}</span>
                         </div>
                     </b-card-header>
 
@@ -129,25 +129,27 @@
                                 </div>
                             </div>
                             <div class="group-details">
-                                <div class="top-strip">
-                                   <span>
-                                        <!-- Mission type time -->
-                                        <template v-if="checkMissionTypeTime(mission.mission_type)">
-                                            <template v-if="mission.end_date !== null">
-                                                {{ $t("label.from") }} 
-                                                {{mission.start_date | formatDate }} 
-                                                {{ $t("label.until")}}
-                                                {{ mission.end_date | formatDate }}   
+                                <div class="top-strip-wrap">
+                                    <div class="top-strip">
+                                    <span>
+                                            <!-- Mission type time -->
+                                            <template v-if="checkMissionTypeTime(mission.mission_type)">
+                                                <template v-if="mission.end_date !== null">
+                                                    {{ $t("label.from") }} 
+                                                    {{mission.start_date | formatDate }} 
+                                                    {{ $t("label.until")}}
+                                                    {{ mission.end_date | formatDate }}   
+                                                </template>
+                                                <template v-else>
+                                                    {{ $t("label.on_going_opportunities") }}  
+                                                </template>                                    
                                             </template>
+                                            <!-- Mission type goal -->
                                             <template v-else>
-                                                {{ $t("label.on_going_opportunities") }}  
-                                            </template>                                    
-                                        </template>
-                                        <!-- Mission type goal -->
-                                        <template v-else>
-                                            {{mission.objective}}
-                                        </template>
-                                    </span>  
+                                                {{mission.objective}}
+                                            </template>
+                                        </span>  
+                                    </div>
                                 </div>
                                 <div class="group-details-inner">
                                     <template v-if="mission.total_seats != 0 && mission.total_seats !== null">
