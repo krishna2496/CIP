@@ -20,7 +20,8 @@
                         <b-form-input id="" type="email" v-model="login.email" 
                         v-bind:placeholder='$t("placeholder.email_address")'
                         :class="{ 'is-invalid': $v.login.email.$error }" ref='email' autofocus 
-                        maxlength="120"></b-form-input>
+                        maxlength="120"
+                        @keydown.space.prevent></b-form-input>
                         <div v-if="submitted && !$v.login.email.required" class="invalid-feedback">
                         {{ $t("errors.email_required") }}</div>
                         <div v-if="submitted && !$v.login.email.email" class="invalid-feedback">
