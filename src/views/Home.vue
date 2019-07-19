@@ -37,7 +37,7 @@
                 </div>
                 <div class="heading-section">
                     <h2><template v-if="rows > 0">{{ $t("label.explore")}} <strong>{{rows}} {{ $t("label.missions")}}</strong></template></h2>
-                    <div class="right-section">
+                    <div class="right-section" v-if="sortByFilterSet">
                         <AppCustomDropdown
                         :optionList="sortByOptions"
                         :defaultText="sortByDefault"
