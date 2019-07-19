@@ -198,26 +198,32 @@
             >{{ message }}</b-alert>
                     <div class="autocomplete-control">
                         <div class="autosuggest-container">
-                <vue-autosuggest
-                    v-model="query"
-                    :suggestions="filteredOptions"
-                    @selected="onSelected"
-                    :get-suggestion-value="getSuggestionValue"
-                    :input-props="{id:'autosuggest__input', placeholder:autoSuggestPlaceholder}" >
-                    <div slot-scope="{suggestion}">
-                    <img :src="suggestion.item.avatar" />
-                    <div>
-                    {{suggestion.item.first_name}}  {{suggestion.item.last_name}}
-                    </div>
-                    </div>
-                </vue-autosuggest>
+                        <VueAutosuggest 
+                        ref="autosuggest"
+                        name="user"
+                        v-model="query"
+                        :suggestions="filteredOptions"
+                        @input="onInputChange"
+                        @selected="onSelected"
+                        :get-suggestion-value="getSuggestionValue"
+                        :input-props="{
+                        id:'autosuggest__input', 
+                        placeholder:autoSuggestPlaceholder,
+                        }" >
+                        <div slot-scope="{suggestion}">
+                        <img :src="suggestion.item.avatar" />
+                        <div>
+                        {{suggestion.item.first_name}}  {{suggestion.item.last_name}}
+                        </div>
+                        </div>
+                        </VueAutosuggest>
                     </div>
                 </div>
             <b-form>
                  <div class="btn-wrap">
                     <b-button @click="$refs.userDetailModal.hide()" class="btn-borderprimary">
                     {{ $t("label.close") }}</b-button>
-                    <b-button class="btn-bordersecondary" @click="inviteColleagues">
+                    <b-button class="btn-bordersecondary" @click="inviteColleagues" ref="autosuggestSubmit" v-bind:disabled="submitDisable">
                     {{ $t("label.submit") }}</b-button>
                 </div>
             </b-form>
@@ -258,7 +264,7 @@ export default {
             message : null,
             classVariant :"success",
             autoSuggestPlaceholder : '',
-            addToFavourite : '',
+            submitDisable :true
         };
     },
     computed: {
@@ -315,9 +321,13 @@ export default {
                 this.$emit("getMissions","removeLoader"); 
             });
         },
+        onInputChange(text) {   
+             this.submitDisable =true;
+        },
         // For selected user id.
         onSelected(item) {
             this.selected = item.item;
+            this.submitDisable = false; 
             this.invitedUserId = item.item.user_id;
         },
         //This is what the <input/> value is set to when you are selecting a suggestion.
@@ -344,21 +354,26 @@ export default {
         // invite collegues api call
         inviteColleagues(){
             let inviteData = {};
-            inviteData.mission_id=this.currentMission;
+            inviteData.mission_id = this.currentMission;
             inviteData.to_user_id=this.invitedUserId;
             inviteColleague(inviteData).then(response => {
+                this.submitDisable =true;
                 if (response.error == true) {
                     this.classVariant = "danger";
                     this.message = response.message;
+                    this.$refs.autosuggest.$data.currentIndex = null;
+                    this.$refs.autosuggest.$data.internalValue = '';
                     this.showErrorDiv = true;
                 } else {
-                    this.classVariant = "success";
-                    this.message = response.message;
-                    this.showErrorDiv = true;
                     this.query ="";
                     this.selected = "";
                     this.currentMissionId = 0;
                     this.invitedUserId = 0;
+                    this.$refs.autosuggest.$data.currentIndex = null;
+                    this.$refs.autosuggest.$data.internalValue = '';
+                    this.classVariant = "success";
+                    this.message = response.message;
+                    this.showErrorDiv = true;
                 }
             })
         },
@@ -380,7 +395,7 @@ export default {
             this.$bvToast.toast(message, {
                 variant: variant,
                 solid: true,
-                autoHideDelay: 5000
+                autoHideDelay: 3000
             })
         },
     },
@@ -389,42 +404,3 @@ export default {
     }
 };
 </script>
-<style>
-/*.demo { 
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-}
-
-.demo input {
-  width: 260px;
-  padding: 0.5rem;
-}
-
-.demo ul {
-  width: 100%;
-  color: rgba(30, 39, 46,1.0);
-  list-style: none;
-  margin: 0;
-  padding: 0.5rem 0 .5rem 0;
-}
-.demo li {
-  margin: 0 0 0 0;
-  border-radius: 5px;
-  padding: 0.75rem 0 0.75rem 0.75rem;
-  display: flex;
-  align-items: center;
-}
-.demo li:hover {
-  cursor: pointer;
-}
-
-.autosuggest-container {
-  display: flex;
-  justify-content: center;
-  width: 280px;
-}
-
-#autosuggest { width: 100%; display: block;}
-.autosuggest__results-item--highlighted {
-  background-color: rgba(51, 217, 178,0.2);
-}*/
-</style>
