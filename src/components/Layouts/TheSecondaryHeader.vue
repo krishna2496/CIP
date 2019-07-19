@@ -195,12 +195,11 @@ export default {
             filters.exploreMissionParams = '';
             store.commit("exploreFilter",filters);
             this.$router.push({ name: 'home' })
-            if(country.selectedId != ''){
             filterList(this.selectedfilterParams).then( response => {
                 if (response) {       
                     if(response.city) {             
-                        this.cityList = Object.entries(response.city);          
-                            this.selectedCity = [];
+                        this.cityList = Object.entries(response.city);
+                        this.selectedCity = [];
                     }
 
                     if(response.themes) {
@@ -215,7 +214,7 @@ export default {
                 }
                 this.$parent.searchMissions(this.search,this.selectedfilterParams);        
             });
-            }
+
         },
 
         changeCity(city) {
@@ -228,22 +227,20 @@ export default {
             filters.exploreMissionParams = '';
             store.commit("exploreFilter",filters);
             this.$router.push({ name: 'home' })
-            if(city != ''){
-                filterList(this.selectedfilterParams).then( response => {
-                    if (response) {
-                        if(response.themes) {                   
-                            this.themeList = Object.entries(response.themes);
-                            this.selectedTheme = [];
-                        }
-
-                        if(response.skill) {
-                            this.skillList = Object.entries(response.skill);
-                            this.selectedSkill = []; 
-                        } 
+            filterList(this.selectedfilterParams).then( response => {
+                if (response) {
+                    if(response.themes) {                   
+                        this.themeList = Object.entries(response.themes);
+                        this.selectedTheme = [];
                     }
-                    this.$parent.searchMissions(this.search,this.selectedfilterParams);
-                });  
-            }
+
+                    if(response.skill) {
+                        this.skillList = Object.entries(response.skill);
+                        this.selectedSkill = []; 
+                    } 
+                }
+                this.$parent.searchMissions(this.search,this.selectedfilterParams);
+            });  
         },
 
         changeTheme(theme) {
@@ -254,17 +251,15 @@ export default {
             filters.exploreMissionParams = '';
             store.commit("exploreFilter",filters);
             this.$router.push({ name: 'home' })
-            if(theme != ''){
-                filterList(this.selectedfilterParams).then( response => {
-                    if (response) {   
-                        if(response.skill) {                 
-                            this.skillList = Object.entries(response.skill);
-                            this.selectedSkill = [];
-                        }
-                    }  
-                    this.$parent.searchMissions(this.search,this.selectedfilterParams);              
-                });   
-            }
+            filterList(this.selectedfilterParams).then( response => {
+                if (response) {   
+                    if(response.skill) {                 
+                        this.skillList = Object.entries(response.skill);
+                        this.selectedSkill = [];
+                    }
+                }  
+                this.$parent.searchMissions(this.search,this.selectedfilterParams);              
+            });   
         },
 
         changeSkill(skill) {
@@ -274,9 +269,7 @@ export default {
             filters.exploreMissionParams = '';
             store.commit("exploreFilter",filters);
             this.$router.push({ name: 'home' }) 
-            if(skill != '') {
-                this.$parent.searchMissions(this.search,this.selectedfilterParams);  
-            }  
+            this.$parent.searchMissions(this.search,this.selectedfilterParams);    
         },
 
         // Filter listing
