@@ -147,6 +147,7 @@ class MissionController extends Controller
             $userFilterData = $userFilters->toArray()["filters"];
            
             $mission = $this->missionRepository->appMissions($request, $userFilterData, $languageId);
+
             foreach ($mission as $key => $value) {
                 if (isset($value->goalMission)) {
                     $value->goal_objective  = $value->goalMission->goal_objective;
@@ -169,7 +170,7 @@ class MissionController extends Controller
                     //Progress bar for goal
                 }
     
-                if ($value->total_seats != 0) { //With limited seats
+                if ($value->total_seats != 0 && $value->total_seats !== null) { //With limited seats
                     $value->seats_left = ($value->total_seats) - ($value->mission_application_count);
                 } else { //Unlimeted seats
                     $value->already_volunteered = $value->mission_application_count;
@@ -188,8 +189,8 @@ class MissionController extends Controller
     
                 // Check for apply in mission validity
                 $value->set_view_detail = 0;
-                $today = date(config("constants.DATE_FORMAT"));
-    
+                $today = $this->helpers->getUserTimeZoneDate(date(config("constants.DB_DATE_FORMAT")));
+                
                 if (($value->user_application_count > 0) ||
                     ($value->application_deadline !== null && $value->application_deadline < $today) ||
                     ($value->total_seats != 0 && $value->total_seats == $value->mission_application_count) ||

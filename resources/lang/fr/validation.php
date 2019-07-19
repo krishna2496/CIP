@@ -101,6 +101,26 @@ return [
     |
     */
 
-    'attributes' => [],
+    'attributes' => [
+        'page_details.slug' => 'slug',
+        'page_details.translations' => 'translations',
+        'page_details.translations.*.lang' => 'lang',
+        'page_details.translations.*.title' => 'title',
+        'page_details.translations.*.sections' => 'sections',
+        'translations.*.values' => 'values',
+        'media_images.*.media_name' => 'media name',
+        'media_images.*.media_type' => 'media type',
+        'media_images.*.media_path' => 'media path',
+        'media_videos.*.media_name' => 'media name',
+        'media_videos.*.media_type' => 'media type',
+        'media_videos.*.media_path' => 'media path',
+        'documents.*.document_name' => 'document name',
+        'documents.*.document_type' => 'document type',
+        'documents.*.document_path' => 'document path',
+        'skills.*.skill_id' => 'skill id',  
+        'location.city' => 'city', 
+        'location.country' => 'country',   
+        'password_confirmation' => 'confirm password',         
+        ],
 
 ];

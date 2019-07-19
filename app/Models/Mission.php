@@ -36,6 +36,13 @@ class Mission extends Model
      */
     protected $primaryKey = 'mission_id';
 
+    /*
+     * @var App\Helpers\Helpers
+     */
+
+    private $helpers;
+
+
     /**
      * The attributes that are mass assignable.
      *
@@ -58,9 +65,11 @@ class Mission extends Model
     'seats_left','user_application_count','mission_application_count','missionSkill','city_name','missionApplication',
     'country','favouriteMission','missionInvite','missionRating', 'goalMission', 'timeMission', 'application_deadline',
     'application_start_date', 'application_end_date', 'application_start_time', 'application_end_time',
-    'goal_objective', 'mission_count', 'mission_rating_count'];
+    'goal_objective', 'mission_count', 'mission_rating_count','already_volunteered','total_available_seat',
+    'available_seat','deadline','favourite_mission_count'];
 
     protected $appends = ['city_name'];
+
     /**
      * Get the document record associated with the mission.
      *
@@ -227,10 +236,23 @@ class Mission extends Model
     public function setStartDateAttribute($value)
     {
         $this->attributes['start_date'] = ($value != null) ?
-        Carbon::parse($value)->format(config('constants.DB_DATE_FORMAT')) : null;
+        Carbon::parse($value, config('constants.TIMEZONE'))->setTimezone(config('app.TIMEZONE')) : null;
     }
 
+    
     /**
+     * Get start date attribute from the model.
+     *
+     * @return string
+     */
+    public function getStartDateAttribute() :string
+    {
+        if (isset($this->attributes['start_date'])) {
+            return Carbon::parse($this->attributes['start_date'])->setTimezone(config('constants.TIMEZONE'));
+		}
+    }
+	
+	/**
      * Set end date attribute on the model.
      *
      * @param  mixed   $value
@@ -239,6 +261,33 @@ class Mission extends Model
     public function setEndDateAttribute($value)
     {
         $this->attributes['end_date'] = ($value != null) ?
-        Carbon::parse($value)->format(config('constants.DB_DATE_FORMAT')) : null;
+        Carbon::parse($value, config('constants.TIMEZONE'))->setTimezone(config('app.TIMEZONE')) : null;
+    }
+	
+    /**
+     * Get end date attribute from the model.
+     *
+     * @return string
+     */
+    public function getEndDateAttribute():string
+    {
+        if (isset($this->attributes['end_date'])) {
+            return Carbon::parse($this->attributes['end_date'])->setTimezone(config('constants.TIMEZONE'));
+        }
+    }
+	
+    /*
+    * Check seats are available or not.
+    *
+    * @param int $missionId
+    * @return App\Models\Mission
+    */
+    public function checkAvailableSeats(int $missionId): Mission
+    {
+        return $this->select('*')
+        ->where('mission.mission_id', $missionId)
+        ->withCount(['missionApplication as mission_application_count' => function ($query) use ($missionId) {
+            $query->where('approval_status', config("constants.application_status")["AUTOMATICALLY_APPROVED"]);
+        }])->first();
     }
 }

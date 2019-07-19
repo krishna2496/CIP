@@ -13,6 +13,7 @@ use App\Models\UserSkill;
 use Validator;
 use PDOException;
 use DB;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class UserRepository implements UserInterface
 {
@@ -125,6 +126,7 @@ class UserRepository implements UserInterface
      */
     public function linkSkill(array $request, int $id): bool
     {
+        $this->user->findOrFail($id);
         foreach ($request['skills'] as $value) {
             $this->userSkill->linkUserSkill($id, $value['skill_id']);
         }
@@ -140,6 +142,7 @@ class UserRepository implements UserInterface
      */
     public function unlinkSkill(array $request, int $id): bool
     {
+        $this->user->findOrFail($id);
         $userSkill = $this->userSkill;
         foreach ($request['skills'] as $value) {
             $userSkill = $this->userSkill->deleteUserSkill($id, $value['skill_id']);
@@ -192,5 +195,23 @@ class UserRepository implements UserInterface
             return $this->all();
         }
         return $this->user->searchUser($text, $userId)->get();
+    }
+
+    /**
+     * Get user detail by email id
+     *
+     * @param string $email
+     * @return App\User
+     */
+    public function getUserByEmail(string $email): User
+    {
+        $user = $this->user->getUserByEmail($email);
+        
+        if (is_null($user)) {
+            throw new ModelNotFoundException(
+                trans('messages.custom_error_message.ERROR_USER_NOT_FOUND')
+            );
+        }
+        return $user;
     }
 }

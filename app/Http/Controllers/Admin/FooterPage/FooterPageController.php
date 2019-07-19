@@ -6,9 +6,7 @@ use App\Repositories\FooterPage\FooterPageRepository;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Input;
 use App\Helpers\ResponseHelper;
-use Illuminate\Validation\Rule;
 use App\Traits\RestExceptionHandlerTrait;
 use Validator;
 use DB;
@@ -175,7 +173,8 @@ class FooterPageController extends Controller
                 $request->all(),
                 [
                 "page_details" => "required",
-                "page_details.translations.*.lang" => "required_with:page_details.translations",
+                "page_details.slug" => "sometimes|required",
+                "page_details.translations.*.lang" => "required_with:page_details.translations|max:2",
                 "page_details.translations.*.title" => "required_with:page_details.translations",
                 "page_details.translations.*.sections" => "required_with:page_details.translations",
                 ]

@@ -60,7 +60,13 @@
 		"news" : "News",
 		"policy" : "Policy",
 		"volunteering" : "Volunteering",
-		"sponsored" : "Sponsored"
+		"sponsored" : "Sponsored",
+		"submit" : "Submit",
+		"close" : "Close",
+		"search_user" : "Search User",
+		"invite_colleague" : "Invite Colleague",
+		"remove_from_favourite" : "Remove from favourite"
+
 
 	},
 

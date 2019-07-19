@@ -80,12 +80,14 @@ return [
         'ERROR_SLIDER_LIMIT' => 'FR: Sorry, you cannot add more than '.config('constants.SLIDER_LIMIT').' slides!',
         'ERROR_NOT_VALID_EXTENSION' => 'FR: File must have .scss type',
         'ERROR_FILE_NAME_NOT_MATCHED_WITH_STRUCTURE' => 'FR: File name doesn`t match with structure',
+        'ERROR_INVALID_IMAGE_URL' => 'FR: The url must be a file of type: jpeg, png, jpg',
         
         // Custom error code for CMS Module - 300000 - 309999
         'ERROR_INVALID_ARGUMENT' => 'FR: Invalid argument',
         'ERROR_FOOTER_PAGE_NOT_FOUND' => 'FR: Footer page not found in the system',
         'ERROR_DATABASE_OPERATIONAL' => 'FR: Database operational error',
         'ERROR_NO_DATA_FOUND' => 'FR: No data found',
+        'ERROR_NO_DATA_FOUND_FOR_SLUG' => 'FR: No data found for slug',
 
         // Custom error code for Mission Module - 400000 - 409999
         'ERROR_INVALID_MISSION_APPLICATION_DATA' => 'FR: Invalid application data or missing parameter',
@@ -101,6 +103,7 @@ return [
         'ERROR_MISSION_APPLICATION_SEATS_NOT_AVAILABLE' => 'FR: No seats available for this mission',
         'ERROR_MISSION_APPLICATION_DEADLINE_PASSED' => 'FR: Application deadline is passed. You cannot apply for this mission',
         'ERROR_MISSION_APPLICATION_ALREADY_ADDED' => 'FR: You have already applied for this mission',
+        'ERROR_MISSION_APPLICATION_NOT_FOUND' => 'FR: Requested mission application does not exist',
 
         'ERROR_INVALID_INVITE_MISSION_DATA' => 'FR: Invalid invite mission detail',
         'ERROR_INVITE_MISSION_ALREADY_EXIST' => 'FR: User is already invited for this mission',

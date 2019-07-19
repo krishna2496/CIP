@@ -77,14 +77,7 @@ class FooterPageController extends Controller
         try {
             // Get data for parent table
             $footerPage = $this->footerPageRepository->getPageDetail($slug);
-            // Check data found or not
-            if ($footerPage->count() == 0) {
-                return $this->modelNotFound(
-                    config('constants.error_codes.ERROR_NO_DATA_FOUND'),
-                    trans('messages.custom_error_message.ERROR_NO_DATA_FOUND')
-                );
-            }
-
+          
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_FOOTER_PAGE_LISTING');
             return $this->responseHelper->success($apiStatus, $apiMessage, $footerPage->toArray());
@@ -97,8 +90,8 @@ class FooterPageController extends Controller
             );
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
-                config('constants.error_codes.ERROR_NO_DATA_FOUND'),
-                trans('messages.custom_error_message.ERROR_NO_DATA_FOUND')
+                config('constants.error_codes.ERROR_NO_DATA_FOUND_FOR_SLUG'),
+                trans('messages.custom_error_message.ERROR_NO_DATA_FOUND_FOR_SLUG')
             );
         } catch (\Exception $e) {
             return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));

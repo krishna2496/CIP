@@ -19,7 +19,6 @@ use App\Exceptions\BucketNotFoundException;
 use App\Exceptions\FileNotFoundException;
 use App\Exceptions\FileUploadException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use App\Jobs\AppMailerJob;
 
 class TenantOptionsController extends Controller
 {
@@ -118,7 +117,7 @@ class TenantOptionsController extends Controller
     public function storeSlider(Request $request): JsonResponse
     {
         // Server side validataions
-        $validator = Validator::make($request->toArray(), ["url" => "required"]);
+        $validator = Validator::make($request->toArray(), ["url" => "required|url"]);
 
         // If post parameter have any missing parameter
         if ($validator->fails()) {
@@ -151,7 +150,12 @@ class TenantOptionsController extends Controller
                 } catch (\Exception $e) {
                     return $this->badRequest($e->getMessage());
                 }
-                if ($request->url = $this->s3helper->uploadFileOnS3Bucket($request->url, $tenantName)) {
+
+                $imageUrl = "";
+                if ($imageUrl = $this->s3helper->uploadFileOnS3Bucket($request->url, $tenantName)) {
+
+                    $request->merge(['url' => $imageUrl]);
+                    
                     // Set data for create new record
                     $insertData = array();
                     $insertData['option_name'] = config('constants.TENANT_OPTION_SLIDER');
@@ -305,7 +309,7 @@ class TenantOptionsController extends Controller
                 /* Check user uploading custom style variable file,
                 then we need to make it as high priority instead of passed colors. */
                 
-                if ($fileName === env('CUSTOM_STYLE_VARIABLE_FILE_NAME')) {
+                if ($fileName === config('constants.AWS_CUSTOM_STYLE_VARIABLE_FILE_NAME')) {
                     $isVariableScss = 1;
                 }
 
@@ -546,31 +550,6 @@ class TenantOptionsController extends Controller
                 config('constants.error_codes.ERROR_TENANT_OPTION_NOT_FOUND'),
                 trans('messages.custom_error_message.ERROR_TENANT_OPTION_NOT_FOUND')
             );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
-        }
-    }
-
-    /**
-     * Update tenant option value
-     *
-     * @param Illuminate\Http\Request $request
-     */
-    public function sendEmail(Request $request)
-    {
-        try {
-            $tenantName = $this->helpers->getSubDomainFromRequest($request);
-        } catch (\Exception $e) {
-            return $this->badRequest($e->getMessage());
-        }
-                    
-        try {
-            $params['tenant_name'] = $tenantName;
-            $params['to'] = 'siddharajsinh.zala@tatvasoft.com'; //required
-            $params['template'] = 'emails.notification.welcome'; //path to the email template
-            $params['subject'] = 'Some Awesome Subject'; //optional
-
-            dispatch(new AppMailerJob($params));
         } catch (\Exception $e) {
             return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }

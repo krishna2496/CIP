@@ -85,7 +85,8 @@ return [
         'ERROR_INVALID_ARGUMENT' => 'Invalid argument',
         'ERROR_FOOTER_PAGE_NOT_FOUND' => 'Footer page not found in the system',
         'ERROR_DATABASE_OPERATIONAL' => 'Database operational error',
-        'ERROR_NO_DATA_FOUND' => 'No data found',
+        'ERROR_NO_DATA_FOUND' => 'No data found',        
+        'ERROR_NO_DATA_FOUND_FOR_SLUG' => 'No data found for slug',
 
         // Custom error code for Mission Module - 400000 - 409999
         'ERROR_INVALID_MISSION_APPLICATION_DATA' => 'Invalid application data or missing parameter',
@@ -104,6 +105,7 @@ return [
         'ERROR_INVITE_MISSION_ALREADY_EXIST' => 'User is already invited for this mission',
         'ERROR_MISSION_APPLICATION_DEADLINE_PASSED' => 'Application deadline is passed. You cannot apply for this mission',
         'ERROR_MISSION_APPLICATION_ALREADY_ADDED' => 'You have already applied for this mission',
+        'ERROR_MISSION_APPLICATION_NOT_FOUND' => 'Requested mission application does not exist',
 
         // Custom error code for Tenant Authorization - 210000 - 219999
         'ERROR_INVALID_API_AND_SECRET_KEY' => 'Invalid API Key or Secret key',
@@ -142,6 +144,7 @@ return [
         'ERROR_WHILE_UPLOADING_IMAGE_ON_S3' => 'An error while uploading image on S3',
         'ERROR_DOWNLOADING_IMAGE_TO_LOCAL' => 'An error while downloading image from S3 to server',
         'ERROR_IMAGE_UPLOAD_INVALID_DATA' => 'Invalid input file',
-        'ERROR_TENANT_OPTION_NOT_FOUND' => 'No tenant option found'
+        'ERROR_TENANT_OPTION_NOT_FOUND' => 'No tenant option found',
+        'ERROR_LANGUAGE_NOT_FOUND' => 'Language not found'
     ],
 ];

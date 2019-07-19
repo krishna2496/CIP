@@ -41,15 +41,15 @@ class MissionInvite extends Model
     {
         return $this->belongsTo(Mission::class, 'mission_id', 'mission_id');
     }
-	
-	/**
+    
+    /**
      * Get mission invite record for a user
      *
      * @return MissionInvite
      */
     public function getMissionInvite(int $missionId, int $inviteUserId, int $fromUserId): Collection
     {
-        return static::where(['mission_id' => $missionId, 'to_user_id' => $inviteUserId, 'from_user_id' => $fromUserId])->get();
+        return static::where(['mission_id' => $missionId,
+        'to_user_id' => $inviteUserId, 'from_user_id' => $fromUserId])->get();
     }
-
 }

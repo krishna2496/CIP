@@ -22,7 +22,7 @@ use Carbon\Carbon;
 
 class MissionRepository implements MissionInterface
 {
-    /**
+	/**
      * @var App\Models\Mission
      */
     public $mission;
@@ -162,7 +162,14 @@ class MissionRepository implements MissionInterface
             $this->missionLanguage->create($missionLanguage);
             unset($missionLanguage);
         }
-
+        
+        // For skills
+        if (isset($request->skills) && count($request->skills) > 0) {
+            foreach ($request->skills as $value) {
+                $this->missionSkill->linkMissionSkill($mission->mission_id, $value['skill_id']);
+            }
+        }
+        
         $tenantName = $this->helpers->getSubDomainFromRequest($request);
         $isDefault = 0;
 
@@ -297,6 +304,13 @@ class MissionRepository implements MissionInterface
                 'language_id' => $language->language_id], $missionLanguage);
                     
                 unset($missionLanguage);
+            }
+        }
+        
+        // For skills
+        if (isset($request->skills) && count($request->skills) > 0) {
+            foreach ($request->skills as $value) {
+                $this->missionSkill->linkMissionSkill($mission->mission_id, $value['skill_id']);
             }
         }
 
@@ -454,9 +468,10 @@ class MissionRepository implements MissionInterface
     {
         $missionData = [];
         // Get  mission data
-        $missionQuery = $this->mission->select('*');
+        $missionQuery = $this->mission->select('mission.*');
+		$missionQuery->leftjoin('time_mission', 'mission.mission_id', '=', 'time_mission.mission_id');
         $missionQuery->where('publication_status', config("constants.publication_status")["APPROVED"])
-            ->with(['missionTheme', 'missionMedia', 'goalMission', 'timeMission'
+            ->with(['missionTheme', 'missionMedia', 'goalMission'
             ])->with(['missionMedia' => function ($query) {
                 $query->where('status', '1');
                 $query->where('default', '1');
@@ -470,9 +485,13 @@ class MissionRepository implements MissionInterface
                 ->where('approval_status', config("constants.application_status")["AUTOMATICALLY_APPROVED"]);
             }])
             ->withCount(['missionApplication as mission_application_count' => function ($query) use ($request) {
-                $query->where('approval_status', config("constants.application_status")["AUTOMATICALLY_APPROVED"]);
+                $query->whereIn('approval_status', [config("constants.application_status")["AUTOMATICALLY_APPROVED"],
+				config("constants.application_status")["PENDING"]]);
             }])
-            ->withCount([
+            ->withCount(['favouriteMission as favourite_mission_count' => function ($query) use ($request) {
+                $query->Where('user_id', $request->auth->user_id);
+            }]);
+        $missionQuery->withCount([
                 'missionRating as mission_rating_count' => function ($query) {
                     $query->select(DB::raw("AVG(rating) as rating"));
                 }
@@ -562,6 +581,30 @@ class MissionRepository implements MissionInterface
             });
         }
 
+        if ($userFilterData['sort_by'] && $userFilterData['sort_by'] != '') {
+            if ($userFilterData['sort_by'] == config('constants.NEWEST')) {
+                $missionQuery->orderBY('mission.created_at', 'desc');
+            }
+            if ($userFilterData['sort_by'] == config('constants.OLDEST')) {
+                $missionQuery->orderBY('mission.created_at', 'asc');
+            }
+            if ($userFilterData['sort_by'] == config('constants.LOWEST_AVAILABLE_SEATS')) {
+				$missionQuery->orderByRaw('total_seats - mission_application_count asc');
+            }
+            if ($userFilterData['sort_by'] == config('constants.HIGHEST_AVAILABLE_SEATS')) {
+				$missionQuery->orderByRaw('total_seats - mission_application_count desc');
+            }
+            if ($userFilterData['sort_by'] == config('constants.MY_FAVOURITE')) {
+                $missionQuery->withCount(['favouriteMission as favourite_mission_count'
+                    => function ($query) use ($request) {
+                        $query->Where('user_id', $request->auth->user_id);
+                    }]);
+                $missionQuery->orderBY('favourite_mission_count', 'desc');
+            }
+            if ($userFilterData['sort_by'] == config('constants.DEADLINE')) {
+				$missionQuery->orderBy(\DB::raw('time_mission.application_deadline IS NULL, time_mission.application_deadline'), 'asc');
+			}
+        }
         $mission =  $missionQuery->paginate($request->perPage);
         return $mission;
     }
@@ -693,7 +736,7 @@ class MissionRepository implements MissionInterface
     {
         $mission = $this->mission->findOrFail($missionId);
         $favouriteMission = $this->favouriteMission->findFavourite($userId, $missionId);
-        
+
         if (is_null($favouriteMission)) {
             $favouriteMissions = $this->favouriteMission->addToFavourite($userId, $missionId);
         } else {

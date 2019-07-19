@@ -5,7 +5,6 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Validation\Rule;
 use App\Repositories\Mission\MissionRepository;
@@ -16,7 +15,6 @@ use App\Models\MissionMedia;
 use App\Models\MissionTheme;
 use App\Helpers\Helpers;
 use App\Helpers\ResponseHelper;
-use App\Helpers\LanguageHelper;
 use Validator;
 use DB;
 use App\Traits\RestExceptionHandlerTrait;
@@ -86,7 +84,6 @@ class MissionController extends Controller
      */
     public function store(Request $request): JsonResponse
     {
-       
         // Server side validataions
         $validator = Validator::make(
             $request->all(),
@@ -102,12 +99,13 @@ class MissionController extends Controller
                 "organisation" => "required",
                 "publication_status" => ['required', Rule::in(config('constants.publication_status'))],
                 "media_images.*.media_name" => "required",
-                "media_images.*.media_type" => Rule::in(config('constants.image_types')),
+                "media_images.*.media_type" => ["required", Rule::in(config('constants.image_types'))],
                 "media_images.*.media_path" => "required",
                 "media_videos.*.media_name" => "required",
+                "media_videos.*.media_type" => "required",
                 "media_videos.*.media_path" => "required",
                 "documents.*.document_name" => "required",
-                "documents.*.document_type" => Rule::in(config('constants.document_types')),
+                "documents.*.document_type" => ["required", Rule::in(config('constants.document_types'))],
                 "documents.*.document_path" => "required",
                 "start_date" => "sometimes|required_with:end_date",
                 "end_date" => "sometimes|after:start_date",
@@ -137,9 +135,7 @@ class MissionController extends Controller
         } catch (PDOException $e) {
             return $this->PDO(
                 config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
-                trans(
-                    'messages.custom_error_message.ERROR_DATABASE_OPERATIONAL'
-                )
+                trans('messages.custom_error_message.ERROR_DATABASE_OPERATIONAL')
             );
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
@@ -190,7 +186,7 @@ class MissionController extends Controller
      * @param int $id
      * @return Illuminate\Http\JsonResponse
      */
-    public function update(Request $request, $id): JsonResponse
+    public function update(Request $request, int $id): JsonResponse
     {
         // Server side validataions
         $validator = Validator::make(
@@ -258,7 +254,7 @@ class MissionController extends Controller
      * @param int $id
      * @return Illuminate\Http\JsonResponse
      */
-    public function destroy($id): JsonResponse
+    public function destroy(int $id): JsonResponse
     {
         try {
             $mission = $this->missionRepository->delete($id);

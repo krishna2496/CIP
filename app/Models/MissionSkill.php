@@ -59,4 +59,18 @@ class MissionSkill extends Model
     {
         return $this->hasOne(Mission::class, 'mission_id', 'mission_id');
     }
+	
+	/**
+     * Store/update specified resource.
+     *
+     * @param  int  $missionId
+     * @param  int  $skillId
+     * @return array
+     */
+    public function linkMissionSkill(int $missionId, int $skillId)
+    {
+		if (Skill::find($skillId)) {
+			return static::firstOrNew(array('mission_id' => $missionId, 'skill_id' => $skillId, 'deleted_at' => null))->save();
+		}		
+	}
 }

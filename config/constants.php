@@ -13,6 +13,16 @@ return [
     'DB_DATE_FORMAT' => 'Y-m-d H:i:s',
     'PER_PAGE_LIMIT' => '9',
     'FRONT_DATE_FORMAT' => 'd/m/Y',
+
+    'EMAIL_TEMPLATE_FOLDER' => 'emails',
+    'EMAIL_TEMPLATE_USER_INVITE' => 'invite',
+
+    'AWS_S3_ASSETS_FOLDER_NAME' => 'assets',
+    'AWS_S3_IMAGES_FOLDER_NAME' => 'images',
+    'AWS_S3_LOGO_IMAGE_NAME' => 'logo.png',
+    'AWS_S3_CUSTOME_CSS_NAME' => 'style.css',
+    'AWS_CUSTOM_STYLE_VARIABLE_FILE_NAME' => '_variables.scss',
+    'TIMEZONE' => '',
     
     /*
      * User custom field types
@@ -110,8 +120,17 @@ return [
     'SKILL' => "skill",
     'RANDOM' => 'random_missions',
 
+    /* sort by */
+    "NEWEST" => "newest",
+    "OLDEST" => "oldest",
+    "LOWEST_AVAILABLE_SEATS" => "lowest_available_seats",
+    "HIGHEST_AVAILABLE_SEATS" => "highest_available_seats",
+    "MY_FAVOURITE" => "my_favourite",
+    "DEADLINE" => "deadline",
+
     'ORGANIZATION' => "organization",
     'EXPLORE_MISSION_LIMIT' => "5",
+    'IMAGE' => "image",
 
     'error_codes' => [
         'ERROR_FOOTER_PAGE_REQUIRED_FIELDS_EMPTY' => '300000',
@@ -119,6 +138,7 @@ return [
         'ERROR_FOOTER_PAGE_NOT_FOUND' => '300003',
         'ERROR_DATABASE_OPERATIONAL' => '300004',
         'ERROR_NO_DATA_FOUND' => '300005',
+        'ERROR_NO_DATA_FOUND_FOR_SLUG' => '300006',
         'ERROR_USER_NOT_FOUND' => '100000',
         'ERROR_SKILL_INVALID_DATA' => '100002',
         'ERROR_USER_CUSTOM_FIELD_INVALID_DATA' => '100003',
@@ -130,6 +150,7 @@ return [
         'ERROR_SLIDER_LIMIT' => '100014',
         'ERROR_NOT_VALID_EXTENSION' => '100015',
         'ERROR_FILE_NAME_NOT_MATCHED_WITH_STRUCTURE' => '100016',
+        'ERROR_INVALID_IMAGE_URL' => '100017',
         'ERROR_INVALID_API_AND_SECRET_KEY' => '210000',
         'ERROR_API_AND_SECRET_KEY_REQUIRED' => '210001',
         'ERROR_EMAIL_NOT_EXIST' => '210002',
@@ -161,6 +182,7 @@ return [
         'ERROR_INVITE_MISSION_ALREADY_EXIST' => '400020',
         'ERROR_MISSION_APPLICATION_DEADLINE_PASSED' => '400022',
         'ERROR_MISSION_APPLICATION_ALREADY_ADDED' => '400023',
+        'ERROR_MISSION_APPLICATION_NOT_FOUND' => '400024',
         
         'ERROR_OCCURRED' => '999999',
         'ERROR_INVALID_JSON' => '900000',

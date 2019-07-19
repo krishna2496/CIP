@@ -8,6 +8,7 @@ use DB;
 use App\Traits\RestExceptionHandlerTrait;
 use PDOException;
 use Throwable;
+use Carbon\Carbon;
 
 class Helpers
 {
@@ -227,5 +228,42 @@ class Helpers
         } catch (\Exception $e) {
             return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
+    }
+
+    /**
+     * Get date according to user timezone
+     *
+     * @param string $date
+     * @return string
+     */
+    public function getUserTimeZoneDate(string $date) : string
+    {
+        if (config('constants.TIMEZONE') != '' && $date !== null) {
+            if (!($date instanceof Carbon)) {
+                if (is_numeric($date)) {
+                    // Assume Timestamp
+                    $date = Carbon::createFromTimestamp($date);
+                } else {
+                    $date = Carbon::parse($date);
+                }
+            }
+            return $date->setTimezone(config('constants.TIMEZONE'))->format(config('constants.DB_DATE_FORMAT'));
+        }
+        return $date;
+    }
+
+    /**
+     * Check url extension
+     *
+     * @param string $url
+     * @param string $type
+     * @return bool
+     */
+    public function checkUrlExtension(string $url, string $type) : bool
+    {
+        $urlExtension = pathinfo($url, PATHINFO_EXTENSION);
+        $constants = ($type == config('constants.IMAGE')) ? config('constants.image_types')
+        : config('constants.document_types');
+        return (!in_array($urlExtension, $constants)) ? false : true;
     }
 }
