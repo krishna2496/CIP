@@ -48,6 +48,15 @@ export default {
         }
       }, 600);
     },
+      signinAdj() {
+      setTimeout(() => {
+        if (document.querySelector(".signin-form-wrapper") != null) {
+          var contentH = document.body.clientHeight;
+          document.querySelector(".signin-form-wrapper").style.height =
+            contentH + "px";
+        }
+      });
+    },
     handleScroll() {
       var body = document.querySelector("body");
       var bheader = document.querySelector("header");
@@ -120,6 +129,7 @@ export default {
   },
   beforeMount() {
     this.footerAdj();
+    this.signinAdj();
   },
   created() {
     var ua = navigator.userAgent.toLowerCase();
@@ -132,10 +142,12 @@ export default {
     }
     window.addEventListener("resize", this.footerAdj);
     window.addEventListener("scroll", this.handleScroll);
-
+    window.scrollTo(0, 0);
      
   },
   updated() {
+    window.scrollTo(0, 0);
+    this.signinAdj();
     this.footerAdj();
     setTimeout(() =>  {
       var selectorList = document.querySelectorAll(".nav-link");

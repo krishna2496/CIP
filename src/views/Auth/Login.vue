@@ -32,11 +32,10 @@
                         v-bind:placeholder='$t("placeholder.password")' 
                         :class="{ 'is-invalid': $v.login.password.$error }" 
                         maxlength="120"
-                        @keypress.enter.prevent="handleSubmit"></b-form-input>
+                        @keypress.enter.prevent="handleSubmit"
+                        @keydown.space.prevent></b-form-input>
                         <div v-if="submitted && !$v.login.password.required" class="invalid-feedback">
                         {{ $t("errors.password_required") }}</div>
-                        <div v-if="submitted && !$v.login.password.minLength" class="invalid-feedback">
-                        {{ $t("errors.invalid_password") }}</div>
                     </b-form-group>
                     <b-button type="button" @click="handleSubmit" class=" btn-bordersecondary">
                     {{ $t("label.login") }}</b-button>
@@ -55,7 +54,7 @@
 import TheSlider from '../../components/TheSlider';
 import ThePrimaryFooter from "../../components/Layouts/ThePrimaryFooter";
 import AppCustomDropdown from '../../components/AppCustomDropdown';
-import { required, email, minLength, between } from 'vuelidate/lib/validators';
+import { required, email, between } from 'vuelidate/lib/validators';
 import store from '../../store';
 import {loadLocaleMessages,login,databaseConnection,tenantSetting} from '../../services/service';
 import constants from '../../constant';
@@ -86,7 +85,7 @@ export default {
     validations: {
         login: {
             email: {required, email},
-            password: {required, minLength: minLength(constants.PASSWORD_MIN_LENGTH)}
+            password: {required}
         }
     },
     methods: {
