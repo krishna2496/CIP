@@ -30,8 +30,8 @@ export default {
 			isDynamicCarsousetSet : false
 		};
 	},
-	created(){				
-		if (store.state.slider != null && JSON.parse(store.state.slider).length > 0) { 
+	created(){		
+		if (store.state.slider != null && JSON.parse(store.state.slider).length > 0) { 			
 		   this.carouselItems = JSON.parse(store.state.slider);
 		   this.isDynamicCarsousetSet =true
 		}

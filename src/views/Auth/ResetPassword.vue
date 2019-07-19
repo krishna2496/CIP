@@ -1,6 +1,6 @@
 <template>
     <div class="signin-page-wrapper">
-        <TheSlider/>
+        <TheSlider v-if="isShowSlider"/>
             <div class="signin-form-wrapper">
                 <div class="lang-drodown-wrap">
                     <AppCustomDropdown :optionList="langList" :defaultText="defautLang" 
@@ -82,6 +82,7 @@ export default {
 
 data() {    
 return {
+    isShowSlider: false,
     myValue: '',
     defautLang: "",
     langList:[],
@@ -126,7 +127,8 @@ methods:{
                     // Get tenant setting
                     tenantSetting();                                                                                
 
-                    this.fetchUserLanguage(this.$route.query.email);
+                    this.fetchUserLanguage(this.$route.query.email);                    
+                    this.isShowSlider = true;
             })       
     },
     async fetchUserLanguage(email) {
