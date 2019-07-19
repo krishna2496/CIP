@@ -31,10 +31,8 @@ export default {
 		};
 	},
 	created(){		
-		if (JSON.parse(store.state.slider).length > 0) { 
-		   this.carouselItems = JSON.parse(store.state.slider);
-		   this.isDynamicCarsousetSet =true
-		}
+		this.carouselItems = JSON.parse(store.state.slider);
+		this.isDynamicCarsousetSet =true
 	},
 	methods:{
 		getTitle: (sliderDetail) => {
