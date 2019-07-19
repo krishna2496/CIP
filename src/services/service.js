@@ -10,6 +10,8 @@ import missionFilterListing from "./Mission/MissionFilterListing";
 import exploreMission from "./Mission/ExploreMission";
 import tenantSetting from "./TenantSetting";
 import favoriteMission from "./Mission/FavoriteMission";
+import getUserLanguage from "./User/GetUserLanguage";
+
 export {
     loadLocaleMessages,
     missionListing,
@@ -22,5 +24,6 @@ export {
     exploreMission,
     filterList,
     tenantSetting,
-    favoriteMission
+    favoriteMission,
+    getUserLanguage
 }

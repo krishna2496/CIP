@@ -67,7 +67,7 @@ import ThePrimaryFooter from "../../components/Layouts/ThePrimaryFooter";
 import AppCustomDropdown from '../../components/AppCustomDropdown';
 import store from '../../store';
 import { required, email,sameAs, minLength, between } from 'vuelidate/lib/validators';
-import {loadLocaleMessages,resetPassword} from '../../services/service';
+import {loadLocaleMessages,resetPassword, getUserLanguage, databaseConnection, tenantSetting} from '../../services/service';
 import axios from "axios";
 import constants from '../../constant';
 
@@ -114,14 +114,53 @@ methods:{
         _this.$forceUpdate();
         _this.$refs.ThePrimaryFooter.$forceUpdate()
     },
+    async createConnection(){
+            await databaseConnection(this.langList).then(response => {
+                    this.isShowComponent = true
+                    //Get langauage list from Local Storage
+                    this.langList = JSON.parse(store.state.listOfLanguage)
+                    this.defautLang = store.state.defaultLanguage
+                    
+                    // Get tenant setting
+                    tenantSetting();                                                                                
 
+                    this.fetchUserLanguage(this.$route.query.email);
+            })       
+    },
+    async fetchUserLanguage(email) {
+
+        let defaultLanguageData = [];
+        let response = await getUserLanguage(email);        
+        let languageCode = '';
+        
+        if (typeof response.error === "undefined") {
+
+            languageCode = this.langList.filter(function (language) { 
+                    if (language['0'] == response.data.default_language_id) {
+                        return language;
+                    }
+                }
+            );
+            
+            defaultLanguageData["selectedVal"] = languageCode[0][1];
+            defaultLanguageData["selectedId"] = response.data.default_language_id;
+
+            this.defautLang = languageCode[0][1];
+
+            store.commit('setDefaultLanguage', defaultLanguageData)
+
+            this.$i18n.locale = languageCode[0][1].toLowerCase()
+            await loadLocaleMessages(this.$i18n.locale);
+        }
+
+    },
     handleSubmit(e) {
         this.submitted = true;
         this.$v.$touch();
         // stop here if form is invalid
         if (this.$v.$invalid) {
-        return;
-    }
+            return;
+        }
 
         let resetPasswordData = {};
         resetPasswordData.reset_password_token = this.resetPassword.token;
@@ -150,17 +189,21 @@ methods:{
                 this.$v.$reset();  
             }
         });
-},
+    },
 },
 created() {
+    this.createConnection();
+
     //get token and email from url
     let tokenData = this.$route.path.split('/');
+    
     this.resetPassword.token = tokenData[tokenData.length-1]
     this.resetPassword.email = this.$route.query.email  
+    
     // set language list and default language fetching from local storage
     this.langList = (store.state.listOfLanguage !== null) ? JSON.parse(store.state.listOfLanguage) : []
-    this.defautLang = store.state.defaultLanguage
-},
+    this.defautLang = store.state.defaultLanguage;
+}
 
 
 }
