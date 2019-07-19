@@ -162,14 +162,14 @@ class MissionRepository implements MissionInterface
             $this->missionLanguage->create($missionLanguage);
             unset($missionLanguage);
         }
-		
-		// For skills
-		if (isset($request->skills) && count($request->skills) > 0) {
-			foreach ($request->skills as $value) {
-				$this->missionSkill->linkMissionSkill($mission->mission_id, $value['skill_id']);
-			}
-		}
-		
+        
+        // For skills
+        if (isset($request->skills) && count($request->skills) > 0) {
+            foreach ($request->skills as $value) {
+                $this->missionSkill->linkMissionSkill($mission->mission_id, $value['skill_id']);
+            }
+        }
+        
         $tenantName = $this->helpers->getSubDomainFromRequest($request);
         $isDefault = 0;
 
@@ -306,13 +306,13 @@ class MissionRepository implements MissionInterface
                 unset($missionLanguage);
             }
         }
-		
-		// For skills
-		if (isset($request->skills) && count($request->skills) > 0) {
-			foreach ($request->skills as $value) {
-				$this->missionSkill->linkMissionSkill($mission->mission_id, $value['skill_id']);
-			}
-		}
+        
+        // For skills
+        if (isset($request->skills) && count($request->skills) > 0) {
+            foreach ($request->skills as $value) {
+                $this->missionSkill->linkMissionSkill($mission->mission_id, $value['skill_id']);
+            }
+        }
 
         $tenantName = $this->helpers->getSubDomainFromRequest($request);
         // Add/Update  mission media images
@@ -489,7 +489,7 @@ class MissionRepository implements MissionInterface
             ->withCount(['favouriteMission as favourite_mission_count' => function ($query) use ($request) {
                 $query->Where('user_id', $request->auth->user_id);
             }]);
-            $missionQuery->withCount([
+        $missionQuery->withCount([
                 'missionRating as mission_rating_count' => function ($query) {
                     $query->select(DB::raw("AVG(rating) as rating"));
                 }
