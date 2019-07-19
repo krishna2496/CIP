@@ -10,6 +10,11 @@
 |
 */
 $router->group(['middleware' => 'localization'], function ($router) {
+    
+    /* Get api to fetch user default language, from it's mail. */
+    $router->get('/app/get-user-language', ['as' => 'connect', 'middleware' => 'tenant.connection',
+     'uses' => 'App\User\UserController@getUserDefaultLanguage']);
+
     /* Connect first time to get styling data. */
     $router->get('/app/connect', ['as' => 'connect', 'middleware' => 'tenant.connection',
      'uses' => 'App\Tenant\TenantOptionController@getTenantOption']);
