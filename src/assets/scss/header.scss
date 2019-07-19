@@ -1083,11 +1083,15 @@ header {
             .counter{		
                 display: inline-block;		
                 background: $control-border;		
-                color: $black-primary;		
-                padding: 1px 6px;		
+                color: $black-primary;				
                 border-radius: 100%;		
                 line-height: 17px;		
-                font-size: 12px;		
+                font-size: 12px;
+                max-width: 19px;
+                height: 19px;
+                flex: 0 0 19px;
+                text-align: center;
+                margin-left: 10px;		
             }		
         }		
     }
