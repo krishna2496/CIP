@@ -66,7 +66,6 @@ export default {
     },
     onInputChange(text) {
       // event fired when the input changes
-      console.log(text)
     },
     /**
      * This is what the <input/> value is set to when you are selecting a suggestion.
@@ -75,7 +74,6 @@ export default {
       return suggestion.item.name;
     },
     focusMe(e) {
-      console.log(e) // FocusEvent
     }
   }
 }

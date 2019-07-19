@@ -4,8 +4,8 @@
 			<b-carousel-slide 
 				v-for="item in carouselItems"
 				:key="item.sort_order"
-				:caption="getTitle(item.translations)"
-				:text="getDescription(item.translations)"
+				:caption="getTitle(item.slider_detail)"
+				:text="getDescription(item.slider_detail)"
 				:img-src="item.url">     
 			</b-carousel-slide>
         </b-carousel>
@@ -30,37 +30,42 @@ export default {
 			isDynamicCarsousetSet : false
 		};
 	},
-	created(){
+	created(){		
 		if (JSON.parse(store.state.slider).length > 0) { 
 		   this.carouselItems = JSON.parse(store.state.slider);
 		   this.isDynamicCarsousetSet =true
 		}
 	},
 	methods:{
-		getTitle: (translations) => {
-			// Fetch slider title by language
-			if (translations) {
-				var filteredObj  = translations.filter(function (item, i) { 
-				if (item.lang === store.state.defaultLanguage.toLowerCase()) {
-					return translations[i].slider_title;
+		getTitle: (sliderDetail) => {
+			if (typeof sliderDetail !== 'undefined') {
+				var translations = JSON.parse(JSON.stringify(sliderDetail)).translations;
+				//Fetch slider title by language
+				if (translations) {
+					var filteredObj  = translations.filter(function (item, i) { 
+					if (item.lang === store.state.defaultLanguage.toLowerCase()) {
+						return translations[i].slider_title;
+					}
+					});
+					if (filteredObj.length > 0 && filteredObj[0].slider_title) {
+						return filteredObj[0].slider_title;
+					}
 				}
-				});
-				if (filteredObj[0].slider_title) {
-			   		return filteredObj[0].slider_title;
-			   	}
 			}
 		},
-
-		getDescription: (translations) => {
-			// Fetch slider description by language
-			if (translations) {
-				var filteredObj  = translations.filter(function (item, i) { 
-				if (item.lang === store.state.defaultLanguage.toLowerCase()) {
-					return translations[i].slider_description;
-				}
-				});
-				if (filteredObj[0].slider_description) {
-					return filteredObj[0].slider_description;
+		getDescription: (sliderDetail) => {
+			if (typeof sliderDetail !== 'undefined') {
+				var translations = JSON.parse(JSON.stringify(sliderDetail)).translations;
+				// Fetch slider description by language			
+				if (translations) {
+					var filteredObj  = translations.filter(function (item, i) { 
+					if (item.lang === store.state.defaultLanguage.toLowerCase()) {
+						return translations[i].slider_description;
+					}
+					});					
+					if (filteredObj.length > 0 && filteredObj[0].slider_description) {
+						return filteredObj[0].slider_description;
+					}
 				}
 			}
 		}

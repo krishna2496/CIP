@@ -185,7 +185,6 @@ export default {
       for (var j = 0; j < tolist_group.length; ++j) {
         for (var i = 0; i < this.selectList.length; ++i) {
           if (this.selectList[i].id == tolist_group[j].id) {
-            console.log("success");
             tolist_group[j].remove();
           }
         }
@@ -197,7 +196,6 @@ export default {
     hideModal() {
       this.toList = this.toList;
       var tolist_group = document.querySelectorAll(".tolist-group li");
-      console.log(tolist_group);
     }
   },
 

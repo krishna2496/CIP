@@ -63,7 +63,7 @@ export default {
             defautLang: "",
             langList:[],
             forgotPassword: {
-            email: '',
+                email: '',
             },
             submitted: false,
             classVariant: 'danger',
