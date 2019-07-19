@@ -238,8 +238,8 @@ export default {
 
         updateSortTitle(value) {
             store.commit("sortByFilter",value.selectedId)
-            this.getMissions();
             this.sortByDefault = value.selectedVal;
+            this.getMissions();
         },
         //Mission listing
         async getMissions(parmas = ""){
