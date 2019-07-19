@@ -65,8 +65,8 @@ $actionUrl = config('app.mail_url').$token;
 								</tr>
 								<tr>
 									<td style="font-family: Verdana,Geneva,sans-serif;  color: #3a3a3a; font-size:30px; line-height: 46px;" class="title_text">
-										Changing your <br/>
-										Optimy password
+									{{ trans('mail.forgot_password.HEADING_ONE', [], config('app.user_language_code')) }} <br/>
+									{{ trans('mail.forgot_password.HEADING_TWO', [], config('app.user_language_code')) }}
 									</td>
 								</tr>
 								<tr>
@@ -75,8 +75,7 @@ $actionUrl = config('app.mail_url').$token;
 								</tr>
 								<tr>
 									<td style="font-family: Verdana,Geneva,sans-serif;  color: #414141; font-size:15px; line-height: 19px;">
-										Need to reset your password? No Problem. Just click below
-										to get started.
+										{{ trans('mail.forgot_password.PARAGRAPH_ONE', [], config('app.user_language_code')) }}<br/>
 									</td>
 								</tr>
 								<tr>
@@ -90,15 +89,15 @@ $actionUrl = config('app.mail_url').$token;
 											<tr>
 												<td style=" width:20px;"></td>
 												<td class="button_text" style="color:#f88634; font-size:17px; font-family: Verdana,Geneva,sans-serif;" valign="middle">
-													<a href="{{ $actionUrl }}" title="Reset my password"  style="display:inline-block; color:#f88634; font-size:17px; vertical-align:middle; display: block;">
-														Reset my password
+													<a href="{{ $actionUrl }}" title="{{ trans('mail.forgot_password.RESET_PASSWORD_BUTTON', [], config('app.user_language_code')) }}"  style="display:inline-block; color:#f88634; font-size:17px; vertical-align:middle; display: block;">
+														{{ trans('mail.forgot_password.RESET_PASSWORD_BUTTON', [], config('app.user_language_code')) }}
 													</a>
 												</td>
-												<td>
-													<a href="{{ $actionUrl }}" title="Reset my password"  style="display:inline-block; color:#f88634; font-size:17px; vertical-align: top;">
+												<!-- <td>
+													<a href="{{ $actionUrl }}" title="{{ trans('mail.forgot_password.RESET_PASSWORD_BUTTON', [], config('app.user_language_code')) }}"  style="display:inline-block; color:#f88634; font-size:17px; vertical-align: top;">
 														<img src="{{ $resetArowPasswordBtn }} " height="42" width="30" alt="Arrow" />
 													</a>
-												</td>
+												</td> -->
 												<td style=" width: 20px;"></td>
 											</tr>
 										</table>
@@ -110,8 +109,7 @@ $actionUrl = config('app.mail_url').$token;
 								</tr>
 								<tr>
 									<td style="font-family: Verdana,Geneva,sans-serif;  color: #414141; font-size:15px; line-height: 19px;">
-										If you didn’t request to change your optimy password, you don’t
-										have to do anything. So that’s easy.
+									{{ trans('mail.forgot_password.PARAGRAPH_TWO', [], config('app.user_language_code')) }}
 									</td>
 								</tr>
 								<tr>
@@ -130,8 +128,7 @@ $actionUrl = config('app.mail_url').$token;
 								</tr>
 								<tr>
 									<td style="font-family: Verdana,Geneva,sans-serif;  color: #757575; font-size:13px; line-height: 17px;">
-										If you’re having trouble clicking the “Reset Password” button, copy and
-										paste the URL below into your web browser.
+										{{ trans('mail.forgot_password.FOOTER_TEXT', [], config('app.user_language_code')) }}
 									</td>
 								</tr>
 								<tr>
@@ -168,7 +165,7 @@ $actionUrl = config('app.mail_url').$token;
 
 					<tr>
 						<td style="font-family: Verdana,Geneva,sans-serif;  color: #757575; font-size:13px; line-height: 17px; align:center; text-align:center">
-							© {{date('Y')}} Optimy, All Rights Reserved.
+							© {{date('Y')}} Optimy, {{ trans('mail.other_text.ALL_RIGHTS_RESERVED', [], config('app.user_language_code')) }}
 						</td>
 					</tr>
 					<tr>

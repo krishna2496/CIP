@@ -20,7 +20,7 @@ return [
         'MESSAGE_USER_SKILLS_DELETED' => 'FR: User skills unlinked successfully',
         'MESSAGE_SLIDER_ADD_SUCCESS' => 'FR: Slider image added successfully',
         'MESSAGE_USER_LOGGED_IN' => 'FR: You are successfully logged in',
-        'MESSAGE_PASSWORD_RESET_LINK_SEND_SUCCESS' => 'FR: Reset Password link is sent to your email account,link will be expire in ' . config('constants.FORGOT_PASSWORD_EXPIRY_TIME') . ' hours',
+        'MESSAGE_PASSWORD_RESET_LINK_SEND_SUCCESS' => 'le lien Réinitialiser le mot de passe est envoyé à votre compte de messagerie, le lien expirera dans ' . config('constants.FORGOT_PASSWORD_EXPIRY_TIME') . ' heures',
         'MESSAGE_PASSWORD_CHANGE_SUCCESS' => 'FR: Your password has been changed successfully.',
         'MESSAGE_CUSTOM_FIELD_ADDED' => 'FR: User custom field added successfully',
         'MESSAGE_CUSTOM_FIELD_UPDATED' => 'FR: User custom field updated successfully',
