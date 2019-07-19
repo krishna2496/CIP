@@ -5,7 +5,7 @@
     border-bottom: none;
     .close {
       font-size: 0;
-      background: url(../images/cross-ic.svg) no-repeat;
+      background: url($assetUrl+"/cross-ic.svg") no-repeat;
       padding: 0;
       margin: 0;
       width: 17px;
@@ -164,7 +164,7 @@
             &::after {
               border: none;
               content: "";
-              background: transparent url(../images/plus-ic.svg) no-repeat;
+              background: transparent url($assetUrl+"/plus-ic.svg") no-repeat;
               padding: 0;
               background-size: 32px;
               width: 32px;
@@ -211,7 +211,7 @@
   .btn-wrap {
     display: flex;
     justify-content: flex-end;
-    padding-top: 80px;
+    padding-top: 20px;
     @include sm-max {
       padding-top: 15px;
     }

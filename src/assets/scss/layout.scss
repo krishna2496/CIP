@@ -139,27 +139,6 @@ ul {
     }
 }
 
-/** Toast style**/
-.toast{
-    padding-right:36px;
-    header{
-        &.toast-header{
-            position:relative; 
-            background: transparent;
-            border: none;
-            position: absolute;  
-            height:auto;
-            padding:0;
-            .close{
-                position: absolute;
-                right: 15px;
-                top: 12px;
-                color:$gray-primary;
-                opacity:1;
-            }
-        }   
-    }
-}
 
 /** Toast style**/
 .toast{
@@ -799,7 +778,7 @@ main {
 				background-size:25px;
 				height: 25px;
 				width: 25px; 
-				background: url(../images/white-arrow.svg)no-repeat;
+				background: url($assetUrl+"/white-arrow.svg")no-repeat;
 				outline: none;
 				box-shadow: none; 
 				@include sm-max{
@@ -1383,7 +1362,7 @@ main {
 					&:after{
 						position: absolute;
 						content: "";
-						background: url(../images/down-arrow.svg)no-repeat;
+						background: url($assetUrl+"/down-arrow.svg")no-repeat;
 						right: 10px;
 						top: 8px;
 						background-size: 12px;
@@ -1835,7 +1814,7 @@ main {
                 &:after {
                     position: absolute;
                     content: "";
-                    background: url("../images/next-arrow.svg");
+                    background: url($assetUrl+"/next-arrow.svg");
                     background-size: 12px;
                     width: 100%;
                     height: 100%;
@@ -1872,7 +1851,7 @@ main {
                 &:after {
                     position: absolute;
                     content: "";
-                    background: url("../images/next-arrow.svg");
+                    background: url($assetUrl+"/next-arrow.svg");
                     @include rotate(180deg);
                     background-size: 12px;
                     width: 100%;

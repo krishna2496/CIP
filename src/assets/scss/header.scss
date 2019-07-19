@@ -140,7 +140,7 @@ header {
                 &:after {
                     position: absolute;
                     content: "";
-                    background: url("../images//down-arrow.svg") no-repeat;
+                    background: url($assetUrl+"/down-arrow.svg") no-repeat;
                     border: none !important;
                     background-size: 11px;
                     width: 11px;
@@ -675,7 +675,7 @@ header {
                             &:after {
                                 position: absolute;
                                 content: "";
-                                background: url("../images/white-check-ic.svg") no-repeat center center;
+                                background: url($assetUrl+"/white-check-ic.svg") no-repeat center center;
                                 background-size: 8px;
                                 height: 12px;
                                 width: 12px;
@@ -1136,7 +1136,7 @@ header {
                 color: $black-primary;
                 font-size: 16px;
                 font-weight: 300;
-                background: url("../images/down-arrow.svg") no-repeat right 12px center/13px 11px;
+                background: url($assetUrl+"/down-arrow.svg") no-repeat right 12px center/13px 11px;
                 border: none;
 
                 &:focus {

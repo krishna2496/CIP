@@ -65,7 +65,7 @@
                                 </b-button>
                                 </div>
                                 <div class="group-category" 
-                                v-if="mission.mission_theme != null">{{getThemeTitle(mission.mission_theme.translations)}}
+                                v-if="mission.mission_theme != null"><span class="category-text">{{getThemeTitle(mission.mission_theme.translations)}}</span>
                                 </div>
                             </b-card-header>
 
