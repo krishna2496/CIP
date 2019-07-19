@@ -318,8 +318,14 @@ export default {
             };
             missionData.mission_id = missionId;
             favoriteMission(missionData).then(response => {
-                this.$emit("getMissions","removeLoader"); 
+                if(response.error == true){
+                    this.makeToast("danger",response.message);
+                } else {
+                    this.makeToast("success",response.message);
+                    this.$emit("getMissions","removeLoader");
+                } 
             });
+            
         },
         onInputChange(text) {   
              this.submitDisable =true;
