@@ -9,5 +9,16 @@ return [
         'MISSION' => 'MISSION :',
         'ALL_RIGHTS_RESERVED' => 'All Rights Reserved.',
         'MAIL_MISSION_RECOMMENDATION' => 'Mission Recommendation'
+    ],
+    'forgot_password' => [
+        'HEADING_ONE' => 'Changing your',
+        'HEADING_TWO' => 'Optimy password',
+        'PARAGRAPH_ONE' => 'Need to reset your password? No Problem. Just click below to get started.',
+        'RESET_PASSWORD_BUTTON' => 'Reset my password',
+        'PARAGRAPH_TWO' => "If you didn’t request to change your optimy password, you don’t have to do anything. So that’s easy.",
+        'FOOTER_TEXT' => "If you’re having trouble clicking the “Reset Password” button, copy and paste the URL below into your web browser."
+    ],
+    'other_text' => [
+        'ALL_RIGHTS_RESERVED' => 'All Rights Reserved.'
     ]
 ];
