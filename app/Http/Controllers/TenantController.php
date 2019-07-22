@@ -340,7 +340,7 @@ class TenantController extends Controller
             $response['api_secret'] = $apiKeys['api_secret'];
             
             // Set response data
-            $apiStatus = Response::HTTP_CREATED;
+            $apiStatus = Response::HTTP_CREATED; 
             $apiMessage = trans('messages.success.MESSAGE_API_USER_CREATED_SUCCESSFULLY');
 
             return $this->responseHelper->success($apiStatus, $apiMessage, $response);
