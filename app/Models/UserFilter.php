@@ -42,7 +42,7 @@ class UserFilter extends Model
      * @param  mixed   $value
      * @return void
      */
-    public function setFiltersAttribute($value)
+    public function setFiltersAttribute($value) : void
     {
         $this->attributes['filters'] = serialize($value);
     }
@@ -51,9 +51,9 @@ class UserFilter extends Model
      * Get an attribute from the model.
      *
      * @param  string  $value
-     * @return mixed
+     * @return array
      */
-    public function getFiltersAttribute($value)
+    public function getFiltersAttribute($value): array
     {
         return unserialize($value);
     }
@@ -63,9 +63,9 @@ class UserFilter extends Model
      *
      * @param  array $condition
      * @param  array $data
-     * @return array
+     * @return object
      */
-    public function createOrUpdateUserFilter(array $condition, array $data)
+    public function createOrUpdateUserFilter(array $condition, array $data): object
     {
         return static::updateOrCreate($condition, $data);
     }
