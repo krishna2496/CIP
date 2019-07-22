@@ -6,13 +6,13 @@ use App\Repositories\Country\CountryRepository;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Input;
 use PDOException;
 use App\Helpers\ResponseHelper;
 use App\Traits\RestExceptionHandlerTrait;
 
 class CountryController extends Controller
 {
+    use RestExceptionHandlerTrait;
     /**
      * @var App\Repositories\Country\CountryRepository
      */

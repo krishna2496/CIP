@@ -87,7 +87,7 @@ class AuthController extends Controller
      * @param \App\User $user
      * @return string
      */
-    protected function jwt(User $user)
+    protected function jwt(User $user) :String
     {
         $payload = [
             'iss' => "lumen-jwt",       // Issuer of the token

@@ -43,9 +43,9 @@ class UserSkill extends Model
      *
      * @param  int  $userId
      * @param  int  $skillId
-     * @return array
+     * @return bool
      */
-    public function linkUserSkill(int $userId, int $skillId)
+    public function linkUserSkill(int $userId, int $skillId): bool
     {
         return static::firstOrNew(array('user_id' => $userId, 'skill_id' => $skillId, 'deleted_at' => null))->save();
     }
@@ -55,9 +55,9 @@ class UserSkill extends Model
      *
      * @param  int  $userId
      * @param  int  $skillId
-     * @return array
+     * @return  bool
      */
-    public function deleteUserSkill(int $userId, int $skillId)
+    public function deleteUserSkill(int $userId, int $skillId): bool
     {
         return static::where(['user_id' => $userId, 'skill_id' => $skillId])->delete();
     }
@@ -76,9 +76,9 @@ class UserSkill extends Model
      * Find the specified resource.
      *
      * @param  int  $userId
-     * @return array
+     * @return Skill
      */
-    public function find(int $userId)
+    public function find(int $userId):Skill
     {
         return static::with('skill')->find($userId);
     }

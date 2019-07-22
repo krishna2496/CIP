@@ -12,6 +12,7 @@ use App\Traits\RestExceptionHandlerTrait;
 
 class SkillController extends Controller
 {
+    use RestExceptionHandlerTrait;
     /**
      * @var App\Repositories\Skill\SkillRepository
      */
@@ -25,7 +26,7 @@ class SkillController extends Controller
     /**
      * Create a new controller instance.
      *
-     * @param App\Repositories\Skill\SkillRepository $skill
+     * @param App\Repositories\Skill\SkillRepository $skillRepository
      * @param Illuminate\Http\ResponseHelper $responseHelper
      * @return void
      */
