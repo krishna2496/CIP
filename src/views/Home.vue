@@ -51,7 +51,7 @@
                 <!-- grid view -->
                     <b-tab class="grid-tab-content">
                         <template slot="title">
-                        <i class="grid" @click="activeView = 'gridView'">
+                        <i class="grid" @click="activeView = 'gridView'" v-b-tooltip.hover title="Grid View">
                             <svg
                             version="1.1"
                             id="Capa_1"
@@ -89,7 +89,7 @@
                         <!-- list view -->
                     <b-tab class="list-tab-content">
                         <template slot="title">
-                        <i class="list" @click="activeView = 'listView'">
+                        <i class="list" @click="activeView = 'listView'" v-b-tooltip.hover title="List View">
                             <svg
                             id="Layer_1"
                             data-name="Layer 1"
