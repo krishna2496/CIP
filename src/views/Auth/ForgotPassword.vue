@@ -1,6 +1,6 @@
 <template>
     <div class="signin-page-wrapper">
-        <TheSlider/>
+        <TheSlider v-if="isShowSlider"/>
         <div class="signin-form-wrapper">
             <div class="lang-drodown-wrap">
                 <AppCustomDropdown :optionList="langList" :defaultText="defautLang" 
@@ -48,7 +48,7 @@ import TheSlider from "../../components/TheSlider";
 import ThePrimaryFooter from "../../components/Layouts/ThePrimaryFooter";
 import AppCustomDropdown from "../../components/AppCustomDropdown";
 import { required, email, minLength, between } from 'vuelidate/lib/validators';
-import {loadLocaleMessages,forgotPassword} from '../../services/service';
+import {loadLocaleMessages,forgotPassword, getUserLanguage, databaseConnection, tenantSetting} from '../../services/service';
 import store from '../../store';
 import axios from "axios";
 
@@ -60,6 +60,7 @@ export default {
     },
     data() {
         return {
+            isShowSlider: false,
             myValue: "",
             defautLang: "",
             langList:[],
@@ -89,6 +90,47 @@ export default {
                 _this.$forceUpdate();
                 _this.$refs.ThePrimaryFooter.$forceUpdate()
         },
+        async createConnection(){
+            await databaseConnection(this.langList).then(response => {
+                    this.isShowComponent = true
+                    //Get langauage list from Local Storage
+                    this.langList = JSON.parse(store.state.listOfLanguage)
+                    this.defautLang = store.state.defaultLanguage
+                    
+                    // Get tenant setting
+                    tenantSetting();                                                                                
+
+                    this.fetchUserLanguage(this.$route.query.email);                    
+                    this.isShowSlider = true;
+            })       
+    },
+    async fetchUserLanguage(email) {
+
+        let defaultLanguageData = [];
+        let response = await getUserLanguage(email);        
+        let languageCode = '';
+        
+        if (typeof response.error === "undefined") {
+
+            languageCode = this.langList.filter(function (language) { 
+                    if (language['0'] == response.data.default_language_id) {
+                        return language;
+                    }
+                }
+            );
+            
+            defaultLanguageData["selectedVal"] = languageCode[0][1];
+            defaultLanguageData["selectedId"] = response.data.default_language_id;
+
+            this.defautLang = languageCode[0][1];
+
+            store.commit('setDefaultLanguage', defaultLanguageData)
+
+            this.$i18n.locale = languageCode[0][1].toLowerCase()
+            await loadLocaleMessages(this.$i18n.locale);
+        }
+
+    },
         handleSubmit(e) {
             this.submitted = true;
             // Stop here if form is invalid
@@ -123,6 +165,7 @@ export default {
         this.$refs.email.focus();
     },
     created() {
+        this.createConnection();
         // Set language list and default language fetch from Local Storage
         this.langList = (localStorage.getItem('listOfLanguage') !== null) ? JSON.parse(localStorage.getItem('listOfLanguage')) : []
         this.defautLang = localStorage.getItem('defaultLanguage') 
