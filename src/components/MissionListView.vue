@@ -175,14 +175,13 @@
                                             </div>
                                         </template>
 
-                                        <template v-if="mission.application_deadline !== null">
+                                        <template v-if="mission.application_deadline != null">
                                             <div class="detail-column info-block">
                                                 <i class="icon-wrap">
                                                     <img :src="$store.state.imagePath+'/assets/images/clock.svg'" alt="user">
                                                 </i>
                                                 <div class="text-wrap">
-                                                    <span class="title-text mb-1">
-                                                    {{mission.application_deadline | formatDate}}</span>
+                                                    <span class="title-text mb-1">{{mission.application_deadline | formatDate}}</span>
                                                     <span class="subtitle-text">{{ $t("label.deadline") }}</span>
                                                 </div>
                                             </div>
