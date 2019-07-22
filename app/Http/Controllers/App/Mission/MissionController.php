@@ -444,7 +444,8 @@ class MissionController extends Controller
             // Set response data
             $apiData = ($missionFavourite != null)
             ? ['favourite_mission_id' => $missionFavourite->favourite_mission_id] : [];
-            $apiStatus = Response::HTTP_OK;
+            $apiStatus = ($missionFavourite != null) ? Response::HTTP_CREATED
+            : Response::HTTP_OK;
             $apiMessage = ($missionFavourite != null) ?
             trans('messages.success.MESSAGE_MISSION_ADDED_TO_FAVOURITE') :
             trans('messages.success.MESSAGE_MISSION_DELETED_FROM_FAVOURITE');
