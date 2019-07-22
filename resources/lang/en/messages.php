@@ -144,7 +144,7 @@ return [
         'ERROR_WHILE_UPLOADING_IMAGE_ON_S3' => 'An error while uploading image on S3',
         'ERROR_DOWNLOADING_IMAGE_TO_LOCAL' => 'An error while downloading image from S3 to server',
         'ERROR_IMAGE_UPLOAD_INVALID_DATA' => 'Invalid input file',
-        'ERROR_TENANT_OPTION_NOT_FOUND' => 'No tenant option found'
+        'ERROR_TENANT_OPTION_NOT_FOUND' => 'No tenant option found',
         'ERROR_LANGUAGE_NOT_FOUND' => 'Language not found'
     ],
 ];
