@@ -95,6 +95,11 @@ $router->group(['middleware' => 'localization'], function ($router) {
     $router->get('/app/user', ['as' =>'app.user',
     'middleware' => 'tenant.connection|jwt.auth|PaginationMiddleware',
     'uses' => 'App\User\UserController@index']);
+
+    /* Fetch recent volunteers */
+    $router->get('/app/mission/volunteers', ['as' =>'app.user',
+    'middleware' => 'tenant.connection|jwt.auth|PaginationMiddleware',
+    'uses' => 'App\Mission\MissionApplicationController@getVolunteers']);
 });
 
 
