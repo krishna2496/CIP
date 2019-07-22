@@ -46,7 +46,7 @@ class MissionRating extends Model
      *
      * @param  array $condition
      * @param  array $data
-     * @return array
+     * @return App\Models\MissionRating
      */
     public function createOrUpdateRating(array $condition, array $data): MissionRating
     {
