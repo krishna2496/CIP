@@ -1,8 +1,8 @@
 <?php
+
 namespace App\Http\Controllers\Admin\User;
 
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
+use Illuminate\Http\Request;use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
 use App\Repositories\User\UserRepository;
