@@ -2,6 +2,7 @@
 namespace App\Repositories\Mission;
 
 use Illuminate\Http\Request;
+use App\Models\MissionRating;
 
 interface MissionInterface
 {
@@ -55,4 +56,13 @@ interface MissionInterface
      * @return string
      */
     public function getMissionName(int $missionId, $languageId): string;
+
+    /**
+     * Add/update mission rating.
+     *
+     * @param int $userId
+     * @param array $request
+     * @return App\Models\MissionRating
+     */
+    public function storeMissionRating(int $userId, array $request): MissionRating;
 }

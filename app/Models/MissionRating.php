@@ -25,6 +25,13 @@ class MissionRating extends Model
     protected $primaryKey = 'mission_rating_id';
     
     /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = ['mission_id', 'user_id', 'rating'];
+    
+    /**
      * Get the mission that has media.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
@@ -32,5 +39,17 @@ class MissionRating extends Model
     public function mission(): BelongsTo
     {
         return $this->belongsTo(Mission::class, 'mission_id', 'mission_id');
+    }
+
+    /**
+     * Store/update specified resource.
+     *
+     * @param  array $condition
+     * @param  array $data
+     * @return array
+     */
+    public function createOrUpdateRating(array $condition, array $data): MissionRating
+    {
+        return static::updateOrCreate($condition, $data);
     }
 }
