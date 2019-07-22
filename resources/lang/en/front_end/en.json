@@ -65,9 +65,18 @@
 		"close" : "Close",
 		"search_user" : "Search User",
 		"invite_colleague" : "Invite Colleague",
-		"remove_from_favourite" : "Remove from favourite"
-
-
+		"remove_from_favourite" : "Remove from favourite",
+		"date" : "Date",
+		"organisation" : "Organisation",
+		"apply_now" : "Apply now",
+		"recommend_to_co-Worker" : "Recommend to a Co-Worker",
+		"information" : "Information",
+		"days" : "Days",
+		"rating" : "Rating",
+		"recent_volunteers" : "Recent Volunteers",
+		"comment" : "Comments",
+		"read_more_comments" :"Read more comments",
+		"post_comment" : "Post comment"
 	},
 
 	"placeholder" : {
