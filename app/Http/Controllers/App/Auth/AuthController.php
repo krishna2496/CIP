@@ -23,6 +23,7 @@ use App\Repositories\TenantOption\TenantOptionRepository;
 use App\Traits\RestExceptionHandlerTrait;
 use InvalidArgumentException;
 use PDOException;
+use App\Helpers\LanguageHelper;
 
 class AuthController extends Controller
 {
@@ -50,6 +51,11 @@ class AuthController extends Controller
      * @var App\Repositories\TenantOption\TenantOptionRepository
      */
     private $tenantOptionRepository;
+
+    /*
+     * @var App\Helpers\LanguageHelper
+     */
+    private $languageHelper;
     
     /**
      * Create a new controller instance.
@@ -58,18 +64,21 @@ class AuthController extends Controller
      * @param Illuminate\Http\ResponseHelper $responseHelper
      * @param App\Repositories\TenantOption\TenantOptionRepository $tenantOptionRepository
      * @param App\Helpers\Helpers $helpers
+     * @param  Illuminate\Http\LanguageHelper $languageHelper
      * @return void
      */
     public function __construct(
         Request $request,
         ResponseHelper $responseHelper,
         TenantOptionRepository $tenantOptionRepository,
-        Helpers $helpers
+        Helpers $helpers,
+        LanguageHelper $languageHelper
     ) {
         $this->request = $request;
         $this->responseHelper = $responseHelper;
         $this->tenantOptionRepository = $tenantOptionRepository;
         $this->helpers = $helpers;
+        $this->languageHelper = $languageHelper;
     }
 
     /**
@@ -182,6 +191,12 @@ class AuthController extends Controller
 
             $userDetail = $user->where('email', $request->get('email'))->first();
 
+            $languages = $this->languageHelper->getLanguages($request);
+            $language = $languages->where('language_id', $userDetail->language_id)->first();
+            
+            $languageCode = $language->code;
+            config(['app.user_language_code' => $languageCode]);
+            
             if (!$userDetail) {
                 return $this->responseHelper->error(
                     Response::HTTP_FORBIDDEN,
