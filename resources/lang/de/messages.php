@@ -61,6 +61,7 @@ return [
         'MESSAGE_TENANT_OPTION_FOUND' => 'DE: Tenant option found', 
         'MESSAGE_INVITED_FOR_MISSION' => 'DE: User invited to mission successfully',
         'MESSAGE_APPLICATION_CREATED' => 'DE: Applied for a mission successfully',
+        'MESSAGE_MISSION_VOLUNTEERS_LISTING' => 'DE: Get mission volunteers successfully',
     ],
 
         

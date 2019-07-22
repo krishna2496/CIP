@@ -2,6 +2,7 @@
 namespace App\Repositories\MissionApplication;
 
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 interface MissionApplicationInterface
 {
@@ -66,4 +67,13 @@ interface MissionApplicationInterface
      * @return App\Models\MissionApplication
      */
     public function updateApplication(Request $request, int $missionId, int $applicationId);
+
+    /*
+     * Get recent volunteers
+     *
+     * @param Illuminate\Http\Request $request
+     * @param int $missionId
+     * @return \Illuminate\Pagination\LengthAwarePaginator
+     */
+    public function missionVolunteerDetail(Request $request, int $missionId): LengthAwarePaginator;
 }

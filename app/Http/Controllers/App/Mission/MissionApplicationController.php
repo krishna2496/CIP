@@ -124,35 +124,20 @@ class MissionApplicationController extends Controller
      * Get recent volunteers
      *
      * @param Illuminate\Http\Request $request
+     * @param int $missionId
      * @return \Illuminate\Http\JsonResponse
      */
-    public function getVolunteers(Request $request): JsonResponse
+    public function getVolunteers(Request $request, int $missionId): JsonResponse
     {
         try {
-            // Server side validataions
-            $validator = Validator::make(
-                $request->all(),
-                [
-                    "mission_id" => "required|exists:mission,mission_id"
-                ]
-            );
-            // If request parameter have any error
-            if ($validator->fails()) {
-                return $this->responseHelper->error(
-                    Response::HTTP_UNPROCESSABLE_ENTITY,
-                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                    config('constants.error_codes.ERROR_INVALID_MISSION_APPLICATION_DATA'),
-                    $validator->errors()->first()
-                );
-            }
-
+            $volunteers = $this->missionApplicationRepository->missionVolunteerDetail($request, $missionId);
 
             // Set response data
-            // $apiData = ['mission_application_id' => $missionApplication->mission_application_id];
-            $apiStatus = Response::HTTP_CREATED;
-            $apiMessage = trans('messages.success.MESSAGE_APPLICATION_CREATED');
+            $apiData = $volunteers;
+            $apiStatus = Response::HTTP_OK;
+            $apiMessage = trans('messages.success.MESSAGE_MISSION_VOLUNTEERS_LISTING');
             
-            return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
+            return $this->responseHelper->successWithPagination($apiStatus, $apiMessage, $apiData);
         } catch (PDOException $e) {
             return $this->PDO(
                 config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),

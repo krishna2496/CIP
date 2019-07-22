@@ -60,7 +60,8 @@ return [
         'MESSAGE_MISSION_RATING_LISTING' => 'Obtenir une note de mission avec succès',
         'MESSAGE_TENANT_OPTION_FOUND' => 'Option locataire trouvée', 
         'MESSAGE_INVITED_FOR_MISSION' => 'Utilisateur invité à la mission avec succès',
-        'MESSAGE_APPLICATION_CREATED' => 'Appliqué pour une mission avec succès'
+        'MESSAGE_APPLICATION_CREATED' => 'Appliqué pour une mission avec succès',
+        'MESSAGE_MISSION_VOLUNTEERS_LISTING' => 'Obtenez des volontaires de mission avec succès',
     ],
 
         

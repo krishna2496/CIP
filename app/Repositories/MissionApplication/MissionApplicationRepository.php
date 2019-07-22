@@ -110,7 +110,7 @@ class MissionApplicationRepository implements MissionApplicationInterface
             'user_id' => $userId,
             'motivation' => $request['motivation'] ?? '',
             'availability_id' => $request['availability_id'],
-			'approval_status' => config('constants.application_status.PENDING')
+            'approval_status' => config('constants.application_status.PENDING')
         );
         return $this->missionApplication->create($application);
     }
@@ -160,5 +160,17 @@ class MissionApplicationRepository implements MissionApplicationInterface
         $missionApplication = $this->missionApplication->findOrFail($applicationId);
         $missionApplication->update($request->toArray());
         return $missionApplication;
+    }
+
+    /*
+     * Get recent volunteers
+     *
+     * @param Illuminate\Http\Request $request
+     * @param int $missionId
+     * @return \Illuminate\Pagination\LengthAwarePaginator
+     */
+    public function missionVolunteerDetail(Request $request, int $missionId): LengthAwarePaginator
+    {
+        return $this->missionApplication->getVolunteers($request, $missionId);
     }
 }
