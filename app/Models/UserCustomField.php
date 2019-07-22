@@ -61,9 +61,9 @@ class UserCustomField extends Model
      * Delete the specified resource.
      *
      * @param  int  $id
-     * @return void
+     * @return bool
      */
-    public function deleteCustomField(int $id)
+    public function deleteCustomField(int $id): bool
     {
         return static::findOrFail($id)->delete();
     }

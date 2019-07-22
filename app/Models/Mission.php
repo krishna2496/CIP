@@ -245,9 +245,9 @@ class Mission extends Model
      *
      * @return string
      */
-    public function getStartDateAttribute() :string
+    public function getStartDateAttribute()
     {
-        if (isset($this->attributes['start_date'])) {
+        if (isset($this->attributes['start_date']) && !empty(config('constants.TIMEZONE'))) {
             return Carbon::parse($this->attributes['start_date'])->setTimezone(config('constants.TIMEZONE'));
 		}
     }
@@ -269,9 +269,9 @@ class Mission extends Model
      *
      * @return string
      */
-    public function getEndDateAttribute():string
+    public function getEndDateAttribute()
     {
-        if (isset($this->attributes['end_date'])) {
+        if (isset($this->attributes['end_date']) && !empty(config('constants.TIMEZONE'))) {
             return Carbon::parse($this->attributes['end_date'])->setTimezone(config('constants.TIMEZONE'));
         }
     }

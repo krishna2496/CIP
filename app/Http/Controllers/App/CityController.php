@@ -6,13 +6,13 @@ use App\Repositories\City\CityRepository;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Input;
 use PDOException;
 use App\Helpers\ResponseHelper;
 use App\Traits\RestExceptionHandlerTrait;
 
 class CityController extends Controller
 {
+    use RestExceptionHandlerTrait;
     /**
      * @var CityRepository
      */

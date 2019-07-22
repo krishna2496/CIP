@@ -6,7 +6,6 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Repositories\Mission\MissionRepository;
 use App\Repositories\UserFilter\UserFilterRepository;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Config;
 use App\Models\Mission;
 use App\Repositories\MissionTheme\MissionThemeRepository;
@@ -15,7 +14,6 @@ use App\Helpers\Helpers;
 use App\Helpers\LanguageHelper;
 use App\Helpers\ResponseHelper;
 use App\Http\Controllers\Controller;
-use Carbon\Carbon;
 use InvalidArgumentException;
 use PDOException;
 use Illuminate\Http\JsonResponse;
@@ -73,6 +71,9 @@ class MissionController extends Controller
      * @param Illuminate\Http\ResponseHelper $responseHelper
      * @param Illuminate\Http\UserFilterRepository $userFilterRepository
      * @param  Illuminate\Http\LanguageHelper $languageHelper
+     * @param App\Helpers\Helpers $helpers
+     * @param App\Helpers\Helpers $theme
+     * @param App\Helpers\Helpers $skill
      * @return void
      */
     public function __construct(
@@ -443,7 +444,8 @@ class MissionController extends Controller
             // Set response data
             $apiData = ($missionFavourite != null)
             ? ['favourite_mission_id' => $missionFavourite->favourite_mission_id] : [];
-            $apiStatus = Response::HTTP_OK;
+            $apiStatus = ($missionFavourite != null) ? Response::HTTP_CREATED
+            : Response::HTTP_OK;
             $apiMessage = ($missionFavourite != null) ?
             trans('messages.success.MESSAGE_MISSION_ADDED_TO_FAVOURITE') :
             trans('messages.success.MESSAGE_MISSION_DELETED_FROM_FAVOURITE');

@@ -22,7 +22,7 @@ use Carbon\Carbon;
 
 class MissionRepository implements MissionInterface
 {
-	/**
+    /**
      * @var App\Models\Mission
      */
     public $mission;
@@ -469,7 +469,7 @@ class MissionRepository implements MissionInterface
         $missionData = [];
         // Get  mission data
         $missionQuery = $this->mission->select('mission.*');
-		$missionQuery->leftjoin('time_mission', 'mission.mission_id', '=', 'time_mission.mission_id');
+        $missionQuery->leftjoin('time_mission', 'mission.mission_id', '=', 'time_mission.mission_id');
         $missionQuery->where('publication_status', config("constants.publication_status")["APPROVED"])
             ->with(['missionTheme', 'missionMedia', 'goalMission'
             ])->with(['missionMedia' => function ($query) {
@@ -590,10 +590,10 @@ class MissionRepository implements MissionInterface
                 $missionQuery->orderBY('mission.created_at', 'asc');
             }
             if ($userFilterData['sort_by'] == config('constants.LOWEST_AVAILABLE_SEATS')) {
-				$missionQuery->orderByRaw('total_seats - mission_application_count asc');
+                $missionQuery->orderByRaw('total_seats - mission_application_count asc');
             }
             if ($userFilterData['sort_by'] == config('constants.HIGHEST_AVAILABLE_SEATS')) {
-				$missionQuery->orderByRaw('total_seats - mission_application_count desc');
+                $missionQuery->orderByRaw('total_seats - mission_application_count desc');
             }
             if ($userFilterData['sort_by'] == config('constants.MY_FAVOURITE')) {
                 $missionQuery->withCount(['favouriteMission as favourite_mission_count'
@@ -603,8 +603,11 @@ class MissionRepository implements MissionInterface
                 $missionQuery->orderBY('favourite_mission_count', 'desc');
             }
             if ($userFilterData['sort_by'] == config('constants.DEADLINE')) {
-				$missionQuery->orderBy(\DB::raw('time_mission.application_deadline IS NULL, time_mission.application_deadline'), 'asc');
-			}
+                $missionQuery->orderBy(
+                    \DB::raw('time_mission.application_deadline IS NULL, time_mission.application_deadline'),
+                    'asc'
+                );
+            }
         }
         $mission =  $missionQuery->paginate($request->perPage);
         return $mission;

@@ -6,13 +6,13 @@ use App\Repositories\MissionTheme\MissionThemeRepository;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Input;
 use PDOException;
 use App\Helpers\ResponseHelper;
 use App\Traits\RestExceptionHandlerTrait;
 
 class ThemeController extends Controller
 {
+    use RestExceptionHandlerTrait;
     /**
      * @var App\Repositories\Theme\MissionThemeRepository
      */

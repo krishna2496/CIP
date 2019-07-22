@@ -7,7 +7,6 @@ use Illuminate\Mail\Mailable;
 
 class AppMailer extends Mailable
 {
-
     public $params;
     public $subject;
     public $from_email;
@@ -37,7 +36,7 @@ class AppMailer extends Mailable
         $this->from_email = isset($this->params['from_email']) ? $this->params['from_email']
         : env('MAIL_FROM_ADDRESS', 'noreply@example.com');
         
-        $this->from_name = isset($this->params['from_name']) ? $this->params['from_name'] 
+        $this->from_name = isset($this->params['from_name']) ? $this->params['from_name']
         : env('MAIL_FROM_NAME', 'Optimy');
 
         $this->template = $this->params['template'];

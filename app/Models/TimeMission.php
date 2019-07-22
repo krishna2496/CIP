@@ -58,7 +58,7 @@ class TimeMission extends Model
      */
     public function getApplicationDeadlineAttribute()
     {
-        if (isset($this->attributes['application_deadline'])) {
+        if (isset($this->attributes['application_deadline']) && !empty(config('constants.TIMEZONE'))) {
             return Carbon::parse($this->attributes['application_deadline'])->setTimezone(config('constants.TIMEZONE'))->format(config('constants.DB_DATE_FORMAT'));
         }
     }
@@ -82,7 +82,7 @@ class TimeMission extends Model
      */
     public function getApplicationStartDateAttribute()
     {
-        if (isset($this->attributes['application_start_date'])) {
+        if (isset($this->attributes['application_start_date']) && !empty(config('constants.TIMEZONE'))) {
             return Carbon::parse($this->attributes['application_start_date'])->setTimezone(config('constants.TIMEZONE'))->format(config('constants.DB_DATE_FORMAT'));
         }
     }
@@ -106,7 +106,7 @@ class TimeMission extends Model
      */
     public function getApplicationEndDateAttribute()
     {
-        if (isset($this->attributes['application_end_date'])) {
+        if (isset($this->attributes['application_end_date']) && !empty(config('constants.TIMEZONE'))) {
             return Carbon::parse($this->attributes['application_end_date'])->setTimezone(config('constants.TIMEZONE'))->format(config('constants.DB_DATE_FORMAT'));
         }
     }
@@ -130,7 +130,7 @@ class TimeMission extends Model
      */
     public function getApplicationStartTimeAttribute()
     {
-        if (isset($this->attributes['application_start_time'])) {
+        if (isset($this->attributes['application_start_time']) && !empty(config('constants.TIMEZONE'))) {
             return Carbon::parse($this->attributes['application_start_time'])->setTimezone(config('constants.TIMEZONE'))->format(config('constants.DB_DATE_FORMAT'));
         }
     }
@@ -154,7 +154,7 @@ class TimeMission extends Model
      */
     public function getApplicationEndTimeAttribute()
     {
-        if (isset($this->attributes['application_end_time'])) {
+        if (isset($this->attributes['application_end_time']) && !empty(config('constants.TIMEZONE'))) {
             return Carbon::parse($this->attributes['application_end_time'])->setTimezone(config('constants.TIMEZONE'))->format(config('constants.DB_DATE_FORMAT'));
         }
     }
