@@ -68,7 +68,7 @@ class TenantOptionsTest extends TestCase
      */
     public function it_should_reset_style_to_default()
     {
-        $this->get('style/reset-style',  ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->get('style/reset-style', ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
         ->seeStatusCode(200);
     }
 
@@ -119,7 +119,7 @@ class TenantOptionsTest extends TestCase
      */
     public function it_should_download_style_from_s3()
     {
-        $this->get('style/download-style',  ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->get('style/download-style', ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
         ->seeStatusCode(200)
         ->seeJsonStructure([
             'status',
@@ -127,4 +127,29 @@ class TenantOptionsTest extends TestCase
             ]);
     }
 
+    /**
+    * @test
+    *
+    * Update style file not found error
+    *
+    * @return void
+    */
+    public function it_should_return_error_for_missing_file_while_update_style()
+    {
+        $this->post('style/update-style', [], ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(200);
+    }
+
+    /**
+    * @test
+    *
+    * Get custom styling css
+    *
+    * @return void
+    */
+    public function it_should_return_custom_css()
+    {
+        $this->get('app/custom-css', ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(200);
+    }
 }

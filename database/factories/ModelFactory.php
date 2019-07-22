@@ -81,3 +81,16 @@ $factory->define(App\Models\Skill::class, function (Faker\Generator $faker) {
         'parent_skill' => 0,
     ];
 });
+
+$factory->define(App\Models\MissionApplication::class, function (Faker\Generator $faker) {
+    // $mission = App\Models\Mission::get()->random(); 
+    // dd($mission);
+    return [
+        'mission_id' => rand(1, 1),
+        'user_id' => rand(1, 1),
+        'availability_id' => rand(1, 1),
+        'applied_at' => date("Y-m-d H:i:s"),
+        'approval_status' => 'AUTOMATICALLY_APPROVED',
+        'motivation' => str_random(10)
+    ];
+});

@@ -163,7 +163,7 @@ $router->group(
         $router->delete('/{missionId}', ['as' => 'missions.delete',
         'uses' => 'Admin\Mission\MissionController@destroy']);
         $router->get('/{missionId}/applications', ['middleware' => ['PaginationMiddleware'],
-        'as' => 'missions.applications', 'uses' => 'Admin\Mission\MissionApplicationController@missionApplications']);
+         'uses' => 'Admin\Mission\MissionApplicationController@missionApplications']);
         $router->get(
             '/{missionId}/applications/{applicationId}',
             ['uses' => 'Admin\Mission\MissionApplicationController@missionApplication']
