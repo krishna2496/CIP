@@ -6,7 +6,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Models\Mission;
+use App\User;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use \Illuminate\Pagination\LengthAwarePaginator;
 
 class MissionApplication extends Model
 {
@@ -45,8 +47,8 @@ class MissionApplication extends Model
      *
      * @var array
      */
-    protected $visible = ['mission_application_id', 'mission_id',
-    'user_id', 'applied_at', 'motivation', 'availability_id', 'approval_status'];
+    protected $visible = ['mission_application_id', 'mission_id', 'user_id', 'applied_at', 'motivation',
+    'availability_id', 'approval_status', 'user', 'first_name', 'last_name', 'avatar'];
 
     /**
      * Defined relation for the mission table.
@@ -56,6 +58,16 @@ class MissionApplication extends Model
     public function mission(): BelongsTo
     {
         return $this->belongsTo(Mission::class, 'mission_id', 'mission_id');
+    }
+
+    /**
+     * Defined relation for the user table.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'user_id', 'user_id');
     }
 
     /**
@@ -112,5 +124,23 @@ class MissionApplication extends Model
     {
         return $this->where(['mission_id' => $missionId, 'user_id' => $userId])
         ->count();
+    }
+
+    /**
+     * Find listing of a resource.
+     *
+     * @param \Illuminate\Http\Request  $request
+     * @param int $missionId
+     * @return \Illuminate\Pagination\LengthAwarePaginator
+     */
+    public function getVolunteers(Request $request, int $missionId): LengthAwarePaginator
+    {
+        $missionVolunteers = $this->select('user.user_id', 'user.first_name', 'user.last_name', 'user.avatar')
+        ->where('mission_id', $missionId)
+        ->where('approval_status', config("constants.application_status")["AUTOMATICALLY_APPROVED"])
+        ->leftJoin('user', 'mission_application.user_id', '=', 'user.user_id')
+        ->orderBy('mission_application.mission_application_id', 'desc')
+        ->paginate($request->perPage);
+        return $missionVolunteers;
     }
 }

@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Hash;
 use App\Models\City;
 use App\Models\Country;
 use App\Models\Timezone;
+use App\Models\missionApplication;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Nicolaslopezj\Searchable\SearchableTrait;
 
@@ -108,13 +109,23 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     }
     
     /**
-     * Defined has one relation for the user_skill table.
+     * Defined has many relation for the user_skill table.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function userSkills(): HasMany
     {
         return $this->hasMany(UserSkill::class, 'user_id', 'user_id');
+    }
+
+    /**
+     * Defined has many relation for the mission_application table.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function missionApplication(): HasMany
+    {
+        return $this->hasMany(MissionApplication::class, 'user_id', 'user_id');
     }
 
     /**

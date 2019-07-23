@@ -124,8 +124,7 @@ class MissionApplicationRepository implements MissionApplicationInterface
      */
     public function missionApplications(Request $request, int $missionId): LengthAwarePaginator
     {
-        $missionApplicationDetails = $this->missionApplication->find($request, $missionId);
-        return $missionApplicationDetails;
+        return $this->missionApplication->find($request, $missionId);
     }
 
     /**
@@ -160,5 +159,18 @@ class MissionApplicationRepository implements MissionApplicationInterface
         $missionApplication = $this->missionApplication->findOrFail($applicationId);
         $missionApplication->update($request->toArray());
         return $missionApplication;
+    }
+
+    /*
+     * Get recent volunteers
+     *
+     * @param Illuminate\Http\Request $request
+     * @param int $missionId
+     * @return \Illuminate\Pagination\LengthAwarePaginator
+     */
+    public function missionVolunteerDetail(Request $request, int $missionId): LengthAwarePaginator
+    {
+        $this->mission->findOrFail($missionId);
+        return $this->missionApplication->getVolunteers($request, $missionId);
     }
 }
