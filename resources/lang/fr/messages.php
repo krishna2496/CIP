@@ -62,6 +62,7 @@ return [
         'MESSAGE_INVITED_FOR_MISSION' => 'Utilisateur invité à la mission avec succès',
         'MESSAGE_APPLICATION_CREATED' => 'Appliqué pour une mission avec succès',
         'MESSAGE_MISSION_VOLUNTEERS_LISTING' => 'Obtenez des volontaires de mission avec succès',
+        'MESSAGE_NO_MISSION_VOLUNTEERS_FOUND' => 'Aucun volontaire récent trouvé',
     ],
 
         

@@ -129,8 +129,8 @@ class MissionApplication extends Model
     /**
      * Find listing of a resource.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int $missionId
+     * @param \Illuminate\Http\Request  $request
+     * @param int $missionId
      * @return \Illuminate\Pagination\LengthAwarePaginator
      */
     public function getVolunteers(Request $request, int $missionId): LengthAwarePaginator

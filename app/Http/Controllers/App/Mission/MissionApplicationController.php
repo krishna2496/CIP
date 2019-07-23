@@ -1,13 +1,14 @@
 <?php
 namespace App\Http\Controllers\App\Mission;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Http\JsonResponse;
 use App\Repositories\MissionApplication\MissionApplicationRepository;
 use App\Helpers\ResponseHelper;
-use App\Http\Controllers\Controller;
 use PDOException;
-use Illuminate\Http\JsonResponse;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Traits\RestExceptionHandlerTrait;
 use Validator;
 
@@ -130,14 +131,20 @@ class MissionApplicationController extends Controller
     public function getVolunteers(Request $request, int $missionId): JsonResponse
     {
         try {
-            $volunteers = $this->missionApplicationRepository->missionVolunteerDetail($request, $missionId);
-
+            $recentVolunteers = $this->missionApplicationRepository->missionVolunteerDetail($request, $missionId);
+           
             // Set response data
-            $apiData = $volunteers;
+            $apiData = $recentVolunteers;
             $apiStatus = Response::HTTP_OK;
-            $apiMessage = trans('messages.success.MESSAGE_MISSION_VOLUNTEERS_LISTING');
+            $apiMessage = (!is_null($recentVolunteers)) ? trans('messages.success.MESSAGE_MISSION_VOLUNTEERS_LISTING')
+            : trans('messages.success.MESSAGE_NO_MISSION_VOLUNTEERS_FOUND');
             
             return $this->responseHelper->successWithPagination($apiStatus, $apiMessage, $apiData);
+        } catch (ModelNotFoundException $e) {
+            return $this->modelNotFound(
+                config('constants.error_codes.ERROR_MISSION_NOT_FOUND'),
+                trans('messages.custom_error_message.ERROR_MISSION_NOT_FOUND')
+            );
         } catch (PDOException $e) {
             return $this->PDO(
                 config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
