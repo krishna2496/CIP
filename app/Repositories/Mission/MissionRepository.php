@@ -785,27 +785,27 @@ class MissionRepository implements MissionInterface
     }
     
     /**
-     *Get detail of mission.
+     * Get detail of mission.
      *
      * @param Illuminate\Http\Request $request
-     * @param Array $userFilterData
      * @param int $languageId
-     * @param int $misionId
+     * @param int $missionId
      * @return \Illuminate\Pagination\LengthAwarePaginator
      */
     public function appMission(
         Request $request,
-        array $userFilterData,
         int $languageId,
-        int $misionId
+        int $missionId
     ): LengthAwarePaginator {
+        $mission = $this->mission->findOrFail($missionId);
         $missionData = [];
         // Get  mission data
-        $missionQuery = $this->mission->select('mission.*');
+        $missionQuery = $this->mission->select('mission.*')->where('mission.mission_id', $missionId);
         $missionQuery->leftjoin('time_mission', 'mission.mission_id', '=', 'time_mission.mission_id');
+        // $missionQuery->leftjoin('goal_mission', 'mission.mission_id', '=', 'goal_mission.mission_id');
         $missionQuery->where('publication_status', config("constants.publication_status")["APPROVED"])
-            ->with(['missionTheme', 'missionMedia', 'goalMission'
-            ])->with(['missionMedia' => function ($query) {
+            ->with(['missionTheme', 'missionMedia', 'goalMission', 'missionDocument'])
+            ->with(['missionMedia' => function ($query) {
                 $query->where('status', '1');
                 $query->where('default', '1');
             }])
@@ -824,125 +824,20 @@ class MissionRepository implements MissionInterface
             }])
             ->withCount(['favouriteMission as favourite_mission_count' => function ($query) use ($request) {
                 $query->Where('user_id', $request->auth->user_id);
-            }]);
+            }])
+            ;
         $missionQuery->withCount([
                 'missionRating as mission_rating_count' => function ($query) {
                     $query->select(DB::raw("AVG(rating) as rating"));
                 }
             ]);
-        $missionQuery->with(['missionRating']);
-        //Explore mission by top favourite
-        if ($request->has('explore_mission_type') &&
-        ($request->input('explore_mission_type') == config('constants.TOP_FAVOURITE'))) {
-            $missionQuery->withCount(['favouriteMission as favourite_mission_count']);
-            $missionQuery->orderBY('favourite_mission_count', 'desc');
-        }
+        $missionQuery->with(['missionRating'  => function ($query) use ($request) {
+            $query->Where('user_id', $request->auth->user_id);
+        }]);
+        $missionQuery->withCount(['favouriteMission as favourite_mission_count']);
 
-        //Explore mission by most ranked
-        if ($request->has('explore_mission_type') &&
-        ($request->input('explore_mission_type') == config('constants.MOST_RANKED'))) {
-            $missionQuery->orderBY('mission_rating_count', 'desc');
-        }
-
-        //Explore mission recommended to user
-        if ($request->has('explore_mission_type') &&
-        ($request->input('explore_mission_type') == config('constants.TOP_RECOMMENDED'))) {
-            $missionQuery->withCount(['missionInvite as mission_invite_count' => function ($query) use ($request) {
-                $query->where('to_user_id', $request->auth->user_id);
-            }]);
-
-            $missionQuery->orderBY('mission_invite_count', 'desc');
-            $missionQuery->whereHas('missionInvite', function ($countryQuery) use ($request) {
-                $countryQuery->where('to_user_id', $request->auth->user_id);
-            });
-        }
-
-        //Explore mission by random
-        if ($request->has('explore_mission_type') &&
-        ($request->input('explore_mission_type') == config('constants.RANDOM'))) {
-            $missionQuery->inRandomOrder();
-        }
-        
-        // Explore mission by country
-        if ($request->has('explore_mission_type') && $request->input('explore_mission_type') != '') {
-            if ($request->input('explore_mission_type') == config('constants.THEME')) {
-                $missionQuery->Where("mission.theme_id", $request->input('explore_mission_params'));
-            }
-            if ($request->input('explore_mission_type') == config('constants.COUNTRY')) {
-                $missionQuery->Where(function ($query) use ($request) {
-                    $query->wherehas('country', function ($countryQuery) use ($request) {
-                        $countryQuery->where('name', 'like', '%' . $request->input('explore_mission_params') . '%');
-                    });
-                });
-            }
-            if ($request->input('explore_mission_type') == config('constants.ORGANIZATION')) {
-                $missionQuery->Where(
-                    'organisation_name',
-                    'like',
-                    '%' . $request->input('explore_mission_params') . '%'
-                );
-            }
-        }
-        
-        //Explore mission by theme
-        if ($userFilterData['search'] && $userFilterData['search'] != '') {
-            $missionQuery->Where(function ($query) use ($userFilterData) {
-                $query->wherehas('missionLanguage', function ($missionLanguageQuery) use ($userFilterData) {
-                    $missionLanguageQuery->Where('title', 'like', '%' . $userFilterData['search'] . '%');
-                    $missionLanguageQuery->orWhere('short_description', 'like', '%' . $userFilterData['search'] . '%');
-                });
-                $query->orWhere(function ($organizationQuery) use ($userFilterData) {
-                    $organizationQuery->orWhere('organisation_name', 'like', '%' . $userFilterData['search'] . '%');
-                });
-            });
-        }
-
-        if ($userFilterData['country_id'] && $userFilterData['country_id'] != '') {
-            $missionQuery->Where("mission.country_id", $userFilterData['country_id']);
-        }
-
-        if ($userFilterData['city_id'] && $userFilterData['city_id'] != '') {
-            $missionQuery->whereIn("mission.city_id", explode(",", $userFilterData['city_id']));
-        }
-
-        if ($userFilterData['theme_id'] && $userFilterData['theme_id'] != '') {
-            $missionQuery->whereIn("mission.theme_id", explode(",", $userFilterData['theme_id']));
-        }
-
-        if ($userFilterData['skill_id'] && $userFilterData['skill_id'] != '') {
-            $missionQuery->wherehas('missionSkill', function ($skillQuery) use ($userFilterData) {
-                $skillQuery->whereIn("skill_id", explode(",", $userFilterData['skill_id']));
-            });
-        }
-
-        if ($userFilterData['sort_by'] && $userFilterData['sort_by'] != '') {
-            if ($userFilterData['sort_by'] == config('constants.NEWEST')) {
-                $missionQuery->orderBY('mission.created_at', 'desc');
-            }
-            if ($userFilterData['sort_by'] == config('constants.OLDEST')) {
-                $missionQuery->orderBY('mission.created_at', 'asc');
-            }
-            if ($userFilterData['sort_by'] == config('constants.LOWEST_AVAILABLE_SEATS')) {
-                $missionQuery->orderByRaw('total_seats - mission_application_count asc');
-            }
-            if ($userFilterData['sort_by'] == config('constants.HIGHEST_AVAILABLE_SEATS')) {
-                $missionQuery->orderByRaw('total_seats - mission_application_count desc');
-            }
-            if ($userFilterData['sort_by'] == config('constants.MY_FAVOURITE')) {
-                $missionQuery->withCount(['favouriteMission as favourite_mission_count'
-                    => function ($query) use ($request) {
-                        $query->Where('user_id', $request->auth->user_id);
-                    }]);
-                $missionQuery->orderBY('favourite_mission_count', 'desc');
-            }
-            if ($userFilterData['sort_by'] == config('constants.DEADLINE')) {
-                $missionQuery->orderBy(
-                    \DB::raw('time_mission.application_deadline IS NULL, time_mission.application_deadline'),
-                    'asc'
-                );
-            }
-        }
         $mission =  $missionQuery->paginate($request->perPage);
+        // $mission =  $missionQuery->paginate($request->perPage);
         return $mission;
     }
 }

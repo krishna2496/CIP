@@ -239,7 +239,6 @@ class Mission extends Model
         Carbon::parse($value, config('constants.TIMEZONE'))->setTimezone(config('app.TIMEZONE')) : null;
     }
 
-    
     /**
      * Get start date attribute from the model.
      *
@@ -249,10 +248,10 @@ class Mission extends Model
     {
         if (isset($this->attributes['start_date']) && !empty(config('constants.TIMEZONE'))) {
             return Carbon::parse($this->attributes['start_date'])->setTimezone(config('constants.TIMEZONE'));
-		}
+        }
     }
-	
-	/**
+    
+    /**
      * Set end date attribute on the model.
      *
      * @param  mixed   $value
@@ -263,7 +262,7 @@ class Mission extends Model
         $this->attributes['end_date'] = ($value != null) ?
         Carbon::parse($value, config('constants.TIMEZONE'))->setTimezone(config('app.TIMEZONE')) : null;
     }
-	
+    
     /**
      * Get end date attribute from the model.
      *
@@ -275,7 +274,7 @@ class Mission extends Model
             return Carbon::parse($this->attributes['end_date'])->setTimezone(config('constants.TIMEZONE'));
         }
     }
-	
+    
     /*
     * Check seats are available or not.
     *

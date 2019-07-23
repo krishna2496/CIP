@@ -557,14 +557,16 @@ class MissionController extends Controller
             // $filterTagArray = $this->missionFiltersTag($request, $language, $userFilters);
             // $userFilterData = $userFilters->toArray()["filters"];
            
-            $mission = $this->missionRepository->appMission($request, $userFilterData, $languageId, $missionId);
+            $mission = $this->missionRepository->appMission($request, $languageId, $missionId);
 
             foreach ($mission as $key => $value) {
                 if (isset($value->goalMission)) {
                     $value->goal_objective  = $value->goalMission->goal_objective;
                     unset($value->goalMission);
                 }
+                $value->my_rating  = $value->missionRating->rating;
 
+// dd($value->missionRating);
                 if (isset($value->timeMission)) {
                     $value->application_deadline = $value->timeMission->application_deadline;
                     $value->application_start_date = $value->timeMission->application_start_date;
@@ -587,10 +589,10 @@ class MissionController extends Controller
                     $value->already_volunteered = $value->mission_application_count;
                 }
     
-                // Get defalut media image
-                $value->default_media_type = $value->missionMedia[0]->media_type ?? '';
-                $value->default_media_path = $value->missionMedia[0]->media_path ?? '';
-                unset($value->missionMedia);
+                // // Get defalut media image
+                // $value->default_media_type = $value->missionMedia[0]->media_type ?? '';
+                // $value->default_media_path = $value->missionMedia[0]->media_path ?? '';
+                // unset($value->missionMedia);
     
                 // Set title and description
                 $value->title = $value->missionLanguage[0]->title ?? '';
@@ -628,6 +630,7 @@ class MissionController extends Controller
                 trans('messages.custom_error_message.ERROR_MISSION_NOT_FOUND')
             );
         } catch (PDOException $e) {
+            dd($e);
             return $this->PDO(
                 config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
                 trans(
@@ -635,6 +638,7 @@ class MissionController extends Controller
                 )
             );
         } catch (\Exception $e) {
+            dd($e);
             throw new \Exception(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
