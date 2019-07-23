@@ -114,7 +114,10 @@ export default {
             show: false,
             isComponentVisible:false,
             tagsFilter : [],
-            quickAccessFilterSet:true
+            quickAccessFilterSet:true,
+            isCountryChange: false,
+            isCityChange: false,
+            isThemeChange: false
         };
     },
     methods: {
@@ -176,7 +179,8 @@ export default {
             });
         },
 
-        changeCountry(country) {
+        async changeCountry(country) {
+            this.isCountryChange = true;
             this.selectedfilterParams.countryId = country.selectedId;
             if(country.selectedId != ''){
                 this.defautCountry = country.selectedVal.replace(/<\/?("[^"]*"|'[^']*'|[^>])*(>|$)/g,""); 
@@ -195,7 +199,7 @@ export default {
             filters.exploreMissionParams = '';
             store.commit("exploreFilter",filters);
             this.$router.push({ name: 'home' })
-            filterList(this.selectedfilterParams).then( response => {
+            await filterList(this.selectedfilterParams).then( response => {
                 if (response) {       
                     if(response.city) {             
                         this.cityList = Object.entries(response.city);
@@ -214,62 +218,72 @@ export default {
                 }
                 this.$parent.searchMissions(this.search,this.selectedfilterParams);        
             });
-
+            this.isCountryChange = false;
         },
 
-        changeCity(city) {
-            this.selectedfilterParams.cityId = city;
-            this.selectedfilterParams.themeId = '';
-            this.themeList = [];
-            this.skillList = [];
-            let filters = {};
-            filters.exploreMissionType = '';
-            filters.exploreMissionParams = '';
-            store.commit("exploreFilter",filters);
-            this.$router.push({ name: 'home' })
-            filterList(this.selectedfilterParams).then( response => {
-                if (response) {
-                    if(response.themes) {                   
-                        this.themeList = Object.entries(response.themes);
-                        this.selectedTheme = [];
-                    }
+        async changeCity(city) {            
+            this.isCityChange = true;
+            if(!this.isCountryChange) {
+                this.selectedfilterParams.cityId = city;
+                this.selectedfilterParams.themeId = '';
+                this.themeList = [];
+                this.skillList = [];
+                let filters = {};
+                filters.exploreMissionType = '';
+                filters.exploreMissionParams = '';
+                store.commit("exploreFilter",filters);
+                this.$router.push({ name: 'home' })
+                await filterList(this.selectedfilterParams).then( response => {
+                    if (response) {
+                        if(response.themes) {                   
+                            this.themeList = Object.entries(response.themes);
+                            this.selectedTheme = [];
+                        }
 
-                    if(response.skill) {
-                        this.skillList = Object.entries(response.skill);
-                        this.selectedSkill = []; 
-                    } 
-                }
-                this.$parent.searchMissions(this.search,this.selectedfilterParams);
-            });  
+                        if(response.skill) {
+                            this.skillList = Object.entries(response.skill);
+                            this.selectedSkill = []; 
+                        } 
+                    }
+                    this.$parent.searchMissions(this.search,this.selectedfilterParams);
+                });
+                this.isCityChange = false;
+            }
         },
 
-        changeTheme(theme) {
-            this.selectedfilterParams.themeId = theme;
-            this.skillList = [];
-            let filters = {};
-            filters.exploreMissionType = '';
-            filters.exploreMissionParams = '';
-            store.commit("exploreFilter",filters);
-            this.$router.push({ name: 'home' })
-            filterList(this.selectedfilterParams).then( response => {
-                if (response) {   
-                    if(response.skill) {                 
-                        this.skillList = Object.entries(response.skill);
-                        this.selectedSkill = [];
-                    }
-                }  
-                this.$parent.searchMissions(this.search,this.selectedfilterParams);              
-            });   
+        async changeTheme(theme) {
+            this.isThemeChange = true;
+            if(!this.isCountryChange && !this.isCityChange) {
+                this.selectedfilterParams.themeId = theme;
+                this.skillList = [];
+                let filters = {};
+                filters.exploreMissionType = '';
+                filters.exploreMissionParams = '';
+                store.commit("exploreFilter",filters);
+                this.$router.push({ name: 'home' })
+                await filterList(this.selectedfilterParams).then( response => {
+                    if (response) {   
+                        if(response.skill) {                 
+                            this.skillList = Object.entries(response.skill);
+                            this.selectedSkill = [];
+                        }
+                    }  
+                    this.$parent.searchMissions(this.search,this.selectedfilterParams);              
+                });   
+                this.isThemeChange = false;
+            }
         },
 
         changeSkill(skill) {
-            this.selectedfilterParams.skillId = skill;
-            let filters = {};
-            filters.exploreMissionType = '';
-            filters.exploreMissionParams = '';
-            store.commit("exploreFilter",filters);
-            this.$router.push({ name: 'home' }) 
-            this.$parent.searchMissions(this.search,this.selectedfilterParams);    
+            if (!this.isCountryChange && !this.isCityChange && !this.isThemeChange ) {
+                this.selectedfilterParams.skillId = skill;
+                let filters = {};
+                filters.exploreMissionType = '';
+                filters.exploreMissionParams = '';
+                store.commit("exploreFilter",filters);
+                this.$router.push({ name: 'home' }) 
+                this.$parent.searchMissions(this.search,this.selectedfilterParams);
+            }    
         },
 
         // Filter listing
