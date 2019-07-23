@@ -834,7 +834,10 @@ class MissionRepository implements MissionInterface
         $missionQuery->with(['missionRating'  => function ($query) use ($request) {
             $query->Where('user_id', $request->auth->user_id);
         }]);
-        $missionQuery->withCount(['favouriteMission as favourite_mission_count']);
+        $missionQuery->with(['favouriteMission'  => function ($query) use ($request) {
+            $query->Where('user_id', $request->auth->user_id);
+        }]);
+        // $missionQuery->withCount(['favouriteMission as favourite_mission_count']);
 
         $mission =  $missionQuery->paginate($request->perPage);
         // $mission =  $missionQuery->paginate($request->perPage);

@@ -564,7 +564,9 @@ class MissionController extends Controller
                     $value->goal_objective  = $value->goalMission->goal_objective;
                     unset($value->goalMission);
                 }
-                $value->my_rating  = $value->missionRating->rating;
+
+                $value->my_rating  = $value->missionRating[0]->rating;
+                $value->is_favourite  = (empty($value->favouriteMission)) ? 0 : 1;
 
 // dd($value->missionRating);
                 if (isset($value->timeMission)) {
