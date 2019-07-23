@@ -62,6 +62,8 @@ return [
         'MESSAGE_INVITED_FOR_MISSION' => 'User invited to mission successfully',
         'MESSAGE_APPLICATION_CREATED' => 'You have successfully applied for this mission',
         'MESSAGE_RATING_ADDED' => 'Mission rating added successfully',
+        'MESSAGE_MISSION_VOLUNTEERS_LISTING' => 'Get mission volunteers successfully',
+        'MESSAGE_NO_MISSION_VOLUNTEERS_FOUND' => 'No recent volunteers found',
     ],
 
         

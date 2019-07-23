@@ -1,13 +1,14 @@
 <?php
 namespace App\Http\Controllers\App\Mission;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Http\JsonResponse;
 use App\Repositories\MissionApplication\MissionApplicationRepository;
 use App\Helpers\ResponseHelper;
-use App\Http\Controllers\Controller;
 use PDOException;
-use Illuminate\Http\JsonResponse;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Traits\RestExceptionHandlerTrait;
 use Validator;
 
@@ -110,6 +111,40 @@ class MissionApplicationController extends Controller
             $apiMessage = trans('messages.success.MESSAGE_APPLICATION_CREATED');
             
             return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
+        } catch (PDOException $e) {
+            return $this->PDO(
+                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
+                trans('messages.custom_error_message.ERROR_DATABASE_OPERATIONAL')
+            );
+        } catch (\Exception $e) {
+            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
+        }
+    }
+
+    /**
+     * Get recent volunteers
+     *
+     * @param Illuminate\Http\Request $request
+     * @param int $missionId
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getVolunteers(Request $request, int $missionId): JsonResponse
+    {
+        try {
+            $missionVolunteers = $this->missionApplicationRepository->missionVolunteerDetail($request, $missionId);
+           
+            // Set response data
+            $apiData = $missionVolunteers;
+            $apiStatus = Response::HTTP_OK;
+            $apiMessage = (!is_null($missionVolunteers)) ? trans('messages.success.MESSAGE_MISSION_VOLUNTEERS_LISTING')
+            : trans('messages.success.MESSAGE_NO_MISSION_VOLUNTEERS_FOUND');
+            
+            return $this->responseHelper->successWithPagination($apiStatus, $apiMessage, $apiData);
+        } catch (ModelNotFoundException $e) {
+            return $this->modelNotFound(
+                config('constants.error_codes.ERROR_MISSION_NOT_FOUND'),
+                trans('messages.custom_error_message.ERROR_MISSION_NOT_FOUND')
+            );
         } catch (PDOException $e) {
             return $this->PDO(
                 config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
