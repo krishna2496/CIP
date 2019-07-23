@@ -110,7 +110,7 @@ class MissionApplicationRepository implements MissionApplicationInterface
             'user_id' => $userId,
             'motivation' => $request['motivation'] ?? '',
             'availability_id' => $request['availability_id'],
-			'approval_status' => config('constants.application_status.PENDING')
+            'approval_status' => config('constants.application_status.PENDING')
         );
         return $this->missionApplication->create($application);
     }

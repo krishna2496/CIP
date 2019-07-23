@@ -90,6 +90,13 @@ $router->group(['middleware' => 'localization'], function ($router) {
         ['middleware' => 'tenant.connection|jwt.auth|JsonApiMiddleware',
         'uses' => 'App\Mission\MissionApplicationController@missionApplication']
     );
+
+    /* Store mission ratings */
+    $router->post(
+        'app/mission/rating',
+        ['middleware' => 'tenant.connection|jwt.auth|JsonApiMiddleware',
+        'uses' => 'App\Mission\MissionRatingController@store']
+    );
     
     /* Fetch user */
     $router->get('/app/user', ['as' =>'app.user',

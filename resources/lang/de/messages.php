@@ -61,6 +61,7 @@ return [
         'MESSAGE_TENANT_OPTION_FOUND' => 'DE: Tenant option found', 
         'MESSAGE_INVITED_FOR_MISSION' => 'DE: User invited to mission successfully',
         'MESSAGE_APPLICATION_CREATED' => 'DE: Applied for a mission successfully',
+        'MESSAGE_RATING_ADDED' => 'DE: Mission rating added successfully',
     ],
 
         
@@ -106,7 +107,8 @@ return [
         'ERROR_MISSION_APPLICATION_DEADLINE_PASSED' => 'DE: Application deadline is passed. You cannot apply for this mission',
         'ERROR_MISSION_APPLICATION_ALREADY_ADDED' => 'DE: You have already applied for this mission',
         'ERROR_MISSION_APPLICATION_NOT_FOUND' => 'DE: Requested mission application does not exist',
-
+        'ERROR_MISSION_RATING_INVALID_DATA' => 'DE: Mission rating creation failed. Please check input parameters',
+               
         // Custom error code for Tenant Authorization - 210000 - 219999
         'ERROR_INVALID_API_AND_SECRET_KEY' => 'DE: Invalid API Key or Secret key',
         'ERROR_API_AND_SECRET_KEY_REQUIRED' => 'DE: API key and Secret key are required',

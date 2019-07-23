@@ -15,6 +15,7 @@ use App\Models\MissionMedia;
 use App\Models\FavouriteMission;
 use App\Models\MissionSkill;
 use App\Models\TimeMission;
+use App\Models\MissionRating;
 use DB;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
@@ -58,6 +59,11 @@ class MissionRepository implements MissionInterface
     private $missionSkill;
 
     /**
+     * @var App\models\MissionRating
+     */
+    private $missionRating;
+
+    /**
      * Create a new Mission repository instance.
      *
      * @param  App\Models\Mission $mission
@@ -69,6 +75,7 @@ class MissionRepository implements MissionInterface
      * @param  Illuminate\Http\S3Helper $s3helper
      * @param App\Models\MissionSkill
      * @param  App\Models\FavouriteMission $favouriteMission
+     * @param  App\Models\MissionRating $missionRating
      * @return void
      */
     public function __construct(
@@ -81,7 +88,8 @@ class MissionRepository implements MissionInterface
         Helpers $helpers,
         S3Helper $s3helper,
         FavouriteMission $favouriteMission,
-        MissionSkill $missionSkill
+        MissionSkill $missionSkill,
+        MissionRating $missionRating
     ) {
         $this->mission = $mission;
         $this->missionLanguage = $missionLanguage;
@@ -93,6 +101,7 @@ class MissionRepository implements MissionInterface
         $this->s3helper = $s3helper;
         $this->favouriteMission = $favouriteMission;
         $this->missionSkill = $missionSkill;
+        $this->missionRating = $missionRating;
     }
     
     /**
@@ -487,7 +496,7 @@ class MissionRepository implements MissionInterface
             }])
             ->withCount(['missionApplication as mission_application_count' => function ($query) use ($request) {
                 $query->whereIn('approval_status', [config("constants.application_status")["AUTOMATICALLY_APPROVED"],
-				config("constants.application_status")["PENDING"]]);
+                config("constants.application_status")["PENDING"]]);
             }])
             ->withCount(['favouriteMission as favourite_mission_count' => function ($query) use ($request) {
                 $query->Where('user_id', $request->auth->user_id);
@@ -759,5 +768,19 @@ class MissionRepository implements MissionInterface
     public function getMissionName(int $missionId, $languageId): string
     {
         return $this->missionLanguage->getMissionName($missionId, $languageId);
+    }
+
+    /**
+     * Add/update mission rating.
+     *
+     * @param int $userId
+     * @param array $request
+     * @return App\Models\MissionRating
+     */
+    public function storeMissionRating(int $userId, array $request): MissionRating
+    {
+        $missionRating = array('rating' => $request['rating']);
+        return $this->missionRating->createOrUpdateRating(['mission_id' => $request['mission_id'],
+        'user_id' => $userId], $missionRating);
     }
 }
