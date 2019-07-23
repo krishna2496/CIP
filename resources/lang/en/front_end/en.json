@@ -76,7 +76,10 @@
 		"recent_volunteers" : "Recent Volunteers",
 		"comment" : "Comments",
 		"read_more_comments" :"Read more comments",
-		"post_comment" : "Post comment"
+		"post_comment" : "Post comment",
+		"comments" : "Comments",
+		"documents" : "Documents",
+		"read_more_comment" : "Read more comment"
 	},
 
 	"placeholder" : {
