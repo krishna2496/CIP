@@ -132,11 +132,11 @@ class MissionApplicationController extends Controller
     {
         try {
             $missionVolunteers = $this->missionApplicationRepository->missionVolunteerDetail($request, $missionId);
-           
+
             // Set response data
             $apiData = $missionVolunteers;
             $apiStatus = Response::HTTP_OK;
-            $apiMessage = (!is_null($missionVolunteers)) ? trans('messages.success.MESSAGE_MISSION_VOLUNTEERS_LISTING')
+            $apiMessage = (count($missionVolunteers) > 0) ? trans('messages.success.MESSAGE_MISSION_VOLUNTEERS_LISTING')
             : trans('messages.success.MESSAGE_NO_MISSION_VOLUNTEERS_FOUND');
             
             return $this->responseHelper->successWithPagination($apiStatus, $apiMessage, $apiData);
