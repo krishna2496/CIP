@@ -192,7 +192,7 @@ class SkillController extends Controller
                 $skillDetail = $this->skillRepository->find($id);
             } catch (ModelNotFoundException $e) {
                 return $this->modelNotFound(
-                    config('constants.error_codes.ERROR_USER_NOT_FOUND'),
+                    config('constants.error_codes.ERROR_SKILL_NOT_FOUND'),
                     $e->getMessage()
                 );
             }

@@ -119,7 +119,7 @@ class SkillRepository implements SkillInterface
             return $this->skill->findSkill($id);
         } catch (ModelNotFoundException $e) {
             throw new ModelNotFoundException(
-                trans('messages.custom_error_message.ERROR_USER_NOT_FOUND')
+                trans('messages.custom_error_message.ERROR_SKILL_NOT_FOUND')
             );
         }
     }
