@@ -135,12 +135,12 @@ class MissionApplication extends Model
      */
     public function getVolunteers(Request $request, int $missionId): LengthAwarePaginator
     {
-        $missionApplication = $this->where('mission_id', $missionId)
+        $missionVolunteers = $this->select('user.user_id', 'user.first_name', 'user.last_name', 'user.avatar')
+        ->where('mission_id', $missionId)
         ->where('approval_status', config("constants.application_status")["AUTOMATICALLY_APPROVED"])
         ->leftJoin('user', 'mission_application.user_id', '=', 'user.user_id')
-        ->select('user.user_id', 'user.first_name', 'user.last_name', 'user.avatar')
         ->orderBy('mission_application.mission_application_id', 'desc')
         ->paginate($request->perPage);
-        return $missionApplication;
+        return $missionVolunteers;
     }
 }

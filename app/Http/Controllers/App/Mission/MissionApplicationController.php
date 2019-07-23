@@ -131,12 +131,12 @@ class MissionApplicationController extends Controller
     public function getVolunteers(Request $request, int $missionId): JsonResponse
     {
         try {
-            $recentVolunteers = $this->missionApplicationRepository->missionVolunteerDetail($request, $missionId);
+            $missionVolunteers = $this->missionApplicationRepository->missionVolunteerDetail($request, $missionId);
            
             // Set response data
-            $apiData = $recentVolunteers;
+            $apiData = $missionVolunteers;
             $apiStatus = Response::HTTP_OK;
-            $apiMessage = (!is_null($recentVolunteers)) ? trans('messages.success.MESSAGE_MISSION_VOLUNTEERS_LISTING')
+            $apiMessage = (!is_null($missionVolunteers)) ? trans('messages.success.MESSAGE_MISSION_VOLUNTEERS_LISTING')
             : trans('messages.success.MESSAGE_NO_MISSION_VOLUNTEERS_FOUND');
             
             return $this->responseHelper->successWithPagination($apiStatus, $apiMessage, $apiData);
