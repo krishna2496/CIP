@@ -102,6 +102,16 @@ $router->group(['middleware' => 'localization'], function ($router) {
     $router->get('/app/user', ['as' =>'app.user',
     'middleware' => 'tenant.connection|jwt.auth|PaginationMiddleware',
     'uses' => 'App\User\UserController@index']);
+
+    /* Fetch user */
+    $router->get('/app/user', ['as' =>'app.user',
+    'middleware' => 'tenant.connection|jwt.auth|PaginationMiddleware',
+    'uses' => 'App\User\UserController@index']);
+
+    /* Get mission detail  */
+     $router->get('/app/missions/{missionId}', [
+    'middleware' => 'localization|tenant.connection|jwt.auth',
+    'uses' => 'App\Mission\MissionController@appMission']);
 });
 
 

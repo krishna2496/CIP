@@ -534,4 +534,108 @@ class MissionController extends Controller
             return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
+    
+    /**
+     * Get missions detail
+     *
+     * @param Illuminate\Http\Request $request
+     * @param int $missionId
+     * @return Illuminate\Http\JsonResponse
+     */
+    public function appMission(Request $request, int $missionId): JsonResponse
+    {
+        try {
+            $languages = $this->languageHelper->getLanguages($request);
+            $language = ($request->hasHeader('X-localization')) ?
+            $request->header('X-localization') : env('TENANT_DEFAULT_LANGUAGE_CODE');
+            $language = $languages->where('code', $language)->first();
+            $languageId = $language->language_id;
+            //Save User search data
+            // $this->userFilterRepository->saveFilter($request);
+            // Get users filter
+            // $userFilters = $this->userFilterRepository->userFilter($request);
+            // $filterTagArray = $this->missionFiltersTag($request, $language, $userFilters);
+            // $userFilterData = $userFilters->toArray()["filters"];
+           
+            $mission = $this->missionRepository->appMission($request, $userFilterData, $languageId, $missionId);
+
+            foreach ($mission as $key => $value) {
+                if (isset($value->goalMission)) {
+                    $value->goal_objective  = $value->goalMission->goal_objective;
+                    unset($value->goalMission);
+                }
+
+                if (isset($value->timeMission)) {
+                    $value->application_deadline = $value->timeMission->application_deadline;
+                    $value->application_start_date = $value->timeMission->application_start_date;
+                    $value->application_end_date = $value->timeMission->application_end_date;
+                    $value->application_start_time = $value->timeMission->application_start_time;
+                    $value->application_end_time = $value->timeMission->application_end_time;
+
+                    unset($value->timeMission);
+                    unset($value->goalMission);
+                }
+
+                unset($value->city);
+                if ($value->mission_type == config("constants.MISSION_TYPE['GOAL']")) {
+                    //Progress bar for goal
+                }
+    
+                if ($value->total_seats != 0 && $value->total_seats !== null) { //With limited seats
+                    $value->seats_left = ($value->total_seats) - ($value->mission_application_count);
+                } else { //Unlimeted seats
+                    $value->already_volunteered = $value->mission_application_count;
+                }
+    
+                // Get defalut media image
+                $value->default_media_type = $value->missionMedia[0]->media_type ?? '';
+                $value->default_media_path = $value->missionMedia[0]->media_path ?? '';
+                unset($value->missionMedia);
+    
+                // Set title and description
+                $value->title = $value->missionLanguage[0]->title ?? '';
+                $value->short_description = $value->missionLanguage[0]->short_description ?? '';
+                $value->objective = $value->missionLanguage[0]->objective ?? '';
+                unset($value->missionLanguage);
+    
+                // Check for apply in mission validity
+                $value->set_view_detail = 0;
+                $today = $this->helpers->getUserTimeZoneDate(date(config("constants.DB_DATE_FORMAT")));
+                
+                if (($value->user_application_count > 0) ||
+                    ($value->application_deadline !== null && $value->application_deadline < $today) ||
+                    ($value->total_seats != 0 && $value->total_seats == $value->mission_application_count) ||
+                    ($value->end_date !== null && $value->end_date < $today)
+                    // || ($value->mission_type != 'GOAL' && $value->goal_objective ==  $today)
+                ) {
+                    $value->set_view_detail = 1;
+                }
+                $value->mission_rating_count = $value->mission_rating_count ?? 0;
+            }
+            // $metaData['filters'] = $userFilterData;
+            // $metaData['filters']["tags"] = $filterTagArray;
+            $apiData = $mission;
+            $apiStatus = Response::HTTP_OK;
+            $apiMessage = trans('messages.success.MESSAGE_MISSION_LISTING');
+            return $this->responseHelper->successWithPagination(
+                $apiStatus,
+                $apiMessage,
+                $apiData
+            );
+        } catch (ModelNotFoundException $e) {
+            return $this->modelNotFound(
+                config('constants.error_codes.ERROR_MISSION_NOT_FOUND'),
+                trans('messages.custom_error_message.ERROR_MISSION_NOT_FOUND')
+            );
+        } catch (PDOException $e) {
+            return $this->PDO(
+                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
+                trans(
+                    'messages.custom_error_message.ERROR_DATABASE_OPERATIONAL'
+                )
+            );
+        } catch (\Exception $e) {
+            throw new \Exception(trans('messages.custom_error_message.ERROR_OCCURRED'));
+        }
+    }
 }
