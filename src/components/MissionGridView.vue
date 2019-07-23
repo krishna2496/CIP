@@ -45,7 +45,7 @@
                                     </svg>
                                     </i>
                                      <i class="hover-img">
-                                       <svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+                                        <svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
                                             viewBox="0 0 492.7 426.8" style="enable-background:new 0 0 492.7 426.8;" xml:space="preserve">
                                         <g>
                                             <g id="Icons_18_">
@@ -197,7 +197,7 @@
                                     </b-button>
                                 </b-link>
 
-                                <b-link v-if="mission.set_view_detail == 1" :to="'/mission_detail/' + mission.mission_id">
+                                <b-link v-if="mission.set_view_detail == 1" :to="'/mission-detail/' + mission.mission_id">
                                     <b-button class="btn-bordersecondary icon-btn" >
                                         <span>{{ $t("label.view_detail") }}</span>
                                     <i>

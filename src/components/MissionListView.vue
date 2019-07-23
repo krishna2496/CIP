@@ -109,7 +109,7 @@
                                             </i>
                                         </b-button>
                                     </b-link>
-                                    <b-link v-if="mission.set_view_detail == 1" :to="'/mission_detail/' + mission.mission_id">
+                                    <b-link v-if="mission.set_view_detail == 1" :to="'/mission-detail/' + mission.mission_id">
                                         <b-button class="btn-bordersecondary icon-btn" >
                                             <span>{{ $t("label.view_detail") }}</span>
                                             <i>

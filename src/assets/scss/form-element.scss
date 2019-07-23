@@ -232,6 +232,8 @@ label {
     font-size: 14px;
     width: 100%;
     white-space: nowrap;
+    display: flex;
+    justify-content: space-between;
 
     @include md-max {
       word-break: break-word;

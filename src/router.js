@@ -40,13 +40,13 @@ let routes = [{
     name: 'forgotPassword',
     component: () =>
         import ('./views/Auth/ForgotPassword.vue')
-}, {
+}, 
+{
     path: '/:slug',
     name: 'cms',
     component: () =>
         import ('./views/Cms.vue')
 },
-
 {
     path: '/home/:searchParamsType',
     name: 'exploreMissions',
@@ -56,7 +56,15 @@ let routes = [{
     component: () =>
         import ('./views/Home.vue')
 },
-
+{
+    path: '/mission-detail/:misisonId',
+    name: 'missionDetail',
+    meta: {
+        requiresAuth: true
+    },
+    component: () =>
+        import ('./views/MissionDetail.vue')
+},
 ];
 
 export default new Router({

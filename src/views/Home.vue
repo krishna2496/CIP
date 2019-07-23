@@ -282,11 +282,12 @@ export default {
                 }
                 if(store.state.sortBy != null && store.state.sortBy != '') {
                     var sortBy = store.state.sortBy;
-                    var sortByFilter = sortBy[0].toUpperCase() + sortBy.slice(1);
                     var _this = this;
                     setTimeout(function(){ 
-                        _this.sortByDefault =  sortByFilter.split('_').join(' ');
-                    },300);
+                        var labelString = 'label.'
+                        var sortByValue = labelString.concat(sortBy); 
+                        _this.sortByDefault = _this.$i18n.t(sortByValue);
+                    },200);
                 }
               
             }); 
@@ -379,7 +380,7 @@ export default {
         this.missionFilter();
         searchUser().then(response => {
             this.userList = response;
-         });
+        });
                
         setTimeout(function(){ 
             _this.sortByDefault = _this.$i18n.t("label.sort_by");
