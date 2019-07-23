@@ -132,7 +132,7 @@ class MissionApplicationController extends Controller
     {
         try {
             $missionVolunteers = $this->missionApplicationRepository->missionVolunteerDetail($request, $missionId);
-        //    dd($missionVolunteers);
+
             // Set response data
             $apiData = $missionVolunteers;
             $apiStatus = Response::HTTP_OK;
