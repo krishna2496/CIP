@@ -790,24 +790,30 @@ class MissionRepository implements MissionInterface
      * @param Illuminate\Http\Request $request
      * @param int $languageId
      * @param int $missionId
-     * @return \Illuminate\Pagination\LengthAwarePaginator
+     * @return \App\Models\Mission
      */
-    public function appMission(
-        Request $request,
-        int $languageId,
-        int $missionId
-    ): LengthAwarePaginator {
-        $mission = $this->mission->findOrFail($missionId);
+    public function appMission(Request $request, int $languageId, int $missionId): Mission
+    {
         $missionData = [];
-        // Get  mission data
-        $missionQuery = $this->mission->select('mission.*')->where('mission.mission_id', $missionId);
-        $missionQuery->leftjoin('time_mission', 'mission.mission_id', '=', 'time_mission.mission_id');
-        // $missionQuery->leftjoin('goal_mission', 'mission.mission_id', '=', 'goal_mission.mission_id');
+        // Get  mission detail
+        $missionQuery = $this->mission->select('mission.*');
         $missionQuery->where('publication_status', config("constants.publication_status")["APPROVED"])
-            ->with(['missionTheme', 'missionMedia', 'goalMission', 'missionDocument'])
+            ->with(['missionTheme', 'missionMedia', 'goalMission', 'missionDocument', 'timeMission'])
+            ->with(['missionSkill' => function ($query) {
+                $query->with('mission', 'skill');
+            }])
+            ->with(['missionApplication' => function ($query) use ($request) {
+                $query->where('user_id', $request->auth->user_id);
+            }])
             ->with(['missionMedia' => function ($query) {
                 $query->where('status', '1');
                 $query->where('default', '1');
+            }])
+            ->with(['missionRating'  => function ($query) use ($request) {
+                $query->Where('user_id', $request->auth->user_id);
+            }])
+            ->with(['favouriteMission'  => function ($query) use ($request) {
+                $query->Where('user_id', $request->auth->user_id);
             }])
             ->with(['missionLanguage' => function ($query) use ($languageId) {
                 $query->select('mission_language_id', 'mission_id', 'title', 'short_description', 'objective')
@@ -825,22 +831,11 @@ class MissionRepository implements MissionInterface
             ->withCount(['favouriteMission as favourite_mission_count' => function ($query) use ($request) {
                 $query->Where('user_id', $request->auth->user_id);
             }])
-            ;
-        $missionQuery->withCount([
+            ->withCount([
                 'missionRating as mission_rating_count' => function ($query) {
                     $query->select(DB::raw("AVG(rating) as rating"));
                 }
             ]);
-        $missionQuery->with(['missionRating'  => function ($query) use ($request) {
-            $query->Where('user_id', $request->auth->user_id);
-        }]);
-        $missionQuery->with(['favouriteMission'  => function ($query) use ($request) {
-            $query->Where('user_id', $request->auth->user_id);
-        }]);
-        // $missionQuery->withCount(['favouriteMission as favourite_mission_count']);
-
-        $mission =  $missionQuery->paginate($request->perPage);
-        // $mission =  $missionQuery->paginate($request->perPage);
-        return $mission;
+        return $missionQuery->findOrFail($missionId);
     }
 }

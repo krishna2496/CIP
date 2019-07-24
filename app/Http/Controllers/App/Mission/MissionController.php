@@ -550,97 +550,95 @@ class MissionController extends Controller
             $request->header('X-localization') : env('TENANT_DEFAULT_LANGUAGE_CODE');
             $language = $languages->where('code', $language)->first();
             $languageId = $language->language_id;
-            //Save User search data
-            // $this->userFilterRepository->saveFilter($request);
-            // Get users filter
-            // $userFilters = $this->userFilterRepository->userFilter($request);
-            // $filterTagArray = $this->missionFiltersTag($request, $language, $userFilters);
-            // $userFilterData = $userFilters->toArray()["filters"];
-           
-            $mission = $this->missionRepository->appMission($request, $languageId, $missionId);
 
-            foreach ($mission as $key => $value) {
-                if (isset($value->goalMission)) {
-                    $value->goal_objective  = $value->goalMission->goal_objective;
-                    unset($value->goalMission);
-                }
+            $missionData = $this->missionRepository->appMission($request, $languageId, $missionId);
+            $mission = $missionData->toArray();
 
-                $value->my_rating  = $value->missionRating[0]->rating;
-                $value->is_favourite  = (empty($value->favouriteMission)) ? 0 : 1;
-
-// dd($value->missionRating);
-                if (isset($value->timeMission)) {
-                    $value->application_deadline = $value->timeMission->application_deadline;
-                    $value->application_start_date = $value->timeMission->application_start_date;
-                    $value->application_end_date = $value->timeMission->application_end_date;
-                    $value->application_start_time = $value->timeMission->application_start_time;
-                    $value->application_end_time = $value->timeMission->application_end_time;
-
-                    unset($value->timeMission);
-                    unset($value->goalMission);
-                }
-
-                unset($value->city);
-                if ($value->mission_type == config("constants.MISSION_TYPE['GOAL']")) {
-                    //Progress bar for goal
-                }
-    
-                if ($value->total_seats != 0 && $value->total_seats !== null) { //With limited seats
-                    $value->seats_left = ($value->total_seats) - ($value->mission_application_count);
-                } else { //Unlimeted seats
-                    $value->already_volunteered = $value->mission_application_count;
-                }
-    
-                // // Get defalut media image
-                // $value->default_media_type = $value->missionMedia[0]->media_type ?? '';
-                // $value->default_media_path = $value->missionMedia[0]->media_path ?? '';
-                // unset($value->missionMedia);
-    
-                // Set title and description
-                $value->title = $value->missionLanguage[0]->title ?? '';
-                $value->short_description = $value->missionLanguage[0]->short_description ?? '';
-                $value->objective = $value->missionLanguage[0]->objective ?? '';
-                unset($value->missionLanguage);
-    
-                // Check for apply in mission validity
-                $value->set_view_detail = 0;
-                $today = $this->helpers->getUserTimeZoneDate(date(config("constants.DB_DATE_FORMAT")));
-                
-                if (($value->user_application_count > 0) ||
-                    ($value->application_deadline !== null && $value->application_deadline < $today) ||
-                    ($value->total_seats != 0 && $value->total_seats == $value->mission_application_count) ||
-                    ($value->end_date !== null && $value->end_date < $today)
-                    // || ($value->mission_type != 'GOAL' && $value->goal_objective ==  $today)
-                ) {
-                    $value->set_view_detail = 1;
-                }
-                $value->mission_rating_count = $value->mission_rating_count ?? 0;
+            if (isset($mission['goal_mission'])) {
+                $mission['goal_objective']  = $mission['goal_mission']['goal_objective'];
             }
-            // $metaData['filters'] = $userFilterData;
-            // $metaData['filters']["tags"] = $filterTagArray;
+            if (isset($mission['time_mission'])) {
+                $mission['application_deadline'] = $mission['time_mission']['application_deadline'];
+                $mission['application_start_date'] = $mission['time_mission']['application_start_date'];
+                $mission['application_end_date'] = $mission['time_mission']['application_end_date'];
+                $mission['application_start_time'] = $mission['time_mission']['application_start_time'];
+                $mission['application_end_time'] = $mission['time_mission']['application_end_time'];
+            }
+            unset($mission['goal_mission']);
+            unset($mission['time_mission']);
+
+            $mission['user_application_status']  = ($mission['mission_application'][0]['approval_status']) ?? '';
+            $mission['my_rating']  = ($mission['mission_rating'][0]['rating']) ?? 0;
+            $mission['is_favourite']  = (empty($mission['favourite_mission'])) ? 0 : 1;
+            unset($mission['mission_rating']);
+            unset($mission['favourite_mission']);
+            unset($mission['mission_application']);
+           
+            // Set seats_left or already_volunteered
+            if ($mission['total_seats'] != 0 && $mission['total_seats'] !== null) {
+                $mission['seats_left'] = ($mission['total_seats']) - ($mission['mission_application_count']);
+            } else {
+                $mission['already_volunteered'] = $mission['mission_application_count'];
+            }
+    
+            // Get defalut media image
+            $mission['default_media_type'] = $mission['mission_media'][0]['media_type'] ?? '';
+            $mission['default_media_path'] = $mission['mission_media'][0]['media_path'] ?? '';
+            unset($mission['mission_media']);
+            unset($mission['city']);
+    
+            // Set title and description
+            $mission['title'] = $mission['mission_language'][0]['title'] ?? '';
+            $mission['short_description'] = $mission['mission_language'][0]['short_description'] ?? '';
+            $mission['objective'] = $mission['mission_language'][0]['objective'] ?? '';
+            unset($mission['mission_language']);
+    
+            // Check for apply in mission validity
+            $mission['set_view_detail'] = 0;
+            $today = $this->helpers->getUserTimeZoneDate(date(config("constants.DB_DATE_FORMAT")));
+                
+            if (($mission['user_application_count'] > 0) ||
+                    (isset($mission['application_deadline']) && $mission['application_deadline'] < $today) ||
+                    ($mission['total_seats'] != 0
+                    && $mission['total_seats'] == $mission['mission_application_count']) ||
+                    ($mission['end_date'] !== null && $mission['end_date'] < $today)
+                ) {
+                $mission['set_view_detail'] = 1;
+            }
+            $mission['mission_rating_count'] = $mission['mission_rating_count'] ?? 0;
             $apiData = $mission;
+            if (!empty($mission['mission_skill'])) {
+                foreach ($mission['mission_skill'] as $key => $value) {
+                    if ($value['skill']) {
+                        $arrayKey = array_search($language->code, array_column(
+                            $value['skill']['translations'],
+                            'lang'
+                        ));
+                        if ($arrayKey  !== '') {
+                            $returnData[config('constants.SKILL')][$key]['title'] =
+                            $value['skill']['translations'][$arrayKey]['title'];
+                            $returnData[config('constants.SKILL')][$key]['id'] =
+                            $value['skill']['skill_id'];
+                        }
+                    }
+                }
+                $apiData[config('constants.SKILL')] = $returnData[config('constants.SKILL')];
+            }
+            unset($apiData['mission_skill']);
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_MISSION_LISTING');
-            return $this->responseHelper->successWithPagination(
-                $apiStatus,
-                $apiMessage,
-                $apiData
-            );
+            return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
                 config('constants.error_codes.ERROR_MISSION_NOT_FOUND'),
                 trans('messages.custom_error_message.ERROR_MISSION_NOT_FOUND')
             );
         } catch (PDOException $e) {
-            dd($e);
             return $this->PDO(
                 config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
-                trans(
-                    'messages.custom_error_message.ERROR_DATABASE_OPERATIONAL'
-                )
+                trans('messages.custom_error_message.ERROR_DATABASE_OPERATIONAL')
             );
         } catch (\Exception $e) {
-            dd($e);
             throw new \Exception(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
