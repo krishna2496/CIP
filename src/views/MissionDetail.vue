@@ -425,9 +425,14 @@
 						</div>
 					</div>
 					<div class="recent-volunteer-block">
-						<!-- div class="content-loader-wrap recent-loader">
+						<div 
+						v-bind:class="{ 
+	 									'content-loader-wrap': true, 
+	 									'recent-loader': recentVolunterLoader,
+ 									}"
+						>
 						      <div class="content-loader"></div>
-						    </div>	 -->
+						    </div>	
 						<h2 class="title-with-border"><span>{{ $t("label.recent_volunteers") }} </span></h2>
 						<div class="recent-details-block">
 							<b-list-group class="volunteers-list"  
@@ -874,6 +879,7 @@ export default {
         classVariant :"success",
         autoSuggestPlaceholder : '',
         submitDisable :true,
+        recentVolunterLoader : true,
         bgImage : [
         require("@/assets/images/pdf.svg"),
         require("@/assets/images/doc.svg"),
@@ -1066,6 +1072,7 @@ export default {
 			missionData.mission_id = this.$route.params.misisonId;
 			missionData.page = this.currentPage;
 	    	if (missionData.mission_id) {
+	    		this.recentVolunterLoader = true;
 	        	missionVolunteers(missionData).then(response =>{
 	        		
 			        if (!response.error) {
@@ -1073,7 +1080,7 @@ export default {
 			        	if (response.pagination) {
 			        		this.rows = response.pagination.total
 			        	}
-	        			// console.log(response.data);
+	        			this.recentVolunterLoader = false;
 	        		}
 	        	})			
 	        }

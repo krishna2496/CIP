@@ -968,6 +968,19 @@ main {
                         display: none;
                     }
                     &:hover, &:focus, &.added-fav{
+                        background: transparent!important;
+                        color: $gray-primary!important;   
+                        .hover-img{
+                            display: none;
+                        }
+                        .normal-img{
+                            display: inline-block;
+                            svg{
+                                fill: $gray-primary;
+                            }
+                        }
+                    }
+                    &.added-fav{
                         .hover-img{
                             display: inline-block;
                             svg{
@@ -976,7 +989,7 @@ main {
                         }
                         .normal-img{
                             display: none;
-                        }   
+                        }
                     }
                 }
             }
@@ -1111,7 +1124,7 @@ main {
                     padding: 6px 20px;
                     background: $white;
                     border: 1px solid $border-color;
-                    border-radius: 17px;
+                    border-radius: 50px;
                     font-size: 18px;
                     line-height: 26px;
 
@@ -1165,15 +1178,6 @@ main {
                     svg {
                         height: 100%;
                         width: 100%;
-                        fill: $gray-primary;
-                    }
-                }
-
-                &:hover, &:focus {
-                    i {
-                        svg {
-                            fill: $white;
-                        }
                     }
                 }
             }
