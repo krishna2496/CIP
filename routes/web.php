@@ -107,6 +107,16 @@ $router->group(['middleware' => 'localization'], function ($router) {
     $router->get('/app/mission/{missionId}/volunteers', [
     'middleware' => 'tenant.connection|jwt.auth|PaginationMiddleware',
     'uses' => 'App\Mission\MissionApplicationController@getVolunteers']);
+     
+    /* Get mission related listing  */
+    $router->get('/app/related-missions/{missionId}', ['as' => 'app.related-missions',
+    'middleware' => 'localization|tenant.connection|jwt.auth',
+    'uses' => 'App\Mission\MissionController@relatedMission']);
+   
+    /* Get mission media listing  */
+    $router->get('/app/mission-media/{missionId}', ['as' => 'app.mission-media',
+    'middleware' => 'localization|tenant.connection|jwt.auth',
+    'uses' => 'App\Mission\MissionMediaController@getMissionMedia']);
 });
 
 

@@ -1,8 +1,10 @@
 <?php
+
 namespace App\Repositories\Mission;
 
 use Illuminate\Http\Request;
 use App\Models\MissionRating;
+use Illuminate\Database\Eloquent\Collection;
 
 interface MissionInterface
 {
@@ -48,7 +50,7 @@ interface MissionInterface
      */
     public function missionFavourite(int $userId, int $missionId);
     
-    /*
+    /**
      * Get mission name.
      *
      * @param int $missionId
@@ -65,4 +67,22 @@ interface MissionInterface
      * @return App\Models\MissionRating
      */
     public function storeMissionRating(int $userId, array $request): MissionRating;
+
+    /**
+     * Display mission media.
+     *
+     * @param int $missionId
+     * @return Illuminate\Database\Eloquent\Collection
+     */
+    public function getMissionMedia(int $missionId): Collection;
+
+    /**
+     * Display listing of related mission.
+     *
+     * @param Illuminate\Http\Request $request
+     * @param int $languageId
+     * @param int $missionId
+     * @return Illuminate\Database\Eloquent\Collection
+     */
+    public function relatedMissions(Request $request, int $languageId, int $missionId): Collection;
 }

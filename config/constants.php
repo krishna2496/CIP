@@ -13,6 +13,8 @@ return [
     'DB_DATE_FORMAT' => 'Y-m-d H:i:s',
     'PER_PAGE_LIMIT' => '9',
     'FRONT_DATE_FORMAT' => 'd/m/Y',
+    'RELATED_MISSION_LIMIT' => '3',
+    'MISSION_MEDIA_LIMIT' => '20',
 
     'EMAIL_TEMPLATE_FOLDER' => 'emails',
     'EMAIL_TEMPLATE_USER_INVITE' => 'invite',
