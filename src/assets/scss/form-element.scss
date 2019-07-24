@@ -390,6 +390,13 @@ label {
       &:hover {
         background: $border-color;
       }
+      label{
+        &.no-checkbox{
+          padding: 8px 15px;
+          line-height: 20px;
+          display: flex;
+          }
+      }
     }
   }
 }
@@ -642,6 +649,7 @@ label {
                 width: 25px;
                 height: 25px;
                 margin-right: 15px;
+                border-radius: 100%;
             }
         }
           &:hover {

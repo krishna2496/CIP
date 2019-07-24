@@ -1,32 +1,50 @@
 <template>
   <div class="platform-page inner-pages filter-header">
 	   <header>
-     		<ThePrimaryHeader v-if="isShownComponent" ></ThePrimaryHeader>
-             <TheSecondaryHeader v-if="isShownComponent"></TheSecondaryHeader>
+     		<ThePrimaryHeader v-if="isShownComponent"></ThePrimaryHeader>
+            <TheSecondaryHeader :search="search" v-if="isShownComponent"></TheSecondaryHeader>
     	</header>
       	<main>
 			<b-container>
 		  	<div class="slider-banner-block">
 					<b-row>
 						<b-col lg="6" class="slider-col">
+							<!-- <div class="content-loader-wrap slider-loader">
+						      <div class="content-loader"></div>
+						    </div> -->
 							<div class="thumb-slider">
-								<swiper :options="swiperOptionTop" class="gallery-top" ref="swiperTop"  >
-									<div class="swiper-slide" v-for="(slide , s) in slideGalleryList" :key="s" :style="{backgroundImage: 'url(' + slide.slideGalleryImg + ')'}">
+								<div class="gallery-top">
+									<div class="img-wrap inner-gallery-block">
+										<img src="../assets/images/gallery-img03.jpg">
 									</div>
-									<div class="swiper-pagination" slot="pagination"></div>
-									<div class="swiper-button-prev swiper-nav-btn" slot="button-prev"></div>
-        							<div class="swiper-button-next swiper-nav-btn" slot="button-next"></div>
-								</swiper>
-								<swiper :options="swiperOptionThumbs" class="gallery-thumbs" ref="swiperThumbs" v-if="slideThumbList.length > 0">
-									<div class="swiper-slide" v-for="(slide , s) in slideThumbList" :key="s" :style="{backgroundImage: 'url(' + slide.slideThumbImg + ')'}">
+									<div class="video-wrap inner-gallery-block">
+										 <iframe id="video" width="560" height="315" src='https://www.youtube.com/embed/YE7VzlLtp-4' frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe> 
 									</div>
-									<div class="swiper-button-next swiper-nav-button" slot="button-next">
-										<img src="../assets/images/white-arrow.svg" alt="">
+									
+								</div>
+
+								<carousel  :nav="true" :dots="false" :items="5" :loop="true" :mouseDrag="false" :touchDrag="false" class="gallery-thumbs" :margin ="8" :responsive="{0:{items:3},576:{items:4},1200:{items:5}}">
+									<div class="img-block thumbs-col">
+										<img src="../assets/images/gallery-img01.jpg">
 									</div>
-									<div class="swiper-button-prev swiper-nav-button" slot="button-prev">
-										<img src="../assets/images/white-arrow.svg" alt="">
+									<div class="img-block thumbs-col">
+										<img src="../assets/images/gallery-img02.jpg">
 									</div>
-								</swiper>
+									<div class="img-block thumbs-col">
+										<img src="../assets/images/gallery-img03.jpg">
+									</div>
+									<div class="img-block thumbs-col">
+										<img src="../assets/images/gallery-img04.jpg">
+									</div>
+									<div class="img-block thumbs-col">
+										<img src="../assets/images/gallery-img05.jpg">
+									</div>
+									<div class="video-block thumbs-col">
+										<img src="http://i3.ytimg.com/vi/YE7VzlLtp-4/hqdefault.jpg" data-src="https://www.youtube.com/embed/YE7VzlLtp-4" class="video-item">	
+										<!-- <img src="http://i3.ytimg.com/vi/_gJyJ8NvZgg/maxresdefault.jpg" data-src="https://www.youtube.com/embed/YE7VzlLtp-4" class="video-item">	 -->
+										<i class="btn-play"></i>
+									</div>
+								</carousel>
 							</div>
 						</b-col>
 						<b-col lg="6" class="ml-auto banner-content-wrap">
@@ -48,17 +66,36 @@
 										>
 										</star-rating>
 									</div>
-									<b-button class="btn-borderprimary icon-btn" @click="favoriteMission(missionId)">
-									<i>
-										<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 21" width="24" height="21">
-											<g id="Main Content">
-												<g id="Content">
-													<path id="Forma 1 copy 4" class="shp0"
-														d="M22.1 2.86C20.9 1.66 19.3 1 17.59 1C15.89 1 14.28 1.66 13.08 2.86L12.49 3.45L11.89 2.86C10.69 1.66 9.08 1 7.38 1C5.67 1 4.07 1.66 2.87 2.86C0.38 5.33 0.38 9.36 2.87 11.84L11.78 20.71C11.93 20.86 12.11 20.95 12.3 20.98C12.36 20.99 12.43 21 12.49 21C12.74 21 13 20.9 13.19 20.71L22.1 11.84C24.59 9.36 24.59 5.33 22.1 2.86ZM20.71 10.45L12.49 18.64L4.26 10.45C2.54 8.74 2.54 5.96 4.26 4.25C5.09 3.42 6.2 2.96 7.38 2.96C8.56 2.96 9.66 3.42 10.5 4.25L11.79 5.53C12.16 5.9 12.81 5.9 13.18 5.53L14.47 4.25C15.31 3.42 16.41 2.96 17.59 2.96C18.77 2.96 19.88 3.42 20.71 4.25C22.43 5.96 22.43 8.74 20.71 10.45Z" />
-												</g>
-											</g>
-										</svg>
-									</i>
+									<b-button 
+ 									v-bind:class="{ 
+	 									'btn-borderprimary': true, 
+	 									'icon-btn': true,
+	 									'added-fav' : missionAddedToFavoriteByUser
+ 									}"
+									 @click="favoriteMission(missionId)">
+									<i class="normal-img">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 21" width="24" height="21">
+                                        <g id="Main Content">
+                                            <g id="1">
+                                                <g id="Image content">
+                                                    <path id="Forma 1" d="M22.1 2.86C20.9 1.66 19.3 1 17.59 1C15.89 1 14.29 1.66 13.08 2.86L12.49 3.45L11.89 2.86C10.69 1.66 9.08 1 7.38 1C5.67 1 4.07 1.66 2.87 2.86C0.38 5.34 0.38 9.36 2.87 11.84L11.78 20.71C11.93 20.86 12.11 20.95 12.3 20.98C12.36 20.99 12.43 21 12.49 21C12.74 21 13 20.9 13.19 20.71L22.1 11.84C24.59 9.36 24.59 5.34 22.1 2.86ZM20.71 10.45L12.49 18.64L4.26 10.45C2.54 8.74 2.54 5.96 4.26 4.25C5.09 3.42 6.2 2.96 7.38 2.96C8.56 2.96 9.66 3.42 10.5 4.25L11.79 5.53C12.16 5.9 12.81 5.9 13.18 5.53L14.47 4.25C15.31 3.42 16.41 2.96 17.59 2.96C18.77 2.96 19.88 3.42 20.71 4.25C22.43 5.96 22.43 8.74 20.71 10.45Z" />
+                                                </g>
+                                            </g>
+                                        </g>
+                                    </svg>
+                                    </i>
+                                     <i class="hover-img">
+                                       <svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+                                            viewBox="0 0 492.7 426.8" style="enable-background:new 0 0 492.7 426.8;" xml:space="preserve">
+                                        <g>
+                                            <g id="Icons_18_">
+                                                <path d="M492.7,133.1C492.7,59.6,433.1,0,359.7,0c-48,0-89.9,25.5-113.3,63.6C222.9,25.5,181,0,133,0
+                                                    C59.6,0,0,59.6,0,133.1c0,40,17.7,75.8,45.7,100.2l188.5,188.6c3.2,3.2,7.6,5,12.1,5s8.9-1.8,12.1-5L447,233.2
+                                                    C475,208.9,492.7,173.1,492.7,133.1z"/>
+                                            </g>
+                                        </g>
+                                        </svg>
+                                    </i>	
 									<span v-if="missionAddedToFavoriteByUser">
 										{{ $t('label.remove_from_favourite') }}
 									</span>
@@ -388,20 +425,32 @@
 						</div>
 					</div>
 					<div class="recent-volunteer-block">
-						<h2 class="title-with-border"><span>Recent Volunteers</span></h2>
+						<!-- div class="content-loader-wrap recent-loader">
+						      <div class="content-loader"></div>
+						    </div>	 -->
+						<h2 class="title-with-border"><span>{{ $t("label.recent_volunteers") }} </span></h2>
 						<div class="recent-details-block">
-							<b-list-group class="volunteers-list" :data-perpage="3"  :current-page="currentPage">
+							<b-list-group class="volunteers-list"  
+								:current-page="currentPage">
 								<b-list-group-item v-for="(volunteer , v) in volunteerList" :key="v" >
-									<div v-if="(volunteer.id >= ((currentPage - 1 ) * perPage ) + 1) && (volunteer.id <= Math.min(perPage * currentPage , rows ))" class="list-item">
-									<i class="user-profile-icon" :style="{backgroundImage: 'url(' + volunteer.imgSrc + ')'}"></i>
-									<span>{{volunteer.name}}</span>
+									<div  class="list-item">
+										<i class="user-profile-icon" :style="{backgroundImage: 'url(' + volunteer.avatar + ')'}">
+										</i>
+										<span>{{volunteer.first_name}} {{volunteer.last_name}}</span>
 									</div>
 								</b-list-group-item>
 							</b-list-group>
-
-							<div class="custom-pagination">
-							<b-pagination v-model="currentPage" :total-rows="rows" :per-page="perPage"></b-pagination>
-							<span> {{((currentPage - 1 ) * perPage ) + 1}} - {{Math.min(perPage * currentPage , rows )}} of {{rows}} Recent Volunteers</span></div>
+							<div class="custom-pagination" v-if="rows > 0">
+								<b-pagination
+				                    v-model="currentPage"
+				                    :total-rows="rows"
+				                    :per-page="perPage" 
+				                    @change="pageChange" 
+			                    >    
+			                    </b-pagination>
+			     				<span> 
+			     				{{((currentPage - 1 ) * perPage ) + 1}} - {{Math.min(perPage * currentPage , rows )}} of {{rows}} {{ $t("label.recent_volunteers") }}</span>
+							</div>
 						</div>
 					</div>
                 </b-col>
@@ -411,6 +460,9 @@
 	  <div class="mission-block">
 		  <b-container class="card-grid">
 			   <h2>Related Missions</h2>
+			   <!-- <div class="content-loader-wrap mission-loader">
+						      <div class="content-loader"></div>
+						    </div> -->
                <b-row>
                 <b-col lg="4" sm="6" class="card-outer" data-aos="fade-up">
                     <b-card no-body>
@@ -528,7 +580,7 @@
                                         <img src="../assets/images/location.svg" alt="location">
                                     </i>Cape Town
                                 </b-link>
-                                <b-button class="favourite-icon" v-b-tooltip.hover title="Add to favourite">
+                                <b-button class="favourite-icon" v-b-tooltip.hover>
                                     <i class="normal-img">
                                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 21" width="24" height="21">
                                         <g id="Main Content">
@@ -774,10 +826,11 @@
 	  </div>
       </main>
        <footer>
-             <TheSecondaryFooter></TheSecondaryFooter>
+             <TheSecondaryFooter v-if="isShownComponent"></TheSecondaryFooter>
         </footer>
   </div>
 </template>
+
 <script>
 import AppCustomChip from "../components/AppCustomChip";
 import StarRating from 'vue-star-rating';
@@ -785,9 +838,10 @@ import ThePrimaryHeader from "../components/Layouts/ThePrimaryHeader";
 import TheSecondaryHeader from "../components/Layouts/TheSecondaryHeader";
 import TheSecondaryFooter from "../components/Layouts/TheSecondaryFooter";
 import { VueAutosuggest } from 'vue-autosuggest';
-import { swiper, swiperSlide } from 'vue-awesome-swiper';
-import {favoriteMission,inviteColleague ,applyMission,searchUser} from "../services/service";
+import carousel from 'vue-owl-carousel';
+import {favoriteMission,inviteColleague ,applyMission,searchUser,storeMissionRating,missionVolunteers} from "../services/service";
 import SimpleBar from 'simplebar';
+import store from "../store";
 
 export default {
   components: {
@@ -795,21 +849,23 @@ export default {
     StarRating,
 	ThePrimaryHeader,
 	TheSecondaryHeader,
-	swiper,
-	swiperSlide,
 	TheSecondaryFooter,
 	VueAutosuggest,
-	SimpleBar
+	SimpleBar,
+	carousel
   },
   data() {
     return {
-    	isShownComponent :true,
+    	isShownComponent :false,
     	missionId :this.$route.params.misisonId,
     	missionAddedToFavoriteByUser : false,
     	query: "",
         selected: "",
         rating:3.5,
+        currentPage : 1,
+        search : "",
         userList : [],
+        rows : 0,
         myclass:["userdetail-modal"],
         currentMissionId : 0,
         invitedUserId : 0,
@@ -823,20 +879,6 @@ export default {
         require("@/assets/images/doc.svg"),
         require("@/assets/images/xlsx.svg"),
 		],
-		 slideGalleryList: [
-        { slideGalleryImg: require("../assets/images/gallery-img01.jpg") },
-        { slideGalleryImg: require("../assets/images/gallery-img02.jpg") },
-        { slideGalleryImg: require("../assets/images/gallery-img03.jpg") },
-        { slideGalleryImg: require("../assets/images/gallery-img04.jpg") },
-        { slideGalleryImg: require("../assets/images/gallery-img05.jpg") },
-      ],
-      slideThumbList: [
-        { slideThumbImg: require("../assets/images/gallery-img01.jpg") },
-        { slideThumbImg: require("../assets/images/gallery-img02.jpg") },
-        { slideThumbImg: require("../assets/images/gallery-img03.jpg") },
-        { slideThumbImg: require("../assets/images/gallery-img04.jpg") },
-        { slideThumbImg: require("../assets/images/gallery-img05.jpg") },
-      ],
         orgLogo:require("@/assets/images/ces-logo.png"),
         commentImg:[ 
 			require("@/assets/images/volunteer3.png"),
@@ -849,65 +891,33 @@ export default {
             require("@/assets/images/group-img6.png"),
         ],
         volunteerList:[
-            {name: 'Andrew Johnson' , imgSrc:  require("@/assets/images/volunteer1.png") , id:1},
-            {name: 'Charles Vigue' , imgSrc:  require("@/assets/images/volunteer2.png") , id:2},
-            {name: 'Kathryn Roberts' , imgSrc:  require("@/assets/images/volunteer3.png") , id:3},
-            {name: 'Estella Fowles' , imgSrc:  require("@/assets/images/volunteer4.png") , id:4},
-            {name: 'Rose Lewis' , imgSrc:  require("@/assets/images/volunteer5.png") , id:5},
-            {name: 'Raymond Pabon' , imgSrc:  require("@/assets/images/volunteer6.png") , id:6},
-            {name: 'Travis Steen' , imgSrc:  require("@/assets/images/volunteer7.png") , id:7},
-            {name: 'Sarah Santillan' , imgSrc:  require("@/assets/images/volunteer8.png") , id:8},
-            {name: 'Linda Richards' , imgSrc:  require("@/assets/images/volunteer9.png") , id:9},
-            {name: 'Rose Lewis' , imgSrc:  require("@/assets/images/volunteer5.png") , id:13},
-            {name: 'Raymond Pabon' , imgSrc:  require("@/assets/images/volunteer6.png") , id:14},
-            {name: 'Andrew Johnson' , imgSrc:  require("@/assets/images/volunteer1.png") , id:10},
-            {name: 'Charles Vigue' , imgSrc:  require("@/assets/images/volunteer2.png") , id:11},
-            {name: 'Kathryn Roberts' , imgSrc:  require("@/assets/images/volunteer3.png") , id:12},
-            {name: 'Travis Steen' , imgSrc:  require("@/assets/images/volunteer7.png") , id:15},
-            {name: 'Travis Steen' , imgSrc:  require("@/assets/images/volunteer7.png") , id:16},
-            {name: 'Sarah Santillan' , imgSrc:  require("@/assets/images/volunteer8.png") , id:17},
-            {name: 'Linda Richards' , imgSrc:  require("@/assets/images/volunteer9.png") , id:18},
-            {name: 'Rose Lewis' , imgSrc:  require("@/assets/images/volunteer5.png") , id:22},
-            {name: 'Sarah Santillan' , imgSrc:  require("@/assets/images/volunteer8.png") , id:23},
-            {name: 'Linda Richards' , imgSrc:  require("@/assets/images/volunteer9.png") , id:24},
-            {name: 'Andrew Johnson' , imgSrc:  require("@/assets/images/volunteer1.png") , id:19},
-            {name: 'Charles Vigue' , imgSrc:  require("@/assets/images/volunteer2.png") , id:20},
-            {name: 'Kathryn Roberts' , imgSrc:  require("@/assets/images/volunteer3.png") , id:21},
+            // {name: 'Andrew Johnson' , imgSrc:  require("@/assets/images/volunteer1.png") , id:1},
+            // {name: 'Charles Vigue' , imgSrc:  require("@/assets/images/volunteer2.png") , id:2},
+            // {name: 'Kathryn Roberts' , imgSrc:  require("@/assets/images/volunteer3.png") , id:3},
+            // {name: 'Estella Fowles' , imgSrc:  require("@/assets/images/volunteer4.png") , id:4},
+            // {name: 'Rose Lewis' , imgSrc:  require("@/assets/images/volunteer5.png") , id:5},
+            // {name: 'Raymond Pabon' , imgSrc:  require("@/assets/images/volunteer6.png") , id:6},
+            // {name: 'Travis Steen' , imgSrc:  require("@/assets/images/volunteer7.png") , id:7},
+            // {name: 'Sarah Santillan' , imgSrc:  require("@/assets/images/volunteer8.png") , id:8},
+            // {name: 'Linda Richards' , imgSrc:  require("@/assets/images/volunteer9.png") , id:9},
+            // {name: 'Rose Lewis' , imgSrc:  require("@/assets/images/volunteer5.png") , id:13},
+            // {name: 'Raymond Pabon' , imgSrc:  require("@/assets/images/volunteer6.png") , id:14},
+            // {name: 'Andrew Johnson' , imgSrc:  require("@/assets/images/volunteer1.png") , id:10},
+            // {name: 'Charles Vigue' , imgSrc:  require("@/assets/images/volunteer2.png") , id:11},
+            // {name: 'Kathryn Roberts' , imgSrc:  require("@/assets/images/volunteer3.png") , id:12},
+            // {name: 'Travis Steen' , imgSrc:  require("@/assets/images/volunteer7.png") , id:15},
+            // {name: 'Travis Steen' , imgSrc:  require("@/assets/images/volunteer7.png") , id:16},
+            // {name: 'Sarah Santillan' , imgSrc:  require("@/assets/images/volunteer8.png") , id:17},
+            // {name: 'Linda Richards' , imgSrc:  require("@/assets/images/volunteer9.png") , id:18},
+            // {name: 'Rose Lewis' , imgSrc:  require("@/assets/images/volunteer5.png") , id:22},
+            // {name: 'Sarah Santillan' , imgSrc:  require("@/assets/images/volunteer8.png") , id:23},
+            // {name: 'Linda Richards' , imgSrc:  require("@/assets/images/volunteer9.png") , id:24},
+            // {name: 'Andrew Johnson' , imgSrc:  require("@/assets/images/volunteer1.png") , id:19},
+            // {name: 'Charles Vigue' , imgSrc:  require("@/assets/images/volunteer2.png") , id:20},
+            // {name: 'Kathryn Roberts' , imgSrc:  require("@/assets/images/volunteer3.png") , id:21},
 		],
 		max: 100,
 		value: 70,
-		swiperOptionTop: {
-          spaceBetween: 10,
-		  loop: true,
-		  touchRatio: 0,
-		  loopedSlides: 5,
-		  resize: true,
-		   breakpoints: {
-            767: {
-				pagination: {
-					el: '.swiper-pagination',
-					clickable: true
-				},
-				 navigation: {
-					nextEl: '.swiper-button-next',
-					prevEl: '.swiper-button-prev'
-				}
-			}
-		  }
-		  
-        },
-        swiperOptionThumbs: {
-          spaceBetween:7,
-          slidesPerView: 4,
-          touchRatio: 0,
-		  loop: true,
-		  loopedSlides: 5, 
-		  slideToClickedSlide: true,
-		  navigation: {
-            nextEl: '.swiper-button-next',
-            prevEl: '.swiper-button-prev'
-		  },
-        }
     };
   },
   mounted(){
@@ -949,29 +959,31 @@ export default {
                 ];
             }
         },
-		rows(){
-			return this.volunteerList.length;
-		},
 		perPage(){
 			if(screen.width > 767){
 				return 9;
 			}
-		else{
-			return 8;
-		}
+			else{
+				return 8;
+			}
 		},
-		swiperTop() {
-			return this.$refs.swiperTop.swiper
-		},
-		swiperThumb() {
-			return this.$refs.swiperThumbs.swiper
-		}
 
    },
    methods: {
    		setRating: function(rating){
-	      this.rating= rating;
-	      console.log(this.rating);
+			let missionData = {
+				mission_id : '',
+				rating : ''
+			};
+			missionData.mission_id = this.missionId;
+			missionData.rating = this.rating;
+		    storeMissionRating(missionData).then(response => {
+		        if(response.error == true){
+		            this.makeToast("danger",response.message);
+		        } else {
+		            this.makeToast("success",response.message);
+		        } 
+		    });
 	    },
 		// Add mission to favorite
 		favoriteMission(missionId){
@@ -1045,29 +1057,97 @@ export default {
                 }
             })
         },
+        // missionVolunteers
+        getMissionVolunteers(){
+        	let missionData = {
+				mission_id : '',
+				page : ''
+			};
+			missionData.mission_id = this.$route.params.misisonId;
+			missionData.page = this.currentPage;
+	    	if (missionData.mission_id) {
+	        	missionVolunteers(missionData).then(response =>{
+	        		
+			        if (!response.error) {
+			        	this.volunteerList = response.data;
+			        	if (response.pagination) {
+			        		this.rows = response.pagination.total
+			        	}
+	        			// console.log(response.data);
+	        		}
+	        	})			
+	        }
+    	},
+
+    	searchUsers() {
+			searchUser().then(userResponse => {
+				this.userList = userResponse;
+				this.getMissionVolunteers();
+				this.isShownComponent = true;
+	        });
+    	},
+
+    	pageChange (page) {
+            //Change pagination
+            this.currentPage = page;
+            this.getMissionVolunteers();
+        },
 		makeToast(variant = null,message) {
             this.$bvToast.toast(message, {
                 variant: variant,
                 solid: true,
                 autoHideDelay: 3000
             })
-        }
+        },
+        handleSlider(){
+		   	var hide_video = document.querySelector(".video-wrap");
+			var thumb_img = document.querySelectorAll(".gallery-thumbs .owl-item img, .gallery-thumbs .owl-item .btn-play");
+			var gallery_img = document.querySelector(".gallery-top .img-wrap");
+			var gallery_img_src = document.querySelector(".gallery-top .img-wrap img");
+			var video_src =  document.querySelector(".video-wrap iframe");
+			// var play_src = document.querySelector(".video-block .")
+			thumb_img.forEach(function(item_event){
+
+				item_event.addEventListener("click", function(event){
+					 event.stopPropagation();
+					console.log(event.target)
+					var data_src = this.getAttribute('data-src')
+					if(this.classList.contains("video-item")){
+						video_src.src = data_src
+							hide_video.style.display = "block";
+							gallery_img.style.display = "none";	
+						}
+						else if(this.classList.contains("btn-play")){
+							var parent_i = this.parentNode;
+							var sibling_i = parent_i.childNodes;
+							hide_video.style.display = "block";
+							gallery_img.style.display = "none";
+							video_src.src = sibling_i[0].getAttribute('data-src')
+						}
+						else{
+							gallery_img_src.src = this.src ;		
+							gallery_img.style.display = "block";
+							hide_video.style.display = "none";
+						}
+				});	
+			});
+	   }
    },
 	created(){
 		var _this = this;
-		searchUser().then(response => {
-            this.userList = response;
-        });
-     	this.$nextTick(() => {
-	        var swiperTop = _this.$refs.swiperTop.swiper
-			var swiperThumbs = _this.$refs.swiperThumbs.swiper
-	        swiperTop.controller.control = swiperThumbs
-			swiperThumbs.controller.control = swiperTop
-	  	});
-	  	 window.addEventListener("resize", function(){
-			 _this.swiperTop.update();
-			 _this.swiperThumb.update();
-	  });
+		if(store.state.search != null) {
+	        this.search = store.state.search;
+	    } else {
+	    	this.search = '';
+	    }
+	    this.searchUsers();
+
+	    var _this = this;
+		 setTimeout(() => {
+			_this.handleSlider();
+		});
+	    // Get mission volunteers
+	    // this.getMissionVolunteers();
 	},
    updated(){
 	
