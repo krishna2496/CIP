@@ -542,7 +542,7 @@ class MissionController extends Controller
      * @param int $missionId
      * @return Illuminate\Http\JsonResponse
      */
-    public function appMission(Request $request, int $missionId): JsonResponse
+    public function missionDetail(Request $request, int $missionId): JsonResponse
     {
         try {
             $languages = $this->languageHelper->getLanguages($request);
@@ -551,7 +551,7 @@ class MissionController extends Controller
             $language = $languages->where('code', $language)->first();
             $languageId = $language->language_id;
 
-            $missionData = $this->missionRepository->appMission($request, $languageId, $missionId);
+            $missionData = $this->missionRepository->missionDetail($request, $languageId, $missionId);
             $mission = $missionData->toArray();
 
             if (isset($mission['goal_mission'])) {

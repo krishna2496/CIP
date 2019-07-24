@@ -75,5 +75,5 @@ interface MissionInterface
      * @param int $missionId
      * @return \App\Models\Mission
      */
-    public function appMission(Request $request, int $languageId, int $missionId): Mission;
+    public function missionDetail(Request $request, int $languageId, int $missionId): Mission;
 }
