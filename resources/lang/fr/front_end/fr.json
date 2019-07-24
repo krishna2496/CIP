@@ -69,7 +69,7 @@
 		"date" : "Date",
 		"organisation" : "Organisation",
 		"apply_now" : "Apply now",
-		"recommend_to_co-Worker" : "Recommend to a Co-Worker",
+		"recommend_to_co_worker" : "Recommend to a Co-Worker",
 		"information" : "Information",
 		"days" : "Days",
 		"rating" : "Rating",
@@ -78,7 +78,12 @@
 		"read_more_comments" :"Read more comments",
 		"post_comment" : "Post comment",
         "comments" : "commentaires",
-        "documents" : "Les documents"
+        "documents" : "Les documents",
+		"post_comment" : "Post comment",
+		"comments" : "commentaires",
+		"documents" : "Les documents",
+		"read_more_comment" : "Lire plus de commentaire",
+		"submit_new_mission" : "Soumettre une nouvelle mission"
 	},
 
 	"placeholder" : {
