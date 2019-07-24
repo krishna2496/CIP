@@ -50,8 +50,8 @@ class MissionCommentController extends Controller
     public function getComment(Request $request, int $missionId): JsonResponse
     {
         try {
-            $missionMedia = $this->missionRepository->getComment($missionId);
-            $apiData = $missionMedia->toArray();
+            $comments = $this->missionRepository->getComment($missionId);
+            $apiData = $comments->toArray();
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_MISSION_COMMENT_LISTING');
             return $this->responseHelper->success(
