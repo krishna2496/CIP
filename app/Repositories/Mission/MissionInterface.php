@@ -68,7 +68,7 @@ interface MissionInterface
     public function storeMissionRating(int $userId, array $request): MissionRating;
 
     /**
-     * Get detail of mission.
+     * Get mission detail.
      *
      * @param Illuminate\Http\Request $request
      * @param int $languageId
