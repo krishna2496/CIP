@@ -235,7 +235,6 @@ class TenantOptionsController extends Controller
             $validator = Validator::make(
                 $request->toArray(),
                 [
-                    "custom_scss_file" => "mimes:scss",
                     "custom_scss_file_name" => "required"
                 ]
             );
