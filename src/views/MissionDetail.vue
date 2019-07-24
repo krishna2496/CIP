@@ -2,7 +2,7 @@
   <div class="platform-page inner-pages filter-header">
 	   <header>
      		<ThePrimaryHeader v-if="isShownComponent"></ThePrimaryHeader>
-            <TheSecondaryHeader :search="search" v-if="isShownComponent"></TheSecondaryHeader>
+            <TheSecondaryHeader :search="search" :missionList="missionList" v-if="isShownComponent"></TheSecondaryHeader>
     	</header>
       	<main>
 			<b-container>
@@ -871,6 +871,9 @@ export default {
         search : "",
         userList : [],
         rows : 0,
+        missionList : [
+        	{ mission:1 }
+        ],
         myclass:["userdetail-modal"],
         currentMissionId : 0,
         invitedUserId : 0,

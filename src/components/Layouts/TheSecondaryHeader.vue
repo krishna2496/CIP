@@ -91,7 +91,7 @@ export default {
     ],
     data() {
         return {
-            defautCountry: "Country",
+            defautCountry: "Country", 
             defautCity: "",
             defautTheme: "",
             defautSkill: "",
