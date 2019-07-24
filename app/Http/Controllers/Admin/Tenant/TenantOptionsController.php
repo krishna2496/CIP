@@ -235,7 +235,6 @@ class TenantOptionsController extends Controller
             $validator = Validator::make(
                 $request->toArray(),
                 [
-                    "custom_scss_file" => "mimes:scss",
                     "custom_scss_file_name" => "required"
                 ]
             );
@@ -359,7 +358,6 @@ class TenantOptionsController extends Controller
         $validator = Validator::make(
             $request->toArray(),
             [
-                "image_file" => "required|mimes:jpeg,jpg,svg,png",
                 "image_name" => "required"
             ]
         );
@@ -383,7 +381,7 @@ class TenantOptionsController extends Controller
                 Response::HTTP_UNPROCESSABLE_ENTITY,
                 Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
                 config('constants.error_codes.ERROR_NOT_VALID_EXTENSION'),
-                trans('messages.custom_error_message.ERROR_NOT_VALID_EXTENSION')
+                trans('messages.custom_error_message.ERROR_NOT_VALID_IMAGE_FILE_EXTENSION')
             );
         }
 
