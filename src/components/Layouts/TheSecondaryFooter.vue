@@ -2,8 +2,8 @@
     <div class="primary-footer">
         <b-container>
             <b-row>
-                <b-col md="6" class="footer-menu" v-if="isDynamicFooterItemsSet">
-                    <b-list-group>
+                <b-col md="6" class="footer-menu" >
+                    <b-list-group v-if="isDynamicFooterItemsSet">
                         <b-list-group-item  
                             v-for="item in footerItems" 
                             :to="{ path: '/'+item.slug}"

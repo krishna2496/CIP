@@ -14,6 +14,8 @@ import getUserLanguage from "./User/GetUserLanguage";
 import searchUser from "./SearchUser";
 import inviteColleague from "./InviteColleague";
 import applyMission from "./Mission/ApplyMission";
+import storeMissionRating from "./Mission/StoreMissionRating";
+import missionVolunteers from "./Mission/MissionVolunteers";
 
 export {
     loadLocaleMessages,
@@ -31,5 +33,7 @@ export {
     getUserLanguage,
     searchUser,
     inviteColleague,
-    applyMission
+    applyMission,
+    storeMissionRating,
+    missionVolunteers
 }

@@ -30,6 +30,7 @@ export default new Vuex.Store({
         tags : localStorage.getItem('tags'),
         sortBy : localStorage.getItem('sortBy'),
         tenantSetting : localStorage.getItem('tenantSetting'),
+        missionNotFoundText : localStorage.getItem('missionNotFoundText')
     },
     mutations: {
         // Set login data in state and local storage       
@@ -136,6 +137,11 @@ export default new Vuex.Store({
         setTenantSetting(state,data) {
             localStorage.setItem("tenantSetting",JSON.stringify(data));
             state.tenantSetting = JSON.stringify(data);
+        },
+        // Set mission not found text
+        missionNotFound(state,data){
+            localStorage.setItem("missionNotFoundText",JSON.stringify(data));
+            state.missionNotFoundText = JSON.stringify(data);
         }
     },
     getters: {},

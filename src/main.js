@@ -53,7 +53,8 @@ router.beforeEach((to, from, next) => {
     }
     next();
 });
- Vue.filter('formatDate', function(value) {
+
+Vue.filter('formatDate', function(value) {
       if (value) {
         return moment(String(value)).format('DD/MM/YYYY')
       }
