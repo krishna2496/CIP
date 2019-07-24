@@ -51,10 +51,10 @@ class FooterPagesLanguage extends Model
     /**
      * Set description attribute on the model.
      *
-     * @param  mixed   $value
+     * @param  array $value
      * @return void
      */
-    public function setDescriptionAttribute($value)
+    public function setDescriptionAttribute(array $value): void
     {
         $this->attributes['description'] = serialize($value);
     }
@@ -62,10 +62,10 @@ class FooterPagesLanguage extends Model
     /**
      * Get an attribute from the model.
      *
-     * @param  string  $value
-     * @return mixed
+     * @param  string $value
+     * @return array
      */
-    public function getDescriptionAttribute($value)
+    public function getDescriptionAttribute(string $value): array
     {
         return unserialize($value);
     }
@@ -74,9 +74,9 @@ class FooterPagesLanguage extends Model
      * Get an attribute from the model.
      *
      * @param  string  $value
-     * @return mixed
+     * @return array
      */
-    public function getSectionsAttribute($value)
+    public function getSectionsAttribute(string $value): array
     {
         return unserialize($value);
     }
@@ -86,9 +86,9 @@ class FooterPagesLanguage extends Model
      *
      * @param  array $condition
      * @param  array $data
-     * @return array
+     * @return App\Models\FooterPagesLanguage
      */
-    public function createOrUpdateFooterPagesLanguage(array $condition, array $data)
+    public function createOrUpdateFooterPagesLanguage(array $condition, array $data): FooterPagesLanguage
     {
         return static::updateOrCreate($condition, $data);
     }

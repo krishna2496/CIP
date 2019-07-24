@@ -22,7 +22,7 @@ class UserRepository implements UserInterface
     public $user;
 
     /**
-     * @var App\Model\UserSkill
+     * @var App\Models\UserSkill
      */
     public $userSkill;
     

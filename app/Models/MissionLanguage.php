@@ -78,9 +78,9 @@ class MissionLanguage extends Model
      *
      * @param  array $condition
      * @param  array $data
-     * @return array
+     * @return App\Models\MissionLanguage
      */
-    public function createOrUpdateLanguage(array $condition, array $data)
+    public function createOrUpdateLanguage(array $condition, array $data): MissionLanguage
     {
         return static::updateOrCreate($condition, $data);
     }

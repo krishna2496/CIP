@@ -93,7 +93,7 @@ class Mission extends Model
     /**
      * Get the language title record associated with the mission.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function missionLanguage(): HasMany
     {
@@ -175,7 +175,7 @@ class Mission extends Model
     /**
      * Get the mission skill associated with the mission.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\hasMany
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function missionSkill(): HasMany
     {
@@ -185,7 +185,7 @@ class Mission extends Model
     /**
      * Defined for goal mission.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\hasMany
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
     public function goalMission(): HasOne
     {
@@ -195,7 +195,7 @@ class Mission extends Model
     /**
      * Defined for time mission.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\hasMany
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
     public function timeMission(): HasOne
     {
@@ -206,9 +206,9 @@ class Mission extends Model
      * Soft delete from the database.
      *
      * @param  int  $id
-     * @return void
+     * @return bool
      */
-    public function deleteMission(int $id)
+    public function deleteMission(int $id): bool
     {
         $mission = static::findOrFail($id)->delete();
         // static::missionMedia()->delete();
@@ -222,7 +222,7 @@ class Mission extends Model
      *
      * @return string
      */
-    public function getCityNameAttribute()
+    public function getCityNameAttribute(): string
     {
         return $this->city()->select('name')->first()->name;
     }
@@ -230,10 +230,10 @@ class Mission extends Model
     /**
      * Set start date attribute on the model.
      *
-     * @param  mixed   $value
+     * @param  string $value
      * @return void
      */
-    public function setStartDateAttribute($value)
+    public function setStartDateAttribute(string $value): void
     {
         $this->attributes['start_date'] = ($value != null) ?
         Carbon::parse($value)->format(config('constants.DB_DATE_FORMAT')) : null;
@@ -303,10 +303,10 @@ class Mission extends Model
     /**
      * Set end date attribute on the model.
      *
-     * @param  mixed   $value
+     * @param  string $value
      * @return void
      */
-    public function setEndDateAttribute($value)
+    public function setEndDateAttribute(string $value): void
     {
         $this->attributes['end_date'] = ($value != null) ?
         Carbon::parse($value)->format(config('constants.DB_DATE_FORMAT')) : null;
