@@ -425,9 +425,14 @@
 						</div>
 					</div>
 					<div class="recent-volunteer-block">
-						<!-- div class="content-loader-wrap recent-loader">
+						<div 
+						v-bind:class="{ 
+	 									'content-loader-wrap': true, 
+	 									'recent-loader': recentVolunterLoader,
+ 									}"
+						>
 						      <div class="content-loader"></div>
-						    </div>	 -->
+						    </div>	
 						<h2 class="title-with-border"><span>{{ $t("label.recent_volunteers") }} </span></h2>
 						<div class="recent-details-block">
 							<b-list-group class="volunteers-list"  
@@ -825,7 +830,7 @@
 		  </b-container>
 	  </div>
       </main>
-       <footer>
+       <footer v-if="isShownComponent">
              <TheSecondaryFooter v-if="isShownComponent"></TheSecondaryFooter>
         </footer>
   </div>
@@ -834,9 +839,9 @@
 <script>
 import AppCustomChip from "../components/AppCustomChip";
 import StarRating from 'vue-star-rating';
-import ThePrimaryHeader from "../components/Layouts/ThePrimaryHeader";
-import TheSecondaryHeader from "../components/Layouts/TheSecondaryHeader";
-import TheSecondaryFooter from "../components/Layouts/TheSecondaryFooter";
+// import ThePrimaryHeader from "../components/Layouts/ThePrimaryHeader";
+// import TheSecondaryHeader from "../components/Layouts/TheSecondaryHeader";
+// import TheSecondaryFooter from "../components/Layouts/TheSecondaryFooter";
 import { VueAutosuggest } from 'vue-autosuggest';
 import carousel from 'vue-owl-carousel';
 import {favoriteMission,inviteColleague ,applyMission,searchUser,storeMissionRating,missionVolunteers} from "../services/service";
@@ -847,9 +852,9 @@ export default {
   components: {
     AppCustomChip,
     StarRating,
-	ThePrimaryHeader,
-	TheSecondaryHeader,
-	TheSecondaryFooter,
+	ThePrimaryHeader : () => import("../components/Layouts/ThePrimaryHeader"),
+	TheSecondaryHeader: () => import("../components/Layouts/TheSecondaryHeader"),
+	TheSecondaryFooter : () =>  import("../components/Layouts/TheSecondaryFooter"),
 	VueAutosuggest,
 	SimpleBar,
 	carousel
@@ -874,6 +879,7 @@ export default {
         classVariant :"success",
         autoSuggestPlaceholder : '',
         submitDisable :true,
+        recentVolunterLoader : true,
         bgImage : [
         require("@/assets/images/pdf.svg"),
         require("@/assets/images/doc.svg"),
@@ -921,26 +927,24 @@ export default {
     };
   },
   mounted(){
-	  var _this = this;
-	 var dataId_ ;
-	  var tab_item = document.querySelectorAll(".platform-details-tab .nav-tabs li a")
-		tab_item.forEach(function(item_event){
-			item_event.addEventListener("click", tabsHandle);
+	 var tabItem = document.querySelectorAll(".platform-details-tab .nav-tabs li a")
+		tabItem.forEach(function(tabItemEvent){
+			tabItemEvent.addEventListener("click", tabsHandle);
 		});	
-		function tabsHandle(evt){
-			var i, tabcontent, tablinks;
-		tabcontent = document.getElementsByClassName("tab-content");
-		for (i = 0; i < tabcontent.length; i++) {
-			tabcontent[i].style.display = "none";
-			if(evt.currentTarget.getAttribute("data-id") === tabcontent[i].getAttribute('id')){
-				tabcontent[i].style.display = "block";
+		function tabsHandle(tabsEvent){
+			var i, tabContent, tabLinks;
+			tabContent = document.getElementsByClassName("tab-content");
+			for (i = 0; i < tabContent.length; i++) {
+				tabContent[i].style.display = "none";
+				if(tabsEvent.currentTarget.getAttribute("data-id") === tabContent[i].getAttribute('id')){
+					tabContent[i].style.display = "block";
+				}
 			}
-		}
-		tablinks = document.getElementsByClassName("tablinks");
-		for (i = 0; i < tablinks.length; i++) {
-			tablinks[i].className = tablinks[i].className.replace(" active", "");
-		}
-		evt.currentTarget.className += " active";
+			tabLinks = document.getElementsByClassName("tablinks");
+			for (i = 0; i < tabLinks.length; i++) {
+				tabLinks[i].className = tabLinks[i].className.replace(" active", "");
+			}
+			tabsEvent.currentTarget.className += " active";
 		}
    },
    computed: {
@@ -1066,6 +1070,7 @@ export default {
 			missionData.mission_id = this.$route.params.misisonId;
 			missionData.page = this.currentPage;
 	    	if (missionData.mission_id) {
+	    		this.recentVolunterLoader = true;
 	        	missionVolunteers(missionData).then(response =>{
 	        		
 			        if (!response.error) {
@@ -1073,7 +1078,7 @@ export default {
 			        	if (response.pagination) {
 			        		this.rows = response.pagination.total
 			        	}
-	        			// console.log(response.data);
+	        			this.recentVolunterLoader = false;
 	        		}
 	        	})			
 	        }
@@ -1099,39 +1104,31 @@ export default {
                 autoHideDelay: 3000
             })
         },
-        handleSlider(){
-		   	var hide_video = document.querySelector(".video-wrap");
-			var thumb_img = document.querySelectorAll(".gallery-thumbs .owl-item img, .gallery-thumbs .owl-item .btn-play");
-			var gallery_img = document.querySelector(".gallery-top .img-wrap");
-			var gallery_img_src = document.querySelector(".gallery-top .img-wrap img");
-			var video_src =  document.querySelector(".video-wrap iframe");
-			// var play_src = document.querySelector(".video-block .")
-			thumb_img.forEach(function(item_event){
-
-				item_event.addEventListener("click", function(event){
-					 event.stopPropagation();
-					console.log(event.target)
-					var data_src = this.getAttribute('data-src')
-					if(this.classList.contains("video-item")){
-						video_src.src = data_src
-							hide_video.style.display = "block";
-							gallery_img.style.display = "none";	
-						}
-						else if(this.classList.contains("btn-play")){
-							var parent_i = this.parentNode;
-							var sibling_i = parent_i.childNodes;
-							hide_video.style.display = "block";
-							gallery_img.style.display = "none";
-							video_src.src = sibling_i[0].getAttribute('data-src')
-						}
-						else{
-							gallery_img_src.src = this.src ;		
-							gallery_img.style.display = "block";
-							hide_video.style.display = "none";
-						}
-				});	
-			});
-	   }
+      handleSliderClick(event){
+			event.stopPropagation()
+			var hideVideo = document.querySelector(".video-wrap");
+			var galleryImg = document.querySelector(".gallery-top .img-wrap");
+			var galleryImgSrc = document.querySelector(".gallery-top .img-wrap img");
+			var videoSrc =  document.querySelector(".video-wrap iframe");
+			var dataSrc = event.target.getAttribute('data-src');
+			if(event.target.classList.contains("video-item")){
+				videoSrc.src = dataSrc
+				hideVideo.style.display = "block";
+				galleryImg.style.display = "none";	
+			}
+			else if(event.target.classList.contains("btn-play")){
+				var parentBtn = event.target.parentNode;
+				var siblingBtn = parentBtn.childNodes;
+				hideVideo.style.display = "block";
+				galleryImg.style.display = "none";
+				videoSrc.src = siblingBtn[0].getAttribute('data-src')
+			}
+			else{
+				 galleryImgSrc.src = event.target.src ;		
+				galleryImg.style.display = "block";
+				hideVideo.style.display = "none";
+			}
+		}
    },
 	created(){
 		var _this = this;
@@ -1142,9 +1139,23 @@ export default {
 	    }
 	    this.searchUsers();
 
-	    var _this = this;
+	    var globalThis = this;
 		 setTimeout(() => {
-			_this.handleSlider();
+		  var thumbImg = document.querySelectorAll(".gallery-thumbs .owl-item img, .gallery-thumbs .owl-item .btn-play");
+			thumbImg.forEach(function(itemEvent){
+				itemEvent.removeEventListener("click", globalThis.handleSliderClick);	
+				itemEvent.addEventListener("click", globalThis.handleSliderClick);	
+			});
+			
+		});
+		window.addEventListener('resize', function() {
+			setTimeout(() => {
+				var thumbImg = document.querySelectorAll(".gallery-thumbs .owl-item img, .gallery-thumbs .owl-item .btn-play");
+					thumbImg.forEach(function(itemEvent){
+					itemEvent.removeEventListener("click", globalThis.handleSliderClick);	
+					itemEvent.addEventListener("click", globalThis.handleSliderClick);	
+				});
+			},2000);
 		});
 	    // Get mission volunteers
 	    // this.getMissionVolunteers();
