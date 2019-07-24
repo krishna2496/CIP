@@ -76,4 +76,12 @@ interface MissionInterface
      * @return \App\Models\Mission
      */
     public function missionDetail(Request $request, int $languageId, int $missionId): Mission;
+
+    /**
+     * Get mission comments.
+     *
+     * @param int $missionId
+     * @return Illuminate\Database\Eloquent\Collection
+     */
+    public function getComment(int $missionId): Collection;
 }
