@@ -294,7 +294,13 @@ export default {
                 'theme' :[],
                 'skill' :[]
             }
-
+            var _this = this;
+            setTimeout(function(){
+                _this.defautCity =  _this.$i18n.t("label.city"),
+                _this.defautTheme =  _this.$i18n.t("label.theme"),
+                _this.defautSkill = _this.$i18n.t("label.skills")
+            },500)
+            
             this.selectedfilterParams.countryId = store.state.countryId;
             this.selectedfilterParams.cityId = store.state.cityId;
             this.selectedfilterParams.themeId = store.state.themeId;
@@ -347,9 +353,6 @@ export default {
                             this.selectedSkill = store.state.skillId.toString().split(',')
                         }
 
-                        this.defautCity =  this.$i18n.t("label.city"),
-                        this.defautTheme =  this.$i18n.t("label.theme"),
-                        this.defautSkill = this.$i18n.t("label.skills")
                     }            
                     this.isComponentVisible =true;
             }); 

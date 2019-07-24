@@ -8,6 +8,7 @@ export default async(langList,defautLang) => {
     await axios.get(process.env.VUE_APP_API_ENDPOINT + "app/connect")
         .then((response) => {
             if (response.data.data) {
+                
                 let data = response.data.data;
                 // Store slider in Local Storage
                 if (data.sliders) {
@@ -85,6 +86,13 @@ export default async(langList,defautLang) => {
                 store.commit('setLogo', logo)
                 var sliderData = [];
                 store.commit('setSlider', JSON.stringify(sliderData))
+            }
+
+            // Set no mission found message
+            if(response.data.data.no_mission_custom_text) {
+                store.commit('missionNotFound',response.data.data.no_mission_custom_text.translations);
+            } else {
+                store.commit('missionNotFound','');
             }
 
         })
