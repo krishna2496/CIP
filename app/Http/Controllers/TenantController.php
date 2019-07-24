@@ -19,7 +19,6 @@ use PDOException;
 use InvalidArgumentException;
 use Aws\S3\Exception\S3Exception;
 use App\Jobs\DownloadAssestFromS3ToLocalStorageJob;
-use App\Repositories\ApiUser\ApiUserRepository;
 
 class TenantController extends Controller
 {
@@ -29,11 +28,6 @@ class TenantController extends Controller
      * @var App\Repositories\Tenant\TenantRepository
      */
     private $tenantRepository;
-
-    /**
-     * @var App\Repositories\ApiUser\ApiUserRepository
-     */
-    private $apiUserRepository;
     
     /**
      * @var App\Helpers\ResponseHelper
@@ -44,16 +38,15 @@ class TenantController extends Controller
      * Create a new Tenant controller instance.
      *
      * @param  App\Repositories\Tenant\TenantRepository $tenantRepository
+     * @param  App\Helpers\ResponseHelper $responseHelper
      * @return void
      */
     public function __construct(
         TenantRepository $tenantRepository,
-        ResponseHelper $responseHelper,
-        ApiUserRepository $apiUserRepository
+        ResponseHelper $responseHelper
     ) {
         $this->tenantRepository = $tenantRepository;
         $this->responseHelper = $responseHelper;
-        $this->apiUserRepository = $apiUserRepository;
     }
     
     /**
@@ -243,185 +236,6 @@ class TenantController extends Controller
             return $this->modelNotFound(
                 config('constants.error_codes.ERROR_TENANT_NOT_FOUND'),
                 trans('messages.custom_error_message.'.config('constants.error_codes.ERROR_TENANT_NOT_FOUND'))
-            );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.999999'));
-        }
-    }
-
-    /**
-     * Get all api users
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param int $tenantId
-     * @return \Illuminate\Http\JsonResponse;
-     */
-    public function getAllApiUser(int $tenantId): JsonResponse
-    {
-        try {
-            $tenantDetail = $this->tenantRepository->find($tenantId);
-
-            $apiUsers = $this->apiUserRepository->apiUserList($tenantId);
-
-            $responseMessage = (count($apiUsers) > 0) ? trans('messages.success.MESSAGE_TENANT_API_USER_LISTING') :
-            trans('messages.success.MESSAGE_NO_RECORD_FOUND');
-
-            return $this->responseHelper->successWithPagination($apiUsers, Response::HTTP_OK, $responseMessage);
-        } catch (ModelNotFoundException $e) {
-            return $this->modelNotFound(
-                config('constants.error_codes.ERROR_TENANT_NOT_FOUND'),
-                trans('messages.custom_error_message.'.config('constants.error_codes.ERROR_TENANT_NOT_FOUND'))
-            );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.999999'));
-        }
-    }
-
-    /**
-     * Get api user detail
-     *
-     * @param int $tenantId
-     * @param int $apiUserId
-     * @return \Illuminate\Http\JsonResponse;
-     */
-    public function getApiUserDetail(int $tenantId, int $apiUserId): JsonResponse
-    {
-        try {
-            $tenantDetail = $this->tenantRepository->find($tenantId);
-        } catch (ModelNotFoundException $e) {
-            return $this->modelNotFound(
-                config('constants.error_codes.ERROR_TENANT_NOT_FOUND'),
-                trans('messages.custom_error_message.'.config('constants.error_codes.ERROR_TENANT_NOT_FOUND'))
-            );
-        }
-        try {
-            $apiUser = $this->apiUserRepository->findApiUser($apiUserId);
-
-            // Set response data
-            $apiStatus = Response::HTTP_OK;
-            $apiMessage = trans('messages.success.MESSAGE_API_USER_FOUND');
-            $apiData = $apiUser->toArray();
-
-            return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
-        } catch (ModelNotFoundException $e) {
-            return $this->modelNotFound(
-                config('constants.error_codes.ERROR_API_USER_NOT_FOUND'),
-                trans('messages.custom_error_message.'.config('constants.error_codes.ERROR_API_USER_NOT_FOUND'))
-            );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.999999'));
-        }
-    }
-
-    /**
-     * Create api user for tenant
-     *
-     * @param int $tenantId
-     * @return \Illuminate\Http\JsonResponse;
-     */
-    public function createApiUser(int $tenantId): JsonResponse
-    {
-        try {
-            $this->tenantRepository->find($tenantId);
-        } catch (ModelNotFoundException $e) {
-            return $this->modelNotFound(
-                config('constants.error_codes.ERROR_TENANT_NOT_FOUND'),
-                trans('messages.custom_error_message.'.config('constants.error_codes.ERROR_TENANT_NOT_FOUND'))
-            );
-        }
-
-        try {
-            $apiKeys['api_key'] = str_random(16);
-            $apiKeys['api_secret'] = str_random(16);
-            $apiUser = $this->apiUserRepository->store($tenantId, $apiKeys);
-            
-            $response['api_user_id'] = $apiUser->api_user_id;
-            $response['api_key'] = $apiUser->api_key;
-            $response['api_secret'] = $apiKeys['api_secret'];
-            
-            // Set response data
-            $apiStatus = Response::HTTP_CREATED;
-            $apiMessage = trans('messages.success.MESSAGE_API_USER_CREATED_SUCCESSFULLY');
-
-            return $this->responseHelper->success($apiStatus, $apiMessage, $response);
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.999999'));
-        }
-    }
-
-    /**
-     * Renew api_secret for api user
-     *
-     * @param int $tenantId
-     * @param int $apiUserId
-     * @return \Illuminate\Http\JsonResponse;
-     */
-    public function renewApiUser(int $tenantId, int $apiUserId): JsonResponse
-    {
-        try {
-            $this->tenantRepository->find($tenantId);
-        } catch (ModelNotFoundException $e) {
-            return $this->modelNotFound(
-                config('constants.error_codes.ERROR_TENANT_NOT_FOUND'),
-                trans('messages.custom_error_message.'.config('constants.error_codes.ERROR_TENANT_NOT_FOUND'))
-            );
-        }
-
-        try {
-            $apiSecret = str_random(16);
-            
-            $apiUser = $this->apiUserRepository->update($tenantId, $apiUserId, $apiSecret);
-            $apiUser->api_secret = $apiSecret;
-
-            $response['api_user_id'] = $apiUser->api_user_id;
-            $response['api_key'] = $apiUser->api_key;
-            $response['api_secret'] = $apiSecret;
-
-            // Set response data
-            $apiStatus = Response::HTTP_OK;
-            $apiMessage = trans('messages.success.MESSAGE_API_USER_UPDATED_SUCCESSFULLY');
-
-            return $this->responseHelper->success($apiStatus, $apiMessage, $response);
-        } catch (ModelNotFoundException $e) {
-            return $this->modelNotFound(
-                config('constants.error_codes.ERROR_API_USER_NOT_FOUND'),
-                trans('messages.custom_error_message.'.config('constants.error_codes.ERROR_API_USER_NOT_FOUND'))
-            );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.999999'));
-        }
-    }
-
-    /**
-     * Delete api user
-     *
-     * @param int $tenantId
-     * @param int $apiUserId
-     * @return \Illuminate\Http\JsonResponse;
-     */
-    public function deleteApiUser(int $tenantId, int $apiUserId): JsonResponse
-    {
-        try {
-            $this->tenantRepository->find($tenantId);
-        } catch (ModelNotFoundException $e) {
-            return $this->modelNotFound(
-                config('constants.error_codes.ERROR_TENANT_NOT_FOUND'),
-                trans('messages.custom_error_message.'.config('constants.error_codes.ERROR_TENANT_NOT_FOUND'))
-            );
-        }
-
-        try {
-            $apiUser = $this->apiUserRepository->delete($tenantId, $apiUserId);
-
-            // Set response data
-            $apiStatus = Response::HTTP_NO_CONTENT;
-            $apiMessage = trans('messages.success.MESSAGE_API_USER_DELETED');
-
-            return $this->responseHelper->success($apiStatus, $apiMessage);
-        } catch (ModelNotFoundException $e) {
-            return $this->modelNotFound(
-                config('constants.error_codes.ERROR_API_USER_NOT_FOUND'),
-                trans('messages.custom_error_message.'.config('constants.error_codes.ERROR_API_USER_NOT_FOUND'))
             );
         } catch (\Exception $e) {
             return $this->badRequest(trans('messages.custom_error_message.999999'));
