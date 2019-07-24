@@ -22,7 +22,7 @@ return [
     'AWS_S3_LOGO_IMAGE_NAME' => 'logo.png',
     'AWS_S3_CUSTOME_CSS_NAME' => 'style.css',
     'AWS_CUSTOM_STYLE_VARIABLE_FILE_NAME' => '_variables.scss',
-    'TIMEZONE' => '',
+    'TIMEZONE' => 'UTC',
     
     /*
      * User custom field types
