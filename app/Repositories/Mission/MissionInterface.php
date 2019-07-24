@@ -4,6 +4,7 @@ namespace App\Repositories\Mission;
 use Illuminate\Http\Request;
 use App\Models\MissionRating;
 use App\Models\Mission;
+use Illuminate\Database\Eloquent\Collection;
 
 interface MissionInterface
 {

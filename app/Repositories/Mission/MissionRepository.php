@@ -849,10 +849,8 @@ class MissionRepository implements MissionInterface
     {
         // Fetch mission comments
         $mission = $this->mission->findOrFail($missionId);
-        $missionQuery = $mission->comment(['comment'  => function ($query) use ($missionId) {
-            $query->Where('mission_id', $missionId);
-        }])
+        $commentQuery = $mission->comment()->orderBy('comment_id', 'desc')
         ->with(['user:user_id,first_name,last_name,avatar']);
-        return $missionQuery->take(config("constants.MISSION_COMMENT_LIMIT"))->get();
+        return $commentQuery->take(config("constants.MISSION_COMMENT_LIMIT"))->get();
     }
 }
