@@ -64,6 +64,7 @@ return [
         'MESSAGE_RATING_ADDED' => 'Évaluation de la mission ajoutée avec succès',
         'MESSAGE_MISSION_VOLUNTEERS_LISTING' => 'Obtenez des volontaires de mission avec succès',
         'MESSAGE_NO_MISSION_VOLUNTEERS_FOUND' => 'Aucun volontaire récent trouvé',
+        'MESSAGE_MISSION_COMMENT_LISTING' => 'Obtenir des commentaires de mission avec succès',
     ],
 
         

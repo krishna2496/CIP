@@ -117,6 +117,11 @@ $router->group(['middleware' => 'localization'], function ($router) {
     $router->get('/app/mission/{missionId}/volunteers', [
     'middleware' => 'tenant.connection|jwt.auth|PaginationMiddleware',
     'uses' => 'App\Mission\MissionApplicationController@getVolunteers']);
+
+    /* Get mission detail  */
+    $router->get('/app/missions/{missionId}/comments', [
+        'middleware' => 'localization|tenant.connection|jwt.auth',
+        'uses' => 'App\Mission\MissionCommentController@getComment']);
 });
 
 

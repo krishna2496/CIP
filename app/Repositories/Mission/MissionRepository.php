@@ -838,4 +838,21 @@ class MissionRepository implements MissionInterface
             ]);
         return $missionQuery->findOrFail($missionId);
     }
+
+    /**
+     * Get mission comments.
+     *
+     * @param int $missionId
+     * @return Illuminate\Database\Eloquent\Collection
+     */
+    public function getComment(int $missionId): Collection
+    {
+        // Fetch mission comments
+        $mission = $this->mission->findOrFail($missionId);
+        $missionQuery = $mission->comment(['comment'  => function ($query) use ($missionId) {
+            $query->Where('mission_id', $missionId);
+        }])
+        ->with(['user:user_id,first_name,last_name,avatar']);
+        return $missionQuery->take(config("constants.MISSION_COMMENT_LIMIT"))->get();
+    }
 }

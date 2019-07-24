@@ -568,7 +568,7 @@ class MissionController extends Controller
             unset($mission['time_mission']);
 
             $mission['user_application_status']  = ($mission['mission_application'][0]['approval_status']) ?? '';
-            $mission['my_rating']  = ($mission['mission_rating'][0]['rating']) ?? 0;
+            $mission['mission_rating']  = ($mission['mission_rating'][0]['rating']) ?? 0;
             $mission['is_favourite']  = (empty($mission['favourite_mission'])) ? 0 : 1;
             unset($mission['mission_rating']);
             unset($mission['favourite_mission']);

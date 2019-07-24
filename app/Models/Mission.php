@@ -17,6 +17,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Carbon\Carbon;
 use App\Models\GoalMission;
 use App\Models\TimeMission;
+use App\Models\Comment;
 
 class Mission extends Model
 {
@@ -203,6 +204,16 @@ class Mission extends Model
         return $this->hasOne(TimeMission::class, 'mission_id', 'mission_id');
     }
     
+    /**
+     * Get comment associated with the mission.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function comment(): HasMany
+    {
+        return $this->hasMany(Comment::class, 'mission_id', 'mission_id');
+    }
+
     /**
      * Soft delete from the database.
      *
