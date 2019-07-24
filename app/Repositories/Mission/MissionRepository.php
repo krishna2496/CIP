@@ -785,7 +785,7 @@ class MissionRepository implements MissionInterface
     }
     
     /**
-     * Get detail of mission.
+     * Get mission detail
      *
      * @param Illuminate\Http\Request $request
      * @param int $languageId
