@@ -854,7 +854,7 @@ export default {
     StarRating,
 	ThePrimaryHeader : () => import("../components/Layouts/ThePrimaryHeader"),
 	TheSecondaryHeader: () => import("../components/Layouts/TheSecondaryHeader"),
-	TheSecondaryFooter : () => import("../components/Layouts/TheSecondaryFooter"),
+	TheSecondaryFooter : () =>  import("../components/Layouts/TheSecondaryFooter"),
 	VueAutosuggest,
 	SimpleBar,
 	carousel

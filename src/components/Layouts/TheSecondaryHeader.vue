@@ -13,7 +13,7 @@
                             onfocus="this.placeholder=''"
                             id="search"
                             v-model="search"
-                            onblur="this.placeholder='Search mission...'">                           
+                            onblur="this.placeholder='Search mission'">                           
                         </b-form-input>
                         <i>
                             <img :src="$store.state.imagePath+'/assets/images/search-ic.svg'" alt="Search">
@@ -28,7 +28,7 @@
                         </b-button>
                         <b-button class="btn btn-clear">{{$t("label.clear_all")}}</b-button>
                     </div>
-                <b-list-group v-if="quickAccessFilterSet">
+                <b-list-group v-if="quickAccessFilterSet && missionList.length > 0">
                     <b-list-group-item>
                         <AppFilterDropdown
                             :optionList="countryList"
@@ -85,7 +85,10 @@ import {eventBus} from "../../main";
 export default {
     components: { AppFilterDropdown, AppCheckboxDropdown },
     name: "TheSecondaryHeader", 
-    props: ['search'],
+    props: [
+    'search',
+    'missionList'
+    ],
     data() {
         return {
             defautCountry: "Country",
