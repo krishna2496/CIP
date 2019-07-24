@@ -540,11 +540,14 @@ main {
 }
 .home-page {
     .no-data-found{
+        padding-top:60px;
         .btn-wrap{
             padding-top:25px;
             text-align:center;  
             .btn{
-                display:inline-block!important;
+                display:inline-flex!important;
+                align-items: center;
+                padding:6px 25px;
             }
         }
     }

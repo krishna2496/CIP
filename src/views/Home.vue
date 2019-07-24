@@ -4,13 +4,13 @@
              <ThePrimaryHeader @exploreMisison="exploreMisison" 
              @getMissions = "getMissions"
              v-if="isShownComponent" ></ThePrimaryHeader>
-             <TheSecondaryHeader :search="search" ref="secondaryHeader" 
+             <TheSecondaryHeader :search="search" :missionList="missionList" ref="secondaryHeader" 
              @getMissions="getMissions"
               v-if="isShownComponent"></TheSecondaryHeader>
         </header>
         <main>
             <b-container class="home-content-wrapper">
-                <div>
+                <div v-if="missionList.length > 0">
                 <div class="chip-container" v-if="tags != ''">
                     <span v-for="(item , i) in tags.country" >
                         <AppCustomChip :textVal="item" :tagId ="i" type ="country" 
@@ -35,7 +35,7 @@
                     <b-button class="clear-btn" @click="clearMissionFilter">{{$t("label.clear_all")}}</b-button>
                 </div>
                 </div>
-                <div class="heading-section">
+                <div class="heading-section" v-if="missionList.length > 0">
                     <h2><template v-if="rows > 0">{{ $t("label.explore")}} <strong>{{rows}} {{ $t("label.missions")}}</strong></template></h2>
                     <div class="right-section" v-if="sortByFilterSet">
                         <AppCustomDropdown
@@ -51,7 +51,7 @@
                 <!-- grid view -->
                     <b-tab class="grid-tab-content">
                         <template slot="title">
-                        <i class="grid" @click="activeView = 'gridView'" v-b-tooltip.hover title="Grid View">
+                        <i class="grid" @click="activeView = 'gridView'" v-b-tooltip.hover title="Grid View" v-if="missionList.length > 0">
                             <svg
                             version="1.1"
                             id="Capa_1"
@@ -89,7 +89,7 @@
                         <!-- list view -->
                     <b-tab class="list-tab-content">
                         <template slot="title">
-                        <i class="list" @click="activeView = 'listView'" v-b-tooltip.hover title="List View">
+                        <i class="list" @click="activeView = 'listView'" v-b-tooltip.hover title="List View" v-if="missionList.length > 0">
                             <svg
                             id="Layer_1"
                             data-name="Layer 1"
