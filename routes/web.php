@@ -50,7 +50,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
     /* Get mission listing  */
     $router->get('/app/missions/', ['as' => 'app.missions',
     'middleware' => 'localization|tenant.connection|jwt.auth|PaginationMiddleware',
-    'uses' => 'App\Mission\MissionController@appMissionList']);
+    'uses' => 'App\Mission\MissionController@getMissionList']);
 
     /* Get user filter  */
     $router->get('/app/user-filter', ['middleware' => 'tenant.connection|jwt.auth',
@@ -103,6 +103,16 @@ $router->group(['middleware' => 'localization'], function ($router) {
     'middleware' => 'tenant.connection|jwt.auth|PaginationMiddleware',
     'uses' => 'App\User\UserController@index']);
 
+    /* Fetch search-user */
+    $router->get('/app/search-user', ['as' =>'app.user',
+    'middleware' => 'tenant.connection|jwt.auth|PaginationMiddleware',
+    'uses' => 'App\User\UserController@index']);
+
+    /* Get mission detail  */
+    $router->get('/app/mission/{missionId}', [
+    'middleware' => 'localization|tenant.connection|jwt.auth',
+    'uses' => 'App\Mission\MissionController@getMissionDetail']);
+    
     /* Fetch recent volunteers */
     $router->get('/app/mission/{missionId}/volunteers', [
     'middleware' => 'tenant.connection|jwt.auth|PaginationMiddleware',
@@ -117,6 +127,11 @@ $router->group(['middleware' => 'localization'], function ($router) {
     $router->get('/app/mission-media/{missionId}', ['as' => 'app.mission-media',
     'middleware' => 'localization|tenant.connection|jwt.auth',
     'uses' => 'App\Mission\MissionMediaController@getMissionMedia']);
+
+    /* Get mission comments  */
+    $router->get('/app/mission/{missionId}/comments', [
+        'middleware' => 'localization|tenant.connection|jwt.auth',
+        'uses' => 'App\Mission\MissionCommentController@getComment']);
 });
 
 

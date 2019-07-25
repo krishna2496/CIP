@@ -17,6 +17,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Carbon\Carbon;
 use App\Models\GoalMission;
 use App\Models\TimeMission;
+use App\Models\Comment;
 
 class Mission extends Model
 {
@@ -66,7 +67,8 @@ class Mission extends Model
     'country','favouriteMission','missionInvite','missionRating', 'goalMission', 'timeMission', 'application_deadline',
     'application_start_date', 'application_end_date', 'application_start_time', 'application_end_time',
     'goal_objective', 'mission_count', 'mission_rating_count','already_volunteered','total_available_seat',
-    'available_seat','deadline','favourite_mission_count'];
+    'available_seat','deadline','favourite_mission_count', 'my_rating', 'is_favourite', 'skill_id',
+    'user_application_status'];
 
     protected $appends = ['city_name'];
 
@@ -203,6 +205,16 @@ class Mission extends Model
     }
     
     /**
+     * Get comment associated with the mission.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function comment(): HasMany
+    {
+        return $this->hasMany(Comment::class, 'mission_id', 'mission_id');
+    }
+
+    /**
      * Soft delete from the database.
      *
      * @param  int  $id
@@ -239,7 +251,6 @@ class Mission extends Model
         Carbon::parse($value, config('constants.TIMEZONE'))->setTimezone(config('app.TIMEZONE')) : null;
     }
 
-    
     /**
      * Get start date attribute from the model.
      *
@@ -248,7 +259,8 @@ class Mission extends Model
     public function getStartDateAttribute()
     {
         if (isset($this->attributes['start_date']) && !empty(config('constants.TIMEZONE'))) {
-            return Carbon::parse($this->attributes['start_date'])->setTimezone(config('constants.TIMEZONE'));
+            return Carbon::parse($this->attributes['start_date'])->setTimezone(config('constants.TIMEZONE'))
+            ->format(config('constants.DB_DATE_FORMAT'));
         }
     }
     
@@ -272,7 +284,8 @@ class Mission extends Model
     public function getEndDateAttribute()
     {
         if (isset($this->attributes['end_date']) && !empty(config('constants.TIMEZONE'))) {
-            return Carbon::parse($this->attributes['end_date'])->setTimezone(config('constants.TIMEZONE'));
+            return Carbon::parse($this->attributes['end_date'])->setTimezone(config('constants.TIMEZONE'))
+            ->format(config('constants.DB_DATE_FORMAT'));
         }
     }
     

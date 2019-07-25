@@ -4,6 +4,7 @@ namespace App\Repositories\Mission;
 
 use Illuminate\Http\Request;
 use App\Models\MissionRating;
+use App\Models\Mission;
 use Illuminate\Database\Eloquent\Collection;
 
 interface MissionInterface
@@ -85,4 +86,22 @@ interface MissionInterface
      * @return Illuminate\Database\Eloquent\Collection
      */
     public function relatedMissions(Request $request, int $languageId, int $missionId): Collection;
+
+    /**
+     * Get mission detail.
+     *
+     * @param Illuminate\Http\Request $request
+     * @param int $languageId
+     * @param int $missionId
+     * @return \App\Models\Mission
+     */
+    public function getMissionDetail(Request $request, int $languageId, int $missionId): Mission;
+
+    /**
+     * Get mission comments.
+     *
+     * @param int $missionId
+     * @return Illuminate\Database\Eloquent\Collection
+     */
+    public function getComment(int $missionId): Collection;
 }

@@ -65,6 +65,7 @@ return [
         'MESSAGE_MISSION_VOLUNTEERS_LISTING' => 'DE: Get mission volunteers successfully',
         'MESSAGE_NO_MISSION_VOLUNTEERS_FOUND' => 'DE: No recent volunteers found',
         'MESSAGE_MISSION_MEDIA_LISTING' => 'DE: Mission media listing sucessfully',
+        'MESSAGE_MISSION_COMMENT_LISTING' => 'DE: Get mission comments successfully',
     ],
 
         

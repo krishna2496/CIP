@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers\App\Mission;
 
 use Illuminate\Http\Request;
@@ -100,37 +99,7 @@ class MissionController extends Controller
      * @param Illuminate\Http\Request $request
      * @return Illuminate\Http\JsonResponse
      */
-    public function missionList(Request $request): JsonResponse
-    {
-        try {
-            $missions = $this->missionRepository->missionDetail($request);
-            
-            $apiData = $missions;
-            $apiStatus = Response::HTTP_OK;
-            $apiMessage = trans('messages.success.MESSAGE_MISSION_LISTING');
-            return $this->responseHelper->successWithPagination($apiStatus, $apiMessage, $apiData);
-        } catch (PDOException $e) {
-            return $this->PDO(
-                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
-                trans('messages.custom_error_message.ERROR_DATABASE_OPERATIONAL')
-            );
-        } catch (InvalidArgumentException $e) {
-            return $this->invalidArgument(
-                config('constants.error_codes.ERROR_INVALID_ARGUMENT'),
-                trans('messages.custom_error_message.ERROR_INVALID_ARGUMENT')
-            );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
-        }
-    }
-
-    /**
-     * Get missions listing
-     *
-     * @param Illuminate\Http\Request $request
-     * @return Illuminate\Http\JsonResponse
-     */
-    public function appMissionList(Request $request): JsonResponse
+    public function getMissionList(Request $request): JsonResponse
     {
         try {
             $languages = $this->languageHelper->getLanguages($request);
@@ -147,7 +116,7 @@ class MissionController extends Controller
             
             $userFilterData = $userFilters->toArray()["filters"];
            
-            $mission = $this->missionRepository->appMissions($request, $userFilterData, $languageId);
+            $mission = $this->missionRepository->getMissions($request, $userFilterData, $languageId);
 
             foreach ($mission as $key => $value) {
                 if (isset($value->goalMission)) {
@@ -550,7 +519,7 @@ class MissionController extends Controller
             $request->header('X-localization') : env('TENANT_DEFAULT_LANGUAGE_CODE');
             $language = $languages->where('code', $language)->first();
             $languageId = $language->language_id;
-        
+
             $mission = $this->missionRepository->relatedMissions($request, $languageId, $missionId);
             foreach ($mission as $key => $value) {
                 if (isset($value->goalMission)) {
@@ -614,9 +583,115 @@ class MissionController extends Controller
         } catch (PDOException $e) {
             return $this->PDO(
                 config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
-                trans(
-                    'messages.custom_error_message.ERROR_DATABASE_OPERATIONAL'
-                )
+                trans('messages.custom_error_message.ERROR_DATABASE_OPERATIONAL')
+            );
+        } catch (\Exception $e) {
+            throw new \Exception(trans('messages.custom_error_message.ERROR_OCCURRED'));
+        }
+    }
+    
+    /**
+     * Get missions detail
+     *
+     * @param Illuminate\Http\Request $request
+     * @param int $missionId
+     * @return Illuminate\Http\JsonResponse
+     */
+    public function getMissionDetail(Request $request, int $missionId): JsonResponse
+    {
+        try {
+            $languages = $this->languageHelper->getLanguages($request);
+            $language = ($request->hasHeader('X-localization')) ?
+            $request->header('X-localization') : env('TENANT_DEFAULT_LANGUAGE_CODE');
+            $language = $languages->where('code', $language)->first();
+            $languageId = $language->language_id;
+
+            $missionData = $this->missionRepository->getMissionDetail($request, $languageId, $missionId);
+            $mission = $missionData->toArray();
+
+            if (isset($mission['goal_mission'])) {
+                $mission['goal_objective']  = $mission['goal_mission']['goal_objective'];
+            }
+            if (isset($mission['time_mission'])) {
+                $mission['application_deadline'] = $mission['time_mission']['application_deadline'];
+                $mission['application_start_date'] = $mission['time_mission']['application_start_date'];
+                $mission['application_end_date'] = $mission['time_mission']['application_end_date'];
+                $mission['application_start_time'] = $mission['time_mission']['application_start_time'];
+                $mission['application_end_time'] = $mission['time_mission']['application_end_time'];
+            }
+            unset($mission['goal_mission']);
+            unset($mission['time_mission']);
+
+            $mission['user_application_status']  = ($mission['mission_application'][0]['approval_status']) ?? '';
+            $mission['mission_rating']  = ($mission['mission_rating'][0]['rating']) ?? 0;
+            $mission['is_favourite']  = (empty($mission['favourite_mission'])) ? 0 : 1;
+            unset($mission['mission_rating']);
+            unset($mission['favourite_mission']);
+            unset($mission['mission_application']);
+           
+            // Set seats_left or already_volunteered
+            if ($mission['total_seats'] != 0 && $mission['total_seats'] !== null) {
+                $mission['seats_left'] = ($mission['total_seats']) - ($mission['mission_application_count']);
+            } else {
+                $mission['already_volunteered'] = $mission['mission_application_count'];
+            }
+    
+            // Get defalut media image
+            $mission['default_media_type'] = $mission['mission_media'][0]['media_type'] ?? '';
+            $mission['default_media_path'] = $mission['mission_media'][0]['media_path'] ?? '';
+            unset($mission['mission_media']);
+            unset($mission['city']);
+    
+            // Set title and description
+            $mission['title'] = $mission['mission_language'][0]['title'] ?? '';
+            $mission['short_description'] = $mission['mission_language'][0]['short_description'] ?? '';
+            $mission['objective'] = $mission['mission_language'][0]['objective'] ?? '';
+            unset($mission['mission_language']);
+    
+            // Check for apply in mission validity
+            $mission['set_view_detail'] = 0;
+            $today = $this->helpers->getUserTimeZoneDate(date(config("constants.DB_DATE_FORMAT")));
+                
+            if (($mission['user_application_count'] > 0) ||
+                    (isset($mission['application_deadline']) && $mission['application_deadline'] < $today) ||
+                    ($mission['total_seats'] != 0
+                    && $mission['total_seats'] == $mission['mission_application_count']) ||
+                    ($mission['end_date'] !== null && $mission['end_date'] < $today)
+                ) {
+                $mission['set_view_detail'] = 1;
+            }
+            $mission['mission_rating_count'] = $mission['mission_rating_count'] ?? 0;
+            $apiData = $mission;
+            if (!empty($mission['mission_skill'])) {
+                foreach ($mission['mission_skill'] as $key => $value) {
+                    if ($value['skill']) {
+                        $arrayKey = array_search($language->code, array_column(
+                            $value['skill']['translations'],
+                            'lang'
+                        ));
+                        if ($arrayKey  !== '') {
+                            $returnData[config('constants.SKILL')][$key]['title'] =
+                            $value['skill']['translations'][$arrayKey]['title'];
+                            $returnData[config('constants.SKILL')][$key]['id'] =
+                            $value['skill']['skill_id'];
+                        }
+                    }
+                }
+                $apiData[config('constants.SKILL')] = $returnData[config('constants.SKILL')];
+            }
+            unset($apiData['mission_skill']);
+            $apiStatus = Response::HTTP_OK;
+            $apiMessage = trans('messages.success.MESSAGE_MISSION_LISTING');
+            return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
+        } catch (ModelNotFoundException $e) {
+            return $this->modelNotFound(
+                config('constants.error_codes.ERROR_MISSION_NOT_FOUND'),
+                trans('messages.custom_error_message.ERROR_MISSION_NOT_FOUND')
+            );
+        } catch (PDOException $e) {
+            return $this->PDO(
+                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
+                trans('messages.custom_error_message.ERROR_DATABASE_OPERATIONAL')
             );
         } catch (\Exception $e) {
             throw new \Exception(trans('messages.custom_error_message.ERROR_OCCURRED'));
