@@ -100,37 +100,7 @@ class MissionController extends Controller
      * @param Illuminate\Http\Request $request
      * @return Illuminate\Http\JsonResponse
      */
-    public function missionList(Request $request): JsonResponse
-    {
-        try {
-            $missions = $this->missionRepository->missionDetail($request);
-            
-            $apiData = $missions;
-            $apiStatus = Response::HTTP_OK;
-            $apiMessage = trans('messages.success.MESSAGE_MISSION_LISTING');
-            return $this->responseHelper->successWithPagination($apiStatus, $apiMessage, $apiData);
-        } catch (PDOException $e) {
-            return $this->PDO(
-                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
-                trans('messages.custom_error_message.ERROR_DATABASE_OPERATIONAL')
-            );
-        } catch (InvalidArgumentException $e) {
-            return $this->invalidArgument(
-                config('constants.error_codes.ERROR_INVALID_ARGUMENT'),
-                trans('messages.custom_error_message.ERROR_INVALID_ARGUMENT')
-            );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
-        }
-    }
-
-    /**
-     * Get missions listing
-     *
-     * @param Illuminate\Http\Request $request
-     * @return Illuminate\Http\JsonResponse
-     */
-    public function appMissionList(Request $request): JsonResponse
+    public function getMissionList(Request $request): JsonResponse
     {
         try {
             $languages = $this->languageHelper->getLanguages($request);
@@ -147,7 +117,7 @@ class MissionController extends Controller
             
             $userFilterData = $userFilters->toArray()["filters"];
            
-            $mission = $this->missionRepository->appMissions($request, $userFilterData, $languageId);
+            $mission = $this->missionRepository->getMissions($request, $userFilterData, $languageId);
 
             foreach ($mission as $key => $value) {
                 if (isset($value->goalMission)) {
@@ -542,7 +512,7 @@ class MissionController extends Controller
      * @param int $missionId
      * @return Illuminate\Http\JsonResponse
      */
-    public function missionDetail(Request $request, int $missionId): JsonResponse
+    public function getMissionDetail(Request $request, int $missionId): JsonResponse
     {
         try {
             $languages = $this->languageHelper->getLanguages($request);
@@ -551,7 +521,7 @@ class MissionController extends Controller
             $language = $languages->where('code', $language)->first();
             $languageId = $language->language_id;
 
-            $missionData = $this->missionRepository->missionDetail($request, $languageId, $missionId);
+            $missionData = $this->missionRepository->getMissionDetail($request, $languageId, $missionId);
             $mission = $missionData->toArray();
 
             if (isset($mission['goal_mission'])) {

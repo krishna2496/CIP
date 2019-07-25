@@ -473,7 +473,7 @@ class MissionRepository implements MissionInterface
      * @param int $languageId
      * @return \Illuminate\Pagination\LengthAwarePaginator
      */
-    public function appMissions(Request $request, array $userFilterData, int $languageId): LengthAwarePaginator
+    public function getMissions(Request $request, array $userFilterData, int $languageId): LengthAwarePaginator
     {
         $missionData = [];
         // Get  mission data
@@ -792,7 +792,7 @@ class MissionRepository implements MissionInterface
      * @param int $missionId
      * @return \App\Models\Mission
      */
-    public function missionDetail(Request $request, int $languageId, int $missionId): Mission
+    public function getMissionDetail(Request $request, int $languageId, int $missionId): Mission
     {
         $missionData = [];
         // Get  mission detail
