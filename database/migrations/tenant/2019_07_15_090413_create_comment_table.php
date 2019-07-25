@@ -17,6 +17,7 @@ class CreateCommentTable extends Migration
             $table->bigIncrements('comment_id');
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('mission_id');
+            $table->enum('approval_status', ['PENDING','PUBLISHED','DECLINED']);
             $table->text('comment');
             $table->timestamps();
             $table->softDeletes();            
