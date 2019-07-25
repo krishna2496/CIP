@@ -27,7 +27,7 @@ class FooterPageTest extends TestCase
                         'sections' =>  [
                             [
                                 'title' => str_random(20),
-                                'description' => str_random(255),
+                                'description' => array(str_random(255)),
                             ]
                         ],
                     ]
@@ -84,7 +84,7 @@ class FooterPageTest extends TestCase
                         'sections' =>  [
                             [
                                 'title' => str_random(20),
-                                'description' => str_random(255),
+                                'description' => array(str_random(255)),
                             ]
                         ],
                     ]
@@ -116,7 +116,7 @@ class FooterPageTest extends TestCase
                         'sections' =>  [
                             [
                                 'title' => str_random(20),
-                                'description' => str_random(255),
+                                'description' => array(str_random(255)),
                             ]
                         ],
                     ]
@@ -197,7 +197,7 @@ class FooterPageTest extends TestCase
                         'title' => str_random(20),
                         'sections' =>  [
                             'title' => str_random(20),
-                            'description' => str_random(255),
+                            'description' => array(str_random(255)),
                         ],
                     ]
                 ],

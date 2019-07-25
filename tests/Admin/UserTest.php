@@ -630,4 +630,41 @@ class UserTest extends TestCase
         $skill->delete();
     }
 
+    /**
+     * @test
+     *
+     * Return error if email is already exist
+     *
+     * @return void
+     */
+    public function it_should_return_error_while_email_is_exist_for_create_user()
+    {
+        DB::setDefaultConnection('tenant');
+        $email = App\User::get()->random()->email;
+        DB::setDefaultConnection('mysql');
+
+        $name = str_random(10);
+        $params = [
+                'first_name' => $name,
+                'last_name' => str_random(10),
+                'email' => $email,
+                'password' => str_random(10),
+                'timezone_id' => rand(1, 1),
+                'language_id' => rand(1, 1),
+                'availability_id' => rand(1, 1),
+                'why_i_volunteer' => str_random(10),
+                'employee_id' => str_random(10),
+                'department' => str_random(10),
+                'manager_name' => str_random(10),
+                'city_id' => rand(1, 1),
+                'country_id' => rand(1, 1),
+                'profile_text' => str_random(10),
+                'linked_in_url' => 'https://www.'.str_random(10).'.com'
+            ];
+
+        $this->post("users/", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(422);
+    }
+
+
 }
