@@ -16,12 +16,15 @@ class CreateCommentTable extends Migration
         Schema::create('comment', function (Blueprint $table) {
             $table->bigIncrements('comment_id');
             $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('mission_id');
             $table->text('comment');
             $table->timestamps();
             $table->softDeletes();            
 
             // Set references with user table
             $table->foreign('user_id')->references('user_id')->on('user')->onDelete('CASCADE')->onUpdate('CASCADE');
+            // Set references with mission table
+            $table->foreign('mission_id')->references('mission_id')->on('mission')->onDelete('CASCADE')->onUpdate('CASCADE');
         });
     }
 
