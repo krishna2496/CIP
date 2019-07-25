@@ -210,11 +210,7 @@ class Mission extends Model
      */
     public function deleteMission(int $id): bool
     {
-        $mission = static::findOrFail($id)->delete();
-        // static::missionMedia()->delete();
-        // static::missionLanguage()->delete();
-        // static::missionDocument()->delete();
-        return $mission;
+        return static::findOrFail($id)->delete();
     }
 
     /**
