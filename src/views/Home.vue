@@ -4,7 +4,8 @@
              <ThePrimaryHeader @exploreMisison="exploreMisison" 
              @getMissions = "getMissions"
              v-if="isShownComponent" ></ThePrimaryHeader>
-             <TheSecondaryHeader :search="search" :missionList="missionList" ref="secondaryHeader" @testSearch="test"
+             <TheSecondaryHeader :search="search" :missionList="missionList" ref="secondaryHeader" 
+             @storeMisisonSearch="storeSearch"
              @getMissions="getMissions"
               v-if="isShownComponent"></TheSecondaryHeader>
         </header>
@@ -228,7 +229,7 @@ export default {
     },
 
     methods: {
-        test(searchString) {
+        storeSearch(searchString) {
             this.search = searchString
         },
         handleScroll() {
