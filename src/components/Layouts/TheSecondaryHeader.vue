@@ -10,9 +10,10 @@
                             :placeholder="$t('label.search')+' '+$t('label.mission')"
                             @focus="handleFocus()"
                             @blur="handleBlur()"
+                            v-model="searchString"
                             onfocus="this.placeholder=''"
                             id="search"
-                            v-model="search"
+                            @keyup="test"
                             onblur="this.placeholder='Search mission'">                           
                         </b-form-input>
                         <i>
@@ -120,10 +121,14 @@ export default {
             quickAccessFilterSet:true,
             isCountryChange: false,
             isCityChange: false,
-            isThemeChange: false
+            isThemeChange: false,
+            searchString: this.search
         };
     },
     methods: {
+        test() {
+            this.$emit('testSearch', this.searchString);
+        },
         handleFocus() {
             var b_header = document.querySelector(".bottom-header");
             b_header.classList.add("active");

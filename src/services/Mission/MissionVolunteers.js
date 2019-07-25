@@ -20,8 +20,14 @@ export default async(data) => {
             }
         }).then((response) => { 
                 responseData.error = false;
-                responseData.data = response.data.data;
-                responseData.pagination = response.data.pagination;
+                if(response.data.data){
+                    responseData.data = response.data.data;
+                    responseData.pagination = response.data.pagination;
+                } else {
+                    responseData.data = [];
+                    responseData.pagination = [];
+                }
+                
             })
         .catch(function(error) {
             responseData.error = true;

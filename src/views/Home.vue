@@ -4,7 +4,7 @@
              <ThePrimaryHeader @exploreMisison="exploreMisison" 
              @getMissions = "getMissions"
              v-if="isShownComponent" ></ThePrimaryHeader>
-             <TheSecondaryHeader :search="search" :missionList="missionList" ref="secondaryHeader" 
+             <TheSecondaryHeader :search="search" :missionList="missionList" ref="secondaryHeader" @testSearch="test"
              @getMissions="getMissions"
               v-if="isShownComponent"></TheSecondaryHeader>
         </header>
@@ -51,7 +51,9 @@
                 <!-- grid view -->
                     <b-tab class="grid-tab-content">
                         <template slot="title">
-                        <i class="grid" @click="activeView = 'gridView'" v-b-tooltip.hover title="Grid View" v-if="missionList.length > 0">
+                        <i class="grid" @click="activeView = 'gridView'" v-b-tooltip.hover 
+                        :title = "$t('label.grid_view')"
+                        v-if="missionList.length > 0">
                             <svg
                             version="1.1"
                             id="Capa_1"
@@ -89,7 +91,9 @@
                         <!-- list view -->
                     <b-tab class="list-tab-content">
                         <template slot="title">
-                        <i class="list" @click="activeView = 'listView'" v-b-tooltip.hover title="List View" v-if="missionList.length > 0">
+                        <i class="list" @click="activeView = 'listView'" v-b-tooltip.hover 
+                        :title = "$t('label.list_view')"
+                        v-if="missionList.length > 0">
                             <svg
                             id="Layer_1"
                             data-name="Layer 1"
@@ -224,7 +228,9 @@ export default {
     },
 
     methods: {
-
+        test(searchString) {
+            this.search = searchString
+        },
         handleScroll() {
             var body = document.querySelector("body");
             var bheader = document.querySelector("header");
