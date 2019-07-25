@@ -10,11 +10,11 @@ class PaginationMiddleware
     /**
      * Handle an incoming request.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  object  $request
      * @param  \Closure  $next
      * @return mixed
      */
-    public function handle(Request $request, Closure $next)
+    public function handle($request, Closure $next)
     {
         if ($request->perPage > $this->perPageMax || !is_numeric($request->perPage) && isset($request->perPage)) {
             $request->perPage = $this->perPageMax;

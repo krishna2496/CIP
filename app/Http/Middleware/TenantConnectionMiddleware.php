@@ -31,11 +31,11 @@ class TenantConnectionMiddleware
     /**
      * Handle an incoming request.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param object $request
      * @param \Closure $next
      * @return mixed
      */
-    public function handle(Request $request, Closure $next)
+    public function handle($request, Closure $next)
     {
         // Pre-Middleware Action
         $token = $request->get('token');

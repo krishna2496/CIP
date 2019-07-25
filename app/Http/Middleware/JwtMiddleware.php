@@ -38,11 +38,11 @@ class JwtMiddleware
     /**
      * Handle an incoming request.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  object  $request
      * @param  \Closure  $next
      * @return mixed
      */
-    public function handle(Request $request, Closure $next, $guard = null)
+    public function handle($request, Closure $next, $guard = null)
     {
         $token = ($request->hasHeader('token')) ? $request->header('token') : '';
 
