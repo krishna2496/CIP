@@ -44,8 +44,10 @@ class MissionInvite extends Model
     
     /**
      * Get mission invite record for a user
-     *
-     * @return MissionInvite
+     * @var int $missionId
+     * @var int $inviteUserId
+     * @var int $fromUserId
+     * @return Illuminate\Support\Collection
      */
     public function getMissionInvite(int $missionId, int $inviteUserId, int $fromUserId): Collection
     {

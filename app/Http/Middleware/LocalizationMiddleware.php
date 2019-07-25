@@ -12,7 +12,7 @@ class LocalizationMiddleware
      * @param  \Closure  $next
      * @return mixed
      */
-    public function handle($request, Closure $next)
+    public function handle(Request $request, Closure $next)
     {
         try {
             // Check header request and determine localizaton

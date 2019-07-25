@@ -20,7 +20,7 @@ class JsonApiMiddleware
      *
      * @return mixed
      */
-    public function handle($request, Closure $next)
+    public function handle(Request $request, Closure $next)
     {
         if (in_array($request->getMethod(), self::PARSED_METHODS) && (env('APP_ENV') != 'testing')) {
             if (json_decode($request->getContent(), true) == null) {

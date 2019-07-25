@@ -65,7 +65,7 @@ class FooterPagesLanguage extends Model
      * @param  string  $value
      * @return mixed
      */
-    public function getDescriptionAttribute($value)
+    public function getDescriptionAttribute(string $value)
     {
         return unserialize($value);
     }
@@ -76,7 +76,7 @@ class FooterPagesLanguage extends Model
      * @param  string  $value
      * @return mixed
      */
-    public function getSectionsAttribute($value)
+    public function getSectionsAttribute(string $value)
     {
         return unserialize($value);
     }

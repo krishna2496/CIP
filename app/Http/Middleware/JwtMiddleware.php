@@ -26,6 +26,7 @@ class JwtMiddleware
      * Create a new middleware instance.
      *
      * @param Illuminate\Http\ResponseHelper $responseHelper
+     * @param App\Repositories\Timezone\TimezoneRepository $timezoneRepository
      * @return void
      */
     public function __construct(ResponseHelper $responseHelper, TimezoneRepository $timezoneRepository)
@@ -41,7 +42,7 @@ class JwtMiddleware
      * @param  \Closure  $next
      * @return mixed
      */
-    public function handle($request, Closure $next, $guard = null)
+    public function handle(Request $request, Closure $next, $guard = null)
     {
         $token = ($request->hasHeader('token')) ? $request->header('token') : '';
 

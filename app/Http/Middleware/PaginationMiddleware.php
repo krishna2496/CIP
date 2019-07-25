@@ -14,7 +14,7 @@ class PaginationMiddleware
      * @param  \Closure  $next
      * @return mixed
      */
-    public function handle($request, Closure $next)
+    public function handle(Request $request, Closure $next)
     {
         if ($request->perPage > $this->perPageMax || !is_numeric($request->perPage) && isset($request->perPage)) {
             $request->perPage = $this->perPageMax;

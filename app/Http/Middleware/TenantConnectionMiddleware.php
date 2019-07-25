@@ -35,7 +35,7 @@ class TenantConnectionMiddleware
      * @param \Closure $next
      * @return mixed
      */
-    public function handle($request, Closure $next)
+    public function handle(Request $request, Closure $next)
     {
         // Pre-Middleware Action
         $token = $request->get('token');

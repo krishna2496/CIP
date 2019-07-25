@@ -59,14 +59,14 @@ class TenantOptionController extends Controller
         TenantOptionRepository $tenantOptionRepository,
         ResponseHelper $responseHelper,
         LanguageHelper $languageHelper,
-        Helpers $helpers,
-        Helpers $s3helper
+        S3Helper $s3helper,
+        Helpers $helpers
     ) {
         $this->tenantOptionRepository = $tenantOptionRepository;
         $this->responseHelper = $responseHelper;
         $this->languageHelper = $languageHelper;
-        $this->helpers = $helpers;
         $this->s3helper = $s3helper;
+        $this->helpers = $helpers;
     }
     
     /**
@@ -142,7 +142,7 @@ class TenantOptionController extends Controller
      *
      * @return string
      */
-    public function getCustomCss()
+    public function getCustomCss(): string
     {
         $tenantCustomCss = '';
         // find custom css
