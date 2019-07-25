@@ -251,7 +251,6 @@ class AuthController extends Controller
     /**
      * reset_password_link_expiry - check is reset password link is expired or not
      *
-     * @param \App\User $user
      * @param \Illuminate\Http\Request $request
      * @return Illuminate\Http\JsonResponse
      */
