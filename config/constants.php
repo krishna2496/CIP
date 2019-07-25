@@ -26,6 +26,8 @@ return [
     'AWS_CUSTOM_STYLE_VARIABLE_FILE_NAME' => '_variables.scss',
     'TIMEZONE' => '',
     'MISSION_COMMENT_LIMIT' => 20,
+    'LIST' => 'list',
+    'DETAIL' => 'detail',
     
     /*
      * User custom field types

@@ -117,10 +117,11 @@ class MissionController extends Controller
             $userFilterData = $userFilters->toArray()["filters"];
             $missionList = $this->missionRepository->getMissions($request, $userFilterData, $languageId);
 
+            $type = config('constants.LIST');
             $missionsTransformed = $missionList
                 ->getCollection()
-                ->map(function ($item) use ($languageCode) {
-                    return $this->transformMission($item, $languageCode);
+                ->map(function ($item) use ($languageCode, $type) {
+                    return $this->transformMission($item, $languageCode, $type);
                 })->toArray();
                 
             $missionsPaginated = new \Illuminate\Pagination\LengthAwarePaginator(
@@ -487,7 +488,7 @@ class MissionController extends Controller
 
             $missionData = $this->missionRepository->relatedMissions($request, $languageId, $missionId);
             $mission = $missionData->map(function (Mission $mission) {
-                return $this->transformMission($mission, '');
+                return $this->transformMission($mission, '', '');
             })->all();
 
             $apiData = $mission;
@@ -529,10 +530,11 @@ class MissionController extends Controller
             $language = $languages->where('code', $language)->first();
             $languageId = $language->language_id;
             $languageCode = $language->code;
+            $type = config('constants.DETAIL');
 
             $missionData = $this->missionRepository->getMissionDetail($request, $languageId, $missionId);
-            $mission = $missionData->map(function (Mission $mission) use ($languageCode) {
-                return $this->transformMission($mission, $languageCode);
+            $mission = $missionData->map(function (Mission $mission) use ($languageCode, $type) {
+                return $this->transformMission($mission, $languageCode, $type);
             })->all();
 
             $apiData = $mission;
