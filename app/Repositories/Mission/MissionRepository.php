@@ -793,7 +793,7 @@ class MissionRepository implements MissionInterface
      * @param int missionId
      * @return Illuminate\Database\Eloquent\Collection
      */
-    public function relatedMissions(Request $request, int $languageId, int $missionId): Collection
+    public function getRelatedMissions(Request $request, int $languageId, int $missionId): Collection
     {
         // Check mission id exists or not
         $mission = $this->mission->findOrFail($missionId);
@@ -909,9 +909,8 @@ class MissionRepository implements MissionInterface
      * @param int $missionId
      * @return Illuminate\Database\Eloquent\Collection
      */
-    public function getComment(int $missionId): Collection
+    public function getComments(int $missionId): Collection
     {
-        // Fetch mission comments
         $mission = $this->mission->findOrFail($missionId);
         $commentQuery = $mission->comment()->orderBy('comment_id', 'desc')
         ->with(['user:user_id,first_name,last_name,avatar']);

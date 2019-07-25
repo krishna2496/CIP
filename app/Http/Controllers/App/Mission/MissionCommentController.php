@@ -41,16 +41,16 @@ class MissionCommentController extends Controller
     }
 
     /**
-     * Get mission media listing
+     * Get mission comments
      *
      * @param Illuminate\Http\Request $request
      * @param int $missionId
      * @return Illuminate\Http\JsonResponse
      */
-    public function getComment(Request $request, int $missionId): JsonResponse
+    public function getComments(Request $request, int $missionId): JsonResponse
     {
         try {
-            $comments = $this->missionRepository->getComment($missionId);
+            $comments = $this->missionRepository->getComments($missionId);
             $apiData = $comments->toArray();
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_MISSION_COMMENT_LISTING');

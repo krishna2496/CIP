@@ -18,10 +18,9 @@ trait MissionTransformable
      *
      * @param App\Models\Mission $mission
      * @param string $languageCode
-     * @param string $type
      * @return App\Models\Mission
      */
-    protected function transformMission(Mission $mission, string $languageCode, string $type): Mission
+    protected function transformMission(Mission $mission, string $languageCode): Mission
     {
         if (isset($mission['goalMission'])) {
             $mission['goal_objective']  = $mission['goalMission']['goal_objective'];
@@ -38,8 +37,8 @@ trait MissionTransformable
 
         $mission['user_application_status']  = ($mission['missionApplication'][0]['approval_status']) ?? '';
         $mission['rating']  = ($mission['missionRating'][0]['rating']) ?? 0;
-                
         $mission['is_favourite']  = (empty($mission['favouriteMission'])) ? 0 : 1;
+        unset($mission['missionRating']);
         unset($mission['favouriteMission']);
         unset($mission['missionApplication']);
         
@@ -77,7 +76,7 @@ trait MissionTransformable
 
         $mission['mission_rating_count'] = $mission['mission_rating_count'] ?? 0;
               
-        if (!empty($mission['missionSkill']) && ($type == config('constants.DETAIL'))) {
+        if (!empty($mission['missionSkill']) && (isset($mission['missionSkill']))) {
             foreach ($mission['missionSkill'] as $key => $value) {
                 if ($value['skill']) {
                     $arrayKey = array_search($languageCode, array_column(
@@ -94,10 +93,6 @@ trait MissionTransformable
             }
             $mission[config('constants.SKILL')] = $returnData[config('constants.SKILL')];
         }
-        if ($type == config('constants.LIST')) {
-            $mission['mission_rating']  = ($mission['missionRating']) ?? [];
-        }
-        unset($mission['missionRating']);
         unset($mission['missionSkill']);
         return $mission;
     }

@@ -121,7 +121,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
     /* Get mission related listing  */
     $router->get('/app/related-missions/{missionId}', ['as' => 'app.related-missions',
     'middleware' => 'localization|tenant.connection|jwt.auth',
-    'uses' => 'App\Mission\MissionController@relatedMission']);
+    'uses' => 'App\Mission\MissionController@getRelatedMissions']);
    
     /* Get mission media listing  */
     $router->get('/app/mission-media/{missionId}', ['as' => 'app.mission-media',
@@ -131,7 +131,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
     /* Get mission comments  */
     $router->get('/app/mission/{missionId}/comments', [
         'middleware' => 'localization|tenant.connection|jwt.auth',
-        'uses' => 'App\Mission\MissionCommentController@getComment']);
+        'uses' => 'App\Mission\MissionCommentController@getComments']);
 });
 
 

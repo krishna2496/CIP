@@ -85,7 +85,7 @@ interface MissionInterface
      * @param int $missionId
      * @return Illuminate\Database\Eloquent\Collection
      */
-    public function relatedMissions(Request $request, int $languageId, int $missionId): Collection;
+    public function getRelatedMissions(Request $request, int $languageId, int $missionId): Collection;
 
     /**
      * Get mission detail.
@@ -103,5 +103,5 @@ interface MissionInterface
      * @param int $missionId
      * @return Illuminate\Database\Eloquent\Collection
      */
-    public function getComment(int $missionId): Collection;
+    public function getComments(int $missionId): Collection;
 }

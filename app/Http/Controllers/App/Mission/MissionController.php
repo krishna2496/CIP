@@ -117,11 +117,10 @@ class MissionController extends Controller
             $userFilterData = $userFilters->toArray()["filters"];
             $missionList = $this->missionRepository->getMissions($request, $userFilterData, $languageId);
 
-            $type = config('constants.LIST');
             $missionsTransformed = $missionList
                 ->getCollection()
-                ->map(function ($item) use ($languageCode, $type) {
-                    return $this->transformMission($item, $languageCode, $type);
+                ->map(function ($item) use ($languageCode) {
+                    return $this->transformMission($item, $languageCode);
                 })->toArray();
                 
             $missionsPaginated = new \Illuminate\Pagination\LengthAwarePaginator(
@@ -477,7 +476,7 @@ class MissionController extends Controller
      * @param int $missionId
      * @return Illuminate\Http\JsonResponse
      */
-    public function relatedMission(Request $request, int $missionId): JsonResponse
+    public function getRelatedMissions(Request $request, int $missionId): JsonResponse
     {
         try {
             $languages = $this->languageHelper->getLanguages($request);
@@ -486,9 +485,9 @@ class MissionController extends Controller
             $language = $languages->where('code', $language)->first();
             $languageId = $language->language_id;
 
-            $missionData = $this->missionRepository->relatedMissions($request, $languageId, $missionId);
+            $missionData = $this->missionRepository->getRelatedMissions($request, $languageId, $missionId);
             $mission = $missionData->map(function (Mission $mission) {
-                return $this->transformMission($mission, '', '');
+                return $this->transformMission($mission, '');
             })->all();
 
             $apiData = $mission;
@@ -530,11 +529,10 @@ class MissionController extends Controller
             $language = $languages->where('code', $language)->first();
             $languageId = $language->language_id;
             $languageCode = $language->code;
-            $type = config('constants.DETAIL');
 
             $missionData = $this->missionRepository->getMissionDetail($request, $languageId, $missionId);
-            $mission = $missionData->map(function (Mission $mission) use ($languageCode, $type) {
-                return $this->transformMission($mission, $languageCode, $type);
+            $mission = $missionData->map(function (Mission $mission) use ($languageCode) {
+                return $this->transformMission($mission, $languageCode);
             })->all();
 
             $apiData = $mission;
