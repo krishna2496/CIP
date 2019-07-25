@@ -41,17 +41,11 @@ class TenantOptionController extends Controller
     private $helpers;
 
     /**
-    * @var App\Helpers\S3Helper
-    */
-    private $s3helper;
-
-    /**
      * Create a new controller instance.
      *
      * @param App\Repositories\TenantOption\TenantOptionRepository $tenantOptionRepository
      * @param Illuminate\Http\ResponseHelper $responseHelper
      * @param App\Helpers\LanguageHelper $languageHelper
-     * @param App\Helpers\S3Helper $s3helper
      * @param App\Helpers\Helpers $helpers
      * @return void
      */
@@ -59,14 +53,12 @@ class TenantOptionController extends Controller
         TenantOptionRepository $tenantOptionRepository,
         ResponseHelper $responseHelper,
         LanguageHelper $languageHelper,
-        Helpers $helpers,
-        Helpers $s3helper
+        Helpers $helpers
     ) {
         $this->tenantOptionRepository = $tenantOptionRepository;
         $this->responseHelper = $responseHelper;
         $this->languageHelper = $languageHelper;
         $this->helpers = $helpers;
-        $this->s3helper = $s3helper;
     }
     
     /**
