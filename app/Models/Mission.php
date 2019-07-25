@@ -67,8 +67,8 @@ class Mission extends Model
     'country','favouriteMission','missionInvite','missionRating', 'goalMission', 'timeMission', 'application_deadline',
     'application_start_date', 'application_end_date', 'application_start_time', 'application_end_time',
     'goal_objective', 'mission_count', 'mission_rating_count','already_volunteered','total_available_seat',
-    'available_seat','deadline','favourite_mission_count', 'my_rating', 'is_favourite', 'skill_id',
-    'user_application_status'];
+    'available_seat','deadline','favourite_mission_count', 'mission_rating', 'is_favourite', 'skill_id',
+    'user_application_status', 'skill'];
 
     protected $appends = ['city_name'];
 

@@ -840,13 +840,13 @@ class MissionRepository implements MissionInterface
      * @param Illuminate\Http\Request $request
      * @param int $languageId
      * @param int $missionId
-     * @return \App\Models\Mission
+     * @return Illuminate\Database\Eloquent\Collection
      */
-    public function getMissionDetail(Request $request, int $languageId, int $missionId): Mission
+    public function getMissionDetail(Request $request, int $languageId, int $missionId): Collection
     {
-        $missionData = [];
+        $mission = $this->mission->findOrFail($missionId);
         // Get  mission detail
-        $missionQuery = $this->mission->select('mission.*');
+        $missionQuery = $this->mission->select('mission.*')->where('mission_id', $missionId);
         $missionQuery->where('publication_status', config("constants.publication_status")["APPROVED"])
             ->with(['missionTheme', 'missionMedia', 'goalMission', 'missionDocument', 'timeMission'])
             ->with(['missionSkill' => function ($query) {
@@ -886,7 +886,7 @@ class MissionRepository implements MissionInterface
                     $query->select(DB::raw("AVG(rating) as rating"));
                 }
             ]);
-        return $missionQuery->findOrFail($missionId);
+        return $missionQuery->get();
     }
 
     /**
