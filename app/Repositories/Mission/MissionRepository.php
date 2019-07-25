@@ -912,7 +912,9 @@ class MissionRepository implements MissionInterface
     public function getComments(int $missionId): Collection
     {
         $mission = $this->mission->findOrFail($missionId);
-        $commentQuery = $mission->comment()->where('approval_status', config("constants.comment_approval_status.PUBLISHED"))->orderBy('comment_id', 'desc')
+        $commentQuery = $mission->comment()
+        ->where('approval_status', config("constants.comment_approval_status.PUBLISHED"))
+        ->orderBy('comment_id', 'desc')
         ->with(['user:user_id,first_name,last_name,avatar']);
         return $commentQuery->take(config("constants.MISSION_COMMENT_LIMIT"))->get();
     }
