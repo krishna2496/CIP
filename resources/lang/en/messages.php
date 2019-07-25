@@ -64,6 +64,8 @@ return [
         'MESSAGE_RATING_ADDED' => 'Mission rating added successfully',
         'MESSAGE_MISSION_VOLUNTEERS_LISTING' => 'Get mission volunteers successfully',
         'MESSAGE_NO_MISSION_VOLUNTEERS_FOUND' => 'No recent volunteers found',
+        'MESSAGE_MISSION_MEDIA_LISTING' => 'Mission media listing sucessfully',
+        'MESSAGE_MISSION_COMMENT_LISTING' => 'Get mission comments successfully',
     ],
 
         

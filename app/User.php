@@ -129,6 +129,16 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     }
 
     /**
+     * Get comment associated with the user.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function comment(): HasMany
+    {
+        return $this->hasMany(Comment::class, 'user_id', 'user_id');
+    }
+
+    /**
      * The is set attribute method for password. This will make has of entered password, before insert.
      *
      * @param string $password
