@@ -26,7 +26,7 @@ class MissionCommentController extends Controller
     private $responseHelper;
        
     /**
-     * Create a new  Mission media controller instance
+     * Create a new comment controller instance
      *
      * @param App\Repositories\Mission\MissionRepository $missionRepository
      * @param Illuminate\Http\ResponseHelper $responseHelper
