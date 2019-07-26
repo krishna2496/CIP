@@ -7,7 +7,7 @@
                         <b-form-input
                             type="text"
                             @keypress.enter="searchMission"
-                            :placeholder="searchPlaceHolder"
+                            :placeholder="$t('label.search')+' '+$t('label.mission')"
                             @focus="handleFocus()"
                             @blur="handleBlur()"
                             v-model="searchString"                            
@@ -130,6 +130,7 @@ export default {
             this.$emit('storeMisisonSearch', this.searchString);
         },
         handleFocus() {
+            // console.log(this.$refs);
             this.searchPlaceHolder = '';
             var b_header = document.querySelector(".bottom-header");
             b_header.classList.add("active");

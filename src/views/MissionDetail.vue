@@ -49,8 +49,7 @@
 						</b-col>
 						<b-col lg="6" class="ml-auto banner-content-wrap">
 							<div class="banner-content-block">
-							<h1>CSR initiative stands for Coffee &amp;
-								Farmer Equity</h1>
+							<h1>{{missionDetail.title}}</h1>
 								<div class="rating-with-btn">
 									<div class="rating-block">
 										<star-rating
@@ -61,7 +60,7 @@
 										inactive-color="#Fff"
 										active-color="#F7D341"
 										v-bind:star-size="25"
-										:rating="rating"
+										:rating="missionDetail.rating"
 										@rating-selected ="setRating"
 										>
 										</star-rating>
@@ -106,31 +105,92 @@
 
 								</b-button>
 								</div>
-							<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam.</p>
+							<p>{{missionDetail.short_description}}</p>
 							<div class="group-details">
 								<div class="top-strip">
-									<span>Plant 10,000 Trees</span>
-								</div>
-								<div class="group-details-inner has-progress">
-									<div class="detail-column info-block">
-										<i class="icon-wrap">
-											<img src="../assets/images/user-icon.svg" alt="user">
-										</i>
-										<div class="text-wrap">
-											<span class="title-text mb-1">10</span>
-											<span class="subtitle-text">Seats left</span>
-										</div>
-									</div>
-									<div class="detail-column progress-block">
-										<i class="icon-wrap">
-											<img src="../assets/images/target-ic.svg" alt="user">
-										</i>
-										<div class="text-wrap">
-											<b-progress :value="value" :max="max" class="mb-2"></b-progress>
-											<span class="subtitle-text">8000 achieved</span>
-										</div>
-									</div>
-								</div>
+                                        <span>
+                                        <!-- Mission type time -->
+                                        <template v-if="checkMissionTypeTime(missionDetail.mission_type)">
+                                        <template v-if="missionDetail.end_date !== null">
+                                            {{ $t("label.from") }} 
+                                            {{missionDetail.start_date | formatDate }} 
+                                            {{ $t("label.until")}}
+                                            {{ missionDetail.end_date | formatDate }} 
+                                        </template>
+                                        <template v-else>
+                                            {{ $t("label.on_going_opportunities") }}  
+                                        </template>
+                                        </template>
+                                        <!-- Mission type goal -->
+                                        <template v-else>
+                                            {{missionDetail.objective}}
+                                        </template>
+                                        </span>    
+                                </div>
+								
+								<template v-if="checkMissionTypeTime(missionDetail.mission_type)">
+                                        <div class="group-details-inner">
+                                            <template v-if="missionDetail.total_seats != 0 && missionDetail.total_seats !== null">
+                                                <div class="detail-column info-block">
+                                                    <i class="icon-wrap">
+                                                        <img :src="$store.state.imagePath+'/assets/images/user-icon.svg'" alt="user">
+                                                        
+                                                    </i>
+                                                    <div class="text-wrap">
+                                                        <span class="title-text mb-1">{{missionDetail.seats_left}}</span>
+                                                        <span class="subtitle-text">{{ $t("label.seats_left") }}</span>
+                                                    </div>
+                                                </div>
+                                            </template>
+                                            <template v-else>
+                                                <div class="detail-column info-block">
+                                                    <i class="icon-wrap">
+                                                        <img :src="$store.state.imagePath+'/assets/images/user-icon1.svg'" alt="user">
+                                                    </i>
+                                                    <div class="text-wrap">
+                                                        <span class="title-text mb-1">{{missionDetail.mission_application_count}}</span>
+                                                        <span class="subtitle-text">{{ $t("label.already_volunteered") }}</span>
+                                                    </div>
+                                                </div>
+                                            </template>
+                                            <template v-if="missionDetail.application_deadline != null">
+                                                <div class="detail-column info-block">
+                                                    <i class="icon-wrap">
+                                                        <img :src="$store.state.imagePath+'/assets/images/clock.svg'" alt="user">
+                                                    </i>
+                                                    <div class="text-wrap">
+                                                        <span class="title-text mb-1">{{missionDetail.application_deadline | formatDate}}</span>
+                                                        <span class="subtitle-text">{{ $t("label.deadline") }}</span>
+                                                    </div>
+                                                </div>
+                                            </template>
+                                        </div>
+                                    </template>
+                                    <template v-else>
+                                        <div class="group-details-inner has-progress">
+                                            <div class="detail-column info-block">
+                                            <template v-if="missionDetail.total_seats != 0 && missionDetail.total_seats !== null">
+                                                <i class="icon-wrap">
+                                                    <img :src="$store.state.imagePath+'/assets/images/user-icon.svg'" alt="user">
+                                                </i>
+                                                <div class="text-wrap">
+                                                    <span class="title-text mb-1">{{missionDetail.seats_left}}</span>
+                                                    <span class="subtitle-text">{{ $t("label.seats_left") }}</span>
+                                                </div>
+                                            </template>
+                                            <template v-else>
+                                                <i class="icon-wrap">
+                                                    <img :src="$store.state.imagePath+'/assets/images/user-icon1.svg'" alt="user">
+                                                </i>
+                                                <div class="text-wrap">
+                                                    <span class="title-text mb-1">{{missionDetail.mission_application_count}}</span>
+                                                    <span class="subtitle-text">{{ $t("label.already_volunteered") }}</span>
+                                                </div>
+                                            </template>
+
+                                            </div>
+                                        </div>
+                                    </template>
 							</div>
 							<b-list-group class="info-box">
 								<b-list-group-item>
@@ -139,7 +199,7 @@
 											<img src="../assets/images/location-black.svg" alt="" />
 										</i>
 										<span class="label">{{ $t("label.city")}}</span>
-										<p class="text-wrap">London</p>
+										<p class="text-wrap">{{missionDetail.city_name}}</p>
 									</div>
 								</b-list-group-item>
 								<b-list-group-item>
@@ -148,7 +208,7 @@
 											<img src="../assets/images/earth-ic.svg" alt="" />
 										</i>
 										<span class="label">{{ $t("label.theme")}}</span>
-										<p class="text-wrap">Environment</p>
+										<p class="text-wrap">{{getThemeTitle(missionDetail.mission_theme)}}</p>
 									</div>
 								</b-list-group-item>
 								<b-list-group-item>
@@ -157,7 +217,13 @@
 											<img src="../assets/images/calendar.svg" alt="" />
 										</i>
 										<span class="label">{{ $t("label.date")}}</span>
-										<p class="text-wrap">Ongoing Opportunity</p>
+										<template v-if="missionDetail.application_deadline && missionDetail.application_deadline != null">
+                                                <p class="text-wrap">{{missionDetail.application_deadline | formatDate}}</p>
+                                        </template>
+                                        <template v-else>
+                                        	<p class="text-wrap">{{ $t("label.on_going_opportunities") }} </p>
+                                        </template>
+										
 									</div>
 								</b-list-group-item>
 								<b-list-group-item>
@@ -166,7 +232,7 @@
 											<img src="../assets/images/group-ic.svg" alt="" />
 										</i>
 										<span class="label">{{ $t("label.organisation")}}</span>
-										<p class="text-wrap">CSE Network</p>
+										<p class="text-wrap">{{missionDetail.organisation_name}}</p>
 									</div>
 								</b-list-group-item>
 							</b-list-group>
@@ -182,7 +248,7 @@
 									</i>
 									<span>{{ $t("label.recommend_to_co_worker") }}</span>
 								</b-button>
-								<b-button class="btn-bordersecondary icon-btn">
+								<b-button class="btn-bordersecondary icon-btn" v-bind:disabled="disableApply">
 										<span>{{ $t("label.apply_now") }}</span>
 										<i>
 											<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 16" width="19" height="15">
@@ -211,8 +277,7 @@
 						 {{ $t("label.mission") }}</a></li>
 						 <li><a href="javascript:void(0)" data-id="organization" class="tablinks">
 						 {{ $t("label.organisation") }}</a></li>
-						 <li><a href="javascript:void(0)" data-id="sponsored" class="tablinks">
-						 {{ $t("label.sponsored") }}</a></li>
+						 
 						 <li><a href="javascript:void(0)" data-id="comments" class="tablinks">
 						 {{ $t("label.comments") }}</a></li>
 					 </ul>
@@ -230,14 +295,50 @@
 									<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum</p>
 									<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
 									<h2>{{ $t("label.documents") }}</h2>
-									<!-- <div class="document-list-wrap">
-										<b-link href="#" target="_blank" title=""><CustomChip :textVal="'lorem-ipsum.pdf'" class="has-img no-close" :url="bgImage[0]"/></b-link>
-										<b-link href="#" target="_blank" title=""><CustomChip :textVal="'at_vero_eos_accusamus.doc'"  class="has-img no-close" :url="bgImage[1]"/></b-link>
-										<b-link href="#" target="_blank" title=""><CustomChip :textVal="'important_doc.xls'"  class="has-img no-close" :url="bgImage[2]"/></b-link>
-										<b-link href="#" target="_blank" title=""><CustomChip :textVal="'loremm.pdf'"  class="has-img no-close" :url="bgImage[0]"/></b-link>
-										<b-link href="#" target="_blank" title=""><CustomChip :textVal="'important_doc.xls'"  class="has-img no-close" :url="bgImage[2]"/></b-link>
-										<b-link href="#" target="_blank" title=""><CustomChip :textVal="'lorem-ipsum.pdf'"  class="has-img no-close" :url="bgImage[0]"/></b-link>
-									</div>     -->                    
+
+									<div class="document-list-wrap" v-if="missionDetail.mission_document 
+									&& missionDetail.mission_document.length > 0" >
+										
+										<div class="document-list-block" v-for="document in missionDetail.mission_document"  >
+										
+											<!-- pdf -->
+										<template v-if="document.document_type =='pdf'">
+											<b-link :href="document.document_path" target="_blank" 
+											:title="document.document_name">
+											<AppCustomChip 
+												:textVal="document.document_name" 
+												class="has-img no-close" 
+												:url="bgImage[0]"/>
+											</b-link>
+										</template>
+										<!-- doc -->
+										<template v-if="document.document_type =='doc' || document.document_type =='docx' ">
+											<b-link :href="document.document_path" target="_blank" 
+											:title="document.document_name">
+											<AppCustomChip 
+												:textVal="document.document_name" 
+												class="has-img no-close" 
+												:url="bgImage[1]"/>
+											</b-link>
+										</template>
+
+										<!-- xls  xlsx-->
+										<template v-if="document.document_type =='xls' || document.document_type =='xlsx ' ">
+											<b-link :href="document.document_path" target="_blank" 
+											:title="document.document_name">
+											<AppCustomChip 
+												:textVal="document.document_name" 
+												class="has-img no-close" 
+												:url="bgImage[2]"/>
+											</b-link>
+										</template>
+
+										</div>
+										
+									</div> 
+										<div class="document-list-block" v-else>
+											{{ $t("label.no_document")}}
+										</div>
 								</b-collapse>
 					 		</div>
 							<div class="tabs">
@@ -293,25 +394,7 @@
 										<p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
 									</b-collapse>
 							</div>
-							<div class="tabs">
-								<div class="tab-title">
-									<h3 v-b-toggle.sponsored>{{ $t("label.sponsored") }}</h3>
-								</div>
-									<b-collapse id="sponsored" accordion="my-accordion" role="tabpanel" class="tab-content">
-										<h2>Introduction</h2>
-										<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-										<p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-										<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-										<h2>How do we support this mission</h2>
-										<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum</p>
-										<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-										<h2>Documents</h2>
-										<!-- <div class="document-list-wrap">
-											<b-link href="#" target="_blank" title=""><CustomChip :textVal="'lorem-ipsum.pdf'" class="has-img no-close" :url="bgImage[0]"/></b-link>
-											<b-link href="#" target="_blank" title=""><CustomChip :textVal="'at_vero_eos_accusamus.doc'"  class="has-img no-close" :url="bgImage[1]"/></b-link>
-										</div>   -->  
-									</b-collapse>
-							</div>
+							
 							<div class="tabs">
 								<div class="tab-title">
 									<h3 v-b-toggle.comments>{{ $t("label.comment") }}</h3>
@@ -401,64 +484,33 @@
 						 <h2 class="title-with-border"><span>{{ $t("label.information") }}</span></h2>
 						<div class="table-wrap">
 							<div class="table-row">
-								<span class="label-col">Skills</span>
-								<span class="detail-col">Cool, Easy going, Math, Computer</span>
+								<span class="label-col">{{$t("label.skills")}}</span>
+								<span class="detail-col">{{getSkills(missionDetail)}}</span>
 							</div>
 							<div class="table-row">
-								<span class="label-col">Days</span>
-								<span class="detail-col">Weekend only</span>
+								<span class="label-col">{{$t("label.days")}}</span>
+								<span class="detail-col">-</span>
 							</div>
 							<div class="table-row">
-								<span class="label-col">Rating</span>
+								<span class="label-col">{{$t("label.rating")}}</span>
 								<span class="detail-col">
 									 <star-rating
-										:rating="5" :read-only="true" :increment="0.01"
+										:rating="missionDetail.mission_rating_count" :read-only="true" :increment="0.01"
 										v-bind:max-rating="5"
 										inactive-color="#dddddd"
 										active-color="#F7D341"
 										v-bind:star-size="23"
 										>
 									</star-rating>
-									<span>(by 125 volunteers)</span>
+									<span>(
+									{{ $t("label.by")}} 
+									{{missionDetail.mission_rating_total_volunteers}} 
+									{{$t("label.volunteers")}} )</span>
 								</span>
 							</div>
 						</div>
 					</div>
 					<RecentVolunteers v-if="isShownComponent"></RecentVolunteers>
-					<!-- <div class="recent-volunteer-block">
-						<div 
-						v-bind:class="{ 
-	 									'content-loader-wrap': true, 
-	 									'recent-loader': recentVolunterLoader,
- 									}"
-						>
-						      <div class="content-loader"></div>
-						    </div>	
-						<h2 class="title-with-border"><span>{{ $t("label.recent_volunteers") }} </span></h2>
-						<div class="recent-details-block">
-							<b-list-group class="volunteers-list"  
-								:current-page="currentPage">
-								<b-list-group-item v-for="(volunteer , v) in volunteerList" :key="v" >
-									<div  class="list-item">
-										<i class="user-profile-icon" :style="{backgroundImage: 'url(' + volunteer.avatar + ')'}">
-										</i>
-										<span>{{volunteer.first_name}} {{volunteer.last_name}}</span>
-									</div>
-								</b-list-group-item>
-							</b-list-group>
-							<div class="custom-pagination" v-if="rows > 0">
-								<b-pagination
-				                    v-model="currentPage"
-				                    :total-rows="rows"
-				                    :per-page="perPage" 
-				                    @change="pageChange" 
-			                    >    
-			                    </b-pagination>
-			     				<span> 
-			     				{{((currentPage - 1 ) * perPage ) + 1}} - {{Math.min(perPage * currentPage , rows )}} of {{rows}} {{ $t("label.recent_volunteers") }}</span>
-							</div>
-						</div>
-					</div> -->
                 </b-col>
           </b-row>
 	  </div>
@@ -540,7 +592,7 @@
                             </div>
                             <div class="group-details">
                                 <div class="top-strip">
-                                    <span>Ongoing Opportunity</span>
+                                    <span>{{ $t("label.on_going_opportunities") }} </span>
                                 </div>
                                 <div class="group-details-inner">
                                     <div class="detail-column info-block">
@@ -840,11 +892,13 @@
 <script>
 import AppCustomChip from "../components/AppCustomChip";
 import StarRating from 'vue-star-rating';
+import constants from '../constant';
 import { VueAutosuggest } from 'vue-autosuggest';
 import carousel from 'vue-owl-carousel';
-import {favoriteMission,inviteColleague ,applyMission,searchUser,storeMissionRating,} from "../services/service";
+import {favoriteMission,inviteColleague ,applyMission,searchUser,storeMissionRating,missionDetail} from "../services/service";
 import SimpleBar from 'simplebar';
 import store from "../store";
+import moment from 'moment'
 
 export default {
   components: {
@@ -859,48 +913,51 @@ export default {
 	RecentVolunteers: () => import("../components/RecentVolunteers"),
   },
   data() {
-    return {
-    	isShownComponent :false,
-    	missionId :this.$route.params.misisonId,
-    	missionAddedToFavoriteByUser : false,
-    	query: "",
-        selected: "",
-        rating:3.5,
-        search : "",
-        userList : [],
-        missionList : [
-        	{ mission:1 }
-        ],
-        myclass:["userdetail-modal"],
-        currentMissionId : 0,
-        invitedUserId : 0,
-        showErrorDiv : false,
-        message : null,
-        classVariant :"success",
-        autoSuggestPlaceholder : '',
-        submitDisable :true,
-        recentVolunterLoader : true,
-        bgImage : [
-        require("@/assets/images/pdf.svg"),
-        require("@/assets/images/doc.svg"),
-        require("@/assets/images/xlsx.svg"),
-		],
-        orgLogo:require("@/assets/images/ces-logo.png"),
-        commentImg:[ 
-			require("@/assets/images/volunteer3.png"),
-			require("@/assets/images/volunteer2.png")
+	    return {
+	    	isShownComponent :false,
+	    	missionId :this.$route.params.misisonId,
+	    	missionAddedToFavoriteByUser : false,
+	    	query: "",
+	        selected: "",
+	        rating:3.5,
+	        search : "",
+	        userList : [],
+	        missionList : [
+	        	{ mission:1 }
+	        ],
+	        myclass:["userdetail-modal"],
+	        currentMissionId : 0,
+	        invitedUserId : 0,
+	        showErrorDiv : false,
+	        message : null,
+	        classVariant :"success",
+	        autoSuggestPlaceholder : '',
+	        submitDisable :true,
+	        recentVolunterLoader : true,
+	        missionDetail : [],
+	        disableApply : false,
+	        missionDocument : [],
+	        bgImage : [
+	        require("@/assets/images/pdf.svg"),
+	        require("@/assets/images/doc.svg"),
+	        require("@/assets/images/xlsx.svg"),
 			],
-        currentPage: 1,
-        grpImages: [
-            require("@/assets/images/group-img4.png"),
-            require("@/assets/images/group-img5.png"),
-            require("@/assets/images/group-img6.png"),
-        ],
-		max: 100,
-		value: 70,
-    };
-  },
-  mounted(){
+	        orgLogo:require("@/assets/images/ces-logo.png"),
+	        commentImg:[ 
+				require("@/assets/images/volunteer3.png"),
+				require("@/assets/images/volunteer2.png")
+				],
+	        currentPage: 1,
+	        grpImages: [
+	            require("@/assets/images/group-img4.png"),
+	            require("@/assets/images/group-img5.png"),
+	            require("@/assets/images/group-img6.png"),
+	        ],
+			max: 100,
+			value: 70,
+	    };
+  	},
+	mounted(){
 	 var tabItem = document.querySelectorAll(".platform-details-tab .nav-tabs li a")
 		tabItem.forEach(function(tabItemEvent){
 			tabItemEvent.addEventListener("click", tabsHandle);
@@ -920,8 +977,8 @@ export default {
 			}
 			tabsEvent.currentTarget.className += " active";
 		}
-   },
-   computed: {
+	},
+    computed: {
    		filteredOptions() {
             if(this.userList){
                 return [
@@ -939,6 +996,11 @@ export default {
         }
    },
    methods: {
+   		// Check mission type
+        checkMissionTypeTime(missionType) {
+            return missionType == constants.MISSION_TYPE_TIME
+        },
+
    		setRating: function(rating){
 			let missionData = {
 				mission_id : '',
@@ -1041,7 +1103,8 @@ export default {
                 autoHideDelay: 3000
             })
         },
-      handleSliderClick(event){
+
+      	handleSliderClick(event){
 			event.stopPropagation()
 			var hideVideo = document.querySelector(".video-wrap");
 			var galleryImg = document.querySelector(".gallery-top .img-wrap");
@@ -1065,10 +1128,74 @@ export default {
 				galleryImg.style.display = "block";
 				hideVideo.style.display = "none";
 			}
-		}
+		},
+
+		getMissionDetail() {
+			if(this.$route.params.misisonId) {
+				missionDetail(this.$route.params.misisonId).then(response => {
+	                if (response.error == false) {
+	                	if(response.data[0]) {
+	                		 this.missionDetail = response.data[0];
+							if(response.data[0].is_favourite == 1) {
+								this.missionAddedToFavoriteByUser = true;
+							}
+
+							if(response.data[0].set_view_detail == 1) {
+								// disableApply
+								if(response.data[0].user_application_status ==  
+									constants.AUTOMATICALLY_APPROVED || response.data[0].user_application_status ==  
+									constants.PENDING ) {
+									this.disableApply = true;
+								}
+							}
+							this.missionDocument = response.data[0].mission_document
+	                	}
+	                  
+	                }
+	            })
+			} else {
+				router.push({
+                	name: 'home'
+            	})
+			}
+		},
+		//get theme title
+        getThemeTitle(missionTheme) {
+        	if(missionTheme) {
+	        	let translations = missionTheme.translations
+	            if (translations) {
+	                var filteredObj  = translations.filter(function (item, i) { 
+	                    if (item.lang === store.state.defaultLanguage.toLowerCase()) {
+	                        return translations[i].title;
+	                    }
+	                });
+	                if (filteredObj[0].title) {
+	                    return filteredObj[0].title;
+	                }
+	            }
+        	}
+        },
+        getSkills(missionDetail) {
+        	let skills = '';
+        	if(missionDetail.skill) {
+    		 	var filteredObj  = (missionDetail.skill).filter(function (item, i) { 
+	                  console.log(item.title);
+	                  if(skills == '') {
+	                  	skills = item.title;
+	                  } else {
+	                  	skills = skills+","+item.title;
+	                  }
+                });
+        	} else {
+        		skills = '-';
+        	}
+        	return skills;
+        }
    },
 	created(){
 		var _this = this;
+		// Get mission detail
+		this.getMissionDetail();
 		if(store.state.search != null) {
 	        this.search = store.state.search;
 	    } else {

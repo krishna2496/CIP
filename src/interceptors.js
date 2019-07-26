@@ -12,9 +12,9 @@ export default function setup() {
         var lastPosition =  domain.length -1;
         var getRequest = domain[lastPosition].split('?');
         var getRequestEndPoint = getRequest[0];
-        console.log(getRequestEndPoint);
+        // console.log(domain[lastPosition]);
         // Do something before request is sent
-        if(domain[lastPosition] == "favourite"){
+        if(domain[lastPosition] == "favourite" || domain[lastPosition] == "rating"){
             addLoader = "false";
         }
 
