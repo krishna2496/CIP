@@ -284,7 +284,7 @@ class ApiUserTest extends TestCase
     /**
      * @test
      * 
-     * Delete api user, while tenant not found
+     * Delete api user, while api user not found
      * @return void
      */
     public function it_should_return_api_user_not_found_for_delete_api_user()
