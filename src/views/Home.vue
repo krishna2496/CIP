@@ -51,29 +51,10 @@
                 <!-- grid view -->
                     <b-tab class="grid-tab-content">
                         <template slot="title">
-                        <i class="grid" @click="activeView = 'gridView'" v-b-tooltip.hover title="Grid View">
-                            <svg
-                            version="1.1"
-                            id="Capa_1"
-                            xmlns="http://www.w3.org/2000/svg"
-                            xmlns:xlink="http://www.w3.org/1999/xlink"
-                            x="0px"
-                            y="0px"
-                            viewBox="0 0 174.239 174.239"
-                            style="enable-background:new 0 0 174.239 174.239;"
-                            xml:space="preserve"
-                            >
-                            <g><g>
-                            <path d="M174.239,174.239H96.945V96.945h77.294V174.239z M111.88,159.305h47.425V111.88H111.88V159.305z"></path>
-                            </g><g>
-                            <path d="M77.294,174.239H0V96.945h77.294V174.239z M14.935,159.305H62.36V111.88H14.935V159.305z"></path>
-                            </g><g>
-                            <path d="M174.239,77.294H96.945V0h77.294V77.294z M111.88,62.36h47.425V14.935H111.88V62.36z"></path>
-                            </g><g>
-                            <path d="M77.294,77.294H0V0h77.294V77.294z M14.935,62.36H62.36V14.935H14.935V62.36z"></path>
-                            </g></g>
-                            </svg>
-                        </i>
+                            <i class="grid icon-wrap" @click="activeView = 'gridView'" v-b-tooltip.hover :title = "$t('label.grid_view')" v-if="missionList.length > 0">
+                            <img class="img-normal" :src="$store.state.imagePath+'/assets/images/grid.svg'" alt="Down Arrow" />
+                            <img class="img-rollover" :src="$store.state.imagePath+'/assets/images/grid-h.svg'" alt="Down Arrow" />
+                         </i>
                         </template>
                         <GridView 
                         id="gridView"
@@ -89,16 +70,10 @@
                         <!-- list view -->
                     <b-tab class="list-tab-content">
                         <template slot="title">
-                        <i class="list" @click="activeView = 'listView'" v-b-tooltip.hover title="List View">
-                            <svg
-                            id="Layer_1"
-                            data-name="Layer 1"
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 22 22"
-                            >
-                            <path id="List" class="cls-1" d="M0,0H22V2H0ZM0,10H22v2H0ZM0,20H22v2H0Z"></path>
-                            </svg>
-                        </i>
+                            <i class="list icon-wrap" @click="activeView = 'listView'" v-b-tooltip.hover :title = "$t('label.list_view')" v-if="missionList.length > 0">
+                            <img class="img-normal" :src="$store.state.imagePath+'/assets/images/list.svg'" alt="Down Arrow" />
+                            <img class="img-rollover" :src="$store.state.imagePath+'/assets/images/list-h.svg'" alt="Down Arrow" />
+                            </i>
                         </template>
                         <ListView
                         id="listView"
