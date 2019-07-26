@@ -101,7 +101,7 @@ class AppMisionApplicationTest extends TestCase
             ],
             "start_date" => "2019-05-15 10:40:00",
             "end_date" => "2019-10-15 10:40:00",
-            "mission_type" => "GOAL",
+            "mission_type" => "TIME",
             "goal_objective" => rand(1, 1000),
             "total_seats" => rand(1, 1000),
             "application_deadline" => "2019-07-25 11:40:00",
