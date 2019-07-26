@@ -83,7 +83,10 @@
 		"comments" : "commentaires",
 		"documents" : "Les documents",
 		"read_more_comment" : "Lire plus de commentaire",
-		"submit_new_mission" : "Soumettre une nouvelle mission"
+		"submit_new_mission" : "Soumettre une nouvelle mission",
+		"grid_view" : "Vue de la grille",
+		"list_view" : "Vue liste",
+		"no_volunteers" : "No Volunteers"
 	},
 
 	"placeholder" : {

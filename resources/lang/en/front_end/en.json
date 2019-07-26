@@ -84,7 +84,10 @@
 		"comments" : "Comments",
 		"documents" : "Documents",
 		"read_more_comment" : "Read more comment",
-		"submit_new_mission" : "Submit new mission"
+		"submit_new_mission" : "Submit new mission",
+		"grid_view" : "Grid view",
+        "list_view" : "List view",
+		"no_volunteers" : "No Volunteers"
 	},
 
 	"placeholder" : {
