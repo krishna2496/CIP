@@ -87,7 +87,10 @@
 		"submit_new_mission" : "Submit new mission",
 		"grid_view" : "Grid view",
         "list_view" : "List view",
-		"no_volunteers" : "No Volunteers"
+		"no_volunteers" : "No Volunteers",
+		"by" : "by",
+		"volunteers" : "volunteers",
+		"no_document" : "No documents"
 	},
 
 	"placeholder" : {
