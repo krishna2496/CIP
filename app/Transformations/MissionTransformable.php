@@ -77,6 +77,7 @@ trait MissionTransformable
         $mission['mission_rating_count'] = $mission['mission_rating_count'] ?? 0;
               
         if (!empty($mission['missionSkill']) && (isset($mission['missionSkill']))) {
+			$returnData = [];
             foreach ($mission['missionSkill'] as $key => $value) {
                 if ($value['skill']) {
                     $arrayKey = array_search($languageCode, array_column(
@@ -91,7 +92,8 @@ trait MissionTransformable
                     }
                 }
             }
-            $mission[config('constants.SKILL')] = $returnData[config('constants.SKILL')];
+			if (!empty($returnData))
+				$mission[config('constants.SKILL')] = $returnData[config('constants.SKILL')];
         }
         unset($mission['missionSkill']);
         return $mission;
