@@ -866,7 +866,14 @@ class MissionRepository implements MissionInterface
                 $query->Where('user_id', $request->auth->user_id);
             }])
             ->with(['missionLanguage' => function ($query) use ($languageId) {
-                $query->select('mission_language_id', 'mission_id', 'title', 'short_description', 'objective')
+                $query->select(
+                    'mission_language_id',
+                    'mission_id',
+                    'title',
+                    'short_description',
+                    'objective',
+                    'description'
+                )
                 ->where('language_id', $languageId);
             }])
             ->withCount(['missionApplication as user_application_count' => function ($query) use ($request) {

@@ -58,6 +58,7 @@ trait MissionTransformable
         // Set title and description
         $mission['title'] = $mission['missionLanguage'][0]['title'] ?? '';
         $mission['short_description'] = $mission['missionLanguage'][0]['short_description'] ?? '';
+        $mission['description'] = $mission['missionLanguage'][0]['description'] ?? '';
         $mission['objective'] = $mission['missionLanguage'][0]['objective'] ?? '';
         unset($mission['missionLanguage']);
 
