@@ -108,21 +108,9 @@ class FooterPageTest extends TestCase
         $params = [
             'page_details' =>
                 [
-                'slug' => str_random(20),
-                'translations' =>  [
-                    [
-                        'lang' => 'en',
-                        'title' => str_random(20),
-                        'sections' =>  [
-                            [
-                                'title' => str_random(20),
-                                'description' => array(str_random(255)),
-                            ]
-                        ],
-                    ]
+                'slug' => str_random(20)                
                 ],
-            ],
-        ];
+            ];
 
         $connection = 'tenant';
         $footerPage = factory(\App\Models\FooterPage::class)->make();
