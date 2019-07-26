@@ -12,16 +12,22 @@ export default function setup() {
         var lastPosition =  domain.length -1;
         var getRequest = domain[lastPosition].split('?');
         var getRequestEndPoint = getRequest[0];
+        console.log(getRequestEndPoint);
         // Do something before request is sent
         if(domain[lastPosition] == "favourite"){
             addLoader = "false";
         }
 
-        if(getRequestEndPoint == "missions") {
+        if(getRequestEndPoint == "missions" || getRequestEndPoint == "volunteers") {
             if(config.headers.addLoader == "removeLoader"){
                 addLoader = "false";
             }
         }
+
+        if(getRequestEndPoint == "volunteers") {
+                addLoader = "false";
+        }
+
         if(addLoader == "true") {
             document.body.classList.add("loader-enable");
         }

@@ -4,13 +4,14 @@
              <ThePrimaryHeader @exploreMisison="exploreMisison" 
              @getMissions = "getMissions"
              v-if="isShownComponent" ></ThePrimaryHeader>
-             <TheSecondaryHeader :search="search" ref="secondaryHeader" 
+             <TheSecondaryHeader :search="search" :missionList="missionList" ref="secondaryHeader" 
+             @storeMisisonSearch="storeSearch"
              @getMissions="getMissions"
               v-if="isShownComponent"></TheSecondaryHeader>
         </header>
         <main>
             <b-container class="home-content-wrapper">
-                <div>
+                <div v-if="missionList.length > 0">
                 <div class="chip-container" v-if="tags != ''">
                     <span v-for="(item , i) in tags.country" >
                         <AppCustomChip :textVal="item" :tagId ="i" type ="country" 
@@ -35,7 +36,7 @@
                     <b-button class="clear-btn" @click="clearMissionFilter">{{$t("label.clear_all")}}</b-button>
                 </div>
                 </div>
-                <div class="heading-section">
+                <div class="heading-section" v-if="missionList.length > 0">
                     <h2><template v-if="rows > 0">{{ $t("label.explore")}} <strong>{{rows}} {{ $t("label.missions")}}</strong></template></h2>
                     <div class="right-section" v-if="sortByFilterSet">
                         <AppCustomDropdown
@@ -59,7 +60,7 @@
                         <GridView 
                         id="gridView"
                         :items="missionList"
-                        :per-page="perPage"
+                        :p:per-page="perPage"
                         :current-page="currentPage"
                         v-if="isShownComponent"
                         :userList = "userList"
@@ -78,14 +79,15 @@
                         <ListView
                         id="listView"
                         :items="missionList"
-                        :per-page="perPage"
+                        :p:per-page="perPage"
                         :current-page="currentPage"
                         v-if="isShownComponent"
                         :userList = "userList"
                         @getMissions = "getMissions"
                         small
                         />
-                    </b-tab>          
+                    </b-tab>
+                      
                 </b-tabs>
             <!-- Tabing grid view and list view end -->
             <!-- Pagination start -->
@@ -107,27 +109,9 @@
             <TheSecondaryFooter></TheSecondaryFooter>
         </footer>
         <back-to-top bottom="68px" right="40px" :title="$t('label.back_to_top')">
-        <i>
-            <svg
-                version="1.1"
-                id="Capa_1"
-                xmlns="http://www.w3.org/2000/svg"
-                xmlns:xlink="http://www.w3.org/1999/xlink"
-                x="0px"
-                y="0px"
-                width="451.847px"
-                height="451.847px"
-                viewBox="0 0 451.847 451.847"
-                style="enable-background:new 0 0 451.847 451.847;"
-                xml:space="preserve">
-            <g>
-            <path
-            d="M225.923,354.706c-8.098,0-16.195-3.092-22.369-9.263L9.27,151.157c-12.359-12.359-12.359-32.397,0-44.751
-            c12.354-12.354,32.388-12.354,44.748,0l171.905,171.915l171.906-171.909c12.359-12.354,32.391-12.354,44.744,0
-            c12.365,12.354,12.365,32.392,0,44.751L248.292,345.449C242.115,351.621,234.018,354.706,225.923,354.706z"
-            ></path>
-            </g>
-            </svg>
+         <i class="icon-wrap">
+            <img class="img-normal" :src="$store.state.imagePath+'/assets/images/down-arrow.svg'" alt="Down Arrow" />
+            <img class="img-rollover" :src="$store.state.imagePath+'/assets/images/down-arrow-black.svg'" alt="Down Arrow" />
         </i>
         </back-to-top>
     </div>
@@ -199,7 +183,9 @@ export default {
     },
 
     methods: {
-
+        storeSearch(searchString) {
+            this.search = searchString
+        },
         handleScroll() {
             var body = document.querySelector("body");
             var bheader = document.querySelector("header");

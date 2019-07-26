@@ -7,13 +7,13 @@
                         <b-form-input
                             type="text"
                             @keypress.enter="searchMission"
-                            :placeholder="$t('label.search')+' '+$t('label.mission')"
+                            :placeholder="searchPlaceHolder"
                             @focus="handleFocus()"
                             @blur="handleBlur()"
-                            onfocus="this.placeholder=''"
+                            v-model="searchString"                            
                             id="search"
-                            v-model="search"
-                            onblur="this.placeholder='Search mission...'">                           
+                            @keyup="test"
+                            >                           
                         </b-form-input>
                         <i>
                             <img :src="$store.state.imagePath+'/assets/images/search-ic.svg'" alt="Search">
@@ -28,7 +28,7 @@
                         </b-button>
                         <b-button class="btn btn-clear">{{$t("label.clear_all")}}</b-button>
                     </div>
-                <b-list-group v-if="quickAccessFilterSet">
+                <b-list-group v-if="quickAccessFilterSet && missionList.length > 0">
                     <b-list-group-item>
                         <AppFilterDropdown
                             :optionList="countryList"
@@ -85,10 +85,14 @@ import {eventBus} from "../../main";
 export default {
     components: { AppFilterDropdown, AppCheckboxDropdown },
     name: "TheSecondaryHeader", 
-    props: ['search'],
+    props: [
+    'search',
+    'missionList'
+    ],
     data() {
-        return {
-            defautCountry: "Country",
+        return {            
+            searchPlaceHolder: this.$i18n.t('label.search')+' '+this.$i18n.t('label.mission'),
+            defautCountry: "Country", 
             defautCity: "",
             defautTheme: "",
             defautSkill: "",
@@ -117,11 +121,16 @@ export default {
             quickAccessFilterSet:true,
             isCountryChange: false,
             isCityChange: false,
-            isThemeChange: false
+            isThemeChange: false,
+            searchString: this.search
         };
     },
     methods: {
+        test() {
+            this.$emit('storeMisisonSearch', this.searchString);
+        },
         handleFocus() {
+            this.searchPlaceHolder = '';
             var b_header = document.querySelector(".bottom-header");
             b_header.classList.add("active");
         },
@@ -155,6 +164,7 @@ export default {
         },
 
         handleBlur() {
+            this.searchPlaceHolder = this.$i18n.t('label.search')+' '+this.$i18n.t('label.mission');
             var b_header = document.querySelector(".bottom-header");
             var input_edit = document.querySelector(".search-block input");
             b_header.classList.remove("active");
@@ -294,7 +304,13 @@ export default {
                 'theme' :[],
                 'skill' :[]
             }
-
+            var _this = this;
+            setTimeout(function(){
+                _this.defautCity =  _this.$i18n.t("label.city"),
+                _this.defautTheme =  _this.$i18n.t("label.theme"),
+                _this.defautSkill = _this.$i18n.t("label.skills")
+            },500)
+            
             this.selectedfilterParams.countryId = store.state.countryId;
             this.selectedfilterParams.cityId = store.state.cityId;
             this.selectedfilterParams.themeId = store.state.themeId;
@@ -347,9 +363,6 @@ export default {
                             this.selectedSkill = store.state.skillId.toString().split(',')
                         }
 
-                        this.defautCity =  this.$i18n.t("label.city"),
-                        this.defautTheme =  this.$i18n.t("label.theme"),
-                        this.defautSkill = this.$i18n.t("label.skills")
                     }            
                     this.isComponentVisible =true;
             }); 
