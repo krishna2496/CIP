@@ -492,7 +492,9 @@ class MissionController extends Controller
 
             $apiData = $mission;
             $apiStatus = Response::HTTP_OK;
-            $apiMessage = trans('messages.success.MESSAGE_MISSION_LISTING');
+            $apiMessage = (!empty($mission)) ?
+            trans('messages.success.MESSAGE_MISSION_LISTING') :
+            trans('messages.success.MESSAGE_NO_RELATED_MISSION_FOUND');
             return $this->responseHelper->success(
                 $apiStatus,
                 $apiMessage,
