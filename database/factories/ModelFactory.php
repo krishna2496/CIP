@@ -83,8 +83,6 @@ $factory->define(App\Models\Skill::class, function (Faker\Generator $faker) {
 });
 
 $factory->define(App\Models\MissionApplication::class, function (Faker\Generator $faker) {
-    // $mission = App\Models\Mission::get()->random(); 
-    // dd($mission);
     return [
         'mission_id' => rand(1, 1),
         'user_id' => rand(1, 1),

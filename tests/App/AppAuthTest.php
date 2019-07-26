@@ -86,27 +86,27 @@ class AppAuthTest extends TestCase
      *
      * @return void
      */
-    public function it_should_sent_request_for_reset_password()
-    {
-        $connection = 'tenant';
-        $user = factory(\App\User::class)->make();
-        $user->setConnection($connection);
-        $user->save();
+    // public function it_should_sent_request_for_reset_password()
+    // {
+    //     $connection = 'tenant';
+    //     $user = factory(\App\User::class)->make();
+    //     $user->setConnection($connection);
+    //     $user->save();
 
-        $params = [
-            'email' => $user->email,
-        ];
+    //     $params = [
+    //         'email' => $user->email,
+    //     ];
 
-        $this->post('app/request-password-reset', $params, [])
-          ->seeStatusCode(200)
-          ->seeJsonStructure(
-              [
-                "status",
-                "message"
-            ]
-        );
-        $user->delete();
-    }
+    //     $this->post('app/request-password-reset', $params, [])
+    //       ->seeStatusCode(200)
+    //       ->seeJsonStructure(
+    //           [
+    //             "status",
+    //             "message"
+    //         ]
+    //     );
+    //     $user->delete();
+    // }
 
     /**
      * @test
