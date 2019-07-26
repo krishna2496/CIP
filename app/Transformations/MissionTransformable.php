@@ -37,7 +37,7 @@ trait MissionTransformable
 
         $mission['user_application_status']  = ($mission['missionApplication'][0]['approval_status']) ?? '';
         $mission['rating']  = ($mission['missionRating'][0]['rating']) ?? 0;
-        $mission['is_favourite']  = (empty($mission['favouriteMission'])) ? 0 : 1;
+        $mission['is_favourite']  = (empty($mission['favouriteMission']->toArray())) ? 0 : 1;
         unset($mission['missionRating']);
         unset($mission['favouriteMission']);
         unset($mission['missionApplication']);
@@ -77,7 +77,7 @@ trait MissionTransformable
         $mission['mission_rating_count'] = $mission['mission_rating_count'] ?? 0;
               
         if (!empty($mission['missionSkill']) && (isset($mission['missionSkill']))) {
-			$returnData = [];
+            $returnData = [];
             foreach ($mission['missionSkill'] as $key => $value) {
                 if ($value['skill']) {
                     $arrayKey = array_search($languageCode, array_column(
@@ -92,8 +92,9 @@ trait MissionTransformable
                     }
                 }
             }
-			if (!empty($returnData))
-				$mission[config('constants.SKILL')] = $returnData[config('constants.SKILL')];
+            if (!empty($returnData)) {
+                $mission[config('constants.SKILL')] = $returnData[config('constants.SKILL')];
+            }
         }
         unset($mission['missionSkill']);
         return $mission;

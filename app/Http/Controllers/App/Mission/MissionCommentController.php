@@ -54,6 +54,9 @@ class MissionCommentController extends Controller
             $apiData = $comments->toArray();
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_MISSION_COMMENT_LISTING');
+            $apiMessage = (!empty($apiData)) ?
+            trans('messages.success.MESSAGE_MISSION_COMMENT_LISTING') :
+            trans('messages.success.MESSAGE_NO_MISSION_COMMENT_FOUND');
             return $this->responseHelper->success(
                 $apiStatus,
                 $apiMessage,

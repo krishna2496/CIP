@@ -44,7 +44,15 @@ return [
     'DEFAULT_LANGUAGE' => 'EN',
     'FRONTEND_LANGUAGE_FOLDER' => 'front_end',
 
-    
+    /*
+     * Comments approval status
+     */
+    'comment_approval_status' => [
+        'PENDING' => 'PENDING',
+        'PUBLISHED' => 'PUBLISHED',
+        'DECLINED' => 'DECLINED'
+    ],
+
     /*
      * Mission types
      */
