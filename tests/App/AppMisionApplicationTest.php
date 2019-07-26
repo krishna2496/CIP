@@ -1,14 +1,13 @@
 <?php
 use Laravel\Lumen\Testing\DatabaseMigrations;
 use Laravel\Lumen\Testing\DatabaseTransactions;
-use App\Models\Mission;
-use App\Models\FavouriteMission;
 use Illuminate\Support\Facades\Config;
 use Firebase\JWT\JWT;
 use Firebase\JWT\ExpiredException;
 use Illuminate\Support\Facades\DB;
+use App\Models\Mission;
 
-class AppMissionTest extends TestCase
+class AppMisionApplicationTest extends TestCase
 {
     /**
      * @test
@@ -17,7 +16,7 @@ class AppMissionTest extends TestCase
      *
      * @return void
      */
-    public function it_should_return_all_app_missions()
+    public function it_should_return_no_mission_found_for_apply()
     {
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
@@ -26,18 +25,12 @@ class AppMissionTest extends TestCase
         DB::connection('mysql')->getPdo();
         Config::set('database.default', 'mysql');
 
+        $params = [
+                'mission_id' => rand(1000000, 20000000)
+            ];
         $token = $this->getToken($user->user_id);
-        $this->get(route('app.missions'), ['token' => $token])
-          ->seeStatusCode(200)
-          ->seeJsonStructure([
-            "status",
-            "meta_data" => [
-                "filters" => [
-                    "search"
-                ]
-            ],
-            "message"
-        ]);
+        $this->post('app/mission/application', $params, ['token' => $token])
+          ->seeStatusCode(422);
         $user->delete();
     }
 
