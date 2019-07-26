@@ -10,7 +10,7 @@ class PaginationMiddleware
     /**
      * Handle an incoming request.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  object  $request
      * @param  \Closure  $next
      * @return mixed
      */

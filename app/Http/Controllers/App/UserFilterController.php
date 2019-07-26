@@ -48,6 +48,7 @@ class UserFilterController extends Controller
      * @param App\Repositories\MissionTheme\MissionThemeRepository $theme
      * @param App\Repositories\Skill\SkillRepository $skill
      * @param App\Helpers\ResponseHelper $responseHelper
+     * @param App\Helpers\Helpers $helper
      * @return void
      */
     public function __construct(

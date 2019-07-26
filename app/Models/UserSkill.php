@@ -78,7 +78,7 @@ class UserSkill extends Model
      * @param  int  $userId
      * @return Skill
      */
-    public function find(int $userId):Skill
+    public function find(int $userId): Skill
     {
         return static::with('skill')->find($userId);
     }

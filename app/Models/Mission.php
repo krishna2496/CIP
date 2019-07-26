@@ -95,7 +95,7 @@ class Mission extends Model
     /**
      * Get the language title record associated with the mission.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function missionLanguage(): HasMany
     {
@@ -177,7 +177,7 @@ class Mission extends Model
     /**
      * Get the mission skill associated with the mission.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\hasMany
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function missionSkill(): HasMany
     {
@@ -187,7 +187,7 @@ class Mission extends Model
     /**
      * Defined for goal mission.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\hasMany
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
     public function goalMission(): HasOne
     {
@@ -197,7 +197,7 @@ class Mission extends Model
     /**
      * Defined for time mission.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\hasMany
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
     public function timeMission(): HasOne
     {
@@ -234,7 +234,7 @@ class Mission extends Model
      *
      * @return string
      */
-    public function getCityNameAttribute()
+    public function getCityNameAttribute(): string
     {
         return $this->city()->select('name')->first()->name;
     }
@@ -256,7 +256,7 @@ class Mission extends Model
      *
      * @return string
      */
-    public function getStartDateAttribute()
+    public function getStartDateAttribute(): string
     {
         if (isset($this->attributes['start_date']) && !empty(config('constants.TIMEZONE'))) {
             return Carbon::parse($this->attributes['start_date'])->setTimezone(config('constants.TIMEZONE'))
