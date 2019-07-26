@@ -919,7 +919,6 @@ export default {
 	    	missionAddedToFavoriteByUser : false,
 	    	query: "",
 	        selected: "",
-	        rating:3.5,
 	        search : "",
 	        userList : [],
 	        missionList : [
@@ -1007,7 +1006,7 @@ export default {
 				rating : ''
 			};
 			missionData.mission_id = this.missionId;
-			missionData.rating = this.rating;
+			missionData.rating = rating;
 		    storeMissionRating(missionData).then(response => {
 		        if(response.error == true){
 		            this.makeToast("danger",response.message);
