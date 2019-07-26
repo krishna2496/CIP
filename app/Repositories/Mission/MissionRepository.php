@@ -885,6 +885,8 @@ class MissionRepository implements MissionInterface
                 'missionRating as mission_rating_count' => function ($query) {
                     $query->select(DB::raw("AVG(rating) as rating"));
                 }
+            ])->withCount([
+                'missionRating as mission_rating_total_volunteers'
             ]);
         return $missionQuery->get();
     }
