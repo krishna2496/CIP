@@ -66,9 +66,9 @@ class MissionLanguage extends Model
      * Get an attribute from the model.
      *
      * @param  string  $value
-     * @return mixed
+     * @return array
      */
-    public function getDescriptionAttribute(string $value)
+    public function getDescriptionAttribute(string $value): array
     {
         return unserialize($value);
     }
