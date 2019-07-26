@@ -4,9 +4,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\Mission;
+use App\User;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class MissionRating extends Model
+class Comment extends Model
 {
     use SoftDeletes;
 
@@ -15,24 +16,31 @@ class MissionRating extends Model
      *
      * @var string
      */
-    protected $table = 'mission_rating';
+    protected $table = 'comment';
 
     /**
      * The primary key for the model.
      *
-     * @var int
+     * @var string
      */
-    protected $primaryKey = 'mission_rating_id';
-    
+    protected $primaryKey = 'comment_id';
+
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
-    protected $fillable = ['mission_id', 'user_id', 'rating'];
+    protected $fillable = ['comment_id', 'user_id', 'mission_id', 'comment'];
+
+    /**
+     * The attributes that should be visible in arrays.
+     *
+     * @var array
+     */
+    protected $visible = ['comment_id', 'comment', 'created_at', 'user'];
     
     /**
-     * Get the mission that has media.
+     * Get the mission that has comment.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
@@ -42,14 +50,12 @@ class MissionRating extends Model
     }
 
     /**
-     * Store/update specified resource.
+     * Get the user that has comment.
      *
-     * @param  array $condition
-     * @param  array $data
-     * @return App\Models\MissionRating
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function createOrUpdateRating(array $condition, array $data): MissionRating
+    public function user(): BelongsTo
     {
-        return static::updateOrCreate($condition, $data);
+        return $this->belongsTo(User::class, 'user_id', 'user_id');
     }
 }

@@ -18,6 +18,7 @@ trait UserTransformable
         $prop->first_name = $user->first_name;
         $prop->last_name = $user->last_name;
         $prop->email = $user->email;
+        $prop->avatar = $user->avatar;
         return $prop;
     }
 }

@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Repositories\Mission;
 
 use App\Repositories\Mission\MissionInterface;
@@ -15,6 +16,7 @@ use App\Models\MissionMedia;
 use App\Models\FavouriteMission;
 use App\Models\MissionSkill;
 use App\Models\TimeMission;
+use App\Models\MissionRating;
 use DB;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
@@ -58,6 +60,11 @@ class MissionRepository implements MissionInterface
     private $missionSkill;
 
     /**
+     * @var App\models\MissionRating
+     */
+    private $missionRating;
+
+    /**
      * Create a new Mission repository instance.
      *
      * @param  App\Models\Mission $mission
@@ -69,6 +76,7 @@ class MissionRepository implements MissionInterface
      * @param  Illuminate\Http\S3Helper $s3helper
      * @param App\Models\MissionSkill
      * @param  App\Models\FavouriteMission $favouriteMission
+     * @param  App\Models\MissionRating $missionRating
      * @return void
      */
     public function __construct(
@@ -81,7 +89,8 @@ class MissionRepository implements MissionInterface
         Helpers $helpers,
         S3Helper $s3helper,
         FavouriteMission $favouriteMission,
-        MissionSkill $missionSkill
+        MissionSkill $missionSkill,
+        MissionRating $missionRating
     ) {
         $this->mission = $mission;
         $this->missionLanguage = $missionLanguage;
@@ -93,6 +102,7 @@ class MissionRepository implements MissionInterface
         $this->s3helper = $s3helper;
         $this->favouriteMission = $favouriteMission;
         $this->missionSkill = $missionSkill;
+        $this->missionRating = $missionRating;
     }
     
     /**
@@ -162,7 +172,14 @@ class MissionRepository implements MissionInterface
             $this->missionLanguage->create($missionLanguage);
             unset($missionLanguage);
         }
-
+        
+        // For skills
+        if (isset($request->skills) && count($request->skills) > 0) {
+            foreach ($request->skills as $value) {
+                $this->missionSkill->linkMissionSkill($mission->mission_id, $value['skill_id']);
+            }
+        }
+        
         $tenantName = $this->helpers->getSubDomainFromRequest($request);
         $isDefault = 0;
 
@@ -297,6 +314,13 @@ class MissionRepository implements MissionInterface
                 'language_id' => $language->language_id], $missionLanguage);
                     
                 unset($missionLanguage);
+            }
+        }
+        
+        // For skills
+        if (isset($request->skills) && count($request->skills) > 0) {
+            foreach ($request->skills as $value) {
+                $this->missionSkill->linkMissionSkill($mission->mission_id, $value['skill_id']);
             }
         }
 
@@ -450,13 +474,14 @@ class MissionRepository implements MissionInterface
      * @param int $languageId
      * @return \Illuminate\Pagination\LengthAwarePaginator
      */
-    public function appMissions(Request $request, array $userFilterData, int $languageId): LengthAwarePaginator
+    public function getMissions(Request $request, array $userFilterData, int $languageId): LengthAwarePaginator
     {
         $missionData = [];
         // Get  mission data
-        $missionQuery = $this->mission->select('*');
+        $missionQuery = $this->mission->select('mission.*');
+        $missionQuery->leftjoin('time_mission', 'mission.mission_id', '=', 'time_mission.mission_id');
         $missionQuery->where('publication_status', config("constants.publication_status")["APPROVED"])
-            ->with(['missionTheme', 'missionMedia', 'goalMission', 'timeMission'
+            ->with(['missionTheme', 'missionMedia', 'goalMission'
             ])->with(['missionMedia' => function ($query) {
                 $query->where('status', '1');
                 $query->where('default', '1');
@@ -467,15 +492,17 @@ class MissionRepository implements MissionInterface
             }])
             ->withCount(['missionApplication as user_application_count' => function ($query) use ($request) {
                 $query->where('user_id', $request->auth->user_id)
-                ->where('approval_status', config("constants.application_status")["AUTOMATICALLY_APPROVED"]);
+                ->whereIn('approval_status', [config("constants.application_status")["AUTOMATICALLY_APPROVED"],
+                config("constants.application_status")["PENDING"]]);
             }])
             ->withCount(['missionApplication as mission_application_count' => function ($query) use ($request) {
-                $query->where('approval_status', config("constants.application_status")["AUTOMATICALLY_APPROVED"]);
+                $query->whereIn('approval_status', [config("constants.application_status")["AUTOMATICALLY_APPROVED"],
+                config("constants.application_status")["PENDING"]]);
             }])
             ->withCount(['favouriteMission as favourite_mission_count' => function ($query) use ($request) {
                 $query->Where('user_id', $request->auth->user_id);
             }]);
-            $missionQuery->withCount([
+        $missionQuery->withCount([
                 'missionRating as mission_rating_count' => function ($query) {
                     $query->select(DB::raw("AVG(rating) as rating"));
                 }
@@ -573,8 +600,10 @@ class MissionRepository implements MissionInterface
                 $missionQuery->orderBY('mission.created_at', 'asc');
             }
             if ($userFilterData['sort_by'] == config('constants.LOWEST_AVAILABLE_SEATS')) {
+                $missionQuery->orderByRaw('total_seats - mission_application_count asc');
             }
             if ($userFilterData['sort_by'] == config('constants.HIGHEST_AVAILABLE_SEATS')) {
+                $missionQuery->orderByRaw('total_seats - mission_application_count desc');
             }
             if ($userFilterData['sort_by'] == config('constants.MY_FAVOURITE')) {
                 $missionQuery->withCount(['favouriteMission as favourite_mission_count'
@@ -584,12 +613,12 @@ class MissionRepository implements MissionInterface
                 $missionQuery->orderBY('favourite_mission_count', 'desc');
             }
             if ($userFilterData['sort_by'] == config('constants.DEADLINE')) {
-                $missionQuery->with(['timeMission' => function ($query) {
-                    $query->orderBy("application_deadline");
-                }]);
+                $missionQuery->orderBy(
+                    \DB::raw('time_mission.application_deadline IS NULL, time_mission.application_deadline'),
+                    'asc'
+                );
             }
         }
-        
         $mission =  $missionQuery->paginate($request->perPage);
         return $mission;
     }
@@ -740,5 +769,155 @@ class MissionRepository implements MissionInterface
     public function getMissionName(int $missionId, $languageId): string
     {
         return $this->missionLanguage->getMissionName($missionId, $languageId);
+    }
+
+    /**
+     * Add/update mission rating.
+     *
+     * @param int $userId
+     * @param array $request
+     * @return App\Models\MissionRating
+     */
+    public function storeMissionRating(int $userId, array $request): MissionRating
+    {
+        $missionRating = array('rating' => $request['rating']);
+        return $this->missionRating->createOrUpdateRating(['mission_id' => $request['mission_id'],
+        'user_id' => $userId], $missionRating);
+    }
+
+    /**
+     * Display listing of related mission.
+     *
+     * @param Illuminate\Http\Request $request
+     * @param int $languageId
+     * @param int missionId
+     * @return Illuminate\Database\Eloquent\Collection
+     */
+    public function getRelatedMissions(Request $request, int $languageId, int $missionId): Collection
+    {
+        // Check mission id exists or not
+        $mission = $this->mission->findOrFail($missionId);
+
+        // Get  mission data
+        $missionQuery = $this->mission->where('theme_id', $mission->theme_id)
+        ->whereNotIn('mission.mission_id', [$missionId])
+        ->select('mission.*')->take(config("constants.RELATED_MISSION_LIMIT"));
+
+        $missionQuery->where('publication_status', config("constants.publication_status")["APPROVED"])
+        ->with(['missionTheme', 'missionMedia', 'goalMission', 'timeMission'
+        ])->with(['missionMedia' => function ($query) {
+            $query->where('status', '1');
+            $query->where('default', '1');
+        }])
+        ->with(['missionLanguage' => function ($query) use ($languageId) {
+            $query->select('mission_language_id', 'mission_id', 'title', 'short_description', 'objective')
+            ->where('language_id', $languageId);
+        }])
+        ->withCount(['missionApplication as user_application_count' => function ($query) use ($request) {
+            $query->where('user_id', $request->auth->user_id)
+            ->whereIn('approval_status', [config("constants.application_status")["AUTOMATICALLY_APPROVED"],
+            config("constants.application_status")["PENDING"]]);
+        }])
+        ->withCount(['missionApplication as mission_application_count' => function ($query) use ($request) {
+            $query->whereIn('approval_status', [config("constants.application_status")["AUTOMATICALLY_APPROVED"],
+            config("constants.application_status")["PENDING"]]);
+        }])
+        ->withCount(['favouriteMission as favourite_mission_count' => function ($query) use ($request) {
+            $query->Where('user_id', $request->auth->user_id);
+        }]);
+        $missionQuery->withCount([
+            'missionRating as mission_rating_count' => function ($query) {
+                $query->select(DB::raw("AVG(rating) as rating"));
+            }
+        ]);
+        $missionQuery->with(['missionRating']);
+        return $missionQuery->inRandomOrder()->get();
+    }
+
+    /**
+     * Get mission detail
+     *
+     * @param Illuminate\Http\Request $request
+     * @param int $languageId
+     * @param int $missionId
+     * @return Illuminate\Database\Eloquent\Collection
+     */
+    public function getMissionDetail(Request $request, int $languageId, int $missionId): Collection
+    {
+        $mission = $this->mission->findOrFail($missionId);
+        // Get  mission detail
+        $missionQuery = $this->mission->select('mission.*')->where('mission_id', $missionId);
+        $missionQuery->where('publication_status', config("constants.publication_status")["APPROVED"])
+            ->with(['missionTheme', 'missionMedia', 'goalMission', 'missionDocument', 'timeMission'])
+            ->with(['missionSkill' => function ($query) {
+                $query->with('mission', 'skill');
+            }])
+            ->with(['missionApplication' => function ($query) use ($request) {
+                $query->where('user_id', $request->auth->user_id);
+            }])
+            ->with(['missionMedia' => function ($query) {
+                $query->where('status', '1');
+                $query->where('default', '1');
+            }])
+            ->with(['missionRating'  => function ($query) use ($request) {
+                $query->Where('user_id', $request->auth->user_id);
+            }])
+            ->with(['favouriteMission'  => function ($query) use ($request) {
+                $query->Where('user_id', $request->auth->user_id);
+            }])
+            ->with(['missionLanguage' => function ($query) use ($languageId) {
+                $query->select('mission_language_id', 'mission_id', 'title', 'short_description', 'objective')
+                ->where('language_id', $languageId);
+            }])
+            ->withCount(['missionApplication as user_application_count' => function ($query) use ($request) {
+                $query->where('user_id', $request->auth->user_id)
+                ->whereIn('approval_status', [config("constants.application_status")["AUTOMATICALLY_APPROVED"],
+                config("constants.application_status")["PENDING"]]);
+            }])
+            ->withCount(['missionApplication as mission_application_count' => function ($query) use ($request) {
+                $query->whereIn('approval_status', [config("constants.application_status")["AUTOMATICALLY_APPROVED"],
+                config("constants.application_status")["PENDING"]]);
+            }])
+            ->withCount(['favouriteMission as favourite_mission_count' => function ($query) use ($request) {
+                $query->Where('user_id', $request->auth->user_id);
+            }])
+            ->withCount([
+                'missionRating as mission_rating_count' => function ($query) {
+                    $query->select(DB::raw("AVG(rating) as rating"));
+                }
+            ])->withCount([
+                'missionRating as mission_rating_total_volunteers'
+            ]);
+        return $missionQuery->get();
+    }
+
+    /**
+     * Display mission media.
+     *
+     * @param int $missionId
+     * @return Illuminate\Database\Eloquent\Collection
+    */
+    public function getMissionMedia(int $missionId): Collection
+    {
+        // Fetch mission media details
+        $missionData = $this->mission->findOrFail($missionId);
+        return $missionData->missionMedia()->orderBy('mission_media_id', 'ASC')
+        ->take(config("constants.MISSION_MEDIA_LIMIT"))->get();
+    }
+
+    /**
+     * Get mission comments.
+     *
+     * @param int $missionId
+     * @return Illuminate\Database\Eloquent\Collection
+     */
+    public function getComments(int $missionId): Collection
+    {
+        $mission = $this->mission->findOrFail($missionId);
+        $commentQuery = $mission->comment()
+        ->where('approval_status', config("constants.comment_approval_status.PUBLISHED"))
+        ->orderBy('comment_id', 'desc')
+        ->with(['user:user_id,first_name,last_name,avatar']);
+        return $commentQuery->take(config("constants.MISSION_COMMENT_LIMIT"))->get();
     }
 }

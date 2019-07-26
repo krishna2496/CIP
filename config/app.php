@@ -60,6 +60,8 @@ return [
 
     'asset_url' => env('ASSET_URL', null),
 
+    'user_language_code' => '',
+
     /*
     |--------------------------------------------------------------------------
     | Application Timezone

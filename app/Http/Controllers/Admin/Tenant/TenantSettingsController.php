@@ -31,7 +31,8 @@ class TenantSettingsController extends Controller
     /**
      * Create a new controller instance.
      *
-     * @param   App\Repositories\TenantSetting\TenantSettingRepository $tenantSettingRepository
+     * @param App\Repositories\TenantSetting\TenantSettingRepository $tenantSettingRepository
+     * @param App\Helpers\ResponseHelper $responseHelper
      * @return void
      */
     public function __construct(TenantSettingRepository $tenantSettingRepository, ResponseHelper $responseHelper)
@@ -43,6 +44,7 @@ class TenantSettingsController extends Controller
     /**
      * Display a listing of the resource.
      *
+     * @param Illuminate\Http\Request $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function index(Request $request): JsonResponse
@@ -65,28 +67,6 @@ class TenantSettingsController extends Controller
         } catch (\Exception $e) {
             return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
     }
 
     /**
@@ -132,16 +112,5 @@ class TenantSettingsController extends Controller
         } catch (\Exception $e) {
             return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
     }
 }

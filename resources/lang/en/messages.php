@@ -6,7 +6,7 @@ return [
     */
     'success' => [
         'MESSAGE_USER_FOUND' => 'User found successfully',
-        'MESSAGE_NO_DATA_FOUND' => 'No Data Found',
+        'MESSAGE_NO_DATA_FOUND' => 'No data found',
         'MESSAGE_USER_CREATED' => 'User created successfully',
         'MESSAGE_USER_DELETED' => 'User deleted successfully',
         'MESSAGE_FOOTER_PAGE_CREATED' => 'Page created successfully',
@@ -20,7 +20,7 @@ return [
         'MESSAGE_USER_SKILLS_DELETED' => 'User skills unlinked successfully',
         'MESSAGE_SLIDER_ADD_SUCCESS' => 'Slider image added successfully',
         'MESSAGE_USER_LOGGED_IN' => 'You are successfully logged in',
-        'MESSAGE_PASSWORD_RESET_LINK_SEND_SUCCESS' => 'Reset Password link is sent to your email account,link will be expire in ' . config('constants.FORGOT_PASSWORD_EXPIRY_TIME') . ' hours',
+        'MESSAGE_PASSWORD_RESET_LINK_SEND_SUCCESS' => 'Reset password link is sent to your email account,link will be expire in ' . config('constants.FORGOT_PASSWORD_EXPIRY_TIME') . ' hours',
         'MESSAGE_PASSWORD_CHANGE_SUCCESS' => 'Your password has been changed successfully.',
         'MESSAGE_CUSTOM_FIELD_ADDED' => 'User custom field added successfully',
         'MESSAGE_CUSTOM_FIELD_UPDATED' => 'User custom field updated successfully',
@@ -60,7 +60,15 @@ return [
         'MESSAGE_MISSION_RATING_LISTING' => 'Get mission rating successfully',
         'MESSAGE_TENANT_OPTION_FOUND' => 'Tenant option found', 
         'MESSAGE_INVITED_FOR_MISSION' => 'User invited to mission successfully',
-        'MESSAGE_APPLICATION_CREATED' => 'Applied for a mission successfully',
+        'MESSAGE_APPLICATION_CREATED' => 'You have successfully applied for this mission',
+        'MESSAGE_RATING_ADDED' => 'Mission rating added successfully',
+        'MESSAGE_MISSION_VOLUNTEERS_LISTING' => 'Get mission volunteers successfully',
+        'MESSAGE_NO_MISSION_VOLUNTEERS_FOUND' => 'No recent volunteers found',
+        'MESSAGE_MISSION_MEDIA_LISTING' => 'Mission media listing sucessfully',
+        'MESSAGE_MISSION_COMMENT_LISTING' => 'Get mission comments successfully',
+        'MESSAGE_NO_RELATED_MISSION_FOUND' => 'Related mission not found',
+        'MESSAGE_NO_MISSION_MEDIA_FOUND' => 'Mission media not found',
+        'MESSAGE_NO_MISSION_COMMENT_FOUND' => 'Mission comments not found',  
     ],
 
         
@@ -80,7 +88,9 @@ return [
         'ERROR_SLIDER_LIMIT' => 'Sorry, you cannot add more than '.config('constants.SLIDER_LIMIT').' slides!',
         'ERROR_NOT_VALID_EXTENSION' => 'File must have .scss type',
         'ERROR_FILE_NAME_NOT_MATCHED_WITH_STRUCTURE' => 'File name doesn`t match with structure',
+        'ERROR_NOT_VALID_IMAGE_FILE_EXTENSION' => 'The image file must be a file of type: jpeg, jpg, svg, png.',
         
+                
         // Custom error code for CMS Module - 300000 - 309999
         'ERROR_INVALID_ARGUMENT' => 'Invalid argument',
         'ERROR_FOOTER_PAGE_NOT_FOUND' => 'Footer page not found in the system',
@@ -96,7 +106,7 @@ return [
         'ERROR_MISSION_REQUIRED_FIELDS_EMPTY' => 'Mission creation failed. Please check input parameters',
         'ERROR_NO_MISSION_FOUND' => 'Mission does not found in system',
         'ERROR_THEME_INVALID_DATA' => 'Mission theme creation failed. Please check input parameters',
-        'ERROR_THEME_NOT_FOUND' => 'Mission Theme does not found in system',
+        'ERROR_THEME_NOT_FOUND' => 'Mission theme does not found in system',
         'ERROR_SKILL_NOT_FOUND' => 'Skill does not found in system',
         'ERROR_PARENT_SKILL_NOT_FOUND' => 'Parent skill does not found in system',
         'ERROR_INVALID_MISSION_ID' => 'Invalid mission id',
@@ -106,10 +116,11 @@ return [
         'ERROR_MISSION_APPLICATION_DEADLINE_PASSED' => 'Application deadline is passed. You cannot apply for this mission',
         'ERROR_MISSION_APPLICATION_ALREADY_ADDED' => 'You have already applied for this mission',
         'ERROR_MISSION_APPLICATION_NOT_FOUND' => 'Requested mission application does not exist',
+        'ERROR_MISSION_RATING_INVALID_DATA' => 'Mission rating creation failed. Please check input parameters',
 
         // Custom error code for Tenant Authorization - 210000 - 219999
-        'ERROR_INVALID_API_AND_SECRET_KEY' => 'Invalid API Key or Secret key',
-        'ERROR_API_AND_SECRET_KEY_REQUIRED' => 'API key and Secret key are required',
+        'ERROR_INVALID_API_AND_SECRET_KEY' => 'Invalid API key or secret key',
+        'ERROR_API_AND_SECRET_KEY_REQUIRED' => 'API key and secret key are required',
         'ERROR_EMAIL_NOT_EXIST' => 'Email address does not exist in the system',
         'ERROR_INVALID_RESET_PASSWORD_LINK' => 'Reset password link is expired or invalid',
         'ERROR_RESET_PASSWORD_INVALID_DATA' => 'Invalid input data',
@@ -131,7 +142,7 @@ return [
         'ERROR_WHILE_DOWNLOADING_FILES_FROM_S3_TO_LOCAL' => "File is failed to download from S3 to local",
         'ERROR_WHILE_COMPILING_SCSS_FILES' => 'An error has occured, while compiling SCSS files to update SCSS changes',
         'ERROR_WHILE_STORE_COMPILED_CSS_FILE_TO_LOCAL' => 'An error has occured, while storing compiled css file to local storage',
-        'ERROR_NO_FILES_FOUND_TO_UPLOAD_ON_S3_BUCKET' => 'No files found to upload on s3 bucket',
+        'ERROR_NO_FILES_FOUND_TO_UPLOAD_ON_S3_BUCKET' => 'No files found to upload on S3 bucket',
         'ERROR_FAILD_TO_UPLOAD_COMPILE_FILE_ON_S3' => 'Failed to upload files on S3',
         'ERROR_FAILED_TO_RESET_STYLING' => 'Failed to reset styling settings',
         'ERROR_DEFAULT_THEME_FOLDER_NOT_FOUND' => 'Default theme folder not found on server',
@@ -144,6 +155,7 @@ return [
         'ERROR_WHILE_UPLOADING_IMAGE_ON_S3' => 'An error while uploading image on S3',
         'ERROR_DOWNLOADING_IMAGE_TO_LOCAL' => 'An error while downloading image from S3 to server',
         'ERROR_IMAGE_UPLOAD_INVALID_DATA' => 'Invalid input file',
-        'ERROR_TENANT_OPTION_NOT_FOUND' => 'No tenant option found'
+        'ERROR_TENANT_OPTION_NOT_FOUND' => 'No tenant option found',
+        'ERROR_LANGUAGE_NOT_FOUND' => 'Language not found'
     ],
 ];

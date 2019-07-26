@@ -40,9 +40,9 @@ class TenantOption extends Model
      * Update resource.
      *
      * @param  array  $colorData
-     * @return array
+     * @return bool
      */
-    public function addOrUpdateColor(array $colorData)
+    public function addOrUpdateColor(array $colorData): bool
     {
         $styleData['option_name'] = $colorData['option_name'];
         $tenantOption = static::updateOrCreate($styleData);

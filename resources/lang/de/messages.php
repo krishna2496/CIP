@@ -61,6 +61,14 @@ return [
         'MESSAGE_TENANT_OPTION_FOUND' => 'DE: Tenant option found', 
         'MESSAGE_INVITED_FOR_MISSION' => 'DE: User invited to mission successfully',
         'MESSAGE_APPLICATION_CREATED' => 'DE: Applied for a mission successfully',
+        'MESSAGE_RATING_ADDED' => 'DE: Mission rating added successfully',
+        'MESSAGE_MISSION_VOLUNTEERS_LISTING' => 'DE: Get mission volunteers successfully',
+        'MESSAGE_NO_MISSION_VOLUNTEERS_FOUND' => 'DE: No recent volunteers found',
+        'MESSAGE_MISSION_MEDIA_LISTING' => 'DE: Mission media listing sucessfully',
+        'MESSAGE_MISSION_COMMENT_LISTING' => 'DE: Get mission comments successfully',
+        'MESSAGE_NO_RELATED_MISSION_FOUND' => 'DE: Related mission not found',
+        'MESSAGE_NO_MISSION_MEDIA_FOUND' => 'DE: Mission media not found',
+        'MESSAGE_NO_MISSION_COMMENT_FOUND' => 'DE: Mission comments not found',        
     ],
 
         
@@ -80,6 +88,7 @@ return [
         'ERROR_SLIDER_LIMIT' => 'DE: Sorry, you cannot add more than '.config('constants.SLIDER_LIMIT').' slides!',
         'ERROR_NOT_VALID_EXTENSION' => 'DE: File must have .scss type',
         'ERROR_FILE_NAME_NOT_MATCHED_WITH_STRUCTURE' => 'DE: File name doesn`t match with structure',
+        'ERROR_INVALID_IMAGE_URL' => 'DE: The url must be a file of type: jpeg, png, jpg',
         
         // Custom error code for CMS Module - 300000 - 309999
         'ERROR_INVALID_ARGUMENT' => 'DE: Invalid argument',
@@ -105,7 +114,8 @@ return [
         'ERROR_MISSION_APPLICATION_DEADLINE_PASSED' => 'DE: Application deadline is passed. You cannot apply for this mission',
         'ERROR_MISSION_APPLICATION_ALREADY_ADDED' => 'DE: You have already applied for this mission',
         'ERROR_MISSION_APPLICATION_NOT_FOUND' => 'DE: Requested mission application does not exist',
-
+        'ERROR_MISSION_RATING_INVALID_DATA' => 'DE: Mission rating creation failed. Please check input parameters',
+               
         // Custom error code for Tenant Authorization - 210000 - 219999
         'ERROR_INVALID_API_AND_SECRET_KEY' => 'DE: Invalid API Key or Secret key',
         'ERROR_API_AND_SECRET_KEY_REQUIRED' => 'DE: API key and Secret key are required',

@@ -65,50 +65,6 @@ class TenantOptionsController extends Controller
     }
 
     /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show(int $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(int $id)
-    {
-        //
-    }
-
-    /**
      * Store slider details.
      *
      * @param \Illuminate\Http\Request  $request
@@ -150,7 +106,11 @@ class TenantOptionsController extends Controller
                 } catch (\Exception $e) {
                     return $this->badRequest($e->getMessage());
                 }
-                if ($request->url = $this->s3helper->uploadFileOnS3Bucket($request->url, $tenantName)) {
+
+                $imageUrl = "";
+                if ($imageUrl = $this->s3helper->uploadFileOnS3Bucket($request->url, $tenantName)) {
+                    $request->merge(['url' => $imageUrl]);
+                    
                     // Set data for create new record
                     $insertData = array();
                     $insertData['option_name'] = config('constants.TENANT_OPTION_SLIDER');
@@ -274,7 +234,7 @@ class TenantOptionsController extends Controller
             $validator = Validator::make(
                 $request->toArray(),
                 [
-                    "custom_scss_file_name" => "required",
+                    "custom_scss_file_name" => "required"
                 ]
             );
 
@@ -391,11 +351,12 @@ class TenantOptionsController extends Controller
      */
     public function updateImage(Request $request): JsonResponse
     {
+        $validFileTypesArray = ['jpeg','jpg','svg','png'];
+
         // Server side validataions
         $validator = Validator::make(
             $request->toArray(),
             [
-                "image_file" => "required|mimes:jpeg,jpg,svg,png",
                 "image_name" => "required"
             ]
         );
@@ -412,14 +373,24 @@ class TenantOptionsController extends Controller
 
         $file = $request->file('image_file');
         $fileName = $request->image_name;
-        
+
+        // If request parameter have any error
+        if (!in_array($file->getClientOriginalExtension(), $validFileTypesArray)) {
+            return $this->responseHelper->error(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                config('constants.error_codes.ERROR_NOT_VALID_EXTENSION'),
+                trans('messages.custom_error_message.ERROR_NOT_VALID_IMAGE_FILE_EXTENSION')
+            );
+        }
+
         try {
             // Get domain name from request and use as tenant name.
             $tenantName = $this->helpers->getSubDomainFromRequest($request);
         } catch (\Exception $e) {
             return $this->badRequest($e->getMessage());
         }
-        
+
         if (Storage::disk('s3')->exists($tenantName)) {
             if (!Storage::disk('s3')->exists($tenantName.'/assets/images/'.$fileName)) {
                 throw new FileNotFoundException(
@@ -481,7 +452,7 @@ class TenantOptionsController extends Controller
             : $request->option_value;
 
             $tenantOption = $this->tenantOptionRepository->store($data);
-            $apiStatus = Response::HTTP_OK;
+            $apiStatus = Response::HTTP_CREATED;
             $apiMessage = trans('messages.success.MESSAGE_TENANT_OPTION_CREATED');
             
             return $this->responseHelper->success($apiStatus, $apiMessage);
@@ -508,7 +479,7 @@ class TenantOptionsController extends Controller
      * @param Illuminate\Http\Request $request
      * @return Illuminate\Http\JsonResponse
      */
-    public function updateTenantOption(Request $request)
+    public function updateTenantOption(Request $request): JsonResponse
     {
         $validator = Validator::make(
             $request->all(),

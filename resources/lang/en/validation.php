@@ -119,8 +119,8 @@ return [
         'documents.*.document_path' => 'document path',
         'skills.*.skill_id' => 'skill id',  
         'location.city' => 'city', 
-        'location.country' => 'country', 
-        'password_confirmation' => 'confirm password',        
+        'location.country' => 'country',   
+        'password_confirmation' => 'confirm password',         
         ],
 
 ];

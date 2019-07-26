@@ -8,10 +8,11 @@ use App\Http\Controllers\Controller;
 use App\Repositories\User\UserRepository;
 use App\Helpers\ResponseHelper;
 use App\Traits\RestExceptionHandlerTrait;
-use Validator;
 use App\User;
 use InvalidArgumentException;
 use App\Transformations\UserTransformable;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Helpers\LanguageHelper;
 
 class UserController extends Controller
 {
@@ -27,16 +28,26 @@ class UserController extends Controller
     private $responseHelper;
     
     /**
+     * @var App\Helpers\LanguageHelper
+     */
+    private $languageHelper;
+
+    /**
      * Create a new controller instance.
      *
      * @param App\Repositories\User\UserRepository $userRepository
      * @param Illuminate\Http\ResponseHelper $responseHelper
+     * @param App\Helpers\LanguageHelper
      * @return void
      */
-    public function __construct(UserRepository $userRepository, ResponseHelper $responseHelper)
-    {
+    public function __construct(
+        UserRepository $userRepository,
+        ResponseHelper $responseHelper,
+        LanguageHelper $languageHelper
+    ) {
         $this->userRepository = $userRepository;
         $this->responseHelper = $responseHelper;
+        $this->languageHelper = $languageHelper;
     }
     
     /**
@@ -69,6 +80,37 @@ class UserController extends Controller
             );
         } catch (\Exception $e) {
             return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
+        }
+    }
+
+    /**
+     * Get default language of user
+     *
+     * @param Illuminate\Http\Request $request
+     * @return Illuminate\Http\JsonResponse
+     */
+    public function getUserDefaultLanguage(Request $request)
+    {
+        try {
+            $email = $request->get('email');
+            $user = $this->userRepository->getUserByEmail($email);
+
+            $userLanguage['default_language_id'] = $user->language_id;
+
+            $apiStatus = Response::HTTP_OK;
+            return $this->responseHelper->success(Response::HTTP_OK, '', $userLanguage);
+        } catch (ModelNotFoundException $e) {
+            return $this->modelNotFound(
+                config('constants.error_codes.ERROR_USER_NOT_FOUND'),
+                $e->getMessage()
+            );
+        } catch (\PDOException $e) {
+            return $this->PDO(
+                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
+                $e->getMessage()
+            );
+        } catch (\Exception $e) {
+            return $this->badRequest($e->getMessage());
         }
     }
 }

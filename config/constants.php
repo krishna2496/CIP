@@ -13,6 +13,8 @@ return [
     'DB_DATE_FORMAT' => 'Y-m-d H:i:s',
     'PER_PAGE_LIMIT' => '9',
     'FRONT_DATE_FORMAT' => 'd/m/Y',
+    'RELATED_MISSION_LIMIT' => '3',
+    'MISSION_MEDIA_LIMIT' => '20',
 
     'EMAIL_TEMPLATE_FOLDER' => 'emails',
     'EMAIL_TEMPLATE_USER_INVITE' => 'invite',
@@ -22,7 +24,8 @@ return [
     'AWS_S3_LOGO_IMAGE_NAME' => 'logo.png',
     'AWS_S3_CUSTOME_CSS_NAME' => 'style.css',
     'AWS_CUSTOM_STYLE_VARIABLE_FILE_NAME' => '_variables.scss',
-    'TIMEZONE' => '',
+    'TIMEZONE' => 'UTC',
+    'MISSION_COMMENT_LIMIT' => 20,
     
     /*
      * User custom field types
@@ -41,7 +44,15 @@ return [
     'DEFAULT_LANGUAGE' => 'EN',
     'FRONTEND_LANGUAGE_FOLDER' => 'front_end',
 
-    
+    /*
+     * Comments approval status
+     */
+    'comment_approval_status' => [
+        'PENDING' => 'PENDING',
+        'PUBLISHED' => 'PUBLISHED',
+        'DECLINED' => 'DECLINED'
+    ],
+
     /*
      * Mission types
      */
@@ -130,6 +141,7 @@ return [
 
     'ORGANIZATION' => "organization",
     'EXPLORE_MISSION_LIMIT' => "5",
+    'IMAGE' => "image",
 
     'error_codes' => [
         'ERROR_FOOTER_PAGE_REQUIRED_FIELDS_EMPTY' => '300000',
@@ -149,6 +161,7 @@ return [
         'ERROR_SLIDER_LIMIT' => '100014',
         'ERROR_NOT_VALID_EXTENSION' => '100015',
         'ERROR_FILE_NAME_NOT_MATCHED_WITH_STRUCTURE' => '100016',
+        'ERROR_INVALID_IMAGE_URL' => '100017',
         'ERROR_INVALID_API_AND_SECRET_KEY' => '210000',
         'ERROR_API_AND_SECRET_KEY_REQUIRED' => '210001',
         'ERROR_EMAIL_NOT_EXIST' => '210002',
@@ -181,6 +194,7 @@ return [
         'ERROR_MISSION_APPLICATION_DEADLINE_PASSED' => '400022',
         'ERROR_MISSION_APPLICATION_ALREADY_ADDED' => '400023',
         'ERROR_MISSION_APPLICATION_NOT_FOUND' => '400024',
+        'ERROR_MISSION_RATING_INVALID_DATA' => '400025',
         
         'ERROR_OCCURRED' => '999999',
         'ERROR_INVALID_JSON' => '900000',

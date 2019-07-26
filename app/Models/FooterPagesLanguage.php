@@ -65,7 +65,7 @@ class FooterPagesLanguage extends Model
      * @param  string $value
      * @return array
      */
-    public function getDescriptionAttribute(string $value): array
+    public function getDescriptionAttribute(string $value)
     {
         return unserialize($value);
     }
@@ -76,7 +76,7 @@ class FooterPagesLanguage extends Model
      * @param  string  $value
      * @return array
      */
-    public function getSectionsAttribute(string $value): array
+    public function getSectionsAttribute(string $value)
     {
         return unserialize($value);
     }

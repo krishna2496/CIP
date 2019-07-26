@@ -120,7 +120,7 @@ return [
         'skills.*.skill_id' => 'skill id',   
         'location.city' => 'city', 
         'location.country' => 'country',   
-        'password_confirmation' => 'confirm password',   
+        'password_confirmation' => 'confirm password',     
         ],
 
 ];

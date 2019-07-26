@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Hash;
 use App\Models\City;
 use App\Models\Country;
 use App\Models\Timezone;
+use App\Models\missionApplication;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Nicolaslopezj\Searchable\SearchableTrait;
 
@@ -53,7 +54,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     protected $visible = ['user_id', 'first_name', 'last_name', 'email',
      'password', 'avatar', 'timezone_id', 'availability_id', 'why_i_volunteer',
      'employee_id', 'department', 'manager_name', 'city_id', 'country_id',
-     'profile_text', 'linked_in_url', 'status', 'city', 'country', 'timezone'];
+     'profile_text', 'linked_in_url', 'status', 'city', 'country', 'timezone', 'language_id'];
     
     /**
      * The attributes excluded from the model's JSON form.
@@ -108,13 +109,33 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     }
     
     /**
-     * Defined has one relation for the user_skill table.
+     * Defined has many relation for the user_skill table.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function userSkills(): HasMany
     {
         return $this->hasMany(UserSkill::class, 'user_id', 'user_id');
+    }
+
+    /**
+     * Defined has many relation for the mission_application table.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function missionApplication(): HasMany
+    {
+        return $this->hasMany(MissionApplication::class, 'user_id', 'user_id');
+    }
+
+    /**
+     * Get comment associated with the user.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function comment(): HasMany
+    {
+        return $this->hasMany(Comment::class, 'user_id', 'user_id');
     }
 
     /**
@@ -172,5 +193,16 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     public function searchUser($term, $userId)
     {
         return self::where('user_id', '<>', $userId)->search($term);
+    }
+
+    /**
+     * Search user
+     *
+     * @param string $email     *
+     * @return mixed
+     */
+    public function getUserByEmail(string $email)
+    {
+        return $this->where('email', $email)->first();
     }
 }

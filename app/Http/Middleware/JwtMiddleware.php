@@ -26,6 +26,7 @@ class JwtMiddleware
      * Create a new middleware instance.
      *
      * @param Illuminate\Http\ResponseHelper $responseHelper
+     * @param App\Repositories\Timezone\TimezoneRepository $timezoneRepository
      * @return void
      */
     public function __construct(ResponseHelper $responseHelper, TimezoneRepository $timezoneRepository)
@@ -37,7 +38,7 @@ class JwtMiddleware
     /**
      * Handle an incoming request.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  object  $request
      * @param  \Closure  $next
      * @return mixed
      */

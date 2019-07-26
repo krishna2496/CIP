@@ -3,18 +3,15 @@ namespace App\Http\Controllers\App;
 
 use App\Http\Controllers\Controller;
 use App\Repositories\UserFilter\UserFilterRepository;
-use App\Repositories\Country\CountryRepository;
 use App\Repositories\Skill\SkillRepository;
 use App\Repositories\MissionTheme\MissionThemeRepository;
-use App\Repositories\City\CityRepository;
 use App\Helpers\Helpers;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Input;
-use App\Traits\RestExceptionHandlerTrait;
 use PDOException;
 use App\Helpers\ResponseHelper;
+use App\Traits\RestExceptionHandlerTrait;
 
 class UserFilterController extends Controller
 {
@@ -25,19 +22,9 @@ class UserFilterController extends Controller
     private $filters;
 
     /**
-     * @var App\Repositories\Country\CountryRepository
-     */
-    private $country;
-
-    /**
      * @var App\Repositories\MissionTheme\MissionThemeRepository
      */
     private $theme;
-
-    /**
-     * @var App\Repositories\City\CityRepository
-     */
-    private $city;
 
     /**
      * @var App\Repositories\Skill\SkillRepository
@@ -57,12 +44,15 @@ class UserFilterController extends Controller
     /**
      * Create a new controller instance.
      *
+     * @param App\Repositories\UserFilter\UserFilterRepository $filters
+     * @param App\Repositories\MissionTheme\MissionThemeRepository $theme
+     * @param App\Repositories\Skill\SkillRepository $skill
+     * @param App\Helpers\ResponseHelper $responseHelper
+     * @param App\Helpers\Helpers $helper
      * @return void
      */
     public function __construct(
         UserFilterRepository $filters,
-        CountryRepository $country,
-        CityRepository $city,
         MissionThemeRepository $theme,
         SkillRepository $skill,
         ResponseHelper $responseHelper,
@@ -70,8 +60,6 @@ class UserFilterController extends Controller
     ) {
         $this->filters = $filters;
         $this->responseHelper = $responseHelper;
-        $this->country = $country;
-        $this->city = $city;
         $this->theme = $theme;
         $this->skill = $skill;
         $this->helper = $helper;

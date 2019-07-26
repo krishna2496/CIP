@@ -82,6 +82,7 @@ class MissionApplicationRepository implements MissionApplicationInterface
             $applicationDeadline = $this->timeMission->getDeadLine($missionId);
             return ($applicationDeadline > Carbon::now()) ? true : false;
         }
+        return true;
     }
     
     /*
@@ -107,8 +108,9 @@ class MissionApplicationRepository implements MissionApplicationInterface
         $application = array(
             'mission_id' => $request['mission_id'],
             'user_id' => $userId,
-            'motivation' => $request['motivation'],
-            'availability_id' => $request['availability_id']
+            'motivation' => $request['motivation'] ?? '',
+            'availability_id' => $request['availability_id'],
+            'approval_status' => config('constants.application_status.PENDING')
         );
         return $this->missionApplication->create($application);
     }
@@ -157,5 +159,18 @@ class MissionApplicationRepository implements MissionApplicationInterface
         $missionApplication = $this->missionApplication->findOrFail($applicationId);
         $missionApplication->update($request->toArray());
         return $missionApplication;
+    }
+
+    /*
+     * Get recent volunteers
+     *
+     * @param Illuminate\Http\Request $request
+     * @param int $missionId
+     * @return \Illuminate\Pagination\LengthAwarePaginator
+     */
+    public function missionVolunteerDetail(Request $request, int $missionId): LengthAwarePaginator
+    {
+        $this->mission->findOrFail($missionId);
+        return $this->missionApplication->getVolunteers($request, $missionId);
     }
 }
