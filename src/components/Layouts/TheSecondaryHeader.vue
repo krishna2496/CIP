@@ -7,13 +7,13 @@
                         <b-form-input
                             type="text"
                             @keypress.enter="searchMission"
-                            :placeholder="$t('label.search')+' '+$t('label.mission')"
+                            :placeholder="searchPlaceHolder"
                             @focus="handleFocus()"
                             @blur="handleBlur()"
-                            onfocus="this.placeholder=''"
+                            v-model="searchString"                            
                             id="search"
-                            v-model="search"
-                            onblur="this.placeholder='Search mission'">                           
+                            @keyup="test"
+                            >                           
                         </b-form-input>
                         <i>
                             <img :src="$store.state.imagePath+'/assets/images/search-ic.svg'" alt="Search">
@@ -90,7 +90,8 @@ export default {
     'missionList'
     ],
     data() {
-        return {
+        return {            
+            searchPlaceHolder: this.$i18n.t('label.search')+' '+this.$i18n.t('label.mission'),
             defautCountry: "Country", 
             defautCity: "",
             defautTheme: "",
@@ -120,11 +121,16 @@ export default {
             quickAccessFilterSet:true,
             isCountryChange: false,
             isCityChange: false,
-            isThemeChange: false
+            isThemeChange: false,
+            searchString: this.search
         };
     },
     methods: {
+        test() {
+            this.$emit('storeMisisonSearch', this.searchString);
+        },
         handleFocus() {
+            this.searchPlaceHolder = '';
             var b_header = document.querySelector(".bottom-header");
             b_header.classList.add("active");
         },
@@ -158,6 +164,7 @@ export default {
         },
 
         handleBlur() {
+            this.searchPlaceHolder = this.$i18n.t('label.search')+' '+this.$i18n.t('label.mission');
             var b_header = document.querySelector(".bottom-header");
             var input_edit = document.querySelector(".search-block input");
             b_header.classList.remove("active");

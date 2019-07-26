@@ -18,7 +18,7 @@
 										<img src="../assets/images/gallery-img03.jpg">
 									</div>
 									<div class="video-wrap inner-gallery-block">
-										 <iframe id="video" width="560" height="315" src='https://www.youtube.com/embed/YE7VzlLtp-4' frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe> 
+										 <iframe id="video" width="560" height="315" src='' frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe> 
 									</div>
 									
 								</div>
@@ -424,7 +424,8 @@
 							</div>
 						</div>
 					</div>
-					<div class="recent-volunteer-block">
+					<RecentVolunteers v-if="isShownComponent"></RecentVolunteers>
+					<!-- <div class="recent-volunteer-block">
 						<div 
 						v-bind:class="{ 
 	 									'content-loader-wrap': true, 
@@ -457,7 +458,7 @@
 			     				{{((currentPage - 1 ) * perPage ) + 1}} - {{Math.min(perPage * currentPage , rows )}} of {{rows}} {{ $t("label.recent_volunteers") }}</span>
 							</div>
 						</div>
-					</div>
+					</div> -->
                 </b-col>
           </b-row>
 	  </div>
@@ -839,12 +840,9 @@
 <script>
 import AppCustomChip from "../components/AppCustomChip";
 import StarRating from 'vue-star-rating';
-// import ThePrimaryHeader from "../components/Layouts/ThePrimaryHeader";
-// import TheSecondaryHeader from "../components/Layouts/TheSecondaryHeader";
-// import TheSecondaryFooter from "../components/Layouts/TheSecondaryFooter";
 import { VueAutosuggest } from 'vue-autosuggest';
 import carousel from 'vue-owl-carousel';
-import {favoriteMission,inviteColleague ,applyMission,searchUser,storeMissionRating,missionVolunteers} from "../services/service";
+import {favoriteMission,inviteColleague ,applyMission,searchUser,storeMissionRating,} from "../services/service";
 import SimpleBar from 'simplebar';
 import store from "../store";
 
@@ -854,10 +852,11 @@ export default {
     StarRating,
 	ThePrimaryHeader : () => import("../components/Layouts/ThePrimaryHeader"),
 	TheSecondaryHeader: () => import("../components/Layouts/TheSecondaryHeader"),
-	TheSecondaryFooter : () =>  import("../components/Layouts/TheSecondaryFooter"),
+	TheSecondaryFooter: () => import("../components/Layouts/TheSecondaryFooter"),
 	VueAutosuggest,
 	SimpleBar,
-	carousel
+	carousel,
+	RecentVolunteers: () => import("../components/RecentVolunteers"),
   },
   data() {
     return {
@@ -867,10 +866,8 @@ export default {
     	query: "",
         selected: "",
         rating:3.5,
-        currentPage : 1,
         search : "",
         userList : [],
-        rows : 0,
         missionList : [
         	{ mission:1 }
         ],
@@ -899,32 +896,6 @@ export default {
             require("@/assets/images/group-img5.png"),
             require("@/assets/images/group-img6.png"),
         ],
-        volunteerList:[
-            // {name: 'Andrew Johnson' , imgSrc:  require("@/assets/images/volunteer1.png") , id:1},
-            // {name: 'Charles Vigue' , imgSrc:  require("@/assets/images/volunteer2.png") , id:2},
-            // {name: 'Kathryn Roberts' , imgSrc:  require("@/assets/images/volunteer3.png") , id:3},
-            // {name: 'Estella Fowles' , imgSrc:  require("@/assets/images/volunteer4.png") , id:4},
-            // {name: 'Rose Lewis' , imgSrc:  require("@/assets/images/volunteer5.png") , id:5},
-            // {name: 'Raymond Pabon' , imgSrc:  require("@/assets/images/volunteer6.png") , id:6},
-            // {name: 'Travis Steen' , imgSrc:  require("@/assets/images/volunteer7.png") , id:7},
-            // {name: 'Sarah Santillan' , imgSrc:  require("@/assets/images/volunteer8.png") , id:8},
-            // {name: 'Linda Richards' , imgSrc:  require("@/assets/images/volunteer9.png") , id:9},
-            // {name: 'Rose Lewis' , imgSrc:  require("@/assets/images/volunteer5.png") , id:13},
-            // {name: 'Raymond Pabon' , imgSrc:  require("@/assets/images/volunteer6.png") , id:14},
-            // {name: 'Andrew Johnson' , imgSrc:  require("@/assets/images/volunteer1.png") , id:10},
-            // {name: 'Charles Vigue' , imgSrc:  require("@/assets/images/volunteer2.png") , id:11},
-            // {name: 'Kathryn Roberts' , imgSrc:  require("@/assets/images/volunteer3.png") , id:12},
-            // {name: 'Travis Steen' , imgSrc:  require("@/assets/images/volunteer7.png") , id:15},
-            // {name: 'Travis Steen' , imgSrc:  require("@/assets/images/volunteer7.png") , id:16},
-            // {name: 'Sarah Santillan' , imgSrc:  require("@/assets/images/volunteer8.png") , id:17},
-            // {name: 'Linda Richards' , imgSrc:  require("@/assets/images/volunteer9.png") , id:18},
-            // {name: 'Rose Lewis' , imgSrc:  require("@/assets/images/volunteer5.png") , id:22},
-            // {name: 'Sarah Santillan' , imgSrc:  require("@/assets/images/volunteer8.png") , id:23},
-            // {name: 'Linda Richards' , imgSrc:  require("@/assets/images/volunteer9.png") , id:24},
-            // {name: 'Andrew Johnson' , imgSrc:  require("@/assets/images/volunteer1.png") , id:19},
-            // {name: 'Charles Vigue' , imgSrc:  require("@/assets/images/volunteer2.png") , id:20},
-            // {name: 'Kathryn Roberts' , imgSrc:  require("@/assets/images/volunteer3.png") , id:21},
-		],
 		max: 100,
 		value: 70,
     };
@@ -965,16 +936,7 @@ export default {
                 }
                 ];
             }
-        },
-		perPage(){
-			if(screen.width > 767){
-				return 9;
-			}
-			else{
-				return 8;
-			}
-		},
-
+        }
    },
    methods: {
    		setRating: function(rating){
@@ -1064,42 +1026,14 @@ export default {
                 }
             })
         },
-        // missionVolunteers
-        getMissionVolunteers(){
-        	let missionData = {
-				mission_id : '',
-				page : ''
-			};
-			missionData.mission_id = this.$route.params.misisonId;
-			missionData.page = this.currentPage;
-	    	if (missionData.mission_id) {
-	    		this.recentVolunterLoader = true;
-	        	missionVolunteers(missionData).then(response =>{
-	        		
-			        if (!response.error) {
-			        	this.volunteerList = response.data;
-			        	if (response.pagination) {
-			        		this.rows = response.pagination.total
-			        	}
-	        			this.recentVolunterLoader = false;
-	        		}
-	        	})			
-	        }
-    	},
 
     	searchUsers() {
 			searchUser().then(userResponse => {
 				this.userList = userResponse;
-				this.getMissionVolunteers();
 				this.isShownComponent = true;
 	        });
     	},
 
-    	pageChange (page) {
-            //Change pagination
-            this.currentPage = page;
-            this.getMissionVolunteers();
-        },
 		makeToast(variant = null,message) {
             this.$bvToast.toast(message, {
                 variant: variant,
@@ -1160,8 +1094,6 @@ export default {
 				});
 			},2000);
 		});
-	    // Get mission volunteers
-	    // this.getMissionVolunteers();
 	},
    updated(){
 	

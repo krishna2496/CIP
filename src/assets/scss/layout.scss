@@ -1745,6 +1745,16 @@ main {
                 flex: 0 0 100%;
                 margin-left: 0;
             }
+            &.no-volunteer{
+                min-height:10px;
+                padding-bottom:30px;
+                p{
+                    font-size:18px;
+                    line-height:24px;
+                    padding-top:30px;
+                    margin-bottom:0;
+                }
+            }
         }
 
         .table-wrap {
