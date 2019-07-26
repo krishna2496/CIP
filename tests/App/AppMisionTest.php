@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Config;
 use Firebase\JWT\JWT;
 use Firebase\JWT\ExpiredException;
 use Illuminate\Support\Facades\DB;
+use App\Helpers\Helpers;
 
 class AppMissionTest extends TestCase
 {
@@ -26,7 +27,7 @@ class AppMissionTest extends TestCase
         DB::connection('mysql')->getPdo();
         Config::set('database.default', 'mysql');
 
-        $token = $this->getToken($user->user_id);
+        $token = Helpers::getTestUserToken($user->user_id);
         $this->get(route('app.missions'), ['token' => $token])
           ->seeStatusCode(200)
           ->seeJsonStructure([
@@ -56,7 +57,7 @@ class AppMissionTest extends TestCase
         $user->save();
         DB::connection('mysql')->getPdo();
         Config::set('database.default', 'mysql');
-        $token = $this->getToken($user->user_id);
+        $token = Helpers::getTestUserToken($user->user_id);
         
         $this->get(route('app.missions'), ['token' => $token])
           ->seeStatusCode(200)
@@ -99,7 +100,7 @@ class AppMissionTest extends TestCase
         $params = [
                 'mission_id' => rand(1000000, 2000000)
             ];
-        $token = $this->getToken($user->user_id);
+        $token = Helpers::getTestUserToken($user->user_id);
         $this->post('app/mission/favourite', $params, ['token' => $token])
           ->seeStatusCode(404);
         $user->delete();
@@ -126,7 +127,7 @@ class AppMissionTest extends TestCase
                 'mission_id' => $missionId
             ];
 
-        $token = $this->getToken($user->user_id);
+        $token = Helpers::getTestUserToken($user->user_id);
         $this->post('app/mission/favourite', $params, ['token' => $token])
           ->seeStatusCode(201)
           ->seeJsonStructure([
@@ -159,7 +160,7 @@ class AppMissionTest extends TestCase
                 'mission_id' => $missionId
             ];
 
-        $token = $this->getToken($user->user_id);
+        $token = Helpers::getTestUserToken($user->user_id);
         //Code for add mission to favourite
         $this->post('app/mission/favourite', $params, ['token' => $token])
           ->seeStatusCode(201)
@@ -175,24 +176,5 @@ class AppMissionTest extends TestCase
             "status",
             "message"
         ]);
-    }
-
-
-    /**
-     * Create new user and generate jwt token
-     *
-     * @param int $userId
-     * @return string
-     */
-    public function getToken(int $userId)
-    {
-        $payload = [
-            'iss' => "lumen-jwt",
-            'sub' => $userId,
-            'iat' => time(),
-            'exp' => time() + 60 * 60,
-            'fqdn' => 'tatva'
-        ];
-        return JWT::encode($payload, env('JWT_SECRET'));
     }
 }

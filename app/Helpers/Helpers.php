@@ -9,6 +9,7 @@ use App\Traits\RestExceptionHandlerTrait;
 use PDOException;
 use Throwable;
 use Carbon\Carbon;
+use Firebase\JWT\JWT;
 
 class Helpers
 {
@@ -250,5 +251,23 @@ class Helpers
             return $date->setTimezone(config('constants.TIMEZONE'))->format(config('constants.DB_DATE_FORMAT'));
         }
         return $date;
+    }
+
+    /**
+     * Get user token for testing
+     *
+     * @param int $userId
+     * @return string
+     */
+    public static function getTestUserToken(int $userId) : string
+    {
+        $payload = [
+            'iss' => "lumen-jwt",
+            'sub' => $userId,
+            'iat' => time(),
+            'exp' => time() + 60 * 60,
+            'fqdn' => 'tatva'
+        ];
+        return JWT::encode($payload, env('JWT_SECRET'));
     }
 }
