@@ -24,6 +24,7 @@ trait MissionTransformable
     {
         if (isset($mission['goalMission'])) {
             $mission['goal_objective']  = $mission['goalMission']['goal_objective'];
+            $mission['achieved_goal']  = rand(1, $mission['goalMission']['goal_objective']);
         }
         if (isset($mission['timeMission'])) {
             $mission['application_deadline'] = $mission['timeMission']['application_deadline'];
