@@ -66,7 +66,10 @@ return [
         'MESSAGE_NO_MISSION_VOLUNTEERS_FOUND' => 'Aucun volontaire récent trouvé',
         'MESSAGE_MISSION_MEDIA_LISTING' => 'Les médias de la mission ont réussi',
         'MESSAGE_MISSION_COMMENT_LISTING' => 'Obtenir des commentaires de mission avec succès',
-        'MESSAGE_ASSET_IMAGES_RESET_SUCCESS' => 'Les images d\'actif ont été réinitialisées avec succès'
+        'MESSAGE_ASSET_IMAGES_RESET_SUCCESS' => 'Les images d\'actif ont été réinitialisées avec succès',
+        'MESSAGE_NO_RELATED_MISSION_FOUND' => 'Mission associée non trouvée',        
+        'MESSAGE_NO_MISSION_MEDIA_FOUND' => 'Média de mission introuvable',
+        'MESSAGE_NO_MISSION_COMMENT_FOUND' => 'Commentaires de mission non trouvés',  
     ],
 
         

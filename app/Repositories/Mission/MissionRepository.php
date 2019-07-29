@@ -866,7 +866,14 @@ class MissionRepository implements MissionInterface
                 $query->Where('user_id', $request->auth->user_id);
             }])
             ->with(['missionLanguage' => function ($query) use ($languageId) {
-                $query->select('mission_language_id', 'mission_id', 'title', 'short_description', 'objective')
+                $query->select(
+                    'mission_language_id',
+                    'mission_id',
+                    'title',
+                    'short_description',
+                    'objective',
+                    'description'
+                )
                 ->where('language_id', $languageId);
             }])
             ->withCount(['missionApplication as user_application_count' => function ($query) use ($request) {
@@ -885,6 +892,8 @@ class MissionRepository implements MissionInterface
                 'missionRating as mission_rating_count' => function ($query) {
                     $query->select(DB::raw("AVG(rating) as rating"));
                 }
+            ])->withCount([
+                'missionRating as mission_rating_total_volunteers'
             ]);
         return $missionQuery->get();
     }
@@ -912,7 +921,9 @@ class MissionRepository implements MissionInterface
     public function getComments(int $missionId): Collection
     {
         $mission = $this->mission->findOrFail($missionId);
-        $commentQuery = $mission->comment()->orderBy('comment_id', 'desc')
+        $commentQuery = $mission->comment()
+        ->where('approval_status', config("constants.comment_approval_status.PUBLISHED"))
+        ->orderBy('comment_id', 'desc')
         ->with(['user:user_id,first_name,last_name,avatar']);
         return $commentQuery->take(config("constants.MISSION_COMMENT_LIMIT"))->get();
     }

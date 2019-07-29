@@ -53,7 +53,9 @@ class MissionMediaController extends Controller
             $missionMedia = $this->missionRepository->getMissionMedia($missionId);
             $apiData = $missionMedia->toArray();
             $apiStatus = Response::HTTP_OK;
-            $apiMessage = trans('messages.success.MESSAGE_MISSION_MEDIA_LISTING');
+            $apiMessage = (!empty($apiData)) ?
+            trans('messages.success.MESSAGE_MISSION_MEDIA_LISTING') :
+            trans('messages.success.MESSAGE_NO_MISSION_MEDIA_FOUND');
             return $this->responseHelper->success(
                 $apiStatus,
                 $apiMessage,

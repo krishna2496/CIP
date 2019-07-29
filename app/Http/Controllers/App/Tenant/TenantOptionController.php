@@ -132,9 +132,9 @@ class TenantOptionController extends Controller
     /**
      * Get tenant custom css from table `tenant_options`
      *
-     * @return string
+     * @return JsonResponse
      */
-    public function getCustomCss(): string
+    public function getCustomCss(): JsonResponse
     {
         $tenantCustomCss = '';
         // find custom css
