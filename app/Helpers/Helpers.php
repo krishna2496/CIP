@@ -9,6 +9,7 @@ use App\Traits\RestExceptionHandlerTrait;
 use PDOException;
 use Throwable;
 use Carbon\Carbon;
+use App\Exceptions\TenantDomainNotFoundException;
 
 class Helpers
 {
@@ -29,18 +30,24 @@ class Helpers
     */
     public function getSubDomainFromRequest(Request $request) : string
     {
-        try {
-            if (env('APP_ENV')=='local' || env('APP_ENV')=='testing') {
-                return env('DEFAULT_TENANT');
+        if ((env('APP_ENV') == 'local' || env('APP_ENV') == 'testing')) {
+            return env('DEFAULT_TENANT');
+        } else {
+            if (isset($request->headers->all()['referer'])) {
+                try {
+                    return explode(".", parse_url($request->headers->all()['referer'][0])['host'])[0];
+                } catch (\Exception $e) {
+                    return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
+                }
             } else {
-                return explode(".", parse_url($request->headers->all()['referer'][0])['host'])[0];
-            }
-        } catch (\Exception $e) {
-            if (env('APP_ENV')=='local' || env('APP_ENV')=='testing') {
-                return env('DEFAULT_TENANT');
-            } else {
-                // error unable to find referer
-                throw new \Exception(trans('messages.custom_error_message.ERROR_TENANT_DOMAIN_NOT_FOUND'));
+                if ((env('APP_ENV')=='local' || env('APP_ENV')=='testing')) {
+                    return env('DEFAULT_TENANT');
+                } else {
+                    throw new TenantDomainNotFoundException(
+                        trans('messages.custom_error_message.ERROR_TENANT_DOMAIN_NOT_FOUND'),
+                        config('constants.error_codes.ERROR_TENANT_DOMAIN_NOT_FOUND')
+                    );
+                }
             }
         }
     }
