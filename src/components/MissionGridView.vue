@@ -61,7 +61,7 @@
                                     <img 
                                     :src="$store.state.imagePath+'/assets/images/add-group-ic.svg'"
                                     :alt="$t('label.invite_colleague')"
-                                    >
+                                    >F
                                 </b-button>
                                 </div>
                                 <div class="group-category" 

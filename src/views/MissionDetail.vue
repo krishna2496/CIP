@@ -187,8 +187,12 @@
                                                     <span class="subtitle-text">{{ $t("label.already_volunteered") }}</span>
                                                 </div>
                                             </template>
-
+											
                                             </div>
+                                            <div class="text-wrap">
+	                                            <b-progress :value="value" :max="max" class="mb-2"></b-progress>
+	                                            <span class="subtitle-text">8000 achieved</span>
+                                        	</div>
                                         </div>
                                     </template>
 							</div>
@@ -721,7 +725,7 @@
                             </div>
                         </b-card-body>
                         <b-card-footer>
-                            <b-button class="btn-bordersecondary icon-btn" :title="$t('label.apply_now')">
+                            <b-button class="btn-bordersecondary icon-btn" @click="applyForMission(missionDetail.mission_id)" :title="$t('label.apply_now')">
                                 <span>{{ $t("label.apply")}}</span>
                                 <i>
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 16" width="19" height="15">
@@ -936,6 +940,8 @@ export default {
 	        missionDetail : [],
 	        disableApply : false,
 	        missionDocument : [],
+	        max: 100,
+            value: 80,
 	        bgImage : [
 	        require("@/assets/images/pdf.svg"),
 	        require("@/assets/images/doc.svg"),
@@ -1189,7 +1195,21 @@ export default {
         		skills = '-';
         	}
         	return skills;
-        }
+        },
+        // Apply for mission
+        applyForMission(missionId) {
+            let missionData = {};
+            missionData.mission_id = missionId;
+            missionData.availability_id = 1;
+            applyMission(missionData).then(response => {
+                if(response.error == true){
+                    this.makeToast("danger",response.message);
+                } else {
+                    this.makeToast("success",response.message);
+                    this.$emit("getMissions"); 
+                }
+            })
+        },
    },
 	created(){
 		var _this = this;
