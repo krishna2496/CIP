@@ -1,9 +1,6 @@
 <?php
 use Laravel\Lumen\Testing\DatabaseMigrations;
 use Laravel\Lumen\Testing\DatabaseTransactions;
-use Illuminate\Support\Facades\Config;
-use Firebase\JWT\JWT;
-use Firebase\JWT\ExpiredException;
 use Illuminate\Support\Facades\DB;
 use App\Models\Mission;
 use App\Helpers\Helpers;
@@ -171,7 +168,7 @@ class AppMisionApplicationTest extends TestCase
             "end_date" => "2019-10-15 10:40:00",
             "mission_type" => "GOAL",
             "goal_objective" => rand(1, 1000),
-            "total_seats" => 0,
+            "total_seats" => 1,
             "application_deadline" => "2019-07-25 11:40:00",
             "publication_status" => "APPROVED",
             "theme_id" => rand(1, 1)
@@ -182,7 +179,9 @@ class AppMisionApplicationTest extends TestCase
         $mission = Mission::orderBy("mission_id", "DESC")->take(1)->get();
         
         $params = [
-                'mission_id' => $mission[0]['mission_id']
+                'mission_id' => $mission[0]['mission_id'],
+                'availability_id' => rand(1, 1),
+                'motivation' => str_random(10)
             ];
         DB::setDefaultConnection('mysql');
         $token = Helpers::getTestUserToken($user->user_id);
