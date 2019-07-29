@@ -9,43 +9,7 @@
 		  	<div class="slider-banner-block">
 					<b-row>
 						<b-col lg="6" class="slider-col">
-							<!-- <div class="content-loader-wrap slider-loader">
-						      <div class="content-loader"></div>
-						    </div> -->
-							<div class="thumb-slider">
-								<div class="gallery-top">
-									<div class="img-wrap inner-gallery-block">
-										<img src="../assets/images/gallery-img03.jpg">
-									</div>
-									<div class="video-wrap inner-gallery-block">
-										 <iframe id="video" width="560" height="315" src='' frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe> 
-									</div>
-									
-								</div>
-
-								<carousel  :nav="true" :dots="false" :items="5" :loop="true" :mouseDrag="false" :touchDrag="false" class="gallery-thumbs" :margin ="8" :responsive="{0:{items:3},576:{items:4},1200:{items:5}}">
-									<div class="img-block thumbs-col">
-										<img src="../assets/images/gallery-img01.jpg">
-									</div>
-									<div class="img-block thumbs-col">
-										<img src="../assets/images/gallery-img02.jpg">
-									</div>
-									<div class="img-block thumbs-col">
-										<img src="../assets/images/gallery-img03.jpg">
-									</div>
-									<div class="img-block thumbs-col">
-										<img src="../assets/images/gallery-img04.jpg">
-									</div>
-									<div class="img-block thumbs-col">
-										<img src="../assets/images/gallery-img05.jpg">
-									</div>
-									<div class="video-block thumbs-col">
-										<img src="http://i3.ytimg.com/vi/YE7VzlLtp-4/hqdefault.jpg" data-src="https://www.youtube.com/embed/YE7VzlLtp-4" class="video-item">	
-										<!-- <img src="http://i3.ytimg.com/vi/_gJyJ8NvZgg/maxresdefault.jpg" data-src="https://www.youtube.com/embed/YE7VzlLtp-4" class="video-item">	 -->
-										<i class="btn-play"></i>
-									</div>
-								</carousel>
-							</div>
+							<MissionCarousel  v-if="isShownComponent"></MissionCarousel>
 						</b-col>
 						<b-col lg="6" class="ml-auto banner-content-wrap">
 							<div class="banner-content-block">
@@ -841,7 +805,6 @@
 import AppCustomChip from "../components/AppCustomChip";
 import StarRating from 'vue-star-rating';
 import { VueAutosuggest } from 'vue-autosuggest';
-import carousel from 'vue-owl-carousel';
 import {favoriteMission,inviteColleague ,applyMission,searchUser,storeMissionRating,} from "../services/service";
 import SimpleBar from 'simplebar';
 import store from "../store";
@@ -855,8 +818,8 @@ export default {
 	TheSecondaryFooter: () => import("../components/Layouts/TheSecondaryFooter"),
 	VueAutosuggest,
 	SimpleBar,
-	carousel,
 	RecentVolunteers: () => import("../components/RecentVolunteers"),
+	MissionCarousel: () => import("../components/MissionCarousel"),
   },
   data() {
     return {

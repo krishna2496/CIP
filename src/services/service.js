@@ -16,6 +16,7 @@ import inviteColleague from "./InviteColleague";
 import applyMission from "./Mission/ApplyMission";
 import storeMissionRating from "./Mission/StoreMissionRating";
 import missionVolunteers from "./Mission/MissionVolunteers";
+import missionCarousel from "./Mission/MissionCarousel";
 
 export {
     loadLocaleMessages,
@@ -35,5 +36,6 @@ export {
     inviteColleague,
     applyMission,
     storeMissionRating,
-    missionVolunteers
+    missionVolunteers,
+	missionCarousel
 }
