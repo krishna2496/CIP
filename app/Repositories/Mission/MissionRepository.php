@@ -908,7 +908,7 @@ class MissionRepository implements MissionInterface
     {
         // Fetch mission media details
         $missionData = $this->mission->findOrFail($missionId);
-        return $missionData->missionMedia()->orderBy('mission_media_id', 'ASC')
+        return $missionData->missionMedia()->orderBy('default', 'DESC')
         ->take(config("constants.MISSION_MEDIA_LIMIT"))->get();
     }
 

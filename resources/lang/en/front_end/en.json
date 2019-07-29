@@ -90,12 +90,14 @@
 		"no_volunteers" : "No Volunteers",
 		"by" : "by",
 		"volunteers" : "volunteers",
-		"no_document" : "No documents"
+		"no_document" : "No documents",
+		"related_missions" : "Related Missions"
 	},
 
 	"placeholder" : {
 		"email_address" : "Enter email address",
-		"password" : "Enter password"
+		"password" : "Enter password",
+		"comment" : "Enter your comments.."
 	},
 
 	"errors" : {

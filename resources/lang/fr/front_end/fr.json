@@ -89,13 +89,14 @@
 		"no_volunteers" : "No Volunteers",
 		"by" : "par",
 		"volunteers" : "bénévoles",
-		"no_document" : "Pas de documents"
+		"no_document" : "Pas de documents",
+		"related_missions" : "Missions connexes"
 	},
 
 	"placeholder" : {
 		"email_address" : "Entrer l'adresse e-mail",
 		"password" : "Entrer le mot de passe",
-		"identical_password" : "Les mots de passe doivent être identiques."
+		"comment" : "Entrez vos commentaires .."
 	},
 
 	"errors" : {
