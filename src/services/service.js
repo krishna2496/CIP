@@ -17,7 +17,7 @@ import applyMission from "./Mission/ApplyMission";
 import storeMissionRating from "./Mission/StoreMissionRating";
 import missionVolunteers from "./Mission/MissionVolunteers";
 import missionCarousel from "./Mission/MissionCarousel";
-
+import missionDetail from "./Mission/MissionDetail"
 export {
     loadLocaleMessages,
     missionListing,
@@ -38,4 +38,5 @@ export {
     storeMissionRating,
     missionVolunteers,
 	missionCarousel
+    missionDetail
 }

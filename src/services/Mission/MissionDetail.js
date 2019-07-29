@@ -1,16 +1,15 @@
 import store from '../../store'
 import axios from 'axios'
 
-export default async(data) => {
+export default async(missionId) => {
     let responseData = {};
     var defaultLanguage = '';
-    var missionId = data.mission_id;
-    
+
     if (store.state.defaultLanguage !== null) {
         defaultLanguage = (store.state.defaultLanguage).toLowerCase();
     }
 
-    var url =process.env.VUE_APP_API_ENDPOINT + "app/mission/"+missionId+"/volunteers?page=" + data.page
+    var url =process.env.VUE_APP_API_ENDPOINT + "app/mission/"+missionId
     await axios({
             url: url,
             method: 'get',
@@ -22,10 +21,8 @@ export default async(data) => {
                 responseData.error = false;
                 if(response.data.data){
                     responseData.data = response.data.data;
-                    responseData.pagination = response.data.pagination;
                 } else {
                     responseData.data = [];
-                    responseData.pagination = [];
                 }
                 
             })

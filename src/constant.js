@@ -12,4 +12,7 @@ export default Object.freeze({
     HIGHEST_AVAILABLE_SEATS : 'highest_available_seats',
     MY_FAVOURITE : 'my_favourite',
     DEADLINE : 'deadline',
+    AUTOMATICALLY_APPROVED : "AUTOMATICALLY_APPROVED",
+    PENDING : "PENDING",
+    REFUSED : "REFUSED"
 })
