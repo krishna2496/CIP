@@ -1,6 +1,6 @@
 <?php
     return [
-        'PER_PAGE_LIMIT' => '1',
+        'PER_PAGE_LIMIT' => '10',
         'error_codes' => [
             'ERROR_TENANT_REQUIRED_FIELDS_EMPTY' => '200001',
             'ERROR_TENANT_ALREADY_EXIST' => '200002',
