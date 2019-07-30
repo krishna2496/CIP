@@ -1,7 +1,4 @@
 <?php
-use Laravel\Lumen\Testing\DatabaseMigrations;
-use Laravel\Lumen\Testing\DatabaseTransactions;
-use App\Models\Mission;
 
 class MissionTest extends TestCase
 {    
@@ -38,7 +35,7 @@ class MissionTest extends TestCase
                     ],
                     "location" => [
                         "city_id" => rand(1, 1),
-                        "country_code" => "IND"
+                        "country_code" => "IN"
                     ],
                     "mission_detail" => [[
                             "lang" => "en",
@@ -111,7 +108,7 @@ class MissionTest extends TestCase
             'message',
             'status',
         ]);
-        Mission::orderBy("mission_id", "DESC")->take(1)->delete();
+        App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->delete();
     }
 
     /**
@@ -140,7 +137,6 @@ class MissionTest extends TestCase
 
         $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
         ->seeStatusCode(422);
-        Mission::orderBy("mission_id", "DESC")->take(1)->delete();
     }
     
     /**
@@ -157,13 +153,14 @@ class MissionTest extends TestCase
         $mission->setConnection($connection);
         $mission->save();
 
-        $this->get(route('missions'), ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->get('missions', ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
           ->seeStatusCode(200)
           ->seeJsonStructure([
             "status",
             "data",
             "message"
         ]);
+        $mission->delete();
     }
 
     /**
@@ -183,9 +180,8 @@ class MissionTest extends TestCase
         $mission = factory(\App\Models\Mission::class)->make();
         $mission->setConnection($connection);
         $mission->save();
-        $mission_id = $mission->mission_id;
 
-        $this->patch("missions/".$mission_id, $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->patch("missions/".$mission->mission_id, $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
         ->seeStatusCode(200)
         ->seeJsonStructure([
             'message',
@@ -250,5 +246,145 @@ class MissionTest extends TestCase
             ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))]
         )
         ->seeStatusCode(404);
+    }
+
+    /**
+     * @test
+     *
+     * Create mission api return error If user enter goal mission type and do not enter goal objective
+     *
+     * @return void
+     */
+    public function it_should_return_error_for_invalid_goal_objective()
+    {
+        $params = [
+                    "organisation" => [
+                        "organisation_id" => rand(1, 1),
+                        "organisation_name" => str_random(10)
+                    ],
+                    "location" => [
+                        "city_id" => rand(1, 1),
+                        "country_code" => "IN"
+                    ],
+                    "mission_detail" => [[
+                            "lang" => "en",
+                            "title" => str_random(10),
+                            "short_description" => str_random(20),
+                            "objective" => str_random(20),
+                            "section" => [
+                                [
+                                    "title" => str_random(10),
+                                    "description" => str_random(100),
+                                ],
+                                [
+                                    "title" => str_random(10),
+                                    "description" => str_random(100),
+                                ]
+                            ]
+                        ],
+                        [
+                            "lang" => "fr",
+                            "title" => str_random(10),
+                            "short_description" => str_random(20),
+                            "objective" => str_random(20),
+                            "section" => [
+                                [
+                                    "title" => str_random(10),
+                                    "description" => str_random(100),
+                                ],
+                                [
+                                    "title" => str_random(10),
+                                    "description" => str_random(100),
+                                ]
+                            ]
+                        ]
+                    ],
+                    "start_date" => "2019-05-15 10:40:00",
+                    "end_date" => "2019-10-15 10:40:00",
+                    "mission_type" => "GOAL",
+                    "goal_objective" => "",
+                    "total_seats" => rand(1, 1000),
+                    "application_deadline" => "2019-07-28 11:40:00",
+                    "publication_status" => "DRAFT",
+                    "theme_id" => rand(1, 1)
+                ];
+
+        $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(422);
+    }
+
+    /**
+     * @test
+     *
+     * Create mission api return error if user enter invalid mission type
+     *
+     * @return void
+     */
+    public function it_should_return_error_for_invalid_mission_type()
+    {
+        $params = [                    
+                    "mission_type" => "GOAL1",                   
+                ];
+
+        $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(422)
+        ->seeJsonStructure([
+            "errors" => [
+                [
+                    "status",
+                    "type",
+                    "message",
+                    "code"
+                ]
+            ]
+        ]); 
+    }
+
+    /**
+     * @test
+     *
+     * Get mission details by Id
+     *
+     * @return void
+     */
+    public function it_should_return_mission_detail_by_id()
+    {
+        $connection = 'tenant';
+        $mission = factory(\App\Models\Mission::class)->make();
+        $mission->setConnection($connection);
+        $mission->save();
+
+        $this->get("missions/".$mission->mission_id, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(200)
+        ->seeJsonStructure([
+                'message',
+                'status',
+            ]);
+        $mission->delete();
+    }
+
+    /**
+     * @test
+     *
+     * Get error for invalid mission id for get mission details by Id
+     *
+     * @return void
+     */
+    public function it_should_return_error_for_invalid_mission_id()
+    {
+        $missionId = rand(100000, 5000000);
+
+        $this->get("missions/".$missionId, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(404)
+        ->seeJsonStructure([
+            "errors" => [
+                [
+                    "status",
+                    "type",
+                    "message",
+                    "code"
+                ]
+            ]
+        ]); 
     }
 }

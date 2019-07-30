@@ -43,7 +43,7 @@ interface MissionApplicationInterface
      * Display a listing of the resource.
      *
      * @param \Illuminate\Http\Request $request
-     * @param int $mission_id
+     * @param int $missionId
      * @return Illuminate\Pagination\LengthAwarePaginator
      */
     public function missionApplications(Request $request, int $missionId);

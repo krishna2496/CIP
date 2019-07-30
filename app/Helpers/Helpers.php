@@ -10,6 +10,7 @@ use PDOException;
 use Throwable;
 use Carbon\Carbon;
 use App\Exceptions\TenantDomainNotFoundException;
+use Firebase\JWT\JWT;
 
 class Helpers
 {
@@ -272,5 +273,23 @@ class Helpers
         $constants = ($type == config('constants.IMAGE')) ? config('constants.image_types')
         : config('constants.document_types');
         return (!in_array($urlExtension, $constants)) ? false : true;
+    }
+
+    /**
+     * Get user token for testing
+     *
+     * @param int $userId
+     * @return string
+     */
+    public static function getTestUserToken(int $userId) : string
+    {
+        $payload = [
+            'iss' => "lumen-jwt",
+            'sub' => $userId,
+            'iat' => time(),
+            'exp' => time() + 60 * 60,
+            'fqdn' => 'tatva'
+        ];
+        return JWT::encode($payload, env('JWT_SECRET'));
     }
 }

@@ -71,8 +71,9 @@ class MissionRatingController extends Controller
             $missionRating = $this->missionRepository->storeMissionRating($request->auth->user_id, $request->toArray());
 
             // Set response data
-            $apiStatus = Response::HTTP_OK;
-            $apiMessage = trans('messages.success.MESSAGE_RATING_ADDED');
+            $apiStatus = ($missionRating->wasRecentlyCreated) ? Response::HTTP_CREATED : Response::HTTP_OK;
+            $apiMessage = ($missionRating->wasRecentlyCreated) ? trans('messages.success.MESSAGE_RATING_ADDED')
+            : trans('messages.success.MESSAGE_RATING_UPDATED');
             
             return $this->responseHelper->success($apiStatus, $apiMessage);
         } catch (PDOException $e) {

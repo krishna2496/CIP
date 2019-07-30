@@ -52,10 +52,10 @@ class Skill extends Model
     /**
      * Set translations attribute on the model.
      *
-     * @param  mixed   $value
+     * @param  array $value
      * @return void
      */
-    public function setTranslationsAttribute($value)
+    public function setTranslationsAttribute(array $value): void
     {
         $this->attributes['translations'] = serialize($value);
     }
@@ -63,10 +63,10 @@ class Skill extends Model
     /**
      * Get an attribute from the model.
      *
-     * @param  string  $value
-     * @return mixed
+     * @param  string $value
+     * @return array
      */
-    public function getTranslationsAttribute(string $value)
+    public function getTranslationsAttribute(string $value): array
     {
         return unserialize($value);
     }

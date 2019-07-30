@@ -49,7 +49,7 @@ class FooterPage extends Model
     /**
      * Soft delete the model from the database.
      *
-     * @param  int  $id
+     * @param  int $id
      * @return bool
      */
     public function deleteFooterPage(int $id): bool

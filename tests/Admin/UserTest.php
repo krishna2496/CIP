@@ -1,7 +1,5 @@
 <?php
-use Laravel\Lumen\Testing\DatabaseMigrations;
-use Laravel\Lumen\Testing\DatabaseTransactions;
-use App\User;
+use Illuminate\Support\Facades\DB;
 
 class UserTest extends TestCase
 {
@@ -42,6 +40,7 @@ class UserTest extends TestCase
             'message',
             'status',
         ]);
+        App\User::where("first_name", $name)->orderBy("user_id", "DESC")->take(1)->delete();
     }
 
     /**
@@ -117,7 +116,7 @@ class UserTest extends TestCase
     /**
      * @test
      *
-     * Get all users
+     * Get user by id
      *
      * @return void
      */
@@ -128,8 +127,7 @@ class UserTest extends TestCase
         $user->setConnection($connection);
         $user->save();
 
-        $userId = $user->user_id;
-        $this->get('users/'.$userId, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->get('users/'.$user->user_id, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
           ->seeStatusCode(200)
           ->seeJsonStructure([
             "status",
@@ -217,9 +215,8 @@ class UserTest extends TestCase
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
         $user->save();
-        $user_id = $user->user_id;
 
-        $this->patch("users/".$user_id, $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->patch("users/".$user->user_id, $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
         ->seeStatusCode(200)
         ->seeJsonStructure([
             'data' => [
@@ -302,4 +299,366 @@ class UserTest extends TestCase
         )
         ->seeStatusCode(404);
     }
+    /**
+     * @test
+     *
+     * Return error if data is empty
+     *
+     * @return void
+     */
+    public function it_should_return_error_while_data_is_empty_for_create_user()
+    {
+        $name = str_random(10);
+        $params = [
+                'first_name' => '',
+                'last_name' => '',
+                'email' => '',
+                'password' => '',
+                'timezone_id' => '',
+                'language_id' => '',
+                'availability_id' => '',
+                'why_i_volunteer' => '',
+                'employee_id' => '',
+                'department' => '',
+                'manager_name' => '',
+                'city_id' => '',
+                'country_id' => '',
+                'profile_text' => '',
+                'linked_in_url' => ''
+            ];
+
+        $this->post("users/", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(422);
+    }
+
+    /**
+     * @test
+     *
+     * Return error if email is invalid
+     *
+     * @return void
+     */
+    public function it_should_return_error_while_email_is_invalid_for_create_user()
+    {
+        $name = str_random(10);
+        $params = [
+                'first_name' => $name,
+                'last_name' => str_random(10),
+                'email' => str_random(10),
+                'password' => str_random(10),
+                'timezone_id' => rand(1, 1),
+                'language_id' => rand(1, 1),
+                'availability_id' => rand(1, 1),
+                'why_i_volunteer' => str_random(10),
+                'employee_id' => str_random(10),
+                'department' => str_random(10),
+                'manager_name' => str_random(10),
+                'city_id' => rand(1, 1),
+                'country_id' => rand(1, 1),
+                'profile_text' => str_random(10),
+                'linked_in_url' => 'https://www.'.str_random(10).'.com'
+            ];
+
+        $this->post("users/", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(422);
+    }
+
+        /**
+     * @test
+     *
+     * Return error for fix length
+     *
+     * @return void
+     */
+    public function it_should_return_error_fix_length_validation_in_create_user()
+    {
+        $params = [
+                'first_name' => str_random(255)
+            ];
+
+        $this->post("users/", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(422);
+    }
+
+    /**
+     * @test
+     *
+     * Update user without email
+     *
+     * @return void
+     */
+    public function it_should_update_user_without_email_update()
+    {
+        $params = [
+            'first_name' => str_random(10),
+            'last_name' => str_random(10),
+            'password' => str_random(10),
+            'timezone_id' => rand(1, 1),
+            'language_id' => rand(1, 1),
+            'availability_id' => rand(1, 1),
+            'why_i_volunteer' => str_random(10),
+            'employee_id' => str_random(10),
+            'department' => str_random(10),
+            'manager_name' => str_random(10),
+            'city_id' => rand(1, 1),
+            'country_id' => rand(1, 1),
+            'profile_text' => str_random(10),
+            'linked_in_url' => 'https://www.'.str_random(10).'.com'
+        ];
+
+        $connection = 'tenant';
+        $user = factory(\App\User::class)->make();
+        $user->setConnection($connection);
+        $user->save();
+        
+        $this->patch("users/".$user->user_id, $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(200)
+        ->seeJsonStructure([
+            'data' => [
+                'user_id',
+            ],
+            'message',
+            'status',
+            ]);
+        $user->delete();
+    }
+
+    /**
+     * @test
+     *
+     * Get all user skills
+     *
+     * @return void
+     */
+    public function it_should_return_user_skills()
+    {
+        $connection = 'tenant';
+        $user = factory(\App\User::class)->make();
+        $user->setConnection($connection);
+        $user->save();
+        
+        $this->get('user/skills/'.$user->user_id, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+          ->seeStatusCode(200)
+          ->seeJsonStructure([
+            "status",
+            "message"
+        ]);
+        $user->delete();
+    }
+
+    /**
+     * @test
+     *
+     * Check if user not exist in system
+     *
+     * @return void
+     */
+    public function it_should_return_error_if_user_is_not_exist()
+    {        
+        $this->post('user/skills/'.rand(100000, 500000), ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+          ->seeStatusCode(401);
+    }
+    
+    /**
+     * @test
+     *
+     * If no user skills registered
+     *
+     * @return void
+     */
+    public function it_should_return_no_user_skills_registered()
+    {
+        $connection = 'tenant';
+        $user = factory(\App\User::class)->make();
+        $user->setConnection($connection);
+        $user->save();
+        
+        $this->get('user/skills/'.$user->user_id, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+          ->seeStatusCode(200)
+          ->seeJsonStructure([
+            "status",
+            "message"
+        ]);
+        $user->delete();
+    }
+
+    /**
+     * @test
+     *
+     * Link skill to user
+     *
+     * @return void
+     */
+    public function it_should_link_skill_to_user()
+    {
+        $connection = 'tenant';
+        $skill = factory(\App\Models\Skill::class)->make();
+        $skill->setConnection($connection);
+        $skill->save();
+ 
+        $user = factory(\App\User::class)->make();
+        $user->setConnection($connection);
+        $user->save();
+
+        $params = [
+            'skills' => [
+                [
+                    "skill_id" => $skill->skill_id
+                ]
+            ]
+        ];
+
+        $this->post('user/skills/'.$user->user_id, $params,['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+          ->seeStatusCode(201)
+          ->seeJsonStructure([
+            "status",
+            "message"
+        ]);
+        $user->delete();
+        $skill->delete();
+    }
+
+    /**
+     * @test
+     *
+     * Link skill to user validate user
+     *
+     * @return void
+     */
+    public function it_should_validate_user_for_link_skill_to_user()
+    {
+        $connection = 'tenant';
+        $skill = factory(\App\Models\Skill::class)->make();
+        $skill->setConnection($connection);
+        $skill->save();
+ 
+        $params = [
+            'skills' => [
+                [
+                    "skill_id" => $skill->skill_id
+                ]
+            ]
+        ];
+
+        $this->post('user/skills/'.rand(100000, 5000000), $params,['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+          ->seeStatusCode(404)
+          ->seeJsonStructure([
+              "errors" => [
+                  [
+                    "status",
+                    "message"
+                  ]
+              ]            
+            ]);
+        $skill->delete();
+    }
+
+    /**
+     * @test
+     *
+     * Unlink skill from user
+     *
+     * @return void
+     */
+    public function it_should_unlink_skill_from_user()
+    {
+        $connection = 'tenant';
+        $skill = factory(\App\Models\Skill::class)->make();
+        $skill->setConnection($connection);
+        $skill->save();
+ 
+        $user = factory(\App\User::class)->make();
+        $user->setConnection($connection);
+        $user->save();
+
+        $params = [
+            'skills' => [
+                [
+                    "skill_id" => $skill->skill_id
+                ]
+            ]
+        ];
+
+        $this->delete('user/skills/'.$user->user_id, $params,['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+          ->seeStatusCode(200)
+          ->seeJsonStructure([
+            "status",
+            "message"
+        ]);
+        $user->delete();
+        $skill->delete();
+    }
+
+        /**
+     * @test
+     *
+     * Unlink skill to user validate user
+     *
+     * @return void
+     */
+    public function it_should_validate_user_for_unlink_skill_from_user()
+    {
+        $connection = 'tenant';
+        $skill = factory(\App\Models\Skill::class)->make();
+        $skill->setConnection($connection);
+        $skill->save();
+ 
+        $params = [
+            'skills' => [
+                [
+                    "skill_id" => $skill->skill_id
+                ]
+            ]
+        ];
+
+        $this->delete('user/skills/'.rand(100000, 5000000), $params,['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+          ->seeStatusCode(404)
+          ->seeJsonStructure([
+              "errors" => [
+                  [
+                    "status",
+                    "message"
+                  ]
+              ]            
+            ]);
+        $skill->delete();
+    }
+
+    /**
+     * @test
+     *
+     * Return error if email is already exist
+     *
+     * @return void
+     */
+    public function it_should_return_error_while_email_is_exist_for_create_user()
+    {
+        DB::setDefaultConnection('tenant');
+        $email = App\User::get()->random()->email;
+        DB::setDefaultConnection('mysql');
+
+        $name = str_random(10);
+        $params = [
+                'first_name' => $name,
+                'last_name' => str_random(10),
+                'email' => $email,
+                'password' => str_random(10),
+                'timezone_id' => rand(1, 1),
+                'language_id' => rand(1, 1),
+                'availability_id' => rand(1, 1),
+                'why_i_volunteer' => str_random(10),
+                'employee_id' => str_random(10),
+                'department' => str_random(10),
+                'manager_name' => str_random(10),
+                'city_id' => rand(1, 1),
+                'country_id' => rand(1, 1),
+                'profile_text' => str_random(10),
+                'linked_in_url' => 'https://www.'.str_random(10).'.com'
+            ];
+
+        $this->post("users/", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(422);
+    }
+
+
 }

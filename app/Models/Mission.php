@@ -220,15 +220,11 @@ class Mission extends Model
      * Soft delete from the database.
      *
      * @param  int  $id
-     * @return void
+     * @return bool
      */
-    public function deleteMission(int $id)
+    public function deleteMission(int $id): bool
     {
-        $mission = static::findOrFail($id)->delete();
-        // static::missionMedia()->delete();
-        // static::missionLanguage()->delete();
-        // static::missionDocument()->delete();
-        return $mission;
+        return static::findOrFail($id)->delete();
     }
 
     /**
@@ -244,10 +240,10 @@ class Mission extends Model
     /**
      * Set start date attribute on the model.
      *
-     * @param  mixed   $value
+     * @param  string $value
      * @return void
      */
-    public function setStartDateAttribute($value)
+    public function setStartDateAttribute(string $value): void
     {
         $this->attributes['start_date'] = ($value != null) ?
         Carbon::parse($value, config('constants.TIMEZONE'))->setTimezone(config('app.TIMEZONE')) : null;
@@ -269,7 +265,7 @@ class Mission extends Model
     /**
      * Set end date attribute on the model.
      *
-     * @param  mixed   $value
+     * @param string $value
      * @return void
      */
     public function setEndDateAttribute($value)
@@ -281,7 +277,7 @@ class Mission extends Model
     /**
      * Get end date attribute from the model.
      *
-     * @return string
+     * @return string|null
      */
     public function getEndDateAttribute()
     {

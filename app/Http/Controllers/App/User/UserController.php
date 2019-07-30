@@ -44,8 +44,7 @@ class UserController extends Controller
         UserRepository $userRepository,
         ResponseHelper $responseHelper,
         LanguageHelper $languageHelper
-    )
-    {
+    ) {
         $this->userRepository = $userRepository;
         $this->responseHelper = $responseHelper;
         $this->languageHelper = $languageHelper;
@@ -111,7 +110,6 @@ class UserController extends Controller
                 $e->getMessage()
             );
         } catch (\Exception $e) {
-            
             return $this->badRequest($e->getMessage());
         }
     }

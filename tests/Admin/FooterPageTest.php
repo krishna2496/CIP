@@ -1,8 +1,4 @@
 <?php
-use Laravel\Lumen\Testing\DatabaseMigrations;
-use Laravel\Lumen\Testing\DatabaseTransactions;
-use App\Models\FooterPage;
-use App\Models\FooterPagesLanguage;
 
 class FooterPageTest extends TestCase
 {
@@ -27,7 +23,7 @@ class FooterPageTest extends TestCase
                         'sections' =>  [
                             [
                                 'title' => str_random(20),
-                                'description' => str_random(255),
+                                'description' => array(str_random(255)),
                             ]
                         ],
                     ]
@@ -43,7 +39,8 @@ class FooterPageTest extends TestCase
             ],
             'message',
             'status',
-        ]);        
+        ]);    
+        App\Models\FooterPage::where('slug', $slug)->delete();    
     }
 
     /**
@@ -84,7 +81,7 @@ class FooterPageTest extends TestCase
                         'sections' =>  [
                             [
                                 'title' => str_random(20),
-                                'description' => str_random(255),
+                                'description' => array(str_random(255)),
                             ]
                         ],
                     ]
@@ -105,24 +102,13 @@ class FooterPageTest extends TestCase
      */
     public function it_should_update_footer_page()
     {
+        $slug = str_random(20);
         $params = [
             'page_details' =>
                 [
-                'slug' => str_random(20),
-                'translations' =>  [
-                    [
-                        'lang' => 'en',
-                        'title' => str_random(20),
-                        'sections' =>  [
-                            [
-                                'title' => str_random(20),
-                                'description' => str_random(255),
-                            ]
-                        ],
-                    ]
+                'slug' => $slug                
                 ],
-            ],
-        ];
+            ];
 
         $connection = 'tenant';
         $footerPage = factory(\App\Models\FooterPage::class)->make();
@@ -139,6 +125,7 @@ class FooterPageTest extends TestCase
             'message',
             'status',
         ]);
+        App\Models\FooterPage::where('slug', $slug)->delete(); 
     }
     
     /**
@@ -197,7 +184,7 @@ class FooterPageTest extends TestCase
                         'title' => str_random(20),
                         'sections' =>  [
                             'title' => str_random(20),
-                            'description' => str_random(255),
+                            'description' => array(str_random(255)),
                         ],
                     ]
                 ],

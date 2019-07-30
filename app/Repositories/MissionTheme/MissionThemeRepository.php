@@ -84,7 +84,7 @@ class MissionThemeRepository implements MissionThemeInterface
      * Find specified resource in storage.
      *
      * @param  int  $id
-     * @return App\User
+     * @return App\Models\MissionTheme
      */
     public function find(int $id): MissionTheme
     {

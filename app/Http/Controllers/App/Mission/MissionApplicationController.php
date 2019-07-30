@@ -80,7 +80,7 @@ class MissionApplicationController extends Controller
             }
 
             $seatAvailable = $this->missionApplicationRepository->checkAvailableSeats($request->mission_id);
-            if (!$seatAvailable) {
+            if ($seatAvailable === false) {
                 return $this->responseHelper->error(
                     Response::HTTP_UNPROCESSABLE_ENTITY,
                     Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],

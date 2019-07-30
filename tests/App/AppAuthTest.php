@@ -1,18 +1,10 @@
 <?php
-use Laravel\Lumen\Testing\DatabaseMigrations;
-use Laravel\Lumen\Testing\DatabaseTransactions;
-use App\User;
-use App\Models\TenantOption;
-use App\Models\PasswordReset;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Auth\Passwords\PasswordBrokerManager;
-use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Notification;
-use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\DB;
 
 class AppAuthTest extends TestCase
-{
-    
+{    
     /**
      * @test
      *
@@ -36,7 +28,7 @@ class AppAuthTest extends TestCase
             'password' => $password,
         ];
 
-        $this->post('login', $params, [])
+        $this->post('app/login', $params, [])
           ->seeStatusCode(200)
           ->seeJsonStructure(
               [
@@ -74,7 +66,7 @@ class AppAuthTest extends TestCase
             'password' => $user->password,
         ];
 
-        $this->post('login', $params, [])
+        $this->post('app/login', $params, [])
           ->seeStatusCode(422);
         $user->delete();
     }
@@ -97,7 +89,7 @@ class AppAuthTest extends TestCase
             'email' => $user->email,
         ];
 
-        $this->post('request_password_reset', $params, [])
+        $this->post('app/request-password-reset', $params, [])
           ->seeStatusCode(200)
           ->seeJsonStructure(
               [
@@ -118,11 +110,10 @@ class AppAuthTest extends TestCase
     public function it_should_show_error_for_incorrect_email()
     {
         $params = [
-            'email' => str_random(10).'@gmail.com',
+            'email' => str_random(10),
         ];
-
-        $this->post('request_password_reset', $params, [])
-          ->seeStatusCode(403);
+        $this->post('app/request-password-reset', $params, [])
+          ->seeStatusCode(422);
     }
 
     /**
@@ -145,7 +136,7 @@ class AppAuthTest extends TestCase
             'password_confirmation' =>"12345678",
         ];
 
-        $this->put('password_reset', $params, [])
+        $this->put('app/password-reset', $params, [])
           ->seeStatusCode(422);
         $user->delete();
     }
@@ -163,12 +154,11 @@ class AppAuthTest extends TestCase
         $token = '';
         
         $this->get('connect');
-        $user = User::first();
+        $user = App\User::first();
 
-        DB::connection('mysql')->getPdo();
-        Config::set('database.default', 'mysql');
+        DB::setDefaultConnection('mysql');
 
-        $this->post('request_password_reset', ['email' => $user->email])
+        $this->post('app/request-password-reset', ['email' => $user->email])
             ->seeStatusCode(200);
 
         Notification::assertSentTo(
@@ -181,10 +171,9 @@ class AppAuthTest extends TestCase
             }
         );
 
-        DB::connection('mysql')->getPdo();
-        Config::set('database.default', 'mysql');
+        DB::setDefaultConnection('mysql');
 
-        $response = $this->put('/password_reset', [
+        $response = $this->put('app/password-reset', [
             'reset_password_token' => $token,
             'email' => $user->email,
             'password' => 'password',
@@ -192,5 +181,22 @@ class AppAuthTest extends TestCase
         ]);
         
         $this->assertTrue(Hash::check('password', $user->fresh()->password));
+    }
+
+    /**
+     * @test
+     *
+     * Show error if email is invalid
+     *
+     * @return void
+     */
+    public function it_should_show_error_if_email_is_invalid()
+    {
+        $params = [
+            'email' => 'test@gmail.com',
+            'password' => 'test',
+        ];
+        $this->post('app/login', $params, [])
+          ->seeStatusCode(403);
     }
 }
