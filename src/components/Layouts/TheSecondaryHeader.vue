@@ -7,7 +7,7 @@
                         <b-form-input
                             type="text"
                             @keypress.enter="searchMission"
-                            :placeholder="$t('label.search')+' '+$t('label.mission')"
+                            :placeholder="searchPlaceHolder"
                             @focus="handleFocus()"
                             @blur="handleBlur()"
                             v-model="searchString"                            
