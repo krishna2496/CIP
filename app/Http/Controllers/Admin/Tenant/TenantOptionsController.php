@@ -19,6 +19,8 @@ use App\Exceptions\BucketNotFoundException;
 use App\Exceptions\FileNotFoundException;
 use App\Exceptions\FileUploadException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Jobs\CopyDefaultThemeImagesToTenantImagesJob;
+use App\Exceptions\TenantDomainNotFoundException;
 
 class TenantOptionsController extends Controller
 {
@@ -100,16 +102,10 @@ class TenantOptionsController extends Controller
                 );
             } else {
                 // Upload slider image on S3 server
-                try {
-                    // Get domain name from request and use as tenant name.
-                    $tenantName = $this->helpers->getSubDomainFromRequest($request);
-                } catch (\Exception $e) {
-                    return $this->badRequest($e->getMessage());
-                }
-
+                // Get domain name from request and use as tenant name.
+                $tenantName = $this->helpers->getSubDomainFromRequest($request);
                 $imageUrl = "";
                 if ($imageUrl = $this->s3helper->uploadFileOnS3Bucket($request->url, $tenantName)) {
-
                     $request->merge(['url' => $imageUrl]);
                     
                     // Set data for create new record
@@ -134,6 +130,8 @@ class TenantOptionsController extends Controller
                     );
                 }
             }
+        } catch (TenantDomainNotFoundException $e) {
+            throw $e;
         } catch (PDOException $e) {
             return $this->PDO(
                 config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
@@ -157,8 +155,10 @@ class TenantOptionsController extends Controller
         try {
             // Get domain name from request and use as tenant name.
             $tenantName = $this->helpers->getSubDomainFromRequest($request);
+        } catch (TenantDomainNotFoundException $e) {
+            throw $e;
         } catch (\Exception $e) {
-            return $this->badRequest($e->getMessage());
+            return $this->badRequest('messages.custom_error_message.ERROR_OCCURRED');
         }
         
         try {
@@ -169,6 +169,8 @@ class TenantOptionsController extends Controller
                 config('constants.error_codes.ERROR_FAILED_TO_RESET_STYLING'),
                 trans('messages.custom_error_message.ERROR_FAILED_TO_RESET_STYLING')
             );
+        } catch (BucketNotFoundException $e) {
+            throw $e;
         } catch (\Exception $e) {
             throw new \Exception(trans('messages.custom_error_message.ERROR_FAILED_TO_RESET_STYLING'));
         }
@@ -220,8 +222,10 @@ class TenantOptionsController extends Controller
         try {
             // Get domain name from request and use as tenant name.
             $tenantName = $this->helpers->getSubDomainFromRequest($request);
+        } catch (TenantDomainNotFoundException $e) {
+            throw $e;
         } catch (\Exception $e) {
-            return $this->badRequest($e->getMessage());
+             return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
 
         // Need to check local copy for tenant assest is there or not?
@@ -325,11 +329,16 @@ class TenantOptionsController extends Controller
         try {
             // Get domain name from request and use as tenant name.
             $tenantName = $this->helpers->getSubDomainFromRequest($request);
+        } catch (TenantDomainNotFoundException $e) {
+            throw $e;
         } catch (\Exception $e) {
-            return $this->badRequest($e->getMessage());
+             return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
-        
-        $assetFilesArray = $this->s3helper->getAllScssFiles($tenantName);
+        try {
+            $assetFilesArray = $this->s3helper->getAllScssFiles($tenantName);
+        } catch (BucketNotFoundException $e) {
+            throw $e;
+        }
         if (count($assetFilesArray) > 0) {
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_ASSETS_FILES_LISTING');
@@ -388,8 +397,10 @@ class TenantOptionsController extends Controller
         try {
             // Get domain name from request and use as tenant name.
             $tenantName = $this->helpers->getSubDomainFromRequest($request);
+        } catch (TenantDomainNotFoundException $e) {
+            throw $e;
         } catch (\Exception $e) {
-            return $this->badRequest($e->getMessage());
+             return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
 
         if (Storage::disk('s3')->exists($tenantName)) {
@@ -520,5 +531,42 @@ class TenantOptionsController extends Controller
         } catch (\Exception $e) {
             return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
+    }
+
+    /**
+     * Reset to default asset images
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function resetAssetsImages(Request $request): JsonResponse
+    {
+        try {
+            // Get domain name from request and use as tenant name.
+            $tenantName = $this->helpers->getSubDomainFromRequest($request);
+        } catch (TenantDomainNotFoundException $e) {
+            throw $e;
+        } catch (\Exception $e) {
+            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
+        }
+        
+        try {
+            // Copy default theme folder to tenant folder on s3
+            dispatch(new CopyDefaultThemeImagesToTenantImagesJob($tenantName));
+        } catch (S3Exception $e) {
+            return $this->s3Exception(
+                config('constants.error_codes.ERROR_FAILED_TO_RESET_ASSET_IMAGE'),
+                trans('messages.custom_error_message.ERROR_FAILED_TO_RESET_ASSET_IMAGE')
+            );
+        } catch (BucketNotFoundException $e) {
+            throw $e;
+        } catch (\Exception $e) {
+            throw new \Exception(trans('messages.custom_error_message.ERROR_FAILED_TO_RESET_ASSET_IMAGE'));
+        }
+
+        // Set response data
+        $apiStatus = Response::HTTP_OK;
+        $apiMessage = trans('messages.success.MESSAGE_ASSET_IMAGES_RESET_SUCCESS');
+        return $this->responseHelper->success($apiStatus, $apiMessage);
     }
 }
