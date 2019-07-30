@@ -655,7 +655,7 @@ export default {
 				rating : ''
 			};
 			missionData.mission_id = this.missionId;
-			missionData.rating = this.rating;
+			missionData.rating = rating;
 		    storeMissionRating(missionData).then(response => {
 		        if(response.error == true){
 		            this.makeToast("danger",response.message);
@@ -790,7 +790,6 @@ export default {
 							}
 
 							if(response.data[0].set_view_detail == 1) {
-								console.log(response.data[0]);
 								// disableApply
 								if(response.data[0].user_application_status ==  
 									constants.AUTOMATICALLY_APPROVED || response.data[0].user_application_status ==  
