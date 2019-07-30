@@ -1,15 +1,11 @@
 <?php
-use Laravel\Lumen\Testing\DatabaseMigrations;
-use Laravel\Lumen\Testing\DatabaseTransactions;
-use App\Models\TenantOption;
-use App\Repositories\TenantOption\TenantOptionRepository;
 
 class TenantOptionsTest extends TestCase
 {
     /**
      * @test
      *
-     * Create footer page api
+     * Create slider
      *
      * @return void
      */
@@ -56,7 +52,7 @@ class TenantOptionsTest extends TestCase
                 'message',
                 ]);
         }
-        TenantOption::where("option_name", "slider")->orderBy("tenant_option_id", "DESC")->take(1)->delete();
+        App\Models\TenantOption::where("option_name", "slider")->orderBy("tenant_option_id", "DESC")->take(1)->delete();
     }
 
     /**
@@ -130,7 +126,7 @@ class TenantOptionsTest extends TestCase
     /**
     * @test
     *
-    * Update style file not found error
+    * Update style
     *
     * @return void
     */
@@ -151,5 +147,74 @@ class TenantOptionsTest extends TestCase
     {
         $this->get('app/custom-css', ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
         ->seeStatusCode(200);
+    }
+
+    /**
+     * @test
+     *
+     * Create tenant option
+     *
+     * @return void
+     */
+    public function it_should_create_tenant_option()
+    {
+        $optionName = str_random(20);
+        $params = [
+            'option_name' => $optionName,
+            'option_value' =>
+                [
+                'translations' =>  [
+                    [
+                        'lang' => 'en',
+                        'message' => str_random(20)
+                    ]
+                ],
+            ],
+        ];
+
+        $this->post("tenant-option/", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(201)
+        ->seeJsonStructure([
+            'status',
+            'message',
+        ]);
+        App\Models\TenantOption::where("option_name", $optionName)->orderBy("tenant_option_id", "DESC")->take(1)->delete();
+    }
+
+    /**
+     * @test
+     *
+     * Return error if data is invalid
+     *
+     * @return void
+     */
+    public function it_should_return_error_for_invalid_data_for_tenant_option()
+    {
+        $optionName = '';
+        $params = [
+            'option_name' => $optionName,
+            'option_value' =>
+                [
+                'translations' =>  [
+                    [
+                        'lang' => 'en',
+                        'message' => str_random(20)
+                    ]
+                ],
+            ],
+        ];
+
+        $this->post("tenant-option/", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(422)
+        ->seeJsonStructure([
+            'errors' => [
+                [
+                    'status',
+                    'type',
+                    'code',
+                    'message'
+                ]
+            ]
+        ]);
     }
 }

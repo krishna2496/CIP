@@ -1,18 +1,10 @@
 <?php
-use Laravel\Lumen\Testing\DatabaseMigrations;
-use Laravel\Lumen\Testing\DatabaseTransactions;
-use App\User;
-use App\Models\TenantOption;
-use App\Models\PasswordReset;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Auth\Passwords\PasswordBrokerManager;
-use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Notification;
-use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\DB;
 
 class AppAuthTest extends TestCase
-{
-    
+{    
     /**
      * @test
      *
@@ -86,27 +78,27 @@ class AppAuthTest extends TestCase
      *
      * @return void
      */
-    // public function it_should_sent_request_for_reset_password()
-    // {
-    //     $connection = 'tenant';
-    //     $user = factory(\App\User::class)->make();
-    //     $user->setConnection($connection);
-    //     $user->save();
+    public function it_should_sent_request_for_reset_password()
+    {
+        $connection = 'tenant';
+        $user = factory(\App\User::class)->make();
+        $user->setConnection($connection);
+        $user->save();
 
-    //     $params = [
-    //         'email' => $user->email,
-    //     ];
+        $params = [
+            'email' => $user->email,
+        ];
 
-    //     $this->post('app/request-password-reset', $params, [])
-    //       ->seeStatusCode(200)
-    //       ->seeJsonStructure(
-    //           [
-    //             "status",
-    //             "message"
-    //         ]
-    //     );
-    //     $user->delete();
-    // }
+        $this->post('app/request-password-reset', $params, [])
+          ->seeStatusCode(200)
+          ->seeJsonStructure(
+              [
+                "status",
+                "message"
+            ]
+        );
+        $user->delete();
+    }
 
     /**
      * @test
@@ -118,11 +110,10 @@ class AppAuthTest extends TestCase
     public function it_should_show_error_for_incorrect_email()
     {
         $params = [
-            'email' => str_random(10).'@gmail.com',
+            'email' => str_random(10),
         ];
-
         $this->post('app/request-password-reset', $params, [])
-          ->seeStatusCode(403);
+          ->seeStatusCode(422);
     }
 
     /**
@@ -157,43 +148,40 @@ class AppAuthTest extends TestCase
      *
      * @return void
      */
-    // public function it_should_reset_password()
-    // {
-    //     Notification::fake();
-    //     $token = '';
+    public function it_should_reset_password()
+    {
+        Notification::fake();
+        $token = '';
         
-    //     $this->get('connect');
-    //     $user = User::first();
+        $this->get('connect');
+        $user = App\User::first();
 
-    //     DB::connection('mysql')->getPdo();
-    //     Config::set('database.default', 'mysql');
+        DB::setDefaultConnection('mysql');
 
-    //     $this->post('app/request-password-reset', ['email' => $user->email])
-    //         ->seeStatusCode(200);
+        $this->post('app/request-password-reset', ['email' => $user->email])
+            ->seeStatusCode(200);
 
-    //     Notification::assertSentTo(
-    //         $user,
-    //         \Illuminate\Auth\Notifications\ResetPassword::class,
-    //         function ($notification, $channels) use (&$token) {
-    //             $token = $notification->token;
+        Notification::assertSentTo(
+            $user,
+            \Illuminate\Auth\Notifications\ResetPassword::class,
+            function ($notification, $channels) use (&$token) {
+                $token = $notification->token;
 
-    //             return true;
-    //         }
-    //     );
+                return true;
+            }
+        );
 
-    //     DB::connection('mysql')->getPdo();
-    //     Config::set('database.default', 'mysql');
+        DB::setDefaultConnection('mysql');
 
-    //     $response = $this->put('app/password-reset', [
-    //         'reset_password_token' => $token,
-    //         'email' => $user->email,
-    //         'password' => 'password',
-    //         'password_confirmation' => 'password'
-    //     ]);
+        $response = $this->put('app/password-reset', [
+            'reset_password_token' => $token,
+            'email' => $user->email,
+            'password' => 'password',
+            'password_confirmation' => 'password'
+        ]);
         
-    //     $this->assertTrue(Hash::check('password', $user->fresh()->password));
-    // }
-
+        $this->assertTrue(Hash::check('password', $user->fresh()->password));
+    }
 
     /**
      * @test
@@ -208,7 +196,6 @@ class AppAuthTest extends TestCase
             'email' => 'test@gmail.com',
             'password' => 'test',
         ];
-
         $this->post('app/login', $params, [])
           ->seeStatusCode(403);
     }

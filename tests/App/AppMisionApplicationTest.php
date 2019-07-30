@@ -1,8 +1,5 @@
 <?php
-use Laravel\Lumen\Testing\DatabaseMigrations;
-use Laravel\Lumen\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\DB;
-use App\Models\Mission;
 use App\Helpers\Helpers;
 
 class AppMisionApplicationTest extends TestCase
@@ -10,7 +7,7 @@ class AppMisionApplicationTest extends TestCase
     /**
      * @test
      *
-     * No mission found
+     * Return no mission found
      *
      * @return void
      */
@@ -38,7 +35,7 @@ class AppMisionApplicationTest extends TestCase
      * @return void
      */
     public function it_should_return_error_for_already_applied_to_a_mission()
-    {        
+    {
         DB::setDefaultConnection('tenant');
         $missionApplication = App\Models\MissionApplication::get()->random();
         $missionId = $missionApplication->mission_id;
@@ -61,9 +58,9 @@ class AppMisionApplicationTest extends TestCase
      * @return void
      */
     public function it_should_return_error_if_deadline_is_passed()
-    {            
+    {
         $connection = 'tenant';
-        $user = factory(\App\User::class)->make();        
+        $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
         $user->save();
         // Add mission with passed deadline
@@ -108,7 +105,7 @@ class AppMisionApplicationTest extends TestCase
 
         $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
         ->seeStatusCode(201);
-        $mission = Mission::orderBy("mission_id", "DESC")->take(1)->get();
+        $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->get();
         
         $params = [
                 'mission_id' => $mission[0]['mission_id']
@@ -118,7 +115,7 @@ class AppMisionApplicationTest extends TestCase
         $this->post('app/mission/application', $params, ['token' => $token])
           ->seeStatusCode(422);
         $user->delete();
-        Mission::orderBy("mission_id", "DESC")->take(1)->delete();
+        App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->delete();
     }
 
     /**
@@ -129,9 +126,9 @@ class AppMisionApplicationTest extends TestCase
      * @return void
      */
     public function it_should_return_error_if_seats_not_available()
-    {            
+    {
         $connection = 'tenant';
-        $user = factory(\App\User::class)->make();        
+        $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
         $user->save();
         // Add mission with passed deadline
@@ -165,19 +162,19 @@ class AppMisionApplicationTest extends TestCase
                 ]
             ],
             "start_date" => "2019-05-15 10:40:00",
-            "end_date" => "2019-10-15 10:40:00",
+            "end_date" => "2020-10-15 10:40:00",
             "mission_type" => "GOAL",
             "goal_objective" => rand(1, 1000),
             "total_seats" => 1,
-            "application_deadline" => "2019-07-25 11:40:00",
+            "application_deadline" => "2020-07-25 11:40:00",
             "publication_status" => "APPROVED",
             "theme_id" => rand(1, 1)
         ];
 
         $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
         ->seeStatusCode(201);
-        $mission = Mission::orderBy("mission_id", "DESC")->take(1)->get();
-        
+        $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->get();
+        App\Models\Mission::where("mission_id", $mission[0]['mission_id'])->update(["total_seats" => 0]);
         $params = [
                 'mission_id' => $mission[0]['mission_id'],
                 'availability_id' => rand(1, 1),
@@ -188,7 +185,7 @@ class AppMisionApplicationTest extends TestCase
         $this->post('app/mission/application', $params, ['token' => $token])
           ->seeStatusCode(422);
         $user->delete();
-        Mission::orderBy("mission_id", "DESC")->take(1)->delete();
+        App\Models\Mission::where("mission_id", $mission[0]['mission_id'])->take(1)->delete();
     }
 
     /**
@@ -199,9 +196,9 @@ class AppMisionApplicationTest extends TestCase
      * @return void
      */
     public function it_should_add_record_for_apply_to_a_mission()
-    {   
+    {
         $connection = 'tenant';
-        $user = factory(\App\User::class)->make();        
+        $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
         $user->save();
 
@@ -238,7 +235,7 @@ class AppMisionApplicationTest extends TestCase
             "end_date" => "2020-10-15 10:40:00",
             "mission_type" => "TIME",
             "goal_objective" => rand(1, 1000),
-            "total_seats" => rand(1,10),
+            "total_seats" => rand(1, 10),
             "application_deadline" => "2020-10-15 10:40:00",
             "publication_status" => "APPROVED",
             "theme_id" => rand(1, 1)
@@ -246,12 +243,12 @@ class AppMisionApplicationTest extends TestCase
 
         $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
         ->seeStatusCode(201);
-        $mission = Mission::orderBy("mission_id", "DESC")->take(1)->get();
+        $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->get();
         
         $params = [
                 'mission_id' => $mission[0]['mission_id'],
                 'motivation' => str_random(10),
-                'availability_id' => rand(1,1)
+                'availability_id' => rand(1, 1)
             ];
         DB::setDefaultConnection('mysql');
         
@@ -267,8 +264,6 @@ class AppMisionApplicationTest extends TestCase
             ]);
            
         $user->delete();
-        Mission::orderBy("mission_id", "DESC")->take(1)->delete();
+        App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->delete();
     }
-    
-
 }

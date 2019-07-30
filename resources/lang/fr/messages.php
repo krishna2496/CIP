@@ -62,6 +62,7 @@ return [
         'MESSAGE_INVITED_FOR_MISSION' => 'Utilisateur invité à la mission avec succès',
         'MESSAGE_APPLICATION_CREATED' => 'Appliqué pour une mission avec succès',
         'MESSAGE_RATING_ADDED' => 'Évaluation de la mission ajoutée avec succès',
+        'MESSAGE_RATING_UPDATED' => 'Evaluation de la mission mise à jour avec succès',
         'MESSAGE_MISSION_VOLUNTEERS_LISTING' => 'Obtenez des volontaires de mission avec succès',
         'MESSAGE_NO_MISSION_VOLUNTEERS_FOUND' => 'Aucun volontaire récent trouvé',
         'MESSAGE_MISSION_MEDIA_LISTING' => 'Les médias de la mission ont réussi',

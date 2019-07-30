@@ -1,11 +1,4 @@
 <?php
-use Laravel\Lumen\Testing\DatabaseMigrations;
-use Laravel\Lumen\Testing\DatabaseTransactions;
-use App\Models\Mission;
-use App\Models\FavouriteMission;
-use Illuminate\Support\Facades\Config;
-use Firebase\JWT\JWT;
-use Firebase\JWT\ExpiredException;
 use Illuminate\Support\Facades\DB;
 use App\Helpers\Helpers;
 
@@ -24,8 +17,7 @@ class AppMissionTest extends TestCase
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
         $user->save();
-        DB::connection('mysql')->getPdo();
-        Config::set('database.default', 'mysql');
+        DB::setDefaultConnection('mysql');
 
         $token = Helpers::getTestUserToken($user->user_id);
         $this->get(route('app.missions'), ['token' => $token])
@@ -55,8 +47,7 @@ class AppMissionTest extends TestCase
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
         $user->save();
-        DB::connection('mysql')->getPdo();
-        Config::set('database.default', 'mysql');
+        DB::setDefaultConnection('mysql');
         $token = Helpers::getTestUserToken($user->user_id);
         
         $this->get(route('app.missions'), ['token' => $token])
@@ -94,15 +85,24 @@ class AppMissionTest extends TestCase
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
         $user->save();
-        DB::connection('mysql')->getPdo();
-        Config::set('database.default', 'mysql');
+        DB::setDefaultConnection('mysql');
 
         $params = [
                 'mission_id' => rand(1000000, 2000000)
             ];
         $token = Helpers::getTestUserToken($user->user_id);
         $this->post('app/mission/favourite', $params, ['token' => $token])
-          ->seeStatusCode(404);
+          ->seeStatusCode(404)
+          ->seeJsonStructure([
+            "errors" => [
+                [
+                    "status",
+                    "type",
+                    "message",
+                    "code"
+                ]
+            ]
+        ]); 
         $user->delete();
     }
 
@@ -135,7 +135,7 @@ class AppMissionTest extends TestCase
             "message"
         ]);
         $user->delete();
-        FavouriteMission::where('user_id', $user->user_id)->delete();
+        App\Models\FavouriteMission::where('user_id', $user->user_id)->delete();
     }
 
     /**
@@ -176,5 +176,231 @@ class AppMissionTest extends TestCase
             "status",
             "message"
         ]);
+    }
+
+    /**
+     * @test
+     *
+     * Get mission detail by mission id
+     *
+     * @return void
+     */
+    public function it_should_return_app_mission_detail_by_id()
+    {
+        DB::setDefaultConnection('tenant');
+        $missionId = App\Models\Mission::get()->random()->mission_id;
+        $userId = App\User::get()->random()->user_id;
+        DB::setDefaultConnection('mysql');
+
+        $token = Helpers::getTestUserToken($userId);
+        $this->get('app/mission/'.$missionId, ['token' => $token])
+          ->seeStatusCode(200)
+          ->seeJsonStructure([
+            "status",
+            "data" => [
+                [
+                    "mission_id",
+                    "theme_id",
+                    "city_id",
+                    "country_id",
+                    "start_date",
+                    "end_date",
+                    "total_seats",
+                    "mission_type",
+                    "publication_status",
+                    "organisation_id",
+                    "organisation_name",
+                    "user_application_count",
+                    "mission_application_count",
+                    "favourite_mission_count",
+                    "mission_rating_count",
+                    "mission_rating_total_volunteers",
+                    "user_application_status",
+                    "rating",
+                    "is_favourite",
+                    "seats_left",
+                    "default_media_type",
+                    "default_media_path",
+                    "title",
+                    "short_description",
+                    "set_view_detail",
+                    "city_name",
+                    "mission_theme"=> [
+                        "mission_theme_id",
+                        "theme_name",
+                        "translations"
+                    ],
+                    "mission_document"=> []
+                ]
+            ],
+            "message"
+        ]);
+    }
+
+    /**
+     * @test
+     *
+     * It should return error for invalid mission id
+     *
+     * @return void
+     */
+    public function it_should_return_error_for_invalid_mission_id_for_get_mission_details()
+    {
+        DB::setDefaultConnection('tenant');
+        $userId = App\User::get()->random()->user_id;
+        DB::setDefaultConnection('mysql');
+        $missionId = rand(1000000,2000000);
+        
+        $token = Helpers::getTestUserToken($userId);
+        $this->get('/app/mission/'.$missionId, ['token' => $token])
+        ->seeStatusCode(404)
+        ->seeJsonStructure([
+            "errors" => [
+                [
+                    "status",
+                    "type",
+                    "message",
+                    "code"
+                ]
+            ]
+        ]);      
+    }
+
+    /**
+     * @test
+     *
+     * Get mission detail by mission id
+     *
+     * @return void
+     */
+    public function it_should_return_related_mission_by_id()
+    {
+        DB::setDefaultConnection('tenant');
+        $missionId = App\Models\Mission::get()->random()->mission_id;
+        $userId = App\User::get()->random()->user_id;
+        DB::setDefaultConnection('mysql');
+
+        $token = Helpers::getTestUserToken($userId);
+        $this->get('/app/related-missions/'.$missionId, ['token' => $token])
+          ->seeStatusCode(200)
+          ->seeJsonStructure([
+            "status",
+            "data" => [
+                [
+                    "mission_id",
+                    "theme_id",
+                    "city_id",
+                    "country_id",
+                    "start_date",
+                    "end_date",
+                    "total_seats",
+                    "mission_type",
+                    "publication_status",
+                    "organisation_id",
+                    "organisation_name",
+                    "user_application_count",
+                    "mission_application_count",
+                    "favourite_mission_count",
+                    "mission_rating_count",
+                    "user_application_status",
+                    "rating",
+                    "is_favourite",
+                    "seats_left",
+                    "default_media_type",
+                    "default_media_path",
+                    "title",
+                    "short_description",
+                    "set_view_detail",
+                    "city_name",
+                    "mission_theme"=> [
+                        "mission_theme_id",
+                        "theme_name",
+                        "translations"
+                    ]
+                ],
+            ],
+            "message"
+        ]);
+    }
+
+    /**
+     * @test
+     *
+     * It should return error for invalid mission id
+     *
+     * @return void
+     */
+    public function it_should_return_error_for_invalid_mission_id_to_get_related_mission()
+    {
+        DB::setDefaultConnection('tenant');
+        $userId = App\User::get()->random()->user_id;
+        DB::setDefaultConnection('mysql');
+        $missionId = rand(1000000,2000000);
+        
+        $token = Helpers::getTestUserToken($userId);
+        $this->get('/app/related-missions/'.$missionId, ['token' => $token])
+        ->seeStatusCode(404)
+        ->seeJsonStructure([
+            "errors" => [
+                [
+                    "status",
+                    "type",
+                    "message",
+                    "code"
+                ]
+            ]
+        ]);           
+    }
+
+    /**
+     * @test
+     *
+     * Get mission volunteers by mission id
+     *
+     * @return void
+     */
+    public function it_should_return_app_mission_volunteers_by_mission_id()
+    {
+        DB::setDefaultConnection('tenant');
+        $missionId = App\Models\Mission::get()->random()->mission_id;
+        $userId = App\User::get()->random()->user_id;
+        DB::setDefaultConnection('mysql');
+
+        $token = Helpers::getTestUserToken($userId);
+        $this->get('app/mission/'.$missionId.'/volunteers', ['token' => $token])
+          ->seeStatusCode(200)
+          ->seeJsonStructure([
+            "status",
+            "message"
+        ]);
+    }
+
+    /**
+     * @test
+     *
+     * It should return error for invalid mission id
+     *
+     * @return void
+     */
+    public function it_should_return_error_for_invalid_mission_id_for_get_volunteers()
+    {
+        DB::setDefaultConnection('tenant');
+        $userId = App\User::get()->random()->user_id;
+        DB::setDefaultConnection('mysql');
+        $missionId = rand(1000000,2000000);
+        
+        $token = Helpers::getTestUserToken($userId);
+        $this->get('app/mission/'.$missionId.'/volunteers', ['token' => $token])
+        ->seeStatusCode(404)
+        ->seeJsonStructure([
+            "errors" => [
+                [
+                    "status",
+                    "type",
+                    "message",
+                    "code"
+                ]
+            ]
+        ]);      
     }
 }

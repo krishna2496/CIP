@@ -1,7 +1,4 @@
 <?php
-use Laravel\Lumen\Testing\DatabaseMigrations;
-use Laravel\Lumen\Testing\DatabaseTransactions;
-use App\User;
 use Illuminate\Support\Facades\DB;
 
 class UserTest extends TestCase
@@ -43,6 +40,7 @@ class UserTest extends TestCase
             'message',
             'status',
         ]);
+        App\User::where("first_name", $name)->orderBy("user_id", "DESC")->take(1)->delete();
     }
 
     /**
@@ -118,7 +116,7 @@ class UserTest extends TestCase
     /**
      * @test
      *
-     * Get all users
+     * Get user by id
      *
      * @return void
      */
@@ -129,8 +127,7 @@ class UserTest extends TestCase
         $user->setConnection($connection);
         $user->save();
 
-        $userId = $user->user_id;
-        $this->get('users/'.$userId, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->get('users/'.$user->user_id, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
           ->seeStatusCode(200)
           ->seeJsonStructure([
             "status",
@@ -218,9 +215,8 @@ class UserTest extends TestCase
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
         $user->save();
-        $user_id = $user->user_id;
 
-        $this->patch("users/".$user_id, $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->patch("users/".$user->user_id, $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
         ->seeStatusCode(200)
         ->seeJsonStructure([
             'data' => [
@@ -415,9 +411,7 @@ class UserTest extends TestCase
         $user->setConnection($connection);
         $user->save();
         
-        $user_id = $user->user_id;
-
-        $this->patch("users/".$user_id, $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->patch("users/".$user->user_id, $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
         ->seeStatusCode(200)
         ->seeJsonStructure([
             'data' => [

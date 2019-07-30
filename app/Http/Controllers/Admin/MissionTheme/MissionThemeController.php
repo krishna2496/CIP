@@ -13,6 +13,7 @@ use InvalidArgumentException;
 use PDOException;
 use Validator;
 use DB;
+use Illuminate\Validation\Rule;
 
 class MissionThemeController extends Controller
 {
@@ -78,7 +79,7 @@ class MissionThemeController extends Controller
             // Server side validataions
             $validator = Validator::make(
                 $request->all(),
-                ["theme_name" => "required",
+                ["theme_name" => "required|unique:mission_theme",
                 "translations" => "required"]
             );
 
@@ -129,7 +130,10 @@ class MissionThemeController extends Controller
             // Server side validataions
             $validator = Validator::make(
                 $request->all(),
-                ["theme_name" => "sometimes|required",
+                ["theme_name" => [
+                    "sometimes",
+                    "required",
+                    Rule::unique('mission_theme')->ignore($id, 'mission_theme_id')],
                 "translations" => "sometimes|required"]
             );
 

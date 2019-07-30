@@ -1,7 +1,4 @@
 <?php
-use Laravel\Lumen\Testing\DatabaseMigrations;
-use Laravel\Lumen\Testing\DatabaseTransactions;
-use App\Models\Mission;
 
 class MissionTest extends TestCase
 {    
@@ -111,7 +108,7 @@ class MissionTest extends TestCase
             'message',
             'status',
         ]);
-        Mission::orderBy("mission_id", "DESC")->take(1)->delete();
+        App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->delete();
     }
 
     /**
@@ -140,7 +137,6 @@ class MissionTest extends TestCase
 
         $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
         ->seeStatusCode(422);
-        Mission::orderBy("mission_id", "DESC")->take(1)->delete();
     }
     
     /**
@@ -150,21 +146,22 @@ class MissionTest extends TestCase
      *
      * @return void
      */
-    // public function it_should_return_all_mission()
-    // {
-    //     $connection = 'tenant';
-    //     $mission = factory(\App\Models\Mission::class)->make();
-    //     $mission->setConnection($connection);
-    //     $mission->save();
+    public function it_should_return_all_mission()
+    {
+        $connection = 'tenant';
+        $mission = factory(\App\Models\Mission::class)->make();
+        $mission->setConnection($connection);
+        $mission->save();
 
-    //     $this->get('missions', ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
-    //       ->seeStatusCode(200)
-    //       ->seeJsonStructure([
-    //         "status",
-    //         "data",
-    //         "message"
-    //     ]);
-    // }
+        $this->get('missions', ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+          ->seeStatusCode(200)
+          ->seeJsonStructure([
+            "status",
+            "data",
+            "message"
+        ]);
+        $mission->delete();
+    }
 
     /**
      * @test
@@ -183,9 +180,8 @@ class MissionTest extends TestCase
         $mission = factory(\App\Models\Mission::class)->make();
         $mission->setConnection($connection);
         $mission->save();
-        $mission_id = $mission->mission_id;
 
-        $this->patch("missions/".$mission_id, $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->patch("missions/".$mission->mission_id, $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
         ->seeStatusCode(200)
         ->seeJsonStructure([
             'message',
@@ -331,7 +327,17 @@ class MissionTest extends TestCase
                 ];
 
         $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
-        ->seeStatusCode(422);
+        ->seeStatusCode(422)
+        ->seeJsonStructure([
+            "errors" => [
+                [
+                    "status",
+                    "type",
+                    "message",
+                    "code"
+                ]
+            ]
+        ]); 
     }
 
     /**
@@ -347,9 +353,8 @@ class MissionTest extends TestCase
         $mission = factory(\App\Models\Mission::class)->make();
         $mission->setConnection($connection);
         $mission->save();
-        $mission_id = $mission->mission_id;
 
-        $this->get("missions/".$mission_id, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->get("missions/".$mission->mission_id, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
         ->seeStatusCode(200)
         ->seeJsonStructure([
                 'message',
@@ -367,10 +372,19 @@ class MissionTest extends TestCase
      */
     public function it_should_return_error_for_invalid_mission_id()
     {
-        $mission_id = rand(100000, 5000000);
+        $missionId = rand(100000, 5000000);
 
-        $this->get("missions/".$mission_id, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
-        ->seeStatusCode(404);
+        $this->get("missions/".$missionId, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(404)
+        ->seeJsonStructure([
+            "errors" => [
+                [
+                    "status",
+                    "type",
+                    "message",
+                    "code"
+                ]
+            ]
+        ]); 
     }
-
 }

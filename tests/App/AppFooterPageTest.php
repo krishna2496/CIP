@@ -1,7 +1,4 @@
 <?php
-use Laravel\Lumen\Testing\DatabaseMigrations;
-use Laravel\Lumen\Testing\DatabaseTransactions;
-use App\Models\FooterPage;
 
 class AppFooterPageTest extends TestCase
 {
@@ -160,8 +157,8 @@ class AppFooterPageTest extends TestCase
         $slug = str_random(10) ;
 
         $this->get('/app/cms/'.$slug, [])
-          ->seeStatusCode(404)
-          ->seeJsonStructure([
+        ->seeStatusCode(404)
+        ->seeJsonStructure([
               "errors" => [
                   [
                     "status",
@@ -193,5 +190,4 @@ class AppFooterPageTest extends TestCase
               ]
         ]);
     }
-
 }

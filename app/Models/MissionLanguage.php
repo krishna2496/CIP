@@ -54,10 +54,10 @@ class MissionLanguage extends Model
     /**
      * Set description attribute on the model.
      *
-     * @param  mixed   $value
+     * @param array $value
      * @return void
      */
-    public function setDescriptionAttribute($value)
+    public function setDescriptionAttribute(array $value)
     {
         $this->attributes['description'] = serialize($value);
     }
@@ -66,9 +66,9 @@ class MissionLanguage extends Model
      * Get an attribute from the model.
      *
      * @param  string  $value
-     * @return mixed
+     * @return array
      */
-    public function getDescriptionAttribute(string $value)
+    public function getDescriptionAttribute(string $value): array
     {
         return unserialize($value);
     }

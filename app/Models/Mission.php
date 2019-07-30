@@ -263,7 +263,7 @@ class Mission extends Model
     /**
      * Set end date attribute on the model.
      *
-     * @param  mixed   $value
+     * @param string $value
      * @return void
      */
     public function setEndDateAttribute($value)
@@ -275,7 +275,7 @@ class Mission extends Model
     /**
      * Get end date attribute from the model.
      *
-     * @return string
+     * @return string|null
      */
     public function getEndDateAttribute()
     {

@@ -51,10 +51,10 @@ class MissionTheme extends Model
     /**
      * Set translations attribute on the model.
      *
-     * @param  string $value
+     * @param  array $value
      * @return void
      */
-    public function setTranslationsAttribute(string $value): void
+    public function setTranslationsAttribute(array $value): void
     {
         $this->attributes['translations'] = serialize($value);
     }

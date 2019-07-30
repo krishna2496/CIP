@@ -59,14 +59,14 @@ class MissionApplicationRepository implements MissionApplicationInterface
     public function checkAvailableSeats(int $missionId): bool
     {
         $mission = $this->mission->checkAvailableSeats($missionId);
+        if ($mission['total_seats'] == 0) {
+            return false;
+        }
 
         if ($mission['total_seats'] != 0) {
             $seatsLeft = ($mission['total_seats']) - ($mission['mission_application_count']);
-            if ($seatsLeft == 0 || $mission['total_seats'] == $mission['mission_application_count']) {
-                return false;
-            }
+            return ($seatsLeft == 0 || $mission['total_seats'] == $mission['mission_application_count']) ? false : true;
         }
-        return true;
     }
     
     /*
@@ -119,7 +119,7 @@ class MissionApplicationRepository implements MissionApplicationInterface
      * Display a listing of the resource.
      *
      * @param \Illuminate\Http\Request $request
-     * @param int $mission_id
+     * @param int $missionId
      * @return Illuminate\Pagination\LengthAwarePaginator
      */
     public function missionApplications(Request $request, int $missionId): LengthAwarePaginator
