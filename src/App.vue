@@ -114,7 +114,9 @@ export default {
           var optionlist_width = parseInt(
             window.getComputedStyle(optionlist).getPropertyValue("width")
           );
+          console.log(optionlist_width)
           if (optionlist_wrap_height < optionlist_height) {
+            console.log("auto width")
             var minwidth_style = e.querySelector(".simplebar-offset");
             minwidth_style.setAttribute("style", "left: 0 !important");
             if (
@@ -204,7 +206,7 @@ export default {
               dropdwon_toggle[i].addEventListener("click", _this.handleClick);          
             }
           }
-    },1000);
+    },2000);
 
            
         var btn_active = document.querySelectorAll(".favourite-icon");

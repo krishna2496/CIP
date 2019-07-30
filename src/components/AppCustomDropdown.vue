@@ -1,8 +1,8 @@
 <template>
-    <div v-if="optionList != null && optionList.length > 0" class="custom-dropdown">
+    <div v-if="optionList != null && optionList.length > 0" class="custom-dropdown select-dropdown">
         <span class="select-text">{{defaultText}}</span>
-        <div class="option-list-wrap" data-simplebar>
-            <ul class="option-list" v-if="translationEnable == 'false'">
+        <div class="option-list-wrap dropdown-option-wrap" data-simplebar>
+            <ul class="option-list dropdown-option-list" v-if="translationEnable == 'false'">
                 <li
                     v-for="item in optionList"
                     v-bind:data-id="item[0]"
@@ -10,7 +10,7 @@
                     @touchend="handleSelect"
                 >{{item[1]}}</li>
             </ul>
-            <ul class="option-list" v-else>
+            <ul class="option-list dropdown-option-list" v-else>
                 <li
                     v-for="item in optionList"
                     v-bind:data-id="item[0]"
