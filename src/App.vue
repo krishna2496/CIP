@@ -12,6 +12,7 @@ export default {
     return {};
   },
   mounted() {
+    this.footerAdj();
     //ios browser detection
     if (navigator.userAgent.match(/iP(hone|od|ad)/i)) {
       document.querySelector("body").classList.add("browser-ios");
@@ -46,7 +47,7 @@ export default {
           document.querySelector(".inner-pages").style.paddingBottom =
             footerH + "px";
         }
-      }, 600);
+      }, 1000);
     },
       signinAdj() {
       setTimeout(() => {
@@ -132,6 +133,7 @@ export default {
     this.signinAdj();
   },
   created() {
+     this.footerAdj();
     var ua = navigator.userAgent.toLowerCase();
     if (ua.indexOf("safari") != -1) {
       if (ua.indexOf("chrome") > -1) {

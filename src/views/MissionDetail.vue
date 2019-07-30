@@ -815,7 +815,6 @@ export default {
         	let skills = '';
         	if(missionDetail.skill) {
     		 	var filteredObj  = (missionDetail.skill).filter(function (item, i) { 
-	                  console.log(item.title);
 	                  if(skills == '') {
 	                  	skills = item.title;
 	                  } else {

@@ -130,7 +130,6 @@ export default {
             this.$emit('storeMisisonSearch', this.searchString);
         },
         handleFocus() {
-            // console.log(this.$refs);
             this.searchPlaceHolder = '';
             var b_header = document.querySelector(".bottom-header");
             b_header.classList.add("active");
