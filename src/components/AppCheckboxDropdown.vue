@@ -1,8 +1,8 @@
 <template>
-    <div class="checkbox-select">
+    <div class="checkbox-select select-dropdown">
         <span class="select-text">{{filterTitle}}</span>
-    <div class="chk-select-wrap" data-simplebar @click.stop @touchend.stop>
-    <ul class="chk-select-options" v-if="checkList.length > 0">
+    <div class="chk-select-wrap dropdown-option-wrap" data-simplebar @click.stop @touchend.stop>
+    <ul class="chk-select-options dropdown-option-list" v-if="checkList.length > 0">
         <li 
             v-for="(item , i) in checkList" 
             v-bind:data-id="item[1].id"
@@ -11,7 +11,7 @@
             <b-form-checkbox name  v-model="items" v-bind:value="item[1].id">{{item[1].title}}<span class="counter">{{item[1].mission_count}}</span></b-form-checkbox>
         </li>
     </ul>
-    <ul class="chk-select-options" v-else>
+    <ul class="chk-select-options dropdown-option-list" v-else>
         <li>
             <label class="no-checkbox">{{ $t("label.no_record_found")}}</label>
         </li>

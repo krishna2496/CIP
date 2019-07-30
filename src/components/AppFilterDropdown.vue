@@ -1,8 +1,8 @@
 <template>
-    <div class="custom-dropdown">
+    <div class="custom-dropdown select-dropdown dropdown-with-count">
         <span class="select-text">{{defaultText}}</span>
-        <div class="option-list-wrap" data-simplebar v-if="optionList != null && optionList.length > 0" >
-            <ul class="option-list" v-if="translationEnable == 'false'">
+        <div class="option-list-wrap dropdown-option-wrap" data-simplebar v-if="optionList != null && optionList.length > 0" >
+            <ul class="option-list dropdown-option-list" v-if="translationEnable == 'false'">
                 <li
                     v-for="item in optionList"
                     v-bind:data-id="item[1].id"
@@ -12,7 +12,7 @@
                     <span class="counter">{{item[1].mission_count}}</span>
                 </li>
             </ul>
-            <ul class="option-list" v-else>
+            <ul class="option-list dropdown-option-list" v-else>
                 <li
                     v-for="item in optionList"
                     v-bind:data-id="item[0]"

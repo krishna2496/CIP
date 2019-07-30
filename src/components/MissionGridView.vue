@@ -153,28 +153,26 @@
                                     <template v-else>
                                         <div class="group-details-inner  has-progress">
                                             <div class="detail-column info-block">
-                                            <template v-if="mission.total_seats != 0 && mission.total_seats !== null">
-                                                <i class="icon-wrap">
-                                                    <img :src="$store.state.imagePath+'/assets/images/user-icon.svg'" alt="user">
-                                                </i>
-                                                <div class="text-wrap">
-                                                    <span class="title-text mb-1">{{mission.seats_left}}</span>
-                                                    <span class="subtitle-text">{{ $t("label.seats_left") }}</span>
-                                                </div>
-                                            </template>
-                                            <template v-else>
-                                                <i class="icon-wrap">
-                                                    <img :src="$store.state.imagePath+'/assets/images/user-icon1.svg'" alt="user">
-                                                </i>
-                                                <div class="text-wrap">
-                                                    <span class="title-text mb-1">{{mission.mission_application_count}}</span>
-                                                    <span class="subtitle-text">{{ $t("label.already_volunteered") }}</span>
-                                                </div>
-                                            </template>
-                                            
+                                                <template v-if="mission.total_seats != 0 && mission.total_seats !== null">
+                                                    <i class="icon-wrap">
+                                                        <img :src="$store.state.imagePath+'/assets/images/user-icon.svg'" alt="user">
+                                                    </i>
+                                                    <div class="text-wrap">
+                                                        <span class="title-text mb-1">{{mission.seats_left}}</span>
+                                                        <span class="subtitle-text">{{ $t("label.seats_left") }}</span>
+                                                    </div>
+                                                </template>
+                                                <template v-else>
+                                                    <i class="icon-wrap">
+                                                        <img :src="$store.state.imagePath+'/assets/images/user-icon1.svg'" alt="user">
+                                                    </i>
+                                                    <div class="text-wrap">
+                                                        <span class="title-text mb-1">{{mission.mission_application_count}}</span>
+                                                        <span class="subtitle-text">{{ $t("label.already_volunteered") }}</span>
+                                                    </div>
+                                                </template>  
                                             </div>
-                                        </div>
-                                        <div class="detail-column progress-block">
+                                             <div class="detail-column progress-block">
                                                     <i class="icon-wrap">
                                                         <img src="../assets/images/landing/target-ic.svg" alt="user">
                                                     </i>
@@ -183,7 +181,9 @@
                                                         <span class="subtitle-text">{{mission.achieved_goal}} 
                                                         {{ $t("label.achieved")}}</span>
                                                     </div>
-                                                </div>
+                                        </div>
+                                        </div>
+                                       
                                     </template>
                                 </div>                        
                             </b-card-body>
