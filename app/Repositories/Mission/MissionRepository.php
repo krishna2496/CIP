@@ -759,7 +759,7 @@ class MissionRepository implements MissionInterface
         return $this->favouriteMission->findFavourite($userId, $missionId);
     }
 
-    /*
+    /**
      * Get mission name.
      *
      * @param int $missionId

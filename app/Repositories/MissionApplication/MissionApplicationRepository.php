@@ -50,7 +50,7 @@ class MissionApplicationRepository implements MissionApplicationInterface
     }
 
     
-    /*
+    /**
      * Check seats are available or not.
      *
      * @param int $missionId
@@ -69,7 +69,7 @@ class MissionApplicationRepository implements MissionApplicationInterface
         }
     }
     
-    /*
+    /**
      * Check mission deadline
      *
      * @param int $missionId
@@ -101,6 +101,7 @@ class MissionApplicationRepository implements MissionApplicationInterface
      * Add mission application.
      *
      * @param array $request
+     * @param int $userId
      * @return App\Models\MissionApplication
      */
     public function storeApplication(array $request, int $userId): MissionApplication
@@ -161,7 +162,7 @@ class MissionApplicationRepository implements MissionApplicationInterface
         return $missionApplication;
     }
 
-    /*
+    /**
      * Get recent volunteers
      *
      * @param Illuminate\Http\Request $request

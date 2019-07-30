@@ -16,7 +16,7 @@ class CountryRepository implements CountryInterface
     /**
      * Create a new repository instance.
      *
-     * $param App\Models\Country
+     * @param App\Models\Country $country
      * @return void
      */
     public function __construct(Country $country)
@@ -27,6 +27,7 @@ class CountryRepository implements CountryInterface
     /**
     * Get a listing of resource.
     *
+    * @param \Illuminate\Http\Request $request
     * @return Illuminate\Support\Collection
     */
     public function countryList(Request $request): Collection

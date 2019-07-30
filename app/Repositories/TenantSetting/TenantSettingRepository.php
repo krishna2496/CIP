@@ -21,7 +21,13 @@ class TenantSettingRepository implements TenantSettingInterface
      * @var App\Models\TenantSetting
      */
     public $tenantSetting;
-    
+
+    /**
+     * Create a new repository instance.
+     *
+     * @param App\Models\TenantSetting $tenantSetting
+     * @return void
+     */
     public function __construct(TenantSetting $tenantSetting)
     {
         $this->tenantSetting = $tenantSetting;
@@ -31,6 +37,7 @@ class TenantSettingRepository implements TenantSettingInterface
      * Update setting value
      *
      * @param array $data
+     * @param int $settingId
      */
     public function updateSetting(array $data, int $settingId)
     {
