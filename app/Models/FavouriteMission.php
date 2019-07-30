@@ -72,9 +72,9 @@ class FavouriteMission extends Model
      *
      * @param  int  $userId
      * @param  int  $missionId
-     * @return App\Models\FavouriteMission|null
+     * @return null|App\Models\FavouriteMission
      */
-    public function findFavourite(int $userId, int $missionId)
+    public function findFavourite(int $userId, int $missionId): ?FavouriteMission
     {
         return static::where('mission_id', $missionId)->where('user_id', $userId)->first();
     }

@@ -150,7 +150,7 @@ class AuthController extends Controller
             }
             
             // Generate JWT token
-            $data["token"] = $this->jwt($userDetail);
+            $data["token"] = $this->helpers->getJwtToken($userDetail->user_id);
             $data['user_id'] = isset($userDetail->user_id) ? $userDetail->user_id : '';
             $data['first_name'] = isset($userDetail->first_name) ? $userDetail->first_name : '';
             $data['last_name'] = isset($userDetail->last_name) ? $userDetail->last_name : '';

@@ -38,7 +38,7 @@ class UserCustomField extends Model
     /**
      * Set translations attribute on the model.
      *
-     * @param  mixed   $value
+     * @param  mixed $value
      * @return void
      */
     public function setTranslationsAttribute(array $value): void
@@ -49,7 +49,7 @@ class UserCustomField extends Model
     /**
      * Get an attribute from the model.
      *
-     * @param  string  $value
+     * @param  string $value
      * @return array
      */
     public function getTranslationsAttribute(string $value): array
@@ -60,7 +60,7 @@ class UserCustomField extends Model
     /**
      * Delete the specified resource.
      *
-     * @param  int  $id
+     * @param  int $id
      * @return bool
      */
     public function deleteCustomField(int $id): bool

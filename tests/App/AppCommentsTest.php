@@ -18,7 +18,7 @@ class AppCommentsTest extends TestCase
         $userId = App\User::get()->random()->user_id;
         DB::setDefaultConnection('mysql');
 
-        $token = Helpers::getTestUserToken($userId);
+        $token = Helpers::getJwtToken($userId);
         $this->get('/app/mission/'.$missionId.'/comments', ['token' => $token])
           ->seeStatusCode(200)
           ->seeJsonStructure([
@@ -41,7 +41,7 @@ class AppCommentsTest extends TestCase
         $userId = App\User::get()->random()->user_id;
         DB::setDefaultConnection('mysql');
 
-        $token = Helpers::getTestUserToken($userId);
+        $token = Helpers::getJwtToken($userId);
         $this->get('/app/mission/'.$missionId.'/comments', ['token' => $token])
           ->seeStatusCode(200)
           ->seeJsonStructure([
@@ -64,7 +64,7 @@ class AppCommentsTest extends TestCase
         DB::setDefaultConnection('mysql');
         $missionId = rand(1000000,2000000);
         
-        $token = Helpers::getTestUserToken($userId);
+        $token = Helpers::getJwtToken($userId);
         $this->get('/app/mission/'.$missionId.'/comments', ['token' => $token])
         ->seeStatusCode(404)
         ->seeJsonStructure([

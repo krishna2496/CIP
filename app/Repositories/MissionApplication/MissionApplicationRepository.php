@@ -75,7 +75,7 @@ class MissionApplicationRepository implements MissionApplicationInterface
      * @param int $missionId
      * @return bool
      */
-    public function checkMissionDeadline(int $missionId)
+    public function checkMissionDeadline(int $missionId): bool
     {
         $mission = $this->mission->findOrFail($missionId);
         if ($mission->mission_type == config('constants.mission_type.TIME')) {

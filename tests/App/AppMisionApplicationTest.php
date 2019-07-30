@@ -21,7 +21,7 @@ class AppMisionApplicationTest extends TestCase
         $params = [
                 'mission_id' => rand(1000000, 20000000)
             ];
-        $token = Helpers::getTestUserToken($user->user_id);
+        $token = Helpers::getJwtToken($user->user_id);
         $this->post('app/mission/application', $params, ['token' => $token])
           ->seeStatusCode(422);
         $user->delete();
@@ -45,7 +45,7 @@ class AppMisionApplicationTest extends TestCase
         $params = [
                 'mission_id' => $missionId
             ];
-        $token = Helpers::getTestUserToken($userId);
+        $token = Helpers::getJwtToken($userId);
         $this->post('app/mission/application', $params, ['token' => $token])
           ->seeStatusCode(422);
     }
@@ -111,7 +111,7 @@ class AppMisionApplicationTest extends TestCase
                 'mission_id' => $mission[0]['mission_id']
             ];
         DB::setDefaultConnection('mysql');
-        $token = Helpers::getTestUserToken($user->user_id);
+        $token = Helpers::getJwtToken($user->user_id);
         $this->post('app/mission/application', $params, ['token' => $token])
           ->seeStatusCode(422);
         $user->delete();
@@ -181,7 +181,7 @@ class AppMisionApplicationTest extends TestCase
                 'motivation' => str_random(10)
             ];
         DB::setDefaultConnection('mysql');
-        $token = Helpers::getTestUserToken($user->user_id);
+        $token = Helpers::getJwtToken($user->user_id);
         $this->post('app/mission/application', $params, ['token' => $token])
           ->seeStatusCode(422);
         $user->delete();
@@ -252,7 +252,7 @@ class AppMisionApplicationTest extends TestCase
             ];
         DB::setDefaultConnection('mysql');
         
-        $token = Helpers::getTestUserToken($user->user_id);
+        $token = Helpers::getJwtToken($user->user_id);
         $this->post('app/mission/application', $params, ['token' => $token])
           ->seeStatusCode(201)
           ->seeJsonStructure([

@@ -275,9 +275,9 @@ class Mission extends Model
     /**
      * Get end date attribute from the model.
      *
-     * @return string|null
+     * @return null|string
      */
-    public function getEndDateAttribute()
+    public function getEndDateAttribute(): ?string
     {
         if (isset($this->attributes['end_date']) && !empty(config('constants.TIMEZONE'))) {
             return Carbon::parse($this->attributes['end_date'])->setTimezone(config('constants.TIMEZONE'))

@@ -416,9 +416,9 @@ class MissionRepository implements MissionInterface
      * Remove the specified resource from storage.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return bool
      */
-    public function delete(int $id)
+    public function delete(int $id): bool
     {
         return $this->mission->deleteMission($id);
     }
@@ -744,9 +744,9 @@ class MissionRepository implements MissionInterface
      *
      * @param int $userId
      * @param int $missionId
-     * @return mixed
+     * @return null|App\Models\FavouriteMission
      */
-    public function missionFavourite(int $userId, int $missionId)
+    public function missionFavourite(int $userId, int $missionId): ?FavouriteMission
     {
         $mission = $this->mission->findOrFail($missionId);
         $favouriteMission = $this->favouriteMission->findFavourite($userId, $missionId);
