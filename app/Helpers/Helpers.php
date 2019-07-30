@@ -269,7 +269,7 @@ class Helpers
     }
 
     /**
-     * Get user token for testing
+     * Get JWT token
      *
      * @param int $userId
      * @return string
@@ -277,10 +277,10 @@ class Helpers
     public static function getJwtToken(int $userId) : string
     {
         $payload = [
-            'iss' => "lumen-jwt",
-            'sub' => $userId,
-            'iat' => time(),
-            'exp' => time() + 60 * 60,
+            'iss' => "lumen-jwt", // Issuer of the token
+            'sub' => $userId, // Subject of the token
+            'iat' => time(), // Time when JWT was issued.
+            'exp' => time() + 60 * 60, // Expiration time
             'fqdn' => env('DEFAULT_TENANT')
         ];
         // As you can see we are passing `JWT_SECRET` as the second parameter that will
