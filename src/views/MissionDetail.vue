@@ -247,7 +247,9 @@
 									</i>
 									<span>{{ $t("label.recommend_to_co_worker") }}</span>
 								</b-button>
-								<b-button class="btn-bordersecondary icon-btn" v-bind:disabled="disableApply">
+								<b-button class="btn-bordersecondary icon-btn" v-bind:disabled="disableApply"
+								@click="applyForMission(missionDetail.mission_id)"
+								>
 										<span>{{ $t("label.apply_now") }}</span>
 										<i>
 											<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 16" width="19" height="15">
@@ -741,7 +743,20 @@ export default {
 				this.getRelatedMissions();
 	        });
     	},
-
+    	// Apply for mission
+        applyForMission(missionId) {
+            let missionData = {};
+            missionData.mission_id = missionId;
+            missionData.availability_id = 1;
+            applyMission(missionData).then(response => {
+                if(response.error == true){
+                    this.makeToast("danger",response.message);
+                } else {
+                    this.makeToast("success",response.message);
+                    this.$emit("getMissions"); 
+                }
+            })
+        },
     	getRelatedMissions() {
     		if(this.$route.params.misisonId) {
     				this.relatedMissionlLoader = true;
@@ -785,14 +800,14 @@ export default {
 							this.missionDocument = response.data[0].mission_document
 	                	}
 	                  
+	                }else {
+	                	this.$router.push('/');
 	                }
 	                
 					this.searchUsers();
 	            })
 			} else {
-				router.push({
-                	name: 'home'
-            	})
+				this.$router.push('/');
 			}
 		},
 		//get theme title
