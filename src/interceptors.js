@@ -10,9 +10,11 @@ export default function setup() {
         var url = config.url;
         var domain =url.split('/');
         var lastPosition =  domain.length -1;
+        var secondLastPosition =  domain.length -2;
+        var secondLastValue =  domain[secondLastPosition];
         var getRequest = domain[lastPosition].split('?');
         var getRequestEndPoint = getRequest[0];
-        // console.log(domain[lastPosition]);
+
         // Do something before request is sent
         if(domain[lastPosition] == "favourite" || domain[lastPosition] == "rating"){
             addLoader = "false";
@@ -23,9 +25,13 @@ export default function setup() {
                 addLoader = "false";
             }
         }
+        
+        if(secondLastValue == "mission-media") {
+            addLoader = "false";
+        }
 
         if(getRequestEndPoint == "volunteers") {
-                addLoader = "false";
+            addLoader = "false";
         }
 
         if(addLoader == "true") {

@@ -151,7 +151,7 @@
                                         </div>
                                     </template>
                                     <template v-else>
-                                        <div class="group-details-inner">
+                                        <div class="group-details-inner  has-progress">
                                             <div class="detail-column info-block">
                                             <template v-if="mission.total_seats != 0 && mission.total_seats !== null">
                                                 <i class="icon-wrap">
@@ -171,9 +171,19 @@
                                                     <span class="subtitle-text">{{ $t("label.already_volunteered") }}</span>
                                                 </div>
                                             </template>
-
+                                            
                                             </div>
                                         </div>
+                                        <div class="detail-column progress-block">
+                                                    <i class="icon-wrap">
+                                                        <img src="../assets/images/landing/target-ic.svg" alt="user">
+                                                    </i>
+                                                    <div class="text-wrap">
+                                                        <b-progress :value="mission.achieved_goal" :max="mission.goal_objective" class="mb-2"></b-progress>
+                                                        <span class="subtitle-text">{{mission.achieved_goal}} 
+                                                        {{ $t("label.achieved")}}</span>
+                                                    </div>
+                                                </div>
                                     </template>
                                 </div>                        
                             </b-card-body>

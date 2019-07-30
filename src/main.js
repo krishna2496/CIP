@@ -17,7 +17,8 @@ import AOS from "aos";
 import "aos/dist/aos.css";
 import BackToTop from "vue-backtotop";
 import moment from 'moment'
-import constants from './constant'
+import constants from './constant';
+import SocialSharing from "vue-social-sharing";
 
 Vue.use(Vuelidate, VueAxios, axios);
 Vue.config.devtools = true
@@ -27,6 +28,7 @@ Vue.use(BootstrapVue);
 Vue.use(VueScrollTo);
 Vue.use(BackToTop);
 Vue.use(toast);
+Vue.use(SocialSharing);
 AOS.init({
     once: true,
     easing: "ease-in-out",

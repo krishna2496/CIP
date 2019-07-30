@@ -186,6 +186,19 @@
                                                 </div>
                                             </div>
                                         </template>
+                                        <template v-else>
+                                            <div class="detail-column progress-block">
+                                                <i class="icon-wrap">
+                                                    <img src="../assets/images/landing/target-ic.svg" alt="user">
+                                                </i>
+                                                <div class="text-wrap">
+                                                    <b-progress :value="mission.achieved_goal" :max="mission.goal_objective" class="mb-2"></b-progress>
+                                                    <span class="subtitle-text">
+                                                    {{mission.achieved_goal}} {{ $t("label.achieved")}}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </template>
                                 </div>
                             </div>
                         </div>
