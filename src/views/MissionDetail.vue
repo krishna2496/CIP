@@ -790,10 +790,11 @@ export default {
 							}
 
 							if(response.data[0].set_view_detail == 1) {
+								console.log(response.data[0]);
 								// disableApply
 								if(response.data[0].user_application_status ==  
 									constants.AUTOMATICALLY_APPROVED || response.data[0].user_application_status ==  
-									constants.PENDING ) {
+									constants.PENDING || response.data[0].user_application_status == '') {
 									this.disableApply = true;
 								}
 							}
