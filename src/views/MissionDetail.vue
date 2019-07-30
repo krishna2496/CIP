@@ -1,15 +1,40 @@
 <template>
-  <div class="platform-page inner-pages filter-header">
-	   <header>
+  <div class="platform-page inner-pages">
+	    <header>
      		<ThePrimaryHeader v-if="isShownComponent"></ThePrimaryHeader>
-            <TheSecondaryHeader :search="search" :missionList="missionList" v-if="isShownComponent"></TheSecondaryHeader>
     	</header>
       	<main>
+      	
+	 	<social-sharing
+	        :url="sharingUrl"
+	        :title="missionDetail.title"
+	        :description="missionDetail.short_description"
+	        :quote="missionDetail.title"
+	        inline-template
+      	>
+        <div class="social-sharing">
+          <network network="facebook">
+            <i class="social-icon facebook-icon">
+              <img src="../assets/images/facebook-ic.svg" alt="Facebook" />
+            </i>
+          </network>
+          <network network="linkedin">
+            <i class="social-icon linkedin-icon">
+              <img src="../assets/images/linkedin-ic.svg" alt="Linkedin" />
+            </i>
+          </network>
+          <network network="twitter">
+            <i class="social-icon twitter-icon">
+              <img src="../assets/images/twitter-ic.svg" alt="Twitter" />
+            </i>
+          </network>
+        </div>
+      </social-sharing>
 			<b-container>
 		  	<div class="slider-banner-block">
 					<b-row>
 						<b-col lg="6" class="slider-col">
-							<MissionCarousel  v-if="isShownComponent"></MissionCarousel>
+							<MissionCarousel  v-if="isShownMediaComponent"></MissionCarousel>
 						</b-col>
 						<b-col lg="6" class="ml-auto banner-content-wrap">
 							<div class="banner-content-block">
@@ -151,8 +176,18 @@
                                                     <span class="subtitle-text">{{ $t("label.already_volunteered") }}</span>
                                                 </div>
                                             </template>
-
+												
                                             </div>
+                                            <div class="detail-column progress-block">
+			                                        <i class="icon-wrap">
+			                                            <img src="../assets/images/landing/target-ic.svg" alt="user">
+			                                        </i>
+			                                        <div class="text-wrap">
+			                                            <b-progress :value="missionDetail.achieved_goal" :max="missionDetail.goal_objective" class="mb-2"></b-progress>
+			                                            <span class="subtitle-text">{{missionDetail.achieved_goal}} 
+			                                            {{ $t("label.achieved")}}</span>
+			                                        </div>
+		                                    	</div>
                                         </div>
                                     </template>
 							</div>
@@ -251,13 +286,12 @@
 								<h3 v-b-toggle.mission>Mission</h3>
 							</div>
 								<b-collapse id="mission" visible accordion="my-accordion" role="tabpanel" class="tab-content">
-									<h2>Introduction</h2>
-									<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-									<p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-									<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-									<h2>Challenge</h2>
-									<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum</p>
-									<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+									<div v-if="missionDetail.description && missionDetail.description.length > 0">
+										<div v-for="section in missionDetail.description">
+											<h2>{{section.title}}</h2>
+											<p>{{section.description}}</p>
+										</div>
+									</div>
 									<h2>{{ $t("label.documents") }}</h2>
 
 									<div class="document-list-wrap" v-if="missionDetail.mission_document 
@@ -369,74 +403,28 @@
 									<label>{{ $t("label.comment") }}</label>
 									<b-form-textarea id="" 
 									:placeholder="$t('placeholder.comment')"
-									placeholder="Enter your comments..." rows="4" size="lg"  no-resize></b-form-textarea>
+								     rows="4" size="lg"  no-resize></b-form-textarea>
 									<b-button class="btn-bordersecondary">{{ $t("label.post_comment") }}</b-button>
 								</b-form>
-								<div class="comment-list">
-									<div class="more-inner-list">
-										<div class="comment-list-item">
+								<div class="comment-list" v-if="missionComment && missionComment.length > 0">
+									<div class="more-inner-list" >
+										<div class="comment-list-item" v-for="comments in missionComment">
 											<b-media class="comment-media">
-												<i slot="aside" class="user-profile-icon" :style="{backgroundImage: 'url(' + commentImg[0] + ')'}"></i>
-												<h5>Arnold Hubler</h5>
-												<p>Monday, June 10, 2019, 10:30PM</p>
+												<i slot="aside" class="user-profile-icon" 
+													:style="{backgroundImage: 'url(' + comments.user.avatar + ')'}">
+												</i>
+												<h5>{{comments.user.first_name}} {{comments.user.last_name}}</h5>
+												<p>{{ getCommentDate(comments.created_at) }}</p>
 											</b-media>
 											<p>
-												Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+											{{comments.comment}}
 											</p>
 										</div>
-										<div class="more-inner-list">
-											<div class="comment-list-item inner-list-item">
-												<b-media class="comment-media">
-													<i slot="aside" class="user-profile-icon" :style="{backgroundImage: 'url(' + commentImg[1] + ')'}"></i>
-													<h5>Herbert Brown</h5>
-													<p>Monday, June 10, 2019, 10:30PM</p>
-												</b-media>
-												<p>
-													But I must explain to you how all this mistaken idea of denouncing pleasure and praising pain was born and I will give you a complete account of the system, and expound the actual teachings of the great explorer of the truth.
-												</p>
-											</div>
-											<div class="more-inner-list">
-												<div class="comment-list-item inner-list-item">
-													<b-media class="comment-media">
-														<i slot="aside" class="user-profile-icon" :style="{backgroundImage: 'url(' + commentImg[0] + ')'}"></i>
-														<h5>Arnold Hubler</h5>
-														<p>Monday, June 10, 2019, 10:30PM</p>
-													</b-media>
-													<p>
-														Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.
-													</p>
-												</div>
-											</div>	
-										</div>	
+											
 									</div>
-									<div class="more-inner-list">
-										<div class="comment-list-item inner-list-item">
-											<b-media class="comment-media">
-												<i slot="aside" class="user-profile-icon" :style="{backgroundImage: 'url(' + commentImg[0] + ')'}"></i>
-												<h5>Arnold Hubler</h5>
-												<p>Monday, June 10, 2019, 10:30PM</p>
-											</b-media>
-											<p>
-												Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-											</p>
-										</div>
-									</div>	
-									<div class="more-inner-list">
-										<div class="comment-list-item inner-list-item">
-											<b-media class="comment-media">
-												<i slot="aside" class="user-profile-icon" :style="{backgroundImage: 'url(' + commentImg[0] + ')'}"></i>
-												<h5>Arnold Hubler</h5>
-												<p>Monday, June 10, 2019, 10:30PM</p>
-											</b-media>
-											<p>
-												But I must explain to you how all this mistaken idea of denouncing pleasure and praising pain was born and I will give you a complete account of the system, and expound the actual teachings of the great explorer of the truth.
-											</p>
-										</div>
-									</div>	
+								
 								</div>
-								<div class="more-comment-list">
-									<b-link href="#" target="_blank" title="Read More Comments" class="border-hover-link">{{ $t("label.read_more_comment") }}</b-link>
-								</div>
+								
 									</b-collapse>
 								</div>
 							</div>
@@ -480,334 +468,24 @@
 	  </div>
       </b-container>
 	  <div class="mission-block">
-		  <b-container class="card-grid">
-			   <h2>Related Missions</h2>
-			   <!-- <div class="content-loader-wrap mission-loader">
-						      <div class="content-loader"></div>
-						    </div> -->
-               <b-row>
-                <b-col lg="4" sm="6" class="card-outer" data-aos="fade-up">
-                    <b-card no-body>
-                        <b-card-header>
-                            <div class="header-img-block">
-                                <b-link class="group-img" :style="{backgroundImage: 'url('+grpImages[0]+')'}">
-                                    <img src="../assets/images/group-img1.png" alt="group-img">
-                                </b-link>
-                                <b-link href="#" class="location" title="location">
-                                    <i>
-                                        <img src="../assets/images/location.svg" alt="location">
-                                    </i>London
-                                </b-link>
-                                <b-button class="favourite-icon" v-b-tooltip.hover title="Add to favourite">
-                                    <i class="normal-img">
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 21" width="24" height="21">
-                                        <g id="Main Content">
-                                            <g id="1">
-                                                <g id="Image content">
-                                                    <path id="Forma 1" d="M22.1 2.86C20.9 1.66 19.3 1 17.59 1C15.89 1 14.29 1.66 13.08 2.86L12.49 3.45L11.89 2.86C10.69 1.66 9.08 1 7.38 1C5.67 1 4.07 1.66 2.87 2.86C0.38 5.34 0.38 9.36 2.87 11.84L11.78 20.71C11.93 20.86 12.11 20.95 12.3 20.98C12.36 20.99 12.43 21 12.49 21C12.74 21 13 20.9 13.19 20.71L22.1 11.84C24.59 9.36 24.59 5.34 22.1 2.86ZM20.71 10.45L12.49 18.64L4.26 10.45C2.54 8.74 2.54 5.96 4.26 4.25C5.09 3.42 6.2 2.96 7.38 2.96C8.56 2.96 9.66 3.42 10.5 4.25L11.79 5.53C12.16 5.9 12.81 5.9 13.18 5.53L14.47 4.25C15.31 3.42 16.41 2.96 17.59 2.96C18.77 2.96 19.88 3.42 20.71 4.25C22.43 5.96 22.43 8.74 20.71 10.45Z" />
-                                                </g>
-                                            </g>
-                                        </g>
-                                    </svg>
-                                    </i>
-                                     <i class="hover-img">
-                                       <svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-                                            viewBox="0 0 492.7 426.8" style="enable-background:new 0 0 492.7 426.8;" xml:space="preserve">
-                                        <g>
-                                            <g id="Icons_18_">
-                                                <path d="M492.7,133.1C492.7,59.6,433.1,0,359.7,0c-48,0-89.9,25.5-113.3,63.6C222.9,25.5,181,0,133,0
-                                                    C59.6,0,0,59.6,0,133.1c0,40,17.7,75.8,45.7,100.2l188.5,188.6c3.2,3.2,7.6,5,12.1,5s8.9-1.8,12.1-5L447,233.2
-                                                    C475,208.9,492.7,173.1,492.7,133.1z"/>
-                                            </g>
-                                        </g>
-                                        </svg>
-                                    </i>       
-                                </b-button>
-                                <b-button class="add-icon" title="add">
-                                    <img src="../assets/images/add-group-ic.svg" alt="add">
-                                </b-button>
-                            </div>
-							<div class="group-category">
-								<span class="category-text">Environment</span>
-							</div>
-                        </b-card-header>
-                        <b-card-body>
-                            <div class="content-block">
-                                <b-link target="_blank" title="CSR initiative stands" class="card-title mb-2">CSR initiative stands for Coffee and Farmer Equity 
-                                </b-link>
-                                <b-card-text>
-                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-                                    incididunt
-                                    ut labore...
-                                </b-card-text>
-                                <div class="group-ratings">
-                                    <span class="group-name">CSE Network</span>
-                                    <span class="ratings">
-                                         <star-rating
-										v-bind:increment="0.01"
-										v-bind:max-rating="5"
-										inactive-color="#dddddd"
-										active-color="#F7D341"
-										v-bind:star-size="23"
-										>
-									</star-rating>
-                                    </span>
-                                </div>
-                            </div>
-                            <div class="group-details">
-                                <div class="top-strip">
-                                    <span>{{ $t("label.on_going_opportunities") }} </span>
-                                </div>
-                                <div class="group-details-inner">
-                                    <div class="detail-column info-block">
-                                        <i class="icon-wrap">
-                                            <img src="../assets/images/user-icon1.svg" alt="user">
-                                        </i>
-                                        <div class="text-wrap">
-                                            <span class="title-text mb-1">250</span>
-                                            <span class="subtitle-text"><em>Already</em> volunteered</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </b-card-body>
-                        <b-card-footer>
-                            <b-button class="btn-bordersecondary icon-btn" title="Apply Now">
-                                <span>Apply</span>
-                                <i>
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 16" width="19" height="15">
-                                        <g id="Main Content">
-                                            <g id="1">
-                                                <g id="Button">
-                                                    <path id="Forma 1 copy 12" class="shp0"
-                                                        d="M16.49,1.22c-0.31,-0.3 -0.83,-0.3 -1.16,0c-0.31,0.29 -0.31,0.77 0,1.06l5.88,5.44h-19.39c-0.45,0 -0.81,0.33 -0.81,0.75c0,0.42 0.36,0.76 0.81,0.76h19.39l-5.88,5.43c-0.31,0.3 -0.31,0.78 0,1.07c0.32,0.3 0.85,0.3 1.16,0l7.27,-6.73c0.32,-0.29 0.32,-0.77 0,-1.06z" />
-                                                </g>
-                                            </g>
-                                        </g>
-                                    </svg>
-                                </i>
-                            </b-button>
-                        </b-card-footer>
-                    </b-card>
-                </b-col>
-                 <b-col lg="4" sm="6" class="card-outer" data-aos="fade-up">
-                    <b-card no-body>
-                        <b-card-header>
-                            <div class="header-img-block">
-                                <b-link class="group-img" :style="{backgroundImage: 'url('+grpImages[1]+')'}">
-                                    <img src="../assets/images/group-img1.png" alt="group-img">
-                                </b-link>
-                                <b-link href="#" class="location" title="location">
-                                    <i>
-                                        <img src="../assets/images/location.svg" alt="location">
-                                    </i>Cape Town
-                                </b-link>
-                                <b-button class="favourite-icon" v-b-tooltip.hover>
-                                    <i class="normal-img">
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 21" width="24" height="21">
-                                        <g id="Main Content">
-                                            <g id="1">
-                                                <g id="Image content">
-                                                    <path id="Forma 1" d="M22.1 2.86C20.9 1.66 19.3 1 17.59 1C15.89 1 14.29 1.66 13.08 2.86L12.49 3.45L11.89 2.86C10.69 1.66 9.08 1 7.38 1C5.67 1 4.07 1.66 2.87 2.86C0.38 5.34 0.38 9.36 2.87 11.84L11.78 20.71C11.93 20.86 12.11 20.95 12.3 20.98C12.36 20.99 12.43 21 12.49 21C12.74 21 13 20.9 13.19 20.71L22.1 11.84C24.59 9.36 24.59 5.34 22.1 2.86ZM20.71 10.45L12.49 18.64L4.26 10.45C2.54 8.74 2.54 5.96 4.26 4.25C5.09 3.42 6.2 2.96 7.38 2.96C8.56 2.96 9.66 3.42 10.5 4.25L11.79 5.53C12.16 5.9 12.81 5.9 13.18 5.53L14.47 4.25C15.31 3.42 16.41 2.96 17.59 2.96C18.77 2.96 19.88 3.42 20.71 4.25C22.43 5.96 22.43 8.74 20.71 10.45Z" />
-                                                </g>
-                                            </g>
-                                        </g>
-                                    </svg>
-                                    </i>
-                                     <i class="hover-img">
-                                       <svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-                                            viewBox="0 0 492.7 426.8" style="enable-background:new 0 0 492.7 426.8;" xml:space="preserve">
-                                        <g>
-                                            <g id="Icons_18_">
-                                                <path d="M492.7,133.1C492.7,59.6,433.1,0,359.7,0c-48,0-89.9,25.5-113.3,63.6C222.9,25.5,181,0,133,0
-                                                    C59.6,0,0,59.6,0,133.1c0,40,17.7,75.8,45.7,100.2l188.5,188.6c3.2,3.2,7.6,5,12.1,5s8.9-1.8,12.1-5L447,233.2
-                                                    C475,208.9,492.7,173.1,492.7,133.1z"/>
-                                            </g>
-                                        </g>
-                                        </svg>
-                                    </i>       
-                                </b-button>
-                                <b-button class="add-icon" title="add">
-                                    <img src="../assets/images/add-group-ic.svg" alt="add">
-                                </b-button>
-                            </div>
-							<div class="group-category">
-								<span class="category-text">Animals</span>
-							</div>
-                        </b-card-header>
-                        <b-card-body>
-                            <div class="content-block">
-                                <b-link target="_blank" title="Animal welfare &amp; save birds" class="card-title mb-2">Animal welfare &amp; save birds campaign
-                                </b-link>
-                                <b-card-text>
-                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-                                    incididunt
-                                    ut labore...
-                                </b-card-text>
-                                <div class="group-ratings">
-                                    <span class="group-name">JR Foundation</span>
-                                    <span class="ratings">
-                                         <star-rating
-										v-bind:increment="0.01"
-										v-bind:max-rating="5"
-										inactive-color="#dddddd"
-										active-color="#F7D341"
-										v-bind:star-size="23"
-										>
-									</star-rating>
-                                    </span>
-                                </div>
-                            </div>
-                            <div class="group-details">
-                                <div class="top-strip">
-                                    <span>Plant 10,000 Trees</span>
-                                </div>
-                                <div class="group-details-inner has-progress">
-                                    <div class="detail-column info-block">
-                                        <i class="icon-wrap">
-                                            <img src="../assets/images/user-icon.svg">
-                                        </i>
-                                        <div class="text-wrap">
-                                            <span class="title-text mb-1">10</span>
-                                            <span class="subtitle-text">{{ $t("label.seats_left")}}</span>
-                                        </div>
-                                    </div>
-                                    <div class="detail-column progress-block">
-                                        <i class="icon-wrap">
-                                            <img src="../assets/images/target-ic.svg">
-                                        </i>
-                                        <div class="text-wrap">
-                                            <b-progress :value="value" :max="max" class="mb-2"></b-progress>
-                                            <span class="subtitle-text">8000 {{ $t("label.achieved")}}</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </b-card-body>
-                        <b-card-footer>
-                            <b-button class="btn-bordersecondary icon-btn" :title="$t('label.apply_now')">
-                                <span>{{ $t("label.apply")}}</span>
-                                <i>
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 16" width="19" height="15">
-                                        <g id="Main Content">
-                                            <g id="1">
-                                                <g id="Button">
-                                                    <path id="Forma 1 copy 12" class="shp0"
-                                                        d="M16.49,1.22c-0.31,-0.3 -0.83,-0.3 -1.16,0c-0.31,0.29 -0.31,0.77 0,1.06l5.88,5.44h-19.39c-0.45,0 -0.81,0.33 -0.81,0.75c0,0.42 0.36,0.76 0.81,0.76h19.39l-5.88,5.43c-0.31,0.3 -0.31,0.78 0,1.07c0.32,0.3 0.85,0.3 1.16,0l7.27,-6.73c0.32,-0.29 0.32,-0.77 0,-1.06z" />
-                                                </g>
-                                            </g>
-                                        </g>
-                                    </svg>
-                                </i>
-                            </b-button>
-                        </b-card-footer>
-                    </b-card>
-                </b-col>
-                 <b-col lg="4" sm="6" class="card-outer" data-aos="fade-up">
-                    <b-card no-body>
-                        <b-card-header>
-                            <div class="header-img-block">
-                                <b-link class="group-img" :style="{backgroundImage: 'url('+grpImages[2]+')'}">
-                                    <img src="../assets/images/group-img1.png" alt="group-img">
-                                </b-link>
-                                <b-link href="#" class="location" title="location">
-                                    <i>
-                                        <img src="../assets/images/location.svg" :title="$t('label.location')">
-                                    </i>Paris
-                                </b-link>
-                                <b-button class="favourite-icon" v-b-tooltip.hover
-                                    <i class="normal-img">
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 21" width="24" height="21">
-                                        <g id="Main Content">
-                                            <g id="1">
-                                                <g id="Image content">
-                                                    <path id="Forma 1" d="M22.1 2.86C20.9 1.66 19.3 1 17.59 1C15.89 1 14.29 1.66 13.08 2.86L12.49 3.45L11.89 2.86C10.69 1.66 9.08 1 7.38 1C5.67 1 4.07 1.66 2.87 2.86C0.38 5.34 0.38 9.36 2.87 11.84L11.78 20.71C11.93 20.86 12.11 20.95 12.3 20.98C12.36 20.99 12.43 21 12.49 21C12.74 21 13 20.9 13.19 20.71L22.1 11.84C24.59 9.36 24.59 5.34 22.1 2.86ZM20.71 10.45L12.49 18.64L4.26 10.45C2.54 8.74 2.54 5.96 4.26 4.25C5.09 3.42 6.2 2.96 7.38 2.96C8.56 2.96 9.66 3.42 10.5 4.25L11.79 5.53C12.16 5.9 12.81 5.9 13.18 5.53L14.47 4.25C15.31 3.42 16.41 2.96 17.59 2.96C18.77 2.96 19.88 3.42 20.71 4.25C22.43 5.96 22.43 8.74 20.71 10.45Z" />
-                                                </g>
-                                            </g>
-                                        </g>
-                                    </svg>
-                                    </i>
-                                     <i class="hover-img">
-                                       <svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-                                            viewBox="0 0 492.7 426.8" style="enable-background:new 0 0 492.7 426.8;" xml:space="preserve">
-                                        <g>
-                                            <g id="Icons_18_">
-                                                <path d="M492.7,133.1C492.7,59.6,433.1,0,359.7,0c-48,0-89.9,25.5-113.3,63.6C222.9,25.5,181,0,133,0
-                                                    C59.6,0,0,59.6,0,133.1c0,40,17.7,75.8,45.7,100.2l188.5,188.6c3.2,3.2,7.6,5,12.1,5s8.9-1.8,12.1-5L447,233.2
-                                                    C475,208.9,492.7,173.1,492.7,133.1z"/>
-                                            </g>
-                                        </g>
-                                        </svg>
-                                    </i>       
-                                </b-button>
-                                <b-button class="add-icon" title="add">
-                                    <img src="../assets/images/add-group-ic.svg" alt="add">
-                                </b-button>
-                            </div>
-							<div class="group-category">
-								<span class="category-text">Health</span>
-							</div>
-                        </b-card-header>
-                        <b-card-body>
-                            <div class="content-block">
-                                <b-link target="_blank" title="Plantation and Afforestation" class="card-title mb-2">Plantation and Afforestation programme 
-                                </b-link>
-                                <b-card-text>
-                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-                                    incididunt
-                                    ut labore...
-                                </b-card-text>
-                                <div class="group-ratings">
-                                    <span class="group-name">Amaze Doctors</span>
-                                    <span class="ratings">
-                                        <star-rating
-										v-bind:increment="0.01"
-										v-bind:max-rating="5"
-										inactive-color="#dddddd"
-										active-color="#F7D341"
-										v-bind:star-size="23"
-										>
-									</star-rating>
-                                    </span>
-                                </div>
-                            </div>
-                            <div class="group-details">
-                                <div class="top-strip">
-                                    <span>Plant 10,000 Trees</span>
-                                </div>
-                                <div class="group-details-inner has-progress">
-                                    <div class="detail-column progress-block">
-                                        <i class="icon-wrap">
-                                            <img src="../assets/images/target-ic.svg" alt="user">
-                                        </i>
-                                        <div class="text-wrap">
-                                            <b-progress :value="value" :max="max" class="mb-2"></b-progress>
-                                            <span class="subtitle-text">8000 achieved</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </b-card-body>
-                        <b-card-footer>
-                            <b-button class="btn-bordersecondary icon-btn" title="Apply Now">
-                                <span>Apply</span>
-                                <i>
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 16" width="19" height="15">
-                                        <g id="Main Content">
-                                            <g id="1">
-                                                <g id="Button">
-                                                    <path id="Forma 1 copy 12" class="shp0"
-                                                        d="M16.49,1.22c-0.31,-0.3 -0.83,-0.3 -1.16,0c-0.31,0.29 -0.31,0.77 0,1.06l5.88,5.44h-19.39c-0.45,0 -0.81,0.33 -0.81,0.75c0,0.42 0.36,0.76 0.81,0.76h19.39l-5.88,5.43c-0.31,0.3 -0.31,0.78 0,1.07c0.32,0.3 0.85,0.3 1.16,0l7.27,-6.73c0.32,-0.29 0.32,-0.77 0,-1.06z" />
-                                                </g>
-                                            </g>
-                                        </g>
-                                    </svg>
-                                </i>
-                            </b-button>
-                        </b-card-footer>
-                    </b-card>
-                </b-col>
-          </b-row>
+			<b-container class="card-grid">
+			   <h2>{{$t("label.related_missions")}}</h2>
+			   		<div v-if="missionListing.length > 0">
+					   	<div v-bind:class="{ 'content-loader-wrap': true, 'mission-loader': relatedMissionlLoader}">
+							<div class="content-loader"></div>
+						</div>
+							<GridView 
+			                id="gridView"
+			                :items="missionListing"
+			                v-if="isShownComponent"
+			                :userList = "userList"
+			                @getMissions = "getRelatedMissions"
+			                small
+			            />
+			        </div>
+			        <div v-else>
+			        	<h3 class="text-center">{{$t("label.no_related_missions")}}</h3>
+			        </div>
           <b-modal centered :title="$t('label.search_user')" ref="userDetailModal" 
             :modal-class="myclass" hide-footer>
             <b-alert show :variant="classVariant" dismissible v-model="showErrorDiv"
@@ -858,7 +536,7 @@ import AppCustomChip from "../components/AppCustomChip";
 import StarRating from 'vue-star-rating';
 import constants from '../constant';
 import { VueAutosuggest } from 'vue-autosuggest';
-import {favoriteMission,inviteColleague ,applyMission,searchUser,storeMissionRating,missionDetail} from "../services/service";
+import {favoriteMission,inviteColleague ,applyMission,searchUser,storeMissionRating,missionDetail,relatedMissions,missionComments} from "../services/service";
 import SimpleBar from 'simplebar';
 import store from "../store";
 import moment from 'moment'
@@ -870,13 +548,15 @@ export default {
 	ThePrimaryHeader : () => import("../components/Layouts/ThePrimaryHeader"),
 	TheSecondaryHeader: () => import("../components/Layouts/TheSecondaryHeader"),
 	TheSecondaryFooter: () => import("../components/Layouts/TheSecondaryFooter"),
+	GridView: () => import("../components/MissionGridView"),
 	VueAutosuggest,
 	SimpleBar,
 	RecentVolunteers: () => import("../components/RecentVolunteers"),
 	MissionCarousel: () => import("../components/MissionCarousel"),
   },
-  data() {
+  	data() {
 	    return {
+	    	sharingUrl : "",
 	    	isShownComponent :false,
 	    	missionId :this.$route.params.misisonId,
 	    	missionAddedToFavoriteByUser : false,
@@ -900,24 +580,21 @@ export default {
 	        missionDetail : [],
 	        disableApply : false,
 	        missionDocument : [],
+	        relatedMissionlLoader : true,
+	        isShownMediaComponent : false,
 	        bgImage : [
 	        require("@/assets/images/pdf.svg"),
 	        require("@/assets/images/doc.svg"),
 	        require("@/assets/images/xlsx.svg"),
 			],
 	        orgLogo:require("@/assets/images/ces-logo.png"),
-	        commentImg:[ 
-				require("@/assets/images/volunteer3.png"),
-				require("@/assets/images/volunteer2.png")
-				],
+	       
 	        currentPage: 1,
-	        grpImages: [
-	            require("@/assets/images/group-img4.png"),
-	            require("@/assets/images/group-img5.png"),
-	            require("@/assets/images/group-img6.png"),
-	        ],
+	       
 			max: 100,
 			value: 70,
+			missionListing : [],
+			missionComment : []
 	    };
   	},
 	mounted(){
@@ -959,6 +636,12 @@ export default {
         }
    },
    methods: {
+   		// Get comment create date format
+	   	getCommentDate(commentDate){
+	   		var day = moment(commentDate, "YYYY-MM-DD HH:mm:ss").format('dddd');
+	   		var date = moment(String(commentDate)).format('MMMM DD, YYYY, h:mm A')
+	   		return day+', '+date;
+	   	},
    		// Check mission type
         checkMissionTypeTime(missionType) {
             return missionType == constants.MISSION_TYPE_TIME
@@ -1026,7 +709,7 @@ export default {
             });
         },
 		// invite collegues api call
-        inviteColleagues(){
+        inviteColleagues() {
             let inviteData = {};
             inviteData.mission_id = this.currentMission;
             inviteData.to_user_id=this.invitedUserId;
@@ -1055,8 +738,21 @@ export default {
     	searchUsers() {
 			searchUser().then(userResponse => {
 				this.userList = userResponse;
-				this.isShownComponent = true;
+				this.getRelatedMissions();
 	        });
+    	},
+
+    	getRelatedMissions() {
+    		if(this.$route.params.misisonId) {
+    				this.relatedMissionlLoader = true;
+					relatedMissions(this.$route.params.misisonId).then(response => {
+					if(response.error == false) {
+						this.missionListing = response.data;
+					}
+					this.relatedMissionlLoader = false;
+					this.missionComments();
+				});
+			}
     	},
 
 		makeToast(variant = null,message) {
@@ -1067,35 +763,10 @@ export default {
             })
         },
 
-      	handleSliderClick(event){
-			event.stopPropagation()
-			var hideVideo = document.querySelector(".video-wrap");
-			var galleryImg = document.querySelector(".gallery-top .img-wrap");
-			var galleryImgSrc = document.querySelector(".gallery-top .img-wrap img");
-			var videoSrc =  document.querySelector(".video-wrap iframe");
-			var dataSrc = event.target.getAttribute('data-src');
-			if(event.target.classList.contains("video-item")){
-				videoSrc.src = dataSrc
-				hideVideo.style.display = "block";
-				galleryImg.style.display = "none";	
-			}
-			else if(event.target.classList.contains("btn-play")){
-				var parentBtn = event.target.parentNode;
-				var siblingBtn = parentBtn.childNodes;
-				hideVideo.style.display = "block";
-				galleryImg.style.display = "none";
-				videoSrc.src = siblingBtn[0].getAttribute('data-src')
-			}
-			else{
-				 galleryImgSrc.src = event.target.src ;		
-				galleryImg.style.display = "block";
-				hideVideo.style.display = "none";
-			}
-		},
-
 		getMissionDetail() {
 			if(this.$route.params.misisonId) {
 				missionDetail(this.$route.params.misisonId).then(response => {
+					this.isShownMediaComponent = true;
 	                if (response.error == false) {
 	                	if(response.data[0]) {
 	                		 this.missionDetail = response.data[0];
@@ -1115,6 +786,8 @@ export default {
 	                	}
 	                  
 	                }
+	                
+					this.searchUsers();
 	            })
 			} else {
 				router.push({
@@ -1153,10 +826,19 @@ export default {
         		skills = '-';
         	}
         	return skills;
+        },
+
+        missionComments() {
+        	missionComments(this.$route.params.misisonId).then(response => {
+					if(response.error == false) {
+						this.missionComment = response.data;
+					}
+					this.isShownComponent = true;
+			});
         }
    },
 	created(){
-		var _this = this;
+		this.sharingUrl = document.URL
 		// Get mission detail
 		this.getMissionDetail();
 		if(store.state.search != null) {
@@ -1164,30 +846,43 @@ export default {
 	    } else {
 	    	this.search = '';
 	    }
-	    this.searchUsers();
-
-	    var globalThis = this;
-		 setTimeout(() => {
-		  var thumbImg = document.querySelectorAll(".gallery-thumbs .owl-item img, .gallery-thumbs .owl-item .btn-play");
-			thumbImg.forEach(function(itemEvent){
-				itemEvent.removeEventListener("click", globalThis.handleSliderClick);	
-				itemEvent.addEventListener("click", globalThis.handleSliderClick);	
-			});
-			
-		});
-		window.addEventListener('resize', function() {
-			setTimeout(() => {
-				var thumbImg = document.querySelectorAll(".gallery-thumbs .owl-item img, .gallery-thumbs .owl-item .btn-play");
-					thumbImg.forEach(function(itemEvent){
-					itemEvent.removeEventListener("click", globalThis.handleSliderClick);	
-					itemEvent.addEventListener("click", globalThis.handleSliderClick);	
-				});
-			},2000);
-		});
 	},
    updated(){
 	
-   }
+   },
+   watch:{
+	    $route (to, from){
+	    	this.sharingUrl = document.URL
+	    	this.isShownComponent = false
+	    	this.missionId = this.$route.params.misisonId
+	    	this.missionAddedToFavoriteByUser = false
+	    	this.query = ""
+	        this.selected = ""
+	        this.rating =3.5
+	        this.search = ""
+	        this.userList = []
+	        this.myclass = ["userdetail-modal"]
+	        this.currentMissionId = 0
+	        this.invitedUserId = 0
+	        this.showErrorDiv = false
+	        this.message = null
+	        this.classVariant = "success"
+	        this.autoSuggestPlaceholder = ''
+	        this.submitDisable =true
+	        this.recentVolunterLoader = true
+	        this.missionDetail = []
+	        this.disableApply = false
+	        this.missionDocument = []
+	        this.relatedMissionlLoader = true
+	        this.isShownMediaComponent = false
+	       
+			this.max = 100,
+			this.value = 70,
+			this.missionListing = [],
+			this.missionComment = []
+	       	this.getMissionDetail();
+	    }
+	} 
 };
 </script>
 
