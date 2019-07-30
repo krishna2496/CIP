@@ -70,7 +70,6 @@ export default {
     },
      handleClick(e) {
         e.stopPropagation();
-        console.log(e.target)
         var profile_toggle = document.querySelector(
           ".profile-menu .dropdown-toggle"
         );
@@ -99,7 +98,6 @@ export default {
         }
         var dropdown_list = document.querySelectorAll(".select-dropdown");
         dropdown_list.forEach(function(e) {
-          console.log(e.target)
           var dropdown_list_width = parseInt(
             window.getComputedStyle(e).getPropertyValue("width")
           );
