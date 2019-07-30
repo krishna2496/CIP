@@ -16,7 +16,7 @@ class CityRepository implements CityInterface
     /**
      * Create a new repository instance.
      *
-     * $param App\Models\City
+     * @param App\Models\City $city
      * @return void
      */
     public function __construct(City $city)
@@ -27,6 +27,7 @@ class CityRepository implements CityInterface
     /**
     * Get a listing of resource.
     *
+    * @param \Illuminate\Http\Request $request
     * @return Illuminate\Support\Collection
     */
     public function cityList(Request $request): Collection
