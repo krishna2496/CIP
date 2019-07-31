@@ -227,7 +227,7 @@ class MissionRepository implements MissionInterface
                 foreach ($request->media_videos as $value) {
                     $missionMedia = array('mission_id' => $mission->mission_id,
                                           'media_name' => $value['media_name'],
-                                          'media_type' => pathinfo($value['media_name'], PATHINFO_EXTENSION),
+                                          'media_type' => (pathinfo($value['media_name'], PATHINFO_EXTENSION)) ? pathinfo($value['media_name'], PATHINFO_EXTENSION) : 'mp4',
                                           'media_path' => $value['media_path']);
                     $this->missionMedia->create($missionMedia);
                     unset($missionMedia);
@@ -371,7 +371,7 @@ class MissionRepository implements MissionInterface
             foreach ($request->media_videos as $value) {
                 $missionMedia = array('mission_id' => $id,
                                       'media_name' => $value['media_name'],
-                                      'media_type' => pathinfo($value['media_name'], PATHINFO_EXTENSION),
+                                      'media_type' => (pathinfo($value['media_name'], PATHINFO_EXTENSION)) ? pathinfo($value['media_name'], PATHINFO_EXTENSION) : 'mp4',
                                       'media_path' => $value['media_path']);
 
                 $this->missionMedia->createOrUpdateMedia(['mission_id' => $id,
