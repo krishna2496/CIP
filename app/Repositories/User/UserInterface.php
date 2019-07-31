@@ -79,7 +79,7 @@ interface UserInterface
      * List all the users
      *
      * @param int $userId
-     * @return \Illuminate\Support\Collection
+     * @return Illuminate\Database\Eloquent\Collection
      */
     public function listUsers(int $userId) : Collection;
 
@@ -87,7 +87,7 @@ interface UserInterface
      * Search user
      *
      * @param string $text
-     * @return \Illuminate\Support\Collection
+     * @return Illuminate\Database\Eloquent\Collection
      */
     public function searchUsers(string $text = null, int $userId): Collection;
 }

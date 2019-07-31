@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Repositories\Mission;
 
 use App\Repositories\Mission\MissionInterface;
