@@ -39,7 +39,7 @@ class UserFilter extends Model
     /**
      * Set description attribute on the model.
      *
-     * @param  mixed   $value
+     * @param  mixed $value
      * @return void
      */
     public function setFiltersAttribute($value) : void

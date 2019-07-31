@@ -276,20 +276,22 @@ class Helpers
     }
 
     /**
-     * Get user token for testing
+     * Get JWT token
      *
      * @param int $userId
      * @return string
      */
-    public static function getTestUserToken(int $userId) : string
+    public static function getJwtToken(int $userId) : string
     {
         $payload = [
-            'iss' => "lumen-jwt",
-            'sub' => $userId,
-            'iat' => time(),
-            'exp' => time() + 60 * 60,
-            'fqdn' => 'tatva'
+            'iss' => "lumen-jwt", // Issuer of the token
+            'sub' => $userId, // Subject of the token
+            'iat' => time(), // Time when JWT was issued.
+            'exp' => time() + 60 * 60, // Expiration time
+            'fqdn' => env('DEFAULT_TENANT')
         ];
+        // As you can see we are passing `JWT_SECRET` as the second parameter that will
+        // be used to decode the token in the future.
         return JWT::encode($payload, env('JWT_SECRET'));
     }
 }

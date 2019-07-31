@@ -2,6 +2,7 @@
 namespace App\Repositories\Timezone;
 
 use Illuminate\Http\Request;
+use App\Models\Timezone;
 
 interface TimezoneInterface
 {
@@ -12,5 +13,5 @@ interface TimezoneInterface
      * @param int $timezone_id
      * @return App\Models\Timezone
      */
-    public function timezoneList(Request $request, int $timezone_id);
+    public function timezoneList(Request $request, int $timezone_id = null) :Timezone;
 }

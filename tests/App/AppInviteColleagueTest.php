@@ -23,7 +23,7 @@ class AppInviteColleagueTest extends TestCase
             'to_user_id' => rand(1000000,2000000)
         ];
         
-        $token = Helpers::getTestUserToken($userId);
+        $token = Helpers::getJwtToken($userId);
         $this->post('/app/mission/invite', $params, ['token' => $token])
         ->seeStatusCode(422)
         ->seeJsonStructure([
@@ -55,7 +55,7 @@ class AppInviteColleagueTest extends TestCase
             'mission_id' => rand(1000000,2000000)
         ];
         
-        $token = Helpers::getTestUserToken($userId);
+        $token = Helpers::getJwtToken($userId);
         $this->post('/app/mission/invite', $params, ['token' => $token])
         ->seeStatusCode(422)
         ->seeJsonStructure([
@@ -89,7 +89,7 @@ class AppInviteColleagueTest extends TestCase
             'to_user_id' => $missionInviteData->to_user_id
         ];
         
-        $token = Helpers::getTestUserToken($missionInviteData->from_user_id);
+        $token = Helpers::getJwtToken($missionInviteData->from_user_id);
         $this->post('/app/mission/invite', $params, ['token' => $token])
         ->seeStatusCode(422)
         ->seeJsonStructure([
@@ -124,7 +124,7 @@ class AppInviteColleagueTest extends TestCase
             'to_user_id' => $toUserId
         ];
         
-        $token = Helpers::getTestUserToken($userId);
+        $token = Helpers::getJwtToken($userId);
         $this->post('/app/mission/invite', $params, ['token' => $token])
         ->seeStatusCode(201)
         ->seeJsonStructure([

@@ -2,75 +2,78 @@
 namespace App\Repositories\User;
 
 use Illuminate\Http\Request;
+use App\User;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 interface UserInterface
 {
     /**
-     * Store a new resource.
+     * Store a newly created resource in storage.
      *
      * @param array $request
-     * @return void
+     * @return App\User
      */
-    public function store(array $request);
+    public function store(array $request): User;
     
     /**
-     * Update resource.
+     * Update the specified resource in storage.
+     *
+     * @param  array  $request
+     * @param  int  $id
+     * @return App\User
+     */
+    public function update(array $request, int $id): User;
+    
+    /**
+     * Get listing of users
+     *
+     * @param Illuminate\Http\Request $request
+     * @return Illuminate\Pagination\LengthAwarePaginator
+     */
+    public function userList(Request $request): LengthAwarePaginator;
+
+    /**
+     * Find specified resource in storage.
+     *
+     * @param  int  $id
+     * @return App\User
+     */
+    public function find(int $id): User;
+    
+    /**
+     * Remove specified resource in storage.
+     *
+     * @param  int  $id
+     * @return bool
+     */
+    public function delete(int $id): bool;
+
+    /**
+     * Display a listing of specified resources.
+     *
+     * @param int $userId
+     * @return Illuminate\Database\Eloquent\Collection
+     */
+    public function userSkills(int $userId): Collection;
+
+    /**
+     * Store a newly created resource into database
      *
      * @param array $request
      * @param int $id
-     * @return void
+     * @return bool
      */
-    public function update(array $request, int $id);
-    
-    /**
-     * Listing of all resources.
-     *
-     * @param  Illuminate\Http\Request $request
-     * @return void
-     */
-    public function userList(Request $request);
+    public function linkSkill(array $request, int $id): bool;
 
     /**
-     * Find a specified resource.
+     * Remove the specified resource from storage
      *
-     * @param  int $id
-     * @return void
+     * @param array $request
+     * @param int $id
+     * @return bool
      */
-    public function find(int $id);
-    
-    /**
-     * Delete a specified resource.
-     *
-     * @param  int $id
-     * @return void
-     */
-    public function delete(int $id);
-
-    /**
-     * Display a listing of the resource.
-     *
-     * @param  Illuminate\Http\Request $userId
-     * @return void
-     */
-    public function userSkills(int $userId);
-
-    /**
-     * Store a new resource.
-     *
-     * @param  array $request
-     * @param  int $id
-     * @return \Illuminate\Http\Response
-     */
-    public function linkSkill(array $request, int $id);
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  array $request
-     * @param  int $id
-     * @return \Illuminate\Http\Response
-     */
-    public function unlinkSkill(array $request, int $id);
+    public function unlinkSkill(array $request, int $id): bool;
 
     /**
      * List all the users
@@ -78,7 +81,7 @@ interface UserInterface
      * @param int $userId
      * @return \Illuminate\Support\Collection
      */
-    public function listUsers(int $userId);
+    public function listUsers(int $userId) : Collection;
 
     /**
      * Search user
@@ -86,5 +89,5 @@ interface UserInterface
      * @param string $text
      * @return \Illuminate\Support\Collection
      */
-    public function searchUsers(string $text = null, int $userId);
+    public function searchUsers(string $text = null, int $userId): Collection;
 }

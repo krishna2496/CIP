@@ -36,7 +36,7 @@ class TenantOptionRepository implements TenantOptionInterface
     *
     * @return Illiminate\Support\Collection
     */
-    public function getAllSlider(): Collection
+    public function getAllSlider()
     {
         return $this->tenantOption->where('option_name', config('constants.TENANT_OPTION_SLIDER'))->get();
     }
@@ -78,7 +78,7 @@ class TenantOptionRepository implements TenantOptionInterface
      *
      * @return Illuminate\Support\Collection
      */
-    public function getOptions(): Collection
+    public function getOptions()
     {
         return $this->tenantOption->get(['option_name', 'option_value']);
     }
@@ -87,9 +87,9 @@ class TenantOptionRepository implements TenantOptionInterface
     * Get a listing of resource.
     *
     * @param array $conditions
-    * @return App\Models\TenantOption | Null
+    * @return App\Models\TenantOption|null
     */
-    public function getOptionWithCondition(array $conditions = [])
+    public function getOptionWithCondition(array $conditions = []): ?TenantOption
     {
         $optionQuery = $this->tenantOption;
 
@@ -129,9 +129,9 @@ class TenantOptionRepository implements TenantOptionInterface
      * Select by option name
      *
      * @param String $data
-     * @return Illuminate\Support\Collection
+     * @return null|Illuminate\Support\Collection
      */
-    public function getOptionValue(string $data): Collection
+    public function getOptionValue(string $data): ?Collection
     {
         return $this->tenantOption->whereOption_name($data)->get();
     }
