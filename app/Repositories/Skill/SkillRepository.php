@@ -106,13 +106,7 @@ class SkillRepository implements SkillInterface
      */
     public function find(int $id): Skill
     {
-        try {
-            return $this->skill->findSkill($id);
-        } catch (ModelNotFoundException $e) {
-            throw new ModelNotFoundException(
-                trans('messages.custom_error_message.ERROR_SKILL_NOT_FOUND')
-            );
-        }
+		return $this->skill->findSkill($id);
     }
     
     /**
