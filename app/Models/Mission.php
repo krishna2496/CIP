@@ -51,7 +51,7 @@ class Mission extends Model
      */
     protected $fillable = ['theme_id', 'city_id',
     'country_id', 'start_date', 'end_date', 'total_seats', 'available_seats',
-    'publication_status', 'organisation_id', 'organisation_name', 'mission_type'];
+    'publication_status', 'organisation_id', 'organisation_name', 'mission_type', 'organisation_detail'];
     
     /**
      * The attributes that should be visible in arrays.
