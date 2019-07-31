@@ -19,7 +19,13 @@ class TenantOptionRepository implements TenantOptionInterface
      * @var App\Models\TenantOption
      */
     public $tenantOption;
-    
+
+    /**
+     * Create a new repository instance.
+     *
+     * @param App\Models\TenantOption $tenantOption
+     * @return void
+     */
     public function __construct(TenantOption $tenantOption)
     {
         $this->tenantOption = $tenantOption;

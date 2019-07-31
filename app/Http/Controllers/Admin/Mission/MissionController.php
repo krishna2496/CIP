@@ -16,6 +16,7 @@ use App\Traits\RestExceptionHandlerTrait;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use PDOException;
 use InvalidArgumentException;
+use App\Exceptions\TenantDomainNotFoundException;
 
 class MissionController extends Controller
 {
@@ -137,6 +138,8 @@ class MissionController extends Controller
                 config('constants.error_codes.ERROR_NO_MISSION_FOUND'),
                 trans('messages.custom_error_message.ERROR_NO_MISSION_FOUND')
             );
+        } catch (TenantDomainNotFoundException $e) {
+            throw $e;
         } catch (\Exception $e) {
             return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }

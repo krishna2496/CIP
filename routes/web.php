@@ -235,6 +235,7 @@ $router->group(
         $router->get('/reset-style', ['uses' => 'Admin\Tenant\TenantOptionsController@resetStyleSettings']);
         $router->get('/download-style', ['uses' => 'Admin\Tenant\TenantOptionsController@downloadStyleFiles']);
         $router->post('/update-image', ['uses' => 'Admin\Tenant\TenantOptionsController@updateImage']);
+        $router->get('/reset-asset-images', ['uses' => 'Admin\Tenant\TenantOptionsController@resetAssetsImages']);
     }
 );
 

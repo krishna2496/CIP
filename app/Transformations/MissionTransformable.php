@@ -24,6 +24,7 @@ trait MissionTransformable
     {
         if (isset($mission['goalMission'])) {
             $mission['goal_objective']  = $mission['goalMission']['goal_objective'];
+            $mission['achieved_goal']  = ($mission['goalMission']['goal_objective']*0.6);
         }
         if (isset($mission['timeMission'])) {
             $mission['application_deadline'] = $mission['timeMission']['application_deadline'];
@@ -58,6 +59,7 @@ trait MissionTransformable
         // Set title and description
         $mission['title'] = $mission['missionLanguage'][0]['title'] ?? '';
         $mission['short_description'] = $mission['missionLanguage'][0]['short_description'] ?? '';
+        $mission['description'] = $mission['missionLanguage'][0]['description'] ?? '';
         $mission['objective'] = $mission['missionLanguage'][0]['objective'] ?? '';
         unset($mission['missionLanguage']);
 

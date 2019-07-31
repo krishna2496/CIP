@@ -8,14 +8,19 @@ use Aws\S3\Exception\S3Exception;
 
 class UploadAssetsFromLocalToS3StorageJob extends Job
 {
+
+    /**
+     * @var string $tenantName
+     */
     protected $tenantName;
 
     /**
      * Create a new job instance.
      *
+     * @param string $tenantName
      * @return void
      */
-    public function __construct($tenantName)
+    public function __construct(string $tenantName)
     {
         $this->tenantName = $tenantName;
     }

@@ -187,7 +187,7 @@ trait RestExceptionHandlerTrait
      * @param string $message
      * @return \Illuminate\Http\JsonResponse
      */
-    protected function fileNotFound(string $customErrorCode = '', string $message = 'Assets bucket not found on S3')
+    protected function fileNotFound(string $customErrorCode = '', string $message = 'File not found on S3')
     {
         return $this->jsonResponse(
             Response::HTTP_NOT_FOUND,
@@ -197,7 +197,22 @@ trait RestExceptionHandlerTrait
         );
     }
     
-    
+    /**
+     * Returns json response for tenant's domain not found
+     *
+     * @param string $customErrorCode
+     * @param string $message
+     * @return \Illuminate\Http\JsonResponse
+     */
+    protected function tenantDomainNotFound(string $customErrorCode = '', string $message = 'Tenant Domain not found')
+    {
+        return $this->jsonResponse(
+            Response::HTTP_NOT_FOUND,
+            Response::$statusTexts[Response::HTTP_NOT_FOUND],
+            $customErrorCode,
+            $message
+        );
+    }
     /**
      * Returns json response.
      *

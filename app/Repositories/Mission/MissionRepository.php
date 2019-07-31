@@ -767,7 +767,7 @@ class MissionRepository implements MissionInterface
         return $this->favouriteMission->findFavourite($userId, $missionId);
     }
 
-    /*
+    /**
      * Get mission name.
      *
      * @param int $missionId
@@ -874,7 +874,14 @@ class MissionRepository implements MissionInterface
                 $query->Where('user_id', $request->auth->user_id);
             }])
             ->with(['missionLanguage' => function ($query) use ($languageId) {
-                $query->select('mission_language_id', 'mission_id', 'title', 'short_description', 'objective')
+                $query->select(
+                    'mission_language_id',
+                    'mission_id',
+                    'title',
+                    'short_description',
+                    'objective',
+                    'description'
+                )
                 ->where('language_id', $languageId);
             }])
             ->withCount(['missionApplication as user_application_count' => function ($query) use ($request) {
@@ -909,7 +916,7 @@ class MissionRepository implements MissionInterface
     {
         // Fetch mission media details
         $missionData = $this->mission->findOrFail($missionId);
-        return $missionData->missionMedia()->orderBy('mission_media_id', 'ASC')
+        return $missionData->missionMedia()->orderBy('default', 'DESC')
         ->take(config("constants.MISSION_MEDIA_LIMIT"))->get();
     }
 

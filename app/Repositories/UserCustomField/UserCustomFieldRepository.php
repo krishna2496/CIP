@@ -19,6 +19,7 @@ class UserCustomFieldRepository implements UserCustomFieldInterface
     /**
      * Create a new repository instance.
      *
+     * @param App\Models\UserCustomField $field
      * @return void
      */
     public function __construct(UserCustomField $field)

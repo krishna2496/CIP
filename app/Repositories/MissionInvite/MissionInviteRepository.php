@@ -33,7 +33,7 @@ class MissionInviteRepository implements MissionInviteInterface
         $this->missionInvite = $missionInvite;
     }
 
-    /*
+    /**
      * Check user is already invited for a mission
      *
      * @param int $missionId
