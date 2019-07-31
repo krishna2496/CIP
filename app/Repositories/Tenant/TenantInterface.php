@@ -2,6 +2,8 @@
 namespace App\Repositories\Tenant;
 
 use Illuminate\Http\Request;
+use App\Models\Tenant;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 interface TenantInterface
 {
@@ -9,40 +11,40 @@ interface TenantInterface
      * Store a new resource.
      *
      * @param  Illuminate\Http\Request $request
-     * @return void
+     * @return App\Models\Tenant
      */
-    public function store(Request $request);
+    public function store(Request $request): Tenant;
 
     /**
      * Update resource.
      *
      * @param  array $requestarray
      * @param  int $id
-     * @return void
+     * @return App\Models\Tenant
      */
-    public function update(array $requestarray, int $id);
+    public function update(array $requestarray, int $id): Tenant;
 
     /**
      * Listing of a all resources.
      *
      * @param  Illuminate\Http\Request $request
-     * @return void
+     * @return \Illuminate\Pagination\LengthAwarePaginator
      */
-    public function tenantList(Request $request);
+    public function tenantList(Request $request): LengthAwarePaginator;
 
     /**
      * Find a specified resource.
      *
      * @param  int $id
-     * @return void
+     * @return App\Models\Tenant
      */
-    public function find(int $id);
+    public function find(int $id): Tenant;
 
     /**
      * Delete a specified resource.
      *
      * @param  int $id
-     * @return void
+     * @return bool
      */
-    public function delete(int $id);
+    public function delete(int $id): bool;
 }

@@ -24,6 +24,7 @@ class CreateTableMission extends Migration {
             $table->enum('publication_status', ['DRAFT','PENDING_APPROVAL','REFUSED','APPROVED','PUBLISHED_FOR_VOTING','PUBLISHED_FOR_APPLYING','UNPUBLISHED']);
             $table->bigInteger('organisation_id')->unsigned();
             $table->string('organisation_name',255);
+            $table->text('organisation_detail');
             $table->timestamps();
             $table->softDeletes();
             // Relation defined between missions(city_id) with cities(id)
