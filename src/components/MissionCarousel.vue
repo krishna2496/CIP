@@ -49,7 +49,8 @@ export default {
 		   carouselLoader: true,
 		   deafultImage : true,
 		   deafultVideo : false,
-		   loop :true
+		   loop :true,
+		   defaultMediaPath : ''
 	    }
         },
     directives: {},
@@ -126,9 +127,10 @@ export default {
 					
 					if(this.mediaCarouselList[0].media_type == "mp4") {
 					 	this.deafultVideo = true;
-					 	this.deafultImage = false;
+					 	this.deafultImage = false;	 	
 					}
-		  
+					this.defaultMediaPath = this.getMediaPath(this.mediaCarouselList[0]);
+				 	this.$emit("defaultMediaPathDetail",this.defaultMediaPath);
 				}
 			})		
 		}
