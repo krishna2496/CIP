@@ -31,11 +31,12 @@ class MissionTest extends TestCase
         $params = [
                     "organisation" => [
                         "organisation_id" => rand(1, 1),
-                        "organisation_name" => str_random(10)
+                        "organisation_name" => str_random(10),
+                        "organisation_detail" => str_random(50)
                     ],
                     "location" => [
                         "city_id" => rand(1, 1),
-                        "country_code" => "IN"
+                        "country_code" => "US"
                     ],
                     "mission_detail" => [[
                             "lang" => "en",
@@ -123,7 +124,8 @@ class MissionTest extends TestCase
         $params = [
                     "organisation" => [
                         "organisation_id" => rand(1, 1),
-                        "organisation_name" => str_random(10)
+                        "organisation_name" => str_random(10),
+                        "organisation_detail" => str_random(50)
                     ],
                     "start_date" => "2019-05-15 10:40:00",
                     "end_date" => "2019-10-15 10:40:00",
@@ -260,11 +262,12 @@ class MissionTest extends TestCase
         $params = [
                     "organisation" => [
                         "organisation_id" => rand(1, 1),
-                        "organisation_name" => str_random(10)
+                        "organisation_name" => str_random(10),
+                        "organisation_detail" => str_random(50)
                     ],
                     "location" => [
                         "city_id" => rand(1, 1),
-                        "country_code" => "IN"
+                        "country_code" => "US"
                     ],
                     "mission_detail" => [[
                             "lang" => "en",

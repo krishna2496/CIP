@@ -13,27 +13,23 @@ class AppMissionMediaTest extends TestCase
      */
     public function it_should_return_all_media_by_mission_id()
     {
-        DB::setDefaultConnection('tenant');
-        $missionId = App\Models\Mission::get()->random()->mission_id;
-        $userId = App\User::get()->random()->user_id;
-        DB::setDefaultConnection('mysql');
+        $connection = 'tenant';
+        $mission = factory(\App\Models\Mission::class)->make();
+        $mission->setConnection($connection);
+        $mission->save();
+        $user = factory(\App\User::class)->make();
+        $user->setConnection($connection);
+        $user->save();
 
-        $token = Helpers::getJwtToken($userId);
-        $this->get('/app/mission-media/'.$missionId, ['token' => $token])
+        $token = Helpers::getJwtToken($user->user_id);
+        $this->get('/app/mission-media/'.$mission->mission_id, ['token' => $token])
           ->seeStatusCode(200)
           ->seeJsonStructure([
             "status",
-            "data" => [
-                [
-                    "mission_media_id",
-                    "media_name",
-                    "media_type",
-                    "media_path",
-                    "default"
-                ],
-            ],
             "message"
         ]);
+        $user->delete();
+        $mission->delete();
     }
 
     /**

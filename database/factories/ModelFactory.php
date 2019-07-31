@@ -63,14 +63,15 @@ $factory->define(App\Models\Mission::class, function (Faker\Generator $faker) {
     return [
         "theme_id" => rand(1, 1),
         "city_id" => rand(1, 1),
-        "country_id" => rand(1, 1),
+        "country_id" => 233,
         "start_date" => "2019-05-15 10:40:00",
         "end_date" => "2019-10-15 10:40:00",
         "total_seats" => rand(1, 1000),        
         "mission_type" => "GOAL",
-        "publication_status" => "DRAFT",
+        "publication_status" => "APPROVED",
         "organisation_id" => rand(1, 1),
         "organisation_name" => str_random(10),
+        "organisation_detail" => str_random(50)
     ];
 });
 

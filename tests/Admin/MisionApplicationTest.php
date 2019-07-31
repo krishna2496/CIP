@@ -1,4 +1,5 @@
 <?php
+use Carbon\Carbon;
 
 class MissionApplicationTest extends TestCase
 {
@@ -11,20 +12,31 @@ class MissionApplicationTest extends TestCase
     */
     public function it_should_return_mission_applications()
     {
-        DB::setDefaultConnection('tenant');
         $connection = 'tenant';
-        $missionApplication = factory(\App\Models\MissionApplication::class)->make();
-        $missionApplication->setConnection($connection);
-        $missionApplication->save();
-        $missionApplication->mission_id = App\Models\Mission::get()->random()->mission_id;
-        $missionApplication->user_id = App\User::get()->random()->user_id;
-        $missionApplication->update(); 
-        
-        DB::setDefaultConnection('mysql');
+        $mission = factory(\App\Models\Mission::class)->make();
+        $mission->setConnection($connection);
+        $mission->save();
 
+        $user = factory(\App\User::class)->make();
+        $user->setConnection($connection);
+        $user->save();
+
+        $missionApplication = new App\Models\MissionApplication();
+
+        $missionApplication->setConnection($connection);
+        $missionApplication->mission_id = $mission->mission_id;
+        $missionApplication->user_id = $user->user_id;
+        $missionApplication->availability_id = rand(1,1);
+        $missionApplication->motivation = str_random(10);
+        $missionApplication->approval_status = config('constants.application_status.PENDING');
+        $missionApplication->applied_at = Carbon::now();
+        $missionApplication->save(); 
+        
         $this->get('/missions/'.$missionApplication->mission_id.'/applications', ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
         ->seeStatusCode(200);
         $missionApplication->delete(); 
+        $user->delete(); 
+        $mission->delete(); 
     }
 
     /**
@@ -36,20 +48,31 @@ class MissionApplicationTest extends TestCase
     */
     public function it_should_return_mission_application()
     {
-        DB::setDefaultConnection('tenant');
         $connection = 'tenant';
-        $missionApplication = factory(\App\Models\MissionApplication::class)->make();
+        $mission = factory(\App\Models\Mission::class)->make();
+        $mission->setConnection($connection);
+        $mission->save();
+
+        $user = factory(\App\User::class)->make();
+        $user->setConnection($connection);
+        $user->save();
+
+        $missionApplication = new App\Models\MissionApplication();
+
         $missionApplication->setConnection($connection);
-        $missionApplication->save();
-        $missionApplication->mission_id = App\Models\Mission::get()->random()->mission_id;
-        $missionApplication->user_id = App\User::get()->random()->user_id;
-        $missionApplication->update(); 
-        
-        DB::setDefaultConnection('mysql');
+        $missionApplication->mission_id = $mission->mission_id;
+        $missionApplication->user_id = $user->user_id;
+        $missionApplication->availability_id = rand(1,1);
+        $missionApplication->motivation = str_random(10);
+        $missionApplication->approval_status = config('constants.application_status.PENDING');
+        $missionApplication->applied_at = Carbon::now();
+        $missionApplication->save(); 
 
         $this->get('/missions/'.$missionApplication->mission_id.'/applications/'.$missionApplication->mission_application_id, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
         ->seeStatusCode(200);
-        $missionApplication->delete(); 
+        $missionApplication->delete();
+        $user->delete(); 
+        $mission->delete();  
     }
 
     /**
@@ -61,20 +84,14 @@ class MissionApplicationTest extends TestCase
     */
     public function it_should_return_error_for_invalid_mission_application()
     {
-        DB::setDefaultConnection('tenant');
         $connection = 'tenant';
-        $missionApplication = factory(\App\Models\MissionApplication::class)->make();
-        $missionApplication->setConnection($connection);
-        $missionApplication->save();
-        $missionApplication->mission_id = App\Models\Mission::get()->random()->mission_id;
-        $missionApplication->user_id = App\User::get()->random()->user_id;
-        $missionApplication->update(); 
-        
-        DB::setDefaultConnection('mysql');
+        $mission = factory(\App\Models\Mission::class)->make();
+        $mission->setConnection($connection);
+        $mission->save();
 
-        $this->get('/missions/'.$missionApplication->mission_id.'/applications/'.rand(10000000, 200000000), ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->get('/missions/'.$mission->mission_id.'/applications/'.rand(10000000, 200000000), ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
         ->seeStatusCode(200);
-        $missionApplication->delete(); 
+        $mission->delete(); 
     }
 
     /**
@@ -84,22 +101,33 @@ class MissionApplicationTest extends TestCase
     *
     * @return void
     */
-    public function it_should_return_error_for_invalid_mission_id()
+    public function it_should_return_error_for_invalid_mission_id_to_get_application()
     {
-        DB::setDefaultConnection('tenant');
         $connection = 'tenant';
-        $missionApplication = factory(\App\Models\MissionApplication::class)->make();
+        $mission = factory(\App\Models\Mission::class)->make();
+        $mission->setConnection($connection);
+        $mission->save();
+
+        $user = factory(\App\User::class)->make();
+        $user->setConnection($connection);
+        $user->save();
+
+        $missionApplication = new App\Models\MissionApplication();
+
         $missionApplication->setConnection($connection);
-        $missionApplication->save();
-        $missionApplication->mission_id = App\Models\Mission::get()->random()->mission_id;
-        $missionApplication->user_id = App\User::get()->random()->user_id;
-        $missionApplication->update(); 
-        
-        DB::setDefaultConnection('mysql');
+        $missionApplication->mission_id = $mission->mission_id;
+        $missionApplication->user_id = $user->user_id;
+        $missionApplication->availability_id = rand(1,1);
+        $missionApplication->motivation = str_random(10);
+        $missionApplication->approval_status = config('constants.application_status.PENDING');
+        $missionApplication->applied_at = Carbon::now();
+        $missionApplication->save(); 
 
         $this->get('/missions/'.rand(10000000, 200000000).'/applications/'.$missionApplication->mission_application_id, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
         ->seeStatusCode(200);
         $missionApplication->delete(); 
+        $mission->delete(); 
+        $user->delete(); 
     }
 
     /**
@@ -115,16 +143,26 @@ class MissionApplicationTest extends TestCase
                     "approval_status" => "AUTOMATICALLY_APPROVED",
                 ];
 
-        DB::setDefaultConnection('tenant');
         $connection = 'tenant';
-        $missionApplication = factory(\App\Models\MissionApplication::class)->make();
-        $missionApplication->setConnection($connection);
-        $missionApplication->save();
-        $missionApplication->mission_id = App\Models\Mission::get()->random()->mission_id;
-        $missionApplication->user_id = App\User::get()->random()->user_id;
-        $missionApplication->update(); 
+        $mission = factory(\App\Models\Mission::class)->make();
+        $mission->setConnection($connection);
+        $mission->save();
 
-        DB::setDefaultConnection('mysql');
+        $user = factory(\App\User::class)->make();
+        $user->setConnection($connection);
+        $user->save();
+
+        $missionApplication = new App\Models\MissionApplication();
+
+        $missionApplication->setConnection($connection);
+        $missionApplication->mission_id = $mission->mission_id;
+        $missionApplication->user_id = $user->user_id;
+        $missionApplication->availability_id = rand(1,1);
+        $missionApplication->motivation = str_random(10);
+        $missionApplication->approval_status = config('constants.application_status.PENDING');
+        $missionApplication->applied_at = Carbon::now();
+        $missionApplication->save(); 
+        
         $this->patch('/missions/'.$missionApplication->mission_id.'/applications/'.$missionApplication->mission_application_id, $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
         ->seeStatusCode(200)
         ->seeJsonStructure([
@@ -132,6 +170,8 @@ class MissionApplicationTest extends TestCase
             'status',
             ]);
         $missionApplication->delete();
+        $mission->delete();
+        $user->delete();
     }
     
     /**
@@ -147,16 +187,26 @@ class MissionApplicationTest extends TestCase
                     "approval_status" => "AUTOMATICALLY_APPROVED",
                 ];
 
-        DB::setDefaultConnection('tenant');
         $connection = 'tenant';
-        $missionApplication = factory(\App\Models\MissionApplication::class)->make();
-        $missionApplication->setConnection($connection);
-        $missionApplication->save();
-        $missionApplication->mission_id = App\Models\Mission::get()->random()->mission_id;
-        $missionApplication->user_id = App\User::get()->random()->user_id;
-        $missionApplication->update(); 
+        $mission = factory(\App\Models\Mission::class)->make();
+        $mission->setConnection($connection);
+        $mission->save();
 
-        DB::setDefaultConnection('mysql');
+        $user = factory(\App\User::class)->make();
+        $user->setConnection($connection);
+        $user->save();
+
+        $missionApplication = new App\Models\MissionApplication();
+
+        $missionApplication->setConnection($connection);
+        $missionApplication->mission_id = $mission->mission_id;
+        $missionApplication->user_id = $user->user_id;
+        $missionApplication->availability_id = rand(1,1);
+        $missionApplication->motivation = str_random(10);
+        $missionApplication->approval_status = config('constants.application_status.PENDING');
+        $missionApplication->applied_at = Carbon::now();
+        $missionApplication->save();  
+
         $this->patch('/missions/'.rand(1000000, 2000000).'/applications/'.$missionApplication->mission_application_id, $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
         ->seeStatusCode(404);
         $missionApplication->delete();

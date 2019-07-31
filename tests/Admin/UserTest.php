@@ -52,6 +52,11 @@ class UserTest extends TestCase
      */
     public function it_should_return_all_users()
     {
+        $connection = 'tenant';
+        $user = factory(\App\User::class)->make();
+        $user->setConnection($connection);
+        $user->save();
+
         $this->get(route('users'), ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
           ->seeStatusCode(200)
           ->seeJsonStructure([
@@ -94,6 +99,7 @@ class UserTest extends TestCase
             ],
             "message"
         ]);
+        $user->delete();
     }
 
     /**

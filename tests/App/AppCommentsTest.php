@@ -13,18 +13,23 @@ class AppCommentsTest extends TestCase
      */
     public function it_should_return_all_comments_by_mission_id()
     {
-        DB::setDefaultConnection('tenant');
-        $missionId = App\Models\Mission::get()->random()->mission_id;
-        $userId = App\User::get()->random()->user_id;
-        DB::setDefaultConnection('mysql');
+        $connection = 'tenant';
+        $mission = factory(\App\Models\Mission::class)->make();
+        $mission->setConnection($connection);
+        $mission->save();
+        $user = factory(\App\User::class)->make();
+        $user->setConnection($connection);
+        $user->save();
 
-        $token = Helpers::getJwtToken($userId);
-        $this->get('/app/mission/'.$missionId.'/comments', ['token' => $token])
+        $token = Helpers::getJwtToken($user->user_id);
+        $this->get('/app/mission/'.$mission->mission_id.'/comments', ['token' => $token])
           ->seeStatusCode(200)
           ->seeJsonStructure([
             "status",
             "message"
         ]);
+        $user->delete();
+        $mission->delete();
     }
 
     /**
@@ -36,18 +41,23 @@ class AppCommentsTest extends TestCase
      */
     public function it_should_return_no_comments_found_by_mission_id()
     {
-        DB::setDefaultConnection('tenant');
-        $missionId = App\Models\Mission::get()->random()->mission_id;
-        $userId = App\User::get()->random()->user_id;
-        DB::setDefaultConnection('mysql');
+        $connection = 'tenant';
+        $mission = factory(\App\Models\Mission::class)->make();
+        $mission->setConnection($connection);
+        $mission->save();
+        $user = factory(\App\User::class)->make();
+        $user->setConnection($connection);
+        $user->save();
 
-        $token = Helpers::getJwtToken($userId);
-        $this->get('/app/mission/'.$missionId.'/comments', ['token' => $token])
+        $token = Helpers::getJwtToken($user->user_id);
+        $this->get('/app/mission/'.$mission->mission_id.'/comments', ['token' => $token])
           ->seeStatusCode(200)
           ->seeJsonStructure([
             "status",
             "message"
         ]);
+        $user->delete();
+        $mission->delete();
     }
 
     /**

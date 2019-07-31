@@ -1,6 +1,7 @@
 <?php
 use Illuminate\Support\Facades\DB;
 use App\Helpers\Helpers;
+use Carbon\Carbon;
 
 class AppMisionApplicationTest extends TestCase
 {
@@ -36,18 +37,36 @@ class AppMisionApplicationTest extends TestCase
      */
     public function it_should_return_error_for_already_applied_to_a_mission()
     {
-        DB::setDefaultConnection('tenant');
-        $missionApplication = App\Models\MissionApplication::get()->random();
-        $missionId = $missionApplication->mission_id;
-        $userId = $missionApplication->user_id;
-        DB::setDefaultConnection('mysql');
+        $connection = 'tenant';
+        $mission = factory(\App\Models\Mission::class)->make();
+        $mission->setConnection($connection);
+        $mission->save();
+
+        $user = factory(\App\User::class)->make();
+        $user->setConnection($connection);
+        $user->save();
+
+        $missionApplication = new App\Models\MissionApplication();
+
+        $missionApplication->setConnection($connection);
+        $missionApplication->mission_id = $mission->mission_id;
+        $missionApplication->user_id = $user->user_id;
+        $missionApplication->availability_id = rand(1,1);
+        $missionApplication->motivation = str_random(10);
+        $missionApplication->approval_status = config('constants.application_status.PENDING');
+        $missionApplication->applied_at = Carbon::now();
+        $missionApplication->save();          
         
         $params = [
-                'mission_id' => $missionId
+                'mission_id' => $mission->mission_id
             ];
-        $token = Helpers::getJwtToken($userId);
+        $token = Helpers::getJwtToken($user->user_id);
         $this->post('app/mission/application', $params, ['token' => $token])
           ->seeStatusCode(422);
+
+        $missionApplication->delete();          
+        $mission->delete();          
+        $user->delete();    
     }
 
     /**
@@ -67,11 +86,12 @@ class AppMisionApplicationTest extends TestCase
         $params = [
             "organisation" => [
                 "organisation_id" => rand(1, 1),
-                "organisation_name" => str_random(10)
+                "organisation_name" => str_random(10),
+                "organisation_detail" => str_random(50)
             ],
             "location" => [
                 "city_id" => rand(1, 1),
-                "country_code" => "IN"
+                "country_code" => "US"
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -135,11 +155,12 @@ class AppMisionApplicationTest extends TestCase
         $params = [
             "organisation" => [
                 "organisation_id" => rand(1, 1),
-                "organisation_name" => str_random(10)
+                "organisation_name" => str_random(10),
+                "organisation_detail" => str_random(50)
             ],
             "location" => [
                 "city_id" => rand(1, 1),
-                "country_code" => "IN"
+                "country_code" => "US"
             ],
             "mission_detail" => [[
                     "lang" => "en",
@@ -205,11 +226,12 @@ class AppMisionApplicationTest extends TestCase
         $params = [
             "organisation" => [
                 "organisation_id" => rand(1, 1),
-                "organisation_name" => str_random(10)
+                "organisation_name" => str_random(10),
+                "organisation_detail" => str_random(50)
             ],
             "location" => [
                 "city_id" => rand(1, 1),
-                "country_code" => "IN"
+                "country_code" => "US"
             ],
             "mission_detail" => [[
                     "lang" => "en",
