@@ -22,8 +22,8 @@
         <env name="APP_ENV" value="testing"/>
         <env name="CACHE_DRIVER" value="array"/>
         <env name="QUEUE_CONNECTION" value="sync"/>
-        <env name="TENANT_DB_DATABASE" value="ci_tenant_1"/>
-        <env name="API_KEY" value="api_key_data"/>
-        <env name="API_SECRET" value="api_secret_data"/>
+        <env name="TENANT_DB_DATABASE" value="ci_tenant_3"/>
+        <env name="API_KEY" value="yZvkZnCx14DOSlk9"/>
+        <env name="API_SECRET" value="FxKZPcgdapbi69iq"/>
     </php>
 </phpunit>
