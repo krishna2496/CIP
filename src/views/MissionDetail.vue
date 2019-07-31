@@ -441,7 +441,7 @@
 										{{missionDetail.mission_rating_total_volunteers}}
 									 </em>
 									<em v-if="missionDetail.mission_rating_total_volunteers <=1" class="volunteery-counter"> {{ $t("label.volunteer")}} )</em>
-									<em v-else> {{ $t("label.volunteers")}} )</em>
+									<em v-else class="volunteery-counter"> {{ $t("label.volunteers")}} )</em>
 								</span>
 							</div>
 						</div>
