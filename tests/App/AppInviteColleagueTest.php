@@ -13,17 +13,20 @@ class AppInviteColleagueTest extends TestCase
      */
     public function it_should_validate_user_before_invite()
     {
-        DB::setDefaultConnection('tenant');
-        $missionId = App\Models\Mission::get()->random()->mission_id;
-        $userId = App\User::get()->random()->user_id;
-        DB::setDefaultConnection('mysql');
+        $connection = 'tenant';
+        $mission = factory(\App\Models\Mission::class)->make();
+        $mission->setConnection($connection);
+        $mission->save();
+        $user = factory(\App\User::class)->make();
+        $user->setConnection($connection);
+        $user->save();
 
         $params = [
-            'mission_id' => $missionId,
+            'mission_id' => $mission->mission_id,
             'to_user_id' => rand(1000000,2000000)
         ];
         
-        $token = Helpers::getJwtToken($userId);
+        $token = Helpers::getJwtToken($user->user_id);
         $this->post('/app/mission/invite', $params, ['token' => $token])
         ->seeStatusCode(422)
         ->seeJsonStructure([
@@ -36,6 +39,8 @@ class AppInviteColleagueTest extends TestCase
                 ]
             ]
         ]); 
+        $user->delete();
+        $mission->delete();
     }
 
     /**
@@ -78,18 +83,28 @@ class AppInviteColleagueTest extends TestCase
      * @return void
      */
     public function it_should_return_error_if_user_already_invited_for_mission()
-    {
-        DB::setDefaultConnection('tenant');
-        $userId = App\User::get()->random()->user_id;
-        $missionInviteData = App\Models\MissionInvite::get()->random();
-        DB::setDefaultConnection('mysql');
+    {        
+        $connection = 'tenant';
+        $mission = factory(\App\Models\Mission::class)->make();
+        $mission->setConnection($connection);
+        $mission->save();
+        $user = factory(\App\User::class)->make();
+        $user->setConnection($connection);
+        $user->save();
+        $toUser = factory(\App\User::class)->make();
+        $toUser->setConnection($connection);
+        $toUser->save();
 
         $params = [
-            'mission_id' => $missionInviteData->missionId,
-            'to_user_id' => $missionInviteData->to_user_id
+            'mission_id' => $mission->mission_id,
+            'to_user_id' => $toUser->user_id
         ];
-        
-        $token = Helpers::getJwtToken($missionInviteData->from_user_id);
+
+        $token = Helpers::getJwtToken($user->user_id);
+        $this->post('/app/mission/invite', $params, ['token' => $token]);  
+
+        DB::setDefaultConnection('mysql');
+
         $this->post('/app/mission/invite', $params, ['token' => $token])
         ->seeStatusCode(422)
         ->seeJsonStructure([
@@ -101,7 +116,11 @@ class AppInviteColleagueTest extends TestCase
                     "code"
                 ]
             ]
-        ]);    
+        ]); 
+        App\Models\MissionInvite::where(['mission_id' =>$mission->mission_id, 'to_user_id' => $toUser->user_id, 'from_user_id' => $user->user_id ])->take(1)->delete();  
+        $user->delete();
+        $toUser->delete();
+        $mission->delete();   
     }
 
     /**
@@ -113,18 +132,23 @@ class AppInviteColleagueTest extends TestCase
      */
     public function it_should_invite_user_to_a_mission()
     {
-        DB::setDefaultConnection('tenant');
-        $missionId = App\Models\Mission::get()->random()->mission_id;
-        $userId = App\User::get()->random()->user_id;
-        $toUserId = App\User::where('user_id', '<>', $userId)->get()->random()->user_id;
-        DB::setDefaultConnection('mysql');
+        $connection = 'tenant';
+        $mission = factory(\App\Models\Mission::class)->make();
+        $mission->setConnection($connection);
+        $mission->save();
+        $user = factory(\App\User::class)->make();
+        $user->setConnection($connection);
+        $user->save();
+        $toUser = factory(\App\User::class)->make();
+        $toUser->setConnection($connection);
+        $toUser->save();
 
         $params = [
-            'mission_id' => $missionId,
-            'to_user_id' => $toUserId
+            'mission_id' => $mission->mission_id,
+            'to_user_id' => $toUser->user_id
         ];
         
-        $token = Helpers::getJwtToken($userId);
+        $token = Helpers::getJwtToken($user->user_id);
         $this->post('/app/mission/invite', $params, ['token' => $token])
         ->seeStatusCode(201)
         ->seeJsonStructure([
@@ -134,6 +158,9 @@ class AppInviteColleagueTest extends TestCase
             ],
             'message',
         ]);  
-        App\Models\MissionInvite::where(['mission_id' =>$missionId, 'to_user_id' => $toUserId, 'from_user_id' => $userId ])->take(1)->delete();  
+        App\Models\MissionInvite::where(['mission_id' =>$mission->mission_id, 'to_user_id' => $toUser->user_id, 'from_user_id' => $user->user_id ])->take(1)->delete();  
+        $user->delete();
+        $toUser->delete();
+        $mission->delete();
     }
 }

@@ -17,7 +17,9 @@ class AppMissionTest extends TestCase
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
         $user->save();
-        DB::setDefaultConnection('mysql');
+        $mission = factory(\App\Models\Mission::class)->make();
+        $mission->setConnection($connection);
+        $mission->save();
 
         $token = Helpers::getJwtToken($user->user_id);
         $this->get(route('app.missions'), ['token' => $token])
@@ -32,6 +34,7 @@ class AppMissionTest extends TestCase
             "message"
         ]);
         $user->delete();
+        $mission->delete();
     }
 
     /**
@@ -115,16 +118,16 @@ class AppMissionTest extends TestCase
      */
     public function it_should_add_mission_to_favourite()
     {
-        DB::setDefaultConnection('tenant');
-        $missionId = App\Models\Mission::get()->random()->mission_id;
-        DB::setDefaultConnection('mysql');
-     
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
         $user->save();
+        $mission = factory(\App\Models\Mission::class)->make();
+        $mission->setConnection($connection);
+        $mission->save();
+
         $params = [
-                'mission_id' => $missionId
+                'mission_id' => $mission->mission_id
             ];
 
         $token = Helpers::getJwtToken($user->user_id);
@@ -134,8 +137,9 @@ class AppMissionTest extends TestCase
             "status",
             "message"
         ]);
-        $user->delete();
         App\Models\FavouriteMission::where('user_id', $user->user_id)->delete();
+        $user->delete();
+        $mission->delete();
     }
 
     /**
@@ -147,17 +151,17 @@ class AppMissionTest extends TestCase
      */
     public function it_should_remove_mission_from_favourite()
     {
-        DB::setDefaultConnection('tenant');
-        $missionId = App\Models\Mission::get()->random()->mission_id;
-        DB::setDefaultConnection('mysql');
-     
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
         $user->save();
+
+        $mission = factory(\App\Models\Mission::class)->make();
+        $mission->setConnection($connection);
+        $mission->save();
         
         $params = [
-                'mission_id' => $missionId
+                'mission_id' => $mission->mission_id
             ];
 
         $token = Helpers::getJwtToken($user->user_id);
@@ -176,6 +180,8 @@ class AppMissionTest extends TestCase
             "status",
             "message"
         ]);
+        $user->delete();
+        $mission->delete();
     }
 
     /**
@@ -187,13 +193,17 @@ class AppMissionTest extends TestCase
      */
     public function it_should_return_app_mission_detail_by_id()
     {
-        DB::setDefaultConnection('tenant');
-        $missionId = App\Models\Mission::get()->random()->mission_id;
-        $userId = App\User::get()->random()->user_id;
-        DB::setDefaultConnection('mysql');
+        $connection = 'tenant';
+        $mission = factory(\App\Models\Mission::class)->make();
+        $mission->setConnection($connection);
+        $mission->save();
 
-        $token = Helpers::getJwtToken($userId);
-        $this->get('app/mission/'.$missionId, ['token' => $token])
+        $user = factory(\App\User::class)->make();
+        $user->setConnection($connection);
+        $user->save();
+
+        $token = Helpers::getJwtToken($user->user_id);
+        $this->get('app/mission/'.$mission->mission_id, ['token' => $token])
           ->seeStatusCode(200)
           ->seeJsonStructure([
             "status",
@@ -235,6 +245,8 @@ class AppMissionTest extends TestCase
             ],
             "message"
         ]);
+        $user->delete();
+        $mission->delete();
     }
 
     /**
@@ -246,12 +258,13 @@ class AppMissionTest extends TestCase
      */
     public function it_should_return_error_for_invalid_mission_id_for_get_mission_details()
     {
-        DB::setDefaultConnection('tenant');
-        $userId = App\User::get()->random()->user_id;
-        DB::setDefaultConnection('mysql');
+        $connection = 'tenant';
+        $user = factory(\App\User::class)->make();
+        $user->setConnection($connection);
+        $user->save();
         $missionId = rand(1000000,2000000);
         
-        $token = Helpers::getJwtToken($userId);
+        $token = Helpers::getJwtToken($user->user_id);
         $this->get('/app/mission/'.$missionId, ['token' => $token])
         ->seeStatusCode(404)
         ->seeJsonStructure([
@@ -263,7 +276,8 @@ class AppMissionTest extends TestCase
                     "code"
                 ]
             ]
-        ]);      
+        ]);   
+        $user->delete();   
     }
 
     /**
@@ -275,13 +289,16 @@ class AppMissionTest extends TestCase
      */
     public function it_should_return_related_mission_by_id()
     {
-        DB::setDefaultConnection('tenant');
-        $missionId = App\Models\Mission::get()->random()->mission_id;
-        $userId = App\User::get()->random()->user_id;
-        DB::setDefaultConnection('mysql');
+        $connection = 'tenant';
+        $mission = factory(\App\Models\Mission::class)->make();
+        $mission->setConnection($connection);
+        $mission->save();
+        $user = factory(\App\User::class)->make();
+        $user->setConnection($connection);
+        $user->save();
 
-        $token = Helpers::getJwtToken($userId);
-        $this->get('/app/related-missions/'.$missionId, ['token' => $token])
+        $token = Helpers::getJwtToken($user->user_id);
+        $this->get('/app/related-missions/'.$mission->mission_id, ['token' => $token])
           ->seeStatusCode(200)
           ->seeJsonStructure([
             "status",
@@ -321,6 +338,8 @@ class AppMissionTest extends TestCase
             ],
             "message"
         ]);
+        $user->delete();
+        $mission->delete();
     }
 
     /**
@@ -332,12 +351,13 @@ class AppMissionTest extends TestCase
      */
     public function it_should_return_error_for_invalid_mission_id_to_get_related_mission()
     {
-        DB::setDefaultConnection('tenant');
-        $userId = App\User::get()->random()->user_id;
-        DB::setDefaultConnection('mysql');
+        $connection = 'tenant';
+        $user = factory(\App\User::class)->make();
+        $user->setConnection($connection);
+        $user->save();
         $missionId = rand(1000000,2000000);
         
-        $token = Helpers::getJwtToken($userId);
+        $token = Helpers::getJwtToken($user->user_id);
         $this->get('/app/related-missions/'.$missionId, ['token' => $token])
         ->seeStatusCode(404)
         ->seeJsonStructure([
@@ -349,7 +369,8 @@ class AppMissionTest extends TestCase
                     "code"
                 ]
             ]
-        ]);           
+        ]); 
+        $user->delete();          
     }
 
     /**
@@ -361,18 +382,23 @@ class AppMissionTest extends TestCase
      */
     public function it_should_return_app_mission_volunteers_by_mission_id()
     {
-        DB::setDefaultConnection('tenant');
-        $missionId = App\Models\Mission::get()->random()->mission_id;
-        $userId = App\User::get()->random()->user_id;
-        DB::setDefaultConnection('mysql');
+        $connection = 'tenant';
+        $mission = factory(\App\Models\Mission::class)->make();
+        $mission->setConnection($connection);
+        $mission->save();
+        $user = factory(\App\User::class)->make();
+        $user->setConnection($connection);
+        $user->save();
 
-        $token = Helpers::getJwtToken($userId);
-        $this->get('app/mission/'.$missionId.'/volunteers', ['token' => $token])
+        $token = Helpers::getJwtToken($user->user_id);
+        $this->get('app/mission/'.$mission->mission_id.'/volunteers', ['token' => $token])
           ->seeStatusCode(200)
           ->seeJsonStructure([
             "status",
             "message"
         ]);
+        $mission->delete();
+        $user->delete();
     }
 
     /**
@@ -384,12 +410,13 @@ class AppMissionTest extends TestCase
      */
     public function it_should_return_error_for_invalid_mission_id_for_get_volunteers()
     {
-        DB::setDefaultConnection('tenant');
-        $userId = App\User::get()->random()->user_id;
-        DB::setDefaultConnection('mysql');
+        $connection = 'tenant';        
+        $user = factory(\App\User::class)->make();
+        $user->setConnection($connection);
+        $user->save();
         $missionId = rand(1000000,2000000);
         
-        $token = Helpers::getJwtToken($userId);
+        $token = Helpers::getJwtToken($user->user_id);
         $this->get('app/mission/'.$missionId.'/volunteers', ['token' => $token])
         ->seeStatusCode(404)
         ->seeJsonStructure([
@@ -401,6 +428,7 @@ class AppMissionTest extends TestCase
                     "code"
                 ]
             ]
-        ]);      
+        ]);  
+        $user->delete();    
     }
 }

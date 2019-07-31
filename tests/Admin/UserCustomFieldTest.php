@@ -48,6 +48,11 @@ class UserCustomFieldTest extends TestCase
      */
     public function it_should_return_all_user_custom_fields()
     {
+        $connection = 'tenant';
+        $userCustomField = factory(\App\Models\UserCustomField::class)->make();
+        $userCustomField->setConnection($connection);
+        $userCustomField->save();
+
         $this->get(route('metadata.users.custom_fields'), ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
           ->seeStatusCode(200)
           ->seeJsonStructure([
@@ -63,6 +68,7 @@ class UserCustomFieldTest extends TestCase
             ],
             "message"
         ]);
+        $userCustomField->delete();
     }
 
     /**

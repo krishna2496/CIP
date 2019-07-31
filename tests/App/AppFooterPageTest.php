@@ -11,6 +11,11 @@ class AppFooterPageTest extends TestCase
      */
     public function it_should_return_all_footer_pages_with_details()
     {
+        $connection = 'tenant';
+        $footer_page = factory(\App\Models\FooterPage::class)->make();
+        $footer_page->setConnection($connection);
+        $footer_page->save();
+
         $this->get(route('cms.detail'), [])
           ->seeStatusCode(200)
           ->seeJsonStructure([
@@ -32,6 +37,7 @@ class AppFooterPageTest extends TestCase
             ],
             "message"
         ]);
+        $footer_page->delete();
     }
 
     /**
@@ -60,6 +66,11 @@ class AppFooterPageTest extends TestCase
      */
     public function it_should_return_all_footer_pages_listing()
     {
+        $connection = 'tenant';
+        $footer_page = factory(\App\Models\FooterPage::class)->make();
+        $footer_page->setConnection($connection);
+        $footer_page->save();
+
         $this->get(route('cms.detail'), [])
           ->seeStatusCode(200)
           ->seeJsonStructure([
@@ -80,6 +91,7 @@ class AppFooterPageTest extends TestCase
             ],
             "message"
         ]);
+        $footer_page->delete();
     }
 
     /**

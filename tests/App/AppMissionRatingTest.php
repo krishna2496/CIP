@@ -13,16 +13,16 @@ class AppMissionRatingTest extends TestCase
      */
     public function it_should_add_mission_rating()
     {
-        DB::setDefaultConnection('tenant');
-        $missionId = App\Models\Mission::get()->random()->mission_id;
-        DB::setDefaultConnection('mysql');
-     
         $connection = 'tenant';
+        $mission = factory(\App\Models\Mission::class)->make();
+        $mission->setConnection($connection);
+        $mission->save();
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
         $user->save();
+
         $params = [
-                'mission_id' => $missionId,
+                'mission_id' => $mission->mission_id,
                 'rating' => rand(1, 5)
             ];
 
@@ -33,9 +33,7 @@ class AppMissionRatingTest extends TestCase
             "status",
             "message"
         ]);
-        $user->delete();
-        App\Models\MissionRating::where(['user_id' => $user->user_id, 'mission_id' => $missionId])->delete();
-    }
+}
 
     /**
      * @test
@@ -62,7 +60,10 @@ class AppMissionRatingTest extends TestCase
             "status",
             "message"
         ]);
-    }
+        App\Models\MissionRating::where(['user_id' => $missionRatingData->user_id, 'mission_id' => $missionRatingData->mission_id])->delete();
+        App\User::where(['user_id' => $missionRatingData->user_id])->delete();
+        App\Models\Mission::where(['mission_id' => $missionRatingData->mission_id])->delete();
+}
 
     /**
      * @test
@@ -107,16 +108,20 @@ class AppMissionRatingTest extends TestCase
      */
     public function it_should_return_error_for_invalid_minimum_rating()
     {
-        DB::setDefaultConnection('tenant');
-        $missionRatingData = App\Models\MissionRating::get()->random();
-        DB::setDefaultConnection('mysql');
+        $connection = 'tenant';
+        $mission = factory(\App\Models\Mission::class)->make();
+        $mission->setConnection($connection);
+        $mission->save();
+        $user = factory(\App\User::class)->make();
+        $user->setConnection($connection);
+        $user->save();
 
         $params = [
-                'mission_id' => $missionRatingData->mission_id,
+                'mission_id' => $mission->mission_id,
                 'rating' => 0.2
             ];
 
-        $token = Helpers::getJwtToken($missionRatingData->user_id);
+        $token = Helpers::getJwtToken($user->user_id);
         $this->post('app/mission/rating', $params, ['token' => $token])
         ->seeStatusCode(422)
         ->seeJsonStructure([
@@ -129,6 +134,8 @@ class AppMissionRatingTest extends TestCase
                 ]
             ]
         ]); 
+        $user->delete();
+        $mission->delete();
     }
 
     /**
@@ -140,16 +147,20 @@ class AppMissionRatingTest extends TestCase
      */
     public function it_should_return_error_for_invalid_maximum_rating()
     {
-        DB::setDefaultConnection('tenant');
-        $missionRatingData = App\Models\MissionRating::get()->random();
-        DB::setDefaultConnection('mysql');
+        $connection = 'tenant';
+        $mission = factory(\App\Models\Mission::class)->make();
+        $mission->setConnection($connection);
+        $mission->save();
+        $user = factory(\App\User::class)->make();
+        $user->setConnection($connection);
+        $user->save();
 
         $params = [
-                'mission_id' => $missionRatingData->mission_id,
+                'mission_id' => $mission->mission_id,
                 'rating' => 5.5
             ];
 
-        $token = Helpers::getJwtToken($missionRatingData->user_id);
+        $token = Helpers::getJwtToken($user->user_id);
         $this->post('app/mission/rating', $params, ['token' => $token])
         ->seeStatusCode(422)
         ->seeJsonStructure([
@@ -162,5 +173,7 @@ class AppMissionRatingTest extends TestCase
                 ]
             ]
         ]); 
+        $user->delete();
+        $mission->delete();
     }
 }
