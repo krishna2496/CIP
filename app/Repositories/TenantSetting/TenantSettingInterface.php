@@ -4,6 +4,7 @@ namespace App\Repositories\TenantSetting;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
+use App\Models\TenantSetting;
 
 interface TenantSettingInterface
 {
