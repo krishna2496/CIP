@@ -90,7 +90,8 @@
 		"by" : "par",
 		"volunteers" : "bénévoles",
 		"no_document" : "Pas de documents",
-		"related_missions" : "Missions connexes"
+		"related_missions" : "Missions connexes",
+		"no_related_missions" : "Aucune mission liée"
 	},
 
 	"placeholder" : {
