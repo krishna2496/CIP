@@ -68,7 +68,7 @@ class MissionLanguage extends Model
      * @param  string $value
      * @return array
      */
-    public function getDescriptionAttribute(string $value): array
+    public function getDescriptionAttribute($value)
     {
         if ($value) {
             return unserialize($value);
