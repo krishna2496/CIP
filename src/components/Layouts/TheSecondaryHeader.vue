@@ -53,6 +53,7 @@
                             :filterTitle="defautTheme" 
                             :selectedItem="selectedTheme"
                             :checkList="themeList"
+                            @changeParmas="changeThemeParmas"
                             @updateCall="changeTheme"
                         />
                     </b-list-group-item>
@@ -62,6 +63,7 @@
                             :filterTitle="defautSkill" 
                             :checkList="skillList"
                             :selectedItem="selectedSkill"
+                             @changeParmas="changeSkillParmas"
                             @updateCall="changeSkill"
                         />
                     </b-list-group-item>
@@ -126,9 +128,21 @@ export default {
         };
     },
     methods: {
+        changeThemeParmas() {
+            this.isCountryChange = false;
+            this.isCityChange = false;
+        },
+
+        changeSkillParmas() {
+          this.isCountryChange = false;
+          this.isCityChange = false;
+          this.isThemeChange = false;  
+        },
+
         test() {
             this.$emit('storeMisisonSearch', this.searchString);
         },
+        
         handleFocus() {
             this.searchPlaceHolder = '';
             var b_header = document.querySelector(".bottom-header");
@@ -161,6 +175,19 @@ export default {
                 });
                 this.selectedSkill = filteredSkill;
             }
+        },
+
+        changeThemeStatus(theme) {
+            this.isCountryChange = false;
+            this.isCityChange = false;
+            this.changeTheme(theme);
+        },
+
+        changeSkillStatus(skill) {
+            this.isCountryChange = false;
+            this.isCityChange = false;
+            this.isThemeChange = false;
+            this.changeSkill(skill);
         },
 
         handleBlur() {
@@ -262,6 +289,7 @@ export default {
         },
 
         async changeTheme(theme) {
+            
             this.isThemeChange = true;
             if(!this.isCountryChange && !this.isCityChange) {
                 this.selectedfilterParams.themeId = theme;

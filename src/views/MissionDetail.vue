@@ -18,11 +18,6 @@
               <img src="../assets/images/facebook-ic.svg" alt="Facebook" />
             </i>
           </network>
-          <network network="linkedin">
-            <i class="social-icon linkedin-icon">
-              <img src="../assets/images/linkedin-ic.svg" alt="Linkedin" />
-            </i>
-          </network>
           <network network="twitter">
             <i class="social-icon twitter-icon">
               <img src="../assets/images/twitter-ic.svg" alt="Twitter" />
@@ -293,51 +288,50 @@
 											<p>{{section.description}}</p>
 										</div>
 									</div>
-									<h2>{{ $t("label.documents") }}</h2>
-
-									<div class="document-list-wrap" v-if="missionDetail.mission_document 
+									<div v-if="missionDetail.mission_document 
 									&& missionDetail.mission_document.length > 0" >
-										
-										<div class="document-list-block" v-for="document in missionDetail.mission_document"  >
-										
-											<!-- pdf -->
-										<template v-if="document.document_type =='pdf'">
-											<b-link :href="document.document_path" target="_blank" 
-											:title="document.document_name">
-											<AppCustomChip 
-												:textVal="document.document_name" 
-												class="has-img no-close" 
-												:url="bgImage[0]"/>
-											</b-link>
-										</template>
-										<!-- doc -->
-										<template v-if="document.document_type =='doc' || document.document_type =='docx' ">
-											<b-link :href="document.document_path" target="_blank" 
-											:title="document.document_name">
-											<AppCustomChip 
-												:textVal="document.document_name" 
-												class="has-img no-close" 
-												:url="bgImage[1]"/>
-											</b-link>
-										</template>
+										<h2>{{ $t("label.documents") }}</h2>
 
-										<!-- xls  xlsx-->
-										<template v-if="document.document_type =='xls' || document.document_type =='xlsx ' ">
-											<b-link :href="document.document_path" target="_blank" 
-											:title="document.document_name">
-											<AppCustomChip 
-												:textVal="document.document_name" 
-												class="has-img no-close" 
-												:url="bgImage[2]"/>
-											</b-link>
-										</template>
+										<div class="document-list-wrap">
+											
+											<div class="document-list-block" v-for="document in missionDetail.mission_document"  >
+											
+												<!-- pdf -->
+											<template v-if="document.document_type =='pdf'">
+												<b-link :href="document.document_path" target="_blank" 
+												:title="document.document_name">
+												<AppCustomChip 
+													:textVal="document.document_name" 
+													class="has-img no-close" 
+													:url="bgImage[0]"/>
+												</b-link>
+											</template>
+											<!-- doc -->
+											<template v-if="document.document_type =='doc' || document.document_type =='docx' ">
+												<b-link :href="document.document_path" target="_blank" 
+												:title="document.document_name">
+												<AppCustomChip 
+													:textVal="document.document_name" 
+													class="has-img no-close" 
+													:url="bgImage[1]"/>
+												</b-link>
+											</template>
 
-										</div>
-										
-									</div> 
-										<div class="document-list-block" v-else>
-											{{ $t("label.no_document")}}
-										</div>
+											<!-- xls  xlsx-->
+											<template v-if="document.document_type =='xls' || document.document_type =='xlsx ' ">
+												<b-link :href="document.document_path" target="_blank" 
+												:title="document.document_name">
+												<AppCustomChip 
+													:textVal="document.document_name" 
+													class="has-img no-close" 
+													:url="bgImage[2]"/>
+												</b-link>
+											</template>
+
+											</div>
+											
+										</div> 
+									</div>
 								</b-collapse>
 					 		</div>
 							<div class="tabs">
@@ -468,10 +462,10 @@
           </b-row>
 	  </div>
       </b-container>
-	  <div class="mission-block">
+	  <div class="mission-block" v-if="missionListing && missionListing.length > 0">
 			<b-container class="card-grid">
-			   <h2>{{$t("label.related_missions")}}</h2>
-			   		<div v-if="missionListing.length > 0">
+			    <h2>{{$t("label.related_missions")}}</h2>
+			   		<div>
 					   	<div v-bind:class="{ 'content-loader-wrap': true, 'mission-loader': relatedMissionlLoader}">
 							<div class="content-loader"></div>
 						</div>
@@ -484,13 +478,14 @@
 			                small
 			            />
 			        </div>
-			        <div v-else>
-			        	<h3 class="text-center">{{$t("label.no_related_missions")}}</h3>
-			        </div>
-          <b-modal centered :title="$t('label.search_user')" ref="userDetailModal" 
+			</b-container>
+		  
+	  </div>
+	  <b-modal centered :title="$t('label.search_user')" ref="userDetailModal" 
             :modal-class="myclass" hide-footer>
-            <b-alert show :variant="classVariant" dismissible v-model="showErrorDiv"
-            >{{ message }}</b-alert>
+	            <b-alert show :variant="classVariant" dismissible v-model="showErrorDiv">
+	            	{{ message }}
+        		</b-alert>
                 <div class="autocomplete-control">
                     <div class="autosuggest-container">
                         <VueAutosuggest 
@@ -523,8 +518,6 @@
                 </div>
             </b-form>
         </b-modal>
-		  </b-container>
-	  </div>
       </main>
        <footer v-if="isShownComponent">
              <TheSecondaryFooter v-if="isShownComponent"></TheSecondaryFooter>
