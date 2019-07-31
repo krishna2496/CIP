@@ -70,6 +70,7 @@ export default {
     },
      handleClick(e) {
         e.stopPropagation();
+        console.log(e.target)
         var profile_toggle = document.querySelector(
           ".profile-menu .dropdown-toggle"
         );
@@ -201,9 +202,13 @@ export default {
      var dropdwon_toggle = document.querySelectorAll(".select-text");
              for (var i = 0; i < dropdwon_toggle.length; ++i) {
             if (screen.width < 1025) {
+
               dropdwon_toggle[i].addEventListener("touchend", _this.handleClick);
             } else {
-              dropdwon_toggle[i].addEventListener("click", _this.handleClick);          
+              
+              dropdwon_toggle[i].addEventListener("click", _this.handleClick); 
+              dropdwon_toggle[i].addEventListener("click", function(){
+              });          
             }
           }
     },2000);

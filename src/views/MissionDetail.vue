@@ -4,32 +4,19 @@
      		<ThePrimaryHeader v-if="isShownComponent"></ThePrimaryHeader>
     	</header>
       	<main>
-      	
-	 	<social-sharing
-	        :url="sharingUrl"
-	        :title="missionDetail.title"
-	        :description="missionDetail.short_description"
-	        :quote="missionDetail.title"
-	        inline-template
-      	>
-        <div class="social-sharing">
-          <network network="facebook">
-            <i class="social-icon facebook-icon">
-              <img src="../assets/images/facebook-ic.svg" alt="Facebook" />
-            </i>
-          </network>
-          <network network="twitter">
-            <i class="social-icon twitter-icon">
-              <img src="../assets/images/twitter-ic.svg" alt="Twitter" />
-            </i>
-          </network>
-        </div>
-      </social-sharing>
+      		<div v-if="isShareComponentShown">
+      <AddThis 
+        publicId="ra-5d4173b2ee914965"
+        :data-url="sharingUrl"
+        :data-title="missionDetail.title"
+        :data-description="missionDetail.short_description"
+        :data-media="defaultMedia"
+       /></div>
 			<b-container>
 		  	<div class="slider-banner-block">
 					<b-row>
 						<b-col lg="6" class="slider-col">
-							<MissionCarousel  v-if="isShownMediaComponent"></MissionCarousel>
+							<MissionCarousel  v-if="isShownMediaComponent" @defaultMediaPathDetail = "defaultMediaPathDetail"></MissionCarousel>
 						</b-col>
 						<b-col lg="6" class="ml-auto banner-content-wrap">
 							<div class="banner-content-block">
@@ -241,7 +228,7 @@
 									</i>
 									<span>{{ $t("label.recommend_to_co_worker") }}</span>
 								</b-button>
-								<b-button class="btn-bordersecondary icon-btn" v-bind:disabled="disableApply"
+								<b-button class="btn-bordersecondary icon-btn" :disabled="disableApply"
 								@click="applyForMission(missionDetail.mission_id)"
 								>
 										<span>{{ $t("label.apply_now") }}</span>
@@ -449,10 +436,12 @@
 										v-bind:star-size="23"
 										>
 									</star-rating>
-									<span>(
-									{{ $t("label.by")}} 
-									{{missionDetail.mission_rating_total_volunteers}} 
-									{{$t("label.volunteers")}} )</span>
+									<em>(
+										{{ $t("label.by")}} 
+										{{missionDetail.mission_rating_total_volunteers}}
+									 </em>
+									<em v-if="missionDetail.mission_rating_total_volunteers <=1" class="volunteery-counter"> {{ $t("label.volunteer")}} )</em>
+									<em v-else> {{ $t("label.volunteers")}} )</em>
 								</span>
 							</div>
 						</div>
@@ -533,7 +522,8 @@ import { VueAutosuggest } from 'vue-autosuggest';
 import {favoriteMission,inviteColleague ,applyMission,searchUser,storeMissionRating,missionDetail,relatedMissions,missionComments} from "../services/service";
 import SimpleBar from 'simplebar';
 import store from "../store";
-import moment from 'moment'
+import moment from 'moment';
+import AddThis from 'vue-simple-addthis-share'
 
 export default {
   components: {
@@ -545,6 +535,7 @@ export default {
 	GridView: () => import("../components/MissionGridView"),
 	VueAutosuggest,
 	SimpleBar,
+	AddThis,
 	RecentVolunteers: () => import("../components/RecentVolunteers"),
 	MissionCarousel: () => import("../components/MissionCarousel"),
   },
@@ -587,7 +578,9 @@ export default {
 			max: 100,
 			value: 70,
 			missionListing : [],
-			missionComment : []
+			missionComment : [],
+			defaultMedia : '',
+			isShareComponentShown : false
 	    };
   	},
 	mounted(){
@@ -701,6 +694,11 @@ export default {
                     });
             });
         },
+
+        defaultMediaPathDetail(defaultImage) {
+        	this.defaultMedia = defaultImage;
+        	this.isShareComponentShown = true;
+        },
 		// invite collegues api call
         inviteColleagues() {
             let inviteData = {};
@@ -736,6 +734,7 @@ export default {
     	},
     	// Apply for mission
         applyForMission(missionId) {
+        	this.disableApply = true;
             let missionData = {};
             missionData.mission_id = missionId;
             missionData.availability_id = 1;
@@ -746,6 +745,7 @@ export default {
                     this.makeToast("success",response.message);
                     this.$emit("getMissions"); 
                 }
+
             })
         },
     	getRelatedMissions() {
@@ -824,7 +824,7 @@ export default {
 	                  if(skills == '') {
 	                  	skills = item.title;
 	                  } else {
-	                  	skills = skills+","+item.title;
+	                  	skills = skills+", "+item.title;
 	                  }
                 });
         	} else {
@@ -837,7 +837,9 @@ export default {
             let missionData = {};
             missionData.mission_id = missionId;
             missionData.availability_id = 1;
+            
             applyMission(missionData).then(response => {
+            	this.disableApply = true;
                 if(response.error == true){
                     this.makeToast("danger",response.message);
                 } else {

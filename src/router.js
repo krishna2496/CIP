@@ -65,6 +65,7 @@ let routes = [{
     component: () =>
         import ('./views/MissionDetail.vue')
 },
+
 ];
 
 export default new Router({

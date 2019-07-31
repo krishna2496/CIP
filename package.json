@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "aos": "^3.0.0-beta.6",
-    "axios": "^0.18.0",
+    "axios": "^0.18.1",
     "bootstrap": "^4.3.1",
     "bootstrap-vue": "^2.0.0-rc.20",
     "core-js": "^2.6.5",
@@ -26,6 +26,7 @@
     "vue-owl-carousel": "^2.0.3",
     "vue-router": "^3.0.3",
     "vue-scrollto": "^2.15.0",
+    "vue-simple-addthis-share": "^0.1.0",
     "vue-social-sharing": "^2.4.5",
     "vue-star-rating": "^1.6.1",
     "vuelidate": "^0.7.4",
@@ -42,6 +43,7 @@
     "node-sass": "^4.9.0",
     "sass-loader": "^7.1.0",
     "vue-cli-plugin-i18n": "^0.6.0",
-    "vue-template-compiler": "^2.5.21"
+    "vue-template-compiler": "^2.5.21",
+    "webpack-cli": "^3.3.6"
   }
 }
