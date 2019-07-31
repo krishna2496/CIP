@@ -141,4 +141,20 @@ interface MissionInterface
      * @return Illuminate\Database\Eloquent\Collection
      */
     public function missionFilter(Request $request, string $filterParams): Collection;
+
+    /**
+     * Check seats are available or not.
+     *
+     * @param int $missionId
+     * @return bool
+     */
+    public function checkAvailableSeats(int $missionId): bool;
+
+    /**
+     * Check mission deadline
+     *
+     * @param int $missionId
+     * @return bool
+     */
+    public function checkMissionDeadline(int $missionId): bool;
 }

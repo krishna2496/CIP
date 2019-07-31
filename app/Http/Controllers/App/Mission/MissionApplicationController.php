@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
 use App\Repositories\MissionApplication\MissionApplicationRepository;
+use App\Repositories\Mission\MissionRepository;
 use App\Helpers\ResponseHelper;
 use PDOException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -15,10 +16,16 @@ use Validator;
 class MissionApplicationController extends Controller
 {
     use RestExceptionHandlerTrait;
+    
     /**
      * @var MissionApplicationRepository
      */
     private $missionApplicationRepository;
+    
+    /**
+     * @var MissionRepository
+     */
+    private $missionRepository;
     
     /**
      * @var App\Helpers\ResponseHelper
@@ -29,14 +36,17 @@ class MissionApplicationController extends Controller
      * Create a new Mission controller instance.
      *
      * @param App\Repositories\MissionApplication\MissionApplicationRepository $missionApplicationRepository
+     * @param App\Repositories\Mission\MissionRepository $missionRepository
      * @param Illuminate\Http\ResponseHelper $responseHelper
      * @return void
      */
     public function __construct(
         MissionApplicationRepository $missionApplicationRepository,
+        MissionRepository $missionRepository,
         ResponseHelper $responseHelper
     ) {
         $this->missionApplicationRepository = $missionApplicationRepository;
+        $this->missionRepository = $missionRepository;
         $this->responseHelper = $responseHelper;
     }
 
@@ -79,7 +89,7 @@ class MissionApplicationController extends Controller
                 );
             }
 
-            $seatAvailable = $this->missionApplicationRepository->checkAvailableSeats($request->mission_id);
+            $seatAvailable = $this->missionRepository->checkAvailableSeats($request->mission_id);
             if ($seatAvailable === false) {
                 return $this->responseHelper->error(
                     Response::HTTP_UNPROCESSABLE_ENTITY,
@@ -89,7 +99,7 @@ class MissionApplicationController extends Controller
                 );
             }
 
-            $applicationDeadline = $this->missionApplicationRepository->checkMissionDeadline($request->mission_id);
+            $applicationDeadline = $this->missionRepository->checkMissionDeadline($request->mission_id);
             if (!$applicationDeadline) {
                 return $this->responseHelper->error(
                     Response::HTTP_UNPROCESSABLE_ENTITY,

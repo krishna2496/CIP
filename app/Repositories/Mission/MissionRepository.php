@@ -920,4 +920,39 @@ class MissionRepository implements MissionInterface
         ->with(['user:user_id,first_name,last_name,avatar']);
         return $commentQuery->take(config("constants.MISSION_COMMENT_LIMIT"))->get();
     }
+        
+    /*
+     * Check seats are available or not.
+     *
+     * @param int $missionId
+     * @return bool
+     */
+    public function checkAvailableSeats(int $missionId): bool
+    {
+        $mission = $this->mission->checkAvailableSeats($missionId);
+        if ($mission['total_seats'] == 0) {
+            return false;
+        }
+
+        if ($mission['total_seats'] != 0) {
+            $seatsLeft = ($mission['total_seats']) - ($mission['mission_application_count']);
+            return ($seatsLeft == 0 || $mission['total_seats'] == $mission['mission_application_count']) ? false : true;
+        }
+    }
+    
+    /*
+     * Check mission deadline
+     *
+     * @param int $missionId
+     * @return bool
+     */
+    public function checkMissionDeadline(int $missionId): bool
+    {
+        $mission = $this->mission->findOrFail($missionId);
+        if ($mission->mission_type == config('constants.mission_type.TIME')) {
+            $applicationDeadline = $this->timeMission->getDeadLine($missionId);
+            return ($applicationDeadline > Carbon::now()) ? true : false;
+        }
+        return true;
+    }
 }

@@ -8,22 +8,6 @@ use Illuminate\Pagination\LengthAwarePaginator;
 interface MissionApplicationInterface
 {
     /*
-     * Check seats are available or not.
-     *
-     * @param int $missionId
-     * @return bool
-     */
-    public function checkAvailableSeats(int $missionId): bool;
-
-    /*
-     * Check mission deadline
-     *
-     * @param int $missionId
-     * @return bool
-     */
-    public function checkMissionDeadline(int $missionId): bool;
-
-    /*
      * Check already applied for a mission or not.
      *
      * @param int $missionId
