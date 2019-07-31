@@ -12,12 +12,6 @@ let routes = [{
         import ('./views/Auth/Login.vue')
 },
 {
-    path: '/testing',
-    name: 'AddThis',
-    component: () =>
-        import ('./views/AddThis.vue')
-},
-{
     path: '/home',
     name: 'home',
     meta: {

@@ -208,7 +208,6 @@ export default {
               
               dropdwon_toggle[i].addEventListener("click", _this.handleClick); 
               dropdwon_toggle[i].addEventListener("click", function(){
-                console.log("update")
               });          
             }
           }
