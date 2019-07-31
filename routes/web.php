@@ -205,7 +205,7 @@ $router->group(
         $router->delete('/{missionId}', ['as' => 'missions.delete',
         'uses' => 'Admin\Mission\MissionController@destroy']);
         $router->get('/{missionId}/applications', ['middleware' => ['PaginationMiddleware'],
-        'as' => 'missions.applications', 'uses' => 'Admin\Mission\MissionApplicationController@missionApplications']);
+         'uses' => 'Admin\Mission\MissionApplicationController@missionApplications']);
         $router->get(
             '/{missionId}/applications/{applicationId}',
             ['uses' => 'Admin\Mission\MissionApplicationController@missionApplication']
@@ -235,6 +235,7 @@ $router->group(
         $router->get('/reset-style', ['uses' => 'Admin\Tenant\TenantOptionsController@resetStyleSettings']);
         $router->get('/download-style', ['uses' => 'Admin\Tenant\TenantOptionsController@downloadStyleFiles']);
         $router->post('/update-image', ['uses' => 'Admin\Tenant\TenantOptionsController@updateImage']);
+        $router->get('/reset-asset-images', ['uses' => 'Admin\Tenant\TenantOptionsController@resetAssetsImages']);
     }
 );
 

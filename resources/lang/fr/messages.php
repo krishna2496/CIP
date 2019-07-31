@@ -62,10 +62,12 @@ return [
         'MESSAGE_INVITED_FOR_MISSION' => 'Utilisateur invité à la mission avec succès',
         'MESSAGE_APPLICATION_CREATED' => 'Appliqué pour une mission avec succès',
         'MESSAGE_RATING_ADDED' => 'Évaluation de la mission ajoutée avec succès',
+        'MESSAGE_RATING_UPDATED' => 'Evaluation de la mission mise à jour avec succès',
         'MESSAGE_MISSION_VOLUNTEERS_LISTING' => 'Obtenez des volontaires de mission avec succès',
         'MESSAGE_NO_MISSION_VOLUNTEERS_FOUND' => 'Aucun volontaire récent trouvé',
         'MESSAGE_MISSION_MEDIA_LISTING' => 'Les médias de la mission ont réussi',
         'MESSAGE_MISSION_COMMENT_LISTING' => 'Obtenir des commentaires de mission avec succès',
+        'MESSAGE_ASSET_IMAGES_RESET_SUCCESS' => 'Les images d\'actif ont été réinitialisées avec succès',
         'MESSAGE_NO_RELATED_MISSION_FOUND' => 'Mission associée non trouvée',        
         'MESSAGE_NO_MISSION_MEDIA_FOUND' => 'Média de mission introuvable',
         'MESSAGE_NO_MISSION_COMMENT_FOUND' => 'Commentaires de mission non trouvés',  
@@ -154,6 +156,8 @@ return [
         'ERROR_WHILE_UPLOADING_IMAGE_ON_S3' => 'Une erreur lors du téléchargement de l\'image sur S3',
         'ERROR_DOWNLOADING_IMAGE_TO_LOCAL' => 'Une erreur lors du téléchargement de l\'image de S3 sur le serveur',
         'ERROR_IMAGE_UPLOAD_INVALID_DATA' => 'Fichier d\'entrée invalide',
-        'ERROR_TENANT_OPTION_NOT_FOUND' => 'Aucune option de locataire trouvée'
+        'ERROR_TENANT_OPTION_NOT_FOUND' => 'Aucune option de locataire trouvée',
+        'ERROR_LANGUAGE_NOT_FOUND' => 'Langue non trouvée',
+        'ERROR_FAILED_TO_RESET_ASSET_IMAGE' => 'Impossible de réinitialiser les images d\'actif'
     ],
 ];

@@ -50,7 +50,7 @@ class MissionApplicationRepository implements MissionApplicationInterface
     }
 
     
-    /*
+    /**
      * Check seats are available or not.
      *
      * @param int $missionId
@@ -59,23 +59,23 @@ class MissionApplicationRepository implements MissionApplicationInterface
     public function checkAvailableSeats(int $missionId): bool
     {
         $mission = $this->mission->checkAvailableSeats($missionId);
+        if ($mission['total_seats'] == 0) {
+            return false;
+        }
 
         if ($mission['total_seats'] != 0) {
             $seatsLeft = ($mission['total_seats']) - ($mission['mission_application_count']);
-            if ($seatsLeft == 0 || $mission['total_seats'] == $mission['mission_application_count']) {
-                return false;
-            }
+            return ($seatsLeft == 0 || $mission['total_seats'] == $mission['mission_application_count']) ? false : true;
         }
-        return true;
     }
     
-    /*
+    /**
      * Check mission deadline
      *
      * @param int $missionId
      * @return bool
      */
-    public function checkMissionDeadline(int $missionId): bool
+    public function checkMissionDeadline(int $missionId)
     {
         $mission = $this->mission->findOrFail($missionId);
         if ($mission->mission_type == config('constants.mission_type.TIME')) {
@@ -101,6 +101,7 @@ class MissionApplicationRepository implements MissionApplicationInterface
      * Add mission application.
      *
      * @param array $request
+     * @param int $userId
      * @return App\Models\MissionApplication
      */
     public function storeApplication(array $request, int $userId): MissionApplication
@@ -119,7 +120,7 @@ class MissionApplicationRepository implements MissionApplicationInterface
      * Display a listing of the resource.
      *
      * @param \Illuminate\Http\Request $request
-     * @param int $mission_id
+     * @param int $missionId
      * @return Illuminate\Pagination\LengthAwarePaginator
      */
     public function missionApplications(Request $request, int $missionId): LengthAwarePaginator
@@ -161,7 +162,7 @@ class MissionApplicationRepository implements MissionApplicationInterface
         return $missionApplication;
     }
 
-    /*
+    /**
      * Get recent volunteers
      *
      * @param Illuminate\Http\Request $request

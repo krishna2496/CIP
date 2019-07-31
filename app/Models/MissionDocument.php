@@ -53,9 +53,9 @@ class MissionDocument extends Model
      *
      * @param  array $condition
      * @param  array $data
-     * @return array
+     * @return App\Models\MissionDocument
      */
-    public function createOrUpdateDocument(array $condition, array $data)
+    public function createOrUpdateDocument(array $condition, array $data): MissionDocument
     {
         return static::updateOrCreate($condition, $data);
     }

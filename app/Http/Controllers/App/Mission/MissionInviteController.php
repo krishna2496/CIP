@@ -18,6 +18,7 @@ use App\Repositories\User\UserRepository;
 use App\Repositories\Mission\MissionRepository;
 use Illuminate\Support\Facades\Mail;
 use App\Jobs\AppMailerJob;
+use App\Exceptions\TenantDomainNotFoundException;
 
 class MissionInviteController extends Controller
 {
@@ -156,23 +157,14 @@ class MissionInviteController extends Controller
                     'colleagueLanguage'=> $colleagueLanguage
                 );
 
-                try {
-                    $tenantName = $this->helpers->getSubDomainFromRequest($request);
-                } catch (\Exception $e) {
-                    return $this->badRequest($e->getMessage());
-                }
-                            
-                try {
-                    $params['tenant_name'] = $tenantName;
-                    $params['to'] = $colleagueEmail; //required
-                    $params['template'] = config('constants.EMAIL_TEMPLATE_FOLDER').'.'.config('constants.EMAIL_TEMPLATE_USER_INVITE'); //path to the email template
-                    $params['subject'] = trans('mail.recommonded_mission.MAIL_MISSION_RECOMMENDATION', [], $colleagueLanguage); //optional
-                    $params['data'] = $data;
-
-                    dispatch(new AppMailerJob($params));
-                } catch (\Exception $e) {
-                    return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
-                }
+                $tenantName = $this->helpers->getSubDomainFromRequest($request);
+               
+                $params['tenant_name'] = $tenantName;
+                $params['to'] = $colleagueEmail; //required
+                $params['template'] = config('constants.EMAIL_TEMPLATE_FOLDER').'.'.config('constants.EMAIL_TEMPLATE_USER_INVITE'); //path to the email template
+                $params['subject'] = trans('mail.recommonded_mission.MAIL_MISSION_RECOMMENDATION', [], $colleagueLanguage); //optional
+                $params['data'] = $data;
+                dispatch(new AppMailerJob($params));
             }
             
             // Set response data
@@ -185,6 +177,8 @@ class MissionInviteController extends Controller
                 config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
                 trans('messages.custom_error_message.ERROR_DATABASE_OPERATIONAL')
             );
+        } catch (TenantDomainNotFoundException $e) {
+            throw $e;
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
                 config('constants.error_codes.ERROR_MISSION_NOT_FOUND'),

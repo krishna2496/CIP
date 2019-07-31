@@ -9,6 +9,7 @@ use DB;
 use Firebase\JWT\JWT;
 use Firebase\JWT\ExpiredException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Exceptions\TenantDomainNotFoundException;
 
 class TenantConnectionMiddleware
 {
@@ -51,10 +52,18 @@ class TenantConnectionMiddleware
             }
         } else {
             // Uncomment below line while testing in apis with front side.
-            // $domain = $this->helpers->getSubDomainFromRequest($request);
-            
-            // comment below line while testing in apis with front side.
-            $domain = env('DEFAULT_TENANT');
+            if (env('APP_ENV') == 'local' || env('APP_ENV') == 'testing') {
+                try {
+                    $domain = $this->helpers->getSubDomainFromRequest($request);
+                } catch (TenantDomainNotFoundException $e) {
+                    throw $e;
+                } catch (\Exception $e) {
+                    throw new \Exception();
+                }
+            } else {
+                // comment below line while testing in apis with front side.
+                $domain = env('DEFAULT_TENANT');
+            }
         }
 
         if ($domain !== env('APP_DOMAIN')) {

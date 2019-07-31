@@ -19,7 +19,6 @@ class TimezoneRepository implements TimezoneInterface
      * Create a new Timezone repository instance.
      *
      * @param  App\Models\Timezone $timezone
-     * @param  Illuminate\Http\ResponseHelper $responseHelper
      * @return void
      */
     public function __construct(Timezone $timezone)

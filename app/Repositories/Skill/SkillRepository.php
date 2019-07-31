@@ -6,7 +6,6 @@ use Illuminate\Http\Request;
 use App\Models\Skill;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use App\Repositories\User\UserRepository;
 
 class SkillRepository implements SkillInterface
 {
@@ -16,21 +15,14 @@ class SkillRepository implements SkillInterface
     public $skill;
 
     /**
-     * @var App\Repositories\User\UserRepository
-     */
-    public $userRepository;
-
-    /**
      * Create a new Mission repository instance.
      *
      * @param  App\Models\Skill $skill
-     * @param  App\Repositories\User\UserRepository $userRepository
      * @return void
      */
-    public function __construct(Skill $skill, UserRepository $userRepository)
+    public function __construct(Skill $skill)
     {
         $this->skill = $skill;
-        $this->userRepository = $userRepository;
     }
     
     /**
@@ -115,7 +107,6 @@ class SkillRepository implements SkillInterface
     public function find(int $id): Skill
     {
         try {
-            $this->userRepository->find($id);
             return $this->skill->findSkill($id);
         } catch (ModelNotFoundException $e) {
             throw new ModelNotFoundException(

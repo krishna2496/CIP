@@ -8,7 +8,7 @@ use Illuminate\Http\Response;
 use App\Models\Mission;
 use App\User;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use \Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class MissionApplication extends Model
 {
@@ -75,9 +75,9 @@ class MissionApplication extends Model
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $missionId
-     * @return array
+     * @return Illuminate\Pagination\LengthAwarePaginator
      */
-    public function find(Request $request, int $missionId)
+    public function find(Request $request, int $missionId): LengthAwarePaginator
     {
         $applicationQuery = $this;
 
@@ -101,15 +101,14 @@ class MissionApplication extends Model
      * @param  int  $applicationId
      * @return array
      */
-    public function findDetail(int $missionId, int $applicationId)
+    public function findDetail(int $missionId, int $applicationId): array
     {
         $applicationQuery = $this;
         $applicationQuery = $applicationQuery->orderBy('mission_application_id', 'asc');
 
         $missionApplication = $applicationQuery->where(
             ['mission_id' => $missionId, 'mission_application_id' => $applicationId]
-        )
-            ->get()->toArray();
+        )->get()->toArray();
         return $missionApplication;
     }
 

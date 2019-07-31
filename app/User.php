@@ -198,7 +198,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     /**
      * Search user
      *
-     * @param string $email     *
+     * @param string $email
      * @return mixed
      */
     public function getUserByEmail(string $email)

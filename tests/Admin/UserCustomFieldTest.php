@@ -1,8 +1,4 @@
 <?php
-use Laravel\Lumen\Testing\DatabaseMigrations;
-use Laravel\Lumen\Testing\DatabaseTransactions;
-use App\User;
-use App\Models\UserCustomField;
 
 class UserCustomFieldTest extends TestCase
 {
@@ -37,9 +33,10 @@ class UserCustomFieldTest extends TestCase
             'data' => [
                 'field_id',
             ],
-            'message',
-            'status',
-            ]);
+        'message',
+        'status',
+        ]);
+        App\Models\UserCustomField::where("name", $name)->orderBy("field_id", "DESC")->take(1)->delete();
     }
     
     /**

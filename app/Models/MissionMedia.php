@@ -53,9 +53,9 @@ class MissionMedia extends Model
      *
      * @param  array $condition
      * @param  array $data
-     * @return array
+     * @return App\Models\MissionMedia
      */
-    public function createOrUpdateMedia(array $condition, array $data)
+    public function createOrUpdateMedia(array $condition, array $data): MissionMedia
     {
         return static::updateOrCreate($condition, $data);
     }

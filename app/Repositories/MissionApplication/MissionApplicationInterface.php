@@ -1,27 +1,12 @@
 <?php
 namespace App\Repositories\MissionApplication;
 
+use App\Models\MissionApplication;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 interface MissionApplicationInterface
 {
-    /*
-     * Check seats are available or not.
-     *
-     * @param int $missionId
-     * @return bool
-     */
-    public function checkAvailableSeats(int $missionId);
-
-    /*
-     * Check mission deadline.
-     *
-     * @param int $missionId
-     * @return bool
-     */
-    public function checkMissionDeadline(int $missionId);
-
     /*
      * Check already applied for a mission or not.
      *
@@ -29,44 +14,43 @@ interface MissionApplicationInterface
      * @param int $userId
      * @return int
      */
-    public function checkApplyMission(int $missionId, int $userId);
-    
+    public function checkApplyMission(int $missionId, int $userId): int;
+  
     /**
      * Add mission application.
      *
      * @param array $request
      * @return App\Models\MissionApplication
      */
-    public function storeApplication(array $request, int $userId);
+    public function storeApplication(array $request, int $userId): MissionApplication;
 
     /**
      * Display a listing of the resource.
      *
      * @param \Illuminate\Http\Request $request
-     * @param int $mission_id
+     * @param int $missionId
      * @return Illuminate\Pagination\LengthAwarePaginator
      */
-    public function missionApplications(Request $request, int $missionId);
+    public function missionApplications(Request $request, int $missionId): LengthAwarePaginator;
 
     /**
      * Display specified resource.
      *
-     * @param \Illuminate\Http\Request $request
      * @param int $missionId
      * @param int $applicationId
      * @return array
      */
-    public function missionApplication(int $missionId, int $applicationId);
+    public function missionApplication(int $missionId, int $applicationId): array;
 
     /**
-     * Update resource.
+     * Update the specified resource in storage.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param  \Illuminate\Http\Request  $request
      * @param int $missionId
      * @param int $applicationId
      * @return App\Models\MissionApplication
      */
-    public function updateApplication(Request $request, int $missionId, int $applicationId);
+    public function updateApplication(Request $request, int $missionId, int $applicationId): MissionApplication;
 
     /*
      * Get recent volunteers

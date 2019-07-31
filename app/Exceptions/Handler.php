@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Exceptions;
 
 use Exception;
@@ -13,6 +12,7 @@ use App\Exceptions\FileDownloadException;
 use Leafo\ScssPhp\Exception\ParserException;
 use App\Exceptions\BucketNotFoundException;
 use App\Exceptions\FileNotFoundException;
+use App\Exceptions\TenantDomainNotFoundException;
 
 class Handler extends ExceptionHandler
 {
@@ -65,6 +65,9 @@ class Handler extends ExceptionHandler
         }
         if ($exception instanceof FileNotFoundException) {
             return $this->filenotFound($exception->getCode(), $exception->getMessage());
+        }
+        if ($exception instanceof TenantDomainNotFoundException) {
+            return $this->tenantDomainNotFound($exception->getCode(), $exception->getMessage());
         }
         return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
     }

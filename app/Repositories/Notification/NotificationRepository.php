@@ -50,7 +50,7 @@ class NotificationRepository implements NotificationInterface
         $this->userNotification = $userNotification;
     }
 
-    /*
+    /**
      * Get notification type id
      *
      * @param string $type
@@ -63,7 +63,7 @@ class NotificationRepository implements NotificationInterface
         ->value('notification_type_id');
     }
 
-    /*
+    /**
      * Send notification
      *
      * @param array $notificationData
@@ -74,14 +74,14 @@ class NotificationRepository implements NotificationInterface
         return $this->notification->create($notificationData);
     }
     
-    /*
+    /**
      * Check if user notification is enabled or not
      *
      * @param int $userId
      * @param int $notificationTypeId
-     * @return App\Models\UserNotification
+     * @return null|App\Models\UserNotification
      */
-    public function userNotificationSetting(int $userId, int $notificationTypeId)
+    public function userNotificationSetting(int $userId, int $notificationTypeId): ?UserNotification
     {
         return $this->userNotification->where(['user_id' => $userId,
                 'notification_type_id' => $notificationTypeId])->first();

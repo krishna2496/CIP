@@ -9,6 +9,8 @@ use App\Traits\RestExceptionHandlerTrait;
 use PDOException;
 use Throwable;
 use Carbon\Carbon;
+use App\Exceptions\TenantDomainNotFoundException;
+use Firebase\JWT\JWT;
 
 class Helpers
 {
@@ -29,18 +31,24 @@ class Helpers
     */
     public function getSubDomainFromRequest(Request $request) : string
     {
-        try {
-            if (env('APP_ENV')=='local' || env('APP_ENV')=='testing') {
-                return env('DEFAULT_TENANT');
+        if ((env('APP_ENV') == 'local' || env('APP_ENV') == 'testing')) {
+            return env('DEFAULT_TENANT');
+        } else {
+            if (isset($request->headers->all()['referer'])) {
+                try {
+                    return explode(".", parse_url($request->headers->all()['referer'][0])['host'])[0];
+                } catch (\Exception $e) {
+                    return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
+                }
             } else {
-                return explode(".", parse_url($request->headers->all()['referer'][0])['host'])[0];
-            }
-        } catch (\Exception $e) {
-            if (env('APP_ENV')=='local' || env('APP_ENV')=='testing') {
-                return env('DEFAULT_TENANT');
-            } else {
-                // error unable to find referer
-                throw new \Exception(trans('messages.custom_error_message.ERROR_TENANT_DOMAIN_NOT_FOUND'));
+                if ((env('APP_ENV')=='local' || env('APP_ENV')=='testing')) {
+                    return env('DEFAULT_TENANT');
+                } else {
+                    throw new TenantDomainNotFoundException(
+                        trans('messages.custom_error_message.ERROR_TENANT_DOMAIN_NOT_FOUND'),
+                        config('constants.error_codes.ERROR_TENANT_DOMAIN_NOT_FOUND')
+                    );
+                }
             }
         }
     }
@@ -265,5 +273,25 @@ class Helpers
         $constants = ($type == config('constants.IMAGE')) ? config('constants.image_types')
         : config('constants.document_types');
         return (!in_array($urlExtension, $constants)) ? false : true;
+    }
+
+    /**
+     * Get JWT token
+     *
+     * @param int $userId
+     * @return string
+     */
+    public static function getJwtToken(int $userId) : string
+    {
+        $payload = [
+            'iss' => "lumen-jwt", // Issuer of the token
+            'sub' => $userId, // Subject of the token
+            'iat' => time(), // Time when JWT was issued.
+            'exp' => time() + 60 * 60, // Expiration time
+            'fqdn' => env('DEFAULT_TENANT')
+        ];
+        // As you can see we are passing `JWT_SECRET` as the second parameter that will
+        // be used to decode the token in the future.
+        return JWT::encode($payload, env('JWT_SECRET'));
     }
 }

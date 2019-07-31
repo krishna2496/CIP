@@ -62,10 +62,12 @@ return [
         'MESSAGE_INVITED_FOR_MISSION' => 'User invited to mission successfully',
         'MESSAGE_APPLICATION_CREATED' => 'You have successfully applied for this mission',
         'MESSAGE_RATING_ADDED' => 'Mission rating added successfully',
+        'MESSAGE_RATING_UPDATED' => 'Mission rating updated successfully',        
         'MESSAGE_MISSION_VOLUNTEERS_LISTING' => 'Get mission volunteers successfully',
         'MESSAGE_NO_MISSION_VOLUNTEERS_FOUND' => 'No recent volunteers found',
-        'MESSAGE_MISSION_MEDIA_LISTING' => 'Mission media listing sucessfully',
+        'MESSAGE_MISSION_MEDIA_LISTING' => 'Mission media listing successfully',
         'MESSAGE_MISSION_COMMENT_LISTING' => 'Get mission comments successfully',
+        'MESSAGE_ASSET_IMAGES_RESET_SUCCESS' => 'Asset images reset successfully',
         'MESSAGE_NO_RELATED_MISSION_FOUND' => 'Related mission not found',
         'MESSAGE_NO_MISSION_MEDIA_FOUND' => 'Mission media not found',
         'MESSAGE_NO_MISSION_COMMENT_FOUND' => 'Mission comments not found',  
@@ -156,6 +158,7 @@ return [
         'ERROR_DOWNLOADING_IMAGE_TO_LOCAL' => 'An error while downloading image from S3 to server',
         'ERROR_IMAGE_UPLOAD_INVALID_DATA' => 'Invalid input file',
         'ERROR_TENANT_OPTION_NOT_FOUND' => 'No tenant option found',
-        'ERROR_LANGUAGE_NOT_FOUND' => 'Language not found'
+        'ERROR_LANGUAGE_NOT_FOUND' => 'Language not found',
+        'ERROR_FAILED_TO_RESET_ASSET_IMAGE' => 'Failed to reset asset images'
     ],
 ];

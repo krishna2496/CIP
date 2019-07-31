@@ -61,15 +61,34 @@ $factory->define(App\Models\TenantOption::class, function (Faker\Generator $fake
 
 $factory->define(App\Models\Mission::class, function (Faker\Generator $faker) {
     return [
-        "organisation_id" => rand(1, 1),
-        "organisation_name" => str_random(10),
+        "theme_id" => rand(1, 1),
         "city_id" => rand(1, 1),
         "country_id" => rand(1, 1),
         "start_date" => "2019-05-15 10:40:00",
         "end_date" => "2019-10-15 10:40:00",
+        "total_seats" => rand(1, 1000),        
         "mission_type" => "GOAL",
-        "total_seats" => rand(1, 1000),
         "publication_status" => "DRAFT",
-        "theme_id" => rand(1, 1)
+        "organisation_id" => rand(1, 1),
+        "organisation_name" => str_random(10),
+    ];
+});
+
+$factory->define(App\Models\Skill::class, function (Faker\Generator $faker) {
+    return [
+        'skill_name' => str_random(10),
+        'translations' => array(str_random(10)),
+        'parent_skill' => 0,
+    ];
+});
+
+$factory->define(App\Models\MissionApplication::class, function (Faker\Generator $faker) {
+    return [
+        'mission_id' => rand(1, 1),
+        'user_id' => rand(1, 1),
+        'availability_id' => rand(1, 1),
+        'applied_at' => date("Y-m-d H:i:s"),
+        'approval_status' => 'AUTOMATICALLY_APPROVED',
+        'motivation' => str_random(10)
     ];
 });

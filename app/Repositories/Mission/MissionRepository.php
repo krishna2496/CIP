@@ -417,9 +417,9 @@ class MissionRepository implements MissionInterface
      * Remove the specified resource from storage.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return bool
      */
-    public function delete(int $id)
+    public function delete(int $id): bool
     {
         return $this->mission->deleteMission($id);
     }
@@ -745,9 +745,9 @@ class MissionRepository implements MissionInterface
      *
      * @param int $userId
      * @param int $missionId
-     * @return mixed
+     * @return null|App\Models\FavouriteMission
      */
-    public function missionFavourite(int $userId, int $missionId)
+    public function missionFavourite(int $userId, int $missionId): ?FavouriteMission
     {
         $mission = $this->mission->findOrFail($missionId);
         $favouriteMission = $this->favouriteMission->findFavourite($userId, $missionId);
@@ -760,7 +760,7 @@ class MissionRepository implements MissionInterface
         return $this->favouriteMission->findFavourite($userId, $missionId);
     }
 
-    /*
+    /**
      * Get mission name.
      *
      * @param int $missionId
@@ -927,5 +927,40 @@ class MissionRepository implements MissionInterface
         ->orderBy('comment_id', 'desc')
         ->with(['user:user_id,first_name,last_name,avatar']);
         return $commentQuery->take(config("constants.MISSION_COMMENT_LIMIT"))->get();
+    }
+        
+    /*
+     * Check seats are available or not.
+     *
+     * @param int $missionId
+     * @return bool
+     */
+    public function checkAvailableSeats(int $missionId): bool
+    {
+        $mission = $this->mission->checkAvailableSeats($missionId);
+        if ($mission['total_seats'] == 0) {
+            return false;
+        }
+
+        if ($mission['total_seats'] != 0) {
+            $seatsLeft = ($mission['total_seats']) - ($mission['mission_application_count']);
+            return ($seatsLeft == 0 || $mission['total_seats'] == $mission['mission_application_count']) ? false : true;
+        }
+    }
+    
+    /*
+     * Check mission deadline
+     *
+     * @param int $missionId
+     * @return bool
+     */
+    public function checkMissionDeadline(int $missionId): bool
+    {
+        $mission = $this->mission->findOrFail($missionId);
+        if ($mission->mission_type == config('constants.mission_type.TIME')) {
+            $applicationDeadline = $this->timeMission->getDeadLine($missionId);
+            return ($applicationDeadline > Carbon::now()) ? true : false;
+        }
+        return true;
     }
 }

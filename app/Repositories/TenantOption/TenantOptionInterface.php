@@ -2,20 +2,21 @@
 namespace App\Repositories\TenantOption;
 
 use Illuminate\Http\Request;
+use App\Models\TenantOption;
+use Illiminate\Support\Collection;
 
 interface TenantOptionInterface
 {
-
     /**
      * Store tenant slider data.
      *
      * @param  array $data
-     * @return void
+     * @return App\Models\TenantOption
      */
-    public function storeSlider(array $data);
+    public function storeSlider(array $data): TenantOption;
 
     /**
-     * Update tenant styling settings data.
+     * Update style settings.
      *
      * @param  Illuminate\Http\Request $request
      * @return void
@@ -23,9 +24,47 @@ interface TenantOptionInterface
     public function updateStyleSettings(Request $request);
 
     /**
-     *  Get all sliders of tenant.
+     * Get a listing of slider.
      *
-     * @return void
+     * @return Illiminate\Support\Collection
      */
     public function getAllSlider();
+
+    /**
+     * Store tenant option data
+     *
+     * @return Illuminate\Support\Collection
+     */
+    public function getOptions();
+
+    /**
+    * Get a listing of resource.
+    *
+    * @param array $conditions
+    * @return null|App\Models\TenantOption
+    */
+    public function getOptionWithCondition(array $conditions = []): ?TenantOption;
+
+    /**
+    * Get a count of slider.
+    *
+    * @return int
+    */
+    public function getAllSliderCount(): int;
+
+    /**
+     * Create new option
+     *
+     * @param array $option
+     * @return App\Models\TenantOption
+     */
+    public function store(array $option): TenantOption;
+
+    /**
+     * Select by option name
+     *
+     * @param String $data
+     * @return Illuminate\Support\Collection
+     */
+    public function getOptionValue(string $data);
 }

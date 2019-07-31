@@ -19,6 +19,7 @@ class UserCustomFieldRepository implements UserCustomFieldInterface
     /**
      * Create a new repository instance.
      *
+     * @param App\Models\UserCustomField $field
      * @return void
      */
     public function __construct(UserCustomField $field)
@@ -72,18 +73,7 @@ class UserCustomFieldRepository implements UserCustomFieldInterface
         $customField->update($request);
         return $customField;
     }
-    
-    
-    /**
-     * Find the specified resource in storage.
-     *
-     * @param  int  $id
-     * @return mixed
-     */
-    public function find(int $id)
-    {
-    }
-    
+       
     /**
      * Remove the specified resource from storage.
      *

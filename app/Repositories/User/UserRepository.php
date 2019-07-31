@@ -23,7 +23,7 @@ class UserRepository implements UserInterface
     public $user;
 
     /**
-     * @var App\Model\UserSkill
+     * @var App\Models\UserSkill
      */
     public $userSkill;
     
@@ -36,6 +36,7 @@ class UserRepository implements UserInterface
      * Create a new User repository instance.
      *
      * @param  App\User $user
+     * @param  App\Models\UserSkill $userSkill
      * @param  Illuminate\Http\ResponseHelper $responseHelper
      * @return void
      */
@@ -164,7 +165,7 @@ class UserRepository implements UserInterface
     /**
      * Get username
      *
-     * @param int $missionId
+     * @param int $userId
      * @return string
      */
     public function getUserName(int $userId): string
@@ -187,6 +188,7 @@ class UserRepository implements UserInterface
      * Search user
      *
      * @param string $text
+     * @param int $userId
      * @return \Illuminate\Support\Collection
      */
     public function searchUsers(string $text = null, int $userId): Collection

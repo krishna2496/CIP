@@ -51,10 +51,10 @@ class MissionTheme extends Model
     /**
      * Set translations attribute on the model.
      *
-     * @param  mixed   $value
+     * @param  array $value
      * @return void
      */
-    public function setTranslationsAttribute($value)
+    public function setTranslationsAttribute(array $value): void
     {
         $this->attributes['translations'] = serialize($value);
     }
@@ -62,10 +62,10 @@ class MissionTheme extends Model
     /**
      * Get an attribute from the model.
      *
-     * @param  string  $value
-     * @return mixed
+     * @param  string $value
+     * @return array
      */
-    public function getTranslationsAttribute($value)
+    public function getTranslationsAttribute(string $value): array
     {
         return unserialize($value);
     }
@@ -74,9 +74,9 @@ class MissionTheme extends Model
      * Find the specified resource.
      *
      * @param  int  $id
-     * @return array
+     * @return MissionTheme
      */
-    public function findMissionTheme(int $id)
+    public function findMissionTheme(int $id): MissionTheme
     {
         return static::findOrFail($id);
     }
