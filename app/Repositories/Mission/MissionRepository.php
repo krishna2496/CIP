@@ -687,7 +687,6 @@ class MissionRepository implements MissionInterface
                 ->selectRaw('COUNT(mission.mission_id) as mission_count')
                 ->groupBy('mission.country_id');
                 $mission = $missionQuery->get();
-                return $mission;
                 break;
 
             case config('constants.CITY'):
@@ -702,7 +701,6 @@ class MissionRepository implements MissionInterface
                 }
                 $missionQuery->groupBy('mission.city_id');
                 $mission = $missionQuery->get();
-                return $mission;
                 break;
 
             case config('constants.THEME'):
@@ -720,13 +718,12 @@ class MissionRepository implements MissionInterface
                 }
                 $missionQuery->groupBy('mission.theme_id');
                 $mission = $missionQuery->get();
-                return $mission;
                 break;
 
             case config('constants.SKILL'):
-                $skillQuery = $this->missionSkill->select('*');
-                $skillQuery->selectRaw('COUNT(mission_id) as mission_count');
-                $skillQuery->wherehas('mission', function ($query) use ($request) {
+                $missionSkillQuery = $this->missionSkill->select('*');
+                $missionSkillQuery->selectRaw('COUNT(mission_id) as mission_count');
+                $missionSkillQuery->wherehas('mission', function ($query) use ($request) {
                     if ($request->has('country_id') && $request->input('country_id') != '') {
                         $query->Where("mission.country_id", $request->input('country_id'));
                     }
@@ -738,13 +735,13 @@ class MissionRepository implements MissionInterface
                     }
                 });
 
-                $skillQuery->with('mission', 'skill');
-                $skillQuery->groupBy('skill_id');
-                $skillQuery->orderBy('mission_count', 'desc');
-                $skill = $skillQuery->get();
-                return $skill;
+                $missionSkillQuery->with('mission', 'skill');
+                $missionSkillQuery->groupBy('skill_id');
+                $missionSkillQuery->orderBy('mission_count', 'desc');
+                $mission = $missionSkillQuery->get();
                 break;
         }
+		return $mission;
     }
 
     /**
