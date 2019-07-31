@@ -38,7 +38,7 @@ class CreateUserTable extends Migration
             
             $table->foreign('timezone_id')->references('timezone_id')->on('timezone')->onDelete('CASCADE')->onUpdate('CASCADE');
             // cross database            
-            $table->foreign('availability_id')->references('availability_id')->on('user_availability')->onDelete('CASCADE')->onUpdate('CASCADE');
+            $table->foreign('availability_id')->references('availability_id')->on('availability')->onDelete('CASCADE')->onUpdate('CASCADE');
             $table->foreign('city_id')->references('city_id')->on('city')->onDelete('CASCADE')->onUpdate('CASCADE');
             $table->foreign('country_id')->references('country_id')->on('country')->onDelete('CASCADE')->onUpdate('CASCADE');
         });

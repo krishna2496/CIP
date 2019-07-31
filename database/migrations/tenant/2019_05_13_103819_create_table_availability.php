@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateTableUserAvailability extends Migration
+class CreateTableAvailability extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateTableUserAvailability extends Migration
      */
     public function up()
     {
-        Schema::create('user_availability', function (Blueprint $table) {
+        Schema::create('availability', function (Blueprint $table) {
             $table->bigIncrements('availability_id')->unsinged();
             $table->string('type',255);
             $table->timestamps();
@@ -28,6 +28,6 @@ class CreateTableUserAvailability extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('user_availability');
+        Schema::dropIfExists('availability');
     }
 }
