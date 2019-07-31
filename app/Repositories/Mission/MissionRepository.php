@@ -30,6 +30,11 @@ class MissionRepository implements MissionInterface
     public $mission;
 
     /**
+     * @var App\Models\TimeMission
+     */
+    public $timeMission;
+
+    /**
      * @var App\Helpers\ResponseHelper
      */
     private $responseHelper;
@@ -68,6 +73,7 @@ class MissionRepository implements MissionInterface
      * Create a new Mission repository instance.
      *
      * @param  App\Models\Mission $mission
+     * @param  App\Models\TimeMission $timeMission
      * @param  App\Models\MissionLanguage $missionLanguage
      * @param  App\Models\MissionMedia $missionMedia
      * @param  App\Models\MissionDocument $missionDocument
@@ -81,6 +87,7 @@ class MissionRepository implements MissionInterface
      */
     public function __construct(
         Mission $mission,
+        TimeMission $timeMission,
         MissionLanguage $missionLanguage,
         MissionMedia $missionMedia,
         MissionDocument $missionDocument,
@@ -93,6 +100,7 @@ class MissionRepository implements MissionInterface
         MissionRating $missionRating
     ) {
         $this->mission = $mission;
+        $this->timeMission = $timeMission;
         $this->missionLanguage = $missionLanguage;
         $this->missionMedia = $missionMedia;
         $this->missionDocument = $missionDocument;
