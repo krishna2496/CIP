@@ -12,6 +12,12 @@ let routes = [{
         import ('./views/Auth/Login.vue')
 },
 {
+    path: '/testing',
+    name: 'AddThis',
+    component: () =>
+        import ('./views/AddThis.vue')
+},
+{
     path: '/home',
     name: 'home',
     meta: {
@@ -65,6 +71,7 @@ let routes = [{
     component: () =>
         import ('./views/MissionDetail.vue')
 },
+
 ];
 
 export default new Router({

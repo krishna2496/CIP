@@ -2,12 +2,14 @@
 	<div 
     v-bind:class="{ 
 	   'recent-volunteer-block': true,
-	   'no-volunteer' : noVolunteerFound
+	   'no-volunteer' : noVolunteerFound,
+	   'hide-pagination' : hidePagination,
 	}">
 	<div 
 		v-bind:class="{ 
 				'content-loader-wrap': true, 
 				'recent-loader': recentVolunterLoader,
+				
 		}"
 	>
   	<div class="content-loader"></div>
@@ -24,7 +26,7 @@
 				</div>
 			</b-list-group-item>
 		</b-list-group>
-		<div class="custom-pagination" v-if="rows > 0">
+		<div class="custom-pagination" v-if="rows > 9">
 			<b-pagination
                 v-model="currentPage"
                 :total-rows="rows"
@@ -57,7 +59,8 @@ export default {
 	       volunteerList:[],
 	       recentVolunterLoader : true,
 	       perPage : 9,
-	       noVolunteerFound : false
+	       noVolunteerFound : false,
+	       hidePagination : true,
         }
         },
     directives: {},
@@ -92,6 +95,9 @@ export default {
 			        	
 			        	if (response.pagination) {
 			        		this.rows = response.pagination.total
+			        		if(this.rows > 9) {
+			        			this.hidePagination = false;
+			        		}
 			        	}
 	        		}
 	        		this.recentVolunterLoader = false;

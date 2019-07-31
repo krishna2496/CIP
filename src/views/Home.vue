@@ -227,13 +227,15 @@ export default {
                     this.rows = response.pagination.total;
                     this.perPage = response.pagination.per_page;
                     this.currentPage = response.pagination.current_page;
+                    
                 } else {
                     this.rows = 0;
                     if (this.currentPage != 1) {
                         this.currentPage = 1;
                         this.getMissions();
                     }
-                }          
+                }     
+                
                 this.isShownComponent = true;
                 if(store.state.search != null) {
                     this.search = store.state.search;

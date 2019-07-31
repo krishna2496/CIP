@@ -241,7 +241,7 @@
 									</i>
 									<span>{{ $t("label.recommend_to_co_worker") }}</span>
 								</b-button>
-								<b-button class="btn-bordersecondary icon-btn" v-bind:disabled="disableApply"
+								<b-button class="btn-bordersecondary icon-btn" :disabled="disableApply"
 								@click="applyForMission(missionDetail.mission_id)"
 								>
 										<span>{{ $t("label.apply_now") }}</span>
@@ -449,10 +449,12 @@
 										v-bind:star-size="23"
 										>
 									</star-rating>
-									<span>(
-									{{ $t("label.by")}} 
-									{{missionDetail.mission_rating_total_volunteers}} 
-									{{$t("label.volunteers")}} )</span>
+									<em>(
+										{{ $t("label.by")}} 
+										{{missionDetail.mission_rating_total_volunteers}}
+									 </em>
+									<em v-if="missionDetail.mission_rating_total_volunteers <=1" class="volunteery-counter"> {{ $t("label.volunteer")}} )</em>
+									<em v-else> {{ $t("label.volunteers")}} )</em>
 								</span>
 							</div>
 						</div>
@@ -736,6 +738,7 @@ export default {
     	},
     	// Apply for mission
         applyForMission(missionId) {
+        	this.disableApply = true;
             let missionData = {};
             missionData.mission_id = missionId;
             missionData.availability_id = 1;
@@ -746,6 +749,7 @@ export default {
                     this.makeToast("success",response.message);
                     this.$emit("getMissions"); 
                 }
+
             })
         },
     	getRelatedMissions() {
@@ -824,7 +828,7 @@ export default {
 	                  if(skills == '') {
 	                  	skills = item.title;
 	                  } else {
-	                  	skills = skills+","+item.title;
+	                  	skills = skills+", "+item.title;
 	                  }
                 });
         	} else {
@@ -837,7 +841,9 @@ export default {
             let missionData = {};
             missionData.mission_id = missionId;
             missionData.availability_id = 1;
+            
             applyMission(missionData).then(response => {
+            	this.disableApply = true;
                 if(response.error == true){
                     this.makeToast("danger",response.message);
                 } else {

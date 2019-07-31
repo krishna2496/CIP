@@ -29,6 +29,7 @@ Vue.use(VueScrollTo);
 Vue.use(BackToTop);
 Vue.use(toast);
 Vue.use(SocialSharing);
+
 AOS.init({
     once: true,
     easing: "ease-in-out",

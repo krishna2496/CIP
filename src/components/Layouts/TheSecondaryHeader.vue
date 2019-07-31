@@ -63,7 +63,7 @@
                             :filterTitle="defautSkill" 
                             :checkList="skillList"
                             :selectedItem="selectedSkill"
-                             @changeParmas="changeSkillParmas"
+                            @changeParmas="changeSkillParmas"
                             @updateCall="changeSkill"
                         />
                     </b-list-group-item>
@@ -115,7 +115,8 @@ export default {
                 themeId : "",
                 skillId : "",
                 tags : [],
-                sortBy : ""
+                sortBy : "",
+                search : ""
             },
             show: false,
             isComponentVisible:false,
@@ -142,7 +143,7 @@ export default {
         test() {
             this.$emit('storeMisisonSearch', this.searchString);
         },
-        
+
         handleFocus() {
             this.searchPlaceHolder = '';
             var b_header = document.querySelector(".bottom-header");
@@ -155,18 +156,28 @@ export default {
                 this.changeCountry(data)
             }
             if(data.selectedType == "city"){
+                this.isCountryChange = false;
+                this.isCityChange = false;
+                this.isThemeChange = false;  
                 let selectedData =store.state.cityId.toString().split(',');
                 var filteredCity = selectedData.filter(function(value, index, arr){
                     return value !=  data.selectedId;
                 });
                 this.selectedCity = filteredCity;
+                this.selectedTheme = [];
+                this.selectedSkill = [];
             }
             if(data.selectedType == "theme"){
-                let selectedData =store.state.themeId.toString().split(',');
+                this.isCountryChange = false;
+                this.isCityChange = false;
+                this.isThemeChange = false;  
+                let selectedData = store.state.themeId.toString().split(',');
                 var filteredTheme = selectedData.filter(function(value, index, arr){
                     return value !=  data.selectedId;
                 });
+                this.selectedSkill = [];
                 this.selectedTheme = filteredTheme;
+                
             }
             if(data.selectedType == "skill"){
                 let selectedData =store.state.skillId.toString().split(',');
@@ -175,19 +186,6 @@ export default {
                 });
                 this.selectedSkill = filteredSkill;
             }
-        },
-
-        changeThemeStatus(theme) {
-            this.isCountryChange = false;
-            this.isCityChange = false;
-            this.changeTheme(theme);
-        },
-
-        changeSkillStatus(skill) {
-            this.isCountryChange = false;
-            this.isCityChange = false;
-            this.isThemeChange = false;
-            this.changeSkill(skill);
         },
 
         handleBlur() {
@@ -263,6 +261,7 @@ export default {
             if(!this.isCountryChange) {
                 this.selectedfilterParams.cityId = city;
                 this.selectedfilterParams.themeId = '';
+                this.selectedfilterParams.skillId = '';
                 this.themeList = [];
                 this.skillList = [];
                 let filters = {};
@@ -289,11 +288,12 @@ export default {
         },
 
         async changeTheme(theme) {
-            
             this.isThemeChange = true;
-            if(!this.isCountryChange && !this.isCityChange) {
+            if(!this.isCountryChange && !this.isCityChange) { 
                 this.selectedfilterParams.themeId = theme;
+                this.selectedfilterParams.skillId = '';
                 this.skillList = [];
+                this.selectedSkill = [];
                 let filters = {};
                 filters.exploreMissionType = '';
                 filters.exploreMissionParams = '';
@@ -312,7 +312,7 @@ export default {
             }
         },
 
-        changeSkill(skill) {
+        async changeSkill(skill) {
             if (!this.isCountryChange && !this.isCityChange && !this.isThemeChange ) {
                 this.selectedfilterParams.skillId = skill;
                 let filters = {};
@@ -343,6 +343,7 @@ export default {
             this.selectedfilterParams.cityId = store.state.cityId;
             this.selectedfilterParams.themeId = store.state.themeId;
             this.selectedfilterParams.skillId = store.state.skillId;
+            this.selectedfilterParams.search = store.state.search;
             this.selectedCity = [];
             this.selectedTheme = [];
             this.selectedSkill = [];
