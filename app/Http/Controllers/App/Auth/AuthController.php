@@ -82,27 +82,6 @@ class AuthController extends Controller
     }
 
     /**
-     * Create a new token.
-     *
-     * @param \App\User $user
-     * @return string
-     */
-    protected function jwt(User $user) :String
-    {
-        $payload = [
-            'iss' => "lumen-jwt",       // Issuer of the token
-            'sub' => $user->user_id,    // Subject of the token
-            'iat' => time(),            // Time when JWT was issued.
-            'exp' => time() + 60 * 60,  // Expiration time
-            'fqdn' => 'tatva'
-        ];
-
-        // As you can see we are passing `JWT_SECRET` as the second parameter that will
-        // be used to decode the token in the future.
-        return JWT::encode($payload, env('JWT_SECRET'));
-    }
-
-    /**
      * Authenticate a user and return the token if the provided credentials are correct.
      *
      * @param \App\User $user
@@ -150,7 +129,7 @@ class AuthController extends Controller
             }
             
             // Generate JWT token
-            $data["token"] = $this->jwt($userDetail);
+            $data["token"] = $this->helpers->getJwtToken($userDetail->user_id);
             $data['user_id'] = isset($userDetail->user_id) ? $userDetail->user_id : '';
             $data['first_name'] = isset($userDetail->first_name) ? $userDetail->first_name : '';
             $data['last_name'] = isset($userDetail->last_name) ? $userDetail->last_name : '';

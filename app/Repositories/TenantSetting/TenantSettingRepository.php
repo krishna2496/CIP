@@ -38,8 +38,9 @@ class TenantSettingRepository implements TenantSettingInterface
      *
      * @param array $data
      * @param int $settingId
+     * @return App\Models\TenantSetting
      */
-    public function updateSetting(array $data, int $settingId)
+    public function updateSetting(array $data, int $settingId): TenantSetting
     {
         $setting = $this->tenantSetting->findOrFail($settingId);
         $setting->update($data);
@@ -47,21 +48,21 @@ class TenantSettingRepository implements TenantSettingInterface
     }
 
     /**
-    * Get all tenant's settings data
-    *
-    * @param Illuminate\Http\Request $request
-    * @return Illuminate\Pagination\LengthAwarePaginator
-    */
+     * Get all tenant's settings data
+     *
+     * @param Illuminate\Http\Request $request
+     * @return Illuminate\Pagination\LengthAwarePaginator
+     */
     public function getAllSettings(Request $request): LengthAwarePaginator
     {
         return $this->tenantSetting->paginate($request->perPage);
     }
 
     /**
-    * Get all tenant's settings data. Used for front end api.
-    *
-    * @return Illuminate\Database\Eloquent\Collection
-    */
+     * Get all tenant's settings data. Used for front end api.
+     *
+     * @return Illuminate\Database\Eloquent\Collection
+     */
     public function fetchAllTenantSettings(): Collection
     {
         return $this->tenantSetting->select('tenant_setting_id', 'key', 'value')->get();

@@ -1,48 +1,72 @@
 <?php
 namespace App\Repositories\FooterPage;
 
+use App\Models\FooterPage;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
 
 interface FooterPageInterface
 {
     /**
-     * Store a new resource.
+     * Store a newly created resource in storage
      *
-     * @param  Illuminate\Http\Request $request
-     * @return void
+     * @param \Illuminate\Http\Request $request
+     * @return App\Models\FooterPage
      */
-    public function store(Request $request);
+    public function store(Request $request): FooterPage;
     
     /**
-     * Find a specified resource.
+     * Find the specified resource from database
      *
-     * @param  int $id
-     * @return void
+     * @param int $id
+     * @return App\Models\FooterPage
      */
-    public function find(int $id);
+    public function find(int $id): FooterPage;
     
     /**
-     * Update resource.
-     *
-     * @param  Illuminate\Http\Request $request
-     * @param  int $id
-     * @return void
-     */
-    public function update(Request $request, int $id);
+    * Update the specified resource in storage.
+    *
+    * @param  \Illuminate\Http\Request  $request
+    * @param  int  $id
+    * @return App\Models\FooterPage
+    */
+    public function update(Request $request, int $id): FooterPage;
     
     /**
-     * Get page listing.
-     *
-     * @param  Illuminate\Http\Request $request
-     * @return void
-     */
-    public function footerPageList(Request $request);
+    * Display a listing of footer pages.
+    *
+    * @param Illuminate\Http\Request $request
+    * @return Illuminate\Pagination\LengthAwarePaginator
+    */
+    public function footerPageList(Request $request): LengthAwarePaginator;
     
     /**
-     * Delete specified resource.
+     * Remove the specified resource from storage.
      *
-     * @param  int $id
-     * @return void
+     * @param  int  $id
+     * @return bool
      */
-    public function delete(int $id);
+    public function delete(int $id): bool;
+
+    /**
+    * Get a listing of resource.
+    *
+    * @return Illuminate\Support\Collection
+    */
+    public function getPageList(): Collection;
+
+    /**
+    * Get a listing of resource.
+    *
+    * @return Illuminate\Support\Collection
+    */
+    public function getPageDetailList(): Collection;
+
+    /**
+    * Get a listing of resource.
+    *
+    * @return App\Models\FooterPage
+    */
+    public function getPageDetail($slug): FooterPage;
 }

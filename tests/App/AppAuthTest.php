@@ -153,7 +153,7 @@ class AppAuthTest extends TestCase
         Notification::fake();
         $token = '';
         
-        $this->get('connect');
+        DB::setDefaultConnection('tenant');
         $user = App\User::first();
 
         DB::setDefaultConnection('mysql');

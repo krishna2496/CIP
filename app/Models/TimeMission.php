@@ -67,7 +67,7 @@ class TimeMission extends Model
     /**
      * Set application start date
      *
-     * @param  mixed   $value
+     * @param  mixed $value
      * @return void
      */
     public function setApplicationStartDateAttribute($value)
@@ -92,7 +92,7 @@ class TimeMission extends Model
     /**
      * Set application end date
      *
-     * @param  mixed   $value
+     * @param  mixed $value
      * @return void
      */
     public function setApplicationEndDateAttribute($value)
@@ -117,7 +117,7 @@ class TimeMission extends Model
     /**
      * Set application start time attribute on the model.
      *
-     * @param  mixed   $value
+     * @param  mixed $value
      * @return void
      */
     public function setApplicationStartTimeAttribute($value)
@@ -142,7 +142,7 @@ class TimeMission extends Model
     /**
      * Set application end time attribute on the model.
      *
-     * @param  mixed   $value
+     * @param  mixed $value
      * @return void
      */
     public function setApplicationEndTimeAttribute($value)
