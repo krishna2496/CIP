@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Repositories\Mission;
 
 use App\Repositories\Mission\MissionInterface;
@@ -495,7 +494,14 @@ class MissionRepository implements MissionInterface
                 $query->where('default', '1');
             }])
             ->with(['missionLanguage' => function ($query) use ($languageId) {
-                $query->select('mission_language_id', 'mission_id', 'title', 'short_description', 'objective')
+                $query->select(
+                    'mission_language_id',
+                    'mission_id',
+                    'title',
+                    'short_description',
+                    'objective',
+                    'description'
+                )
                 ->where('language_id', $languageId);
             }])
             ->withCount(['missionApplication as user_application_count' => function ($query) use ($request) {

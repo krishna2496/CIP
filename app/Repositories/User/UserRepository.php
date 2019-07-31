@@ -177,7 +177,7 @@ class UserRepository implements UserInterface
      * List all the users
      *
      * @param int $userId
-     * @return \Illuminate\Support\Collection
+     * @return Illuminate\Database\Eloquent\Collection
      */
     public function listUsers(int $userId) : Collection
     {
@@ -189,7 +189,7 @@ class UserRepository implements UserInterface
      *
      * @param string $text
      * @param int $userId
-     * @return \Illuminate\Support\Collection
+     * @return Illuminate\Database\Eloquent\Collection
      */
     public function searchUsers(string $text = null, int $userId): Collection
     {
