@@ -49,7 +49,7 @@ class TenantRepository implements TenantInterface
      * Store a newly created resource in storage
      *
      * @param \Illuminate\Http\Request $request
-     * @return App\Models\Tenant Tenant
+     * @return App\Models\Tenant $tenant
      */
     public function store(Request $request): Tenant
     {
