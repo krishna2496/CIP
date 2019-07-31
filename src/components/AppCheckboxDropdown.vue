@@ -1,5 +1,5 @@
 <template>
-    <div class="checkbox-select select-dropdown">
+    <div class="checkbox-select select-dropdown dropdown-with-counter">
         <span class="select-text">{{filterTitle}}</span>
     <div class="chk-select-wrap dropdown-option-wrap" data-simplebar @click.stop @touchend.stop>
     <ul class="chk-select-options dropdown-option-list" v-if="checkList.length > 0">
@@ -8,7 +8,7 @@
             v-bind:data-id="item[1].id"
             :key="i"           
             >
-            <b-form-checkbox name  v-model="items" v-bind:value="item[1].id">{{item[1].title}}<span class="counter">{{item[1].mission_count}}</span></b-form-checkbox>
+            <b-form-checkbox name  v-model="items" @click.native ="filterTable" v-bind:value="item[1].id">{{item[1].title}}<span class="counter">{{item[1].mission_count}}</span></b-form-checkbox>
         </li>
     </ul>
     <ul class="chk-select-options dropdown-option-list" v-else>
@@ -41,6 +41,9 @@ export default {
     },
     mounted() {},
     methods: {
+        filterTable() {
+            this.$emit("changeParmas");
+        }
     },
     watch: {
         items: function(val){            

@@ -14,9 +14,8 @@ export default function setup() {
         var secondLastValue =  domain[secondLastPosition];
         var getRequest = domain[lastPosition].split('?');
         var getRequestEndPoint = getRequest[0];
-
         // Do something before request is sent
-        if(domain[lastPosition] == "favourite" || domain[lastPosition] == "rating"){
+        if(domain[lastPosition] == "favourite" || domain[lastPosition] == "rating" || domain[lastPosition] == "comments"){
             addLoader = "false";
         }
 
@@ -26,11 +25,11 @@ export default function setup() {
             }
         }
         
-        if(secondLastValue == "mission-media") {
+        if(secondLastValue == "mission-media" || secondLastValue == "cms" || secondLastValue == "language") {
             addLoader = "false";
         }
 
-        if(getRequestEndPoint == "volunteers") {
+        if(getRequestEndPoint == "volunteers" || getRequestEndPoint == "explore-mission" || getRequestEndPoint == "listing") {
             addLoader = "false";
         }
 
