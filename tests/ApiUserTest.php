@@ -69,7 +69,7 @@ class ApiUserTest extends TestCase
     public function it_should_list_of_all_api_users_of_tenant()
     {
         // Get random tenant
-        $tenant = Tenant::get()->random();
+        $tenant = Tenant::whereHas('apiUsers')->get()->random();
         
         // Get all api user of tenant
         $this->get(route("tenants.api-users", ["tenant_id" => $tenant->tenant_id]), [])
@@ -107,7 +107,7 @@ class ApiUserTest extends TestCase
     public function it_should_return_api_user_detail()
     {
         // Get random tenant with api users data
-        $tenant = Tenant::with('apiUsers')->get()->random();
+        $tenant = Tenant::whereHas('apiUsers')->get()->random();
 
         // Get random api user from list
         $apiUser = $tenant->apiUsers->random();
@@ -139,7 +139,7 @@ class ApiUserTest extends TestCase
         $tenantId = rand(99999999,999999999);
 
         // Get random tenant with api users data
-        $tenant = Tenant::with('apiUsers')->get()->random();
+        $tenant = Tenant::whereHas('apiUsers')->get()->random();
 
         // Get random api user from list
         $apiUser = $tenant->apiUsers->random();
@@ -158,7 +158,7 @@ class ApiUserTest extends TestCase
     public function it_should_return_api_user_not_found_for_api_user_detail()
     {
         // Get random tenant with api users data
-        $tenant = Tenant::with('apiUsers')->get()->random();
+        $tenant = Tenant::whereHas('apiUsers')->get()->random();
 
         // Generate random tenantId
         $apiUserId = rand(99999999,999999999);
@@ -230,7 +230,7 @@ class ApiUserTest extends TestCase
     public function it_should_return_api_user_not_found_for_updated_secret_key_of_api_user()
     {
         // Get random tenant with api users data
-        $tenant = Tenant::with('apiUsers')->get()->random();
+        $tenant = Tenant::whereHas('apiUsers')->get()->random();
 
         // Generate random apiUserId
         $apiUserId = rand(99999999,999999999);        
