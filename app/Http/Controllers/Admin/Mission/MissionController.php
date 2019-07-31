@@ -106,7 +106,8 @@ class MissionController extends Controller
                 "start_date" => "sometimes|required_with:end_date",
                 "end_date" => "sometimes|after:start_date",
                 "total_seats" => "numeric",
-                "goal_objective" => "required_if:mission_type,GOAL"
+                "goal_objective" => "required_if:mission_type,GOAL",
+                "availability_id" => "required"
             ]
         );
 
@@ -141,6 +142,7 @@ class MissionController extends Controller
         } catch (TenantDomainNotFoundException $e) {
             throw $e;
         } catch (\Exception $e) {
+            dd($e);
             return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
@@ -209,7 +211,8 @@ class MissionController extends Controller
                 "documents.*.document_path" => "required_with:documents",
                 "start_date" => "sometimes|required_with:end_date",
                 "end_date" => "sometimes|after:start_date",
-                "total_seats" => "numeric"
+                "total_seats" => "numeric",
+                "availability_id" => "sometimes|required"
             ]
         );
         

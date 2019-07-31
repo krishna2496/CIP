@@ -134,6 +134,7 @@ class MissionRepository implements MissionInterface
                 'organisation_id' => $request->organisation['organisation_id'],
                 'organisation_name' => $request->organisation['organisation_name'],
                 'organisation_detail' => $request->organisation['organisation_detail'],
+                'availability_id' => $request->availability_id,
                 'mission_type' => $request->mission_type
             );
         
