@@ -134,6 +134,10 @@ export default {
             this.isCityChange = false;
         },
 
+        changeSearch() {
+            this.searchString = '';
+        },
+
         changeSkillParmas() {
           this.isCountryChange = false;
           this.isCityChange = false;
@@ -496,13 +500,13 @@ export default {
         }
         var _this = this;
         eventBus.$on('clearAllFilters', (message) => {
-            this.clearFilter();
+            _this.clearFilter();
         });
         eventBus.$on('setDefaultText', (message) => {
-            this.defautCountry = this.$i18n.t("label.country");
+            _this.defautCountry = this.$i18n.t("label.country");
         });
         eventBus.$on('setDefaultData', (message) => {        
-            this.filterListing();
+            _this.filterListing();
         });
         // Fetch Filters
         this.filterListing();
