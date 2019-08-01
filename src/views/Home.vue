@@ -269,9 +269,20 @@ export default {
         },
 
         searchMissions(searchParams,filterParmas) {
+
             this.filterData.search =  searchParams;
-            this.filterData.countryId = filterParmas.countryId;
-            this.filterData.cityId =  filterParmas.cityId;
+            if(store.state.exploreMissionType == ''){
+                this.filterData.countryId = filterParmas.countryId;
+            } else {
+                this.filterData.countryId = '';
+            }
+
+            if(store.state.exploreMissionType == ''){
+                this.filterData.cityId =  filterParmas.cityId;
+            } else {
+                this.filterData.cityId =  '';
+            }
+
             this.filterData.themeId = filterParmas.themeId;
             this.filterData.skillId = filterParmas.skillId;
             this.filterData.tags = filterParmas.tags;
