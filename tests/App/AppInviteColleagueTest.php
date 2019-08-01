@@ -52,15 +52,16 @@ class AppInviteColleagueTest extends TestCase
      */
     public function it_should_validate_mission_before_invite()
     {
-        DB::setDefaultConnection('tenant');
-        $userId = App\User::get()->random()->user_id;
-        DB::setDefaultConnection('mysql');
+        $connection = 'tenant';
+        $user = factory(\App\User::class)->make();
+        $user->setConnection($connection);
+        $user->save();
 
         $params = [
             'mission_id' => rand(1000000,2000000)
         ];
         
-        $token = Helpers::getJwtToken($userId);
+        $token = Helpers::getJwtToken($user->user_id);
         $this->post('/app/mission/invite', $params, ['token' => $token])
         ->seeStatusCode(422)
         ->seeJsonStructure([
@@ -73,6 +74,7 @@ class AppInviteColleagueTest extends TestCase
                 ]
             ]
         ]);    
+        $user->delete();
     }
 
     /**

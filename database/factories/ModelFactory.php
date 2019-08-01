@@ -67,11 +67,12 @@ $factory->define(App\Models\Mission::class, function (Faker\Generator $faker) {
         "start_date" => "2019-05-15 10:40:00",
         "end_date" => "2019-10-15 10:40:00",
         "total_seats" => rand(1, 1000),        
-        "mission_type" => "GOAL",
-        "publication_status" => "APPROVED",
+        "mission_type" => config("constants.mission_type.GOAL"),
+        "publication_status" => config("constants.publication_status.APPROVED"),
         "organisation_id" => rand(1, 1),
         "organisation_name" => str_random(10),
-        "organisation_detail" => str_random(50)
+        "organisation_detail" => str_random(50),
+        "availability_id" => rand(1, 1)
     ];
 });
 

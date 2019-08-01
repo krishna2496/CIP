@@ -72,7 +72,8 @@ class Mission extends Model
     'goal_objective', 'achieved_goal', 'mission_count', 'mission_rating_count',
     'already_volunteered','total_available_seat', 'available_seat','deadline',
     'favourite_mission_count', 'mission_rating', 'is_favourite', 'skill_id',
-    'user_application_status', 'skill', 'rating', 'mission_rating_total_volunteers', 'availability_id', 'type'];
+    'user_application_status', 'skill', 'rating', 'mission_rating_total_volunteers',
+    'availability_id', 'availability_type'];
 
     protected $appends = ['city_name'];
 
@@ -225,8 +226,7 @@ class Mission extends Model
      */
     public function availability(): BelongsTo
     {
-        return $this->belongsTo(Availability::class, 'availability_id', 'availability_id')
-         ->select('availability_id', 'type');
+        return $this->belongsTo(Availability::class, 'availability_id', 'availability_id');
     }
 
     /**

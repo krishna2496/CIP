@@ -43,6 +43,10 @@ trait MissionTransformable
         unset($mission['favouriteMission']);
         unset($mission['missionApplication']);
         
+        if (isset($mission['availability'])) {
+            $mission['availability_type']  = $mission['availability']['type'];
+            unset($mission['availability']);
+        }
         // Set seats_left or already_volunteered
         if ($mission['total_seats'] != 0 && $mission['total_seats'] !== null) {
             $mission['seats_left'] = ($mission['total_seats']) - ($mission['mission_application_count']);

@@ -33,6 +33,8 @@ class AppMissionRatingTest extends TestCase
             "status",
             "message"
         ]);
+        $user->delete();
+        $mission->delete();
 }
 
     /**
@@ -44,25 +46,31 @@ class AppMissionRatingTest extends TestCase
      */
     public function it_should_update_mission_rating()
     {
-        DB::setDefaultConnection('tenant');
-        $missionRatingData = App\Models\MissionRating::get()->random();
-        DB::setDefaultConnection('mysql');
+        $connection = 'tenant';
+        $mission = factory(\App\Models\Mission::class)->make();
+        $mission->setConnection($connection);
+        $mission->save();
+        $user = factory(\App\User::class)->make();
+        $user->setConnection($connection);
+        $user->save();
 
         $params = [
-                'mission_id' => $missionRatingData->mission_id,
-                'rating' => $missionRatingData->rating
+                'mission_id' => $mission->mission_id,
+                'rating' => rand(1, 5)
             ];
 
-        $token = Helpers::getJwtToken($missionRatingData->user_id);
+        $token = Helpers::getJwtToken($user->user_id);
+        $this->post('app/mission/rating', $params, ['token' => $token]);
+        DB::setDefaultConnection('mysql');
         $this->post('app/mission/rating', $params, ['token' => $token])
           ->seeStatusCode(200)
           ->seeJsonStructure([
             "status",
             "message"
         ]);
-        App\Models\MissionRating::where(['user_id' => $missionRatingData->user_id, 'mission_id' => $missionRatingData->mission_id])->delete();
-        App\User::where(['user_id' => $missionRatingData->user_id])->delete();
-        App\Models\Mission::where(['mission_id' => $missionRatingData->mission_id])->delete();
+        App\Models\MissionRating::where(['user_id' => $user->user_id, 'mission_id' => $mission->mission_id])->delete();
+        $user->delete();
+        $mission->delete();
 }
 
     /**
