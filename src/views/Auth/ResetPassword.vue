@@ -131,6 +131,9 @@ methods:{
 
                     this.fetchUserLanguage(this.$route.query.email);                    
                     this.isShowSlider = true;
+                    loadLocaleMessages(store.state.defaultLanguage).then(response =>{
+                        this.langauageData = JSON.parse(store.state.languageLabel);
+                    });
             })       
     },
     async fetchUserLanguage(email) {

@@ -100,6 +100,9 @@ export default {
                     this.defautLang = store.state.defaultLanguage
                     // Get tenant setting
                     tenantSetting(); 
+                    loadLocaleMessages(store.state.defaultLanguage).then(response =>{
+                        this.langauageData = JSON.parse(store.state.languageLabel);
+                    });
             })       
         },
         
@@ -145,8 +148,7 @@ export default {
     created() {
         //Database connection and fetching tenant options api
         this.createConnection()
-        this.langauageData = JSON.parse(store.state.languageLabel);
-
+        
         var domain = '';
         var imagePath = '';
         var currentUrl = (((window.location.origin).split('.')));
