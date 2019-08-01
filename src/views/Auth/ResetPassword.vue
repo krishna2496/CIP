@@ -12,50 +12,50 @@
                     <img :src="this.$store.state.logo">
                 </router-link>
                 <div class="form-title-block">
-                    <h1>{{ $t("label.new_password") }}</h1>
-                    <p>{{ $t("label.new_password_messgae") }}</p>
+                    <h1>{{ langauageData.label.new_password }}</h1>
+                    <p>{{ langauageData.label.new_password_messgae }}</p>
                 </div>
                 <!-- success or error msg -->
                 <b-alert show :variant="classVariant" dismissible v-model="showDismissibleAlert"> {{ message }}</b-alert>
                 <!-- reset password form start -->
                 <b-form class="signin-form">
                     <b-form-group :state="false">
-                        <label>{{ $t("label.new_password") }}</label>
+                        <label>{{ langauageData.label.new_password }}</label>
                         <b-form-input id="" type="password" v-model="resetPassword.password" :class="{ 'is-invalid': $v.resetPassword.password.$error }" value="Password" 
                         maxlength="120"
-                        v-bind:placeholder='$t("placeholder.password")' 
+                        v-bind:placeholder='langauageData.placeholder.password' 
                         autofocus
                         @keydown.space.prevent></b-form-input>
                         <div v-if="submitted && !$v.resetPassword.password.required" class="invalid-feedback">
-                            {{ $t("errors.password_required") }}
+                            {{ langauageData.errors.password_required }}
                         </div>
                         <div v-if="submitted && !$v.resetPassword.password.minLength" class="invalid-feedback">
-                            {{ $t("errors.invalid_password") }}
+                            {{ langauageData.errors.invalid_password }}
                         </div>
                     </b-form-group>
                     <b-form-group>
-                        <label>{{ $t("label.confirm_new_password") }}</label>
+                        <label>{{ langauageData.label.confirm_new_password }}</label>
                         <b-form-input id="" type="password" v-model="resetPassword.confirmPassword" :class="{ 'is-invalid': $v.resetPassword.confirmPassword.$error }"
                         maxlength="120" 
-                        v-bind:placeholder='$t("placeholder.password")' 
+                        v-bind:placeholder='langauageData.placeholder.password' 
                         @keypress.enter.prevent="handleSubmit" value="Password"
                         @keydown.space.prevent></b-form-input>
                         <div v-if="submitted && !$v.resetPassword.confirmPassword.required" class="invalid-feedback">
-                            {{ $t("errors.password_required") }}
+                            {{ langauageData.errors.password_required }}
                         </div>
                         <div v-if="submitted && !$v.resetPassword.confirmPassword.minLength" class="invalid-feedback">
-                            {{ $t("errors.invalid_password") }}
+                            {{ langauageData.errors.invalid_password }}
                         </div>
                         <div v-if="submitted && $v.resetPassword.confirmPassword.required && $v.resetPassword.confirmPassword.minLength && !$v.resetPassword.confirmPassword.sameAsPassword" class="invalid-feedback">
-                            {{ $t("errors.identical_password") }}
+                            {{ langauageData.errors.identical_password }}
                         </div>
                     </b-form-group>
                     <b-button type="button" @click="handleSubmit" class="btn btn-bordersecondary">
-                        {{ $t("label.change_password") }}
+                        {{ langauageData.label.change_password }}
                     </b-button>
                 </b-form>
                 <div class="form-link">
-                    <b-link to="/">{{ $t("label.login") }}</b-link>
+                    <b-link to="/">{{ langauageData.label.login }}</b-link>
                 </div>
             </div>
             <ThePrimaryFooter ref="ThePrimaryFooter"/>
@@ -96,6 +96,7 @@ return {
     classVariant: 'danger',
     message: null,
     showDismissibleAlert: false,
+    langauageData : [],
 };
 },
 
@@ -113,7 +114,8 @@ methods:{
         this.defautLang = language.selectedVal;
         store.commit('setDefaultLanguage',language);
         this.$i18n.locale = language.selectedVal.toLowerCase()
-        await loadLocaleMessages(this.$i18n.locale);   
+        await loadLocaleMessages(this.$i18n.locale); 
+        this.langauageData = JSON.parse(store.state.languageLabel);  
         _this.$forceUpdate();
         _this.$refs.ThePrimaryFooter.$forceUpdate()
     },
@@ -197,7 +199,7 @@ methods:{
 },
 created() {
     this.createConnection();
-
+    this.langauageData = JSON.parse(store.state.languageLabel);
     //get token and email from url
     let tokenData = this.$route.path.split('/');
     

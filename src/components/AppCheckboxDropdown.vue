@@ -13,7 +13,7 @@
     </ul>
     <ul class="chk-select-options dropdown-option-list" v-else>
         <li>
-            <label class="no-checkbox">{{ $t("label.no_record_found")}}</label>
+            <label class="no-checkbox">{{ langauageData.label.no_record_found }}</label>
         </li>
     </ul>
     </div>
@@ -22,6 +22,7 @@
 
 <script>
 import Vue from "vue";
+import store from '../store';
 export default {
     name: "AppCheckboxDropdown",
     components: {},
@@ -37,6 +38,7 @@ export default {
     data() {
         return {
             items: this.selectedItem,
+            langauageData : [],
         };
     },
     mounted() {},
@@ -54,6 +56,7 @@ export default {
         },
     },
     created() {
+         this.langauageData = JSON.parse(store.state.languageLabel);
     },
 };
 </script>

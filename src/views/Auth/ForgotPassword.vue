@@ -12,30 +12,30 @@
                     <img :src="this.$store.state.logo">
                 </router-link>
                 <div class="form-title-block">
-                    <h1>{{ $t("label.forgot_password") }}</h1>
-                    <p>{{ $t("label.forgot_password_message") }}</p>
+                    <h1>{{ langauageData.label.forgot_password }}</h1>
+                    <p>{{ langauageData.label.forgot_password_message }}</p>
                 </div>
                 <!-- success or error msg -->
                 <b-alert show :variant="classVariant" dismissible v-model="showDismissibleAlert"> {{ message }}</b-alert>
                 <!-- forgot password form start -->       
                 <b-form class="signin-form">
                     <b-form-group>
-                    <label for>{{ $t("label.email_address") }}</label>
+                    <label for>{{ langauageData.label.email_address }}</label>
                     <b-form-input id type="email" v-model="forgotPassword.email" :class="{ 'is-invalid': $v.forgotPassword.email.$error }" @keypress.enter.prevent="handleSubmit" 
                     maxlength="120"
-                    v-bind:placeholder='$t("placeholder.email_address")'
+                    v-bind:placeholder='langauageData.placeholder.email_address'
                     ref='email' autofocus
                     @keydown.space.prevent></b-form-input>
                     <div v-if="submitted && !$v.forgotPassword.email.required" class="invalid-feedback">
-                        {{ $t("errors.email_required") }}</div>
+                        {{ langauageData.errors.email_required }}</div>
                     <div v-if="submitted && !$v.forgotPassword.email.email" class="invalid-feedback">
-                        {{ $t("errors.invalid_email") }}</div>
+                        {{ langauageData.errors.invalid_email }}</div>
                     </b-form-group>         
-                    <b-button type="button" @click="handleSubmit" class="btn btn-bordersecondary">{{ $t("label.reset_password_button") }}
+                    <b-button type="button" @click="handleSubmit" class="btn btn-bordersecondary">{{ langauageData.label.reset_password_button }}
                     </b-button>
                 </b-form>
                 <div class="form-link">
-                <b-link to="/">{{ $t("label.login") }}</b-link>
+                <b-link to="/">{{ langauageData.label.login }}</b-link>
                 </div>
             </div>
             <ThePrimaryFooter ref="ThePrimaryFooter"/>
@@ -71,6 +71,7 @@ export default {
             classVariant: 'danger',
             message: null,
             showDismissibleAlert: false,
+            langauageData : [],
         };
     },
 
@@ -87,8 +88,9 @@ export default {
             store.commit('setDefaultLanguage',language);
             this.$i18n.locale = language.selectedVal.toLowerCase()
             await loadLocaleMessages(this.$i18n.locale);   
-                _this.$forceUpdate();
-                _this.$refs.ThePrimaryFooter.$forceUpdate()
+            this.langauageData = JSON.parse(store.state.languageLabel);
+            _this.$forceUpdate();
+            _this.$refs.ThePrimaryFooter.$forceUpdate()
         },
         async createConnection(){
             await databaseConnection(this.langList).then(response => {
@@ -166,6 +168,7 @@ export default {
     },
     created() {
         this.createConnection();
+        this.langauageData = JSON.parse(store.state.languageLabel);
         // Set language list and default language fetch from Local Storage
         this.langList = (localStorage.getItem('listOfLanguage') !== null) ? JSON.parse(localStorage.getItem('listOfLanguage')) : []
         this.defautLang = localStorage.getItem('defaultLanguage') 

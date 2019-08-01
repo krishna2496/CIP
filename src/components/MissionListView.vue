@@ -15,7 +15,7 @@
                             </div>
                             <div  class="location">
                                 <i>
-                                    <img :src="$store.state.imagePath+'/assets/images/location.svg'" :alt="$t('label.location')">
+                                    <img :src="$store.state.imagePath+'/assets/images/location.svg'" :alt="langauageData.label.location">
                                 </i>{{mission.city_name}}
                             </div>
                             <b-button 
@@ -24,7 +24,7 @@
                                     active : mission.favourite_mission_count == 1
                                 }"  
                                 v-b-tooltip.hover
-                                :title="mission.favourite_mission_count == 1 ?  $t('label.remove_from_favourite') :$t('label.add_to_favourite')"
+                                :title="mission.favourite_mission_count == 1 ?  langauageData.label.remove_from_favourite :langauageData.label.add_to_favourite"
                                 @click="favoriteMission(mission.mission_id)"
                             >
                                 <i class="normal-img">
@@ -52,11 +52,11 @@
                                 </i>       
                              </b-button>
                             <b-button class="add-icon" 
-                                :title="$t('label.invite_colleague')"
+                                :title="langauageData.label.invite_colleague"
                                 @click="handleModal(mission.mission_id)">
                                 <img 
                                     :src="$store.state.imagePath+'/assets/images/add-group-ic.svg'"
-                                    :alt="$t('label.invite_colleague')"
+                                    :alt="langauageData.label.invite_colleague"
                                 >
                             </b-button>
                         </div>
@@ -94,7 +94,7 @@
                                 <div class="bottom-block">
                                     <b-link v-if="mission.set_view_detail == 0" @click="applyForMission(mission.mission_id)">
                                         <b-button class="btn-bordersecondary icon-btn">
-                                            <span>{{ $t("label.apply") }}</span>
+                                            <span>{{ langauageData.label.apply }}</span>
                                             <i>
                                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 16" width="19" height="15">
                                                     <g id="Main Content">
@@ -111,7 +111,7 @@
                                     </b-link>
                                     <b-link v-if="mission.set_view_detail == 1" :to="'/mission-detail/' + mission.mission_id">
                                         <b-button class="btn-bordersecondary icon-btn" >
-                                            <span>{{ $t("label.view_detail") }}</span>
+                                            <span>{{ langauageData.label.view_detail }}</span>
                                             <i>
                                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 16" width="19" height="15">
                                                     <g id="Main Content">
@@ -135,13 +135,13 @@
                                             <!-- Mission type time -->
                                             <template v-if="checkMissionTypeTime(mission.mission_type)">
                                                 <template v-if="mission.end_date !== null">
-                                                    {{ $t("label.from") }} 
+                                                    {{ langauageData.label.from }} 
                                                     {{mission.start_date | formatDate }} 
-                                                    {{ $t("label.until")}}
+                                                    {{ langauageData.label.until}}
                                                     {{ mission.end_date | formatDate }}   
                                                 </template>
                                                 <template v-else>
-                                                    {{ $t("label.on_going_opportunities") }}  
+                                                    {{ langauageData.label.on_going_opportunities }}  
                                                 </template>                                    
                                             </template>
                                             <!-- Mission type goal -->
@@ -159,7 +159,7 @@
                                             </i>
                                             <div class="text-wrap">
                                                 <span class="title-text mb-1">{{mission.seats_left}}</span>
-                                                <span class="subtitle-text">{{ $t("label.seats_left") }}</span>
+                                                <span class="subtitle-text">{{ langauageData.label.seats_left }}</span>
                                             </div>
                                         </div>
                                         </template>
@@ -170,7 +170,7 @@
                                                 </i>
                                                 <div class="text-wrap">
                                                     <span class="title-text mb-1">{{mission.mission_application_count}}</span>
-                                                    <span class="subtitle-text">{{ $t("label.already_volunteered") }}</span>
+                                                    <span class="subtitle-text">{{ langauageData.label.already_volunteered }}</span>
                                                 </div>
                                             </div>
                                         </template>
@@ -182,7 +182,7 @@
                                                 </i>
                                                 <div class="text-wrap">
                                                     <span class="title-text mb-1">{{mission.application_deadline | formatDate}}</span>
-                                                    <span class="subtitle-text">{{ $t("label.deadline") }}</span>
+                                                    <span class="subtitle-text">{{ langauageData.label.deadline }}</span>
                                                 </div>
                                             </div>
                                         </template>
@@ -194,7 +194,7 @@
                                                 <div class="text-wrap">
                                                     <b-progress :value="mission.achieved_goal" :max="mission.goal_objective" class="mb-2"></b-progress>
                                                     <span class="subtitle-text">
-                                                    {{mission.achieved_goal}} {{ $t("label.achieved")}}
+                                                    {{mission.achieved_goal}} {{ langauageData.label.achieved}}
                                                     </span>
                                                 </div>
                                             </div>
@@ -206,7 +206,7 @@
                 </b-card>
             </div>   
         </div>
-        <b-modal centered :title="$t('label.search_user')" ref="userDetailModal" 
+        <b-modal centered :title="langauageData.label.search_user" ref="userDetailModal" 
             :modal-class="myclass" hide-footer>
             <b-alert show :variant="classVariant" dismissible v-model="showErrorDiv"
             >{{ message }}</b-alert>
@@ -236,9 +236,9 @@
             <b-form>
                  <div class="btn-wrap">
                     <b-button @click="$refs.userDetailModal.hide()" class="btn-borderprimary">
-                    {{ $t("label.close") }}</b-button>
+                    {{ langauageData.label.close }}</b-button>
                     <b-button class="btn-bordersecondary" @click="inviteColleagues" ref="autosuggestSubmit" v-bind:disabled="submitDisable">
-                    {{ $t("label.submit") }}</b-button>
+                    {{ langauageData.label.submit }}</b-button>
                 </div>
             </b-form>
         </b-modal>
@@ -247,7 +247,7 @@
         <h2 class="text-center">{{noRecordFound()}}</h2>
         <div class="btn-wrap">
                 <b-button :to="'/home/#'" class="btn-bordersecondary icon-btn">
-                    <span>{{ $t("label.submit_new_mission") }}</span>
+                    <span>{{ langauageData.label.submit_new_mission }}</span>
                     <i>
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 16" width="19" height="15">
                             <g id="Main Content">
@@ -295,7 +295,8 @@ export default {
             message : null,
             classVariant :"success",
             autoSuggestPlaceholder : '',
-            submitDisable :true
+            submitDisable :true,
+            langauageData : [],
         };
     },
     computed: {
@@ -329,11 +330,11 @@ export default {
                 if (data[0].message) {
                     return data[0].message;
                 } else {
-                    return this.$i18n.t("label.no_record_found");
+                    return this.langauageData.label.no_record_found;
                 }
 
             } else {
-                return this.$i18n.t("label.no_record_found");
+                return this.langauageData.label.no_record_found;
             }
         },
         // Get theme title
@@ -395,7 +396,7 @@ export default {
         },
         // Open auto suggest modal
         handleModal(missionId){
-            this.autoSuggestPlaceholder = this.$i18n.t("label.search_user")
+            this.autoSuggestPlaceholder = this.langauageData.label.search_user
             this.showErrorDiv = false;
             this.message = null;
             this.$refs.userDetailModal.show();
@@ -457,7 +458,7 @@ export default {
         },
     },
     created() {
-
+        this.langauageData = JSON.parse(store.state.languageLabel);
     }
 };
 </script>

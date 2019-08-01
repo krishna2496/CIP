@@ -20,13 +20,13 @@
                     </b-button>
 					<ul v-if="this.$store.state.isLoggedIn">
                         <li class="has-menu">
-                          <a href="Javascript:void(0)" :title='$t("label.explore")'>{{ $t("label.explore")}}</a>
+                          <a href="Javascript:void(0)" :title='langauageData.label.explore'>{{ langauageData.label.explore}}</a>
 
                           <ul class="dropdown-menu sub-dropdown">
                             <li 
                             v-bind:class="topThemeClass"
                             >
-                              <a href="Javascript:void(0)">{{ $t("label.top_themes")}}</a>
+                              <a href="Javascript:void(0)">{{ langauageData.label.top_themes}}</a>
                               <ul class="subdropdown-menu" v-if="topTheme != null && topTheme.length > 0">
                                 <li v-for = "items in topTheme">
                                     <router-link 
@@ -40,7 +40,7 @@
                             <li
                             v-bind:class="topCountryClass"
                             >
-                            <a href="Javascript:void(0)">{{$t("label.top_country")}}</a>
+                            <a href="Javascript:void(0)">{{langauageData.label.top_country}}</a>
                                 <ul class="subdropdown-menu" v-if="topCountry != null && topCountry.length > 0">
                                     <li v-for = "items in topCountry">
                                     <router-link 
@@ -53,7 +53,7 @@
                                 </ul>
                             </li>
                             <li v-bind:class="topOrganizationClass">
-                                <a href="Javascript:void(0)">{{ $t("label.top_organisation")}}</a>
+                                <a href="Javascript:void(0)">{{ langauageData.label.top_organisation}}</a>
                                 <ul class="subdropdown-menu" v-if="topOrganization != null && topOrganization.length > 0">
                                 <li v-for = "items in topOrganization">
                                     <router-link 
@@ -68,43 +68,43 @@
                                 <router-link 
                                     :to="{ path: '/home/most_ranked_missions'}" @click.native="menuBarclickHandler"
                                     >
-                                    {{$t("label.most_ranked")}}
+                                    {{langauageData.label.most_ranked}}
                                 </router-link>
                             </li>
                             <li class="no-dropdown">
                                 <router-link 
                                     :to="{ path: '/home/favourite_missions'}" @click.native="menuBarclickHandler"
                                     >
-                                    {{$t("label.top_favourite")}}
+                                    {{langauageData.label.top_favourite}}
                                 </router-link>
                             </li>
                             <li class="no-dropdown">
                                 <router-link 
                                     :to="{ path: '/home/recommended_missions'}" @click.native="menuBarclickHandler"
                                     >
-                                    {{$t("label.recommended")}}
+                                    {{langauageData.label.recommended}}
                                 </router-link>
                             </li>
                             <li class="no-dropdown">
                                 <router-link 
                                     :to="{ path: '/home/random_missions'}" @click.native="menuBarclickHandler"
                                     >
-                                    {{$t("label.random")}}
+                                    {{langauageData.label.random}}
                                 </router-link>
                             </li>
                           </ul>
                         </li>
                         <li class="has-menu no-dropdown">
-                          <a href="#" :title='$t("label.stories")'>{{ $t("label.stories")}}</a>
+                          <a href="#" :title='langauageData.label.stories'>{{ langauageData.label.stories}}</a>
                         </li>
                         <li class="has-menu no-dropdown">
-                          <a href="#" :title='$t("label.news")'>{{ $t("label.news")}}</a>
+                          <a href="#" :title='langauageData.label.news'>{{ langauageData.label.news}}</a>
                         </li>
                         <li class="has-menu">
-                          <a href="#" :title='$t("label.policy")'>{{ $t("label.policy")}}</a>
+                          <a href="#" :title='langauageData.label.policy'>{{ langauageData.label.policy}}</a>
                           <ul class="dropdown-menu">
-                            <li><a href="#">{{ $t("label.volunteering")}}</a></li>
-                            <li><a href="#">{{ $t("label.sponsored")}}</a></li>
+                            <li><a href="#">{{ langauageData.label.volunteering}}</a></li>
+                            <li><a href="#">{{ langauageData.label.sponsored}}</a></li>
                           </ul>
                         </li>
                     </ul>
@@ -124,7 +124,7 @@
                             v-on:click.native="logout()" 
                             replace 
                             v-if="this.$store.state.isLoggedIn"
-                            >{{ $t("label.logout")}}
+                            >{{ langauageData.label.logout}}
                         </b-dropdown-item>
                     </b-nav-item-dropdown>
                 </b-nav>
@@ -142,7 +142,7 @@
                             
                         </b-button>
                         <span class="title">Notification</span>
-                        <b-button class="btn-clear"  @click="showclearitem">{{$t("label.clear_all")}}</b-button>
+                        <b-button class="btn-clear"  @click="showclearitem">{{langauageData.label.clear_all}}</b-button>
                     </template>
                     <div class="notification-details" data-simplebar>
                         <b-list-group>
@@ -280,6 +280,7 @@ export default {
             topOrganizationClass : 'no-dropdown',
             filterData : [],
             topOrganization:[],
+            langauageData : [],
         };
     },
     mounted() {
@@ -409,6 +410,7 @@ export default {
         },
     },
     created() {
+        this.langauageData = JSON.parse(store.state.languageLabel);
         document.addEventListener("scroll", this.handscroller);
         if(store.state.isLoggedIn) {
             this.exploreMissions();

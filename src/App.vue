@@ -71,7 +71,7 @@ export default {
   	}
     },
      handleClick(e) {
-        e.stopPropagation();        
+        e.stopPropagation();
         var profile_toggle = document.querySelector(
           ".profile-menu .dropdown-toggle"
         );
@@ -116,7 +116,7 @@ export default {
           var optionlist_width = parseInt(
             window.getComputedStyle(optionlist).getPropertyValue("width")
           );
-          if (optionlist_wrap_height < optionlist_height) {            
+          if (optionlist_wrap_height < optionlist_height) {
             var minwidth_style = e.querySelector(".simplebar-offset");
             minwidth_style.setAttribute("style", "left: 0 !important");
             if (

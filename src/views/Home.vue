@@ -33,11 +33,11 @@
                         @updateCall="changeTag"
                         />
                     </span>
-                    <b-button class="clear-btn" @click="clearMissionFilter">{{$t("label.clear_all")}}</b-button>
+                    <b-button class="clear-btn" @click="clearMissionFilter">{{langauageData.label.clear_all}}</b-button>
                 </div>
                 </div>
                 <div class="heading-section" v-if="missionList.length > 0">
-                    <h2><template v-if="rows > 0">{{ $t("label.explore")}} <strong>{{rows}} {{ $t("label.missions")}}</strong></template></h2>
+                    <h2><template v-if="rows > 0">{{ langauageData.label.explore}} <strong>{{rows}} {{ langauageData.label.missions}}</strong></template></h2>
                     <div class="right-section" v-if="sortByFilterSet">
                         <AppCustomDropdown
                         :optionList="sortByOptions"
@@ -52,7 +52,7 @@
                 <!-- grid view -->
                     <b-tab class="grid-tab-content">
                         <template slot="title">
-                            <i class="grid icon-wrap" @click="activeView = 'gridView'" v-b-tooltip.hover :title = "$t('label.grid_view')" v-if="missionList.length > 0">
+                            <i class="grid icon-wrap" @click="activeView = 'gridView'" v-b-tooltip.hover :title = "langauageData.label.grid_view" v-if="missionList.length > 0">
                             <img class="img-normal" :src="$store.state.imagePath+'/assets/images/grid.svg'" alt="Down Arrow" />
                             <img class="img-rollover" :src="$store.state.imagePath+'/assets/images/grid-h.svg'" alt="Down Arrow" />
                          </i>
@@ -71,7 +71,7 @@
                         <!-- list view -->
                     <b-tab class="list-tab-content">
                         <template slot="title">
-                            <i class="list icon-wrap" @click="activeView = 'listView'" v-b-tooltip.hover :title = "$t('label.list_view')" v-if="missionList.length > 0">
+                            <i class="list icon-wrap" @click="activeView = 'listView'" v-b-tooltip.hover :title = "langauageData.label.list_view" v-if="missionList.length > 0">
                             <img class="img-normal" :src="$store.state.imagePath+'/assets/images/list.svg'" alt="Down Arrow" />
                             <img class="img-rollover" :src="$store.state.imagePath+'/assets/images/list-h.svg'" alt="Down Arrow" />
                             </i>
@@ -108,7 +108,7 @@
         <footer>
             <TheSecondaryFooter></TheSecondaryFooter>
         </footer>
-        <back-to-top bottom="68px" right="40px" :title="$t('label.back_to_top')">
+        <back-to-top bottom="68px" right="40px" :title="langauageData.label.back_to_top">
          <i class="icon-wrap">
             <img class="img-normal" :src="$store.state.imagePath+'/assets/images/down-arrow.svg'" alt="Down Arrow" />
             <img class="img-rollover" :src="$store.state.imagePath+'/assets/images/down-arrow-black.svg'" alt="Down Arrow" />
@@ -179,6 +179,7 @@ export default {
             tags:"",
             sortByFilterSet : true,
             userList :[],
+            langauageData : [],
         };
     },
 
@@ -249,7 +250,7 @@ export default {
                     setTimeout(function(){ 
                         var labelString = 'label.'
                         var sortByValue = labelString.concat(sortBy); 
-                        _this.sortByDefault = _this.$i18n.t(sortByValue);
+                        _this.sortByDefault = _this.langauageData.label[sortBy];
                     },200);
                 }
               
@@ -331,6 +332,7 @@ export default {
         }
     },
     created() { 
+        this.langauageData = JSON.parse(store.state.languageLabel);
         let filterSetting = JSON.parse(store.state.tenantSetting);
         if(filterSetting.sorting_missions != 1){
             this.sortByFilterSet = false;
@@ -358,7 +360,8 @@ export default {
         });
                
         setTimeout(function(){ 
-            _this.sortByDefault = _this.$i18n.t("label.sort_by");
+            
+            _this.sortByDefault = _this.langauageData.label.sort_by;
         },200);
         window.addEventListener("scroll", this.handleScroll);
     },

@@ -14,7 +14,7 @@
 	>
   	<div class="content-loader"></div>
     </div>	
-	<h2 class="title-with-border"><span>{{ $t("label.recent_volunteers") }} </span></h2>
+	<h2 class="title-with-border"><span>{{ langauageData.label.recent_volunteers }} </span></h2>
 	<div class="recent-details-block" v-if="volunteerList.length > 0">
 		<b-list-group class="volunteers-list"  
 			:current-page="currentPage">
@@ -35,18 +35,18 @@
             >    
             </b-pagination>
 				<span> 
-				{{((currentPage - 1 ) * perPage ) + 1}} - {{Math.min(perPage * currentPage , rows )}} of {{rows}} {{ $t("label.recent_volunteers") }}</span>
+				{{((currentPage - 1 ) * perPage ) + 1}} - {{Math.min(perPage * currentPage , rows )}} of {{rows}} {{ langauageData.label.recent_volunteers }}</span>
 		</div>
 	</div>
 	<p v-else>
-		{{ $t("label.no_volunteers") }}
+		{{ langauageData.label.no_volunteers }}
 	</p>
 </div>
 </template>
 
 <script>
 import {missionVolunteers} from "../services/service";
-
+import store from '../store';
 export default {
     name: "RecentVolunteers",
     components: {},
@@ -60,7 +60,8 @@ export default {
 	       recentVolunterLoader : true,
 	       perPage : 9,
 	       noVolunteerFound : false,
-	       hidePagination : true,
+		   hidePagination : true,
+		   langauageData : [],
         }
         },
     directives: {},
@@ -106,6 +107,7 @@ export default {
     	},
     },
     created() {
+		this.langauageData = JSON.parse(store.state.languageLabel);
     	this.getMissionVolunteers();
     }
 };

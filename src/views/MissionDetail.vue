@@ -4,14 +4,15 @@
      		<ThePrimaryHeader v-if="isShownComponent"></ThePrimaryHeader>
     	</header>
       	<main>
-      		<div v-if="isShareComponentShown">
-      <AddThis 
-        publicId="ra-5d4173b2ee914965"
-        :data-url="sharingUrl"
-        :data-title="missionDetail.title"
-        :data-description="missionDetail.short_description"
-        :data-media="defaultMedia"
-       /></div>
+		<div v-if="isShareComponentShown">
+	      <AddThis 
+	        publicId="ra-5d4173b2ee914965"
+	        :data-url="sharingUrl"
+	        :data-title="missionDetail.title"
+	        :data-description="missionDetail.short_description"
+	        :data-media="defaultMedia"
+	       />
+	    </div>
 			<b-container>
 		  	<div class="slider-banner-block">
 					<b-row>
@@ -67,11 +68,11 @@
                                         </svg>
                                     </i>	
 									<span v-if="missionAddedToFavoriteByUser">
-										{{ $t('label.remove_from_favourite') }}
+										{{ langauageData.label.remove_from_favourite }}
 									</span>
 
 									<span v-else>
-										{{ $t('label.add_to_favourite') }}
+										{{ langauageData.label.add_to_favourite }}
 									</span>
 
 								</b-button>
@@ -83,13 +84,13 @@
                                         <!-- Mission type time -->
                                         <template v-if="checkMissionTypeTime(missionDetail.mission_type)">
                                         <template v-if="missionDetail.end_date !== null">
-                                            {{ $t("label.from") }} 
+                                            {{ langauageData.label.from }} 
                                             {{missionDetail.start_date | formatDate }} 
-                                            {{ $t("label.until")}}
+                                            {{ langauageData.label.until}}
                                             {{ missionDetail.end_date | formatDate }} 
                                         </template>
                                         <template v-else>
-                                            {{ $t("label.on_going_opportunities") }}  
+                                            {{ langauageData.label.on_going_opportunities }}  
                                         </template>
                                         </template>
                                         <!-- Mission type goal -->
@@ -109,7 +110,7 @@
                                                     </i>
                                                     <div class="text-wrap">
                                                         <span class="title-text mb-1">{{missionDetail.seats_left}}</span>
-                                                        <span class="subtitle-text">{{ $t("label.seats_left") }}</span>
+                                                        <span class="subtitle-text">{{ langauageData.label.seats_left }}</span>
                                                     </div>
                                                 </div>
                                             </template>
@@ -120,7 +121,7 @@
                                                     </i>
                                                     <div class="text-wrap">
                                                         <span class="title-text mb-1">{{missionDetail.mission_application_count}}</span>
-                                                        <span class="subtitle-text">{{ $t("label.already_volunteered") }}</span>
+                                                        <span class="subtitle-text">{{ langauageData.label.already_volunteered }}</span>
                                                     </div>
                                                 </div>
                                             </template>
@@ -131,7 +132,7 @@
                                                     </i>
                                                     <div class="text-wrap">
                                                         <span class="title-text mb-1">{{missionDetail.application_deadline | formatDate}}</span>
-                                                        <span class="subtitle-text">{{ $t("label.deadline") }}</span>
+                                                        <span class="subtitle-text">{{ langauageData.label.deadline }}</span>
                                                     </div>
                                                 </div>
                                             </template>
@@ -146,7 +147,7 @@
                                                 </i>
                                                 <div class="text-wrap">
                                                     <span class="title-text mb-1">{{missionDetail.seats_left}}</span>
-                                                    <span class="subtitle-text">{{ $t("label.seats_left") }}</span>
+                                                    <span class="subtitle-text">{{ langauageData.label.seats_left }}</span>
                                                 </div>
                                             </template>
                                             <template v-else>
@@ -155,7 +156,7 @@
                                                 </i>
                                                 <div class="text-wrap">
                                                     <span class="title-text mb-1">{{missionDetail.mission_application_count}}</span>
-                                                    <span class="subtitle-text">{{ $t("label.already_volunteered") }}</span>
+                                                    <span class="subtitle-text">{{ langauageData.label.already_volunteered }}</span>
                                                 </div>
                                             </template>
                                             </div>
@@ -166,7 +167,7 @@
 			                                        <div class="text-wrap">
 			                                            <b-progress :value="missionDetail.achieved_goal" :max="missionDetail.goal_objective" class="mb-2"></b-progress>
 			                                            <span class="subtitle-text">{{missionDetail.achieved_goal}} 
-			                                            {{ $t("label.achieved")}}</span>
+			                                            {{ langauageData.label.achieved}}</span>
 			                                        </div>
 		                                    	</div>
                                         </div>
@@ -178,7 +179,7 @@
 										<i class="img-wrap">
 											<img src="../assets/images/location-black.svg" alt="" />
 										</i>
-										<span class="label">{{ $t("label.city")}}</span>
+										<span class="label">{{ langauageData.label.city}}</span>
 										<p class="text-wrap">{{missionDetail.city_name}}</p>
 									</div>
 								</b-list-group-item>
@@ -187,7 +188,7 @@
 										<i class="img-wrap">
 											<img src="../assets/images/earth-ic.svg" alt="" />
 										</i>
-										<span class="label">{{ $t("label.theme")}}</span>
+										<span class="label">{{ langauageData.label.theme}}</span>
 										<p class="text-wrap">{{getThemeTitle(missionDetail.mission_theme)}}</p>
 									</div>
 								</b-list-group-item>
@@ -196,12 +197,12 @@
 										<i class="img-wrap">
 											<img src="../assets/images/calendar.svg" alt="" />
 										</i>
-										<span class="label">{{ $t("label.date")}}</span>
+										<span class="label">{{ langauageData.label.date}}</span>
 										<template v-if="missionDetail.application_deadline && missionDetail.application_deadline != null">
                                                 <p class="text-wrap">{{missionDetail.application_deadline | formatDate}}</p>
                                         </template>
                                         <template v-else>
-                                        	<p class="text-wrap">{{ $t("label.on_going_opportunities") }} </p>
+                                        	<p class="text-wrap">{{ langauageData.label.on_going_opportunities }} </p>
                                         </template>
 										
 									</div>
@@ -211,7 +212,7 @@
 										<i class="img-wrap">
 											<img src="../assets/images/group-ic.svg" alt="" />
 										</i>
-										<span class="label">{{ $t("label.organisation")}}</span>
+										<span class="label">{{ langauageData.label.organisation}}</span>
 										<p class="text-wrap">{{missionDetail.organisation_name}}</p>
 									</div>
 								</b-list-group-item>
@@ -226,7 +227,7 @@
 												d="m512 428h-84v84h-40v-84h-84v-40h84v-84h40v84h84zm-212.695312-204.5625c1.757812 7.910156 2.695312 16.128906 2.695312 24.5625 0 34.550781-15.59375 65.527344-40.105469 86.269531.699219.277344 1.40625.546875 2.105469.832031v44.199219c-21.414062-11.667969-45.945312-18.300781-72-18.300781v-.039062c-.332031.007812-.667969.007812-1 .015624v.023438c-83.261719 0-151 67.738281-151 151h-40c0-79.371094 48.671875-147.582031 117.730469-176.378906-25.449219-20.734375-41.730469-52.3125-41.730469-87.621094 0-62.308594 50.691406-113 113-113 7.40625 0 14.644531.722656 21.65625 2.089844-1.734375-7.84375-2.65625-15.988282-2.65625-24.34375 0-62.167969 50.578125-112.746094 112.746094-112.746094 62.167968 0 112.746094 50.578125 112.746094 112.746094 0 34.894531-15.9375 66.136718-40.910157 86.832031 33.011719 13.109375 61.464844 35.117187 82.304688 63.421875h-53.847657c-24.847656-22.023438-56.976562-36-92.273437-37.796875-2.652344.1875-5.324219.289063-8.019531.289063-7.332032 0-14.5-.710938-21.441406-2.054688zm-51.304688-110.691406c0 40.113281 32.632812 72.746094 72.746094 72.746094 40.109375 0 72.746094-32.632813 72.746094-72.746094 0-40.113282-32.636719-72.746094-72.746094-72.746094-40.113282 0-72.746094 32.632812-72.746094 72.746094zm14 135.253906c0-40.253906-32.746094-73-73-73s-73 32.746094-73 73 32.746094 73 73 73 73-32.746094 73-73zm0 0" />
 										</svg>
 									</i>
-									<span>{{ $t("label.recommend_to_co_worker") }}</span>
+									<span>{{ langauageData.label.recommend_to_co_worker }}</span>
 								</b-button>
 
 								<b-button 
@@ -237,7 +238,7 @@
 									
 								>
 										<span>
-											{{ $t("label.applied") }}
+											{{ langauageData.label.applied }}
 										</span>
 										<i>
 											<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 16" width="19" height="15">
@@ -260,10 +261,10 @@
 									@click="applyForMission(missionDetail.mission_id)"
 								>
 										<span v-if="disableApply">
-											{{ $t("label.applied") }}
+											{{ langauageData.label.applied }}
 										</span>
 										<span v-else>
-											{{ $t("label.apply_now") }}
+											{{ langauageData.label.apply_now }}
 										</span>				
 										<i>
 											<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 16" width="19" height="15">
@@ -290,12 +291,12 @@
 				 <div class="platform-details-tab tabs">
 					 <ul class="nav-tabs nav">
 						 <li><a href="javascript:void(0)" data-id="mission" class="tablinks active">
-						 {{ $t("label.mission") }}</a></li>
+						 {{ langauageData.label.mission }}</a></li>
 						 <li><a href="javascript:void(0)" data-id="organization" class="tablinks">
-						 {{ $t("label.organisation") }}</a></li>
+						 {{ langauageData.label.organisation }}</a></li>
 						 
-						 <li><a href="javascript:void(0)" data-id="comments" class="tablinks">
-						 {{ $t("label.comments") }}</a></li>
+						 <li @click="missionComments"><a href="javascript:void(0)" data-id="comments" class="tablinks">
+						 {{ langauageData.label.comments }}</a></li>
 					 </ul>
 					 <div class="tab-content-wrap">
 						<div class="tabs">
@@ -311,7 +312,7 @@
 									</div>
 									<div v-if="missionDetail.mission_document 
 									&& missionDetail.mission_document.length > 0" >
-										<h2>{{ $t("label.documents") }}</h2>
+										<h2>{{ langauageData.label.documents }}</h2>
 
 										<div class="document-list-wrap">
 											
@@ -357,7 +358,7 @@
 					 		</div>
 							<div class="tabs">
 								<div class="tab-title">
-									<h3 v-b-toggle.organization>{{ $t("label.organisation") }}</h3>
+									<h3 v-b-toggle.organization>{{ langauageData.label.organisation }}</h3>
 								</div>
 									<b-collapse id="organization" accordion="my-accordion" role="tabpanel" class="tab-content">
 										<b-media class="org-media">
@@ -411,16 +412,16 @@
 							
 							<div class="tabs">
 								<div class="tab-title">
-									<h3 v-b-toggle.comments>{{ $t("label.comment") }}</h3>
+									<h3 v-b-toggle.comments>{{ langauageData.label.comment }}</h3>
 								</div>
 								<div>
 									<b-collapse id="comments" accordion="my-accordion" role="tabpanel" class="tab-content comment-block">
 										<b-form class="comment-form">
-									<label>{{ $t("label.comment") }}</label>
+									<label>{{ langauageData.label.comment }}</label>
 									<b-form-textarea id="" 
-									:placeholder="$t('placeholder.comment')"
+									:placeholder="langauageData.placeholder.comment"
 								     rows="4" size="lg"  no-resize></b-form-textarea>
-									<b-button class="btn-bordersecondary">{{ $t("label.post_comment") }}</b-button>
+									<b-button class="btn-bordersecondary">{{ langauageData.label.post_comment }}</b-button>
 								</b-form>
 								<div class="comment-list" v-if="missionComment && missionComment.length > 0">
 									<div class="more-inner-list" >
@@ -449,18 +450,19 @@
                 </b-col>
                 <b-col xl="4" lg="5" class="platform-details-right">
 					<div class="info-block">
-						 <h2 class="title-with-border"><span>{{ $t("label.information") }}</span></h2>
+						 <h2 class="title-with-border"><span>{{ langauageData.label.information }}</span></h2>
 						<div class="table-wrap">
 							<div class="table-row">
-								<span class="label-col">{{$t("label.skills")}}</span>
+								<span class="label-col">{{langauageData.label.skills}}</span>
 								<span class="detail-col">{{getSkills(missionDetail)}}</span>
 							</div>
 							<div class="table-row">
-								<span class="label-col">{{$t("label.days")}}</span>
-								<span class="detail-col">-</span>
+								<span class="label-col">{{langauageData.label.days}}</span>
+								<span class="detail-col" v-if="missionDetail.availability_type != ''">{{missionDetail.availability_type}}</span>
+								<span class="detail-col" v-else>-</span>
 							</div>
 							<div class="table-row">
-								<span class="label-col">{{$t("label.rating")}}</span>
+								<span class="label-col">{{langauageData.label.rating}}</span>
 								<span class="detail-col">
 									 <star-rating
 										:rating="missionDetail.mission_rating_count" :read-only="true" :increment="0.01"
@@ -471,11 +473,11 @@
 										>
 									</star-rating>
 									<em>(
-										{{ $t("label.by")}} 
+										{{ langauageData.label.by}} 
 										{{missionDetail.mission_rating_total_volunteers}}
 									 </em>
-									<em v-if="missionDetail.mission_rating_total_volunteers <=1" class="volunteery-counter"> {{ $t("label.volunteer")}} )</em>
-									<em v-else class="volunteery-counter"> {{ $t("label.volunteers")}} )</em>
+									<em v-if="missionDetail.mission_rating_total_volunteers <=1" class="volunteery-counter"> {{ langauageData.label.volunteer}} )</em>
+									<em v-else class="volunteery-counter"> {{ langauageData.label.volunteers}} )</em>
 								</span>
 							</div>
 						</div>
@@ -487,7 +489,7 @@
       </b-container>
 	  <div class="mission-block" v-if="missionListing && missionListing.length > 0">
 			<b-container class="card-grid">
-			    <h2>{{$t("label.related_missions")}}</h2>
+			    <h2>{{langauageData.label.related_missions}}</h2>
 			   		<div>
 					   	<div v-bind:class="{ 'content-loader-wrap': true, 'mission-loader': relatedMissionlLoader}">
 							<div class="content-loader"></div>
@@ -504,7 +506,7 @@
 			</b-container>
 		  
 	  </div>
-	  <b-modal centered :title="$t('label.search_user')" ref="userDetailModal" 
+	  <b-modal centered :title="langauageData.label.search_user" ref="userDetailModal" 
             :modal-class="myclass" hide-footer>
 	            <b-alert show :variant="classVariant" dismissible v-model="showErrorDiv">
 	            	{{ message }}
@@ -535,9 +537,9 @@
             <b-form>
                  <div class="btn-wrap">
                     <b-button @click="$refs.userDetailModal.hide()" class="btn-borderprimary">
-                    {{ $t("label.close") }}</b-button>
+                    {{ langauageData.label.close }}</b-button>
                     <b-button class="btn-bordersecondary" @click="inviteColleagues" ref="autosuggestSubmit" v-bind:disabled="submitDisable">
-                    {{ $t("label.submit") }}</b-button>
+                    {{ langauageData.label.submit }}</b-button>
                 </div>
             </b-form>
         </b-modal>
@@ -614,7 +616,8 @@ export default {
 			missionListing : [],
 			missionComment : [],
 			defaultMedia : '',
-			isShareComponentShown : false
+			isShareComponentShown : false,
+			langauageData : [],
 	    };
   	},
 	mounted(){
@@ -658,9 +661,13 @@ export default {
    methods: {
    		// Get comment create date format
 	   	getCommentDate(commentDate){
-	   		var day = moment(commentDate, "YYYY-MM-DD HH:mm:ss").format('dddd');
-	   		var date = moment(String(commentDate)).format('MMMM DD, YYYY, h:mm A')
-	   		return day+', '+date;
+	   		if(commentDate != null) {
+		   		var day = moment(commentDate, "YYYY-MM-DD HH:mm:ss").format('dddd');
+		   		var date = moment(String(commentDate)).format('MMMM DD, YYYY, h:mm A')
+		   		return day+', '+date;
+	   		} else {
+	   			return '';
+	   		}
 	   	},
    		// Check mission type
         checkMissionTypeTime(missionType) {
@@ -715,7 +722,7 @@ export default {
         },
 		// Open auto suggest modal
         handleModal(missionId){
-            this.autoSuggestPlaceholder = this.$i18n.t("label.search_user")
+            this.autoSuggestPlaceholder = this.langauageData.label.search_user
             this.showErrorDiv = false;
             this.message = null;
             this.$refs.userDetailModal.show();
@@ -790,7 +797,7 @@ export default {
 						this.missionListing = response.data;
 					}
 					this.relatedMissionlLoader = false;
-					this.missionComments();
+					this.isShownComponent = true;
 				});
 			}
     	},
@@ -888,8 +895,7 @@ export default {
         	missionComments(this.$route.params.misisonId).then(response => {
 					if(response.error == false) {
 						this.missionComment = response.data;
-					}
-					this.isShownComponent = true;
+					}			
 			});
         }
    },
@@ -902,7 +908,8 @@ export default {
 	        this.search = store.state.search;
 	    } else {
 	    	this.search = '';
-	    }
+		}
+		this.langauageData = JSON.parse(store.state.languageLabel);
 	},
    updated(){
 	
