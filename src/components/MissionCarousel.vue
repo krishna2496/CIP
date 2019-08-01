@@ -61,8 +61,14 @@ export default {
     	getMediaPath(media) {
     		if(media.media_type == 'mp4') {
     			let videoPath = media.media_path;
-			 	let data = videoPath.split("=");
-            	return  "https://img.youtube.com/vi/"+data.slice(-1)[0]+"/mqdefault.jpg";
+			 	let videoId = '';
+			 	var regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+			    var match = videoPath.match(regExp);
+
+			    if (match && match[2].length == 11) {
+			        videoId =  match[2];
+			    }
+            	return  "https://img.youtube.com/vi/"+videoId+"/mqdefault.jpg";
     		} else {
     			return media.media_path;
     		}
@@ -71,8 +77,15 @@ export default {
     	getEmbededPath(media) {
     		if(media.media_type == 'mp4') {
     			let videoPath = media.media_path;
-			 	let data = videoPath.split("=");
-            	return  "https://www.youtube.com/embed/"+data.slice(-1)[0];
+			 	let videoId = '';
+			 	var regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+			    var match = videoPath.match(regExp);
+
+			    if (match && match[2].length == 11) {
+			        videoId =  match[2];
+			    } 
+
+            	return  "https://www.youtube.com/embed/"+videoId;
     		} else {
     			return media.media_path;
     		}
@@ -82,6 +95,7 @@ export default {
     		if(media.media_type == 'mp4') {
     			let videoPath = media.media_path;
 			 	let data = videoPath.split("=");
+			 	console.log(data);
             	return  "https://www.youtube.com/embed/"+data.slice(-1)[0];
     		} 
     	},
