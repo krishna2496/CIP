@@ -30,8 +30,8 @@ return [
         '200006' => 'Invalid argument',
         '200008' => 'Error while creating folder on S3 bucket',
         '200009' => 'Api user not found',
-
-        '999999' => 'An error has occured'
+        '999999' => 'An error has occured',
+        'ERROR_BOOSTRAP_SCSS_NOT_FOUND' => 'Boostrap SCSS file not found while compiling SCSS files',
     ]
     
 ];
