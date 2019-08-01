@@ -15,5 +15,8 @@ class DatabaseSeeder extends Seeder
         $this->call('CountryTableSeeder');
         $this->call('TimezoneTableSeeder');
         $this->call('CityTableSeeder');
+        $this->call('MissionThemeTableSeeder');
+        $this->call('NotificationTypeTableSeeder');
+        $this->call('AvailabilityTableSeeder');
     }
 }

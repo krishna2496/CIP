@@ -30,7 +30,7 @@ class CreateTableMissionApplication extends Migration
             // Relation defined between missions(user_id) with users(user_id)
             $table->foreign('user_id')->references('user_id')->on('user')->onDelete('CASCADE')->onUpdate('CASCADE');
 
-            $table->foreign('availability_id')->references('availability_id')->on('user_availability')->onDelete('CASCADE')->onUpdate('CASCADE');
+            $table->foreign('availability_id')->references('availability_id')->on('availability')->onDelete('CASCADE')->onUpdate('CASCADE');
 
         });
     }
