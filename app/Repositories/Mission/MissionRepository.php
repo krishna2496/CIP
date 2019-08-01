@@ -16,6 +16,7 @@ use App\Models\FavouriteMission;
 use App\Models\MissionSkill;
 use App\Models\TimeMission;
 use App\Models\MissionRating;
+use App\Models\Availability;
 use DB;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
@@ -490,7 +491,7 @@ class MissionRepository implements MissionInterface
         $missionQuery = $this->mission->select('mission.*');
         $missionQuery->leftjoin('time_mission', 'mission.mission_id', '=', 'time_mission.mission_id');
         $missionQuery->where('publication_status', config("constants.publication_status")["APPROVED"])
-            ->with(['missionTheme', 'missionMedia', 'goalMission'
+            ->with(['missionTheme', 'missionMedia', 'goalMission', 'availability'
             ])->with(['missionMedia' => function ($query) {
                 $query->where('status', '1');
                 $query->where('default', '1');

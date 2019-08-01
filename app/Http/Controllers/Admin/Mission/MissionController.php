@@ -142,7 +142,6 @@ class MissionController extends Controller
         } catch (TenantDomainNotFoundException $e) {
             throw $e;
         } catch (\Exception $e) {
-            dd($e);
             return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
