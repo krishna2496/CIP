@@ -818,7 +818,7 @@ export default {
 							} else {
 								if(response.data[0].user_application_status ==  
 									constants.AUTOMATICALLY_APPROVED || response.data[0].user_application_status ==  
-									constants.PENDING  || response.data[0].user_application_status == '') {
+									constants.PENDING) {
 									this.disableApply = true;
 								}
 							}
