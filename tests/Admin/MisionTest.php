@@ -30,12 +30,12 @@ class MissionTest extends TestCase
     {
         $params = [
                     "organisation" => [
-                        "organisation_id" => rand(1, 1),
+                        "organisation_id" => 1,
                         "organisation_name" => str_random(10),
                         "organisation_detail" => str_random(50)
                     ],
                     "location" => [
-                        "city_id" => rand(1, 1),
+                        "city_id" => 1,
                         "country_code" => "US"
                     ],
                     "mission_detail" => [[
@@ -97,8 +97,8 @@ class MissionTest extends TestCase
                     "total_seats" => rand(1, 1000),
                     "application_deadline" => "2019-07-28 11:40:00",
                     "publication_status" => config("constants.publication_status.APPROVED"),
-                    "theme_id" => rand(1, 1),
-                    "availability_id" => rand(1, 1)
+                    "theme_id" => 1,
+                    "availability_id" => 1
                 ];
 
         $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
@@ -124,7 +124,7 @@ class MissionTest extends TestCase
     {
         $params = [
                     "organisation" => [
-                        "organisation_id" => rand(1, 1),
+                        "organisation_id" => 1,
                         "organisation_name" => str_random(10),
                         "organisation_detail" => str_random(50)
                     ],
@@ -135,8 +135,8 @@ class MissionTest extends TestCase
                     "total_seats" => rand(1, 1000),
                     "application_deadline" => "2019-07-28 11:40:00",
                     "publication_status" => config("constants.publication_status.APPROVED"),
-                    "theme_id" => rand(1, 1),
-                    "availability_id" => rand(1, 1)
+                    "theme_id" => 1,
+                    "availability_id" => 1
                 ];
 
         $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
@@ -263,12 +263,12 @@ class MissionTest extends TestCase
     {
         $params = [
                     "organisation" => [
-                        "organisation_id" => rand(1, 1),
+                        "organisation_id" => 1,
                         "organisation_name" => str_random(10),
                         "organisation_detail" => str_random(50)
                     ],
                     "location" => [
-                        "city_id" => rand(1, 1),
+                        "city_id" => 1,
                         "country_code" => "US"
                     ],
                     "mission_detail" => [[
@@ -311,8 +311,8 @@ class MissionTest extends TestCase
                     "total_seats" => rand(1, 1000),
                     "application_deadline" => "2019-07-28 11:40:00",
                     "publication_status" => config("constants.publication_status.DRAFT"),
-                    "theme_id" => rand(1, 1),
-                    "availability_id" => rand(1, 1)
+                    "theme_id" => 1,
+                    "availability_id" => 1
                 ];
 
         $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])

@@ -51,7 +51,7 @@ class AppMisionApplicationTest extends TestCase
         $missionApplication->setConnection($connection);
         $missionApplication->mission_id = $mission->mission_id;
         $missionApplication->user_id = $user->user_id;
-        $missionApplication->availability_id = rand(1,1);
+        $missionApplication->availability_id = 1;
         $missionApplication->motivation = str_random(10);
         $missionApplication->approval_status = config('constants.application_status.PENDING');
         $missionApplication->applied_at = Carbon::now();
@@ -95,12 +95,12 @@ class AppMisionApplicationTest extends TestCase
         // Add mission with passed deadline
         $params = [
             "organisation" => [
-                "organisation_id" => rand(1, 1),
+                "organisation_id" => 1,
                 "organisation_name" => str_random(10),
                 "organisation_detail" => str_random(50)
             ],
             "location" => [
-                "city_id" => rand(1, 1),
+                "city_id" => 1,
                 "country_code" => "US"
             ],
             "mission_detail" => [[
@@ -130,8 +130,8 @@ class AppMisionApplicationTest extends TestCase
             "total_seats" => rand(1, 1000),
             "application_deadline" => "2019-07-25 11:40:00",
             "publication_status" => config("constants.publication_status.APPROVED"),
-            "theme_id" => rand(1, 1),
-            "availability_id" => rand(1, 1)
+            "theme_id" => 1,
+            "availability_id" => 1
         ];
 
         $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
@@ -175,12 +175,12 @@ class AppMisionApplicationTest extends TestCase
         // Add mission with passed deadline
         $params = [
             "organisation" => [
-                "organisation_id" => rand(1, 1),
+                "organisation_id" => 1,
                 "organisation_name" => str_random(10),
                 "organisation_detail" => str_random(50)
             ],
             "location" => [
-                "city_id" => rand(1, 1),
+                "city_id" => 1,
                 "country_code" => "US"
             ],
             "mission_detail" => [[
@@ -210,8 +210,8 @@ class AppMisionApplicationTest extends TestCase
             "total_seats" => 1,
             "application_deadline" => "2020-07-25 11:40:00",
             "publication_status" => config("constants.publication_status.APPROVED"),
-            "theme_id" => rand(1, 1),
-            "availability_id" => rand(1, 1)
+            "theme_id" => 1,
+            "availability_id" => 1
         ];
 
         $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
@@ -220,7 +220,7 @@ class AppMisionApplicationTest extends TestCase
         App\Models\Mission::where("mission_id", $mission[0]['mission_id'])->update(["total_seats" => 0]);
         $params = [
                 'mission_id' => $mission[0]['mission_id'],
-                'availability_id' => rand(1, 1),
+                'availability_id' => 1,
                 'motivation' => str_random(10)
             ];
         DB::setDefaultConnection('mysql');
@@ -257,12 +257,12 @@ class AppMisionApplicationTest extends TestCase
 
         $params = [
             "organisation" => [
-                "organisation_id" => rand(1, 1),
+                "organisation_id" => 1,
                 "organisation_name" => str_random(10),
                 "organisation_detail" => str_random(50)
             ],
             "location" => [
-                "city_id" => rand(1, 1),
+                "city_id" => 1,
                 "country_code" => "US"
             ],
             "mission_detail" => [[
@@ -292,8 +292,8 @@ class AppMisionApplicationTest extends TestCase
             "total_seats" => rand(1, 10),
             "application_deadline" => "2020-10-15 10:40:00",
             "publication_status" => config("constants.publication_status.APPROVED"),
-            "theme_id" => rand(1, 1),
-            "availability_id" => rand(1, 1)
+            "theme_id" => 1,
+            "availability_id" => 1
         ];
 
         $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
@@ -303,7 +303,7 @@ class AppMisionApplicationTest extends TestCase
         $params = [
                 'mission_id' => $mission[0]['mission_id'],
                 'motivation' => str_random(10),
-                'availability_id' => rand(1, 1)
+                'availability_id' => 1
             ];
         DB::setDefaultConnection('mysql');
         
