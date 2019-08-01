@@ -22,6 +22,7 @@ class CreateTableMission extends Migration {
             $table->integer('total_seats')->nullable();
             $table->enum('mission_type', ['TIME','GOAL']);
             $table->enum('publication_status', ['DRAFT','PENDING_APPROVAL','REFUSED','APPROVED','PUBLISHED_FOR_VOTING','PUBLISHED_FOR_APPLYING','UNPUBLISHED']);
+            $table->unsignedBigInteger('availability_id');
             $table->bigInteger('organisation_id')->unsigned();
             $table->string('organisation_name',255);
             $table->text('organisation_detail');
@@ -32,6 +33,7 @@ class CreateTableMission extends Migration {
             // Relation defined between missions(country_id) with counties(id)
             $table->foreign('country_id')->references('country_id')->on('country')->onDelete('CASCADE')->onUpdate('CASCADE');
             $table->foreign('theme_id')->references('mission_theme_id')->on('mission_theme')->onDelete('CASCADE')->onUpdate('CASCADE');
+            $table->foreign('availability_id')->references('availability_id')->on('availability')->onDelete('CASCADE')->onUpdate('CASCADE');
 
         });
     }
