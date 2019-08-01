@@ -12,7 +12,7 @@
         </div>
         <div class="copyright-text">
             <p>
-                {{ $t("label.powered_by") }}
+                {{ langauageData.label.powered_by }}
                 <b-link title="Optimy" href="https://www.optimy.com/">  
                 Optimy</b-link>
             </p>
@@ -31,11 +31,13 @@ export default {
   data() {
     return {
       footerItems: [],
-      isDynamicFooterItemsSet: false
+      isDynamicFooterItemsSet: false,
+      langauageData : [],
     };
   },
   mounted() {},
   created() {
+    this.langauageData = JSON.parse(store.state.languageLabel);
     // Fetching footer CMS pages
     this.getPageListing();
     //Fetch language json file

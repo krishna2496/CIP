@@ -1,4 +1,5 @@
 <template>
+
     <div class="signin-page-wrapper">
         <TheSlider v-if="isShowComponent"/>
         <div class="signin-form-wrapper">
@@ -16,34 +17,34 @@
                 <!-- login form start -->
                 <b-form class="signin-form">
                     <b-form-group>
-                        <label for="">{{ $t("label.email_address") }}</label>
+                        <label for="">{{ langauageData.label.email_address }}</label>
                         <b-form-input id="" type="email" v-model="login.email" 
-                        v-bind:placeholder='$t("placeholder.email_address")'
+                        v-bind:placeholder='langauageData.placeholder.email_address'
                         :class="{ 'is-invalid': $v.login.email.$error }" ref='email' autofocus 
                         maxlength="120"
                         @keydown.space.prevent></b-form-input>
                         <div v-if="submitted && !$v.login.email.required" class="invalid-feedback">
-                        {{ $t("errors.email_required") }}</div>
+                        {{ langauageData.errors.email_required }}</div>
                         <div v-if="submitted && !$v.login.email.email" class="invalid-feedback">
-                        {{ $t("errors.invalid_email") }}</div>
+                        {{ langauageData.errors.invalid_email }}</div>
                     </b-form-group>
                     <b-form-group>
-                        <label for="">{{ $t("label.password") }}</label>
+                        <label for="">{{ langauageData.label.password }}</label>
                         <b-form-input id="" type="password" v-model="login.password" required 
-                        v-bind:placeholder='$t("placeholder.password")' 
+                        v-bind:placeholder='langauageData.placeholder.password' 
                         :class="{ 'is-invalid': $v.login.password.$error }" 
                         maxlength="120"
                         @keypress.enter.prevent="handleSubmit"
                         @keydown.space.prevent></b-form-input>
                         <div v-if="submitted && !$v.login.password.required" class="invalid-feedback">
-                        {{ $t("errors.password_required") }}</div>
+                        {{ langauageData.errors.password_required }}</div>
                     </b-form-group>
                     <b-button type="button" @click="handleSubmit" class=" btn-bordersecondary">
-                    {{ $t("label.login") }}</b-button>
+                    {{ langauageData.label.login }}</b-button>
                 </b-form>
                 <!-- link to forgot-password -->
                 <div class="form-link">
-                    <b-link to="/forgot-password">{{ $t("label.lost_password") }}</b-link>
+                    <b-link to="/forgot-password">{{ langauageData.label.lost_password }}</b-link>
                 </div>
             </div>
             <ThePrimaryFooter ref="ThePrimaryFooter" v-if="isShowComponent"/>
@@ -81,6 +82,7 @@ export default {
             message: null,
             showDismissibleAlert: false,
             isShowComponent : false,
+            langauageData : [],
         };
     },
     validations: {
@@ -107,6 +109,7 @@ export default {
             store.commit('setDefaultLanguage',language);
             this.$i18n.locale = language.selectedVal.toLowerCase()
             await loadLocaleMessages(this.$i18n.locale);   
+            this.langauageData = JSON.parse(store.state.languageLabel);
             _this.$forceUpdate();
             _this.$refs.ThePrimaryFooter.$forceUpdate()
         },
@@ -142,6 +145,7 @@ export default {
     created() {
         //Database connection and fetching tenant options api
         this.createConnection()
+        this.langauageData = JSON.parse(store.state.languageLabel);
 
         var domain = '';
         var imagePath = '';

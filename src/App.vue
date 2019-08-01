@@ -70,7 +70,6 @@ export default {
     },
      handleClick(e) {
         e.stopPropagation();
-        console.log(e.target)
         var profile_toggle = document.querySelector(
           ".profile-menu .dropdown-toggle"
         );
@@ -115,7 +114,7 @@ export default {
           var optionlist_width = parseInt(
             window.getComputedStyle(optionlist).getPropertyValue("width")
           );
-          console.log(optionlist_width)
+
           if (optionlist_wrap_height < optionlist_height) {
             console.log("auto width")
             var minwidth_style = e.querySelector(".simplebar-offset");

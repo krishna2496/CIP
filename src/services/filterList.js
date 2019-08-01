@@ -24,7 +24,7 @@ export default async(data) => {
     }
 
     if (data.themeId != '') {
-        if (data.countryId != '' || data.city_id != '') {
+        if (data.countryId != '' || data.cityId != '') {
             url = url+"&theme_id=" + data.themeId
         } else {
             url = url+"?theme_id=" + data.themeId
@@ -32,7 +32,7 @@ export default async(data) => {
     }
 
     if (data.search != '') {
-        if (data.countryId != '' || data.city_id != '' || data.themeId != '') {
+        if (data.countryId != '' || data.cityId != '' || data.themeId != '') {
             url = url+"&search=" + data.search
         } else {
             url = url+"?search=" + data.search

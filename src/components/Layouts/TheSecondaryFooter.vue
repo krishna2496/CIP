@@ -14,7 +14,7 @@
                     </b-list-group>
                 </b-col>
                 <b-col md="6" class="copyright-text">
-                    <p>© {{year}} Optimy.com. {{ $t("label.all_rights_reserved") }}.</p>
+                    <p>© {{year}} Optimy.com. {{ langauageData.label.all_rights_reserved }}.</p>
                 </b-col>
             </b-row>
         </b-container>
@@ -34,13 +34,16 @@ export default {
         return {
             footerItems: [],
             isDynamicFooterItemsSet : false,
-            year : new Date().getFullYear()
+            year : new Date().getFullYear(),
+            langauageData : [],
         };
     },
     created() {
+         
+        this.langauageData = JSON.parse(store.state.languageLabel);
         // Fetching footer CMS pages
         this.getPageListing();
-        loadLocaleMessages(store.state.defaultLanguage);
+        // loadLocaleMessages(store.state.defaultLanguage);
     },
     methods:{  
         async getPageListing(){

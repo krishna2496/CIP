@@ -26,7 +26,7 @@
                         <b-button class="btn btn-back" @click="handleBack">
                             <img :src="$store.state.imagePath+'/assets/images/down-arrow.svg'" alt="Back Icon">
                         </b-button>
-                        <b-button class="btn btn-clear">{{$t("label.clear_all")}}</b-button>
+                        <b-button class="btn btn-clear">{{langauageData.label.clear_all}}</b-button>
                     </div>
                 <b-list-group v-if="quickAccessFilterSet && missionList.length > 0">
                     <b-list-group-item>
@@ -93,7 +93,7 @@ export default {
     ],
     data() {
         return {            
-            searchPlaceHolder: this.$i18n.t('label.search')+' '+this.$i18n.t('label.mission'),
+            searchPlaceHolder: '',
             defautCountry: "Country", 
             defautCity: "",
             defautTheme: "",
@@ -125,7 +125,8 @@ export default {
             isCountryChange: false,
             isCityChange: false,
             isThemeChange: false,
-            searchString: this.search
+            searchString: this.search,
+            langauageData : [],
         };
     },
     methods: {
@@ -193,7 +194,7 @@ export default {
         },
 
         handleBlur() {
-            this.searchPlaceHolder = this.$i18n.t('label.search')+' '+this.$i18n.t('label.mission');
+            this.searchPlaceHolder = this.langauageData.label.search+' '+this.langauageData.label.mission;
             var b_header = document.querySelector(".bottom-header");
             var input_edit = document.querySelector(".search-block input");
             b_header.classList.remove("active");
@@ -225,7 +226,7 @@ export default {
                 this.defautCountry = country.selectedVal.replace(/<\/?("[^"]*"|'[^']*'|[^>])*(>|$)/g,""); 
                 this.defautCountry = this.defautCountry.replace(/[^a-zA-Z\s]+/g,'');
             } else {
-                this.defautCountry = this.$i18n.t("label.country");
+                this.defautCountry = this.langauageData.label.country;
             }
             this.selectedfilterParams.cityId = '';
             this.selectedfilterParams.themeId = '';
@@ -338,9 +339,9 @@ export default {
             }
             var _this = this;
             setTimeout(function(){
-                _this.defautCity =  _this.$i18n.t("label.city"),
-                _this.defautTheme =  _this.$i18n.t("label.theme"),
-                _this.defautSkill = _this.$i18n.t("label.skills")
+                _this.defautCity =  _this.langauageData.label.city,
+                _this.defautTheme =  _this.langauageData.label.theme,
+                _this.defautSkill = _this.langauageData.label.skills
             },500)
             
             this.selectedfilterParams.countryId = store.state.countryId;
@@ -381,7 +382,7 @@ export default {
                                     tags.country[0] = selectedCountryData[0][1].id+'_'+selectedCountryData[0][1].title;
                                 }
                         } else {
-                                this.defautCountry = this.$i18n.t("label.country");
+                                this.defautCountry = this.langauageData.label.country;
                         }
 
                         if(store.state.cityId != ''){
@@ -403,6 +404,8 @@ export default {
 
         searchMission($event) {
             this.$parent.searchMissions(this.search,this.selectedfilterParams);
+            this.selectedfilterParams.search  = this.search
+            this.filterSearchListing();
         },
 
         fetchFilters() {
@@ -412,7 +415,7 @@ export default {
         clearFilter() {
             var _this = this; 
             this.selectedfilterParams.countryId = '';
-            this.defautCountry = this.$i18n.t("label.country");
+            this.defautCountry = this.langauageData.label.country;
             this.selectedfilterParams.cityId = '';
             this.selectedfilterParams.themeId = '';
             this.selectedfilterParams.skillId = '';
@@ -428,6 +431,29 @@ export default {
                 }
             });  
             
+        },
+        // Filter listing
+        filterSearchListing() {
+
+            filterList(this.selectedfilterParams).then( response => {
+                    if (response) { 
+                        if(response.country) {
+                            this.countryList = Object.entries(response.country);
+                        }
+
+                        if(response.city) {
+                            this.cityList = Object.entries(response.city);
+                        }
+
+                        if(response.themes) {
+                            this.themeList = Object.entries(response.themes);
+                        }
+
+                        if(response.skill) {
+                            this.skillList = Object.entries(response.skill);
+                        }
+                    }            
+            }); 
         },
         clearAllFilter(){
             this.selectedfilterParams.countryId = '';
@@ -458,21 +484,21 @@ export default {
             this.selectedfilterParams.cityId = store.state.cityId;
             filterList(this.selectedfilterParams).then( response => {
                     if (response) { 
-                        if(response.country) {
+                        if (response.country) {
                             this.countryList = Object.entries(response.country);
                         }
 
-                        if(response.city) {
+                        if (response.city) {
                             this.cityList = Object.entries(response.city);
                         }
-                        if(response.themes) {
+                        if (response.themes) {
                             this.themeList = Object.entries(response.themes);
                         }
 
-                        if(response.skill) {
+                        if (response.skill) {
                             this.skillList = Object.entries(response.skill);
                         }
-                        if(store.state.countryId != '') {
+                        if (store.state.countryId != '') {
                                 if(this.countryList) {
                                     let selectedCountryData = this.countryList.filter(function(country) {
                                         if(store.state.countryId == country[1].id){
@@ -482,10 +508,10 @@ export default {
                                     this.defautCountry = selectedCountryData[0][1].title;
                                 }
                         } else {
-                                this.defautCountry = this.$i18n.t("label.country");
+                                this.defautCountry = this.langauageData.label.country;
                         }
 
-                        if(store.state.cityId != ''){
+                        if (store.state.cityId != ''){
                             this.selectedCity = store.state.cityId.toString().split(',')
                         }
                     }            
@@ -494,6 +520,8 @@ export default {
         } 
     },
     created() {
+        this.langauageData = JSON.parse(store.state.languageLabel);
+        this.searchPlaceHolder = this.langauageData.label.search+' '+this.langauageData.label.mission;
         let filterSetting = JSON.parse(store.state.tenantSetting);
         if(filterSetting.quick_access_filters != 1){
             this.quickAccessFilterSet = false;
@@ -503,7 +531,7 @@ export default {
             _this.clearFilter();
         });
         eventBus.$on('setDefaultText', (message) => {
-            _this.defautCountry = this.$i18n.t("label.country");
+            _this.defautCountry = this.langauageData.label.country;
         });
         eventBus.$on('setDefaultData', (message) => {        
             _this.filterListing();

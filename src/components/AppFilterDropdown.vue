@@ -17,18 +17,19 @@
                     v-for="item in optionList"
                     v-bind:data-id="item[0]"
                     @click="handleSelect"
-                    @touchend="handleSelect">{{$t(`label.${item[1]}`)}}</li>
+                    @touchend="handleSelect">{{`${langauageData}.label.${item[1]}`}}</li>
             </ul>
         </div>
         <div class="option-list-wrap" data-simplebar v-else >
             <ul class="option-list" v-if="translationEnable == 'false'">
-                <li> {{ $t("label.no_record_found")}} </li>
+                <li> {{ langauageData.label.no_record_found }} </li>
             </ul>
         </div>
     </div>
 </template>
 
 <script>
+import store from '../store';
 export default {
     name: "AppFilterDropdown",
     components: {},
@@ -39,7 +40,8 @@ export default {
     },
     data() {
         return {
-            defaultTextVal: this.defaultText
+            defaultTextVal: this.defaultText,
+            langauageData : [],
         };
     },
     mounted() {
@@ -54,6 +56,10 @@ export default {
     },
     beforeDestroy() {
         document.removeEventListener("click", this.onClick);
+    },
+    created() {
+         
+        this.langauageData = JSON.parse(store.state.languageLabel);
     }
 };
 </script>
