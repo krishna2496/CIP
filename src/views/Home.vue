@@ -292,7 +292,7 @@ export default {
             let filteExplore = {};
             filteExplore.exploreMissionType = '';
             filteExplore.exploreMissionParams  = '';
-
+            this.search = '';
             this.filterData.search =  '';
             this.filterData.countryId = '';
             this.filterData.cityId =  '';
@@ -309,6 +309,7 @@ export default {
             }
             store.commit('userFilter',this.filterData)
             store.commit('exploreFilter',filteExplore);
+            this.$refs.secondaryHeader.changeSearch();
             this.getMissions(); 
         },
         changeTag(data){
