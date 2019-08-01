@@ -92,7 +92,9 @@
 		"volunteers" : "volunteers",
 		"no_document" : "No documents",
 		"related_missions" : "Related Missions",
-		"no_related_missions" : "No Related Missions"
+		"no_related_missions" : "No Related Missions",
+		"volunteer" : "volunteer",
+		"applied" : "Applied"
 	},
 
 	"placeholder" : {
