@@ -85,6 +85,21 @@ let routes = [{
             }
         ],
     },
+
+
+    beforeEnter: (to, from, next) => {
+            to.meta.metaTags.map(tagDef => {
+                const tag = document.createElement('meta');
+                Object.keys(tagDef).forEach(key => {
+                    tag.setAttribute(key, tagDef[key]);
+                });
+                return tag;
+            })
+            // Add the meta tags to the document head.
+            .forEach(tag => document.head.appendChild(tag));
+            next();
+    },
+
     component: () =>
         import ('./views/MissionDetail.vue')
 },
