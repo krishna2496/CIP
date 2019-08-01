@@ -59,6 +59,7 @@ export default {
       });
     },
     handleScroll() {
+    if (document.querySelector(".inner-pages > header") != null) {
       var body = document.querySelector("body");
       var bheader = document.querySelector("header");
       var bheader_top = bheader.offsetHeight;
@@ -67,10 +68,10 @@ export default {
       } else {
         body.classList.remove("small-header");
       }
+  	}
     },
      handleClick(e) {
-        e.stopPropagation();
-        console.log(e.target)
+        e.stopPropagation();        
         var profile_toggle = document.querySelector(
           ".profile-menu .dropdown-toggle"
         );
@@ -115,9 +116,7 @@ export default {
           var optionlist_width = parseInt(
             window.getComputedStyle(optionlist).getPropertyValue("width")
           );
-          console.log(optionlist_width)
-          if (optionlist_wrap_height < optionlist_height) {
-            console.log("auto width")
+          if (optionlist_wrap_height < optionlist_height) {            
             var minwidth_style = e.querySelector(".simplebar-offset");
             minwidth_style.setAttribute("style", "left: 0 !important");
             if (
@@ -145,7 +144,9 @@ export default {
         document.querySelector("body").classList.add("browser-safari"); // Safari
       }
     }
+
     window.addEventListener("resize", this.footerAdj);
+    window.addEventListener("resize", this.signinAdj);
     window.addEventListener("scroll", this.handleScroll);
     window.scrollTo(0, 0);
      
@@ -221,7 +222,7 @@ export default {
             })
         });
         
-
+ window.addEventListener("resize", this.footerAdj);
 
   },
   destroyed() {
