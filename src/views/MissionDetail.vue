@@ -260,7 +260,7 @@
 									@click="applyForMission(missionDetail.mission_id)"
 								>
 										<span>
-											{{ $t("label.apply_now") }}
+											{{ applyButton }}
 										</span>				
 										<i>
 											<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 16" width="19" height="15">
@@ -597,6 +597,7 @@ export default {
 	        missionDocument : [],
 	        relatedMissionlLoader : true,
 	        isShownMediaComponent : false,
+	        applyButton : '',
 	        bgImage : [
 	        require("@/assets/images/pdf.svg"),
 	        require("@/assets/images/doc.svg"),
@@ -873,6 +874,7 @@ export default {
             
             applyMission(missionData).then(response => {
             	this.disableApply = true;
+            	this.applyButton = this.$i18n.t("label.applied")
                 if(response.error == true){
                     this.makeToast("danger",response.message);
                 } else {
@@ -892,6 +894,11 @@ export default {
    },
 	created(){
 		this.sharingUrl = document.URL
+		var _this= this;
+		setTimeout (function(){
+			_this.applyButton = _this.$i18n.t("label.apply_now")
+		},500)
+		
 		// Get mission detail
 		this.getMissionDetail();
 		if(store.state.search != null) {
@@ -928,7 +935,7 @@ export default {
 	        this.missionDocument = []
 	        this.relatedMissionlLoader = true
 	        this.isShownMediaComponent = false
-	       
+	       	this.applyButton = ''
 			this.max = 100,
 			this.value = 70,
 			this.missionListing = [],
