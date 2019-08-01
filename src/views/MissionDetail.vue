@@ -897,7 +897,7 @@ export default {
 		var _this= this;
 		setTimeout (function(){
 			_this.applyButton = _this.$i18n.t("label.apply_now")
-		},500)
+		},1000)
 		
 		// Get mission detail
 		this.getMissionDetail();
