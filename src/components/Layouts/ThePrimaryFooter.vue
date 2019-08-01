@@ -40,8 +40,6 @@ export default {
     this.langauageData = JSON.parse(store.state.languageLabel);
     // Fetching footer CMS pages
     this.getPageListing();
-    //Fetch language json file
-    loadLocaleMessages(store.state.defaultLanguage);
   },
   methods: {
     async getPageListing() {
