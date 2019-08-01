@@ -66,7 +66,17 @@ class AppAuthTest extends TestCase
         ];
 
         $this->post('app/login', $params, [])
-          ->seeStatusCode(422);
+          ->seeStatusCode(422)
+          ->seeJsonStructure([
+              'errors' => [
+                  [
+                      'status',
+                      'type',
+                      'code',
+                      'message'
+                  ]
+              ]
+          ]);
         $user->delete();
     }
 
@@ -112,7 +122,17 @@ class AppAuthTest extends TestCase
             'email' => str_random(10),
         ];
         $this->post('app/request-password-reset', $params, [])
-          ->seeStatusCode(422);
+          ->seeStatusCode(422)
+          ->seeJsonStructure([
+              'errors' => [
+                  [
+                      'status',
+                      'type',
+                      'code',
+                      'message'
+                  ]
+              ]
+          ]);
     }
 
     /**
@@ -136,7 +156,17 @@ class AppAuthTest extends TestCase
         ];
 
         $this->put('app/password-reset', $params, [])
-          ->seeStatusCode(422);
+        ->seeStatusCode(422)
+        ->seeJsonStructure([
+            'errors' => [
+                [
+                    'status',
+                    'type',
+                    'code',
+                    'message'
+                ]
+            ]
+        ]);
         $user->delete();
     }
 

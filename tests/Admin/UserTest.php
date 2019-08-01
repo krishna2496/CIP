@@ -187,7 +187,17 @@ class UserTest extends TestCase
     {
         $userId = rand(1000000, 50000000);
         $this->get("users/".$userId, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
-        ->seeStatusCode(404);
+        ->seeStatusCode(404)
+        ->seeJsonStructure([
+            "errors" => [
+                [
+                    "status",
+                    "type",
+                    "message",
+                    "code"
+                ]
+            ]
+        ]); 
     }
 
     /**
@@ -265,7 +275,17 @@ class UserTest extends TestCase
             $params,
             ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))]
         )
-        ->seeStatusCode(404);
+        ->seeStatusCode(404)
+        ->seeJsonStructure([
+            "errors" => [
+                [
+                    "status",
+                    "type",
+                    "message",
+                    "code"
+                ]
+            ]
+        ]); 
     }
 
     /**
@@ -303,7 +323,17 @@ class UserTest extends TestCase
             [],
             ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))]
         )
-        ->seeStatusCode(404);
+        ->seeStatusCode(404)
+        ->seeJsonStructure([
+            "errors" => [
+                [
+                    "status",
+                    "type",
+                    "message",
+                    "code"
+                ]
+            ]
+        ]); 
     }
     /**
      * @test
@@ -314,27 +344,37 @@ class UserTest extends TestCase
      */
     public function it_should_return_error_while_data_is_empty_for_create_user()
     {
-        $name = str_random(10);
+        
         $params = [
                 'first_name' => '',
                 'last_name' => '',
                 'email' => '',
                 'password' => '',
-                'timezone_id' => '',
-                'language_id' => '',
-                'availability_id' => '',
+                'timezone_id' => 1,
+                'language_id' => 1,
+                'availability_id' => 1,
                 'why_i_volunteer' => '',
                 'employee_id' => '',
                 'department' => '',
                 'manager_name' => '',
-                'city_id' => '',
-                'country_id' => '',
+                'city_id' => 1,
+                'country_id' => 233,
                 'profile_text' => '',
                 'linked_in_url' => ''
             ];
 
         $this->post("users/", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
-        ->seeStatusCode(422);
+        ->seeStatusCode(422)
+        ->seeJsonStructure([
+            'errors' => [
+                [
+                    'status',
+                    'type',
+                    'code',
+                    'message'
+                ]
+            ]
+        ]);
     }
 
     /**
@@ -366,7 +406,17 @@ class UserTest extends TestCase
             ];
 
         $this->post("users/", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
-        ->seeStatusCode(422);
+        ->seeStatusCode(422)
+        ->seeJsonStructure([
+            'errors' => [
+                [
+                    'status',
+                    'type',
+                    'code',
+                    'message'
+                ]
+            ]
+        ]);
     }
 
         /**
@@ -383,7 +433,17 @@ class UserTest extends TestCase
             ];
 
         $this->post("users/", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
-        ->seeStatusCode(422);
+        ->seeStatusCode(422)
+        ->seeJsonStructure([
+            'errors' => [
+                [
+                    'status',
+                    'type',
+                    'code',
+                    'message'
+                ]
+            ]
+        ]);
     }
 
     /**

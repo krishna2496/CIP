@@ -24,7 +24,17 @@ class AppMisionApplicationTest extends TestCase
             ];
         $token = Helpers::getJwtToken($user->user_id);
         $this->post('app/mission/application', $params, ['token' => $token])
-          ->seeStatusCode(422);
+          ->seeStatusCode(422)
+          ->seeJsonStructure([
+              'errors' => [
+                  [
+                      'status',
+                      'type',
+                      'code',
+                      'message'
+                  ]
+              ]
+          ]);
         $user->delete();
     }
 
