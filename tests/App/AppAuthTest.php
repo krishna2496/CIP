@@ -43,7 +43,6 @@ class AppAuthTest extends TestCase
                 "message"
             ]
         );
-
         $user->delete();
     }
 
@@ -153,10 +152,10 @@ class AppAuthTest extends TestCase
         Notification::fake();
         $token = '';
         
-        DB::setDefaultConnection('tenant');
-        $user = App\User::first();
-
-        DB::setDefaultConnection('mysql');
+        $connection = 'tenant';
+        $user = factory(\App\User::class)->make();
+        $user->setConnection($connection);
+        $user->save();
 
         $this->post('app/request-password-reset', ['email' => $user->email])
             ->seeStatusCode(200);
@@ -181,6 +180,7 @@ class AppAuthTest extends TestCase
         ]);
         
         $this->assertTrue(Hash::check('password', $user->fresh()->password));
+        $user->delete();
     }
 
     /**

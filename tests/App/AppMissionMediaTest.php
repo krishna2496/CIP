@@ -41,12 +41,13 @@ class AppMissionMediaTest extends TestCase
      */
     public function it_should_return_error_for_invalid_mission_id_for_get_media()
     {
-        DB::setDefaultConnection('tenant');
-        $userId = App\User::get()->random()->user_id;
-        DB::setDefaultConnection('mysql');
+        $connection = 'tenant';
+        $user = factory(\App\User::class)->make();
+        $user->setConnection($connection);
+        $user->save();
         $missionId = rand(1000000,2000000);
         
-        $token = Helpers::getJwtToken($userId);
+        $token = Helpers::getJwtToken($user->user_id);
         $this->get('/app/mission/'.$missionId.'/comments', ['token' => $token])
         ->seeStatusCode(404)
         ->seeJsonStructure([
@@ -59,5 +60,6 @@ class AppMissionMediaTest extends TestCase
                 ]
             ]
         ]);
+        $user->delete();
     }
 }
