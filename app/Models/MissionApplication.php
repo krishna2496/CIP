@@ -122,6 +122,7 @@ class MissionApplication extends Model
     public function checkApplyMission(int $missionId, int $userId): int
     {
         return $this->where(['mission_id' => $missionId, 'user_id' => $userId])
+        ->where('approval_status', '<>', config('constants.application_status.REFUSED'))
         ->count();
     }
 
