@@ -314,4 +314,17 @@ class Mission extends Model
             $query->where('approval_status', config("constants.application_status")["AUTOMATICALLY_APPROVED"]);
         }])->first();
     }
+
+    /**
+     * Set organisation detail in serialize form
+     *
+     * @param array|null $value
+     * @return void
+     */
+    public function setOrganisationDetailAttribute($value)
+    {
+        if (!is_null($value) && !empty($value)) {
+            $this->attributes['organisation_detail'] = serialize($value);
+        }
+    }
 }
