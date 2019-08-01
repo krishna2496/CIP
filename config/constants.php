@@ -26,6 +26,7 @@ return [
     'AWS_CUSTOM_STYLE_VARIABLE_FILE_NAME' => '_variables.scss',
     'TIMEZONE' => 'UTC',
     'MISSION_COMMENT_LIMIT' => 20,
+    'AWS_S3_DEFAULT_PROFILE_IMAGE' => 'user.png',
     
     /*
      * User custom field types

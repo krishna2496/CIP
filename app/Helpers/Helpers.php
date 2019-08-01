@@ -294,4 +294,19 @@ class Helpers
         // be used to decode the token in the future.
         return JWT::encode($payload, env('JWT_SECRET'));
     }
+
+    /**
+     * Get tenant default profile image for user
+     * 
+     * @param \Illuminate\Http\Request $request
+     * @return string
+     */
+    public function getDefaultProfileImage(Request $request): string
+    {
+        $tenantName = $this->getSubDomainFromRequest($request);
+
+        return 'https://s3.'.env('AWS_REGION').'.amazonaws.com/'.
+        env('AWS_S3_BUCKET_NAME').'/'.$tenantName.'/'.config('constants.AWS_S3_ASSETS_FOLDER_NAME').
+        '/'.config('constants.AWS_S3_IMAGES_FOLDER_NAME').'/'.config('constants.AWS_S3_DEFAULT_PROFILE_IMAGE');
+    }
 }
