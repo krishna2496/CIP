@@ -685,6 +685,20 @@ class MissionRepository implements MissionInterface
                     'publication_status',
                     config("constants.publication_status")["APPROVED"]
                 );
+				if ($request->has('search') && $request->input('search') != '') {
+                    $missionQuery->Where(function ($query) use ($request) {
+                        $query->with('missionLanguage');
+                        $query->wherehas('missionLanguage', function ($missionLanguageQuery) use ($request) {
+                            $missionLanguageQuery->Where('title', 'like', '%' . $request->input('search') . '%');
+                            $missionLanguageQuery
+                            ->orWhere('short_description', 'like', '%' . $request->input('search') . '%');
+                        });
+                        $query->orWhere(function ($organizationQuery) use ($request) {
+                            $organizationQuery
+                            ->orWhere('organisation_name', 'like', '%' . $request->input('search') . '%');
+                        });
+                    });
+                }
                 $missionQuery->with(['country'])
                 ->selectRaw('COUNT(mission.mission_id) as mission_count')
                 ->groupBy('mission.country_id');
@@ -696,6 +710,20 @@ class MissionRepository implements MissionInterface
                     'publication_status',
                     config("constants.publication_status")["APPROVED"]
                 );
+				if ($request->has('search') && $request->input('search') != '') {
+                    $missionQuery->Where(function ($query) use ($request) {
+                        $query->with('missionLanguage');
+                        $query->wherehas('missionLanguage', function ($missionLanguageQuery) use ($request) {
+                            $missionLanguageQuery->Where('title', 'like', '%' . $request->input('search') . '%');
+                            $missionLanguageQuery
+                            ->orWhere('short_description', 'like', '%' . $request->input('search') . '%');
+                        });
+                        $query->orWhere(function ($organizationQuery) use ($request) {
+                            $organizationQuery
+                            ->orWhere('organisation_name', 'like', '%' . $request->input('search') . '%');
+                        });
+                    });
+                }
                 $missionQuery->with(['city'])
                 ->selectRaw('COUNT(mission.mission_id) as mission_count');
                 if ($request->has('country_id') && $request->input('country_id') != '') {
@@ -710,6 +738,20 @@ class MissionRepository implements MissionInterface
                     'publication_status',
                     config("constants.publication_status")["APPROVED"]
                 );
+				if ($request->has('search') && $request->input('search') != '') {
+                    $missionQuery->Where(function ($query) use ($request) {
+                        $query->with('missionLanguage');
+                        $query->wherehas('missionLanguage', function ($missionLanguageQuery) use ($request) {
+                            $missionLanguageQuery->Where('title', 'like', '%' . $request->input('search') . '%');
+                            $missionLanguageQuery
+                            ->orWhere('short_description', 'like', '%' . $request->input('search') . '%');
+                        });
+                        $query->orWhere(function ($organizationQuery) use ($request) {
+                            $organizationQuery
+                            ->orWhere('organisation_name', 'like', '%' . $request->input('search') . '%');
+                        });
+                    });
+                }
                 $missionQuery->with(['missionTheme'])
                 ->selectRaw('COUNT(mission.mission_id) as mission_count');
                 if ($request->has('country_id') && $request->input('country_id') != '') {
@@ -726,7 +768,21 @@ class MissionRepository implements MissionInterface
                 $missionSkillQuery = $this->missionSkill->select('*');
                 $missionSkillQuery->selectRaw('COUNT(mission_id) as mission_count');
                 $missionSkillQuery->wherehas('mission', function ($query) use ($request) {
-                    if ($request->has('country_id') && $request->input('country_id') != '') {
+					$query->with('missionLanguage');
+                    if ($request->has('search') && $request->input('search') != '') {
+                        $query->Where(function ($searchQuery) use ($request) {
+                            $searchQuery->wherehas('missionLanguage', function ($missionLanguageQuery) use ($request) {
+                                $missionLanguageQuery->Where('title', 'like', '%' . $request->input('search') . '%');
+                                $missionLanguageQuery
+                                ->orWhere('short_description', 'like', '%' . $request->input('search') . '%');
+                            });
+                            $searchQuery->orWhere(function ($organizationQuery) use ($request) {
+                                $organizationQuery
+                                ->orWhere('organisation_name', 'like', '%' . $request->input('search') . '%');
+                            });
+                        });
+                    }
+					if ($request->has('country_id') && $request->input('country_id') != '') {
                         $query->Where("mission.country_id", $request->input('country_id'));
                     }
                     if ($request->has('city_id') && $request->input('city_id') != '') {
