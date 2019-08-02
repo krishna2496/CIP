@@ -12,8 +12,8 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use InvalidArgumentException;
 use PDOException;
 use Validator;
-    use DB;
-    use Illuminate\Validation\Rule;
+use DB;
+use Illuminate\Validation\Rule;
 
 class SkillController extends Controller
 {
@@ -79,8 +79,10 @@ class SkillController extends Controller
             // Server side validataions
             $validator = Validator::make(
                 $request->all(),
-                ["skill_name" => "required|unique:skill",
-                "translations" => "required"]
+                [
+                    "skill_name" => "required|unique:skill,skill_name,NULL,skill_id,deleted_at,NULL",
+                    "translations" => "required"
+                ]
             );
 
             // If request parameter have any error
@@ -138,7 +140,7 @@ class SkillController extends Controller
                 ["skill_name" => [
                     "sometimes",
                     "required",
-                    Rule::unique('skill')->ignore($id, 'skill_id')],
+                    Rule::unique('skill')->ignore($id, 'skill_id,deleted_at,NULL')],
                 "translations" => "sometimes|required"]
             );
 
