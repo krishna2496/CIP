@@ -19,6 +19,7 @@ use App\Repositories\Mission\MissionRepository;
 use Illuminate\Support\Facades\Mail;
 use App\Jobs\AppMailerJob;
 use App\Exceptions\TenantDomainNotFoundException;
+use App\Repositories\TenantOption\TenantOptionRepository;
 
 class MissionInviteController extends Controller
 {
@@ -49,7 +50,12 @@ class MissionInviteController extends Controller
     private $helpers;
 
     /**
-     * Create a new mission invite controller instance.
+     * @var TenantOptionRepository
+     */
+    private $tenantOptionRepository;
+
+    /**
+     * Create a new Mission controller instance.
      *
      * @param App\Repositories\Mission\MissionInviteRepository $missionInviteRepository
      * @param App\Repositories\Notification\NotificationRepository $notificationRepository
@@ -67,7 +73,8 @@ class MissionInviteController extends Controller
         MissionRepository $missionRepository,
         ResponseHelper $responseHelper,
         LanguageHelper $languageHelper,
-        Helpers $helpers
+        Helpers $helpers,
+        TenantOptionRepository $tenantOptionRepository
     ) {
         $this->missionInviteRepository = $missionInviteRepository;
         $this->notificationRepository = $notificationRepository;
@@ -76,6 +83,7 @@ class MissionInviteController extends Controller
         $this->responseHelper = $responseHelper;
         $this->languageHelper = $languageHelper;
         $this->helpers = $helpers;
+        $this->tenantOptionRepository = $tenantOptionRepository;
     }
 
     /**
@@ -130,7 +138,7 @@ class MissionInviteController extends Controller
             // Check if to_user_id (colleague) has enabled notification for Recommended missions
             $notifyColleague = $this->notificationRepository
             ->userNotificationSetting($request->to_user_id, $notificationTypeId);
-                
+
             if ($notifyColleague) {
                 $colleague = $this->userRepository->find($request->to_user_id);
                 $colleagueEmail = $colleague->email;
@@ -164,6 +172,9 @@ class MissionInviteController extends Controller
                 $params['template'] = config('constants.EMAIL_TEMPLATE_FOLDER').'.'.config('constants.EMAIL_TEMPLATE_USER_INVITE'); //path to the email template
                 $params['subject'] = trans('mail.recommonded_mission.MAIL_MISSION_RECOMMENDATION', [], $colleagueLanguage); //optional
                 $params['data'] = $data;
+                $params['data']['logo'] = $this->tenantOptionRepository->getOptionWithCondition(
+                    ['option_name' => 'custom_logo']
+                )->option_value;
                 dispatch(new AppMailerJob($params));
             }
             
