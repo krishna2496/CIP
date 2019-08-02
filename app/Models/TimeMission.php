@@ -170,7 +170,7 @@ class TimeMission extends Model
     * @param int $missionId
     * @return string
     */
-    public function getDeadLine(int $missionId): string
+    public function getDeadLine(int $missionId): ?string
     {
         return $this->where('mission_id', $missionId)->value('application_deadline');
     }
