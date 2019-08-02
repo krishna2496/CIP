@@ -79,8 +79,10 @@ class MissionThemeController extends Controller
             // Server side validataions
             $validator = Validator::make(
                 $request->all(),
-                ["theme_name" => "required|unique:mission_theme",
-                "translations" => "required"]
+                [
+                    "theme_name" => "required|unique:mission_theme,theme_name,NULL,mission_theme_id,deleted_at,NULL",
+                    "translations" => "required"
+                ]
             );
 
             // If request parameter have any error
@@ -133,10 +135,10 @@ class MissionThemeController extends Controller
                 ["theme_name" => [
                     "sometimes",
                     "required",
-                    Rule::unique('mission_theme')->ignore($id, 'mission_theme_id')],
+                    Rule::unique('mission_theme')->ignore($id, 'mission_theme_id,deleted_at,NULL')],
                 "translations" => "sometimes|required"]
             );
-
+            
             // If request parameter have any error
             if ($validator->fails()) {
                 return $this->responseHelper->error(

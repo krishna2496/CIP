@@ -6,6 +6,7 @@ use DB;
 use PDOException;
 use App\Traits\RestExceptionHandlerTrait;
 use App\Helpers\Helpers;
+use Illuminate\Support\Collection;
 
 class LanguageHelper
 {
@@ -30,10 +31,10 @@ class LanguageHelper
     /**
      * Get languages from `ci_admin` table
      *
-     * @param string $tenantName
-     * @return mix
+     * @param Illuminate\Http\Request $request
+     * @return Illuminate\Support\Collection
      */
-    public function getLanguages(Request $request)
+    public function getLanguages(Request $request): Collection
     {
         try {
             // Connect master database to get language details
@@ -42,7 +43,7 @@ class LanguageHelper
             
             // Connect tenant database
             $this->helpers->switchDatabaseConnection('tenant', $request);
-            
+
             return $languages;
         } catch (\Exception $e) {
             return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));

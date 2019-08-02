@@ -4,13 +4,13 @@ namespace App\Helpers;
 use App\Helpers\ResponseHelper;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Config;
+use Firebase\JWT\JWT;
 use DB;
 use App\Traits\RestExceptionHandlerTrait;
 use PDOException;
 use Throwable;
-use Carbon\Carbon;
 use App\Exceptions\TenantDomainNotFoundException;
-use Firebase\JWT\JWT;
+use Carbon\Carbon;
 
 class Helpers
 {
@@ -23,7 +23,7 @@ class Helpers
     public function __construct()
     {
     }
-
+    
     /**
     * It will return
     * @param Illuminate\Http\Request $request
@@ -108,11 +108,10 @@ class Helpers
     /**
      * It will retrive tenant details from tenant table
      *
-     * @param array $array
      * @param Illuminate\Http\Request $request
-     * @return Tenant
+     * @return object $tenant
      */
-    public function getTenantDetail(Request $request)
+    public function getTenantDetail(Request $request): object
     {
         // Connect master database to get language details
         $this->switchDatabaseConnection('mysql', $request);
@@ -141,10 +140,10 @@ class Helpers
     /**
      * Get country detail from country_id
      *
-     * @param string $country_id
+     * @param int  $country_id
      * @return array
      */
-    public function getCountry($country_id) : array
+    public function getCountry(int $country_id) : array
     {
         $country = DB::table("country")->where("country_id", $country_id)->first();
         $countryData = array('country_id' => $country->country_id,
@@ -157,10 +156,10 @@ class Helpers
     /**
      * Get city data from city_id
      *
-     * @param string $city_id
+     * @param int $city_id
      * @return array
      */
-    public function getCity($city_id) : array
+    public function getCity(int $city_id) : array
     {
         $city = DB::table("city")->whereIn("city_id", explode(",", $city_id))->get()->toArray();
         $cityData = [];
@@ -287,7 +286,7 @@ class Helpers
             'iss' => "lumen-jwt", // Issuer of the token
             'sub' => $userId, // Subject of the token
             'iat' => time(), // Time when JWT was issued.
-            'exp' => time() + 60 * 60, // Expiration time
+            'exp' => time() + 60 * 60 * 4, // Expiration time
             'fqdn' => env('DEFAULT_TENANT')
         ];
         // As you can see we are passing `JWT_SECRET` as the second parameter that will

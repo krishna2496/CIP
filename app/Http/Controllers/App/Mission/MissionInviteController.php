@@ -49,7 +49,7 @@ class MissionInviteController extends Controller
     private $helpers;
 
     /**
-     * Create a new Mission controller instance.
+     * Create a new mission invite controller instance.
      *
      * @param App\Repositories\Mission\MissionInviteRepository $missionInviteRepository
      * @param App\Repositories\Notification\NotificationRepository $notificationRepository

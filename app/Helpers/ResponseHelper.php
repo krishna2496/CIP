@@ -35,6 +35,7 @@ class ResponseHelper
      * @param string $apiStatus
      * @param string $apiMessage
      * @param Illuminate\Pagination\LengthAwarePaginator $apiData
+     * @param array $metaData
      * @return Illuminate\Http\JsonResponse
      */
     public function successWithPagination(

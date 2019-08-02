@@ -281,7 +281,7 @@ class Mission extends Model
      * @param string $value
      * @return void
      */
-    public function setEndDateAttribute($value)
+    public function setEndDateAttribute(string $value): void
     {
         $this->attributes['end_date'] = ($value != null) ?
         Carbon::parse($value, config('constants.TIMEZONE'))->setTimezone(config('app.TIMEZONE')) : null;
@@ -300,7 +300,7 @@ class Mission extends Model
         }
     }
     
-    /*
+    /**
     * Check seats are available or not.
     *
     * @param int $missionId

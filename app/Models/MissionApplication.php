@@ -112,7 +112,7 @@ class MissionApplication extends Model
         return $missionApplication;
     }
 
-    /*
+    /**
      * Check already applied for a mission or not.
      *
      * @param int $missionId

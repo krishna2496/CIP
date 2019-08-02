@@ -359,8 +359,8 @@ class UserController extends Controller
             return $this->responseHelper->success(Response::HTTP_OK, $responseMessage, $apiData);
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
-                config('constants.error_codes.ERROR_USER_SKILL_NOT_FOUND'),
-                trans('messages.custom_error_message.ERROR_USER_SKILL_NOT_FOUND')
+                config('constants.error_codes.ERROR_USER_NOT_FOUND'),
+                trans('messages.custom_error_message.ERROR_USER_NOT_FOUND')
             );
         } catch (\Exception $e) {
             return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));

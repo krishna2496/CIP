@@ -19,7 +19,7 @@ class TenantSettingsController extends Controller
     use RestExceptionHandlerTrait;
 
     /**
-     * @var  App\Repositories\TenantSetting\TenantOptionRepository
+     * @var  App\Repositories\TenantSetting\TenantSettingRepository
      */
     private $tenantSettingRepository;
 

@@ -63,10 +63,8 @@ class MissionApplicationRepository implements MissionApplicationInterface
             return false;
         }
 
-        if ($mission['total_seats'] != 0) {
-            $seatsLeft = ($mission['total_seats']) - ($mission['mission_application_count']);
-            return ($seatsLeft == 0 || $mission['total_seats'] == $mission['mission_application_count']) ? false : true;
-        }
+        $seatsLeft = ($mission['total_seats']) - ($mission['mission_application_count']);
+        return ($seatsLeft == 0 || $mission['total_seats'] == $mission['mission_application_count']) ? false : true;
     }
     
     /**
