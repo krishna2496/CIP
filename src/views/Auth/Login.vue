@@ -1,6 +1,6 @@
 <template>
 
-    <div class="signin-page-wrapper">
+    <div class="signin-page-wrapper" v-if="isPageShown">
         <TheSlider v-if="isShowComponent"/>
         <div class="signin-form-wrapper">
             <div class="lang-drodown-wrap">
@@ -83,6 +83,7 @@ export default {
             showDismissibleAlert: false,
             isShowComponent : false,
             langauageData : [],
+            isPageShown : false
         };
     },
     validations: {
@@ -102,6 +103,11 @@ export default {
                     tenantSetting(); 
                     loadLocaleMessages(store.state.defaultLanguage).then(response =>{
                         this.langauageData = JSON.parse(store.state.languageLabel);
+                        this.isPageShown = true
+                        var _this =this;
+                        setTimeout(function(){
+                            _this.$refs.email.focus();
+                        },500)
                     });
             })       
         },
@@ -142,8 +148,7 @@ export default {
         },
     },
     mounted() {
-        //Autofocus
-        this.$refs.email.focus();        
+
     },        
     created() {
         //Database connection and fetching tenant options api
@@ -160,6 +165,10 @@ export default {
                 store.commit('setImagePath', imagePath);
             }
         }
+         //Autofocus
+
+            
+         
     },
 };
 </script>

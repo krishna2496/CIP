@@ -37,7 +37,13 @@
                 </div>
                 </div>
                 <div class="heading-section" v-if="missionList.length > 0">
-                    <h2><template v-if="rows > 0">{{ langauageData.label.explore}} <strong>{{rows}} {{ langauageData.label.missions}}</strong></template></h2>
+                    <h2>
+                        <template v-if="rows > 0">{{ langauageData.label.explore}}
+                         <strong>{{rows}}</strong> 
+                         <strong v-if="rows > 1" class="ml-1">{{ langauageData.label.missions}}</strong>
+                         <strong v-else>{{ langauageData.label.mission}}</strong>
+                        </template>
+                    </h2>
                     <div class="right-section" v-if="sortByFilterSet">
                         <AppCustomDropdown
                         :optionList="sortByOptions"

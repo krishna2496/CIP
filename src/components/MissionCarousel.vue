@@ -95,8 +95,7 @@ export default {
     		if(media.media_type == 'mp4') {
     			let videoPath = media.media_path;
 			 	let data = videoPath.split("=");
-			 	console.log(data);
-            	return  "https://www.youtube.com/embed/"+data.slice(-1)[0];
+			 	return  "https://www.youtube.com/embed/"+data.slice(-1)[0];
     		} 
     	},
 
