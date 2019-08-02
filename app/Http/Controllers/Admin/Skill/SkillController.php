@@ -80,7 +80,7 @@ class SkillController extends Controller
             $validator = Validator::make(
                 $request->all(),
                 [
-                    "skill_name" => "required|unique:skill,skill_name,NULL,skill_id,deleted_at,NULL",
+                    "skill_name" => "required|max:64|unique:skill,skill_name,NULL,skill_id,deleted_at,NULL",
                     "translations" => "required"
                 ]
             );
