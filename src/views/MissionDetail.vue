@@ -4,15 +4,7 @@
      		<ThePrimaryHeader v-if="isShownComponent"></ThePrimaryHeader>
     	</header>
       	<main>
-		<div v-if="isShareComponentShown">
-	      <AddThis 
-	        publicId="ra-5d4173b2ee914965"
-	        :data-url="sharingUrl"
-	        :data-title="missionDetail.title"
-	        :data-description="missionDetail.short_description"
-	        :data-media="defaultMedia"
-	       />
-	    </div>
+		
 			<b-container>
 		  	<div class="slider-banner-block">
 					<b-row>
@@ -557,7 +549,6 @@ import {favoriteMission,inviteColleague ,applyMission,searchUser,storeMissionRat
 import SimpleBar from 'simplebar';
 import store from "../store";
 import moment from 'moment';
-import AddThis from 'vue-simple-addthis-share'
 
 export default {
   components: {
@@ -569,7 +560,6 @@ export default {
 	GridView: () => import("../components/MissionGridView"),
 	VueAutosuggest,
 	SimpleBar,
-	AddThis,
 	RecentVolunteers: () => import("../components/RecentVolunteers"),
 	MissionCarousel: () => import("../components/MissionCarousel"),
   },

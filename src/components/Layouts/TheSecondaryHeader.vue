@@ -137,6 +137,8 @@ export default {
 
         changeSearch() {
             this.searchString = '';
+            this.selectedfilterParams.search = '';
+            this.filterSearchListing();
         },
 
         changeSkillParmas() {

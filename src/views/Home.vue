@@ -41,7 +41,7 @@
                         <template v-if="rows > 0">{{ langauageData.label.explore}}
                          <strong>{{rows}}</strong> 
                          <strong v-if="rows > 1" class="ml-1">{{ langauageData.label.missions}}</strong>
-                         <strong v-else>{{ langauageData.label.mission}}</strong>
+                         <strong v-else class="ml-1">{{ langauageData.label.mission}}</strong>
                         </template>
                     </h2>
                     <div class="right-section" v-if="sortByFilterSet">
