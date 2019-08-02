@@ -18,19 +18,15 @@ import "aos/dist/aos.css";
 import BackToTop from "vue-backtotop";
 import moment from 'moment'
 import constants from './constant';
-import SocialSharing from "vue-social-sharing";
-import AddThis from 'vue-simple-addthis-share'
 
 Vue.use(Vuelidate, VueAxios, axios);
 Vue.config.devtools = true
 Vue.config.productionTip = false;
-
 Vue.use(BootstrapVue);
 Vue.use(VueScrollTo);
 Vue.use(BackToTop);
 Vue.use(toast);
-Vue.use(SocialSharing);
-Vue.use(AddThis);
+
 
 AOS.init({
     once: true,
