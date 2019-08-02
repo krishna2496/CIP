@@ -105,7 +105,7 @@ export default {
         //List cms pages
         cmsListing(slug){
             axios.get(process.env.VUE_APP_API_ENDPOINT+"app/cms/"+slug)
-            .then((response) => {
+            .then((response) => {                
             if (response.data.data) {
                 let dataList = [];
                 response.data.data.pages.forEach(function(value,key){
@@ -118,7 +118,10 @@ export default {
                 this.footerItems = dataList[0]
                 this.isDynamicFooterItemsSet = true
             }
-            }).catch(error => {
+            }).catch((error) => {
+                if (error.response.status == 404) {
+                    this.$router.push({ name: '404' });
+                }
             })
         }
     },
