@@ -175,7 +175,7 @@
                             </b-list-group-item>
                             <b-list-group-item href="#" class="unread-item">
                                 <i>
-                                    <img :src="$store.state.imagePath+'/assets/images/warning.pngg'" alt>
+                                    <img :src="$store.state.imagePath+'/assets/images/warning.png'" alt>
                                     
                                 </i>
                                 <p>New Message -<b>Message title goes here</b></p>
