@@ -58,6 +58,27 @@ class CreateFolderInS3BucketJob extends Job
                 if (!strpos($file, env('AWS_S3_IMAGES_FOLDER_NAME', "/images"))) {
                     Storage::disk('local')->put($this->tenant->name.'/'.$sourcePath, Storage::disk('s3')->get($file));
                 }
+                
+                
+                // Insert default logo image in database
+                if (strpos($file, env('AWS_S3_IMAGES_FOLDER_NAME').'/'.config('constants.AWS_S3_LOGO_IMAGE_NAME'))) {
+                    $logoPathInS3 = 'https://s3.'.env('AWS_REGION').'.amazonaws.com/'.
+                    env('AWS_S3_BUCKET_NAME').'/'.$this->tenant->name.'/'.env('AWS_S3_ASSETS_FOLDER_NAME').
+                    '/'.env('AWS_S3_IMAGES_FOLDER_NAME').'/'.config('constants.AWS_S3_LOGO_IMAGE_NAME');
+
+                    // Connect with tenant database
+                    $tenantOptionData['option_name'] = "custom_logo";
+                    $tenantOptionData['option_value'] = $logoPathInS3;
+
+                    // Create connection with tenant database
+                    $this->databaseHelper->connectWithTenantDatabase($this->tenant->tenant_id);
+                    DB::table('tenant_option')->insert($tenantOptionData);
+
+                    // Disconnect tenant database and reconnect with default database
+                    DB::disconnect('tenant');
+                    DB::reconnect('mysql');
+                    DB::setDefaultConnection('mysql');
+                }
 
                 if (basename($file)==env('S3_CUSTOME_CSS_NAME')) {
                     $pathInS3 = 'https://s3.'.env('AWS_REGION').'.amazonaws.com/'.

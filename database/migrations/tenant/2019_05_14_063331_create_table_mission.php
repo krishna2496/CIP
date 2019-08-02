@@ -25,7 +25,7 @@ class CreateTableMission extends Migration {
             $table->unsignedBigInteger('availability_id');
             $table->bigInteger('organisation_id')->unsigned();
             $table->string('organisation_name',255);
-            $table->text('organisation_detail');
+            $table->text('organisation_detail')->nullable();
             $table->timestamps();
             $table->softDeletes();
             // Relation defined between missions(city_id) with cities(id)
