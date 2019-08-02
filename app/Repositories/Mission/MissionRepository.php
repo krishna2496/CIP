@@ -921,7 +921,8 @@ class MissionRepository implements MissionInterface
                 $query->with('mission', 'skill');
             }])
             ->with(['missionApplication' => function ($query) use ($request) {
-                $query->where('user_id', $request->auth->user_id);
+                $query->where('user_id', $request->auth->user_id)
+                ->where('approval_status', '<>', config("constants.application_status")["REFUSED"]);
             }])
             ->with(['missionMedia' => function ($query) {
                 $query->where('status', '1');
