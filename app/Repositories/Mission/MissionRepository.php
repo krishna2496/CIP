@@ -135,7 +135,8 @@ class MissionRepository implements MissionInterface
                 'publication_status' => $request->publication_status,
                 'organisation_id' => $request->organisation['organisation_id'],
                 'organisation_name' => $request->organisation['organisation_name'],
-                'organisation_detail' => $request->organisation['organisation_detail'],
+                'organisation_detail' => (isset($request->organisation['organisation_detail'])) ?
+                $request->organisation['organisation_detail'] : '',
                 'availability_id' => $request->availability_id,
                 'mission_type' => $request->mission_type
             );
@@ -278,6 +279,9 @@ class MissionRepository implements MissionInterface
         }
         if (isset($request->organisation['organisation_name'])) {
             $request->request->add(['organisation_name' => $request->organisation['organisation_name']]);
+        }
+        if (isset($request->organisation['organisation_detail'])) {
+            $request->request->add(['organisation_detail' => $request->organisation['organisation_detail']]);
         }
 
         $mission = $this->mission->findOrFail($id);
