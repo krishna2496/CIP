@@ -146,8 +146,9 @@ ul {
 
 
 /** Toast style**/
-.b-toast{
-	z-index:99999;
+
+.b-toaster, .b-toast , .b-toaster-slot{
+	z-index:99999!important;
 }
 .toast {
 	padding-right: 36px;
