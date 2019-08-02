@@ -168,9 +168,9 @@ class TimeMission extends Model
     * Get deadline for mission.
     *
     * @param int $missionId
-    * @return string
+    * @return null|string
     */
-    public function getDeadLine(int $missionId): string
+    public function getDeadLine(int $missionId): ?string
     {
         return $this->where('mission_id', $missionId)->value('application_deadline');
     }
