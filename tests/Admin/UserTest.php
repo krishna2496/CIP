@@ -197,7 +197,7 @@ class UserTest extends TestCase
                     "code"
                 ]
             ]
-        ]); 
+        ]);
     }
 
     /**
@@ -285,7 +285,7 @@ class UserTest extends TestCase
                     "code"
                 ]
             ]
-        ]); 
+        ]);
     }
 
     /**
@@ -333,7 +333,7 @@ class UserTest extends TestCase
                     "code"
                 ]
             ]
-        ]); 
+        ]);
     }
     /**
      * @test
@@ -344,7 +344,6 @@ class UserTest extends TestCase
      */
     public function it_should_return_error_while_data_is_empty_for_create_user()
     {
-        
         $params = [
                 'first_name' => '',
                 'last_name' => '',
@@ -419,7 +418,7 @@ class UserTest extends TestCase
         ]);
     }
 
-        /**
+    /**
      * @test
      *
      * Return error for fix length
@@ -520,9 +519,20 @@ class UserTest extends TestCase
      * @return void
      */
     public function it_should_return_error_if_user_is_not_exist()
-    {        
-        $this->post('user/skills/'.rand(100000, 500000), ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
-          ->seeStatusCode(401);
+    {
+        $this->get('user/skills/'.rand(100000, 500000), ['Authorization' => 'Basic '
+        .base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(404)
+        ->seeJsonStructure([
+            'errors' => [
+                [
+                    'status',
+                    'type',
+                    'code',
+                    'message'
+                ]
+            ]
+        ]);
     }
     
     /**
@@ -574,7 +584,7 @@ class UserTest extends TestCase
             ]
         ];
 
-        $this->post('user/skills/'.$user->user_id, $params,['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post('user/skills/'.$user->user_id, $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
           ->seeStatusCode(201)
           ->seeJsonStructure([
             "status",
@@ -606,7 +616,7 @@ class UserTest extends TestCase
             ]
         ];
 
-        $this->post('user/skills/'.rand(100000, 5000000), $params,['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post('user/skills/'.rand(100000, 5000000), $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
           ->seeStatusCode(404)
           ->seeJsonStructure([
               "errors" => [
@@ -614,7 +624,7 @@ class UserTest extends TestCase
                     "status",
                     "message"
                   ]
-              ]            
+              ]
             ]);
         $skill->delete();
     }
@@ -645,7 +655,7 @@ class UserTest extends TestCase
             ]
         ];
 
-        $this->delete('user/skills/'.$user->user_id, $params,['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->delete('user/skills/'.$user->user_id, $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
           ->seeStatusCode(200)
           ->seeJsonStructure([
             "status",
@@ -655,7 +665,7 @@ class UserTest extends TestCase
         $skill->delete();
     }
 
-        /**
+    /**
      * @test
      *
      * Unlink skill to user validate user
@@ -677,7 +687,7 @@ class UserTest extends TestCase
             ]
         ];
 
-        $this->delete('user/skills/'.rand(100000, 5000000), $params,['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->delete('user/skills/'.rand(100000, 5000000), $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
           ->seeStatusCode(404)
           ->seeJsonStructure([
               "errors" => [
@@ -685,7 +695,7 @@ class UserTest extends TestCase
                     "status",
                     "message"
                   ]
-              ]            
+              ]
             ]);
         $skill->delete();
     }
@@ -724,7 +734,17 @@ class UserTest extends TestCase
             ];
 
         $this->post("users/", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
-        ->seeStatusCode(422);
+        ->seeStatusCode(422)
+        ->seeJsonStructure([
+            'errors' => [
+                [
+                    'status',
+                    'type',
+                    'code',
+                    'message'
+                ]
+            ]
+        ]);
         $user->delete();
     }
 }

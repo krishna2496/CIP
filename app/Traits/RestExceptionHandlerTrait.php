@@ -7,8 +7,17 @@ use App\Helpers\ResponseHelper;
 
 trait RestExceptionHandlerTrait
 {
+    /**
+     * @var App\Helpers\ResponseHelper
+     */
     private $responseHelper;
 
+    /**
+     * Create a new trait instance.
+     *
+     * @param Illuminate\Http\ResponseHelper $responseHelper
+     * @return void
+     */
     public function __construct(ResponseHelper $responseHelper)
     {
         $this->responseHelper = $responseHelper;
@@ -18,8 +27,6 @@ trait RestExceptionHandlerTrait
      * Returns json response for generic bad request.
      *
      * @param string $message
-     * @param int $statusCode
-     * @return \Illuminate\Http\JsonResponse
      */
     protected function badRequest(string $message = 'Bad request')
     {
@@ -34,6 +41,7 @@ trait RestExceptionHandlerTrait
     /**
      * Returns json response for Eloquent model not found exception.
      *
+     * @param string $customErrorCode
      * @param string $message
      * @return \Illuminate\Http\JsonResponse
      */
@@ -50,6 +58,7 @@ trait RestExceptionHandlerTrait
     /**
      * Returns json response for Invalid argument exception.
      *
+     * @param string $customErrorCode
      * @param string $message
      * @return \Illuminate\Http\JsonResponse
      */
@@ -66,6 +75,7 @@ trait RestExceptionHandlerTrait
     /**
      * Returns json response for Query exception
      *
+     * @param string $customErrorCode
      * @param string $message
      * @return \Illuminate\Http\JsonResponse
      */

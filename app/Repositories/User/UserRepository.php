@@ -159,6 +159,7 @@ class UserRepository implements UserInterface
      */
     public function userSkills(int $userId): Collection
     {
+        $this->user->findOrFail($userId);
         return $this->userSkill->with('skill')->where('user_id', $userId)->get();
     }
 

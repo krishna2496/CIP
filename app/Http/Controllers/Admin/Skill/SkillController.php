@@ -158,7 +158,7 @@ class SkillController extends Controller
             } catch (ModelNotFoundException $e) {
                 return $this->modelNotFound(
                     config('constants.error_codes.ERROR_SKILL_NOT_FOUND'),
-                    $e->getMessage()
+                    trans('messages.custom_error_message.ERROR_SKILL_NOT_FOUND')
                 );
             }
 
@@ -197,7 +197,7 @@ class SkillController extends Controller
             } catch (ModelNotFoundException $e) {
                 return $this->modelNotFound(
                     config('constants.error_codes.ERROR_SKILL_NOT_FOUND'),
-                    $e->getMessage()
+                    trans('messages.custom_error_message.ERROR_SKILL_NOT_FOUND')
                 );
             }
 

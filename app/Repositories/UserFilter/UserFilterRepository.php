@@ -21,9 +21,9 @@ class UserFilterRepository implements UserFilterInterface
     private $response;
 
     /**
-     * Create a new User repository instance.
+     * Create a new user filter repository instance.
      *
-     * @param  App\Models\UserFilter $UserFilter
+     * @param  App\Models\UserFilter $filters
      * @param  Illuminate\Http\Response $response
      * @return void
      */

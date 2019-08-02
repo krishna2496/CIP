@@ -46,7 +46,7 @@ class MissionInviteRepository implements MissionInviteInterface
         return $this->missionInvite->getMissionInvite($missionId, $inviteUserId, $fromUserId);
     }
     
-    /*
+    /**
      * Store a newly created resource into database
      *
      * @param int $missionId

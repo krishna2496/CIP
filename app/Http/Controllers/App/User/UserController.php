@@ -102,15 +102,15 @@ class UserController extends Controller
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
                 config('constants.error_codes.ERROR_USER_NOT_FOUND'),
-                $e->getMessage()
+                trans('messages.custom_error_message.ERROR_USER_NOT_FOUND')
             );
         } catch (\PDOException $e) {
             return $this->PDO(
                 config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
-                $e->getMessage()
+                trans('messages.custom_error_message.ERROR_USER_NOT_FOUND')
             );
         } catch (\Exception $e) {
-            return $this->badRequest($e->getMessage());
+            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
 }

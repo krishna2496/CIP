@@ -56,8 +56,7 @@ class UserCustomFieldRepository implements UserCustomFieldInterface
      */
     public function store(array $request): UserCustomField
     {
-        $customField = $this->field->create($request);
-        return $customField;
+        return $this->field->create($request);
     }
     
     /**

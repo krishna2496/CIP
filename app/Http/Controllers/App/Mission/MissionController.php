@@ -40,25 +40,25 @@ class MissionController extends Controller
      */
     private $userFilterRepository;
 
-    /*
+    /**
      * @var App\Helpers\LanguageHelper
      */
 
     private $languageHelper;
 
-    /*
+    /**
      * @var App\Helpers\Helpers
      */
 
     private $helpers;
 
-    /*
+    /**
      * @var App\Repositories\MissionTheme\MissionThemeRepository;
      */
 
     private $theme;
 
-    /*
+    /**
      * @var App\Repositories\Skill\SkillRepository
      */
 
@@ -70,10 +70,10 @@ class MissionController extends Controller
      * @param App\Repositories\Mission\MissionRepository $missionRepository
      * @param Illuminate\Http\ResponseHelper $responseHelper
      * @param Illuminate\Http\UserFilterRepository $userFilterRepository
-     * @param  Illuminate\Http\LanguageHelper $languageHelper
+     * @param Illuminate\Http\LanguageHelper $languageHelper
      * @param App\Helpers\Helpers $helpers
-     * @param App\Helpers\Helpers $theme
-     * @param App\Helpers\Helpers $skill
+     * @param Illuminate\Http\MissionThemeRepository $theme
+     * @param Illuminate\Http\SkillRepository $skill
      * @return void
      */
     public function __construct(

@@ -3,7 +3,7 @@ namespace App\Repositories\TenantOption;
 
 use App\Repositories\TenantOption\TenantOptionInterface;
 use Illuminate\Http\Request;
-use Illuminate\Support\Collection;
+use Illuminate\Database\Eloquent\Collection;
 use Validator;
 use PDOException;
 use DB;
@@ -34,7 +34,7 @@ class TenantOptionRepository implements TenantOptionInterface
     /**
     * Get a listing of slider.
     *
-    * @return Illiminate\Support\Collection
+    * @return Illuminate\Database\Eloquent\Collection
     */
     public function getAllSlider()
     {
@@ -78,7 +78,7 @@ class TenantOptionRepository implements TenantOptionInterface
      *
      * @return Illuminate\Support\Collection
      */
-    public function getOptions()
+    public function getOptions(): Collection
     {
         return $this->tenantOption->get(['option_name', 'option_value']);
     }

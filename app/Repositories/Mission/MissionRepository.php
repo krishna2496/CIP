@@ -79,9 +79,10 @@ class MissionRepository implements MissionInterface
      * @param  App\Models\MissionDocument $missionDocument
      * @param  Illuminate\Http\ResponseHelper $responseHelper
      * @param  Illuminate\Http\LanguageHelper $languageHelper
-     * @param  Illuminate\Http\S3Helper $s3helper
-     * @param App\Models\MissionSkill
+     * @param  App\Helpers\Helpers $helpers
+     * @param  App\Helpers\S3Helper $s3helper
      * @param  App\Models\FavouriteMission $favouriteMission
+     * @param  App\Models\MissionSkill $missionSkill
      * @param  App\Models\MissionRating $missionRating
      * @return void
      */
@@ -938,7 +939,7 @@ class MissionRepository implements MissionInterface
         return $commentQuery->take(config("constants.MISSION_COMMENT_LIMIT"))->get();
     }
         
-    /*
+    /**
      * Check seats are available or not.
      *
      * @param int $missionId
@@ -947,17 +948,15 @@ class MissionRepository implements MissionInterface
     public function checkAvailableSeats(int $missionId): bool
     {
         $mission = $this->mission->checkAvailableSeats($missionId);
-        if ($mission['total_seats'] == 0) {
-            return false;
-        }
-
         if ($mission['total_seats'] != 0) {
             $seatsLeft = ($mission['total_seats']) - ($mission['mission_application_count']);
             return ($seatsLeft == 0 || $mission['total_seats'] == $mission['mission_application_count']) ? false : true;
+        } else {
+            return false;
         }
     }
     
-    /*
+    /**
      * Check mission deadline
      *
      * @param int $missionId
