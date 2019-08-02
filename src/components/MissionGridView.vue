@@ -57,7 +57,7 @@
                                         </svg>
                                     </i>       
                                 </b-button>
-                                <b-button class="add-icon" :title="langauageData.label.invite_colleague" @click="handleModal(mission.mission_id)">
+                                <b-button class="add-icon" v-b-tooltip.hover :title="langauageData.label.invite_colleague" @click="handleModal(mission.mission_id)">
                                     <img 
                                     :src="$store.state.imagePath+'/assets/images/add-group-ic.svg'"
                                     :alt="langauageData.label.invite_colleague"
@@ -71,9 +71,9 @@
 
                             <b-card-body>
                                 <div class="content-block">
-                                    <h2 class="card-title mb-2">
+                                    <b-link target="_blank" :to="'/mission-detail/' + mission.mission_id" class="card-title mb-2">
                                         {{mission.title | substring(40)}}
-                                    </h2>
+                                    </b-link>
                                     <b-card-text>
                                         {{mission.short_description | substring(98)}}
                                     </b-card-text>

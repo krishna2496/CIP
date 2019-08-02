@@ -77,6 +77,7 @@
 
 								</b-button>
 								</div>
+
 							<p>{{missionDetail.short_description}}</p>
 							<div class="group-details">
 								<div class="top-strip">
@@ -99,7 +100,7 @@
                                         </template>
                                         </span>    
                                 </div>
-								
+									<!-- {{missionDetail}} -->
 								<template v-if="checkMissionTypeTime(missionDetail.mission_type)">
                                         <div class="group-details-inner">
                                             <template v-if="missionDetail.total_seats != 0 && missionDetail.total_seats !== null">
@@ -229,7 +230,6 @@
 									</i>
 									<span>{{ langauageData.label.recommend_to_co_worker }}</span>
 								</b-button>
-
 								<b-button 
 									class="btn-bordersecondary icon-btn" 
 									v-if="missionDetail.user_application_status == 'AUTOMATICALLY_APPROVED' ||
@@ -260,11 +260,9 @@
 									:disabled="disableApply"
 									@click="applyForMission(missionDetail.mission_id)"
 								>
-										<span v-if="disableApply">
-											{{ langauageData.label.applied }}
-										</span>
-										<span v-else>
-											{{ langauageData.label.apply_now }}
+
+										<span>
+											{{ applyButton }}
 										</span>				
 										<i>
 											<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 16" width="19" height="15">
@@ -618,6 +616,7 @@ export default {
 			defaultMedia : '',
 			isShareComponentShown : false,
 			langauageData : [],
+			applyButton :'',
 	    };
   	},
 	mounted(){
@@ -773,20 +772,21 @@ export default {
 				this.getRelatedMissions();
 	        });
     	},
-    	// Apply for mission
+        // Apply for mission
         applyForMission(missionId) {
-        	this.disableApply = true;
             let missionData = {};
             missionData.mission_id = missionId;
             missionData.availability_id = 1;
+            
             applyMission(missionData).then(response => {
-                if(response.error == true){
+            	if(response.error == true){
                     this.makeToast("danger",response.message);
                 } else {
+                	this.disableApply = true;
+                	this.applyButton = this.langauageData.label.applied
                     this.makeToast("success",response.message);
                     this.$emit("getMissions"); 
                 }
-
             })
         },
     	getRelatedMissions() {
@@ -821,16 +821,16 @@ export default {
 								this.missionAddedToFavoriteByUser = true;
 							}
 
-							if(response.data[0].set_view_detail == 1) {
-								// disableApply					
-									this.disableApply = true;
-							} else {
+							
 								if(response.data[0].user_application_status ==  
 									constants.AUTOMATICALLY_APPROVED || response.data[0].user_application_status ==  
 									constants.PENDING) {
 									this.disableApply = true;
+
+								} else {
+									this.disableApply = false
 								}
-							}
+							
 							this.missionDocument = response.data[0].mission_document
 	                	}
 	                  
@@ -875,22 +875,7 @@ export default {
         	}
         	return skills;
         },
-        // Apply for mission
-        applyForMission(missionId) {
-            let missionData = {};
-            missionData.mission_id = missionId;
-            missionData.availability_id = 1;
-            
-            applyMission(missionData).then(response => {
-            	this.disableApply = true;
-                if(response.error == true){
-                    this.makeToast("danger",response.message);
-                } else {
-                    this.makeToast("success",response.message);
-                    this.$emit("getMissions"); 
-                }
-            })
-        },
+        
         missionComments() {
         	missionComments(this.$route.params.misisonId).then(response => {
 					if(response.error == false) {
@@ -910,6 +895,7 @@ export default {
 	    	this.search = '';
 		}
 		this.langauageData = JSON.parse(store.state.languageLabel);
+		this.applyButton = this.langauageData.label.apply_now
 	},
    updated(){
 	
@@ -942,7 +928,8 @@ export default {
 			this.max = 100,
 			this.value = 70,
 			this.missionListing = [],
-			this.missionComment = []
+			this.missionComment = [],
+			this.applyButton = '',
 	       	this.getMissionDetail();
 	    }
 	} 

@@ -101,39 +101,12 @@ export default {
                     
                     // Get tenant setting
                     tenantSetting();
-                    this.fetchUserLanguage(this.$route.query.email);                    
+                                       
                     this.isShowSlider = true;
                     loadLocaleMessages(store.state.defaultLanguage).then(response =>{
                         this.langauageData = JSON.parse(store.state.languageLabel);
                     });
             })       
-    },
-    async fetchUserLanguage(email) {
-
-        let defaultLanguageData = [];
-        let response = await getUserLanguage(email);        
-        let languageCode = '';
-        
-        if (typeof response.error === "undefined") {
-
-            languageCode = this.langList.filter(function (language) { 
-                    if (language['0'] == response.data.default_language_id) {
-                        return language;
-                    }
-                }
-            );
-            
-            defaultLanguageData["selectedVal"] = languageCode[0][1];
-            defaultLanguageData["selectedId"] = response.data.default_language_id;
-
-            this.defautLang = languageCode[0][1];
-
-            store.commit('setDefaultLanguage', defaultLanguageData)
-
-            this.$i18n.locale = languageCode[0][1].toLowerCase()
-            await loadLocaleMessages(this.$i18n.locale);
-        }
-
     },
         handleSubmit(e) {
             this.submitted = true;
