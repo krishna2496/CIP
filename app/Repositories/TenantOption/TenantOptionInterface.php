@@ -3,7 +3,7 @@ namespace App\Repositories\TenantOption;
 
 use Illuminate\Http\Request;
 use App\Models\TenantOption;
-use Illiminate\Support\Collection;
+use Illuminate\Database\Eloquent\Collection;
 
 interface TenantOptionInterface
 {
@@ -33,9 +33,9 @@ interface TenantOptionInterface
     /**
      * Store tenant option data
      *
-     * @return Illuminate\Support\Collection
+     * @return Illuminate\Database\Eloquent\Collection
      */
-    public function getOptions();
+    public function getOptions(): Collection;
 
     /**
     * Get a listing of resource.

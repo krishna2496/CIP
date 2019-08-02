@@ -128,7 +128,8 @@ class S3Helper
             $disk->put($tenantName.'/'.basename($url), file_get_contents($url, false, $context));
             // Uncomment below line before going live
             if ($disk->put(
-                $tenantName.'/'.config('constants.AWS_S3_ASSETS_FOLDER_NAME').'/'.config('constants.AWS_S3_IMAGES_FOLDER_NAME')
+                $tenantName.'/'.config('constants.AWS_S3_ASSETS_FOLDER_NAME').'/'
+                .config('constants.AWS_S3_IMAGES_FOLDER_NAME')
                 .'/'.basename($url),
                 file_get_contents($url)
             )) {

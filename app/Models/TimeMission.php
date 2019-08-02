@@ -164,7 +164,7 @@ class TimeMission extends Model
         }
     }
 
-    /*
+    /**
     * Get deadline for mission.
     *
     * @param int $missionId

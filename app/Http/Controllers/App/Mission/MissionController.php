@@ -40,29 +40,29 @@ class MissionController extends Controller
      */
     private $userFilterRepository;
 
-    /*
+    /**
      * @var App\Helpers\LanguageHelper
      */
 
     private $languageHelper;
 
-    /*
+    /**
      * @var App\Helpers\Helpers
      */
 
     private $helpers;
 
-    /*
+    /**
      * @var App\Repositories\MissionTheme\MissionThemeRepository;
      */
 
-    private $theme;
+    private $themeRepository;
 
-    /*
+    /**
      * @var App\Repositories\Skill\SkillRepository
      */
 
-    private $skill;
+    private $skillRepository;
 
     /**
      * Create a new Mission controller instance
@@ -70,10 +70,10 @@ class MissionController extends Controller
      * @param App\Repositories\Mission\MissionRepository $missionRepository
      * @param Illuminate\Http\ResponseHelper $responseHelper
      * @param Illuminate\Http\UserFilterRepository $userFilterRepository
-     * @param  Illuminate\Http\LanguageHelper $languageHelper
+     * @param Illuminate\Http\LanguageHelper $languageHelper
      * @param App\Helpers\Helpers $helpers
-     * @param App\Helpers\Helpers $theme
-     * @param App\Helpers\Helpers $skill
+     * @param Illuminate\Http\MissionThemeRepository $themeRepository
+     * @param Illuminate\Http\SkillRepository $skillRepository
      * @return void
      */
     public function __construct(
@@ -82,16 +82,16 @@ class MissionController extends Controller
         UserFilterRepository $userFilterRepository,
         LanguageHelper $languageHelper,
         Helpers $helpers,
-        MissionThemeRepository $theme,
-        SkillRepository $skill
+        MissionThemeRepository $themeRepository,
+        SkillRepository $skillRepository
     ) {
         $this->missionRepository = $missionRepository;
         $this->responseHelper = $responseHelper;
         $this->userFilterRepository = $userFilterRepository;
         $this->languageHelper = $languageHelper;
         $this->helpers = $helpers;
-        $this->theme = $theme;
-        $this->skill = $skill;
+        $this->themeRepository = $themeRepository;
+        $this->skillRepository = $skillRepository;
     }
 
     /**
@@ -433,7 +433,7 @@ class MissionController extends Controller
                 }
 
                 if ($filterData["filters"]["theme_id"] && $filterData["filters"]["theme_id"] != "") {
-                    $themeTag = $this->theme->missionThemeList($request, $filterData["filters"]["theme_id"]);
+                    $themeTag = $this->themeRepository->missionThemeList($request, $filterData["filters"]["theme_id"]);
                     if ($themeTag) {
                         foreach ($themeTag as $value) {
                             if ($value->translations) {
@@ -448,7 +448,7 @@ class MissionController extends Controller
                 }
 
                 if ($filterData["filters"]["skill_id"] && $filterData["filters"]["skill_id"] != "") {
-                    $skillTag = $this->skill->skillList($request, $filterData["filters"]["skill_id"]);
+                    $skillTag = $this->skillRepository->skillList($request, $filterData["filters"]["skill_id"]);
                     if ($skillTag) {
                         foreach ($skillTag as $value) {
                             if ($value->translations) {

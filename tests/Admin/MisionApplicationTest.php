@@ -26,7 +26,7 @@ class MissionApplicationTest extends TestCase
         $missionApplication->setConnection($connection);
         $missionApplication->mission_id = $mission->mission_id;
         $missionApplication->user_id = $user->user_id;
-        $missionApplication->availability_id = rand(1,1);
+        $missionApplication->availability_id = 1;
         $missionApplication->motivation = str_random(10);
         $missionApplication->approval_status = config('constants.application_status.PENDING');
         $missionApplication->applied_at = Carbon::now();
@@ -62,7 +62,7 @@ class MissionApplicationTest extends TestCase
         $missionApplication->setConnection($connection);
         $missionApplication->mission_id = $mission->mission_id;
         $missionApplication->user_id = $user->user_id;
-        $missionApplication->availability_id = rand(1,1);
+        $missionApplication->availability_id = 1;
         $missionApplication->motivation = str_random(10);
         $missionApplication->approval_status = config('constants.application_status.PENDING');
         $missionApplication->applied_at = Carbon::now();
@@ -117,7 +117,7 @@ class MissionApplicationTest extends TestCase
         $missionApplication->setConnection($connection);
         $missionApplication->mission_id = $mission->mission_id;
         $missionApplication->user_id = $user->user_id;
-        $missionApplication->availability_id = rand(1,1);
+        $missionApplication->availability_id = 1;
         $missionApplication->motivation = str_random(10);
         $missionApplication->approval_status = config('constants.application_status.PENDING');
         $missionApplication->applied_at = Carbon::now();
@@ -157,7 +157,7 @@ class MissionApplicationTest extends TestCase
         $missionApplication->setConnection($connection);
         $missionApplication->mission_id = $mission->mission_id;
         $missionApplication->user_id = $user->user_id;
-        $missionApplication->availability_id = rand(1,1);
+        $missionApplication->availability_id = 1;
         $missionApplication->motivation = str_random(10);
         $missionApplication->approval_status = config('constants.application_status.PENDING');
         $missionApplication->applied_at = Carbon::now();
@@ -201,14 +201,24 @@ class MissionApplicationTest extends TestCase
         $missionApplication->setConnection($connection);
         $missionApplication->mission_id = $mission->mission_id;
         $missionApplication->user_id = $user->user_id;
-        $missionApplication->availability_id = rand(1,1);
+        $missionApplication->availability_id = 1;
         $missionApplication->motivation = str_random(10);
         $missionApplication->approval_status = config('constants.application_status.PENDING');
         $missionApplication->applied_at = Carbon::now();
         $missionApplication->save();  
 
         $this->patch('/missions/'.rand(1000000, 2000000).'/applications/'.$missionApplication->mission_application_id, $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
-        ->seeStatusCode(404);
+        ->seeStatusCode(404)
+        ->seeJsonStructure([
+            "errors" => [
+                [
+                    "status",
+                    "type",
+                    "message",
+                    "code"
+                ]
+            ]
+        ]); 
         $missionApplication->delete();
     }
 }

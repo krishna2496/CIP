@@ -33,7 +33,7 @@ class MissionApplicationController extends Controller
     private $responseHelper;
 
     /**
-     * Create a new Mission controller instance.
+     * Create a new mission application controller instance.
      *
      * @param App\Repositories\MissionApplication\MissionApplicationRepository $missionApplicationRepository
      * @param App\Repositories\Mission\MissionRepository $missionRepository

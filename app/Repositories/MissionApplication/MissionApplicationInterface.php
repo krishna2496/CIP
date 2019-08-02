@@ -7,7 +7,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 
 interface MissionApplicationInterface
 {
-    /*
+    /**
      * Check already applied for a mission or not.
      *
      * @param int $missionId
@@ -52,7 +52,7 @@ interface MissionApplicationInterface
      */
     public function updateApplication(Request $request, int $missionId, int $applicationId): MissionApplication;
 
-    /*
+    /**
      * Get recent volunteers
      *
      * @param Illuminate\Http\Request $request
