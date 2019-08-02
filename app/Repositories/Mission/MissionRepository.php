@@ -523,20 +523,8 @@ class MissionRepository implements MissionInterface
                 }
             ]);
         $missionQuery->with(['missionRating']);
-        //Explore mission by top favourite
-        if ($request->has('explore_mission_type') &&
-        ($request->input('explore_mission_type') == config('constants.TOP_FAVOURITE'))) {
-            $missionQuery->withCount(['favouriteMission as favourite_mission_count']);
-            $missionQuery->orderBY('favourite_mission_count', 'desc');
-        }
-
-        //Explore mission by most ranked
-        if ($request->has('explore_mission_type') &&
-        ($request->input('explore_mission_type') == config('constants.MOST_RANKED'))) {
-            $missionQuery->orderBY('mission_rating_count', 'desc');
-        }
-
-        //Explore mission recommended to user
+       
+	   //Explore mission recommended to user
         if ($request->has('explore_mission_type') &&
         ($request->input('explore_mission_type') == config('constants.TOP_RECOMMENDED'))) {
             $missionQuery->withCount(['missionInvite as mission_invite_count' => function ($query) use ($request) {
@@ -634,6 +622,20 @@ class MissionRepository implements MissionInterface
                 );
             }
         }
+		
+		 //Explore mission by top favourite
+        if ($request->has('explore_mission_type') &&
+        ($request->input('explore_mission_type') == config('constants.TOP_FAVOURITE'))) {
+            $missionQuery->withCount(['favouriteMission as favourite_mission_count']);
+            $missionQuery->orderBY('favourite_mission_count', 'desc');
+        }
+
+        //Explore mission by most ranked
+        if ($request->has('explore_mission_type') &&
+        ($request->input('explore_mission_type') == config('constants.MOST_RANKED'))) {
+            $missionQuery->orderBY('mission_rating_count', 'desc');
+        }
+		
         $mission =  $missionQuery->paginate($request->perPage);
         return $mission;
     }
@@ -787,6 +789,12 @@ class MissionRepository implements MissionInterface
                             });
                         });
                     }
+					
+					$query->where(
+                        'publication_status',
+                        config("constants.publication_status")["APPROVED"]
+                    );
+					
 					if ($request->has('country_id') && $request->input('country_id') != '') {
                         $query->Where("mission.country_id", $request->input('country_id'));
                     }
