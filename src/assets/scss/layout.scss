@@ -146,8 +146,12 @@ ul {
 
 
 /** Toast style**/
+.b-toast{
+	z-index:99999;
+}
 .toast {
 	padding-right: 36px;
+	z-index:99999;
 
 	header {
 		&.toast-header {
