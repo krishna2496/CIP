@@ -919,7 +919,8 @@ export default {
 			this.value = 70,
 			this.missionListing = [],
 			this.missionComment = [],
-			this.applyButton = '',
+			this.langauageData = JSON.parse(store.state.languageLabel);
+			this.applyButton = this.langauageData.label.apply_now
 	       	this.getMissionDetail();
 	    }
 	} 
