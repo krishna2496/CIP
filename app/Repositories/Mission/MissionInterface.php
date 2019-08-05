@@ -99,14 +99,6 @@ interface MissionInterface
     public function getMissionDetail(Request $request, int $languageId, int $missionId): Collection;
 
     /**
-     * Get mission comments.
-     *
-     * @param int $missionId
-     * @return Illuminate\Database\Eloquent\Collection
-     */
-    public function getComments(int $missionId): Collection;
-
-    /**
      * Display a listing of mission.
      *
      * @param Illuminate\Http\Request $request
