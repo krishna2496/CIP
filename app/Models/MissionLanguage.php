@@ -38,7 +38,7 @@ class MissionLanguage extends Model
      *
      * @var array
      */
-    protected $visible = ['mission_language_id', 'lang', 'language_id', 'title', 'objective', 'short_description',
+    protected $visible = ['lang', 'language_id', 'title', 'objective', 'short_description',
                          'description'];
 
     /**

@@ -267,7 +267,7 @@ class Mission extends Model
      *
      * @return string
      */
-    public function getStartDateAttribute(): string
+    public function getStartDateAttribute()
     {
         if (isset($this->attributes['start_date']) && !empty(config('constants.TIMEZONE'))) {
             return Carbon::parse($this->attributes['start_date'])->setTimezone(config('constants.TIMEZONE'))
