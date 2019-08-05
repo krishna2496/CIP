@@ -151,10 +151,10 @@ interface MissionInterface
     public function checkAvailableSeats(int $missionId): bool;
 
     /**
-     * Check mission deadline
+     * Check mission application deadline
      *
      * @param int $missionId
      * @return bool
      */
-    public function checkMissionDeadline(int $missionId): bool;
+    public function checkMissionApplicationDeadline(int $missionId): bool;
 }
