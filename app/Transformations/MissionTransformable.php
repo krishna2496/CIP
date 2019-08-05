@@ -22,7 +22,7 @@ trait MissionTransformable
      */
     protected function transformMission(Mission $mission, string $languageCode): Mission
     {
-        if (isset($mission['goalMission'])) {
+        if (isset($mission['goalMission']) && is_numeric($mission['goalMission'])) {
             $mission['goal_objective']  = $mission['goalMission']['goal_objective'];
             $mission['achieved_goal']  = ($mission['goalMission']['goal_objective']*0.6);
         }
