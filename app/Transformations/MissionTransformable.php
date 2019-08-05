@@ -104,6 +104,15 @@ trait MissionTransformable
                 $mission[config('constants.SKILL')] = $returnData[config('constants.SKILL')];
             }
         }
+
+        if (!empty($mission['organisation_detail']) && (isset($mission['organisation_detail']))) {
+            if ($mission['organisation_detail']) {
+                $arrayKey = array_search($languageCode, array_column($mission['organisation_detail'], 'lang'));
+                if ($arrayKey  !== '') {
+                    $mission['organisation_detail'] = $mission['organisation_detail'][$arrayKey]['detail'];
+                }
+            }
+        }
         unset($mission['missionSkill']);
         return $mission;
     }
