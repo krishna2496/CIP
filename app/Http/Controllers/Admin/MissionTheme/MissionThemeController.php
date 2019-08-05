@@ -80,7 +80,8 @@ class MissionThemeController extends Controller
             $validator = Validator::make(
                 $request->all(),
                 [
-                    "theme_name" => "required|unique:mission_theme,theme_name,NULL,mission_theme_id,deleted_at,NULL",
+                    "theme_name" => "required|max:255|
+                    unique:mission_theme,theme_name,NULL,mission_theme_id,deleted_at,NULL",
                     "translations" => "required"
                 ]
             );

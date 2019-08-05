@@ -62,7 +62,7 @@ class Mission extends Model
      */
     protected $visible = ['mission_id', 'theme_id', 'city_id',
     'country_id', 'start_date', 'end_date', 'total_seats', 'available_seats',
-    'publication_status', 'organisation_id', 'organisation_name', 'mission_type',
+    'publication_status', 'organisation_id', 'organisation_name', 'organisation_detail', 'mission_type',
     'missionDocument', 'missionMedia', 'missionLanguage', 'missionTheme', 'city',
     'default_media_type','default_media_path','title','short_description',
     'description','objective','set_view_detail','city_name',
@@ -326,5 +326,15 @@ class Mission extends Model
         if (!is_null($value) && !empty($value)) {
             $this->attributes['organisation_detail'] = serialize($value);
         }
+    }
+
+    /**
+     * Get organisation detail in unserialize form
+     *
+     * @return null|array
+     */
+    public function getOrganisationDetailAttribute($value): ?array
+    {
+		return (!is_null($value) && ($value != '')) ? unserialize($value) : null;
     }
 }

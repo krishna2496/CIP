@@ -99,7 +99,7 @@ class MissionApplicationController extends Controller
                 );
             }
 
-            $applicationDeadline = $this->missionRepository->checkMissionDeadline($request->mission_id);
+            $applicationDeadline = $this->missionRepository->checkMissionApplicationDeadline($request->mission_id);
             if (!$applicationDeadline) {
                 return $this->responseHelper->error(
                     Response::HTTP_UNPROCESSABLE_ENTITY,

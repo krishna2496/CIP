@@ -71,7 +71,7 @@ $factory->define(App\Models\Mission::class, function (Faker\Generator $faker) {
         "publication_status" => config("constants.publication_status.APPROVED"),
         "organisation_id" => 1,
         "organisation_name" => str_random(10),
-        "organisation_detail" => str_random(50),
+        "organisation_detail" => '',
         "availability_id" => 1
     ];
 });
