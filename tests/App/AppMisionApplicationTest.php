@@ -107,7 +107,7 @@ class AppMisionApplicationTest extends TestCase
             "organisation" => [
                 "organisation_id" => 1,
                 "organisation_name" => str_random(10),
-                "organisation_detail" => str_random(50)
+                "organisation_detail" => ''
             ],
             "location" => [
                 "city_id" => 1,
@@ -187,7 +187,7 @@ class AppMisionApplicationTest extends TestCase
             "organisation" => [
                 "organisation_id" => 1,
                 "organisation_name" => str_random(10),
-                "organisation_detail" => str_random(50)
+                "organisation_detail" => ''
             ],
             "location" => [
                 "city_id" => 1,
@@ -269,7 +269,7 @@ class AppMisionApplicationTest extends TestCase
             "organisation" => [
                 "organisation_id" => 1,
                 "organisation_name" => str_random(10),
-                "organisation_detail" => str_random(50)
+                "organisation_detail" => ''
             ],
             "location" => [
                 "city_id" => 1,
