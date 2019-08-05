@@ -286,11 +286,26 @@ class Helpers
             'iss' => "lumen-jwt", // Issuer of the token
             'sub' => $userId, // Subject of the token
             'iat' => time(), // Time when JWT was issued.
-            'exp' => time() + 60 * 60, // Expiration time
+            'exp' => time() + 60 * 60 * 4, // Expiration time
             'fqdn' => env('DEFAULT_TENANT')
         ];
         // As you can see we are passing `JWT_SECRET` as the second parameter that will
         // be used to decode the token in the future.
         return JWT::encode($payload, env('JWT_SECRET'));
+    }
+
+    /**
+     * Get tenant default profile image for user
+     * 
+     * @param \Illuminate\Http\Request $request
+     * @return string
+     */
+    public function getDefaultProfileImage(Request $request): string
+    {
+        $tenantName = $this->getSubDomainFromRequest($request);
+
+        return 'https://s3.'.config('constants.AWS_REGION').'.amazonaws.com/'.
+        config('constants.AWS_S3_BUCKET_NAME').'/'.$tenantName.'/'.config('constants.AWS_S3_ASSETS_FOLDER_NAME').
+        '/'.config('constants.AWS_S3_IMAGES_FOLDER_NAME').'/'.config('constants.AWS_S3_DEFAULT_PROFILE_IMAGE');
     }
 }

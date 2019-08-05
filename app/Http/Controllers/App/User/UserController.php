@@ -13,6 +13,7 @@ use InvalidArgumentException;
 use App\Transformations\UserTransformable;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Helpers\LanguageHelper;
+use App\Helpers\Helpers;
 
 class UserController extends Controller
 {
@@ -31,6 +32,11 @@ class UserController extends Controller
      * @var App\Helpers\LanguageHelper
      */
     private $languageHelper;
+    
+    /**
+     * @var App\Helpers\Helpers
+     */
+    private $helpers;
 
     /**
      * Create a new controller instance.
@@ -38,16 +44,19 @@ class UserController extends Controller
      * @param App\Repositories\User\UserRepository $userRepository
      * @param Illuminate\Http\ResponseHelper $responseHelper
      * @param App\Helpers\LanguageHelper
+     * @param App\Helpers\Helpers $helpers
      * @return void
      */
     public function __construct(
         UserRepository $userRepository,
         ResponseHelper $responseHelper,
-        LanguageHelper $languageHelper
+        LanguageHelper $languageHelper,
+        Helpers $helpers
     ) {
         $this->userRepository = $userRepository;
         $this->responseHelper = $responseHelper;
         $this->languageHelper = $languageHelper;
+        $this->helpers = $helpers;
     }
     
     /**
@@ -64,8 +73,11 @@ class UserController extends Controller
                 $userList = $this->userRepository->searchUsers($request->input('search'), $request->auth->user_id);
             }
 
-            $users = $userList->map(function (User $user) {
-                return $this->transformUser($user);
+            $users = $userList->map(function (User $user) use($request){
+                $user = $this->transformUser($user);
+                $user->avatar = isset($user->avatar) ? $user->avatar :
+            $this->helpers->getDefaultProfileImage($request);
+                return $user;
             })->all();
 
             // Set response data

@@ -25,11 +25,6 @@ class AppMailer extends Mailable
     {
         $this->params = $params;
         
-        $this->params['data']['logo'] = 'https://'.env("AWS_S3_BUCKET_NAME").'.s3.'
-        .env("AWS_REGION").'.amazonaws.com/'.$this->params['tenant_name'].'/'
-        .config('constants.AWS_S3_ASSETS_FOLDER_NAME').'/'.config('constants.AWS_S3_IMAGES_FOLDER_NAME').'/'
-        .config('constants.AWS_S3_LOGO_IMAGE_NAME');
-
         $this->data = isset($this->params['data']) ? $this->params['data'] : '';
         $this->subject = isset($this->params['subject']) ? $this->params['subject'] : '';
         

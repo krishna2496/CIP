@@ -98,7 +98,6 @@ class MissionController extends Controller
                 "media_images.*.media_type" => ["required", Rule::in(config('constants.image_types'))],
                 "media_images.*.media_path" => "required",
                 "media_videos.*.media_name" => "required",
-                "media_videos.*.media_type" => "required",
                 "media_videos.*.media_path" => "required",
                 "documents.*.document_name" => "required",
                 "documents.*.document_type" => ["required", Rule::in(config('constants.document_types'))],

@@ -255,7 +255,7 @@ class MissionController extends Controller
     public function filters(Request $request): JsonResponse
     {
         try {
-            $returnData = [];
+            $returnData = $apiData = [];
             $language = ($request->hasHeader('X-localization')) ?
             $request->header('X-localization') : env('TENANT_DEFAULT_LANGUAGE_CODE');
             // Get Data by country

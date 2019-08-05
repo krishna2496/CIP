@@ -26,6 +26,9 @@ return [
     'AWS_CUSTOM_STYLE_VARIABLE_FILE_NAME' => '_variables.scss',
     'TIMEZONE' => 'UTC',
     'MISSION_COMMENT_LIMIT' => 20,
+    'AWS_S3_DEFAULT_PROFILE_IMAGE' => 'user.png',
+    'AWS_REGION' => 'eu-central-1',
+    'AWS_S3_BUCKET_NAME' => 'optimy-dev-tatvasoft',
     
     /*
      * User custom field types

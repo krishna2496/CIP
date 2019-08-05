@@ -24,6 +24,7 @@ use App\Traits\RestExceptionHandlerTrait;
 use InvalidArgumentException;
 use PDOException;
 use App\Helpers\LanguageHelper;
+use App\Exceptions\TenantDomainNotFoundException;
 
 class AuthController extends Controller
 {
@@ -133,7 +134,8 @@ class AuthController extends Controller
             $data['user_id'] = isset($userDetail->user_id) ? $userDetail->user_id : '';
             $data['first_name'] = isset($userDetail->first_name) ? $userDetail->first_name : '';
             $data['last_name'] = isset($userDetail->last_name) ? $userDetail->last_name : '';
-            $data['avatar'] = isset($userDetail->avatar) ? $userDetail->avatar :'';
+            $data['avatar'] = isset($userDetail->avatar) ? $userDetail->avatar :
+            $this->helpers->getDefaultProfileImage($request);
             
             $apiData = $data;
             $apiStatus = Response::HTTP_OK;
@@ -141,6 +143,8 @@ class AuthController extends Controller
             return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
         } catch (\Exception $e) {
             return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
+        } catch (TenantDomainNotFoundException $e) {
+            throw $e;
         }
     }
     
