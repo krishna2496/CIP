@@ -32,7 +32,7 @@ class MissionTest extends TestCase
                     "organisation" => [
                         "organisation_id" => 1,
                         "organisation_name" => str_random(10),
-                        "organisation_detail" => str_random(50)
+                        "organisation_detail" => ''
                     ],
                     "location" => [
                         "city_id" => 1,
@@ -126,7 +126,7 @@ class MissionTest extends TestCase
                     "organisation" => [
                         "organisation_id" => 1,
                         "organisation_name" => str_random(10),
-                        "organisation_detail" => str_random(50)
+                        "organisation_detail" => ''
                     ],
                     "start_date" => "2019-05-15 10:40:00",
                     "end_date" => "2019-10-15 10:40:00",
@@ -295,7 +295,7 @@ class MissionTest extends TestCase
                     "organisation" => [
                         "organisation_id" => 1,
                         "organisation_name" => str_random(10),
-                        "organisation_detail" => str_random(50)
+                        "organisation_detail" => ''
                     ],
                     "location" => [
                         "city_id" => 1,
