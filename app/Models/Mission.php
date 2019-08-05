@@ -267,12 +267,12 @@ class Mission extends Model
      *
      * @return string
      */
-    public function getStartDateAttribute()
+    public function getStartDateAttribute(): ?string
     {
-        if (isset($this->attributes['start_date']) && !empty(config('constants.TIMEZONE'))) {
-            return Carbon::parse($this->attributes['start_date'])->setTimezone(config('constants.TIMEZONE'))
-            ->format(config('constants.DB_DATE_FORMAT'));
-        }
+		return (isset($this->attributes['start_date']) && !empty(config('constants.TIMEZONE'))) ? 
+		Carbon::parse($this->attributes['start_date'])->setTimezone(config('constants.TIMEZONE'))
+            ->format(config('constants.DB_DATE_FORMAT')):
+			null;
     }
     
     /**
@@ -294,10 +294,10 @@ class Mission extends Model
      */
     public function getEndDateAttribute(): ?string
     {
-        if (isset($this->attributes['end_date']) && !empty(config('constants.TIMEZONE'))) {
-            return Carbon::parse($this->attributes['end_date'])->setTimezone(config('constants.TIMEZONE'))
-            ->format(config('constants.DB_DATE_FORMAT'));
-        }
+		return (isset($this->attributes['end_date']) && !empty(config('constants.TIMEZONE'))) ? 
+		     Carbon::parse($this->attributes['end_date'])->setTimezone(config('constants.TIMEZONE'))
+             ->format(config('constants.DB_DATE_FORMAT')):
+			 null;
     }
     
     /**
