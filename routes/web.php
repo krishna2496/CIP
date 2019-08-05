@@ -133,7 +133,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
         'middleware' => 'localization|tenant.connection|jwt.auth',
         'uses' => 'App\Mission\MissionCommentController@getComments']);
 
-    /* Store mission comments  */
+    /* Store mission comment */
     $router->post('/app/mission/comment', [
         'middleware' => 'localization|tenant.connection|jwt.auth',
         'uses' => 'App\Mission\MissionCommentController@store']);
