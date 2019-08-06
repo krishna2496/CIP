@@ -104,7 +104,7 @@ return [
     'attributes' => [
         'page_details.slug' => 'slug',
         'page_details.translations' => 'translations',
-        'page_details.translations.*.lang' => 'lang',
+        'page_details.translations.*.lang' => 'language code',
         'page_details.translations.*.title' => 'title',
         'page_details.translations.*.sections' => 'sections',
         'translations.*.values' => 'values',
@@ -121,6 +121,7 @@ return [
         'location.city' => 'city', 
         'location.country' => 'country',   
         'password_confirmation' => 'confirm password',         
+        'translations.*.lang' => 'language code',         
         ],
 
 ];

@@ -85,13 +85,14 @@ class UserController extends Controller
                 "last_name" => "required|max:16",
                 "email" => "required|email|unique:user,email,NULL,user_id,deleted_at,NULL",
                 "password" => "required|min:8",
-                "city_id" => "required",
-                "country_id" => "required",
+                "city_id" => "required|exists:city,city_id",
+                "country_id" => "required|exists:country,country_id",
                 "profile_text" => "required",
                 "employee_id" => "max:16",
                 "department" => "max:16",
                 "manager_name" => "max:16",
-                "linked_in_url" => "url"]
+                "linked_in_url" => "url",
+				"availability_id" => "exists:user_availability,availability_id"]
             );
 
             // If request parameter have any error
@@ -180,7 +181,10 @@ class UserController extends Controller
                 "employee_id" => "sometimes|required|max:16",
                 "department" => "sometimes|required|max:16",
                 "manager_name" => "sometimes|required|max:16",
-                "linked_in_url" => "sometimes|required|url"]
+                "linked_in_url" => "sometimes|required|url",
+				"availability_id" => "exists:user_availability,availability_id",
+				"city_id" => "exists:city,city_id",
+				"country_id" => "exists:country,country_id"]
             );
                         
             // If request parameter have any error
@@ -256,7 +260,7 @@ class UserController extends Controller
         try {
             $validator = Validator::make($request->toArray(), [
                 'skills' => 'required',
-                'skills.*.skill_id' => 'required',
+                'skills.*.skill_id' => 'required|exists:skill,skill_id,deleted_at,NULL',
             ]);
 
             // If request parameter have any error
@@ -305,7 +309,7 @@ class UserController extends Controller
             // Server side validataions
             $validator = Validator::make($request->toArray(), [
                 'skills' => 'required',
-                'skills.*.skill_id' => 'required',
+                'skills.*.skill_id' => 'required|exists:skill,skill_id',
             ]);
 
             // If request parameter have any error
