@@ -59,10 +59,10 @@ class MissionCommentController extends Controller
             trans('messages.success.MESSAGE_MISSION_COMMENT_LISTING') :
             trans('messages.success.MESSAGE_NO_MISSION_COMMENT_FOUND');
             return $this->responseHelper->successWithPagination($apiStatus, $apiMessage, $apiData);
-        } catch (PDOException $e) {
-            return $this->PDO(
-                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
-                trans('messages.custom_error_message.ERROR_DATABASE_OPERATIONAL')
+        } catch (InvalidArgumentException $e) {
+            return $this->invalidArgument(
+                config('constants.error_codes.ERROR_INVALID_ARGUMENT'),
+                trans('messages.custom_error_message.ERROR_INVALID_ARGUMENT')
             );
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
@@ -110,11 +110,6 @@ class MissionCommentController extends Controller
             $apiMessage =trans('messages.success.MESSAGE_COMMENT_ADDED');
             
             return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
-        } catch (PDOException $e) {
-            return $this->PDO(
-                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
-                trans('messages.custom_error_message.ERROR_DATABASE_OPERATIONAL')
-            );
         } catch (\Exception $e) {
             return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
