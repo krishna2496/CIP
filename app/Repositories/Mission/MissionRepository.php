@@ -1034,7 +1034,7 @@ class MissionRepository implements MissionInterface
     {
         $mission = $this->mission->findOrFail($missionId);
         if ($mission->mission_type == config('constants.mission_type.TIME')) {
-            $applicationDeadline = $this->timeMission->getDeadLine($missionId);
+            $applicationDeadline = $this->timeMission->getApplicationDeadLine($missionId);
             return (is_null($applicationDeadline) || $applicationDeadline > Carbon::now()) ? true : false;
         }
         return true;
