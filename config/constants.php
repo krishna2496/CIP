@@ -81,8 +81,6 @@ return [
      * Image types
      */
     'image_types' => [
-        'JPG' => 'jpg',
-        'JPEG' => 'jpeg',
         'PNG' => 'png'
     ],
 

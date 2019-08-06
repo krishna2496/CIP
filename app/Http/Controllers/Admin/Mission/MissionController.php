@@ -104,8 +104,8 @@ class MissionController extends Controller
                 "documents.*.document_path" => "required",
                 "start_date" => "sometimes|required_with:end_date",
                 "end_date" => "sometimes|after:start_date",
-                "total_seats" => "numeric",
-                "goal_objective" => "required_if:mission_type,GOAL",
+                "total_seats" => "integer|min:1",
+                "goal_objective" => "required_if:mission_type,GOAL|integer|min:1",
                 "availability_id" => "required"
             ]
         );
@@ -119,7 +119,7 @@ class MissionController extends Controller
                 $validator->errors()->first()
             );
         }
-
+        
         try {
             $mission = $this->missionRepository->store($request);
                        
@@ -196,7 +196,7 @@ class MissionController extends Controller
                 "mission_detail.*.lang" => "required_with:mission_detail",
                 "mission_detail.*.title" => "required_with:mission_detail",
                 "publication_status" => [Rule::in(config('constants.publication_status'))],
-                "goal_objective" => "required_if:mission_type,GOAL",
+                "goal_objective" => "required_if:mission_type,GOAL|integer|min:1",
                 "media_images.*.media_name" => "required_with:media_images",
                 "media_images.*.media_type" => ['required_with:media_images',
                  Rule::in(config('constants.image_types'))],
@@ -209,7 +209,7 @@ class MissionController extends Controller
                 "documents.*.document_path" => "required_with:documents",
                 "start_date" => "sometimes|required_with:end_date",
                 "end_date" => "sometimes|after:start_date",
-                "total_seats" => "numeric",
+                "total_seats" => "integer|min:1",
                 "availability_id" => "sometimes|required"
             ]
         );
