@@ -4,7 +4,13 @@
      		<ThePrimaryHeader v-if="isShownComponent"></ThePrimaryHeader>
     	</header>
       	<main>
-		
+			<social-sharing v-bind:url='"http://api.optimy.local/social-sharing/"+domainName+"/"+missionId+"/"+$store.state.imagePath.defaultLanguageId' inline-template>
+				<div>
+					<network network="facebook">
+						<i class="fa fa-facebook"></i> Facebook
+					</network>
+				</div>
+			</social-sharing>
 			<b-container>
 		  	<div class="slider-banner-block">
 					<b-row>
@@ -74,22 +80,22 @@
 							<div class="group-details">
 								<div class="top-strip">
                                         <span>
-                                        <!-- Mission type time -->
-                                        <template v-if="checkMissionTypeTime(missionDetail.mission_type)">
-                                        <template v-if="missionDetail.end_date !== null">
-                                            {{ langauageData.label.from }} 
-                                            {{missionDetail.start_date | formatDate }} 
-                                            {{ langauageData.label.until}}
-                                            {{ missionDetail.end_date | formatDate }} 
-                                        </template>
-                                        <template v-else>
-                                            {{ langauageData.label.on_going_opportunities }}  
-                                        </template>
-                                        </template>
-                                        <!-- Mission type goal -->
-                                        <template v-else>
-                                            {{missionDetail.objective}}
-                                        </template>
+	                                        <!-- Mission type time -->
+	                                        <template v-if="checkMissionTypeTime(missionDetail.mission_type)">
+	                                        <template v-if="missionDetail.end_date !== null">
+	                                            {{ langauageData.label.from }} 
+	                                            {{missionDetail.start_date | formatDate }} 
+	                                            {{ langauageData.label.until}}
+	                                            {{ missionDetail.end_date | formatDate }} 
+	                                        </template>
+	                                        <template v-else>
+	                                            {{ langauageData.label.on_going_opportunities }}  
+	                                        </template>
+	                                        </template>
+	                                        <!-- Mission type goal -->
+	                                        <template v-else>
+	                                            {{missionDetail.objective}}
+	                                        </template>
                                         </span>    
                                 </div>
 									<!-- {{missionDetail}} -->
@@ -294,6 +300,26 @@
 								<h3 v-b-toggle.mission>Mission</h3>
 							</div>
 								<b-collapse id="mission" visible accordion="my-accordion" role="tabpanel" class="tab-content">
+						
+									<div class="mission-tab-block row" v-if="!checkMissionTypeTime(missionDetail.mission_type)">
+										<div class="col-sm-4 mission-tab-col">
+											<div class="mission-tab-inner">
+												<p>{{missionDetail.goal_objective}}<span>Trees</span></p>
+											</div>
+										</div>
+										<div class="col-sm-4 mission-tab-col">
+											<div class="mission-tab-inner">
+												<p>{{missionDetail.achieved_goal}} <span>Planted</span></p>
+											</div>
+										</div>
+										<div class="col-sm-4 mission-tab-col">
+											<div class="mission-tab-inner">
+												<p>{{pendingGoal(missionDetail)}}<span>
+												{{langauageData.label.remaining}}
+												</span></p>
+											</div>
+										</div>	
+									</div>
 									<div v-if="missionDetail.description && missionDetail.description.length > 0">
 										<div v-for="section in missionDetail.description">
 											<h2>{{section.title}}</h2>
@@ -351,52 +377,7 @@
 									<h3 v-b-toggle.organization>{{ langauageData.label.organisation }}</h3>
 								</div>
 									<b-collapse id="organization" accordion="my-accordion" role="tabpanel" class="tab-content">
-										<b-media class="org-media">
-											<div class="img-wrap" slot="aside">
-												<img :src="orgLogo" alt="" />
-											</div>
-											<h3>CES Industrial Solutions Network</h3>
-											<p><i> <img src="../assets/images/user-icon1.svg" alt="" /></i>Melvin A. Sawyer, Managing Director</p>
-										</b-media>
-										<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco... <b-link class="more-link">See more</b-link></p>
-										<b-list-group class="contact-info-list">
-											<b-list-group-item>
-												<b-link>
-												<i class="left-icon">
-													<img src="../assets/images/location-black.svg" alt="" />
-												</i>
-												<p class="text-wrap">4456 Illinois Avenue <span>Oregon City, OR 97045</span></p>
-												</b-link>
-											</b-list-group-item>
-											<b-list-group-item>
-												<b-link>
-												<i class="left-icon">
-													<img src="../assets/images/phone-ic.svg" alt="" />
-												</i>
-												<p class="text-wrap">+1 503-742-7810</p>
-												</b-link>
-											</b-list-group-item>
-											<b-list-group-item>
-												<b-link>
-												<i class="left-icon">
-													<img src="../assets/images/mailbox-ic.svg" alt="" />
-												</i>
-												<p class="text-wrap">melvinasawyer@yahoo.com</p>
-												</b-link>
-											</b-list-group-item>
-											<b-list-group-item>
-												<b-link>
-												<i class="left-icon">
-													<img src="../assets/images/earth-ic.svg" alt="" />
-												</i>
-												<p class="text-wrap">www.cesnetworksolution.com</p>
-												</b-link>
-											</b-list-group-item>
-										</b-list-group>
-										<h2>About Organization</h2>
-										<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-										</p>
-										<p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+										<div v-html="missionDetail.organisation_detail"></div>
 									</b-collapse>
 							</div>
 							
@@ -504,23 +485,23 @@
                 <div class="autocomplete-control">
                     <div class="autosuggest-container">
                         <VueAutosuggest 
-                        ref="autosuggest"
-                        name="user"
-                        v-model="query"
-                        :suggestions="filteredOptions"
-                        @input="onInputChange"
-                        @selected="onSelected"
-                        :get-suggestion-value="getSuggestionValue"
-                        :input-props="{
-                        id:'autosuggest__input', 
-                        placeholder:autoSuggestPlaceholder,
-                        }" >
-                        <div slot-scope="{suggestion}">
-                        <img :src="suggestion.item.avatar" />
-                        <div>
-                        {{suggestion.item.first_name}}  {{suggestion.item.last_name}}
-                        </div>
-                        </div>
+	                        ref="autosuggest"
+	                        name="user"
+	                        v-model="query"
+	                        :suggestions="filteredOptions"
+	                        @input="onInputChange"
+	                        @selected="onSelected"
+	                        :get-suggestion-value="getSuggestionValue"
+	                        :input-props="{
+	                        id:'autosuggest__input', 
+	                        placeholder:autoSuggestPlaceholder,
+	                        }" >
+	                        <div slot-scope="{suggestion}">
+		                        <img :src="suggestion.item.avatar" />
+		                        <div>
+		                        	{{suggestion.item.first_name}}  {{suggestion.item.last_name}}
+		                        </div>
+	                        </div>
                         </VueAutosuggest>
                     </div>
                 </div>
@@ -549,6 +530,8 @@ import {favoriteMission,inviteColleague ,applyMission,searchUser,storeMissionRat
 import SimpleBar from 'simplebar';
 import store from "../store";
 import moment from 'moment';
+import SocialSharing from 'vue-social-sharing';
+ 
 
 export default {
   components: {
@@ -562,6 +545,7 @@ export default {
 	SimpleBar,
 	RecentVolunteers: () => import("../components/RecentVolunteers"),
 	MissionCarousel: () => import("../components/MissionCarousel"),
+	SocialSharing
   },
   	data() {
 	    return {
@@ -607,6 +591,7 @@ export default {
 			isShareComponentShown : false,
 			langauageData : [],
 			applyButton :'',
+			domainName: ''
 	    };
   	},
 	mounted(){
@@ -800,13 +785,17 @@ export default {
             })
         },
 
+        pendingGoal(missionDetail) {
+        	return missionDetail.goal_objective - missionDetail.achieved_goal;
+        },
+
 		getMissionDetail() {
 			if(this.$route.params.misisonId) {
 				missionDetail(this.$route.params.misisonId).then(response => {
 					this.isShownMediaComponent = true;
 	                if (response.error == false) {
 	                	if(response.data[0]) {
-	                		 this.missionDetail = response.data[0];
+	                		this.missionDetail = response.data[0];
 							if(response.data[0].is_favourite == 1) {
 								this.missionAddedToFavoriteByUser = true;
 							}
@@ -822,6 +811,8 @@ export default {
 								}
 							
 							this.missionDocument = response.data[0].mission_document
+	                	} else {
+            				this.$router.push('/');
 	                	}
 	                  
 	                }else {
@@ -875,6 +866,13 @@ export default {
         }
    },
 	created(){
+		
+		var currentUrl = (((window.location.origin).split('.')));
+
+		if (currentUrl[0]) {
+			this.domainName = ((currentUrl[0]).split('//'));
+		}
+
 		this.sharingUrl = document.URL
 		var _this= this;		
 		// Get mission detail

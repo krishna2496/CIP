@@ -174,8 +174,11 @@
                                             </div>
                                         </template>
 
-                                        <template v-if="mission.application_deadline != null">
-                                            <div class="detail-column info-block">
+                                        <template v-if="mission.application_deadline != null ||
+                                        checkMissionTypeTime(mission.mission_type)
+                                        ">
+                                            <div class="detail-column info-block" 
+                                            v-if="mission.application_deadline != null">
                                                 <i class="icon-wrap">
                                                     <img :src="$store.state.imagePath+'/assets/images/clock.svg'" alt="user">
                                                 </i>

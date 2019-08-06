@@ -53,6 +53,7 @@ export default {
             selectedData['selectedId']  = e.target.dataset.id;
             this.$emit("updateCall", selectedData);
         },
+        
         handleClick(e) {
           e.stopPropagation();
           setTimeout(function() {
@@ -117,8 +118,7 @@ export default {
     beforeDestroy() {
         document.removeEventListener("click", this.onClick);
     },
-    created() {
-         
+    created() { 
         this.langauageData = JSON.parse(store.state.languageLabel);
     }
 };

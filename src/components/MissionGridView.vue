@@ -1,7 +1,5 @@
 <template>
-
     <div class="cards-wrapper" v-if="items.length > 0">
-
         <div class="card-grid">
             <b-row>
                 <b-col lg="4" sm="6" class="card-outer" data-aos="fade-up" 
