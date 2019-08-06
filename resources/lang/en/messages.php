@@ -15,7 +15,7 @@ return [
         'MESSAGE_FOOTER_PAGE_LISTING' => 'Footer pages listed successfully.',
         'MESSAGE_USER_UPDATED' => 'User updated successfully',
         'MESSAGE_NO_RECORD_FOUND' => 'No records found',
-        'MESSAGE_USER_LISTING' => 'User list successfully',
+        'MESSAGE_USER_LISTING' => 'User listed successfully',
         'MESSAGE_USER_SKILLS_CREATED' => 'User skills linked successfully',
         'MESSAGE_USER_SKILLS_DELETED' => 'User skills unlinked successfully',
         'MESSAGE_SLIDER_ADD_SUCCESS' => 'Slider image added successfully',
@@ -72,7 +72,11 @@ return [
         'MESSAGE_NO_MISSION_MEDIA_FOUND' => 'Mission media not found',
         'MESSAGE_NO_MISSION_COMMENT_FOUND' => 'Mission comments not found',  
         'MESSAGE_COMMENT_ADDED' => 'Mission comment added successfully',
-    ],
+        'MESSAGE_POLICY_PAGE_LISTING' => 'Policy pages listed successfully.',        
+        'MESSAGE_POLICY_PAGE_CREATED' => 'Policy page created successfully',        
+        'MESSAGE_POLICY_PAGE_DELETED' => 'Page deleted successfully',
+        'MESSAGE_POLICY_PAGE_UPDATED' => 'Policy page updated sucessfully'
+		],
 
         
     /**
@@ -100,6 +104,7 @@ return [
         'ERROR_DATABASE_OPERATIONAL' => 'Database operational error',
         'ERROR_NO_DATA_FOUND' => 'No data found',        
         'ERROR_NO_DATA_FOUND_FOR_SLUG' => 'No data found for slug',
+        'ERROR_POLICY_PAGE_NOT_FOUND' => 'Policy page not found in the system',
 
         // Custom error code for Mission Module - 400000 - 409999
         'ERROR_INVALID_MISSION_APPLICATION_DATA' => 'Invalid application data or missing parameter',

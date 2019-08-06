@@ -15,12 +15,35 @@
             <meta property="og:description" content="{{$mission->missionLanguage->first()->short_description}}" />
         @endif
         <meta property="og:image" content="{{$mission->missionMedia->first()->media_image}}" />
-        <meta http-equiv="refresh" content="5;url=http://{{$fqdn}}{{config('constants.FRONT_URL')}}{{$mission->mission_id}}">    
+
+        @if(env('APP_ENV')=='local')
+            <meta http-equiv="refresh" content="5;url=http://{{config('constants.DEFAULT_TENANT_NAME')}}{{config('constants.FRONT_MISSION_DETAIL_URL')}}/{{$mission->mission_id}}"> 
+        @else
+            <meta http-equiv="refresh" content="5;url=http://{{$fqdn}}{{config('constants.FRONT_MISSION_DETAIL_URL')}}/{{$mission->mission_id}}"> 
+        @endif
     @else
-        <meta http-equiv="refresh" content="5;url=http://{{$fqdn}}{{config('constants.FRONT_HOME_URL')}}">
+        @if(env('APP_ENV')=='local')
+            <meta http-equiv="refresh" content="5;url=http://{{config('constants.DEFAULT_TENANT_NAME')}}{{config('constants.FRONT_HOME_URL')}}">
+        @else
+            <meta http-equiv="refresh" content="5;url=http://{{$fqdn}}{{config('constants.FRONT_HOME_URL')}}">
+        @endif
     @endif
 </head>
 <body>
-    
+    <div class="row">
+        <div class="text-center col-md-12">
+            <h3> Please wait after 5 seconds page will be redirect </h3>
+            <span>If not redirecting. Please click <a href="http://web8.anasource.com/team4/ciplatform/mission-detail/{{$mission->mission_id}}">here</a></span>
+        </div>
+    </div>
 </body>
+<style>
+    .row .col-md-12 {
+        float: left;
+        width: 100%;
+    }
+    .text-center {
+        text-align: center;
+    }
+</style>
 </html>

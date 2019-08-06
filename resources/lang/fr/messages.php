@@ -72,6 +72,10 @@ return [
         'MESSAGE_NO_MISSION_MEDIA_FOUND' => 'Média de mission introuvable',
         'MESSAGE_NO_MISSION_COMMENT_FOUND' => 'Commentaires de mission non trouvés',  
         'MESSAGE_COMMENT_ADDED' => 'Commentaire de mission ajouté avec succès',
+        'MESSAGE_POLICY_PAGE_LISTING' => 'Liste des pages de règles correctement.',        
+        'MESSAGE_POLICY_PAGE_CREATED' => 'Page de stratégie créée avec succès',        
+        'MESSAGE_POLICY_PAGE_DELETED' => 'Page supprimée avec succès',
+        'MESSAGE_POLICY_PAGE_UPDATED' => 'La page de politique a été mise à jour avec succès',
     ],
 
         
@@ -98,7 +102,8 @@ return [
         'ERROR_FOOTER_PAGE_NOT_FOUND' => 'Page de pied de page introuvable dans le système',
         'ERROR_DATABASE_OPERATIONAL' => 'Erreur opérationnelle de la base de données',
         'ERROR_NO_DATA_FOUND' => 'Aucune donnée disponible',
-        'ERROR_NO_DATA_FOUND_FOR_SLUG' => 'Aucune donnée trouvée pour slug',
+        'ERROR_NO_DATA_FOUND_FOR_SLUG' => 'Aucune donnée trouvée pour slug',        
+        'ERROR_POLICY_PAGE_NOT_FOUND' => 'Page de stratégie introuvable dans le système',
 
         // Custom error code for Mission Module - 400000 - 409999
         'ERROR_INVALID_MISSION_APPLICATION_DATA' => 'Données d\'application non valides ou paramètre manquant',

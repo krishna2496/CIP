@@ -1,28 +1,28 @@
 <?php
-namespace App\Repositories\FooterPage;
+namespace App\Repositories\PolicyPage;
 
-use App\Repositories\FooterPage\FooterPageInterface;
+use App\Repositories\PolicyPage\PolicyPageInterface;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use App\Models\FooterPage;
-use App\Models\FooterPagesLanguage;
+use App\Models\PolicyPage;
+use App\Models\PolicyPagesLanguage;
 use App\Helpers\Helpers;
 use App\Helpers\LanguageHelper;
 use DB;
 use Illuminate\Support\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 
-class FooterPageRepository implements FooterPageInterface
+class PolicyPageRepository implements PolicyPageInterface
 {
     /**
-     * @var App\Models\FooterPage
+     * @var App\Models\PolicyPage
      */
     private $page;
     
     /**
-     * @var App\Models\FooterPagesLanguage
+     * @var App\Models\PolicyPagesLanguage
      */
-    private $footerPageLanguage;
+    private $policyPageLanguage;
 
     /**
      * @var App\Helpers\LanguageHelper
@@ -32,18 +32,18 @@ class FooterPageRepository implements FooterPageInterface
     /**
      * Create a new repository instance.
      *
-     * @param App\Models\FooterPage $page
-     * @param App\Models\FooterPagesLanguage $footerPageLanguage
+     * @param App\Models\PolicyPage $page
+     * @param App\Models\PolicyPagesLanguage $policyPageLanguage
      * @param App\Helpers\LanguageHelper $languageHelper
      * @return void
      */
     public function __construct(
-        FooterPage $page,
-        FooterPagesLanguage $footerPageLanguage,
+        PolicyPage $page,
+        PolicyPagesLanguage $policyPageLanguage,
         LanguageHelper $languageHelper
     ) {
         $this->page = $page;
-        $this->footerPageLanguage = $footerPageLanguage;
+        $this->policyPageLanguage = $policyPageLanguage;
         $this->languageHelper = $languageHelper;
     }
     
@@ -51,43 +51,43 @@ class FooterPageRepository implements FooterPageInterface
      * Store a newly created resource in storage
      *
      * @param \Illuminate\Http\Request $request
-     * @return App\Models\FooterPage
+     * @return App\Models\PolicyPage
      */
-    public function store(Request $request): FooterPage
+    public function store(Request $request): PolicyPage
     {
         $postData = $request->page_details;
         // Set data for create new record
         $page = array();
         $page['status'] = config('constants.ACTIVE');
         $page['slug'] = $postData['slug'];
-        // Create new cms page
-        $footerPage = $this->page->create($page);
+        // Create new policy page
+        $policyPage = $this->page->create($page);
         
         $languages = $this->languageHelper->getLanguages($request);
+        
         foreach ($postData['translations'] as $value) {
             // Get language_id from language code - It will fetch data from `ci_admin` database
             $language = $languages->where('code', $value['lang'])->first();
-            
-            $footerPageLanguageData = array('page_id' => $footerPage['page_id'],
+            $policyPageLanguageData = array('page_id' => $policyPage['page_id'],
                                       'language_id' => $language->language_id,
                                       'title' => $value['title'],
                                       'description' => $value['sections']);
                                       
-            $this->footerPageLanguage->create($footerPageLanguageData);
+            $this->policyPageLanguage->create($policyPageLanguageData);
             
-            unset($footerPageLanguageData);
+            unset($policyPageLanguageData);
         }
-        return $footerPage;
+        return $policyPage;
     }
     
     /**
     * Update the specified resource in storage.
     *
-    * @param  \Illuminate\Http\Request  $request
-    * @param  int  $id
-    * @return App\Models\FooterPage
+    * @param  \Illuminate\Http\Request $request
+    * @param  int $id
+    * @return App\Models\PolicyPage
     */
-    public function update(Request $request, int $id): FooterPage
+    public function update(Request $request, int $id): PolicyPage
     {
         $postData = $request->page_details;
         
@@ -100,9 +100,9 @@ class FooterPageRepository implements FooterPageInterface
             $page['slug'] = $postData['slug'];
         }
         
-        // Update footer page
-        $footerPage = $this->page->findOrFail($id);
-        $footerPage->update($page);
+        // Update policy page
+        $policyPage = $this->page->findOrFail($id);
+        $policyPage->update($page);
         
         $languages = $this->languageHelper->getLanguages($request);
                  
@@ -111,26 +111,26 @@ class FooterPageRepository implements FooterPageInterface
                 $language = $languages->where('code', $value['lang'])->first();
                 $pageLanguageData = [
                     'title' => $value['title'],
-                    'description' => serialize($value['sections']),
-                    'page_id' => $footerPage['page_id'],
+                    'description' => $value['sections'],
+                    'page_id' => $policyPage['page_id'],
                     'language_id' => $language->language_id
                 ];
 
-                $this->footerPageLanguage->createOrUpdateFooterPagesLanguage(['page_id' => $id,
+                $this->policyPageLanguage->createOrUpdatePolicyPagesLanguage(['page_id' => $id,
                  'language_id' => $language->language_id], $pageLanguageData);
                 unset($pageLanguageData);
             }
         }
-        return $footerPage;
+        return $policyPage;
     }
     
     /**
-    * Display a listing of footer pages.
+    * Display a listing of policy pages.
     *
     * @param Illuminate\Http\Request $request
     * @return Illuminate\Pagination\LengthAwarePaginator
     */
-    public function footerPageList(Request $request): LengthAwarePaginator
+    public function getPolicyPageList(Request $request): LengthAwarePaginator
     {
         $pageQuery = $this->page->with('pageTranslations');
         
@@ -152,9 +152,9 @@ class FooterPageRepository implements FooterPageInterface
      * Find the specified resource from database
      *
      * @param int $id
-     * @return App\Models\FooterPage
+     * @return App\Models\PolicyPage
      */
-    public function find(int $id): FooterPage
+    public function find(int $id): PolicyPage
     {
         return $this->page->with('pages')->findOrFail($id);
     }
@@ -162,12 +162,12 @@ class FooterPageRepository implements FooterPageInterface
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  int $id
      * @return bool
      */
     public function delete(int $id): bool
     {
-        return $this->page->deleteFooterPage($id);
+        return $this->page->deletePolicyPage($id);
     }
 
     /**
@@ -193,9 +193,9 @@ class FooterPageRepository implements FooterPageInterface
     /**
     * Get a listing of resource.
     *
-    * @return App\Models\FooterPage
+    * @return App\Models\PolicyPage
     */
-    public function getPageDetail($slug): FooterPage
+    public function getPageDetail($slug): PolicyPage
     {
         return $this->page->with(['pages:page_id,language_id,title,description as sections'])
         ->whereSlug($slug)->firstorfail();

@@ -94,3 +94,9 @@ $factory->define(App\Models\MissionApplication::class, function (Faker\Generator
         'motivation' => str_random(10)
     ];
 });
+
+$factory->define(App\Models\PolicyPage::class, function (Faker\Generator $faker) {
+    return [
+        'slug' => str_random(20)
+    ];
+});

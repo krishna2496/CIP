@@ -29,8 +29,9 @@ return [
     'AWS_S3_DEFAULT_PROFILE_IMAGE' => 'user.png',
     'AWS_REGION' => 'eu-central-1',
     'AWS_S3_BUCKET_NAME' => 'optimy-dev-tatvasoft',
-    'FRONT_URL' => '.optimy.com/team4/ciplatform/mission-detail/',
-    'FRONT_HOME_URL' => '.optimy.com/team4/ciplatform/',
+    'FRONT_MISSION_DETAIL_URL' => '.anasource.com/team4/ciplatform/mission-detail/',
+    'FRONT_HOME_URL' => '.anasource.com/team4/ciplatform/',
+    'DEFAULT_TENANT_NAME' => 'tatva',
     /*
      * User custom field types
      */
@@ -224,8 +225,10 @@ return [
         'ERROR_IMAGE_UPLOAD_INVALID_DATA' => '800017',
         'ERROR_TENANT_OPTION_REQUIRED_FIELDS_EMPTY' => '800018',
         'ERROR_TENANT_OPTION_NOT_FOUND' => '800019',
-        'ERROR_FAILED_TO_RESET_ASSET_IMAGE' => '800020'
+        'ERROR_FAILED_TO_RESET_ASSET_IMAGE' => '800020',
         
+        'ERROR_POLICY_PAGE_NOT_FOUND' => '300010',
+        'ERROR_POLICY_PAGE_REQUIRED_FIELDS_EMPTY' => '300011'
     ]
     
 ];
