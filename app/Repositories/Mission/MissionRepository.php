@@ -1040,7 +1040,7 @@ class MissionRepository implements MissionInterface
                     $q->where('language_id', $langId);
                 },
                 'missionMedia' => function ($q) {
-                    $q->where('default', 1);
+                    $q->where('default', '1');
                 }
             ]
         )

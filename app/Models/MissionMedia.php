@@ -36,7 +36,7 @@ class MissionMedia extends Model
      *
      * @var array
      */
-    protected $visible = ['mission_media_id', 'media_type', 'media_name', 'media_path', 'default', 'video_thumbnail'];
+    protected $visible = ['mission_media_id', 'media_type', 'media_name', 'media_path', 'default', 'media_image'];
     
     protected $appends = ['video_thumbnail'];
 
@@ -67,13 +67,17 @@ class MissionMedia extends Model
      *
      * @return string|null
      */
-    public function getVideoThumbnailAttribute(): ?string
+    public function getMediaImageAttribute(): ?string
     {
+        
         if ($this->attributes['media_type'] == 'mp4') {
             preg_match('/^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/', $this->attributes['media_path'], $matches);            
             if (count($matches)) {
                 return "https://img.youtube.com/vi/".$matches[2]."/mqdefault.jpg";
             }
+        }
+        if ($this->attributes['media_type'] !== 'mp4' && !is_null($this->attributes['media_type'])) {
+            return $this->attributes['media_path'];
         }
         return null;
     }
