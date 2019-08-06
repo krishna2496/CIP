@@ -990,22 +990,6 @@ class MissionRepository implements MissionInterface
         return $missionData->missionMedia()->orderBy('default', 'DESC')
         ->take(config("constants.MISSION_MEDIA_LIMIT"))->get();
     }
-
-    /**
-     * Get mission comments.
-     *
-     * @param int $missionId
-     * @return Illuminate\Database\Eloquent\Collection
-     */
-    public function getComments(int $missionId): Collection
-    {
-        $mission = $this->mission->findOrFail($missionId);
-        $commentQuery = $mission->comment()
-        ->where('approval_status', config("constants.comment_approval_status.PUBLISHED"))
-        ->orderBy('comment_id', 'desc')
-        ->with(['user:user_id,first_name,last_name,avatar']);
-        return $commentQuery->take(config("constants.MISSION_COMMENT_LIMIT"))->get();
-    }
         
     /**
      * Check seats are available or not.
