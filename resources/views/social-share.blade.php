@@ -17,23 +17,42 @@
         <meta property="og:image" content="{{$mission->missionMedia->first()->media_image}}" />
 
         @if(env('APP_ENV')=='local')
-            <meta http-equiv="refresh" content="5;url=http://{{config('constants.DEFAULT_FQDN_FOR_FRONT')}}{{config('constants.FRONT_MISSION_DETAIL_URL')}}{{$mission->mission_id}}"> 
+            <script>
+                setTimeout(function(){
+                    window.location="http://{{config('constants.DEFAULT_FQDN_FOR_FRONT')}}{{config('constants.FRONT_MISSION_DETAIL_URL')}}{{$mission->mission_id}}";
+                },5000);
+            </script>
         @else
-            <meta http-equiv="refresh" content="5;url=http://{{$fqdn}}{{config('constants.FRONT_MISSION_DETAIL_URL')}}/{{$mission->mission_id}}"> 
+            <script>
+                setTimeout(function(){
+                    window.location="http://{{$fqdn}}{{config('constants.FRONT_MISSION_DETAIL_URL')}}/{{$mission->mission_id}}";
+                },5000);
+            </script>
         @endif
     @else
-        @if(env('APP_ENV')=='local')
-            <meta http-equiv="refresh" content="5;url=http://{{config('constants.DEFAULT_FQDN_FOR_FRONT')}}{{config('constants.FRONT_HOME_URL')}}">
-        @else
-            <meta http-equiv="refresh" content="5;url=http://{{$fqdn}}{{config('constants.FRONT_HOME_URL')}}">
+        @if(env('APP_ENV')=='local')            
+            <script>
+                setTimeout(function(){
+                    window.location="http://{{config('constants.DEFAULT_FQDN_FOR_FRONT')}}{{config('constants.FRONT_HOME_URL')}}";
+                },5000);
+            </script>
+        @else            
+            <script>
+                setTimeout(function(){
+                    window.location="http://{{$fqdn}}{{config('constants.FRONT_HOME_URL')}}";
+                },5000);
+            </script>
         @endif
     @endif
+
+    
+
 </head>
 <body>
     <div class="row">
         <div class="text-center col-md-12">
             <h3> Please wait after 5 seconds page will be redirect </h3>
-            <span>If not redirecting. Please click <a href="http://web8.anasource.com/team4/ciplatform/mission-detail/{{$mission->mission_id}}">here</a></span>
+            <span>If not redirecting. Please click <a href="http://{{config('constants.DEFAULT_FQDN_FOR_FRONT')}}{{config('constants.FRONT_MISSION_DETAIL_URL')}}{{$mission->mission_id}}}">here</a></span>
         </div>
     </div>
 </body>
