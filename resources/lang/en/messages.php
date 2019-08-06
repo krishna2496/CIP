@@ -71,6 +71,10 @@ return [
         'MESSAGE_NO_RELATED_MISSION_FOUND' => 'Related mission not found',
         'MESSAGE_NO_MISSION_MEDIA_FOUND' => 'Mission media not found',
         'MESSAGE_NO_MISSION_COMMENT_FOUND' => 'Mission comments not found',  
+        'MESSAGE_POLICY_PAGE_LISTING' => 'Policy pages listing successfully.',        
+        'MESSAGE_POLICY_PAGE_CREATED' => 'Policy page created successfully',        
+        'MESSAGE_POLICY_PAGE_DELETED' => 'Page deleted successfully',
+        'MESSAGE_POLICY_PAGE_UPDATED' => 'Policy page updated sucessfully',
     ],
 
         
@@ -99,6 +103,7 @@ return [
         'ERROR_DATABASE_OPERATIONAL' => 'Database operational error',
         'ERROR_NO_DATA_FOUND' => 'No data found',        
         'ERROR_NO_DATA_FOUND_FOR_SLUG' => 'No data found for slug',
+        'ERROR_POLICY_PAGE_NOT_FOUND' => 'Policy page not found in the system',
 
         // Custom error code for Mission Module - 400000 - 409999
         'ERROR_INVALID_MISSION_APPLICATION_DATA' => 'Invalid application data or missing parameter',
