@@ -5,7 +5,17 @@ import TermsofUse from './views/Cms.vue'
 
 Vue.use(Router)
 
-let routes = [{
+let routes = [{ 
+    path: '*',
+    redirect: '/404'
+},
+{ 
+    path: '/404',
+    name: '404',
+    component:  () =>
+        import ('./views/404.vue')
+},
+{
     path: '/',
     name: 'login',
     component: () =>
