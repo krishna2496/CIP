@@ -65,7 +65,7 @@ class PolicyPagesLanguage extends Model
      * @param  string $value
      * @return array
      */
-    public function getDescriptionAttribute(string $value)
+    public function getDescriptionAttribute(string $value): array
     {
         return unserialize($value);
     }
@@ -76,7 +76,7 @@ class PolicyPagesLanguage extends Model
      * @param  string $value
      * @return array
      */
-    public function getSectionsAttribute(string $value)
+    public function getSectionsAttribute(string $value): array
     {
         return unserialize($value);
     }
