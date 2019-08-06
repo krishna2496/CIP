@@ -4,7 +4,7 @@
      		<ThePrimaryHeader v-if="isShownComponent"></ThePrimaryHeader>
     	</header>
       	<main>
-			<social-sharing v-bind:url='"http://api.optimy.local/social-sharing/"+domainName+"/"+missionId+"/"+$store.state.imagePath.defaultLanguageId' inline-template>
+			<social-sharing v-bind:url="facebookSharingUrl" inline-template>
 				<div>
 					<network network="facebook">
 						<i class="fa fa-facebook"></i> Facebook
@@ -591,7 +591,8 @@ export default {
 			isShareComponentShown : false,
 			langauageData : [],
 			applyButton :'',
-			domainName: ''
+			domainName: '',
+			facebookSharingUrl: ''
 	    };
   	},
 	mounted(){
@@ -614,6 +615,14 @@ export default {
 			}
 			tabsEvent.currentTarget.className += " active";
 		}
+
+		var currentUrl = (((window.location.origin).split('.')));
+
+		if (currentUrl[0]) {
+			this.domainName = ((currentUrl[0]).split('//'))[1];
+		}
+
+		this.facebookSharingUrl = process.env.VUE_APP_API_ENDPOINT+"team4/cip-api/social-sharing/"+this.domainName+"/"+this.missionId+"/"+store.state.defaultLanguageId;
 	},
     computed: {
    		filteredOptions() {
@@ -867,11 +876,7 @@ export default {
    },
 	created(){
 		
-		var currentUrl = (((window.location.origin).split('.')));
-
-		if (currentUrl[0]) {
-			this.domainName = ((currentUrl[0]).split('//'));
-		}
+		
 
 		this.sharingUrl = document.URL
 		var _this= this;		
