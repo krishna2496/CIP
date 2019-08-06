@@ -31,7 +31,7 @@ return [
     'AWS_S3_BUCKET_NAME' => 'optimy-dev-tatvasoft',
     'FRONT_MISSION_DETAIL_URL' => '.anasource.com/team4/ciplatform/mission-detail/',
     'FRONT_HOME_URL' => '.anasource.com/team4/ciplatform/',
-    'DEFAULT_TENANT_NAME' => 'tatva',
+    'DEFAULT_FQDN_FOR_FRONT' => 'web8',
     /*
      * User custom field types
      */
