@@ -29,8 +29,9 @@ return [
     'AWS_S3_DEFAULT_PROFILE_IMAGE' => 'user.png',
     'AWS_REGION' => 'eu-central-1',
     'AWS_S3_BUCKET_NAME' => 'optimy-dev-tatvasoft',
-    'FRONT_URL' => '.optimy.com/team4/ciplatform/mission-detail/',
-    'FRONT_HOME_URL' => '.optimy.com/team4/ciplatform/',
+    'FRONT_MISSION_DETAIL_URL' => '.anasource.com/team4/ciplatform/mission-detail/',
+    'FRONT_HOME_URL' => '.anasource.com/team4/ciplatform/',
+    'DEFAULT_TENANT_NAME' => 'tatva',
     /*
      * User custom field types
      */
