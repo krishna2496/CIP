@@ -84,8 +84,9 @@ class UserCustomFieldController extends Controller
                 ["name" => "required",
                 "type" => ['required',
                     Rule::in(config('constants.custom_field_types'))],
-                "is_mandatory" => "required",
+                "is_mandatory" => "required|boolean",
                 "translations" => "required",
+				"translations.*.lang" => "max:2",
                 "translations.*.values" => Rule::requiredIf(
                     $request->type == config('constants.custom_field_types.DROP-DOWN') ||
                     $request->type == config('constants.custom_field_types.RADIO')
@@ -141,11 +142,12 @@ class UserCustomFieldController extends Controller
             $validator = Validator::make(
                 $request->toArray(),
                 ["name" => "sometimes|required",
-                "is_mandatory" => "sometimes|required",
+                "is_mandatory" => "sometimes|required|boolean",
                 "type" => [
                     "sometimes",
                     "required",
                     Rule::in(config('constants.custom_field_types'))],
+				"translations.*.lang" => "max:2",
                 "translations.*.values" =>
                 Rule::requiredIf($request->type == config('constants.custom_field_types.DROP-DOWN')
                     || $request->type == config('constants.custom_field_types.RADIO')),

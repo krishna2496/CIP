@@ -113,7 +113,7 @@ class MissionApplicationController extends Controller
     {
         try {
             $validator = Validator::make($request->toArray(), [
-                'approval_status' => Rule::in(config('constants.application_status')),
+                'approval_status' => ['required',Rule::in(config('constants.application_status'))],
             ]);
 
             // If request parameter have any error
