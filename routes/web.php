@@ -286,6 +286,22 @@ $router->group(
     }
 );
 $router->get('/social-sharing/{fqdn}/{missionId}/{langId}', ['as' => 'social-sharing', 'uses' => 'App\Mission\MissionSocialSharingController@setMetaData']);
+
+/* Set policy page data for tenant specific */
+$router->group(
+    ['prefix' => 'policy', 'middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware'],
+    function ($router) {
+        $router->get('/', ['as' => 'policy', 'middleware' => ['PaginationMiddleware'],
+        'uses' => 'Admin\PolicyPage\PolicyPageController@index']);
+        $router->get('/{pageId}', ['as' => 'policy.show', 'uses' => 'Admin\PolicyPage\PolicyPageController@show']);
+        $router->post('/', ['as' => 'policy.store', 'uses' => 'Admin\PolicyPage\PolicyPageController@store']);
+        $router->patch('/{pageId}', ['as' => 'policy.update',
+        'uses' => 'Admin\PolicyPage\PolicyPageController@update']);
+        $router->delete('/{pageId}', ['as' => 'policy.delete',
+        'uses' => 'Admin\PolicyPage\PolicyPageController@destroy']);
+    }
+);
+
 /*
 |
 |--------------------------------------------------------------------------
