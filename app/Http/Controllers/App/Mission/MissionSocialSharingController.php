@@ -7,6 +7,8 @@ use App\Http\Controllers\Controller;
 use App\Helpers\Helpers;
 use App\Models\Mission;
 use Illuminate\View\View;
+use App\Repositories\Mission\MissionRepository;
+use App\Exceptions\TenantDomainNotFoundException;
 
 class MissionSocialSharingController extends Controller
 {
@@ -17,14 +19,21 @@ class MissionSocialSharingController extends Controller
     private $helpers;
 
     /**
+     * @var App\Repositories\Mission\MissionRepository
+     */
+    private $missionRepository;
+
+    /**
      * Create a new controller instance.
      *
      * @param  App\Helpers\Helpers $helpers
+     * @param App\Repositories\Mission\MissionRepository $missionRepository
      * @return void
      */
-    public function __construct(Helpers $helpers)
+    public function __construct(Helpers $helpers, MissionRepository $missionRepository)
     {
         $this->helpers = $helpers;
+        $this->missionRepository = $missionRepository;
     }
 
     /**
@@ -37,22 +46,17 @@ class MissionSocialSharingController extends Controller
      */
     public function setMetaData(string $fqdn, int $missionId, int $langId): View
     {
-        // Need to get tenant id from tenant name        
-        $tenant = $this->helpers->getTenantDetailsFromName($fqdn);
-
+        try {
+            // Need to get tenant id from tenant name
+            $tenant = $this->helpers->getTenantDetailsFromName($fqdn);
+        } catch (TenantDomainNotFoundException $e) {
+            throw $e;
+        } catch (\Exception $e) {
+            throw new \Exception(trans('messages.custom_error_message.ERROR_OCCURRED'));
+        }
+        
         // Get mission details from mission id
-        $mission = Mission::where('mission_id', $missionId)
-        ->with(
-            [
-                'missionLanguage' => function ($q) use ($langId) {
-                    $q->where('language_id', $langId);
-                },
-                'missionMedia' => function ($q) {
-                    $q->where('default', 1);
-                }
-            ]
-        )
-        ->first();
+        $mission = $this->missionRepository->getMissionDetailsFromId($missionId, $langId);
         
         return view('social-share', compact('mission', 'fqdn', 'missionId', 'langId'));
     }

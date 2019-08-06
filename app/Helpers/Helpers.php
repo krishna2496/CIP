@@ -320,7 +320,12 @@ class Helpers
     {
         // Get tenant details based on tenant name
         $tenant = DB::table('tenant')->where('name', $tenantName)->first();
-
+        if (is_null($tenant)) {
+            throw new TenantDomainNotFoundException(
+                trans('messages.custom_error_message.ERROR_TENANT_DOMAIN_NOT_FOUND'),
+                config('constants.error_codes.ERROR_TENANT_DOMAIN_NOT_FOUND')
+            );
+        }
         // Create database connection based on tenant id
         $this->createConnection($tenant->tenant_id);
         $pdo = DB::connection('tenant')->getPdo();

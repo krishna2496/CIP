@@ -7,13 +7,18 @@
 
     <title>Facebook Sharing</title>
     
-    <meta property="og:url" content="{{route('social-sharing', ['fqdn' => $fqdn, 'missionId' => $missionId, 'langId' => $langId])}}" />
-    <meta property="og:type" content="article" />
-    <meta property="og:title" content="{{$mission->missionLanguage->first()->title}}" />
-    <meta property="og:description" content="{{$mission->missionLanguage->first()->short_description}}" />
-    <meta property="og:image" content="{{$mission->missionMedia->first()->video_thumbnail}}" />
-
-    <meta http-equiv="refresh" content="5;url=http://{{$fqdn}}{{config('constants.FRONT_URL')}}{{$mission->mission_id}}">    
+    @if (!is_null($mission))
+        <meta property="og:url" content="{{route('social-sharing', ['fqdn' => $fqdn, 'missionId' => $missionId, 'langId' => $langId])}}" />
+        <meta property="og:type" content="article" />
+        @if ($mission->missionLanguage->count() > 0)
+            <meta property="og:title" content="{{$mission->missionLanguage->first()->title}}" />
+            <meta property="og:description" content="{{$mission->missionLanguage->first()->short_description}}" />
+        @endif
+        <meta property="og:image" content="{{$mission->missionMedia->first()->video_thumbnail}}" />
+        <meta http-equiv="refresh" content="5;url=http://{{$fqdn}}{{config('constants.FRONT_URL')}}{{$mission->mission_id}}">    
+    @else
+        <meta http-equiv="refresh" content="5;url=http://{{$fqdn}}{{config('constants.FRONT_HOME_URL')}}">
+    @endif
 </head>
 <body>
     
