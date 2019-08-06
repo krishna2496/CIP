@@ -17,13 +17,13 @@
         <meta property="og:image" content="{{$mission->missionMedia->first()->media_image}}" />
 
         @if(env('APP_ENV')=='local')
-            <meta http-equiv="refresh" content="5;url=http://{{config('constants.DEFAULT_TENANT_NAME')}}{{config('constants.FRONT_MISSION_DETAIL_URL')}}/{{$mission->mission_id}}"> 
+            <meta http-equiv="refresh" content="5;url=http://{{config('constants.DEFAULT_FQDN_FOR_FRONT')}}{{config('constants.FRONT_MISSION_DETAIL_URL')}}{{$mission->mission_id}}"> 
         @else
             <meta http-equiv="refresh" content="5;url=http://{{$fqdn}}{{config('constants.FRONT_MISSION_DETAIL_URL')}}/{{$mission->mission_id}}"> 
         @endif
     @else
         @if(env('APP_ENV')=='local')
-            <meta http-equiv="refresh" content="5;url=http://{{config('constants.DEFAULT_TENANT_NAME')}}{{config('constants.FRONT_HOME_URL')}}">
+            <meta http-equiv="refresh" content="5;url=http://{{config('constants.DEFAULT_FQDN_FOR_FRONT')}}{{config('constants.FRONT_HOME_URL')}}">
         @else
             <meta http-equiv="refresh" content="5;url=http://{{$fqdn}}{{config('constants.FRONT_HOME_URL')}}">
         @endif
