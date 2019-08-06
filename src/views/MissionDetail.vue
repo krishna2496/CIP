@@ -619,7 +619,11 @@ export default {
 		var currentUrl = (((window.location.origin).split('.')));
 
 		if (currentUrl[0]) {
-			this.domainName = ((currentUrl[0]).split('//'))[1];
+			if (process.env.NODE_ENV == 'development') {
+				this.domainName = process.env.VUE_APP_DEFAULT_TENANT
+			} else {
+				this.domainName = ((currentUrl[0]).split('//'))[1];
+			}
 		}
 
 		this.facebookSharingUrl = process.env.VUE_APP_API_ENDPOINT+"social-sharing/"+this.domainName+"/"+this.missionId+"/"+store.state.defaultLanguageId;
