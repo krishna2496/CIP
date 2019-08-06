@@ -100,8 +100,6 @@ class FooterPageController extends Controller
                 );
             }
             
-            $postData = $request->page_details;
-            
             $footerPage = $this->footerPageRepository->store($request);
             
             // Set response data

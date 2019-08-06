@@ -269,10 +269,10 @@ class Mission extends Model
      */
     public function getStartDateAttribute(): ?string
     {
-		return (isset($this->attributes['start_date']) && !empty(config('constants.TIMEZONE'))) ? 
-		Carbon::parse($this->attributes['start_date'])->setTimezone(config('constants.TIMEZONE'))
+        return (isset($this->attributes['start_date']) && !empty(config('constants.TIMEZONE'))) ?
+        Carbon::parse($this->attributes['start_date'])->setTimezone(config('constants.TIMEZONE'))
             ->format(config('constants.DB_DATE_FORMAT')):
-			null;
+            null;
     }
     
     /**
@@ -294,10 +294,10 @@ class Mission extends Model
      */
     public function getEndDateAttribute(): ?string
     {
-		return (isset($this->attributes['end_date']) && !empty(config('constants.TIMEZONE'))) ? 
-		     Carbon::parse($this->attributes['end_date'])->setTimezone(config('constants.TIMEZONE'))
+        return (isset($this->attributes['end_date']) && !empty(config('constants.TIMEZONE'))) ?
+             Carbon::parse($this->attributes['end_date'])->setTimezone(config('constants.TIMEZONE'))
              ->format(config('constants.DB_DATE_FORMAT')):
-			 null;
+             null;
     }
     
     /**
@@ -311,7 +311,8 @@ class Mission extends Model
         return $this->select('*')
         ->where('mission.mission_id', $missionId)
         ->withCount(['missionApplication as mission_application_count' => function ($query) use ($missionId) {
-            $query->where('approval_status', config("constants.application_status")["AUTOMATICALLY_APPROVED"]);
+            $query->whereIn('approval_status', [config("constants.application_status")["AUTOMATICALLY_APPROVED"],
+            config("constants.application_status")["PENDING"]]);
         }])->first();
     }
 
@@ -335,6 +336,6 @@ class Mission extends Model
      */
     public function getOrganisationDetailAttribute($value): ?array
     {
-		return (!is_null($value) && ($value != '')) ? unserialize($value) : null;
+        return (!is_null($value) && ($value != '')) ? unserialize($value) : null;
     }
 }
