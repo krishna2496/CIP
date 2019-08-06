@@ -15,9 +15,18 @@
             <meta property="og:description" content="{{$mission->missionLanguage->first()->short_description}}" />
         @endif
         <meta property="og:image" content="{{$mission->missionMedia->first()->media_image}}" />
-        <meta http-equiv="refresh" content="5;url=http://web8.anasource.com/team4/ciplatform/mission-detail/{{$mission->mission_id}}">    
+
+        @if(env('APP_ENV')=='local')
+            <meta http-equiv="refresh" content="5;url=http://{{config('constants.DEFAULT_TENANT_NAME')}}{{config('constants.FRONT_MISSION_DETAIL_URL')}}/{{$mission->mission_id}}"> 
+        @else
+            <meta http-equiv="refresh" content="5;url=http://{{$fqdn}}{{config('constants.FRONT_MISSION_DETAIL_URL')}}/{{$mission->mission_id}}"> 
+        @endif
     @else
-        <meta http-equiv="refresh" content="5;url=http://{{$fqdn}}{{config('constants.FRONT_HOME_URL')}}">
+        @if(env('APP_ENV')=='local')
+            <meta http-equiv="refresh" content="5;url=http://{{config('constants.DEFAULT_TENANT_NAME')}}{{config('constants.FRONT_HOME_URL')}}">
+        @else
+            <meta http-equiv="refresh" content="5;url=http://{{$fqdn}}{{config('constants.FRONT_HOME_URL')}}">
+        @endif
     @endif
 </head>
 <body>
