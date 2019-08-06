@@ -69,7 +69,8 @@ return [
         'MESSAGE_MISSION_COMMENT_LISTING' => 'DE: Get mission comments successfully',
         'MESSAGE_NO_RELATED_MISSION_FOUND' => 'DE: Related mission not found',
         'MESSAGE_NO_MISSION_MEDIA_FOUND' => 'DE: Mission media not found',
-        'MESSAGE_NO_MISSION_COMMENT_FOUND' => 'DE: Mission comments not found',        
+        'MESSAGE_NO_MISSION_COMMENT_FOUND' => 'DE: Mission comments not found',  
+        'MESSAGE_COMMENT_ADDED' => 'DE: Mission comment added successfully',
     ],
 
         
@@ -116,7 +117,8 @@ return [
         'ERROR_MISSION_APPLICATION_ALREADY_ADDED' => 'DE: You have already applied for this mission',
         'ERROR_MISSION_APPLICATION_NOT_FOUND' => 'DE: Requested mission application does not exist',
         'ERROR_MISSION_RATING_INVALID_DATA' => 'DE: Mission rating creation failed. Please check input parameters',
-               
+        'ERROR_MISSION_COMMENT_INVALID_DATA' => 'DE: Mission comment creation failed. Please check input parameters',
+              
         // Custom error code for Tenant Authorization - 210000 - 219999
         'ERROR_INVALID_API_AND_SECRET_KEY' => 'DE: Invalid API Key or Secret key',
         'ERROR_API_AND_SECRET_KEY_REQUIRED' => 'DE: API key and Secret key are required',
