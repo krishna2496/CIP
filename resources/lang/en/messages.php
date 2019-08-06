@@ -104,7 +104,7 @@ return [
         // Custom error code for Mission Module - 400000 - 409999
         'ERROR_INVALID_MISSION_APPLICATION_DATA' => 'Invalid application data or missing parameter',
         'ERROR_INVALID_MISSION_DATA' => 'Invalid mission data or missing parameter',
-        'ERROR_MISSION_NOT_FOUND' => 'Requested mission not exist',
+        'ERROR_MISSION_NOT_FOUND' => 'Requested mission does not exist',
         'ERROR_MISSION_DELETION' => 'Mission deletion failed',
         'ERROR_MISSION_REQUIRED_FIELDS_EMPTY' => 'Mission creation failed. Please check input parameters',
         'ERROR_NO_MISSION_FOUND' => 'Mission not found in system',
