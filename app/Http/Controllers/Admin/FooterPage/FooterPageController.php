@@ -13,6 +13,7 @@ use DB;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use PDOException;
 use InvalidArgumentException;
+use Illuminate\Validation\Rule;
 
 class FooterPageController extends Controller
 {
@@ -81,7 +82,8 @@ class FooterPageController extends Controller
                 $request->all(),
                 [
                     "page_details" => "required",
-                    "page_details.slug" => "required",
+                    "page_details.slug" => "required|max:255|
+                    unique:footer_page,slug,NULL,page_id,deleted_at,NULL",
                     "page_details.translations" => "required",
                     "page_details.translations.*.lang" => "required|max:2",
                     "page_details.translations.*.title" => "required",
@@ -168,16 +170,19 @@ class FooterPageController extends Controller
         try {
             // Server side validataions
             $validator = Validator::make(
-                $request->all(),
+                $request->page_details,
                 [
-                "page_details" => "required",
-                "page_details.slug" => "sometimes|required",
-                "page_details.translations.*.lang" => "required_with:page_details.translations|max:2",
-                "page_details.translations.*.title" => "required_with:page_details.translations",
-                "page_details.translations.*.sections" => "required_with:page_details.translations",
+                "slug" => [
+                    "sometimes",
+                    "required",
+                    "max:255",
+                    Rule::unique('footer_page')->ignore($id, 'page_id,deleted_at,NULL')],
+                "translations.*.lang" => "required_with:translations|max:2",
+                "translations.*.title" => "required_with:translations",
+                "translations.*.sections" => "required_with:translations",
                 ]
             );
-            
+                  
             // If post parameter have any missing parameter
             if ($validator->fails()) {
                 return $this->responseHelper->error(

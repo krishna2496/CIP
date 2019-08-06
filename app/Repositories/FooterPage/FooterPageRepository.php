@@ -111,7 +111,7 @@ class FooterPageRepository implements FooterPageInterface
                 $language = $languages->where('code', $value['lang'])->first();
                 $pageLanguageData = [
                     'title' => $value['title'],
-                    'description' => serialize($value['sections']),
+                    'description' => $value['sections'],
                     'page_id' => $footerPage['page_id'],
                     'language_id' => $language->language_id
                 ];
