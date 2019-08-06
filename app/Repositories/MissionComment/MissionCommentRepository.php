@@ -4,14 +4,19 @@ namespace App\Repositories\MissionComment;
 use App\Repositories\MissionComment\MissionCommentInterface;
 use App\Models\Comment;
 use App\Models\Mission;
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class MissionCommentRepository implements MissionCommentInterface
 {
     /**
      * @var App\Models\Comment
      */
-    public $comment;
+    private $comment;
+
+    /**
+     * @var App\Models\Mission
+     */
+    private $mission;
  
     /**
      * Create a new mission comment repository instance.
@@ -27,7 +32,7 @@ class MissionCommentRepository implements MissionCommentInterface
     }
     
     /**
-     * Store a newly created resource in storage.
+     * Store mission comment
      *
      * @param int $userId
      * @param array $request
@@ -40,18 +45,18 @@ class MissionCommentRepository implements MissionCommentInterface
     }
     
     /**
-     * Get mission comments.
+     * Get mission comments
      *
      * @param int $missionId
-     * @return Illuminate\Database\Eloquent\Collection
+     * @return \Illuminate\Pagination\LengthAwarePaginator
      */
-    public function getComments(int $missionId): Collection
+    public function getComments(int $missionId): LengthAwarePaginator
     {
         $mission = $this->mission->findOrFail($missionId);
         $commentQuery = $mission->comment()
         ->where('approval_status', config("constants.comment_approval_status.PUBLISHED"))
         ->orderBy('comment_id', 'desc')
         ->with(['user:user_id,first_name,last_name,avatar']);
-        return $commentQuery->take(config("constants.MISSION_COMMENT_LIMIT"))->get();
+        return $commentQuery->paginate(config("constants.MISSION_COMMENT_LIMIT"));
     }
 }

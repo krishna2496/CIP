@@ -52,13 +52,13 @@ class MissionCommentController extends Controller
     {
         try {
             $comments = $this->missionCommentRepository->getComments($missionId);
-            $apiData = $comments->toArray();
+            $apiData = $comments;
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_MISSION_COMMENT_LISTING');
             $apiMessage = (!empty($apiData)) ?
             trans('messages.success.MESSAGE_MISSION_COMMENT_LISTING') :
             trans('messages.success.MESSAGE_NO_MISSION_COMMENT_FOUND');
-            return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
+            return $this->responseHelper->successWithPagination($apiStatus, $apiMessage, $apiData);
         } catch (PDOException $e) {
             return $this->PDO(
                 config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
@@ -75,7 +75,7 @@ class MissionCommentController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store mission comment
      *
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\JsonResponse

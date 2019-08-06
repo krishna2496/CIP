@@ -2,7 +2,7 @@
 namespace App\Repositories\MissionComment;
 
 use App\Models\Comment;
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 interface MissionCommentInterface
 {
@@ -16,10 +16,10 @@ interface MissionCommentInterface
     public function store(int $userId, array $request): Comment;
 
     /**
-     * Get mission comments.
+     * Get mission comments
      *
      * @param int $missionId
-     * @return Illuminate\Database\Eloquent\Collection
+     * @return \Illuminate\Pagination\LengthAwarePaginator
      */
-    public function getComments(int $missionId): Collection;
+    public function getComments(int $missionId): LengthAwarePaginator;
 }
