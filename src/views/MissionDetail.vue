@@ -622,7 +622,7 @@ export default {
 			this.domainName = ((currentUrl[0]).split('//'))[1];
 		}
 
-		this.facebookSharingUrl = process.env.VUE_APP_API_ENDPOINT+"team4/cip-api/social-sharing/"+this.domainName+"/"+this.missionId+"/"+store.state.defaultLanguageId;
+		this.facebookSharingUrl = process.env.VUE_APP_API_ENDPOINT+"social-sharing/"+this.domainName+"/"+this.missionId+"/"+store.state.defaultLanguageId;
 	},
     computed: {
    		filteredOptions() {
