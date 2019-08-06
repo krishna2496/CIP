@@ -619,7 +619,7 @@ export default {
 		var currentUrl = (((window.location.origin).split('.')));
 
 		if (currentUrl[0]) {
-			if (process.env.NODE_ENV == 'development') {
+			if (process.env.NODE_ENV == 'production') {
 				this.domainName = process.env.VUE_APP_DEFAULT_TENANT
 			} else {
 				this.domainName = ((currentUrl[0]).split('//'))[1];
