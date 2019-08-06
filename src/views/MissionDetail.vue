@@ -785,7 +785,7 @@ export default {
 					this.isShownMediaComponent = true;
 	                if (response.error == false) {
 	                	if(response.data[0]) {
-	                		 this.missionDetail = response.data[0];
+	                		this.missionDetail = response.data[0];
 							if(response.data[0].is_favourite == 1) {
 								this.missionAddedToFavoriteByUser = true;
 							}
@@ -801,6 +801,8 @@ export default {
 								}
 							
 							this.missionDocument = response.data[0].mission_document
+	                	} else {
+            				this.$router.push('/');
 	                	}
 	                  
 	                }else {

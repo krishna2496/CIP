@@ -75,7 +75,19 @@ export default {
         this.footerAdj();
         this.signinAdj();
     },
-    created() {
+    handleScroll() {
+		if (document.querySelector(".inner-pages > header") != null) {
+		  var body = document.querySelector("body");
+		  var bheader = document.querySelector("header");
+		  var bheader_top = bheader.offsetHeight;
+		  if (window.scrollY > bheader_top) {
+			body.classList.add("small-header");
+		  } else {
+			body.classList.remove("small-header");
+		  }
+		}
+	  },
+  beforeMount() {
     this.footerAdj();
     var ua = navigator.userAgent.toLowerCase();
     if (ua.indexOf("safari") != -1) {
@@ -85,6 +97,7 @@ export default {
         document.querySelector("body").classList.add("browser-safari"); // Safari
     }
     }
+
     window.addEventListener("resize", this.footerAdj);
     window.addEventListener("resize", this.signinAdj);
     window.addEventListener("scroll", this.handleScroll);
@@ -138,11 +151,14 @@ export default {
             event.addEventListener("click", function(){
                 event.classList.toggle("active");
             })
-            });
-    },
-    destroyed() {
-        window.removeEventListener("scroll", this.handleScroll);
-    }
+        });
+        
+ window.addEventListener("resize", this.footerAdj);
+
+  },
+  destroyed() {
+    window.removeEventListener("scroll", this.handleScroll);
+  }
 };
 </script>
 
