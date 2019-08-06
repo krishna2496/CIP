@@ -14,7 +14,7 @@
             <meta property="og:title" content="{{$mission->missionLanguage->first()->title}}" />
             <meta property="og:description" content="{{$mission->missionLanguage->first()->short_description}}" />
         @endif
-        <meta property="og:image" content="{{$mission->missionMedia->first()->video_thumbnail}}" />
+        <meta property="og:image" content="{{$mission->missionMedia->first()->media_image}}" />
         <meta http-equiv="refresh" content="5;url=http://{{$fqdn}}{{config('constants.FRONT_URL')}}{{$mission->mission_id}}">    
     @else
         <meta http-equiv="refresh" content="5;url=http://{{$fqdn}}{{config('constants.FRONT_HOME_URL')}}">
