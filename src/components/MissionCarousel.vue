@@ -119,7 +119,10 @@ export default {
 				videoSrc.src = siblingBtn[0].getAttribute('data-src')
 			}
 			else{
-				 galleryImgSrc.src = event.target.src ;		
+				var iframe =  document.querySelector( 'iframe');
+				var iframeSrc = iframe.src;
+				iframe.src = iframeSrc;
+				galleryImgSrc.src = event.target.src ;		
 				galleryImg.style.display = "block";
 				hideVideo.style.display = "none";
 			}

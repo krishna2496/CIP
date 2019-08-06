@@ -1778,6 +1778,67 @@ main {
 		color: $primary;
 	}
 }
+.mission-tab-block{
+	align-items: center;
+	justify-content: center;
+	padding-bottom: 30px;
+	@include lg-max{
+		padding-bottom: 20px;
+		margin: 0 -10px;
+	}
+	.mission-tab-col{
+		padding: 0 10px;
+		@include xs-max{
+			margin-bottom: 15px;
+		}
+	}
+	.mission-tab-inner{
+		border: 1px solid $border-color;
+		padding: 22px 15px;
+		@include xs-max{
+			padding: 10px 15px;
+		}
+		p{
+			margin-bottom: 0;
+			text-align: center;
+			font-size: 34px;
+			line-height: 40px;
+			@include lg-max{
+				font-size: 28px;
+				line-height: 32px;
+			}
+			@include xs-max{
+				font-size: 22px;
+				line-height: 26px;
+				text-align: left;
+			}
+			span{
+				display: block;
+				font-size: 16px;
+				line-height: 20px;
+				color: $gray-primary;
+				margin-top: 5px;
+				position: relative;
+				@include xs-max{
+					display: inline-block;
+					margin: 0 0 0 20px;
+					vertical-align: middle
+				}
+				&:after{
+					@include xs-max{
+						position: absolute;
+						content: "";
+						height: 1px;
+						width: 6px;
+						background: #414141;
+						top: 10px;
+						left: -12px;
+					}
+				}
+			}
+		}
+	}
+}
 
 .comment-block {
 	.comment-form {
@@ -3282,3 +3343,4 @@ main {
 		}
 	}
 }
+

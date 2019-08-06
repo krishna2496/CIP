@@ -21,7 +21,7 @@
                     </div>
                 </b-col>
 
-                <b-col xl="6" lg="7" class="filter-block">
+                <b-col xl="6" lg="7" class="filter-block" @touchend.stop>
                     <div class="mobile-top-block">
                         <b-button class="btn btn-back" @click="handleBack">
                             <img :src="$store.state.imagePath+'/assets/images/down-arrow.svg'" alt="Back Icon">
