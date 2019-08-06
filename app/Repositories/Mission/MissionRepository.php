@@ -1023,4 +1023,28 @@ class MissionRepository implements MissionInterface
         }
         return true;
     }
+
+    /**
+     * Get mission details from mission id and language id
+     *
+     * @param int $missionId
+     * @param int $langId
+     * @return App\Models\Mission|null
+     */
+    public function getMissionDetailsFromId(int $missionId, int $langId): ?Mission
+    {
+        $mission = $this->mission->where('mission_id', $missionId)
+        ->with(
+            [
+                'missionLanguage' => function ($q) use ($langId) {
+                    $q->where('language_id', $langId);
+                },
+                'missionMedia' => function ($q) {
+                    $q->where('default', 1);
+                }
+            ]
+        )
+        ->first();
+        return $mission;
+    }
 }

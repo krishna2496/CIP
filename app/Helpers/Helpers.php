@@ -11,6 +11,7 @@ use PDOException;
 use Throwable;
 use App\Exceptions\TenantDomainNotFoundException;
 use Carbon\Carbon;
+use stdClass;
 
 class Helpers
 {
@@ -307,5 +308,29 @@ class Helpers
         return 'https://s3.'.config('constants.AWS_REGION').'.amazonaws.com/'.
         config('constants.AWS_S3_BUCKET_NAME').'/'.$tenantName.'/'.config('constants.AWS_S3_ASSETS_FOLDER_NAME').
         '/'.config('constants.AWS_S3_IMAGES_FOLDER_NAME').'/'.config('constants.AWS_S3_DEFAULT_PROFILE_IMAGE');
+    }
+
+    /**
+     * Get tenant details from tenant name only
+     * 
+     * @param string $tenantName
+     * @return stdClass $tenant
+     */
+    public function getTenantDetailsFromName(string $tenantName): stdClass
+    {
+        // Get tenant details based on tenant name
+        $tenant = DB::table('tenant')->where('name', $tenantName)->first();
+        if (is_null($tenant)) {
+            throw new TenantDomainNotFoundException(
+                trans('messages.custom_error_message.ERROR_TENANT_DOMAIN_NOT_FOUND'),
+                config('constants.error_codes.ERROR_TENANT_DOMAIN_NOT_FOUND')
+            );
+        }
+        // Create database connection based on tenant id
+        $this->createConnection($tenant->tenant_id);
+        $pdo = DB::connection('tenant')->getPdo();
+        Config::set('database.default', 'tenant');
+
+        return $tenant;
     }
 }

@@ -285,7 +285,7 @@ $router->group(
         $router->delete('/{skillId}', ['uses' => 'Admin\Skill\SkillController@destroy']);
     }
 );
-
+$router->get('/social-sharing/{fqdn}/{missionId}/{langId}', ['as' => 'social-sharing', 'uses' => 'App\Mission\MissionSocialSharingController@setMetaData']);
 /*
 |
 |--------------------------------------------------------------------------
