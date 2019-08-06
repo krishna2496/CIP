@@ -29,7 +29,7 @@ return [
         'MESSAGE_APPLICATION_UPDATED' => 'Mission application updated successfully',
         'MESSAGE_CUSTOM_STYLE_UPLOADED_SUCCESS' => 'Custom styling data uploaded successfully',
         'MESSAGE_CUSTOM_STYLE_RESET_SUCCESS' => 'Custom styling reset successfully',
-        'MESSAGE_CUSTOM_FIELD_LISTING' => 'User custom field listed successfully',
+        'MESSAGE_CUSTOM_FIELD_LISTING' => 'User custom fields listed successfully',
         'MESSAGE_MISSION_ADDED' => 'Mission created successfully',
         'MESSAGE_MISSION_UPDATED' => 'Mission updated successfully',
         'MESSAGE_MISSION_DELETED' => 'Mission deleted successfully',
