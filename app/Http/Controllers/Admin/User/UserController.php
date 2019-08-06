@@ -358,7 +358,7 @@ class UserController extends Controller
 
             // Set response data
             $apiData = (count($skillList) > 0) ? $skillList->toArray() : [];
-            $responseMessage = (count($skillList) > 0) ? trans('messages.success.MESSAGE_USER_LISTING')
+            $responseMessage = (count($skillList) > 0) ? trans('messages.success.MESSAGE_SKILL_LISTING')
              : trans('messages.success.MESSAGE_NO_RECORD_FOUND');
             return $this->responseHelper->success(Response::HTTP_OK, $responseMessage, $apiData);
         } catch (ModelNotFoundException $e) {
