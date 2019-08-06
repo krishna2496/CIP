@@ -122,6 +122,7 @@ return [
         'location.country' => 'country',   
         'password_confirmation' => 'confirm password',         
         'translations.*.lang' => 'language code',         
+        'is_mandatory' => 'mandatory',         
         ],
 
 ];

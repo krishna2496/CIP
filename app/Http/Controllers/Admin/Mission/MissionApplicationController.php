@@ -53,7 +53,7 @@ class MissionApplicationController extends Controller
     {
         try {
             $applicationList = $this->missionApplicationRepository->missionApplications($request, $missionId);
-            $responseMessage = (count($applicationList) > 0) ? trans('messages.success.MESSAGE_APPLICATION_LISTING')
+            $responseMessage = (count($applicationList) > 0) ? trans('messages.success.MESSAGE_APPLICATIONS_LISTING')
              : trans('messages.success.MESSAGE_NO_RECORD_FOUND');
             
             return $this->responseHelper->successWithPagination(
