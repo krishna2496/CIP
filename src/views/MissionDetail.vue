@@ -4,7 +4,13 @@
      		<ThePrimaryHeader v-if="isShownComponent"></ThePrimaryHeader>
     	</header>
       	<main>
-		
+			<social-sharing v-bind:url='"http://api.optimy.local/social-sharing/"+domainName+"/"+missionId+"/"+$store.state.imagePath.defaultLanguageId' inline-template>
+				<div>
+					<network network="facebook">
+						<i class="fa fa-facebook"></i> Facebook
+					</network>
+				</div>
+			</social-sharing>
 			<b-container>
 		  	<div class="slider-banner-block">
 					<b-row>
@@ -549,6 +555,8 @@ import {favoriteMission,inviteColleague ,applyMission,searchUser,storeMissionRat
 import SimpleBar from 'simplebar';
 import store from "../store";
 import moment from 'moment';
+import SocialSharing from 'vue-social-sharing';
+ 
 
 export default {
   components: {
@@ -562,6 +570,7 @@ export default {
 	SimpleBar,
 	RecentVolunteers: () => import("../components/RecentVolunteers"),
 	MissionCarousel: () => import("../components/MissionCarousel"),
+	SocialSharing
   },
   	data() {
 	    return {
@@ -607,6 +616,7 @@ export default {
 			isShareComponentShown : false,
 			langauageData : [],
 			applyButton :'',
+			domainName: ''
 	    };
   	},
 	mounted(){
@@ -875,6 +885,13 @@ export default {
         }
    },
 	created(){
+		
+		var currentUrl = (((window.location.origin).split('.')));
+
+		if (currentUrl[0]) {
+			this.domainName = ((currentUrl[0]).split('//'));
+		}
+
 		this.sharingUrl = document.URL
 		var _this= this;		
 		// Get mission detail
