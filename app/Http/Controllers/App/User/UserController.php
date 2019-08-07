@@ -125,4 +125,54 @@ class UserController extends Controller
             return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request $request
+     * @param  int $id
+     * @return Illuminate\Http\JsonResponse
+     */
+    public function linkSkill(Request $request, int $id): JsonResponse
+    {
+        dd("hello");
+        try {
+            $validator = Validator::make($request->toArray(), [
+                'skills' => 'required',
+                'skills.*.skill_id' => 'required|exists:skill,skill_id,deleted_at,NULL',
+            ]);
+
+            // If request parameter have any error
+            if ($validator->fails()) {
+                return $this->responseHelper->error(
+                    Response::HTTP_UNPROCESSABLE_ENTITY,
+                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                    config('constants.error_codes.ERROR_SKILL_INVALID_DATA'),
+                    $validator->errors()->first()
+                );
+            }
+
+            $this->userRepository->linkSkill($request->toArray(), $id);
+
+            // Set response data
+            $apiStatus = Response::HTTP_CREATED;
+            $apiMessage = trans('messages.success.MESSAGE_USER_SKILLS_CREATED');
+            return $this->responseHelper->success($apiStatus, $apiMessage);
+        } catch (PDOException $e) {
+            return $this->PDO(
+                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
+                trans(
+                    'messages.custom_error_message.ERROR_DATABASE_OPERATIONAL'
+                )
+            );
+        } catch (ModelNotFoundException $e) {
+            return $this->modelNotFound(
+                config('constants.error_codes.ERROR_USER_NOT_FOUND'),
+                trans('messages.custom_error_message.ERROR_USER_NOT_FOUND')
+            );
+        } catch (\Exception $e) {
+            $dd($e);
+            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
+        }
+    }
 }

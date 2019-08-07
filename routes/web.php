@@ -137,6 +137,15 @@ $router->group(['middleware' => 'localization'], function ($router) {
     $router->post('/app/mission/comment', [
         'middleware' => 'localization|tenant.connection|jwt.auth',
         'uses' => 'App\Mission\MissionCommentController@store']);
+
+    /* Set skill data for tenant user specific */
+    $router->get('/app/user/skills/{userId}', ['as' => 'user.skills', 'middleware' => 'localization|tenant.connection',
+    'uses' => 'App\User\UserController@userSkills']);
+    $router->post('/app/user/skills/{userId}', ['as' => 'user.skills', 'middleware' => 'localization|tenant.connection',
+    'uses' => 'App\User\FooterPageController@linkSkill']);
+    $router->delete('/app/user/skills/{userId}', ['as' => 'user.skills',
+    'middleware' => 'localization|tenant.connection',
+    'uses' => 'App\User\UserController@unlinkSkill']);
 });
 
 
