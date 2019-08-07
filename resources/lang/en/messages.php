@@ -25,6 +25,7 @@ return [
         'MESSAGE_PASSWORD_CHANGE_SUCCESS' => 'Your password has been changed successfully.',
         'MESSAGE_CUSTOM_FIELD_ADDED' => 'User custom field added successfully',
         'MESSAGE_CUSTOM_FIELD_UPDATED' => 'User custom field updated successfully',
+		'MESSAGE_CUSTOM_FIELD_FOUND' => 'User custom field found successfully',
         'MESSAGE_CUSTOM_FIELD_DELETED' => 'User custom field deleted successfully',
         'MESSAGE_APPLICATION_LISTING' => 'Mission application found successfully',
         'MESSAGE_APPLICATIONS_LISTING' => 'Mission applications listed successfully',

@@ -24,6 +24,7 @@ return [
         'MESSAGE_PASSWORD_CHANGE_SUCCESS' => 'Votre mot de passe a été changé avec succès.',
         'MESSAGE_CUSTOM_FIELD_ADDED' => 'Champ personnalisé d\'utilisateur ajouté avec succès',
         'MESSAGE_CUSTOM_FIELD_UPDATED' => 'Le champ personnalisé de l\'utilisateur a été mis à jour avec succès',
+		'MESSAGE_CUSTOM_FIELD_FOUND' => 'Champ personnalisé de l\'utilisateur trouvé avec succès',
         'MESSAGE_CUSTOM_FIELD_DELETED' => 'Le champ personnalisé de l\'utilisateur a été supprimé avec succès',
         'MESSAGE_APPLICATION_LISTING' => 'Liste des applications de mission avec succès',
         'MESSAGE_APPLICATION_UPDATED' => 'Application de mission mise à jour avec succès',
