@@ -305,12 +305,19 @@
 									<div class="mission-tab-block row" v-if="!checkMissionTypeTime(missionDetail.mission_type)">
 										<div class="col-sm-4 mission-tab-col">
 											<div class="mission-tab-inner">
-												<p>{{missionDetail.goal_objective}}<span>Trees</span></p>
+												<p v-if="missionDetail.goal_objective">{{missionDetail.goal_objective}}<span>Trees</span></p>
+												<p else>
+													0<span>Trees</span>
+												</p>
 											</div>
 										</div>
 										<div class="col-sm-4 mission-tab-col">
 											<div class="mission-tab-inner">
-												<p>{{missionDetail.achieved_goal}} <span>Planted</span></p>
+												<p v-if="missionDetail.achieved_goal">			{{missionDetail.achieved_goal}} <span>Planted</span>
+												</p>
+												<p else>
+													0<span>Planted</span>
+												</p>
 											</div>
 										</div>
 										<div class="col-sm-4 mission-tab-col">
@@ -415,10 +422,10 @@
 											</div>
 										</div>
 									</b-form>
-
 									<div class="comment-list" 
-										v-if="missionComment && missionComment.length > 0" data-simplebar>
-										<div class="more-inner-list" >
+										v-if="missionComment && missionComment.length > 0">
+										<div class="comment-list-inner" data-simplebar>
+											<div>
 											<div class="comment-list-item" v-for="comments in missionComment">
 												<b-media class="comment-media">
 													<i slot="aside" class="user-profile-icon" 
@@ -431,6 +438,7 @@
 												{{comments.comment}}
 												</p>
 											</div>
+										</div>
 										</div>					
 									</div>
 									<div class="more-comment-list" 
@@ -843,7 +851,11 @@ export default {
         },
 
         pendingGoal(missionDetail) {
-        	return missionDetail.goal_objective - missionDetail.achieved_goal;
+        	if(missionDetail.goal_objective) {
+        		return missionDetail.goal_objective - missionDetail.achieved_goal;
+        	} else {
+        		return 0;
+        	}
         },
 
 		getMissionDetail() {
@@ -869,17 +881,17 @@ export default {
 							
 							this.missionDocument = response.data[0].mission_document
 	                	} else {
-            				this.$router.push('/');
+            				this.$router.push('/404');
 	                	}
 	                  
 	                }else {
-	                	this.$router.push('/');
+	                	this.$router.push('/404');
 	                }
 	                
 					this.searchUsers();
 	            })
 			} else {
-				this.$router.push('/');
+				this.$router.push('/404');
 			}
 		},
 		//get theme title
@@ -942,7 +954,6 @@ export default {
             this.$v.$touch();
             // stop here if form is invalid
             if (this.$v.$invalid) {
-            	
                 return;
             }
             this.postComment = true;
@@ -969,16 +980,10 @@ export default {
 
         showMoreComment() {
         	this.page++;
-        	this.missionComments();
-        	var container = this.$el.querySelector(".simplebar-content-wrapper");
-        	console.log(container);
-      		container.scrollTop = container.scrollHeight;
+        	this.missionComments();	
         }
    },
-	created(){
-		
-		
-
+	created() {
 		this.sharingUrl = document.URL
 		var _this= this;		
 		// Get mission detail
@@ -991,10 +996,11 @@ export default {
 		this.langauageData = JSON.parse(store.state.languageLabel);
 		this.applyButton = this.langauageData.label.apply_now
 	},
-   updated(){
-	
-   },
-   watch:{
+
+	updated(){
+
+	},
+    watch:{
 	    $route (to, from){
 	    	this.sharingUrl = document.URL
 	    	this.isShownComponent = false
