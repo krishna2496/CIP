@@ -1,17 +1,18 @@
 <?php
-namespace App\Http\Controllers\App\Mission;
 
-use App\Http\Controllers\Controller;
+namespace App\Http\Controllers\Admin\Mission;
+
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+
 use Illuminate\Http\Response;
 use App\Repositories\MissionComment\MissionCommentRepository;
 use App\Helpers\ResponseHelper;
 use PDOException;
 use Illuminate\Http\JsonResponse;
 use App\Traits\RestExceptionHandlerTrait;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use InvalidArgumentException;
-use Validator;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class MissionCommentController extends Controller
 {
@@ -26,7 +27,7 @@ class MissionCommentController extends Controller
      * @var MissionCommentRepository
      */
     private $missionCommentRepository;
-    
+
     /**
      * Create a new comment controller instance
      *
@@ -43,19 +44,15 @@ class MissionCommentController extends Controller
     }
 
     /**
-     * Get mission comments
-     *
-     * @param Illuminate\Http\Request $request
+     * Display a listing of the resource.
      * @param int $missionId
      * @return Illuminate\Http\JsonResponse
      */
-    public function getComments(Request $request, int $missionId): JsonResponse
+    public function index(int $missionId): JsonResponse
     {
         try {
-            $comments = $this->missionCommentRepository->getComments($missionId);
-            $apiData = $comments;
+            $apiData = $this->missionCommentRepository->getComments($missionId);
             $apiStatus = Response::HTTP_OK;
-            $apiMessage = trans('messages.success.MESSAGE_MISSION_COMMENT_LISTING');
             $apiMessage = ($apiData->count()) ?
             trans('messages.success.MESSAGE_MISSION_COMMENT_LISTING') :
             trans('messages.success.MESSAGE_NO_MISSION_COMMENT_FOUND');
@@ -76,43 +73,47 @@ class MissionCommentController extends Controller
     }
 
     /**
-     * Store mission comment
+     * Store a newly created resource in storage.
      *
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
      */
-    public function store(Request $request): JsonResponse
+    public function store(Request $request)
     {
-        try {
-            // Server side validataions
-            $validator = Validator::make(
-                $request->all(),
-                [
-                    "comment" => "required|max:280",
-                    "mission_id" => "required|exists:mission,mission_id"
-                ]
-            );
+        //
+    }
 
-            // If request parameter have any error
-            if ($validator->fails()) {
-                return $this->responseHelper->error(
-                    Response::HTTP_UNPROCESSABLE_ENTITY,
-                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                    config('constants.error_codes.ERROR_MISSION_COMMENT_INVALID_DATA'),
-                    $validator->errors()->first()
-                );
-            }
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return Illuminate\Http\JsonResponse
+     */
+    public function show(int $id): JsonResponse
+    {
+        //
+    }
 
-            $missionComment = $this->missionCommentRepository->store($request->auth->user_id, $request->toArray());
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, $id)
+    {
+        //
+    }
 
-            // Set response data
-            $apiStatus = Response::HTTP_CREATED;
-            $apiData = ['comment_id' => $missionComment->comment_id];
-            $apiMessage =trans('messages.success.MESSAGE_COMMENT_ADDED');
-            
-            return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
-        }
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy($id)
+    {
+        //
     }
 }
