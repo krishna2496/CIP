@@ -4,7 +4,13 @@
      		<ThePrimaryHeader v-if="isShownComponent"></ThePrimaryHeader>
     	</header>
       	<main>
-		
+			<social-sharing v-bind:url="facebookSharingUrl" inline-template>
+				<div>
+					<network network="facebook">
+						<i class="fa fa-facebook"></i> Facebook
+					</network>
+				</div>
+			</social-sharing>
 			<b-container>
 		  	<div class="slider-banner-block">
 				<b-row>
@@ -555,6 +561,8 @@ import SimpleBar from 'simplebar';
 import store from "../store";
 import moment from 'moment';
 import { required } from 'vuelidate/lib/validators';
+import SocialSharing from 'vue-social-sharing';
+ 
 
 export default {
   components: {
@@ -568,6 +576,7 @@ export default {
 	SimpleBar,
 	RecentVolunteers: () => import("../components/RecentVolunteers"),
 	MissionCarousel: () => import("../components/MissionCarousel"),
+	SocialSharing
   },
   	data() {
 	    return {
@@ -602,9 +611,7 @@ export default {
 	        require("@/assets/images/xlsx.svg"),
 			],
 	        orgLogo:require("@/assets/images/ces-logo.png"),
-	       
 	        currentPage: 1,
-	       
 			max: 100,
 			value: 70,
 			missionListing : [],
@@ -618,7 +625,9 @@ export default {
 			nextUrl : null,
 			page:1,
 			postComment : false,
-			loadMoreComment : false
+			loadMoreComment : false,
+			domainName: '',
+			facebookSharingUrl: '',
 	    };
   	},
 	mounted(){
@@ -641,6 +650,18 @@ export default {
 			}
 			tabsEvent.currentTarget.className += " active";
 		}
+
+		var currentUrl = (((window.location.origin).split('.')));
+
+		if (currentUrl[0]) {
+			if (process.env.NODE_ENV == 'production') {
+				this.domainName = process.env.VUE_APP_DEFAULT_TENANT
+			} else {
+				this.domainName = ((currentUrl[0]).split('//'))[1];
+			}
+		}
+
+		this.facebookSharingUrl = process.env.VUE_APP_API_ENDPOINT+"social-sharing/"+this.domainName+"/"+this.missionId+"/"+store.state.defaultLanguageId;
 	},
     computed: {
    		filteredOptions() {
@@ -949,6 +970,9 @@ export default {
         }
    },
 	created(){
+		
+		
+
 		this.sharingUrl = document.URL
 		var _this= this;		
 		// Get mission detail
