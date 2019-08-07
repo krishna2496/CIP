@@ -265,7 +265,7 @@
 
 <script>
 import store from '../../store';
-import {exploreMission} from '../../services/service';
+import {exploreMission,policy} from '../../services/service';
 import {eventBus} from "../../main";
 export default {
     components: {},
@@ -281,6 +281,7 @@ export default {
             filterData : [],
             topOrganization:[],
             langauageData : [],
+            policyPage : []
         };
     },
     mounted() {
@@ -400,14 +401,26 @@ export default {
                 }
                 if (this.topOrganization != null && this.topOrganization.length > 0 ) {
                     this.topOrganizationClass = 'has-submenu';
-                } 
+                }
+                // Call get policy service 
+                this.getPolicyPage();
             }); 
-        },   
+        },  
+
         async clearFilter($event) {
             if(store.state.isLoggedIn) {
                 location.reload()                    
             }
         },
+
+        async getPolicyPage() {
+            await policy().then( response => {
+                if(response.error == false){
+                    console.log(response.data);
+                    // this.policyPage = 
+                } 
+            }); 
+        },  
     },
     created() {
         this.langauageData = JSON.parse(store.state.languageLabel);

@@ -437,23 +437,22 @@
 									<div class="comment-list" 
 										v-if="missionComment && missionComment.length > 0">
 										<div class="comment-list-inner" data-simplebar>
-											<div>
-											<div class="comment-list-item" v-for="comments in missionComment">
-												<b-media class="comment-media">
-													<i slot="aside" class="user-profile-icon" 
-														:style="{backgroundImage: 'url(' + comments.user.avatar + ')'}">
-													</i>
-													<h5>{{comments.user.first_name}} {{comments.user.last_name}}</h5>
-													<p>{{ getCommentDate(comments.created_at) }}</p>
-												</b-media>
-												<p>
-												{{comments.comment}}
-												</p>
+											<div class="more-inner-list" >
+												<div class="comment-list-item" v-for="comments in missionComment">
+													<b-media class="comment-media">
+														<i slot="aside" class="user-profile-icon" 
+															:style="{backgroundImage: 'url(' + comments.user.avatar + ')'}">
+														</i>
+														<h5>{{comments.user.first_name}} {{comments.user.last_name}}</h5>
+														<p>{{ getCommentDate(comments.created_at) }}</p>
+													</b-media>
+													<p>
+													{{comments.comment}}
+													</p>
+												</div>
 											</div>
-										</div>
-										</div>					
-									</div>
-									<div class="more-comment-list" 
+										</div>	
+											<div class="more-comment-list" 
 										v-if="nextUrl != null">
 										<b-link  
 											v-if="loadMoreComment"
@@ -466,7 +465,9 @@
 											class="btn btn-bordersecondary">
 											<span>{{ langauageData.label.read_more_comment }}</span>
 										</b-link>
+									</div>				
 									</div>
+								
 									</b-collapse>
 							</div>
 					 </div>	
@@ -992,7 +993,15 @@ export default {
 
         showMoreComment() {
         	this.page++;
-        	this.missionComments();	
+    		var simplebarContent = document.querySelector(".comment-list-inner .simplebar-content");
+			var simplebarHeight = simplebarContent.offsetHeight
+			console.log(simplebarHeight)
+			setTimeout(function(){
+				var simplebarWrapper  = document.querySelector(".comment-list .simplebar-content-wrapper");
+				simplebarWrapper.scrollTop = simplebarHeight;
+				console.log(simplebarWrapper.scrollTop)	
+			},100);
+			this.missionComments();
         }
    },
 	created() {
