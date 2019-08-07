@@ -380,8 +380,13 @@ export default {
                                             return country;
                                         }
                                     });
-                                    this.defautCountry = selectedCountryData[0][1].title;
-                                    tags.country[0] = selectedCountryData[0][1].id+'_'+selectedCountryData[0][1].title;
+                                    if (selectedCountryData[0]) {
+                                        this.defautCountry = selectedCountryData[0][1].title;
+                                        tags.country[0] = selectedCountryData[0][1].id+'_'+selectedCountryData[0][1].title;
+                                    } else {
+                                        this.defautCountry = this.langauageData.label.country;
+                                        tags.country[0] = '';
+                                    }
                                 }
                         } else {
                                 this.defautCountry = this.langauageData.label.country;

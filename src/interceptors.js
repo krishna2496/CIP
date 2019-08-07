@@ -14,8 +14,9 @@ export default function setup() {
         var secondLastValue =  domain[secondLastPosition];
         var getRequest = domain[lastPosition].split('?');
         var getRequestEndPoint = getRequest[0];
+
         // Do something before request is sent
-        if(domain[lastPosition] == "favourite" || domain[lastPosition] == "rating" || domain[lastPosition] == "comments"){
+        if(domain[lastPosition] == "favourite" || domain[lastPosition] == "rating" || domain[lastPosition] == "comment" || getRequestEndPoint == "comments"){
             addLoader = "false";
         }
 
