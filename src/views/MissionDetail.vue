@@ -1022,9 +1022,10 @@ export default {
 			this.postComment = false,
 			this.loadMoreComment = false,
 			this.langauageData = JSON.parse(store.state.languageLabel);
-			this.applyButton = this.langauageData.label.apply_now
-	       	this.getMissionDetail();
+			this.applyButton = this.langauageData.label.apply_now;
 	       	this.page = 1;
+			this.getMissionDetail();
+			this.facebookSharingUrl = process.env.VUE_APP_API_ENDPOINT+"social-sharing/"+this.domainName+"/"+this.missionId+"/"+store.state.defaultLanguageId;			
 	    }
 	} 
 };
