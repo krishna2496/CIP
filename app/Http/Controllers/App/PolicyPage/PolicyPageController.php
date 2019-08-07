@@ -10,6 +10,7 @@ use App\Models\PolicyPage;
 use App\Models\PolicyPagesLanguage;
 use App\Helpers\Helpers;
 use App\Helpers\ResponseHelper;
+use App\Helpers\LanguageHelper;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Traits\RestExceptionHandlerTrait;
 
@@ -31,12 +32,17 @@ class PolicyPageController extends Controller
      *
      * @param  App\Repositories\PolicyPage\PolicyPageRepository $policyPageRepository
      * @param  App\Helpers\ResponseHelper $responseHelper
+     * @param  App\Helpers\LanguageHelper $languageHelper
      * @return void
      */
-    public function __construct(PolicyPageRepository $policyPageRepository, ResponseHelper $responseHelper)
-    {
+    public function __construct(
+        PolicyPageRepository $policyPageRepository,
+        ResponseHelper $responseHelper,
+        LanguageHelper $languageHelper
+    ) {
         $this->policyPageRepository = $policyPageRepository;
         $this->responseHelper = $responseHelper;
+        $this->languageHelper = $languageHelper;
     }
     
     /**
@@ -67,14 +73,21 @@ class PolicyPageController extends Controller
     /**
      * Display the specified resource.
      *
+     * @param Request $request
      * @param string $slug
      * @return Illuminate\Http\JsonResponse
      */
-    public function show(string $slug): JsonResponse
+    public function show(Request $request, string $slug): JsonResponse
     {
         try {
+            $languages = $this->languageHelper->getLanguages($request);
+
+            $language = ($request->hasHeader('X-localization')) ?
+            $request->header('X-localization') : env('TENANT_DEFAULT_LANGUAGE_CODE');
+            $languageId = $languages->where('code', $language)->first()->language_id;
+           
             // Get data for parent table
-            $policyPage = $this->policyPageRepository->getPageDetail($slug);
+            $policyPage = $this->policyPageRepository->getPageDetail($slug, $languageId);
           
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_PAGE_FOUND');
@@ -92,6 +105,7 @@ class PolicyPageController extends Controller
                 trans('messages.custom_error_message.ERROR_NO_DATA_FOUND_FOR_SLUG')
             );
         } catch (\Exception $e) {
+            dd($e);
             return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
