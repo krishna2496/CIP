@@ -93,7 +93,9 @@
 		"related_missions" : "Missions connexes",
 		"no_related_missions" : "Aucune mission liée",
 		"volunteer" : "bénévole",
-		"applied" : "Appliquée"
+		"applied" : "Appliquée",
+		"remaining" : "Restante",
+        "loading" : "Chargement..."
 	},
 
 	"placeholder" : {
@@ -107,7 +109,8 @@
 		"invalid_email" : "Entrez une adresse email valide",
 		"password_required" : "Mot de passe requis",
 		"invalid_password" : "La longueur du mot de passe doit être d'au moins 8 caractères",
-		"identical_password" : "Les mots de passe doivent être identiques."
+		"identical_password" : "Les mots de passe doivent être identiques.",
+		"comment_required" : "Commentaire requis"
 	}
 
 }

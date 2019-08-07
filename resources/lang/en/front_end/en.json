@@ -94,7 +94,9 @@
 		"related_missions" : "Related Missions",
 		"no_related_missions" : "No Related Missions",
 		"volunteer" : "volunteer",
-		"applied" : "Applied"
+		"applied" : "Applied",
+		"remaining" : "Remaining",
+        "loading" : "Loading..."
 	},
 
 	"placeholder" : {
@@ -108,7 +110,8 @@
 		"invalid_email" : "Enter valid email address",
 		"password_required" : "Password is required",
 		"invalid_password" : "Password lenght should be minimum 8 character",
-		"identical_password" : "Passwords must be identical."
+		"identical_password" : "Passwords must be identical.",
+		"comment_required" : "Comment is required"
 	}
 
 }
