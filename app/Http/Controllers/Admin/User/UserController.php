@@ -181,7 +181,7 @@ class UserController extends Controller
                 "employee_id" => "sometimes|required|max:16",
                 "department" => "sometimes|required|max:16",
                 "manager_name" => "sometimes|required|max:16",
-                "linked_in_url" => "sometimes|required|url",
+                "linked_in_url" => "url",
 				"availability_id" => "exists:availability,availability_id",
 				"city_id" => "exists:city,city_id",
 				"country_id" => "exists:country,country_id"]

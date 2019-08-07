@@ -77,7 +77,7 @@ class FooterPageController extends Controller
             $footerPage = $this->footerPageRepository->getPageDetail($slug);
           
             $apiStatus = Response::HTTP_OK;
-            $apiMessage = trans('messages.success.MESSAGE_FOOTER_PAGE_LISTING');
+            $apiMessage = trans('messages.success.MESSAGE_FOOTER_PAGE_FOUND');
             return $this->responseHelper->success($apiStatus, $apiMessage, $footerPage->toArray());
         } catch (PDOException $e) {
             return $this->PDO(

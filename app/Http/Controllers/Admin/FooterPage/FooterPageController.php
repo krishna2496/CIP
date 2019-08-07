@@ -81,7 +81,7 @@ class FooterPageController extends Controller
                 $request->all(),
                 [
                     "page_details" => "required",
-                    "page_details.slug" => "required",
+                    "page_details.slug" => "required|unique:footer_page,slug,NULL,page_id,deleted_at,NULL",
                     "page_details.translations" => "required",
                     "page_details.translations.*.lang" => "required|max:2",
                     "page_details.translations.*.title" => "required",
@@ -107,7 +107,7 @@ class FooterPageController extends Controller
             $apiMessage = trans('messages.success.MESSAGE_FOOTER_PAGE_CREATED');
             $apiData = ['page_id' => $footerPage['page_id']];
             return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
-        } catch (PDOException $e) {
+        } catch (PDOException $e) {dd($e);
             return $this->PDO(
                 config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
                 trans(
@@ -171,7 +171,7 @@ class FooterPageController extends Controller
                 $request->all(),
                 [
                 "page_details" => "required",
-                "page_details.slug" => "sometimes|required",
+                "page_details.slug" => "sometimes|required|unique:footer_page,slug,NULL,page_id,deleted_at,NULL",
                 "page_details.translations.*.lang" => "required_with:page_details.translations|max:2",
                 "page_details.translations.*.title" => "required_with:page_details.translations",
                 "page_details.translations.*.sections" => "required_with:page_details.translations",
