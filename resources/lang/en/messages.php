@@ -125,7 +125,7 @@ return [
         'ERROR_INVITE_MISSION_ALREADY_EXIST' => 'User is already invited for this mission',
         'ERROR_MISSION_APPLICATION_DEADLINE_PASSED' => 'Application deadline is passed. You cannot apply for this mission',
         'ERROR_MISSION_APPLICATION_ALREADY_ADDED' => 'You have already applied for this mission',
-        'ERROR_MISSION_APPLICATION_NOT_FOUND' => 'Requested mission application not exist',
+        'ERROR_MISSION_APPLICATION_NOT_FOUND' => 'Application does not exist',
         'ERROR_MISSION_RATING_INVALID_DATA' => 'Mission rating creation failed. Please check input parameters',
         'ERROR_MISSION_COMMENT_INVALID_DATA' => 'Mission comment creation failed. Please check input parameters',
         
