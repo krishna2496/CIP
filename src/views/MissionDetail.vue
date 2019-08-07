@@ -4,10 +4,22 @@
      		<ThePrimaryHeader v-if="isShownComponent"></ThePrimaryHeader>
     	</header>
       	<main>
-			<social-sharing v-bind:url="facebookSharingUrl" inline-template>
-				<div>
+			<social-sharing 
+				v-bind:url="socialSharingUrl"
+				:title="missionDetail.title"
+				:description="missionDetail.short_description"
+				inline-template
+			>
+				<div class="social-sharing">
 					<network network="facebook">
-						<i class="fa fa-facebook"></i> Facebook
+						<i class="social-icon facebook-icon">
+							<img :src="$store.state.imagePath+'/assets/images/facebook-ic.svg'" alt="Facebook" />
+						</i>
+					</network>
+					<network network="twitter">
+						<i class="social-icon twitter-icon">
+							<img :src="$store.state.imagePath+'/assets/images/twitter-ic.svg'" alt="Twitter" />
+						</i>
 					</network>
 				</div>
 			</social-sharing>
@@ -425,23 +437,22 @@
 									<div class="comment-list" 
 										v-if="missionComment && missionComment.length > 0">
 										<div class="comment-list-inner" data-simplebar>
-											<div>
-											<div class="comment-list-item" v-for="comments in missionComment">
-												<b-media class="comment-media">
-													<i slot="aside" class="user-profile-icon" 
-														:style="{backgroundImage: 'url(' + comments.user.avatar + ')'}">
-													</i>
-													<h5>{{comments.user.first_name}} {{comments.user.last_name}}</h5>
-													<p>{{ getCommentDate(comments.created_at) }}</p>
-												</b-media>
-												<p>
-												{{comments.comment}}
-												</p>
+											<div class="more-inner-list" >
+												<div class="comment-list-item" v-for="comments in missionComment">
+													<b-media class="comment-media">
+														<i slot="aside" class="user-profile-icon" 
+															:style="{backgroundImage: 'url(' + comments.user.avatar + ')'}">
+														</i>
+														<h5>{{comments.user.first_name}} {{comments.user.last_name}}</h5>
+														<p>{{ getCommentDate(comments.created_at) }}</p>
+													</b-media>
+													<p>
+													{{comments.comment}}
+													</p>
+												</div>
 											</div>
-										</div>
-										</div>					
-									</div>
-									<div class="more-comment-list" 
+										</div>	
+											<div class="more-comment-list" 
 										v-if="nextUrl != null">
 										<b-link  
 											v-if="loadMoreComment"
@@ -454,7 +465,9 @@
 											class="btn btn-bordersecondary">
 											<span>{{ langauageData.label.read_more_comment }}</span>
 										</b-link>
+									</div>				
 									</div>
+								
 									</b-collapse>
 							</div>
 					 </div>	
@@ -638,7 +651,7 @@ export default {
 			postComment : false,
 			loadMoreComment : false,
 			domainName: '',
-			facebookSharingUrl: '',
+			socialSharingUrl: ''
 	    };
   	},
 	mounted(){
@@ -672,7 +685,7 @@ export default {
 			}
 		}
 
-		this.facebookSharingUrl = process.env.VUE_APP_API_ENDPOINT+"social-sharing/"+this.domainName+"/"+this.missionId+"/"+store.state.defaultLanguageId;
+		this.socialSharingUrl = process.env.VUE_APP_API_ENDPOINT+"social-sharing/"+this.domainName+"/"+this.missionId+"/"+store.state.defaultLanguageId;
 	},
     computed: {
    		filteredOptions() {
@@ -980,7 +993,15 @@ export default {
 
         showMoreComment() {
         	this.page++;
-        	this.missionComments();	
+    		var simplebarContent = document.querySelector(".comment-list-inner .simplebar-content");
+			var simplebarHeight = simplebarContent.offsetHeight
+			console.log(simplebarHeight)
+			setTimeout(function(){
+				var simplebarWrapper  = document.querySelector(".comment-list .simplebar-content-wrapper");
+				simplebarWrapper.scrollTop = simplebarHeight;
+				console.log(simplebarWrapper.scrollTop)	
+			},100);
+			this.missionComments();
         }
    },
 	created() {
@@ -1037,7 +1058,7 @@ export default {
 			this.applyButton = this.langauageData.label.apply_now;
 	       	this.page = 1;
 			this.getMissionDetail();
-			this.facebookSharingUrl = process.env.VUE_APP_API_ENDPOINT+"social-sharing/"+this.domainName+"/"+this.missionId+"/"+store.state.defaultLanguageId;			
+			this.socialSharingUrl = process.env.VUE_APP_API_ENDPOINT+"social-sharing/"+this.domainName+"/"+this.missionId+"/"+store.state.defaultLanguageId;			
 	    }
 	} 
 };
