@@ -927,7 +927,7 @@ export default {
 					}
 				  	setTimeout(() => {
 					  	this.loadMoreComment = false;	
-				  	},500)			
+				  	},100)			
 			});
         },
 
