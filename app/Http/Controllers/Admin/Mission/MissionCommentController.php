@@ -44,7 +44,7 @@ class MissionCommentController extends Controller
     }
 
     /**
-     * Display a listing of the resource.
+     * Get listing of tenant's comments
      * @param int $missionId
      * @return Illuminate\Http\JsonResponse
      */
