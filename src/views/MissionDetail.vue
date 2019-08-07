@@ -928,7 +928,8 @@ export default {
 			this.missionComment = [],
 			this.langauageData = JSON.parse(store.state.languageLabel);
 			this.applyButton = this.langauageData.label.apply_now
-	       	this.getMissionDetail();
+			this.getMissionDetail();
+			this.facebookSharingUrl = process.env.VUE_APP_API_ENDPOINT+"social-sharing/"+this.domainName+"/"+this.missionId+"/"+store.state.defaultLanguageId;			
 	    }
 	} 
 };
