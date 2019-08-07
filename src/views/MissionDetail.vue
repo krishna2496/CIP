@@ -13,274 +13,275 @@
 			</social-sharing>
 			<b-container>
 		  	<div class="slider-banner-block">
-					<b-row>
-						<b-col lg="6" class="slider-col">
-							<MissionCarousel  v-if="isShownMediaComponent" @defaultMediaPathDetail = "defaultMediaPathDetail"></MissionCarousel>
-						</b-col>
-						<b-col lg="6" class="ml-auto banner-content-wrap">
-							<div class="banner-content-block">
-							<h1>{{missionDetail.title}}</h1>
-								<div class="rating-with-btn">
-									<div class="rating-block">
-										<star-rating
-										v-bind:increment="0.5"
-										v-bind:max-rating="5"
-										:border-width="2"
-										border-color="#757575"
-										inactive-color="#Fff"
-										active-color="#F7D341"
-										v-bind:star-size="25"
-										:rating="missionDetail.rating"
-										@rating-selected ="setRating"
-										>
-										</star-rating>
-									</div>
-									<b-button 
- 									v-bind:class="{ 
-	 									'btn-borderprimary': true, 
-	 									'icon-btn': true,
-	 									'added-fav' : missionAddedToFavoriteByUser
- 									}"
-									 @click="favoriteMission(missionId)">
-									<i class="normal-img">
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 21" width="24" height="21">
-                                        <g id="Main Content">
-                                            <g id="1">
-                                                <g id="Image content">
-                                                    <path id="Forma 1" d="M22.1 2.86C20.9 1.66 19.3 1 17.59 1C15.89 1 14.29 1.66 13.08 2.86L12.49 3.45L11.89 2.86C10.69 1.66 9.08 1 7.38 1C5.67 1 4.07 1.66 2.87 2.86C0.38 5.34 0.38 9.36 2.87 11.84L11.78 20.71C11.93 20.86 12.11 20.95 12.3 20.98C12.36 20.99 12.43 21 12.49 21C12.74 21 13 20.9 13.19 20.71L22.1 11.84C24.59 9.36 24.59 5.34 22.1 2.86ZM20.71 10.45L12.49 18.64L4.26 10.45C2.54 8.74 2.54 5.96 4.26 4.25C5.09 3.42 6.2 2.96 7.38 2.96C8.56 2.96 9.66 3.42 10.5 4.25L11.79 5.53C12.16 5.9 12.81 5.9 13.18 5.53L14.47 4.25C15.31 3.42 16.41 2.96 17.59 2.96C18.77 2.96 19.88 3.42 20.71 4.25C22.43 5.96 22.43 8.74 20.71 10.45Z" />
-                                                </g>
-                                            </g>
-                                        </g>
-                                    </svg>
-                                    </i>
-                                     <i class="hover-img">
-                                       <svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-                                            viewBox="0 0 492.7 426.8" style="enable-background:new 0 0 492.7 426.8;" xml:space="preserve">
-                                        <g>
-                                            <g id="Icons_18_">
-                                                <path d="M492.7,133.1C492.7,59.6,433.1,0,359.7,0c-48,0-89.9,25.5-113.3,63.6C222.9,25.5,181,0,133,0
-                                                    C59.6,0,0,59.6,0,133.1c0,40,17.7,75.8,45.7,100.2l188.5,188.6c3.2,3.2,7.6,5,12.1,5s8.9-1.8,12.1-5L447,233.2
-                                                    C475,208.9,492.7,173.1,492.7,133.1z"/>
-                                            </g>
-                                        </g>
-                                        </svg>
-                                    </i>	
-									<span v-if="missionAddedToFavoriteByUser">
-										{{ langauageData.label.remove_from_favourite }}
-									</span>
-
-									<span v-else>
-										{{ langauageData.label.add_to_favourite }}
-									</span>
-
-								</b-button>
+				<b-row>
+					<b-col lg="6" class="slider-col">
+						<MissionCarousel  v-if="isShownMediaComponent" @defaultMediaPathDetail = "defaultMediaPathDetail"></MissionCarousel>
+					</b-col>
+					<b-col lg="6" class="ml-auto banner-content-wrap">
+						<div class="banner-content-block">
+						<h1>{{missionDetail.title}}</h1>
+							<div class="rating-with-btn">
+								<div class="rating-block">
+									<star-rating
+									v-bind:increment="0.5"
+									v-bind:max-rating="5"
+									:border-width="2"
+									border-color="#757575"
+									inactive-color="#Fff"
+									active-color="#F7D341"
+									v-bind:star-size="25"
+									:rating="missionDetail.rating"
+									@rating-selected ="setRating"
+									>
+									</star-rating>
 								</div>
+								<b-button 
+									v-bind:class="{ 
+										'btn-borderprimary': true, 
+										'icon-btn': true,
+										'added-fav' : missionAddedToFavoriteByUser
+									}"
+								 @click="favoriteMission(missionId)">
+								<i class="normal-img">
+				                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 21" width="24" height="21">
+				                    <g id="Main Content">
+				                        <g id="1">
+				                            <g id="Image content">
+				                                <path id="Forma 1" d="M22.1 2.86C20.9 1.66 19.3 1 17.59 1C15.89 1 14.29 1.66 13.08 2.86L12.49 3.45L11.89 2.86C10.69 1.66 9.08 1 7.38 1C5.67 1 4.07 1.66 2.87 2.86C0.38 5.34 0.38 9.36 2.87 11.84L11.78 20.71C11.93 20.86 12.11 20.95 12.3 20.98C12.36 20.99 12.43 21 12.49 21C12.74 21 13 20.9 13.19 20.71L22.1 11.84C24.59 9.36 24.59 5.34 22.1 2.86ZM20.71 10.45L12.49 18.64L4.26 10.45C2.54 8.74 2.54 5.96 4.26 4.25C5.09 3.42 6.2 2.96 7.38 2.96C8.56 2.96 9.66 3.42 10.5 4.25L11.79 5.53C12.16 5.9 12.81 5.9 13.18 5.53L14.47 4.25C15.31 3.42 16.41 2.96 17.59 2.96C18.77 2.96 19.88 3.42 20.71 4.25C22.43 5.96 22.43 8.74 20.71 10.45Z" />
+				                            </g>
+				                        </g>
+				                    </g>
+				                </svg>
+				                </i>
+				                 <i class="hover-img">
+				                   <svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+				                        viewBox="0 0 492.7 426.8" style="enable-background:new 0 0 492.7 426.8;" xml:space="preserve">
+				                    <g>
+				                        <g id="Icons_18_">
+				                            <path d="M492.7,133.1C492.7,59.6,433.1,0,359.7,0c-48,0-89.9,25.5-113.3,63.6C222.9,25.5,181,0,133,0
+				                                C59.6,0,0,59.6,0,133.1c0,40,17.7,75.8,45.7,100.2l188.5,188.6c3.2,3.2,7.6,5,12.1,5s8.9-1.8,12.1-5L447,233.2
+				                                C475,208.9,492.7,173.1,492.7,133.1z"/>
+				                        </g>
+				                    </g>
+				                    </svg>
+				                </i>	
+								<span v-if="missionAddedToFavoriteByUser">
+									{{ langauageData.label.remove_from_favourite }}
+								</span>
 
-							<p>{{missionDetail.short_description}}</p>
-							<div class="group-details">
-								<div class="top-strip">
-                                        <span>
-	                                        <!-- Mission type time -->
-	                                        <template v-if="checkMissionTypeTime(missionDetail.mission_type)">
-	                                        <template v-if="missionDetail.end_date !== null">
-	                                            {{ langauageData.label.from }} 
-	                                            {{missionDetail.start_date | formatDate }} 
-	                                            {{ langauageData.label.until}}
-	                                            {{ missionDetail.end_date | formatDate }} 
-	                                        </template>
-	                                        <template v-else>
-	                                            {{ langauageData.label.on_going_opportunities }}  
-	                                        </template>
-	                                        </template>
-	                                        <!-- Mission type goal -->
-	                                        <template v-else>
-	                                            {{missionDetail.objective}}
-	                                        </template>
-                                        </span>    
-                                </div>
-									<!-- {{missionDetail}} -->
-								<template v-if="checkMissionTypeTime(missionDetail.mission_type)">
-                                        <div class="group-details-inner">
-                                            <template v-if="missionDetail.total_seats != 0 && missionDetail.total_seats !== null">
-                                                <div class="detail-column info-block">
-                                                    <i class="icon-wrap">
-                                                        <img :src="$store.state.imagePath+'/assets/images/user-icon.svg'" alt="user">
-                                                        
-                                                    </i>
-                                                    <div class="text-wrap">
-                                                        <span class="title-text mb-1">{{missionDetail.seats_left}}</span>
-                                                        <span class="subtitle-text">{{ langauageData.label.seats_left }}</span>
-                                                    </div>
-                                                </div>
-                                            </template>
-                                            <template v-else>
-                                                <div class="detail-column info-block">
-                                                    <i class="icon-wrap">
-                                                        <img :src="$store.state.imagePath+'/assets/images/user-icon1.svg'" alt="user">
-                                                    </i>
-                                                    <div class="text-wrap">
-                                                        <span class="title-text mb-1">{{missionDetail.mission_application_count}}</span>
-                                                        <span class="subtitle-text">{{ langauageData.label.already_volunteered }}</span>
-                                                    </div>
-                                                </div>
-                                            </template>
-                                            <template v-if="missionDetail.application_deadline != null">
-                                                <div class="detail-column info-block">
-                                                    <i class="icon-wrap">
-                                                        <img :src="$store.state.imagePath+'/assets/images/clock.svg'" alt="user">
-                                                    </i>
-                                                    <div class="text-wrap">
-                                                        <span class="title-text mb-1">{{missionDetail.application_deadline | formatDate}}</span>
-                                                        <span class="subtitle-text">{{ langauageData.label.deadline }}</span>
-                                                    </div>
-                                                </div>
-                                            </template>
-                                        </div>
-                                    </template>
-                                    <template v-else>
-                                        <div class="group-details-inner has-progress">
-                                            <div class="detail-column info-block">
-                                            <template v-if="missionDetail.total_seats != 0 && missionDetail.total_seats !== null">
-                                                <i class="icon-wrap">
-                                                    <img :src="$store.state.imagePath+'/assets/images/user-icon.svg'" alt="user">
-                                                </i>
-                                                <div class="text-wrap">
-                                                    <span class="title-text mb-1">{{missionDetail.seats_left}}</span>
-                                                    <span class="subtitle-text">{{ langauageData.label.seats_left }}</span>
-                                                </div>
-                                            </template>
-                                            <template v-else>
-                                                <i class="icon-wrap">
-                                                    <img :src="$store.state.imagePath+'/assets/images/user-icon1.svg'" alt="user">
-                                                </i>
-                                                <div class="text-wrap">
-                                                    <span class="title-text mb-1">{{missionDetail.mission_application_count}}</span>
-                                                    <span class="subtitle-text">{{ langauageData.label.already_volunteered }}</span>
-                                                </div>
-                                            </template>
-                                            </div>
-                                            <div class="detail-column progress-block">
-			                                        <i class="icon-wrap">
-			                                            <img src="../assets/images/landing/target-ic.svg" alt="user">
-			                                        </i>
-			                                        <div class="text-wrap">
-			                                            <b-progress :value="missionDetail.achieved_goal" :max="missionDetail.goal_objective" class="mb-2"></b-progress>
-			                                            <span class="subtitle-text">{{missionDetail.achieved_goal}} 
-			                                            {{ langauageData.label.achieved}}</span>
-			                                        </div>
-		                                    	</div>
-                                        </div>
-                                    </template>
+								<span v-else>
+									{{ langauageData.label.add_to_favourite }}
+								</span>
+
+							</b-button>
 							</div>
-							<b-list-group class="info-box">
-								<b-list-group-item>
-									<div>
-										<i class="img-wrap">
-											<img src="../assets/images/location-black.svg" alt="" />
-										</i>
-										<span class="label">{{ langauageData.label.city}}</span>
-										<p class="text-wrap">{{missionDetail.city_name}}</p>
-									</div>
-								</b-list-group-item>
-								<b-list-group-item>
-									<div>
-										<i class="img-wrap">
-											<img src="../assets/images/earth-ic.svg" alt="" />
-										</i>
-										<span class="label">{{ langauageData.label.theme}}</span>
-										<p class="text-wrap">{{getThemeTitle(missionDetail.mission_theme)}}</p>
-									</div>
-								</b-list-group-item>
-								<b-list-group-item>
-									<div>
-										<i class="img-wrap">
-											<img src="../assets/images/calendar.svg" alt="" />
-										</i>
-										<span class="label">{{ langauageData.label.date}}</span>
-										<template v-if="missionDetail.application_deadline && missionDetail.application_deadline != null">
-                                                <p class="text-wrap">{{missionDetail.application_deadline | formatDate}}</p>
-                                        </template>
-                                        <template v-else>
-                                        	<p class="text-wrap">{{ langauageData.label.on_going_opportunities }} </p>
-                                        </template>
-										
-									</div>
-								</b-list-group-item>
-								<b-list-group-item>
-									<div>
-										<i class="img-wrap">
-											<img src="../assets/images/group-ic.svg" alt="" />
-										</i>
-										<span class="label">{{ langauageData.label.organisation}}</span>
-										<p class="text-wrap">{{missionDetail.organisation_name}}</p>
-									</div>
-								</b-list-group-item>
-							</b-list-group>
-							<div class="btn-wrap">
-								<b-button class="btn-borderprimary icon-btn"  
-								@click="handleModal(missionId)">
+
+						<p>{{missionDetail.short_description}}</p>
+						<div class="group-details">
+							<div class="top-strip">
+				                    <span>
+				                        <!-- Mission type time -->
+				                        <template v-if="checkMissionTypeTime(missionDetail.mission_type)">
+				                        <template v-if="missionDetail.end_date !== null">
+				                            {{ langauageData.label.from }} 
+				                            {{missionDetail.start_date | formatDate }} 
+				                            {{ langauageData.label.until}}
+				                            {{ missionDetail.end_date | formatDate }} 
+				                        </template>
+				                        <template v-else>
+				                            {{ langauageData.label.on_going_opportunities }}  
+				                        </template>
+				                        </template>
+				                        <!-- Mission type goal -->
+				                        <template v-else>
+				                            {{missionDetail.objective}}
+				                        </template>
+				                    </span>    
+				            </div>
+								<!-- {{missionDetail}} -->
+							<template v-if="checkMissionTypeTime(missionDetail.mission_type)">
+				                    <div class="group-details-inner">
+				                        <template v-if="missionDetail.total_seats != 0 && missionDetail.total_seats !== null">
+				                            <div class="detail-column info-block">
+				                                <i class="icon-wrap">
+				                                    <img :src="$store.state.imagePath+'/assets/images/user-icon.svg'" alt="user">
+				                                    
+				                                </i>
+				                                <div class="text-wrap">
+				                                    <span class="title-text mb-1">{{missionDetail.seats_left}}</span>
+				                                    <span class="subtitle-text">{{ langauageData.label.seats_left }}</span>
+				                                </div>
+				                            </div>
+				                        </template>
+				                        <template v-else>
+				                            <div class="detail-column info-block">
+				                                <i class="icon-wrap">
+				                                    <img :src="$store.state.imagePath+'/assets/images/user-icon1.svg'" alt="user">
+				                                </i>
+				                                <div class="text-wrap">
+				                                    <span class="title-text mb-1">{{missionDetail.mission_application_count}}</span>
+				                                    <span class="subtitle-text">{{ langauageData.label.already_volunteered }}</span>
+				                                </div>
+				                            </div>
+				                        </template>
+				                        <template v-if="missionDetail.application_deadline != null">
+				                            <div class="detail-column info-block">
+				                                <i class="icon-wrap">
+				                                    <img :src="$store.state.imagePath+'/assets/images/clock.svg'" alt="user">
+				                                </i>
+				                                <div class="text-wrap">
+				                                    <span class="title-text mb-1">{{missionDetail.application_deadline | formatDate}}</span>
+				                                    <span class="subtitle-text">{{ langauageData.label.deadline }}</span>
+				                                </div>
+				                            </div>
+				                        </template>
+				                    </div>
+				                </template>
+				                <template v-else>
+				                    <div class="group-details-inner has-progress">
+				                        <div class="detail-column info-block">
+				                        <template v-if="missionDetail.total_seats != 0 && missionDetail.total_seats !== null">
+				                            <i class="icon-wrap">
+				                                <img :src="$store.state.imagePath+'/assets/images/user-icon.svg'" alt="user">
+				                            </i>
+				                            <div class="text-wrap">
+				                                <span class="title-text mb-1">{{missionDetail.seats_left}}</span>
+				                                <span class="subtitle-text">{{ langauageData.label.seats_left }}</span>
+				                            </div>
+				                        </template>
+				                        <template v-else>
+				                            <i class="icon-wrap">
+				                                <img :src="$store.state.imagePath+'/assets/images/user-icon1.svg'" alt="user">
+				                            </i>
+				                            <div class="text-wrap">
+				                                <span class="title-text mb-1">{{missionDetail.mission_application_count}}</span>
+				                                <span class="subtitle-text">{{ langauageData.label.already_volunteered }}</span>
+				                            </div>
+				                        </template>
+				                        </div>
+				                        <div class="detail-column progress-block">
+				                                <i class="icon-wrap">
+				                                    <img src="../assets/images/landing/target-ic.svg" alt="user">
+				                                </i>
+				                                <div class="text-wrap">
+				                                    <b-progress :value="missionDetail.achieved_goal" :max="missionDetail.goal_objective" class="mb-2"></b-progress>
+				                                    <span class="subtitle-text">{{missionDetail.achieved_goal}} 
+				                                    {{ langauageData.label.achieved}}</span>
+				                                </div>
+				                        	</div>
+				                    </div>
+				                </template>
+						</div>
+						<b-list-group class="info-box">
+							<b-list-group-item>
+								<div>
+									<i class="img-wrap">
+										<img src="../assets/images/location-black.svg" alt="" />
+									</i>
+									<span class="label">{{ langauageData.label.city}}</span>
+									<p class="text-wrap">{{missionDetail.city_name}}</p>
+								</div>
+							</b-list-group-item>
+							<b-list-group-item>
+								<div>
+									<i class="img-wrap">
+										<img src="../assets/images/earth-ic.svg" alt="" />
+									</i>
+									<span class="label">{{ langauageData.label.theme}}</span>
+									<p class="text-wrap">{{getThemeTitle(missionDetail.mission_theme)}}</p>
+								</div>
+							</b-list-group-item>
+							<b-list-group-item>
+								<div>
+									<i class="img-wrap">
+										<img src="../assets/images/calendar.svg" alt="" />
+									</i>
+									<span class="label">{{ langauageData.label.date}}</span>
+									<template v-if="missionDetail.application_deadline && missionDetail.application_deadline != null">
+				                            <p class="text-wrap">{{missionDetail.application_deadline | formatDate}}</p>
+				                    </template>
+				                    <template v-else>
+				                    	<p class="text-wrap">{{ langauageData.label.on_going_opportunities }} </p>
+				                    </template>
+									
+								</div>
+							</b-list-group-item>
+							<b-list-group-item>
+								<div>
+									<i class="img-wrap">
+										<img src="../assets/images/group-ic.svg" alt="" />
+									</i>
+									<span class="label">{{ langauageData.label.organisation}}</span>
+									<p class="text-wrap">{{missionDetail.organisation_name}}</p>
+								</div>
+							</b-list-group-item>
+						</b-list-group>
+
+						<div class="btn-wrap">
+							<b-button class="btn-borderprimary icon-btn"  
+							@click="handleModal(missionId)">
+								<i>
+									<svg height="512pt" viewBox="0 0 512 512" width="512pt"
+										xmlns="http://www.w3.org/2000/svg">
+										<path
+											d="m512 428h-84v84h-40v-84h-84v-40h84v-84h40v84h84zm-212.695312-204.5625c1.757812 7.910156 2.695312 16.128906 2.695312 24.5625 0 34.550781-15.59375 65.527344-40.105469 86.269531.699219.277344 1.40625.546875 2.105469.832031v44.199219c-21.414062-11.667969-45.945312-18.300781-72-18.300781v-.039062c-.332031.007812-.667969.007812-1 .015624v.023438c-83.261719 0-151 67.738281-151 151h-40c0-79.371094 48.671875-147.582031 117.730469-176.378906-25.449219-20.734375-41.730469-52.3125-41.730469-87.621094 0-62.308594 50.691406-113 113-113 7.40625 0 14.644531.722656 21.65625 2.089844-1.734375-7.84375-2.65625-15.988282-2.65625-24.34375 0-62.167969 50.578125-112.746094 112.746094-112.746094 62.167968 0 112.746094 50.578125 112.746094 112.746094 0 34.894531-15.9375 66.136718-40.910157 86.832031 33.011719 13.109375 61.464844 35.117187 82.304688 63.421875h-53.847657c-24.847656-22.023438-56.976562-36-92.273437-37.796875-2.652344.1875-5.324219.289063-8.019531.289063-7.332032 0-14.5-.710938-21.441406-2.054688zm-51.304688-110.691406c0 40.113281 32.632812 72.746094 72.746094 72.746094 40.109375 0 72.746094-32.632813 72.746094-72.746094 0-40.113282-32.636719-72.746094-72.746094-72.746094-40.113282 0-72.746094 32.632812-72.746094 72.746094zm14 135.253906c0-40.253906-32.746094-73-73-73s-73 32.746094-73 73 32.746094 73 73 73 73-32.746094 73-73zm0 0" />
+									</svg>
+								</i>
+								<span>{{ langauageData.label.recommend_to_co_worker }}</span>
+							</b-button>
+							<b-button 
+								class="btn-bordersecondary icon-btn" 
+								v-if="missionDetail.user_application_status == 'AUTOMATICALLY_APPROVED' ||
+									missionDetail.user_application_status == 'PENDING'" 
+								:disabled="true"
+								
+							>
+									<span>
+										{{ langauageData.label.applied }}
+									</span>
 									<i>
-										<svg height="512pt" viewBox="0 0 512 512" width="512pt"
-											xmlns="http://www.w3.org/2000/svg">
-											<path
-												d="m512 428h-84v84h-40v-84h-84v-40h84v-84h40v84h84zm-212.695312-204.5625c1.757812 7.910156 2.695312 16.128906 2.695312 24.5625 0 34.550781-15.59375 65.527344-40.105469 86.269531.699219.277344 1.40625.546875 2.105469.832031v44.199219c-21.414062-11.667969-45.945312-18.300781-72-18.300781v-.039062c-.332031.007812-.667969.007812-1 .015624v.023438c-83.261719 0-151 67.738281-151 151h-40c0-79.371094 48.671875-147.582031 117.730469-176.378906-25.449219-20.734375-41.730469-52.3125-41.730469-87.621094 0-62.308594 50.691406-113 113-113 7.40625 0 14.644531.722656 21.65625 2.089844-1.734375-7.84375-2.65625-15.988282-2.65625-24.34375 0-62.167969 50.578125-112.746094 112.746094-112.746094 62.167968 0 112.746094 50.578125 112.746094 112.746094 0 34.894531-15.9375 66.136718-40.910157 86.832031 33.011719 13.109375 61.464844 35.117187 82.304688 63.421875h-53.847657c-24.847656-22.023438-56.976562-36-92.273437-37.796875-2.652344.1875-5.324219.289063-8.019531.289063-7.332032 0-14.5-.710938-21.441406-2.054688zm-51.304688-110.691406c0 40.113281 32.632812 72.746094 72.746094 72.746094 40.109375 0 72.746094-32.632813 72.746094-72.746094 0-40.113282-32.636719-72.746094-72.746094-72.746094-40.113282 0-72.746094 32.632812-72.746094 72.746094zm14 135.253906c0-40.253906-32.746094-73-73-73s-73 32.746094-73 73 32.746094 73 73 73 73-32.746094 73-73zm0 0" />
+										<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 16" width="19" height="15">
+											<g id="Main Content">
+												<g id="1">
+													<g id="Button">
+														<path id="Forma 1 copy 12" class="shp0"
+															d="M16.49,1.22c-0.31,-0.3 -0.83,-0.3 -1.16,0c-0.31,0.29 -0.31,0.77 0,1.06l5.88,5.44h-19.39c-0.45,0 -0.81,0.33 -0.81,0.75c0,0.42 0.36,0.76 0.81,0.76h19.39l-5.88,5.43c-0.31,0.3 -0.31,0.78 0,1.07c0.32,0.3 0.85,0.3 1.16,0l7.27,-6.73c0.32,-0.29 0.32,-0.77 0,-1.06z" />
+													</g>
+												</g>
+											</g>
 										</svg>
 									</i>
-									<span>{{ langauageData.label.recommend_to_co_worker }}</span>
-								</b-button>
-								<b-button 
-									class="btn-bordersecondary icon-btn" 
-									v-if="missionDetail.user_application_status == 'AUTOMATICALLY_APPROVED' ||
-										missionDetail.user_application_status == 'PENDING'" 
-									:disabled="true"
-									
-								>
-										<span>
-											{{ langauageData.label.applied }}
-										</span>
-										<i>
-											<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 16" width="19" height="15">
-												<g id="Main Content">
-													<g id="1">
-														<g id="Button">
-															<path id="Forma 1 copy 12" class="shp0"
-																d="M16.49,1.22c-0.31,-0.3 -0.83,-0.3 -1.16,0c-0.31,0.29 -0.31,0.77 0,1.06l5.88,5.44h-19.39c-0.45,0 -0.81,0.33 -0.81,0.75c0,0.42 0.36,0.76 0.81,0.76h19.39l-5.88,5.43c-0.31,0.3 -0.31,0.78 0,1.07c0.32,0.3 0.85,0.3 1.16,0l7.27,-6.73c0.32,-0.29 0.32,-0.77 0,-1.06z" />
-														</g>
+							</b-button>
+
+							<b-button 
+								class="btn-bordersecondary icon-btn" 
+								v-else 
+								:disabled="disableApply"
+								@click="applyForMission(missionDetail.mission_id)"
+							>
+
+									<span>
+										{{ applyButton }}
+									</span>				
+									<i>
+										<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 16" width="19" height="15">
+											<g id="Main Content">
+												<g id="1">
+													<g id="Button">
+														<path id="Forma 1 copy 12" class="shp0"
+															d="M16.49,1.22c-0.31,-0.3 -0.83,-0.3 -1.16,0c-0.31,0.29 -0.31,0.77 0,1.06l5.88,5.44h-19.39c-0.45,0 -0.81,0.33 -0.81,0.75c0,0.42 0.36,0.76 0.81,0.76h19.39l-5.88,5.43c-0.31,0.3 -0.31,0.78 0,1.07c0.32,0.3 0.85,0.3 1.16,0l7.27,-6.73c0.32,-0.29 0.32,-0.77 0,-1.06z" />
 													</g>
 												</g>
-											</svg>
-										</i>
-								</b-button>
+											</g>
+										</svg>
+									</i>
+							</b-button>
 
-								<b-button 
-									class="btn-bordersecondary icon-btn" 
-									v-else 
-									:disabled="disableApply"
-									@click="applyForMission(missionDetail.mission_id)"
-								>
-
-										<span>
-											{{ applyButton }}
-										</span>				
-										<i>
-											<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 16" width="19" height="15">
-												<g id="Main Content">
-													<g id="1">
-														<g id="Button">
-															<path id="Forma 1 copy 12" class="shp0"
-																d="M16.49,1.22c-0.31,-0.3 -0.83,-0.3 -1.16,0c-0.31,0.29 -0.31,0.77 0,1.06l5.88,5.44h-19.39c-0.45,0 -0.81,0.33 -0.81,0.75c0,0.42 0.36,0.76 0.81,0.76h19.39l-5.88,5.43c-0.31,0.3 -0.31,0.78 0,1.07c0.32,0.3 0.85,0.3 1.16,0l7.27,-6.73c0.32,-0.29 0.32,-0.77 0,-1.06z" />
-														</g>
-													</g>
-												</g>
-											</svg>
-										</i>
-								</b-button>
-
+						</div>
 							</div>
-								</div>
-						</b-col>
-					</b-row> 	
-		  		</div>
+					</b-col>
+				</b-row> 	
+	  		</div>
 		  <div class="platform-details-wrap">
           <b-row>
               <b-col xl="8" lg="7" class="platform-details-left">
@@ -385,43 +386,72 @@
 								<div class="tab-title">
 									<h3 v-b-toggle.comments>{{ langauageData.label.comment }}</h3>
 								</div>
-								<div>
-									<b-collapse id="comments" accordion="my-accordion" role="tabpanel" class="tab-content comment-block">
-										<b-form class="comment-form">
-									<label>{{ langauageData.label.comment }}</label>
-									<b-form-textarea id="" 
-									:placeholder="langauageData.placeholder.comment"
-								     rows="4" size="lg"  no-resize></b-form-textarea>
-									<b-button class="btn-bordersecondary">{{ langauageData.label.post_comment }}</b-button>
-								</b-form>
-								<div class="comment-list" v-if="missionComment && missionComment.length > 0">
-									<div class="more-inner-list" >
-										<div class="comment-list-item" v-for="comments in missionComment">
-											<b-media class="comment-media">
-												<i slot="aside" class="user-profile-icon" 
-													:style="{backgroundImage: 'url(' + comments.user.avatar + ')'}">
-												</i>
-												<h5>{{comments.user.first_name}} {{comments.user.last_name}}</h5>
-												<p>{{ getCommentDate(comments.created_at) }}</p>
-											</b-media>
-											<p>
-											{{comments.comment}}
-											</p>
+									<b-collapse id="comments" accordion="my-accordion" role="tabpanel" class="			tab-content comment-block">
+
+									<b-form class="comment-form">
+										<label>{{ langauageData.label.comment }}</label>	
+										<b-form-textarea id="" 
+											:placeholder="langauageData.placeholder.comment"
+											v-model="comment"
+											:class="{ 'is-invalid': $v.comment.$error }"
+										    rows="4" size="lg"  no-resize>
+									    </b-form-textarea>
+
+									    <div v-if="submitted && !$v.comment.required" class="invalid-feedback">
+                        				{{ langauageData.errors.comment_required }}
+                        				</div>
+                        				<div class="btn-with-loader">
+											<b-button class="btn-bordersecondary" 
+											 	@click="handleSubmit" v-bind:disabled="postComment">
+												{{ langauageData.label.post_comment }}
+											</b-button>
+											<div class="spinner btn-loader" v-if="postComment">
+											  <div class="bounce1"></div>
+											  <div class="bounce2"></div>
+											  <div class="bounce3"></div>
+											</div>
 										</div>
-											
+									</b-form>
+
+									<div class="comment-list" 
+										v-if="missionComment && missionComment.length > 0" data-simplebar>
+										<div class="more-inner-list" >
+											<div class="comment-list-item" v-for="comments in missionComment">
+												<b-media class="comment-media">
+													<i slot="aside" class="user-profile-icon" 
+														:style="{backgroundImage: 'url(' + comments.user.avatar + ')'}">
+													</i>
+													<h5>{{comments.user.first_name}} {{comments.user.last_name}}</h5>
+													<p>{{ getCommentDate(comments.created_at) }}</p>
+												</b-media>
+												<p>
+												{{comments.comment}}
+												</p>
+											</div>
+										</div>					
 									</div>
-								
-								</div>
-								
+									<div class="more-comment-list" 
+										v-if="nextUrl != null">
+										<b-link  
+											v-if="loadMoreComment"
+											class="btn btn-bordersecondary">
+											<span>{{ langauageData.label.loading }}</span>
+										</b-link>
+										<b-link  
+											v-else
+											@click = "showMoreComment"
+											class="btn btn-bordersecondary">
+											<span>{{ langauageData.label.read_more_comment }}</span>
+										</b-link>
+									</div>
 									</b-collapse>
-								</div>
 							</div>
 					 </div>	
   				</div>
                 </b-col>
                 <b-col xl="4" lg="5" class="platform-details-right">
 					<div class="info-block">
-						 <h2 class="title-with-border"><span>{{ langauageData.label.information }}</span></h2>
+						<h2 class="title-with-border"><span>{{ langauageData.label.information }}</span></h2>
 						<div class="table-wrap">
 							<div class="table-row">
 								<span class="label-col">{{langauageData.label.skills}}</span>
@@ -526,10 +556,11 @@ import AppCustomChip from "../components/AppCustomChip";
 import StarRating from 'vue-star-rating';
 import constants from '../constant';
 import { VueAutosuggest } from 'vue-autosuggest';
-import {favoriteMission,inviteColleague ,applyMission,searchUser,storeMissionRating,missionDetail,relatedMissions,missionComments} from "../services/service";
+import {favoriteMission,inviteColleague ,applyMission,searchUser,storeMissionRating,missionDetail,relatedMissions,missionComments,storeMissionComments} from "../services/service";
 import SimpleBar from 'simplebar';
 import store from "../store";
 import moment from 'moment';
+import { required } from 'vuelidate/lib/validators';
 import SocialSharing from 'vue-social-sharing';
  
 
@@ -580,9 +611,7 @@ export default {
 	        require("@/assets/images/xlsx.svg"),
 			],
 	        orgLogo:require("@/assets/images/ces-logo.png"),
-	       
 	        currentPage: 1,
-	       
 			max: 100,
 			value: 70,
 			missionListing : [],
@@ -591,8 +620,14 @@ export default {
 			isShareComponentShown : false,
 			langauageData : [],
 			applyButton :'',
+			submitted: false,
+			comment :'',
+			nextUrl : null,
+			page:1,
+			postComment : false,
+			loadMoreComment : false,
 			domainName: '',
-			facebookSharingUrl: ''
+			facebookSharingUrl: '',
 	    };
   	},
 	mounted(){
@@ -645,6 +680,9 @@ export default {
             }
         }
    },
+   validations: {
+            comment: {required},
+    },
    methods: {
    		// Get comment create date format
 	   	getCommentDate(commentDate){
@@ -871,11 +909,64 @@ export default {
         },
         
         missionComments() {
-        	missionComments(this.$route.params.misisonId).then(response => {
+        	this.loadMoreComment = true;
+        	let commentData = {};
+        	commentData.missionId = this.$route.params.misisonId;
+        	commentData.page = this.page;
+        	missionComments(commentData).then(response => {
 					if(response.error == false) {
-						this.missionComment = response.data;
-					}			
+						if(this.missionComment.length) {
+							var _this = this;
+							response.data.map(function(value, key) {
+							     _this.missionComment.push(value);
+						    });
+						} else {
+							this.missionComment = response.data;
+						}
+						this.nextUrl = response.pagination.next_url;
+					}
+				  	setTimeout(() => {
+					  	this.loadMoreComment = false;	
+				  	},500)			
 			});
+        },
+
+        handleSubmit(e) {
+            this.submitted = true;
+            this.$v.$touch();
+            // stop here if form is invalid
+            if (this.$v.$invalid) {
+            	
+                return;
+            }
+            this.postComment = true;
+       	 	let commentData = {
+            	mission_id : '',
+            	comment : ''
+            }
+            commentData.mission_id = this.$route.params.misisonId;
+            commentData.comment = this.comment;
+            // Call to store mission service with params mission_id and comments
+            storeMissionComments(commentData).then( response => {
+                if(response.error == true){
+                    this.makeToast("danger",response.message);
+                } else {
+                	this.comment = '';
+                	this.disableApply = true;
+                	this.applyButton = this.langauageData.label.applied
+                    this.makeToast("success",response.message);
+                   	this.$v.$reset();
+                }
+                this.postComment = false;
+            });
+        },
+
+        showMoreComment() {
+        	this.page++;
+        	this.missionComments();
+        	var container = this.$el.querySelector(".simplebar-content-wrapper");
+        	console.log(container);
+      		container.scrollTop = container.scrollHeight;
         }
    },
 	created(){
@@ -926,9 +1017,15 @@ export default {
 			this.value = 70,
 			this.missionListing = [],
 			this.missionComment = [],
+			this.submitted = false,
+			this.nextUrl = null,
+			this.postComment = false,
+			this.loadMoreComment = false,
 			this.langauageData = JSON.parse(store.state.languageLabel);
-			this.applyButton = this.langauageData.label.apply_now
-	       	this.getMissionDetail();
+			this.applyButton = this.langauageData.label.apply_now;
+	       	this.page = 1;
+			this.getMissionDetail();
+			this.facebookSharingUrl = process.env.VUE_APP_API_ENDPOINT+"social-sharing/"+this.domainName+"/"+this.missionId+"/"+store.state.defaultLanguageId;			
 	    }
 	} 
 };
