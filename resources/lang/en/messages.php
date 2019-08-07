@@ -43,7 +43,7 @@ return [
         'MESSAGE_ASSETS_FILES_LISTING' => "Assets files listing successfully",
         'MESSAGE_TENANT_SETTING_UPDATE_SUCCESSFULLY' => 'Settings has been update successfully',
         'MESSAGE_TENANT_SETTINGS_LISTING' => 'Settings listing successfully',
-		'MESSAGE_THEME_CREATED' => 'Mission theme created successfully',
+        'MESSAGE_THEME_CREATED' => 'Mission theme created successfully',
         'MESSAGE_THEME_UPDATED' => 'Mission theme updated successfully',
         'MESSAGE_THEME_DELETED' => 'Mission theme deleted successfully',
         'MESSAGE_THEME_FOUND' => 'Mission theme found successfully',
@@ -58,11 +58,11 @@ return [
         'MESSAGE_MISSION_ADDED_TO_FAVOURITE' => 'Mission added to favourite',
         'MESSAGE_MISSION_DELETED_FROM_FAVOURITE' => 'Mission removed from favourite',
         'MESSAGE_MISSION_RATING_LISTING' => 'Get mission rating successfully',
-        'MESSAGE_TENANT_OPTION_FOUND' => 'Tenant option found', 
+        'MESSAGE_TENANT_OPTION_FOUND' => 'Tenant option found',
         'MESSAGE_INVITED_FOR_MISSION' => 'User invited to mission successfully',
         'MESSAGE_APPLICATION_CREATED' => 'You have successfully applied for this mission',
         'MESSAGE_RATING_ADDED' => 'Mission rating added successfully',
-        'MESSAGE_RATING_UPDATED' => 'Mission rating updated successfully',        
+        'MESSAGE_RATING_UPDATED' => 'Mission rating updated successfully',
         'MESSAGE_MISSION_VOLUNTEERS_LISTING' => 'Get mission volunteers successfully',
         'MESSAGE_NO_MISSION_VOLUNTEERS_FOUND' => 'No recent volunteers found',
         'MESSAGE_MISSION_MEDIA_LISTING' => 'Mission media listing successfully',
@@ -70,7 +70,7 @@ return [
         'MESSAGE_ASSET_IMAGES_RESET_SUCCESS' => 'Asset images reset successfully',
         'MESSAGE_NO_RELATED_MISSION_FOUND' => 'Related mission not found',
         'MESSAGE_NO_MISSION_MEDIA_FOUND' => 'Mission media not found',
-        'MESSAGE_NO_MISSION_COMMENT_FOUND' => 'Mission comments not found',  
+        'MESSAGE_NO_MISSION_COMMENT_FOUND' => 'Mission comments not found',
         'MESSAGE_COMMENT_ADDED' => 'Mission comment added successfully',
     ],
 
@@ -98,7 +98,7 @@ return [
         'ERROR_INVALID_ARGUMENT' => 'Invalid argument',
         'ERROR_FOOTER_PAGE_NOT_FOUND' => 'Footer page not found in the system',
         'ERROR_DATABASE_OPERATIONAL' => 'Database operational error',
-        'ERROR_NO_DATA_FOUND' => 'No data found',        
+        'ERROR_NO_DATA_FOUND' => 'No data found',
         'ERROR_NO_DATA_FOUND_FOR_SLUG' => 'No data found for slug',
 
         // Custom error code for Mission Module - 400000 - 409999
@@ -121,7 +121,9 @@ return [
         'ERROR_MISSION_APPLICATION_NOT_FOUND' => 'Requested mission application not exist',
         'ERROR_MISSION_RATING_INVALID_DATA' => 'Mission rating creation failed. Please check input parameters',
         'ERROR_MISSION_COMMENT_INVALID_DATA' => 'Mission comment creation failed. Please check input parameters',
-        
+        'ERROR_INVALID_MISSION_MEDIA_DATA' => 'Invalid mission media data',
+        'ERROR_INVALID_MISSION_DOCUMENT_DATA' => 'Invalid mission document data',
+
         // Custom error code for Tenant Authorization - 210000 - 219999
         'ERROR_INVALID_API_AND_SECRET_KEY' => 'Invalid API key or secret key',
         'ERROR_API_AND_SECRET_KEY_REQUIRED' => 'API key and secret key are required',
