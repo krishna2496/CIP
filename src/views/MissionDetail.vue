@@ -400,6 +400,9 @@
 									    <div v-if="submitted && !$v.comment.required" class="invalid-feedback">
                         				{{ langauageData.errors.comment_required }}
                         				</div>
+                        				<div v-if="submitted && !$v.comment.maxLength" class="invalid-feedback">
+                        				{{ langauageData.errors.comment_max_length }}
+                        				</div>
                         				<div class="btn-with-loader">
 											<b-button class="btn-bordersecondary" 
 											 	@click="handleSubmit" v-bind:disabled="postComment">
@@ -560,7 +563,7 @@ import {favoriteMission,inviteColleague ,applyMission,searchUser,storeMissionRat
 import SimpleBar from 'simplebar';
 import store from "../store";
 import moment from 'moment';
-import { required } from 'vuelidate/lib/validators';
+import { required,maxLength } from 'vuelidate/lib/validators';
 import SocialSharing from 'vue-social-sharing';
  
 
@@ -681,7 +684,10 @@ export default {
         }
    },
    validations: {
-            comment: {required},
+            comment: {
+            	required,
+            	maxLength: maxLength(280)
+            },
     },
    methods: {
    		// Get comment create date format
