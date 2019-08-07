@@ -650,11 +650,7 @@ export default {
 			postComment : false,
 			loadMoreComment : false,
 			domainName: '',
-<<<<<<< HEAD
 			socialSharingUrl: ''
-=======
-			facebookSharingUrl: '',
->>>>>>> 5ec3dbdb6e9b8695034f484368b4db792351a0ef
 	    };
   	},
 	mounted(){
