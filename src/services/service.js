@@ -21,6 +21,7 @@ import missionDetail from "./Mission/MissionDetail";
 import relatedMissions from "./Mission/RelatedMissions";
 import missionComments from "./Mission/MissionComments";
 import storeMissionComments from "./Mission/StoreMissionComments";
+import policy from "./Policy";
 
 export {
     loadLocaleMessages,
@@ -45,5 +46,6 @@ export {
     missionDetail,
     relatedMissions,
     missionComments,
-    storeMissionComments
+    storeMissionComments,
+    policy
 }

@@ -1852,36 +1852,17 @@ main {
 		background: $light-gray;
 		padding: 20px;
 		margin: 32px 0 0;
-		max-height:450px;
 		@include sm-max {
 			margin: 32px -15px 0;
 			padding: 20px 15px;
 		}
-
-		.more-inner-list {
-			margin-bottom: 13px;
-
-			&:last-child {
-				margin-bottom: 0;
-			}
-
-			.more-inner-list {
-				margin: 13px 0 0 31px;
-
-				@include sm-max {
-					margin: 13px 0 0 15px;
-				}
-
-				.comment-list-item {
-					border-top: 2px solid $primary;
-				}
-			}
+		.comment-list-inner{
+			max-height:450px;
 		}
-
 		.comment-list-item {
 			background: $white;
 			padding: 21px 21px 13px;
-
+			margin-bottom: 13px;
 			&:last-child {
 				margin-bottom: 0;
 			}
