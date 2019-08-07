@@ -9,7 +9,7 @@
     
     @if (!is_null($mission))
         <meta property="og:url" content="{{route('social-sharing', ['fqdn' => $fqdn, 'missionId' => $missionId, 'langId' => $langId])}}" />
-        <meta property="og:type" content="article" />
+        <meta property="og:type" content="website" />
         @if ($mission->missionLanguage->count() > 0)
             <meta property="og:title" content="{{$mission->missionLanguage->first()->title}}" />
             <meta property="og:description" content="{{$mission->missionLanguage->first()->short_description}}" />
@@ -44,25 +44,32 @@
             </script>
         @endif
     @endif
-
-    
-
+    <script>
+    	var seconds = 5;
+        var x = setInterval(function() {
+            document.getElementById('seconds').innerHTML = seconds--
+            if(seconds<0) {
+                clearInterval(x);
+            }
+        },1000)
+    </script>
+    <style>
+        .row .col-md-12 {
+            float: left;
+            width: 100%;
+            font-family: 'sans-serif';
+        }
+        .text-center {
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
     <div class="row">
         <div class="text-center col-md-12">
-            <h3> Please wait after 5 seconds page will be redirect </h3>
-            <span>If not redirecting. Please click <a href="http://{{config('constants.DEFAULT_FQDN_FOR_FRONT')}}{{config('constants.FRONT_MISSION_DETAIL_URL')}}{{$mission->mission_id}}}">here</a></span>
+            <h3> Please wait after <span id="seconds">5</span> seconds page will be redirect </h3>
+            <span>If not redirecting. Please click <a href="http://{{config('constants.DEFAULT_FQDN_FOR_FRONT')}}{{config('constants.FRONT_MISSION_DETAIL_URL')}}{{$mission->mission_id}}">here</a></span>
         </div>
     </div>
 </body>
-<style>
-    .row .col-md-12 {
-        float: left;
-        width: 100%;
-    }
-    .text-center {
-        text-align: center;
-    }
-</style>
 </html>
