@@ -106,7 +106,7 @@ class UserRepository implements UserInterface
     {
         return $this->user->findUser($id);
     }
-    
+
     /**
      * Remove specified resource in storage.
      *
@@ -216,5 +216,16 @@ class UserRepository implements UserInterface
             );
         }
         return $user;
+    }
+    
+    /**
+     * Find specified resource in storage.
+     *
+     * @param  int  $id
+     * @return App\User
+     */
+    public function findUserDetail(int $id): User
+    {
+        return $this->user->findUserDetail($id);
     }
 }

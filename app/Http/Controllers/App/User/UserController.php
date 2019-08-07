@@ -73,10 +73,10 @@ class UserController extends Controller
                 $userList = $this->userRepository->searchUsers($request->input('search'), $request->auth->user_id);
             }
 
-            $users = $userList->map(function (User $user) use($request){
+            $users = $userList->map(function (User $user) use ($request) {
                 $user = $this->transformUser($user);
                 $user->avatar = isset($user->avatar) ? $user->avatar :
-            $this->helpers->getDefaultProfileImage($request);
+                $this->helpers->getDefaultProfileImage($request);
                 return $user;
             })->all();
 
@@ -119,6 +119,32 @@ class UserController extends Controller
         } catch (\PDOException $e) {
             return $this->PDO(
                 config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
+                trans('messages.custom_error_message.ERROR_USER_NOT_FOUND')
+            );
+        } catch (\Exception $e) {
+            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
+        }
+    }
+
+    /**
+     * Display the specified user detail.
+     *
+     * @param int $id
+     * @return Illuminate\Http\JsonResponse
+     */
+    public function show(int $id): JsonResponse
+    {
+        try {
+            $userDetail = $this->userRepository->findUserDetail($id);
+                
+            $apiData = $userDetail->toArray();
+            $apiStatus = Response::HTTP_OK;
+            $apiMessage = trans('messages.success.MESSAGE_USER_FOUND');
+            
+            return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
+        } catch (ModelNotFoundException $e) {
+            return $this->modelNotFound(
+                config('constants.error_codes.ERROR_USER_NOT_FOUND'),
                 trans('messages.custom_error_message.ERROR_USER_NOT_FOUND')
             );
         } catch (\Exception $e) {

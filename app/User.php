@@ -205,4 +205,15 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     {
         return $this->where('email', $email)->first();
     }
+
+    /**
+     * Find the specified resource.
+     *
+     * @param  int  $id
+     * @return array
+     */
+    public function findUserDetail(int $id)
+    {
+        return static::with('city', 'country', 'timezone')->findOrFail($id);
+    }
 }

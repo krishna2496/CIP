@@ -137,6 +137,10 @@ $router->group(['middleware' => 'localization'], function ($router) {
     $router->post('/app/mission/comment', [
         'middleware' => 'localization|tenant.connection|jwt.auth',
         'uses' => 'App\Mission\MissionCommentController@store']);
+
+    /* Get api to fetch user details for edit. */
+    $router->get('/app/user-detail/{userId}', ['as' => 'connect', 'middleware' => 'tenant.connection|jwt.auth',
+     'uses' => 'App\User\UserController@show']);
 });
 
 
@@ -189,8 +193,8 @@ $router->group(
     function ($router) {
         $router->get('/', ['as' => 'metadata.users.custom_fields',
         'middleware' => ['PaginationMiddleware'] ,'uses' => 'Admin\User\UserCustomFieldController@index']);
-		$router->get('/{fieldId}', ['as' => 'metadata.users.custom_fields.show',
-		'uses' => 'Admin\User\UserCustomFieldController@show']);
+        $router->get('/{fieldId}', ['as' => 'metadata.users.custom_fields.show',
+        'uses' => 'Admin\User\UserCustomFieldController@show']);
         $router->post('/', ['as' => 'metadata.users.custom_fields.store',
         'uses' => 'Admin\User\UserCustomFieldController@store']);
         $router->patch('/{fieldId}', ['as' => 'metadata.users.custom_fields.update',
@@ -287,7 +291,8 @@ $router->group(
         $router->delete('/{skillId}', ['uses' => 'Admin\Skill\SkillController@destroy']);
     }
 );
-$router->get('/social-sharing/{fqdn}/{missionId}/{langId}', ['as' => 'social-sharing', 'uses' => 'App\Mission\MissionSocialSharingController@setMetaData']);
+$router->get('/social-sharing/{fqdn}/{missionId}/{langId}', ['as' => 'social-sharing',
+'uses' => 'App\Mission\MissionSocialSharingController@setMetaData']);
 
 /* Set policy page data for tenant specific */
 $router->group(
