@@ -4,10 +4,22 @@
      		<ThePrimaryHeader v-if="isShownComponent"></ThePrimaryHeader>
     	</header>
       	<main>
-			<social-sharing v-bind:url="facebookSharingUrl" inline-template>
-				<div>
+			<social-sharing 
+				v-bind:url="socialSharingUrl"
+				:title="missionDetail.title"
+				:description="missionDetail.short_description"
+				inline-template
+			>
+				<div class="social-sharing">
 					<network network="facebook">
-						<i class="fa fa-facebook"></i> Facebook
+						<i class="social-icon facebook-icon">
+							<img :src="$store.state.imagePath+'/assets/images/facebook-ic.svg'" alt="Facebook" />
+						</i>
+					</network>
+					<network network="twitter">
+						<i class="social-icon twitter-icon">
+							<img :src="$store.state.imagePath+'/assets/images/twitter-ic.svg'" alt="Twitter" />
+						</i>
 					</network>
 				</div>
 			</social-sharing>
@@ -592,7 +604,7 @@ export default {
 			langauageData : [],
 			applyButton :'',
 			domainName: '',
-			facebookSharingUrl: ''
+			socialSharingUrl: ''
 	    };
   	},
 	mounted(){
@@ -626,7 +638,7 @@ export default {
 			}
 		}
 
-		this.facebookSharingUrl = process.env.VUE_APP_API_ENDPOINT+"social-sharing/"+this.domainName+"/"+this.missionId+"/"+store.state.defaultLanguageId;
+		this.socialSharingUrl = process.env.VUE_APP_API_ENDPOINT+"social-sharing/"+this.domainName+"/"+this.missionId+"/"+store.state.defaultLanguageId;
 	},
     computed: {
    		filteredOptions() {
@@ -929,7 +941,7 @@ export default {
 			this.langauageData = JSON.parse(store.state.languageLabel);
 			this.applyButton = this.langauageData.label.apply_now
 			this.getMissionDetail();
-			this.facebookSharingUrl = process.env.VUE_APP_API_ENDPOINT+"social-sharing/"+this.domainName+"/"+this.missionId+"/"+store.state.defaultLanguageId;			
+			this.socialSharingUrl = process.env.VUE_APP_API_ENDPOINT+"social-sharing/"+this.domainName+"/"+this.missionId+"/"+store.state.defaultLanguageId;			
 	    }
 	} 
 };
