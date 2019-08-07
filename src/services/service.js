@@ -20,6 +20,7 @@ import missionCarousel from "./Mission/MissionCarousel";
 import missionDetail from "./Mission/MissionDetail";
 import relatedMissions from "./Mission/RelatedMissions";
 import missionComments from "./Mission/MissionComments";
+import storeMissionComments from "./Mission/StoreMissionComments";
 
 export {
     loadLocaleMessages,
@@ -43,5 +44,6 @@ export {
 	missionCarousel,
     missionDetail,
     relatedMissions,
-    missionComments
+    missionComments,
+    storeMissionComments
 }

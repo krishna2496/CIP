@@ -9,23 +9,24 @@ export default async(data) => {
         defaultLanguage = (store.state.defaultLanguage).toLowerCase();
     }
 
-    var url = process.env.VUE_APP_API_ENDPOINT + "app/mission/"+data.missionId+"/comments?page="+data.page
+    var url = process.env.VUE_APP_API_ENDPOINT + "app/mission/comment"
     await axios({
             url: url,
-            method: 'get',
+            data,
+            method: 'post',
             headers: {
                 'X-localization': defaultLanguage,
                 'token': store.state.token,
             }
         }).then((response) => { 
                 responseData.error = false;
-                if(response.data.data){
-                    responseData.data = response.data.data;
-                    responseData.pagination = response.data.pagination;
-                }
-            })
+                responseData.message = response.data.message;
+        })
         .catch(function(error) {
-            responseData.error = true;
+            if (error.response.data.errors[0].message) {
+                responseData.error = true;
+                responseData.message = error.response.data.errors[0].message;
+            }  
         });
     return responseData;
 }

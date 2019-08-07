@@ -188,7 +188,7 @@
                             <b-list-group>
                             <b-list-group-item href="#" class="unread-item">
                                 <i>
-                                    <img :src="$store.state.imagePath+'/assets/images/warning.pngg'" alt>
+                                    <img :src="$store.state.imagePath+'/assets/images/warning.png'" alt>
                                 </i>
                                 <p>
                                     Volunteering hours<b>submitted the 17/05/2019 approved</b>
@@ -197,14 +197,14 @@
                             </b-list-group-item>
                             <b-list-group-item href="#" class="unread-item">
                                 <i>
-                                    <img :src="$store.state.imagePath+'/assets/images/warning.pngg'" alt>
+                                    <img :src="$store.state.imagePath+'/assets/images/warning.png'" alt>
                                 </i>
                                 <p>Volunteering hours<b>submitted the 17/05/2019 approved</b></p>
                                 <span class="status"></span>
                             </b-list-group-item>
                             <b-list-group-item href="#" class="unread-item">
                                 <i>
-                                    <img :src="$store.state.imagePath+'/assets/images/warning.pngg'" alt>
+                                    <img :src="$store.state.imagePath+'/assets/images/warning.png'" alt>
                                 </i>
                                 <p>Volunteering hours<b>submitted the 17/05/2019 approved</b></p>
                                 <span class="status"></span>
