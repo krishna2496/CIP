@@ -67,7 +67,7 @@ class PolicyPageController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  string $slug
+     * @param string $slug
      * @return Illuminate\Http\JsonResponse
      */
     public function show(string $slug): JsonResponse
@@ -77,7 +77,7 @@ class PolicyPageController extends Controller
             $policyPage = $this->policyPageRepository->getPageDetail($slug);
           
             $apiStatus = Response::HTTP_OK;
-            $apiMessage = trans('messages.success.MESSAGE_POLICY_PAGE_LISTING');
+            $apiMessage = trans('messages.success.MESSAGE_PAGE_FOUND');
             return $this->responseHelper->success($apiStatus, $apiMessage, $policyPage->toArray());
         } catch (PDOException $e) {
             return $this->PDO(
