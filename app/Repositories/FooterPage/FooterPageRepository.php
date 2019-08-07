@@ -32,9 +32,9 @@ class FooterPageRepository implements FooterPageInterface
     /**
      * Create a new repository instance.
      *
-     * @param App\Models\FooterPage
-     * @param App\Models\FooterPagesLanguage
-     * @param App\Helpers\LanguageHelper
+     * @param App\Models\FooterPage $page
+     * @param App\Models\FooterPagesLanguage $footerPageLanguage
+     * @param App\Helpers\LanguageHelper $languageHelper
      * @return void
      */
     public function __construct(
