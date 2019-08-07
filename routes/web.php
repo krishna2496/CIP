@@ -138,11 +138,9 @@ $router->group(['middleware' => 'localization'], function ($router) {
         'middleware' => 'localization|tenant.connection|jwt.auth',
         'uses' => 'App\Mission\MissionCommentController@store']);
 
-    /* Set skill data for tenant user specific */
-    $router->get('/app/user/skills/{userId}', ['as' => 'user.skills', 'middleware' => 'localization|tenant.connection',
-    'uses' => 'App\User\UserController@userSkills']);
+    /* Cms for user skill */
     $router->post('/app/user/skills/{userId}', ['as' => 'user.skills', 'middleware' => 'localization|tenant.connection',
-    'uses' => 'App\User\FooterPageController@linkSkill']);
+    'uses' => 'App\User\UserController@linkSkill']);
     $router->delete('/app/user/skills/{userId}', ['as' => 'user.skills',
     'middleware' => 'localization|tenant.connection',
     'uses' => 'App\User\UserController@unlinkSkill']);
@@ -294,7 +292,8 @@ $router->group(
         $router->delete('/{skillId}', ['uses' => 'Admin\Skill\SkillController@destroy']);
     }
 );
-$router->get('/social-sharing/{fqdn}/{missionId}/{langId}', ['as' => 'social-sharing', 'uses' => 'App\Mission\MissionSocialSharingController@setMetaData']);
+$router->get('/social-sharing/{fqdn}/{missionId}/{langId}', ['as' => 'social-sharing',
+'uses' => 'App\Mission\MissionSocialSharingController@setMetaData']);
 
 /* Set policy page data for tenant specific */
 $router->group(

@@ -128,6 +128,7 @@ return [
         'ERROR_MISSION_APPLICATION_NOT_FOUND' => 'Requested mission application not exist',
         'ERROR_MISSION_RATING_INVALID_DATA' => 'Mission rating creation failed. Please check input parameters',
         'ERROR_MISSION_COMMENT_INVALID_DATA' => 'Mission comment creation failed. Please check input parameters',
+        'SKILL_LIMIT' => 'Maximum '. config('constants.SKILL_LIMIT').' skills can be selected',
         
         // Custom error code for Tenant Authorization - 210000 - 219999
         'ERROR_INVALID_API_AND_SECRET_KEY' => 'Invalid API key or secret key',

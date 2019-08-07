@@ -90,4 +90,12 @@ interface UserInterface
      * @return Illuminate\Database\Eloquent\Collection
      */
     public function searchUsers(string $text = null, int $userId): Collection;
+
+    /**
+     * Delete skills by userId
+     *
+     * @param int $userId
+     * @return bool
+     */
+    public function deleteSkills(int $userId): bool;
 }

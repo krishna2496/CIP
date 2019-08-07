@@ -14,6 +14,7 @@ use App\Transformations\UserTransformable;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Helpers\LanguageHelper;
 use App\Helpers\Helpers;
+use Validator;
 
 class UserController extends Controller
 {
@@ -73,10 +74,10 @@ class UserController extends Controller
                 $userList = $this->userRepository->searchUsers($request->input('search'), $request->auth->user_id);
             }
 
-            $users = $userList->map(function (User $user) use($request){
+            $users = $userList->map(function (User $user) use ($request) {
                 $user = $this->transformUser($user);
                 $user->avatar = isset($user->avatar) ? $user->avatar :
-            $this->helpers->getDefaultProfileImage($request);
+                $this->helpers->getDefaultProfileImage($request);
                 return $user;
             })->all();
 
@@ -135,7 +136,6 @@ class UserController extends Controller
      */
     public function linkSkill(Request $request, int $id): JsonResponse
     {
-        dd("hello");
         try {
             $validator = Validator::make($request->toArray(), [
                 'skills' => 'required',
@@ -151,6 +151,19 @@ class UserController extends Controller
                     $validator->errors()->first()
                 );
             }
+
+            // Check if skills is maximum or not
+            if (count($request->skills) > config('constants.SKILL_LIMIT')) {
+                return $this->responseHelper->error(
+                    Response::HTTP_UNPROCESSABLE_ENTITY,
+                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                    config('constants.error_codes.ERROR_SKILL_LIMIT'),
+                    trans('messages.custom_error_message.SKILL_LIMIT')
+                );
+            }
+
+            //Delete  user skills
+            $this->userRepository->deleteSkills($id);
 
             $this->userRepository->linkSkill($request->toArray(), $id);
 
@@ -171,7 +184,56 @@ class UserController extends Controller
                 trans('messages.custom_error_message.ERROR_USER_NOT_FOUND')
             );
         } catch (\Exception $e) {
-            $dd($e);
+            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
+        }
+    }
+    
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  \Illuminate\Http\Request $request
+     * @param  int $id
+     * @return Illuminate\Http\JsonResponse
+     */
+    public function unlinkSkill(Request $request, int $id): JsonResponse
+    {
+        try {
+            // Server side validataions
+            $validator = Validator::make($request->toArray(), [
+                'skills' => 'required',
+                'skills.*.skill_id' => 'required|exists:skill,skill_id',
+            ]);
+
+            // If request parameter have any error
+            if ($validator->fails()) {
+                return $this->responseHelper->error(
+                    Response::HTTP_UNPROCESSABLE_ENTITY,
+                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                    config('constants.error_codes.ERROR_SKILL_INVALID_DATA'),
+                    $validator->errors()->first()
+                );
+            }
+
+            $userSkill = $this->userRepository->unlinkSkill($request->toArray(), $id);
+            // Set response data
+            $apiStatus = Response::HTTP_OK;
+            $apiMessage = $userSkill ? trans('messages.success.MESSAGE_USER_SKILLS_DELETED') :
+            trans('messages.success.MESSAGE_NO_DATA_FOUND');
+            
+            return $this->responseHelper->success($apiStatus, $apiMessage);
+        } catch (ModelNotFoundException $e) {
+            return $this->modelNotFound(
+                config('constants.error_codes.ERROR_USER_NOT_FOUND'),
+                trans('messages.custom_error_message.ERROR_USER_NOT_FOUND')
+            );
+        } catch (PDOException $e) {
+            return $this->PDO(
+                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
+                trans(
+                    'messages.custom_error_message.ERROR_DATABASE_OPERATIONAL'
+                )
+            );
+        } catch (\Exception $e) {
             return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }

@@ -15,6 +15,7 @@ return [
     'FRONT_DATE_FORMAT' => 'd/m/Y',
     'RELATED_MISSION_LIMIT' => '3',
     'MISSION_MEDIA_LIMIT' => '20',
+    'SKILL_LIMIT' => '15',
 
     'EMAIL_TEMPLATE_FOLDER' => 'emails',
     'EMAIL_TEMPLATE_USER_INVITE' => 'invite',
@@ -201,6 +202,7 @@ return [
         'ERROR_MISSION_APPLICATION_NOT_FOUND' => '400024',
         'ERROR_MISSION_RATING_INVALID_DATA' => '400025',
         'ERROR_MISSION_COMMENT_INVALID_DATA' => '400026',
+        'ERROR_SKILL_LIMIT' => '400028',
                 
         'ERROR_OCCURRED' => '999999',
         'ERROR_INVALID_JSON' => '900000',
