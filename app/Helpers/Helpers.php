@@ -255,7 +255,7 @@ class Helpers
                     $date = Carbon::parse($date);
                 }
             }
-            return $date->setTimezone(config('constants.TIMEZONE'))->format(config('constants.DB_DATE_FORMAT'));
+            return $date->setTimezone(config('constants.TIMEZONE'))->format(config('constants.DB_DATE_TIME_FORMAT'));
         }
         return $date;
     }

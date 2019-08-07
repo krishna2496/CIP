@@ -71,7 +71,7 @@ trait MissionTransformable
 
         // Check for apply in mission validity
         $mission['set_view_detail'] = 0;
-        $today = $this->helpers->getUserTimeZoneDate(date(config("constants.DB_DATE_FORMAT")));
+        $today = $this->helpers->getUserTimeZoneDate(date(config("constants.DB_DATE_TIME_FORMAT")));
             
         if (($mission['user_application_count'] > 0) ||
                 (isset($mission['application_deadline']) && $mission['application_deadline'] < $today) ||
@@ -82,7 +82,7 @@ trait MissionTransformable
             $mission['set_view_detail'] = 1;
         }
 
-        $mission['mission_rating_count'] = $mission['mission_rating_count'] ?? 0;
+        $mission['mission_rating_count'] = $mission['mission_rating_count'] ? ceil($mission['mission_rating_count']) : 0;
               
         if (!empty($mission['missionSkill']) && (isset($mission['missionSkill']))) {
             $returnData = [];
