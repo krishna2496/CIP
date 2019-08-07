@@ -2,7 +2,6 @@
 namespace App\Http\Controllers\App\Mission;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Repositories\MissionComment\MissionCommentRepository;
 use App\Helpers\ResponseHelper;
@@ -45,17 +44,15 @@ class MissionCommentController extends Controller
     /**
      * Get mission comments
      *
-     * @param Illuminate\Http\Request $request
      * @param int $missionId
      * @return Illuminate\Http\JsonResponse
      */
-    public function getComments(Request $request, int $missionId): JsonResponse
+    public function getComments(int $missionId): JsonResponse
     {
         try {
             $comments = $this->missionCommentRepository->getComments($missionId);
             $apiData = $comments;
             $apiStatus = Response::HTTP_OK;
-            $apiMessage = trans('messages.success.MESSAGE_MISSION_COMMENT_LISTING');
             $apiMessage = (!empty($apiData)) ?
             trans('messages.success.MESSAGE_MISSION_COMMENT_LISTING') :
             trans('messages.success.MESSAGE_NO_MISSION_COMMENT_FOUND');
