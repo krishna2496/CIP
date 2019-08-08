@@ -87,7 +87,7 @@ class MissionController extends Controller
                 "mission_type" => ['required', Rule::in(config('constants.mission_type'))],
                 "location" => "required",
                 "location.city_id" => "required|required|exists:city,city_id",
-                "location.country_code" => "required",
+                "location.country_code" => "required|exists:country,ISO",
                 "availability_id" => "required|exists:availability,availability_id",
                 "mission_detail" => "required",
                 "mission_detail.*.lang" => "required",
@@ -98,8 +98,8 @@ class MissionController extends Controller
                 "media_videos.*.media_name" => "required",
                 "media_videos.*.media_path" => "required",
                 "documents.*.document_path" => "required|valid_document_path",
-                "start_date" => "sometimes|required_with:end_date",
-                "end_date" => "sometimes|after:start_date",
+                "start_date" => "required_if:mission_type,TIME|required_with:end_date|date",
+                "end_date" => "sometimes|after:start_date|date",
                 "total_seats" => "integer|min:1",
                 "goal_objective" => "required_if:mission_type,GOAL|integer|min:1",
             ]
@@ -123,7 +123,7 @@ class MissionController extends Controller
             $apiMessage = trans('messages.success.MESSAGE_MISSION_ADDED');
             $apiData = ['mission_id' => $mission->mission_id];
             return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
-        } catch (PDOException $e) {
+        } catch (PDOException $e) {dd($e);
             return $this->PDO(
                 config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
                 trans('messages.custom_error_message.ERROR_DATABASE_OPERATIONAL')
