@@ -1,13 +1,13 @@
 import axios from 'axios'
 import store from '../store'
 
-export default async(data) => {
+export default async(slug) => {
     let responseData = {};
     var defaultLanguage = '';
     if (store.state.defaultLanguage !== null) {
         defaultLanguage = (store.state.defaultLanguage).toLowerCase();
     }
-    var url =process.env.VUE_APP_API_ENDPOINT + "app/policy/listing";
+    var url =process.env.VUE_APP_API_ENDPOINT + "app/policy/"+slug;
 
     await axios({
             url: url,
@@ -27,4 +27,5 @@ export default async(data) => {
         responseData.error = true;
     });
     return responseData;
+
 }

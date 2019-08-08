@@ -46,6 +46,15 @@ let routes = [{
         import ('./views/Auth/ResetPassword.vue')
 },
 {
+        path: '/my-account',
+        name: 'myAccount',
+        meta: {
+            requiresAuth: true
+        },
+        component: () =>
+            import ('./views/MyAccount.vue')
+},
+{
     path: '/forgot-password',
     name: 'forgotPassword',
     component: () =>
@@ -95,8 +104,7 @@ let routes = [{
             }
         ],
     },
-
-
+    
     beforeEnter: (to, from, next) => {
             to.meta.metaTags.map(tagDef => {
                 const tag = document.createElement('meta');
@@ -112,6 +120,15 @@ let routes = [{
 
     component: () =>
         import ('./views/MissionDetail.vue')
+},
+{
+        path: '/policy/:policyPage',
+        name: 'policy',
+        meta: {
+            requiresAuth: true
+        },
+        component: () =>
+            import ('./views/Policy.vue')
 },
 
 ];
