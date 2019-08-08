@@ -10,6 +10,7 @@ use App\User;
 use App\Helpers\Helpers;
 use App\Helpers\ResponseHelper;
 use App\Models\UserSkill;
+use App\Models\Availability;
 use Validator;
 use PDOException;
 use DB;
@@ -26,6 +27,11 @@ class UserRepository implements UserInterface
      * @var App\Models\UserSkill
      */
     public $userSkill;
+
+    /**
+     * @var App\Models\Availability
+     */
+    public $availability;
     
     /**
      * @var App\Helpers\ResponseHelper
@@ -37,13 +43,19 @@ class UserRepository implements UserInterface
      *
      * @param  App\User $user
      * @param  App\Models\UserSkill $userSkill
+     * @param  App\Models\Availability $availability
      * @param  Illuminate\Http\ResponseHelper $responseHelper
      * @return void
      */
-    public function __construct(User $user, UserSkill $userSkill, ResponseHelper $responseHelper)
-    {
+    public function __construct(
+        User $user,
+        UserSkill $userSkill,
+        Availability $availability,
+        ResponseHelper $responseHelper
+    ) {
         $this->user = $user;
         $this->responseHelper = $responseHelper;
+        $this->availability = $availability;
         $this->userSkill = $userSkill;
     }
     
@@ -227,5 +239,15 @@ class UserRepository implements UserInterface
     public function findUserDetail(int $id): User
     {
         return $this->user->findUserDetail($id);
+    }
+
+    /**
+     * Get Availability.
+     *
+     * @return Illuminate\Database\Eloquent\Collection
+     */
+    public function getAvailability(): Collection
+    {
+        return $this->availability->getAvailability();
     }
 }

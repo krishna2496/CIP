@@ -100,9 +100,9 @@ class UserCustomFieldRepository implements UserCustomFieldInterface
      * Get listing of user custom fields
      *
      * @param Illuminate\Http\Request $request
-     * @return \Illuminate\Pagination\LengthAwarePaginator
+     * @return Illuminate\Support\Collection
      */
-    public function getAlluserCustomFields(Request $request): Collection
+    public function getUserCustomFields(Request $request): Collection
     {
         return $this->field->get();
     }

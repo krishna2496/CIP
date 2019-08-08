@@ -106,7 +106,7 @@ class SkillRepository implements SkillInterface
      */
     public function find(int $id): Skill
     {
-		return $this->skill->findSkill($id);
+        return $this->skill->findSkill($id);
     }
     
     /**

@@ -15,6 +15,7 @@ use App\Models\City;
 use App\Models\Country;
 use App\Models\Timezone;
 use App\Models\missionApplication;
+use App\Models\Availability;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Nicolaslopezj\Searchable\SearchableTrait;
 
@@ -54,7 +55,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     protected $visible = ['user_id', 'first_name', 'last_name', 'email',
      'password', 'avatar', 'timezone_id', 'availability_id', 'why_i_volunteer',
      'employee_id', 'department', 'manager_name', 'city_id', 'country_id',
-     'profile_text', 'linked_in_url', 'status', 'city', 'country', 'timezone', 'language_id'];
+     'profile_text', 'linked_in_url', 'status', 'city', 'country', 'timezone', 'language_id', 'availability'];
     
     /**
      * The attributes excluded from the model's JSON form.
@@ -96,6 +97,16 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     public function country(): HasOne
     {
         return $this->hasOne(Country::class, 'country_id', 'country_id');
+    }
+
+    /**
+    * Defined has one relation for the country table.
+    *
+    * @return \Illuminate\Database\Eloquent\Relations\HasOne
+    */
+    public function availability(): HasOne
+    {
+        return $this->hasOne(Availability::class, 'availability_id', 'availability_id');
     }
     
     /**
@@ -207,13 +218,13 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     }
 
     /**
-     * Find the specified resource.
+     * Get user detail
      *
-     * @param  int  $id
-     * @return array
+     * @param int $userId
+     * @return App\User
      */
-    public function findUserDetail(int $id)
+    public function findUserDetail(int $userId): User
     {
-        return static::with('city', 'country', 'timezone')->findOrFail($id);
+        return static::with('city', 'country', 'timezone', 'availability')->findOrFail($userId);
     }
 }

@@ -25,12 +25,11 @@ class CityRepository implements CityInterface
     }
     
     /**
-    * Get a listing of resource.
+    * Get listing of all city.
     *
-    * @param \Illuminate\Http\Request $request
     * @return Illuminate\Support\Collection
     */
-    public function cityList(Request $request): Collection
+    public function cityList(): Collection
     {
         return $this->city->pluck('name', 'city_id');
     }

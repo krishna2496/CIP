@@ -4,6 +4,7 @@ namespace App\Repositories\UserCustomField;
 use Illuminate\Http\Request;
 use App\Models\UserCustomField;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
 
 interface UserCustomFieldInterface
 {
@@ -24,14 +25,14 @@ interface UserCustomFieldInterface
     */
     public function update(array $request, int $id): UserCustomField;
     
-	/**
+    /**
      * Find user custom field in storage.
      *
      * @param  int  $id
      * @return App\Models\UserCustomField
      */
     public function find(int $id): UserCustomField;
-	
+    
     /**
      * Get listing of user custom fields
      *
@@ -47,4 +48,12 @@ interface UserCustomFieldInterface
      * @return bool
      */
     public function delete(int $id): bool;
+
+    /**
+     * Get listing of user custom fields
+     *
+     * @param Illuminate\Http\Request $request
+     * @return Illuminate\Support\Collection
+     */
+    public function getUserCustomFields(Request $request): Collection;
 }

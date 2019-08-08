@@ -138,8 +138,8 @@ $router->group(['middleware' => 'localization'], function ($router) {
         'middleware' => 'localization|tenant.connection|jwt.auth',
         'uses' => 'App\Mission\MissionCommentController@store']);
 
-    /* Get api to fetch user details for edit. */
-    $router->get('/app/user-detail/{userId}', ['as' => 'connect', 'middleware' => 'tenant.connection|jwt.auth',
+    /* Get user details */
+    $router->get('/app/user-detail', ['as' => 'connect', 'middleware' => 'tenant.connection|jwt.auth',
      'uses' => 'App\User\UserController@show']);
 });
 

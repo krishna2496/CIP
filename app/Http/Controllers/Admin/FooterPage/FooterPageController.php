@@ -107,7 +107,7 @@ class FooterPageController extends Controller
             $apiMessage = trans('messages.success.MESSAGE_FOOTER_PAGE_CREATED');
             $apiData = ['page_id' => $footerPage['page_id']];
             return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
-        } catch (PDOException $e) {dd($e);
+        } catch (PDOException $e) {
             return $this->PDO(
                 config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
                 trans(
