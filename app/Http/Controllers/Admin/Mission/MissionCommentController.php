@@ -14,6 +14,7 @@ use App\Traits\RestExceptionHandlerTrait;
 use InvalidArgumentException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Repositories\Mission\MissionRepository;
+use Validator;
 
 class MissionCommentController extends Controller
 {
@@ -37,6 +38,7 @@ class MissionCommentController extends Controller
     /**
      * Create a new comment controller instance
      *
+     * @param App\Repositories\Mission\MissionRepository $missionRepository
      * @param App\Repositories\Mission\MissionCommentRepository $missionCommentRepository
      * @param Illuminate\Http\ResponseHelper $responseHelper
      * @return void
@@ -53,6 +55,7 @@ class MissionCommentController extends Controller
 
     /**
      * Get listing of tenant's comments
+     *
      * @param int $missionId
      * @return Illuminate\Http\JsonResponse
      */
@@ -81,20 +84,10 @@ class MissionCommentController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Get comment detail, by mission and comment id
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
+     * @param int $missionId
+     * @param int  $commentId
      * @return Illuminate\Http\JsonResponse
      */
     public function show(int $missionId, int $commentId): JsonResponse
@@ -130,25 +123,107 @@ class MissionCommentController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update comment, by mission and comment id
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param  int  $missionId
+     * @param  int  $commentId
+     * @return Illuminate\Http\JsonResponse
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, int $missionId, int $commentId): JsonResponse
     {
-        //
+        
+        // First find mission
+        try {
+            $mission = $this->missionRepository->find($missionId);
+        } catch (ModelNotFoundException $e) {
+            return $this->modelNotFound(
+                config('constants.error_codes.ERROR_MISSION_NOT_FOUND'),
+                trans('messages.custom_error_message.ERROR_MISSION_NOT_FOUND')
+            );
+        }
+
+        $validCommentStatusList = implode(",", array_values(config('constants.comment_approval_status')));
+
+        // Server side validation
+        $validator = Validator::make(
+            $request->all(),
+            [
+                "approval_status" => "required|in:".$validCommentStatusList,
+            ]
+        );
+        
+        // If request parameter have any error
+        if ($validator->fails()) {
+            return $this->responseHelper->error(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                config('constants.error_codes.ERROR_INVALID_MISSION_DATA'),
+                $validator->errors()->first()
+            );
+        }
+
+        // Now find comments from that mission
+        try {
+            $data['approval_status'] = $request->approval_status;
+            $apiData = $this->missionCommentRepository->updateComment($commentId, $data);
+            $apiStatus = Response::HTTP_OK;
+            $apiMessage = trans('messages.success.MESSAGE_COMMENT_UPDATED');
+            return $this->responseHelper->success($apiStatus, $apiMessage, $apiData->toArray());
+        } catch (InvalidArgumentException $e) {
+            return $this->invalidArgument(
+                config('constants.error_codes.ERROR_INVALID_ARGUMENT'),
+                trans('messages.custom_error_message.ERROR_INVALID_ARGUMENT')
+            );
+        } catch (ModelNotFoundException $e) {
+            return $this->modelNotFound(
+                config('constants.error_codes.ERROR_COMMENT_NOT_FOUND'),
+                trans('messages.custom_error_message.ERROR_COMMENT_NOT_FOUND')
+            );
+        } catch (\Exception $e) {
+            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
+        }
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Delete comment, by mission and comment id
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param  int  $missionId
+     * @param  int  $commentId
+     * @return Illuminate\Http\JsonResponse
      */
-    public function destroy($id)
+    public function destroy(int $missionId, int $commentId): JsonResponse
     {
-        //
+        // First find mission
+        try {
+            $mission = $this->missionRepository->find($missionId);
+        } catch (ModelNotFoundException $e) {
+            return $this->modelNotFound(
+                config('constants.error_codes.ERROR_MISSION_NOT_FOUND'),
+                trans('messages.custom_error_message.ERROR_MISSION_NOT_FOUND')
+            );
+        }
+
+        // Get comment and delete it.
+        try {
+            $apiData = $this->missionCommentRepository->deleteComment($commentId);
+
+            $apiStatus = Response::HTTP_NO_CONTENT;
+            $apiMessage = trans('messages.success.MESSAGE_COMMENT_DELETED');
+            
+            return $this->responseHelper->success($apiStatus, $apiMessage);
+        } catch (InvalidArgumentException $e) {
+            return $this->invalidArgument(
+                config('constants.error_codes.ERROR_INVALID_ARGUMENT'),
+                trans('messages.custom_error_message.ERROR_INVALID_ARGUMENT')
+            );
+        } catch (ModelNotFoundException $e) {
+            return $this->modelNotFound(
+                config('constants.error_codes.ERROR_COMMENT_NOT_FOUND'),
+                trans('messages.custom_error_message.ERROR_COMMENT_NOT_FOUND')
+            );
+        } catch (\Exception $e) {
+            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
+        }
     }
 }
