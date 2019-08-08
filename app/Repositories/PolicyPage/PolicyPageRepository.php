@@ -172,22 +172,15 @@ class PolicyPageRepository implements PolicyPageInterface
 
     /**
     * Get a listing of resource.
-    *
+    * @param int $languageId
     * @return Illuminate\Support\Collection
     */
-    public function getPageList(): Collection
+    public function getPageList(int $languageId): Collection
     {
-        return $this->page->with(['pages:page_id,language_id,title'])->get();
-    }
-
-    /**
-    * Get a listing of resource.
-    *
-    * @return Illuminate\Support\Collection
-    */
-    public function getPageDetailList(): Collection
-    {
-        return $this->page->with(['pages:page_id,language_id,title,description as sections'])->get();
+        return $this->page->with(['pages' => function ($query) use ($languageId) {
+            $query->select('page_id', 'language_id', 'title')
+            ->where('language_id', $languageId);
+        }])->get();
     }
 
     /**
