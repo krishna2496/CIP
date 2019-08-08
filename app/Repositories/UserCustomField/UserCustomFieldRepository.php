@@ -4,6 +4,7 @@ namespace App\Repositories\UserCustomField;
 use App\Repositories\UserCustomField\UserCustomFieldInterface;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
 use App\Models\UserCustomField;
 use DB;
 
@@ -72,8 +73,8 @@ class UserCustomFieldRepository implements UserCustomFieldInterface
         $customField->update($request);
         return $customField;
     }
-	
-	/**
+    
+    /**
      * Find user custom field in storage.
      *
      * @param  int  $id
@@ -81,7 +82,7 @@ class UserCustomFieldRepository implements UserCustomFieldInterface
      */
     public function find(int $id): UserCustomField
     {
-		return $this->field->findOrFail($id);
+        return $this->field->findOrFail($id);
     }
        
     /**
@@ -93,5 +94,16 @@ class UserCustomFieldRepository implements UserCustomFieldInterface
     public function delete(int $id): bool
     {
         return $this->field->deleteCustomField($id);
+    }
+
+    /**
+     * Get listing of user custom fields
+     *
+     * @param Illuminate\Http\Request $request
+     * @return \Illuminate\Pagination\LengthAwarePaginator
+     */
+    public function getAlluserCustomFields(Request $request): Collection
+    {
+        return $this->field->get();
     }
 }

@@ -6,6 +6,7 @@ use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
 use App\Repositories\User\UserRepository;
+use App\Repositories\UserCustomField\UserCustomFieldRepository;
 use App\Helpers\ResponseHelper;
 use App\Traits\RestExceptionHandlerTrait;
 use App\User;
@@ -23,6 +24,13 @@ class UserController extends Controller
      */
     private $userRepository;
     
+    /**
+     * User custom field
+     *
+     * @var App\Repositories\UserCustomField\UserCustomFieldRepository
+     */
+    private $userCustomFieldRepository;
+
     /**
      * @var App\Helpers\ResponseHelper
      */
@@ -42,6 +50,7 @@ class UserController extends Controller
      * Create a new controller instance.
      *
      * @param App\Repositories\User\UserRepository $userRepository
+     * @param App\Repositories\UserCustomField\UserCustomFieldRepository $userCustomFieldRepository
      * @param Illuminate\Http\ResponseHelper $responseHelper
      * @param App\Helpers\LanguageHelper
      * @param App\Helpers\Helpers $helpers
@@ -49,11 +58,13 @@ class UserController extends Controller
      */
     public function __construct(
         UserRepository $userRepository,
+        UserCustomFieldRepository $userCustomFieldRepository,
         ResponseHelper $responseHelper,
         LanguageHelper $languageHelper,
         Helpers $helpers
     ) {
         $this->userRepository = $userRepository;
+        $this->userCustomFieldRepository = $userCustomFieldRepository;
         $this->responseHelper = $responseHelper;
         $this->languageHelper = $languageHelper;
         $this->helpers = $helpers;
@@ -129,15 +140,21 @@ class UserController extends Controller
     /**
      * Display the specified user detail.
      *
+     * @param Illuminate\Http\Request $request
      * @param int $id
      * @return Illuminate\Http\JsonResponse
      */
-    public function show(int $id): JsonResponse
+    public function show(Request $request, int $id): JsonResponse
     {
         try {
             $userDetail = $this->userRepository->findUserDetail($id);
-                
+            $customFields = $this->userCustomFieldRepository->getAlluserCustomFields($request);
+            
+            // dd($customFields);
+            
             $apiData = $userDetail->toArray();
+            $apiData['custom_fields'] = $customFields->toArray();
+
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_USER_FOUND');
             
@@ -148,6 +165,7 @@ class UserController extends Controller
                 trans('messages.custom_error_message.ERROR_USER_NOT_FOUND')
             );
         } catch (\Exception $e) {
+            dd($e);
             return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
