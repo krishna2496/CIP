@@ -189,19 +189,22 @@ class MissionController extends Controller
             [
                 "mission_type" => [Rule::in(config('constants.mission_type'))],
                 "location.city_id" => "required_with:location",
-                "location.country_code" => "required_with:location",
-                "mission_detail.*.lang" => "required_with:mission_detail",
+                "location.country_code" => "required_with:location|exists:country,ISO",
+                "mission_detail.*.lang" => "required_with:mission_detail|max:2",
                 "mission_detail.*.title" => "required_with:mission_detail",
                 "publication_status" => [Rule::in(config('constants.publication_status'))],
                 "goal_objective" => "required_if:mission_type,GOAL|integer|min:1",
                 "media_images.*.media_path" => "required_with:media_images|valid_media_path",
                 "media_videos.*.media_name" => "required_with:media_videos",
-                "media_videos.*.media_path" => "required_with:media_videos",
+                "media_videos.*.media_path" => "required_with:media_videos|valid_video_url",
                 "documents.*.document_path" => "required_with:documents|valid_document_path",
-                "start_date" => "sometimes|required_with:end_date",
-                "end_date" => "sometimes|after:start_date",
+                "start_date" => "sometimes|required_if:mission_type,TIME,required_with:end_date|date",
+                "end_date" => "sometimes|after:start_date|date",
                 "total_seats" => "integer|min:1",
-                "availability_id" => "sometimes|required"
+                "availability_id" => "sometimes|required|exists:availability,availability_id",
+				"skills.*.skill_id" => "exists:skill,skill_id",
+				"theme_id" => "sometimes|required|exists:mission_theme,mission_theme_id,deleted_at,NULL",
+				"application_deadline" => "date"
             ]
         );
         
