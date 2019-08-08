@@ -51,18 +51,11 @@ interface PolicyPageInterface
 
     /**
     * Get a listing of resource.
-    *
+    * @param int $languageId
     * @return Illuminate\Support\Collection
     */
-    public function getPageList(): Collection;
-
-    /**
-    * Get a listing of resource.
-    *
-    * @return Illuminate\Support\Collection
-    */
-    public function getPageDetailList(): Collection;
-
+    public function getPageList(int $languageId): Collection;
+    
     /**
     * Get a listing of resource.
     *
