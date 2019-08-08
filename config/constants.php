@@ -85,8 +85,6 @@ return [
      * Image types
      */
     'image_types' => [
-        'JPG' => 'jpg',
-        'JPEG' => 'jpeg',
         'PNG' => 'png'
     ],
 
@@ -203,6 +201,8 @@ return [
         'ERROR_MISSION_APPLICATION_NOT_FOUND' => '400024',
         'ERROR_MISSION_RATING_INVALID_DATA' => '400025',
         'ERROR_MISSION_COMMENT_INVALID_DATA' => '400026',
+        'ERROR_INVALID_MISSION_MEDIA_DATA' => '400027',
+        'ERROR_INVALID_MISSION_DOCUMENT_DATA' => '400028',
         'ERROR_COMMENT_NOT_FOUND' => '400027',
                 
         'ERROR_OCCURRED' => '999999',

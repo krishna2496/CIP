@@ -297,7 +297,7 @@ class Helpers
 
     /**
      * Get tenant default profile image for user
-     * 
+     *
      * @param \Illuminate\Http\Request $request
      * @return string
      */

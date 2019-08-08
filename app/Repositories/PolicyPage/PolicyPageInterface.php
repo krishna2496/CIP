@@ -66,7 +66,9 @@ interface PolicyPageInterface
     /**
     * Get a listing of resource.
     *
+    * @param string $slug
+    * @param int $languageId
     * @return App\Models\PolicyPage
     */
-    public function getPageDetail($slug): PolicyPage;
+    public function getPageDetail(string $slug, int $languageId): PolicyPage;
 }

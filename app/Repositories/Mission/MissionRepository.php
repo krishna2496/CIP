@@ -206,11 +206,11 @@ class MissionRepository implements MissionInterface
                     $media = array('default' => '0');
                     $this->missionMedia->where('mission_id', $mission->mission_id)->update($media);
                 }
-                
+              
                 $missionMedia = array(
                         'mission_id' => $mission->mission_id,
-                        'media_name' => $value['media_name'],
-                        'media_type' => pathinfo($value['media_name'], PATHINFO_EXTENSION),
+                        'media_name' => basename($filePath),
+                        'media_type' => pathinfo($filePath, PATHINFO_EXTENSION),
                         'media_path' => $filePath,
                         'default' => $default
                     );
@@ -231,8 +231,7 @@ class MissionRepository implements MissionInterface
                 foreach ($request->media_videos as $value) {
                     $missionMedia = array('mission_id' => $mission->mission_id,
                                           'media_name' => $value['media_name'],
-                                          'media_type' => (pathinfo($value['media_name'], PATHINFO_EXTENSION)) ?
-                                           pathinfo($value['media_name'], PATHINFO_EXTENSION) : 'mp4',
+                                          'media_type' => 'mp4',
                                           'media_path' => $value['media_path']);
                     $this->missionMedia->create($missionMedia);
                     unset($missionMedia);
@@ -246,8 +245,8 @@ class MissionRepository implements MissionInterface
                 foreach ($request->documents as $value) {
                     $filePath = $this->s3helper->uploadFileOnS3Bucket($value['document_path'], $tenantName);
                     $missionDocument = array('mission_id' => $mission->mission_id,
-                                            'document_name' => $value['document_name'],
-                                            'document_type' => pathinfo($value['document_name'], PATHINFO_EXTENSION),
+                                            'document_name' => basename($filePath),
+                                            'document_type' => pathinfo(basename($filePath), PATHINFO_EXTENSION),
                                             'document_path' => $filePath);
                     $this->missionDocument->create($missionDocument);
                     unset($missionDocument);
@@ -355,8 +354,8 @@ class MissionRepository implements MissionInterface
                 }
                 
                 $missionMedia = array('mission_id' => $id,
-                                      'media_name' => $value['media_name'],
-                                      'media_type' => pathinfo($value['media_name'], PATHINFO_EXTENSION),
+                                      'media_name' => basename($filePath),
+                                      'media_type' => pathinfo($filePath, PATHINFO_EXTENSION),
                                       'media_path' => $filePath,
                                       'default' => $default);
                 
@@ -379,8 +378,7 @@ class MissionRepository implements MissionInterface
             foreach ($request->media_videos as $value) {
                 $missionMedia = array('mission_id' => $id,
                                       'media_name' => $value['media_name'],
-                                      'media_type' => (pathinfo($value['media_name'], PATHINFO_EXTENSION)) ?
-                                       pathinfo($value['media_name'], PATHINFO_EXTENSION) : 'mp4',
+                                      'media_type' => '',
                                       'media_path' => $value['media_path']);
 
                 $this->missionMedia->createOrUpdateMedia(['mission_id' => $id,
@@ -391,13 +389,12 @@ class MissionRepository implements MissionInterface
         // Add/Update mission documents
         if (isset($request->documents) && count($request->documents) > 0) {
             foreach ($request->documents as $value) {
-                $missionDocument = array('mission_id' => $id,
-                                        'document_name' => $value['document_name'],
-                                        'document_type' => pathinfo($value['document_name'], PATHINFO_EXTENSION)
-                                      );
+                $missionDocument = array('mission_id' => $id);
                 if ($value['document_path'] != '') {
                     $filePath = $this->s3helper->uploadFileOnS3Bucket($value['document_path'], $tenantName);
                     $missionDocument['document_path'] = $filePath;
+                    $missionDocument['document_name'] = basename($filePath);
+                    $missionDocument['document_type'] = pathinfo($filePath, PATHINFO_EXTENSION);
                 }
                 
                 $this->missionDocument->createOrUpdateDocument(['mission_id' => $id,

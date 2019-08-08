@@ -85,8 +85,14 @@ return [
     */
 
     'custom' => [
-        'attribute-name' => [
-            'rule-name' => 'custom-message',
+        'media_images.*.media_path' => [
+            'valid_media_path' => 'Please enter valid media image',
+        ],
+        'documents.*.document_path' => [
+            'valid_document_path' => 'Please enter valid document file',
+        ],
+		'media_videos.*.media_path' => [
+            'valid_video_url' => 'Please enter valid youtube url',
         ],
     ],
 
@@ -122,7 +128,13 @@ return [
         'location.country' => 'country',   
         'password_confirmation' => 'confirm password',         
         'translations.*.lang' => 'language code',         
-        'is_mandatory' => 'mandatory',         
+        'is_mandatory' => 'mandatory',       
+		'page_details.translations.*.sections.*.title' => 'title',
+		'page_details.translations.*.sections.*.description' => 'description',
+		'location.city_id' => 'city',
+		'location.country_code' => 'country code',
+		'organisation.organisation_id' => 'organisation id',
+		'mission_detail.*.lang' => 'language code'
         ],
 
 ];
