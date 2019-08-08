@@ -77,7 +77,9 @@ return [
         'MESSAGE_POLICY_PAGE_CREATED' => 'Page de stratégie créée avec succès',        
         'MESSAGE_POLICY_PAGE_DELETED' => 'Page supprimée avec succès',
         'MESSAGE_POLICY_PAGE_UPDATED' => 'La page de politique a été mise à jour avec succès',
-        'MESSAGE_COMMENT_FOUND' => 'Commentaire trouvé avec succès'
+        'MESSAGE_COMMENT_FOUND' => 'Commentaire trouvé avec succès',
+        'MESSAGE_COMMENT_UPDATED' => 'Commentaire mis à jour avec succès',
+        'MESSAGE_COMMENT_DELETED' => 'Commentaire supprimé avec succès'
     ],
 
         

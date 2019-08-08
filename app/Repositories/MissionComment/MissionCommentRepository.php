@@ -59,6 +59,7 @@ class MissionCommentRepository implements MissionCommentInterface
         ->with(['user:user_id,first_name,last_name,avatar']);
         return $commentQuery->paginate(config("constants.MISSION_COMMENT_LIMIT"));
     }
+
     /**
      * Get comment by commentn_id
      *
@@ -68,5 +69,31 @@ class MissionCommentRepository implements MissionCommentInterface
     public function getComment(int $commentId): Comment
     {
         return $this->comment->findOrFail($commentId);
+    }
+
+    /**
+     * Update comment, by commentId
+     *
+     * @param int $commentId
+     * @param array $data
+     * @return App\Models\Comment
+     */
+    public function updateComment(int $commentId, array $data): Comment
+    {
+        $comment = $this->comment->findOrFail($commentId);
+        $comment->update($data);
+        return $comment;
+    }
+
+    /**
+     * Delete comment, by commentId
+     *
+     * @param int $commentId
+     * @return bool
+     */
+    public function deleteComment(int $commentId): bool
+    {
+        $comment = $this->comment->findOrFail($commentId);
+        return $comment->delete();
     }
 }

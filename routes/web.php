@@ -231,8 +231,22 @@ $router->group(
         $router->get(
             '/{missionId}/comments/{commentId}',
             [
-                'as' => 'missions.comments',
+                'as' => 'missions.comments.detail',
                 'uses' => 'Admin\Mission\MissionCommentController@show'
+            ]
+        );
+        $router->patch(
+            '/{missionId}/comments/{commentId}',
+            [
+                'as' => 'missions.comments.update',
+                'uses' => 'Admin\Mission\MissionCommentController@update'
+            ]
+        );
+        $router->delete(
+            '/{missionId}/comments/{commentId}',
+            [
+                'as' => 'missions.comments.delete',
+                'uses' => 'Admin\Mission\MissionCommentController@destroy'
             ]
         );
     }

@@ -79,7 +79,9 @@ return [
         'MESSAGE_POLICY_PAGE_CREATED' => 'Policy page created successfully',        
         'MESSAGE_POLICY_PAGE_DELETED' => 'Page deleted successfully',
         'MESSAGE_POLICY_PAGE_UPDATED' => 'Policy page updated successfully',
-        'MESSAGE_COMMENT_FOUND' => 'Comment found successfully'
+        'MESSAGE_COMMENT_FOUND' => 'Comment found successfully',
+        'MESSAGE_COMMENT_UPDATED' => 'Comment updated successfully',
+        'MESSAGE_COMMENT_DELETED' => 'Comment deleted successfully'
 		],
 
         
