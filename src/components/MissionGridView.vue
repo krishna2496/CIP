@@ -172,7 +172,7 @@
                                             </div>
                                              <div class="detail-column progress-block">
                                                     <i class="icon-wrap">
-                                                        <img src="../assets/images/landing/target-ic.svg" alt="user">
+                                                        <img :src="$store.state.imagePath+'/assets/images/target-ic.svg'" alt="user">
                                                     </i>
                                                     <div class="text-wrap">
                                                         <b-progress :value="mission.achieved_goal" :max="mission.goal_objective" class="mb-2"></b-progress>

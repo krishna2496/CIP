@@ -95,18 +95,25 @@
                           </ul>
                         </li>
                         <li class="has-menu no-dropdown">
-                          <a href="#" :title='langauageData.label.stories'>{{ langauageData.label.stories}}</a>
+                          <a href="Javascript:void(0)" :title='langauageData.label.stories'>{{ langauageData.label.stories}}</a>
                         </li>
                         <li class="has-menu no-dropdown">
-                          <a href="#" :title='langauageData.label.news'>{{ langauageData.label.news}}</a>
+                          <a href="Javascript:void(0)" :title='langauageData.label.news'>{{ langauageData.label.news}}</a>
                         </li>
+
                         <li class="has-menu">
-                          <a href="#" :title='langauageData.label.policy'>{{ langauageData.label.policy}}</a>
-                          <ul class="dropdown-menu">
-                            <li><a href="#">{{ langauageData.label.volunteering}}</a></li>
-                            <li><a href="#">{{ langauageData.label.sponsored}}</a></li>
+                          <a href="Javascript:void(0)" :title='langauageData.label.policy'>{{ langauageData.label.policy}}</a>
+                          <ul class="dropdown-menu" v-if="policyPage.length > 0">
+                            <li  v-for="item in policyPage">
+                               <router-link 
+                                    :to="{ path: '/policy/'+item.slug}" @click.native="menuBarclickHandler"
+                                    >
+                                    {{item.pages[0].title}}
+                                </router-link>
+                            </li>
                           </ul>
                         </li>
+
                     </ul>
                 </div>
                 <b-nav class="ml-auto">
@@ -120,6 +127,9 @@
                             <i :style="{backgroundImage: 'url('+this.$store.state.avatar+')'}"></i>
                             <em>{{this.$store.state.firstName+' '+this.$store.state.lastName}}</em>
                         </template>
+                        <!-- <b-dropdown-item href="#">Dashboard</b-dropdown-item> -->
+                        <b-dropdown-item :to="{ name: 'myAccount' }">My Account</b-dropdown-item>
+                        <!-- <b-dropdown-item href="#">Help Center</b-dropdown-item> -->
                         <b-dropdown-item 
                             v-on:click.native="logout()" 
                             replace 
@@ -416,8 +426,7 @@ export default {
         async getPolicyPage() {
             await policy().then( response => {
                 if(response.error == false){
-                    console.log(response.data);
-                    // this.policyPage = 
+                    this.policyPage = response.data;
                 } 
             }); 
         },  

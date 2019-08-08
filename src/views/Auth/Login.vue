@@ -156,7 +156,8 @@ export default {
         
         var domain = '';
         var imagePath = '';
-        var currentUrl = (((window.location.origin).split('.')));
+        console.log(window.location);
+        var currentUrl = (((window.location).split('.')));
         if (currentUrl[0]) {
             domain = ((currentUrl[0]).split('//'));
             if(domain[1]) {

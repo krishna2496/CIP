@@ -173,7 +173,7 @@
 				                        </div>
 				                        <div class="detail-column progress-block">
 				                                <i class="icon-wrap">
-				                                    <img src="../assets/images/landing/target-ic.svg" alt="user">
+				                                    <img :src="$store.state.imagePath+'/assets/images/target-ic.svg'" alt="user">
 				                                </i>
 				                                <div class="text-wrap">
 				                                    <b-progress :value="missionDetail.achieved_goal" :max="missionDetail.goal_objective" class="mb-2"></b-progress>
@@ -584,7 +584,6 @@ export default {
     AppCustomChip,
     StarRating,
 	ThePrimaryHeader : () => import("../components/Layouts/ThePrimaryHeader"),
-	TheSecondaryHeader: () => import("../components/Layouts/TheSecondaryHeader"),
 	TheSecondaryFooter: () => import("../components/Layouts/TheSecondaryFooter"),
 	GridView: () => import("../components/MissionGridView"),
 	VueAutosuggest,
@@ -873,7 +872,11 @@ export default {
 									this.disableApply = true;
 
 								} else {
-									this.disableApply = false
+									if (response.data[0].set_view_detail == 1) {
+										this.disableApply = true
+									} else {
+										this.disableApply = false
+									}
 								}
 							
 							this.missionDocument = response.data[0].mission_document
