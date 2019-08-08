@@ -97,7 +97,7 @@ class MissionController extends Controller
                 "publication_status" => ['required', Rule::in(config('constants.publication_status'))],
                 "media_images.*.media_path" => "required|valid_media_path",
                 "media_videos.*.media_name" => "required",
-                "media_videos.*.media_path" => "required",
+                "media_videos.*.media_path" => "required|valid_video_url",
                 "documents.*.document_path" => "required|valid_document_path",
                 "start_date" => "required_if:mission_type,TIME|required_with:end_date|date",
                 "end_date" => "sometimes|after:start_date|date",

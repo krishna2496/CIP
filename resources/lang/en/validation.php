@@ -91,6 +91,9 @@ return [
         'documents.*.document_path' => [
             'valid_document_path' => 'Please enter valid document file',
         ],
+		'media_videos.*.media_path' => [
+            'valid_video_url' => 'Please enter valid youtube url',
+        ],
     ],
 
     /*
