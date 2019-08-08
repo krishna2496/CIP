@@ -129,7 +129,9 @@ return [
 		'page_details.translations.*.sections.*.title' => 'title',
 		'page_details.translations.*.sections.*.description' => 'description',
 		'location.city_id' => 'city',
-		'location.country_code' => 'country code'
+		'location.country_code' => 'country code',
+		'organisation.organisation_id' => 'organisation id',
+		'mission_detail.*.lang' => 'language code'
         ],
 
 ];
