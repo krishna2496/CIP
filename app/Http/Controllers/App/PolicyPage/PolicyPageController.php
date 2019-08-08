@@ -48,13 +48,19 @@ class PolicyPageController extends Controller
     /**
      * Display a listing of policy pages.
      *
+     * @param Illuminate\Http\Request $request
      * @return Illuminate\Http\JsonResponse
      */
-    public function index(): JsonResponse
+    public function index(Request $request): JsonResponse
     {
         try {
-            // Get data for parent table
-            $pageList = $this->policyPageRepository->getPageList();
+            $languages = $this->languageHelper->getLanguages($request);
+
+            $language = ($request->hasHeader('X-localization')) ?
+            $request->header('X-localization') : env('TENANT_DEFAULT_LANGUAGE_CODE');
+            $languageId = $languages->where('code', $language)->first()->language_id;
+            
+            $pageList = $this->policyPageRepository->getPageList($languageId);
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_POLICY_PAGE_LISTING');
             $apiMessage = ($pageList->isEmpty()) ? trans('messages.success.MESSAGE_NO_RECORD_FOUND') :
@@ -73,7 +79,7 @@ class PolicyPageController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param Request $request
+     * @param Illuminate\Http\Request $request
      * @param string $slug
      * @return Illuminate\Http\JsonResponse
      */
@@ -86,7 +92,6 @@ class PolicyPageController extends Controller
             $request->header('X-localization') : env('TENANT_DEFAULT_LANGUAGE_CODE');
             $languageId = $languages->where('code', $language)->first()->language_id;
            
-            // Get data for parent table
             $policyPage = $this->policyPageRepository->getPageDetail($slug, $languageId);
           
             $apiStatus = Response::HTTP_OK;
@@ -103,38 +108,6 @@ class PolicyPageController extends Controller
             return $this->modelNotFound(
                 config('constants.error_codes.ERROR_NO_DATA_FOUND_FOR_SLUG'),
                 trans('messages.custom_error_message.ERROR_NO_DATA_FOUND_FOR_SLUG')
-            );
-        } catch (\Exception $e) {
-            dd($e);
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
-        }
-    }
-
-    /**
-     * Display a listing of policy pages.
-     *
-     * @return Illuminate\Http\JsonResponse
-     */
-    public function policyList(): JsonResponse
-    {
-        try {
-            // Get data for parent table
-            $pageDetailList = $this->policyPageRepository->getPageDetailList();
-            $apiStatus = Response::HTTP_OK;
-            // Check data found or not
-            if ($pageDetailList->count() == 0) {
-                // Set response data
-                $apiMessage = trans('messages.success.MESSAGE_NO_DATA_FOUND');
-                return $this->responseHelper->success($apiStatus, $apiMessage);
-            }
-            $apiMessage = trans('messages.success.MESSAGE_POLICY_PAGE_LISTING');
-            return $this->responseHelper->success($apiStatus, $apiMessage, $pageDetailList->toArray());
-        } catch (PDOException $e) {
-            return $this->PDO(
-                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
-                trans(
-                    'messages.custom_error_message.ERROR_DATABASE_OPERATIONAL'
-                )
             );
         } catch (\Exception $e) {
             return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));

@@ -16,6 +16,7 @@ use App\User;
 use InvalidArgumentException;
 use PDOException;
 use Illuminate\Validation\Rule;
+use App\Helpers\LanguageHelper;
 
 class UserController extends Controller
 {
@@ -29,6 +30,11 @@ class UserController extends Controller
      * @var App\Helpers\ResponseHelper
      */
     private $responseHelper;
+	
+	/**
+     * @var App\Helpers\LanguageHelper
+     */
+    private $languageHelper;
     
     /**
      * Create a new controller instance.
@@ -37,10 +43,11 @@ class UserController extends Controller
      * @param Illuminate\Http\ResponseHelper $responseHelper
      * @return void
      */
-    public function __construct(UserRepository $userRepository, ResponseHelper $responseHelper)
+    public function __construct(UserRepository $userRepository, ResponseHelper $responseHelper, LanguageHelper $languageHelper)
     {
         $this->userRepository = $userRepository;
         $this->responseHelper = $responseHelper;
+        $this->languageHelper = $languageHelper;
     }
     
     /**
@@ -105,6 +112,19 @@ class UserController extends Controller
                     $validator->errors()->first()
                 );
             }
+			
+			// Check language id
+			if (!$this->languageHelper->validateLanguageId($request)) {
+				return $this->responseHelper->error(
+                    Response::HTTP_UNPROCESSABLE_ENTITY,
+                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                    config('constants.error_codes.ERROR_USER_INVALID_DATA'),
+                    trans(
+						'messages.custom_error_message.ERROR_USER_INVALID_LANGUAGE'
+					)
+                );
+			}
+			
             
             // Create new user
             $user = $this->userRepository->store($request->all());
