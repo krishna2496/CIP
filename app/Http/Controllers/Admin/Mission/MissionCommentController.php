@@ -15,6 +15,7 @@ use InvalidArgumentException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Repositories\Mission\MissionRepository;
 use Validator;
+use Illuminate\Validation\Rule;
 
 class MissionCommentController extends Controller
 {
@@ -143,13 +144,11 @@ class MissionCommentController extends Controller
             );
         }
 
-        $validCommentStatusList = implode(",", array_values(config('constants.comment_approval_status')));
-
         // Server side validation
         $validator = Validator::make(
             $request->all(),
             [
-                "approval_status" => "required|in:".$validCommentStatusList,
+                "approval_status" => ['required',Rule::in(config('constants.comment_approval_status'))],
             ]
         );
         
