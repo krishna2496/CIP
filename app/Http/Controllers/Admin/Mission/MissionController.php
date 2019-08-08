@@ -103,6 +103,7 @@ class MissionController extends Controller
                 "end_date" => "sometimes|after:start_date|date",
                 "total_seats" => "integer|min:1",
                 "goal_objective" => "required_if:mission_type,GOAL|integer|min:1",
+				"skills.*.skill_id" => "exists:skill,skill_id",
             ]
         );
 

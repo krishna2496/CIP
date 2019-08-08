@@ -86,10 +86,10 @@ return [
 
     'custom' => [
         'media_images.*.media_path' => [
-            'valid_media_path' => 'Please enter valid media file path',
+            'valid_media_path' => 'Please enter valid media image',
         ],
         'documents.*.document_path' => [
-            'valid_document_path' => 'Please enter valid document file path',
+            'valid_document_path' => 'Please enter valid document file',
         ],
     ],
 
