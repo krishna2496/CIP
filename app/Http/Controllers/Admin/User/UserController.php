@@ -85,7 +85,7 @@ class UserController extends Controller
                 "last_name" => "required|max:16",
                 "email" => "required|email|unique:user,email,NULL,user_id,deleted_at,NULL",
                 "password" => "required|min:8",
-				"availability_id" => "exists:availability,availability_id"]
+				"availability_id" => "exists:availability,availability_id",
                 "city_id" => "required|exists:city,city_id",
                 "country_id" => "required|exists:country,country_id",
                 "profile_text" => "required",
@@ -93,6 +93,7 @@ class UserController extends Controller
                 "department" => "max:16",
                 "manager_name" => "max:16",
                 "linked_in_url" => "url",
+			]
             );
 
             // If request parameter have any error
