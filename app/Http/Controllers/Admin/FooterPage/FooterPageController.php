@@ -82,12 +82,13 @@ class FooterPageController extends Controller
                 $request->all(),
                 [
                     "page_details" => "required",
-                    "page_details.slug" => "required|max:255|
-                     unique:footer_page,slug,NULL,page_id,deleted_at,NULL",
+                    "page_details.slug" => "required|max:255|unique:footer_page,slug,NULL,page_id,deleted_at,NULL",
                     "page_details.translations" => "required",
                     "page_details.translations.*.lang" => "required|max:2",
                     "page_details.translations.*.title" => "required",
                     "page_details.translations.*.sections" => "required",
+                    "page_details.translations.*.sections.*.title" => "required_with:page_details.translations.*.sections",
+                    "page_details.translations.*.sections.*.description" => "required_with:page_details.translations.*.sections",
                 ]
             );
 
@@ -170,16 +171,14 @@ class FooterPageController extends Controller
         try {
             // Server side validataions
             $validator = Validator::make(
-                $request->page_details,
+                $request->all(),
                 [
-                "slug" => [
-                    "sometimes",
-                    "required",
-                    "max:255",
-                    Rule::unique('footer_page')->ignore($id, 'page_id,deleted_at,NULL')],
-                "translations.*.lang" => "required_with:translations|max:2",
-                "translations.*.title" => "required_with:translations",
-                "translations.*.sections" => "required_with:translations",
+                "page_details" => "required",
+                "page_details.translations.*.lang" => "required_with:page_details.translations|max:2",
+                "page_details.translations.*.title" => "required_with:page_details.translations",
+                "page_details.translations.*.sections" => "required_with:page_details.translations",
+				"page_details.translations.*.sections.*.title" => "required_with:page_details.translations.*.sections",
+                "page_details.translations.*.sections.*.description" => "required_with:page_details.translations.*.sections",
                 ]
             );
                   
@@ -190,6 +189,28 @@ class FooterPageController extends Controller
                     Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
                     config('constants.error_codes.ERROR_FOOTER_PAGE_REQUIRED_FIELDS_EMPTY'),
                     $validator->errors()->first()
+                );
+            }
+			
+			// For slug unique validataion
+			$slugValidator = Validator::make(
+                $request->page_details,
+                [
+                "slug" => [
+                    "sometimes",
+                    "required",
+                    "max:255",
+                    Rule::unique('footer_page')->ignore($id, 'page_id,deleted_at,NULL')],
+                ]
+            );
+                  
+            // If post parameter have any missing parameter
+            if ($slugValidator->fails()) {
+                return $this->responseHelper->error(
+                    Response::HTTP_UNPROCESSABLE_ENTITY,
+                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                    config('constants.error_codes.ERROR_FOOTER_PAGE_REQUIRED_FIELDS_EMPTY'),
+                    $slugValidator->errors()->first()
                 );
             }
             

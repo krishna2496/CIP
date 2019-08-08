@@ -125,7 +125,10 @@ return [
         'location.country' => 'country',   
         'password_confirmation' => 'confirm password',         
         'translations.*.lang' => 'language code',         
-        'is_mandatory' => 'mandatory',         
+        'is_mandatory' => 'mandatory',       
+		'page_details.translations.*.sections.*.title' => 'title',
+		'page_details.translations.*.sections.*.description' => 'description',
+		'location.city_id' => 'city'
         ],
 
 ];

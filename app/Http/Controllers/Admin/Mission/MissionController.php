@@ -83,11 +83,12 @@ class MissionController extends Controller
         $validator = Validator::make(
             $request->all(),
             [
-                "theme_id" => "required",
+                "theme_id" => "required|exists:mission_theme,mission_theme_id",
                 "mission_type" => ['required', Rule::in(config('constants.mission_type'))],
                 "location" => "required",
-                "location.city_id" => "required",
+                "location.city_id" => "required|required|exists:city,city_id",
                 "location.country_code" => "required",
+                "availability_id" => "required|exists:availability,availability_id",
                 "mission_detail" => "required",
                 "mission_detail.*.lang" => "required",
                 "mission_detail.*.title" => "required",
@@ -101,7 +102,6 @@ class MissionController extends Controller
                 "end_date" => "sometimes|after:start_date",
                 "total_seats" => "integer|min:1",
                 "goal_objective" => "required_if:mission_type,GOAL|integer|min:1",
-                "availability_id" => "required"
             ]
         );
 
