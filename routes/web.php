@@ -138,12 +138,9 @@ $router->group(['middleware' => 'localization'], function ($router) {
         'middleware' => 'localization|tenant.connection|jwt.auth',
         'uses' => 'App\Mission\MissionCommentController@store']);
 
-    /* Cms for user skill */
+    /* Create user skill */
     $router->post('/app/user/skills/{userId}', ['as' => 'user.skills', 'middleware' => 'localization|tenant.connection',
     'uses' => 'App\User\UserController@linkSkill']);
-    $router->delete('/app/user/skills/{userId}', ['as' => 'user.skills',
-    'middleware' => 'localization|tenant.connection',
-    'uses' => 'App\User\UserController@unlinkSkill']);
 });
 
 

@@ -6,8 +6,8 @@ use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
 use App\Repositories\User\UserRepository;
-use App\Helpers\ResponseHelper;
 use App\Traits\RestExceptionHandlerTrait;
+use App\Helpers\ResponseHelper;
 use App\User;
 use InvalidArgumentException;
 use App\Transformations\UserTransformable;
@@ -44,7 +44,7 @@ class UserController extends Controller
      *
      * @param App\Repositories\User\UserRepository $userRepository
      * @param Illuminate\Http\ResponseHelper $responseHelper
-     * @param App\Helpers\LanguageHelper
+     * @param App\Helpers\LanguageHelper $languageHelper
      * @param App\Helpers\Helpers $helpers
      * @return void
      */
@@ -182,56 +182,6 @@ class UserController extends Controller
             return $this->modelNotFound(
                 config('constants.error_codes.ERROR_USER_NOT_FOUND'),
                 trans('messages.custom_error_message.ERROR_USER_NOT_FOUND')
-            );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
-        }
-    }
-    
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \Illuminate\Http\Request $request
-     * @param  int $id
-     * @return Illuminate\Http\JsonResponse
-     */
-    public function unlinkSkill(Request $request, int $id): JsonResponse
-    {
-        try {
-            // Server side validataions
-            $validator = Validator::make($request->toArray(), [
-                'skills' => 'required',
-                'skills.*.skill_id' => 'required|exists:skill,skill_id',
-            ]);
-
-            // If request parameter have any error
-            if ($validator->fails()) {
-                return $this->responseHelper->error(
-                    Response::HTTP_UNPROCESSABLE_ENTITY,
-                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                    config('constants.error_codes.ERROR_SKILL_INVALID_DATA'),
-                    $validator->errors()->first()
-                );
-            }
-
-            $userSkill = $this->userRepository->unlinkSkill($request->toArray(), $id);
-            // Set response data
-            $apiStatus = Response::HTTP_OK;
-            $apiMessage = $userSkill ? trans('messages.success.MESSAGE_USER_SKILLS_DELETED') :
-            trans('messages.success.MESSAGE_NO_DATA_FOUND');
-            
-            return $this->responseHelper->success($apiStatus, $apiMessage);
-        } catch (ModelNotFoundException $e) {
-            return $this->modelNotFound(
-                config('constants.error_codes.ERROR_USER_NOT_FOUND'),
-                trans('messages.custom_error_message.ERROR_USER_NOT_FOUND')
-            );
-        } catch (PDOException $e) {
-            return $this->PDO(
-                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
-                trans(
-                    'messages.custom_error_message.ERROR_DATABASE_OPERATIONAL'
-                )
             );
         } catch (\Exception $e) {
             return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
