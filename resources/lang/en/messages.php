@@ -78,7 +78,8 @@ return [
         'MESSAGE_POLICY_PAGE_LISTING' => 'Policy pages listed successfully.',        
         'MESSAGE_POLICY_PAGE_CREATED' => 'Policy page created successfully',        
         'MESSAGE_POLICY_PAGE_DELETED' => 'Page deleted successfully',
-        'MESSAGE_POLICY_PAGE_UPDATED' => 'Policy page updated sucessfully'
+        'MESSAGE_POLICY_PAGE_UPDATED' => 'Policy page updated successfully',
+        'MESSAGE_COMMENT_FOUND' => 'Comment found successfully'
 		],
 
         
@@ -171,6 +172,7 @@ return [
         'ERROR_IMAGE_UPLOAD_INVALID_DATA' => 'Invalid input file',
         'ERROR_TENANT_OPTION_NOT_FOUND' => 'No tenant option found',
         'ERROR_LANGUAGE_NOT_FOUND' => 'Language not found',
-        'ERROR_FAILED_TO_RESET_ASSET_IMAGE' => 'Failed to reset asset images'
+        'ERROR_FAILED_TO_RESET_ASSET_IMAGE' => 'Failed to reset asset images',
+        'ERROR_COMMENT_NOT_FOUND' => 'Comment not found',
     ],
 ];
