@@ -30,6 +30,7 @@ $app->configure('errors');
 $app->configure('messages');
 $app->configure('constants'); //constant file config
 $app->configure('filesystems');
+$app->configure('queue');
 
 $app->register(Flipbox\LumenGenerator\LumenGeneratorServiceProvider::class);
 

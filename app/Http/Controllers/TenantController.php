@@ -19,6 +19,7 @@ use PDOException;
 use InvalidArgumentException;
 use Aws\S3\Exception\S3Exception;
 use App\Jobs\DownloadAssestFromS3ToLocalStorageJob;
+use Queue;
 
 class TenantController extends Controller
 {
@@ -97,17 +98,17 @@ class TenantController extends Controller
             
             // ONLY FOR DEVELOPMENT MODE. (PLEASE REMOVE THIS CODE IN PRODUCTION MODE)
             if (env('APP_ENV')=='local' || env('APP_ENV')=='testing') {
-                dispatch(new TenantDefaultLanguageJob($tenant));
+                Queue::push(new TenantDefaultLanguageJob($tenant));
             }
             
             // Job dispatched to create new tenant's database and migrations
-            dispatch(new TenantMigrationJob($tenant));
+            Queue::push(new TenantMigrationJob($tenant));
 
             // // Create assets folder for tenant on AWS s3 bucket
-            dispatch(new CreateFolderInS3BucketJob($tenant));
+            Queue::push(new CreateFolderInS3BucketJob($tenant));
 
             // Compile CSS file and upload on s3
-            dispatch(new CompileScssFiles($tenant->name));
+            Queue::push(new CompileScssFiles($tenant->name));
 
             // Set response data
             $apiStatus = Response::HTTP_CREATED;
