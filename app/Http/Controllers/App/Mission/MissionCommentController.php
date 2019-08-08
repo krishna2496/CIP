@@ -53,7 +53,7 @@ class MissionCommentController extends Controller
             $comments = $this->missionCommentRepository->getComments($missionId);
             $apiData = $comments;
             $apiStatus = Response::HTTP_OK;
-            $apiMessage = (!empty($apiData)) ?
+            $apiMessage = ($apiData->count()) ?
             trans('messages.success.MESSAGE_MISSION_COMMENT_LISTING') :
             trans('messages.success.MESSAGE_NO_MISSION_COMMENT_FOUND');
             return $this->responseHelper->successWithPagination($apiStatus, $apiMessage, $apiData);

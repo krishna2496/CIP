@@ -77,6 +77,7 @@ return [
         'MESSAGE_POLICY_PAGE_CREATED' => 'Page de stratégie créée avec succès',        
         'MESSAGE_POLICY_PAGE_DELETED' => 'Page supprimée avec succès',
         'MESSAGE_POLICY_PAGE_UPDATED' => 'La page de politique a été mise à jour avec succès',
+        'MESSAGE_COMMENT_FOUND' => 'Commentaire trouvé avec succès'
     ],
 
         
@@ -168,6 +169,7 @@ return [
         'ERROR_IMAGE_UPLOAD_INVALID_DATA' => 'Fichier d\'entrée invalide',
         'ERROR_TENANT_OPTION_NOT_FOUND' => 'Aucune option de locataire trouvée',
         'ERROR_LANGUAGE_NOT_FOUND' => 'Langue non trouvée',
-        'ERROR_FAILED_TO_RESET_ASSET_IMAGE' => 'Impossible de réinitialiser les images d\'actif'
+        'ERROR_FAILED_TO_RESET_ASSET_IMAGE' => 'Impossible de réinitialiser les images d\'actif',
+        'ERROR_COMMENT_NOT_FOUND' => 'Commentaire non trouvé',
     ],
 ];
