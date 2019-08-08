@@ -93,6 +93,7 @@ class UserController extends Controller
                 "email" => "required|email|unique:user,email,NULL,user_id,deleted_at,NULL",
                 "password" => "required|min:8",
 				"availability_id" => "exists:availability,availability_id",
+				"language_id" => "required|int",
                 "city_id" => "required|exists:city,city_id",
                 "country_id" => "required|exists:country,country_id",
                 "profile_text" => "required",
@@ -217,6 +218,20 @@ class UserController extends Controller
                     $validator->errors()->first()
                 );
             }
+			
+			// Check language id
+			if (isset($request->language_id)) {
+				if (!$this->languageHelper->validateLanguageId($request)) {
+					return $this->responseHelper->error(
+						Response::HTTP_UNPROCESSABLE_ENTITY,
+						Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+						config('constants.error_codes.ERROR_USER_INVALID_DATA'),
+						trans(
+							'messages.custom_error_message.ERROR_USER_INVALID_LANGUAGE'
+						)
+					);
+				}
+			}
 
             // Update user
             $user = $this->userRepository->update($request->toArray(), $id);
