@@ -48,7 +48,7 @@ class PolicyPageController extends Controller
     /**
      * Display a listing of policy pages.
      *
-     * @param Request $request
+     * @param Illuminate\Http\Request $request
      * @return Illuminate\Http\JsonResponse
      */
     public function index(Request $request): JsonResponse
@@ -79,7 +79,7 @@ class PolicyPageController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param Request $request
+     * @param Illuminate\Http\Request $request
      * @param string $slug
      * @return Illuminate\Http\JsonResponse
      */
