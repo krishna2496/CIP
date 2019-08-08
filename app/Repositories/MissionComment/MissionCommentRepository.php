@@ -59,4 +59,14 @@ class MissionCommentRepository implements MissionCommentInterface
         ->with(['user:user_id,first_name,last_name,avatar']);
         return $commentQuery->paginate(config("constants.MISSION_COMMENT_LIMIT"));
     }
+    /**
+     * Get comment by commentn_id
+     *
+     * @param int $commentId
+     * @return App\Models\Comment
+     */
+    public function getComment(int $commentId): Comment
+    {
+        return $this->comment->findOrFail($commentId);
+    }
 }

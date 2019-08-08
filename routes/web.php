@@ -222,10 +222,17 @@ $router->group(
             ['uses' => 'Admin\Mission\MissionApplicationController@updateApplication']
         );
         $router->get(
-            '/{mission_id}/comments',
+            '/{missionId}/comments',
             [
                 'as' => 'missions.comments',
                 'uses' => 'Admin\Mission\MissionCommentController@index'
+            ]
+        );
+        $router->get(
+            '/{missionId}/comments/{commentId}',
+            [
+                'as' => 'missions.comments',
+                'uses' => 'Admin\Mission\MissionCommentController@show'
             ]
         );
         
