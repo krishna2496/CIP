@@ -104,7 +104,7 @@ class TenantController extends Controller
             // Job dispatched to create new tenant's database and migrations
             Queue::push(new TenantMigrationJob($tenant));
 
-            // // Create assets folder for tenant on AWS s3 bucket
+            // Create assets folder for tenant on AWS s3 bucket
             Queue::push(new CreateFolderInS3BucketJob($tenant));
 
             // Compile CSS file and upload on s3
