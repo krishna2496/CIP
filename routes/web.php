@@ -139,9 +139,11 @@ $router->group(['middleware' => 'localization'], function ($router) {
         'uses' => 'App\Mission\MissionCommentController@store']);
   
     /* Policy pages  */
-    $router->get('/app/policy/listing', ['as' => 'policy.listing', 'middleware' => 'localization|tenant.connection',
+    $router->get('/app/policy/listing', ['as' => 'policy.listing',
+    'middleware' => 'localization|tenant.connection|jwt.auth',
     'uses' => 'App\PolicyPage\PolicyPageController@index']);
-    $router->get('/app/policy/{slug}', ['as' => 'policy.show', 'middleware' => 'localization|tenant.connection',
+    $router->get('/app/policy/{slug}', ['as' => 'policy.show',
+    'middleware' => 'localization|tenant.connection|jwt.auth',
     'uses' => 'App\PolicyPage\PolicyPageController@show']);
 });
 
