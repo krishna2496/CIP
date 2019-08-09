@@ -151,8 +151,8 @@ class FooterPageController extends Controller
             );
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
-                config('constants.error_codes.ERROR_NO_DATA_FOUND'),
-                trans('messages.custom_error_message.ERROR_NO_DATA_FOUND')
+                config('constants.error_codes.ERROR_FOOTER_PAGE_NOT_FOUND'),
+                trans('messages.custom_error_message.ERROR_FOOTER_PAGE_NOT_FOUND')
             );
         } catch (\Exception $e) {
             return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));

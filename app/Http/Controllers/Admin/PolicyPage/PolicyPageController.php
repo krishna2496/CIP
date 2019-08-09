@@ -91,6 +91,8 @@ class PolicyPageController extends Controller
                     "page_details.translations.*.lang" => "required|max:2",
                     "page_details.translations.*.title" => "required",
                     "page_details.translations.*.sections" => "required",
+					"page_details.translations.*.sections.*.title" => "required_with:page_details.translations.*.sections",
+                    "page_details.translations.*.sections.*.description" => "required_with:page_details.translations.*.sections",
                 ]
             );
 
@@ -152,8 +154,8 @@ class PolicyPageController extends Controller
             );
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
-                config('constants.error_codes.ERROR_NO_DATA_FOUND'),
-                trans('messages.custom_error_message.ERROR_NO_DATA_FOUND')
+                config('constants.error_codes.ERROR_POLICY_PAGE_NOT_FOUND'),
+                trans('messages.custom_error_message.ERROR_POLICY_PAGE_NOT_FOUND')
             );
         } catch (\Exception $e) {
             return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
@@ -161,7 +163,7 @@ class PolicyPageController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update policy page
      *
      * @param \Illuminate\Http\Request $request
      * @param int $id
