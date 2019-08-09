@@ -48,13 +48,17 @@ class MissionCommentRepository implements MissionCommentInterface
      * Get mission comments
      *
      * @param int $missionId
+     * @param array $statusList
      * @return \Illuminate\Pagination\LengthAwarePaginator
      */
-    public function getComments(int $missionId): LengthAwarePaginator
+    public function getComments(int $missionId, array $statusList = []): LengthAwarePaginator
     {
         $mission = $this->mission->findOrFail($missionId);
+        
+        $approvalStatusList = ($statusList) ? $statusList : [config("constants.comment_approval_status.PUBLISHED")];
+            
         $commentQuery = $mission->comment()
-        ->where('approval_status', config("constants.comment_approval_status.PUBLISHED"))
+        ->whereIn('approval_status', $approvalStatusList)
         ->orderBy('comment_id', 'desc')
         ->with(['user:user_id,first_name,last_name,avatar']);
         return $commentQuery->paginate(config("constants.MISSION_COMMENT_LIMIT"));

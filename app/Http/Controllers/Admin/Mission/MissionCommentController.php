@@ -63,7 +63,10 @@ class MissionCommentController extends Controller
     public function index(int $missionId): JsonResponse
     {
         try {
-            $apiData = $this->missionCommentRepository->getComments($missionId);
+            $apiData = $this->missionCommentRepository->getComments(
+                $missionId,
+                config("constants.comment_approval_status")
+            );
             $apiStatus = Response::HTTP_OK;
             $apiMessage = ($apiData->count()) ?
             trans('messages.success.MESSAGE_MISSION_COMMENT_LISTING') :
