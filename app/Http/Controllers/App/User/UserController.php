@@ -128,7 +128,7 @@ class UserController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Add skill to user
      *
      * @param  \Illuminate\Http\Request $request
      * @return Illuminate\Http\JsonResponse
