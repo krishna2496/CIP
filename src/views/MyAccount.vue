@@ -297,6 +297,7 @@ export default {
         },
         toDataURL(url, callback) {
             var xhr = new XMLHttpRequest();
+            xhr.open('GET', url,true);
             xhr.onload = function() {
             var reader = new FileReader();
             reader.onloadend = function() {
@@ -304,7 +305,7 @@ export default {
             }
                 reader.readAsDataURL(xhr.response);
             };
-            xhr.open('GET', url);
+            // xhr.setRequestHeader("Access-Control-Allow-Origin", "*");
             xhr.responseType = 'blob';
             xhr.send();
             this.isPrefilLoaded = true
