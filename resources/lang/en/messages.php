@@ -74,7 +74,7 @@ return [
         'MESSAGE_NO_RELATED_MISSION_FOUND' => 'Related mission not found',
         'MESSAGE_NO_MISSION_MEDIA_FOUND' => 'Mission media not found',
         'MESSAGE_NO_MISSION_COMMENT_FOUND' => 'Mission comments not found',
-        'MESSAGE_COMMENT_ADDED' => 'Mission comment added successfully',
+        'MESSAGE_COMMENT_ADDED' => 'Mission comment submitted for approval',
         'MESSAGE_POLICY_PAGE_LISTING' => 'Policy pages listed successfully.',        
         'MESSAGE_POLICY_PAGE_CREATED' => 'Policy page created successfully',        
         'MESSAGE_POLICY_PAGE_DELETED' => 'Page deleted successfully',
