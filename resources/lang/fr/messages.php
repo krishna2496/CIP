@@ -72,7 +72,7 @@ return [
         'MESSAGE_NO_RELATED_MISSION_FOUND' => 'Mission associée non trouvée',
         'MESSAGE_NO_MISSION_MEDIA_FOUND' => 'Média de mission introuvable',
         'MESSAGE_NO_MISSION_COMMENT_FOUND' => 'Commentaires de mission non trouvés',
-        'MESSAGE_COMMENT_ADDED' => 'Commentaire de mission ajouté avec succès',
+        'MESSAGE_COMMENT_ADDED' => 'Merci pour votre commentaire. Votre commentaire ne sera visible qu\'après modération',
         'MESSAGE_POLICY_PAGE_LISTING' => 'Liste des pages de règles correctement.',        
         'MESSAGE_POLICY_PAGE_CREATED' => 'Page de stratégie créée avec succès',        
         'MESSAGE_POLICY_PAGE_DELETED' => 'Page supprimée avec succès',

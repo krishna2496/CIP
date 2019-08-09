@@ -70,7 +70,7 @@ return [
         'MESSAGE_NO_RELATED_MISSION_FOUND' => 'DE: Related mission not found',
         'MESSAGE_NO_MISSION_MEDIA_FOUND' => 'DE: Mission media not found',
         'MESSAGE_NO_MISSION_COMMENT_FOUND' => 'DE: Mission comments not found',
-        'MESSAGE_COMMENT_ADDED' => 'DE: Mission comment added successfully',
+        'MESSAGE_COMMENT_ADDED' => 'DE: Thanks for your comment. Your comment will only be visible after moderation',
     ],
 
         
