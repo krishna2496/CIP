@@ -149,6 +149,7 @@ return [
         'ERROR_TOKEN_EXPIRED' => 'Provided token is expired',
         'ERROR_IN_TOKEN_DECODE' => 'An error while decoding token',
         'ERROR_TOKEN_NOT_PROVIDED' => 'Token not provided',
+        'ERROR_OLD_PASSWORD_NOT_MATCHED' => 'Sorry old password dosen\'t matched',
         
 
         // Custom error code for common exception
