@@ -46,9 +46,11 @@ $factory->define(App\Models\UserCustomField::class, function (Faker\Generator $f
         'type' => $typeArray[$randomTypes],
         'is_mandatory' => 1,
         'translations' => [
-            'lang' => "en",
-            'name' => str_random(10),
-            'values' => "[".rand(1, 5).",".rand(5, 10)."]"
+            [
+                'lang' => "en",
+                'name' => str_random(10),
+                'values' => "[".rand(1, 5).",".rand(5, 10)."]"
+            ]            
         ]
     ];
 });
@@ -79,7 +81,12 @@ $factory->define(App\Models\Mission::class, function (Faker\Generator $faker) {
 $factory->define(App\Models\Skill::class, function (Faker\Generator $faker) {
     return [
         'skill_name' => str_random(10),
-        'translations' => array(str_random(10)),
+        'translations' => [
+            [
+                'lang' => "en",
+                'title' => str_random(10)
+            ]            
+        ],
         'parent_skill' => 0,
     ];
 });

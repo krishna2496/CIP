@@ -196,6 +196,8 @@ class UserController extends Controller
             $request->header('X-localization') : env('TENANT_DEFAULT_LANGUAGE_CODE');
             $languageCode = $languages->where('code', $language)->first()->code;
             $userCustomFieldData = [];
+            $userSkillData = [];
+            $allSkillData = [];
             $customFieldsData = $customFields->toArray();
 
             if (!empty($customFieldsData) && (isset($customFieldsData))) {
