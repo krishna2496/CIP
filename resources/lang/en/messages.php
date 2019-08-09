@@ -176,6 +176,6 @@ return [
         'ERROR_TENANT_OPTION_NOT_FOUND' => 'No tenant option found',
         'ERROR_LANGUAGE_NOT_FOUND' => 'Language not found',
         'ERROR_FAILED_TO_RESET_ASSET_IMAGE' => 'Failed to reset asset images',
-        'ERROR_COMMENT_NOT_FOUND' => 'Comment not found',
+        'ERROR_COMMENT_NOT_FOUND' => 'Requested comment does not exist',
     ],
 ];
