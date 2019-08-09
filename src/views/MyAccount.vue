@@ -5,6 +5,7 @@
     </header>
     <main>
     <b-container>
+       
         <b-row class="profile-content">
         <b-col xl="3" lg="4" md="12" class="profile-left-col">
             <div class="profile-details">
@@ -70,6 +71,23 @@
                     />
                 </b-form-group>
             </div>
+            <div v-if="isPrefilLoaded">
+            <picture-input 
+                  ref="fileInput" 
+                  @change="onChange" 
+                  width="300" 
+                  height="300" 
+                  margin="16" 
+                  accept="image/jpeg,image/png"
+                  :prefillOptions="{fileType: 'png'}"
+                  :prefill="newUrl"
+                  buttonClass="btn"
+                  :customStrings="{
+                    upload: '<h1>Bummer!</h1>',
+                    drag: 'Drag a 😺 GIF or GTFO'
+                  }">
+            </picture-input>
+        </div>
         </b-col>
         <b-col xl="9" lg="8" md="12" class="profile-form-wrap">
             <b-form class="profile-form">
@@ -173,9 +191,9 @@
                     <b-form-group>
                         <label>{{langauageData.label.availablity}}</label>
                         <AppCustomDropdown
-                        :default_text="availabilityDefault"
-                        :optionList="availabilityList"
-                        @updateCall="updateAvailability"
+                            :default_text="availabilityDefault"
+                            :optionList="availabilityList"
+                            @updateCall="updateAvailability"
                         />
                     </b-form-group>
                 </b-col>
@@ -213,56 +231,97 @@
 import AppCustomDropdown from "../components/AppCustomDropdown";
 import MultiSelect from "../components/MultiSelect";
 import store from "../store";
+import PictureInput from 'vue-picture-input'
 
 export default {
-components: {
-ThePrimaryHeader : () => import("../components/Layouts/ThePrimaryHeader"),
-TheSecondaryFooter: () => import("../components/Layouts/TheSecondaryFooter"),
-AppCustomDropdown,
-MultiSelect
-},
-data() {
-return {
-langList: ["English: USA", "English: UK", "French"],
-langDefault: "English: USA",
-userIcon: require("@/assets/images/user-img-large.png"),
-timeList: ["GMT-4"],
-timeDefault: "GMT-4",
-countryList: [
-"India",
-"Japan",
-"China",
-"Africa",
-"Iran",
-"Shrilanka",
-"Bangladesh"
-],
-countryDefault: "Select your country",
-availabilityList: ["part time", "full time", "free lancher"],
-availabilityDefault: "Select your availablity",
-file: "null",
-langauageData : []
-};
-},
-mounted() {},
+    components: {
+        ThePrimaryHeader : () => import("../components/Layouts/ThePrimaryHeader"),
+        TheSecondaryFooter: () => import("../components/Layouts/TheSecondaryFooter"),
+        AppCustomDropdown,
+        MultiSelect,
+        PictureInput
+    },
+    data() {
+        return {
+            langList: ["English: USA", "English: UK", "French"],
+            langDefault: "English: USA",
+            userIcon: require("@/assets/images/user-img-large.png"),
+            timeList: ["GMT-4"],
+            timeDefault: "GMT-4",
+            countryList: [
+            "India",
+            "Japan",
+            "China",
+            "Africa",
+            "Iran",
+            "Shrilanka",
+            "Bangladesh"
+            ],
+            countryDefault: "Select your country",
+            availabilityList: ["part time", "full time", "free lancher"],
+            availabilityDefault: "Select your availablity",
+            file: "null",
+            langauageData : [],
+            clientImage : "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/tatva/assets/images/volunteer9.png",
+            newUrl : "",
+            isPrefilLoaded : false,
+            prefilImageType : {
+                mediaType: 'image/png'
+            }
+        };
+    },
+    mounted() {},
 
-methods: {
-updateLang(value) {
-this.langDefault = value;
-},
-updateTime(value) {
-this.timeDefault = value;
-},
-updateCountry(value) {
-this.countryDefault = value;
-},
-updateAvailability(value) {
-this.availabilityDefault = value;
-}
-},
-created() {
-this.langauageData = JSON.parse(store.state.languageLabel);
-}
+    methods: {
+        updateLang(value) {
+            this.langDefault = value;
+        },
+        updateTime(value) {
+            this.timeDefault = value;
+        },
+        updateCountry(value) {
+            this.countryDefault = value;
+        },
+        updateAvailability(value) {
+            this.availabilityDefault = value;
+        },
+        onChange (image) {
+            alert(image);
+          console.log('New picture selected!')
+          if (image) {
+            console.log('Picture loaded.')
+            // this.image = image
+          } else {
+            console.log('FileReader API not supported: use the <form>, Luke!')
+          }
+        },
+        toDataURL(url, callback) {
+            var xhr = new XMLHttpRequest();
+            xhr.onload = function() {
+            var reader = new FileReader();
+            reader.onloadend = function() {
+                callback(reader.result);
+            }
+                reader.readAsDataURL(xhr.response);
+            };
+            xhr.open('GET', url);
+            xhr.responseType = 'blob';
+            xhr.send();
+            this.isPrefilLoaded = true
+        }
+
+      
+    },
+    created() {
+        var _this =this
+        this.langauageData = JSON.parse(store.state.languageLabel);
+        this.toDataURL(this.clientImage, function(dataUrl) {
+            // console.log(dataUrl);
+            _this.newUrl = dataUrl
+  // console.log('RESULT:', dataUrl)
+})
+        // alert(this.getBase64Image(this.clientImage));
+    }
 
 };
 </script>
