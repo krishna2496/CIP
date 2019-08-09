@@ -117,10 +117,13 @@ return [
         'documents.*.document_name' => 'document name',
         'documents.*.document_type' => 'document type',
         'documents.*.document_path' => 'document path',
-        'skills.*.skill_id' => 'skill id',  
-        'location.city' => 'city', 
-        'location.country' => 'country',   
-        'password_confirmation' => 'confirm password',         
+        'skills.*.skill_id' => 'skill id',
+        'location.city' => 'city',
+        'location.country' => 'country',
+        'password_confirmation' => 'confirm password',
+        'translations.*.lang' => 'language code',
+        'is_mandatory' => 'mandatory',
+        'slider_detail.translations.*.lang' => 'language code'
         ],
 
 ];
