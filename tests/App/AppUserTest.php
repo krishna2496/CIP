@@ -98,4 +98,111 @@ class AppUserTest extends TestCase
         ]);
         $user->delete();
     }
+
+    /**
+     * @test
+     *
+     * Add skill to user
+     *
+     * @return void
+     */
+    public function it_should_add_skill_to_user()
+    {
+        $connection = 'tenant';
+        $user = factory(\App\User::class)->make();
+        $user->setConnection($connection);
+        $user->save();        
+        $skill = factory(\App\Models\Skill::class)->make();
+        $skill->setConnection($connection);
+        $skill->save();
+
+        $params = [
+            'skills' => [
+                [
+                    "skill_id" => $skill->skill_id
+                ]
+            ]
+        ];
+
+        $token = Helpers::getJwtToken($user->user_id);
+        $this->post('/app/user/skills', $params, ['token' => $token])
+        ->seeStatusCode(201)
+        ->seeJsonStructure([
+            "status",
+            "message"
+        ]);
+        $user->delete();
+        $skill->delete();
+    }
+
+    /**
+     * @test
+     *
+     * Validate request for add skill to user
+     *
+     * @return void
+     */
+    public function it_should_validate_skill_for_add_skill_to_user()
+    {
+        $connection = 'tenant';
+        $user = factory(\App\User::class)->make();
+        $user->setConnection($connection);
+        $user->save();        
+       
+        $params = [
+            'skills' => [
+                [
+                    "skill_id" => ''
+                ]
+            ]
+        ];
+
+        $token = Helpers::getJwtToken($user->user_id);
+        $this->post('/app/user/skills', $params, ['token' => $token])
+        ->seeStatusCode(422)
+        ->seeJsonStructure([
+            "errors" => [
+                [
+                    "status",
+                    "type",
+                    "message",
+                    "code"
+                ]
+            ]
+        ]);   
+        $user->delete();
+    }
+
+    /**
+     * @test
+     *
+     * Validate request for add skill to user
+     *
+     * @return void
+     */
+    public function it_should_validate_request_for_add_skill_to_user()
+    {
+        $connection = 'tenant';
+        $user = factory(\App\User::class)->make();
+        $user->setConnection($connection);
+        $user->save();        
+       
+        $params = [];
+
+        $token = Helpers::getJwtToken($user->user_id);
+        $this->post('/app/user/skills', $params, ['token' => $token])
+        ->seeStatusCode(422)
+        ->seeJsonStructure([
+            "errors" => [
+                [
+                    "status",
+                    "type",
+                    "message",
+                    "code"
+                ]
+            ]
+        ]);   
+        $user->delete();
+    }
+
 }

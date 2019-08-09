@@ -32,15 +32,15 @@ $router->group(['middleware' => 'localization'], function ($router) {
      'uses' => 'App\Auth\AuthController@reset_password']);
 
     /* reset password  */
-    $router->put('/app/password-reset', ['middleware' => 'localization|tenant.connection',
+    $router->put('/app/password-reset', ['middleware' => 'tenant.connection',
      'uses' => 'App\Auth\AuthController@passwordReset']);
 
     /* CMS footer pages  */
-    $router->get('/app/cms/listing', ['as' => 'cms.listing', 'middleware' => 'localization|tenant.connection',
+    $router->get('/app/cms/listing', ['as' => 'cms.listing', 'middleware' => 'tenant.connection',
      'uses' => 'App\FooterPage\FooterPageController@index']);
-    $router->get('/app/cms/detail', ['as' => 'cms.detail', 'middleware' => 'localization|tenant.connection',
+    $router->get('/app/cms/detail', ['as' => 'cms.detail', 'middleware' => 'tenant.connection',
      'uses' => 'App\FooterPage\FooterPageController@cmsList']);
-    $router->get('/app/cms/{slug}', ['as' => 'cms.show', 'middleware' => 'localization|tenant.connection',
+    $router->get('/app/cms/{slug}', ['as' => 'cms.show', 'middleware' => 'tenant.connection',
      'uses' => 'App\FooterPage\FooterPageController@show']);
     
     /* Get custom css url  */
@@ -49,7 +49,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
     
     /* Get mission listing  */
     $router->get('/app/missions/', ['as' => 'app.missions',
-    'middleware' => 'localization|tenant.connection|jwt.auth|PaginationMiddleware',
+    'middleware' => 'tenant.connection|jwt.auth|PaginationMiddleware',
     'uses' => 'App\Mission\MissionController@getMissionList']);
 
     /* Get user filter  */
@@ -66,12 +66,12 @@ $router->group(['middleware' => 'localization'], function ($router) {
 
     /* Add/remove favourite */
     $router->post('/app/mission/favourite', [
-        'middleware' => 'localization|tenant.connection|jwt.auth|JsonApiMiddleware',
+        'middleware' => 'tenant.connection|jwt.auth|JsonApiMiddleware',
         'uses' => 'App\Mission\MissionController@missionFavourite']);
 
     /* Mission Invite  */
     $router->post('/app/mission/invite', ['as' => 'app.missions.invite',
-    'middleware' => 'localization|tenant.connection|jwt.auth',
+    'middleware' => 'tenant.connection|jwt.auth',
     'uses' => 'App\Mission\MissionInviteController@missionInvite']);
 
     /* Fetch tenant option */
@@ -110,7 +110,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
 
     /* Get mission detail  */
     $router->get('/app/mission/{missionId}', [
-    'middleware' => 'localization|tenant.connection|jwt.auth',
+    'middleware' => 'tenant.connection|jwt.auth',
     'uses' => 'App\Mission\MissionController@getMissionDetail']);
     
     /* Fetch recent volunteers */
@@ -120,29 +120,29 @@ $router->group(['middleware' => 'localization'], function ($router) {
      
     /* Get mission related listing  */
     $router->get('/app/related-missions/{missionId}', ['as' => 'app.related-missions',
-    'middleware' => 'localization|tenant.connection|jwt.auth',
+    'middleware' => 'tenant.connection|jwt.auth',
     'uses' => 'App\Mission\MissionController@getRelatedMissions']);
    
     /* Get mission media listing  */
     $router->get('/app/mission-media/{missionId}', ['as' => 'app.mission-media',
-    'middleware' => 'localization|tenant.connection|jwt.auth',
+    'middleware' => 'tenant.connection|jwt.auth',
     'uses' => 'App\Mission\MissionMediaController@getMissionMedia']);
 
     /* Get mission comments  */
     $router->get('/app/mission/{missionId}/comments', [
-        'middleware' => 'localization|tenant.connection|jwt.auth',
+        'middleware' => 'tenant.connection|jwt.auth',
         'uses' => 'App\Mission\MissionCommentController@getComments']);
 
     /* Store mission comment */
     $router->post('/app/mission/comment', [
-        'middleware' => 'localization|tenant.connection|jwt.auth',
+        'middleware' => 'tenant.connection|jwt.auth',
         'uses' => 'App\Mission\MissionCommentController@store']);
 
     /* Create user skill */
-    $router->post('/app/user/skills/{userId}', ['as' => 'user.skills', 'middleware' => 'localization|tenant.connection',
+    $router->post('/app/user/skills', ['as' => 'user.skills',
+    'middleware' => 'tenant.connection|jwt.auth',
     'uses' => 'App\User\UserController@linkSkill']);
 });
-
 
 /* Fetch Language json file */
 $router->get('language/{lang}', ['as' => 'language', 'uses' => 'App\Language\LanguageController@fetchLangaugeFile']);

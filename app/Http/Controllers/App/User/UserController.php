@@ -131,12 +131,12 @@ class UserController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request $request
-     * @param  int $id
      * @return Illuminate\Http\JsonResponse
      */
-    public function linkSkill(Request $request, int $id): JsonResponse
+    public function linkSkill(Request $request): JsonResponse
     {
         try {
+            $id = $request->auth->user_id;
             $validator = Validator::make($request->toArray(), [
                 'skills' => 'required',
                 'skills.*.skill_id' => 'required|exists:skill,skill_id,deleted_at,NULL',
@@ -152,7 +152,7 @@ class UserController extends Controller
                 );
             }
 
-            // Check if skills is maximum or not
+            // Check if skills reaches maximum limit
             if (count($request->skills) > config('constants.SKILL_LIMIT')) {
                 return $this->responseHelper->error(
                     Response::HTTP_UNPROCESSABLE_ENTITY,
@@ -162,7 +162,7 @@ class UserController extends Controller
                 );
             }
 
-            //Delete  user skills
+            //Delete user skills
             $this->userRepository->deleteSkills($id);
 
             $this->userRepository->linkSkill($request->toArray(), $id);
@@ -174,9 +174,7 @@ class UserController extends Controller
         } catch (PDOException $e) {
             return $this->PDO(
                 config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
-                trans(
-                    'messages.custom_error_message.ERROR_DATABASE_OPERATIONAL'
-                )
+                trans('messages.custom_error_message.ERROR_DATABASE_OPERATIONAL')
             );
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
