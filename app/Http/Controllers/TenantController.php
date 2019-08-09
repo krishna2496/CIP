@@ -82,8 +82,9 @@ class TenantController extends Controller
     {
         try {
             $validator = Validator::make($request->toArray(), [
-                'name' => 'required|max:512|unique:tenant,name,NULL,tenant_id,deleted_at,NULL',
-                'sponsor_id'  => 'required']);
+                'name' => 'required|regex:/(^[A-Za-z0-9]+$)+/|
+                max:512|unique:tenant,name,NULL,tenant_id,deleted_at,NULL',
+                'sponsor_id'  => 'required|numeric']);
 
             if ($validator->fails()) {
                 return $this->responseHelper->error(
