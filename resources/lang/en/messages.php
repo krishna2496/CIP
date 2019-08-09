@@ -69,7 +69,7 @@ return [
         'MESSAGE_MISSION_VOLUNTEERS_LISTING' => 'Get mission volunteers successfully',
         'MESSAGE_NO_MISSION_VOLUNTEERS_FOUND' => 'No recent volunteers found',
         'MESSAGE_MISSION_MEDIA_LISTING' => 'Mission media listed successfully',
-        'MESSAGE_MISSION_COMMENT_LISTING' => 'Get mission comments successfully',
+        'MESSAGE_MISSION_COMMENT_LISTING' => 'Mission comments listed successfully',
         'MESSAGE_ASSET_IMAGES_RESET_SUCCESS' => 'Asset images reset successfully',
         'MESSAGE_NO_RELATED_MISSION_FOUND' => 'Related mission not found',
         'MESSAGE_NO_MISSION_MEDIA_FOUND' => 'Mission media not found',

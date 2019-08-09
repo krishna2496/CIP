@@ -134,7 +134,8 @@ return [
 		'location.city_id' => 'city',
 		'location.country_code' => 'country code',
 		'organisation.organisation_id' => 'organisation id',
-		'mission_detail.*.lang' => 'language code'
+		'mission_detail.*.lang' => 'language code',
+		'to_user_id' => 'user id'
         ],
 
 ];
