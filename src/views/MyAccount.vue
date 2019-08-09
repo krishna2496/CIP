@@ -71,20 +71,23 @@
                     />
                 </b-form-group>
             </div>
+            <div v-if="isPrefilLoaded">
             <picture-input 
                   ref="fileInput" 
                   @change="onChange" 
                   width="300" 
                   height="300" 
                   margin="16" 
-                  accept="image/jpeg,image/png" 
-                  size="10" 
+                  accept="image/jpeg,image/png"
+                  :prefillOptions="{fileType: 'png'}"
+                  :prefill="newUrl"
                   buttonClass="btn"
                   :customStrings="{
                     upload: '<h1>Bummer!</h1>',
                     drag: 'Drag a 😺 GIF or GTFO'
                   }">
             </picture-input>
+        </div>
         </b-col>
         <b-col xl="9" lg="8" md="12" class="profile-form-wrap">
             <b-form class="profile-form">
@@ -258,7 +261,13 @@ export default {
             availabilityList: ["part time", "full time", "free lancher"],
             availabilityDefault: "Select your availablity",
             file: "null",
-            langauageData : []
+            langauageData : [],
+            clientImage : "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/tatva/assets/images/volunteer9.png",
+            newUrl : "",
+            isPrefilLoaded : false,
+            prefilImageType : {
+                mediaType: 'image/png'
+            }
         };
     },
     mounted() {},
@@ -285,11 +294,35 @@ export default {
           } else {
             console.log('FileReader API not supported: use the <form>, Luke!')
           }
+        },
+        toDataURL(url, callback) {
+            var xhr = new XMLHttpRequest();
+            xhr.onload = function() {
+            var reader = new FileReader();
+            reader.onloadend = function() {
+                callback(reader.result);
+            }
+                reader.readAsDataURL(xhr.response);
+            };
+            // alert('https://cors-escape.herokuapp.com/'+url);
+            xhr.open('GET',url);
+            // xhr.setRequestHeader("Access-Control-Allow-Origin", '*');
+            xhr.responseType = 'blob';
+            xhr.send();
+            this.isPrefilLoaded = true
         }
+
       
     },
     created() {
+        var _this =this
         this.langauageData = JSON.parse(store.state.languageLabel);
+        this.toDataURL(this.clientImage, function(dataUrl) {
+            // console.log(dataUrl);
+            _this.newUrl = dataUrl
+  // console.log('RESULT:', dataUrl)
+})
+        // alert(this.getBase64Image(this.clientImage));
     }
 
 };
