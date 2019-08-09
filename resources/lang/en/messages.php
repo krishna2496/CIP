@@ -25,7 +25,7 @@ return [
         'MESSAGE_PASSWORD_CHANGE_SUCCESS' => 'Your password has been changed successfully.',
         'MESSAGE_CUSTOM_FIELD_ADDED' => 'User custom field added successfully',
         'MESSAGE_CUSTOM_FIELD_UPDATED' => 'User custom field updated successfully',
-		'MESSAGE_CUSTOM_FIELD_FOUND' => 'User custom field found successfully',
+        'MESSAGE_CUSTOM_FIELD_FOUND' => 'User custom field found successfully',
         'MESSAGE_CUSTOM_FIELD_DELETED' => 'User custom field deleted successfully',
         'MESSAGE_APPLICATION_LISTING' => 'Mission application found successfully',
         'MESSAGE_APPLICATIONS_LISTING' => 'Mission applications listed successfully',
@@ -44,9 +44,9 @@ return [
         'MESSAGE_MISSION_FOUND' => 'Mission found successfully',
         'MESSAGE_PAGE_FOUND' => 'Page found successfully',
         'MESSAGE_ASSETS_FILES_LISTING' => "Assets files listed successfully",
-        'MESSAGE_TENANT_SETTING_UPDATE_SUCCESSFULLY' => 'Settings has been update successfully',
+        'MESSAGE_TENANT_SETTING_UPDATE_SUCCESSFULLY' => 'Settings has been updated successfully',
         'MESSAGE_TENANT_SETTINGS_LISTING' => 'Settings listed successfully',
-		'MESSAGE_THEME_CREATED' => 'Mission theme created successfully',
+        'MESSAGE_THEME_CREATED' => 'Mission theme created successfully',
         'MESSAGE_THEME_UPDATED' => 'Mission theme updated successfully',
         'MESSAGE_THEME_DELETED' => 'Mission theme deleted successfully',
         'MESSAGE_THEME_FOUND' => 'Mission theme found successfully',
@@ -56,7 +56,7 @@ return [
         'MESSAGE_SKILL_FOUND' => 'Skill found successfully',
         'MESSAGE_THEME_FOUND' => 'Mission theme found successfully',
         'MESSAGE_TENANT_OPTION_CREATED' => 'Tenant option created successfully',
-        'MESSAGE_TENANT_OPTION_UPDATED' => 'Tenant option update successfully',
+        'MESSAGE_TENANT_OPTION_UPDATED' => 'Tenant option updated successfully',
         'MESSAGE_TENANT_OPTIONS_LIST' => 'Tenant options listed successfully',
         'MESSAGE_MISSION_ADDED_TO_FAVOURITE' => 'Mission added to favourite',
         'MESSAGE_MISSION_DELETED_FROM_FAVOURITE' => 'Mission removed from favourite',
@@ -75,14 +75,14 @@ return [
         'MESSAGE_NO_MISSION_MEDIA_FOUND' => 'Mission media not found',
         'MESSAGE_NO_MISSION_COMMENT_FOUND' => 'Mission comments not found',
         'MESSAGE_COMMENT_ADDED' => 'Mission comment added successfully',
-        'MESSAGE_POLICY_PAGE_LISTING' => 'Policy pages listed successfully.',        
-        'MESSAGE_POLICY_PAGE_CREATED' => 'Policy page created successfully',        
+        'MESSAGE_POLICY_PAGE_LISTING' => 'Policy pages listed successfully.',
+        'MESSAGE_POLICY_PAGE_CREATED' => 'Policy page created successfully',
         'MESSAGE_POLICY_PAGE_DELETED' => 'Page deleted successfully',
         'MESSAGE_POLICY_PAGE_UPDATED' => 'Policy page updated successfully',
         'MESSAGE_COMMENT_FOUND' => 'Comment found successfully',
         'MESSAGE_COMMENT_UPDATED' => 'Comment updated successfully',
         'MESSAGE_COMMENT_DELETED' => 'Comment deleted successfully'
-		],
+        ],
 
         
     /**
@@ -90,10 +90,10 @@ return [
     */
     'custom_error_message' => [
         // Custom error code for User Module - 100000 - 109999
-        'ERROR_USER_NOT_FOUND' => 'User not found in system',
+        'ERROR_USER_NOT_FOUND' => 'User does not found in system',
         'ERROR_SKILL_INVALID_DATA' => 'Invalid skill data',
         'ERROR_USER_CUSTOM_FIELD_INVALID_DATA' => 'Custom field creation failed. Please check input parameters',
-        'ERROR_USER_CUSTOM_FIELD_NOT_FOUND' => 'Requested user custom field not exist',
+        'ERROR_USER_CUSTOM_FIELD_NOT_FOUND' => 'Requested user custom field does not exist',
         'ERROR_USER_INVALID_DATA' => 'User creation failed. Please check input parameters',
         'ERROR_USER_SKILL_NOT_FOUND' => 'Requested skills for user not exist',
         'ERROR_SLIDER_IMAGE_UPLOAD' => 'Unable to upload slider image',
@@ -102,7 +102,7 @@ return [
         'ERROR_NOT_VALID_EXTENSION' => 'File must have .scss type',
         'ERROR_FILE_NAME_NOT_MATCHED_WITH_STRUCTURE' => 'File name doesn`t match with structure',
         'ERROR_NOT_VALID_IMAGE_FILE_EXTENSION' => 'The image file must be a file of type: jpeg, jpg, svg, png.',
-		'ERROR_USER_INVALID_LANGUAGE' => 'Please enter valid language id',
+        'ERROR_USER_INVALID_LANGUAGE' => 'Please enter valid language id',
         
                 
         // Custom error code for CMS Module - 300000 - 309999

@@ -81,12 +81,12 @@ class UserCustomFieldController extends Controller
             // Server side validataions
             $validator = Validator::make(
                 $request->toArray(),
-                ["name" => "required",
+                ["name" => "required|unique:user_custom_field,name,NULL,field_id,deleted_at,NULL",
                 "type" => ['required',
                     Rule::in(config('constants.custom_field_types'))],
                 "is_mandatory" => "required|boolean",
                 "translations" => "required",
-				"translations.*.lang" => "max:2",
+                "translations.*.lang" => "max:2",
                 "translations.*.values" => Rule::requiredIf(
                     $request->type == config('constants.custom_field_types.DROP-DOWN') ||
                     $request->type == config('constants.custom_field_types.RADIO')
@@ -141,13 +141,17 @@ class UserCustomFieldController extends Controller
             // Server side validataions
             $validator = Validator::make(
                 $request->toArray(),
-                ["name" => "sometimes|required",
+                ["name" => [
+                    "sometimes",
+                    "required",
+                    "max:255",
+                    Rule::unique('user_custom_field')->ignore($id, 'field_id,deleted_at,NULL')],
                 "is_mandatory" => "sometimes|required|boolean",
                 "type" => [
                     "sometimes",
                     "required",
                     Rule::in(config('constants.custom_field_types'))],
-				"translations.*.lang" => "max:2",
+                "translations.*.lang" => "max:2",
                 "translations.*.values" =>
                 Rule::requiredIf($request->type == config('constants.custom_field_types.DROP-DOWN')
                     || $request->type == config('constants.custom_field_types.RADIO')),
@@ -191,8 +195,8 @@ class UserCustomFieldController extends Controller
             return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
-	
-	/**
+    
+    /**
      * Display the specified user custom field detail.
      *
      * @param int $id
@@ -201,7 +205,7 @@ class UserCustomFieldController extends Controller
     public function show(int $id): JsonResponse
     {
         try {
-			$fieldDetail = $this->userCustomFieldRepository->find($id);
+            $fieldDetail = $this->userCustomFieldRepository->find($id);
             
             $apiData = $fieldDetail->toArray();
             $apiStatus = Response::HTTP_OK;
