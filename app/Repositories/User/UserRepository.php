@@ -230,7 +230,7 @@ class UserRepository implements UserInterface
     {
         // Fetch user details from system and update password
         $userDetail = $this->user->find($id);
-        $userDetail->password=$password;
+        $userDetail->password = $password;
         return $userDetail->save();
     }
 }
