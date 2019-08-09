@@ -47,6 +47,6 @@ class TimezoneRepository implements TimezoneInterface
      */
     public function getTimezoneList() :Collection
     {
-        return $this->timezone->get();
+        return $this->timezone->pluck('timezone', 'timezone_id');
     }
 }

@@ -188,7 +188,7 @@ class UserController extends Controller
             $countryList = $this->countryRepository->countryList();
             $cityList = $this->cityRepository->cityList();
             $timezoneList = $this->timeZoneRepository->getTimezoneList();
-            $tenantLanguages = $this->languageHelper->getTenantLanguages($request);
+            $tenantLanguages = $this->languageHelper->getTenantLanguageList($request);
             $availabilityList = $this->userRepository->getAvailability();
 
             $languages = $this->languageHelper->getLanguages($request);
@@ -245,17 +245,12 @@ class UserController extends Controller
                     if ($value) {
                         $arrayKey = array_search($languageCode, array_column($value['translations'], 'lang'));
                         if ($arrayKey !== '') {
-                            $returnData[config('constants.SKILL')][$key]['skill_id'] =
-                            $value['skill_id'];
-                            $returnData[config('constants.SKILL')][$key]['skill_name'] =
-                            $value['skill_name'];
-                            $returnData[config('constants.SKILL')][$key]['translations'] =
-                            $value['translations'][$arrayKey]['title'];
+                            $returnData[$value['skill_id']] = $value['translations'][$arrayKey]['title'];
                         }
                     }
                 }
                 if (!empty($returnData)) {
-                    $allSkillData = $returnData[config('constants.SKILL')];
+                    $allSkillData = $returnData;
                 }
             }
 

@@ -5,7 +5,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\Mission;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Collection as SupportCollection;
 
 class Availability extends Model
 {
@@ -62,10 +62,10 @@ class Availability extends Model
     /**
      * Get all resources.
      *
-     * @return Illuminate\Database\Eloquent\Collection
+     * @return Illuminate\Support\Collection
      */
-    public function getAvailability(): Collection
+    public function getAvailability(): SupportCollection
     {
-        return static::get();
+        return static::pluck('type', 'availability_id');
     }
 }

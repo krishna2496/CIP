@@ -2,6 +2,7 @@
 namespace App\Repositories\User;
 
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Collection as SupportCollection;
 use App\Repositories\User\UserInterface;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -244,9 +245,9 @@ class UserRepository implements UserInterface
     /**
      * Get Availability.
      *
-     * @return Illuminate\Database\Eloquent\Collection
+     * @return Illuminate\Support\Collection
      */
-    public function getAvailability(): Collection
+    public function getAvailability(): SupportCollection
     {
         return $this->availability->getAvailability();
     }
