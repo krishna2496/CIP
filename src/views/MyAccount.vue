@@ -304,9 +304,7 @@ export default {
             }
                 reader.readAsDataURL(xhr.response);
             };
-            // alert('https://cors-escape.herokuapp.com/'+url);
-            xhr.open('GET',url);
-            // xhr.setRequestHeader("Access-Control-Allow-Origin", '*');
+            xhr.open('GET', url);
             xhr.responseType = 'blob';
             xhr.send();
             this.isPrefilLoaded = true
