@@ -443,29 +443,36 @@
 														<i slot="aside" class="user-profile-icon" 
 															:style="{backgroundImage: 'url(' + comments.user.avatar + ')'}">
 														</i>
-														<h5>{{comments.user.first_name}} {{comments.user.last_name}}</h5>
-														<p>{{ getCommentDate(comments.created_at) }}</p>
+														<div class="comment-title">
+															<h5>{{comments.user.first_name}} {{comments.user.last_name}}</h5>
+															<p>{{ getCommentDate(comments.created_at) }}</p>
+														</div>
+														<div class="comment-content">
+															<p>
+															{{comments.comment}}
+															</p>
+														</div>
 													</b-media>
-													<p>
-													{{comments.comment}}
-													</p>
 												</div>
 											</div>
-										</div>	
+
 											<div class="more-comment-list" 
-										v-if="nextUrl != null">
-										<b-link  
-											v-if="loadMoreComment"
-											class="btn btn-bordersecondary">
-											<span>{{ langauageData.label.loading }}</span>
-										</b-link>
-										<b-link  
-											v-else
-											@click = "showMoreComment"
-											class="btn btn-bordersecondary">
-											<span>{{ langauageData.label.read_more_comment }}</span>
-										</b-link>
-									</div>				
+												v-if="nextUrl != null">
+												<b-button  
+													v-if="loadMoreComment"
+													class="comment-btn">
+													<span>{{ langauageData.label.loading }}</span>
+												</b-button>
+												<b-button  
+													v-else
+													@click = "showMoreComment"
+													class="comment-btn">
+													<span>{{ langauageData.label.read_more_comment }}</span>
+												</b-button>
+											</div>
+
+										</div>	
+															
 									</div>
 								
 									</b-collapse>

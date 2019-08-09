@@ -1861,8 +1861,8 @@ main {
 		}
 		.comment-list-item {
 			background: $white;
-			padding: 21px 21px 13px;
-			margin-bottom: 13px;
+			padding: 21px 21px;
+			margin-bottom: 15px;
 			&:last-child {
 				margin-bottom: 0;
 			}
@@ -1882,20 +1882,22 @@ main {
 		}
 
 		.comment-media {
-			margin-bottom: 12px;
-			align-items: center;
-
+			margin-bottom: 0;
 			.mr-3 {
 				margin-right: 12px !important;
 			}
+			.comment-title{
+				h5 {
+					margin-bottom: 0;
+				}
 
-			h5 {
-				margin-bottom: 0;
+				p {
+					font-size: 12px;
+					margin-bottom: 0;
+				}
 			}
-
-			p {
-				font-size: 12px;
-				margin-bottom: 0;
+			.comment-content{
+				padding-top: 8px;
 			}
 		}
 	}
@@ -1904,19 +1906,20 @@ main {
 		text-align: center;
 
 		.btn {
-			display: flex!important;
+			display: inline-flex!important;
 		    align-items: center;
 		    justify-content: center;
 		    border-radius:0;
-		    background:$primary;
-		    color:$white;
+		    background:transparent!important;
+		    color:$black-primary!important;
+		    border:none!important;
+		    padding: 0;
+		    margin-top: 15px;
 		    &:hover,&:focus{
-		    	background:$primary;
-		    	color:$white;
+		    	background:transparent!important;
+			    color:$black-primary!important;
+			    border:none!important;
 		    }
-		}
-		a{
-		font-size :15px !important
 		}
 	}
 }
