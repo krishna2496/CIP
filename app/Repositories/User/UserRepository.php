@@ -217,4 +217,20 @@ class UserRepository implements UserInterface
         }
         return $user;
     }
+    
+    /**
+     * Change user password
+     *
+     * @param int $id
+     * @param string $password
+     *
+     * @return bool
+     */
+    public function changePassword(int $id, string $password): bool
+    {
+        // Fetch user details from system and update password
+        $userDetail = $this->user->find($id);
+        $userDetail->password=$password;
+        return $userDetail->save();
+    }
 }

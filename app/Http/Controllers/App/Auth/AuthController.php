@@ -26,6 +26,7 @@ use PDOException;
 use App\Helpers\LanguageHelper;
 use App\Exceptions\TenantDomainNotFoundException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Repositories\User\UserRepository;
 
 class AuthController extends Controller
 {
@@ -60,6 +61,11 @@ class AuthController extends Controller
     private $languageHelper;
     
     /**
+     * @var App\Repositories\User\UserRepository
+     */
+    private $userRepository;
+    
+    /**
      * Create a new controller instance.
      *
      * @param \Illuminate\Http\Request $request
@@ -67,6 +73,7 @@ class AuthController extends Controller
      * @param App\Repositories\TenantOption\TenantOptionRepository $tenantOptionRepository
      * @param App\Helpers\Helpers $helpers
      * @param  Illuminate\Http\LanguageHelper $languageHelper
+     * @param App\Repositories\User\UserRepository $userRepository
      * @return void
      */
     public function __construct(
@@ -74,13 +81,15 @@ class AuthController extends Controller
         ResponseHelper $responseHelper,
         TenantOptionRepository $tenantOptionRepository,
         Helpers $helpers,
-        LanguageHelper $languageHelper
+        LanguageHelper $languageHelper,
+        UserRepository $userRepository
     ) {
         $this->request = $request;
         $this->responseHelper = $responseHelper;
         $this->tenantOptionRepository = $tenantOptionRepository;
         $this->helpers = $helpers;
         $this->languageHelper = $languageHelper;
+        $this->userRepository = $userRepository;
     }
 
     /**
@@ -349,9 +358,9 @@ class AuthController extends Controller
     {
         try {
             $validator = Validator::make($request->toArray(), [
-                'oldPassword' => 'required',
+                'old_password' => 'required',
                 'password' => 'required|min:8',
-                'confirmPassword' => 'required|min:8|same:password',
+                'confirm_password' => 'required|min:8|same:password',
             ]);
             
             if ($validator->fails()) {
@@ -363,10 +372,7 @@ class AuthController extends Controller
                 );
             }
 
-            // Fetch user details from system
-            $userDetail = User::find($request->auth->user_id);
-
-            $status = Hash::check($request->oldPassword, $request->auth->password);
+            $status = Hash::check($request->old_password, $request->auth->password);
             if (!$status) {
                 return $this->responseHelper->error(
                     Response::HTTP_UNPROCESSABLE_ENTITY,
@@ -375,14 +381,13 @@ class AuthController extends Controller
                     trans('messages.custom_error_message.ERROR_OLD_PASSWORD_NOT_MATCHED')
                 );
             }
-
-            // Update password
-            $userDetail->password=$request->password;
-            $userDetail->save();
-
-            $newToken = $this->helpers->getJwtToken($request->auth->user_id);
             
-          
+            // Update password
+            $passwordStatus = $this->userRepository->changePassword($request->auth->user_id, $request->password);
+            
+            // Get new token
+            $newToken = ($passwordStatus) ? $this->helpers->getJwtToken($request->auth->user_id) : '';
+            
             // Send response
             $apiStatus = Response::HTTP_OK;
             $apiData = array('token' => $newToken);
