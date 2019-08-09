@@ -85,7 +85,7 @@ class MissionCommentController extends Controller
     }
 
     /**
-     * Get comment detail, by mission and comment id
+     * Get comment detail by mission id and comment id
      *
      * @param int $missionId
      * @param int  $commentId
@@ -124,7 +124,7 @@ class MissionCommentController extends Controller
     }
 
     /**
-     * Update comment, by mission and comment id
+     * Update comment by mission id and comment id
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $missionId
@@ -185,7 +185,7 @@ class MissionCommentController extends Controller
     }
 
     /**
-     * Delete comment, by mission and comment id
+     * Delete comment by mission id and comment id
      *
      * @param  int  $missionId
      * @param  int  $commentId

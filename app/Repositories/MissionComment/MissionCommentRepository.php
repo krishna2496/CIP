@@ -61,7 +61,7 @@ class MissionCommentRepository implements MissionCommentInterface
     }
 
     /**
-     * Get comment by commentn_id
+     * Get comment detail
      *
      * @param int $commentId
      * @return App\Models\Comment
