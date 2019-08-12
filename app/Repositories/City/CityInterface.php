@@ -9,7 +9,8 @@ interface CityInterface
     /**
     * Get a listing of resource.
     *
+    * @param int $countryId
     * @return Illuminate\Support\Collection
     */
-    public function cityList(): Collection;
+    public function cityList(int $countryId): Collection;
 }

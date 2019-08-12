@@ -139,8 +139,12 @@ $router->group(['middleware' => 'localization'], function ($router) {
         'uses' => 'App\Mission\MissionCommentController@store']);
 
     /* Get user details */
-    $router->get('/app/user-detail', ['as' => 'connect', 'middleware' => 'tenant.connection|jwt.auth',
+    $router->get('/app/user-detail', ['middleware' => 'tenant.connection|jwt.auth',
      'uses' => 'App\User\UserController@show']);
+
+    /* Get city by country id */
+    $router->get('/app/city/{countryId}', ['middleware' => 'tenant.connection|jwt.auth',
+     'uses' => 'App\City\CityController@fetchCity']);
 });
 
 

@@ -186,7 +186,7 @@ class UserController extends Controller
             $userSkillList = $this->userRepository->userSkills($userId);
             $skillList = $this->skillRepository->skillList($request);
             $countryList = $this->countryRepository->countryList();
-            $cityList = $this->cityRepository->cityList();
+            $cityList = $this->cityRepository->cityList($userDetail->country_id);
             $timezoneList = $this->timeZoneRepository->getTimezoneList();
             $tenantLanguages = $this->languageHelper->getTenantLanguageList($request);
             $availabilityList = $this->userRepository->getAvailability();
@@ -255,6 +255,7 @@ class UserController extends Controller
             }
 
             $apiData = $userDetail->toArray();
+            $apiData['language_code'] = $languageCode;
             $apiData['custom_fields'] = $userCustomFieldData;
             $apiData['user_skills'] = $userSkillData;
             $apiData['skill_list'] = $allSkillData;

@@ -27,10 +27,12 @@ class CityRepository implements CityInterface
     /**
     * Get listing of all city.
     *
+    * @param int $countryId
     * @return Illuminate\Support\Collection
     */
-    public function cityList(): Collection
+    public function cityList(int $countryId): Collection
     {
-        return $this->city->pluck('name', 'city_id');
+        $this->city->where('country_id', $countryId)->firstOrFail();
+        return $this->city->where('country_id', $countryId)->pluck('name', 'city_id');
     }
 }
