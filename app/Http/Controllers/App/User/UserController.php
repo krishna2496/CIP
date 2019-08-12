@@ -264,6 +264,12 @@ class UserController extends Controller
             $apiData['timezone_list'] = $timezoneList;
             $apiData['language_list'] = $tenantLanguages;
             $apiData['availability_list'] = $availabilityList;
+            if (isset($userDetail->avatar)) {
+                $type = pathinfo($userDetail->avatar, PATHINFO_EXTENSION);
+                $imageData = file_get_contents($userDetail->avatar);
+                $avatarBase64 = 'data:image/' . $type . ';base64,' . base64_encode($imageData);
+                $apiData['avatar_base64'] = $avatarBase64;
+            }
            
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_USER_FOUND');
