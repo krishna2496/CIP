@@ -16,7 +16,9 @@ use App\Models\Country;
 use App\Models\Timezone;
 use App\Models\missionApplication;
 use App\Models\Availability;
+use App\Models\UserCustomFieldValue;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Nicolaslopezj\Searchable\SearchableTrait;
 
 class User extends Model implements AuthenticatableContract, AuthorizableContract, CanResetPasswordInterface
@@ -55,7 +57,8 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     protected $visible = ['user_id', 'first_name', 'last_name', 'email',
      'password', 'avatar', 'timezone_id', 'availability_id', 'why_i_volunteer',
      'employee_id', 'department', 'manager_name', 'city_id', 'country_id',
-     'profile_text', 'linked_in_url', 'status', 'city', 'country', 'timezone', 'language_id', 'availability'];
+     'profile_text', 'linked_in_url', 'status', 'city', 'country', 'timezone', 'language_id', 'availability',
+    'userCustomFieldValue'];
     
     /**
      * The attributes excluded from the model's JSON form.
@@ -150,6 +153,16 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     }
 
     /**
+     * Defined has many relation for the user_custom_field_value table.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function userCustomFieldValue(): HasMany
+    {
+        return $this->hasMany(UserCustomFieldValue::class, 'user_id', 'user_id');
+    }
+
+    /**
      * The is set attribute method for password. This will make has of entered password, before insert.
      *
      * @param string $password
@@ -225,6 +238,6 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      */
     public function findUserDetail(int $userId): User
     {
-        return static::with('city', 'country', 'timezone', 'availability')->findOrFail($userId);
+        return static::with('city', 'country', 'timezone', 'availability', 'userCustomFieldValue')->findOrFail($userId);
     }
 }

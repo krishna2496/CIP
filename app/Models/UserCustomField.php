@@ -3,6 +3,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use App\Models\UserCustomFieldValue;
 
 class UserCustomField extends Model
 {
@@ -35,6 +37,16 @@ class UserCustomField extends Model
      */
     protected $visible = ['field_id', 'name', 'type', 'translations', 'is_mandatory'];
     
+    /**
+     * Defined has many relation for the user_custom_field_value table.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function userCustomFieldValue(): HasMany
+    {
+        return $this->hasMany(UserCustomFieldValue::class, 'field_id', 'field_id');
+    }
+
     /**
      * Set translations attribute on the model.
      *
