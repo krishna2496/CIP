@@ -23,6 +23,9 @@ $router->group(
         $router->patch('/{tenant_id}', ['as' => 'tenants.update', 'uses'=>'TenantController@update']);
         // Delete tenant
         $router->delete('/{tenant_id}', ['as' => 'tenants.destroy', 'uses'=>'TenantController@destroy']);
+        // Tenant has option detail
+        $router->get('/{tenantId}/options', ['as' => 'tenants.options',
+        'uses'=>'TenantHasOptionController@show']);
         // Get api user list
         $router->get(
             '/{tenant_id}/api_users',

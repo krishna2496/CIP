@@ -94,7 +94,8 @@ class Tenant extends Model
      */
     public function findTenant(int $id): self
     {
-        return static::with('options', 'tenantLanguages', 'tenantLanguages.language')->findOrFail($id);
+        return static::with('options', 'tenantLanguages', 'tenantLanguages.language', 'options.option')
+         ->findOrFail($id);
     }
 
     /**

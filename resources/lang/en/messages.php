@@ -15,7 +15,8 @@ return [
         'MESSAGE_API_USER_FOUND' => 'API user found successfully',
         'MESSAGE_API_USER_CREATED_SUCCESSFULLY' => 'API user created successfully',
         'MESSAGE_API_USER_DELETED' => 'API user deleted successfully',
-        'MESSAGE_API_USER_UPDATED_SUCCESSFULLY' => 'API user\'s secret key updated successfully'
+        'MESSAGE_API_USER_UPDATED_SUCCESSFULLY' => 'API user\'s secret key updated successfully',
+        'MESSAGE_TENANT_OPTION_LISTING' => 'Tenant option listed successfully'
     ],
     
     /**
