@@ -145,6 +145,11 @@ $router->group(['middleware' => 'localization'], function ($router) {
     $router->get('/app/policy/{slug}', ['as' => 'policy.show',
     'middleware' => 'localization|tenant.connection|jwt.auth',
     'uses' => 'App\PolicyPage\PolicyPageController@show']);
+   
+    /* Update user details */
+    $router->patch('/app/user', [
+        'middleware' => 'localization|tenant.connection|jwt.auth',
+        'uses' => 'App\User\UserController@update']);
 });
 
 
