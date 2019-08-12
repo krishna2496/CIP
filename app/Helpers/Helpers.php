@@ -157,10 +157,10 @@ class Helpers
     /**
      * Get city data from city_id
      *
-     * @param int $city_id
+     * @param string $city_id
      * @return array
      */
-    public function getCity(int $city_id) : array
+    public function getCity(string $city_id) : array
     {
         $city = DB::table("city")->whereIn("city_id", explode(",", $city_id))->get()->toArray();
         $cityData = [];
