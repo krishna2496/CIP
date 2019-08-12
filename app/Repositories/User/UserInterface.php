@@ -3,6 +3,7 @@ namespace App\Repositories\User;
 
 use Illuminate\Http\Request;
 use App\User;
+use App\Models\UserCustomFieldValue;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 
@@ -90,4 +91,13 @@ interface UserInterface
      * @return Illuminate\Database\Eloquent\Collection
      */
     public function searchUsers(string $text = null, int $userId): Collection;
+
+    /**
+    * Add/Update user custom field value.
+    *
+    * @param array $userCustomFields
+    * @param int $id
+    * @return null|App\Models\UserCustomFieldValue
+    */
+    public function updateCustomFields(array $userCustomFields, int $id): ?UserCustomFieldValue;
 }

@@ -10,6 +10,7 @@ use App\User;
 use App\Helpers\Helpers;
 use App\Helpers\ResponseHelper;
 use App\Models\UserSkill;
+use App\Models\UserCustomFieldValue;
 use Validator;
 use PDOException;
 use DB;
@@ -26,6 +27,11 @@ class UserRepository implements UserInterface
      * @var App\Models\UserSkill
      */
     public $userSkill;
+
+    /**
+     * @var App\Models\UserCustomFieldValue
+     */
+    public $userCustomFieldValue;
     
     /**
      * @var App\Helpers\ResponseHelper
@@ -37,14 +43,20 @@ class UserRepository implements UserInterface
      *
      * @param  App\User $user
      * @param  App\Models\UserSkill $userSkill
+     * @param  App\Models\UserCustomFieldValue $userCustomFieldValue
      * @param  Illuminate\Http\ResponseHelper $responseHelper
      * @return void
      */
-    public function __construct(User $user, UserSkill $userSkill, ResponseHelper $responseHelper)
-    {
+    public function __construct(
+        User $user,
+        UserSkill $userSkill,
+        UserCustomFieldValue $userCustomFieldValue,
+        ResponseHelper $responseHelper
+    ) {
         $this->user = $user;
-        $this->responseHelper = $responseHelper;
         $this->userSkill = $userSkill;
+        $this->userCustomFieldValue = $userCustomFieldValue;
+        $this->responseHelper = $responseHelper;
     }
     
     /**
@@ -216,5 +228,30 @@ class UserRepository implements UserInterface
             );
         }
         return $user;
+    }
+
+    /**
+    * Add/Update user custom field value.
+    *
+    * @param array $userCustomFields
+    * @param int $userId
+    * @return null|App\Models\UserCustomFieldValue
+    */
+    public function updateCustomFields(array $userCustomFields, int $userId): ?UserCustomFieldValue
+    {
+        foreach ($userCustomFields as $data) {
+            $userCustomFieldData = [
+                'field_id' => $data['field_id'],
+                'user_id' => $userId,
+                'value' => $data['value']
+            ];
+
+            $userCustomField = $this->userCustomFieldValue->createOrUpdateCustomFieldValue(
+                ['field_id' => $data['field_id'], 'user_id' => $userId],
+                $userCustomFieldData
+            );
+            unset($userCustomFieldData);
+        }
+        return $userCustomField ?? null;
     }
 }
