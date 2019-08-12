@@ -16,7 +16,7 @@ class TenantHasOptionController extends Controller
     use RestExceptionHandlerTrait;
 
     /**
-     * @var App\Repositories\Tenant\TenantHasOptionRepository
+     * @var App\Repositories\TenantHasOption\TenantHasOptionRepository
      */
     private $tenantHasOptionRepository;
     
@@ -25,6 +25,11 @@ class TenantHasOptionController extends Controller
      */
     private $responseHelper;
 
+    /**
+     * @var App\Repositories\Tenant\TenantRepository
+     */
+    private $tenantRepository;
+    
     /**
      * Create a new Tenant has option controller instance.
      *
