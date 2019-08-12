@@ -18,9 +18,11 @@ $router->group(
         // Get tenant details from id
         $router->get('/{tenant_id:[0-9]+}', ['as' => 'tenants.detail', 'uses'=>'TenantController@show']);
         // Create new tenant
-        $router->post('/', ['as' => 'tenants.store', 'uses'=>'TenantController@store']);
+        $router->post('/', ['as' => 'tenants.store', 'middleware' => 'localization|JsonApiMiddleware',
+        'uses'=>'TenantController@store']);
         // Update tenant details
-        $router->patch('/{tenant_id}', ['as' => 'tenants.update', 'uses'=>'TenantController@update']);
+        $router->patch('/{tenant_id}', ['as' => 'tenants.update',
+        'middleware' => 'localization|JsonApiMiddleware', 'uses'=>'TenantController@update']);
         // Delete tenant
         $router->delete('/{tenant_id}', ['as' => 'tenants.destroy', 'uses'=>'TenantController@destroy']);
         // Get api user list

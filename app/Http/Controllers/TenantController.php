@@ -67,7 +67,7 @@ class TenantController extends Controller
         } catch (InvalidArgumentException $e) {
             return $this->invalidArgument(
                 config('constants.error_codes.ERROR_INVALID_ARGUMENT'),
-                trans('messages.custom_error_message.'.config('constants.error_codes.ERROR_INVALID_ARGUMENT'))
+                trans('messages.custom_error_message.ERROR_INVALID_ARGUMENT')
             );
         }
     }
@@ -122,28 +122,26 @@ class TenantController extends Controller
             $this->destroy($tenant->tenant_id);
             return $this->PDO(
                 config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
-                trans(
-                    'messages.custom_error_message.'.config('constants.error_codes.ERROR_DATABASE_OPERATIONAL')
-                )
+                trans('messages.custom_error_message.ERROR_DATABASE_OPERATIONAL')
             );
         } catch (InvalidArgumentException $e) {
             // Delete created tenant
             $this->destroy($tenant->tenant_id);
             return $this->invalidArgument(
                 config('constants.error_codes.ERROR_INVALID_ARGUMENT'),
-                trans('messages.custom_error_message.'.config('constants.error_codes.ERROR_INVALID_ARGUMENT'))
+                trans('messages.custom_error_message.ERROR_INVALID_ARGUMENT')
             );
         } catch (S3Exception $e) {
             // Delete created tenant
             $this->destroy($tenant->tenant_id);
             return $this->s3Exception(
                 config('constants.error_codes.FAILED_TO_CREATE_FOLDER_ON_S3'),
-                trans('messages.custom_error_message.'.config('constants.error_codes.FAILED_TO_CREATE_FOLDER_ON_S3'))
+                trans('messages.custom_error_message.FAILED_TO_CREATE_FOLDER_ON_S3')
             );
         } catch (\Exception $e) {
             // Delete created tenant
             $this->destroy($tenant->tenant_id);
-            return $this->badRequest(trans('messages.custom_error_message.999999'));
+            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
 
@@ -166,10 +164,10 @@ class TenantController extends Controller
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
                 config('constants.error_codes.ERROR_TENANT_NOT_FOUND'),
-                trans('messages.custom_error_message.'.config('constants.error_codes.ERROR_TENANT_NOT_FOUND'))
+                trans('messages.custom_error_message.ERROR_TENANT_NOT_FOUND')
             );
         } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.999999'));
+            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
 
@@ -183,7 +181,12 @@ class TenantController extends Controller
     public function update(Request $request, int $id): JsonResponse
     {
         try {
-            $rules = ['name' => 'max:512|sometimes|required|unique:tenant,name,'. $id . ',tenant_id,deleted_at,NULL'];
+            $rules = [
+                'name' => 'max:512|sometimes|regex:/(^[A-Za-z0-9]+$)+/|
+                required|unique:tenant,name,'. $id . ',tenant_id,deleted_at,NULL',
+                'sponsor_id' => 'sometimes|required|numeric'
+            ];
+            
             $validator = Validator::make($request->toArray(), $rules);
 
             if ($validator->fails()) {
@@ -204,17 +207,15 @@ class TenantController extends Controller
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
                 config('constants.error_codes.ERROR_TENANT_NOT_FOUND'),
-                trans('messages.custom_error_message.'.config('constants.error_codes.ERROR_TENANT_NOT_FOUND'))
+                trans('messages.custom_error_message.ERROR_TENANT_NOT_FOUND')
             );
         } catch (PDOException $e) {
             return $this->PDO(
                 config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
-                trans(
-                    'messages.custom_error_message.'.config('constants.error_codes.ERROR_DATABASE_OPERATIONAL')
-                )
+                trans('messages.custom_error_message.ERROR_DATABASE_OPERATIONAL')
             );
         } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.999999'));
+            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
 
@@ -237,10 +238,10 @@ class TenantController extends Controller
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
                 config('constants.error_codes.ERROR_TENANT_NOT_FOUND'),
-                trans('messages.custom_error_message.'.config('constants.error_codes.ERROR_TENANT_NOT_FOUND'))
+                trans('messages.custom_error_message.ERROR_TENANT_NOT_FOUND')
             );
         } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.999999'));
+            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
 }
