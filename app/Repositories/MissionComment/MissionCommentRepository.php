@@ -48,15 +48,56 @@ class MissionCommentRepository implements MissionCommentInterface
      * Get mission comments
      *
      * @param int $missionId
+     * @param array $statusList
      * @return \Illuminate\Pagination\LengthAwarePaginator
      */
-    public function getComments(int $missionId): LengthAwarePaginator
+    public function getComments(int $missionId, array $statusList = []): LengthAwarePaginator
     {
         $mission = $this->mission->findOrFail($missionId);
+        
+        $approvalStatusList = ($statusList) ? $statusList : [config("constants.comment_approval_status.PUBLISHED")];
+            
         $commentQuery = $mission->comment()
-        ->where('approval_status', config("constants.comment_approval_status.PUBLISHED"))
+        ->whereIn('approval_status', $approvalStatusList)
         ->orderBy('comment_id', 'desc')
         ->with(['user:user_id,first_name,last_name,avatar']);
         return $commentQuery->paginate(config("constants.MISSION_COMMENT_LIMIT"));
+    }
+
+    /**
+     * Get comment detail
+     *
+     * @param int $commentId
+     * @return App\Models\Comment
+     */
+    public function getComment(int $commentId): Comment
+    {
+        return $this->comment->findOrFail($commentId);
+    }
+
+    /**
+     * Update comment, by commentId
+     *
+     * @param int $commentId
+     * @param array $data
+     * @return App\Models\Comment
+     */
+    public function updateComment(int $commentId, array $data): Comment
+    {
+        $comment = $this->comment->findOrFail($commentId);
+        $comment->update($data);
+        return $comment;
+    }
+
+    /**
+     * Delete comment, by commentId
+     *
+     * @param int $commentId
+     * @return bool
+     */
+    public function deleteComment(int $commentId): bool
+    {
+        $comment = $this->comment->findOrFail($commentId);
+        return $comment->delete();
     }
 }

@@ -24,6 +24,7 @@ return [
         'MESSAGE_PASSWORD_CHANGE_SUCCESS' => 'Votre mot de passe a été changé avec succès.',
         'MESSAGE_CUSTOM_FIELD_ADDED' => 'Champ personnalisé d\'utilisateur ajouté avec succès',
         'MESSAGE_CUSTOM_FIELD_UPDATED' => 'Le champ personnalisé de l\'utilisateur a été mis à jour avec succès',
+		'MESSAGE_CUSTOM_FIELD_FOUND' => 'Champ personnalisé de l\'utilisateur trouvé avec succès',
         'MESSAGE_CUSTOM_FIELD_DELETED' => 'Le champ personnalisé de l\'utilisateur a été supprimé avec succès',
         'MESSAGE_APPLICATION_LISTING' => 'Liste des applications de mission avec succès',
         'MESSAGE_APPLICATION_UPDATED' => 'Application de mission mise à jour avec succès',
@@ -36,7 +37,7 @@ return [
         'MESSAGE_MISSION_LISTING' => 'Liste des missions réussie',
         'MESSAGE_SKILL_LISTING' => 'Liste de compétences avec succès',
         'MESSAGE_THEME_LISTING' => 'Liste de thèmes de mission réussie',
-        'MESSAGE_CITY_LISTING' => 'Annonce de la ville avec succès',    
+        'MESSAGE_CITY_LISTING' => 'Annonce de la ville avec succès',
         'MESSAGE_MISSION_ADDED_TO_FAVOURITE' => 'Mission ajouté aux favoris',
         'MESSAGE_MISSION_DELETED_FROM_FAVOURITE' => 'Mission retirée du favori',
         'MESSAGE_COUNTRY_LISTING' => 'Liste de pays avec succès',
@@ -45,7 +46,7 @@ return [
         'MESSAGE_ASSETS_FILES_LISTING' => 'Liste des fichiers d\'actifs avec succès',
         'MESSAGE_TENANT_SETTING_UPDATE_SUCCESSFULLY' => 'Les paramètres ont été mis à jour avec succès',
         'MESSAGE_TENANT_SETTINGS_LISTING' => 'Liste des paramètres avec succès',
-		'MESSAGE_THEME_CREATED' => 'Thème de mission créé avec succès',
+        'MESSAGE_THEME_CREATED' => 'Thème de mission créé avec succès',
         'MESSAGE_THEME_UPDATED' => 'Thème de la mission mis à jour avec succès',
         'MESSAGE_THEME_DELETED' => 'Thème de mission supprimé avec succès',
         'MESSAGE_THEME_FOUND' => 'Thème de la mission trouvé avec succès',
@@ -58,7 +59,7 @@ return [
         'MESSAGE_TENANT_OPTION_UPDATED' => 'Option de locataire mise à jour avec succès',
         'MESSAGE_TENANT_OPTIONS_LIST' => 'Liste des options locataires avec succès',
         'MESSAGE_MISSION_RATING_LISTING' => 'Obtenir une note de mission avec succès',
-        'MESSAGE_TENANT_OPTION_FOUND' => 'Option locataire trouvée', 
+        'MESSAGE_TENANT_OPTION_FOUND' => 'Option locataire trouvée',
         'MESSAGE_INVITED_FOR_MISSION' => 'Utilisateur invité à la mission avec succès',
         'MESSAGE_APPLICATION_CREATED' => 'Appliqué pour une mission avec succès',
         'MESSAGE_RATING_ADDED' => 'Évaluation de la mission ajoutée avec succès',
@@ -68,14 +69,17 @@ return [
         'MESSAGE_MISSION_MEDIA_LISTING' => 'Les médias de la mission ont réussi',
         'MESSAGE_MISSION_COMMENT_LISTING' => 'Obtenir des commentaires de mission avec succès',
         'MESSAGE_ASSET_IMAGES_RESET_SUCCESS' => 'Les images d\'actif ont été réinitialisées avec succès',
-        'MESSAGE_NO_RELATED_MISSION_FOUND' => 'Mission associée non trouvée',        
+        'MESSAGE_NO_RELATED_MISSION_FOUND' => 'Mission associée non trouvée',
         'MESSAGE_NO_MISSION_MEDIA_FOUND' => 'Média de mission introuvable',
-        'MESSAGE_NO_MISSION_COMMENT_FOUND' => 'Commentaires de mission non trouvés',  
-        'MESSAGE_COMMENT_ADDED' => 'Commentaire de mission ajouté avec succès',
+        'MESSAGE_NO_MISSION_COMMENT_FOUND' => 'Commentaires de mission non trouvés',
+        'MESSAGE_COMMENT_ADDED' => 'Merci pour votre commentaire. Votre commentaire ne sera visible qu\'après modération',
         'MESSAGE_POLICY_PAGE_LISTING' => 'Liste des pages de règles correctement.',        
         'MESSAGE_POLICY_PAGE_CREATED' => 'Page de stratégie créée avec succès',        
         'MESSAGE_POLICY_PAGE_DELETED' => 'Page supprimée avec succès',
         'MESSAGE_POLICY_PAGE_UPDATED' => 'La page de politique a été mise à jour avec succès',
+        'MESSAGE_COMMENT_FOUND' => 'Commentaire trouvé avec succès',
+        'MESSAGE_COMMENT_UPDATED' => 'Commentaire mis à jour avec succès',
+        'MESSAGE_COMMENT_DELETED' => 'Commentaire supprimé avec succès'
     ],
 
         
@@ -123,7 +127,8 @@ return [
         'ERROR_MISSION_RATING_INVALID_DATA' => 'La création de la note de mission a échoué. Veuillez vérifier les paramètres d`entrée',
         'ERROR_MISSION_COMMENT_INVALID_DATA' => 'La création de commentaire de mission a échoué. Veuillez vérifier les paramètres d`entrée',
         'SKILL_LIMIT' => 'Désolé, vous ne pouvez pas ajouter plus de '. config('constants.SKILL_LIMIT').' compétences',
-
+        'ERROR_INVALID_MISSION_MEDIA_DATA' => 'Données de média de mission non valides',
+        'ERROR_INVALID_MISSION_DOCUMENT_DATA' => 'Données de média de mission non valides',
         'ERROR_INVALID_INVITE_MISSION_DATA' => 'Détail de la mission d\'invitation non valide',
         'ERROR_INVITE_MISSION_ALREADY_EXIST' => 'L\'utilisateur est déjà invité pour cette mission',
         
@@ -140,6 +145,7 @@ return [
         'ERROR_TOKEN_EXPIRED' => 'Le jeton fourni a expiré',
         'ERROR_IN_TOKEN_DECODE' => 'Une erreur lors du décodage du jeton',
         'ERROR_TOKEN_NOT_PROVIDED' => 'Jeton non fourni',
+        'ERROR_OLD_PASSWORD_NOT_MATCHED' => 'Désolé, l\'ancien mot de passe ne correspond pas',
         
 
         // Custom error code for common exception
@@ -166,6 +172,7 @@ return [
         'ERROR_IMAGE_UPLOAD_INVALID_DATA' => 'Fichier d\'entrée invalide',
         'ERROR_TENANT_OPTION_NOT_FOUND' => 'Aucune option de locataire trouvée',
         'ERROR_LANGUAGE_NOT_FOUND' => 'Langue non trouvée',
-        'ERROR_FAILED_TO_RESET_ASSET_IMAGE' => 'Impossible de réinitialiser les images d\'actif'
+        'ERROR_FAILED_TO_RESET_ASSET_IMAGE' => 'Impossible de réinitialiser les images d\'actif',
+        'ERROR_COMMENT_NOT_FOUND' => 'Commentaire non trouvé',
     ],
 ];

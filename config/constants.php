@@ -10,7 +10,9 @@ return [
     'SLIDER_LIMIT' => '4',
     'SLIDER_IMAGE_PATH' => 'images/',
     'ACTIVE' => 1,
-    'DB_DATE_FORMAT' => 'Y-m-d H:i:s',
+    'DB_DATE_TIME_FORMAT' => 'Y-m-d H:i:s',
+    'DB_DATE_FORMAT' => 'Y-m-d',
+    'DB_TIME_FORMAT' => 'H:i:s',
     'PER_PAGE_LIMIT' => '9',
     'FRONT_DATE_FORMAT' => 'd/m/Y',
     'RELATED_MISSION_LIMIT' => '3',
@@ -84,8 +86,6 @@ return [
      * Image types
      */
     'image_types' => [
-        'JPG' => 'jpg',
-        'JPEG' => 'jpeg',
         'PNG' => 'png'
     ],
 
@@ -202,7 +202,10 @@ return [
         'ERROR_MISSION_APPLICATION_NOT_FOUND' => '400024',
         'ERROR_MISSION_RATING_INVALID_DATA' => '400025',
         'ERROR_MISSION_COMMENT_INVALID_DATA' => '400026',
-        'ERROR_SKILL_LIMIT' => '400028',
+        'ERROR_INVALID_MISSION_MEDIA_DATA' => '400027',
+        'ERROR_INVALID_MISSION_DOCUMENT_DATA' => '400028',
+        'ERROR_COMMENT_NOT_FOUND' => '400029',
+        'ERROR_SKILL_LIMIT' => '400030',
                 
         'ERROR_OCCURRED' => '999999',
         'ERROR_INVALID_JSON' => '900000',
@@ -230,7 +233,8 @@ return [
         'ERROR_FAILED_TO_RESET_ASSET_IMAGE' => '800020',
         
         'ERROR_POLICY_PAGE_NOT_FOUND' => '300010',
-        'ERROR_POLICY_PAGE_REQUIRED_FIELDS_EMPTY' => '300011'
+        'ERROR_POLICY_PAGE_REQUIRED_FIELDS_EMPTY' => '300011',
+        
     ]
     
 ];

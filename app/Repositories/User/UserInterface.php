@@ -98,4 +98,14 @@ interface UserInterface
      * @return bool
      */
     public function deleteSkills(int $userId): bool;
+    
+    /**
+     * Change user password
+     *
+     * @param int $id
+     * @param string $password
+     *
+     * @return bool
+     */
+    public function changePassword(int $id, string $password): bool;
 }

@@ -23,7 +23,15 @@ interface UserCustomFieldInterface
     * @return App\Models\UserCustomField
     */
     public function update(array $request, int $id): UserCustomField;
-
+    
+    /**
+     * Find user custom field in storage.
+     *
+     * @param  int  $id
+     * @return App\Models\UserCustomField
+     */
+    public function find(int $id): UserCustomField;
+    
     /**
      * Get listing of user custom fields
      *

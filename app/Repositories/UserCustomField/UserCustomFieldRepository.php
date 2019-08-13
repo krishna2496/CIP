@@ -72,6 +72,17 @@ class UserCustomFieldRepository implements UserCustomFieldInterface
         $customField->update($request);
         return $customField;
     }
+    
+    /**
+     * Find user custom field in storage.
+     *
+     * @param  int  $id
+     * @return App\Models\UserCustomField
+     */
+    public function find(int $id): UserCustomField
+    {
+        return $this->field->findOrFail($id);
+    }
        
     /**
      * Remove the specified resource from storage.

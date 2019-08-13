@@ -25,6 +25,8 @@ use InvalidArgumentException;
 use PDOException;
 use App\Helpers\LanguageHelper;
 use App\Exceptions\TenantDomainNotFoundException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Repositories\User\UserRepository;
 
 class AuthController extends Controller
 {
@@ -59,6 +61,11 @@ class AuthController extends Controller
     private $languageHelper;
     
     /**
+     * @var App\Repositories\User\UserRepository
+     */
+    private $userRepository;
+    
+    /**
      * Create a new controller instance.
      *
      * @param \Illuminate\Http\Request $request
@@ -66,6 +73,7 @@ class AuthController extends Controller
      * @param App\Repositories\TenantOption\TenantOptionRepository $tenantOptionRepository
      * @param App\Helpers\Helpers $helpers
      * @param  Illuminate\Http\LanguageHelper $languageHelper
+     * @param App\Repositories\User\UserRepository $userRepository
      * @return void
      */
     public function __construct(
@@ -73,13 +81,15 @@ class AuthController extends Controller
         ResponseHelper $responseHelper,
         TenantOptionRepository $tenantOptionRepository,
         Helpers $helpers,
-        LanguageHelper $languageHelper
+        LanguageHelper $languageHelper,
+        UserRepository $userRepository
     ) {
         $this->request = $request;
         $this->responseHelper = $responseHelper;
         $this->tenantOptionRepository = $tenantOptionRepository;
         $this->helpers = $helpers;
         $this->languageHelper = $languageHelper;
+        $this->userRepository = $userRepository;
     }
 
     /**
@@ -118,7 +128,6 @@ class AuthController extends Controller
                     trans('messages.custom_error_message.ERROR_EMAIL_NOT_EXIST')
                 );
             }
-            
             // Verify user's password
             if (!Hash::check($this->request->input('password'), $userDetail->password)) {
                 return $this->responseHelper->error(
@@ -337,5 +346,60 @@ class AuthController extends Controller
     {
         $passwordBrokerManager = new PasswordBrokerManager(app());
         return $passwordBrokerManager->broker();
+    }
+    
+    /**
+     * Change password.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return Illuminate\Http\JsonResponse
+     */
+    public function changePassword(Request $request): JsonResponse
+    {
+        try {
+            $validator = Validator::make($request->toArray(), [
+                'old_password' => 'required',
+                'password' => 'required|min:8',
+                'confirm_password' => 'required|min:8|same:password',
+            ]);
+            
+            if ($validator->fails()) {
+                return $this->responseHelper->error(
+                    Response::HTTP_UNPROCESSABLE_ENTITY,
+                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                    config('constants.error_codes.ERROR_INVALID_DETAIL'),
+                    $validator->errors()->first()
+                );
+            }
+
+            $status = Hash::check($request->old_password, $request->auth->password);
+            if (!$status) {
+                return $this->responseHelper->error(
+                    Response::HTTP_UNPROCESSABLE_ENTITY,
+                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                    config('constants.error_codes.ERROR_INVALID_DETAIL'),
+                    trans('messages.custom_error_message.ERROR_OLD_PASSWORD_NOT_MATCHED')
+                );
+            }
+            
+            // Update password
+            $passwordStatus = $this->userRepository->changePassword($request->auth->user_id, $request->password);
+            
+            // Get new token
+            $newToken = ($passwordStatus) ? $this->helpers->getJwtToken($request->auth->user_id) : '';
+            
+            // Send response
+            $apiStatus = Response::HTTP_OK;
+            $apiData = array('token' => $newToken);
+            $apiMessage = trans('messages.success.MESSAGE_PASSWORD_CHANGE_SUCCESS');
+            return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
+        } catch (ModelNotFoundException $e) {
+            return $this->modelNotFound(
+                config('constants.error_codes.ERROR_USER_NOT_FOUND'),
+                trans('messages.custom_error_message.ERROR_USER_NOT_FOUND')
+            );
+        } catch (\Exception $e) {
+            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
+        }
     }
 }

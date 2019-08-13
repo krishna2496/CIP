@@ -51,22 +51,17 @@ interface PolicyPageInterface
 
     /**
     * Get a listing of resource.
-    *
+    * @param int $languageId
     * @return Illuminate\Support\Collection
     */
-    public function getPageList(): Collection;
-
+    public function getPageList(int $languageId): Collection;
+    
     /**
     * Get a listing of resource.
     *
-    * @return Illuminate\Support\Collection
-    */
-    public function getPageDetailList(): Collection;
-
-    /**
-    * Get a listing of resource.
-    *
+    * @param string $slug
+    * @param int $languageId
     * @return App\Models\PolicyPage
     */
-    public function getPageDetail($slug): PolicyPage;
+    public function getPageDetail(string $slug, int $languageId): PolicyPage;
 }

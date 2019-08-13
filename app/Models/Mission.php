@@ -271,7 +271,7 @@ class Mission extends Model
     {
         return (isset($this->attributes['start_date']) && !empty(config('constants.TIMEZONE'))) ?
         Carbon::parse($this->attributes['start_date'])->setTimezone(config('constants.TIMEZONE'))
-            ->format(config('constants.DB_DATE_FORMAT')):
+            ->format(config('constants.DB_DATE_TIME_FORMAT')):
             null;
     }
     
@@ -296,7 +296,7 @@ class Mission extends Model
     {
         return (isset($this->attributes['end_date']) && !empty(config('constants.TIMEZONE'))) ?
              Carbon::parse($this->attributes['end_date'])->setTimezone(config('constants.TIMEZONE'))
-             ->format(config('constants.DB_DATE_FORMAT')):
+             ->format(config('constants.DB_DATE_TIME_FORMAT')):
              null;
     }
     

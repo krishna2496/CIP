@@ -118,7 +118,7 @@ class Helpers
         $this->switchDatabaseConnection('mysql', $request);
 
         $tenantName = $this->getSubDomainFromRequest($request);
-        $tenant = DB::table('tenant')->where('name', $tenantName)->first();
+        $tenant = DB::table('tenant')->where('name', $tenantName)->whereNull('deleted_at')->first();
 
         // Connect tenant database
         $this->switchDatabaseConnection('tenant', $request);
@@ -157,10 +157,10 @@ class Helpers
     /**
      * Get city data from city_id
      *
-     * @param int $city_id
+     * @param string $city_id
      * @return array
      */
-    public function getCity(int $city_id) : array
+    public function getCity(string $city_id) : array
     {
         $city = DB::table("city")->whereIn("city_id", explode(",", $city_id))->get()->toArray();
         $cityData = [];
@@ -255,7 +255,7 @@ class Helpers
                     $date = Carbon::parse($date);
                 }
             }
-            return $date->setTimezone(config('constants.TIMEZONE'))->format(config('constants.DB_DATE_FORMAT'));
+            return $date->setTimezone(config('constants.TIMEZONE'))->format(config('constants.DB_DATE_TIME_FORMAT'));
         }
         return $date;
     }
@@ -297,7 +297,7 @@ class Helpers
 
     /**
      * Get tenant default profile image for user
-     * 
+     *
      * @param \Illuminate\Http\Request $request
      * @return string
      */
@@ -312,7 +312,7 @@ class Helpers
 
     /**
      * Get tenant details from tenant name only
-     * 
+     *
      * @param string $tenantName
      * @return stdClass $tenant
      */

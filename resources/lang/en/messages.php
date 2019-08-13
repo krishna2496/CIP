@@ -25,6 +25,7 @@ return [
         'MESSAGE_PASSWORD_CHANGE_SUCCESS' => 'Your password has been changed successfully.',
         'MESSAGE_CUSTOM_FIELD_ADDED' => 'User custom field added successfully',
         'MESSAGE_CUSTOM_FIELD_UPDATED' => 'User custom field updated successfully',
+		'MESSAGE_CUSTOM_FIELD_FOUND' => 'User custom field found successfully',
         'MESSAGE_CUSTOM_FIELD_DELETED' => 'User custom field deleted successfully',
         'MESSAGE_APPLICATION_LISTING' => 'Mission application found successfully',
         'MESSAGE_APPLICATIONS_LISTING' => 'Mission applications listed successfully',
@@ -60,24 +61,27 @@ return [
         'MESSAGE_MISSION_ADDED_TO_FAVOURITE' => 'Mission added to favourite',
         'MESSAGE_MISSION_DELETED_FROM_FAVOURITE' => 'Mission removed from favourite',
         'MESSAGE_MISSION_RATING_LISTING' => 'Get mission rating successfully',
-        'MESSAGE_TENANT_OPTION_FOUND' => 'Tenant option found', 
+        'MESSAGE_TENANT_OPTION_FOUND' => 'Tenant option found',
         'MESSAGE_INVITED_FOR_MISSION' => 'User invited to mission successfully',
         'MESSAGE_APPLICATION_CREATED' => 'You have successfully applied for this mission',
         'MESSAGE_RATING_ADDED' => 'Mission rating added successfully',
-        'MESSAGE_RATING_UPDATED' => 'Mission rating updated successfully',        
+        'MESSAGE_RATING_UPDATED' => 'Mission rating updated successfully',
         'MESSAGE_MISSION_VOLUNTEERS_LISTING' => 'Get mission volunteers successfully',
         'MESSAGE_NO_MISSION_VOLUNTEERS_FOUND' => 'No recent volunteers found',
         'MESSAGE_MISSION_MEDIA_LISTING' => 'Mission media listed successfully',
-        'MESSAGE_MISSION_COMMENT_LISTING' => 'Get mission comments successfully',
+        'MESSAGE_MISSION_COMMENT_LISTING' => 'Mission comments listed successfully',
         'MESSAGE_ASSET_IMAGES_RESET_SUCCESS' => 'Asset images reset successfully',
         'MESSAGE_NO_RELATED_MISSION_FOUND' => 'Related mission not found',
         'MESSAGE_NO_MISSION_MEDIA_FOUND' => 'Mission media not found',
-        'MESSAGE_NO_MISSION_COMMENT_FOUND' => 'Mission comments not found',  
-        'MESSAGE_COMMENT_ADDED' => 'Mission comment added successfully',
+        'MESSAGE_NO_MISSION_COMMENT_FOUND' => 'Mission comments not found',
+        'MESSAGE_COMMENT_ADDED' => 'Thanks for your comment. Your comment will only be visible after moderation',
         'MESSAGE_POLICY_PAGE_LISTING' => 'Policy pages listed successfully.',        
         'MESSAGE_POLICY_PAGE_CREATED' => 'Policy page created successfully',        
         'MESSAGE_POLICY_PAGE_DELETED' => 'Page deleted successfully',
-        'MESSAGE_POLICY_PAGE_UPDATED' => 'Policy page updated sucessfully'
+        'MESSAGE_POLICY_PAGE_UPDATED' => 'Policy page updated successfully',
+        'MESSAGE_COMMENT_FOUND' => 'Comment found successfully',
+        'MESSAGE_COMMENT_UPDATED' => 'Comment updated successfully',
+        'MESSAGE_COMMENT_DELETED' => 'Comment deleted successfully'
 		],
 
         
@@ -98,13 +102,14 @@ return [
         'ERROR_NOT_VALID_EXTENSION' => 'File must have .scss type',
         'ERROR_FILE_NAME_NOT_MATCHED_WITH_STRUCTURE' => 'File name doesn`t match with structure',
         'ERROR_NOT_VALID_IMAGE_FILE_EXTENSION' => 'The image file must be a file of type: jpeg, jpg, svg, png.',
+		'ERROR_USER_INVALID_LANGUAGE' => 'Please enter valid language id',
         
                 
         // Custom error code for CMS Module - 300000 - 309999
         'ERROR_INVALID_ARGUMENT' => 'Invalid argument',
         'ERROR_FOOTER_PAGE_NOT_FOUND' => 'Footer page not found in the system',
         'ERROR_DATABASE_OPERATIONAL' => 'Database operational error',
-        'ERROR_NO_DATA_FOUND' => 'No data found',        
+        'ERROR_NO_DATA_FOUND' => 'No data found',
         'ERROR_NO_DATA_FOUND_FOR_SLUG' => 'No data found for slug',
         'ERROR_POLICY_PAGE_NOT_FOUND' => 'Policy page not found in the system',
 
@@ -125,11 +130,13 @@ return [
         'ERROR_INVITE_MISSION_ALREADY_EXIST' => 'User is already invited for this mission',
         'ERROR_MISSION_APPLICATION_DEADLINE_PASSED' => 'Application deadline is passed. You cannot apply for this mission',
         'ERROR_MISSION_APPLICATION_ALREADY_ADDED' => 'You have already applied for this mission',
-        'ERROR_MISSION_APPLICATION_NOT_FOUND' => 'Requested mission application not exist',
+        'ERROR_MISSION_APPLICATION_NOT_FOUND' => 'Application does not exist',
         'ERROR_MISSION_RATING_INVALID_DATA' => 'Mission rating creation failed. Please check input parameters',
         'ERROR_MISSION_COMMENT_INVALID_DATA' => 'Mission comment creation failed. Please check input parameters',
         'SKILL_LIMIT' => 'Sorry, you cannot add more than '. config('constants.SKILL_LIMIT').' skills',
-        
+        'ERROR_INVALID_MISSION_MEDIA_DATA' => 'Invalid mission media data',
+        'ERROR_INVALID_MISSION_DOCUMENT_DATA' => 'Invalid mission document data',
+
         // Custom error code for Tenant Authorization - 210000 - 219999
         'ERROR_INVALID_API_AND_SECRET_KEY' => 'Invalid API key or secret key',
         'ERROR_API_AND_SECRET_KEY_REQUIRED' => 'API key and secret key are required',
@@ -143,6 +150,7 @@ return [
         'ERROR_TOKEN_EXPIRED' => 'Provided token is expired',
         'ERROR_IN_TOKEN_DECODE' => 'An error while decoding token',
         'ERROR_TOKEN_NOT_PROVIDED' => 'Token not provided',
+        'ERROR_OLD_PASSWORD_NOT_MATCHED' => 'Sorry old password dosen\'t matched',
         
 
         // Custom error code for common exception
@@ -169,6 +177,7 @@ return [
         'ERROR_IMAGE_UPLOAD_INVALID_DATA' => 'Invalid input file',
         'ERROR_TENANT_OPTION_NOT_FOUND' => 'No tenant option found',
         'ERROR_LANGUAGE_NOT_FOUND' => 'Language not found',
-        'ERROR_FAILED_TO_RESET_ASSET_IMAGE' => 'Failed to reset asset images'
+        'ERROR_FAILED_TO_RESET_ASSET_IMAGE' => 'Failed to reset asset images',
+        'ERROR_COMMENT_NOT_FOUND' => 'Requested comment does not exist',
     ],
 ];

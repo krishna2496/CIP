@@ -10,6 +10,7 @@ use App\Models\TimeMission;
 use App\Models\Mission;
 use Carbon\Carbon;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class MissionApplicationRepository implements MissionApplicationInterface
 {
@@ -122,9 +123,15 @@ class MissionApplicationRepository implements MissionApplicationInterface
                 trans('messages.custom_error_message.ERROR_MISSION_NOT_FOUND')
             );
         }
-        $missionApplication = $this->missionApplication->findOrFail($applicationId);
-        $missionApplication->update($request->toArray());
-        return $missionApplication;
+        try {
+            $missionApplication = $this->missionApplication->findOrFail($applicationId);
+            $missionApplication->update($request->toArray());
+            return $missionApplication;
+        } catch (ModelNotFoundException $e) {
+            throw new ModelNotFoundException(
+                trans('messages.custom_error_message.ERROR_MISSION_APPLICATION_NOT_FOUND')
+            );
+        }
     }
 
     /**

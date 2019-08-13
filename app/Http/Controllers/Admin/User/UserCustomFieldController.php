@@ -86,7 +86,7 @@ class UserCustomFieldController extends Controller
                     Rule::in(config('constants.custom_field_types'))],
                 "is_mandatory" => "required|boolean",
                 "translations" => "required",
-				"translations.*.lang" => "max:2",
+                "translations.*.lang" => "max:2",
                 "translations.*.values" => Rule::requiredIf(
                     $request->type == config('constants.custom_field_types.DROP-DOWN') ||
                     $request->type == config('constants.custom_field_types.RADIO')
@@ -147,7 +147,7 @@ class UserCustomFieldController extends Controller
                     "sometimes",
                     "required",
                     Rule::in(config('constants.custom_field_types'))],
-				"translations.*.lang" => "max:2",
+                "translations.*.lang" => "max:2",
                 "translations.*.values" =>
                 Rule::requiredIf($request->type == config('constants.custom_field_types.DROP-DOWN')
                     || $request->type == config('constants.custom_field_types.RADIO')),
@@ -186,6 +186,32 @@ class UserCustomFieldController extends Controller
                 trans(
                     'messages.custom_error_message.ERROR_DATABASE_OPERATIONAL'
                 )
+            );
+        } catch (\Exception $e) {
+            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
+        }
+    }
+    
+    /**
+     * Display the specified user custom field detail.
+     *
+     * @param int $id
+     * @return Illuminate\Http\JsonResponse
+     */
+    public function show(int $id): JsonResponse
+    {
+        try {
+            $fieldDetail = $this->userCustomFieldRepository->find($id);
+            
+            $apiData = $fieldDetail->toArray();
+            $apiStatus = Response::HTTP_OK;
+            $apiMessage = trans('messages.success.MESSAGE_CUSTOM_FIELD_FOUND');
+            
+            return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
+        } catch (ModelNotFoundException $e) {
+            return $this->modelNotFound(
+                config('constants.error_codes.ERROR_USER_CUSTOM_FIELD_NOT_FOUND'),
+                trans('messages.custom_error_message.ERROR_USER_CUSTOM_FIELD_NOT_FOUND')
             );
         } catch (\Exception $e) {
             return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
