@@ -23,6 +23,7 @@ import missionComments from "./Mission/MissionComments";
 import storeMissionComments from "./Mission/StoreMissionComments";
 import policy from "./Policy";
 import policyDetail from "./PolicyDetail";
+import getUserDetail from "./User/GetUserDetail";
 
 export {
     loadLocaleMessages,
@@ -49,5 +50,6 @@ export {
     missionComments,
     storeMissionComments,
     policy,
-    policyDetail
+    policyDetail,
+    getUserDetail
 }

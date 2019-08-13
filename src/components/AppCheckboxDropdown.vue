@@ -2,12 +2,15 @@
     <div class="checkbox-select select-dropdown dropdown-with-counter">
         <span class="select-text" @click="handleClick">{{filterTitle}}</span>
     <div class="chk-select-wrap dropdown-option-wrap" data-simplebar @click.stop @touchend.stop>
+
+
     <ul class="chk-select-options dropdown-option-list" v-if="checkList.length > 0">
         <li 
             v-for="(item , i) in checkList" 
             v-bind:data-id="item[1].id"
             :key="i"           
             >
+             {{item}}
             <b-form-checkbox name  v-model="items" @click.native ="filterTable" v-bind:value="item[1].id">{{item[1].title}}<span class="counter">{{item[1].mission_count}}</span></b-form-checkbox>
         </li>
     </ul>

@@ -58,6 +58,7 @@
         position: relative;
         height: 100%;
         overflow: hidden;
+        background: $border-color;
       }
       .group-img {
         display: inline-block;
@@ -91,7 +92,7 @@
       &:hover,
       &:active,
       &:focus {
-        color: $black-primary;
+        color: $black;
       }
     }
     .card-text {
@@ -135,7 +136,7 @@
       position: absolute;
       position: absolute;
       right: 15px;
-      bottom: 67px;
+      bottom: 80px;
       display: inline-flex;
       justify-content: center;
       align-items: center;
@@ -187,7 +188,7 @@
     .add-icon {
       position: absolute;
       right: 15px;
-      bottom: 14px;
+      bottom: 28px;
       display: inline-flex;
       justify-content: center;
       align-items: center;
@@ -216,9 +217,9 @@
     }
     .group-category {
       position: absolute;
-      bottom: -10px;
-      left: 0;
-      right: 0;
+      bottom: -15px;
+      left: 15px;
+      right: 15px;
       display: inline-block;
       text-align: center;
       z-index: 5;
@@ -228,6 +229,12 @@
         padding: 9px 17px;
         font-size: 16px;
         line-height: 18px;
+        display: inline-block;
+        max-width: 100%;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+        @extend .control_shadow;
         @include lg-max {
           font-size: 15px;
           padding: 6px 14px;
@@ -370,7 +377,7 @@
         text-align: center;
         background: $white;
         span {
-          z-index: 1;
+          z-index: 5;
           display: inline-block;
           padding: 5px 18px;
           background: $white;
@@ -416,7 +423,6 @@
     }
     .btn {
       &.btn-bordersecondary {
-        padding: 0 22px;
         @include lg-max {
           min-height: 40px;
         }
@@ -622,7 +628,7 @@
   }
 }
 
-.storie-page {
+.lists-page {
   .pagination-block {
     padding-bottom: 80px;
     @include md-max {

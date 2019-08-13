@@ -250,6 +250,7 @@ export default {
 
                     if(response.themes) {
                         this.themeList = Object.entries(response.themes);
+                        console.log(this.themeList );
                         this.selectedTheme = [];
                     } 
 

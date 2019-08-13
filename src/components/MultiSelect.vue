@@ -14,7 +14,7 @@
             </b-button>
             <b-modal
                 centered
-                title="Add your Skills"
+                :title="langauageData.label.add_your_skills"
                 ref="skillModal"
                 :modal-class="myclass"
                 hide-footer
@@ -50,9 +50,7 @@
                 <b-button class="btn-bordersecondary">{{langauageData.label.save}}</b-button>
             </div>
             </b-modal>
-            <div class="btn-wrapper">
-                <b-button class="btn-bordersecondary">{{langauageData.label.save}}</b-button>
-            </div>
+           
         </div>
     </div>
 </template>
