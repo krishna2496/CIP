@@ -145,6 +145,7 @@ return [
         'ERROR_TOKEN_EXPIRED' => 'Le jeton fourni a expiré',
         'ERROR_IN_TOKEN_DECODE' => 'Une erreur lors du décodage du jeton',
         'ERROR_TOKEN_NOT_PROVIDED' => 'Jeton non fourni',
+        'ERROR_OLD_PASSWORD_NOT_MATCHED' => 'Désolé, l\'ancien mot de passe ne correspond pas',
         
 
         // Custom error code for common exception

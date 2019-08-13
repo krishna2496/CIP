@@ -90,4 +90,14 @@ interface UserInterface
      * @return Illuminate\Database\Eloquent\Collection
      */
     public function searchUsers(string $text = null, int $userId): Collection;
+
+    /**
+     * Change user password
+     *
+     * @param int $id
+     * @param string $password
+     *
+     * @return bool
+     */
+    public function changePassword(int $id, string $password): bool;
 }

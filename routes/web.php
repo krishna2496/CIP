@@ -145,6 +145,11 @@ $router->group(['middleware' => 'localization'], function ($router) {
     $router->get('/app/policy/{slug}', ['as' => 'policy.show',
     'middleware' => 'localization|tenant.connection|jwt.auth',
     'uses' => 'App\PolicyPage\PolicyPageController@show']);
+
+    /* Password change routing */
+    $router->patch('/app/change-password', ['as' => 'password.change',
+    'middleware' => 'tenant.connection|jwt.auth',
+    'uses' => 'App\Auth\AuthController@changePassword']);
 });
 
 
