@@ -199,6 +199,8 @@ class UserController extends Controller
             $userSkillData = [];
             $allSkillData = [];
             $customFieldsData = $customFields->toArray();
+            $customFieldsValue = $userDetail->userCustomFieldValue;
+            unset($userDetail->userCustomFieldValue);
 
             if (!empty($customFieldsData) && (isset($customFieldsData))) {
                 $returnData = [];
@@ -211,6 +213,10 @@ class UserController extends Controller
                             $returnData['translations']['lang'] = $value['translations'][$arrayKey]['lang'];
                             $returnData['translations']['name'] = $value['translations'][$arrayKey]['name'];
                             $returnData['translations']['values'] = $value['translations'][$arrayKey]['values'];
+                            $returnData['user_custom_field_value'] = $customFieldsValue->where(
+                                'field_id',
+                                $value['field_id']
+                            )->first()->value;
                         }
                     }
                     if (!empty($returnData)) {
