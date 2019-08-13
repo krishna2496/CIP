@@ -213,7 +213,7 @@ class AppUserTest extends TestCase
      *
      * @return void
      */
-    public function it_should_show_error_if_required_fields_are_empty_for_chamhe_password()
+    public function it_should_show_error_if_required_fields_are_empty_for_change_password()
     {
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
