@@ -219,7 +219,7 @@ class UserRepository implements UserInterface
     }
     
     /**
-     * Change user password
+     * Change user's password
      *
      * @param int $id
      * @param string $password

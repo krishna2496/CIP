@@ -349,7 +349,7 @@ class AuthController extends Controller
     }
     
     /**
-     * Change password.
+     * Change password from user edit profile page
      *
      * @param \Illuminate\Http\Request $request
      * @return Illuminate\Http\JsonResponse
@@ -372,8 +372,8 @@ class AuthController extends Controller
                 );
             }
 
-            $status = Hash::check($request->old_password, $request->auth->password);
-            if (!$status) {
+            $isValidOldPassword = Hash::check($request->old_password, $request->auth->password);
+            if (!$isValidOldPassword) {
                 return $this->responseHelper->error(
                     Response::HTTP_UNPROCESSABLE_ENTITY,
                     Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
@@ -383,10 +383,10 @@ class AuthController extends Controller
             }
             
             // Update password
-            $passwordStatus = $this->userRepository->changePassword($request->auth->user_id, $request->password);
+            $passwordChange = $this->userRepository->changePassword($request->auth->user_id, $request->password);
             
             // Get new token
-            $newToken = ($passwordStatus) ? $this->helpers->getJwtToken($request->auth->user_id) : '';
+            $newToken = ($passwordChange) ? $this->helpers->getJwtToken($request->auth->user_id) : '';
             
             // Send response
             $apiStatus = Response::HTTP_OK;
