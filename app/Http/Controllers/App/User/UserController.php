@@ -213,10 +213,10 @@ class UserController extends Controller
                             $returnData['translations']['lang'] = $value['translations'][$arrayKey]['lang'];
                             $returnData['translations']['name'] = $value['translations'][$arrayKey]['name'];
                             $returnData['translations']['values'] = $value['translations'][$arrayKey]['values'];
-                            $returnData['user_custom_field_value'] = $customFieldsValue->where(
-                                'field_id',
-                                $value['field_id']
-                            )->first()->value;
+                          
+                            $userCustomFieldValue = $customFieldsValue->where('field_id', $value['field_id'])
+                            ->where('user_id', $userId)->first();
+                            $returnData['user_custom_field_value'] = $userCustomFieldValue->value ?? '';
                         }
                     }
                     if (!empty($returnData)) {
@@ -292,6 +292,7 @@ class UserController extends Controller
                 trans('messages.custom_error_message.ERROR_USER_NOT_FOUND')
             );
         } catch (\Exception $e) {
+            dd($e);
             return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
