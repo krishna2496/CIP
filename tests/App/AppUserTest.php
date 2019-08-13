@@ -210,7 +210,7 @@ class AppUserTest extends TestCase
      *
      * @return void
      */
-    public function it_should_return_skill_limit_for_add_skill_to_user()
+    public function it_should_return_skill_limit_error_for_add_skill_to_user()
     {
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
