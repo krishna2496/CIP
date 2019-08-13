@@ -6,14 +6,15 @@ use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
 use App\Repositories\User\UserRepository;
-use App\Helpers\ResponseHelper;
 use App\Traits\RestExceptionHandlerTrait;
+use App\Helpers\ResponseHelper;
 use App\User;
 use InvalidArgumentException;
 use App\Transformations\UserTransformable;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Helpers\LanguageHelper;
 use App\Helpers\Helpers;
+use Validator;
 
 class UserController extends Controller
 {
@@ -43,7 +44,7 @@ class UserController extends Controller
      *
      * @param App\Repositories\User\UserRepository $userRepository
      * @param Illuminate\Http\ResponseHelper $responseHelper
-     * @param App\Helpers\LanguageHelper
+     * @param App\Helpers\LanguageHelper $languageHelper
      * @param App\Helpers\Helpers $helpers
      * @return void
      */
@@ -73,10 +74,10 @@ class UserController extends Controller
                 $userList = $this->userRepository->searchUsers($request->input('search'), $request->auth->user_id);
             }
 
-            $users = $userList->map(function (User $user) use($request){
+            $users = $userList->map(function (User $user) use ($request) {
                 $user = $this->transformUser($user);
                 $user->avatar = isset($user->avatar) ? $user->avatar :
-            $this->helpers->getDefaultProfileImage($request);
+                $this->helpers->getDefaultProfileImage($request);
                 return $user;
             })->all();
 
@@ -119,6 +120,65 @@ class UserController extends Controller
         } catch (\PDOException $e) {
             return $this->PDO(
                 config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
+                trans('messages.custom_error_message.ERROR_USER_NOT_FOUND')
+            );
+        } catch (\Exception $e) {
+            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
+        }
+    }
+
+    /**
+     * Add skill to user
+     *
+     * @param  \Illuminate\Http\Request $request
+     * @return Illuminate\Http\JsonResponse
+     */
+    public function linkSkill(Request $request): JsonResponse
+    {
+        try {
+            $id = $request->auth->user_id;
+            $validator = Validator::make($request->toArray(), [
+                'skills' => 'required',
+                'skills.*.skill_id' => 'required|exists:skill,skill_id,deleted_at,NULL',
+            ]);
+
+            // If request parameter have any error
+            if ($validator->fails()) {
+                return $this->responseHelper->error(
+                    Response::HTTP_UNPROCESSABLE_ENTITY,
+                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                    config('constants.error_codes.ERROR_SKILL_INVALID_DATA'),
+                    $validator->errors()->first()
+                );
+            }
+
+            // Check if skills reaches maximum limit
+            if (count($request->skills) > config('constants.SKILL_LIMIT')) {
+                return $this->responseHelper->error(
+                    Response::HTTP_UNPROCESSABLE_ENTITY,
+                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                    config('constants.error_codes.ERROR_SKILL_LIMIT'),
+                    trans('messages.custom_error_message.SKILL_LIMIT')
+                );
+            }
+
+            //Delete user skills
+            $this->userRepository->deleteSkills($id);
+
+            $this->userRepository->linkSkill($request->toArray(), $id);
+
+            // Set response data
+            $apiStatus = Response::HTTP_CREATED;
+            $apiMessage = trans('messages.success.MESSAGE_USER_SKILLS_CREATED');
+            return $this->responseHelper->success($apiStatus, $apiMessage);
+        } catch (PDOException $e) {
+            return $this->PDO(
+                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
+                trans('messages.custom_error_message.ERROR_DATABASE_OPERATIONAL')
+            );
+        } catch (ModelNotFoundException $e) {
+            return $this->modelNotFound(
+                config('constants.error_codes.ERROR_USER_NOT_FOUND'),
                 trans('messages.custom_error_message.ERROR_USER_NOT_FOUND')
             );
         } catch (\Exception $e) {

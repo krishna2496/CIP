@@ -30,8 +30,8 @@ class UserController extends Controller
      * @var App\Helpers\ResponseHelper
      */
     private $responseHelper;
-	
-	/**
+    
+    /**
      * @var App\Helpers\LanguageHelper
      */
     private $languageHelper;
@@ -43,8 +43,11 @@ class UserController extends Controller
      * @param Illuminate\Http\ResponseHelper $responseHelper
      * @return void
      */
-    public function __construct(UserRepository $userRepository, ResponseHelper $responseHelper, LanguageHelper $languageHelper)
-    {
+    public function __construct(
+        UserRepository $userRepository,
+        ResponseHelper $responseHelper,
+        LanguageHelper $languageHelper
+    ) {
         $this->userRepository = $userRepository;
         $this->responseHelper = $responseHelper;
         $this->languageHelper = $languageHelper;
@@ -92,16 +95,15 @@ class UserController extends Controller
                 "last_name" => "required|max:16",
                 "email" => "required|email|unique:user,email,NULL,user_id,deleted_at,NULL",
                 "password" => "required|min:8",
-				"availability_id" => "exists:availability,availability_id",
-				"language_id" => "required|int",
+                "availability_id" => "exists:availability,availability_id",
+                "language_id" => "required|int",
                 "city_id" => "required|exists:city,city_id",
                 "country_id" => "required|exists:country,country_id",
                 "profile_text" => "required",
                 "employee_id" => "max:16",
                 "department" => "max:16",
                 "manager_name" => "max:16",
-                "linked_in_url" => "url",
-			]
+                "linked_in_url" => "url"]
             );
 
             // If request parameter have any error
@@ -113,19 +115,19 @@ class UserController extends Controller
                     $validator->errors()->first()
                 );
             }
-			
-			// Check language id
-			if (!$this->languageHelper->validateLanguageId($request)) {
-				return $this->responseHelper->error(
+            
+            // Check language id
+            if (!$this->languageHelper->validateLanguageId($request)) {
+                return $this->responseHelper->error(
                     Response::HTTP_UNPROCESSABLE_ENTITY,
                     Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
                     config('constants.error_codes.ERROR_USER_INVALID_DATA'),
                     trans(
-						'messages.custom_error_message.ERROR_USER_INVALID_LANGUAGE'
-					)
+                        'messages.custom_error_message.ERROR_USER_INVALID_LANGUAGE'
+                    )
                 );
-			}
-			
+            }
+            
             
             // Create new user
             $user = $this->userRepository->store($request->all());
@@ -204,9 +206,9 @@ class UserController extends Controller
                 "department" => "sometimes|required|max:16",
                 "manager_name" => "sometimes|required|max:16",
                 "linked_in_url" => "url",
-				"availability_id" => "exists:availability,availability_id",
-				"city_id" => "exists:city,city_id",
-				"country_id" => "exists:country,country_id"]
+                "availability_id" => "exists:availability,availability_id",
+                "city_id" => "exists:city,city_id",
+                "country_id" => "exists:country,country_id"]
             );
                         
             // If request parameter have any error
@@ -218,20 +220,20 @@ class UserController extends Controller
                     $validator->errors()->first()
                 );
             }
-			
-			// Check language id
-			if (isset($request->language_id)) {
-				if (!$this->languageHelper->validateLanguageId($request)) {
-					return $this->responseHelper->error(
-						Response::HTTP_UNPROCESSABLE_ENTITY,
-						Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-						config('constants.error_codes.ERROR_USER_INVALID_DATA'),
-						trans(
-							'messages.custom_error_message.ERROR_USER_INVALID_LANGUAGE'
-						)
-					);
-				}
-			}
+            
+            // Check language id
+            if (isset($request->language_id)) {
+                if (!$this->languageHelper->validateLanguageId($request)) {
+                    return $this->responseHelper->error(
+                        Response::HTTP_UNPROCESSABLE_ENTITY,
+                        Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                        config('constants.error_codes.ERROR_USER_INVALID_DATA'),
+                        trans(
+                            'messages.custom_error_message.ERROR_USER_INVALID_LANGUAGE'
+                        )
+                    );
+                }
+            }
 
             // Update user
             $user = $this->userRepository->update($request->toArray(), $id);

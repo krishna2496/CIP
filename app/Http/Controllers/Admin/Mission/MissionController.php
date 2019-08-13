@@ -93,7 +93,7 @@ class MissionController extends Controller
                 "mission_detail.*.lang" => "required|max:2",
                 "mission_detail.*.title" => "required",
                 "organisation" => "required",
-				"organisation.organisation_id" => "integer",
+                "organisation.organisation_id" => "integer",
                 "publication_status" => ['required', Rule::in(config('constants.publication_status'))],
                 "media_images.*.media_path" => "required|valid_media_path",
                 "media_videos.*.media_name" => "required",
@@ -103,7 +103,7 @@ class MissionController extends Controller
                 "end_date" => "sometimes|after:start_date|date",
                 "total_seats" => "integer|min:1",
                 "goal_objective" => "required_if:mission_type,GOAL|integer|min:1",
-				"skills.*.skill_id" => "exists:skill,skill_id",
+                "skills.*.skill_id" => "exists:skill,skill_id",
             ]
         );
 
@@ -125,7 +125,7 @@ class MissionController extends Controller
             $apiMessage = trans('messages.success.MESSAGE_MISSION_ADDED');
             $apiData = ['mission_id' => $mission->mission_id];
             return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
-        } catch (PDOException $e) {dd($e);
+        } catch (PDOException $e) {
             return $this->PDO(
                 config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
                 trans('messages.custom_error_message.ERROR_DATABASE_OPERATIONAL')
@@ -202,9 +202,9 @@ class MissionController extends Controller
                 "end_date" => "sometimes|after:start_date|date",
                 "total_seats" => "integer|min:1",
                 "availability_id" => "sometimes|required|exists:availability,availability_id",
-				"skills.*.skill_id" => "exists:skill,skill_id",
-				"theme_id" => "sometimes|required|exists:mission_theme,mission_theme_id,deleted_at,NULL",
-				"application_deadline" => "date"
+                "skills.*.skill_id" => "exists:skill,skill_id",
+                "theme_id" => "sometimes|required|exists:mission_theme,mission_theme_id,deleted_at,NULL",
+                "application_deadline" => "date"
             ]
         );
         

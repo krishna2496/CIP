@@ -84,8 +84,8 @@ class LanguageHelper
             return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
-	
-	/**
+    
+    /**
      * Check for valid language_id from `ci_admin` table
      *
      * @param \Illuminate\Http\Request $request
@@ -100,9 +100,9 @@ class LanguageHelper
             
             $tenantLanguage = DB::table('tenant_language')
             ->where('tenant_id', $tenant->tenant_id)
-			->where('language_id', $request->language_id);
+            ->where('language_id', $request->language_id);
   
-			// Connect tenant database
+            // Connect tenant database
             $this->helpers->switchDatabaseConnection('tenant', $request);
             
             return ($tenantLanguage->count() > 0) ? true : false;

@@ -312,7 +312,7 @@ class Helpers
 
     /**
      * Get tenant details from tenant name only
-     * 
+     *
      * @param string $tenantName
      * @return stdClass $tenant
      */

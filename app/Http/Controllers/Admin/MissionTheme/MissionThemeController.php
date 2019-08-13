@@ -83,7 +83,7 @@ class MissionThemeController extends Controller
                     "theme_name" => "required|max:255|
                     unique:mission_theme,theme_name,NULL,mission_theme_id,deleted_at,NULL",
                     "translations" => "required",
-					"translations.*.lang" => "required_with:translations|max:2"
+                    "translations.*.lang" => "required_with:translations|max:2"
                 ]
             );
 
@@ -139,8 +139,8 @@ class MissionThemeController extends Controller
                     "required",
                     Rule::unique('mission_theme')->ignore($id, 'mission_theme_id,deleted_at,NULL')],
                 "translations" => "sometimes|required",
-				"translations.*.lang" => "required_with:translations|max:2"
-				]
+                "translations.*.lang" => "required_with:translations|max:2"
+                ]
             );
             
             // If request parameter have any error

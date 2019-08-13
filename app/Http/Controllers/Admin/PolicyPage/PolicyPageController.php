@@ -91,8 +91,10 @@ class PolicyPageController extends Controller
                     "page_details.translations.*.lang" => "required|max:2",
                     "page_details.translations.*.title" => "required",
                     "page_details.translations.*.sections" => "required",
-					"page_details.translations.*.sections.*.title" => "required_with:page_details.translations.*.sections",
-                    "page_details.translations.*.sections.*.description" => "required_with:page_details.translations.*.sections",
+                    "page_details.translations.*.sections.*.title" =>
+                    "required_with:page_details.translations.*.sections",
+                    "page_details.translations.*.sections.*.description" =>
+                    "required_with:page_details.translations.*.sections",
                 ]
             );
 

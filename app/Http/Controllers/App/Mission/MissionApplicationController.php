@@ -64,7 +64,7 @@ class MissionApplicationController extends Controller
                 $request->all(),
                 [
                     "mission_id" => "required|exists:mission,mission_id",
-					"availability_id" => "int|exists:availability,availability_id"
+                    "availability_id" => "int|exists:availability,availability_id"
                 ]
             );
             // If request parameter have any error

@@ -82,8 +82,8 @@ class SkillController extends Controller
                 [
                     "skill_name" => "required|max:64|unique:skill,skill_name,NULL,skill_id,deleted_at,NULL",
                     "translations" => "required",
-					"parent_skill" => "int",
-					"translations.*.lang" => "required_with:translations|max:2"
+                    "parent_skill" => "int",
+                    "translations.*.lang" => "required_with:translations|max:2"
                 ]
             );
 
@@ -143,11 +143,11 @@ class SkillController extends Controller
                     "sometimes",
                     "required",
                     Rule::unique('skill')->ignore($id, 'skill_id,deleted_at,NULL')],
-				"parent_skill" => [
+                "parent_skill" => [
                     "int",
                     Rule::unique('skill')->ignore($id, 'skill_id')],
                 "translations" => "sometimes|required",
-				"translations.*.lang" => "required_with:translations|max:2"]
+                "translations.*.lang" => "required_with:translations|max:2"]
             );
 
             // If request parameter have any error
@@ -200,7 +200,7 @@ class SkillController extends Controller
     public function show(int $id): JsonResponse
     {
         try {
-			$skillDetail = $this->skillRepository->find($id);
+            $skillDetail = $this->skillRepository->find($id);
             
             $apiData = $skillDetail->toArray();
             $apiStatus = Response::HTTP_OK;

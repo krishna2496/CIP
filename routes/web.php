@@ -32,15 +32,15 @@ $router->group(['middleware' => 'localization'], function ($router) {
      'uses' => 'App\Auth\AuthController@reset_password']);
 
     /* reset password  */
-    $router->put('/app/password-reset', ['middleware' => 'localization|tenant.connection',
+    $router->put('/app/password-reset', ['middleware' => 'tenant.connection',
      'uses' => 'App\Auth\AuthController@passwordReset']);
 
     /* CMS footer pages  */
-    $router->get('/app/cms/listing', ['as' => 'cms.listing', 'middleware' => 'localization|tenant.connection',
+    $router->get('/app/cms/listing', ['as' => 'cms.listing', 'middleware' => 'tenant.connection',
      'uses' => 'App\FooterPage\FooterPageController@index']);
-    $router->get('/app/cms/detail', ['as' => 'cms.detail', 'middleware' => 'localization|tenant.connection',
+    $router->get('/app/cms/detail', ['as' => 'cms.detail', 'middleware' => 'tenant.connection',
      'uses' => 'App\FooterPage\FooterPageController@cmsList']);
-    $router->get('/app/cms/{slug}', ['as' => 'cms.show', 'middleware' => 'localization|tenant.connection',
+    $router->get('/app/cms/{slug}', ['as' => 'cms.show', 'middleware' => 'tenant.connection',
      'uses' => 'App\FooterPage\FooterPageController@show']);
     
     /* Get custom css url  */
@@ -49,7 +49,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
     
     /* Get mission listing  */
     $router->get('/app/missions/', ['as' => 'app.missions',
-    'middleware' => 'localization|tenant.connection|jwt.auth|PaginationMiddleware',
+    'middleware' => 'tenant.connection|jwt.auth|PaginationMiddleware',
     'uses' => 'App\Mission\MissionController@getMissionList']);
 
     /* Get user filter  */
@@ -66,12 +66,12 @@ $router->group(['middleware' => 'localization'], function ($router) {
 
     /* Add/remove favourite */
     $router->post('/app/mission/favourite', [
-        'middleware' => 'localization|tenant.connection|jwt.auth|JsonApiMiddleware',
+        'middleware' => 'tenant.connection|jwt.auth|JsonApiMiddleware',
         'uses' => 'App\Mission\MissionController@missionFavourite']);
 
     /* Mission Invite  */
     $router->post('/app/mission/invite', ['as' => 'app.missions.invite',
-    'middleware' => 'localization|tenant.connection|jwt.auth',
+    'middleware' => 'tenant.connection|jwt.auth',
     'uses' => 'App\Mission\MissionInviteController@missionInvite']);
 
     /* Fetch tenant option */
@@ -110,7 +110,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
 
     /* Get mission detail  */
     $router->get('/app/mission/{missionId}', [
-    'middleware' => 'localization|tenant.connection|jwt.auth',
+    'middleware' => 'tenant.connection|jwt.auth',
     'uses' => 'App\Mission\MissionController@getMissionDetail']);
     
     /* Fetch recent volunteers */
@@ -120,24 +120,25 @@ $router->group(['middleware' => 'localization'], function ($router) {
      
     /* Get mission related listing  */
     $router->get('/app/related-missions/{missionId}', ['as' => 'app.related-missions',
-    'middleware' => 'localization|tenant.connection|jwt.auth',
+    'middleware' => 'tenant.connection|jwt.auth',
     'uses' => 'App\Mission\MissionController@getRelatedMissions']);
    
     /* Get mission media listing  */
     $router->get('/app/mission-media/{missionId}', ['as' => 'app.mission-media',
-    'middleware' => 'localization|tenant.connection|jwt.auth',
+    'middleware' => 'tenant.connection|jwt.auth',
     'uses' => 'App\Mission\MissionMediaController@getMissionMedia']);
 
     /* Get mission comments  */
     $router->get('/app/mission/{missionId}/comments', [
-        'middleware' => 'localization|tenant.connection|jwt.auth',
+        'middleware' => 'tenant.connection|jwt.auth',
         'uses' => 'App\Mission\MissionCommentController@getComments']);
 
     /* Store mission comment */
     $router->post('/app/mission/comment', [
-        'middleware' => 'localization|tenant.connection|jwt.auth',
+        'middleware' => 'tenant.connection|jwt.auth',
         'uses' => 'App\Mission\MissionCommentController@store']);
-  
+});
+
     /* Policy pages  */
     $router->get('/app/policy/listing', ['as' => 'policy.listing',
     'middleware' => 'localization|tenant.connection|jwt.auth',
@@ -148,13 +149,17 @@ $router->group(['middleware' => 'localization'], function ($router) {
 
     /* Password change routing */
     $router->patch('/app/change-password', ['as' => 'password.change',
-    'middleware' => 'tenant.connection|jwt.auth',
+    'middleware' => 'tenant.connection|localization|jwt.auth',
     'uses' => 'App\Auth\AuthController@changePassword']);
-});
 
+    /* Create user skill */
+    $router->post('/app/user/skills', ['as' => 'user.skills',
+    'middleware' => 'tenant.connection|jwt.auth',
+    'uses' => 'App\User\UserController@linkSkill']);
 
-/* Fetch Language json file */
-$router->get('language/{lang}', ['as' => 'language', 'uses' => 'App\Language\LanguageController@fetchLangaugeFile']);
+    /* Fetch Language json file */
+    $router->get('language/{lang}', ['as' => 'language',
+    'uses' => 'App\Language\LanguageController@fetchLangaugeFile']);
 
 /*
 |
@@ -166,185 +171,190 @@ $router->get('language/{lang}', ['as' => 'language', 'uses' => 'App\Language\Lan
 |
 */
 
-/* Set user data for tenant specific */
-$router->group(
-    ['prefix' => 'users', 'middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware'],
-    function ($router) {
-        $router->get('/', ['as' => 'users', 'middleware' => ['PaginationMiddleware'],
-        'uses' => 'Admin\User\UserController@index']);
-        $router->get('/{userId}', ['as' => 'users.show', 'uses' => 'Admin\User\UserController@show']);
-        $router->post('/', ['as' => 'users.store', 'uses' => 'Admin\User\UserController@store']);
-        $router->patch('/{userId}', ['as' => 'users.update', 'uses' => 'Admin\User\UserController@update']);
-        $router->delete('/{userId}', ['as' => 'usersdelete', 'uses' => 'Admin\User\UserController@destroy']);
-    }
-);
+    /* Set user data for tenant specific */
+    $router->group(
+        ['prefix' => 'users', 'middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware'],
+        function ($router) {
+            $router->get('/', ['as' => 'users', 'middleware' => ['PaginationMiddleware'],
+            'uses' => 'Admin\User\UserController@index']);
+            $router->get('/{userId}', ['as' => 'users.show', 'uses' => 'Admin\User\UserController@show']);
+            $router->post('/', ['as' => 'users.store', 'uses' => 'Admin\User\UserController@store']);
+            $router->patch('/{userId}', ['as' => 'users.update', 'uses' => 'Admin\User\UserController@update']);
+            $router->delete('/{userId}', ['as' => 'usersdelete', 'uses' => 'Admin\User\UserController@destroy']);
+        }
+    );
 
-/* Set custom slider data for tenant specific */
-$router->post('/create_slider', ['as' => 'create_slider', 'middleware' => 'localization|auth.tenant.admin',
- 'uses' => 'Admin\Tenant\TenantOptionsController@storeSlider']);
+    /* Set custom slider data for tenant specific */
+    $router->post('/create_slider', ['as' => 'create_slider', 'middleware' => 'localization|auth.tenant.admin',
+    'uses' => 'Admin\Tenant\TenantOptionsController@storeSlider']);
 
-/* Set Footer Page data for tenant specific */
-$router->group(
-    ['prefix' => 'cms', 'middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware'],
-    function ($router) {
-        $router->get('/', ['as' => 'cms', 'middleware' => ['PaginationMiddleware'],
-        'uses' => 'Admin\FooterPage\FooterPageController@index']);
-        $router->get('/{pageId}', ['as' => 'cms.show', 'uses' => 'Admin\FooterPage\FooterPageController@show']);
-        $router->post('/', ['as' => 'cms.store', 'uses' => 'Admin\FooterPage\FooterPageController@store']);
-        $router->patch('/{pageId}', ['as' => 'cms.update', 'uses' => 'Admin\FooterPage\FooterPageController@update']);
-        $router->delete('/{pageId}', ['as' => 'cms.delete', 'uses' => 'Admin\FooterPage\FooterPageController@destroy']);
-    }
-);
+    /* Set Footer Page data for tenant specific */
+    $router->group(
+        ['prefix' => 'cms', 'middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware'],
+        function ($router) {
+            $router->get('/', ['as' => 'cms', 'middleware' => ['PaginationMiddleware'],
+            'uses' => 'Admin\FooterPage\FooterPageController@index']);
+            $router->get('/{pageId}', ['as' => 'cms.show', 'uses' => 'Admin\FooterPage\FooterPageController@show']);
+            $router->post('/', ['as' => 'cms.store', 'uses' => 'Admin\FooterPage\FooterPageController@store']);
+            $router->patch('/{pageId}', ['as' => 'cms.update',
+            'uses' => 'Admin\FooterPage\FooterPageController@update']);
+            $router->delete('/{pageId}', ['as' => 'cms.delete',
+            'uses' => 'Admin\FooterPage\FooterPageController@destroy']);
+        }
+    );
 
-/* Set custom field data for tenant specific */
-$router->group(
-    ['prefix' => 'metadata/users/custom_fields', 'middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware'],
-    function ($router) {
-        $router->get('/', ['as' => 'metadata.users.custom_fields',
-        'middleware' => ['PaginationMiddleware'] ,'uses' => 'Admin\User\UserCustomFieldController@index']);
-        $router->get('/{fieldId}', ['as' => 'metadata.users.custom_fields.show',
-        'uses' => 'Admin\User\UserCustomFieldController@show']);
-        $router->post('/', ['as' => 'metadata.users.custom_fields.store',
-        'uses' => 'Admin\User\UserCustomFieldController@store']);
-        $router->patch('/{fieldId}', ['as' => 'metadata.users.custom_fields.update',
-        'uses' => 'Admin\User\UserCustomFieldController@update']);
-        $router->delete('/{fieldId}', ['as' => 'metadata.users.custom_fields.delete',
-        'uses' => 'Admin\User\UserCustomFieldController@destroy']);
-    }
-);
+    /* Set custom field data for tenant specific */
+    $router->group(
+        ['prefix' => 'metadata/users/custom_fields',
+        'middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware'],
+        function ($router) {
+            $router->get('/', ['as' => 'metadata.users.custom_fields',
+            'middleware' => ['PaginationMiddleware'] ,'uses' => 'Admin\User\UserCustomFieldController@index']);
+            $router->get('/{fieldId}', ['as' => 'metadata.users.custom_fields.show',
+            'uses' => 'Admin\User\UserCustomFieldController@show']);
+            $router->post('/', ['as' => 'metadata.users.custom_fields.store',
+            'uses' => 'Admin\User\UserCustomFieldController@store']);
+            $router->patch('/{fieldId}', ['as' => 'metadata.users.custom_fields.update',
+            'uses' => 'Admin\User\UserCustomFieldController@update']);
+            $router->delete('/{fieldId}', ['as' => 'metadata.users.custom_fields.delete',
+            'uses' => 'Admin\User\UserCustomFieldController@destroy']);
+        }
+    );
 
-/* Set mission data for tenant specific */
-$router->group(
-    ['prefix' => 'missions', 'middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware'],
-    function ($router) {
-        $router->get('', ['as' => 'missions', 'middleware' => ['PaginationMiddleware'],
-        'uses' => 'Admin\Mission\MissionController@index']);
-        $router->get('/{missionId}', ['as' => 'missions.show', 'uses' => 'Admin\Mission\MissionController@show']);
-        $router->post('/', ['as' => 'missions.store', 'uses' => 'Admin\Mission\MissionController@store']);
-        $router->patch('/{missionId}', ['as' => 'missions.update', 'uses' => 'Admin\Mission\MissionController@update']);
-        $router->delete('/{missionId}', ['as' => 'missions.delete',
-        'uses' => 'Admin\Mission\MissionController@destroy']);
-        $router->get('/{missionId}/applications', ['middleware' => ['PaginationMiddleware'],
-         'uses' => 'Admin\Mission\MissionApplicationController@missionApplications']);
-        $router->get(
-            '/{missionId}/applications/{applicationId}',
-            ['uses' => 'Admin\Mission\MissionApplicationController@missionApplication']
-        );
-        $router->patch(
-            '/{missionId}/applications/{applicationId}',
-            ['uses' => 'Admin\Mission\MissionApplicationController@updateApplication']
-        );
-        $router->get(
-            '/{missionId}/comments',
-            [
-                'as' => 'missions.comments',
-                'uses' => 'Admin\Mission\MissionCommentController@index'
-            ]
-        );
-        $router->get(
-            '/{missionId}/comments/{commentId}',
-            [
-                'as' => 'missions.comments.detail',
-                'uses' => 'Admin\Mission\MissionCommentController@show'
-            ]
-        );
-        $router->patch(
-            '/{missionId}/comments/{commentId}',
-            [
-                'as' => 'missions.comments.update',
-                'uses' => 'Admin\Mission\MissionCommentController@update'
-            ]
-        );
-        $router->delete(
-            '/{missionId}/comments/{commentId}',
-            [
-                'as' => 'missions.comments.delete',
-                'uses' => 'Admin\Mission\MissionCommentController@destroy'
-            ]
-        );
-    }
-);
+    /* Set mission data for tenant specific */
+    $router->group(
+        ['prefix' => 'missions', 'middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware'],
+        function ($router) {
+            $router->get('', ['as' => 'missions', 'middleware' => ['PaginationMiddleware'],
+            'uses' => 'Admin\Mission\MissionController@index']);
+            $router->get('/{missionId}', ['as' => 'missions.show', 'uses' => 'Admin\Mission\MissionController@show']);
+            $router->post('/', ['as' => 'missions.store', 'uses' => 'Admin\Mission\MissionController@store']);
+            $router->patch('/{missionId}', ['as' => 'missions.update',
+            'uses' => 'Admin\Mission\MissionController@update']);
+            $router->delete('/{missionId}', ['as' => 'missions.delete',
+            'uses' => 'Admin\Mission\MissionController@destroy']);
+            $router->get('/{missionId}/applications', ['middleware' => ['PaginationMiddleware'],
+            'uses' => 'Admin\Mission\MissionApplicationController@missionApplications']);
+            $router->get(
+                '/{missionId}/applications/{applicationId}',
+                ['uses' => 'Admin\Mission\MissionApplicationController@missionApplication']
+            );
+            $router->patch(
+                '/{missionId}/applications/{applicationId}',
+                ['uses' => 'Admin\Mission\MissionApplicationController@updateApplication']
+            );
+            $router->get(
+                '/{missionId}/comments',
+                [
+                    'as' => 'missions.comments',
+                    'uses' => 'Admin\Mission\MissionCommentController@index'
+                ]
+            );
+            $router->get(
+                '/{missionId}/comments/{commentId}',
+                [
+                    'as' => 'missions.comments.detail',
+                    'uses' => 'Admin\Mission\MissionCommentController@show'
+                ]
+            );
+            $router->patch(
+                '/{missionId}/comments/{commentId}',
+                [
+                    'as' => 'missions.comments.update',
+                    'uses' => 'Admin\Mission\MissionCommentController@update'
+                ]
+            );
+            $router->delete(
+                '/{missionId}/comments/{commentId}',
+                [
+                    'as' => 'missions.comments.delete',
+                    'uses' => 'Admin\Mission\MissionCommentController@destroy'
+                ]
+            );
+        }
+    );
 
-/* Set skill data for tenant user specific */
-$router->group(
-    ['prefix' => 'user/skills', 'middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware'],
-    function ($router) {
-        $router->get('/{userId}', ['uses' => 'Admin\User\UserController@userSkills']);
-        $router->post('/{userId}', ['uses' => 'Admin\User\UserController@linkSkill']);
-        $router->delete('/{userId}', ['uses' => 'Admin\User\UserController@unlinkSkill']);
-    }
-);
+    /* Set skill data for tenant user specific */
+    $router->group(
+        ['prefix' => 'user/skills', 'middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware'],
+        function ($router) {
+            $router->get('/{userId}', ['uses' => 'Admin\User\UserController@userSkills']);
+            $router->post('/{userId}', ['uses' => 'Admin\User\UserController@linkSkill']);
+            $router->delete('/{userId}', ['uses' => 'Admin\User\UserController@unlinkSkill']);
+        }
+    );
 
-/*Admin style routes*/
-$router->group(
-    ['prefix' => 'style', 'middleware' => 'localization|auth.tenant.admin'],
-    function ($router) {
-        $router->post('/update-style', ['uses' => 'Admin\Tenant\TenantOptionsController@updateStyleSettings']);
-        $router->get('/reset-style', ['uses' => 'Admin\Tenant\TenantOptionsController@resetStyleSettings']);
-        $router->get('/download-style', ['uses' => 'Admin\Tenant\TenantOptionsController@downloadStyleFiles']);
-        $router->post('/update-image', ['uses' => 'Admin\Tenant\TenantOptionsController@updateImage']);
-        $router->get('/reset-asset-images', ['uses' => 'Admin\Tenant\TenantOptionsController@resetAssetsImages']);
-    }
-);
+    /*Admin style routes*/
+    $router->group(
+        ['prefix' => 'style', 'middleware' => 'localization|auth.tenant.admin'],
+        function ($router) {
+            $router->post('/update-style', ['uses' => 'Admin\Tenant\TenantOptionsController@updateStyleSettings']);
+            $router->get('/reset-style', ['uses' => 'Admin\Tenant\TenantOptionsController@resetStyleSettings']);
+            $router->get('/download-style', ['uses' => 'Admin\Tenant\TenantOptionsController@downloadStyleFiles']);
+            $router->post('/update-image', ['uses' => 'Admin\Tenant\TenantOptionsController@updateImage']);
+            $router->get('/reset-asset-images', ['uses' => 'Admin\Tenant\TenantOptionsController@resetAssetsImages']);
+        }
+    );
 
-/* Admin setting routes */
-$router->group(
-    ['prefix' => 'settings', 'middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware'],
-    function ($router) {
-        $router->get('/', ['uses' => 'Admin\Tenant\TenantSettingsController@index']);
-        $router->patch('/{settingId}', ['uses' => 'Admin\Tenant\TenantSettingsController@update']);
-    }
-);
+    /* Admin setting routes */
+    $router->group(
+        ['prefix' => 'settings', 'middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware'],
+        function ($router) {
+            $router->get('/', ['uses' => 'Admin\Tenant\TenantSettingsController@index']);
+            $router->patch('/{settingId}', ['uses' => 'Admin\Tenant\TenantSettingsController@update']);
+        }
+    );
 
-/* Set mission theme data for tenant specific */
-$router->group(
-    ['prefix' => '/entities/themes', 'middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware'],
-    function ($router) {
-        $router->get('/', ['middleware' => ['PaginationMiddleware'],
-        'uses' => 'Admin\MissionTheme\MissionThemeController@index']);
-        $router->get('/{themeId}', ['uses' => 'Admin\MissionTheme\MissionThemeController@show']);
-        $router->post('/', ['uses' => 'Admin\MissionTheme\MissionThemeController@store']);
-        $router->patch('/{themeId}', ['uses' => 'Admin\MissionTheme\MissionThemeController@update']);
-        $router->delete('/{themeId}', ['uses' => 'Admin\MissionTheme\MissionThemeController@destroy']);
-    }
-);
+    /* Set mission theme data for tenant specific */
+    $router->group(
+        ['prefix' => '/entities/themes', 'middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware'],
+        function ($router) {
+            $router->get('/', ['middleware' => ['PaginationMiddleware'],
+            'uses' => 'Admin\MissionTheme\MissionThemeController@index']);
+            $router->get('/{themeId}', ['uses' => 'Admin\MissionTheme\MissionThemeController@show']);
+            $router->post('/', ['uses' => 'Admin\MissionTheme\MissionThemeController@store']);
+            $router->patch('/{themeId}', ['uses' => 'Admin\MissionTheme\MissionThemeController@update']);
+            $router->delete('/{themeId}', ['uses' => 'Admin\MissionTheme\MissionThemeController@destroy']);
+        }
+    );
 
-$router->group(
-    ['prefix' => 'tenant-option', 'middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware'],
-    function ($router) {
-        $router->post('/', ['uses' => 'Admin\Tenant\TenantOptionsController@storeTenantOption']);
-        $router->patch('/', ['uses' => 'Admin\Tenant\TenantOptionsController@updateTenantOption']);
-    }
-);
+    $router->group(
+        ['prefix' => 'tenant-option', 'middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware'],
+        function ($router) {
+            $router->post('/', ['uses' => 'Admin\Tenant\TenantOptionsController@storeTenantOption']);
+            $router->patch('/', ['uses' => 'Admin\Tenant\TenantOptionsController@updateTenantOption']);
+        }
+    );
 
-/* Set skills data for tenant specific */
-$router->group(
-    ['prefix' => '/entities/skills', 'middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware'],
-    function ($router) {
-        $router->get('/', ['middleware' => ['PaginationMiddleware'], 'uses' => 'Admin\Skill\SkillController@index']);
-        $router->get('/{skillId}', ['uses' => 'Admin\Skill\SkillController@show']);
-        $router->post('/', ['uses' => 'Admin\Skill\SkillController@store']);
-        $router->patch('/{skillId}', ['uses' => 'Admin\Skill\SkillController@update']);
-        $router->delete('/{skillId}', ['uses' => 'Admin\Skill\SkillController@destroy']);
-    }
-);
-$router->get('/social-sharing/{fqdn}/{missionId}/{langId}', ['as' => 'social-sharing',
-'uses' => 'App\Mission\MissionSocialSharingController@setMetaData']);
+    /* Set skills data for tenant specific */
+    $router->group(
+        ['prefix' => '/entities/skills', 'middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware'],
+        function ($router) {
+            $router->get('/', ['middleware' => ['PaginationMiddleware'],
+            'uses' => 'Admin\Skill\SkillController@index']);
+            $router->get('/{skillId}', ['uses' => 'Admin\Skill\SkillController@show']);
+            $router->post('/', ['uses' => 'Admin\Skill\SkillController@store']);
+            $router->patch('/{skillId}', ['uses' => 'Admin\Skill\SkillController@update']);
+            $router->delete('/{skillId}', ['uses' => 'Admin\Skill\SkillController@destroy']);
+        }
+    );
+    $router->get('/social-sharing/{fqdn}/{missionId}/{langId}', ['as' => 'social-sharing',
+    'uses' => 'App\Mission\MissionSocialSharingController@setMetaData']);
 
-/* Set policy page data for tenant specific */
-$router->group(
-    ['prefix' => 'policy', 'middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware'],
-    function ($router) {
-        $router->get('/', ['as' => 'policy', 'middleware' => ['PaginationMiddleware'],
-        'uses' => 'Admin\PolicyPage\PolicyPageController@index']);
-        $router->get('/{pageId}', ['as' => 'policy.show', 'uses' => 'Admin\PolicyPage\PolicyPageController@show']);
-        $router->post('/', ['as' => 'policy.store', 'uses' => 'Admin\PolicyPage\PolicyPageController@store']);
-        $router->patch('/{pageId}', ['as' => 'policy.update',
-        'uses' => 'Admin\PolicyPage\PolicyPageController@update']);
-        $router->delete('/{pageId}', ['as' => 'policy.delete',
-        'uses' => 'Admin\PolicyPage\PolicyPageController@destroy']);
-    }
-);
+    /* Set policy page data for tenant specific */
+    $router->group(
+        ['prefix' => 'policy', 'middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware'],
+        function ($router) {
+            $router->get('/', ['as' => 'policy', 'middleware' => ['PaginationMiddleware'],
+            'uses' => 'Admin\PolicyPage\PolicyPageController@index']);
+            $router->get('/{pageId}', ['as' => 'policy.show', 'uses' => 'Admin\PolicyPage\PolicyPageController@show']);
+            $router->post('/', ['as' => 'policy.store', 'uses' => 'Admin\PolicyPage\PolicyPageController@store']);
+            $router->patch('/{pageId}', ['as' => 'policy.update',
+            'uses' => 'Admin\PolicyPage\PolicyPageController@update']);
+            $router->delete('/{pageId}', ['as' => 'policy.delete',
+            'uses' => 'Admin\PolicyPage\PolicyPageController@destroy']);
+        }
+    );
 
 /*
 |

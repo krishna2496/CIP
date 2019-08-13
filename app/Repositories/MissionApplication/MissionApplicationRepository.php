@@ -123,10 +123,10 @@ class MissionApplicationRepository implements MissionApplicationInterface
                 trans('messages.custom_error_message.ERROR_MISSION_NOT_FOUND')
             );
         }
-		try {
-           $missionApplication = $this->missionApplication->findOrFail($applicationId);
-			$missionApplication->update($request->toArray());
-			return $missionApplication;
+        try {
+            $missionApplication = $this->missionApplication->findOrFail($applicationId);
+            $missionApplication->update($request->toArray());
+            return $missionApplication;
         } catch (ModelNotFoundException $e) {
             throw new ModelNotFoundException(
                 trans('messages.custom_error_message.ERROR_MISSION_APPLICATION_NOT_FOUND')

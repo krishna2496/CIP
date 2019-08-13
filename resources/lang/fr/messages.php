@@ -126,9 +126,9 @@ return [
         'ERROR_MISSION_APPLICATION_NOT_FOUND' => 'L\'application de mission demandée n\'existe pas',
         'ERROR_MISSION_RATING_INVALID_DATA' => 'La création de la note de mission a échoué. Veuillez vérifier les paramètres d`entrée',
         'ERROR_MISSION_COMMENT_INVALID_DATA' => 'La création de commentaire de mission a échoué. Veuillez vérifier les paramètres d`entrée',
+        'SKILL_LIMIT' => 'Désolé, vous ne pouvez pas ajouter plus de '. config('constants.SKILL_LIMIT').' compétences',
         'ERROR_INVALID_MISSION_MEDIA_DATA' => 'Données de média de mission non valides',
         'ERROR_INVALID_MISSION_DOCUMENT_DATA' => 'Données de média de mission non valides',
-
         'ERROR_INVALID_INVITE_MISSION_DATA' => 'Détail de la mission d\'invitation non valide',
         'ERROR_INVITE_MISSION_ALREADY_EXIST' => 'L\'utilisateur est déjà invité pour cette mission',
         
