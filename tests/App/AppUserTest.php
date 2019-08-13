@@ -220,27 +220,13 @@ class AppUserTest extends TestCase
         $skill->setConnection($connection);
         $skill->save();
 
+        $skillsArray = [];
+        for ($i = 0; $i <= config('constants.SKILL_LIMIT'); $i++ ) {
+            $skillsArray[] = ["skill_id" => $skill->skill_id];
+        }        
         $params = [
-            'skills' => [
-                ["skill_id" => $skill->skill_id],
-                ["skill_id" => $skill->skill_id],
-                ["skill_id" => $skill->skill_id],
-                ["skill_id" => $skill->skill_id],
-                ["skill_id" => $skill->skill_id],
-                ["skill_id" => $skill->skill_id],
-                ["skill_id" => $skill->skill_id],
-                ["skill_id" => $skill->skill_id],
-                ["skill_id" => $skill->skill_id],
-                ["skill_id" => $skill->skill_id],
-                ["skill_id" => $skill->skill_id],
-                ["skill_id" => $skill->skill_id],
-                ["skill_id" => $skill->skill_id],
-                ["skill_id" => $skill->skill_id],
-                ["skill_id" => $skill->skill_id],
-                ["skill_id" => $skill->skill_id]
-            ]
+            'skills' => $skillsArray
         ];
-
         $token = Helpers::getJwtToken($user->user_id);
         $this->post('/app/user/skills', $params, ['token' => $token])
         ->seeStatusCode(422)
