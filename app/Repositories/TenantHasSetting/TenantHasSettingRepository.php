@@ -56,14 +56,14 @@ class TenantHasSettingRepository implements TenantHasSettingInterface
     /**
      * Create new setting
      *
-     * @param \Illuminate\Http\Request $request
+     * @param array $data
      * @param int $tenantId
      * @return bool
      */
-    public function store(Request $request, int $tenantId): bool
+    public function store(array $data, int $tenantId): bool
     {
-        foreach ($request->settings as $value) {
-            $this->tenantHasSetting->storeSettings($tenantId, $value['tenant_setting_id']);
+        foreach ($data['settings'] as $value) {
+            $this->tenantHasSetting->storeSettings($tenantId, $value['tenant_setting_id'], $value['value']);
         }
         return true;
     }

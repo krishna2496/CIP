@@ -12,8 +12,9 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Traits\RestExceptionHandlerTrait;
 use App\Repositories\Tenant\TenantRepository;
 use App\Models\TenantHasSetting;
-
 use Validator;
+use App\Helpers\DatabaseHelper;
+use DB;
 
 class TenantHasSettingController extends Controller
 {
@@ -50,6 +51,7 @@ class TenantHasSettingController extends Controller
         $this->tenantHasSettingRepository = $tenantHasSettingRepository;
         $this->tenantRepository = $tenantRepository;
         $this->responseHelper = $responseHelper;
+        $this->databaseHelper = new DatabaseHelper;
     }
     
     /**
@@ -93,6 +95,7 @@ class TenantHasSettingController extends Controller
             $validator = Validator::make($request->toArray(), [
                 'settings' => 'required',
                 'settings.*.tenant_setting_id' => 'required|exists:tenant_setting,tenant_setting_id',
+                'settings.*.value' => 'required',
                 ]);
 
             if ($validator->fails()) {
@@ -103,14 +106,33 @@ class TenantHasSettingController extends Controller
                     $validator->errors()->first()
                 );
             }
+
             // Check tenant is available or not
             $tenant = $this->tenantRepository->find($tenantId);
 
-            $this->tenantHasSettingRepository->store($request, $tenantId);
+            // Store settings
+            $this->tenantHasSettingRepository->store($request->toArray(), $tenantId);
+
+            // Create connection with tenant database
+            $this->databaseHelper->connectWithTenantDatabase($tenantId);
+
+            // Store settings in admin tenant setting
+            foreach ($request->settings as $value) {
+                if ($value['value'] == 1) {
+                    DB::table('tenant_setting')->updateOrInsert(['setting_id' => $value['tenant_setting_id']]);
+                } else {
+                    DB::table('tenant_setting')->where(['setting_id' => $value['tenant_setting_id']])->delete();
+                }
+            }
+            
+            // Disconnect tenant database and reconnect with default database
+            DB::disconnect('tenant');
+            DB::reconnect('mysql');
+            DB::setDefaultConnection('mysql');
             
             // Set response data
             $apiStatus = Response::HTTP_OK;
-            $apiMessage =  trans('messages.success.MESSAGE_TENANT_SETTINGS_CREATED');
+            $apiMessage =  trans('messages.success.MESSAGE_TENANT_SETTINGS_UPDATED');
             
             return $this->responseHelper->success($apiStatus, $apiMessage);
         } catch (PDOException $e) {

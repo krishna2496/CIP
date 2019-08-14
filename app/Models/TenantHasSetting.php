@@ -89,10 +89,15 @@ class TenantHasSetting extends Model
      *
      * @param  int  $tenantId
      * @param  int  $tenantSettingId
+     * @param  int  $value
      * @return bool
      */
-    public function storeSettings(int $tenantId, int $tenantSettingId): bool
+    public function storeSettings(int $tenantId, int $tenantSettingId, int $value): bool
     {
-        return static::firstOrNew(array('tenant_id' => $tenantId, 'tenant_setting_id' => $tenantSettingId))->save();
+        if ($value == 1) {
+            return static::firstOrNew(array('tenant_id' => $tenantId, 'tenant_setting_id' => $tenantSettingId))->save();
+        } else {
+            return static::where(['tenant_id' => $tenantId, 'tenant_setting_id' => $tenantSettingId])->delete();
+        }
     }
 }
