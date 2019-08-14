@@ -81,7 +81,7 @@ class UserCustomFieldController extends Controller
             // Server side validataions
             $validator = Validator::make(
                 $request->toArray(),
-                ["name" => "required",
+                ["name" => "required|unique:user_custom_field,name,NULL,field_id,deleted_at,NULL",
                 "type" => ['required',
                     Rule::in(config('constants.custom_field_types'))],
                 "is_mandatory" => "required|boolean",
@@ -141,7 +141,11 @@ class UserCustomFieldController extends Controller
             // Server side validataions
             $validator = Validator::make(
                 $request->toArray(),
-                ["name" => "sometimes|required",
+                ["name" => [
+                    "sometimes",
+                    "required",
+                    "max:255",
+                    Rule::unique('user_custom_field')->ignore($id, 'field_id,deleted_at,NULL')],
                 "is_mandatory" => "sometimes|required|boolean",
                 "type" => [
                     "sometimes",

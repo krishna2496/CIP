@@ -24,7 +24,7 @@ return [
         'MESSAGE_PASSWORD_CHANGE_SUCCESS' => 'Votre mot de passe a été changé avec succès.',
         'MESSAGE_CUSTOM_FIELD_ADDED' => 'Champ personnalisé d\'utilisateur ajouté avec succès',
         'MESSAGE_CUSTOM_FIELD_UPDATED' => 'Le champ personnalisé de l\'utilisateur a été mis à jour avec succès',
-		'MESSAGE_CUSTOM_FIELD_FOUND' => 'Champ personnalisé de l\'utilisateur trouvé avec succès',
+        'MESSAGE_CUSTOM_FIELD_FOUND' => 'Champ personnalisé de l\'utilisateur trouvé avec succès',
         'MESSAGE_CUSTOM_FIELD_DELETED' => 'Le champ personnalisé de l\'utilisateur a été supprimé avec succès',
         'MESSAGE_APPLICATION_LISTING' => 'Liste des applications de mission avec succès',
         'MESSAGE_APPLICATION_UPDATED' => 'Application de mission mise à jour avec succès',
@@ -56,7 +56,7 @@ return [
         'MESSAGE_SKILL_FOUND' => 'Compétence trouvée avec succès',
         'MESSAGE_THEME_FOUND' => 'Thème de la mission trouvé avec succès',
         'MESSAGE_TENANT_OPTION_CREATED' => 'Option de locataire créée avec succès',
-        'MESSAGE_TENANT_OPTION_UPDATED' => 'Option de locataire mise à jour avec succès',
+        'MESSAGE_TENANT_OPTION_UPDATED' => 'Option locataire mise à jour avec succès',
         'MESSAGE_TENANT_OPTIONS_LIST' => 'Liste des options locataires avec succès',
         'MESSAGE_MISSION_RATING_LISTING' => 'Obtenir une note de mission avec succès',
         'MESSAGE_TENANT_OPTION_FOUND' => 'Option locataire trouvée',
@@ -107,7 +107,7 @@ return [
         'ERROR_FOOTER_PAGE_NOT_FOUND' => 'Page de pied de page introuvable dans le système',
         'ERROR_DATABASE_OPERATIONAL' => 'Erreur opérationnelle de la base de données',
         'ERROR_NO_DATA_FOUND' => 'Aucune donnée disponible',
-        'ERROR_NO_DATA_FOUND_FOR_SLUG' => 'Aucune donnée trouvée pour slug',        
+        'ERROR_NO_DATA_FOUND_FOR_SLUG' => 'Aucune donnée trouvée pour slug',
         'ERROR_POLICY_PAGE_NOT_FOUND' => 'Page de stratégie introuvable dans le système',
 
         // Custom error code for Mission Module - 400000 - 409999
