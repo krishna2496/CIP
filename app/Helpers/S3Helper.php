@@ -207,6 +207,7 @@ class S3Helper
             // Get file type from base64
             $fileOpen = finfo_open();
             $mime_type = finfo_buffer($fileOpen, base64_decode($avatar), FILEINFO_MIME_TYPE);
+
             $type = explode('/', $mime_type);
             
             $imagePath = $tenantName.'/profile_images/'.$userId.'_'.time().'.'.$type[1];
