@@ -101,6 +101,8 @@ return [
     |
     */
 
-    'attributes' => [],
+    'attributes' => [
+        'settings.*.tenant_setting_id' => 'tenant setting id',
+    ],
 
 ];
