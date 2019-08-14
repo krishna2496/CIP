@@ -160,6 +160,11 @@ $router->group(['middleware' => 'localization'], function ($router) {
     /* Fetch Language json file */
     $router->get('language/{lang}', ['as' => 'language',
     'uses' => 'App\Language\LanguageController@fetchLangaugeFile']);
+    
+    /* Upload profile image */
+    $router->patch('/app/user/upload-profile-image', ['as' => 'upload.profile.image',
+    'middleware' => 'localization|tenant.connection|jwt.auth',
+    'uses' => 'App\User\UserController@uploadProfileImage']);
 
 /*
 |

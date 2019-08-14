@@ -188,4 +188,36 @@ class S3Helper
         }
         return $scssFilesArray;
     }
+
+    /**
+     * Upload profile image on AWS s3 bucket
+     *
+     * @param string $avatar
+     * @param string $tenantName
+     * @param int $userId
+     *
+     * @return string
+     */
+    public function uploadProfileImageOnS3Bucket(string $avatar, string $tenantName, int $userId): string
+    {
+        try {
+            if (!file_exists($tenantName.'/profile_images')) {
+                mkdir($tenantName.'/profile_images', 0777, true);
+            }
+            // Get file type from base64
+            $fileOpen = finfo_open();
+            $mime_type = finfo_buffer($fileOpen, base64_decode($avatar), FILEINFO_MIME_TYPE);
+            $type = explode('/', $mime_type);
+            
+            $imagePath = $tenantName.'/profile_images/'.$userId.'_'.time().'.'.$type[1];
+            Storage::disk('s3')->put($imagePath, base64_decode($avatar), 'public');
+            $filePath =  Storage::disk('s3')->url($imagePath);
+            return $filePath;
+        } catch (S3Exception $e) {
+            return $this->s3Exception(
+                config('constants.error_codes.ERROR_FAILD_TO_UPLOAD_COMPILE_FILE_ON_S3'),
+                trans('messages.custom_error_message.ERROR_FAILD_TO_UPLOAD_COMPILE_FILE_ON_S3')
+            );
+        }
+    }
 }
