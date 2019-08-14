@@ -24,6 +24,9 @@ import storeMissionComments from "./Mission/StoreMissionComments";
 import policy from "./Policy";
 import policyDetail from "./PolicyDetail";
 import getUserDetail from "./User/GetUserDetail";
+import saveProfile from "./User/SaveProfile";
+import changeUserPassword from "./User/ChangePassword";
+import changeProfilePicture from "./User/ChangeProfilePicture";
 
 export {
     loadLocaleMessages,
@@ -51,5 +54,8 @@ export {
     storeMissionComments,
     policy,
     policyDetail,
-    getUserDetail
+    getUserDetail,
+    saveProfile,
+    changeUserPassword,
+    changeProfilePicture
 }

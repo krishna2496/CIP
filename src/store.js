@@ -148,7 +148,11 @@ export default new Vuex.Store({
         setlanguageLabel(state,data){
             localStorage.setItem("languageLabel",JSON.stringify(data));
             state.languageLabel = JSON.stringify(data);
-        }
+        },
+        changeToken(state,data) {
+            localStorage.setItem('token', data)
+            state.token = data;
+        } 
     },
     getters: {},
     actions: {}

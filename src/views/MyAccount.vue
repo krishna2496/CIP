@@ -293,6 +293,7 @@
                     <CustomField
                     :optionList="customFieldList"
                     :optionListValue="customFieldValue"
+                    @detectChangeInCustomFeild = "detectChangeInCustomFeild"
                     />
                 </b-col>
               
@@ -322,8 +323,10 @@
           hide-footer
         >
           <template slot="modal-title">{{langauageData.label.change_password}}</template>
+          <b-alert show :variant="classVariant" dismissible v-model="showErrorDiv">
+                    {{ message }}
+                </b-alert>
           <form action class="form-wrap">
-
             <b-form-group>
               <b-form-input id type="password" 
                v-model="resetPassword.oldPassword" 
@@ -332,7 +335,7 @@
               :placeholder="langauageData.placeholder.old_password"
               ></b-form-input>
               <div v-if="submitted && !$v.resetPassword.oldPassword.required" class="invalid-feedback">
-                    {{ langauageData.errors.password_required }}</div>
+                    {{ langauageData.errors.field_required }}</div>
             </b-form-group>
 
             <b-form-group>
@@ -343,7 +346,7 @@
                :placeholder="langauageData.placeholder.new_password"
               ></b-form-input>
                 <div v-if="submitted && !$v.resetPassword.newPassword.required" class="invalid-feedback">
-                    {{ langauageData.errors.password_required }}</div>
+                    {{ langauageData.errors.field_required }}</div>
                 <div v-if="submitted && !$v.resetPassword.newPassword.minLength" class="invalid-feedback">
                 {{ langauageData.errors.invalid_password }}</div>
             </b-form-group>
@@ -355,12 +358,11 @@
                 @keydown.space.prevent
                 :placeholder="langauageData.placeholder.confirm_password"
                 type="password"> 
+              </b-form-input>
                 <div v-if="submitted && !$v.resetPassword.confirmPassword.required" class="invalid-feedback">
-                    {{ langauageData.errors.password_required }}</div>
+                    {{ langauageData.errors.field_required }}</div>
                 <div v-if="submitted && !$v.resetPassword.confirmPassword.sameAsPassword" class="invalid-feedback">
                     {{ langauageData.errors.identical_password }}</div>
-              </b-form-input>
-
             </b-form-group>
           </form>
           <div class="btn-wrap">
@@ -371,7 +373,7 @@
             >{{langauageData.label.cancel}}</b-button>
             <b-button
               class="btn-bordersecondary"
-              @click="save()"
+              @click="changePassword()"
              
             >{{langauageData.label.change_password}}</b-button>
           </div>
@@ -391,7 +393,7 @@ import MultiSelect from "../components/MultiSelect";
 import CustomField from "../components/CustomField";
 import store from "../store";
 import PictureInput from 'vue-picture-input'
-import {getUserDetail} from "../services/service";
+import {getUserDetail,saveProfile,changeUserPassword,changeProfilePicture} from "../services/service";
 import { required,maxLength, email,sameAs, minLength, between,helpers} from 'vuelidate/lib/validators';
 import constants from '../constant';
 
@@ -414,7 +416,7 @@ export default {
             countryList: [],
             countryDefault: '',
             availabilityList: [
-            "1 :test"
+                "1 :test"
             ],
             availabilityDefault: "",
             file: "null",
@@ -434,6 +436,9 @@ export default {
                 newPassword : "",
                 confirmPassword : ""
             },
+            showErrorDiv : false,
+            message : null,
+            classVariant :"success",
             profile : {
                 firstName : "",
                 lastName : "",
@@ -455,15 +460,34 @@ export default {
             language : '',
             time : '',
             customFieldList : [],
-            customFieldValue :[]
+            customFieldValue :[],
+            returnCustomFeildData : [],
+            saveProfileData :{
+                first_name: "",
+                last_name: "",
+                email: "",
+                avatar:"" ,
+                timezone_id: "",
+                language_id : "",
+                availability_id : "",
+                why_i_volunteer : "",
+                employee_id : "",
+                department : "",
+                manager_name : "",
+                city_id : "",
+                country_id : "",
+                profile_text : "",
+                linked_in_url : "",
+                custom_fields: []
+            }
         };
     },
     validations: {
         resetPassword : {
             oldPassword : {required},
             newPassword : {required,minLength: minLength(constants.PASSWORD_MIN_LENGTH)},
-            confirmPassword : {required},
-                        sameAsPassword: sameAs('password')
+            confirmPassword : {required,
+                        sameAsPassword: sameAs('newPassword')}
         },
         profile : {
             firstName : {required},
@@ -567,14 +591,14 @@ export default {
                     this.profile.department = this.userData.department,
                     this.profile.availability = this.userData.availability_id,
                     this.profile.userSkills = this.userData.user_skills
-                    // this.profile.country =  this.userData.country_id,
+                    this.profile.country =  this.userData.country_id,
                     this.profile.city= this.userData.city_id,
                     this.profile.availability =  this.userData.availability_id,
                     this.profile.language= this.userData.language_id,
                     this.profile.time= this.userData.timezone_id
 
                 if( this.userData.country.name != '' &&  this.userData.country.name != null) {
-                    // this.countryDefault = this.userData.country.name
+                    this.countryDefault = this.userData.country.name
                 }
                 if( this.userData.city.name != '' &&  this.userData.city.name != null) {
                     this.cityDefault = this.userData.city.name
@@ -583,7 +607,7 @@ export default {
                     this.availabilityDefault = this.userData.availability.type
                 }
                 if( this.userData.language_id != '' &&  this.userData.language_id != null) {
-                    this.languageDefault = "2"
+                    this.languageDefault = this.userData.language_code
                 }
                 if( this.userData.timezone.timezone != '' &&  this.userData.timezone.timezone != null) {
                     this.timeDefault = this.userData.timezone.timezone
@@ -593,16 +617,50 @@ export default {
                 this.isShownComponent = true;
             })
         },
+        detectChangeInCustomFeild (data) {
+            this.returnCustomFeildData = data;
+        },
         //submit form
         handleSubmit(e) {
+            var _this = this;
             this.submitted = true;
             this.$v.$touch();
             // stop here if form is invalid
-            if (this.$v.$invalid) {
+         
+            if (this.$v.profile.$invalid) {
                 return;
             }
-            // // Call to login service with params email address and password
-            // login(this.login).then( response => {
+
+            let returnData = {};
+                _this.saveProfileData.first_name  = _this.profile.firstName,
+                _this.saveProfileData.last_name = _this.profile.lastName,
+                _this.saveProfileData.title = _this.profile.title,
+                _this.saveProfileData.timezone_id = _this.profile.time,
+                _this.saveProfileData.language_id  =_this.profile.language,
+                _this.saveProfileData.availability_id  = _this.profile.availability,
+                _this.saveProfileData.why_i_volunteer  = _this.profile.whyiVolunteer,
+                _this.saveProfileData.employee_id  =_this.profile.employeeId,
+                _this.saveProfileData.department  = _this.profile.department,
+                _this.saveProfileData.manager_name  = _this.profile.managerName,
+                _this.saveProfileData.city_id  = _this.profile.city,
+                _this.saveProfileData.country_id  = _this.profile.country,
+                _this.saveProfileData.profile_text  = _this.profile.profileText,
+                _this.saveProfileData.linked_in_url  = _this.profile.linkedInUrl,
+                _this.saveProfileData.custom_fields = []
+        
+                Object.keys(this.returnCustomFeildData).map(function(key) {
+                    
+                        _this.saveProfileData.custom_fields.push({
+                            field_id: key,
+                            value : _this.returnCustomFeildData[key]
+                        });
+                    });
+            
+             console.log(this.saveProfileData);
+            
+
+            // Call to save profile service 
+            // saveProfile(this.saveProfileData).then( response => {
             //     if (response.error === true) { 
             //         this.message = null;
             //         this.showDismissibleAlert = true
@@ -616,7 +674,48 @@ export default {
             //         });
             //     }
             // });
-        },    
+        },   
+        changePassword() {
+            var _this = this;
+            this.submitted = true;
+            this.$v.$touch();
+            // stop here if form is invalid 
+            if (this.$v.resetPassword.$invalid) {
+                return;
+            }
+            let resetPasswordData = {}
+        
+            resetPasswordData.old_password = this.resetPassword.oldPassword
+            resetPasswordData.password = this.resetPassword.newPassword
+            resetPasswordData.confirm_password = this.resetPassword.confirmPassword
+            // Call to save profile service 
+            changeUserPassword(resetPasswordData).then( response => {
+                console.log(response);
+                if (response.error === true) { 
+                    console.log("in");
+                    this.message = null;
+                    this.showErrorDiv = true
+                    this.classVariant = 'danger'
+                    //set error msg
+                    this.message = response.message
+                } else {
+                    this.message = null;
+                    this.showErrorDiv = true
+                    this.classVariant = 'success'
+                    //set success msg
+                    this.message = response.message 
+                    //Reset to blank
+                    this.submitted = false;
+                    this.resetPassword.oldPassword = ''
+                    this.resetPassword.newPassword = ''
+                    this.resetPassword.confirmPassword = ''
+                    this.$v.$reset(); 
+                    alert(response.data.token);
+                    store.commit("changeToken",response.data.token)
+                }
+            });
+            // changePassword
+        }
     },
     created() {
         var _this =this

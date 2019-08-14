@@ -970,3 +970,21 @@ label {
     }
   }
 }
+
+.custom-field{
+  .checkbox-select{
+    position: relative;
+  }
+  .form-group{
+    .is-invalid{
+      .custom-control{
+        .custom-control-label{
+            color:$error;
+            &:before, &:after{
+              border-color:$error!important;
+            }
+        }
+      }
+    }
+  }
+}
