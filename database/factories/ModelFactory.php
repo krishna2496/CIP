@@ -48,7 +48,7 @@ $factory->define(App\Models\UserCustomField::class, function (Faker\Generator $f
         'translations' => [
             'lang' => "en",
             'name' => str_random(10),
-            'values' => "[".rand(1, 5).",".rand(5, 10)."]"
+            'values' => "[".'1:'.rand(1, 5).",".'2:'.rand(5, 10)."]"
         ]
     ];
 });

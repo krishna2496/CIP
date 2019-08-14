@@ -185,8 +185,9 @@ class UserController extends Controller
 
             // Update user
             $user = $this->userRepository->update($request->toArray(), $id);
-            $userCustomFields = $this->userRepository->updateCustomFields($request->custom_fields, $id);
-
+            if (!empty($request->custom_fields) && isset($request->custom_fields)) {
+                $userCustomFields = $this->userRepository->updateCustomFields($request->custom_fields, $id);
+            }
 
             // Set response data
             $apiData = ['user_id' => $user->user_id];
@@ -207,6 +208,7 @@ class UserController extends Controller
                 )
             );
         } catch (\Exception $e) {
+            dd($e);
             return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
