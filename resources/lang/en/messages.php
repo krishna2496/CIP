@@ -180,6 +180,6 @@ return [
         'ERROR_LANGUAGE_NOT_FOUND' => 'Language not found',
         'ERROR_FAILED_TO_RESET_ASSET_IMAGE' => 'Failed to reset asset images',
         'ERROR_COMMENT_NOT_FOUND' => 'Requested comment does not exist',
-        'ERROR_FAILD_TO_UPLOAD_PROFILE_IMAGE_ON_S3' => 'Failed to upload files on S3',
+        'ERROR_FAILD_TO_UPLOAD_PROFILE_IMAGE_ON_S3' => 'Failed to upload image on S3',
     ],
 ];
