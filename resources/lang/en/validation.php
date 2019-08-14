@@ -94,6 +94,9 @@ return [
 		'media_videos.*.media_path' => [
             'valid_video_url' => 'Please enter valid youtube url',
         ],
+		'avatar' => [
+            'valid_profile_image' => 'Invalid image file or image type is not allowed. Allowed types: png, jpeg, jpg',
+        ],
     ],
 
     /*

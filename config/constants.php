@@ -88,6 +88,15 @@ return [
     'image_types' => [
         'PNG' => 'png'
     ],
+	
+	/*
+     * User profile image allowed MIME types
+     */
+    'profile_image_types' => [
+        'image/png',
+        'image/jpeg',
+        'image/jpg'
+    ],
 
     /*
      * Document types

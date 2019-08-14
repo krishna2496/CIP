@@ -201,9 +201,6 @@ class S3Helper
     public function uploadProfileImageOnS3Bucket(string $avatar, string $tenantName, int $userId): string
     {
         try {
-            if (!file_exists($tenantName.'/profile_images')) {
-                mkdir($tenantName.'/profile_images', 0777, true);
-            }
             // Get file type from base64
             $fileOpen = finfo_open();
             $mime_type = finfo_buffer($fileOpen, base64_decode($avatar), FILEINFO_MIME_TYPE);

@@ -207,7 +207,7 @@ class UserController extends Controller
     {
         try {
             $validator = Validator::make($request->toArray(), [
-                'avatar' => 'required'
+                'avatar' => 'required|valid_profile_image'
             ]);
 
             // If request parameter have any error
