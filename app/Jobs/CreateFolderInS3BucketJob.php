@@ -6,9 +6,12 @@ use Illuminate\Support\Facades\Storage;
 use App\Models\Tenant;
 use App\Helpers\DatabaseHelper;
 use DB;
+use App\Traits\SendEmailTrait;
 
 class CreateFolderInS3BucketJob extends Job
 {
+    use SendEmailTrait;
+
     /**
      * @var App\Models\Tenant
      */
@@ -109,25 +112,68 @@ class CreateFolderInS3BucketJob extends Job
                             DB::setDefaultConnection('mysql');
                         }
                     }
+                    // Send success mail to super admin
+                    $message = "<p> Tenant : " .$this->tenant->name. "<br>";
+                    $message .= "Background Job Name : Create Folder On S3 Bucket Job <br>";
+                    $message .= "Background Job Status : Success <br>";
+
+                    $this->sendEmailNotification($message);
+
+                    Log::info($message);
                 }
             } catch (\Exception $e) {
-                Log::info("Tenant" .$this->tenant->name."'s : Create folder on S3 bucket job have some error.
-                So, S3 folder, database and tenant deleted.");
+                $message = "<p> Tenant : " .$this->tenant->name. "<br>";
+                $message .= "Background Job Name : Create Folder On S3 Bucket Job <br>";
+                $message .= "Background Job Status : Failed <br>";
+                $message .= "Message : S3 folder has been deleted. </p>";
+    
+                $this->sendEmailNotification($message, false);
+    
+                Log::info($message);
 
                 // Delete directory from s3
                 Storage::disk('s3')->deleteDirectory($this->tenant->name);
 
                 // Delete tenant database
-                DB::statement("DROP DATABASE IF EXISTS `ci_tenant_{$this->tenant->tenant_id}`");
+                //DB::statement("DROP DATABASE IF EXISTS `ci_tenant_{$this->tenant->tenant_id}`");
 
                 // Delete created tenant
-                $this->tenant->delete();
+                // $this->tenant->delete();
             }
         } else {
-            Log::info("Tenant" .$this->tenant->name."'s : Create folder on S3 bucket job have some error.
-            So, job deleted from database");
+            $message = "<p> Tenant : " .$this->tenant->name. "<br>";
+            $message .= "Background Job Name : Create Folder On S3 Bucket Job <br>";
+            $message .= "Background Job Status : Failed <br>";
+            $message .= "Message : Job has been deleted from database. </p>";
+
+            $this->sendEmailNotification($message, false);
+
+            Log::info($message);
+
             // Delete job from database
             $this->delete();
         }
+    }
+
+    /**
+     * Send email notification to admin
+     * @param string $message
+     * @param bool $isFail
+     * @return void
+     */
+    public function sendEmailNotification(string $message, bool $isFail = false)
+    {
+        $data = array(
+            'message'=> $message,
+            'tenant_name' => $this->tenant->name
+        );
+        
+        $params['to'] = config('constants.ADMIN_EMAIL_ADDRESS'); //required
+        $params['template'] = config('constants.EMAIL_TEMPLATE_FOLDER').'.'.config('constants.EMAIL_TEMPLATE_USER_INVITE'); //path to the email template
+        $params['subject'] = ($isFail) ? 'Error in tenant creation : '. $this->tenant->name :
+        'Success create folder on S3 bucket job : '.$this->tenant->name; //optional
+        $params['data'] = $data;
+
+        $this->sendEmail($params);
     }
 }

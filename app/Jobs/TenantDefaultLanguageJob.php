@@ -3,9 +3,11 @@ namespace App\Jobs;
 
 use App\Models\Tenant;
 use Illuminate\Support\Facades\Log;
+use App\Traits\SendEmailTrait;
 
 class TenantDefaultLanguageJob extends Job
 {
+    use SendEmailTrait;
     /**
      * @var App\Models\Tenant
      */
@@ -41,18 +43,61 @@ class TenantDefaultLanguageJob extends Job
                 foreach ($defaultData as $key => $data) {
                     $this->tenant->tenantLanguages()->create($data);
                 }
+                // Send success mail to super admin
+                $message = "<p> Tenant : " .$this->tenant->name. "<br>";
+                $message .= "Background Job Name : Tenant Default Language Job <br>";
+                $message .= "Background Job Status : Success <br>";
+
+                $this->sendEmailNotification($message);
+
+                Log::info($message);
             } catch (\Exception $e) {
-                Log::info($this->tenant->name." deleted. Because of default language job have some issue");
+                $message = "<p> Tenant : " .$this->tenant->name. '<br>';
+                $message .= "Background Job Name : Tenant Default Language Job <br>";
+                $message .= "Background Job Status : Failed <br>";
+                $message .= "Message : Tenant has been delete.</p>";
+
+                $this->sendEmailNotification($message, false);
+
+                Log::info($message);
 
                 // Delete tenant from database
                 $this->tenant->delete();
             }
         } else {
-            Log::info("Tenant" .$this->tenant->name."'s : 
-            default language job have some issue. So, job is deleted from database");
+            $message = "<p> Tenant : " .$this->tenant->name. "<br>";
+            $message .= "Background Job Name : Tenant Default Language <br>";
+            $message .= "Background Job Status : Failed <br>";
+            $message .= "Message : Background job has been deleted from database.</p>";
+
+            $this->sendEmailNotification($message, false);
+
+            Log::info($message);
 
             // Delete job from database
             $this->delete();
         }
+    }
+
+    /**
+     * Send email notification to admin
+     * @param string $message
+     * @param bool $isFail
+     * @return void
+     */
+    public function sendEmailNotification(string $message, bool $isFail = false)
+    {
+        $data = array(
+            'message'=> $message,
+            'tenant_name' => $this->tenant->name
+        );
+        
+        $params['to'] = config('constants.ADMIN_EMAIL_ADDRESS'); //required
+        $params['template'] = config('constants.EMAIL_TEMPLATE_FOLDER').'.'.config('constants.EMAIL_TEMPLATE_USER_INVITE'); //path to the email template
+        $params['subject'] = ($isFail) ? 'Error in tenant creation : '. $this->tenant->name :
+        'Success tenant default language job : '.$this->tenant->name; //optional
+        $params['data'] = $data;
+
+        $this->sendEmail($params);
     }
 }

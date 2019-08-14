@@ -33,6 +33,9 @@ return [
         'ERROR_OCCURRED' => 'An error has occured',
         'ERROR_BOOSTRAP_SCSS_NOT_FOUND' => 'Boostrap SCSS file not found while compiling SCSS files',
         'ERROR_INVALID_JSON' => 'Format Json invalid',
+        'ERROR_WHILE_STORE_COMPILED_CSS_FILE_TO_LOCAL' => 'Error while storing compiled CSS to local',
+        'ERROR_FAILD_TO_UPLOAD_COMPILE_FILE_ON_S3' => 'Error while uploading compiled CSS to S3',
+        'ERROR_WHILE_COMPILING_SCSS_FILES' => 'Error while compiling SCSS files',
     ]
     
 ];
