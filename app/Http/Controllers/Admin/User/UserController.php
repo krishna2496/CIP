@@ -16,6 +16,7 @@ use App\User;
 use InvalidArgumentException;
 use PDOException;
 use Illuminate\Validation\Rule;
+use App\Helpers\LanguageHelper;
 
 class UserController extends Controller
 {
@@ -31,16 +32,25 @@ class UserController extends Controller
     private $responseHelper;
     
     /**
+     * @var App\Helpers\LanguageHelper
+     */
+    private $languageHelper;
+    
+    /**
      * Create a new controller instance.
      *
      * @param App\Repositories\User\UserRepository $userRepository
      * @param Illuminate\Http\ResponseHelper $responseHelper
      * @return void
      */
-    public function __construct(UserRepository $userRepository, ResponseHelper $responseHelper)
-    {
+    public function __construct(
+        UserRepository $userRepository,
+        ResponseHelper $responseHelper,
+        LanguageHelper $languageHelper
+    ) {
         $this->userRepository = $userRepository;
         $this->responseHelper = $responseHelper;
+        $this->languageHelper = $languageHelper;
     }
     
     /**
@@ -85,6 +95,8 @@ class UserController extends Controller
                 "last_name" => "required|max:16",
                 "email" => "required|email|unique:user,email,NULL,user_id,deleted_at,NULL",
                 "password" => "required|min:8",
+                "availability_id" => "exists:availability,availability_id",
+                "language_id" => "required|int",
                 "city_id" => "required|exists:city,city_id",
                 "country_id" => "required|exists:country,country_id",
                 "profile_text" => "required",
@@ -104,6 +116,19 @@ class UserController extends Controller
                     $validator->errors()->first()
                 );
             }
+            
+            // Check language id
+            if (!$this->languageHelper->validateLanguageId($request)) {
+                return $this->responseHelper->error(
+                    Response::HTTP_UNPROCESSABLE_ENTITY,
+                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                    config('constants.error_codes.ERROR_USER_INVALID_DATA'),
+                    trans(
+                        'messages.custom_error_message.ERROR_USER_INVALID_LANGUAGE'
+                    )
+                );
+            }
+            
             
             // Create new user
             $user = $this->userRepository->store($request->all());
@@ -195,6 +220,20 @@ class UserController extends Controller
                     config('constants.error_codes.ERROR_USER_INVALID_DATA'),
                     $validator->errors()->first()
                 );
+            }
+            
+            // Check language id
+            if (isset($request->language_id)) {
+                if (!$this->languageHelper->validateLanguageId($request)) {
+                    return $this->responseHelper->error(
+                        Response::HTTP_UNPROCESSABLE_ENTITY,
+                        Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                        config('constants.error_codes.ERROR_USER_INVALID_DATA'),
+                        trans(
+                            'messages.custom_error_message.ERROR_USER_INVALID_LANGUAGE'
+                        )
+                    );
+                }
             }
 
             // Update user

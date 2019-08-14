@@ -85,8 +85,17 @@ return [
     */
 
     'custom' => [
-        'attribute-name' => [
-            'rule-name' => 'custom-message',
+        'media_images.*.media_path' => [
+            'valid_media_path' => 'Please enter valid media image',
+        ],
+        'documents.*.document_path' => [
+            'valid_document_path' => 'Please enter valid document file',
+        ],
+		'media_videos.*.media_path' => [
+            'valid_video_url' => 'Please enter valid youtube url',
+        ],
+		'avatar' => [
+            'valid_profile_image' => 'Invalid image file or image type is not allowed. Allowed types: png, jpeg, jpg',
         ],
     ],
 
@@ -116,13 +125,21 @@ return [
         'media_videos.*.media_path' => 'media path',
         'documents.*.document_name' => 'document name',
         'documents.*.document_type' => 'document type',
-        'documents.*.document_path' => 'document path',
-        'skills.*.skill_id' => 'skill id',
-        'location.city' => 'city',
-        'location.country' => 'country',
-        'password_confirmation' => 'confirm password',
-        'translations.*.lang' => 'language code',
-        'is_mandatory' => 'mandatory',
-        'slider_detail.translations.*.lang' => 'language code'
-    ],
+        'documents.*.document_path' => 'document path',        
+        'slider_detail.translations.*.lang' => 'language code',
+        'skills.*.skill_id' => 'skill id',  
+        'location.city' => 'city', 
+        'location.country' => 'country',   
+        'password_confirmation' => 'confirm password',         
+        'translations.*.lang' => 'language code',         
+        'is_mandatory' => 'mandatory',       
+		'page_details.translations.*.sections.*.title' => 'title',
+		'page_details.translations.*.sections.*.description' => 'description',
+		'location.city_id' => 'city',
+		'location.country_code' => 'country code',
+		'organisation.organisation_id' => 'organisation id',
+		'mission_detail.*.lang' => 'language code',
+		'to_user_id' => 'user id'
+        ],
+
 ];

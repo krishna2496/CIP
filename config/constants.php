@@ -17,6 +17,7 @@ return [
     'FRONT_DATE_FORMAT' => 'd/m/Y',
     'RELATED_MISSION_LIMIT' => '3',
     'MISSION_MEDIA_LIMIT' => '20',
+    'SKILL_LIMIT' => '15',
 
     'EMAIL_TEMPLATE_FOLDER' => 'emails',
     'EMAIL_TEMPLATE_USER_INVITE' => 'invite',
@@ -85,9 +86,16 @@ return [
      * Image types
      */
     'image_types' => [
-        'JPG' => 'jpg',
-        'JPEG' => 'jpeg',
         'PNG' => 'png'
+    ],
+
+    /*
+     * User profile image allowed MIME types
+     */
+    'profile_image_types' => [
+        'image/png',
+        'image/jpeg',
+        'image/jpg'
     ],
 
     /*
@@ -203,6 +211,10 @@ return [
         'ERROR_MISSION_APPLICATION_NOT_FOUND' => '400024',
         'ERROR_MISSION_RATING_INVALID_DATA' => '400025',
         'ERROR_MISSION_COMMENT_INVALID_DATA' => '400026',
+        'ERROR_INVALID_MISSION_MEDIA_DATA' => '400027',
+        'ERROR_INVALID_MISSION_DOCUMENT_DATA' => '400028',
+        'ERROR_COMMENT_NOT_FOUND' => '400029',
+        'ERROR_SKILL_LIMIT' => '400030',
                 
         'ERROR_OCCURRED' => '999999',
         'ERROR_INVALID_JSON' => '900000',
@@ -229,9 +241,11 @@ return [
         'ERROR_TENANT_OPTION_NOT_FOUND' => '800019',
         'ERROR_FAILED_TO_RESET_ASSET_IMAGE' => '800020',
         'ERROR_COUNTRY_NOT_FOUND' => '800021',
+        'ERROR_FAILD_TO_UPLOAD_PROFILE_IMAGE_ON_S3' => '800022',
         
         'ERROR_POLICY_PAGE_NOT_FOUND' => '300010',
-        'ERROR_POLICY_PAGE_REQUIRED_FIELDS_EMPTY' => '300011'
+        'ERROR_POLICY_PAGE_REQUIRED_FIELDS_EMPTY' => '300011',
+        
     ]
     
 ];

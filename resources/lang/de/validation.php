@@ -85,8 +85,11 @@ return [
     */
 
     'custom' => [
-        'attribute-name' => [
-            'rule-name' => 'custom-message',
+        'media_images.*.media_path' => [
+            'valid_media_path' => 'Please enter valid media file path',
+        ],
+        'documents.*.document_path' => [
+            'valid_document_path' => 'Please enter valid document file path',
         ],
     ],
 

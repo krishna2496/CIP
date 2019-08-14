@@ -59,7 +59,7 @@ class UserSkill extends Model
      */
     public function deleteUserSkill(int $userId, int $skillId): bool
     {
-        return static::where(['user_id' => $userId, 'skill_id' => $skillId])->delete();
+        return static::where(['user_id' => $userId, 'skill_id' => $skillId])->forceDelete();
     }
 
     /**
@@ -81,5 +81,16 @@ class UserSkill extends Model
     public function find(int $userId): Skill
     {
         return static::with('skill')->find($userId);
+    }
+
+    /**
+     * Delete user skills
+     *
+     * @param int $userId
+     * @return bool
+     */
+    public function deleteUserSkills(int $userId): bool
+    {
+        return static::where(['user_id' => $userId])->forceDelete();
     }
 }

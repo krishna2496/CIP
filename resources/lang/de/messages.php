@@ -58,7 +58,7 @@ return [
         'MESSAGE_TENANT_OPTION_UPDATED' => 'DE: Tenant option update successfully',
         'MESSAGE_TENANT_OPTIONS_LIST' => 'DE: Tenant options listed successfully',
         'MESSAGE_MISSION_RATING_LISTING' => 'DE: Get mission rating successfully',
-        'MESSAGE_TENANT_OPTION_FOUND' => 'DE: Tenant option found', 
+        'MESSAGE_TENANT_OPTION_FOUND' => 'DE: Tenant option found',
         'MESSAGE_INVITED_FOR_MISSION' => 'DE: User invited to mission successfully',
         'MESSAGE_APPLICATION_CREATED' => 'DE: Applied for a mission successfully',
         'MESSAGE_RATING_ADDED' => 'DE: Mission rating added successfully',
@@ -69,9 +69,9 @@ return [
         'MESSAGE_MISSION_COMMENT_LISTING' => 'DE: Get mission comments successfully',
         'MESSAGE_NO_RELATED_MISSION_FOUND' => 'DE: Related mission not found',
         'MESSAGE_NO_MISSION_MEDIA_FOUND' => 'DE: Mission media not found',
-        'MESSAGE_NO_MISSION_COMMENT_FOUND' => 'DE: Mission comments not found',  
-        'MESSAGE_COMMENT_ADDED' => 'DE: Mission comment added successfully',
-        'MESSAGE_NO_CITY_FOUND' => 'DE: City not found', 
+        'MESSAGE_NO_MISSION_COMMENT_FOUND' => 'DE: Mission comments not found',
+        'MESSAGE_COMMENT_ADDED' => 'DE: Thanks for your comment. Your comment will only be visible after moderation',
+        'MESSAGE_PROFILE_IMAGE_UPLOADED' => 'DE: Profile image uploaded successfully',
     ],
 
         
@@ -119,7 +119,9 @@ return [
         'ERROR_MISSION_APPLICATION_NOT_FOUND' => 'DE: Requested mission application does not exist',
         'ERROR_MISSION_RATING_INVALID_DATA' => 'DE: Mission rating creation failed. Please check input parameters',
         'ERROR_MISSION_COMMENT_INVALID_DATA' => 'DE: Mission comment creation failed. Please check input parameters',
-              
+        'ERROR_INVALID_MISSION_MEDIA_DATA' => 'DE: Invalid mission media data',
+        'ERROR_INVALID_MISSION_DOCUMENT_DATA' => 'DE: Invalid mission document data',
+        
         // Custom error code for Tenant Authorization - 210000 - 219999
         'ERROR_INVALID_API_AND_SECRET_KEY' => 'DE: Invalid API Key or Secret key',
         'ERROR_API_AND_SECRET_KEY_REQUIRED' => 'DE: API key and Secret key are required',
@@ -133,6 +135,7 @@ return [
         'ERROR_TOKEN_EXPIRED' => 'DE: Provided token is expired',
         'ERROR_IN_TOKEN_DECODE' => 'DE: An error while decoding token',
         'ERROR_TOKEN_NOT_PROVIDED' => 'DE: Token not provided',
+        'ERROR_OLD_PASSWORD_NOT_MATCHED' => 'DE: Sorry old password dosen\'t matched',
         
 
         // Custom error code for common exception
@@ -159,5 +162,6 @@ return [
         'ERROR_IMAGE_UPLOAD_INVALID_DATA' => 'DE: Invalid input file',
         'ERROR_TENANT_OPTION_NOT_FOUND' => 'DE: No tenant option found',
         'ERROR_COUNTRY_NOT_FOUND' => 'DE: Requested country does not exist',
+        'ERROR_FAILD_TO_UPLOAD_PROFILE_IMAGE_ON_S3' => 'DE: Failed to upload image on S3',
     ],
 ];

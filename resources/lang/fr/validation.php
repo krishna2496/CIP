@@ -85,8 +85,17 @@ return [
     */
 
     'custom' => [
-        'attribute-name' => [
-            'rule-name' => 'custom-message',
+        'media_images.*.media_path' => [
+            'valid_media_path' => 'Please enter valid media file path',
+        ],
+        'documents.*.document_path' => [
+            'valid_document_path' => 'Please enter valid document file path',
+        ],
+		'media_videos.*.media_path' => [
+            'valid_video_url' => 'Veuillez entrer une URL youtube valide.',
+        ],
+		'avatar' => [
+            'valid_profile_image' => 'Le fichier image ou le type d\'image invalide n\'est pas autorisé. Types autorisés: png, jpeg, jpg',
         ],
     ],
 

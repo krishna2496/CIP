@@ -8,7 +8,6 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Validation\Rule;
 use App\Repositories\Mission\MissionRepository;
-use App\Helpers\Helpers;
 use App\Helpers\ResponseHelper;
 use Validator;
 use DB;
@@ -36,7 +35,7 @@ class MissionController extends Controller
      *
      * @param  App\Repositories\Mission\MissionRepository $missionRepository
      * @param  App\Helpers\ResponseHelper $responseHelper
-     * @return void
+    * @return void
      */
     public function __construct(MissionRepository $missionRepository, ResponseHelper $responseHelper)
     {
@@ -84,29 +83,27 @@ class MissionController extends Controller
         $validator = Validator::make(
             $request->all(),
             [
-                "theme_id" => "required",
+                "theme_id" => "required|exists:mission_theme,mission_theme_id,deleted_at,NULL",
                 "mission_type" => ['required', Rule::in(config('constants.mission_type'))],
                 "location" => "required",
-                "location.city_id" => "required",
-                "location.country_code" => "required",
+                "location.city_id" => "required|required|exists:city,city_id",
+                "location.country_code" => "required|exists:country,ISO",
+                "availability_id" => "required|exists:availability,availability_id",
                 "mission_detail" => "required",
-                "mission_detail.*.lang" => "required",
+                "mission_detail.*.lang" => "required|max:2",
                 "mission_detail.*.title" => "required",
                 "organisation" => "required",
+                "organisation.organisation_id" => "integer",
                 "publication_status" => ['required', Rule::in(config('constants.publication_status'))],
-                "media_images.*.media_name" => "required",
-                "media_images.*.media_type" => ["required", Rule::in(config('constants.image_types'))],
-                "media_images.*.media_path" => "required",
+                "media_images.*.media_path" => "required|valid_media_path",
                 "media_videos.*.media_name" => "required",
-                "media_videos.*.media_path" => "required",
-                "documents.*.document_name" => "required",
-                "documents.*.document_type" => ["required", Rule::in(config('constants.document_types'))],
-                "documents.*.document_path" => "required",
-                "start_date" => "sometimes|required_with:end_date",
-                "end_date" => "sometimes|after:start_date",
-                "total_seats" => "numeric",
-                "goal_objective" => "required_if:mission_type,GOAL",
-                "availability_id" => "required"
+                "media_videos.*.media_path" => "required|valid_video_url",
+                "documents.*.document_path" => "required|valid_document_path",
+                "start_date" => "required_if:mission_type,TIME|required_with:end_date|date",
+                "end_date" => "sometimes|after:start_date|date",
+                "total_seats" => "integer|min:1",
+                "goal_objective" => "required_if:mission_type,GOAL|integer|min:1",
+                "skills.*.skill_id" => "exists:skill,skill_id",
             ]
         );
 
@@ -192,25 +189,22 @@ class MissionController extends Controller
             [
                 "mission_type" => [Rule::in(config('constants.mission_type'))],
                 "location.city_id" => "required_with:location",
-                "location.country_code" => "required_with:location",
-                "mission_detail.*.lang" => "required_with:mission_detail",
+                "location.country_code" => "required_with:location|exists:country,ISO",
+                "mission_detail.*.lang" => "required_with:mission_detail|max:2",
                 "mission_detail.*.title" => "required_with:mission_detail",
                 "publication_status" => [Rule::in(config('constants.publication_status'))],
-                "goal_objective" => "required_if:mission_type,GOAL",
-                "media_images.*.media_name" => "required_with:media_images",
-                "media_images.*.media_type" => ['required_with:media_images',
-                 Rule::in(config('constants.image_types'))],
-                "media_images.*.media_path" => "required_with:media_images",
+                "goal_objective" => "required_if:mission_type,GOAL|integer|min:1",
+                "media_images.*.media_path" => "required_with:media_images|valid_media_path",
                 "media_videos.*.media_name" => "required_with:media_videos",
-                "media_videos.*.media_path" => "required_with:media_videos",
-                "documents.*.document_name" => "required_with:documents",
-                "documents.*.document_type" => ['required_with:documents',
-                 Rule::in(config('constants.document_types'))],
-                "documents.*.document_path" => "required_with:documents",
-                "start_date" => "sometimes|required_with:end_date",
-                "end_date" => "sometimes|after:start_date",
-                "total_seats" => "numeric",
-                "availability_id" => "sometimes|required"
+                "media_videos.*.media_path" => "required_with:media_videos|valid_video_url",
+                "documents.*.document_path" => "required_with:documents|valid_document_path",
+                "start_date" => "sometimes|required_if:mission_type,TIME,required_with:end_date|date",
+                "end_date" => "sometimes|after:start_date|date",
+                "total_seats" => "integer|min:1",
+                "availability_id" => "sometimes|required|exists:availability,availability_id",
+                "skills.*.skill_id" => "exists:skill,skill_id",
+                "theme_id" => "sometimes|required|exists:mission_theme,mission_theme_id,deleted_at,NULL",
+                "application_deadline" => "date"
             ]
         );
         

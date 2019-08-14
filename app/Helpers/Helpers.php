@@ -118,7 +118,7 @@ class Helpers
         $this->switchDatabaseConnection('mysql', $request);
 
         $tenantName = $this->getSubDomainFromRequest($request);
-        $tenant = DB::table('tenant')->where('name', $tenantName)->first();
+        $tenant = DB::table('tenant')->where('name', $tenantName)->whereNull('deleted_at')->first();
 
         // Connect tenant database
         $this->switchDatabaseConnection('tenant', $request);
@@ -155,7 +155,7 @@ class Helpers
     }
 
     /**
-     * Get city data from city_id
+     * Get city data from cityId
      *
      * @param string $cityId
      * @return array

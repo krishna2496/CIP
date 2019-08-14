@@ -84,6 +84,39 @@ class LanguageHelper
             return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
+    
+    /**
+     * Check for valid language_id from `ci_admin` table
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return mix
+     */
+    public function validateLanguageId(Request $request)
+    {
+        try {
+            $tenant = $this->helpers->getTenantDetail($request);
+            // Connect master database to get language details
+            $this->helpers->switchDatabaseConnection('mysql', $request);
+            
+            $tenantLanguage = DB::table('tenant_language')
+            ->where('tenant_id', $tenant->tenant_id)
+            ->where('language_id', $request->language_id);
+  
+            // Connect tenant database
+            $this->helpers->switchDatabaseConnection('tenant', $request);
+            
+            return ($tenantLanguage->count() > 0) ? true : false;
+        } catch (PDOException $e) {
+            return $this->PDO(
+                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
+                trans(
+                    'messages.custom_error_message.ERROR_DATABASE_OPERATIONAL'
+                )
+            );
+        } catch (\Exception $e) {
+            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
+        }
+    }
 
     /**
      * Get languages from `ci_admin` table
@@ -97,7 +130,7 @@ class LanguageHelper
             $tenant = $this->helpers->getTenantDetail($request);
             // Connect master database to get language details
             $this->helpers->switchDatabaseConnection('mysql', $request);
-            
+
             $tenantLanguages = DB::table('tenant_language')
             ->select('language.language_id', 'language.code', 'language.name', 'tenant_language.default')
             ->leftJoin('language', 'language.language_id', '=', 'tenant_language.language_id')

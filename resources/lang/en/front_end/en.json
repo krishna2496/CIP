@@ -79,11 +79,10 @@
 		"post_comment" : "Post comment",
 		"comments" : "Comments",
 		"documents" : "Documents",
-		"read_more_comment" : "Read more comment",
 		"post_comment" : "Post comment",
 		"comments" : "Comments",
 		"documents" : "Documents",
-		"read_more_comment" : "Read more comment",
+		"read_more_comment" : "Read more comments",
 		"submit_new_mission" : "Submit new mission",
 		"grid_view" : "Grid view",
         "list_view" : "List view",
@@ -102,16 +101,17 @@
 	"placeholder" : {
 		"email_address" : "Enter email address",
 		"password" : "Enter password",
-		"comment" : "Enter your comments.."
+		"comment" : "Enter your comments..."
 	},
 
 	"errors" : {
-		"email_required" : "Email address is required",
-		"invalid_email" : "Enter valid email address",
-		"password_required" : "Password is required",
+		"email_required" : "Please enter email address",
+		"invalid_email" : "Please enter valid email address",
+		"password_required" : "Please enter password",
 		"invalid_password" : "Password lenght should be minimum 8 character",
 		"identical_password" : "Passwords must be identical.",
-		"comment_required" : "Comment is required"
+		"comment_required" : "Comment is required",
+		"comment_max_length" : "The comment may not be greater than 280 characters"
 	}
 
 }

@@ -30,14 +30,14 @@ class Comment extends Model
      *
      * @var array
      */
-    protected $fillable = ['comment_id', 'user_id', 'mission_id', 'comment'];
+    protected $fillable = ['comment_id', 'user_id', 'mission_id', 'comment', 'approval_status'];
 
     /**
      * The attributes that should be visible in arrays.
      *
      * @var array
      */
-    protected $visible = ['comment_id', 'comment', 'created_at', 'user'];
+    protected $visible = ['comment_id', 'comment', 'created_at', 'user', 'approval_status'];
     
     /**
      * Get the mission that has comment.
