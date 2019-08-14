@@ -8,7 +8,7 @@ return [
         'MESSAGE_TENANT_CREATED' => 'Tenant created successfully',
         'MESSAGE_TENANT_UPDATED' => 'Tenant details updated successfully',
         'MESSAGE_TENANT_DELETED' => 'Tenant deleted successfully',
-        'MESSAGE_TENANT_LISTING' => 'Tenant listing successfully',
+        'MESSAGE_TENANT_LISTING' => 'Tenants listed successfully',
         'MESSAGE_NO_RECORD_FOUND' => 'No records found',
         'MESSAGE_TENANT_FOUND' => 'Tenant found successfully',
         'MESSAGE_TENANT_API_USER_LISTING' => 'Tenant\'s API users listed successfully',        
@@ -22,16 +22,20 @@ return [
     * API Error Codes and Message
     */
     'custom_error_message' => [
-        '200001' => 'Tenant name or sponsored field is empty',
-        '200002' => 'Tenant name is already taken, Please try with different name.',
-        '200003' => 'Tenant not found in the system',
-        '200004' => 'Database operational error',
-        '200005' => 'No data found',
-        '200006' => 'Invalid argument',
-        '200008' => 'Error while creating folder on S3 bucket',
-        '200009' => 'API user not found',
-        '999999' => 'An error has occured',
+        'ERROR_TENANT_REQUIRED_FIELDS_EMPTY' => 'Tenant name or sponsored field is empty',
+        'ERROR_TENANT_ALREADY_EXIST' => 'Tenant name is already taken, Please try with different name.',
+        'ERROR_TENANT_NOT_FOUND' => 'Tenant not found in the system',
+        'ERROR_DATABASE_OPERATIONAL' => 'Database operational error',
+        'ERROR_NO_DATA_FOUND' => 'No data found',
+        'ERROR_INVALID_ARGUMENT' => 'Invalid argument',
+        'FAILED_TO_CREATE_FOLDER_ON_S3' => 'Error while creating folder on S3 bucket',
+        'ERROR_API_USER_NOT_FOUND' => 'API user not found',
+        'ERROR_OCCURRED' => 'An error has occured',
         'ERROR_BOOSTRAP_SCSS_NOT_FOUND' => 'Boostrap SCSS file not found while compiling SCSS files',
+        'ERROR_INVALID_JSON' => 'Format Json invalid',
+        'ERROR_WHILE_STORE_COMPILED_CSS_FILE_TO_LOCAL' => 'Error while storing compiled CSS to local',
+        'ERROR_FAILD_TO_UPLOAD_COMPILE_FILE_ON_S3' => 'Error while uploading compiled CSS to S3',
+        'ERROR_WHILE_COMPILING_SCSS_FILES' => 'Error while compiling SCSS files',
     ]
     
 ];

@@ -56,7 +56,7 @@ class ApiUserController extends Controller
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
                 config('constants.error_codes.ERROR_TENANT_NOT_FOUND'),
-                trans('messages.custom_error_message.'.config('constants.error_codes.ERROR_TENANT_NOT_FOUND'))
+                trans('messages.custom_error_message.ERROR_TENANT_NOT_FOUND')
             );
         }
 
@@ -75,7 +75,7 @@ class ApiUserController extends Controller
 
             return $this->responseHelper->success($apiStatus, $apiMessage, $response);
         } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.999999'));
+            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
 
@@ -93,8 +93,10 @@ class ApiUserController extends Controller
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
                 config('constants.error_codes.ERROR_TENANT_NOT_FOUND'),
-                trans('messages.custom_error_message.'.config('constants.error_codes.ERROR_TENANT_NOT_FOUND'))
+                trans('messages.custom_error_message.ERROR_TENANT_NOT_FOUND')
             );
+        } catch (\Exception $e) {
+            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
 
         try {
@@ -115,10 +117,10 @@ class ApiUserController extends Controller
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
                 config('constants.error_codes.ERROR_API_USER_NOT_FOUND'),
-                trans('messages.custom_error_message.'.config('constants.error_codes.ERROR_API_USER_NOT_FOUND'))
+                trans('messages.custom_error_message.ERROR_API_USER_NOT_FOUND')
             );
         } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.999999'));
+            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
 
@@ -136,7 +138,7 @@ class ApiUserController extends Controller
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
                 config('constants.error_codes.ERROR_TENANT_NOT_FOUND'),
-                trans('messages.custom_error_message.'.config('constants.error_codes.ERROR_TENANT_NOT_FOUND'))
+                trans('messages.custom_error_message.ERROR_TENANT_NOT_FOUND')
             );
         }
 
@@ -151,10 +153,10 @@ class ApiUserController extends Controller
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
                 config('constants.error_codes.ERROR_API_USER_NOT_FOUND'),
-                trans('messages.custom_error_message.'.config('constants.error_codes.ERROR_API_USER_NOT_FOUND'))
+                trans('messages.custom_error_message.ERROR_API_USER_NOT_FOUND')
             );
         } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.999999'));
+            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
 
@@ -178,10 +180,10 @@ class ApiUserController extends Controller
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
                 config('constants.error_codes.ERROR_TENANT_NOT_FOUND'),
-                trans('messages.custom_error_message.'.config('constants.error_codes.ERROR_TENANT_NOT_FOUND'))
+                trans('messages.custom_error_message.ERROR_TENANT_NOT_FOUND')
             );
         } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.999999'));
+            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
 
@@ -199,7 +201,7 @@ class ApiUserController extends Controller
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
                 config('constants.error_codes.ERROR_TENANT_NOT_FOUND'),
-                trans('messages.custom_error_message.'.config('constants.error_codes.ERROR_TENANT_NOT_FOUND'))
+                trans('messages.custom_error_message.ERROR_TENANT_NOT_FOUND')
             );
         }
         try {
@@ -214,10 +216,10 @@ class ApiUserController extends Controller
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
                 config('constants.error_codes.ERROR_API_USER_NOT_FOUND'),
-                trans('messages.custom_error_message.'.config('constants.error_codes.ERROR_API_USER_NOT_FOUND'))
+                trans('messages.custom_error_message.ERROR_API_USER_NOT_FOUND')
             );
         } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.999999'));
+            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
 }

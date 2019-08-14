@@ -5,61 +5,37 @@ return [
     * Success messages
     */
     'success' => [
-        'MESSAGE_TENANT_CREATED' => 'FR: Tenant created successfully',
-        'MESSAGE_TENANT_UPDATED' => 'FR: Tenant details updated successfully',
-        'MESSAGE_TENANT_DELETED' => 'FR: Tenant deleted successfully',
-        'MESSAGE_TENANT_LISTING' => 'FR: Tenant listing successfully',
-        'MESSAGE_NO_RECORD_FOUND' => 'FR: No records found',
-        'MESSAGE_TENANT_FOUND' => 'FR: Tenant found successfully',
-    ],
-    
-    /**
-    * HTTP status code
-    */
-    'status_code' => [
-        'HTTP_CREATED' => '201',
-        'HTTP_NO_CONTENT' => '204',
-        'HTTP_STATUS_BAD_REQUEST' => '400',
-        'HTTP_STATUS_403' => '403',
-        'HTTP_STATUS_NOT_FOUND' => '404',
-        'HTTP_STATUS_422' => '422',
-        'HTTP_STATUS_500' => '500',
-        'HTTP_STATUS_BAD_GATEWAY' => '502',
-        'HTTP_STATUS_METHOD_NOT_ALLOWED' => '405',
-    ],
-    
-   /**
-    * HTTP status Types
-    */
-    'status_type' => [
-        'HTTP_STATUS_TYPE_400' => 'FR: Bad Request',
-        'HTTP_STATUS_TYPE_403' => 'FR: Forbidden',
-        'HTTP_STATUS_TYPE_404' => 'FR: Not Found',
-        'HTTP_STATUS_TYPE_422' => 'FR: Unprocessable entity',
-        'HTTP_STATUS_TYPE_500' => 'FR: Internal Server Error',
-        'HTTP_STATUS_TYPE_502' => 'FR: Backend service failure (data store failure)',
-        'HTTP_STATUS_TYPE_405' => 'FR: Method Not Allowed',
-    ],
-    
-    /**
-    * API Error Codes
-    */
-    'custom_error_code' => [
-        'ERROR_200001' => '200001',
-        'ERROR_200002' => '200002',
-        'ERROR_200003' => '200003',
-        'ERROR_200004' => '200004',
+        'MESSAGE_TENANT_CREATED' => 'Locataire créé avec succès',
+        'MESSAGE_TENANT_UPDATED' => 'Détails du locataire mis à jour avec succès',
+        'MESSAGE_TENANT_DELETED' => 'Locataire supprimé avec succès',
+        'MESSAGE_TENANT_LISTING' => 'Locataires listés avec succès',
+        'MESSAGE_NO_RECORD_FOUND' => 'Aucun enregistrement trouvé',
+        'MESSAGE_TENANT_FOUND' => 'Locataire trouvé avec succès',
+        'MESSAGE_TENANT_API_USER_LISTING' => 'Les utilisateurs de l\'API du locataire répertoriés avec succès',        
+        'MESSAGE_API_USER_FOUND' => 'Utilisateur de l\'API trouvé avec succès',
+        'MESSAGE_API_USER_CREATED_SUCCESSFULLY' => 'Utilisateur de l\'API créé avec succès',
+        'MESSAGE_API_USER_DELETED' => 'Utilisateur de l\'API supprimé avec succès',
+        'MESSAGE_API_USER_UPDATED_SUCCESSFULLY' => 'La clé secrète de l\'utilisateur de l\'API a été mise à jour avec succès'
     ],
     
     /**
     * API Error Codes and Message
     */
     'custom_error_message' => [
-        '200001' => 'FR: Tenant name or sponsored field is empty',
-        '200002' => 'FR: Tenant name is already taken, Please try with different name.',
-        '200003' => 'FR: Tenant not found in the system',
-        '200004' => 'FR: Database operational error',
-        '200005' => 'FR: No data found',
+        'ERROR_TENANT_REQUIRED_FIELDS_EMPTY' => 'Le nom ou le champ sponsorisé est vide',
+        'ERROR_TENANT_ALREADY_EXIST' => 'Le nom du locataire est déjà pris, veuillez essayer avec un nom différent',
+        'ERROR_TENANT_NOT_FOUND' => 'Non trouvé dans le système',
+        'ERROR_DATABASE_OPERATIONAL' => 'Erreur opérationnelle de la base de données',
+        'ERROR_NO_DATA_FOUND' => 'Aucune donnée disponible',
+        'ERROR_INVALID_ARGUMENT' => 'argument invalide',
+        'FAILED_TO_CREATE_FOLDER_ON_S3' => 'Erreur lors de la création du dossier sur le compartiment S3',
+        'ERROR_API_USER_NOT_FOUND' => 'Utilisateur API introuvable',
+        'ERROR_OCCURRED' => 'Une erreur est survenue',
+        'ERROR_BOOSTRAP_SCSS_NOT_FOUND' => 'Fichier Boostrap SCSS introuvable lors de la compilation des fichiers SCSS',
+        'ERROR_INVALID_JSON' => 'Format Json invalide',
+        'ERROR_WHILE_STORE_COMPILED_CSS_FILE_TO_LOCAL' => 'Erreur lors du stockage de CSS compilé au niveau local',
+        'ERROR_FAILD_TO_UPLOAD_COMPILE_FILE_ON_S3' => 'Erreur lors du téléchargement du fichier CSS compilé vers S3',
+        'ERROR_WHILE_COMPILING_SCSS_FILES' => 'Erreur lors de la compilation des fichiers SCSS',
     ]
     
 ];
