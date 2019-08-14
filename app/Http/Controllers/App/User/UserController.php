@@ -206,6 +206,20 @@ class UserController extends Controller
     public function uploadProfileImage(Request $request)
     {
         try {
+            $validator = Validator::make($request->toArray(), [
+                'avatar' => 'required'
+            ]);
+
+            // If request parameter have any error
+            if ($validator->fails()) {
+                return $this->responseHelper->error(
+                    Response::HTTP_UNPROCESSABLE_ENTITY,
+                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                    config('constants.error_codes.ERROR_USER_INVALID_DATA'),
+                    $validator->errors()->first()
+                );
+            }
+
             $userId = $request->auth->user_id;
             $tenantName = $this->helpers->getSubDomainFromRequest($request);
             $imagePath = $this->s3helper->uploadProfileImageOnS3Bucket($request->avatar, $tenantName, $userId);

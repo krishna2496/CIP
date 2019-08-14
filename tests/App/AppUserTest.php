@@ -381,4 +381,71 @@ class AppUserTest extends TestCase
             ]
         ]);
     }
+
+    /**
+     * @test
+     *
+     * Upload profile image
+     *
+     * @return void
+     */
+    public function it_should_upload_profile_image()
+    {
+        $connection = 'tenant';
+        $user = factory(\App\User::class)->make();
+        $user->setConnection($connection);
+        $user->save();
+        
+        $path= 'https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer9.png';
+        $type = pathinfo($path, PATHINFO_EXTENSION);
+        $fileData = file_get_contents($path);
+        $base64 = 'data:image/' . $type . ';base64,' . base64_encode($fileData);
+        
+        $params = [
+            'avatar' => $base64
+        ];
+        $token = Helpers::getJwtToken($user->user_id);
+        $this->patch('app/user/upload-profile-image', $params, ['token' => $token])
+        ->seeStatusCode(200)
+        ->seeJsonStructure(
+            [
+                "status",
+                "message"
+            ]
+        );
+        $user->delete();
+    }
+
+    /**
+     * @test
+     *
+     * Return error if required field is empty for upload profile image
+     *
+     * @return void
+     */
+    public function it_should_return_error_if_required_field_is_empty_for_upload_profile_image()
+    {
+        $connection = 'tenant';
+        $user = factory(\App\User::class)->make();
+        $user->setConnection($connection);
+        $user->save();
+        
+        $params = [
+            'avatar' => ""
+        ];
+        $token = Helpers::getJwtToken($user->user_id);
+        $this->patch('app/user/upload-profile-image', $params, ['token' => $token])
+        ->seeStatusCode(422)
+        ->seeJsonStructure([
+            'errors' => [
+                [
+                    'status',
+                    'type',
+                    'code',
+                    'message'
+                ]
+            ]
+        ]);
+        $user->delete();
+    }
 }

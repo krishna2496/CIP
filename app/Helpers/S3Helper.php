@@ -204,7 +204,12 @@ class S3Helper
             if (!file_exists($tenantName.'/profile_images')) {
                 mkdir($tenantName.'/profile_images', 0777, true);
             }
-            $imagePath = $tenantName.'/profile_images/'.$userId.'_'.time().'.png';
+            // Get file type from base64
+            $fileOpen = finfo_open();
+            $mime_type = finfo_buffer($fileOpen, base64_decode($avatar), FILEINFO_MIME_TYPE);
+            $type = explode('/', $mime_type);
+            
+            $imagePath = $tenantName.'/profile_images/'.$userId.'_'.time().'.'.$type[1];
             Storage::disk('s3')->put($imagePath, base64_decode($avatar), 'public');
             $filePath =  Storage::disk('s3')->url($imagePath);
             return $filePath;
