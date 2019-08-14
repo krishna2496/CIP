@@ -198,7 +198,7 @@ class UserController extends Controller
     }
 
     /**
-     * Upload profile photo of user
+     * Upload profile image of user
      *
      * @param Illuminate\Http\Request $request
      * @return Illuminate\Http\JsonResponse
