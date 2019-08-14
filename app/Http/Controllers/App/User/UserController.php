@@ -14,7 +14,9 @@ use App\Transformations\UserTransformable;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Helpers\LanguageHelper;
 use App\Helpers\Helpers;
+use App\Helpers\S3Helper;
 use Validator;
+use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
@@ -40,24 +42,33 @@ class UserController extends Controller
     private $helpers;
 
     /**
+     * @var App\Helpers\S3Helper
+     */
+    private $s3helper;
+    
+
+    /**
      * Create a new controller instance.
      *
      * @param App\Repositories\User\UserRepository $userRepository
      * @param Illuminate\Http\ResponseHelper $responseHelper
      * @param App\Helpers\LanguageHelper $languageHelper
      * @param App\Helpers\Helpers $helpers
+     * @param App\Helpers\S3Helper $s3helper
      * @return void
      */
     public function __construct(
         UserRepository $userRepository,
         ResponseHelper $responseHelper,
         LanguageHelper $languageHelper,
-        Helpers $helpers
+        Helpers $helpers,
+        S3Helper $s3helper
     ) {
         $this->userRepository = $userRepository;
         $this->responseHelper = $responseHelper;
         $this->languageHelper = $languageHelper;
         $this->helpers = $helpers;
+        $this->s3helper = $s3helper;
     }
     
     /**
@@ -179,6 +190,40 @@ class UserController extends Controller
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
                 config('constants.error_codes.ERROR_USER_NOT_FOUND'),
+                trans('messages.custom_error_message.ERROR_USER_NOT_FOUND')
+            );
+        } catch (\Exception $e) {
+            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
+        }
+    }
+
+    /**
+     * Upload profile photo of user
+     *
+     * @param Illuminate\Http\Request $request
+     * @return Illuminate\Http\JsonResponse
+     */
+    public function uploadProfileImage(Request $request)
+    {
+        try {
+            $userId = $request->auth->user_id;
+            $tenantName = $this->helpers->getSubDomainFromRequest($request);
+            $imagePath = $this->s3helper->uploadProfileImageOnS3Bucket($request->avatar, $tenantName, $userId);
+            
+            $userData['avatar'] = $imagePath;
+            $this->userRepository->update($userData, $userId);
+            
+            $apiMessage = trans('messages.success.MESSAGE_PROFILE_IMAGE_UPLOADED');
+            $apiStatus = Response::HTTP_OK;
+            return $this->responseHelper->success(Response::HTTP_OK, $apiMessage);
+        } catch (S3Exception $e) {
+            return $this->s3Exception(
+                config('constants.error_codes.ERROR_FAILED_TO_RESET_STYLING'),
+                trans('messages.custom_error_message.ERROR_FAILED_TO_RESET_STYLING')
+            );
+        } catch (\PDOException $e) {
+            return $this->PDO(
+                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
                 trans('messages.custom_error_message.ERROR_USER_NOT_FOUND')
             );
         } catch (\Exception $e) {

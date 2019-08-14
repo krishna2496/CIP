@@ -81,7 +81,8 @@ return [
         'MESSAGE_POLICY_PAGE_UPDATED' => 'Policy page updated successfully',
         'MESSAGE_COMMENT_FOUND' => 'Comment found successfully',
         'MESSAGE_COMMENT_UPDATED' => 'Comment updated successfully',
-        'MESSAGE_COMMENT_DELETED' => 'Comment deleted successfully'
+        'MESSAGE_COMMENT_DELETED' => 'Comment deleted successfully',
+        'MESSAGE_PROFILE_IMAGE_UPLOADED' => 'Profile image uploaded successfully',
 		],
 
         
@@ -179,5 +180,6 @@ return [
         'ERROR_LANGUAGE_NOT_FOUND' => 'Language not found',
         'ERROR_FAILED_TO_RESET_ASSET_IMAGE' => 'Failed to reset asset images',
         'ERROR_COMMENT_NOT_FOUND' => 'Requested comment does not exist',
+        'ERROR_FAILD_TO_UPLOAD_PROFILE_IMAGE_ON_S3' => 'Failed to upload files on S3',
     ],
 ];

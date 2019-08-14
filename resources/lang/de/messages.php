@@ -71,6 +71,7 @@ return [
         'MESSAGE_NO_MISSION_MEDIA_FOUND' => 'DE: Mission media not found',
         'MESSAGE_NO_MISSION_COMMENT_FOUND' => 'DE: Mission comments not found',
         'MESSAGE_COMMENT_ADDED' => 'DE: Thanks for your comment. Your comment will only be visible after moderation',
+        'MESSAGE_PROFILE_IMAGE_UPLOADED' => 'DE: Profile image uploaded successfully',
     ],
 
         
@@ -159,6 +160,7 @@ return [
         'ERROR_WHILE_UPLOADING_IMAGE_ON_S3' => 'DE: An error while uploading image on S3',
         'ERROR_DOWNLOADING_IMAGE_TO_LOCAL' => 'DE: An error while downloading image from S3 to server',
         'ERROR_IMAGE_UPLOAD_INVALID_DATA' => 'DE: Invalid input file',
-        'ERROR_TENANT_OPTION_NOT_FOUND' => 'DE: No tenant option found'
+        'ERROR_TENANT_OPTION_NOT_FOUND' => 'DE: No tenant option found',
+        'ERROR_FAILD_TO_UPLOAD_PROFILE_IMAGE_ON_S3' => 'DE: Failed to upload files on S3',
     ],
 ];
