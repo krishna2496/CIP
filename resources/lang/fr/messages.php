@@ -11,7 +11,8 @@ return [
         'MESSAGE_TENANT_LISTING' => 'FR: Tenant listing successfully',
         'MESSAGE_NO_RECORD_FOUND' => 'FR: No records found',
         'MESSAGE_TENANT_FOUND' => 'FR: Tenant found successfully',
-        'MESSAGE_TENANT_OPTION_LISTING' => 'FR: Tenant option listed successfully',
+        'MESSAGE_TENANT_SETTING_LISTING' => 'FR: Tenant setting listed successfully',
+        'MESSAGE_TENANT_SETTINGS_CREATED' => 'FR: Tenant settings created successfully',
     ],
     
     /**

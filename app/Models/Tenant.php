@@ -1,7 +1,7 @@
 <?php
 namespace App\Models;
 
-use App\Models\TenantHasOption;
+use App\Models\TenantHasSetting;
 use App\Models\ApiUser;
 use App\Models\TenantLanguage;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -46,7 +46,7 @@ class Tenant extends Model
      * @var array
      */
     protected $visible = ['tenant_id', 'name', 'sponsor_id', 'status',
-    'options', 'tenantLanguages', 'tenantLanguages.language'];
+    'settings', 'tenantLanguages', 'tenantLanguages.language'];
 
      
     /**
@@ -57,13 +57,13 @@ class Tenant extends Model
     protected $softDelete = true;
     
     /**
-    * Defined has many relation for the tenant_option table.
+    * Defined has many relation for the tenant_setting table.
     *
     * @return \Illuminate\Database\Eloquent\Relations\HasMany
     */
-    public function options(): HasMany
+    public function settings(): HasMany
     {
-        return $this->hasMany(TenantHasOption::class, 'tenant_id', 'tenant_id');
+        return $this->hasMany(TenantHasSetting::class, 'tenant_id', 'tenant_id');
     }
 
     /**
@@ -94,7 +94,7 @@ class Tenant extends Model
      */
     public function findTenant(int $id): self
     {
-        return static::with('options', 'tenantLanguages', 'tenantLanguages.language', 'options.option')
+        return static::with('settings', 'tenantLanguages', 'tenantLanguages.language', 'settings.setting')
          ->findOrFail($id);
     }
 
