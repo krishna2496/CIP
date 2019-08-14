@@ -89,7 +89,7 @@ class UserSkill extends Model
      * @param int $userId
      * @return bool
      */
-    public function deleteUserAllSkills(int $userId): bool
+    public function deleteUserSkills(int $userId): bool
     {
         return static::where(['user_id' => $userId])->forceDelete();
     }

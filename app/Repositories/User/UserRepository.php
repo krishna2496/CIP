@@ -226,7 +226,7 @@ class UserRepository implements UserInterface
      */
     public function deleteSkills(int $userId): bool
     {
-        return $this->userSkill->deleteUserAllSkills($userId);
+        return $this->userSkill->deleteUserSkills($userId);
     }
 
     /**

@@ -128,7 +128,7 @@ class UserController extends Controller
     }
 
     /**
-     * Add skill to user
+     * Add/remove user skills
      *
      * @param  \Illuminate\Http\Request $request
      * @return Illuminate\Http\JsonResponse
