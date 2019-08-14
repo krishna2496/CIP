@@ -77,7 +77,7 @@ class TenantMigrationJob extends Job
                 $message .= "Background Job Status : Failed <br>";
                 $message .= "Message : Tenant and database have been deleted. </p>";
     
-                $this->sendEmailNotification($message, false);
+                $this->sendEmailNotification($message, true);
     
                 Log::info($message);
                                 
@@ -92,7 +92,7 @@ class TenantMigrationJob extends Job
             $message .= "Background Job Status : Failed <br>";
             $message .= "Message : Job deleted from database. </p>";
 
-            $this->sendEmailNotification($message, false);
+            $this->sendEmailNotification($message, true);
 
             Log::info($message);
             

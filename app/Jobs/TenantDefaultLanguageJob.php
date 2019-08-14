@@ -57,7 +57,7 @@ class TenantDefaultLanguageJob extends Job
                 $message .= "Background Job Status : Failed <br>";
                 $message .= "Message : Tenant has been delete.</p>";
 
-                $this->sendEmailNotification($message, false);
+                $this->sendEmailNotification($message, true);
 
                 Log::info($message);
 
@@ -70,7 +70,7 @@ class TenantDefaultLanguageJob extends Job
             $message .= "Background Job Status : Failed <br>";
             $message .= "Message : Background job has been deleted from database.</p>";
 
-            $this->sendEmailNotification($message, false);
+            $this->sendEmailNotification($message, true);
 
             Log::info($message);
 

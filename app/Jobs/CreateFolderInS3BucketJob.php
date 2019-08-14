@@ -127,7 +127,7 @@ class CreateFolderInS3BucketJob extends Job
                 $message .= "Background Job Status : Failed <br>";
                 $message .= "Message : S3 folder has been deleted. </p>";
     
-                $this->sendEmailNotification($message, false);
+                $this->sendEmailNotification($message, true);
     
                 Log::info($message);
 
@@ -146,7 +146,7 @@ class CreateFolderInS3BucketJob extends Job
             $message .= "Background Job Status : Failed <br>";
             $message .= "Message : Job has been deleted from database. </p>";
 
-            $this->sendEmailNotification($message, false);
+            $this->sendEmailNotification($message, true);
 
             Log::info($message);
 

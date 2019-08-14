@@ -87,7 +87,7 @@ class CompileScssFiles extends Job
                         $message .= "Message : ".
                         trans('messages.custom_error_message.ERROR_FAILD_TO_UPLOAD_COMPILE_FILE_ON_S3')."</p>";
             
-                        $this->sendEmailNotification($message, false);
+                        $this->sendEmailNotification($message, true);
             
                         Log::info($message);
 
@@ -103,7 +103,7 @@ class CompileScssFiles extends Job
                     $message .= "Message : ".
                         trans('messages.custom_error_message.ERROR_WHILE_STORE_COMPILED_CSS_FILE_TO_LOCAL')."</p>";
             
-                    $this->sendEmailNotification($message, false);
+                    $this->sendEmailNotification($message, true);
             
                     Log::info($message);
 
@@ -119,7 +119,7 @@ class CompileScssFiles extends Job
                 $message .= "Message : ".
                 trans('messages.custom_error_message.ERROR_WHILE_COMPILING_SCSS_FILES')."</p>";
     
-                $this->sendEmailNotification($message, false);
+                $this->sendEmailNotification($message, true);
     
                 Log::info($message);
 
@@ -134,7 +134,7 @@ class CompileScssFiles extends Job
                 $message .= "Message : ".
                 trans('messages.custom_error_message.ERROR_WHILE_COMPILING_SCSS_FILES')."</p>";
     
-                $this->sendEmailNotification($message, false);
+                $this->sendEmailNotification($message, true);
     
                 Log::info($message);
 
@@ -154,7 +154,7 @@ class CompileScssFiles extends Job
             $message .= "Background Job Status : Failed <br>";
             $message .= "Message : Job deleted from database.</p>";
 
-            $this->sendEmailNotification($message, false);
+            $this->sendEmailNotification($message, true);
 
             Log::info($message);
 
