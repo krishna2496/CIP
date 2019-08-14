@@ -42,7 +42,7 @@ class TenantSetting extends Model
      *
      * @var array
      */
-    protected $visible = ['tenant_setting_id', 'title', 'description', 'key', 'status'];
+    protected $visible = ['tenant_setting_id', 'title', 'description', 'key', 'is_active'];
 
     /**
      * The rules that should validate request.

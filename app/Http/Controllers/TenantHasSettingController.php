@@ -109,7 +109,7 @@ class TenantHasSettingController extends Controller
             $this->tenantHasSettingRepository->store($request, $tenantId);
             
             // Set response data
-            $apiStatus = Response::HTTP_CREATED;
+            $apiStatus = Response::HTTP_OK;
             $apiMessage =  trans('messages.success.MESSAGE_TENANT_SETTINGS_CREATED');
             
             return $this->responseHelper->success($apiStatus, $apiMessage);

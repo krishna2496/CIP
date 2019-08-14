@@ -43,7 +43,7 @@ class TenantHasSettingRepository implements TenantHasSettingInterface
             'tenant_setting.tenant_setting_id',
             'tenant_setting.description',
             'tenant_setting.key',
-            DB::raw("CASE WHEN tenant_has_setting.tenant_setting_id  IS NULL THEN 'Not Selected' ELSE 'Selected' END AS status ")
+            DB::raw("CASE WHEN tenant_has_setting.tenant_setting_id  IS NULL THEN '0' ELSE '1' END AS is_active ")
         )
         ->leftJoin('tenant_has_setting', function ($join) use ($tenantId) {
             $join->on('tenant_setting.tenant_setting_id', '=', 'tenant_has_setting.tenant_setting_id')
