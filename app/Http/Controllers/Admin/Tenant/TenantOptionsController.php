@@ -75,7 +75,13 @@ class TenantOptionsController extends Controller
     public function storeSlider(Request $request): JsonResponse
     {
         // Server side validataions
-        $validator = Validator::make($request->toArray(), ["url" => "required|url"]);
+        $validator = Validator::make(
+            $request->toArray(),
+            [
+                "url" => "required|url",
+                "slider_detail.translations.*.lang" => "max:2"
+            ]
+        );
 
         // If post parameter have any missing parameter
         if ($validator->fails()) {
@@ -117,7 +123,7 @@ class TenantOptionsController extends Controller
                     $tenantOption = $this->tenantOptionRepository->storeSlider($insertData);
 
                     // Set response data
-                    $apiStatus = Response::HTTP_OK;
+                    $apiStatus = Response::HTTP_CREATED;
                     $apiMessage = trans('messages.success.MESSAGE_SLIDER_ADD_SUCCESS');
                     return $this->responseHelper->success($apiStatus, $apiMessage);
                 } else {
@@ -225,7 +231,7 @@ class TenantOptionsController extends Controller
         } catch (TenantDomainNotFoundException $e) {
             throw $e;
         } catch (\Exception $e) {
-             return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
+            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
 
         // Need to check local copy for tenant assest is there or not?
@@ -332,7 +338,7 @@ class TenantOptionsController extends Controller
         } catch (TenantDomainNotFoundException $e) {
             throw $e;
         } catch (\Exception $e) {
-             return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
+            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
         try {
             $assetFilesArray = $this->s3helper->getAllScssFiles($tenantName);
@@ -400,7 +406,7 @@ class TenantOptionsController extends Controller
         } catch (TenantDomainNotFoundException $e) {
             throw $e;
         } catch (\Exception $e) {
-             return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
+            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
 
         if (Storage::disk('s3')->exists($tenantName)) {

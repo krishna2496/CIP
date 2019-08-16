@@ -3,6 +3,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use App\User;
 
 class UserCustomFieldValue extends Model
 {
@@ -35,6 +37,16 @@ class UserCustomFieldValue extends Model
      * @var array
      */
     protected $visible = ['user_custom_field_value_id', 'field_id', 'user_id', 'value'];
+
+    /**
+     * Defined has one relation for the user table.
+    *
+    * @return \Illuminate\Database\Eloquent\Relations\HasOne
+    */
+    public function user(): HasOne
+    {
+        return $this->hasOne(User::class, 'user_id', 'user_id');
+    }
 
     /**
      * Store/update specified resource.

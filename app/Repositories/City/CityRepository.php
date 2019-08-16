@@ -4,6 +4,7 @@ namespace App\Repositories\City;
 use App\Repositories\City\CityInterface;
 use Illuminate\Http\Request;
 use App\Models\City;
+use App\Models\Country;
 use Illuminate\Support\Collection;
 
 class CityRepository implements CityInterface
@@ -14,24 +15,32 @@ class CityRepository implements CityInterface
     public $city;
 
     /**
+     * @var App\Models\Country
+     */
+    public $country;
+
+    /**
      * Create a new repository instance.
      *
      * @param App\Models\City $city
+     * @param App\Models\Country $country
      * @return void
      */
-    public function __construct(City $city)
+    public function __construct(City $city, Country $country)
     {
         $this->city = $city;
+        $this->country = $country;
     }
     
     /**
-    * Get a listing of resource.
+    * Get listing of all city.
     *
-    * @param \Illuminate\Http\Request $request
+    * @param int $countryId
     * @return Illuminate\Support\Collection
     */
-    public function cityList(Request $request): Collection
+    public function cityList(int $countryId): Collection
     {
-        return $this->city->pluck('name', 'city_id');
+        $this->country->findOrFail($countryId);
+        return $this->city->where('country_id', $countryId)->pluck('name', 'city_id');
     }
 }

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Timezone;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Collection;
 use DB;
 
 class TimezoneRepository implements TimezoneInterface
@@ -37,5 +38,15 @@ class TimezoneRepository implements TimezoneInterface
     {
         $timezone = $this->timezone->where("timezone_id", $timezone_id)->first();
         return $timezone;
+    }
+
+    /**
+     * Get timezone list
+     *
+     * @return Illuminate\Support\Collection
+     */
+    public function getTimezoneList() :Collection
+    {
+        return $this->timezone->pluck('timezone', 'timezone_id');
     }
 }

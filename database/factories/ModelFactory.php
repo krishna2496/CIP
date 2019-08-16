@@ -79,7 +79,12 @@ $factory->define(App\Models\Mission::class, function (Faker\Generator $faker) {
 $factory->define(App\Models\Skill::class, function (Faker\Generator $faker) {
     return [
         'skill_name' => str_random(10),
-        'translations' => array(str_random(10)),
+        'translations' => [
+            [
+                'lang' => "en",
+                'title' => str_random(10)
+            ]            
+        ],
         'parent_skill' => 0,
     ];
 });

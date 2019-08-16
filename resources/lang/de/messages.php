@@ -161,6 +161,7 @@ return [
         'ERROR_DOWNLOADING_IMAGE_TO_LOCAL' => 'DE: An error while downloading image from S3 to server',
         'ERROR_IMAGE_UPLOAD_INVALID_DATA' => 'DE: Invalid input file',
         'ERROR_TENANT_OPTION_NOT_FOUND' => 'DE: No tenant option found',
+        'ERROR_COUNTRY_NOT_FOUND' => 'DE: Requested country does not exist',
         'ERROR_FAILD_TO_UPLOAD_PROFILE_IMAGE_ON_S3' => 'DE: Failed to upload image on S3',
     ],
 ];

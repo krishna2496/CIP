@@ -2,6 +2,7 @@
 namespace App\Repositories\User;
 
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Collection as SupportCollection;
 use App\Repositories\User\UserInterface;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -11,6 +12,7 @@ use App\Helpers\Helpers;
 use App\Helpers\ResponseHelper;
 use App\Models\UserSkill;
 use App\Models\UserCustomFieldValue;
+use App\Models\Availability;
 use Validator;
 use PDOException;
 use DB;
@@ -32,6 +34,11 @@ class UserRepository implements UserInterface
      * @var App\Models\UserCustomFieldValue
      */
     public $userCustomFieldValue;
+
+    /**
+     * @var App\Models\Availability
+     */
+    public $availability;
     
     /**
      * @var App\Helpers\ResponseHelper
@@ -44,6 +51,7 @@ class UserRepository implements UserInterface
      * @param  App\User $user
      * @param  App\Models\UserSkill $userSkill
      * @param  App\Models\UserCustomFieldValue $userCustomFieldValue
+     * @param  App\Models\Availability $availability
      * @param  Illuminate\Http\ResponseHelper $responseHelper
      * @return void
      */
@@ -51,11 +59,13 @@ class UserRepository implements UserInterface
         User $user,
         UserSkill $userSkill,
         UserCustomFieldValue $userCustomFieldValue,
+        Availability $availability,
         ResponseHelper $responseHelper
     ) {
         $this->user = $user;
         $this->userSkill = $userSkill;
         $this->userCustomFieldValue = $userCustomFieldValue;
+        $this->availability = $availability;
         $this->responseHelper = $responseHelper;
     }
     
@@ -118,7 +128,7 @@ class UserRepository implements UserInterface
     {
         return $this->user->findUser($id);
     }
-    
+
     /**
      * Remove specified resource in storage.
      *
@@ -231,7 +241,7 @@ class UserRepository implements UserInterface
     }
 
     /**
-    *Add/Update user custom field value.
+     *Add/Update user custom field value.
     *
     * @param array $userCustomFields
     * @param int $userId
@@ -253,6 +263,27 @@ class UserRepository implements UserInterface
             unset($userCustomFieldData);
         }
         return $userCustomField ?? null;
+    }
+
+    /**
+     * Find specified resource in storage.
+     *
+     * @param  int  $id
+     * @return App\User
+     */
+    public function findUserDetail(int $id): User
+    {
+        return $this->user->findUserDetail($id);
+    }
+
+    /**
+     * Get Availability.
+     *
+     * @return Illuminate\Support\Collection
+     */
+    public function getAvailability(): SupportCollection
+    {
+        return $this->availability->getAvailability();
     }
 
     /**
