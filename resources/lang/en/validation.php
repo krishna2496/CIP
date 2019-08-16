@@ -139,7 +139,8 @@ return [
 		'location.country_code' => 'country code',
 		'organisation.organisation_id' => 'organisation id',
 		'mission_detail.*.lang' => 'language code',
-		'to_user_id' => 'user id'
+        'to_user_id' => 'user id',
+        'custom_fields.*.field_id' => 'field id',
         ],
 
 ];
