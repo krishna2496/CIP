@@ -407,7 +407,8 @@ class UserController extends Controller
 
             $userId = $request->auth->user_id;
             $tenantName = $this->helpers->getSubDomainFromRequest($request);
-            $imagePath = $this->s3helper->uploadProfileImageOnS3Bucket($request->avatar, $tenantName, $userId);
+			$avatar = preg_replace('#^data:image/\w+;base64,#i', '', $request->avatar);
+			$imagePath = $this->s3helper->uploadProfileImageOnS3Bucket($avatar, $tenantName, $userId);
             
             $userData['avatar'] = $imagePath;
             $this->userRepository->update($userData, $userId);
