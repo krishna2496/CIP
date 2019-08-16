@@ -17,7 +17,7 @@ export default function setup() {
 
         // Do something before request is sent
         if(domain[lastPosition] == "favourite" || domain[lastPosition] == "rating" 
-            || domain[lastPosition] == "comment" || getRequestEndPoint == "comments" || domain[lastPosition] == "upload-profile-image"){
+            || domain[lastPosition] == "comment" || getRequestEndPoint == "comments"){
             addLoader = "false";
         }
 
