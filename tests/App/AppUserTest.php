@@ -431,6 +431,8 @@ class AppUserTest extends TestCase
     }
 
     /**
+	 * @test
+	 *
      * Show error if required fields are empty
      *
      * @return void
@@ -463,6 +465,8 @@ class AppUserTest extends TestCase
     }
 
     /**
+	 * @test
+	 *
      * Upload profile image
      *
      * @return void
