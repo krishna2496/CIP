@@ -149,6 +149,8 @@ class AppUserTest extends TestCase
     }
 
     /**
+     * @test
+     * 
      * Add skill to user
      *
      * @return void
@@ -215,7 +217,7 @@ class AppUserTest extends TestCase
         $user->delete();
     }
 
-/**
+    /**
      * @test
      *
      * Return error if user data is invalid
@@ -250,6 +252,8 @@ class AppUserTest extends TestCase
     }
 
     /**
+     * @test
+     * 
      * Validate request for add skill to user
      *
      * @return void
@@ -327,6 +331,7 @@ class AppUserTest extends TestCase
 
     /**
      * @test
+     * 
      * Change password
      *
      * @return void
@@ -361,6 +366,8 @@ class AppUserTest extends TestCase
     }
 
     /**
+     * @test
+     * 
      * Show error if incorrect old password
      *
      * @return void
@@ -431,6 +438,8 @@ class AppUserTest extends TestCase
     }
 
     /**
+     * @test
+     * 
      * Show error if required fields are empty
      *
      * @return void
@@ -463,6 +472,8 @@ class AppUserTest extends TestCase
     }
 
     /**
+     * @test
+     * 
      * Upload profile image
      *
      * @return void
