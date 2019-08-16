@@ -208,7 +208,6 @@ class UserController extends Controller
                 )
             );
         } catch (\Exception $e) {
-            dd($e);
             return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
