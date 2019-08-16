@@ -15,7 +15,10 @@ use App\Models\City;
 use App\Models\Country;
 use App\Models\Timezone;
 use App\Models\missionApplication;
+use App\Models\Availability;
+use App\Models\UserCustomFieldValue;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Nicolaslopezj\Searchable\SearchableTrait;
 
 class User extends Model implements AuthenticatableContract, AuthorizableContract, CanResetPasswordInterface
@@ -54,7 +57,8 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     protected $visible = ['user_id', 'first_name', 'last_name', 'email',
      'password', 'avatar', 'timezone_id', 'availability_id', 'why_i_volunteer',
      'employee_id', 'department', 'manager_name', 'city_id', 'country_id',
-     'profile_text', 'linked_in_url', 'status', 'city', 'country', 'timezone', 'language_id'];
+     'profile_text', 'linked_in_url', 'status', 'city', 'country', 'timezone', 'language_id', 'availability',
+    'userCustomFieldValue'];
     
     /**
      * The attributes excluded from the model's JSON form.
@@ -97,6 +101,16 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     {
         return $this->hasOne(Country::class, 'country_id', 'country_id');
     }
+
+    /**
+    * Defined has one relation for the country table.
+    *
+    * @return \Illuminate\Database\Eloquent\Relations\HasOne
+    */
+    public function availability(): HasOne
+    {
+        return $this->hasOne(Availability::class, 'availability_id', 'availability_id');
+    }
     
     /**
     * Defined has one relation for the timezone table.
@@ -136,6 +150,16 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     public function comment(): HasMany
     {
         return $this->hasMany(Comment::class, 'user_id', 'user_id');
+    }
+
+    /**
+     * Defined has many relation for the user_custom_field_value table.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function userCustomFieldValue(): HasMany
+    {
+        return $this->hasMany(UserCustomFieldValue::class, 'user_id', 'user_id');
     }
 
     /**
@@ -204,5 +228,16 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     public function getUserByEmail(string $email)
     {
         return $this->where('email', $email)->first();
+    }
+
+    /**
+     * Get user detail
+     *
+     * @param int $userId
+     * @return App\User
+     */
+    public function findUserDetail(int $userId): User
+    {
+        return static::with('city', 'country', 'timezone', 'availability', 'userCustomFieldValue')->findOrFail($userId);
     }
 }

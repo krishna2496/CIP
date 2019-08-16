@@ -137,6 +137,14 @@ $router->group(['middleware' => 'localization'], function ($router) {
     $router->post('/app/mission/comment', [
         'middleware' => 'tenant.connection|jwt.auth',
         'uses' => 'App\Mission\MissionCommentController@store']);
+
+    /* Get user details */
+    $router->get('/app/user-detail', ['middleware' => 'tenant.connection|jwt.auth',
+     'uses' => 'App\User\UserController@show']);
+
+    /* Get city by country id */
+    $router->get('/app/city/{countryId}', ['middleware' => 'tenant.connection|jwt.auth',
+     'uses' => 'App\City\CityController@fetchCity']);
 });
 
     /* Policy pages  */
@@ -248,34 +256,6 @@ $router->group(['middleware' => 'localization'], function ($router) {
                 '/{missionId}/applications/{applicationId}',
                 ['uses' => 'Admin\Mission\MissionApplicationController@updateApplication']
             );
-            $router->get(
-                '/{missionId}/comments',
-                [
-                    'as' => 'missions.comments',
-                    'uses' => 'Admin\Mission\MissionCommentController@index'
-                ]
-            );
-            $router->get(
-                '/{missionId}/comments/{commentId}',
-                [
-                    'as' => 'missions.comments.detail',
-                    'uses' => 'Admin\Mission\MissionCommentController@show'
-                ]
-            );
-            $router->patch(
-                '/{missionId}/comments/{commentId}',
-                [
-                    'as' => 'missions.comments.update',
-                    'uses' => 'Admin\Mission\MissionCommentController@update'
-                ]
-            );
-            $router->delete(
-                '/{missionId}/comments/{commentId}',
-                [
-                    'as' => 'missions.comments.delete',
-                    'uses' => 'Admin\Mission\MissionCommentController@destroy'
-                ]
-            );
         }
     );
 
@@ -358,6 +338,59 @@ $router->group(['middleware' => 'localization'], function ($router) {
             'uses' => 'Admin\PolicyPage\PolicyPageController@update']);
             $router->delete('/{pageId}', ['as' => 'policy.delete',
             'uses' => 'Admin\PolicyPage\PolicyPageController@destroy']);
+        }
+    );
+
+    /* Set mission data for tenant specific */
+    $router->group(
+        ['prefix' => 'missions', 'middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware'],
+        function ($router) {
+            $router->get('', ['as' => 'missions', 'middleware' => ['PaginationMiddleware'],
+            'uses' => 'Admin\Mission\MissionController@index']);
+            $router->get('/{missionId}', ['as' => 'missions.show', 'uses' => 'Admin\Mission\MissionController@show']);
+            $router->post('/', ['as' => 'missions.store', 'uses' => 'Admin\Mission\MissionController@store']);
+            $router->patch('/{missionId}', ['as' => 'missions.update',
+            'uses' => 'Admin\Mission\MissionController@update']);
+            $router->delete('/{missionId}', ['as' => 'missions.delete',
+            'uses' => 'Admin\Mission\MissionController@destroy']);
+            $router->get('/{missionId}/applications', ['middleware' => ['PaginationMiddleware'],
+            'uses' => 'Admin\Mission\MissionApplicationController@missionApplications']);
+            $router->get(
+                '/{missionId}/applications/{applicationId}',
+                ['uses' => 'Admin\Mission\MissionApplicationController@missionApplication']
+            );
+            $router->patch(
+                '/{missionId}/applications/{applicationId}',
+                ['uses' => 'Admin\Mission\MissionApplicationController@updateApplication']
+            );
+            $router->get(
+                '/{missionId}/comments',
+                [
+                    'as' => 'missions.comments',
+                    'uses' => 'Admin\Mission\MissionCommentController@index'
+                ]
+            );
+            $router->get(
+                '/{missionId}/comments/{commentId}',
+                [
+                    'as' => 'missions.comments.detail',
+                    'uses' => 'Admin\Mission\MissionCommentController@show'
+                ]
+            );
+            $router->patch(
+                '/{missionId}/comments/{commentId}',
+                [
+                    'as' => 'missions.comments.update',
+                    'uses' => 'Admin\Mission\MissionCommentController@update'
+                ]
+            );
+            $router->delete(
+                '/{missionId}/comments/{commentId}',
+                [
+                    'as' => 'missions.comments.delete',
+                    'uses' => 'Admin\Mission\MissionCommentController@destroy'
+                ]
+            );
         }
     );
 

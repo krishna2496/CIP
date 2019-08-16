@@ -2,7 +2,6 @@
 namespace App\Repositories\Country;
 
 use App\Repositories\Country\CountryInterface;
-use Illuminate\Http\Request;
 use App\Models\Country;
 use Illuminate\Support\Collection;
 
@@ -27,10 +26,9 @@ class CountryRepository implements CountryInterface
     /**
     * Get a listing of resource.
     *
-    * @param \Illuminate\Http\Request $request
     * @return Illuminate\Support\Collection
     */
-    public function countryList(Request $request): Collection
+    public function countryList(): Collection
     {
         return $this->country->pluck('name', 'country_id');
     }

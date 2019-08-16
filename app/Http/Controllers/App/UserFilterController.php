@@ -66,7 +66,7 @@ class UserFilterController extends Controller
     }
     
     /**
-     * Display listing of footer pages
+     * Display listing of user filter
      *
      * @param Illuminate\Http\Request $request
      * @return Illuminate\Http\JsonResponse

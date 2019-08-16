@@ -127,26 +127,26 @@ class Helpers
     }
     
     /**
-     * Get country id from country_code
+     * Get country id from country code
      *
-     * @param string $country_code
+     * @param string $countryCode
      * @return int
      */
-    public function getCountryId(string $country_code) : int
+    public function getCountryId(string $countryCode) : int
     {
-        $country = DB::table("country")->where("ISO", $country_code)->first();
+        $country = DB::table("country")->where("ISO", $countryCode)->first();
         return $country->country_id;
     }
 
     /**
      * Get country detail from country_id
      *
-     * @param int  $country_id
+     * @param int  $countryId
      * @return array
      */
-    public function getCountry(int $country_id) : array
+    public function getCountry(int $countryId) : array
     {
-        $country = DB::table("country")->where("country_id", $country_id)->first();
+        $country = DB::table("country")->where("country_id", $countryId)->first();
         $countryData = array('country_id' => $country->country_id,
                              'country_code' => $country->ISO,
                              'name' => $country->name,
@@ -155,14 +155,14 @@ class Helpers
     }
 
     /**
-     * Get city data from city_id
+     * Get city data from cityId
      *
-     * @param string $city_id
+     * @param string $cityId
      * @return array
      */
-    public function getCity(string $city_id) : array
+    public function getCity(string $cityId) : array
     {
-        $city = DB::table("city")->whereIn("city_id", explode(",", $city_id))->get()->toArray();
+        $city = DB::table("city")->whereIn("city_id", explode(",", $cityId))->get()->toArray();
         $cityData = [];
         if (!empty($city)) {
             foreach ($city as $key => $value) {
