@@ -24,7 +24,7 @@ return [
         'MESSAGE_PASSWORD_CHANGE_SUCCESS' => 'Votre mot de passe a été changé avec succès.',
         'MESSAGE_CUSTOM_FIELD_ADDED' => 'Champ personnalisé d\'utilisateur ajouté avec succès',
         'MESSAGE_CUSTOM_FIELD_UPDATED' => 'Le champ personnalisé de l\'utilisateur a été mis à jour avec succès',
-		'MESSAGE_CUSTOM_FIELD_FOUND' => 'Champ personnalisé de l\'utilisateur trouvé avec succès',
+        'MESSAGE_CUSTOM_FIELD_FOUND' => 'Champ personnalisé de l\'utilisateur trouvé avec succès',
         'MESSAGE_CUSTOM_FIELD_DELETED' => 'Le champ personnalisé de l\'utilisateur a été supprimé avec succès',
         'MESSAGE_APPLICATION_LISTING' => 'Liste des applications de mission avec succès',
         'MESSAGE_APPLICATION_UPDATED' => 'Application de mission mise à jour avec succès',
@@ -56,7 +56,7 @@ return [
         'MESSAGE_SKILL_FOUND' => 'Compétence trouvée avec succès',
         'MESSAGE_THEME_FOUND' => 'Thème de la mission trouvé avec succès',
         'MESSAGE_TENANT_OPTION_CREATED' => 'Option de locataire créée avec succès',
-        'MESSAGE_TENANT_OPTION_UPDATED' => 'Option de locataire mise à jour avec succès',
+        'MESSAGE_TENANT_OPTION_UPDATED' => 'Option locataire mise à jour avec succès',
         'MESSAGE_TENANT_OPTIONS_LIST' => 'Liste des options locataires avec succès',
         'MESSAGE_MISSION_RATING_LISTING' => 'Obtenir une note de mission avec succès',
         'MESSAGE_TENANT_OPTION_FOUND' => 'Option locataire trouvée',
@@ -79,7 +79,8 @@ return [
         'MESSAGE_POLICY_PAGE_UPDATED' => 'La page de politique a été mise à jour avec succès',
         'MESSAGE_COMMENT_FOUND' => 'Commentaire trouvé avec succès',
         'MESSAGE_COMMENT_UPDATED' => 'Commentaire mis à jour avec succès',
-        'MESSAGE_COMMENT_DELETED' => 'Commentaire supprimé avec succès'
+        'MESSAGE_COMMENT_DELETED' => 'Commentaire supprimé avec succès',
+        'MESSAGE_PROFILE_IMAGE_UPLOADED' => 'Image de profil téléchargée avec succès',
     ],
 
         
@@ -106,7 +107,7 @@ return [
         'ERROR_FOOTER_PAGE_NOT_FOUND' => 'Page de pied de page introuvable dans le système',
         'ERROR_DATABASE_OPERATIONAL' => 'Erreur opérationnelle de la base de données',
         'ERROR_NO_DATA_FOUND' => 'Aucune donnée disponible',
-        'ERROR_NO_DATA_FOUND_FOR_SLUG' => 'Aucune donnée trouvée pour slug',        
+        'ERROR_NO_DATA_FOUND_FOR_SLUG' => 'Aucune donnée trouvée pour slug',
         'ERROR_POLICY_PAGE_NOT_FOUND' => 'Page de stratégie introuvable dans le système',
 
         // Custom error code for Mission Module - 400000 - 409999
@@ -126,9 +127,9 @@ return [
         'ERROR_MISSION_APPLICATION_NOT_FOUND' => 'L\'application de mission demandée n\'existe pas',
         'ERROR_MISSION_RATING_INVALID_DATA' => 'La création de la note de mission a échoué. Veuillez vérifier les paramètres d`entrée',
         'ERROR_MISSION_COMMENT_INVALID_DATA' => 'La création de commentaire de mission a échoué. Veuillez vérifier les paramètres d`entrée',
+        'SKILL_LIMIT' => 'Désolé, vous ne pouvez pas ajouter plus de '. config('constants.SKILL_LIMIT').' compétences',
         'ERROR_INVALID_MISSION_MEDIA_DATA' => 'Données de média de mission non valides',
         'ERROR_INVALID_MISSION_DOCUMENT_DATA' => 'Données de média de mission non valides',
-
         'ERROR_INVALID_INVITE_MISSION_DATA' => 'Détail de la mission d\'invitation non valide',
         'ERROR_INVITE_MISSION_ALREADY_EXIST' => 'L\'utilisateur est déjà invité pour cette mission',
         
@@ -145,6 +146,7 @@ return [
         'ERROR_TOKEN_EXPIRED' => 'Le jeton fourni a expiré',
         'ERROR_IN_TOKEN_DECODE' => 'Une erreur lors du décodage du jeton',
         'ERROR_TOKEN_NOT_PROVIDED' => 'Jeton non fourni',
+        'ERROR_OLD_PASSWORD_NOT_MATCHED' => 'L\'ancien mot de passe que vous avez entré est incorrect',
         
 
         // Custom error code for common exception
@@ -173,5 +175,6 @@ return [
         'ERROR_LANGUAGE_NOT_FOUND' => 'Langue non trouvée',
         'ERROR_FAILED_TO_RESET_ASSET_IMAGE' => 'Impossible de réinitialiser les images d\'actif',
         'ERROR_COMMENT_NOT_FOUND' => 'Commentaire non trouvé',
+        'ERROR_FAILD_TO_UPLOAD_PROFILE_IMAGE_ON_S3' => 'Échec du téléchargement de fichiers sur S3',
     ],
 ];

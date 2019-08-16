@@ -6,8 +6,8 @@ use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
 use App\Repositories\User\UserRepository;
-use App\Helpers\ResponseHelper;
 use App\Traits\RestExceptionHandlerTrait;
+use App\Helpers\ResponseHelper;
 use App\User;
 use InvalidArgumentException;
 use App\Transformations\UserTransformable;
@@ -16,6 +16,8 @@ use App\Helpers\LanguageHelper;
 use App\Helpers\Helpers;
 use Validator;
 use Illuminate\Validation\Rule;
+use App\Helpers\S3Helper;
+use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
@@ -41,24 +43,33 @@ class UserController extends Controller
     private $helpers;
 
     /**
+     * @var App\Helpers\S3Helper
+     */
+    private $s3helper;
+    
+
+    /**
      * Create a new controller instance.
      *
      * @param App\Repositories\User\UserRepository $userRepository
      * @param Illuminate\Http\ResponseHelper $responseHelper
-     * @param App\Helpers\LanguageHelper
+     * @param App\Helpers\LanguageHelper $languageHelper
      * @param App\Helpers\Helpers $helpers
+     * @param App\Helpers\S3Helper $s3helper
      * @return void
      */
     public function __construct(
         UserRepository $userRepository,
         ResponseHelper $responseHelper,
         LanguageHelper $languageHelper,
-        Helpers $helpers
+        Helpers $helpers,
+        S3Helper $s3helper
     ) {
         $this->userRepository = $userRepository;
         $this->responseHelper = $responseHelper;
         $this->languageHelper = $languageHelper;
         $this->helpers = $helpers;
+        $this->s3helper = $s3helper;
     }
     
     /**
@@ -160,7 +171,7 @@ class UserController extends Controller
                 "custom_fields.*.value" => "sometimes|required"
                 ]
             );
-                        
+
             // If request parameter have any error
             if ($validator->fails()) {
                 return $this->responseHelper->error(
@@ -170,7 +181,7 @@ class UserController extends Controller
                     $validator->errors()->first()
                 );
             }
-            
+
             // Check language id
             if (isset($request->language_id)) {
                 if (!$this->languageHelper->validateLanguageId($request)) {
@@ -206,6 +217,113 @@ class UserController extends Controller
                 trans(
                     'messages.custom_error_message.ERROR_DATABASE_OPERATIONAL'
                 )
+            );
+        } catch (\Exception $e) {
+            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
+        }
+    }
+    
+    /**
+     * Upload profile image of user
+     *
+     * @param Illuminate\Http\Request $request
+     * @return Illuminate\Http\JsonResponse
+     */
+    public function uploadProfileImage(Request $request)
+    {
+        try {
+            $validator = Validator::make($request->toArray(), [
+                'avatar' => 'required|valid_profile_image'
+            ]);
+
+            // If request parameter have any error
+            if ($validator->fails()) {
+                return $this->responseHelper->error(
+                    Response::HTTP_UNPROCESSABLE_ENTITY,
+                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                    config('constants.error_codes.ERROR_USER_INVALID_DATA'),
+                    $validator->errors()->first()
+                );
+            }
+
+            $userId = $request->auth->user_id;
+            $tenantName = $this->helpers->getSubDomainFromRequest($request);
+            $imagePath = $this->s3helper->uploadProfileImageOnS3Bucket($request->avatar, $tenantName, $userId);
+            
+            $userData['avatar'] = $imagePath;
+            $this->userRepository->update($userData, $userId);
+            
+            $apiMessage = trans('messages.success.MESSAGE_PROFILE_IMAGE_UPLOADED');
+            $apiStatus = Response::HTTP_OK;
+            return $this->responseHelper->success(Response::HTTP_OK, $apiMessage);
+        } catch (S3Exception $e) {
+            return $this->s3Exception(
+                config('constants.error_codes.ERROR_FAILED_TO_RESET_STYLING'),
+                trans('messages.custom_error_message.ERROR_FAILED_TO_RESET_STYLING')
+            );
+        } catch (\PDOException $e) {
+            return $this->PDO(
+                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
+                trans('messages.custom_error_message.ERROR_USER_NOT_FOUND')
+            );
+        } catch (\Exception $e) {
+            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
+        }
+    }
+
+    /**
+     * Add/remove user skills
+     *
+     * @param  \Illuminate\Http\Request $request
+     * @return Illuminate\Http\JsonResponse
+     */
+    public function linkSkill(Request $request): JsonResponse
+    {
+        try {
+            $id = $request->auth->user_id;
+            $validator = Validator::make($request->toArray(), [
+                'skills' => 'required',
+                'skills.*.skill_id' => 'required|exists:skill,skill_id,deleted_at,NULL',
+            ]);
+
+            // If request parameter have any error
+            if ($validator->fails()) {
+                return $this->responseHelper->error(
+                    Response::HTTP_UNPROCESSABLE_ENTITY,
+                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                    config('constants.error_codes.ERROR_SKILL_INVALID_DATA'),
+                    $validator->errors()->first()
+                );
+            }
+            
+            // Check if skills reaches maximum limit
+            if (count($request->skills) > config('constants.SKILL_LIMIT')) {
+                return $this->responseHelper->error(
+                    Response::HTTP_UNPROCESSABLE_ENTITY,
+                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                    config('constants.error_codes.ERROR_SKILL_LIMIT'),
+                    trans('messages.custom_error_message.SKILL_LIMIT')
+                );
+            }
+
+            //Delete user skills
+            $this->userRepository->deleteSkills($id);
+
+            $this->userRepository->linkSkill($request->toArray(), $id);
+
+            // Set response data
+            $apiStatus = Response::HTTP_CREATED;
+            $apiMessage = trans('messages.success.MESSAGE_USER_SKILLS_CREATED');
+            return $this->responseHelper->success($apiStatus, $apiMessage);
+        } catch (PDOException $e) {
+            return $this->PDO(
+                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
+                trans('messages.custom_error_message.ERROR_DATABASE_OPERATIONAL')
+            );
+        } catch (ModelNotFoundException $e) {
+            return $this->modelNotFound(
+                config('constants.error_codes.ERROR_USER_NOT_FOUND'),
+                trans('messages.custom_error_message.ERROR_USER_NOT_FOUND')
             );
         } catch (\Exception $e) {
             return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));

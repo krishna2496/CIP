@@ -231,7 +231,7 @@ class UserRepository implements UserInterface
     }
 
     /**
-    * Add/Update user custom field value.
+    *Add/Update user custom field value.
     *
     * @param array $userCustomFields
     * @param int $userId
@@ -253,5 +253,32 @@ class UserRepository implements UserInterface
             unset($userCustomFieldData);
         }
         return $userCustomField ?? null;
+    }
+
+    /**
+     * Delete skills by userId
+     *
+     * @param int $userId
+     * @return bool
+     */
+    public function deleteSkills(int $userId): bool
+    {
+        return $this->userSkill->deleteUserSkills($userId);
+    }
+
+    /**
+     * Change user's password
+     *
+     * @param int $id
+     * @param string $password
+     *
+     * @return bool
+     */
+    public function changePassword(int $id, string $password): bool
+    {
+        // Fetch user details from system and update password
+        $userDetail = $this->user->find($id);
+        $userDetail->password = $password;
+        return $userDetail->save();
     }
 }

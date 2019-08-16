@@ -36,16 +36,16 @@ return [
         'MESSAGE_MISSION_LISTING' => 'DE: Mission listed successfully',
         'MESSAGE_SKILL_LISTING' => 'DE: Skill listed successfully',
         'MESSAGE_THEME_LISTING' => 'DE: Mission theme listed successfully',
-        'MESSAGE_CITY_LISTING' => 'DE: City listed successfully',      
+        'MESSAGE_CITY_LISTING' => 'DE: City listed successfully',
         'MESSAGE_MISSION_ADDED_TO_FAVOURITE' => 'DE: Mission added to favourite',
         'MESSAGE_MISSION_DELETED_FROM_FAVOURITE' => 'DE: Mission removed from favourite',
         'MESSAGE_COUNTRY_LISTING' => 'DE: Country listed successfully',
         'MESSAGE_MISSION_FOUND' => 'DE: Mission found successfully',
         'MESSAGE_PAGE_FOUND' => 'DE: Page found successfully',
         'MESSAGE_ASSETS_FILES_LISTING' => 'DE: Assets files listed successfully',
-        'MESSAGE_TENANT_SETTING_UPDATE_SUCCESSFULLY' => 'DE: Settings has been update successfully',
+        'MESSAGE_TENANT_SETTING_UPDATE_SUCCESSFULLY' => 'DE: Settings has been updated successfully',
         'MESSAGE_TENANT_SETTINGS_LISTING' => 'DE: Settings listed successfully',
-		'MESSAGE_THEME_CREATED' => 'DE: Mission theme created successfully',
+        'MESSAGE_THEME_CREATED' => 'DE: Mission theme created successfully',
         'MESSAGE_THEME_UPDATED' => 'DE: Mission theme updated successfully',
         'MESSAGE_THEME_DELETED' => 'DE: Mission theme deleted successfully',
         'MESSAGE_THEME_FOUND' => 'DE: Mission theme found successfully',
@@ -55,7 +55,7 @@ return [
         'MESSAGE_SKILL_FOUND' => 'DE: Skill found successfully',
         'MESSAGE_THEME_FOUND' => 'DE: Mission theme found successfully',
         'MESSAGE_TENANT_OPTION_CREATED' => 'DE: Tenant option created successfully',
-        'MESSAGE_TENANT_OPTION_UPDATED' => 'DE: Tenant option update successfully',
+        'MESSAGE_TENANT_OPTION_UPDATED' => 'DE: Tenant option updated successfully',
         'MESSAGE_TENANT_OPTIONS_LIST' => 'DE: Tenant options listed successfully',
         'MESSAGE_MISSION_RATING_LISTING' => 'DE: Get mission rating successfully',
         'MESSAGE_TENANT_OPTION_FOUND' => 'DE: Tenant option found',
@@ -71,6 +71,7 @@ return [
         'MESSAGE_NO_MISSION_MEDIA_FOUND' => 'DE: Mission media not found',
         'MESSAGE_NO_MISSION_COMMENT_FOUND' => 'DE: Mission comments not found',
         'MESSAGE_COMMENT_ADDED' => 'DE: Thanks for your comment. Your comment will only be visible after moderation',
+        'MESSAGE_PROFILE_IMAGE_UPLOADED' => 'DE: Profile image uploaded successfully',
     ],
 
         
@@ -134,6 +135,7 @@ return [
         'ERROR_TOKEN_EXPIRED' => 'DE: Provided token is expired',
         'ERROR_IN_TOKEN_DECODE' => 'DE: An error while decoding token',
         'ERROR_TOKEN_NOT_PROVIDED' => 'DE: Token not provided',
+        'ERROR_OLD_PASSWORD_NOT_MATCHED' => 'DE: Sorry old password dosen\'t matched',
         
 
         // Custom error code for common exception
@@ -158,6 +160,7 @@ return [
         'ERROR_WHILE_UPLOADING_IMAGE_ON_S3' => 'DE: An error while uploading image on S3',
         'ERROR_DOWNLOADING_IMAGE_TO_LOCAL' => 'DE: An error while downloading image from S3 to server',
         'ERROR_IMAGE_UPLOAD_INVALID_DATA' => 'DE: Invalid input file',
-        'ERROR_TENANT_OPTION_NOT_FOUND' => 'DE: No tenant option found'
+        'ERROR_TENANT_OPTION_NOT_FOUND' => 'DE: No tenant option found',
+        'ERROR_FAILD_TO_UPLOAD_PROFILE_IMAGE_ON_S3' => 'DE: Failed to upload image on S3',
     ],
 ];

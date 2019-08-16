@@ -100,4 +100,22 @@ interface UserInterface
     * @return null|App\Models\UserCustomFieldValue
     */
     public function updateCustomFields(array $userCustomFields, int $id): ?UserCustomFieldValue;
+
+    /**
+     * Delete skills by userId
+     *
+     * @param int $userId
+     * @return bool
+     */
+    public function deleteSkills(int $userId): bool;
+    
+    /**
+     * Change user password
+     *
+     * @param int $id
+     * @param string $password
+     *
+     * @return bool
+     */
+    public function changePassword(int $id, string $password): bool;
 }

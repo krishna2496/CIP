@@ -72,8 +72,8 @@ class UserCustomFieldRepository implements UserCustomFieldInterface
         $customField->update($request);
         return $customField;
     }
-	
-	/**
+    
+    /**
      * Find user custom field in storage.
      *
      * @param  int  $id
@@ -81,7 +81,7 @@ class UserCustomFieldRepository implements UserCustomFieldInterface
      */
     public function find(int $id): UserCustomField
     {
-		return $this->field->findOrFail($id);
+        return $this->field->findOrFail($id);
     }
        
     /**

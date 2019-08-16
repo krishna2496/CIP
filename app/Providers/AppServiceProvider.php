@@ -18,9 +18,20 @@ class AppServiceProvider extends ServiceProvider
             $urlExtension = pathinfo($value, PATHINFO_EXTENSION);
             return (!in_array($urlExtension, config('constants.document_types'))) ? false : true;
         });
-		
-		Validator::extend('valid_video_url', function ($attribute, $value) {
-			return (preg_match("/^(https?\:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/watch\?v\=\w+$/", $value)) ? true : false;
+        
+        Validator::extend('valid_video_url', function ($attribute, $value) {
+            return (preg_match(
+                '~^(?:https?://)?(?:www[.])?(?:youtube[.]com/watch[?]v=|youtu[.]be/)([^&]{11}) ~x',
+                $value
+            ))
+            ? true : false;
+        });
+        
+        Validator::extend('valid_profile_image', function ($attribute, $value, $params, $validator) {
+            $image = base64_decode($value);
+            $f = finfo_open();
+            $result = finfo_buffer($f, $image, FILEINFO_MIME_TYPE);
+            return in_array($result, config('constants.profile_image_types'));
         });
     }
 
