@@ -96,7 +96,7 @@
                         <b-form-input id type="text" 
                         v-model="profile.firstName" 
                         :class="{ 'is-invalid': submitted && $v.profile.firstName.$error }" 
-                        @keydown.space.prevent
+    
                         autofocus 
                         :placeholder="langauageData.placeholder.name" 
                         maxlength="16"
@@ -112,7 +112,7 @@
                             <b-form-input id type="text" 
                             v-model="profile.lastName" 
                             :class="{ 'is-invalid': submitted && $v.profile.lastName.$error }" 
-                            @keydown.space.prevent
+        
                             :placeholder="langauageData.placeholder.surname"
                             maxlength="16"
                             ></b-form-input>
@@ -125,7 +125,7 @@
                             <label for>{{langauageData.label.employee_id}}</label>
                             <b-form-input id type="text" 
                                 v-model="profile.employeeId"    
-                                @keydown.space.prevent
+            
                                 maxlength="16"
                                 :placeholder="langauageData.placeholder.employee_id">
                             </b-form-input>
@@ -136,7 +136,7 @@
                             <label for>{{langauageData.label.manager}}</label>
                             <b-form-input id type="text"
                             v-model="profile.managerName"                     
-                            @keydown.space.prevent
+        
                             :placeholder="langauageData.placeholder.manager"
                             maxlength="16"
                             ></b-form-input>
@@ -147,7 +147,7 @@
                             <label for>{{langauageData.label.title}}</label>
                             <b-form-input id type="text"
                             v-model="profile.title" 
-                            @keydown.space.prevent
+        
                             :placeholder="langauageData.placeholder.title"
                             maxlength="25"
                             ></b-form-input>
@@ -158,7 +158,7 @@
                             <label for>{{langauageData.label.department}}</label>
                             <b-form-input id type="text"
                             v-model="profile.department" 
-                            @keydown.space.prevent
+        
                             :placeholder="langauageData.placeholder.department"></b-form-input>
                             
                         </b-form-group>
@@ -173,7 +173,7 @@
                             no-resize
                             v-model="profile.profileText" 
                             :class="{ 'is-invalid': submitted && $v.profile.profileText.$error }" 
-                            @keydown.space.prevent
+        
                             rows="5"
                             ></b-form-textarea>
                             <div v-if="submitted && !$v.profile.profileText.required" class="invalid-feedback">
@@ -189,7 +189,7 @@
                         id
                         v-model="profile.whyiVolunteer" 
                         :class="{ 'is-invalid': submitted && $v.profile.whyiVolunteer.$error }" 
-                        @keydown.space.prevent
+    
                         :placeholder="langauageData.placeholder.why_i_volunteer"
                         size="lg"
                         no-resize
@@ -271,7 +271,7 @@
                         <b-form-input id 
                          v-model="profile.linkedInUrl" 
                         :class="{ 'is-invalid': submitted && $v.profile.linkedInUrl.$error }" 
-                        @keydown.space.prevent
+    
                         :placeholder="langauageData.placeholder.linked_in"
                         ></b-form-input>
                           <div v-if="submitted && !$v.profile.linkedInUrl.validLinkedInUrl" class="invalid-feedback">
@@ -340,7 +340,6 @@
               <b-form-input id type="password" 
                v-model="resetPassword.oldPassword" 
                 :class="{ 'is-invalid': passwordSubmit && $v.resetPassword.oldPassword.$error }" 
-                @keydown.space.prevent
               :placeholder="langauageData.placeholder.old_password"
               ></b-form-input>
               <div v-if="passwordSubmit && !$v.resetPassword.oldPassword.required" class="invalid-feedback">
@@ -351,7 +350,6 @@
               <b-form-input id type="password" 
                 v-model="resetPassword.newPassword" 
                 :class="{ 'is-invalid': passwordSubmit && $v.resetPassword.newPassword.$error }" 
-                @keydown.space.prevent
                :placeholder="langauageData.placeholder.new_password"
               ></b-form-input>
                 <div v-if="passwordSubmit && !$v.resetPassword.newPassword.required" class="invalid-feedback">
@@ -364,13 +362,12 @@
               <b-form-input id 
                v-model="resetPassword.confirmPassword" 
                 :class="{ 'is-invalid': passwordSubmit && $v.resetPassword.confirmPassword.$error }" 
-                @keydown.space.prevent
                 :placeholder="langauageData.placeholder.confirm_password"
                 type="password"> 
               </b-form-input>
                 <div v-if="passwordSubmit && !$v.resetPassword.confirmPassword.required" class="invalid-feedback">
                     {{ langauageData.errors.field_required }}</div>
-                <div v-if="passwordSubmit && !$v.resetPassword.confirmPassword.sameAsPassword" class="invalid-feedback">
+                <div v-if="passwordSubmit && $v.resetPassword.confirmPassword.required && !$v.resetPassword.confirmPassword.sameAsPassword" class="invalid-feedback">
                     {{ langauageData.errors.identical_password }}</div>
             </b-form-group>
           </form>
@@ -772,11 +769,12 @@ export default {
                             this.makeToast("danger",skillResponse.message);
                         } else {
                             this.isShownComponent = false;
-                            loadLocaleMessages(this.profile.languageCode).then(langaugeResponse =>{
+                            loadLocaleMessages(this.profile.languageCode).then(langaugeResponse => {
                                 this.langauageData = JSON.parse(store.state.languageLabel); 
                                 this.isShownComponent = true;
                                 this.disableApply = true;
                                 this.makeToast("success",response.message);
+                                this.getUserProfileDetail();
                             });
                             store.commit("changeUserDetail",this.profile)
                         }
@@ -787,6 +785,7 @@ export default {
 
 
         },   
+        // changePassword
         changePassword() {
             var _this = this;
             this.passwordSubmit = true;
@@ -821,9 +820,13 @@ export default {
                     this.resetPassword.confirmPassword = ''
                     this.$v.$reset(); 
                     store.commit("changeToken",response.data.token)
+                    setTimeout(function() {
+                        _this.$refs.changePasswordModal.hide();
+                        _this.showErrorDiv = false
+                    },1000)
                 }
             });
-            // changePassword
+     
         },
         changeCityData(countryId) {
             if(countryId) {
