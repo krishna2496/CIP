@@ -12,7 +12,6 @@ export default {
       return {};
     },
     mounted() {
-        this.footerAdj();
         //ios browser detection
         if (navigator.userAgent.match(/iP(hone|od|ad)/i)) {
             document.querySelector("body").classList.add("browser-ios");
@@ -39,16 +38,6 @@ export default {
             });
         }
         },
-        footerAdj() {
-            setTimeout(function() {
-                if (document.querySelector("footer") != null) {
-                    var footerH = document.querySelector("footer").offsetHeight;
-                    document.querySelector("footer").style.marginTop = -footerH + "px";
-                    document.querySelector(".inner-pages").style.paddingBottom =
-                    footerH + "px";
-                }
-            }, 1000);
-        },
         signinAdj() {
             setTimeout(function() {
             if (document.querySelector(".signin-form-wrapper") != null) {
@@ -72,7 +61,6 @@ export default {
         }
     },
     beforeMount() {
-        this.footerAdj();
         this.signinAdj();
     },
     handleScroll() {
@@ -88,7 +76,6 @@ export default {
 		}
 	  },
   beforeMount() {
-    this.footerAdj();
     var ua = navigator.userAgent.toLowerCase();
     if (ua.indexOf("safari") != -1) {
     if (ua.indexOf("chrome") > -1) {
@@ -97,8 +84,6 @@ export default {
         document.querySelector("body").classList.add("browser-safari"); // Safari
     }
     }
-
-    window.addEventListener("resize", this.footerAdj);
     window.addEventListener("resize", this.signinAdj);
     window.addEventListener("scroll", this.handleScroll);
     window.scrollTo(0, 0);
@@ -106,7 +91,6 @@ export default {
     updated() {
         window.scrollTo(0, 0);
         this.signinAdj();
-        this.footerAdj();
         setTimeout(() =>  {
             var selectorList = document.querySelectorAll(".nav-link");
             var dropdownList = document.querySelectorAll(
@@ -153,7 +137,6 @@ export default {
             })
         });
         
- window.addEventListener("resize", this.footerAdj);
 
   },
   destroyed() {

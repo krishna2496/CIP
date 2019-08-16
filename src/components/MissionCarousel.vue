@@ -19,7 +19,7 @@
 					</iframe>
 				</div>	
 			</div>
-			<carousel  :nav="true" :dots="false" :items="5" :loop="loop" :mouseDrag="false" :touchDrag="false" class="gallery-thumbs" :margin ="8" :responsive="{0:{items:3},576:{items:4},1200:{items:5}}">
+			<carousel  :nav="true" :dots="false" :items="5" :loop="loop" :mouseDrag="false"  class="gallery-thumbs" :margin ="8" :responsive="{0:{items:3},576:{items:4},1200:{items:5}}">
 				<div class="thumbs-col" v-bind:class="{
 				'video-block': media.media_type == 'mp4', 
 				'img-block': media.media_type != 'mp4'}" 

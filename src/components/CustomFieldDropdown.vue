@@ -1,9 +1,9 @@
 <template>
-
     <div v-if="optionList != null && optionList.length > 0" 
       v-bind:class="{
         'custom-dropdown' :true,
-        'select-dropdown':true
+        'select-dropdown':true,
+        'is-invalid' : errorClass
       }"
       >
         <span class="select-text" @click="handleClick">{{defaultText}}</span>
@@ -26,17 +26,30 @@
         </div>
         
     </div>
+    <div v-else v-bind:class="{
+        'custom-dropdown' :true,
+        'select-dropdown':true,
+        'is-invalid' : errorClass
+      }">
+        <span class="select-text" @click="handleClick">{{defaultText}}</span>
+        <div class="option-list-wrap dropdown-option-wrap " data-simplebar>
+            <ul class="option-list dropdown-option-list">
+                <li>{{langauageData.label.no_record_found}}</li>
+            </ul>
+        </div>
+    </div>
 </template>
 
 <script>
 import store from '../store';
 export default {
-    name: "AppCustomDropdown",
+    name: "CustomFieldDropdown",
     components: {},
     props: {
         optionList: Array,
         defaultText: String,
-        translationEnable : String
+        translationEnable : String,
+        errorClass : Boolean,
     },
     data() {
         return {

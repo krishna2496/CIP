@@ -2,6 +2,8 @@
     <div class="checkbox-select select-dropdown dropdown-with-counter">
         <span class="select-text" @click="handleClick">{{filterTitle}}</span>
     <div class="chk-select-wrap dropdown-option-wrap" data-simplebar @click.stop @touchend.stop>
+
+
     <ul class="chk-select-options dropdown-option-list" v-if="checkList.length > 0">
         <li 
             v-for="(item , i) in checkList" 

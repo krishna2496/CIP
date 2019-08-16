@@ -91,6 +91,11 @@
 }
 
 //break points
+@mixin xxs-max {
+  @media (max-width: 480px) {
+    @content;
+  }
+}
 
 @mixin xs-max {
   @media (max-width: 575px) {

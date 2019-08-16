@@ -148,6 +148,31 @@ export default new Vuex.Store({
         setlanguageLabel(state,data){
             localStorage.setItem("languageLabel",JSON.stringify(data));
             state.languageLabel = JSON.stringify(data);
+        },
+        changeToken(state,data) {
+            localStorage.setItem('token', data)
+            state.token = data;
+        },
+        changeAvatar(state,data) {
+            localStorage.setItem('avatar', data.avatar) 
+            state.avatar = data.avatar;
+        },
+        changeUserDetail(state, data) {  
+        
+            var langaugeCode = data.languageCode; 
+            
+            localStorage.setItem('firstName', data.firstName)
+            localStorage.setItem('lastName', data.lastName)
+            localStorage.setItem('defaultLanguage', langaugeCode.toUpperCase())
+            localStorage.setItem('defaultLanguageId', data.language);
+            localStorage.setItem('countryId',data.country)
+            localStorage.setItem('cityId',data.city)
+            state.defaultLanguage = langaugeCode.toUpperCase()
+            state.defaultLanguageId = data.language;
+            state.firstName = data.firstName;
+            state.lastName = data.lastName;
+            state.countryId = data.country
+            state.cityId = data.city
         }
     },
     getters: {},

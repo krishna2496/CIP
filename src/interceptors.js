@@ -16,7 +16,8 @@ export default function setup() {
         var getRequestEndPoint = getRequest[0];
 
         // Do something before request is sent
-        if(domain[lastPosition] == "favourite" || domain[lastPosition] == "rating" || domain[lastPosition] == "comment" || getRequestEndPoint == "comments"){
+        if(domain[lastPosition] == "favourite" || domain[lastPosition] == "rating" 
+            || domain[lastPosition] == "comment" || getRequestEndPoint == "comments" || domain[lastPosition] == "upload-profile-image"){
             addLoader = "false";
         }
 
