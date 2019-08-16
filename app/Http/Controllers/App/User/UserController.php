@@ -412,9 +412,10 @@ class UserController extends Controller
             $userData['avatar'] = $imagePath;
             $this->userRepository->update($userData, $userId);
             
+            $apiData = ['avatar' => $imagePath];
             $apiMessage = trans('messages.success.MESSAGE_PROFILE_IMAGE_UPLOADED');
             $apiStatus = Response::HTTP_OK;
-            return $this->responseHelper->success(Response::HTTP_OK, $apiMessage);
+            return $this->responseHelper->success(Response::HTTP_OK, $apiMessage, $apiData);
         } catch (S3Exception $e) {
             return $this->s3Exception(
                 config('constants.error_codes.ERROR_FAILED_TO_RESET_STYLING'),
