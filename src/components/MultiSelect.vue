@@ -138,6 +138,7 @@ export default {
         },
         saveSkill(){
             this.$emit("saveSkillData",this.toList);
+            this.showErrorDiv = false
             this.$refs.skillModal.hide();
         }
     },

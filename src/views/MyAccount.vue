@@ -367,7 +367,7 @@
               </b-form-input>
                 <div v-if="passwordSubmit && !$v.resetPassword.confirmPassword.required" class="invalid-feedback">
                     {{ langauageData.errors.field_required }}</div>
-                <div v-if="passwordSubmit && !$v.resetPassword.confirmPassword.sameAsPassword" class="invalid-feedback">
+                <div v-if="passwordSubmit && $v.resetPassword.confirmPassword.required && !$v.resetPassword.confirmPassword.sameAsPassword" class="invalid-feedback">
                     {{ langauageData.errors.identical_password }}</div>
             </b-form-group>
           </form>
@@ -785,6 +785,7 @@ export default {
 
 
         },   
+        // changePassword
         changePassword() {
             var _this = this;
             this.passwordSubmit = true;
@@ -819,9 +820,13 @@ export default {
                     this.resetPassword.confirmPassword = ''
                     this.$v.$reset(); 
                     store.commit("changeToken",response.data.token)
+                    setTimeout(function() {
+                        _this.$refs.changePasswordModal.hide();
+                        _this.showErrorDiv = false
+                    },1000)
                 }
             });
-            // changePassword
+     
         },
         changeCityData(countryId) {
             if(countryId) {
