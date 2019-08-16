@@ -157,7 +157,8 @@ export default new Vuex.Store({
             localStorage.setItem('avatar', data.avatar) 
             state.avatar = data.avatar;
         },
-        changeUserDetail(state, data) {   
+        changeUserDetail(state, data) {  
+        
             var langaugeCode = data.languageCode; 
             
             localStorage.setItem('firstName', data.firstName)

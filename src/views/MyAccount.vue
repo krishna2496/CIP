@@ -402,7 +402,7 @@ import MultiSelect from "../components/MultiSelect";
 import CustomField from "../components/CustomField";
 import store from "../store";
 import PictureInput from 'vue-picture-input'
-import {getUserDetail,saveProfile,changeUserPassword,changeProfilePicture,changeCity,saveUserProfile,saveSkill} from "../services/service";
+import {getUserDetail,saveProfile,changeUserPassword,changeProfilePicture,changeCity,saveUserProfile,saveSkill,loadLocaleMessages} from "../services/service";
 import { required,maxLength, email,sameAs, minLength, between,helpers} from 'vuelidate/lib/validators';
 import constants from '../constant';
 
@@ -531,6 +531,7 @@ export default {
     methods: {
         updateLang(value) {
             this.languageDefault = value.selectedVal;
+            this.profile.languageCode = value.selectedVal;
             this.profile.language =  value.selectedId;
         },
         updateTime(value) {
@@ -770,9 +771,13 @@ export default {
                         if(skillResponse.error == true){
                             this.makeToast("danger",skillResponse.message);
                         } else {
-                            this.disableApply = true;
-                            this.makeToast("success",response.message);
-                            // this.getUserProfileDetail()
+                            this.isShownComponent = false;
+                            loadLocaleMessages(this.profile.languageCode).then(langaugeResponse =>{
+                                this.langauageData = JSON.parse(store.state.languageLabel); 
+                                this.isShownComponent = true;
+                                this.disableApply = true;
+                                this.makeToast("success",response.message);
+                            });
                             store.commit("changeUserDetail",this.profile)
                         }
                     });
