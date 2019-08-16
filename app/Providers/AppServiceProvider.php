@@ -28,10 +28,10 @@ class AppServiceProvider extends ServiceProvider
         });
         
         Validator::extend('valid_profile_image', function ($attribute, $value, $params, $validator) {
-            $image = base64_decode($value);
+            $image = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $value));
             $f = finfo_open();
             $result = finfo_buffer($f, $image, FILEINFO_MIME_TYPE);
-            return in_array($result, config('constants.profile_image_types'));
+			return in_array($result, config('constants.profile_image_types'));
         });
     }
 
