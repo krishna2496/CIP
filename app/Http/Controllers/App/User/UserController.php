@@ -283,13 +283,12 @@ class UserController extends Controller
             $apiData['timezone_list'] = $timezoneList;
             $apiData['language_list'] = $tenantLanguages;
             $apiData['availability_list'] = $availabilityList;
-            if (isset($userDetail->avatar)) {
+            if (isset($userDetail->avatar) && ($userDetail->avatar != '')) {
                 $type = pathinfo($userDetail->avatar, PATHINFO_EXTENSION);
                 $imageData = file_get_contents($userDetail->avatar);
                 $avatarBase64 = 'data:image/' . $type . ';base64,' . base64_encode($imageData);
-                $apiData['avatar_base64'] = $avatarBase64;
             }
-           
+            $apiData['avatar_base64'] = $avatarBase64 ?? '';
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_USER_FOUND');
             
@@ -319,11 +318,6 @@ class UserController extends Controller
                 $request->all(),
                 ["first_name" => "sometimes|required|max:16",
                 "last_name" => "sometimes|required|max:16",
-                "email" => [
-                    "sometimes",
-                    "required",
-                    "email",
-                    Rule::unique('user')->ignore($id, 'user_id')],
                 "password" => "sometimes|required|min:8",
                 "employee_id" => "sometimes|required|max:16",
                 "department" => "sometimes|required|max:16",
