@@ -30,12 +30,12 @@
 
                             <b-form-group :label="item.translations.name"  v-if="item.type == 'checkbox'">
                                 <b-form-checkbox-group
-                                :id='`checkbox-${item.field_id}`'
+                                 id="checkbox-1"
                                 v-model="customFeildData[item.field_id]"  
                                 :options="getRadioArrayValue(item.translations.values)"
-                                :name="item.translations.name"
-                                 :class="{ 'is-invalid':false }" 
-                                 @change="updateChanges"
+                                name="checkbox-custom"
+                                :class="{ 'is-invalid':false }" 
+                                
                                 >
                                 </b-form-checkbox-group>
                             </b-form-group>
