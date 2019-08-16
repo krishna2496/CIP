@@ -223,13 +223,15 @@ class UserController extends Controller
                         $returnData = $value;
                         unset($returnData['translations']);
                         if ($arrayKey !== '') {
-                            $returnData['translations']['lang'] = $value['translations'][$arrayKey]['lang'];
-                            $returnData['translations']['name'] = $value['translations'][$arrayKey]['name'];
-                            $returnData['translations']['values'] = $value['translations'][$arrayKey]['values'];
-                          
-                            $userCustomFieldValue = $customFieldsValue->where('field_id', $value['field_id'])
-                            ->where('user_id', $userId)->first();
-                            $returnData['user_custom_field_value'] = $userCustomFieldValue->value ?? '';
+                            if (isset($value['translations'][$arrayKey])) {
+                                $returnData['translations']['lang'] = $value['translations'][$arrayKey]['lang'];
+                                $returnData['translations']['name'] = $value['translations'][$arrayKey]['name'];
+                                $returnData['translations']['values'] = $value['translations'][$arrayKey]['values'];
+                            
+                                $userCustomFieldValue = $customFieldsValue->where('field_id', $value['field_id'])
+                                ->where('user_id', $userId)->first();
+                                $returnData['user_custom_field_value'] = $userCustomFieldValue->value ?? '';
+                            }
                         }
                     }
                     if (!empty($returnData)) {
@@ -283,6 +285,7 @@ class UserController extends Controller
             $apiData['timezone_list'] = $timezoneList;
             $apiData['language_list'] = $tenantLanguages;
             $apiData['availability_list'] = $availabilityList;
+
             if (isset($userDetail->avatar) && ($userDetail->avatar != '')) {
                 $type = pathinfo($userDetail->avatar, PATHINFO_EXTENSION);
                 $imageData = file_get_contents($userDetail->avatar);
@@ -319,9 +322,9 @@ class UserController extends Controller
                 ["first_name" => "sometimes|required|max:16",
                 "last_name" => "sometimes|required|max:16",
                 "password" => "sometimes|required|min:8",
-                "employee_id" => "sometimes|required|max:16",
-                "department" => "sometimes|required|max:16",
-                "manager_name" => "sometimes|required|max:16",
+                "employee_id" => "max:16",
+                "department" => "max:16",
+                "manager_name" => "max:16",
                 "linked_in_url" => "url",
                 "availability_id" => "exists:availability,availability_id",
                 "city_id" => "exists:city,city_id",

@@ -571,6 +571,7 @@ class AppUserTest extends TestCase
                 "country_id",
                 "profile_text",
                 "linked_in_url",
+                "title",
                 "status",
                 "city",
                 "country",

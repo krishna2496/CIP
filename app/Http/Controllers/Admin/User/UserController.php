@@ -102,8 +102,7 @@ class UserController extends Controller
                 "employee_id" => "max:16",
                 "department" => "max:16",
                 "manager_name" => "max:16",
-                "linked_in_url" => "url",
-                "availability_id" => "exists:user_availability,availability_id"]
+                "linked_in_url" => "url"]
             );
 
             // If request parameter have any error
