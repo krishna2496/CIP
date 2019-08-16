@@ -88,7 +88,7 @@ return [
     'image_types' => [
         'PNG' => 'png'
     ],
-
+    
     /*
      * User profile image allowed MIME types
      */
@@ -244,8 +244,6 @@ return [
         'ERROR_FAILD_TO_UPLOAD_PROFILE_IMAGE_ON_S3' => '800022',
         
         'ERROR_POLICY_PAGE_NOT_FOUND' => '300010',
-        'ERROR_POLICY_PAGE_REQUIRED_FIELDS_EMPTY' => '300011',
-        
+        'ERROR_POLICY_PAGE_REQUIRED_FIELDS_EMPTY' => '300011'
     ]
-    
 ];

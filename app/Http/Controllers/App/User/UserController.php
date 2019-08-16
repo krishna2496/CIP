@@ -19,8 +19,10 @@ use App\Transformations\UserTransformable;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Helpers\LanguageHelper;
 use App\Helpers\Helpers;
-use App\Helpers\S3Helper;
 use Validator;
+use Illuminate\Validation\Rule;
+use App\Helpers\S3Helper;
+use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
@@ -183,7 +185,7 @@ class UserController extends Controller
     }
 
     /**
-      * Get user detail.
+     * Get user detail.
      *
      * @param Illuminate\Http\Request $request
      * @return Illuminate\Http\JsonResponse
@@ -301,66 +303,91 @@ class UserController extends Controller
             return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
-
+    
     /**
-     * Add/remove user skills
+     * Update user data
      *
-     * @param  \Illuminate\Http\Request $request
-     * @return Illuminate\Http\JsonResponse
+     * @param Illuminate\Http\Request $request
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function linkSkill(Request $request): JsonResponse
+    public function update(Request $request): JsonResponse
     {
         try {
             $id = $request->auth->user_id;
-            $validator = Validator::make($request->toArray(), [
-                'skills' => 'required',
-                'skills.*.skill_id' => 'required|exists:skill,skill_id,deleted_at,NULL',
-            ]);
+            // Server side validataions
+            $validator = Validator::make(
+                $request->all(),
+                ["first_name" => "sometimes|required|max:16",
+                "last_name" => "sometimes|required|max:16",
+                "email" => [
+                    "sometimes",
+                    "required",
+                    "email",
+                    Rule::unique('user')->ignore($id, 'user_id')],
+                "password" => "sometimes|required|min:8",
+                "employee_id" => "sometimes|required|max:16",
+                "department" => "sometimes|required|max:16",
+                "manager_name" => "sometimes|required|max:16",
+                "linked_in_url" => "url",
+                "availability_id" => "exists:availability,availability_id",
+                "city_id" => "exists:city,city_id",
+                "country_id" => "exists:country,country_id",
+                "custom_fields.*.field_id" => "sometimes|required|exists:user_custom_field,field_id",
+                "custom_fields.*.value" => "sometimes|required"
+                ]
+            );
 
             // If request parameter have any error
             if ($validator->fails()) {
                 return $this->responseHelper->error(
                     Response::HTTP_UNPROCESSABLE_ENTITY,
                     Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                    config('constants.error_codes.ERROR_SKILL_INVALID_DATA'),
+                    config('constants.error_codes.ERROR_USER_INVALID_DATA'),
                     $validator->errors()->first()
                 );
             }
 
-            // Check if skills reaches maximum limit
-            if (count($request->skills) > config('constants.SKILL_LIMIT')) {
-                return $this->responseHelper->error(
-                    Response::HTTP_UNPROCESSABLE_ENTITY,
-                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                    config('constants.error_codes.ERROR_SKILL_LIMIT'),
-                    trans('messages.custom_error_message.SKILL_LIMIT')
-                );
+            // Check language id
+            if (isset($request->language_id)) {
+                if (!$this->languageHelper->validateLanguageId($request)) {
+                    return $this->responseHelper->error(
+                        Response::HTTP_UNPROCESSABLE_ENTITY,
+                        Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                        config('constants.error_codes.ERROR_USER_INVALID_DATA'),
+                        trans('messages.custom_error_message.ERROR_USER_INVALID_LANGUAGE')
+                    );
+                }
             }
 
-            //Delete user skills
-            $this->userRepository->deleteSkills($id);
-
-            $this->userRepository->linkSkill($request->toArray(), $id);
+            // Update user
+            $user = $this->userRepository->update($request->toArray(), $id);
+            if (!empty($request->custom_fields) && isset($request->custom_fields)) {
+                $userCustomFields = $this->userRepository->updateCustomFields($request->custom_fields, $id);
+            }
 
             // Set response data
-            $apiStatus = Response::HTTP_CREATED;
-            $apiMessage = trans('messages.success.MESSAGE_USER_SKILLS_CREATED');
-            return $this->responseHelper->success($apiStatus, $apiMessage);
-        } catch (PDOException $e) {
-            return $this->PDO(
-                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
-                trans('messages.custom_error_message.ERROR_DATABASE_OPERATIONAL')
-            );
+            $apiData = ['user_id' => $user->user_id];
+            $apiStatus = Response::HTTP_OK;
+            $apiMessage = trans('messages.success.MESSAGE_USER_UPDATED');
+            
+            return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
                 config('constants.error_codes.ERROR_USER_NOT_FOUND'),
                 trans('messages.custom_error_message.ERROR_USER_NOT_FOUND')
             );
+        } catch (PDOException $e) {
+            return $this->PDO(
+                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
+                trans(
+                    'messages.custom_error_message.ERROR_DATABASE_OPERATIONAL'
+                )
+            );
         } catch (\Exception $e) {
             return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
-
+    
     /**
      * Upload profile image of user
      *
@@ -402,6 +429,65 @@ class UserController extends Controller
         } catch (\PDOException $e) {
             return $this->PDO(
                 config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
+                trans('messages.custom_error_message.ERROR_USER_NOT_FOUND')
+            );
+        } catch (\Exception $e) {
+            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
+        }
+    }
+
+    /**
+     * Add/remove user skills
+     *
+     * @param  \Illuminate\Http\Request $request
+     * @return Illuminate\Http\JsonResponse
+     */
+    public function linkSkill(Request $request): JsonResponse
+    {
+        try {
+            $id = $request->auth->user_id;
+            $validator = Validator::make($request->toArray(), [
+                'skills' => 'required',
+                'skills.*.skill_id' => 'required|exists:skill,skill_id,deleted_at,NULL',
+            ]);
+
+            // If request parameter have any error
+            if ($validator->fails()) {
+                return $this->responseHelper->error(
+                    Response::HTTP_UNPROCESSABLE_ENTITY,
+                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                    config('constants.error_codes.ERROR_SKILL_INVALID_DATA'),
+                    $validator->errors()->first()
+                );
+            }
+            
+            // Check if skills reaches maximum limit
+            if (count($request->skills) > config('constants.SKILL_LIMIT')) {
+                return $this->responseHelper->error(
+                    Response::HTTP_UNPROCESSABLE_ENTITY,
+                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                    config('constants.error_codes.ERROR_SKILL_LIMIT'),
+                    trans('messages.custom_error_message.SKILL_LIMIT')
+                );
+            }
+
+            //Delete user skills
+            $this->userRepository->deleteSkills($id);
+
+            $this->userRepository->linkSkill($request->toArray(), $id);
+
+            // Set response data
+            $apiStatus = Response::HTTP_CREATED;
+            $apiMessage = trans('messages.success.MESSAGE_USER_SKILLS_CREATED');
+            return $this->responseHelper->success($apiStatus, $apiMessage);
+        } catch (PDOException $e) {
+            return $this->PDO(
+                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
+                trans('messages.custom_error_message.ERROR_DATABASE_OPERATIONAL')
+            );
+        } catch (ModelNotFoundException $e) {
+            return $this->modelNotFound(
+                config('constants.error_codes.ERROR_USER_NOT_FOUND'),
                 trans('messages.custom_error_message.ERROR_USER_NOT_FOUND')
             );
         } catch (\Exception $e) {
