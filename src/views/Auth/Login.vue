@@ -18,7 +18,8 @@
                 <b-form class="signin-form">
                     <b-form-group>
                         <label for="">{{ langauageData.label.email_address }}</label>
-                        <b-form-input id="" type="email" v-model="login.email" 
+                        <b-form-input id="" type="email" 
+                        v-model="login.email" 
                         v-bind:placeholder='langauageData.placeholder.email_address'
                         :class="{ 'is-invalid': $v.login.email.$error }" ref='email' autofocus 
                         maxlength="120"

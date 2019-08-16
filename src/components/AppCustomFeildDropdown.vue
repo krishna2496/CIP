@@ -3,25 +3,27 @@
     <div v-if="optionList != null && optionList.length > 0" 
       v-bind:class="{
         'custom-dropdown' :true,
-        'select-dropdown':true
+        'select-dropdown':true,
+        'is-invalid' : errorClass
       }"
       >
+
         <span class="select-text" @click="handleClick">{{defaultText}}</span>
         <div class="option-list-wrap dropdown-option-wrap " data-simplebar>
             <ul class="option-list dropdown-option-list" v-if="translationEnable == 'false'">
                 <li
                     v-for="item in optionList"
-                    v-bind:data-id="item[0]"
+                    v-bind:data-id="item.value"
                     @click="handleSelect"
                     @touchend="handleSelect"
-                >{{item[1]}}</li>
+                >{{item.text}}</li>
             </ul>
             <ul class="option-list dropdown-option-list" v-else>
                 <li
                     v-for="item in optionList"
-                    v-bind:data-id="item[0]"
+                    v-bind:data-id="item.value"
                     @click="handleSelect"
-                    @touchend="handleSelect">{{langauageData.label[item[1]]}}</li>
+                    @touchend="handleSelect">{{langauageData.label[item.text]}}</li>
             </ul>
         </div>
         
@@ -36,7 +38,9 @@ export default {
     props: {
         optionList: Array,
         defaultText: String,
-        translationEnable : String
+        translationEnable : String,
+        errorClass : Boolean,
+        fieldId : Number
     },
     data() {
         return {
@@ -51,6 +55,7 @@ export default {
             var selectedData = []
             selectedData['selectedVal']  = e.target.innerHTML;
             selectedData['selectedId']  = e.target.dataset.id;
+            selectedData['fieldId'] = this.fieldId;
             this.$emit("updateCall", selectedData);
         },
         handleClick(e) {

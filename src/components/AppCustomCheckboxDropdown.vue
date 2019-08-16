@@ -1,57 +1,53 @@
 <template>
-
-    <div v-if="optionList != null && optionList.length > 0" 
-      v-bind:class="{
-        'custom-dropdown' :true,
-        'select-dropdown':true
-      }"
-      >
-        <span class="select-text" @click="handleClick">{{defaultText}}</span>
-        <div class="option-list-wrap dropdown-option-wrap " data-simplebar>
-            <ul class="option-list dropdown-option-list" v-if="translationEnable == 'false'">
-                <li
-                    v-for="item in optionList"
-                    v-bind:data-id="item[0]"
-                    @click="handleSelect"
-                    @touchend="handleSelect"
-                >{{item[1]}}</li>
-            </ul>
-            <ul class="option-list dropdown-option-list" v-else>
-                <li
-                    v-for="item in optionList"
-                    v-bind:data-id="item[0]"
-                    @click="handleSelect"
-                    @touchend="handleSelect">{{langauageData.label[item[1]]}}</li>
-            </ul>
-        </div>
-        
+    <div class="checkbox-select select-dropdown dropdown-with-counter">
+        <span class="select-text" @click="handleClick">{{filterTitle}}</span>
+    <div class="chk-select-wrap dropdown-option-wrap" data-simplebar @click.stop @touchend.stop>
+    <ul class="chk-select-options dropdown-option-list" v-if="checkList.length > 0">
+        <li 
+            v-for="(item , i) in checkList" 
+            v-bind:data-id="item.value"
+            :key="i"           
+            >
+            <!-- <b-form-checkbox name  v-model="items" @click.native ="filterTable" v-bind:value="item.value"> -->
+              <b-form-checkbox name  v-model="items" @click.native ="filterTable" v-bind:value="item.value">
+            {{item.text}}</b-form-checkbox>
+        </li>
+    </ul>
+    <ul class="chk-select-options dropdown-option-list" v-else>
+        <li>
+            <label class="no-checkbox">{{ langauageData.label.no_record_found }}</label>
+        </li>
+    </ul>
+    </div>
     </div>
 </template>
 
 <script>
+import Vue from "vue";
 import store from '../store';
 export default {
-    name: "AppCustomDropdown",
+    name: "AppCheckboxDropdown",
     components: {},
     props: {
-        optionList: Array,
-        defaultText: String,
-        translationEnable : String
+        filterTitle: String,
+        checkList: {
+        type: Array,
+            default: () => []
+        },
+        selectedItem: Array,
+        fieldId : Number
     },
+
     data() {
         return {
-            defaultTextVal: this.defaultText,
-            langauageData : []
+            items: this.selectedItem,
+            langauageData : [],
         };
     },
-    mounted() {
-    },
+    mounted() {},
     methods: {
-        handleSelect(e) {
-            var selectedData = []
-            selectedData['selectedVal']  = e.target.innerHTML;
-            selectedData['selectedId']  = e.target.dataset.id;
-            this.$emit("updateCall", selectedData);
+        filterTable() {
+            this.$emit("changeParmas");
         },
         handleClick(e) {
       e.stopPropagation();
@@ -116,12 +112,20 @@ export default {
       });
     }
     },
-    beforeDestroy() {
-        document.removeEventListener("click", this.onClick);
+    watch: {
+        items: function(val){      
+       
+            var selectedData = []
+            selectedData['selectedVal']  = val.join(',');
+            selectedData['fieldId'] = this.fieldId;  
+            this.$emit("updateCall",selectedData);
+        },
+        selectedItem:function(val){
+            this.items = this.selectedItem;
+        },
     },
     created() {
-        this.langauageData = JSON.parse(store.state.languageLabel);
-    }
+         this.langauageData = JSON.parse(store.state.languageLabel);
+    },
 };
 </script>
-
