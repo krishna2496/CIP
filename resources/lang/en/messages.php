@@ -92,7 +92,7 @@ return [
     */
     'custom_error_message' => [
         // Custom error code for User Module - 100000 - 109999
-        'ERROR_USER_NOT_FOUND' => 'User does not found in system',
+        'ERROR_USER_NOT_FOUND' => 'User not found in system',
         'ERROR_SKILL_INVALID_DATA' => 'Invalid skill data',
         'ERROR_USER_CUSTOM_FIELD_INVALID_DATA' => 'Custom field creation failed. Please check input parameters',
         'ERROR_USER_CUSTOM_FIELD_NOT_FOUND' => 'Requested user custom field does not exist',
