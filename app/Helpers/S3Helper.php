@@ -204,6 +204,7 @@ class S3Helper
             // Get file type from base64
             $fileOpen = finfo_open();
             $mime_type = finfo_buffer($fileOpen, base64_decode($avatar), FILEINFO_MIME_TYPE);
+
             $type = explode('/', $mime_type);
             
             $imagePath = $tenantName.'/profile_images/'.$userId.'_'.time().'.'.$type[1];
@@ -212,8 +213,8 @@ class S3Helper
             return $filePath;
         } catch (S3Exception $e) {
             return $this->s3Exception(
-                config('constants.error_codes.ERROR_FAILD_TO_UPLOAD_COMPILE_FILE_ON_S3'),
-                trans('messages.custom_error_message.ERROR_FAILD_TO_UPLOAD_COMPILE_FILE_ON_S3')
+                config('constants.error_codes.ERROR_FAILD_TO_UPLOAD_PROFILE_IMAGE_ON_S3'),
+                trans('messages.custom_error_message.ERROR_FAILD_TO_UPLOAD_PROFILE_IMAGE_ON_S3')
             );
         }
     }
