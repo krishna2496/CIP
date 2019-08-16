@@ -7,11 +7,11 @@ export default async(data) => {
     if (store.state.defaultLanguage !== null) {
         defaultLanguage = (store.state.defaultLanguage).toLowerCase();
     }
-    var url =process.env.VUE_APP_API_ENDPOINT + "app/user-detail";
+    var url =process.env.VUE_APP_API_ENDPOINT + "app/user/upload-profile-image";
 
     await axios({
             url: url,
-            method: 'GET',
+            method: 'PATCH',
             data : data,
             headers: {
                 'X-localization': defaultLanguage,

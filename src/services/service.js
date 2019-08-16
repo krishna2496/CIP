@@ -24,9 +24,11 @@ import storeMissionComments from "./Mission/StoreMissionComments";
 import policy from "./Policy";
 import policyDetail from "./PolicyDetail";
 import getUserDetail from "./User/GetUserDetail";
-import saveProfile from "./User/SaveProfile";
+import saveUserProfile from "./User/SaveProfile";
 import changeUserPassword from "./User/ChangePassword";
 import changeProfilePicture from "./User/ChangeProfilePicture";
+import changeCity from "./Mission/ChangeCity";
+import saveSkill from "./User/SaveSkill";
 
 export {
     loadLocaleMessages,
@@ -55,7 +57,9 @@ export {
     policy,
     policyDetail,
     getUserDetail,
-    saveProfile,
+    saveUserProfile,
     changeUserPassword,
-    changeProfilePicture
+    changeProfilePicture,
+    changeCity,
+    saveSkill
 }

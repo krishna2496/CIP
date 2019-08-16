@@ -2,17 +2,31 @@ import axios from 'axios'
 import store from '../../store'
 
 export default async(data) => {
-    let responseData ={};
+    console.log(data);
+    let skills = {
+        skills: []
+    }
+    let skillArray = [];
+    if(data.length > 0) {
+        Object.keys(data).map(function(key) {
+            skills['skills'].push({
+                skill_id:  data[key].id,                
+            });
+        });
+    }
+   
+ 
+    let responseData = {};
     var defaultLanguage = '';
     if (store.state.defaultLanguage !== null) {
         defaultLanguage = (store.state.defaultLanguage).toLowerCase();
     }
-    var url =process.env.VUE_APP_API_ENDPOINT + "app/user";
+    var url =process.env.VUE_APP_API_ENDPOINT + "app/user/skills";
 
     await axios({
             url: url,
-            method: 'PATCH',
-            data,
+            method: 'POST',
+            data :skills,
             headers: {
                 'X-localization': defaultLanguage,
                 'token': store.state.token,

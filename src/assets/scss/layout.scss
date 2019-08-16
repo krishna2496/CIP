@@ -151,11 +151,12 @@ ul {
 
 /** Toast style**/
 .b-toast{
-	z-index:99999;
+	z-index:9999999!important;
+    top:70px !important
 }
 .toast {
 	padding-right: 36px;
-	z-index:99999;
+	z-index:9999999!important;
 
     header {
         &.toast-header {
@@ -3227,6 +3228,7 @@ main {
 
     &.mission-loader,
     &.slider-loader,
+    &.profile-image-loader,
     &.recent-loader {
         display: flex;
     }

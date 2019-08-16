@@ -37,11 +37,9 @@
 									<star-rating
 									v-bind:increment="0.5"
 									v-bind:max-rating="5"
-									:border-width="2"
-									border-color="#757575"
-									inactive-color="#Fff"
+									inactive-color="#dddddd"
 									active-color="#F7D341"
-									v-bind:star-size="25"
+									v-bind:star-size="23"
 									:rating="missionDetail.rating"
 									@rating-selected ="setRating"
 									>
@@ -408,7 +406,6 @@
 									<b-collapse id="comments" accordion="my-accordion" role="tabpanel" class="			tab-content comment-block">
 
 									<b-form class="comment-form">
-										<label>{{ langauageData.label.comment }}</label>	
 										<b-form-textarea id="" 
 											:placeholder="langauageData.placeholder.comment"
 											v-model="comment"

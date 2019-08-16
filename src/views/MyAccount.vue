@@ -9,15 +9,15 @@
         <b-col xl="3" lg="4" md="12" class="profile-left-col">
             <div class="profile-details">
             <div  class="profile-block">
-                <div v-bind:class="{ 'content-loader-wrap': true, 'slider-loader': true}">
+                <div v-bind:class="{ 'content-loader-wrap': true, 'profile-image-loader': imageLoader}">
                     <div class="content-loader"></div>
                 </div>
                 <picture-input 
                       v-if="isPrefilLoaded"
                       ref="fileInput" 
-                      @change="onChange"  
+                      @change="changeImage"  
                       accept="image/jpeg,image/png"
-                      :prefillOptions="{mediaType: 'image/png'}"
+                      :prefillOptions="prefillOptionArray"
                       :prefill="newUrl"
                       buttonClass="btn"
                       :customStrings="{
@@ -54,9 +54,9 @@
             </div>
             <b-form-group>
                 <label>{{langauageData.label.language}}</label>
-                <AppCustomDropdown
+                <CustomFieldDropdown
                     v-model="profile.language" 
-                    :errorClass="$v.profile.language.$error" 
+                    :errorClass="submitted && $v.profile.language.$error" 
                     :defaultText="languageDefault"
                     :optionList="languageList"
                     @updateCall="updateLang"
@@ -68,9 +68,9 @@
             </b-form-group>
                 <b-form-group>
                     <label>{{langauageData.label.timezone}}</label>
-                    <AppCustomDropdown
+                    <CustomFieldDropdown
                         v-model="profile.time" 
-                        :errorClass="$v.profile.time.$error" 
+                        :errorClass="submitted && $v.profile.time.$error" 
                         :defaultText="timeDefault"
                         :optionList="timeList"
                         @updateCall="updateTime"
@@ -95,7 +95,7 @@
                         <label for>{{langauageData.label.name}}</label>
                         <b-form-input id type="text" 
                         v-model="profile.firstName" 
-                        :class="{ 'is-invalid': $v.profile.firstName.$error }" 
+                        :class="{ 'is-invalid': submitted && $v.profile.firstName.$error }" 
                         @keydown.space.prevent
                         autofocus 
                         :placeholder="langauageData.placeholder.name" 
@@ -111,7 +111,7 @@
                             <label for>{{langauageData.label.surname}}</label>
                             <b-form-input id type="text" 
                             v-model="profile.lastName" 
-                            :class="{ 'is-invalid': $v.profile.lastName.$error }" 
+                            :class="{ 'is-invalid': submitted && $v.profile.lastName.$error }" 
                             @keydown.space.prevent
                             :placeholder="langauageData.placeholder.surname"
                             maxlength="16"
@@ -147,13 +147,10 @@
                             <label for>{{langauageData.label.title}}</label>
                             <b-form-input id type="text"
                             v-model="profile.title" 
-                            :class="{ 'is-invalid': $v.profile.title.$error }" 
                             @keydown.space.prevent
                             :placeholder="langauageData.placeholder.title"
                             maxlength="25"
                             ></b-form-input>
-                            <div v-if="submitted && !$v.profile.title.required" class="invalid-feedback">
-                            {{ langauageData.errors.title_required }}</div>
                         </b-form-group>
                     </b-col>
                     <b-col md="6">
@@ -175,7 +172,7 @@
                             size="lg"
                             no-resize
                             v-model="profile.profileText" 
-                            :class="{ 'is-invalid': $v.profile.profileText.$error }" 
+                            :class="{ 'is-invalid': submitted && $v.profile.profileText.$error }" 
                             @keydown.space.prevent
                             rows="5"
                             ></b-form-textarea>
@@ -191,7 +188,7 @@
                         <b-form-textarea
                         id
                         v-model="profile.whyiVolunteer" 
-                        :class="{ 'is-invalid': $v.profile.whyiVolunteer.$error }" 
+                        :class="{ 'is-invalid': submitted && $v.profile.whyiVolunteer.$error }" 
                         @keydown.space.prevent
                         :placeholder="langauageData.placeholder.why_i_volunteer"
                         size="lg"
@@ -214,9 +211,9 @@
             <b-col md="6">
                 <b-form-group>
                     <label>{{langauageData.label.country}}</label>
-                    <AppCustomDropdown
+                    <CustomFieldDropdown
                         v-model="profile.country" 
-                        :errorClass="$v.profile.country.$error" 
+                        :errorClass="submitted && $v.profile.country.$error" 
                         :defaultText="countryDefault"
                         :optionList="countryList"
                         @updateCall="updateCountry"
@@ -232,9 +229,9 @@
             <b-col md="6">
                 <b-form-group>
                     <label>{{langauageData.label.city}}</label>
-                     <AppCustomDropdown
-                         v-model="profile.city" 
-                        :errorClass="$v.profile.city.$error" 
+                     <CustomFieldDropdown
+                        v-model="profile.city" 
+                        :errorClass="submitted && $v.profile.city.$error" 
                         :defaultText="cityDefault"
                         :optionList="cityList"
                         @updateCall="updateCity"
@@ -255,9 +252,9 @@
                 <b-col md="6">
                     <b-form-group>
                         <label>{{langauageData.label.availablity}}</label>
-                        <AppCustomDropdown
-                              v-model="profile.availability" 
-                            :errorClass="$v.profile.availability.$error" 
+                        <CustomFieldDropdown               
+                            v-model="profile.availability" 
+                            :errorClass="submitted && $v.profile.availability.$error" 
                             :defaultText="availabilityDefault"
                             :optionList="availabilityList"
                             @updateCall="updateAvailability"
@@ -273,7 +270,7 @@
                         <label>{{langauageData.label.linked_in}}</label>
                         <b-form-input id 
                          v-model="profile.linkedInUrl" 
-                        :class="{ 'is-invalid': $v.profile.linkedInUrl.$error }" 
+                        :class="{ 'is-invalid': submitted && $v.profile.linkedInUrl.$error }" 
                         @keydown.space.prevent
                         :placeholder="langauageData.placeholder.linked_in"
                         ></b-form-input>
@@ -306,7 +303,19 @@
                   </h2>
                 </b-col>
                 <b-col cols="12">
-                  <MultiSelect/>
+                    <ul class="skill-list-wrapper" v-if="resetUserSkillList != null && resetUserSkillList.length > 0">
+                        <li  v-for="(toitem, idx) in resetUserSkillList">{{toitem.name}}</li>
+                    </ul>
+                    <ul v-else class="skill-list-wrapper" >
+                        <li>{{langauageData.label.no_record_found}}</li>
+                    </ul>
+                    <MultiSelect
+                        v-if="isShownComponent"
+                        :fromList="skillListing"
+                        :toList="userSkillList"
+                        @resetData = "resetSkillListingData"
+                        @saveSkillData = "saveSkillData"
+                    />
                 </b-col>
                 <div class="btn-wrapper">
                     <b-button class="btn-bordersecondary" @click="handleSubmit">{{langauageData.label.save}}</b-button>
@@ -323,45 +332,45 @@
           hide-footer
         >
           <template slot="modal-title">{{langauageData.label.change_password}}</template>
-          <b-alert show :variant="classVariant" dismissible v-model="showErrorDiv">
+            <b-alert show :variant="classVariant" dismissible v-model="showErrorDiv">
                     {{ message }}
-                </b-alert>
+            </b-alert>
           <form action class="form-wrap">
             <b-form-group>
               <b-form-input id type="password" 
                v-model="resetPassword.oldPassword" 
-                :class="{ 'is-invalid': $v.resetPassword.oldPassword.$error }" 
+                :class="{ 'is-invalid': passwordSubmit && $v.resetPassword.oldPassword.$error }" 
                 @keydown.space.prevent
               :placeholder="langauageData.placeholder.old_password"
               ></b-form-input>
-              <div v-if="submitted && !$v.resetPassword.oldPassword.required" class="invalid-feedback">
+              <div v-if="passwordSubmit && !$v.resetPassword.oldPassword.required" class="invalid-feedback">
                     {{ langauageData.errors.field_required }}</div>
             </b-form-group>
 
             <b-form-group>
               <b-form-input id type="password" 
                 v-model="resetPassword.newPassword" 
-                :class="{ 'is-invalid': $v.resetPassword.newPassword.$error }" 
+                :class="{ 'is-invalid': passwordSubmit && $v.resetPassword.newPassword.$error }" 
                 @keydown.space.prevent
                :placeholder="langauageData.placeholder.new_password"
               ></b-form-input>
-                <div v-if="submitted && !$v.resetPassword.newPassword.required" class="invalid-feedback">
+                <div v-if="passwordSubmit && !$v.resetPassword.newPassword.required" class="invalid-feedback">
                     {{ langauageData.errors.field_required }}</div>
-                <div v-if="submitted && !$v.resetPassword.newPassword.minLength" class="invalid-feedback">
+                <div v-if="passwordSubmit && !$v.resetPassword.newPassword.minLength" class="invalid-feedback">
                 {{ langauageData.errors.invalid_password }}</div>
             </b-form-group>
 
             <b-form-group>
               <b-form-input id 
                v-model="resetPassword.confirmPassword" 
-                :class="{ 'is-invalid': $v.resetPassword.confirmPassword.$error }" 
+                :class="{ 'is-invalid': passwordSubmit && $v.resetPassword.confirmPassword.$error }" 
                 @keydown.space.prevent
                 :placeholder="langauageData.placeholder.confirm_password"
                 type="password"> 
               </b-form-input>
-                <div v-if="submitted && !$v.resetPassword.confirmPassword.required" class="invalid-feedback">
+                <div v-if="passwordSubmit && !$v.resetPassword.confirmPassword.required" class="invalid-feedback">
                     {{ langauageData.errors.field_required }}</div>
-                <div v-if="submitted && !$v.resetPassword.confirmPassword.sameAsPassword" class="invalid-feedback">
+                <div v-if="passwordSubmit && !$v.resetPassword.confirmPassword.sameAsPassword" class="invalid-feedback">
                     {{ langauageData.errors.identical_password }}</div>
             </b-form-group>
           </form>
@@ -388,12 +397,12 @@
 </template>
 
 <script>
-import AppCustomDropdown from "../components/AppCustomDropdown";
+import CustomFieldDropdown from "../components/CustomFieldDropdown";
 import MultiSelect from "../components/MultiSelect";
 import CustomField from "../components/CustomField";
 import store from "../store";
 import PictureInput from 'vue-picture-input'
-import {getUserDetail,saveProfile,changeUserPassword,changeProfilePicture} from "../services/service";
+import {getUserDetail,saveProfile,changeUserPassword,changeProfilePicture,changeCity,saveUserProfile,saveSkill} from "../services/service";
 import { required,maxLength, email,sameAs, minLength, between,helpers} from 'vuelidate/lib/validators';
 import constants from '../constant';
 
@@ -401,7 +410,7 @@ export default {
     components: {
         ThePrimaryHeader : () => import("../components/Layouts/ThePrimaryHeader"),
         TheSecondaryFooter: () => import("../components/Layouts/TheSecondaryFooter"),
-        AppCustomDropdown,
+        CustomFieldDropdown,
         MultiSelect,
         PictureInput,
         CustomField
@@ -415,17 +424,21 @@ export default {
             timeDefault: "",
             countryList: [],
             countryDefault: '',
-            availabilityList: [
-                "1 :test"
-            ],
+            availabilityList: [],
+            passwordSubmit : false,
             availabilityDefault: "",
             file: "null",
             langauageData : [],
+            skillListing : [],
+            resetSkillList : [],
+            prefillOptionArray : {
+                mediaType: 'image/png'
+            },
             clientImage : "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/tatva/assets/images/volunteer9.png",
             newUrl : "",
             isPrefilLoaded : false,
             prefilImageType : {
-                mediaType: 'image/png'
+                mediaType: ''
             },
             userData : [],
             isShownComponent : false,
@@ -454,7 +467,8 @@ export default {
                 availability : "",
                 userSkills : [],
                 language : "",
-                time : ""
+                time : "",
+                languageCode : ""
             },
             submitted: false,
             language : '',
@@ -462,11 +476,12 @@ export default {
             customFieldList : [],
             customFieldValue :[],
             returnCustomFeildData : [],
+            userSkillList : [],
+            resetUserSkillList : [],
+            imageLoader : true,
             saveProfileData :{
                 first_name: "",
                 last_name: "",
-                email: "",
-                avatar:"" ,
                 timezone_id: "",
                 language_id : "",
                 availability_id : "",
@@ -493,7 +508,6 @@ export default {
             firstName : {required},
             lastName : {required},
             profileText : {required,maxLength: maxLength(255)},
-            title : {required},
             whyiVolunteer : {required,maxLength: maxLength(255)},
             linkedInUrl :{
                 validLinkedInUrl(linkedInUrl) {
@@ -508,51 +522,74 @@ export default {
             city : {required},
             availability : {required},
             language : {required},
-            time : {required}
+            time : {required},
+           
         }
     },
     mounted() {},
 
     methods: {
         updateLang(value) {
-            this.langDefault = value.selectedVal;
+            this.languageDefault = value.selectedVal;
             this.profile.language =  value.selectedId;
         },
         updateTime(value) {
             this.timeDefault = value.selectedVal;
             this.profile.time =  value.selectedId;
+
         },
         updateCity(value) {
             this.cityDefault = value.selectedVal;
             this.profile.city =  value.selectedId;
+
         },
-        updateCountry(value) {
+        updateCountry(value) { 
             this.countryDefault = value.selectedVal;
             this.profile.country =  value.selectedId;
+
+            this.changeCityData(value.selectedId);
         },
         updateAvailability(value) {
             this.availabilityDefault = value.selectedVal;
             this.profile.availability =  value.selectedId;
         },
-        onChange (image) {
-            alert(image);
-          console.log('New picture selected!')
-          if (image) {
-            console.log('Picture loaded.')
-            // this.image = image
-          } else {
-            console.log('FileReader API not supported: use the <form>, Luke!')
-          }
+        changeImage(image) {
+            this.imageLoader = true;
+            let imageData = {}
+            imageData.avatar = image;
+            changeProfilePicture(imageData).then(response => {
+                if(response.error == true){
+                    this.makeToast("danger",response.message);
+                } else {
+                    this.disableApply = true;
+                    this.makeToast("success",response.message);
+                    store.commit("changeAvatar",response.data)
+                }
+                this.imageLoader = false;
+                
+            })
+        },
+        saveSkillData(skillList) {
+            this.resetUserSkillList = skillList
         },
         // Get user detail
-        getUserProfileDetail() {
-            getUserDetail().then(response => {
+        async getUserProfileDetail() {
+            await getUserDetail().then(response => {
                 if(response.error == true){
-                    // this.$router.push('/404');
+                    this.$router.push('/404');
                 } else {
                     var _this = this;
                     this.userData = response.data;
                     this.newUrl = this.userData.avatar_base64;
+                    var lowerCase = this.newUrl.toLowerCase();
+                    if (lowerCase.indexOf("png") !== -1) {
+                        this.prefilImageType.mediaType = "png"
+                    }
+                    else if (lowerCase.indexOf("jpg") !== -1 || lowerCase.indexOf("jpeg") !== -1) {
+                        
+                        this.prefilImageType.mediaType = "jpg"
+                    }  
+
                     this.isPrefilLoaded = true
                     this.countryList = Object.keys(this.userData.country_list).map(function(key) {
                         return [Number(key), _this.userData.country_list[key]];
@@ -585,7 +622,7 @@ export default {
                     this.profile.employeeId = this.userData.employee_id,
                     this.profile.managerName = this.userData.manager_name,
                     this.profile.profileText = this.userData.profile_text,
-                    this.profile.title = this.userData.linked_in_url,
+                    this.profile.title = this.userData.title,
                     this.profile.whyiVolunteer = this.userData.why_i_volunteer,
                     this.profile.linkedInUrl = this.userData.linked_in_url,
                     this.profile.department = this.userData.department,
@@ -596,6 +633,7 @@ export default {
                     this.profile.availability =  this.userData.availability_id,
                     this.profile.language= this.userData.language_id,
                     this.profile.time= this.userData.timezone_id
+                    this.profile.languageCode = this.userData.language_code
 
                 if( this.userData.country.name != '' &&  this.userData.country.name != null) {
                     this.countryDefault = this.userData.country.name
@@ -612,10 +650,76 @@ export default {
                 if( this.userData.timezone.timezone != '' &&  this.userData.timezone.timezone != null) {
                     this.timeDefault = this.userData.timezone.timezone
                 }
-               
+
+
+                if(this.userData.skill_list) {
+                        Object.keys(this.userData.skill_list).map(function(key) {
+                            if(_this.userData.skill_list[key]) {
+                                _this.skillListing.push({
+                                    name:_this.userData.skill_list[key],
+                                    id: key
+                                });
+                                _this.resetSkillList.push({
+                                    name:_this.userData.skill_list[key],
+                                    id: key
+                                });
+
+                            }
+                        });
+                }
+
+                if(this.userData.user_skills) {
+                        Object.keys(this.userData.user_skills).map(function(key) {
+                            if(_this.userData.user_skills[key].translations) {
+                                _this.userSkillList.push({
+                                    name:_this.userData.user_skills[key].translations,
+                                    id: _this.userData.user_skills[key].skill_id
+                                });
+                                _this.resetUserSkillList.push({
+                                    name:_this.userData.user_skills[key].translations,
+                                    id: _this.userData.user_skills[key].skill_id
+                                });
+                            }
+                    });
+                }
                 } 
+                this.imageLoader = false;
                 this.isShownComponent = true;
             })
+        },
+        resetSkillListingData() {
+            this.skillListing = [];
+            this.userSkillList = [];
+            var _this = this;
+            if(this.userData.skill_list) {
+                        Object.keys(this.userData.skill_list).map(function(key) {
+                            if(_this.userData.skill_list[key]) {
+                                _this.skillListing.push({
+                                    name:_this.userData.skill_list[key],
+                                    id: key
+                                });
+                            }
+                        });
+            }
+            if(this.userData.user_skills) {
+                        Object.keys(this.userData.user_skills).map(function(key) {
+                            if(_this.userData.user_skills[key].translations) {
+                                _this.userSkillList.push({
+                                    name:_this.userData.user_skills[key].translations,
+                                    id: _this.userData.user_skills[key].skill_id
+                                });      
+                            }
+                    });
+            }
+            var filteredObj  = this.userSkillList.filter(function (toItem, toIndex) { 
+                var filteredObj  = _this.skillListing.filter(function (fromItem, fromIndex) { 
+                    if(toItem.id == fromItem.id) {
+                        _this.skillListing.splice(fromIndex,1);
+                    }
+                });    
+            });
+           
+            // this.userSkillList = this.resetUserSkillList;
         },
         detectChangeInCustomFeild (data) {
             this.returnCustomFeildData = data;
@@ -626,7 +730,7 @@ export default {
             this.submitted = true;
             this.$v.$touch();
             // stop here if form is invalid
-         
+            // console.log(this.$v.profile);
             if (this.$v.profile.$invalid) {
                 return;
             }
@@ -656,28 +760,31 @@ export default {
                         });
                     });
             
-             console.log(this.saveProfileData);
-            
-
+             // console.log(this.saveProfileData);
             // Call to save profile service 
-            // saveProfile(this.saveProfileData).then( response => {
-            //     if (response.error === true) { 
-            //         this.message = null;
-            //         this.showDismissibleAlert = true
-            //         this.classVariant = 'danger'
-            //         //set error msg
-            //         this.message = response.message
-            //     } else {
-            //         //redirect to landing page
-            //         this.$router.replace({
-            //             name: "home"
-            //         });
-            //     }
-            // });
+            saveUserProfile(this.saveProfileData).then( response => {
+                if(response.error == true){
+                    this.makeToast("danger",response.message);
+                } else {
+                    saveSkill(this.userSkillList).then( skillResponse => {
+                        if(skillResponse.error == true){
+                            this.makeToast("danger",skillResponse.message);
+                        } else {
+                            this.disableApply = true;
+                            this.makeToast("success",response.message);
+                            // this.getUserProfileDetail()
+                            store.commit("changeUserDetail",this.profile)
+                        }
+                    });
+                }
+            });
+           
+
+
         },   
         changePassword() {
             var _this = this;
-            this.submitted = true;
+            this.passwordSubmit = true;
             this.$v.$touch();
             // stop here if form is invalid 
             if (this.$v.resetPassword.$invalid) {
@@ -690,9 +797,7 @@ export default {
             resetPasswordData.confirm_password = this.resetPassword.confirmPassword
             // Call to save profile service 
             changeUserPassword(resetPasswordData).then( response => {
-                console.log(response);
                 if (response.error === true) { 
-                    console.log("in");
                     this.message = null;
                     this.showErrorDiv = true
                     this.classVariant = 'danger'
@@ -705,17 +810,37 @@ export default {
                     //set success msg
                     this.message = response.message 
                     //Reset to blank
-                    this.submitted = false;
+                    this.passwordSubmit = false;
                     this.resetPassword.oldPassword = ''
                     this.resetPassword.newPassword = ''
                     this.resetPassword.confirmPassword = ''
                     this.$v.$reset(); 
-                    alert(response.data.token);
                     store.commit("changeToken",response.data.token)
                 }
             });
             // changePassword
-        }
+        },
+        changeCityData(countryId) {
+            if(countryId) {
+                changeCity(countryId).then( response => {
+                    // console.log(response);
+                    if (response.error === true) { 
+                        this.cityList = []
+                    } else {
+                       this.cityList = response.data
+                    }
+                    this.cityDefault = this.langauageData.placeholder.city 
+                    this.profile.city = '';
+                });
+            }
+        },
+        makeToast(variant = null,message) {
+            this.$bvToast.toast(message, {
+                variant: variant,
+                solid: true,
+                autoHideDelay: 1000
+            })
+        },
     },
     created() {
         var _this =this

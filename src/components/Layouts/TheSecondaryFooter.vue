@@ -44,6 +44,7 @@ export default {
         // Fetching footer CMS pages
         this.getPageListing();
         // loadLocaleMessages(store.state.defaultLanguage);
+        this.footerAdj();
     },
     methods:{  
         async getPageListing(){
@@ -77,6 +78,18 @@ export default {
         clickHandler($event) {
             this.$emit('cmsListing',this.$route.params.slug);
         },
+         footerAdj() {
+                if (document.querySelector("footer") != null) {
+                    var footerH = document.querySelector("footer").offsetHeight;
+                    document.querySelector("footer").style.marginTop = -footerH + "px";
+                    document.querySelector(".inner-pages").style.paddingBottom =
+                    footerH + "px";
+                }
+        }
     },
+    updated(){
+         this.footerAdj();
+         window.addEventListener("resize", this.footerAdj);
+    }
 };
 </script>
