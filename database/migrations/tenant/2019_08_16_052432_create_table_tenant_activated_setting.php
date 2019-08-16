@@ -16,11 +16,11 @@ class CreateTableTenantActivatedSetting extends Migration
     {
         Schema::create('tenant_activated_setting', function (Blueprint $table) {
             $table->bigIncrements('tenant_activated_setting_id')->unsigned();
-            $table->unsignedBigInteger('setting_id'); // FK tenant_settings id
+            $table->unsignedBigInteger('tenant_setting_id'); // FK tenant_settings id
             $table->timestamps();
             $table->softDeletes();
             
-            $table->foreign('setting_id')->references('setting_id')->on('tenant_settings')->onDelete('CASCADE')->onUpdate('CASCADE');
+            $table->foreign('tenant_setting_id')->references('tenant_setting_id')->on('tenant_setting')->onDelete('CASCADE')->onUpdate('CASCADE');
         });
     }
 

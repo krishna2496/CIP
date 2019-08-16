@@ -27,7 +27,7 @@ class CreateTableTimesheetItems extends Migration
             $table->softDeletes();
             
             $table->foreign('timesheet_id')->references('timesheet_id')->on('timesheet')->onDelete('CASCADE')->onUpdate('CASCADE');
-            $table->foreign('mission_id')->references('mission_id')->on('timesheet')->onDelete('CASCADE')->onUpdate('CASCADE');
+            $table->foreign('mission_id')->references('mission_id')->on('mission')->onDelete('CASCADE')->onUpdate('CASCADE');
 
         });
     }
