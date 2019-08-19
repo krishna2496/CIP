@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateTableForTenantSetting extends Migration
+class CreateTableTenantActivatedSetting extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,9 @@ class CreateTableForTenantSetting extends Migration
      */
     public function up()
     {
-        Schema::create('tenant_setting', function (Blueprint $table) {
-            $table->bigIncrements('tenant_setting_id');
-            $table->string('title', 255);
-            $table->text('description');
-            $table->string('key', 255);
-            $table->enum('value', ['0', '1'])->default(1);
+        Schema::create('tenant_activated_setting', function (Blueprint $table) {
+            $table->bigIncrements('tenant_activated_setting_id');
+            $table->bigInteger('tenant_setting_id')->unsigned();
             $table->timestamps();
             $table->softDeletes();
         });
@@ -31,6 +28,6 @@ class CreateTableForTenantSetting extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('tenant_setting');
+        Schema::dropIfExists('tenant_activated_setting');
     }
 }
