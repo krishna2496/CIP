@@ -23,13 +23,6 @@ class TenantTest extends TestCase
                     'name',
                     'sponsor_id',
                     'status',
-                    'options' => [
-                        '*' => [
-                            'tenant_option_id',
-                            'option_name',
-                            'option_value'
-                        ]
-                    ],
                     'tenant_languages' => [
                         '*' => [
                             'language_id',
@@ -73,13 +66,8 @@ class TenantTest extends TestCase
     public function it_should_create_tenant()
     {
         $params = [
-            'name' => 'tatva_'.rand(500, 1000),
-            'sponsor_id' => '456123',
-            'options' => 
-            [
-              'theme_enabled' => '1',
-              'skills_enabled' => '1',
-            ],
+            'name' => 'tatva'.rand(500, 1000),
+            'sponsor_id' => '456123'
         ];
 
         $this->post("tenants", $params, [])
@@ -109,13 +97,6 @@ class TenantTest extends TestCase
                 'name',
                 'sponsor_id',
                 'status',
-                'options' => [
-                    '*' => [
-                        'tenant_option_id',
-                        'option_name',
-                        'option_value'
-                    ]
-                ],
                 'tenant_languages' => [
                     '*' => [
                         'language_id',
@@ -163,12 +144,8 @@ class TenantTest extends TestCase
         $tenant = factory(Tenant::class)->create();
 
         $data = [
-            'name' => "testing_".str_random(10),
-            'sponsor_id' => rand(1000,50000),
-            'options' => [
-                "theme_enabled" => 1,
-                "skills_enabled" => 0
-            ]
+            'name' => "testing".str_random(10),
+            'sponsor_id' => rand(1000,50000)
         ];
 
         $this->patch(route("tenants.update", ["tenant_id" => $tenant->tenant_id]), $data)
