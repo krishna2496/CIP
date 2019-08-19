@@ -47,6 +47,7 @@ class TenantHasSettingRepository implements TenantHasSettingInterface
         )
         ->leftJoin('tenant_has_setting', function ($join) use ($tenantId) {
             $join->on('tenant_setting.tenant_setting_id', '=', 'tenant_has_setting.tenant_setting_id')
+            ->whereNull('tenant_has_setting.deleted_at')
             ->where('tenant_has_setting.tenant_id', $tenantId);
         })
         ->get();
