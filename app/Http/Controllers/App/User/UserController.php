@@ -7,10 +7,7 @@ use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
 use App\Repositories\User\UserRepository;
 use App\Repositories\UserCustomField\UserCustomFieldRepository;
-use App\Repositories\Skill\SkillRepository;
-use App\Repositories\Country\CountryRepository;
 use App\Repositories\City\CityRepository;
-use App\Repositories\Timezone\TimezoneRepository;
 use App\Helpers\ResponseHelper;
 use App\Traits\RestExceptionHandlerTrait;
 use App\User;
@@ -38,25 +35,10 @@ class UserController extends Controller
     private $userCustomFieldRepository;
 
     /**
-     * @var App\Repositories\Skill\SkillRepository
-     */
-    private $skillRepository;
-
-    /**
-     * @var App\Repositories\Country\CountryRepository
-     */
-    private $countryRepository;
-
-    /**
      * @var App\Repositories\City\CityRepository
      */
     private $cityRepository;
 
-    /**
-     * @var App\Repositories\Timezone\TimezoneRepository
-     */
-    private $timeZoneRepository;
-    
     /**
      * @var App\Helpers\ResponseHelper
      */
@@ -83,10 +65,7 @@ class UserController extends Controller
      *
      * @param App\Repositories\User\UserRepository $userRepository
      * @param App\Repositories\UserCustomField\UserCustomFieldRepository $userCustomFieldRepository
-     * @param App\Repositories\Skill\SkillRepository $skillRepository
-     * @param App\Repositories\Country\CountryRepository $countryRepository
      * @param App\Repositories\City\CityRepository $cityRepository
-     * @param App\Repositories\Timezone\TimezoneRepository $timeZoneRepository
      * @param Illuminate\Http\ResponseHelper $responseHelper
      * @param App\Helpers\LanguageHelper $languageHelper
      * @param App\Helpers\Helpers $helpers
@@ -96,10 +75,7 @@ class UserController extends Controller
     public function __construct(
         UserRepository $userRepository,
         UserCustomFieldRepository $userCustomFieldRepository,
-        SkillRepository $skillRepository,
-        CountryRepository $countryRepository,
         CityRepository $cityRepository,
-        TimezoneRepository $timeZoneRepository,
         ResponseHelper $responseHelper,
         LanguageHelper $languageHelper,
         Helpers $helpers,
@@ -107,10 +83,7 @@ class UserController extends Controller
     ) {
         $this->userRepository = $userRepository;
         $this->userCustomFieldRepository = $userCustomFieldRepository;
-        $this->skillRepository = $skillRepository;
-        $this->countryRepository = $countryRepository;
         $this->cityRepository = $cityRepository;
-        $this->timeZoneRepository = $timeZoneRepository;
         $this->responseHelper = $responseHelper;
         $this->languageHelper = $languageHelper;
         $this->helpers = $helpers;
@@ -197,10 +170,7 @@ class UserController extends Controller
             $userDetail = $this->userRepository->findUserDetail($userId);
             $customFields = $this->userCustomFieldRepository->getUserCustomFields($request);
             $userSkillList = $this->userRepository->userSkills($userId);
-            $skillList = $this->skillRepository->skillList($request);
-            $countryList = $this->countryRepository->countryList();
             $cityList = $this->cityRepository->cityList($userDetail->country_id);
-            $timezoneList = $this->timeZoneRepository->getTimezoneList();
             $tenantLanguages = $this->languageHelper->getTenantLanguageList($request);
             $availabilityList = $this->userRepository->getAvailability();
 
@@ -210,7 +180,6 @@ class UserController extends Controller
             $languageCode = $languages->where('code', $language)->first()->code;
             $userCustomFieldData = [];
             $userSkillData = [];
-            $allSkillData = [];
             $customFieldsData = $customFields->toArray();
             $customFieldsValue = $userDetail->userCustomFieldValue;
             unset($userDetail->userCustomFieldValue);
@@ -258,29 +227,11 @@ class UserController extends Controller
                 }
             }
 
-            if (!empty($skillList) && (isset($skillList))) {
-                $returnData = [];
-                foreach ($skillList as $key => $value) {
-                    if ($value) {
-                        $arrayKey = array_search($languageCode, array_column($value['translations'], 'lang'));
-                        if ($arrayKey !== '') {
-                            $returnData[$value['skill_id']] = $value['translations'][$arrayKey]['title'];
-                        }
-                    }
-                }
-                if (!empty($returnData)) {
-                    $allSkillData = $returnData;
-                }
-            }
-
             $apiData = $userDetail->toArray();
             $apiData['language_code'] = $languageCode;
             $apiData['custom_fields'] = $userCustomFieldData;
             $apiData['user_skills'] = $userSkillData;
-            $apiData['skill_list'] = $allSkillData;
-            $apiData['country_list'] = $countryList;
             $apiData['city_list'] = $cityList;
-            $apiData['timezone_list'] = $timezoneList;
             $apiData['language_list'] = $tenantLanguages;
             $apiData['availability_list'] = $availabilityList;
             if (isset($userDetail->avatar) && ($userDetail->avatar != '')) {
@@ -327,7 +278,8 @@ class UserController extends Controller
                 "city_id" => "exists:city,city_id",
                 "country_id" => "exists:country,country_id",
                 "custom_fields.*.field_id" => "sometimes|required|exists:user_custom_field,field_id",
-                "custom_fields.*.value" => "sometimes|required"
+                'skills' => 'present|array',
+                'skills.*.skill_id' => 'required|exists:skill,skill_id,deleted_at,NULL',
                 ]
             );
 
@@ -353,11 +305,27 @@ class UserController extends Controller
                 }
             }
 
+            // Check if skills reaches maximum limit
+            if (count($request->skills) > config('constants.SKILL_LIMIT')) {
+                return $this->responseHelper->error(
+                    Response::HTTP_UNPROCESSABLE_ENTITY,
+                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                    config('constants.error_codes.ERROR_SKILL_LIMIT'),
+                    trans('messages.custom_error_message.SKILL_LIMIT')
+                );
+            }
+
             // Update user
             $user = $this->userRepository->update($request->toArray(), $id);
+
+            // Update user custom fields
             if (!empty($request->custom_fields) && isset($request->custom_fields)) {
                 $userCustomFields = $this->userRepository->updateCustomFields($request->custom_fields, $id);
             }
+
+            // Update skills
+            $this->userRepository->deleteSkills($id);
+            $this->userRepository->linkSkill($request->toArray(), $id);
 
             // Set response data
             $apiData = ['user_id' => $user->user_id];
@@ -407,8 +375,8 @@ class UserController extends Controller
 
             $userId = $request->auth->user_id;
             $tenantName = $this->helpers->getSubDomainFromRequest($request);
-			$avatar = preg_replace('#^data:image/\w+;base64,#i', '', $request->avatar);
-			$imagePath = $this->s3helper->uploadProfileImageOnS3Bucket($avatar, $tenantName, $userId);
+            $avatar = preg_replace('#^data:image/\w+;base64,#i', '', $request->avatar);
+            $imagePath = $this->s3helper->uploadProfileImageOnS3Bucket($avatar, $tenantName, $userId);
             
             $userData['avatar'] = $imagePath;
             $this->userRepository->update($userData, $userId);

@@ -72,6 +72,11 @@ return [
         'MESSAGE_NO_MISSION_COMMENT_FOUND' => 'DE: Mission comments not found',
         'MESSAGE_COMMENT_ADDED' => 'DE: Thanks for your comment. Your comment will only be visible after moderation',
         'MESSAGE_PROFILE_IMAGE_UPLOADED' => 'DE: Profile image uploaded successfully',
+        'MESSAGE_TIMEZONE_LISTING' => 'DE: Timezone listed successfully',
+        'MESSAGE_NO_TIMEZONE_FOUND' => 'DE: Timezone not found',
+        'MESSAGE_NO_CITY_FOUND' => 'DE: City not found',
+        'MESSAGE_NO_SKILL_FOUND' => 'DE: Skill not found',
+        'MESSAGE_NO_COUNTRY_FOUND' => 'DE: Country not found',
     ],
 
         

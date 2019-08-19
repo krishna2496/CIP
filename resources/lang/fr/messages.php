@@ -82,6 +82,10 @@ return [
         'MESSAGE_COMMENT_UPDATED' => 'Commentaire mis à jour avec succès',
         'MESSAGE_COMMENT_DELETED' => 'Commentaire supprimé avec succès',
         'MESSAGE_PROFILE_IMAGE_UPLOADED' => 'Image de profil téléchargée avec succès',
+        'MESSAGE_TIMEZONE_LISTING' => 'Fuseau horaire répertorié avec succès',
+        'MESSAGE_NO_TIMEZONE_FOUND' => 'Fuseau horaire introuvable',
+        'MESSAGE_NO_SKILL_FOUND' => 'Compétence non trouvée',
+        'MESSAGE_NO_COUNTRY_FOUND' => 'Pays non trouvé',
     ],
 
         
