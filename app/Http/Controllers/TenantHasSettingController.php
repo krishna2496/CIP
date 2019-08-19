@@ -101,7 +101,7 @@ class TenantHasSettingController extends Controller
         try {
             $validator = Validator::make($request->toArray(), [
                 'settings' => 'required',
-                'settings.*.tenant_setting_id' => 'required|exists:tenant_setting,tenant_setting_id',
+                'settings.*.tenant_setting_id' => 'required|exists:tenant_setting,tenant_setting_id,deleted_at,NULL',
                 'settings.*.value' => 'required|in:0,1',
                 ]);
 
