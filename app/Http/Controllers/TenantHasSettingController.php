@@ -34,24 +34,31 @@ class TenantHasSettingController extends Controller
      * @var App\Repositories\Tenant\TenantRepository
      */
     private $tenantRepository;
+
+    /**
+     * @var App\Helpers\DatabaseHelper
+     */
+    private $databaseHelper;
     
     /**
-     * Create a new Tenant has Setting controller instance.
+     * Create a new Tenant has setting controller instance.
      *
      * @param  App\Repositories\TenantHasSetting\TenantHasSettingRepository $tenantHasSettingRepository
      * @param  App\Repositories\Tenant\TenantRepository $tenantRepository
      * @param  App\Helpers\ResponseHelper $responseHelper
+     * @param  App\Helpers\DatabaseHelper $databaseHelper
      * @return void
      */
     public function __construct(
         TenantHasSettingRepository $tenantHasSettingRepository,
         TenantRepository $tenantRepository,
-        ResponseHelper $responseHelper
+        ResponseHelper $responseHelper,
+        DatabaseHelper $databaseHelper
     ) {
         $this->tenantHasSettingRepository = $tenantHasSettingRepository;
         $this->tenantRepository = $tenantRepository;
         $this->responseHelper = $responseHelper;
-        $this->databaseHelper = new DatabaseHelper;
+        $this->databaseHelper = $databaseHelper;
     }
     
     /**
@@ -95,7 +102,7 @@ class TenantHasSettingController extends Controller
             $validator = Validator::make($request->toArray(), [
                 'settings' => 'required',
                 'settings.*.tenant_setting_id' => 'required|exists:tenant_setting,tenant_setting_id',
-                'settings.*.value' => 'required',
+                'settings.*.value' => 'required|in:0,1',
                 ]);
 
             if ($validator->fails()) {
