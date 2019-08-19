@@ -141,6 +141,8 @@ return [
 		'mission_detail.*.lang' => 'language code',
         'to_user_id' => 'user id',
         'custom_fields.*.field_id' => 'field id',
+        'settings.*.tenant_setting_id' => 'tenant setting id',
+        'settings.*.value' => 'value',
         ],
 
 ];

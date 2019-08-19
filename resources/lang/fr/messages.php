@@ -81,7 +81,8 @@ return [
         'MESSAGE_COMMENT_FOUND' => 'Commentaire trouvé avec succès',
         'MESSAGE_COMMENT_UPDATED' => 'Commentaire mis à jour avec succès',
         'MESSAGE_COMMENT_DELETED' => 'Commentaire supprimé avec succès',
-        'MESSAGE_PROFILE_IMAGE_UPLOADED' => 'Image de profil téléchargée avec succès',
+        'MESSAGE_PROFILE_IMAGE_UPLOADED' => 'Image de profil téléchargée avec succès',        
+        'MESSAGE_TENANT_SETTINGS_UPDATED' => 'Paramètres du locataire mis à jour avec succès',
     ],
 
         

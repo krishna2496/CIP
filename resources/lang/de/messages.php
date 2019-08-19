@@ -71,7 +71,9 @@ return [
         'MESSAGE_NO_MISSION_MEDIA_FOUND' => 'DE: Mission media not found',
         'MESSAGE_NO_MISSION_COMMENT_FOUND' => 'DE: Mission comments not found',
         'MESSAGE_COMMENT_ADDED' => 'DE: Thanks for your comment. Your comment will only be visible after moderation',
-        'MESSAGE_PROFILE_IMAGE_UPLOADED' => 'DE: Profile image uploaded successfully',
+        'MESSAGE_PROFILE_IMAGE_UPLOADED' => 'DE: Profile image uploaded successfully',         
+        'MESSAGE_TENANT_SETTINGS_UPDATED' => 'DE: Tenant settings updated successfully',
+
     ],
 
         

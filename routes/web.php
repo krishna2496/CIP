@@ -292,6 +292,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
         function ($router) {
             $router->get('/', ['uses' => 'Admin\Tenant\TenantSettingsController@index']);
             $router->patch('/{settingId}', ['uses' => 'Admin\Tenant\TenantSettingsController@update']);
+            $router->post('/', ['uses' => 'Admin\Tenant\TenantActivatedSettingController@store']);
         }
     );
 

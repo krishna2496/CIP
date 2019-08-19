@@ -84,7 +84,8 @@ return [
         'MESSAGE_COMMENT_FOUND' => 'Comment found successfully',
         'MESSAGE_COMMENT_UPDATED' => 'Comment updated successfully',
         'MESSAGE_COMMENT_DELETED' => 'Comment deleted successfully',
-        'MESSAGE_PROFILE_IMAGE_UPLOADED' => 'Profile image uploaded successfully',
+        'MESSAGE_PROFILE_IMAGE_UPLOADED' => 'Profile image uploaded successfully',        
+        'MESSAGE_TENANT_SETTINGS_UPDATED' => 'Tenant settings updated successfully',
 		],
         
     /**
