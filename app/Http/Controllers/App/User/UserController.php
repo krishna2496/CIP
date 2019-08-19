@@ -208,6 +208,7 @@ class UserController extends Controller
             $language = ($request->hasHeader('X-localization')) ?
             $request->header('X-localization') : env('TENANT_DEFAULT_LANGUAGE_CODE');
             $languageCode = $languages->where('code', $language)->first()->code;
+            $userLanguageCode = $languages->where('language_id', $userDetail->language_id)->first()->code;
             $userCustomFieldData = [];
             $userSkillData = [];
             $allSkillData = [];
@@ -276,7 +277,7 @@ class UserController extends Controller
             }
 
             $apiData = $userDetail->toArray();
-            $apiData['language_code'] = $languageCode;
+            $apiData['language_code'] = $userLanguageCode;
             $apiData['custom_fields'] = $userCustomFieldData;
             $apiData['user_skills'] = $userSkillData;
             $apiData['skill_list'] = $allSkillData;

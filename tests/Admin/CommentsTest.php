@@ -410,6 +410,142 @@ class CommentsTest extends TestCase
         $mission->delete();
     }
 
+    /**
+     * @test
+     *
+     * Remove comment for mission
+     *
+     * @return void
+     */
+    public function it_should_remove_comment()
+    {
+        $connection = 'tenant';
+        $mission = factory(\App\Models\Mission::class)->make();
+        $mission->setConnection($connection);
+        $mission->save();
 
-    
+        $user = factory(\App\User::class)->make();
+        $user->setConnection($connection);
+        $user->save();
+
+        $params = [
+            "comment" => str_random('100'),
+            "mission_id" => $mission->mission_id
+        ];
+
+        $token = Helpers::getJwtToken($user->user_id);
+        $this->post('/app/mission/comment', $params, ['token' => $token])
+          ->seeStatusCode(201)
+          ->seeJsonStructure([
+            "status",
+            "message"
+        ]);
+        $comment = App\Models\Comment::where('user_id', $user->user_id)->first();
+       
+        DB::setDefaultConnection('mysql');
+        
+        $this->delete(
+            '/missions/'.$mission->mission_id.'/comments/'.$comment->comment_id,
+            [],
+            ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))]
+        )
+        ->seeStatusCode(204);
+
+        $user->delete();
+        $mission->delete();
+    }
+
+    /**
+     * @test
+     *
+     * Return error for invalid comment id for remove comment for mission
+     *
+     * @return void
+     */
+    public function it_should_return_error_for_invalid_comment_id_for_remove_comment()
+    {
+        $connection = 'tenant';
+        $mission = factory(\App\Models\Mission::class)->make();
+        $mission->setConnection($connection);
+        $mission->save();
+
+        $user = factory(\App\User::class)->make();
+        $user->setConnection($connection);
+        $user->save();
+
+        $this->delete(
+            '/missions/'.$mission->mission_id.'/comments/'.rand(1000000, 2000000),
+            [],
+            ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))]
+        )
+        ->seeStatusCode(404)
+        ->seeJsonStructure([
+            "errors" => [
+                [
+                    "status",
+                    "type",
+                    "message",
+                    "code"
+                ]
+            ]
+        ]); 
+
+        $user->delete();
+        $mission->delete();
+    }
+
+    /**
+     * @test
+     *
+     * Return error for invalid mission id for remove comment for mission
+     *
+     * @return void
+     */
+    public function it_should_return_error_for_invalid_mission_id_for_remove_comment()
+    {
+        $connection = 'tenant';
+        $mission = factory(\App\Models\Mission::class)->make();
+        $mission->setConnection($connection);
+        $mission->save();
+
+        $user = factory(\App\User::class)->make();
+        $user->setConnection($connection);
+        $user->save();
+
+        $params = [
+            "comment" => str_random('100'),
+            "mission_id" => $mission->mission_id
+        ];
+
+        $token = Helpers::getJwtToken($user->user_id);
+        $this->post('/app/mission/comment', $params, ['token' => $token])
+          ->seeStatusCode(201)
+          ->seeJsonStructure([
+            "status",
+            "message"
+        ]);
+        $comment = App\Models\Comment::where('user_id', $user->user_id)->first();
+       
+        DB::setDefaultConnection('mysql');
+        
+        $this->delete(
+            '/missions/'.rand(1000000, 2000000).'/comments/'.$comment->comment_id,
+            [],
+            ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))]
+        )
+        ->seeStatusCode(404)
+        ->seeJsonStructure([
+            "errors" => [
+                [
+                    "status",
+                    "type",
+                    "message",
+                    "code"
+                ]
+            ]
+        ]); 
+        
+        $user->delete();
+        $mission->delete();
+    }    
 }
