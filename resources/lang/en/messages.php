@@ -17,7 +17,7 @@ return [
         'MESSAGE_API_USER_DELETED' => 'API user deleted successfully',
         'MESSAGE_API_USER_UPDATED_SUCCESSFULLY' => 'API user\'s secret key updated successfully',
         'MESSAGE_TENANT_SETTING_LISTING' => 'Tenant setting listed successfully',
-        'MESSAGE_TENANT_SETTINGS_CREATED' => 'Tenant settings updated successfully',
+        'MESSAGE_TENANT_SETTINGS_UPDATED' => 'Tenant settings updated successfully',
     ],
     
     /**
