@@ -32,7 +32,7 @@ class TenantRepository implements TenantInterface
      */
     public function tenantList(Request $request): LengthAwarePaginator
     {
-        $tenantQuery = $this->tenant->with('options', 'tenantLanguages', 'tenantLanguages.language');
+        $tenantQuery = $this->tenant->with('tenantLanguages', 'tenantLanguages.language');
 
         if ($request->has('search')) {
             $tenantQuery->where('name', 'like', '%' . $request->input('search') . '%');

@@ -25,6 +25,13 @@ $router->group(
         'middleware' => 'localization|JsonApiMiddleware', 'uses'=>'TenantController@update']);
         // Delete tenant
         $router->delete('/{tenant_id}', ['as' => 'tenants.destroy', 'uses'=>'TenantController@destroy']);
+        // Get tenant has setting detail
+        $router->get('/{tenantId}/settings', ['as' => 'tenants.settings',
+        'uses'=>'TenantHasSettingController@show']);
+        // Store settings
+        $router->post('/{tenantId}/settings', ['as' => 'tenants.store.settings',
+        'uses'=>'TenantHasSettingController@store']);
+        
         // Get api user list
         $router->get(
             '/{tenant_id}/api_users',
