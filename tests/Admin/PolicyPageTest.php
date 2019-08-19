@@ -198,9 +198,14 @@ class PolicyPageTest extends TestCase
                         'lang' => 'en',
                         'title' => str_random(20),
                         'sections' =>  [
-                            'title' => str_random(20),
-                            'description' => array(str_random(255)),
-                        ],
+                            [
+                                'title' => str_random(20),
+                                'description' => array(str_random(255)),
+                            ],[
+                                'title' => str_random(20),
+                                'description' => array(str_random(255)),
+                            ]
+                        ]
                     ]
                 ],
             ],
