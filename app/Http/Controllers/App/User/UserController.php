@@ -191,14 +191,16 @@ class UserController extends Controller
                         $arrayKey = array_search($languageCode, array_column($value['translations'], 'lang'));
                         $returnData = $value;
                         unset($returnData['translations']);
-                        if ($arrayKey !== '') {
-                            $returnData['translations']['lang'] = $value['translations'][$arrayKey]['lang'];
-                            $returnData['translations']['name'] = $value['translations'][$arrayKey]['name'];
-                            $returnData['translations']['values'] = $value['translations'][$arrayKey]['values'];
-                          
-                            $userCustomFieldValue = $customFieldsValue->where('field_id', $value['field_id'])
-                            ->where('user_id', $userId)->first();
-                            $returnData['user_custom_field_value'] = $userCustomFieldValue->value ?? '';
+                        if (isset($value['translations'][$arrayKey])) {
+                            if ($arrayKey !== '') {
+                                $returnData['translations']['lang'] = $value['translations'][$arrayKey]['lang'];
+                                $returnData['translations']['name'] = $value['translations'][$arrayKey]['name'];
+                                $returnData['translations']['values'] = $value['translations'][$arrayKey]['values'];
+                              
+                                $userCustomFieldValue = $customFieldsValue->where('field_id', $value['field_id'])
+                                ->where('user_id', $userId)->first();
+                                $returnData['user_custom_field_value'] = $userCustomFieldValue->value ?? '';
+                            }
                         }
                     }
                     if (!empty($returnData)) {
@@ -341,9 +343,7 @@ class UserController extends Controller
         } catch (PDOException $e) {
             return $this->PDO(
                 config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
-                trans(
-                    'messages.custom_error_message.ERROR_DATABASE_OPERATIONAL'
-                )
+                trans('messages.custom_error_message.ERROR_DATABASE_OPERATIONAL')
             );
         } catch (\Exception $e) {
             return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));

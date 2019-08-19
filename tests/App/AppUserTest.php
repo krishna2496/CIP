@@ -133,7 +133,9 @@ class AppUserTest extends TestCase
                     "field_id" => $fieldId,
                     "value" => "1"
                 ]
-            ]
+            ],
+            'skills' => []
+
         ];
     
         $token = Helpers::getJwtToken($user->user_id);
@@ -582,10 +584,7 @@ class AppUserTest extends TestCase
                 "availability",
                 "custom_fields",
                 "user_skills",
-                "skill_list",
-                "country_list",
                 "city_list",
-                "timezone_list",
                 "language_list",
                 "availability_list",
             ],
@@ -605,7 +604,7 @@ class AppUserTest extends TestCase
      */
     public function it_should_return_error_for_invalid_authorization_token()
     {
-        $token = Helpers::getJwtToken(rand(1000000, 20000000));
+        $token = str_random(50);
         $this->get('/app/user-detail', ['token' => $token])
         ->seeStatusCode(400)
         ->seeJsonStructure([
