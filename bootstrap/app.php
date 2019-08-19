@@ -30,8 +30,22 @@ $app->configure('errors');
 $app->configure('messages');
 $app->configure('constants'); //constant file config
 $app->configure('filesystems');
+$app->configure('queue');
+$app->configure('mail');
+$app->configure('services');
 
 $app->register(Flipbox\LumenGenerator\LumenGeneratorServiceProvider::class);
+
+
+/**
+ * mailer package registration
+ */
+$app->register(Illuminate\Notifications\NotificationServiceProvider::class);
+$app->register(\Illuminate\Mail\MailServiceProvider::class);
+$app->alias('mailer', \Illuminate\Contracts\Mail\Mailer::class);
+$app->alias('mailer', \Illuminateminate\Mail\Mailer::class);
+$app->alias('mailer', \Illuminate\Contracts\Mail\MailQueue::class);
+
 
 /*
 |--------------------------------------------------------------------------
@@ -70,7 +84,8 @@ $app->singleton(
 // ]);
 
 $app->routeMiddleware([
-	'localization' => App\Http\Middleware\LocalizationMiddleware::class
+    'localization' => App\Http\Middleware\LocalizationMiddleware::class,
+    'JsonApiMiddleware' => App\Http\Middleware\JsonApiMiddleware::class
     //'auth' => App\Http\Middleware\Authenticate::class,
 ]);
 
