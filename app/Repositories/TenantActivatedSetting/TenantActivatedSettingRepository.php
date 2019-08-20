@@ -39,4 +39,14 @@ class TenantActivatedSettingRepository implements TenantActivatedSettingInterfac
         }
         return true;
     }
+
+    /**
+     * Fetch all tenant settings
+     *
+     * @return Illuminate\Database\Eloquent\Collection
+     */
+    public function fetchAllTenantSettings(): Collection
+    {
+        return $this->tenantActivatedSetting->whereHas('settings')->get();
+    }
 }

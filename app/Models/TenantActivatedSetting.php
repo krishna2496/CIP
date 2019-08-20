@@ -4,6 +4,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\{Model, SoftDeletes};
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Collection;
+use App\Models\TenantSetting;
 
 class TenantActivatedSetting extends Model
 {
@@ -41,7 +42,7 @@ class TenantActivatedSetting extends Model
      *
      * @var array
      */
-    protected $visible = ['tenant_setting_id', 'tenant_activated_setting_id'];
+    protected $visible = ['tenant_setting_id', 'tenant_activated_setting_id','settings'];
 
     /**
      * The rules that should validate request.
@@ -66,5 +67,15 @@ class TenantActivatedSetting extends Model
         } else {
             return static::where(['tenant_setting_id' => $tenantSettingId])->delete();
         }
+    }
+
+    /**
+     * Fetch tenant settings.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function settings(): hasOne
+    {
+        return $this->hasOne(TenantSetting::class, 'tenant_setting_id', 'tenant_setting_id');
     }
 }
