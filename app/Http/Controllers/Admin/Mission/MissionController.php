@@ -83,12 +83,12 @@ class MissionController extends Controller
         $validator = Validator::make(
             $request->all(),
             [
-                "theme_id" => "required|exists:mission_theme,mission_theme_id,deleted_at,NULL",
+                "theme_id" => "integer|required|exists:mission_theme,mission_theme_id,deleted_at,NULL",
                 "mission_type" => ['required', Rule::in(config('constants.mission_type'))],
                 "location" => "required",
-                "location.city_id" => "required|required|exists:city,city_id",
-                "location.country_code" => "required|exists:country,ISO",
-                "availability_id" => "required|exists:availability,availability_id",
+                "location.city_id" => "integer|required|exists:city,city_id,deleted_at,NULL",
+                "location.country_code" => "required|exists:country,ISO,deleted_at,NULL",
+                "availability_id" => "integer|required|exists:availability,availability_id,deleted_at,NULL",
                 "mission_detail" => "required",
                 "mission_detail.*.lang" => "required|max:2",
                 "mission_detail.*.title" => "required",
@@ -103,7 +103,7 @@ class MissionController extends Controller
                 "end_date" => "sometimes|after:start_date|date",
                 "total_seats" => "integer|min:1",
                 "goal_objective" => "required_if:mission_type,GOAL|integer|min:1",
-                "skills.*.skill_id" => "exists:skill,skill_id",
+                "skills.*.skill_id" => "integer|exists:skill,skill_id,deleted_at,NULL",
             ]
         );
 
@@ -188,7 +188,7 @@ class MissionController extends Controller
             $request->all(),
             [
                 "mission_type" => [Rule::in(config('constants.mission_type'))],
-                "location.city_id" => "required_with:location",
+                "location.city_id" => "required_with:location|integer|exists:city,city_id,deleted_at,NULL",
                 "location.country_code" => "required_with:location|exists:country,ISO",
                 "mission_detail.*.lang" => "required_with:mission_detail|max:2",
                 "mission_detail.*.title" => "required_with:mission_detail",
@@ -201,9 +201,9 @@ class MissionController extends Controller
                 "start_date" => "sometimes|required_if:mission_type,TIME,required_with:end_date|date",
                 "end_date" => "sometimes|after:start_date|date",
                 "total_seats" => "integer|min:1",
-                "availability_id" => "sometimes|required|exists:availability,availability_id",
-                "skills.*.skill_id" => "exists:skill,skill_id",
-                "theme_id" => "sometimes|required|exists:mission_theme,mission_theme_id,deleted_at,NULL",
+                "availability_id" => "sometimes|required|integer|exists:availability,availability_id,deleted_at,NULL",
+                "skills.*.skill_id" => "integer|exists:skill,skill_id,deleted_at,NULL",
+                "theme_id" => "sometimes|required|integer|exists:mission_theme,mission_theme_id,deleted_at,NULL",
                 "application_deadline" => "date"
             ]
         );

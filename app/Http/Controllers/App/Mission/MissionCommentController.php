@@ -87,7 +87,7 @@ class MissionCommentController extends Controller
                 $request->all(),
                 [
                     "comment" => "required|max:280",
-                    "mission_id" => "required|exists:mission,mission_id"
+                    "mission_id" => "required|integer|exists:mission,mission_id,deleted_at,NULL"
                 ]
             );
 
