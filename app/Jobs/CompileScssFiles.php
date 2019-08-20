@@ -124,7 +124,6 @@ class CompileScssFiles extends Job
             throw $e;
         }
         // Send success mail to super admin
-        $this->emailMessage = 'Job executed successfully';
         $this->sendEmailNotification();
     }
 
@@ -135,11 +134,11 @@ class CompileScssFiles extends Job
      */
     public function sendEmailNotification(bool $isFail = false)
     {
-        $status = ($isFail) ? 'Failed' : 'Passed';
-
-        $message = "<p> Tenant : " .$this->tenantName. "<br>";
-        $message .= "Background Job Name : Compile SCSS Files <br>";
-        $message .= "Background Job Status : ".$status." <br>";
+        $status = ($isFail===false) ? trans('messages.email_text.PASSED') : trans('messages.email_text.FAILED');
+        $message = "<p> ".trans('messages.email_text.TENANT')." : " .$this->tenantName. "<br>";
+        $message .= trans('messages.email_text.BACKGROUND_JOB_NAME')." : "
+        .trans('messages.email_text.COMPILE_SCSS_FILES') ." <br>";
+        $message .= trans('messages.email_text.BACKGROUND_JOB_STATUS')." : ".$status." <br>";
 
         $data = array(
             'message'=> $message,
@@ -148,8 +147,10 @@ class CompileScssFiles extends Job
 
         $params['to'] = config('constants.ADMIN_EMAIL_ADDRESS'); //required
         $params['template'] = config('constants.EMAIL_TEMPLATE_FOLDER').'.'.config('constants.EMAIL_TEMPLATE_USER_INVITE'); //path to the email template
-        $params['subject'] = ($isFail) ? 'Error: Compile SCSS Files Job For '.$this->tenantName. ' Tenant' :
-        'Success: Compile SCSS Files Job For '.$this->tenantName. ' Tenant'; //optional
+        $params['subject'] = ($isFail) ? trans("messages.email_text.ERROR")." : "
+        .trans('messages.email_text.COMPILE_SCSS_FILES') . " " .trans('messages.email_text.JOB_FOR'). " "
+        . $this->tenantName . " ".trans("messages.email_text.TENANT") :
+        trans("messages.email_text.SUCCESS").": " .trans('messages.email_text.COMPILE_SCSS_FILES'). " " .trans('messages.email_text.JOB_FOR'). $this->tenantName. " " .trans("messages.email_text.TENANT"); //optional
         $params['data'] = $data;
 
         $this->sendEmail($params);

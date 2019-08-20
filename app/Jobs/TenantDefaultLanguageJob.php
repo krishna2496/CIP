@@ -68,11 +68,12 @@ class TenantDefaultLanguageJob extends Job
      */
     public function sendEmailNotification(bool $isFail = false)
     {
-        $status = ($isFail) ? 'Failed' : 'Passed';
 
-        $message = "<p> Tenant : " .$this->tenant->name. "<br>";
-        $message .= "Background Job Name : Tenant Default Language <br>";
-        $message .= "Background Job Status : ".$status." <br>";
+        $status = ($isFail===false) ? trans('messages.email_text.PASSED') : trans('messages.email_text.FAILED');
+        $message = "<p> ".trans('messages.email_text.TENANT')." : " .$this->tenant->name. "<br>";
+        $message .= trans('messages.email_text.BACKGROUND_JOB_NAME')." :
+        ".trans('messages.email_text.TENANT_DEFAULT_LANGUAGE')." <br>";
+        $message .= trans('messages.email_text.BACKGROUND_JOB_STATUS')." : ".$status." <br>";
 
         $data = array(
             'message'=> $message,
@@ -81,8 +82,11 @@ class TenantDefaultLanguageJob extends Job
 
         $params['to'] = config('constants.ADMIN_EMAIL_ADDRESS'); //required
         $params['template'] = config('constants.EMAIL_TEMPLATE_FOLDER').'.'.config('constants.EMAIL_TEMPLATE_USER_INVITE'); //path to the email template
-        $params['subject'] = ($isFail) ? 'Error: Tenant Default Language Job For '.$this->tenant->name. ' Tenant' :
-        'Success: Tenant Default Language Job For '.$this->tenant->name. ' Tenant'; //optional
+        $params['subject'] = ($isFail) ? trans("messages.email_text.ERROR"). " : "
+        .trans('messages.email_text.TENANT_DEFAULT_LANGUAGE')
+        . " " . trans('messages.email_text.JOB_FOR'). " "  . $this->tenant->name  . " "
+        .trans("messages.email_text.TENANT") :
+        trans("messages.email_text.SUCCESS"). " : " .trans('messages.email_text.TENANT_DEFAULT_LANGUAGE'). " " . trans('messages.email_text.JOB_FOR') . $this->tenant->name. " " .trans("messages.email_text.TENANT"); //optional
         $params['data'] = $data;
 
         $this->sendEmail($params);
