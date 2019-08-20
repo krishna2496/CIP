@@ -99,17 +99,17 @@ class TenantController extends Controller
             
             // ONLY FOR DEVELOPMENT MODE. (PLEASE REMOVE THIS CODE IN PRODUCTION MODE)
             if (env('APP_ENV')=='local' || env('APP_ENV')=='testing') {
-                Queue::pushOn($tenant->name, new TenantDefaultLanguageJob($tenant));
+                Queue::push(new TenantDefaultLanguageJob($tenant));
             }
             
             // Job dispatched to create new tenant's database and migrations
-            Queue::pushOn($tenant->name, new TenantMigrationJob($tenant));
+            Queue::push(new TenantMigrationJob($tenant));
 
             // Create assets folder for tenant on AWS s3 bucket
-            Queue::pushOn($tenant->name, new CreateFolderInS3BucketJob($tenant));
+            Queue::push(new CreateFolderInS3BucketJob($tenant));
 
             // Compile CSS file and upload on s3
-            Queue::pushOn($tenant->name, new CompileScssFiles($tenant->name));
+            Queue::push(new CompileScssFiles($tenant->name));
 
             // Set response data
             $apiStatus = Response::HTTP_CREATED;

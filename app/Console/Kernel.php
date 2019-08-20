@@ -24,6 +24,6 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('run:queue-process')->everyMinute();
+        $schedule->command('queue:listen --timeout=0')->everyMinute();
     }
 }
