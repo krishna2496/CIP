@@ -285,12 +285,12 @@ class UserController extends Controller
             $apiData['availability_list'] = $availabilityList;
             if (isset($userDetail->avatar) && ($userDetail->avatar != '')) {
                 $type = pathinfo($userDetail->avatar, PATHINFO_EXTENSION);
-				$arrContextOptions=array(
-				"ssl"=>array(
-					"verify_peer"=>false,
-					"verify_peer_name"=>false,
-				),
-			);  
+                $arrContextOptions=array(
+                "ssl"=>array(
+                    "verify_peer"=>false,
+                    "verify_peer_name"=>false,
+                ),
+                );
                 $imageData = file_get_contents($userDetail->avatar, false, stream_context_create($arrContextOptions));
                 $avatarBase64 = 'data:image/' . $type . ';base64,' . base64_encode($imageData);
             }
@@ -413,8 +413,8 @@ class UserController extends Controller
 
             $userId = $request->auth->user_id;
             $tenantName = $this->helpers->getSubDomainFromRequest($request);
-			$avatar = preg_replace('#^data:image/\w+;base64,#i', '', $request->avatar);
-			$imagePath = $this->s3helper->uploadProfileImageOnS3Bucket($avatar, $tenantName, $userId);
+            $avatar = preg_replace('#^data:image/\w+;base64,#i', '', $request->avatar);
+            $imagePath = $this->s3helper->uploadProfileImageOnS3Bucket($avatar, $tenantName, $userId);
             
             $userData['avatar'] = $imagePath;
             $this->userRepository->update($userData, $userId);
