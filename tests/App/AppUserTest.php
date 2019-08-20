@@ -149,6 +149,8 @@ class AppUserTest extends TestCase
     }
 
     /**
+     * @test
+     * 
      * Add skill to user
      *
      * @return void
@@ -215,7 +217,7 @@ class AppUserTest extends TestCase
         $user->delete();
     }
 
-/**
+    /**
      * @test
      *
      * Return error if user data is invalid
@@ -250,6 +252,8 @@ class AppUserTest extends TestCase
     }
 
     /**
+     * @test
+     * 
      * Validate request for add skill to user
      *
      * @return void
@@ -327,6 +331,7 @@ class AppUserTest extends TestCase
 
     /**
      * @test
+     * 
      * Change password
      *
      * @return void
@@ -361,6 +366,8 @@ class AppUserTest extends TestCase
     }
 
     /**
+     * @test
+     * 
      * Show error if incorrect old password
      *
      * @return void
@@ -431,8 +438,8 @@ class AppUserTest extends TestCase
     }
 
     /**
-	 * @test
-	 *
+     * @test
+     * 
      * Show error if required fields are empty
      *
      * @return void
@@ -465,8 +472,8 @@ class AppUserTest extends TestCase
     }
 
     /**
-	 * @test
-	 *
+     * @test
+     * 
      * Upload profile image
      *
      * @return void
@@ -481,7 +488,7 @@ class AppUserTest extends TestCase
         $path= 'https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer9.png';
         $type = pathinfo($path, PATHINFO_EXTENSION);
         $fileData = file_get_contents($path);
-        $base64 = 'data:image/' . $type . ';base64,' . base64_encode($fileData);
+        $base64 = base64_encode($fileData);
         
         $params = [
             'avatar' => $base64
@@ -575,6 +582,7 @@ class AppUserTest extends TestCase
                 "country_id",
                 "profile_text",
                 "linked_in_url",
+                "title",
                 "status",
                 "city",
                 "country",

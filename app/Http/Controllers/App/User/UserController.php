@@ -208,6 +208,7 @@ class UserController extends Controller
             $language = ($request->hasHeader('X-localization')) ?
             $request->header('X-localization') : env('TENANT_DEFAULT_LANGUAGE_CODE');
             $languageCode = $languages->where('code', $language)->first()->code;
+            $userLanguageCode = $languages->where('language_id', $userDetail->language_id)->first()->code;
             $userCustomFieldData = [];
             $userSkillData = [];
             $allSkillData = [];
@@ -223,13 +224,15 @@ class UserController extends Controller
                         $returnData = $value;
                         unset($returnData['translations']);
                         if ($arrayKey !== '') {
-                            $returnData['translations']['lang'] = $value['translations'][$arrayKey]['lang'];
-                            $returnData['translations']['name'] = $value['translations'][$arrayKey]['name'];
-                            $returnData['translations']['values'] = $value['translations'][$arrayKey]['values'];
-                          
-                            $userCustomFieldValue = $customFieldsValue->where('field_id', $value['field_id'])
-                            ->where('user_id', $userId)->first();
-                            $returnData['user_custom_field_value'] = $userCustomFieldValue->value ?? '';
+                            if (isset($value['translations'][$arrayKey])) {
+                                $returnData['translations']['lang'] = $value['translations'][$arrayKey]['lang'];
+                                $returnData['translations']['name'] = $value['translations'][$arrayKey]['name'];
+                                $returnData['translations']['values'] = $value['translations'][$arrayKey]['values'];
+                            
+                                $userCustomFieldValue = $customFieldsValue->where('field_id', $value['field_id'])
+                                ->where('user_id', $userId)->first();
+                                $returnData['user_custom_field_value'] = $userCustomFieldValue->value ?? '';
+                            }
                         }
                     }
                     if (!empty($returnData)) {
@@ -274,7 +277,7 @@ class UserController extends Controller
             }
 
             $apiData = $userDetail->toArray();
-            $apiData['language_code'] = $languageCode;
+            $apiData['language_code'] = $userLanguageCode;
             $apiData['custom_fields'] = $userCustomFieldData;
             $apiData['user_skills'] = $userSkillData;
             $apiData['skill_list'] = $allSkillData;
@@ -283,6 +286,7 @@ class UserController extends Controller
             $apiData['timezone_list'] = $timezoneList;
             $apiData['language_list'] = $tenantLanguages;
             $apiData['availability_list'] = $availabilityList;
+
             if (isset($userDetail->avatar) && ($userDetail->avatar != '')) {
                 $type = pathinfo($userDetail->avatar, PATHINFO_EXTENSION);
                 $arrContextOptions=array(
@@ -325,9 +329,9 @@ class UserController extends Controller
                 ["first_name" => "sometimes|required|max:16",
                 "last_name" => "sometimes|required|max:16",
                 "password" => "sometimes|required|min:8",
-                "employee_id" => "sometimes|required|max:16",
-                "department" => "sometimes|required|max:16",
-                "manager_name" => "sometimes|required|max:16",
+                "employee_id" => "max:16",
+                "department" => "max:16",
+                "manager_name" => "max:16",
                 "linked_in_url" => "url",
                 "availability_id" => "exists:availability,availability_id",
                 "city_id" => "exists:city,city_id",

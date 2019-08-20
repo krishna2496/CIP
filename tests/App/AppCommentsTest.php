@@ -1,5 +1,4 @@
 <?php
-use Illuminate\Support\Facades\DB;
 use App\Helpers\Helpers;
 
 class AppCommentsTest extends TestCase
