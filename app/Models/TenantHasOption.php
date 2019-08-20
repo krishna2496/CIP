@@ -2,6 +2,9 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\{Model, SoftDeletes};
+use App\Models\TenantOption;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Collection;
 
 class TenantHasOption extends Model
 {
@@ -19,28 +22,28 @@ class TenantHasOption extends Model
      *
      * @var string
      */
-    protected $primaryKey = 'tenant_option_id';
+    protected $primaryKey = 'tenant_has_option_id';
 
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
-    protected $fillable = ['tenant_id','option_name','option_value'];
+    protected $fillable = ['tenant_option_id', 'tenant_id', 'option_value'];
 
     /**
      * The attributes that should be mutated to dates.
      *
      * @var array
      */
-    protected $dates = ['created_at','updated_at','deleted_at'];
+    protected $dates = ['created_at', 'updated_at', 'deleted_at'];
 
     /**
      * The attributes that should be visible in arrays.
      *
      * @var array
      */
-    protected $visible = ['tenant_option_id', 'option_name', 'option_value'];
+    protected $visible = ['tenant_option_id', 'tenant_id', 'option_value', 'option'];
 
     /**
      * The rules that should validate request.
@@ -51,4 +54,13 @@ class TenantHasOption extends Model
         // Validation rules
     ];
     
+    /**
+    * Defined has many relation for the tenant_option table.
+    *
+    * @return \Illuminate\Database\Eloquent\Relations\HasOne
+    */
+    public function option(): HasOne
+    {
+        return $this->hasOne(TenantOption::class, 'tenant_option_id', 'tenant_option_id');
+    }
 }

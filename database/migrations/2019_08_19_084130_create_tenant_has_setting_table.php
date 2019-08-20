@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateTenantHasOptionTable extends Migration
+class CreateTenantHasSettingTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,16 +13,16 @@ class CreateTenantHasOptionTable extends Migration
      */
     public function up()
     {
-        Schema::create('tenant_has_option', function (Blueprint $table) {
-            $table->bigIncrements('tenant_option_id');
+        Schema::create('tenant_has_setting', function (Blueprint $table) {
             $table->bigInteger('tenant_id')->unsigned();
-            $table->string('option_name',64);
-            $table->enum('option_value',['0','1'])->default('1')->comment('0: Inactive, 1: Active');
+            $table->bigInteger('tenant_setting_id')->unsigned();
             $table->timestamps();
             $table->softDeletes();
 
-            // Relation defined between tenant_has_option(tenant_id) with tenant(id)
+            // Relation defined between tenant_has_setting(tenant_id) with tenant(tenant_id)
             $table->foreign('tenant_id')->references('tenant_id')->on('tenant')->onDelete('CASCADE')->onUpdate('CASCADE');
+            // Relation defined between tenant_has_setting(tenant_setting_id) with tenant_setting(tenant_setting_id)
+            $table->foreign('tenant_setting_id')->references('tenant_setting_id')->on('tenant_setting')->onDelete('CASCADE')->onUpdate('CASCADE');
         });
     }
 
@@ -33,6 +33,6 @@ class CreateTenantHasOptionTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('tenant_has_option');
+        Schema::dropIfExists('tenant_has_setting');
     }
 }
