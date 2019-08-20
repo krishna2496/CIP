@@ -285,7 +285,13 @@ class UserController extends Controller
             $apiData['availability_list'] = $availabilityList;
             if (isset($userDetail->avatar) && ($userDetail->avatar != '')) {
                 $type = pathinfo($userDetail->avatar, PATHINFO_EXTENSION);
-                $imageData = file_get_contents($userDetail->avatar);
+				$arrContextOptions=array(
+				"ssl"=>array(
+					"verify_peer"=>false,
+					"verify_peer_name"=>false,
+				),
+			);  
+                $imageData = file_get_contents($userDetail->avatar, false, stream_context_create($arrContextOptions));
                 $avatarBase64 = 'data:image/' . $type . ';base64,' . base64_encode($imageData);
             }
             $apiData['avatar_base64'] = $avatarBase64 ?? '';
@@ -425,7 +431,7 @@ class UserController extends Controller
         } catch (\PDOException $e) {
             return $this->PDO(
                 config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
-                trans('messages.custom_error_message.ERROR_USER_NOT_FOUND')
+                trans('messages.custom_error_message.ERROR_DATABASE_OPERATIONAL')
             );
         } catch (\Exception $e) {
             return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
