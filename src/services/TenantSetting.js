@@ -10,15 +10,19 @@ export default async(data) => {
             method: 'get',
         })
         .then((response) => {
+            let settingArray = {};
             if(response.data.data) { 
-                let settingArray = {};
                 $.each(response.data.data, function(index,module){
                     var key = module.key;
                     settingArray[key] = module.value
-                });
-                store.commit("setTenantSetting",settingArray);
+                }); 
                 responseData = response.data.data;
+                
+            } else {
+                settingArray = null
             }
+            store.commit("setTenantSetting",settingArray);
+
         })
         .catch(function(error) {});
     return responseData;
