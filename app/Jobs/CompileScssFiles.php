@@ -41,7 +41,7 @@ class CompileScssFiles extends Job
     public function __construct(string $tenantName)
     {
         $this->tenantName = $tenantName;
-        $this->emailMessage = 'Job passed successufully';
+        $this->emailMessage = trans("messages.email_text.JOB_PASSED_SUCCESSFULLY");
     }
 
     /**

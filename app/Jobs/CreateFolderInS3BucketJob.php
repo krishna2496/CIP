@@ -43,7 +43,7 @@ class CreateFolderInS3BucketJob extends Job
     {
         $this->tenant = $tenant;
         $this->databaseHelper = new DatabaseHelper;
-        $this->emailMessage = 'Job passed successufully';
+        $this->emailMessage = trans("messages.email_text.JOB_PASSED_SUCCESSFULLY");
     }
 
     /**

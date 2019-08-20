@@ -34,7 +34,7 @@ class TenantDefaultLanguageJob extends Job
     public function __construct(Tenant $tenant)
     {
         $this->tenant = $tenant;
-        $this->emailMessage = 'Job passed successufully';
+        $this->emailMessage = trans("messages.email_text.JOB_PASSED_SUCCESSFULLY");
     }
 
     /**

@@ -51,7 +51,8 @@ return [
         'COMPILE_SCSS_FILES' => 'Compile SCSS Files',
         'CREATE_FOLDER_ON_S3_BUCKET' => 'Create Folder On S3 Bucket',
         'TENANT_DEFAULT_LANGUAGE' => 'Tenant Default Language',
-        'TENANT_MIGRATION' => 'Tenant Migration'
+        'TENANT_MIGRATION' => 'Tenant Migration',
+        'JOB_PASSED_SUCCESSFULLY' => 'Job passed successufully',
 
     ]
     
