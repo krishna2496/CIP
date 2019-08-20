@@ -1,22 +1,22 @@
 <?php
-namespace App\Http\Controllers\App\City;
+namespace App\Http\Controllers\App\Timezone;
 
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
-use App\Repositories\City\CityRepository;
+use Illuminate\Http\JsonResponse;
 use App\Helpers\ResponseHelper;
+use App\Repositories\Timezone\TimezoneRepository;
 use App\Traits\RestExceptionHandlerTrait;
 use InvalidArgumentException;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 
-class CityController extends Controller
+class TimezoneController extends Controller
 {
     use RestExceptionHandlerTrait;
     /**
-     * @var App\Repositories\City\CityRepository
+     * @var App\Repositories\Timezone\TimezoneRepository
      */
-    private $cityRepository;
+    private $timeZoneRepository;
 
     /**
      * @var App\Helpers\ResponseHelper
@@ -26,43 +26,37 @@ class CityController extends Controller
     /**
      * Create a new controller instance.
      *
-     * @param App\Repositories\City\CityRepository $cityRepository
+     * @param App\Repositories\Timezone\TimezoneRepository $timeZoneRepository
      * @param Illuminate\Http\ResponseHelper $responseHelper
      * @return void
      */
     public function __construct(
-        CityRepository $cityRepository,
+        TimezoneRepository $timeZoneRepository,
         ResponseHelper $responseHelper
     ) {
-        $this->cityRepository = $cityRepository;
+        $this->timeZoneRepository = $timeZoneRepository;
         $this->responseHelper = $responseHelper;
     }
 
     /**
-    * Fetch city by country id
+    * Get timezone list
     *
-    * @param int $countryId
     * @return Illuminate\Http\JsonResponse
     */
-    public function fetchCity(int $countryId): JsonResponse
+    public function index() : JsonResponse
     {
         try {
-            $cityList = $this->cityRepository->cityList($countryId);
-            $apiData = $cityList->toArray();
+            $timezoneList = $this->timeZoneRepository->getTimezoneList();
+            $apiData = $timezoneList->toArray();
             $apiStatus = Response::HTTP_OK;
             $apiMessage = (!empty($apiData)) ?
-            trans('messages.success.MESSAGE_CITY_LISTING') :
-            trans('messages.success.MESSAGE_NO_CITY_FOUND');
+            trans('messages.success.MESSAGE_TIMEZONE_LISTING') :
+            trans('messages.success.MESSAGE_NO_TIMEZONE_FOUND');
             return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
         } catch (InvalidArgumentException $e) {
             return $this->invalidArgument(
                 config('constants.error_codes.ERROR_INVALID_ARGUMENT'),
                 trans('messages.custom_error_message.ERROR_INVALID_ARGUMENT')
-            );
-        } catch (ModelNotFoundException $e) {
-            return $this->modelNotFound(
-                config('constants.error_codes.ERROR_COUNTRY_NOT_FOUND'),
-                trans('messages.custom_error_message.ERROR_COUNTRY_NOT_FOUND')
             );
         } catch (\Exception $e) {
             return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));

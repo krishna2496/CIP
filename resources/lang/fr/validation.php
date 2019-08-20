@@ -72,6 +72,7 @@ return [
     'timezone'             => 'FR Lumen : The :attribute must be a valid zone.',
     'unique'               => 'FR Lumen : The :attribute has already been taken.',
     'url'                  => 'FR Lumen : The :attribute format is invalid.',
+    'present'              => 'The :attribute field is required',
 
     /*
     |--------------------------------------------------------------------------

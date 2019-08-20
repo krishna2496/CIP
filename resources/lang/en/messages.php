@@ -85,6 +85,10 @@ return [
         'MESSAGE_COMMENT_UPDATED' => 'Comment updated successfully',
         'MESSAGE_COMMENT_DELETED' => 'Comment deleted successfully',
         'MESSAGE_PROFILE_IMAGE_UPLOADED' => 'Profile image uploaded successfully',
+        'MESSAGE_TIMEZONE_LISTING' => 'Timezone listed successfully',
+        'MESSAGE_NO_TIMEZONE_FOUND' => 'Timezone not found',
+        'MESSAGE_NO_SKILL_FOUND' => 'Skill not found',
+        'MESSAGE_NO_COUNTRY_FOUND' => 'Country not found',
 		],
         
     /**

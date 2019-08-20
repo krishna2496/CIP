@@ -127,9 +127,7 @@ class AppMisionApplicationTest extends TestCase
                 ]
             ],
             "media_images" => [[
-                    "media_name" => "TatvaSoft-Software-Development-Company.png",
-                    "media_type" => "png",
-                    "media_path" => "http://web8.anasource.com/team4/cip-api-swagger/group-img1.png",
+                    "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer9.png",
                     "default" => "1"
                 ]
             ],
@@ -207,9 +205,7 @@ class AppMisionApplicationTest extends TestCase
                 ]
             ],
             "media_images" => [[
-                    "media_name" => "TatvaSoft-Software-Development-Company.png",
-                    "media_type" => "png",
-                    "media_path" => "http://web8.anasource.com/team4/cip-api-swagger/group-img1.png",
+                    "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer9.png",
                     "default" => "1"
                 ]
             ],
@@ -289,9 +285,7 @@ class AppMisionApplicationTest extends TestCase
                 ]
             ],
             "media_images" => [[
-                    "media_name" => "TatvaSoft-Software-Development-Company.png",
-                    "media_type" => "png",
-                    "media_path" => "http://web8.anasource.com/team4/cip-api-swagger/group-img1.png",
+                    "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer9.png",
                     "default" => "1"
                 ]
             ],

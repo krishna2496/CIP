@@ -290,9 +290,14 @@ class AppMissionTest extends TestCase
     public function it_should_return_related_mission_by_id()
     {
         $connection = 'tenant';
+        $missionRelated = factory(\App\Models\Mission::class)->make();
+        $missionRelated->setConnection($connection);
+        $missionRelated->save();
+
         $mission = factory(\App\Models\Mission::class)->make();
         $mission->setConnection($connection);
         $mission->save();
+
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
         $user->save();
@@ -340,6 +345,7 @@ class AppMissionTest extends TestCase
         ]);
         $user->delete();
         $mission->delete();
+        $missionRelated->delete();
     }
 
     /**
