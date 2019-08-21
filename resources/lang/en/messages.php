@@ -55,7 +55,8 @@ return [
         'JOB_PASSED_SUCCESSFULLY' => 'Job passed successufully',
         'ALL_JOBS_EXECUTED_SUCCESSFULLY' => 'All background jobs executed successfully',
         'ON_BACKGROUND_JOBS' => 'On background jobs for',
-        'MESSAGE' => 'Message'
+        'MESSAGE' => 'Message',
+        'BACKGROUND_JOB_EXCEPTION_MESSAGE' => 'Background job exception message'
     ]
     
 ];
