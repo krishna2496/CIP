@@ -55,7 +55,6 @@ export default {
        * [param] field
        */
       cropSuccess(imgDataUrl, field){
-        console.log('-------- crop success --------');
         this.imgDataUrl = imgDataUrl;
       },
       /**
@@ -65,7 +64,6 @@ export default {
        * [param] field
        */
       cropUploadSuccess(jsonData, field){
-        console.log('-------- upload success --------');
         console.log(jsonData);
         console.log('field: ' + field);
       },
@@ -76,7 +74,6 @@ export default {
        * [param] field
        */
       cropUploadFail(status, field){
-        console.log('-------- upload fail --------');
         console.log(status);
         console.log('field: ' + field);
       }
@@ -85,7 +82,6 @@ export default {
     // 
     created() {
       this.url  =process.env.VUE_APP_API_ENDPOINT + "app/user/upload-profile-image"
-         // this.langauageData = JSON.parse(store.state.languageLabel);
     },
 };
 </script>

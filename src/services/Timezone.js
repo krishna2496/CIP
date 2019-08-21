@@ -28,7 +28,6 @@ export default async(countryId) => {
                 }
             })
         .catch(function(error) {
-             console.log("out");
                 responseData.error = true;
                
         });

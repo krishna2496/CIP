@@ -758,7 +758,6 @@ export default {
            
         },
         detectChangeInCustomFeild (data) {
-            // console.log(data);
             this.returnCustomFeildData = data;
         },
         //submit form
@@ -802,8 +801,6 @@ export default {
                 _this.saveProfileData.skills = []
        
                 Object.keys(this.returnCustomFeildData).map(function(key) { 
-                        
-                        // console.log(_this.returnCustomFeildData[key]);
                         let customValue = _this.returnCustomFeildData[key];
 
                         if (Array.isArray(customValue)) {
@@ -887,7 +884,6 @@ export default {
         changeCityData(countryId) {
             if(countryId) {
                 changeCity(countryId).then( response => {
-                    // console.log(response);
                     if (response.error === true) { 
                         this.cityList = []
                     } else {

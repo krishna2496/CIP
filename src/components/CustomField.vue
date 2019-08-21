@@ -259,15 +259,6 @@ export default {
             }
             return returnData;
         },
-        handleSubmit2() {
-            this.$v.$touch();
-          
-            if (this.$v.$invalid) {
-                return;
-            }
-            
-            // console.log(this.customFeildData);
-        },
         getErrorClass(id) {
             if(this.$v.customFeildData[id] && this.isSubmit == true) {
                 return this.$v.customFeildData[id].$invalid
