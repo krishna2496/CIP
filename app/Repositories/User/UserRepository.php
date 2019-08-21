@@ -13,9 +13,6 @@ use App\Helpers\ResponseHelper;
 use App\Models\UserSkill;
 use App\Models\UserCustomFieldValue;
 use App\Models\Availability;
-use Validator;
-use PDOException;
-use DB;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class UserRepository implements UserInterface
@@ -150,8 +147,10 @@ class UserRepository implements UserInterface
     public function linkSkill(array $request, int $id): bool
     {
         $this->user->findOrFail($id);
-        foreach ($request['skills'] as $value) {
-            $this->userSkill->linkUserSkill($id, $value['skill_id']);
+        if (!empty($request['skills'])) {
+            foreach ($request['skills'] as $value) {
+                $this->userSkill->linkUserSkill($id, $value['skill_id']);
+            }
         }
         return true;
     }

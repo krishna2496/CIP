@@ -36,8 +36,7 @@ class TimezoneRepository implements TimezoneInterface
      */
     public function timezoneList(Request $request, int $timezone_id = null) :Timezone
     {
-        $timezone = $this->timezone->where("timezone_id", $timezone_id)->first();
-        return $timezone;
+        return $this->timezone->where("timezone_id", $timezone_id)->first();
     }
 
     /**

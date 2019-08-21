@@ -135,7 +135,7 @@ class LanguageHelper
             ->select('language.language_id', 'language.code', 'language.name', 'tenant_language.default')
             ->leftJoin('language', 'language.language_id', '=', 'tenant_language.language_id')
             ->where('tenant_id', $tenant->tenant_id)
-            ->pluck('language.code', 'language.language_id');
+            ->pluck('language.name', 'language.language_id');
 
             // Connect tenant database
             $this->helpers->switchDatabaseConnection('tenant', $request);
@@ -144,9 +144,7 @@ class LanguageHelper
         } catch (PDOException $e) {
             return $this->PDO(
                 config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
-                trans(
-                    'messages.custom_error_message.ERROR_DATABASE_OPERATIONAL'
-                )
+                trans('messages.custom_error_message.ERROR_DATABASE_OPERATIONAL')
             );
         } catch (\Exception $e) {
             return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));

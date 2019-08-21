@@ -332,6 +332,7 @@ class Mission extends Model
     /**
      * Get organisation detail in unserialize form
      *
+     * @param string|null $value
      * @return null|array
      */
     public function getOrganisationDetailAttribute($value): ?array

@@ -135,7 +135,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
 
     /* Store mission comment */
     $router->post('/app/mission/comment', [
-        'middleware' => 'tenant.connection|jwt.auth',
+        'middleware' => 'tenant.connection|jwt.auth|JsonApiMiddleware',
         'uses' => 'App\Mission\MissionCommentController@store']);
 
     /* Get user details */
@@ -145,6 +145,18 @@ $router->group(['middleware' => 'localization'], function ($router) {
     /* Get city by country id */
     $router->get('/app/city/{countryId}', ['middleware' => 'tenant.connection|jwt.auth',
      'uses' => 'App\City\CityController@fetchCity']);
+
+    /* Get timezone list */
+    $router->get('/app/timezone', ['middleware' => 'tenant.connection|jwt.auth',
+    'uses' => 'App\Timezone\TimezoneController@index']);
+
+    /* Get skill list */
+    $router->get('/app/skill', ['middleware' => 'tenant.connection|jwt.auth',
+    'uses' => 'App\Skill\SkillController@index']);
+
+    /* Get country list */
+    $router->get('/app/country', ['middleware' => 'tenant.connection|jwt.auth',
+    'uses' => 'App\Country\CountryController@index']);
 });
 
     /* Policy pages  */
@@ -157,7 +169,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
    
     /* Update user details */
     $router->patch('/app/user', [
-        'middleware' => 'localization|tenant.connection|jwt.auth',
+        'middleware' => 'localization|tenant.connection|jwt.auth|JsonApiMiddleware',
         'uses' => 'App\User\UserController@update']);
 
     /* Password change routing */

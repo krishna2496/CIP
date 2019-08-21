@@ -82,7 +82,7 @@ class SkillController extends Controller
                 [
                     "skill_name" => "required|max:64|unique:skill,skill_name,NULL,skill_id,deleted_at,NULL",
                     "translations" => "required",
-                    "parent_skill" => "int",
+                    "parent_skill" => "numeric|valid_parent_skill",
                     "translations.*.lang" => "required_with:translations|max:2"
                 ]
             );
@@ -143,9 +143,7 @@ class SkillController extends Controller
                     "sometimes",
                     "required",
                     Rule::unique('skill')->ignore($id, 'skill_id,deleted_at,NULL')],
-                "parent_skill" => [
-                    "int",
-                    Rule::unique('skill')->ignore($id, 'skill_id')],
+                "parent_skill" => "numeric|valid_parent_skill",
                 "translations" => "sometimes|required",
                 "translations.*.lang" => "required_with:translations|max:2"]
             );

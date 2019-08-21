@@ -71,25 +71,11 @@ class MissionTest extends TestCase
                             ]
                         ]
                     ],
-                    "documents" => [
-                        [
-                            "document_name" => "pdf-test.pdf",
-                            "document_type" => "pdf",
-                            "document_path" => "http://web8.anasource.com/team4/cip-api-swagger/pdf-test.pdf"
-                        ]
-                    ],
                     "media_images" => [[
-                            "media_name" => "TatvaSoft-Software-Development-Company.png",
-                            "media_type" => "png",
-                            "media_path" => "http://web8.anasource.com/team4/cip-api-swagger/group-img1.png",
+                            "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer9.png",
                             "default" => "1"
                         ]
                     ],
-                    "media_videos" => [[
-                        "media_name" => "youtube_small.mp4",
-                        "media_type" => "mp4",
-                        "media_path" => "https://www.youtube.com/watch?v=WfjO17X9hOo"
-                    ]],
                     "start_date" => "2019-05-15 10:40:00",
                     "end_date" => "2019-10-15 10:40:00",
                     "mission_type" => config("constants.mission_type.GOAL"),

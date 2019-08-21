@@ -98,8 +98,8 @@ class MissionInviteController extends Controller
             $validator = Validator::make(
                 $request->all(),
                 [
-                    "mission_id" => "numeric|required|exists:mission,mission_id",
-                    "to_user_id" => "numeric|required|exists:user,user_id",
+                    "mission_id" => "numeric|required|exists:mission,mission_id,deleted_at,NULL",
+                    "to_user_id" => "numeric|required|exists:user,user_id,deleted_at,NULL",
                 ]
             );
     

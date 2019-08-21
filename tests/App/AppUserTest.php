@@ -133,7 +133,9 @@ class AppUserTest extends TestCase
                     "field_id" => $fieldId,
                     "value" => "1"
                 ]
-            ]
+            ],
+            'skills' => []
+
         ];
     
         $token = Helpers::getJwtToken($user->user_id);
@@ -149,6 +151,8 @@ class AppUserTest extends TestCase
     }
 
     /**
+     * @test
+     * 
      * Add skill to user
      *
      * @return void
@@ -215,7 +219,7 @@ class AppUserTest extends TestCase
         $user->delete();
     }
 
-/**
+    /**
      * @test
      *
      * Return error if user data is invalid
@@ -250,6 +254,8 @@ class AppUserTest extends TestCase
     }
 
     /**
+     * @test
+     * 
      * Validate request for add skill to user
      *
      * @return void
@@ -327,6 +333,7 @@ class AppUserTest extends TestCase
 
     /**
      * @test
+     * 
      * Change password
      *
      * @return void
@@ -361,6 +368,8 @@ class AppUserTest extends TestCase
     }
 
     /**
+     * @test
+     * 
      * Show error if incorrect old password
      *
      * @return void
@@ -431,8 +440,8 @@ class AppUserTest extends TestCase
     }
 
     /**
-	 * @test
-	 *
+     * @test
+     * 
      * Show error if required fields are empty
      *
      * @return void
@@ -465,8 +474,8 @@ class AppUserTest extends TestCase
     }
 
     /**
-	 * @test
-	 *
+     * @test
+     * 
      * Upload profile image
      *
      * @return void
@@ -481,7 +490,7 @@ class AppUserTest extends TestCase
         $path= 'https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer9.png';
         $type = pathinfo($path, PATHINFO_EXTENSION);
         $fileData = file_get_contents($path);
-        $base64 = 'data:image/' . $type . ';base64,' . base64_encode($fileData);
+        $base64 = base64_encode($fileData);
         
         $params = [
             'avatar' => $base64
@@ -575,6 +584,7 @@ class AppUserTest extends TestCase
                 "country_id",
                 "profile_text",
                 "linked_in_url",
+                "title",
                 "status",
                 "city",
                 "country",
@@ -582,10 +592,7 @@ class AppUserTest extends TestCase
                 "availability",
                 "custom_fields",
                 "user_skills",
-                "skill_list",
-                "country_list",
                 "city_list",
-                "timezone_list",
                 "language_list",
                 "availability_list",
             ],
@@ -605,7 +612,7 @@ class AppUserTest extends TestCase
      */
     public function it_should_return_error_for_invalid_authorization_token()
     {
-        $token = Helpers::getJwtToken(rand(1000000, 20000000));
+        $token = str_random(50);
         $this->get('/app/user-detail', ['token' => $token])
         ->seeStatusCode(400)
         ->seeJsonStructure([

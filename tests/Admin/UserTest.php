@@ -259,7 +259,7 @@ class UserTest extends TestCase
             'password' => str_random(10),
             'timezone_id' => 1,
             'language_id' => 1,
-            'availability_id' => rand(1, 50),
+            'availability_id' => 1,
             'why_i_volunteer' => str_random(10),
             'employee_id' => str_random(10),
             'department' => str_random(10),
@@ -275,7 +275,7 @@ class UserTest extends TestCase
             $params,
             ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))]
         )
-        ->seeStatusCode(404)
+        ->seeStatusCode(422)
         ->seeJsonStructure([
             "errors" => [
                 [
