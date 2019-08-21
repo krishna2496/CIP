@@ -43,7 +43,7 @@ class CompileScssFiles extends Job
 
     /**
      * Create a new job instance.
-     *
+     * @param App\Models\Tenant $tenant
      * @return void
      */
     public function __construct(Tenant $tenant)
