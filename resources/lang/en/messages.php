@@ -89,6 +89,7 @@ return [
         'MESSAGE_NO_TIMEZONE_FOUND' => 'Timezone not found',
         'MESSAGE_NO_SKILL_FOUND' => 'Skill not found',
         'MESSAGE_NO_COUNTRY_FOUND' => 'Country not found',
+        'MESSAGE_TENANT_SETTINGS_UPDATED' => 'Tenant settings updated successfully',
 		],
         
     /**
