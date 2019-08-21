@@ -335,6 +335,7 @@ class UserTest extends TestCase
             ]
         ]);
     }
+    
     /**
      * @test
      *

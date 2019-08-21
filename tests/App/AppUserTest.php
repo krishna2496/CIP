@@ -248,7 +248,7 @@ class AppUserTest extends TestCase
                 ]
             ]
         ]);
-
+        $user->delete();
     }
 
     /**
@@ -544,5 +544,111 @@ class AppUserTest extends TestCase
                 ]
             ]
         ]);
+    }
+
+    /**
+     * @test
+     *
+     * Return error if user data is invalid
+     *
+     * @return void
+     */
+    public function it_should_return_error_for_maxlength_validate_for_save_user_data()
+    {
+        $connection = 'tenant';
+        $user = factory(\App\User::class)->make();
+        $user->setConnection($connection);
+        $user->save();
+
+        $params = [
+            'first_name' => str_random(300)
+        ];
+
+        $token = Helpers::getJwtToken($user->user_id);
+        $this->patch('app/user/', $params, ['token' => $token])
+        ->seeStatusCode(422)
+        ->seeJsonStructure([
+            "errors" => [
+                [
+                    "status",
+                    "type",
+                    "message",
+                    "code"
+                ]
+            ]
+        ]);
+        $user->delete();
+    }
+
+    /**
+     * @test
+     *
+     * Return error if user data is invalid
+     *
+     * @return void
+     */
+    public function it_should_return_error_for_url_validation_for_save_user_data()
+    {
+        $connection = 'tenant';
+        $user = factory(\App\User::class)->make();
+        $user->setConnection($connection);
+        $user->save();
+
+        $params = [
+            'linked_in_url' => str_random(20)
+        ];
+
+        $token = Helpers::getJwtToken($user->user_id);
+        $this->patch('app/user/', $params, ['token' => $token])
+        ->seeStatusCode(422)
+        ->seeJsonStructure([
+            "errors" => [
+                [
+                    "status",
+                    "type",
+                    "message",
+                    "code"
+                ]
+            ]
+        ]);
+        $user->delete();
+    }
+
+    /**
+     * @test
+     *
+     * Return error if not valid file for upload profile image
+     *
+     * @return void
+     */
+    public function it_should_return_error_for_invalid_file_type_for_upload_profile_image()
+    {
+        $connection = 'tenant';
+        $user = factory(\App\User::class)->make();
+        $user->setConnection($connection);
+        $user->save();
+        
+        $path= 'https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js';
+        $type = pathinfo($path, PATHINFO_EXTENSION);
+        $fileData = file_get_contents($path);
+        $base64 = base64_encode($fileData);
+        
+        $params = [
+            'avatar' => $base64
+        ];
+        $token = Helpers::getJwtToken($user->user_id);
+        $this->patch('app/user/upload-profile-image', $params, ['token' => $token])
+        ->seeStatusCode(422)
+        ->seeJsonStructure([
+            'errors' => [
+                [
+                    'status',
+                    'type',
+                    'code',
+                    'message'
+                ]
+            ]
+        ]);
+        $user->delete();
     }
 }
