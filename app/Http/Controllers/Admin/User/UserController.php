@@ -94,10 +94,11 @@ class UserController extends Controller
                 "last_name" => "required|max:16",
                 "email" => "required|email|unique:user,email,NULL,user_id,deleted_at,NULL",
                 "password" => "required|min:8",
-                "availability_id" => "exists:availability,availability_id",
+                "availability_id" => "integer|exists:availability,availability_id,deleted_at,NULL",
+                "timezone_id" => "integer|exists:timezone,timezone_id,deleted_at,NULL",
                 "language_id" => "required|int",
-                "city_id" => "required|exists:city,city_id",
-                "country_id" => "required|exists:country,country_id",
+                "city_id" => "integer|required|exists:city,city_id,deleted_at,NULL",
+                "country_id" => "integer|required|exists:country,country_id,deleted_at,NULL",
                 "profile_text" => "required",
                 "employee_id" => "max:16",
                 "department" => "max:16",
@@ -206,9 +207,10 @@ class UserController extends Controller
                 "department" => "sometimes|required|max:16",
                 "manager_name" => "sometimes|required|max:16",
                 "linked_in_url" => "url",
-                "availability_id" => "exists:availability,availability_id",
-                "city_id" => "exists:city,city_id",
-                "country_id" => "exists:country,country_id"]
+                "timezone_id" => "integer|exists:timezone,timezone_id,deleted_at,NULL",
+                "availability_id" => "integer|exists:availability,availability_id,deleted_at,NULL",
+                "city_id" => "integer|exists:city,city_id,deleted_at,NULL",
+                "country_id" => "integer|exists:country,country_id,deleted_at,NULL"]
             );
                         
             // If request parameter have any error

@@ -284,12 +284,12 @@ class UserController extends Controller
                 "department" => "max:16",
                 "manager_name" => "max:16",
                 "linked_in_url" => "url",
-                "availability_id" => "exists:availability,availability_id",
-                "city_id" => "exists:city,city_id",
-                "country_id" => "exists:country,country_id",
-                "custom_fields.*.field_id" => "sometimes|required|exists:user_custom_field,field_id",
+                "availability_id" => "integer|exists:availability,availability_id,deleted_at,NULL",
+                "city_id" => "integer|exists:city,city_id,deleted_at,NULL",
+                "country_id" => "integer|exists:country,country_id,deleted_at,NULL",
+                "custom_fields.*.field_id" => "sometimes|required|exists:user_custom_field,field_id,deleted_at,NULL",
                 'skills' => 'present|array',
-                'skills.*.skill_id' => 'required|exists:skill,skill_id,deleted_at,NULL']
+                'skills.*.skill_id' => 'integer|required|exists:skill,skill_id,deleted_at,NULL']
             );
 
             // If request parameter have any error

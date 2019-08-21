@@ -135,7 +135,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
 
     /* Store mission comment */
     $router->post('/app/mission/comment', [
-        'middleware' => 'tenant.connection|jwt.auth',
+        'middleware' => 'tenant.connection|jwt.auth|JsonApiMiddleware',
         'uses' => 'App\Mission\MissionCommentController@store']);
 
     /* Get user details */
@@ -169,7 +169,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
    
     /* Update user details */
     $router->patch('/app/user', [
-        'middleware' => 'localization|tenant.connection|jwt.auth',
+        'middleware' => 'localization|tenant.connection|jwt.auth|JsonApiMiddleware',
         'uses' => 'App\User\UserController@update']);
 
     /* Password change routing */

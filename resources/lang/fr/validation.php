@@ -98,6 +98,9 @@ return [
 		'avatar' => [
             'valid_profile_image' => 'Le fichier image ou le type d\'image invalide n\'est pas autorisé. Types autorisés: png, jpeg, jpg',
         ],
+		'parent_skill' => [
+            'valid_parent_skill' => 'Compétence parent invalide',
+        ],
     ],
 
     /*
