@@ -90,16 +90,19 @@ class TenantMigrationJob extends Job
     /**
      * Send email notification to admin
      * @param bool $isFail
+     * @param bool $errorMessage
      * @return void
      */
-    public function sendEmailNotification(bool $isFail = false)
+    public function sendEmailNotification(bool $isFail = false, string $errorMessage = '')
     {
         $status = ($isFail===false) ? trans('messages.email_text.PASSED') : trans('messages.email_text.FAILED');
         $message = "<p> ".trans('messages.email_text.TENANT')." : " .$this->tenant->name. "<br>";
         $message .= trans('messages.email_text.BACKGROUND_JOB_NAME')." : ".trans('messages.email_text.TENANT_MIGRATION')
         ." <br>";
         $message .= trans('messages.email_text.BACKGROUND_JOB_STATUS')." : ".$status." <br>";
-
+        if (!empty($errorMessage)) {
+            $message .= trans('messages.email_text.BACKGROUND_JOB_EXCEPTION_MESSAGE')." : ".$errorMessage." <br>";
+        }
         $data = array(
             'message'=> $message,
             'tenant_name' => $this->tenant->name
@@ -124,6 +127,6 @@ class TenantMigrationJob extends Job
      */
     public function failed(\Exception $exception)
     {
-        $this->sendEmailNotification(true);
+        $this->sendEmailNotification(true, $exception->getMessage());
     }
 }
