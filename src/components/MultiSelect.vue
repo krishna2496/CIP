@@ -137,7 +137,8 @@ export default {
             this.$emit("resetData");
         },
         saveSkill(){
-            this.$emit("saveSkillData",this.toList);
+            store.commit("saveCurrentSkill",this.toList)
+            this.$emit("saveSkillData");
             this.showErrorDiv = false
             this.$refs.skillModal.hide();
         }

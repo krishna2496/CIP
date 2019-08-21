@@ -334,7 +334,7 @@ label {
     color: $error;
   }
 }
-.custom-dropdown{
+.custom-dropdown , .checkbox-select{
   &.is-invalid{
   span{
       border-color:$error;
@@ -986,6 +986,17 @@ label {
             }
         }
       }
+      &.checkbox-select{
+        .custom-control{
+        .custom-control-label{
+            color:$black-primary;
+            &:before, &:after{
+              border-color:$control-border!important;
+            }
+        }
+      }
+      }
     }
   }
 }
+

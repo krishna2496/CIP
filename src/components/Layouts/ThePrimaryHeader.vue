@@ -66,28 +66,28 @@
                             </li>
                             <li class="no-dropdown">
                                 <router-link 
-                                    :to="{ path: '/home/most_ranked_missions'}" @click.native="menuBarclickHandler"
+                                    :to="{ path: '/home/most-ranked-missions'}" @click.native="menuBarclickHandler"
                                     >
                                     {{langauageData.label.most_ranked}}
                                 </router-link>
                             </li>
                             <li class="no-dropdown">
                                 <router-link 
-                                    :to="{ path: '/home/favourite_missions'}" @click.native="menuBarclickHandler"
+                                    :to="{ path: '/home/favourite-missions'}" @click.native="menuBarclickHandler"
                                     >
                                     {{langauageData.label.top_favourite}}
                                 </router-link>
                             </li>
                             <li class="no-dropdown">
                                 <router-link 
-                                    :to="{ path: '/home/recommended_missions'}" @click.native="menuBarclickHandler"
+                                    :to="{ path: '/home/recommended-missions'}" @click.native="menuBarclickHandler"
                                     >
                                     {{langauageData.label.recommended}}
                                 </router-link>
                             </li>
                             <li class="no-dropdown">
                                 <router-link 
-                                    :to="{ path: '/home/random_missions'}" @click.native="menuBarclickHandler"
+                                    :to="{ path: '/home/random-missions'}" @click.native="menuBarclickHandler"
                                     >
                                     {{langauageData.label.random}}
                                 </router-link>
@@ -128,7 +128,7 @@
                             <em>{{this.$store.state.firstName+' '+this.$store.state.lastName}}</em>
                         </template>
                         <!-- <b-dropdown-item href="#">Dashboard</b-dropdown-item> -->
-                        <b-dropdown-item :to="{ name: 'myAccount' }">My Account</b-dropdown-item>
+                        <b-dropdown-item :to="{ name: 'myAccount' }">{{ langauageData.label.my_account}}</b-dropdown-item>
                         <!-- <b-dropdown-item href="#">Help Center</b-dropdown-item> -->
                         <b-dropdown-item 
                             v-on:click.native="logout()" 
