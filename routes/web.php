@@ -300,7 +300,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
 
     /* Admin setting routes */
     $router->group(
-        ['prefix' => 'settings', 'middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware'],
+        ['prefix' => 'tenant-settings', 'middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware'],
         function ($router) {
             $router->get('/', ['uses' => 'Admin\Tenant\TenantSettingsController@index']);
             $router->patch('/{settingId}', ['uses' => 'Admin\Tenant\TenantSettingsController@update']);
