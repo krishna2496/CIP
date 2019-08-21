@@ -43,4 +43,22 @@ class CityRepository implements CityInterface
         $this->country->findOrFail($countryId);
         return $this->city->where('country_id', $countryId)->pluck('name', 'city_id');
     }
+
+    /**
+     * Get city data from cityId
+     *
+     * @param string $cityId
+     * @return array
+     */
+    public function getCity(string $cityId) : array
+    {
+        $city = $this->city->whereIn("city_id", explode(",", $cityId))->get()->toArray();
+        $cityData = [];
+        if (!empty($city)) {
+            foreach ($city as $key => $value) {
+                $cityData[$value['city_id']] = $value['name'];
+            }
+        }
+        return $cityData;
+    }
 }
