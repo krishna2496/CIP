@@ -5,6 +5,8 @@ use App\Http\Controllers\Controller;
 use App\Repositories\UserFilter\UserFilterRepository;
 use App\Repositories\Skill\SkillRepository;
 use App\Repositories\MissionTheme\MissionThemeRepository;
+use App\Repositories\Country\CountryRepository;
+use App\Repositories\City\CityRepository;
 use App\Helpers\Helpers;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -42,6 +44,16 @@ class UserFilterController extends Controller
     private $responseHelper;
 
     /**
+     * @var App\Repositories\Country\CountryRepository
+     */
+    private $countryRepository;
+
+    /**
+     * @var App\Repositories\City\CityRepository
+     */
+    private $cityRepository;
+
+    /**
      * Create a new controller instance.
      *
      * @param App\Repositories\UserFilter\UserFilterRepository $filters
@@ -49,6 +61,8 @@ class UserFilterController extends Controller
      * @param App\Repositories\Skill\SkillRepository $skill
      * @param App\Helpers\ResponseHelper $responseHelper
      * @param App\Helpers\Helpers $helper
+     * @param App\Repositories\Country\CountryRepository $countryRepository
+     * @param App\Repositories\City\CityRepository $cityRepository
      * @return void
      */
     public function __construct(
@@ -56,13 +70,17 @@ class UserFilterController extends Controller
         MissionThemeRepository $theme,
         SkillRepository $skill,
         ResponseHelper $responseHelper,
-        Helpers $helper
+        Helpers $helper,
+        CountryRepository $countryRepository,
+        CityRepository $cityRepository
     ) {
         $this->filters = $filters;
         $this->responseHelper = $responseHelper;
         $this->theme = $theme;
         $this->skill = $skill;
         $this->helper = $helper;
+        $this->countryRepository = $countryRepository;
+        $this->cityRepository = $cityRepository;
     }
     
     /**
@@ -83,14 +101,14 @@ class UserFilterController extends Controller
 
             if (!empty($filterData["filters"])) {
                 if ($filterData["filters"]["country_id"] && $filterData["filters"]["country_id"] != "") {
-                    $countryTag = $this->helper->getCountry($filterData["filters"]["country_id"]);
+                    $countryTag = $this->countryRepository->getCountry($filterData["filters"]["country_id"]);
                     if ($countryTag["name"]) {
                         $filterTagArray["country"][$countryTag["country_id"]] = $countryTag["name"];
                     }
                 }
 
                 if ($filterData["filters"]["city_id"] && $filterData["filters"]["city_id"] != "") {
-                    $cityTag = $this->helper->getCity($filterData["filters"]["city_id"]);
+                    $cityTag = $this->cityRepository->getCity($filterData["filters"]["city_id"]);
                     if ($cityTag) {
                         foreach ($cityTag as $key => $value) {
                             $filterTagArray["city"][$key] = $value;
@@ -136,9 +154,7 @@ class UserFilterController extends Controller
         } catch (\PDOException $e) {
             return $this->PDO(
                 config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
-                trans(
-                    'messages.custom_error_message.ERROR_DATABASE_OPERATIONAL'
-                )
+                trans('messages.custom_error_message.ERROR_DATABASE_OPERATIONAL')
             );
         } catch (\Exception $e) {
             throw new \Exception(trans('messages.custom_error_message.ERROR_OCCURRED'));

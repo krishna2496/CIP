@@ -17,6 +17,7 @@ use App\Models\MissionSkill;
 use App\Models\TimeMission;
 use App\Models\MissionRating;
 use App\Models\Availability;
+use App\Repositories\Country\CountryRepository;
 use DB;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
@@ -68,6 +69,11 @@ class MissionRepository implements MissionInterface
      * @var App\models\MissionRating
      */
     private $missionRating;
+    
+    /**
+     * @var App\Repositories\Country\CountryRepository
+     */
+    private $countryRepository;
 
     /**
      * Create a new Mission repository instance.
@@ -84,6 +90,7 @@ class MissionRepository implements MissionInterface
      * @param  App\Models\FavouriteMission $favouriteMission
      * @param  App\Models\MissionSkill $missionSkill
      * @param  App\Models\MissionRating $missionRating
+     * @param  App\Repositories\Country\CountryRepository $countryRepository
      * @return void
      */
     public function __construct(
@@ -98,7 +105,8 @@ class MissionRepository implements MissionInterface
         S3Helper $s3helper,
         FavouriteMission $favouriteMission,
         MissionSkill $missionSkill,
-        MissionRating $missionRating
+        MissionRating $missionRating,
+        CountryRepository $countryRepository
     ) {
         $this->mission = $mission;
         $this->timeMission = $timeMission;
@@ -112,6 +120,7 @@ class MissionRepository implements MissionInterface
         $this->favouriteMission = $favouriteMission;
         $this->missionSkill = $missionSkill;
         $this->missionRating = $missionRating;
+        $this->countryRepository = $countryRepository;
     }
     
     /**
@@ -123,7 +132,7 @@ class MissionRepository implements MissionInterface
     public function store(Request $request): Mission
     {
         $languages = $this->languageHelper->getLanguages($request);
-        $countryId = $this->helpers->getCountryId($request->location['country_code']);
+        $countryId = $this->countryRepository->getCountryId($request->location['country_code']);
         $missionData = array(
                 'theme_id' => $request->theme_id,
                 'city_id' => $request->location['city_id'],
@@ -268,7 +277,7 @@ class MissionRepository implements MissionInterface
         $languages = $this->languageHelper->getLanguages($request);
         // Set data for update record
         if (isset($request->location['country_code'])) {
-            $countryId = $this->helpers->getCountryId($request->location['country_code']);
+            $countryId = $this->countryRepository->getCountryId($request->location['country_code']);
             $request->request->add(['country_id' => $countryId]);
         }
         if (isset($request->location['city_id'])) {

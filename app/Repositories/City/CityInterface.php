@@ -13,4 +13,12 @@ interface CityInterface
     * @return Illuminate\Support\Collection
     */
     public function cityList(int $countryId): Collection;
+
+    /**
+     * Get city data from cityId
+     *
+     * @param string $cityId
+     * @return array
+     */
+    public function getCity(string $cityId) : array;
 }
