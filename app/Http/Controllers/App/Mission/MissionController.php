@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Config;
 use App\Models\Mission;
 use App\Repositories\MissionTheme\MissionThemeRepository;
 use App\Repositories\Skill\SkillRepository;
+use App\Repositories\Country\CountryRepository;
+use App\Repositories\City\CityRepository;
 use App\Helpers\Helpers;
 use App\Helpers\LanguageHelper;
 use App\Helpers\ResponseHelper;
@@ -43,26 +45,32 @@ class MissionController extends Controller
     /**
      * @var App\Helpers\LanguageHelper
      */
-
     private $languageHelper;
 
     /**
      * @var App\Helpers\Helpers
      */
-
     private $helpers;
 
     /**
      * @var App\Repositories\MissionTheme\MissionThemeRepository;
      */
-
     private $themeRepository;
 
     /**
      * @var App\Repositories\Skill\SkillRepository
      */
-
     private $skillRepository;
+
+    /**
+     * @var App\Repositories\Country\CountryRepository
+     */
+    private $countryRepository;
+
+    /**
+     * @var App\Repositories\City\CityRepository
+     */
+    private $cityRepository;
 
     /**
      * Create a new Mission controller instance
@@ -72,8 +80,10 @@ class MissionController extends Controller
      * @param Illuminate\Http\UserFilterRepository $userFilterRepository
      * @param Illuminate\Http\LanguageHelper $languageHelper
      * @param App\Helpers\Helpers $helpers
-     * @param Illuminate\Http\MissionThemeRepository $themeRepository
-     * @param Illuminate\Http\SkillRepository $skillRepository
+     * @param App\Repositories\MissionTheme\MissionThemeRepository $themeRepository
+     * @param App\Repositories\Skill\SkillRepository $skillRepository
+     * @param App\Repositories\Country\CountryRepository $countryRepository
+     * @param App\Repositories\City\CityRepository $cityRepository
      * @return void
      */
     public function __construct(
@@ -83,7 +93,9 @@ class MissionController extends Controller
         LanguageHelper $languageHelper,
         Helpers $helpers,
         MissionThemeRepository $themeRepository,
-        SkillRepository $skillRepository
+        SkillRepository $skillRepository,
+        CountryRepository $countryRepository,
+        CityRepository $cityRepository
     ) {
         $this->missionRepository = $missionRepository;
         $this->responseHelper = $responseHelper;
@@ -92,6 +104,8 @@ class MissionController extends Controller
         $this->helpers = $helpers;
         $this->themeRepository = $themeRepository;
         $this->skillRepository = $skillRepository;
+        $this->countryRepository = $countryRepository;
+        $this->cityRepository = $cityRepository;
     }
 
     /**
@@ -417,14 +431,14 @@ class MissionController extends Controller
 
             if (!empty($filterData["filters"])) {
                 if ($filterData["filters"]["country_id"] && $filterData["filters"]["country_id"] != "") {
-                    $countryTag = $this->helpers->getCountry($filterData["filters"]["country_id"]);
+                    $countryTag = $this->countryRepository->getCountry($filterData["filters"]["country_id"]);
                     if ($countryTag["name"]) {
                         $filterTagArray["country"][$countryTag["country_id"]] = $countryTag["name"];
                     }
                 }
 
                 if ($filterData["filters"]["city_id"] && $filterData["filters"]["city_id"] != "") {
-                    $cityTag = $this->helpers->getCity($filterData["filters"]["city_id"]);
+                    $cityTag = $this->cityRepository->getCity($filterData["filters"]["city_id"]);
                     if ($cityTag) {
                         foreach ($cityTag as $key => $value) {
                             $filterTagArray["city"][$key] = $value;
