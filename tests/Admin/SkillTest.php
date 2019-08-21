@@ -87,7 +87,7 @@ class SkillTest extends TestCase
         ];
 
         $this->post("entities/skills", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
-        ->seeStatusCode(404)
+        ->seeStatusCode(422)
         ->seeJsonStructure([
             'errors' => [
                 [
@@ -285,7 +285,7 @@ class SkillTest extends TestCase
      *
      * @return void
      */
-    public function it_should_return_error_for_update_skill_wrong_parent_skill()
+    public function it_should_return_error_for_update_skill_for_wrong_parent_skill()
     {
         $skillName = str_random(20);
         $params = [        
@@ -310,7 +310,7 @@ class SkillTest extends TestCase
         ];
         
         $this->patch('entities/skills/'.$skillId, $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
-        ->seeStatusCode(404)
+        ->seeStatusCode(422)
         ->seeJsonStructure([
             'errors' => [
                 [

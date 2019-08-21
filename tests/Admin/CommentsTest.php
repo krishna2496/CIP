@@ -363,7 +363,7 @@ class CommentsTest extends TestCase
      *
      * @return void
      */
-    public function it_should_return_error_for_invalid_comment_status()
+    public function it_should_return_error_for_blank_comment_status()
     {
         $connection = 'tenant';
         $mission = factory(\App\Models\Mission::class)->make();
@@ -548,4 +548,58 @@ class CommentsTest extends TestCase
         $user->delete();
         $mission->delete();
     }    
+
+    /**
+     * @test
+     *
+     * It should return error for invalid status
+     *
+     * @return void
+     */
+    public function it_should_return_error_for_invalid_comment_status()
+    {
+        $connection = 'tenant';
+        $mission = factory(\App\Models\Mission::class)->make();
+        $mission->setConnection($connection);
+        $mission->save();
+
+        $user = factory(\App\User::class)->make();
+        $user->setConnection($connection);
+        $user->save();
+
+        $params = [
+            "comment" => str_random('100'),
+            "mission_id" => $mission->mission_id
+        ];
+
+        $token = Helpers::getJwtToken($user->user_id);
+        $this->post('/app/mission/comment', $params, ['token' => $token])
+          ->seeStatusCode(201)
+          ->seeJsonStructure([
+            "status",
+            "message"
+        ]);
+        $comment = App\Models\Comment::where('user_id', $user->user_id)->first();
+       
+        DB::setDefaultConnection('mysql');
+        
+        $params = [
+            "approval_status" => 'test',
+        ];
+
+        $this->patch('/missions/'.$mission->mission_id.'/comments/'.$comment->comment_id, $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(422)
+        ->seeJsonStructure([
+            'errors' => [
+                [
+                    'status',
+                    'type',
+                    'code',
+                    'message'
+                ]
+            ]
+        ]);
+        $user->delete();
+        $mission->delete();
+    }
 }

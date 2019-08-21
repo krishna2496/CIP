@@ -275,7 +275,7 @@ class UserTest extends TestCase
             $params,
             ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))]
         )
-        ->seeStatusCode(422)
+        ->seeStatusCode(404)
         ->seeJsonStructure([
             "errors" => [
                 [
@@ -335,6 +335,7 @@ class UserTest extends TestCase
             ]
         ]);
     }
+    
     /**
      * @test
      *
