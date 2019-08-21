@@ -82,7 +82,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
     /* Fetch tenant settings */
     $router->get('/app/tenant-settings', ['as' =>'tenant-settings',
     'middleware' => 'tenant.connection',
-    'uses' => 'App\Tenant\TenantSettingsController@index']);
+    'uses' => 'App\Tenant\TenantActivatedSettingController@index']);
 
     /* Apply to a mission */
     $router->post(
@@ -304,6 +304,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
         function ($router) {
             $router->get('/', ['uses' => 'Admin\Tenant\TenantSettingsController@index']);
             $router->patch('/{settingId}', ['uses' => 'Admin\Tenant\TenantSettingsController@update']);
+            $router->post('/', ['uses' => 'Admin\Tenant\TenantActivatedSettingController@store']);
         }
     );
 
