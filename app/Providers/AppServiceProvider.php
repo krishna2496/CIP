@@ -4,6 +4,7 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Schema;
 use Validator;
+use App\Models\Skill;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -31,7 +32,11 @@ class AppServiceProvider extends ServiceProvider
             $image = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $value));
             $f = finfo_open();
             $result = finfo_buffer($f, $image, FILEINFO_MIME_TYPE);
-			return in_array($result, config('constants.profile_image_types'));
+            return in_array($result, config('constants.profile_image_types'));
+        });
+
+        Validator::extend('valid_parent_skill', function ($attribute, $value) {
+            return ($value == 0) ? true : ((empty(Skill::where('skill_id', $value)->get()->toArray())) ? false : true);
         });
     }
 

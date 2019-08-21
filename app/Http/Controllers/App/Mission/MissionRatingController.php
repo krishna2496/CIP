@@ -53,7 +53,7 @@ class MissionRatingController extends Controller
                 $request->all(),
                 [
                     "rating" => "required|numeric|min:0.5|max:5",
-                    "mission_id" => "required|exists:mission,mission_id"
+                    "mission_id" => "integer|required|exists:mission,mission_id,deleted_at,NULL"
                 ]
             );
 
