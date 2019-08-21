@@ -344,7 +344,7 @@ class Helpers
     {
         try {
             $tenant = $this->getTenantDetail($request);
-            // Connect master database to get language details
+            // Connect master database to get tenant settings
             $this->switchDatabaseConnection('mysql', $request);
             
             $tenantSetting = DB::table('tenant_has_setting')
