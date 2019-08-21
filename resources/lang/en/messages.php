@@ -53,7 +53,9 @@ return [
         'TENANT_DEFAULT_LANGUAGE' => 'Tenant Default Language',
         'TENANT_MIGRATION' => 'Tenant Migration',
         'JOB_PASSED_SUCCESSFULLY' => 'Job passed successufully',
-
+        'ALL_JOBS_EXECUTED_SUCCESSFULLY' => 'All background jobs executed successfully',
+        'ON_BACKGROUND_JOBS' => 'On background jobs for',
+        'MESSAGE' => 'Message'
     ]
     
 ];

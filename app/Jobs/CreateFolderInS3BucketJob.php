@@ -35,6 +35,13 @@ class CreateFolderInS3BucketJob extends Job
     public $tries = 1;
 
     /**
+     * The number of seconds the job can run before timing out.
+     *
+     * @var int
+     */
+    public $timeout = 0;
+
+    /**
      * Create a new job instance.
      *
      * @return void
@@ -121,8 +128,6 @@ class CreateFolderInS3BucketJob extends Job
                         DB::setDefaultConnection('mysql');
                     }
                 }
-                // Send success mail to super admin
-                $this->sendEmailNotification();
             }
         } catch (\Exception $e) {
             throw $e;
@@ -137,7 +142,7 @@ class CreateFolderInS3BucketJob extends Job
      */
     public function sendEmailNotification(bool $isFail = false)
     {
-        $status = ($isFail) ? trans('messages.email_text.PASSED') : trans('messages.email_text.FAILED');
+        $status = ($isFail===false) ? trans('messages.email_text.PASSED') : trans('messages.email_text.FAILED');
         $message = "<p> ".trans('messages.email_text.TENANT')." : " .$this->tenant->name. "<br>";
         $message .= trans('messages.email_text.BACKGROUND_JOB_NAME')." :
         ".trans('messages.email_text.CREATE_FOLDER_ON_S3_BUCKET')." <br>";
@@ -149,7 +154,7 @@ class CreateFolderInS3BucketJob extends Job
         );
 
         $params['to'] = config('constants.ADMIN_EMAIL_ADDRESS'); //required
-        $params['template'] = config('constants.EMAIL_TEMPLATE_FOLDER').'.'.config('constants.EMAIL_TEMPLATE_USER_INVITE'); //path to the email template
+        $params['template'] = config('constants.EMAIL_TEMPLATE_FOLDER').'.'.config('constants.EMAIL_TEMPLATE_JOB_NOTIFICATION'); //path to the email template
         $params['subject'] = ($isFail) ? trans("messages.email_text.ERROR")." :
         ".trans('messages.email_text.CREATE_FOLDER_ON_S3_BUCKET'). " ". trans('messages.email_text.JOB_FOR').
         " "  . $this->tenant->name . " " .trans("messages.email_text.TENANT") :

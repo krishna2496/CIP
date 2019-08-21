@@ -21,6 +21,6 @@
         'AWS_S3_IMAGES_FOLDER_NAME' => 'images',
         'AWS_S3_LOGO_IMAGE_NAME' => 'logo.png',
         'EMAIL_TEMPLATE_FOLDER' => 'emails',
-        'EMAIL_TEMPLATE_USER_INVITE' => 'tenant-notification',
+        'EMAIL_TEMPLATE_JOB_NOTIFICATION' => 'tenant-notification',
         'ADMIN_EMAIL_ADDRESS' => 'siddharajsinh.zala@tatvasoft.com'
     ];

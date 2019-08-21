@@ -26,6 +26,13 @@ class TenantDefaultLanguageJob extends Job
     public $tries = 1;
 
     /**
+     * The number of seconds the job can run before timing out.
+     *
+     * @var int
+     */
+    public $timeout = 0;
+
+    /**
      * Create a new job instance
      *
      * @param App\Tenant $tenant
@@ -53,7 +60,6 @@ class TenantDefaultLanguageJob extends Job
             foreach ($defaultData as $key => $data) {
                 $this->tenant->tenantLanguages()->create($data);
             }
-            $this->sendEmailNotification();
         } catch (\Exception $e) {
             $this->emailMessage = "Error while adding default language for tenant";
             $this->sendEmailNotification(true);
@@ -81,7 +87,7 @@ class TenantDefaultLanguageJob extends Job
         );
 
         $params['to'] = config('constants.ADMIN_EMAIL_ADDRESS'); //required
-        $params['template'] = config('constants.EMAIL_TEMPLATE_FOLDER').'.'.config('constants.EMAIL_TEMPLATE_USER_INVITE'); //path to the email template
+        $params['template'] = config('constants.EMAIL_TEMPLATE_FOLDER').'.'.config('constants.EMAIL_TEMPLATE_JOB_NOTIFICATION'); //path to the email template
         $params['subject'] = ($isFail) ? trans("messages.email_text.ERROR"). " : "
         .trans('messages.email_text.TENANT_DEFAULT_LANGUAGE')
         . " " . trans('messages.email_text.JOB_FOR'). " "  . $this->tenant->name  . " "
