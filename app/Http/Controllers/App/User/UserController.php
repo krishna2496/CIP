@@ -7,6 +7,7 @@ use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
 use App\Repositories\User\UserRepository;
 use App\Repositories\UserCustomField\UserCustomFieldRepository;
+use App\Repositories\UserFilter\UserFilterRepository;
 use App\Repositories\City\CityRepository;
 use App\Helpers\ResponseHelper;
 use App\Traits\RestExceptionHandlerTrait;
@@ -59,6 +60,10 @@ class UserController extends Controller
      */
     private $s3helper;
     
+    /**
+     * @var App\Repositories\UserFilter\UserFilterRepository
+     */
+    private $userFilterRepository;
 
     /**
      * Create a new controller instance.
@@ -66,6 +71,7 @@ class UserController extends Controller
      * @param App\Repositories\User\UserRepository $userRepository
      * @param App\Repositories\UserCustomField\UserCustomFieldRepository $userCustomFieldRepository
      * @param App\Repositories\City\CityRepository $cityRepository
+     * @param Illuminate\Http\UserFilterRepository $userFilterRepository
      * @param Illuminate\Http\ResponseHelper $responseHelper
      * @param App\Helpers\LanguageHelper $languageHelper
      * @param App\Helpers\Helpers $helpers
@@ -76,6 +82,7 @@ class UserController extends Controller
         UserRepository $userRepository,
         UserCustomFieldRepository $userCustomFieldRepository,
         CityRepository $cityRepository,
+        UserFilterRepository $userFilterRepository,
         ResponseHelper $responseHelper,
         LanguageHelper $languageHelper,
         Helpers $helpers,
@@ -84,6 +91,7 @@ class UserController extends Controller
         $this->userRepository = $userRepository;
         $this->userCustomFieldRepository = $userCustomFieldRepository;
         $this->cityRepository = $cityRepository;
+        $this->userFilterRepository = $userFilterRepository;
         $this->responseHelper = $responseHelper;
         $this->languageHelper = $languageHelper;
         $this->helpers = $helpers;
@@ -325,6 +333,9 @@ class UserController extends Controller
                     );
                 }
             }
+
+            // Update user filter
+            $this->userFilterRepository->saveFilter($request);
 
             // Update user
             $user = $this->userRepository->update($request->toArray(), $id);

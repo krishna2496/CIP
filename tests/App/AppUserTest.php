@@ -149,62 +149,58 @@ class AppUserTest extends TestCase
         $user->delete();
         $userCustomField->delete();
     }
-
+       
     /**
      * @test
-     * 
-     * Add skill to user
+     *
+     * Validate skill limit for add skill to user
      *
      * @return void
      */
-    public function it_should_add_skill_to_user()
+    public function it_should_return_skill_limit_error_for_save_user_data()
     {
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
         $user->save();
+
+        $userCustomField = factory(\App\Models\UserCustomField::class)->make();
+        $userCustomField->setConnection($connection);
+        $userCustomField->save();
+        $fieldId = $userCustomField->field_id;
 
         $skill = factory(\App\Models\Skill::class)->make();
         $skill->setConnection($connection);
         $skill->save();
 
-        $params = [
-            'skills' => [
-                [
-                    "skill_id" => $skill->skill_id
-                ]
-            ]
-        ];
-        
-        $token = Helpers::getJwtToken($user->user_id);
-        $this->post('/app/user/skills', $params, ['token' => $token])
-        ->seeStatusCode(201)
-        ->seeJsonStructure([
-            "status",
-            "message"
-        ]);
-        $user->delete();
-        $skill->delete();
-    }
-        
-    /**
-     * @test
-     *
-     * Validate request for add skill to user
-     *
-     * @return void
-     */
-    public function it_should_validate_request_for_add_skill_to_user()
-    {
-        $connection = 'tenant';
-        $user = factory(\App\User::class)->make();
-        $user->setConnection($connection);
-        $user->save();
-       
-        $params = [];
+        $skillsArray = [];
+        for ($i = 0; $i <= config('constants.SKILL_LIMIT'); $i++ ) {
+            $skillsArray[] = ["skill_id" => $skill->skill_id];
+        }       
 
+        $params = [
+            'first_name' => str_random(10),
+            'last_name' => str_random(10),
+            'timezone_id' => 1,
+            'language_id' => 1,
+            'availability_id' => 1,
+            'why_i_volunteer' => str_random(50),
+            'employee_id' => str_random(3),
+            'department' => str_random(5),
+            'manager_name' => str_random(5),
+            'custom_fields' => [
+                [
+                    "field_id" => $fieldId,
+                    "value" => "1"
+                ]
+            ],
+            'skills' => $skillsArray
+
+        ];
+    
         $token = Helpers::getJwtToken($user->user_id);
-        $this->post('/app/user/skills', $params, ['token' => $token])
+
+        $this->patch('app/user/', $params, ['token' => $token])
         ->seeStatusCode(422)
         ->seeJsonStructure([
             "errors" => [
@@ -217,6 +213,8 @@ class AppUserTest extends TestCase
             ]
         ]);
         $user->delete();
+        $skill->delete();
+        $userCustomField->delete();
     }
 
     /**
@@ -250,85 +248,7 @@ class AppUserTest extends TestCase
                 ]
             ]
         ]);
-
-    }
-
-    /**
-     * @test
-     * 
-     * Validate request for add skill to user
-     *
-     * @return void
-     */
-    public function it_should_validate_skill_for_add_skill_to_user()
-    {
-        $connection = 'tenant';
-        $user = factory(\App\User::class)->make();
-        $user->setConnection($connection);
-        $user->save();
-
-        $params = [
-            'skills' => [
-                [
-                    "skill_id" => ''
-                ]
-            ]
-        ];
-
-        $token = Helpers::getJwtToken($user->user_id);
-        $this->post('/app/user/skills', $params, ['token' => $token])
-        ->seeStatusCode(422)
-        ->seeJsonStructure([
-            "errors" => [
-                [
-                    "status",
-                    "type",
-                    "message",
-                    "code"
-                ]
-            ]
-        ]);
-    }  
-
-    /**
-     * @test
-     *
-     * Validate skill limit for add skill to user
-     *
-     * @return void
-     */
-    public function it_should_return_skill_limit_error_for_add_skill_to_user()
-    {
-        $connection = 'tenant';
-        $user = factory(\App\User::class)->make();
-        $user->setConnection($connection);
-        $user->save();
-        $skill = factory(\App\Models\Skill::class)->make();
-        $skill->setConnection($connection);
-        $skill->save();
-
-        $skillsArray = [];
-        for ($i = 0; $i <= config('constants.SKILL_LIMIT'); $i++ ) {
-            $skillsArray[] = ["skill_id" => $skill->skill_id];
-        }        
-        $params = [
-            'skills' => $skillsArray
-        ];
-        $token = Helpers::getJwtToken($user->user_id);
-        $this->post('/app/user/skills', $params, ['token' => $token])
-        ->seeStatusCode(422)
-        ->seeJsonStructure([
-            "errors" => [
-                [
-                    "status",
-                    "type",
-                    "message",
-                    "code"
-                ]
-            ]
-        ]);
         $user->delete();
-        $skill->delete();
     }
 
     /**
@@ -624,5 +544,111 @@ class AppUserTest extends TestCase
                 ]
             ]
         ]);
+    }
+
+    /**
+     * @test
+     *
+     * Return error if user data is invalid
+     *
+     * @return void
+     */
+    public function it_should_return_error_for_maxlength_validate_for_save_user_data()
+    {
+        $connection = 'tenant';
+        $user = factory(\App\User::class)->make();
+        $user->setConnection($connection);
+        $user->save();
+
+        $params = [
+            'first_name' => str_random(300)
+        ];
+
+        $token = Helpers::getJwtToken($user->user_id);
+        $this->patch('app/user/', $params, ['token' => $token])
+        ->seeStatusCode(422)
+        ->seeJsonStructure([
+            "errors" => [
+                [
+                    "status",
+                    "type",
+                    "message",
+                    "code"
+                ]
+            ]
+        ]);
+        $user->delete();
+    }
+
+    /**
+     * @test
+     *
+     * Return error if user data is invalid
+     *
+     * @return void
+     */
+    public function it_should_return_error_for_url_validation_for_save_user_data()
+    {
+        $connection = 'tenant';
+        $user = factory(\App\User::class)->make();
+        $user->setConnection($connection);
+        $user->save();
+
+        $params = [
+            'linked_in_url' => str_random(20)
+        ];
+
+        $token = Helpers::getJwtToken($user->user_id);
+        $this->patch('app/user/', $params, ['token' => $token])
+        ->seeStatusCode(422)
+        ->seeJsonStructure([
+            "errors" => [
+                [
+                    "status",
+                    "type",
+                    "message",
+                    "code"
+                ]
+            ]
+        ]);
+        $user->delete();
+    }
+
+    /**
+     * @test
+     *
+     * Return error if not valid file for upload profile image
+     *
+     * @return void
+     */
+    public function it_should_return_error_for_invalid_file_type_for_upload_profile_image()
+    {
+        $connection = 'tenant';
+        $user = factory(\App\User::class)->make();
+        $user->setConnection($connection);
+        $user->save();
+        
+        $path= 'https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js';
+        $type = pathinfo($path, PATHINFO_EXTENSION);
+        $fileData = file_get_contents($path);
+        $base64 = base64_encode($fileData);
+        
+        $params = [
+            'avatar' => $base64
+        ];
+        $token = Helpers::getJwtToken($user->user_id);
+        $this->patch('app/user/upload-profile-image', $params, ['token' => $token])
+        ->seeStatusCode(422)
+        ->seeJsonStructure([
+            'errors' => [
+                [
+                    'status',
+                    'type',
+                    'code',
+                    'message'
+                ]
+            ]
+        ]);
+        $user->delete();
     }
 }

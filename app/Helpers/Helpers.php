@@ -333,4 +333,46 @@ class Helpers
 
         return $tenant;
     }
+
+    /**
+     * Get fetch all tenant settings detais
+     * 
+     * @param \Illuminate\Http\Request $request
+     * @return mix
+     */
+    public function getAllTenantSetting(Request $request)
+    {
+        try {
+            $tenant = $this->getTenantDetail($request);
+            // Connect master database to get tenant settings
+            $this->switchDatabaseConnection('mysql', $request);
+            
+            $tenantSetting = DB::table('tenant_has_setting')
+            ->select('tenant_has_setting.tenant_setting_id', 'tenant_setting.key', 'tenant_setting.tenant_setting_id')
+            ->leftJoin(
+                'tenant_setting',
+                'tenant_setting.tenant_setting_id',
+                '=',
+                'tenant_has_setting.tenant_setting_id'
+            )
+            ->whereNull('tenant_has_setting.deleted_at')
+            ->whereNull('tenant_setting.deleted_at')
+            ->where('tenant_id', $tenant->tenant_id)
+            ->get();
+
+            // Connect tenant database
+            $this->switchDatabaseConnection('tenant', $request);
+            
+            return $tenantSetting;
+        } catch (PDOException $e) {
+            return $this->PDO(
+                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
+                trans(
+                    'messages.custom_error_message.ERROR_DATABASE_OPERATIONAL'
+                )
+            );
+        } catch (\Exception $e) {
+            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
+        }
+    }
 }

@@ -171,5 +171,4 @@
          "timezone_required" : "Timezone is required",
          "field_required" : "This field is required"
 	}
-
 }
