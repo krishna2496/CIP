@@ -38,6 +38,25 @@ return [
         'ERROR_WHILE_STORE_COMPILED_CSS_FILE_TO_LOCAL' => 'Error while storing compiled CSS to local',
         'ERROR_FAILD_TO_UPLOAD_COMPILE_FILE_ON_S3' => 'Error while uploading compiled CSS to S3',
         'ERROR_WHILE_COMPILING_SCSS_FILES' => 'Error while compiling SCSS files',
+    ],
+    'email_text' => [
+        'ERROR' => 'Error',
+        'SUCCESS' => 'Success',
+        'JOB_FOR' => 'Job For ',
+        'PASSED' => 'Passed',
+        'FAILED' => 'Failed',
+        'TENANT' => 'tenant',
+        'BACKGROUND_JOB_NAME' => 'Background Job Name',
+        'BACKGROUND_JOB_STATUS' => 'Background Job Status',
+        'COMPILE_SCSS_FILES' => 'Compile SCSS Files',
+        'CREATE_FOLDER_ON_S3_BUCKET' => 'Create Folder On S3 Bucket',
+        'TENANT_DEFAULT_LANGUAGE' => 'Tenant Default Language',
+        'TENANT_MIGRATION' => 'Tenant Migration',
+        'JOB_PASSED_SUCCESSFULLY' => 'Job passed successufully',
+        'ALL_JOBS_EXECUTED_SUCCESSFULLY' => 'All background jobs executed successfully',
+        'ON_BACKGROUND_JOBS' => 'On background jobs for',
+        'MESSAGE' => 'Message',
+        'BACKGROUND_JOB_EXCEPTION_MESSAGE' => 'Background job exception message'
     ]
     
 ];

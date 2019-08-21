@@ -86,19 +86,28 @@ class TenantHasSetting extends Model
     }
 
     /**
-     * Store/update settings.
+     * enable settings
      *
      * @param  int  $tenantId
      * @param  int  $tenantSettingId
-     * @param  int  $value
      * @return bool
      */
-    public function storeSettings(int $tenantId, int $tenantSettingId, int $value): bool
+    public function enableSetting(int $tenantId, int $tenantSettingId): bool
     {
-        if ($value == 1) {
-            return static::firstOrNew(array('tenant_id' => $tenantId, 'tenant_setting_id' => $tenantSettingId))->save();
-        } else {
-            return static::where(['tenant_id' => $tenantId, 'tenant_setting_id' => $tenantSettingId])->delete();
-        }
+        return $this->where(['tenant_id' => $tenantId, 'tenant_setting_id' => $tenantSettingId])->withTrashed()->first() ?
+				$this->where(['tenant_id' => $tenantId, 'tenant_setting_id' => $tenantSettingId])->withTrashed()->first()->restore():
+				static::firstOrNew(array('tenant_id' => $tenantId, 'tenant_setting_id' => $tenantSettingId))->save();
+    }
+	
+	/**
+     * disable settings
+     *
+     * @param  int  $tenantId
+     * @param  int  $tenantSettingId
+     * @return bool
+     */
+    public function disableSetting(int $tenantId, int $tenantSettingId): bool
+    {
+        return static::where(['tenant_id' => $tenantId, 'tenant_setting_id' => $tenantSettingId])->delete();
     }
 }

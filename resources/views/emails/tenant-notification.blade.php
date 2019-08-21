@@ -53,7 +53,7 @@
 								</tr>
 								<tr>
 									<td height="40" style="line-height:0;">
-									Background job have some issue.
+									Please find below details for background jobs for tenant.
 									</td>
 								</tr>
 								<tr>

@@ -14,6 +14,25 @@ class TenantDefaultLanguageJob extends Job
     protected $tenant;
 
     /**
+     * @var string
+     */
+    private $emailMessage;
+
+    /**
+     * The number of times the job may be attempted.
+     *
+     * @var int
+     */
+    public $tries = 1;
+
+    /**
+     * The number of seconds the job can run before timing out.
+     *
+     * @var int
+     */
+    public $timeout = 0;
+
+    /**
      * Create a new job instance
      *
      * @param App\Tenant $tenant
@@ -22,6 +41,7 @@ class TenantDefaultLanguageJob extends Job
     public function __construct(Tenant $tenant)
     {
         $this->tenant = $tenant;
+        $this->emailMessage = trans("messages.email_text.JOB_PASSED_SUCCESSFULLY");
     }
 
     /**
@@ -31,73 +51,61 @@ class TenantDefaultLanguageJob extends Job
      */
     public function handle()
     {
-        // Job will try to attempt only one time. If need to re-attempt then it will delete job from table
-        if ($this->attempts() < 2) {
-            // do job things
-            try {
-                // Add default English and French language for tenant - Testing purpose
-                $defaultData = array(
-                    ['language_id' => 1, 'default' => '1'],
-                    ['language_id' => 2, 'default' => '0']
-                );
-                foreach ($defaultData as $key => $data) {
-                    $this->tenant->tenantLanguages()->create($data);
-                }
-                // Send success mail to super admin
-                $message = "<p> Tenant : " .$this->tenant->name. "<br>";
-                $message .= "Background Job Name : Tenant Default Language Job <br>";
-                $message .= "Background Job Status : Success <br>";
-
-                $this->sendEmailNotification($message);
-
-                Log::info($message);
-            } catch (\Exception $e) {
-                $message = "<p> Tenant : " .$this->tenant->name. '<br>';
-                $message .= "Background Job Name : Tenant Default Language Job <br>";
-                $message .= "Background Job Status : Failed <br>";
-                $message .= "Message : Tenant has been delete.</p>";
-
-                $this->sendEmailNotification($message, true);
-
-                Log::info($message);
-
-                // Delete tenant from database
-                $this->tenant->delete();
+        try {
+            // Add default English and French language for tenant - Testing purpose
+            $defaultData = array(
+                ['language_id' => 1, 'default' => '1'],
+                ['language_id' => 2, 'default' => '0']
+            );
+            foreach ($defaultData as $key => $data) {
+                $this->tenant->tenantLanguages()->create($data);
             }
-        } else {
-            $message = "<p> Tenant : " .$this->tenant->name. "<br>";
-            $message .= "Background Job Name : Tenant Default Language <br>";
-            $message .= "Background Job Status : Failed <br>";
-            $message .= "Message : Background job has been deleted from database.</p>";
-
-            $this->sendEmailNotification($message, true);
-
-            Log::info($message);
-
-            // Delete job from database
-            $this->delete();
+        } catch (\Exception $e) {
+            $this->emailMessage = "Error while adding default language for tenant";
+            $this->sendEmailNotification(true);
+            $this->tenant->delete();
         }
     }
 
     /**
      * Send email notification to admin
-     * @param string $message
      * @param bool $isFail
      * @return void
      */
-    public function sendEmailNotification(string $message, bool $isFail = false)
+    public function sendEmailNotification(bool $isFail = false)
     {
+
+        $status = ($isFail===false) ? trans('messages.email_text.PASSED') : trans('messages.email_text.FAILED');
+        $message = "<p> ".trans('messages.email_text.TENANT')." : " .$this->tenant->name. "<br>";
+        $message .= trans('messages.email_text.BACKGROUND_JOB_NAME')." :
+        ".trans('messages.email_text.TENANT_DEFAULT_LANGUAGE')." <br>";
+        $message .= trans('messages.email_text.BACKGROUND_JOB_STATUS')." : ".$status." <br>";
+
         $data = array(
             'message'=> $message,
             'tenant_name' => $this->tenant->name
         );
-        
+
         $params['to'] = config('constants.ADMIN_EMAIL_ADDRESS'); //required
-        $params['template'] = config('constants.EMAIL_TEMPLATE_FOLDER').'.'.config('constants.EMAIL_TEMPLATE_USER_INVITE'); //path to the email template
-        $params['subject'] = ($isFail) ? 'Error in tenant creation : '. $this->tenant->name :
-        'Success tenant default language job : '.$this->tenant->name; //optional
+        $params['template'] = config('constants.EMAIL_TEMPLATE_FOLDER').'.'.config('constants.EMAIL_TEMPLATE_JOB_NOTIFICATION'); //path to the email template
+        $params['subject'] = ($isFail) ? trans("messages.email_text.ERROR"). " : "
+        .trans('messages.email_text.TENANT_DEFAULT_LANGUAGE')
+        . " " . trans('messages.email_text.JOB_FOR'). " "  . $this->tenant->name  . " "
+        .trans("messages.email_text.TENANT") :
+        trans("messages.email_text.SUCCESS"). " : " .trans('messages.email_text.TENANT_DEFAULT_LANGUAGE'). " " . trans('messages.email_text.JOB_FOR') . $this->tenant->name. " " .trans("messages.email_text.TENANT"); //optional
         $params['data'] = $data;
 
         $this->sendEmail($params);
+    }
+
+    /**
+     * The job failed to process.
+     *
+     * @param  Exception  $exception
+     * @return void
+     */
+    public function failed(\Exception $exception)
+    {
+        $this->sendEmailNotification(true);
     }
 }

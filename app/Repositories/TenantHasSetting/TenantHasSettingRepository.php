@@ -64,7 +64,10 @@ class TenantHasSettingRepository implements TenantHasSettingInterface
     public function store(array $data, int $tenantId): bool
     {
         foreach ($data['settings'] as $value) {
-            $this->tenantHasSetting->storeSettings($tenantId, $value['tenant_setting_id'], $value['value']);
+			if ($value['value'] == 1) 
+				$this->tenantHasSetting->enableSetting($tenantId, $value['tenant_setting_id']);
+			else 
+				$this->tenantHasSetting->disableSetting($tenantId, $value['tenant_setting_id']);
         }
         return true;
     }
