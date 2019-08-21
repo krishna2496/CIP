@@ -181,7 +181,24 @@ export default new Vuex.Store({
         saveCurrentSkill(state,data) {
             // state.currentSkill = data;
              localStorage.setItem('currentSkill', JSON.stringify(data))
-        }
+        },
+        clearFilter(state) {
+            let tag = []
+            localStorage.setItem('search','')
+            localStorage.setItem('countryId','')
+            localStorage.setItem('cityId','')
+            localStorage.setItem('themeId','')
+            localStorage.setItem('skillId','')
+            localStorage.setItem('tags',JSON.stringify(tag))
+            localStorage.setItem('sortBy',''),
+            state.search = ''
+            state.countryId = ''
+            state.cityId = ''
+            state.themeId = ''
+            state.skillId = ''
+            state.tags = JSON.stringify(tag)
+            state.sortBy = ''
+        },
     },
     getters: {},
     actions: {}
