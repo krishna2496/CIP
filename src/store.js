@@ -31,7 +31,8 @@ export default new Vuex.Store({
         sortBy : localStorage.getItem('sortBy'),
         tenantSetting : localStorage.getItem('tenantSetting'),
         missionNotFoundText : localStorage.getItem('missionNotFoundText'),
-        languageLabel : localStorage.getItem('languageLabel')
+        languageLabel : localStorage.getItem('languageLabel'),
+        currentSkill : []
     },
     mutations: {
         // Set login data in state and local storage       
@@ -136,8 +137,13 @@ export default new Vuex.Store({
         },
         // Set tenant option
         setTenantSetting(state,data) {
-            localStorage.setItem("tenantSetting",JSON.stringify(data));
-            state.tenantSetting = JSON.stringify(data);
+            if(data != null) {
+                localStorage.setItem("tenantSetting",JSON.stringify(data));
+                state.tenantSetting = JSON.stringify(data);
+            } else {
+                localStorage.setItem("tenantSetting",data);
+                state.tenantSetting = data;
+            }
         },
         // Set mission not found text
         missionNotFound(state,data){
@@ -157,10 +163,8 @@ export default new Vuex.Store({
             localStorage.setItem('avatar', data.avatar) 
             state.avatar = data.avatar;
         },
-        changeUserDetail(state, data) {  
-        
+        changeUserDetail(state, data) {        
             var langaugeCode = data.languageCode; 
-            
             localStorage.setItem('firstName', data.firstName)
             localStorage.setItem('lastName', data.lastName)
             localStorage.setItem('defaultLanguage', langaugeCode.toUpperCase())
@@ -173,6 +177,10 @@ export default new Vuex.Store({
             state.lastName = data.lastName;
             state.countryId = data.country
             state.cityId = data.city
+        },
+        saveCurrentSkill(state,data) {
+            // state.currentSkill = data;
+             localStorage.setItem('currentSkill', JSON.stringify(data))
         }
     },
     getters: {},

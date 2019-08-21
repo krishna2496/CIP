@@ -340,7 +340,7 @@ export default {
     created() { 
         this.langauageData = JSON.parse(store.state.languageLabel);
         let filterSetting = JSON.parse(store.state.tenantSetting);
-        if(filterSetting.sorting_missions != 1){
+        if(filterSetting != null && filterSetting.sorting_missions != 1){
             this.sortByFilterSet = false;
         }
         if (this.$route.params.searchParamsType){

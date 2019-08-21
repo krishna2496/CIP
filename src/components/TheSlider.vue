@@ -56,7 +56,6 @@ export default {
 		getDescription: (sliderDetail) => {
 
 			if (typeof sliderDetail !== 'undefined') {
-				// console.log(sliderDetail);
 				var translations = JSON.parse(JSON.stringify(sliderDetail)).translations;
 				// Fetch slider description by language			
 				if (translations) {

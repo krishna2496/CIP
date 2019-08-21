@@ -250,7 +250,6 @@ export default {
 
                     if(response.themes) {
                         this.themeList = Object.entries(response.themes);
-                        console.log(this.themeList );
                         this.selectedTheme = [];
                     } 
 
@@ -531,7 +530,7 @@ export default {
         this.langauageData = JSON.parse(store.state.languageLabel);
         this.searchPlaceHolder = this.langauageData.label.search+' '+this.langauageData.label.mission;
         let filterSetting = JSON.parse(store.state.tenantSetting);
-        if(filterSetting.quick_access_filters != 1){
+        if(filterSetting != null && filterSetting.quick_access_filters != 1){
             this.quickAccessFilterSet = false;
         }
         var _this = this;

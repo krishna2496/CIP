@@ -1002,11 +1002,9 @@ export default {
         	this.page++;
     		var simplebarContent = document.querySelector(".comment-list-inner .simplebar-content");
 			var simplebarHeight = simplebarContent.offsetHeight
-			console.log(simplebarHeight)
 			setTimeout(function(){
 				var simplebarWrapper  = document.querySelector(".comment-list .simplebar-content-wrapper");
 				simplebarWrapper.scrollTop = simplebarHeight;
-				console.log(simplebarWrapper.scrollTop)	
 			},100);
 			this.missionComments();
         }

@@ -1,4 +1,4 @@
-import store from '../../store'
+import store from '../store'
 import axios from 'axios'
 
 export default async(countryId) => {
@@ -11,7 +11,7 @@ export default async(countryId) => {
         defaultLanguage = (store.state.defaultLanguage).toLowerCase();
     }
     await axios({
-            url: process.env.VUE_APP_API_ENDPOINT + "app/city/"+countryId,
+            url: process.env.VUE_APP_API_ENDPOINT + "app/timezone",
             method: 'GET',
             headers: {
                 'X-localization': defaultLanguage,
