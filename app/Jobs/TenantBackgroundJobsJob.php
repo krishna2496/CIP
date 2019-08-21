@@ -2,7 +2,6 @@
 
 namespace App\Jobs;
 
-use Illuminate\Queue\QueueManager;
 use App\Models\Tenant;
 use Queue;
 use App\Traits\SendEmailTrait;
@@ -33,7 +32,6 @@ class TenantBackgroundJobsJob extends Job
     /**
      * Create a new job instance.
      * @param App\Models\Tenant $tenant
-     * @param Illuminate\Queue\QueueManager $queueManager
      * @return void
      */
     public function __construct(Tenant $tenant)
