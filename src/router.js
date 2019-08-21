@@ -9,12 +9,6 @@ let routes = [{
     path: '*',
     redirect: '/404'
 },
-{
-    path: '/picture',
-    name: 'picture',
-    component: () =>
-        import ('./views/picture.vue')
-},
 { 
     path: '/404',
     name: '404',
