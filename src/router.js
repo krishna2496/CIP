@@ -15,6 +15,7 @@ let routes = [{
     component:  () =>
         import ('./views/404.vue')
 },
+
 {
     path: '/',
     name: 'login',

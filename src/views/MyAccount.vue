@@ -12,9 +12,10 @@
                 <div v-bind:class="{ 'content-loader-wrap': true, 'profile-image-loader': imageLoader}">
                     <div class="content-loader"></div>
                 </div>
+
                 <picture-input 
-                      v-if="isPrefilLoaded"
-                      ref="fileInput" 
+                     
+                      ref="pictureInput" 
                       @change="changeImage"  
                       accept="image/jpeg,image/png"
                       :prefillOptions="prefillOptionArray"
@@ -189,7 +190,6 @@
                         id
                         v-model="profile.whyiVolunteer" 
                         :class="{ 'is-invalid': submitted && $v.profile.whyiVolunteer.$error }" 
-    
                         :placeholder="langauageData.placeholder.why_i_volunteer"
                         size="lg"
                         no-resize
@@ -280,7 +280,7 @@
                   
                 </b-col>
             </b-row>
-            <b-row class="row-form" v-if="isShownComponent">
+            <b-row class="row-form" v-if="isShownComponent && customFieldList.length > 0">
                 <b-col cols="12">
                     <h2 class="title-with-border">
                         <span>{{langauageData.label.custom_field}}</span>
@@ -290,6 +290,7 @@
                     <CustomField
                     :optionList="customFieldList"
                     :optionListValue="customFieldValue"
+                    :isSubmit="isCustomFieldSubmit"
                     @detectChangeInCustomFeild = "detectChangeInCustomFeild"
                     />
                 </b-col>
@@ -373,15 +374,14 @@
           </form>
           <div class="btn-wrap">
             <b-button
-              class="btn-borderprimary"
-              @click="$refs.changePasswordModal.hide()"
-             
+            class="btn-borderprimary"
+            @click="$refs.changePasswordModal.hide()"
             >{{langauageData.label.cancel}}</b-button>
             <b-button
-              class="btn-bordersecondary"
-              @click="changePassword()"
-             
-            >{{langauageData.label.change_password}}</b-button>
+                class="btn-bordersecondary"
+                @click="changePassword()">
+                {{langauageData.label.change_password}}
+            </b-button>
           </div>
         </b-modal>
 
@@ -399,7 +399,7 @@ import MultiSelect from "../components/MultiSelect";
 import CustomField from "../components/CustomField";
 import store from "../store";
 import PictureInput from 'vue-picture-input'
-import {getUserDetail,saveProfile,changeUserPassword,changeProfilePicture,changeCity,saveUserProfile,saveSkill,loadLocaleMessages} from "../services/service";
+import {getUserDetail,saveProfile,changeUserPassword,changeProfilePicture,changeCity,saveUserProfile,saveSkill,loadLocaleMessages,country,skill,timezone} from "../services/service";
 import { required,maxLength, email,sameAs, minLength, between,helpers} from 'vuelidate/lib/validators';
 import constants from '../constant';
 
@@ -423,6 +423,7 @@ export default {
             countryDefault: '',
             availabilityList: [],
             passwordSubmit : false,
+            isCustomFieldSubmit : false,
             availabilityDefault: "",
             file: "null",
             langauageData : [],
@@ -559,7 +560,7 @@ export default {
                 if(response.error == true){
                     this.makeToast("danger",response.message);
                 } else {
-                    this.disableApply = true;
+                    
                     this.makeToast("success",response.message);
                     store.commit("changeAvatar",response.data)
                 }
@@ -567,8 +568,9 @@ export default {
                 
             })
         },
-        saveSkillData(skillList) {
-            this.resetUserSkillList = skillList
+        saveSkillData() { 
+            let data = JSON.parse(localStorage.getItem('currentSkill'));
+            this.resetUserSkillList = data
         },
         // Get user detail
         async getUserProfileDetail() {
@@ -589,9 +591,7 @@ export default {
                     }  
 
                     this.isPrefilLoaded = true
-                    this.countryList = Object.keys(this.userData.country_list).map(function(key) {
-                        return [Number(key), _this.userData.country_list[key]];
-                    });
+
                     this.cityList = Object.keys(this.userData.city_list).map(function(key) {
                         return [Number(key), _this.userData.city_list[key]];
                     });
@@ -601,11 +601,9 @@ export default {
                     this.languageList = Object.keys(this.userData.language_list).map(function(key) {
                         return [Number(key), _this.userData.language_list[key]];
                     });
-                    this.timeList = Object.keys(this.userData.timezone_list).map(function(key) {
-                        return [Number(key), _this.userData.timezone_list[key]];
-                    });
-
+                   
                     this.customFieldList = this.userData.custom_fields
+
                     if(this.userData.user_custom_field_value) {
                     this.customFieldValue = Object.keys(this.userData.user_custom_field_value).map(function(key) {
                             return [
@@ -643,31 +641,72 @@ export default {
                     this.availabilityDefault = this.userData.availability.type
                 }
                 if( this.userData.language_id != '' &&  this.userData.language_id != null) {
-                    this.languageDefault = this.userData.language_code
+                    Object.keys(_this.userData.language_list).map(function(key) {
+                            if(key == _this.userData.language_id) {
+                               _this.languageDefault = _this.userData.language_list[key]
+                            }
+                    });
                 }
                 if( this.userData.timezone.timezone != '' &&  this.userData.timezone.timezone != null) {
                     this.timeDefault = this.userData.timezone.timezone
                 }
+                this.skillListing = [];
+                this.userSkillList = [];
+                this.resetUserSkillList = [];
+                // country,skill,timezone
 
+                country().then(responseData => {
+                    if(responseData.error == false) {
+                        this.countryList = responseData.data  
+                    }    
 
-                if(this.userData.skill_list) {
-                        Object.keys(this.userData.skill_list).map(function(key) {
-                            if(_this.userData.skill_list[key]) {
-                                _this.skillListing.push({
-                                    name:_this.userData.skill_list[key],
-                                    id: key
+                    timezone().then(responseData => {
+                        if(responseData.error == false) {
+                            this.timeList = responseData.data  
+                        } 
+
+                        skill().then(responseData => {
+                            if(responseData.error == false) {
+                                this.userData.skill_list = responseData.data
+                                Object.keys(this.userData.skill_list).map(function(key) {
+                                    if(_this.userData.skill_list[key]) {
+                                        _this.skillListing.push({
+                                            name:_this.userData.skill_list[key],
+                                            id: key
+                                        }); 
+                                    }
                                 });
-                                _this.resetSkillList.push({
-                                    name:_this.userData.skill_list[key],
-                                    id: key
-                                });
+                            } 
+                            this.isShownComponent = true;   
+                        })   
+                    })
+                })
 
-                            }
-                        });
-                }
+                
+
+               
+
+                // this.countryList = Object.keys(this.userData.country_list).map(function(key) {
+                //         return [Number(key), _this.userData.country_list[key]];
+                //     });
+
+                //     this.timeList = Object.keys(this.userData.timezone_list).map(function(key) {
+                //         return [Number(key), _this.userData.timezone_list[key]];
+                //     });
+
+                //     if(this.userData.skill_list) {
+                //         Object.keys(this.userData.skill_list).map(function(key) {
+                //             if(_this.userData.skill_list[key]) {
+                //                 _this.skillListing.push({
+                //                     name:_this.userData.skill_list[key],
+                //                     id: key
+                //                 }); 
+                //             }
+                //         });
+                // }
 
                 if(this.userData.user_skills) {
-                        Object.keys(this.userData.user_skills).map(function(key) {
+                    Object.keys(this.userData.user_skills).map(function(key) {
                             if(_this.userData.user_skills[key].translations) {
                                 _this.userSkillList.push({
                                     name:_this.userData.user_skills[key].translations,
@@ -682,7 +721,7 @@ export default {
                 }
                 } 
                 this.imageLoader = false;
-                this.isShownComponent = true;
+               
             })
         },
         resetSkillListingData() {
@@ -717,7 +756,6 @@ export default {
                 });    
             });
            
-            // this.userSkillList = this.resetUserSkillList;
         },
         detectChangeInCustomFeild (data) {
             this.returnCustomFeildData = data;
@@ -727,11 +765,22 @@ export default {
             var _this = this;
             this.submitted = true;
             this.$v.$touch();
-            // stop here if form is invalid
-            // console.log(this.$v.profile);
+            var isCustomFieldInvalid = false;
+            var isNormalFieldInvalid = false;
+            let validationData = document.querySelectorAll('[validstate="true"]');    
+            this.isCustomFieldSubmit = true;
+            validationData.forEach(function(validateData) {
+                validateData.classList.add("is-invalid");
+                isCustomFieldInvalid = true;
+            });
+           
             if (this.$v.profile.$invalid) {
-                return;
+               isNormalFieldInvalid = true;
             }
+
+            if(isNormalFieldInvalid == true || isCustomFieldInvalid == true) {
+                return 
+            } 
 
             let returnData = {};
                 _this.saveProfileData.first_name  = _this.profile.firstName,
@@ -749,41 +798,45 @@ export default {
                 _this.saveProfileData.profile_text  = _this.profile.profileText,
                 _this.saveProfileData.linked_in_url  = _this.profile.linkedInUrl,
                 _this.saveProfileData.custom_fields = []
-        
-                Object.keys(this.returnCustomFeildData).map(function(key) {
+                _this.saveProfileData.skills = []
+       
+                Object.keys(this.returnCustomFeildData).map(function(key) { 
+                        let customValue = _this.returnCustomFeildData[key];
+
+                        if (Array.isArray(customValue)) {
+                            customValue = customValue.join();
+                        } 
                     
                         _this.saveProfileData.custom_fields.push({
                             field_id: key,
-                            value : _this.returnCustomFeildData[key]
+                            value : customValue
                         });
                     });
             
-             // console.log(this.saveProfileData);
-            // Call to save profile service 
-            saveUserProfile(this.saveProfileData).then( response => {
-                if(response.error == true){
-                    this.makeToast("danger",response.message);
-                } else {
-                    saveSkill(this.userSkillList).then( skillResponse => {
-                        if(skillResponse.error == true){
-                            this.makeToast("danger",skillResponse.message);
-                        } else {
+                if(this.userSkillList.length > 0) {
+                    Object.keys(this.userSkillList).map(function(key) {
+                        _this.saveProfileData['skills'].push({
+                            skill_id:  _this.userSkillList[key].id,                
+                        });
+                    });
+                }
+
+                // Call to save profile service 
+                saveUserProfile(this.saveProfileData).then( response => {
+                    if(response.error == true){
+                        this.makeToast("danger",response.message);
+                    } else {                     
+                        this.getUserProfileDetail().then(getResponse => {
                             this.isShownComponent = false;
                             loadLocaleMessages(this.profile.languageCode).then(langaugeResponse => {
                                 this.langauageData = JSON.parse(store.state.languageLabel); 
-                                this.isShownComponent = true;
-                                this.disableApply = true;
-                                this.makeToast("success",response.message);
-                                this.getUserProfileDetail();
+                                this.makeToast("success",response.message);  
+                                this.isShownComponent = true;  
                             });
                             store.commit("changeUserDetail",this.profile)
-                        }
-                    });
-                }
-            });
-           
-
-
+                        });
+                    }
+                });          
         },   
         // changePassword
         changePassword() {
@@ -831,7 +884,6 @@ export default {
         changeCityData(countryId) {
             if(countryId) {
                 changeCity(countryId).then( response => {
-                    // console.log(response);
                     if (response.error === true) { 
                         this.cityList = []
                     } else {

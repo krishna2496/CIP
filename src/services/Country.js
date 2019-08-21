@@ -1,4 +1,4 @@
-import store from '../../store'
+import store from '../store'
 import axios from 'axios'
 
 export default async(countryId) => {
@@ -11,7 +11,7 @@ export default async(countryId) => {
         defaultLanguage = (store.state.defaultLanguage).toLowerCase();
     }
     await axios({
-            url: process.env.VUE_APP_API_ENDPOINT + "app/city/"+countryId,
+            url: process.env.VUE_APP_API_ENDPOINT + "app/country",
             method: 'GET',
             headers: {
                 'X-localization': defaultLanguage,
@@ -21,14 +21,13 @@ export default async(countryId) => {
                 responseData.error = false;
                 responseData.message = response.data.message;
                 if(response.data.data ) {
-                   
                     responseData.data  = Object.keys(response.data.data ).map(function(key) {
                         return [Number(key), response.data.data[key]];
                     });
                 }
             })
         .catch(function(error) {
-                responseData.error = true;
+            responseData.error = true;
                
         });
     return responseData;

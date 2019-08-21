@@ -10,19 +10,23 @@
                                     :defaultText="defaultValue[item.field_id]"
                                     :optionList="getArrayValue(item.translations.values)"
                                     :errorClass = "getErrorClass(item.field_id)"
+                                    :validstate="getErrorState(item.field_id)"
                                     :fieldId = "item.field_id"
                                     translationEnable= "false"
                                     @updateCall="updateCustomDropDown"
-                                />  
+                                /> 
+                                 <div v-if="getErrorClass(item.field_id)" class="invalid-feedback">
+                                     {{item.translations.name}} {{ langauageData.errors.field_required }}
+                                </div> 
                             </b-form-group>
 
                             <b-form-group :label="item.translations.name" v-if="item.type == 'radio'">
                                 <b-form-radio-group
                                     v-model="customFeildData[item.field_id]"  
                                     :id='`radio-${item.field_id}`'
-                                    :class="{ 'is-invalid':false }" 
                                     :options="getRadioArrayValue(item.translations.values)"
-
+                                    :class="{ 'is-invalid': getErrorClass(item.field_id) }" 
+                                    :validstate="getErrorState(item.field_id)"
                                      @change="updateChanges"
                                     :name="item.translations.name">   
                                 </b-form-radio-group>
@@ -34,8 +38,9 @@
                                 v-model="customFeildData[item.field_id]"  
                                 :options="getRadioArrayValue(item.translations.values)"
                                 name="checkbox-custom"
-                                :class="{ 'is-invalid':false }" 
-                                
+                                :class="{ 'is-invalid': getErrorClass(item.field_id) }" 
+                                :validstate="getErrorState(item.field_id)"
+                                @input="updateChanges"
                                 >
                                 </b-form-checkbox-group>
                             </b-form-group>
@@ -48,9 +53,13 @@
                                     :selectedItem="getSelectedItem(item.field_id)"
                                     :checkList="getRadioArrayValue(item.translations.values)"
                                     :errorClass = "getErrorClass(item.field_id)"
+                                    :validstate="getErrorState(item.field_id)"
                                     :fieldId = "item.field_id"
                                     @updateCall="changeMultiSelect"
                                 />
+                                <div v-if="getErrorClass(item.field_id)" class="invalid-feedback">
+                                     {{item.translations.name}} {{ langauageData.errors.field_required }}
+                                </div> 
                             </b-form-group>
 
                             <b-form-group v-if="item.type == 'textarea'">
@@ -60,12 +69,15 @@
                                 :id='`textarea-${item.field_id}`'
                                 :placeholder='`Enter ${item.translations.name}`'
                                 rows="3"
-                                :class="{ 'is-invalid': false }" 
-                                @keypress="updateChanges"
+                                :class="{ 'is-invalid': getErrorClass(item.field_id) }" 
+                                :validstate="getErrorState(item.field_id)"
+                                @change="updateChanges"
                                 max-rows="6"
                                 >
                             </b-form-textarea>
-
+                                <div v-if="getErrorClass(item.field_id)" class="invalid-feedback">
+                                     {{item.translations.name}} {{ langauageData.errors.field_required }}
+                                </div> 
                             </b-form-group>
 
                             <b-form-group v-if="item.type == 'text'">
@@ -73,7 +85,12 @@
                                 <b-form-input   
                                 v-model="customFeildData[item.field_id]"  
                                 @keypress="updateChanges"
+                                :class="{ 'is-invalid': getErrorClass(item.field_id) }" 
+                                :validstate="getErrorState(item.field_id)"
                                 :placeholder='`Enter ${item.translations.name}`'></b-form-input>  
+                                <div v-if="getErrorClass(item.field_id)" class="invalid-feedback">
+                                     {{item.translations.name}} {{ langauageData.errors.field_required }}
+                                </div> 
                             </b-form-group>
 
                             <b-form-group v-if="item.type == 'email'">
@@ -82,7 +99,13 @@
                                 type="email"
                                 v-model="customFeildData[item.field_id]"  
                                 @keypress="updateChanges"
+                                :class="{ 'is-invalid': getErrorClass(item.field_id) }" 
+                                :validstate="getErrorState(item.field_id)"
                                 :placeholder='`Enter ${item.translations.name}`'></b-form-input>  
+                                <div v-if="getErrorClass(item.field_id)" class="invalid-feedback">
+                                    <span v-if="!$v.customFeildData[item.field_id].required">{{item.translations.name}} {{ langauageData.errors.field_required }}</span>
+                                    <span v-if="!$v.customFeildData[item.field_id].email">{{item.translations.name}} {{ langauageData.errors.invalid_email }}</span>
+                                </div> 
                             </b-form-group>
                     </b-col>
     </div>
@@ -105,7 +128,8 @@ export default {
     name: "customField",
     props: {
         optionList : Array,
-        optionListValue : Array
+        optionListValue : Array,
+        isSubmit : Boolean
     },
     data() {
         return {
@@ -127,11 +151,25 @@ export default {
             var _this = this;
             
                 _.each( this.customFieldList, wrr => {
-                    // if(this.submit == true) {
+                    if(wrr.is_mandatory == 1) {
                         validations.customFeildData[wrr.field_id] = {
                             required
                         };
-                    // }
+                    } else {
+                          validations.customFeildData[wrr.field_id] = {};
+                    }
+
+                    if(wrr.type == "email") {
+                        if(wrr.is_mandatory == 1) {
+                            validations.customFeildData[wrr.field_id] = {
+                                required,email
+                            };
+                        } else {
+                            validations.customFeildData[wrr.field_id] = {
+                               email
+                            };
+                        }
+                    }
                     
                     
                     switch (wrr.type) {
@@ -170,7 +208,11 @@ export default {
                             break;
                         case 'checkbox' :
                             this.$set(this.defaultValue, wrr.field_id, wrr.user_custom_field_value)
-                            this.$set(this.customFeildData, wrr.field_id, wrr.user_custom_field_value)
+                            if(wrr.user_custom_field_value.toString().indexOf(",") !== -1) {
+                                this.$set(this.customFeildData, wrr.field_id, wrr.user_custom_field_value.split(","))
+                            } else {
+                                this.$set(this.customFeildData, wrr.field_id, wrr.user_custom_field_value.toString().split())
+                            }
                             break;
                         default:
                             this.$set(this.defaultValue, wrr.field_id, wrr.user_custom_field_value)
@@ -217,16 +259,14 @@ export default {
             }
             return returnData;
         },
-        handleSubmit2() {
-            this.$v.$touch();
-          
-            if (this.$v.$invalid) {
-                return;
-            }
-            
-            // console.log(this.customFeildData);
-        },
         getErrorClass(id) {
+            if(this.$v.customFeildData[id] && this.isSubmit == true) {
+                return this.$v.customFeildData[id].$invalid
+            } else {
+                return false
+            }
+        },
+        getErrorState(id) {
             if(this.$v.customFeildData[id]) {
                 return this.$v.customFeildData[id].$invalid
             } else {

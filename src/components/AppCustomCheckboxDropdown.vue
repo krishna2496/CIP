@@ -1,5 +1,14 @@
 <template>
-    <div class="checkbox-select select-dropdown dropdown-with-counter">
+    <div 
+
+    v-bind:class="{
+        'checkbox-select' :true,
+        'select-dropdown':true,
+        'dropdown-with-counter' : true,
+        'is-invalid' : errorClass
+      }"
+
+     >
         <span class="select-text" @click="handleClick">{{filterTitle}}</span>
     <div class="chk-select-wrap dropdown-option-wrap" data-simplebar @click.stop @touchend.stop>
     <ul class="chk-select-options dropdown-option-list" v-if="checkList.length > 0">
@@ -35,7 +44,8 @@ export default {
             default: () => []
         },
         selectedItem: Array,
-        fieldId : Number
+        fieldId : Number,
+        errorClass : Boolean
     },
 
     data() {
@@ -52,7 +62,6 @@ export default {
         handleClick(e) {
       e.stopPropagation();
       setTimeout(function() {
-        // console.log(e.target)
         var profile_toggle = document.querySelector(
           ".profile-menu .dropdown-toggle"
         );
@@ -80,7 +89,6 @@ export default {
           }
         }
         var dropdown_list = document.querySelectorAll(".select-dropdown");
-        // console.log(dropdown_list)
         dropdown_list.forEach(function(e) {
           var dropdown_list_width = parseInt(
             window.getComputedStyle(e).getPropertyValue("width")

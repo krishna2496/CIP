@@ -2,7 +2,6 @@ import axios from 'axios'
 import store from '../../store'
 
 export default async(data) => {
-    console.log(data);
     let skills = {
         skills: []
     }
