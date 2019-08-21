@@ -31,7 +31,7 @@ return [
     'connections' => [
 
         'sync' => [
-            'driver' => env('QUEUE_DRIVER', 'database'),
+            'driver' => 'sync',
         ],
 
         'database' => [

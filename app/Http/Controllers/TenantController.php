@@ -20,6 +20,7 @@ use InvalidArgumentException;
 use Aws\S3\Exception\S3Exception;
 use App\Jobs\DownloadAssestFromS3ToLocalStorageJob;
 use Queue;
+use App\Jobs\TenantBackgroundJobsJob;
 
 class TenantController extends Controller
 {
@@ -97,19 +98,7 @@ class TenantController extends Controller
 
             $tenant = $this->tenantRepository->store($request);
             
-            // ONLY FOR DEVELOPMENT MODE. (PLEASE REMOVE THIS CODE IN PRODUCTION MODE)
-            if (env('APP_ENV')=='local' || env('APP_ENV')=='testing') {
-                Queue::push(new TenantDefaultLanguageJob($tenant));
-            }
-            
-            // Job dispatched to create new tenant's database and migrations
-            Queue::push(new TenantMigrationJob($tenant));
-
-            // Create assets folder for tenant on AWS s3 bucket
-            Queue::push(new CreateFolderInS3BucketJob($tenant));
-
-            // Compile CSS file and upload on s3
-            Queue::push(new CompileScssFiles($tenant->name));
+            Queue::push(new TenantBackgroundJobsJob($tenant));
 
             // Set response data
             $apiStatus = Response::HTTP_CREATED;
