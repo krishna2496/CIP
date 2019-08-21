@@ -654,7 +654,7 @@ export default {
                 this.userSkillList = [];
                 this.resetUserSkillList = [];
                 // country,skill,timezone
-              
+
                 country().then(responseData => {
                     if(responseData.error == false) {
                         this.countryList = responseData.data  
@@ -815,7 +815,7 @@ export default {
                             value : customValue
                         });
                     });
-
+            
                 if(this.userSkillList.length > 0) {
                     Object.keys(this.userSkillList).map(function(key) {
                         _this.saveProfileData['skills'].push({
