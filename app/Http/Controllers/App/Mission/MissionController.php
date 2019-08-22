@@ -76,9 +76,9 @@ class MissionController extends Controller
      * Create a new Mission controller instance
      *
      * @param App\Repositories\Mission\MissionRepository $missionRepository
-     * @param Illuminate\Http\ResponseHelper $responseHelper
+     * @param Illuminate\Helpers\ResponseHelper $responseHelper
      * @param Illuminate\Http\UserFilterRepository $userFilterRepository
-     * @param Illuminate\Http\LanguageHelper $languageHelper
+     * @param Illuminate\Helpers\LanguageHelper $languageHelper
      * @param App\Helpers\Helpers $helpers
      * @param App\Repositories\MissionTheme\MissionThemeRepository $themeRepository
      * @param App\Repositories\Skill\SkillRepository $skillRepository
@@ -174,7 +174,7 @@ class MissionController extends Controller
                 )
             );
         } catch (\Exception $e) {
-            throw new \Exception(trans('messages.custom_error_message.ERROR_OCCURRED'));
+            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
 
@@ -256,7 +256,7 @@ class MissionController extends Controller
                 )
             );
         } catch (\Exception $e) {
-            throw new \Exception(trans('messages.custom_error_message.ERROR_OCCURRED'));
+            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
 
@@ -406,7 +406,6 @@ class MissionController extends Controller
         } catch (PDOException $e) {
             return $this->PDO(
                 config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
-                trans('messages.custom_error_message.ERROR_DATABASE_OPERATIONAL'),
                 trans('messages.custom_error_message.ERROR_DATABASE_OPERATIONAL')
             );
         } catch (\Exception $e) {
@@ -525,7 +524,7 @@ class MissionController extends Controller
                 trans('messages.custom_error_message.ERROR_DATABASE_OPERATIONAL')
             );
         } catch (\Exception $e) {
-            throw new \Exception(trans('messages.custom_error_message.ERROR_OCCURRED'));
+            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
     
@@ -567,7 +566,7 @@ class MissionController extends Controller
                 trans('messages.custom_error_message.ERROR_DATABASE_OPERATIONAL')
             );
         } catch (\Exception $e) {
-            throw new \Exception(trans('messages.custom_error_message.ERROR_OCCURRED'));
+            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
 }

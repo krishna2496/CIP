@@ -27,7 +27,7 @@ class CityController extends Controller
      * Create a new controller instance.
      *
      * @param App\Repositories\City\CityRepository $cityRepository
-     * @param Illuminate\Http\ResponseHelper $responseHelper
+     * @param App\Helpers\ResponseHelper $responseHelper
      * @return void
      */
     public function __construct(

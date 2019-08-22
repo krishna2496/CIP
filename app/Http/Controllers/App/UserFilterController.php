@@ -157,7 +157,7 @@ class UserFilterController extends Controller
                 trans('messages.custom_error_message.ERROR_DATABASE_OPERATIONAL')
             );
         } catch (\Exception $e) {
-            throw new \Exception(trans('messages.custom_error_message.ERROR_OCCURRED'));
+            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
 }

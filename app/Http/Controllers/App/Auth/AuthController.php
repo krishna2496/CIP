@@ -72,7 +72,7 @@ class AuthController extends Controller
      * @param Illuminate\Http\ResponseHelper $responseHelper
      * @param App\Repositories\TenantOption\TenantOptionRepository $tenantOptionRepository
      * @param App\Helpers\Helpers $helpers
-     * @param  Illuminate\Http\LanguageHelper $languageHelper
+     * @param  Illuminate\Helpers\LanguageHelper $languageHelper
      * @param App\Repositories\User\UserRepository $userRepository
      * @return void
      */
@@ -150,10 +150,10 @@ class AuthController extends Controller
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_USER_LOGGED_IN');
             return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         } catch (TenantDomainNotFoundException $e) {
             throw $e;
+        } catch (\Exception $e) {
+            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
     

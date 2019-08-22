@@ -32,7 +32,7 @@ class MissionRating extends Model
     protected $fillable = ['mission_id', 'user_id', 'rating'];
     
     /**
-     * Get the mission that has media.
+     * Get the mission that has rating.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
