@@ -1,5 +1,4 @@
 <?php
-use Illuminate\Support\Facades\DB;
 use App\Helpers\Helpers;
 
 class AppCommentsTest extends TestCase
@@ -216,7 +215,7 @@ class AppCommentsTest extends TestCase
         $mission->save();
 
         $params = [
-            "comment" => '',
+            "comment" => str_random(500),
             "mission_id" => $mission->mission_id
         ];
         $token = Helpers::getJwtToken($user->user_id);
@@ -235,5 +234,4 @@ class AppCommentsTest extends TestCase
         $user->delete();
         $mission->delete();
     }
-
 }

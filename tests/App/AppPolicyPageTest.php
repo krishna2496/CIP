@@ -1,4 +1,5 @@
 <?php
+use App\Helpers\Helpers;
 
 class AppPolicyPageTest extends TestCase
 {
@@ -16,7 +17,12 @@ class AppPolicyPageTest extends TestCase
         $policyPage->setConnection($connection);
         $policyPage->save();
 
-        $this->get(route('policy.detail'), [])
+        $user = factory(\App\User::class)->make();
+        $user->setConnection($connection);
+        $user->save();
+        
+        $token = Helpers::getJwtToken($user->user_id);
+        $this->get('/app/policy/listing', ['token' => $token])
           ->seeStatusCode(200)
           ->seeJsonStructure([
             "status",
@@ -24,19 +30,12 @@ class AppPolicyPageTest extends TestCase
                 "*" => [
                     "page_id",
                     "slug",
-                    "status",
-                    "pages" => [
-                        "*" => [
-                            "page_id",
-                            "language_id",
-                            "title",
-                            "sections"
-                        ]
-                    ]
+                    "status"
                 ]
             ],
             "message"
         ]);
+        $user->delete();
         $policyPage->delete();
     }
 
@@ -49,49 +48,19 @@ class AppPolicyPageTest extends TestCase
      */
     public function it_should_return_no_policy_page_found()
     {
-        $this->get(route("policy.detail"), [])
+        $connection = 'tenant';
+        $user = factory(\App\User::class)->make();
+        $user->setConnection($connection);
+        $user->save();
+        
+        $token = Helpers::getJwtToken($user->user_id);
+        $this->get('/app/policy/listing', ['token' => $token])
         ->seeStatusCode(200)
         ->seeJsonStructure([
             "status",
             "message"
         ]);
-    }
-
-    /**
-     * @test
-     *
-     * Get all policy page list
-     *
-     * @return void
-     */
-    public function it_should_return_all_policy_pages_listing()
-    {
-        $connection = 'tenant';
-        $policyPage = factory(\App\Models\PolicyPage::class)->make();
-        $policyPage->setConnection($connection);
-        $policyPage->save();
-
-        $this->get(route('policy.detail'), [])
-          ->seeStatusCode(200)
-          ->seeJsonStructure([
-            "status",
-            "data" => [
-                "*" => [
-                    "page_id",
-                    "slug",
-                    "status",
-                    "pages" => [
-                        "*" => [
-                            "page_id",
-                            "language_id",
-                            "title"
-                        ]
-                    ]
-                ]
-            ],
-            "message"
-        ]);
-        $policyPage->delete();
+        $user->delete();
     }
 
     /**
@@ -108,9 +77,14 @@ class AppPolicyPageTest extends TestCase
         $policyPage->setConnection($connection);
         $policyPage->save();
 
+        $connection = 'tenant';
+        $user = factory(\App\User::class)->make();
+        $user->setConnection($connection);
+        $user->save();
+        
         $slug = $policyPage->slug;
-
-        $this->get('/app/policy/'.$slug, [])
+        $token = Helpers::getJwtToken($user->user_id);
+        $this->get('/app/policy/'.$slug, ['token' => $token])
           ->seeStatusCode(200)
           ->seeJsonStructure([
             "status",
@@ -128,7 +102,7 @@ class AppPolicyPageTest extends TestCase
             ],
             "message"
         ]);
-
+        $user->delete();
         $policyPage->delete();
     }
 
@@ -143,7 +117,13 @@ class AppPolicyPageTest extends TestCase
     {
         $slug = str_random(10) ;
 
-        $this->get('/app/policy/'.$slug, [])
+        $connection = 'tenant';
+        $user = factory(\App\User::class)->make();
+        $user->setConnection($connection);
+        $user->save();
+        
+        $token = Helpers::getJwtToken($user->user_id);
+        $this->get('/app/policy/'.$slug, ['token' => $token])
         ->seeStatusCode(404)
         ->seeJsonStructure([
               "errors" => [
@@ -153,6 +133,7 @@ class AppPolicyPageTest extends TestCase
                   ]
               ]
         ]);
+        $user->delete();
     }
 
     /**
@@ -165,11 +146,15 @@ class AppPolicyPageTest extends TestCase
     public function it_should_return_policy_page_list()
     {
         $connection = 'tenant';
+        $user = factory(\App\User::class)->make();
+        $user->setConnection($connection);
+        $user->save();
         $policyPage = factory(\App\Models\PolicyPage::class)->make();
         $policyPage->setConnection($connection);
         $policyPage->save();
-
-        $this->get('/app/policy/listing', [])
+        
+        $token = Helpers::getJwtToken($user->user_id);
+        $this->get('/app/policy/listing', ['token' => $token])
           ->seeStatusCode(200)
           ->seeJsonStructure([
             "status",
@@ -178,19 +163,12 @@ class AppPolicyPageTest extends TestCase
                     "page_id",
                     "slug",
                     "status",
-                    "pages" => [
-                        "*" => [
-                            "page_id",
-                            "language_id",
-                            "title",
-                            "sections"
-                        ]
-                    ]
+                    "pages"
                 ]
             ],
             "message"
         ]);
-
+        $user->delete();
         $policyPage->delete();
     }
 }

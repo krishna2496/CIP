@@ -119,7 +119,6 @@ class PolicyPageTest extends TestCase
         ]);
     }
 
-
     /**
      * @test
      *
@@ -198,9 +197,14 @@ class PolicyPageTest extends TestCase
                         'lang' => 'en',
                         'title' => str_random(20),
                         'sections' =>  [
-                            'title' => str_random(20),
-                            'description' => array(str_random(255)),
-                        ],
+                            [
+                                'title' => str_random(20),
+                                'description' => array(str_random(255)),
+                            ],[
+                                'title' => str_random(20),
+                                'description' => array(str_random(255)),
+                            ]
+                        ]
                     ]
                 ],
             ],
@@ -332,5 +336,336 @@ class PolicyPageTest extends TestCase
                 ]
             ]
         ]);
+    }
+
+    /**
+     * @test
+     *
+     * Create policy page validate data
+     *
+     * @return void
+     */
+    public function it_should_show_error_for_create_policy_page_invalid_language_data()
+    {
+        $params = [
+            'page_details' =>
+                [
+                'slug' => '',
+                'translations' =>  [
+                    [
+                        'lang' => 'eng',
+                        'title' => str_random(20),
+                        'sections' =>  [
+                            [
+                                'title' => str_random(20),
+                                'description' => array(str_random(255)),
+                            ]
+                        ],
+                    ]
+                ],
+            ],
+        ];
+
+        $this->post("policy/", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(422)
+        ->seeJsonStructure([
+            'errors' => [
+                [
+                    'status',
+                    'type',
+                    'code',
+                    'message'
+                ]
+            ]
+        ]);
+    }
+
+    /**
+     * @test
+     *
+     * Create policy page validate data
+     *
+     * @return void
+     */
+    public function it_should_show_error_for_create_policy_page_invalid_slug()
+    {
+        $connection = 'tenant';
+        $policyPage = factory(\App\Models\PolicyPage::class)->make();
+        $policyPage->setConnection($connection);
+        $policyPage->save();
+        
+        $slug = $policyPage->slug;
+
+        $params = [
+            'page_details' =>
+                [
+                'slug' => $slug,
+                'translations' =>  [
+                    [
+                        'lang' => 'en',
+                        'title' => str_random(20),
+                        'sections' =>  [
+                            [
+                                'title' => str_random(20),
+                                'description' => array(str_random(255)),
+                            ]
+                        ],
+                    ]
+                ],
+            ],
+        ];
+
+        $this->post("policy/", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(422)
+        ->seeJsonStructure([
+            'errors' => [
+                [
+                    'status',
+                    'type',
+                    'code',
+                    'message'
+                ]
+            ]
+        ]);
+    }
+
+    /**
+     * @test
+     *
+     * Create policy page allow deleted slug
+     *
+     * @return void
+     */
+    public function it_should_create_policy_page_allow_deleted_slug()
+    {
+        $connection = 'tenant';
+        $policyPage = factory(\App\Models\PolicyPage::class)->make();
+        $policyPage->setConnection($connection);
+        $policyPage->save();
+        
+        $slug = $policyPage->slug;
+        $policyPage->delete();
+
+        $params = [
+            'page_details' =>
+                [
+                'slug' => $slug,
+                'translations' =>  [
+                    [
+                        'lang' => 'en',
+                        'title' => str_random(20),
+                        'sections' =>  [
+                            [
+                                'title' => str_random(20),
+                                'description' => array(str_random(255)),
+                            ]
+                        ],
+                    ]
+                ],
+            ],
+        ];
+
+        $this->post("policy/", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(201)
+        ->seeJsonStructure([
+            'data' => [
+                'page_id',
+            ],
+            'message',
+            'status',
+        ]);
+        App\Models\PolicyPage::where('slug', $slug)->delete();
+    }
+
+    /**
+     * @test
+     *
+     * Return error if data is invalid for Update policy page api
+     *
+     * @return void
+     */
+    public function it_should_return_error_for_invalid_data_for_update_policy_page()
+    {
+        $params = [
+            'page_details' =>
+                [
+                'slug' => ''
+                ],
+            ];
+
+        $connection = 'tenant';
+        $policyPage = factory(\App\Models\PolicyPage::class)->make();
+        $policyPage->setConnection($connection);
+        $policyPage->save();
+        $page_id = $policyPage->page_id;
+
+        $this->patch("policy/".$page_id, $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(422)
+        ->seeJsonStructure([
+            'errors' => [
+                [
+                    'status',
+                    'type',
+                    'code',
+                    'message'
+                ]
+            ]
+        ]);
+    }
+
+    /**
+     * @test
+     *
+     * Update policy page validate data
+     *
+     * @return void
+     */
+    public function it_should_show_error_for_update_policy_page_invalid_language_data()
+    {
+        $params = [
+            'page_details' =>
+                [
+                'slug' => str_random(10),
+                'translations' =>  [
+                    [
+                        'lang' => 'eng',
+                        'title' => str_random(20),
+                        'sections' =>  [
+                            [
+                                'title' => str_random(20),
+                                'description' => array(str_random(255)),
+                            ]
+                        ],
+                    ]
+                ],
+            ],
+        ];
+
+        $connection = 'tenant';
+        $policyPage = factory(\App\Models\PolicyPage::class)->make();
+        $policyPage->setConnection($connection);
+        $policyPage->save();
+        $page_id = $policyPage->page_id;
+
+        $this->patch("policy/".$page_id, $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(422)
+        ->seeJsonStructure([
+            'errors' => [
+                [
+                    'status',
+                    'type',
+                    'code',
+                    'message'
+                ]
+            ]
+        ]);
+    }
+
+    /**
+     * @test
+     *
+     * Update policy page validate data
+     *
+     * @return void
+     */
+    public function it_should_show_error_for_update_policy_page_invalid_slug()
+    {
+        $connection = 'tenant';
+        $policyPage = factory(\App\Models\PolicyPage::class)->make();
+        $policyPage->setConnection($connection);
+        $policyPage->save();
+        
+        $slug = $policyPage->slug;
+
+        $policyPageNew = factory(\App\Models\PolicyPage::class)->make();
+        $policyPageNew->setConnection($connection);
+        $policyPageNew->save();
+        
+        $params = [
+            'page_details' =>
+                [
+                'slug' => $slug,
+                'translations' =>  [
+                    [
+                        'lang' => 'en',
+                        'title' => str_random(20),
+                        'sections' =>  [
+                            [
+                                'title' => str_random(20),
+                                'description' => array(str_random(255)),
+                            ]
+                        ],
+                    ]
+                ],
+            ],
+        ];
+
+        $this->patch("policy/".$policyPageNew->page_id, $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(422)
+        ->seeJsonStructure([
+            'errors' => [
+                [
+                    'status',
+                    'type',
+                    'code',
+                    'message'
+                ]
+            ]
+        ]);
+        $policyPageNew->delete();
+        $policyPage->delete();
+    }
+
+    /**
+     * @test
+     *
+     * Update policy page allow deleted slug
+     *
+     * @return void
+     */
+    public function it_should_update_policy_page_allow_deleted_slug()
+    {
+        $connection = 'tenant';
+        $policyPage = factory(\App\Models\PolicyPage::class)->make();
+        $policyPage->setConnection($connection);
+        $policyPage->save();
+        
+        $slug = $policyPage->slug;
+        $policyPage->delete();
+
+        $connection = 'tenant';
+        $policyPageNew = factory(\App\Models\PolicyPage::class)->make();
+        $policyPageNew->setConnection($connection);
+        $policyPageNew->save();
+
+        $params = [
+            'page_details' =>
+                [
+                'slug' => $slug,
+                'translations' =>  [
+                    [
+                        'lang' => 'en',
+                        'title' => str_random(20),
+                        'sections' =>  [
+                            [
+                                'title' => str_random(20),
+                                'description' => array(str_random(255)),
+                            ]
+                        ],
+                    ]
+                ],
+            ],
+        ];
+
+        $this->patch("policy/".$policyPageNew->page_id, $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(200)
+        ->seeJsonStructure([
+            'data' => [
+                'page_id',
+            ],
+            'message',
+            'status',
+        ]);
+        App\Models\PolicyPage::where('slug', $slug)->delete();
     }
 }

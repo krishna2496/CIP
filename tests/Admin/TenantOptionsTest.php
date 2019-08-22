@@ -46,7 +46,7 @@ class TenantOptionsTest extends TestCase
                 ]);
         } else {
             $this->post("create_slider/", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
-            ->seeStatusCode(200)
+            ->seeStatusCode(201)
             ->seeJsonStructure([
                 'status',
                 'message',

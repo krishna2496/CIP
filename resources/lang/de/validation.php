@@ -72,6 +72,7 @@ return [
     'timezone'             => 'The :attribute must be a valid zone.',
     'unique'               => 'The :attribute has already been taken.',
     'url'                  => 'The :attribute format is invalid.',
+    'present'              => 'The :attribute field is required',
 
     /*
     |--------------------------------------------------------------------------
@@ -90,6 +91,12 @@ return [
         ],
         'documents.*.document_path' => [
             'valid_document_path' => 'Please enter valid document file path',
+        ],
+		'avatar' => [
+            'valid_profile_image' => 'Invalid image file or image type is not allowed. Allowed types: png, jpeg, jpg',
+        ],
+		'parent_skill' => [
+            'valid_parent_skill' => 'Invalid parent skill',
         ],
     ],
 

@@ -79,9 +79,6 @@
 		"post_comment" : "Post comment",
 		"comments" : "Comments",
 		"documents" : "Documents",
-		"post_comment" : "Post comment",
-		"comments" : "Comments",
-		"documents" : "Documents",
 		"read_more_comment" : "Read more comments",
 		"submit_new_mission" : "Submit new mission",
 		"grid_view" : "Grid view",
@@ -117,7 +114,8 @@
         "professional_information" : "Professional information",
         "linked_in" : "Linked in",
         "custom_field" : "Additional field",
-        "please_select" : "Please select"
+		"please_select" : "Please select",
+		"my_account" : "My account"
 	},
 
 	"placeholder" : {
@@ -169,7 +167,9 @@
          "skill_selection" : "Skill selection is required",
          "language_required" : "Language is required",
          "timezone_required" : "Timezone is required",
-         "field_required" : "This field is required"
+         "field_required" : "is required"
 	}
+
+	
 
 }
