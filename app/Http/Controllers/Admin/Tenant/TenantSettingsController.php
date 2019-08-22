@@ -14,7 +14,6 @@ use Illuminate\Http\Request;
 use InvalidArgumentException;
 use Validator;
 use App\Helpers\Helpers;
-use App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository;
 
 class TenantSettingsController extends Controller
 {
@@ -34,11 +33,6 @@ class TenantSettingsController extends Controller
      * @var App\Helpers\Helpers
      */
     private $helpers;
-
-    /**
-     * @var App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository
-     */
-    private $tenantActivatedSettingRepository;
 
     /**
      * Create a new controller instance.
@@ -67,6 +61,7 @@ class TenantSettingsController extends Controller
     public function index(Request $request): JsonResponse
     {
         try {
+            // Fetch all tenant settings details from super admin
             $getTenantSettings = $this->helpers->getAllTenantSetting($request);
 
             // Fetch all tenant settings data
@@ -79,12 +74,12 @@ class TenantSettingsController extends Controller
                         return $value->tenant_setting_id == $tenantSetting->setting_id;
                     });
                     
-                    $tenantSettingData[$index]['tenant_setting_id'] = $tenantSettings[$index]
+                    $tenantSettingData[$settingKey]['tenant_setting_id'] = $tenantSettings[$index]
                     ->tenant_setting_id;
-                    $tenantSettingData[$index]['key'] = $getTenantSettings[$index]->key;
-                    $tenantSettingData[$index]['description'] = $getTenantSettings[$index]
+                    $tenantSettingData[$settingKey]['key'] = $getTenantSettings[$index]->key;
+                    $tenantSettingData[$settingKey]['description'] = $getTenantSettings[$index]
                     ->description;
-                    $tenantSettingData[$index]['title'] = $getTenantSettings[$index]
+                    $tenantSettingData[$settingKey]['title'] = $getTenantSettings[$index]
                     ->title;
                 }
             }
