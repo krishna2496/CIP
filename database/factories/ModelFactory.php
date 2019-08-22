@@ -105,3 +105,15 @@ $factory->define(App\Models\PolicyPage::class, function (Faker\Generator $faker)
         'slug' => str_random(20)
     ];
 });
+
+$factory->define(App\Models\TenantSetting::class, function (Faker\Generator $faker) {
+    return [
+        'setting_id' => 1
+    ];
+});
+
+$factory->define(App\Models\TenantActivatedSetting::class, function (Faker\Generator $faker) {
+    return [
+        'tenant_setting_id' => 114
+    ];
+});

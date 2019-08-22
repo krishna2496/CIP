@@ -348,7 +348,13 @@ class Helpers
             $this->switchDatabaseConnection('mysql', $request);
             
             $tenantSetting = DB::table('tenant_has_setting')
-            ->select('tenant_has_setting.tenant_setting_id', 'tenant_setting.key', 'tenant_setting.tenant_setting_id')
+            ->select(
+                'tenant_has_setting.tenant_setting_id',
+                'tenant_setting.key',
+                'tenant_setting.tenant_setting_id',
+                'tenant_setting.description',
+                'tenant_setting.title'
+            )
             ->leftJoin(
                 'tenant_setting',
                 'tenant_setting.tenant_setting_id',

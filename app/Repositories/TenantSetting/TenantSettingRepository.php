@@ -65,6 +65,7 @@ class TenantSettingRepository implements TenantSettingInterface
      */
     public function fetchAllTenantSettings(): Collection
     {
-        return $this->tenantSetting->select('tenant_setting_id', 'key', 'value')->get();
+        // return $this->tenantSetting->select('tenant_setting_id', 'key', 'value')->get();
+        return $this->tenantSetting->select('tenant_setting_id', 'setting_id')->get();
     }
 }

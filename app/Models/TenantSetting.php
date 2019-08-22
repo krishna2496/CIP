@@ -34,5 +34,15 @@ class TenantSetting extends Model
      *
      * @var array
      */
-    protected $visible = ['tenant_setting_id','title','description','key','value'];
+    protected $visible = ['tenant_setting_id','setting_id','description','key','value'];
+
+    /**
+     * Fetch all tenant settings.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function getAllTenantSettings()
+    {
+        return $this->all();
+    }
 }
