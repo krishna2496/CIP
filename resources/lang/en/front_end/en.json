@@ -167,7 +167,8 @@
          "skill_selection" : "Skill selection is required",
          "language_required" : "Language is required",
          "timezone_required" : "Timezone is required",
-         "field_required" : "is required"
+         "field_required" : "is required",
+		 "field_is_required" : "This field is required"
 	}
 
 	
