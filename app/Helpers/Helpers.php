@@ -290,7 +290,7 @@ class Helpers
 
     /**
      * Get fetch all tenant settings detais
-     * 
+     *
      * @param \Illuminate\Http\Request $request
      * @return mix
      */
