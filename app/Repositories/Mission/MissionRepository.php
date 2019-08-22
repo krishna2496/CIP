@@ -635,17 +635,33 @@ class MissionRepository implements MissionInterface
         if ($request->has('explore_mission_type') &&
         ($request->input('explore_mission_type') == config('constants.TOP_FAVOURITE'))) {
             $missionQuery->withCount(['favouriteMission as favourite_mission_count']);
+            $missionQuery = $missionQuery->having("favourite_mission_count", '>', '0');
             $missionQuery->orderBY('favourite_mission_count', 'desc');
         }
 
         //Explore mission by most ranked
         if ($request->has('explore_mission_type') &&
         ($request->input('explore_mission_type') == config('constants.MOST_RANKED'))) {
+            $missionQuery->withCount(['missionRating as average_rating' => function ($query) use ($request) {
+                $query->select(DB::raw("AVG(rating) as rating"));
+            }]);
+            $missionQuery = $missionQuery->having("average_rating", '>', '0');
             $missionQuery->orderBY('mission_rating_count', 'desc');
         }
-        
-        $mission =  $missionQuery->paginate($request->perPage);
-        return $mission;
+        $missionData = $missionQuery->get();
+        $missionCollection = collect($missionData);
+
+        $page = $request->page ?? 1;
+        $perPage = $request->perPage;
+
+        $paginate = new LengthAwarePaginator(
+            $missionCollection->forPage($page, $perPage),
+            $missionCollection->count(),
+            $perPage,
+            $page,
+            ['path'=>url('app/missions')]
+        );
+        return $paginate;
     }
 
     /**

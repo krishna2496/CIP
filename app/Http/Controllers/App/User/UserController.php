@@ -132,7 +132,7 @@ class UserController extends Controller
      * @param Illuminate\Http\Request $request
      * @return Illuminate\Http\JsonResponse
      */
-    public function getUserDefaultLanguage(Request $request)
+    public function getUserDefaultLanguage(Request $request): JsonResponse
     {
         try {
             $email = $request->get('email');
@@ -150,7 +150,7 @@ class UserController extends Controller
         } catch (\PDOException $e) {
             return $this->PDO(
                 config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
-                trans('messages.custom_error_message.ERROR_USER_NOT_FOUND')
+                trans('messages.custom_error_message.ERROR_DATABASE_OPERATIONAL')
             );
         } catch (\Exception $e) {
             return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
@@ -365,7 +365,7 @@ class UserController extends Controller
      * @param Illuminate\Http\Request $request
      * @return Illuminate\Http\JsonResponse
      */
-    public function uploadProfileImage(Request $request)
+    public function uploadProfileImage(Request $request): JsonResponse
     {
         try {
             $validator = Validator::make($request->toArray(), [
@@ -393,7 +393,7 @@ class UserController extends Controller
             $apiData = ['avatar' => $imagePath];
             $apiMessage = trans('messages.success.MESSAGE_PROFILE_IMAGE_UPLOADED');
             $apiStatus = Response::HTTP_OK;
-            return $this->responseHelper->success(Response::HTTP_OK, $apiMessage, $apiData);
+            return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
         } catch (S3Exception $e) {
             return $this->s3Exception(
                 config('constants.error_codes.ERROR_FAILED_TO_RESET_STYLING'),

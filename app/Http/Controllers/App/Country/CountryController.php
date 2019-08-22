@@ -27,7 +27,7 @@ class CountryController extends Controller
      * Create a new controller instance.
      *
      * @param App\Repositories\Country\CountryRepository $countryRepository
-     * @param Illuminate\Http\ResponseHelper $responseHelper
+     * @param Illuminate\Helpers\ResponseHelper $responseHelper
      * @return void
      */
     public function __construct(

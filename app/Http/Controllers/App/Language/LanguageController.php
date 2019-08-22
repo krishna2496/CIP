@@ -1,8 +1,6 @@
 <?php
 namespace App\Http\Controllers\App\Language;
 
-use Illuminate\Http\Request;
-use App\Helpers\Helpers;
 use App\Http\Controllers\Controller;
 
 class LanguageController extends Controller

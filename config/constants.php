@@ -137,7 +137,7 @@ return [
     'TOP_COUNTRY' => "top_countries",
     'TOP_ORGANISATION' => "top_organization",
     'TOP_ORGANISATION' => "top_organization",
-    'MOST_RANKED' => "most_ranked_missions",
+    'MOST_RANKED' => "most-ranked-missions",
     'TOP_FAVOURITE' => "favourite_missions",
     'TOP_RECOMMENDED' => "recommended_missions",
     'THEME' => "themes",
