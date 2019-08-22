@@ -344,7 +344,7 @@
               :placeholder="langauageData.placeholder.old_password"
               ></b-form-input>
               <div v-if="passwordSubmit && !$v.resetPassword.oldPassword.required" class="invalid-feedback">
-                    {{ langauageData.errors.field_required }}</div>
+                    {{ langauageData.errors.field_is_required }}</div>
             </b-form-group>
 
             <b-form-group>
@@ -354,7 +354,7 @@
                :placeholder="langauageData.placeholder.new_password"
               ></b-form-input>
                 <div v-if="passwordSubmit && !$v.resetPassword.newPassword.required" class="invalid-feedback">
-                    {{ langauageData.errors.field_required }}</div>
+                    {{ langauageData.errors.field_is_required }}</div>
                 <div v-if="passwordSubmit && !$v.resetPassword.newPassword.minLength" class="invalid-feedback">
                 {{ langauageData.errors.invalid_password }}</div>
             </b-form-group>
@@ -367,7 +367,7 @@
                 type="password"> 
               </b-form-input>
                 <div v-if="passwordSubmit && !$v.resetPassword.confirmPassword.required" class="invalid-feedback">
-                    {{ langauageData.errors.field_required }}</div>
+                    {{ langauageData.errors.field_is_required }}</div>
                 <div v-if="passwordSubmit && $v.resetPassword.confirmPassword.required && !$v.resetPassword.confirmPassword.sameAsPassword" class="invalid-feedback">
                     {{ langauageData.errors.identical_password }}</div>
             </b-form-group>
