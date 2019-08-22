@@ -318,6 +318,7 @@ class Helpers
             ->whereNull('tenant_has_setting.deleted_at')
             ->whereNull('tenant_setting.deleted_at')
             ->where('tenant_id', $tenant->tenant_id)
+            ->orderBy('tenant_has_setting.tenant_setting_id')
             ->get();
 
             // Connect tenant database
