@@ -485,7 +485,7 @@ export default {
             this.$bvToast.toast(message, {
                 variant: variant,
                 solid: true,
-                autoHideDelay: 3000
+                autoHideDelay: 3000000
             })
         },
     },

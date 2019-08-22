@@ -10,11 +10,11 @@ export default async(data) => {
             method: 'get',
         })
         .then((response) => {
-            let settingArray = {};
+            let settingArray = [];
             if(response.data.data) { 
                 $.each(response.data.data, function(index,module){
                     var key = module.key;
-                    settingArray[key] = module.value
+                    settingArray[index] = module.key
                 }); 
                 responseData = response.data.data;
                 
