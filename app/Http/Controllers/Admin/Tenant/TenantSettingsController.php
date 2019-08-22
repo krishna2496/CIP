@@ -13,6 +13,7 @@ use Illuminate\Http\Response;
 use Illuminate\Http\Request;
 use InvalidArgumentException;
 use Validator;
+use App\Helpers\Helpers;
 
 class TenantSettingsController extends Controller
 {
@@ -29,20 +30,30 @@ class TenantSettingsController extends Controller
     private $responseHelper;
 
     /**
+     * @var App\Helpers\Helpers
+     */
+    private $helpers;
+
+    /**
      * Create a new controller instance.
      *
      * @param App\Repositories\TenantSetting\TenantSettingRepository $tenantSettingRepository
      * @param App\Helpers\ResponseHelper $responseHelper
+     * @param App\Helpers\Helpers $helpers
      * @return void
      */
-    public function __construct(TenantSettingRepository $tenantSettingRepository, ResponseHelper $responseHelper)
-    {
+    public function __construct(
+        TenantSettingRepository $tenantSettingRepository,
+        ResponseHelper $responseHelper,
+        Helpers $helpers
+    ) {
         $this->tenantSettingRepository = $tenantSettingRepository;
         $this->responseHelper = $responseHelper;
+        $this->helpers = $helpers;
     }
 
     /**
-     * Display a listing of the resource.
+     * Display a listing of tenant settings.
      *
      * @param Illuminate\Http\Request $request
      * @return \Illuminate\Http\JsonResponse
@@ -50,15 +61,38 @@ class TenantSettingsController extends Controller
     public function index(Request $request): JsonResponse
     {
         try {
-            $settings = $this->tenantSettingRepository->getAllSettings($request);
+            // Fetch all tenant settings details from super admin
+            $getTenantSettings = $this->helpers->getAllTenantSetting($request);
+
+            // Fetch all tenant settings data
+            $tenantSettings = $this->tenantSettingRepository->fetchAllTenantSettings();
+            
+            $tenantSettingData = array();
+
+            if ($tenantSettings->count() &&  $getTenantSettings->count()) {
+                foreach ($tenantSettings as $settingKey => $tenantSetting) {
+                    $index = $getTenantSettings->search(function ($value, $key) use ($tenantSetting) {
+                        return $value->tenant_setting_id == $tenantSetting->setting_id;
+                    });
+                    
+                    $tenantSettingData[$index]['tenant_setting_id'] = $tenantSettings[$index]
+                    ->tenant_setting_id;
+                    $tenantSettingData[$index]['key'] = $getTenantSettings[$index]->key;
+                    $tenantSettingData[$index]['description'] = $getTenantSettings[$index]
+                    ->description;
+                    $tenantSettingData[$index]['title'] = $getTenantSettings[$index]
+                    ->title;
+                }
+            }
+            $apiData = $tenantSettingData;
 
             // Set response data
             $apiStatus = Response::HTTP_OK;
-            $apiMessage = trans('messages.success.MESSAGE_TENANT_SETTINGS_LISTING');
-            $apiMessage = ($settings->isEmpty()) ? trans('messages.success.MESSAGE_NO_RECORD_FOUND') :
-             trans('messages.success.MESSAGE_TENANT_SETTINGS_LISTING');
+            $apiMessage = ($tenantSettings->isEmpty() || $getTenantSettings->isEmpty()) ?
+            trans('messages.success.MESSAGE_NO_RECORD_FOUND'):
+            trans('messages.success.MESSAGE_TENANT_SETTINGS_LISTING');
 
-            return $this->responseHelper->successWithPagination($apiStatus, $apiMessage, $settings);
+            return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
         } catch (InvalidArgumentException $e) {
             return $this->invalidArgument(
                 config('constants.error_codes.ERROR_INVALID_ARGUMENT'),
