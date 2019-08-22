@@ -223,7 +223,6 @@ export default {
             filter.exploreMissionParams = store.state.exploreMissionParams
             filter.sortBy = store.state.sortBy 
             filter.addLoader = parmas       
-            
             await missionListing(filter).then( response => {
                 if (response.data) {
                     this.missionList = response.data;    
@@ -264,7 +263,8 @@ export default {
         },
 
         async missionFilter(){
-            await missionFilterListing().then( response => {
+
+            await missionFilterListing().then( response => {  
                 this.getMissions();
             }); 
         },
@@ -340,7 +340,7 @@ export default {
     created() { 
         this.langauageData = JSON.parse(store.state.languageLabel);
         let filterSetting = JSON.parse(store.state.tenantSetting);
-        if(filterSetting != null && filterSetting.sorting_missions != 1){
+        if(filterSetting != null && filterSetting['sorting_missions']){
             this.sortByFilterSet = false;
         }
         if (this.$route.params.searchParamsType){
@@ -351,16 +351,20 @@ export default {
                 filteExplore.exploreMissionParams = this.$route.params.searchParams;
             }
             store.commit('exploreFilter',filteExplore);
+            store.commit('clearFilter')
+             this.getMissions();
 
         } else {
             let filteExplore = {};
             filteExplore.exploreMissionType = '';
             filteExplore.exploreMissionParams = '';
             store.commit('exploreFilter',filteExplore);
+            // Mission listing
+            this.missionFilter();
         }
         var _this = this;
-        // Mission listing
-        this.missionFilter();
+        
+        
         searchUser().then(response => {
             this.userList = response;
         });

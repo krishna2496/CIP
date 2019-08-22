@@ -6,7 +6,7 @@
                     <div class="icon-input">
                         <b-form-input
                             type="text"
-                            @keypress.enter="searchMission"
+                            v-on:keyup.enter="searchMission"
                             :placeholder="searchPlaceHolder"
                             @focus="handleFocus()"
                             @blur="handleBlur()"
@@ -530,7 +530,7 @@ export default {
         this.langauageData = JSON.parse(store.state.languageLabel);
         this.searchPlaceHolder = this.langauageData.label.search+' '+this.langauageData.label.mission;
         let filterSetting = JSON.parse(store.state.tenantSetting);
-        if(filterSetting != null && filterSetting.quick_access_filters != 1){
+        if(filterSetting != null && filterSetting['quick_access_filters']){
             this.quickAccessFilterSet = false;
         }
         var _this = this;
