@@ -290,7 +290,7 @@ class Helpers
 
     /**
      * Get fetch all tenant settings detais
-     * 
+     *
      * @param \Illuminate\Http\Request $request
      * @return mix
      */
@@ -302,7 +302,13 @@ class Helpers
             $this->switchDatabaseConnection('mysql', $request);
             
             $tenantSetting = DB::table('tenant_has_setting')
-            ->select('tenant_has_setting.tenant_setting_id', 'tenant_setting.key', 'tenant_setting.tenant_setting_id')
+            ->select(
+                'tenant_has_setting.tenant_setting_id',
+                'tenant_setting.key',
+                'tenant_setting.tenant_setting_id',
+                'tenant_setting.description',
+                'tenant_setting.title'
+            )
             ->leftJoin(
                 'tenant_setting',
                 'tenant_setting.tenant_setting_id',
@@ -312,8 +318,10 @@ class Helpers
             ->whereNull('tenant_has_setting.deleted_at')
             ->whereNull('tenant_setting.deleted_at')
             ->where('tenant_id', $tenant->tenant_id)
+            ->orderBy('tenant_has_setting.tenant_setting_id')
             ->get();
 
+			
             // Connect tenant database
             $this->switchDatabaseConnection('tenant', $request);
             

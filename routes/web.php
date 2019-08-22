@@ -80,7 +80,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
     'uses' => 'App\Tenant\TenantOptionController@fetchTenantOptionValue']);
 
     /* Fetch tenant settings */
-    $router->get('/app/tenant-settings', ['as' =>'tenant-settings',
+    $router->get('/app/tenant-settings', ['as' =>'app.tenant-settings',
     'middleware' => 'tenant.connection',
     'uses' => 'App\Tenant\TenantActivatedSettingController@index']);
 

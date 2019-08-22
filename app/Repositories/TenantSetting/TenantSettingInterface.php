@@ -26,7 +26,7 @@ interface TenantSettingInterface
     public function getAllSettings(Request $request): LengthAwarePaginator;
 
     /**
-     * Get all tenant's settings data. Used for front end api.
+     * Get all tenant's settings data
      *
      * @return Illuminate\Database\Eloquent\Collection
      */
