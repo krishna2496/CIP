@@ -321,6 +321,7 @@ class Helpers
             ->orderBy('tenant_has_setting.tenant_setting_id')
             ->get();
 
+			
             // Connect tenant database
             $this->switchDatabaseConnection('tenant', $request);
             
