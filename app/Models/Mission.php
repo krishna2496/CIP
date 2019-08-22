@@ -73,7 +73,7 @@ class Mission extends Model
     'already_volunteered','total_available_seat', 'available_seat','deadline',
     'favourite_mission_count', 'mission_rating', 'is_favourite', 'skill_id',
     'user_application_status', 'skill', 'rating', 'mission_rating_total_volunteers',
-    'availability_id', 'availability_type'];
+    'availability_id', 'availability_type', 'average_rating'];
 
     protected $appends = ['city_name'];
 
