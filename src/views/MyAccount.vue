@@ -470,6 +470,7 @@ export default {
             },
             submitted: false,
             language : '',
+            languageCode: null,
             time : '',
             customFieldList : [],
             customFieldValue :[],
@@ -525,7 +526,7 @@ export default {
         }
     },
     mounted() {
-       
+
     },
 
     methods: {
@@ -533,6 +534,7 @@ export default {
             this.languageDefault = value.selectedVal;
             this.profile.languageCode = value.selectedVal;
             this.profile.language =  value.selectedId;
+            this.languageCode = this.userData.language_code_list[value.selectedId];
         },
         updateTime(value) {
             this.timeDefault = value.selectedVal;
@@ -827,7 +829,8 @@ export default {
                 saveUserProfile(this.saveProfileData).then( response => {
                     if(response.error == true){
                         this.makeToast("danger",response.message);
-                    } else {                     
+                    } else {    
+                        store.commit('setDefaultLanguageCode', this.languageCode)                 
                         this.getUserProfileDetail().then(getResponse => {
                             this.isShownComponent = false;
                             loadLocaleMessages(this.profile.languageCode).then(langaugeResponse => {
@@ -912,7 +915,7 @@ export default {
         this.availabilityDefault = this.langauageData.placeholder.availablity 
         this.languageDefault = this.langauageData.placeholder.language 
         this.timeDefault = this.langauageData.placeholder.timezone 
-        
+        this.languageCode = store.state.defaultLanguage
         this.getUserProfileDetail();
     }
 
