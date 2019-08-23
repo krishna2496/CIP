@@ -13,11 +13,11 @@
             <b-form-checkbox name  v-model="items" @click.native ="filterTable" v-bind:value="item[1].id">{{item[1].title}}<span class="counter">{{item[1].mission_count}}</span></b-form-checkbox>
         </li>
     </ul>
-    <ul class="chk-select-options dropdown-option-list" v-else>
+   <!--  <ul class="chk-select-options dropdown-option-list" v-else>
         <li>
             <label class="no-checkbox">{{ langauageData.label.no_record_found }}</label>
         </li>
-    </ul>
+    </ul> -->
     </div>
     </div>
 </template>

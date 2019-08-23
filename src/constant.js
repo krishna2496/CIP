@@ -14,5 +14,33 @@ export default Object.freeze({
     DEADLINE : 'deadline',
     AUTOMATICALLY_APPROVED : "AUTOMATICALLY_APPROVED",
     PENDING : "PENDING",
-    REFUSED : "REFUSED"
+    REFUSED : "REFUSED",
+    
+    TOTAL_VOTES : "total_votes",
+    SKILLS_ENABLED : "skills_enabled",
+    STORIES_ENABLED : "stories_enabled",
+    NEWS_ENABLED : "news_enabled",
+    THEMES_ENABLED : "themes_enabled",
+    POLICIES_ENABLED : "policies_enabled",
+    SORTING_MISSIONS: "sorting_missions",
+    QUICK_ACCESS_FILTERS : "quick_access_filters",
+    Total_HOURS_VOLUNTEERED : "total_hours_volunteered_in_platform",
+    Total_MISSIONS_IN_PLATEFORM : "total_missions_in_platform",
+    TIME_CREDIT_MISSION : "time_credit_mission",
+    USER_CAN_SUBMIT_MISSION : "user_can_submit_mission",
+
+    SHARE_MISSION_FACEBOOK : "share_mission_facebook",
+    SHARE_MISSION_TWITTER : "share_mission_twitter",
+    RECENT_VOLUNTEERES : "recent_volunteers",
+    MISSION_RATINGS : "mission_ratings",
+    INVITE_COLLEAGUE : "invite_colleague",
+    MISSION_COMMENTS : "mission_comments",
+    SHOW_GOAL_OF_MISSION : "show_goal_of_mission",
+    SHOW_CURRENT_STATUS_OF_MISSION : "show_current_status_of_mission",
+    SHOW_REMAINING_DATA_TO_ACHIEVE_GOAL : "show_remaining_data_to_achieve_goal",
+    VOLUNTEERING_HOURS_AUTO_APPROVED : "volunteering_hours_auto_approved",
+    VOLUNTEERING_GOAL_AUTO_APPROVED : "volunteering_goal_auto_approved",
+    MISSION_COMMENT_AUTO_APPROVED : "mission_comment_auto_approved",
+    IS_STORY_AUTO_APPROVED : "is_story_auto_approved"
+
 })
