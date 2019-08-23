@@ -9,7 +9,7 @@
                 :title="langauageData.label.add_your_skills"
                 ref="skillModal"
                 :modal-class="myclass"
-                
+
                 hide-footer
                 @hidden="hideModal"
             >
@@ -99,7 +99,7 @@ export default {
             this.$refs.skillModal.show();
         },
         hideModal() {
-             this.fromList = [];
+            this.fromList = [];
             this.toList = [],
             this.$emit("resetData");
         },

@@ -37,8 +37,10 @@
                                 </b-form-radio-group>
                             </b-form-group>
 
-                            <b-form-group :label="item.translations.name"  v-if="item.type == 'checkbox'">
-                                 <span v-if="item.is_mandatory == 1">*</span>
+                            <b-form-group   v-if="item.type == 'checkbox'">
+                                <label>{{item.translations.name}}
+                                    <span v-if="item.is_mandatory == 1">*</span>
+                                </label>
                                 <b-form-checkbox-group
                                  id="checkbox-1"
                                 v-model="customFeildData[item.field_id]"  
@@ -46,14 +48,14 @@
                                 name="checkbox-custom"
                                 :class="{ 'is-invalid': getErrorClass(item.field_id) }" 
                                 :validstate="getErrorState(item.field_id)"
-                                @input="updateChanges"
+                                @input="updateChangesCheckBox"
                                 >
                                 </b-form-checkbox-group>
                             </b-form-group>
 
                             <b-form-group v-if="item.type == 'multiselect'">
-                                <label>{{item.translations.name}}</label>
-                                 <span v-if="item.is_mandatory == 1">*</span>
+                                <label>{{item.translations.name}} <span v-if="item.is_mandatory == 1">*</span></label>
+                                
                                 <AppCustomCheckboxDropdown 
                                     :filterTitle="defaultText" 
                                     v-model="customFeildData[item.field_id]"  
@@ -70,8 +72,8 @@
                             </b-form-group>
 
                             <b-form-group v-if="item.type == 'textarea'">
-                                <label>{{item.translations.name}}</label>
-                                 <span v-if="item.is_mandatory == 1">*</span>
+                                <label>{{item.translations.name}}<span v-if="item.is_mandatory == 1">*</span></label>
+                                 
                                 <b-form-textarea
                                 v-model.trim="customFeildData[item.field_id]"  
                                 :id='`textarea-${item.field_id}`'
@@ -89,8 +91,8 @@
                             </b-form-group>
 
                             <b-form-group v-if="item.type == 'text'">
-                                <label>{{item.translations.name}}</label>
-                                 <span v-if="item.is_mandatory == 1">*</span>
+                                <label>{{item.translations.name}}<span v-if="item.is_mandatory == 1">*</span></label>
+                                 
                                 <b-form-input   
                                 v-model.trim="customFeildData[item.field_id]"  
                                 @keypress="updateChanges"
@@ -103,8 +105,8 @@
                             </b-form-group>
 
                             <b-form-group v-if="item.type == 'email'">
-                                <label>{{item.translations.name}}</label>
-                                 <span v-if="item.is_mandatory == 1">*</span>
+                                <label>{{item.translations.name}} <span v-if="item.is_mandatory == 1">*</span></label>
+                                
                                 <b-form-input   
                                 type="email"
                                 v-model.trim="customFeildData[item.field_id]"  
@@ -221,7 +223,7 @@ export default {
                             if(wrr.user_custom_field_value.toString().indexOf(",") !== -1) {
                                 this.$set(this.customFeildData, wrr.field_id, wrr.user_custom_field_value.split(","))
                             } else {
-                                this.$set(this.customFeildData, wrr.field_id, wrr.user_custom_field_value.toString().split())
+                                this.$set(this.customFeildData, wrr.field_id, [])
                             }
                             break;
                         default:
@@ -309,8 +311,10 @@ export default {
     
         },
         updateChanges() {
-            console.log(this.customFeildData[4]);
             this.$emit("detectChangeInCustomFeild",this.customFeildData);
+        },
+        updateChangesCheckBox() {
+            console.log(this.customFeildData)
         }
     },
    

@@ -114,7 +114,7 @@ export default {
             this.$emit("updateCall",val.join(','));
         },
         selectedItem:function(val){
-            this.items = this.selectedItem;
+           this.items = this.selectedItem;
         },
     },
     created() {

@@ -392,6 +392,7 @@
 					 		</div>
 							<div class="tabs">
 								<div class="tab-title">
+									
 									<h3 v-b-toggle.organization>{{ langauageData.label.organisation }}</h3>
 								</div>
 									<b-collapse id="organization" accordion="my-accordion" role="tabpanel" class="tab-content">
@@ -901,17 +902,17 @@ export default {
 							
 							this.missionDocument = response.data[0].mission_document
 	                	} else {
-            				// this.$router.push('/404');
+            				this.$router.push('/404');
 	                	}
 	                  
 	                }else {
-	                	// this.$router.push('/404');
+	                	this.$router.push('/404');
 	                }
 	                
 					this.searchUsers();
 	            })
 			} else {
-				// this.$router.push('/404');
+				this.$router.push('/404');
 			}
 		},
 		//get theme title

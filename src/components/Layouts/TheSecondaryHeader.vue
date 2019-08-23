@@ -566,6 +566,12 @@ export default {
         if(store.state.search != null) {
             this.search = store.state.search;
         }
+        if(this.missionList.length < 0) {
+            this.countryList = [];
+            this.cityList = [];
+            this.themeList = [];
+            this.skillList = [];
+        }
     }
 };
 </script>
