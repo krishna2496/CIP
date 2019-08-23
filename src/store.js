@@ -32,7 +32,8 @@ export default new Vuex.Store({
         tenantSetting : localStorage.getItem('tenantSetting'),
         missionNotFoundText : localStorage.getItem('missionNotFoundText'),
         languageLabel : localStorage.getItem('languageLabel'),
-        currentSkill : []
+        currentSkill : null,
+        currentFromSkill : null
     },
     mutations: {
         // Set login data in state and local storage       
@@ -181,6 +182,10 @@ export default new Vuex.Store({
         saveCurrentSkill(state,data) {
             // state.currentSkill = data;
              localStorage.setItem('currentSkill', JSON.stringify(data))
+        },
+        saveCurrentFromSkill(state,data) {
+            // state.currentSkill = data;
+             localStorage.setItem('currentFromSkill', JSON.stringify(data))
         },
         clearFilter(state) {
             let tag = []

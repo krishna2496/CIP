@@ -9,7 +9,6 @@
                 :title="langauageData.label.add_your_skills"
                 ref="skillModal"
                 :modal-class="myclass"
-
                 hide-footer
                 @hidden="hideModal"
             >
@@ -71,14 +70,14 @@ export default {
             selectList: [],
             myclass: ["skill-modal"],
             showErrorDiv : false,
-            message : ''
+            message : '',
+            closeClick : true,
+            dataFromList : this.fromList,
+            dataToList : this.toList
         };
     },
     mounted() {
         var a = this.$refs.skillModal;
-         $(this.$refs.skillModal).on("hidden.bs.modal", function(){
-            alert(0);
-         })
     },
     methods: {
         handleclick() {
@@ -99,12 +98,21 @@ export default {
             this.$refs.skillModal.show();
         },
         hideModal() {
-            this.fromList = [];
-            this.toList = [],
-            this.$emit("resetData");
+            if(this.closeClick) {
+                if (localStorage.getItem("currentSkill") !== null && localStorage.getItem("currentFromSkill") !== null) {
+                     this.$emit("resetPreviousData");
+                } else {
+                    this.dataFromList = [];
+                    this.dataToList = [];
+                    this.$emit("resetData");
+                }
+            } else {
+                this.toList = this.toList;
+            }
         },
         // Add to list
         addToList(id) {
+            this.closeClick = true;
             var _this = this; 
             if(this.toList.length <= 14) {
                 var filteredObj  = this.fromList.filter(function (item, i) { 
@@ -123,6 +131,7 @@ export default {
 
         // Remove data from to list 
         removeFromToList(id) {
+            this.closeClick = true;
             var _this = this;
             var filteredObj  = this.toList.filter(function (item, i) { 
                     if (item.id == id) {
@@ -140,15 +149,25 @@ export default {
             });
         },
         resetSkill() {
-            this.fromList = [];
-            this.toList = [],
-            this.$emit("resetData");
+            if (localStorage.getItem("currentSkill") !== null && localStorage.getItem("currentFromSkill") !== null) {
+                     this.$emit("resetPreviousData");
+            } else {
+                    this.dataFromList = [];
+                    this.dataToList = [];
+                    this.$emit("resetData");
+            }
+            // this.fromList = [];
+            // this.toList = [],
+            // this.$emit("resetData");
+            this.closeClick = false;
         },
         saveSkill(){
             store.commit("saveCurrentSkill",this.toList)
+            store.commit("saveCurrentFromSkill",this.fromList)
             this.$emit("saveSkillData");
             this.showErrorDiv = false
             this.$refs.skillModal.hide();
+            this.closeClick = false;
         }
     },
 
