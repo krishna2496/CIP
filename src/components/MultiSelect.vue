@@ -9,6 +9,7 @@
                 :title="langauageData.label.add_your_skills"
                 ref="skillModal"
                 :modal-class="myclass"
+                
                 hide-footer
                 @hidden="hideModal"
             >
@@ -23,6 +24,7 @@
                             <span>{{fromitem.name}}</span>
                             <b-button  @click="addToList(fromitem.id)">
                                 <img :src="$store.state.imagePath+'/assets/images/plus-ic.svg'" 
+                                :title="langauageData.label.add"
                                 alt="plus icon sss"
                             />
                             </b-button>
@@ -34,7 +36,9 @@
                         <li v-for="(toitem, idx) in toList" :id="toitem.id" :key="idx">
                             <span>{{toitem.name}}</span>
                             <b-button @click="removeFromToList(toitem.id)">
-                                <img :src="$store.state.imagePath+'/assets/images/cross-ic.svg'" alt="cross icon" />
+                                <img :src="$store.state.imagePath+'/assets/images/cross-ic.svg'" 
+                                :title="langauageData.label.remove"
+                                alt="cross icon" />
                             </b-button>
                         </li>
                     </ul>
@@ -72,6 +76,9 @@ export default {
     },
     mounted() {
         var a = this.$refs.skillModal;
+         $(this.$refs.skillModal).on("hidden.bs.modal", function(){
+            alert(0);
+         })
     },
     methods: {
         handleclick() {
@@ -92,8 +99,9 @@ export default {
             this.$refs.skillModal.show();
         },
         hideModal() {
-            this.toList = this.toList;
-            var tolist_group = document.querySelectorAll(".tolist-group li");
+             this.fromList = [];
+            this.toList = [],
+            this.$emit("resetData");
         },
         // Add to list
         addToList(id) {

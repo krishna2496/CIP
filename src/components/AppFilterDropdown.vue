@@ -20,11 +20,11 @@
                     @touchend="handleSelect">{{`${langauageData}.label.${item[1]}`}}</li>
             </ul>
         </div>
-        <div class="option-list-wrap" data-simplebar v-else >
+       <!--  <div class="option-list-wrap" data-simplebar v-else >
             <ul class="option-list" v-if="translationEnable == 'false'">
                 <li> {{ langauageData.label.no_record_found }} </li>
             </ul>
-        </div>
+        </div> -->
     </div>
 </template>
 

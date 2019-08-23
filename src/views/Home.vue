@@ -317,8 +317,8 @@ export default {
             this.filterData.themeId = '';
             this.filterData.skillId = '';
             this.filterData.tags = '';
-            this.filterData.sortBy = store.state.sortBy;
-
+            this.filterData.sortBy = '';
+            this.sortByDefault = this.langauageData.label.sort_by;
             if(filters.parmasType) {
                 filteExplore.exploreMissionType = filters.parmasType;
             }

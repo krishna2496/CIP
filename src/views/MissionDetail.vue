@@ -901,17 +901,17 @@ export default {
 							
 							this.missionDocument = response.data[0].mission_document
 	                	} else {
-            				this.$router.push('/404');
+            				// this.$router.push('/404');
 	                	}
 	                  
 	                }else {
-	                	this.$router.push('/404');
+	                	// this.$router.push('/404');
 	                }
 	                
 					this.searchUsers();
 	            })
 			} else {
-				this.$router.push('/404');
+				// this.$router.push('/404');
 			}
 		},
 		//get theme title

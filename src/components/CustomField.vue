@@ -2,9 +2,10 @@
 
     <div class="row custom-field" v-if="customFieldList != null && customFieldList.length > 0">
                      <b-col :md="getColumn(item.type)"  v-for="(item,key) in optionList">
-                            
                             <b-form-group v-if="item.type == 'drop-down'">
-                                <label>{{item.translations.name}}</label>
+                                <label>{{item.translations.name}}
+                                    <span v-if="item.is_mandatory == 1">*</span>
+                                </label>
                                 <AppCustomFeildDropdown
                                     v-model="customFeildData[item.field_id]"  
                                     :defaultText="defaultValue[item.field_id]"
@@ -20,7 +21,11 @@
                                 </div> 
                             </b-form-group>
 
-                            <b-form-group :label="item.translations.name" v-if="item.type == 'radio'">
+                            <b-form-group v-if="item.type == 'radio'">
+                               
+                                <label>{{item.translations.name}}
+                                    <span v-if="item.is_mandatory == 1">*</span>
+                                </label>
                                 <b-form-radio-group
                                     v-model="customFeildData[item.field_id]"  
                                     :id='`radio-${item.field_id}`'
@@ -33,6 +38,7 @@
                             </b-form-group>
 
                             <b-form-group :label="item.translations.name"  v-if="item.type == 'checkbox'">
+                                 <span v-if="item.is_mandatory == 1">*</span>
                                 <b-form-checkbox-group
                                  id="checkbox-1"
                                 v-model="customFeildData[item.field_id]"  
@@ -47,6 +53,7 @@
 
                             <b-form-group v-if="item.type == 'multiselect'">
                                 <label>{{item.translations.name}}</label>
+                                 <span v-if="item.is_mandatory == 1">*</span>
                                 <AppCustomCheckboxDropdown 
                                     :filterTitle="defaultText" 
                                     v-model="customFeildData[item.field_id]"  
@@ -64,8 +71,9 @@
 
                             <b-form-group v-if="item.type == 'textarea'">
                                 <label>{{item.translations.name}}</label>
+                                 <span v-if="item.is_mandatory == 1">*</span>
                                 <b-form-textarea
-                                v-model="customFeildData[item.field_id]"  
+                                v-model.trim="customFeildData[item.field_id]"  
                                 :id='`textarea-${item.field_id}`'
                                 :placeholder='`Enter ${item.translations.name}`'
                                 rows="3"
@@ -82,8 +90,9 @@
 
                             <b-form-group v-if="item.type == 'text'">
                                 <label>{{item.translations.name}}</label>
+                                 <span v-if="item.is_mandatory == 1">*</span>
                                 <b-form-input   
-                                v-model="customFeildData[item.field_id]"  
+                                v-model.trim="customFeildData[item.field_id]"  
                                 @keypress="updateChanges"
                                 :class="{ 'is-invalid': getErrorClass(item.field_id) }" 
                                 :validstate="getErrorState(item.field_id)"
@@ -95,16 +104,17 @@
 
                             <b-form-group v-if="item.type == 'email'">
                                 <label>{{item.translations.name}}</label>
+                                 <span v-if="item.is_mandatory == 1">*</span>
                                 <b-form-input   
                                 type="email"
-                                v-model="customFeildData[item.field_id]"  
+                                v-model.trim="customFeildData[item.field_id]"  
                                 @keypress="updateChanges"
                                 :class="{ 'is-invalid': getErrorClass(item.field_id) }" 
                                 :validstate="getErrorState(item.field_id)"
                                 :placeholder='`Enter ${item.translations.name}`'></b-form-input>  
                                 <div v-if="getErrorClass(item.field_id)" class="invalid-feedback">
                                     <span v-if="!$v.customFeildData[item.field_id].required">{{item.translations.name}} {{ langauageData.errors.field_required }}</span>
-                                    <span v-if="!$v.customFeildData[item.field_id].email">{{item.translations.name}} {{ langauageData.errors.invalid_email }}</span>
+                                    <span v-if="!$v.customFeildData[item.field_id].email">{{ langauageData.errors.invalid_email }}</span>
                                 </div> 
                             </b-form-group>
                     </b-col>
@@ -299,6 +309,7 @@ export default {
     
         },
         updateChanges() {
+            console.log(this.customFeildData[4]);
             this.$emit("detectChangeInCustomFeild",this.customFeildData);
         }
     },

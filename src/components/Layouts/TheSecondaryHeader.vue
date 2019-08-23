@@ -19,8 +19,13 @@
                             <img :src="$store.state.imagePath+'/assets/images/search-ic.svg'" alt="Search">
                         </i>
                     </div>
-                </b-col>
+                     <i class="clear-btn"  @click="clearSearchFilter">
 
+                        <img :src="$store.state.imagePath+'/assets/images/cross-ic.svg'" 
+                        :title="langauageData.label.clear_search"
+                        alt="clear" />
+                    </i>
+                </b-col>
                 <b-col xl="6" lg="7" class="filter-block" @touchend.stop>
                     <div class="mobile-top-block">
                         <b-button class="btn btn-back" @click="handleBack">
@@ -28,7 +33,7 @@
                         </b-button>
                         <b-button class="btn btn-clear">{{langauageData.label.clear_all}}</b-button>
                     </div>
-                <b-list-group v-if="quickAccessFilterSet && missionList.length > 0">
+                <b-list-group v-if="quickAccessFilterSet">
                     <b-list-group-item>
                         <AppFilterDropdown
                             :optionList="countryList"
@@ -200,6 +205,7 @@ export default {
             var b_header = document.querySelector(".bottom-header");
             var input_edit = document.querySelector(".search-block input");
             b_header.classList.remove("active");
+            console.log(input_edit.value);
             if (input_edit.value.length > 0) {
                 b_header.classList.add("active");
             } else {
@@ -426,6 +432,7 @@ export default {
             this.selectedfilterParams.cityId = '';
             this.selectedfilterParams.themeId = '';
             this.selectedfilterParams.skillId = '';
+            this.selectedfilterParams.sortBy = '';   
             this.selectedCity = [];
             this.selectedSkill = [];
             this.selectedTheme = [];
@@ -461,6 +468,17 @@ export default {
                         }
                     }            
             }); 
+        },
+        clearSearchFilter() {
+            this.searchString = '';
+            this.selectedfilterParams.search = '';
+            this.$parent.searchMissions(this.searchString,this.selectedfilterParams);
+            this.filterSearchListing();
+            var _this= this;
+            setTimeout(function(){
+                    _this.handleBlur()
+            },200)
+            
         },
         clearAllFilter(){
             this.selectedfilterParams.countryId = '';
