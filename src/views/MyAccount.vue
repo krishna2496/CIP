@@ -159,7 +159,7 @@
                             <label for>{{langauageData.label.department}}</label>
                             <b-form-input id type="text"
                             v-model.trim="profile.department" 
-        
+                             maxlength="16"
                             :placeholder="langauageData.placeholder.department"></b-form-input>
                             
                         </b-form-group>
@@ -316,6 +316,7 @@
                         :toList="userSkillList"
                         @resetData = "resetSkillListingData"
                         @saveSkillData = "saveSkillData"
+                        @resetPreviousData = "resetPreviousData"
                     />
                 </b-col>
                 <div class="btn-wrapper">
@@ -760,6 +761,13 @@ export default {
                 });    
             });
            
+        },
+        resetPreviousData() {
+            let currentSkill = JSON.parse(localStorage.getItem('currentSkill'));
+            this.userSkillList = currentSkill
+
+            let currentFromSkill = JSON.parse(localStorage.getItem('currentFromSkill'));
+            this.skillListing = currentFromSkill
         },
         detectChangeInCustomFeild (data) {
             this.returnCustomFeildData = data;
