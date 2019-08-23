@@ -180,6 +180,7 @@ class UserController extends Controller
             $userSkillList = $this->userRepository->userSkills($userId);
             $cityList = $this->cityRepository->cityList($userDetail->country_id);
             $tenantLanguages = $this->languageHelper->getTenantLanguageList($request);
+            $tenantLanguageCodes = $this->languageHelper->getTenantLanguageCodeList($request);
             $availabilityList = $this->userRepository->getAvailability();
 
             $languages = $this->languageHelper->getLanguages($request);
@@ -244,6 +245,7 @@ class UserController extends Controller
             $apiData['user_skills'] = $userSkillData;
             $apiData['city_list'] = $cityList;
             $apiData['language_list'] = $tenantLanguages;
+            $apiData['language_code_list'] = $tenantLanguageCodes;
             $apiData['availability_list'] = $availabilityList;
 
             if (isset($userDetail->avatar) && ($userDetail->avatar != '')) {

@@ -118,7 +118,10 @@
         "linked_in" : "linked.in",
         "custom_field" : "Champ additionnel",
 		"please_select" : "Veuillez choisir",
-		"my_account" : "Mon compte"
+		"my_account" : "Mon compte",
+		"remove" : "Retirer",
+		"edit" : "Modifier",
+		"clear_search" : "Effacer la recherche"
 	},
 
 	"placeholder" : {

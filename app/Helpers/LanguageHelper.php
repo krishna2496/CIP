@@ -150,4 +150,27 @@ class LanguageHelper
             return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
+
+    /**
+     * Get languages code from `ci_admin` table
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return Illuminate\Support\Collection
+     */
+    public function getTenantLanguageCodeList(Request $request): Collection
+    {
+        $tenant = $this->helpers->getTenantDetail($request);
+        // Connect master database to get language details
+        $this->helpers->switchDatabaseConnection('mysql', $request);
+
+        $tenantLanguagesCodes = DB::table('tenant_language')
+        ->select('language.language_id', 'language.code', 'language.name', 'tenant_language.default')
+        ->leftJoin('language', 'language.language_id', '=', 'tenant_language.language_id')
+        ->where('tenant_id', $tenant->tenant_id)
+        ->pluck('language.code', 'language.language_id');
+        // Connect tenant database
+        $this->helpers->switchDatabaseConnection('tenant', $request);
+
+        return $tenantLanguagesCodes;
+    }
 }

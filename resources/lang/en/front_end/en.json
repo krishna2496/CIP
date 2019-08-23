@@ -113,9 +113,12 @@
         "basic_information" : "Basic information",
         "professional_information" : "Professional information",
         "linked_in" : "Linked in",
-        "custom_field" : "Additional field",
+        "custom_field" : "Additional information",
 		"please_select" : "Please select",
-		"my_account" : "My account"
+		"my_account" : "My account",
+		"remove" : "Remove",
+		"edit" : "Edit",
+		"clear_search" : "Clear search"
 	},
 
 	"placeholder" : {
