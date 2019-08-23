@@ -159,7 +159,7 @@
                             <label for>{{langauageData.label.department}}</label>
                             <b-form-input id type="text"
                             v-model.trim="profile.department" 
-        
+                             maxlength="16"
                             :placeholder="langauageData.placeholder.department"></b-form-input>
                             
                         </b-form-group>
