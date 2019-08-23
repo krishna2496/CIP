@@ -71,19 +71,32 @@ export default {
             var nav_bottom = nav_height + nav_top;
             var footer_top = document.querySelector("footer").getBoundingClientRect()
             .top;
-            if (screen.width > 767) {
-                if (window_top > nav_top) {
-                    if (nav_bottom >= footer_top) {
-                        nav_.classList.add("absolute");
-                        nav_.classList.remove("fixed");
-                    } else {
-                        nav_.classList.add("fixed");
-                        nav_.classList.remove("absolute");
-                    }
-                } else {
-                    nav_.classList.remove("fixed");
-                }
-            }
+            if(screen.width > 1024){
+        if (window_top > nav_top) {
+          if (nav_bottom >= footer_top + 100) {
+              alert(footer_top);
+            nav_.classList.add("absolute");
+            nav_.classList.remove("fixed");
+          } else {
+            nav_.classList.add("fixed");
+            nav_.classList.remove("absolute");
+          }
+        } else {
+          nav_.classList.remove("fixed");
+        }
+      }
+
+      if(screen.width > 767){
+        if (window_top > nav_top) {
+          if (nav_bottom >= footer_top) {
+            nav_.classList.remove("fixed");
+          } else {
+            nav_.classList.add("fixed");
+          }
+        } else {
+          nav_.classList.remove("fixed");
+        }
+      }
 
             var link_list = document.querySelectorAll(".cms-nav .nav-item");
             var block_list = document.querySelectorAll(".cms-content-block");

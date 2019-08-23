@@ -199,6 +199,11 @@ export default new Vuex.Store({
             state.tags = JSON.stringify(tag)
             state.sortBy = ''
         },
+        // Set default language code and id data in state and local storage
+        setDefaultLanguageCode(state, language) {
+            localStorage.setItem('defaultLanguage', language);
+            state.defaultLanguage = language;
+        },
     },
     getters: {},
     actions: {}
