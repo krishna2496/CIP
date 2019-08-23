@@ -1,4 +1,4 @@
-<template>
+    <template>
     <div class="top-header">
         <b-navbar toggleable="lg">
             <b-container>
@@ -380,6 +380,7 @@ export default {
             }
         },
         logout(){
+            document.querySelector('body').classList.remove('small-header');
             this.$store.commit('logoutUser');
         },
         menuBarclickHandler($event) {

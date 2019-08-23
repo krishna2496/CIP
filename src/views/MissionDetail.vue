@@ -392,6 +392,7 @@
 					 		</div>
 							<div class="tabs">
 								<div class="tab-title">
+									
 									<h3 v-b-toggle.organization>{{ langauageData.label.organisation }}</h3>
 								</div>
 									<b-collapse id="organization" accordion="my-accordion" role="tabpanel" class="tab-content">
