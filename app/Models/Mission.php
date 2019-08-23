@@ -335,7 +335,7 @@ class Mission extends Model
      * @param string|null $value
      * @return null|array
      */
-    public function getOrganisationDetailAttribute($value): ?array
+    public function getOrganisationDetailAttribute($value)
     {
         return (!is_null($value) && ($value != '')) ? unserialize($value) : null;
     }
