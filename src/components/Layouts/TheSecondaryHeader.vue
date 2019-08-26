@@ -1,5 +1,10 @@
 <template>
-    <div class="bottom-header">
+    <div 
+
+    v-bind:class="{
+        'bottom-header' :true,
+        'active':searchString != '' ? true :false,
+      }">
         <b-container>
             <b-row>
                 <b-col xl="6" lg="5" class="search-block">
@@ -13,6 +18,7 @@
                             v-model="searchString"                            
                             id="search"
                             @keyup="test"
+
                             >                           
                         </b-form-input>
                         <i>
@@ -582,6 +588,8 @@ export default {
         eventBus.$on('setDefaultData', (message) => {        
             _this.filterListing();
         });
+
+
         // Fetch Filters
         this.filterListing();
         if(store.state.search != null) {

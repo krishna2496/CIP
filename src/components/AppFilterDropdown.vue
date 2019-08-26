@@ -1,5 +1,12 @@
 <template>
-    <div class="custom-dropdown select-dropdown dropdown-with-counter">
+    <div 
+ v-bind:class="{
+        'custom-dropdown' :true,
+        'select-dropdown':true,
+        'dropdown-with-counter' : true,
+        'no-list-item' : optionList.length > 0 ? false : true
+      }"
+    >
         <span class="select-text" @click="handleClick">{{defaultText}}</span>
         <div class="option-list-wrap dropdown-option-wrap" data-simplebar v-if="optionList != null && optionList.length > 0" >
             <ul class="option-list dropdown-option-list" v-if="translationEnable == 'false'">

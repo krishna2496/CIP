@@ -282,9 +282,16 @@ a {
     top: 50%;
   }
 }
-
+.modal {
+  label {
+    outline: none !important;
+    display: block !important;
+  }
+}
 .form-group {
   width: 100%;
+  margin-bottom: 10px;
+  border: none;
 }
 input,
 textarea {
@@ -304,7 +311,7 @@ textarea {
   appearance: none;
   -webkit-appearance: none;
   outline: none;
-
+  overflow: hidden;
   @include placeholder {
     color: $black-primary;
     font-family: $general-font;
@@ -324,7 +331,7 @@ textarea {
     box-shadow: none !important;
   }
   &.is-invalid{
-    background-image:none !important;
+      background-image: none !important;
   }
 }
 
@@ -337,12 +344,12 @@ label {
     color: $error;
   }
 }
-.custom-dropdown , .checkbox-select{
-  &.is-invalid{
-  span{
-      border-color:$error;
+.custom-dropdown , .checkbox-select {
+  &.is-invalid {
+    span {
+      border-color: $error;
     }
-    ~ .invalid-feedback{
+    ~ .invalid-feedback {
       display: block;
     }
   }
@@ -643,6 +650,15 @@ label {
       min-width: 100%;
     }
   }
+  &.no-list-item{
+      cursor: not-allowed;
+      .select-text{
+          pointer-events: none;
+          &:after{
+              display: none;
+          }
+      }
+  }
 }
 
 .notification-popover {
@@ -876,21 +892,26 @@ label {
 }
 
 .profile-block {
-  min-height:160px;
+  min-height: 160px;
   position: relative;
-  background:$border-color;
-  border-radius:100%;
-  overflow:hidden;
-  width:160px;
-  margin:0 auto;
-  .content-loader-wrap{
-   
-    .content-loader{
-      font-size: 5px;
-      margin: 0 auto;
-      width: 7px;
-      height: 7px;
-    }
+  background: $border-color;
+  border-radius: 100%;
+  overflow: hidden;
+  width: 160px;
+  margin: 0 auto;
+
+  .priimage{
+    height: 160px !important;
+    width: 160px !important;
+    border-radius: 100%;
+    overflow: hidden;
+    position: absolute;
+    left:0;
+    top:0;
+    background-size:100%;
+    background-position:center center;
+    @include transition(all 0.3s); 
+    z-index: 9998;
   }
   .picture-input {
     height: 160px !important;
@@ -899,22 +920,9 @@ label {
     overflow: hidden;
     position: relative;
     @include transition(all 0.3s);
-    >div{
+    > div {
       border-radius: 100%;
       overflow: hidden;
-    }
-    &:hover {
-      .btn {
-        opacity: 1;
-        visibility: visible;
-        transform: scale(1);
-        background-color: $rgb-black-dark;
-        &:before {
-          opacity: 1;
-          visibility: visible;
-          transform: scale(1);
-        }
-      }
     }
     .preview-container {
       height: 160px !important;
@@ -927,7 +935,8 @@ label {
       height: 160px !important;
       width: 160px;
       overflow: hidden;
-      border-radius: 100%!important;
+      border-radius: 100% !important;
+      z-index: 9999 !important;
     }
     .picture-inner {
       border: none;
@@ -951,11 +960,11 @@ label {
       opacity: 0;
       visibility: hidden;
       transform: scale(0);
-      z-index:99999;
+      z-index: 9999;
       &:before {
         content: "";
         position: absolute;
-        background: url("../images/edit-ic-white.svg") no-repeat center;
+        background: url($assetUrl+"/edit-ic-white.svg") no-repeat center;
         width: 24px;
         height: 24px;
         display: flex;
@@ -973,33 +982,48 @@ label {
       }
     }
   }
-}
-
-.custom-field{
-  .checkbox-select{
-    position: relative;
-  }
-  .form-group{
-    .is-invalid{
-      .custom-control{
-        .custom-control-label{
-            color:$error;
-            &:before, &:after{
-              border-color:$error!important;
-            }
-        }
-      }
-      &.checkbox-select{
-        .custom-control{
-        .custom-control-label{
-            color:$black-primary;
-            &:before, &:after{
-              border-color:$control-border!important;
-            }
-        }
-      }
+  &:hover {
+    .priimage{
+        z-index: 9999;
+    }
+    .btn {
+      opacity: 1;
+      visibility: visible;
+      transform: scale(1);
+      background-color: $rgb-black-dark;
+      &:before {
+        opacity: 1;
+        visibility: visible;
+        transform: scale(1);
       }
     }
   }
 }
 
+.custom-field{
+    .checkbox-select{
+      position: relative;
+    }
+    .form-group{
+      .is-invalid{
+        .custom-control{
+          .custom-control-label{
+              color:$error;
+              &:before, &:after{
+                border-color:$error!important;
+              }
+          }
+        }
+        &.checkbox-select{
+          .custom-control{
+          .custom-control-label{
+              color:$black-primary;
+              &:before, &:after{
+                border-color:$control-border!important;
+              }
+          }
+        }
+        }
+      }
+    }
+  }
