@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 
-    <title>Facebook Sharing</title>
+    <title>{{$fqdn}} | Social Sharing</title>
     
     @if (!is_null($mission))
         <meta property="og:url" content="{{route('social-sharing', ['fqdn' => $fqdn, 'missionId' => $missionId, 'langId' => $langId])}}" />
