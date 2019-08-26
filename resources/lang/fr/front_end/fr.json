@@ -121,7 +121,9 @@
 		"my_account" : "Mon compte",
 		"remove" : "Retirer",
 		"edit" : "Modifier",
-		"clear_search" : "Effacer la recherche"
+		"clear_search" : "Effacer la recherche",
+		"facebook": "Facebook",
+		"twitter": "Gazouillement"
 	},
 
 	"placeholder" : {

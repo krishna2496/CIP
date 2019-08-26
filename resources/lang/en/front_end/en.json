@@ -118,7 +118,9 @@
 		"my_account" : "My account",
 		"remove" : "Remove",
 		"edit" : "Edit",
-		"clear_search" : "Clear search"
+		"clear_search" : "Clear search",
+		"facebook": "Facebook",
+		"twitter": "Twitter"
 	},
 
 	"placeholder" : {
