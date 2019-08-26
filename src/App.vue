@@ -139,11 +139,12 @@ export default {
           });
         });
       });
-      notification_btn.addEventListener("click", function() {
-        dropdownList.forEach(function(removeDropdown) {
-          removeDropdown.classList.remove("dropdown-open");
-        });
-      });
+      
+      // notification_btn.addEventListener("click", function() {
+      //   dropdownList.forEach(function(removeDropdown) {
+      //     removeDropdown.classList.remove("dropdown-open");
+      //   });
+      // });
 
       var pagination_item = document.querySelectorAll(
         ".pagination-block .page-item .page-link"
