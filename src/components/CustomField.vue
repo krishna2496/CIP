@@ -223,7 +223,11 @@ export default {
                             if(wrr.user_custom_field_value.toString().indexOf(",") !== -1) {
                                 this.$set(this.customFeildData, wrr.field_id, wrr.user_custom_field_value.split(","))
                             } else {
-                                this.$set(this.customFeildData, wrr.field_id, [])
+                                if(wrr.user_custom_field_value.toString() != '') {
+                                    this.$set(this.customFeildData, wrr.field_id, wrr.user_custom_field_value.toString().split(","))
+                                } else {
+                                    this.$set(this.customFeildData, wrr.field_id, [])
+                                }
                             }
                             break;
                         default:

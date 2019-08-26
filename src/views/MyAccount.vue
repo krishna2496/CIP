@@ -14,17 +14,17 @@
                 </div>
 
                 <picture-input 
-                     
-                      ref="pictureInput" 
-                      @change="changeImage"  
-                      accept="image/jpeg,image/png"
-                      :prefillOptions="prefillOptionArray"
-                      :prefill="newUrl"
-                      buttonClass="btn"
-                      :customStrings="{
-                        upload: '<h1>Bummer!</h1>',
-                        drag: 'Drag a 😺 GIF or GTFO'
-                      }">
+                    :title="changePhoto"
+                    ref="pictureInput" 
+                    @change="changeImage"  
+                    accept="image/jpeg,image/png"
+                    :prefillOptions="prefillOptionArray"
+                    :prefill="newUrl"
+                    buttonClass="btn"
+                    :customStrings="{
+                    upload: '<h1>Bummer!</h1>',
+                    drag: 'Drag a 😺 GIF or GTFO'
+                    }">
                 </picture-input>
             </div>
             <h4>{{userData.first_name}} {{userData.last_name}}</h4>
@@ -97,7 +97,7 @@
                         <b-form-input id type="text" 
                         v-model.trim="profile.firstName" 
                         :class="{ 'is-invalid': submitted && $v.profile.firstName.$error }" 
-    
+                        @keypress="alphaNumeric($event)"
                         autofocus 
                         :placeholder="langauageData.placeholder.name" 
                         maxlength="16"
@@ -113,7 +113,7 @@
                             <b-form-input id type="text" 
                             v-model.trim="profile.lastName" 
                             :class="{ 'is-invalid': submitted && $v.profile.lastName.$error }" 
-        
+                            @keypress="alphaNumeric($event)"
                             :placeholder="langauageData.placeholder.surname"
                             maxlength="16"
                             ></b-form-input>
@@ -126,7 +126,7 @@
                             <label for>{{langauageData.label.employee_id}}</label>
                             <b-form-input id type="text" 
                                 v-model.trim="profile.employeeId"    
-            
+                                @keypress="alphaNumeric($event)"
                                 maxlength="16"
                                 :placeholder="langauageData.placeholder.employee_id">
                             </b-form-input>
@@ -137,7 +137,7 @@
                             <label for>{{langauageData.label.manager}}</label>
                             <b-form-input id type="text"
                             v-model.trim="profile.managerName"                     
-        
+                            @keypress="alphaNumeric($event)"
                             :placeholder="langauageData.placeholder.manager"
                             maxlength="16"
                             ></b-form-input>
@@ -148,7 +148,7 @@
                             <label for>{{langauageData.label.title}}</label>
                             <b-form-input id type="text"
                             v-model.trim="profile.title" 
-        
+                            @keypress="alphaNumeric($event)"
                             :placeholder="langauageData.placeholder.title"
                             maxlength="25"
                             ></b-form-input>
@@ -159,6 +159,7 @@
                             <label for>{{langauageData.label.department}}</label>
                             <b-form-input id type="text"
                             v-model.trim="profile.department" 
+                            @keypress="alphaNumeric($event)"
                              maxlength="16"
                             :placeholder="langauageData.placeholder.department"></b-form-input>
                             
@@ -172,6 +173,7 @@
                             :placeholder="langauageData.placeholder.my_profile"
                             size="lg"
                             no-resize
+                            @keypress="alphaNumeric($event)"
                             v-model.trim="profile.profileText" 
                             :class="{ 'is-invalid': submitted && $v.profile.profileText.$error }" 
         
@@ -189,6 +191,7 @@
                         <b-form-textarea
                         id
                         v-model.trim="profile.whyiVolunteer" 
+                        @keypress="alphaNumeric($event)"
                         :class="{ 'is-invalid': submitted && $v.profile.whyiVolunteer.$error }" 
                         :placeholder="langauageData.placeholder.why_i_volunteer"
                         size="lg"
@@ -271,7 +274,6 @@
                         <b-form-input id 
                          v-model.trim="profile.linkedInUrl" 
                         :class="{ 'is-invalid': submitted && $v.profile.linkedInUrl.$error }" 
-    
                         :placeholder="langauageData.placeholder.linked_in"
                         ></b-form-input>
                           <div v-if="submitted && !$v.profile.linkedInUrl.validLinkedInUrl" class="invalid-feedback">
@@ -479,6 +481,7 @@ export default {
             userSkillList : [],
             resetUserSkillList : [],
             imageLoader : true,
+            changePhoto : "",
             saveProfileData :{
                 first_name: "",
                 last_name: "",
@@ -914,6 +917,16 @@ export default {
                 autoHideDelay: 1000
             })
         },
+        alphaNumeric(evt) {
+            evt = (evt) ? evt : window.event;
+            var keyCode = (evt.which) ? evt.which : evt.keyCode;
+            if ( !( (keyCode >= 48 && keyCode <= 57) 
+               ||(keyCode >= 65 && keyCode <= 90) 
+               || (keyCode >= 97 && keyCode <= 122) ) 
+               && keyCode != 8 && keyCode != 32) {
+               evt.preventDefault();
+            }
+        }
     },
     created() {
         var _this =this
@@ -922,7 +935,8 @@ export default {
         this.cityDefault = this.langauageData.placeholder.city 
         this.availabilityDefault = this.langauageData.placeholder.availablity 
         this.languageDefault = this.langauageData.placeholder.language 
-        this.timeDefault = this.langauageData.placeholder.timezone 
+        this.timeDefault = this.langauageData.placeholder.timezone
+        this.changePhoto =  this.langauageData.label.edit
         this.languageCode = store.state.defaultLanguage
         this.getUserProfileDetail();
     }

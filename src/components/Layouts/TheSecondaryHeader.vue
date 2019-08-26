@@ -33,6 +33,7 @@
                         </b-button>
                         <b-button class="btn btn-clear">{{langauageData.label.clear_all}}</b-button>
                     </div>
+
                 <b-list-group v-if="quickAccessFilterSet">
                     <b-list-group-item>
                         <AppFilterDropdown
@@ -52,7 +53,7 @@
                             @updateCall="changeCity"
                         />
                     </b-list-group-item>
-                    <b-list-group-item>
+                    <b-list-group-item v-if="isThemeDisplay">
                         <AppCheckboxDropdown 
                             v-if="isComponentVisible" 
                             :filterTitle="defautTheme" 
@@ -62,7 +63,7 @@
                             @updateCall="changeTheme"
                         />
                     </b-list-group-item>
-                    <b-list-group-item>
+                    <b-list-group-item v-if="isSkillDisplay">
                         <AppCheckboxDropdown 
                             v-if="isComponentVisible" 
                             :filterTitle="defautSkill" 
@@ -89,6 +90,8 @@ import AppCheckboxDropdown from "../AppCheckboxDropdown";
 import {filterList,missionFilterListing} from "../../services/service";
 import store from "../../store";
 import {eventBus} from "../../main";
+import constants from '../../constant';
+
 export default {
     components: { AppFilterDropdown, AppCheckboxDropdown },
     name: "TheSecondaryHeader", 
@@ -127,6 +130,8 @@ export default {
             isComponentVisible:false,
             tagsFilter : [],
             quickAccessFilterSet:true,
+            isThemeDisplay : true,
+            isSkillDisplay : true,
             isCountryChange: false,
             isCityChange: false,
             isThemeChange: false,
@@ -205,7 +210,6 @@ export default {
             var b_header = document.querySelector(".bottom-header");
             var input_edit = document.querySelector(".search-block input");
             b_header.classList.remove("active");
-            console.log(input_edit.value);
             if (input_edit.value.length > 0) {
                 b_header.classList.add("active");
             } else {
@@ -453,20 +457,36 @@ export default {
                     if (response) { 
                         if(response.country) {
                             this.countryList = Object.entries(response.country);
+                        } else {
+                             this.defautCountry = this.langauageData.label.country;
                         }
 
                         if(response.city) {
                             this.cityList = Object.entries(response.city);
+                        } else {
+                            this.cityList = []
                         }
 
                         if(response.themes) {
                             this.themeList = Object.entries(response.themes);
+                        } else {
+                            this.themeList = []
                         }
 
                         if(response.skill) {
                             this.skillList = Object.entries(response.skill);
+                        } else {
+                            this.skillList = []
                         }
-                    }            
+                    } else {
+                        this.defautCountry = this.langauageData.label.country;
+                        this.cityList = []
+                        this.themeList = []
+                        this.skillList = []
+                        this.selectedCity = []
+                        this.selectedSkill = []
+                        this.selectedTheme = []
+                    }         
             }); 
         },
         clearSearchFilter() {
@@ -547,10 +567,11 @@ export default {
     created() {
         this.langauageData = JSON.parse(store.state.languageLabel);
         this.searchPlaceHolder = this.langauageData.label.search+' '+this.langauageData.label.mission;
-        let filterSetting = JSON.parse(store.state.tenantSetting);
-        if(filterSetting != null && filterSetting['quick_access_filters']){
-            this.quickAccessFilterSet = false;
-        }
+        
+        this.quickAccessFilterSet = this.settingEnabled(constants.QUICK_ACCESS_FILTERS);
+        this.isThemeDisplay = this.settingEnabled(constants.THEMES_ENABLED);
+        this.isSkillDisplay = this.settingEnabled(constants.SKILLS_ENABLED);
+        
         var _this = this;
         eventBus.$on('clearAllFilters', (message) => {
             _this.clearFilter();
