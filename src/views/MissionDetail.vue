@@ -13,13 +13,13 @@
 				<div class="social-sharing">
 					<network network="facebook">
 						<i class="social-icon facebook-icon">
-							<img :src="$store.state.imagePath+'/assets/images/facebook-ic.svg'" alt="Facebook" title="langauageData.label.facebook"/>
+							<img :src="$store.state.imagePath+'/assets/images/facebook-ic.svg'" alt="Facebook" title="Facebook"/>
 						</i>
 					</network>
 					<network network="twitter">
 						<i class="social-icon twitter-icon">
 							<img :src="$store.state.imagePath+'/assets/images/twitter-ic.svg'" alt="Twitter" 
-							title="langauageData.label.twitter"
+							 title="Twitter"
 							/>
 						</i>
 					</network>
@@ -305,7 +305,7 @@
 						 {{ langauageData.label.organisation }}</a></li>
 						 
 						 <li @click="missionComments"><a href="javascript:void(0)" data-id="comments" class="tablinks">
-						asfasf</a></li>
+						</a></li>
 					 </ul>
 					 <div class="tab-content-wrap">
 						<div class="tabs">

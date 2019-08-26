@@ -37,7 +37,7 @@
                         <b-button class="btn btn-back" @click="handleBack">
                             <img :src="$store.state.imagePath+'/assets/images/down-arrow.svg'" alt="Back Icon">
                         </b-button>
-                        <b-button class="btn btn-clear">{{langauageData.label.clear_all}}</b-button>
+                        <b-button class="btn btn-clear" @click="clearMissionFilters">{{langauageData.label.clear_all}}</b-button>
                     </div>
 
                 <b-list-group v-if="quickAccessFilterSet">
@@ -568,7 +568,10 @@ export default {
                     }            
             }); 
             }, 500); 
-        } 
+        },
+        clearMissionFilters() {
+            this.$parent.clearMissionFilter();
+        }
     },
     created() {
         this.langauageData = JSON.parse(store.state.languageLabel);

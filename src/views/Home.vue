@@ -7,6 +7,7 @@
              <TheSecondaryHeader :search="search" :missionList="missionList" ref="secondaryHeader" 
              @storeMisisonSearch="storeSearch"
              @getMissions="getMissions"
+             @clearMissionFilter="clearMissionFilter"
               v-if="isShownComponent"></TheSecondaryHeader>
         </header>
         <main>
