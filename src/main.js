@@ -69,6 +69,24 @@ Vue.filter('substring', function (value,data) {
     }
 });
 
+Vue.mixin({
+  methods: {
+    settingEnabled (key) {
+        let settingArray =  JSON.parse(store.state.tenantSetting)
+        console.log(settingArray);
+        if(settingArray != null) {
+            if(settingArray.indexOf(key) !== -1){
+                return true;
+            } else{
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
+  }
+})
+
 new Vue({
     router,
     store,

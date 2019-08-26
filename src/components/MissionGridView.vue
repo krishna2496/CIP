@@ -55,7 +55,9 @@
                                         </svg>
                                     </i>       
                                 </b-button>
-                                <b-button class="add-icon" v-b-tooltip.hover :title="langauageData.label.invite_colleague" @click="handleModal(mission.mission_id)">
+                                <b-button class="add-icon" 
+                                v-if="isInviteCollegueDisplay"
+                                v-b-tooltip.hover :title="langauageData.label.invite_colleague" @click="handleModal(mission.mission_id)">
                                     <img 
                                     :src="$store.state.imagePath+'/assets/images/add-group-ic.svg'"
                                     :alt="langauageData.label.invite_colleague"
@@ -78,6 +80,7 @@
                                     <div class="group-ratings">
                                         <span class="group-name">{{mission.organisation_name}}</span>
 											<star-rating
+                                                v-if="isStarRatingDisplay"
 												v-bind:increment="0.5"
 												v-bind:max-rating="5"
 												inactive-color="#dddddd"
@@ -319,6 +322,8 @@ export default {
             autoSuggestPlaceholder : '',
             submitDisable :true,
             langauageData : [],
+            isInviteCollegueDisplay : true,
+            isStarRatingDisplay : true
         };
     },
     computed: {
@@ -354,7 +359,7 @@ export default {
                     }
                 })
                 
-                if (data[0].message) {
+                if (data[0] && data[0].message) {
                     return data[0].message;
                 } else {
                     return this.langauageData.label.no_record_found;
@@ -491,6 +496,8 @@ export default {
     },
     created(){   
         this.langauageData = JSON.parse(store.state.languageLabel);
+        this.isInviteCollegueDisplay = this.settingEnabled(constants.INVITE_COLLEAGUE);
+        this.isStarRatingDisplay = this.settingEnabled(constants.MISSION_RATINGS);
     },
 };
 </script>
