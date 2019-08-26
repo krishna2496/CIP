@@ -147,6 +147,7 @@ return [
         'custom_fields.*.field_id' => 'field id',
         'settings.*.tenant_setting_id' => 'tenant setting id',
         'settings.*.value' => 'value',
+        'option_value.translations.*.lang' => 'language code',
         ],
 
 ];
