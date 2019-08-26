@@ -136,14 +136,15 @@ class MissionController extends Controller
                 ->map(function ($item) use ($languageCode) {
                     return $this->transformMission($item, $languageCode);
                 })->toArray();
-                
+            
+            $requestString = $request->except(['page','perPage']);
             $missionsPaginated = new \Illuminate\Pagination\LengthAwarePaginator(
                 $missionsTransformed,
                 $missionList->total(),
                 $missionList->perPage(),
                 $missionList->currentPage(),
                 [
-                    'path' => $request->url(),
+                    'path' => $request->url().'?'.http_build_query($requestString),
                     'query' => [
                         'page' => $missionList->currentPage()
                     ]
