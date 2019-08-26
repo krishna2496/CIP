@@ -304,7 +304,7 @@
 						 <li><a href="javascript:void(0)" data-id="organization" class="tablinks">
 						 {{ langauageData.label.organisation }}</a></li>
 						 
-						 <li @click="missionComments"><a href="javascript:void(0)" data-id="comments" class="tablinks">
+						 <li @click="missionComments"><a href="javascript:void(0)" data-id="comments" class="tablinks">{{ langauageData.label.comments }}
 						</a></li>
 					 </ul>
 					 <div class="tab-content-wrap">
@@ -971,7 +971,9 @@ export default {
 						} else {
 							this.missionComment = response.data;
 						}
-						this.nextUrl = response.pagination.next_url;
+						if(response.pagination) {
+							this.nextUrl = response.pagination.next_url;
+						}
 					}
 				  	setTimeout(() => {
 					  	this.loadMoreComment = false;	
