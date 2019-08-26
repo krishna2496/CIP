@@ -120,7 +120,12 @@
 		"edit" : "Edit",
 		"clear_search" : "Clear search",
 		"facebook": "Facebook",
-		"twitter": "Twitter"
+		"twitter": "Twitter",
+		"page_not_found": "Page not found",
+		"oops": "Oops!",
+		"page_not_found_message_heading": "The page you were looking for doesn't exist.",
+		"page_not_found_message_text": "You may have mistyped the address or the page may have moved.",
+		"go_to_home_page": "Go to Homepage"
 	},
 
 	"placeholder" : {
