@@ -96,6 +96,7 @@ export default {
           var optionlist = optionlist_wrap.querySelector(
             ".dropdown-option-list"
           );
+          if(optionlist != null){
           var optionlist_height = optionlist.offsetHeight;
           var optionlist_width = parseInt(
             window.getComputedStyle(optionlist).getPropertyValue("width")
@@ -110,6 +111,7 @@ export default {
               minwidth_style.setAttribute("style", "left: auto !important");
             }
           }
+        }
         });
       });
     }

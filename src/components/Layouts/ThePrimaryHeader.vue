@@ -13,7 +13,7 @@
                     :style="{backgroundImage: 'url('+this.$store.state.logo+')'}"
                     v-else>
                 </b-navbar-brand>
-				
+	
                 <div class="menu-wrap" @touchend.stop>
                     <b-button class="btn-cross" @click="closeMenu">                        
                         <img :src="$store.state.imagePath+'/assets/images/cross-ic.svg'" alt>                        
@@ -24,18 +24,19 @@
 
                           <ul class="dropdown-menu sub-dropdown">
                             <li 
-                            v-bind:class="topThemeClass"
+                                v-if="isThemeDisplay"
+                                v-bind:class="topThemeClass"
                             >
-                              <a href="Javascript:void(0)">{{ langauageData.label.top_themes}}</a>
-                              <ul class="subdropdown-menu" v-if="topTheme != null && topTheme.length > 0">
-                                <li v-for = "items in topTheme">
-                                    <router-link 
+                            <a href="Javascript:void(0)">{{ langauageData.label.top_themes}}</a>
+                            <ul class="subdropdown-menu" v-if="topTheme != null && topTheme.length > 0">
+                            <li v-for = "items in topTheme">
+                                <router-link 
                                     :to="{ path: '/home/themes/'+items.id}" @click.native="menuBarclickHandler"
-                                    >
+                                >
                                     {{ items.title}}
-                                    </router-link>
-                                </li>
-                              </ul>
+                                </router-link>
+                            </li>
+                            </ul>
                             </li>
                             <li
                             v-bind:class="topCountryClass"
@@ -94,14 +95,14 @@
                             </li>
                           </ul>
                         </li>
-                        <li class="has-menu no-dropdown">
+                        <li class="has-menu no-dropdown" v-if="isStoryDisplay">
                           <a href="Javascript:void(0)" :title='langauageData.label.stories'>{{ langauageData.label.stories}}</a>
                         </li>
-                        <li class="has-menu no-dropdown">
+                        <li class="has-menu no-dropdown" v-if="isNewsDisplay">
                           <a href="Javascript:void(0)" :title='langauageData.label.news'>{{ langauageData.label.news}}</a>
                         </li>
 
-                        <li class="has-menu">
+                        <li class="has-menu" v-if="isPolicyDisplay">
                           <a href="Javascript:void(0)" :title='langauageData.label.policy'>{{ langauageData.label.policy}}</a>
                           <ul class="dropdown-menu" v-if="policyPage.length > 0">
                             <li  v-for="item in policyPage">
@@ -277,6 +278,8 @@
 import store from '../../store';
 import {exploreMission,policy} from '../../services/service';
 import {eventBus} from "../../main";
+import constants from '../../constant';
+
 export default {
     components: {},
     name: "PrimaryHeader",
@@ -291,7 +294,11 @@ export default {
             filterData : [],
             topOrganization:[],
             langauageData : [],
-            policyPage : []
+            policyPage : [],
+            isThemeDisplay : true,
+            isStoryDisplay : true,
+            isNewsDisplay : true,
+            isPolicyDisplay : true 
         };
     },
     mounted() {
@@ -435,6 +442,11 @@ export default {
     created() {
         this.langauageData = JSON.parse(store.state.languageLabel);
         document.addEventListener("scroll", this.handscroller);
+        this.isThemeDisplay = this.settingEnabled(constants.THEMES_ENABLED);
+        this.isStoryDisplay = this.settingEnabled(constants.STORIES_ENABLED);
+        this.isNewsDisplay = this.settingEnabled(constants.NEWS_ENABLED);
+        this.isPolicyDisplay = this.settingEnabled(constants.POLICIES_ENABLED);
+
         if(store.state.isLoggedIn) {
             this.exploreMissions();
         }   

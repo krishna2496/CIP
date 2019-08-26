@@ -52,6 +52,7 @@
                                 </i>       
                              </b-button>
                             <b-button class="add-icon" 
+                                v-if="isInviteCollegueDisplay"
                                 @click="handleModal(mission.mission_id)" v-b-tooltip.hover :title="langauageData.label.invite_colleague">
                                 <img 
                                     :src="$store.state.imagePath+'/assets/images/add-group-ic.svg'"
@@ -77,7 +78,7 @@
                             <div class="rating-with-button">
                                 <div class="group-ratings">
                                     <span class="group-name">{{mission.organisation_name}}</span>
-                                    <span class="ratings">                                        
+                                    <span class="ratings" v-if="isStarRatingDisplay">                                        
                                         <star-rating
 										v-bind:increment="0.5"
 										v-bind:max-rating="5"
@@ -299,6 +300,9 @@ export default {
             autoSuggestPlaceholder : '',
             submitDisable :true,
             langauageData : [],
+            isInviteCollegueDisplay : true,
+            isStarRatingDisplay : true,
+            isQuickAccessSet : true
         };
     },
     computed: {
@@ -329,7 +333,7 @@ export default {
                     }
                 })
                 
-                if (data[0].message) {
+                if (data[0] && data[0].message) {
                     return data[0].message;
                 } else {
                     return this.langauageData.label.no_record_found;
@@ -461,6 +465,9 @@ export default {
     },
     created() {
         this.langauageData = JSON.parse(store.state.languageLabel);
+        this.isInviteCollegueDisplay = this.settingEnabled(constants.INVITE_COLLEAGUE);
+        this.isStarRatingDisplay = this.settingEnabled(constants.MISSION_RATINGS);
+        this.isQuickAccessSet = this.settingEnabled(constants.QUICK_ACCESS_FILTERS);
     }
 };
 </script>

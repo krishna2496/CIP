@@ -1,10 +1,18 @@
 <template>
-    <div class="checkbox-select select-dropdown dropdown-with-counter">
+
+    <div 
+    v-bind:class="{
+        'checkbox-select' :true,
+        'select-dropdown':true,
+        'dropdown-with-counter' : true,
+        'emptyList' : checkList.length > 0 ? false : true
+      }">
+      <!-- {{checkList}} -->
         <span class="select-text" @click="handleClick">{{filterTitle}}</span>
     <div class="chk-select-wrap dropdown-option-wrap" data-simplebar @click.stop @touchend.stop>
 
 
-    <ul class="chk-select-options dropdown-option-list" v-if="checkList.length > 0">
+    <ul  class="chk-select-options dropdown-option-list">
         <li 
             v-for="(item , i) in checkList" 
             v-bind:data-id="item[1].id"
@@ -91,6 +99,7 @@ export default {
           var optionlist = optionlist_wrap.querySelector(
             ".dropdown-option-list"
           );
+          if(optionlist != null){
           var optionlist_height = optionlist.offsetHeight;
           var optionlist_width = parseInt(
             window.getComputedStyle(optionlist).getPropertyValue("width")
@@ -105,8 +114,9 @@ export default {
               minwidth_style.setAttribute("style", "left: auto !important");
             }
           }
+        }
         });
-      });
+      },100);
     }
     },
     watch: {

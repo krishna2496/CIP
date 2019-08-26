@@ -655,7 +655,13 @@ export default {
 			postComment : false,
 			loadMoreComment : false,
 			domainName: '',
-			socialSharingUrl: ''
+			socialSharingUrl: '',
+
+			isFacebookSharingDisplay : false,
+			isTwitterSharingDisplay : false,
+			isStarDisplay : false,
+			isHealthDisplay : false,
+			
 	    };
   	},
 	mounted(){

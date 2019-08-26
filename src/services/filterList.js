@@ -50,6 +50,8 @@ export default async(data) => {
         .then((response) => {
             if(response.data.data) { 
                 responseData = response.data.data;
+            } else {
+                responseData = ''
             }
         })
         .catch(function(error) {});
