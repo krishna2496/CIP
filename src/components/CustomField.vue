@@ -316,9 +316,6 @@ export default {
         },
         updateChanges() {
             this.$emit("detectChangeInCustomFeild",this.customFeildData);
-        },
-        updateChangesCheckBox() {
-            // console.log(this.customFeildData)
         }
     },
    
