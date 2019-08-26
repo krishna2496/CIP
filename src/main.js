@@ -37,9 +37,18 @@ AOS.init({
 export const eventBus = new Vue();
 // call vue axios interceptors
 interceptorsSetup();
+let entryUrl = null;
 // check requirment of authentication for path
 router.beforeEach((to, from, next) => {
+    if (store.state.isLoggedIn) {
+        if (entryUrl) {
+          const url = entryUrl;
+          entryUrl = null;
+          return next(url); // goto stored url
+        }
+    }
     if (to.meta.requiresAuth && !store.state.isLoggedIn) {
+        entryUrl = to.path;
         next({
             name: "login"
         });
@@ -73,7 +82,7 @@ Vue.mixin({
   methods: {
     settingEnabled (key) {
         let settingArray =  JSON.parse(store.state.tenantSetting)
-        console.log(settingArray);
+       
         if(settingArray != null) {
             if(settingArray.indexOf(key) !== -1){
                 return true;

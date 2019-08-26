@@ -145,11 +145,15 @@ ul {
         padding: 0;
         margin: 0;
         border: none;
+        &.no-list-item{
+            display: none;
+        }
     }
 }
 
 
 /** Toast style**/
+
 .b-toaster-top-right{
 	z-index:9999999!important;
 }
@@ -176,6 +180,7 @@ ul {
         }
     }
 }
+
 
 /** svg icons **/
 
@@ -928,67 +933,131 @@ main {
 
         .owl-nav {
 
-            &:after,
-            &:before {
+            > div{
                 position: absolute;
-                content: "";
-                background: rgba(0, 0, 0, 0.6);
+                background: rgba(0, 0, 0, 0.6) !important;
                 width: 22px;
+                border-radius: 0;
                 height: 100%;
                 z-index: 1;
                 top: 0;
                 bottom: 0;
-
-                @include sm-max {
-                    width: 18px;
-                }
-            }
-
-            &:after {
-                left: 0;
-                right: auto;
-            }
-
-            &:before {
-                right: 0;
-                left: auto;
-            }
-
-            >div {
-                position: absolute;
-                z-index: 2;
-                top: 50%;
-                @include transformY(-50%);
-                background-position: center;
-                background-size: 22px;
-                height: 22px;
-                width: 22px;
-                background: url($assetUrl+"/white-arrow.svg")no-repeat !important;
-                outline: none;
-                box-shadow: none;
-                color: transparent !important;
                 padding: 0;
                 margin: 0;
+                color: transparent !important;
 
                 @include sm-max {
-                    height: 18px;
                     width: 18px;
-                    background-size: 18px;
                 }
-
                 &.owl-prev {
                     left: 0;
-                    transform: translateY(-50%) rotate(180deg);
-                    -webkit-transform: translateY(-50%) rotate(180deg);
-                    -ms-transform: translateY(-50%) rotate(180deg);
-                    -moz-transform: translateY(-50%) rotate(180deg);
-
+                    transform: rotate(180deg);
+                    -webkit-transform: rotate(180deg);
+                    -ms-transform: rotate(180deg);
+                    -moz-transform: rotate(180deg);
+                    &:before{
+                        position: absolute;
+                        z-index: 2;
+                        left: 0;
+                        content: '';
+                        top: 50%;
+                        @include transformY(-50%);
+                        background-position: center;
+                        background-size: 22px;
+                        height: 22px;
+                        width: 22px;
+                        background: url($assetUrl+"/white-arrow.svg")no-repeat !important;
+                        @include sm-max {
+                            height: 18px;
+                            width: 18px;
+                            background-size: 18px;
+                        }
+                    }
                 }
-
+        
                 &.owl-next {
                     right: 0;
+                    &::before{
+                        position: absolute;
+                        z-index: 2;
+                        top: 50%;
+                        left: 0;
+                        content: '';
+                        @include transformY(-50%);
+                        background-position: center;
+                        background-size: 22px;
+                        height: 22px;
+                        width: 22px;
+                        background: url($assetUrl+"/white-arrow.svg")no-repeat !important;
+                        @include sm-max {
+                            height: 18px;
+                            width: 18px;
+                            background-size: 18px;
+                        }
+                    }
                 }
             }
+            // &:after,
+            // &:before {
+            //     position: absolute;
+            //     content: "";
+            //     background: rgba(0, 0, 0, 0.6);
+            //     width: 22px;
+            //     height: 100%;
+            //     z-index: 1;
+            //     top: 0;
+            //     bottom: 0;
+
+            //     @include sm-max {
+            //         width: 18px;
+            //     }
+            // }
+
+            // &:after {
+            //     left: 0;
+            //     right: auto;
+            // }
+
+            // &:before {
+            //     right: 0;
+            //     left: auto;
+            // }
+
+            // >div {
+            //     position: absolute;
+            //     z-index: 2;
+            //     top: 50%;
+            //     @include transformY(-50%);
+            //     background-position: center;
+            //     background-size: 22px;
+            //     height: 22px;
+            //     width: 22px;
+            //     background: url($assetUrl+"/white-arrow.svg")no-repeat !important;
+            //     outline: none;
+            //     box-shadow: none;
+            //     color: transparent !important;
+            //     padding: 0;
+            //     margin: 0;
+
+            //     @include sm-max {
+            //         height: 18px;
+            //         width: 18px;
+            //         background-size: 18px;
+            //     }
+
+            //     &.owl-prev {
+            //         left: 0;
+            //         transform: translateY(-50%) rotate(180deg);
+            //         -webkit-transform: translateY(-50%) rotate(180deg);
+            //         -ms-transform: translateY(-50%) rotate(180deg);
+            //         -moz-transform: translateY(-50%) rotate(180deg);
+
+            //     }
+
+            //     &.owl-next {
+            //         right: 0;
+            //     }
+            // }
         }
 
         .gallery-thumbs {
@@ -2507,26 +2576,6 @@ main {
                 }
             }
         }
-         .btn-wrapper {
-            display: flex;
-            width: 100%;
-            padding: 0;
-            justify-content: flex-end;
-            margin-top: 70px;
-
-            @include xl-max {
-                margin-top: 50px;
-            }
-
-            @include md-max {
-                margin-top: 30px;
-            }
-
-            .btn {
-                min-width: 108px;
-                display: inline-block !important;
-            }
-        }
     }
 
     .custom-dropdown {
@@ -2555,8 +2604,8 @@ main {
                 border: 1px solid transparent;
 
                 img {
-                    width: 18px !important;
-                    height: 23px !important;
+                    width: 25px;
+                    height: 25px;
                     &.norma-img {
                         display: block;
                     }
@@ -2722,6 +2771,27 @@ main {
         min-height: 40px;
         font-size: 16px;
     }
+
+    .btn-wrapper {
+        display: flex;
+        width: 100%;
+        padding: 0;
+        justify-content: flex-end;
+        margin-top: 70px;
+
+        @include xl-max {
+            margin-top: 50px;
+        }
+
+        @include md-max {
+            margin-top: 30px;
+        }
+
+        .btn {
+            min-width: 108px;
+            display: inline-block !important;
+        }
+    }
 }
 
 /** Dashboard **/
@@ -2812,7 +2882,7 @@ main {
                 height: 100%;
                 display: flex;
                 flex-direction: column;
-                justify-content: space-between;
+                justify-content: flex-start;
 
                 @include xl-max {
                     padding: 15px;
@@ -2962,6 +3032,12 @@ main {
 					padding: 0 10px;
 				}
 			}
+		}
+		.story-img{
+			min-height: 300px;
+			background-repeat:no-repeat;
+			background-position: center;
+			background-size: cover; 
 		}
 		.story-card{
 			box-shadow: 0 0 25px 0 rgba(0, 0, 0, 0.06);
@@ -3208,7 +3284,14 @@ main {
         }
     }
 }
-
+.dashboard-stories{
+	.inner-statusbar{
+		.list-group-item{
+			max-width: 25%!important;
+			flex: 0 0 25%!important;
+		}
+	}
+}
 
 
 /** loader style **/
@@ -3227,7 +3310,6 @@ main {
 
     &.mission-loader,
     &.slider-loader,
-    &.profile-image-loader,
     &.recent-loader {
         display: flex;
     }
@@ -3519,5 +3601,3 @@ background-color: rgba(0,0,0,.2);
     transform: scale(1.0);
   }
 }
-
-

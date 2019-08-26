@@ -13,12 +13,14 @@
 				<div class="social-sharing">
 					<network network="facebook">
 						<i class="social-icon facebook-icon">
-							<img :src="$store.state.imagePath+'/assets/images/facebook-ic.svg'" alt="Facebook" />
+							<img :src="$store.state.imagePath+'/assets/images/facebook-ic.svg'" alt="Facebook" title="Facebook"/>
 						</i>
 					</network>
 					<network network="twitter">
 						<i class="social-icon twitter-icon">
-							<img :src="$store.state.imagePath+'/assets/images/twitter-ic.svg'" alt="Twitter" />
+							<img :src="$store.state.imagePath+'/assets/images/twitter-ic.svg'" alt="Twitter" 
+							 title="Twitter"
+							/>
 						</i>
 					</network>
 				</div>
@@ -303,12 +305,12 @@
 						 {{ langauageData.label.organisation }}</a></li>
 						 
 						 <li @click="missionComments"><a href="javascript:void(0)" data-id="comments" class="tablinks">
-						 {{ langauageData.label.comments }}</a></li>
+						</a></li>
 					 </ul>
 					 <div class="tab-content-wrap">
 						<div class="tabs">
 							<div class="tab-title">
-								<h3 v-b-toggle.mission>Mission</h3>
+								<h3 v-b-toggle.mission>{{ langauageData.label.mission }}</h3>
 							</div>
 								<b-collapse id="mission" visible accordion="my-accordion" role="tabpanel" class="tab-content">
 						
@@ -401,7 +403,7 @@
 							</div>
 							
 							<div class="tabs">
-								<div class="tab-title">
+								<div class="tab-title" @click="missionComments">
 									<h3 v-b-toggle.comments>{{ langauageData.label.comment }}</h3>
 								</div>
 									<b-collapse id="comments" accordion="my-accordion" role="tabpanel" class="			tab-content comment-block">
@@ -432,6 +434,7 @@
 											</div>
 										</div>
 									</b-form>
+								
 									<div class="comment-list" 
 										v-if="missionComment && missionComment.length > 0">
 										<div class="comment-list-inner" data-simplebar>
@@ -661,7 +664,7 @@ export default {
 			isTwitterSharingDisplay : false,
 			isStarDisplay : false,
 			isHealthDisplay : false,
-			
+
 	    };
   	},
 	mounted(){

@@ -26,7 +26,7 @@
 				</div>
 			</b-list-group-item>
 		</b-list-group>
-		<div class="custom-pagination" v-if="rows > 9">
+		<div class="custom-pagination" v-if="rows > 12">
 			<b-pagination
                 v-model="currentPage"
                 :total-rows="rows"
@@ -58,7 +58,7 @@ export default {
 	       rows : 0, 
 	       volunteerList:[],
 	       recentVolunterLoader : true,
-	       perPage : 9,
+	       perPage : 12,
 	       noVolunteerFound : false,
 		   hidePagination : true,
 		   langauageData : [],
@@ -96,7 +96,7 @@ export default {
 			        	
 			        	if (response.pagination) {
 			        		this.rows = response.pagination.total
-			        		if(this.rows > 9) {
+			        		if(this.rows > 12) {
 			        			this.hidePagination = false;
 			        		}
 			        	}

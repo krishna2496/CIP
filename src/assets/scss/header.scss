@@ -1,20 +1,20 @@
 .filter-header{
-    header {
-        .small-header & {
-            top: -73px;
+	header {
+		.small-header & {
+			top: -73px;
 
-            @include md-max {
-                top: 0;
-                box-shadow: 0 2px 4px -1px rgba(0,0,0,0.25);
-                -webkit-box-shadow: 0 2px 4px -1px rgba(0,0,0,0.25);
-                -ms-box-shadow: 0 2px 4px -1px rgba(0,0,0,0.25);
-                -moz-box-shadow: 0 2px 4px -1px rgba(0,0,0,0.25);
-            }
-            .open-search & {
-                box-shadow: none;
-            }
-        }
-    }
+			@include md-max {
+				top: 0;
+				box-shadow: 0 2px 4px -1px rgba(0,0,0,0.25);
+				-webkit-box-shadow: 0 2px 4px -1px rgba(0,0,0,0.25);
+				-ms-box-shadow: 0 2px 4px -1px rgba(0,0,0,0.25);
+				-moz-box-shadow: 0 2px 4px -1px rgba(0,0,0,0.25);
+			}
+			.open-search & {
+				box-shadow: none;
+			}
+		}
+	}
 }
 header {
     &:not(.modal-header) {
@@ -39,15 +39,15 @@ header {
 
 .top-header {
     padding: 6px 0;
-    border-bottom: 1px solid $border-color;
-    @include md-max{
-        .small-header &{
-            border: none;
-            .open-search &{
-                border-bottom: 1px solid $border-color;
-            }
-        }
-    }
+	border-bottom: 1px solid $border-color;
+	@include md-max{
+		.small-header &{
+			border: none;
+			.open-search &{
+				border-bottom: 1px solid $border-color;
+			}
+		}
+	}
     .navbar {
         padding: 0;
 
@@ -158,7 +158,7 @@ header {
                     @include transformY(-50%);
                     margin: 0;
                     @include transition(all 0.3s);
-                }
+				}
             }
 
             &.no-dropdown {
@@ -330,8 +330,8 @@ header {
                 border-radius: 50%;
                 background-position: center;
                 background-repeat: no-repeat;
-                background-size: cover;
-                background-color: $border-color;
+				background-size: cover;
+				background-color: $border-color;
 
                 @include md-max {
                     margin: 0;
@@ -377,24 +377,24 @@ header {
             padding: 20px 24px;
             position: relative;
             cursor: pointer;
-             > a{
-                 &.router-link-active{
-                    color:$black;
-                    &:before{
-                        position: absolute;
-                        content: "";
-                        left: 0;
-                        bottom: -27px;
-                        width: 100%;
-                        height: 3px;
-                        background: $black;
-                        @include md-max{
-                            content: none;
-                            display: none;
-                        }
-                    }
-                }
-             }
+			 > a{
+				 &.router-link-active{
+					color:$black;
+					&:before{
+						position: absolute;
+						content: "";
+						left: 0;
+						bottom: -27px;
+						width: 100%;
+						height: 3px;
+						background: $black;
+						@include md-max{
+							content: none;
+							display: none;
+						}
+					}
+				}
+			 }
             &:hover {
                 .dropdown-menu {
                     @include md-min {
@@ -1108,12 +1108,12 @@ header {
 .filter-block {
     padding-left: 0 !important;
     height: 78px;
-    display: flex;
-    .dropdown-option-wrap{
-        @include md-max{
-            max-height: 100%;
-        }
-    }
+	display: flex;
+	.dropdown-option-wrap{
+		@include md-max{
+			max-height: 100%;
+		}
+	}
 
     @include md-max {
         position: fixed;
@@ -1130,7 +1130,7 @@ header {
         .open-filter & {
             right: 0;
         }
-    }
+	}
     .list-group {
 
         height: 100%;
@@ -1238,9 +1238,9 @@ header {
             .option-list {
                 li {
                     padding: 8px 15px;
-                    line-height: 20px;
-                    display: flex;      
-                    justify-content: space-between;     
+					line-height: 20px;
+					display: flex;		
+                    justify-content: space-between;		
                     align-items: center;
                 }
             }
@@ -1369,43 +1369,43 @@ html {
     }
 }
 .filter-block{
-    .dropdown-with-counter{
-        .dropdown-option-wrap{
-            ul{ 
-                &.dropdown-option-list{ 
-                    &.chk-select-options{
-                        li{
-                            padding-right: 0;
-                        }
-                    }
-                    li{     
-                        position: relative;
-                        padding-right: 50px;
-                        label{
-                            padding-right: 50px;
-                        }
-                        .counter{       
-                            display: inline-block;      
-                            background: $control-border;        
-                            color: $black-primary;      
-                            padding: 0;     
-                            border-radius: 100%;        
-                            line-height: 17px;      
-                            font-size: 12px;
-                            text-align: center;
-                            margin-left: 0;
-                            position: absolute;
-                            top: 50%;
-                            @include transformY(-50%);
-                            right: 15px;
-                            width: 19px;
-                            height: 19px;
-                            min-height: 1px;
-                                    
-                        }       
-                    }       
-                }
-            }
-        }
-    }
+	.dropdown-with-counter{
+		.dropdown-option-wrap{
+			ul{	
+				&.dropdown-option-list{	
+					&.chk-select-options{
+						li{
+							padding-right: 0;
+						}
+					}
+					li{		
+						position: relative;
+						padding-right: 50px;
+						label{
+							padding-right: 50px;
+						}
+						.counter{		
+							display: inline-block;		
+							background: $control-border;		
+							color: $black-primary;		
+							padding: 0;		
+							border-radius: 100%;		
+							line-height: 17px;		
+							font-size: 12px;
+							text-align: center;
+							margin-left: 0;
+							position: absolute;
+							top: 50%;
+							@include transformY(-50%);
+							right: 15px;
+							width: 19px;
+							height: 19px;
+							min-height: 1px;
+									
+						}		
+					}		
+				}
+			}
+		}
+	}
 }
