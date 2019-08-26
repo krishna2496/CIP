@@ -48,7 +48,7 @@
                                 name="checkbox-custom"
                                 :class="{ 'is-invalid': getErrorClass(item.field_id) }" 
                                 :validstate="getErrorState(item.field_id)"
-                                @input="updateChangesCheckBox"
+                                @input="updateChanges"
                                 >
                                 </b-form-checkbox-group>
                             </b-form-group>
@@ -318,7 +318,7 @@ export default {
             this.$emit("detectChangeInCustomFeild",this.customFeildData);
         },
         updateChangesCheckBox() {
-            console.log(this.customFeildData)
+            // console.log(this.customFeildData)
         }
     },
    

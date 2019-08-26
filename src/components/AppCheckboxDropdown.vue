@@ -5,9 +5,9 @@
         'checkbox-select' :true,
         'select-dropdown':true,
         'dropdown-with-counter' : true,
-        'emptyList' : checkList.length > 0 ? false : true
+        'no-list-item' : checkList.length > 0 ? false : true
       }">
-      <!-- {{checkList}} -->
+      <!-- {{filterTitle}} -->
         <span class="select-text" @click="handleClick">{{filterTitle}}</span>
     <div class="chk-select-wrap dropdown-option-wrap" data-simplebar @click.stop @touchend.stop>
 

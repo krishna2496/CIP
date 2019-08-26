@@ -10,7 +10,7 @@ export default async(data) => {
         defaultLanguage = (store.state.defaultLanguage).toLowerCase();
     }
 
-    var url =process.env.VUE_APP_API_ENDPOINT + "app/mission/"+missionId+"/volunteers?page=" + data.page
+    var url =process.env.VUE_APP_API_ENDPOINT + "app/mission/"+missionId+"/volunteers?page=" + data.page + "&perPage=" +12
     await axios({
             url: url,
             method: 'get',
