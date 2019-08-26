@@ -132,7 +132,14 @@ return [
         'NEW_MISSIONS' => 'New missions',
         'NEW_MESSAGES' => 'New messages'
     ],
-     
+    
+    /*
+     * Tenant settings
+     */
+    'tenant_settings' => [
+        'EMAIL_NOTIFICATION_INVITE_COLLEAGUE' => 'email_notification_invite_colleague'
+    ],
+    
     'TOP_THEME' => "top_themes",
     'TOP_COUNTRY' => "top_countries",
     'TOP_ORGANISATION' => "top_organization",

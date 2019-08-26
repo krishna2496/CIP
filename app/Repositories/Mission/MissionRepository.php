@@ -648,6 +648,7 @@ class MissionRepository implements MissionInterface
             $missionQuery = $missionQuery->having("average_rating", '>', '0');
             $missionQuery->orderBY('mission_rating_count', 'desc');
         }
+        
         $missionData = $missionQuery->get();
         $missionCollection = collect($missionData);
 
@@ -659,7 +660,7 @@ class MissionRepository implements MissionInterface
             $missionCollection->count(),
             $perPage,
             $page,
-            ['path'=>url('app/missions')]
+            ['path'=>url($request->getPathInfo())]
         );
         return $paginate;
     }
