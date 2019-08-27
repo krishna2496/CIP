@@ -99,16 +99,6 @@ class TenantRepository implements TenantInterface
     {
         $tenant = $this->tenant->findOrFail($id);
         $tenant->update($requestArray);
-
-        // Add options data into `tenant_has_option` table
-        if (isset($requestArray['options']) && count($requestArray['options']) > 0) {
-            foreach ($requestArray['options'] as $optionName => $optionValue) {
-                $tenantOptionData['option_name'] = $optionName;
-                $tenantOptionData['option_value'] = $optionValue;
-                $tenant->options()->where('option_name', $optionName)
-                    ->update($tenantOptionData);
-            }
-        }
         return $tenant;
     }
 }
