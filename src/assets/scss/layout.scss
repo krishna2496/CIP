@@ -2092,7 +2092,6 @@ main {
             border: 1px solid $border-color;
             padding: 23px 29px 58px;
             position: relative;
-            min-height: 514px;
 
             @include lg-max {
                 padding: 20px 20px 58px;
@@ -2102,7 +2101,6 @@ main {
                 max-width: 49%;
                 flex: 0 0 49%;
                 margin-left: 7px;
-                min-height: 475px;
             }
 
             @include sm-max {

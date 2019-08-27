@@ -8,7 +8,7 @@
         <div class="error-page-wrap">
           <div class="error-img" :style="{backgroundImage: 'url('+bgImg+')'}"></div>
           <div class="error-content">
-            <h2>{{langauageData.label.page_not_found}}</h2>
+            <!-- <h2>{{langauageData.label.page_not_found}}</h2> -->
             <h1>
               <b>{{langauageData.label.oops}}</b>{{langauageData.label.page_not_found_message_heading}}
             </h1>
