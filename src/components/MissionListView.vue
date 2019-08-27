@@ -248,7 +248,7 @@
     </div>
     <div class="no-data-found" v-else>
         <h2 class="text-center">{{noRecordFound()}}</h2>
-        <div class="btn-wrap">
+        <div class="btn-wrap" v-if="isSubmitNewMissionSet">
                 <b-button :to="'/home/#'" class="btn-bordersecondary icon-btn">
                     <span>{{ langauageData.label.submit_new_mission }}</span>
                     <i>
@@ -264,7 +264,7 @@
                         </svg>
                     </i>
                 </b-button>
-            </div>  
+        </div>  
     </div>
 </template>
 <script>
@@ -302,7 +302,8 @@ export default {
             langauageData : [],
             isInviteCollegueDisplay : true,
             isStarRatingDisplay : true,
-            isQuickAccessSet : true
+            isQuickAccessSet : true,
+            isSubmitNewMissionSet : true,
         };
     },
     computed: {
@@ -468,6 +469,7 @@ export default {
         this.isInviteCollegueDisplay = this.settingEnabled(constants.INVITE_COLLEAGUE);
         this.isStarRatingDisplay = this.settingEnabled(constants.MISSION_RATINGS);
         this.isQuickAccessSet = this.settingEnabled(constants.QUICK_ACCESS_FILTERS);
+        this.isSubmitNewMissionSet = this.settingEnabled(constants.USER_CAN_SUBMIT_MISSION);
     }
 };
 </script>
