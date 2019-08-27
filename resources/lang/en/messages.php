@@ -90,6 +90,7 @@ return [
         'MESSAGE_NO_SKILL_FOUND' => 'Skill not found',
         'MESSAGE_NO_COUNTRY_FOUND' => 'Country not found',
         'MESSAGE_TENANT_SETTINGS_UPDATED' => 'Tenant settings updated successfully',
+        'TIMESHEET_ENTRY_ADDED_SUCESSFULLY' => 'Timesheet entry added successfully',
 		],
         
     /**

@@ -87,6 +87,7 @@ return [
         'MESSAGE_NO_SKILL_FOUND' => 'Compétence non trouvée',
         'MESSAGE_NO_COUNTRY_FOUND' => 'Pays non trouvé',
         'MESSAGE_TENANT_SETTINGS_UPDATED' => 'Paramètres du locataire mis à jour avec succès',
+        'TIMESHEET_ENTRY_ADDED_SUCESSFULLY' => 'Entrée de la feuille de temps ajoutée avec succès',
     ],
 
         

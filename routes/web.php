@@ -191,6 +191,11 @@ $router->group(['middleware' => 'localization'], function ($router) {
     'middleware' => 'localization|tenant.connection|jwt.auth',
     'uses' => 'App\User\UserController@uploadProfileImage']);
 
+    /* Store timesheet data */
+    $router->post('/app/timesheet', ['as' => 'app.timesheet',
+    'middleware' => 'tenant.connection|jwt.auth',
+    'uses' => 'App\Timesheet\TimesheetController@store']);
+
 /*
 |
 |--------------------------------------------------------------------------
