@@ -300,12 +300,12 @@
                 
             </b-row>
             <b-row class="row-form">
-                <b-col cols="12">
+                <b-col cols="12" v-if="isSkillDisplay">
                   <h2 class="title-with-border">
                     <span>{{langauageData.label.my_skills}}</span>
                   </h2>
                 </b-col>
-                <b-col cols="12">
+                <b-col cols="12" v-if="isSkillDisplay">
                     <ul class="skill-list-wrapper" v-if="resetUserSkillList != null && resetUserSkillList.length > 0">
                         <li  v-for="(toitem, idx) in resetUserSkillList">{{toitem.name}}</li>
                     </ul>
@@ -418,6 +418,8 @@ export default {
     data() {
         return {
             languageList: [],
+            isQuickAccessFilterDisplay : true,
+            isSkillDisplay : true,
             languageDefault: "",
             userIcon: require("@/assets/images/user-img-large.png"),
             timeList: [],
@@ -584,7 +586,7 @@ export default {
         async getUserProfileDetail() {
             await getUserDetail().then(response => {
                 if(response.error == true){
-                    this.$router.push('/404');
+                    // this.$router.push('/404');
                 } else {
                     var _this = this;
                     this.userData = response.data;
@@ -827,8 +829,8 @@ export default {
                             value : customValue
                         });
                     });
-            
-                if(this.userSkillList.length > 0) {
+                
+                if(this.userSkillList.length > 0 && this.isSkillDisplay) {
                     Object.keys(this.userSkillList).map(function(key) {
                         _this.saveProfileData['skills'].push({
                             skill_id:  _this.userSkillList[key].id,                
@@ -938,6 +940,8 @@ export default {
         this.timeDefault = this.langauageData.placeholder.timezone
         this.changePhoto =  this.langauageData.label.edit
         this.languageCode = store.state.defaultLanguage
+        this.isQuickAccessFilterDisplay = this.settingEnabled(constants.QUICK_ACCESS_FILTERS);
+        this.isSkillDisplay = this.settingEnabled(constants.SKILLS_ENABLED);
         this.getUserProfileDetail();
     }
 

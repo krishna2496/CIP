@@ -12,7 +12,7 @@
         </header>
         <main>
             <b-container class="home-content-wrapper">
-                <div v-if="missionList.length > 0">
+                <div v-if="missionList.length > 0 && isQuickAccessDisplay">
                 <div class="chip-container" v-if="tags != ''">
                     <span v-for="(item , i) in tags.country" >
                         <AppCustomChip :textVal="item" :tagId ="i" type ="country" 
@@ -38,7 +38,7 @@
                 </div>
                 </div>
                 <div class="heading-section" v-if="missionList.length > 0">
-                    <h2>
+                    <h2 v-if="isTotalMissionDisplay">
                         <template v-if="rows > 0">{{ langauageData.label.explore}}
                          <strong>{{rows}}</strong> 
                          <strong v-if="rows > 1" class="ml-1">{{ langauageData.label.missions}}</strong>
@@ -188,6 +188,8 @@ export default {
             sortByFilterSet : true,
             userList :[],
             langauageData : [],
+            isTotalMissionDisplay : true,
+            isQuickAccessDisplay : true
         };
     },
 
@@ -341,10 +343,8 @@ export default {
     },
     created() { 
         this.langauageData = JSON.parse(store.state.languageLabel);
-        let filterSetting = JSON.parse(store.state.tenantSetting);
-        if(filterSetting != null && filterSetting['sorting_missions']){
-            this.sortByFilterSet = false;
-        }
+       
+            this.sortByFilterSet = this.settingEnabled(constants.Total_MISSIONS_IN_PLATEFORM)
         if (this.$route.params.searchParamsType){
             let filteExplore = {};
             filteExplore.exploreMissionParams  = '';
@@ -365,8 +365,8 @@ export default {
             this.missionFilter();
         }
         var _this = this;
-        
-        
+        this.isTotalMissionDisplay = this.settingEnabled(constants.Total_MISSIONS_IN_PLATEFORM)
+        this.isQuickAccessDisplay = this.settingEnabled(constants.QUICK_ACCESS_FILTERS)
         searchUser().then(response => {
             this.userList = response;
         });

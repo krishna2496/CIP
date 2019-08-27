@@ -23,6 +23,7 @@
                         v-bind:placeholder='langauageData.placeholder.email_address'
                         :class="{ 'is-invalid': $v.login.email.$error }" ref='email' autofocus 
                         maxlength="120"
+                        @keypress.enter.prevent="handleSubmit"
                         @keydown.space.prevent></b-form-input>
                         <div v-if="submitted && !$v.login.email.required" class="invalid-feedback">
                         {{ langauageData.errors.email_required }}</div>
