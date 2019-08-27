@@ -86,6 +86,23 @@ class TimesheetController extends Controller
 
                 // Remove extra params
                 $request->request->remove('time');
+
+                // Fetch goal objective
+                $objective = $this->missionRepository->getGoalObjective($request->mission_id);
+               
+                // Fetch all added actions from database
+                $totalAddedActions = $this->timesheetRepository->getAddedActions($request->mission_id);
+                // Add total actions
+                $totalActions = $totalAddedActions + $request->action;
+             
+                if ($totalActions > $objective->goal_objective) {
+                    return $this->responseHelper->error(
+                        Response::HTTP_UNPROCESSABLE_ENTITY,
+                        Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                        config('constants.error_codes.ERROR_INVALID_ACTION'),
+                        trans('messages.custom_error_message.ERROR_INVALID_ACTION')
+                    );
+                }
             } else {
                 $validator = Validator::make(
                     $request->all(),

@@ -84,4 +84,15 @@ class TimesheetRepository implements TimesheetInterface
         }
         return $timesheet;
     }
+
+    /**
+     * get added action data count
+     *
+     * @param int $missionId
+     * @return int|null
+     */
+    public function getAddedActions(int $missionId): ?int
+    {
+        return ($this->timesheet->where('mission_id', $missionId)->sum('action')) ?? 0;
+    }
 }

@@ -170,5 +170,8 @@ return [
         'ERROR_TENANT_OPTION_NOT_FOUND' => 'DE: No tenant option found',
         'ERROR_COUNTRY_NOT_FOUND' => 'DE: Requested country does not exist',
         'ERROR_FAILD_TO_UPLOAD_PROFILE_IMAGE_ON_S3' => 'DE: Failed to upload image on S3',
+
+        //For timesheet module
+        'ERROR_INVALID_ACTION' => 'DE: Invalid goal action',
     ],
 ];

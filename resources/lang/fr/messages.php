@@ -184,5 +184,9 @@ return [
         'ERROR_COUNTRY_NOT_FOUND' => 'Le pays demandé n\'existe pas',
         'ERROR_COMMENT_NOT_FOUND' => 'Commentaire non trouvé',
         'ERROR_FAILD_TO_UPLOAD_PROFILE_IMAGE_ON_S3' => 'Échec du téléchargement de fichiers sur S3',
+
+        
+        //For timesheet module
+        'ERROR_INVALID_ACTION' => 'Action de but invalide',
     ],
 ];

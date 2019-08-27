@@ -189,5 +189,8 @@ return [
         'ERROR_COUNTRY_NOT_FOUND' => 'Requested country does not exist',
         'ERROR_COMMENT_NOT_FOUND' => 'Requested comment does not exist',
         'ERROR_FAILD_TO_UPLOAD_PROFILE_IMAGE_ON_S3' => 'Failed to upload image on S3',
+
+        //For timesheet module
+        'ERROR_INVALID_ACTION' => 'Invalid goal action',
     ],
 ];
