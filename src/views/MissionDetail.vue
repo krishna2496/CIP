@@ -11,12 +11,12 @@
 				inline-template
 			>
 				<div class="social-sharing">
-					<network network="facebook">
+					<network network="facebook" v-if="isFacebookSharingDisplay">
 						<i class="social-icon facebook-icon">
 							<img :src="$store.state.imagePath+'/assets/images/facebook-ic.svg'" alt="Facebook" title="Facebook"/>
 						</i>
 					</network>
-					<network network="twitter">
+					<network network="twitter" v-if="isTwitterSharingDisplay">
 						<i class="social-icon twitter-icon">
 							<img :src="$store.state.imagePath+'/assets/images/twitter-ic.svg'" alt="Twitter" 
 							 title="Twitter"
@@ -34,7 +34,7 @@
 					<b-col lg="6" class="ml-auto banner-content-wrap">
 						<div class="banner-content-block">
 						<h1>{{missionDetail.title}}</h1>
-							<div class="rating-with-btn">
+							<div class="rating-with-btn" v-if="isStarDisplay">
 								<div class="rating-block">
 									<star-rating
 									v-bind:increment="0.5"
@@ -194,7 +194,7 @@
 									<p class="text-wrap">{{missionDetail.city_name}}</p>
 								</div>
 							</b-list-group-item>
-							<b-list-group-item>
+							<b-list-group-item v-if="isThemeDisplay">
 								<div>
 									<i class="img-wrap">
 										<img src="../assets/images/earth-ic.svg" alt="" />
@@ -231,7 +231,7 @@
 
 						<div class="btn-wrap">
 							<b-button class="btn-borderprimary icon-btn"  
-							@click="handleModal(missionId)">
+							@click="handleModal(missionId)" v-if="isInviteCollegueDisplay">
 								<i>
 									<svg height="512pt" viewBox="0 0 512 512" width="512pt"
 										xmlns="http://www.w3.org/2000/svg">
@@ -304,18 +304,19 @@
 						 <li><a href="javascript:void(0)" data-id="organization" class="tablinks">
 						 {{ langauageData.label.organisation }}</a></li>
 						 
-						 <li @click="missionComments"><a href="javascript:void(0)" data-id="comments" class="tablinks">{{ langauageData.label.comments }}
+						 <li @click="missionComments"><a href="javascript:void(0)" data-id="comments" class="tablinks" v-if="isCommentDisplay">{{ langauageData.label.comments }}
 						</a></li>
 					 </ul>
+					
 					 <div class="tab-content-wrap">
 						<div class="tabs">
-							<div class="tab-title">
-								<h3 v-b-toggle.mission>{{ langauageData.label.mission }}</h3>
-							</div>
+								<div class="tab-title">
+									<h3 v-b-toggle.mission>{{ langauageData.label.mission }}</h3>
+								</div>
 								<b-collapse id="mission" visible accordion="my-accordion" role="tabpanel" class="tab-content">
 						
 									<div class="mission-tab-block row" v-if="!checkMissionTypeTime(missionDetail.mission_type)">
-										<div class="col-sm-4 mission-tab-col">
+										<div class="col-sm-4 mission-tab-col" v-if="isMissionGoalDisplay">
 											<div class="mission-tab-inner">
 												<p v-if="missionDetail.goal_objective">{{missionDetail.goal_objective}}<span>Trees</span></p>
 												<p else>
@@ -323,7 +324,7 @@
 												</p>
 											</div>
 										</div>
-										<div class="col-sm-4 mission-tab-col">
+										<div class="col-sm-4 mission-tab-col" v-if="isCurrentStatusDisplay">
 											<div class="mission-tab-inner">
 												<p v-if="missionDetail.achieved_goal">			{{missionDetail.achieved_goal}} <span>Planted</span>
 												</p>
@@ -332,7 +333,7 @@
 												</p>
 											</div>
 										</div>
-										<div class="col-sm-4 mission-tab-col">
+										<div class="col-sm-4 mission-tab-col" v-if="isRemainingGoalDisplay">
 											<div class="mission-tab-inner">
 												<p>{{pendingGoal(missionDetail)}}<span>
 												{{langauageData.label.remaining}}
@@ -402,7 +403,7 @@
 									</b-collapse>
 							</div>
 							
-							<div class="tabs">
+							<div class="tabs" v-if="isCommentDisplay">
 								<div class="tab-title" @click="missionComments">
 									<h3 v-b-toggle.comments>{{ langauageData.label.comment }}</h3>
 								</div>
@@ -485,7 +486,7 @@
 					<div class="info-block">
 						<h2 class="title-with-border"><span>{{ langauageData.label.information }}</span></h2>
 						<div class="table-wrap">
-							<div class="table-row">
+							<div class="table-row" v-if="isSkillDispaly">
 								<span class="label-col">{{langauageData.label.skills}}</span>
 								<span class="detail-col">{{getSkills(missionDetail)}}</span>
 							</div>
@@ -494,7 +495,7 @@
 								<span class="detail-col" v-if="missionDetail.availability_type != ''">{{missionDetail.availability_type}}</span>
 								<span class="detail-col" v-else>-</span>
 							</div>
-							<div class="table-row">
+							<div class="table-row" v-if="isStarDisplay">
 								<span class="label-col">{{langauageData.label.rating}}</span>
 								<span class="detail-col">
 									 <star-rating
@@ -515,7 +516,7 @@
 							</div>
 						</div>
 					</div>
-					<RecentVolunteers v-if="isShownComponent"></RecentVolunteers>
+					<RecentVolunteers v-if="isShownComponent && isRecentVolunteerDispaly"></RecentVolunteers>
                 </b-col>
           </b-row>
 	  </div>
@@ -659,14 +660,20 @@ export default {
 			loadMoreComment : false,
 			domainName: '',
 			socialSharingUrl: '',
-
 			isFacebookSharingDisplay : false,
 			isTwitterSharingDisplay : false,
 			isStarDisplay : false,
-			isHealthDisplay : false,
-
-	    };
-  	},
+			isThemeDisplay : false,
+			isInviteCollegueDisplay : false,
+			isCommentDisplay :false,
+			isRecentVolunteerDispaly : false,
+			isMissionGoalDisplay : false,
+    		isCurrentStatusDisplay : false,
+    		isRemainingGoalDisplay : false,
+    		isSkillDispaly : false	,
+    		isQuickAccessFilterDisplay : false
+  	};
+  },
 	mounted(){
 	 var tabItem = document.querySelectorAll(".platform-details-tab .nav-tabs li a")
 		tabItem.forEach(function(tabItemEvent){
@@ -1033,6 +1040,19 @@ export default {
 		}
 		this.langauageData = JSON.parse(store.state.languageLabel);
 		this.applyButton = this.langauageData.label.apply_now
+
+		this.isFacebookSharingDisplay =this.settingEnabled(constants.SHARE_MISSION_FACEBOOK)
+		this.isTwitterSharingDisplay =this.settingEnabled(constants.SHARE_MISSION_TWITTER)
+		this.isStarDisplay =this.settingEnabled(constants.MISSION_RATINGS)
+		this.isThemeDisplay =this.settingEnabled(constants.THEMES_ENABLED)
+		this.isInviteCollegueDisplay =this.settingEnabled(constants.INVITE_COLLEAGUE)
+		this.isCommentDisplay =this.settingEnabled(constants.MISSION_COMMENTS)		
+		this.isRecentVolunteerDispaly =this.settingEnabled(constants.RECENT_VOLUNTEERES)	
+		this.isMissionGoalDisplay = this.settingEnabled(constants.SHOW_GOAL_OF_MISSION)	
+		this.isCurrentStatusDisplay = this.settingEnabled(constants.SHOW_CURRENT_STATUS_OF_MISSION)	
+		this.isRemainingGoalDisplay = this.settingEnabled(constants.SHOW_REMAINING_DATA_TO_ACHIEVE_GOAL)	
+		this.isSkillDispaly = this.settingEnabled(constants.SKILLS_ENABLED)
+		this.isQuickAccessFilterDisplay = this.settingEnabled(constants.QUICK_ACCESS_FILTERS)
 	},
 
 	updated(){
@@ -1074,6 +1094,19 @@ export default {
 			this.langauageData = JSON.parse(store.state.languageLabel);
 			this.applyButton = this.langauageData.label.apply_now;
 	       	this.page = 1;
+			this.isFacebookSharingDisplay = false
+			this.isTwitterSharingDisplay = false
+			this.isStarDisplay = false
+			this.isThemeDisplay = false
+			this.isInviteCollegueDisplay = false
+			this.isCommentDisplay =false
+			this.isRecentVolunteerDispaly = false
+			this.isSkillDispaly = false
+			this.isMissionGoalDisplay = false
+			this.isCurrentStatusDisplay = false
+			this.isRemainingGoalDisplay = false
+			this.isSkillDispaly = false		
+			this.isQuickAccessFilterDisplay = false
 			this.getMissionDetail();
 			this.socialSharingUrl = process.env.VUE_APP_API_ENDPOINT+"social-sharing/"+this.domainName+"/"+this.missionId+"/"+store.state.defaultLanguageId;			
 	    }

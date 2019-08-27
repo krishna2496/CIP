@@ -2086,6 +2086,12 @@ main {
                 flex: 0 0 100%;
                 margin: 0 0 30px;
             }
+            em{
+                display:inline-block;
+                &.volunteery-counter{
+                    margin-left:5px;
+                }
+            }
         }
 
         .recent-volunteer-block {
@@ -2574,6 +2580,26 @@ main {
                 }
             }
         }
+        .btn-wrapper {
+            display: flex;
+            width: 100%;
+            padding: 0;
+            justify-content: flex-end;
+            margin-top: 70px;
+
+            @include xl-max {
+                margin-top: 50px;
+            }
+
+            @include md-max {
+                margin-top: 30px;
+            }
+
+            .btn {
+                min-width: 108px;
+                display: inline-block !important;
+            }
+        }
     }
 
     .custom-dropdown {
@@ -2770,26 +2796,6 @@ main {
         font-size: 16px;
     }
 
-    .btn-wrapper {
-        display: flex;
-        width: 100%;
-        padding: 0;
-        justify-content: flex-end;
-        margin-top: 70px;
-
-        @include xl-max {
-            margin-top: 50px;
-        }
-
-        @include md-max {
-            margin-top: 30px;
-        }
-
-        .btn {
-            min-width: 108px;
-            display: inline-block !important;
-        }
-    }
 }
 
 /** Dashboard **/

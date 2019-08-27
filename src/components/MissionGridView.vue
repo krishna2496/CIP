@@ -269,7 +269,7 @@
     </div>
     <div class="no-data-found" v-else>
         <h2 class="text-center">{{noRecordFound()}}</h2>
-        <div class="btn-wrap">
+        <div class="btn-wrap" v-if="isSubmitNewMissionSet">
                 <b-button :to="'/home/#'" class="btn-bordersecondary icon-btn">
                     <span>{{ langauageData.label.submit_new_mission }}</span>
                     <i>
@@ -285,7 +285,7 @@
                         </svg>
                     </i>
                 </b-button>
-            </div>  
+        </div>  
     </div>
     
 </template>
@@ -323,7 +323,8 @@ export default {
             submitDisable :true,
             langauageData : [],
             isInviteCollegueDisplay : true,
-            isStarRatingDisplay : true
+            isStarRatingDisplay : true,
+            isSubmitNewMissionSet : true
         };
     },
     computed: {
@@ -417,7 +418,15 @@ export default {
             
         },
         onInputChange(text) {   
+            console.log("input change")
              this.submitDisable =true;
+               setTimeout(() => {
+                var onFocus = document.getElementById('autosuggest');
+                    onFocus.addEventListener("click", function(){
+                        var myElement = document.querySelector('.autosuggest__results');
+                        new SimpleBar(myElement, { autoHide: true });   
+                    });
+            });
         },
         // For selected user id.
         onSelected(item) {
@@ -498,6 +507,7 @@ export default {
         this.langauageData = JSON.parse(store.state.languageLabel);
         this.isInviteCollegueDisplay = this.settingEnabled(constants.INVITE_COLLEAGUE);
         this.isStarRatingDisplay = this.settingEnabled(constants.MISSION_RATINGS);
+        this.isSubmitNewMissionSet = this.settingEnabled(constants.USER_CAN_SUBMIT_MISSION);
     },
 };
 </script>
