@@ -142,5 +142,6 @@ return [
 		'mission_detail.*.lang' => 'language code',
         'to_user_id' => 'user id',
         'custom_fields.*.field_id' => 'field id',
+        'option_value.translations.*.lang' => 'language code',
     ],
 ];

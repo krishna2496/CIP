@@ -5,6 +5,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Repositories\MissionInvite\MissionInviteRepository;
 use App\Repositories\Notification\NotificationRepository;
+use App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository;
 use App\Helpers\ResponseHelper;
 use App\Helpers\LanguageHelper;
 use App\Helpers\Helpers;
@@ -55,10 +56,16 @@ class MissionInviteController extends Controller
     private $tenantOptionRepository;
 
     /**
+     * @var App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository
+     */
+    private $tenantActivatedSettingRepository;
+
+    /**
      * Create a new Mission controller instance.
      *
      * @param App\Repositories\Mission\MissionInviteRepository $missionInviteRepository
      * @param App\Repositories\Notification\NotificationRepository $notificationRepository
+     * @param App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository $tenantActivatedSettingRepository
      * @param App\Repositories\User\UserRepository $userRepository
      * @param App\Repositories\Mission\MissionRepository $missionRepository
      * @param Illuminate\Http\ResponseHelper $responseHelper
@@ -69,6 +76,7 @@ class MissionInviteController extends Controller
     public function __construct(
         MissionInviteRepository $missionInviteRepository,
         NotificationRepository $notificationRepository,
+        TenantActivatedSettingRepository $tenantActivatedSettingRepository,
         UserRepository $userRepository,
         MissionRepository $missionRepository,
         ResponseHelper $responseHelper,
@@ -78,6 +86,7 @@ class MissionInviteController extends Controller
     ) {
         $this->missionInviteRepository = $missionInviteRepository;
         $this->notificationRepository = $notificationRepository;
+        $this->tenantActivatedSettingRepository = $tenantActivatedSettingRepository;
         $this->userRepository = $userRepository;
         $this->missionRepository = $missionRepository;
         $this->responseHelper = $responseHelper;
@@ -85,7 +94,7 @@ class MissionInviteController extends Controller
         $this->helpers = $helpers;
         $this->tenantOptionRepository = $tenantOptionRepository;
     }
-
+    
     /**
      * Invite to a mission
      *
@@ -131,51 +140,54 @@ class MissionInviteController extends Controller
                 $request->to_user_id,
                 $request->auth->user_id
             );
-            
-            $notificationTypeId = $this->notificationRepository
-            ->getNotificationTypeID(config('constants.notification_types.RECOMMENDED_MISSIONS'));
-            
-            // Check if to_user_id (colleague) has enabled notification for Recommended missions
-            $notifyColleague = $this->notificationRepository
-            ->userNotificationSetting($request->to_user_id, $notificationTypeId);
 
-            if ($notifyColleague) {
-                $colleague = $this->userRepository->find($request->to_user_id);
-                $colleagueEmail = $colleague->email;
-                $colleagueLanguageId = $colleague->language_id;
-                $languages = $this->languageHelper->getLanguages($request);
-                $language = $languages->where('language_id', $colleagueLanguageId)->first();
-                $colleagueLanguage = $language->code;
-                $fromUserName = $this->userRepository->getUserName($request->auth->user_id);
-                $missionName = $this->missionRepository->getMissionName(
-                    $request->mission_id,
-                    $colleague->language_id
-                );
-                $notificationData = array(
-                    'notification_type_id' => $notificationTypeId,
-                    'user_id' => $request->auth->user_id,
-                    'to_user_id' => $request->to_user_id,
-                    'mission_id' => $request->mission_id,
-                );
-                $notification = $this->notificationRepository->createNotification($notificationData);
+            $getTenantSettings = $this->helpers->getAllTenantActivatedSetting($request);
+            if (in_array(config('constants.tenant_settings.EMAIL_NOTIFICATION_INVITE_COLLEAGUE'), $getTenantSettings)) {
+                $notificationTypeId = $this->notificationRepository
+                ->getNotificationTypeID(config('constants.notification_types.RECOMMENDED_MISSIONS'));
                 
-                $data = array(
-                    'missionName'=> $missionName,
-                    'fromUserName'=> $fromUserName,
-                    'colleagueLanguage'=> $colleagueLanguage
-                );
+                // Check if to_user_id (colleague) has enabled notification for Recommended missions
+                $notifyColleague = $this->notificationRepository
+                ->userNotificationSetting($request->to_user_id, $notificationTypeId);
 
-                $tenantName = $this->helpers->getSubDomainFromRequest($request);
-               
-                $params['tenant_name'] = $tenantName;
-                $params['to'] = $colleagueEmail; //required
-                $params['template'] = config('constants.EMAIL_TEMPLATE_FOLDER').'.'.config('constants.EMAIL_TEMPLATE_USER_INVITE'); //path to the email template
-                $params['subject'] = trans('mail.recommonded_mission.MAIL_MISSION_RECOMMENDATION', [], $colleagueLanguage); //optional
-                $params['data'] = $data;
-                $params['data']['logo'] = $this->tenantOptionRepository->getOptionWithCondition(
-                    ['option_name' => 'custom_logo']
-                )->option_value;
-                dispatch(new AppMailerJob($params));
+                if ($notifyColleague) {
+                    $colleague = $this->userRepository->find($request->to_user_id);
+                    $colleagueEmail = $colleague->email;
+                    $colleagueLanguageId = $colleague->language_id;
+                    $languages = $this->languageHelper->getLanguages($request);
+                    $language = $languages->where('language_id', $colleagueLanguageId)->first();
+                    $colleagueLanguage = $language->code;
+                    $fromUserName = $this->userRepository->getUserName($request->auth->user_id);
+                    $missionName = $this->missionRepository->getMissionName(
+                        $request->mission_id,
+                        $colleague->language_id
+                    );
+                    $notificationData = array(
+                        'notification_type_id' => $notificationTypeId,
+                        'user_id' => $request->auth->user_id,
+                        'to_user_id' => $request->to_user_id,
+                        'mission_id' => $request->mission_id,
+                    );
+                    $notification = $this->notificationRepository->createNotification($notificationData);
+                    
+                    $data = array(
+                        'missionName'=> $missionName,
+                        'fromUserName'=> $fromUserName,
+                        'colleagueLanguage'=> $colleagueLanguage
+                    );
+
+                    $tenantName = $this->helpers->getSubDomainFromRequest($request);
+                
+                    $params['tenant_name'] = $tenantName;
+                    $params['to'] = $colleagueEmail; //required
+                    $params['template'] = config('constants.EMAIL_TEMPLATE_FOLDER').'.'.config('constants.EMAIL_TEMPLATE_USER_INVITE'); //path to the email template
+                    $params['subject'] = trans('mail.recommonded_mission.MAIL_MISSION_RECOMMENDATION', [], $colleagueLanguage); //optional
+                    $params['data'] = $data;
+                    $params['data']['logo'] = $this->tenantOptionRepository->getOptionWithCondition(
+                        ['option_name' => 'custom_logo']
+                    )->option_value;
+                    dispatch(new AppMailerJob($params));
+                }
             }
             
             // Set response data

@@ -460,7 +460,8 @@ class TenantOptionsController extends Controller
             $request->all(),
             [
                 "option_name" => "required|unique:tenant_option,option_name,NULL,tenant_option_id,deleted_at,NULL",
-                "option_value" => "required"
+                "option_value" => "required",
+                "option_value.translations.*.lang" => "max:2"
             ]
         );
 
@@ -512,7 +513,8 @@ class TenantOptionsController extends Controller
             $request->all(),
             [
                 "option_name" => "required",
-                "option_value" => "required"
+                "option_value" => "required",
+                "option_value.translations.*.lang" => "max:2"
             ]
         );
 
