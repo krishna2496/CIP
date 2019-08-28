@@ -21,10 +21,10 @@
                             <b-button 
                                 v-bind:class="{ 
                                     'favourite-icon' : true,
-                                    active : mission.favourite_mission_count == 1
+                                    active : mission.is_favourite == 1
                                 }"  
                                 v-b-tooltip.hover
-                                :title="mission.favourite_mission_count == 1 ?  langauageData.label.remove_from_favourite :langauageData.label.add_to_favourite"
+                                :title="mission.is_favourite == 1 ?  langauageData.label.remove_from_favourite :langauageData.label.add_to_favourite"
                                 @click="favoriteMission(mission.mission_id)"
                             >
                                 <i class="normal-img">
@@ -61,7 +61,7 @@
                             </b-button>
                         </div>
                         <div  class="group-category" 
-                            v-if="mission.mission_theme != null"><span class="category-text">{{getThemeTitle(mission.mission_theme.translations)}}</span>
+                            v-if="mission.mission_theme != null && isThemeSet"><span class="category-text">{{getThemeTitle(mission.mission_theme.translations)}}</span>
                         </div>
                     </b-card-header>
 
@@ -304,6 +304,7 @@ export default {
             isStarRatingDisplay : true,
             isQuickAccessSet : true,
             isSubmitNewMissionSet : true,
+            isThemeSet : true,
         };
     },
     computed: {
@@ -470,6 +471,7 @@ export default {
         this.isStarRatingDisplay = this.settingEnabled(constants.MISSION_RATINGS);
         this.isQuickAccessSet = this.settingEnabled(constants.QUICK_ACCESS_FILTERS);
         this.isSubmitNewMissionSet = this.settingEnabled(constants.USER_CAN_SUBMIT_MISSION);
+        this.isThemeSet = this.settingEnabled(constants.THEMES_ENABLED);
     }
 };
 </script>
