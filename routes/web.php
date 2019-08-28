@@ -196,6 +196,11 @@ $router->group(['middleware' => 'localization'], function ($router) {
     'middleware' => 'tenant.connection|jwt.auth',
     'uses' => 'App\Timesheet\TimesheetController@store']);
 
+    /* Get timesheet data */
+    $router->get('/app/timesheet', ['as' => 'app.timesheet',
+    'middleware' => 'tenant.connection|jwt.auth',
+    'uses' => 'App\Timesheet\TimesheetController@index']);
+
 /*
 |
 |--------------------------------------------------------------------------

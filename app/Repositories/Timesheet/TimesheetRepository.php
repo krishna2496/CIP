@@ -4,6 +4,7 @@ namespace App\Repositories\Timesheet;
 use App\Repositories\Timesheet\TimesheetInterface;
 use Illuminate\Http\Request;
 use App\Models\Timesheet;
+use App\Models\Mission;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Collection;
@@ -63,7 +64,6 @@ class TimesheetRepository implements TimesheetInterface
      */
     public function storeTimesheet(Request $request): Timesheet
     {
-        
         $data = $request->toArray();
         $timesheet = $this->timesheet->create($data);
         $tenantName = $this->helpers->getSubDomainFromRequest($request);
@@ -104,6 +104,24 @@ class TimesheetRepository implements TimesheetInterface
      */
     public function getAllTimesheetEntries(Request $request)
     {
-        return ($this->timesheet->where('mission_id', $missionId)->sum('action')) ?? 0;
+        // $timesheetQuery =
+        $timesheetQuery = Mission::select(
+            'mission.mission_id',
+            'mission.theme_id',
+            'mission.city_id',
+            'mission.country_id',
+            'mission.start_date',
+            'mission.end_date',
+            'mission.mission_type',
+            'mission.publication_status'
+        )
+        ->where('publication_status', config("constants.publication_status")["APPROVED"])
+        ->with(['timesheet', 'missionLanguage', 'goalMission', 'timeMission'])
+        ->with(['missionApplication' => function ($query) use ($request) {
+            $query->where('user_id', $request->auth->user_id)
+            ->whereIn('approval_status', [config("constants.application_status")["AUTOMATICALLY_APPROVED"]]);
+        }])
+        ->get();
+        return $timesheetQuery;
     }
 }

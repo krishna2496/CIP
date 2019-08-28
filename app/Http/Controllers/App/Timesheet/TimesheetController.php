@@ -162,6 +162,7 @@ class TimesheetController extends Controller
     {
         try {
             $timesheetEntries = $this->timesheetRepository->getAllTimesheetEntries($request);
+            // dd($timesheetEntries);
             $apiData = $timesheetEntries->toArray();
             $apiStatus = Response::HTTP_OK;
             $apiMessage = (!empty($apiData)) ?
@@ -178,6 +179,7 @@ class TimesheetController extends Controller
                 trans('messages.custom_error_message.ERROR_DATABASE_OPERATIONAL')
             );
         } catch (\Exception $e) {
+            dd($e);
             return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
         // catch (ModelNotFoundException $e) {
