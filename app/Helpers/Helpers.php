@@ -336,41 +336,4 @@ class Helpers
             return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
-
-    /**
-     * Get fetch all activated tenant settings
-     *
-     * @param \Illuminate\Http\Request $request
-     * @return mix
-     */
-    public function getAllTenantActivatedSetting(Request $request)
-    {
-        try {
-            // Fetch tenant all settings details
-            $getTenantSettings = $this->getAllTenantSetting($request);
-
-            // Get data from tenant database
-            $tenantSettings = \App\Models\TenantActivatedSetting::whereHas('settings')->get();
-
-            $tenantSettingData = array();
-            if ($tenantSettings->count() &&  $getTenantSettings->count()) {
-                foreach ($tenantSettings as $settingKey => $tenantSetting) {
-                    $index = $getTenantSettings->search(function ($value, $key) use ($tenantSetting) {
-                        return $value->tenant_setting_id == $tenantSetting->settings->setting_id;
-                    });
-                    $tenantSettingData[] = $getTenantSettings[$index]->key;
-                }
-            }
-            return $tenantSettingData;
-        } catch (PDOException $e) {
-            return $this->PDO(
-                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
-                trans(
-                    'messages.custom_error_message.ERROR_DATABASE_OPERATIONAL'
-                )
-            );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
-        }
-    }
 }
