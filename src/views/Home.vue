@@ -344,7 +344,7 @@ export default {
     created() { 
         this.langauageData = JSON.parse(store.state.languageLabel);
        
-            this.sortByFilterSet = this.settingEnabled(constants.Total_MISSIONS_IN_PLATEFORM)
+            this.sortByFilterSet = this.settingEnabled(constants.SORTING_MISSIONS)
         if (this.$route.params.searchParamsType){
             let filteExplore = {};
             filteExplore.exploreMissionParams  = '';

@@ -41,7 +41,7 @@
                     </div>
 
                 <b-list-group v-if="quickAccessFilterSet">
-                    <b-list-group-item>
+                    <b-list-group-item v-if="isCountrySelectionSet">
                         <AppFilterDropdown
                             :optionList="countryList"
                             :defaultText="defautCountry"
@@ -141,6 +141,7 @@ export default {
             isCountryChange: false,
             isCityChange: false,
             isThemeChange: false,
+            isCountrySelectionSet: false,
             searchString: this.search,
             langauageData : [],
         };
@@ -580,7 +581,7 @@ export default {
         this.quickAccessFilterSet = this.settingEnabled(constants.QUICK_ACCESS_FILTERS);
         this.isThemeDisplay = this.settingEnabled(constants.THEMES_ENABLED);
         this.isSkillDisplay = this.settingEnabled(constants.SKILLS_ENABLED);
-        
+        this.isCountrySelectionSet = this.settingEnabled(constants.IS_COUNTRY_SELECTION);
         var _this = this;
         eventBus.$on('clearAllFilters', (message) => {
             _this.clearFilter();

@@ -41,6 +41,7 @@ export default Object.freeze({
     VOLUNTEERING_HOURS_AUTO_APPROVED : "volunteering_hours_auto_approved",
     VOLUNTEERING_GOAL_AUTO_APPROVED : "volunteering_goal_auto_approved",
     MISSION_COMMENT_AUTO_APPROVED : "mission_comment_auto_approved",
-    IS_STORY_AUTO_APPROVED : "is_story_auto_approved"
+    IS_STORY_AUTO_APPROVED : "is_story_auto_approved",
+    IS_COUNTRY_SELECTION : "country_selection"
 
 })

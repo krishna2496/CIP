@@ -3,6 +3,7 @@
 	    <header>
      		<ThePrimaryHeader v-if="isShownComponent"></ThePrimaryHeader>
     	</header>
+
       	<main>
 			<social-sharing 
 				v-bind:url="socialSharingUrl"
@@ -11,12 +12,12 @@
 				inline-template
 			>
 				<div class="social-sharing">
-					<network network="facebook" v-if="isFacebookSharingDisplay">
+					<network network="facebook" v-if="$store.state.isFacebookDisplay">
 						<i class="social-icon facebook-icon">
 							<img :src="$store.state.imagePath+'/assets/images/facebook-ic.svg'" alt="Facebook" title="Facebook"/>
 						</i>
 					</network>
-					<network network="twitter" v-if="isTwitterSharingDisplay">
+					<network network="twitter" v-if="$store.state.isTwitterDisplay">
 						<i class="social-icon twitter-icon">
 							<img :src="$store.state.imagePath+'/assets/images/twitter-ic.svg'" alt="Twitter" 
 							 title="Twitter"
@@ -1042,7 +1043,9 @@ export default {
 		this.applyButton = this.langauageData.label.apply_now
 
 		this.isFacebookSharingDisplay =this.settingEnabled(constants.SHARE_MISSION_FACEBOOK)
+		store.state.isFacebookDisplay = this.isFacebookSharingDisplay
 		this.isTwitterSharingDisplay =this.settingEnabled(constants.SHARE_MISSION_TWITTER)
+		store.state.isTwitterDisplay = this.isTwitterSharingDisplay
 		this.isStarDisplay =this.settingEnabled(constants.MISSION_RATINGS)
 		this.isThemeDisplay =this.settingEnabled(constants.THEMES_ENABLED)
 		this.isInviteCollegueDisplay =this.settingEnabled(constants.INVITE_COLLEAGUE)
