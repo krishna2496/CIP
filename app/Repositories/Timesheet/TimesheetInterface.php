@@ -13,4 +13,12 @@ interface TimesheetInterface
      * @return App\Models\Timesheet
      */
     public function storeTimesheet(Request $request): Timesheet;
+
+    /**
+     * get added action data count
+     *
+     * @param int $missionId
+     * @return int
+     */
+    public function getAddedActions(int $missionId): int;
 }

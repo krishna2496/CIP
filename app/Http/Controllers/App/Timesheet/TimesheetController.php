@@ -50,7 +50,7 @@ class TimesheetController extends Controller
     }
 
     /**
-     * Store a newly timesheet items into database
+     * Store a newly timesheet into database
      *
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\JsonResponse;
@@ -92,9 +92,11 @@ class TimesheetController extends Controller
                
                 // Fetch all added actions from database
                 $totalAddedActions = $this->timesheetRepository->getAddedActions($request->mission_id);
+
                 // Add total actions
                 $totalActions = $totalAddedActions + $request->action;
              
+                // Check total goals are not maximum than provided goals
                 if ($totalActions > $objective->goal_objective) {
                     return $this->responseHelper->error(
                         Response::HTTP_UNPROCESSABLE_ENTITY,
@@ -139,7 +141,7 @@ class TimesheetController extends Controller
             return $this->PDO(
                 config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
                 trans(
-                    'messages.custom_error_message.'.config('constants.error_codes.ERROR_DATABASE_OPERATIONAL')
+                    'messages.custom_error_message.ERROR_DATABASE_OPERATIONAL'
                 )
             );
         } catch (InvalidArgumentException $e) {

@@ -4,10 +4,7 @@ namespace App\Repositories\Timesheet;
 use App\Repositories\Timesheet\TimesheetInterface;
 use Illuminate\Http\Request;
 use App\Models\Timesheet;
-use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Support\Collection;
-use DB;
 use App\Models\TimesheetDocument;
 use App\Helpers\S3Helper;
 use App\Helpers\Helpers;
@@ -89,9 +86,9 @@ class TimesheetRepository implements TimesheetInterface
      * get added action data count
      *
      * @param int $missionId
-     * @return int|null
+     * @return int
      */
-    public function getAddedActions(int $missionId): ?int
+    public function getAddedActions(int $missionId): int
     {
         return ($this->timesheet->where('mission_id', $missionId)->sum('action')) ?? 0;
     }
