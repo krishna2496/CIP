@@ -95,4 +95,15 @@ class TimesheetRepository implements TimesheetInterface
     {
         return ($this->timesheet->where('mission_id', $missionId)->sum('action')) ?? 0;
     }
+
+    /**
+     * Get timesheet entries
+     *
+     * @param Request $request
+     * @return array
+     */
+    public function getAllTimesheetEntries(Request $request)
+    {
+        return ($this->timesheet->where('mission_id', $missionId)->sum('action')) ?? 0;
+    }
 }

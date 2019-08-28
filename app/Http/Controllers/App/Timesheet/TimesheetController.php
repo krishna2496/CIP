@@ -151,4 +151,40 @@ class TimesheetController extends Controller
             return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
+
+    /**
+     * Get all timesheet entries
+     *
+     * @param Illuminate\Http\Request $request
+     * @return Illuminate\Http\JsonResponse
+     */
+    public function index(Request $request): JsonResponse
+    {
+        try {
+            $timesheetEntries = $this->timesheetRepository->getAllTimesheetEntries($request);
+            $apiData = $timesheetEntries->toArray();
+            $apiStatus = Response::HTTP_OK;
+            $apiMessage = (!empty($apiData)) ?
+            trans('messages.success.MESSAGE_TIMESHEET_ENTRIES_LISTING') :
+            trans('messages.success.MESSAGE_NO_TIMESHEET_ENTRIES_FOUND');
+            return $this->responseHelper->success(
+                $apiStatus,
+                $apiMessage,
+                $apiData
+            );
+        } catch (PDOException $e) {
+            return $this->PDO(
+                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
+                trans('messages.custom_error_message.ERROR_DATABASE_OPERATIONAL')
+            );
+        } catch (\Exception $e) {
+            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
+        }
+        // catch (ModelNotFoundException $e) {
+        //     return $this->modelNotFound(
+        //         config('constants.error_codes.ERROR_MISSION_NOT_FOUND'),
+        //         trans('messages.custom_error_message.ERROR_MISSION_NOT_FOUND')
+        //     );
+        // }
+    }
 }

@@ -91,6 +91,8 @@ return [
         'MESSAGE_NO_COUNTRY_FOUND' => 'Country not found',
         'MESSAGE_TENANT_SETTINGS_UPDATED' => 'Tenant settings updated successfully',
         'TIMESHEET_ENTRY_ADDED_SUCESSFULLY' => 'Timesheet entry added successfully',
+        'MESSAGE_TIMESHEET_ENTRIES_LISTING' => 'Timesheet entries listed successfully',
+        'MESSAGE_NO_TIMESHEET_ENTRIES_FOUND' => 'Timesheet entries not found',
 		],
         
     /**

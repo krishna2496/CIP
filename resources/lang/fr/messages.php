@@ -88,6 +88,8 @@ return [
         'MESSAGE_NO_COUNTRY_FOUND' => 'Pays non trouvé',
         'MESSAGE_TENANT_SETTINGS_UPDATED' => 'Paramètres du locataire mis à jour avec succès',
         'TIMESHEET_ENTRY_ADDED_SUCESSFULLY' => 'Entrée de la feuille de temps ajoutée avec succès',
+        'MESSAGE_TIMESHEET_ENTRIES_LISTING' => 'Entrées de la feuille de temps listées avec succès',
+        'MESSAGE_NO_TIMESHEET_ENTRIES_FOUND' => 'Entrées de la feuille de temps non trouvées',
     ],
 
         
