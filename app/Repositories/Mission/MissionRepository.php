@@ -634,9 +634,9 @@ class MissionRepository implements MissionInterface
         //Explore mission by top favourite
         if ($request->has('explore_mission_type') &&
         ($request->input('explore_mission_type') == config('constants.TOP_FAVOURITE'))) {
-            $missionQuery->withCount(['favouriteMission as favourite_mission_count']);
-            $missionQuery = $missionQuery->having("favourite_mission_count", '>', '0');
-            $missionQuery->orderBY('favourite_mission_count', 'desc');
+            $missionQuery->withCount(['favouriteMission as favourite_mission_counts']);
+            $missionQuery = $missionQuery->having("favourite_mission_counts", '>', '0');
+            $missionQuery->orderBY('favourite_mission_counts', 'desc');
         }
 
         //Explore mission by most ranked
