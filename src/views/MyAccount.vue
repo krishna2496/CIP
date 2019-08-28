@@ -48,7 +48,6 @@
             </b-list-group>
             <div class="link-wrap">
                 <b-button
-                  title="change password"
                   class="btn-link-border"
                   @click="$refs.changePasswordModal.show()"
                 >{{langauageData.label.change_password}}</b-button>
@@ -570,7 +569,7 @@ export default {
                 if(response.error == true){
                     this.makeToast("danger",response.message);
                 } else {
-                    
+                    console.log(response);
                     this.makeToast("success",response.message);
                     store.commit("changeAvatar",response.data)
                 }
