@@ -203,6 +203,15 @@ class TenantOptionsController extends Controller
     {
         $isVariableScss = 0;
 
+        if (!$request->hasFile('custom_scss_file') && empty($request->primary_color)) {
+            return $this->responseHelper->error(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                config('constants.error_codes.ERROR_REQUIRED_FIELDS_FOR_UPDATE_STYLING'),
+                trans('messages.custom_error_message.ERROR_REQUIRED_FIELDS_FOR_UPDATE_STYLING')
+            );
+        }
+        
         try {
             $this->tenantOptionRepository->updateStyleSettings($request);
         } catch (PDOException $e) {
