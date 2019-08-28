@@ -121,7 +121,13 @@
 		"my_account" : "Mon compte",
 		"remove" : "Retirer",
 		"edit" : "Modifier",
-		"clear_search" : "Effacer la recherche"
+		"clear_search" : "Effacer la recherche",
+		"facebook": "Facebook",
+		"twitter": "Gazouillement",
+		"oops": "Oops!",
+		"page_not_found_message_heading": "Oops! La page que vous recherchez n'existe pas.",
+		"page_not_found_message_text": "Vous avez peut-être mal saisi l'adresse ou la page a été déplacée.",
+		"go_to_home_page": "Aller à la page d'accueil"
 	},
 
 	"placeholder" : {

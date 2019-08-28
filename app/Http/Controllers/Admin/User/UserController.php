@@ -100,7 +100,8 @@ class UserController extends Controller
                 "city_id" => "integer|required|exists:city,city_id,deleted_at,NULL",
                 "country_id" => "integer|required|exists:country,country_id,deleted_at,NULL",
                 "profile_text" => "required",
-                "employee_id" => "max:16",
+                "employee_id" => "max:16|
+                unique:user,employee_id,NULL,user_id,deleted_at,NULL",
                 "department" => "max:16",
                 "manager_name" => "max:16",
                 "linked_in_url" => "url"
@@ -203,7 +204,11 @@ class UserController extends Controller
                     "email",
                     Rule::unique('user')->ignore($id, 'user_id')],
                 "password" => "sometimes|required|min:8",
-                "employee_id" => "sometimes|required|max:16",
+                "employee_id" => [
+                    "sometimes",
+                    "required",
+                    "max:16",
+                    Rule::unique('user')->ignore($id, 'user_id,deleted_at,NULL')],
                 "department" => "sometimes|required|max:16",
                 "manager_name" => "sometimes|required|max:16",
                 "linked_in_url" => "url",
