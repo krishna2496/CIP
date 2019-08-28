@@ -21,6 +21,7 @@ use App\Exceptions\FileUploadException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Jobs\CopyDefaultThemeImagesToTenantImagesJob;
 use App\Exceptions\TenantDomainNotFoundException;
+use App\Jobs\ResetStyeSettingsJob;
 
 class TenantOptionsController extends Controller
 {
@@ -166,26 +167,23 @@ class TenantOptionsController extends Controller
         } catch (\Exception $e) {
             return $this->badRequest('messages.custom_error_message.ERROR_OCCURRED');
         }
-        
-        try {
-            // Copy default theme folder to tenant folder on s3
-            dispatch(new CreateFolderInS3BucketJob($tenantName));
-        } catch (S3Exception $e) {
-            return $this->s3Exception(
-                config('constants.error_codes.ERROR_FAILED_TO_RESET_STYLING'),
-                trans('messages.custom_error_message.ERROR_FAILED_TO_RESET_STYLING')
-            );
-        } catch (BucketNotFoundException $e) {
-            throw $e;
-        } catch (\Exception $e) {
-            throw new \Exception(trans('messages.custom_error_message.ERROR_FAILED_TO_RESET_STYLING'));
-        }
 
-        // Copy tenant folder to local
-        dispatch(new DownloadAssestFromS3ToLocalStorageJob($tenantName));
+        // Database connection with master database
+        $this->helpers->switchDatabaseConnection('mysql', $request);
         
-        // Compile downloaded files and update css on s3
-        $this->s3helper->compileLocalScss($tenantName);
+        // Change queue default driver to database
+        $queueManager = app('queue');
+        $defaultDriver = $queueManager->getDefaultDriver();
+        $queueManager->setDefaultDriver('database');
+
+        // Dispatch job, that will store in master database
+        dispatch(new ResetStyeSettingsJob($tenantName));
+
+        // Change queue driver to default
+        $queueManager->setDefaultDriver($defaultDriver);
+        
+        // Database connection with tenant database
+        $this->helpers->switchDatabaseConnection('tenant', $request);
         
         // Set response data
         $apiStatus = Response::HTTP_OK;
