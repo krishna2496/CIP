@@ -648,16 +648,15 @@ class MissionRepository implements MissionInterface
             $missionQuery = $missionQuery->having("average_rating", '>', '0');
             $missionQuery->orderBY('mission_rating_count', 'desc');
         }
-        
-        $missionData = $missionQuery->get();
-        $missionCollection = collect($missionData);
-
         $page = $request->page ?? 1;
         $perPage = $request->perPage;
+        $offSet = ($page-1) * $perPage;
+        $totalCount = $missionQuery->get()->count();
+        $missionData = $missionQuery->offset($offSet)->limit($perPage)->get();
 
         $paginate = new LengthAwarePaginator(
-            $missionCollection->forPage($page, $perPage),
-            $missionCollection->count(),
+            $missionData,
+            $totalCount,
             $perPage,
             $page,
             ['path'=>url($request->getPathInfo())]
