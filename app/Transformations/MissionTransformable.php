@@ -38,7 +38,8 @@ trait MissionTransformable
 
         $mission['user_application_status']  = ($mission['missionApplication'][0]['approval_status']) ?? '';
         $mission['rating']  = ($mission['missionRating'][0]['rating']) ?? 0;
-        $mission['is_favourite']  = (empty($mission['favouriteMission']->toArray())) ? 0 : 1;
+        $mission['is_favourite']  = ($mission['favourite_mission_count'] && ($mission['favourite_mission_count'] != 0))
+        ? 1 : 0;
         unset($mission['missionRating']);
         unset($mission['favouriteMission']);
         unset($mission['missionApplication']);
