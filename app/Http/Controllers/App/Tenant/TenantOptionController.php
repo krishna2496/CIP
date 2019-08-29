@@ -10,6 +10,7 @@ use App\Helpers\ResponseHelper;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Config;
 use App\Repositories\TenantOption\TenantOptionRepository;
+use App\Repositories\Slider\SliderRepository;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Traits\RestExceptionHandlerTrait;
 use InvalidArgumentException;
@@ -24,6 +25,11 @@ class TenantOptionController extends Controller
      * @var TenantOptionRepository
      */
     private $tenantOption;
+
+    /**
+     * @var SliderRepository
+     */
+    private $sliderRepository;
 
     /**
      * @var App\Helpers\ResponseHelper
@@ -44,6 +50,7 @@ class TenantOptionController extends Controller
      * Create a new controller instance.
      *
      * @param App\Repositories\TenantOption\TenantOptionRepository $tenantOptionRepository
+     * @param App\Repositories\Slider\SliderRepository $sliderRepository
      * @param Illuminate\Http\ResponseHelper $responseHelper
      * @param App\Helpers\LanguageHelper $languageHelper
      * @param App\Helpers\Helpers $helpers
@@ -51,11 +58,13 @@ class TenantOptionController extends Controller
      */
     public function __construct(
         TenantOptionRepository $tenantOptionRepository,
+        SliderRepository $sliderRepository,
         ResponseHelper $responseHelper,
         LanguageHelper $languageHelper,
         Helpers $helpers
     ) {
         $this->tenantOptionRepository = $tenantOptionRepository;
+        $this->sliderRepository = $sliderRepository;
         $this->responseHelper = $responseHelper;
         $this->languageHelper = $languageHelper;
         $this->helpers = $helpers;
@@ -77,19 +86,18 @@ class TenantOptionController extends Controller
             
             if ($data) {
                 foreach ($data as $key => $value) {
-                    // For slider
-                    if ($value->option_name == config('constants.TENANT_OPTION_SLIDER')) {
-                        $slider[]= json_decode($value->option_value, true);
-                    } else {
-                        $optionData[$value->option_name] = $value->option_value;
-                    }
-                }
-                // Sort an array by sort order of slider
-                if (!empty($slider)) {
-                    $this->helpers->sortMultidimensionalArray($slider, 'sort_order', SORT_ASC);
-                    $optionData['sliders'] = $slider;
+                    $optionData[$value->option_name] = $value->option_value;
                 }
             }
+            // For slider
+            $sliderData = array();
+            $sliders = $this->sliderRepository->getAllSliders();
+            foreach ($sliders as $key => $value) {
+                $value['slider_detail']['translations'] = $value['translations'];
+                unset($value['translations']);
+                $sliderData[] = $value;
+            }
+            $optionData['sliders'] = $sliderData;
 
             $tenantLanguages = $this->languageHelper->getTenantLanguages($request);
 

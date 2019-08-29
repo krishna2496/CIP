@@ -12,7 +12,9 @@ class AppServiceProvider extends ServiceProvider
     {
         Validator::extend('valid_media_path', function ($attribute, $value) {
             $urlExtension = pathinfo($value, PATHINFO_EXTENSION);
-            return (!in_array($urlExtension, config('constants.image_types'))) ? false : true;
+            $validExtensions = ($attribute == 'url') ?
+            config('constants.slider_image_types') : config('constants.image_types');
+            return (!in_array($urlExtension, $validExtensions)) ? false : true;
         });
 
         Validator::extend('valid_document_path', function ($attribute, $value) {

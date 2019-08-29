@@ -78,6 +78,10 @@ return [
         'MESSAGE_NO_SKILL_FOUND' => 'DE: Skill not found',
         'MESSAGE_NO_COUNTRY_FOUND' => 'DE: Country not found',
         'MESSAGE_TENANT_SETTINGS_UPDATED' => 'DE: Tenant settings updated successfully',
+        'MESSAGE_SLIDERS_LIST' => 'DE: Sliders listed successfully',
+        'MESSAGE_NO_SLIDER_FOUND' => 'DE: Slider not found',
+        'MESSAGE_SLIDER_UPDATED_SUCCESS' => 'DE: Slider image updated successfully',
+        'MESSAGE_SLIDER_DELETED' => 'DE: Slider deleted successfully',
     ],
 
         
@@ -169,5 +173,6 @@ return [
         'ERROR_TENANT_OPTION_NOT_FOUND' => 'DE: No tenant option found',
         'ERROR_COUNTRY_NOT_FOUND' => 'DE: Requested country does not exist',
         'ERROR_FAILD_TO_UPLOAD_PROFILE_IMAGE_ON_S3' => 'DE: Failed to upload image on S3',
+        'ERROR_SLIDER_NOT_FOUND' => 'DE: No slider found',
     ],
 ];
