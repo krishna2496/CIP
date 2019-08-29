@@ -21,4 +21,21 @@ interface TimesheetInterface
      * @return int
      */
     public function getAddedActions(int $missionId): int;
+    
+    /**
+     * Update timesheet
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param int $timesheetId
+     * @return bool
+     */
+    public function updateTimesheet(Request $request, int $timesheetId):  bool;
+
+    /**
+     * Fetch timesheet details
+     *
+     * @param int $timesheetId
+     * @return null|Timesheet
+     */
+    public function find(int $timesheetId): ?Timesheet;
 }

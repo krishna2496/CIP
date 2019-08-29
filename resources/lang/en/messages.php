@@ -91,7 +91,8 @@ return [
         'MESSAGE_NO_COUNTRY_FOUND' => 'Country not found',
         'MESSAGE_TENANT_SETTINGS_UPDATED' => 'Tenant settings updated successfully',
         'TIMESHEET_ENTRY_ADDED_SUCESSFULLY' => 'Timesheet entry added successfully',
-		],
+        'TIMESHEET_ENTRY_UPDATED_SUCESSFULLY' => 'Timesheet entry updated successfully',
+	],
         
     /**
     * API Error Codes and Message
@@ -192,5 +193,6 @@ return [
 
         //For timesheet module
         'ERROR_INVALID_ACTION' => 'Invalid goal action',
+        'TIMESHEET_NOT_FOUND' => 'Timesheet does not exists' ,
     ],
 ];

@@ -79,6 +79,7 @@ return [
         'MESSAGE_NO_COUNTRY_FOUND' => 'DE: Country not found',
         'MESSAGE_TENANT_SETTINGS_UPDATED' => 'DE: Tenant settings updated successfully',
         'TIMESHEET_ENTRY_ADDED_SUCESSFULLY' => 'DE: Timesheet entry added successfully',
+        'TIMESHEET_ENTRY_UPDATED_SUCESSFULLY' => 'DE: Timesheet entry updated successfully',
     ],
 
         
@@ -173,5 +174,6 @@ return [
 
         //For timesheet module
         'ERROR_INVALID_ACTION' => 'DE: Invalid goal action',
+        'TIMESHEET_NOT_FOUND' => 'DE: Timesheet does not exists',
     ],
 ];

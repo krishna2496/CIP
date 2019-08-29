@@ -60,23 +60,27 @@ class TimesheetRepository implements TimesheetInterface
      */
     public function storeTimesheet(Request $request): Timesheet
     {
-        
         $data = $request->toArray();
         $timesheet = $this->timesheet->create($data);
         $tenantName = $this->helpers->getSubDomainFromRequest($request);
 
-        // Add timesheet documents
-        if (isset($request->documents) && count($request->documents) > 0) {
-            if (!empty($request->documents)) {
-                foreach ($request->documents as $value) {
-                    $filePath = $this->s3helper->uploadFileOnS3Bucket($value['document_path'], $tenantName);
-                    $timesheetDocument = array('timesheet_id' => $timesheet->timesheet_id,
-                                            'document_name' => basename($filePath),
-                                            'document_type' => pathinfo(basename($filePath), PATHINFO_EXTENSION),
-                                            'document_path' => $filePath);
-                    $this->timesheetDocument->create($timesheetDocument);
-                    unset($timesheetDocument);
-                }
+        $files = $request->file('documents');
+       
+        if ($request->hasFile('documents')) {
+            foreach ($files as $file) {
+                $filePath = $this->s3helper
+                ->uploadDocumentOnS3Bucket(
+                    $file,
+                    $tenantName,
+                    $request->auth->user_id,
+                    $timesheet->timesheet_id
+                );
+                $timesheetDocument = array('timesheet_id' => $timesheet->timesheet_id,
+                                        'document_name' => basename($filePath),
+                                        'document_type' => pathinfo(basename($filePath), PATHINFO_EXTENSION),
+                                        'document_path' => $filePath);
+                $this->timesheetDocument->create($timesheetDocument);
+                unset($timesheetDocument);
             }
         }
         return $timesheet;
@@ -91,5 +95,53 @@ class TimesheetRepository implements TimesheetInterface
     public function getAddedActions(int $missionId): int
     {
         return ($this->timesheet->where('mission_id', $missionId)->sum('action')) ?? 0;
+    }
+
+    /**
+     * Update timesheet
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param int $timesheetId
+     * @return bool
+     */
+    public function updateTimesheet(Request $request, int $timesheetId):  bool
+    {
+        $timesheetData =$this->timesheet->where(['timesheet_id' => $timesheetId,
+        'user_id' => $request->auth->user_id])->firstOrFail();
+
+        $data = $request->toArray();
+        $timesheet = $timesheetData->update($data);
+        $tenantName = $this->helpers->getSubDomainFromRequest($request);
+
+        $files = $request->file('documents');
+       
+        if ($request->hasFile('documents')) {
+            foreach ($files as $file) {
+                $filePath = $this->s3helper->uploadDocumentOnS3Bucket(
+                    $file,
+                    $tenantName,
+                    $request->auth->user_id,
+                    $timesheetId
+                );
+                $timesheetDocument = array('timesheet_id' => $timesheetId,
+                                        'document_name' => basename($filePath),
+                                        'document_type' => pathinfo(basename($filePath), PATHINFO_EXTENSION),
+                                        'document_path' => $filePath);
+                $this->timesheetDocument->create($timesheetDocument);
+                unset($timesheetDocument);
+            }
+        }
+        return $timesheet;
+    }
+
+    /**
+     * Fetch timesheet details
+     *
+     * @param int $timesheetId
+     * @return null|Timesheet
+     */
+    public function find(int $timesheetId): ?Timesheet
+    {
+        return $this->timesheet->findOrFail($timesheetId);
     }
 }

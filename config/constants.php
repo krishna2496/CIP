@@ -18,6 +18,7 @@ return [
     'RELATED_MISSION_LIMIT' => '3',
     'MISSION_MEDIA_LIMIT' => '20',
     'SKILL_LIMIT' => '15',
+    'TIMESHEET_DOCUMENT_SIZE_LIMIT' => '5120',
 
     'EMAIL_TEMPLATE_FOLDER' => 'emails',
     'EMAIL_TEMPLATE_USER_INVITE' => 'invite',
@@ -223,6 +224,7 @@ return [
         'ERROR_SKILL_LIMIT' => '400030',
         'ERROR_TIMESHEET_ITEMS_REQUIRED_FIELDS_EMPTY' => '400031',
         'ERROR_INVALID_ACTION' => '400032',
+        'TIMESHEET_NOT_FOUND' => '400033',
                 
         'ERROR_OCCURRED' => '999999',
         'ERROR_INVALID_JSON' => '900000',

@@ -196,6 +196,11 @@ $router->group(['middleware' => 'localization'], function ($router) {
     'middleware' => 'tenant.connection|jwt.auth',
     'uses' => 'App\Timesheet\TimesheetController@store']);
 
+    /* Update timesheet data */
+    $router->patch('/app/timesheet/{timesheetId}', ['as' => 'app.timesheet',
+    'middleware' => 'tenant.connection|jwt.auth',
+    'uses' => 'App\Timesheet\TimesheetController@update']);
+
 /*
 |
 |--------------------------------------------------------------------------
