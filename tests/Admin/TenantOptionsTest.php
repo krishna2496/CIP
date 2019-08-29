@@ -32,7 +32,7 @@ class TenantOptionsTest extends TestCase
         $count = $tenant->where('option_name', config('constants.TENANT_OPTION_SLIDER'))->count();
 
         if ($count >= config('constants.SLIDER_LIMIT')) {
-            $this->post("create_slider/", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+            $this->post("slider/", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
             ->seeStatusCode(403)
             ->seeJsonStructure([
                 'errors' => [
@@ -45,7 +45,7 @@ class TenantOptionsTest extends TestCase
                     ]
                 ]);
         } else {
-            $this->post("create_slider/", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+            $this->post("slider/", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
             ->seeStatusCode(201)
             ->seeJsonStructure([
                 'status',
@@ -92,7 +92,7 @@ class TenantOptionsTest extends TestCase
             ],
         ];
 
-        $this->post("create_slider/", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post("slider/", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
         ->seeStatusCode(422)
         ->seeJsonStructure([
             'errors' => [

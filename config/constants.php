@@ -89,6 +89,15 @@ return [
     'image_types' => [
         'PNG' => 'png'
     ],
+
+    /*
+     * Slider image types
+     */
+    'slider_image_types' => [
+        'PNG' => 'png',
+        'JPG' => 'jpg',
+        'JPEG' => 'jpeg',
+    ],
     
     /*
      * User profile image allowed MIME types
@@ -184,6 +193,7 @@ return [
         'ERROR_NOT_VALID_EXTENSION' => '100015',
         'ERROR_FILE_NAME_NOT_MATCHED_WITH_STRUCTURE' => '100016',
         'ERROR_INVALID_IMAGE_URL' => '100017',
+        'ERROR_SLIDER_NOT_FOUND' => '100018',
         'ERROR_INVALID_API_AND_SECRET_KEY' => '210000',
         'ERROR_API_AND_SECRET_KEY_REQUIRED' => '210001',
         'ERROR_EMAIL_NOT_EXIST' => '210002',

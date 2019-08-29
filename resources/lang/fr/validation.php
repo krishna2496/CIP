@@ -101,6 +101,9 @@ return [
 		'parent_skill' => [
             'valid_parent_skill' => 'Compétence parent invalide',
         ],
+        'url' => [
+            'valid_media_path' => 'Please enter valid image url',
+        ],
     ],
 
     /*

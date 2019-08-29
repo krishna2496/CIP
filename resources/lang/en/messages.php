@@ -90,6 +90,10 @@ return [
         'MESSAGE_NO_SKILL_FOUND' => 'Skill not found',
         'MESSAGE_NO_COUNTRY_FOUND' => 'Country not found',
         'MESSAGE_TENANT_SETTINGS_UPDATED' => 'Tenant settings updated successfully',
+        'MESSAGE_SLIDERS_LIST' => 'Sliders listed successfully',
+        'MESSAGE_NO_SLIDER_FOUND' => 'Slider not found',
+        'MESSAGE_SLIDER_UPDATED_SUCCESS' => 'Slider image updated successfully',
+        'MESSAGE_SLIDER_DELETED' => 'Slider deleted successfully',
 		],
         
     /**
@@ -190,5 +194,6 @@ return [
         'ERROR_FAILD_TO_UPLOAD_PROFILE_IMAGE_ON_S3' => 'Failed to upload image on S3',
         'ERROR_REQUIRED_FIELDS_FOR_UPDATE_STYLING' => 'Required either primary color or custom SCSS file field',
         'ERROR_WHILE_UPLOADING_FILE_ON_S3' => 'An error while uploading file on S3',
+        'ERROR_SLIDER_NOT_FOUND' => 'No slider found',
     ],
 ];

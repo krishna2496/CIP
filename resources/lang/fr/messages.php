@@ -87,6 +87,10 @@ return [
         'MESSAGE_NO_SKILL_FOUND' => 'Compétence non trouvée',
         'MESSAGE_NO_COUNTRY_FOUND' => 'Pays non trouvé',
         'MESSAGE_TENANT_SETTINGS_UPDATED' => 'Paramètres du locataire mis à jour avec succès',
+        'MESSAGE_SLIDERS_LIST' => 'Sliders listés avec succès',
+        'MESSAGE_NO_SLIDER_FOUND' => 'Slider introuvable',
+        'MESSAGE_SLIDER_UPDATED_SUCCESS' => 'Image du curseur mise à jour avec succès',
+        'MESSAGE_SLIDER_DELETED' => 'Slider supprimé avec succès',
     ],
 
         
@@ -185,5 +189,6 @@ return [
         'ERROR_FAILD_TO_UPLOAD_PROFILE_IMAGE_ON_S3' => 'Échec du téléchargement de fichiers sur S3',
         'ERROR_REQUIRED_FIELDS_FOR_UPDATE_STYLING' => 'Requis soit en couleur primaire, soit en champ de fichier SCSS personnalisé',
         'ERROR_WHILE_UPLOADING_FILE_ON_S3' => 'Une erreur lors du téléchargement du fichier sur S3',
+        'ERROR_SLIDER_NOT_FOUND' => 'Aucun curseur trouvé',
     ],
 ];

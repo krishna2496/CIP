@@ -63,18 +63,7 @@ class TenantOptionRepository implements TenantOptionInterface
     }
 
     /**
-     * Store tenant slider data.
-     *
-     * @param  array $data
-     * @return App\Models\TenantOption
-     */
-    public function storeSlider(array $data): TenantOption
-    {
-        return $this->tenantOption->create($data);
-    }
-
-    /**
-     * Store tenant option data
+     * Get tenant option data
      *
      * @return Illuminate\Support\Collection
      */
@@ -102,16 +91,6 @@ class TenantOptionRepository implements TenantOptionInterface
             throw new ModelNotFoundException(trans('messages.custom_error_message.ERROR_TENANT_OPTION_NOT_FOUND'));
         }
         return $optionQuery->first();
-    }
-
-    /**
-    * Get a count of slider.
-    *
-    * @return int
-    */
-    public function getAllSliderCount(): int
-    {
-        $count = $this->tenantOption->where('option_name', config('constants.TENANT_OPTION_SLIDER'))->count();
     }
 
     /**

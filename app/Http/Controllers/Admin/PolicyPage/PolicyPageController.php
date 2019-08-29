@@ -58,7 +58,6 @@ class PolicyPageController extends Controller
 
             // Set response data
             $apiStatus = Response::HTTP_OK;
-            $apiMessage = trans('messages.success.MESSAGE_POLICY_PAGE_LISTING');
             $apiMessage = ($policyPages->isEmpty()) ? trans('messages.success.MESSAGE_NO_RECORD_FOUND') :
              trans('messages.success.MESSAGE_POLICY_PAGE_LISTING');
             return $this->responseHelper->successWithPagination($apiStatus, $apiMessage, $policyPages);
