@@ -12,6 +12,7 @@ use Throwable;
 use App\Exceptions\TenantDomainNotFoundException;
 use Carbon\Carbon;
 use stdClass;
+use Illuminate\Support\Facades\Hash;
 
 class Helpers
 {
@@ -32,23 +33,28 @@ class Helpers
     */
     public function getSubDomainFromRequest(Request $request) : string
     {
-        if ((env('APP_ENV') == 'local' || env('APP_ENV') == 'testing')) {
-            return env('DEFAULT_TENANT');
+        // Check admin request
+        if ($request->header('php-auth-pw') && $request->header('php-auth-user')) {
+            return $this->getDomainFromUserAPIKeys($request);
         } else {
-            if (isset($request->headers->all()['referer'])) {
-                try {
-                    return explode(".", parse_url($request->headers->all()['referer'][0])['host'])[0];
-                } catch (\Exception $e) {
-                    return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
-                }
+            if ((env('APP_ENV') == 'local' || env('APP_ENV') == 'testing')) {
+                return env('DEFAULT_TENANT');
             } else {
-                if ((env('APP_ENV')=='local' || env('APP_ENV')=='testing')) {
-                    return env('DEFAULT_TENANT');
+                if (isset($request->headers->all()['referer'])) {
+                    try {
+                        return explode(".", parse_url($request->headers->all()['referer'][0])['host'])[0];
+                    } catch (\Exception $e) {
+                        return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
+                    }
                 } else {
-                    throw new TenantDomainNotFoundException(
-                        trans('messages.custom_error_message.ERROR_TENANT_DOMAIN_NOT_FOUND'),
-                        config('constants.error_codes.ERROR_TENANT_DOMAIN_NOT_FOUND')
-                    );
+                    if ((env('APP_ENV')=='local' || env('APP_ENV')=='testing')) {
+                        return env('DEFAULT_TENANT');
+                    } else {
+                        throw new TenantDomainNotFoundException(
+                            trans('messages.custom_error_message.ERROR_TENANT_DOMAIN_NOT_FOUND'),
+                            config('constants.error_codes.ERROR_TENANT_DOMAIN_NOT_FOUND')
+                        );
+                    }
                 }
             }
         }
@@ -106,15 +112,11 @@ class Helpers
     public function switchDatabaseConnection(string $connection, Request $request)
     {
         try {
-            $domain = $this->getSubDomainFromRequest($request);
             // Set master connection
             $pdo = DB::connection('mysql')->getPdo();
             Config::set('database.default', 'mysql');
 
             if ($connection=="tenant") {
-                // Uncomment code for production
-                /*$tenant = DB::table('tenant')->where('name',$domain)->whereNull('deleted_at')->first();
-                $this->createConnection($tenant->tenant_id);*/
                 $pdo = DB::connection('tenant')->getPdo();
                 Config::set('database.default', 'tenant');
             }
@@ -137,28 +139,17 @@ class Helpers
      */
     public function createConnection(int $tenantId)
     {
-        try {
-            Config::set('database.connections.tenant', array(
-                'driver'    => 'mysql',
-                'host'      => env('DB_HOST'),
-                'database'  => 'ci_tenant_'.$tenantId,
-                'username'  => env('DB_USERNAME'),
-                'password'  => env('DB_PASSWORD'),
-            ));
-            // Create connection for the tenant database
-            $pdo = DB::connection('tenant')->getPdo();
-            // Set default database
-            Config::set('database.default', 'tenant');
-        } catch (PDOException $e) {
-            return $this->PDO(
-                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
-                trans(
-                    'messages.custom_error_message.ERROR_DATABASE_OPERATIONAL'
-                )
-            );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
-        }
+        Config::set('database.connections.tenant', array(
+            'driver'    => 'mysql',
+            'host'      => env('DB_HOST'),
+            'database'  => 'ci_tenant_'.$tenantId,
+            'username'  => env('DB_USERNAME'),
+            'password'  => env('DB_PASSWORD'),
+        ));
+        // Create connection for the tenant database
+        $pdo = DB::connection('tenant')->getPdo();
+        // Set default database
+        Config::set('database.default', 'tenant');
     }
 
     /**
@@ -340,6 +331,34 @@ class Helpers
             );
         } catch (\Exception $e) {
             return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
+        }
+    }
+
+    
+    public function getDomainFromUserAPIKeys(Request $request)
+    {
+        // Check basic auth passed or not
+        $this->switchDatabaseConnection('mysql', $request);
+        // authenticate api user based on basic auth parameters
+        $apiUser = DB::table('api_user')
+                    ->leftJoin('tenant', 'tenant.tenant_id', '=', 'api_user.tenant_id')
+                    ->where('api_key', base64_encode($request->header('php-auth-user')))
+                    ->where('api_user.status', '1')
+                    ->where('tenant.status', '1')
+                    ->whereNull('api_user.deleted_at')
+                    ->whereNull('tenant.deleted_at')
+                    ->first();
+
+        $this->switchDatabaseConnection('tenant', $request);
+        // If user authenticates successfully
+        if ($apiUser && Hash::check($request->header('php-auth-pw'), $apiUser->api_secret)) {
+            // Create connection with their tenant database
+            return $apiUser->name;
+        } else {
+            throw new TenantDomainNotFoundException(
+                trans('messages.custom_error_message.ERROR_TENANT_DOMAIN_NOT_FOUND'),
+                config('constants.error_codes.ERROR_TENANT_DOMAIN_NOT_FOUND')
+            );
         }
     }
 }
