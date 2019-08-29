@@ -88,4 +88,15 @@ class SliderRepository implements SliderInterface
     {
         return $this->slider->select('url', 'translations', 'sort_order')->orderBy('sort_order')->get()->toArray();
     }
+
+    /**
+     * Find Slider
+     *
+     * @param  int  $id
+     * @return App\Models\Slider
+     */
+    public function find(int $id): Slider
+    {
+        return $this->slider->findOrFail($id);
+    }
 }
