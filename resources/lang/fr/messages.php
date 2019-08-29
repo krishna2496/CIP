@@ -88,7 +88,7 @@ return [
         'MESSAGE_NO_COUNTRY_FOUND' => 'Pays non trouvé',
         'MESSAGE_TENANT_SETTINGS_UPDATED' => 'Paramètres du locataire mis à jour avec succès',
         'MESSAGE_SLIDERS_LIST' => 'Sliders listés avec succès',
-        'MESSAGE_NO_SLIDER_FOUND' => 'Slider introuvable',
+        'MESSAGE_NO_SLIDER_FOUND' => 'Aucun curseur trouvé',
         'MESSAGE_SLIDER_UPDATED_SUCCESS' => 'Image du curseur mise à jour avec succès',
         'MESSAGE_SLIDER_DELETED' => 'Slider supprimé avec succès',
     ],

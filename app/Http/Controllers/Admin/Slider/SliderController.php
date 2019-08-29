@@ -10,7 +10,6 @@ use App\Helpers\ResponseHelper;
 use App\Helpers\S3Helper;
 use App\Helpers\Helpers;
 use App\Traits\RestExceptionHandlerTrait;
-use InvalidArgumentException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Validator;
 
@@ -72,7 +71,7 @@ class SliderController extends Controller
             [
                 "url" => "required|url|valid_media_path",
                 "translations.*.lang" => "max:2",
-                "sort_order" => "integer|max:1"
+                "sort_order" => "numeric|min:0"
             ]
         );
 
@@ -130,6 +129,14 @@ class SliderController extends Controller
                 config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
                 trans('messages.custom_error_message.ERROR_DATABASE_OPERATIONAL')
             );
+        } catch (\ErrorException $e) {
+            // Response error unable to upload file on S3
+            return $this->responseHelper->error(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                config('constants.error_codes.ERROR_SLIDER_IMAGE_UPLOAD'),
+                trans('messages.custom_error_message.ERROR_SLIDER_IMAGE_UPLOAD')
+            );
         } catch (\Exception $e) {
             return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
@@ -150,7 +157,7 @@ class SliderController extends Controller
             [
                 "url" => "sometimes|required|url",
                 "translations.*.lang" => "max:2",
-                "sort_order" => "integer|max:1"
+                "sort_order" => "numeric|min:0"
             ]
         );
 
@@ -165,9 +172,10 @@ class SliderController extends Controller
         }
 
         try {
+            $this->sliderRepository->find($id);
             // Upload slider image on S3 server
             $tenantName = $this->helpers->getSubDomainFromRequest($request);
-
+            
             if (isset($request->url)) {
                 $imageUrl = "";
                 if ($imageUrl = $this->s3helper->uploadFileOnS3Bucket($request->url, $tenantName)) {
@@ -202,6 +210,14 @@ class SliderController extends Controller
                 config('constants.error_codes.ERROR_SLIDER_NOT_FOUND'),
                 trans('messages.custom_error_message.ERROR_SLIDER_NOT_FOUND')
             );
+        } catch (\ErrorException $e) {
+            // Response error unable to upload file on S3
+            return $this->responseHelper->error(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                config('constants.error_codes.ERROR_SLIDER_IMAGE_UPLOAD'),
+                trans('messages.custom_error_message.ERROR_SLIDER_IMAGE_UPLOAD')
+            );
         } catch (\Exception $e) {
             return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
@@ -231,11 +247,6 @@ class SliderController extends Controller
             return $this->PDO(
                 config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
                 trans('messages.custom_error_message.ERROR_DATABASE_OPERATIONAL')
-            );
-        } catch (InvalidArgumentException $e) {
-            return $this->invalidArgument(
-                config('constants.error_codes.ERROR_INVALID_ARGUMENT'),
-                trans('messages.custom_error_message.ERROR_INVALID_ARGUMENT')
             );
         } catch (\Exception $e) {
             return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
