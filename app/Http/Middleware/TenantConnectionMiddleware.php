@@ -51,18 +51,12 @@ class TenantConnectionMiddleware
                 throw new \Exception();
             }
         } else {
-            // Uncomment below line while testing in apis with front side.
-            if (env('APP_ENV') == 'local' || env('APP_ENV') == 'testing') {
-                try {
-                    $domain = $this->helpers->getSubDomainFromRequest($request);
-                } catch (TenantDomainNotFoundException $e) {
-                    throw $e;
-                } catch (\Exception $e) {
-                    throw new \Exception();
-                }
-            } else {
-                // comment below line while testing in apis with front side.
-                $domain = env('DEFAULT_TENANT');
+            try {
+                $domain = $this->helpers->getSubDomainFromRequest($request);
+            } catch (TenantDomainNotFoundException $e) {
+                throw $e;
+            } catch (\Exception $e) {
+                throw new \Exception();
             }
         }
 
