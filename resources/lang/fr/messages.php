@@ -188,6 +188,7 @@ return [
         'ERROR_COMMENT_NOT_FOUND' => 'Commentaire non trouvé',
         'ERROR_FAILD_TO_UPLOAD_PROFILE_IMAGE_ON_S3' => 'Échec du téléchargement de fichiers sur S3',
         'ERROR_REQUIRED_FIELDS_FOR_UPDATE_STYLING' => 'Requis soit en couleur primaire, soit en champ de fichier SCSS personnalisé',
+        'ERROR_WHILE_UPLOADING_FILE_ON_S3' => 'Une erreur lors du téléchargement du fichier sur S3',
         'ERROR_SLIDER_NOT_FOUND' => 'Aucun curseur trouvé',
     ],
 ];

@@ -193,6 +193,7 @@ return [
         'ERROR_COMMENT_NOT_FOUND' => 'Requested comment does not exist',
         'ERROR_FAILD_TO_UPLOAD_PROFILE_IMAGE_ON_S3' => 'Failed to upload image on S3',
         'ERROR_REQUIRED_FIELDS_FOR_UPDATE_STYLING' => 'Required either primary color or custom SCSS file field',
+        'ERROR_WHILE_UPLOADING_FILE_ON_S3' => 'An error while uploading file on S3',
         'ERROR_SLIDER_NOT_FOUND' => 'No slider found',
     ],
 ];
