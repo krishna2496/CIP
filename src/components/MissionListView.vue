@@ -317,6 +317,12 @@ export default {
                     var lastName = option.last_name.toLowerCase();
                     var email = option.email.toLowerCase();
                     var searchString = firstName+''+lastName+''+email;
+                    setTimeout(function(){
+                        var myElement = document.querySelector('.autosuggest__results');
+                        if(myElement != null) {
+                            new SimpleBar(myElement, { autoHide: false });
+                        }
+                    });
                     return searchString.indexOf(this.query.toLowerCase()) > -1;
                   })
                 }
@@ -413,7 +419,9 @@ export default {
                 var onFocus = document.getElementById('autosuggest');
                     onFocus.addEventListener("click", function(){
                         var myElement = document.querySelector('.autosuggest__results');
-                        new SimpleBar(myElement, { autoHide: true });   
+                        if(myElement != null) {
+                            new SimpleBar(myElement, { autoHide: true });   
+                        }
                     });
             });
         },

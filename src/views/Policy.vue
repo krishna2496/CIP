@@ -64,18 +64,28 @@ export default {
         // left menu sticky function
         handleScroll() {
             var nav_ = document.querySelector(".cms-nav");
-            var header_height = document.querySelector("header").offsetHeight;
-            var nav_top = nav_.offsetTop;
-            var window_top = window.pageYOffset + (header_height + 1);
-            var nav_height = document.querySelector(".cms-nav .nav").offsetHeight;
-            var nav_bottom = nav_height + nav_top;
-            var footer_top = document.querySelector("footer").getBoundingClientRect()
-            .top;
-         if(screen.width > 767){
+      var nav_top = nav_.offsetTop;
+      var screen_height = document.body.clientHeight;
+      var header_height = document.querySelector("header").offsetHeight;
+      var footer_height = document.querySelector("footer").offsetHeight
+      var window_top = window.pageYOffset + (header_height + 1);
+      var nav_height = document.querySelector(".cms-nav .nav").offsetHeight;
+      var nav_bottom = nav_height + nav_top;
+      var footer_top = document.querySelector("footer").getBoundingClientRect()
+        .top;
+
+      var content_height = document.querySelector('.cms-content').offsetHeight - parseInt(window.getComputedStyle(document.querySelector('.cms-content'), null).getPropertyValue("padding-bottom"));
+      var scroll_height = screen_height - nav_top - footer_height + header_height;
+      if(screen.width > 767 && screen.width < 1025){
+        if(content_height > scroll_height){
         if (window_top > nav_top) {
             nav_.classList.add("fixed");
         } else {
           nav_.classList.remove("fixed");
+        }
+        }
+        else{
+            nav_.classList.remove("fixed");
         }
       }
 
