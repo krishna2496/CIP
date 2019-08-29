@@ -8,7 +8,7 @@ use App\Jobs\CompileScssFiles;
 use App\Models\Tenant;
 use Illuminate\Support\Facades\Log;
 
-class ResetStyeSettingsJob extends Job
+class ResetStyleSettingsJob extends Job
 {
     /**
      * @var App\Models\Tenant
