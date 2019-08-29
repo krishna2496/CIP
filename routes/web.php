@@ -215,7 +215,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
     );
 
     /* Store slider data for tenant specific */
-    $router->post('/slider', ['as' => 'slider.store', 'middleware' => 'localization|auth.tenant.admin',
+    $router->post('/slider', ['as' => 'slider.store', 'middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware',
     'uses' => 'Admin\Slider\SliderController@store']);
 
     /* Get slider */
@@ -223,7 +223,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
      'uses' => 'Admin\Slider\SliderController@index']);
 
     /* Update slider data for tenant specific */
-    $router->patch('/slider/{sliderId}', ['as' => 'slider.update', 'middleware' => 'localization|auth.tenant.admin',
+    $router->patch('/slider/{sliderId}', ['as' => 'slider.update', 'middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware',
     'uses' => 'Admin\Slider\SliderController@update']);
 
     /* Delete slider data for tenant specific */
