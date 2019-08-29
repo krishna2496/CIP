@@ -93,6 +93,9 @@
       }
     }
   }
+  .pagination-block{
+      margin-bottom: 30px;
+  }
 }
 
 /** Dashboard volunteer-table table style **/
@@ -165,7 +168,6 @@
       vertical-align: middle;
       &:not(.mission-col){
         text-align: center;
-        cursor: pointer;
         }
     }
     tr{
@@ -178,7 +180,29 @@
     td {
       min-width: 140px;
       height: 56px;
-      text-align: center;
+      &:not(.mission-col):not(.declined){
+        cursor: pointer;
+        position: relative;
+        &:before{
+            position:absolute;
+            content: '';
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 100%;
+            background: $light-gray url($assetUrl+"/plus-ic-black.svg") no-repeat;
+            background-size: 20px;
+            background-position: center center;
+            z-index: 1;
+            opacity: 0;
+            @include transition(all 0.3s);
+        }
+        &:hover{
+            &:before{
+               opacity: 1;
+            }
+        }
+      }
       &.approved ,&.declined{
           position: relative;
           &:after{
@@ -197,7 +221,6 @@
         }
       }
       &.declined{
-          cursor: default;
           &:after{
               border-color: transparent $error $error;
           }
@@ -205,7 +228,7 @@
     }
     th{
         &.currentdate-col {
-            background: $gray-bg;
+            background: $light-gray;
           }
     }
     .mission-col {
@@ -232,37 +255,51 @@
   margin-bottom: 30px;
 }
 
-.datepicker-block {
+.inner-wrap {
   display: inline-flex;
   align-items: center;
   margin-bottom: 0;
   flex-wrap: wrap;
+  .add-entry{
+      border:none;
+      background: $light-gray;
+      margin-right: 20px;
+      padding: 4px 13px;
+      @include border-radius(3px);
+      img{
+          height: 13px;
+          width:13px;
+      }
+  }
   p {
     margin-bottom: 0;
   }
-  .datepicker-col {
+  .datepicker-block{
+      img{
+          height: 16px;
+          width: 16px;
+      }
+  }
+  .select-time-period {
     display: inline-flex;
-    border-right: 1px solid $border-color;
+    @include border-radius(3px);
     padding-right: 15px;
     margin-right: 15px;
-    &:first-child {
-      @include sm-max {
-        max-width: 100%;
-        flex: 0 0 100%;
-        margin: 0 0 15px;
-        padding: 0;
-        border: none;
-      }
-    }
-    &:last-child {
-      margin-right: 0;
-      padding-right: 0;
-      border: none;
-    }
-    @include sm-max {
-      @media screen and (orientation: portrait) {
-        border: none;
-      }
+    span{
+        cursor: pointer;
+        color: $gray-primary;
+        border: 1px solid $border-color;
+        padding: 3px 9px;
+        &:first-child{
+            border-radius: 3px 0 0 3px;
+        }
+        &:last-child{
+            border-radius: 0 3px 3px 0;
+        }
+        &.current{
+            background: $light-gray;
+            cursor: default;
+        }
     }
   }
   .custom-dropdown {
@@ -270,22 +307,69 @@
   }
   .picker-btn-wrap {
     display: inline-flex;
-    margin-right: 15px;
+    margin-right: 20px;
+    border:1px solid $border-color;
+    @include border-radius(3px);
+    span{
+        padding:3px 11px;
+        color: $gray-primary;
+    }
   }
   .picker-btn {
-    background: $primary;
+    background:$light-gray;
     border: none;
-    padding: 5px 8px;
     display: inline-flex;
     align-items: center;
     border-radius: 3px;
-    margin-right: 10px;
+    &.prev-btn{
+        border-radius: 3px 0 0 3px;
+        padding: 5px 10px 5px 13px;
+    }
+    &.next-btn{
+        border-radius: 0 3px 3px 0;
+        padding: 5px 13px 5px 10px;
+    }
     img {
-      width: 16px;
-      height: 16px;
+      width: 12px;
+      height: 12px;
     }
     &:last-child {
       margin-right: 0;
     }
   }
+}
+
+
+.meta-data-list{
+    display: flex;
+    flex:1;
+    -ms-flex:1;
+    margin:10px 0 50px;
+    li{
+        margin-right: 15px;
+        padding-left: 25px;
+        position: relative;
+        font-size: 18px;
+        line-height: 24px;
+        &:before{
+            position: absolute;
+            height: 15px;
+            width: 18px;
+            content: '';
+            border-radius: 3px;
+            top:50%;
+            transform: translateY(-50%);
+            left: 0;
+        }
+        &.approve-indication{
+            &:before{
+                background: $success;
+            }
+        }
+        &.decline-indication{
+            &:before{
+                background: $error;
+            }
+        }
+    }
 }
