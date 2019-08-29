@@ -30,6 +30,12 @@
       margin-bottom: 20px;
     }
 
+    h2{
+        font-size: 24px;
+        line-height: 28px;
+        font-weight: 700;
+    }
+
     .table-responsive {
       margin-bottom: 20px;
     }
@@ -45,6 +51,7 @@
         }
         th {
           border-bottom: none;
+          height: 70px;
         }
         &:last-child {
           td {
@@ -152,37 +159,61 @@
   table {
     td,
     th {
-      font-size: 14px;
+      font-size: 15px;
       line-height: 18px;
-      padding: 8px 12px;
+      padding: 5px 24px;
       vertical-align: middle;
-    }
-    th {
-      &.status-col {
+      &:not(.mission-col){
         text-align: center;
-      }
+        cursor: pointer;
+        }
+    }
+    tr{
+        &.total-row{
+            td{
+                font-weight: 700;
+            }
+        }
     }
     td {
-      &.currentdate-col {
-        cursor: pointer;
+      min-width: 140px;
+      height: 56px;
+      text-align: center;
+      &.approved ,&.declined{
+          position: relative;
+          &:after{
+              position: absolute;
+              content: '';
+              border-style: solid;
+              
+              border-width: 20px 40px 0 0;
+              right: 0;
+              bottom: 0;
+          }
+      }
+      &.approved{
+        &:after{
+            border-color:transparent $success $success;
+        }
+      }
+      &.declined{
+          cursor: default;
+          &:after{
+              border-color: transparent $error $error;
+          }
       }
     }
-    .time-col {
-      font-size: 11px;
-      line-height: 15px;
-      padding: 2px 3px;
-      text-align: center;
-      min-width: 50px;
-      height: 50px;
+    th{
+        &.currentdate-col {
+            background: $gray-bg;
+          }
     }
     .mission-col {
-      min-width: 260px;
+      text-align: left;
+      min-width: 270px;
     }
     .total-col {
-      min-width: 60px;
-    }
-    .currentdate-col {
-      background: $light-blue;
+      font-weight: 700;
     }
   }
 }
@@ -199,36 +230,6 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 30px;
-  .table-tab {
-    display: inline-flex;
-    align-items: center;
-  }
-  .tab-btn {
-    width: 50px;
-    height: 50px;
-    border-radius: 100%;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    @include md-max {
-      display: none;
-    }
-    &.active {
-      background: $border-color;
-      .icon-wrap {
-        .img-normal {
-          display: none;
-        }
-        .img-rollover {
-          display: inline-block;
-        }
-      }
-    }
-    .icon-wrap {
-      width: 25px;
-      height: 25px;
-    }
-  }
 }
 
 .datepicker-block {
