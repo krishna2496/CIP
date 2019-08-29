@@ -172,6 +172,7 @@ class SliderController extends Controller
         }
 
         try {
+            $this->sliderRepository->find($id);
             // Upload slider image on S3 server
             $tenantName = $this->helpers->getSubDomainFromRequest($request);
             
