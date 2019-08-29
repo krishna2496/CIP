@@ -2,7 +2,7 @@
 
 namespace App\Jobs;
 
-class ResetStyeSettingsJob extends Job
+class ResetStyleSettingsJob extends Job
 {
     /**
      * @var string $tenantName
