@@ -21,6 +21,20 @@ class ResetStyeSettingsJob extends Job
     private $tenantName;
 
     /**
+     * The number of times the job may be attempted.
+     *
+     * @var int
+     */
+    public $tries = 1;
+
+    /**
+     * The number of seconds the job can run before timing out.
+     *
+     * @var int
+     */
+    public $timeout = 0;
+    
+    /**
      * Create a new job instance.
      * @param string $tenantName
      * @return void
