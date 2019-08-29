@@ -93,7 +93,7 @@ class SliderRepository implements SliderInterface
      * Find Slider
      *
      * @param  int  $id
-     * @return bool
+     * @return App\Models\Slider
      */
     public function find(int $id): Slider
     {
