@@ -7,14 +7,14 @@ use App\Models\Slider;
 interface SliderInterface
 {
     /**
-    * Get a count of slider.
+    * Get count of all slides
     *
     * @return int
     */
     public function getAllSliderCount(): ?int;
     
     /**
-     * Store tenant slider data.
+     * Store tenant slider data
      *
      * @param  array $data
      * @return App\Models\Slider
@@ -22,7 +22,7 @@ interface SliderInterface
     public function storeSlider(array $data): Slider;
 
     /**
-     * Update tenant slider data.
+     * Update tenant slider data
      *
      * @param array $data
      * @param int $id
