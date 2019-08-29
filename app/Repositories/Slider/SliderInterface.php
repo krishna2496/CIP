@@ -44,4 +44,19 @@ interface SliderInterface
      * @return bool
      */
     public function delete(int $id): bool;
+
+    /**
+     * Find Slider
+     *
+     * @param  int  $id
+     * @return App\Models\Slider
+     */
+    public function find(int $id): Slider;
+
+    /**
+     * Get tenant sliders
+     *
+     * @return array;
+     */
+    public function getAllSliders(): array;
 }

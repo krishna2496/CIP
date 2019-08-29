@@ -71,7 +71,7 @@ class SliderController extends Controller
             [
                 "url" => "required|url|valid_media_path",
                 "translations.*.lang" => "max:2",
-                "sort_order" => "numeric|between:1,4"
+                "sort_order" => "numeric|min:0"
             ]
         );
 
@@ -157,7 +157,7 @@ class SliderController extends Controller
             [
                 "url" => "sometimes|required|url",
                 "translations.*.lang" => "max:2",
-                "sort_order" => "numeric|between:1,4"
+                "sort_order" => "numeric|min:0"
             ]
         );
 
@@ -172,6 +172,7 @@ class SliderController extends Controller
         }
 
         try {
+            $this->sliderRepository->find($id);
             // Upload slider image on S3 server
             $tenantName = $this->helpers->getSubDomainFromRequest($request);
             
