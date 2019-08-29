@@ -21,6 +21,8 @@ use App\Exceptions\FileUploadException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Jobs\CopyDefaultThemeImagesToTenantImagesJob;
 use App\Exceptions\TenantDomainNotFoundException;
+use App\Jobs\ResetStyleSettingsJob;
+use App\Jobs\UpdateStyleSettingsJob;
 
 class TenantOptionsController extends Controller
 {
@@ -67,90 +69,6 @@ class TenantOptionsController extends Controller
     }
 
     /**
-     * Store slider details.
-     *
-     * @param \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function storeSlider(Request $request): JsonResponse
-    {
-        // Server side validataions
-        $validator = Validator::make(
-            $request->toArray(),
-            [
-                "url" => "required|url",
-                "slider_detail.translations.*.lang" => "max:2"
-            ]
-        );
-
-        // If post parameter have any missing parameter
-        if ($validator->fails()) {
-            return $this->responseHelper->error(
-                Response::HTTP_UNPROCESSABLE_ENTITY,
-                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                config('constants.error_codes.ERROR_SLIDER_INVALID_DATA'),
-                $validator->errors()->first()
-            );
-        }
-
-        try {
-            // Get total count of "slider"
-            $sliderCount = $this->tenantOptionRepository->getAllSlider()->count();
-
-            // Prevent data insertion if user is trying to insert more than defined slider limit records
-            if ($sliderCount >= config('constants.SLIDER_LIMIT')) {
-                // Set response data
-                return $this->responseHelper->error(
-                    Response::HTTP_FORBIDDEN,
-                    Response::$statusTexts[Response::HTTP_FORBIDDEN],
-                    config('constants.error_codes.ERROR_SLIDER_LIMIT'),
-                    trans('messages.custom_error_message.ERROR_SLIDER_LIMIT')
-                );
-            } else {
-                // Upload slider image on S3 server
-                // Get domain name from request and use as tenant name.
-                $tenantName = $this->helpers->getSubDomainFromRequest($request);
-                $imageUrl = "";
-                if ($imageUrl = $this->s3helper->uploadFileOnS3Bucket($request->url, $tenantName)) {
-                    $request->merge(['url' => $imageUrl]);
-                    
-                    // Set data for create new record
-                    $insertData = array();
-                    $insertData['option_name'] = config('constants.TENANT_OPTION_SLIDER');
-                    $insertData['option_value'] = serialize(json_encode($request->toArray()));
-
-                    // Create new tenant_option
-                    $tenantOption = $this->tenantOptionRepository->storeSlider($insertData);
-
-                    // Set response data
-                    $apiStatus = Response::HTTP_CREATED;
-                    $apiMessage = trans('messages.success.MESSAGE_SLIDER_ADD_SUCCESS');
-                    return $this->responseHelper->success($apiStatus, $apiMessage);
-                } else {
-                    // Response error unable to upload file on S3
-                    return $this->responseHelper->error(
-                        Response::HTTP_UNPROCESSABLE_ENTITY,
-                        Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                        config('constants.error_codes.ERROR_SLIDER_IMAGE_UPLOAD'),
-                        trans('messages.custom_error_message.ERROR_SLIDER_IMAGE_UPLOAD')
-                    );
-                }
-            }
-        } catch (TenantDomainNotFoundException $e) {
-            throw $e;
-        } catch (PDOException $e) {
-            return $this->PDO(
-                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
-                trans(
-                    'messages.custom_error_message.ERROR_DATABASE_OPERATIONAL'
-                )
-            );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
-        }
-    }
-
-    /**
      * Reset to default style
      *
      * @param \Illuminate\Http\Request $request
@@ -166,26 +84,23 @@ class TenantOptionsController extends Controller
         } catch (\Exception $e) {
             return $this->badRequest('messages.custom_error_message.ERROR_OCCURRED');
         }
-        
-        try {
-            // Copy default theme folder to tenant folder on s3
-            dispatch(new CreateFolderInS3BucketJob($tenantName));
-        } catch (S3Exception $e) {
-            return $this->s3Exception(
-                config('constants.error_codes.ERROR_FAILED_TO_RESET_STYLING'),
-                trans('messages.custom_error_message.ERROR_FAILED_TO_RESET_STYLING')
-            );
-        } catch (BucketNotFoundException $e) {
-            throw $e;
-        } catch (\Exception $e) {
-            throw new \Exception(trans('messages.custom_error_message.ERROR_FAILED_TO_RESET_STYLING'));
-        }
 
-        // Copy tenant folder to local
-        dispatch(new DownloadAssestFromS3ToLocalStorageJob($tenantName));
+        // Database connection with master database
+        $this->helpers->switchDatabaseConnection('mysql', $request);
         
-        // Compile downloaded files and update css on s3
-        $this->s3helper->compileLocalScss($tenantName);
+        // Change queue default driver to database
+        $queueManager = app('queue');
+        $defaultDriver = $queueManager->getDefaultDriver();
+        $queueManager->setDefaultDriver('database');
+
+        // Dispatch job, that will store in master database
+        dispatch(new ResetStyleSettingsJob($tenantName));
+
+        // Change queue driver to default
+        $queueManager->setDefaultDriver($defaultDriver);
+        
+        // Database connection with tenant database
+        $this->helpers->switchDatabaseConnection('tenant', $request);
         
         // Set response data
         $apiStatus = Response::HTTP_OK;
@@ -202,7 +117,8 @@ class TenantOptionsController extends Controller
     public function updateStyleSettings(Request $request): JsonResponse
     {
         $isVariableScss = 0;
-
+        $fileName = '';
+        
         if (!$request->hasFile('custom_scss_file') && empty($request->primary_color)) {
             return $this->responseHelper->error(
                 Response::HTTP_UNPROCESSABLE_ENTITY,
@@ -243,12 +159,6 @@ class TenantOptionsController extends Controller
             return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
 
-        // Need to check local copy for tenant assest is there or not?
-        if (!Storage::disk('local')->exists($tenantName)) {
-            // Copy files from S3 and download in local storage using tenant FQDN
-            dispatch(new DownloadAssestFromS3ToLocalStorageJob($tenantName));
-        }
-
         if ($request->hasFile('custom_scss_file')) {
             // Server side validataions
             $validator = Validator::make(
@@ -283,15 +193,13 @@ class TenantOptionsController extends Controller
 
                 /* Check user uploading custom style variable file,
                 then we need to make it as high priority instead of passed colors. */
-                
                 if ($fileName === config('constants.AWS_CUSTOM_STYLE_VARIABLE_FILE_NAME')) {
                     $isVariableScss = 1;
                 }
-
-                if (Storage::disk('local')->exists('/'.$tenantName.'/assets/scss/'.$fileName)) {
-                    // Delete existing one
-                    Storage::disk('local')->delete($file);
-                } else {
+                // Need to get list SCSS files from S3 server and match name with passed file name
+                $allSCSSFiles = $this->s3helper->getAllScssFiles($tenantName);
+                // if it is not exist then need to throw error
+                if (array_search($fileName, array_column($allSCSSFiles['scss_files'], 'scss_file_name')) === false) {
                     // Error: Return like uploaded file name doesn't match with structure.
                     return $this->responseHelper->error(
                         Response::HTTP_UNPROCESSABLE_ENTITY,
@@ -300,33 +208,46 @@ class TenantOptionsController extends Controller
                         trans('messages.custom_error_message.ERROR_FILE_NAME_NOT_MATCHED_WITH_STRUCTURE')
                     );
                 }
-
-                if (!Storage::disk('local')->put(
-                    '/'.$tenantName.'/assets/scss/'.$fileName,
-                    file_get_contents($file->getRealPath())
-                )) {
-                    // Error unable to download file to server
+                // Need to upload file on S3 and that function will return uploaded file URL.
+                $file = $request->file('custom_scss_file');
+                
+                $filePath = $tenantName.'/'.config('constants.AWS_S3_ASSETS_FOLDER_NAME').'/'.
+                config('constants.AWS_S3_SCSS_FOLDER_NAME').'/'. $fileName;
+                
+                if (!Storage::disk('s3')->put($filePath, file_get_contents($file))) {
+                    // Throw exception file not uploaded successfully
                     throw new FileUploadException(
-                        trans('messages.custom_error_message.ERROR_DOWNLOADING_IMAGE_TO_LOCAL'),
-                        config('constants.error_codes.ERROR_DOWNLOADING_IMAGE_TO_LOCAL')
+                        trans('messages.custom_error_message.ERROR_WHILE_UPLOADING_FILE_ON_S3'),
+                        config('constants.error_codes.ERROR_WHILE_UPLOADING_FILE_ON_S3')
                     );
                 }
             }
         }
 
-        // Compile scss and upload on s3 css folder in tenant's folder
         $options['isVariableScss'] = $isVariableScss;
         
         if (isset($request->primary_color) && $request->primary_color!='') {
             $options['primary_color'] = $request->primary_color;
         }
 
-        if (isset($request->secondary_color) && $request->secondary_color!='') {
-            $options['secondary_color'] = $request->secondary_color;
-        }
-                    
-        $this->s3helper->compileLocalScss($tenantName, $options);
+        // Database connection with master database
+        $this->helpers->switchDatabaseConnection('mysql', $request);
+        
+        // Change queue default driver to database
+        $queueManager = app('queue');
+        $defaultDriver = $queueManager->getDefaultDriver();
+        $queueManager->setDefaultDriver('database');
 
+        // Create new job that will take tenantName, options, and uploaded file path as an argument.
+        // Dispatch job, that will store in master database
+        dispatch(new UpdateStyleSettingsJob($tenantName, $options, $fileName));
+
+        // Change queue driver to default
+        $queueManager->setDefaultDriver($defaultDriver);
+        
+        // Database connection with tenant database
+        $this->helpers->switchDatabaseConnection('tenant', $request);
+        
         // Set response data
         $apiStatus = Response::HTTP_OK;
         $apiMessage = trans('messages.success.MESSAGE_CUSTOM_STYLE_UPLOADED_SUCCESS');

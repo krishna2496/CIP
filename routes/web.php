@@ -214,9 +214,21 @@ $router->group(['middleware' => 'localization'], function ($router) {
         }
     );
 
-    /* Set custom slider data for tenant specific */
-    $router->post('/create_slider', ['as' => 'create_slider', 'middleware' => 'localization|auth.tenant.admin',
-    'uses' => 'Admin\Tenant\TenantOptionsController@storeSlider']);
+    /* Store slider data for tenant specific */
+    $router->post('/slider', ['as' => 'slider.store', 'middleware' => 'localization|auth.tenant.admin',
+    'uses' => 'Admin\Slider\SliderController@store']);
+
+    /* Get slider */
+    $router->get('/slider', ['as' => 'slider', 'middleware' => 'localization|auth.tenant.admin',
+     'uses' => 'Admin\Slider\SliderController@index']);
+
+    /* Update slider data for tenant specific */
+    $router->patch('/slider/{sliderId}', ['as' => 'slider.update', 'middleware' => 'localization|auth.tenant.admin',
+    'uses' => 'Admin\Slider\SliderController@update']);
+
+    /* Delete slider data for tenant specific */
+    $router->delete('/slider/{sliderId}', ['as' => 'slider.delete', 'middleware' => 'localization|auth.tenant.admin',
+    'uses' => 'Admin\Slider\SliderController@destroy']);
 
     /* Set Footer Page data for tenant specific */
     $router->group(
@@ -293,7 +305,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
             $router->post('/update-style', ['uses' => 'Admin\Tenant\TenantOptionsController@updateStyleSettings']);
             $router->get('/reset-style', ['uses' => 'Admin\Tenant\TenantOptionsController@resetStyleSettings']);
             $router->get('/download-style', ['uses' => 'Admin\Tenant\TenantOptionsController@downloadStyleFiles']);
-            $router->post('/update-image', ['uses' => 'Admin\Tenant\TenantOptionsController@updateImage']);
+            $router->patch('/update-image', ['uses' => 'Admin\Tenant\TenantOptionsController@updateImage']);
             $router->get('/reset-asset-images', ['uses' => 'Admin\Tenant\TenantOptionsController@resetAssetsImages']);
         }
     );

@@ -24,6 +24,7 @@ return [
 
     'AWS_S3_ASSETS_FOLDER_NAME' => 'assets',
     'AWS_S3_IMAGES_FOLDER_NAME' => 'images',
+    'AWS_S3_SCSS_FOLDER_NAME' => 'scss',
     'AWS_S3_LOGO_IMAGE_NAME' => 'logo.png',
     'AWS_S3_CUSTOME_CSS_NAME' => 'style.css',
     'AWS_CUSTOM_STYLE_VARIABLE_FILE_NAME' => '_variables.scss',
@@ -87,6 +88,15 @@ return [
      */
     'image_types' => [
         'PNG' => 'png'
+    ],
+
+    /*
+     * Slider image types
+     */
+    'slider_image_types' => [
+        'PNG' => 'png',
+        'JPG' => 'jpg',
+        'JPEG' => 'jpeg',
     ],
     
     /*
@@ -183,6 +193,7 @@ return [
         'ERROR_NOT_VALID_EXTENSION' => '100015',
         'ERROR_FILE_NAME_NOT_MATCHED_WITH_STRUCTURE' => '100016',
         'ERROR_INVALID_IMAGE_URL' => '100017',
+        'ERROR_SLIDER_NOT_FOUND' => '100018',
         'ERROR_INVALID_API_AND_SECRET_KEY' => '210000',
         'ERROR_API_AND_SECRET_KEY_REQUIRED' => '210001',
         'ERROR_EMAIL_NOT_EXIST' => '210002',
@@ -249,6 +260,7 @@ return [
         'ERROR_COUNTRY_NOT_FOUND' => '800021',
         'ERROR_FAILD_TO_UPLOAD_PROFILE_IMAGE_ON_S3' => '800022',
         'ERROR_REQUIRED_FIELDS_FOR_UPDATE_STYLING' => '800023',
+        'ERROR_WHILE_UPLOADING_FILE_ON_S3' => '800024',
         
         'ERROR_POLICY_PAGE_NOT_FOUND' => '300010',
         'ERROR_POLICY_PAGE_REQUIRED_FIELDS_EMPTY' => '300011'

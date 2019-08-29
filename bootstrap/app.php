@@ -87,6 +87,7 @@ $app->configure('messages');  //Message Constants config
 $app->configure('mail');  //Mail Constants config
 $app->configure('filesystems');
 $app->configure('services');
+$app->configure('queue');
 
 /**
  * mailer package registration

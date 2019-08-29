@@ -74,38 +74,7 @@ class Helpers
             throw new \Exception(trans('messages.custom_error_message.ERROR_TENANT_DOMAIN_NOT_FOUND'));
         }
     }
-
-    /**
-     * Sorting of multidimensional array
-     *
-     * @param array $array
-     * @param string $subfield
-     * @param int $sort
-     */
-    public function sortMultidimensionalArray(&$array, string $subfield, int $sort)
-    {
-        $sortarray = array();
-        $arrayLength = count($array);
-        $sortOrder = 1;
-        if (!empty($array) && (isset($array))) {
-            foreach ($array as $key => $row) {
-                if ((!isset($row[$subfield]) || $row[$subfield] == '')) {
-                    $row[$subfield] = $array[$key][$subfield] = $arrayLength;
-                    $arrayLength++;
-                }
-
-                $sortarray[$key] =  $row[$subfield] ;
-            }
-
-            array_multisort($sortarray, $sort, $array);
-
-            foreach ($array as $key => $row) {
-                $array[$key][$subfield] = $sortOrder;
-                $sortOrder++;
-            }
-        }
-    }
-
+    
     /**
      * It will retrive tenant details from tenant table
      *
