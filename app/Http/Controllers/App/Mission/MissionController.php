@@ -130,7 +130,7 @@ class MissionController extends Controller
             $userFilters = $this->userFilterRepository->userFilter($request);
             $filterTagArray = $this->missionFiltersTag($request, $language, $userFilters);
             $userFilterData = $userFilters->toArray()["filters"];
-
+            // Checking explore mission type is out of list or not
             if ($request->has('explore_mission_type') && $request->input('explore_mission_type') != '') {
                 $exploreMissionType = $request->input('explore_mission_type');
                 if ($exploreMissionType != config('constants.TOP_RECOMMENDED') &&
