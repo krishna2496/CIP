@@ -14,7 +14,7 @@
                     v-bind:data-id="item[0]"
                     @click="handleSelect"
                     @touchend="handleSelect"
-                >{{item}}</li>
+                >{{item[1]}}</li>
             </ul>
             <ul class="option-list dropdown-option-list" v-else>
                 <li
