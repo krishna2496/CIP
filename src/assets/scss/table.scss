@@ -23,17 +23,17 @@
       padding: 15px 15px 25px;
     }
     &.timesheet-table-outer {
-      margin-bottom: 40px;
+      margin-bottom: 20px;
     }
 
     h3 {
       margin-bottom: 20px;
     }
 
-    h2{
-        font-size: 24px;
-        line-height: 28px;
-        font-weight: 700;
+    h2 {
+      font-size: 24px;
+      line-height: 28px;
+      font-weight: 700;
     }
 
     .table-responsive {
@@ -93,8 +93,8 @@
       }
     }
   }
-  .pagination-block{
-      margin-bottom: 30px;
+  .pagination-block {
+    margin-bottom: 40px;
   }
 }
 
@@ -166,70 +166,84 @@
       line-height: 18px;
       padding: 5px 24px;
       vertical-align: middle;
-      &:not(.mission-col){
+      &:not(.mission-col) {
         text-align: center;
-        }
+      }
     }
-    tr{
-        &.total-row{
-            td{
-                font-weight: 700;
-            }
+    tr {
+      &.total-row {
+        td {
+          font-weight: 700;
+          cursor: default !important;
+          pointer-events: none;
+          &::before {
+            content: none;
+            display: none;
+          }
         }
+      }
+    }
+    th{
+        span {
+            display: block;
+            font-weight: 400;
+            font-size: 13px;
+          }
     }
     td {
       min-width: 140px;
       height: 56px;
-      &:not(.mission-col):not(.declined){
+      &:not(.mission-col):not(.approved):not(.total-col) {
         cursor: pointer;
         position: relative;
-        &:before{
-            position:absolute;
-            content: '';
-            top: 0;
-            left: 0;
-            height: 100%;
-            width: 100%;
-            background: $light-gray url($assetUrl+"/plus-ic-black.svg") no-repeat;
-            background-size: 20px;
-            background-position: center center;
-            z-index: 1;
-            opacity: 0;
-            @include transition(all 0.3s);
+        &:before {
+          position: absolute;
+          content: "";
+          top: 0;
+          left: 0;
+          height: 100%;
+          width: 100%;
+          background: $light-gray url($assetUrl+"/plus-ic-black.svg") no-repeat;
+          background-size: 20px;
+          background-position: center center;
+          z-index: 1;
+          opacity: 0;
+          @include transition(all 0.3s);
         }
-        &:hover{
-            &:before{
-               opacity: 1;
-            }
-        }
-      }
-      &.approved ,&.declined{
-          position: relative;
-          &:after{
-              position: absolute;
-              content: '';
-              border-style: solid;
-              
-              border-width: 20px 40px 0 0;
-              right: 0;
-              bottom: 0;
+        &:hover {
+          &:before {
+            opacity: 1;
           }
-      }
-      &.approved{
-        &:after{
-            border-color:transparent $success $success;
         }
       }
-      &.declined{
-          &:after{
-              border-color: transparent $error $error;
-          }
+      &.approved,
+      &.declined {
+        position: relative;
+        &:after {
+          position: absolute;
+          content: "";
+          border-style: solid;
+
+          border-width: 15px 22px 0 0;
+          right: 0;
+          bottom: 0;
+        }
+      }
+      &.approved {
+        &:after {
+          border-color: transparent $success $success;
+        }
+      }
+      &.declined {
+        &:after {
+          border-color: transparent $error $error;
+        }
       }
     }
-    th{
-        &.currentdate-col {
-            background: $light-gray;
-          }
+    th {
+      &.currentdate-col {
+        background: $light-gray;
+      }
     }
     .mission-col {
       text-align: left;
@@ -260,46 +274,55 @@
   align-items: center;
   margin-bottom: 0;
   flex-wrap: wrap;
-  .add-entry{
-      border:none;
-      background: $light-gray;
-      margin-right: 20px;
-      padding: 4px 13px;
-      @include border-radius(3px);
-      img{
-          height: 13px;
-          width:13px;
-      }
-  }
   p {
     margin-bottom: 0;
   }
-  .datepicker-block{
-      img{
-          height: 16px;
-          width: 16px;
-      }
+  .datepicker-block {
+    position: relative;
+    img {
+      height: 22px;
+      width: 22px;
+    }
+    .mx-datepicker {
+      position: absolute;
+      opacity: 0;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 100%;
+    }
+    .mx-input-wrapper {
+      height: 100%;
+    }
+    .mx-input {
+      height: 100% !important;
+      width: 100% !important;
+      padding: 0 !important;
+      cursor: pointer;
+    }
+    .mx-input-append {
+      display: none;
+    }
   }
   .select-time-period {
     display: inline-flex;
     @include border-radius(3px);
-    padding-right: 15px;
-    margin-right: 15px;
-    span{
-        cursor: pointer;
-        color: $gray-primary;
-        border: 1px solid $border-color;
-        padding: 3px 9px;
-        &:first-child{
-            border-radius: 3px 0 0 3px;
-        }
-        &:last-child{
-            border-radius: 0 3px 3px 0;
-        }
-        &.current{
-            background: $light-gray;
-            cursor: default;
-        }
+    margin-right: 25px;
+    span {
+      cursor: pointer;
+      color: $gray-primary;
+      border: 1px solid $border-color;
+      padding: 3px 9px;
+      &:first-child {
+        border-radius: 3px 0 0 3px;
+      }
+      &:last-child {
+        border-radius: 0 3px 3px 0;
+      }
+      &.current {
+        background: $light-gray;
+        cursor: default;
+      }
     }
   }
   .custom-dropdown {
@@ -308,26 +331,26 @@
   .picker-btn-wrap {
     display: inline-flex;
     margin-right: 20px;
-    border:1px solid $border-color;
+    border: 1px solid $border-color;
     @include border-radius(3px);
-    span{
-        padding:3px 11px;
-        color: $gray-primary;
+    span {
+      padding: 3px 11px;
+      color: $gray-primary;
     }
   }
   .picker-btn {
-    background:$light-gray;
+    background: $light-gray;
     border: none;
     display: inline-flex;
     align-items: center;
     border-radius: 3px;
-    &.prev-btn{
-        border-radius: 3px 0 0 3px;
-        padding: 5px 10px 5px 13px;
+    &.prev-btn {
+      border-radius: 3px 0 0 3px;
+      padding: 5px 10px 5px 13px;
     }
-    &.next-btn{
-        border-radius: 0 3px 3px 0;
-        padding: 5px 13px 5px 10px;
+    &.next-btn {
+      border-radius: 0 3px 3px 0;
+      padding: 5px 13px 5px 10px;
     }
     img {
       width: 12px;
@@ -339,37 +362,50 @@
   }
 }
 
-
-.meta-data-list{
-    display: flex;
-    flex:1;
-    -ms-flex:1;
-    margin:10px 0 50px;
-    li{
-        margin-right: 15px;
-        padding-left: 25px;
-        position: relative;
-        font-size: 18px;
-        line-height: 24px;
-        &:before{
-            position: absolute;
-            height: 15px;
-            width: 18px;
-            content: '';
-            border-radius: 3px;
-            top:50%;
-            transform: translateY(-50%);
-            left: 0;
-        }
-        &.approve-indication{
-            &:before{
-                background: $success;
-            }
-        }
-        &.decline-indication{
-            &:before{
-                background: $error;
-            }
-        }
+.meta-data-list {
+  display: flex;
+  flex: 1;
+  -ms-flex: 1;
+  margin: 10px 0 50px;
+  li {
+    margin-right: 15px;
+    padding-left: 21px;
+    position: relative;
+    font-size: 14px;
+    line-height: 28px;
+    &:before {
+      position: absolute;
+      height: 12px;
+      width: 15px;
+      content: "";
+      border-radius: 3px;
+      top: 50%;
+      transform: translateY(-50%);
+      left: 0;
     }
+    &.approve-indication {
+      &:before {
+        background: $success;
+      }
+    }
+    &.decline-indication {
+      &:before {
+        background: $error;
+      }
+    }
+  }
+}
+
+.table {
+  &.b-table {
+    > thead,
+    > tbody {
+      > tr {
+        > .b-table-sticky-column:last-child {
+          right: 0;
+          left: auto;
+        }
+      }
+    }
+  }
 }
