@@ -19,6 +19,7 @@
         ],
         'AWS_S3_ASSETS_FOLDER_NAME' => 'assets',
         'AWS_S3_IMAGES_FOLDER_NAME' => 'images',
+        'AWS_S3_SCSS_FOLDER_NAME' => 'scss',
         'AWS_S3_LOGO_IMAGE_NAME' => 'logo.png',
         'EMAIL_TEMPLATE_FOLDER' => 'emails',
         'EMAIL_TEMPLATE_JOB_NOTIFICATION' => 'tenant-notification',
