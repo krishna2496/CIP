@@ -367,5 +367,45 @@ class SliderTest extends TestCase
             "message"
         ]);
     }
-    
+
+    /**
+     * @test
+     *
+     * It should delete slider
+     *
+     * @return void
+     */
+    public function it_should_delete_slider()
+    {
+        $connection = 'tenant';
+        $slider = factory(\App\Models\Slider::class)->make();
+        $slider->setConnection($connection);
+        $slider->save();
+
+        $this->delete('slider/'.$slider->slider_id, [], ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+          ->seeStatusCode(204);
+    }
+
+    /**
+     * @test
+     *
+     * It should return error for invalid slider id for delete slider
+     *
+     * @return void
+     */
+    public function it_should_return_error_if_slider_id_is_invalid()
+    {   
+        $this->delete('slider/'.rand(1000000, 5000000), [], ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(404)
+        ->seeJsonStructure([
+            'errors' => [
+                [
+                    'status',
+                    'type',
+                    'code',
+                    'message'
+                ]
+            ]
+        ]);
+    }    
 }
