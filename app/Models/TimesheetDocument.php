@@ -40,11 +40,13 @@ class TimesheetDocument extends Model
     /**
      * Soft delete the model from the database.
      *
-     * @param  int $id
+     * @param int $documentId
+     * @param int $timesheetId
      * @return bool
      */
-    public function deleteTimesheetDocument(int $id): bool
+    public function deleteTimesheetDocument(int $documentId, int $timesheetId): bool
     {
-        return static::find($id) ? static::find($id)->delete() : false;
+        return static::where(['timesheet_id' => $timesheetId,
+        'timesheet_document_id' => $documentId])->firstOrFail()->delete();
     }
 }

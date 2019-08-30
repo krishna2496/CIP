@@ -198,6 +198,7 @@ return [
         //For timesheet module
         'ERROR_INVALID_ACTION' => 'Invalid goal action',
         'TIMESHEET_NOT_FOUND' => 'Timesheet does not exists' ,
-        'ERROR_TIMESHEET_ALREADY_UPDATED' => 'Sorry you cannot update timesheet it is already approved',
+        'ERROR_TIMESHEET_ALREADY_UPDATED' => 'Sorry you cannot update timesheet it is already approved',        
+        'TIMESHEET_DOCUMENT_NOT_FOUND' => 'Timesheet document does not exists',
     ],
 ];

@@ -52,7 +52,8 @@ interface TimesheetInterface
     * Remove the timesheet document.
     *
     * @param  int  $id
+    * @param  int  $timesheetId
     * @return bool
     */
-    public function delete(int $id): bool;
+    public function delete(int $id, int $timesheetId): bool;
 }

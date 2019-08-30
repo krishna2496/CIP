@@ -195,5 +195,6 @@ return [
         'ERROR_INVALID_ACTION' => 'Action de but invalide',        
         'TIMESHEET_NOT_FOUND' => 'La feuille de temps n\'existe pas',
         'ERROR_TIMESHEET_ALREADY_UPDATED' => 'Désolé, vous ne pouvez pas mettre à jour la feuille de temps, elle est déjà approuvée',
+        'TIMESHEET_DOCUMENT_NOT_FOUND' => 'La feuille de temps n\'existe pas',
     ],
 ];

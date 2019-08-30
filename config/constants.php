@@ -246,6 +246,7 @@ return [
         'ERROR_INVALID_ACTION' => '400032',
         'TIMESHEET_NOT_FOUND' => '400033',
         'ERROR_TIMESHEET_ALREADY_UPDATED' => '400034',
+        'TIMESHEET_DOCUMENT_NOT_FOUND' => '400035',
                 
         'ERROR_OCCURRED' => '999999',
         'ERROR_INVALID_JSON' => '900000',

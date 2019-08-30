@@ -180,5 +180,6 @@ return [
         'ERROR_INVALID_ACTION' => 'DE: Invalid goal action',
         'TIMESHEET_NOT_FOUND' => 'DE: Timesheet does not exists',
         'ERROR_TIMESHEET_ALREADY_UPDATED' => 'DE: Sorry you cannot update timesheet it is already approved',
+        'TIMESHEET_DOCUMENT_NOT_FOUND' => 'DE: Timesheet document does not exists',
     ],
 ];

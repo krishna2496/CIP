@@ -208,10 +208,11 @@ class TimesheetRepository implements TimesheetInterface
     * Remove the timesheet document.
     *
     * @param  int  $id
+    * @param  int  $timesheetId
     * @return bool
     */
-    public function delete(int $id): bool
+    public function delete(int $id, int $timesheetId): bool
     {
-        return $this->timesheetDocument->deleteTimesheetDocument($id);
+        return $this->timesheetDocument->deleteTimesheetDocument($id, $timesheetId);
     }
 }

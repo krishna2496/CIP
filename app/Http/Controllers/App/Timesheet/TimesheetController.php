@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers\App\Timesheet;
 
 use Illuminate\Http\Request;
@@ -364,7 +365,14 @@ class TimesheetController extends Controller
             $timesheetData = $this->timesheetRepository->getTimesheetData($timesheetId, $request->auth->user_id);
 
             // Delete timesheet document
-            $timesheetDocument = $this->timesheetRepository->delete($documentId);
+            try {
+                $timesheetDocument = $this->timesheetRepository->delete($documentId, $timesheetId);
+            } catch (ModelNotFoundException $e) {
+                return $this->modelNotFound(
+                    config('constants.error_codes.TIMESHEET_DOCUMENT_NOT_FOUND'),
+                    trans('messages.custom_error_message.TIMESHEET_DOCUMENT_NOT_FOUND')
+                );
+            }
             
             // Set response data
             $apiStatus = Response::HTTP_OK;
