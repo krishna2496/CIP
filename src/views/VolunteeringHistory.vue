@@ -8,18 +8,19 @@
       <div class="dashboard-tab-content">
         <b-container>
           <div class="heading-section">
-            <h1>Volunteering History</h1>
+            <h1>{{langauageData.label.volunteering_history}}</h1>
           </div>
           <div class="inner-content-wrap">
             <b-row class="chart-block">
               <b-col lg="6" class="chart-col">
                 <div class="inner-chart-col">
                   <div class="chart-title">
-                    <h5>Hours per theme</h5>
-                    <CustomDropdown
+                    <h5>{{langauageData.label.hours_per_theme}}</h5>
+                    <AppCustomDropdown 
                       :optionList="themeYearList"
                       @updateCall="updateThemeYear"
-                      :default_text="ThemeYearText"
+                      :defaultText="ThemeYearText"
+                      translationEnable="false"
                     />
                   </div>
                   <div class="line-chart">
@@ -30,11 +31,12 @@
               <b-col lg="6" class="chart-col">
                 <div class="inner-chart-col">
                   <div class="chart-title">
-                    <h5>Hours per skill</h5>
-                    <CustomDropdown
+                    <h5>{{langauageData.label.hours_per_skill}}</h5>
+                    <AppCustomDropdown 
                       :optionList="skillYearList"
                       @updateCall="updateSkillYear"
-                      :default_text="skillYearText"
+                      :defaultText="skillYearText"
+                      translationEnable= "false"
                     />
                   </div>
                   <div class="line-chart">
@@ -47,7 +49,7 @@
               <b-col lg="6" class="table-col">
                 <div class="table-outer">
                   <div class="table-inner">
-                    <h3>Volunteering Hours</h3>
+                    <h3>{{langauageData.label.volunteering_hours}}</h3>
                     <b-table
                       :items="hoursItems"
                       responsive
@@ -56,14 +58,14 @@
                     ></b-table>
                   </div>
                   <div class="btn-row">
-                    <b-button class="btn-bordersecondary ml-auto" title="Export">Export</b-button>
+                    <b-button class="btn-bordersecondary ml-auto">{{langauageData.label.export}}</b-button>
                   </div>
                 </div>
               </b-col>
               <b-col lg="6" class="table-col">
                 <div class="table-outer">
                   <div class="table-inner">
-                    <h3>Volunteering Goals</h3>
+                    <h3>{{langauageData.label.volunteering_goals}}</h3>
                     <b-table
                       :items="goalsItems"
                       responsive
@@ -72,7 +74,7 @@
                     ></b-table>
                   </div>
                   <div class="btn-row">
-                    <b-button class="btn-bordersecondary ml-auto" title="Export">Export</b-button>
+                    <b-button class="btn-bordersecondary ml-auto">{{langauageData.label.export}}</b-button>
                   </div>
                 </div>
               </b-col>
@@ -83,8 +85,8 @@
 					<b-button title="Start Volunteering" class="btn-borderprimary">Start Volunteering</b-button>
 				</div>
             </div>-->
-          </div>
-        </b-container>
+          </div
+>        </b-container>
       </div>
     </main>
     <footer>
@@ -96,15 +98,16 @@
 <script>
 import TopHeader from "../components/Layouts/ThePrimaryHeader";
 import PrimaryFooter from "../components/Layouts/TheSecondaryFooter";
-import CustomDropdown from "../components/AppCustomDropdown";
+import AppCustomDropdown from "../components/AppCustomDropdown";
 import DashboardBreadcrumb from "../components/DashboardBreadcrumb";
-
+import store from '../store';
 import Chart from "chart.js";
+
 export default {
   components: {
     TopHeader,
     PrimaryFooter,
-    CustomDropdown,
+    AppCustomDropdown,
     Chart,
     DashboardBreadcrumb
   },
@@ -113,6 +116,7 @@ export default {
 
   data() {
     return {
+      langauageData : [],
       hoursFields: [
         {
           key: "Mission",
@@ -203,59 +207,20 @@ export default {
         }
       ],
       ThemeYearText: "Year",
+     
       themeYearList: [
-        "1996",
-        "1997",
-        "1998",
-        "1999",
-        "2000",
-        "2001",
-        "2002",
-        "2003",
-        "2004",
-        "2005",
-        "2006",
-        "2007",
-        "2008",
-        "2009",
-        "2010",
-        "2011",
-        "2012",
-        "2013",
-        "2014",
-        "2015",
-        "2016",
-        "2017",
-        "2018",
-        "2019"
+        ["2016","2016"],
+        ["2017","2017"],
+        ["2018","2018"],
+        ["2019","2019"]
       ],
       skillYearText: "Year",
-      skillYearList: [
-        "1996",
-        "1997",
-        "1998",
-        "1999",
-        "2000",
-        "2001",
-        "2002",
-        "2003",
-        "2004",
-        "2005",
-        "2006",
-        "2007",
-        "2008",
-        "2009",
-        "2010",
-        "2011",
-        "2012",
-        "2013",
-        "2014",
-        "2015",
-        "2016",
-        "2017",
-        "2018",
-        "2019"
-      ]
+       skillYearList: [
+        ["2016","2016"],
+        ["2017","2017"],
+        ["2018","2018"],
+        ["2019","2019"]
+        ]
     };
   },
   mounted() {
@@ -345,11 +310,14 @@ export default {
   },
   methods: {
     updateThemeYear(value) {
-      this.ThemeYearText = value;
+      this.ThemeYearText = value.selectedVal;
     },
     updateSkillYear(value) {
-      this.skillYearText = value;
+      this.skillYearText = value.selectedVal;
     }
+  },
+  created() {
+     this.langauageData = JSON.parse(store.state.languageLabel);
   }
 };
 </script>

@@ -350,13 +350,6 @@
   }
 }
 
-.table-modal {
-  &.goal-modal {
-    .modal-dialog {
-      max-width: 600px;
-    }
-  }
-}
 
 .date-col {
   @include xs-max {
@@ -365,6 +358,9 @@
 }
 
 .modal {
+    .close{
+        cursor: pointer;
+    }
   &.table-modal {
     .modal-header {
       .close {
@@ -378,4 +374,11 @@
       padding-left: 8px;
     }
   }
+}
+
+
+.modal-open{
+    header{
+        z-index:1039;
+    }
 }

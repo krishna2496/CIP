@@ -277,6 +277,10 @@ export default {
             //Change pagination
             this.currentPage = page;
             this.getMissions();
+            // window.scrollTo({
+            //     top: 0,
+            //     behavior: 'smooth'
+            // });
         },
 
         searchMissions(searchParams,filterParmas) {

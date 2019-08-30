@@ -2122,7 +2122,7 @@ main {
                 p {
                     font-size: 18px;
                     line-height: 24px;
-                    padding-top: 30px;
+                    padding-top: 30px; 
                     margin-bottom: 0;
                 }
 			}
@@ -2795,7 +2795,6 @@ main {
         min-height: 40px;
         font-size: 16px;
     }
-
 }
 
 /** Dashboard **/
@@ -3409,35 +3408,35 @@ main {
 
 ::-webkit-scrollbar {
   -webkit-appearance: none;
-  height: 5px;
+  height: 10px;
   width: 6px;
 }
 
 ::-webkit-scrollbar-thumb {
   border-radius: 16px;
-background-color: rgba(0,0,0,.2);
+background-color: rgba(0,0,0,.08);
 
 }
 ::-ms-scrollbar {
   -webkit-appearance: none;
-  height: 5px;
+  height: 10px;
   width: 6px;
 }
 
 ::-ms-scrollbar-thumb {
   border-radius: 16px;
-background-color: rgba(0,0,0,.2);
+background-color: rgba(0,0,0,.08);
 
 }
 ::-moz-scrollbar {
   -webkit-appearance: none;
-  height: 5px;
+  height: 10px;
   width: 6px;
 }
 
 ::-moz-scrollbar-thumb {
   border-radius: 16px;
-background-color: rgba(0,0,0,.2);
+background-color: rgba(0,0,0,.08);
 
 }
 
