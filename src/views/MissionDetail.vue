@@ -14,13 +14,14 @@
 				<div class="social-sharing">
 					<network network="facebook" v-if="$store.state.isFacebookDisplay">
 						<i class="social-icon facebook-icon">
-							<img :src="$store.state.imagePath+'/assets/images/facebook-ic.svg'" alt="Facebook" title="Facebook"/>
+							<img :src="$store.state.imagePath+'/assets/images/facebook-ic.svg'" :alt="`${JSON.parse(this.$store.state.languageLabel).label.facebook}`"
+							:title="`${JSON.parse(this.$store.state.languageLabel).label.facebook}`"/>
 						</i>
 					</network>
 					<network network="twitter" v-if="$store.state.isTwitterDisplay">
 						<i class="social-icon twitter-icon">
-							<img :src="$store.state.imagePath+'/assets/images/twitter-ic.svg'" alt="Twitter" 
-							 title="Twitter"
+							<img :src="$store.state.imagePath+'/assets/images/twitter-ic.svg'" :alt="`${JSON.parse(this.$store.state.languageLabel).label.twitter}`"
+							:title="`${JSON.parse(this.$store.state.languageLabel).label.twitter}`"
 							/>
 						</i>
 					</network>
@@ -1035,9 +1036,9 @@ export default {
 				simplebarWrapper.scrollTop = simplebarHeight;
 			},100);
 			this.missionComments();
-        }
+		}
    },
-	created() {
+	created() {		
 		this.sharingUrl = document.URL
 		var _this= this;		
 		// Get mission detail
@@ -1064,8 +1065,7 @@ export default {
 		this.isRemainingGoalDisplay = this.settingEnabled(constants.SHOW_REMAINING_DATA_TO_ACHIEVE_GOAL)	
 		this.isSkillDispaly = this.settingEnabled(constants.SKILLS_ENABLED)
 		this.isQuickAccessFilterDisplay = this.settingEnabled(constants.QUICK_ACCESS_FILTERS)
-	},
-
+	},	
 	updated(){
 
 	},
