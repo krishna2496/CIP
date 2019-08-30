@@ -523,7 +523,7 @@
           </b-row>
 	  </div>
       </b-container>
-	  <div class="mission-block" v-if="missionListing && missionListing.length > 0">
+	  <div class="mission-block" v-if="missionListing && missionListing.length > 0 && relatedMissionsDisplay">
 			<b-container class="card-grid">
 			    <h2>{{langauageData.label.related_missions}}</h2>
 			   		<div>
@@ -597,7 +597,6 @@ import store from "../store";
 import moment from 'moment';
 import { required,maxLength } from 'vuelidate/lib/validators';
 import SocialSharing from 'vue-social-sharing';
- 
 
 export default {
   components: {
@@ -673,7 +672,8 @@ export default {
     		isCurrentStatusDisplay : false,
     		isRemainingGoalDisplay : false,
     		isSkillDispaly : false	,
-    		isQuickAccessFilterDisplay : false
+    		isQuickAccessFilterDisplay : false,
+    		relatedMissionsDisplay : false
   	};
   },
 	mounted(){
@@ -1065,6 +1065,7 @@ export default {
 		this.isRemainingGoalDisplay = this.settingEnabled(constants.SHOW_REMAINING_DATA_TO_ACHIEVE_GOAL)	
 		this.isSkillDispaly = this.settingEnabled(constants.SKILLS_ENABLED)
 		this.isQuickAccessFilterDisplay = this.settingEnabled(constants.QUICK_ACCESS_FILTERS)
+		this.relatedMissionsDisplay = this.settingEnabled(constants.RELATED_MISSIONS)
 	},	
 	updated(){
 
@@ -1118,6 +1119,7 @@ export default {
 			this.isRemainingGoalDisplay = false
 			this.isSkillDispaly = false		
 			this.isQuickAccessFilterDisplay = false
+			this.relatedMissionsDisplay = false
 			this.getMissionDetail();
 			this.socialSharingUrl = process.env.VUE_APP_API_ENDPOINT+"social-sharing/"+this.domainName+"/"+this.missionId+"/"+store.state.defaultLanguageId;			
 	    }
