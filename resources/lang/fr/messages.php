@@ -87,10 +87,19 @@ return [
         'MESSAGE_NO_SKILL_FOUND' => 'Compétence non trouvée',
         'MESSAGE_NO_COUNTRY_FOUND' => 'Pays non trouvé',
         'MESSAGE_TENANT_SETTINGS_UPDATED' => 'Paramètres du locataire mis à jour avec succès',
+<<<<<<< HEAD
         'MESSAGE_SLIDERS_LIST' => 'Sliders listés avec succès',
         'MESSAGE_NO_SLIDER_FOUND' => 'Aucun curseur trouvé',
         'MESSAGE_SLIDER_UPDATED_SUCCESS' => 'Image du curseur mise à jour avec succès',
         'MESSAGE_SLIDER_DELETED' => 'Slider supprimé avec succès',
+=======
+        'TIMESHEET_ENTRY_ADDED_SUCESSFULLY' => 'Entrée de la feuille de temps ajoutée avec succès',
+        'MESSAGE_TIMESHEET_ENTRIES_LISTING' => 'Entrées de la feuille de temps listées avec succès',
+        'MESSAGE_NO_TIMESHEET_ENTRIES_FOUND' => 'Entrées de la feuille de temps non trouvées',
+        'TIMESHEET_ENTRY_UPDATED_SUCESSFULLY' => 'Entrée de la feuille de temps mise à jour avec succès',
+        'MESSAGE_TIMESHEET_LISTING' => 'Feuille de temps listée avec succès',
+        'MESSAGE_TIMESHEET_DOCUMENT_DELETED' => 'La feuille de temps du document a été supprimée avec succès',
+>>>>>>> 4640a6c3f0b47e1b518d13e1e9d64971da255577
     ],
 
         
@@ -190,5 +199,12 @@ return [
         'ERROR_REQUIRED_FIELDS_FOR_UPDATE_STYLING' => 'Requis soit en couleur primaire, soit en champ de fichier SCSS personnalisé',
         'ERROR_WHILE_UPLOADING_FILE_ON_S3' => 'Une erreur lors du téléchargement du fichier sur S3',
         'ERROR_SLIDER_NOT_FOUND' => 'Aucun curseur trouvé',
+
+        
+        //For timesheet module
+        'ERROR_INVALID_ACTION' => 'Action de but invalide',        
+        'TIMESHEET_NOT_FOUND' => 'La feuille de temps n\'existe pas',
+        'ERROR_TIMESHEET_ALREADY_UPDATED' => 'Désolé, vous ne pouvez pas mettre à jour la feuille de temps, elle est déjà approuvée',
+        'TIMESHEET_DOCUMENT_NOT_FOUND' => 'La feuille de temps n\'existe pas',
     ],
 ];

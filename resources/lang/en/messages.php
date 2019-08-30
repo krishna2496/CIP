@@ -90,11 +90,21 @@ return [
         'MESSAGE_NO_SKILL_FOUND' => 'Skill not found',
         'MESSAGE_NO_COUNTRY_FOUND' => 'Country not found',
         'MESSAGE_TENANT_SETTINGS_UPDATED' => 'Tenant settings updated successfully',
+<<<<<<< HEAD
         'MESSAGE_SLIDERS_LIST' => 'Sliders listed successfully',
         'MESSAGE_NO_SLIDER_FOUND' => 'No sliders found',
         'MESSAGE_SLIDER_UPDATED_SUCCESS' => 'Slider image updated successfully',
         'MESSAGE_SLIDER_DELETED' => 'Slider deleted successfully',
 		],
+=======
+        'TIMESHEET_ENTRY_ADDED_SUCESSFULLY' => 'Timesheet entry added successfully',
+        'MESSAGE_TIMESHEET_ENTRIES_LISTING' => 'Timesheet entries listed successfully',
+        'MESSAGE_NO_TIMESHEET_ENTRIES_FOUND' => 'Timesheet entries not found',
+        'TIMESHEET_ENTRY_UPDATED_SUCESSFULLY' => 'Timesheet entry updated successfully',
+        'MESSAGE_TIMESHEET_LISTING' => 'Timesheet listed sucessfully',        
+        'MESSAGE_TIMESHEET_DOCUMENT_DELETED' => 'Timesheet document deleted sucessfully',
+	],
+>>>>>>> 4640a6c3f0b47e1b518d13e1e9d64971da255577
         
     /**
     * API Error Codes and Message
@@ -195,5 +205,11 @@ return [
         'ERROR_REQUIRED_FIELDS_FOR_UPDATE_STYLING' => 'Required either primary color or custom SCSS file field',
         'ERROR_SLIDER_NOT_FOUND' => 'Slider not found',
         'ERROR_WHILE_UPLOADING_FILE_ON_S3' => 'An error while uploading file on S3',
+
+        //For timesheet module
+        'ERROR_INVALID_ACTION' => 'Invalid goal action',
+        'TIMESHEET_NOT_FOUND' => 'Timesheet does not exists' ,
+        'ERROR_TIMESHEET_ALREADY_UPDATED' => 'Sorry you cannot update timesheet it is already approved',        
+        'TIMESHEET_DOCUMENT_NOT_FOUND' => 'Timesheet document does not exists',
     ],
 ];

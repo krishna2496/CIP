@@ -109,7 +109,7 @@ class SliderController extends Controller
                     $slider = $this->sliderRepository->storeSlider($request->toArray());
 
                     // Set response data
-					$apiData = ['slider_id' => $slider->slider_id];
+                    $apiData = ['slider_id' => $slider->slider_id];
                     $apiStatus = Response::HTTP_CREATED;
                     $apiMessage = trans('messages.success.MESSAGE_SLIDER_ADD_SUCCESS');
                     return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);

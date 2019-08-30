@@ -82,6 +82,12 @@ return [
         'MESSAGE_NO_SLIDER_FOUND' => 'DE: No sliders found',
         'MESSAGE_SLIDER_UPDATED_SUCCESS' => 'DE: Slider image updated successfully',
         'MESSAGE_SLIDER_DELETED' => 'DE: Slider deleted successfully',
+        'TIMESHEET_ENTRY_ADDED_SUCESSFULLY' => 'DE: Timesheet entry added successfully',
+        'MESSAGE_TIMESHEET_ENTRIES_LISTING' => 'DE: Timesheet entries listed successfully',
+        'MESSAGE_NO_TIMESHEET_ENTRIES_FOUND' => 'DE: Timesheet entries not found',
+        'TIMESHEET_ENTRY_UPDATED_SUCESSFULLY' => 'DE: Timesheet entry updated successfully',
+        'MESSAGE_TIMESHEET_LISTING' => 'DE: Timesheet listed sucessfully',        
+        'MESSAGE_TIMESHEET_DOCUMENT_DELETED' => 'DE: Timesheet document deleted sucessfully',
     ],
 
         
@@ -173,6 +179,15 @@ return [
         'ERROR_TENANT_OPTION_NOT_FOUND' => 'DE: No tenant option found',
         'ERROR_COUNTRY_NOT_FOUND' => 'DE: Requested country does not exist',
         'ERROR_FAILD_TO_UPLOAD_PROFILE_IMAGE_ON_S3' => 'DE: Failed to upload image on S3',
+<<<<<<< HEAD
         'ERROR_SLIDER_NOT_FOUND' => 'DE: Slider not found',
+=======
+
+        //For timesheet module
+        'ERROR_INVALID_ACTION' => 'DE: Invalid goal action',
+        'TIMESHEET_NOT_FOUND' => 'DE: Timesheet does not exists',
+        'ERROR_TIMESHEET_ALREADY_UPDATED' => 'DE: Sorry you cannot update timesheet it is already approved',
+        'TIMESHEET_DOCUMENT_NOT_FOUND' => 'DE: Timesheet document does not exists',
+>>>>>>> 4640a6c3f0b47e1b518d13e1e9d64971da255577
     ],
 ];
