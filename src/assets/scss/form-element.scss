@@ -1027,3 +1027,134 @@ label {
       }
     }
   }
+
+  .vue-star-rating-star{
+      line-height:0;
+  }
+
+
+
+  /** Date picker style **/
+
+  .mx-datepicker{
+      width: 100%!important;
+  }
+  .mx-datepicker-popup{
+      z-index: 1040 !important;
+  }
+  .mx-input{
+      height: 38px !important;
+      &:focus{
+          border-color: $gray-primary !important;
+      }
+  }
+
+  .mx-calendar{
+     font-family:$general-font !important;
+     color: $black-primary !important;
+    }
+
+  .mx-calendar-content{
+      width: 238px !important;
+      height: 238px !important;
+    .cell{
+        &:hover{
+            background: $gray-bg !important;
+        }
+        &.actived{
+            background: $primary!important;
+        }
+        &.next-month:not(.disabled) , &.last-month:not(.disabled){
+            &:hover{
+                color: $black-primary !important;
+            }
+        }
+        &.inrange{
+            background: $gray-bg !important;
+            color: $black-primary !important;
+        }
+        &.today{
+            &:hover{
+                color: $white !important;
+                background: $gray-primary !important;
+            }
+        }
+        &.disabled{
+            background: transparent !important;
+        }
+    }
+  } 
+  .mx-panel-date{
+    td{
+        &.today{
+            color: $white !important;
+            background: $gray-primary !important;
+        }
+    }
+    td, th{
+        font-size: 14px !important;
+        height: 34px !important;
+        width: 34px !important;
+    }
+  } 
+
+  .mx-calendar-header > a[class*="mx-icon-"] {
+    &:hover{
+        opacity: 0.6!important;
+    }
+  }
+
+  /**Date range picker style**/
+  .mx-range-wrapper{
+      width: 524px !important;
+      .mx-calendar{
+          box-shadow: none !important;
+      }
+      .mx-input-append{
+          display: none !important;
+      }
+  }
+  .mx-shortcuts-wrapper{
+    display: none;
+  }
+
+  .mx-datepicker-footer{
+      padding: 10px 4px !important;
+  }
+  .mx-datepicker-btn-confirm{
+    min-width: 70px;
+    min-height: 28px;
+    font-size: 14px !important;
+    color: $primary !important;
+    background-color: $white !important;
+    border: 2px solid $primary !important;
+    border-radius: 25px !important;
+    &:hover{
+        background-color: $primary !important;
+        color:$white !important;
+    }
+  }
+
+
+  /** File upload Style **/
+
+
+  .file-upload-wrap{
+      border:1px solid $border-color;
+      @include border-radius(3px);
+
+  }
+  .btn{
+      &.file-uploads{
+          background:$gray-bg;
+          color: $black-primary;
+          width: 150px;
+          height: 45px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          line-height: 30px;
+          cursor: pointer;
+          margin: 15px;
+      }
+  }

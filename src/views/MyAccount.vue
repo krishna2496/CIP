@@ -49,7 +49,7 @@
             <div class="link-wrap">
                 <b-button
                   class="btn-link-border"
-                  @click="$refs.changePasswordModal.show()"
+                  @click="handleModel"
                 >{{langauageData.label.change_password}}</b-button>
             </div>
             <b-form-group>
@@ -263,7 +263,7 @@
                             translationEnable= "false"
                         />
                           <div v-if="submitted && !$v.profile.availability.required" class="invalid-feedback">
-                        {{ langauageData.errors.availablity_required }}</div>
+                        {{ langauageData.errors.availability_required }}</div>
                     </b-form-group>
                   
                 </b-col>
@@ -340,10 +340,11 @@
             </b-alert>
           <form action class="form-wrap">
             <b-form-group>
-              <b-form-input id type="password" 
-               v-model.trim="resetPassword.oldPassword" 
+              <b-form-input id type="password"
+                ref="oldPassword" 
+                v-model.trim="resetPassword.oldPassword" 
                 :class="{ 'is-invalid': passwordSubmit && $v.resetPassword.oldPassword.$error }" 
-              :placeholder="langauageData.placeholder.old_password"
+                :placeholder="langauageData.placeholder.old_password"
               ></b-form-input>
               <div v-if="passwordSubmit && !$v.resetPassword.oldPassword.required" class="invalid-feedback">
                     {{ langauageData.errors.field_is_required }}</div>
@@ -366,6 +367,7 @@
                v-model.trim="resetPassword.confirmPassword" 
                 :class="{ 'is-invalid': passwordSubmit && $v.resetPassword.confirmPassword.$error }" 
                 :placeholder="langauageData.placeholder.confirm_password"
+                @keypress.enter.prevent="changePassword"
                 type="password"> 
               </b-form-input>
                 <div v-if="passwordSubmit && !$v.resetPassword.confirmPassword.required" class="invalid-feedback">
@@ -533,7 +535,9 @@ export default {
     mounted() {
 
     },
-
+    updated() { 
+       
+     },
     methods: {
         updateLang(value) {
             this.languageDefault = value.selectedVal;
@@ -585,7 +589,7 @@ export default {
         async getUserProfileDetail() {
             await getUserDetail().then(response => {
                 if(response.error == true){
-                    // this.$router.push('/404');
+                    this.$router.push('/404');
                 } else {
                     var _this = this;
                     this.userData = response.data;
@@ -928,6 +932,13 @@ export default {
                && keyCode != 8 && keyCode != 32) {
                evt.preventDefault();
             }
+        },
+        handleModel() {
+            this.$refs.changePasswordModal.show()
+            let _this = this
+            setTimeout(function(){
+                console.log(_this.$refs.oldPassword.focus());
+            },100)
         }
     },
     created() {
@@ -943,6 +954,22 @@ export default {
         this.isQuickAccessFilterDisplay = this.settingEnabled(constants.QUICK_ACCESS_FILTERS);
         this.isSkillDisplay = this.settingEnabled(constants.SKILLS_ENABLED);
         this.getUserProfileDetail();
+
+
+
+    },
+    watch : {
+        showModal: function(){
+            console.log("ds");
+            if(this.showModal == false){
+            let self = this
+            Vue.nextTick()
+                .then(function () {
+                    console.log(self.$refs.number.focus())
+            })
+        }
+    }
+     
     }
 
 };

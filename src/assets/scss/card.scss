@@ -376,6 +376,9 @@
         margin: 0 auto;
         text-align: center;
         background: $white;
+        @include lg-max{
+            top:-16px;
+        }
         span {
           z-index: 5;
           display: inline-block;
