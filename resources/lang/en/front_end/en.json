@@ -155,7 +155,7 @@
 		 "email_required" : "Email address is required",
          "invalid_email" : "Enter valid email address",
          "password_required" : "Password is required",
-         "invalid_password" : "Password lenght should be minimum 8 character",
+         "invalid_password" : "Password length should be minimum 8 character",
          "identical_password" : "Passwords must be identical.",
          "comment_required" : "Comment is required",
          "comment_max_length" : "The comment may not be greater than 280 characters",
