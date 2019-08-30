@@ -35,7 +35,7 @@ class TimesheetDocument extends Model
      *
      * @var array
      */
-    protected $visible = ['timesheet_id', 'document_name', 'document_path', 'document_type'];
+    protected $visible = ['timesheet_document_id', 'timesheet_id', 'document_name', 'document_path', 'document_type'];
 
     /**
      * Soft delete the model from the database.

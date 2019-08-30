@@ -11,6 +11,7 @@ use App\Repositories\Mission\MissionRepository;
 use App\Traits\RestExceptionHandlerTrait;
 use InvalidArgumentException;
 use Validator;
+use Illuminate\Validation\Rule;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class TimesheetController extends Controller
@@ -64,7 +65,7 @@ class TimesheetController extends Controller
                 [
                     'mission_id' => 'required|exists:mission,mission_id,deleted_at,NULL',
                     'date_volunteered' => 'required',
-                    'day_volunteered' => 'required',
+                    'day_volunteered' => ['required', Rule::in(config('constants.day_volunteered'))],
                     'documents.*' => 'max:'.config('constants.TIMESHEET_DOCUMENT_SIZE_LIMIT'),
                 ],
                 [
@@ -184,7 +185,7 @@ class TimesheetController extends Controller
                 $request->toArray(),
                 [
                     'date_volunteered' => 'required',
-                    'day_volunteered' => 'required',
+                    'day_volunteered' => ['required', Rule::in(config('constants.day_volunteered'))],
                     'documents.*' => 'max:'.config('constants.TIMESHEET_DOCUMENT_SIZE_LIMIT'),
                 ],
                 [
@@ -208,7 +209,7 @@ class TimesheetController extends Controller
             $timesheetDetails = $timesheetData->toArray();
 
             // If timesheet status is approved
-            if ($timesheetDetails["timesheet_status"][0]["status"] == config('constants.timesheet_status.APPROVED')) {
+            if ($timesheetDetails["timesheet_status"]["status"] == config('constants.timesheet_status.APPROVED')) {
                 return $this->responseHelper->error(
                     Response::HTTP_UNPROCESSABLE_ENTITY,
                     Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],

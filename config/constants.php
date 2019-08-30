@@ -84,6 +84,15 @@ return [
     ],
 
     /*
+     * Day volunteered types
+     */
+    'day_volunteered' => [
+        'WORKDAY' => 'WORKDAY',
+        'HOLIDAY' => 'HOLIDAY',
+        'WEEKEND' => 'WEEKEND'
+    ],
+
+    /*
      * Image types
      */
     'image_types' => [
