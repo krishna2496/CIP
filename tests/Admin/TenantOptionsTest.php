@@ -41,7 +41,11 @@ class TenantOptionsTest extends TestCase
     */
     public function it_should_return_error_for_missing_file_while_update_style()
     {
-        $this->post('style/update-style', [], ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $params = [
+            'primary_color' => "#ccc"
+        ];
+
+        $this->post('style/update-style', $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
         ->seeStatusCode(200);
     }
 

@@ -59,15 +59,13 @@ class TenantConnectionMiddleware
                 throw new \Exception();
             }
         }
-
-        if ($domain !== env('APP_DOMAIN')) {
-            $tenant = DB::table('tenant')->select('tenant_id')
-            ->where('name', $domain)->whereNull('deleted_at')->first();
-            if (!$tenant) {
-                throw new ModelNotFoundException(trans('messages.custom_error_message.400000'));
-            }
-            $this->helpers->createConnection($tenant->tenant_id);
+        $this->helpers->switchDatabaseConnection('mysql', $request);
+        $tenant = DB::table('tenant')->select('tenant_id')
+        ->where('name', $domain)->whereNull('deleted_at')->first();
+        if (!$tenant) {
+            throw new ModelNotFoundException(trans('messages.custom_error_message.400000'));
         }
+        $this->helpers->createConnection($tenant->tenant_id);
         return $next($request);
     }
 }
