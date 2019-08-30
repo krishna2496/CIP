@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Models\Timesheet;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class TimesheetStatus extends Model
 {
@@ -36,4 +38,14 @@ class TimesheetStatus extends Model
      * @var array
      */
     protected $visible = ['status'];
+
+    /**
+     * Get the mission that has theme
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function timesheet(): HasMany
+    {
+        return $this->hasMany(Timesheet::class, 'timesheet_status_id', 'status_id');
+    }
 }

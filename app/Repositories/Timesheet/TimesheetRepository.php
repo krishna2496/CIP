@@ -129,7 +129,6 @@ class TimesheetRepository implements TimesheetInterface
         $timesheetQuery = Mission::select('mission.mission_id', 'mission.city_id')
         ->where(['publication_status' => config("constants.publication_status")["APPROVED"],
         'mission_type'=> $missionType])
-        ->with(['timesheet'])
         ->whereHas('missionApplication', function ($query) use ($request) {
             $query->where('user_id', $request->auth->user_id)
             ->whereIn('approval_status', [config("constants.application_status")["AUTOMATICALLY_APPROVED"]]);
@@ -137,6 +136,9 @@ class TimesheetRepository implements TimesheetInterface
         ->with(['missionLanguage' => function ($query) use ($languageId) {
             $query->select('mission_language_id', 'mission_id', 'title')
             ->where('language_id', $languageId);
+        }])
+        ->with(['timesheet' => function ($query) {
+            $query->with('timesheetStatus');
         }])
         ->get();
         return $timesheetQuery;

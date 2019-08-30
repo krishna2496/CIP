@@ -3,11 +3,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 use Carbon\Carbon;
 use App\Models\Mission;
 use App\Models\TimesheetDocument;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use App\Models\TimesheetStatus;
 
 class Timesheet extends Model
@@ -113,10 +114,10 @@ class Timesheet extends Model
     /**
      * Get the timesheet status record associated with the timesheet.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function timesheetStatus(): HasMany
+    public function timesheetStatus(): BelongsTo
     {
-        return $this->hasMany(TimesheetStatus::class, 'timesheet_status_id', 'status_id');
+        return $this->belongsTo(TimesheetStatus::class, 'status_id', 'timesheet_status_id');
     }
 }
