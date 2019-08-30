@@ -92,6 +92,8 @@ return [
         'MESSAGE_TENANT_SETTINGS_UPDATED' => 'Tenant settings updated successfully',
         'TIMESHEET_ENTRY_ADDED_SUCESSFULLY' => 'Timesheet entry added successfully',
         'TIMESHEET_ENTRY_UPDATED_SUCESSFULLY' => 'Timesheet entry updated successfully',
+        'MESSAGE_TIMESHEET_LISTING' => 'Timesheet listed sucessfully',        
+        'MESSAGE_TIMESHEET_DOCUMENT_DELETED' => 'Timesheet document deleted sucessfully',
 	],
         
     /**
@@ -194,5 +196,6 @@ return [
         //For timesheet module
         'ERROR_INVALID_ACTION' => 'Invalid goal action',
         'TIMESHEET_NOT_FOUND' => 'Timesheet does not exists' ,
+        'ERROR_TIMESHEET_ALREADY_UPDATED' => 'Sorry you cannot update timesheet it is already approved',
     ],
 ];

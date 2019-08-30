@@ -89,6 +89,8 @@ return [
         'MESSAGE_TENANT_SETTINGS_UPDATED' => 'Paramètres du locataire mis à jour avec succès',
         'TIMESHEET_ENTRY_ADDED_SUCESSFULLY' => 'Entrée de la feuille de temps ajoutée avec succès',
         'TIMESHEET_ENTRY_UPDATED_SUCESSFULLY' => 'Entrée de la feuille de temps mise à jour avec succès',
+        'MESSAGE_TIMESHEET_LISTING' => 'Feuille de temps listée avec succès',
+        'MESSAGE_TIMESHEET_DOCUMENT_DELETED' => 'La feuille de temps du document a été supprimée avec succès',
     ],
 
         
@@ -190,5 +192,6 @@ return [
         //For timesheet module
         'ERROR_INVALID_ACTION' => 'Action de but invalide',        
         'TIMESHEET_NOT_FOUND' => 'La feuille de temps n\'existe pas',
+        'ERROR_TIMESHEET_ALREADY_UPDATED' => 'Désolé, vous ne pouvez pas mettre à jour la feuille de temps, elle est déjà approuvée',
     ],
 ];

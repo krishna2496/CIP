@@ -144,4 +144,27 @@ class TimesheetRepository implements TimesheetInterface
     {
         return $this->timesheet->findOrFail($timesheetId);
     }
+
+    /**
+     * Fetch timesheet details
+     *
+     * @param int $timesheetId
+     * @param int $userId
+     * @return Timesheet
+     */
+    public function getTimesheetData(int $timesheetId, int $userId): Timesheet
+    {
+        return $this->timesheet->findTimesheet($timesheetId, $userId);
+    }
+    
+    /**
+    * Remove the timesheet document.
+    *
+    * @param  int  $id
+    * @return bool
+    */
+    public function delete(int $id): bool
+    {
+        return $this->timesheetDocument->deleteTimesheetDocument($id);
+    }
 }

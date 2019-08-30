@@ -141,7 +141,7 @@ class TimesheetController extends Controller
             }
             
             // Remove params
-            $request->request->remove('status');
+            $request->request->remove('status_id');
 
             // Store timesheet item
             $request->request->add(['user_id' => $request->auth->user_id]);
@@ -204,7 +204,18 @@ class TimesheetController extends Controller
             }
             
             // Fetch timesheet data
-            $timesheetData = $this->timesheetRepository->find($timesheetId);
+            $timesheetData = $this->timesheetRepository->getTimesheetData($timesheetId, $request->auth->user_id);
+            $timesheetDetails = $timesheetData->toArray();
+
+            // If timesheet status is approved
+            if ($timesheetDetails["timesheet_status"][0]["status"] == config('constants.timesheet_status.APPROVED')) {
+                return $this->responseHelper->error(
+                    Response::HTTP_UNPROCESSABLE_ENTITY,
+                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                    config('constants.error_codes.ERROR_TIMESHEET_ALREADY_UPDATED'),
+                    trans('messages.custom_error_message.ERROR_TIMESHEET_ALREADY_UPDATED')
+                );
+            }
 
             // Fetch mission type from missionid
             $missionData = $this->missionRepository->find($timesheetData->mission_id);
@@ -265,7 +276,7 @@ class TimesheetController extends Controller
             
             // Remove params
             $request->request->remove('mission_id');
-            $request->request->remove('status');
+            $request->request->remove('status_id');
 
             // Store timesheet item
             $timesheet = $this->timesheetRepository->updateTimesheet($request, $timesheetId);
@@ -287,6 +298,80 @@ class TimesheetController extends Controller
                 config('constants.error_codes.ERROR_INVALID_ARGUMENT'),
                 trans('messages.custom_error_message.ERROR_INVALID_ARGUMENT')
             );
+        } catch (ModelNotFoundException $e) {
+            return $this->modelNotFound(
+                config('constants.error_codes.TIMESHEET_NOT_FOUND'),
+                trans('messages.custom_error_message.TIMESHEET_NOT_FOUND')
+            );
+        } catch (\Exception $e) {
+            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
+        }
+    }
+
+    /**
+     * Show timesheet data
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param int $timesheetId
+     * @return \Illuminate\Http\JsonResponse;
+     */
+    public function show(Request $request, int $timesheetId): JsonResponse
+    {
+        try {
+            // Fetch timesheet data
+            $timesheetData = $this->timesheetRepository->getTimesheetData($timesheetId, $request->auth->user_id);
+            $timesheetDetail = $timesheetData->toArray();
+            if ($timesheetData->time != null) {
+                $time = explode(":", $timesheetData->time);
+                $timesheetDetail += ["hours" => $time[0]];
+                $timesheetDetail += ["minutes" => $time[1]];
+                unset($timesheetDetail["time"]);
+            }
+
+            $apiStatus = Response::HTTP_OK;
+            $apiMessage = trans('messages.success.MESSAGE_TIMESHEET_LISTING');
+            return $this->responseHelper->success($apiStatus, $apiMessage, $timesheetDetail);
+        } catch (PDOException $e) {
+            return $this->PDO(
+                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
+                trans(
+                    'messages.custom_error_message.ERROR_DATABASE_OPERATIONAL'
+                )
+            );
+        } catch (ModelNotFoundException $e) {
+            return $this->modelNotFound(
+                config('constants.error_codes.TIMESHEET_NOT_FOUND'),
+                trans('messages.custom_error_message.TIMESHEET_NOT_FOUND')
+            );
+        } catch (\Exception $e) {
+            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
+        }
+    }
+
+    /**
+     * Remove the timesheet documents.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param int  $timesheetId
+     * @param int  $documentId
+     * @return Illuminate\Http\JsonResponse
+     */
+    public function destroy(Request $request, int $timesheetId, int $documentId): JsonResponse
+    {
+        try {
+            // Fetch timesheet data
+            $timesheetData = $this->timesheetRepository->getTimesheetData($timesheetId, $request->auth->user_id);
+
+            // Delete timesheet document
+            $timesheetDocument = $this->timesheetRepository->delete($documentId);
+            
+            // Set response data
+            $apiStatus = Response::HTTP_OK;
+            $apiMessage = (!$timesheetDocument) ?
+            trans('messages.success.MESSAGE_NO_RECORD_FOUND'):
+            trans('messages.success.MESSAGE_TIMESHEET_DOCUMENT_DELETED');
+
+            return $this->responseHelper->success($apiStatus, $apiMessage);
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
                 config('constants.error_codes.TIMESHEET_NOT_FOUND'),

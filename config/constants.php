@@ -121,6 +121,17 @@ return [
     ],
 
     /*
+     * Timesheet status
+     */
+    'timesheet_status' => [
+        'AUTOMATICALLY_APPROVED' => 'AUTOMATICALLY_APPROVED',
+        'PENDING' => 'PENDING',
+        'DECLINED' => 'DECLINED',
+        'APPROVED' => 'APPROVED',
+        'SUBMIT_FOR_APPROVAL' => 'SUBMIT_FOR_APPROVAL'
+    ],
+
+    /*
      * User notification types
      */
     'notification_types' => [
@@ -225,6 +236,7 @@ return [
         'ERROR_TIMESHEET_ITEMS_REQUIRED_FIELDS_EMPTY' => '400031',
         'ERROR_INVALID_ACTION' => '400032',
         'TIMESHEET_NOT_FOUND' => '400033',
+        'ERROR_TIMESHEET_ALREADY_UPDATED' => '400034',
                 
         'ERROR_OCCURRED' => '999999',
         'ERROR_INVALID_JSON' => '900000',

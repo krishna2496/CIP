@@ -80,6 +80,8 @@ return [
         'MESSAGE_TENANT_SETTINGS_UPDATED' => 'DE: Tenant settings updated successfully',
         'TIMESHEET_ENTRY_ADDED_SUCESSFULLY' => 'DE: Timesheet entry added successfully',
         'TIMESHEET_ENTRY_UPDATED_SUCESSFULLY' => 'DE: Timesheet entry updated successfully',
+        'MESSAGE_TIMESHEET_LISTING' => 'DE: Timesheet listed sucessfully',        
+        'MESSAGE_TIMESHEET_DOCUMENT_DELETED' => 'DE: Timesheet document deleted sucessfully',
     ],
 
         
@@ -175,5 +177,6 @@ return [
         //For timesheet module
         'ERROR_INVALID_ACTION' => 'DE: Invalid goal action',
         'TIMESHEET_NOT_FOUND' => 'DE: Timesheet does not exists',
+        'ERROR_TIMESHEET_ALREADY_UPDATED' => 'DE: Sorry you cannot update timesheet it is already approved',
     ],
 ];

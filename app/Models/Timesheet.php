@@ -4,6 +4,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Carbon\Carbon;
+use App\Models\TimesheetDocument;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use App\Models\TimesheetStatus;
 
 class Timesheet extends Model
 {
@@ -38,10 +41,10 @@ class Timesheet extends Model
      * @var array
      */
     protected $visible = ['user_id', 'mission_id', 'time', 'action', 'date_volunteered', 'day_volunteered',
-    'notes', 'status'];
+    'notes', 'timesheetDocument', 'timesheetStatus'];
 
     /**
-     * Set application start date attribute on the model.
+     * Set date volunteered attribute on the model.
      *
      * @param  mixed $value
      * @return void
@@ -50,5 +53,48 @@ class Timesheet extends Model
     {
         $this->attributes['date_volunteered'] = ($value != null) ?
         Carbon::createFromFormat('m-d-Y', $value)->setTimezone(config('constants.TIMEZONE')) : null;
+    }
+
+    /**
+     * Get date volunteered attribute on the model.
+     *
+     * @return null|string
+     */
+    public function getDateVolunteeredAttribute(): ?string
+    {
+        return ($this->attributes['date_volunteered'] != null) ?
+        (new Carbon($this->attributes['date_volunteered']))->format('m-d-Y'): null;
+    }
+
+    /**
+     * Get the timesheet document record associated with the timesheet.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function timesheetDocument(): HasMany
+    {
+        return $this->hasMany(TimesheetDocument::class, 'timesheet_id', 'timesheet_id');
+    }
+
+    /**
+     * Find the specified resource.
+     *
+     * @param  int  $id
+     * @return array
+     */
+    public function findTimesheet(int $timesheetId, int $userId)
+    {
+        return static::with('timesheetDocument', 'timesheetStatus')->where(['timesheet_id' => $timesheetId,
+        'user_id' => $userId])->firstOrFail();
+    }
+
+    /**
+     * Get the timesheet status record associated with the timesheet.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function timesheetStatus(): HasMany
+    {
+        return $this->hasMany(TimesheetStatus::class, 'timesheet_status_id', 'status_id');
     }
 }

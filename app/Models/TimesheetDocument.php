@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Carbon\Carbon;
 
 class TimesheetDocument extends Model
 {
@@ -37,4 +36,15 @@ class TimesheetDocument extends Model
      * @var array
      */
     protected $visible = ['timesheet_id', 'document_name', 'document_path', 'document_type'];
+
+    /**
+     * Soft delete the model from the database.
+     *
+     * @param  int $id
+     * @return bool
+     */
+    public function deleteTimesheetDocument(int $id): bool
+    {
+        return static::find($id) ? static::find($id)->delete() : false;
+    }
 }

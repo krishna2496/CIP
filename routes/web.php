@@ -201,6 +201,16 @@ $router->group(['middleware' => 'localization'], function ($router) {
     'middleware' => 'tenant.connection|jwt.auth',
     'uses' => 'App\Timesheet\TimesheetController@update']);
 
+    /* Get timesheet data */
+    $router->get('/app/timesheet/{timesheetId}', ['as' => 'app.timesheet.show',
+    'middleware' => 'tenant.connection|jwt.auth',
+    'uses' => 'App\Timesheet\TimesheetController@show']);
+
+    /* Delete timesheet doecument data */
+    $router->delete('/app/timesheet/{timesheetId}/document/{documentId}', ['as' => 'app.timesheet.destroy',
+    'middleware' => 'tenant.connection|jwt.auth',
+    'uses' => 'App\Timesheet\TimesheetController@destroy']);
+
 /*
 |
 |--------------------------------------------------------------------------

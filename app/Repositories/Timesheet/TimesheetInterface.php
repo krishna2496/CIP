@@ -38,4 +38,21 @@ interface TimesheetInterface
      * @return null|Timesheet
      */
     public function find(int $timesheetId): ?Timesheet;
+
+    /**
+     * Fetch timesheet details
+     *
+     * @param int $timesheetId
+     * @param int $userId
+     * @return Timesheet
+     */
+    public function getTimesheetData(int $timesheetId, int $userId): Timesheet;
+
+    /**
+    * Remove the timesheet document.
+    *
+    * @param  int  $id
+    * @return bool
+    */
+    public function delete(int $id): bool;
 }
