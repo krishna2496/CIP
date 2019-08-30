@@ -89,8 +89,8 @@ class MissionRepository implements MissionInterface
      * @param  App\Models\MissionLanguage $missionLanguage
      * @param  App\Models\MissionMedia $missionMedia
      * @param  App\Models\MissionDocument $missionDocument
-     * @param  Illuminate\Http\ResponseHelper $responseHelper
-     * @param  Illuminate\Http\LanguageHelper $languageHelper
+     * @param  App\Helpers\ResponseHelper $responseHelper
+     * @param  App\Helpers\LanguageHelper $languageHelper
      * @param  App\Helpers\Helpers $helpers
      * @param  App\Helpers\S3Helper $s3helper
      * @param  App\Models\FavouriteMission $favouriteMission
