@@ -123,12 +123,45 @@ class MissionController extends Controller
             $language = $languages->where('code', $language)->first();
             $languageId = $language->language_id;
             $languageCode = $language->code;
+
             //Save User search data
             $this->userFilterRepository->saveFilter($request);
             // Get users filter
             $userFilters = $this->userFilterRepository->userFilter($request);
             $filterTagArray = $this->missionFiltersTag($request, $language, $userFilters);
             $userFilterData = $userFilters->toArray()["filters"];
+
+            if ($request->has('explore_mission_type') && $request->input('explore_mission_type') != '') {
+                $exploreMissionType = $request->input('explore_mission_type');
+                if ($exploreMissionType != config('constants.TOP_RECOMMENDED') &&
+                    $exploreMissionType != config('constants.RANDOM') &&
+                    $exploreMissionType !=config('constants.THEME') &&
+                    $exploreMissionType != config('constants.COUNTRY') &&
+                    $exploreMissionType != config('constants.ORGANIZATION') &&
+                    $exploreMissionType != config('constants.ORGANIZATION') &&
+                    $exploreMissionType != config('constants.MOST_RANKED')
+                ) {
+                    $metaData['filters'] = $userFilterData;
+                    $metaData['filters']["tags"] = $filterTagArray;
+                    $missionsTransformed = [];
+                    $apiData = new \Illuminate\Pagination\LengthAwarePaginator(
+                        $missionsTransformed,
+                        0,
+                        $request->perPage
+                    );
+                    $apiStatus = Response::HTTP_OK;
+                    $apiMessage = trans('messages.success.MESSAGE_MISSION_LISTING');
+                    
+                    return $this->responseHelper->successWithPagination(
+                        $apiStatus,
+                        $apiMessage,
+                        $apiData,
+                        $metaData
+                    );
+                }
+            }
+
+
             $missionList = $this->missionRepository->getMissions($request, $userFilterData, $languageId);
 
             $missionsTransformed = $missionList
