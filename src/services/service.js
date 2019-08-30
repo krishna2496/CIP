@@ -29,10 +29,11 @@ import changeUserPassword from "./User/ChangePassword";
 import changeProfilePicture from "./User/ChangeProfilePicture";
 import changeCity from "./Mission/ChangeCity";
 import saveSkill from "./User/SaveSkill";
-
 import country from "./Country";
 import skill from "./Skill";
 import timezone from "./Timezone";
+import volunteerTimesheetHours from "./VolunteerTimesheet/VolunteerTimesheetHours";
+
 
 export {
     loadLocaleMessages,
@@ -68,5 +69,6 @@ export {
     saveSkill,
     country,
     skill,
-    timezone
+    timezone,
+    volunteerTimesheetHours
 }

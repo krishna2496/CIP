@@ -253,7 +253,7 @@
                 </b-col>
                 <b-col md="6">
                     <b-form-group>
-                        <label>{{langauageData.label.availablity}}*</label>
+                        <label>{{langauageData.label.availability}}*</label>
                         <CustomFieldDropdown               
                             v-model="profile.availability" 
                             :errorClass="submitted && $v.profile.availability.$error" 

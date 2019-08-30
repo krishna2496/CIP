@@ -3,11 +3,11 @@
 		<h2>{{langauageData.label[currentMonthName]}} {{currentYearNumber}}</h2>
 		<div class="inner-wrap">
 			<!-- <button class="add-entry"  @click="$refs.timeHoursModal.show()">
-				<img src="../assets/images/plus-ic-black.svg" alt="plus-ic"/>
+				<img :src="$store.state.imagePath+'/assets/images/plus-ic-black'.svg" alt="plus-ic"/>
 			</button> -->
 			<div class="picker-btn-wrap">
 				<button class="prev-btn picker-btn" :title="langauageData.label.previous" @click.stop="goPrev">
-					<img src="../assets/images/back-arrow-black.svg" alt="Back Arrow" />
+					<img :src="$store.state.imagePath+'/assets/images/back-arrow-black.svg'" alt="Back Arrow" />
 				</button>
 
 				<span>{{langauageData.label[currentMonthName]}}</span>
@@ -15,7 +15,7 @@
 					:title="langauageData.label.next"  
 					v-bind:class="{disabled :isPreviousButtonDisable}"
 					@click.stop="goNext">
-					<img src="../assets/images/next-arrow-black.svg" alt="Next Arrow"/>
+					<img :src="$store.state.imagePath+'/assets/images/next-arrow-black.svg'" alt="Next Arrow"/>
 				</button>
 			</div>
 			<div class="select-time-period">
@@ -24,7 +24,7 @@
 				<span class="current">{{langauageData.label.month}}</span>
 			</div>
 			 <div class="datepicker-block">
-              <img src="../assets/images/datepicker-ic.svg" alt="datepicker-ic" />
+              <img :src="$store.state.imagePath+'/assets/images/datepicker-ic.svg'" alt="datepicker-ic" />
               <date-picker v-model="value2" range appendToBody :lang="lang" confirm></date-picker>
             </div>
 		</div>
