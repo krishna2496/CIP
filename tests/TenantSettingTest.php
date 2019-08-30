@@ -5,299 +5,160 @@ use Laravel\Lumen\Testing\DatabaseTransactions;
 use Aws\S3\Exception\S3Exception;
 use App\Models\ApiUser;
 use App\Models\Tenant;
+use App\Models\TenantSetting;
 
 class TenantSettingTest extends TestCase
 {
     /**
      * @test
      * 
-     * Create new api user
+     * List of all settings of tenant with their status
      * @return void
      */
     public function it_should_list_all_settings_for_tenant()
     {
         $tenant = Tenant::get()->random();
-
-        $this->get(route('tenants.settings', ['tenantId' => $tenant->tenant_id]));
         
-        // Create api user of create tenant
-        $response = $this->post(route("tenants.create-api-user", ["tenant_id" => $tenant->tenant_id]), [])
-        ->seeStatusCode(201)
+        $this->get(route('tenants.settings', ['tenantId' => $tenant->tenant_id]))
+        ->seeStatusCode(200)
         ->seeJsonStructure([
             'status',
             'data' => [
-                'api_user_id',
-                'api_key',
-                'api_secret',
+                ['*' =>
+                    'title',
+                    'tenant_setting_id',
+                    'description',
+                    'key',
+                    'is_active'
+                ]
             ],
             'message',
         ]);
-
-        $apiUserId = $response->response->getData()->data->api_user_id;
-        
-        // Get api user data from create api user's id
-        $apiUser = ApiUser::where('api_user_id', $apiUserId)->first();
-        
-        // Delete created api user
-        $this->assertEquals(true, $apiUser->delete());
-
-        // Delete created tenant
-        $this->assertEquals(true, $tenant->delete());        
     }
     
     /**
      * @test
      * 
-     * Create api user, while tenant not found
+     * List of all settings of tenant with their status, while tenant not found
      * @return void
      */
-    public function it_should_return_tenant_not_found()
+    public function it_should_return_tenant_not_found_for_tenant_setting()
     {
         // Generate random tenantId
         $tenantId = rand(99999999,999999999);
         
-        // Create api user of create tenant
-        $this->post(route("tenants.create-api-user", ["tenant_id" => $tenantId]), [])
+        $this->get(route('tenants.settings', ['tenantId' => $tenantId]))
         ->seeStatusCode(404);
     }
 
     /**
      * @test
      * 
-     * List of all api user of tenant
+     * Add tenant setting
      * @return void
      */
-    public function it_should_list_of_all_api_users_of_tenant()
-    {
-        // Get random tenant
-        $tenant = Tenant::whereHas('apiUsers')->get()->random();
-        
-        // Get all api user of tenant
-        $this->get(route("tenants.api-users", ["tenant_id" => $tenant->tenant_id]), [])
-        ->seeStatusCode(200)
-        ->seeJsonStructure([
-            "status",
-            "data",
-            "pagination",
-            "message"
-        ]);
+    public function it_should_add_setting_for_tenant()
+    {   
+        // Create random settings array     
+        for ($i=0; $i<3; $i++) {
+            $params['settings'][$i] = [
+                'tenant_setting_id' => TenantSetting::get()->random()->tenant_setting_id,
+                'value' => 1,
+            ];
+        }
+        // Add settings into tenant_has_setting (master database) and tenant_setting in (tenant's database)
+        $this->post(route('tenants.store.settings', ['tenantId' => env('DEFAULT_TENANT_ID')]), $params)
+        ->seeStatusCode(200);
+
+        // Make disable settings
+        foreach($params['settings'] as $key => $param) {            
+            $params['settings'][$key] = [
+                'tenant_setting_id' => $param['tenant_setting_id'],
+                'value' => 0
+            ];
+        }
+        // And again call setting API with 0 value to delete it
+        $this->post( route('tenants.store.settings', ['tenantId' => env('DEFAULT_TENANT_ID')]), $params)
+        ->seeStatusCode(200);
     }
 
     /**
      * @test
      * 
-     * List of all api user, while tenant not found
+     * Add tenant setting, error if enter wrong tenant_setting_id 
      * @return void
      */
-    public function it_should_return_tenant_not_found_for_api_user_listing()
-    {
-        // Generate random tenantId
-        $tenantId = rand(99999999,999999999);
-        
-        // Get all api users of tenant
-        $this->get(route("tenants.api-users", ["tenant_id" => $tenantId]), [])
-        ->seeStatusCode(404);
+    public function it_should_return_error_if_wrong_tenant_setting_id()
+    {   
+        // Create random settings array     
+        for ($i=0; $i<3; $i++) {
+            $params['settings'][$i] = [
+                'tenant_setting_id' => rand(9999999,999999999),
+                'value' => 1,
+            ];
+        }
+        // Add settings into tenant_has_setting (master database) and tenant_setting in (tenant's database)
+        $this->post(route('tenants.store.settings', ['tenantId' => env('DEFAULT_TENANT_ID')]), $params)
+        ->seeStatusCode(422);
     }
 
     /**
      * @test
      * 
-     * Detail of api user
+     * Add tenant setting, error if enter wrong value
      * @return void
      */
-    public function it_should_return_api_user_detail()
-    {
-        // Get random tenant with api users data
-        $tenant = Tenant::whereHas('apiUsers')->get()->random();
-
-        // Get random api user from list
-        $apiUser = $tenant->apiUsers->random();
-        
-        // Get details of api user, based on tenant_id and api_user_id
-        $this->get(route("tenants.get-api-user", ["tenant_id" => $tenant->tenant_id, "api_user_id" => $apiUser->api_user_id]), [])
-        ->seeStatusCode(200)
-        ->seeJsonStructure([
-            "status",
-            "data" => [
-                "api_user_id",
-                "tenant_id",
-                "api_key",
-                "status"
-            ],
-            "message"
-        ]);
+    public function it_should_return_error_if_wrong_value()
+    {   
+        // Create random settings array     
+        for ($i=0; $i<3; $i++) {
+            $params['settings'][$i] = [
+                'tenant_setting_id' => TenantSetting::get()->random()->tenant_setting_id,
+                'value' => rand(9999999,999999999),
+            ];
+        }
+        // Add settings into tenant_has_setting (master database) and tenant_setting in (tenant's database)
+        $this->post(route('tenants.store.settings', ['tenantId' => env('DEFAULT_TENANT_ID')]), $params)
+        ->seeStatusCode(422);
     }
 
     /**
      * @test
      * 
-     * Detail of api user, while tenant not found
+     * Add tenant setting, error if enter value is blank
      * @return void
      */
-    public function it_should_return_tenant_not_found_for_api_user_detail()
-    {
-        // Generate random tenantId
-        $tenantId = rand(99999999,999999999);
-
-        // Get random tenant with api users data
-        $tenant = Tenant::whereHas('apiUsers')->get()->random();
-
-        // Get random api user from list
-        $apiUser = $tenant->apiUsers->random();
-        
-        // Get details of api user, based on tenantId and api_user_id
-        $this->get(route("tenants.get-api-user", ["tenant_id" => $tenantId, "api_user_id" => $apiUser->api_user_id]), [])
-        ->seeStatusCode(404);
+    public function it_should_return_error_if_value_is_blank()
+    {   
+        // Create random settings array     
+        for ($i=0; $i<3; $i++) {
+            $params['settings'][$i] = [
+                'tenant_setting_id' => TenantSetting::get()->random()->tenant_setting_id,
+                'value' => '',
+            ];
+        }
+        // Add settings into tenant_has_setting (master database) and tenant_setting in (tenant's database)
+        $this->post(route('tenants.store.settings', ['tenantId' => env('DEFAULT_TENANT_ID')]), $params)
+        ->seeStatusCode(422);
     }
 
     /**
      * @test
      * 
-     * Detail of api user, while api user not found for tenant
+     * Add tenant setting, error if enter tenant_setting_id is blank
      * @return void
      */
-    public function it_should_return_api_user_not_found_for_api_user_detail()
-    {
-        // Get random tenant with api users data
-        $tenant = Tenant::whereHas('apiUsers')->get()->random();
-
-        // Generate random tenantId
-        $apiUserId = rand(99999999,999999999);
-    
-        // Get details of api user, based on tenantId and api_user_id
-        $this->get(route("tenants.get-api-user", ["tenant_id" => $tenant->tenant_id, "api_user_id" => $apiUserId]), [])
-        ->seeStatusCode(404);
-    }
-
-    /**
-     * @test
-     * 
-     * Renew api user's key
-     * @return void
-     */
-    public function it_should_return_updated_secret_key_of_api_user()
-    {
-        // Create new tenant
-        $tenant = factory(Tenant::class)->create();
-
-        // Create new api user
-        $data['api_key'] = str_random(10);
-        $data['api_secret'] = str_random(10);
-
-        $apiUser = $tenant->apiUsers()->create($data);        
-
-        // Update that created api user                                
-        $this->patch(route("tenants.renew-api-user", ["tenant_id" => $tenant->tenant_id, "api_user_id" => $apiUser->api_user_id]), [])
-        ->seeStatusCode(200)
-        ->seeJsonStructure([
-            "status",
-            "data" => [
-                "api_user_id",
-                "api_key",
-                "api_secret"
-            ],
-            "message"
-        ]);
-
-        // Delete above records which are created for this test case
-        $this->assertEquals(true, $tenant->delete());
-        $this->assertEquals(true, $apiUser->delete());        
-    }
-
-    /**
-     * @test
-     * 
-     * Renew api user's key, while tenant not found
-     * @return void
-     */
-    public function it_should_return_tenant_not_found_for_updated_secret_key_of_api_user()
-    {
-        // Generate random tenantId
-        $tenantId = rand(99999999,999999999);        
-
-        $apiUser = ApiUser::get()->random();        
-
-        // Update that created api user                                
-        $this->patch(route("tenants.renew-api-user", ["tenant_id" => $tenantId, "api_user_id" => $apiUser->api_user_id]), [])
-        ->seeStatusCode(404);
-    }
-
-    /**
-     * @test
-     * 
-     * Renew api user's key, while api user not found
-     * @return void
-     */
-    public function it_should_return_api_user_not_found_for_updated_secret_key_of_api_user()
-    {
-        // Get random tenant with api users data
-        $tenant = Tenant::whereHas('apiUsers')->get()->random();
-
-        // Generate random apiUserId
-        $apiUserId = rand(99999999,999999999);        
-
-        // Update that created api user
-        $this->patch(route("tenants.renew-api-user", ["tenant_id" => $tenant->tenant_id, "api_user_id" => $apiUserId]), [])
-        ->seeStatusCode(404);
-    }
-
-    /**
-     * @test
-     * 
-     * Delete api user
-     * @return void
-     */
-    public function it_should_delete_api_user()
-    {
-        // Create new tenant
-        $tenant = factory(Tenant::class)->create();
-
-        // Create new api user
-        $data['api_key'] = str_random(10);
-        $data['api_secret'] = str_random(10);
-
-        $apiUser = $tenant->apiUsers()->create($data);        
-
-        // Delete api user for tenant                                
-        $this->delete(route("tenants.delete-api-user", ["tenant_id" => $tenant->tenant_id, "api_user_id" => $apiUser->api_user_id]), [])
-        ->seeStatusCode(204);
-    }
-
-    /**
-     * @test
-     * 
-     * Delete api user, while tenant not found
-     * @return void
-     */
-    public function it_should_return_tenant_not_found_for_delete_api_user()
-    {
-        // Generate random tenantId
-        $tenantId = rand(99999999,999999999);
-
-        // Get random api user
-        $apiUser = ApiUser::get()->random();        
-
-        // Delete api user for tenant                                
-        $this->delete(route("tenants.delete-api-user", ["tenant_id" => $tenantId, "api_user_id" => $apiUser->api_user_id]), [])
-        ->seeStatusCode(404);
-    }
-
-    /**
-     * @test
-     * 
-     * Delete api user, while api user not found
-     * @return void
-     */
-    public function it_should_return_api_user_not_found_for_delete_api_user()
-    {
-        // Get random tenant
-        $tenant =  Tenant::get()->random();
-
-        // Generate random apiUserId
-        $apiUserId = rand(99999999,999999999);        
-
-        // Delete api user for tenant                                
-        $this->delete(route("tenants.delete-api-user", ["tenant_id" => $tenant->tenant_id, "api_user_id" => $apiUserId]), [])
-        ->seeStatusCode(404);
+    public function it_should_return_error_if_tenant_setting_id_is_blank()
+    {   
+        // Create random settings array     
+        for ($i=0; $i<3; $i++) {
+            $params['settings'][$i] = [
+                'tenant_setting_id' => '',
+                'value' => 1,
+            ];
+        }
+        // Add settings into tenant_has_setting (master database) and tenant_setting in (tenant's database)
+        $this->post(route('tenants.store.settings', ['tenantId' => env('DEFAULT_TENANT_ID')]), $params)
+        ->seeStatusCode(422);
     }
 }
