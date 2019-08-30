@@ -93,7 +93,10 @@ return [
         'TIMESHEET_ENTRY_ADDED_SUCESSFULLY' => 'Timesheet entry added successfully',
         'MESSAGE_TIMESHEET_ENTRIES_LISTING' => 'Timesheet entries listed successfully',
         'MESSAGE_NO_TIMESHEET_ENTRIES_FOUND' => 'Timesheet entries not found',
-		],
+        'TIMESHEET_ENTRY_UPDATED_SUCESSFULLY' => 'Timesheet entry updated successfully',
+        'MESSAGE_TIMESHEET_LISTING' => 'Timesheet listed sucessfully',        
+        'MESSAGE_TIMESHEET_DOCUMENT_DELETED' => 'Timesheet document deleted sucessfully',
+	],
         
     /**
     * API Error Codes and Message
@@ -194,5 +197,7 @@ return [
 
         //For timesheet module
         'ERROR_INVALID_ACTION' => 'Invalid goal action',
+        'TIMESHEET_NOT_FOUND' => 'Timesheet does not exists' ,
+        'ERROR_TIMESHEET_ALREADY_UPDATED' => 'Sorry you cannot update timesheet it is already approved',
     ],
 ];
