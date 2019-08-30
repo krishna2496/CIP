@@ -5,59 +5,6 @@ class TenantOptionsTest extends TestCase
     /**
      * @test
      *
-     * Create slider
-     *
-     * @return void
-     */
-    public function it_should_create_slider()
-    {
-        $params = [
-            'url' => "http://new.anasource.com/team11/s3/sliderimg4.jpg",
-            'sort_order' => "1",
-            'slider_detail' =>
-                [
-                'translations' =>  [
-                    [
-                        'lang' => 'en',
-                        'slider_title' => str_random(20),
-                        'slider_description' => str_random(200)
-                    ]
-                ],
-            ],
-        ];
-
-        $connection = 'tenant';
-        $tenant = factory(\App\Models\TenantOption::class)->make();
-        $tenant->setConnection($connection);
-        $count = $tenant->where('option_name', config('constants.TENANT_OPTION_SLIDER'))->count();
-
-        if ($count >= config('constants.SLIDER_LIMIT')) {
-            $this->post("slider/", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
-            ->seeStatusCode(403)
-            ->seeJsonStructure([
-                'errors' => [
-                        [
-                            'status',
-                            'type',
-                            'code',
-                            'message'
-                        ]
-                    ]
-                ]);
-        } else {
-            $this->post("slider/", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
-            ->seeStatusCode(201)
-            ->seeJsonStructure([
-                'status',
-                'message',
-                ]);
-        }
-        App\Models\TenantOption::where("option_name", "slider")->orderBy("tenant_option_id", "DESC")->take(1)->delete();
-    }
-
-    /**
-     * @test
-     *
      * Reset style to default
      *
      * @return void
@@ -67,45 +14,7 @@ class TenantOptionsTest extends TestCase
         $this->get('style/reset-style', ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
         ->seeStatusCode(200);
     }
-
-    /**
-     * @test
-     *
-     * Validate URL
-     *
-     * @return void
-     */
-    public function it_should_return_error_for_invalid_url()
-    {
-        $params = [
-            'url' => "test",
-            'sort_order' => "1",
-            'slider_detail' =>
-                [
-                'translations' =>  [
-                    [
-                        'lang' => 'en',
-                        'slider_title' => str_random(20),
-                        'slider_description' => str_random(200)
-                    ]
-                ],
-            ],
-        ];
-
-        $this->post("slider/", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
-        ->seeStatusCode(422)
-        ->seeJsonStructure([
-            'errors' => [
-                [
-                    'status',
-                    'type',
-                    'code',
-                    'message'
-                ]
-            ]
-        ]);
-    }
-
+    
     /**
      * @test
      *
