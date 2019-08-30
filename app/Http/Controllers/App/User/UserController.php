@@ -205,7 +205,8 @@ class UserController extends Controller
                             if ($arrayKey !== '') {
                                 $returnData['translations']['lang'] = $value['translations'][$arrayKey]['lang'];
                                 $returnData['translations']['name'] = $value['translations'][$arrayKey]['name'];
-                                $returnData['translations']['values'] = $value['translations'][$arrayKey]['values'];
+								if (isset($value['translations'][$arrayKey]['values']))
+									$returnData['translations']['values'] = $value['translations'][$arrayKey]['values'];
 
                                 $userCustomFieldValue = $customFieldsValue->where('field_id', $value['field_id'])
                                 ->where('user_id', $userId)->first();
