@@ -17,15 +17,250 @@
                             <VolunteeringTimesheetTableHeader
                                 @updateCall="changeVolunteeringHours"
                             />
-                            <b-table
-                                :items="timeSheetHoursItems"
-                                responsive
-                                bordered
-                                :fields="timesheetHoursFields"
-                                :tbody-tr-class="timesheetTotal"
-                                class="timesheet-table timesheethours-table"
-                            >
-                            </b-table>
+                            <b-table-simple
+                  small
+                  responsive
+                  bordered
+                  class="timesheet-table timesheethours-table"
+                >
+                  <b-thead>
+                    <b-tr>
+                      <b-th class="mission-col">Mission</b-th>
+                      <b-th>
+                        1
+                        <span>Sunday</span>
+                      </b-th>
+                      <b-th>
+                        2
+                        <span>Monday</span>
+                      </b-th>
+                      <b-th class="currentdate-col">
+                        3
+                        <span>Tuesday</span>
+                      </b-th>
+                      <b-th>
+                        4
+                        <span>Wednesday</span>
+                      </b-th>
+                      <b-th>
+                        5
+                        <span>Thursday</span>
+                      </b-th>
+                      <b-th>
+                        6
+                        <span>Friday</span>
+                      </b-th>
+                      <b-th>
+                        7
+                        <span>Saturday</span>
+                      </b-th>
+                      <b-th>
+                        8
+                        <span>Sunday</span>
+                      </b-th>
+                      <b-th>
+                        9
+                        <span>Monday</span>
+                      </b-th>
+                      <b-th>
+                        10
+                        <span>Tuesday</span>
+                      </b-th>
+                      <b-th>
+                        11
+                        <span>Wednesday</span>
+                      </b-th>
+                      <b-th>
+                        12
+                        <span>Thursday</span>
+                      </b-th>
+                      <b-th>
+                        13
+                        <span>Friday</span>
+                      </b-th>
+                      <b-th>
+                        14
+                        <span>Saturday</span>
+                      </b-th>
+                      <b-th>
+                        15
+                        <span>Sunday</span>
+                      </b-th>
+                      <b-th>
+                        16
+                        <span>Monday</span>
+                      </b-th>
+                      <b-th>
+                        17
+                        <span>Tuesday</span>
+                      </b-th>
+                      <b-th>
+                        18
+                        <span>Wednesday</span>
+                      </b-th>
+                      <b-th>
+                        19
+                        <span>Thursday</span>
+                      </b-th>
+                      <b-th>
+                        20
+                        <span>Friday</span>
+                      </b-th>
+                      <b-th>
+                        21
+                        <span>Saturday</span>
+                      </b-th>
+                      <b-th>
+                        22
+                        <span>Sunday</span>
+                      </b-th>
+                      <b-th>
+                        23
+                        <span>Monday</span>
+                      </b-th>
+                      <b-th>
+                        24
+                        <span>Tuesday</span>
+                      </b-th>
+                      <b-th>
+                        25
+                        <span>Wednesday</span>
+                      </b-th>
+                      <b-th>
+                        26
+                        <span>Thursday</span>
+                      </b-th>
+                      <b-th>
+                        27
+                        <span>Friday</span>
+                      </b-th>
+                      <b-th>
+                        28
+                        <span>Saturday</span>
+                      </b-th>
+                      <b-th>
+                        29
+                        <span>Sunday</span>
+                      </b-th>
+                      <b-th>
+                        30
+                        <span>Monday</span>
+                      </b-th>
+                      <b-th>
+                        31
+                        <span>Tuesday</span>
+                      </b-th>
+                      <b-th class="total-col">Total</b-th>
+                    </b-tr>
+                  </b-thead>
+                  <b-tbody>
+                    <b-tr>
+                      <b-td class="mission-col">Help Old People</b-td>
+                      <b-td >5:00</b-td>
+                      <b-td></b-td>
+                      <b-td class="approved">2:00</b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td class="total-col">7:00</b-td>
+                    </b-tr>
+                    <b-tr>
+                      <b-td class="mission-col">Help Young Kids</b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td class="declined">6:00</b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td class="total-col">6:00</b-td>
+                    </b-tr>
+                    <b-tr class="total-row">
+                      <b-td class="mission-col">Total:</b-td>
+                      <b-td>5:00</b-td>
+                      <b-td></b-td>
+                      <b-td>2:00</b-td>
+                      <b-td></b-td>
+                      <b-td>6:00</b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td class="total-col">13:00</b-td>
+                    </b-tr>
+                  </b-tbody>
+                </b-table-simple>
                         </div>
                         <div class="btn-block">
                             <b-button class="btn-bordersecondary ml-auto" title="Submit">{{langauageData.label.submit}}</b-button>
@@ -41,14 +276,250 @@
                             <VolunteeringTimesheetTableHeader
                                 @updateCall="changeVolunteeringGoals"
                             />
-                            <b-table
-                                :items="timesheetGoalsItems"
-                                responsive
-                                bordered
-                                :fields="timesheetGoalsFields"
-                                class="timesheet-table timesheetgoals-table"
-                            >
-                            </b-table>
+                             <b-table-simple
+                  small
+                  responsive
+                  bordered
+                  class="timesheet-table timesheetgoals-table"
+                >
+                  <b-thead>
+                    <b-tr>
+                      <b-th class="mission-col">Mission</b-th>
+                      <b-th>
+                        1
+                        <span>Sunday</span>
+                      </b-th>
+                      <b-th>
+                        2
+                        <span>Monday</span>
+                      </b-th>
+                      <b-th class="currentdate-col">
+                        3
+                        <span>Tuesday</span>
+                      </b-th>
+                      <b-th>
+                        4
+                        <span>Wednesday</span>
+                      </b-th>
+                      <b-th>
+                        5
+                        <span>Thursday</span>
+                      </b-th>
+                      <b-th>
+                        6
+                        <span>Friday</span>
+                      </b-th>
+                      <b-th>
+                        7
+                        <span>Saturday</span>
+                      </b-th>
+                      <b-th>
+                        8
+                        <span>Sunday</span>
+                      </b-th>
+                      <b-th>
+                        9
+                        <span>Monday</span>
+                      </b-th>
+                      <b-th>
+                        10
+                        <span>Tuesday</span>
+                      </b-th>
+                      <b-th>
+                        11
+                        <span>Wednesday</span>
+                      </b-th>
+                      <b-th>
+                        12
+                        <span>Thursday</span>
+                      </b-th>
+                      <b-th>
+                        13
+                        <span>Friday</span>
+                      </b-th>
+                      <b-th>
+                        14
+                        <span>Saturday</span>
+                      </b-th>
+                      <b-th>
+                        15
+                        <span>Sunday</span>
+                      </b-th>
+                      <b-th>
+                        16
+                        <span>Monday</span>
+                      </b-th>
+                      <b-th>
+                        17
+                        <span>Tuesday</span>
+                      </b-th>
+                      <b-th>
+                        18
+                        <span>Wednesday</span>
+                      </b-th>
+                      <b-th>
+                        19
+                        <span>Thursday</span>
+                      </b-th>
+                      <b-th>
+                        20
+                        <span>Friday</span>
+                      </b-th>
+                      <b-th>
+                        21
+                        <span>Saturday</span>
+                      </b-th>
+                      <b-th>
+                        22
+                        <span>Sunday</span>
+                      </b-th>
+                      <b-th>
+                        23
+                        <span>Monday</span>
+                      </b-th>
+                      <b-th>
+                        24
+                        <span>Tuesday</span>
+                      </b-th>
+                      <b-th>
+                        25
+                        <span>Wednesday</span>
+                      </b-th>
+                      <b-th>
+                        26
+                        <span>Thursday</span>
+                      </b-th>
+                      <b-th>
+                        27
+                        <span>Friday</span>
+                      </b-th>
+                      <b-th>
+                        28
+                        <span>Saturday</span>
+                      </b-th>
+                      <b-th>
+                        29
+                        <span>Sunday</span>
+                      </b-th>
+                      <b-th>
+                        30
+                        <span>Monday</span>
+                      </b-th>
+                      <b-th>
+                        31
+                        <span>Tuesday</span>
+                      </b-th>
+                      <b-th class="total-col">Total</b-th>
+                    </b-tr>
+                  </b-thead>
+                  <b-tbody>
+                    <b-tr>
+                      <b-td class="mission-col">Help Old People</b-td>
+                      <b-td>5</b-td>
+                      <b-td></b-td>
+                      <b-td class="approved">2</b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td class="total-col">7</b-td>
+                    </b-tr>
+                    <b-tr>
+                      <b-td class="mission-col">Help Young Kids</b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td class="declined">6</b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td class="total-col">6</b-td>
+                    </b-tr>
+                    <b-tr class="total-row">
+                      <b-td class="mission-col">Total:</b-td>
+                      <b-td>5</b-td>
+                      <b-td></b-td>
+                      <b-td>2</b-td>
+                      <b-td></b-td>
+                      <b-td>6</b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td></b-td>
+                      <b-td class="total-col">13</b-td>
+                    </b-tr>
+                  </b-tbody>
+                </b-table-simple>
                         </div>
                     <div class="btn-block">
                         <b-button class="btn-bordersecondary ml-auto">{{langauageData.label.submit}}</b-button>
@@ -58,9 +529,9 @@
                         <div class="table-inner">
                             <h3>{{langauageData.label.hours_requests}}</h3>
                             <b-table
-                            :items="timesheetResquetItems"
+                            :items="timesheetRequestItems"
                             responsive
-                            :fields="timesheetResquetFields"
+                            :fields="timesheetRequestFields"
                             class="volunteery-table"
                             ></b-table>
                         </div>
@@ -81,9 +552,9 @@
                         <div class="table-inner">
                             <h3>{{langauageData.label.goals_requests}}</h3>
                             <b-table
-                            :items="timesheetResquetItems"
+                            :items="timesheetRequestItems"
                             responsive
-                            :fields="timesheetResquetFields"
+                            :fields="timesheetRequestFields"
                             class="volunteery-table"
                             ></b-table>
                         </div>
@@ -175,7 +646,32 @@
                         </b-form-group>
                         <b-form-group>
                             <label for>{{langauageData.label.file_upload}}</label>
-                            <b-form-input id type="text"></b-form-input>
+                            <div class="file-upload-wrap">
+                             <file-upload
+                                class="btn"
+                                post-action="/upload/post"
+                                extensions="gif,jpg,jpeg,png,webp"
+                                accept="image/png,image/gif,image/jpeg,image/webp"
+                                :multiple="true"
+                                :drop="true"
+                                :drop-directory="true"
+                                :size="1024 * 1024 * 10"
+                                v-model="files"
+                                ref="upload">
+                               Browse
+                                </file-upload>
+                                <div class="uploaded-file-details" v-for="(file, index) in files" :key="file.id">
+                                    <p class="filename">{{file.name}}</p>
+                                    <span>{{file.size}}</span>
+                                    <div class="status">
+                                        <span v-if="file.error">{{file.error}}</span>
+                                        <span v-else-if="file.success">File uploaded successfully.</span>
+                                    </div>
+                                    <a class="remove-item" href="#" @click.prevent="$refs.upload.remove(file)">
+                                    <img src="../assets/images/delete-ic.svg" alt="delete-ic"/>
+                                    </a>
+                                </div>
+                            </div>
                         </b-form-group>
                     </form>
                     <div class="btn-wrap">
@@ -255,7 +751,32 @@
                     </b-form-group>
                     <b-form-group>
                         <label for>{{langauageData.label.file_upload}}</label>
-                        <b-form-input id type="text"></b-form-input>
+                        <div class="file-upload-wrap">
+                             <file-upload
+                                class="btn"
+                                post-action="/upload/post"
+                                extensions="gif,jpg,jpeg,png,webp"
+                                accept="image/png,image/gif,image/jpeg,image/webp"
+                                :multiple="true"
+                                :drop="true"
+                                :drop-directory="true"
+                                :size="1024 * 1024 * 10"
+                                v-model="files"
+                                ref="upload2">
+                               Browse
+                                </file-upload>
+                                <div class="uploaded-file-details" v-for="(file, index) in files" :key="file.id">
+                                    <p class="filename">{{file.name}}</p>
+                                    <span>{{file.size}}</span>
+                                    <div class="status">
+                                        <span v-if="file.error">{{file.error}}</span>
+                                        <span v-else-if="file.success">File uploaded successfully.</span>
+                                    </div>
+                                    <a class="remove-item" href="#" @click.prevent="$refs.upload.remove(file)">
+                                    <img src="../assets/images/delete-ic.svg" alt="delete-ic"/>
+                                    </a>
+                                </div>
+                            </div>
                     </b-form-group>
                 </form>
                 <div class="btn-wrap">
@@ -286,6 +807,7 @@ import constants from '../constant';
 import axios from "axios";
 import store from '../store';
 import DatePicker from "vue2-datepicker";
+import FileUpload from 'vue-upload-component';
 
 export default {
     components: {
@@ -295,13 +817,15 @@ export default {
         SimpleBar,
         DashboardBreadcrumb,
         VolunteeringTimesheetTableHeader,
-        DatePicker
+        DatePicker,
+        FileUpload
     },
 
     name: "dashboardtimesheet",
 
     data() {
         return {
+            files: [],
             time1: "",
             value2: "",
             lang: {
@@ -339,346 +863,90 @@ export default {
             ],
             defaultMission: "Help Old People",
             langauageData : [],
-            timesheetResquetFields: [
-            {
-            key: "Mission",
-            class: "mission-col"
-            },
-            {
-            key: "Time",
-            },
-            {
-            key: "Hours",
-            class: "hours-col"
-            },
-            {
-            key: "Organisation",
-            class: "organisation-col"
-            }
-            ],
-            timesheetResquetItems: [
-            {
-            Mission: "Help old people",
-            Time: "1h30",
-            Hours: 5.5,
-            Organisation: "Red Cross"
-            },
-            {
-            Mission: "Help young kids",
-            Time: "0h20",
-            Hours: 0.33,
-            Organisation: "Red Cross"
-            },
-            {
-            Mission: "Plant house",
-            Time: "2h50",
-            Hours: 2.83,
-            Organisation: "Green House"
-            },
-            {
-            Mission: "The place",
-            Time: "0h15",
-            Hours: 0.25,
-            Organisation: "Blue Cross"
-            }
-            ],
-
-            timesheetHoursFields: [
-            {
-            key: "Mission",
-            class: "mission-col"
-            },
-            {
-            key: "1",
-            class: "approved"
-            },
-            {
-            key: "2",
-            },
-            {
-            key: "3",
-            class: "currentdate-col declined",
-            },
-            {
-            key: "4",
-            },
-            {
-            key: "5",
-            },
-            {
-            key: "6",
-            },
-            {
-            key: "7",
-            },
-
-            {
-            key: "Total",
-            class: "total-col"
-            },
-            ],
-            timeSheetHoursItems: [
-            {
-            Mission: "Help Old People 1",
-            "1": "5:00",
-            "2": "",
-            "3": "2:00",
-            "4": "",
-            "5": "",
-            "6": "",
-            "7": "",
-            Total: "7:00"
-            },
-            {
-            Mission: "Help Young Kids 1",
-            "11": "",
-            "22": "",
-            "33": "",
-            "43": "",
-            "55": "6:00",
-            "66": "",
-            "77": "",
-            Total: "6:00",
-            },
-            {
-            status: "total",
-            Mission: "Total:",
-            "1": "5:00",
-            "2": "",
-            "3": "2:00",
-            "4": "",
-            "5": "6:00",
-            "6": "",
-            "7": "",
-            Total: "13:00"
-            }
-            ],
-
-
-            timesheetGoalsFields: [
-            {
-            key: "Mission",
-            class: "mission-col"
-            },
-            {
-            key: "1",
-            },
-            {
-            key: "2",
-            },
-            {
-            key: "3",
-            class: "currentdate-col declined",
-            },
-            {
-            key: "4",
-            },
-            {
-            key: "5",
-            },
-            {
-            key: "6",
-            },
-            {
-            key: "7",
-            },
-            {
-            key: "8",
-            },
-            {
-            key: "9",
-            },
-            {
-            key: "10",
-            },
-            {
-            key: "11",
-            },
-            {
-            key: "12",
-            },
-            {
-            key: "13",
-            },
-            {
-            key: "14",
-            },
-            {
-            key: "15",
-            },
-            {
-            key: "16",
-            },
-            {
-            key: "17",
-            },
-            {
-            key: "18",
-            },
-            {
-            key: "19",
-            },
-            {
-            key: "20",
-            },
-            {
-            key: "21",
-            },
-            {
-            key: "22",
-            },
-            {
-            key: "23",
-            },
-            {
-            key: "24",
-            },
-            {
-            key: "25",
-            },
-            {
-            key: "26",
-            },
-            {
-            key: "27",
-            },
-            {
-            key: "28",
-            },
-            {
-            key: "29",
-            },
-            {
-            key: "30",
-            },
-            {
-            key: "31",
-            },
-            {
-            key: "Total",
-            class: "total-col"
-            },
-            ],
-            timesheetGoalsItems: [
-            {
-            Mission: "Help Old People",
-            "1": "5:00",
-            "2": "",
-            "3": "2:00",
-            "4": "",
-            "5": "",
-            "6": "",
-            "7": "",
-            "8": "",
-            "9": "",
-            "10": "",
-            "11": "",
-            "12": "",
-            "13": "",
-            "14": "",
-            "15": "",
-            "16": "",
-            "17": "",
-            "18": "",
-            "19": "",
-            "20": "",
-            "21": "",
-            "22": "",
-            "23": "",
-            "24": "",
-            "25": "",
-            "26": "",
-            "27": "",
-            "28": "",
-            "29": "",
-            "30": "",
-            "31": "",
-            Total: "7:00"
-            },
-            {
-            Mission: "Help Young Kids",
-            "11": "",
-            "22": "",
-            "33": "",
-            "43": "",
-            "55": "6:00",
-            "66": "",
-            "77": "",
-            "8": "",
-            "9": "",
-            "10": "",
-            "11": "",
-            "12": "",
-            "13": "",
-            "14": "",
-            "15": "",
-            "16": "",
-            "17": "",
-            "18": "",
-            "19": "",
-            "20": "",
-            "21": "",
-            "22": "",
-            "23": "",
-            "24": "",
-            "25": "",
-            "26": "",
-            "27": "",
-            "28": "",
-            "29": "",
-            "30": "",
-            "31": "",
-            Total: "6:00",
-            },
-            {
-            status: "total",
-            Mission: "Total hours",
-            "1": "5:00",
-            "2": "",
-            "3": "2:00",
-            "4": "",
-            "5": "6:00",
-            "6": "",
-            "7": "",
-            "8": "",
-            "9": "",
-            "10": "",
-            "11": "",
-            "12": "",
-            "13": "",
-            "14": "",
-            "15": "",
-            "16": "",
-            "17": "",
-            "18": "",
-            "19": "",
-            "20": "",
-            "21": "",
-            "22": "",
-            "23": "",
-            "24": "",
-            "25": "",
-            "26": "",
-            "27": "",
-            "28": "",
-            "29": "",
-            "30": "",
-            "31": "",
-            Total: "13:00"
-            }
-            ],
+            timesheetRequestFields: [
+        {
+          key: "Mission",
+          class: "mission-col"
+        },
+        {
+          key: "Time"
+        },
+        {
+          key: "Hours",
+          class: "hours-col"
+        },
+        {
+          key: "Organisation",
+          class: "organisation-col"
+        }
+      ],
+      timesheetRequestItems: [
+        {
+          Mission: "Help old people",
+          Time: "1h30",
+          Hours: 5.5,
+          Organisation: "Red Cross"
+        },
+        {
+          Mission: "Help young kids",
+          Time: "0h20",
+          Hours: 0.33,
+          Organisation: "Red Cross"
+        },
+        {
+          Mission: "Plant house",
+          Time: "2h50",
+          Hours: 2.83,
+          Organisation: "Green House"
+        },
+        {
+          Mission: "The place",
+          Time: "0h15",
+          Hours: 0.25,
+          Organisation: "Blue Cross"
+        }
+      ],
+      goalRequestFields: [
+        {
+          key: "Mission",
+          class: "mission-col"
+        },
+        {
+          key: "Action"
+        },
+        {
+          key: "Organisation",
+          class: "organisation-col"
+        }
+      ],
+      goalRequestItems: [
+        {
+          Mission: "Help old people",
+          Action: "100",
+          Organisation: "Red Cross"
+        },
+        {
+          Mission: "Help young kids",
+          Action: "200",
+          Organisation: "Red Cross"
+        },
+        {
+          Mission: "Plant house",
+          Action: "300",
+          Organisation: "Green House"
+        },
+        {
+          Mission: "The place",
+          Action: "400",
+          Organisation: "Blue Cross"
+        }
+      ],
             defaultWorkday: "",
             workDayList: [
             ["workday","workday"],
             ["weekend","weekend"],
             ["holiday","holiday"],
             ],
-            default_month: "Mar",
-            monthList: ["Jan", "Feb", "Mar", "April"],
-            default_date: "27",
-            dateList: ["1", "2", "4", "27"],
-            default_year: "2018",
-            yearList: ["2018", "2017", "2016", "2015"],
             rows: 25,
             perPage: 2,
             currentPage: 1,
@@ -694,19 +962,6 @@ export default {
             updateWorkday(value) {
                 this.defaultWorkday = value.selectedVal;
             },
-            updateMonth(value) {
-                this.default_month = value;
-            },
-            updateDate(value) {
-                this.default_date = value;
-            },
-            updateYear(value) {
-                this.default_year = value;
-            },
-            timesheetTotal(item){
-                if(!item) return
-                    if(item.status === 'total') return 'total-row';
-                },
             updateMission(value) {
                 this.defaultMission = value;
             },
