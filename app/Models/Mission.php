@@ -19,6 +19,7 @@ use App\Models\GoalMission;
 use App\Models\TimeMission;
 use App\Models\Comment;
 use App\Models\Availability;
+use App\Models\Timesheet;
 
 class Mission extends Model
 {
@@ -73,7 +74,7 @@ class Mission extends Model
     'already_volunteered','total_available_seat', 'available_seat','deadline',
     'favourite_mission_count', 'mission_rating', 'is_favourite', 'skill_id',
     'user_application_status', 'skill', 'rating', 'mission_rating_total_volunteers',
-    'availability_id', 'availability_type', 'average_rating'];
+    'availability_id', 'availability_type', 'average_rating', 'timesheet', 'timesheetStatus'];
 
     protected $appends = ['city_name'];
 
@@ -227,6 +228,16 @@ class Mission extends Model
     public function availability(): BelongsTo
     {
         return $this->belongsTo(Availability::class, 'availability_id', 'availability_id');
+    }
+
+    /**
+     * Get timesheet associated with the mission.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function timesheet(): HasMany
+    {
+        return $this->hasMany(Timesheet::class, 'mission_id', 'mission_id');
     }
 
     /**
