@@ -33,7 +33,9 @@ export default new Vuex.Store({
         missionNotFoundText : localStorage.getItem('missionNotFoundText'),
         languageLabel : localStorage.getItem('languageLabel'),
         currentSkill : null,
-        currentFromSkill : null
+        currentFromSkill : null,
+        isTwitterDisplay:false,
+        isFacebookDisplay : false
     },
     mutations: {
         // Set login data in state and local storage       
@@ -163,6 +165,7 @@ export default new Vuex.Store({
         changeAvatar(state,data) {
             localStorage.setItem('avatar', data.avatar) 
             state.avatar = data.avatar;
+            console.log(state.avatar);
         },
         changeUserDetail(state, data) {        
             var langaugeCode = data.languageCode; 

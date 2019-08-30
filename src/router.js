@@ -22,6 +22,34 @@ let routes = [{
     component: () =>
         import ('./views/Auth/Login.vue')
 },
+
+{
+        path: '/volunteering-timesheet',
+        name: 'Volunteering timesheet ',
+        meta: {
+            requiresAuth: true
+        },
+        component: () =>
+            import ('./views/VolunteeringTimesheet.vue')
+},
+{
+        path: '/volunteering-history',
+        name: 'Volunteering history ',
+        meta: {
+            requiresAuth: true
+        },
+        component: () =>
+            import ('./views/VolunteeringHistory.vue')
+},{
+        path: '/dashboard',
+        name: 'dashboard',
+        meta: {
+            requiresAuth: true
+        },
+        component: () =>
+            import ('./views/Dashboard.vue')
+},
+
 {
     path: '/home',
     name: 'home',

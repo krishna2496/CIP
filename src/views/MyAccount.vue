@@ -48,7 +48,6 @@
             </b-list-group>
             <div class="link-wrap">
                 <b-button
-                  title="change password"
                   class="btn-link-border"
                   @click="$refs.changePasswordModal.show()"
                 >{{langauageData.label.change_password}}</b-button>
@@ -401,7 +400,7 @@ import CustomFieldDropdown from "../components/CustomFieldDropdown";
 import MultiSelect from "../components/MultiSelect";
 import CustomField from "../components/CustomField";
 import store from "../store";
-import PictureInput from 'vue-picture-input'
+import PictureInput from '../components/vue-picture-input'
 import {getUserDetail,saveProfile,changeUserPassword,changeProfilePicture,changeCity,saveUserProfile,saveSkill,loadLocaleMessages,country,skill,timezone} from "../services/service";
 import { required,maxLength, email,sameAs, minLength, between,helpers} from 'vuelidate/lib/validators';
 import constants from '../constant';
@@ -565,12 +564,12 @@ export default {
         changeImage(image) {
             this.imageLoader = true;
             let imageData = {}
+          
             imageData.avatar = image;
             changeProfilePicture(imageData).then(response => {
                 if(response.error == true){
                     this.makeToast("danger",response.message);
                 } else {
-                    
                     this.makeToast("success",response.message);
                     store.commit("changeAvatar",response.data)
                 }
@@ -590,7 +589,8 @@ export default {
                 } else {
                     var _this = this;
                     this.userData = response.data;
-                    this.newUrl = this.userData.avatar_base64;
+                    this.newUrl = this.userData.avatar;
+                    store.commit("changeAvatar",this.userData)
                     var lowerCase = this.newUrl.toLowerCase();
                     if (lowerCase.indexOf("png") !== -1) {
                         this.prefilImageType.mediaType = "png"

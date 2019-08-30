@@ -128,7 +128,7 @@
                             <i :style="{backgroundImage: 'url('+this.$store.state.avatar+')'}"></i>
                             <em>{{this.$store.state.firstName+' '+this.$store.state.lastName}}</em>
                         </template>
-                        <!-- <b-dropdown-item href="#">Dashboard</b-dropdown-item> -->
+                        <b-dropdown-item :to="{ name: 'dashboard' }">Dashboard</b-dropdown-item>
                         <b-dropdown-item :to="{ name: 'myAccount' }">{{ langauageData.label.my_account}}</b-dropdown-item>
                         <!-- <b-dropdown-item href="#">Help Center</b-dropdown-item> -->
                         <b-dropdown-item 
