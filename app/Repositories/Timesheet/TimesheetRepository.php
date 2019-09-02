@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Repositories\Timesheet;
 
 use DB;
@@ -214,5 +215,30 @@ class TimesheetRepository implements TimesheetInterface
     public function delete(int $id, int $timesheetId): bool
     {
         return $this->timesheetDocument->deleteTimesheetDocument($id, $timesheetId);
+    }
+
+    /**
+     * Update timesheet on submitted
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param int $userId
+     * @return bool
+     */
+    public function updateSubmittedTimesheet(Request $request, int $userId): bool
+    {
+        $status = false;
+        if ($request->timesheet_entries) {
+            foreach ($request->timesheet_entries as $data) {
+                $timesheetData = $this->timesheet->with('timesheetStatus')->where(['user_id' => $userId,
+                'timesheet_id' => $data['timesheet_id']])
+                ->firstOrFail();
+                $timesheetDetails = $timesheetData->toArray();
+                if ($timesheetDetails["timesheet_status"]["status"] == config('constants.timesheet_status.PENDING')) {
+                    $timesheetData->status_id = "5";
+                    $status = $timesheetData->save();
+                }
+            }
+        }
+        return $status;
     }
 }

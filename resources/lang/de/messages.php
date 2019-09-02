@@ -84,6 +84,8 @@ return [
         'TIMESHEET_ENTRY_UPDATED_SUCESSFULLY' => 'DE: Timesheet entry updated successfully',
         'MESSAGE_TIMESHEET_LISTING' => 'DE: Timesheet listed sucessfully',        
         'MESSAGE_TIMESHEET_DOCUMENT_DELETED' => 'DE: Timesheet document deleted sucessfully',
+        'TIMESHEET_SUBMITTED_SUCESSFULLY' => 'DE: Timesheet submitted sucessfully',
+        'TIMESHEET_ALREADY_SUBMITTED_FOR_APPROVAL' => 'DE: Timesheet already submitted for approval',
     ],
 
         
