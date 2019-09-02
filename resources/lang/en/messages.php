@@ -100,7 +100,11 @@ return [
         'TIMESHEET_ENTRY_UPDATED_SUCESSFULLY' => 'Timesheet entry updated successfully',
         'MESSAGE_TIMESHEET_LISTING' => 'Timesheet listed successfully',        
         'MESSAGE_TIMESHEET_DOCUMENT_DELETED' => 'Timesheet document deleted successfully',
-        'MESSAGE_TIMESETTING_STATUS_UPDATED' => 'Timesheet status updated successfully'
+        'MESSAGE_TIMESETTING_STATUS_UPDATED' => 'Timesheet status updated successfully',
+        'MESSAGE_TIMESHEET_LISTING' => 'Timesheet listed sucessfully',        
+        'MESSAGE_TIMESHEET_DOCUMENT_DELETED' => 'Timesheet document deleted sucessfully',
+        'TIMESHEET_SUBMITTED_SUCESSFULLY' => 'Timesheet submitted sucessfully',
+        'TIMESHEET_ALREADY_SUBMITTED_FOR_APPROVAL' => 'Timesheet already submitted for approval',
 	],
         
     /**

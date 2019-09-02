@@ -438,4 +438,49 @@ class TimesheetController extends Controller
             return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
+
+    /**
+     * Submit timesheet
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\JsonResponse;
+     */
+    public function submitTimesheet(Request $request): JsonResponse
+    {
+        try {
+            $validator = Validator::make(
+                $request->toArray(),
+                [
+                    'timesheet_entries' => 'required',
+                    'timesheet_entries.*.timesheet_id' => 'required|exists:timesheet,timesheet_id,deleted_at,NULL',
+                ]
+            );
+
+            // If validator fails
+            if ($validator->fails()) {
+                return $this->responseHelper->error(
+                    Response::HTTP_UNPROCESSABLE_ENTITY,
+                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                    config('constants.error_codes.ERROR_TIMESHEET_ITEMS_REQUIRED_FIELDS_EMPTY'),
+                    $validator->errors()->first()
+                );
+            }
+
+            // Fetch timesheet data
+            $timesheetData = $this->timesheetRepository->updateSubmittedTimesheet($request, $request->auth->user_id);
+            
+            $apiStatus = Response::HTTP_OK;
+            $apiMessage = (!$timesheetData)? trans('messages.success.TIMESHEET_ALREADY_SUBMITTED_FOR_APPROVAL') :
+            trans('messages.success.TIMESHEET_SUBMITTED_SUCESSFULLY');
+
+            return $this->responseHelper->success($apiStatus, $apiMessage);
+        } catch (ModelNotFoundException $e) {
+            return $this->modelNotFound(
+                config('constants.error_codes.TIMESHEET_NOT_FOUND'),
+                trans('messages.custom_error_message.TIMESHEET_NOT_FOUND')
+            );
+        } catch (\Exception $e) {
+            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
+        }
+    }
 }

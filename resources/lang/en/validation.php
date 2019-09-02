@@ -151,6 +151,7 @@ return [
         'settings.*.tenant_setting_id' => 'tenant setting id',
         'settings.*.value' => 'value',
         'option_value.translations.*.lang' => 'language code',
+        'timesheet_entries.*.timesheet_id' => 'timesheet id',
         ],
 
 ];

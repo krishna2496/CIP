@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Repositories\Timesheet;
 
 use DB;
@@ -256,5 +257,29 @@ class TimesheetRepository implements TimesheetInterface
     {
         $timesheet = $this->timesheet->findOrFail($timesheetId);
         return $timesheet->update($data);
+    }
+
+    /** Update timesheet on submitted
+    *
+    * @param \Illuminate\Http\Request $request
+    * @param int $userId
+    * @return bool
+    */
+    public function updateSubmittedTimesheet(Request $request, int $userId): bool
+    {
+        $status = false;
+        if ($request->timesheet_entries) {
+            foreach ($request->timesheet_entries as $data) {
+                $timesheetData = $this->timesheet->with('timesheetStatus')->where(['user_id' => $userId,
+                'timesheet_id' => $data['timesheet_id']])
+                ->firstOrFail();
+                $timesheetDetails = $timesheetData->toArray();
+                if ($timesheetDetails["timesheet_status"]["status"] == config('constants.timesheet_status.PENDING')) {
+                    $timesheetData->status_id = "5";
+                    $status = $timesheetData->save();
+                }
+            }
+        }
+        return $status;
     }
 }

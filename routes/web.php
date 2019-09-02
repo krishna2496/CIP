@@ -216,6 +216,11 @@ $router->group(['middleware' => 'localization'], function ($router) {
     'middleware' => 'tenant.connection|jwt.auth',
     'uses' => 'App\Timesheet\TimesheetController@destroy']);
 
+    /* Submit timesheet data */
+    $router->patch('/app/timesheet/submit', ['as' => 'app.timesheet.submit',
+    'middleware' => 'tenant.connection|jwt.auth',
+    'uses' => 'App\Timesheet\TimesheetController@submitTimesheet']);
+
 /*
 |
 |--------------------------------------------------------------------------
