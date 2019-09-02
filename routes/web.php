@@ -196,12 +196,17 @@ $router->group(['middleware' => 'localization'], function ($router) {
     'middleware' => 'tenant.connection|jwt.auth',
     'uses' => 'App\Timesheet\TimesheetController@store']);
 
+    /* Submit timesheet data */
+    $router->patch('/app/timesheet/submit', ['as' => 'app.timesheet.submit',
+    'middleware' => 'tenant.connection|jwt.auth',
+    'uses' => 'App\Timesheet\TimesheetController@submitTimesheet']);
+
     /* Get timesheet data */
     $router->get('/app/timesheet', ['as' => 'app.timesheet',
     'middleware' => 'tenant.connection|jwt.auth',
     'uses' => 'App\Timesheet\TimesheetController@index']);
     
-    /* Update timesheet data */
+    /* Update timesheet data by id */
     $router->patch('/app/timesheet/{timesheetId}', ['as' => 'app.timesheet',
     'middleware' => 'tenant.connection|jwt.auth',
     'uses' => 'App\Timesheet\TimesheetController@update']);
@@ -211,15 +216,11 @@ $router->group(['middleware' => 'localization'], function ($router) {
     'middleware' => 'tenant.connection|jwt.auth',
     'uses' => 'App\Timesheet\TimesheetController@show']);
 
-    /* Delete timesheet doecument data */
+    /* Delete timesheet document data */
     $router->delete('/app/timesheet/{timesheetId}/document/{documentId}', ['as' => 'app.timesheet.destroy',
     'middleware' => 'tenant.connection|jwt.auth',
     'uses' => 'App\Timesheet\TimesheetController@destroy']);
-
-    /* Submit timesheet data */
-    $router->patch('/app/timesheet/submit', ['as' => 'app.timesheet.submit',
-    'middleware' => 'tenant.connection|jwt.auth',
-    'uses' => 'App\Timesheet\TimesheetController@submitTimesheet']);
+  
 
 /*
 |
