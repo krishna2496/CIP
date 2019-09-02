@@ -667,7 +667,6 @@ export default {
                 this.skillListing = [];
                 this.userSkillList = [];
                 this.resetUserSkillList = [];
-                // country,skill,timezone
 
                 country().then(responseData => {
                     if(responseData.error == false) {
@@ -695,29 +694,6 @@ export default {
                         })   
                     })
                 })
-
-                
-
-               
-
-                // this.countryList = Object.keys(this.userData.country_list).map(function(key) {
-                //         return [Number(key), _this.userData.country_list[key]];
-                //     });
-
-                //     this.timeList = Object.keys(this.userData.timezone_list).map(function(key) {
-                //         return [Number(key), _this.userData.timezone_list[key]];
-                //     });
-
-                //     if(this.userData.skill_list) {
-                //         Object.keys(this.userData.skill_list).map(function(key) {
-                //             if(_this.userData.skill_list[key]) {
-                //                 _this.skillListing.push({
-                //                     name:_this.userData.skill_list[key],
-                //                     id: key
-                //                 }); 
-                //             }
-                //         });
-                // }
 
                 if(this.userData.user_skills) {
                     Object.keys(this.userData.user_skills).map(function(key) {
@@ -937,7 +913,7 @@ export default {
             this.$refs.changePasswordModal.show()
             let _this = this
             setTimeout(function(){
-                console.log(_this.$refs.oldPassword.focus());
+                _this.$refs.oldPassword.focus();
             },100)
         }
     },
@@ -954,22 +930,6 @@ export default {
         this.isQuickAccessFilterDisplay = this.settingEnabled(constants.QUICK_ACCESS_FILTERS);
         this.isSkillDisplay = this.settingEnabled(constants.SKILLS_ENABLED);
         this.getUserProfileDetail();
-
-
-
-    },
-    watch : {
-        showModal: function(){
-            console.log("ds");
-            if(this.showModal == false){
-            let self = this
-            Vue.nextTick()
-                .then(function () {
-                    console.log(self.$refs.number.focus())
-            })
-        }
-    }
-     
     }
 
 };

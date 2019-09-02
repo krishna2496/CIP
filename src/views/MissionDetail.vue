@@ -556,6 +556,7 @@
 	                        :suggestions="filteredOptions"
 	                        @input="onInputChange"
 	                        @selected="onSelected"
+	                        @keydown="tabHandler"
 	                        :get-suggestion-value="getSuggestionValue"
 	                        :input-props="{
 	                        id:'autosuggest__input', 
@@ -793,6 +794,12 @@ export default {
             this.selected = item.item;
             this.submitDisable = false;  
             this.invitedUserId = item.item.user_id;
+        },
+        tabHandler(){
+            setTimeout(() => {
+                var myElement = document.querySelector('.autosuggest__results');
+                new SimpleBar(myElement, { autoHide: false });  
+            });     
         },
         //This is what the <input/> value is set to when you are selecting a suggestion.
         getSuggestionValue(suggestion) {

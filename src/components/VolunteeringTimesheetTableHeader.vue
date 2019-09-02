@@ -18,6 +18,7 @@
 					<img :src="$store.state.imagePath+'/assets/images/next-arrow-black.svg'" alt="Next Arrow"/>
 				</button>
 			</div>
+       <div class="picker-wrapper">
 			<div class="select-time-period">
 				<span>{{langauageData.label.day}}</span>
 				<span>{{langauageData.label.week}}</span>
@@ -27,6 +28,7 @@
               <img :src="$store.state.imagePath+'/assets/images/datepicker-ic.svg'" alt="datepicker-ic" />
               <date-picker v-model="value2" range appendToBody :lang="lang" confirm></date-picker>
             </div>
+          </div>
 		</div>
     </div>
 </template>
@@ -124,10 +126,10 @@ export default {
                 }
                 this.getWeekDayNameOfMonth(this.sortNameOfMonth,this.currentYearNumber)
               	var selectedData = []
-	            selectedData['month']  = this.currentMonthNumber;
-	            selectedData['year']  = this.currentYearNumber;
-	            selectedData['weekdays']  = this.weekNameArray;
-	            this.$emit("updateCall", selectedData);
+  	            selectedData['month']  = this.currentMonthNumber;
+  	            selectedData['year']  = this.currentYearNumber;
+  	            selectedData['weekdays']  = this.weekNameArray;
+  	            this.$emit("updateCall", selectedData);
             },
     },
     created() {
