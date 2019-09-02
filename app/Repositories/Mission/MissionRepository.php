@@ -76,9 +76,9 @@ class MissionRepository implements MissionInterface
      */
     private $countryRepository;
 
-     /**
-     * @var App\Models\GoalMission
-     */
+    /**
+    * @var App\Models\GoalMission
+    */
     public $goalMission;
 
     /**

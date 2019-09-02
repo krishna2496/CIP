@@ -78,7 +78,7 @@ return [
         'MESSAGE_POLICY_PAGE_LISTING' => 'Policy pages listed successfully.',        
         'MESSAGE_POLICY_PAGE_CREATED' => 'Policy page created successfully',        
         'MESSAGE_POLICY_PAGE_DELETED' => 'Page deleted successfully',
-        'MESSAGE_POLICY_PAGE_UPDATED' => 'Policy page updated sucessfully',
+        'MESSAGE_POLICY_PAGE_UPDATED' => 'Policy page updated successfully',
         'MESSAGE_NO_CITY_FOUND' => 'City not found',
         'MESSAGE_POLICY_PAGE_UPDATED' => 'Policy page updated successfully',
         'MESSAGE_COMMENT_FOUND' => 'Comment found successfully',
@@ -98,6 +98,9 @@ return [
         'MESSAGE_TIMESHEET_ENTRIES_LISTING' => 'Timesheet entries listed successfully',
         'MESSAGE_NO_TIMESHEET_ENTRIES_FOUND' => 'Timesheet entries not found',
         'TIMESHEET_ENTRY_UPDATED_SUCESSFULLY' => 'Timesheet entry updated successfully',
+        'MESSAGE_TIMESHEET_LISTING' => 'Timesheet listed successfully',        
+        'MESSAGE_TIMESHEET_DOCUMENT_DELETED' => 'Timesheet document deleted successfully',
+        'MESSAGE_TIMESETTING_STATUS_UPDATED' => 'Timesheet status updated successfully',
         'MESSAGE_TIMESHEET_LISTING' => 'Timesheet listed sucessfully',        
         'MESSAGE_TIMESHEET_DOCUMENT_DELETED' => 'Timesheet document deleted sucessfully',
         'TIMESHEET_SUBMITTED_SUCESSFULLY' => 'Timesheet submitted sucessfully',
@@ -155,6 +158,7 @@ return [
         'SKILL_LIMIT' => 'Sorry, you cannot add more than '. config('constants.SKILL_LIMIT').' skills',
         'ERROR_INVALID_MISSION_MEDIA_DATA' => 'Invalid mission media data',
         'ERROR_INVALID_MISSION_DOCUMENT_DATA' => 'Invalid mission document data',
+        'ERROR_TIMESHEET_ENTRY_NOT_FOUND' => 'Timesheet entry id not found',
 
         // Custom error code for Tenant Authorization - 210000 - 219999
         'ERROR_INVALID_API_AND_SECRET_KEY' => 'Invalid API key or secret key',

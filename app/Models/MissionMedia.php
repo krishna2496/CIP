@@ -69,9 +69,12 @@ class MissionMedia extends Model
      */
     public function getMediaImageAttribute(): ?string
     {
-        
         if ($this->attributes['media_type'] == 'mp4') {
-            preg_match('/^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/', $this->attributes['media_path'], $matches);            
+            preg_match(
+                '/^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/',
+                $this->attributes['media_path'],
+                $matches
+            );
             if (count($matches)) {
                 return "https://img.youtube.com/vi/".$matches[2]."/mqdefault.jpg";
             }
