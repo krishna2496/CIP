@@ -24,7 +24,11 @@ header {
         background: $white;
         width: 100%;
         position: fixed;
-        @include transition(all 0.4s);
+        transition:all 0.4s , z-index 0s;
+        -webkit-transition:all 0.4s , z-index 0s;
+        -ms-transition:all 0.4s , z-index 0s;
+        -moz-transition:all 0.4s , z-index 0s;
+        -o-transition:all 0.4s , z-index 0s;
         top: 0;
 
         @include md-max {
