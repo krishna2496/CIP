@@ -135,6 +135,7 @@ class TimesheetController extends Controller
                     $validator->errors()->first()
                 );
             }
+            $this->timesheetRepository->find($timesheetId);
             $this->timesheetRepository->updateTimesheetField($request->toArray(), $timesheetId);
 
             $apiStatus = Response::HTTP_OK;
