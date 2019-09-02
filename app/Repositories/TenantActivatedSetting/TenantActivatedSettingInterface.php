@@ -15,4 +15,12 @@ interface TenantActivatedSettingInterface
      * @return bool
      */
     public function store(array $data): bool;
+
+    /**
+     * Get fetch all activated tenant settings
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return array
+     */
+    public function getAllTenantActivatedSetting(Request $request): array;
 }

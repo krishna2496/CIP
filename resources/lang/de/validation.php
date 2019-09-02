@@ -149,5 +149,6 @@ return [
         'to_user_id' => 'user id',
         'custom_fields.*.field_id' => 'field id',
         'option_value.translations.*.lang' => 'language code',
+        'timesheet_entries.*.timesheet_id' => 'timesheet id',
     ],
 ];

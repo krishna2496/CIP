@@ -56,4 +56,13 @@ interface TimesheetInterface
     * @return bool
     */
     public function delete(int $id, int $timesheetId): bool;
+
+    /**
+     * Update timesheet on submitted
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param int $userId
+     * @return bool
+     */
+    public function updateSubmittedTimesheet(Request $request, int $userId): bool;
 }
