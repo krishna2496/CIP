@@ -23,18 +23,6 @@ let routes = [{
         import ('./views/Auth/Login.vue')
 },
 {
-    path: '/calendar',
-    name: 'calendar',
-    component: () =>
-        import ('./views/calendar.vue')
-},
-{
-    path: '/calendar2',
-    name: 'calendar2',
-    component: () =>
-        import ('./views/calendar2.vue')
-},
-{
         path: '/volunteering-timesheet',
         name: 'Volunteering timesheet ',
         meta: {

@@ -17,8 +17,7 @@
                             @blur="handleBlur()"
                             v-model="searchString"                            
                             id="search"
-                            @keyup="test"
-
+                            @keyup="searchMissionString"
                             >                           
                         </b-form-input>
                         <i>
@@ -164,7 +163,7 @@ export default {
           this.isThemeChange = false;  
         },
 
-        test() {
+        searchMissionString() {
             this.$emit('storeMisisonSearch', this.searchString);
         },
 

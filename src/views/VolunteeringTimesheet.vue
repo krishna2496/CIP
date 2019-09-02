@@ -13,7 +13,6 @@
                 <div class="dashboard-table">
                     <div class="table-outer">
                         <div class="table-inner">
-                            {{volunteeringHoursWeeks}}
                             <h3>{{langauageData.label.volunteering_hours}}</h3>
                             <VolunteeringTimesheetTableHeader
                                 @updateCall="changeVolunteeringHours"
@@ -29,7 +28,7 @@
                                     <b-tr>
                                         <b-th class="mission-col">{{langauageData.label.mission}}</b-th>
                                         <b-th v-for="(item,key) in volunteeringHoursWeeks">
-                                          {{key+1}}<span>{{item}}</span> 
+                                            {{key+1}}<span>{{item}}</span> 
                                         </b-th>  
                                         <b-th class="total-col">{{langauageData.label.total}}</b-th>
                                     </b-tr>
@@ -37,16 +36,27 @@
                                 <b-tbody v-if="timeMissionData.length > 0">
                                     <b-tr v-for="(timeItem,key) in timeMissionData">
                                         <b-td class="mission-col">{{timeItem.title}}</b-td>
-                                        <b-td v-for="(item,key) in volunteeringHoursWeeks">
-                                          {{getTime(key,timeItem.timesheet)}} 
+                                        <b-td 
+                                        :mission-id="timeItem.mission_id"
+                                        :date="key+1"
+                                        v-on:click="getRelatedTimeData(key+1,timeItem)"
+                                        v-bind:class="{ 
+                                            'approved' : getTimeSheetHourClass(key+1,timeItem.timesheet) == 'approved',
+                                            'declined' : getTimeSheetHourClass(key+1,timeItem.timesheet) == 'declined'
+                                        }"
+                                        v-for="(item,key) in volunteeringHoursWeeks">
+                                            {{getTime(key,timeItem.timesheet)}} 
                                         </b-td> 
-                                        <b-td class="total-col">7:00</b-td>
+                                        <b-td class="total-col">{{getRawHourTotal(timeItem.timesheet)}}</b-td>
                                     </b-tr>
                                     <b-tr class="total-row">
-                                      <b-td class="mission-col">Total:</b-td>
-                                      <b-td>5</b-td>
-                                      
-                                      <b-td class="total-col">13</b-td>
+                                        <b-td class="mission-col">{{langauageData.label.total}}:</b-td>
+                                            <b-td v-for="(item,key) in volunteeringHoursWeeks">
+                                                {{getColumnHourTotal(key+1)}}
+                                            </b-td> 
+                                            <b-td>
+                                                {{getTotalHours()}}
+                                            </b-td>
                                     </b-tr>
                                 </b-tbody>
 
@@ -60,7 +70,7 @@
                         <li class="approve-indication">{{langauageData.label.approved}}</li>
                         <li class="decline-indication">{{langauageData.label.declined}}</li>
                     </ul>
-                    {{goalMissionData}}
+                 <!--    {{goalMissionData}} -->
                     <div class="table-outer timesheet-table-outer">
                         <div class="table-inner">
                             <h3>{{langauageData.label.volunteering_goals}}</h3>
@@ -214,7 +224,7 @@
                         v-model="currentPage"
                         :total-rows="rows"
                         :per-page="perPage"
-                        align="right"
+                        align="center"
                         aria-controls=""
                         ></b-pagination>
                     </div>
@@ -237,128 +247,24 @@
                         v-model="currentPage"
                         :total-rows="rows"
                         :per-page="perPage"
-                        align="right"
+                        align="center"
                         aria-controls=""
                         ></b-pagination>
                     </div>
                 </div>
 
-                <b-modal ref="timeHoursModal" :modal-class="'time-hours-modal table-modal'" hide-footer>
-                    <template slot="modal-header" slot-scope="{ close }">
-                        <i class="close" @click="close()" v-b-tooltip.hover :title="langauageData.label.close"></i>
-                        <h5 class="modal-title">{{langauageData.label.hour_entry_modal_title}}</h5>
-                    </template>
-                    <form action class="form-wrap">
-                        <!-- <b-form-group>
-                        <b-row>
-                        <b-col cols="12">
-                        <b-form-group>
-                        <label for>Select mission</label>
-                        <AppCustomDropdown
-                        :optionList="missionList"
-                        :default_text="defaultMission"
-                        @updateCall="updateMission"
-                        />
-                        </b-form-group>
-                        </b-col>
-                        </b-row>
-                        </b-form-group> -->
-                        <b-form-group>
-                            <b-row>
-                                <b-col cols="6" class="time-col-left">
-                                    <b-form-group>
-                                        <label for>{{langauageData.label.hours}}</label>
-                                        <b-form-input id type="text" placeholder="Enter spent hours"></b-form-input>
-                                    </b-form-group>
-                                </b-col>
-                                <b-col cols="6" class="time-col-right">
-                                    <b-form-group>
-                                        <label for>{{langauageData.label.minutes}}</label>
-                                        <b-form-input id type="text"></b-form-input>
-                                    </b-form-group>
-                                </b-col>
-                            </b-row>
-                        </b-form-group>
-                        <b-form-group>
-                            <b-row>
-                                <b-col sm="6" class="date-col">
-                                    <b-form-group>
-                                        <label for>{{langauageData.label.date_volunteered}}</label>
-                                            <date-picker
-                                                v-model="time1"
-                                                valuetype="format"
-                                                :first-day-of-week="1"
-                                                :lang="lang"
-                                            ></date-picker>
-                                    </b-form-group>
-                                </b-col>
-                                <b-col sm="6" class="date-col">
-                                    <b-form-group>
-                                        <label for>{{langauageData.label.workday}}</label>
-                                        <b-row>
-                                            <b-col sm="6">
-                                                <AppCustomDropdown
-                                                    :optionList="workDayList"
-                                                    :defaultText="defaultWorkday"
-                                                    @updateCall="updateWorkday"
-                                                    translationEnable= "false"
-                                                />
-                                            </b-col>
-                                        </b-row>
-                                    </b-form-group>
-                                </b-col>
-                            </b-row>
-                        </b-form-group>
-
-                        <b-form-group>
-                            <label for>{{langauageData.label.notes}}:</label>
-                            <b-form-textarea id size="lg" no-resize rows="5"></b-form-textarea>
-                        </b-form-group>
-                        <b-form-group>
-                            <label for>{{langauageData.label.file_upload}}</label>
-                            <div class="file-upload-wrap">
-                             <file-upload
-                                class="btn"
-                                post-action="/upload/post"
-                                extensions="gif,jpg,jpeg,png,webp"
-                                accept="image/png,image/gif,image/jpeg,image/webp"
-                                :multiple="true"
-                                :drop="true"
-                                :drop-directory="true"
-                                :size="1024 * 1024 * 10"
-                                v-model="files"
-                                ref="upload">
-                               Browse
-                                </file-upload>
-                                <div class="uploaded-file-details" v-for="(file, index) in files" :key="file.id">
-                                    <p class="filename">{{file.name}}</p>
-                                    <span>{{file.size}}</span>
-                                    <div class="status">
-                                        <span v-if="file.error">{{file.error}}</span>
-                                        <span v-else-if="file.success">File uploaded successfully.</span>
-                                    </div>
-                                    <a class="remove-item" href="#" @click.prevent="$refs.upload.remove(file)">
-                                    <img :src="$store.state.imagePath+'/assets/images/delete-ic.svg'" alt="delete-ic"/>
-                                    </a>
-                                </div>
-                            </div>
-                        </b-form-group>
-                    </form>
-                    <div class="btn-wrap">
-                        <b-button
-                            class="btn-borderprimary"
-                            @click="$refs.timeHoursModal.hide()"
-                            title="Cancel"
-                        >{{langauageData.label.cancel}}</b-button>
-                        <b-button class="btn-bordersecondary" @click="save()" title="Submit">{{langauageData.label.submit}}</b-button>
-                    </div>
-                </b-modal>
+              <AddVolunteeringHours
+                ref="timeModal"
+                :defaultWorkday="defaultWorkday"
+                :files="files"
+                :timeEntryDefaultData="currentTimeData"
+              />
 
                     <b-modal ref="goalModal" :modal-class="'goal-modal table-modal'" hide-footer>
 
                     <template slot="modal-header" slot-scope="{ close }">
                         <i class="close" @click="close()" v-b-tooltip.hover :title="langauageData.label.close"></i>
-                        <h5 class="modal-title"></h5>
+                        <h5 class="modal-title">&nbsp;</h5>
                     </template>
                 <form action class="form-wrap">
                     <!--  <b-form-group>
@@ -377,7 +283,7 @@
                     </b-form-group> -->
                     <b-form-group>
                         <b-row>
-                        <b-col cols="12">
+                        <b-col sm="12">
                             <b-form-group>
                                 <label for>{{langauageData.label.actions}}</label>
                                 <b-form-input id type="text" placeholder="Enter actions"></b-form-input>
@@ -401,53 +307,62 @@
                         <b-col sm="6" class="date-col">
                             <b-form-group>
                                 <label for>{{langauageData.label.workday}}</label>
-                                <b-row>
-                                    <b-col sm="6">
                                         <AppCustomDropdown
                                             :optionList="workDayList"
                                             :defaultText="defaultWorkday"
                                             @updateCall="updateWorkday"
                                             translationEnable= "false"
                                         />
-                                    </b-col>
-                                </b-row>
                             </b-form-group>
                         </b-col>
                     </b-row>
                     </b-form-group>
                     <b-form-group>
-                        <label for>{{langauageData.label.notes}}</label>
-                        <b-form-textarea id size="lg" no-resize rows="5"></b-form-textarea>
+                        <b-row>
+                            <b-col sm="12">
+                                <b-form-group>
+                                    <label for>{{langauageData.label.notes}}</label>
+                                    <b-form-textarea id size="lg" no-resize rows="5"></b-form-textarea>
+                                </b-form-group>
+                            </b-col>
+                        </b-row>
                     </b-form-group>
-                    <b-form-group>
-                        <label for>{{langauageData.label.file_upload}}</label>
-                        <div class="file-upload-wrap">
-                             <file-upload
-                                class="btn"
-                                post-action="/upload/post"
-                                extensions="gif,jpg,jpeg,png,webp"
-                                accept="image/png,image/gif,image/jpeg,image/webp"
-                                :multiple="true"
-                                :drop="true"
-                                :drop-directory="true"
-                                :size="1024 * 1024 * 10"
-                                v-model="files"
-                                ref="upload2">
-                               Browse
+                              
+                      <b-form-group>
+                  <b-row>
+                       <b-col sm="12" class="date-col">
+                            <label for>{{langauageData.label.file_upload}}</label>
+                            <div class="file-upload-wrap">
+                            <div class="btn-wrapper">
+                                <file-upload
+                                    class="btn"
+                                    post-action="/upload/post"
+                                    extensions="gif,jpg,jpeg,png,webp"
+                                    accept="image/png,image/gif,image/jpeg,image/webp"
+                                    :multiple="true"
+                                    :drop="true"
+                                    :drop-directory="true"
+                                    :size="1024 * 1024 * 10"
+                                    v-model="files"
+                                    ref="upload">
+                                    Browse
                                 </file-upload>
-                                <div class="uploaded-file-details" v-for="(file, index) in files" :key="file.id">
-                                    <p class="filename">{{file.name}}</p>
-                                    <span>{{file.size}}</span>
-                                    <div class="status">
-                                        <span v-if="file.error">{{file.error}}</span>
-                                        <span v-else-if="file.success">File uploaded successfully.</span>
-                                    </div>
-                                    <a class="remove-item" href="#" @click.prevent="$refs.upload.remove(file)">
-                                    <img :src="$store.state.imagePath+'/assets/images/delete-ic.svg'" alt="delete-ic"/>
-                                    </a>
-                                </div>
+                                <span>Or drop files here</span>
                             </div>
-                    </b-form-group>
+                            <div class="uploaded-file-details" v-for="(file, index) in files" :key="file.id">
+                                <p class="filename">{{file.name}}</p>
+                                <span class="file-size">{{file.size}}</span>
+                                <div class="status">
+                                    <span class="success">File uploaded successfully</span>
+                                </div>
+                                <a class="remove-item" href="#" @click.prevent="$refs.upload.remove(file)" v-b-tooltip.hover title="Delete">
+                                <img :src="$store.state.imagePath+'/assets/images/delete-ic.svg'" alt="delete-ic"/>
+                                </a>
+                            </div>
+                        </div>
+                    </b-col>
+                  </b-row>
+              </b-form-group>
                 </form>
                 <div class="btn-wrap">
                     <b-button
@@ -472,6 +387,7 @@ import TheSecondaryFooter from "../components/Layouts/TheSecondaryFooter";
 import AppCustomDropdown from "../components/CustomFieldDropdown";
 import DashboardBreadcrumb from "../components/DashboardBreadcrumb";
 import VolunteeringTimesheetTableHeader from "../components/VolunteeringTimesheetTableHeader"
+import AddVolunteeringHours from "../components/AddVolunteeringHours";
 import SimpleBar from "simplebar";
 import constants from '../constant';
 import axios from "axios";
@@ -479,6 +395,7 @@ import store from '../store';
 import DatePicker from "vue2-datepicker";
 import FileUpload from 'vue-upload-component';
 import {volunteerTimesheetHours} from '../services/service';
+import moment from 'moment'
 
 export default {
     components: {
@@ -489,7 +406,8 @@ export default {
         DashboardBreadcrumb,
         VolunteeringTimesheetTableHeader,
         DatePicker,
-        FileUpload
+        FileUpload,
+        AddVolunteeringHours
     },
 
     name: "dashboardtimesheet",
@@ -497,6 +415,7 @@ export default {
     data() {
         return {
             files: [],
+            approved : "approved",
             time1: "",
             value2: "",
             lang: {
@@ -516,107 +435,107 @@ export default {
             "Dec"
             ],
             pickers: [
-            "next 7 days",
-            "next 30 days",
-            "previous 7 days",
-            "previous 30 days"
+                "next 7 days",
+                "next 30 days",
+                "previous 7 days",
+                "previous 30 days"
             ],
             placeholder: {
-            date: "mm/dd/yy",
-            dateRange: "Select Date Range"
+                date: "mm/dd/yy",
+                dateRange: "Select Date Range"
             }
             },
             missionList: [
-            "Help Old People",
-            "Help Young Kids",
-            "Plant house",
-            "The place"
+                "Help Old People",
+                "Help Young Kids",
+                "Plant house",
+                "The place"
             ],
             defaultMission: "Help Old People",
             langauageData : [],
             timesheetRequestFields: [
-        {
-          key: "Mission",
-          class: "mission-col"
-        },
-        {
-          key: "Time"
-        },
-        {
-          key: "Hours",
-          class: "hours-col"
-        },
-        {
-          key: "Organisation",
-          class: "organisation-col"
-        }
-      ],
-      timesheetRequestItems: [
-        {
-          Mission: "Help old people",
-          Time: "1h30",
-          Hours: 5.5,
-          Organisation: "Red Cross"
-        },
-        {
-          Mission: "Help young kids",
-          Time: "0h20",
-          Hours: 0.33,
-          Organisation: "Red Cross"
-        },
-        {
-          Mission: "Plant house",
-          Time: "2h50",
-          Hours: 2.83,
-          Organisation: "Green House"
-        },
-        {
-          Mission: "The place",
-          Time: "0h15",
-          Hours: 0.25,
-          Organisation: "Blue Cross"
-        }
-      ],
-      goalRequestFields: [
-        {
-          key: "Mission",
-          class: "mission-col"
-        },
-        {
-          key: "Action"
-        },
-        {
-          key: "Organisation",
-          class: "organisation-col"
-        }
-      ],
-      goalRequestItems: [
-        {
-          Mission: "Help old people",
-          Action: "100",
-          Organisation: "Red Cross"
-        },
-        {
-          Mission: "Help young kids",
-          Action: "200",
-          Organisation: "Red Cross"
-        },
-        {
-          Mission: "Plant house",
-          Action: "300",
-          Organisation: "Green House"
-        },
-        {
-          Mission: "The place",
-          Action: "400",
-          Organisation: "Blue Cross"
-        }
-      ],
+            {
+                key: "Mission",
+                class: "mission-col"
+            },
+            {
+                key: "Time"
+            },
+            {
+                key: "Hours",
+                class: "hours-col"
+            },
+            {
+                key: "Organisation",
+                class: "organisation-col"
+            }
+            ],
+            timesheetRequestItems: [
+            {
+                Mission: "Help old people",
+                Time: "1h30",
+                Hours: 5.5,
+                Organisation: "Red Cross"
+            },
+            {
+                Mission: "Help young kids",
+                Time: "0h20",
+                Hours: 0.33,
+                Organisation: "Red Cross"
+            },
+            {
+                Mission: "Plant house",
+                Time: "2h50",
+                Hours: 2.83,
+                Organisation: "Green House"
+            },
+            {
+                Mission: "The place",
+                Time: "0h15",
+                Hours: 0.25,
+                Organisation: "Blue Cross"
+            }
+            ],
+            goalRequestFields: [
+            {
+                key: "Mission",
+                class: "mission-col"
+            },
+            {
+                key: "Action"
+            },
+            {
+                key: "Organisation",
+                class: "organisation-col"
+            }
+            ],
+            goalRequestItems: [
+                {
+                    Mission: "Help old people",
+                    Action: "100",
+                    Organisation: "Red Cross"
+                },
+                {
+                    Mission: "Help young kids",
+                    Action: "200",
+                    Organisation: "Red Cross"
+                },
+                {
+                    Mission: "Plant house",
+                    Action: "300",
+                    Organisation: "Green House"
+                },
+                {
+                    Mission: "The place",
+                    Action: "400",
+                    Organisation: "Blue Cross"
+                }
+            ],
             defaultWorkday: "",
             workDayList: [
-            ["workday","workday"],
-            ["weekend","weekend"],
-            ["holiday","holiday"],
+                ["workday","workday"],
+                ["weekend","weekend"],
+                ["holiday","holiday"],
             ],
             rows: 25,
             perPage: 2,
@@ -628,12 +547,84 @@ export default {
             volunteeringGoalCurrentYear : '',
             volunteeringGoalWeeks : [],
             timeMissionData : [],
-            goalMissionData : []
-            };
+            goalMissionData : [],
+            totalHours : "00:00:00",
+            currentTimeData: 
+                {
+                    missionId : '',
+                    hours : '',
+                    minutes : '',
+                    dateVolunteered : '',
+                    workDay : '',
+                    notes : '',
+                    day: ''
+                }
+            ,
+            timeEntryDefaultData : null,
+            isTimeEntryModelShown : false
+
+        };
+    },
+        updated() {
+        
         },
         methods: {
+                getRelatedTimeData(date,timeArray) {
+                    this.currentTimeData.missionId = timeArray.mission_id
+                    this.currentTimeData.day = date
+                    var _this = this;
+                    if(timeArray.timesheet) {
+                        let timeSheetArray =  timeArray.timesheet;
+                        timeSheetArray.filter(function (timeSheetItem, timeSheetIndex) {
+                            let currentArrayDate = timeSheetItem.date
+                            let currentArrayYear = timeSheetItem.year
+                            let currentArrayMonth = timeSheetItem.month
+                            if(_this.volunteeringHoursCurrentYear == currentArrayYear) {
+                                if(_this.volunteeringHoursCurrentMonth == currentArrayMonth) {
+                                    if(date == currentArrayDate) {
+                                        if(timeSheetItem.time != "") {
+                                            var time= timeSheetItem.time.split(':');
+                                            _this.currentTimeData.hours = time[0]
+                                            _this.currentTimeData.minutes = time[1]
+                                        }
+                                        _this.currentTimeData.dateVolunteered = timeSheetItem.date_volunteered
+                                        _this.currentTimeData.workDay = timeSheetItem.day_volunteered
+                                        _this.currentTimeData.notes = timeSheetItem.notes
+                                    }
+                                }
+                            }
+                          
+                        });
+                    }
+                    this.$refs.timeModal.$refs.timeHoursModal.show();    
+                   
+                },
+                getTimeSheetHourClass(date,timeArray) {
+                    let _this = this
+                    let returnData = '';
+                    timeArray.filter(function (timeSheetItem, timeSheetIndex) {
+                        let currentArrayDate = timeSheetItem.date
+                        let currentArrayYear = timeSheetItem.year
+                        let currentArrayMonth = timeSheetItem.month
+                        if(_this.volunteeringHoursCurrentYear == currentArrayYear) {
+                            if(_this.volunteeringHoursCurrentMonth == currentArrayMonth) {
+
+                                if(date == currentArrayDate) {
+                                    if(timeSheetItem.timesheet_status.status == "APPROVED") {
+                                        returnData = "approved";
+                                    } 
+                                    if(timeSheetItem.timesheet_status.status == "DECLINED") {
+                                        returnData = "declined"
+                                    }
+                                }
+                            }
+                        }
+                      
+                    });
+
+                    return returnData;
+                },
                 changeVolunteeringHours(data) {
-                    console.log(data);
                     this.volunteeringHoursCurrentMonth = data.month
                     this.volunteeringHoursCurrentYear = data.year
                     data.weekdays.shift();
@@ -661,50 +652,159 @@ export default {
                 },
                 getTime(date,timeArray) {
                     let _this = this
+                    let returnData = '';
+                     var dates = date+1;
                     timeArray.filter(function (timeSheetItem, timeSheetIndex) {
                         let currentArrayDate = timeSheetItem.date
                         let currentArrayYear = timeSheetItem.year
                         let currentArrayMonth = timeSheetItem.month
-
                        
                         if(_this.volunteeringHoursCurrentYear == currentArrayYear) {
                             if(_this.volunteeringHoursCurrentMonth == currentArrayMonth) {
-                                if(date == currentArrayDate) {
-                                    console.log(timeSheetItem.time)
+                                if(dates == currentArrayDate) {
+                                    returnData = timeSheetItem.time
                                 }
                             }
                         }
-                        // console.log(currentArrayDate+','+currentArrayYear+','+currentArrayMonth);
+                      
                     });
-                   
-                    var dates = date+1;
-                    return dates
-                }
-            },
-            created() {
-                var globalThis = this;
-                this.langauageData = JSON.parse(store.state.languageLabel);
-                this.defaultWorkday = this.langauageData.label.workday 
-                this.getVolunteerHoursData();
-                setTimeout(() => {
-                    var hourTableCell = document.querySelectorAll(
-                        ".timesheethours-table td:not(.mission-col):not(.approved):not(.total-col)"
-                    );
+                    return returnData
+                },
+                getRawHourTotal(timeArray) {
+                    let _this = this
+                    var time1 = "00:00:00";
 
-                    var goalTableCell = document.querySelectorAll(
-                        ".timesheetgoals-table td:not(.mission-col):not(.approved):not(.total-col)"
-                    );
-                    hourTableCell.forEach(function(currentEvent) {
-                        currentEvent.addEventListener("click", function() {
-                            globalThis.$refs.timeHoursModal.show();
-                        });
+                    var hour=0;
+                    var minute=0;
+                    var second=0;
+                    timeArray.filter(function (timeSheetItem, timeSheetIndex) {
+                        let currentArrayDate = timeSheetItem.date
+                        let currentArrayYear = timeSheetItem.year
+                        let currentArrayMonth = timeSheetItem.month
+                     
+ 
+                        var time2 = timeSheetItem.time;
+      
+
+                        if(_this.volunteeringHoursCurrentYear == currentArrayYear) {
+                            if(_this.volunteeringHoursCurrentMonth == currentArrayMonth) {
+                                var splitTime1= time1.split(':');
+                                var splitTime2= time2.split(':');
+
+                                hour = parseInt(splitTime1[0])+parseInt(splitTime2[0]);
+                                minute = parseInt(splitTime1[1])+parseInt(splitTime2[1]);
+                                hour = hour + minute/60;
+                                minute = minute%60;
+                                second = parseInt(splitTime1[2])+parseInt(splitTime2[2]);
+                                minute = minute + second/60;
+                                second = second%60;
+                                time1= Math.floor(hour)+':'+Math.floor(minute)+":"+Math.floor(second);
+                            }
+                        }
                     });
-                    goalTableCell.forEach(function(currentEvent) {
-                        currentEvent.addEventListener("click", function() {
-                            globalThis.$refs.goalModal.show();
+                    if(time1 != "00:00:00") {
+                        return time1;
+                    }
+                },
+                getColumnHourTotal(day) {
+
+                    let _this = this
+                    var time1 = "00:00:00";
+
+                    var hour=0;
+                    var minute=0;
+                    var second=0;
+                    let timeArray = this.timeMissionData;
+                    timeArray.filter(function (timeSheetItem, timeSheetIndex) {
+                        let timeEntry = timeSheetItem.timesheet;
+                        timeEntry.filter(function (timeEntry, timeEntryIndex) {
+                            let currentArrayDate = timeEntry.date
+                            let currentArrayYear = timeEntry.year
+                            let currentArrayMonth = timeEntry.month
+                            var time2 = timeEntry.time;
+                            if(_this.volunteeringHoursCurrentYear == currentArrayYear) {
+                                if(_this.volunteeringHoursCurrentMonth == currentArrayMonth) {
+                                    if(day == currentArrayDate) {
+                                        var splitTime1= time1.split(':');
+                                        var splitTime2= time2.split(':');
+                                        hour = parseInt(splitTime1[0])+parseInt(splitTime2[0]);
+                                        minute = parseInt(splitTime1[1])+parseInt(splitTime2[1]);
+                                        hour = hour + minute/60;
+                                        minute = minute%60;
+                                        second = parseInt(splitTime1[2])+parseInt(splitTime2[2]);
+                                        minute = minute + second/60;
+                                        second = second%60;
+                                        time1= Math.floor(hour)+':'+Math.floor(minute)+":"+Math.floor(second);
+                                    }
+                                }
+                            }
                         });
+                        
                     });
-                });
-            }
+                    if(time1 != "00:00:00") {
+                        return time1;
+                    }
+                },
+                getTotalHours() {
+                    let _this = this
+                    var time1 = "00:00:00";
+                    var hour=0;
+                    var minute=0;
+                    var second=0;
+                    let timeArray = this.timeMissionData;
+                    timeArray.filter(function (timeSheetItem, timeSheetIndex) {
+                        let timeEntry = timeSheetItem.timesheet;
+                        timeEntry.filter(function (timeEntry, timeEntryIndex) {
+                            let currentArrayDate = timeEntry.date
+                            let currentArrayYear = timeEntry.year
+                            let currentArrayMonth = timeEntry.month
+                            var time2 = timeEntry.time;
+                            if(_this.volunteeringHoursCurrentYear == currentArrayYear) {
+                                if(_this.volunteeringHoursCurrentMonth == currentArrayMonth) {
+                                        var splitTime1= time1.split(':');
+                                        var splitTime2= time2.split(':');
+                                        hour = parseInt(splitTime1[0])+parseInt(splitTime2[0]);
+                                        minute = parseInt(splitTime1[1])+parseInt(splitTime2[1]);
+                                        hour = hour + minute/60;
+                                        minute = minute%60;
+                                        second = parseInt(splitTime1[2])+parseInt(splitTime2[2]);
+                                        minute = minute + second/60;
+                                        second = second%60;
+                                        time1= Math.floor(hour)+':'+Math.floor(minute)+":"+Math.floor(second);
+                                }
+                            }
+                        });
+                        
+                    });
+                    if(time1 != "00:00:00") {
+                        return time1;
+                    }
+                }
+        },
+        created() {
+            var globalThis = this;
+            this.langauageData = JSON.parse(store.state.languageLabel);
+            this.defaultWorkday = this.langauageData.label.workday 
+            this.getVolunteerHoursData();
+            // setTimeout(() => {
+            //     var hourTableCell = document.querySelectorAll(
+            //         ".timesheethours-table td:not(.mission-col):not(.approved):not(.total-col)"
+            //     );
+            //     console.log(hourTableCell);
+            //     var goalTableCell = document.querySelectorAll(
+            //         ".timesheetgoals-table td:not(.mission-col):not(.approved):not(.total-col)"
+            //     );
+            //     hourTableCell.forEach(function(currentEvent) {
+            //         currentEvent.addEventListener("click", function() {
+            //             globalThis.$refs.timeHoursModal.show();
+            //         });
+            //     });
+            //     goalTableCell.forEach(function(currentEvent) {
+            //         currentEvent.addEventListener("click", function() {
+            //             globalThis.$refs.goalModal.show();
+            //         });
+            //     });
+            // },700);
+        }
 };
 </script>
