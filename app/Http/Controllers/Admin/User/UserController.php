@@ -104,7 +104,8 @@ class UserController extends Controller
                 unique:user,employee_id,NULL,user_id,deleted_at,NULL",
                 "department" => "max:16",
                 "manager_name" => "max:16",
-                "linked_in_url" => "url"
+                "linked_in_url" => "url|valid_linkedin_url",
+                "why_i_volunteer" => "required",
                 ]
             );
 
