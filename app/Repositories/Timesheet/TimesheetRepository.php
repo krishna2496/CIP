@@ -257,8 +257,7 @@ class TimesheetRepository implements TimesheetInterface
      */
     public function updateTimesheetField(array $data, int $timesheetId): bool
     {
-        $timesheet = $this->timesheet->findOrFail($timesheetId);
-        return $timesheet->update($data);
+        return $this->timesheet->where('timesheet_id', $timesheetId)->update($data);
     }
 
     /** Update timesheet on submitted
