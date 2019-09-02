@@ -104,6 +104,9 @@ return [
         'url' => [
             'valid_media_path' => 'Please enter valid image url',
         ],
+        'linked_in_url' => [
+            'valid_linkedin_url' => 'Please enter valid linkedIn url',
+        ],
     ],
 
     /*

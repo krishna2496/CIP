@@ -104,7 +104,8 @@ class UserController extends Controller
                 unique:user,employee_id,NULL,user_id,deleted_at,NULL",
                 "department" => "max:16",
                 "manager_name" => "max:16",
-                "linked_in_url" => "url"
+                "linked_in_url" => "url|valid_linkedin_url",
+                "why_i_volunteer" => "required",
                 ]
             );
 
@@ -211,7 +212,8 @@ class UserController extends Controller
                     Rule::unique('user')->ignore($id, 'user_id,deleted_at,NULL')],
                 "department" => "sometimes|required|max:16",
                 "manager_name" => "sometimes|required|max:16",
-                "linked_in_url" => "url",
+                "linked_in_url" => "url|valid_linkedin_url",
+                "why_i_volunteer" => "sometimes|required",
                 "timezone_id" => "integer|exists:timezone,timezone_id,deleted_at,NULL",
                 "availability_id" => "integer|exists:availability,availability_id,deleted_at,NULL",
                 "city_id" => "integer|exists:city,city_id,deleted_at,NULL",
