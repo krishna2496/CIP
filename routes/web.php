@@ -451,6 +451,16 @@ $router->group(['middleware' => 'localization'], function ($router) {
         }
     );
 
+    /* Timesheet management */
+    $router->group(
+        ['prefix' => 'timesheet', 'middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware'],
+        function ($router) {
+            $router->get('/{userId}', ['as' => 'user.timesheet', 'middleware' => ['PaginationMiddleware'],
+                'uses' => 'Admin\Timesheet\TimesheetController@index']);
+            $router->patch('/{timesheetId}', ['as' => 'update.user.timesheet.status',
+                'uses' => 'Admin\Timesheet\TimesheetController@update']);
+        }
+    );
 /*
 |
 |--------------------------------------------------------------------------

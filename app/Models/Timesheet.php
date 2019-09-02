@@ -43,8 +43,8 @@ class Timesheet extends Model
      *
      * @var array
      */
-    protected $visible = ['user_id', 'mission_id', 'time', 'action', 'date_volunteered', 'day_volunteered',
-    'notes', 'timesheetDocument', 'timesheetStatus'];
+    protected $visible = ['timesheet_id', 'user_id', 'mission_id', 'time', 'action', 'date_volunteered',
+    'day_volunteered', 'notes', 'timesheetDocument', 'timesheetStatus','mission'];
 
     /**
       * Get the mission associated with timesheet.

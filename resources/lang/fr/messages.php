@@ -87,19 +87,17 @@ return [
         'MESSAGE_NO_SKILL_FOUND' => 'Compétence non trouvée',
         'MESSAGE_NO_COUNTRY_FOUND' => 'Pays non trouvé',
         'MESSAGE_TENANT_SETTINGS_UPDATED' => 'Paramètres du locataire mis à jour avec succès',
-<<<<<<< HEAD
         'MESSAGE_SLIDERS_LIST' => 'Sliders listés avec succès',
         'MESSAGE_NO_SLIDER_FOUND' => 'Aucun curseur trouvé',
         'MESSAGE_SLIDER_UPDATED_SUCCESS' => 'Image du curseur mise à jour avec succès',
         'MESSAGE_SLIDER_DELETED' => 'Slider supprimé avec succès',
-=======
         'TIMESHEET_ENTRY_ADDED_SUCESSFULLY' => 'Entrée de la feuille de temps ajoutée avec succès',
         'MESSAGE_TIMESHEET_ENTRIES_LISTING' => 'Entrées de la feuille de temps listées avec succès',
         'MESSAGE_NO_TIMESHEET_ENTRIES_FOUND' => 'Entrées de la feuille de temps non trouvées',
         'TIMESHEET_ENTRY_UPDATED_SUCESSFULLY' => 'Entrée de la feuille de temps mise à jour avec succès',
         'MESSAGE_TIMESHEET_LISTING' => 'Feuille de temps listée avec succès',
         'MESSAGE_TIMESHEET_DOCUMENT_DELETED' => 'La feuille de temps du document a été supprimée avec succès',
->>>>>>> 4640a6c3f0b47e1b518d13e1e9d64971da255577
+        'MESSAGE_TIMESETTING_STATUS_UPDATED' => 'Statut de la feuille de temps mis à jour avec succès'
     ],
 
         
@@ -151,6 +149,7 @@ return [
         'ERROR_INVALID_MISSION_DOCUMENT_DATA' => 'Données de média de mission non valides',
         'ERROR_INVALID_INVITE_MISSION_DATA' => 'Détail de la mission d\'invitation non valide',
         'ERROR_INVITE_MISSION_ALREADY_EXIST' => 'L\'utilisateur est déjà invité pour cette mission',
+        'ERROR_TIMESHEET_ENTRY_NOT_FOUND' => 'ID de saisie de la feuille de temps introuvable',
         
         // Custom error code for Tenant Authorization - 210000 - 219999
         'ERROR_INVALID_API_AND_SECRET_KEY' => 'Clé API ou clé secrète invalide',

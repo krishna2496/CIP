@@ -116,9 +116,9 @@ class TimesheetRepository implements TimesheetInterface
      *
      * @param Request $request
      * @param string $missionType
-     * @return array
+     * @return Illuminate\Database\Eloquent\Collection
      */
-    public function getAllTimesheetEntries(Request $request, string $missionType)
+    public function getAllTimesheetEntries(Request $request, string $missionType): Collection
     {
         $languages = $this->languageHelper->getLanguages($request);
         $language = ($request->hasHeader('X-localization')) ?
@@ -214,5 +214,47 @@ class TimesheetRepository implements TimesheetInterface
     public function delete(int $id, int $timesheetId): bool
     {
         return $this->timesheetDocument->deleteTimesheetDocument($id, $timesheetId);
+    }
+
+    /**
+     * Display a listing of specified resources.
+     *
+     * @param int $userId
+     * @return Illuminate\Database\Eloquent\Collection
+     */
+    public function getUserTimesheet(int $userId, Request $request): Collection
+    {
+        $languages = $this->languageHelper->getLanguages($request);
+        $language = ($request->hasHeader('X-localization')) ?
+        $request->header('X-localization') : env('TENANT_DEFAULT_LANGUAGE_CODE');
+        $language = $languages->where('code', $language)->first();
+        $languageId = $language->language_id;
+
+        return Mission::select('mission.mission_id', 'mission.city_id')
+        ->where(['publication_status' => config("constants.publication_status")["APPROVED"]])
+        ->whereHas('missionApplication', function ($query) use ($userId) {
+            $query->where('user_id', $userId)
+            ->whereIn('approval_status', [config("constants.application_status")["AUTOMATICALLY_APPROVED"]]);
+        })
+        ->with(['missionLanguage' => function ($query) use ($languageId) {
+            $query->select('mission_language_id', 'mission_id', 'title')
+            ->where('language_id', $languageId);
+        }])
+        ->with(['timesheet' => function ($query) {
+            $query->with('timesheetStatus');
+        }])
+        ->get();
+    }
+
+    /**
+     * Display a listing of specified resources.
+     *
+     * @param int $userId
+     * @return Illuminate\Database\Eloquent\Collection
+     */
+    public function updateTimesheetField(array $data, $timesheetId): bool
+    {
+        $timesheet = $this->timesheet->findOrFail($timesheetId);
+        return $timesheet->update($data);
     }
 }

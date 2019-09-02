@@ -14,6 +14,7 @@ use InvalidArgumentException;
 use Validator;
 use Illuminate\Validation\Rule;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use PDOException;
 
 class TimesheetController extends Controller
 {
