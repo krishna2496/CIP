@@ -1,7 +1,7 @@
 <template>
     <div>
         <b-modal ref="timeHoursModal" :modal-class="'time-hours-modal table-modal'" hide-footer>
-        {{timeEntryDefaultData}}
+        <!-- {{timeEntryDefaultData}} -->
             <template slot="modal-header" slot-scope="{ close }">
                 <i class="close" @click="close()" v-b-tooltip.hover :title="langauageData.label.close"></i>
                     <h5 class="modal-title">{{langauageData.label.hour_entry_modal_title}}</h5>
