@@ -53,9 +53,17 @@ $factory->define(App\Models\UserCustomField::class, function (Faker\Generator $f
     ];
 });
 
-$factory->define(App\Models\TenantOption::class, function (Faker\Generator $faker) {
+$factory->define(App\Models\Slider::class, function (Faker\Generator $faker) {
     return [
-        'option_name' => 'slider'
+        'url' => 'https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer9.png',
+        'sort_order' => '1',
+        'translations' =>  [
+            [
+                'lang' => 'en',
+                'slider_title' => str_random(20),
+                'slider_description' => str_random(200)
+            ]
+        ],
     ];
 });
 

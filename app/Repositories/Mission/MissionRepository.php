@@ -22,6 +22,7 @@ use DB;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
 use Carbon\Carbon;
+use App\Models\GoalMission;
 
 class MissionRepository implements MissionInterface
 {
@@ -40,7 +41,7 @@ class MissionRepository implements MissionInterface
      */
     private $responseHelper;
 
-    /*
+    /**
      * @var App\Helpers\LanguageHelper
      */
     private $languageHelper;
@@ -75,6 +76,11 @@ class MissionRepository implements MissionInterface
      */
     private $countryRepository;
 
+     /**
+     * @var App\Models\GoalMission
+     */
+    public $goalMission;
+
     /**
      * Create a new Mission repository instance.
      *
@@ -83,14 +89,15 @@ class MissionRepository implements MissionInterface
      * @param  App\Models\MissionLanguage $missionLanguage
      * @param  App\Models\MissionMedia $missionMedia
      * @param  App\Models\MissionDocument $missionDocument
-     * @param  Illuminate\Http\ResponseHelper $responseHelper
-     * @param  Illuminate\Http\LanguageHelper $languageHelper
+     * @param  App\Helpers\ResponseHelper $responseHelper
+     * @param  App\Helpers\LanguageHelper $languageHelper
      * @param  App\Helpers\Helpers $helpers
      * @param  App\Helpers\S3Helper $s3helper
      * @param  App\Models\FavouriteMission $favouriteMission
      * @param  App\Models\MissionSkill $missionSkill
      * @param  App\Models\MissionRating $missionRating
      * @param  App\Repositories\Country\CountryRepository $countryRepository
+     * @param  App\Models\GoalMission $goalMission
      * @return void
      */
     public function __construct(
@@ -106,7 +113,8 @@ class MissionRepository implements MissionInterface
         FavouriteMission $favouriteMission,
         MissionSkill $missionSkill,
         MissionRating $missionRating,
-        CountryRepository $countryRepository
+        CountryRepository $countryRepository,
+        GoalMission $goalMission
     ) {
         $this->mission = $mission;
         $this->timeMission = $timeMission;
@@ -121,6 +129,7 @@ class MissionRepository implements MissionInterface
         $this->missionSkill = $missionSkill;
         $this->missionRating = $missionRating;
         $this->countryRepository = $countryRepository;
+        $this->goalMission = $goalMission;
     }
     
     /**
@@ -1068,5 +1077,18 @@ class MissionRepository implements MissionInterface
         )
         ->first();
         return $mission;
+    }
+
+
+    /**
+     * Get goal objective
+     *
+     * @param int $missionId
+     * @return App\Models\GoalMission|null
+     */
+    public function getGoalObjective(int $missionId): ?GoalMission
+    {
+        return $this->goalMission->select('goal_objective')->where('mission_id', $missionId)
+        ->first();
     }
 }

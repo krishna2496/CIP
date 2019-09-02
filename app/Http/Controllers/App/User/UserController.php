@@ -249,7 +249,7 @@ class UserController extends Controller
             $apiData['language_code_list'] = $tenantLanguageCodes;
             $apiData['availability_list'] = $availabilityList;
 
-            if (isset($userDetail->avatar) && ($userDetail->avatar != '')) {
+            /* if (isset($userDetail->avatar) && ($userDetail->avatar != '')) {
                 $type = pathinfo($userDetail->avatar, PATHINFO_EXTENSION);
                 $arrContextOptions=array(
                 "ssl"=>array(
@@ -260,7 +260,7 @@ class UserController extends Controller
                 $imageData = file_get_contents($userDetail->avatar, false, stream_context_create($arrContextOptions));
                 $avatarBase64 = 'data:image/' . $type . ';base64,' . base64_encode($imageData);
             }
-            $apiData['avatar_base64'] = $avatarBase64 ?? '';
+            $apiData['avatar_base64'] = $avatarBase64 ?? ''; */
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_USER_FOUND');
             
