@@ -343,6 +343,9 @@ class UserController extends Controller
                 }
             }
 
+            //Remove params
+            $request->request->remove("email");
+
             // Update user filter
             $this->userFilterRepository->saveFilter($request);
 
