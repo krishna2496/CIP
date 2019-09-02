@@ -205,8 +205,9 @@ class UserController extends Controller
                             if ($arrayKey !== '') {
                                 $returnData['translations']['lang'] = $value['translations'][$arrayKey]['lang'];
                                 $returnData['translations']['name'] = $value['translations'][$arrayKey]['name'];
-								if (isset($value['translations'][$arrayKey]['values']))
-									$returnData['translations']['values'] = $value['translations'][$arrayKey]['values'];
+                                if (isset($value['translations'][$arrayKey]['values'])) {
+                                    $returnData['translations']['values'] = $value['translations'][$arrayKey]['values'];
+                                }
 
                                 $userCustomFieldValue = $customFieldsValue->where('field_id', $value['field_id'])
                                 ->where('user_id', $userId)->first();
@@ -298,7 +299,7 @@ class UserController extends Controller
                     Rule::unique('user')->ignore($id, 'user_id,deleted_at,NULL')],
                 "department" => "max:16",
                 "manager_name" => "max:16",
-                "linked_in_url" => "sometimes|required|url|valid_linkedin_url",
+                "linked_in_url" => "url|valid_linkedin_url",
                 "why_i_volunteer" => "sometimes|required",
                 "availability_id" => "integer|exists:availability,availability_id,deleted_at,NULL",
                 "timezone_id" => "integer|exists:timezone,timezone_id,deleted_at,NULL",
