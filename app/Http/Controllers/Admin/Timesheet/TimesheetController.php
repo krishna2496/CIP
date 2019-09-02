@@ -13,6 +13,7 @@ use App\Repositories\Timesheet\TimesheetRepository;
 use PDOException;
 use Validator;
 use App\Models\TimesheetStatus;
+use Illuminate\Http\JsonResponse;
 
 class TimesheetController extends Controller
 {
@@ -55,11 +56,10 @@ class TimesheetController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @param int $tenantId
      * @param int $userId
-     * @return \Illuminate\Http\Response
+     * @return Illuminate\Http\JsonResponse
      */
-    public function index(int $userId, Request $request)
+    public function index(int $userId, Request $request): JsonResponse
     {
         try {
             $user = $this->userRepository->find($userId);
@@ -113,9 +113,9 @@ class TimesheetController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $timesheetId
-     * @return \Illuminate\Http\Response
+     * @return Illuminate\Http\JsonResponse
      */
-    public function update(Request $request, $timesheetId)
+    public function update(Request $request, $timesheetId): JsonResponse
     {
         try {
             // Server side validataions

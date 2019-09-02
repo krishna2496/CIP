@@ -221,6 +221,7 @@ class TimesheetRepository implements TimesheetInterface
      * Display a listing of specified resources.
      *
      * @param int $userId
+     * @param \Illuminate\Http\Request $request
      * @return Illuminate\Database\Eloquent\Collection
      */
     public function getUserTimesheet(int $userId, Request $request): Collection
@@ -250,10 +251,11 @@ class TimesheetRepository implements TimesheetInterface
     /**
      * Display a listing of specified resources.
      *
-     * @param int $userId
-     * @return Illuminate\Database\Eloquent\Collection
+     * @param array $data
+     * @param int $timesheetId
+     * @return bool
      */
-    public function updateTimesheetField(array $data, $timesheetId): bool
+    public function updateTimesheetField(array $data, int $timesheetId): bool
     {
         $timesheet = $this->timesheet->findOrFail($timesheetId);
         return $timesheet->update($data);
