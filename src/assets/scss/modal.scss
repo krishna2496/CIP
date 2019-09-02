@@ -139,6 +139,7 @@
 
 .skill-modal {
   .modal-header {
+      padding-right: 50px;
     .close {
       right: 30px;
       margin-top: 12px;
@@ -372,6 +373,12 @@
     }
     .time-col-right {
       padding-left: 8px;
+    }
+  }
+  .custom-dropdown{
+    > span{
+        padding-top: 9px;
+        padding-bottom: 9px;
     }
   }
 }
