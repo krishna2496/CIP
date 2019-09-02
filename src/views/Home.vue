@@ -11,10 +11,11 @@
               v-if="isShownComponent"></TheSecondaryHeader>
         </header>
         <main>
+          
             <b-container class="home-content-wrapper">
                 <div v-if="missionList.length > 0 && isQuickAccessDisplay">
                 <div class="chip-container" v-if="tags != ''">
-                    <span v-for="(item , i) in tags.country" >
+                    <span v-for="(item , i) in tags.country" v-if="isCountrySelectionSet">
                         <AppCustomChip :textVal="item" :tagId ="i" type ="country" 
                         @updateCall="changeTag"
                         />
@@ -24,17 +25,19 @@
                         @updateCall="changeTag"
                         />
                     </span>
-                    <span v-for="(item , i) in tags.theme" >
+                    <span v-for="(item , i) in tags.theme" v-if="isThemeDisplay">
                         <AppCustomChip :textVal="item" :tagId ="i" type ="theme"
                         @updateCall="changeTag"
                         />
                     </span>
-                    <span v-for="(item , i) in tags.skill" >
+                    <span v-for="(item , i) in tags.skill" v-if="isSkillDisplay">
                         <AppCustomChip :textVal="item" :tagId ="i" type ="skill"
                         @updateCall="changeTag"
                         />
                     </span>
-                    <b-button class="clear-btn" @click="clearMissionFilter">{{langauageData.label.clear_all}}</b-button>
+                    <b-button class="clear-btn" 
+                    v-if="isCountrySelectionSet || tags.city || (tags.theme && isThemeDisplay) || (tags.skill && isSkillDisplay)"
+                    @click="clearMissionFilter">{{langauageData.label.clear_all}}</b-button>
                 </div>
                 </div>
                 <div class="heading-section" v-if="missionList.length > 0">
@@ -189,7 +192,10 @@ export default {
             userList :[],
             langauageData : [],
             isTotalMissionDisplay : true,
-            isQuickAccessDisplay : true
+            isQuickAccessDisplay : true,
+            isThemeDisplay : true,
+            isSkillDisplay : true,
+            isCountrySelectionSet: false,
         };
     },
 
@@ -347,8 +353,7 @@ export default {
     },
     created() { 
         this.langauageData = JSON.parse(store.state.languageLabel);
-       
-            this.sortByFilterSet = this.settingEnabled(constants.SORTING_MISSIONS)
+        this.sortByFilterSet = this.settingEnabled(constants.SORTING_MISSIONS)
         if (this.$route.params.searchParamsType){
             let filteExplore = {};
             filteExplore.exploreMissionParams  = '';
@@ -371,12 +376,15 @@ export default {
         var _this = this;
         this.isTotalMissionDisplay = this.settingEnabled(constants.Total_MISSIONS_IN_PLATEFORM)
         this.isQuickAccessDisplay = this.settingEnabled(constants.QUICK_ACCESS_FILTERS)
+        this.isThemeDisplay = this.settingEnabled(constants.THEMES_ENABLED);
+        this.isSkillDisplay = this.settingEnabled(constants.SKILLS_ENABLED);
+        this.isCountrySelectionSet = this.settingEnabled(constants.IS_COUNTRY_SELECTION);
+
         searchUser().then(response => {
             this.userList = response;
         });
                
-        setTimeout(function(){ 
-            
+        setTimeout(function(){      
             _this.sortByDefault = _this.langauageData.label.sort_by;
         },200);
         window.addEventListener("scroll", this.handleScroll);

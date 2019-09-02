@@ -304,6 +304,7 @@ tspan {
 
 .pagination-block {
     .pagination {
+        flex-wrap: wrap;
         .page-item {
             margin: 0 3px;
 
@@ -627,8 +628,6 @@ main {
             text-align: center;
 
             .btn {
-                display: inline-flex !important;
-                align-items: center;
                 padding: 6px 25px;
             }
         }

@@ -6,12 +6,15 @@
             </b-button>
             <b-modal
                 centered
-                :title="langauageData.label.add_your_skills"
                 ref="skillModal"
                 :modal-class="myclass"
                 hide-footer
                 @hidden="hideModal"
             >
+            <template slot="modal-header" slot-scope="{ close }">
+                <i class="close"  @click="close()" v-b-tooltip.hover :title="langauageData.label.close"></i>
+              <h5 class="modal-title">{{langauageData.label.add_your_skills}}</h5>
+            </template>
             <b-alert show variant="danger" dismissible v-model="showErrorDiv">
                     {{ message }}
             </b-alert>

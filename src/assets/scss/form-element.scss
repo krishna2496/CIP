@@ -38,6 +38,15 @@ a {
   }
   &.btn {
     display: inline-block !important;
+    &.icon-btn {
+      span {
+        top: 0;
+      }
+      i {
+        position: relative;
+        top: 1px;
+      }
+    }
   }
 }
 .btn {
@@ -330,8 +339,8 @@ textarea {
   &.is-valid {
     box-shadow: none !important;
   }
-  &.is-invalid{
-      background-image: none !important;
+  &.is-invalid {
+    background-image: none !important;
   }
 }
 
@@ -344,7 +353,8 @@ label {
     color: $error;
   }
 }
-.custom-dropdown , .checkbox-select {
+.custom-dropdown,
+.checkbox-select {
   &.is-invalid {
     span {
       border-color: $error;
@@ -629,16 +639,29 @@ label {
     }
   }
 }
+.simplebar-vertical {
+  &.simplebar-track {
+    width: 7px !important;
 
-.simplebar-track {
-  width: 7px !important;
+    .simplebar-scrollbar {
+      width: 4px;
 
-  .simplebar-scrollbar {
-    width: 4px;
-
-    &:before {
-      background: $border-color !important;
-      opacity: 1 !important;
+      &:before {
+        background: $border-color !important;
+        opacity: 1 !important;
+      }
+    }
+  }
+}
+.simplebar-horizontal {
+    &.simplebar-track {
+        height: 7px!important;
+    .simplebar-scrollbar {
+        height: 4px;
+      &:before {
+        background: $border-color !important;
+        opacity: 1 !important;
+      }
     }
   }
 }
@@ -650,14 +673,14 @@ label {
       min-width: 100%;
     }
   }
-  &.no-list-item{
-      cursor: not-allowed;
-      .select-text{
-          pointer-events: none;
-          &:after{
-              display: none;
-          }
+  &.no-list-item {
+    cursor: not-allowed;
+    .select-text {
+      pointer-events: none;
+      &:after {
+        display: none;
       }
+    }
   }
 }
 
@@ -771,11 +794,12 @@ label {
       z-index: 2;
       border: 1px solid $border-color;
       width: 100%;
-      padding: 4px 0;
+      padding: 0;
       border-radius: 0 0 3px 3px;
       max-height: 150px;
 
       ul {
+        padding: 4px 0;
         li {
           padding: 8px 15px;
           @include transition(all 0.3s);
@@ -797,7 +821,8 @@ label {
             }
           }
 
-          &:hover {
+          &:hover,
+          &.autosuggest__results-item--highlighted {
             background: $border-color;
           }
         }
@@ -900,17 +925,17 @@ label {
   width: 160px;
   margin: 0 auto;
 
-  .priimage{
+  .priimage {
     height: 160px !important;
     width: 160px !important;
     border-radius: 100%;
     overflow: hidden;
     position: absolute;
-    left:0;
-    top:0;
-    background-size:100%;
-    background-position:center center;
-    @include transition(all 0.3s); 
+    left: 0;
+    top: 0;
+    background-size: 100%;
+    background-position: center center;
+    @include transition(all 0.3s);
     z-index: 9998;
   }
   .picture-input {
@@ -983,8 +1008,8 @@ label {
     }
   }
   &:hover {
-    .priimage{
-        z-index: 9999;
+    .priimage {
+      z-index: 9999;
     }
     .btn {
       opacity: 1;
@@ -1000,161 +1025,209 @@ label {
   }
 }
 
-.custom-field{
-    .checkbox-select{
-      position: relative;
-    }
-    .form-group{
-      .is-invalid{
-        .custom-control{
-          .custom-control-label{
-              color:$error;
-              &:before, &:after{
-                border-color:$error!important;
-              }
+.custom-field {
+  .checkbox-select {
+    position: relative;
+  }
+  .form-group {
+    .is-invalid {
+      .custom-control {
+        .custom-control-label {
+          color: $error;
+          &:before,
+          &:after {
+            border-color: $error !important;
           }
         }
-        &.checkbox-select{
-          .custom-control{
-          .custom-control-label{
-              color:$black-primary;
-              &:before, &:after{
-                border-color:$control-border!important;
-              }
+      }
+      &.checkbox-select {
+        .custom-control {
+          .custom-control-label {
+            color: $black-primary;
+            &:before,
+            &:after {
+              border-color: $control-border !important;
+            }
           }
         }
-        }
       }
     }
   }
+}
 
-  .vue-star-rating-star{
-      line-height:0;
+.vue-star-rating-star {
+  line-height: 0;
+}
+
+/** Date picker style **/
+
+.mx-datepicker {
+  width: 100% !important;
+}
+.mx-datepicker-popup {
+  z-index: 1040 !important;
+}
+.mx-input {
+  height: 38px !important;
+  &:focus {
+    border-color: $gray-primary !important;
   }
+}
 
+.mx-calendar {
+  font-family: $general-font !important;
+  color: $black-primary !important;
+}
 
-
-  /** Date picker style **/
-
-  .mx-datepicker{
-      width: 100%!important;
-  }
-  .mx-datepicker-popup{
-      z-index: 1040 !important;
-  }
-  .mx-input{
-      height: 38px !important;
-      &:focus{
-          border-color: $gray-primary !important;
+.mx-calendar-content {
+  width: 238px !important;
+  height: 238px !important;
+  .cell {
+    &:hover {
+      background: $gray-bg !important;
+    }
+    &.actived {
+      background: $primary !important;
+    }
+    &.next-month:not(.disabled),
+    &.last-month:not(.disabled) {
+      &:hover {
+        color: $black-primary !important;
       }
-  }
-
-  .mx-calendar{
-     font-family:$general-font !important;
-     color: $black-primary !important;
     }
-
-  .mx-calendar-content{
-      width: 238px !important;
-      height: 238px !important;
-    .cell{
-        &:hover{
-            background: $gray-bg !important;
-        }
-        &.actived{
-            background: $primary!important;
-        }
-        &.next-month:not(.disabled) , &.last-month:not(.disabled){
-            &:hover{
-                color: $black-primary !important;
-            }
-        }
-        &.inrange{
-            background: $gray-bg !important;
-            color: $black-primary !important;
-        }
-        &.today{
-            &:hover{
-                color: $white !important;
-                background: $gray-primary !important;
-            }
-        }
-        &.disabled{
-            background: transparent !important;
-        }
+    &.inrange {
+      background: $gray-bg !important;
+      color: $black-primary !important;
     }
-  } 
-  .mx-panel-date{
-    td{
-        &.today{
-            color: $white !important;
-            background: $gray-primary !important;
-        }
-    }
-    td, th{
-        font-size: 14px !important;
-        height: 34px !important;
-        width: 34px !important;
-    }
-  } 
-
-  .mx-calendar-header > a[class*="mx-icon-"] {
-    &:hover{
-        opacity: 0.6!important;
-    }
-  }
-
-  /**Date range picker style**/
-  .mx-range-wrapper{
-      width: 524px !important;
-      .mx-calendar{
-          box-shadow: none !important;
+    &.today {
+      &:hover {
+        color: $white !important;
+        background: $gray-primary !important;
       }
-      .mx-input-append{
-          display: none !important;
-      }
+    }
+    &.disabled {
+      background: transparent !important;
+    }
   }
-  .mx-shortcuts-wrapper{
-    display: none;
+}
+.mx-panel-date {
+  td {
+    &.today {
+      color: $white !important;
+      background: $gray-primary !important;
+    }
   }
-
-  .mx-datepicker-footer{
-      padding: 10px 4px !important;
-  }
-  .mx-datepicker-btn-confirm{
-    min-width: 70px;
-    min-height: 28px;
+  td,
+  th {
     font-size: 14px !important;
-    color: $primary !important;
-    background-color: $white !important;
-    border: 2px solid $primary !important;
-    border-radius: 25px !important;
-    &:hover{
-        background-color: $primary !important;
-        color:$white !important;
+    height: 34px !important;
+    width: 34px !important;
+  }
+}
+
+.mx-calendar-header > a[class*="mx-icon-"] {
+  &:hover {
+    opacity: 0.6 !important;
+  }
+}
+
+/**Date range picker style**/
+.mx-range-wrapper {
+  max-width: 524px !important;
+  width:100% !important;
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  .mx-calendar {
+    box-shadow: none !important;
+  }
+  .mx-input-append {
+    display: none !important;
+  }
+}
+.mx-shortcuts-wrapper {
+  display: none;
+}
+
+.mx-datepicker-footer {
+  padding: 10px 4px !important;
+}
+.mx-datepicker-btn-confirm {
+  min-width: 70px;
+  min-height: 28px;
+  font-size: 14px !important;
+  color: $primary !important;
+  background-color: $white !important;
+  border: 2px solid $primary !important;
+  border-radius: 25px !important;
+  &:hover {
+    background-color: $primary !important;
+    color: $white !important;
+  }
+}
+
+/** File upload Style **/
+
+.file-upload-wrap {
+  border: 1px solid $border-color;
+  @include border-radius(3px);
+  .btn-wrapper {
+    display: flex;
+    flex: 1;
+    -ms-flex: 1;
+    justify-content: flex-start;
+    align-items: center;
+    .btn {
+      &.file-uploads {
+        margin-left: 15px;
+      }
     }
   }
-
-
-  /** File upload Style **/
-
-
-  .file-upload-wrap{
-      border:1px solid $border-color;
-      @include border-radius(3px);
-
+  .remove-item {
+    position: absolute;
+    right: 15px;
+    bottom: 15px;
+    line-height: 0;
+    img {
+      height: 22px;
+      width: 20px;
+    }
   }
-  .btn{
-      &.file-uploads{
-          background:$gray-bg;
-          color: $black-primary;
-          width: 150px;
-          height: 45px;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          line-height: 30px;
-          cursor: pointer;
-          margin: 15px;
-      }
+}
+.btn {
+  &.file-uploads {
+    background: $gray-bg;
+    color: $black-primary;
+    width: 150px;
+    height: 45px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    line-height: 30px;
+    cursor: pointer;
+    margin: 15px;
+    label,
+    input {
+      cursor: pointer;
+    }
   }
+}
+.uploaded-file-details {
+  position: relative;
+  border-top: 2px solid $border-color;
+  padding: 10px 35px 15px 15px;
+  .filename {
+    margin-bottom: 0;
+  }
+  .file-size {
+    color: $gray-primary;
+  }
+  .status {
+    font-size: 12px;
+    line-height: 15px;
+    font-family: $general-font;
+    .success {
+      color: $success;
+    }
+  }
+}
