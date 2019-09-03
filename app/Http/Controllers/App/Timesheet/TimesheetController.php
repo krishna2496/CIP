@@ -14,6 +14,7 @@ use InvalidArgumentException;
 use Validator;
 use Illuminate\Validation\Rule;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use PDOException;
 
 class TimesheetController extends Controller
 {
@@ -446,7 +447,6 @@ class TimesheetController extends Controller
      */
     public function submitTimesheet(Request $request): JsonResponse
     {
-
         try {
             $validator = Validator::make(
                 $request->toArray(),

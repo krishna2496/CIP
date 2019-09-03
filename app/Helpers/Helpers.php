@@ -92,7 +92,6 @@ class Helpers
         // Connect master database to get language details
         $tenantName = $this->getSubDomainFromRequest($request);
         $this->switchDatabaseConnection('mysql', $request);
-
         $tenant = DB::table('tenant')->where('name', $tenantName)->whereNull('deleted_at')->first();
         // Connect tenant database
         $this->switchDatabaseConnection('tenant', $request);

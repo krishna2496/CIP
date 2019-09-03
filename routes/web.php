@@ -196,12 +196,17 @@ $router->group(['middleware' => 'localization'], function ($router) {
     'middleware' => 'tenant.connection|jwt.auth',
     'uses' => 'App\Timesheet\TimesheetController@store']);
 
+    /* Submit timesheet data */
+    $router->patch('/app/timesheet/submit', ['as' => 'app.timesheet.submit',
+    'middleware' => 'tenant.connection|jwt.auth',
+    'uses' => 'App\Timesheet\TimesheetController@submitTimesheet']);
+
     /* Get timesheet data */
     $router->get('/app/timesheet', ['as' => 'app.timesheet',
     'middleware' => 'tenant.connection|jwt.auth',
     'uses' => 'App\Timesheet\TimesheetController@index']);
     
-    /* Update timesheet data */
+    /* Update timesheet data by id */
     $router->patch('/app/timesheet/{timesheetId}', ['as' => 'app.timesheet',
     'middleware' => 'tenant.connection|jwt.auth',
     'uses' => 'App\Timesheet\TimesheetController@update']);
@@ -211,15 +216,11 @@ $router->group(['middleware' => 'localization'], function ($router) {
     'middleware' => 'tenant.connection|jwt.auth',
     'uses' => 'App\Timesheet\TimesheetController@show']);
 
-    /* Delete timesheet doecument data */
+    /* Delete timesheet document data */
     $router->delete('/app/timesheet/{timesheetId}/document/{documentId}', ['as' => 'app.timesheet.destroy',
     'middleware' => 'tenant.connection|jwt.auth',
     'uses' => 'App\Timesheet\TimesheetController@destroy']);
-
-    /* Submit timesheet data */
-    $router->patch('/app/timesheet/submit', ['as' => 'app.timesheet.submit',
-    'middleware' => 'tenant.connection|jwt.auth',
-    'uses' => 'App\Timesheet\TimesheetController@submitTimesheet']);
+  
 
     /* Fetch pending goal requests */
     $router->get('/app/timesheet/goal-request', ['as' => 'app.timesheet',
@@ -461,6 +462,16 @@ $router->group(['middleware' => 'localization'], function ($router) {
         }
     );
 
+    /* Timesheet management */
+    $router->group(
+        ['prefix' => 'timesheet', 'middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware'],
+        function ($router) {
+            $router->get('/{userId}', ['as' => 'user.timesheet', 'middleware' => ['PaginationMiddleware'],
+                'uses' => 'Admin\Timesheet\TimesheetController@index']);
+            $router->patch('/{timesheetId}', ['as' => 'update.user.timesheet.status',
+                'uses' => 'Admin\Timesheet\TimesheetController@update']);
+        }
+    );
 /*
 |
 |--------------------------------------------------------------------------

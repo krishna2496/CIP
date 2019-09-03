@@ -37,7 +37,7 @@ class TimesheetStatus extends Model
      *
      * @var array
      */
-    protected $visible = ['status'];
+    protected $visible = ['timesheet_status_id','status'];
 
     /**
      * Get the mission that has theme
