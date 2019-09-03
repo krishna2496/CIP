@@ -200,6 +200,11 @@ $router->group(['middleware' => 'localization'], function ($router) {
     $router->patch('/app/timesheet/submit', ['as' => 'app.timesheet.submit',
     'middleware' => 'tenant.connection|jwt.auth',
     'uses' => 'App\Timesheet\TimesheetController@submitTimesheet']);
+    
+    /* Fetch pending time requests */
+    $router->get('/app/timesheet/time-request', ['as' => 'app.timesheet',
+    'middleware' => 'tenant.connection|jwt.auth',
+    'uses' => 'App\Timesheet\TimesheetController@getTimeRequestList']);
 
     /* Get timesheet data */
     $router->get('/app/timesheet', ['as' => 'app.timesheet',

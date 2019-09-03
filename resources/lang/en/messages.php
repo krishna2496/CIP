@@ -105,6 +105,8 @@ return [
         'MESSAGE_TIMESHEET_DOCUMENT_DELETED' => 'Timesheet document deleted sucessfully',
         'TIMESHEET_SUBMITTED_SUCESSFULLY' => 'Timesheet submitted sucessfully',
         'TIMESHEET_ALREADY_SUBMITTED_FOR_APPROVAL' => 'Timesheet already submitted for approval',
+        'MESSAGE_TIME_REQUEST_LISTING' => 'Time request listed successfully',
+        'MESSAGE_TIME_REQUEST_NOT_FOUND' => 'No time request found',
 	],
         
     /**

@@ -15,6 +15,8 @@ use Validator;
 use Illuminate\Validation\Rule;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use PDOException;
+use \Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
 
 class TimesheetController extends Controller
 {
@@ -443,7 +445,7 @@ class TimesheetController extends Controller
      * Submit timesheet
      *
      * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\JsonResponse;
+     * @return \Illuminate\Http\JsonResponse
      */
     public function submitTimesheet(Request $request): JsonResponse
     {
@@ -478,6 +480,57 @@ class TimesheetController extends Controller
             return $this->modelNotFound(
                 config('constants.error_codes.TIMESHEET_NOT_FOUND'),
                 trans('messages.custom_error_message.TIMESHEET_NOT_FOUND')
+            );
+        } catch (\Exception $e) {
+            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
+        }
+    }
+
+    /**
+     * Get Request timesheet
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getTimeRequestList(Request $request): JsonResponse
+    {
+        try {
+            // Fetch timesheet data
+            $timesheetDetails = $this->timesheetRepository->getTimeRequestDetails($request);
+
+            foreach ($timesheetDetails as $values) {
+                // Check mission language is set
+                if ($values->missionLanguage) {
+                    $values->setAttribute('title', $values->missionLanguage[0]->title);
+                    unset($values->missionLanguage);
+                }
+
+                // For time
+                $totalHours = (int)($values->total_hours / 60);
+                $hoursData = $totalHours."h";
+                $minutes = $values->total_hours % 60;
+                $time = $hoursData.$minutes;
+
+                //For hours
+                $minutesData = $minutes / 60;
+                $hours = $totalHours + $minutesData;
+                $hoursDetail = number_format((float)$hours, 2, '.', '');
+
+                $values->time = $time;
+                $values->hours = $hoursDetail;
+                unset($values->total_hours);
+            }
+            
+            $apiData = $timesheetDetails;
+            $apiStatus = Response::HTTP_OK;
+            $apiMessage = (count($apiData) > 0) ? trans('messages.success.MESSAGE_TIME_REQUEST_LISTING') :
+            trans('messages.success.MESSAGE_TIME_REQUEST_NOT_FOUND');
+
+            return $this->responseHelper->successWithPagination($apiStatus, $apiMessage, $apiData);
+        } catch (PDOException $e) {
+            return $this->PDO(
+                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
+                trans('messages.custom_error_message.ERROR_DATABASE_OPERATIONAL')
             );
         } catch (\Exception $e) {
             return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));

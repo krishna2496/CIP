@@ -283,4 +283,38 @@ class TimesheetRepository implements TimesheetInterface
         }
         return $status;
     }
+
+    /**
+     * Get time request details.
+     *
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return Illuminate\Pagination\LengthAwarePaginator
+     */
+    public function getTimeRequestDetails(Request $request) : LengthAwarePaginator
+    {
+        $languages = $this->languageHelper->getLanguages($request);
+        $language = ($request->hasHeader('X-localization')) ?
+        $request->header('X-localization') : env('TENANT_DEFAULT_LANGUAGE_CODE');
+        $language = $languages->where('code', $language)->first();
+        $languageId = $language->language_id;
+        
+        $goalRequestQuery = Mission::query()
+        ->select('mission.mission_id', 'mission.city_id', 'mission.organisation_name');
+        $goalRequestQuery->where(['publication_status' => config("constants.publication_status")["APPROVED"],
+        'mission_type'=> config('constants.mission_type.TIME')])
+        ->with(['missionLanguage' => function ($query) use ($languageId) {
+            $query->select('mission_language_id', 'mission_id', 'title')
+            ->where('language_id', $languageId);
+        }])
+        ->whereHas('timesheet', function ($query) use ($request) {
+            $query->where(['status_id' => 5, 'user_id' => $request->auth->user_id]);
+        })
+        ->withCount([
+        'timesheet AS total_hours' => function ($query) use ($request) {
+            $query->select(DB::raw("sum(((hour(time) * 60) + minute(time))) as 'total_minutes'"))
+            ->where(['status_id' => 5, 'user_id' => $request->auth->user_id]);
+        }]);
+        return $goalRequestQuery->paginate($request->perPage);
+    }
 }
