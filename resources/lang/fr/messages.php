@@ -100,6 +100,8 @@ return [
         'MESSAGE_TIMESETTING_STATUS_UPDATED' => 'Statut de la feuille de temps mis à jour avec succès',
         'TIMESHEET_SUBMITTED_SUCESSFULLY' => 'Feuille de temps soumise avec succès',
         'TIMESHEET_ALREADY_SUBMITTED_FOR_APPROVAL' => 'Feuille de temps déjà soumise pour approbation',
+        'MESSAGE_GOAL_REQUEST_LISTING' => 'Demande d\'objectif répertoriée avec succès',
+        'MESSAGE_NO_GOAL_REQUEST_FOUND' => 'Demande d\'objectif non trouvée',
     ],
 
         

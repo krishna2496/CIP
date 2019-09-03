@@ -4,13 +4,12 @@ namespace App\Repositories\Timesheet;
 
 use DB;
 use App\Models\Mission;
-use App\Models\Timezone;
+use App\Models\Timesheet;
+use App\Models\TimesheetDocument;
+use Illuminate\Http\Request;
 use App\Helpers\Helpers;
 use App\Helpers\S3Helper;
 use App\Helpers\LanguageHelper;
-use App\Models\Timesheet;
-use Illuminate\Http\Request;
-use App\Models\TimesheetDocument;
 use Illuminate\Support\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use App\Repositories\Timesheet\TimesheetInterface;
@@ -284,5 +283,38 @@ class TimesheetRepository implements TimesheetInterface
             }
         }
         return $status;
+    }
+
+    /**
+     * Fetch goal requests list
+     *
+     * @param Request $request
+     * @return Illuminate\Pagination\LengthAwarePaginator
+     */
+    public function getGoalRequestList(Request $request): LengthAwarePaginator
+    {
+        $languages = $this->languageHelper->getLanguages($request);
+        $language = ($request->hasHeader('X-localization')) ?
+        $request->header('X-localization') : env('TENANT_DEFAULT_LANGUAGE_CODE');
+        $language = $languages->where('code', $language)->first();
+        $languageId = $language->language_id;
+        
+        $goalRequestQuery = Mission::query()
+        ->select('mission.mission_id', 'mission.city_id', 'mission.organisation_name');
+        $goalRequestQuery->where(['publication_status' => config("constants.publication_status")["APPROVED"],
+        'mission_type'=> config('constants.mission_type.GOAL')])
+        ->with(['missionLanguage' => function ($query) use ($languageId) {
+            $query->select('mission_language_id', 'mission_id', 'title')
+            ->where('language_id', $languageId);
+        }])
+        ->whereHas('timesheet', function ($query) use ($request) {
+            $query->where(['status_id' => 5, 'user_id' => $request->auth->user_id]);
+        })
+        ->withCount([
+        'timesheet AS total_action' => function ($query) use ($request) {
+            $query->select(DB::raw("SUM(action) as action"))
+            ->where(['status_id' => 5, 'user_id' => $request->auth->user_id]);
+        }]);
+        return $goalRequestQuery->paginate($request->perPage);
     }
 }

@@ -485,4 +485,36 @@ class TimesheetController extends Controller
             return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
+
+    /**
+     * Fetch pending goal requests
+     *
+     * @param Illuminate\Http\Request $request
+     * @return Illuminate\Http\JsonResponse
+     */
+    public function getGoalRequestList(Request $request): JsonResponse
+    {
+        try {
+            $goalRequestList = $this->timesheetRepository->getGoalRequestList($request);
+
+            foreach ($goalRequestList as $value) {
+                if ($value->missionLanguage) {
+                    $value->setAttribute('title', $value->missionLanguage[0]->title);
+                    unset($value->missionLanguage);
+                }
+            }
+            
+            $apiMessage = (count($goalRequestList) > 0) ?
+            trans('messages.success.MESSAGE_GOAL_REQUEST_LISTING') :
+            trans('messages.success.MESSAGE_NO_GOAL_REQUEST_FOUND');
+            return $this->responseHelper->successWithPagination(Response::HTTP_OK, $apiMessage, $goalRequestList);
+        } catch (PDOException $e) {
+            return $this->PDO(
+                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
+                trans('messages.custom_error_message.ERROR_DATABASE_OPERATIONAL')
+            );
+        } catch (\Exception $e) {
+            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
+        }
+    }
 }

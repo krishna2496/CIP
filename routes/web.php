@@ -222,6 +222,11 @@ $router->group(['middleware' => 'localization'], function ($router) {
     'uses' => 'App\Timesheet\TimesheetController@destroy']);
   
 
+    /* Fetch pending goal requests */
+    $router->get('/app/timesheet/goal-request', ['as' => 'app.timesheet',
+    'middleware' => 'tenant.connection|jwt.auth',
+    'uses' => 'App\Timesheet\TimesheetController@getGoalRequestList']);
+
 /*
 |
 |--------------------------------------------------------------------------
