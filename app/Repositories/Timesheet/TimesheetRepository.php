@@ -141,9 +141,10 @@ class TimesheetRepository implements TimesheetInterface
         ->with(['timesheet' => function ($query) use ($missionType) {
             $type = ($missionType == config('constants.mission_type.TIME')) ? 'time' : 'action';
             $query->select('mission_id', 'date_volunteered', 'day_volunteered', 'notes', 'status_id', $type)
-            ->where('user_id', $request->auth->user_id)->with('timesheetStatus');
-        }]);
-        return $timesheetQuery->get();
+            ->with('timesheetStatus');
+        }])
+        ->get();
+        return $timesheetQuery;
     }
     
     /**
