@@ -52,6 +52,54 @@ class TimesheetController extends Controller
         $this->responseHelper = $responseHelper;
         $this->missionRepository = $missionRepository;
     }
+    
+    /**
+     * Get all timesheet entries
+     *
+     * @param Illuminate\Http\Request $request
+     * @return Illuminate\Http\JsonResponse
+     */
+    public function index(Request $request): JsonResponse
+    {
+        try {
+            $timeMissionEntries = $this->timesheetRepository
+            ->getAllTimesheetEntries($request, config('constants.mission_type.TIME'));
+            foreach ($timeMissionEntries as $value) {
+                if ($value->missionLanguage) {
+                    $value->setAttribute('title', $value->missionLanguage[0]->title);
+                    unset($value->missionLanguage);
+                }
+                $value->setAppends([]);
+            }
+
+            $goalMissionEntries = $this->timesheetRepository
+            ->getAllTimesheetEntries($request, config('constants.mission_type.GOAL'));
+            foreach ($goalMissionEntries as $value) {
+                if ($value->missionLanguage) {
+                    $value->setAttribute('title', $value->missionLanguage[0]->title);
+                    unset($value->missionLanguage);
+                }
+                $value->setAppends([]);
+            }
+           
+            $timesheetEntries[config('constants.mission_type.TIME')] = $timeMissionEntries;
+            $timesheetEntries[config('constants.mission_type.GOAL')] = $goalMissionEntries;
+
+            $apiData = $timesheetEntries;
+            $apiStatus = Response::HTTP_OK;
+            $apiMessage = (count($timeMissionEntries->toArray()) > 0 && count($goalMissionEntries->toArray()) > 0) ?
+            trans('messages.success.MESSAGE_TIMESHEET_ENTRIES_LISTING') :
+            trans('messages.success.MESSAGE_NO_TIMESHEET_ENTRIES_FOUND');
+            return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
+        } catch (PDOException $e) {
+            return $this->PDO(
+                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
+                trans('messages.custom_error_message.ERROR_DATABASE_OPERATIONAL')
+            );
+        } catch (\Exception $e) {
+            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
+        }
+    }
 
     /**
      * Store a newly timesheet into database
@@ -386,55 +434,6 @@ class TimesheetController extends Controller
             return $this->modelNotFound(
                 config('constants.error_codes.TIMESHEET_NOT_FOUND'),
                 trans('messages.custom_error_message.TIMESHEET_NOT_FOUND')
-            );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
-        }
-    }
-
-    /**
-     * Get all timesheet entries
-     *
-     * @param Illuminate\Http\Request $request
-     * @return Illuminate\Http\JsonResponse
-     */
-    public function index(Request $request): JsonResponse
-    {
-        try {
-            $timeMissionEntries = $this->timesheetRepository
-            ->getAllTimesheetEntries($request, config('constants.mission_type.TIME'));
-            $goalMissionEntries = $this->timesheetRepository
-            ->getAllTimesheetEntries($request, config('constants.mission_type.GOAL'));
-
-            foreach ($timeMissionEntries as $value) {
-                if ($value->missionLanguage) {
-                    $value->setAttribute('title', $value->missionLanguage[0]->title);
-                    unset($value->missionLanguage);
-                }
-                $value->setAppends([]);
-            }
-
-            foreach ($goalMissionEntries as $value) {
-                if ($value->missionLanguage) {
-                    $value->setAttribute('title', $value->missionLanguage[0]->title);
-                    unset($value->missionLanguage);
-                }
-                $value->setAppends([]);
-            }
-           
-            $timesheetEntries[config('constants.mission_type.TIME')] = $timeMissionEntries;
-            $timesheetEntries[config('constants.mission_type.GOAL')] = $goalMissionEntries;
-
-            $apiData = $timesheetEntries;
-            $apiStatus = Response::HTTP_OK;
-            $apiMessage = (!empty($apiData)) ?
-            trans('messages.success.MESSAGE_TIMESHEET_ENTRIES_LISTING') :
-            trans('messages.success.MESSAGE_NO_TIMESHEET_ENTRIES_FOUND');
-            return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
-        } catch (PDOException $e) {
-            return $this->PDO(
-                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
-                trans('messages.custom_error_message.ERROR_DATABASE_OPERATIONAL')
             );
         } catch (\Exception $e) {
             return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));

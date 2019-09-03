@@ -93,7 +93,7 @@ return [
         'MESSAGE_SLIDER_DELETED' => 'Slider supprimé avec succès',
         'TIMESHEET_ENTRY_ADDED_SUCESSFULLY' => 'Entrée de la feuille de temps ajoutée avec succès',
         'MESSAGE_TIMESHEET_ENTRIES_LISTING' => 'Entrées de la feuille de temps listées avec succès',
-        'MESSAGE_NO_TIMESHEET_ENTRIES_FOUND' => 'Entrées de la feuille de temps non trouvées',
+        'MESSAGE_NO_TIMESHEET_ENTRIES_FOUND' => 'Aucune entrée de feuille de temps trouvée',
         'TIMESHEET_ENTRY_UPDATED_SUCESSFULLY' => 'Entrée de la feuille de temps mise à jour avec succès',
         'MESSAGE_TIMESHEET_LISTING' => 'Feuille de temps listée avec succès',
         'MESSAGE_TIMESHEET_DOCUMENT_DELETED' => 'La feuille de temps du document a été supprimée avec succès',

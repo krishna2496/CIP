@@ -96,7 +96,7 @@ return [
         'MESSAGE_SLIDER_DELETED' => 'Slider deleted successfully',
         'TIMESHEET_ENTRY_ADDED_SUCESSFULLY' => 'Timesheet entry added successfully',
         'MESSAGE_TIMESHEET_ENTRIES_LISTING' => 'Timesheet entries listed successfully',
-        'MESSAGE_NO_TIMESHEET_ENTRIES_FOUND' => 'Timesheet entries not found',
+        'MESSAGE_NO_TIMESHEET_ENTRIES_FOUND' => 'No timesheet entries found',
         'TIMESHEET_ENTRY_UPDATED_SUCESSFULLY' => 'Timesheet entry updated successfully',
         'MESSAGE_TIMESHEET_LISTING' => 'Timesheet listed successfully',        
         'MESSAGE_TIMESHEET_DOCUMENT_DELETED' => 'Timesheet document deleted successfully',
