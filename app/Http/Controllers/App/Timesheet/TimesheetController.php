@@ -411,6 +411,7 @@ class TimesheetController extends Controller
                     $value->setAttribute('title', $value->missionLanguage[0]->title);
                     unset($value->missionLanguage);
                 }
+                $value->setAppends([]);
             }
 
             foreach ($goalMissionEntries as $value) {
@@ -418,6 +419,7 @@ class TimesheetController extends Controller
                     $value->setAttribute('title', $value->missionLanguage[0]->title);
                     unset($value->missionLanguage);
                 }
+                $value->setAppends([]);
             }
            
             $timesheetEntries[config('constants.mission_type.TIME')] = $timeMissionEntries;
