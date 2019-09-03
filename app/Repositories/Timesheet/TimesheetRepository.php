@@ -138,13 +138,13 @@ class TimesheetRepository implements TimesheetInterface
             $query->select('mission_language_id', 'mission_id', 'title')
             ->where('language_id', $languageId);
         }])
-        ->with(['timesheet' => function ($query) use ($missionType) {
+        ->with(['timesheet' => function ($query) use ($missionType, $request) {
             $type = ($missionType == config('constants.mission_type.TIME')) ? 'time' : 'action';
             $query->select('mission_id', 'date_volunteered', 'day_volunteered', 'notes', 'status_id', $type)
+            ->where('user_id', $request->auth->user_id)
             ->with('timesheetStatus');
-        }])
-        ->get();
-        return $timesheetQuery;
+        }]);
+        return $timesheetQuery->get();
     }
     
     /**
