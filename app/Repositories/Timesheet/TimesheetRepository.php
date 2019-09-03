@@ -127,7 +127,7 @@ class TimesheetRepository implements TimesheetInterface
         $language = $languages->where('code', $language)->first();
         $languageId = $language->language_id;
         
-        $timesheetQuery = Mission::select('mission.mission_id', 'mission.city_id')
+        $timesheetQuery = Mission::select('mission.mission_id')
         ->where(['publication_status' => config("constants.publication_status")["APPROVED"],
         'mission_type'=> $missionType])
         ->whereHas('missionApplication', function ($query) use ($request) {
@@ -138,11 +138,12 @@ class TimesheetRepository implements TimesheetInterface
             $query->select('mission_language_id', 'mission_id', 'title')
             ->where('language_id', $languageId);
         }])
-        ->with(['timesheet' => function ($query) {
-            $query->with('timesheetStatus');
-        }])
-        ->get();
-        return $timesheetQuery;
+        ->with(['timesheet' => function ($query) use ($missionType) {
+            $type = ($missionType == config('constants.mission_type.TIME')) ? 'time' : 'action';
+            $query->select('mission_id', 'date_volunteered', 'day_volunteered', 'notes', 'status_id', $type)
+            ->where('user_id', $request->auth->user_id)->with('timesheetStatus');
+        }]);
+        return $timesheetQuery->get();
     }
     
     /**
