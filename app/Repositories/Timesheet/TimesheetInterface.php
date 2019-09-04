@@ -3,6 +3,7 @@ namespace App\Repositories\Timesheet;
 
 use Illuminate\Http\Request;
 use App\Models\Timesheet;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 interface TimesheetInterface
 {
@@ -65,4 +66,12 @@ interface TimesheetInterface
      * @return bool
      */
     public function updateSubmittedTimesheet(Request $request, int $userId): bool;
+
+    /**
+     * Fetch goal requests list
+     *
+     * @param Request $request
+     * @return Illuminate\Pagination\LengthAwarePaginator
+     */
+    public function getGoalRequestList(Request $request): LengthAwarePaginator;
 }

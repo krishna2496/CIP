@@ -231,6 +231,11 @@ $router->group(['middleware' => 'localization'], function ($router) {
     'middleware' => 'tenant.connection|jwt.auth',
     'uses' => 'App\Timesheet\VolunteerHistoryController@skillHistory']);
 
+    /* Fetch pending goal requests */
+    $router->get('/app/timesheet/goal-request', ['as' => 'app.timesheet',
+    'middleware' => 'tenant.connection|jwt.auth',
+    'uses' => 'App\Timesheet\TimesheetController@getGoalRequestList']);
+
 /*
 |
 |--------------------------------------------------------------------------
