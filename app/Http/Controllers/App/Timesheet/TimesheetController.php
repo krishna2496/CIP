@@ -2,20 +2,20 @@
 
 namespace App\Http\Controllers\App\Timesheet;
 
+use App\Helpers\ResponseHelper;
+use App\Http\Controllers\Controller;
+use App\Repositories\Mission\MissionRepository;
+use App\Repositories\Timesheet\TimesheetRepository;
+use App\Traits\RestExceptionHandlerTrait;
+use Carbon\Carbon;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use App\Http\Controllers\Controller;
-use Illuminate\Http\JsonResponse;
-use App\Helpers\ResponseHelper;
-use App\Repositories\Timesheet\TimesheetRepository;
-use App\Repositories\Mission\MissionRepository;
-use App\Traits\RestExceptionHandlerTrait;
-use InvalidArgumentException;
-use Validator;
 use Illuminate\Validation\Rule;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
+use InvalidArgumentException;
 use PDOException;
-use Carbon\Carbon;
+use Validator;
 
 class TimesheetController extends Controller
 {
@@ -55,6 +55,54 @@ class TimesheetController extends Controller
     }
 
     /**
+     * Get all timesheet entries
+     *
+     * @param Illuminate\Http\Request $request
+     * @return Illuminate\Http\JsonResponse
+     */
+    public function index(Request $request): JsonResponse
+    {
+        try {
+            $timeMissionEntries = $this->timesheetRepository
+                ->getAllTimesheetEntries($request, config('constants.mission_type.TIME'));
+            foreach ($timeMissionEntries as $value) {
+                if ($value->missionLanguage) {
+                    $value->setAttribute('title', $value->missionLanguage[0]->title);
+                    unset($value->missionLanguage);
+                }
+                $value->setAppends([]);
+            }
+
+            $goalMissionEntries = $this->timesheetRepository
+                ->getAllTimesheetEntries($request, config('constants.mission_type.GOAL'));
+            foreach ($goalMissionEntries as $value) {
+                if ($value->missionLanguage) {
+                    $value->setAttribute('title', $value->missionLanguage[0]->title);
+                    unset($value->missionLanguage);
+                }
+                $value->setAppends([]);
+            }
+
+            $timesheetEntries[config('constants.mission_type.TIME')] = $timeMissionEntries;
+            $timesheetEntries[config('constants.mission_type.GOAL')] = $goalMissionEntries;
+
+            $apiData = $timesheetEntries;
+            $apiStatus = Response::HTTP_OK;
+            $apiMessage = (count($timeMissionEntries->toArray()) > 0 && count($goalMissionEntries->toArray()) > 0) ?
+            trans('messages.success.MESSAGE_TIMESHEET_ENTRIES_LISTING') :
+            trans('messages.success.MESSAGE_NO_TIMESHEET_ENTRIES_FOUND');
+            return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
+        } catch (PDOException $e) {
+            return $this->PDO(
+                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
+                trans('messages.custom_error_message.ERROR_DATABASE_OPERATIONAL')
+            );
+        } catch (\Exception $e) {
+            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
+        }
+    }
+
+    /**
      * Store a newly timesheet into database
      *
      * @param \Illuminate\Http\Request $request
@@ -70,11 +118,11 @@ class TimesheetController extends Controller
                     'mission_id' => 'required|exists:mission,mission_id,deleted_at,NULL',
                     'date_volunteered' => 'required',
                     'day_volunteered' => ['required', Rule::in(config('constants.day_volunteered'))],
-                    'documents.*' => 'max:'.$documentSizeLimit.'|valid_timesheet_document_type',
+                    'documents.*' => 'max:' . $documentSizeLimit . '|valid_timesheet_document_type',
                 ],
                 [
-                    'max' => 'Document size should not be max than '.
-                        (config('constants.TIMESHEET_DOCUMENT_SIZE_LIMIT')/1024).' MB',
+                    'max' => 'Document size should not be max than ' .
+                    (config('constants.TIMESHEET_DOCUMENT_SIZE_LIMIT') / 1024) . ' MB',
                 ]
             );
 
@@ -104,8 +152,9 @@ class TimesheetController extends Controller
                     trans('messages.custom_error_message.ERROR_INVALID_DATA_FOR_TIMESHEET_ENTRY')
                 );
             }
-          
-            if ($missionApplicationData->approval_status != config('constants.timesheet_status.AUTOMATICALLY_APPROVED')) {
+
+            if ($missionApplicationData->approval_status
+                != config('constants.timesheet_status.AUTOMATICALLY_APPROVED')) {
                 return $this->responseHelper->error(
                     Response::HTTP_UNPROCESSABLE_ENTITY,
                     Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
@@ -115,7 +164,7 @@ class TimesheetController extends Controller
             }
 
             $dateTime = ($request->date_volunteered != null) ?
-            Carbon::createFromFormat('m-d-Y', $request->date_volunteered): null;
+            Carbon::createFromFormat('m-d-Y', $request->date_volunteered) : null;
             $dateTime = strtotime($dateTime);
             $date = date('Y-m-d', $dateTime);
 
@@ -123,7 +172,7 @@ class TimesheetController extends Controller
                 $validator = Validator::make(
                     $request->all(),
                     [
-                     "action" => "required|integer|min:1",
+                        "action" => "required|integer|min:1",
                     ]
                 );
 
@@ -133,13 +182,13 @@ class TimesheetController extends Controller
 
                 // Fetch goal objective from goal mission
                 $objective = $this->missionRepository->getGoalObjective($request->mission_id);
-               
+
                 // Fetch all added goal actions from database
                 $totalAddedActions = $this->timesheetRepository->getAddedActions($request->mission_id);
 
                 // Add total actions
                 $totalActions = $totalAddedActions + $request->action;
-             
+
                 // Check total goals are not maximum than provided goals
                 if ($totalActions > $objective->goal_objective) {
                     return $this->responseHelper->error(
@@ -158,7 +207,7 @@ class TimesheetController extends Controller
                     ]
                 );
 
-                $time = $request->hours .":". $request->minutes;
+                $time = $request->hours . ":" . $request->minutes;
                 $request->request->add(['time' => $time]);
                 // Remove extra params
                 $request->request->remove('action');
@@ -187,7 +236,7 @@ class TimesheetController extends Controller
                         }
                     }
                 }
-                
+
                 // Fetch timesheet details by date and status
                 $timesheetData = $this->timesheetRepository->getTimesheetDetailByDate(
                     $request->mission_id,
@@ -204,7 +253,7 @@ class TimesheetController extends Controller
                     );
                 }
             }
-             
+
             // If validator fails
             if ($validator->fails()) {
                 return $this->responseHelper->error(
@@ -214,7 +263,7 @@ class TimesheetController extends Controller
                     $validator->errors()->first()
                 );
             }
-            
+
             // Remove params
             $request->request->remove('status_id');
 
@@ -227,12 +276,12 @@ class TimesheetController extends Controller
             // Store timesheet item
             $request->request->add(['user_id' => $request->auth->user_id]);
             $timesheet = $this->timesheetRepository->storeTimesheet($request);
- 
+
             // Set response data
             $apiStatus = Response::HTTP_CREATED;
-            $apiMessage =  trans('messages.success.TIMESHEET_ENTRY_ADDED_SUCESSFULLY');
+            $apiMessage = trans('messages.success.TIMESHEET_ENTRY_ADDED_SUCESSFULLY');
             $apiData = ['timesheet_id' => $timesheet->timesheet_id];
-            
+
             return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
         } catch (PDOException $e) {
             return $this->PDO(
@@ -267,11 +316,11 @@ class TimesheetController extends Controller
                 [
                     'date_volunteered' => 'required',
                     'day_volunteered' => ['required', Rule::in(config('constants.day_volunteered'))],
-                    'documents.*' => 'max:'.$documentSizeLimit.'|valid_timesheet_document_type',
+                    'documents.*' => 'max:' . $documentSizeLimit . '|valid_timesheet_document_type',
                 ],
                 [
-                    'max' => 'Document size should not be max than '.
-                        (config('constants.TIMESHEET_DOCUMENT_SIZE_LIMIT')/1024).' MB',
+                    'max' => 'Document size should not be max than ' .
+                    (config('constants.TIMESHEET_DOCUMENT_SIZE_LIMIT') / 1024) . ' MB',
                 ]
             );
 
@@ -284,7 +333,7 @@ class TimesheetController extends Controller
                     $validator->errors()->first()
                 );
             }
-            
+
             // Fetch timesheet data
             $timesheetData = $this->timesheetRepository->getTimesheetData($timesheetId, $request->auth->user_id);
             $timesheetDetails = $timesheetData->toArray();
@@ -315,13 +364,13 @@ class TimesheetController extends Controller
 
                 // Fetch goal objective from goal mission
                 $objective = $this->missionRepository->getGoalObjective($timesheetData->mission_id);
-               
+
                 // Fetch all added actions from database
                 $totalAddedActions = $this->timesheetRepository->getAddedActions($timesheetData->mission_id);
 
                 // Add total actions
                 $totalActions = ($totalAddedActions + $request->action) - $timesheetData->action;
-             
+
                 // Check total goals are not maximum than provided goals
                 if ($totalActions > $objective->goal_objective) {
                     return $this->responseHelper->error(
@@ -340,19 +389,19 @@ class TimesheetController extends Controller
                     ]
                 );
 
-                $time = $request->hours .":". $request->minutes;
+                $time = $request->hours . ":" . $request->minutes;
                 $request->request->add(['time' => $time]);
-                
+
                 // Remove extra params
                 $request->request->remove('action');
 
                 // Convert date in Y-m-d format
                 $dateTime = ($request->date_volunteered != null) ?
-                Carbon::createFromFormat('m-d-Y', $request->date_volunteered): null;
+                Carbon::createFromFormat('m-d-Y', $request->date_volunteered) : null;
                 $dateTime = strtotime($dateTime);
                 $date = date('Y-m-d', $dateTime);
-            
-                 // Check start dates and end dates of mission
+
+                // Check start dates and end dates of mission
                 if ($missionData->start_date) {
                     $startDate = (new Carbon($missionData->start_date))->format('Y-m-d');
                     if ($date < $startDate) {
@@ -386,11 +435,11 @@ class TimesheetController extends Controller
                     $validator->errors()->first()
                 );
             }
-            
+
             // Remove params
             $request->request->remove('mission_id');
             $request->request->remove('status_id');
-            
+
             // Remove white space from notes
             if ($request->has('notes')) {
                 $notes = trim($request->notes);
@@ -399,11 +448,11 @@ class TimesheetController extends Controller
 
             // Store timesheet item
             $timesheet = $this->timesheetRepository->updateTimesheet($request, $timesheetId);
- 
+
             // Set response data
             $apiStatus = Response::HTTP_OK;
-            $apiMessage =  trans('messages.success.TIMESHEET_ENTRY_UPDATED_SUCESSFULLY');
-            
+            $apiMessage = trans('messages.success.TIMESHEET_ENTRY_UPDATED_SUCESSFULLY');
+
             return $this->responseHelper->success($apiStatus, $apiMessage);
         } catch (PDOException $e) {
             return $this->PDO(
@@ -490,11 +539,11 @@ class TimesheetController extends Controller
                     trans('messages.custom_error_message.TIMESHEET_DOCUMENT_NOT_FOUND')
                 );
             }
-            
+
             // Set response data
             $apiStatus = Response::HTTP_OK;
             $apiMessage = (!$timesheetDocument) ?
-            trans('messages.success.MESSAGE_NO_RECORD_FOUND'):
+            trans('messages.success.MESSAGE_NO_RECORD_FOUND') :
             trans('messages.success.MESSAGE_TIMESHEET_DOCUMENT_DELETED');
 
             return $this->responseHelper->success($apiStatus, $apiMessage);
@@ -502,55 +551,6 @@ class TimesheetController extends Controller
             return $this->modelNotFound(
                 config('constants.error_codes.TIMESHEET_NOT_FOUND'),
                 trans('messages.custom_error_message.TIMESHEET_NOT_FOUND')
-            );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
-        }
-    }
-
-    /**
-     * Get all timesheet entries
-     *
-     * @param Illuminate\Http\Request $request
-     * @return Illuminate\Http\JsonResponse
-     */
-    public function index(Request $request): JsonResponse
-    {
-        try {
-            $timeMissionEntries = $this->timesheetRepository
-            ->getAllTimesheetEntries($request, config('constants.mission_type.TIME'));
-            $goalMissionEntries = $this->timesheetRepository
-            ->getAllTimesheetEntries($request, config('constants.mission_type.GOAL'));
-
-            foreach ($timeMissionEntries as $value) {
-                if ($value->missionLanguage) {
-                    $value->setAttribute('title', $value->missionLanguage[0]->title);
-                    unset($value->missionLanguage);
-                }
-                $value->setAppends([]);
-            }
-
-            foreach ($goalMissionEntries as $value) {
-                if ($value->missionLanguage) {
-                    $value->setAttribute('title', $value->missionLanguage[0]->title);
-                    unset($value->missionLanguage);
-                }
-                $value->setAppends([]);
-            }
-           
-            $timesheetEntries[config('constants.mission_type.TIME')] = $timeMissionEntries;
-            $timesheetEntries[config('constants.mission_type.GOAL')] = $goalMissionEntries;
-
-            $apiData = $timesheetEntries;
-            $apiStatus = Response::HTTP_OK;
-            $apiMessage = (!empty($apiData)) ?
-            trans('messages.success.MESSAGE_TIMESHEET_ENTRIES_LISTING') :
-            trans('messages.success.MESSAGE_NO_TIMESHEET_ENTRIES_FOUND');
-            return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
-        } catch (PDOException $e) {
-            return $this->PDO(
-                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
-                trans('messages.custom_error_message.ERROR_DATABASE_OPERATIONAL')
             );
         } catch (\Exception $e) {
             return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
@@ -586,9 +586,9 @@ class TimesheetController extends Controller
 
             // Fetch timesheet data
             $timesheetData = $this->timesheetRepository->updateSubmittedTimesheet($request, $request->auth->user_id);
-            
+
             $apiStatus = Response::HTTP_OK;
-            $apiMessage = (!$timesheetData)? trans('messages.success.TIMESHEET_ALREADY_SUBMITTED_FOR_APPROVAL') :
+            $apiMessage = (!$timesheetData) ? trans('messages.success.TIMESHEET_ALREADY_SUBMITTED_FOR_APPROVAL') :
             trans('messages.success.TIMESHEET_SUBMITTED_SUCESSFULLY');
 
             return $this->responseHelper->success($apiStatus, $apiMessage);
@@ -619,7 +619,7 @@ class TimesheetController extends Controller
                     unset($value->missionLanguage);
                 }
             }
-            
+
             $apiMessage = (count($goalRequestList) > 0) ?
             trans('messages.success.MESSAGE_GOAL_REQUEST_LISTING') :
             trans('messages.success.MESSAGE_NO_GOAL_REQUEST_FOUND');
