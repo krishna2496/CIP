@@ -108,7 +108,8 @@ class TimesheetRepository implements TimesheetInterface
      */
     public function getAddedActions(int $missionId): int
     {
-        return ($this->timesheet->where('mission_id', $missionId)->sum('action')) ?? 0;
+        return ($this->timesheet->where('mission_id', $missionId)
+        ->whereIn('status_id', array(2, 4))->sum('action')) ?? 0;
     }
 
     /**
@@ -316,5 +317,18 @@ class TimesheetRepository implements TimesheetInterface
             ->where(['status_id' => 5, 'user_id' => $request->auth->user_id]);
         }]);
         return $goalRequestQuery->paginate($request->perPage);
+    }
+
+    /**
+     * Fetch timesheet details by missionId and date
+     *
+     * @param int $missionId
+     * @param string $date
+     * @return null|Illuminate\Support\Collection
+     */
+    public function getTimesheetDetailByDate(int $missionId, string $date): ? Collection
+    {
+        return ($this->timesheet->where(['mission_id' => $missionId, 'date_volunteered' => $date])
+        ->whereIn('status_id', array(2, 4)))->get();
     }
 }

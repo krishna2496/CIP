@@ -15,6 +15,7 @@ use Validator;
 use Illuminate\Validation\Rule;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use PDOException;
+use Carbon\Carbon;
 
 class TimesheetController extends Controller
 {
@@ -62,13 +63,14 @@ class TimesheetController extends Controller
     public function store(Request $request): JsonResponse
     {
         try {
+            $documentSizeLimit = config('constants.TIMESHEET_DOCUMENT_SIZE_LIMIT');
             $validator = Validator::make(
                 $request->toArray(),
                 [
                     'mission_id' => 'required|exists:mission,mission_id,deleted_at,NULL',
                     'date_volunteered' => 'required',
                     'day_volunteered' => ['required', Rule::in(config('constants.day_volunteered'))],
-                    'documents.*' => 'max:'.config('constants.TIMESHEET_DOCUMENT_SIZE_LIMIT'),
+                    'documents.*' => 'max:'.$documentSizeLimit.'|valid_timesheet_document_type',
                 ],
                 [
                     'max' => 'Document size should not be max than '.
@@ -88,6 +90,35 @@ class TimesheetController extends Controller
 
             // Fetch mission type from missionid
             $missionData = $this->missionRepository->find($request->mission_id);
+            try {
+                // Fetch mission application data
+                $missionApplicationData = $this->missionRepository->getMissionApplication(
+                    $request->mission_id,
+                    $request->auth->user_id
+                );
+            } catch (ModelNotFoundException $e) {
+                return $this->responseHelper->error(
+                    Response::HTTP_UNPROCESSABLE_ENTITY,
+                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                    config('constants.error_codes.ERROR_INVALID_DATA_FOR_TIMESHEET_ENTRY'),
+                    trans('messages.custom_error_message.ERROR_INVALID_DATA_FOR_TIMESHEET_ENTRY')
+                );
+            }
+          
+            if ($missionApplicationData->approval_status != config('constants.timesheet_status.AUTOMATICALLY_APPROVED')) {
+                return $this->responseHelper->error(
+                    Response::HTTP_UNPROCESSABLE_ENTITY,
+                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                    config('constants.error_codes.MISSION_APPLICATION_NOT_APPROVED'),
+                    trans('messages.custom_error_message.MISSION_APPLICATION_NOT_APPROVED')
+                );
+            }
+
+            $dateTime = ($request->date_volunteered != null) ?
+            Carbon::createFromFormat('m-d-Y', $request->date_volunteered): null;
+            $dateTime = strtotime($dateTime);
+            $date = date('Y-m-d', $dateTime);
+
             if ($missionData->mission_type == "GOAL") {
                 $validator = Validator::make(
                     $request->all(),
@@ -131,6 +162,47 @@ class TimesheetController extends Controller
                 $request->request->add(['time' => $time]);
                 // Remove extra params
                 $request->request->remove('action');
+
+                // Check start dates and end dates of mission
+                if ($missionData->start_date) {
+                    $startDate = (new Carbon($missionData->start_date))->format('Y-m-d');
+                    if ($date < $startDate) {
+                        return $this->responseHelper->error(
+                            Response::HTTP_UNPROCESSABLE_ENTITY,
+                            Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                            config('constants.error_codes.ERROR_MISSION_STARTDATE'),
+                            trans('messages.custom_error_message.ERROR_MISSION_STARTDATE')
+                        );
+                    } else {
+                        if ($missionData->end_date) {
+                            $endDate = (new Carbon($missionData->end_date))->format('Y-m-d');
+                            if ($date > $endDate) {
+                                return $this->responseHelper->error(
+                                    Response::HTTP_UNPROCESSABLE_ENTITY,
+                                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                                    config('constants.error_codes.ERROR_MISSION_ENDDATE'),
+                                    trans('messages.custom_error_message.ERROR_MISSION_ENDDATE')
+                                );
+                            }
+                        }
+                    }
+                }
+                
+                // Fetch timesheet details by date and status
+                $timesheetData = $this->timesheetRepository->getTimesheetDetailByDate(
+                    $request->mission_id,
+                    $date
+                );
+
+                // If timesheet status is approved for given date
+                if ($timesheetData->count() > 0) {
+                    return $this->responseHelper->error(
+                        Response::HTTP_UNPROCESSABLE_ENTITY,
+                        Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                        config('constants.error_codes.ERROR_TIMESHEET_ALREADY_DONE_FOR_DATE'),
+                        trans('messages.custom_error_message.ERROR_TIMESHEET_ALREADY_DONE_FOR_DATE')
+                    );
+                }
             }
              
             // If validator fails
@@ -145,6 +217,12 @@ class TimesheetController extends Controller
             
             // Remove params
             $request->request->remove('status_id');
+
+            // Remove white space from notes
+            if ($request->has('notes')) {
+                $notes = trim($request->notes);
+                $request->request->add(['notes' => $notes]);
+            }
 
             // Store timesheet item
             $request->request->add(['user_id' => $request->auth->user_id]);
@@ -183,12 +261,13 @@ class TimesheetController extends Controller
     public function update(Request $request, int $timesheetId): JsonResponse
     {
         try {
+            $documentSizeLimit = config('constants.TIMESHEET_DOCUMENT_SIZE_LIMIT');
             $validator = Validator::make(
                 $request->toArray(),
                 [
                     'date_volunteered' => 'required',
                     'day_volunteered' => ['required', Rule::in(config('constants.day_volunteered'))],
-                    'documents.*' => 'max:'.config('constants.TIMESHEET_DOCUMENT_SIZE_LIMIT'),
+                    'documents.*' => 'max:'.$documentSizeLimit.'|valid_timesheet_document_type',
                 ],
                 [
                     'max' => 'Document size should not be max than '.
@@ -211,7 +290,7 @@ class TimesheetController extends Controller
             $timesheetDetails = $timesheetData->toArray();
 
             // If timesheet status is approved
-            if ($timesheetDetails["timesheet_status"]["status"] == config('constants.timesheet_status.APPROVED')) {
+            if ($timesheetDetails["timesheet_status"]["status"] != config('constants.timesheet_status.PENDING')) {
                 return $this->responseHelper->error(
                     Response::HTTP_UNPROCESSABLE_ENTITY,
                     Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
@@ -266,6 +345,37 @@ class TimesheetController extends Controller
                 
                 // Remove extra params
                 $request->request->remove('action');
+
+                // Convert date in Y-m-d format
+                $dateTime = ($request->date_volunteered != null) ?
+                Carbon::createFromFormat('m-d-Y', $request->date_volunteered): null;
+                $dateTime = strtotime($dateTime);
+                $date = date('Y-m-d', $dateTime);
+            
+                 // Check start dates and end dates of mission
+                if ($missionData->start_date) {
+                    $startDate = (new Carbon($missionData->start_date))->format('Y-m-d');
+                    if ($date < $startDate) {
+                        return $this->responseHelper->error(
+                            Response::HTTP_UNPROCESSABLE_ENTITY,
+                            Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                            config('constants.error_codes.ERROR_MISSION_STARTDATE'),
+                            trans('messages.custom_error_message.ERROR_MISSION_STARTDATE')
+                        );
+                    } else {
+                        if ($missionData->end_date) {
+                            $endDate = (new Carbon($missionData->end_date))->format('Y-m-d');
+                            if ($date > $endDate) {
+                                return $this->responseHelper->error(
+                                    Response::HTTP_UNPROCESSABLE_ENTITY,
+                                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                                    config('constants.error_codes.ERROR_MISSION_ENDDATE'),
+                                    trans('messages.custom_error_message.ERROR_MISSION_ENDDATE')
+                                );
+                            }
+                        }
+                    }
+                }
             }
             // If validator fails
             if ($validator->fails()) {
@@ -280,6 +390,12 @@ class TimesheetController extends Controller
             // Remove params
             $request->request->remove('mission_id');
             $request->request->remove('status_id');
+            
+            // Remove white space from notes
+            if ($request->has('notes')) {
+                $notes = trim($request->notes);
+                $request->request->add(['notes' => $notes]);
+            }
 
             // Store timesheet item
             $timesheet = $this->timesheetRepository->updateTimesheet($request, $timesheetId);
