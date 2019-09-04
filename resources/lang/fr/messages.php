@@ -100,6 +100,10 @@ return [
         'MESSAGE_TIMESETTING_STATUS_UPDATED' => 'Statut de la feuille de temps mis à jour avec succès',
         'TIMESHEET_SUBMITTED_SUCESSFULLY' => 'Feuille de temps soumise avec succès',
         'TIMESHEET_ALREADY_SUBMITTED_FOR_APPROVAL' => 'Feuille de temps déjà soumise pour approbation',
+        'MESSAGE_THEME_HISTORY_PER_HOUR_LISTED' => 'Données d\'historique de thème par heure répertoriées avec succès',
+        'MESSAGE_SKILL_HISTORY_PER_HOUR_LISTED' => 'Historique des compétences par heure répertorié avec succès',
+        'MESSAGE_THEME_HISTORY_NOT_FOUND' => 'Données de l\'historique du thème non trouvées',
+        'MESSAGE_SKILL_HISTORY_NOT_FOUND' => 'Historique des compétences non trouvé',
     ],
 
         

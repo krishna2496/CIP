@@ -105,6 +105,10 @@ return [
         'MESSAGE_TIMESHEET_DOCUMENT_DELETED' => 'Timesheet document deleted sucessfully',
         'TIMESHEET_SUBMITTED_SUCESSFULLY' => 'Timesheet submitted sucessfully',
         'TIMESHEET_ALREADY_SUBMITTED_FOR_APPROVAL' => 'Timesheet already submitted for approval',
+        'MESSAGE_THEME_HISTORY_PER_HOUR_LISTED' => 'Theme history data per hour listed successfully',
+        'MESSAGE_SKILL_HISTORY_PER_HOUR_LISTED' => 'Skill history data per hour listed successfully',
+        'MESSAGE_THEME_HISTORY_NOT_FOUND' => 'Theme history data not found',
+        'MESSAGE_SKILL_HISTORY_NOT_FOUND' => 'Skill history data not found',
 	],
         
     /**
