@@ -308,7 +308,7 @@ class TimesheetRepository implements TimesheetInterface
      * @param Request $request
      * @return Illuminate\Pagination\LengthAwarePaginator
      */
-    public function getGoalRequestList(Request $request): LengthAwarePaginator
+    public function goalRequestList(Request $request): LengthAwarePaginator
     {
         $languages = $this->languageHelper->getLanguages($request);
         $language = ($request->hasHeader('X-localization')) ?

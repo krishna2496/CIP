@@ -192,9 +192,9 @@ $router->group(['middleware' => 'localization'], function ($router) {
     'uses' => 'App\User\UserController@uploadProfileImage']);
  
     /* Fetch pending goal requests */
-    $router->get('/app/timesheet/goal-request', ['as' => 'app.timesheet',
+    $router->get('/app/timesheet/goal-request', ['as' => 'app.timesheet.goal-request',
     'middleware' => 'tenant.connection|jwt.auth',
-    'uses' => 'App\Timesheet\TimesheetController@getGoalRequestList']);
+    'uses' => 'App\Timesheet\TimesheetController@goalRequestList']);
 
     /* Store timesheet data */
     $router->post('/app/timesheet', ['as' => 'app.timesheet',
@@ -236,10 +236,6 @@ $router->group(['middleware' => 'localization'], function ($router) {
     'middleware' => 'tenant.connection|jwt.auth',
     'uses' => 'App\Timesheet\VolunteerHistoryController@skillHistory']);
 
-    /* Fetch pending goal requests */
-    $router->get('/app/timesheet/goal-request', ['as' => 'app.timesheet.goal-request',
-    'middleware' => 'tenant.connection|jwt.auth',
-    'uses' => 'App\Timesheet\TimesheetController@getGoalRequestList']);
 /*
 |
 |--------------------------------------------------------------------------
