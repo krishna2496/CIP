@@ -31,7 +31,7 @@
                         alt="clear" />
                     </i>
                 </b-col>
-                <b-col xl="6" lg="7" class="filter-block" @touchend.stop>
+                <b-col xl="6" lg="7" class="filter-block">
                     <div class="mobile-top-block">
                         <b-button class="btn btn-back" @click="handleBack">
                             <img :src="$store.state.imagePath+'/assets/images/down-arrow.svg'" alt="Back Icon">
@@ -81,7 +81,7 @@
                 </b-list-group>
                 </b-col>
 
-                <div class="filter-icon" @click="handleFilter" @touchend.stop>
+                <div class="filter-icon" @click="handleFilter" @click.stop>
                     <img :src="$store.state.imagePath+'/assets/images/filter-ic.svg'" alt="filter">
                 </div>
             </b-row>
@@ -145,6 +145,14 @@ export default {
             langauageData : [],
         };
     },
+     mounted() {
+    var mobile_filter = document.querySelector(".filter-block");
+    mobile_filter.addEventListener("click", function(e) {
+      if (window.innerWidth < 992) {
+        e.stopPropagation();
+      }
+    });
+  },
     methods: {
         changeThemeParmas() {
             this.isCountryChange = false;
