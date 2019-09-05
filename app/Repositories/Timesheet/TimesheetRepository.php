@@ -23,6 +23,11 @@ class TimesheetRepository implements TimesheetInterface
     public $timesheet;
 
     /**
+     * @var App\Models\Mission
+     */
+    public $mission;
+
+    /**
      * @var App\Models\TimesheetDocument
      */
     public $timesheetDocument;
@@ -46,6 +51,7 @@ class TimesheetRepository implements TimesheetInterface
      * Create a new Timesheet repository instance.
      *
      * @param  App\Models\Timesheet $timesheet
+     * @param  App\Models\Mission $mission
      * @param  App\Models\TimesheetDocument $timesheetDocument
      * @param  App\Helpers\Helpers $helpers
      * @param App\Helpers\LanguageHelper $languageHelper
@@ -54,12 +60,14 @@ class TimesheetRepository implements TimesheetInterface
      */
     public function __construct(
         Timesheet $timesheet,
+        Mission $mission,
         TimesheetDocument $timesheetDocument,
         Helpers $helpers,
         LanguageHelper $languageHelper,
         S3Helper $s3helper
     ) {
         $this->timesheet = $timesheet;
+        $this->mission = $mission;
         $this->timesheetDocument = $timesheetDocument;
         $this->helpers = $helpers;
         $this->languageHelper = $languageHelper;
@@ -126,7 +134,7 @@ class TimesheetRepository implements TimesheetInterface
         $language = $languages->where('code', $language)->first();
         $languageId = $language->language_id;
         
-        $timesheetQuery = Mission::select('mission.mission_id')
+        $timesheetQuery = $this->mission->select('mission.mission_id')
         ->where(['publication_status' => config("constants.publication_status")["APPROVED"],
         'mission_type'=> $missionType])
         ->whereHas('missionApplication', function ($query) use ($request) {
@@ -233,7 +241,7 @@ class TimesheetRepository implements TimesheetInterface
         $language = $languages->where('code', $language)->first();
         $languageId = $language->language_id;
 
-        return Mission::select('mission.mission_id', 'mission.city_id')
+        return $this->mission->select('mission.mission_id', 'mission.city_id')
         ->where(['publication_status' => config("constants.publication_status")["APPROVED"]])
         ->whereHas('missionApplication', function ($query) use ($userId) {
             $query->where('user_id', $userId)
@@ -299,9 +307,9 @@ class TimesheetRepository implements TimesheetInterface
         $language = $languages->where('code', $language)->first();
         $languageId = $language->language_id;
         
-        $goalRequestQuery = Mission::query()
-        ->select('mission.mission_id', 'mission.city_id', 'mission.organisation_name');
-        $goalRequestQuery->where(['publication_status' => config("constants.publication_status")["APPROVED"],
+        $goalRequest = $this->mission->query()
+        ->select('mission.mission_id', 'mission.organisation_name');
+        $goalRequest->where(['publication_status' => config("constants.publication_status")["APPROVED"],
         'mission_type'=> config('constants.mission_type.GOAL')])
         ->with(['missionLanguage' => function ($query) use ($languageId) {
             $query->select('mission_language_id', 'mission_id', 'title')
@@ -315,6 +323,6 @@ class TimesheetRepository implements TimesheetInterface
             $query->select(DB::raw("SUM(action) as action"))
             ->where(['status_id' => 5, 'user_id' => $request->auth->user_id]);
         }]);
-        return $goalRequestQuery->paginate($request->perPage);
+        return $goalRequest->paginate($request->perPage);
     }
 }

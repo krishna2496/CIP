@@ -502,6 +502,7 @@ class TimesheetController extends Controller
                     $value->setAttribute('title', $value->missionLanguage[0]->title);
                     unset($value->missionLanguage);
                 }
+                $value->setAppends([]);
             }
             
             $apiMessage = (count($goalRequestList) > 0) ?
