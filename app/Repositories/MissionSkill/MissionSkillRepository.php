@@ -38,9 +38,10 @@ class MissionSkillRepository implements MissionSkillInterface
      * Get all skill history with total minutes logged, based on year and all years.
      *
      * @param int $year
+     * @param int $userId
      * @return Illuminate\Support\Collection
      */
-    public function getHoursPerSkill(int $year = null): Collection
+    public function getHoursPerSkill(int $year = null, int $userId): Collection
     {
         $queryBuilder = $this->missionSkill->select([
             'mission_skill.skill_id',
@@ -55,6 +56,7 @@ class MissionSkillRepository implements MissionSkillInterface
             $queryBuilder = $queryBuilder->whereRaw(\DB::raw('year(timesheet.created_at) = "'.$year.'"'));
         }
         $queryBuilder = $queryBuilder->where('mission.publication_status', 'APPROVED')
+        ->where('timesheet.user_id', $userId)
         ->whereNotNull('mission.mission_id')
         ->whereIn('timesheet.status_id', $this->timesheetStatus->getApprovedStatuses()->toArray())
         ->whereNotNull('timesheet.timesheet_id')

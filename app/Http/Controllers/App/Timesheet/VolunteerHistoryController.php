@@ -128,7 +128,8 @@ class VolunteerHistoryController extends Controller
     public function themeHistory(Request $request): JsonResponse
     {
         try {
-            $themeTimeHistory = $this->missionThemeRepository->getHoursPerTheme($request->year);
+            $userId = $request->auth->user_id;
+            $themeTimeHistory = $this->missionThemeRepository->getHoursPerTheme($request->year, $userId);
 
             $apiStatus = Response::HTTP_OK;
             $apiMessage = (!empty($themeTimeHistory->toArray())) ?
@@ -151,7 +152,8 @@ class VolunteerHistoryController extends Controller
     public function skillHistory(Request $request): JsonResponse
     {
         try {
-            $skillTimeHistory = $this->missionSkillRepository->getHoursPerSkill($request->year);
+            $userId = $request->auth->user_id;
+            $skillTimeHistory = $this->missionSkillRepository->getHoursPerSkill($request->year, $userId);
 
             $apiStatus = Response::HTTP_OK;
             $apiMessage =  (!empty($skillTimeHistory->toArray())) ?
