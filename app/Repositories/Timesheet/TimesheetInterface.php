@@ -74,7 +74,7 @@ interface TimesheetInterface
      * @param Request $request
      * @return Illuminate\Pagination\LengthAwarePaginator
      */
-    public function getGoalRequestList(Request $request): LengthAwarePaginator;
+    public function goalRequestList(Request $request): LengthAwarePaginator;
 
     /**
      * Fetch timesheet details by missionId and date

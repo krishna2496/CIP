@@ -608,16 +608,17 @@ class TimesheetController extends Controller
      * @param Illuminate\Http\Request $request
      * @return Illuminate\Http\JsonResponse
      */
-    public function getGoalRequestList(Request $request): JsonResponse
+    public function goalRequestList(Request $request): JsonResponse
     {
         try {
-            $goalRequestList = $this->timesheetRepository->getGoalRequestList($request);
+            $goalRequestList = $this->timesheetRepository->goalRequestList($request);
 
             foreach ($goalRequestList as $value) {
                 if ($value->missionLanguage) {
                     $value->setAttribute('title', $value->missionLanguage[0]->title);
                     unset($value->missionLanguage);
                 }
+                $value->setAppends([]);
             }
 
             $apiMessage = (count($goalRequestList) > 0) ?
