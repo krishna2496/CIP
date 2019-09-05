@@ -23,6 +23,11 @@ class TimesheetRepository implements TimesheetInterface
     public $timesheet;
 
     /**
+     * @var App\Models\Mission
+     */
+    public $mission;
+
+    /**
      * @var App\Models\TimesheetDocument
      */
     public $timesheetDocument;
@@ -46,6 +51,7 @@ class TimesheetRepository implements TimesheetInterface
      * Create a new Timesheet repository instance.
      *
      * @param  App\Models\Timesheet $timesheet
+     * @param  App\Models\Mission $mission
      * @param  App\Models\TimesheetDocument $timesheetDocument
      * @param  App\Helpers\Helpers $helpers
      * @param App\Helpers\LanguageHelper $languageHelper
@@ -54,12 +60,14 @@ class TimesheetRepository implements TimesheetInterface
      */
     public function __construct(
         Timesheet $timesheet,
+        Mission $mission,
         TimesheetDocument $timesheetDocument,
         Helpers $helpers,
         LanguageHelper $languageHelper,
         S3Helper $s3helper
     ) {
         $this->timesheet = $timesheet;
+        $this->mission = $mission;
         $this->timesheetDocument = $timesheetDocument;
         $this->helpers = $helpers;
         $this->languageHelper = $languageHelper;
@@ -108,7 +116,8 @@ class TimesheetRepository implements TimesheetInterface
      */
     public function getAddedActions(int $missionId): int
     {
-        return ($this->timesheet->where('mission_id', $missionId)->sum('action')) ?? 0;
+        return ($this->timesheet->where('mission_id', $missionId)
+        ->whereIn('status_id', array(2, 4))->sum('action')) ?? 0;
     }
 
     /**
@@ -126,7 +135,7 @@ class TimesheetRepository implements TimesheetInterface
         $language = $languages->where('code', $language)->first();
         $languageId = $language->language_id;
         
-        $timesheetQuery = Mission::select('mission.mission_id')
+        $timesheet = $this->mission->select('mission.mission_id')
         ->where(['publication_status' => config("constants.publication_status")["APPROVED"],
         'mission_type'=> $missionType])
         ->whereHas('missionApplication', function ($query) use ($request) {
@@ -143,7 +152,7 @@ class TimesheetRepository implements TimesheetInterface
             ->where('user_id', $request->auth->user_id)
             ->with('timesheetStatus');
         }]);
-        return $timesheetQuery->get();
+        return $timesheet->get();
     }
     
     /**
@@ -316,5 +325,18 @@ class TimesheetRepository implements TimesheetInterface
             ->where(['status_id' => 5, 'user_id' => $request->auth->user_id]);
         }]);
         return $goalRequestQuery->paginate($request->perPage);
+    }
+
+    /**
+     * Fetch timesheet details by missionId and date
+     *
+     * @param int $missionId
+     * @param string $date
+     * @return null|Illuminate\Support\Collection
+     */
+    public function getTimesheetDetailByDate(int $missionId, string $date): ? Collection
+    {
+        return ($this->timesheet->where(['mission_id' => $missionId, 'date_volunteered' => $date])
+        ->whereIn('status_id', array(2, 4)))->get();
     }
 }

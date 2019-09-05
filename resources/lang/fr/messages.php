@@ -93,7 +93,7 @@ return [
         'MESSAGE_SLIDER_DELETED' => 'Slider supprimé avec succès',
         'TIMESHEET_ENTRY_ADDED_SUCESSFULLY' => 'Entrée de la feuille de temps ajoutée avec succès',
         'MESSAGE_TIMESHEET_ENTRIES_LISTING' => 'Entrées de la feuille de temps listées avec succès',
-        'MESSAGE_NO_TIMESHEET_ENTRIES_FOUND' => 'Entrées de la feuille de temps non trouvées',
+        'MESSAGE_NO_TIMESHEET_ENTRIES_FOUND' => 'Aucune entrée de feuille de temps trouvée',
         'TIMESHEET_ENTRY_UPDATED_SUCESSFULLY' => 'Entrée de la feuille de temps mise à jour avec succès',
         'MESSAGE_TIMESHEET_LISTING' => 'Feuille de temps listée avec succès',
         'MESSAGE_TIMESHEET_DOCUMENT_DELETED' => 'La feuille de temps du document a été supprimée avec succès',
@@ -211,7 +211,12 @@ return [
         //For timesheet module
         'ERROR_INVALID_ACTION' => 'Action de but invalide',        
         'TIMESHEET_NOT_FOUND' => 'La feuille de temps n\'existe pas',
-        'ERROR_TIMESHEET_ALREADY_UPDATED' => 'Désolé, vous ne pouvez pas mettre à jour la feuille de temps, elle est déjà approuvée',
-        'TIMESHEET_DOCUMENT_NOT_FOUND' => 'La feuille de temps n\'existe pas',
+        'ERROR_TIMESHEET_ALREADY_UPDATED' => 'Vous ne pouvez pas mettre à jour la feuille de temps approuvée',
+        'TIMESHEET_DOCUMENT_NOT_FOUND' => 'La feuille de temps n\'existe pas',        
+        'ERROR_MISSION_STARTDATE' => 'Date invalide: la date sélectionnée ne doit pas être antérieure à la date de début',
+        'ERROR_MISSION_ENDDATE' => 'La date sélectionnée ne doit pas être supérieure à la date de fin de la mission.',
+        'MISSION_APPLICATION_NOT_APPROVED' => 'L\'application de la mission n\'est pas approuvée',
+        'ERROR_TIMESHEET_ALREADY_DONE_FOR_DATE' => 'La saisie du temps est déjà approuvée pour une date donnée', 
+        'ERROR_INVALID_DATA_FOR_TIMESHEET_ENTRY' => 'Vous ne pouvez pas ajouter de temps',
     ],
 ];

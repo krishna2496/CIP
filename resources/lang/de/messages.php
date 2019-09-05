@@ -84,7 +84,7 @@ return [
         'MESSAGE_SLIDER_DELETED' => 'DE: Slider deleted successfully',
         'TIMESHEET_ENTRY_ADDED_SUCESSFULLY' => 'DE: Timesheet entry added successfully',
         'MESSAGE_TIMESHEET_ENTRIES_LISTING' => 'DE: Timesheet entries listed successfully',
-        'MESSAGE_NO_TIMESHEET_ENTRIES_FOUND' => 'DE: Timesheet entries not found',
+        'MESSAGE_NO_TIMESHEET_ENTRIES_FOUND' => 'DE: No timesheet entries found',
         'TIMESHEET_ENTRY_UPDATED_SUCESSFULLY' => 'DE: Timesheet entry updated successfully',
         'MESSAGE_TIMESHEET_LISTING' => 'DE: Timesheet listed sucessfully',        
         'MESSAGE_TIMESHEET_DOCUMENT_DELETED' => 'DE: Timesheet document deleted sucessfully',
@@ -188,7 +188,12 @@ return [
         //For timesheet module
         'ERROR_INVALID_ACTION' => 'DE: Invalid goal action',
         'TIMESHEET_NOT_FOUND' => 'DE: Timesheet does not exists',
-        'ERROR_TIMESHEET_ALREADY_UPDATED' => 'DE: Sorry you cannot update timesheet it is already approved',
-        'TIMESHEET_DOCUMENT_NOT_FOUND' => 'DE: Timesheet document does not exists',
+        'ERROR_TIMESHEET_ALREADY_UPDATED' => 'DE: You can not update approved timesheet',
+        'TIMESHEET_DOCUMENT_NOT_FOUND' => 'DE: Timesheet document does not exists',        
+        'ERROR_MISSION_STARTDATE' => 'DE: Invalid date: selected date should not be before startdate',
+        'ERROR_MISSION_ENDDATE' => 'DE: Selected date should not be greater than mission end date',
+        'MISSION_APPLICATION_NOT_APPROVED' => 'DE: Mission application is not approved',
+        'ERROR_TIMESHEET_ALREADY_DONE_FOR_DATE' => 'DE: Time entry is already approved for given date',         
+        'ERROR_INVALID_DATA_FOR_TIMESHEET_ENTRY' => 'DE: You cannot add time entry',
     ],
 ];

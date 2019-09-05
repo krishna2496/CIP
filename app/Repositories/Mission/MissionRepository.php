@@ -23,6 +23,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
 use Carbon\Carbon;
 use App\Models\GoalMission;
+use App\Models\MissionApplication;
 
 class MissionRepository implements MissionInterface
 {
@@ -81,6 +82,12 @@ class MissionRepository implements MissionInterface
     */
     public $goalMission;
 
+    
+    /**
+    * @var App\Models\MissionApplication
+    */
+    private $missionApplication;
+
     /**
      * Create a new Mission repository instance.
      *
@@ -98,6 +105,7 @@ class MissionRepository implements MissionInterface
      * @param  App\Models\MissionRating $missionRating
      * @param  App\Repositories\Country\CountryRepository $countryRepository
      * @param  App\Models\GoalMission $goalMission
+     * @param  App\Models\MissionApplication $missionApplication
      * @return void
      */
     public function __construct(
@@ -114,7 +122,8 @@ class MissionRepository implements MissionInterface
         MissionSkill $missionSkill,
         MissionRating $missionRating,
         CountryRepository $countryRepository,
-        GoalMission $goalMission
+        GoalMission $goalMission,
+        MissionApplication $missionApplication
     ) {
         $this->mission = $mission;
         $this->timeMission = $timeMission;
@@ -130,6 +139,7 @@ class MissionRepository implements MissionInterface
         $this->missionRating = $missionRating;
         $this->countryRepository = $countryRepository;
         $this->goalMission = $goalMission;
+        $this->missionApplication = $missionApplication;
     }
     
     /**
@@ -1090,5 +1100,18 @@ class MissionRepository implements MissionInterface
     {
         return $this->goalMission->select('goal_objective')->where('mission_id', $missionId)
         ->first();
+    }
+
+    /** Get mission application details by mission id and user id
+     *
+     * @param int $missionId
+     * @param int $userId
+     * @return App\Models\MissionApplication
+     */
+    public function getMissionApplication(int $missionId, int $userId): MissionApplication
+    {
+        return $this->missionApplication->where(['user_id' => $userId,
+                'mission_id' => $missionId])
+                ->firstOrFail();
     }
 }

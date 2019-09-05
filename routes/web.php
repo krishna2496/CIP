@@ -190,6 +190,11 @@ $router->group(['middleware' => 'localization'], function ($router) {
     $router->patch('/app/user/upload-profile-image', ['as' => 'upload.profile.image',
     'middleware' => 'localization|tenant.connection|jwt.auth',
     'uses' => 'App\User\UserController@uploadProfileImage']);
+ 
+    /* Fetch pending goal requests */
+    $router->get('/app/timesheet/goal-request', ['as' => 'app.timesheet',
+    'middleware' => 'tenant.connection|jwt.auth',
+    'uses' => 'App\Timesheet\TimesheetController@getGoalRequestList']);
 
     /* Store timesheet data */
     $router->post('/app/timesheet', ['as' => 'app.timesheet',
@@ -230,11 +235,6 @@ $router->group(['middleware' => 'localization'], function ($router) {
     $router->get('/app/volunteer/history/skill', ['as' => 'app.volunteer.history.skill',
     'middleware' => 'tenant.connection|jwt.auth',
     'uses' => 'App\Timesheet\VolunteerHistoryController@skillHistory']);
-
-    /* Fetch pending goal requests */
-    $router->get('/app/timesheet/goal-request', ['as' => 'app.timesheet',
-    'middleware' => 'tenant.connection|jwt.auth',
-    'uses' => 'App\Timesheet\TimesheetController@getGoalRequestList']);
 
 /*
 |
