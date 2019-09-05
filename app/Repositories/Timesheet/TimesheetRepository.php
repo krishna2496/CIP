@@ -135,7 +135,7 @@ class TimesheetRepository implements TimesheetInterface
         $language = $languages->where('code', $language)->first();
         $languageId = $language->language_id;
         
-        $timesheet = $this->mission->select('mission.mission_id')
+        $timesheet = $this->mission->select('mission.mission_id', 'mission.start_date', 'mission.end_date')
         ->where(['publication_status' => config("constants.publication_status")["APPROVED"],
         'mission_type'=> $missionType])
         ->whereHas('missionApplication', function ($query) use ($request) {
