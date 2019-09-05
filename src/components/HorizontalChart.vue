@@ -1,6 +1,6 @@
 <template>
     <div>
-        <canvas v-show='data' ref="themeChartRefs"></canvas>
+        <canvas v-show='data' ref="chartRefs"></canvas>
         <div v-show="!data">
             <h5>Loading...</h5>
         </div>
@@ -31,48 +31,71 @@ export default {
             default: "#dc3545"
         }
     },
-    mounted() {
-        var themeChartRefs = this.$refs.themeChartRefs;
-        var themeContent = themeChartRefs.getContext("2d");
-        var themeChart = new Chart(themeContent, {
-        type: "horizontalBar",
-        data: {
-            labels: this.labels,
-            datasets: [
-            {
-                data: this.data,
-                backgroundColor: this.backgroundColor,
-                borderColor: this.borderColor,
-                borderWidth: 1
-            }
-            ]
-        },
-        options: {
-            legend: {
-            display: false
-            },
-            scales: {
-            yAxes: [
-                {
-                ticks: {
-                    beginAtZero: true
-                }
-                }
-            ],
-            xAxes: [
-                {
-                ticks: {
-                    fontColor: this.fontColor,
-                    fontSize: 14,
-                    max: Math.round(Math.max(...this.data)*2),
-                    min: 0,
-                    stepSize: Math.round((Math.max(...this.data)*2)/10)
-                }
-                }
-            ]
-            }
+    data() {
+        return {
+            themeChart: null
         }
-        });
+    },
+    mounted() {
+        this.renderChart();
+    },
+    methods: {
+        renderChart() {
+            this.themeChart = null;
+            var chartRefs = this.$refs.chartRefs;
+            var chartContent = chartRefs.getContext("2d");
+            chartContent.clearRect(0, 0, chartContent.width, chartRefs.height);
+            this.themeChart = new Chart(chartContent, {
+                type: "horizontalBar",
+                data: {
+                    labels: this.labels,
+                    datasets: [
+                    {
+                        data: this.data,
+                        backgroundColor: this.backgroundColor,
+                        borderColor: this.borderColor,
+                        borderWidth: 1
+                    }
+                    ]
+                },
+                options: {
+                    legend: {
+                    display: false
+                    },
+                    scales: {
+                    yAxes: [
+                        {
+                        ticks: {
+                            beginAtZero: true
+                        }
+                        }
+                    ],
+                    xAxes: [
+                        {
+                        ticks: {
+                            fontColor: this.fontColor,
+                            fontSize: 14,
+                            max: Math.round(Math.max(...this.data)*2),
+                            min: 0,
+                            stepSize: Math.round((Math.max(...this.data)*2)/10)
+                        }
+                        }
+                    ]
+                    }
+                }
+            });
+        }
+    },
+    watch: {
+        $props: {
+            handler() {
+                this.themeChart.data.labels = [];
+                this.themeChart.data.labels = this.labels;
+                this.themeChart.data.datasets[0].data = this.data;
+                this.themeChart.update();
+            },
+            deep: true,
+        }
     }
 }
 </script>
