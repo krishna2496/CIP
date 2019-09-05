@@ -97,7 +97,6 @@
                         v-model.trim="profile.firstName" 
                         :class="{ 'is-invalid': submitted && $v.profile.firstName.$error }" 
                         @keypress="alphaNumeric($event)"
-                        autofocus 
                         :placeholder="langauageData.placeholder.name" 
                         maxlength="16"
                         ></b-form-input>
@@ -319,10 +318,10 @@
                         @saveSkillData = "saveSkillData"
                         @resetPreviousData = "resetPreviousData"
                     />
-                </b-col>
-                <div class="btn-wrapper">
+                     <div class="btn-wrapper">
                     <b-button class="btn-bordersecondary" @click="handleSubmit">{{langauageData.label.save}}</b-button>
                 </div>
+                </b-col>
             </b-row>
             </b-form>
         </b-col>

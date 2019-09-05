@@ -273,6 +273,7 @@
         }
       }
       &.approved {
+        pointer-events:none;
         &:after {
           border-color: transparent $success $success;
         }
@@ -398,7 +399,7 @@
     span {
       padding: 3px 11px;
       color: $gray-primary;
-      width: 79px;
+      width: 114px;
       text-align: center;
     }
   }
@@ -472,4 +473,7 @@
       }
     }
   }
+}
+.table-wrapper-outer{
+  position:relative;
 }

@@ -281,12 +281,13 @@ export default {
 
         pageChange (page) {
             //Change pagination
+                  window.scrollTo({
+    'behavior': 'smooth',
+    'left': 0,
+    'top': 0
+  }, 0);
             this.currentPage = page;
             this.getMissions();
-            // window.scrollTo({
-            //     top: 0,
-            //     behavior: 'smooth'
-            // });
         },
 
         searchMissions(searchParams,filterParmas) {

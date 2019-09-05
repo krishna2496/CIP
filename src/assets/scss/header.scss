@@ -1218,10 +1218,6 @@ header {
                 font-size: 18px;
                 padding-left: 19px;
                 line-height: normal;
-
-                &:after {
-                    right: 20px;
-                }
             }
         }
 
@@ -1243,7 +1239,7 @@ header {
                 li {
                     padding: 8px 15px;
 					line-height: 20px;
-					display: flex;		
+					display: block;		
                     justify-content: space-between;		
                     align-items: center;
                 }
@@ -1286,10 +1282,6 @@ header {
                 z-index: 5;
                 font-size: 18px;
                 padding-left: 19px;
-
-                &:after {
-                    right: 20px;
-                }
             }
         }
 
@@ -1319,7 +1311,7 @@ header {
             align-items: center;
             position: absolute;
             left: 0;
-            right: 18px;
+            right: 13px;
             top: 0;
 
             .btn {
@@ -1379,15 +1371,19 @@ html {
 				&.dropdown-option-list{	
 					&.chk-select-options{
 						li{
-							padding-right: 0;
+                            &.has-count{
+                                padding-right: 0;
+                            }
 						}
 					}
 					li{		
-						position: relative;
+                        position: relative;
+                        &.has-count{
 						padding-right: 50px;
-						label{
-							padding-right: 50px;
-						}
+						    label{
+							    padding-right: 50px;
+                            }
+                        }
 						.counter{		
 							display: inline-block;		
 							background: $control-border;		
