@@ -8,6 +8,7 @@ use App\Models\FavouriteMission;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use App\Models\GoalMission;
+use App\Models\MissionApplication;
 
 interface MissionInterface
 {
@@ -158,4 +159,12 @@ interface MissionInterface
      * @return App\Models\GoalMission|null
      */
     public function getGoalObjective(int $missionId): ?GoalMission;
+
+    /** Get mission application details by user id and mission id
+     *
+     * @param int $missionId
+     * @param int $userId
+     * @return MissionApplication
+     */
+    public function getMissionApplication(int $missionId, int $userId): MissionApplication;
 }

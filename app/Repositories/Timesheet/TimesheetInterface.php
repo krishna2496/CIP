@@ -4,6 +4,7 @@ namespace App\Repositories\Timesheet;
 use Illuminate\Http\Request;
 use App\Models\Timesheet;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
 
 interface TimesheetInterface
 {
@@ -74,4 +75,13 @@ interface TimesheetInterface
      * @return Illuminate\Pagination\LengthAwarePaginator
      */
     public function getGoalRequestList(Request $request): LengthAwarePaginator;
+
+    /**
+     * Fetch timesheet details by missionId and date
+     *
+     * @param int $missionId
+     * @param string $date
+     * @return null|Illuminate\Support\Collection
+     */
+    public function getTimesheetDetailByDate(int $missionId, string $date): ? Collection;
 }

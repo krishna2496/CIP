@@ -348,6 +348,12 @@ class Mission extends Model
      */
     public function getOrganisationDetailAttribute($value)
     {
-        return (!is_null($value) && ($value != '')) ? unserialize($value) : null;
+        if (!is_null($value) && ($value != '')) {
+            $data = @unserialize($value);
+            if ($data !== false) {
+                return (!is_null($value) && ($value != '')) ? unserialize($value) : null;
+            }
+        }
+        return null;
     }
 }
