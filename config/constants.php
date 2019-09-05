@@ -130,6 +130,21 @@ return [
         'TXT' => 'txt'
     ],
 
+    
+    /*
+     * Timesheet document types
+     */
+    'timesheet_document_types' => [
+        'DOC' => 'doc',
+        'DOCX' => 'docx',
+        'XLS' => 'xls',
+        'XLSX' => 'xlsx',
+        'CSV' => 'csv',
+        'PNG' => 'png',
+        'PDF' => 'pdf',
+        'JPG' => 'jpg'
+    ],
+
     /*
      * Application status
      */
@@ -259,6 +274,11 @@ return [
         'ERROR_TIMESHEET_ALREADY_UPDATED' => '400034',
         'TIMESHEET_DOCUMENT_NOT_FOUND' => '400035',
         'ERROR_TIMESHEET_ENTRY_NOT_FOUND' => '400036',
+        'ERROR_MISSION_STARTDATE' => '400037',
+        'ERROR_MISSION_ENDDATE' => '400038',
+        'MISSION_APPLICATION_NOT_APPROVED' => '400039',
+        'ERROR_TIMESHEET_ALREADY_DONE_FOR_DATE' => '400040',
+        'ERROR_INVALID_DATA_FOR_TIMESHEET_ENTRY' => '400041',
                 
         'ERROR_OCCURRED' => '999999',
         'ERROR_INVALID_JSON' => '900000',
