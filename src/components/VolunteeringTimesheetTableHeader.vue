@@ -18,17 +18,17 @@
 					<img :src="$store.state.imagePath+'/assets/images/next-arrow-black.svg'" alt="Next Arrow"/>
 				</button>
 			</div>
-       <div class="picker-wrapper">
-			<div class="select-time-period">
-				<span>{{langauageData.label.day}}</span>
-				<span>{{langauageData.label.week}}</span>
-				<span class="current">{{langauageData.label.month}}</span>
-			</div>
-			 <div class="datepicker-block">
-              <img :src="$store.state.imagePath+'/assets/images/datepicker-ic.svg'" alt="datepicker-ic" />
-              <date-picker v-model="value2" range appendToBody :lang="lang" confirm></date-picker>
+       <!-- <div class="picker-wrapper">
+    			<div class="select-time-period">
+    				<span>{{langauageData.label.day}}</span>
+    				<span>{{langauageData.label.week}}</span>
+    				<span class="current">{{langauageData.label.month}}</span>
+    			</div>
+    			 <div class="datepicker-block">
+                  <img :src="$store.state.imagePath+'/assets/images/datepicker-ic.svg'" alt="datepicker-ic" />
+                  <date-picker v-model="value2" range appendToBody :lang="lang" confirm></date-picker>
             </div>
-          </div>
+          </div> -->
 		</div>
     </div>
 </template>
@@ -47,48 +47,48 @@ export default {
     ],
     data: function() {
         return {
-        time1: "",
-       value2: "",
-          lang: {
-            days: [" Sun ", " Mon ", " Tue ", " Wed ", " You ", " Fri ", " Sat "],
-            months: [
-              "Jan",
-              "Feb",
-              "Mar",
-              "Apr",
-              "May",
-              "Jun",
-              "Jul",
-              "Aug",
-              "Sep",
-              "Oct",
-              "Nov",
-              "Dec"
-            ],
-            pickers: [
-              "next 7 days",
-              "next 30 days",
-              "previous 7 days",
-              "previous 30 days"
-            ],
-            placeholder: {
-              date: "mm/dd/yy",
-              dateRange: "Select Date Range"
-            }
-          },
-			langauageData : [],
-			currentMonth: moment().startOf('month'),
-			daysInCurrentMonth : 0,
-			currentMonthName : '',
-			currentMonthNumber : '',
-			currentYearNumber : '',
-			dayName : "",
-			sortNameOfMonth : "",
-			weekNameArray : [],
-			isPreviousButtonDisable : false,
-			currentMonthFix : moment().startOf('month'),
+            time1: "",
+            value2: "",
+              lang: {
+                    days: [" Sun ", " Mon ", " Tue ", " Wed ", " You ", " Fri ", " Sat "],
+                    months: [
+                      "Jan",
+                      "Feb",
+                      "Mar",
+                      "Apr",
+                      "May",
+                      "Jun",
+                      "Jul",
+                      "Aug",
+                      "Sep",
+                      "Oct",
+                      "Nov",
+                      "Dec"
+                    ],
+                    pickers: [
+                      "next 7 days",
+                      "next 30 days",
+                      "previous 7 days",
+                      "previous 30 days"
+                    ],
+                    placeholder: {
+                      date: "mm/dd/yy",
+                      dateRange: "Select Date Range"
+                    }
+                },
+    			langauageData : [],
+    			currentMonth: moment().startOf('month'),
+    			daysInCurrentMonth : 0,
+    			currentMonthName : '',
+    			currentMonthNumber : '',
+    			currentYearNumber : '',
+    			dayName : "",
+    			sortNameOfMonth : "",
+    			weekNameArray : [],
+    			isPreviousButtonDisable : false,
+    			currentMonthFix : moment().startOf('month'),
         }
-        },
+    },
     directives: {},
     computed: {
         

@@ -2,7 +2,7 @@
     <div class="top-header">
         <b-navbar toggleable="lg">
             <b-container>
-			    <b-navbar-toggle target="nav-collapse" @click="openMenu" v-if="this.$store.state.isLoggedIn">
+			    <b-navbar-toggle @click.stop target="nav-collapse" @click="openMenu" v-if="this.$store.state.isLoggedIn">
                 </b-navbar-toggle>
 				<b-navbar-brand :to="{ name: 'home' }" :style="{backgroundImage: 'url('+this.$store.state.logo+')'}"
                  v-if="this.$store.state.isLoggedIn"
@@ -14,7 +14,7 @@
                     v-else>
                 </b-navbar-brand>
 	
-                <div class="menu-wrap" @touchend.stop>
+                <div class="menu-wrap" @click.stop>
                     <b-button class="btn-cross" @click="closeMenu">                        
                         <img :src="$store.state.imagePath+'/assets/images/cross-ic.svg'" alt>                        
                     </b-button>

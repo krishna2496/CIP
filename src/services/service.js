@@ -33,7 +33,7 @@ import country from "./Country";
 import skill from "./Skill";
 import timezone from "./Timezone";
 import volunteerTimesheetHours from "./VolunteerTimesheet/VolunteerTimesheetHours";
-
+import addVolunteerHours from "./VolunteerTimesheet/AddVolunteerHours"
 
 export {
     loadLocaleMessages,
@@ -70,5 +70,6 @@ export {
     country,
     skill,
     timezone,
-    volunteerTimesheetHours
+    volunteerTimesheetHours,
+    addVolunteerHours
 }
