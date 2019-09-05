@@ -89,10 +89,12 @@ export default {
     watch: {
         $props: {
             handler() {
+                console.log(this.data);
                 this.themeChart.data.labels = [];
                 this.themeChart.data.labels = this.labels;
                 this.themeChart.data.datasets[0].data = this.data;
                 this.themeChart.update();
+                console.log('update props');
             },
             deep: true,
         }
