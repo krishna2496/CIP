@@ -470,13 +470,19 @@ label {
       }
     }
 
-    .option-list-wrap {
-      border-radius: 0 0 3px 3px;
-    }
-
     .chk-select-wrap {
       border-radius: 0 0 3px 3px;
       display: block;
+        .chk-select-options{
+          li{
+              white-space: nowrap;
+              @include md-max{
+                  overflow: hidden;
+                  text-overflow: ellipsis;
+              }
+          }
+        }
+    
     }
   }
 
@@ -632,6 +638,10 @@ label {
         cursor: pointer;
         white-space: nowrap;
 
+        @include lmd-max{
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
         &:hover {
           background: $border-color;
         }
@@ -668,9 +678,17 @@ label {
 
 .select-dropdown {
   .simplebar-offset {
-    @include md-min {
+    @include lmd-min {
       left: auto !important;
       min-width: 100%;
+    }
+  }
+  &.checkbox-select{
+    .simplebar-offset {
+      @include md-min{
+          left: auto !important;
+          min-width: 100%;
+      }
     }
   }
   &.no-list-item {
@@ -936,7 +954,7 @@ label {
     background-size: 100%;
     background-position: center center;
     @include transition(all 0.3s);
-    z-index: 9998;
+    z-index: 1039;
   }
   .picture-input {
     height: 160px !important;
@@ -954,6 +972,7 @@ label {
       width: 160px !important;
       position: relative;
       border-radius: 100% !important;
+      z-index:1039;
     }
     .picture-preview {
       background: $border-color;
@@ -961,7 +980,7 @@ label {
       width: 160px;
       overflow: hidden;
       border-radius: 100% !important;
-      z-index: 9999 !important;
+      z-index: 1039 !important;
     }
     .picture-inner {
       border: none;
@@ -1131,6 +1150,14 @@ label {
   }
 }
 
+
+.mx-input{
+    box-shadow: 0.966px 0.259px 3px rgba(0, 0, 0, 0.05) !important;
+    -webkit-box-shadow: 0.966px 0.259px 3px rgba(0, 0, 0, 0.05) !important;
+    -moz-box-shadow: 0.966px 0.259px 3px rgba(0, 0, 0, 0.05) !important;
+    -ms-box-shadow: 0.966px 0.259px 3px rgba(0, 0, 0, 0.05) !important;
+    -o-zbox-shadow: 0.966px 0.259px 3px rgba(0, 0, 0, 0.05) !important;
+}
 /**Date range picker style**/
 .mx-range-wrapper {
   max-width: 524px !important;
@@ -1230,4 +1257,16 @@ label {
       color: $success;
     }
   }
+}
+
+.browser-ios{
+    .filter-block{
+        .checkbox-select{
+            .simplebar-offset{
+                @include md-min{
+                    right: 0 !important;
+                }
+            }
+        }
+    } 
 }

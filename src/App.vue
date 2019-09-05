@@ -16,11 +16,7 @@ export default {
         if (navigator.userAgent.match(/iP(hone|od|ad)/i)) {
             document.querySelector("body").classList.add("browser-ios");
         }
-        if (screen.width < 1025) {
-            document.addEventListener("touchend", this.onClick);
-        } else {
-            document.addEventListener("click", this.onClick);
-        }
+         document.addEventListener("click", this.onClick);
     },
      methods: {
     onClick(event) {
@@ -100,6 +96,19 @@ export default {
     window.addEventListener("resize", this.handleSocialShare);
     window.addEventListener("scroll", this.handleScroll);
     window.scrollTo(0, 0);
+    
+     setTimeout(function(){
+        var allElements = document.querySelectorAll('*');
+        allElements.forEach(function(allEvent){
+            allEvent.addEventListener('click' , function(){
+                setTimeout(function(){
+                if(document.querySelector('body').classList.contains('modal-open')){
+                     window.scrollTo(0, 0);
+                }
+                });
+                });
+            })
+        });   
   },
   updated() {
     window.scrollTo(0, 0);
