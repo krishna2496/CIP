@@ -17,7 +17,7 @@
     "core-js": "^2.6.5",
     "jquery": "^3.4.1",
     "moment": "^2.24.0",
-    "simplebar": "^4.0.0-alpha.9",
+    "simplebar": "^4.2.0",
     "vue": "^2.6.10",
     "vue-autosuggest": "^2.0.1",
     "vue-axios": "^2.1.4",
