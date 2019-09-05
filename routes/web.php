@@ -226,6 +226,15 @@ $router->group(['middleware' => 'localization'], function ($router) {
     'middleware' => 'tenant.connection|jwt.auth',
     'uses' => 'App\Timesheet\TimesheetController@destroy']);
   
+    /* Get volunteering history */
+    $router->get('/app/volunteer/history/theme', ['as' => 'app.volunteer.history.theme',
+    'middleware' => 'tenant.connection|jwt.auth',
+    'uses' => 'App\Timesheet\VolunteerHistoryController@themeHistory']);
+
+    /* Get volunteering history */
+    $router->get('/app/volunteer/history/skill', ['as' => 'app.volunteer.history.skill',
+    'middleware' => 'tenant.connection|jwt.auth',
+    'uses' => 'App\Timesheet\VolunteerHistoryController@skillHistory']);
 
 /*
 |
