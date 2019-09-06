@@ -4,13 +4,14 @@
         <ThePrimaryHeader></ThePrimaryHeader>
         </header>
         <main>
+            {{enableSubmitGoalTimeSheet}}
             <DashboardBreadcrumb />
              <div class="dashboard-tab-content">
             <b-container>
                 <div class="heading-section">
                     <h1>{{langauageData.label.volunteering_timesheet}}</h1>
                 </div>
-                {{goalMissionData}}
+             
                 <div class="dashboard-table">
                     <div class="table-outer">
                         <div class="table-inner">
@@ -69,7 +70,11 @@
                         </div>
                         </div>
                         <div class="btn-block">
-                            <b-button class="btn-bordersecondary ml-auto" @click="submitVolunteerTimeSheet('time')" title="Submit">{{langauageData.label.submit}}</b-button>
+                            <b-button class="btn-bordersecondary ml-auto"
+                            v-bind:class="{
+                                disabled : enableSubmitTimeTimeSheet    
+                            }"
+                            @click="submitVolunteerTimeSheet('time')">{{langauageData.label.submit}}</b-button>
                         </div>
                     </div>
                     <ul class="meta-data-list">
@@ -128,7 +133,11 @@
                     </b-table-simple>
                     </div>
                     <div class="btn-block">
-                        <b-button class="btn-bordersecondary ml-auto">{{langauageData.label.submit}}</b-button>
+                        <b-button class="btn-bordersecondary ml-auto"
+                        v-bind:class="{
+                                disabled : enableSubmitGoalTimeSheet    
+                            }"
+                        >{{langauageData.label.submit}}</b-button>
                     </div>
                     </div>
                     <div class="table-outer timesheet-table-outer">
@@ -503,7 +512,9 @@ export default {
             volunteerHourDisableDates : [],
             defaultHours : '',
             defaultMinutes : '',
-            futureDates: new Date()
+            futureDates: new Date(),
+            enableSubmitGoalTimeSheet : true,
+            enableSubmitTimeTimeSheet : true
         };
     },
     updated() {
@@ -847,8 +858,15 @@ export default {
                 
             });
             if(time1 != "00:00") {
+                if(timeSheetType == "time") {
+                    this.enableSubmitTimeTimeSheet = false;
+                } 
+                if(timeSheetType == "goal") {
+                    this.enableSubmitGoalTimeSheet = false
+                }
+                  
                 return time1;
-            }
+            } 
         },
 
         updateMinutes(value) {
@@ -871,18 +889,28 @@ export default {
             this.defaultWorkday = this.langauageData.placeholder.workday 
         },
         submitVolunteerTimeSheet(timeSheetType) {
-            if(timeSheetType == "time") {
+            
                 let timeSheetId = {
                     'timesheet_entries' : []
                 }
-          
-                this.timeMissionData.filter(function (timeMission, timeMissionIndex) {
-                    timeMission.timesheet.filter(function (timeSheet, timeSheetIndex) {
-                        if(timeSheet.timesheet_status.status != "APPROVED" && timeSheet.timesheet_status.status != "AUTOMATICALLY_APPROVED"){
-                                timeSheetId.timesheet_entries.push({'timesheet_id':timeSheet.timesheet_id})  
-                            }
+                let timeArray = [];
+                if(timeSheetType == "time") {
+                    timeArray = this.timeMissionData;
+                } else {
+                    timeArray = this.goalMissionData;
+                }
+                if(timeArray) {
+                    timeArray.filter(function (timeMission, timeMissionIndex) {
+                        let timeSheetArray = timeMission.timesheet;
+                        if(timeSheetArray) {
+                            timeSheetArray.filter(function (timeSheet, timeSheetIndex) {
+                                if(timeSheet.timesheet_status.status != "APPROVED" && timeSheet.timesheet_status.status != "AUTOMATICALLY_APPROVED"){
+                                        timeSheetId.timesheet_entries.push({'timesheet_id':timeSheet.timesheet_id})  
+                                    }
+                            });
+                        }
                     });
-                });
+                }
                 submitVolunteerHourTimeSheet(timeSheetId).then(response => {
                     if(response.error == true){
                         this.makeToast("danger",response.message);
@@ -891,7 +919,6 @@ export default {
                     }  
                 })
                  
-            }
         },
         makeToast(variant = null,message) {
             this.$bvToast.toast(message, {
