@@ -131,7 +131,6 @@ class TimesheetRepository implements TimesheetInterface
     public function getAllTimesheetEntries(Request $request): array
     {
         $timeMissionEntries = $this->getTimesheetEntries($request, config('constants.mission_type.TIME'));
-       
         foreach ($timeMissionEntries as $value) {
             if ($value->missionLanguage) {
                 $value->setAttribute('title', $value->missionLanguage[0]->title);
