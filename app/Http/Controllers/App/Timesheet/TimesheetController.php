@@ -409,7 +409,7 @@ class TimesheetController extends Controller
      * Submit timesheet for approval
      *
      * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\JsonResponse;
+     * @return \Illuminate\Http\JsonResponse
      */
     public function submitTimesheet(Request $request): JsonResponse
     {
@@ -450,6 +450,32 @@ class TimesheetController extends Controller
     }
 
     /**
+     * Get Request timesheet
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getPendingTimeRequests(Request $request): JsonResponse
+    {
+        try {
+            $timeRequestList = $this->timesheetRepository->timeRequestList($request);
+            
+            $apiStatus = Response::HTTP_OK;
+            $apiMessage = (count($timeRequestList) > 0) ? trans('messages.success.MESSAGE_TIME_REQUEST_LISTING') :
+            trans('messages.success.MESSAGE_TIME_REQUEST_NOT_FOUND');
+
+            return $this->responseHelper->successWithPagination($apiStatus, $apiMessage, $timeRequestList);
+        } catch (PDOException $e) {
+            return $this->PDO(
+                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
+                trans('messages.custom_error_message.ERROR_DATABASE_OPERATIONAL')
+            );
+        } catch (\Exception $e) {
+            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
+        }
+    }
+
+    /**
      * Fetch pending goal requests
      *
      * @param Illuminate\Http\Request $request
@@ -459,14 +485,6 @@ class TimesheetController extends Controller
     {
         try {
             $goalRequestList = $this->timesheetRepository->goalRequestList($request);
-
-            foreach ($goalRequestList as $value) {
-                if ($value->missionLanguage) {
-                    $value->setAttribute('title', $value->missionLanguage[0]->title);
-                    unset($value->missionLanguage);
-                }
-                $value->setAppends([]);
-            }
 
             $apiMessage = (count($goalRequestList) > 0) ?
             trans('messages.success.MESSAGE_GOAL_REQUEST_LISTING') :

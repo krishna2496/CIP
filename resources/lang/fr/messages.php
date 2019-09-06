@@ -104,10 +104,11 @@ return [
         'MESSAGE_SKILL_HISTORY_PER_HOUR_LISTED' => 'Heures de bénévolat par compétence répertoriée avec succès',
         'MESSAGE_THEME_HISTORY_NOT_FOUND' => 'Heures de bénévolat par thème non trouvé',
         'MESSAGE_SKILL_HISTORY_NOT_FOUND' => 'Heures de bénévolat par compétence non trouvée',
-        'MESSAGE_NO_GOAL_REQUEST_FOUND' => 'Entrée de feuille de temps non trouvée',
         'MESSAGE_GOAL_REQUEST_LISTING' => 'Demande d\'objectif répertoriée avec succès',
         'MESSAGE_NO_GOAL_REQUEST_FOUND' => 'Demande d\'objectif non trouvée',
         'MESSAGE_POLICY_PAGE_FOUND' => 'Page de stratégie trouvée avec succès',
+        'MESSAGE_TIME_REQUEST_LISTING' => 'Demande de temps listée avec succès',
+        'MESSAGE_TIME_REQUEST_NOT_FOUND' => 'Aucune demande de temps trouvée',
     ],
 
         

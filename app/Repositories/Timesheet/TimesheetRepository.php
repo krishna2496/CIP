@@ -253,7 +253,62 @@ class TimesheetRepository implements TimesheetInterface
     }
 
     /**
-     * Fetch pending goal requests
+     * Get time request details.
+     *
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return Illuminate\Pagination\LengthAwarePaginator
+     */
+    public function timeRequestList(Request $request) : LengthAwarePaginator
+    {
+        $languageId = $this->languageHelper->getLanguageId($request);
+        
+        $timeRequests = $this->mission->query()
+        ->select('mission.mission_id', 'mission.organisation_name');
+        $timeRequests->where(['publication_status' => config("constants.publication_status")["APPROVED"],
+        'mission_type'=> config('constants.mission_type.TIME')])
+        ->with(['missionLanguage' => function ($query) use ($languageId) {
+            $query->select('mission_language_id', 'mission_id', 'title')
+            ->where('language_id', $languageId);
+        }])
+        ->whereHas('timesheet', function ($query) use ($request) {
+            $query->where(['status_id' => config('constants.timesheet_status_id.SUBMIT_FOR_APPROVAL'),
+            'user_id' => $request->auth->user_id]);
+        })
+        ->withCount([
+        'timesheet AS total_hours' => function ($query) use ($request) {
+            $query->select(DB::raw("sum(((hour(time) * 60) + minute(time))) as 'total_minutes'"))
+            ->where(['status_id' => config('constants.timesheet_status_id.SUBMIT_FOR_APPROVAL'),
+            'user_id' => $request->auth->user_id]);
+        }]);
+        $timeRequestsList = $timeRequests->paginate($request->perPage);
+        foreach ($timeRequestsList as $value) {
+            if ($value->missionLanguage) {
+                $value->setAttribute('title', $value->missionLanguage[0]->title);
+                unset($value->missionLanguage);
+            }
+
+            // For time
+            $totalHours = (int)($value->total_hours / 60);
+            $hoursData = $totalHours."h";
+            $minutes = $value->total_hours % 60;
+            $time = $hoursData.$minutes;
+
+            //For hours
+            $minutesData = $minutes / 60;
+            $hours = $totalHours + $minutesData;
+            $hoursDetail = number_format((float)$hours, 2, '.', '');
+
+            $value->time = $time;
+            $value->hours = $hoursDetail;
+            unset($value->total_hours);
+            $value->setAppends([]);
+        }
+        return $timeRequestsList;
+    }
+
+    /**
+      * Fetch pending goal requests
      *
      * @param Illuminate\Http\Request $request
      * @return Illuminate\Pagination\LengthAwarePaginator
@@ -284,11 +339,19 @@ class TimesheetRepository implements TimesheetInterface
                 'user_id' => $request->auth->user_id]
             );
         }]);
-        return $goalRequests->paginate($request->perPage);
+        $goalRequestList = $goalRequests->paginate($request->perPage);
+        foreach ($goalRequestList as $value) {
+            if ($value->missionLanguage) {
+                $value->setAttribute('title', $value->missionLanguage[0]->title);
+                unset($value->missionLanguage);
+            }
+            $value->setAppends([]);
+        }
+        return $goalRequestList;
     }
 
     /**
-     * Fetch timesheet details by missionId and date
+     * Fetch timesheet details by mission and date
      *
      * @param int $missionId
      * @param string $date

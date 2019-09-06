@@ -51,13 +51,22 @@ interface TimesheetInterface
     public function delete(int $id, int $timesheetId): bool;
 
     /**
-     * Update timesheet status on submit
+     * Update timesheet status
      *
      * @param \Illuminate\Http\Request $request
      * @param int $userId
      * @return bool
      */
     public function submitTimesheet(Request $request, int $userId): bool;
+
+    /**
+     * Get time request details.
+     *
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return Illuminate\Pagination\LengthAwarePaginator
+     */
+    public function timeRequestList(Request $request) : LengthAwarePaginator;
 
     /**
      * Fetch goal requests list

@@ -112,6 +112,8 @@ return [
         'MESSAGE_GOAL_REQUEST_LISTING' => 'Goal requests listed successfully',
         'MESSAGE_NO_GOAL_REQUEST_FOUND' => 'No pending goal requests found',
         'MESSAGE_POLICY_PAGE_FOUND' => 'Policy page found successfully',
+        'MESSAGE_TIME_REQUEST_LISTING' => 'Time requests listed successfully',
+        'MESSAGE_TIME_REQUEST_NOT_FOUND' => 'No pending time requests found',
 	],
         
     /**

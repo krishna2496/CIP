@@ -205,17 +205,17 @@ $router->group(['middleware' => 'localization'], function ($router) {
     $router->post('/app/timesheet/submit', ['as' => 'app.timesheet.submit',
     'middleware' => 'localization|tenant.connection|jwt.auth',
     'uses' => 'App\Timesheet\TimesheetController@submitTimesheet']);
+    
+    /* Fetch pending time requests */
+    $router->get('/app/timesheet/time-requests', ['as' => 'app.timesheet.time-requests',
+    'middleware' => 'tenant.connection|jwt.auth',
+    'uses' => 'App\Timesheet\TimesheetController@getPendingTimeRequests']);
 
     /* Get timesheet data */
     $router->get('/app/timesheet', ['as' => 'app.timesheet',
     'middleware' => 'localization|tenant.connection|jwt.auth',
     'uses' => 'App\Timesheet\TimesheetController@index']);
     
-    /* Update timesheet data by id */
-    $router->patch('/app/timesheet/{timesheetId}', ['as' => 'app.timesheet',
-    'middleware' => 'localization|tenant.connection|jwt.auth',
-    'uses' => 'App\Timesheet\TimesheetController@update']);
-
     /* Get timesheet data */
     $router->get('/app/timesheet/{timesheetId}', ['as' => 'app.timesheet.show',
     'middleware' => 'localization|tenant.connection|jwt.auth',
