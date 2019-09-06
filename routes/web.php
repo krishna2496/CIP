@@ -225,16 +225,19 @@ $router->group(['middleware' => 'localization'], function ($router) {
     $router->delete('/app/timesheet/{timesheetId}/document/{documentId}', ['as' => 'app.timesheet.destroy',
     'middleware' => 'tenant.connection|jwt.auth',
     'uses' => 'App\Timesheet\TimesheetController@destroy']);
-  
-    /* Get volunteering history */
-    $router->get('/app/volunteer/history/theme', ['as' => 'app.volunteer.history.theme',
-    'middleware' => 'tenant.connection|jwt.auth',
-    'uses' => 'App\Timesheet\VolunteerHistoryController@themeHistory']);
+    
+    $router->group(['middleware' => 'localization'], function ($router) {
 
-    /* Get volunteering history */
-    $router->get('/app/volunteer/history/skill', ['as' => 'app.volunteer.history.skill',
-    'middleware' => 'tenant.connection|jwt.auth',
-    'uses' => 'App\Timesheet\VolunteerHistoryController@skillHistory']);
+        /* Get volunteering history */
+        $router->get('/app/volunteer/history/theme', ['as' => 'app.volunteer.history.theme',
+        'middleware' => 'tenant.connection|jwt.auth',
+        'uses' => 'App\VolunteerHistory\VolunteerHistoryController@themeHistory']);
+    
+        /* Get volunteering history */
+        $router->get('/app/volunteer/history/skill', ['as' => 'app.volunteer.history.skill',
+        'middleware' => 'tenant.connection|jwt.auth',
+        'uses' => 'App\VolunteerHistory\VolunteerHistoryController@skillHistory']);
+    });
 
 /*
 |
