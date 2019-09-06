@@ -135,7 +135,7 @@ class TimesheetRepository implements TimesheetInterface
         $language = $languages->where('code', $language)->first();
         $languageId = $language->language_id;
         
-        $timesheet = $this->mission->select('mission.mission_id')
+        $timesheet = $this->mission->select('mission.mission_id', 'mission.start_date', 'mission.end_date')
         ->where(['publication_status' => config("constants.publication_status")["APPROVED"],
         'mission_type'=> $missionType])
         ->whereHas('missionApplication', function ($query) use ($request) {
@@ -148,7 +148,15 @@ class TimesheetRepository implements TimesheetInterface
         }])
         ->with(['timesheet' => function ($query) use ($missionType, $request) {
             $type = ($missionType == config('constants.mission_type.TIME')) ? 'time' : 'action';
-            $query->select('mission_id', 'date_volunteered', 'day_volunteered', 'notes', 'status_id', $type)
+            $query->select(
+                'timesheet_id',
+                'mission_id',
+                'date_volunteered',
+                'day_volunteered',
+                'notes',
+                'status_id',
+                $type
+            )
             ->where('user_id', $request->auth->user_id)
             ->with('timesheetStatus');
         }]);
@@ -242,7 +250,7 @@ class TimesheetRepository implements TimesheetInterface
         $language = $languages->where('code', $language)->first();
         $languageId = $language->language_id;
 
-        return Mission::select('mission.mission_id')
+        return $this->mission->select('mission.mission_id')
         ->where(['publication_status' => config("constants.publication_status")["APPROVED"]])
         ->whereHas('missionApplication', function ($query) use ($userId) {
             $query->where('user_id', $userId)
@@ -301,7 +309,7 @@ class TimesheetRepository implements TimesheetInterface
      * @param Request $request
      * @return Illuminate\Pagination\LengthAwarePaginator
      */
-    public function getGoalRequestList(Request $request): LengthAwarePaginator
+    public function goalRequestList(Request $request): LengthAwarePaginator
     {
         $languages = $this->languageHelper->getLanguages($request);
         $language = ($request->hasHeader('X-localization')) ?
@@ -309,9 +317,9 @@ class TimesheetRepository implements TimesheetInterface
         $language = $languages->where('code', $language)->first();
         $languageId = $language->language_id;
         
-        $goalRequestQuery = Mission::query()
-        ->select('mission.mission_id', 'mission.city_id', 'mission.organisation_name');
-        $goalRequestQuery->where(['publication_status' => config("constants.publication_status")["APPROVED"],
+        $goalRequest = $this->mission->query()
+        ->select('mission.mission_id', 'mission.organisation_name');
+        $goalRequest->where(['publication_status' => config("constants.publication_status")["APPROVED"],
         'mission_type'=> config('constants.mission_type.GOAL')])
         ->with(['missionLanguage' => function ($query) use ($languageId) {
             $query->select('mission_language_id', 'mission_id', 'title')
@@ -321,11 +329,11 @@ class TimesheetRepository implements TimesheetInterface
             $query->where(['status_id' => 5, 'user_id' => $request->auth->user_id]);
         })
         ->withCount([
-        'timesheet AS total_action' => function ($query) use ($request) {
+        'timesheet AS action' => function ($query) use ($request) {
             $query->select(DB::raw("SUM(action) as action"))
             ->where(['status_id' => 5, 'user_id' => $request->auth->user_id]);
         }]);
-        return $goalRequestQuery->paginate($request->perPage);
+        return $goalRequest->paginate($request->perPage);
     }
 
     /**
