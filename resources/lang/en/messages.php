@@ -111,6 +111,7 @@ return [
         'MESSAGE_SKILL_HISTORY_NOT_FOUND' => 'Skill history data not found',
         'MESSAGE_GOAL_REQUEST_LISTING' => 'Goal request listed successfully',
         'MESSAGE_NO_GOAL_REQUEST_FOUND' => 'No goal request found',
+        'MESSAGE_POLICY_PAGE_FOUND' => 'Policy page found successfully',
 	],
         
     /**
@@ -164,7 +165,6 @@ return [
         'SKILL_LIMIT' => 'Sorry, you cannot add more than '. config('constants.SKILL_LIMIT').' skills',
         'ERROR_INVALID_MISSION_MEDIA_DATA' => 'Invalid mission media data',
         'ERROR_INVALID_MISSION_DOCUMENT_DATA' => 'Invalid mission document data',
-        'ERROR_TIMESHEET_ENTRY_NOT_FOUND' => 'Timesheet entry id not found',
 
         // Custom error code for Tenant Authorization - 210000 - 219999
         'ERROR_INVALID_API_AND_SECRET_KEY' => 'Invalid API key or secret key',
@@ -224,5 +224,12 @@ return [
         'MISSION_APPLICATION_NOT_APPROVED' => 'Mission application is not approved',
         'ERROR_TIMESHEET_ALREADY_DONE_FOR_DATE' => 'Time entry is already approved for given date', 
         'ERROR_INVALID_DATA_FOR_TIMESHEET_ENTRY' => 'You cannot add time entry',
+        'ERROR_TIMESHEET_ENTRY_NOT_FOUND' => 'Timesheet entry id not found',
+        'ERROR_TIMESHEET_DECLINED' => 'You can not update declined timesheet',
+        'ERROR_TIMESHEET_SUBMIT_FOR_APPROVAL' => 'This timesheet is already submitted for approval. You cannot update it',
+        'ERROR_SAME_DATE_TIME_ENTRY' => 'You cannot add more than 24 hours timeentry for same date',
+        'ERROR_INVALID_HOURS' => 'Hours must be in between 00, 23',
+        'ERROR_INVALID_MINUTES' => 'Minutes must be in between 00, 59',
+
     ],
 ];

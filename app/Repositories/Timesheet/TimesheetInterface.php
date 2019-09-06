@@ -9,12 +9,12 @@ use Illuminate\Support\Collection;
 interface TimesheetInterface
 {
     /**
-     * Store timesheet
+     * Store/Update timesheet
      *
      * @param \Illuminate\Http\Request $request
      * @return App\Models\Timesheet
      */
-    public function storeTimesheet(Request $request): Timesheet;
+    public function storeOrUpdateTimesheet(Request $request): Timesheet;
 
     /**
      * get added action data count
@@ -23,16 +23,7 @@ interface TimesheetInterface
      * @return int
      */
     public function getAddedActions(int $missionId): int;
-    
-    /**
-     * Update timesheet
-     *
-     * @param \Illuminate\Http\Request $request
-     * @param int $timesheetId
-     * @return bool
-     */
-    public function updateTimesheet(Request $request, int $timesheetId):  bool;
-
+  
     /**
      * Fetch timesheet details
      *
@@ -84,4 +75,14 @@ interface TimesheetInterface
      * @return null|Illuminate\Support\Collection
      */
     public function getTimesheetDetailByDate(int $missionId, string $date): ? Collection;
+   
+    /**
+     * Fetch timesheet details
+     *
+     * @param int $missionId
+     * @param int $userId
+     * @param string $date
+     * @return null|Illuminate\Support\Collection
+     */
+    public function getTimesheetDetails(int $missionId, int $userId, string $date): ?Collection;
 }
