@@ -117,7 +117,9 @@ class TimesheetRepository implements TimesheetInterface
     public function getAddedActions(int $missionId): int
     {
         return ($this->timesheet->where('mission_id', $missionId)
-        ->whereIn('status_id', array(2, 4))->sum('action')) ?? 0;
+        ->whereIn('status_id', array(config('constants.timesheet_status_id.APPROVED'),
+        config('constants.timesheet_status_id.AUTOMATICALLY_APPROVED')))
+        ->sum('action')) ?? 0;
     }
 
     /**
