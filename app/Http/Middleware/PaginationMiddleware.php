@@ -5,7 +5,7 @@ use Closure;
 
 class PaginationMiddleware
 {
-    private $perPageMax=10;
+    private $perPageMax = config('constants.PER_PAGE_MAX');
    
     /**
      * Handle an incoming request.
