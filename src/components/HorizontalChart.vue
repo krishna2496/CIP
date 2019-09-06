@@ -74,10 +74,7 @@ export default {
                         {
                         ticks: {
                             fontColor: this.fontColor,
-                            fontSize: 14,
-                            max: Math.round(Math.max(...this.data)*2),
-                            min: 0,
-                            stepSize: Math.round((Math.max(...this.data)*2)/10)
+                            fontSize: 14
                         }
                         }
                     ]
