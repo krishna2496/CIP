@@ -8,7 +8,7 @@
                 <b-alert show :variant="classVariant" dismissible v-model="showErrorDiv">
                     {{ message }}
                 </b-alert>
-            {{$v.timeEntryDefaultData.minutes}}
+  
             <form action class="form-wrap">
                 <b-form-group>
                     <b-row>
@@ -23,16 +23,17 @@
                             </b-form-group> -->
 
                             <b-form-group>
-                                <label for>{{langauageData.label.hours}}</label>
+                                <label for>{{langauageData.label.hours}}*</label>
                                 <AppCustomDropdown
                                     v-model="timeEntryDefaultData.hours"
                                     :optionList="hourList"
+                                    :errorClass="submitted && ($v.timeEntryDefaultData.minutes.required || $v.timeEntryDefaultData.minutes.$invalid)" 
                                     :defaultText="defaultHours"
-                                    :errorClass="submitted && $v.timeEntryDefaultData.hours.$error" 
                                     @updateCall="updateHours"
                                     translationEnable= "false"
                                 />
-                                
+                                <div v-if="submitted && !$v.timeEntryDefaultData.minutes.required" class="invalid-feedback">
+                                    {{ langauageData.errors.minute_or_hours_is_required }}</div>
                             </b-form-group>
 
                         </b-col>
@@ -47,11 +48,11 @@
                             </b-form-group> -->
 
                               <b-form-group>
-                                <label for>{{langauageData.label.minutes}}</label>
+                                <label for>{{langauageData.label.minutes}}*</label>
                                 <AppCustomDropdown
                                     v-model="timeEntryDefaultData.hours"
                                     :optionList="minuteList"
-                                    :errorClass="submitted && $v.timeEntryDefaultData.minutes.$error" 
+                                    :errorClass="submitted && ($v.timeEntryDefaultData.minutes.required || $v.timeEntryDefaultData.minutes.$invalid)" 
                                     :defaultText="defaultMinutes"
                                     @updateCall="updateMinutes"
                                     translationEnable= "false"
@@ -67,21 +68,24 @@
                     <b-row>
                         <b-col sm="6" class="date-col">
                             <b-form-group>
-                                <label for>{{langauageData.label.date_volunteered}}</label>
+                                <label for>{{langauageData.label.date_volunteered}}*</label>
                                 <date-picker
                                     v-model="timeEntryDefaultData.dateVolunteered"
-                                    :notAfter="disabledFutureDates"
+                                    :notAfter="timeEntryDefaultData.disabledFutureDates"
+                                    :notBefore="timeEntryDefaultData.disabledPastDates"
                                     :disabledDays="disableDates"
                                     :class="{ 'is-invalid': submitted && $v.timeEntryDefaultData.dateVolunteered.$error }"
                                     :lang="lang"
-                                ></date-picker>
-                                <div v-if="submitted && !$v.timeEntryDefaultData.dateVolunteered.required" class="invalid-feedback">
+                                >
+                                     
+                                </date-picker>
+                               <div v-if="submitted && !$v.timeEntryDefaultData.dateVolunteered.required" class="invalid-feedback">
                                     {{ langauageData.errors.date_volunteer_is_required }}</div>
                             </b-form-group>
                         </b-col>
                     <b-col sm="6" class="date-col">
                         <b-form-group>
-                            <label for>{{langauageData.label.workday}}</label>
+                            <label for>{{langauageData.label.workday}}*</label>
                                     <AppCustomDropdown
                                         v-model="timeEntryDefaultData.workDay"
                                         :optionList="workDayList"
@@ -90,9 +94,10 @@
                                         @updateCall="updateWorkday"
                                         translationEnable= "true"
                                     />
-                        </b-form-group>
-                        <div v-if="submitted && !$v.timeEntryDefaultData.workDay.required" class="invalid-feedback">
+                                  <div v-if="submitted && !$v.timeEntryDefaultData.workDay.required" class="invalid-feedback">
                                     {{ langauageData.errors.work_day }}</div>
+                        </b-form-group>
+                      
                     </b-col>
                     </b-row>
                 </b-form-group>
@@ -100,15 +105,16 @@
                     <b-row>
                         <b-col sm="12">
                             <b-form-group>
-                                <label for>{{langauageData.label.notes}}:</label>
+                                <label for>{{langauageData.label.notes}}*</label>
                                 <b-form-textarea id
                                 v-model="timeEntryDefaultData.notes"
                                 :class="{ 'is-invalid': submitted && $v.timeEntryDefaultData.notes.$error }"
                                 :placeholder="langauageData.placeholder.notes"
                                 size="lg" no-resize rows="5"></b-form-textarea>
-                            </b-form-group>
-                             <div v-if="submitted && !$v.timeEntryDefaultData.notes.required" class="invalid-feedback">
+                                 <div v-if="submitted && !$v.timeEntryDefaultData.notes.required" class="invalid-feedback">
                                     {{ langauageData.errors.notes }}</div>
+                            </b-form-group>
+                            
                         </b-col>
                     </b-row>
                 </b-form-group>
@@ -128,9 +134,23 @@
                                     :size="1024 * 1024 * 10"
                                     v-model="files"
                                     ref="upload">
-                                Browse
+                                {{langauageData.label.browse}}
                                 </file-upload>
-                                <span>Or drop files here</span>
+                                <span>{{langauageData.label.drop_files}}</span>
+                            </div>
+                            <div class="uploaded-file-details" v-for="(file, index) in timeEntryDefaultData.documents">
+                                
+                                <a class="filename" :href="file.document_path" target="_blank">{{file.document_name}}</a>
+                                <a 
+                                class="remove-item" 
+                                href="#" 
+                                @click.prevent="deleteFile(file.timesheet_id,file.timesheet_document_id)" 
+                                v-b-tooltip.hover 
+                                :title="langauageData.label.close"
+                                >
+                                    <img :src="$store.state.imagePath+'/assets/images/delete-ic.svg'" alt="delete-ic"/>
+                                </a>
+                            
                             </div>
                             <div class="uploaded-file-details" v-for="(file, index) in files" :key="file.id">
                                 <p class="filename">{{file.name}}</p>
@@ -139,7 +159,7 @@
                                 href="#" 
                                 @click.prevent="$refs.upload.remove(file)" 
                                 v-b-tooltip.hover 
-                                title="Delete"
+                                :title="langauageData.label.close"
                                 >
                                     <img :src="$store.state.imagePath+'/assets/images/delete-ic.svg'" alt="delete-ic"/>
                                 </a>
@@ -153,12 +173,12 @@
             <b-button
                 class="btn-borderprimary"
                 @click="$refs.timeHoursModal.hide()"
-                title="Cancel"
+                
             >{{langauageData.label.cancel}}</b-button>
             <b-button 
                 class="btn-bordersecondary" 
                 @click="saveTimeHours()" 
-                title="Submit">{{langauageData.label.submit}}
+                >{{langauageData.label.submit}}
             </b-button>
         </div>
         </b-modal>
@@ -172,7 +192,7 @@ import DatePicker from "vue2-datepicker";
 import AppCustomDropdown from "../components/CustomFieldDropdown";
 import { required,maxLength, email,sameAs, minLength, between,helpers,numeric,requiredIf} from 'vuelidate/lib/validators';
 import FileUpload from 'vue-upload-component';
-import {addVolunteerHours} from '../services/service';
+import {addVolunteerHours,removeDocument} from '../services/service';
 
 export default {
     name: "VolunteeringHours",
@@ -196,20 +216,21 @@ export default {
             langauageData : [],
             submitted : false,
             disabledFutureDates : new Date(),
+            
             showErrorDiv : false,
             message : null,
             classVariant :"success",
             hourList:[
-                    ["0","00"],
-                    ["1","01"],
-                    ["2","02"],
-                    ["3","03"],
-                    ["4","04"],
-                    ["5","05"],
-                    ["6","06"],
-                    ["7","07"],
-                    ["8","08"],
-                    ["9","09"],
+                    ["00","00"],
+                    ["01","01"],
+                    ["02","02"],
+                    ["03","03"],
+                    ["04","04"],
+                    ["05","05"],
+                    ["06","06"],
+                    ["07","07"],
+                    ["08","08"],
+                    ["09","09"],
                     ["10","10"],
                     ["11","11"],
                     ["12","12"],
@@ -226,16 +247,16 @@ export default {
                     ["23","23"]
             ],
             minuteList:[
-                    ["0","00"],
-                    ["1","01"],
-                    ["2","02"],
-                    ["3","03"],
-                    ["4","04"],
-                    ["5","05"],
-                    ["6","06"],
-                    ["7","07"],
-                    ["8","08"],
-                    ["9","09"],
+                    ["00","00"],
+                    ["01","01"],
+                    ["02","02"],
+                    ["03","03"],
+                    ["04","04"],
+                    ["05","05"],
+                    ["06","06"],
+                    ["07","07"],
+                    ["08","08"],
+                    ["09","09"],
                     ["10","10"],
                     ["11","11"],
                     ["12","12"],
@@ -300,20 +321,12 @@ export default {
         }
     },
     validations() {
-        
-                     
+        const requiredValidation = (this.timeEntryDefaultData.hours == ''|| this.timeEntryDefaultData.hours == '00') 
+        && (this.timeEntryDefaultData.minutes == "00" || this.timeEntryDefaultData.minutes == "") ? {required} : {}
+                   
         return {
             timeEntryDefaultData : {      
-                minutes: {
-                    requiredIf: requiredIf(() => {
-                        return this.timeEntryDefaultData.hours == ''|| this.timeEntryDefaultData.hours == '0'
-                    }),
-                },
-                hours: {
-                    requiredIf: requiredIf(() => {
-                        return this.timeEntryDefaultData.minutes == ''|| this.timeEntryDefaultData.minutes == '0'
-                    }),
-                },
+                minutes: requiredValidation,
                 workDay : {required},
                 notes : {required},
                 dateVolunteered : {required}
@@ -355,8 +368,13 @@ export default {
             var _this = this;
             this.submitted = true;
             this.$v.$touch();
+         
             if (this.$v.$invalid) {
                 return;
+            }
+            if((this.timeEntryDefaultData.hours == ''|| this.timeEntryDefaultData.hours == '00') 
+                && (this.timeEntryDefaultData.minutes == "00" || this.timeEntryDefaultData.minutes == "")) {
+                return
             }
 
             const formData = new FormData();
@@ -368,13 +386,15 @@ export default {
                     formData.append('documents[]', fileItem.file);
                 })
             }  
-            let volunteeredDate = moment(String(this.timeEntryDefaultData.dateVolunteered)).format('DD-MM-YYYY');
+            let volunteeredDate = moment(String(this.timeEntryDefaultData.dateVolunteered)).format('MM-DD-YYYY');
+            let hours = this.timeEntryDefaultData.hours == '' ? 0 : this.timeEntryDefaultData.hours
+            let minutes = this.timeEntryDefaultData.minutes == '' ? 0 : this.timeEntryDefaultData.minutes
             formData.append('mission_id',this.timeEntryDefaultData.missionId);
             formData.append('date_volunteered',volunteeredDate);
             formData.append('day_volunteered',this.timeEntryDefaultData.workDay);
             formData.append('notes',this.timeEntryDefaultData.notes);
-            formData.append('hours',this.timeEntryDefaultData.hours);
-            formData.append('minutes',this.timeEntryDefaultData.minutes);
+            formData.append('hours',hours);
+            formData.append('minutes',minutes);
          
             addVolunteerHours(formData).then( response => {
                 if (response.error === true) { 
@@ -389,11 +409,45 @@ export default {
                     this.classVariant = 'success'
                     //set error msg
                     this.message = response.message
-                    this.submitted = false;   
+                    this.submitted = false;  
+                    this.$emit("getTimeSheetData");
+                    setTimeout(function() {
+                        _this.$refs.timeHoursModal.hide();
+                        _this.hideModal();
+                    },700) 
+                   
                 }
                
             })
             
+        },
+        deleteFile(timeSheetId,documentId) {
+            var _this = this
+            let deletFile = {
+                'timesheet_id' : timeSheetId,
+                'document_id' : documentId
+            }
+           
+            
+            removeDocument(deletFile).then(response => {
+                if(response) {
+
+                    this.message = null;
+                    this.showErrorDiv = true
+                    this.classVariant = 'success'
+                    this.message = response
+                    this.timeEntryDefaultData.documents.filter(function (document, index) {
+                        if(document.timesheet_document_id == documentId && document.timesheet_id == timeSheetId) {
+                            _this.timeEntryDefaultData.documents.splice(index, 1);
+                        }
+                    });
+                } else {
+                    this.message = null;
+                    this.showErrorDiv = true
+                    this.classVariant = 'danger'
+                    this.message = response
+                }
+            })
         },
         hideModal() {
             this.submitted = false;
@@ -401,6 +455,7 @@ export default {
             this.$emit("resetModal");
             document.querySelector('html').classList.remove('modal-open');
         }
+        
     },
     created() {
         this.langauageData = JSON.parse(store.state.languageLabel) 

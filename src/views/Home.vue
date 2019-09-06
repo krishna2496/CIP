@@ -62,7 +62,7 @@
                 <!-- grid view -->
                     <b-tab class="grid-tab-content">
                         <template slot="title">
-                            <i class="grid icon-wrap" @click="activeView = 'gridView'" v-b-tooltip.hover :title = "langauageData.label.grid_view" v-if="missionList.length > 0">
+                            <i class="grid icon-wrap" @click="activeView = 'gridView'" v-b-tooltip.hover.bottom :title = "langauageData.label.grid_view" v-if="missionList.length > 0">
                             <img class="img-normal" :src="$store.state.imagePath+'/assets/images/grid.svg'" alt="Down Arrow" />
                             <img class="img-rollover" :src="$store.state.imagePath+'/assets/images/grid-h.svg'" alt="Down Arrow" />
                          </i>
@@ -81,7 +81,7 @@
                         <!-- list view -->
                     <b-tab class="list-tab-content">
                         <template slot="title">
-                            <i class="list icon-wrap" @click="activeView = 'listView'" v-b-tooltip.hover :title = "langauageData.label.list_view" v-if="missionList.length > 0">
+                            <i class="list icon-wrap" @click="activeView = 'listView'" v-b-tooltip.hover.bottom :title = "langauageData.label.list_view" v-if="missionList.length > 0">
                             <img class="img-normal" :src="$store.state.imagePath+'/assets/images/list.svg'" alt="Down Arrow" />
                             <img class="img-rollover" :src="$store.state.imagePath+'/assets/images/list-h.svg'" alt="Down Arrow" />
                             </i>
