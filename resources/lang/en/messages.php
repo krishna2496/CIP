@@ -115,7 +115,7 @@ return [
         'MESSAGE_THEME_HISTORY_NOT_FOUND' => 'Theme history data not found',
         'MESSAGE_SKILL_HISTORY_NOT_FOUND' => 'Skill history data not found',
         'MESSAGE_GOAL_REQUEST_LISTING' => 'Goal requests listed successfully',
-        'MESSAGE_NO_GOAL_REQUEST_FOUND' => 'No goal request found',
+        'MESSAGE_NO_GOAL_REQUEST_FOUND' => 'No pending goal requests found',
 	],
         
     /**

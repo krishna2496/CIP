@@ -60,18 +60,18 @@ interface TimesheetInterface
     public function delete(int $id, int $timesheetId): bool;
 
     /**
-     * Update timesheet on submitted
+     * Update timesheet status on submit
      *
      * @param \Illuminate\Http\Request $request
      * @param int $userId
      * @return bool
      */
-    public function updateSubmittedTimesheet(Request $request, int $userId): bool;
+    public function submitTimesheet(Request $request, int $userId): bool;
 
     /**
      * Fetch goal requests list
      *
-     * @param Request $request
+     * @param Illuminate\Http\Request $request
      * @return Illuminate\Pagination\LengthAwarePaginator
      */
     public function goalRequestList(Request $request): LengthAwarePaginator;
@@ -93,4 +93,12 @@ interface TimesheetInterface
      * @return bool
      */
     public function updateTimesheetStatus(int $statusId, int $timesheetId): bool;
+    
+    /**
+     * Get timesheet entries
+     *
+     * @param Illuminate\Http\Request $request
+     * @return array
+     */
+    public function getAllTimesheetEntries(Request $request): array;
 }
