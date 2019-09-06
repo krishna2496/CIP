@@ -94,6 +94,7 @@ return [
         'MESSAGE_TIME_REQUEST_NOT_FOUND' => 'DE: No pending time requests found',
         'MESSAGE_GOAL_REQUEST_LISTING' => 'DE: Goal requests listed successfully',
         'MESSAGE_NO_GOAL_REQUEST_FOUND' => 'DE: No pending goal requests found',
+        'MESSAGE_POLICY_PAGE_FOUND' => 'DE: Policy page found successfully',
     ],
 
         
@@ -197,5 +198,11 @@ return [
         'MISSION_APPLICATION_NOT_APPROVED' => 'DE: Mission application is not approved',
         'ERROR_TIMESHEET_ALREADY_DONE_FOR_DATE' => 'DE: Time entry is already approved for given date',         
         'ERROR_INVALID_DATA_FOR_TIMESHEET_ENTRY' => 'DE: You cannot add time entry',
+        'ERROR_TIMESHEET_ENTRY_NOT_FOUND' => 'DE: Timesheet entry id not found',
+        'ERROR_TIMESHEET_DECLINED' => 'DE: You can not update declined timesheet',
+        'ERROR_TIMESHEET_SUBMIT_FOR_APPROVAL' => 'DE: This timesheet is already submitted for approval. You cannot update it',
+        'ERROR_SAME_DATE_TIME_ENTRY' => 'DE: You cannot add more than 24 hours timeentry for same date',
+        'ERROR_INVALID_HOURS' => 'DE: Hours must be in between 00, 23',
+        'ERROR_INVALID_MINUTES' => 'DE: Minutes must be in between 00, 59',
     ],
 ];

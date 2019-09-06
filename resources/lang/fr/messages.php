@@ -100,14 +100,15 @@ return [
         'MESSAGE_TIMESETTING_STATUS_UPDATED' => 'Statut de la feuille de temps mis à jour avec succès',
         'TIMESHEET_SUBMITTED_SUCESSFULLY' => 'Feuille de temps soumise avec succès',
         'TIMESHEET_ALREADY_SUBMITTED_FOR_APPROVAL' => 'Feuille de temps déjà soumise pour approbation',
+        'MESSAGE_THEME_HISTORY_PER_HOUR_LISTED' => 'Heures de bénévolat par thème répertorié avec succès',
+        'MESSAGE_SKILL_HISTORY_PER_HOUR_LISTED' => 'Heures de bénévolat par compétence répertoriée avec succès',
+        'MESSAGE_THEME_HISTORY_NOT_FOUND' => 'Heures de bénévolat par thème non trouvé',
+        'MESSAGE_SKILL_HISTORY_NOT_FOUND' => 'Heures de bénévolat par compétence non trouvée',
+        'MESSAGE_GOAL_REQUEST_LISTING' => 'Demande d\'objectif répertoriée avec succès',
+        'MESSAGE_NO_GOAL_REQUEST_FOUND' => 'Demande d\'objectif non trouvée',
+        'MESSAGE_POLICY_PAGE_FOUND' => 'Page de stratégie trouvée avec succès',
         'MESSAGE_TIME_REQUEST_LISTING' => 'Demande de temps listée avec succès',
         'MESSAGE_TIME_REQUEST_NOT_FOUND' => 'Aucune demande de temps trouvée',
-        'MESSAGE_THEME_HISTORY_PER_HOUR_LISTED' => 'Données d\'historique de thème par heure répertoriées avec succès',
-        'MESSAGE_SKILL_HISTORY_PER_HOUR_LISTED' => 'Historique des compétences par heure répertorié avec succès',
-        'MESSAGE_THEME_HISTORY_NOT_FOUND' => 'Données de l\'historique du thème non trouvées',
-        'MESSAGE_SKILL_HISTORY_NOT_FOUND' => 'Historique des compétences non trouvé',
-        'MESSAGE_GOAL_REQUEST_LISTING' => 'Demandes d\'objectif listées avec succès',
-        'MESSAGE_NO_GOAL_REQUEST_FOUND' => 'Aucune demande d\'objectif en attente n\'a été trouvée',
     ],
 
         
@@ -159,7 +160,6 @@ return [
         'ERROR_INVALID_MISSION_DOCUMENT_DATA' => 'Données de média de mission non valides',
         'ERROR_INVALID_INVITE_MISSION_DATA' => 'Détail de la mission d\'invitation non valide',
         'ERROR_INVITE_MISSION_ALREADY_EXIST' => 'L\'utilisateur est déjà invité pour cette mission',
-        'ERROR_TIMESHEET_ENTRY_NOT_FOUND' => 'ID de saisie de la feuille de temps introuvable',
         
         // Custom error code for Tenant Authorization - 210000 - 219999
         'ERROR_INVALID_API_AND_SECRET_KEY' => 'Clé API ou clé secrète invalide',
@@ -220,5 +220,11 @@ return [
         'MISSION_APPLICATION_NOT_APPROVED' => 'L\'application de la mission n\'est pas approuvée',
         'ERROR_TIMESHEET_ALREADY_DONE_FOR_DATE' => 'La saisie du temps est déjà approuvée pour une date donnée', 
         'ERROR_INVALID_DATA_FOR_TIMESHEET_ENTRY' => 'Vous ne pouvez pas ajouter de temps',
+        'ERROR_TIMESHEET_ENTRY_NOT_FOUND' => 'ID de saisie de la feuille de temps introuvable',
+        'ERROR_TIMESHEET_DECLINED' => 'Vous ne pouvez pas mettre à jour la feuille de temps refusée',
+        'ERROR_TIMESHEET_SUBMIT_FOR_APPROVAL' => 'Cette feuille de temps est déjà soumise pour approbation. Vous ne pouvez pas le mettre à jour',
+        'ERROR_SAME_DATE_TIME_ENTRY' => 'Vous ne pouvez pas ajouter plus de 24 heures à la même date',
+        'ERROR_INVALID_HOURS' => 'Les heures doivent être comprises entre 00 et 23',
+        'ERROR_INVALID_MINUTES' => 'Les minutes doivent être comprises entre 00 et 59',
     ],
 ];

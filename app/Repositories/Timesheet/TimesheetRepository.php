@@ -5,6 +5,7 @@ namespace App\Repositories\Timesheet;
 use DB;
 use App\Models\Mission;
 use App\Models\Timesheet;
+use Carbon\Carbon;
 use App\Models\TimesheetDocument;
 use Illuminate\Http\Request;
 use App\Helpers\Helpers;
@@ -20,17 +21,17 @@ class TimesheetRepository implements TimesheetInterface
     /**
      * @var App\Models\Timesheet
      */
-    public $timesheet;
+    private $timesheet;
 
     /**
      * @var App\Models\Mission
      */
-    public $mission;
+    private $mission;
 
     /**
      * @var App\Models\TimesheetDocument
      */
-    public $timesheetDocument;
+    private $timesheetDocument;
 
     /**
      * @var App\Helpers\S3Helper
@@ -54,7 +55,7 @@ class TimesheetRepository implements TimesheetInterface
      * @param  App\Models\Mission $mission
      * @param  App\Models\TimesheetDocument $timesheetDocument
      * @param  App\Helpers\Helpers $helpers
-     * @param App\Helpers\LanguageHelper $languageHelper
+     * @param  App\Helpers\LanguageHelper $languageHelper
      * @param  App\Helpers\S3Helper $s3helper
      * @return void
      */
@@ -75,15 +76,23 @@ class TimesheetRepository implements TimesheetInterface
     }
     
     /**
-     * Store timesheet
+     * Store/Update timesheet
      *
      * @param \Illuminate\Http\Request $request
      * @return App\Models\Timesheet
      */
-    public function storeTimesheet(Request $request): Timesheet
+    public function storeOrUpdateTimesheet(Request $request): Timesheet
     {
-        $data = $request->toArray();
-        $timesheet = $this->timesheet->create($data);
+        $data = $request->except('date_volunteered');
+
+        $dateVolunteered = Carbon::createFromFormat('m-d-Y', $request->date_volunteered)
+        ->setTimezone(config('constants.TIMEZONE'));
+        
+        $timesheet = $this->timesheet->updateOrCreate(['user_id' => $request->auth->user_id,
+        'mission_id' => $request->mission_id,
+        'date_volunteered' => $dateVolunteered->format('Y-m-d')
+        ], $data);
+
         $tenantName = $this->helpers->getSubDomainFromRequest($request);
 
         $files = $request->file('documents');
@@ -106,20 +115,6 @@ class TimesheetRepository implements TimesheetInterface
             }
         }
         return $timesheet;
-    }
-
-    /**
-     * get added action data count
-     *
-     * @param int $missionId
-     * @return int
-     */
-    public function getAddedActions(int $missionId): int
-    {
-        return ($this->timesheet->where('mission_id', $missionId)
-        ->whereIn('status_id', array(config('constants.timesheet_status_id.APPROVED'),
-        config('constants.timesheet_status_id.AUTOMATICALLY_APPROVED')))
-        ->sum('action')) ?? 0;
     }
 
     /**
@@ -153,43 +148,6 @@ class TimesheetRepository implements TimesheetInterface
         return $timesheetEntries;
     }
     
-    /**
-     * Update timesheet
-     *
-     * @param \Illuminate\Http\Request $request
-     * @param int $timesheetId
-     * @return bool
-     */
-    public function updateTimesheet(Request $request, int $timesheetId):  bool
-    {
-        $timesheetData =$this->timesheet->where(['timesheet_id' => $timesheetId,
-        'user_id' => $request->auth->user_id])->firstOrFail();
-
-        $data = $request->toArray();
-        $timesheet = $timesheetData->update($data);
-        $tenantName = $this->helpers->getSubDomainFromRequest($request);
-
-        $files = $request->file('documents');
-       
-        if ($request->hasFile('documents')) {
-            foreach ($files as $file) {
-                $filePath = $this->s3helper->uploadDocumentOnS3Bucket(
-                    $file,
-                    $tenantName,
-                    $request->auth->user_id,
-                    $timesheetId
-                );
-                $timesheetDocument = array('timesheet_id' => $timesheetId,
-                                        'document_name' => basename($filePath),
-                                        'document_type' => pathinfo(basename($filePath), PATHINFO_EXTENSION),
-                                        'document_path' => $filePath);
-                $this->timesheetDocument->create($timesheetDocument);
-                unset($timesheetDocument);
-            }
-        }
-        return $timesheet;
-    }
-
     /**
      * Fetch timesheet details
      *
@@ -443,5 +401,36 @@ class TimesheetRepository implements TimesheetInterface
             ->with('timesheetStatus');
         }]);
         return $timesheet->get();
+    }
+
+    /**
+     * Fetch timesheet details
+     *
+     * @param int $missionId
+     * @param int $userId
+     * @param string $date
+     * @return null|Illuminate\Support\Collection
+     */
+    public function getTimesheetDetails(int $missionId, int $userId, string $date): ?Collection
+    {
+        $date = Carbon::createFromFormat('m-d-Y', $date)
+        ->setTimezone(config('constants.TIMEZONE'));
+        $date = $date->format('Y-m-d');
+        return $this->timesheet->with('timesheetDocument', 'timesheetStatus')->where(['mission_id' => $missionId,
+        'user_id' => $userId, 'date_volunteered' => $date])->get();
+    }
+
+    /**
+     * get added action data count
+     *
+     * @param int $missionId
+     * @return int
+     */
+    public function getAddedActions(int $missionId): int
+    {
+        return ($this->timesheet->where('mission_id', $missionId)
+        ->whereIn('status_id', array(config('constants.timesheet_status_id.APPROVED'),
+        config('constants.timesheet_status_id.AUTOMATICALLY_APPROVED')))
+        ->sum('action')) ?? 0;
     }
 }

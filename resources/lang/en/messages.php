@@ -105,14 +105,15 @@ return [
         'MESSAGE_TIMESHEET_DOCUMENT_DELETED' => 'Timesheet document deleted sucessfully',
         'TIMESHEET_SUBMITTED_SUCESSFULLY' => 'Timesheet submitted sucessfully',
         'TIMESHEET_ALREADY_SUBMITTED_FOR_APPROVAL' => 'Timesheet already submitted for approval',
-        'MESSAGE_TIME_REQUEST_LISTING' => 'Time requests listed successfully',
-        'MESSAGE_TIME_REQUEST_NOT_FOUND' => 'No pending time requests found',
-        'MESSAGE_THEME_HISTORY_PER_HOUR_LISTED' => 'Theme history data per hour listed successfully',
-        'MESSAGE_SKILL_HISTORY_PER_HOUR_LISTED' => 'Skill history data per hour listed successfully',
-        'MESSAGE_THEME_HISTORY_NOT_FOUND' => 'Theme history data not found',
-        'MESSAGE_SKILL_HISTORY_NOT_FOUND' => 'Skill history data not found',
+        'MESSAGE_THEME_HISTORY_PER_HOUR_LISTED' => 'Volunteer hours per theme listed successfully',
+        'MESSAGE_SKILL_HISTORY_PER_HOUR_LISTED' => 'Volunteer hours per skill listed successfully',
+        'MESSAGE_THEME_HISTORY_NOT_FOUND' => 'Volunteer hours per theme not found',
+        'MESSAGE_SKILL_HISTORY_NOT_FOUND' => 'Volunteer hours per skill not found',
         'MESSAGE_GOAL_REQUEST_LISTING' => 'Goal requests listed successfully',
         'MESSAGE_NO_GOAL_REQUEST_FOUND' => 'No pending goal requests found',
+        'MESSAGE_POLICY_PAGE_FOUND' => 'Policy page found successfully',
+        'MESSAGE_TIME_REQUEST_LISTING' => 'Time requests listed successfully',
+        'MESSAGE_TIME_REQUEST_NOT_FOUND' => 'No pending time requests found',
 	],
         
     /**
@@ -226,5 +227,11 @@ return [
         'MISSION_APPLICATION_NOT_APPROVED' => 'Mission application is not approved',
         'ERROR_TIMESHEET_ALREADY_DONE_FOR_DATE' => 'Time entry is already approved for given date', 
         'ERROR_INVALID_DATA_FOR_TIMESHEET_ENTRY' => 'You cannot add time entry',
+        'ERROR_TIMESHEET_DECLINED' => 'You can not update declined timesheet',
+        'ERROR_TIMESHEET_SUBMIT_FOR_APPROVAL' => 'This timesheet is already submitted for approval. You cannot update it',
+        'ERROR_SAME_DATE_TIME_ENTRY' => 'You cannot add more than 24 hours timeentry for same date',
+        'ERROR_INVALID_HOURS' => 'Hours must be in between 00, 23',
+        'ERROR_INVALID_MINUTES' => 'Minutes must be in between 00, 59',
+
     ],
 ];
