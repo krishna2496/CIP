@@ -169,8 +169,9 @@ class TimesheetController extends Controller
             );
             $timesheetDetails = $timesheetData->toArray();
             if ($timesheetData->count() > 0) {
+                $timesheetStatus = $timesheetDetails[0]["timesheet_status"]["status"];
                 // If timesheet status declined
-                if ($timesheetDetails[0]["timesheet_status"]["status"] == config('constants.timesheet_status.DECLINED')) {
+                if ($timesheetStatus == config('constants.timesheet_status.DECLINED')) {
                     return $this->responseHelper->error(
                         Response::HTTP_UNPROCESSABLE_ENTITY,
                         Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
@@ -180,8 +181,7 @@ class TimesheetController extends Controller
                 }
 
                 // If timesheet status is submitted for approval
-                if ($timesheetDetails[0]["timesheet_status"]["status"]
-                    == config('constants.timesheet_status.SUBMIT_FOR_APPROVAL')) {
+                if ($timesheetStatus == config('constants.timesheet_status.SUBMIT_FOR_APPROVAL')) {
                     return $this->responseHelper->error(
                         Response::HTTP_UNPROCESSABLE_ENTITY,
                         Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
@@ -191,9 +191,8 @@ class TimesheetController extends Controller
                 }
 
                 // If timesheet status is approved
-                if ($timesheetDetails[0]["timesheet_status"]["status"] == config('constants.timesheet_status.APPROVED')
-                    || $timesheetDetails[0]["timesheet_status"]["status"]
-                    == config('constants.timesheet_status.AUTOMATICALLY_APPROVED')) {
+                if ($timesheetStatus == config('constants.timesheet_status.APPROVED')
+                    || $timesheetStatus == config('constants.timesheet_status.AUTOMATICALLY_APPROVED')) {
                     return $this->responseHelper->error(
                         Response::HTTP_UNPROCESSABLE_ENTITY,
                         Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
@@ -333,9 +332,7 @@ class TimesheetController extends Controller
         } catch (PDOException $e) {
             return $this->PDO(
                 config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
-                trans(
-                    'messages.custom_error_message.ERROR_DATABASE_OPERATIONAL'
-                )
+                trans('messages.custom_error_message.ERROR_DATABASE_OPERATIONAL')
             );
         } catch (InvalidArgumentException $e) {
             return $this->invalidArgument(
