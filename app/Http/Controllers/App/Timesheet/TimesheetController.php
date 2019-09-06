@@ -63,32 +63,12 @@ class TimesheetController extends Controller
     public function index(Request $request): JsonResponse
     {
         try {
-            $timeMissionEntries = $this->timesheetRepository
-                ->getAllTimesheetEntries($request, config('constants.mission_type.TIME'));
-            foreach ($timeMissionEntries as $value) {
-                if ($value->missionLanguage) {
-                    $value->setAttribute('title', $value->missionLanguage[0]->title);
-                    unset($value->missionLanguage);
-                }
-                $value->setAppends([]);
-            }
+            $timesheetEntries = $this->timesheetRepository->getAllTimesheetEntries($request);
 
-            $goalMissionEntries = $this->timesheetRepository
-                ->getAllTimesheetEntries($request, config('constants.mission_type.GOAL'));
-            foreach ($goalMissionEntries as $value) {
-                if ($value->missionLanguage) {
-                    $value->setAttribute('title', $value->missionLanguage[0]->title);
-                    unset($value->missionLanguage);
-                }
-                $value->setAppends([]);
-            }
-
-            $timesheetEntries[config('constants.mission_type.TIME')] = $timeMissionEntries;
-            $timesheetEntries[config('constants.mission_type.GOAL')] = $goalMissionEntries;
-            
             $apiData = $timesheetEntries;
             $apiStatus = Response::HTTP_OK;
-            $apiMessage = (count($timeMissionEntries->toArray()) > 0 || count($goalMissionEntries->toArray()) > 0) ?
+            $apiMessage = (count($timesheetEntries[config('constants.mission_type.TIME')]) > 0 ||
+            count($timesheetEntries[config('constants.mission_type.GOAL')]) > 0) ?
             trans('messages.success.MESSAGE_TIMESHEET_ENTRIES_LISTING') :
             trans('messages.success.MESSAGE_NO_TIMESHEET_ENTRIES_FOUND');
             return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);

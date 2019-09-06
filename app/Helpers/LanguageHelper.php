@@ -178,9 +178,9 @@ class LanguageHelper
      * Get language id from request
      *
      * @param \Illuminate\Http\Request $request
-     * @return integer
+     * @return int
      */
-    public function getLanguageId(Request $request): integer
+    public function getLanguageId(Request $request): int
     {
         $languages = $this->getTenantLanguages($request);
         return $languages->where('code', config('app.locale'))->first()->language_id;

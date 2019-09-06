@@ -124,43 +124,32 @@ class TimesheetRepository implements TimesheetInterface
      * Get timesheet entries
      *
      * @param Illuminate\Http\Request $request
-     * @param string $missionType
-     * @return Illuminate\Database\Eloquent\Collection
+     * @return array
      */
-    public function getAllTimesheetEntries(Request $request, string $missionType): Collection
+    public function getAllTimesheetEntries(Request $request): array
     {
-        $languages = $this->languageHelper->getLanguages($request);
-        $language = ($request->hasHeader('X-localization')) ?
-        $request->header('X-localization') : env('TENANT_DEFAULT_LANGUAGE_CODE');
-        $language = $languages->where('code', $language)->first();
-        $languageId = $language->language_id;
-        
-        $timesheet = $this->mission->select('mission.mission_id', 'mission.start_date', 'mission.end_date')
-        ->where(['publication_status' => config("constants.publication_status")["APPROVED"],
-        'mission_type'=> $missionType])
-        ->whereHas('missionApplication', function ($query) use ($request) {
-            $query->where('user_id', $request->auth->user_id)
-            ->whereIn('approval_status', [config("constants.application_status")["AUTOMATICALLY_APPROVED"]]);
-        })
-        ->with(['missionLanguage' => function ($query) use ($languageId) {
-            $query->select('mission_language_id', 'mission_id', 'title')
-            ->where('language_id', $languageId);
-        }])
-        ->with(['timesheet' => function ($query) use ($missionType, $request) {
-            $type = ($missionType == config('constants.mission_type.TIME')) ? 'time' : 'action';
-            $query->select(
-                'timesheet_id',
-                'mission_id',
-                'date_volunteered',
-                'day_volunteered',
-                'notes',
-                'status_id',
-                $type
-            )
-            ->where('user_id', $request->auth->user_id)
-            ->with('timesheetStatus');
-        }]);
-        return $timesheet->get();
+        $timeMissionEntries = $this->getTimesheetEntries($request, config('constants.mission_type.TIME'));
+       
+        foreach ($timeMissionEntries as $value) {
+            if ($value->missionLanguage) {
+                $value->setAttribute('title', $value->missionLanguage[0]->title);
+                unset($value->missionLanguage);
+            }
+            $value->setAppends([]);
+        }
+
+        $goalMissionEntries = $this->getTimesheetEntries($request, config('constants.mission_type.GOAL'));
+        foreach ($goalMissionEntries as $value) {
+            if ($value->missionLanguage) {
+                $value->setAttribute('title', $value->missionLanguage[0]->title);
+                unset($value->missionLanguage);
+            }
+            $value->setAppends([]);
+        }
+
+        $timesheetEntries[config('constants.mission_type.TIME')] = $timeMissionEntries;
+        $timesheetEntries[config('constants.mission_type.GOAL')] = $goalMissionEntries;
+        return $timesheetEntries;
     }
     
     /**
@@ -349,5 +338,45 @@ class TimesheetRepository implements TimesheetInterface
         return ($this->timesheet->where(['mission_id' => $missionId, 'date_volunteered' => $date])
         ->whereIn('status_id', array(config('constants.timesheet_status_id.APPROVED'),
         config('constants.timesheet_status_id.AUTOMATICALLY_APPROVED'))))->get();
+    }
+
+    /**
+     * Get timesheet entries
+     *
+     * @param Illuminate\Http\Request $request
+     * @param string $missionType
+     * @return Illuminate\Database\Eloquent\Collection
+     */
+    public function getTimesheetEntries(Request $request, string $missionType): Collection
+    {
+        $languageId = $this->languageHelper->getLanguageId($request);
+        $userId = $request->auth->user_id;
+
+        $timesheet = $this->mission->select('mission.mission_id', 'mission.start_date', 'mission.end_date')
+        ->where(['publication_status' => config("constants.publication_status")["APPROVED"],
+        'mission_type'=> $missionType])
+        ->whereHas('missionApplication', function ($query) use ($userId) {
+            $query->where('user_id', $userId)
+            ->whereIn('approval_status', [config("constants.application_status")["AUTOMATICALLY_APPROVED"]]);
+        })
+        ->with(['missionLanguage' => function ($query) use ($languageId) {
+            $query->select('mission_language_id', 'mission_id', 'title')
+            ->where('language_id', $languageId);
+        }])
+        ->with(['timesheet' => function ($query) use ($missionType, $userId) {
+            $type = ($missionType == config('constants.mission_type.TIME')) ? 'time' : 'action';
+            $query->select(
+                'timesheet_id',
+                'mission_id',
+                'date_volunteered',
+                'day_volunteered',
+                'notes',
+                'status_id',
+                $type
+            )
+            ->where('user_id', $userId)
+            ->with('timesheetStatus');
+        }]);
+        return $timesheet->get();
     }
 }

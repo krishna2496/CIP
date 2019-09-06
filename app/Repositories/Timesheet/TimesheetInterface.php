@@ -84,4 +84,12 @@ interface TimesheetInterface
      * @return null|Illuminate\Support\Collection
      */
     public function getTimesheetDetailByDate(int $missionId, string $date): ? Collection;
+
+    /**
+     * Get timesheet entries
+     *
+     * @param Illuminate\Http\Request $request
+     * @return array
+     */
+    public function getAllTimesheetEntries(Request $request): array;
 }
