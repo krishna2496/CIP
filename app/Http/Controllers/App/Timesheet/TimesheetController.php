@@ -99,10 +99,6 @@ class TimesheetController extends Controller
                     'date_volunteered' => 'required',
                     'day_volunteered' => ['required', Rule::in(config('constants.day_volunteered'))],
                     'documents.*' => 'max:' . $documentSizeLimit . '|valid_timesheet_document_type',
-                ],
-                [
-                    'max' => 'Document size should not be max than ' .
-                    (config('constants.TIMESHEET_DOCUMENT_SIZE_LIMIT') / 1024) . ' MB',
                 ]
             );
 

@@ -109,6 +109,8 @@ return [
         ],
         'documents.*' => [
             'valid_timesheet_document_type' => 'Please select valid timesheet documents',
+            'max' => 'Document file size must be ' .
+            (config('constants.TIMESHEET_DOCUMENT_SIZE_LIMIT') / 1024) . 'mb or below',
         ],
     ],
 
