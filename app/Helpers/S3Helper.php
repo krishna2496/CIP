@@ -119,20 +119,12 @@ class S3Helper
     public function uploadFileOnS3Bucket(string $url, string $tenantName): string
     {
         $disk = Storage::disk('s3');
-        // Comment $context_array and $context code before going live
-        $context_array = array('http'=>array('proxy'=>env('AWS_WEBPROXY_HOST').":".env('AWS_WEBPROXY_PORT'),
-        'request_fulluri'=>true));
-        $context = stream_context_create($context_array);
-        // Comment below line before going live
-        $disk->put($tenantName.'/'.basename($url), file_get_contents($url, false, $context));
-        // Uncomment below line before going live
         if ($disk->put(
             $tenantName.'/'.config('constants.AWS_S3_ASSETS_FOLDER_NAME').'/'
             .config('constants.AWS_S3_IMAGES_FOLDER_NAME')
             .'/'.basename($url),
             file_get_contents($url)
         )) {
-            $file = $disk->get($tenantName.'/'.basename($url));
             $pathInS3 = 'https://'.env('AWS_S3_BUCKET_NAME').'.s3.'
             .env("AWS_REGION").'.amazonaws.com/'.$tenantName.'/'.config('constants.AWS_S3_ASSETS_FOLDER_NAME')
             .'/'.config('constants.AWS_S3_IMAGES_FOLDER_NAME').'/'.basename($url);
@@ -229,7 +221,7 @@ class S3Helper
         try {
             $disk = Storage::disk('s3');
             $name = time() . $file->getClientOriginalName();
-            $documentPath = $tenantName.'/'.$userId.'/timesheet/'.$timesheetId.'_'.basename($name);
+            $documentPath = $tenantName.'/users/'.$userId.'/timesheet/'.$timesheetId.'_'.basename($name);
             $pathInS3 = 'https://'.env('AWS_S3_BUCKET_NAME').'.s3.'
             .env("AWS_REGION").'.amazonaws.com/'. $documentPath;
 

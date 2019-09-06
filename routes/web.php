@@ -179,7 +179,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
 
     /* Create user skill */
     $router->post('/app/user/skills', ['as' => 'user.skills',
-    'middleware' => 'tenant.connection|jwt.auth',
+    'middleware' => 'tenant.connection|localization|jwt.auth',
     'uses' => 'App\User\UserController@linkSkill']);
 
     /* Fetch Language json file */
@@ -190,36 +190,54 @@ $router->group(['middleware' => 'localization'], function ($router) {
     $router->patch('/app/user/upload-profile-image', ['as' => 'upload.profile.image',
     'middleware' => 'localization|tenant.connection|jwt.auth',
     'uses' => 'App\User\UserController@uploadProfileImage']);
+ 
+    /* Fetch pending goal requests */
+    $router->get('/app/timesheet/goal-requests', ['as' => 'app.timesheet.goal-requests',
+    'middleware' => 'localization|tenant.connection|jwt.auth',
+    'uses' => 'App\Timesheet\TimesheetController@getPendingGoalRequests']);
 
     /* Store timesheet data */
     $router->post('/app/timesheet', ['as' => 'app.timesheet',
-    'middleware' => 'tenant.connection|jwt.auth',
+    'middleware' => 'localization|tenant.connection|jwt.auth',
     'uses' => 'App\Timesheet\TimesheetController@store']);
+
+    /* Submit timesheet data */
+    $router->post('/app/timesheet/submit', ['as' => 'app.timesheet.submit',
+    'middleware' => 'localization|tenant.connection|jwt.auth',
+    'uses' => 'App\Timesheet\TimesheetController@submitTimesheet']);
+    
+    /* Fetch pending time requests */
+    $router->get('/app/timesheet/time-requests', ['as' => 'app.timesheet.time-requests',
+    'middleware' => 'tenant.connection|jwt.auth',
+    'uses' => 'App\Timesheet\TimesheetController@getPendingTimeRequests']);
 
     /* Get timesheet data */
     $router->get('/app/timesheet', ['as' => 'app.timesheet',
-    'middleware' => 'tenant.connection|jwt.auth',
+    'middleware' => 'localization|tenant.connection|jwt.auth',
     'uses' => 'App\Timesheet\TimesheetController@index']);
     
-    /* Update timesheet data */
-    $router->patch('/app/timesheet/{timesheetId}', ['as' => 'app.timesheet',
-    'middleware' => 'tenant.connection|jwt.auth',
-    'uses' => 'App\Timesheet\TimesheetController@update']);
-
     /* Get timesheet data */
     $router->get('/app/timesheet/{timesheetId}', ['as' => 'app.timesheet.show',
-    'middleware' => 'tenant.connection|jwt.auth',
+    'middleware' => 'localization|tenant.connection|jwt.auth',
     'uses' => 'App\Timesheet\TimesheetController@show']);
 
-    /* Delete timesheet doecument data */
+    /* Delete timesheet document data */
     $router->delete('/app/timesheet/{timesheetId}/document/{documentId}', ['as' => 'app.timesheet.destroy',
-    'middleware' => 'tenant.connection|jwt.auth',
+    'middleware' => 'localization|tenant.connection|jwt.auth',
     'uses' => 'App\Timesheet\TimesheetController@destroy']);
+    
+    $router->group(['middleware' => 'localization'], function ($router) {
 
-    /* Submit timesheet data */
-    $router->patch('/app/timesheet/submit', ['as' => 'app.timesheet.submit',
-    'middleware' => 'tenant.connection|jwt.auth',
-    'uses' => 'App\Timesheet\TimesheetController@submitTimesheet']);
+        /* Get volunteering history */
+        $router->get('/app/volunteer/history/theme', ['as' => 'app.volunteer.history.theme',
+        'middleware' => 'tenant.connection|jwt.auth',
+        'uses' => 'App\VolunteerHistory\VolunteerHistoryController@themeHistory']);
+    
+        /* Get volunteering history */
+        $router->get('/app/volunteer/history/skill', ['as' => 'app.volunteer.history.skill',
+        'middleware' => 'tenant.connection|jwt.auth',
+        'uses' => 'App\VolunteerHistory\VolunteerHistoryController@skillHistory']);
+    });
 
 /*
 |
@@ -456,6 +474,16 @@ $router->group(['middleware' => 'localization'], function ($router) {
         }
     );
 
+    /* Timesheet management */
+    $router->group(
+        ['prefix' => 'timesheet', 'middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware'],
+        function ($router) {
+            $router->get('/{userId}', ['as' => 'user.timesheet', 'middleware' => ['PaginationMiddleware'],
+                'uses' => 'Admin\Timesheet\TimesheetController@index']);
+            $router->patch('/{timesheetId}', ['as' => 'update.user.timesheet.status',
+                'uses' => 'Admin\Timesheet\TimesheetController@update']);
+        }
+    );
 /*
 |
 |--------------------------------------------------------------------------

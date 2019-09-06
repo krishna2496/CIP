@@ -50,6 +50,11 @@ class AppServiceProvider extends ServiceProvider
             ))
             ? true : false;
         });
+
+        Validator::extend('valid_timesheet_document_type', function ($attribute, $value) {
+            $urlExtension = $value->getClientOriginalExtension();
+            return (!in_array($urlExtension, config('constants.timesheet_document_types'))) ? false : true;
+        });
     }
 
     /**

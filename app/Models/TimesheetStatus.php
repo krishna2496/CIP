@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\Timesheet;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Collection;
 
 class TimesheetStatus extends Model
 {
@@ -37,7 +38,7 @@ class TimesheetStatus extends Model
      *
      * @var array
      */
-    protected $visible = ['status'];
+    protected $visible = ['timesheet_status_id','status'];
 
     /**
      * Get the mission that has theme
@@ -47,5 +48,19 @@ class TimesheetStatus extends Model
     public function timesheet(): HasMany
     {
         return $this->hasMany(Timesheet::class, 'timesheet_status_id', 'status_id');
+    }
+
+    /**
+     * Get the success statuses' ids
+     *
+     * @return Illuminate\Support\Collection
+     */
+    public function getApprovedStatuses(): Collection
+    {
+        return $this->select('timesheet_status_id')
+        ->whereIn('status', [
+            config('constants.timesheet_status.AUTOMATICALLY_APPROVED'),
+            config('constants.timesheet_status.APPROVED')
+        ])->get();
     }
 }
