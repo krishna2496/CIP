@@ -54,6 +54,7 @@ export default {
                         data: this.data,
                         backgroundColor: this.backgroundColor,
                         borderColor: this.borderColor,
+                        hoverBackgroundColor: this.backgroundColor,
                         borderWidth: 1
                     }
                     ]
