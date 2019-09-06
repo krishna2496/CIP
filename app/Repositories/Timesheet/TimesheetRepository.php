@@ -85,12 +85,12 @@ class TimesheetRepository implements TimesheetInterface
     {
         $data = $request->except('date_volunteered');
 
-        $date = Carbon::createFromFormat('m-d-Y', $request->date_volunteered)
+        $dateVolunteered = Carbon::createFromFormat('m-d-Y', $request->date_volunteered)
         ->setTimezone(config('constants.TIMEZONE'));
         
         $timesheet = $this->timesheet->updateOrCreate(['user_id' => $request->auth->user_id,
         'mission_id' => $request->mission_id,
-        'date_volunteered' => $date->format('Y-m-d')
+        'date_volunteered' => $dateVolunteered->format('Y-m-d')
         ], $data);
 
         $tenantName = $this->helpers->getSubDomainFromRequest($request);

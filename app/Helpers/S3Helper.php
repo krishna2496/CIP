@@ -229,7 +229,7 @@ class S3Helper
         try {
             $disk = Storage::disk('s3');
             $name = time() . $file->getClientOriginalName();
-            $documentPath = $tenantName.'/'.$userId.'/timesheet/'.$timesheetId.'_'.basename($name);
+            $documentPath = $tenantName.'/users/'.$userId.'/timesheet/'.$timesheetId.'_'.basename($name);
             $pathInS3 = 'https://'.env('AWS_S3_BUCKET_NAME').'.s3.'
             .env("AWS_REGION").'.amazonaws.com/'. $documentPath;
 
