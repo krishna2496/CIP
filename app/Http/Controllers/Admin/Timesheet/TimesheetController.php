@@ -95,7 +95,7 @@ class TimesheetController extends Controller
     }
 
     /**
-     * Approve/decline timehseet entry" instead of "Update the specified resource in storage
+     * Approve/decline timehseet entry
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $timesheetId

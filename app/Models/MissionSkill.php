@@ -32,7 +32,7 @@ class MissionSkill extends Model
      * @var array
      */
     protected $visible = ['mission_skill_id', 'skill_id', 'mission_id', 'skill', 'mission_count',
-    'total_minutes', 'skill_name'];
+    'total_minutes', 'skill_name','translations'];
     /**
      * The attributes that are mass assignable.
      *
