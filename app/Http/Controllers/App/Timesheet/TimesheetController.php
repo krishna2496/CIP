@@ -85,10 +85,10 @@ class TimesheetController extends Controller
 
             $timesheetEntries[config('constants.mission_type.TIME')] = $timeMissionEntries;
             $timesheetEntries[config('constants.mission_type.GOAL')] = $goalMissionEntries;
-
+            
             $apiData = $timesheetEntries;
             $apiStatus = Response::HTTP_OK;
-            $apiMessage = (count($timeMissionEntries->toArray()) > 0 && count($goalMissionEntries->toArray()) > 0) ?
+            $apiMessage = (count($timeMissionEntries->toArray()) > 0 || count($goalMissionEntries->toArray()) > 0) ?
             trans('messages.success.MESSAGE_TIMESHEET_ENTRIES_LISTING') :
             trans('messages.success.MESSAGE_NO_TIMESHEET_ENTRIES_FOUND');
             return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);

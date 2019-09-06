@@ -328,7 +328,7 @@ class TimesheetRepository implements TimesheetInterface
             $query->where(['status_id' => 5, 'user_id' => $request->auth->user_id]);
         })
         ->withCount([
-        'timesheet AS total_action' => function ($query) use ($request) {
+        'timesheet AS action' => function ($query) use ($request) {
             $query->select(DB::raw("SUM(action) as action"))
             ->where(['status_id' => 5, 'user_id' => $request->auth->user_id]);
         }]);
