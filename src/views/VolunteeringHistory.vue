@@ -217,8 +217,8 @@ export default {
           Organisation: "Green House"
         }
       ],
-      ThemeYearText: "Year",
 
+      ThemeYearText: "Year",
       themeYearList: [
         ["2016", "2016"],
         ["2017", "2017"],
@@ -226,15 +226,18 @@ export default {
         ["2019", "2019"]
       ],
       skillYearText: "Year",
-      skillYearList: [
-        ["2016", "2016"],
-        ["2017", "2017"],
-        ["2018", "2018"],
-        ["2019", "2019"]
-      ]
+      skillYearList: []
     };
   },
-  mounted() {},
+  mounted() {
+    var currentYear = new Date().getFullYear();
+    var yearsList = [];    
+    for (var index = currentYear; index > (currentYear - 5); index--) {
+      yearsList.push([index, index]);
+    }
+    this.skillYearList = yearsList;
+    this.themeYearList = yearsList;
+  },
   methods: {
     updateThemeYear(value) {
       this.ThemeYearText = value.selectedVal;
