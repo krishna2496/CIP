@@ -16,10 +16,12 @@ class LocalizationMiddleware
     {
         try {
             // Check header request and determine localizaton
-            $local = ($request->hasHeader('X-localization')) ? $request->header('X-localization') :
-            env('TENANT_DEFAULT_LANGUAGE_CODE');
+            $local = (!empty($request->header('X-localization')) && $request->hasHeader('X-localization'))
+            ? $request->header('X-localization') : env('TENANT_DEFAULT_LANGUAGE_CODE');
+            
             // set laravel localization
             config(['app.locale' => $local]);
+            
             // continue request
             return $next($request);
         } catch (\Exception $e) {

@@ -71,6 +71,14 @@ class TimesheetController extends Controller
         }
         try {
             $userTimesheet = $this->timesheetRepository->getUserTimesheet($userId, $request);
+            foreach ($userTimesheet as $value) {
+                if ($value->missionLanguage) {
+                    $value->setAttribute('title', $value->missionLanguage[0]->title);
+                    unset($value->missionLanguage);
+                }
+                $value->setAppends([]);
+            }
+
             $apiStatus = Response::HTTP_OK;
             $apiMessage = (!empty($userTimesheet)) ?
             trans('messages.success.MESSAGE_TIMESHEET_ENTRIES_LISTING') :
@@ -87,29 +95,7 @@ class TimesheetController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
+     * Approve/decline timehseet entry
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $timesheetId
@@ -136,7 +122,7 @@ class TimesheetController extends Controller
                 );
             }
             $this->timesheetRepository->find($timesheetId);
-            $this->timesheetRepository->updateTimesheetField($request->toArray(), $timesheetId);
+            $this->timesheetRepository->updateTimesheetStatus($request->status_id, $timesheetId);
 
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_TIMESETTING_STATUS_UPDATED');
@@ -150,16 +136,5 @@ class TimesheetController extends Controller
         } catch (\Execption $e) {
             return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
     }
 }

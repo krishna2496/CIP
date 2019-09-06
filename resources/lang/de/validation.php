@@ -104,6 +104,9 @@ return [
         'linked_in_url' => [
             'valid_linkedin_url' => 'Please enter valid linkedIn url',
         ],
+        'documents.*' => [
+            'valid_timesheet_document_type' => 'Please select valid timesheet documents',
+        ],
     ],
 
     /*

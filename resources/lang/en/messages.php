@@ -96,7 +96,7 @@ return [
         'MESSAGE_SLIDER_DELETED' => 'Slider deleted successfully',
         'TIMESHEET_ENTRY_ADDED_SUCESSFULLY' => 'Timesheet entry added successfully',
         'MESSAGE_TIMESHEET_ENTRIES_LISTING' => 'Timesheet entries listed successfully',
-        'MESSAGE_NO_TIMESHEET_ENTRIES_FOUND' => 'Timesheet entries not found',
+        'MESSAGE_NO_TIMESHEET_ENTRIES_FOUND' => 'No timesheet entries found',
         'TIMESHEET_ENTRY_UPDATED_SUCESSFULLY' => 'Timesheet entry updated successfully',
         'MESSAGE_TIMESHEET_LISTING' => 'Timesheet listed successfully',        
         'MESSAGE_TIMESHEET_DOCUMENT_DELETED' => 'Timesheet document deleted successfully',
@@ -105,8 +105,14 @@ return [
         'MESSAGE_TIMESHEET_DOCUMENT_DELETED' => 'Timesheet document deleted sucessfully',
         'TIMESHEET_SUBMITTED_SUCESSFULLY' => 'Timesheet submitted sucessfully',
         'TIMESHEET_ALREADY_SUBMITTED_FOR_APPROVAL' => 'Timesheet already submitted for approval',
-        'MESSAGE_TIME_REQUEST_LISTING' => 'Time request listed successfully',
-        'MESSAGE_TIME_REQUEST_NOT_FOUND' => 'No time request found',
+        'MESSAGE_TIME_REQUEST_LISTING' => 'Time requests listed successfully',
+        'MESSAGE_TIME_REQUEST_NOT_FOUND' => 'No pending time requests found',
+        'MESSAGE_THEME_HISTORY_PER_HOUR_LISTED' => 'Theme history data per hour listed successfully',
+        'MESSAGE_SKILL_HISTORY_PER_HOUR_LISTED' => 'Skill history data per hour listed successfully',
+        'MESSAGE_THEME_HISTORY_NOT_FOUND' => 'Theme history data not found',
+        'MESSAGE_SKILL_HISTORY_NOT_FOUND' => 'Skill history data not found',
+        'MESSAGE_GOAL_REQUEST_LISTING' => 'Goal requests listed successfully',
+        'MESSAGE_NO_GOAL_REQUEST_FOUND' => 'No pending goal requests found',
 	],
         
     /**
@@ -160,7 +166,7 @@ return [
         'SKILL_LIMIT' => 'Sorry, you cannot add more than '. config('constants.SKILL_LIMIT').' skills',
         'ERROR_INVALID_MISSION_MEDIA_DATA' => 'Invalid mission media data',
         'ERROR_INVALID_MISSION_DOCUMENT_DATA' => 'Invalid mission document data',
-        'ERROR_TIMESHEET_ENTRY_NOT_FOUND' => 'Timesheet entry id not found',
+        'ERROR_TIMESHEET_ENTRY_NOT_FOUND' => 'Timesheet entry not found',
 
         // Custom error code for Tenant Authorization - 210000 - 219999
         'ERROR_INVALID_API_AND_SECRET_KEY' => 'Invalid API key or secret key',
@@ -213,7 +219,12 @@ return [
         //For timesheet module
         'ERROR_INVALID_ACTION' => 'Invalid goal action',
         'TIMESHEET_NOT_FOUND' => 'Timesheet does not exists' ,
-        'ERROR_TIMESHEET_ALREADY_UPDATED' => 'Sorry you cannot update timesheet it is already approved',        
+        'ERROR_TIMESHEET_ALREADY_UPDATED' => 'You can not update approved timesheet',        
         'TIMESHEET_DOCUMENT_NOT_FOUND' => 'Timesheet document does not exists',
+        'ERROR_MISSION_STARTDATE' => 'Invalid date: selected date should not be before startdate',
+        'ERROR_MISSION_ENDDATE' => 'Selected date should not be greater than mission end date',
+        'MISSION_APPLICATION_NOT_APPROVED' => 'Mission application is not approved',
+        'ERROR_TIMESHEET_ALREADY_DONE_FOR_DATE' => 'Time entry is already approved for given date', 
+        'ERROR_INVALID_DATA_FOR_TIMESHEET_ENTRY' => 'You cannot add time entry',
     ],
 ];
