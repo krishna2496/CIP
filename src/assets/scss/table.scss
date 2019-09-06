@@ -283,6 +283,10 @@
           border-color: transparent $error $error;
         }
       }
+      &.disabled{
+          cursor: default;
+          pointer-events: none;
+      }
     }
     th {
       &.currentdate-col {
@@ -416,6 +420,10 @@
     &.next-btn {
       border-radius: 0 3px 3px 0;
       padding: 5px 13px 5px 10px;
+    }
+    &.disabled{
+      pointer-events:none;
+      cursor:default;
     }
     img {
       width: 12px;

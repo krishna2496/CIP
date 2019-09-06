@@ -17,7 +17,7 @@ export default function setup() {
 
         // Do something before request is sent
         if(domain[lastPosition] == "favourite" || domain[lastPosition] == "rating" 
-            || domain[lastPosition] == "comment" || getRequestEndPoint == "comments"){
+            || domain[lastPosition] == "comment" || getRequestEndPoint == "comments" || domain[lastPosition] == "timesheet"){
             addLoader = "false";
         }
 
@@ -27,7 +27,7 @@ export default function setup() {
             }
         }
         
-        if(secondLastValue == "mission-media" || secondLastValue == "cms" || secondLastValue == "language") {
+        if(secondLastValue == "mission-media" || secondLastValue == "cms" || secondLastValue == "language" ||  secondLastValue == "document") {
             addLoader = "false";
         }
 

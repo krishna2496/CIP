@@ -134,9 +134,7 @@ export default {
     },
     created() {
     	this.langauageData = JSON.parse(store.state.languageLabel);
-    	this.changeMonth(this.currentMonth);
-		
-    
+    	this.changeMonth(this.currentMonth);	    
     }
 };
 </script>

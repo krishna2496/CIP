@@ -7,8 +7,8 @@
 	}">
 	<div 
 		v-bind:class="{ 
-				'content-loader-wrap': true, 
-				'recent-loader': recentVolunterLoader,
+			'content-loader-wrap': true, 
+			'recent-loader': recentVolunterLoader,
 				
 		}"
 	>
