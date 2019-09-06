@@ -146,7 +146,7 @@
                                 href="#" 
                                 @click.prevent="deleteFile(file.timesheet_id,file.timesheet_document_id)" 
                                 v-b-tooltip.hover 
-                                :title="langauageData.label.close"
+                                :title="langauageData.label.delete"
                                 >
                                     <img :src="$store.state.imagePath+'/assets/images/delete-ic.svg'" alt="delete-ic"/>
                                 </a>
@@ -159,7 +159,7 @@
                                 href="#" 
                                 @click.prevent="$refs.upload.remove(file)" 
                                 v-b-tooltip.hover 
-                                :title="langauageData.label.close"
+                                :title="langauageData.label.delete"
                                 >
                                     <img :src="$store.state.imagePath+'/assets/images/delete-ic.svg'" alt="delete-ic"/>
                                 </a>
@@ -321,6 +321,7 @@ export default {
         }
     },
     validations() {
+        
         const requiredValidation = (this.timeEntryDefaultData.hours == ''|| this.timeEntryDefaultData.hours == '00') 
         && (this.timeEntryDefaultData.minutes == "00" || this.timeEntryDefaultData.minutes == "") ? {required} : {}
                    
