@@ -118,14 +118,14 @@
                                     'declined' : getTimeSheetHourClass(key+1,timeItem) == 'declined',
                                     'disabled' : getTimeSheetHourClass(key+1,timeItem) == 'disabled'
                                     }"
-                                    v-for="(item,key) in volunteeringHoursWeeks">
+                                    v-for="(item,key) in volunteeringGoalWeeks">
                                     {{getTime(key,timeItem.timesheet,'goal')}} 
                                     </b-td> 
                                     <b-td class="total-col">{{getRawHourTotal(timeItem.timesheet,'goal')}}</b-td>
                                 </b-tr>
                                 <b-tr class="total-row">
                                     <b-td class="mission-col">{{langauageData.label.total}}:</b-td>
-                                    <b-td v-for="(item,key) in volunteeringHoursWeeks">
+                                    <b-td v-for="(item,key) in volunteeringGoalWeeks">
                                     {{getColumnHourTotal(key+1,'goal')}}
                                     </b-td> 
                                     <b-td>
@@ -210,7 +210,7 @@
 
                     <template slot="modal-header" slot-scope="{ close }">
                         <i class="close" @click="close()" v-b-tooltip.hover :title="langauageData.label.close"></i>
-                        <h5 class="modal-title">&nbsp;</h5>
+                        <h5 class="modal-title">{{langauageData.label.goal_entry_modal_title}}</h5>
                     </template>
                 <form action class="form-wrap">
                     <!--  <b-form-group>
@@ -751,6 +751,7 @@ export default {
                             if(timeSheetType == "time") {
                                 returnData = timeSheetItem.time
                             } else {
+                                console.log(timeSheetItem);
                                 returnData = timeSheetItem.action
                             }
                         }
