@@ -58,8 +58,8 @@ class PolicyPageController extends Controller
 
             // Set response data
             $apiStatus = Response::HTTP_OK;
-            $apiMessage = ($policyPages->isEmpty()) ? trans('messages.success.MESSAGE_NO_RECORD_FOUND') :
-             trans('messages.success.MESSAGE_POLICY_PAGE_LISTING');
+            $apiMessage = ($policyPages->isEmpty()) ? trans('messages.custom_error_message.ERROR_POLICY_PAGE_NOT_FOUND')
+            : trans('messages.success.MESSAGE_POLICY_PAGE_LISTING');
             return $this->responseHelper->successWithPagination($apiStatus, $apiMessage, $policyPages);
         } catch (InvalidArgumentException $e) {
             return $this->invalidArgument(
@@ -144,7 +144,7 @@ class PolicyPageController extends Controller
             $mission = $this->policyPageRepository->find($id);
             
             $apiStatus = Response::HTTP_OK;
-            $apiMessage = trans('messages.success.MESSAGE_PAGE_FOUND');
+            $apiMessage = trans('messages.success.MESSAGE_POLICY_PAGE_FOUND');
             return $this->responseHelper->success($apiStatus, $apiMessage, $mission->toArray());
         } catch (PDOException $e) {
             return $this->PDO(

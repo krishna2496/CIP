@@ -54,8 +54,8 @@ class FooterPageController extends Controller
 
             // Set response data
             $apiStatus = Response::HTTP_OK;
-            $apiMessage = ($footerPages->isEmpty()) ? trans('messages.success.MESSAGE_NO_RECORD_FOUND') :
-             trans('messages.success.MESSAGE_FOOTER_PAGE_LISTING');
+            $apiMessage = ($footerPages->isEmpty()) ? trans('messages.custom_error_message.ERROR_FOOTER_PAGE_NOT_FOUND')
+            : trans('messages.success.MESSAGE_FOOTER_PAGE_LISTING');
             return $this->responseHelper->successWithPagination($apiStatus, $apiMessage, $footerPages);
         } catch (InvalidArgumentException $e) {
             return $this->invalidArgument(
