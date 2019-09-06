@@ -194,7 +194,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
     /* Fetch pending goal requests */
     $router->get('/app/timesheet/goal-requests', ['as' => 'app.timesheet.goal-requests',
     'middleware' => 'localization|tenant.connection|jwt.auth',
-    'uses' => 'App\Timesheet\TimesheetController@goalRequestList']);
+    'uses' => 'App\Timesheet\TimesheetController@getPendingGoalRequests']);
 
     /* Store timesheet data */
     $router->post('/app/timesheet', ['as' => 'app.timesheet',
@@ -202,7 +202,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
     'uses' => 'App\Timesheet\TimesheetController@store']);
 
     /* Submit timesheet data */
-    $router->patch('/app/timesheet/submit', ['as' => 'app.timesheet.submit',
+    $router->post('/app/timesheet/submit', ['as' => 'app.timesheet.submit',
     'middleware' => 'localization|tenant.connection|jwt.auth',
     'uses' => 'App\Timesheet\TimesheetController@submitTimesheet']);
 
