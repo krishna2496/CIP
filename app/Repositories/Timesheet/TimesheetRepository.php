@@ -208,7 +208,8 @@ class TimesheetRepository implements TimesheetInterface
             $query->select('mission_language_id', 'mission_id', 'title')
             ->where('language_id', $languageId);
         }])
-        ->with(['timesheet' => function ($query) {
+        ->with(['timesheet' => function ($query) use ($userId) {
+            $query->where('user_id', $userId);
             $query->with('timesheetStatus');
         }])
         ->get();
