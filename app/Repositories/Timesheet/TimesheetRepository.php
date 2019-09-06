@@ -123,7 +123,7 @@ class TimesheetRepository implements TimesheetInterface
     /**
      * Get timesheet entries
      *
-     * @param Request $request
+     * @param Illuminate\Http\Request $request
      * @param string $missionType
      * @return Illuminate\Database\Eloquent\Collection
      */
@@ -278,13 +278,13 @@ class TimesheetRepository implements TimesheetInterface
         return $this->timesheet->where('timesheet_id', $timesheetId)->update($data);
     }
 
-    /** Update timesheet on submitted
+    /** Update timesheet status on submit
     *
     * @param \Illuminate\Http\Request $request
     * @param int $userId
     * @return bool
     */
-    public function updateSubmittedTimesheet(Request $request, int $userId): bool
+    public function submitTimesheet(Request $request, int $userId): bool
     {
         $status = false;
         if ($request->timesheet_entries) {
@@ -294,8 +294,8 @@ class TimesheetRepository implements TimesheetInterface
                 ->firstOrFail();
                 $timesheetDetails = $timesheetData->toArray();
                 if ($timesheetDetails["timesheet_status"]["status"] == config('constants.timesheet_status.PENDING')) {
-                    $timesheetData->status_id = "5";
-                    $status = $timesheetData->save();
+                    $timesheetData->status_id = config('constants.timesheet_status_id.SUBMIT_FOR_APPROVAL');
+                    $status = $timesheetData->update();
                 }
             }
         }
@@ -303,36 +303,39 @@ class TimesheetRepository implements TimesheetInterface
     }
 
     /**
-     * Fetch goal requests list
+     * Fetch pending goal requests
      *
-     * @param Request $request
+     * @param Illuminate\Http\Request $request
      * @return Illuminate\Pagination\LengthAwarePaginator
      */
     public function goalRequestList(Request $request): LengthAwarePaginator
     {
-        $languages = $this->languageHelper->getLanguages($request);
-        $language = ($request->hasHeader('X-localization')) ?
-        $request->header('X-localization') : env('TENANT_DEFAULT_LANGUAGE_CODE');
-        $language = $languages->where('code', $language)->first();
-        $languageId = $language->language_id;
-        
-        $goalRequest = $this->mission->query()
+        $languages = $this->languageHelper->getTenantLanguages($request);
+        $languageId = $languages->where('code', config('app.locale'))->first()->language_id;
+
+        $goalRequests = $this->mission->query()
         ->select('mission.mission_id', 'mission.organisation_name');
-        $goalRequest->where(['publication_status' => config("constants.publication_status")["APPROVED"],
+        $goalRequests->where(['publication_status' => config("constants.publication_status")["APPROVED"],
         'mission_type'=> config('constants.mission_type.GOAL')])
         ->with(['missionLanguage' => function ($query) use ($languageId) {
             $query->select('mission_language_id', 'mission_id', 'title')
             ->where('language_id', $languageId);
         }])
         ->whereHas('timesheet', function ($query) use ($request) {
-            $query->where(['status_id' => 5, 'user_id' => $request->auth->user_id]);
+            $query->where(
+                ['status_id' => config('constants.timesheet_status_id.SUBMIT_FOR_APPROVAL'),
+                'user_id' => $request->auth->user_id]
+            );
         })
         ->withCount([
         'timesheet AS action' => function ($query) use ($request) {
             $query->select(DB::raw("SUM(action) as action"))
-            ->where(['status_id' => 5, 'user_id' => $request->auth->user_id]);
+            ->where(
+                ['status_id' => config('constants.timesheet_status_id.SUBMIT_FOR_APPROVAL'),
+                'user_id' => $request->auth->user_id]
+            );
         }]);
-        return $goalRequest->paginate($request->perPage);
+        return $goalRequests->paginate($request->perPage);
     }
 
     /**
@@ -345,6 +348,7 @@ class TimesheetRepository implements TimesheetInterface
     public function getTimesheetDetailByDate(int $missionId, string $date): ? Collection
     {
         return ($this->timesheet->where(['mission_id' => $missionId, 'date_volunteered' => $date])
-        ->whereIn('status_id', array(2, 4)))->get();
+        ->whereIn('status_id', array(config('constants.timesheet_status_id.APPROVED'),
+        config('constants.timesheet_status_id.AUTOMATICALLY_APPROVED'))))->get();
     }
 }

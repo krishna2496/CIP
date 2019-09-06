@@ -558,7 +558,7 @@ class TimesheetController extends Controller
     }
 
     /**
-     * Submit timesheet
+     * Submit timesheet for approval
      *
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\JsonResponse;
@@ -584,11 +584,10 @@ class TimesheetController extends Controller
                 );
             }
 
-            // Fetch timesheet data
-            $timesheetData = $this->timesheetRepository->updateSubmittedTimesheet($request, $request->auth->user_id);
+            $timesheet = $this->timesheetRepository->submitTimesheet($request, $request->auth->user_id);
 
             $apiStatus = Response::HTTP_OK;
-            $apiMessage = (!$timesheetData) ? trans('messages.success.TIMESHEET_ALREADY_SUBMITTED_FOR_APPROVAL') :
+            $apiMessage = (!$timesheet) ? trans('messages.success.TIMESHEET_ALREADY_SUBMITTED_FOR_APPROVAL') :
             trans('messages.success.TIMESHEET_SUBMITTED_SUCESSFULLY');
 
             return $this->responseHelper->success($apiStatus, $apiMessage);
@@ -608,7 +607,7 @@ class TimesheetController extends Controller
      * @param Illuminate\Http\Request $request
      * @return Illuminate\Http\JsonResponse
      */
-    public function goalRequestList(Request $request): JsonResponse
+    public function getPendingGoalRequests(Request $request): JsonResponse
     {
         try {
             $goalRequestList = $this->timesheetRepository->goalRequestList($request);
