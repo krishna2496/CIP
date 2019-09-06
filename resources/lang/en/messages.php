@@ -105,12 +105,12 @@ return [
         'MESSAGE_TIMESHEET_DOCUMENT_DELETED' => 'Timesheet document deleted sucessfully',
         'TIMESHEET_SUBMITTED_SUCESSFULLY' => 'Timesheet submitted sucessfully',
         'TIMESHEET_ALREADY_SUBMITTED_FOR_APPROVAL' => 'Timesheet already submitted for approval',
-        'MESSAGE_THEME_HISTORY_PER_HOUR_LISTED' => 'Theme history data per hour listed successfully',
-        'MESSAGE_SKILL_HISTORY_PER_HOUR_LISTED' => 'Skill history data per hour listed successfully',
-        'MESSAGE_THEME_HISTORY_NOT_FOUND' => 'Theme history data not found',
-        'MESSAGE_SKILL_HISTORY_NOT_FOUND' => 'Skill history data not found',
-        'MESSAGE_GOAL_REQUEST_LISTING' => 'Goal request listed successfully',
-        'MESSAGE_NO_GOAL_REQUEST_FOUND' => 'No goal request found',
+        'MESSAGE_THEME_HISTORY_PER_HOUR_LISTED' => 'Volunteer hours per theme listed successfully',
+        'MESSAGE_SKILL_HISTORY_PER_HOUR_LISTED' => 'Volunteer hours per skill listed successfully',
+        'MESSAGE_THEME_HISTORY_NOT_FOUND' => 'Volunteer hours per theme not found',
+        'MESSAGE_SKILL_HISTORY_NOT_FOUND' => 'Volunteer hours per skill not found',
+        'MESSAGE_GOAL_REQUEST_LISTING' => 'Goal requests listed successfully',
+        'MESSAGE_NO_GOAL_REQUEST_FOUND' => 'No pending goal requests found',
         'MESSAGE_POLICY_PAGE_FOUND' => 'Policy page found successfully',
 	],
         
@@ -165,6 +165,7 @@ return [
         'SKILL_LIMIT' => 'Sorry, you cannot add more than '. config('constants.SKILL_LIMIT').' skills',
         'ERROR_INVALID_MISSION_MEDIA_DATA' => 'Invalid mission media data',
         'ERROR_INVALID_MISSION_DOCUMENT_DATA' => 'Invalid mission document data',
+        'ERROR_TIMESHEET_ENTRY_NOT_FOUND' => 'Timesheet entry not found',
 
         // Custom error code for Tenant Authorization - 210000 - 219999
         'ERROR_INVALID_API_AND_SECRET_KEY' => 'Invalid API key or secret key',

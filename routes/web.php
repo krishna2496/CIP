@@ -179,7 +179,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
 
     /* Create user skill */
     $router->post('/app/user/skills', ['as' => 'user.skills',
-    'middleware' => 'tenant.connection|jwt.auth',
+    'middleware' => 'tenant.connection|localization|jwt.auth',
     'uses' => 'App\User\UserController@linkSkill']);
 
     /* Fetch Language json file */
@@ -192,49 +192,52 @@ $router->group(['middleware' => 'localization'], function ($router) {
     'uses' => 'App\User\UserController@uploadProfileImage']);
  
     /* Fetch pending goal requests */
-    $router->get('/app/timesheet/goal-request', ['as' => 'app.timesheet',
-    'middleware' => 'tenant.connection|jwt.auth',
-    'uses' => 'App\Timesheet\TimesheetController@getGoalRequestList']);
+    $router->get('/app/timesheet/goal-requests', ['as' => 'app.timesheet.goal-requests',
+    'middleware' => 'localization|tenant.connection|jwt.auth',
+    'uses' => 'App\Timesheet\TimesheetController@getPendingGoalRequests']);
 
     /* Store timesheet data */
     $router->post('/app/timesheet', ['as' => 'app.timesheet',
-    'middleware' => 'tenant.connection|jwt.auth',
+    'middleware' => 'localization|tenant.connection|jwt.auth',
     'uses' => 'App\Timesheet\TimesheetController@store']);
 
     /* Submit timesheet data */
-    $router->patch('/app/timesheet/submit', ['as' => 'app.timesheet.submit',
-    'middleware' => 'tenant.connection|jwt.auth',
+    $router->post('/app/timesheet/submit', ['as' => 'app.timesheet.submit',
+    'middleware' => 'localization|tenant.connection|jwt.auth',
     'uses' => 'App\Timesheet\TimesheetController@submitTimesheet']);
 
     /* Get timesheet data */
     $router->get('/app/timesheet', ['as' => 'app.timesheet',
-    'middleware' => 'tenant.connection|jwt.auth',
+    'middleware' => 'localization|tenant.connection|jwt.auth',
     'uses' => 'App\Timesheet\TimesheetController@index']);
     
     /* Update timesheet data by id */
     $router->patch('/app/timesheet/{timesheetId}', ['as' => 'app.timesheet',
-    'middleware' => 'tenant.connection|jwt.auth',
+    'middleware' => 'localization|tenant.connection|jwt.auth',
     'uses' => 'App\Timesheet\TimesheetController@update']);
 
     /* Get timesheet data */
     $router->get('/app/timesheet/{timesheetId}', ['as' => 'app.timesheet.show',
-    'middleware' => 'tenant.connection|jwt.auth',
+    'middleware' => 'localization|tenant.connection|jwt.auth',
     'uses' => 'App\Timesheet\TimesheetController@show']);
 
     /* Delete timesheet document data */
     $router->delete('/app/timesheet/{timesheetId}/document/{documentId}', ['as' => 'app.timesheet.destroy',
-    'middleware' => 'tenant.connection|jwt.auth',
+    'middleware' => 'localization|tenant.connection|jwt.auth',
     'uses' => 'App\Timesheet\TimesheetController@destroy']);
-  
-    /* Get volunteering history */
-    $router->get('/app/volunteer/history/theme', ['as' => 'app.volunteer.history.theme',
-    'middleware' => 'tenant.connection|jwt.auth',
-    'uses' => 'App\Timesheet\VolunteerHistoryController@themeHistory']);
+    
+    $router->group(['middleware' => 'localization'], function ($router) {
 
-    /* Get volunteering history */
-    $router->get('/app/volunteer/history/skill', ['as' => 'app.volunteer.history.skill',
-    'middleware' => 'tenant.connection|jwt.auth',
-    'uses' => 'App\Timesheet\VolunteerHistoryController@skillHistory']);
+        /* Get volunteering history */
+        $router->get('/app/volunteer/history/theme', ['as' => 'app.volunteer.history.theme',
+        'middleware' => 'tenant.connection|jwt.auth',
+        'uses' => 'App\VolunteerHistory\VolunteerHistoryController@themeHistory']);
+    
+        /* Get volunteering history */
+        $router->get('/app/volunteer/history/skill', ['as' => 'app.volunteer.history.skill',
+        'middleware' => 'tenant.connection|jwt.auth',
+        'uses' => 'App\VolunteerHistory\VolunteerHistoryController@skillHistory']);
+    });
 
 /*
 |

@@ -90,8 +90,8 @@ return [
         'MESSAGE_TIMESHEET_DOCUMENT_DELETED' => 'DE: Timesheet document deleted sucessfully',
         'TIMESHEET_SUBMITTED_SUCESSFULLY' => 'DE: Timesheet submitted sucessfully',
         'TIMESHEET_ALREADY_SUBMITTED_FOR_APPROVAL' => 'DE: Timesheet already submitted for approval',
-        'MESSAGE_GOAL_REQUEST_LISTING' => 'DE: Goal request listed successfully',
-        'MESSAGE_NO_GOAL_REQUEST_FOUND' => 'DE: No goal request found',
+        'MESSAGE_GOAL_REQUEST_LISTING' => 'DE: Goal requests listed successfully',
+        'MESSAGE_NO_GOAL_REQUEST_FOUND' => 'DE: No pending goal requests found',
         'MESSAGE_POLICY_PAGE_FOUND' => 'DE: Policy page found successfully',
     ],
 

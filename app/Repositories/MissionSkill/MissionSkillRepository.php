@@ -38,13 +38,15 @@ class MissionSkillRepository implements MissionSkillInterface
      * Get all skill history with total minutes logged, based on year and all years.
      *
      * @param int $year
+     * @param int $userId
      * @return Illuminate\Support\Collection
      */
-    public function getHoursPerSkill(int $year = null): Collection
+    public function getHoursPerSkill(int $year = null, int $userId): Collection
     {
         $queryBuilder = $this->missionSkill->select([
             'mission_skill.skill_id',
             'skill.skill_name',
+            'skill.translations',
             \DB::raw('sum(minute(timesheet.time) + (hour(timesheet.time)*60)) as total_minutes')
         ])
         ->leftjoin('mission', 'mission.mission_id', 'mission_skill.mission_id')
@@ -55,11 +57,26 @@ class MissionSkillRepository implements MissionSkillInterface
             $queryBuilder = $queryBuilder->whereRaw(\DB::raw('year(timesheet.created_at) = "'.$year.'"'));
         }
         $queryBuilder = $queryBuilder->where('mission.publication_status', 'APPROVED')
+        ->where('timesheet.user_id', $userId)
         ->whereNotNull('mission.mission_id')
         ->whereIn('timesheet.status_id', $this->timesheetStatus->getApprovedStatuses()->toArray())
         ->whereNotNull('timesheet.timesheet_id')
         ->groupBy('mission_skill.skill_id');
         
-        return $queryBuilder->get();
+        $hoursPerSkill = $queryBuilder->get();
+
+        $languageCode = config('app.locale');
+        foreach ($hoursPerSkill as $skill) {
+            $tranlations = unserialize($skill->translations);
+            $arrayKey = array_search($languageCode, array_column(
+                $tranlations,
+                'lang'
+            ));
+            if ($arrayKey  !== '') {
+                $skill->skill_name = $tranlations[$arrayKey]['title'];
+            }
+            unset($skill->translations);
+        }
+        return $hoursPerSkill;
     }
 }

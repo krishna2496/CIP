@@ -114,13 +114,15 @@ class MissionThemeRepository implements MissionThemeInterface
      * Get all theme history with total minutes logged, based on year and all years.
      *
      * @param int $year
+     * @param int $userId
      * @return Illuminate\Support\Collection
      */
-    public function getHoursPerTheme(int $year = null): Collection
+    public function getHoursPerTheme(int $year = null, int $userId): Collection
     {
         $queryBuilder = $this->missionTheme->select([
             'mission_theme.mission_theme_id',
             'mission_theme.theme_name',
+            'mission_theme.translations',
             \DB::raw('sum(minute(time) + (hour(time)*60)) as total_minutes')
         ])
         ->leftjoin('mission', 'theme_id', 'mission_theme_id')
@@ -130,11 +132,25 @@ class MissionThemeRepository implements MissionThemeInterface
             $queryBuilder = $queryBuilder->whereRaw(\DB::raw('year(timesheet.created_at) = "'.$year.'"'));
         }
         $queryBuilder = $queryBuilder->where('mission.publication_status', 'APPROVED')
+        ->where('timesheet.user_id', $userId)
         ->whereNotNull('mission.mission_id')
         ->whereIn('timesheet.status_id', $this->timesheetStatus->getApprovedStatuses()->toArray())
         ->whereNotNull('timesheet.timesheet_id')
         ->groupBy('mission_theme.mission_theme_id');
         
-        return $queryBuilder->get();
+        $hoursPerThemes = $queryBuilder->get();
+        
+        $languageCode = config('app.locale');
+        foreach ($hoursPerThemes as $theme) {
+            $arrayKey = array_search($languageCode, array_column(
+                $theme->translations,
+                'lang'
+            ));
+            if ($arrayKey  !== '') {
+                $theme->theme_name = $theme->translations[$arrayKey]['title'];
+            }
+            unset($theme->translations);
+        }
+        return $hoursPerThemes;
     }
 }

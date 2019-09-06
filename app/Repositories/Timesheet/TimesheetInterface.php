@@ -51,21 +51,21 @@ interface TimesheetInterface
     public function delete(int $id, int $timesheetId): bool;
 
     /**
-     * Update timesheet on submitted
+     * Update timesheet status on submit
      *
      * @param \Illuminate\Http\Request $request
      * @param int $userId
      * @return bool
      */
-    public function updateSubmittedTimesheet(Request $request, int $userId): bool;
+    public function submitTimesheet(Request $request, int $userId): bool;
 
     /**
      * Fetch goal requests list
      *
-     * @param Request $request
+     * @param Illuminate\Http\Request $request
      * @return Illuminate\Pagination\LengthAwarePaginator
      */
-    public function getGoalRequestList(Request $request): LengthAwarePaginator;
+    public function goalRequestList(Request $request): LengthAwarePaginator;
 
     /**
      * Fetch timesheet details by missionId and date
@@ -75,7 +75,7 @@ interface TimesheetInterface
      * @return null|Illuminate\Support\Collection
      */
     public function getTimesheetDetailByDate(int $missionId, string $date): ? Collection;
-   
+
     /**
      * Fetch timesheet details
      *
@@ -85,4 +85,21 @@ interface TimesheetInterface
      * @return null|Illuminate\Support\Collection
      */
     public function getTimesheetDetails(int $missionId, int $userId, string $date): ?Collection;
+
+    /**
+     * Update timesheet field value, based on timesheet_id condition
+     *
+     * @param int $statusId
+     * @param int $timesheetId
+     * @return bool
+     */
+    public function updateTimesheetStatus(int $statusId, int $timesheetId): bool;
+    
+    /**
+     * Get timesheet entries
+     *
+     * @param Illuminate\Http\Request $request
+     * @return array
+     */
+    public function getAllTimesheetEntries(Request $request): array;
 }

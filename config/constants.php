@@ -37,6 +37,7 @@ return [
     'FRONT_MISSION_DETAIL_URL' => '.anasource.com/team4/ciplatform/mission-detail/',
     'FRONT_HOME_URL' => '.anasource.com/team4/ciplatform/',
     'DEFAULT_FQDN_FOR_FRONT' => 'web8',
+    'PER_PAGE_MAX' => '50',
     /*
      * User custom field types
      */
@@ -163,6 +164,17 @@ return [
         'DECLINED' => 'DECLINED',
         'APPROVED' => 'APPROVED',
         'SUBMIT_FOR_APPROVAL' => 'SUBMIT_FOR_APPROVAL'
+    ],
+
+    /*
+     * Timesheet status
+     */
+    'timesheet_status_id' => [
+        'PENDING' => '1',
+        'APPROVED' => '2',
+        'DECLINED' => '3',
+        'AUTOMATICALLY_APPROVED' => '4',
+        'SUBMIT_FOR_APPROVAL' => '5'
     ],
 
     /*
