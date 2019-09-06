@@ -113,21 +113,6 @@ class VolunteerHistoryController extends Controller
             $userId = $request->auth->user_id;
             $skillTimeHistory = $this->missionSkillRepository->getHoursPerSkill($request->year, $userId);
 
-            /* if (!empty($skillTimeHistory) && (isset($skillTimeHistory))) {
-                $returnData = [];
-                foreach ($skillTimeHistory as $key => $value) {
-                    if ($value) {
-                        $arrayKey = array_search($languageCode, array_column($value['translations'], 'lang'));
-                        if ($arrayKey !== '') {
-                            $returnData[$value['skill_id']] = $value['translations'][$arrayKey]['title'];
-                        }
-                    }
-                }
-                if (!empty($returnData)) {
-                    $allSkillData = $returnData;
-                }
-            } */
-
             $apiStatus = Response::HTTP_OK;
             $apiMessage =  (!empty($skillTimeHistory->toArray())) ?
             trans('messages.success.MESSAGE_SKILL_HISTORY_PER_HOUR_LISTED'):
@@ -136,7 +121,6 @@ class VolunteerHistoryController extends Controller
 
             return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
         } catch (\Exception $e) {
-            dd($e);
             return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
