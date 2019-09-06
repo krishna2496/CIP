@@ -10,6 +10,7 @@
                 <div class="heading-section">
                     <h1>{{langauageData.label.volunteering_timesheet}}</h1>
                 </div>
+                {{goalMissionData}}
                 <div class="dashboard-table">
                     <div class="table-outer">
                         <div class="table-inner">
@@ -18,7 +19,7 @@
                                 @updateCall="changeVolunteeringHours"
                             />
                             <div class="table-wrapper-outer">
-                            <div v-bind:class="{ 'content-loader-wrap': true, 'loader-active': false}">
+                            <div v-bind:class="{ 'content-loader-wrap': true, 'loader-active': tableLoaderActive}">
                                 <div class="content-loader"></div>
                             </div>
                             <b-table-simple
@@ -42,10 +43,11 @@
                                         <b-td 
                                         :mission-id="timeItem.mission_id"
                                         :date="key+1"
-                                        v-on:click="getRelatedTimeData(key+1,timeItem)"
+                                        v-on:click="getRelatedTimeData(key+1,timeItem,'time')"
                                         v-bind:class="{ 
-                                            'approved' : getTimeSheetHourClass(key+1,timeItem.timesheet) == 'approved',
-                                            'declined' : getTimeSheetHourClass(key+1,timeItem.timesheet) == 'declined'
+                                            'approved' : getTimeSheetHourClass(key+1,timeItem) == 'approved',
+                                            'declined' : getTimeSheetHourClass(key+1,timeItem) == 'declined',
+                                            'disabled' : getTimeSheetHourClass(key+1,timeItem) == 'disabled'
                                         }"
                                         v-for="(item,key) in volunteeringHoursWeeks">
                                             {{getTime(key,timeItem.timesheet)}} 
@@ -55,10 +57,10 @@
                                     <b-tr class="total-row">
                                         <b-td class="mission-col">{{langauageData.label.total}}:</b-td>
                                         <b-td v-for="(item,key) in volunteeringHoursWeeks">
-                                            {{getColumnHourTotal(key+1)}}
+                                            {{getColumnHourTotal(key+1,'time')}}
                                         </b-td> 
                                         <b-td>
-                                            {{getTotalHours()}}
+                                            {{getTotalHours('time')}}
                                         </b-td>
                                     </b-tr>
                                 </b-tbody>
@@ -67,7 +69,7 @@
                         </div>
                         </div>
                         <div class="btn-block">
-                            <b-button class="btn-bordersecondary ml-auto" title="Submit">{{langauageData.label.submit}}</b-button>
+                            <b-button class="btn-bordersecondary ml-auto" @click="submitVolunteerTimeSheet('time')" title="Submit">{{langauageData.label.submit}}</b-button>
                         </div>
                     </div>
                     <ul class="meta-data-list">
@@ -82,11 +84,11 @@
                                 @updateCall="changeVolunteeringGoals"
                             />
                              <b-table-simple
-                          small
-                          responsive
-                          bordered
-                          class="timesheet-table timesheetgoals-table"
-                        >
+                              small
+                              responsive
+                              bordered
+                              class="timesheet-table timesheetgoals-table"
+                            >
                         <b-thead>
                             <b-tr>
                                 <b-th class="mission-col">{{langauageData.label.mission}}</b-th>
@@ -96,112 +98,32 @@
                                 <b-th class="total-col">{{langauageData.label.total}}</b-th>
                             </b-tr>
                         </b-thead>
-                      <b-tbody>
-                        <b-tr>
-                          <b-td class="mission-col">Help Old People</b-td>
-                          <b-td>5</b-td>
-                          <b-td></b-td>
-                          <b-td class="approved">2</b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td class="total-col">7</b-td>
-                        </b-tr>
-                        <b-tr>
-                          <b-td class="mission-col">Help Young Kids</b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td class="declined">6</b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td class="total-col">6</b-td>
-                        </b-tr>
-                        <b-tr class="total-row">
-                          <b-td class="mission-col">Total:</b-td>
-                          <b-td>5</b-td>
-                          <b-td></b-td>
-                          <b-td>2</b-td>
-                          <b-td></b-td>
-                          <b-td>6</b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td class="total-col">13</b-td>
-                        </b-tr>
+                      <b-tbody v-if="goalMissionData.length > 0">
+                       <b-tr v-for="(timeItem,key) in goalMissionData">
+                                        <b-td class="mission-col">{{timeItem.title}}</b-td>
+                                        <b-td 
+                                        :mission-id="timeItem.mission_id"
+                                        :date="key+1"
+                                        v-on:click="getRelatedTimeData(key+1,timeItem,'goal')"
+                                        v-bind:class="{ 
+                                            'approved' : getTimeSheetHourClass(key+1,timeItem) == 'approved',
+                                            'declined' : getTimeSheetHourClass(key+1,timeItem) == 'declined',
+                                            'disabled' : getTimeSheetHourClass(key+1,timeItem) == 'disabled'
+                                        }"
+                                        v-for="(item,key) in volunteeringHoursWeeks">
+                                            {{getTime(key,timeItem.timesheet)}} 
+                                        </b-td> 
+                                        <b-td class="total-col">{{getRawHourTotal(timeItem.timesheet)}}</b-td>
+                                    </b-tr>
+                                    <b-tr class="total-row">
+                                        <b-td class="mission-col">{{langauageData.label.total}}:</b-td>
+                                        <b-td v-for="(item,key) in volunteeringHoursWeeks">
+                                            {{getColumnHourTotal(key+1,'goal')}}
+                                        </b-td> 
+                                        <b-td>
+                                            {{getTotalHours('goal')}}
+                                        </b-td>
+                                    </b-tr>
                       </b-tbody>
                     </b-table-simple>
                     </div>
@@ -265,7 +187,7 @@
                         :files="files"
                         :timeEntryDefaultData="currentTimeData"
                         :disableDates="volunteerHourDisableDates"
-                       
+                        @getTimeSheetData = "getVolunteerHoursData"
                         @resetModal ="hideModal"
                         :workDayList="workDayList"
                         @updateCall="updateDefaultValue" 
@@ -405,7 +327,7 @@ import axios from "axios";
 import store from '../store';
 import DatePicker from "vue2-datepicker";
 import FileUpload from 'vue-upload-component';
-import {volunteerTimesheetHours} from '../services/service';
+import {volunteerTimesheetHours,fetchTimeSheetDocuments,submitVolunteerHourTimeSheet} from '../services/service';
 import moment from 'moment'
 
 export default {
@@ -429,6 +351,7 @@ export default {
             approved : "approved",
             time1: "",
             value2: "",
+            tableLoaderActive : true,
             lang: {
             days: [" Sun ", " Mon ", " Tue ", " Wed ", " You ", " Fri ", " Sat "],
             months: [
@@ -568,25 +491,43 @@ export default {
                     dateVolunteered : '',
                     workDay : '',
                     notes : '',
-                    day: ''
+                    day: '',
+                    timeSheetId : '',
+                    documents : [],
+                    disabledPastDates : '',
+                    disabledFutureDates : ''
                 }
             ,
             timeEntryDefaultData : null,
             isTimeEntryModelShown : false,
             volunteerHourDisableDates : [],
             defaultHours : '',
-            defaultMinutes : ''
+            defaultMinutes : '',
+            futureDates: new Date()
         };
     },
     updated() {
     
     },
     methods: {
-        getRelatedTimeData(date,timeArray) {
-
+        getRelatedTimeData(date,timeArray,timeSheetType) {
             this.currentTimeData.missionId = timeArray.mission_id
             this.currentTimeData.day = date
-         
+        
+            let missionEndDate = timeArray.end_date
+           
+            this.currentTimeData.disabledPastDates = timeArray.start_date
+                                        
+            
+            let futerDate = moment(this.futureDates).format("YYYY-MM-DD");
+            let endDate = moment(missionEndDate).format("YYYY-MM-DD");
+          
+            if (endDate > futerDate) {
+                this.currentTimeData.disabledFutureDates = futerDate
+            } else {
+                this.currentTimeData.disabledFutureDates = endDate
+            }
+
             var _this = this;
             if(timeArray.timesheet) { 
                 let timeSheetArray =  timeArray.timesheet;
@@ -603,19 +544,48 @@ export default {
                     let currentArrayDate = timeSheetItem.date
                     let currentArrayYear = timeSheetItem.year
                     let currentArrayMonth = timeSheetItem.month
+
                     if(_this.volunteeringHoursCurrentYear == currentArrayYear) {
                         if(_this.volunteeringHoursCurrentMonth == currentArrayMonth) {
                             if(date == currentArrayDate) {
-                                if(timeSheetItem.time != "") {
-                                    var time= timeSheetItem.time.split(':');
-                                    _this.currentTimeData.hours = time[0]
-                                    _this.currentTimeData.minutes = time[1]
-                                    _this.defaultHours = time[0]
-                                    _this.defaultMinutes = time[1]
-                                }
-                                _this.currentTimeData.dateVolunteered = timeSheetItem.date_volunteered
-                                _this.currentTimeData.workDay = timeSheetItem.day_volunteered
-                                _this.currentTimeData.notes = timeSheetItem.notes
+                                let timeSheetId = timeSheetItem.timesheet_id
+                                _this.currentTimeData.timeSheetId = timeSheetId;
+                               
+                                fetchTimeSheetDocuments(timeSheetId).then( response => {
+                                    if(response) {
+                                        _this.currentTimeData.dateVolunteered = response.date_volunteered
+                                        _this.currentTimeData.workDay = response.day_volunteered
+                                        _this.currentTimeData.notes = response.notes
+                                        _this.currentTimeData.documents = response.timesheet_document
+                                        if(response.hours) {
+                                            _this.currentTimeData.hours = response.hours.toString()
+                                            _this.defaultHours = response.hours.toString()
+                                        } else {
+                                            _this.currentTimeData.hours = ''
+                                            _this.defaultHours = ''
+                                        }
+                                        if(response.minutes) {
+                                            _this.currentTimeData.minutes = response.minutes.toString()
+                                            _this.defaultMinutes = response.minutes.toString()
+                                        } else {
+                                            _this.currentTimeData.minutes = ''
+                                            _this.defaultMinutes = ''
+                                        }
+                                       
+                                        
+                                    }
+                                });
+
+                                // if(timeSheetItem.time != "") {
+                                //     var time= timeSheetItem.time.split(':');
+                                //     _this.currentTimeData.hours = time[0]
+                                //     _this.currentTimeData.minutes = time[1]
+                                //     _this.defaultHours = time[0]
+                                //     _this.defaultMinutes = time[1]
+                                // }
+                                // _this.currentTimeData.dateVolunteered = timeSheetItem.date_volunteered
+                                // _this.currentTimeData.workDay = timeSheetItem.day_volunteered
+                                // _this.currentTimeData.notes = timeSheetItem.notes
 
                                 _this.workDayList.filter(function (workList, workIndex) {
                                   if(workList[0] == timeSheetItem.day_volunteered) {
@@ -623,25 +593,49 @@ export default {
                                    
                                   }
                                 });
-                                
+                                // console.log(_this.currentTimeData);
                             }
                         }
+
                     }
                   
                 });
             }
-
-            this.$refs.timeModal.$refs.timeHoursModal.show();    
+            if(timeSheetType == 'time') {
+                this.$refs.timeModal.$refs.timeHoursModal.show();    
+            } else {
+                this.$refs.goalModal.show();
+            }
            
         },
 
-        getTimeSheetHourClass(date,timeArray) {
+        getTimeSheetHourClass(date,timeSheetArray) {
             let _this = this
             let returnData = '';
+
+            let missionEndDate = timeSheetArray.end_date         
+            let disabledPastDates = moment(timeSheetArray.start_date).format("YYYY-MM-DD")                                  
+            let disablefuterDate = moment(this.futureDates).format("YYYY-MM-DD");
+            let endDate = moment(missionEndDate).format("YYYY-MM-DD");
+            let disableEndDate = '';
+
+            if (endDate > disablefuterDate) {
+                disableEndDate = disablefuterDate
+            } else {
+                disableEndDate = endDate
+            }
+          
+             let currentDate = moment(_this.volunteeringHoursCurrentYear+'-'+_this.volunteeringHoursCurrentMonth+'-'+date).format("YYYY-MM-DD");
+                
+           
+            let timeArray = timeSheetArray.timesheet;
             timeArray.filter(function (timeSheetItem, timeSheetIndex) {
                 let currentArrayDate = timeSheetItem.date
                 let currentArrayYear = timeSheetItem.year
                 let currentArrayMonth = timeSheetItem.month
+               
+
+
                 if(_this.volunteeringHoursCurrentYear == currentArrayYear) {
                     if(_this.volunteeringHoursCurrentMonth == currentArrayMonth) {
 
@@ -654,25 +648,41 @@ export default {
                             }
                         }
                     }
-                }
+                }  
               
             });
+            if (currentDate < disabledPastDates) {
+                    returnData ="disabled"
+                } 
 
+                if(currentDate > disableEndDate) {
+                     returnData = "disabled"
+                }
             return returnData;
         },
 
         changeVolunteeringHours(data) {
+            var _this =this;
+            this.tableLoaderActive = true
             this.volunteeringHoursCurrentMonth = data.month
             this.volunteeringHoursCurrentYear = data.year
             data.weekdays.shift();
             this.volunteeringHoursWeeks = data.weekdays;
+            setTimeout(function(){
+                _this.tableLoaderActive = false
+            })
         },
 
         changeVolunteeringGoals(data) {
+            var _this =this;
+            this.tableLoaderActive = true
             this.volunteeringGoalCurrentMonth = data.month
             this.volunteeringGoalCurrentYear = data.year
             data.weekdays.shift();
             this.volunteeringGoalWeeks = data.weekdays
+            setTimeout(function(){
+                _this.tableLoaderActive = false
+            })
         },
 
         updateWorkday(value) {
@@ -684,7 +694,6 @@ export default {
                 this.defaultWorkday = value.selectedVal;
             }
             if(value.fieldId == "hours") {
-                console.log("23");
                 this.defaultHours = value.selectedVal
             }
             if(value.fieldId == "minutes") {
@@ -697,19 +706,23 @@ export default {
         },
 
         async getVolunteerHoursData() {
-           await volunteerTimesheetHours().then( response => {
+            this.tableLoaderActive = true
+            var _this =this;
+            await volunteerTimesheetHours().then( response => {
                 if(response) {
                     this.timeMissionData = response['TIME']
                     this.goalMissionData = response['GOAL']
+                    setTimeout(function(){
+                        _this.tableLoaderActive = false
+                    })
                 }
            })
         },
 
         getTime(date,timeArray) {
-
             let _this = this
             let returnData = '';
-             var dates = date+1;
+            var dates = date+1;
             timeArray.filter(function (timeSheetItem, timeSheetIndex) {
 
                 let currentArrayDate = timeSheetItem.date
@@ -730,11 +743,9 @@ export default {
 
         getRawHourTotal(timeArray) {
             let _this = this
-            var time1 = "00:00:00";
-
+            var time1 = "00:00";
             var hour=0;
             var minute=0;
-            var second=0;
             timeArray.filter(function (timeSheetItem, timeSheetIndex) {
                 let currentArrayDate = timeSheetItem.date
                 let currentArrayYear = timeSheetItem.year
@@ -750,64 +761,70 @@ export default {
                         minute = parseInt(splitTime1[1])+parseInt(splitTime2[1]);
                         hour = hour + minute/60;
                         minute = minute%60;
-                        second = parseInt(splitTime1[2])+parseInt(splitTime2[2]);
-                        minute = minute + second/60;
-                        second = second%60;
-                        time1= Math.floor(hour)+':'+Math.floor(minute)+":"+Math.floor(second);
+                        time1= Math.floor(hour)+':'+Math.floor(minute);
                     }
                 }
             });
-            if(time1 != "00:00:00") {
+            if(time1 != "00:00") {
                 return time1;
             }
         },
 
-        getColumnHourTotal(day) {
+        getColumnHourTotal(day,timeSheetType) {
 
             let _this = this
-            var time1 = "00:00:00";
+            var time1 = "00:00";
             var hour=0;
             var minute=0;
-            var second=0;
-            let timeArray = this.timeMissionData;
-            timeArray.filter(function (timeSheetItem, timeSheetIndex) {
-                let timeEntry = timeSheetItem.timesheet;
-                timeEntry.filter(function (timeEntry, timeEntryIndex) {
-                    let currentArrayDate = timeEntry.date
-                    let currentArrayYear = timeEntry.year
-                    let currentArrayMonth = timeEntry.month
-                    var time2 = timeEntry.time;
-                    if(_this.volunteeringHoursCurrentYear == currentArrayYear) {
-                        if(_this.volunteeringHoursCurrentMonth == currentArrayMonth) {
-                            if(day == currentArrayDate) {
-                                var splitTime1= time1.split(':');
-                                var splitTime2= time2.split(':');
-                                hour = parseInt(splitTime1[0])+parseInt(splitTime2[0]);
-                                minute = parseInt(splitTime1[1])+parseInt(splitTime2[1]);
-                                hour = hour + minute/60;
-                                minute = minute%60;
-                                second = parseInt(splitTime1[2])+parseInt(splitTime2[2]);
-                                minute = minute + second/60;
-                                second = second%60;
-                                time1= Math.floor(hour)+':'+Math.floor(minute)+":"+Math.floor(second);
+           
+            let timeArray = []
+            if(timeSheetType == "time") {
+                timeArray = this.timeMissionData;
+            } else {
+                timeArray = this.goalMissionData;
+            }
+            if(timeArray.length > 0) {
+                timeArray.filter(function (timeSheetItem, timeSheetIndex) {
+                    let timeEntry = timeSheetItem.timesheet;
+                    timeEntry.filter(function (timeEntry, timeEntryIndex) {
+                        let currentArrayDate = timeEntry.date
+                        let currentArrayYear = timeEntry.year
+                        let currentArrayMonth = timeEntry.month
+                        var time2 = timeEntry.time;
+                        if(_this.volunteeringHoursCurrentYear == currentArrayYear) {
+                            if(_this.volunteeringHoursCurrentMonth == currentArrayMonth) {
+                                if(day == currentArrayDate) {
+                                    var splitTime1= time1.split(':');
+                                    var splitTime2= time2.split(':');
+                                    hour = parseInt(splitTime1[0])+parseInt(splitTime2[0]);
+                                    minute = parseInt(splitTime1[1])+parseInt(splitTime2[1]);
+                                    hour = hour + minute/60;
+                                    minute = minute%60;
+                                    time1= Math.floor(hour)+':'+Math.floor(minute);
+                                }
                             }
                         }
-                    }
+                    });
+                    
                 });
-                
-            });
-            if(time1 != "00:00:00") {
+            }
+            if(time1 != "00:00") {
                 return time1;
             }
         },
         
-        getTotalHours() {
+        getTotalHours(timeSheetType) {
             let _this = this
-            var time1 = "00:00:00";
+            var time1 = "00:00";
             var hour=0;
             var minute=0;
-            var second=0;
-            let timeArray = this.timeMissionData;
+           
+            let timeArray = []
+            if(timeSheetType == "time") {
+                timeArray = this.timeMissionData;
+            } else {
+                timeArray = this.goalMissionData;
+            }
             timeArray.filter(function (timeSheetItem, timeSheetIndex) {
                 let timeEntry = timeSheetItem.timesheet;
                 timeEntry.filter(function (timeEntry, timeEntryIndex) {
@@ -823,16 +840,13 @@ export default {
                                 minute = parseInt(splitTime1[1])+parseInt(splitTime2[1]);
                                 hour = hour + minute/60;
                                 minute = minute%60;
-                                second = parseInt(splitTime1[2])+parseInt(splitTime2[2]);
-                                minute = minute + second/60;
-                                second = second%60;
-                                time1= Math.floor(hour)+':'+Math.floor(minute)+":"+Math.floor(second);
+                                time1= Math.floor(hour)+':'+Math.floor(minute);
                         }
                     }
                 });
                 
             });
-            if(time1 != "00:00:00") {
+            if(time1 != "00:00") {
                 return time1;
             }
         },
@@ -849,11 +863,43 @@ export default {
             this.currentTimeData.workDay = '';
             this.currentTimeData.notes = '';
             this.currentTimeData.day = '';
+            this.currentTimeData.timeSheetId = '';
+            this.currentTimeData.documents = '';
             this.volunteerHourDisableDates = [],
             this.defaultHours = this.langauageData.placeholder.spent_hours
             this.defaultMinutes = this.langauageData.placeholder.spent_minutes
             this.defaultWorkday = this.langauageData.placeholder.workday 
-        }
+        },
+        submitVolunteerTimeSheet(timeSheetType) {
+            if(timeSheetType == "time") {
+                let timeSheetId = {
+                    'timesheet_entries' : []
+                }
+          
+                this.timeMissionData.filter(function (timeMission, timeMissionIndex) {
+                    timeMission.timesheet.filter(function (timeSheet, timeSheetIndex) {
+                        if(timeSheet.timesheet_status.status != "APPROVED" && timeSheet.timesheet_status.status != "AUTOMATICALLY_APPROVED"){
+                                timeSheetId.timesheet_entries.push({'timesheet_id':timeSheet.timesheet_id})  
+                            }
+                    });
+                });
+                submitVolunteerHourTimeSheet(timeSheetId).then(response => {
+                    if(response.error == true){
+                        this.makeToast("danger",response.message);
+                    } else {
+                        this.makeToast("success",response.message);
+                    }  
+                })
+                 
+            }
+        },
+        makeToast(variant = null,message) {
+            this.$bvToast.toast(message, {
+                variant: variant,
+                solid: true,
+                autoHideDelay: 1000
+            })
+        },
     },
     created() {
         var globalThis = this;

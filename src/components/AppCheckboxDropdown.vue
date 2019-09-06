@@ -96,7 +96,7 @@ export default {
         var optionlist = optionlist_wrap.querySelector(".dropdown-option-list");
         if (optionlist != null) {
           var optionlist_width = parseInt(window.getComputedStyle(optionlist).getPropertyValue("width"));
-                console.log(optionlist_width);
+              
             var minwidth_style = dropdown_list.querySelector(".simplebar-offset");
             if (dropdown_list_width > optionlist_width) {
               minwidth_style.setAttribute("style", "left: 0 !important");

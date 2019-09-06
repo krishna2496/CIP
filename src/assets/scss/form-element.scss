@@ -473,16 +473,16 @@ label {
     .chk-select-wrap {
       border-radius: 0 0 3px 3px;
       display: block;
-        .chk-select-options{
-          li{
-              white-space: nowrap;
-              @include md-max{
-                  overflow: hidden;
-                  text-overflow: ellipsis;
-              }
+      .chk-select-options{
+        li{
+          white-space: nowrap;
+          @include md-max{
+            overflow: hidden;
+            text-overflow: ellipsis;
           }
         }
-    
+      }
+      
     }
   }
 
@@ -639,8 +639,8 @@ label {
         white-space: nowrap;
 
         @include lmd-max{
-            overflow: hidden;
-            text-overflow: ellipsis;
+          overflow: hidden;
+          text-overflow: ellipsis;
         }
         &:hover {
           background: $border-color;
@@ -664,10 +664,10 @@ label {
   }
 }
 .simplebar-horizontal {
-    &.simplebar-track {
-        height: 7px!important;
+  &.simplebar-track {
+    height: 7px!important;
     .simplebar-scrollbar {
-        height: 4px;
+      height: 4px;
       &:before {
         background: $border-color !important;
         opacity: 1 !important;
@@ -686,8 +686,8 @@ label {
   &.checkbox-select{
     .simplebar-offset {
       @include md-min{
-          left: auto !important;
-          min-width: 100%;
+        left: auto !important;
+        min-width: 100%;
       }
     }
   }
@@ -1082,6 +1082,16 @@ label {
 
 .mx-datepicker {
   width: 100% !important;
+  &.is-invalid{
+    .mx-input-wrapper{
+      input{
+      border-color:$error;
+      }
+    }
+    + .invalid-feedback{
+      display:block;
+    }
+  }
 }
 .mx-datepicker-popup {
   z-index: 1040 !important;
@@ -1152,11 +1162,11 @@ label {
 
 
 .mx-input{
-    box-shadow: 0.966px 0.259px 3px rgba(0, 0, 0, 0.05) !important;
-    -webkit-box-shadow: 0.966px 0.259px 3px rgba(0, 0, 0, 0.05) !important;
-    -moz-box-shadow: 0.966px 0.259px 3px rgba(0, 0, 0, 0.05) !important;
-    -ms-box-shadow: 0.966px 0.259px 3px rgba(0, 0, 0, 0.05) !important;
-    -o-zbox-shadow: 0.966px 0.259px 3px rgba(0, 0, 0, 0.05) !important;
+  box-shadow: 0.966px 0.259px 3px rgba(0, 0, 0, 0.05) !important;
+  -webkit-box-shadow: 0.966px 0.259px 3px rgba(0, 0, 0, 0.05) !important;
+  -moz-box-shadow: 0.966px 0.259px 3px rgba(0, 0, 0, 0.05) !important;
+  -ms-box-shadow: 0.966px 0.259px 3px rgba(0, 0, 0, 0.05) !important;
+  -o-zbox-shadow: 0.966px 0.259px 3px rgba(0, 0, 0, 0.05) !important;
 }
 /**Date range picker style**/
 .mx-range-wrapper {
@@ -1260,13 +1270,17 @@ label {
 }
 
 .browser-ios{
-    .filter-block{
-        .checkbox-select{
-            .simplebar-offset{
-                @include md-min{
-                    right: 0 !important;
-                }
-            }
+  .filter-block{
+    .checkbox-select{
+      .simplebar-offset{
+        @include md-min{
+          right: 0 !important;
         }
-    } 
+      }
+    }
+  } 
+}
+
+.tooltip{
+  z-index:1039;
 }

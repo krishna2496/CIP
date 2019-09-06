@@ -2,8 +2,11 @@
     <div class="top-header">
         <b-navbar toggleable="lg">
             <b-container>
-			    <b-navbar-toggle @click.stop target="nav-collapse" @click="openMenu" v-if="this.$store.state.isLoggedIn">
-                </b-navbar-toggle>
+                <div class="navbar-toggler" @click.stop v-if="this.$store.state.isLoggedIn">
+                  <b-link title="Menu" @click="openMenu" class="toggler-icon">
+                    <img src="../../assets/images/menu-ic.svg" alt />
+                  </b-link>
+                </div>
 				<b-navbar-brand :to="{ name: 'home' }" :style="{backgroundImage: 'url('+this.$store.state.logo+')'}"
                  v-if="this.$store.state.isLoggedIn"
                  @click.native="clearFilter"
