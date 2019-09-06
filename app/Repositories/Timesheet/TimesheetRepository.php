@@ -310,9 +310,8 @@ class TimesheetRepository implements TimesheetInterface
      */
     public function goalRequestList(Request $request): LengthAwarePaginator
     {
-        $languages = $this->languageHelper->getTenantLanguages($request);
-        $languageId = $languages->where('code', config('app.locale'))->first()->language_id;
-
+        $languageId = $this->languageHelper->getLanguageId($request);
+       
         $goalRequests = $this->mission->query()
         ->select('mission.mission_id', 'mission.organisation_name');
         $goalRequests->where(['publication_status' => config("constants.publication_status")["APPROVED"],
