@@ -240,7 +240,7 @@ class TimesheetRepository implements TimesheetInterface
         $language = $languages->where('code', $language)->first();
         $languageId = $language->language_id;
 
-        return $this->mission->select('mission.mission_id', 'mission.city_id')
+        return $this->mission->select('mission.mission_id')
         ->where(['publication_status' => config("constants.publication_status")["APPROVED"]])
         ->whereHas('missionApplication', function ($query) use ($userId) {
             $query->where('user_id', $userId)
@@ -257,15 +257,16 @@ class TimesheetRepository implements TimesheetInterface
     }
 
     /**
-     * Display a listing of specified resources.
+     * Update timesheet field value, based on timesheet_id condition
      *
-     * @param array $data
+     * @param int $statusId
      * @param int $timesheetId
      * @return bool
      */
-    public function updateTimesheetField(array $data, int $timesheetId): bool
+    public function updateTimesheetStatus(int $statusId, int $timesheetId): bool
     {
-        return $this->timesheet->where('timesheet_id', $timesheetId)->update($data);
+        return $this->timesheet->where('timesheet_id', $timesheetId)
+        ->update(['status_id' => $statusId]);
     }
 
     /** Update timesheet status on submit

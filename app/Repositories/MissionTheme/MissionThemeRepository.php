@@ -122,6 +122,7 @@ class MissionThemeRepository implements MissionThemeInterface
         $queryBuilder = $this->missionTheme->select([
             'mission_theme.mission_theme_id',
             'mission_theme.theme_name',
+            'mission_theme.translations',
             \DB::raw('sum(minute(time) + (hour(time)*60)) as total_minutes')
         ])
         ->leftjoin('mission', 'theme_id', 'mission_theme_id')
@@ -137,6 +138,19 @@ class MissionThemeRepository implements MissionThemeInterface
         ->whereNotNull('timesheet.timesheet_id')
         ->groupBy('mission_theme.mission_theme_id');
         
-        return $queryBuilder->get();
+        $hoursPerThemes = $queryBuilder->get();
+        
+        $languageCode = config('app.locale');
+        foreach ($hoursPerThemes as $theme) {
+            $arrayKey = array_search($languageCode, array_column(
+                $theme->translations,
+                'lang'
+            ));
+            if ($arrayKey  !== '') {
+                $theme->theme_name = $theme->translations[$arrayKey]['title'];
+            }
+            unset($theme->translations);
+        }
+        return $hoursPerThemes;
     }
 }

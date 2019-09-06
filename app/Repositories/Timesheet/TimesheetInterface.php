@@ -86,6 +86,15 @@ interface TimesheetInterface
     public function getTimesheetDetailByDate(int $missionId, string $date): ? Collection;
 
     /**
+     * Update timesheet field value, based on timesheet_id condition
+     *
+     * @param int $statusId
+     * @param int $timesheetId
+     * @return bool
+     */
+    public function updateTimesheetStatus(int $statusId, int $timesheetId): bool;
+    
+    /**
      * Get timesheet entries
      *
      * @param Illuminate\Http\Request $request

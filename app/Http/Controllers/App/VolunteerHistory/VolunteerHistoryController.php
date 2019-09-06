@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\App\Timesheet;
+namespace App\Http\Controllers\App\VolunteerHistory;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -17,6 +17,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use PDOException;
 use App\Repositories\MissionTheme\MissionThemeRepository;
 use App\Repositories\MissionSkill\MissionSkillRepository;
+use App\Helpers\LanguageHelper;
 
 class VolunteerHistoryController extends Controller
 {
@@ -42,6 +43,11 @@ class VolunteerHistoryController extends Controller
      */
     private $responseHelper;
 
+    /**
+     * @var App\Helpers\LanguageHelper
+     */
+    private $languageHelper;
+
 
     /**
      * Create a new controller instance.
@@ -56,67 +62,14 @@ class VolunteerHistoryController extends Controller
         TimesheetRepository $timesheetRepository,
         MissionThemeRepository $missionThemeRepository,
         MissionSkillRepository $missionSkillRepository,
-        ResponseHelper $responseHelper
+        ResponseHelper $responseHelper,
+        LanguageHelper $languageHelper
     ) {
         $this->timesheetRepository = $timesheetRepository;
         $this->missionThemeRepository = $missionThemeRepository;
         $this->missionSkillRepository = $missionSkillRepository;
         $this->responseHelper = $responseHelper;
-    }
-
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
+        $this->languageHelper = $languageHelper;
     }
 
     /**
@@ -136,7 +89,7 @@ class VolunteerHistoryController extends Controller
             trans('messages.success.MESSAGE_THEME_HISTORY_PER_HOUR_LISTED'):
             trans('messages.success.MESSAGE_THEME_HISTORY_NOT_FOUND');
             $apiData = $themeTimeHistory->toArray();
-
+            
             return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
         } catch (\Exception $e) {
             return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
@@ -152,6 +105,11 @@ class VolunteerHistoryController extends Controller
     public function skillHistory(Request $request): JsonResponse
     {
         try {
+            $languages = $this->languageHelper->getLanguages($request);
+            $language = ($request->hasHeader('X-localization')) ?
+            $request->header('X-localization') : env('TENANT_DEFAULT_LANGUAGE_CODE');
+            $languageCode = $languages->where('code', $language)->first()->code;
+
             $userId = $request->auth->user_id;
             $skillTimeHistory = $this->missionSkillRepository->getHoursPerSkill($request->year, $userId);
 
