@@ -17,6 +17,14 @@
             'ERROR_FAILD_TO_UPLOAD_COMPILE_FILE_ON_S3' => '200012',
             'ERROR_WHILE_COMPILING_SCSS_FILES' => '200013',
         ],
+        'background_process_status' => [
+            'PENDING' => '0',
+            'COMPLETED' => '1',
+            'IN_PROGRESS' => '2',
+            'FAILED' => '-1'
+        ],
+        'AWS_S3_BUCKET_NAME' => 'optimy-dev-tatvasoft',
+        'AWS_S3_DEFAULT_THEME_FOLDER_NAME' => 'default_theme',
         'AWS_S3_ASSETS_FOLDER_NAME' => 'assets',
         'AWS_S3_IMAGES_FOLDER_NAME' => 'images',
         'AWS_S3_SCSS_FOLDER_NAME' => 'scss',

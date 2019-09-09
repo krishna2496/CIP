@@ -20,7 +20,6 @@ use InvalidArgumentException;
 use Aws\S3\Exception\S3Exception;
 use App\Jobs\DownloadAssestFromS3ToLocalStorageJob;
 use Queue;
-use App\Jobs\TenantBackgroundJobsJob;
 
 class TenantController extends Controller
 {
@@ -97,21 +96,7 @@ class TenantController extends Controller
             }
 
             $tenant = $this->tenantRepository->store($request);
-			dispatch(new TenantMigrationJob($tenant));
-			
-			// Copy local default_theme folder
-			$sourceFolder = storage_path('app/default_theme');
-			$destinationFolder = storage_path('app/'.$tenant->name);
-			exec('mkdir '.$destinationFolder);
-			exec('cp -r '.$sourceFolder.'/* '.$destinationFolder.' ');
-			
-			// Create assets folder for tenant on AWS s3 bucket
-            exec('aws s3 cp --recursive s3://optimy-dev-tatvasoft/default_theme s3://optimy-dev-tatvasoft/'.$tenant->name);
-        
-			// Compile CSS file and upload on s3
-			dispatch(new CompileScssFiles($tenant));
-            //Queue::push(new TenantBackgroundJobsJob($tenant));
-
+            
             // Set response data
             $apiStatus = Response::HTTP_CREATED;
             $apiData = ['tenant_id' => $tenant->tenant_id];
@@ -139,7 +124,7 @@ class TenantController extends Controller
                 config('constants.error_codes.FAILED_TO_CREATE_FOLDER_ON_S3'),
                 trans('messages.custom_error_message.FAILED_TO_CREATE_FOLDER_ON_S3')
             );
-        } catch (\Exception $e) {dd($e);
+        } catch (\Exception $e) {
             // Delete created tenant
             $this->destroy($tenant->tenant_id);
             return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));

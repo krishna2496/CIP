@@ -31,7 +31,7 @@ class Tenant extends Model
      *
      * @var array
      */
-    protected $fillable = ['name','sponsor_id'];
+    protected $fillable = ['name','sponsor_id','background_process_status'];
 
     /**
      * The attributes that should be mutated to dates.
@@ -46,7 +46,7 @@ class Tenant extends Model
      * @var array
      */
     protected $visible = ['tenant_id', 'name', 'sponsor_id', 'status',
-    'settings', 'tenantLanguages', 'tenantLanguages.language'];
+    'settings', 'tenantLanguages', 'tenantLanguages.language','background_process_status'];
 
      
     /**
