@@ -66,7 +66,7 @@ class TenantBackgroundJobsJob extends Job
 
             // Copy local default_theme folder
             $sourceFolder = storage_path('app/default_theme');
-            $destinationFolder = storage_path('app/'.$tenant->name);
+            $destinationFolder = storage_path('app/'.$this->tenant->name);
 
             exec('mkdir '.$destinationFolder);
             exec('cp -r '.$sourceFolder.'/* '.$destinationFolder.' ');
@@ -75,7 +75,7 @@ class TenantBackgroundJobsJob extends Job
             exec('aws s3 cp --recursive s3://'.config('constants.AWS_S3_BUCKET_NAME').
             '/'.config('constants.AWS_S3_DEFAULT_THEME_FOLDER_NAME').' s3://'
             .config('constants.AWS_S3_BUCKET_NAME').'/'
-            .$tenant->name);
+            .$this->tenant->name);
 
             // Compile CSS file and upload on s3
             dispatch(new CompileScssFiles($this->tenant));
