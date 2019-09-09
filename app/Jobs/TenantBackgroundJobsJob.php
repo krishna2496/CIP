@@ -5,6 +5,9 @@ namespace App\Jobs;
 use App\Models\Tenant;
 use Queue;
 use App\Traits\SendEmailTrait;
+use App\Jobs\TenantDefaultLanguageJob;
+use App\Jobs\TenantMigrationJob;
+use Illuminate\Support\Facades\Log;
 
 class TenantBackgroundJobsJob extends Job
 {
@@ -46,30 +49,50 @@ class TenantBackgroundJobsJob extends Job
      */
     public function handle()
     {
-        $queueManager = app('queue');
+        try {
+            $this->tenant->update(
+                [
+                    'background_process_status' => config('constants.background_process_status.IN_PROGRESS')
+                ]
+            );
 
-        $defaultDriver = $queueManager->getDefaultDriver();
-
-        $queueManager->setDefaultDriver('sync');
-
-        // ONLY FOR DEVELOPMENT MODE. (PLEASE REMOVE THIS CODE IN PRODUCTION MODE)
-        if (env('APP_ENV')=='local' || env('APP_ENV')=='testing') {
-            dispatch(new TenantDefaultLanguageJob($this->tenant));
-        }
+            // ONLY FOR DEVELOPMENT MODE. (PLEASE REMOVE THIS CODE IN PRODUCTION MODE)
+            if (env('APP_ENV')=='local' || env('APP_ENV')=='testing') {
+                dispatch(new TenantDefaultLanguageJob($this->tenant));
+            }
         
-        // Job dispatched to create new tenant's database and migrations
-        dispatch(new TenantMigrationJob($this->tenant));
+            // Job dispatched to create new tenant's database and migrations
+            dispatch(new TenantMigrationJob($this->tenant));
 
-        // Create assets folder for tenant on AWS s3 bucket
-        dispatch(new CreateFolderInS3BucketJob($this->tenant));
+            // Copy local default_theme folder
+            $sourceFolder = storage_path('app/default_theme');
+            $destinationFolder = storage_path('app/'.$this->tenant->name);
 
-        // Compile CSS file and upload on s3
-        dispatch(new CompileScssFiles($this->tenant));
+            exec('mkdir '.$destinationFolder);
+            exec('cp -r '.$sourceFolder.'/* '.$destinationFolder.' ');
 
-        $queueManager->setDefaultDriver($defaultDriver);
+            // Create assets folder for tenant on AWS s3 bucket
+            exec('aws s3 cp --recursive s3://'.config('constants.AWS_S3_BUCKET_NAME').
+            '/'.config('constants.AWS_S3_DEFAULT_THEME_FOLDER_NAME').' s3://'
+            .config('constants.AWS_S3_BUCKET_NAME').'/'
+            .$this->tenant->name);
 
-        // Send success mail to super admin
-        $this->sendEmailNotification();
+            // Compile CSS file and upload on s3
+            dispatch(new CompileScssFiles($this->tenant));
+
+            $this->tenant->update(
+                [
+                    'background_process_status' => config('constants.background_process_status.COMPLETED')
+                ]
+            );
+        } catch (\Exception $e) {
+            Log::info('Exception in tenant background job execution '. $e);
+            $this->tenant->update(
+                [
+                    'background_process_status' => config('constants.background_process_status.FAILED')
+                ]
+            );
+        }
     }
 
     /**
@@ -80,6 +103,7 @@ class TenantBackgroundJobsJob extends Job
      */
     public function failed(\Exception $exception)
     {
+        $this->tenant->update(['background_process_status' => config('constants.background_process_status.FAILED')]);
         $this->sendEmailNotification(true);
     }
 

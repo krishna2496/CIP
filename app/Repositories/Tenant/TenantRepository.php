@@ -5,6 +5,7 @@ use App\Repositories\Tenant\TenantInterface;
 use Illuminate\Http\Request;
 use App\Models\Tenant;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
 
 class TenantRepository implements TenantInterface
 {
@@ -100,5 +101,18 @@ class TenantRepository implements TenantInterface
         $tenant = $this->tenant->findOrFail($id);
         $tenant->update($requestArray);
         return $tenant;
+    }
+
+    /**
+     * Get pending tenant list to execute their background process
+     *
+     * @return null|Illuminate\Support\Collection
+     */
+    public function getPendingTenantsForProcess(): Collection
+    {
+        return $this->tenant->where(
+            'background_process_status',
+            config('constants.background_process_status.PENDING')
+        )->get();
     }
 }
