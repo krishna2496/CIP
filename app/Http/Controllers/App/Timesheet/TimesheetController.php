@@ -121,6 +121,9 @@ class TimesheetController extends Controller
                 );
             }
 
+            // Remove params
+            $request->request->remove('status_id');
+
             try {
                 // Fetch mission application data
                 $missionApplicationData = $this->missionRepository->getMissionApplication(
@@ -165,12 +168,14 @@ class TimesheetController extends Controller
                         config('constants.error_codes.ERROR_TIMESHEET_ALREADY_UPDATED'),
                         trans('messages.custom_error_message.ERROR_TIMESHEET_ALREADY_UPDATED')
                     );
+                } else {
+                    $request->request->add(['status_id' => config('constants.timesheet_status_id.PENDING')]);
                 }
             }
 
             $dateTime = Carbon::createFromFormat('m-d-Y', $request->date_volunteered);
             $dateTime = strtotime($dateTime);
-            $date = date('Y-m-d', $dateTime);
+            $dateVolunteered = date('Y-m-d', $dateTime);
            
             // Fetch mission data from missionid
             $missionData = $this->missionRepository->find($request->mission_id);
@@ -242,7 +247,7 @@ class TimesheetController extends Controller
                 // Check start dates and end dates of mission
                 if ($missionData->start_date) {
                     $startDate = (new Carbon($missionData->start_date))->format('Y-m-d');
-                    if ($date < $startDate) {
+                    if ($dateVolunteered < $startDate) {
                         return $this->responseHelper->error(
                             Response::HTTP_UNPROCESSABLE_ENTITY,
                             Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
@@ -252,7 +257,7 @@ class TimesheetController extends Controller
                     } else {
                         if ($missionData->end_date) {
                             $endDate = (new Carbon($missionData->end_date))->format('Y-m-d');
-                            if ($date > $endDate) {
+                            if ($dateVolunteered > $endDate) {
                                 $missionEndDate = Carbon::createFromFormat('Y-m-d', $endDate);
                        
                                 // Fetch tenant options value
@@ -266,7 +271,7 @@ class TimesheetController extends Controller
                            
                                     // Add weeks mission end date
                                     $totalDate = $missionEndDate->addWeeks($extraWeeks);
-                                    if ($date > $totalDate) {
+                                    if ($dateVolunteered > $totalDate) {
                                         return $this->responseHelper->error(
                                             Response::HTTP_UNPROCESSABLE_ENTITY,
                                             Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
@@ -297,9 +302,6 @@ class TimesheetController extends Controller
                     $validator->errors()->first()
                 );
             }
-
-            // Remove params
-            $request->request->remove('status_id');
 
             // Remove white space from notes
             if ($request->has('notes')) {
