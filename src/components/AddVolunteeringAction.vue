@@ -1,9 +1,9 @@
 <template>
     <div>
-        <b-modal ref="timeHoursModal" @hidden ="hideModal" :modal-class="'time-hours-modal table-modal'" hide-footer>
+        <b-modal ref="goalActionModal" :modal-class="'goal-modal table-modal'" hide-footer  @hidden ="hideModal">
             <template slot="modal-header" slot-scope="{ close }">
                 <i class="close" @click="close()" v-b-tooltip.hover :title="langauageData.label.close"></i>
-                    <h5 class="modal-title">{{langauageData.label.hour_entry_modal_title}}</h5>
+                    <h5 class="modal-title">{{langauageData.label.goal_entry_modal_title}}</h5>
                 </template>
                 <b-alert show :variant="classVariant" dismissible v-model="showErrorDiv">
                     {{ message }}
@@ -22,44 +22,24 @@
                             </b-form-group>
                         </b-col>
                         <b-col>
+                           <b-form-group>
+                        <b-row>
+                        <b-col sm="12">
                             <b-form-group>
-                                <label for>{{langauageData.label.hours}}*</label>
-                                <AppCustomDropdown
-                                    v-model="timeEntryDefaultData.hours"
-                                    :optionList="hourList"
-                                    :errorClass="submitted && ($v.timeEntryDefaultData.hours.required || $v.timeEntryDefaultData.hours.$invalid)" 
-                                    :defaultText="defaultHours"
-                                    @updateCall="updateHours"
-                                    translationEnable= "false"
-                                />
-                                <div v-if="submitted && !$v.timeEntryDefaultData.hours.required" class="invalid-feedback">
-                                    {{ langauageData.errors.minute_or_hours_is_required }}</div>
+                                <label for>{{langauageData.label.actions}}*</label>
+                                <b-form-input 
+                                v-model.trim="timeEntryDefaultData.action"
+                                :class="{ 'is-invalid': submitted && $v.timeEntryDefaultData.action.$error }"
+                                type="text" :placeholder="langauageData.placeholder.action"></b-form-input>
+                                <div 
+                                    v-if="submitted && !$v.timeEntryDefaultData.dateVolunteered.required" 
+                                    class="invalid-feedback">
+                                    {{ langauageData.errors.action_required }}
+                                </div>
                             </b-form-group>
-
                         </b-col>
-                        <b-col sm="6">
-                            <!-- minuteList -->
-                          <!--   <b-form-group>
-                                <label for>{{langauageData.label.minutes}}</label>
-                                <b-form-input id type="text"
-                                v-model.trim="timeEntryDefaultData.minutes"
-                                :class="{ 'is-invalid': submitted && $v.timeEntryDefaultData.minutes.$error }"
-                                :placeholder="langauageData.placeholder.spent_minutes"></b-form-input>
-                            </b-form-group> -->
-
-                              <b-form-group>
-                                <label for>{{langauageData.label.minutes}}*</label>
-                                <AppCustomDropdown
-                                    v-model="timeEntryDefaultData.hours"
-                                    :optionList="minuteList"
-                                    :errorClass="submitted && ($v.timeEntryDefaultData.hours.required || $v.timeEntryDefaultData.hours.$invalid)" 
-                                    :defaultText="defaultMinutes"
-                                    @updateCall="updateMinutes"
-                                    translationEnable= "false"
-                                />
-                                <div v-if="submitted && !$v.timeEntryDefaultData.hours.required" class="invalid-feedback">
-                                    {{ langauageData.errors.minute_or_hours_is_required }}</div>
-                            </b-form-group>
+                        </b-row>
+                    </b-form-group>
 
                         </b-col>
                     </b-row>
@@ -120,7 +100,7 @@
                 </b-form-group>
                 <b-form-group>
                     <b-row>
-                        <b-col sm="6" class="date-col">
+                        <b-col sm="12" class="date-col">
                         <label for>{{langauageData.label.file_upload}}</label>
                         <div class="file-upload-wrap">
                             <div class="btn-wrapper">
@@ -177,7 +157,7 @@
             >{{langauageData.label.cancel}}</b-button>
             <b-button 
                 class="btn-bordersecondary" 
-                @click="saveTimeHours()" 
+                @click="saveAction()" 
                 >{{langauageData.label.submit}}
             </b-button>
         </div>
@@ -314,24 +294,15 @@ export default {
                 date_volunteered: "",
                 day_volunteered: "",
                 notes: "",
-                hours: "",
-                minutes: "",
+                action : "",
                 documents: []
             }
         }
     },
     validations() {
-
-        const requiredHourValidation = (
-            (this.timeEntryDefaultData.minutes == '' || this.timeEntryDefaultData.hours == '') ||
-            (this.timeEntryDefaultData.minutes == '00' && this.timeEntryDefaultData.hours == '00') || 
-            (this.timeEntryDefaultData.minutes == '00' && this.timeEntryDefaultData.hours == '') ||
-            (this.timeEntryDefaultData.minutes == '' && this.timeEntryDefaultData.hours == '00') 
-        ) ? {required} : {};
-
         return {
             timeEntryDefaultData : {      
-                hours : requiredHourValidation,
+                action : {required},
                 workDay : {required},
                 notes : {required},
                 dateVolunteered : {required}
@@ -369,17 +340,13 @@ export default {
             this.timeEntryDefaultData.minutes = value.selectedId
             this.$emit("updateCall",selectedData)
         },
-        saveTimeHours() {
+        saveAction() {
             var _this = this;
             this.submitted = true;
             this.$v.$touch();
          
             if (this.$v.$invalid) {
                 return;
-            }
-            if((this.timeEntryDefaultData.hours == ''|| this.timeEntryDefaultData.hours == '00') 
-                && (this.timeEntryDefaultData.minutes == "00" || this.timeEntryDefaultData.minutes == "")) {
-                return
             }
 
             const formData = new FormData();
@@ -398,8 +365,7 @@ export default {
             formData.append('date_volunteered',volunteeredDate);
             formData.append('day_volunteered',this.timeEntryDefaultData.workDay);
             formData.append('notes',this.timeEntryDefaultData.notes);
-            formData.append('hours',hours);
-            formData.append('minutes',minutes);
+            formData.append('action',this.timeEntryDefaultData.action);
          
             addVolunteerEntry(formData).then( response => {
                 if (response.error === true) { 
@@ -432,8 +398,7 @@ export default {
                 'timesheet_id' : timeSheetId,
                 'document_id' : documentId
             }
-           
-            
+             
             removeDocument(deletFile).then(response => {
                 if(response) {
 
