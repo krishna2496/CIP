@@ -109,6 +109,10 @@ return [
         'MESSAGE_POLICY_PAGE_FOUND' => 'Page de stratégie trouvée avec succès',
         'MESSAGE_TIME_REQUEST_LISTING' => 'Demande de temps listée avec succès',
         'MESSAGE_TIME_REQUEST_NOT_FOUND' => 'Aucune demande de temps trouvée',
+        'MESSAGE_GOAL_MISSION_TIME_ENTRY_LISTED' => 'Entrée de la feuille de temps des missions d\'objectif répertoriée',
+        'MESSAGE_NO_GOAL_MISSION_TIME_ENTRY_FOUND' => 'Entrée de la feuille de temps des missions d\'objectif non trouvée',
+        'MESSAGE_TIME_MISSION_TIME_ENTRY_LISTED' => 'Saisie des feuilles de temps des missions répertoriées',
+        'MESSAGE_NO_TIME_MISSION_TIME_ENTRY_FOUND' => 'Entrée dans la feuille de temps des missions non trouvée'
     ],
 
         

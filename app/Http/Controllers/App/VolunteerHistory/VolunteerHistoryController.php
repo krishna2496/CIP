@@ -124,4 +124,66 @@ class VolunteerHistoryController extends Controller
             return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
+
+    /**
+     * Get all user mission with total time entry for each mission
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return Illuminate\Http\JsonResponse
+     */
+    public function timeMissionHistory(Request $request): JsonResponse
+    {
+        try {
+            $statusArray = [
+                config('constants.timesheet_status_id.AUTOMATICALLY_APPROVED'),
+                config('constants.timesheet_status_id.APPROVED')
+            ];
+
+            $goalRequestList = $this->timesheetRepository->timeRequestList($request, $statusArray);
+
+            $apiMessage = (count($goalRequestList) > 0) ?
+            trans('messages.success.MESSAGE_TIME_MISSION_TIME_ENTRY_LISTED') :
+            trans('messages.success.MESSAGE_NO_TIME_MISSION_TIME_ENTRY_FOUND');
+            
+            return $this->responseHelper->successWithPagination(Response::HTTP_OK, $apiMessage, $goalRequestList);
+        } catch (PDOException $e) {
+            return $this->PDO(
+                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
+                trans('messages.custom_error_message.ERROR_DATABASE_OPERATIONAL')
+            );
+        } catch (\Exception $e) {
+            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
+        }
+    }
+
+    /**
+     * Get all skill history with total minutes logged, based on year and all years.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return Illuminate\Http\JsonResponse
+     */
+    public function goalMissionHistory(Request $request): JsonResponse
+    {
+        try {
+            $statusArray = [
+                config('constants.timesheet_status_id.AUTOMATICALLY_APPROVED'),
+                config('constants.timesheet_status_id.APPROVED')
+            ];
+
+            $goalRequestList = $this->timesheetRepository->goalRequestList($request, $statusArray);
+
+            $apiMessage = (count($goalRequestList) > 0) ?
+            trans('messages.success.MESSAGE_GOAL_MISSION_TIME_ENTRY_LISTED') :
+            trans('messages.success.MESSAGE_NO_GOAL_MISSION_TIME_ENTRY_FOUND');
+            
+            return $this->responseHelper->successWithPagination(Response::HTTP_OK, $apiMessage, $goalRequestList);
+        } catch (PDOException $e) {
+            return $this->PDO(
+                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
+                trans('messages.custom_error_message.ERROR_DATABASE_OPERATIONAL')
+            );
+        } catch (\Exception $e) {
+            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
+        }
+    }
 }
