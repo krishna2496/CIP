@@ -20,7 +20,6 @@ use InvalidArgumentException;
 use Aws\S3\Exception\S3Exception;
 use App\Jobs\DownloadAssestFromS3ToLocalStorageJob;
 use Queue;
-use App\Jobs\TenantBackgroundJobsJob;
 
 class TenantController extends Controller
 {
@@ -98,8 +97,6 @@ class TenantController extends Controller
 
             $tenant = $this->tenantRepository->store($request);
             
-            Queue::push(new TenantBackgroundJobsJob($tenant));
-
             // Set response data
             $apiStatus = Response::HTTP_CREATED;
             $apiData = ['tenant_id' => $tenant->tenant_id];

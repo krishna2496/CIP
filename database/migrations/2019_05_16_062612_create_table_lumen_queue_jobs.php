@@ -21,7 +21,7 @@ class CreateTableLumenQueueJobs extends Migration
             $table->unsignedInteger('reserved_at')->nullable();
             $table->unsignedInteger('available_at');
             $table->unsignedInteger('created_at');
-            $table->index(['queue', 'reserved', 'reserved_at']);
+            $table->index(['queue', 'reserved_at']);
         });
     }
 
