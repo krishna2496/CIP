@@ -16,6 +16,7 @@ use Illuminate\Validation\Rule;
 use InvalidArgumentException;
 use PDOException;
 use Validator;
+use App\Repositories\TenantOption\TenantOptionRepository;
 
 class TimesheetController extends Controller
 {
@@ -36,22 +37,30 @@ class TimesheetController extends Controller
     private $missionRepository;
 
     /**
+     * @var App\Repositories\TenantOption\TenantOptionRepository
+     */
+    private $tenantOptionRepository;
+
+    /**
      * Create a new controller instance.
      *
      * @param App\Repositories\Timesheet\TimesheetRepository $timesheetRepository
      * @param App\Helpers\ResponseHelper $responseHelper
      * @param App\Repositories\Mission\MissionRepository $missionRepository
+     * @param App\Repositories\TenantOption\TenantOptionRepository $tenantOptionRepository
      *
      * @return void
      */
     public function __construct(
         TimesheetRepository $timesheetRepository,
         ResponseHelper $responseHelper,
-        MissionRepository $missionRepository
+        MissionRepository $missionRepository,
+        TenantOptionRepository $tenantOptionRepository
     ) {
         $this->timesheetRepository = $timesheetRepository;
         $this->responseHelper = $responseHelper;
         $this->missionRepository = $missionRepository;
+        $this->tenantOptionRepository = $tenantOptionRepository;
     }
 
     /**
@@ -146,26 +155,7 @@ class TimesheetController extends Controller
             $timesheetDetails = $timesheetData->toArray();
             if ($timesheetData->count() > 0) {
                 $timesheetStatus = $timesheetDetails[0]["timesheet_status"]["status"];
-                // If timesheet status declined
-                if ($timesheetStatus == config('constants.timesheet_status.DECLINED')) {
-                    return $this->responseHelper->error(
-                        Response::HTTP_UNPROCESSABLE_ENTITY,
-                        Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                        config('constants.error_codes.ERROR_TIMESHEET_DECLINED'),
-                        trans('messages.custom_error_message.ERROR_TIMESHEET_DECLINED')
-                    );
-                }
-
-                // If timesheet status is submitted for approval
-                if ($timesheetStatus == config('constants.timesheet_status.SUBMIT_FOR_APPROVAL')) {
-                    return $this->responseHelper->error(
-                        Response::HTTP_UNPROCESSABLE_ENTITY,
-                        Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                        config('constants.error_codes.ERROR_TIMESHEET_SUBMIT_FOR_APPROVAL'),
-                        trans('messages.custom_error_message.ERROR_TIMESHEET_SUBMIT_FOR_APPROVAL')
-                    );
-                }
-
+              
                 // If timesheet status is approved
                 if ($timesheetStatus == config('constants.timesheet_status.APPROVED')
                     || $timesheetStatus == config('constants.timesheet_status.AUTOMATICALLY_APPROVED')) {
@@ -263,12 +253,35 @@ class TimesheetController extends Controller
                         if ($missionData->end_date) {
                             $endDate = (new Carbon($missionData->end_date))->format('Y-m-d');
                             if ($date > $endDate) {
-                                return $this->responseHelper->error(
-                                    Response::HTTP_UNPROCESSABLE_ENTITY,
-                                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                                    config('constants.error_codes.ERROR_MISSION_ENDDATE'),
-                                    trans('messages.custom_error_message.ERROR_MISSION_ENDDATE')
-                                );
+                                $missionEndDate = Carbon::createFromFormat('Y-m-d', $endDate);
+                       
+                                // Fetch tenant options value
+                                $tenantOptionData = $this->tenantOptionRepository
+                                ->getOptionValue('ALLOW_TIMESHEET_ENTRY');
+
+                                // Count records
+                                if (count($tenantOptionData) > 0) {
+                                    $tenantOptionDetails = $tenantOptionData->toArray();
+                                    $extraWeeks = intval($tenantOptionDetails[0]['option_value']);
+                           
+                                    // Add weeks mission end date
+                                    $totalDate = $missionEndDate->addWeeks($extraWeeks);
+                                    if ($date > $totalDate) {
+                                        return $this->responseHelper->error(
+                                            Response::HTTP_UNPROCESSABLE_ENTITY,
+                                            Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                                            config('constants.error_codes.ERROR_MISSION_ENDDATE'),
+                                            trans('messages.custom_error_message.ERROR_MISSION_ENDDATE')
+                                        );
+                                    }
+                                } else {
+                                    return $this->responseHelper->error(
+                                        Response::HTTP_UNPROCESSABLE_ENTITY,
+                                        Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                                        config('constants.error_codes.ERROR_MISSION_ENDDATE'),
+                                        trans('messages.custom_error_message.ERROR_MISSION_ENDDATE')
+                                    );
+                                }
                             }
                         }
                     }

@@ -221,8 +221,6 @@ return [
         'ERROR_TIMESHEET_ALREADY_DONE_FOR_DATE' => 'La saisie du temps est déjà approuvée pour une date donnée', 
         'ERROR_INVALID_DATA_FOR_TIMESHEET_ENTRY' => 'Vous ne pouvez pas ajouter de temps',
         'ERROR_TIMESHEET_ENTRY_NOT_FOUND' => 'ID de saisie de la feuille de temps introuvable',
-        'ERROR_TIMESHEET_DECLINED' => 'Vous ne pouvez pas mettre à jour la feuille de temps refusée',
-        'ERROR_TIMESHEET_SUBMIT_FOR_APPROVAL' => 'Cette feuille de temps est déjà soumise pour approbation. Vous ne pouvez pas le mettre à jour',
         'ERROR_SAME_DATE_TIME_ENTRY' => 'Vous ne pouvez pas ajouter plus de 24 heures à la même date',
         'ERROR_INVALID_HOURS' => 'Les heures doivent être comprises entre 00 et 23',
         'ERROR_INVALID_MINUTES' => 'Les minutes doivent être comprises entre 00 et 59',
