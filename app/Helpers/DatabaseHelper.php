@@ -14,6 +14,7 @@ class DatabaseHelper
      */
     public function connectWithTenantDatabase(int $tenantId)
     {
+        DB::purge('tenant');
         // Set configuration options for the newly create tenant
         Config::set(
             'database.connections.tenant',

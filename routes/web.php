@@ -10,6 +10,9 @@
 | and give it the Closure to call when that URI is requested.
 |
 */
+/* Route to run background process for tenant. To perform SCSS and assets operations */
+$router->get('/tenant/runBackgroundProcess', 'TenantBackgroundProcessController@runBackgroundProcess');
+
 $router->group(
     ['prefix' => 'tenants', 'middleware' => 'localization'],
     function ($router) {
