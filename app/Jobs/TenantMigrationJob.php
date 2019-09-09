@@ -63,8 +63,8 @@ class TenantMigrationJob extends Job
     public function handle()
     {
         try {
-            // Create database
-            DB::statement("CREATE DATABASE IF NOT EXISTS `ci_tenant_{$this->tenant->tenant_id}`");
+			// Create database
+			DB::statement("CREATE DATABASE IF NOT EXISTS `ci_tenant_{$this->tenant->tenant_id}`");
 
             // Connect with newly created database
             $this->databaseHelper->connectWithTenantDatabase($this->tenant->tenant_id);

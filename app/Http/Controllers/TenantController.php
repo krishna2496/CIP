@@ -97,8 +97,20 @@ class TenantController extends Controller
             }
 
             $tenant = $this->tenantRepository->store($request);
-            
-            Queue::push(new TenantBackgroundJobsJob($tenant));
+			dispatch(new TenantMigrationJob($tenant));
+			
+			// Copy local default_theme folder
+			$sourceFolder = storage_path('app/default_theme');
+			$destinationFolder = storage_path('app/'.$tenant->name);
+			exec('mkdir '.$destinationFolder);
+			exec('cp -r '.$sourceFolder.'/* '.$destinationFolder.' ');
+			
+			// Create assets folder for tenant on AWS s3 bucket
+            exec('aws s3 cp --recursive s3://optimy-dev-tatvasoft/default_theme s3://optimy-dev-tatvasoft/'.$tenant->name);
+        
+			// Compile CSS file and upload on s3
+			dispatch(new CompileScssFiles($tenant));
+            //Queue::push(new TenantBackgroundJobsJob($tenant));
 
             // Set response data
             $apiStatus = Response::HTTP_CREATED;
@@ -127,7 +139,7 @@ class TenantController extends Controller
                 config('constants.error_codes.FAILED_TO_CREATE_FOLDER_ON_S3'),
                 trans('messages.custom_error_message.FAILED_TO_CREATE_FOLDER_ON_S3')
             );
-        } catch (\Exception $e) {
+        } catch (\Exception $e) {dd($e);
             // Delete created tenant
             $this->destroy($tenant->tenant_id);
             return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
