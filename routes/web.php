@@ -36,11 +36,11 @@ $router->group(['middleware' => 'localization'], function ($router) {
      'uses' => 'App\Auth\AuthController@passwordReset']);
 
     /* CMS footer pages  */
-    $router->get('/app/cms/listing', ['as' => 'cms.listing', 'middleware' => 'tenant.connection',
+    $router->get('/app/cms/listing', ['as' => 'app.cms.listing', 'middleware' => 'tenant.connection',
      'uses' => 'App\FooterPage\FooterPageController@index']);
-    $router->get('/app/cms/detail', ['as' => 'cms.detail', 'middleware' => 'tenant.connection',
+    $router->get('/app/cms/detail', ['as' => 'app.cms.detail', 'middleware' => 'tenant.connection',
      'uses' => 'App\FooterPage\FooterPageController@cmsList']);
-    $router->get('/app/cms/{slug}', ['as' => 'cms.show', 'middleware' => 'tenant.connection',
+    $router->get('/app/cms/{slug}', ['as' => 'app.cms.show', 'middleware' => 'tenant.connection',
      'uses' => 'App\FooterPage\FooterPageController@show']);
     
     /* Get custom css url  */

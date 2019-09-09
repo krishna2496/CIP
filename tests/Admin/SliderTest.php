@@ -100,7 +100,7 @@ class SliderTest extends TestCase
     {
         $params = [
             'url' => 'https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer9.png',
-            'sort_order' => str_random(2),        
+            'sort_order' => str_random(20),        
             'translations' =>  [
                 [
                     'lang' => 'en',

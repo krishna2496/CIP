@@ -638,9 +638,7 @@ class AppTimesheetTest extends TestCase
         $this->post('app/timesheet', $params, ['token' => $token])
           ->seeStatusCode(201);
 
-        $timesheet = App\Models\Timesheet::orderBy("timesheet_id", "DESC")->take(1)->get();
-        
-        $this->patch('app/timesheet/'.$timesheet[0]['timesheet_id'], $params, ['token' => $token])
+        $this->post('app/timesheet/', $params, ['token' => $token])
           ->seeStatusCode(200)
           ->seeJsonStructure([
             'status',
@@ -651,7 +649,6 @@ class AppTimesheetTest extends TestCase
         App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->delete();
         App\Models\MissionApplication::where("mission_id", $mission[0]['mission_id'])->delete();
     }
-
     
     /**
      * @test
@@ -740,7 +737,6 @@ class AppTimesheetTest extends TestCase
         $this->post('app/timesheet', $params, ['token' => $token])
           ->seeStatusCode(201);
 
-        $timesheet = App\Models\Timesheet::orderBy("timesheet_id", "DESC")->take(1)->get();
         $params = [
             'mission_id' => $mission[0]['mission_id'],
             'date_volunteered' => date('m-d-Y'),
@@ -751,7 +747,7 @@ class AppTimesheetTest extends TestCase
             'documents[]' =>[]
         ];
 
-        $this->patch('app/timesheet/'.$timesheet[0]['timesheet_id'], $params, ['token' => $token])
+        $this->post('app/timesheet/', $params, ['token' => $token])
         ->seeStatusCode(422)
         ->seeJsonStructure([
             "errors" => [
@@ -856,7 +852,6 @@ class AppTimesheetTest extends TestCase
         $this->post('app/timesheet', $params, ['token' => $token])
           ->seeStatusCode(201);
 
-        $timesheet = App\Models\Timesheet::orderBy("timesheet_id", "DESC")->take(1)->get();
         $params = [
             'mission_id' => $mission[0]['mission_id'],
             'date_volunteered' => date('m-d-Y'),
@@ -867,7 +862,7 @@ class AppTimesheetTest extends TestCase
             'documents[]' =>[]
         ];
 
-        $this->patch('app/timesheet/'.$timesheet[0]['timesheet_id'], $params, ['token' => $token])
+        $this->post('app/timesheet/', $params, ['token' => $token])
         ->seeStatusCode(422)
         ->seeJsonStructure([
             "errors" => [
@@ -972,7 +967,6 @@ class AppTimesheetTest extends TestCase
         $this->post('app/timesheet', $params, ['token' => $token])
           ->seeStatusCode(201);
 
-        $timesheet = App\Models\Timesheet::orderBy("timesheet_id", "DESC")->take(1)->get();
         $params = [
             'mission_id' => $mission[0]['mission_id'],
             'date_volunteered' => date('m-d-Y'),
@@ -983,7 +977,7 @@ class AppTimesheetTest extends TestCase
             'documents[]' =>[]
         ];
 
-        $this->patch('app/timesheet/'.$timesheet[0]['timesheet_id'], $params, ['token' => $token])
+        $this->post('app/timesheet/', $params, ['token' => $token])
         ->seeStatusCode(422)
         ->seeJsonStructure([
             "errors" => [
@@ -1000,4 +994,6 @@ class AppTimesheetTest extends TestCase
         App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->delete();
         App\Models\MissionApplication::where("mission_id", $mission[0]['mission_id'])->delete();
     }
+
+    
 }

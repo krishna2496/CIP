@@ -11,7 +11,6 @@ use App\Traits\RestExceptionHandlerTrait;
 use Validator;
 use DB;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use PDOException;
 use InvalidArgumentException;
 use Illuminate\Validation\Rule;
 
@@ -111,18 +110,6 @@ class FooterPageController extends Controller
             $apiMessage = trans('messages.success.MESSAGE_FOOTER_PAGE_CREATED');
             $apiData = ['page_id' => $footerPage['page_id']];
             return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
-        } catch (PDOException $e) {
-            return $this->PDO(
-                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
-                trans(
-                    'messages.custom_error_message.ERROR_DATABASE_OPERATIONAL'
-                )
-            );
-        } catch (InvalidArgumentException $e) {
-            return $this->invalidArgument(
-                config('constants.error_codes.ERROR_INVALID_ARGUMENT'),
-                trans('messages.custom_error_message.ERROR_INVALID_ARGUMENT')
-            );
         } catch (\Exception $e) {
             return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
@@ -143,13 +130,6 @@ class FooterPageController extends Controller
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_PAGE_FOUND');
             return $this->responseHelper->success($apiStatus, $apiMessage, $mission->toArray());
-        } catch (PDOException $e) {
-            return $this->PDO(
-                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
-                trans(
-                    'messages.custom_error_message.ERROR_DATABASE_OPERATIONAL'
-                )
-            );
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
                 config('constants.error_codes.ERROR_FOOTER_PAGE_NOT_FOUND'),
@@ -223,13 +203,6 @@ class FooterPageController extends Controller
             $apiMessage = trans('messages.success.MESSAGE_FOOTER_PAGE_UPDATED');
             $apiData = ['page_id' => $id];
             return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
-        } catch (PDOException $e) {
-            return $this->PDO(
-                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
-                trans(
-                    'messages.custom_error_message.ERROR_DATABASE_OPERATIONAL'
-                )
-            );
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
                 config('constants.error_codes.ERROR_FOOTER_PAGE_NOT_FOUND'),

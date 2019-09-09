@@ -115,7 +115,7 @@ $factory->define(App\Models\PolicyPage::class, function (Faker\Generator $faker)
 
 $factory->define(App\Models\TenantSetting::class, function (Faker\Generator $faker) {
     return [
-        'setting_id' => 1
+        'setting_id' => 2
     ];
 });
 
