@@ -116,7 +116,7 @@ return [
         'MESSAGE_TIME_REQUEST_NOT_FOUND' => 'No pending time requests found',
         'MESSAGE_GOAL_MISSION_TIME_ENTRY_LISTED' => 'Goal missions timesheet entry listed',
         'MESSAGE_NO_GOAL_MISSION_TIME_ENTRY_FOUND' => 'Goal missions timesheet entry not found',
-        'MESSAGE_TIME_MISSION_TIME_ENTRY_LISTED' => 'Time missions timesheet entry listed',
+        'MESSAGE_TIME_MISSION_TIME_ENTRY_LISTED' => 'Approved time missions timesheet details listed sucessfully',
         'MESSAGE_NO_TIME_MISSION_TIME_ENTRY_FOUND' => 'Time missions timesheet entry not found'
 	],
         
