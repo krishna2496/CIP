@@ -125,11 +125,6 @@ class SliderController extends Controller
             }
         } catch (TenantDomainNotFoundException $e) {
             throw $e;
-        } catch (PDOException $e) {
-            return $this->PDO(
-                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
-                trans('messages.custom_error_message.ERROR_DATABASE_OPERATIONAL')
-            );
         } catch (\ErrorException $e) {
             // Response error unable to upload file on S3
             return $this->responseHelper->error(
@@ -201,11 +196,6 @@ class SliderController extends Controller
             return $this->responseHelper->success($apiStatus, $apiMessage);
         } catch (TenantDomainNotFoundException $e) {
             throw $e;
-        } catch (PDOException $e) {
-            return $this->PDO(
-                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
-                trans('messages.custom_error_message.ERROR_DATABASE_OPERATIONAL')
-            );
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
                 config('constants.error_codes.ERROR_SLIDER_NOT_FOUND'),
@@ -243,11 +233,6 @@ class SliderController extends Controller
             return $this->modelNotFound(
                 config('constants.error_codes.ERROR_TENANT_DOMAIN_NOT_FOUND'),
                 trans('messages.custom_error_message.ERROR_TENANT_DOMAIN_NOT_FOUND')
-            );
-        } catch (PDOException $e) {
-            return $this->PDO(
-                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
-                trans('messages.custom_error_message.ERROR_DATABASE_OPERATIONAL')
             );
         } catch (\Exception $e) {
             return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));

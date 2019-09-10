@@ -155,11 +155,6 @@ class UserController extends Controller
                 config('constants.error_codes.ERROR_USER_NOT_FOUND'),
                 trans('messages.custom_error_message.ERROR_USER_NOT_FOUND')
             );
-        } catch (\PDOException $e) {
-            return $this->PDO(
-                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
-                trans('messages.custom_error_message.ERROR_DATABASE_OPERATIONAL')
-            );
         } catch (\Exception $e) {
             return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
@@ -361,11 +356,6 @@ class UserController extends Controller
                 config('constants.error_codes.ERROR_USER_NOT_FOUND'),
                 trans('messages.custom_error_message.ERROR_USER_NOT_FOUND')
             );
-        } catch (PDOException $e) {
-            return $this->PDO(
-                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
-                trans('messages.custom_error_message.ERROR_DATABASE_OPERATIONAL')
-            );
         } catch (\Exception $e) {
             return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
@@ -410,11 +400,6 @@ class UserController extends Controller
             return $this->s3Exception(
                 config('constants.error_codes.ERROR_FAILED_TO_RESET_STYLING'),
                 trans('messages.custom_error_message.ERROR_FAILED_TO_RESET_STYLING')
-            );
-        } catch (\PDOException $e) {
-            return $this->PDO(
-                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
-                trans('messages.custom_error_message.ERROR_DATABASE_OPERATIONAL')
             );
         } catch (\Exception $e) {
             return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));

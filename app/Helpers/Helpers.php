@@ -7,7 +7,6 @@ use Illuminate\Support\Facades\Config;
 use Firebase\JWT\JWT;
 use DB;
 use App\Traits\RestExceptionHandlerTrait;
-use PDOException;
 use Throwable;
 use App\Exceptions\TenantDomainNotFoundException;
 use Carbon\Carbon;
@@ -118,13 +117,6 @@ class Helpers
                 $pdo = DB::connection('tenant')->getPdo();
                 Config::set('database.default', 'tenant');
             }
-        } catch (PDOException $e) {
-            return $this->PDO(
-                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
-                trans(
-                    'messages.custom_error_message.ERROR_DATABASE_OPERATIONAL'
-                )
-            );
         } catch (\Exception $e) {
             return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
@@ -283,13 +275,6 @@ class Helpers
             $this->switchDatabaseConnection('tenant', $request);
             
             return $tenantSetting;
-        } catch (PDOException $e) {
-            return $this->PDO(
-                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
-                trans(
-                    'messages.custom_error_message.ERROR_DATABASE_OPERATIONAL'
-                )
-            );
         } catch (\Exception $e) {
             return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }

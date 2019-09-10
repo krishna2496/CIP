@@ -28,7 +28,7 @@ class UserTest extends TestCase
                 'city_id' => 1,
                 'country_id' => 233,
                 'profile_text' => str_random(10),
-                'linked_in_url' => 'https://www.'.str_random(10).'.com'
+                'linked_in_url' => 'https://in.linkedin.com/in/test-test-2b52238b'
             ];
 
         $this->post("users/", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
@@ -224,7 +224,7 @@ class UserTest extends TestCase
             'city_id' => 1,
             'country_id' => 233,
             'profile_text' => str_random(10),
-            'linked_in_url' => 'https://www.'.str_random(10).'.com'
+            'linked_in_url' => 'https://in.linkedin.com/in/test-test-2b52238b'
         ];
 
         $connection = 'tenant';
@@ -267,7 +267,7 @@ class UserTest extends TestCase
             'city_id' => 1,
             'country_id' => 233,
             'profile_text' => str_random(10),
-            'linked_in_url' => 'https://www.'.str_random(10).'.com'
+            'linked_in_url' => 'https://in.linkedin.com/in/test-test-2b52238b'
         ];
 
         $this->patch(
@@ -402,7 +402,7 @@ class UserTest extends TestCase
                 'city_id' => 1,
                 'country_id' => 233,
                 'profile_text' => str_random(10),
-                'linked_in_url' => 'https://www.'.str_random(10).'.com'
+                'linked_in_url' => 'https://in.linkedin.com/in/test-test-2b52238b'
             ];
 
         $this->post("users/", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
@@ -469,7 +469,7 @@ class UserTest extends TestCase
             'city_id' => 1,
             'country_id' => 233,
             'profile_text' => str_random(10),
-            'linked_in_url' => 'https://www.'.str_random(10).'.com'
+            'linked_in_url' => 'https://in.linkedin.com/in/test-test-2b52238b'
         ];
 
         $connection = 'tenant';
@@ -731,7 +731,7 @@ class UserTest extends TestCase
                 'city_id' => 1,
                 'country_id' => 233,
                 'profile_text' => str_random(10),
-                'linked_in_url' => 'https://www.'.str_random(10).'.com'
+                'linked_in_url' => 'https://in.linkedin.com/in/test-test-2b52238b'
             ];
 
         $this->post("users/", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])

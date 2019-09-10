@@ -11,7 +11,6 @@ use App\Helpers\Helpers;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
-use PDOException;
 use App\Helpers\ResponseHelper;
 use App\Traits\RestExceptionHandlerTrait;
 
@@ -151,11 +150,6 @@ class UserFilterController extends Controller
             $filterData["filters"]["tags"] = $filterTagArray;
             $apiStatus = Response::HTTP_OK;
             return $this->responseHelper->success($apiStatus, '', $filterData);
-        } catch (\PDOException $e) {
-            return $this->PDO(
-                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
-                trans('messages.custom_error_message.ERROR_DATABASE_OPERATIONAL')
-            );
         } catch (\Exception $e) {
             return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }

@@ -6,7 +6,6 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Repositories\MissionComment\MissionCommentRepository;
 use App\Helpers\ResponseHelper;
-use PDOException;
 use Illuminate\Http\JsonResponse;
 use App\Traits\RestExceptionHandlerTrait;
 use Illuminate\Database\Eloquent\ModelNotFoundException;

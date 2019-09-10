@@ -14,7 +14,6 @@ use InvalidArgumentException;
 use Validator;
 use Illuminate\Validation\Rule;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use PDOException;
 use App\Repositories\MissionTheme\MissionThemeRepository;
 use App\Repositories\MissionSkill\MissionSkillRepository;
 use App\Helpers\LanguageHelper;

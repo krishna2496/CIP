@@ -22,7 +22,6 @@ use Carbon\Carbon;
 use App\Repositories\TenantOption\TenantOptionRepository;
 use App\Traits\RestExceptionHandlerTrait;
 use InvalidArgumentException;
-use PDOException;
 use App\Helpers\LanguageHelper;
 use App\Exceptions\TenantDomainNotFoundException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -228,13 +227,6 @@ class AuthController extends Controller
                 trans('messages.custom_error_message.'
                 .config('constants.error_codes.ERROR_RESET_PASSWORD_INVALID_DATA'))
             );
-        } catch (PDOException $e) {
-            return $this->PDO(
-                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
-                trans(
-                    'messages.custom_error_message.ERROR_DATABASE_OPERATIONAL'
-                )
-            );
         } catch (\Exception $e) {
             return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
@@ -313,13 +305,6 @@ class AuthController extends Controller
                 config('constants.error_codes.ERROR_RESET_PASSWORD_INVALID_DATA'),
                 trans('messages.custom_error_message.'
                 .config('constants.error_codes.ERROR_RESET_PASSWORD_INVALID_DATA'))
-            );
-        } catch (PDOException $e) {
-            return $this->PDO(
-                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
-                trans(
-                    'messages.custom_error_message.ERROR_DATABASE_OPERATIONAL'
-                )
             );
         } catch (\Exception $e) {
             return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));

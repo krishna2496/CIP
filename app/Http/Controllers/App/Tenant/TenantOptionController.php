@@ -14,7 +14,6 @@ use App\Repositories\Slider\SliderRepository;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Traits\RestExceptionHandlerTrait;
 use InvalidArgumentException;
-use PDOException;
 use Illuminate\Http\JsonResponse;
 use Validator;
 
@@ -120,13 +119,6 @@ class TenantOptionController extends Controller
                 config('constants.error_codes.ERROR_TENANT_DOMAIN_NOT_FOUND'),
                 trans('messages.custom_error_message.ERROR_TENANT_DOMAIN_NOT_FOUND')
             );
-        } catch (PDOException $e) {
-            return $this->PDO(
-                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
-                trans(
-                    'messages.custom_error_message.ERROR_DATABASE_OPERATIONAL'
-                )
-            );
         } catch (InvalidArgumentException $e) {
             return $this->invalidArgument(
                 config('constants.error_codes.ERROR_INVALID_ARGUMENT'),
@@ -156,13 +148,6 @@ class TenantOptionController extends Controller
             $apiStatus = Response::HTTP_OK;
 
             return $this->responseHelper->success($apiStatus, '', $apiData);
-        } catch (PDOException $e) {
-            return $this->PDO(
-                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
-                trans(
-                    'messages.custom_error_message.ERROR_DATABASE_OPERATIONAL'
-                )
-            );
         } catch (InvalidArgumentException $e) {
             return $this->invalidArgument(
                 config('constants.error_codes.ERROR_INVALID_ARGUMENT'),

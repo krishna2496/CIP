@@ -14,7 +14,6 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Validation\Rule;
 use InvalidArgumentException;
-use PDOException;
 use Validator;
 
 class TimesheetController extends Controller
@@ -72,11 +71,6 @@ class TimesheetController extends Controller
             trans('messages.success.MESSAGE_TIMESHEET_ENTRIES_LISTING') :
             trans('messages.success.MESSAGE_NO_TIMESHEET_ENTRIES_FOUND');
             return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
-        } catch (PDOException $e) {
-            return $this->PDO(
-                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
-                trans('messages.custom_error_message.ERROR_DATABASE_OPERATIONAL')
-            );
         } catch (\Exception $e) {
             return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
@@ -309,11 +303,6 @@ class TimesheetController extends Controller
             $apiData = ['timesheet_id' => $timesheet->timesheet_id];
 
             return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
-        } catch (PDOException $e) {
-            return $this->PDO(
-                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
-                trans('messages.custom_error_message.ERROR_DATABASE_OPERATIONAL')
-            );
         } catch (InvalidArgumentException $e) {
             return $this->invalidArgument(
                 config('constants.error_codes.ERROR_INVALID_ARGUMENT'),
@@ -347,13 +336,6 @@ class TimesheetController extends Controller
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_TIMESHEET_LISTING');
             return $this->responseHelper->success($apiStatus, $apiMessage, $timesheetDetail);
-        } catch (PDOException $e) {
-            return $this->PDO(
-                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
-                trans(
-                    'messages.custom_error_message.ERROR_DATABASE_OPERATIONAL'
-                )
-            );
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
                 config('constants.error_codes.TIMESHEET_NOT_FOUND'),
@@ -465,11 +447,6 @@ class TimesheetController extends Controller
             trans('messages.success.MESSAGE_TIME_REQUEST_NOT_FOUND');
 
             return $this->responseHelper->successWithPagination($apiStatus, $apiMessage, $timeRequestList);
-        } catch (PDOException $e) {
-            return $this->PDO(
-                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
-                trans('messages.custom_error_message.ERROR_DATABASE_OPERATIONAL')
-            );
         } catch (\Exception $e) {
             return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
@@ -490,11 +467,6 @@ class TimesheetController extends Controller
             trans('messages.success.MESSAGE_GOAL_REQUEST_LISTING') :
             trans('messages.success.MESSAGE_NO_GOAL_REQUEST_FOUND');
             return $this->responseHelper->successWithPagination(Response::HTTP_OK, $apiMessage, $goalRequestList);
-        } catch (PDOException $e) {
-            return $this->PDO(
-                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
-                trans('messages.custom_error_message.ERROR_DATABASE_OPERATIONAL')
-            );
         } catch (\Exception $e) {
             return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }

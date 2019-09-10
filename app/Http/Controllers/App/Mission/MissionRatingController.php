@@ -8,7 +8,6 @@ use Illuminate\Http\JsonResponse;
 use App\Helpers\ResponseHelper;
 use App\Http\Controllers\Controller;
 use App\Traits\RestExceptionHandlerTrait;
-use PDOException;
 use Validator;
 
 class MissionRatingController extends Controller
@@ -76,11 +75,6 @@ class MissionRatingController extends Controller
             : trans('messages.success.MESSAGE_RATING_UPDATED');
             
             return $this->responseHelper->success($apiStatus, $apiMessage);
-        } catch (PDOException $e) {
-            return $this->PDO(
-                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
-                trans('messages.custom_error_message.ERROR_DATABASE_OPERATIONAL')
-            );
         } catch (\Exception $e) {
             return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }

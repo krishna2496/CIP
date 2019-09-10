@@ -10,7 +10,6 @@ use Illuminate\Http\JsonResponse;
 use App\Helpers\ResponseHelper;
 use Illuminate\Validation\Rule;
 use Validator;
-use PDOException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Traits\RestExceptionHandlerTrait;
 use InvalidArgumentException;
@@ -116,13 +115,6 @@ class UserCustomFieldController extends Controller
                 config('constants.error_codes.ERROR_USER_CUSTOM_FIELD_INVALID_DATA'),
                 trans('messages.custom_error_message.ERROR_USER_CUSTOM_FIELD_INVALID_DATA')
             );
-        } catch (PDOException $e) {
-            return $this->PDO(
-                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
-                trans(
-                    'messages.custom_error_message.ERROR_DATABASE_OPERATIONAL'
-                )
-            );
         } catch (\Exception $e) {
             return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
@@ -183,13 +175,6 @@ class UserCustomFieldController extends Controller
             return $this->modelNotFound(
                 config('constants.error_codes.ERROR_USER_CUSTOM_FIELD_NOT_FOUND'),
                 trans('messages.custom_error_message.ERROR_USER_CUSTOM_FIELD_NOT_FOUND')
-            );
-        } catch (PDOException $e) {
-            return $this->PDO(
-                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
-                trans(
-                    'messages.custom_error_message.ERROR_DATABASE_OPERATIONAL'
-                )
             );
         } catch (\Exception $e) {
             return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));

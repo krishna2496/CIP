@@ -9,7 +9,6 @@ use DB;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use PDOException;
 use App\Traits\RestExceptionHandlerTrait;
 use Illuminate\Support\Facades\Hash;
 
@@ -78,13 +77,6 @@ class AuthTenantAdminMiddleware
                 Response::$statusTexts[Response::HTTP_UNAUTHORIZED],
                 config('constants.error_codes.ERROR_INVALID_API_AND_SECRET_KEY'),
                 trans('messages.custom_error_message.ERROR_INVALID_API_AND_SECRET_KEY')
-            );
-        } catch (PDOException $e) {
-            return $this->PDO(
-                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
-                trans(
-                    'messages.custom_error_message.ERROR_DATABASE_OPERATIONAL'
-                )
             );
         } catch (\Exception $e) {
             return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));

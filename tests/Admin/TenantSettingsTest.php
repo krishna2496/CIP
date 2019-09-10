@@ -11,17 +11,16 @@ class TenantSettingsTest extends TestCase
      */
     public function it_should_return_all_tenant_settings()
     {
-        $this->get('settings', ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->get('tenant-settings', ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
           ->seeStatusCode(200)
           ->seeJsonStructure([
             "status",
             "data" => [
                "*" => [
                     "tenant_setting_id",
-                    "title",
-                    "description",
                     "key",
-                    "value"
+                    "description",
+                    "title"
                 ]
             ],
             "message"
@@ -45,7 +44,7 @@ class TenantSettingsTest extends TestCase
                     "value" => "1"
                 ];
 
-        $this->patch("settings/".$settingId, $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->patch("tenant-settings/".$settingId, $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
         ->seeStatusCode(200)
         ->seeJsonStructure([
             'message',
@@ -70,7 +69,7 @@ class TenantSettingsTest extends TestCase
                     "value" => "123456"
                 ];
 
-        $this->patch("settings/".$settingId, $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->patch("tenant-settings/".$settingId, $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
         ->seeStatusCode(422)
         ->seeJsonStructure([
             'errors' => [
@@ -98,7 +97,7 @@ class TenantSettingsTest extends TestCase
                     "value" => "1"
                 ];
 
-        $this->patch("settings/".$settingId, $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->patch("tenant-settings/".$settingId, $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
         ->seeStatusCode(404)
         ->seeJsonStructure([
             'errors' => [
@@ -129,7 +128,7 @@ class TenantSettingsTest extends TestCase
                     "value" => ""
                 ];
 
-        $this->patch("settings/".$settingId, $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->patch("tenant-settings/".$settingId, $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
         ->seeStatusCode(422)
         ->seeJsonStructure([
             'errors' => [

@@ -7,7 +7,6 @@ use Illuminate\Http\Response;
 use App\Repositories\Mission\MissionRepository;
 use App\Helpers\ResponseHelper;
 use App\Http\Controllers\Controller;
-use PDOException;
 use Illuminate\Http\JsonResponse;
 use App\Traits\RestExceptionHandlerTrait;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -60,11 +59,6 @@ class MissionMediaController extends Controller
                 $apiStatus,
                 $apiMessage,
                 $apiData
-            );
-        } catch (PDOException $e) {
-            return $this->PDO(
-                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
-                trans('messages.custom_error_message.ERROR_DATABASE_OPERATIONAL')
             );
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(

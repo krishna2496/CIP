@@ -10,7 +10,6 @@ use App\Helpers\ResponseHelper;
 use App\Repositories\User\UserRepository;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Repositories\Timesheet\TimesheetRepository;
-use PDOException;
 use Validator;
 use App\Models\TimesheetStatus;
 use Illuminate\Http\JsonResponse;
@@ -84,11 +83,6 @@ class TimesheetController extends Controller
             trans('messages.success.MESSAGE_TIMESHEET_ENTRIES_LISTING') :
             trans('messages.success.MESSAGE_NO_TIMESHEET_ENTRIES_FOUND');
             return $this->responseHelper->success($apiStatus, $apiMessage, $userTimesheet->toArray());
-        } catch (PDOException $e) {
-            return $this->PDO(
-                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
-                trans('messages.custom_error_message.ERROR_DATABASE_OPERATIONAL')
-            );
         } catch (\Exception $e) {
             return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }

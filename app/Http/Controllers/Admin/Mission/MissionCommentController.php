@@ -7,7 +7,6 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Response;
 use App\Repositories\MissionComment\MissionCommentRepository;
 use App\Helpers\ResponseHelper;
-use PDOException;
 use Illuminate\Http\JsonResponse;
 use App\Traits\RestExceptionHandlerTrait;
 use InvalidArgumentException;

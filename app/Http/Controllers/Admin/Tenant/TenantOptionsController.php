@@ -11,7 +11,6 @@ use Illuminate\Http\JsonResponse;
 use App\Helpers\S3Helper;
 use App\Helpers\Helpers;
 use Validator;
-use PDOException;
 use App\Jobs\DownloadAssestFromS3ToLocalStorageJob;
 use App\Jobs\CreateFolderInS3BucketJob;
 use App\Traits\RestExceptionHandlerTrait;
@@ -130,13 +129,6 @@ class TenantOptionsController extends Controller
         
         try {
             $this->tenantOptionRepository->updateStyleSettings($request);
-        } catch (PDOException $e) {
-            return $this->PDO(
-                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
-                trans(
-                    'messages.custom_error_message.ERROR_DATABASE_OPERATIONAL'
-                )
-            );
         } catch (\ErrorException $e) {
             return $this->internaServerError(
                 config('constants.error_codes.ERROR_ON_UPDATING_STYLING_VARIBLE_IN_DATABASE'),
@@ -405,13 +397,6 @@ class TenantOptionsController extends Controller
             $apiMessage = trans('messages.success.MESSAGE_TENANT_OPTION_CREATED');
             
             return $this->responseHelper->success($apiStatus, $apiMessage);
-        } catch (PDOException $e) {
-            return $this->PDO(
-                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
-                trans(
-                    'messages.custom_error_message.ERROR_DATABASE_OPERATIONAL'
-                )
-            );
         } catch (InvalidArgumentException $e) {
             return $this->invalidArgument(
                 config('constants.error_codes.ERROR_INVALID_ARGUMENT'),
