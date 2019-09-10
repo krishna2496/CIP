@@ -64,17 +64,19 @@ interface TimesheetInterface
      *
      *
      * @param \Illuminate\Http\Request $request
+     * @param array $statusArray
      * @return Illuminate\Pagination\LengthAwarePaginator
      */
-    public function timeRequestList(Request $request) : LengthAwarePaginator;
+    public function timeRequestList(Request $request, array $statusArray) : LengthAwarePaginator;
 
     /**
      * Fetch goal requests list
      *
      * @param Illuminate\Http\Request $request
+     * @param array $statusArray
      * @return Illuminate\Pagination\LengthAwarePaginator
      */
-    public function goalRequestList(Request $request): LengthAwarePaginator;
+    public function goalRequestList(Request $request, array $statusArray): LengthAwarePaginator;
 
     /**
      * Fetch timesheet details by missionId and date

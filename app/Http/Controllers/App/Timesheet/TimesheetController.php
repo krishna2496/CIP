@@ -206,10 +206,10 @@ class TimesheetController extends Controller
                 $objective = $this->missionRepository->getGoalObjective($request->mission_id);
                 
                 // Fetch all added goal actions from database
-                 $totalAddedActions = $this->timesheetRepository->getAddedActions($request->mission_id);
+                $totalAddedActions = $this->timesheetRepository->getAddedActions($request->mission_id);
 
-                 // Add total actions
-                 $totalActions = $totalAddedActions + $request->action;
+                // Add total actions
+                $totalActions = $totalAddedActions + $request->action;
 
                 // Check total goals are not maximum than provided goals
                 if ($totalActions > $objective->goal_objective) {
@@ -458,7 +458,8 @@ class TimesheetController extends Controller
     public function getPendingTimeRequests(Request $request): JsonResponse
     {
         try {
-            $timeRequestList = $this->timesheetRepository->timeRequestList($request);
+            $statusArray = [config('constants.timesheet_status_id.SUBMIT_FOR_APPROVAL')];
+            $timeRequestList = $this->timesheetRepository->timeRequestList($request, $statusArray);
             
             $apiStatus = Response::HTTP_OK;
             $apiMessage = (count($timeRequestList) > 0) ? trans('messages.success.MESSAGE_TIME_REQUEST_LISTING') :
@@ -484,7 +485,8 @@ class TimesheetController extends Controller
     public function getPendingGoalRequests(Request $request): JsonResponse
     {
         try {
-            $goalRequestList = $this->timesheetRepository->goalRequestList($request);
+            $statusArray = [config('constants.timesheet_status_id.SUBMIT_FOR_APPROVAL')];
+            $goalRequestList = $this->timesheetRepository->goalRequestList($request, $statusArray);
 
             $apiMessage = (count($goalRequestList) > 0) ?
             trans('messages.success.MESSAGE_GOAL_REQUEST_LISTING') :
