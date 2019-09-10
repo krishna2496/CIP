@@ -208,7 +208,6 @@ class TimesheetRepository implements TimesheetInterface
             $query->where('user_id', $userId);
             $query->with('timesheetStatus');
         }])
-        ->withCount(['timesheet.time'])
         ->get();
     }
 
