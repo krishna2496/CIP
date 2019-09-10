@@ -224,18 +224,10 @@ class TenantOptionsController extends Controller
         // Database connection with master database
         $this->helpers->switchDatabaseConnection('mysql', $request);
         
-        // Change queue default driver to database
-        $queueManager = app('queue');
-        $defaultDriver = $queueManager->getDefaultDriver();
-        $queueManager->setDefaultDriver('database');
-
         // Create new job that will take tenantName, options, and uploaded file path as an argument.
         // Dispatch job, that will store in master database
         dispatch(new UpdateStyleSettingsJob($tenantName, $options, $fileName));
 
-        // Change queue driver to default
-        $queueManager->setDefaultDriver($defaultDriver);
-        
         // Database connection with tenant database
         $this->helpers->switchDatabaseConnection('tenant', $request);
         
