@@ -105,16 +105,6 @@ class SkillController extends Controller
             $apiMessage = trans('messages.success.MESSAGE_SKILL_CREATED');
             
             return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
-        } catch (ModelNotFoundException $e) {
-            return $this->modelNotFound(
-                config('constants.error_codes.ERROR_PARENT_SKILL_NOT_FOUND'),
-                trans('messages.custom_error_message.ERROR_PARENT_SKILL_NOT_FOUND')
-            );
-        } catch (InvalidArgumentException $e) {
-            return $this->invalidArgument(
-                config('constants.error_codes.ERROR_INVALID_ARGUMENT'),
-                trans('messages.custom_error_message.ERROR_INVALID_ARGUMENT')
-            );
         } catch (\Exception $e) {
             return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
@@ -168,11 +158,6 @@ class SkillController extends Controller
             $apiMessage = trans('messages.success.MESSAGE_SKILL_UPDATED');
             
             return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
-        } catch (ModelNotFoundException $e) {
-            return $this->modelNotFound(
-                config('constants.error_codes.ERROR_SKILL_NOT_FOUND'),
-                trans('messages.custom_error_message.ERROR_SKILL_NOT_FOUND')
-            );
         } catch (\Exception $e) {
             return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
