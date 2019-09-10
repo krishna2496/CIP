@@ -63,20 +63,13 @@ class TenantBackgroundJobsJob extends Job
         
             // Job dispatched to create new tenant's database and migrations
             dispatch(new TenantMigrationJob($this->tenant));
-
+		
             // Copy local default_theme folder
-            $sourceFolder = storage_path('app/default_theme');
-            $destinationFolder = storage_path('app/'.$this->tenant->name);
-
-            exec('mkdir '.$destinationFolder);
-            exec('cp -r '.$sourceFolder.'/* '.$destinationFolder.' ');
-
+			dispatch(new DownloadAssestFromS3ToLocalStorageJob($this->tenant->name));
+            
             // Create assets folder for tenant on AWS s3 bucket
-            exec('aws s3 cp --recursive s3://'.config('constants.AWS_S3_BUCKET_NAME').
-            '/'.config('constants.AWS_S3_DEFAULT_THEME_FOLDER_NAME').' s3://'
-            .config('constants.AWS_S3_BUCKET_NAME').'/'
-            .$this->tenant->name);
-
+			dispatch(new CreateFolderInS3BucketJob($this->tenant));
+			
             // Compile CSS file and upload on s3
             dispatch(new CompileScssFiles($this->tenant));
 
