@@ -36,6 +36,7 @@ return [
     'FRONT_MISSION_DETAIL_URL' => '.anasource.com/team4/ciplatform/mission-detail/',
     'FRONT_HOME_URL' => '.anasource.com/team4/ciplatform/',
     'DEFAULT_FQDN_FOR_FRONT' => 'web8',
+	'AWS_S3_DEFAULT_THEME_FOLDER_NAME' => 'default_theme',
     /*
      * User custom field types
      */
