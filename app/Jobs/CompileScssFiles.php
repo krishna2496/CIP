@@ -86,12 +86,6 @@ class CompileScssFiles extends Job
 
             $css = $scss->compile($importScss);
         
-            /* // Delete if folder is already there
-            if (Storage::disk('local')->exists($this->tenant->name.'\assets\css\style.css')) {
-                // Delete existing one
-                Storage::disk('local')->delete($this->tenant->name.'\assets\css\style.css');
-            } */
-
             // Put compiled css file into local storage
             if (Storage::disk('local')->put($this->tenant->name.'\assets\css\style.css', $css)) {
                 // Copy default theme folder to tenant folder on s3
