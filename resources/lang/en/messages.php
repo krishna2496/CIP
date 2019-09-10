@@ -231,8 +231,6 @@ return [
         'MISSION_APPLICATION_NOT_APPROVED' => 'Mission application is not approved',
         'ERROR_TIMESHEET_ALREADY_DONE_FOR_DATE' => 'Time entry is already approved for given date', 
         'ERROR_INVALID_DATA_FOR_TIMESHEET_ENTRY' => 'You cannot add time entry',
-        'ERROR_TIMESHEET_DECLINED' => 'You can not update declined timesheet',
-        'ERROR_TIMESHEET_SUBMIT_FOR_APPROVAL' => 'This timesheet is already submitted for approval. You cannot update it',
         'ERROR_SAME_DATE_TIME_ENTRY' => 'You cannot add more than 24 hours timeentry for same date',
         'ERROR_INVALID_HOURS' => 'Hours must be in between 00, 23',
         'ERROR_INVALID_MINUTES' => 'Minutes must be in between 00, 59',
