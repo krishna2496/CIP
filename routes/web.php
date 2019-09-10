@@ -243,10 +243,20 @@ $router->group(['middleware' => 'localization'], function ($router) {
         'middleware' => 'tenant.connection|jwt.auth',
         'uses' => 'App\VolunteerHistory\VolunteerHistoryController@timeMissionHistory']);
 
+        /* Export volunteering  history for time missions */
+        $router->get('/app/volunteer/history/time-mission/export', ['as' => 'app.volunteer.history.time-mission.export',
+        'middleware' => 'tenant.connection|jwt.auth',
+        'uses' => 'App\VolunteerHistory\VolunteerHistoryController@exportTimeMissionHistory']);
+
         /* Get volunteering  history for goal missions */
         $router->get('/app/volunteer/history/goal-mission', ['as' => 'app.volunteer.history.goal-mission',
         'middleware' => 'tenant.connection|jwt.auth',
         'uses' => 'App\VolunteerHistory\VolunteerHistoryController@goalMissionHistory']);
+
+        /* Export volunteering  history for goal missions */
+        $router->get('/app/volunteer/history/goal-mission/export', ['as' => 'app.volunteer.history.goal-mission.export',
+        'middleware' => 'tenant.connection|jwt.auth',
+        'uses' => 'App\VolunteerHistory\VolunteerHistoryController@exportGoalMissionHistory']);
     });
 
 /*

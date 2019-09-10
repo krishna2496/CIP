@@ -117,7 +117,11 @@ return [
         'MESSAGE_GOAL_MISSION_TIME_ENTRY_LISTED' => 'Goal missions timesheet entry listed',
         'MESSAGE_NO_GOAL_MISSION_TIME_ENTRY_FOUND' => 'Goal missions timesheet entry not found',
         'MESSAGE_TIME_MISSION_TIME_ENTRY_LISTED' => 'Time missions timesheet entry listed',
-        'MESSAGE_NO_TIME_MISSION_TIME_ENTRY_FOUND' => 'Time missions timesheet entry not found'
+        'MESSAGE_NO_TIME_MISSION_TIME_ENTRY_FOUND' => 'Time missions timesheet entry not found',
+        'MESSAGE_USER_GOAL_MISSION_HISTORY_EXPORTED' => 'History file generated successfully for goal missions',
+        'MESSAGE_ENABLE_TO_EXPORT_USER_GOAL_MISSION_HISTORY' => 'Unable to generate history file for goal missions',
+        'MESSAGE_USER_TIME_MISSION_HISTORY_EXPORTED' => 'History file generated successfully for time missions',
+        'MESSAGE_ENABLE_TO_EXPORT_USER_TIME_MISSION_HISTORY' => 'Unable to generate history file for time missions'
 	],
         
     /**

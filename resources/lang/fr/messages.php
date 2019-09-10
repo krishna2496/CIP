@@ -112,7 +112,11 @@ return [
         'MESSAGE_GOAL_MISSION_TIME_ENTRY_LISTED' => 'Entrée de la feuille de temps des missions d\'objectif répertoriée',
         'MESSAGE_NO_GOAL_MISSION_TIME_ENTRY_FOUND' => 'Entrée de la feuille de temps des missions d\'objectif non trouvée',
         'MESSAGE_TIME_MISSION_TIME_ENTRY_LISTED' => 'Saisie des feuilles de temps des missions répertoriées',
-        'MESSAGE_NO_TIME_MISSION_TIME_ENTRY_FOUND' => 'Entrée dans la feuille de temps des missions non trouvée'
+        'MESSAGE_NO_TIME_MISSION_TIME_ENTRY_FOUND' => 'Entrée dans la feuille de temps des missions non trouvée',
+        'MESSAGE_USER_GOAL_MISSION_HISTORY_EXPORTED' => 'Fichier historique généré avec succès pour les missions d\'objectif',
+        'MESSAGE_ENABLE_TO_EXPORT_USER_GOAL_MISSION_HISTORY' => 'Impossible de générer un fichier d\'historique pour les missions d\'objectif',
+        'MESSAGE_USER_TIME_MISSION_HISTORY_EXPORTED' => 'Fichier historique généré avec succès pour les missions temporelles',
+        'MESSAGE_ENABLE_TO_EXPORT_USER_TIME_MISSION_HISTORY' => 'Impossible de générer un fichier d\'historique pour les missions temporelles'
     ],
 
         

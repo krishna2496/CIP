@@ -18,6 +18,8 @@ use PDOException;
 use App\Repositories\MissionTheme\MissionThemeRepository;
 use App\Repositories\MissionSkill\MissionSkillRepository;
 use App\Helpers\LanguageHelper;
+use App\Helpers\ExportCSV;
+use Carbon\Carbon;
 
 class VolunteerHistoryController extends Controller
 {
@@ -139,13 +141,13 @@ class VolunteerHistoryController extends Controller
                 config('constants.timesheet_status_id.APPROVED')
             ];
 
-            $goalRequestList = $this->timesheetRepository->timeRequestList($request, $statusArray);
+            $timeMissionList = $this->timesheetRepository->timeRequestList($request, $statusArray);
 
-            $apiMessage = (count($goalRequestList) > 0) ?
+            $apiMessage = (count($timeMissionList) > 0) ?
             trans('messages.success.MESSAGE_TIME_MISSION_TIME_ENTRY_LISTED') :
             trans('messages.success.MESSAGE_NO_TIME_MISSION_TIME_ENTRY_FOUND');
             
-            return $this->responseHelper->successWithPagination(Response::HTTP_OK, $apiMessage, $goalRequestList);
+            return $this->responseHelper->successWithPagination(Response::HTTP_OK, $apiMessage, $timeMissionList);
         } catch (PDOException $e) {
             return $this->PDO(
                 config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
@@ -170,18 +172,113 @@ class VolunteerHistoryController extends Controller
                 config('constants.timesheet_status_id.APPROVED')
             ];
 
-            $goalRequestList = $this->timesheetRepository->goalRequestList($request, $statusArray);
+            $goalMissionList = $this->timesheetRepository->goalRequestList($request, $statusArray);
 
-            $apiMessage = (count($goalRequestList) > 0) ?
+            $apiMessage = (count($goalMissionList) > 0) ?
             trans('messages.success.MESSAGE_GOAL_MISSION_TIME_ENTRY_LISTED') :
             trans('messages.success.MESSAGE_NO_GOAL_MISSION_TIME_ENTRY_FOUND');
             
-            return $this->responseHelper->successWithPagination(Response::HTTP_OK, $apiMessage, $goalRequestList);
+            return $this->responseHelper->successWithPagination(Response::HTTP_OK, $apiMessage, $goalMissionList);
         } catch (PDOException $e) {
             return $this->PDO(
                 config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
                 trans('messages.custom_error_message.ERROR_DATABASE_OPERATIONAL')
             );
+        } catch (\Exception $e) {
+            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
+        }
+    }
+
+    /**
+     * Export user's goal mission history
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return Illuminate\Http\JsonResponse
+     */
+    public function exportGoalMissionHistory(Request $request): JsonResponse
+    {
+        try {
+            $statusArray = [
+                config('constants.timesheet_status_id.AUTOMATICALLY_APPROVED'),
+                config('constants.timesheet_status_id.APPROVED')
+            ];
+
+            $goalMissionList = $this->timesheetRepository->goalRequestList($request, $statusArray, false);
+
+            $userName = $request->auth->first_name.'_'.$request->auth->last_name;
+            $fileName = Carbon::now()->timestamp.'_'.$userName.'_Goal_Mission_History.xlsx';
+     
+            $excel = new ExportCSV($fileName);
+
+            $headings = ['Mission Name', 'Organization Name', 'Actions'];
+
+            $excel->setHeadlines($headings);
+
+            foreach ($goalMissionList as $mission) {
+                $excel->setData([
+                    $mission->title,
+                    $mission->organisation_name,
+                    $mission->action
+                ]);
+            }
+
+            $path = $excel->export('app/csv-export');
+
+            $apiStatus = Response::HTTP_OK;
+            $apiMessage =  (!empty($path)) ?
+                trans('messages.success.MESSAGE_USER_GOAL_MISSION_HISTORY_EXPORTED'):
+                trans('messages.success.MESSAGE_ENABLE_TO_EXPORT_USER_GOAL_MISSION_HISTORY');
+            $apiData = (!empty($path)) ? ['path' => $path] : [];
+
+            return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
+        } catch (\Exception $e) {
+            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
+        }
+    }
+
+    /**
+     * Export user's time mission history
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return Illuminate\Http\JsonResponse
+     */
+    public function exportTimeMissionHistory(Request $request): JsonResponse
+    {
+        try {
+            $statusArray = [
+                config('constants.timesheet_status_id.AUTOMATICALLY_APPROVED'),
+                config('constants.timesheet_status_id.APPROVED')
+            ];
+
+            $timeRequestList = $this->timesheetRepository->timeRequestList($request, $statusArray, false);
+
+            $userName = $request->auth->first_name.'_'.$request->auth->last_name;
+            $fileName = Carbon::now()->timestamp.'_'.$userName.'_Time_Mission_History.xlsx';
+        
+            $excel = new ExportCSV($fileName);
+
+            $headings = ['Mission Name', 'Organization Name', 'Time', 'Hours'];
+
+            $excel->setHeadlines($headings);
+
+            foreach ($timeRequestList as $mission) {
+                $excel->setData([
+                    $mission->title,
+                    $mission->organisation_name,
+                    $mission->time,
+                    $mission->hours
+                ]);
+            }
+
+            $path = $excel->export('app/csv-export');
+
+            $apiStatus = Response::HTTP_OK;
+            $apiMessage =  (!empty($path)) ?
+            trans('messages.success.MESSAGE_USER_TIME_MISSION_HISTORY_EXPORTED'):
+            trans('messages.success.MESSAGE_ENABLE_TO_EXPORT_USER_TIME_MISSION_HISTORY');
+            $apiData = (!empty($path)) ? ['path' => $path] : [];
+
+            return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
         } catch (\Exception $e) {
             return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
