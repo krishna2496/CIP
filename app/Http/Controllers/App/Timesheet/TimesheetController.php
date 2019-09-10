@@ -181,7 +181,7 @@ class TimesheetController extends Controller
             $missionData = $this->missionRepository->find($request->mission_id);
 
             // Check mission type
-            if ($missionData->mission_type == "GOAL") {
+            if ($missionData->mission_type == config('constants.mission_type.GOAL')) {
                 $validator = Validator::make(
                     $request->all(),
                     [
