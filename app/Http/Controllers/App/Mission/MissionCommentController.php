@@ -10,7 +10,6 @@ use PDOException;
 use Illuminate\Http\JsonResponse;
 use App\Traits\RestExceptionHandlerTrait;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use InvalidArgumentException;
 use Validator;
 
 class MissionCommentController extends Controller
@@ -54,15 +53,9 @@ class MissionCommentController extends Controller
             $comments = $this->missionCommentRepository->getComments($missionId);
             $apiData = $comments;
             $apiStatus = Response::HTTP_OK;
-            $apiMessage = ($apiData->count()) ?
-            trans('messages.success.MESSAGE_MISSION_COMMENT_LISTING') :
-            trans('messages.success.MESSAGE_NO_MISSION_COMMENT_FOUND');
+            $apiMessage = ($apiData->count() > 0) ? trans('messages.success.MESSAGE_MISSION_COMMENT_LISTING')
+            : trans('messages.success.MESSAGE_NO_MISSION_COMMENT_FOUND');
             return $this->responseHelper->successWithPagination($apiStatus, $apiMessage, $apiData);
-        } catch (InvalidArgumentException $e) {
-            return $this->invalidArgument(
-                config('constants.error_codes.ERROR_INVALID_ARGUMENT'),
-                trans('messages.custom_error_message.ERROR_INVALID_ARGUMENT')
-            );
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
                 config('constants.error_codes.ERROR_MISSION_NOT_FOUND'),

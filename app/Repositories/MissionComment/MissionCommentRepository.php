@@ -1,6 +1,7 @@
 <?php
 namespace App\Repositories\MissionComment;
 
+use Illuminate\Http\Request;
 use App\Repositories\MissionComment\MissionCommentInterface;
 use App\Models\Comment;
 use App\Models\Mission;
@@ -49,9 +50,10 @@ class MissionCommentRepository implements MissionCommentInterface
      *
      * @param int $missionId
      * @param array $statusList
+     * @param Illuminate\Http\Request $request
      * @return \Illuminate\Pagination\LengthAwarePaginator
      */
-    public function getComments(int $missionId, array $statusList = []): LengthAwarePaginator
+    public function getComments(int $missionId, array $statusList = [], Request $request = null): LengthAwarePaginator
     {
         $mission = $this->mission->findOrFail($missionId);
         
@@ -59,8 +61,13 @@ class MissionCommentRepository implements MissionCommentInterface
             
         $commentQuery = $mission->comment()
         ->whereIn('approval_status', $approvalStatusList)
-        ->orderBy('comment_id', 'desc')
         ->with(['user:user_id,first_name,last_name,avatar']);
+        
+        $orderDirection = 'desc';
+        if (isset($request)) {
+            $orderDirection = ($request->has('order')) ? $request->input('order', 'desc') : 'desc';
+        }
+        $commentQuery = $commentQuery->orderBy('comment_id', $orderDirection);
         return $commentQuery->paginate(config("constants.MISSION_COMMENT_LIMIT"));
     }
 

@@ -104,7 +104,6 @@ class MissionApplication extends Model
     public function findDetail(int $missionId, int $applicationId): array
     {
         $applicationQuery = $this;
-        $applicationQuery = $applicationQuery->orderBy('mission_application_id', 'asc');
 
         $missionApplication = $applicationQuery->where(
             ['mission_id' => $missionId, 'mission_application_id' => $applicationId]

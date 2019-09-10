@@ -10,7 +10,6 @@ use App\Helpers\ResponseHelper;
 use App\Helpers\LanguageHelper;
 use App\Helpers\Helpers;
 use App\Http\Controllers\Controller;
-use PDOException;
 use Illuminate\Http\JsonResponse;
 use App\Traits\RestExceptionHandlerTrait;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -202,11 +201,6 @@ class MissionInviteController extends Controller
             }
             
             return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
-        } catch (PDOException $e) {
-            return $this->PDO(
-                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
-                trans('messages.custom_error_message.ERROR_DATABASE_OPERATIONAL')
-            );
         } catch (TenantDomainNotFoundException $e) {
             throw $e;
         } catch (ModelNotFoundException $e) {

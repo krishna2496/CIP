@@ -437,4 +437,38 @@ class AppMissionTest extends TestCase
         ]);  
         $user->delete();    
     }
+
+    /**
+     * @test
+     *
+     * It should validate data for add mission to favourite
+     *
+     * @return void
+     */
+    public function it_should_validate_mission_id_for_add_mission_to_favourite()
+    {
+        $connection = 'tenant';
+        $user = factory(\App\User::class)->make();
+        $user->setConnection($connection);
+        $user->save();
+        DB::setDefaultConnection('mysql');
+
+        $params = [
+                'mission_id' => "test"
+            ];
+        $token = Helpers::getJwtToken($user->user_id);
+        $this->post('app/mission/favourite', $params, ['token' => $token])
+          ->seeStatusCode(422)
+          ->seeJsonStructure([
+            "errors" => [
+                [
+                    "status",
+                    "type",
+                    "message",
+                    "code"
+                ]
+            ]
+        ]); 
+        $user->delete();
+    }
 }

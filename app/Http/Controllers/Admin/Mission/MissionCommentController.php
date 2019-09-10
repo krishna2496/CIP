@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Admin\Mission;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-
 use Illuminate\Http\Response;
 use App\Repositories\MissionComment\MissionCommentRepository;
 use App\Helpers\ResponseHelper;
@@ -58,14 +57,16 @@ class MissionCommentController extends Controller
      * Get listing of tenant's comments
      *
      * @param int $missionId
+     * @param Illuminate\Http\Request $request
      * @return Illuminate\Http\JsonResponse
      */
-    public function index(int $missionId): JsonResponse
+    public function index(int $missionId, Request $request): JsonResponse
     {
         try {
             $apiData = $this->missionCommentRepository->getComments(
                 $missionId,
-                config("constants.comment_approval_status")
+                config("constants.comment_approval_status"),
+                $request
             );
             $apiStatus = Response::HTTP_OK;
             $apiMessage = ($apiData->count()) ?
@@ -111,11 +112,6 @@ class MissionCommentController extends Controller
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_COMMENT_FOUND');
             return $this->responseHelper->success($apiStatus, $apiMessage, $apiData->toArray());
-        } catch (InvalidArgumentException $e) {
-            return $this->invalidArgument(
-                config('constants.error_codes.ERROR_INVALID_ARGUMENT'),
-                trans('messages.custom_error_message.ERROR_INVALID_ARGUMENT')
-            );
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
                 config('constants.error_codes.ERROR_COMMENT_NOT_FOUND'),
@@ -172,11 +168,6 @@ class MissionCommentController extends Controller
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_COMMENT_UPDATED');
             return $this->responseHelper->success($apiStatus, $apiMessage, $apiData->toArray());
-        } catch (InvalidArgumentException $e) {
-            return $this->invalidArgument(
-                config('constants.error_codes.ERROR_INVALID_ARGUMENT'),
-                trans('messages.custom_error_message.ERROR_INVALID_ARGUMENT')
-            );
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
                 config('constants.error_codes.ERROR_COMMENT_NOT_FOUND'),
@@ -214,11 +205,6 @@ class MissionCommentController extends Controller
             $apiMessage = trans('messages.success.MESSAGE_COMMENT_DELETED');
             
             return $this->responseHelper->success($apiStatus, $apiMessage);
-        } catch (InvalidArgumentException $e) {
-            return $this->invalidArgument(
-                config('constants.error_codes.ERROR_INVALID_ARGUMENT'),
-                trans('messages.custom_error_message.ERROR_INVALID_ARGUMENT')
-            );
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
                 config('constants.error_codes.ERROR_COMMENT_NOT_FOUND'),

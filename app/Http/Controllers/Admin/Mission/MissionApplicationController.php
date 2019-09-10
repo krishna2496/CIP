@@ -6,12 +6,12 @@ use Illuminate\Http\Response;
 use App\Repositories\MissionApplication\MissionApplicationRepository;
 use App\Helpers\ResponseHelper;
 use App\Http\Controllers\Controller;
-use PDOException;
 use Illuminate\Http\JsonResponse;
 use App\Traits\RestExceptionHandlerTrait;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Validator;
 use Illuminate\Validation\Rule;
+use InvalidArgumentException;
 
 class MissionApplicationController extends Controller
 {
@@ -86,23 +86,13 @@ class MissionApplicationController extends Controller
              : trans('messages.success.MESSAGE_NO_RECORD_FOUND');
             
             return $this->responseHelper->success(Response::HTTP_OK, $responseMessage, $applicationList);
-        } catch (PDOException $e) {
-            return $this->PDO(
-                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
-                trans('messages.custom_error_message.ERROR_DATABASE_OPERATIONAL')
-            );
-        } catch (InvalidArgumentException $e) {
-            return $this->invalidArgument(
-                config('constants.error_codes.ERROR_INVALID_ARGUMENT'),
-                trans('messages.custom_error_message.ERROR_INVALID_ARGUMENT')
-            );
         } catch (\Exception $e) {
             return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
 
     /**
-     * Update resource.
+     * Update mission application
      *
      * @param \Illuminate\Http\Request $request
      * @param int $missionId
@@ -144,16 +134,6 @@ class MissionApplicationController extends Controller
             $apiMessage = trans('messages.success.MESSAGE_APPLICATION_UPDATED');
             
             return $this->responseHelper->success($apiStatus, $apiMessage);
-        } catch (InvalidArgumentException $e) {
-            return $this->invalidArgument(
-                config('constants.error_codes.ERROR_INVALID_ARGUMENT'),
-                trans('messages.custom_error_message.ERROR_INVALID_ARGUMENT')
-            );
-        } catch (PDOException $e) {
-            return $this->PDO(
-                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
-                trans('messages.custom_error_message.ERROR_DATABASE_OPERATIONAL')
-            );
         } catch (\Exception $e) {
             return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }

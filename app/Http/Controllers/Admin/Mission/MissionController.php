@@ -124,11 +124,6 @@ class MissionController extends Controller
             $apiMessage = trans('messages.success.MESSAGE_MISSION_ADDED');
             $apiData = ['mission_id' => $mission->mission_id];
             return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
-        } catch (ModelNotFoundException $e) {
-            return $this->modelNotFound(
-                config('constants.error_codes.ERROR_NO_MISSION_FOUND'),
-                trans('messages.custom_error_message.ERROR_NO_MISSION_FOUND')
-            );
         } catch (TenantDomainNotFoundException $e) {
             throw $e;
         } catch (\Exception $e) {
