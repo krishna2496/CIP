@@ -87,8 +87,10 @@ class ExportCSV
         fputcsv($csv, $this->headLines);
 
         // Write rows into file
-        fputcsv($csv, $this->data);
-        
+        foreach ($this->data as $row) {
+            fputcsv($csv, $row);
+        }
+
         fclose($csv);
 
         if (\file_exists($this->path)) {

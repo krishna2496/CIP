@@ -225,7 +225,7 @@ class VolunteerHistoryController extends Controller
                 $excel->setHeadlines($headings);
 
                 foreach ($goalMissionList as $mission) {
-                    $excel->setData([
+                    $excel->appendRow([
                         $mission->title,
                         $mission->organisation_name,
                         $mission->action
@@ -276,7 +276,7 @@ class VolunteerHistoryController extends Controller
                 $excel->setHeadlines($headings);
 
                 foreach ($timeRequestList as $mission) {
-                    $excel->setData([
+                    $excel->appendRow([
                         $mission->title,
                         $mission->organisation_name,
                         $mission->time,

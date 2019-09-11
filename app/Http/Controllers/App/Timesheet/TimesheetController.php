@@ -547,7 +547,7 @@ class TimesheetController extends Controller
                 $excel->setHeadlines($headings);
 
                 foreach ($timeRequestList as $mission) {
-                    $excel->setData([
+                    $excel->appendRow([
                         $mission->title,
                         $mission->organisation_name,
                         $mission->time,
@@ -595,7 +595,7 @@ class TimesheetController extends Controller
                 $excel->setHeadlines($headings);
 
                 foreach ($goalRequestList as $mission) {
-                    $excel->setData([
+                    $excel->appendRow([
                         $mission->title,
                         $mission->organisation_name,
                         $mission->action
