@@ -340,4 +340,15 @@ class Helpers
         $totalHours = $hours + $minutes;
         return number_format((float)$totalHours, 2, '.', '');
     }
+
+    /**
+     * Change date format
+     *
+     * @param string $date
+     * @return string
+     */
+    public function changeDateFormat(string $date): string
+    {
+        return date(config('constants.TIMESHEET_DATE_FORMAT'), strtotime($date));
+    }
 }

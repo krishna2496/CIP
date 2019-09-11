@@ -1107,16 +1107,43 @@ class MissionRepository implements MissionInterface
         ->first();
     }
 
-    /** Get mission application details by mission id and user id
+    /** Get mission application details by mission id, user id and status
      *
      * @param int $missionId
      * @param int $userId
+     * @param string $status
      * @return App\Models\MissionApplication
      */
-    public function getMissionApplication(int $missionId, int $userId): MissionApplication
+    public function getMissionApplication(int $missionId, int $userId, string $status): MissionApplication
     {
         return $this->missionApplication->where(['user_id' => $userId,
-                'mission_id' => $missionId])
+                'mission_id' => $missionId, 'approval_status' => $status])
                 ->firstOrFail();
+    }
+
+    /**
+     * Get Mission data for timesheet
+     *
+     * @param int $id
+     * @return App\Models\Mission
+     */
+    public function getTimesheetMissionData(int $id): Mission
+    {
+        return $this->mission->with('goalMission')
+        ->select('mission_id', 'start_date', 'end_date', 'mission_type', 'city_id')
+        ->findOrFail($id);
+    }
+    
+    /**
+     * Get Mission type
+     *
+     * @param int $id
+     * @return null|Collection
+     */
+    public function getMissionType(int $id): ?Collection
+    {
+        return $this->mission->select('mission_type', 'city_id')
+        ->where('mission_id', $id)
+        ->get();
     }
 }
