@@ -391,7 +391,8 @@ export default {
                         return translations[i].title;
                     }
                 });
-                if (filteredObj[0].title) {
+                
+                if (filteredObj[0]) {
                     return filteredObj[0].title;
                 }
             }

@@ -84,6 +84,7 @@ export default {
     this.handleSocialShare();
   },
   created() {
+    
     var ua = navigator.userAgent.toLowerCase();
     if (ua.indexOf("safari") != -1) {
       if (ua.indexOf("chrome") > -1) {
@@ -171,6 +172,7 @@ export default {
           event.classList.toggle("active");
         });
       });
+
     }, 1000);
   },
   destroyed() {
