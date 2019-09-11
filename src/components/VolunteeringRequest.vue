@@ -12,7 +12,7 @@
                </b-table>
             </div>
             <div class="btn-block">
-                <b-button class="btn-bordersecondary ml-auto">{{langauageData.label.export}}</b-button>
+                <b-button class="btn-bordersecondary ml-auto" @click="exportFile">{{langauageData.label.export}}</b-button>
             </div>  
         </div>
         <div class="pagination-block" v-if="items.length > 0">
@@ -31,7 +31,7 @@
 import store from '../store';
 import moment from 'moment'
 import DatePicker from "vue2-datepicker";
-
+import ExportFile from "../services/ExportFile";
 export default {
     name: "VolunteeringRequest",
     components: {
@@ -42,12 +42,14 @@ export default {
         headerField : Array,
         headerLable : String,
         currentPage : Number,
-        totalRow : Number
+        totalRow : Number,
+        exportUrl : String,
+        fileName : String
     },
     data: function() {
         return {
             langauageData : [],     
-            perPage : 5,
+            perPage : 1,
             page : this.currentPage
         }
     },
@@ -58,7 +60,13 @@ export default {
     methods: {
         pageChange (page) {
             this.$emit("updateCall", page);
-        }, 
+        },
+        exportFile() {
+            ExportFile(this.exportUrl, this.fileName)
+            .then(response => {
+                console.log(response);
+            })
+        }
     },
     created() {
     	this.langauageData = JSON.parse(store.state.languageLabel)

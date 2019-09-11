@@ -26,9 +26,9 @@
                   <div class="line-chart" v-if="perHourApiDataTheme.length">
                     <horizontal-chart :labels="getThemeLabels" :data="getThemeValue"></horizontal-chart>
                   </div>
-				  <div v-else class="text-center">
-					  <h5>{{langauageData.label.no_record_found}}</h5>
-				  </div>
+                  <div v-else class="text-center">
+                    <h5>{{langauageData.label.no_record_found}}</h5>
+                  </div>
                 </div>
               </b-col>
               <b-col lg="6" class="chart-col">
@@ -52,6 +52,18 @@
               </b-col>
             </b-row>
             <b-row class="dashboard-table">
+				<b-col lg="6" class="table-col">
+				<VolunteeringRequest
+					:headerField="timesheetRequestFields"
+					:items="timesheetRequestItems"
+					:headerLable="timeRequestLabel"
+					:currentPage="hourRequestCurrentPage"
+					:totalRow="hourRequestTotalRow"
+					@updateCall = "getVolunteerMissionsHours"
+					exportUrl = "app/volunteer/history/time-mission/export"
+					:fileName="langauageData.export_timesheet_file_names.PENDING_TIME_MISSION_ENTRIES_XLSX"
+				/>
+				</b-col>
               <b-col lg="6" class="table-col">
                 <div class="table-outer">
                   <div class="table-inner">
@@ -108,6 +120,9 @@ import AppCustomDropdown from "../components/AppCustomDropdown";
 import DashboardBreadcrumb from "../components/DashboardBreadcrumb";
 import HorizontalChart from "../components/HorizontalChart";
 import VolunteerHistoryHours from "../services/VolunteerHistory/VolunteerHistoryHours";
+import VolunteerMissionHours from "../services/VolunteerHistory/VolunteerMissionHours";
+import VolunteerMissionGoals from "../services/VolunteerHistory/VolunteerMissionGoals";
+import VolunteeringRequest from "../components/VolunteeringRequest";
 import store from "../store";
 import Chart from "chart.js";
 
@@ -118,115 +133,132 @@ export default {
     AppCustomDropdown,
     Chart,
     DashboardBreadcrumb,
-    HorizontalChart
+	HorizontalChart,
+	VolunteeringRequest
   },
 
   name: "dashboardhistory",
 
   data() {
     return {
-      langauageData: [],
-      perHourApiDataTheme: [],
-      perHourApiDataSkill: [],
-      hoursFields: [
-        {
-          key: "Mission",
-          class: "mission-col"
-        },
-        {
-          key: "Time",
-          class: "time-col"
-        },
-        {
-          key: "Hours",
-          class: "hours-col"
-        },
-        {
-          key: "Organisation",
-          class: "organisation-col"
-        }
-      ],
-      hoursItems: [
-        {
-          Mission: "Help old people",
-          Time: "1h30",
-          Hours: 5.5,
-          Organisation: "Red Cross"
-        },
-        {
-          Mission: "Help young kids",
-          Time: "0h20",
-          Hours: 0.33,
-          Organisation: "Red Cross"
-        },
-        {
-          Mission: "Plant house",
-          Time: "2h50",
-          Hours: 2.83,
-          Organisation: "Green House"
-        },
-        {
-          Mission: "The place",
-          Time: "0h15",
-          Hours: 0.25,
-          Organisation: "Blue Cross"
-        }
-      ],
-      goalsFields: [
-        {
-          key: "Mission",
-          class: "mission-col"
-        },
-        {
-          key: "Goal",
-          class: "goal-col"
-        },
-        {
-          key: "Result",
-          class: "result-col"
-        },
-        {
-          key: "Result%",
-          class: "result-col"
-        },
-        {
-          key: "Organisation",
-          class: "organisation-col"
-        }
-      ],
-      goalsItems: [
-        {
-          Mission: "Plant trees",
-          Goal: "Plant 1000 tree",
-          Result: 900,
-          "Result%": "90%",
-          Organisation: "Red Cross"
-        },
-        {
-          Mission: "Feed Kids",
-          Goal: "Provide 5000 meals",
-          Result: 4400,
-          "Result%": "88%",
-          Organisation: "Red Cross"
-        },
-        {
-          Mission: "Feed the homeless",
-          Goal: "Provide 2500 meals",
-          Result: 400,
-          "Result%": "20%",
-          Organisation: "Green House"
-        }
-      ],
+		langauageData: [],
+		perHourApiDataTheme: [],
+		perHourApiDataSkill: [],
 
-      ThemeYearText: "Year",
-      themeYearList: [
-        ["2016", "2016"],
-        ["2017", "2017"],
-        ["2018", "2018"],
-        ["2019", "2019"]
-      ],
-      skillYearText: "Year",
-      skillYearList: []
+		timeRequestLabel :"",
+
+
+		timesheetRequestItems: [],
+		hourRequestCurrentPage : 1,
+		hourRequestTotalRow : 0,
+
+		VolunteeringRequest : [],
+		timesheetRequestFields: [],
+		goalRequestCurrentPage : 1,
+		goalRequestTotalRow : 0,
+		goalRequestFields: [],
+		goalRequestItems: [],
+			
+
+		hoursFields: [
+			{
+			key: "Mission",
+			class: "mission-col"
+			},
+			{
+			key: "Time",
+			class: "time-col"
+			},
+			{
+			key: "Hours",
+			class: "hours-col"
+			},
+			{
+			key: "Organisation",
+			class: "organisation-col"
+			}
+		],
+		hoursItems: [
+			{
+			Mission: "Help old people",
+			Time: "1h30",
+			Hours: 5.5,
+			Organisation: "Red Cross"
+			},
+			{
+			Mission: "Help young kids",
+			Time: "0h20",
+			Hours: 0.33,
+			Organisation: "Red Cross"
+			},
+			{
+			Mission: "Plant house",
+			Time: "2h50",
+			Hours: 2.83,
+			Organisation: "Green House"
+			},
+			{
+			Mission: "The place",
+			Time: "0h15",
+			Hours: 0.25,
+			Organisation: "Blue Cross"
+			}
+		],
+		goalsFields: [
+			{
+			key: "Mission",
+			class: "mission-col"
+			},
+			{
+			key: "Goal",
+			class: "goal-col"
+			},
+			{
+			key: "Result",
+			class: "result-col"
+			},
+			{
+			key: "Result%",
+			class: "result-col"
+			},
+			{
+			key: "Organisation",
+			class: "organisation-col"
+			}
+		],
+		goalsItems: [
+			{
+			Mission: "Plant trees",
+			Goal: "Plant 1000 tree",
+			Result: 900,
+			"Result%": "90%",
+			Organisation: "Red Cross"
+			},
+			{
+			Mission: "Feed Kids",
+			Goal: "Provide 5000 meals",
+			Result: 4400,
+			"Result%": "88%",
+			Organisation: "Red Cross"
+			},
+			{
+			Mission: "Feed the homeless",
+			Goal: "Provide 2500 meals",
+			Result: 400,
+			"Result%": "20%",
+			Organisation: "Green House"
+			}
+		],
+
+		ThemeYearText: "Year",
+		themeYearList: [
+			["2016", "2016"],
+			["2017", "2017"],
+			["2018", "2018"],
+			["2019", "2019"]
+		],
+		skillYearText: "Year",
+		skillYearList: []
     };
   },
   mounted() {
@@ -257,12 +289,49 @@ export default {
           this[typeName] = [];
         }
       });
-    }
+	},
+	getVolunteerMissionsHours(currentPage) {
+		VolunteerMissionHours(currentPage).then(response => {
+			var _this = this;
+            _this.timesheetRequestItems = [];
+			if(response.data) {
+				let data = response.data;
+				let mission = this.langauageData.label.mission;
+				let time = this.langauageData.label.time;
+				let hours = this.langauageData.label.hours;
+				let organisation = this.langauageData.label.organisation;
+				console.log(response.pagination);
+				if(response.pagination) {
+					_this.hourRequestTotalRow = response.pagination.total;
+					_this.hourRequestCurrentPage = response.pagination.current_page
+				}
+				
+				data.filter(function(item,index){
+					_this.timesheetRequestItems.push(
+						{
+							[mission] : item.title,
+							[time] : item.time,
+							[hours] : item.hours,
+							[organisation] : item.organisation_name,
+						}
+					)
+				})
+			}
+		})
+	},
+	getVolunteerMissionsGoals(currentPage) {
+		VolunteerMissionGoals(currentPage).then(response => {
+			// console.log(response);
+		})
+	}
   },
   created() {
-    this.langauageData = JSON.parse(store.state.languageLabel);
+	this.langauageData = JSON.parse(store.state.languageLabel);
+	this.timeRequestLabel = this.langauageData.label.hours_requests
     this.getVolunteerHistoryHoursOfType("theme");
-    this.getVolunteerHistoryHoursOfType("skill");
+	this.getVolunteerHistoryHoursOfType("skill");
+	this.getVolunteerMissionsHours();
+	this.getVolunteerMissionsGoals();
   },
   computed: {
     getThemeLabels: {

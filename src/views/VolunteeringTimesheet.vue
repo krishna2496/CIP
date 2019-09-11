@@ -895,11 +895,6 @@ export default {
         },
         getTimeRequest(currentPage) {
             this.getTimeRequestData(currentPage);
-            // window.scrollTo({
-            //         'behavior': 'smooth',
-            //         'left': 500,
-            //         'top': 500
-            // });
         },
         getTimeRequestData(currentPage) {   
             var _this = this;
