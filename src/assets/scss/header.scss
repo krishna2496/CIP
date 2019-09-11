@@ -201,6 +201,10 @@ header {
                 &:active {
                     color: $black-primary;
                 }
+
+                &.router-link-active{
+                    background: $gray-bg;
+                }
             }
 
             li {
@@ -1386,7 +1390,7 @@ html {
                         }
 						.counter{		
 							display: inline-block;		
-							background: $control-border;		
+							background: $light-gray-secondary;		
 							color: $black-primary;		
 							padding: 0;		
 							border-radius: 100%;		
@@ -1398,8 +1402,9 @@ html {
 							top: 50%;
 							@include transformY(-50%);
 							right: 15px;
-							width: 19px;
-							height: 19px;
+							min-width: 19px;
+                            height: auto;
+                            padding:2px 3px;
 							min-height: 1px;
 									
 						}		

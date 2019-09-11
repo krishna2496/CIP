@@ -116,6 +116,24 @@
       }
     }
   }
+  .badge {
+    &.status-label {
+      background: transparent;
+      color: $black-primary;
+      border: 1px solid $border-color;
+      border-radius: 50px;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      max-width: 100%;
+      overflow: hidden;
+      position: relative;
+      display: inline-block;
+      padding: 5px 18px;
+      vertical-align: middle;
+      font-size: 15px;
+      font-weight: 400;
+    }
+  }
 }
 
 .btn-cross {
@@ -323,8 +341,24 @@
 .send-message-modal {
   .modal-dialog {
     @include sm-min {
-      max-width: 1150px;
+    //   max-width: 1150px;
       padding: 0 15px;
+    }
+    .form-group {
+      &.d-flex {
+        > div {
+          display: flex;
+          margin-bottom: 8px;
+          > label {
+            margin: 0 10px 0 0;
+            min-width: 50px;
+          }
+          > p {
+            margin: 0;
+            word-break: break-all;
+          }
+        }
+      }
     }
   }
 }
@@ -398,4 +432,11 @@ body {
     background: transparent;
     z-index: 1039;
   }
+}
+
+
+.userdetail-modal{
+    .modal-dialog{
+        padding-top: 50px;
+    }
 }

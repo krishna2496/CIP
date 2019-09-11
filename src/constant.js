@@ -43,6 +43,7 @@ export default Object.freeze({
     MISSION_COMMENT_AUTO_APPROVED : "mission_comment_auto_approved",
     IS_STORY_AUTO_APPROVED : "is_story_auto_approved",
     IS_COUNTRY_SELECTION : "country_selection",
-    RELATED_MISSIONS : "related_missions"
+    RELATED_MISSIONS : "related_missions",
+    TIMESHEET_DOCUMENT_UPLOAD: "timesheet_document_upload"
 
 })
