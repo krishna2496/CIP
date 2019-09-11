@@ -124,3 +124,11 @@ $factory->define(App\Models\TenantActivatedSetting::class, function (Faker\Gener
         'tenant_setting_id' => 114
     ];
 });
+
+$factory->define(App\Models\TimesheetDocument::class, function (Faker\Generator $faker) {
+    return [
+        'document_name' => 'volunteer9.png',
+        'document_path' => 'https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer9.png',
+        'document_type' => 'png'
+    ];
+});

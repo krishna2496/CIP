@@ -332,7 +332,6 @@ class TimesheetController extends Controller
                 $timesheetDetail += ["minutes" => $time[1]];
                 unset($timesheetDetail["time"]);
             }
-
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_TIMESHEET_LISTING');
             return $this->responseHelper->success($apiStatus, $apiMessage, $timesheetDetail);
@@ -371,10 +370,8 @@ class TimesheetController extends Controller
             }
 
             // Set response data
-            $apiStatus = Response::HTTP_OK;
-            $apiMessage = (!$timesheetDocument) ?
-            trans('messages.success.MESSAGE_NO_RECORD_FOUND') :
-            trans('messages.success.MESSAGE_TIMESHEET_DOCUMENT_DELETED');
+            $apiStatus = Response::HTTP_NO_CONTENT;
+            $apiMessage = trans('messages.success.MESSAGE_TIMESHEET_DOCUMENT_DELETED');
 
             return $this->responseHelper->success($apiStatus, $apiMessage);
         } catch (ModelNotFoundException $e) {
@@ -463,9 +460,8 @@ class TimesheetController extends Controller
         try {
             $goalRequestList = $this->timesheetRepository->goalRequestList($request);
 
-            $apiMessage = (count($goalRequestList) > 0) ?
-            trans('messages.success.MESSAGE_GOAL_REQUEST_LISTING') :
-            trans('messages.success.MESSAGE_NO_GOAL_REQUEST_FOUND');
+            $apiMessage = (count($goalRequestList) > 0) ? trans('messages.success.MESSAGE_GOAL_REQUEST_LISTING')
+            : trans('messages.success.MESSAGE_NO_GOAL_REQUEST_FOUND');
             return $this->responseHelper->successWithPagination(Response::HTTP_OK, $apiMessage, $goalRequestList);
         } catch (\Exception $e) {
             return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));

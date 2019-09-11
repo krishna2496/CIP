@@ -65,7 +65,7 @@ class AppMisionApplicationTest extends TestCase
         $missionApplication->motivation = str_random(10);
         $missionApplication->approval_status = config('constants.application_status.PENDING');
         $missionApplication->applied_at = Carbon::now();
-        $missionApplication->save();          
+        $missionApplication->save();
         
         $params = [
                 'mission_id' => $mission->mission_id
@@ -82,11 +82,11 @@ class AppMisionApplicationTest extends TestCase
                     "code"
                 ]
             ]
-        ]); 
+        ]);
 
-        $missionApplication->delete();          
-        $mission->delete();          
-        $user->delete();    
+        $missionApplication->delete();
+        $mission->delete();
+        $user->delete();
     }
 
     /**
@@ -132,7 +132,7 @@ class AppMisionApplicationTest extends TestCase
                 ]
             ],
             "start_date" => "2019-05-15 10:40:00",
-            "end_date" => "2019-10-15 10:40:00",
+            "end_date" => "2020-10-15 10:40:00",
             "mission_type" => config("constants.mission_type.TIME"),
             "goal_objective" => rand(1, 1000),
             "total_seats" => rand(1, 1000),
@@ -162,7 +162,7 @@ class AppMisionApplicationTest extends TestCase
                     "code"
                 ]
             ]
-        ]); 
+        ]);
         $user->delete();
         App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->delete();
     }
@@ -242,7 +242,7 @@ class AppMisionApplicationTest extends TestCase
                     "code"
                 ]
             ]
-        ]); 
+        ]);
         $user->delete();
         App\Models\Mission::where("mission_id", $mission[0]['mission_id'])->take(1)->delete();
     }
