@@ -252,9 +252,10 @@ class TimesheetRepository implements TimesheetInterface
      *
      * @param \Illuminate\Http\Request $request
      * @param array $statusArray
-     * @return Illuminate\Pagination\LengthAwarePaginator
+     * @param bool $withPagination
+     * @return Object
      */
-    public function timeRequestList(Request $request, array $statusArray) : LengthAwarePaginator
+    public function timeRequestList(Request $request, array $statusArray, bool $withPagination = true) : Object
     {
         $languageId = $this->languageHelper->getLanguageId($request);
         
@@ -276,7 +277,12 @@ class TimesheetRepository implements TimesheetInterface
             $query->where('user_id', $request->auth->user_id);
             $query->whereIn('status_id', $statusArray);
         }]);
-        $timeRequestsList = $timeRequests->paginate($request->perPage);
+        if ($withPagination) {
+            $timeRequestsList = $timeRequests->paginate($request->perPage);
+        } else {
+            $timeRequestsList = $timeRequests->get();
+        }
+
         foreach ($timeRequestsList as $value) {
             if ($value->missionLanguage) {
                 $value->setAttribute('title', $value->missionLanguage[0]->title);
@@ -296,9 +302,10 @@ class TimesheetRepository implements TimesheetInterface
      *
      * @param Illuminate\Http\Request $request
      * @param array $statusArray
-     * @return Illuminate\Pagination\LengthAwarePaginator
+     * @param bool $withPagination
+     * @return Object
      */
-    public function goalRequestList(Request $request, array $statusArray): LengthAwarePaginator
+    public function goalRequestList(Request $request, array $statusArray, bool $withPagination = true): Object
     {
         $languageId = $this->languageHelper->getLanguageId($request);
        
@@ -320,7 +327,11 @@ class TimesheetRepository implements TimesheetInterface
             $query->where('user_id', $request->auth->user_id);
             $query->whereIn('status_id', $statusArray);
         }]);
-        $goalRequestList = $goalRequests->paginate($request->perPage);
+        if ($withPagination) {
+            $goalRequestList = $goalRequests->paginate($request->perPage);
+        } else {
+            $goalRequestList = $goalRequests->get();
+        }
         foreach ($goalRequestList as $value) {
             if ($value->missionLanguage) {
                 $value->setAttribute('title', $value->missionLanguage[0]->title);

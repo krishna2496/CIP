@@ -38,7 +38,7 @@ return [
     'FRONT_HOME_URL' => '.anasource.com/team4/ciplatform/',
     'DEFAULT_FQDN_FOR_FRONT' => 'web8',
     'PER_PAGE_MAX' => '50',
-	'AWS_S3_DEFAULT_THEME_FOLDER_NAME' => 'default_theme',
+    'AWS_S3_DEFAULT_THEME_FOLDER_NAME' => 'default_theme',
     /*
      * User custom field types
      */
@@ -176,6 +176,16 @@ return [
         'DECLINED' => '3',
         'AUTOMATICALLY_APPROVED' => '4',
         'SUBMIT_FOR_APPROVAL' => '5'
+    ],
+
+    /**
+     * Export timesheet file names
+     */
+    'export_timesheet_file_names' => [
+        'PENDING_TIME_MISSION_ENTRIES_XLSX' => 'Pending_Time_Mission_Entries.xlsx',
+        'PENTIND_GOAL_MISSION_ENTRIES_XLSX' => 'Pending_Goal_Mission_Entries.xlsx',
+        'TIME_MISSION_HISTORY_XLSX' => 'Time_Mission_History.xlsx',
+        'GOAL_MISSION_HISTORY_XLSX' => 'Goal_Mission_History.xlsx'
     ],
 
     /*
