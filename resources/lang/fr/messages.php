@@ -237,4 +237,15 @@ return [
         'ERROR_INVALID_HOURS' => 'Les heures doivent être comprises entre 00 et 23',
         'ERROR_INVALID_MINUTES' => 'Les minutes doivent être comprises entre 00 et 59',
     ],
+
+    /**
+     * Export sheet's headings
+     */
+    'export_sheet_headings' => [
+        'MISSION_NAME' => 'Nom de la mission',
+        'ORGANIZATION_NAME' => 'nom de l\'organisation',
+        'ACTIONS' => 'actes',
+        'TIME' => 'Temps',
+        'HOURS' => 'Heures'
+    ]
 ];

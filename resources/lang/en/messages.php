@@ -244,4 +244,15 @@ return [
         'ERROR_INVALID_MINUTES' => 'Minutes must be in between 00, 59',
 
     ],
+
+    /**
+     * Export sheet's headings
+     */
+    'export_sheet_headings' => [
+        'MISSION_NAME' => 'Mission Name',
+        'ORGANIZATION_NAME' => 'Organization Name',
+        'ACTIONS' => 'Actions',
+        'TIME' => 'Time',
+        'HOURS' => 'Hours'
+    ]
 ];
