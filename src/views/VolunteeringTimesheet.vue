@@ -1,7 +1,7 @@
 <template>
     <div class="dashboard-timesheet inner-pages">
         <header>
-        <ThePrimaryHeader></ThePrimaryHeader>
+        <ThePrimaryHeader v-if="isShownComponent"></ThePrimaryHeader>
         </header>
         <main>
             <DashboardBreadcrumb />
@@ -45,9 +45,11 @@
                                             :date="key+1"
                                             v-on:click="getRelatedTimeData(key+1,timeItem,'time')"
                                             v-bind:class="{ 
-                                                'approved' : getTimeSheetHourClass(key+1,timeItem) == 'approved',
-                                                'declined' : getTimeSheetHourClass(key+1,timeItem) == 'declined',
-                                                'disabled' : getTimeSheetHourClass(key+1,timeItem) == 'disabled'
+                                                'approved' : getTimeSheetHourClass(key+1,timeItem,'time') == 'approved',
+                                                'declined' : getTimeSheetHourClass(key+1,timeItem,'time') == 'declined',
+                                                'disabled' : getTimeSheetHourClass(key+1,timeItem,'time') == 'disabled',
+                                                'approval' : getTimeSheetHourClass(key+1,timeItem,'time') == 'submit_for_approval',  
+                                                'default-time' : getTimeSheetHourClass(key+1,timeItem,'time') == 'default-time'
                                             }"
                                             v-for="(item,key) in volunteeringHoursWeeks">
                                                 {{getTime(key,timeItem.timesheet,'time')}} 
@@ -79,6 +81,9 @@
                     <ul class="meta-data-list">
                         <li class="approve-indication">{{langauageData.label.approved}}</li>
                         <li class="decline-indication">{{langauageData.label.declined}}</li>
+                        <li class="approval-indication">
+                            {{langauageData.label.submit_for_approval}}
+                        </li>
                     </ul>
                  <!--    {{goalMissionData}} -->
                     <div class="table-outer timesheet-table-outer">
@@ -114,9 +119,11 @@
                                     :date="key+1"
                                     v-on:click="getRelatedTimeData(key+1,timeItem,'goal')"
                                     v-bind:class="{ 
-                                    'approved' : getTimeSheetHourClass(key+1,timeItem) == 'approved',
-                                    'declined' : getTimeSheetHourClass(key+1,timeItem) == 'declined',
-                                    'disabled' : getTimeSheetHourClass(key+1,timeItem) == 'disabled'
+                                    'approved' : getTimeSheetHourClass(key+1,timeItem,'goal') == 'approved',
+                                    'declined' : getTimeSheetHourClass(key+1,timeItem,'goal') == 'declined',
+                                    'disabled' : getTimeSheetHourClass(key+1,timeItem,'goal') == 'disabled',
+                                    'approval' : getTimeSheetHourClass(key+1,timeItem,'goal') == 'submit_for_approval',
+                                    'default-time' : getTimeSheetHourClass(key+1,timeItem,'goal') == 'default-time'
                                     }"
                                     v-for="(item,key) in volunteeringGoalWeeks">
                                     {{getTime(key,timeItem.timesheet,'goal')}} 
@@ -144,35 +151,28 @@
                             }"
                         >{{langauageData.label.submit}}</b-button>
                     </div>
-                    </div>
-                    <VolunteeringRequest
-                        :headerField="timesheetRequestFields"
-                        :items="timesheetRequestItems"
-                        :headerLable="timeRequestLabel"
-                    />
-                    <div class="table-outer timesheet-table-outer">
-                        <div class="table-inner">
-                            <h3>{{langauageData.label.goals_requests}}</h3>
-                            <b-table
+                    </div> 
+                     
+                   
+                        <VolunteeringRequest
+                            :headerField="timesheetRequestFields"
                             :items="timesheetRequestItems"
-                            responsive
-                            :fields="timesheetRequestFields"
-                            class="volunteery-table"
-                            ></b-table>
-                        </div>
-                        <div class="btn-block">
-                            <b-button class="btn-bordersecondary ml-auto">{{langauageData.label.export}}</b-button>
-                        </div>
-                    </div>
-                    <div class="pagination-block">
-                        <b-pagination
-                        v-model="currentPage"
-                        :total-rows="rows"
-                        :per-page="perPage"
-                        align="center"
-                        aria-controls=""
-                        ></b-pagination>
-                    </div>
+                            :headerLable="timeRequestLabel"
+                            :currentPage="hourRequestCurrentPage"
+                            :totalRow="hourRequestTotalRow"
+                            @updateCall = "getTimeRequest"
+                        />
+                    
+                    
+                        <VolunteeringRequest
+                            :headerField="goalRequestFields"
+                            :items="goalRequestItems"
+                            :headerLable="goalRequestLabel"
+                            :currentPage="goalRequestCurrentPage"
+                            :totalRow="goalRequestTotalRow"
+                            @updateCall = "getGoalRequest"
+                        />
+                    
                 </div>
 
                     <AddVolunteeringHours
@@ -187,6 +187,7 @@
                         @resetModal ="hideModal"
                         :workDayList="workDayList"
                         @updateCall="updateDefaultValue" 
+                        @changeDocument="changeTimeDocument"
                     />
                     <AddVolunteeringAction
                         ref="goalModal"
@@ -200,15 +201,13 @@
                         @resetModal ="hideModal"
                         :workDayList="workDayList"
                         @updateCall="updateDefaultValue" 
+                        @changeDocument="changeGoalDocument"
                     />
-                  
-
-    
                 </b-container>
             </div>
         </main>
         <footer>
-            <TheSecondaryFooter></TheSecondaryFooter>
+            <TheSecondaryFooter v-if="isShownComponent"></TheSecondaryFooter>
         </footer>
     </div>
 </template>
@@ -230,6 +229,7 @@ import DatePicker from "vue2-datepicker";
 import FileUpload from 'vue-upload-component';
 import {volunteerTimesheetHours,fetchTimeSheetDocuments,submitVolunteerHourTimeSheet,timeRequest,goalRequest} from '../services/service';
 import moment from 'moment'
+import { setTimeout } from 'timers';
 
 export default {
     components: {
@@ -251,85 +251,18 @@ export default {
             files: [],
             tableLoaderActive : true,
             goalTableLoaderActive : true,
-            timeRequestLoaderActive : true,
-            goalRequestLoaderActive : true,
+            timeRequestLoaderActive : false,
+            goalRequestLoaderActive : false,
             langauageData : [],
             VolunteeringRequest : [],
-            timesheetRequestFields: [
-                {
-                    key: "Mission"           
-                },
-                {
-                    key: "Time"
-                },
-                {
-                    key: "Hours"           
-                },
-                {
-                    key: "Organisation"
-                }
-            ],
-            timesheetRequestItems: [
-            {
-                Mission: "Help old people",
-                Time: "1h30",
-                Hours: 5.5,
-                Organisation: "Red Cross"
-            },
-            {
-                Mission: "Help young kids",
-                Time: "0h20",
-                Hours: 0.33,
-                Organisation: "Red Cross"
-            },
-            {
-                Mission: "Plant house",
-                Time: "2h50",
-                Hours: 2.83,
-                Organisation: "Green House"
-            },
-            {
-                Mission: "The place",
-                Time: "0h15",
-                Hours: 0.25,
-                Organisation: "Blue Cross"
-            }
-            ],
-            goalRequestFields: [
-            {
-                key: "Mission",
-                class: "mission-col"
-            },
-            {
-                key: "Action"
-            },
-            {
-                key: "Organisation",
-                class: "organisation-col"
-            }
-            ],
-            goalRequestItems: [
-                {
-                    Mission: "Help old people",
-                    Action: "100",
-                    Organisation: "Red Cross"
-                },
-                {
-                    Mission: "Help young kids",
-                    Action: "200",
-                    Organisation: "Red Cross"
-                },
-                {
-                    Mission: "Plant house",
-                    Action: "300",
-                    Organisation: "Green House"
-                },
-                {
-                    Mission: "The place",
-                    Action: "400",
-                    Organisation: "Blue Cross"
-                }
-            ],
+            timesheetRequestFields: [],
+            timesheetRequestItems: [],
+            hourRequestCurrentPage : 1,
+            goalRequestCurrentPage : 1,
+            hourRequestTotalRow : 0,
+            goalRequestTotalRow : 0,
+            goalRequestFields: [],
+            goalRequestItems: [],
             defaultWorkday: "",
             workDayList: [
                 ["WORKDAY","workday"],
@@ -373,13 +306,89 @@ export default {
             defaultMinutes : '',
             futureDates: new Date(),
             enableSubmitGoalTimeSheet : true,
-            enableSubmitTimeTimeSheet : true
+            enableSubmitTimeTimeSheet : true,
+            isShownComponent : false
         };
     },
     updated() {
     
     },
     methods: {
+        changeTimeDocument(date) {
+            var _this = this;
+            let year = moment(date).format("YYYY");
+            let month = moment(date).format("M");
+            let dates = moment(date).format("D");
+            let timeSheetId = '';
+            this.timeMissionData.filter(function(timeArray,timeIndex) {
+                if(timeArray.mission_id == _this.currentTimeData.missionId && timeArray.timesheet) {
+                    timeArray.timesheet.filter(function(timeSheetArray,timeSheetIndex) {
+                        if(timeSheetArray.month == month && timeSheetArray.year == year && timeSheetArray.date == dates) {
+                            timeSheetId = timeSheetArray.timesheet_id;
+                            _this.workDayList.filter(function (workList, workIndex) {
+                                if(workList[0] == timeSheetArray.day_volunteered) {
+                                    _this.defaultWorkday = _this.langauageData.label[workList[1]];
+                                }
+                            });
+                        } 
+                    })
+                }
+            })
+
+            if(timeSheetId != '') {
+                _this.fetchTimeSheetRealtedData(timeSheetId);
+            } else {
+                _this.currentTimeData.documents = []
+                _this.defaultWorkday = _this.langauageData.placeholder.workday 
+                _this.defaultHours = _this.langauageData.placeholder.spent_hours
+                _this.defaultMinutes = _this.langauageData.placeholder.spent_minutes
+                _this.currentTimeData.hours = '';
+                _this.currentTimeData.minutes = '';
+                _this.currentTimeData.workDay = '';
+                _this.currentTimeData.notes = '';
+                _this.currentTimeData.day= '';
+                _this.currentTimeData.timeSheetId = '';
+                _this.currentTimeData.action = '';
+            }
+           
+        },
+        changeGoalDocument(date) {
+            var _this = this;
+            let year = moment(date).format("YYYY");
+            let month = moment(date).format("M");
+            let dates = moment(date).format("D");
+            let timeSheetId = '';
+            this.goalMissionData.filter(function(timeArray,timeIndex) {
+                if(timeArray.mission_id == _this.currentTimeData.missionId && timeArray.timesheet) {
+                    timeArray.timesheet.filter(function(timeSheetArray,timeSheetIndex) {
+                        if(timeSheetArray.month == month && timeSheetArray.year == year && timeSheetArray.date == dates) {
+                            timeSheetId = timeSheetArray.timesheet_id;
+                            _this.workDayList.filter(function (workList, workIndex) {
+                                if(workList[0] == timeSheetArray.day_volunteered) {
+                                    _this.defaultWorkday = _this.langauageData.label[workList[1]];
+                                }
+                            });
+                        } 
+                    })
+                }
+            })
+
+            if(timeSheetId != '') {
+                _this.fetchTimeSheetRealtedData(timeSheetId);
+            } else {
+                _this.currentTimeData.documents = []
+                _this.defaultWorkday = _this.langauageData.placeholder.workday 
+                _this.defaultHours = _this.langauageData.placeholder.spent_hours
+                _this.defaultMinutes = _this.langauageData.placeholder.spent_minutes
+                _this.currentTimeData.hours = '';
+                _this.currentTimeData.minutes = '';
+                _this.currentTimeData.workDay = '';
+                _this.currentTimeData.notes = '';
+                _this.currentTimeData.day= '';
+                _this.currentTimeData.timeSheetId = '';
+                _this.currentTimeData.action = '';
+            }
+        },
         getRelatedTimeData(date,timeArray,timeSheetType) {
             this.currentTimeData.missionId = timeArray.mission_id
             this.currentTimeData.day = date
@@ -415,14 +424,46 @@ export default {
                     let currentArrayDate = timeSheetItem.date
                     let currentArrayYear = timeSheetItem.year
                     let currentArrayMonth = timeSheetItem.month
-
-                    if(_this.volunteeringHoursCurrentYear == currentArrayYear) {
-                        if(_this.volunteeringHoursCurrentMonth == currentArrayMonth) {
+                    let currentTimeSheetYear = '';
+                    let currentTimeSheetMonth = '';
+                    if(timeSheetType == 'time') {
+                        currentTimeSheetYear = _this.volunteeringHoursCurrentYear;
+                        currentTimeSheetMonth = _this.volunteeringHoursCurrentMonth;
+                    } else {
+                        currentTimeSheetYear = _this.volunteeringGoalCurrentYear;
+                        currentTimeSheetMonth = _this.volunteeringGoalCurrentMonth;
+                    }
+                    if(currentTimeSheetYear == currentArrayYear) {
+                        if(currentTimeSheetMonth == currentArrayMonth) {
                             if(date == currentArrayDate) {
                                 let timeSheetId = timeSheetItem.timesheet_id
                                 _this.currentTimeData.timeSheetId = timeSheetId;
                                
-                                fetchTimeSheetDocuments(timeSheetId).then( response => {
+                                _this.fetchTimeSheetRealtedData(timeSheetId);
+
+                                _this.workDayList.filter(function (workList, workIndex) {
+                                  if(workList[0] == timeSheetItem.day_volunteered) {
+                                    _this.defaultWorkday = _this.langauageData.label[workList[1]];
+                                   
+                                  }
+                                });
+                            }
+                        }
+
+                    }
+                  
+                });
+            }
+            if(timeSheetType == 'time') {
+                this.$refs.timeModal.$refs.timeHoursModal.show();    
+            } else {
+                this.$refs.goalModal.$refs.goalActionModal.show();
+            }
+           
+        },
+        fetchTimeSheetRealtedData(timeSheetId) {
+            var _this = this
+             fetchTimeSheetDocuments(timeSheetId).then( response => {
                                     if(response) {
 
                                         _this.currentTimeData.dateVolunteered = response.date_volunteered
@@ -447,30 +488,8 @@ export default {
                                         _this.currentTimeData.action = response.action
                                     }
                                 });
-
-                                _this.workDayList.filter(function (workList, workIndex) {
-                                  if(workList[0] == timeSheetItem.day_volunteered) {
-                                    _this.defaultWorkday = _this.langauageData.label[workList[1]];
-                                   
-                                  }
-                                });
-                                // console.log(_this.currentTimeData);
-                            }
-                        }
-
-                    }
-                  
-                });
-            }
-            if(timeSheetType == 'time') {
-                this.$refs.timeModal.$refs.timeHoursModal.show();    
-            } else {
-                this.$refs.goalModal.$refs.goalActionModal.show();
-            }
-           
         },
-
-        getTimeSheetHourClass(date,timeSheetArray) {
+        getTimeSheetHourClass(date,timeSheetArray,timeSheetType) {
             let _this = this
             let returnData = '';
 
@@ -490,26 +509,42 @@ export default {
                 
            
             let timeArray = timeSheetArray.timesheet;
-            timeArray.filter(function (timeSheetItem, timeSheetIndex) {
-                let currentArrayDate = timeSheetItem.date
-                let currentArrayYear = timeSheetItem.year
-                let currentArrayMonth = timeSheetItem.month
+            
+                timeArray.filter(function (timeSheetItem, timeSheetIndex) {
+                    let currentArrayDate = timeSheetItem.date
+                    let currentArrayYear = timeSheetItem.year
+                    let currentArrayMonth = timeSheetItem.month
+                    let currentTimeSheetYear = '';
+                    let currentTimeSheetMonth = '';
 
-                if(_this.volunteeringHoursCurrentYear == currentArrayYear) {
-                    if(_this.volunteeringHoursCurrentMonth == currentArrayMonth) {
-
-                        if(date == currentArrayDate) {
-                            if(timeSheetItem.timesheet_status.status == "APPROVED") {
-                                returnData = "approved";
-                            } 
-                            if(timeSheetItem.timesheet_status.status == "DECLINED") {
-                                returnData = "declined"
-                            }
-                        }
+                    if(timeSheetType == 'time') {
+                        currentTimeSheetYear = _this.volunteeringHoursCurrentYear;
+                        currentTimeSheetMonth = _this.volunteeringHoursCurrentMonth;
+                    } else {
+                        currentTimeSheetYear = _this.volunteeringGoalCurrentYear;
+                        currentTimeSheetMonth = _this.volunteeringGoalCurrentMonth;
                     }
-                }  
-              
-            });
+                    if(currentTimeSheetYear == currentArrayYear) {
+                        if(currentTimeSheetMonth == currentArrayMonth) {
+                            if(date == currentArrayDate) {
+                                if(timeSheetItem.timesheet_status.status == "APPROVED" || timeSheetItem.timesheet_status.status == "AUTOMATICALLY_APPROVED") {
+                                    returnData = "approved";
+                                } 
+                                else if(timeSheetItem.timesheet_status.status == "DECLINED") {
+                                    returnData = "declined"
+                                }
+                                else if(timeSheetItem.timesheet_status.status == "SUBMIT_FOR_APPROVAL") {
+                                    returnData = "submit_for_approval"
+                                }
+                                else {
+                                    returnData = "default-time"
+                                }
+                            }
+                        } 
+                    }
+                  
+                });
+        
             if (currentDate < disabledPastDates) {
                     returnData ="disabled"
                 } 
@@ -568,14 +603,19 @@ export default {
             this.tableLoaderActive = true
             var _this =this;
             await volunteerTimesheetHours().then( response => {
-                this.getTimeRequestData();
+                this.isShownComponent = true;
                 if(response) {
                     this.timeMissionData = response['TIME']
                     this.goalMissionData = response['GOAL']
                 }
+            
+                _this.tableLoaderActive = false
                 setTimeout(function(){
-                    _this.tableLoaderActive = false
-                })
+                    _this.getTimeRequestData(_this.hourRequestCurrentPage);
+                },50)
+                setTimeout(function(){
+                    _this.getGoalRequestData(_this.goalRequestCurrentPage);
+                },100)
            })
         },
 
@@ -817,6 +857,7 @@ export default {
                 let timeSheetId = {
                     'timesheet_entries' : []
                 }
+                let timeSheetEntry = []
                 let timeArray = [];
                 if(timeSheetType == "time") {
                     timeArray = this.timeMissionData;
@@ -830,7 +871,7 @@ export default {
                             timeSheetArray.filter(function (timeSheet, timeSheetIndex) {
                                 if(timeSheet.timesheet_status.status != "APPROVED" && timeSheet.timesheet_status.status != "AUTOMATICALLY_APPROVED"){
                                         timeSheetId.timesheet_entries.push({'timesheet_id':timeSheet.timesheet_id})  
-                                    }
+                                }
                             });
                         }
                     });
@@ -852,30 +893,75 @@ export default {
                 autoHideDelay: 1000
             })
         },
-
-        getTimeRequestData() {
+        getTimeRequest(currentPage) {
+            this.getTimeRequestData(currentPage);
+            // window.scrollTo({
+            //         'behavior': 'smooth',
+            //         'left': 500,
+            //         'top': 500
+            // });
+        },
+        getTimeRequestData(currentPage) {   
             var _this = this;
-            timeRequest().then( response => {
-                this.getGoalRequestData();
-                if(response) {
-                    console.log(response);
-                }
-                setTimeout(function(){
-                        _this.timeRequestLoaderActive = false
-                })
+            _this.timesheetRequestItems = [];
+            timeRequest(currentPage).then( response => {
+                if(response.data) {
+                    let data = response.data;
+                    let mission = this.langauageData.label.mission;
+                    let time = this.langauageData.label.time;
+                    let hours = this.langauageData.label.hours;
+                    let organisation = this.langauageData.label.organisation;
+
+                    if(response.pagination) {
+                        this.hourRequestTotalRow = response.pagination.total;
+                        this.hourRequestCurrentPage = response.pagination.current_page
+                    }
+                    
+                    data.filter(function(item,index){
+                        _this.timesheetRequestItems.push(
+                            {
+                                [mission] : item.title,
+                                [time] : item.time,
+                                [hours] : item.hours,
+                                [organisation] : item.organisation_name,
+                            }
+                        )
+                    })
+                  
+                }  
             })   
         },
+        getGoalRequest(currentPage) {
+            this.getGoalRequestData(currentPage);
 
-        getGoalRequestData() {
+        },
+        getGoalRequestData(currentPage) {
             var _this = this;
-            goalRequest().then( response => {
-                if(response) {
-                   console.log(response);
+            
+            _this.goalRequestItems = []
+            goalRequest(currentPage).then( response => {
+                if(response.data) {
+                    let data = response.data;
+                    let mission = this.langauageData.label.mission;
+                    let action = this.langauageData.label.actions;
+                    let organisation = this.langauageData.label.organisation;
+                     if(response.pagination) {
+                        this.goalRequestTotalRow = response.pagination.total;
+                        this.goalRequestCurrentPage = response.pagination.current_page
+                    }
+                    
+                    data.filter(function(item,index) {
+                        _this.goalRequestItems.push(
+                            {
+                                [mission] : item.title,
+                                [action] : item.action,
+                                [organisation] : item.organisation_name,
+                            }
+                        )
+                    }) 
                 }
-                setTimeout(function(){
-                    _this.goalRequestLoaderActive = false
-                })
-            })  
+               
+            })   
         }
     },
     created() {
@@ -885,8 +971,33 @@ export default {
         this.defaultHours = this.langauageData.placeholder.spent_hours
         this.defaultMinutes = this.langauageData.placeholder.spent_minutes
         this.timeRequestLabel = this.langauageData.label.hours_requests 
-        this.goalRequestLabel = this.langauageData.label.hours_requests 
+        this.goalRequestLabel = this.langauageData.label.goals_requests 
         this.getVolunteerHoursData();
+        let timeRequestFieldArray = [
+            this.langauageData.label.mission,
+            this.langauageData.label.time,
+            this.langauageData.label.hours,
+            this.langauageData.label.organisation,
+        ]
+
+        let goalRequestFieldArray = [
+            this.langauageData.label.mission,
+            this.langauageData.label.actions,
+            this.langauageData.label.organisation,
+        ]
+
+        goalRequestFieldArray.filter(function(data,index){
+            globalThis.goalRequestFields.push({
+                "key" : data
+            })
+        });
+
+        timeRequestFieldArray.filter(function(data,index){
+            globalThis.timesheetRequestFields.push({
+                "key" : data
+            })
+        });
+       
     }
 };
 </script>

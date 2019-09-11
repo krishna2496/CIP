@@ -1,8 +1,7 @@
 import axios from 'axios'
 import store from '../../store'
-import moment from 'moment';
 
-export default async() => {
+export default async(page) => {
     let responseData = {
         error : 'true'
     };
@@ -12,7 +11,7 @@ export default async() => {
     if (store.state.defaultLanguage !== null) {
         defaultLanguage = (store.state.defaultLanguage).toLowerCase();
     }
-    var url =process.env.VUE_APP_API_ENDPOINT + "app/timesheet/goal-requests";
+    var url =process.env.VUE_APP_API_ENDPOINT + "app/timesheet/goal-requests?page="+page;
 
     await axios({
             url: url,
@@ -25,6 +24,8 @@ export default async() => {
         .then((response) => {
             if(response.data.data) { 
                 responseData.error = false;
+                responseData.data = response.data.data
+                responseData.pagination = response.data.pagination
                 responseData.message = response.data.message
             } 
         })

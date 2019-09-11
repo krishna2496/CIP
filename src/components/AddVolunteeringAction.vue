@@ -36,6 +36,11 @@
                                     class="invalid-feedback">
                                     {{ langauageData.errors.action_required }}
                                 </div>
+                                <div 
+                                    v-if="submitted && !$v.timeEntryDefaultData.dateVolunteered.numeric" 
+                                    class="invalid-feedback">
+                                    {{ langauageData.errors.numeric_action }}
+                                </div>
                             </b-form-group>
                         </b-col>
                         </b-row>
@@ -54,6 +59,7 @@
                                     :notAfter="timeEntryDefaultData.disabledFutureDates"
                                     :notBefore="timeEntryDefaultData.disabledPastDates"
                                     :disabledDays="disableDates"
+                                    @change="dateChange()"
                                     :class="{ 'is-invalid': submitted && $v.timeEntryDefaultData.dateVolunteered.$error }"
                                     :lang="lang"
                                 >
@@ -100,19 +106,23 @@
                 </b-form-group>
                 <b-form-group>
                     <b-row>
+                        
                         <b-col sm="12" class="date-col">
+                        <span class="error-message"  v-if="fileError">{{fileError}}</span>
                         <label for>{{langauageData.label.file_upload}}</label>
                         <div class="file-upload-wrap">
-                            <div class="btn-wrapper">
+                            <div class="btn-wrapper"
+                            v-bind:class="{'has-error' : fileError != '' ? true : false}">
                                 <file-upload
                                     class="btn"
-                                    extensions="gif,jpg,jpeg,png,webp"
-                                    accept="image/png,image/gif,image/jpeg,image/webp"
+                                    accept="image/png,image/jpeg,application/doc,
+                                    application/docx,application/xls,application/xlsx,application/csv,application/pdf"
                                     :multiple="true"
                                     :drop="true"
                                     :drop-directory="true"
-                                    :size="1024 * 1024 * 10"
-                                    v-model="files"
+                                    @input="inputUpdate"
+                                    :size="1024 * 1024 *10"
+                                    v-model="fileArray"
                                     ref="upload">
                                 {{langauageData.label.browse}}
                                 </file-upload>
@@ -132,7 +142,7 @@
                                 </a>
                             
                             </div>
-                            <div class="uploaded-file-details" v-for="(file, index) in files" :key="file.id">
+                            <div class="uploaded-file-details" v-for="(file, index) in fileArray" :key="file.id">
                                 <p class="filename">{{file.name}}</p>
                                 <a 
                                 class="remove-item" 
@@ -152,7 +162,7 @@
         <div class="btn-wrap">
             <b-button
                 class="btn-borderprimary"
-                @click="$refs.timeHoursModal.hide()"
+                @click="$refs.goalActionModal.hide()"
                 
             >{{langauageData.label.cancel}}</b-button>
             <b-button 
@@ -196,10 +206,11 @@ export default {
             langauageData : [],
             submitted : false,
             disabledFutureDates : new Date(),
-            
+            fileArray : this.files,
             showErrorDiv : false,
             message : null,
             classVariant :"success",
+            fileError : "",
             hourList:[
                     ["00","00"],
                     ["01","01"],
@@ -302,7 +313,7 @@ export default {
     validations() {
         return {
             timeEntryDefaultData : {      
-                action : {required},
+                action : {required,numeric},
                 workDay : {required},
                 notes : {required},
                 dateVolunteered : {required}
@@ -310,6 +321,20 @@ export default {
         }
     },
     methods: {
+        dateChange() {
+            this.$emit('changeDocument',this.timeEntryDefaultData.dateVolunteered)
+        },
+        inputUpdate(files) {
+            var _this = this
+            files.filter(function(data,index){
+                if(data.size > 50000) {
+                    _this.fileError = _this.langauageData.errors.file_max_size
+                   files.splice(index,1)
+                } else {
+                    _this.fileError = ''
+                }
+            });
+        },
         updateWorkday(value) {
             var selectedData = {
                 'selectedVal' : '',
@@ -351,14 +376,14 @@ export default {
 
             const formData = new FormData();
             let fileData = []
-            let file = this.files;
+            let file = this.fileArray;
             if(file) {
                 file.filter(function (fileItem, fileIndex) {
                     fileData.push(fileItem.file);
                     formData.append('documents[]', fileItem.file);
                 })
             }  
-            let volunteeredDate = moment(String(this.timeEntryDefaultData.dateVolunteered)).format('MM-DD-YYYY');
+            let volunteeredDate = moment(String(this.timeEntryDefaultData.dateVolunteered)).format('YYYY-MM-DD');
             let hours = this.timeEntryDefaultData.hours == '' ? 0 : this.timeEntryDefaultData.hours
             let minutes = this.timeEntryDefaultData.minutes == '' ? 0 : this.timeEntryDefaultData.minutes
             formData.append('mission_id',this.timeEntryDefaultData.missionId);
@@ -383,7 +408,7 @@ export default {
                     this.submitted = false;  
                     this.$emit("getTimeSheetData");
                     setTimeout(function() {
-                        _this.$refs.timeHoursModal.hide();
+                        _this.$refs.goalActionModal.hide();
                         _this.hideModal();
                     },700) 
                    
@@ -422,6 +447,7 @@ export default {
         hideModal() {
             this.submitted = false;
             this.showErrorDiv = false
+            this.fileError = ''
             this.$emit("resetModal");
             document.querySelector('html').classList.remove('modal-open');
         }

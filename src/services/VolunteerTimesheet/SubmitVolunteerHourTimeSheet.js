@@ -15,7 +15,7 @@ export default async(data) => {
    
     await axios({
             url: url,
-            method: 'PATCH',
+            method: 'POST',
             data,
             headers: {
                 'X-localization': defaultLanguage,
@@ -24,7 +24,7 @@ export default async(data) => {
         })
         .then((response) => {          
             if(response.data.message) { 
-                response.error = false
+                responseData.error = false
                 responseData.message =  response.data.message
             } 
         })

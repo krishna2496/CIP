@@ -327,7 +327,10 @@ textarea {
     font-size: 14px;
     font-weight: 400;
   }
-
+&.disabled{
+  background: $disabled-bg;
+  pointer-events: none;
+}
   &:focus {
     box-shadow: none;
     border-color: $gray-primary;
@@ -1219,6 +1222,9 @@ label {
         margin-left: 15px;
       }
     }
+    &.has-error{
+      border: 1px solid $error;
+    }
   }
   .remove-item {
     position: absolute;
@@ -1283,4 +1289,10 @@ label {
 
 .tooltip{
   z-index:1039;
+}
+
+span{
+  &.error-message{
+    color: $error;
+  }
 }

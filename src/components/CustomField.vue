@@ -1,7 +1,6 @@
 <template>
-
     <div class="row custom-field" v-if="customFieldList != null && customFieldList.length > 0">
-                     <b-col :md="getColumn(item.type)"  v-for="(item,key) in optionList">
+                        <b-col :md="getColumn(item.type)"  v-for="(item,key) in optionList">
                             <b-form-group v-if="item.type == 'drop-down'">
                                 <label>{{item.translations.name}}
                                     <span v-if="item.is_mandatory == 1">*</span>
