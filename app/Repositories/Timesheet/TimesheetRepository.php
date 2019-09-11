@@ -288,20 +288,9 @@ class TimesheetRepository implements TimesheetInterface
                 $value->setAttribute('title', $value->missionLanguage[0]->title);
                 unset($value->missionLanguage);
             }
-
-            // For time
-            $totalHours = (int)($value->total_hours / 60);
-            $hoursData = $totalHours."h";
-            $minutes = $value->total_hours % 60;
-            $time = $hoursData.$minutes;
-
-            //For hours
-            $minutesData = $minutes / 60;
-            $hours = $totalHours + $minutesData;
-            $hoursDetail = number_format((float)$hours, 2, '.', '');
-
-            $value->time = $time;
-            $value->hours = $hoursDetail;
+            $value->time = $this->helpers->convertInReportTimeFormat($value->total_hours);
+            $value->hours = $this->helpers->convertInReportHoursFormat($value->total_hours);
+            
             unset($value->total_hours);
             $value->setAppends([]);
         }
