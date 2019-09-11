@@ -20,6 +20,7 @@ use App\Repositories\MissionSkill\MissionSkillRepository;
 use App\Helpers\LanguageHelper;
 use App\Helpers\ExportCSV;
 use Carbon\Carbon;
+use App\Helpers\Helpers;
 
 class VolunteerHistoryController extends Controller
 {
@@ -50,6 +51,10 @@ class VolunteerHistoryController extends Controller
      */
     private $languageHelper;
 
+    /**
+     * @var App\Helpers\Helpers
+     */
+    private $helpers;
 
     /**
      * Create a new controller instance.
@@ -58,6 +63,8 @@ class VolunteerHistoryController extends Controller
      * @param App\Repositories\MissionTheme\MissionThemeRepository $missionThemeRepository
      * @param App\Repositories\MissionSkill\MissionSkillRepository $missionSkillRepository
      * @param App\Helpers\ResponseHelper $responseHelper
+     * @param App\Helpers\Helpers $helpers
+     *
      * @return void
      */
     public function __construct(
@@ -65,13 +72,15 @@ class VolunteerHistoryController extends Controller
         MissionThemeRepository $missionThemeRepository,
         MissionSkillRepository $missionSkillRepository,
         ResponseHelper $responseHelper,
-        LanguageHelper $languageHelper
+        LanguageHelper $languageHelper,
+        Helpers $helpers
     ) {
         $this->timesheetRepository = $timesheetRepository;
         $this->missionThemeRepository = $missionThemeRepository;
         $this->missionSkillRepository = $missionSkillRepository;
         $this->responseHelper = $responseHelper;
         $this->languageHelper = $languageHelper;
+        $this->helpers = $helpers;
     }
 
     /**
@@ -205,30 +214,34 @@ class VolunteerHistoryController extends Controller
 
             $goalMissionList = $this->timesheetRepository->goalRequestList($request, $statusArray, false);
 
-            $userName = $request->auth->first_name.'_'.$request->auth->last_name;
-            $fileName = Carbon::now()->timestamp.'_'.$userName.'_Goal_Mission_History.xlsx';
-     
-            $excel = new ExportCSV($fileName);
+            if ($goalMissionList->count()) {
+                $userName = $request->auth->first_name.'_'.$request->auth->last_name;
+                $fileName = Carbon::now()->timestamp.'_'.$userName.'_Goal_Mission_History.xlsx';
+        
+                $excel = new ExportCSV($fileName);
 
-            $headings = ['Mission Name', 'Organization Name', 'Actions'];
+                $headings = ['Mission Name', 'Organization Name', 'Actions'];
 
-            $excel->setHeadlines($headings);
+                $excel->setHeadlines($headings);
 
-            foreach ($goalMissionList as $mission) {
-                $excel->setData([
-                    $mission->title,
-                    $mission->organisation_name,
-                    $mission->action
-                ]);
+                foreach ($goalMissionList as $mission) {
+                    $excel->setData([
+                        $mission->title,
+                        $mission->organisation_name,
+                        $mission->action
+                    ]);
+                }
+
+                $tenantName = $this->helpers->getSubDomainFromRequest($request);
+
+                $path = $excel->export('app/'.$tenantName.'/timesheet/'.$userName.'/exports');
             }
 
-            $path = $excel->export('app/csv-export');
-
             $apiStatus = Response::HTTP_OK;
-            $apiMessage =  (!empty($path)) ?
+            $apiMessage =  ($goalMissionList->count()) ?
                 trans('messages.success.MESSAGE_USER_GOAL_MISSION_HISTORY_EXPORTED'):
                 trans('messages.success.MESSAGE_ENABLE_TO_EXPORT_USER_GOAL_MISSION_HISTORY');
-            $apiData = (!empty($path)) ? ['path' => $path] : [];
+            $apiData = ($goalMissionList->count()) ? ['path' => $path] : [];
 
             return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
         } catch (\Exception $e) {
@@ -252,31 +265,35 @@ class VolunteerHistoryController extends Controller
 
             $timeRequestList = $this->timesheetRepository->timeRequestList($request, $statusArray, false);
 
-            $userName = $request->auth->first_name.'_'.$request->auth->last_name;
-            $fileName = Carbon::now()->timestamp.'_'.$userName.'_Time_Mission_History.xlsx';
-        
-            $excel = new ExportCSV($fileName);
+            if ($timeRequestList->count()) {
+                $userName = $request->auth->first_name.'_'.$request->auth->last_name;
+                $fileName = Carbon::now()->timestamp.'_'.$userName.'_Time_Mission_History.xlsx';
+            
+                $excel = new ExportCSV($fileName);
 
-            $headings = ['Mission Name', 'Organization Name', 'Time', 'Hours'];
+                $headings = ['Mission Name', 'Organization Name', 'Time', 'Hours'];
 
-            $excel->setHeadlines($headings);
+                $excel->setHeadlines($headings);
 
-            foreach ($timeRequestList as $mission) {
-                $excel->setData([
-                    $mission->title,
-                    $mission->organisation_name,
-                    $mission->time,
-                    $mission->hours
-                ]);
+                foreach ($timeRequestList as $mission) {
+                    $excel->setData([
+                        $mission->title,
+                        $mission->organisation_name,
+                        $mission->time,
+                        $mission->hours
+                    ]);
+                }
+
+                $tenantName = $this->helpers->getSubDomainFromRequest($request);
+
+                $path = $excel->export('app/'.$tenantName.'/timesheet/'.$userName.'/exports');
             }
 
-            $path = $excel->export('app/csv-export');
-
             $apiStatus = Response::HTTP_OK;
-            $apiMessage =  (!empty($path)) ?
+            $apiMessage =  ($timeRequestList->count()) ?
             trans('messages.success.MESSAGE_USER_TIME_MISSION_HISTORY_EXPORTED'):
             trans('messages.success.MESSAGE_ENABLE_TO_EXPORT_USER_TIME_MISSION_HISTORY');
-            $apiData = (!empty($path)) ? ['path' => $path] : [];
+            $apiData = ($timeRequestList->count()) ? ['path' => $path] : [];
 
             return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
         } catch (\Exception $e) {

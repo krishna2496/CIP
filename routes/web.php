@@ -196,6 +196,11 @@ $router->group(['middleware' => 'localization'], function ($router) {
     'middleware' => 'localization|tenant.connection|jwt.auth',
     'uses' => 'App\Timesheet\TimesheetController@getPendingGoalRequests']);
 
+    /* Export pending goal requests */
+    $router->get('/app/timesheet/goal-requests/export', ['as' => 'app.timesheet.goal-requests.export',
+    'middleware' => 'localization|tenant.connection|jwt.auth',
+    'uses' => 'App\Timesheet\TimesheetController@exportPendingGoalRequests']);
+
     /* Store timesheet data */
     $router->post('/app/timesheet', ['as' => 'app.timesheet',
     'middleware' => 'localization|tenant.connection|jwt.auth',
@@ -210,6 +215,11 @@ $router->group(['middleware' => 'localization'], function ($router) {
     $router->get('/app/timesheet/time-requests', ['as' => 'app.timesheet.time-requests',
     'middleware' => 'tenant.connection|jwt.auth',
     'uses' => 'App\Timesheet\TimesheetController@getPendingTimeRequests']);
+
+    /* Export pending time requests */
+    $router->get('/app/timesheet/time-requests/export', ['as' => 'app.timesheet.time-requests.export',
+    'middleware' => 'tenant.connection|jwt.auth',
+    'uses' => 'App\Timesheet\TimesheetController@exportPendingTimeRequests']);
 
     /* Get timesheet data */
     $router->get('/app/timesheet', ['as' => 'app.timesheet',

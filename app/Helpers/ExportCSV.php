@@ -78,7 +78,7 @@ class ExportCSV
         $this->path = str_replace("\\", "/", \storage_path($path));
 
         // Make directory
-        exec('mkdir '.\storage_path($this->path));
+        @mkdir(\storage_path($path), 0755, true);
 
         // Create and open file from location
         $csv = fopen($this->path.'/'.$this->fileName, 'w');

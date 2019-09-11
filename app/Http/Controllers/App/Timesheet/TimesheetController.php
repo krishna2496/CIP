@@ -17,6 +17,8 @@ use InvalidArgumentException;
 use PDOException;
 use Validator;
 use App\Repositories\TenantOption\TenantOptionRepository;
+use App\Helpers\ExportCSV;
+use App\Helpers\Helpers;
 
 class TimesheetController extends Controller
 {
@@ -42,12 +44,18 @@ class TimesheetController extends Controller
     private $tenantOptionRepository;
 
     /**
+     * @var App\Helpers\Helpers
+     */
+    private $helpers;
+
+    /**
      * Create a new controller instance.
      *
      * @param App\Repositories\Timesheet\TimesheetRepository $timesheetRepository
      * @param App\Helpers\ResponseHelper $responseHelper
      * @param App\Repositories\Mission\MissionRepository $missionRepository
      * @param App\Repositories\TenantOption\TenantOptionRepository $tenantOptionRepository
+     * @param App\Helpers\Helpers $helpers
      *
      * @return void
      */
@@ -55,12 +63,14 @@ class TimesheetController extends Controller
         TimesheetRepository $timesheetRepository,
         ResponseHelper $responseHelper,
         MissionRepository $missionRepository,
-        TenantOptionRepository $tenantOptionRepository
+        TenantOptionRepository $tenantOptionRepository,
+        Helpers $helpers
     ) {
         $this->timesheetRepository = $timesheetRepository;
         $this->responseHelper = $responseHelper;
         $this->missionRepository = $missionRepository;
         $this->tenantOptionRepository = $tenantOptionRepository;
+        $this->helpers = $helpers;
     }
 
     /**
@@ -508,6 +518,102 @@ class TimesheetController extends Controller
                 config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
                 trans('messages.custom_error_message.ERROR_DATABASE_OPERATIONAL')
             );
+        } catch (\Exception $e) {
+            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
+        }
+    }
+
+    /**
+     * Export all pending time mission time entries.
+     *
+     * @param Illuminate\Http\Request $request
+     * @return Illuminate\Http\JsonResponse
+     */
+    public function exportPendingTimeRequests(Request $request): JsonResponse
+    {
+        try {
+            $statusArray = [config('constants.timesheet_status_id.SUBMIT_FOR_APPROVAL')];
+
+            $timeRequestList = $this->timesheetRepository->timeRequestList($request, $statusArray, false);
+
+            if ($timeRequestList->count()) {
+                $userName = $request->auth->first_name.'_'.$request->auth->last_name;
+                $fileName = Carbon::now()->timestamp.'_'.$userName.'_Pending_Time_Mission_Entries.xlsx';
+            
+                $excel = new ExportCSV($fileName);
+
+                $headings = ['Mission Name', 'Organization Name', 'Time', 'Hours'];
+
+                $excel->setHeadlines($headings);
+
+                foreach ($timeRequestList as $mission) {
+                    $excel->setData([
+                        $mission->title,
+                        $mission->organisation_name,
+                        $mission->time,
+                        $mission->hours
+                    ]);
+                }
+
+                $tenantName = $this->helpers->getSubDomainFromRequest($request);
+
+                $path = $excel->export('app/'.$tenantName.'/timesheet/'.$userName.'/exports');
+            }
+
+            $apiStatus = Response::HTTP_OK;
+            $apiMessage =  ($timeRequestList->count()) ?
+            trans('messages.success.MESSAGE_USER_PENDING_TIME_MISSION_ENTRIES_EXPORTED'):
+            trans('messages.success.MESSAGE_ENABLE_TO_EXPORT_USER_PENDING_TIME_MISSION_ENTRIES');
+            $apiData = ($timeRequestList->count()) ? ['path' => $path] : [];
+
+            return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
+        } catch (\Exception $e) {
+            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
+        }
+    }
+
+    /**
+     * Export user's goal mission history
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return Illuminate\Http\JsonResponse
+     */
+    public function exportPendingGoalRequests(Request $request): JsonResponse
+    {
+        try {
+            $statusArray = [config('constants.timesheet_status_id.SUBMIT_FOR_APPROVAL')];
+            $goalRequestList = $this->timesheetRepository->goalRequestList($request, $statusArray, false);
+            
+            if ($goalRequestList->count()) {
+                $userName = $request->auth->first_name.'_'.$request->auth->last_name;
+                $fileName = Carbon::now()->timestamp.'_'.$userName.'_Pending_Goal_Mission_Entries.xlsx';
+        
+                $excel = new ExportCSV($fileName);
+
+                $headings = ['Mission Name', 'Organization Name', 'Actions'];
+
+                $excel->setHeadlines($headings);
+
+                foreach ($goalRequestList as $mission) {
+                    $excel->setData([
+                        $mission->title,
+                        $mission->organisation_name,
+                        $mission->action
+                    ]);
+                }
+
+                $tenantName = $this->helpers->getSubDomainFromRequest($request);
+                
+                $path = $excel->export('app/'.$tenantName.'/timesheet/'.$userName.'/exports');
+            }
+
+            $apiStatus = Response::HTTP_OK;
+            $apiMessage =  ($goalRequestList->count()) ?
+                trans('messages.success.MESSAGE_USER_PENDING_GOAL_MISSION_ENTRIES_EXPORTED'):
+                trans('messages.success.MESSAGE_ENABLE_TO_EXPORT_USER_PENDING_GOAL_MISSION_ENTRIES');
+            $apiData = ($goalRequestList->count()) ? ['path' => $path] : [];
+
+            return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
         } catch (\Exception $e) {
             return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
