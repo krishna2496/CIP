@@ -178,6 +178,16 @@ return [
         'SUBMIT_FOR_APPROVAL' => '5'
     ],
 
+    /**
+     * Export timesheet file names
+     */
+    'export_timesheet_file_names' => [
+        'PENDING_TIME_MISSION_ENTRIES_XLSX' => 'Pending_Time_Mission_Entries.xlsx',
+        'PENTIND_GOAL_MISSION_ENTRIES_XLSX' => 'Pending_Goal_Mission_Entries.xlsx',
+        'TIME_MISSION_HISTORY_XLSX' => 'Time_Mission_History.xlsx',
+        'GOAL_MISSION_HISTORY_XLSX' => 'Goal_Mission_History.xlsx'
+    ],
+
     /*
      * User notification types
      */

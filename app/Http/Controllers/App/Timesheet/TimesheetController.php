@@ -537,8 +537,7 @@ class TimesheetController extends Controller
             $timeRequestList = $this->timesheetRepository->timeRequestList($request, $statusArray, false);
 
             if ($timeRequestList->count()) {
-                $userName = $request->auth->first_name.'_'.$request->auth->last_name;
-                $fileName = Carbon::now()->timestamp.'_'.$userName.'_Pending_Time_Mission_Entries.xlsx';
+                $fileName = config('constants.export_timesheet_file_names.PENDING_TIME_MISSION_ENTRIES_XLSX');
             
                 $excel = new ExportCSV($fileName);
 
@@ -557,7 +556,7 @@ class TimesheetController extends Controller
 
                 $tenantName = $this->helpers->getSubDomainFromRequest($request);
 
-                $path = $excel->export('app/'.$tenantName.'/timesheet/'.$userName.'/exports');
+                $path = $excel->export('app/'.$tenantName.'/timesheet/'.$request->auth->user_id.'/exports');
             }
 
             $apiStatus = Response::HTTP_OK;
@@ -585,8 +584,7 @@ class TimesheetController extends Controller
             $goalRequestList = $this->timesheetRepository->goalRequestList($request, $statusArray, false);
             
             if ($goalRequestList->count()) {
-                $userName = $request->auth->first_name.'_'.$request->auth->last_name;
-                $fileName = Carbon::now()->timestamp.'_'.$userName.'_Pending_Goal_Mission_Entries.xlsx';
+                $fileName = config('constants.export_timesheet_file_names.PENTIND_GOAL_MISSION_ENTRIES_XLSX');
         
                 $excel = new ExportCSV($fileName);
 
@@ -604,7 +602,7 @@ class TimesheetController extends Controller
 
                 $tenantName = $this->helpers->getSubDomainFromRequest($request);
                 
-                $path = $excel->export('app/'.$tenantName.'/timesheet/'.$userName.'/exports');
+                $path = $excel->export('app/'.$tenantName.'/timesheet/'.$request->auth->user_id.'/exports');
             }
 
             $apiStatus = Response::HTTP_OK;

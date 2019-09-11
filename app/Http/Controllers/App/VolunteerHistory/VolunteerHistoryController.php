@@ -215,8 +215,7 @@ class VolunteerHistoryController extends Controller
             $goalMissionList = $this->timesheetRepository->goalRequestList($request, $statusArray, false);
 
             if ($goalMissionList->count()) {
-                $userName = $request->auth->first_name.'_'.$request->auth->last_name;
-                $fileName = Carbon::now()->timestamp.'_'.$userName.'_Goal_Mission_History.xlsx';
+                $fileName = config('constants.export_timesheet_file_names.GOAL_MISSION_HISTORY_XLSX');
         
                 $excel = new ExportCSV($fileName);
 
@@ -234,7 +233,7 @@ class VolunteerHistoryController extends Controller
 
                 $tenantName = $this->helpers->getSubDomainFromRequest($request);
 
-                $path = $excel->export('app/'.$tenantName.'/timesheet/'.$userName.'/exports');
+                $path = $excel->export('app/'.$tenantName.'/timesheet/'.$request->auth->user_id.'/exports');
             }
 
             $apiStatus = Response::HTTP_OK;
@@ -266,8 +265,7 @@ class VolunteerHistoryController extends Controller
             $timeRequestList = $this->timesheetRepository->timeRequestList($request, $statusArray, false);
 
             if ($timeRequestList->count()) {
-                $userName = $request->auth->first_name.'_'.$request->auth->last_name;
-                $fileName = Carbon::now()->timestamp.'_'.$userName.'_Time_Mission_History.xlsx';
+                $fileName = config('constants.export_timesheet_file_names.TIME_MISSION_HISTORY_XLSX');
             
                 $excel = new ExportCSV($fileName);
 
@@ -286,7 +284,7 @@ class VolunteerHistoryController extends Controller
 
                 $tenantName = $this->helpers->getSubDomainFromRequest($request);
 
-                $path = $excel->export('app/'.$tenantName.'/timesheet/'.$userName.'/exports');
+                $path = $excel->export('app/'.$tenantName.'/timesheet/'.$request->auth->user_id.'/exports');
             }
 
             $apiStatus = Response::HTTP_OK;
