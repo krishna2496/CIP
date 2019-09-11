@@ -75,7 +75,7 @@ class ExportCSV
      */
     public function export(string $path): string
     {
-        $this->path = \storage_path($path);
+        $this->path = str_replace("\\", "/", \storage_path($path));
 
         // Make directory
         exec('mkdir '.\storage_path($this->path));
