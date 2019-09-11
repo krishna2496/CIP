@@ -17,6 +17,9 @@ use InvalidArgumentException;
 use PDOException;
 use Validator;
 use App\Repositories\TenantOption\TenantOptionRepository;
+use App\Helpers\Helpers;
+
+use App\Models\Mission;
 
 class TimesheetController extends Controller
 {
@@ -42,25 +45,32 @@ class TimesheetController extends Controller
     private $tenantOptionRepository;
 
     /**
+     * @var App\Helpers\Helpers
+     */
+    private $helpers;
+
+    /**
      * Create a new controller instance.
      *
      * @param App\Repositories\Timesheet\TimesheetRepository $timesheetRepository
      * @param App\Helpers\ResponseHelper $responseHelper
      * @param App\Repositories\Mission\MissionRepository $missionRepository
      * @param App\Repositories\TenantOption\TenantOptionRepository $tenantOptionRepository
-     *
+     * @param App\Helpers\Helpers $helpers
      * @return void
      */
     public function __construct(
         TimesheetRepository $timesheetRepository,
         ResponseHelper $responseHelper,
         MissionRepository $missionRepository,
-        TenantOptionRepository $tenantOptionRepository
+        TenantOptionRepository $tenantOptionRepository,
+        Helpers $helpers
     ) {
         $this->timesheetRepository = $timesheetRepository;
         $this->responseHelper = $responseHelper;
         $this->missionRepository = $missionRepository;
         $this->tenantOptionRepository = $tenantOptionRepository;
+        $this->helpers = $helpers;
     }
 
     /**
@@ -100,6 +110,12 @@ class TimesheetController extends Controller
     public function store(Request $request): JsonResponse
     {
         try {
+            //Fetch mission type
+            $getmissionType = $this->missionRepository->getMissionType($request->mission_id);
+            
+            $getmissionType->count() > 0 ?
+            $request->request->add(['mission_type' => $getmissionType[0]['mission_type']]) : null;
+
             $documentSizeLimit = config('constants.TIMESHEET_DOCUMENT_SIZE_LIMIT');
             $validator = Validator::make(
                 $request->toArray(),
@@ -108,6 +124,9 @@ class TimesheetController extends Controller
                     'date_volunteered' => 'required',
                     'day_volunteered' => ['required', Rule::in(config('constants.day_volunteered'))],
                     'documents.*' => 'max:' . $documentSizeLimit . '|valid_timesheet_document_type',
+                    'action' => 'required_if:mission_type,GOAL|integer|min:1',
+                    'hours' => 'required_if:mission_type,TIME|integer|between:0,23',
+                    'minutes' => 'required_if:mission_type,TIME|integer|between:0,59',
                 ]
             );
 
@@ -116,19 +135,17 @@ class TimesheetController extends Controller
                 return $this->responseHelper->error(
                     Response::HTTP_UNPROCESSABLE_ENTITY,
                     Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                    config('constants.error_codes.ERROR_TIMESHEET_ITEMS_REQUIRED_FIELDS_EMPTY'),
+                    config('constants.error_codes.ERROR_TIMESHEET_REQUIRED_FIELDS_EMPTY'),
                     $validator->errors()->first()
                 );
             }
-
-            // Remove params
-            $request->request->remove('status_id');
 
             try {
                 // Fetch mission application data
                 $missionApplicationData = $this->missionRepository->getMissionApplication(
                     $request->mission_id,
-                    $request->auth->user_id
+                    $request->auth->user_id,
+                    config('constants.timesheet_status.AUTOMATICALLY_APPROVED')
                 );
             } catch (ModelNotFoundException $e) {
                 return $this->responseHelper->error(
@@ -138,140 +155,108 @@ class TimesheetController extends Controller
                     trans('messages.custom_error_message.ERROR_INVALID_DATA_FOR_TIMESHEET_ENTRY')
                 );
             }
+         
+            $dateVolunteered = $this->helpers->changeDateFormat($request->date_volunteered);
+            $timesheetStatus = array(config('constants.timesheet_status.APPROVED'),
+            config('constants.timesheet_status.AUTOMATICALLY_APPROVED'));
 
-            if ($missionApplicationData->approval_status
-                != config('constants.timesheet_status.AUTOMATICALLY_APPROVED')) {
-                return $this->responseHelper->error(
-                    Response::HTTP_UNPROCESSABLE_ENTITY,
-                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                    config('constants.error_codes.MISSION_APPLICATION_NOT_APPROVED'),
-                    trans('messages.custom_error_message.MISSION_APPLICATION_NOT_APPROVED')
-                );
-            }
-
-            // Fetch timesheet data
+            // Get timesheet details
             $timesheetData = $this->timesheetRepository->getTimesheetDetails(
                 $request->mission_id,
                 $request->auth->user_id,
-                $request->date_volunteered
+                $dateVolunteered,
+                $timesheetStatus
             );
-            $timesheetDetails = $timesheetData->toArray();
             if ($timesheetData->count() > 0) {
-                $timesheetStatus = $timesheetDetails[0]["timesheet_status"]["status"];
-              
-                // If timesheet status is approved
-                if ($timesheetStatus == config('constants.timesheet_status.APPROVED')
-                    || $timesheetStatus == config('constants.timesheet_status.AUTOMATICALLY_APPROVED')) {
-                    return $this->responseHelper->error(
-                        Response::HTTP_UNPROCESSABLE_ENTITY,
-                        Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                        config('constants.error_codes.ERROR_TIMESHEET_ALREADY_UPDATED'),
-                        trans('messages.custom_error_message.ERROR_TIMESHEET_ALREADY_UPDATED')
-                    );
-                } else {
-                    $request->request->add(['status_id' => config('constants.timesheet_status_id.PENDING')]);
-                }
+                return $this->responseHelper->error(
+                    Response::HTTP_UNPROCESSABLE_ENTITY,
+                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                    config('constants.error_codes.ERROR_TIMESHEET_ALREADY_APPROVED'),
+                    trans('messages.custom_error_message.ERROR_TIMESHEET_ALREADY_APPROVED')
+                );
+            } else {
+                $request->request->add(['status_id' => config('constants.timesheet_status_id.PENDING')]);
             }
-
-            $dateTime = Carbon::createFromFormat('m-d-Y', $request->date_volunteered);
-            $dateTime = strtotime($dateTime);
-            $dateVolunteered = date('Y-m-d', $dateTime);
-           
+            
             // Fetch mission data from missionid
-            $missionData = $this->missionRepository->find($request->mission_id);
+            $timesheetMissionData = $this->missionRepository->getTimesheetMissionData($request->mission_id);
 
             // Check mission type
-            if ($missionData->mission_type == config('constants.mission_type.GOAL')) {
-                $validator = Validator::make(
-                    $request->all(),
-                    [
-                        "action" => "required|integer|min:1",
-                    ]
-                );
+            switch ($timesheetMissionData->mission_type) {
+                case config('constants.mission_type.GOAL'):
+                    // Remove extra params
+                    $request->request->remove('hours');
+                    $request->request->remove('minutes');
 
-                // Remove extra params
-                $request->request->remove('hours');
-                $request->request->remove('minutes');
+                    $missionDetail = $timesheetMissionData->toArray();
 
-                // Fetch goal objective from goal mission
-                $objective = $this->missionRepository->getGoalObjective($request->mission_id);
-                
-                // Fetch all added goal actions from database
-                 $totalAddedActions = $this->timesheetRepository->getAddedActions($request->mission_id);
+                    // Fetch all submitted goal actions from database
+                    $totalSubmittedGoalActions = $this->timesheetRepository->getSubmittedActions($request->mission_id);
 
-                 // Add total actions
-                 $totalActions = $totalAddedActions + $request->action;
+                    // Add total actions
+                    $totalGoalActions = $totalSubmittedGoalActions + $request->action;
 
-                // Check total goals are not maximum than provided goals
-                if ($totalActions > $objective->goal_objective) {
-                    return $this->responseHelper->error(
-                        Response::HTTP_UNPROCESSABLE_ENTITY,
-                        Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                        config('constants.error_codes.ERROR_INVALID_ACTION'),
-                        trans('messages.custom_error_message.ERROR_INVALID_ACTION')
-                    );
-                }
-            } else {
-                $validator = Validator::make(
-                    $request->all(),
-                    [
-                        "hours" => "required",
-                        "minutes" => "required",
-                    ]
-                );
-
-                $hours = intval($request->hours);
-                if (($hours < 0) || ($hours > 23)) {
-                    return $this->responseHelper->error(
-                        Response::HTTP_UNPROCESSABLE_ENTITY,
-                        Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                        config('constants.error_codes.ERROR_INVALID_HOURS'),
-                        trans('messages.custom_error_message.ERROR_INVALID_HOURS')
-                    );
-                }
-                $minutes = intval($request->minutes);
-                if (($minutes < 0) || ($minutes > 59)) {
-                    return $this->responseHelper->error(
-                        Response::HTTP_UNPROCESSABLE_ENTITY,
-                        Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                        config('constants.error_codes.ERROR_INVALID_MINUTES'),
-                        trans('messages.custom_error_message.ERROR_INVALID_MINUTES')
-                    );
-                }
-
-                $time = $request->hours . ":" . $request->minutes;
-                $request->request->add(['time' => $time]);
-                // Remove extra params
-                $request->request->remove('action');
-
-                // Check start dates and end dates of mission
-                if ($missionData->start_date) {
-                    $startDate = (new Carbon($missionData->start_date))->format('Y-m-d');
-                    if ($dateVolunteered < $startDate) {
+                    // Check total goals are not maximum than provided goals
+                    if ($totalGoalActions > $missionDetail["goal_mission"]["goal_objective"]) {
                         return $this->responseHelper->error(
                             Response::HTTP_UNPROCESSABLE_ENTITY,
                             Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                            config('constants.error_codes.ERROR_MISSION_STARTDATE'),
-                            trans('messages.custom_error_message.ERROR_MISSION_STARTDATE')
+                            config('constants.error_codes.ERROR_INVALID_ACTION'),
+                            trans('messages.custom_error_message.ERROR_INVALID_ACTION')
                         );
-                    } else {
-                        if ($missionData->end_date) {
-                            $endDate = (new Carbon($missionData->end_date))->format('Y-m-d');
-                            if ($dateVolunteered > $endDate) {
-                                $missionEndDate = Carbon::createFromFormat('Y-m-d', $endDate);
-                       
-                                // Fetch tenant options value
-                                $tenantOptionData = $this->tenantOptionRepository
-                                ->getOptionValue('ALLOW_TIMESHEET_ENTRY');
+                    }
+                    break;
 
-                                // Count records
-                                if (count($tenantOptionData) > 0) {
-                                    $tenantOptionDetails = $tenantOptionData->toArray();
-                                    $extraWeeks = intval($tenantOptionDetails[0]['option_value']);
-                           
-                                    // Add weeks mission end date
-                                    $totalDate = $missionEndDate->addWeeks($extraWeeks);
-                                    if ($dateVolunteered > $totalDate) {
+                case config('constants.mission_type.TIME'):
+                    $time = $request->hours . ":" . $request->minutes;
+                    $request->request->add(['time' => $time]);
+                    // Remove extra params
+                    $request->request->remove('action');
+
+                    // Check start dates and end dates of mission
+                    if ($timesheetMissionData->start_date) {
+                        $missionStartDate = $this->helpers->changeDateFormat($timesheetMissionData->start_date);
+                        if ($dateVolunteered < $missionStartDate) {
+                            return $this->responseHelper->error(
+                                Response::HTTP_UNPROCESSABLE_ENTITY,
+                                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                                config('constants.error_codes.ERROR_MISSION_STARTDATE'),
+                                trans('messages.custom_error_message.ERROR_MISSION_STARTDATE')
+                            );
+                        } else {
+                            if ($timesheetMissionData->end_date) {
+                                $missionEndDate = $this->helpers->changeDateFormat($timesheetMissionData->end_date);
+                                if ($dateVolunteered > $missionEndDate) {
+                                    $endDate = Carbon::createFromFormat(
+                                        config('constants.TIMESHEET_DATE_FORMAT'),
+                                        $missionEndDate
+                                    );
+                        
+                                    // Fetch tenant options value
+                                    $tenantOptionData = $this->tenantOptionRepository
+                                    ->getOptionValue('ALLOW_TIMESHEET_ENTRY');
+
+                                    $extraWeeks = isset($tenantOptionData[0]['option_value'])
+                                    ? intval($tenantOptionData[0]['option_value'])
+                                    : config('constants.ALLOW_TIMESHEET_ENTRY');
+
+                                    // Count records
+                                    if (count($tenantOptionData) > 0) {
+                                        $tenantOptionDetails = $tenantOptionData->toArray();
+                                        $extraWeeks = intval($tenantOptionDetails[0]['option_value'])
+                                        ?? config('constants.ALLOW_TIMESHEET_ENTRY');
+                            
+                                        // Add weeks mission end date
+                                        $totalDate = $endDate->addWeeks($extraWeeks);
+                                        if ($dateVolunteered > $totalDate) {
+                                            return $this->responseHelper->error(
+                                                Response::HTTP_UNPROCESSABLE_ENTITY,
+                                                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                                                config('constants.error_codes.ERROR_MISSION_ENDDATE'),
+                                                trans('messages.custom_error_message.ERROR_MISSION_ENDDATE')
+                                            );
+                                        }
+                                    } else {
                                         return $this->responseHelper->error(
                                             Response::HTTP_UNPROCESSABLE_ENTITY,
                                             Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
@@ -279,37 +264,15 @@ class TimesheetController extends Controller
                                             trans('messages.custom_error_message.ERROR_MISSION_ENDDATE')
                                         );
                                     }
-                                } else {
-                                    return $this->responseHelper->error(
-                                        Response::HTTP_UNPROCESSABLE_ENTITY,
-                                        Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                                        config('constants.error_codes.ERROR_MISSION_ENDDATE'),
-                                        trans('messages.custom_error_message.ERROR_MISSION_ENDDATE')
-                                    );
                                 }
                             }
                         }
                     }
-                }
+                    break;
+                default:
             }
 
-            // If validator fails
-            if ($validator->fails()) {
-                return $this->responseHelper->error(
-                    Response::HTTP_UNPROCESSABLE_ENTITY,
-                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                    config('constants.error_codes.ERROR_TIMESHEET_ITEMS_REQUIRED_FIELDS_EMPTY'),
-                    $validator->errors()->first()
-                );
-            }
-
-            // Remove white space from notes
-            if ($request->has('notes')) {
-                $notes = trim($request->notes);
-                $request->request->add(['notes' => $notes]);
-            }
-
-            // Store timesheet item
+            // Store timesheet
             $request->request->add(['user_id' => $request->auth->user_id]);
             $timesheet = $this->timesheetRepository->storeOrUpdateTimesheet($request);
 
@@ -438,7 +401,7 @@ class TimesheetController extends Controller
                 return $this->responseHelper->error(
                     Response::HTTP_UNPROCESSABLE_ENTITY,
                     Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                    config('constants.error_codes.ERROR_TIMESHEET_ITEMS_REQUIRED_FIELDS_EMPTY'),
+                    config('constants.error_codes.ERROR_TIMESHEET_REQUIRED_FIELDS_EMPTY'),
                     $validator->errors()->first()
                 );
             }

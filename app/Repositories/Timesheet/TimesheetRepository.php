@@ -83,15 +83,10 @@ class TimesheetRepository implements TimesheetInterface
      */
     public function storeOrUpdateTimesheet(Request $request): Timesheet
     {
-        $data = $request->except('date_volunteered');
-
-        $dateVolunteered = Carbon::createFromFormat('m-d-Y', $request->date_volunteered)
-        ->setTimezone(config('constants.TIMEZONE'));
-        
         $timesheet = $this->timesheet->updateOrCreate(['user_id' => $request->auth->user_id,
         'mission_id' => $request->mission_id,
-        'date_volunteered' => $dateVolunteered->format('Y-m-d')
-        ], $data);
+        'date_volunteered' => $request->date_volunteered
+        ], $request->toArray());
        
         if ($request->hasFile('documents')) {
             $tenantName = $this->helpers->getSubDomainFromRequest($request);
@@ -109,7 +104,6 @@ class TimesheetRepository implements TimesheetInterface
                                         'document_type' => pathinfo(basename($filePath), PATHINFO_EXTENSION),
                                         'document_path' => $filePath);
                 $this->timesheetDocument->create($timesheetDocument);
-                unset($timesheetDocument);
             }
         }
         return $timesheet;
@@ -408,24 +402,31 @@ class TimesheetRepository implements TimesheetInterface
      * @param int $missionId
      * @param int $userId
      * @param string $date
+     * @param array $timesheetStatus
+     *
      * @return null|Illuminate\Support\Collection
      */
-    public function getTimesheetDetails(int $missionId, int $userId, string $date): ?Collection
+    public function getTimesheetDetails(int $missionId, int $userId, string $date, array $timesheetStatus): ?Collection
     {
-        $date = Carbon::createFromFormat('m-d-Y', $date)
-        ->setTimezone(config('constants.TIMEZONE'));
-        $date = $date->format('Y-m-d');
-        return $this->timesheet->with('timesheetDocument', 'timesheetStatus')->where(['mission_id' => $missionId,
-        'user_id' => $userId, 'date_volunteered' => $date])->get();
+        return $this->timesheet->with('timesheetDocument')
+        ->whereHas('timesheetStatus', function ($query) use ($timesheetStatus) {
+            $query->whereIn('status', $timesheetStatus);
+        })
+        ->with(['timesheetStatus' => function ($query) use ($timesheetStatus) {
+            $query->whereIn('status', $timesheetStatus);
+        }])
+        ->where(['mission_id' => $missionId,
+            'user_id' => $userId, 'date_volunteered' => $date])
+            ->get();
     }
 
     /**
-     * get added action data count
+     * get submitted action count
      *
      * @param int $missionId
      * @return int
      */
-    public function getAddedActions(int $missionId): int
+    public function getSubmittedActions(int $missionId): int
     {
         return ($this->timesheet->where('mission_id', $missionId)
         ->whereIn('status_id', array(config('constants.timesheet_status_id.APPROVED'),

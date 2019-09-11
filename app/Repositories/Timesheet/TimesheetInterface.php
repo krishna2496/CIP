@@ -17,12 +17,12 @@ interface TimesheetInterface
     public function storeOrUpdateTimesheet(Request $request): Timesheet;
 
     /**
-     * get added action data count
+     * get submitted action count
      *
      * @param int $missionId
      * @return int
      */
-    public function getAddedActions(int $missionId): int;
+    public function getSubmittedActions(int $missionId): int;
   
     /**
      * Fetch timesheet details
@@ -91,9 +91,11 @@ interface TimesheetInterface
      * @param int $missionId
      * @param int $userId
      * @param string $date
+     * @param array $timesheetStatus
+     *
      * @return null|Illuminate\Support\Collection
      */
-    public function getTimesheetDetails(int $missionId, int $userId, string $date): ?Collection;
+    public function getTimesheetDetails(int $missionId, int $userId, string $date, array $timesheetStatus): ?Collection;
 
     /**
      * Update timesheet field value, based on timesheet_id condition
