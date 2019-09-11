@@ -38,7 +38,7 @@ return [
     'FRONT_HOME_URL' => '.anasource.com/team4/ciplatform/',
     'DEFAULT_FQDN_FOR_FRONT' => 'web8',
     'PER_PAGE_MAX' => '50',
-	'AWS_S3_DEFAULT_THEME_FOLDER_NAME' => 'default_theme',
+    'AWS_S3_DEFAULT_THEME_FOLDER_NAME' => 'default_theme',
     /*
      * User custom field types
      */
@@ -292,11 +292,9 @@ return [
         'MISSION_APPLICATION_NOT_APPROVED' => '400039',
         'ERROR_TIMESHEET_ALREADY_DONE_FOR_DATE' => '400040',
         'ERROR_INVALID_DATA_FOR_TIMESHEET_ENTRY' => '400041',
-        'ERROR_TIMESHEET_DECLINED' => '400042',
-        'ERROR_TIMESHEET_SUBMIT_FOR_APPROVAL' => '400043',
-        'ERROR_SAME_DATE_TIME_ENTRY' => '400044',
-        'ERROR_INVALID_HOURS' => '400045',
-        'ERROR_INVALID_MINUTES' => '400046',
+        'ERROR_SAME_DATE_TIME_ENTRY' => '400042',
+        'ERROR_INVALID_HOURS' => '400043',
+        'ERROR_INVALID_MINUTES' => '400044',
                 
         'ERROR_OCCURRED' => '999999',
         'ERROR_INVALID_JSON' => '900000',
