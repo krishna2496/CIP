@@ -16,32 +16,38 @@
                 <div class="inner-chart-col">
                   <div class="chart-title">
                     <h5>{{langauageData.label.hours_per_theme}}</h5>
-                    <AppCustomDropdown 
+                    <AppCustomDropdown
                       :optionList="themeYearList"
                       @updateCall="updateThemeYear"
                       :defaultText="ThemeYearText"
                       translationEnable="false"
                     />
                   </div>
-                  <div class="line-chart">
-                    <canvas ref="themeChartRefs"></canvas>
+                  <div class="line-chart" v-if="perHourApiDataTheme.length">
+                    <horizontal-chart :labels="getThemeLabels" :data="getThemeValue"></horizontal-chart>
                   </div>
+				  <div v-else class="text-center">
+					  <h5>{{langauageData.label.no_record_found}}</h5>
+				  </div>
                 </div>
               </b-col>
               <b-col lg="6" class="chart-col">
                 <div class="inner-chart-col">
                   <div class="chart-title">
                     <h5>{{langauageData.label.hours_per_skill}}</h5>
-                    <AppCustomDropdown 
+                    <AppCustomDropdown
                       :optionList="skillYearList"
                       @updateCall="updateSkillYear"
                       :defaultText="skillYearText"
-                      translationEnable= "false"
+                      translationEnable="false"
                     />
                   </div>
-                  <div class="line-chart">
-                    <canvas ref="skillChartRefs"></canvas>
+                  <div class="line-chart" v-if="perHourApiDataSkill.length">
+                    <horizontal-chart :labels="getSkillLabels" :data="getSkillValue"></horizontal-chart>
                   </div>
+				  <div v-else class="text-center">
+					  <h5>{{langauageData.label.no_record_found}}</h5>
+				  </div>
                 </div>
               </b-col>
             </b-row>
@@ -85,8 +91,8 @@
 					<b-button title="Start Volunteering" class="btn-borderprimary">Start Volunteering</b-button>
 				</div>
             </div>-->
-          </div
->        </b-container>
+          </div>
+        </b-container>
       </div>
     </main>
     <footer>
@@ -100,7 +106,9 @@ import TopHeader from "../components/Layouts/ThePrimaryHeader";
 import PrimaryFooter from "../components/Layouts/TheSecondaryFooter";
 import AppCustomDropdown from "../components/AppCustomDropdown";
 import DashboardBreadcrumb from "../components/DashboardBreadcrumb";
-import store from '../store';
+import HorizontalChart from "../components/HorizontalChart";
+import VolunteerHistoryHours from "../services/VolunteerHistory/VolunteerHistoryHours";
+import store from "../store";
 import Chart from "chart.js";
 
 export default {
@@ -109,14 +117,17 @@ export default {
     PrimaryFooter,
     AppCustomDropdown,
     Chart,
-    DashboardBreadcrumb
+    DashboardBreadcrumb,
+    HorizontalChart
   },
 
   name: "dashboardhistory",
 
   data() {
     return {
-      langauageData : [],
+      langauageData: [],
+      perHourApiDataTheme: [],
+      perHourApiDataSkill: [],
       hoursFields: [
         {
           key: "Mission",
@@ -206,118 +217,106 @@ export default {
           Organisation: "Green House"
         }
       ],
+
       ThemeYearText: "Year",
-     
       themeYearList: [
-        ["2016","2016"],
-        ["2017","2017"],
-        ["2018","2018"],
-        ["2019","2019"]
+        ["2016", "2016"],
+        ["2017", "2017"],
+        ["2018", "2018"],
+        ["2019", "2019"]
       ],
       skillYearText: "Year",
-       skillYearList: [
-        ["2016","2016"],
-        ["2017","2017"],
-        ["2018","2018"],
-        ["2019","2019"]
-        ]
+      skillYearList: []
     };
   },
   mounted() {
-    var themeChartRefs = this.$refs.themeChartRefs;
-    var themeContent = themeChartRefs.getContext("2d");
-    var themeChart = new Chart(themeContent, {
-      type: "horizontalBar",
-      data: {
-        labels: ["Belgium", "Netheriands", "Spain", "France", "Germany"],
-        datasets: [
-          {
-            data: [330000, 210000, 130000, 70000, 40000],
-            backgroundColor: "#dc3545",
-            borderColor: "#dc3545",
-            borderWidth: 1
-          }
-        ]
-      },
-      options: {
-        legend: {
-          display: false
-        },
-        scales: {
-          yAxes: [
-            {
-              ticks: {
-                beginAtZero: true
-              }
-            }
-          ],
-          xAxes: [
-            {
-              ticks: {
-                fontColor: "#414141",
-                fontSize: 14,
-                max: 350000,
-                min: 0,
-                stepSize: 50000
-              }
-            }
-          ]
-        }
-      }
-    });
-    var skillChartRefs = this.$refs.skillChartRefs;
-    var skillContent = skillChartRefs.getContext("2d");
-    var skillChart = new Chart(skillContent, {
-      type: "horizontalBar",
-      data: {
-        labels: ["Belgium", "Netheriands", "Spain", "France", "Germany"],
-        datasets: [
-          {
-            data: [330000, 210000, 130000, 70000, 40000],
-            backgroundColor: "#dc3545",
-            borderColor: "#dc3545",
-            borderWidth: 1
-          }
-        ]
-      },
-      options: {
-        legend: {
-          display: false
-        },
-        scales: {
-          yAxes: [
-            {
-              display: false,
-              ticks: {
-                beginAtZero: true
-              }
-            }
-          ],
-          xAxes: [
-            {
-              ticks: {
-                fontColor: "#414141",
-                fontSize: 14,
-                max: 350000,
-                min: 0,
-                stepSize: 50000
-              }
-            }
-          ]
-        }
-      }
-    });
+    var currentYear = new Date().getFullYear();
+    var yearsList = [];    
+    for (var index = currentYear; index > (currentYear - 5); index--) {
+      yearsList.push([index, index]);
+    }
+    this.skillYearList = yearsList;
+    this.themeYearList = yearsList;
   },
   methods: {
     updateThemeYear(value) {
       this.ThemeYearText = value.selectedVal;
+      this.getVolunteerHistoryHoursOfType("theme", this.ThemeYearText);
     },
     updateSkillYear(value) {
-      this.skillYearText = value.selectedVal;
+	  this.skillYearText = value.selectedVal;
+	  this.getVolunteerHistoryHoursOfType("skill", this.skillYearText);
+    },
+    getVolunteerHistoryHoursOfType(type = "theme", year = "") {
+      VolunteerHistoryHours(type, year).then(response => {
+        let typeName =
+          "perHourApiData" + type.charAt(0).toUpperCase() + type.slice(1);
+        if (typeof response.data !== "undefined") {
+          this[typeName] = Object.values(response.data);
+        } else {
+          this[typeName] = [];
+        }
+      });
     }
   },
   created() {
-     this.langauageData = JSON.parse(store.state.languageLabel);
+    this.langauageData = JSON.parse(store.state.languageLabel);
+    this.getVolunteerHistoryHoursOfType("theme");
+    this.getVolunteerHistoryHoursOfType("skill");
+  },
+  computed: {
+    getThemeLabels: {
+      get: function() {
+        var labelArray = [];
+        if (this.perHourApiDataTheme.length > 0) {
+          this.perHourApiDataTheme.map(function(data) {
+            labelArray.push(data.theme_name);
+          });
+        } else {
+          return labelArray;
+        }
+        return labelArray;
+      }
+    },
+    getThemeValue: {
+      get: function() {
+        var valueArray = [];
+        if (this.perHourApiDataTheme.length > 0) {
+          this.perHourApiDataTheme.map(function(data) {
+            valueArray.push((data.total_minutes / 60).toFixed(2));
+          });
+        } else {
+          return valueArray;
+        }
+        return valueArray;
+      }
+	},
+	getSkillLabels: {
+      get: function() {
+        var labelArray = [];
+        if (this.perHourApiDataSkill.length > 0) {
+          this.perHourApiDataSkill.map(function(data) {
+            labelArray.push(data.skill_name);
+          });
+        } else {
+          return labelArray;
+        }
+        return labelArray;
+      }
+    },
+    getSkillValue: {
+      get: function() {
+        var valueArray = [];
+        if (this.perHourApiDataSkill.length > 0) {
+          this.perHourApiDataSkill.map(function(data) {
+            valueArray.push((data.total_minutes / 60).toFixed(2));
+          });
+        } else {
+          return valueArray;
+        }
+        return valueArray;
+      }
+    }
   }
 };
 </script>
