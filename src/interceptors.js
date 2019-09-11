@@ -27,7 +27,7 @@ export default function setup() {
             }
         }
         
-        if(secondLastValue == "mission-media" || secondLastValue == "cms" || secondLastValue == "language" ||  secondLastValue == "document") {
+        if(secondLastValue == "mission-media" || secondLastValue == "cms" || secondLastValue == "language" ||  secondLastValue == "document" || secondLastValue == "timesheet") {
             addLoader = "false";
         }
 

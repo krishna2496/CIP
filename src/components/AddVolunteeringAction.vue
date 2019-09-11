@@ -1,9 +1,10 @@
 <template>
     <div>
-        <b-modal ref="timeHoursModal" @hidden ="hideModal" :modal-class="'time-hours-modal table-modal'" hide-footer>
+        
+        <b-modal ref="goalActionModal" :modal-class="'goal-modal table-modal'" hide-footer  @hidden ="hideModal">
             <template slot="modal-header" slot-scope="{ close }">
                 <i class="close" @click="close()" v-b-tooltip.hover :title="langauageData.label.close"></i>
-                    <h5 class="modal-title">{{langauageData.label.hour_entry_modal_title}}</h5>
+                    <h5 class="modal-title">{{langauageData.label.goal_entry_modal_title}}</h5>
                 </template>
                 <b-alert show :variant="classVariant" dismissible v-model="showErrorDiv">
                     {{ message }}
@@ -22,36 +23,30 @@
                             </b-form-group>
                         </b-col>
                         <b-col>
+                           <b-form-group>
+                        <b-row>
+                        <b-col sm="12">
                             <b-form-group>
-                                <label for>{{langauageData.label.hours}}*</label>
-                                <AppCustomDropdown
-                                    v-model="timeEntryDefaultData.hours"
-                                    :optionList="hourList"
-                                    :errorClass="submitted && ($v.timeEntryDefaultData.hours.required || $v.timeEntryDefaultData.hours.$invalid)" 
-                                    :defaultText="defaultHours"
-                                    @updateCall="updateHours"
-                                    translationEnable= "false"
-                                />
-                                <div v-if="submitted && !$v.timeEntryDefaultData.hours.required" class="invalid-feedback">
-                                    {{ langauageData.errors.minute_or_hours_is_required }}</div>
+                                <label for>{{langauageData.label.actions}}*</label>
+                                <b-form-input 
+                                v-model.trim="timeEntryDefaultData.action"
+                                :class="{ 'is-invalid': submitted && $v.timeEntryDefaultData.action.$error }"
+                                type="text" :placeholder="langauageData.placeholder.action"></b-form-input>
+                                <div 
+                                    v-if="submitted && !$v.timeEntryDefaultData.dateVolunteered.required" 
+                                    class="invalid-feedback">
+                                    {{ langauageData.errors.action_required }}
+                                </div>
+                               
+                                <div 
+                                    v-if="submitted && !$v.timeEntryDefaultData.dateVolunteered.minValue" 
+                                    class="invalid-feedback">
+                                    {{ langauageData.errors.minimum_action }}
+                                </div>
                             </b-form-group>
-
                         </b-col>
-                        <b-col sm="6">
-
-                              <b-form-group>
-                                <label for>{{langauageData.label.minutes}}*</label>
-                                <AppCustomDropdown
-                                    v-model="timeEntryDefaultData.hours"
-                                    :optionList="minuteList"
-                                    :errorClass="submitted && ($v.timeEntryDefaultData.hours.required || $v.timeEntryDefaultData.hours.$invalid)" 
-                                    :defaultText="defaultMinutes"
-                                    @updateCall="updateMinutes"
-                                    translationEnable= "false"
-                                />
-                                <div v-if="submitted && !$v.timeEntryDefaultData.hours.required" class="invalid-feedback">
-                                    {{ langauageData.errors.minute_or_hours_is_required }}</div>
-                            </b-form-group>
+                        </b-row>
+                    </b-form-group>
 
                         </b-col>
                     </b-row>
@@ -112,16 +107,18 @@
                     </b-row>
                 </b-form-group>
                 <b-form-group v-if="isFileUploadDisplay">
-                    <b-row> 
-                        <b-col sm="6" class="date-col">
-                        <span v-if="fileError">{{fileError}}</span>
+                    <b-row>
+                        
+                        <b-col sm="12" class="date-col">
+                        <span class="error-message"  v-if="fileError">{{fileError}}</span>
                         <label for>{{langauageData.label.file_upload}}</label>
-                        <div class="file-upload-wrap" v-bind:class="{'has-error' : fileError != '' ? true : false}">
-                            <div class="btn-wrapper">
+                        <div class="file-upload-wrap">
+                            <div class="btn-wrapper"
+                            v-bind:class="{'has-error' : fileError != '' ? true : false}">
                                 <file-upload
                                     class="btn"
                                     accept="image/png,image/jpeg,application/doc,
-                                    application/docx,application/xls,application/xlsx,application/csv,,application/pdf"
+                                    application/docx,application/xls,application/xlsx,application/csv,application/pdf"
                                     :multiple="true"
                                     :drop="true"
                                     :drop-directory="true"
@@ -167,12 +164,12 @@
         <div class="btn-wrap">
             <b-button
                 class="btn-borderprimary"
-                @click="$refs.timeHoursModal.hide()"
+                @click="$refs.goalActionModal.hide()"
                 
             >{{langauageData.label.cancel}}</b-button>
             <b-button 
                 class="btn-bordersecondary" 
-                @click="saveTimeHours()" 
+                @click="saveAction()" 
                 >{{langauageData.label.submit}}
             </b-button>
         </div>
@@ -185,7 +182,7 @@ import store from '../store';
 import moment from 'moment'
 import DatePicker from "vue2-datepicker";
 import AppCustomDropdown from "../components/CustomFieldDropdown";
-import { required,maxLength, email,sameAs, minLength, between,helpers,numeric,requiredIf} from 'vuelidate/lib/validators';
+import { required,maxLength, email,sameAs, minLength, between,helpers,numeric,requiredIf,minValue} from 'vuelidate/lib/validators';
 import FileUpload from 'vue-upload-component';
 import {addVolunteerEntry,removeDocument} from '../services/service';
 import constants from '../constant';
@@ -215,9 +212,8 @@ export default {
             fileArray : this.files,
             showErrorDiv : false,
             message : null,
-            fileError : "",
             classVariant :"success",
-            isFileUploadDisplay : false,
+            fileError : "",
             hourList:[
                     ["00","00"],
                     ["01","01"],
@@ -312,24 +308,15 @@ export default {
                 date_volunteered: "",
                 day_volunteered: "",
                 notes: "",
-                hours: "",
-                minutes: "",
+                action : "",
                 documents: []
             }
         }
     },
     validations() {
-
-        const requiredHourValidation = (
-            (this.timeEntryDefaultData.minutes == '' || this.timeEntryDefaultData.hours == '') ||
-            (this.timeEntryDefaultData.minutes == '00' && this.timeEntryDefaultData.hours == '00') || 
-            (this.timeEntryDefaultData.minutes == '00' && this.timeEntryDefaultData.hours == '') ||
-            (this.timeEntryDefaultData.minutes == '' && this.timeEntryDefaultData.hours == '00') 
-        ) ? {required} : {};
-
         return {
             timeEntryDefaultData : {      
-                hours : requiredHourValidation,
+                action : {required,numeric,minValue:minValue(1)},
                 workDay : {required},
                 notes : {required},
                 dateVolunteered : {required}
@@ -343,7 +330,7 @@ export default {
         inputUpdate(files) {
             var _this = this
             files.filter(function(data,index){
-                if(data.size > 5000000) {
+                if(data.size > 50000) {
                     _this.fileError = _this.langauageData.errors.file_max_size
                    files.splice(index,1)
                 } else {
@@ -381,17 +368,13 @@ export default {
             this.timeEntryDefaultData.minutes = value.selectedId
             this.$emit("updateCall",selectedData)
         },
-        saveTimeHours() {
+        saveAction() {
             var _this = this;
             this.submitted = true;
             this.$v.$touch();
          
             if (this.$v.$invalid) {
                 return;
-            }
-            if((this.timeEntryDefaultData.hours == ''|| this.timeEntryDefaultData.hours == '00') 
-                && (this.timeEntryDefaultData.minutes == "00" || this.timeEntryDefaultData.minutes == "")) {
-                return
             }
 
             const formData = new FormData();
@@ -410,8 +393,7 @@ export default {
             formData.append('date_volunteered',volunteeredDate);
             formData.append('day_volunteered',this.timeEntryDefaultData.workDay);
             formData.append('notes',this.timeEntryDefaultData.notes);
-            formData.append('hours',parseInt(hours, 10));
-            formData.append('minutes',parseInt(minutes, 10));
+            formData.append('action',this.timeEntryDefaultData.action);
          
             addVolunteerEntry(formData).then( response => {
                 if (response.error === true) { 
@@ -429,7 +411,7 @@ export default {
                     this.submitted = false;  
                     this.$emit("getTimeSheetData");
                     setTimeout(function() {
-                        _this.$refs.timeHoursModal.hide();
+                        _this.$refs.goalActionModal.hide();
                         _this.hideModal();
                     },700) 
                    
@@ -444,7 +426,7 @@ export default {
                 'timesheet_id' : timeSheetId,
                 'document_id' : documentId
             }
-           
+             
             removeDocument(deletFile).then(response => {
                 if(response) {
 

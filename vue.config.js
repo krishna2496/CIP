@@ -1,52 +1,53 @@
-const host = 'test.optimy.com';
+const host = "test.optimy.com";
 const port = 8080;
 module.exports = {
-    chainWebpack: config => {
-        config.module
-            .rule("vue")
-            .use("vue-loader")
-            .loader("vue-loader")
+  chainWebpack: config => {
+    config.module
+      .rule("vue")
+      .use("vue-loader")
+      .loader("vue-loader")
 
-            .tap(options => {
-                options["transformAssetUrls"] = {
-                    img: "src",
-                    image: "xlink:href",
-                    "b-img": "src",
-                    "b-img-lazy": ["src", "blank-src"],
-                    "b-card": "img-src",
-                    "b-card-img": "img-src",
-                    "b-card-img-lazy": ["src", "blank-src"],
-                    "b-carousel-slide": "img-src",
-                    "b-embed": "src"
-                };
+      .tap(options => {
+        options["transformAssetUrls"] = {
+          img: "src",
+          image: "xlink:href",
+          "b-img": "src",
+          "b-img-lazy": ["src", "blank-src"],
+          "b-card": "img-src",
+          "b-card-img": "img-src",
+          "b-card-img-lazy": ["src", "blank-src"],
+          "b-carousel-slide": "img-src",
+          "b-embed": "src"
+        };
 
-                return options
-            })
-    },
-	
-	publicPath: process.env.NODE_ENV === 'production' ? '/team4/ciplatform/' : '/',
-	
-    lintOnSave: false,
+        return options;
+      });
+  },
 
-    devServer: {
-        host: 'test.optimy.com',
-        port: 8080,
-        https: false
-    },
+  publicPath:
+    process.env.NODE_ENV === "production" ? "/team4/ciplatform/" : "/",
 
-    pluginOptions: {
-        i18n: {
-            locale: 'en',
-            fallbackLocale: 'en',
-            localeDir: 'locales',
-            enableInSFC: true,
-            initImmediate: true
-        }
+  lintOnSave: false,
+
+  devServer: {
+    host: "test.optimy.com",
+    port: 8080,
+    https: false
+  },
+
+  pluginOptions: {
+    i18n: {
+      locale: "en",
+      fallbackLocale: "en",
+      localeDir: "locales",
+      enableInSFC: true,
+      initImmediate: true
     }
+  }
 };
 
 function newFunction() {
-    return `
+  return `
  @import "@/../src/assets/scss/variables.scss"; 
  @import "@/../src/assets/scss/mixin.scss";
  @import "@/../src/assets/scss/theme/main-theme.scss";
