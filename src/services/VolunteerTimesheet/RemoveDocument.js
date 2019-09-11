@@ -1,6 +1,5 @@
 import axios from 'axios'
 import store from '../../store'
-import moment from 'moment';
 
 export default async(deletFile) => {
     let responseData = [];
@@ -24,6 +23,6 @@ export default async(deletFile) => {
                 responseData =  response.data.message
             } 
         })
-        .catch(function(error) {});
+        .catch(function() {});
     return responseData;
 }

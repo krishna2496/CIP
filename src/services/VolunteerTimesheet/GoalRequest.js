@@ -1,38 +1,39 @@
 import axios from 'axios'
 import store from '../../store'
-import moment from 'moment';
 
-export default async(data) => {
+export default async(page) => {
     let responseData = {
-        'error' : true
+        error : 'true'
     };
-
+ 
+    
     var defaultLanguage = '';
     if (store.state.defaultLanguage !== null) {
         defaultLanguage = (store.state.defaultLanguage).toLowerCase();
     }
-    var url =process.env.VUE_APP_API_ENDPOINT + "app/timesheet/submit";
-   
+    var url =process.env.VUE_APP_API_ENDPOINT + "app/timesheet/goal-requests?page="+page;
+
     await axios({
             url: url,
-            method: 'POST',
-            data,
+            method: 'GET',
             headers: {
                 'X-localization': defaultLanguage,
-                'token': store.state.token,
+                'token': store.state.token
             }
         })
-        .then((response) => {          
-            if(response.data.message) { 
-                responseData.error = false
-                responseData.message =  response.data.message
+        .then((response) => {
+            if(response.data.data) { 
+                responseData.error = false;
+                responseData.data = response.data.data
+                responseData.pagination = response.data.pagination
+                responseData.message = response.data.message
             } 
         })
         .catch(function(error) {
-            if (error.response.data.errors[0].message) {
+           if (error.response.data.errors[0].message) {
                 responseData.error = true;
                 responseData.message = error.response.data.errors[0].message;
-            }  
+            }
         });
     return responseData;
 }

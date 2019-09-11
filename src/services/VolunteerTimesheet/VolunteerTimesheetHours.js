@@ -21,17 +21,14 @@ export default async() => {
             }
         })
         .then((response) => {
-            let settingArray = [];
             if(response.data.data) { 
                 if(response.data.data['TIME']) {
                     let timeData = response.data.data['TIME'] 
-                    var filteredObj  = timeData.filter(function (toItem, toIndex) { 
-                        // timeData[toIndex]['date'] = moment(timeData[toIndex].date_volunteered).format('MMMM Do YYYY, h:mm:ss a');
+                    timeData.filter(function (toItem, toIndex) { 
                         let timeSheet = timeData[toIndex].timesheet;
                         timeDataArray = timeData[toIndex];
                       
                         timeSheet.filter(function (timeSheetItem, timeSheetIndex) {
-                            // console.log(timeData[toIndex]);
                             response.data.data['TIME'][toIndex].timesheet[timeSheetIndex]['date'] =  moment(timeData[toIndex].timesheet[timeSheetIndex].date_volunteered).format('D')
                             response.data.data['TIME'][toIndex].timesheet[timeSheetIndex]['year'] =  moment(timeData[toIndex].timesheet[timeSheetIndex].date_volunteered).format('YYYY')
                             response.data.data['TIME'][toIndex].timesheet[timeSheetIndex]['month'] =  moment(timeData[toIndex].timesheet[timeSheetIndex].date_volunteered).format('M')
@@ -42,8 +39,7 @@ export default async() => {
                 }
                 if(response.data.data['GOAL']) {
                     let timeData = response.data.data['GOAL'] 
-                    var filteredObj  = timeData.filter(function (toItem, toIndex) { 
-                        // timeData[toIndex]['date'] = moment(timeData[toIndex].date_volunteered).format('MMMM Do YYYY, h:mm:ss a');
+                    timeData.filter(function (toItem, toIndex) { 
                         let goalSheet = timeData[toIndex].timesheet;
                         goalDataArray = timeData[toIndex];
                        
@@ -59,6 +55,6 @@ export default async() => {
             } 
             responseData =  response.data.data
         })
-        .catch(function(error) {});
+        .catch(function() {});
     return responseData;
 }

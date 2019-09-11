@@ -233,40 +233,30 @@
           height: 40px;
           min-width:70px;
       }
-      &:not(.mission-col):not(.approved):not(.total-col) {
+      &:not(.mission-col):not(.approved):not(.total-col):not(.declined){
         cursor: pointer;
         position: relative;
-        &:before {
-          position: absolute;
-          content: "";
-          top: 0;
-          left: 0;
-          height: 100%;
-          width: 100%;
+        z-index: 1;
+        background: transparent;
+        &:hover {
           background: $light-gray url($assetUrl+"/plus-ic-black.svg") no-repeat;
           background-size: 20px;
           background-position: center center;
-          z-index: 1;
-          opacity: 0;
-          @include transition(all 0.3s);
-          @include xs-max{
-              background-size:15px;
-          }
-        }
-        &:hover {
-          &:before {
-            opacity: 1;
+          z-index: 3;
+          color: transparent;
+          &:after{
+            content: none;
           }
         }
       }
       &.approved,
-      &.declined {
+      &.declined,
+      &.approval {
         position: relative;
         &:after {
           position: absolute;
           content: "";
           border-style: solid;
-
           border-width: 15px 22px 0 0;
           right: 0;
           bottom: 0;
@@ -281,6 +271,11 @@
       &.declined {
         &:after {
           border-color: transparent $error $error;
+        }
+      }
+      &.approval {
+        &:after {
+          border-color: transparent $info $info;
         }
       }
       &.disabled{
@@ -464,6 +459,11 @@
     &.decline-indication {
       &:before {
         background: $error;
+      }
+    }
+     &.approval-indication {
+      &:before {
+        background: $info;
       }
     }
   }
