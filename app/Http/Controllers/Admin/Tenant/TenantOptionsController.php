@@ -78,26 +78,17 @@ class TenantOptionsController extends Controller
         try {
             // Get domain name from request and use as tenant name.
             $tenantName = $this->helpers->getSubDomainFromRequest($request);
-        } catch (TenantDomainNotFoundException $e) {
+        
+			// Database connection with master database
+			$this->helpers->switchDatabaseConnection('mysql', $request);
+			
+			// Dispatch job, that will store in master database
+			dispatch(new ResetStyleSettingsJob($tenantName));
+		} catch (TenantDomainNotFoundException $e) {
             throw $e;
         } catch (\Exception $e) {
             return $this->badRequest('messages.custom_error_message.ERROR_OCCURRED');
         }
-
-        // Database connection with master database
-        $this->helpers->switchDatabaseConnection('mysql', $request);
-        
-        // Change queue default driver to database
-        $queueManager = app('queue');
-        $defaultDriver = $queueManager->getDefaultDriver();
-        $queueManager->setDefaultDriver('database');
-
-        // Dispatch job, that will store in master database
-        dispatch(new ResetStyleSettingsJob($tenantName));
-
-        // Change queue driver to default
-        $queueManager->setDefaultDriver($defaultDriver);
-        
         // Database connection with tenant database
         $this->helpers->switchDatabaseConnection('tenant', $request);
         
@@ -225,18 +216,10 @@ class TenantOptionsController extends Controller
         // Database connection with master database
         $this->helpers->switchDatabaseConnection('mysql', $request);
         
-        // Change queue default driver to database
-        $queueManager = app('queue');
-        $defaultDriver = $queueManager->getDefaultDriver();
-        $queueManager->setDefaultDriver('database');
-
         // Create new job that will take tenantName, options, and uploaded file path as an argument.
         // Dispatch job, that will store in master database
         dispatch(new UpdateStyleSettingsJob($tenantName, $options, $fileName));
 
-        // Change queue driver to default
-        $queueManager->setDefaultDriver($defaultDriver);
-        
         // Database connection with tenant database
         $this->helpers->switchDatabaseConnection('tenant', $request);
         

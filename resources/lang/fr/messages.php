@@ -109,6 +109,18 @@ return [
         'MESSAGE_POLICY_PAGE_FOUND' => 'Page de stratégie trouvée avec succès',
         'MESSAGE_TIME_REQUEST_LISTING' => 'Demande de temps listée avec succès',
         'MESSAGE_TIME_REQUEST_NOT_FOUND' => 'Aucune demande de temps trouvée',
+        'MESSAGE_GOAL_MISSION_TIME_ENTRY_LISTED' => 'Entrée de la feuille de temps des missions d\'objectif répertoriée',
+        'MESSAGE_NO_GOAL_MISSION_TIME_ENTRY_FOUND' => 'Entrée de la feuille de temps des missions d\'objectif non trouvée',
+        'MESSAGE_TIME_MISSION_TIME_ENTRY_LISTED' => 'Saisie des feuilles de temps des missions répertoriées',
+        'MESSAGE_NO_TIME_MISSION_TIME_ENTRY_FOUND' => 'Entrée dans la feuille de temps des missions non trouvée',        
+        'MESSAGE_USER_GOAL_MISSION_HISTORY_EXPORTED' => 'Fichier historique généré avec succès pour les missions d\'objectif',
+        'MESSAGE_ENABLE_TO_EXPORT_USER_GOAL_MISSION_HISTORY' => 'Aucune donnée trouvée, pour générer un fichier d\'historique pour les missions d\'objectif',
+        'MESSAGE_USER_TIME_MISSION_HISTORY_EXPORTED' => 'Fichier historique généré avec succès pour les missions temporelles',
+        'MESSAGE_ENABLE_TO_EXPORT_USER_TIME_MISSION_HISTORY' => 'Aucune donnée trouvée, pour générer un fichier d\'historique pour les missions temporelles',
+        'MESSAGE_USER_PENDING_TIME_MISSION_ENTRIES_EXPORTED' => 'Entrées de temps en attente pour les missions de temps, générées avec succès',
+        'MESSAGE_ENABLE_TO_EXPORT_USER_PENDING_TIME_MISSION_ENTRIES' => 'Aucune donnée trouvée, pour générer des entrées de temps en attente pour une mission temporelle',
+        'MESSAGE_USER_PENDING_GOAL_MISSION_ENTRIES_EXPORTED' => 'Entrées de temps en attente pour les missions de but, générées avec succès',
+        'MESSAGE_ENABLE_TO_EXPORT_USER_PENDING_GOAL_MISSION_ENTRIES' => 'Aucune donnée trouvée, pour générer des entrées de temps en attente pour la mission de l\'objectif'
     ],
 
         
@@ -221,10 +233,19 @@ return [
         'ERROR_TIMESHEET_ALREADY_DONE_FOR_DATE' => 'La saisie du temps est déjà approuvée pour une date donnée', 
         'ERROR_INVALID_DATA_FOR_TIMESHEET_ENTRY' => 'Vous ne pouvez pas ajouter de temps',
         'ERROR_TIMESHEET_ENTRY_NOT_FOUND' => 'ID de saisie de la feuille de temps introuvable',
-        'ERROR_TIMESHEET_DECLINED' => 'Vous ne pouvez pas mettre à jour la feuille de temps refusée',
-        'ERROR_TIMESHEET_SUBMIT_FOR_APPROVAL' => 'Cette feuille de temps est déjà soumise pour approbation. Vous ne pouvez pas le mettre à jour',
         'ERROR_SAME_DATE_TIME_ENTRY' => 'Vous ne pouvez pas ajouter plus de 24 heures à la même date',
         'ERROR_INVALID_HOURS' => 'Les heures doivent être comprises entre 00 et 23',
         'ERROR_INVALID_MINUTES' => 'Les minutes doivent être comprises entre 00 et 59',
     ],
+
+    /**
+     * Export sheet's headings
+     */
+    'export_sheet_headings' => [
+        'MISSION_NAME' => 'Nom de la mission',
+        'ORGANIZATION_NAME' => 'nom de l\'organisation',
+        'ACTIONS' => 'actes',
+        'TIME' => 'Temps',
+        'HOURS' => 'Heures'
+    ]
 ];

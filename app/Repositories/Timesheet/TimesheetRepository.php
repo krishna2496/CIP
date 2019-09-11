@@ -92,12 +92,10 @@ class TimesheetRepository implements TimesheetInterface
         'mission_id' => $request->mission_id,
         'date_volunteered' => $dateVolunteered->format('Y-m-d')
         ], $data);
-
-        $tenantName = $this->helpers->getSubDomainFromRequest($request);
-
-        $files = $request->file('documents');
        
         if ($request->hasFile('documents')) {
+            $tenantName = $this->helpers->getSubDomainFromRequest($request);
+            $files = $request->file('documents');
             foreach ($files as $file) {
                 $filePath = $this->s3helper
                 ->uploadDocumentOnS3Bucket(
@@ -192,11 +190,7 @@ class TimesheetRepository implements TimesheetInterface
      */
     public function getUserTimesheet(int $userId, Request $request): Collection
     {
-        $languages = $this->languageHelper->getLanguages($request);
-        $language = ($request->hasHeader('X-localization')) ?
-        $request->header('X-localization') : env('TENANT_DEFAULT_LANGUAGE_CODE');
-        $language = $languages->where('code', $language)->first();
-        $languageId = $language->language_id;
+        $languageId = $this->languageHelper->getLanguageId($request);
 
         return $this->mission->select('mission.mission_id')
         ->where(['publication_status' => config("constants.publication_status")["APPROVED"]])
@@ -257,9 +251,11 @@ class TimesheetRepository implements TimesheetInterface
      *
      *
      * @param \Illuminate\Http\Request $request
-     * @return Illuminate\Pagination\LengthAwarePaginator
+     * @param array $statusArray
+     * @param bool $withPagination
+     * @return Object
      */
-    public function timeRequestList(Request $request) : LengthAwarePaginator
+    public function timeRequestList(Request $request, array $statusArray, bool $withPagination = true) : Object
     {
         $languageId = $this->languageHelper->getLanguageId($request);
         
@@ -271,36 +267,30 @@ class TimesheetRepository implements TimesheetInterface
             $query->select('mission_language_id', 'mission_id', 'title')
             ->where('language_id', $languageId);
         }])
-        ->whereHas('timesheet', function ($query) use ($request) {
-            $query->where(['status_id' => config('constants.timesheet_status_id.SUBMIT_FOR_APPROVAL'),
-            'user_id' => $request->auth->user_id]);
+        ->whereHas('timesheet', function ($query) use ($request, $statusArray) {
+            $query->whereIn('status_id', $statusArray);
+            $query->where('user_id', $request->auth->user_id);
         })
         ->withCount([
-        'timesheet AS total_hours' => function ($query) use ($request) {
-            $query->select(DB::raw("sum(((hour(time) * 60) + minute(time))) as 'total_minutes'"))
-            ->where(['status_id' => config('constants.timesheet_status_id.SUBMIT_FOR_APPROVAL'),
-            'user_id' => $request->auth->user_id]);
+        'timesheet AS total_hours' => function ($query) use ($request, $statusArray) {
+            $query->select(DB::raw("sum(((hour(time) * 60) + minute(time))) as 'total_minutes'"));
+            $query->where('user_id', $request->auth->user_id);
+            $query->whereIn('status_id', $statusArray);
         }]);
-        $timeRequestsList = $timeRequests->paginate($request->perPage);
+        if ($withPagination) {
+            $timeRequestsList = $timeRequests->paginate($request->perPage);
+        } else {
+            $timeRequestsList = $timeRequests->get();
+        }
+
         foreach ($timeRequestsList as $value) {
             if ($value->missionLanguage) {
                 $value->setAttribute('title', $value->missionLanguage[0]->title);
                 unset($value->missionLanguage);
             }
-
-            // For time
-            $totalHours = (int)($value->total_hours / 60);
-            $hoursData = $totalHours."h";
-            $minutes = $value->total_hours % 60;
-            $time = $hoursData.$minutes;
-
-            //For hours
-            $minutesData = $minutes / 60;
-            $hours = $totalHours + $minutesData;
-            $hoursDetail = number_format((float)$hours, 2, '.', '');
-
-            $value->time = $time;
-            $value->hours = $hoursDetail;
+            $value->time = $this->helpers->convertInReportTimeFormat($value->total_hours);
+            $value->hours = $this->helpers->convertInReportHoursFormat($value->total_hours);
+            
             unset($value->total_hours);
             $value->setAppends([]);
         }
@@ -308,12 +298,14 @@ class TimesheetRepository implements TimesheetInterface
     }
 
     /**
-      * Fetch pending goal requests
+      * Fetch goal time details.
      *
      * @param Illuminate\Http\Request $request
-     * @return Illuminate\Pagination\LengthAwarePaginator
+     * @param array $statusArray
+     * @param bool $withPagination
+     * @return Object
      */
-    public function goalRequestList(Request $request): LengthAwarePaginator
+    public function goalRequestList(Request $request, array $statusArray, bool $withPagination = true): Object
     {
         $languageId = $this->languageHelper->getLanguageId($request);
        
@@ -325,21 +317,21 @@ class TimesheetRepository implements TimesheetInterface
             $query->select('mission_language_id', 'mission_id', 'title')
             ->where('language_id', $languageId);
         }])
-        ->whereHas('timesheet', function ($query) use ($request) {
-            $query->where(
-                ['status_id' => config('constants.timesheet_status_id.SUBMIT_FOR_APPROVAL'),
-                'user_id' => $request->auth->user_id]
-            );
+        ->whereHas('timesheet', function ($query) use ($request, $statusArray) {
+            $query->where('user_id', $request->auth->user_id);
+            $query->whereIn('status_id', $statusArray);
         })
         ->withCount([
-        'timesheet AS action' => function ($query) use ($request) {
-            $query->select(DB::raw("SUM(action) as action"))
-            ->where(
-                ['status_id' => config('constants.timesheet_status_id.SUBMIT_FOR_APPROVAL'),
-                'user_id' => $request->auth->user_id]
-            );
+        'timesheet AS action' => function ($query) use ($request, $statusArray) {
+            $query->select(DB::raw("SUM(action) as action"));
+            $query->where('user_id', $request->auth->user_id);
+            $query->whereIn('status_id', $statusArray);
         }]);
-        $goalRequestList = $goalRequests->paginate($request->perPage);
+        if ($withPagination) {
+            $goalRequestList = $goalRequests->paginate($request->perPage);
+        } else {
+            $goalRequestList = $goalRequests->get();
+        }
         foreach ($goalRequestList as $value) {
             if ($value->missionLanguage) {
                 $value->setAttribute('title', $value->missionLanguage[0]->title);
