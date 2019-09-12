@@ -20,25 +20,24 @@
         </div>
         <div class="pagination-block" v-if="items.length > 0">
             <b-pagination
-            v-model="currentPage"
+            v-model="page"
             :total-rows="totalRow"
             :per-page="perPage"
             align="center"
             @change="pageChange"
             ></b-pagination>
       </div>
-      </div>
+    </div>
 </template>
 
 <script>
 import store from '../store';
-import moment from 'moment'
-import DatePicker from "vue2-datepicker";
+import moment from 'moment';
 import ExportFile from "../services/ExportFile";
+
 export default {
     name: "VolunteeringRequest",
     components: {
-        DatePicker
     },
     props: {
         items : Array,
@@ -47,12 +46,13 @@ export default {
         currentPage : Number,
         totalRow : Number,
         exportUrl : String,
-        fileName : String
+        fileName : String,
+        perPage : Number,
+        nextUrl : String
     },
     data: function() {
         return {
             langauageData : [],     
-            perPage : 5,
             page : this.currentPage
         }
     },
