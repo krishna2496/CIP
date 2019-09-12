@@ -61,6 +61,7 @@ class MissionSkillRepository implements MissionSkillInterface
         ->whereNotNull('mission.mission_id')
         ->whereIn('timesheet.status_id', $this->timesheetStatus->getApprovedStatuses()->toArray())
         ->whereNotNull('timesheet.timesheet_id')
+        ->whereNull('timesheet.delete_at')
         ->groupBy('mission_skill.skill_id');
         
         $hoursPerSkill = $queryBuilder->get();

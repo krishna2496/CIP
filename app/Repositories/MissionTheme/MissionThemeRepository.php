@@ -136,6 +136,7 @@ class MissionThemeRepository implements MissionThemeInterface
         ->whereNotNull('mission.mission_id')
         ->whereIn('timesheet.status_id', $this->timesheetStatus->getApprovedStatuses()->toArray())
         ->whereNotNull('timesheet.timesheet_id')
+        ->whereNull('timesheet.delete_at')
         ->groupBy('mission_theme.mission_theme_id');
         
         $hoursPerThemes = $queryBuilder->get();

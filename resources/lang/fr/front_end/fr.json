@@ -180,7 +180,9 @@
 		"delete" : "Effacer",
 		"actions" : "actes",
 		"goal" : "Objectif",
-		"submit_for_approval" : "Soumettre pour approbation"
+		"submit_for_approval" : "Soumettre pour approbation",
+		"no_volunteer_history_found" : "Le cœur d’un volontaire n’est jamais mesuré en taille, mais par la profondeur de l'engagement faire une différence dans la vie des autres.",
+		"start_volunteering" : "Commencer le bénévolat"
 	},
 
 	"placeholder" : {
