@@ -28,8 +28,8 @@
 
     h3 {
       margin-bottom: 20px;
-      @include sm-max{
-          margin-bottom: 15px;
+      @include sm-max {
+        margin-bottom: 15px;
       }
     }
 
@@ -37,11 +37,11 @@
       font-size: 24px;
       line-height: 28px;
       font-weight: 700;
-      @include sm-max{
-          font-size: 20px;
-          line-height: 26px;
-          margin-bottom: 10px;
-          width: 100%;
+      @include sm-max {
+        font-size: 20px;
+        line-height: 26px;
+        margin-bottom: 10px;
+        width: 100%;
       }
     }
 
@@ -63,11 +63,11 @@
         th {
           border-bottom: none;
           height: 70px;
-          @include sm-max{
-              height: 56px;
+          @include sm-max {
+            height: 56px;
           }
-          @include xxs-max{
-              height: 50px;
+          @include xxs-max {
+            height: 50px;
           }
         }
         &:last-child {
@@ -101,11 +101,8 @@
       }
       .table-link {
         color: $black;
-        border-bottom: 1px solid $gray-primary;
-        padding-bottom: 2px;
         &:hover {
           color: $gray-primary;
-          border-color: $gray-primary;
         }
       }
     }
@@ -113,13 +110,13 @@
   .pagination-block {
     margin-bottom: 40px;
     display: flex;
-    flex:1;
-    -ms-flex:1;
+    flex: 1;
+    -ms-flex: 1;
     justify-content: flex-end;
-    .pagination{
-        li{
-            margin-bottom: 8px !important;
-        }
+    .pagination {
+      li {
+        margin-bottom: 8px !important;
+      }
     }
   }
 }
@@ -192,11 +189,11 @@
       line-height: 18px;
       padding: 5px 24px;
       vertical-align: middle;
-      @include sm-max{
-          padding: 5px 15px;
+      @include sm-max {
+        padding: 5px 15px;
       }
-      @include xxs-max{
-          padding: 5px 10px;
+      @include xxs-max {
+        padding: 5px 10px;
       }
       &:not(.mission-col) {
         text-align: center;
@@ -225,15 +222,15 @@
     td {
       min-width: 140px;
       height: 56px;
-      @include sm-max{
-          height: 45px;
-          min-width: 85px;
+      @include sm-max {
+        height: 45px;
+        min-width: 85px;
       }
-      @include xxs-max{
-          height: 40px;
-          min-width:70px;
+      @include xxs-max {
+        height: 40px;
+        min-width: 70px;
       }
-      &:not(.mission-col):not(.approved):not(.total-col):not(.declined){
+      &:not(.mission-col):not(.approved):not(.total-col):not(.declined) {
         cursor: pointer;
         position: relative;
         z-index: 1;
@@ -244,7 +241,7 @@
           background-position: center center;
           z-index: 3;
           color: transparent;
-          &:after{
+          &:after {
             content: none;
           }
         }
@@ -257,13 +254,14 @@
           position: absolute;
           content: "";
           border-style: solid;
+
           border-width: 15px 22px 0 0;
           right: 0;
           bottom: 0;
         }
       }
       &.approved {
-        pointer-events:none;
+        pointer-events: none;
         &:after {
           border-color: transparent $success $success;
         }
@@ -278,9 +276,9 @@
           border-color: transparent $info $info;
         }
       }
-      &.disabled{
-          cursor: default;
-          pointer-events: none;
+      &.disabled {
+        cursor: default;
+        pointer-events: none;
       }
     }
     th {
@@ -291,11 +289,11 @@
     .mission-col {
       text-align: left;
       min-width: 270px;
-      @include sm-max{
-          min-width: 230px;
+      @include sm-max {
+        min-width: 230px;
       }
-      @include xxs-max{
-          min-width: 200px;
+      @include xxs-max {
+        min-width: 200px;
       }
     }
     .total-col {
@@ -327,10 +325,10 @@
   p {
     margin-bottom: 0;
   }
-  .picker-wrapper{
-      margin-bottom: 8px;
-      display: inline-flex;
-      align-items: center;
+  .picker-wrapper {
+    margin-bottom: 8px;
+    display: inline-flex;
+    align-items: center;
   }
   .datepicker-block {
     position: relative;
@@ -363,8 +361,8 @@
     display: inline-flex;
     @include border-radius(3px);
     margin-right: 20px;
-    @include xxs-max{
-        margin-right: 15px;
+    @include xxs-max {
+      margin-right: 15px;
     }
     span {
       cursor: pointer;
@@ -392,8 +390,8 @@
     border: 1px solid $border-color;
     @include border-radius(3px);
     margin-bottom: 8px;
-    @include xxs-max{
-        margin-right: 15px;
+    @include xxs-max {
+      margin-right: 15px;
     }
     span {
       padding: 3px 11px;
@@ -416,9 +414,9 @@
       border-radius: 0 3px 3px 0;
       padding: 5px 13px 5px 10px;
     }
-    &.disabled{
-      pointer-events:none;
-      cursor:default;
+    &.disabled {
+      pointer-events: none;
+      cursor: default;
     }
     img {
       width: 12px;
@@ -461,7 +459,7 @@
         background: $error;
       }
     }
-     &.approval-indication {
+    &.approval-indication {
       &:before {
         background: $info;
       }
@@ -482,6 +480,6 @@
     }
   }
 }
-.table-wrapper-outer{
-  position:relative;
+.table-wrapper-outer {
+  position: relative;
 }

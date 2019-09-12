@@ -111,7 +111,7 @@
                         </b-col>
                     </b-row>
                 </b-form-group>
-                <b-form-group>
+                <b-form-group v-if="isFileUploadDisplay">
                     <b-row> 
                         <b-col sm="6" class="date-col">
                         <span v-if="fileError">{{fileError}}</span>
@@ -188,6 +188,7 @@ import AppCustomDropdown from "../components/CustomFieldDropdown";
 import { required,maxLength, email,sameAs, minLength, between,helpers,numeric,requiredIf} from 'vuelidate/lib/validators';
 import FileUpload from 'vue-upload-component';
 import {addVolunteerEntry,removeDocument} from '../services/service';
+import constants from '../constant';
 
 export default {
     name: "VolunteeringHours",
@@ -216,6 +217,7 @@ export default {
             message : null,
             fileError : "",
             classVariant :"success",
+            isFileUploadDisplay : false,
             hourList:[
                     ["00","00"],
                     ["01","01"],
@@ -474,6 +476,7 @@ export default {
     },
     created() {
         this.langauageData = JSON.parse(store.state.languageLabel) 
+        this.isFileUploadDisplay = this.settingEnabled(constants.TIMESHEET_DOCUMENT_UPLOAD)
         this.lang = (store.state.defaultLanguage).toLowerCase();
     }
 };

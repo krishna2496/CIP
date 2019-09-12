@@ -217,12 +217,14 @@
     }
     .group-category {
       position: absolute;
-      bottom: -15px;
+      bottom: 0;
+      @include transformY(50%);
       left: 15px;
       right: 15px;
       display: inline-block;
       text-align: center;
       z-index: 5;
+      margin: 0 40px;
       .category-text {
         background: $white;
         border-radius: 50px;
@@ -231,9 +233,6 @@
         line-height: 18px;
         display: inline-block;
         max-width: 100%;
-        text-overflow: ellipsis;
-        overflow: hidden;
-        white-space: nowrap;
         @extend .control_shadow;
         @include lg-max {
           font-size: 15px;
@@ -376,8 +375,8 @@
         margin: 0 auto;
         text-align: center;
         background: $white;
-        @include lg-max{
-            top:-16px;
+        @include lg-max {
+          top: -16px;
         }
         span {
           z-index: 5;
@@ -686,12 +685,38 @@
         @include md-max {
           margin-bottom: 16px;
         }
-        &.publish-date{
-            margin-bottom: 10px;
+        &.publish-date {
+          margin-bottom: 0;
+          text-align: right;
+          order: 2;
+          flex: 0 0 45%;
+          max-width: 45%;
+          @include sm-max {
+            flex: 0 0 48%;
+            max-width: 48%;
+          }
         }
       }
       .content-block {
         padding-bottom: 25px;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        .bottom-block {
+          display: flex;
+          justify-content: space-between;
+          flex-wrap: wrap;
+          align-items: center;
+          min-height: 50px;
+          &.has-no-author {
+            justify-content: flex-end;
+            .publish-date {
+              max-width: 100%;
+              flex: 0 0 100%;
+            }
+          }
+        }
         @include md-max {
           padding-bottom: 20px;
         }
@@ -704,11 +729,24 @@
       }
     }
     .author-block {
-      display: flex;
-      flex: 1;
-      -ms-flex: 1;
+      display: inline-flex;
+      flex: 0 0 55%;
+      max-width: 55%;
+      flex-direction: row;
       flex-wrap: wrap;
       align-items: center;
+      margin-bottom: 0;
+      position: relative;
+      padding-left: 60px;
+      padding-right: 8px;
+      @include md-max {
+        padding-left: 55px;
+      }
+      @include sm-max {
+        padding-left: 50px;
+        max-width: 52%;
+        flex: 0 0 52%;
+      }
       i {
         height: 50px;
         width: 50px;
@@ -717,7 +755,10 @@
         background-size: cover;
         background-position: center center;
         background-repeat: no-repeat;
-        margin-right: 11px;
+        position: absolute;
+        left: 0;
+        top: 50%;
+        @include transformY(-50%);
         @include md-max {
           height: 45px;
           width: 45px;

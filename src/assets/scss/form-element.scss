@@ -327,10 +327,10 @@ textarea {
     font-size: 14px;
     font-weight: 400;
   }
-&.disabled{
-  background: $disabled-bg;
-  pointer-events: none;
-}
+  &.disabled {
+    background: $disabled-bg;
+    pointer-events: none;
+  }
   &:focus {
     box-shadow: none;
     border-color: $gray-primary;
@@ -476,16 +476,15 @@ label {
     .chk-select-wrap {
       border-radius: 0 0 3px 3px;
       display: block;
-      .chk-select-options{
-        li{
+      .chk-select-options {
+        li {
           white-space: nowrap;
-          @include md-max{
+          @include md-max {
             overflow: hidden;
             text-overflow: ellipsis;
           }
         }
       }
-      
     }
   }
 
@@ -641,7 +640,7 @@ label {
         cursor: pointer;
         white-space: nowrap;
 
-        @include lmd-max{
+        @include lmd-max {
           overflow: hidden;
           text-overflow: ellipsis;
         }
@@ -668,7 +667,7 @@ label {
 }
 .simplebar-horizontal {
   &.simplebar-track {
-    height: 7px!important;
+    height: 7px !important;
     .simplebar-scrollbar {
       height: 4px;
       &:before {
@@ -686,9 +685,9 @@ label {
       min-width: 100%;
     }
   }
-  &.checkbox-select{
+  &.checkbox-select {
     .simplebar-offset {
-      @include md-min{
+      @include md-min {
         left: auto !important;
         min-width: 100%;
       }
@@ -817,7 +816,11 @@ label {
       width: 100%;
       padding: 0;
       border-radius: 0 0 3px 3px;
-      max-height: 150px;
+      max-height: calc(100vh - 200px);
+
+      @include md-max {
+        max-height: 275px;
+      }
 
       ul {
         padding: 4px 0;
@@ -975,7 +978,7 @@ label {
       width: 160px !important;
       position: relative;
       border-radius: 100% !important;
-      z-index:1039;
+      z-index: 1039;
     }
     .picture-preview {
       background: $border-color;
@@ -1085,14 +1088,14 @@ label {
 
 .mx-datepicker {
   width: 100% !important;
-  &.is-invalid{
-    .mx-input-wrapper{
-      input{
-      border-color:$error;
+  &.is-invalid {
+    .mx-input-wrapper {
+      input {
+        border-color: $error;
       }
     }
-    + .invalid-feedback{
-      display:block;
+    + .invalid-feedback {
+      display: block;
     }
   }
 }
@@ -1163,8 +1166,7 @@ label {
   }
 }
 
-
-.mx-input{
+.mx-input {
   box-shadow: 0.966px 0.259px 3px rgba(0, 0, 0, 0.05) !important;
   -webkit-box-shadow: 0.966px 0.259px 3px rgba(0, 0, 0, 0.05) !important;
   -moz-box-shadow: 0.966px 0.259px 3px rgba(0, 0, 0, 0.05) !important;
@@ -1174,10 +1176,10 @@ label {
 /**Date range picker style**/
 .mx-range-wrapper {
   max-width: 524px !important;
-  width:100% !important;
-  display:flex;
-  flex-wrap:wrap;
-  justify-content:center;
+  width: 100% !important;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
   .mx-calendar {
     box-shadow: none !important;
   }
@@ -1222,7 +1224,7 @@ label {
         margin-left: 15px;
       }
     }
-    &.has-error{
+    &.has-error {
       border: 1px solid $error;
     }
   }
@@ -1275,24 +1277,24 @@ label {
   }
 }
 
-.browser-ios{
-  .filter-block{
-    .checkbox-select{
-      .simplebar-offset{
-        @include md-min{
+.browser-ios {
+  .filter-block {
+    .checkbox-select {
+      .simplebar-offset {
+        @include md-min {
           right: 0 !important;
         }
       }
     }
-  } 
+  }
 }
 
-.tooltip{
-  z-index:1039;
+.tooltip {
+  z-index: 1039;
 }
 
-span{
-  &.error-message{
+span {
+  &.error-message {
     color: $error;
   }
 }

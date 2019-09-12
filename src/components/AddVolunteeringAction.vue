@@ -1,5 +1,6 @@
 <template>
     <div>
+        
         <b-modal ref="goalActionModal" :modal-class="'goal-modal table-modal'" hide-footer  @hidden ="hideModal">
             <template slot="modal-header" slot-scope="{ close }">
                 <i class="close" @click="close()" v-b-tooltip.hover :title="langauageData.label.close"></i>
@@ -36,10 +37,11 @@
                                     class="invalid-feedback">
                                     {{ langauageData.errors.action_required }}
                                 </div>
+                               
                                 <div 
-                                    v-if="submitted && !$v.timeEntryDefaultData.dateVolunteered.numeric" 
+                                    v-if="submitted && !$v.timeEntryDefaultData.dateVolunteered.minValue" 
                                     class="invalid-feedback">
-                                    {{ langauageData.errors.numeric_action }}
+                                    {{ langauageData.errors.minimum_action }}
                                 </div>
                             </b-form-group>
                         </b-col>
@@ -104,7 +106,7 @@
                         </b-col>
                     </b-row>
                 </b-form-group>
-                <b-form-group>
+                <b-form-group v-if="isFileUploadDisplay">
                     <b-row>
                         
                         <b-col sm="12" class="date-col">
@@ -180,9 +182,10 @@ import store from '../store';
 import moment from 'moment'
 import DatePicker from "vue2-datepicker";
 import AppCustomDropdown from "../components/CustomFieldDropdown";
-import { required,maxLength, email,sameAs, minLength, between,helpers,numeric,requiredIf} from 'vuelidate/lib/validators';
+import { required,maxLength, email,sameAs, minLength, between,helpers,numeric,requiredIf,minValue} from 'vuelidate/lib/validators';
 import FileUpload from 'vue-upload-component';
 import {addVolunteerEntry,removeDocument} from '../services/service';
+import constants from '../constant';
 
 export default {
     name: "VolunteeringHours",
@@ -313,7 +316,7 @@ export default {
     validations() {
         return {
             timeEntryDefaultData : {      
-                action : {required,numeric},
+                action : {required,numeric,minValue:minValue(1)},
                 workDay : {required},
                 notes : {required},
                 dateVolunteered : {required}
@@ -455,6 +458,7 @@ export default {
     },
     created() {
         this.langauageData = JSON.parse(store.state.languageLabel) 
+        this.isFileUploadDisplay = this.settingEnabled(constants.TIMESHEET_DOCUMENT_UPLOAD)
         this.lang = (store.state.defaultLanguage).toLowerCase();
     }
 };
