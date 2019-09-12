@@ -160,11 +160,28 @@ interface MissionInterface
      */
     public function getGoalObjective(int $missionId): ?GoalMission;
 
-    /** Get mission application details by user id and mission id
+    /** Get mission application details by mission id, user id and status
      *
      * @param int $missionId
      * @param int $userId
+     * @param string $status
      * @return MissionApplication
      */
-    public function getMissionApplication(int $missionId, int $userId): MissionApplication;
+    public function getMissionApplication(int $missionId, int $userId, string $status): MissionApplication;
+    
+    /**
+     * Get Mission data for timesheet
+     *
+     * @param int $id
+     * @return App\Models\Mission
+     */
+    public function getTimesheetMissionData(int $id): Mission;
+    
+    /**
+     * Get Mission type
+     *
+     * @param int $id
+     * @return null|Collection
+     */
+    public function getMissionType(int $id): ?Collection;
 }

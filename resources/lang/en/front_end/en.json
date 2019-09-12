@@ -102,7 +102,7 @@
         "title" : "Title",
         "department" : "Department",
         "my_profile" : "My profile",
-        "why_i_volunteer" : "Why i volunteer ?",
+        "why_i_volunteer" : "Why I volunteer ?",
         "availability" : "Availability",
         "my_skills" : "My skills",
         "add_skills" : "Add skills",
@@ -180,7 +180,9 @@
 		"browse" : "Browse",
 		"delete" : "Delete",
 		"actions" : "Actions",
-		"years" : "Years"
+		"years" : "Years",
+		"goal" : "Goal",
+		"submit_for_approval" : "Submit for approval"
 	},
 
 	"placeholder" : {
@@ -207,7 +209,8 @@
 		 "spent_hours" : "Enter spent hours",
 		 "spent_minutes" : "Enter spent minutes",
 		 "notes" : "Enter notes",
-		 "workday" : "Please select workday"
+		 "workday" : "Please select workday",
+		 "action" : "Enter action"
 	},
 
 	"errors" : {
@@ -241,8 +244,12 @@
 		 "minute_or_hours_is_required" : "Please select hours or minutes",
 		 "date_volunteer_is_required" : "Volunteer date is required",
 		 "work_day" : "Please select workday",
-		 "notes" : "Notes is required"
+		 "notes" : "Notes is required",
+		 "action_required" : "Action is required",
+		 "file_max_size" : "Document may not be greater than 5mb",
+		 "minimum_action" :"The action must be at least 1"
 	},
+
 	
 	"export_timesheet_file_names" : {
 		"PENDING_TIME_MISSION_ENTRIES_XLSX" : "Pending_Time_Mission_Entries.xlsx",

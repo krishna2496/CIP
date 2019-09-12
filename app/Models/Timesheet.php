@@ -108,4 +108,25 @@ class Timesheet extends Model
     {
         return $this->belongsTo(TimesheetStatus::class, 'status_id', 'timesheet_status_id');
     }
+
+    /**
+     * Get time attribute on the model.
+     *
+     * @return null|string
+     */
+    public function getTimeAttribute(): ?string
+    {
+        return ($this->attributes['time'] != null) ? date('H:i', strtotime($this->attributes['time'])) : null;
+    }
+    
+    /**
+     * Set note attribute on the model.
+     *
+     * @param string $value
+     * @return void
+     */
+    public function setNotesAttribute(string $value)
+    {
+        $this->attributes['notes'] = trim($value);
+    }
 }
