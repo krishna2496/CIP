@@ -76,17 +76,14 @@
 						:fileName="langauageData.export_timesheet_file_names.GOAL_MISSION_HISTORY_XLSX"
 					/>
               </b-col>
-            </b-row>
-            <!-- <div class="no-history-data">
-				<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum</p>
-				<div class="btn-row">
-					<b-button title="Start Volunteering" class="btn-borderprimary">Start Volunteering</b-button>
-				</div>
-            </div>-->
+            </b-row>           
           </div>
-		  <div class="inner-content-wrap" v-else>
-			  <h3>No data found</h3>
-		  </div>
+		   <div class="no-history-data" v-else>
+				<p>{{langauageData.label.no_volunteer_history_found}}</p>
+				<div class="btn-row">
+					<b-button :title="langauageData.label.start_volunteering" class="btn-bordersecondary" @click="$router.push({ name: 'home' })">{{langauageData.label.start_volunteering}}</b-button>
+				</div>
+            </div>
         </b-container>
       </div>
     </main>

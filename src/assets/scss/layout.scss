@@ -3129,7 +3129,15 @@ main {
 				}
 			}
 		}
-	}
+    }
+    .no-history-data{
+        text-align: center;
+        .btn-row{
+            .btn{
+                margin: 0 auto;
+            }
+        }
+    }
 
 }
 
