@@ -110,12 +110,13 @@ class TimesheetController extends Controller
     public function store(Request $request): JsonResponse
     {
         try {
-            //Fetch mission type
-            $getmissionType = $this->missionRepository->getMissionType($request->mission_id);
-            
-            $getmissionType->count() > 0 ?
-            $request->request->add(['mission_type' => $getmissionType[0]['mission_type']]) : null;
-
+            if (!empty($request->mission_id)) {
+                //Fetch mission type
+                $getmissionType = $this->missionRepository->getMissionType($request->mission_id);
+                $getmissionType->count() > 0 ?
+                $request->request->add(['mission_type' => $getmissionType[0]['mission_type']]) : null;
+            }
+                
             $documentSizeLimit = config('constants.TIMESHEET_DOCUMENT_SIZE_LIMIT');
             $validator = Validator::make(
                 $request->toArray(),
@@ -303,7 +304,7 @@ class TimesheetController extends Controller
      *
      * @param \Illuminate\Http\Request $request
      * @param int $timesheetId
-     * @return \Illuminate\Http\JsonResponse;
+     * @return \Illuminate\Http\JsonResponse
      */
     public function show(Request $request, int $timesheetId): JsonResponse
     {
