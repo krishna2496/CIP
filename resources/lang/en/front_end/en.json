@@ -249,7 +249,6 @@
 		 "file_max_size" : "Document may not be greater than 5mb",
 		 "minimum_action" :"The action must be at least 1"
 	},
-
 	
 	"export_timesheet_file_names" : {
 		"PENDING_TIME_MISSION_ENTRIES_XLSX" : "Pending_Time_Mission_Entries.xlsx",
