@@ -572,8 +572,8 @@
                     /> -->
 	  	<!-- <b-button class="btn-borderprimary icon-btn"  
 							@click="AddEntry">
-							sddsds -->
-		</b-button>
+							sddsds
+		</b-button> -->
 	  <b-modal :title="langauageData.label.search_user" ref="userDetailModal" 
             :modal-class="myclass" hide-footer size="lg">
 	            <b-alert show :variant="classVariant" dismissible v-model="showErrorDiv">
@@ -798,7 +798,7 @@ export default {
     },
    methods: {
 	   AddEntry(){
-
+		   window.location = "http://test.optimy.com:8080/volunteering-timesheet"
 	   },
    		// Get comment create date format
 	   	getCommentDate(commentDate){

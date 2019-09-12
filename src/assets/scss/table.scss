@@ -230,7 +230,7 @@
         height: 40px;
         min-width: 70px;
       }
-      &:not(.mission-col):not(.approved):not(.total-col):not(.declined) {
+      &:not(.mission-col):not(.approved):not(.total-col){
         cursor: pointer;
         position: relative;
         z-index: 1;

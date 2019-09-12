@@ -779,8 +779,7 @@ export default {
             var minute=0;
             var hourApproved=0;
             var minuteApproved=0;
-             
-            
+
             let timeArray = []
             if(timeSheetType == "time") {
                 timeArray = this.timeMissionData;
@@ -915,6 +914,7 @@ export default {
                     if(response.error == true){
                         this.makeToast("danger",response.message);
                     } else {
+                        this.getVolunteerHoursData()
                         this.makeToast("success",response.message);
                     }  
                 })

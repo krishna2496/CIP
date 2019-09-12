@@ -35,7 +35,10 @@ export default new Vuex.Store({
         currentSkill : null,
         currentFromSkill : null,
         isTwitterDisplay:false,
-        isFacebookDisplay : false
+        isFacebookDisplay : false,
+        missionId : '13',
+        missionType : 'TIME',
+        
     },
     mutations: {
         // Set login data in state and local storage       
@@ -211,6 +214,14 @@ export default new Vuex.Store({
             localStorage.setItem('defaultLanguage', language);
             state.defaultLanguage = language;
         },
+
+        // timeSheetEntryDetail(state,data) {
+        //     localStorage.setItem('missionId', data.missionId);
+        //     timeSheetEntryFromDetailPage : {
+        //         missionId : '',
+        //         missionType : ''
+        //     }
+        // }
     },
     getters: {},
     actions: {}
