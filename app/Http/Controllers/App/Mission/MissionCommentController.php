@@ -12,6 +12,7 @@ use App\Traits\RestExceptionHandlerTrait;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use InvalidArgumentException;
 use Validator;
+use App\Helpers\Helpers;
 
 class MissionCommentController extends Controller
 {
@@ -32,14 +33,17 @@ class MissionCommentController extends Controller
      *
      * @param App\Repositories\Mission\MissionCommentRepository $missionCommentRepository
      * @param Illuminate\Http\ResponseHelper $responseHelper
+     * @param App\Helpers\Helpers
      * @return void
      */
     public function __construct(
         MissionCommentRepository $missionCommentRepository,
-        ResponseHelper $responseHelper
+        ResponseHelper $responseHelper,
+        Helpers $helpers
     ) {
         $this->missionCommentRepository = $missionCommentRepository;
         $this->responseHelper = $responseHelper;
+        $this->helpers = $helpers;
     }
 
     /**
@@ -101,12 +105,22 @@ class MissionCommentController extends Controller
                 );
             }
 
+            // Need to check activated setting for comment approval status
+            $isAutoApproved = $this->helpers->checkTenantSettingStatus('mission_comment_auto_approved', $request);
+            if ($isAutoApproved) {
+                $request->request->add(
+                    [
+                        'status' => config('constants.timesheet_status.AUTOMATICALLY_APPROVED')
+                    ]
+                );
+            }
             $missionComment = $this->missionCommentRepository->store($request->auth->user_id, $request->toArray());
 
             // Set response data
             $apiStatus = Response::HTTP_CREATED;
             $apiData = ['comment_id' => $missionComment->comment_id];
-            $apiMessage =trans('messages.success.MESSAGE_COMMENT_ADDED');
+            $apiMessage = ($isAutoApproved) ? trans('messages.success.MESSAGE_AUTO_APPROVED_COMMENT_ADDED') :
+            trans('messages.success.MESSAGE_COMMENT_ADDED');
             
             return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
         } catch (\Exception $e) {
