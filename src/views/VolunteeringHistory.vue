@@ -61,6 +61,8 @@
 						:totalRow="timeMissionTotalRow"
 						@updateCall = "getVolunteerMissionsHours"
 						exportUrl = "app/volunteer/history/time-mission/export"
+            :perPage = "hourRequestPerPage"
+            :nextUrl = "hourRequestNextUrl"
 						:fileName="langauageData.export_timesheet_file_names.TIME_MISSION_HISTORY_XLSX"
 					/>
 				</b-col>
@@ -71,6 +73,8 @@
 						:headerLable="goalMissionTimesheetLabel"
 						:currentPage="goalMissionCurrentPage"
 						:totalRow="goalMissionTotalRow"
+            :perPage = "goalRequestPerPage"    
+            :nextUrl = "goalRequestNextUrl"
 						@updateCall = "getVolunteerMissionsGoals"
 						exportUrl = "app/volunteer/history/goal-mission/export"
 						:fileName="langauageData.export_timesheet_file_names.GOAL_MISSION_HISTORY_XLSX"
@@ -142,7 +146,11 @@ export default {
 
 		ThemeYearText: "Year",
 		skillYearText: "Year",
-		skillYearList: []
+    skillYearList: [],
+    hourRequestPerPage : 5,
+    goalRequestPerPage : 5,
+    hourRequestNextUrl : null,
+    goalRequestNextUrl : null
     };
   },
   mounted() {
@@ -184,10 +192,12 @@ export default {
 				let time = this.langauageData.label.time;
 				let hours = this.langauageData.label.hours;
 				let organisation = this.langauageData.label.organisation;
-				console.log(response.pagination);
+				
 				if(response.pagination) {
 					_this.timeMissionTotalRow = response.pagination.total;
-					_this.timeMissionCurrentPage = response.pagination.current_page
+          _this.timeMissionCurrentPage = response.pagination.current_page
+          _this.hourRequestPerPage = response.pagination.per_page;
+          _this.hourRequestNextUrl = response.pagination.next_url
 				}
 				
 				data.filter(function(item,index){
@@ -212,10 +222,11 @@ export default {
 				let mission = this.langauageData.label.mission;
 				let action = this.langauageData.label.actions;
 				let organisation = this.langauageData.label.organisation;
-				console.log(response.pagination);
 				if(response.pagination) {
 					_this.goalMissionTotalRow = response.pagination.total;
-					_this.goalMissionCurrentPage = response.pagination.current_page
+          _this.goalMissionCurrentPage = response.pagination.current_page
+          _this.goalRequestPerPage = response.pagination.per_page;
+          _this.goalRequestNextUrl = response.pagination.next_url
 				}
 				
 				data.filter(function(item,index){

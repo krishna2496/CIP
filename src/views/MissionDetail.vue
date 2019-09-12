@@ -542,8 +542,40 @@
 			</b-container>
 		  
 	  </div>
-	  <b-modal centered :title="langauageData.label.search_user" ref="userDetailModal" 
-            :modal-class="myclass" hide-footer>
+	  <!-- <AddVolunteeringHours
+                        ref="timeModal"
+                        :defaultWorkday="defaultWorkday"
+                        :defaultHours="defaultHours"
+                        :defaultMinutes="defaultMinutes"
+                        :files="files"
+                        :timeEntryDefaultData="currentTimeData"
+                        :disableDates="volunteerHourDisableDates"
+                        @getTimeSheetData = "getVolunteerHoursData"
+                        @resetModal ="hideModal"
+                        :workDayList="workDayList"
+                        @updateCall="updateDefaultValue" 
+                        @changeDocument="changeTimeDocument"
+                    />
+                    <AddVolunteeringAction
+                        ref="goalModal"
+                        :defaultWorkday="defaultWorkday"
+                        :defaultHours="defaultHours"
+                        :defaultMinutes="defaultMinutes"
+                        :files="files"
+                        :timeEntryDefaultData="currentTimeData"
+                        :disableDates="volunteerHourDisableDates"
+                        @getTimeSheetData = "getVolunteerHoursData"
+                        @resetModal ="hideModal"
+                        :workDayList="workDayList"
+                        @updateCall="updateDefaultValue" 
+                        @changeDocument="changeGoalDocument"
+                    /> -->
+	  	<!-- <b-button class="btn-borderprimary icon-btn"  
+							@click="AddEntry">
+							sddsds -->
+		</b-button>
+	  <b-modal :title="langauageData.label.search_user" ref="userDetailModal" 
+            :modal-class="myclass" hide-footer size="lg">
 	            <b-alert show :variant="classVariant" dismissible v-model="showErrorDiv">
 	            	{{ message }}
         		</b-alert>
@@ -592,10 +624,12 @@ import AppCustomChip from "../components/AppCustomChip";
 import StarRating from 'vue-star-rating';
 import constants from '../constant';
 import { VueAutosuggest } from 'vue-autosuggest';
-import {favoriteMission,inviteColleague ,applyMission,searchUser,storeMissionRating,missionDetail,relatedMissions,missionComments,storeMissionComments} from "../services/service";
+import {favoriteMission,inviteColleague ,applyMission,searchUser,storeMissionRating,missionDetail,relatedMissions,missionComments,storeMissionComments,volunteerTimesheetHours} from "../services/service";
 import SimpleBar from 'simplebar';
 import store from "../store";
 import moment from 'moment';
+import AddVolunteeringHours from "../components/AddVolunteeringHours";
+import AddVolunteeringAction from "../components/AddVolunteeringAction";
 import { required,maxLength } from 'vuelidate/lib/validators';
 import SocialSharing from 'vue-social-sharing';
 
@@ -614,9 +648,16 @@ export default {
   },
   	data() {
 	    return {
+			defaultWorkday: "",
+			workDayList: [
+                ["WORKDAY","workday"],
+                ["WEEKEND","weekend"],
+                ["HOLIDAY","holiday"],
+            ],
 	    	sharingUrl : "",
 	    	isShownComponent :false,
-	    	missionId :this.$route.params.misisonId,
+			missionId :this.$route.params.misisonId,
+			timeSheetId : '',
 	    	missionAddedToFavoriteByUser : false,
 	    	query: "",
 	        selected: "",
@@ -674,7 +715,23 @@ export default {
     		isRemainingGoalDisplay : false,
     		isSkillDispaly : false	,
     		isQuickAccessFilterDisplay : false,
-    		relatedMissionsDisplay : false
+			relatedMissionsDisplay : false,
+			currentTimeData: 
+                {
+                    missionId : '',
+                    hours : '',
+                    minutes : '',
+                    dateVolunteered : '',
+                    workDay : '',
+                    notes : '',
+                    day: '',
+                    timeSheetId : '',
+                    documents : [],
+                    disabledPastDates : '',
+                    disabledFutureDates : '',
+                    missionName : '',
+                    action : ''
+                }
   	};
   },
 	mounted(){
@@ -740,6 +797,9 @@ export default {
             },
     },
    methods: {
+	   AddEntry(){
+
+	   },
    		// Get comment create date format
 	   	getCommentDate(commentDate){
 	   		if(commentDate != null) {
@@ -889,6 +949,7 @@ export default {
 					this.relatedMissionlLoader = false;
 					this.isShownComponent = true;
 				});
+				this.getVolunteerHoursData(this.$route.params.misisonId);
 			}
     	},
 
@@ -1043,7 +1104,50 @@ export default {
 				simplebarWrapper.scrollTop = simplebarHeight;
 			},100);
 			this.missionComments();
-		}
+		},
+		async getVolunteerHoursData(missionId) {
+			var _this =this;
+			// constants.MISSION_TYPE_TIME
+			// missionDetail.mission_type
+			var missionType = this.missionDetail.mission_type;
+			var currentYear =  moment().format("YYYY-MM-DD");
+			var currentMonth =  moment().format("M");
+			var currentDate =  moment().format("D");
+
+            await volunteerTimesheetHours().then( response => { 
+                if(response) {
+					let timeMissionData = response['TIME'];
+					let goalMissionData = response['GOAL'];
+
+					if(missionType == constants.MISSION_TYPE_TIME) {
+						if(timeMissionData) {
+							timeMissionData.filter(function(timeArray,index){
+								if(timeArray.mission_id == missionId){
+									timeArray.timesheet.filter(function(timeSheetArray,timeSheetIndex){
+										if(timeSheetArray.year == currentYear && timeSheetArray.month == currentMonth && timeSheetArray.date == currentDate) {
+											_this.timeSheetId = timeSheetArray.timesheet_id
+										}
+									})
+								}
+							})
+						}
+					} else {
+						if(goalMissionData) {
+							goalMissionData.filter(function(timeArray,index){
+								if(timeArray.mission_id == missionId){
+									timeArray.timesheet.filter(function(timeSheetArray,timeSheetIndex){
+										if(timeSheetArray.year == currentYear && timeSheetArray.month == currentMonth && timeSheetArray.date == currentDate) {
+											_this.timeSheetId = timeSheetArray.timesheet_id
+										}
+									})
+								}
+							})
+						}
+
+					}
+                }
+           })
+        },
    },
 	created() {		
 		this.sharingUrl = document.URL
@@ -1127,6 +1231,7 @@ export default {
 			this.isSkillDispaly = false		
 			this.isQuickAccessFilterDisplay = false
 			this.relatedMissionsDisplay = false
+			this.timeSheetId = false
 			this.getMissionDetail();
 			this.socialSharingUrl = process.env.VUE_APP_API_ENDPOINT+"social-sharing/"+this.domainName+"/"+this.missionId+"/"+store.state.defaultLanguageId;			
 	    }
