@@ -96,20 +96,7 @@ export default {
     window.addEventListener("resize", this.signinAdj);
     window.addEventListener("resize", this.handleSocialShare);
     window.addEventListener("scroll", this.handleScroll);
-    window.scrollTo(0, 0);
-    
-     // setTimeout(function(){
-     //    var allElements = document.querySelectorAll('*');
-     //    allElements.forEach(function(allEvent){
-     //        allEvent.addEventListener('click' , function(){
-     //            setTimeout(function(){
-     //            if(document.querySelector('body').classList.contains('modal-open')){
-     //                 window.scrollTo(0, 0);
-     //            }
-     //            });
-     //            });
-     //        })
-     //    });   
+    window.scrollTo(0, 0); 
   },
   updated() {
     window.scrollTo(0, 0);
@@ -150,12 +137,6 @@ export default {
         });
       });
       
-      // notification_btn.addEventListener("click", function() {
-      //   dropdownList.forEach(function(removeDropdown) {
-      //     removeDropdown.classList.remove("dropdown-open");
-      //   });
-      // });
-
       var pagination_item = document.querySelectorAll(
         ".pagination-block .page-item .page-link"
       );
