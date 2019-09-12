@@ -25,33 +25,10 @@ class DownloadAssestFromS3ToLocalStorageJob extends Job
      */
     public function handle()
     {
-        if (Storage::disk('local')->exists($this->tenantName)) {
-            Storage::disk('local')->delete($this->tenantName);
-        }
+        $sourceFolder = storage_path('app/'.config('constants.AWS_S3_DEFAULT_THEME_FOLDER_NAME'));
+		$destinationFolder = storage_path('app/'.$this->tenantName);
 
-        Storage::disk('local')->makeDirectory($this->tenantName);
-
-        $allFiles = Storage::disk('s3')->allFiles($this->tenantName.'/assets/scss');
-
-        if (count($allFiles) > 0) {
-            foreach ($allFiles as $key => $file) {
-                $sourcePath = str_replace($this->tenantName, '', $file);
-                if (Storage::disk('local')->exists($file)) {
-                    // Delete existing one
-                    Storage::disk('local')->delete($file);
-                }
-                if (!Storage::disk('local')->put($file, Storage::disk('s3')->get($file))) {
-                    throw new FileDownloadException(
-                        trans('messages.custom_error_message.ERROR_WHILE_DOWNLOADING_FILES_FROM_S3_TO_LOCAL'),
-                        config('constants.error_codes.ERROR_WHILE_DOWNLOADING_FILES_FROM_S3_TO_LOCAL')
-                    );
-                }
-            }
-        } else {
-            throw new FileDownloadException(
-                trans('messages.custom_error_message.ERROR_NO_FILES_FOUND_TO_DOWNLOAD'),
-                config('constants.error_codes.ERROR_NO_FILES_FOUND_TO_DOWNLOAD')
-            );
-        }
+		exec('mkdir '.$destinationFolder);
+		exec('cp -r '.$sourceFolder.'/* '.$destinationFolder.' ');
     }
 }

@@ -295,7 +295,13 @@ class Helpers
         }
     }
     
-    public function getDomainFromUserAPIKeys(Request $request)
+    /**
+     * Get domain from user API key
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return string
+     */
+    public function getDomainFromUserAPIKeys(Request $request): string
     {
         // Check basic auth passed or not
         $this->switchDatabaseConnection('mysql', $request);
@@ -331,5 +337,33 @@ class Helpers
     public function changeDateFormat(string $date): string
     {
         return date(config('constants.TIMESHEET_DATE_FORMAT'), strtotime($date));
+    }
+    
+    /**
+     * Convert in report time format
+     *
+     * @param string $totalHours
+     * @return string
+     */
+    public function convertInReportTimeFormat(string $totalHours) : string
+    {
+        $convertedHours = (int)($totalHours / 60);
+        $hours = $convertedHours."h";
+        $minutes = $totalHours % 60;
+        return $hours.$minutes;
+    }
+
+    /**
+     * Convert in report hours format
+     *
+     * @param string $totalHours
+     * @return string
+     */
+    public function convertInReportHoursFormat(string $totalHours) : string
+    {
+        $hours = (int)($totalHours / 60);
+        $minutes = ($totalHours % 60) / 60;
+        $totalHours = $hours + $minutes;
+        return number_format((float)$totalHours, 2, '.', '');
     }
 }
