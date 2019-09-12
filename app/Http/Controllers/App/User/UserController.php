@@ -124,11 +124,6 @@ class UserController extends Controller
             $apiMessage = (empty($users)) ? trans('messages.success.MESSAGE_NO_RECORD_FOUND')
              : trans('messages.success.MESSAGE_USER_LISTING');
             return $this->responseHelper->success(Response::HTTP_OK, $apiMessage, $users);
-        } catch (InvalidArgumentException $e) {
-            return $this->invalidArgument(
-                config('constants.error_codes.ERROR_INVALID_ARGUMENT'),
-                trans('messages.custom_error_message.ERROR_INVALID_ARGUMENT')
-            );
         } catch (\Exception $e) {
             return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
@@ -156,6 +151,7 @@ class UserController extends Controller
                 trans('messages.custom_error_message.ERROR_USER_NOT_FOUND')
             );
         } catch (\Exception $e) {
+            dd($e);
             return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
@@ -249,11 +245,6 @@ class UserController extends Controller
             $apiMessage = trans('messages.success.MESSAGE_USER_FOUND');
             
             return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
-        } catch (InvalidArgumentException $e) {
-            return $this->invalidArgument(
-                config('constants.error_codes.ERROR_INVALID_ARGUMENT'),
-                trans('messages.custom_error_message.ERROR_INVALID_ARGUMENT')
-            );
         } catch (\Exception $e) {
             return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
@@ -398,8 +389,8 @@ class UserController extends Controller
             return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
         } catch (S3Exception $e) {
             return $this->s3Exception(
-                config('constants.error_codes.ERROR_FAILED_TO_RESET_STYLING'),
-                trans('messages.custom_error_message.ERROR_FAILED_TO_RESET_STYLING')
+                config('constants.error_codes.ERROR_FAILD_TO_UPLOAD_PROFILE_IMAGE_ON_S3'),
+                trans('messages.custom_error_message.ERROR_FAILD_TO_UPLOAD_PROFILE_IMAGE_ON_S3')
             );
         } catch (\Exception $e) {
             return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));

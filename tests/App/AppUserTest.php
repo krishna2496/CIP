@@ -482,6 +482,16 @@ class AppUserTest extends TestCase
         $skill->setConnection($connection);
         $skill->save();
 
+        $skill = factory(\App\Models\Skill::class)->make();
+        $skill->setConnection($connection);
+        $skill->save();
+
+        $userSkill = factory(\App\Models\UserSkill::class)->make();
+        $userSkill->setConnection($connection);
+        $userSkill->user_id = $user->user_id;
+        $userSkill->skill_id = $skill->skill_id;
+        $userSkill->save();        
+
         $token = Helpers::getJwtToken($user->user_id);
         $this->get('/app/user-detail', ['token' => $token])
         ->seeStatusCode(200)
@@ -518,9 +528,10 @@ class AppUserTest extends TestCase
             ],
             "message"
         ]);
-        $user->delete();
+        $userSkill->delete();   
         $userCustomField->delete();
         $skill->delete();
+        $user->delete();
     }
 
     /**
@@ -650,5 +661,116 @@ class AppUserTest extends TestCase
             ]
         ]);
         $user->delete();
+    }
+
+    /**
+     * @test
+     *
+     * Get user language
+     *
+     * @return void
+     */
+    public function it_should_return_user_language()
+    {
+        $connection = 'tenant';
+        $user = factory(\App\User::class)->make();
+        $user->setConnection($connection);
+        $user->save();
+
+        $token = Helpers::getJwtToken($user->user_id);
+        $this->get('app/get-user-language?email='.$user->email, ['token' => $token])
+        ->seeStatusCode(200)
+        ->seeJsonStructure([
+            "status",
+            "data" => [
+                "default_language_id"
+            ]
+        ]);
+        $user->delete();
+    }
+
+    /**
+     * @test
+     * 
+     * Return error for invalid token
+     *
+     * @return void
+     */
+    public function it_should_return_error_for_invalid_email_for_get_user_language()
+    {
+        $connection = 'tenant';
+        $user = factory(\App\User::class)->make();
+        $user->setConnection($connection);
+        $user->save();
+
+        $token = Helpers::getJwtToken($user->user_id);
+        $this->get('app/get-user-language?email=test', ['token' => $token])
+        ->seeStatusCode(404)
+        ->seeJsonStructure([
+            "errors" => [
+                [
+                    "status",
+                    "type",
+                    "message"
+                ]
+            ]
+        ]);
+    }
+
+    /**
+     * @test
+     *
+     * Validate skill limit for add skill to user
+     *
+     * @return void
+     */
+    public function it_should_return_invalid_language_error_for_update_user_data()
+    {
+        $connection = 'tenant';
+        $user = factory(\App\User::class)->make();
+        $user->setConnection($connection);
+        $user->save();
+
+        $userCustomField = factory(\App\Models\UserCustomField::class)->make();
+        $userCustomField->setConnection($connection);
+        $userCustomField->save();
+        $fieldId = $userCustomField->field_id;
+
+        $params = [
+            'first_name' => str_random(10),
+            'last_name' => str_random(10),
+            'timezone_id' => 1,
+            'language_id' => rand(1000, 5000),
+            'availability_id' => 1,
+            'why_i_volunteer' => str_random(50),
+            'employee_id' => str_random(3),
+            'department' => str_random(5),
+            'manager_name' => str_random(5),
+            'custom_fields' => [
+                [
+                    "field_id" => $fieldId,
+                    "value" => "1"
+                ]
+            ],
+            'skills' => []
+
+        ];
+    
+        $token = Helpers::getJwtToken($user->user_id);
+
+        $this->patch('app/user/', $params, ['token' => $token])
+        ->seeStatusCode(422)
+        ->seeJsonStructure([
+            "errors" => [
+                [
+                    "status",
+                    "type",
+                    "message",
+                    "code"
+                ]
+            ]
+        ]);
+        $user->delete();
+        $userCustomField->delete();
     }
 }

@@ -79,12 +79,12 @@ class TenantOptionsController extends Controller
             // Get domain name from request and use as tenant name.
             $tenantName = $this->helpers->getSubDomainFromRequest($request);
         
-			// Database connection with master database
-			$this->helpers->switchDatabaseConnection('mysql', $request);
-			
-			// Dispatch job, that will store in master database
-			dispatch(new ResetStyleSettingsJob($tenantName));
-		} catch (TenantDomainNotFoundException $e) {
+            // Database connection with master database
+            $this->helpers->switchDatabaseConnection('mysql', $request);
+            
+            // Dispatch job, that will store in master database
+            dispatch(new ResetStyleSettingsJob($tenantName));
+        } catch (TenantDomainNotFoundException $e) {
             throw $e;
         } catch (\Exception $e) {
             return $this->badRequest('messages.custom_error_message.ERROR_OCCURRED');
@@ -121,7 +121,7 @@ class TenantOptionsController extends Controller
         try {
             $this->tenantOptionRepository->updateStyleSettings($request);
         } catch (\ErrorException $e) {
-            return $this->internaServerError(
+            return $this->internalServerError(
                 config('constants.error_codes.ERROR_ON_UPDATING_STYLING_VARIBLE_IN_DATABASE'),
                 trans(
                     'messages.custom_error_message.ERROR_ON_UPDATING_STYLING_VARIBLE_IN_DATABASE'

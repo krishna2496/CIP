@@ -60,7 +60,7 @@ class PolicyPageController extends Controller
             $request->header('X-localization') : env('TENANT_DEFAULT_LANGUAGE_CODE');
             $languageId = $languages->where('code', $language)->first()->language_id;
             
-            $pageList = $this->policyPageRepository->getPageList($languageId);
+            $pageList = $this->policyPageRepository->getPageList($languageId, $request);
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_POLICY_PAGE_LISTING');
             $apiMessage = ($pageList->isEmpty()) ? trans('messages.success.MESSAGE_NO_RECORD_FOUND') :

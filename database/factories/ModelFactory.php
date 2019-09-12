@@ -132,3 +132,10 @@ $factory->define(App\Models\TimesheetDocument::class, function (Faker\Generator 
         'document_type' => 'png'
     ];
 });
+
+$factory->define(App\Models\UserSkill::class, function (Faker\Generator $faker) {
+    return [
+        'user_id' => 1,
+        'skill_id' => 1
+    ];
+});

@@ -246,8 +246,7 @@ class TimesheetController extends Controller
                             ->getOptionValue('ALLOW_TIMESHEET_ENTRY');
 
                             $extraWeeks = isset($tenantOptionData[0]['option_value'])
-                            ? intval($tenantOptionData[0]['option_value'])
-                            : config('constants.ALLOW_TIMESHEET_ENTRY');
+                            ? intval($tenantOptionData[0]['option_value']) : config('constants.ALLOW_TIMESHEET_ENTRY');
 
                             // Count records
                             if (count($tenantOptionData) > 0 || $extraWeeks > 0) {
@@ -261,13 +260,6 @@ class TimesheetController extends Controller
                                         trans('messages.custom_error_message.ERROR_MISSION_ENDDATE')
                                     );
                                 }
-                            } else {
-                                return $this->responseHelper->error(
-                                    Response::HTTP_UNPROCESSABLE_ENTITY,
-                                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                                    config('constants.error_codes.ERROR_MISSION_ENDDATE'),
-                                    trans('messages.custom_error_message.ERROR_MISSION_ENDDATE')
-                                );
                             }
                         }
                     }

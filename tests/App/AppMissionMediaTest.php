@@ -39,16 +39,47 @@ class AppMissionMediaTest extends TestCase
      *
      * @return void
      */
+    public function it_should_return_error_for_invalid_mission_id_for_get_comment()
+    {
+        $connection = 'tenant';
+        $user = factory(\App\User::class)->make();
+        $user->setConnection($connection);
+        $user->save();
+        $missionId = rand(1000000, 2000000);
+        
+        $token = Helpers::getJwtToken($user->user_id);
+        $this->get('/app/mission/'.$missionId.'/comments', ['token' => $token])
+        ->seeStatusCode(404)
+        ->seeJsonStructure([
+            "errors" => [
+                [
+                    "status",
+                    "type",
+                    "message",
+                    "code"
+                ]
+            ]
+        ]);
+        $user->delete();
+    }
+
+    /**
+     * @test
+     *
+     * It should return error for invalid mission id
+     *
+     * @return void
+     */
     public function it_should_return_error_for_invalid_mission_id_for_get_media()
     {
         $connection = 'tenant';
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
         $user->save();
-        $missionId = rand(1000000,2000000);
+        $missionId = rand(1000000, 2000000);
         
         $token = Helpers::getJwtToken($user->user_id);
-        $this->get('/app/mission/'.$missionId.'/comments', ['token' => $token])
+        $this->get('/app/mission-media/'.$missionId, ['token' => $token])
         ->seeStatusCode(404)
         ->seeJsonStructure([
             "errors" => [
