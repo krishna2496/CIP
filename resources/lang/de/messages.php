@@ -191,7 +191,7 @@ return [
         //For timesheet module
         'ERROR_INVALID_ACTION' => 'DE: Invalid goal action',
         'TIMESHEET_NOT_FOUND' => 'DE: Timesheet does not exists',
-        'ERROR_TIMESHEET_ALREADY_UPDATED' => 'DE: You can not update approved timesheet',
+        'ERROR_TIMESHEET_ALREADY_APPROVED' => 'DE: You can not update approved timesheet',
         'TIMESHEET_DOCUMENT_NOT_FOUND' => 'DE: Timesheet document does not exists',        
         'ERROR_MISSION_STARTDATE' => 'DE: Invalid date: selected date should not be before startdate',
         'ERROR_MISSION_ENDDATE' => 'DE: Selected date should not be greater than mission end date',
@@ -200,7 +200,5 @@ return [
         'ERROR_INVALID_DATA_FOR_TIMESHEET_ENTRY' => 'DE: You cannot add time entry',
         'ERROR_TIMESHEET_ENTRY_NOT_FOUND' => 'DE: Timesheet entry id not found',
         'ERROR_SAME_DATE_TIME_ENTRY' => 'DE: You cannot add more than 24 hours timeentry for same date',
-        'ERROR_INVALID_HOURS' => 'DE: Hours must be in between 00, 23',
-        'ERROR_INVALID_MINUTES' => 'DE: Minutes must be in between 00, 59',
     ],
 ];

@@ -225,7 +225,7 @@ return [
         //For timesheet module
         'ERROR_INVALID_ACTION' => 'Action de but invalide',        
         'TIMESHEET_NOT_FOUND' => 'La feuille de temps n\'existe pas',
-        'ERROR_TIMESHEET_ALREADY_UPDATED' => 'Vous ne pouvez pas mettre à jour la feuille de temps approuvée',
+        'ERROR_TIMESHEET_ALREADY_APPROVED' => 'Vous ne pouvez pas mettre à jour la feuille de temps approuvée',
         'TIMESHEET_DOCUMENT_NOT_FOUND' => 'La feuille de temps n\'existe pas',        
         'ERROR_MISSION_STARTDATE' => 'Date invalide: la date sélectionnée ne doit pas être antérieure à la date de début',
         'ERROR_MISSION_ENDDATE' => 'La date sélectionnée ne doit pas être supérieure à la date de fin de la mission.',
@@ -234,8 +234,6 @@ return [
         'ERROR_INVALID_DATA_FOR_TIMESHEET_ENTRY' => 'Vous ne pouvez pas ajouter de temps',
         'ERROR_TIMESHEET_ENTRY_NOT_FOUND' => 'ID de saisie de la feuille de temps introuvable',
         'ERROR_SAME_DATE_TIME_ENTRY' => 'Vous ne pouvez pas ajouter plus de 24 heures à la même date',
-        'ERROR_INVALID_HOURS' => 'Les heures doivent être comprises entre 00 et 23',
-        'ERROR_INVALID_MINUTES' => 'Les minutes doivent être comprises entre 00 et 59',
     ],
 
     /**

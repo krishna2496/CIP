@@ -329,6 +329,18 @@ class Helpers
     }
 
     /**
+     * Change date format
+     *
+     * @param string $date
+     * @param string $dateFormat
+     * @return string
+     */
+    public function changeDateFormat(string $date, string $dateFormat): string
+    {
+        return date($dateFormat, strtotime($date));
+    }
+    
+    /**
      * Convert in report time format
      *
      * @param string $totalHours
