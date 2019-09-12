@@ -237,14 +237,10 @@ class TimesheetController extends Controller
                                     : config('constants.ALLOW_TIMESHEET_ENTRY');
 
                                     // Count records
-                                    if (count($tenantOptionData) > 0) {
-                                        $tenantOptionDetails = $tenantOptionData->toArray();
-                                        $extraWeeks = intval($tenantOptionDetails[0]['option_value'])
-                                        ?? config('constants.ALLOW_TIMESHEET_ENTRY');
-                            
-                                        // Add weeks mission end date
-                                        $totalDate = $endDate->addWeeks($extraWeeks);
-                                        if ($dateVolunteered > $totalDate) {
+                                    if (count($tenantOptionData) > 0 || $extraWeeks > 0) {
+                                        // Add weeks to mission end date
+                                        $timeentryEndDate = $endDate->addWeeks($extraWeeks);
+                                        if ($dateVolunteered > $timeentryEndDate) {
                                             return $this->responseHelper->error(
                                                 Response::HTTP_UNPROCESSABLE_ENTITY,
                                                 Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
@@ -279,11 +275,6 @@ class TimesheetController extends Controller
             $apiData = ['timesheet_id' => $timesheet->timesheet_id];
 
             return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
-        } catch (InvalidArgumentException $e) {
-            return $this->invalidArgument(
-                config('constants.error_codes.ERROR_INVALID_ARGUMENT'),
-                trans('messages.custom_error_message.ERROR_INVALID_ARGUMENT')
-            );
         } catch (\Exception $e) {
             return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
