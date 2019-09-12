@@ -327,12 +327,10 @@ textarea {
     font-size: 14px;
     font-weight: 400;
   }
-
-   &.disabled {
+  &.disabled {
     background: $disabled-bg;
     pointer-events: none;
   }
-
   &:focus {
     box-shadow: none;
     border-color: $gray-primary;
@@ -818,7 +816,7 @@ label {
       width: 100%;
       padding: 0;
       border-radius: 0 0 3px 3px;
-      max-height: 350px;
+      max-height: calc(100vh - 200px);
 
       @include md-max {
         max-height: 275px;

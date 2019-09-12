@@ -151,57 +151,32 @@
                             }"
                         >{{langauageData.label.submit}}</b-button>
                     </div>
-                    </div> 
-                     
-
-                       <!-- <div class="table-wrapper-outer request-table-wrap">
-                                <div v-bind:class="{ 'content-loader-wrap': true, 'loader-active': timeRequestLoaderActive}">
-                                    <div class="content-loader"></div>
-                                </div> -->
-                                <VolunteeringRequest
-                                    :headerField="timesheetRequestFields"
-                                    :items="timesheetRequestItems"
-                                    :headerLable="timeRequestLabel"
-                                    :currentPage="hourRequestCurrentPage"
-                                    :totalRow="hourRequestTotalRow"
-                                    @updateCall = "getTimeRequest"
-                                />
-                          <!-- </div> -->
-
-                           <!-- <div class="table-wrapper-outer request-table-wrap">
-                                <div v-bind:class="{ 'content-loader-wrap': true, 'loader-active': goalRequestLoaderActive}">
-                                    <div class="content-loader"></div>
-                                </div> -->
-                                 <VolunteeringRequest
-                                    :headerField="goalRequestFields"
-                                    :items="goalRequestItems"
-                                    :headerLable="goalRequestLabel"
-                                    :currentPage="goalRequestCurrentPage"
-                                    :totalRow="goalRequestTotalRow"
-                                    @updateCall = "getGoalRequest"
-                                />
-                           <!-- </div> -->
-
-                   
-                        <!-- <VolunteeringRequest
-                            :headerField="timesheetRequestFields"
-                            :items="timesheetRequestItems"
-                            :headerLable="timeRequestLabel"
-                            :currentPage="hourRequestCurrentPage"
-                            :totalRow="hourRequestTotalRow"
-                            @updateCall = "getTimeRequest"
-                        />
-                    
-                    
-                        <VolunteeringRequest
-                            :headerField="goalRequestFields"
-                            :items="goalRequestItems"
-                            :headerLable="goalRequestLabel"
-                            :currentPage="goalRequestCurrentPage"
-                            :totalRow="goalRequestTotalRow"
-                            @updateCall = "getGoalRequest"
-                        /> -->
-                    
+                </div> 
+                <VolunteeringRequest
+                        :headerField="timesheetRequestFields"
+                        :items="timesheetRequestItems"
+                        :headerLable="timeRequestLabel"
+                        :currentPage="hourRequestCurrentPage"
+                        :totalRow="hourRequestTotalRow"
+                        @updateCall = "getTimeRequest"
+                        exportUrl = "app/timesheet/time-requests/export"
+                        :perPage = "hourRequestPerPage"
+                        :nextUrl = "hourRequestNextUrl"
+                        :fileName="langauageData.export_timesheet_file_names.PENDING_TIME_MISSION_ENTRIES_XLSX"
+                    />
+               
+                <VolunteeringRequest
+                        :headerField="goalRequestFields"
+                        :items="goalRequestItems"
+                        :headerLable="goalRequestLabel"
+                        :currentPage="goalRequestCurrentPage"
+                        :totalRow="goalRequestTotalRow"
+                        @updateCall = "getGoalRequest"
+                        :perPage = "goalRequestPerPage"    
+                        :nextUrl = "goalRequestNextUrl"
+                        exportUrl = "app/timesheet/goal-requests/export"
+                        :fileName="langauageData.export_timesheet_file_names.PENTIND_GOAL_MISSION_ENTRIES_XLSX"
+                    />
                 </div>
 
                     <AddVolunteeringHours
@@ -280,8 +255,6 @@ export default {
             files: [],
             tableLoaderActive : true,
             goalTableLoaderActive : true,
-            timeRequestLoaderActive : false,
-            goalRequestLoaderActive : false,
             langauageData : [],
             VolunteeringRequest : [],
             timesheetRequestFields: [],
@@ -336,7 +309,11 @@ export default {
             futureDates: new Date(),
             enableSubmitGoalTimeSheet : true,
             enableSubmitTimeTimeSheet : true,
-            isShownComponent : false
+            isShownComponent : false,
+            hourRequestPerPage : 5,
+            goalRequestPerPage : 5,
+            hourRequestNextUrl : null,
+            goalRequestNextUrl : null
         };
     },
     updated() {
@@ -634,20 +611,12 @@ export default {
         async getVolunteerHoursData() {
             this.tableLoaderActive = true
             var _this =this;
-            await volunteerTimesheetHours().then( response => {
-                this.isShownComponent = true;
+            await volunteerTimesheetHours().then( response => { 
                 if(response) {
                     this.timeMissionData = response['TIME']
                     this.goalMissionData = response['GOAL']
                 }
-            
-                _this.tableLoaderActive = false
-                setTimeout(function(){
-                    _this.getTimeRequestData(_this.hourRequestCurrentPage);
-                },50)
-                setTimeout(function(){
-                    _this.getGoalRequestData(_this.goalRequestCurrentPage);
-                },100)
+                _this.tableLoaderActive = false 
            })
         },
 
@@ -961,17 +930,10 @@ export default {
         },
         getTimeRequest(currentPage) {
             this.getTimeRequestData(currentPage);
-            // window.scrollTo({
-            //         'behavior': 'smooth',
-            //         'left': 500,
-            //         'top': 500
-            // });
         },
         getTimeRequestData(currentPage) {
-            this.timeRequestLoaderActive = true
-             
             var _this = this;
-            _this.timesheetRequestItems = [];
+            let currentData = [];
             timeRequest(currentPage).then( response => {
                 if(response.data) {
                     let data = response.data;
@@ -983,10 +945,12 @@ export default {
                     if(response.pagination) {
                         this.hourRequestTotalRow = response.pagination.total;
                         this.hourRequestCurrentPage = response.pagination.current_page
+                        this.hourRequestPerPage = response.pagination.per_page;
+                        this.hourRequestNextUrl = response.pagination.next_url
                     }
                     
                     data.filter(function(item,index){
-                        _this.timesheetRequestItems.push(
+                        currentData.push(
                             {
                                 [mission] : item.title,
                                 [time] : item.time,
@@ -994,9 +958,9 @@ export default {
                                 [organisation] : item.organisation_name,
                             }
                         )
+                        _this.timesheetRequestItems = currentData;
                     })
                 }
-                this.timeRequestLoaderActive = false  
             })   
         },
         getGoalRequest(currentPage) {
@@ -1004,10 +968,9 @@ export default {
 
         },
         getGoalRequestData(currentPage) {
-            this.goalRequestLoaderActive = true
             var _this = this;
-            
-            _this.goalRequestItems = []
+            let currentData = [];
+
             goalRequest(currentPage).then( response => {
                 if(response.data) {
                     let data = response.data;
@@ -1017,19 +980,21 @@ export default {
                      if(response.pagination) {
                         this.goalRequestTotalRow = response.pagination.total;
                         this.goalRequestCurrentPage = response.pagination.current_page
+                        this.goalRequestPerPage = response.pagination.per_page;
+                        this.goalRequestNextUrl = response.pagination.next_url
                     }
                     
                     data.filter(function(item,index) {
-                        _this.goalRequestItems.push(
+                        currentData.push(
                             {
                                 [mission] : item.title,
                                 [action] : item.action,
                                 [organisation] : item.organisation_name,
                             }
                         )
+                        _this.goalRequestItems = currentData
                     }) 
                 }
-                this.goalRequestLoaderActive = false
             })   
         }
     },
@@ -1042,6 +1007,13 @@ export default {
         this.timeRequestLabel = this.langauageData.label.hours_requests 
         this.goalRequestLabel = this.langauageData.label.goals_requests 
         this.getVolunteerHoursData();
+        this.isShownComponent = true;
+        setTimeout(function(){
+            globalThis.getTimeRequestData(globalThis.hourRequestCurrentPage);
+        },80)
+        setTimeout(function(){
+            globalThis.getGoalRequestData(globalThis.goalRequestCurrentPage);
+        },100)
         let timeRequestFieldArray = [
             this.langauageData.label.mission,
             this.langauageData.label.time,

@@ -542,7 +542,7 @@
 			</b-container>
 		  
 	  </div>
-	  <AddVolunteeringHours
+	  <!-- <AddVolunteeringHours
                         ref="timeModal"
                         :defaultWorkday="defaultWorkday"
                         :defaultHours="defaultHours"
@@ -569,10 +569,10 @@
                         :workDayList="workDayList"
                         @updateCall="updateDefaultValue" 
                         @changeDocument="changeGoalDocument"
-                    />
-	  	<b-button class="btn-borderprimary icon-btn"  
+                    /> -->
+	  	<!-- <b-button class="btn-borderprimary icon-btn"  
 							@click="AddEntry">
-							sddsds
+							sddsds -->
 		</b-button>
 	  <b-modal :title="langauageData.label.search_user" ref="userDetailModal" 
             :modal-class="myclass" hide-footer size="lg">
