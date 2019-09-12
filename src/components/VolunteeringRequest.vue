@@ -24,18 +24,16 @@
             @change="pageChange"
             ></b-pagination>
       </div>
-      </div>
+    </div>
 </template>
 
 <script>
 import store from '../store';
 import moment from 'moment'
-import DatePicker from "vue2-datepicker";
 
 export default {
     name: "VolunteeringRequest",
     components: {
-        DatePicker
     },
     props: {
         items : Array,

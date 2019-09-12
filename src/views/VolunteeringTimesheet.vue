@@ -115,15 +115,15 @@
                                 <b-tr v-for="(timeItem,key) in goalMissionData">
                                     <b-td class="mission-col">{{timeItem.title}}</b-td>
                                     <b-td 
-                                    :mission-id="timeItem.mission_id"
-                                    :date="key+1"
-                                    v-on:click="getRelatedTimeData(key+1,timeItem,'goal')"
-                                    v-bind:class="{ 
-                                    'approved' : getTimeSheetHourClass(key+1,timeItem,'goal') == 'approved',
-                                    'declined' : getTimeSheetHourClass(key+1,timeItem,'goal') == 'declined',
-                                    'disabled' : getTimeSheetHourClass(key+1,timeItem,'goal') == 'disabled',
-                                    'approval' : getTimeSheetHourClass(key+1,timeItem,'goal') == 'submit_for_approval',
-                                    'default-time' : getTimeSheetHourClass(key+1,timeItem,'goal') == 'default-time'
+                                        :mission-id="timeItem.mission_id"
+                                        :date="key+1"
+                                        v-on:click="getRelatedTimeData(key+1,timeItem,'goal')"
+                                        v-bind:class="{ 
+                                        'approved' : getTimeSheetHourClass(key+1,timeItem,'goal') == 'approved',
+                                        'declined' : getTimeSheetHourClass(key+1,timeItem,'goal') == 'declined',
+                                        'disabled' : getTimeSheetHourClass(key+1,timeItem,'goal') == 'disabled',
+                                        'approval' : getTimeSheetHourClass(key+1,timeItem,'goal') == 'submit_for_approval',
+                                        'default-time' : getTimeSheetHourClass(key+1,timeItem,'goal') == 'default-time'
                                     }"
                                     v-for="(item,key) in volunteeringGoalWeeks">
                                     {{getTime(key,timeItem.timesheet,'goal')}} 
@@ -153,8 +153,37 @@
                     </div>
                     </div> 
                      
+
+                       <!-- <div class="table-wrapper-outer request-table-wrap">
+                                <div v-bind:class="{ 'content-loader-wrap': true, 'loader-active': timeRequestLoaderActive}">
+                                    <div class="content-loader"></div>
+                                </div> -->
+                                <VolunteeringRequest
+                                    :headerField="timesheetRequestFields"
+                                    :items="timesheetRequestItems"
+                                    :headerLable="timeRequestLabel"
+                                    :currentPage="hourRequestCurrentPage"
+                                    :totalRow="hourRequestTotalRow"
+                                    @updateCall = "getTimeRequest"
+                                />
+                          <!-- </div> -->
+
+                           <!-- <div class="table-wrapper-outer request-table-wrap">
+                                <div v-bind:class="{ 'content-loader-wrap': true, 'loader-active': goalRequestLoaderActive}">
+                                    <div class="content-loader"></div>
+                                </div> -->
+                                 <VolunteeringRequest
+                                    :headerField="goalRequestFields"
+                                    :items="goalRequestItems"
+                                    :headerLable="goalRequestLabel"
+                                    :currentPage="goalRequestCurrentPage"
+                                    :totalRow="goalRequestTotalRow"
+                                    @updateCall = "getGoalRequest"
+                                />
+                           <!-- </div> -->
+
                    
-                        <VolunteeringRequest
+                        <!-- <VolunteeringRequest
                             :headerField="timesheetRequestFields"
                             :items="timesheetRequestItems"
                             :headerLable="timeRequestLabel"
@@ -171,7 +200,7 @@
                             :currentPage="goalRequestCurrentPage"
                             :totalRow="goalRequestTotalRow"
                             @updateCall = "getGoalRequest"
-                        />
+                        /> -->
                     
                 </div>
 
@@ -458,6 +487,7 @@ export default {
                 this.$refs.timeModal.$refs.timeHoursModal.show();    
             } else {
                 this.$refs.goalModal.$refs.goalActionModal.show();
+                
             }
            
         },
@@ -556,6 +586,7 @@ export default {
         },
 
         changeVolunteeringHours(data) {
+            this.enableSubmitTimeTimeSheet = true;
             var _this =this;
             this.tableLoaderActive = true
             this.volunteeringHoursCurrentMonth = data.month
@@ -568,6 +599,7 @@ export default {
         },
 
         changeVolunteeringGoals(data) {
+            this.enableSubmitGoalTimeSheet = true;
             var _this =this;
             this.goalTableLoaderActive = true
             this.volunteeringGoalCurrentMonth = data.month
@@ -771,10 +803,15 @@ export default {
         getTotalHours(timeSheetType) {
             let _this = this
             var time1 = "00:00";
+            var timeApproved = "00:00";
             var action = 0;
+            var actionApproved = 0;
             var hour=0;
             var minute=0;
-           
+            var hourApproved=0;
+            var minuteApproved=0;
+             
+            
             let timeArray = []
             if(timeSheetType == "time") {
                 timeArray = this.timeMissionData;
@@ -799,12 +836,26 @@ export default {
                                         hour = hour + minute/60;
                                         minute = minute%60;
                                         time1= ("0" + Math.floor(hour)).slice(-2)+':'+("0" + Math.floor(minute)).slice(-2);
+                                        if(timeEntry.timesheet_status.status != "APPROVED" && timeEntry.timesheet_status.status != "AUTOMATICALLY_APPROVED") {
+                                             //for submit request
+                                            var splitTimeApproved= timeApproved.split(':');
+                                            hourApproved = parseInt(splitTimeApproved[0])+parseInt(splitTime2[0]);
+                                            minuteApproved = parseInt(splitTimeApproved[1])+parseInt(splitTime2[1]);
+                                            hourApproved = hourApproved + minuteApproved/60;
+                                            minuteApproved = minuteApproved%60;
+                                            timeApproved= ("0" + Math.floor(hourApproved)).slice(-2)+':'+("0" + Math.floor(minuteApproved)).slice(-2);
+                                        }
+                                       
                                     }
                                 }
                             }   else {
                                 if(_this.volunteeringGoalCurrentYear == currentArrayYear) {
                                     if(_this.volunteeringGoalCurrentMonth == currentArrayMonth) {
+                                        
                                        action = action+ timeEntry.action
+                                      if(timeEntry.timesheet_status.status != "APPROVED" && timeEntry.timesheet_status.status != "AUTOMATICALLY_APPROVED") {
+                                          actionApproved = actionApproved +  timeEntry.action
+                                      }
                                     }
                                 }
                              }
@@ -814,15 +865,18 @@ export default {
             
                 if(timeSheetType == "time") {
                     if(time1 != "00:00") {
-                        this.enableSubmitTimeTimeSheet = false;
+                        if(timeApproved != "00:00") {
+                            this.enableSubmitTimeTimeSheet = false;
+                        } 
                         return time1;
-                    }
-                    
+                    }    
                 } 
                 if(timeSheetType == "goal") {
                     if(action != 0) {
-                        this.enableSubmitGoalTimeSheet = false
-                         return action;
+                        if(actionApproved != 0) {
+                            this.enableSubmitGoalTimeSheet = false;
+                        } 
+                        return action;
                     }
                    
                 }    
@@ -853,24 +907,36 @@ export default {
         },
 
         submitVolunteerTimeSheet(timeSheetType) {
-            
+                var _this = this;
                 let timeSheetId = {
                     'timesheet_entries' : []
                 }
                 let timeSheetEntry = []
                 let timeArray = [];
+                let currentYear = ''
+                let currentMonth = ''
                 if(timeSheetType == "time") {
                     timeArray = this.timeMissionData;
+                    currentYear = _this.volunteeringHoursCurrentYear
+                    currentMonth = _this.volunteeringHoursCurrentMonth
                 } else {
                     timeArray = this.goalMissionData;
+                    currentYear = _this.volunteeringGoalCurrentYear
+                    currentMonth = _this.volunteeringGoalCurrentMonth
                 }
                 if(timeArray) {
                     timeArray.filter(function (timeMission, timeMissionIndex) {
                         let timeSheetArray = timeMission.timesheet;
                         if(timeSheetArray) {
                             timeSheetArray.filter(function (timeSheet, timeSheetIndex) {
-                                if(timeSheet.timesheet_status.status != "APPROVED" && timeSheet.timesheet_status.status != "AUTOMATICALLY_APPROVED"){
-                                        timeSheetId.timesheet_entries.push({'timesheet_id':timeSheet.timesheet_id})  
+                                let currentArrayYear = timeSheet.year
+                                let currentArrayMonth = timeSheet.month
+                                if(currentYear == currentArrayYear) {
+                                    if(currentMonth == currentArrayMonth) {
+                                        if(timeSheet.timesheet_status.status != "APPROVED" && timeSheet.timesheet_status.status != "AUTOMATICALLY_APPROVED"){
+                                                timeSheetId.timesheet_entries.push({'timesheet_id':timeSheet.timesheet_id})  
+                                        }
+                                    }
                                 }
                             });
                         }
@@ -901,7 +967,9 @@ export default {
             //         'top': 500
             // });
         },
-        getTimeRequestData(currentPage) {   
+        getTimeRequestData(currentPage) {
+            this.timeRequestLoaderActive = true
+             
             var _this = this;
             _this.timesheetRequestItems = [];
             timeRequest(currentPage).then( response => {
@@ -927,8 +995,8 @@ export default {
                             }
                         )
                     })
-                  
-                }  
+                }
+                this.timeRequestLoaderActive = false  
             })   
         },
         getGoalRequest(currentPage) {
@@ -936,6 +1004,7 @@ export default {
 
         },
         getGoalRequestData(currentPage) {
+            this.goalRequestLoaderActive = true
             var _this = this;
             
             _this.goalRequestItems = []
@@ -960,7 +1029,7 @@ export default {
                         )
                     }) 
                 }
-               
+                this.goalRequestLoaderActive = false
             })   
         }
     },

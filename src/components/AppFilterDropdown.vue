@@ -11,6 +11,7 @@
         <div class="option-list-wrap dropdown-option-wrap" data-simplebar v-if="optionList != null && optionList.length > 0" >
             <ul class="option-list dropdown-option-list" v-if="translationEnable == 'false'">
                 <li
+                    class="has-count"
                     v-for="item in optionList"
                     v-bind:data-id="item[1].id"
                     @click="handleSelect"

@@ -98,18 +98,18 @@ export default {
     window.addEventListener("scroll", this.handleScroll);
     window.scrollTo(0, 0);
     
-     setTimeout(function(){
-        var allElements = document.querySelectorAll('*');
-        allElements.forEach(function(allEvent){
-            allEvent.addEventListener('click' , function(){
-                setTimeout(function(){
-                if(document.querySelector('body').classList.contains('modal-open')){
-                     window.scrollTo(0, 0);
-                }
-                });
-                });
-            })
-        });   
+     // setTimeout(function(){
+     //    var allElements = document.querySelectorAll('*');
+     //    allElements.forEach(function(allEvent){
+     //        allEvent.addEventListener('click' , function(){
+     //            setTimeout(function(){
+     //            if(document.querySelector('body').classList.contains('modal-open')){
+     //                 window.scrollTo(0, 0);
+     //            }
+     //            });
+     //            });
+     //        })
+     //    });   
   },
   updated() {
     window.scrollTo(0, 0);
