@@ -179,6 +179,8 @@ return [
         'SUBMIT_FOR_APPROVAL' => '5'
     ],
 
+    'ALLOW_TIMESHEET_ENTRY' => 2,
+    
     /**
      * Export timesheet file names
      */
@@ -188,7 +190,6 @@ return [
         'TIME_MISSION_HISTORY_XLSX' => 'Time_Mission_History.xlsx',
         'GOAL_MISSION_HISTORY_XLSX' => 'Goal_Mission_History.xlsx'
     ],
-    'ALLOW_TIMESHEET_ENTRY' => 2,
 
     /*
      * User notification types

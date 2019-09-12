@@ -152,7 +152,11 @@ class TimesheetController extends Controller
                 );
             }
          
-            $dateVolunteered = $this->helpers->changeDateFormat($request->date_volunteered);
+            $dateVolunteered = $this->helpers->changeDateFormat(
+                $request->date_volunteered,
+                config('constants.TIMESHEET_DATE_FORMAT')
+            );
+
             $timesheetStatus = array(config('constants.timesheet_status.APPROVED'),
             config('constants.timesheet_status.AUTOMATICALLY_APPROVED'));
 
@@ -192,7 +196,7 @@ class TimesheetController extends Controller
                     // Add total actions
                     $totalGoalActions = $totalSubmittedGoalActions + $request->action;
 
-                    // Check total goals are not maximum than provided goals
+                    // Check total goals should not exceed goal objective
                     if ($totalGoalActions > $missionDetail["goal_mission"]["goal_objective"]) {
                         return $this->responseHelper->error(
                             Response::HTTP_UNPROCESSABLE_ENTITY,
@@ -208,60 +212,66 @@ class TimesheetController extends Controller
                     $request->request->add(['time' => $time]);
                     // Remove extra params
                     $request->request->remove('action');
-
-                    // Check start dates and end dates of mission
-                    if ($timesheetMissionData->start_date) {
-                        $missionStartDate = $this->helpers->changeDateFormat($timesheetMissionData->start_date);
-                        if ($dateVolunteered < $missionStartDate) {
-                            return $this->responseHelper->error(
-                                Response::HTTP_UNPROCESSABLE_ENTITY,
-                                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                                config('constants.error_codes.ERROR_MISSION_STARTDATE'),
-                                trans('messages.custom_error_message.ERROR_MISSION_STARTDATE')
+                    break;
+                default:
+            }
+            
+            // Check start dates and end dates of mission
+            if ($timesheetMissionData->start_date) {
+                $missionStartDate = $this->helpers->changeDateFormat(
+                    $timesheetMissionData->start_date,
+                    config('constants.TIMESHEET_DATE_FORMAT')
+                );
+                if ($dateVolunteered < $missionStartDate) {
+                    return $this->responseHelper->error(
+                        Response::HTTP_UNPROCESSABLE_ENTITY,
+                        Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                        config('constants.error_codes.ERROR_MISSION_STARTDATE'),
+                        trans('messages.custom_error_message.ERROR_MISSION_STARTDATE')
+                    );
+                } else {
+                    if ($timesheetMissionData->end_date) {
+                        $missionEndDate = $this->helpers->changeDateFormat(
+                            $timesheetMissionData->end_date,
+                            config('constants.TIMESHEET_DATE_FORMAT')
+                        );
+                        if ($dateVolunteered > $missionEndDate) {
+                            $endDate = Carbon::createFromFormat(
+                                config('constants.TIMESHEET_DATE_FORMAT'),
+                                $missionEndDate
                             );
-                        } else {
-                            if ($timesheetMissionData->end_date) {
-                                $missionEndDate = $this->helpers->changeDateFormat($timesheetMissionData->end_date);
-                                if ($dateVolunteered > $missionEndDate) {
-                                    $endDate = Carbon::createFromFormat(
-                                        config('constants.TIMESHEET_DATE_FORMAT'),
-                                        $missionEndDate
+                
+                            // Fetch tenant options value
+                            $tenantOptionData = $this->tenantOptionRepository
+                            ->getOptionValue('ALLOW_TIMESHEET_ENTRY');
+
+                            $extraWeeks = isset($tenantOptionData[0]['option_value'])
+                            ? intval($tenantOptionData[0]['option_value'])
+                            : config('constants.ALLOW_TIMESHEET_ENTRY');
+
+                            // Count records
+                            if (count($tenantOptionData) > 0 || $extraWeeks > 0) {
+                                // Add weeks to mission end date
+                                $timeentryEndDate = $endDate->addWeeks($extraWeeks);
+                                if ($dateVolunteered > $timeentryEndDate) {
+                                    return $this->responseHelper->error(
+                                        Response::HTTP_UNPROCESSABLE_ENTITY,
+                                        Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                                        config('constants.error_codes.ERROR_MISSION_ENDDATE'),
+                                        trans('messages.custom_error_message.ERROR_MISSION_ENDDATE')
                                     );
-                        
-                                    // Fetch tenant options value
-                                    $tenantOptionData = $this->tenantOptionRepository
-                                    ->getOptionValue('ALLOW_TIMESHEET_ENTRY');
-
-                                    $extraWeeks = isset($tenantOptionData[0]['option_value'])
-                                    ? intval($tenantOptionData[0]['option_value'])
-                                    : config('constants.ALLOW_TIMESHEET_ENTRY');
-
-                                    // Count records
-                                    if (count($tenantOptionData) > 0 || $extraWeeks > 0) {
-                                        // Add weeks to mission end date
-                                        $timeentryEndDate = $endDate->addWeeks($extraWeeks);
-                                        if ($dateVolunteered > $timeentryEndDate) {
-                                            return $this->responseHelper->error(
-                                                Response::HTTP_UNPROCESSABLE_ENTITY,
-                                                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                                                config('constants.error_codes.ERROR_MISSION_ENDDATE'),
-                                                trans('messages.custom_error_message.ERROR_MISSION_ENDDATE')
-                                            );
-                                        }
-                                    } else {
-                                        return $this->responseHelper->error(
-                                            Response::HTTP_UNPROCESSABLE_ENTITY,
-                                            Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                                            config('constants.error_codes.ERROR_MISSION_ENDDATE'),
-                                            trans('messages.custom_error_message.ERROR_MISSION_ENDDATE')
-                                        );
-                                    }
                                 }
+                            } else {
+                                return $this->responseHelper->error(
+                                    Response::HTTP_UNPROCESSABLE_ENTITY,
+                                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                                    config('constants.error_codes.ERROR_MISSION_ENDDATE'),
+                                    trans('messages.custom_error_message.ERROR_MISSION_ENDDATE')
+                                );
                             }
                         }
                     }
-                    break;
-                default:
+                }
             }
 
             // Store timesheet
