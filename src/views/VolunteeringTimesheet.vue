@@ -161,6 +161,8 @@
                             :currentPage="hourRequestCurrentPage"
                             :totalRow="hourRequestTotalRow"
                             @updateCall = "getTimeRequest"
+                            exportUrl = "app/timesheet/time-requests/export"
+						    :fileName="langauageData.export_timesheet_file_names.PENDING_TIME_MISSION_ENTRIES_XLSX"
                         />
                     
                     
@@ -171,6 +173,8 @@
                             :currentPage="goalRequestCurrentPage"
                             :totalRow="goalRequestTotalRow"
                             @updateCall = "getGoalRequest"
+                            exportUrl = "app/timesheet/goal-requests/export"
+						    :fileName="langauageData.export_timesheet_file_names.PENTIND_GOAL_MISSION_ENTRIES_XLSX"
                         />
                     
                 </div>
@@ -895,11 +899,6 @@ export default {
         },
         getTimeRequest(currentPage) {
             this.getTimeRequestData(currentPage);
-            // window.scrollTo({
-            //         'behavior': 'smooth',
-            //         'left': 500,
-            //         'top': 500
-            // });
         },
         getTimeRequestData(currentPage) {   
             var _this = this;
