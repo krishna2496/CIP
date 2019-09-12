@@ -115,15 +115,15 @@
                                 <b-tr v-for="(timeItem,key) in goalMissionData">
                                     <b-td class="mission-col">{{timeItem.title}}</b-td>
                                     <b-td 
-                                    :mission-id="timeItem.mission_id"
-                                    :date="key+1"
-                                    v-on:click="getRelatedTimeData(key+1,timeItem,'goal')"
-                                    v-bind:class="{ 
-                                    'approved' : getTimeSheetHourClass(key+1,timeItem,'goal') == 'approved',
-                                    'declined' : getTimeSheetHourClass(key+1,timeItem,'goal') == 'declined',
-                                    'disabled' : getTimeSheetHourClass(key+1,timeItem,'goal') == 'disabled',
-                                    'approval' : getTimeSheetHourClass(key+1,timeItem,'goal') == 'submit_for_approval',
-                                    'default-time' : getTimeSheetHourClass(key+1,timeItem,'goal') == 'default-time'
+                                        :mission-id="timeItem.mission_id"
+                                        :date="key+1"
+                                        v-on:click="getRelatedTimeData(key+1,timeItem,'goal')"
+                                        v-bind:class="{ 
+                                        'approved' : getTimeSheetHourClass(key+1,timeItem,'goal') == 'approved',
+                                        'declined' : getTimeSheetHourClass(key+1,timeItem,'goal') == 'declined',
+                                        'disabled' : getTimeSheetHourClass(key+1,timeItem,'goal') == 'disabled',
+                                        'approval' : getTimeSheetHourClass(key+1,timeItem,'goal') == 'submit_for_approval',
+                                        'default-time' : getTimeSheetHourClass(key+1,timeItem,'goal') == 'default-time'
                                     }"
                                     v-for="(item,key) in volunteeringGoalWeeks">
                                     {{getTime(key,timeItem.timesheet,'goal')}} 
@@ -151,32 +151,32 @@
                             }"
                         >{{langauageData.label.submit}}</b-button>
                     </div>
-                    </div> 
-                     
-                   
-                        <VolunteeringRequest
-                            :headerField="timesheetRequestFields"
-                            :items="timesheetRequestItems"
-                            :headerLable="timeRequestLabel"
-                            :currentPage="hourRequestCurrentPage"
-                            :totalRow="hourRequestTotalRow"
-                            @updateCall = "getTimeRequest"
-                            exportUrl = "app/timesheet/time-requests/export"
-						    :fileName="langauageData.export_timesheet_file_names.PENDING_TIME_MISSION_ENTRIES_XLSX"
-                        />
-                    
-                    
-                        <VolunteeringRequest
-                            :headerField="goalRequestFields"
-                            :items="goalRequestItems"
-                            :headerLable="goalRequestLabel"
-                            :currentPage="goalRequestCurrentPage"
-                            :totalRow="goalRequestTotalRow"
-                            @updateCall = "getGoalRequest"
-                            exportUrl = "app/timesheet/goal-requests/export"
-						    :fileName="langauageData.export_timesheet_file_names.PENTIND_GOAL_MISSION_ENTRIES_XLSX"
-                        />
-                    
+                </div> 
+                <VolunteeringRequest
+                        :headerField="timesheetRequestFields"
+                        :items="timesheetRequestItems"
+                        :headerLable="timeRequestLabel"
+                        :currentPage="hourRequestCurrentPage"
+                        :totalRow="hourRequestTotalRow"
+                        @updateCall = "getTimeRequest"
+                        exportUrl = "app/timesheet/time-requests/export"
+                        :perPage = "hourRequestPerPage"
+                        :nextUrl = "hourRequestNextUrl"
+                        :fileName="langauageData.export_timesheet_file_names.PENDING_TIME_MISSION_ENTRIES_XLSX"
+                    />
+               
+                <VolunteeringRequest
+                        :headerField="goalRequestFields"
+                        :items="goalRequestItems"
+                        :headerLable="goalRequestLabel"
+                        :currentPage="goalRequestCurrentPage"
+                        :totalRow="goalRequestTotalRow"
+                        @updateCall = "getGoalRequest"
+                        :perPage = "goalRequestPerPage"    
+                        :nextUrl = "goalRequestNextUrl"
+                        exportUrl = "app/timesheet/goal-requests/export"
+                        :fileName="langauageData.export_timesheet_file_names.PENTIND_GOAL_MISSION_ENTRIES_XLSX"
+                    />
                 </div>
 
                     <AddVolunteeringHours
@@ -255,8 +255,6 @@ export default {
             files: [],
             tableLoaderActive : true,
             goalTableLoaderActive : true,
-            timeRequestLoaderActive : false,
-            goalRequestLoaderActive : false,
             langauageData : [],
             VolunteeringRequest : [],
             timesheetRequestFields: [],
@@ -311,7 +309,11 @@ export default {
             futureDates: new Date(),
             enableSubmitGoalTimeSheet : true,
             enableSubmitTimeTimeSheet : true,
-            isShownComponent : false
+            isShownComponent : false,
+            hourRequestPerPage : 5,
+            goalRequestPerPage : 5,
+            hourRequestNextUrl : null,
+            goalRequestNextUrl : null
         };
     },
     updated() {
@@ -462,6 +464,7 @@ export default {
                 this.$refs.timeModal.$refs.timeHoursModal.show();    
             } else {
                 this.$refs.goalModal.$refs.goalActionModal.show();
+                
             }
            
         },
@@ -560,6 +563,7 @@ export default {
         },
 
         changeVolunteeringHours(data) {
+            this.enableSubmitTimeTimeSheet = true;
             var _this =this;
             this.tableLoaderActive = true
             this.volunteeringHoursCurrentMonth = data.month
@@ -572,6 +576,7 @@ export default {
         },
 
         changeVolunteeringGoals(data) {
+            this.enableSubmitGoalTimeSheet = true;
             var _this =this;
             this.goalTableLoaderActive = true
             this.volunteeringGoalCurrentMonth = data.month
@@ -606,20 +611,12 @@ export default {
         async getVolunteerHoursData() {
             this.tableLoaderActive = true
             var _this =this;
-            await volunteerTimesheetHours().then( response => {
-                this.isShownComponent = true;
+            await volunteerTimesheetHours().then( response => { 
                 if(response) {
                     this.timeMissionData = response['TIME']
                     this.goalMissionData = response['GOAL']
                 }
-            
-                _this.tableLoaderActive = false
-                setTimeout(function(){
-                    _this.getTimeRequestData(_this.hourRequestCurrentPage);
-                },50)
-                setTimeout(function(){
-                    _this.getGoalRequestData(_this.goalRequestCurrentPage);
-                },100)
+                _this.tableLoaderActive = false 
            })
         },
 
@@ -775,10 +772,15 @@ export default {
         getTotalHours(timeSheetType) {
             let _this = this
             var time1 = "00:00";
+            var timeApproved = "00:00";
             var action = 0;
+            var actionApproved = 0;
             var hour=0;
             var minute=0;
-           
+            var hourApproved=0;
+            var minuteApproved=0;
+             
+            
             let timeArray = []
             if(timeSheetType == "time") {
                 timeArray = this.timeMissionData;
@@ -803,12 +805,26 @@ export default {
                                         hour = hour + minute/60;
                                         minute = minute%60;
                                         time1= ("0" + Math.floor(hour)).slice(-2)+':'+("0" + Math.floor(minute)).slice(-2);
+                                        if(timeEntry.timesheet_status.status != "APPROVED" && timeEntry.timesheet_status.status != "AUTOMATICALLY_APPROVED") {
+                                             //for submit request
+                                            var splitTimeApproved= timeApproved.split(':');
+                                            hourApproved = parseInt(splitTimeApproved[0])+parseInt(splitTime2[0]);
+                                            minuteApproved = parseInt(splitTimeApproved[1])+parseInt(splitTime2[1]);
+                                            hourApproved = hourApproved + minuteApproved/60;
+                                            minuteApproved = minuteApproved%60;
+                                            timeApproved= ("0" + Math.floor(hourApproved)).slice(-2)+':'+("0" + Math.floor(minuteApproved)).slice(-2);
+                                        }
+                                       
                                     }
                                 }
                             }   else {
                                 if(_this.volunteeringGoalCurrentYear == currentArrayYear) {
                                     if(_this.volunteeringGoalCurrentMonth == currentArrayMonth) {
+                                        
                                        action = action+ timeEntry.action
+                                      if(timeEntry.timesheet_status.status != "APPROVED" && timeEntry.timesheet_status.status != "AUTOMATICALLY_APPROVED") {
+                                          actionApproved = actionApproved +  timeEntry.action
+                                      }
                                     }
                                 }
                              }
@@ -818,15 +834,18 @@ export default {
             
                 if(timeSheetType == "time") {
                     if(time1 != "00:00") {
-                        this.enableSubmitTimeTimeSheet = false;
+                        if(timeApproved != "00:00") {
+                            this.enableSubmitTimeTimeSheet = false;
+                        } 
                         return time1;
-                    }
-                    
+                    }    
                 } 
                 if(timeSheetType == "goal") {
                     if(action != 0) {
-                        this.enableSubmitGoalTimeSheet = false
-                         return action;
+                        if(actionApproved != 0) {
+                            this.enableSubmitGoalTimeSheet = false;
+                        } 
+                        return action;
                     }
                    
                 }    
@@ -857,24 +876,36 @@ export default {
         },
 
         submitVolunteerTimeSheet(timeSheetType) {
-            
+                var _this = this;
                 let timeSheetId = {
                     'timesheet_entries' : []
                 }
                 let timeSheetEntry = []
                 let timeArray = [];
+                let currentYear = ''
+                let currentMonth = ''
                 if(timeSheetType == "time") {
                     timeArray = this.timeMissionData;
+                    currentYear = _this.volunteeringHoursCurrentYear
+                    currentMonth = _this.volunteeringHoursCurrentMonth
                 } else {
                     timeArray = this.goalMissionData;
+                    currentYear = _this.volunteeringGoalCurrentYear
+                    currentMonth = _this.volunteeringGoalCurrentMonth
                 }
                 if(timeArray) {
                     timeArray.filter(function (timeMission, timeMissionIndex) {
                         let timeSheetArray = timeMission.timesheet;
                         if(timeSheetArray) {
                             timeSheetArray.filter(function (timeSheet, timeSheetIndex) {
-                                if(timeSheet.timesheet_status.status != "APPROVED" && timeSheet.timesheet_status.status != "AUTOMATICALLY_APPROVED"){
-                                        timeSheetId.timesheet_entries.push({'timesheet_id':timeSheet.timesheet_id})  
+                                let currentArrayYear = timeSheet.year
+                                let currentArrayMonth = timeSheet.month
+                                if(currentYear == currentArrayYear) {
+                                    if(currentMonth == currentArrayMonth) {
+                                        if(timeSheet.timesheet_status.status != "APPROVED" && timeSheet.timesheet_status.status != "AUTOMATICALLY_APPROVED"){
+                                                timeSheetId.timesheet_entries.push({'timesheet_id':timeSheet.timesheet_id})  
+                                        }
+                                    }
                                 }
                             });
                         }
@@ -900,9 +931,9 @@ export default {
         getTimeRequest(currentPage) {
             this.getTimeRequestData(currentPage);
         },
-        getTimeRequestData(currentPage) {   
+        getTimeRequestData(currentPage) {
             var _this = this;
-            _this.timesheetRequestItems = [];
+            let currentData = [];
             timeRequest(currentPage).then( response => {
                 if(response.data) {
                     let data = response.data;
@@ -914,10 +945,12 @@ export default {
                     if(response.pagination) {
                         this.hourRequestTotalRow = response.pagination.total;
                         this.hourRequestCurrentPage = response.pagination.current_page
+                        this.hourRequestPerPage = response.pagination.per_page;
+                        this.hourRequestNextUrl = response.pagination.next_url
                     }
                     
                     data.filter(function(item,index){
-                        _this.timesheetRequestItems.push(
+                        currentData.push(
                             {
                                 [mission] : item.title,
                                 [time] : item.time,
@@ -925,9 +958,9 @@ export default {
                                 [organisation] : item.organisation_name,
                             }
                         )
+                        _this.timesheetRequestItems = currentData;
                     })
-                  
-                }  
+                }
             })   
         },
         getGoalRequest(currentPage) {
@@ -936,8 +969,8 @@ export default {
         },
         getGoalRequestData(currentPage) {
             var _this = this;
-            
-            _this.goalRequestItems = []
+            let currentData = [];
+
             goalRequest(currentPage).then( response => {
                 if(response.data) {
                     let data = response.data;
@@ -947,19 +980,21 @@ export default {
                      if(response.pagination) {
                         this.goalRequestTotalRow = response.pagination.total;
                         this.goalRequestCurrentPage = response.pagination.current_page
+                        this.goalRequestPerPage = response.pagination.per_page;
+                        this.goalRequestNextUrl = response.pagination.next_url
                     }
                     
                     data.filter(function(item,index) {
-                        _this.goalRequestItems.push(
+                        currentData.push(
                             {
                                 [mission] : item.title,
                                 [action] : item.action,
                                 [organisation] : item.organisation_name,
                             }
                         )
+                        _this.goalRequestItems = currentData
                     }) 
                 }
-               
             })   
         }
     },
@@ -972,6 +1007,13 @@ export default {
         this.timeRequestLabel = this.langauageData.label.hours_requests 
         this.goalRequestLabel = this.langauageData.label.goals_requests 
         this.getVolunteerHoursData();
+        this.isShownComponent = true;
+        setTimeout(function(){
+            globalThis.getTimeRequestData(globalThis.hourRequestCurrentPage);
+        },80)
+        setTimeout(function(){
+            globalThis.getGoalRequestData(globalThis.goalRequestCurrentPage);
+        },100)
         let timeRequestFieldArray = [
             this.langauageData.label.mission,
             this.langauageData.label.time,

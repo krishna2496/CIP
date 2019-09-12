@@ -230,8 +230,8 @@
                 </b-col>
             </b-row>
         </div>
-        <b-modal centered :title="langauageData.label.search_user" ref="userDetailModal" 
-            :modal-class="myclass" hide-footer>
+        <b-modal :title="langauageData.label.search_user" ref="userDetailModal" 
+            :modal-class="myclass"  size="lg" hide-footer>
             <b-alert show :variant="classVariant" dismissible v-model="showErrorDiv"
             >{{ message }}</b-alert>
                 <div class="autocomplete-control">
