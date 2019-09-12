@@ -1,13 +1,13 @@
 import axios from "axios";
 import store from "../../store";
 
-export default async () => {
+export default async (page) => {
   let responseData = [];
   var defaultLanguage = "";
   if (store.state.defaultLanguage !== null) {
     defaultLanguage = store.state.defaultLanguage.toLowerCase();
   }
-  var url = `${process.env.VUE_APP_API_ENDPOINT}app/volunteer/history/goal-mission`;
+  var url = `${process.env.VUE_APP_API_ENDPOINT}app/volunteer/history/goal-mission?page=${page}`;
   await axios({
     url: url,
     method: "get",
@@ -21,6 +21,7 @@ export default async () => {
         responseData.error = false;
         responseData.message = response.data.message;
         responseData.data = response.data.data;
+        responseData.pagination = response.data.pagination;
       } else {
         responseData.error = false;
         responseData.message = response.data.message;

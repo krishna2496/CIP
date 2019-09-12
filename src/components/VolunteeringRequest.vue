@@ -1,17 +1,20 @@
 <template>
     <div>       
-        <div class="table-outer timesheet-table-outer" v-if="items.length > 0">
+        <div class="table-outer timesheet-table-outer">
             <div class="table-inner">
                 <h3>{{headerLable}}</h3>
-                <b-table
+                <b-table v-if="items.length > 0"
                     :items="items"
                     responsive
                     :fields="headerField"
                     class="volunteery-table"
                 >
                </b-table>
+               <div class="text-center" v-else>
+                <h5>{{langauageData.label.no_record_found}}</h5>
+               </div>
             </div>
-            <div class="btn-block">
+            <div class="btn-block" v-if="items.length > 0">
                 <b-button class="btn-bordersecondary ml-auto" @click="exportFile">{{langauageData.label.export}}</b-button>
             </div>  
         </div>
@@ -49,7 +52,7 @@ export default {
     data: function() {
         return {
             langauageData : [],     
-            perPage : 1,
+            perPage : 5,
             page : this.currentPage
         }
     },
@@ -62,10 +65,7 @@ export default {
             this.$emit("updateCall", page);
         },
         exportFile() {
-            ExportFile(this.exportUrl, this.fileName)
-            .then(response => {
-                console.log(response);
-            })
+            ExportFile(this.exportUrl, this.fileName);
         }
     },
     created() {
