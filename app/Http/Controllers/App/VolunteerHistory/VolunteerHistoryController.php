@@ -21,6 +21,7 @@ use App\Helpers\LanguageHelper;
 use App\Helpers\ExportCSV;
 use Carbon\Carbon;
 use App\Helpers\Helpers;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class VolunteerHistoryController extends Controller
 {
@@ -202,9 +203,9 @@ class VolunteerHistoryController extends Controller
      * Export user's goal mission history
      *
      * @param \Illuminate\Http\Request $request
-     * @return Illuminate\Http\JsonResponse
+     * @return Symfony\Component\HttpFoundation\BinaryFileResponse
      */
-    public function exportGoalMissionHistory(Request $request): JsonResponse
+    public function exportGoalMissionHistory(Request $request): BinaryFileResponse
     {
         try {
             $statusArray = [
@@ -239,14 +240,7 @@ class VolunteerHistoryController extends Controller
 
                 $path = $excel->export('app/'.$tenantName.'/timesheet/'.$request->auth->user_id.'/exports');
             }
-
-            $apiStatus = Response::HTTP_OK;
-            $apiMessage =  ($goalMissionList->count()) ?
-                trans('messages.success.MESSAGE_USER_GOAL_MISSION_HISTORY_EXPORTED'):
-                trans('messages.success.MESSAGE_ENABLE_TO_EXPORT_USER_GOAL_MISSION_HISTORY');
-            $apiData = ($goalMissionList->count()) ? ['path' => $path] : [];
-
-            return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
+            return response()->download($path, $fileName);
         } catch (\Exception $e) {
             return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
@@ -256,9 +250,9 @@ class VolunteerHistoryController extends Controller
      * Export user's time mission history
      *
      * @param \Illuminate\Http\Request $request
-     * @return Illuminate\Http\JsonResponse
+     * @return Symfony\Component\HttpFoundation\BinaryFileResponse
      */
-    public function exportTimeMissionHistory(Request $request): JsonResponse
+    public function exportTimeMissionHistory(Request $request): BinaryFileResponse
     {
         try {
             $statusArray = [
@@ -295,14 +289,7 @@ class VolunteerHistoryController extends Controller
 
                 $path = $excel->export('app/'.$tenantName.'/timesheet/'.$request->auth->user_id.'/exports');
             }
-
-            $apiStatus = Response::HTTP_OK;
-            $apiMessage =  ($timeRequestList->count()) ?
-            trans('messages.success.MESSAGE_USER_TIME_MISSION_HISTORY_EXPORTED'):
-            trans('messages.success.MESSAGE_ENABLE_TO_EXPORT_USER_TIME_MISSION_HISTORY');
-            $apiData = ($timeRequestList->count()) ? ['path' => $path] : [];
-
-            return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
+            return response()->download($path, $fileName);
         } catch (\Exception $e) {
             return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }

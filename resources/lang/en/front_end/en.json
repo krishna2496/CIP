@@ -179,7 +179,8 @@
 		"drop_files" : "Or drop documents here",
 		"browse" : "Browse",
 		"delete" : "Delete",
-		"actions" : "Actions"
+		"actions" : "Actions",
+		"years" : "Years"
 	},
 
 	"placeholder" : {
@@ -241,8 +242,12 @@
 		 "date_volunteer_is_required" : "Volunteer date is required",
 		 "work_day" : "Please select workday",
 		 "notes" : "Notes is required"
-	}
-
+	},
 	
-
+	"export_timesheet_file_names" : {
+		"PENDING_TIME_MISSION_ENTRIES_XLSX" : "Pending_Time_Mission_Entries.xlsx",
+        "PENTIND_GOAL_MISSION_ENTRIES_XLSX" : "Pending_Goal_Mission_Entries.xlsx",
+        "TIME_MISSION_HISTORY_XLSX" : "Time_Mission_History.xlsx",
+        "GOAL_MISSION_HISTORY_XLSX" : "Goal_Mission_History.xlsx"    
+	}
 }
