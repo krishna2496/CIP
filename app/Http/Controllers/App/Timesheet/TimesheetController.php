@@ -18,6 +18,7 @@ use PDOException;
 use Validator;
 use App\Repositories\TenantOption\TenantOptionRepository;
 use App\Helpers\Helpers;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use App\Models\Mission;
 use App\Helpers\ExportCSV;
 
@@ -483,9 +484,9 @@ class TimesheetController extends Controller
      * Export all pending time mission time entries.
      *
      * @param Illuminate\Http\Request $request
-     * @return Illuminate\Http\JsonResponse
+     * @return Symfony\Component\HttpFoundation\BinaryFileResponse
      */
-    public function exportPendingTimeRequests(Request $request): JsonResponse
+    public function exportPendingTimeRequests(Request $request): BinaryFileResponse
     {
         try {
             $statusArray = [config('constants.timesheet_status_id.SUBMIT_FOR_APPROVAL')];
@@ -519,14 +520,7 @@ class TimesheetController extends Controller
 
                 $path = $excel->export('app/'.$tenantName.'/timesheet/'.$request->auth->user_id.'/exports');
             }
-
-            $apiStatus = Response::HTTP_OK;
-            $apiMessage =  ($timeRequestList->count()) ?
-            trans('messages.success.MESSAGE_USER_PENDING_TIME_MISSION_ENTRIES_EXPORTED'):
-            trans('messages.success.MESSAGE_ENABLE_TO_EXPORT_USER_PENDING_TIME_MISSION_ENTRIES');
-            $apiData = ($timeRequestList->count()) ? ['path' => $path] : [];
-
-            return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
+            return response()->download($path, $fileName);
         } catch (\Exception $e) {
             return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
@@ -536,9 +530,9 @@ class TimesheetController extends Controller
      * Export user's goal mission history
      *
      * @param \Illuminate\Http\Request $request
-     * @return Illuminate\Http\JsonResponse
+     * @return Symfony\Component\HttpFoundation\BinaryFileResponse
      */
-    public function exportPendingGoalRequests(Request $request): JsonResponse
+    public function exportPendingGoalRequests(Request $request): BinaryFileResponse
     {
         try {
             $statusArray = [config('constants.timesheet_status_id.SUBMIT_FOR_APPROVAL')];
@@ -569,14 +563,7 @@ class TimesheetController extends Controller
                 
                 $path = $excel->export('app/'.$tenantName.'/timesheet/'.$request->auth->user_id.'/exports');
             }
-
-            $apiStatus = Response::HTTP_OK;
-            $apiMessage =  ($goalRequestList->count()) ?
-                trans('messages.success.MESSAGE_USER_PENDING_GOAL_MISSION_ENTRIES_EXPORTED'):
-                trans('messages.success.MESSAGE_ENABLE_TO_EXPORT_USER_PENDING_GOAL_MISSION_ENTRIES');
-            $apiData = ($goalRequestList->count()) ? ['path' => $path] : [];
-
-            return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
+            return response()->download($path, $fileName);
         } catch (\Exception $e) {
             return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }

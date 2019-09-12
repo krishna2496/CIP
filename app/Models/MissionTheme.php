@@ -67,7 +67,11 @@ class MissionTheme extends Model
      */
     public function getTranslationsAttribute(string $value): array
     {
-        return unserialize($value);
+        $data = @unserialize($value);
+        if ($data !== false) {
+            return unserialize($value);
+        }
+        return [];
     }
 
     /**
