@@ -373,15 +373,14 @@ class TimesheetRepository implements TimesheetInterface
         
         // Fetch tenant options value
         $tenantOptionData = $this->tenantOptionRepository->getOptionValue('ALLOW_TIMESHEET_ENTRY');
-
         $extraWeeks = isset($tenantOptionData[0]['option_value'])
         ? intval($tenantOptionData[0]['option_value']) : config('constants.ALLOW_TIMESHEET_ENTRY');
-        
-        dd($extraWeeks);
-        
+     
         $timesheet = $this->mission->select('mission.mission_id', 'mission.start_date', 'mission.end_date')
-        ->where(['publication_status' => config("constants.publication_status")["APPROVED"],
-        'mission_type'=> $missionType])
+        ->where([
+            'publication_status' => config("constants.publication_status")["APPROVED"],
+            'mission_type'=> $missionType])
+        ->whereRaw('CURDATE() <= date(DATE_ADD(end_date, INTERVAL '.$extraWeeks.' WEEK))')
         ->whereHas('missionApplication', function ($query) use ($userId) {
             $query->where('user_id', $userId)
             ->whereIn('approval_status', [config("constants.application_status")["AUTOMATICALLY_APPROVED"]]);

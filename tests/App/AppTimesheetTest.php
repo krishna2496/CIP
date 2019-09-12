@@ -78,7 +78,7 @@ class AppTimesheetTest extends TestCase
         
         $params = [
             'mission_id' => $mission[0]['mission_id'],
-            'date_volunteered' => date('m-d-Y'),
+            'date_volunteered' => date('Y-m-d'),
             'day_volunteered' => 'HOLIDAY',
             'notes' => str_random(10),
             'hours' => rand(1, 5),
@@ -227,7 +227,7 @@ class AppTimesheetTest extends TestCase
         
         $params = [
             'mission_id' => $mission[0]['mission_id'],
-            'date_volunteered' => date('m-d-Y'),
+            'date_volunteered' => date('Y-m-d'),
             'day_volunteered' => 'HOLIDAY',
             'notes' => str_random(10),
             'hours' => rand(1, 5),
@@ -310,7 +310,7 @@ class AppTimesheetTest extends TestCase
        
         $params = [
             'mission_id' => $mission[0]['mission_id'],
-            'date_volunteered' => date('m-d-Y'),
+            'date_volunteered' => date('Y-m-d'),
             'day_volunteered' => 'HOLIDAY',
             'notes' => str_random(10),
             'hours' => rand(100, 500),
@@ -396,7 +396,7 @@ class AppTimesheetTest extends TestCase
        
         $params = [
             'mission_id' => $mission[0]['mission_id'],
-            'date_volunteered' => date('m-d-Y'),
+            'date_volunteered' => date('Y-m-d'),
             'day_volunteered' => 'HOLIDAY',
             'notes' => str_random(10),
             'hours' => rand(1, 23),
@@ -482,7 +482,7 @@ class AppTimesheetTest extends TestCase
        
         $params = [
             'mission_id' => $mission[0]['mission_id'],
-            'date_volunteered' => date('m-d-Y'),
+            'date_volunteered' => date('Y-m-d'),
             'day_volunteered' => str_random(10),
             'notes' => str_random(10),
             'hours' => rand(1, 23),
@@ -525,7 +525,7 @@ class AppTimesheetTest extends TestCase
 
         $params = [
             'mission_id' => rand(999999, 99999999),
-            'date_volunteered' => date('m-d-Y'),
+            'date_volunteered' => date('Y-m-d'),
             'day_volunteered' => 'HOLIDAY',
             'notes' => str_random(10),
             'hours' => rand(1, 23),
@@ -626,7 +626,7 @@ class AppTimesheetTest extends TestCase
         
         $params = [
             'mission_id' => $mission[0]['mission_id'],
-            'date_volunteered' => date('m-d-Y'),
+            'date_volunteered' => date('Y-m-d'),
             'day_volunteered' => 'HOLIDAY',
             'notes' => str_random(10),
             'hours' => rand(1, 5),
@@ -726,7 +726,7 @@ class AppTimesheetTest extends TestCase
         
         $params = [
             'mission_id' => $mission[0]['mission_id'],
-            'date_volunteered' => date('m-d-Y'),
+            'date_volunteered' => date('Y-m-d'),
             'day_volunteered' => 'HOLIDAY',
             'notes' => str_random(10),
             'hours' => rand(1, 5),
@@ -740,7 +740,7 @@ class AppTimesheetTest extends TestCase
 
         $params = [
             'mission_id' => $mission[0]['mission_id'],
-            'date_volunteered' => date('m-d-Y'),
+            'date_volunteered' => date('Y-m-d'),
             'day_volunteered' => 'HOLIDAY',
             'notes' => str_random(10),
             'hours' => rand(100, 500),
@@ -841,7 +841,7 @@ class AppTimesheetTest extends TestCase
         
         $params = [
             'mission_id' => $mission[0]['mission_id'],
-            'date_volunteered' => date('m-d-Y'),
+            'date_volunteered' => date('Y-m-d'),
             'day_volunteered' => 'HOLIDAY',
             'notes' => str_random(10),
             'hours' => rand(1, 5),
@@ -855,7 +855,7 @@ class AppTimesheetTest extends TestCase
 
         $params = [
             'mission_id' => $mission[0]['mission_id'],
-            'date_volunteered' => date('m-d-Y'),
+            'date_volunteered' => date('Y-m-d'),
             'day_volunteered' => 'HOLIDAY',
             'notes' => str_random(10),
             'hours' => rand(1, 5),
@@ -956,7 +956,7 @@ class AppTimesheetTest extends TestCase
         
         $params = [
             'mission_id' => $mission[0]['mission_id'],
-            'date_volunteered' => date('m-d-Y'),
+            'date_volunteered' => date('Y-m-d'),
             'day_volunteered' => 'HOLIDAY',
             'notes' => str_random(10),
             'hours' => rand(1, 5),
@@ -970,7 +970,7 @@ class AppTimesheetTest extends TestCase
 
         $params = [
             'mission_id' => $mission[0]['mission_id'],
-            'date_volunteered' => date('m-d-Y'),
+            'date_volunteered' => date('Y-m-d'),
             'day_volunteered' => 'HOLIDAY',
             'notes' => str_random(10),
             'hours' => rand(1, 5),
@@ -1071,7 +1071,7 @@ class AppTimesheetTest extends TestCase
         
         $params = [
             'mission_id' => $mission[0]['mission_id'],
-            'date_volunteered' => date('m-d-Y'),
+            'date_volunteered' => date('Y-m-d'),
             'day_volunteered' => 'HOLIDAY',
             'notes' => str_random(10),
             'hours' => rand(1, 5),
@@ -1217,7 +1217,7 @@ class AppTimesheetTest extends TestCase
         
         $params = [
             'mission_id' => $mission[0]['mission_id'],
-            'date_volunteered' => date('m-d-Y'),
+            'date_volunteered' => date('Y-m-d'),
             'day_volunteered' => 'HOLIDAY',
             'notes' => str_random(10),
             'hours' => rand(1, 5),
@@ -1333,7 +1333,7 @@ class AppTimesheetTest extends TestCase
         
         $params = [
             'mission_id' => $mission[0]['mission_id'],
-            'date_volunteered' => date('m-d-Y'),
+            'date_volunteered' => date('Y-m-d'),
             'day_volunteered' => 'HOLIDAY',
             'notes' => str_random(10),
             'hours' => rand(1, 5),
@@ -1486,7 +1486,7 @@ class AppTimesheetTest extends TestCase
         
         $params = [
             'mission_id' => $mission[0]['mission_id'],
-            'date_volunteered' => date('m-d-Y'),
+            'date_volunteered' => date('Y-m-d'),
             'day_volunteered' => 'HOLIDAY',
             'notes' => str_random(10),
             'hours' => rand(1, 5),
@@ -1600,7 +1600,7 @@ class AppTimesheetTest extends TestCase
         
         $params = [
             'mission_id' => $mission[0]['mission_id'],
-            'date_volunteered' => date('m-d-Y'),
+            'date_volunteered' => date('Y-m-d'),
             'day_volunteered' => 'HOLIDAY',
             'notes' => str_random(10),
             'hours' => rand(1, 5),
@@ -1752,7 +1752,7 @@ class AppTimesheetTest extends TestCase
         
         $params = [
             'mission_id' => $mission[0]['mission_id'],
-            'date_volunteered' => date('m-d-Y'),
+            'date_volunteered' => date('Y-m-d'),
             'day_volunteered' => 'HOLIDAY',
             'notes' => str_random(10),
             'hours' => rand(1, 5),
@@ -1878,7 +1878,7 @@ class AppTimesheetTest extends TestCase
         
         $params = [
             'mission_id' => $mission[0]['mission_id'],
-            'date_volunteered' => date('m-d-Y'),
+            'date_volunteered' => date('Y-m-d'),
             'day_volunteered' => 'HOLIDAY',
             'notes' => str_random(10),
             'hours' => rand(1, 5),
@@ -2014,7 +2014,7 @@ class AppTimesheetTest extends TestCase
         
         $params = [
             'mission_id' => $mission[0]['mission_id'],
-            'date_volunteered' => date('m-d-Y'),
+            'date_volunteered' => date('Y-m-d'),
             'day_volunteered' => 'HOLIDAY',
             'notes' => str_random(10),
             'action' => rand(1, 5),
@@ -2148,7 +2148,7 @@ class AppTimesheetTest extends TestCase
         
         $params = [
             'mission_id' => $mission[0]['mission_id'],
-            'date_volunteered' => date('m-d-Y'),
+            'date_volunteered' => date('Y-m-d'),
             'day_volunteered' => 'HOLIDAY',
             'notes' => str_random(10),
             'hours' => rand(1, 5),
@@ -2278,7 +2278,7 @@ class AppTimesheetTest extends TestCase
         
         $params = [
             'mission_id' => $mission[0]['mission_id'],
-            'date_volunteered' => date('m-d-Y'),
+            'date_volunteered' => date('Y-m-d'),
             'day_volunteered' => 'HOLIDAY',
             'notes' => str_random(10),
             'action' => rand(1, 5),
