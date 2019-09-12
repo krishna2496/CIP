@@ -158,7 +158,11 @@ class TimesheetController extends Controller
                 );
             }
          
-            $dateVolunteered = $this->helpers->changeDateFormat($request->date_volunteered);
+            $dateVolunteered = $this->helpers->changeDateFormat(
+                $request->date_volunteered,
+                config('constants.TIMESHEET_DATE_FORMAT')
+            );
+
             $timesheetStatus = array(config('constants.timesheet_status.APPROVED'),
             config('constants.timesheet_status.AUTOMATICALLY_APPROVED'));
 
@@ -198,7 +202,7 @@ class TimesheetController extends Controller
                     // Add total actions
                     $totalGoalActions = $totalSubmittedGoalActions + $request->action;
 
-                    // Check total goals are not maximum than provided goals
+                    // Check total goals should not exceed goal objective
                     if ($totalGoalActions > $missionDetail["goal_mission"]["goal_objective"]) {
                         return $this->responseHelper->error(
                             Response::HTTP_UNPROCESSABLE_ENTITY,
@@ -217,7 +221,10 @@ class TimesheetController extends Controller
 
                     // Check start dates and end dates of mission
                     if ($timesheetMissionData->start_date) {
-                        $missionStartDate = $this->helpers->changeDateFormat($timesheetMissionData->start_date);
+                        $missionStartDate = $this->helpers->changeDateFormat(
+                            $timesheetMissionData->start_date,
+                            config('constants.TIMESHEET_DATE_FORMAT')
+                        );
                         if ($dateVolunteered < $missionStartDate) {
                             return $this->responseHelper->error(
                                 Response::HTTP_UNPROCESSABLE_ENTITY,
@@ -227,7 +234,10 @@ class TimesheetController extends Controller
                             );
                         } else {
                             if ($timesheetMissionData->end_date) {
-                                $missionEndDate = $this->helpers->changeDateFormat($timesheetMissionData->end_date);
+                                $missionEndDate = $this->helpers->changeDateFormat(
+                                    $timesheetMissionData->end_date,
+                                    config('constants.TIMESHEET_DATE_FORMAT')
+                                );
                                 if ($dateVolunteered > $missionEndDate) {
                                     $endDate = Carbon::createFromFormat(
                                         config('constants.TIMESHEET_DATE_FORMAT'),
