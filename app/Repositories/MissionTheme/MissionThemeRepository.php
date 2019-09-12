@@ -139,6 +139,7 @@ class MissionThemeRepository implements MissionThemeInterface
         ->whereNull('timesheet.delete_at')
         ->groupBy('mission_theme.mission_theme_id');
         
+        
         $hoursPerThemes = $queryBuilder->get();
         
         $languageCode = config('app.locale');
