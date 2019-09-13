@@ -110,7 +110,7 @@ class MissionCommentController extends Controller
             if ($isAutoApproved) {
                 $request->request->add(
                     [
-                        'status' => config('constants.comment_approval_status.PUBLISHED')
+                        'approval_status' => config('constants.comment_approval_status.PUBLISHED')
                     ]
                 );
             }
