@@ -230,7 +230,13 @@
 								</div>
 							</b-list-group-item>
 						</b-list-group>
-
+					
+						<div class="btn-wrap" v-if="allowAddEntry">
+							<b-button class="btn-borderprimary icon-btn"  
+								@click="addEntry">
+								Add entry
+							</b-button>
+						</div>
 						<div class="btn-wrap">
 							<b-button class="btn-borderprimary icon-btn"  
 							@click="handleModal(missionId)" v-if="isInviteCollegueDisplay">
@@ -541,40 +547,9 @@
 			        </div>
 			</b-container>
 		  
-	  </div>
-	  <!-- <AddVolunteeringHours
-                        ref="timeModal"
-                        :defaultWorkday="defaultWorkday"
-                        :defaultHours="defaultHours"
-                        :defaultMinutes="defaultMinutes"
-                        :files="files"
-                        :timeEntryDefaultData="currentTimeData"
-                        :disableDates="volunteerHourDisableDates"
-                        @getTimeSheetData = "getVolunteerHoursData"
-                        @resetModal ="hideModal"
-                        :workDayList="workDayList"
-                        @updateCall="updateDefaultValue" 
-                        @changeDocument="changeTimeDocument"
-                    />
-                    <AddVolunteeringAction
-                        ref="goalModal"
-                        :defaultWorkday="defaultWorkday"
-                        :defaultHours="defaultHours"
-                        :defaultMinutes="defaultMinutes"
-                        :files="files"
-                        :timeEntryDefaultData="currentTimeData"
-                        :disableDates="volunteerHourDisableDates"
-                        @getTimeSheetData = "getVolunteerHoursData"
-                        @resetModal ="hideModal"
-                        :workDayList="workDayList"
-                        @updateCall="updateDefaultValue" 
-                        @changeDocument="changeGoalDocument"
-                    /> -->
-	  	<!-- <b-button class="btn-borderprimary icon-btn"  
-							@click="AddEntry">
-							sddsds -->
-		</b-button>
-	  <b-modal :title="langauageData.label.search_user" ref="userDetailModal" 
+	  	</div>
+		
+	  	<b-modal :title="langauageData.label.search_user" ref="userDetailModal" 
             :modal-class="myclass" hide-footer size="lg">
 	            <b-alert show :variant="classVariant" dismissible v-model="showErrorDiv">
 	            	{{ message }}
@@ -716,6 +691,7 @@ export default {
     		isSkillDispaly : false	,
     		isQuickAccessFilterDisplay : false,
 			relatedMissionsDisplay : false,
+			allowAddEntry : false,
 			currentTimeData: 
                 {
                     missionId : '',
@@ -797,8 +773,15 @@ export default {
             },
     },
    methods: {
-	   AddEntry(){
-
+	   addEntry(){
+		   let missionData = {
+			   "missionId" : '',
+			   "missionType" : ''
+		   }
+		   missionData.missionId = this.$route.params.misisonId
+		   missionData.missionType = this.missionDetail.mission_type
+		   store.commit('timeSheetEntryDetail',missionData)
+		   window.location = window.location.origin+"/volunteering-timesheet"
 	   },
    		// Get comment create date format
 	   	getCommentDate(commentDate){
@@ -815,7 +798,7 @@ export default {
             return missionType == constants.MISSION_TYPE_TIME
         },
 
-   		setRating: function(rating){
+   		setRating: function(rating) {
 			let missionData = {
 				mission_id : '',
 				rating : ''
@@ -823,7 +806,7 @@ export default {
 			missionData.mission_id = this.missionId;
 			missionData.rating = rating;
 		    storeMissionRating(missionData).then(response => {
-		        if(response.error == true){
+		        if (response.error == true) {
 		            this.makeToast("danger",response.message);
 		        } else {
 		            this.makeToast("success",response.message);
@@ -831,7 +814,7 @@ export default {
 		    });
 	    },
 		// Add mission to favorite
-		favoriteMission(missionId){
+		favoriteMission(missionId) {
 		    let missionData = {
 		        mission_id : ''
 		    };
@@ -868,7 +851,7 @@ export default {
            return firstName+' '+lastName;
         },
 		// Open auto suggest modal
-        handleModal(missionId){
+        handleModal(missionId) {
             this.autoSuggestPlaceholder = this.langauageData.label.search_user
             this.showErrorDiv = false;
             this.message = null;
@@ -949,7 +932,6 @@ export default {
 					this.relatedMissionlLoader = false;
 					this.isShownComponent = true;
 				});
-				this.getVolunteerHoursData(this.$route.params.misisonId);
 			}
     	},
 
@@ -975,7 +957,11 @@ export default {
 					this.isShownMediaComponent = true;
 	                if (response.error == false) {
 	                	if(response.data[0]) {
-	                		this.missionDetail = response.data[0];
+							this.missionDetail = response.data[0];
+							if(response.data[0].user_application_status ==  
+									constants.AUTOMATICALLY_APPROVED && response.data[0].user_application_count > 0) {
+								this.allowAddEntry = true
+							}
 							if(response.data[0].is_favourite == 1) {
 								this.missionAddedToFavoriteByUser = true;
 							}
@@ -1019,7 +1005,7 @@ export default {
 	                        return translations[i].title;
 	                    }
 	                });
-	                if (filteredObj[0].title) {
+	                if (filteredObj[0]) {
 	                    return filteredObj[0].title;
 	                }
 	            }
@@ -1104,50 +1090,7 @@ export default {
 				simplebarWrapper.scrollTop = simplebarHeight;
 			},100);
 			this.missionComments();
-		},
-		async getVolunteerHoursData(missionId) {
-			var _this =this;
-			// constants.MISSION_TYPE_TIME
-			// missionDetail.mission_type
-			var missionType = this.missionDetail.mission_type;
-			var currentYear =  moment().format("YYYY-MM-DD");
-			var currentMonth =  moment().format("M");
-			var currentDate =  moment().format("D");
-
-            await volunteerTimesheetHours().then( response => { 
-                if(response) {
-					let timeMissionData = response['TIME'];
-					let goalMissionData = response['GOAL'];
-
-					if(missionType == constants.MISSION_TYPE_TIME) {
-						if(timeMissionData) {
-							timeMissionData.filter(function(timeArray,index){
-								if(timeArray.mission_id == missionId){
-									timeArray.timesheet.filter(function(timeSheetArray,timeSheetIndex){
-										if(timeSheetArray.year == currentYear && timeSheetArray.month == currentMonth && timeSheetArray.date == currentDate) {
-											_this.timeSheetId = timeSheetArray.timesheet_id
-										}
-									})
-								}
-							})
-						}
-					} else {
-						if(goalMissionData) {
-							goalMissionData.filter(function(timeArray,index){
-								if(timeArray.mission_id == missionId){
-									timeArray.timesheet.filter(function(timeSheetArray,timeSheetIndex){
-										if(timeSheetArray.year == currentYear && timeSheetArray.month == currentMonth && timeSheetArray.date == currentDate) {
-											_this.timeSheetId = timeSheetArray.timesheet_id
-										}
-									})
-								}
-							})
-						}
-
-					}
-                }
-           })
-        },
+		}
    },
 	created() {		
 		this.sharingUrl = document.URL
