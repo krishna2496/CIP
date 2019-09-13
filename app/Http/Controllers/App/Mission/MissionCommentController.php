@@ -110,7 +110,7 @@ class MissionCommentController extends Controller
             if ($isAutoApproved) {
                 $request->request->add(
                     [
-                        'status' => config('constants.timesheet_status.AUTOMATICALLY_APPROVED')
+                        'status' => config('constants.comment_approval_status.PUBLISHED')
                     ]
                 );
             }
