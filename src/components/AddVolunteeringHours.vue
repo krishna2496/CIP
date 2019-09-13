@@ -1,5 +1,7 @@
 <template>
     <div>
+        
+      
         <b-modal ref="timeHoursModal" @hidden ="hideModal" :modal-class="'time-hours-modal table-modal'" hide-footer>
             <template slot="modal-header" slot-scope="{ close }">
                 <i class="close" @click="close()" v-b-tooltip.hover :title="langauageData.label.close"></i>
@@ -8,6 +10,11 @@
                 <b-alert show :variant="classVariant" dismissible v-model="showErrorDiv">
                     {{ message }}
                 </b-alert>
+
+            <div class="table-wrapper-outer">
+            <div v-bind:class="{ 'content-loader-wrap': true, 'loader-active': isAjaxCall}">
+                <div class="content-loader"></div>
+            </div>
             <form action class="form-wrap">
                 <b-form-group>
                     <b-row>
@@ -32,7 +39,7 @@
                                     @updateCall="updateHours"
                                     translationEnable= "false"
                                 />
-                                <div v-if="submitted && !$v.timeEntryDefaultData.hours.required" class="invalid-feedback">
+                                <div v-if="submitted && (!$v.timeEntryDefaultData.hours.required || !$v.timeEntryDefaultData.hours.$invalid)" class="invalid-feedback">
                                     {{ langauageData.errors.minute_or_hours_is_required }}</div>
                             </b-form-group>
 
@@ -42,14 +49,14 @@
                               <b-form-group>
                                 <label for>{{langauageData.label.minutes}}*</label>
                                 <AppCustomDropdown
-                                    v-model="timeEntryDefaultData.hours"
+                                    v-model="timeEntryDefaultData.minutes"
                                     :optionList="minuteList"
                                     :errorClass="submitted && ($v.timeEntryDefaultData.hours.required || $v.timeEntryDefaultData.hours.$invalid)" 
                                     :defaultText="defaultMinutes"
                                     @updateCall="updateMinutes"
                                     translationEnable= "false"
                                 />
-                                <div v-if="submitted && !$v.timeEntryDefaultData.hours.required" class="invalid-feedback">
+                                <div v-if="submitted && (!$v.timeEntryDefaultData.hours.required || !$v.timeEntryDefaultData.hours.$invalid)" class="invalid-feedback">
                                     {{ langauageData.errors.minute_or_hours_is_required }}</div>
                             </b-form-group>
 
@@ -78,7 +85,7 @@
                         </b-col>
                     <b-col sm="6" class="date-col">
                         <b-form-group>
-                            <label for>{{langauageData.label.workday}}*</label>
+                            <label for>{{langauageData.label.day_volunteered}}*</label>
                                     <AppCustomDropdown
                                         v-model="timeEntryDefaultData.workDay"
                                         :optionList="workDayList"
@@ -133,32 +140,34 @@
                                 </file-upload>
                                 <span>{{langauageData.label.drop_files}}</span>
                             </div>
-                            <div class="uploaded-file-details" v-for="(file, index) in timeEntryDefaultData.documents">
-                                
-                                <a class="filename" :href="file.document_path" target="_blank">{{file.document_name}}</a>
-                                <a 
-                                class="remove-item" 
-                                href="#" 
-                                @click.prevent="deleteFile(file.timesheet_id,file.timesheet_document_id)" 
-                                v-b-tooltip.hover 
-                                :title="langauageData.label.delete"
-                                >
-                                    <img :src="$store.state.imagePath+'/assets/images/delete-ic.svg'" alt="delete-ic"/>
-                                </a>
-                            
-                            </div>
-                            <div class="uploaded-file-details" v-for="(file, index) in fileArray" :key="file.id">
-                                <p class="filename">{{file.name}}</p>
-                                <a 
-                                class="remove-item" 
-                                href="#" 
-                                @click.prevent="$refs.upload.remove(file)" 
-                                v-b-tooltip.hover 
-                                :title="langauageData.label.delete"
-                                >
-                                    <img :src="$store.state.imagePath+'/assets/images/delete-ic.svg'" alt="delete-ic"/>
-                                </a>
-                            </div>
+							<div class="uploaded-file-wrap">
+								<div class="uploaded-file-details" v-for="(file, index) in timeEntryDefaultData.documents">
+									
+									<a class="filename" :href="file.document_path" target="_blank">{{file.document_name}}</a>
+									<a 
+									class="remove-item" 
+									href="#" 
+									@click.prevent="deleteFile(file.timesheet_id,file.timesheet_document_id)" 
+									v-b-tooltip.hover 
+									:title="langauageData.label.delete"
+									>
+										<img :src="$store.state.imagePath+'/assets/images/delete-ic.svg'" alt="delete-ic"/>
+									</a>
+								
+								</div>
+								<div class="uploaded-file-details" v-for="(file, index) in fileArray" :key="file.id">
+									<p class="filename">{{file.name}}</p>
+									<a 
+									class="remove-item" 
+									href="#" 
+									@click.prevent="$refs.upload.remove(file)" 
+									v-b-tooltip.hover 
+									:title="langauageData.label.delete"
+									>
+										<img :src="$store.state.imagePath+'/assets/images/delete-ic.svg'" alt="delete-ic"/>
+									</a>
+								</div>
+							</div>
                         </div>
                         </b-col>
                     </b-row>
@@ -171,10 +180,14 @@
                 
             >{{langauageData.label.cancel}}</b-button>
             <b-button 
-                class="btn-bordersecondary" 
+                class="btn-bordersecondary"
+                v-bind:class="{
+                    disabled:isAjaxCall
+                }" 
                 @click="saveTimeHours()" 
                 >{{langauageData.label.submit}}
             </b-button>
+        </div>
         </div>
         </b-modal>
     </div>
@@ -218,6 +231,7 @@ export default {
             fileError : "",
             classVariant :"success",
             isFileUploadDisplay : false,
+            isAjaxCall : false,
             hourList:[
                     ["00","00"],
                     ["01","01"],
@@ -393,7 +407,7 @@ export default {
                 && (this.timeEntryDefaultData.minutes == "00" || this.timeEntryDefaultData.minutes == "")) {
                 return
             }
-
+            this.isAjaxCall = true;
             const formData = new FormData();
             let fileData = []
             let file = this.fileArray;
@@ -412,7 +426,7 @@ export default {
             formData.append('notes',this.timeEntryDefaultData.notes);
             formData.append('hours',parseInt(hours, 10));
             formData.append('minutes',parseInt(minutes, 10));
-         
+
             addVolunteerEntry(formData).then( response => {
                 if (response.error === true) { 
                     this.message = null;
@@ -434,7 +448,7 @@ export default {
                     },700) 
                    
                 }
-               
+                this.isAjaxCall = false;
             })
             
         },
@@ -447,7 +461,6 @@ export default {
            
             removeDocument(deletFile).then(response => {
                 if(response) {
-
                     this.message = null;
                     this.showErrorDiv = true
                     this.classVariant = 'success'
@@ -463,12 +476,14 @@ export default {
                     this.classVariant = 'danger'
                     this.message = response
                 }
+               
             })
         },
         hideModal() {
             this.submitted = false;
             this.showErrorDiv = false
             this.fileError = ''
+            this.fileArray = [];
             this.$emit("resetModal");
             document.querySelector('html').classList.remove('modal-open');
         }

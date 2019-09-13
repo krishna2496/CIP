@@ -86,7 +86,7 @@ export default {
     			sortNameOfMonth : "",
     			weekNameArray : [],
     			isPreviousButtonDisable : false,
-    			currentMonthFix : moment().startOf('month'),
+          currentMonthFix : moment().startOf('month')
         }
     },
     directives: {},
@@ -119,7 +119,7 @@ export default {
                 this.currentYearNumber = this.currentMonth.format('Y');
                 this.sortNameOfMonth = this.currentMonth.format('MMM')
              
-                if(this.currentMonthFix.format('M') == this.currentMonth.format('M')) {
+                if(this.currentMonthFix.format('M') == this.currentMonth.format('M') && this.currentMonthFix.format('YYYY') == this.currentMonth.format('YYYY')) {
                     this.isPreviousButtonDisable = true;
                 } else {
                     this.isPreviousButtonDisable = false;
@@ -134,7 +134,7 @@ export default {
     },
     created() {
     	this.langauageData = JSON.parse(store.state.languageLabel);
-    	this.changeMonth(this.currentMonth);	    
+      this.changeMonth(this.currentMonth);	    
     }
 };
 </script>
