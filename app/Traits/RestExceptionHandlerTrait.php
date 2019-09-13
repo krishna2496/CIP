@@ -80,7 +80,7 @@ trait RestExceptionHandlerTrait
     }
     
     /**
-     * Returns json response for Methos not allowed http exception
+     * Returns json response for method not allowed http exception
      *
      * @param string $message
      * @return \Illuminate\Http\JsonResponse

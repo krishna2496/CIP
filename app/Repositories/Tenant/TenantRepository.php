@@ -92,14 +92,14 @@ class TenantRepository implements TenantInterface
     /**
      * Update the specified resource in storage.
      *
-     * @param  array  $requestArray
+     * @param  \Illuminate\Http\Request $request
      * @param  int  $id
      * @return App\Models\Tenant $tenant
      */
-    public function update(array $requestArray, int $id): Tenant
+    public function update(Request $request, int $id): Tenant
     {
         $tenant = $this->tenant->findOrFail($id);
-        $tenant->update($requestArray);
+        $tenant->update($request->toArray());
         return $tenant;
     }
 
