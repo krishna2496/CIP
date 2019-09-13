@@ -1161,7 +1161,14 @@ main {
             @include sm-max {
                 margin-bottom: 10px;
             }
-
+            .btn-outer{
+                display: inline-flex;
+                .btn-add-entry{
+                    width: auto;
+                    margin-left: 15px;
+                    min-width: 135px;
+                }
+            }
             .btn {
 				padding: 6px 18px;
 				border-width: 1px!important;
