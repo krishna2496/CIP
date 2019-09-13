@@ -330,7 +330,7 @@ export default {
         inputUpdate(files) {
             var _this = this
             files.filter(function(data,index){
-                if(data.size > 50000) {
+                if(data.size > 5000000) {
                     _this.fileError = _this.langauageData.errors.file_max_size
                    files.splice(index,1)
                 } else {

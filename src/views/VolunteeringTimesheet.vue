@@ -396,6 +396,7 @@ export default {
             }
         },
         getRelatedTimeData(date,timeArray,timeSheetType) {
+            console.log(timeArray);
             this.currentTimeData.missionId = timeArray.mission_id
             this.currentTimeData.day = date
         
@@ -463,8 +464,7 @@ export default {
             if(timeSheetType == 'time') {
                 this.$refs.timeModal.$refs.timeHoursModal.show();    
             } else {
-                this.$refs.goalModal.$refs.goalActionModal.show();
-                
+                this.$refs.goalModal.$refs.goalActionModal.show();     
             }
            
         },
@@ -612,7 +612,7 @@ export default {
             this.tableLoaderActive = true
             var _this =this;
             await volunteerTimesheetHours().then( response => { 
-                if(response) {
+                if(response) {console.log("data2");
                     this.timeMissionData = response['TIME']
                     this.goalMissionData = response['GOAL']
                 }
@@ -779,8 +779,7 @@ export default {
             var minute=0;
             var hourApproved=0;
             var minuteApproved=0;
-             
-            
+
             let timeArray = []
             if(timeSheetType == "time") {
                 timeArray = this.timeMissionData;
@@ -851,11 +850,13 @@ export default {
                 }    
             } ,
 
+        
         updateMinutes(value) {
             this.defaultMinutes = value.selectedVal
         },
 
         hideModal(){
+            store.commit('removeTimeSheetDetail');
             this.currentTimeData.missionId = '';
             this.currentTimeData.hours = '';
             this.currentTimeData.minutes = '';
@@ -873,6 +874,7 @@ export default {
             this.defaultHours = this.langauageData.placeholder.spent_hours
             this.defaultMinutes = this.langauageData.placeholder.spent_minutes
             this.defaultWorkday = this.langauageData.placeholder.workday 
+           
         },
 
         submitVolunteerTimeSheet(timeSheetType) {
@@ -915,6 +917,7 @@ export default {
                     if(response.error == true){
                         this.makeToast("danger",response.message);
                     } else {
+                        this.getVolunteerHoursData()
                         this.makeToast("success",response.message);
                     }  
                 })
@@ -969,6 +972,31 @@ export default {
         },
         getGoalRequestData(currentPage) {
             var _this = this;
+            setTimeout(function() {
+                if(store.state.missionId != '' && store.state.missionId != null) {
+                    let missionId = store.state.missionId;
+                    let timeSheetType = store.state.missionType.toLowerCase()
+                    let timeArray = []
+                    let timeSheetArray = []
+                    let date =  moment().format('D')
+                    if(timeSheetType == "time") {
+                        timeArray = _this.timeMissionData
+                    } else {
+                        timeArray =  _this.goalMissionData
+                    }
+                    timeArray.filter(function(timeArray,timeIndex){
+                        if(timeArray.mission_id == missionId) {
+                            timeSheetArray = timeArray;
+                        }
+                    })
+                    setTimeout(function(){
+                        if(timeSheetArray) { 
+                            _this.getRelatedTimeData(date,timeSheetArray,timeSheetType)
+                        }
+                    },500)   
+                } 
+            },200)
+           
             let currentData = [];
 
             goalRequest(currentPage).then( response => {
@@ -1011,9 +1039,10 @@ export default {
         setTimeout(function(){
             globalThis.getTimeRequestData(globalThis.hourRequestCurrentPage);
         },80)
-        setTimeout(function(){
+        setTimeout(function() {
             globalThis.getGoalRequestData(globalThis.goalRequestCurrentPage);
         },100)
+        
         let timeRequestFieldArray = [
             this.langauageData.label.mission,
             this.langauageData.label.time,
@@ -1038,7 +1067,7 @@ export default {
                 "key" : data
             })
         });
-       
+        
     }
 };
 </script>
