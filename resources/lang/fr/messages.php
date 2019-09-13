@@ -120,7 +120,8 @@ return [
         'MESSAGE_USER_PENDING_TIME_MISSION_ENTRIES_EXPORTED' => 'Entrées de temps en attente pour les missions de temps, générées avec succès',
         'MESSAGE_ENABLE_TO_EXPORT_USER_PENDING_TIME_MISSION_ENTRIES' => 'Aucune donnée trouvée, pour générer des entrées de temps en attente pour une mission temporelle',
         'MESSAGE_USER_PENDING_GOAL_MISSION_ENTRIES_EXPORTED' => 'Entrées de temps en attente pour les missions de but, générées avec succès',
-        'MESSAGE_ENABLE_TO_EXPORT_USER_PENDING_GOAL_MISSION_ENTRIES' => 'Aucune donnée trouvée, pour générer des entrées de temps en attente pour la mission de l\'objectif'
+        'MESSAGE_ENABLE_TO_EXPORT_USER_PENDING_GOAL_MISSION_ENTRIES' => 'Aucune donnée trouvée, pour générer des entrées de temps en attente pour la mission de l\'objectif',
+        'MESSAGE_AUTO_APPROVED_COMMENT_ADDED' => 'Merci pour votre commentaire.'
     ],
 
         

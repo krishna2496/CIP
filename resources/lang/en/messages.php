@@ -125,7 +125,8 @@ return [
         'MESSAGE_USER_PENDING_TIME_MISSION_ENTRIES_EXPORTED' => 'Pending time entries for time missions, generated successfully',
         'MESSAGE_ENABLE_TO_EXPORT_USER_PENDING_TIME_MISSION_ENTRIES' => 'No data found, to generate pending time entries for time mission',
         'MESSAGE_USER_PENDING_GOAL_MISSION_ENTRIES_EXPORTED' => 'Pending time entries for goal missions, generated successfully',
-        'MESSAGE_ENABLE_TO_EXPORT_USER_PENDING_GOAL_MISSION_ENTRIES' => 'No data found, to generate pending time entries for goal mission'
+        'MESSAGE_ENABLE_TO_EXPORT_USER_PENDING_GOAL_MISSION_ENTRIES' => 'No data found, to generate pending time entries for goal mission',
+        'MESSAGE_AUTO_APPROVED_COMMENT_ADDED' => 'Thanks for your comment.'
 	],
         
     /**
