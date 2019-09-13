@@ -123,7 +123,7 @@ class TimesheetController extends Controller
                 $request->toArray(),
                 [
                     'mission_id' => 'required|exists:mission,mission_id,deleted_at,NULL',
-                    'date_volunteered' => 'required',
+                    'date_volunteered' => 'required|date_format:Y-m-d|before:tomorrow',
                     'day_volunteered' => ['required', Rule::in(config('constants.day_volunteered'))],
                     'documents.*' => 'max:' . $documentSizeLimit . '|valid_timesheet_document_type',
                     'action' => 'required_if:mission_type,GOAL|integer|min:1',
@@ -267,13 +267,6 @@ class TimesheetController extends Controller
                                         trans('messages.custom_error_message.ERROR_MISSION_ENDDATE')
                                     );
                                 }
-                            } else {
-                                return $this->responseHelper->error(
-                                    Response::HTTP_UNPROCESSABLE_ENTITY,
-                                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                                    config('constants.error_codes.ERROR_MISSION_ENDDATE'),
-                                    trans('messages.custom_error_message.ERROR_MISSION_ENDDATE')
-                                );
                             }
                         }
                     }
