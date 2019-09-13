@@ -210,7 +210,8 @@
                         @changeDocument="changeGoalDocument"
                     />
                 </div>
-                <div v-else>
+                <div v-else class="inner-content-wrap">
+                    {{langauageData.label.volunteering_timesheet_not_found}}
                 </div>
                 </b-container>
             </div>
