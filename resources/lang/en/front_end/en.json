@@ -185,7 +185,7 @@
 		"submit_for_approval" : "Submit for approval",
 		"day_volunteered" : "Day volunteered",
 		"no_volunteer_history_found" : "The heart of a volunteer is never measured in size, but by the depth of the commitment to make a difference in the lives of others.",
-		"volunteering_timesheet_not_found" : "The heart of a volunteer is never measured in size, but by the depth of the commitment to make a difference in the lives of others",
+		"empty_volunteer_history_text" : "The heart of a volunteer is never measured in size, but by the depth of the commitment to make a difference in the lives of others.",
 		"start_volunteering" : "Start Volunteering"
 
 	},
