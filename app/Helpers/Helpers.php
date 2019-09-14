@@ -17,8 +17,7 @@ use Illuminate\Support\Facades\Hash;
 class Helpers
 {
     use RestExceptionHandlerTrait;
-
-    
+	
     /**
     * It will return tenant name from request
     * @param Illuminate\Http\Request $request
