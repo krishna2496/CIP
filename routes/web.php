@@ -514,6 +514,20 @@ $router->group(['middleware' => 'localization'], function ($router) {
                 'uses' => 'Admin\Timesheet\TimesheetController@update']);
         }
     );
+
+    /* News category management */
+    $router->group(
+        ['prefix' => '/news/category', 'middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware'],
+        function ($router) {
+            $router->get('/', ['middleware' => ['PaginationMiddleware'],
+            'uses' => 'Admin\NewsCategory\NewsCategoryController@index']);
+            $router->get('/{newsCategoryId}', ['uses' => 'Admin\NewsCategory\NewsCategoryController@show']);
+            $router->post('/', ['uses' => 'Admin\NewsCategory\NewsCategoryController@store']);
+            $router->patch('/{newsCategoryId}', ['uses' => 'Admin\NewsCategory\NewsCategoryController@update']);
+            $router->delete('/{newsCategoryId}', ['uses' => 'Admin\NewsCategory\NewsCategoryController@destroy']);
+        }
+    );
+
 /*
 |
 |--------------------------------------------------------------------------

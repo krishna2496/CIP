@@ -121,7 +121,11 @@ return [
         'MESSAGE_ENABLE_TO_EXPORT_USER_PENDING_TIME_MISSION_ENTRIES' => 'Aucune donnée trouvée, pour générer des entrées de temps en attente pour une mission temporelle',
         'MESSAGE_USER_PENDING_GOAL_MISSION_ENTRIES_EXPORTED' => 'Entrées de temps en attente pour les missions de but, générées avec succès',
         'MESSAGE_ENABLE_TO_EXPORT_USER_PENDING_GOAL_MISSION_ENTRIES' => 'Aucune donnée trouvée, pour générer des entrées de temps en attente pour la mission de l\'objectif',
-        'MESSAGE_AUTO_APPROVED_COMMENT_ADDED' => 'Merci pour votre commentaire.'
+        'MESSAGE_AUTO_APPROVED_COMMENT_ADDED' => 'Merci pour votre commentaire.',        
+        'MESSAGE_NEWS_CATEGORY_LISTING' => 'Catégorie de nouvelles répertoriée avec succès',
+        'MESSAGE_NEWS_CATEGORY_DELETED' => 'Catégorie de nouvelles supprimée avec succès',
+        'MESSAGE_NEWS_CATEGORY_CREATED' => 'Catégorie de nouvelles créée avec succès',
+        'MESSAGE_NEWS_CATEGORY_UPDATED' => 'Catégorie de nouvelles mise à jour avec succès',
     ],
 
         
@@ -235,6 +239,9 @@ return [
         'ERROR_INVALID_DATA_FOR_TIMESHEET_ENTRY' => 'Vous ne pouvez pas ajouter de temps',
         'ERROR_TIMESHEET_ENTRY_NOT_FOUND' => 'ID de saisie de la feuille de temps introuvable',
         'ERROR_SAME_DATE_TIME_ENTRY' => 'Vous ne pouvez pas ajouter plus de 24 heures à la même date',
+        
+        // For News module        
+        'ERROR_NEWS_CATEGORY_NOT_FOUND' => 'Catégorie de nouvelles non trouvée dans le système',
     ],
 
     /**

@@ -126,7 +126,11 @@ return [
         'MESSAGE_ENABLE_TO_EXPORT_USER_PENDING_TIME_MISSION_ENTRIES' => 'No data found, to generate pending time entries for time mission',
         'MESSAGE_USER_PENDING_GOAL_MISSION_ENTRIES_EXPORTED' => 'Pending time entries for goal missions, generated successfully',
         'MESSAGE_ENABLE_TO_EXPORT_USER_PENDING_GOAL_MISSION_ENTRIES' => 'No data found, to generate pending time entries for goal mission',
-        'MESSAGE_AUTO_APPROVED_COMMENT_ADDED' => 'Thanks for your comment.'
+        'MESSAGE_AUTO_APPROVED_COMMENT_ADDED' => 'Thanks for your comment.',        
+        'MESSAGE_NEWS_CATEGORY_LISTING' => 'News category listed successfully',
+        'MESSAGE_NEWS_CATEGORY_DELETED' => 'News category deleted successfully',
+        'MESSAGE_NEWS_CATEGORY_CREATED' => 'News category created successfully',
+        'MESSAGE_NEWS_CATEGORY_UPDATED' => 'News category updated successfully',
 	],
         
     /**
@@ -241,6 +245,9 @@ return [
         'ERROR_TIMESHEET_ALREADY_DONE_FOR_DATE' => 'Time entry is already approved for given date', 
         'ERROR_INVALID_DATA_FOR_TIMESHEET_ENTRY' => 'You cannot add time entry',
         'ERROR_SAME_DATE_TIME_ENTRY' => 'You cannot add more than 24 hours timeentry for same date',
+
+        // For News module        
+        'ERROR_NEWS_CATEGORY_NOT_FOUND' => 'News category not found in the system',
     ],
 
     /**
