@@ -145,7 +145,8 @@ return [
         'CSV' => 'csv',
         'PNG' => 'png',
         'PDF' => 'pdf',
-        'JPG' => 'jpg'
+        'JPG' => 'jpg',
+        'JPEG' => 'jpeg'
     ],
 
     /*
