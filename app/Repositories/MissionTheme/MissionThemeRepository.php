@@ -148,7 +148,7 @@ class MissionThemeRepository implements MissionThemeInterface
                 $theme->translations,
                 'lang'
             ));
-            if ($arrayKey  !== '') {
+            if ($arrayKey  !== false) {
                 $theme->theme_name = $theme->translations[$arrayKey]['title'];
             }
             unset($theme->translations);
