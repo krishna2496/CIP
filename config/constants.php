@@ -209,7 +209,8 @@ return [
      * Tenant settings
      */
     'tenant_settings' => [
-        'EMAIL_NOTIFICATION_INVITE_COLLEAGUE' => 'email_notification_invite_colleague'
+        'EMAIL_NOTIFICATION_INVITE_COLLEAGUE' => 'email_notification_invite_colleague',
+        'MISSION_COMMENT_AUTO_APPROVED' => 'mission_comment_auto_approved'
     ],
     
     'TOP_THEME' => "top_themes",

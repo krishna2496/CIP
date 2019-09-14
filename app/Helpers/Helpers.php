@@ -13,20 +13,11 @@ use App\Exceptions\TenantDomainNotFoundException;
 use Carbon\Carbon;
 use stdClass;
 use Illuminate\Support\Facades\Hash;
-use App\Models\TenantActivatedSetting;
 
 class Helpers
 {
     use RestExceptionHandlerTrait;
-    /**
-     * Create a new helper instance.
-     * @param App\Models\TenantActivatedSetting $tenantActivatedSetting
-     * @return void
-     */
-    public function __construct(TenantActivatedSetting $tenantActivatedSetting)
-    {
-        $this->tenantActivatedSetting = $tenantActivatedSetting;
-    }
+
     
     /**
     * It will return tenant name from request
@@ -368,59 +359,5 @@ class Helpers
         $minutes = ($totalHours % 60) / 60;
         $totalHours = $hours + $minutes;
         return number_format((float)$totalHours, 2, '.', '');
-    }
-
-    /**
-     * Get fetch all activated tenant settings
-     *
-     * @param \Illuminate\Http\Request $request
-     * @return array
-     */
-    public function getAllTenantActivatedSetting(Request $request): array
-    {
-        // Fetch tenant all settings details - From super admin
-        $getTenantSettings = $this->getAllTenantSetting($request);
-
-        // Get data from tenant database
-        $tenantActivatedSettings = $this->tenantActivatedSetting->whereHas('settings')->get();
-
-        $tenantSettingData = array();
-        if ($tenantActivatedSettings->count() &&  $getTenantSettings->count()) {
-            foreach ($tenantActivatedSettings as $settingKey => $tenantSetting) {
-                $index = $getTenantSettings->search(function ($value, $key) use ($tenantSetting) {
-                    return $value->tenant_setting_id == $tenantSetting->settings->setting_id;
-                });
-                $tenantSettingData[] = $getTenantSettings[$index]->key;
-            }
-        }
-        return $tenantSettingData;
-    }
-
-    /**
-     * Get fetch all activated tenant settings
-     *
-     * @param \Illuminate\Http\Request $request
-     * @return bool
-     */
-    public function checkTenantSettingStatus(string $settingKeyName, Request $request): bool
-    {
-        // dd($settingKey, $request);
-        // Fetch tenant all settings details - From super admin
-        $getTenantSettings = $this->getAllTenantSetting($request);
-
-        // Get data from tenant database
-        $tenantActivatedSettings = $this->tenantActivatedSetting->whereHas('settings')->get();
-
-        $tenantSettingData = array();
-        if ($tenantActivatedSettings->count() &&  $getTenantSettings->count()) {
-            foreach ($tenantActivatedSettings as $settingKey => $tenantSetting) {
-                $index = $getTenantSettings->search(function ($value, $key) use ($tenantSetting) {
-                    return $value->tenant_setting_id == $tenantSetting->settings->setting_id;
-                });
-                $tenantSettingData[] = $getTenantSettings[$index]->key;
-            }
-        }
-
-        return in_array($settingKeyName, $tenantSettingData);
     }
 }
