@@ -93,4 +93,32 @@ class TenantActivatedSettingRepository implements TenantActivatedSettingInterfac
             return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
+
+    /**
+     * Get fetch all activated tenant settings
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return bool
+     */
+    public function checkTenantSettingStatus(string $settingKeyName, Request $request): bool
+    {
+        // dd($settingKey, $request);
+        // Fetch tenant all settings details - From super admin
+        $getTenantSettings =  $this->helpers->getAllTenantSetting($request);
+
+        // Get data from tenant database
+        $tenantActivatedSettings = $this->tenantActivatedSetting->whereHas('settings')->get();
+
+        $tenantSettingData = array();
+        if ($tenantActivatedSettings->count() &&  $getTenantSettings->count()) {
+            foreach ($tenantActivatedSettings as $settingKey => $tenantSetting) {
+                $index = $getTenantSettings->search(function ($value, $key) use ($tenantSetting) {
+                    return $value->tenant_setting_id == $tenantSetting->settings->setting_id;
+                });
+                $tenantSettingData[] = $getTenantSettings[$index]->key;
+            }
+        }
+
+        return in_array($settingKeyName, $tenantSettingData);
+    }
 }
