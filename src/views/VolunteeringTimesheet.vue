@@ -1,183 +1,185 @@
 <template>
+
     <div class="dashboard-timesheet inner-pages">
         <header>
         <ThePrimaryHeader v-if="isShownComponent"></ThePrimaryHeader>
         </header>
         <main>
+            
             <DashboardBreadcrumb />
-             <div class="dashboard-tab-content">
-            <b-container>
+            <div class="dashboard-tab-content">
+                <b-container>
                 <div class="heading-section">
-                    <h1>{{langauageData.label.volunteering_timesheet}}</h1>
+                    <h1>
+                        {{langauageData.label.volunteering_timesheet}}  
+                    </h1>
                 </div>
-             
-                <div class="dashboard-table">
-                    <div class="table-outer">
-                        <div class="table-inner">
-                            <h3>{{langauageData.label.volunteering_hours}}</h3>
-                            <VolunteeringTimesheetTableHeader
-                                @updateCall="changeVolunteeringHours"
-                            />
-                            <div class="table-wrapper-outer">
-                                <div v-bind:class="{ 'content-loader-wrap': true, 'loader-active': tableLoaderActive}">
-                                    <div class="content-loader"></div>
-                                </div>
-                                <b-table-simple
-                                small
-                                responsive
-                                bordered
-                                class="timesheet-table timesheethours-table"
-                                >
-                                    <b-thead>
-                                        <b-tr>
-                                            <b-th class="mission-col">{{langauageData.label.mission}}</b-th>
-                                            <b-th v-for="(item,key) in volunteeringHoursWeeks">
-                                                {{key+1}}<span>{{item}}</span> 
-                                            </b-th>  
-                                            <b-th class="total-col">{{langauageData.label.total}}</b-th>
-                                        </b-tr>
-                                    </b-thead>
-                                    <b-tbody v-if="timeMissionData.length > 0">
-                                        <b-tr v-for="(timeItem,key) in timeMissionData">
-                                            <b-td class="mission-col">{{timeItem.title}}</b-td>
-                                            <b-td 
-                                            :mission-id="timeItem.mission_id"
-                                            :date="key+1"
-                                            v-on:click="getRelatedTimeData(key+1,timeItem,'time')"
-                                            v-bind:class="{ 
-                                                'approved' : getTimeSheetHourClass(key+1,timeItem,'time') == 'approved',
-                                                'declined' : getTimeSheetHourClass(key+1,timeItem,'time') == 'declined',
-                                                'disabled' : getTimeSheetHourClass(key+1,timeItem,'time') == 'disabled',
-                                                'approval' : getTimeSheetHourClass(key+1,timeItem,'time') == 'submit_for_approval',  
-                                                'default-time' : getTimeSheetHourClass(key+1,timeItem,'time') == 'default-time'
-                                            }"
-                                            v-for="(item,key) in volunteeringHoursWeeks">
-                                                {{getTime(key,timeItem.timesheet,'time')}} 
-                                            </b-td> 
-                                            <b-td class="total-col">{{getRawHourTotal(timeItem.timesheet,'time')}}</b-td>
-                                        </b-tr>
-                                        <b-tr class="total-row">
-                                            <b-td class="mission-col">{{langauageData.label.total}}:</b-td>
-                                            <b-td v-for="(item,key) in volunteeringHoursWeeks">
-                                                {{getColumnHourTotal(key+1,'time')}}
-                                            </b-td> 
-                                            <b-td>
-                                                {{getTotalHours('time')}}
-                                            </b-td>
-                                        </b-tr>
-                                    </b-tbody>
+                <div class="inner-content-wrap" v-if="isAllVisible">
+                    <div class="dashboard-table">
+                        <div class="table-outer">
+                            <div class="table-inner">
+                                <h3>{{langauageData.label.volunteering_hours}}</h3>
+                                <VolunteeringTimesheetTableHeader
+                                    @updateCall="changeVolunteeringHours"
+                                />
+                                <div class="table-wrapper-outer">
+                                    <div v-bind:class="{ 'content-loader-wrap': true, 'loader-active': tableLoaderActive}">
+                                        <div class="content-loader"></div>
+                                    </div>
+                                    <b-table-simple
+                                    small
+                                    responsive
+                                    bordered
+                                    class="timesheet-table timesheethours-table"
+                                    >
+                                        <b-thead>
+                                            <b-tr>
+                                                <b-th class="mission-col">{{langauageData.label.mission}}</b-th>
+                                                <b-th v-for="(item,key) in volunteeringHoursWeeks">
+                                                    {{key+1}}<span>{{item}}</span> 
+                                                </b-th>  
+                                                <b-th class="total-col">{{langauageData.label.total}}</b-th>
+                                            </b-tr>
+                                        </b-thead>
+                                        <b-tbody v-if="timeMissionData.length > 0">
+                                            <b-tr v-for="(timeItem,key) in timeMissionData">
+                                                <b-td class="mission-col">{{timeItem.title}}</b-td>
+                                                <b-td 
+                                                :mission-id="timeItem.mission_id"
+                                                :date="key+1"
+                                                v-on:click="getRelatedTimeData(key+1,timeItem,'time')"
+                                                 v-bind:class="[getTimeSheetHourClass(key+1,timeItem,'time')]"
+                                               
+                                                v-for="(item,key) in volunteeringHoursWeeks">
+                                                    {{getTime(key,timeItem.timesheet,'time')}} 
+                                                </b-td> 
+                                                <b-td class="total-col">{{getRawHourTotal(timeItem.timesheet,'time')}}</b-td>
+                                            </b-tr>
+                                            <b-tr class="total-row">
+                                                <b-td class="mission-col">{{langauageData.label.total}}:</b-td>
+                                                <b-td v-for="(item,key) in volunteeringHoursWeeks">
+                                                    {{getColumnHourTotal(key+1,'time')}}
+                                                </b-td> 
+                                                <b-td>
+                                                    {{getTotalHours('time')}}
+                                                </b-td>
+                                            </b-tr>
+                                        </b-tbody>
 
-                                </b-table-simple>
+                                    </b-table-simple>
+                                </div>
+                            </div>
+                            <div class="btn-block">
+                                <b-button class="btn-bordersecondary ml-auto"
+                                v-bind:class="{
+                                    disabled : enableSubmitTimeTimeSheet    
+                                }"
+                                @click="submitVolunteerTimeSheet('time')">{{langauageData.label.submit}}</b-button>
                             </div>
                         </div>
-                        <div class="btn-block">
-                            <b-button class="btn-bordersecondary ml-auto"
-                            v-bind:class="{
-                                disabled : enableSubmitTimeTimeSheet    
-                            }"
-                            @click="submitVolunteerTimeSheet('time')">{{langauageData.label.submit}}</b-button>
-                        </div>
-                    </div>
-                    <ul class="meta-data-list">
-                        <li class="approve-indication">{{langauageData.label.approved}}</li>
-                        <li class="decline-indication">{{langauageData.label.declined}}</li>
-                        <li class="approval-indication">
-                            {{langauageData.label.submit_for_approval}}
-                        </li>
-                    </ul>
-                 <!--    {{goalMissionData}} -->
-                    <div class="table-outer timesheet-table-outer">
-                        <div class="table-inner">
-                            <h3>{{langauageData.label.volunteering_goals}}</h3>
-                            <VolunteeringTimesheetTableHeader
-                                @updateCall="changeVolunteeringGoals"
-                            />
-                            <div class="table-wrapper-outer">
-                                <div v-bind:class="{ 'content-loader-wrap': true, 'loader-active': goalTableLoaderActive}">
-                                    <div class="content-loader"></div>
+                        <ul class="meta-data-list">
+                            <li class="approve-indication">{{langauageData.label.approved}}</li>
+                            <li class="decline-indication">{{langauageData.label.declined}}</li>
+                            <li class="approval-indication">
+                                {{langauageData.label.submit_for_approval}}
+                            </li>
+                        </ul>
+                    <!--    {{goalMissionData}} -->
+                        <div class="table-outer timesheet-table-outer">
+                            <div class="table-inner">
+                                <h3>{{langauageData.label.volunteering_goals}}</h3>
+                                <VolunteeringTimesheetTableHeader
+                                    @updateCall="changeVolunteeringGoals"
+                                />
+                                <div class="table-wrapper-outer">
+                                    <div v-bind:class="{ 'content-loader-wrap': true, 'loader-active': goalTableLoaderActive}">
+                                        <div class="content-loader"></div>
+                                    </div>
+                                    <b-table-simple
+                                        small
+                                        responsive
+                                        bordered
+                                        class="timesheet-table timesheetgoals-table"
+                                        >
+                                        <b-thead>
+                                            <b-tr>
+                                                <b-th class="mission-col">{{langauageData.label.mission}}</b-th>
+                                                <b-th v-for="(item,key) in volunteeringGoalWeeks">
+                                                    {{key+1}}<span>{{item}}</span> 
+                                                </b-th>  
+                                                <b-th class="total-col">{{langauageData.label.total}}</b-th>
+                                            </b-tr>
+                                        </b-thead>
+                                        <b-tbody v-if="goalMissionData.length > 0">
+                                            <b-tr v-for="(timeItem,key) in goalMissionData">
+                                                <b-td class="mission-col">{{timeItem.title}}</b-td>
+                                                <b-td 
+                                                    :mission-id="timeItem.mission_id"
+                                                    :date="key+1"
+                                                    v-on:click="getRelatedTimeData(key+1,timeItem,'goal')"
+                                                     v-bind:class="[getTimeSheetHourClass(key+1,timeItem,'goal')]"
+                                                   
+                                            
+                                                v-for="(item,key) in volunteeringGoalWeeks">
+                                                {{getTime(key,timeItem.timesheet,'goal')}} 
+                                                </b-td> 
+                                                <b-td class="total-col">{{getRawHourTotal(timeItem.timesheet,'goal')}}</b-td>
+                                            </b-tr>
+                                            <b-tr class="total-row">
+                                                <b-td class="mission-col">{{langauageData.label.total}}:</b-td>
+                                                <b-td v-for="(item,key) in volunteeringGoalWeeks">
+                                                {{getColumnHourTotal(key+1,'goal')}}
+                                                </b-td> 
+                                                <b-td>
+                                                {{getTotalHours('goal')}}
+                                                </b-td>
+                                            </b-tr>
+                                        </b-tbody>
+                                    </b-table-simple>
                                 </div>
-                             <b-table-simple
-                              small
-                              responsive
-                              bordered
-                              class="timesheet-table timesheetgoals-table"
-                            >
-                            <b-thead>
-                                <b-tr>
-                                    <b-th class="mission-col">{{langauageData.label.mission}}</b-th>
-                                    <b-th v-for="(item,key) in volunteeringGoalWeeks">
-                                        {{key+1}}<span>{{item}}</span> 
-                                    </b-th>  
-                                    <b-th class="total-col">{{langauageData.label.total}}</b-th>
-                                </b-tr>
-                            </b-thead>
-                            <b-tbody v-if="goalMissionData.length > 0">
-                                <b-tr v-for="(timeItem,key) in goalMissionData">
-                                    <b-td class="mission-col">{{timeItem.title}}</b-td>
-                                    <b-td 
-                                        :mission-id="timeItem.mission_id"
-                                        :date="key+1"
-                                        v-on:click="getRelatedTimeData(key+1,timeItem,'goal')"
-                                        v-bind:class="{ 
-                                        'approved' : getTimeSheetHourClass(key+1,timeItem,'goal') == 'approved',
-                                        'declined' : getTimeSheetHourClass(key+1,timeItem,'goal') == 'declined',
-                                        'disabled' : getTimeSheetHourClass(key+1,timeItem,'goal') == 'disabled',
-                                        'approval' : getTimeSheetHourClass(key+1,timeItem,'goal') == 'submit_for_approval',
-                                        'default-time' : getTimeSheetHourClass(key+1,timeItem,'goal') == 'default-time'
+                            </div>
+                            <div class="btn-block">
+                                <b-button class="btn-bordersecondary ml-auto"
+                                    @click="submitVolunteerTimeSheet('goal')"
+                                    v-bind:class="{
+                                        disabled : enableSubmitGoalTimeSheet    
                                     }"
-                                    v-for="(item,key) in volunteeringGoalWeeks">
-                                    {{getTime(key,timeItem.timesheet,'goal')}} 
-                                    </b-td> 
-                                    <b-td class="total-col">{{getRawHourTotal(timeItem.timesheet,'goal')}}</b-td>
-                                </b-tr>
-                                <b-tr class="total-row">
-                                    <b-td class="mission-col">{{langauageData.label.total}}:</b-td>
-                                    <b-td v-for="(item,key) in volunteeringGoalWeeks">
-                                    {{getColumnHourTotal(key+1,'goal')}}
-                                    </b-td> 
-                                    <b-td>
-                                    {{getTotalHours('goal')}}
-                                    </b-td>
-                                </b-tr>
-                            </b-tbody>
-                    </b-table-simple>
+                                >{{langauageData.label.submit}}</b-button>
+                            </div>
+                        </div> 
+                            <ul class="meta-data-list">
+                                    <li class="approve-indication">{{langauageData.label.approved}}</li>
+                                    <li class="decline-indication">{{langauageData.label.declined}}</li>
+                                    <li class="approval-indication">
+                                        {{langauageData.label.submit_for_approval}}
+                                    </li>
+                            </ul>
+                            <VolunteeringRequest
+                                    :headerField="timesheetRequestFields"
+                                    :items="timesheetRequestItems"
+                                    :headerLable="timeRequestLabel"
+                                    :currentPage="hourRequestCurrentPage"
+                                    :totalRow="hourRequestTotalRow"
+                                    @updateCall = "getTimeRequest"
+                                    exportUrl = "app/timesheet/time-requests/export"
+                                    :perPage = "hourRequestPerPage"
+                                    :nextUrl = "hourRequestNextUrl"
+                                    :fileName="langauageData.export_timesheet_file_names.PENDING_TIME_MISSION_ENTRIES_XLSX"
+                                />
+                        
+                            <VolunteeringRequest
+                                :headerField="goalRequestFields"
+                                :items="goalRequestItems"
+                                :headerLable="goalRequestLabel"
+                                :currentPage="goalRequestCurrentPage"
+                                :totalRow="goalRequestTotalRow"
+                                @updateCall = "getGoalRequest"
+                                :perPage = "goalRequestPerPage"    
+                                :nextUrl = "goalRequestNextUrl"
+                                exportUrl = "app/timesheet/goal-requests/export"
+                                :fileName="langauageData.export_timesheet_file_names.PENTIND_GOAL_MISSION_ENTRIES_XLSX"
+                            />
                     </div>
-                </div>
-                    <div class="btn-block">
-                        <b-button class="btn-bordersecondary ml-auto"
-                            @click="submitVolunteerTimeSheet('goal')"
-                            v-bind:class="{
-                                disabled : enableSubmitGoalTimeSheet    
-                            }"
-                        >{{langauageData.label.submit}}</b-button>
-                    </div>
-                </div> 
-                <VolunteeringRequest
-                        :headerField="timesheetRequestFields"
-                        :items="timesheetRequestItems"
-                        :headerLable="timeRequestLabel"
-                        :currentPage="hourRequestCurrentPage"
-                        :totalRow="hourRequestTotalRow"
-                        @updateCall = "getTimeRequest"
-                        exportUrl = "app/timesheet/time-requests/export"
-                        :perPage = "hourRequestPerPage"
-                        :nextUrl = "hourRequestNextUrl"
-                        :fileName="langauageData.export_timesheet_file_names.PENDING_TIME_MISSION_ENTRIES_XLSX"
-                    />
-               
-                <VolunteeringRequest
-                        :headerField="goalRequestFields"
-                        :items="goalRequestItems"
-                        :headerLable="goalRequestLabel"
-                        :currentPage="goalRequestCurrentPage"
-                        :totalRow="goalRequestTotalRow"
-                        @updateCall = "getGoalRequest"
-                        :perPage = "goalRequestPerPage"    
-                        :nextUrl = "goalRequestNextUrl"
-                        exportUrl = "app/timesheet/goal-requests/export"
-                        :fileName="langauageData.export_timesheet_file_names.PENTIND_GOAL_MISSION_ENTRIES_XLSX"
-                    />
-                </div>
 
                     <AddVolunteeringHours
                         ref="timeModal"
@@ -207,6 +209,10 @@
                         @updateCall="updateDefaultValue" 
                         @changeDocument="changeGoalDocument"
                     />
+                </div>
+                <div v-else class="inner-content-wrap">
+                    {{langauageData.label.volunteering_timesheet_not_found}}
+                </div>
                 </b-container>
             </div>
         </main>
@@ -313,7 +319,12 @@ export default {
             hourRequestPerPage : 5,
             goalRequestPerPage : 5,
             hourRequestNextUrl : null,
-            goalRequestNextUrl : null
+            goalRequestNextUrl : null,
+            isAllVisible : true,
+            isCurrentDate : false,
+            todaysDate :  moment().format("D"),
+            currentYear :  moment().format("YYYY"),
+            currentMonth :  moment().format("M")
         };
     },
     updated() {
@@ -463,8 +474,7 @@ export default {
             if(timeSheetType == 'time') {
                 this.$refs.timeModal.$refs.timeHoursModal.show();    
             } else {
-                this.$refs.goalModal.$refs.goalActionModal.show();
-                
+                this.$refs.goalModal.$refs.goalActionModal.show();     
             }
            
         },
@@ -498,8 +508,8 @@ export default {
         },
         getTimeSheetHourClass(date,timeSheetArray,timeSheetType) {
             let _this = this
-            let returnData = '';
-
+            let returnData = [];
+            this.isCurrentDate = false;
             let missionEndDate = timeSheetArray.end_date         
             let disabledPastDates = moment(timeSheetArray.start_date).format("YYYY-MM-DD")                                  
             let disablefuterDate = moment(this.futureDates).format("YYYY-MM-DD");
@@ -512,53 +522,68 @@ export default {
                 disableEndDate = endDate
             }
           
-             let currentDate = moment(_this.volunteeringHoursCurrentYear+'-'+_this.volunteeringHoursCurrentMonth+'-'+date).format("YYYY-MM-DD");
+            let currentDate = moment(_this.volunteeringHoursCurrentYear+'-'+_this.volunteeringHoursCurrentMonth+'-'+date).format("YYYY-MM-DD");
                 
            
             let timeArray = timeSheetArray.timesheet;
-            
+            let currentTimeSheetYear = '';
+            let currentTimeSheetMonth = '';
+            if(timeSheetType == 'time') {
+                currentTimeSheetYear = _this.volunteeringHoursCurrentYear;
+                currentTimeSheetMonth = _this.volunteeringHoursCurrentMonth;
+                      
+                } else {
+                currentTimeSheetYear = _this.volunteeringGoalCurrentYear;
+                currentTimeSheetMonth = _this.volunteeringGoalCurrentMonth;
+                        
+            }
                 timeArray.filter(function (timeSheetItem, timeSheetIndex) {
                     let currentArrayDate = timeSheetItem.date
                     let currentArrayYear = timeSheetItem.year
-                    let currentArrayMonth = timeSheetItem.month
-                    let currentTimeSheetYear = '';
-                    let currentTimeSheetMonth = '';
-
-                    if(timeSheetType == 'time') {
-                        currentTimeSheetYear = _this.volunteeringHoursCurrentYear;
-                        currentTimeSheetMonth = _this.volunteeringHoursCurrentMonth;
-                    } else {
-                        currentTimeSheetYear = _this.volunteeringGoalCurrentYear;
-                        currentTimeSheetMonth = _this.volunteeringGoalCurrentMonth;
-                    }
+                    let currentArrayMonth = timeSheetItem.month             
+                   
                     if(currentTimeSheetYear == currentArrayYear) {
                         if(currentTimeSheetMonth == currentArrayMonth) {
                             if(date == currentArrayDate) {
                                 if(timeSheetItem.timesheet_status.status == "APPROVED" || timeSheetItem.timesheet_status.status == "AUTOMATICALLY_APPROVED") {
-                                    returnData = "approved";
+                                    returnData.push("approved")
                                 } 
                                 else if(timeSheetItem.timesheet_status.status == "DECLINED") {
-                                    returnData = "declined"
+                                    returnData.push("declined")
+                                    // returnData = "declined"
                                 }
                                 else if(timeSheetItem.timesheet_status.status == "SUBMIT_FOR_APPROVAL") {
-                                    returnData = "submit_for_approval"
+                                    returnData.push("approval")
+                                    // returnData = "submit_for_approval"
                                 }
                                 else {
-                                    returnData = "default-time"
+                                    returnData.push("default-time")
+                                    // returnData = "default-time"
                                 }
                             }
+
                         } 
                     }
-                  
+                    // if((_this.todaysDate == date) && (currentTimeSheetYear ==  _this.currentYear) && (currentTimeSheetMonth == _this.currentMonth)) {
+                    //             returnData = "currentdate-col";
+                    // }
                 });
-        
-            if (currentDate < disabledPastDates) {
-                    returnData ="disabled"
+                
+                if((_this.todaysDate == date) && (currentTimeSheetYear ==  _this.currentYear) && (currentTimeSheetMonth == _this.currentMonth)) {
+                                
+                                returnData.push("currentdate-col");
+                                
+                }
+                if (currentDate < disabledPastDates) {
+                    returnData.push("disabled")
+                    // returnData ="disabled"
                 } 
 
                 if(currentDate > disableEndDate) {
-                     returnData = "disabled"
+                    returnData.push("disabled")
+                    //  returnData = "disabled"
                 }
+               
             return returnData;
         },
 
@@ -615,6 +640,11 @@ export default {
                 if(response) {
                     this.timeMissionData = response['TIME']
                     this.goalMissionData = response['GOAL']
+                    if(response['TIME'].length > 0 ||  this.goalMissionData.length > 0) {
+                        this.isAllVisible = true
+                    } else {
+                        this.isAllVisible = false
+                    }
                 }
                 _this.tableLoaderActive = false 
            })
@@ -779,8 +809,7 @@ export default {
             var minute=0;
             var hourApproved=0;
             var minuteApproved=0;
-             
-            
+
             let timeArray = []
             if(timeSheetType == "time") {
                 timeArray = this.timeMissionData;
@@ -851,11 +880,13 @@ export default {
                 }    
             } ,
 
+        
         updateMinutes(value) {
             this.defaultMinutes = value.selectedVal
         },
 
         hideModal(){
+            store.commit('removeTimeSheetDetail');
             this.currentTimeData.missionId = '';
             this.currentTimeData.hours = '';
             this.currentTimeData.minutes = '';
@@ -864,15 +895,17 @@ export default {
             this.currentTimeData.notes = '';
             this.currentTimeData.day = '';
             this.currentTimeData.timeSheetId = '';
-            this.currentTimeData.documents = '';
+            this.currentTimeData.documents = [];
             this.volunteerHourDisableDates = [],
             this.currentTimeData.disabledPastDates = '',
             this.currentTimeData.disabledFutureDates = '',
             this.currentTimeData.missionName = ''
             this.currentTimeData.action = ''
+            this.files = [];
             this.defaultHours = this.langauageData.placeholder.spent_hours
             this.defaultMinutes = this.langauageData.placeholder.spent_minutes
             this.defaultWorkday = this.langauageData.placeholder.workday 
+           
         },
 
         submitVolunteerTimeSheet(timeSheetType) {
@@ -915,6 +948,7 @@ export default {
                     if(response.error == true){
                         this.makeToast("danger",response.message);
                     } else {
+                        this.getVolunteerHoursData()
                         this.makeToast("success",response.message);
                     }  
                 })
@@ -969,6 +1003,31 @@ export default {
         },
         getGoalRequestData(currentPage) {
             var _this = this;
+            setTimeout(function() {
+                if(store.state.missionId != '' && store.state.missionId != null) {
+                    let missionId = store.state.missionId;
+                    let timeSheetType = store.state.missionType.toLowerCase()
+                    let timeArray = []
+                    let timeSheetArray = []
+                    let date =  moment().format('D')
+                    if(timeSheetType == "time") {
+                        timeArray = _this.timeMissionData
+                    } else {
+                        timeArray =  _this.goalMissionData
+                    }
+                    timeArray.filter(function(timeArray,timeIndex){
+                        if(timeArray.mission_id == missionId) {
+                            timeSheetArray = timeArray;
+                        }
+                    })
+                    setTimeout(function(){
+                        if(timeSheetArray) { 
+                            _this.getRelatedTimeData(date,timeSheetArray,timeSheetType)
+                        }
+                    },500)   
+                } 
+            },200)
+           
             let currentData = [];
 
             goalRequest(currentPage).then( response => {
@@ -1011,9 +1070,10 @@ export default {
         setTimeout(function(){
             globalThis.getTimeRequestData(globalThis.hourRequestCurrentPage);
         },80)
-        setTimeout(function(){
+        setTimeout(function() {
             globalThis.getGoalRequestData(globalThis.goalRequestCurrentPage);
         },100)
+        
         let timeRequestFieldArray = [
             this.langauageData.label.mission,
             this.langauageData.label.time,
@@ -1038,7 +1098,7 @@ export default {
                 "key" : data
             })
         });
-       
+        
     }
 };
 </script>

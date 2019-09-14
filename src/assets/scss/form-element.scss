@@ -307,6 +307,11 @@ textarea {
   appearance: none;
   -webkit-appearance: none;
 }
+textarea {
+  &.form-control {
+    overflow-y: auto;
+  }
+}
 .form-control {
   width: 100%;
   max-width: 100%;
@@ -1209,7 +1214,10 @@ label {
 }
 
 /** File upload Style **/
-
+.uploaded-file-wrap {
+  max-height: 300px;
+  overflow-y: auto;
+}
 .file-upload-wrap {
   border: 1px solid $border-color;
   @include border-radius(3px);

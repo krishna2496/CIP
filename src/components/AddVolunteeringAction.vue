@@ -5,174 +5,184 @@
             <template slot="modal-header" slot-scope="{ close }">
                 <i class="close" @click="close()" v-b-tooltip.hover :title="langauageData.label.close"></i>
                     <h5 class="modal-title">{{langauageData.label.goal_entry_modal_title}}</h5>
-                </template>
-                <b-alert show :variant="classVariant" dismissible v-model="showErrorDiv">
-                    {{ message }}
-                </b-alert>
-            <form action class="form-wrap">
-                <b-form-group>
-                    <b-row>
-                        <b-col sm="12">
-                            <b-form-group>
-                                <label for>{{langauageData.label.mission}}</label>
-                                <b-form-input id 
-                                type="text"
-                                v-model.trim="timeEntryDefaultData.missionName"
-                                class="disabled"           
-                               ></b-form-input>
-                            </b-form-group>
-                        </b-col>
-                        <b-col>
-                           <b-form-group>
+            </template>
+            <b-alert show :variant="classVariant" dismissible v-model="showErrorDiv">
+                {{ message }}
+            </b-alert>
+            <div class="table-wrapper-outer">
+                <div v-bind:class="{ 'content-loader-wrap': true, 'loader-active': isAjaxCall}">
+                    <div class="content-loader"></div>
+                </div>
+                <form action class="form-wrap">
+                    <b-form-group>
                         <b-row>
-                        <b-col sm="12">
+                            <b-col sm="12">
+                                <b-form-group>
+                                    <label for>{{langauageData.label.mission}}</label>
+                                    <b-form-input id 
+                                    type="text"
+                                    v-model.trim="timeEntryDefaultData.missionName"
+                                    class="disabled"           
+                                ></b-form-input>
+                                </b-form-group>
+                            </b-col>
+                            <b-col>
                             <b-form-group>
-                                <label for>{{langauageData.label.actions}}*</label>
-                                <b-form-input 
-                                v-model.trim="timeEntryDefaultData.action"
-                                :class="{ 'is-invalid': submitted && $v.timeEntryDefaultData.action.$error }"
-                                type="text" :placeholder="langauageData.placeholder.action"></b-form-input>
-                                <div 
-                                    v-if="submitted && !$v.timeEntryDefaultData.dateVolunteered.required" 
-                                    class="invalid-feedback">
-                                    {{ langauageData.errors.action_required }}
-                                </div>
-                               
-                                <div 
-                                    v-if="submitted && !$v.timeEntryDefaultData.dateVolunteered.minValue" 
-                                    class="invalid-feedback">
-                                    {{ langauageData.errors.minimum_action }}
-                                </div>
+                            <b-row>
+                            <b-col sm="12">
+                                <b-form-group>
+                                    <label for>{{langauageData.label.actions}}*</label>
+                                    <b-form-input 
+                                    v-model.trim="timeEntryDefaultData.action"
+                                    :class="{ 'is-invalid': submitted && $v.timeEntryDefaultData.action.$error }"
+                                    type="text" :placeholder="langauageData.placeholder.action"></b-form-input>
+                                    <div 
+                                        v-if="submitted && !$v.timeEntryDefaultData.dateVolunteered.required" 
+                                        class="invalid-feedback">
+                                        {{ langauageData.errors.action_required }}
+                                    </div>
+                                
+                                    <div 
+                                        v-if="submitted && !$v.timeEntryDefaultData.dateVolunteered.minValue" 
+                                        class="invalid-feedback">
+                                        {{ langauageData.errors.minimum_action }}
+                                    </div>
+                                </b-form-group>
+                            </b-col>
+                            </b-row>
+                        </b-form-group>
+
+                            </b-col>
+                        </b-row>
+                    </b-form-group>
+                    <b-form-group>
+                        <b-row>
+                            <b-col sm="6" class="date-col">
+                                <b-form-group>
+                                    <label for>{{langauageData.label.date_volunteered}}*</label>
+                                    <date-picker
+                                        v-model="timeEntryDefaultData.dateVolunteered"
+                                        :notAfter="timeEntryDefaultData.disabledFutureDates"
+                                        :notBefore="timeEntryDefaultData.disabledPastDates"
+                                        :disabledDays="disableDates"
+                                        @change="dateChange()"
+                                        :class="{ 'is-invalid': submitted && $v.timeEntryDefaultData.dateVolunteered.$error }"
+                                        :lang="lang"
+                                    >
+                                        
+                                    </date-picker>
+                                <div v-if="submitted && !$v.timeEntryDefaultData.dateVolunteered.required" class="invalid-feedback">
+                                        {{ langauageData.errors.date_volunteer_is_required }}</div>
+                                </b-form-group>
+                            </b-col>
+                        <b-col sm="6" class="date-col">
+                            <b-form-group>
+                                <label for>{{langauageData.label.day_volunteered}}*</label>
+                                        <AppCustomDropdown
+                                            v-model="timeEntryDefaultData.workDay"
+                                            :optionList="workDayList"
+                                            :errorClass="submitted && $v.timeEntryDefaultData.workDay.$error" 
+                                            :defaultText="defaultWorkday"
+                                            @updateCall="updateWorkday"
+                                            translationEnable= "true"
+                                        />
+                                    <div v-if="submitted && !$v.timeEntryDefaultData.workDay.required" class="invalid-feedback">
+                                        {{ langauageData.errors.work_day }}</div>
                             </b-form-group>
+                        
                         </b-col>
                         </b-row>
                     </b-form-group>
-
-                        </b-col>
-                    </b-row>
-                </b-form-group>
-                <b-form-group>
-                    <b-row>
-                        <b-col sm="6" class="date-col">
-                            <b-form-group>
-                                <label for>{{langauageData.label.date_volunteered}}*</label>
-                                <date-picker
-                                    v-model="timeEntryDefaultData.dateVolunteered"
-                                    :notAfter="timeEntryDefaultData.disabledFutureDates"
-                                    :notBefore="timeEntryDefaultData.disabledPastDates"
-                                    :disabledDays="disableDates"
-                                    @change="dateChange()"
-                                    :class="{ 'is-invalid': submitted && $v.timeEntryDefaultData.dateVolunteered.$error }"
-                                    :lang="lang"
-                                >
-                                     
-                                </date-picker>
-                               <div v-if="submitted && !$v.timeEntryDefaultData.dateVolunteered.required" class="invalid-feedback">
-                                    {{ langauageData.errors.date_volunteer_is_required }}</div>
-                            </b-form-group>
-                        </b-col>
-                    <b-col sm="6" class="date-col">
-                        <b-form-group>
-                            <label for>{{langauageData.label.workday}}*</label>
-                                    <AppCustomDropdown
-                                        v-model="timeEntryDefaultData.workDay"
-                                        :optionList="workDayList"
-                                        :errorClass="submitted && $v.timeEntryDefaultData.workDay.$error" 
-                                        :defaultText="defaultWorkday"
-                                        @updateCall="updateWorkday"
-                                        translationEnable= "true"
-                                    />
-                                  <div v-if="submitted && !$v.timeEntryDefaultData.workDay.required" class="invalid-feedback">
-                                    {{ langauageData.errors.work_day }}</div>
-                        </b-form-group>
-                      
-                    </b-col>
-                    </b-row>
-                </b-form-group>
-                <b-form-group>
-                    <b-row>
-                        <b-col sm="12">
-                            <b-form-group>
-                                <label for>{{langauageData.label.notes}}*</label>
-                                <b-form-textarea id
-                                v-model="timeEntryDefaultData.notes"
-                                :class="{ 'is-invalid': submitted && $v.timeEntryDefaultData.notes.$error }"
-                                :placeholder="langauageData.placeholder.notes"
-                                size="lg" no-resize rows="5"></b-form-textarea>
-                                 <div v-if="submitted && !$v.timeEntryDefaultData.notes.required" class="invalid-feedback">
-                                    {{ langauageData.errors.notes }}</div>
-                            </b-form-group>
-                            
-                        </b-col>
-                    </b-row>
-                </b-form-group>
-                <b-form-group v-if="isFileUploadDisplay">
-                    <b-row>
-                        
-                        <b-col sm="12" class="date-col">
-                        <span class="error-message"  v-if="fileError">{{fileError}}</span>
-                        <label for>{{langauageData.label.file_upload}}</label>
-                        <div class="file-upload-wrap">
-                            <div class="btn-wrapper"
-                            v-bind:class="{'has-error' : fileError != '' ? true : false}">
-                                <file-upload
-                                    class="btn"
-                                    accept="image/png,image/jpeg,application/doc,
-                                    application/docx,application/xls,application/xlsx,application/csv,application/pdf"
-                                    :multiple="true"
-                                    :drop="true"
-                                    :drop-directory="true"
-                                    @input="inputUpdate"
-                                    :size="1024 * 1024 *10"
-                                    v-model="fileArray"
-                                    ref="upload">
-                                {{langauageData.label.browse}}
-                                </file-upload>
-                                <span>{{langauageData.label.drop_files}}</span>
-                            </div>
-                            <div class="uploaded-file-details" v-for="(file, index) in timeEntryDefaultData.documents">
+                    <b-form-group>
+                        <b-row>
+                            <b-col sm="12">
+                                <b-form-group>
+                                    <label for>{{langauageData.label.notes}}*</label>
+                                    <b-form-textarea id
+                                    v-model="timeEntryDefaultData.notes"
+                                    :class="{ 'is-invalid': submitted && $v.timeEntryDefaultData.notes.$error }"
+                                    :placeholder="langauageData.placeholder.notes"
+                                    size="lg" no-resize rows="5"></b-form-textarea>
+                                    <div v-if="submitted && !$v.timeEntryDefaultData.notes.required" class="invalid-feedback">
+                                        {{ langauageData.errors.notes }}</div>
+                                </b-form-group>
                                 
-                                <a class="filename" :href="file.document_path" target="_blank">{{file.document_name}}</a>
-                                <a 
-                                class="remove-item" 
-                                href="#" 
-                                @click.prevent="deleteFile(file.timesheet_id,file.timesheet_document_id)" 
-                                v-b-tooltip.hover 
-                                :title="langauageData.label.delete"
-                                >
-                                    <img :src="$store.state.imagePath+'/assets/images/delete-ic.svg'" alt="delete-ic"/>
-                                </a>
+                            </b-col>
+                        </b-row>
+                    </b-form-group>
+                    <b-form-group v-if="isFileUploadDisplay">
+                        <b-row>
                             
+                            <b-col sm="12" class="date-col">
+                            <span class="error-message"  v-if="fileError">{{fileError}}</span>
+                            <label for>{{langauageData.label.file_upload}}</label>
+                            <div class="file-upload-wrap">
+                                <div class="btn-wrapper"
+                                v-bind:class="{'has-error' : fileError != '' ? true : false}">
+                                    <file-upload
+                                        class="btn"
+                                        accept="image/png,image/jpeg,application/doc,
+                                        application/docx,application/xls,application/xlsx,application/csv,application/pdf"
+                                        :multiple="true"
+                                        :drop="true"
+                                        :drop-directory="true"
+                                        @input="inputUpdate"
+                                        :size="1024 * 1024 *10"
+                                        v-model="fileArray"
+                                        ref="upload">
+                                    {{langauageData.label.browse}}
+                                    </file-upload>
+                                    <span>{{langauageData.label.drop_files}}</span>
+                                </div>
+								<div class="uploaded-file-wrap">
+									<div class="uploaded-file-details" v-for="(file, index) in timeEntryDefaultData.documents">
+										
+										<a class="filename" :href="file.document_path" target="_blank">{{file.document_name}}</a>
+										<a 
+										class="remove-item" 
+										href="#" 
+										@click.prevent="deleteFile(file.timesheet_id,file.timesheet_document_id)" 
+										v-b-tooltip.hover 
+										:title="langauageData.label.delete"
+										>
+											<img :src="$store.state.imagePath+'/assets/images/delete-ic.svg'" alt="delete-ic"/>
+										</a>
+									
+									</div>
+									<div class="uploaded-file-details" v-for="(file, index) in fileArray" :key="file.id">
+										<p class="filename">{{file.name}}</p>
+										<a 
+										class="remove-item" 
+										href="#" 
+										@click.prevent="$refs.upload.remove(file)" 
+										v-b-tooltip.hover 
+										:title="langauageData.label.delete"
+										>
+											<img :src="$store.state.imagePath+'/assets/images/delete-ic.svg'" alt="delete-ic"/>
+										</a>
+									</div>
+								</div>
                             </div>
-                            <div class="uploaded-file-details" v-for="(file, index) in fileArray" :key="file.id">
-                                <p class="filename">{{file.name}}</p>
-                                <a 
-                                class="remove-item" 
-                                href="#" 
-                                @click.prevent="$refs.upload.remove(file)" 
-                                v-b-tooltip.hover 
-                                :title="langauageData.label.delete"
-                                >
-                                    <img :src="$store.state.imagePath+'/assets/images/delete-ic.svg'" alt="delete-ic"/>
-                                </a>
-                            </div>
-                        </div>
-                        </b-col>
-                    </b-row>
-                </b-form-group>
-            </form>
-        <div class="btn-wrap">
-            <b-button
-                class="btn-borderprimary"
-                @click="$refs.goalActionModal.hide()"
-                
-            >{{langauageData.label.cancel}}</b-button>
-            <b-button 
-                class="btn-bordersecondary" 
-                @click="saveAction()" 
-                >{{langauageData.label.submit}}
-            </b-button>
-        </div>
+                            </b-col>
+                        </b-row>
+                    </b-form-group>
+                </form>
+                <div class="btn-wrap">
+                    <b-button
+                        class="btn-borderprimary"
+                        @click="$refs.goalActionModal.hide()"
+                        
+                    >{{langauageData.label.cancel}}</b-button>
+                    <b-button 
+                        class="btn-bordersecondary"
+                        v-bind:class="{
+                            disabled:isAjaxCall
+                        }" 
+                        @click="saveAction()" 
+                        >{{langauageData.label.submit}}
+                    </b-button>
+                </div>
+            </div>
         </b-modal>
     </div>
 </template>
@@ -188,7 +198,7 @@ import {addVolunteerEntry,removeDocument} from '../services/service';
 import constants from '../constant';
 
 export default {
-    name: "VolunteeringHours",
+    name: "VolunteeringAction",
     components: {
         DatePicker,
         AppCustomDropdown,
@@ -211,6 +221,7 @@ export default {
             disabledFutureDates : new Date(),
             fileArray : this.files,
             showErrorDiv : false,
+            isAjaxCall : false,
             message : null,
             classVariant :"success",
             fileError : "",
@@ -330,7 +341,7 @@ export default {
         inputUpdate(files) {
             var _this = this
             files.filter(function(data,index){
-                if(data.size > 50000) {
+                if(data.size > 5000000) {
                     _this.fileError = _this.langauageData.errors.file_max_size
                    files.splice(index,1)
                 } else {
@@ -376,7 +387,7 @@ export default {
             if (this.$v.$invalid) {
                 return;
             }
-
+            this.isAjaxCall = true;
             const formData = new FormData();
             let fileData = []
             let file = this.fileArray;
@@ -416,7 +427,7 @@ export default {
                     },700) 
                    
                 }
-               
+                 this.isAjaxCall = false;
             })
             
         },
@@ -451,6 +462,7 @@ export default {
             this.submitted = false;
             this.showErrorDiv = false
             this.fileError = ''
+            this.fileArray = [];
             this.$emit("resetModal");
             document.querySelector('html').classList.remove('modal-open');
         }

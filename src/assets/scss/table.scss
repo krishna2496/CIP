@@ -230,76 +230,76 @@
         height: 40px;
         min-width: 70px;
       }
-      &:not(.mission-col):not(.approved):not(.total-col):not(.declined) {
+      &:not(.mission-col):not(.approved):not(.total-col){
         cursor: pointer;
         position: relative;
         z-index: 1;
         background: transparent;
         &:hover {
-          background: $light-gray url($assetUrl+"/plus-ic-black.svg") no-repeat;
-          background-size: 20px;
-          background-position: center center;
-          z-index: 3;
-          color: transparent;
-          &:after {
-            content: none;
-          }
+         background: $light-gray url($assetUrl+"/plus-ic-black.svg") no-repeat !important;
+         background-size: 20px !important;
+         background-position: center center !important;
+         z-index: 3;
+         color: transparent;
+         &:after {
+          content: none;
         }
       }
-      &.approved,
-      &.declined,
-      &.approval {
-        position: relative;
-        &:after {
-          position: absolute;
-          content: "";
-          border-style: solid;
+    }
+    &.approved,
+    &.declined,
+    &.approval {
+      position: relative;
+      &:after {
+        position: absolute;
+        content: "";
+        border-style: solid;
 
-          border-width: 15px 22px 0 0;
-          right: 0;
-          bottom: 0;
-        }
-      }
-      &.approved {
-        pointer-events: none;
-        &:after {
-          border-color: transparent $success $success;
-        }
-      }
-      &.declined {
-        &:after {
-          border-color: transparent $error $error;
-        }
-      }
-      &.approval {
-        &:after {
-          border-color: transparent $info $info;
-        }
-      }
-      &.disabled {
-        cursor: default;
-        pointer-events: none;
+        border-width: 15px 22px 0 0;
+        right: 0;
+        bottom: 0;
       }
     }
-    th {
-      &.currentdate-col {
-        background: $light-gray;
+    &.approved {
+      pointer-events: none;
+      &:after {
+        border-color: transparent $success $success;
       }
     }
-    .mission-col {
-      text-align: left;
-      min-width: 270px;
-      @include sm-max {
-        min-width: 230px;
-      }
-      @include xxs-max {
-        min-width: 200px;
+    &.declined {
+      &:after {
+        border-color: transparent $error $error;
       }
     }
-    .total-col {
-      font-weight: 700;
+    &.approval {
+      &:after {
+        border-color: transparent $info $info;
+      }
+    }
+    &.disabled {
+      cursor: default;
+      pointer-events: none;
     }
   }
+  th, td {
+    &.currentdate-col {
+      background: $light-gray!important;
+    }
+  }
+  .mission-col {
+    text-align: left;
+    min-width: 270px;
+    @include sm-max {
+      min-width: 230px;
+    }
+    @include xxs-max {
+      min-width: 200px;
+    }
+  }
+  .total-col {
+    font-weight: 700;
+  }
+}
 }
 
 /** Table modal style **/
