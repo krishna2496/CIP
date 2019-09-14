@@ -7,7 +7,7 @@
       <DashboardBreadcrumb />
       <div class="dashboard-tab-content">
         <b-container>
-          <div class="heading-section">
+          <div class="heading-section" v-if="isAllVisible">
             <h1>{{langauageData.label.volunteering_history}}</h1>
           </div>
           <div class="inner-content-wrap" v-if="isAllVisible">
@@ -83,7 +83,7 @@
             </b-row>           
           </div>
 		   <div class="no-history-data" v-else>
-				<p>{{langauageData.label.no_volunteer_history_found}}</p>
+				<p>{{langauageData.label.empty_volunteer_history_text}}</p>
 				<div class="btn-row">
 					<b-button :title="langauageData.label.start_volunteering" class="btn-bordersecondary" @click="$router.push({ name: 'home' })">{{langauageData.label.start_volunteering}}</b-button>
 				</div>
