@@ -239,7 +239,7 @@ return [
         'TIMESHEET_NOT_FOUND' => 'Timesheet does not exists' ,
         'ERROR_TIMESHEET_ALREADY_APPROVED' => 'You can not update approved timesheet',        
         'TIMESHEET_DOCUMENT_NOT_FOUND' => 'Timesheet document does not exists',
-        'ERROR_MISSION_STARTDATE' => 'Invalid date: selected date should not be before startdate',
+        'ERROR_MISSION_STARTDATE' => 'Invalid date: selected date should not be before start date',
         'ERROR_MISSION_ENDDATE' => 'Selected date should not be greater than mission end date',
         'MISSION_APPLICATION_NOT_APPROVED' => 'Mission application is not approved',
         'ERROR_TIMESHEET_ALREADY_DONE_FOR_DATE' => 'Time entry is already approved for given date', 

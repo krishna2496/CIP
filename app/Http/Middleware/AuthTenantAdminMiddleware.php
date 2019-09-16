@@ -30,12 +30,13 @@ class AuthTenantAdminMiddleware
      * Create a new middleware instance.
      *
      * @param Illuminate\Http\ResponseHelper $responseHelper
+     * @param App\Helpers\Helpers $helpers
      * @return void
      */
-    public function __construct(ResponseHelper $responseHelper)
+    public function __construct(ResponseHelper $responseHelper, Helpers $helpers)
     {
         $this->responseHelper = $responseHelper;
-        $this->helpers = new Helpers;
+        $this->helpers = $helpers;
     }
  
     /**

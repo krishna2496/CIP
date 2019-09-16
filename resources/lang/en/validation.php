@@ -112,6 +112,9 @@ return [
             'max' => 'Document file size must be ' .
             (config('constants.TIMESHEET_DOCUMENT_SIZE_LIMIT') / 1024) . 'mb or below',
         ],
+        'date_volunteered' => [
+            'before' => 'You cannot add time entry for future dates',
+        ],
     ],
 
     /*
