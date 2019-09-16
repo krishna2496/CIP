@@ -1,7 +1,5 @@
 <template>
-    <div>
-        
-      
+    <div>  
         <b-modal ref="timeHoursModal" @hidden ="hideModal" :modal-class="'time-hours-modal table-modal'" hide-footer>
             <template slot="modal-header" slot-scope="{ close }">
                 <i class="close" @click="close()" v-b-tooltip.hover :title="langauageData.label.close"></i>
@@ -40,7 +38,7 @@
                                     translationEnable= "false"
                                 />
                                 <div v-if="submitted && (!$v.timeEntryDefaultData.hours.required || !$v.timeEntryDefaultData.hours.$invalid)" class="invalid-feedback">
-                                    {{ langauageData.errors.minute_or_hours_is_required }}</div>
+                                    {{ langauageData.errors.hours_is_required }}</div>
                             </b-form-group>
 
                         </b-col>
@@ -57,7 +55,7 @@
                                     translationEnable= "false"
                                 />
                                 <div v-if="submitted && (!$v.timeEntryDefaultData.hours.required || !$v.timeEntryDefaultData.hours.$invalid)" class="invalid-feedback">
-                                    {{ langauageData.errors.minute_or_hours_is_required }}</div>
+                                    {{ langauageData.errors.minute_is_required }}</div>
                             </b-form-group>
 
                         </b-col>
@@ -110,7 +108,7 @@
                                 v-model="timeEntryDefaultData.notes"
                                 :class="{ 'is-invalid': submitted && $v.timeEntryDefaultData.notes.$error }"
                                 :placeholder="langauageData.placeholder.notes"
-                                size="lg" no-resize rows="5"></b-form-textarea>
+                                size="lg" rows="5"></b-form-textarea>
                                  <div v-if="submitted && !$v.timeEntryDefaultData.notes.required" class="invalid-feedback">
                                     {{ langauageData.errors.notes }}</div>
                             </b-form-group>
@@ -128,7 +126,7 @@
                                 <file-upload
                                     class="btn"
                                     accept="image/png,image/jpeg,application/doc,
-                                    application/docx,application/xls,application/xlsx,application/csv,,application/pdf"
+                                    application/docx,application/xls,application/xlsx,application/csv,application/pdf"
                                     :multiple="true"
                                     :drop="true"
                                     :drop-directory="true"
@@ -140,32 +138,29 @@
                                 </file-upload>
                                 <span>{{langauageData.label.drop_files}}</span>
                             </div>
+                          
 							<div class="uploaded-file-wrap">
 								<div class="uploaded-file-details" v-for="(file, index) in timeEntryDefaultData.documents">
 									
 									<a class="filename" :href="file.document_path" target="_blank">{{file.document_name}}</a>
-									<a 
+									<b-button 
 									class="remove-item" 
-									href="#" 
-									@click.prevent="deleteFile(file.timesheet_id,file.timesheet_document_id)" 
-									v-b-tooltip.hover 
+									@click.prevent="deleteFile(file.timesheet_id,file.timesheet_document_id)"  
 									:title="langauageData.label.delete"
 									>
 										<img :src="$store.state.imagePath+'/assets/images/delete-ic.svg'" alt="delete-ic"/>
-									</a>
+									</b-button>
 								
 								</div>
 								<div class="uploaded-file-details" v-for="(file, index) in fileArray" :key="file.id">
 									<p class="filename">{{file.name}}</p>
-									<a 
+									<b-button 
 									class="remove-item" 
-									href="#" 
 									@click.prevent="$refs.upload.remove(file)" 
-									v-b-tooltip.hover 
 									:title="langauageData.label.delete"
 									>
 										<img :src="$store.state.imagePath+'/assets/images/delete-ic.svg'" alt="delete-ic"/>
-									</a>
+									</b-button>
 								</div>
 							</div>
                         </div>
@@ -173,22 +168,22 @@
                     </b-row>
                 </b-form-group>
             </form>
-        <div class="btn-wrap">
-            <b-button
-                class="btn-borderprimary"
-                @click="$refs.timeHoursModal.hide()"
-                
-            >{{langauageData.label.cancel}}</b-button>
-            <b-button 
-                class="btn-bordersecondary"
-                v-bind:class="{
-                    disabled:isAjaxCall
-                }" 
-                @click="saveTimeHours()" 
-                >{{langauageData.label.submit}}
-            </b-button>
-        </div>
-        </div>
+            <div class="btn-wrap">
+                <b-button
+                    class="btn-borderprimary"
+                    @click="$refs.timeHoursModal.hide()"
+                    
+                >{{langauageData.label.cancel}}</b-button>
+                <b-button 
+                    class="btn-bordersecondary"
+                    v-bind:class="{
+                        disabled:isAjaxCall
+                    }" 
+                    @click="saveTimeHours()" 
+                    >{{langauageData.label.submit}}
+                </b-button>
+            </div>
+            </div>
         </b-modal>
     </div>
 </template>
@@ -356,12 +351,18 @@ export default {
         },
         inputUpdate(files) {
             var _this = this
+            let allowedFileTypes = ['doc','xls','xlsx','csv','pdf','png','jpg','jpeg']
             files.filter(function(data,index){
-                if(data.size > 5000000) {
+                if(data.size > 4000000) {
                     _this.fileError = _this.langauageData.errors.file_max_size
                    files.splice(index,1)
                 } else {
-                    _this.fileError = ''
+                    let fileName = data.name.split('.');
+                    _this.fileError = '';
+                    if(!allowedFileTypes.includes(fileName[fileName.length-1])) {
+                        _this.fileError = _this.langauageData.errors.invalid_file_type
+                        files.splice(index,1)
+                    }
                 }
             });
         },
