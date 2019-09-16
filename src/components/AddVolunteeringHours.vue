@@ -118,7 +118,7 @@
                         </b-col>
                     </b-row>
                 </b-form-group>
-                <b-form-group v-if="isFileUploadDisplay">
+                <b-form-group >
                     <b-row> 
                         <b-col sm="6" class="date-col">
                         <span v-if="fileError">{{fileError}}</span>

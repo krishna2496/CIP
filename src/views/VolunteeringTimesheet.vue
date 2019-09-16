@@ -8,13 +8,13 @@
             
             <DashboardBreadcrumb />
             <div class="dashboard-tab-content">
-                <b-container>
+                <b-container v-if="isAllVisible">
                 <div class="heading-section">
                     <h1>
                         {{langauageData.label.volunteering_timesheet}}  
                     </h1>
                 </div>
-                <div class="inner-content-wrap" v-if="isAllVisible">
+                <div class="inner-content-wrap">
                     <div class="dashboard-table">
                         <div class="table-outer">
                             <div class="table-inner">
@@ -210,11 +210,16 @@
                         @changeDocument="changeGoalDocument"
                     />
                 </div>
-                <div v-else class="inner-content-wrap">
-                    {{langauageData.label.volunteering_timesheet_not_found}}
-                </div>
+                
                 </b-container>
+                <b-container  v-else>
+                    <div class="inner-content-wrap">
+                        {{langauageData.label.volunteering_timesheet_not_found}}
+                    </div>
+                </b-container>
+               
             </div>
+            
         </main>
         <footer>
             <TheSecondaryFooter v-if="isShownComponent"></TheSecondaryFooter>
@@ -320,7 +325,7 @@ export default {
             goalRequestPerPage : 5,
             hourRequestNextUrl : null,
             goalRequestNextUrl : null,
-            isAllVisible : true,
+            isAllVisible : false,
             isCurrentDate : false,
             todaysDate :  moment().format("D"),
             currentYear :  moment().format("YYYY"),
