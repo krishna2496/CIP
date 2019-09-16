@@ -39,7 +39,8 @@ let routes = [{
         },
         component: () =>
             import ('./views/VolunteeringHistory.vue')
-},{
+},
+{
         path: '/dashboard',
         name: 'dashboard',
         meta: {
@@ -48,7 +49,6 @@ let routes = [{
         component: () =>
             import ('./views/Dashboard.vue')
 },
-
 {
     path: '/home',
     name: 'home',
@@ -106,30 +106,17 @@ let routes = [{
 {
     path: '/mission-detail/:misisonId',
     name: 'missionDetail',
-    beforeEnter: (to, from, next) => {
-            to.meta.metaTags.map(tagDef => {
-                const tag = document.createElement('meta');
-                Object.keys(tagDef).forEach(key => {
-                    tag.setAttribute(key, tagDef[key]);
-                });
-                return tag;
-            })
-            // Add the meta tags to the document head.
-            .forEach(tag => document.head.appendChild(tag));
-            next();
-    },
-
     component: () =>
         import ('./views/MissionDetail.vue')
 },
 {
-        path: '/policy/:policyPage',
-        name: 'policy',
-        meta: {
-            requiresAuth: true
-        },
-        component: () =>
-            import ('./views/Policy.vue')
+    path: '/policy/:policyPage',
+    name: 'policy',
+    meta: {
+        requiresAuth: true
+    },
+    component: () =>
+        import ('./views/Policy.vue')
 },
 
 ];
