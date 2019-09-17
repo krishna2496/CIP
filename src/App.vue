@@ -16,11 +16,7 @@ export default {
         if (navigator.userAgent.match(/iP(hone|od|ad)/i)) {
             document.querySelector("body").classList.add("browser-ios");
         }
-        if (screen.width < 1025) {
-            document.addEventListener("touchend", this.onClick);
-        } else {
-            document.addEventListener("click", this.onClick);
-        }
+         document.addEventListener("click", this.onClick);
     },
      methods: {
     onClick(event) {
@@ -88,6 +84,7 @@ export default {
     this.handleSocialShare();
   },
   created() {
+    
     var ua = navigator.userAgent.toLowerCase();
     if (ua.indexOf("safari") != -1) {
       if (ua.indexOf("chrome") > -1) {
@@ -99,7 +96,7 @@ export default {
     window.addEventListener("resize", this.signinAdj);
     window.addEventListener("resize", this.handleSocialShare);
     window.addEventListener("scroll", this.handleScroll);
-    window.scrollTo(0, 0);
+    window.scrollTo(0, 0); 
   },
   updated() {
     window.scrollTo(0, 0);
@@ -140,12 +137,6 @@ export default {
         });
       });
       
-      // notification_btn.addEventListener("click", function() {
-      //   dropdownList.forEach(function(removeDropdown) {
-      //     removeDropdown.classList.remove("dropdown-open");
-      //   });
-      // });
-
       var pagination_item = document.querySelectorAll(
         ".pagination-block .page-item .page-link"
       );
@@ -162,6 +153,7 @@ export default {
           event.classList.toggle("active");
         });
       });
+
     }, 1000);
   },
   destroyed() {

@@ -33,7 +33,12 @@ import country from "./Country";
 import skill from "./Skill";
 import timezone from "./Timezone";
 import volunteerTimesheetHours from "./VolunteerTimesheet/VolunteerTimesheetHours";
-
+import addVolunteerEntry from "./VolunteerTimesheet/AddVolunteerEntry"
+import fetchTimeSheetDocuments from "./VolunteerTimesheet/FetchTimeSheetDocuments"
+import removeDocument from "./VolunteerTimesheet/RemoveDocument"
+import submitVolunteerHourTimeSheet from "./VolunteerTimesheet/SubmitVolunteerHourTimeSheet"
+import goalRequest from "./VolunteerTimesheet/GoalRequest"
+import timeRequest from "./VolunteerTimesheet/TimeRequest"
 
 export {
     loadLocaleMessages,
@@ -70,5 +75,11 @@ export {
     country,
     skill,
     timezone,
-    volunteerTimesheetHours
+    volunteerTimesheetHours,
+    addVolunteerEntry,
+    fetchTimeSheetDocuments,
+    removeDocument,
+    submitVolunteerHourTimeSheet,
+    goalRequest,
+    timeRequest
 }

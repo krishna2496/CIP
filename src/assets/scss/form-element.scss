@@ -307,6 +307,11 @@ textarea {
   appearance: none;
   -webkit-appearance: none;
 }
+textarea {
+  &.form-control {
+    overflow-y: auto;
+  }
+}
 .form-control {
   width: 100%;
   max-width: 100%;
@@ -327,7 +332,10 @@ textarea {
     font-size: 14px;
     font-weight: 400;
   }
-
+  &.disabled {
+    background: $disabled-bg;
+    pointer-events: none;
+  }
   &:focus {
     box-shadow: none;
     border-color: $gray-primary;
@@ -470,13 +478,18 @@ label {
       }
     }
 
-    .option-list-wrap {
-      border-radius: 0 0 3px 3px;
-    }
-
     .chk-select-wrap {
       border-radius: 0 0 3px 3px;
       display: block;
+      .chk-select-options {
+        li {
+          white-space: nowrap;
+          @include md-max {
+            overflow: hidden;
+            text-overflow: ellipsis;
+          }
+        }
+      }
     }
   }
 
@@ -632,6 +645,10 @@ label {
         cursor: pointer;
         white-space: nowrap;
 
+        @include lmd-max {
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
         &:hover {
           background: $border-color;
         }
@@ -654,10 +671,10 @@ label {
   }
 }
 .simplebar-horizontal {
-    &.simplebar-track {
-        height: 7px!important;
+  &.simplebar-track {
+    height: 7px !important;
     .simplebar-scrollbar {
-        height: 4px;
+      height: 4px;
       &:before {
         background: $border-color !important;
         opacity: 1 !important;
@@ -668,9 +685,17 @@ label {
 
 .select-dropdown {
   .simplebar-offset {
-    @include md-min {
+    @include lmd-min {
       left: auto !important;
       min-width: 100%;
+    }
+  }
+  &.checkbox-select {
+    .simplebar-offset {
+      @include md-min {
+        left: auto !important;
+        min-width: 100%;
+      }
     }
   }
   &.no-list-item {
@@ -796,7 +821,11 @@ label {
       width: 100%;
       padding: 0;
       border-radius: 0 0 3px 3px;
-      max-height: 150px;
+      max-height: calc(100vh - 200px);
+
+      @include md-max {
+        max-height: 275px;
+      }
 
       ul {
         padding: 4px 0;
@@ -936,7 +965,7 @@ label {
     background-size: 100%;
     background-position: center center;
     @include transition(all 0.3s);
-    z-index: 9998;
+    z-index: 1039;
   }
   .picture-input {
     height: 160px !important;
@@ -954,6 +983,7 @@ label {
       width: 160px !important;
       position: relative;
       border-radius: 100% !important;
+      z-index: 1039;
     }
     .picture-preview {
       background: $border-color;
@@ -961,7 +991,7 @@ label {
       width: 160px;
       overflow: hidden;
       border-radius: 100% !important;
-      z-index: 9999 !important;
+      z-index: 1039 !important;
     }
     .picture-inner {
       border: none;
@@ -1063,6 +1093,16 @@ label {
 
 .mx-datepicker {
   width: 100% !important;
+  &.is-invalid {
+    .mx-input-wrapper {
+      input {
+        border-color: $error;
+      }
+    }
+    + .invalid-feedback {
+      display: block;
+    }
+  }
 }
 .mx-datepicker-popup {
   z-index: 1040 !important;
@@ -1131,13 +1171,20 @@ label {
   }
 }
 
+.mx-input {
+  box-shadow: 0.966px 0.259px 3px rgba(0, 0, 0, 0.05) !important;
+  -webkit-box-shadow: 0.966px 0.259px 3px rgba(0, 0, 0, 0.05) !important;
+  -moz-box-shadow: 0.966px 0.259px 3px rgba(0, 0, 0, 0.05) !important;
+  -ms-box-shadow: 0.966px 0.259px 3px rgba(0, 0, 0, 0.05) !important;
+  -o-zbox-shadow: 0.966px 0.259px 3px rgba(0, 0, 0, 0.05) !important;
+}
 /**Date range picker style**/
 .mx-range-wrapper {
   max-width: 524px !important;
-  width:100% !important;
-  display:flex;
-  flex-wrap:wrap;
-  justify-content:center;
+  width: 100% !important;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
   .mx-calendar {
     box-shadow: none !important;
   }
@@ -1167,7 +1214,10 @@ label {
 }
 
 /** File upload Style **/
-
+.uploaded-file-wrap {
+  max-height: 300px;
+  overflow-y: auto;
+}
 .file-upload-wrap {
   border: 1px solid $border-color;
   @include border-radius(3px);
@@ -1182,6 +1232,9 @@ label {
         margin-left: 15px;
       }
     }
+    &.has-error {
+      border: 1px solid $error;
+    }
   }
   .remove-item {
     position: absolute;
@@ -1191,6 +1244,13 @@ label {
     img {
       height: 22px;
       width: 20px;
+    }
+    &.btn-secondary {
+      background-color: transparent !important;
+      border: none;
+      box-shadow: none;
+      outline: none;
+      padding: 0;
     }
   }
 }
@@ -1229,5 +1289,27 @@ label {
     .success {
       color: $success;
     }
+  }
+}
+
+.browser-ios {
+  .filter-block {
+    .checkbox-select {
+      .simplebar-offset {
+        @include md-min {
+          right: 0 !important;
+        }
+      }
+    }
+  }
+}
+
+.tooltip {
+  z-index: 1039;
+}
+
+span {
+  &.error-message {
+    color: $error;
   }
 }

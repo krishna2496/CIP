@@ -49,46 +49,52 @@
 									>
 									</star-rating>
 								</div>
-								<b-button 
-									v-bind:class="{ 
-										'btn-borderprimary': true, 
-										'icon-btn': true,
-										'added-fav' : missionAddedToFavoriteByUser
-									}"
-								 @click="favoriteMission(missionId)">
-								<i class="normal-img">
-				                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 21" width="24" height="21">
-				                    <g id="Main Content">
-				                        <g id="1">
-				                            <g id="Image content">
-				                                <path id="Forma 1" d="M22.1 2.86C20.9 1.66 19.3 1 17.59 1C15.89 1 14.29 1.66 13.08 2.86L12.49 3.45L11.89 2.86C10.69 1.66 9.08 1 7.38 1C5.67 1 4.07 1.66 2.87 2.86C0.38 5.34 0.38 9.36 2.87 11.84L11.78 20.71C11.93 20.86 12.11 20.95 12.3 20.98C12.36 20.99 12.43 21 12.49 21C12.74 21 13 20.9 13.19 20.71L22.1 11.84C24.59 9.36 24.59 5.34 22.1 2.86ZM20.71 10.45L12.49 18.64L4.26 10.45C2.54 8.74 2.54 5.96 4.26 4.25C5.09 3.42 6.2 2.96 7.38 2.96C8.56 2.96 9.66 3.42 10.5 4.25L11.79 5.53C12.16 5.9 12.81 5.9 13.18 5.53L14.47 4.25C15.31 3.42 16.41 2.96 17.59 2.96C18.77 2.96 19.88 3.42 20.71 4.25C22.43 5.96 22.43 8.74 20.71 10.45Z" />
-				                            </g>
-				                        </g>
-				                    </g>
-				                </svg>
-				                </i>
-				                 <i class="hover-img">
-				                   <svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-				                        viewBox="0 0 492.7 426.8" style="enable-background:new 0 0 492.7 426.8;" xml:space="preserve">
-				                    <g>
-				                        <g id="Icons_18_">
-				                            <path d="M492.7,133.1C492.7,59.6,433.1,0,359.7,0c-48,0-89.9,25.5-113.3,63.6C222.9,25.5,181,0,133,0
-				                                C59.6,0,0,59.6,0,133.1c0,40,17.7,75.8,45.7,100.2l188.5,188.6c3.2,3.2,7.6,5,12.1,5s8.9-1.8,12.1-5L447,233.2
-				                                C475,208.9,492.7,173.1,492.7,133.1z"/>
-				                        </g>
-				                    </g>
-				                    </svg>
-				                </i>	
-								<span v-if="missionAddedToFavoriteByUser">
-									{{ langauageData.label.remove_from_favourite }}
-								</span>
+								<div class="btn-outer">
+									<b-button 
+										v-bind:class="{ 
+											'btn-borderprimary': true, 
+											'icon-btn': true,
+											'added-fav' : missionAddedToFavoriteByUser
+										}"
+									@click="favoriteMission(missionId)">
+									<i class="normal-img">
+										<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 21" width="24" height="21">
+										<g id="Main Content">
+											<g id="1">
+												<g id="Image content">
+													<path id="Forma 1" d="M22.1 2.86C20.9 1.66 19.3 1 17.59 1C15.89 1 14.29 1.66 13.08 2.86L12.49 3.45L11.89 2.86C10.69 1.66 9.08 1 7.38 1C5.67 1 4.07 1.66 2.87 2.86C0.38 5.34 0.38 9.36 2.87 11.84L11.78 20.71C11.93 20.86 12.11 20.95 12.3 20.98C12.36 20.99 12.43 21 12.49 21C12.74 21 13 20.9 13.19 20.71L22.1 11.84C24.59 9.36 24.59 5.34 22.1 2.86ZM20.71 10.45L12.49 18.64L4.26 10.45C2.54 8.74 2.54 5.96 4.26 4.25C5.09 3.42 6.2 2.96 7.38 2.96C8.56 2.96 9.66 3.42 10.5 4.25L11.79 5.53C12.16 5.9 12.81 5.9 13.18 5.53L14.47 4.25C15.31 3.42 16.41 2.96 17.59 2.96C18.77 2.96 19.88 3.42 20.71 4.25C22.43 5.96 22.43 8.74 20.71 10.45Z" />
+												</g>
+											</g>
+										</g>
+									</svg>
+									</i>
+									<i class="hover-img">
+									<svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+											viewBox="0 0 492.7 426.8" style="enable-background:new 0 0 492.7 426.8;" xml:space="preserve">
+										<g>
+											<g id="Icons_18_">
+												<path d="M492.7,133.1C492.7,59.6,433.1,0,359.7,0c-48,0-89.9,25.5-113.3,63.6C222.9,25.5,181,0,133,0
+													C59.6,0,0,59.6,0,133.1c0,40,17.7,75.8,45.7,100.2l188.5,188.6c3.2,3.2,7.6,5,12.1,5s8.9-1.8,12.1-5L447,233.2
+													C475,208.9,492.7,173.1,492.7,133.1z"/>
+											</g>
+										</g>
+										</svg>
+									</i>	
+									<span v-if="missionAddedToFavoriteByUser">
+										{{ langauageData.label.remove_from_favourite }}
+									</span>
 
-								<span v-else>
-									{{ langauageData.label.add_to_favourite }}
-								</span>
+									<span v-else>
+										{{ langauageData.label.add_to_favourite }}
+									</span>
 
-							</b-button>
+								</b-button>
+								<!-- <b-button class="btn-borderprimary icon-btn btn-add-entry" v-if="allowAddEntry" 
+									@click="addEntry">
+									Add entry
+								</b-button> -->
 							</div>
+						</div>
 
 						<p>{{missionDetail.short_description}}</p>
 						<div class="group-details">
@@ -230,7 +236,6 @@
 								</div>
 							</b-list-group-item>
 						</b-list-group>
-
 						<div class="btn-wrap">
 							<b-button class="btn-borderprimary icon-btn"  
 							@click="handleModal(missionId)" v-if="isInviteCollegueDisplay">
@@ -273,7 +278,6 @@
 								:disabled="disableApply"
 								@click="applyForMission(missionDetail.mission_id)"
 							>
-
 									<span>
 										{{ applyButton }}
 									</span>				
@@ -541,9 +545,10 @@
 			        </div>
 			</b-container>
 		  
-	  </div>
-	  <b-modal centered :title="langauageData.label.search_user" ref="userDetailModal" 
-            :modal-class="myclass" hide-footer>
+	  	</div>
+		
+	  	<b-modal :title="langauageData.label.search_user" ref="userDetailModal" 
+            :modal-class="myclass" hide-footer size="lg">
 	            <b-alert show :variant="classVariant" dismissible v-model="showErrorDiv">
 	            	{{ message }}
         		</b-alert>
@@ -592,10 +597,12 @@ import AppCustomChip from "../components/AppCustomChip";
 import StarRating from 'vue-star-rating';
 import constants from '../constant';
 import { VueAutosuggest } from 'vue-autosuggest';
-import {favoriteMission,inviteColleague ,applyMission,searchUser,storeMissionRating,missionDetail,relatedMissions,missionComments,storeMissionComments} from "../services/service";
+import {favoriteMission,inviteColleague ,applyMission,searchUser,storeMissionRating,missionDetail,relatedMissions,missionComments,storeMissionComments,volunteerTimesheetHours} from "../services/service";
 import SimpleBar from 'simplebar';
 import store from "../store";
 import moment from 'moment';
+import AddVolunteeringHours from "../components/AddVolunteeringHours";
+import AddVolunteeringAction from "../components/AddVolunteeringAction";
 import { required,maxLength } from 'vuelidate/lib/validators';
 import SocialSharing from 'vue-social-sharing';
 
@@ -614,9 +621,16 @@ export default {
   },
   	data() {
 	    return {
+			defaultWorkday: "",
+			workDayList: [
+                ["WORKDAY","workday"],
+                ["WEEKEND","weekend"],
+                ["HOLIDAY","holiday"],
+            ],
 	    	sharingUrl : "",
 	    	isShownComponent :false,
-	    	missionId :this.$route.params.misisonId,
+			missionId :this.$route.params.misisonId,
+			timeSheetId : '',
 	    	missionAddedToFavoriteByUser : false,
 	    	query: "",
 	        selected: "",
@@ -674,7 +688,24 @@ export default {
     		isRemainingGoalDisplay : false,
     		isSkillDispaly : false	,
     		isQuickAccessFilterDisplay : false,
-    		relatedMissionsDisplay : false
+			relatedMissionsDisplay : false,
+			allowAddEntry : false,
+			currentTimeData: 
+                {
+                    missionId : '',
+                    hours : '',
+                    minutes : '',
+                    dateVolunteered : '',
+                    workDay : '',
+                    notes : '',
+                    day: '',
+                    timeSheetId : '',
+                    documents : [],
+                    disabledPastDates : '',
+                    disabledFutureDates : '',
+                    missionName : '',
+                    action : ''
+                }
   	};
   },
 	mounted(){
@@ -740,6 +771,16 @@ export default {
             },
     },
    methods: {
+	   addEntry(){
+		   let missionData = {
+			   "missionId" : '',
+			   "missionType" : ''
+		   }
+		   missionData.missionId = this.$route.params.misisonId
+		   missionData.missionType = this.missionDetail.mission_type
+		   store.commit('timeSheetEntryDetail',missionData);
+		   this.$router.push('/volunteering-timesheet');  
+	   },
    		// Get comment create date format
 	   	getCommentDate(commentDate){
 	   		if(commentDate != null) {
@@ -755,7 +796,7 @@ export default {
             return missionType == constants.MISSION_TYPE_TIME
         },
 
-   		setRating: function(rating){
+   		setRating: function(rating) {
 			let missionData = {
 				mission_id : '',
 				rating : ''
@@ -763,7 +804,7 @@ export default {
 			missionData.mission_id = this.missionId;
 			missionData.rating = rating;
 		    storeMissionRating(missionData).then(response => {
-		        if(response.error == true){
+		        if (response.error == true) {
 		            this.makeToast("danger",response.message);
 		        } else {
 		            this.makeToast("success",response.message);
@@ -771,7 +812,7 @@ export default {
 		    });
 	    },
 		// Add mission to favorite
-		favoriteMission(missionId){
+		favoriteMission(missionId) {
 		    let missionData = {
 		        mission_id : ''
 		    };
@@ -808,7 +849,7 @@ export default {
            return firstName+' '+lastName;
         },
 		// Open auto suggest modal
-        handleModal(missionId){
+        handleModal(missionId) {
             this.autoSuggestPlaceholder = this.langauageData.label.search_user
             this.showErrorDiv = false;
             this.message = null;
@@ -914,7 +955,11 @@ export default {
 					this.isShownMediaComponent = true;
 	                if (response.error == false) {
 	                	if(response.data[0]) {
-	                		this.missionDetail = response.data[0];
+							this.missionDetail = response.data[0];
+							if(response.data[0].user_application_status ==  
+									constants.AUTOMATICALLY_APPROVED && response.data[0].user_application_count > 0) {
+								this.allowAddEntry = true
+							}
 							if(response.data[0].is_favourite == 1) {
 								this.missionAddedToFavoriteByUser = true;
 							}
@@ -958,7 +1003,7 @@ export default {
 	                        return translations[i].title;
 	                    }
 	                });
-	                if (filteredObj[0].title) {
+	                if (filteredObj[0]) {
 	                    return filteredObj[0].title;
 	                }
 	            }
@@ -1127,6 +1172,7 @@ export default {
 			this.isSkillDispaly = false		
 			this.isQuickAccessFilterDisplay = false
 			this.relatedMissionsDisplay = false
+			this.timeSheetId = false
 			this.getMissionDetail();
 			this.socialSharingUrl = process.env.VUE_APP_API_ENDPOINT+"social-sharing/"+this.domainName+"/"+this.missionId+"/"+store.state.defaultLanguageId;			
 	    }

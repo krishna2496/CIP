@@ -11,10 +11,10 @@
         <div class="option-list-wrap dropdown-option-wrap" data-simplebar v-if="optionList != null && optionList.length > 0" >
             <ul class="option-list dropdown-option-list" v-if="translationEnable == 'false'">
                 <li
+                    class="has-count"
                     v-for="item in optionList"
                     v-bind:data-id="item[1].id"
                     @click="handleSelect"
-                    @touchend="handleSelect"
                     >{{item[1].title}}
                     <span class="counter">{{item[1].mission_count}}</span>
                 </li>
@@ -23,8 +23,7 @@
                 <li
                     v-for="item in optionList"
                     v-bind:data-id="item[0]"
-                    @click="handleSelect"
-                    @touchend="handleSelect">{{`${langauageData}.label.${item[1]}`}}</li>
+                    @click="handleSelect">{{`${langauageData}.label.${item[1]}`}}</li>
             </ul>
         </div>
        <!--  <div class="option-list-wrap" data-simplebar v-else >
@@ -62,73 +61,66 @@ export default {
         },
         
         handleClick(e) {
-          e.stopPropagation();
-          setTimeout(function() {
-            var profile_toggle = document.querySelector(
-              ".profile-menu .dropdown-toggle"
-            );
-            var profile_menu = document.querySelector(".profile-menu");
-            if (profile_menu != null) {
-              if (profile_menu.classList.contains("show")) {
-                profile_toggle.click();
-              }
-            }
-            var notification_btn = document.querySelector(
-              ".notification-menu .nav-link .btn-notification"
-            );
-            var notification_popover = document.querySelector(
-              ".notification-popover"
-            );
-            if (notification_popover != null) {
-              notification_btn.click();
-            }
-
-            e.target.parentNode.classList.toggle("dropdown-open");
-            var dropdownList = document.querySelectorAll(".dropdown-open");
-            for (var i = 0; i < dropdownList.length; ++i) {
-              if (dropdownList[i] != e.target.parentNode) {
-                dropdownList[i].classList.remove("dropdown-open");
-              }
-            }
-            var dropdown_list = document.querySelectorAll(".select-dropdown");
-            dropdown_list.forEach(function(e) {
-              var dropdown_list_width = parseInt(
-                window.getComputedStyle(e).getPropertyValue("width")
-              );
-              var optionlist_wrap = e.querySelector(".dropdown-option-wrap");
-              var optionlist_wrap_height = parseInt(
-                window
-                  .getComputedStyle(optionlist_wrap)
-                  .getPropertyValue("max-height")
-              );
-              var optionlist = optionlist_wrap.querySelector(
-                ".dropdown-option-list"
-              );
-              if(optionlist != null){
-              var optionlist_height = optionlist.offsetHeight;
-              var optionlist_width = parseInt(
-                window.getComputedStyle(optionlist).getPropertyValue("width")
-              );
-              if (optionlist_wrap_height < optionlist_height) {
-                var minwidth_style = e.querySelector(".simplebar-offset");
-                minwidth_style.setAttribute("style", "left: 0 !important");
-                if (
-                  optionlist_wrap_height < optionlist_height &&
-                  dropdown_list_width < optionlist_width
-                ) {
-                  minwidth_style.setAttribute("style", "left: auto !important");
-                }
-              }
-            }
-            });
-          },250);
+      e.stopPropagation();
+      var profile_toggle = document.querySelector(
+        ".profile-menu .dropdown-toggle"
+      );
+      var profile_menu = document.querySelector(".profile-menu");
+      if (profile_menu != null) {
+        if (profile_menu.classList.contains("show")) {
+          profile_toggle.click();
         }
+      }
+      var notification_btn = document.querySelector(
+        ".notification-menu .nav-link .btn-notification"
+      );
+      var notification_popover = document.querySelector(
+        ".notification-popover"
+      );
+      if (notification_popover != null) {
+        notification_btn.click();
+      }
+
+      e.target.parentNode.classList.toggle("dropdown-open");
+      var dropdownList = document.querySelectorAll(".dropdown-open");
+      for (var i = 0; i < dropdownList.length; ++i) {
+        if (dropdownList[i] != e.target.parentNode) {
+          dropdownList[i].classList.remove("dropdown-open");
+        }
+      }
+         var simplebarOffset = e.target.parentNode.querySelector(".simplebar-offset");
+      if(simplebarOffset != null && window.innerWidth > 1024){
+         var simplebarOffset_width = parseInt(window.getComputedStyle(simplebarOffset).getPropertyValue("width"));
+        var simplebarWrapper = simplebarOffset.parentNode.parentNode;
+          simplebarWrapper.style.width = simplebarOffset_width + "px";
+
+        var dropdown_list = e.target.parentNode;
+        var dropdown_list_width = parseInt(window.getComputedStyle(dropdown_list).getPropertyValue("width"));
+        var optionlist_wrap = dropdown_list.querySelector(".dropdown-option-wrap");
+        var optionlist = optionlist_wrap.querySelector(".dropdown-option-list");
+        if (optionlist != null) {
+          var optionlist_width = parseInt(window.getComputedStyle(optionlist).getPropertyValue("width"));
+            var minwidth_style = dropdown_list.querySelector(".simplebar-offset");
+            if (dropdown_list_width > optionlist_width) {
+              minwidth_style.setAttribute("style", "left: 0 !important");
+            }
+        }
+        }
+    }
     },
     beforeDestroy() {
         document.removeEventListener("click", this.onClick);
     },
     created() { 
         this.langauageData = JSON.parse(store.state.languageLabel);
+         setTimeout(function(){
+      var selectDropdown = document.querySelectorAll('.select-dropdown');
+      window.addEventListener("resize", function() {
+         for(var i=0; i < selectDropdown.length ; i++){
+            selectDropdown[i].classList.remove('dropdown-open');
+        }
+    });
+    })
     }
 };
 </script>

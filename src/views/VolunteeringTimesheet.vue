@@ -1,382 +1,237 @@
 <template>
+
     <div class="dashboard-timesheet inner-pages">
         <header>
-        <ThePrimaryHeader></ThePrimaryHeader>
+        <ThePrimaryHeader v-if="isShownComponent"></ThePrimaryHeader>
         </header>
         <main>
+            
             <DashboardBreadcrumb />
-        <div class="dashboard-tab-content">
-            <b-container>
+            <div class="dashboard-tab-content" v-if="isComponentLoaded">
+                <b-container v-if="isAllVisible">
                 <div class="heading-section">
-                    <h1>{{langauageData.label.volunteering_timesheet}}</h1>
+                    <h1>
+                        {{langauageData.label.volunteering_timesheet}}  
+                    </h1>
                 </div>
-                <div class="dashboard-table">
-                    <div class="table-outer">
-                        <div class="table-inner">
-                            <h3>{{langauageData.label.volunteering_hours}}</h3>
-                            <VolunteeringTimesheetTableHeader
-                                @updateCall="changeVolunteeringHours"
-                            />
-                           
-                            <b-table-simple
-                            small
-                            responsive
-                            bordered
-                            class="timesheet-table timesheethours-table"
-                            >
-                                <b-thead>
-                                    <b-tr>
-                                        <b-th class="mission-col">{{langauageData.label.mission}}</b-th>
-                                        <b-th v-for="(item,key) in volunteeringHoursWeeks">
-                                            {{key+1}}<span>{{item}}</span> 
-                                        </b-th>  
-                                        <b-th class="total-col">{{langauageData.label.total}}</b-th>
-                                    </b-tr>
-                                </b-thead>
-                                <b-tbody v-if="timeMissionData.length > 0">
-                                    <b-tr v-for="(timeItem,key) in timeMissionData">
-                                        <b-td class="mission-col">{{timeItem.title}}</b-td>
-                                        <b-td 
-                                        :mission-id="timeItem.mission_id"
-                                        :date="key+1"
-                                        v-on:click="getRelatedTimeData(key+1,timeItem)"
-                                        v-bind:class="{ 
-                                            'approved' : getTimeSheetHourClass(key+1,timeItem.timesheet) == 'approved',
-                                            'declined' : getTimeSheetHourClass(key+1,timeItem.timesheet) == 'declined'
-                                        }"
-                                        v-for="(item,key) in volunteeringHoursWeeks">
-                                            {{getTime(key,timeItem.timesheet)}} 
-                                        </b-td> 
-                                        <b-td class="total-col">{{getRawHourTotal(timeItem.timesheet)}}</b-td>
-                                    </b-tr>
-                                    <b-tr class="total-row">
-                                        <b-td class="mission-col">{{langauageData.label.total}}:</b-td>
-                                            <b-td v-for="(item,key) in volunteeringHoursWeeks">
-                                                {{getColumnHourTotal(key+1)}}
-                                            </b-td> 
-                                            <b-td>
-                                                {{getTotalHours()}}
-                                            </b-td>
-                                    </b-tr>
-                                </b-tbody>
+                <div class="inner-content-wrap">
+                    <div class="dashboard-table">
+                        <div class="table-outer">
+                            <div class="table-inner">
+                                <h3>{{langauageData.label.volunteering_hours}}</h3>
+                                <VolunteeringTimesheetTableHeader
+                                    @updateCall="changeVolunteeringHours"
+                                />
+                                <div class="table-wrapper-outer">
+                                    <div v-bind:class="{ 'content-loader-wrap': true, 'loader-active': tableLoaderActive}">
+                                        <div class="content-loader"></div>
+                                    </div>
+                                    <b-table-simple
+                                    small
+                                    responsive
+                                    bordered
+                                    class="timesheet-table timesheethours-table"
+                                    >
+                                        <b-thead>
+                                            <b-tr>
+                                                <b-th class="mission-col">{{langauageData.label.mission}}</b-th>
+                                                <b-th v-for="(item,key) in volunteeringHoursWeeks"
+                                                    v-bind:class="{'currentdate-col' : highLightCurrentDate(key+1,'time')}">
+                                                    {{key+1}}<span>{{item}}</span> 
+                                                </b-th>  
+                                                <b-th class="total-col">{{langauageData.label.total}}</b-th>
+                                            </b-tr>
+                                        </b-thead>
+                                        <b-tbody v-if="timeMissionData.length > 0">
+                                            <b-tr v-for="(timeItem,key) in timeMissionData">
+                                                <b-td class="mission-col">
+                                                    <a target="_blank" :href="`mission-detail/${timeItem.mission_id}`">{{timeItem.title}}</a>
+                                                </b-td>
+                                                <b-td 
+                                                :mission-id="timeItem.mission_id"
+                                                :date="key+1"
+                                                v-on:click="getRelatedTimeData(key+1,timeItem,'time')"
+                                                v-bind:class="[getTimeSheetHourClass(key+1,timeItem,'time')]"
+                                               
+                                                v-for="(item,key) in volunteeringHoursWeeks">
+                                                    {{getTime(key,timeItem.timesheet,'time')}} 
+                                                </b-td> 
+                                                <b-td class="total-col">{{getRawHourTotal(timeItem.timesheet,'time')}}</b-td>
+                                            </b-tr>
+                                            <b-tr class="total-row">
+                                                <b-td class="mission-col">{{langauageData.label.total}}:</b-td>
+                                                <b-td v-for="(item,key) in volunteeringHoursWeeks">
+                                                    {{getColumnHourTotal(key+1,'time')}}
+                                                </b-td> 
+                                                <b-td>
+                                                    {{getTotalHours('time')}}
+                                                </b-td>
+                                            </b-tr>
+                                        </b-tbody>
 
-                            </b-table-simple>
-                        </div>
-                        <div class="btn-block">
-                            <b-button class="btn-bordersecondary ml-auto" title="Submit">{{langauageData.label.submit}}</b-button>
-                        </div>
-                    </div>
-                    <ul class="meta-data-list">
-                        <li class="approve-indication">{{langauageData.label.approved}}</li>
-                        <li class="decline-indication">{{langauageData.label.declined}}</li>
-                    </ul>
-                 <!--    {{goalMissionData}} -->
-                    <div class="table-outer timesheet-table-outer">
-                        <div class="table-inner">
-                            <h3>{{langauageData.label.volunteering_goals}}</h3>
-                            <VolunteeringTimesheetTableHeader
-                                @updateCall="changeVolunteeringGoals"
-                            />
-                             <b-table-simple
-                          small
-                          responsive
-                          bordered
-                          class="timesheet-table timesheetgoals-table"
-                        >
-                        <b-thead>
-                            <b-tr>
-                                <b-th class="mission-col">{{langauageData.label.mission}}</b-th>
-                                <b-th v-for="(item,key) in volunteeringGoalWeeks">
-                                    {{key+1}}<span>{{item}}</span> 
-                                </b-th>  
-                                <b-th class="total-col">{{langauageData.label.total}}</b-th>
-                            </b-tr>
-                        </b-thead>
-                      <b-tbody>
-                        <b-tr>
-                          <b-td class="mission-col">Help Old People</b-td>
-                          <b-td>5</b-td>
-                          <b-td></b-td>
-                          <b-td class="approved">2</b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td class="total-col">7</b-td>
-                        </b-tr>
-                        <b-tr>
-                          <b-td class="mission-col">Help Young Kids</b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td class="declined">6</b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td class="total-col">6</b-td>
-                        </b-tr>
-                        <b-tr class="total-row">
-                          <b-td class="mission-col">Total:</b-td>
-                          <b-td>5</b-td>
-                          <b-td></b-td>
-                          <b-td>2</b-td>
-                          <b-td></b-td>
-                          <b-td>6</b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td></b-td>
-                          <b-td class="total-col">13</b-td>
-                        </b-tr>
-                      </b-tbody>
-                </b-table-simple>
-                        </div>
-                    <div class="btn-block">
-                        <b-button class="btn-bordersecondary ml-auto">{{langauageData.label.submit}}</b-button>
-                    </div>
-                    </div>
-                    <div class="table-outer timesheet-table-outer">
-                        <div class="table-inner">
-                            <h3>{{langauageData.label.hours_requests}}</h3>
-                            <b-table
-                            :items="timesheetRequestItems"
-                            responsive
-                            :fields="timesheetRequestFields"
-                            class="volunteery-table"
-                            ></b-table>
-                        </div>
-                        <div class="btn-block">
-                            <b-button class="btn-bordersecondary ml-auto" title="Export">{{langauageData.label.export}}</b-button>
-                        </div>  
-                    </div>
-                    <div class="pagination-block">
-                        <b-pagination
-                        v-model="currentPage"
-                        :total-rows="rows"
-                        :per-page="perPage"
-                        align="center"
-                        aria-controls=""
-                        ></b-pagination>
-                    </div>
-                    <div class="table-outer timesheet-table-outer">
-                        <div class="table-inner">
-                            <h3>{{langauageData.label.goals_requests}}</h3>
-                            <b-table
-                            :items="timesheetRequestItems"
-                            responsive
-                            :fields="timesheetRequestFields"
-                            class="volunteery-table"
-                            ></b-table>
-                        </div>
-                        <div class="btn-block">
-                            <b-button class="btn-bordersecondary ml-auto" title="Export">{{langauageData.label.export}}</b-button>
-                        </div>
-                    </div>
-                    <div class="pagination-block">
-                        <b-pagination
-                        v-model="currentPage"
-                        :total-rows="rows"
-                        :per-page="perPage"
-                        align="center"
-                        aria-controls=""
-                        ></b-pagination>
-                    </div>
-                </div>
-
-              <AddVolunteeringHours
-                ref="timeModal"
-                :defaultWorkday="defaultWorkday"
-                :files="files"
-                :timeEntryDefaultData="currentTimeData"
-              />
-
-                    <b-modal ref="goalModal" :modal-class="'goal-modal table-modal'" hide-footer>
-
-                    <template slot="modal-header" slot-scope="{ close }">
-                        <i class="close" @click="close()" v-b-tooltip.hover :title="langauageData.label.close"></i>
-                        <h5 class="modal-title">&nbsp;</h5>
-                    </template>
-                <form action class="form-wrap">
-                    <!--  <b-form-group>
-                    <b-row>
-                    <b-col cols="12">
-                    <b-form-group>
-                    <label for>Select mission</label>
-                    <AppCustomDropdown
-                    :optionList="missionList"
-                    :default_text="defaultMission"
-                    @updateCall="updateMission"
-                    />
-                    </b-form-group>
-                    </b-col>
-                    </b-row>
-                    </b-form-group> -->
-                    <b-form-group>
-                        <b-row>
-                        <b-col sm="12">
-                            <b-form-group>
-                                <label for>{{langauageData.label.actions}}</label>
-                                <b-form-input id type="text" placeholder="Enter actions"></b-form-input>
-                            </b-form-group>
-                        </b-col>
-                        </b-row>
-                    </b-form-group>
-                    <b-form-group>
-                    <b-row>
-                        <b-col sm="6" class="date-col">
-                            <b-form-group>
-                                <label for>{{langauageData.label.date_volunteered}}</label>
-                                <date-picker
-                                    v-model="time1"
-                                    valuetype="format"
-                                    :first-day-of-week="1"
-                                    :lang="lang"
-                            ></date-picker>
-                            </b-form-group>
-                        </b-col>
-                        <b-col sm="6" class="date-col">
-                            <b-form-group>
-                                <label for>{{langauageData.label.workday}}</label>
-                                        <AppCustomDropdown
-                                            :optionList="workDayList"
-                                            :defaultText="defaultWorkday"
-                                            @updateCall="updateWorkday"
-                                            translationEnable= "false"
-                                        />
-                            </b-form-group>
-                        </b-col>
-                    </b-row>
-                    </b-form-group>
-                    <b-form-group>
-                        <b-row>
-                            <b-col sm="12">
-                                <b-form-group>
-                                    <label for>{{langauageData.label.notes}}</label>
-                                    <b-form-textarea id size="lg" no-resize rows="5"></b-form-textarea>
-                                </b-form-group>
-                            </b-col>
-                        </b-row>
-                    </b-form-group>
-                              
-                      <b-form-group>
-                  <b-row>
-                       <b-col sm="12" class="date-col">
-                            <label for>{{langauageData.label.file_upload}}</label>
-                            <div class="file-upload-wrap">
-                            <div class="btn-wrapper">
-                                <file-upload
-                                    class="btn"
-                                    post-action="/upload/post"
-                                    extensions="gif,jpg,jpeg,png,webp"
-                                    accept="image/png,image/gif,image/jpeg,image/webp"
-                                    :multiple="true"
-                                    :drop="true"
-                                    :drop-directory="true"
-                                    :size="1024 * 1024 * 10"
-                                    v-model="files"
-                                    ref="upload">
-                                    Browse
-                                </file-upload>
-                                <span>Or drop files here</span>
-                            </div>
-                            <div class="uploaded-file-details" v-for="(file, index) in files" :key="file.id">
-                                <p class="filename">{{file.name}}</p>
-                                <span class="file-size">{{file.size}}</span>
-                                <div class="status">
-                                    <span class="success">File uploaded successfully</span>
+                                    </b-table-simple>
                                 </div>
-                                <a class="remove-item" href="#" @click.prevent="$refs.upload.remove(file)" v-b-tooltip.hover title="Delete">
-                                <img :src="$store.state.imagePath+'/assets/images/delete-ic.svg'" alt="delete-ic"/>
-                                </a>
+                            </div>
+                            <div class="btn-block">
+                                <b-button class="btn-bordersecondary ml-auto"
+                                v-bind:class="{
+                                    disabled : enableSubmitTimeTimeSheet    
+                                }"
+                                @click="submitVolunteerTimeSheet('time')">{{langauageData.label.submit}}</b-button>
                             </div>
                         </div>
-                    </b-col>
-                  </b-row>
-              </b-form-group>
-                </form>
-                <div class="btn-wrap">
-                    <b-button
-                        class="btn-borderprimary"
-                        @click="$refs.goalModal.hide()"
-                    >{{langauageData.label.cancel}}</b-button>
-                    <b-button class="btn-bordersecondary" @click="save()">{{langauageData.label.submit}}</b-button>
-                </div>
-                </b-modal>
+                        <ul class="meta-data-list">
+                            <li class="approve-indication">{{langauageData.label.approved}}</li>
+                            <li class="decline-indication">{{langauageData.label.declined}}</li>
+                            <li class="approval-indication">
+                                {{langauageData.label.submit_for_approval}}
+                            </li>
+                        </ul>
+                    <!--    {{goalMissionData}} -->
+                        <div class="table-outer timesheet-table-outer">
+                            <div class="table-inner">
+                                <h3>{{langauageData.label.volunteering_goals}}</h3>
+                                <VolunteeringTimesheetTableHeader
+                                    @updateCall="changeVolunteeringGoals"
+                                />
+                                <div class="table-wrapper-outer">
+                                    <div v-bind:class="{ 'content-loader-wrap': true, 'loader-active': goalTableLoaderActive}">
+                                        <div class="content-loader"></div>
+                                    </div>
+                                    <b-table-simple
+                                        small
+                                        responsive
+                                        bordered
+                                        class="timesheet-table timesheetgoals-table"
+                                        >
+                                        <b-thead>
+                                            <b-tr>
+                                                <b-th class="mission-col">{{langauageData.label.mission}}</b-th>
+                                                <b-th 
+                                                    v-bind:class="{'currentdate-col' : highLightCurrentDate(key+1,'goal')}"
+                                                    v-for="(item,key) in volunteeringGoalWeeks">
+                                                    {{key+1}}<span>{{item}}</span> 
+                                                </b-th>  
+                                                <b-th class="total-col">{{langauageData.label.total}}</b-th>
+                                            </b-tr>
+                                        </b-thead>
+                                        <b-tbody v-if="goalMissionData.length > 0">
+                                            <b-tr v-for="(timeItem,key) in goalMissionData">
+                                                <b-td class="mission-col">
+                                                <a target="_blank" :href="`mission-detail/${timeItem.mission_id}`">{{timeItem.title}}</a>
+                                                </b-td>
+                                                <b-td
+                                                    :mission-id="timeItem.mission_id"
+                                                    :date="key+1"
+                                                    v-on:click="getRelatedTimeData(key+1,timeItem,'goal')"
+                                                     v-bind:class="[getTimeSheetHourClass(key+1,timeItem,'goal')]"
+                                                    v-for="(item,key) in volunteeringGoalWeeks">
+                                                    {{getTime(key,timeItem.timesheet,'goal')}} 
+                                                </b-td> 
+                                                <b-td class="total-col">{{getRawHourTotal(timeItem.timesheet,'goal')}}</b-td>
+                                            </b-tr>
+                                            <b-tr class="total-row">
+                                                <b-td class="mission-col">{{langauageData.label.total}}:</b-td>
+                                                <b-td v-for="(item,key) in volunteeringGoalWeeks">
+                                                {{getColumnHourTotal(key+1,'goal')}}
+                                                </b-td> 
+                                                <b-td>
+                                                {{getTotalHours('goal')}}
+                                                </b-td>
+                                            </b-tr>
+                                        </b-tbody>
+                                    </b-table-simple>
+                                </div>
+                            </div>
+                            <div class="btn-block">
+                                <b-button class="btn-bordersecondary ml-auto"
+                                    @click="submitVolunteerTimeSheet('goal')"
+                                    v-bind:class="{
+                                        disabled : enableSubmitGoalTimeSheet    
+                                    }"
+                                >{{langauageData.label.submit}}</b-button>
+                            </div>
+                        </div> 
+                            <ul class="meta-data-list">
+                                    <li class="approve-indication">{{langauageData.label.approved}}</li>
+                                    <li class="decline-indication">{{langauageData.label.declined}}</li>
+                                    <li class="approval-indication">
+                                        {{langauageData.label.submit_for_approval}}
+                                    </li>
+                            </ul>
+                            <VolunteeringRequest
+                                    :headerField="timesheetRequestFields"
+                                    requestType="time"
+                                    :items="timesheetRequestItems"
+                                    :headerLable="timeRequestLabel"
+                                    :currentPage="hourRequestCurrentPage"
+                                    :totalRow="hourRequestTotalRow"
+                                    @updateCall = "getTimeRequest"
+                                    exportUrl = "app/timesheet/time-requests/export"
+                                    :perPage = "hourRequestPerPage"
+                                    :nextUrl = "hourRequestNextUrl"
+                                    :fileName="langauageData.export_timesheet_file_names.PENDING_TIME_MISSION_ENTRIES_XLSX"
+                                />
+                        
+                            <VolunteeringRequest
+                                :headerField="goalRequestFields"
+                                requestType="goal"
+                                :items="goalRequestItems"
+                                :headerLable="goalRequestLabel"
+                                :currentPage="goalRequestCurrentPage"
+                                :totalRow="goalRequestTotalRow"
+                                @updateCall = "getGoalRequest"
+                                :perPage = "goalRequestPerPage"    
+                                :nextUrl = "goalRequestNextUrl"
+                                exportUrl = "app/timesheet/goal-requests/export"
+                                :fileName="langauageData.export_timesheet_file_names.PENTIND_GOAL_MISSION_ENTRIES_XLSX"
+                            />
+                    </div>
+
+                    <AddVolunteeringHours
+                        ref="timeModal"
+                        :defaultWorkday="defaultWorkday"
+                        :defaultHours="defaultHours"
+                        :defaultMinutes="defaultMinutes"
+                        :files="files"
+                        :timeEntryDefaultData="currentTimeData"
+                        :disableDates="volunteerHourDisableDates"
+                        @getTimeSheetData = "getVolunteerHoursData"
+                        @resetModal ="hideModal"
+                        :workDayList="workDayList"
+                        @updateCall="updateDefaultValue" 
+                        @changeDocument="changeTimeDocument"
+                    />
+                    <AddVolunteeringAction
+                        ref="goalModal"
+                        :defaultWorkday="defaultWorkday"
+                        :defaultHours="defaultHours"
+                        :defaultMinutes="defaultMinutes"
+                        :files="files"
+                        :timeEntryDefaultData="currentTimeData"
+                        :disableDates="volunteerHourDisableDates"
+                        @getTimeSheetData = "getVolunteerHoursData"
+                        @resetModal ="hideModal"
+                        :workDayList="workDayList"
+                        @updateCall="updateDefaultValue" 
+                        @changeDocument="changeGoalDocument"
+                    />
+                </div> 
                 </b-container>
+                <b-container  v-else>
+                    <div class="no-history-data">
+                        <p>{{langauageData.label.volunteering_timesheet_not_found}}</p>
+                        <div class="btn-row">
+                            <b-button :title="langauageData.label.start_volunteering" class="btn-bordersecondary" @click="$router.push({ name: 'home' })">{{langauageData.label.start_volunteering}}</b-button>
+                        </div>
+                    </div>
+                </b-container>
+               
             </div>
+            
         </main>
         <footer>
-            <TheSecondaryFooter></TheSecondaryFooter>
+            <TheSecondaryFooter v-if="isShownComponent"></TheSecondaryFooter>
         </footer>
     </div>
 </template>
@@ -388,14 +243,17 @@ import AppCustomDropdown from "../components/CustomFieldDropdown";
 import DashboardBreadcrumb from "../components/DashboardBreadcrumb";
 import VolunteeringTimesheetTableHeader from "../components/VolunteeringTimesheetTableHeader"
 import AddVolunteeringHours from "../components/AddVolunteeringHours";
+import AddVolunteeringAction from "../components/AddVolunteeringAction";
+import VolunteeringRequest from "../components/VolunteeringTimeSheetRequest";
 import SimpleBar from "simplebar";
 import constants from '../constant';
 import axios from "axios";
 import store from '../store';
 import DatePicker from "vue2-datepicker";
 import FileUpload from 'vue-upload-component';
-import {volunteerTimesheetHours} from '../services/service';
+import {volunteerTimesheetHours,fetchTimeSheetDocuments,submitVolunteerHourTimeSheet,timeRequest,goalRequest} from '../services/service';
 import moment from 'moment'
+import { setTimeout } from 'timers';
 
 export default {
     components: {
@@ -405,137 +263,33 @@ export default {
         SimpleBar,
         DashboardBreadcrumb,
         VolunteeringTimesheetTableHeader,
+        AddVolunteeringAction,
         DatePicker,
         FileUpload,
-        AddVolunteeringHours
+        AddVolunteeringHours,
+        VolunteeringRequest
     },
-
-    name: "dashboardtimesheet",
-
+    name: "DashboardTimesheet",
     data() {
         return {
             files: [],
-            approved : "approved",
-            time1: "",
-            value2: "",
-            lang: {
-            days: [" Sun ", " Mon ", " Tue ", " Wed ", " You ", " Fri ", " Sat "],
-            months: [
-            "Jan",
-            "Feb",
-            "Mar",
-            "Apr",
-            "May",
-            "Jun",
-            "Jul",
-            "Aug",
-            "Sep",
-            "Oct",
-            "Nov",
-            "Dec"
-            ],
-            pickers: [
-                "next 7 days",
-                "next 30 days",
-                "previous 7 days",
-                "previous 30 days"
-            ],
-            placeholder: {
-                date: "mm/dd/yy",
-                dateRange: "Select Date Range"
-            }
-            },
-            missionList: [
-                "Help Old People",
-                "Help Young Kids",
-                "Plant house",
-                "The place"
-            ],
-            defaultMission: "Help Old People",
+            tableLoaderActive : true,
+            goalTableLoaderActive : true,
             langauageData : [],
-            timesheetRequestFields: [
-            {
-                key: "Mission",
-                class: "mission-col"
-            },
-            {
-                key: "Time"
-            },
-            {
-                key: "Hours",
-                class: "hours-col"
-            },
-            {
-                key: "Organisation",
-                class: "organisation-col"
-            }
-            ],
-            timesheetRequestItems: [
-            {
-                Mission: "Help old people",
-                Time: "1h30",
-                Hours: 5.5,
-                Organisation: "Red Cross"
-            },
-            {
-                Mission: "Help young kids",
-                Time: "0h20",
-                Hours: 0.33,
-                Organisation: "Red Cross"
-            },
-            {
-                Mission: "Plant house",
-                Time: "2h50",
-                Hours: 2.83,
-                Organisation: "Green House"
-            },
-            {
-                Mission: "The place",
-                Time: "0h15",
-                Hours: 0.25,
-                Organisation: "Blue Cross"
-            }
-            ],
-            goalRequestFields: [
-            {
-                key: "Mission",
-                class: "mission-col"
-            },
-            {
-                key: "Action"
-            },
-            {
-                key: "Organisation",
-                class: "organisation-col"
-            }
-            ],
-            goalRequestItems: [
-                {
-                    Mission: "Help old people",
-                    Action: "100",
-                    Organisation: "Red Cross"
-                },
-                {
-                    Mission: "Help young kids",
-                    Action: "200",
-                    Organisation: "Red Cross"
-                },
-                {
-                    Mission: "Plant house",
-                    Action: "300",
-                    Organisation: "Green House"
-                },
-                {
-                    Mission: "The place",
-                    Action: "400",
-                    Organisation: "Blue Cross"
-                }
-            ],
+            VolunteeringRequest : [],
+            timesheetRequestFields: [],
+            timesheetRequestItems: [],
+            hourRequestCurrentPage : 1,
+            goalRequestCurrentPage : 1,
+            hourRequestTotalRow : 0,
+            goalRequestTotalRow : 0,
+            goalRequestFields: [],
+            goalRequestItems: [],
             defaultWorkday: "",
             workDayList: [
-                ["workday","workday"],
-                ["weekend","weekend"],
-                ["holiday","holiday"],
+                ["WORKDAY","workday"],
+                ["WEEKEND","weekend"],
+                ["HOLIDAY","holiday"],
             ],
             rows: 25,
             perPage: 2,
@@ -548,7 +302,8 @@ export default {
             volunteeringGoalWeeks : [],
             timeMissionData : [],
             goalMissionData : [],
-            totalHours : "00:00:00",
+            timeRequestLabel :"",
+            goalRequestLabel : "",
             currentTimeData: 
                 {
                     missionId : '',
@@ -557,254 +312,811 @@ export default {
                     dateVolunteered : '',
                     workDay : '',
                     notes : '',
-                    day: ''
+                    day: '',
+                    timeSheetId : '',
+                    documents : [],
+                    disabledPastDates : '',
+                    disabledFutureDates : '',
+                    missionName : '',
+                    action : ''
                 }
             ,
             timeEntryDefaultData : null,
-            isTimeEntryModelShown : false
-
+            isTimeEntryModelShown : false,
+            volunteerHourDisableDates : [],
+            defaultHours : '',
+            defaultMinutes : '',
+            futureDates: new Date(),
+            enableSubmitGoalTimeSheet : true,
+            enableSubmitTimeTimeSheet : true,
+            isShownComponent : false,
+            hourRequestPerPage : 5,
+            goalRequestPerPage : 5,
+            hourRequestNextUrl : null,
+            goalRequestNextUrl : null,
+            isAllVisible : false,
+            isCurrentDate : false,
+            todaysDate :  moment().format("D"),
+            currentYear :  moment().format("YYYY"),
+            currentMonth :  moment().format("M"),
+            isComponentLoaded : false
         };
     },
-        updated() {
-        
+    updated() {
+    
+    },
+    methods: {
+        changeTimeDocument(date) {
+            var _this = this;
+            let year = moment(date).format("YYYY");
+            let month = moment(date).format("M");
+            let dates = moment(date).format("D");
+            let timeSheetId = '';
+            this.timeMissionData.filter(function(timeArray,timeIndex) {
+                if(timeArray.mission_id == _this.currentTimeData.missionId && timeArray.timesheet) {
+                    timeArray.timesheet.filter(function(timeSheetArray,timeSheetIndex) {
+                        if(timeSheetArray.month == month && timeSheetArray.year == year && timeSheetArray.date == dates) {
+                            timeSheetId = timeSheetArray.timesheet_id;
+                            _this.workDayList.filter(function (workList, workIndex) {
+                                if(workList[0] == timeSheetArray.day_volunteered) {
+                                    _this.defaultWorkday = _this.langauageData.label[workList[1]];
+                                }
+                            });
+                        } 
+                    })
+                }
+            })
+
+            if(timeSheetId != '') {
+                _this.fetchTimeSheetRealtedData(timeSheetId);
+            } else {
+                _this.currentTimeData.documents = []
+                _this.defaultWorkday = _this.langauageData.placeholder.workday 
+                _this.defaultHours = _this.langauageData.placeholder.spent_hours
+                _this.defaultMinutes = _this.langauageData.placeholder.spent_minutes
+                _this.currentTimeData.hours = '';
+                _this.currentTimeData.minutes = '';
+                _this.currentTimeData.workDay = '';
+                _this.currentTimeData.notes = '';
+                _this.currentTimeData.day= '';
+                _this.currentTimeData.timeSheetId = '';
+                _this.currentTimeData.action = '';
+            }
+           
         },
-        methods: {
-                getRelatedTimeData(date,timeArray) {
-                    this.currentTimeData.missionId = timeArray.mission_id
-                    this.currentTimeData.day = date
-                    var _this = this;
-                    if(timeArray.timesheet) {
-                        let timeSheetArray =  timeArray.timesheet;
-                        timeSheetArray.filter(function (timeSheetItem, timeSheetIndex) {
-                            let currentArrayDate = timeSheetItem.date
-                            let currentArrayYear = timeSheetItem.year
-                            let currentArrayMonth = timeSheetItem.month
-                            if(_this.volunteeringHoursCurrentYear == currentArrayYear) {
-                                if(_this.volunteeringHoursCurrentMonth == currentArrayMonth) {
-                                    if(date == currentArrayDate) {
-                                        if(timeSheetItem.time != "") {
-                                            var time= timeSheetItem.time.split(':');
-                                            _this.currentTimeData.hours = time[0]
-                                            _this.currentTimeData.minutes = time[1]
+        changeGoalDocument(date) {
+            var _this = this;
+            let year = moment(date).format("YYYY");
+            let month = moment(date).format("M");
+            let dates = moment(date).format("D");
+            let timeSheetId = '';
+            this.goalMissionData.filter(function(timeArray,timeIndex) {
+                if(timeArray.mission_id == _this.currentTimeData.missionId && timeArray.timesheet) {
+                    timeArray.timesheet.filter(function(timeSheetArray,timeSheetIndex) {
+                        if(timeSheetArray.month == month && timeSheetArray.year == year && timeSheetArray.date == dates) {
+                            timeSheetId = timeSheetArray.timesheet_id;
+                            _this.workDayList.filter(function (workList, workIndex) {
+                                if(workList[0] == timeSheetArray.day_volunteered) {
+                                    _this.defaultWorkday = _this.langauageData.label[workList[1]];
+                                }
+                            });
+                        } 
+                    })
+                }
+            })
+
+            if(timeSheetId != '') {
+                _this.fetchTimeSheetRealtedData(timeSheetId);
+            } else {
+                _this.currentTimeData.documents = []
+                _this.defaultWorkday = _this.langauageData.placeholder.workday 
+                _this.defaultHours = _this.langauageData.placeholder.spent_hours
+                _this.defaultMinutes = _this.langauageData.placeholder.spent_minutes
+                _this.currentTimeData.hours = '';
+                _this.currentTimeData.minutes = '';
+                _this.currentTimeData.workDay = '';
+                _this.currentTimeData.notes = '';
+                _this.currentTimeData.day= '';
+                _this.currentTimeData.timeSheetId = '';
+                _this.currentTimeData.action = '';
+            }
+        },
+        getRelatedTimeData(date,timeArray,timeSheetType) {
+            this.currentTimeData.missionId = timeArray.mission_id
+            this.currentTimeData.day = date
+        
+            let missionEndDate = timeArray.end_date
+           
+            this.currentTimeData.disabledPastDates = timeArray.start_date
+                                        
+            
+            let futerDate = moment(this.futureDates).format("YYYY-MM-DD");
+            let endDate = moment(missionEndDate).format("YYYY-MM-DD");
+          
+            if (endDate > futerDate) {
+                this.currentTimeData.disabledFutureDates = futerDate
+            } else {
+                this.currentTimeData.disabledFutureDates = endDate
+            }
+
+            var _this = this;
+            if(timeArray.timesheet) { 
+                let timeSheetArray =  timeArray.timesheet;
+                _this.currentTimeData.missionName = timeArray.title
+                _this.currentTimeData.dateVolunteered = _this.volunteeringHoursCurrentYear+'-'+_this.volunteeringHoursCurrentMonth+'-'+date
+                timeSheetArray.filter(function (timeSheetItem, timeSheetIndex) {
+                    if(timeSheetItem.timesheet_status.status == "APPROVED" || 
+                        timeSheetItem.timesheet_status.status == "AUTOMATICALLY_APPROVED"
+                    ) {
+                        _this.volunteerHourDisableDates.push(timeSheetItem.date_volunteered)
+                    }
+
+                    let currentArrayDate = timeSheetItem.date
+                    let currentArrayYear = timeSheetItem.year
+                    let currentArrayMonth = timeSheetItem.month
+                    let currentTimeSheetYear = '';
+                    let currentTimeSheetMonth = '';
+                    if(timeSheetType == 'time') {
+                        currentTimeSheetYear = _this.volunteeringHoursCurrentYear;
+                        currentTimeSheetMonth = _this.volunteeringHoursCurrentMonth;
+                    } else {
+                        currentTimeSheetYear = _this.volunteeringGoalCurrentYear;
+                        currentTimeSheetMonth = _this.volunteeringGoalCurrentMonth;
+                    }
+                    if(currentTimeSheetYear == currentArrayYear) {
+                        if(currentTimeSheetMonth == currentArrayMonth) {
+                            if(date == currentArrayDate) {
+                                let timeSheetId = timeSheetItem.timesheet_id
+                                _this.currentTimeData.timeSheetId = timeSheetId;
+                               
+                                _this.fetchTimeSheetRealtedData(timeSheetId);
+
+                                _this.workDayList.filter(function (workList, workIndex) {
+                                  if(workList[0] == timeSheetItem.day_volunteered) {
+                                    _this.defaultWorkday = _this.langauageData.label[workList[1]];
+                                   
+                                  }
+                                });
+                            }
+                        }
+
+                    }
+                  
+                });
+            }
+            if(timeSheetType == 'time') {
+                this.$refs.timeModal.$refs.timeHoursModal.show();    
+            } else {
+                this.$refs.goalModal.$refs.goalActionModal.show();     
+            }
+           
+        },
+        fetchTimeSheetRealtedData(timeSheetId) {
+            var _this = this
+             fetchTimeSheetDocuments(timeSheetId).then( response => {
+                                    if(response) {
+
+                                        _this.currentTimeData.dateVolunteered = response.date_volunteered
+                                        _this.currentTimeData.workDay = response.day_volunteered
+                                        _this.currentTimeData.notes = response.notes
+                                        _this.currentTimeData.documents = response.timesheet_document
+                                        if(response.hours) {
+                                            _this.currentTimeData.hours = ("0" +response.hours.toString()).slice(-2)
+                                            _this.defaultHours = ("0" +response.hours.toString()).slice(-2)
+                                        } else {
+                                            _this.currentTimeData.hours = '00'
+                                            _this.defaultHours = '00'
                                         }
-                                        _this.currentTimeData.dateVolunteered = timeSheetItem.date_volunteered
-                                        _this.currentTimeData.workDay = timeSheetItem.day_volunteered
-                                        _this.currentTimeData.notes = timeSheetItem.notes
+                                        if(response.minutes) {
+                                            _this.currentTimeData.minutes = ("0" +response.minutes.toString()).slice(-2)
+                                            _this.defaultMinutes = ("0" +response.minutes.toString()).slice(-2)
+                                        } else {
+                                            _this.currentTimeData.minutes = '00'
+                                            _this.defaultMinutes = '00'
+                                        }
+                                       
+                                        _this.currentTimeData.action = response.action
                                     }
-                                }
-                            }
-                          
-                        });
-                    }
-                    this.$refs.timeModal.$refs.timeHoursModal.show();    
+                                });
+        },
+        getTimeSheetHourClass(date,timeSheetArray,timeSheetType) {
+            let _this = this
+            let returnData = [];
+            this.isCurrentDate = false;
+            let missionEndDate = timeSheetArray.end_date      
+            let disabledPastDates = moment(timeSheetArray.start_date).format("YYYY-MM-DD")                                  
+            let disablefuterDate = moment(this.futureDates).format("YYYY-MM-DD");
+            let endDate = moment(missionEndDate).format("YYYY-MM-DD");
+            let disableEndDate = '';
+            if (endDate > disablefuterDate) {
+                disableEndDate = disablefuterDate
+            } else {
+                disableEndDate = endDate
+            }
+            let currentDate = moment(_this.volunteeringHoursCurrentYear+'-'+_this.volunteeringHoursCurrentMonth+'-'+date).format("YYYY-MM-DD");
+            let timeArray = timeSheetArray.timesheet;
+            let currentTimeSheetYear = '';
+            let currentTimeSheetMonth = '';
+            if(timeSheetType == 'time') {
+                currentTimeSheetYear = _this.volunteeringHoursCurrentYear;
+                currentTimeSheetMonth = _this.volunteeringHoursCurrentMonth;
+            } else {
+                currentTimeSheetYear = _this.volunteeringGoalCurrentYear;
+                currentTimeSheetMonth = _this.volunteeringGoalCurrentMonth;
+            }
+                timeArray.filter(function (timeSheetItem, timeSheetIndex) {
+                    let currentArrayDate = timeSheetItem.date
+                    let currentArrayYear = timeSheetItem.year
+                    let currentArrayMonth = timeSheetItem.month             
                    
-                },
-                getTimeSheetHourClass(date,timeArray) {
-                    let _this = this
-                    let returnData = '';
-                    timeArray.filter(function (timeSheetItem, timeSheetIndex) {
-                        let currentArrayDate = timeSheetItem.date
-                        let currentArrayYear = timeSheetItem.year
-                        let currentArrayMonth = timeSheetItem.month
-                        if(_this.volunteeringHoursCurrentYear == currentArrayYear) {
-                            if(_this.volunteeringHoursCurrentMonth == currentArrayMonth) {
-
-                                if(date == currentArrayDate) {
-                                    if(timeSheetItem.timesheet_status.status == "APPROVED") {
-                                        returnData = "approved";
-                                    } 
-                                    if(timeSheetItem.timesheet_status.status == "DECLINED") {
-                                        returnData = "declined"
-                                    }
+                    if(currentTimeSheetYear == currentArrayYear) {
+                        if(currentTimeSheetMonth == currentArrayMonth) {
+                            if(date == currentArrayDate) {
+                                if(timeSheetItem.timesheet_status.status == "APPROVED" || timeSheetItem.timesheet_status.status == "AUTOMATICALLY_APPROVED") {
+                                    returnData.push("approved")
+                                } 
+                                else if(timeSheetItem.timesheet_status.status == "DECLINED") {
+                                    returnData.push("declined")
+                                }
+                                else if(timeSheetItem.timesheet_status.status == "SUBMIT_FOR_APPROVAL") {
+                                    returnData.push("approval")
+                                }
+                                else {
+                                    returnData.push("default-time")
                                 }
                             }
-                        }
-                      
-                    });
-
-                    return returnData;
-                },
-                changeVolunteeringHours(data) {
-                    this.volunteeringHoursCurrentMonth = data.month
-                    this.volunteeringHoursCurrentYear = data.year
-                    data.weekdays.shift();
-                    this.volunteeringHoursWeeks = data.weekdays;
-                },
-                changeVolunteeringGoals(data) {
-                    this.volunteeringGoalCurrentMonth = data.month
-                    this.volunteeringGoalCurrentYear = data.year
-                    data.weekdays.shift();
-                    this.volunteeringGoalWeeks = data.weekdays
-                },
-                updateWorkday(value) {
-                    this.defaultWorkday = value.selectedVal;
-                },
-                updateMission(value) {
-                    this.defaultMission = value;
-                },
-                async getVolunteerHoursData() {
-                   await volunteerTimesheetHours().then( response => {
-                        if(response) {
-                            this.timeMissionData = response['TIME']
-                            this.goalMissionData = response['GOAL']
-                        }
-                   })
-                },
-                getTime(date,timeArray) {
-                    let _this = this
-                    let returnData = '';
-                     var dates = date+1;
-                    timeArray.filter(function (timeSheetItem, timeSheetIndex) {
-                        let currentArrayDate = timeSheetItem.date
-                        let currentArrayYear = timeSheetItem.year
-                        let currentArrayMonth = timeSheetItem.month
-                       
-                        if(_this.volunteeringHoursCurrentYear == currentArrayYear) {
-                            if(_this.volunteeringHoursCurrentMonth == currentArrayMonth) {
-                                if(dates == currentArrayDate) {
-                                    returnData = timeSheetItem.time
-                                }
-                            }
-                        }
-                      
-                    });
-                    return returnData
-                },
-                getRawHourTotal(timeArray) {
-                    let _this = this
-                    var time1 = "00:00:00";
-
-                    var hour=0;
-                    var minute=0;
-                    var second=0;
-                    timeArray.filter(function (timeSheetItem, timeSheetIndex) {
-                        let currentArrayDate = timeSheetItem.date
-                        let currentArrayYear = timeSheetItem.year
-                        let currentArrayMonth = timeSheetItem.month
-                     
- 
-                        var time2 = timeSheetItem.time;
-      
-
-                        if(_this.volunteeringHoursCurrentYear == currentArrayYear) {
-                            if(_this.volunteeringHoursCurrentMonth == currentArrayMonth) {
-                                var splitTime1= time1.split(':');
-                                var splitTime2= time2.split(':');
-
-                                hour = parseInt(splitTime1[0])+parseInt(splitTime2[0]);
-                                minute = parseInt(splitTime1[1])+parseInt(splitTime2[1]);
-                                hour = hour + minute/60;
-                                minute = minute%60;
-                                second = parseInt(splitTime1[2])+parseInt(splitTime2[2]);
-                                minute = minute + second/60;
-                                second = second%60;
-                                time1= Math.floor(hour)+':'+Math.floor(minute)+":"+Math.floor(second);
-                            }
-                        }
-                    });
-                    if(time1 != "00:00:00") {
-                        return time1;
+                        } 
                     }
-                },
-                getColumnHourTotal(day) {
+                });
+                
+                if (currentDate < disabledPastDates && timeSheetArray.start_date != null) {
+                    returnData.push("disabled")
+                } 
 
-                    let _this = this
-                    var time1 = "00:00:00";
+                if(currentDate > disableEndDate) {
+                    returnData.push("disabled")
+                }
+               
+            return returnData;
+        },
+        highLightCurrentDate(date,timeSheetType) {
+            let currentTimeSheetYear = ''
+            let currentTimeSheetMonth = ''
+            if(timeSheetType == 'time') {
+                currentTimeSheetYear = this.volunteeringHoursCurrentYear;
+                currentTimeSheetMonth = this.volunteeringHoursCurrentMonth;
+                      
+            } else {
+                currentTimeSheetYear = this.volunteeringGoalCurrentYear;
+                currentTimeSheetMonth = this.volunteeringGoalCurrentMonth;
+                        
+            }
+            if((this.todaysDate == date) && (currentTimeSheetYear ==  this.currentYear) && (currentTimeSheetMonth == this.currentMonth)) {
+                return true                   
+            }
+        },
+        changeVolunteeringHours(data) {
+            this.enableSubmitTimeTimeSheet = true;
+            var _this =this;
+            this.tableLoaderActive = true
+            this.volunteeringHoursCurrentMonth = data.month
+            this.volunteeringHoursCurrentYear = data.year
+            data.weekdays.shift();
+            this.volunteeringHoursWeeks = data.weekdays;
+            setTimeout(function(){
+                _this.tableLoaderActive = false
+            })
+        },
 
-                    var hour=0;
-                    var minute=0;
-                    var second=0;
-                    let timeArray = this.timeMissionData;
-                    timeArray.filter(function (timeSheetItem, timeSheetIndex) {
-                        let timeEntry = timeSheetItem.timesheet;
-                        timeEntry.filter(function (timeEntry, timeEntryIndex) {
-                            let currentArrayDate = timeEntry.date
-                            let currentArrayYear = timeEntry.year
-                            let currentArrayMonth = timeEntry.month
-                            var time2 = timeEntry.time;
-                            if(_this.volunteeringHoursCurrentYear == currentArrayYear) {
-                                if(_this.volunteeringHoursCurrentMonth == currentArrayMonth) {
-                                    if(day == currentArrayDate) {
-                                        var splitTime1= time1.split(':');
-                                        var splitTime2= time2.split(':');
-                                        hour = parseInt(splitTime1[0])+parseInt(splitTime2[0]);
-                                        minute = parseInt(splitTime1[1])+parseInt(splitTime2[1]);
-                                        hour = hour + minute/60;
-                                        minute = minute%60;
-                                        second = parseInt(splitTime1[2])+parseInt(splitTime2[2]);
-                                        minute = minute + second/60;
-                                        second = second%60;
-                                        time1= Math.floor(hour)+':'+Math.floor(minute)+":"+Math.floor(second);
-                                    }
-                                }
-                            }
-                        });
-                        
-                    });
-                    if(time1 != "00:00:00") {
-                        return time1;
-                    }
-                },
-                getTotalHours() {
-                    let _this = this
-                    var time1 = "00:00:00";
-                    var hour=0;
-                    var minute=0;
-                    var second=0;
-                    let timeArray = this.timeMissionData;
-                    timeArray.filter(function (timeSheetItem, timeSheetIndex) {
-                        let timeEntry = timeSheetItem.timesheet;
-                        timeEntry.filter(function (timeEntry, timeEntryIndex) {
-                            let currentArrayDate = timeEntry.date
-                            let currentArrayYear = timeEntry.year
-                            let currentArrayMonth = timeEntry.month
-                            var time2 = timeEntry.time;
-                            if(_this.volunteeringHoursCurrentYear == currentArrayYear) {
-                                if(_this.volunteeringHoursCurrentMonth == currentArrayMonth) {
-                                        var splitTime1= time1.split(':');
-                                        var splitTime2= time2.split(':');
-                                        hour = parseInt(splitTime1[0])+parseInt(splitTime2[0]);
-                                        minute = parseInt(splitTime1[1])+parseInt(splitTime2[1]);
-                                        hour = hour + minute/60;
-                                        minute = minute%60;
-                                        second = parseInt(splitTime1[2])+parseInt(splitTime2[2]);
-                                        minute = minute + second/60;
-                                        second = second%60;
-                                        time1= Math.floor(hour)+':'+Math.floor(minute)+":"+Math.floor(second);
-                                }
-                            }
-                        });
-                        
-                    });
-                    if(time1 != "00:00:00") {
-                        return time1;
+        changeVolunteeringGoals(data) {
+            this.enableSubmitGoalTimeSheet = true;
+            var _this =this;
+            this.goalTableLoaderActive = true
+            this.volunteeringGoalCurrentMonth = data.month
+            this.volunteeringGoalCurrentYear = data.year
+            data.weekdays.shift();
+            this.volunteeringGoalWeeks = data.weekdays
+            setTimeout(function(){
+                _this.goalTableLoaderActive = false
+            })
+        },
+
+        updateWorkday(value) {
+          this.defaultWorkday = value.selectedVal;
+        },
+
+        updateDefaultValue(value) {
+            if(value.fieldId == "workday") {
+                this.defaultWorkday = value.selectedVal;
+            }
+            if(value.fieldId == "hours") {
+                this.defaultHours = value.selectedVal
+            }
+            if(value.fieldId == "minutes") {
+                this.defaultMinutes = value.selectedVal
+            }
+        },
+
+        updateMission(value) {
+            this.defaultMission = value;
+        },
+
+        async getVolunteerHoursData() {
+            this.tableLoaderActive = true
+            var _this =this;
+            await volunteerTimesheetHours().then( response => { 
+                if(response) {
+                    this.timeMissionData = response['TIME']
+                    this.goalMissionData = response['GOAL']
+                    if(response['TIME'].length > 0 ||  this.goalMissionData.length > 0) {
+                        this.isAllVisible = true
+                    } else {
+                        this.isAllVisible = false
                     }
                 }
+                _this.isComponentLoaded = true
+                _this.tableLoaderActive = false 
+           })
         },
-        created() {
-            var globalThis = this;
-            this.langauageData = JSON.parse(store.state.languageLabel);
-            this.defaultWorkday = this.langauageData.label.workday 
-            this.getVolunteerHoursData();
-            // setTimeout(() => {
-            //     var hourTableCell = document.querySelectorAll(
-            //         ".timesheethours-table td:not(.mission-col):not(.approved):not(.total-col)"
-            //     );
-            //     console.log(hourTableCell);
-            //     var goalTableCell = document.querySelectorAll(
-            //         ".timesheetgoals-table td:not(.mission-col):not(.approved):not(.total-col)"
-            //     );
-            //     hourTableCell.forEach(function(currentEvent) {
-            //         currentEvent.addEventListener("click", function() {
-            //             globalThis.$refs.timeHoursModal.show();
-            //         });
-            //     });
-            //     goalTableCell.forEach(function(currentEvent) {
-            //         currentEvent.addEventListener("click", function() {
-            //             globalThis.$refs.goalModal.show();
-            //         });
-            //     });
-            // },700);
+
+        getTime(date,timeArray,timeSheetType) {
+            let _this = this
+            let returnData = '';
+            var dates = date+1;
+            timeArray.filter(function (timeSheetItem, timeSheetIndex) {
+
+                let currentArrayDate = timeSheetItem.date
+                let currentArrayYear = timeSheetItem.year
+                let currentArrayMonth = timeSheetItem.month
+                if(timeSheetType == "time") {
+                    if(_this.volunteeringHoursCurrentYear == currentArrayYear) {
+                        if(_this.volunteeringHoursCurrentMonth == currentArrayMonth) {
+                            if(dates == currentArrayDate) {
+                                    returnData = timeSheetItem.time                  
+                            }
+                        }
+                    }
+                } else {
+                    if(_this.volunteeringGoalCurrentYear == currentArrayYear) {
+                        if(_this.volunteeringGoalCurrentMonth == currentArrayMonth) {
+                            if(dates == currentArrayDate) {
+                                returnData = timeSheetItem.action    
+                            }
+                        }
+                    }         
+                    
+                }
+              
+            });
+            return returnData
+        },
+        
+        getRawHourTotal(timeArray,timeSheetType) {
+            let _this = this
+            var time1 = "00:00";
+            var hour=0
+            var minute=0
+            var action = 0
+            if(timeArray) {
+                timeArray.filter(function (timeSheetItem, timeSheetIndex) {
+                    let currentArrayDate = timeSheetItem.date
+                    let currentArrayYear = timeSheetItem.year
+                    let currentArrayMonth = timeSheetItem.month
+                    var time2 = timeSheetItem.time;
+                    if(timeSheetType == "time") {
+                        if(_this.volunteeringHoursCurrentYear == currentArrayYear) {
+                            if(_this.volunteeringHoursCurrentMonth == currentArrayMonth) {    
+                                    var splitTime1= time1.split(':');
+                                    var splitTime2= time2.split(':');
+
+                                    hour = parseInt(splitTime1[0])+parseInt(splitTime2[0]);
+                                    minute = parseInt(splitTime1[1])+parseInt(splitTime2[1]);
+                                    hour = hour + minute/60;
+                                    minute = minute%60;
+                                    time1= ("0" + Math.floor(hour)).slice(-2)+':'+("0" + Math.floor(minute)).slice(-2);
+                            }
+                        }
+                    }  else {
+                        if(_this.volunteeringGoalCurrentYear == currentArrayYear) {
+                            if(_this.volunteeringGoalCurrentMonth == currentArrayMonth) {    
+                                action = action+ timeSheetItem.action
+                            }
+                        }
+                           
+                    }
+                });
+            }
+           if(timeSheetType == "time") {
+                    if(time1 != "00:00") {
+                        return time1;
+                    }
+                    
+            } 
+            if(timeSheetType == "goal") {
+                if(action != 0) {
+                    return action;
+                }
+                
+            }  
+        },
+
+        getColumnHourTotal(day,timeSheetType) {
+
+            let _this = this
+            var time1 = "00:00";
+            var hour=0;
+            var minute=0;
+            var action = 0;
+            let timeArray = []
+            if(timeSheetType == "time") {
+                timeArray = this.timeMissionData;
+            } else {
+                timeArray = this.goalMissionData;
+            }
+            if(timeArray.length > 0) {
+                timeArray.filter(function (timeSheetItem, timeSheetIndex) {
+                    let timeEntryData = timeSheetItem.timesheet;
+                    timeEntryData.filter(function (timeEntry, timeEntryIndex) {
+                       
+                            let currentArrayDate = timeEntry.date
+                            let currentArrayYear = timeEntry.year
+                            let currentArrayMonth = timeEntry.month
+                            var time2 = timeEntry.time;
+                            if(timeSheetType == "time") {
+                                if(_this.volunteeringHoursCurrentYear == currentArrayYear) {
+                                    if(_this.volunteeringHoursCurrentMonth == currentArrayMonth) {
+                                        if(day == currentArrayDate) {
+                                            
+                                                var splitTime1= time1.split(':');
+                                                var splitTime2= time2.split(':');
+                                                hour = parseInt(splitTime1[0])+parseInt(splitTime2[0]);
+                                                minute = parseInt(splitTime1[1])+parseInt(splitTime2[1]);
+                                                hour = hour + minute/60;
+                                                minute = minute%60;
+
+                                                time1= ("0" + Math.floor(hour)).slice(-2)+':'+("0" + Math.floor(minute)).slice(-2);
+                                           
+                                        }
+                                    }
+                                } 
+                            } else {
+                                if(_this.volunteeringGoalCurrentYear == currentArrayYear) {
+                                    if(_this.volunteeringGoalCurrentMonth == currentArrayMonth) {
+                                        if(day == currentArrayDate) {
+                                            action = action+ timeEntry.action
+                                        }
+                                    }
+                                } 
+                            }
+                        
+                    });
+                    
+                });
+            }
+            if(timeSheetType == "time") {
+                    if(time1 != "00:00") {
+
+                        return time1;
+                    }
+                    
+            } 
+            if(timeSheetType == "goal") {
+                if(action != 0) {
+                    return action;
+                }
+                
+            }          
+        },
+        
+        getTotalHours(timeSheetType) {
+            let _this = this
+            var time1 = "00:00";
+            var timeApproved = "00:00";
+            var action = 0;
+            var actionApproved = 0;
+            var hour=0;
+            var minute=0;
+            var hourApproved=0;
+            var minuteApproved=0;
+
+            let timeArray = []
+            if(timeSheetType == "time") {
+                timeArray = this.timeMissionData;
+            } else {
+                timeArray = this.goalMissionData;
+            }
+                timeArray.filter(function (timeSheetItem, timeSheetIndex) {
+                    let timeEntryData = timeSheetItem.timesheet;
+                    timeEntryData.filter(function (timeEntry, timeEntryIndex) {
+                        
+                            let currentArrayDate = timeEntry.date
+                            let currentArrayYear = timeEntry.year
+                            let currentArrayMonth = timeEntry.month
+                            var time2 = timeEntry.time;
+                            if(timeSheetType == "time") {
+                                if(_this.volunteeringHoursCurrentYear == currentArrayYear) {
+                                    if(_this.volunteeringHoursCurrentMonth == currentArrayMonth) {
+                                        var splitTime1= time1.split(':');
+                                        var splitTime2= time2.split(':');
+                                        hour = parseInt(splitTime1[0])+parseInt(splitTime2[0]);
+                                        minute = parseInt(splitTime1[1])+parseInt(splitTime2[1]);
+                                        hour = hour + minute/60;
+                                        minute = minute%60;
+                                        time1= ("0" + Math.floor(hour)).slice(-2)+':'+("0" + Math.floor(minute)).slice(-2);
+                                        if(timeEntry.timesheet_status.status != "APPROVED" && timeEntry.timesheet_status.status != "AUTOMATICALLY_APPROVED") {
+                                             //for submit request
+                                            var splitTimeApproved= timeApproved.split(':');
+                                            hourApproved = parseInt(splitTimeApproved[0])+parseInt(splitTime2[0]);
+                                            minuteApproved = parseInt(splitTimeApproved[1])+parseInt(splitTime2[1]);
+                                            hourApproved = hourApproved + minuteApproved/60;
+                                            minuteApproved = minuteApproved%60;
+                                            timeApproved= ("0" + Math.floor(hourApproved)).slice(-2)+':'+("0" + Math.floor(minuteApproved)).slice(-2);
+                                        }
+                                       
+                                    }
+                                }
+                            }   else {
+                                if(_this.volunteeringGoalCurrentYear == currentArrayYear) {
+                                    if(_this.volunteeringGoalCurrentMonth == currentArrayMonth) {
+                                        
+                                       action = action+ timeEntry.action
+                                      if(timeEntry.timesheet_status.status != "APPROVED" && timeEntry.timesheet_status.status != "AUTOMATICALLY_APPROVED") {
+                                          actionApproved = actionApproved +  timeEntry.action
+                                      }
+                                    }
+                                }
+                             }
+                    });
+                    
+                });
+            
+                if(timeSheetType == "time") {
+                    if(time1 != "00:00") {
+                        if(timeApproved != "00:00") {
+                            this.enableSubmitTimeTimeSheet = false;
+                        } 
+                        return time1;
+                    }    
+                } 
+                if(timeSheetType == "goal") {
+                    if(action != 0) {
+                        if(actionApproved != 0) {
+                            this.enableSubmitGoalTimeSheet = false;
+                        } 
+                        return action;
+                    }
+                   
+                }    
+            } ,
+
+        
+        
+        
+        updateMinutes(value) {
+            this.defaultMinutes = value.selectedVal
+        },
+
+        hideModal(){
+            store.commit('removeTimeSheetDetail');
+            this.currentTimeData.missionId = '';
+            this.currentTimeData.hours = '';
+            this.currentTimeData.minutes = '';
+            this.currentTimeData.dateVolunteered = '';
+            this.currentTimeData.workDay = '';
+            this.currentTimeData.notes = '';
+            this.currentTimeData.day = '';
+            this.currentTimeData.timeSheetId = '';
+            this.currentTimeData.documents = [];
+            this.volunteerHourDisableDates = [],
+            this.currentTimeData.disabledPastDates = '',
+            this.currentTimeData.disabledFutureDates = '',
+            this.currentTimeData.missionName = ''
+            this.currentTimeData.action = ''
+            this.files = [];
+            this.defaultHours = this.langauageData.placeholder.spent_hours
+            this.defaultMinutes = this.langauageData.placeholder.spent_minutes
+            this.defaultWorkday = this.langauageData.placeholder.workday 
+           
+        },
+
+        submitVolunteerTimeSheet(timeSheetType) {
+                var _this = this;
+                let timeSheetId = {
+                    'timesheet_entries' : []
+                }
+                let timeSheetEntry = []
+                let timeArray = [];
+                let currentYear = ''
+                let currentMonth = ''
+                if(timeSheetType == "time") {
+                    timeArray = this.timeMissionData;
+                    currentYear = _this.volunteeringHoursCurrentYear
+                    currentMonth = _this.volunteeringHoursCurrentMonth
+                } else {
+                    timeArray = this.goalMissionData;
+                    currentYear = _this.volunteeringGoalCurrentYear
+                    currentMonth = _this.volunteeringGoalCurrentMonth
+                }
+                if(timeArray) {
+                    timeArray.filter(function (timeMission, timeMissionIndex) {
+                        let timeSheetArray = timeMission.timesheet;
+                        if(timeSheetArray) {
+                            timeSheetArray.filter(function (timeSheet, timeSheetIndex) {
+                                let currentArrayYear = timeSheet.year
+                                let currentArrayMonth = timeSheet.month
+                                if(currentYear == currentArrayYear) {
+                                    if(currentMonth == currentArrayMonth) {
+                                        if(timeSheet.timesheet_status.status != "APPROVED" && timeSheet.timesheet_status.status != "AUTOMATICALLY_APPROVED"){
+                                                timeSheetId.timesheet_entries.push({'timesheet_id':timeSheet.timesheet_id})  
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                    });
+                }
+                submitVolunteerHourTimeSheet(timeSheetId).then(response => {
+                    if(response.error == true){
+                        this.makeToast("danger",response.message);
+                    } else {
+                        this.getVolunteerHoursData()
+                        if(timeSheetType == "time") {
+                            this.getTimeRequestData(this.currentPage);
+                        } else {
+                            this.getGoalRequestData(this.currentPage);
+                        }
+                        this.makeToast("success",response.message);
+                    }  
+                })
+                 
+        },
+
+        makeToast(variant = null,message) {
+            this.$bvToast.toast(message, {
+                variant: variant,
+                solid: true,
+                autoHideDelay: 1000
+            })
+        },
+        getTimeRequest(currentPage) {
+            this.getTimeRequestData(currentPage);
+        },
+        getTimeRequestData(currentPage) {
+            var _this = this;
+            let currentData = [];
+            timeRequest(currentPage).then( response => {
+                if(response.data) {
+                    let data = response.data;
+                    let mission = this.langauageData.label.mission;
+                    let time = this.langauageData.label.time;
+                    let hours = this.langauageData.label.hours;
+                    let organisation = this.langauageData.label.organisation;
+
+                    if(response.pagination) {
+                        this.hourRequestTotalRow = response.pagination.total;
+                        this.hourRequestCurrentPage = response.pagination.current_page
+                        this.hourRequestPerPage = response.pagination.per_page;
+                        this.hourRequestNextUrl = response.pagination.next_url
+                    }
+                    
+                    data.filter(function(item,index){
+                        currentData.push(
+                            {
+                                'mission' : item.title,
+                                'time': item.time,
+                                'hours' : item.hours,
+                                'organization' : item.organisation_name,
+                                'missionId' : item.mission_id
+                            }
+                        )
+                        _this.timesheetRequestItems = currentData;
+                    })
+                }
+            })   
+        },
+        getGoalRequest(currentPage) {
+            this.getGoalRequestData(currentPage);
+
+        },
+        getGoalRequestData(currentPage) {
+            var _this = this;
+            setTimeout(function() {
+                if(store.state.missionId != '' && store.state.missionId != null) {
+                    let missionId = store.state.missionId;
+                    let timeSheetType = store.state.missionType.toLowerCase()
+                    let timeArray = []
+                    let timeSheetArray = []
+                    let date =  moment().format('D')
+                    if(timeSheetType == "time") {
+                        timeArray = _this.timeMissionData
+                    } else {
+                        timeArray =  _this.goalMissionData
+                    }
+                    timeArray.filter(function(timeArray,timeIndex){
+                        if(timeArray.mission_id == missionId) {
+                            timeSheetArray = timeArray;
+                        }
+                    })
+                    setTimeout(function(){
+                        if(timeSheetArray) { 
+                            _this.getRelatedTimeData(date,timeSheetArray,timeSheetType)
+                        }
+                    },500)   
+                } 
+            },200)
+           
+            let currentData = [];
+
+            goalRequest(currentPage).then( response => {
+                if(response.data) {
+                    let data = response.data;
+                    let mission = this.langauageData.label.mission;
+                    let action = this.langauageData.label.actions;
+                    let organisation = this.langauageData.label.organisation;
+                     if(response.pagination) {
+                        this.goalRequestTotalRow = response.pagination.total;
+                        this.goalRequestCurrentPage = response.pagination.current_page
+                        this.goalRequestPerPage = response.pagination.per_page;
+                        this.goalRequestNextUrl = response.pagination.next_url
+                    }
+                    
+                    data.filter(function(item,index) {
+                        currentData.push(
+                            {
+                                'mission' : item.title,
+                                'action': item.action,
+                                'organization' : item.organisation_name,
+                                'missionId' : item.mission_id
+                            }
+                        )
+                        _this.goalRequestItems = currentData
+                    }) 
+                }
+            })   
         }
+    },
+    created() {
+        var globalThis = this;
+        this.langauageData = JSON.parse(store.state.languageLabel);
+        this.defaultWorkday = this.langauageData.placeholder.workday 
+        this.defaultHours = this.langauageData.placeholder.spent_hours
+        this.defaultMinutes = this.langauageData.placeholder.spent_minutes
+        this.timeRequestLabel = this.langauageData.label.hours_requests 
+        this.goalRequestLabel = this.langauageData.label.goals_requests 
+        this.getVolunteerHoursData();
+        this.isShownComponent = true;
+        setTimeout(function(){
+            globalThis.getTimeRequestData(globalThis.hourRequestCurrentPage);
+        },80)
+        setTimeout(function() {
+            globalThis.getGoalRequestData(globalThis.goalRequestCurrentPage);
+        },100)
+        
+        let timeRequestFieldArray = [
+            this.langauageData.label.mission,
+            this.langauageData.label.time,
+            this.langauageData.label.hours,
+            this.langauageData.label.organisation,
+        ]
+
+        let goalRequestFieldArray = [
+            this.langauageData.label.mission,
+            this.langauageData.label.actions,
+            this.langauageData.label.organisation,
+        ]
+
+        goalRequestFieldArray.filter(function(data,index){
+            globalThis.goalRequestFields.push({
+                "key" : data
+            })
+        });
+
+        timeRequestFieldArray.filter(function(data,index){
+            globalThis.timesheetRequestFields.push({
+                "key" : data
+            })
+        });
+        
+    }
 };
 </script>

@@ -1161,7 +1161,14 @@ main {
             @include sm-max {
                 margin-bottom: 10px;
             }
-
+            .btn-outer{
+                display: inline-flex;
+                .btn-add-entry{
+                    width: auto;
+                    margin-left: 15px;
+                    min-width: 135px;
+                }
+            }
             .btn {
 				padding: 6px 18px;
 				border-width: 1px!important;
@@ -1536,7 +1543,6 @@ main {
 
         .btn-wrap {
             display: flex;
-            justify-content: center;
             flex-wrap: wrap;
 
             @include md-max {
@@ -1544,7 +1550,8 @@ main {
             }
 
             .btn {
-                margin: 0 15px;
+                margin-right:15px;
+                margin-bottom: 15px;
                 font-size: 20px;
                 min-height: 60px;
                 border-radius: 30px;
@@ -1553,7 +1560,7 @@ main {
                 @include lg-max {
                     min-width: auto;
                     font-size: 16px;
-                    margin: 0 5px;
+                    margin-right: 5px;
                     min-height: 48px;
                     padding: 0 15px;
                 }
@@ -2403,7 +2410,7 @@ main {
 /**Stories-detail page style**/
 .stories-detail-page {
     .slider-banner-block {
-        margin-bottom: 84px;
+        margin-bottom: 50px;
 
         @include md-max {
             margin-bottom: 30px;
@@ -2546,6 +2553,7 @@ main {
 
     .profile-form-wrap {
         padding-left: 30px;
+        margin-top:-7px;
 
         @include lg-max {
             padding-left: 0;
@@ -2554,6 +2562,7 @@ main {
         @include md-max {
             padding-left: 15px;
             padding-top: 40px;
+            margin-top: 0;
         }
 
         @include sm-max {
@@ -2574,6 +2583,7 @@ main {
             textarea {
                 &.form-control {
                     height: 120px;
+                    padding: 8px 12px;
                 }
             }
         }
@@ -3126,7 +3136,15 @@ main {
 				}
 			}
 		}
-	}
+    }
+    .no-history-data{
+        text-align: center;
+        .btn-row{
+            .btn{
+                margin: 0 auto;
+            }
+        }
+    }
 
 }
 
@@ -3288,7 +3306,15 @@ main {
 	.inner-statusbar{
 		.list-group-item{
 			max-width: 25%!important;
-			flex: 0 0 25%!important;
+            flex: 0 0 25%!important;
+            @include sm-max{
+                max-width: 50% !important;
+                flex:0 0 50% !important;
+            }
+            @include xxs-max{
+                max-width: 100%!important;
+                flex: 0 0 100%!important;
+            }
 		}
 	}
 }
@@ -3304,12 +3330,12 @@ main {
     bottom: 0;
     width: 100%;
     height: 100%;
-    display: flex;
     align-items: center;
     display: none;
 
     &.mission-loader,
     &.slider-loader,
+    &.loader-active,
     &.recent-loader {
         display: flex;
     }
@@ -3495,12 +3521,6 @@ background-color: rgba(0,0,0,.08);
   }
 }
 
-// .open-search{
-// 	.filter-block{
-// 		display: none;
-// 	}
-// }
-
 /** News -Style **/
 .news-detail-container{
 	max-width: 1140px;
@@ -3522,7 +3542,14 @@ background-color: rgba(0,0,0,.08);
 				min-height: 270px;
 				margin: 20px 0;
 			}
-		}
+        }
+        .author-name{
+           margin: 15px 0 4px;
+            color:$gray-primary;
+        }
+        .publish-date{
+            color:$gray-primary;
+        }
 		.news-content{
 			p{
 				&:last-child{

@@ -201,6 +201,10 @@ header {
                 &:active {
                     color: $black-primary;
                 }
+
+                &.router-link-active{
+                    background: $gray-bg;
+                }
             }
 
             li {
@@ -1218,10 +1222,6 @@ header {
                 font-size: 18px;
                 padding-left: 19px;
                 line-height: normal;
-
-                &:after {
-                    right: 20px;
-                }
             }
         }
 
@@ -1243,7 +1243,7 @@ header {
                 li {
                     padding: 8px 15px;
 					line-height: 20px;
-					display: flex;		
+					display: block;		
                     justify-content: space-between;		
                     align-items: center;
                 }
@@ -1286,10 +1286,6 @@ header {
                 z-index: 5;
                 font-size: 18px;
                 padding-left: 19px;
-
-                &:after {
-                    right: 20px;
-                }
             }
         }
 
@@ -1319,7 +1315,7 @@ header {
             align-items: center;
             position: absolute;
             left: 0;
-            right: 18px;
+            right: 13px;
             top: 0;
 
             .btn {
@@ -1379,18 +1375,22 @@ html {
 				&.dropdown-option-list{	
 					&.chk-select-options{
 						li{
-							padding-right: 0;
+                            &.has-count{
+                                padding-right: 0;
+                            }
 						}
 					}
 					li{		
-						position: relative;
+                        position: relative;
+                        &.has-count{
 						padding-right: 50px;
-						label{
-							padding-right: 50px;
-						}
+						    label{
+							    padding-right: 50px;
+                            }
+                        }
 						.counter{		
 							display: inline-block;		
-							background: $control-border;		
+							background: $light-gray-secondary;		
 							color: $black-primary;		
 							padding: 0;		
 							border-radius: 100%;		
@@ -1402,8 +1402,9 @@ html {
 							top: 50%;
 							@include transformY(-50%);
 							right: 15px;
-							width: 19px;
-							height: 19px;
+							min-width: 19px;
+                            height: auto;
+                            padding:2px 3px;
 							min-height: 1px;
 									
 						}		
