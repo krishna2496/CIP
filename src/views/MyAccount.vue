@@ -9,7 +9,7 @@
         <b-col xl="3" lg="4" md="12" class="profile-left-col">
             <div class="profile-details">
             <div  class="profile-block">
-                <div v-bind:class="{ 'content-loader-wrap': true, 'loader-active ': imageLoader}">
+                <div v-bind:class="{ 'content-loader-wrap': true, 'loader-active ': isPrefilLoaded}">
                     <div class="content-loader"></div>
                 </div>
 
@@ -442,7 +442,7 @@ export default {
             },
             clientImage : "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/tatva/assets/images/volunteer9.png",
             newUrl : "",
-            isPrefilLoaded : false,
+            isPrefilLoaded : true,
             prefilImageType : {
                 mediaType: ''
             },
@@ -534,9 +534,6 @@ export default {
            
         }
     },
-    mounted() {
-
-    },
     updated() { 
        
      },
@@ -596,6 +593,11 @@ export default {
                     var _this = this;
                     this.userData = response.data;
                     this.newUrl = this.userData.avatar;
+                    const img = new Image();
+                    img.src = this.newUrl;
+                    img.onload = () => {
+                        this.isPrefilLoaded = false
+                    }
                     store.commit("changeAvatar",this.userData)
                     var lowerCase = this.newUrl.toLowerCase();
                     if (lowerCase.indexOf("png") !== -1) {
@@ -606,7 +608,7 @@ export default {
                         this.prefilImageType.mediaType = "jpg"
                     }  
 
-                    this.isPrefilLoaded = true
+                   
 
                     this.cityList = Object.keys(this.userData.city_list).map(function(key) {
                         return [Number(key), _this.userData.city_list[key]];

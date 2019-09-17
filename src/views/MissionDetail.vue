@@ -1070,13 +1070,14 @@ export default {
             commentData.comment = this.comment;
             // Call to store mission service with params mission_id and comments
             storeMissionComments(commentData).then( response => {
-                if(response.error == true){
+                if(response.error == true) {
                     this.makeToast("danger",response.message);
                 } else {
                 	this.comment = '';
                 	this.disableApply = true;
                 	this.applyButton = this.langauageData.label.applied
-                    this.makeToast("success",response.message);
+					this.makeToast("success",response.message);
+					this.missionComments();
                    	this.$v.$reset();
                 }
                 this.postComment = false;
