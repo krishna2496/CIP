@@ -230,8 +230,12 @@
                 </b-col>
             </b-row>
         </div>
-        <b-modal :title="langauageData.label.search_user" ref="userDetailModal" 
+        <b-modal ref="userDetailModal" 
             :modal-class="myclass"  size="lg" hide-footer>
+            <template slot="modal-header" slot-scope="{ close }">
+                <i class="close"  @click="close()" v-b-tooltip.hover :title="langauageData.label.close"></i>
+              <h5 class="modal-title">{{langauageData.label.search_user}}</h5>
+            </template>
             <b-alert show :variant="classVariant" dismissible v-model="showErrorDiv"
             >{{ message }}</b-alert>
                 <div class="autocomplete-control">

@@ -953,6 +953,10 @@ label {
   overflow: hidden;
   width: 160px;
   margin: 0 auto;
+  
+  .content-loader-wrap{
+    z-index:1040;
+  }
 
   .priimage {
     height: 160px !important;
