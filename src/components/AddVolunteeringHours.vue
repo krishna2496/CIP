@@ -354,13 +354,13 @@ export default {
         inputUpdate(files) {
             var _this = this
             let allowedFileTypes = ['doc','xls','xlsx','csv','pdf','png','jpg','jpeg']
+            _this.fileError = '';
             files.filter(function(data,index){
                 if(data.size > 4000000) {
                     _this.fileError = _this.langauageData.errors.file_max_size
                    files.splice(index,1)
                 } else {
                     let fileName = data.name.split('.');
-                    _this.fileError = '';
                     if(!allowedFileTypes.includes(fileName[fileName.length-1])) {
                         _this.fileError = _this.langauageData.errors.invalid_file_type
                         files.splice(index,1)
@@ -408,6 +408,9 @@ export default {
             }
             if((this.timeEntryDefaultData.hours == ''|| this.timeEntryDefaultData.hours == '00') 
                 && (this.timeEntryDefaultData.minutes == "00" || this.timeEntryDefaultData.minutes == "")) {
+                return
+            }
+            if(this.fileError != '') {
                 return
             }
             this.isAjaxCall = true;
