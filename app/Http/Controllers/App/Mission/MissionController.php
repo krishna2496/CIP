@@ -204,69 +204,62 @@ class MissionController extends Controller
      */
     public function exploreMission(Request $request): JsonResponse
     {
-        try {
-            $apiData = [];
-            $language = ($request->hasHeader('X-localization')) ?
-            $request->header('X-localization') : env('TENANT_DEFAULT_LANGUAGE_CODE');
-            // Get Data by top theme
-            $topTheme = $this->missionRepository->exploreMission($request, config('constants.TOP_THEME'));
-            // Get Data by top country
-            $topCountry = $this->missionRepository->exploreMission($request, config('constants.TOP_COUNTRY'));
-            // Get Data by top organization
-            $topOrganisation = $this->missionRepository->exploreMission($request, config('constants.TOP_ORGANISATION'));
+        $apiData = [];
+        $language = ($request->hasHeader('X-localization')) ?
+        $request->header('X-localization') : env('TENANT_DEFAULT_LANGUAGE_CODE');
+        // Get Data by top theme
+        $topTheme = $this->missionRepository->exploreMission($request, config('constants.TOP_THEME'));
+        // Get Data by top country
+        $topCountry = $this->missionRepository->exploreMission($request, config('constants.TOP_COUNTRY'));
+        // Get Data by top organization
+        $topOrganisation = $this->missionRepository->exploreMission($request, config('constants.TOP_ORGANISATION'));
 
-            if (!empty($topTheme->toArray())) {
-                foreach ($topTheme as $key => $value) {
-                    if ($value->missionTheme && $value->missionTheme->translations) {
-                        $arrayKey = array_search($language, array_column($value->missionTheme->translations, 'lang'));
-                
-                        if ($arrayKey  !== '') {
-                            $returnData[config('constants.TOP_THEME')][$key]['title'] =
-                            $value->missionTheme->translations[$arrayKey]['title'];
-                            $returnData[config('constants.TOP_THEME')][$key]['id'] =
-                            $value->missionTheme->mission_theme_id;
-                            $returnData[config('constants.TOP_THEME')][$key]['theme_name'] =
-                            $value->missionTheme->theme_name;
-                        }
-                    }
-                }
-                $apiData[config('constants.TOP_THEME')] = $returnData[config('constants.TOP_THEME')];
-            }
-            if (!empty($topCountry->toArray())) {
-                foreach ($topCountry as $key => $value) {
-                    if ($value->country) {
-                        $returnData[config('constants.TOP_COUNTRY')][$key]['title'] =
-                        $value->country->name;
-                        $returnData[config('constants.TOP_COUNTRY')][$key]['id'] =
-                        $value->country->country_id;
-                    }
-                }
-                $apiData[config('constants.TOP_COUNTRY')] = $returnData[config('constants.TOP_COUNTRY')];
-            }
-            if (!empty($topOrganisation->toArray())) {
-                foreach ($topOrganisation as $key => $value) {
-                    if ($value->organisation_name != '') {
-                        $returnData[config('constants.TOP_ORGANISATION')][$key]['title'] =
-                        $value->organisation_name;
-                        $returnData[config('constants.TOP_ORGANISATION')][$key]['id'] =
-                        $value->organisation_id;
-                    }
-                }
-                $apiData[config('constants.TOP_ORGANISATION')] = $returnData[config('constants.TOP_ORGANISATION')];
-            }
+        if (!empty($topTheme->toArray())) {
+            foreach ($topTheme as $key => $value) {
+                if ($value->missionTheme && $value->missionTheme->translations) {
+                    $arrayKey = array_search($language, array_column($value->missionTheme->translations, 'lang'));
             
-            $apiStatus = Response::HTTP_OK;
-            return $this->responseHelper->success(
-                $apiStatus,
-                '',
-                $apiData
-            );
-        } catch (ModelNotFoundException $e) {
-            return $this->modelNotFound(
-                config('constants.error_codes.ERROR_MISSION_NOT_FOUND'),
-                trans('messages.custom_error_message.ERROR_MISSION_NOT_FOUND')
-            );
+                    if ($arrayKey  !== '') {
+                        $returnData[config('constants.TOP_THEME')][$key]['title'] =
+                        $value->missionTheme->translations[$arrayKey]['title'];
+                        $returnData[config('constants.TOP_THEME')][$key]['id'] =
+                        $value->missionTheme->mission_theme_id;
+                        $returnData[config('constants.TOP_THEME')][$key]['theme_name'] =
+                        $value->missionTheme->theme_name;
+                    }
+                }
+            }
+            $apiData[config('constants.TOP_THEME')] = $returnData[config('constants.TOP_THEME')];
         }
+        if (!empty($topCountry->toArray())) {
+            foreach ($topCountry as $key => $value) {
+                if ($value->country) {
+                    $returnData[config('constants.TOP_COUNTRY')][$key]['title'] =
+                    $value->country->name;
+                    $returnData[config('constants.TOP_COUNTRY')][$key]['id'] =
+                    $value->country->country_id;
+                }
+            }
+            $apiData[config('constants.TOP_COUNTRY')] = $returnData[config('constants.TOP_COUNTRY')];
+        }
+        if (!empty($topOrganisation->toArray())) {
+            foreach ($topOrganisation as $key => $value) {
+                if ($value->organisation_name != '') {
+                    $returnData[config('constants.TOP_ORGANISATION')][$key]['title'] =
+                    $value->organisation_name;
+                    $returnData[config('constants.TOP_ORGANISATION')][$key]['id'] =
+                    $value->organisation_id;
+                }
+            }
+            $apiData[config('constants.TOP_ORGANISATION')] = $returnData[config('constants.TOP_ORGANISATION')];
+        }
+        
+        $apiStatus = Response::HTTP_OK;
+        return $this->responseHelper->success(
+            $apiStatus,
+            '',
+            $apiData
+        );
     }
 
     /**

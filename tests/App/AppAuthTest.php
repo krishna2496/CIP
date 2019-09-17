@@ -275,7 +275,7 @@ class AppAuthTest extends TestCase
         ];
 
         $this->post('app/request-password-reset', $params, [])
-        ->seeStatusCode(400)
+        ->seeStatusCode(403)
         ->seeJsonStructure([
               'errors' => [
                   [
@@ -287,4 +287,29 @@ class AppAuthTest extends TestCase
         ]);
     }
 
+    /**
+     * @test
+     *
+     * Show error if json is invalid
+     *
+     * @return void
+     */
+    public function it_should_check_json_for_reset_password()
+    {
+        $params = [
+            'email',","
+        ];
+        $this->post('app/request-password-reset', $params, [])
+          ->seeStatusCode(422)
+          ->seeJsonStructure([
+              'errors' => [
+                  [
+                      'status',
+                      'type',
+                      'code',
+                      'message'
+                  ]
+              ]
+          ]);
+    }
 }

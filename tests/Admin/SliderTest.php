@@ -497,7 +497,7 @@ class SliderTest extends TestCase
     public function it_should_return_error_for_invalid_slider_id_on_update_slider()
     {
         $params = [
-            'url' => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/test.png",
+            'url' => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer9.png",
             'sort_order' => "1",        
             'translations' =>  [
                 [
@@ -509,7 +509,7 @@ class SliderTest extends TestCase
         ];
 
         $this->patch("slider/".rand(1000000, 5000000), $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
-        ->seeStatusCode(422)
+        ->seeStatusCode(404)
         ->seeJsonStructure([
             'errors' => [
                 [

@@ -102,26 +102,17 @@ class SliderController extends Controller
                 // Upload slider image on S3 server
                 $tenantName = $this->helpers->getSubDomainFromRequest($request);
                 $imageUrl = "";
-                if ($imageUrl = $this->s3helper->uploadFileOnS3Bucket($request->url, $tenantName)) {
-                    $request->merge(['url' => $imageUrl]);
-                    
-                    // Create new slider
-                    $slider = $this->sliderRepository->storeSlider($request->toArray());
+                $imageUrl = $this->s3helper->uploadFileOnS3Bucket($request->url, $tenantName);
+                $request->merge(['url' => $imageUrl]);
+                
+                // Create new slider
+                $slider = $this->sliderRepository->storeSlider($request->toArray());
 
-                    // Set response data
-                    $apiData = ['slider_id' => $slider->slider_id];
-                    $apiStatus = Response::HTTP_CREATED;
-                    $apiMessage = trans('messages.success.MESSAGE_SLIDER_ADD_SUCCESS');
-                    return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
-                } else {
-                    // Response error unable to upload file on S3
-                    return $this->responseHelper->error(
-                        Response::HTTP_UNPROCESSABLE_ENTITY,
-                        Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                        config('constants.error_codes.ERROR_SLIDER_IMAGE_UPLOAD'),
-                        trans('messages.custom_error_message.ERROR_SLIDER_IMAGE_UPLOAD')
-                    );
-                }
+                // Set response data
+                $apiData = ['slider_id' => $slider->slider_id];
+                $apiStatus = Response::HTTP_CREATED;
+                $apiMessage = trans('messages.success.MESSAGE_SLIDER_ADD_SUCCESS');
+                return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
             }
         } catch (TenantDomainNotFoundException $e) {
             throw $e;
@@ -172,17 +163,8 @@ class SliderController extends Controller
             
             if (isset($request->url)) {
                 $imageUrl = "";
-                if ($imageUrl = $this->s3helper->uploadFileOnS3Bucket($request->url, $tenantName)) {
-                    $request->merge(['url' => $imageUrl]);
-                } else {
-                    // Response error unable to upload file on S3
-                    return $this->responseHelper->error(
-                        Response::HTTP_UNPROCESSABLE_ENTITY,
-                        Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                        config('constants.error_codes.ERROR_SLIDER_IMAGE_UPLOAD'),
-                        trans('messages.custom_error_message.ERROR_SLIDER_IMAGE_UPLOAD')
-                    );
-                }
+                $imageUrl = $this->s3helper->uploadFileOnS3Bucket($request->url, $tenantName);
+                $request->merge(['url' => $imageUrl]);
             }
 
             // Update slider
@@ -218,19 +200,12 @@ class SliderController extends Controller
      */
     public function index(Request $request): JsonResponse
     {
-        try {
-            $slider = $this->sliderRepository->getSliders();
-            $apiStatus = Response::HTTP_OK;
-            $apiMessage = ($slider->isEmpty()) ? trans('messages.success.MESSAGE_NO_SLIDER_FOUND') :
-             trans('messages.success.MESSAGE_SLIDERS_LIST');
-            
-            return $this->responseHelper->success($apiStatus, $apiMessage, $slider->toArray());
-        } catch (ModelNotFoundException $e) {
-            return $this->modelNotFound(
-                config('constants.error_codes.ERROR_TENANT_DOMAIN_NOT_FOUND'),
-                trans('messages.custom_error_message.ERROR_TENANT_DOMAIN_NOT_FOUND')
-            );
-        }
+        $slider = $this->sliderRepository->getSliders();
+        $apiStatus = Response::HTTP_OK;
+        $apiMessage = ($slider->isEmpty()) ? trans('messages.success.MESSAGE_NO_SLIDER_FOUND') :
+            trans('messages.success.MESSAGE_SLIDERS_LIST');
+        
+        return $this->responseHelper->success($apiStatus, $apiMessage, $slider->toArray());
     }
 
     /**

@@ -471,4 +471,122 @@ class AppMissionTest extends TestCase
         ]); 
         $user->delete();
     }
+
+    /**
+     * @test
+     *
+     * Get all mission
+     *
+     * @return void
+     */
+    public function it_should_return_all_top_recommended_app_missions()
+    {
+        $connection = 'tenant';
+        $user = factory(\App\User::class)->make();
+        $user->setConnection($connection);
+        $user->save();
+        $mission = factory(\App\Models\Mission::class)->make();
+        $mission->setConnection($connection);
+        $mission->save();
+
+        $token = Helpers::getJwtToken($user->user_id);
+        $this->get('app/missions?explore_mission_type=recommended-missions', ['token' => $token])
+          ->seeStatusCode(200)
+          ->seeJsonStructure([
+            "status",
+            "meta_data" => [
+                "filters" => [
+                    "search"
+                ]
+            ],
+            "message"
+        ]);
+        $user->delete();
+        $mission->delete();
+    }
+
+    /**
+     * @test
+     *
+     * Get all mission
+     *
+     * @return void
+     */
+    public function it_should_return_blank_app_missions()
+    {
+        $connection = 'tenant';
+        $user = factory(\App\User::class)->make();
+        $user->setConnection($connection);
+        $user->save();
+        $mission = factory(\App\Models\Mission::class)->make();
+        $mission->setConnection($connection);
+        $mission->save();
+
+        $token = Helpers::getJwtToken($user->user_id);
+        $this->get('app/missions?explore_mission_type=recommended-missions1', ['token' => $token])
+          ->seeStatusCode(200)
+          ->seeJsonStructure([
+            "status",
+            "meta_data" => [
+                "filters" => [
+                    "search"
+                ]
+            ],
+            "message"
+        ]);
+        $user->delete();
+        $mission->delete();
+    }
+
+    /**
+     * @test
+     *
+     * Explore mission
+     *
+     * @return void
+     */
+    public function it_should_return_explore_missions()
+    {
+        $connection = 'tenant';
+        $user = factory(\App\User::class)->make();
+        $user->setConnection($connection);
+        $user->save();
+
+        $token = Helpers::getJwtToken($user->user_id);
+        $this->get('app/explore-mission', ['token' => $token])
+          ->seeStatusCode(200)
+          ->seeJsonStructure([
+            "status",
+            "data"
+        ]);
+        $user->delete();
+    }
+
+    /**
+     * @test
+     *
+     * Get all mission
+     *
+     * @return void
+     */
+    public function it_should_return_filter_data()
+    {
+        $connection = 'tenant';
+        $user = factory(\App\User::class)->make();
+        $user->setConnection($connection);
+        $user->save();
+
+        $mission = factory(\App\Models\Mission::class)->make();
+        $mission->setConnection($connection);
+        $mission->save();
+
+        $token = Helpers::getJwtToken($user->user_id);
+        $this->get('app/filter-data?country_id='.$mission->country_id.'&city_id='.$mission->city_id, ['token' => $token])
+          ->seeStatusCode(200)
+          ->seeJsonStructure([
+            "status",
+            "data"
+        ]);
+        $user->delete();
+    }
 }
