@@ -388,7 +388,8 @@ class AuthController extends Controller
             $passwordChange = $this->userRepository->changePassword($request->auth->user_id, $request->password);
             
             // Get new token
-            $newToken = ($passwordChange) ? $this->helpers->getJwtToken($request->auth->user_id) : '';
+            $tenantName = $this->helpers->getSubDomainFromRequest($request);
+            $newToken = ($passwordChange) ? $this->helpers->getJwtToken($request->auth->user_id, $tenantName) : '';
             
             // Send response
             $apiStatus = Response::HTTP_OK;
