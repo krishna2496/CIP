@@ -443,6 +443,7 @@ export default {
             if(timeArray.timesheet) { 
                 let timeSheetArray =  timeArray.timesheet;
                 _this.currentTimeData.missionName = timeArray.title
+                _this.currentTimeData.dateVolunteered = _this.volunteeringHoursCurrentYear+'-'+_this.volunteeringHoursCurrentMonth+'-'+date
                 timeSheetArray.filter(function (timeSheetItem, timeSheetIndex) {
                     if(timeSheetItem.timesheet_status.status == "APPROVED" || 
                         timeSheetItem.timesheet_status.status == "AUTOMATICALLY_APPROVED"
@@ -450,9 +451,6 @@ export default {
                         _this.volunteerHourDisableDates.push(timeSheetItem.date_volunteered)
                     }
 
-                           
-                    _this.currentTimeData.dateVolunteered = _this.volunteeringHoursCurrentYear+'-'+_this.volunteeringHoursCurrentMonth+'-'+date
-                     
                     let currentArrayDate = timeSheetItem.date
                     let currentArrayYear = timeSheetItem.year
                     let currentArrayMonth = timeSheetItem.month
