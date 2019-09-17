@@ -255,7 +255,7 @@ export default {
 	this.langauageData = JSON.parse(store.state.languageLabel);
 	this.timeMissionTimesheetLabel = this.langauageData.label.volunteering_hours
 	this.goalMissionTimesheetLabel = this.langauageData.label.volunteering_goals
-    this.getVolunteerHistoryHoursOfType("theme");
+  this.getVolunteerHistoryHoursOfType("theme");
 	this.getVolunteerHistoryHoursOfType("skill");
 	this.getVolunteerMissionsHours();
   this.getVolunteerMissionsGoals();

@@ -171,6 +171,7 @@
                                     :perPage = "hourRequestPerPage"
                                     :nextUrl = "hourRequestNextUrl"
                                     :fileName="langauageData.export_timesheet_file_names.PENDING_TIME_MISSION_ENTRIES_XLSX"
+                                    :totalPages="timeMissionTotalPage"
                                 />
                         
                             <VolunteeringRequest
@@ -185,6 +186,7 @@
                                 :nextUrl = "goalRequestNextUrl"
                                 exportUrl = "app/timesheet/goal-requests/export"
                                 :fileName="langauageData.export_timesheet_file_names.PENTIND_GOAL_MISSION_ENTRIES_XLSX"
+                                :totalPages="goalMissionTotalPage"
                             />
                     </div>
 
@@ -244,7 +246,7 @@ import DashboardBreadcrumb from "../components/DashboardBreadcrumb";
 import VolunteeringTimesheetTableHeader from "../components/VolunteeringTimesheetTableHeader"
 import AddVolunteeringHours from "../components/AddVolunteeringHours";
 import AddVolunteeringAction from "../components/AddVolunteeringAction";
-import VolunteeringRequest from "../components/VolunteeringTimeSheetRequest";
+import VolunteeringRequest from "../components/VolunteeringRequest";
 import SimpleBar from "simplebar";
 import constants from '../constant';
 import axios from "axios";
@@ -285,6 +287,8 @@ export default {
             goalRequestTotalRow : 0,
             goalRequestFields: [],
             goalRequestItems: [],
+            timeMissionTotalPage: null,
+            goalMissionTotalPage: null,
             defaultWorkday: "",
             workDayList: [
                 ["WORKDAY","workday"],
@@ -997,16 +1001,17 @@ export default {
                         this.hourRequestCurrentPage = response.pagination.current_page
                         this.hourRequestPerPage = response.pagination.per_page;
                         this.hourRequestNextUrl = response.pagination.next_url
+                        this.timeMissionTotalPage = response.pagination.total_pages;
                     }
                     
                     data.filter(function(item,index){
                         currentData.push(
                             {
-                                'mission' : item.title,
-                                'time': item.time,
-                                'hours' : item.hours,
-                                'organization' : item.organisation_name,
-                                'missionId' : item.mission_id
+                                [mission] : item.title,
+                                [time] : item.time,
+                                [hours] : item.hours,
+                                [organisation] : item.organisation_name,
+                                ['mission_id'] : item.mission_id 
                             }
                         )
                         _this.timesheetRequestItems = currentData;
@@ -1058,15 +1063,16 @@ export default {
                         this.goalRequestCurrentPage = response.pagination.current_page
                         this.goalRequestPerPage = response.pagination.per_page;
                         this.goalRequestNextUrl = response.pagination.next_url
+                        this.goalMissionTotalPage = response.pagination.total_pages;
                     }
                     
                     data.filter(function(item,index) {
                         currentData.push(
                             {
-                                'mission' : item.title,
-                                'action': item.action,
-                                'organization' : item.organisation_name,
-                                'missionId' : item.mission_id
+                                [mission] : item.title,
+                                [action] : item.action,
+                                [organisation] : item.organisation_name,
+                                ['mission_id'] : item.mission_id
                             }
                         )
                         _this.goalRequestItems = currentData

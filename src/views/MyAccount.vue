@@ -9,7 +9,7 @@
         <b-col xl="3" lg="4" md="12" class="profile-left-col">
             <div class="profile-details">
             <div  class="profile-block">
-                <div v-bind:class="{ 'content-loader-wrap': true, 'profile-image-loader': imageLoader}">
+                <div v-bind:class="{ 'content-loader-wrap': true, 'loader-active ': isPrefilLoaded}">
                     <div class="content-loader"></div>
                 </div>
 
@@ -333,11 +333,14 @@
           centered
           hide-footer
         >
-          <template slot="modal-title">{{langauageData.label.change_password}}</template>
+            <template slot="modal-header" slot-scope="{ close }">
+                <i class="close"  @click="close()" v-b-tooltip.hover :title="langauageData.label.close"></i>
+              <h5 class="modal-title">{{langauageData.label.change_password}}</h5>
+            </template>
             <b-alert show :variant="classVariant" dismissible v-model="showErrorDiv">
-                    {{ message }}
+                {{ message }}
             </b-alert>
-          <form action class="form-wrap">
+            <form action class="form-wrap">
             <b-form-group>
               <b-form-input id type="password"
                 ref="oldPassword" 
@@ -439,7 +442,7 @@ export default {
             },
             clientImage : "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/tatva/assets/images/volunteer9.png",
             newUrl : "",
-            isPrefilLoaded : false,
+            isPrefilLoaded : true,
             prefilImageType : {
                 mediaType: ''
             },
@@ -531,9 +534,6 @@ export default {
            
         }
     },
-    mounted() {
-
-    },
     updated() { 
        
      },
@@ -593,6 +593,11 @@ export default {
                     var _this = this;
                     this.userData = response.data;
                     this.newUrl = this.userData.avatar;
+                    const img = new Image();
+                    img.src = this.newUrl;
+                    img.onload = () => {
+                        this.isPrefilLoaded = false
+                    }
                     store.commit("changeAvatar",this.userData)
                     var lowerCase = this.newUrl.toLowerCase();
                     if (lowerCase.indexOf("png") !== -1) {
@@ -603,7 +608,7 @@ export default {
                         this.prefilImageType.mediaType = "jpg"
                     }  
 
-                    this.isPrefilLoaded = true
+                   
 
                     this.cityList = Object.keys(this.userData.city_list).map(function(key) {
                         return [Number(key), _this.userData.city_list[key]];

@@ -94,7 +94,7 @@
                                  
                                 <b-form-input   
                                 v-model.trim="customFeildData[item.field_id]"  
-                                @keypress="updateChanges"
+                                @input="updateChanges"
                                 :class="{ 'is-invalid': getErrorClass(item.field_id) }" 
                                 :validstate="getErrorState(item.field_id)"
                                 :placeholder='`Enter ${item.translations.name}`'></b-form-input>  
@@ -109,7 +109,7 @@
                                 <b-form-input   
                                 type="email"
                                 v-model.trim="customFeildData[item.field_id]"  
-                                @keypress="updateChanges"
+                                @input="updateChanges"
                                 :class="{ 'is-invalid': getErrorClass(item.field_id) }" 
                                 :validstate="getErrorState(item.field_id)"
                                 :placeholder='`Enter ${item.translations.name}`'></b-form-input>  
@@ -121,7 +121,7 @@
                     </b-col>
     </div>
     <div v-else>
-        No data
+       
     </div>
 </template>
 <script>
@@ -314,6 +314,7 @@ export default {
     
         },
         updateChanges() {
+            console.log(this.customFeildData);
             this.$emit("detectChangeInCustomFeild",this.customFeildData);
         }
     },
