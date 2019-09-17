@@ -91,6 +91,37 @@ return [
         'MESSAGE_NO_SLIDER_FOUND' => 'Aucun curseur trouvé',
         'MESSAGE_SLIDER_UPDATED_SUCCESS' => 'Image du curseur mise à jour avec succès',
         'MESSAGE_SLIDER_DELETED' => 'Slider supprimé avec succès',
+        'TIMESHEET_ENTRY_ADDED_SUCESSFULLY' => 'Entrée de la feuille de temps ajoutée avec succès',
+        'MESSAGE_TIMESHEET_ENTRIES_LISTING' => 'Entrées de la feuille de temps listées avec succès',
+        'MESSAGE_NO_TIMESHEET_ENTRIES_FOUND' => 'Aucune entrée de feuille de temps trouvée',
+        'TIMESHEET_ENTRY_UPDATED_SUCESSFULLY' => 'Entrée de la feuille de temps mise à jour avec succès',
+        'MESSAGE_TIMESHEET_LISTING' => 'Feuille de temps listée avec succès',
+        'MESSAGE_TIMESHEET_DOCUMENT_DELETED' => 'La feuille de temps du document a été supprimée avec succès',
+        'MESSAGE_TIMESETTING_STATUS_UPDATED' => 'Statut de la feuille de temps mis à jour avec succès',
+        'TIMESHEET_SUBMITTED_SUCESSFULLY' => 'Feuille de temps soumise avec succès',
+        'TIMESHEET_ALREADY_SUBMITTED_FOR_APPROVAL' => 'Feuille de temps déjà soumise pour approbation',
+        'MESSAGE_THEME_HISTORY_PER_HOUR_LISTED' => 'Heures de bénévolat par thème répertorié avec succès',
+        'MESSAGE_SKILL_HISTORY_PER_HOUR_LISTED' => 'Heures de bénévolat par compétence répertoriée avec succès',
+        'MESSAGE_THEME_HISTORY_NOT_FOUND' => 'Heures de bénévolat par thème non trouvé',
+        'MESSAGE_SKILL_HISTORY_NOT_FOUND' => 'Heures de bénévolat par compétence non trouvée',
+        'MESSAGE_GOAL_REQUEST_LISTING' => 'Demande d\'objectif répertoriée avec succès',
+        'MESSAGE_NO_GOAL_REQUEST_FOUND' => 'Demande d\'objectif non trouvée',
+        'MESSAGE_POLICY_PAGE_FOUND' => 'Page de stratégie trouvée avec succès',
+        'MESSAGE_TIME_REQUEST_LISTING' => 'Demande de temps listée avec succès',
+        'MESSAGE_TIME_REQUEST_NOT_FOUND' => 'Aucune demande de temps trouvée',
+        'MESSAGE_GOAL_MISSION_TIME_ENTRY_LISTED' => 'Entrée de la feuille de temps des missions d\'objectif répertoriée',
+        'MESSAGE_NO_GOAL_MISSION_TIME_ENTRY_FOUND' => 'Entrée de la feuille de temps des missions d\'objectif non trouvée',
+        'MESSAGE_TIME_MISSION_TIME_ENTRY_LISTED' => 'Saisie des feuilles de temps des missions répertoriées',
+        'MESSAGE_NO_TIME_MISSION_TIME_ENTRY_FOUND' => 'Entrée dans la feuille de temps des missions non trouvée',        
+        'MESSAGE_USER_GOAL_MISSION_HISTORY_EXPORTED' => 'Fichier historique généré avec succès pour les missions d\'objectif',
+        'MESSAGE_ENABLE_TO_EXPORT_USER_GOAL_MISSION_HISTORY' => 'Aucune donnée trouvée, pour générer un fichier d\'historique pour les missions d\'objectif',
+        'MESSAGE_USER_TIME_MISSION_HISTORY_EXPORTED' => 'Fichier historique généré avec succès pour les missions temporelles',
+        'MESSAGE_ENABLE_TO_EXPORT_USER_TIME_MISSION_HISTORY' => 'Aucune donnée trouvée, pour générer un fichier d\'historique pour les missions temporelles',
+        'MESSAGE_USER_PENDING_TIME_MISSION_ENTRIES_EXPORTED' => 'Entrées de temps en attente pour les missions de temps, générées avec succès',
+        'MESSAGE_ENABLE_TO_EXPORT_USER_PENDING_TIME_MISSION_ENTRIES' => 'Aucune donnée trouvée, pour générer des entrées de temps en attente pour une mission temporelle',
+        'MESSAGE_USER_PENDING_GOAL_MISSION_ENTRIES_EXPORTED' => 'Entrées de temps en attente pour les missions de but, générées avec succès',
+        'MESSAGE_ENABLE_TO_EXPORT_USER_PENDING_GOAL_MISSION_ENTRIES' => 'Aucune donnée trouvée, pour générer des entrées de temps en attente pour la mission de l\'objectif',
+        'MESSAGE_AUTO_APPROVED_COMMENT_ADDED' => 'Merci pour votre commentaire.'
     ],
 
         
@@ -190,5 +221,30 @@ return [
         'ERROR_REQUIRED_FIELDS_FOR_UPDATE_STYLING' => 'Requis soit en couleur primaire, soit en champ de fichier SCSS personnalisé',
         'ERROR_WHILE_UPLOADING_FILE_ON_S3' => 'Une erreur lors du téléchargement du fichier sur S3',
         'ERROR_SLIDER_NOT_FOUND' => 'Aucun curseur trouvé',
+
+        
+        //For timesheet module
+        'ERROR_INVALID_ACTION' => 'Action de but invalide',        
+        'TIMESHEET_NOT_FOUND' => 'La feuille de temps n\'existe pas',
+        'ERROR_TIMESHEET_ALREADY_APPROVED' => 'Vous ne pouvez pas mettre à jour la feuille de temps approuvée',
+        'TIMESHEET_DOCUMENT_NOT_FOUND' => 'La feuille de temps n\'existe pas',        
+        'ERROR_MISSION_STARTDATE' => 'Date invalide: la date sélectionnée ne doit pas être antérieure à la date de début',
+        'ERROR_MISSION_ENDDATE' => 'La date sélectionnée ne doit pas être supérieure à la date de fin de la mission.',
+        'MISSION_APPLICATION_NOT_APPROVED' => 'L\'application de la mission n\'est pas approuvée',
+        'ERROR_TIMESHEET_ALREADY_DONE_FOR_DATE' => 'La saisie du temps est déjà approuvée pour une date donnée', 
+        'ERROR_INVALID_DATA_FOR_TIMESHEET_ENTRY' => 'Vous ne pouvez pas ajouter de temps',
+        'ERROR_TIMESHEET_ENTRY_NOT_FOUND' => 'ID de saisie de la feuille de temps introuvable',
+        'ERROR_SAME_DATE_TIME_ENTRY' => 'Vous ne pouvez pas ajouter plus de 24 heures à la même date',
     ],
+
+    /**
+     * Export sheet's headings
+     */
+    'export_sheet_headings' => [
+        'MISSION_NAME' => 'Nom de la mission',
+        'ORGANIZATION_NAME' => 'nom de l\'organisation',
+        'ACTIONS' => 'actes',
+        'TIME' => 'Temps',
+        'HOURS' => 'Heures'
+    ]
 ];

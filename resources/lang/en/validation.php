@@ -104,6 +104,17 @@ return [
         'url' => [
             'valid_media_path' => 'Please enter valid image url',
         ],
+        'linked_in_url' => [
+            'valid_linkedin_url' => 'Please enter valid linkedIn url',
+        ],
+        'documents.*' => [
+            'valid_timesheet_document_type' => 'Please select valid timesheet documents',
+            'max' => 'Document file size must be ' .
+            (config('constants.TIMESHEET_DOCUMENT_SIZE_LIMIT') / 1024) . 'mb or below',
+        ],
+        'date_volunteered' => [
+            'before' => 'You cannot add time entry for future dates',
+        ],
     ],
 
     /*
@@ -151,6 +162,7 @@ return [
         'settings.*.tenant_setting_id' => 'tenant setting id',
         'settings.*.value' => 'value',
         'option_value.translations.*.lang' => 'language code',
+        'timesheet_entries.*.timesheet_id' => 'timesheet id',
         ],
 
 ];

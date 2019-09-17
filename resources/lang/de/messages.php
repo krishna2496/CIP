@@ -82,6 +82,19 @@ return [
         'MESSAGE_NO_SLIDER_FOUND' => 'DE: No sliders found',
         'MESSAGE_SLIDER_UPDATED_SUCCESS' => 'DE: Slider image updated successfully',
         'MESSAGE_SLIDER_DELETED' => 'DE: Slider deleted successfully',
+        'TIMESHEET_ENTRY_ADDED_SUCESSFULLY' => 'DE: Timesheet entry added successfully',
+        'MESSAGE_TIMESHEET_ENTRIES_LISTING' => 'DE: Timesheet entries listed successfully',
+        'MESSAGE_NO_TIMESHEET_ENTRIES_FOUND' => 'DE: No timesheet entries found',
+        'TIMESHEET_ENTRY_UPDATED_SUCESSFULLY' => 'DE: Timesheet entry updated successfully',
+        'MESSAGE_TIMESHEET_LISTING' => 'DE: Timesheet listed sucessfully',        
+        'MESSAGE_TIMESHEET_DOCUMENT_DELETED' => 'DE: Timesheet document deleted sucessfully',
+        'TIMESHEET_SUBMITTED_SUCESSFULLY' => 'DE: Timesheet submitted sucessfully',
+        'TIMESHEET_ALREADY_SUBMITTED_FOR_APPROVAL' => 'DE: Timesheet already submitted for approval',
+        'MESSAGE_TIME_REQUEST_LISTING' => 'DE: Time requests listed successfully',
+        'MESSAGE_TIME_REQUEST_NOT_FOUND' => 'DE: No pending time requests found',
+        'MESSAGE_GOAL_REQUEST_LISTING' => 'DE: Goal requests listed successfully',
+        'MESSAGE_NO_GOAL_REQUEST_FOUND' => 'DE: No pending goal requests found',
+        'MESSAGE_POLICY_PAGE_FOUND' => 'DE: Policy page found successfully',
     ],
 
         
@@ -174,5 +187,18 @@ return [
         'ERROR_COUNTRY_NOT_FOUND' => 'DE: Requested country does not exist',
         'ERROR_FAILD_TO_UPLOAD_PROFILE_IMAGE_ON_S3' => 'DE: Failed to upload image on S3',
         'ERROR_SLIDER_NOT_FOUND' => 'DE: Slider not found',
+
+        //For timesheet module
+        'ERROR_INVALID_ACTION' => 'DE: Invalid goal action',
+        'TIMESHEET_NOT_FOUND' => 'DE: Timesheet does not exists',
+        'ERROR_TIMESHEET_ALREADY_APPROVED' => 'DE: You can not update approved timesheet',
+        'TIMESHEET_DOCUMENT_NOT_FOUND' => 'DE: Timesheet document does not exists',        
+        'ERROR_MISSION_STARTDATE' => 'DE: Invalid date: selected date should not be before start date',
+        'ERROR_MISSION_ENDDATE' => 'DE: Selected date should not be greater than mission end date',
+        'MISSION_APPLICATION_NOT_APPROVED' => 'DE: Mission application is not approved',
+        'ERROR_TIMESHEET_ALREADY_DONE_FOR_DATE' => 'DE: Time entry is already approved for given date',         
+        'ERROR_INVALID_DATA_FOR_TIMESHEET_ENTRY' => 'DE: You cannot add time entry',
+        'ERROR_TIMESHEET_ENTRY_NOT_FOUND' => 'DE: Timesheet entry id not found',
+        'ERROR_SAME_DATE_TIME_ENTRY' => 'DE: You cannot add more than 24 hours timeentry for same date',
     ],
 ];

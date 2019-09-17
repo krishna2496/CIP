@@ -205,8 +205,9 @@ class UserController extends Controller
                             if ($arrayKey !== '') {
                                 $returnData['translations']['lang'] = $value['translations'][$arrayKey]['lang'];
                                 $returnData['translations']['name'] = $value['translations'][$arrayKey]['name'];
-								if (isset($value['translations'][$arrayKey]['values']))
-									$returnData['translations']['values'] = $value['translations'][$arrayKey]['values'];
+                                if (isset($value['translations'][$arrayKey]['values'])) {
+                                    $returnData['translations']['values'] = $value['translations'][$arrayKey]['values'];
+                                }
 
                                 $userCustomFieldValue = $customFieldsValue->where('field_id', $value['field_id'])
                                 ->where('user_id', $userId)->first();
@@ -248,19 +249,7 @@ class UserController extends Controller
             $apiData['language_list'] = $tenantLanguages;
             $apiData['language_code_list'] = $tenantLanguageCodes;
             $apiData['availability_list'] = $availabilityList;
-
-            if (isset($userDetail->avatar) && ($userDetail->avatar != '')) {
-                $type = pathinfo($userDetail->avatar, PATHINFO_EXTENSION);
-                $arrContextOptions=array(
-                "ssl"=>array(
-                    "verify_peer"=>false,
-                    "verify_peer_name"=>false,
-                ),
-                );
-                $imageData = file_get_contents($userDetail->avatar, false, stream_context_create($arrContextOptions));
-                $avatarBase64 = 'data:image/' . $type . ';base64,' . base64_encode($imageData);
-            }
-            $apiData['avatar_base64'] = $avatarBase64 ?? '';
+            
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_USER_FOUND');
             
@@ -298,8 +287,10 @@ class UserController extends Controller
                     Rule::unique('user')->ignore($id, 'user_id,deleted_at,NULL')],
                 "department" => "max:16",
                 "manager_name" => "max:16",
-                "linked_in_url" => "url",
+                "linked_in_url" => "url|valid_linkedin_url",
+                "why_i_volunteer" => "sometimes|required",
                 "availability_id" => "integer|exists:availability,availability_id,deleted_at,NULL",
+                "timezone_id" => "integer|exists:timezone,timezone_id,deleted_at,NULL",
                 "city_id" => "integer|exists:city,city_id,deleted_at,NULL",
                 "country_id" => "integer|exists:country,country_id,deleted_at,NULL",
                 "custom_fields.*.field_id" => "sometimes|required|exists:user_custom_field,field_id,deleted_at,NULL",

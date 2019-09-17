@@ -19,6 +19,7 @@ use App\Models\GoalMission;
 use App\Models\TimeMission;
 use App\Models\Comment;
 use App\Models\Availability;
+use App\Models\Timesheet;
 
 class Mission extends Model
 {
@@ -73,8 +74,9 @@ class Mission extends Model
     'already_volunteered','total_available_seat', 'available_seat','deadline',
     'favourite_mission_count', 'mission_rating', 'is_favourite', 'skill_id',
     'user_application_status', 'skill', 'rating', 'mission_rating_total_volunteers',
-    'availability_id', 'availability_type', 'average_rating'];
-
+    'availability_id', 'availability_type', 'average_rating', 'timesheet', 'timesheetStatus', 'total_hours', 'time',
+    'hours', 'action'];
+    
     protected $appends = ['city_name'];
 
     /**
@@ -230,6 +232,16 @@ class Mission extends Model
     }
 
     /**
+     * Get timesheet associated with the mission.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function timesheet(): HasMany
+    {
+        return $this->hasMany(Timesheet::class, 'mission_id', 'mission_id');
+    }
+
+    /**
      * Soft delete from the database.
      *
      * @param  int  $id
@@ -337,6 +349,12 @@ class Mission extends Model
      */
     public function getOrganisationDetailAttribute($value)
     {
-        return (!is_null($value) && ($value != '')) ? unserialize($value) : null;
+        if (!is_null($value) && ($value != '')) {
+            $data = @unserialize($value);
+            if ($data !== false) {
+                return (!is_null($value) && ($value != '')) ? unserialize($value) : null;
+            }
+        }
+        return null;
     }
 }

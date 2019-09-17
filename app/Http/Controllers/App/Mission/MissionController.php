@@ -139,7 +139,8 @@ class MissionController extends Controller
                     $exploreMissionType != config('constants.COUNTRY') &&
                     $exploreMissionType != config('constants.ORGANIZATION') &&
                     $exploreMissionType != config('constants.ORGANIZATION') &&
-                    $exploreMissionType != config('constants.MOST_RANKED')
+                    $exploreMissionType != config('constants.MOST_RANKED') &&
+                    $exploreMissionType != config('constants.TOP_FAVOURITE')
                 ) {
                     $metaData['filters'] = $userFilterData;
                     $metaData['filters']["tags"] = $filterTagArray;

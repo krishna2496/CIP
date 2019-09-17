@@ -79,9 +79,6 @@
 		"post_comment" : "Post comment",
         "comments" : "commentaires",
         "documents" : "Les documents",
-		"post_comment" : "Post comment",
-		"comments" : "commentaires",
-		"documents" : "Les documents",
 		"read_more_comment" : "Lire plus de commentaire",
 		"submit_new_mission" : "Soumettre une nouvelle mission",
 		"grid_view" : "Vue de la grille",
@@ -176,7 +173,16 @@
 		"saturday" : "Samedi",
 		"sunday" : "Dimanche",
 		"hour_entry_modal_title" : "Veuillez saisir ci-dessous le temps que vous avez consacré à ce projet.",
-		"file_upload" : "Téléchargement de fichiers"
+		"file_upload" : "Téléchargement de fichiers",
+		"years" : "Années",
+		"drop_files" : "Ou déposez des documents ici",
+		"browse" : "Feuilleter",
+		"delete" : "Effacer",
+		"actions" : "actes",
+		"goal" : "Objectif",
+		"submit_for_approval" : "Soumettre pour approbation",
+		"no_volunteer_history_found" : "Le cœur d’un volontaire n’est jamais mesuré en taille, mais par la profondeur de l'engagement faire une différence dans la vie des autres.",
+		"start_volunteering" : "Commencer le bénévolat"
 	},
 
 	"placeholder" : {
@@ -199,7 +205,12 @@
 		"confirm_password" : "Entrez le mot de passe de confirmation",
 		"availability" : "Sélectionnez votre disponibilité",
 		"language" : "choisissez votre langue",
-		"timezone" : "Sélectionnez votre fuseau horaire"
+		"timezone" : "Sélectionnez votre fuseau horaire",
+		"spent_hours" : "Entrez les heures passées",
+		"spent_minutes" : "Entrer les minutes passées",
+		"notes" : "Entrer des notes",
+		"workday" : "Veuillez choisir un jour de travail",
+		"action" : "Entrez l'action"
 	},
 
 	"errors" : {
@@ -229,7 +240,20 @@
 		"language_required" : "La langue est obligatoire",
 		"timezone_required" : "Le fuseau horaire est requis",
 		"field_required" : "est requis",
-		"field_is_required" : "Ce champ est requis"
-	}
+		"field_is_required" : "Ce champ est requis",
+		"minute_or_hours_is_required" : "Veuillez sélectionner des heures ou des minutes",
+		"date_volunteer_is_required" : "Date de bénévolat requise",
+		"work_day" : "Veuillez choisir un jour de travail",
+		"notes" : "Notes est nécessaire",
+		"action_required" : "Action requise",
+		"file_max_size" : "Le document ne doit pas dépasser 5 Mo",
+		"minimum_action" :"L'action doit être d'au moins 1"
+	},
 
+	"export_timesheet_file_names" : {
+		"PENDING_TIME_MISSION_ENTRIES_XLSX" : "Pending_Time_Mission_Entries.xlsx",
+        "PENTIND_GOAL_MISSION_ENTRIES_XLSX" : "Pending_Goal_Mission_Entries.xlsx",
+        "TIME_MISSION_HISTORY_XLSX" : "Time_Mission_History.xlsx",
+        "GOAL_MISSION_HISTORY_XLSX" : "Goal_Mission_History.xlsx"    
+	}
 }

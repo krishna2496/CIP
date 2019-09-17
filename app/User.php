@@ -17,6 +17,7 @@ use App\Models\Timezone;
 use App\Models\missionApplication;
 use App\Models\Availability;
 use App\Models\UserCustomFieldValue;
+use App\Models\Timesheet;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Nicolaslopezj\Searchable\SearchableTrait;
@@ -150,6 +151,16 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     public function comment(): HasMany
     {
         return $this->hasMany(Comment::class, 'user_id', 'user_id');
+    }
+    
+    /**
+     * Get timesheet associated with the user.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function timesheet(): HasMany
+    {
+        return $this->hasMany(Timesheet::class, 'user_id', 'user_id');
     }
 
     /**

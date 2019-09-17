@@ -40,6 +40,21 @@ class AppServiceProvider extends ServiceProvider
         Validator::extend('valid_parent_skill', function ($attribute, $value) {
             return ($value == 0) ? true : ((empty(Skill::where('skill_id', $value)->get()->toArray())) ? false : true);
         });
+
+        Validator::extend('valid_linkedin_url', function ($attribute, $value) {
+            return (preg_match(
+                '/(https?)?:?(\/\/)?(([w]{3}||\w\w)\.)'.
+                '?linkedin.com(\w+:{0,1}\w*@)?(\S+)'.
+                '(:([0-9])+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/',
+                $value
+            ))
+            ? true : false;
+        });
+
+        Validator::extend('valid_timesheet_document_type', function ($attribute, $value) {
+            $urlExtension = $value->getClientOriginalExtension();
+            return (!in_array($urlExtension, config('constants.timesheet_document_types'))) ? false : true;
+        });
     }
 
     /**

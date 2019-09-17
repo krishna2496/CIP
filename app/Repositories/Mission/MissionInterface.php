@@ -7,6 +7,8 @@ use App\Models\Mission;
 use App\Models\FavouriteMission;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
+use App\Models\GoalMission;
+use App\Models\MissionApplication;
 
 interface MissionInterface
 {
@@ -149,4 +151,37 @@ interface MissionInterface
      * @return bool
      */
     public function checkMissionApplicationDeadline(int $missionId): bool;
+
+    /**
+     * Get goal objective
+     *
+     * @param int $missionId
+     * @return App\Models\GoalMission|null
+     */
+    public function getGoalObjective(int $missionId): ?GoalMission;
+
+    /** Get mission application details by mission id, user id and status
+     *
+     * @param int $missionId
+     * @param int $userId
+     * @param string $status
+     * @return MissionApplication
+     */
+    public function getMissionApplication(int $missionId, int $userId, string $status): MissionApplication;
+    
+    /**
+     * Get Mission data for timesheet
+     *
+     * @param int $id
+     * @return App\Models\Mission
+     */
+    public function getTimesheetMissionData(int $id): Mission;
+    
+    /**
+     * Get Mission type
+     *
+     * @param int $id
+     * @return null|Collection
+     */
+    public function getMissionType(int $id): ?Collection;
 }

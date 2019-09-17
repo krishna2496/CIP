@@ -29,7 +29,7 @@ class MissionTheme extends Model
      *
      * @var array
      */
-    protected $visible = ['mission_theme_id', 'theme_name', 'translations'];
+    protected $visible = ['mission_theme_id', 'theme_name', 'translations', 'total_minutes'];
 
     /**
      * The attributes that are mass assignable.
@@ -67,7 +67,11 @@ class MissionTheme extends Model
      */
     public function getTranslationsAttribute(string $value): array
     {
-        return unserialize($value);
+        $data = @unserialize($value);
+        if ($data !== false) {
+            return unserialize($value);
+        }
+        return [];
     }
 
     /**

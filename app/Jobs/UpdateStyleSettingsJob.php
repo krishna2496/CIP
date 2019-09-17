@@ -26,11 +26,11 @@ class UpdateStyleSettingsJob extends Job
 
     /**
      * Create a new job instance.
-     * 
+     *
      * @param string $tenantName
      * @param array $options
      * @param string $fileName
-     * 
+     *
      * @return void
      */
     public function __construct(string $tenantName, array $options, string $fileName = '')

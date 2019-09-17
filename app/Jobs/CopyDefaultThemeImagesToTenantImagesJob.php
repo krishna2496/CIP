@@ -16,7 +16,7 @@ class CopyDefaultThemeImagesToTenantImagesJob extends Job
 
     /**
      * Create a new job instance.
-     * 
+     *
      * @param string $tenantName
      * @return void
      */
@@ -25,11 +25,11 @@ class CopyDefaultThemeImagesToTenantImagesJob extends Job
         $this->tenantName = $tenantName;
     }
 
-     /**
-     * Execute the job.
-     *
-     * @return void
-     */
+    /**
+    * Execute the job.
+    *
+    * @return void
+    */
     public function handle()
     {
         // Copy default theme folder

@@ -78,7 +78,7 @@ return [
         'MESSAGE_POLICY_PAGE_LISTING' => 'Policy pages listed successfully.',        
         'MESSAGE_POLICY_PAGE_CREATED' => 'Policy page created successfully',        
         'MESSAGE_POLICY_PAGE_DELETED' => 'Page deleted successfully',
-        'MESSAGE_POLICY_PAGE_UPDATED' => 'Policy page updated sucessfully',
+        'MESSAGE_POLICY_PAGE_UPDATED' => 'Policy page updated successfully',
         'MESSAGE_NO_CITY_FOUND' => 'City not found',
         'MESSAGE_POLICY_PAGE_UPDATED' => 'Policy page updated successfully',
         'MESSAGE_COMMENT_FOUND' => 'Comment found successfully',
@@ -94,7 +94,40 @@ return [
         'MESSAGE_NO_SLIDER_FOUND' => 'No sliders found',
         'MESSAGE_SLIDER_UPDATED_SUCCESS' => 'Slider image updated successfully',
         'MESSAGE_SLIDER_DELETED' => 'Slider deleted successfully',
-		],
+        'TIMESHEET_ENTRY_ADDED_SUCESSFULLY' => 'Timesheet entry added successfully',
+        'MESSAGE_TIMESHEET_ENTRIES_LISTING' => 'Timesheet entries listed successfully',
+        'MESSAGE_NO_TIMESHEET_ENTRIES_FOUND' => 'No timesheet entries found',
+        'TIMESHEET_ENTRY_UPDATED_SUCESSFULLY' => 'Timesheet entry updated successfully',
+        'MESSAGE_TIMESHEET_LISTING' => 'Timesheet listed successfully',        
+        'MESSAGE_TIMESHEET_DOCUMENT_DELETED' => 'Timesheet document deleted successfully',
+        'MESSAGE_TIMESETTING_STATUS_UPDATED' => 'Timesheet status updated successfully',
+        'MESSAGE_TIMESHEET_LISTING' => 'Timesheet listed sucessfully',        
+        'MESSAGE_TIMESHEET_DOCUMENT_DELETED' => 'Timesheet document deleted sucessfully',
+        'TIMESHEET_SUBMITTED_SUCESSFULLY' => 'Timesheet submitted sucessfully',
+        'TIMESHEET_ALREADY_SUBMITTED_FOR_APPROVAL' => 'Timesheet already submitted for approval',
+        'MESSAGE_THEME_HISTORY_PER_HOUR_LISTED' => 'Volunteer hours per theme listed successfully',
+        'MESSAGE_SKILL_HISTORY_PER_HOUR_LISTED' => 'Volunteer hours per skill listed successfully',
+        'MESSAGE_THEME_HISTORY_NOT_FOUND' => 'Volunteer hours per theme not found',
+        'MESSAGE_SKILL_HISTORY_NOT_FOUND' => 'Volunteer hours per skill not found',
+        'MESSAGE_GOAL_REQUEST_LISTING' => 'Goal requests listed successfully',
+        'MESSAGE_NO_GOAL_REQUEST_FOUND' => 'No pending goal requests found',
+        'MESSAGE_POLICY_PAGE_FOUND' => 'Policy page found successfully',
+        'MESSAGE_TIME_REQUEST_LISTING' => 'Time requests listed successfully',
+        'MESSAGE_TIME_REQUEST_NOT_FOUND' => 'No pending time requests found',
+        'MESSAGE_GOAL_MISSION_TIME_ENTRY_LISTED' => 'Goal missions timesheet entry listed sucessfully',
+        'MESSAGE_NO_GOAL_MISSION_TIME_ENTRY_FOUND' => 'Goal missions timesheet entry not found',
+        'MESSAGE_TIME_MISSION_TIME_ENTRY_LISTED' => 'Time missions timesheet entry listed',
+        'MESSAGE_NO_TIME_MISSION_TIME_ENTRY_FOUND' => 'Time missions timesheet entry not found',
+        'MESSAGE_USER_GOAL_MISSION_HISTORY_EXPORTED' => 'History file generated successfully for goal missions',
+        'MESSAGE_ENABLE_TO_EXPORT_USER_GOAL_MISSION_HISTORY' => 'No data found, to generate history file for goal missions',
+        'MESSAGE_USER_TIME_MISSION_HISTORY_EXPORTED' => 'History file generated successfully for time missions',
+        'MESSAGE_ENABLE_TO_EXPORT_USER_TIME_MISSION_HISTORY' => 'No data found, to generate history file for time missions',
+        'MESSAGE_USER_PENDING_TIME_MISSION_ENTRIES_EXPORTED' => 'Pending time entries for time missions, generated successfully',
+        'MESSAGE_ENABLE_TO_EXPORT_USER_PENDING_TIME_MISSION_ENTRIES' => 'No data found, to generate pending time entries for time mission',
+        'MESSAGE_USER_PENDING_GOAL_MISSION_ENTRIES_EXPORTED' => 'Pending time entries for goal missions, generated successfully',
+        'MESSAGE_ENABLE_TO_EXPORT_USER_PENDING_GOAL_MISSION_ENTRIES' => 'No data found, to generate pending time entries for goal mission',
+        'MESSAGE_AUTO_APPROVED_COMMENT_ADDED' => 'Thanks for your comment.'
+	],
         
     /**
     * API Error Codes and Message
@@ -147,6 +180,7 @@ return [
         'SKILL_LIMIT' => 'Sorry, you cannot add more than '. config('constants.SKILL_LIMIT').' skills',
         'ERROR_INVALID_MISSION_MEDIA_DATA' => 'Invalid mission media data',
         'ERROR_INVALID_MISSION_DOCUMENT_DATA' => 'Invalid mission document data',
+        'ERROR_TIMESHEET_ENTRY_NOT_FOUND' => 'Timesheet entry not found',
 
         // Custom error code for Tenant Authorization - 210000 - 219999
         'ERROR_INVALID_API_AND_SECRET_KEY' => 'Invalid API key or secret key',
@@ -195,5 +229,28 @@ return [
         'ERROR_REQUIRED_FIELDS_FOR_UPDATE_STYLING' => 'Required either primary color or custom SCSS file field',
         'ERROR_SLIDER_NOT_FOUND' => 'Slider not found',
         'ERROR_WHILE_UPLOADING_FILE_ON_S3' => 'An error while uploading file on S3',
+
+        //For timesheet module
+        'ERROR_INVALID_ACTION' => 'Invalid goal action',
+        'TIMESHEET_NOT_FOUND' => 'Timesheet does not exists' ,
+        'ERROR_TIMESHEET_ALREADY_APPROVED' => 'You can not update approved timesheet',        
+        'TIMESHEET_DOCUMENT_NOT_FOUND' => 'Timesheet document does not exists',
+        'ERROR_MISSION_STARTDATE' => 'Invalid date: selected date should not be before start date',
+        'ERROR_MISSION_ENDDATE' => 'Selected date should not be greater than mission end date',
+        'MISSION_APPLICATION_NOT_APPROVED' => 'Mission application is not approved',
+        'ERROR_TIMESHEET_ALREADY_DONE_FOR_DATE' => 'Time entry is already approved for given date', 
+        'ERROR_INVALID_DATA_FOR_TIMESHEET_ENTRY' => 'You cannot add time entry',
+        'ERROR_SAME_DATE_TIME_ENTRY' => 'You cannot add more than 24 hours timeentry for same date',
     ],
+
+    /**
+     * Export sheet's headings
+     */
+    'export_sheet_headings' => [
+        'MISSION_NAME' => 'Mission Name',
+        'ORGANIZATION_NAME' => 'Organization Name',
+        'ACTIONS' => 'Actions',
+        'TIME' => 'Time',
+        'HOURS' => 'Hours'
+    ]
 ];

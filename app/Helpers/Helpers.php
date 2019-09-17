@@ -17,15 +17,7 @@ use Illuminate\Support\Facades\Hash;
 class Helpers
 {
     use RestExceptionHandlerTrait;
-    /**
-     * Create a new helper instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-    }
-    
+	
     /**
     * It will return tenant name from request
     * @param Illuminate\Http\Request $request
@@ -89,10 +81,9 @@ class Helpers
      */
     public function getTenantDetail(Request $request): object
     {
-        // Connect master database to get language details        
+        // Connect master database to get language details
         $tenantName = $this->getSubDomainFromRequest($request);
-		$this->switchDatabaseConnection('mysql', $request);
-		//dd(DB::connection()->getDatabaseName(), $tenantName);
+        $this->switchDatabaseConnection('mysql', $request);
         $tenant = DB::table('tenant')->where('name', $tenantName)->whereNull('deleted_at')->first();
         // Connect tenant database
         $this->switchDatabaseConnection('tenant', $request);
@@ -296,7 +287,13 @@ class Helpers
         }
     }
     
-    public function getDomainFromUserAPIKeys(Request $request)
+    /**
+     * Get domain from user API key
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return string
+     */
+    public function getDomainFromUserAPIKeys(Request $request): string
     {
         // Check basic auth passed or not
         $this->switchDatabaseConnection('mysql', $request);
@@ -321,5 +318,45 @@ class Helpers
                 config('constants.error_codes.ERROR_TENANT_DOMAIN_NOT_FOUND')
             );
         }
+    }
+
+    /**
+     * Change date format
+     *
+     * @param string $date
+     * @param string $dateFormat
+     * @return string
+     */
+    public function changeDateFormat(string $date, string $dateFormat): string
+    {
+        return date($dateFormat, strtotime($date));
+    }
+    
+    /**
+     * Convert in report time format
+     *
+     * @param string $totalHours
+     * @return string
+     */
+    public function convertInReportTimeFormat(string $totalHours) : string
+    {
+        $convertedHours = (int)($totalHours / 60);
+        $hours = $convertedHours."h";
+        $minutes = $totalHours % 60;
+        return $hours.$minutes;
+    }
+
+    /**
+     * Convert in report hours format
+     *
+     * @param string $totalHours
+     * @return string
+     */
+    public function convertInReportHoursFormat(string $totalHours) : string
+    {
+        $hours = (int)($totalHours / 60);
+        $minutes = ($totalHours % 60) / 60;
+        $totalHours = $hours + $minutes;
+        return number_format((float)$totalHours, 2, '.', '');
     }
 }
