@@ -64,6 +64,7 @@
             :perPage = "hourRequestPerPage"
             :nextUrl = "hourRequestNextUrl"
 						:fileName="langauageData.export_timesheet_file_names.TIME_MISSION_HISTORY_XLSX"
+            :totalPages="timeMissionTotalPage"
 					/>
 				</b-col>
               <b-col lg="6" class="table-col">
@@ -78,6 +79,7 @@
 						@updateCall = "getVolunteerMissionsGoals"
 						exportUrl = "app/volunteer/history/goal-mission/export"
 						:fileName="langauageData.export_timesheet_file_names.GOAL_MISSION_HISTORY_XLSX"
+            :totalPages="goalMissionTotalPage"
 					/>
               </b-col>
             </b-row>           
@@ -137,12 +139,14 @@ export default {
 		timeMissionTimesheetItems: [],
 		timeMissionCurrentPage : 1,
 		timeMissionTotalRow : 0,
+    timeMissionTotalPage: null,
 
 		goalMissionTimesheetLabel :"",
 		goalMissionTimesheetFields: [],
 		goalMissionTimesheetItems: [],
 		goalMissionCurrentPage : 1,
-		goalMissionTotalRow : 0,
+    goalMissionTotalRow : 0,
+    goalMissionTotalPage: null,
 
 		ThemeYearText: "Year",
 		skillYearText: "Year",
@@ -197,7 +201,8 @@ export default {
 					_this.timeMissionTotalRow = response.pagination.total;
           _this.timeMissionCurrentPage = response.pagination.current_page
           _this.hourRequestPerPage = response.pagination.per_page;
-          _this.hourRequestNextUrl = response.pagination.next_url
+          _this.hourRequestNextUrl = response.pagination.next_url;
+          _this.timeMissionTotalPage = response.pagination.total_pages;
 				}
 				
 				data.filter(function(item,index){
@@ -206,7 +211,8 @@ export default {
 							[mission] : item.title,
 							[time] : item.time,
 							[hours] : item.hours,
-							[organisation] : item.organisation_name,
+              [organisation] : item.organisation_name,
+              ['mission_id'] : item.mission_id
 						}
 					)
 				})
@@ -224,9 +230,10 @@ export default {
 				let organisation = this.langauageData.label.organisation;
 				if(response.pagination) {
 					_this.goalMissionTotalRow = response.pagination.total;
-          _this.goalMissionCurrentPage = response.pagination.current_page
+          _this.goalMissionCurrentPage = response.pagination.current_page;
           _this.goalRequestPerPage = response.pagination.per_page;
-          _this.goalRequestNextUrl = response.pagination.next_url
+          _this.goalRequestNextUrl = response.pagination.next_url;
+          _this.goalMissionTotalPage = response.pagination.total_pages;
 				}
 				
 				data.filter(function(item,index){
@@ -234,7 +241,8 @@ export default {
 						{
 							[mission] : item.title,
 							[action] : item.action,
-							[organisation] : item.organisation_name,
+              [organisation] : item.organisation_name,
+              ['mission_id'] : item.mission_id
 						}
 					)
 				})
@@ -243,13 +251,38 @@ export default {
 	}
   },
   created() {
+    var _this = this;
 	this.langauageData = JSON.parse(store.state.languageLabel);
 	this.timeMissionTimesheetLabel = this.langauageData.label.volunteering_hours
 	this.goalMissionTimesheetLabel = this.langauageData.label.volunteering_goals
     this.getVolunteerHistoryHoursOfType("theme");
 	this.getVolunteerHistoryHoursOfType("skill");
 	this.getVolunteerMissionsHours();
-	this.getVolunteerMissionsGoals();
+  this.getVolunteerMissionsGoals();
+  let timeRequestFieldArray = [
+            this.langauageData.label.mission,
+            this.langauageData.label.time,
+            this.langauageData.label.hours,
+            this.langauageData.label.organisation,
+        ]
+        
+        timeRequestFieldArray.filter(function(data,index){          
+            _this.timeMissionTimesheetFields.push({
+                "key" : data
+            })
+        });
+
+        let goalRequestFieldArray = [
+            this.langauageData.label.mission,
+            this.langauageData.label.actions,
+            this.langauageData.label.organisation,
+        ]
+
+        goalRequestFieldArray.filter(function(data,index){
+            _this.goalMissionTimesheetFields.push({
+                "key" : data
+            })
+        });
   },
   computed: {
     getThemeLabels: {

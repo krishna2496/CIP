@@ -9,6 +9,9 @@
                     :fields="headerField"
                     class="volunteery-table"
                 >
+                <template slot="Mission" slot-scope="data">
+                    <b-link :to="`/mission-detail/${data.item.mission_id}`" class="table-link">{{ data.item.Mission }}</b-link>
+                </template>
                </b-table>
                <div class="text-center" v-else>
                 <h5>{{langauageData.label.no_record_found}}</h5>
@@ -18,7 +21,7 @@
                 <b-button class="btn-bordersecondary ml-auto" @click="exportFile">{{langauageData.label.export}}</b-button>
             </div>  
         </div>
-        <div class="pagination-block" v-if="items.length > 0">
+        <div class="pagination-block" v-if="items.length > 0 && totalPages > 1">
             <b-pagination
             v-model="page"
             :total-rows="totalRow"
@@ -48,7 +51,8 @@ export default {
         exportUrl : String,
         fileName : String,
         perPage : Number,
-        nextUrl : String
+        nextUrl : String,
+        totalPages : Number
     },
     data: function() {
         return {
