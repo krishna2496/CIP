@@ -10,7 +10,7 @@
                     class="volunteery-table"
                 >
                 <template slot="Mission" slot-scope="data">
-                    <b-link :to="`/mission-detail/${data.item.mission_id}`" target="_blank" class="table-link">{{ data.item.Mission }}</b-link>
+                    <b-link :to="`/mission-detail/${data.item.mission_id}`" class="table-link" target="_blank">{{ data.item.Mission }}</b-link>
                 </template>
                </b-table>
                <div class="text-center" v-else>
