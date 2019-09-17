@@ -89,10 +89,10 @@
 									</span>
 
 								</b-button>
-								<b-button class="btn-borderprimary icon-btn btn-add-entry" v-if="allowAddEntry" 
+								<!-- <b-button class="btn-borderprimary icon-btn btn-add-entry" v-if="allowAddEntry" 
 									@click="addEntry">
 									Add entry
-								</b-button>
+								</b-button> -->
 							</div>
 						</div>
 
@@ -278,7 +278,6 @@
 								:disabled="disableApply"
 								@click="applyForMission(missionDetail.mission_id)"
 							>
-
 									<span>
 										{{ applyButton }}
 									</span>				
@@ -779,8 +778,8 @@ export default {
 		   }
 		   missionData.missionId = this.$route.params.misisonId
 		   missionData.missionType = this.missionDetail.mission_type
-		   store.commit('timeSheetEntryDetail',missionData)
-		   window.location = window.location.origin+"/volunteering-timesheet"
+		   store.commit('timeSheetEntryDetail',missionData);
+		   this.$router.push('/volunteering-timesheet');  
 	   },
    		// Get comment create date format
 	   	getCommentDate(commentDate){

@@ -112,9 +112,8 @@
                     </b-form-group>
                     <b-form-group v-if="isFileUploadDisplay">
                         <b-row>
-                            
+                            <b-col sm="12"><span class="error-message" v-if="fileError">{{fileError}}</span></b-col>
                             <b-col sm="6" class="date-col">
-                            <span class="error-message"  v-if="fileError">{{fileError}}</span>
                             <label for>{{langauageData.label.file_upload}}</label>
                             <div class="file-upload-wrap">
                                 <div class="btn-wrapper"
@@ -337,13 +336,13 @@ export default {
         inputUpdate(files) {
             var _this = this
             let allowedFileTypes = ['doc','xls','xlsx','csv','pdf','png','jpg','jpeg']
+            _this.fileError = '';
             files.filter(function(data,index){
                 if(data.size > 4000000) {
                     _this.fileError = _this.langauageData.errors.file_max_size
                    files.splice(index,1)
                 } else {
                     let fileName = data.name.split('.');
-                    _this.fileError = '';
                     if(!allowedFileTypes.includes(fileName[fileName.length-1])) {
                         _this.fileError = _this.langauageData.errors.invalid_file_type
                         files.splice(index,1)
@@ -389,6 +388,9 @@ export default {
          
             if (this.$v.$invalid) {
                 return;
+            }
+            if(this.fileError != '') {
+                return
             }
             this.isAjaxCall = true;
             const formData = new FormData();
