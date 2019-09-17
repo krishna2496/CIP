@@ -68,24 +68,21 @@ class TimesheetController extends Controller
                 trans('messages.custom_error_message.ERROR_USER_NOT_FOUND')
             );
         }
-        try {
-            $userTimesheet = $this->timesheetRepository->getUserTimesheet($userId, $request);
-            foreach ($userTimesheet as $value) {
-                if ($value->missionLanguage) {
-                    $value->setAttribute('title', $value->missionLanguage[0]->title);
-                    unset($value->missionLanguage);
-                }
-                $value->setAppends([]);
-            }
 
-            $apiStatus = Response::HTTP_OK;
-            $apiMessage = (!empty($userTimesheet)) ?
-            trans('messages.success.MESSAGE_TIMESHEET_ENTRIES_LISTING') :
-            trans('messages.success.MESSAGE_NO_TIMESHEET_ENTRIES_FOUND');
-            return $this->responseHelper->success($apiStatus, $apiMessage, $userTimesheet->toArray());
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
+        $userTimesheet = $this->timesheetRepository->getUserTimesheet($userId, $request);
+        foreach ($userTimesheet as $value) {
+            if ($value->missionLanguage) {
+                $value->setAttribute('title', $value->missionLanguage[0]->title);
+                unset($value->missionLanguage);
+            }
+            $value->setAppends([]);
         }
+
+        $apiStatus = Response::HTTP_OK;
+        $apiMessage = (!empty($userTimesheet)) ?
+        trans('messages.success.MESSAGE_TIMESHEET_ENTRIES_LISTING') :
+        trans('messages.success.MESSAGE_NO_TIMESHEET_ENTRIES_FOUND');
+        return $this->responseHelper->success($apiStatus, $apiMessage, $userTimesheet->toArray());
     }
 
     /**
@@ -127,8 +124,6 @@ class TimesheetController extends Controller
                 config('constants.error_codes.ERROR_TIMESHEET_ENTRY_NOT_FOUND'),
                 trans('messages.custom_error_message.ERROR_TIMESHEET_ENTRY_NOT_FOUND')
             );
-        } catch (\Execption $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
 }

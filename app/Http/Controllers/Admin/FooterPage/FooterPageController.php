@@ -61,8 +61,6 @@ class FooterPageController extends Controller
                 config('constants.error_codes.ERROR_INVALID_ARGUMENT'),
                 trans('messages.custom_error_message.ERROR_INVALID_ARGUMENT')
             );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
 
@@ -74,45 +72,41 @@ class FooterPageController extends Controller
      */
     public function store(Request $request): JsonResponse
     {
-        try {
-            // Server side validataions
-            $validator = Validator::make(
-                $request->all(),
-                [
-                    "page_details" => "required",
-                    "page_details.slug" => "required|max:255|unique:footer_page,slug,NULL,page_id,deleted_at,NULL",
-                    "page_details.translations" => "required",
-                    "page_details.translations.*.lang" => "required|max:2",
-                    "page_details.translations.*.title" => "required",
-                    "page_details.translations.*.sections" => "required",
-                    "page_details.translations.*.sections.*.title" =>
-                    "required_with:page_details.translations.*.sections",
-                    "page_details.translations.*.sections.*.description" =>
-                    "required_with:page_details.translations.*.sections",
-                ]
+        // Server side validataions
+        $validator = Validator::make(
+            $request->all(),
+            [
+                "page_details" => "required",
+                "page_details.slug" => "required|max:255|unique:footer_page,slug,NULL,page_id,deleted_at,NULL",
+                "page_details.translations" => "required",
+                "page_details.translations.*.lang" => "required|max:2",
+                "page_details.translations.*.title" => "required",
+                "page_details.translations.*.sections" => "required",
+                "page_details.translations.*.sections.*.title" =>
+                "required_with:page_details.translations.*.sections",
+                "page_details.translations.*.sections.*.description" =>
+                "required_with:page_details.translations.*.sections",
+            ]
+        );
+
+
+        // If request parameter have any error
+        if ($validator->fails()) {
+            return $this->responseHelper->error(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                config('constants.error_codes.ERROR_FOOTER_PAGE_REQUIRED_FIELDS_EMPTY'),
+                $validator->errors()->first()
             );
-
-
-            // If request parameter have any error
-            if ($validator->fails()) {
-                return $this->responseHelper->error(
-                    Response::HTTP_UNPROCESSABLE_ENTITY,
-                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                    config('constants.error_codes.ERROR_FOOTER_PAGE_REQUIRED_FIELDS_EMPTY'),
-                    $validator->errors()->first()
-                );
-            }
-            
-            $footerPage = $this->footerPageRepository->store($request);
-            
-            // Set response data
-            $apiStatus = Response::HTTP_CREATED;
-            $apiMessage = trans('messages.success.MESSAGE_FOOTER_PAGE_CREATED');
-            $apiData = ['page_id' => $footerPage['page_id']];
-            return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
+        
+        $footerPage = $this->footerPageRepository->store($request);
+        
+        // Set response data
+        $apiStatus = Response::HTTP_CREATED;
+        $apiMessage = trans('messages.success.MESSAGE_FOOTER_PAGE_CREATED');
+        $apiData = ['page_id' => $footerPage['page_id']];
+        return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
     }
 
     /**
@@ -135,8 +129,6 @@ class FooterPageController extends Controller
                 config('constants.error_codes.ERROR_FOOTER_PAGE_NOT_FOUND'),
                 trans('messages.custom_error_message.ERROR_FOOTER_PAGE_NOT_FOUND')
             );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
 
@@ -208,8 +200,6 @@ class FooterPageController extends Controller
                 config('constants.error_codes.ERROR_FOOTER_PAGE_NOT_FOUND'),
                 trans('messages.custom_error_message.ERROR_FOOTER_PAGE_NOT_FOUND')
             );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
 
@@ -233,8 +223,6 @@ class FooterPageController extends Controller
                 config('constants.error_codes.ERROR_FOOTER_PAGE_NOT_FOUND'),
                 trans('messages.custom_error_message.ERROR_FOOTER_PAGE_NOT_FOUND')
             );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
 }

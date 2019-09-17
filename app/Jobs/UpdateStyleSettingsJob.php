@@ -88,21 +88,17 @@ class UpdateStyleSettingsJob extends Job
             $importScss .= '$primary: '.$this->options['primary_color'].';';
         }
 
-        try {
-            $importScss .= '@import "_assets";
-            $assetUrl: "'.$assetUrl.'";                        
-            @import "../../../../../node_modules/bootstrap/scss/bootstrap";
-            @import "../../../../../node_modules/bootstrap-vue/src/index";
-            @import "custom";';
+        $importScss .= '@import "_assets";
+        $assetUrl: "'.$assetUrl.'";                        
+        @import "../../../../../node_modules/bootstrap/scss/bootstrap";
+        @import "../../../../../node_modules/bootstrap-vue/src/index";
+        @import "custom";';
 
-            $css = $scss->compile($importScss);
-        
-            // Put compiled css file into local storage
-            if (Storage::disk('local')->put($this->tenantName.'\assets\css\style.css', $css)) {
-                    Storage::disk('s3')->put($this->tenantName.'\assets\css\style.css', Storage::disk('local')->get($this->tenantName.'\assets\css\style.css'));
-            } 
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
+        $css = $scss->compile($importScss);
+    
+        // Put compiled css file into local storage
+        if (Storage::disk('local')->put($this->tenantName.'\assets\css\style.css', $css)) {
+                Storage::disk('s3')->put($this->tenantName.'\assets\css\style.css', Storage::disk('local')->get($this->tenantName.'\assets\css\style.css'));
         }
     }
 }

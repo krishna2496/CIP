@@ -71,8 +71,6 @@ class PolicyPageController extends Controller
                 config('constants.error_codes.ERROR_INVALID_ARGUMENT'),
                 trans('messages.custom_error_message.ERROR_INVALID_ARGUMENT')
             );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
 
@@ -102,8 +100,6 @@ class PolicyPageController extends Controller
                 config('constants.error_codes.ERROR_NO_DATA_FOUND_FOR_SLUG'),
                 trans('messages.custom_error_message.ERROR_NO_DATA_FOUND_FOR_SLUG')
             );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
 }

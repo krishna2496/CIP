@@ -171,4 +171,33 @@ class AppPolicyPageTest extends TestCase
         $user->delete();
         $policyPage->delete();
     }
+
+    /**
+     * @test
+     *
+     * Return invalid argument error on get policy page listing
+     *
+     * @return void
+     */
+    public function it_should_return_invalid_argument_error_on_policy_page_listing()
+    {
+        $connection = 'tenant';
+        $user = factory(\App\User::class)->make();
+        $user->setConnection($connection);
+        $user->save();        
+
+        $token = Helpers::getJwtToken($user->user_id);
+        $this->get('/app/policy/listing?order=test', ['token' => $token])
+          ->seeStatusCode(400)
+          ->seeJsonStructure([
+              "errors" => [
+                  [
+                    "status",
+                    "type",
+                    "message"
+                  ]
+              ]
+        ]);
+        $user->delete();
+    }
 }

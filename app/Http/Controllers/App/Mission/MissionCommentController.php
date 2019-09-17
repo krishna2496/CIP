@@ -60,8 +60,6 @@ class MissionCommentController extends Controller
                 config('constants.error_codes.ERROR_MISSION_NOT_FOUND'),
                 trans('messages.custom_error_message.ERROR_MISSION_NOT_FOUND')
             );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
 
@@ -73,36 +71,32 @@ class MissionCommentController extends Controller
      */
     public function store(Request $request): JsonResponse
     {
-        try {
-            // Server side validataions
-            $validator = Validator::make(
-                $request->all(),
-                [
-                    "comment" => "required|max:280",
-                    "mission_id" => "required|integer|exists:mission,mission_id,deleted_at,NULL"
-                ]
+        // Server side validataions
+        $validator = Validator::make(
+            $request->all(),
+            [
+                "comment" => "required|max:280",
+                "mission_id" => "required|integer|exists:mission,mission_id,deleted_at,NULL"
+            ]
+        );
+
+        // If request parameter have any error
+        if ($validator->fails()) {
+            return $this->responseHelper->error(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                config('constants.error_codes.ERROR_MISSION_COMMENT_INVALID_DATA'),
+                $validator->errors()->first()
             );
-
-            // If request parameter have any error
-            if ($validator->fails()) {
-                return $this->responseHelper->error(
-                    Response::HTTP_UNPROCESSABLE_ENTITY,
-                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                    config('constants.error_codes.ERROR_MISSION_COMMENT_INVALID_DATA'),
-                    $validator->errors()->first()
-                );
-            }
-
-            $missionComment = $this->missionCommentRepository->store($request->auth->user_id, $request->toArray());
-
-            // Set response data
-            $apiStatus = Response::HTTP_CREATED;
-            $apiData = ['comment_id' => $missionComment->comment_id];
-            $apiMessage =trans('messages.success.MESSAGE_COMMENT_ADDED');
-            
-            return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
+
+        $missionComment = $this->missionCommentRepository->store($request->auth->user_id, $request->toArray());
+
+        // Set response data
+        $apiStatus = Response::HTTP_CREATED;
+        $apiData = ['comment_id' => $missionComment->comment_id];
+        $apiMessage =trans('messages.success.MESSAGE_COMMENT_ADDED');
+        
+        return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
     }
 }

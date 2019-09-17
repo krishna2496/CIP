@@ -452,4 +452,33 @@ class MissionTest extends TestCase
         ]); 
         $mission->delete();
     }
+
+    /**
+     * @test
+     *
+     * Return invalid argument for get all mission
+     *
+     * @return void
+     */
+    public function it_should_return_invalid_argument_for_get_all_mission()
+    {
+        $connection = 'tenant';
+        $mission = factory(\App\Models\Mission::class)->make();
+        $mission->setConnection($connection);
+        $mission->save();
+
+        $this->get('missions?order=test', ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(400)
+        ->seeJsonStructure([
+            'errors' => [
+                [
+                    'status',
+                    'type',
+                    'code',
+                    'message'
+                ]
+            ]
+        ]);
+        $mission->delete();
+    }
 }

@@ -82,8 +82,6 @@ class MissionCommentController extends Controller
                 config('constants.error_codes.ERROR_MISSION_NOT_FOUND'),
                 trans('messages.custom_error_message.ERROR_MISSION_NOT_FOUND')
             );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
 
@@ -116,8 +114,6 @@ class MissionCommentController extends Controller
                 config('constants.error_codes.ERROR_COMMENT_NOT_FOUND'),
                 trans('messages.custom_error_message.ERROR_COMMENT_NOT_FOUND')
             );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
 
@@ -172,8 +168,6 @@ class MissionCommentController extends Controller
                 config('constants.error_codes.ERROR_COMMENT_NOT_FOUND'),
                 trans('messages.custom_error_message.ERROR_COMMENT_NOT_FOUND')
             );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
 
@@ -209,8 +203,6 @@ class MissionCommentController extends Controller
                 config('constants.error_codes.ERROR_COMMENT_NOT_FOUND'),
                 trans('messages.custom_error_message.ERROR_COMMENT_NOT_FOUND')
             );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
 }

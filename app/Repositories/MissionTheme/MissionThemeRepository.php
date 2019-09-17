@@ -59,8 +59,18 @@ class MissionThemeRepository implements MissionThemeInterface
      */
     public function missionThemeDetails(Request $request): LengthAwarePaginator
     {
-        return $this->missionTheme->select('theme_name', 'mission_theme_id', 'translations')
-        ->paginate($request->perPage);
+        $themeQuery = $this->missionTheme->select('theme_name', 'mission_theme_id', 'translations');
+        if ($request->has('search')) {
+            $themeQuery->where(function ($query) use ($request) {
+                $query->orWhere('theme_name', 'like', '%' . $request->input('search') . '%');
+                $query->orWhere('translations', 'like', '%' . $request->input('search') . '%');
+            });
+        }
+        if ($request->has('order')) {
+            $orderDirection = $request->input('order', 'asc');
+            $themeQuery->orderBy('mission_theme_id', $orderDirection);
+        }
+        return $themeQuery->paginate($request->perPage);
     }
 
     /**

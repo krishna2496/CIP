@@ -133,8 +133,6 @@ class SliderController extends Controller
                 config('constants.error_codes.ERROR_SLIDER_IMAGE_UPLOAD'),
                 trans('messages.custom_error_message.ERROR_SLIDER_IMAGE_UPLOAD')
             );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
     
@@ -209,8 +207,6 @@ class SliderController extends Controller
                 config('constants.error_codes.ERROR_SLIDER_IMAGE_UPLOAD'),
                 trans('messages.custom_error_message.ERROR_SLIDER_IMAGE_UPLOAD')
             );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
     
@@ -234,8 +230,6 @@ class SliderController extends Controller
                 config('constants.error_codes.ERROR_TENANT_DOMAIN_NOT_FOUND'),
                 trans('messages.custom_error_message.ERROR_TENANT_DOMAIN_NOT_FOUND')
             );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
 
@@ -259,8 +253,6 @@ class SliderController extends Controller
                 config('constants.error_codes.ERROR_SLIDER_NOT_FOUND'),
                 trans('messages.custom_error_message.ERROR_SLIDER_NOT_FOUND')
             );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
 }

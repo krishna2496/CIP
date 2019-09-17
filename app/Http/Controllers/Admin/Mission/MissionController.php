@@ -65,8 +65,6 @@ class MissionController extends Controller
                 config('constants.error_codes.ERROR_INVALID_ARGUMENT'),
                 trans('messages.custom_error_message.ERROR_INVALID_ARGUMENT')
             );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
 
@@ -126,8 +124,6 @@ class MissionController extends Controller
             return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
         } catch (TenantDomainNotFoundException $e) {
             throw $e;
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
 
@@ -151,8 +147,6 @@ class MissionController extends Controller
                 config('constants.error_codes.ERROR_NO_MISSION_FOUND'),
                 trans('messages.custom_error_message.ERROR_NO_MISSION_FOUND')
             );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
 
@@ -211,8 +205,6 @@ class MissionController extends Controller
                 config('constants.error_codes.ERROR_MISSION_NOT_FOUND'),
                 trans('messages.custom_error_message.ERROR_MISSION_NOT_FOUND')
             );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
     
@@ -235,15 +227,6 @@ class MissionController extends Controller
                 config('constants.error_codes.ERROR_MISSION_NOT_FOUND'),
                 trans('messages.custom_error_message.ERROR_MISSION_NOT_FOUND')
             );
-        } catch (\Exception $e) {
-            return $this->responseHelper->error(
-                Response::HTTP_FORBIDDEN,
-                Response::$statusTexts[Response::HTTP_FORBIDDEN],
-                config('constants.error_codes.ERROR_MISSION_DELETION'),
-                trans('messages.custom_error_message.ERROR_MISSION_DELETION')
-            );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURED'));
         }
     }
 }

@@ -151,8 +151,6 @@ class AuthController extends Controller
             return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
         } catch (TenantDomainNotFoundException $e) {
             throw $e;
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
     
@@ -227,8 +225,6 @@ class AuthController extends Controller
                 trans('messages.custom_error_message.'
                 .config('constants.error_codes.ERROR_RESET_PASSWORD_INVALID_DATA'))
             );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
 
@@ -306,8 +302,6 @@ class AuthController extends Controller
                 trans('messages.custom_error_message.'
                 .config('constants.error_codes.ERROR_RESET_PASSWORD_INVALID_DATA'))
             );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
 
@@ -383,8 +377,6 @@ class AuthController extends Controller
                 config('constants.error_codes.ERROR_USER_NOT_FOUND'),
                 trans('messages.custom_error_message.ERROR_USER_NOT_FOUND')
             );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
 }

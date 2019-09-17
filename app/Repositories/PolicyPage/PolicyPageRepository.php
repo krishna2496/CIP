@@ -171,11 +171,11 @@ class PolicyPageRepository implements PolicyPageInterface
     }
 
     /**
-    * Get a listing of resource.
-    * @param int $languageId
-    * @param Illuminate\Http\Request $request
-    * @return Illuminate\Support\Collection
-    */
+     * Get a listing of resource.
+     * @param int $languageId
+     * @param Illuminate\Http\Request $request
+     * @return Illuminate\Support\Collection
+     */
     public function getPageList(int $languageId, Request $request): Collection
     {
         $pageQuery = $this->page->with(['pages' => function ($query) use ($languageId) {
@@ -190,12 +190,12 @@ class PolicyPageRepository implements PolicyPageInterface
     }
 
     /**
-    * Get a listing of resource.
-    *
-    * @param string $slug
-    * @param int $languageId
-    * @return App\Models\PolicyPage
-    */
+     * Get a listing of resource.
+     *
+     * @param string $slug
+     * @param int $languageId
+     * @return App\Models\PolicyPage
+     */
     public function getPageDetail(string $slug, int $languageId): PolicyPage
     {
         return $this->page->with(['pages' => function ($query) use ($languageId) {

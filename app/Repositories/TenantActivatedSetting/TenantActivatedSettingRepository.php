@@ -67,25 +67,21 @@ class TenantActivatedSettingRepository implements TenantActivatedSettingInterfac
      */
     public function getAllTenantActivatedSetting(Request $request): array
     {
-        try {
-            // Fetch tenant all settings details - From super admin
-            $getTenantSettings = $this->helpers->getAllTenantSetting($request);
+        // Fetch tenant all settings details - From super admin
+        $getTenantSettings = $this->helpers->getAllTenantSetting($request);
 
-            // Get data from tenant database
-            $tenantActivatedSettings = $this->tenantActivatedSetting->whereHas('settings')->get();
+        // Get data from tenant database
+        $tenantActivatedSettings = $this->tenantActivatedSetting->whereHas('settings')->get();
 
-            $tenantSettingData = array();
-            if ($tenantActivatedSettings->count() &&  $getTenantSettings->count()) {
-                foreach ($tenantActivatedSettings as $settingKey => $tenantSetting) {
-                    $index = $getTenantSettings->search(function ($value, $key) use ($tenantSetting) {
-                        return $value->tenant_setting_id == $tenantSetting->settings->setting_id;
-                    });
-                    $tenantSettingData[] = $getTenantSettings[$index]->key;
-                }
+        $tenantSettingData = array();
+        if ($tenantActivatedSettings->count() &&  $getTenantSettings->count()) {
+            foreach ($tenantActivatedSettings as $settingKey => $tenantSetting) {
+                $index = $getTenantSettings->search(function ($value, $key) use ($tenantSetting) {
+                    return $value->tenant_setting_id == $tenantSetting->settings->setting_id;
+                });
+                $tenantSettingData[] = $getTenantSettings[$index]->key;
             }
-            return $tenantSettingData;
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
+        return $tenantSettingData;
     }
 }

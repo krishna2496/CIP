@@ -51,8 +51,6 @@ class MissionSocialSharingController extends Controller
             $tenant = $this->helpers->getTenantDetailsFromName($fqdn);
         } catch (TenantDomainNotFoundException $e) {
             throw $e;
-        } catch (\Exception $e) {
-            throw new \Exception(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
         
         // Get mission details from mission id

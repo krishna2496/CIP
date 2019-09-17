@@ -203,8 +203,6 @@ class MissionInviteController extends Controller
             return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
         } catch (TenantDomainNotFoundException $e) {
             throw $e;
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
 }

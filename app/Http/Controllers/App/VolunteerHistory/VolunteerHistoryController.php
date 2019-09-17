@@ -90,20 +90,16 @@ class VolunteerHistoryController extends Controller
      */
     public function themeHistory(Request $request): JsonResponse
     {
-        try {
-            $userId = $request->auth->user_id;
-            $themeTimeHistory = $this->missionThemeRepository->getHoursPerTheme($request->year, $userId);
+        $userId = $request->auth->user_id;
+        $themeTimeHistory = $this->missionThemeRepository->getHoursPerTheme($request->year, $userId);
 
-            $apiStatus = Response::HTTP_OK;
-            $apiMessage = (!empty($themeTimeHistory->toArray())) ?
-            trans('messages.success.MESSAGE_THEME_HISTORY_PER_HOUR_LISTED'):
-            trans('messages.success.MESSAGE_THEME_HISTORY_NOT_FOUND');
-            $apiData = $themeTimeHistory->toArray();
-            
-            return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
-        }
+        $apiStatus = Response::HTTP_OK;
+        $apiMessage = (!empty($themeTimeHistory->toArray())) ?
+        trans('messages.success.MESSAGE_THEME_HISTORY_PER_HOUR_LISTED'):
+        trans('messages.success.MESSAGE_THEME_HISTORY_NOT_FOUND');
+        $apiData = $themeTimeHistory->toArray();
+        
+        return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
     }
 
     /**
@@ -114,25 +110,21 @@ class VolunteerHistoryController extends Controller
      */
     public function skillHistory(Request $request): JsonResponse
     {
-        try {
-            $languages = $this->languageHelper->getLanguages($request);
-            $language = ($request->hasHeader('X-localization')) ?
-            $request->header('X-localization') : env('TENANT_DEFAULT_LANGUAGE_CODE');
-            $languageCode = $languages->where('code', $language)->first()->code;
+        $languages = $this->languageHelper->getLanguages($request);
+        $language = ($request->hasHeader('X-localization')) ?
+        $request->header('X-localization') : env('TENANT_DEFAULT_LANGUAGE_CODE');
+        $languageCode = $languages->where('code', $language)->first()->code;
 
-            $userId = $request->auth->user_id;
-            $skillTimeHistory = $this->missionSkillRepository->getHoursPerSkill($request->year, $userId);
+        $userId = $request->auth->user_id;
+        $skillTimeHistory = $this->missionSkillRepository->getHoursPerSkill($request->year, $userId);
 
-            $apiStatus = Response::HTTP_OK;
-            $apiMessage =  (!empty($skillTimeHistory->toArray())) ?
-            trans('messages.success.MESSAGE_SKILL_HISTORY_PER_HOUR_LISTED'):
-            trans('messages.success.MESSAGE_SKILL_HISTORY_NOT_FOUND');
-            $apiData = $skillTimeHistory->toArray();
+        $apiStatus = Response::HTTP_OK;
+        $apiMessage =  (!empty($skillTimeHistory->toArray())) ?
+        trans('messages.success.MESSAGE_SKILL_HISTORY_PER_HOUR_LISTED'):
+        trans('messages.success.MESSAGE_SKILL_HISTORY_NOT_FOUND');
+        $apiData = $skillTimeHistory->toArray();
 
-            return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
-        }
+        return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
     }
 
     /**
@@ -161,8 +153,6 @@ class VolunteerHistoryController extends Controller
                 config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
                 trans('messages.custom_error_message.ERROR_DATABASE_OPERATIONAL')
             );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
 
@@ -192,8 +182,6 @@ class VolunteerHistoryController extends Controller
                 config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
                 trans('messages.custom_error_message.ERROR_DATABASE_OPERATIONAL')
             );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
 
@@ -205,50 +193,46 @@ class VolunteerHistoryController extends Controller
      */
     public function exportGoalMissionHistory(Request $request): JsonResponse
     {
-        try {
-            $statusArray = [
-                config('constants.timesheet_status_id.AUTOMATICALLY_APPROVED'),
-                config('constants.timesheet_status_id.APPROVED')
+        $statusArray = [
+            config('constants.timesheet_status_id.AUTOMATICALLY_APPROVED'),
+            config('constants.timesheet_status_id.APPROVED')
+        ];
+
+        $goalMissionList = $this->timesheetRepository->goalRequestList($request, $statusArray, false);
+
+        if ($goalMissionList->count()) {
+            $fileName = config('constants.export_timesheet_file_names.GOAL_MISSION_HISTORY_XLSX');
+    
+            $excel = new ExportCSV($fileName);
+
+            $headings = [
+                trans('messages.export_sheet_headings.MISSION_NAME'),
+                trans('messages.export_sheet_headings.ORGANIZATION_NAME'),
+                trans('messages.export_sheet_headings.ACTIONS')
             ];
 
-            $goalMissionList = $this->timesheetRepository->goalRequestList($request, $statusArray, false);
+            $excel->setHeadlines($headings);
 
-            if ($goalMissionList->count()) {
-                $fileName = config('constants.export_timesheet_file_names.GOAL_MISSION_HISTORY_XLSX');
-        
-                $excel = new ExportCSV($fileName);
-
-                $headings = [
-                    trans('messages.export_sheet_headings.MISSION_NAME'),
-                    trans('messages.export_sheet_headings.ORGANIZATION_NAME'),
-                    trans('messages.export_sheet_headings.ACTIONS')
-                ];
-
-                $excel->setHeadlines($headings);
-
-                foreach ($goalMissionList as $mission) {
-                    $excel->appendRow([
-                        $mission->title,
-                        $mission->organisation_name,
-                        $mission->action
-                    ]);
-                }
-
-                $tenantName = $this->helpers->getSubDomainFromRequest($request);
-
-                $path = $excel->export('app/'.$tenantName.'/timesheet/'.$request->auth->user_id.'/exports');
+            foreach ($goalMissionList as $mission) {
+                $excel->appendRow([
+                    $mission->title,
+                    $mission->organisation_name,
+                    $mission->action
+                ]);
             }
 
-            $apiStatus = Response::HTTP_OK;
-            $apiMessage =  ($goalMissionList->count()) ?
-                trans('messages.success.MESSAGE_USER_GOAL_MISSION_HISTORY_EXPORTED'):
-                trans('messages.success.MESSAGE_ENABLE_TO_EXPORT_USER_GOAL_MISSION_HISTORY');
-            $apiData = ($goalMissionList->count()) ? ['path' => $path] : [];
+            $tenantName = $this->helpers->getSubDomainFromRequest($request);
 
-            return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
+            $path = $excel->export('app/'.$tenantName.'/timesheet/'.$request->auth->user_id.'/exports');
         }
+
+        $apiStatus = Response::HTTP_OK;
+        $apiMessage =  ($goalMissionList->count()) ?
+            trans('messages.success.MESSAGE_USER_GOAL_MISSION_HISTORY_EXPORTED'):
+            trans('messages.success.MESSAGE_ENABLE_TO_EXPORT_USER_GOAL_MISSION_HISTORY');
+        $apiData = ($goalMissionList->count()) ? ['path' => $path] : [];
+
+        return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
     }
 
     /**
@@ -259,51 +243,47 @@ class VolunteerHistoryController extends Controller
      */
     public function exportTimeMissionHistory(Request $request): JsonResponse
     {
-        try {
-            $statusArray = [
-                config('constants.timesheet_status_id.AUTOMATICALLY_APPROVED'),
-                config('constants.timesheet_status_id.APPROVED')
+        $statusArray = [
+            config('constants.timesheet_status_id.AUTOMATICALLY_APPROVED'),
+            config('constants.timesheet_status_id.APPROVED')
+        ];
+
+        $timeRequestList = $this->timesheetRepository->timeRequestList($request, $statusArray, false);
+
+        if ($timeRequestList->count()) {
+            $fileName = config('constants.export_timesheet_file_names.TIME_MISSION_HISTORY_XLSX');
+        
+            $excel = new ExportCSV($fileName);
+
+            $headings = [
+                trans('messages.export_sheet_headings.MISSION_NAME'),
+                trans('messages.export_sheet_headings.ORGANIZATION_NAME'),
+                trans('messages.export_sheet_headings.TIME'),
+                trans('messages.export_sheet_headings.HOURS')
             ];
 
-            $timeRequestList = $this->timesheetRepository->timeRequestList($request, $statusArray, false);
+            $excel->setHeadlines($headings);
 
-            if ($timeRequestList->count()) {
-                $fileName = config('constants.export_timesheet_file_names.TIME_MISSION_HISTORY_XLSX');
-            
-                $excel = new ExportCSV($fileName);
-
-                $headings = [
-                    trans('messages.export_sheet_headings.MISSION_NAME'),
-                    trans('messages.export_sheet_headings.ORGANIZATION_NAME'),
-                    trans('messages.export_sheet_headings.TIME'),
-                    trans('messages.export_sheet_headings.HOURS')
-                ];
-
-                $excel->setHeadlines($headings);
-
-                foreach ($timeRequestList as $mission) {
-                    $excel->appendRow([
-                        $mission->title,
-                        $mission->organisation_name,
-                        $mission->time,
-                        $mission->hours
-                    ]);
-                }
-
-                $tenantName = $this->helpers->getSubDomainFromRequest($request);
-
-                $path = $excel->export('app/'.$tenantName.'/timesheet/'.$request->auth->user_id.'/exports');
+            foreach ($timeRequestList as $mission) {
+                $excel->appendRow([
+                    $mission->title,
+                    $mission->organisation_name,
+                    $mission->time,
+                    $mission->hours
+                ]);
             }
 
-            $apiStatus = Response::HTTP_OK;
-            $apiMessage =  ($timeRequestList->count()) ?
-            trans('messages.success.MESSAGE_USER_TIME_MISSION_HISTORY_EXPORTED'):
-            trans('messages.success.MESSAGE_ENABLE_TO_EXPORT_USER_TIME_MISSION_HISTORY');
-            $apiData = ($timeRequestList->count()) ? ['path' => $path] : [];
+            $tenantName = $this->helpers->getSubDomainFromRequest($request);
 
-            return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
+            $path = $excel->export('app/'.$tenantName.'/timesheet/'.$request->auth->user_id.'/exports');
         }
+
+        $apiStatus = Response::HTTP_OK;
+        $apiMessage =  ($timeRequestList->count()) ?
+        trans('messages.success.MESSAGE_USER_TIME_MISSION_HISTORY_EXPORTED'):
+        trans('messages.success.MESSAGE_ENABLE_TO_EXPORT_USER_TIME_MISSION_HISTORY');
+        $apiData = ($timeRequestList->count()) ? ['path' => $path] : [];
+
+        return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
     }
 }

@@ -81,19 +81,15 @@ class TimesheetController extends Controller
      */
     public function index(Request $request): JsonResponse
     {
-        try {
-            $timesheetEntries = $this->timesheetRepository->getAllTimesheetEntries($request);
+        $timesheetEntries = $this->timesheetRepository->getAllTimesheetEntries($request);
 
-            $apiData = $timesheetEntries;
-            $apiStatus = Response::HTTP_OK;
-            $apiMessage = (count($timesheetEntries[config('constants.mission_type.TIME')]) > 0 ||
-            count($timesheetEntries[config('constants.mission_type.GOAL')]) > 0) ?
-            trans('messages.success.MESSAGE_TIMESHEET_ENTRIES_LISTING') :
-            trans('messages.success.MESSAGE_NO_TIMESHEET_ENTRIES_FOUND');
-            return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
-        }
+        $apiData = $timesheetEntries;
+        $apiStatus = Response::HTTP_OK;
+        $apiMessage = (count($timesheetEntries[config('constants.mission_type.TIME')]) > 0 ||
+        count($timesheetEntries[config('constants.mission_type.GOAL')]) > 0) ?
+        trans('messages.success.MESSAGE_TIMESHEET_ENTRIES_LISTING') :
+        trans('messages.success.MESSAGE_NO_TIMESHEET_ENTRIES_FOUND');
+        return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
     }
 
     /**
@@ -104,182 +100,178 @@ class TimesheetController extends Controller
      */
     public function store(Request $request): JsonResponse
     {
+        if (!empty($request->mission_id)) {
+            //Fetch mission type
+            $getmissionType = $this->missionRepository->getMissionType($request->mission_id);
+            $getmissionType->count() > 0 ?
+            $request->request->add(['mission_type' => $getmissionType[0]['mission_type']]) : null;
+        }
+            
+        $documentSizeLimit = config('constants.TIMESHEET_DOCUMENT_SIZE_LIMIT');
+        $validator = Validator::make(
+            $request->toArray(),
+            [
+                'mission_id' => 'required|exists:mission,mission_id,deleted_at,NULL',
+                'date_volunteered' => 'required',
+                'day_volunteered' => ['required', Rule::in(config('constants.day_volunteered'))],
+                'documents.*' => 'max:' . $documentSizeLimit . '|valid_timesheet_document_type',
+                'action' => 'required_if:mission_type,GOAL|integer|min:1',
+                'hours' => 'required_if:mission_type,TIME|integer|between:0,23',
+                'minutes' => 'required_if:mission_type,TIME|integer|between:0,59',
+            ]
+        );
+
+        // If validator fails
+        if ($validator->fails()) {
+            return $this->responseHelper->error(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                config('constants.error_codes.ERROR_TIMESHEET_REQUIRED_FIELDS_EMPTY'),
+                $validator->errors()->first()
+            );
+        }
+
         try {
-            if (!empty($request->mission_id)) {
-                //Fetch mission type
-                $getmissionType = $this->missionRepository->getMissionType($request->mission_id);
-                $getmissionType->count() > 0 ?
-                $request->request->add(['mission_type' => $getmissionType[0]['mission_type']]) : null;
-            }
-                
-            $documentSizeLimit = config('constants.TIMESHEET_DOCUMENT_SIZE_LIMIT');
-            $validator = Validator::make(
-                $request->toArray(),
-                [
-                    'mission_id' => 'required|exists:mission,mission_id,deleted_at,NULL',
-                    'date_volunteered' => 'required',
-                    'day_volunteered' => ['required', Rule::in(config('constants.day_volunteered'))],
-                    'documents.*' => 'max:' . $documentSizeLimit . '|valid_timesheet_document_type',
-                    'action' => 'required_if:mission_type,GOAL|integer|min:1',
-                    'hours' => 'required_if:mission_type,TIME|integer|between:0,23',
-                    'minutes' => 'required_if:mission_type,TIME|integer|between:0,59',
-                ]
-            );
-
-            // If validator fails
-            if ($validator->fails()) {
-                return $this->responseHelper->error(
-                    Response::HTTP_UNPROCESSABLE_ENTITY,
-                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                    config('constants.error_codes.ERROR_TIMESHEET_REQUIRED_FIELDS_EMPTY'),
-                    $validator->errors()->first()
-                );
-            }
-
-            try {
-                // Fetch mission application data
-                $missionApplicationData = $this->missionRepository->getMissionApplication(
-                    $request->mission_id,
-                    $request->auth->user_id,
-                    config('constants.timesheet_status.AUTOMATICALLY_APPROVED')
-                );
-            } catch (ModelNotFoundException $e) {
-                return $this->responseHelper->error(
-                    Response::HTTP_UNPROCESSABLE_ENTITY,
-                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                    config('constants.error_codes.ERROR_INVALID_DATA_FOR_TIMESHEET_ENTRY'),
-                    trans('messages.custom_error_message.ERROR_INVALID_DATA_FOR_TIMESHEET_ENTRY')
-                );
-            }
-         
-            $dateVolunteered = $this->helpers->changeDateFormat(
-                $request->date_volunteered,
-                config('constants.TIMESHEET_DATE_FORMAT')
-            );
-
-            $timesheetStatus = array(config('constants.timesheet_status.APPROVED'),
-            config('constants.timesheet_status.AUTOMATICALLY_APPROVED'));
-
-            // Get timesheet details
-            $timesheetData = $this->timesheetRepository->getTimesheetDetails(
+            // Fetch mission application data
+            $missionApplicationData = $this->missionRepository->getMissionApplication(
                 $request->mission_id,
                 $request->auth->user_id,
-                $dateVolunteered,
-                $timesheetStatus
+                config('constants.timesheet_status.AUTOMATICALLY_APPROVED')
             );
-            if ($timesheetData->count() > 0) {
-                return $this->responseHelper->error(
-                    Response::HTTP_UNPROCESSABLE_ENTITY,
-                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                    config('constants.error_codes.ERROR_TIMESHEET_ALREADY_APPROVED'),
-                    trans('messages.custom_error_message.ERROR_TIMESHEET_ALREADY_APPROVED')
-                );
-            } else {
-                $request->request->add(['status_id' => config('constants.timesheet_status_id.PENDING')]);
-            }
-            
-            // Fetch mission data from missionid
-            $timesheetMissionData = $this->missionRepository->getTimesheetMissionData($request->mission_id);
+        } catch (ModelNotFoundException $e) {
+            return $this->responseHelper->error(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                config('constants.error_codes.ERROR_INVALID_DATA_FOR_TIMESHEET_ENTRY'),
+                trans('messages.custom_error_message.ERROR_INVALID_DATA_FOR_TIMESHEET_ENTRY')
+            );
+        }
+        
+        $dateVolunteered = $this->helpers->changeDateFormat(
+            $request->date_volunteered,
+            config('constants.TIMESHEET_DATE_FORMAT')
+        );
 
-            // Check mission type
-            switch ($timesheetMissionData->mission_type) {
-                case config('constants.mission_type.GOAL'):
-                    // Remove extra params
-                    $request->request->remove('hours');
-                    $request->request->remove('minutes');
+        $timesheetStatus = array(config('constants.timesheet_status.APPROVED'),
+        config('constants.timesheet_status.AUTOMATICALLY_APPROVED'));
 
-                    $missionDetail = $timesheetMissionData->toArray();
+        // Get timesheet details
+        $timesheetData = $this->timesheetRepository->getTimesheetDetails(
+            $request->mission_id,
+            $request->auth->user_id,
+            $dateVolunteered,
+            $timesheetStatus
+        );
+        if ($timesheetData->count() > 0) {
+            return $this->responseHelper->error(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                config('constants.error_codes.ERROR_TIMESHEET_ALREADY_APPROVED'),
+                trans('messages.custom_error_message.ERROR_TIMESHEET_ALREADY_APPROVED')
+            );
+        } else {
+            $request->request->add(['status_id' => config('constants.timesheet_status_id.PENDING')]);
+        }
+        
+        // Fetch mission data from missionid
+        $timesheetMissionData = $this->missionRepository->getTimesheetMissionData($request->mission_id);
 
-                    // Fetch all submitted goal actions from database
-                    $totalSubmittedGoalActions = $this->timesheetRepository->getSubmittedActions($request->mission_id);
+        // Check mission type
+        switch ($timesheetMissionData->mission_type) {
+            case config('constants.mission_type.GOAL'):
+                // Remove extra params
+                $request->request->remove('hours');
+                $request->request->remove('minutes');
 
-                    // Add total actions
-                    $totalGoalActions = $totalSubmittedGoalActions + $request->action;
+                $missionDetail = $timesheetMissionData->toArray();
 
-                    // Check total goals should not exceed goal objective
-                    if ($totalGoalActions > $missionDetail["goal_mission"]["goal_objective"]) {
-                        return $this->responseHelper->error(
-                            Response::HTTP_UNPROCESSABLE_ENTITY,
-                            Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                            config('constants.error_codes.ERROR_INVALID_ACTION'),
-                            trans('messages.custom_error_message.ERROR_INVALID_ACTION')
-                        );
-                    }
-                    break;
+                // Fetch all submitted goal actions from database
+                $totalSubmittedGoalActions = $this->timesheetRepository->getSubmittedActions($request->mission_id);
 
-                case config('constants.mission_type.TIME'):
-                    $time = $request->hours . ":" . $request->minutes;
-                    $request->request->add(['time' => $time]);
-                    // Remove extra params
-                    $request->request->remove('action');
-                    break;
-                default:
-            }
-            
-            // Check start dates and end dates of mission
-            if ($timesheetMissionData->start_date) {
-                $missionStartDate = $this->helpers->changeDateFormat(
-                    $timesheetMissionData->start_date,
-                    config('constants.TIMESHEET_DATE_FORMAT')
-                );
-                if ($dateVolunteered < $missionStartDate) {
+                // Add total actions
+                $totalGoalActions = $totalSubmittedGoalActions + $request->action;
+
+                // Check total goals should not exceed goal objective
+                if ($totalGoalActions > $missionDetail["goal_mission"]["goal_objective"]) {
                     return $this->responseHelper->error(
                         Response::HTTP_UNPROCESSABLE_ENTITY,
                         Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                        config('constants.error_codes.ERROR_MISSION_STARTDATE'),
-                        trans('messages.custom_error_message.ERROR_MISSION_STARTDATE')
+                        config('constants.error_codes.ERROR_INVALID_ACTION'),
+                        trans('messages.custom_error_message.ERROR_INVALID_ACTION')
                     );
-                } else {
-                    if ($timesheetMissionData->end_date) {
-                        $missionEndDate = $this->helpers->changeDateFormat(
-                            $timesheetMissionData->end_date,
-                            config('constants.TIMESHEET_DATE_FORMAT')
+                }
+                break;
+
+            case config('constants.mission_type.TIME'):
+                $time = $request->hours . ":" . $request->minutes;
+                $request->request->add(['time' => $time]);
+                // Remove extra params
+                $request->request->remove('action');
+                break;
+            default:
+        }
+        
+        // Check start dates and end dates of mission
+        if ($timesheetMissionData->start_date) {
+            $missionStartDate = $this->helpers->changeDateFormat(
+                $timesheetMissionData->start_date,
+                config('constants.TIMESHEET_DATE_FORMAT')
+            );
+            if ($dateVolunteered < $missionStartDate) {
+                return $this->responseHelper->error(
+                    Response::HTTP_UNPROCESSABLE_ENTITY,
+                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                    config('constants.error_codes.ERROR_MISSION_STARTDATE'),
+                    trans('messages.custom_error_message.ERROR_MISSION_STARTDATE')
+                );
+            } else {
+                if ($timesheetMissionData->end_date) {
+                    $missionEndDate = $this->helpers->changeDateFormat(
+                        $timesheetMissionData->end_date,
+                        config('constants.TIMESHEET_DATE_FORMAT')
+                    );
+                    if ($dateVolunteered > $missionEndDate) {
+                        $endDate = Carbon::createFromFormat(
+                            config('constants.TIMESHEET_DATE_FORMAT'),
+                            $missionEndDate
                         );
-                        if ($dateVolunteered > $missionEndDate) {
-                            $endDate = Carbon::createFromFormat(
-                                config('constants.TIMESHEET_DATE_FORMAT'),
-                                $missionEndDate
-                            );
-                
-                            // Fetch tenant options value
-                            $tenantOptionData = $this->tenantOptionRepository
-                            ->getOptionValue('ALLOW_TIMESHEET_ENTRY');
+            
+                        // Fetch tenant options value
+                        $tenantOptionData = $this->tenantOptionRepository
+                        ->getOptionValue('ALLOW_TIMESHEET_ENTRY');
 
-                            $extraWeeks = isset($tenantOptionData[0]['option_value'])
-                            ? intval($tenantOptionData[0]['option_value']) : config('constants.ALLOW_TIMESHEET_ENTRY');
+                        $extraWeeks = isset($tenantOptionData[0]['option_value'])
+                        ? intval($tenantOptionData[0]['option_value']) : config('constants.ALLOW_TIMESHEET_ENTRY');
 
-                            // Count records
-                            if (count($tenantOptionData) > 0 || $extraWeeks > 0) {
-                                // Add weeks to mission end date
-                                $timeentryEndDate = $endDate->addWeeks($extraWeeks);
-                                if ($dateVolunteered > $timeentryEndDate) {
-                                    return $this->responseHelper->error(
-                                        Response::HTTP_UNPROCESSABLE_ENTITY,
-                                        Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                                        config('constants.error_codes.ERROR_MISSION_ENDDATE'),
-                                        trans('messages.custom_error_message.ERROR_MISSION_ENDDATE')
-                                    );
-                                }
+                        // Count records
+                        if (count($tenantOptionData) > 0 || $extraWeeks > 0) {
+                            // Add weeks to mission end date
+                            $timeentryEndDate = $endDate->addWeeks($extraWeeks);
+                            if ($dateVolunteered > $timeentryEndDate) {
+                                return $this->responseHelper->error(
+                                    Response::HTTP_UNPROCESSABLE_ENTITY,
+                                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                                    config('constants.error_codes.ERROR_MISSION_ENDDATE'),
+                                    trans('messages.custom_error_message.ERROR_MISSION_ENDDATE')
+                                );
                             }
                         }
                     }
                 }
             }
-
-            // Store timesheet
-            $request->request->add(['user_id' => $request->auth->user_id]);
-            $timesheet = $this->timesheetRepository->storeOrUpdateTimesheet($request);
-
-            // Set response data
-            $apiStatus = ($timesheet->wasRecentlyCreated) ? Response::HTTP_CREATED : Response::HTTP_OK;
-            $apiMessage = ($timesheet->wasRecentlyCreated) ? trans('messages.success.TIMESHEET_ENTRY_ADDED_SUCESSFULLY')
-            : trans('messages.success.TIMESHEET_ENTRY_UPDATED_SUCESSFULLY');
-            $apiData = ['timesheet_id' => $timesheet->timesheet_id];
-
-            return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
+
+        // Store timesheet
+        $request->request->add(['user_id' => $request->auth->user_id]);
+        $timesheet = $this->timesheetRepository->storeOrUpdateTimesheet($request);
+
+        // Set response data
+        $apiStatus = ($timesheet->wasRecentlyCreated) ? Response::HTTP_CREATED : Response::HTTP_OK;
+        $apiMessage = ($timesheet->wasRecentlyCreated) ? trans('messages.success.TIMESHEET_ENTRY_ADDED_SUCESSFULLY')
+        : trans('messages.success.TIMESHEET_ENTRY_UPDATED_SUCESSFULLY');
+        $apiData = ['timesheet_id' => $timesheet->timesheet_id];
+
+        return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
     }
 
     /**
@@ -309,8 +301,6 @@ class TimesheetController extends Controller
                 config('constants.error_codes.TIMESHEET_NOT_FOUND'),
                 trans('messages.custom_error_message.TIMESHEET_NOT_FOUND')
             );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
 
@@ -348,8 +338,6 @@ class TimesheetController extends Controller
                 config('constants.error_codes.TIMESHEET_NOT_FOUND'),
                 trans('messages.custom_error_message.TIMESHEET_NOT_FOUND')
             );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
 
@@ -392,8 +380,6 @@ class TimesheetController extends Controller
                 config('constants.error_codes.TIMESHEET_NOT_FOUND'),
                 trans('messages.custom_error_message.TIMESHEET_NOT_FOUND')
             );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
 
@@ -405,18 +391,14 @@ class TimesheetController extends Controller
      */
     public function getPendingTimeRequests(Request $request): JsonResponse
     {
-        try {
-            $statusArray = [config('constants.timesheet_status_id.SUBMIT_FOR_APPROVAL')];
-            $timeRequestList = $this->timesheetRepository->timeRequestList($request, $statusArray);
-            
-            $apiStatus = Response::HTTP_OK;
-            $apiMessage = (count($timeRequestList) > 0) ? trans('messages.success.MESSAGE_TIME_REQUEST_LISTING') :
-            trans('messages.success.MESSAGE_TIME_REQUEST_NOT_FOUND');
+        $statusArray = [config('constants.timesheet_status_id.SUBMIT_FOR_APPROVAL')];
+        $timeRequestList = $this->timesheetRepository->timeRequestList($request, $statusArray);
+        
+        $apiStatus = Response::HTTP_OK;
+        $apiMessage = (count($timeRequestList) > 0) ? trans('messages.success.MESSAGE_TIME_REQUEST_LISTING') :
+        trans('messages.success.MESSAGE_TIME_REQUEST_NOT_FOUND');
 
-            return $this->responseHelper->successWithPagination($apiStatus, $apiMessage, $timeRequestList);
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
-        }
+        return $this->responseHelper->successWithPagination($apiStatus, $apiMessage, $timeRequestList);
     }
 
     /**
@@ -427,16 +409,12 @@ class TimesheetController extends Controller
      */
     public function getPendingGoalRequests(Request $request): JsonResponse
     {
-        try {
-            $statusArray = [config('constants.timesheet_status_id.SUBMIT_FOR_APPROVAL')];
-            $goalRequestList = $this->timesheetRepository->goalRequestList($request, $statusArray);
+        $statusArray = [config('constants.timesheet_status_id.SUBMIT_FOR_APPROVAL')];
+        $goalRequestList = $this->timesheetRepository->goalRequestList($request, $statusArray);
 
-            $apiMessage = (count($goalRequestList) > 0) ? trans('messages.success.MESSAGE_GOAL_REQUEST_LISTING')
-            : trans('messages.success.MESSAGE_NO_GOAL_REQUEST_FOUND');
-            return $this->responseHelper->successWithPagination(Response::HTTP_OK, $apiMessage, $goalRequestList);
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
-        }
+        $apiMessage = (count($goalRequestList) > 0) ? trans('messages.success.MESSAGE_GOAL_REQUEST_LISTING')
+        : trans('messages.success.MESSAGE_NO_GOAL_REQUEST_FOUND');
+        return $this->responseHelper->successWithPagination(Response::HTTP_OK, $apiMessage, $goalRequestList);
     }
 
     /**
@@ -447,49 +425,45 @@ class TimesheetController extends Controller
      */
     public function exportPendingTimeRequests(Request $request): JsonResponse
     {
-        try {
-            $statusArray = [config('constants.timesheet_status_id.SUBMIT_FOR_APPROVAL')];
+        $statusArray = [config('constants.timesheet_status_id.SUBMIT_FOR_APPROVAL')];
 
-            $timeRequestList = $this->timesheetRepository->timeRequestList($request, $statusArray, false);
+        $timeRequestList = $this->timesheetRepository->timeRequestList($request, $statusArray, false);
 
-            if ($timeRequestList->count()) {
-                $fileName = config('constants.export_timesheet_file_names.PENDING_TIME_MISSION_ENTRIES_XLSX');
-            
-                $excel = new ExportCSV($fileName);
+        if ($timeRequestList->count()) {
+            $fileName = config('constants.export_timesheet_file_names.PENDING_TIME_MISSION_ENTRIES_XLSX');
+        
+            $excel = new ExportCSV($fileName);
 
-                $headings = [
-                    trans('messages.export_sheet_headings.MISSION_NAME'),
-                    trans('messages.export_sheet_headings.ORGANIZATION_NAME'),
-                    trans('messages.export_sheet_headings.TIME'),
-                    trans('messages.export_sheet_headings.HOURS')
-                ];
+            $headings = [
+                trans('messages.export_sheet_headings.MISSION_NAME'),
+                trans('messages.export_sheet_headings.ORGANIZATION_NAME'),
+                trans('messages.export_sheet_headings.TIME'),
+                trans('messages.export_sheet_headings.HOURS')
+            ];
 
-                $excel->setHeadlines($headings);
+            $excel->setHeadlines($headings);
 
-                foreach ($timeRequestList as $mission) {
-                    $excel->appendRow([
-                        $mission->title,
-                        $mission->organisation_name,
-                        $mission->time,
-                        $mission->hours
-                    ]);
-                }
-
-                $tenantName = $this->helpers->getSubDomainFromRequest($request);
-
-                $path = $excel->export('app/'.$tenantName.'/timesheet/'.$request->auth->user_id.'/exports');
+            foreach ($timeRequestList as $mission) {
+                $excel->appendRow([
+                    $mission->title,
+                    $mission->organisation_name,
+                    $mission->time,
+                    $mission->hours
+                ]);
             }
 
-            $apiStatus = Response::HTTP_OK;
-            $apiMessage =  ($timeRequestList->count()) ?
-            trans('messages.success.MESSAGE_USER_PENDING_TIME_MISSION_ENTRIES_EXPORTED'):
-            trans('messages.success.MESSAGE_ENABLE_TO_EXPORT_USER_PENDING_TIME_MISSION_ENTRIES');
-            $apiData = ($timeRequestList->count()) ? ['path' => $path] : [];
+            $tenantName = $this->helpers->getSubDomainFromRequest($request);
 
-            return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
+            $path = $excel->export('app/'.$tenantName.'/timesheet/'.$request->auth->user_id.'/exports');
         }
+
+        $apiStatus = Response::HTTP_OK;
+        $apiMessage =  ($timeRequestList->count()) ?
+        trans('messages.success.MESSAGE_USER_PENDING_TIME_MISSION_ENTRIES_EXPORTED'):
+        trans('messages.success.MESSAGE_ENABLE_TO_EXPORT_USER_PENDING_TIME_MISSION_ENTRIES');
+        $apiData = ($timeRequestList->count()) ? ['path' => $path] : [];
+
+        return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
     }
 
     /**
@@ -500,45 +474,41 @@ class TimesheetController extends Controller
      */
     public function exportPendingGoalRequests(Request $request): JsonResponse
     {
-        try {
-            $statusArray = [config('constants.timesheet_status_id.SUBMIT_FOR_APPROVAL')];
-            $goalRequestList = $this->timesheetRepository->goalRequestList($request, $statusArray, false);
-            
-            if ($goalRequestList->count()) {
-                $fileName = config('constants.export_timesheet_file_names.PENTIND_GOAL_MISSION_ENTRIES_XLSX');
+        $statusArray = [config('constants.timesheet_status_id.SUBMIT_FOR_APPROVAL')];
+        $goalRequestList = $this->timesheetRepository->goalRequestList($request, $statusArray, false);
         
-                $excel = new ExportCSV($fileName);
+        if ($goalRequestList->count()) {
+            $fileName = config('constants.export_timesheet_file_names.PENTIND_GOAL_MISSION_ENTRIES_XLSX');
+    
+            $excel = new ExportCSV($fileName);
 
-                $headings = [
-                    trans('messages.export_sheet_headings.MISSION_NAME'),
-                    trans('messages.export_sheet_headings.ORGANIZATION_NAME'),
-                    trans('messages.export_sheet_headings.ACTIONS')
-                ];
+            $headings = [
+                trans('messages.export_sheet_headings.MISSION_NAME'),
+                trans('messages.export_sheet_headings.ORGANIZATION_NAME'),
+                trans('messages.export_sheet_headings.ACTIONS')
+            ];
 
-                $excel->setHeadlines($headings);
+            $excel->setHeadlines($headings);
 
-                foreach ($goalRequestList as $mission) {
-                    $excel->appendRow([
-                        $mission->title,
-                        $mission->organisation_name,
-                        $mission->action
-                    ]);
-                }
-
-                $tenantName = $this->helpers->getSubDomainFromRequest($request);
-                
-                $path = $excel->export('app/'.$tenantName.'/timesheet/'.$request->auth->user_id.'/exports');
+            foreach ($goalRequestList as $mission) {
+                $excel->appendRow([
+                    $mission->title,
+                    $mission->organisation_name,
+                    $mission->action
+                ]);
             }
 
-            $apiStatus = Response::HTTP_OK;
-            $apiMessage =  ($goalRequestList->count()) ?
-                trans('messages.success.MESSAGE_USER_PENDING_GOAL_MISSION_ENTRIES_EXPORTED'):
-                trans('messages.success.MESSAGE_ENABLE_TO_EXPORT_USER_PENDING_GOAL_MISSION_ENTRIES');
-            $apiData = ($goalRequestList->count()) ? ['path' => $path] : [];
-
-            return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
+            $tenantName = $this->helpers->getSubDomainFromRequest($request);
+            
+            $path = $excel->export('app/'.$tenantName.'/timesheet/'.$request->auth->user_id.'/exports');
         }
+
+        $apiStatus = Response::HTTP_OK;
+        $apiMessage =  ($goalRequestList->count()) ?
+            trans('messages.success.MESSAGE_USER_PENDING_GOAL_MISSION_ENTRIES_EXPORTED'):
+            trans('messages.success.MESSAGE_ENABLE_TO_EXPORT_USER_PENDING_GOAL_MISSION_ENTRIES');
+        $apiData = ($goalRequestList->count()) ? ['path' => $path] : [];
+
+        return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
     }
 }

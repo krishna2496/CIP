@@ -115,89 +115,85 @@ class MissionController extends Controller
      */
     public function getMissionList(Request $request): JsonResponse
     {
-        try {
-            $languages = $this->languageHelper->getLanguages($request);
-            $language = ($request->hasHeader('X-localization')) ?
-            $request->header('X-localization') : env('TENANT_DEFAULT_LANGUAGE_CODE');
-            $language = $languages->where('code', $language)->first();
-            $languageId = $language->language_id;
-            $languageCode = $language->code;
+        $languages = $this->languageHelper->getLanguages($request);
+        $language = ($request->hasHeader('X-localization')) ?
+        $request->header('X-localization') : env('TENANT_DEFAULT_LANGUAGE_CODE');
+        $language = $languages->where('code', $language)->first();
+        $languageId = $language->language_id;
+        $languageCode = $language->code;
 
-            //Save User search data
-            $this->userFilterRepository->saveFilter($request);
-            // Get users filter
-            $userFilters = $this->userFilterRepository->userFilter($request);
-            $filterTagArray = $this->missionFiltersTag($request, $language, $userFilters);
-            $userFilterData = $userFilters->toArray()["filters"];
-            // Checking explore mission type is out of list or not
-            if ($request->has('explore_mission_type') && $request->input('explore_mission_type') != '') {
-                $exploreMissionType = $request->input('explore_mission_type');
-                if ($exploreMissionType != config('constants.TOP_RECOMMENDED') &&
-                    $exploreMissionType != config('constants.RANDOM') &&
-                    $exploreMissionType !=config('constants.THEME') &&
-                    $exploreMissionType != config('constants.COUNTRY') &&
-                    $exploreMissionType != config('constants.ORGANIZATION') &&
-                    $exploreMissionType != config('constants.ORGANIZATION') &&
-                    $exploreMissionType != config('constants.MOST_RANKED') &&
-                    $exploreMissionType != config('constants.TOP_FAVOURITE')
-                ) {
-                    $metaData['filters'] = $userFilterData;
-                    $metaData['filters']["tags"] = $filterTagArray;
-                    $missionsTransformed = [];
-                    $apiData = new \Illuminate\Pagination\LengthAwarePaginator(
-                        $missionsTransformed,
-                        0,
-                        $request->perPage
-                    );
-                    $apiStatus = Response::HTTP_OK;
-                    $apiMessage = trans('messages.success.MESSAGE_MISSION_LISTING');
-                    
-                    return $this->responseHelper->successWithPagination(
-                        $apiStatus,
-                        $apiMessage,
-                        $apiData,
-                        $metaData
-                    );
-                }
+        //Save User search data
+        $this->userFilterRepository->saveFilter($request);
+        // Get users filter
+        $userFilters = $this->userFilterRepository->userFilter($request);
+        $filterTagArray = $this->missionFiltersTag($request, $language, $userFilters);
+        $userFilterData = $userFilters->toArray()["filters"];
+        // Checking explore mission type is out of list or not
+        if ($request->has('explore_mission_type') && $request->input('explore_mission_type') != '') {
+            $exploreMissionType = $request->input('explore_mission_type');
+            if ($exploreMissionType != config('constants.TOP_RECOMMENDED') &&
+                $exploreMissionType != config('constants.RANDOM') &&
+                $exploreMissionType !=config('constants.THEME') &&
+                $exploreMissionType != config('constants.COUNTRY') &&
+                $exploreMissionType != config('constants.ORGANIZATION') &&
+                $exploreMissionType != config('constants.ORGANIZATION') &&
+                $exploreMissionType != config('constants.MOST_RANKED') &&
+                $exploreMissionType != config('constants.TOP_FAVOURITE')
+            ) {
+                $metaData['filters'] = $userFilterData;
+                $metaData['filters']["tags"] = $filterTagArray;
+                $missionsTransformed = [];
+                $apiData = new \Illuminate\Pagination\LengthAwarePaginator(
+                    $missionsTransformed,
+                    0,
+                    $request->perPage
+                );
+                $apiStatus = Response::HTTP_OK;
+                $apiMessage = trans('messages.success.MESSAGE_MISSION_LISTING');
+                
+                return $this->responseHelper->successWithPagination(
+                    $apiStatus,
+                    $apiMessage,
+                    $apiData,
+                    $metaData
+                );
             }
-
-
-            $missionList = $this->missionRepository->getMissions($request, $userFilterData, $languageId);
-
-            $missionsTransformed = $missionList
-                ->getCollection()
-                ->map(function ($item) use ($languageCode) {
-                    return $this->transformMission($item, $languageCode);
-                })->toArray();
-            
-            $requestString = $request->except(['page','perPage']);
-            $missionsPaginated = new \Illuminate\Pagination\LengthAwarePaginator(
-                $missionsTransformed,
-                $missionList->total(),
-                $missionList->perPage(),
-                $missionList->currentPage(),
-                [
-                    'path' => $request->url().'?'.http_build_query($requestString),
-                    'query' => [
-                        'page' => $missionList->currentPage()
-                    ]
-                ]
-            );
-
-            $metaData['filters'] = $userFilterData;
-            $metaData['filters']["tags"] = $filterTagArray;
-            $apiData = $missionsPaginated;
-            $apiStatus = Response::HTTP_OK;
-            $apiMessage = trans('messages.success.MESSAGE_MISSION_LISTING');
-            return $this->responseHelper->successWithPagination(
-                $apiStatus,
-                $apiMessage,
-                $apiData,
-                $metaData
-            );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
+
+
+        $missionList = $this->missionRepository->getMissions($request, $userFilterData, $languageId);
+
+        $missionsTransformed = $missionList
+            ->getCollection()
+            ->map(function ($item) use ($languageCode) {
+                return $this->transformMission($item, $languageCode);
+            })->toArray();
+        
+        $requestString = $request->except(['page','perPage']);
+        $missionsPaginated = new \Illuminate\Pagination\LengthAwarePaginator(
+            $missionsTransformed,
+            $missionList->total(),
+            $missionList->perPage(),
+            $missionList->currentPage(),
+            [
+                'path' => $request->url().'?'.http_build_query($requestString),
+                'query' => [
+                    'page' => $missionList->currentPage()
+                ]
+            ]
+        );
+
+        $metaData['filters'] = $userFilterData;
+        $metaData['filters']["tags"] = $filterTagArray;
+        $apiData = $missionsPaginated;
+        $apiStatus = Response::HTTP_OK;
+        $apiMessage = trans('messages.success.MESSAGE_MISSION_LISTING');
+        return $this->responseHelper->successWithPagination(
+            $apiStatus,
+            $apiMessage,
+            $apiData,
+            $metaData
+        );
     }
 
     /**
@@ -270,8 +266,6 @@ class MissionController extends Controller
                 config('constants.error_codes.ERROR_MISSION_NOT_FOUND'),
                 trans('messages.custom_error_message.ERROR_MISSION_NOT_FOUND')
             );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
 
@@ -283,89 +277,85 @@ class MissionController extends Controller
      */
     public function filters(Request $request): JsonResponse
     {
-        try {
-            $returnData = $apiData = [];
-            $language = ($request->hasHeader('X-localization')) ?
-            $request->header('X-localization') : env('TENANT_DEFAULT_LANGUAGE_CODE');
-            // Get Data by country
-            $missionCountry = $this->missionRepository->missionFilter($request, config('constants.COUNTRY'));
-            // Get Data by top theme
-            $missionCity = $this->missionRepository->missionFilter($request, config('constants.CITY'));
-            // Get Data by top organization
-            $missionTheme = $this->missionRepository->missionFilter($request, config('constants.THEME'));
-            // Get Data by skills
-            $missionSkill = $this->missionRepository->missionFilter($request, config('constants.SKILL'));
-       
-            if (!empty($missionCountry->toArray())) {
-                foreach ($missionCountry as $key => $value) {
-                    if ($value->country) {
-                        $returnData[config('constants.COUNTRY')][$key]['title'] =
-                        $value->country->name;
-                        $returnData[config('constants.COUNTRY')][$key]['id'] =
-                        $value->country->country_id;
-                        $returnData[config('constants.COUNTRY')][$key]['mission_count'] =
-                        $value->mission_count;
-                    }
+        $returnData = $apiData = [];
+        $language = ($request->hasHeader('X-localization')) ?
+        $request->header('X-localization') : env('TENANT_DEFAULT_LANGUAGE_CODE');
+        // Get Data by country
+        $missionCountry = $this->missionRepository->missionFilter($request, config('constants.COUNTRY'));
+        // Get Data by top theme
+        $missionCity = $this->missionRepository->missionFilter($request, config('constants.CITY'));
+        // Get Data by top organization
+        $missionTheme = $this->missionRepository->missionFilter($request, config('constants.THEME'));
+        // Get Data by skills
+        $missionSkill = $this->missionRepository->missionFilter($request, config('constants.SKILL'));
+    
+        if (!empty($missionCountry->toArray())) {
+            foreach ($missionCountry as $key => $value) {
+                if ($value->country) {
+                    $returnData[config('constants.COUNTRY')][$key]['title'] =
+                    $value->country->name;
+                    $returnData[config('constants.COUNTRY')][$key]['id'] =
+                    $value->country->country_id;
+                    $returnData[config('constants.COUNTRY')][$key]['mission_count'] =
+                    $value->mission_count;
                 }
-                $apiData[config('constants.COUNTRY')] = $returnData[config('constants.COUNTRY')];
             }
-
-            if (!empty($missionCity->toArray())) {
-                foreach ($missionCity as $key => $value) {
-                    $returnData[config('constants.CITY')][$key]['title'] =
-                        $value->city_name;
-                    $returnData[config('constants.CITY')][$key]['id'] =
-                        $value->city_id;
-                    $returnData[config('constants.CITY')][$key]['mission_count'] =
-                        $value->mission_count;
-                }
-                $apiData[config('constants.CITY')] = $returnData[config('constants.CITY')];
-            }
-            
-            if (!empty($missionTheme->toArray())) {
-                foreach ($missionTheme as $key => $value) {
-                    if ($value->missionTheme && $value->missionTheme->translations) {
-                        $arrayKey = array_search($language, array_column($value->missionTheme->translations, 'lang'));
-                        if ($arrayKey  !== '') {
-                            $returnData[config('constants.THEME')][$key]['title'] =
-                            $value->missionTheme->translations[$arrayKey]['title'];
-                            $returnData[config('constants.THEME')][$key]['id'] =
-                            $value->missionTheme->mission_theme_id;
-                            $returnData[config('constants.THEME')][$key]['mission_count'] =
-                            $value->mission_count;
-                        }
-                    }
-                }
-                $apiData[config('constants.THEME')] = $returnData[config('constants.THEME')];
-            }
-            
-            if (!empty($missionSkill->toArray())) {
-                foreach ($missionSkill as $key => $value) {
-                    if ($value->skill) {
-                        $arrayKey = array_search($language, array_column($value->skill->translations, 'lang'));
-                        if ($arrayKey  !== '') {
-                            $returnData[config('constants.SKILL')][$key]['title'] =
-                            $value->skill->translations[$arrayKey]['title'];
-                            $returnData[config('constants.SKILL')][$key]['id'] =
-                            $value->skill->skill_id;
-                            $returnData[config('constants.SKILL')][$key]['mission_count'] =
-                            $value->mission_count;
-                        }
-                    }
-                }
-
-                $apiData[config('constants.SKILL')] = $returnData[config('constants.SKILL')];
-            }
-            
-            $apiStatus = Response::HTTP_OK;
-            return $this->responseHelper->success(
-                $apiStatus,
-                '',
-                $apiData
-            );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
+            $apiData[config('constants.COUNTRY')] = $returnData[config('constants.COUNTRY')];
         }
+
+        if (!empty($missionCity->toArray())) {
+            foreach ($missionCity as $key => $value) {
+                $returnData[config('constants.CITY')][$key]['title'] =
+                    $value->city_name;
+                $returnData[config('constants.CITY')][$key]['id'] =
+                    $value->city_id;
+                $returnData[config('constants.CITY')][$key]['mission_count'] =
+                    $value->mission_count;
+            }
+            $apiData[config('constants.CITY')] = $returnData[config('constants.CITY')];
+        }
+        
+        if (!empty($missionTheme->toArray())) {
+            foreach ($missionTheme as $key => $value) {
+                if ($value->missionTheme && $value->missionTheme->translations) {
+                    $arrayKey = array_search($language, array_column($value->missionTheme->translations, 'lang'));
+                    if ($arrayKey  !== '') {
+                        $returnData[config('constants.THEME')][$key]['title'] =
+                        $value->missionTheme->translations[$arrayKey]['title'];
+                        $returnData[config('constants.THEME')][$key]['id'] =
+                        $value->missionTheme->mission_theme_id;
+                        $returnData[config('constants.THEME')][$key]['mission_count'] =
+                        $value->mission_count;
+                    }
+                }
+            }
+            $apiData[config('constants.THEME')] = $returnData[config('constants.THEME')];
+        }
+        
+        if (!empty($missionSkill->toArray())) {
+            foreach ($missionSkill as $key => $value) {
+                if ($value->skill) {
+                    $arrayKey = array_search($language, array_column($value->skill->translations, 'lang'));
+                    if ($arrayKey  !== '') {
+                        $returnData[config('constants.SKILL')][$key]['title'] =
+                        $value->skill->translations[$arrayKey]['title'];
+                        $returnData[config('constants.SKILL')][$key]['id'] =
+                        $value->skill->skill_id;
+                        $returnData[config('constants.SKILL')][$key]['mission_count'] =
+                        $value->mission_count;
+                    }
+                }
+            }
+
+            $apiData[config('constants.SKILL')] = $returnData[config('constants.SKILL')];
+        }
+        
+        $apiStatus = Response::HTTP_OK;
+        return $this->responseHelper->success(
+            $apiStatus,
+            '',
+            $apiData
+        );
     }
 
     /**
@@ -411,8 +401,6 @@ class MissionController extends Controller
                 config('constants.error_codes.ERROR_MISSION_NOT_FOUND'),
                 trans('messages.custom_error_message.ERROR_MISSION_NOT_FOUND')
             );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
     
@@ -426,63 +414,59 @@ class MissionController extends Controller
      */
     public function missionFiltersTag(Request $request, object $language, UserFilter $userFilters): array
     {
-        try {
-            // Get data of user's filter
-            $filterTagArray = [];
-            $filterData= $userFilters->toArray();
+        // Get data of user's filter
+        $filterTagArray = [];
+        $filterData= $userFilters->toArray();
 
-            if (!empty($filterData["filters"])) {
-                if ($filterData["filters"]["country_id"] && $filterData["filters"]["country_id"] != "") {
-                    $countryTag = $this->countryRepository->getCountry($filterData["filters"]["country_id"]);
-                    if ($countryTag["name"]) {
-                        $filterTagArray["country"][$countryTag["country_id"]] = $countryTag["name"];
+        if (!empty($filterData["filters"])) {
+            if ($filterData["filters"]["country_id"] && $filterData["filters"]["country_id"] != "") {
+                $countryTag = $this->countryRepository->getCountry($filterData["filters"]["country_id"]);
+                if ($countryTag["name"]) {
+                    $filterTagArray["country"][$countryTag["country_id"]] = $countryTag["name"];
+                }
+            }
+
+            if ($filterData["filters"]["city_id"] && $filterData["filters"]["city_id"] != "") {
+                $cityTag = $this->cityRepository->getCity($filterData["filters"]["city_id"]);
+                if ($cityTag) {
+                    foreach ($cityTag as $key => $value) {
+                        $filterTagArray["city"][$key] = $value;
                     }
                 }
+            }
 
-                if ($filterData["filters"]["city_id"] && $filterData["filters"]["city_id"] != "") {
-                    $cityTag = $this->cityRepository->getCity($filterData["filters"]["city_id"]);
-                    if ($cityTag) {
-                        foreach ($cityTag as $key => $value) {
-                            $filterTagArray["city"][$key] = $value;
-                        }
-                    }
-                }
-
-                if ($filterData["filters"]["theme_id"] && $filterData["filters"]["theme_id"] != "") {
-                    $themeTag = $this->themeRepository->missionThemeList($request, $filterData["filters"]["theme_id"]);
-                    if ($themeTag) {
-                        foreach ($themeTag as $value) {
-                            if ($value->translations) {
-                                $arrayKey = array_search($language->code, array_column($value->translations, 'lang'));
-                                if ($arrayKey  !== '') {
-                                    $filterTagArray["theme"][$value->mission_theme_id] =
-                                    $value->translations[$arrayKey]['title'];
-                                }
-                            }
-                        }
-                    }
-                }
-
-                if ($filterData["filters"]["skill_id"] && $filterData["filters"]["skill_id"] != "") {
-                    $skillTag = $this->skillRepository->skillList($request, $filterData["filters"]["skill_id"]);
-                    if ($skillTag) {
-                        foreach ($skillTag as $value) {
-                            if ($value->translations) {
-                                $arrayKey = array_search($language->code, array_column($value->translations, 'lang'));
-                                if ($arrayKey  !== '') {
-                                    $filterTagArray["skill"][$value->skill_id] =
-                                    $value->translations[$arrayKey]['title'];
-                                }
+            if ($filterData["filters"]["theme_id"] && $filterData["filters"]["theme_id"] != "") {
+                $themeTag = $this->themeRepository->missionThemeList($request, $filterData["filters"]["theme_id"]);
+                if ($themeTag) {
+                    foreach ($themeTag as $value) {
+                        if ($value->translations) {
+                            $arrayKey = array_search($language->code, array_column($value->translations, 'lang'));
+                            if ($arrayKey  !== '') {
+                                $filterTagArray["theme"][$value->mission_theme_id] =
+                                $value->translations[$arrayKey]['title'];
                             }
                         }
                     }
                 }
             }
 
-            return $filterTagArray;
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
+            if ($filterData["filters"]["skill_id"] && $filterData["filters"]["skill_id"] != "") {
+                $skillTag = $this->skillRepository->skillList($request, $filterData["filters"]["skill_id"]);
+                if ($skillTag) {
+                    foreach ($skillTag as $value) {
+                        if ($value->translations) {
+                            $arrayKey = array_search($language->code, array_column($value->translations, 'lang'));
+                            if ($arrayKey  !== '') {
+                                $filterTagArray["skill"][$value->skill_id] =
+                                $value->translations[$arrayKey]['title'];
+                            }
+                        }
+                    }
+                }
+            }
         }
+
+        return $filterTagArray;
     }
 
     /**
@@ -521,8 +505,6 @@ class MissionController extends Controller
                 config('constants.error_codes.ERROR_MISSION_NOT_FOUND'),
                 trans('messages.custom_error_message.ERROR_MISSION_NOT_FOUND')
             );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
     
@@ -558,8 +540,6 @@ class MissionController extends Controller
                 config('constants.error_codes.ERROR_MISSION_NOT_FOUND'),
                 trans('messages.custom_error_message.ERROR_MISSION_NOT_FOUND')
             );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
 }

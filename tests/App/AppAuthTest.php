@@ -229,4 +229,62 @@ class AppAuthTest extends TestCase
         $this->post('app/login', $params, [])
           ->seeStatusCode(403);
     }
+
+    /**
+     * @test
+     *
+     * Show error if email is invalid
+     *
+     * @return void
+     */
+    public function it_should_show_error_if_email_is_blank()
+    {
+        $connection = 'tenant';
+        $user = factory(\App\User::class)->make();
+        $user->setConnection($connection);
+        $user->save();
+
+        $params = [];
+
+        $this->post('app/login', $params, [])
+          ->seeStatusCode(422)
+          ->seeJsonStructure([
+              'errors' => [
+                  [
+                      'status',
+                      'type',
+                      'code',
+                      'message'
+                  ]
+              ]
+          ]);
+        $user->delete();
+    }
+
+    /**
+     * @test
+     *
+     * Return error if no data found for request password reset
+     *
+     * @return void
+     */
+    public function it_should_return_error_if_no_data_found_for_request_for_reset_password()
+    {       
+        $params = [
+            'email' => 'test@email.com',
+        ];
+
+        $this->post('app/request-password-reset', $params, [])
+        ->seeStatusCode(400)
+        ->seeJsonStructure([
+              'errors' => [
+                  [
+                      'status',
+                      'type',
+                      'message'
+                  ]
+              ]
+        ]);
+    }
+
 }

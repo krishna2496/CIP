@@ -61,8 +61,6 @@ class MissionThemeController extends Controller
                 config('constants.error_codes.ERROR_INVALID_ARGUMENT'),
                 trans('messages.custom_error_message.ERROR_INVALID_ARGUMENT')
             );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
 
@@ -74,45 +72,35 @@ class MissionThemeController extends Controller
      */
     public function store(Request $request): JsonResponse
     {
-        try {
-            // Server side validataions
-            $validator = Validator::make(
-                $request->all(),
-                [
-                    "theme_name" => "required|max:255|
-                    unique:mission_theme,theme_name,NULL,mission_theme_id,deleted_at,NULL",
-                    "translations" => "required",
-                    "translations.*.lang" => "required_with:translations|max:2"
-                ]
-            );
+        // Server side validataions
+        $validator = Validator::make(
+            $request->all(),
+            [
+                "theme_name" => "required|max:255|
+                unique:mission_theme,theme_name,NULL,mission_theme_id,deleted_at,NULL",
+                "translations" => "required",
+                "translations.*.lang" => "required_with:translations|max:2"
+            ]
+        );
 
-            // If request parameter have any error
-            if ($validator->fails()) {
-                return $this->responseHelper->error(
-                    Response::HTTP_UNPROCESSABLE_ENTITY,
-                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                    config('constants.error_codes.ERROR_THEME_INVALID_DATA'),
-                    $validator->errors()->first()
-                );
-            }
-            
-            // Create new mission theme
-            $missionTheme = $this->missionThemeRepository->store($request->all());
-
-            // Set response data
-            $apiData = ['mission_theme_id' => $missionTheme->mission_theme_id];
-            $apiStatus = Response::HTTP_CREATED;
-            $apiMessage = trans('messages.success.MESSAGE_THEME_CREATED');
-            
-            return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
-        } catch (InvalidArgumentException $e) {
-            return $this->invalidArgument(
-                config('constants.error_codes.ERROR_INVALID_ARGUMENT'),
-                trans('messages.custom_error_message.ERROR_INVALID_ARGUMENT')
+        // If request parameter have any error
+        if ($validator->fails()) {
+            return $this->responseHelper->error(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                config('constants.error_codes.ERROR_THEME_INVALID_DATA'),
+                $validator->errors()->first()
             );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
+        // Create new mission theme
+        $missionTheme = $this->missionThemeRepository->store($request->all());
+
+        // Set response data
+        $apiData = ['mission_theme_id' => $missionTheme->mission_theme_id];
+        $apiStatus = Response::HTTP_CREATED;
+        $apiMessage = trans('messages.success.MESSAGE_THEME_CREATED');
+        
+        return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
     }
 
     /**
@@ -161,8 +149,6 @@ class MissionThemeController extends Controller
                 config('constants.error_codes.ERROR_THEME_NOT_FOUND'),
                 trans('messages.custom_error_message.ERROR_THEME_NOT_FOUND')
             );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
 
@@ -187,8 +173,6 @@ class MissionThemeController extends Controller
                 config('constants.error_codes.ERROR_THEME_NOT_FOUND'),
                 trans('messages.custom_error_message.ERROR_THEME_NOT_FOUND')
             );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
 
@@ -212,8 +196,6 @@ class MissionThemeController extends Controller
                 config('constants.error_codes.ERROR_THEME_NOT_FOUND'),
                 trans('messages.custom_error_message.ERROR_THEME_NOT_FOUND')
             );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
 }

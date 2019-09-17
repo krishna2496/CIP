@@ -139,3 +139,10 @@ $factory->define(App\Models\UserSkill::class, function (Faker\Generator $faker) 
         'skill_id' => 1
     ];
 });
+
+$factory->define(App\Models\City::class, function (Faker\Generator $faker) {
+    return [
+        'country_id' => 1,
+        'name' => 'test'
+    ];
+});
