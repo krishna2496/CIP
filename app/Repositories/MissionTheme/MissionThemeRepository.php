@@ -146,7 +146,9 @@ class MissionThemeRepository implements MissionThemeInterface
         ->whereNotNull('mission.mission_id')
         ->whereIn('timesheet.status_id', $this->timesheetStatus->getApprovedStatuses()->toArray())
         ->whereNotNull('timesheet.timesheet_id')
+        ->whereNull('timesheet.deleted_at')
         ->groupBy('mission_theme.mission_theme_id');
+        
         
         $hoursPerThemes = $queryBuilder->get();
         
@@ -156,7 +158,7 @@ class MissionThemeRepository implements MissionThemeInterface
                 $theme->translations,
                 'lang'
             ));
-            if ($arrayKey  !== '') {
+            if ($arrayKey  !== false) {
                 $theme->theme_name = $theme->translations[$arrayKey]['title'];
             }
             unset($theme->translations);

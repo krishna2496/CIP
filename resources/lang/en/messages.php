@@ -125,7 +125,8 @@ return [
         'MESSAGE_USER_PENDING_TIME_MISSION_ENTRIES_EXPORTED' => 'Pending time entries for time missions, generated successfully',
         'MESSAGE_ENABLE_TO_EXPORT_USER_PENDING_TIME_MISSION_ENTRIES' => 'No data found, to generate pending time entries for time mission',
         'MESSAGE_USER_PENDING_GOAL_MISSION_ENTRIES_EXPORTED' => 'Pending time entries for goal missions, generated successfully',
-        'MESSAGE_ENABLE_TO_EXPORT_USER_PENDING_GOAL_MISSION_ENTRIES' => 'No data found, to generate pending time entries for goal mission'
+        'MESSAGE_ENABLE_TO_EXPORT_USER_PENDING_GOAL_MISSION_ENTRIES' => 'No data found, to generate pending time entries for goal mission',
+        'MESSAGE_AUTO_APPROVED_COMMENT_ADDED' => 'Thanks for your comment.'
 	],
         
     /**
@@ -234,7 +235,7 @@ return [
         'TIMESHEET_NOT_FOUND' => 'Timesheet does not exists' ,
         'ERROR_TIMESHEET_ALREADY_APPROVED' => 'You can not update approved timesheet',        
         'TIMESHEET_DOCUMENT_NOT_FOUND' => 'Timesheet document does not exists',
-        'ERROR_MISSION_STARTDATE' => 'Invalid date: selected date should not be before startdate',
+        'ERROR_MISSION_STARTDATE' => 'Invalid date: selected date should not be before start date',
         'ERROR_MISSION_ENDDATE' => 'Selected date should not be greater than mission end date',
         'MISSION_APPLICATION_NOT_APPROVED' => 'Mission application is not approved',
         'ERROR_TIMESHEET_ALREADY_DONE_FOR_DATE' => 'Time entry is already approved for given date', 

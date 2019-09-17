@@ -38,7 +38,7 @@
 		"already_volunteered" : "Already volunteered",
 		"on_going_opportunities" : "Ongoing opportunities",
 		"view_detail" : "View details",
-		"no_record_found" : "No record found",
+		"no_record_found" : "No records found",
 		"oldest" : "Oldest",
 		"newest" : "Newest",
         "lowest_available_seats" : "Lowest available seats",
@@ -125,7 +125,7 @@
 		"oops": "Oops!",
 		"page_not_found_message_heading": "The page you were looking for doesn't exist.",
 		"page_not_found_message_text": "You may have mistyped the address or the page may have moved.",
-		"go_to_home_page": "Go to Homepage",
+		"go_to_home_page": "Go to homepage",
 		"dashboard" : "Dashboard",
 		"volunteering_history" : "Volunteering History",
 		"volunteering_timesheet" : "Volunteering Timesheet",
@@ -135,7 +135,7 @@
 		"total_hours" : "Total hours",
 		"hours" : "Hours",
 		"minutes" : "Minutes",
-		"date_volunteered" : "Date Volunteered",
+		"date_volunteered" : "Date volunteered",
 		"notes" : "Notes",
 		"volunteering_goals" : "Volunteering Goals",
 		"hours_requests" : "Hours Requests",
@@ -145,8 +145,8 @@
 		"hours_per_theme" : "Hours per theme",
 		"hours_per_skill" : "Hours per skill",
 		"workday" : "Work day",
-		"weekend" : "Weekend",
-		"holiday" : "Holiday time",
+		"weekend" : "Week-end",
+		"holiday" : "Holiday",
 		"approved" : "Approved",
 		"declined" : "Declined",
 		"day" : "Day",
@@ -175,13 +175,19 @@
 		"sunday" : "Sun",
 		"hour_entry_modal_title" : "Please input below time you spent on this mission",
 		"goal_entry_modal_title" : "Please input below action you spent on this mission",
-		"file_upload" : "Document Upload",
+		"file_upload" : "Document upload",
 		"drop_files" : "Or drop documents here",
 		"browse" : "Browse",
 		"delete" : "Delete",
 		"actions" : "Actions",
-		"goal" : "Goal",
-		"submit_for_approval" : "Submit for approval"
+		"years" : "Years",
+		"goal" : "Goal",		
+		"submit_for_approval" : "Submit for approval",
+		"day_volunteered" : "Day volunteered",
+		"no_volunteer_history_found" : "The heart of a volunteer is never measured in size, but by the depth of the commitment to make a difference in the lives of others.",
+		"empty_volunteer_history_text" : "The heart of a volunteer is never measured in size, but by the depth of the commitment to make a difference in the lives of others.",
+		"start_volunteering" : "Start Volunteering"
+
 	},
 
 	"placeholder" : {
@@ -208,7 +214,7 @@
 		 "spent_hours" : "Enter spent hours",
 		 "spent_minutes" : "Enter spent minutes",
 		 "notes" : "Enter notes",
-		 "workday" : "Please select workday",
+		 "workday" : "Please select day volunteered",
 		 "action" : "Enter action"
 	},
 
@@ -242,13 +248,17 @@
 		 "field_is_required" : "This field is required",
 		 "minute_or_hours_is_required" : "Please select hours or minutes",
 		 "date_volunteer_is_required" : "Volunteer date is required",
-		 "work_day" : "Please select workday",
+		 "work_day" : "Please select day volunteered",
 		 "notes" : "Notes is required",
 		 "action_required" : "Action is required",
 		 "file_max_size" : "Document may not be greater than 5mb",
 		 "minimum_action" :"The action must be at least 1"
-	}
-
+	},
 	
-
+	"export_timesheet_file_names" : {
+		"PENDING_TIME_MISSION_ENTRIES_XLSX" : "Pending_Time_Mission_Entries.xlsx",
+        "PENTIND_GOAL_MISSION_ENTRIES_XLSX" : "Pending_Goal_Mission_Entries.xlsx",
+        "TIME_MISSION_HISTORY_XLSX" : "Time_Mission_History.xlsx",
+        "GOAL_MISSION_HISTORY_XLSX" : "Goal_Mission_History.xlsx"    
+	}
 }

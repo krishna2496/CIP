@@ -16,14 +16,6 @@ use Illuminate\Support\Facades\Hash;
 class Helpers
 {
     use RestExceptionHandlerTrait;
-    /**
-     * Create a new helper instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-    }
     
     /**
     * It will return tenant name from request

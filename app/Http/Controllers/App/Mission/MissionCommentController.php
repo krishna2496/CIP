@@ -10,6 +10,8 @@ use Illuminate\Http\JsonResponse;
 use App\Traits\RestExceptionHandlerTrait;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Validator;
+use App\Helpers\Helpers;
+use App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository;
 
 class MissionCommentController extends Controller
 {
@@ -26,18 +28,29 @@ class MissionCommentController extends Controller
     private $missionCommentRepository;
     
     /**
+     * @var App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository
+     */
+    private $tenantActivatedSettingRepository;
+    
+    /**
      * Create a new comment controller instance
      *
      * @param App\Repositories\Mission\MissionCommentRepository $missionCommentRepository
      * @param Illuminate\Http\ResponseHelper $responseHelper
+     * @param App\Helpers\Helpers
+     * @param App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository
      * @return void
      */
     public function __construct(
         MissionCommentRepository $missionCommentRepository,
-        ResponseHelper $responseHelper
+        ResponseHelper $responseHelper,
+        Helpers $helpers,
+        TenantActivatedSettingRepository $tenantActivatedSettingRepository
     ) {
         $this->missionCommentRepository = $missionCommentRepository;
         $this->responseHelper = $responseHelper;
+        $this->helpers = $helpers;
+        $this->tenantActivatedSettingRepository = $tenantActivatedSettingRepository;
     }
 
     /**
@@ -90,12 +103,25 @@ class MissionCommentController extends Controller
             );
         }
 
+        // Need to check activated setting for comment approval status
+        $isAutoApproved = $this->tenantActivatedSettingRepository->checkTenantSettingStatus(
+            config('constants.tenant_settings.MISSION_COMMENT_AUTO_APPROVED'),
+            $request
+        );
+        if ($isAutoApproved) {
+            $request->request->add(
+                [
+                    'approval_status' => config('constants.comment_approval_status.PUBLISHED')
+                ]
+            );
+        }
         $missionComment = $this->missionCommentRepository->store($request->auth->user_id, $request->toArray());
 
         // Set response data
         $apiStatus = Response::HTTP_CREATED;
         $apiData = ['comment_id' => $missionComment->comment_id];
-        $apiMessage =trans('messages.success.MESSAGE_COMMENT_ADDED');
+        $apiMessage = ($isAutoApproved) ? trans('messages.success.MESSAGE_AUTO_APPROVED_COMMENT_ADDED') :
+        trans('messages.success.MESSAGE_COMMENT_ADDED');
         
         return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
     }

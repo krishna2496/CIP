@@ -18,6 +18,7 @@ use Validator;
 use App\Repositories\TenantOption\TenantOptionRepository;
 use App\Helpers\ExportCSV;
 use App\Helpers\Helpers;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use App\Models\Mission;
 
 class TimesheetController extends Controller
@@ -112,7 +113,7 @@ class TimesheetController extends Controller
             $request->toArray(),
             [
                 'mission_id' => 'required|exists:mission,mission_id,deleted_at,NULL',
-                'date_volunteered' => 'required',
+                'date_volunteered' => 'required|date_format:Y-m-d|before:tomorrow',
                 'day_volunteered' => ['required', Rule::in(config('constants.day_volunteered'))],
                 'documents.*' => 'max:' . $documentSizeLimit . '|valid_timesheet_document_type',
                 'action' => 'required_if:mission_type,GOAL|integer|min:1',
@@ -235,25 +236,32 @@ class TimesheetController extends Controller
                             config('constants.TIMESHEET_DATE_FORMAT'),
                             $missionEndDate
                         );
-            
-                        // Fetch tenant options value
-                        $tenantOptionData = $this->tenantOptionRepository
-                        ->getOptionValue('ALLOW_TIMESHEET_ENTRY');
+                        if ($dateVolunteered > $missionEndDate) {
+                            $endDate = Carbon::createFromFormat(
+                                config('constants.TIMESHEET_DATE_FORMAT'),
+                                $missionEndDate
+                            );
+                
+                            // Fetch tenant options value
+                            $tenantOptionData = $this->tenantOptionRepository
+                            ->getOptionValue('ALLOW_TIMESHEET_ENTRY');
 
-                        $extraWeeks = isset($tenantOptionData[0]['option_value'])
-                        ? intval($tenantOptionData[0]['option_value']) : config('constants.ALLOW_TIMESHEET_ENTRY');
+                            $extraWeeks = isset($tenantOptionData[0]['option_value'])
+                            ? intval($tenantOptionData[0]['option_value'])
+                            : config('constants.ALLOW_TIMESHEET_ENTRY');
 
-                        // Count records
-                        if (count($tenantOptionData) > 0 || $extraWeeks > 0) {
-                            // Add weeks to mission end date
-                            $timeentryEndDate = $endDate->addWeeks($extraWeeks);
-                            if ($dateVolunteered > $timeentryEndDate) {
-                                return $this->responseHelper->error(
-                                    Response::HTTP_UNPROCESSABLE_ENTITY,
-                                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                                    config('constants.error_codes.ERROR_MISSION_ENDDATE'),
-                                    trans('messages.custom_error_message.ERROR_MISSION_ENDDATE')
-                                );
+                            // Count records
+                            if (count($tenantOptionData) > 0 || $extraWeeks > 0) {
+                                // Add weeks to mission end date
+                                $timeentryEndDate = $endDate->addWeeks($extraWeeks);
+                                if ($dateVolunteered > $timeentryEndDate) {
+                                    return $this->responseHelper->error(
+                                        Response::HTTP_UNPROCESSABLE_ENTITY,
+                                        Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                                        config('constants.error_codes.ERROR_MISSION_ENDDATE'),
+                                        trans('messages.custom_error_message.ERROR_MISSION_ENDDATE')
+                                    );
+                                }
                             }
                         }
                     }
@@ -421,9 +429,9 @@ class TimesheetController extends Controller
      * Export all pending time mission time entries.
      *
      * @param Illuminate\Http\Request $request
-     * @return Illuminate\Http\JsonResponse
+     * @return Symfony\Component\HttpFoundation\BinaryFileResponse
      */
-    public function exportPendingTimeRequests(Request $request): JsonResponse
+    public function exportPendingTimeRequests(Request $request): BinaryFileResponse
     {
         $statusArray = [config('constants.timesheet_status_id.SUBMIT_FOR_APPROVAL')];
 
@@ -470,9 +478,9 @@ class TimesheetController extends Controller
      * Export user's goal mission history
      *
      * @param \Illuminate\Http\Request $request
-     * @return Illuminate\Http\JsonResponse
+     * @return Symfony\Component\HttpFoundation\BinaryFileResponse
      */
-    public function exportPendingGoalRequests(Request $request): JsonResponse
+    public function exportPendingGoalRequests(Request $request): BinaryFileResponse
     {
         $statusArray = [config('constants.timesheet_status_id.SUBMIT_FOR_APPROVAL')];
         $goalRequestList = $this->timesheetRepository->goalRequestList($request, $statusArray, false);
@@ -501,14 +509,8 @@ class TimesheetController extends Controller
             $tenantName = $this->helpers->getSubDomainFromRequest($request);
             
             $path = $excel->export('app/'.$tenantName.'/timesheet/'.$request->auth->user_id.'/exports');
+
+            return response()->download($path, $fileName);
         }
-
-        $apiStatus = Response::HTTP_OK;
-        $apiMessage =  ($goalRequestList->count()) ?
-            trans('messages.success.MESSAGE_USER_PENDING_GOAL_MISSION_ENTRIES_EXPORTED'):
-            trans('messages.success.MESSAGE_ENABLE_TO_EXPORT_USER_PENDING_GOAL_MISSION_ENTRIES');
-        $apiData = ($goalRequestList->count()) ? ['path' => $path] : [];
-
-        return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
     }
 }
