@@ -116,7 +116,7 @@ return [
         'MESSAGE_TIME_REQUEST_NOT_FOUND' => 'No pending time requests found',
         'MESSAGE_GOAL_MISSION_TIME_ENTRY_LISTED' => 'Goal missions timesheet entry listed sucessfully',
         'MESSAGE_NO_GOAL_MISSION_TIME_ENTRY_FOUND' => 'Goal missions timesheet entry not found',
-        'MESSAGE_TIME_MISSION_TIME_ENTRY_LISTED' => 'Time missions timesheet entry listed',
+        'MESSAGE_TIME_MISSION_TIME_ENTRY_LISTED' => 'Time missions timesheet entry listed sucessfully',
         'MESSAGE_NO_TIME_MISSION_TIME_ENTRY_FOUND' => 'Time missions timesheet entry not found',
         'MESSAGE_USER_GOAL_MISSION_HISTORY_EXPORTED' => 'History file generated successfully for goal missions',
         'MESSAGE_ENABLE_TO_EXPORT_USER_GOAL_MISSION_HISTORY' => 'No data found, to generate history file for goal missions',
@@ -232,14 +232,14 @@ return [
 
         //For timesheet module
         'ERROR_INVALID_ACTION' => 'Invalid goal action',
-        'TIMESHEET_NOT_FOUND' => 'Timesheet does not exists' ,
+        'TIMESHEET_NOT_FOUND' => 'Timesheet entry not found' ,
         'ERROR_TIMESHEET_ALREADY_APPROVED' => 'You can not update approved timesheet',        
         'TIMESHEET_DOCUMENT_NOT_FOUND' => 'Timesheet document does not exists',
         'ERROR_MISSION_STARTDATE' => 'Invalid date: selected date should not be before start date',
         'ERROR_MISSION_ENDDATE' => 'Selected date should not be greater than mission end date',
         'MISSION_APPLICATION_NOT_APPROVED' => 'Mission application is not approved',
         'ERROR_TIMESHEET_ALREADY_DONE_FOR_DATE' => 'Time entry is already approved for given date', 
-        'ERROR_INVALID_DATA_FOR_TIMESHEET_ENTRY' => 'You cannot add time entry',
+        'ERROR_INVALID_DATA_FOR_TIMESHEET_ENTRY' => 'You cannot add time entry, either mission application not found or not approved',
         'ERROR_SAME_DATE_TIME_ENTRY' => 'You cannot add more than 24 hours timeentry for same date',
     ],
 
