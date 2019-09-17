@@ -221,6 +221,7 @@ return [
         'ERROR_REQUIRED_FIELDS_FOR_UPDATE_STYLING' => 'Requis soit en couleur primaire, soit en champ de fichier SCSS personnalisé',
         'ERROR_WHILE_UPLOADING_FILE_ON_S3' => 'Une erreur lors du téléchargement du fichier sur S3',
         'ERROR_SLIDER_NOT_FOUND' => 'Aucun curseur trouvé',
+        'ERROR_NOT_VALID_IMAGE_FILE_EXTENSION' => 'L\'extension d\'image est valide pour cette image',
 
         
         //For timesheet module
