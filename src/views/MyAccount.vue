@@ -9,7 +9,7 @@
         <b-col xl="3" lg="4" md="12" class="profile-left-col">
             <div class="profile-details">
             <div  class="profile-block">
-                <div v-bind:class="{ 'content-loader-wrap': true, 'profile-image-loader': imageLoader}">
+                <div v-bind:class="{ 'content-loader-wrap': true, 'loader-active ': imageLoader}">
                     <div class="content-loader"></div>
                 </div>
 
@@ -333,11 +333,14 @@
           centered
           hide-footer
         >
-          <template slot="modal-title">{{langauageData.label.change_password}}</template>
+            <template slot="modal-header" slot-scope="{ close }">
+                <i class="close"  @click="close()" v-b-tooltip.hover :title="langauageData.label.close"></i>
+              <h5 class="modal-title">{{langauageData.label.change_password}}</h5>
+            </template>
             <b-alert show :variant="classVariant" dismissible v-model="showErrorDiv">
-                    {{ message }}
+                {{ message }}
             </b-alert>
-          <form action class="form-wrap">
+            <form action class="form-wrap">
             <b-form-group>
               <b-form-input id type="password"
                 ref="oldPassword" 
