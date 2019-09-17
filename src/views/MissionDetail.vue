@@ -89,10 +89,10 @@
 									</span>
 
 								</b-button>
-								<b-button class="btn-borderprimary icon-btn btn-add-entry" v-if="allowAddEntry" 
+								<!-- <b-button class="btn-borderprimary icon-btn btn-add-entry" v-if="allowAddEntry" 
 									@click="addEntry">
 									Add entry
-								</b-button>
+								</b-button> -->
 							</div>
 						</div>
 
