@@ -10,7 +10,8 @@
                 v-bind:data-type="type"
                 @click="handleSelect"
             >
-                <img v-bind:data-id="tagId"
+                <img v-bind:data-id="tagId" 
+                v-if="type != 'country' && tagId  != defaultCountry"
                 v-bind:data-type="type" :src="$store.state.imagePath+'/assets/images/cross-ic.svg'" alt="close"/>
             </i>
         </span>
@@ -27,7 +28,9 @@
             url: String,
         },
         data() {
-            return {};
+            return {
+                defaultCountry : 0
+            };
         },
         methods: {
             handleSelect(e) {
@@ -37,5 +40,8 @@
                 this.$emit("updateCall", selectedData);
             }
         },
+        created() {
+            this.defaultCountry = store.state.defaultCountryId
+        }
     };
 </script>

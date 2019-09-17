@@ -18,7 +18,6 @@
                     ref="pictureInput" 
                     @change="changeImage"  
                     accept="image/jpeg,image/png"
-                    :prefillOptions="prefillOptionArray"
                     :prefill="newUrl"
                     buttonClass="btn"
                     :customStrings="{
@@ -308,7 +307,7 @@
                         <li  v-for="(toitem, idx) in resetUserSkillList">{{toitem.name}}</li>
                     </ul>
                     <ul v-else class="skill-list-wrapper" >
-                        <li>{{langauageData.label.no_record_found}}</li>
+                        <li>{{langauageData.label.no_skill_found}}</li>
                     </ul>
                     <MultiSelect
                         v-if="isShownComponent"
@@ -437,9 +436,6 @@ export default {
             langauageData : [],
             skillListing : [],
             resetSkillList : [],
-            prefillOptionArray : {
-                mediaType: 'image/png'
-            },
             clientImage : "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/tatva/assets/images/volunteer9.png",
             newUrl : "",
             isPrefilLoaded : true,
@@ -599,16 +595,6 @@ export default {
                         this.isPrefilLoaded = false
                     }
                     store.commit("changeAvatar",this.userData)
-                    var lowerCase = this.newUrl.toLowerCase();
-                    if (lowerCase.indexOf("png") !== -1) {
-                        this.prefilImageType.mediaType = "png"
-                    }
-                    else if (lowerCase.indexOf("jpg") !== -1 || lowerCase.indexOf("jpeg") !== -1) {
-                        
-                        this.prefilImageType.mediaType = "jpg"
-                    }  
-
-                   
 
                     this.cityList = Object.keys(this.userData.city_list).map(function(key) {
                         return [Number(key), _this.userData.city_list[key]];

@@ -3628,3 +3628,50 @@ background-color: rgba(0,0,0,.08);
     transform: scale(1.0);
   }
 }
+
+.share-block{
+	padding-top: 10px;
+	display: flex;
+	align-items: center;
+	justify-content: flex-end;
+}
+.social-block {
+	display: inline-flex;
+    align-content: center;
+    span{
+        margin-right: 10px;
+        cursor: pointer;
+        &:last-child {
+			margin-right: 0;
+		}
+    }
+	.social-icon {
+		width: 35px;
+		height: 35px;
+		border: 1px solid $gray-primary;
+		border-radius: 100%;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		@include transition(all 0.3s);
+		img {
+		width: 20px;
+		height: 20px;
+		vertical-align: top;
+			&.hover-img {
+				display: none;
+			}
+		}
+		&:hover {
+			background: $gray-primary;
+			img {
+				&.normal-img {
+					display: none;
+				}
+				&.hover-img {
+					display: inline-block;
+				}
+			}
+		}
+	}
+}
