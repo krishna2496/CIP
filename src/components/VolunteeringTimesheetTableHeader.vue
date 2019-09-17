@@ -7,7 +7,7 @@
 			</button> -->
 			<div class="picker-btn-wrap">
 				<button class="prev-btn picker-btn" :title="langauageData.label.previous" @click.stop="goPrev">
-					<img :src="$store.state.imagePath+'/assets/images/back-arrow-black.svg'" alt="Back Arrow" />
+					<img :src="$store.state.imagePath+'/assets/images/back-arrow-black.svg'" :alt="langauageData.label.previous" />
 				</button>
 
 				<span>{{langauageData.label[currentMonthName]}}</span>
@@ -15,9 +15,17 @@
 					:title="langauageData.label.next"  
 					v-bind:class="{disabled :isPreviousButtonDisable}"
 					@click.stop="goNext">
-					<img :src="$store.state.imagePath+'/assets/images/next-arrow-black.svg'" alt="Next Arrow"/>
+					<img :src="$store.state.imagePath+'/assets/images/next-arrow-black.svg'" :alt="langauageData.label.next"/>
 				</button>
 			</div>
+      <div>
+        <AppCustomDropdown
+            :optionList="yearListing"
+            @updateCall="changeYear"
+            :defaultText="defaultYear"
+            translationEnable="false"
+        />
+        </div>
        <!-- <div class="picker-wrapper">
     			<div class="select-time-period">
     				<span>{{langauageData.label.day}}</span>
@@ -37,57 +45,69 @@
 import store from '../store';
 import moment from 'moment'
 import DatePicker from "vue2-datepicker";
+import AppCustomDropdown from "../components/AppCustomDropdown";
 
 export default {
     name: "VolunteeringTimesheetHeader",
     components: {
-        DatePicker
+        DatePicker,
+        AppCustomDropdown
     },
     props: [
     ],
     data: function() {
         return {
-            time1: "",
-            value2: "",
+              time1: "",
+              value2: "",
               lang: {
-                    days: [" Sun ", " Mon ", " Tue ", " Wed ", " You ", " Fri ", " Sat "],
-                    months: [
-                      "Jan",
-                      "Feb",
-                      "Mar",
-                      "Apr",
-                      "May",
-                      "Jun",
-                      "Jul",
-                      "Aug",
-                      "Sep",
-                      "Oct",
-                      "Nov",
-                      "Dec"
-                    ],
-                    pickers: [
-                      "next 7 days",
-                      "next 30 days",
-                      "previous 7 days",
-                      "previous 30 days"
-                    ],
-                    placeholder: {
-                      date: "mm/dd/yy",
-                      dateRange: "Select Date Range"
-                    }
-                },
-    			langauageData : [],
-    			currentMonth: moment().startOf('month'),
-    			daysInCurrentMonth : 0,
-    			currentMonthName : '',
-    			currentMonthNumber : '',
-    			currentYearNumber : '',
-    			dayName : "",
-    			sortNameOfMonth : "",
-    			weekNameArray : [],
-    			isPreviousButtonDisable : false,
-          currentMonthFix : moment().startOf('month')
+                      days: [" Sun ", " Mon ", " Tue ", " Wed ", " You ", " Fri ", " Sat "],
+                      months: [
+                        "Jan",
+                        "Feb",
+                        "Mar",
+                        "Apr",
+                        "May",
+                        "Jun",
+                        "Jul",
+                        "Aug",
+                        "Sep",
+                        "Oct",
+                        "Nov",
+                        "Dec"
+                      ],
+                      pickers: [
+                        "next 7 days",
+                        "next 30 days",
+                        "previous 7 days",
+                        "previous 30 days"
+                      ],
+                      placeholder: {
+                        date: "mm/dd/yy",
+                        dateRange: "Select Date Range"
+                      },
+              },
+              defaultYear: "",
+              yearListing: [],
+              langauageData : [],
+              currentMonth: moment().startOf('month'),
+              daysInCurrentMonth : 0,
+              currentMonthName : '',
+              currentMonthNumber : '',
+              currentYearNumber : '',
+              dayName : "",
+              sortNameOfMonth : "",
+              weekNameArray : [],
+              isPreviousButtonDisable : false,
+              currentMonthFix : moment().startOf('month')
         }
+    },
+    mounted() {
+      var currentYear = new Date().getFullYear();
+      var yearsList = [];    
+      for (var index = currentYear; index > (currentYear - 5); index--) {
+        yearsList.push([index, index]);
+      }
+      this.yearListing = yearsList;
     },
     directives: {},
     computed: {
@@ -104,12 +124,16 @@ export default {
                 }         
             },
             goPrev () {
-                let payload = moment(this.currentMonth).subtract(1, 'months').startOf('month');
+                let payload = moment(this.currentMonth).year(this.currentYearNumber).subtract(1, 'months').startOf('month');
                 this.changeMonth(payload);
             },
             goNext () {
-                let payload = moment(this.currentMonth).add(1, 'months').startOf('month');
+                let payload = moment(this.currentMonth).year(this.currentYearNumber).add(1, 'months').startOf('month');
                 this.changeMonth(payload);
+            },
+            changeYear(year) {
+              let payload = moment(this.currentMonth).year(year.selectedId)
+              this.changeMonth(payload);
             },
             changeMonth(payload) {
                 this.currentMonth = payload;
@@ -118,7 +142,7 @@ export default {
                 this.currentMonthNumber = this.currentMonth.format('M');
                 this.currentYearNumber = this.currentMonth.format('Y');
                 this.sortNameOfMonth = this.currentMonth.format('MMM')
-             
+                this.defaultYear = this.currentMonth.format('Y');
                 if(this.currentMonthFix.format('M') == this.currentMonth.format('M') && this.currentMonthFix.format('YYYY') == this.currentMonth.format('YYYY')) {
                     this.isPreviousButtonDisable = true;
                 } else {

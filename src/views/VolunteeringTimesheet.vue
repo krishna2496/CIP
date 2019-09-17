@@ -7,14 +7,14 @@
         <main>
             
             <DashboardBreadcrumb />
-            <div class="dashboard-tab-content">
-                <b-container>
+            <div class="dashboard-tab-content" v-if="isComponentLoaded">
+                <b-container v-if="isAllVisible">
                 <div class="heading-section">
                     <h1>
                         {{langauageData.label.volunteering_timesheet}}  
                     </h1>
                 </div>
-                <div class="inner-content-wrap" v-if="isAllVisible">
+                <div class="inner-content-wrap">
                     <div class="dashboard-table">
                         <div class="table-outer">
                             <div class="table-inner">
@@ -35,7 +35,8 @@
                                         <b-thead>
                                             <b-tr>
                                                 <b-th class="mission-col">{{langauageData.label.mission}}</b-th>
-                                                <b-th v-for="(item,key) in volunteeringHoursWeeks">
+                                                <b-th v-for="(item,key) in volunteeringHoursWeeks"
+                                                    v-bind:class="{'currentdate-col' : highLightCurrentDate(key+1,'time')}">
                                                     {{key+1}}<span>{{item}}</span> 
                                                 </b-th>  
                                                 <b-th class="total-col">{{langauageData.label.total}}</b-th>
@@ -43,12 +44,14 @@
                                         </b-thead>
                                         <b-tbody v-if="timeMissionData.length > 0">
                                             <b-tr v-for="(timeItem,key) in timeMissionData">
-                                                <b-td class="mission-col">{{timeItem.title}}</b-td>
+                                                <b-td class="mission-col">
+                                                    <a target="_blank" :href="`mission-detail/${timeItem.mission_id}`">{{timeItem.title}}</a>
+                                                </b-td>
                                                 <b-td 
                                                 :mission-id="timeItem.mission_id"
                                                 :date="key+1"
                                                 v-on:click="getRelatedTimeData(key+1,timeItem,'time')"
-                                                 v-bind:class="[getTimeSheetHourClass(key+1,timeItem,'time')]"
+                                                v-bind:class="[getTimeSheetHourClass(key+1,timeItem,'time')]"
                                                
                                                 v-for="(item,key) in volunteeringHoursWeeks">
                                                     {{getTime(key,timeItem.timesheet,'time')}} 
@@ -104,7 +107,9 @@
                                         <b-thead>
                                             <b-tr>
                                                 <b-th class="mission-col">{{langauageData.label.mission}}</b-th>
-                                                <b-th v-for="(item,key) in volunteeringGoalWeeks">
+                                                <b-th 
+                                                    v-bind:class="{'currentdate-col' : highLightCurrentDate(key+1,'goal')}"
+                                                    v-for="(item,key) in volunteeringGoalWeeks">
                                                     {{key+1}}<span>{{item}}</span> 
                                                 </b-th>  
                                                 <b-th class="total-col">{{langauageData.label.total}}</b-th>
@@ -112,16 +117,16 @@
                                         </b-thead>
                                         <b-tbody v-if="goalMissionData.length > 0">
                                             <b-tr v-for="(timeItem,key) in goalMissionData">
-                                                <b-td class="mission-col">{{timeItem.title}}</b-td>
-                                                <b-td 
+                                                <b-td class="mission-col">
+                                                <a target="_blank" :href="`mission-detail/${timeItem.mission_id}`">{{timeItem.title}}</a>
+                                                </b-td>
+                                                <b-td
                                                     :mission-id="timeItem.mission_id"
                                                     :date="key+1"
                                                     v-on:click="getRelatedTimeData(key+1,timeItem,'goal')"
                                                      v-bind:class="[getTimeSheetHourClass(key+1,timeItem,'goal')]"
-                                                   
-                                            
-                                                v-for="(item,key) in volunteeringGoalWeeks">
-                                                {{getTime(key,timeItem.timesheet,'goal')}} 
+                                                    v-for="(item,key) in volunteeringGoalWeeks">
+                                                    {{getTime(key,timeItem.timesheet,'goal')}} 
                                                 </b-td> 
                                                 <b-td class="total-col">{{getRawHourTotal(timeItem.timesheet,'goal')}}</b-td>
                                             </b-tr>
@@ -156,6 +161,7 @@
                             </ul>
                             <VolunteeringRequest
                                     :headerField="timesheetRequestFields"
+                                    requestType="time"
                                     :items="timesheetRequestItems"
                                     :headerLable="timeRequestLabel"
                                     :currentPage="hourRequestCurrentPage"
@@ -169,6 +175,7 @@
                         
                             <VolunteeringRequest
                                 :headerField="goalRequestFields"
+                                requestType="goal"
                                 :items="goalRequestItems"
                                 :headerLable="goalRequestLabel"
                                 :currentPage="goalRequestCurrentPage"
@@ -209,12 +216,19 @@
                         @updateCall="updateDefaultValue" 
                         @changeDocument="changeGoalDocument"
                     />
-                </div>
-                <div v-else class="inner-content-wrap">
-                    {{langauageData.label.volunteering_timesheet_not_found}}
-                </div>
+                </div> 
                 </b-container>
+                <b-container  v-else>
+                    <div class="no-history-data">
+                        <p>{{langauageData.label.volunteering_timesheet_not_found}}</p>
+                        <div class="btn-row">
+                            <b-button :title="langauageData.label.start_volunteering" class="btn-bordersecondary" @click="$router.push({ name: 'home' })">{{langauageData.label.start_volunteering}}</b-button>
+                        </div>
+                    </div>
+                </b-container>
+               
             </div>
+            
         </main>
         <footer>
             <TheSecondaryFooter v-if="isShownComponent"></TheSecondaryFooter>
@@ -230,7 +244,7 @@ import DashboardBreadcrumb from "../components/DashboardBreadcrumb";
 import VolunteeringTimesheetTableHeader from "../components/VolunteeringTimesheetTableHeader"
 import AddVolunteeringHours from "../components/AddVolunteeringHours";
 import AddVolunteeringAction from "../components/AddVolunteeringAction";
-import VolunteeringRequest from "../components/VolunteeringRequest";
+import VolunteeringRequest from "../components/VolunteeringTimeSheetRequest";
 import SimpleBar from "simplebar";
 import constants from '../constant';
 import axios from "axios";
@@ -320,11 +334,12 @@ export default {
             goalRequestPerPage : 5,
             hourRequestNextUrl : null,
             goalRequestNextUrl : null,
-            isAllVisible : true,
+            isAllVisible : false,
             isCurrentDate : false,
             todaysDate :  moment().format("D"),
             currentYear :  moment().format("YYYY"),
-            currentMonth :  moment().format("M")
+            currentMonth :  moment().format("M"),
+            isComponentLoaded : false
         };
     },
     updated() {
@@ -428,6 +443,7 @@ export default {
             if(timeArray.timesheet) { 
                 let timeSheetArray =  timeArray.timesheet;
                 _this.currentTimeData.missionName = timeArray.title
+                _this.currentTimeData.dateVolunteered = _this.volunteeringHoursCurrentYear+'-'+_this.volunteeringHoursCurrentMonth+'-'+date
                 timeSheetArray.filter(function (timeSheetItem, timeSheetIndex) {
                     if(timeSheetItem.timesheet_status.status == "APPROVED" || 
                         timeSheetItem.timesheet_status.status == "AUTOMATICALLY_APPROVED"
@@ -435,9 +451,6 @@ export default {
                         _this.volunteerHourDisableDates.push(timeSheetItem.date_volunteered)
                     }
 
-                           
-                    _this.currentTimeData.dateVolunteered = _this.volunteeringHoursCurrentYear+'-'+_this.volunteeringHoursCurrentMonth+'-'+date
-                     
                     let currentArrayDate = timeSheetItem.date
                     let currentArrayYear = timeSheetItem.year
                     let currentArrayMonth = timeSheetItem.month
@@ -510,32 +523,26 @@ export default {
             let _this = this
             let returnData = [];
             this.isCurrentDate = false;
-            let missionEndDate = timeSheetArray.end_date         
+            let missionEndDate = timeSheetArray.end_date      
             let disabledPastDates = moment(timeSheetArray.start_date).format("YYYY-MM-DD")                                  
             let disablefuterDate = moment(this.futureDates).format("YYYY-MM-DD");
             let endDate = moment(missionEndDate).format("YYYY-MM-DD");
             let disableEndDate = '';
-
             if (endDate > disablefuterDate) {
                 disableEndDate = disablefuterDate
             } else {
                 disableEndDate = endDate
             }
-          
             let currentDate = moment(_this.volunteeringHoursCurrentYear+'-'+_this.volunteeringHoursCurrentMonth+'-'+date).format("YYYY-MM-DD");
-                
-           
             let timeArray = timeSheetArray.timesheet;
             let currentTimeSheetYear = '';
             let currentTimeSheetMonth = '';
             if(timeSheetType == 'time') {
                 currentTimeSheetYear = _this.volunteeringHoursCurrentYear;
                 currentTimeSheetMonth = _this.volunteeringHoursCurrentMonth;
-                      
-                } else {
+            } else {
                 currentTimeSheetYear = _this.volunteeringGoalCurrentYear;
                 currentTimeSheetMonth = _this.volunteeringGoalCurrentMonth;
-                        
             }
                 timeArray.filter(function (timeSheetItem, timeSheetIndex) {
                     let currentArrayDate = timeSheetItem.date
@@ -550,43 +557,44 @@ export default {
                                 } 
                                 else if(timeSheetItem.timesheet_status.status == "DECLINED") {
                                     returnData.push("declined")
-                                    // returnData = "declined"
                                 }
                                 else if(timeSheetItem.timesheet_status.status == "SUBMIT_FOR_APPROVAL") {
                                     returnData.push("approval")
-                                    // returnData = "submit_for_approval"
                                 }
                                 else {
                                     returnData.push("default-time")
-                                    // returnData = "default-time"
                                 }
                             }
-
                         } 
                     }
-                    // if((_this.todaysDate == date) && (currentTimeSheetYear ==  _this.currentYear) && (currentTimeSheetMonth == _this.currentMonth)) {
-                    //             returnData = "currentdate-col";
-                    // }
                 });
                 
-                if((_this.todaysDate == date) && (currentTimeSheetYear ==  _this.currentYear) && (currentTimeSheetMonth == _this.currentMonth)) {
-                                
-                                returnData.push("currentdate-col");
-                                
-                }
-                if (currentDate < disabledPastDates) {
+                if (currentDate < disabledPastDates && timeSheetArray.start_date != null) {
                     returnData.push("disabled")
-                    // returnData ="disabled"
                 } 
 
                 if(currentDate > disableEndDate) {
                     returnData.push("disabled")
-                    //  returnData = "disabled"
                 }
                
             return returnData;
         },
-
+        highLightCurrentDate(date,timeSheetType) {
+            let currentTimeSheetYear = ''
+            let currentTimeSheetMonth = ''
+            if(timeSheetType == 'time') {
+                currentTimeSheetYear = this.volunteeringHoursCurrentYear;
+                currentTimeSheetMonth = this.volunteeringHoursCurrentMonth;
+                      
+            } else {
+                currentTimeSheetYear = this.volunteeringGoalCurrentYear;
+                currentTimeSheetMonth = this.volunteeringGoalCurrentMonth;
+                        
+            }
+            if((this.todaysDate == date) && (currentTimeSheetYear ==  this.currentYear) && (currentTimeSheetMonth == this.currentMonth)) {
+                return true                   
+            }
+        },
         changeVolunteeringHours(data) {
             this.enableSubmitTimeTimeSheet = true;
             var _this =this;
@@ -646,6 +654,7 @@ export default {
                         this.isAllVisible = false
                     }
                 }
+                _this.isComponentLoaded = true
                 _this.tableLoaderActive = false 
            })
         },
@@ -881,6 +890,8 @@ export default {
             } ,
 
         
+        
+        
         updateMinutes(value) {
             this.defaultMinutes = value.selectedVal
         },
@@ -949,6 +960,11 @@ export default {
                         this.makeToast("danger",response.message);
                     } else {
                         this.getVolunteerHoursData()
+                        if(timeSheetType == "time") {
+                            this.getTimeRequestData(this.currentPage);
+                        } else {
+                            this.getGoalRequestData(this.currentPage);
+                        }
                         this.makeToast("success",response.message);
                     }  
                 })
@@ -986,10 +1002,11 @@ export default {
                     data.filter(function(item,index){
                         currentData.push(
                             {
-                                [mission] : item.title,
-                                [time] : item.time,
-                                [hours] : item.hours,
-                                [organisation] : item.organisation_name,
+                                'mission' : item.title,
+                                'time': item.time,
+                                'hours' : item.hours,
+                                'organization' : item.organisation_name,
+                                'missionId' : item.mission_id
                             }
                         )
                         _this.timesheetRequestItems = currentData;
@@ -1046,9 +1063,10 @@ export default {
                     data.filter(function(item,index) {
                         currentData.push(
                             {
-                                [mission] : item.title,
-                                [action] : item.action,
-                                [organisation] : item.organisation_name,
+                                'mission' : item.title,
+                                'action': item.action,
+                                'organization' : item.organisation_name,
+                                'missionId' : item.mission_id
                             }
                         )
                         _this.goalRequestItems = currentData

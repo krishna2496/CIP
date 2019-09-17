@@ -230,76 +230,77 @@
         height: 40px;
         min-width: 70px;
       }
-      &:not(.mission-col):not(.approved):not(.total-col){
+      &:not(.mission-col):not(.approved):not(.total-col) {
         cursor: pointer;
         position: relative;
         z-index: 1;
         background: transparent;
         &:hover {
-         background: $light-gray url($assetUrl+"/plus-ic-black.svg") no-repeat !important;
-         background-size: 20px !important;
-         background-position: center center !important;
-         z-index: 3;
-         color: transparent;
-         &:after {
-          content: none;
+          background: $light-gray url($assetUrl+"/plus-ic-black.svg") no-repeat !important;
+          background-size: 20px !important;
+          background-position: center center !important;
+          z-index: 3;
+          color: transparent;
+          &:after {
+            content: none;
+          }
         }
       }
-    }
-    &.approved,
-    &.declined,
-    &.approval {
-      position: relative;
-      &:after {
-        position: absolute;
-        content: "";
-        border-style: solid;
+      &.approved,
+      &.declined,
+      &.approval {
+        position: relative;
+        &:after {
+          position: absolute;
+          content: "";
+          border-style: solid;
 
-        border-width: 15px 22px 0 0;
-        right: 0;
-        bottom: 0;
+          border-width: 15px 22px 0 0;
+          right: 0;
+          bottom: 0;
+        }
+      }
+      &.approved {
+        pointer-events: none;
+        &:after {
+          border-color: transparent $success $success;
+        }
+      }
+      &.declined {
+        &:after {
+          border-color: transparent $error $error;
+        }
+      }
+      &.approval {
+        &:after {
+          border-color: transparent $info $info;
+        }
+      }
+      &.disabled {
+        cursor: default;
+        pointer-events: none;
       }
     }
-    &.approved {
-      pointer-events: none;
-      &:after {
-        border-color: transparent $success $success;
+    th,
+    td {
+      &.currentdate-col {
+        background: $light-gray !important;
       }
     }
-    &.declined {
-      &:after {
-        border-color: transparent $error $error;
+    .mission-col {
+      text-align: left;
+      min-width: 270px;
+      @include sm-max {
+        min-width: 230px;
+      }
+      @include xxs-max {
+        min-width: 200px;
       }
     }
-    &.approval {
-      &:after {
-        border-color: transparent $info $info;
-      }
-    }
-    &.disabled {
-      cursor: default;
-      pointer-events: none;
+    .total-col {
+      font-weight: 700;
     }
   }
-  th, td {
-    &.currentdate-col {
-      background: $light-gray!important;
-    }
-  }
-  .mission-col {
-    text-align: left;
-    min-width: 270px;
-    @include sm-max {
-      min-width: 230px;
-    }
-    @include xxs-max {
-      min-width: 200px;
-    }
-  }
-  .total-col {
-    font-weight: 700;
-  }
-}
 }
 
 /** Table modal style **/
@@ -315,115 +316,119 @@
   align-items: center;
   margin-bottom: 30px;
   flex-wrap: wrap;
-}
-
-.inner-wrap {
-  display: inline-flex;
-  align-items: center;
-  margin-bottom: 0;
-  flex-wrap: wrap;
-  p {
-    margin-bottom: 0;
-  }
-  .picker-wrapper {
-    margin-bottom: 8px;
+  .inner-wrap {
     display: inline-flex;
     align-items: center;
-  }
-  .datepicker-block {
-    position: relative;
-    img {
-      height: 22px;
-      width: 22px;
-    }
-    .mx-datepicker {
-      position: absolute;
-      opacity: 0;
-      top: 0;
-      left: 0;
-      height: 100%;
-      width: 100%;
-    }
-    .mx-input-wrapper {
-      height: 100%;
-    }
-    .mx-input {
-      height: 100% !important;
-      width: 100% !important;
-      padding: 0 !important;
-      cursor: pointer;
-    }
-    .mx-input-append {
-      display: none;
-    }
-  }
-  .select-time-period {
-    display: inline-flex;
-    @include border-radius(3px);
-    margin-right: 20px;
-    @include xxs-max {
-      margin-right: 15px;
-    }
-    span {
-      cursor: pointer;
-      color: $gray-primary;
-      border: 1px solid $border-color;
-      padding: 3px 9px;
-      &:first-child {
-        border-radius: 3px 0 0 3px;
-      }
+    margin-bottom: 0;
+    flex-wrap: wrap;
+    > div {
+      margin-right: 20px;
+      margin-bottom: 8px;
       &:last-child {
-        border-radius: 0 3px 3px 0;
+        margin-right: 0;
       }
-      &.current {
-        background: $light-gray;
+      @include sm-max {
+        margin-right: 10px;
+      }
+    }
+    p {
+      margin-bottom: 0;
+    }
+    .picker-wrapper {
+      margin-bottom: 8px;
+      display: inline-flex;
+      align-items: center;
+    }
+    .datepicker-block {
+      position: relative;
+      img {
+        height: 22px;
+        width: 22px;
+      }
+      .mx-datepicker {
+        position: absolute;
+        opacity: 0;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 100%;
+      }
+      .mx-input-wrapper {
+        height: 100%;
+      }
+      .mx-input {
+        height: 100% !important;
+        width: 100% !important;
+        padding: 0 !important;
+        cursor: pointer;
+      }
+      .mx-input-append {
+        display: none;
+      }
+    }
+    .select-time-period {
+      display: inline-flex;
+      @include border-radius(3px);
+      margin-right: 20px;
+      @include xxs-max {
+        margin-right: 15px;
+      }
+      span {
+        cursor: pointer;
+        color: $gray-primary;
+        border: 1px solid $border-color;
+        padding: 3px 9px;
+        &:first-child {
+          border-radius: 3px 0 0 3px;
+        }
+        &:last-child {
+          border-radius: 0 3px 3px 0;
+        }
+        &.current {
+          background: $light-gray;
+          cursor: default;
+        }
+      }
+    }
+    .custom-dropdown {
+      width: 102px;
+    }
+    .picker-btn-wrap {
+      display: inline-flex;
+      border: 1px solid $border-color;
+      @include border-radius(3px);
+      span {
+        padding: 3px 11px;
+        color: $gray-primary;
+        width: 114px;
+        text-align: center;
+      }
+    }
+    .picker-btn {
+      background: $light-gray;
+      border: none;
+      display: inline-flex;
+      align-items: center;
+      border-radius: 3px;
+      &.prev-btn {
+        border-radius: 3px 0 0 3px;
+        padding: 5px 10px 5px 13px;
+      }
+      &.next-btn {
+        border-radius: 0 3px 3px 0;
+        padding: 5px 13px 5px 10px;
+      }
+      &.disabled {
+        pointer-events: none;
         cursor: default;
       }
-    }
-  }
-  .custom-dropdown {
-    width: 160px;
-  }
-  .picker-btn-wrap {
-    display: inline-flex;
-    margin-right: 20px;
-    border: 1px solid $border-color;
-    @include border-radius(3px);
-    margin-bottom: 8px;
-    @include xxs-max {
-      margin-right: 15px;
-    }
-    span {
-      padding: 3px 11px;
-      color: $gray-primary;
-      width: 114px;
-      text-align: center;
-    }
-  }
-  .picker-btn {
-    background: $light-gray;
-    border: none;
-    display: inline-flex;
-    align-items: center;
-    border-radius: 3px;
-    &.prev-btn {
-      border-radius: 3px 0 0 3px;
-      padding: 5px 10px 5px 13px;
-    }
-    &.next-btn {
-      border-radius: 0 3px 3px 0;
-      padding: 5px 13px 5px 10px;
-    }
-    &.disabled {
-      pointer-events: none;
-      cursor: default;
-    }
-    img {
-      width: 12px;
-      height: 12px;
-    }
-    &:last-child {
-      margin-right: 0;
+      img {
+        width: 12px;
+        height: 12px;
+      }
+      &:last-child {
+        margin-right: 0;
+      }
     }
   }
 }
@@ -478,5 +483,11 @@
         }
       }
     }
+  }
+}
+
+.timesheet-request {
+  tr {
+    line-height: 32px !important
   }
 }

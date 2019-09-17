@@ -39,7 +39,8 @@ let routes = [{
         },
         component: () =>
             import ('./views/VolunteeringHistory.vue')
-},{
+},
+{
         path: '/dashboard',
         name: 'dashboard',
         meta: {
@@ -48,7 +49,6 @@ let routes = [{
         component: () =>
             import ('./views/Dashboard.vue')
 },
-
 {
     path: '/home',
     name: 'home',
@@ -106,57 +106,17 @@ let routes = [{
 {
     path: '/mission-detail/:misisonId',
     name: 'missionDetail',
-   
-    meta: {
-        requiresAuth: true,
-        metaTags: [
-            {
-              property: 'og:url',
-              content: 'http://www.nytimes.com/2015/02/19/arts/international/when-great-minds-dont-think-alike.html'
-            },
-            {
-              property: 'og:title',
-              content: 'When Great Minds Don’t Think Alike'
-            },
-            {
-              property: 'og:image',
-              content: 'http://static01.nyt.com/images/2015/02/19/arts/international/19iht-btnumbers19A/19iht-btnumbers19A-facebookJumbo-v2.jpg'
-            },
-            {
-              property: 'og:type',
-              content: 'article'
-            },
-            {
-              property: 'og:description',
-              content: 'How much does culture influence creative thinking'
-            }
-        ],
-    },
-    
-    beforeEnter: (to, from, next) => {
-            to.meta.metaTags.map(tagDef => {
-                const tag = document.createElement('meta');
-                Object.keys(tagDef).forEach(key => {
-                    tag.setAttribute(key, tagDef[key]);
-                });
-                return tag;
-            })
-            // Add the meta tags to the document head.
-            .forEach(tag => document.head.appendChild(tag));
-            next();
-    },
-
     component: () =>
         import ('./views/MissionDetail.vue')
 },
 {
-        path: '/policy/:policyPage',
-        name: 'policy',
-        meta: {
-            requiresAuth: true
-        },
-        component: () =>
-            import ('./views/Policy.vue')
+    path: '/policy/:policyPage',
+    name: 'policy',
+    meta: {
+        requiresAuth: true
+    },
+    component: () =>
+        import ('./views/Policy.vue')
 },
 
 ];

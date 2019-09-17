@@ -102,7 +102,7 @@
                                     v-model="timeEntryDefaultData.notes"
                                     :class="{ 'is-invalid': submitted && $v.timeEntryDefaultData.notes.$error }"
                                     :placeholder="langauageData.placeholder.notes"
-                                    size="lg" no-resize rows="5"></b-form-textarea>
+                                    size="lg" rows="5"></b-form-textarea>
                                     <div v-if="submitted && !$v.timeEntryDefaultData.notes.required" class="invalid-feedback">
                                         {{ langauageData.errors.notes }}</div>
                                 </b-form-group>
@@ -112,9 +112,8 @@
                     </b-form-group>
                     <b-form-group v-if="isFileUploadDisplay">
                         <b-row>
-                            
-                            <b-col sm="12" class="date-col">
-                            <span class="error-message"  v-if="fileError">{{fileError}}</span>
+                            <b-col sm="12"><span class="error-message" v-if="fileError">{{fileError}}</span></b-col>
+                            <b-col sm="6" class="date-col">
                             <label for>{{langauageData.label.file_upload}}</label>
                             <div class="file-upload-wrap">
                                 <div class="btn-wrapper"
@@ -138,28 +137,24 @@
 									<div class="uploaded-file-details" v-for="(file, index) in timeEntryDefaultData.documents">
 										
 										<a class="filename" :href="file.document_path" target="_blank">{{file.document_name}}</a>
-										<a 
+										<b-button 
 										class="remove-item" 
-										href="#" 
 										@click.prevent="deleteFile(file.timesheet_id,file.timesheet_document_id)" 
-										v-b-tooltip.hover 
 										:title="langauageData.label.delete"
 										>
 											<img :src="$store.state.imagePath+'/assets/images/delete-ic.svg'" alt="delete-ic"/>
-										</a>
+										</b-button>
 									
 									</div>
 									<div class="uploaded-file-details" v-for="(file, index) in fileArray" :key="file.id">
 										<p class="filename">{{file.name}}</p>
-										<a 
+										<b-button
 										class="remove-item" 
-										href="#" 
 										@click.prevent="$refs.upload.remove(file)" 
-										v-b-tooltip.hover 
 										:title="langauageData.label.delete"
 										>
 											<img :src="$store.state.imagePath+'/assets/images/delete-ic.svg'" alt="delete-ic"/>
-										</a>
+										</b-button>
 									</div>
 								</div>
                             </div>
@@ -340,15 +335,22 @@ export default {
         },
         inputUpdate(files) {
             var _this = this
+            let allowedFileTypes = ['doc','xls','xlsx','csv','pdf','png','jpg','jpeg']
+            _this.fileError = '';
             files.filter(function(data,index){
-                if(data.size > 5000000) {
+                if(data.size > 4000000) {
                     _this.fileError = _this.langauageData.errors.file_max_size
                    files.splice(index,1)
                 } else {
-                    _this.fileError = ''
+                    let fileName = data.name.split('.');
+                    if(!allowedFileTypes.includes(fileName[fileName.length-1])) {
+                        _this.fileError = _this.langauageData.errors.invalid_file_type
+                        files.splice(index,1)
+                    }
                 }
             });
         },
+        
         updateWorkday(value) {
             var selectedData = {
                 'selectedVal' : '',
@@ -386,6 +388,9 @@ export default {
          
             if (this.$v.$invalid) {
                 return;
+            }
+            if(this.fileError != '') {
+                return
             }
             this.isAjaxCall = true;
             const formData = new FormData();
