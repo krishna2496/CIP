@@ -231,7 +231,7 @@ return [
         'ERROR_WHILE_UPLOADING_FILE_ON_S3' => 'An error while uploading file on S3',
 
         //For timesheet module
-        'ERROR_INVALID_ACTION' => 'Invalid goal action',
+        'ERROR_INVALID_ACTION' => 'Entered goal action should not be greater than goal objective',
         'TIMESHEET_NOT_FOUND' => 'Timesheet entry not found' ,
         'ERROR_TIMESHEET_ALREADY_APPROVED' => 'You can not update approved timesheet',        
         'TIMESHEET_DOCUMENT_NOT_FOUND' => 'Timesheet document does not exists',
