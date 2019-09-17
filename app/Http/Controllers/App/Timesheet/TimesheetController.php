@@ -477,9 +477,9 @@ class TimesheetController extends Controller
      * Export all pending time mission time entries.
      *
      * @param Illuminate\Http\Request $request
-     * @return Symfony\Component\HttpFoundation\BinaryFileResponse
+     * @return Object
      */
-    public function exportPendingTimeRequests(Request $request): BinaryFileResponse
+    public function exportPendingTimeRequests(Request $request): Object
     {
         try {
             $statusArray = [config('constants.timesheet_status_id.SUBMIT_FOR_APPROVAL')];
@@ -523,9 +523,9 @@ class TimesheetController extends Controller
      * Export user's goal mission history
      *
      * @param \Illuminate\Http\Request $request
-     * @return Symfony\Component\HttpFoundation\BinaryFileResponse
+     * @return Object
      */
-    public function exportPendingGoalRequests(Request $request): BinaryFileResponse
+    public function exportPendingGoalRequests(Request $request): Object
     {
         try {
             $statusArray = [config('constants.timesheet_status_id.SUBMIT_FOR_APPROVAL')];

@@ -203,9 +203,9 @@ class VolunteerHistoryController extends Controller
      * Export user's goal mission history
      *
      * @param \Illuminate\Http\Request $request
-     * @return Symfony\Component\HttpFoundation\BinaryFileResponse
+     * @return Object
      */
-    public function exportGoalMissionHistory(Request $request): BinaryFileResponse
+    public function exportGoalMissionHistory(Request $request): Object
     {
         try {
             $statusArray = [
@@ -250,9 +250,9 @@ class VolunteerHistoryController extends Controller
      * Export user's time mission history
      *
      * @param \Illuminate\Http\Request $request
-     * @return Symfony\Component\HttpFoundation\BinaryFileResponse
+     * @return Object
      */
-    public function exportTimeMissionHistory(Request $request): BinaryFileResponse
+    public function exportTimeMissionHistory(Request $request): Object
     {
         try {
             $statusArray = [
