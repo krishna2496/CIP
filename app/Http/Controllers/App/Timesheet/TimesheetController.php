@@ -481,7 +481,6 @@ class TimesheetController extends Controller
      */
     public function exportPendingTimeRequests(Request $request): Object
     {
-        
         $statusArray = [config('constants.timesheet_status_id.SUBMIT_FOR_APPROVAL')];
 
         $timeRequestList = $this->timesheetRepository->timeRequestList($request, $statusArray, false);
@@ -517,8 +516,6 @@ class TimesheetController extends Controller
         $apiStatus = Response::HTTP_OK;
         $apiMessage =  trans('messages.success.MESSAGE_ENABLE_TO_EXPORT_USER_PENDING_TIME_MISSION_ENTRIES');
         return $this->responseHelper->success($apiStatus, $apiMessage);
-        
-        
     }
 
     /**
@@ -533,7 +530,6 @@ class TimesheetController extends Controller
         $goalRequestList = $this->timesheetRepository->goalRequestList($request, $statusArray, false);
         
         if ($goalRequestList->count()) {
-
             $fileName = config('constants.export_timesheet_file_names.PENTIND_GOAL_MISSION_ENTRIES_XLSX');
     
             $excel = new ExportCSV($fileName);
