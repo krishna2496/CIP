@@ -103,11 +103,9 @@
 							:title="missionDetail.title"
 							:description="missionDetail.short_description"
 							inline-template
-							> 
-							
+							>
 								<div class="social-block">
 									<network network="facebook" v-if="$store.state.isFacebookDisplay" class="social-icon">
-				
 											<img 
 											:src="$store.state.imagePath+'/assets/images/facebook-ic-gray.svg'" 
 											:alt="`${JSON.parse(this.$store.state.languageLabel).label.facebook}`"
@@ -116,11 +114,10 @@
 											<img :src="$store.state.imagePath+'/assets/images/facebook-ic-gray-h.svg'" 
 											:alt="`${JSON.parse(this.$store.state.languageLabel).label.facebook}`"
 											:title="`${JSON.parse(this.$store.state.languageLabel).label.facebook}`"
-											class="hover-img" alt="facebook img"/>
+											class="hover-img"/>
 			
 									</network>
 									<network network="twitter" v-if="$store.state.isTwitterDisplay" class="social-icon">
-			
 											<img :src="$store.state.imagePath+'/assets/images/twitter-ic-gray.svg'" 
 											:alt="`${JSON.parse(this.$store.state.languageLabel).label.twitter}`"
 											:title="`${JSON.parse(this.$store.state.languageLabel).label.twitter}`"
@@ -128,10 +125,10 @@
 											<img :src="$store.state.imagePath+'/assets/images/twitter-ic-gray-h.svg'" 
 											:alt="`${JSON.parse(this.$store.state.languageLabel).label.twitter}`"
 											:title="`${JSON.parse(this.$store.state.languageLabel).label.twitter}`"
-											class="hover-img" alt="twitter img" />
+											class="hover-img"/>
 									</network>
-									</div>
-							</social-sharing>
+								</div>
+						</social-sharing>
 							</div>
 						<!-- <div class="share-block">
 								<div class="social-block">
