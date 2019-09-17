@@ -241,6 +241,7 @@ return [
         'ERROR_TIMESHEET_ALREADY_DONE_FOR_DATE' => 'Time entry is already approved for given date', 
         'ERROR_INVALID_DATA_FOR_TIMESHEET_ENTRY' => 'You cannot add time entry',
         'ERROR_SAME_DATE_TIME_ENTRY' => 'You cannot add more than 24 hours timeentry for same date',
+        'ERROR_UNAUTHORIZED_USER' => 'Unauthorized user'
     ],
 
     /**
