@@ -23,16 +23,26 @@ class JwtMiddleware
     private $timezoneRepository;
 
     /**
+     * @var App\Helpers\Helpers $helpers
+     */
+    private $helpers;
+
+    /**
      * Create a new middleware instance.
      *
      * @param Illuminate\Http\ResponseHelper $responseHelper
      * @param App\Repositories\Timezone\TimezoneRepository $timezoneRepository
+     * @param App\Helpers\Helpers $helpers
      * @return void
      */
-    public function __construct(ResponseHelper $responseHelper, TimezoneRepository $timezoneRepository)
-    {
+    public function __construct(
+        ResponseHelper $responseHelper,
+        TimezoneRepository $timezoneRepository,
+        Helpers $helpers
+    ) {
         $this->responseHelper = $responseHelper;
         $this->timezoneRepository = $timezoneRepository;
+        $this->helpers = $helpers;
     }
 
     /**
@@ -79,8 +89,18 @@ class JwtMiddleware
                 trans('messages.custom_error_message.ERROR_IN_TOKEN_DECODE')
             );
         }
-
+        // Here we need to check tenant name from token and request
+        $tenantName = $this->helpers->getSubDomainFromRequest($request);
+        if ($tenantName !== $credentials->fqdn) {
+            return $this->responseHelper->error(
+                Response::HTTP_UNAUTHORIZED,
+                Response::$statusTexts[Response::HTTP_UNAUTHORIZED],
+                config('constants.error_codes.ERROR_UNAUTHORIZED_USER'),
+                trans('messages.custom_error_message.ERROR_UNAUTHORIZED_USER')
+            );
+        }
         $user = User::find($credentials->sub);
+
         $timezone = '';
         $timezone = $this->timezoneRepository->timezoneList($request, $user->timezone_id);
         if ($timezone) {
