@@ -63,7 +63,10 @@ class TenantConnectionMiddleware
         $tenant = DB::table('tenant')->select('tenant_id')
         ->where('name', $domain)->whereNull('deleted_at')->first();
         if (!$tenant) {
-            throw new ModelNotFoundException(trans('messages.custom_error_message.400000'));
+            throw new TenantDomainNotFoundException(
+                trans('messages.custom_error_message.ERROR_TENANT_DOMAIN_NOT_FOUND'),
+                config('constants.error_codes.ERROR_TENANT_DOMAIN_NOT_FOUND')
+            );
         }
         $this->helpers->createConnection($tenant->tenant_id);
         return $next($request);
