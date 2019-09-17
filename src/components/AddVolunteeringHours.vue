@@ -119,10 +119,11 @@
                 <b-form-group v-if="isFileUploadDisplay">
                     <b-row> 
                         <b-col sm="6" class="date-col">
-                        <span v-if="fileError">{{fileError}}</span>
+                        <span class="error-message" v-if="fileError">{{fileError}}</span>
                         <label for>{{langauageData.label.file_upload}}</label>
                         <div class="file-upload-wrap" v-bind:class="{'has-error' : fileError != '' ? true : false}">
-                            <div class="btn-wrapper">
+                            <div class="btn-wrapper" 
+                            v-bind:class="{'has-error' : fileError != '' ? true : false}">
                                 <file-upload
                                     class="btn"
                                     accept="image/png,image/jpeg,application/doc,

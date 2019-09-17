@@ -7,6 +7,7 @@
                     v-if="items.length > 0"
                     small
                     responsive
+                    class="timesheet-request"
                 >
                 <b-thead>
                     <b-tr>
