@@ -481,42 +481,41 @@ class TimesheetController extends Controller
      */
     public function exportPendingTimeRequests(Request $request): Object
     {
-        try {
-            $statusArray = [config('constants.timesheet_status_id.SUBMIT_FOR_APPROVAL')];
+        $statusArray = [config('constants.timesheet_status_id.SUBMIT_FOR_APPROVAL')];
 
-            $timeRequestList = $this->timesheetRepository->timeRequestList($request, $statusArray, false);
+        $timeRequestList = $this->timesheetRepository->timeRequestList($request, $statusArray, false);
 
-            if ($timeRequestList->count()) {
-                $fileName = config('constants.export_timesheet_file_names.PENDING_TIME_MISSION_ENTRIES_XLSX');
-            
-                $excel = new ExportCSV($fileName);
+        if ($timeRequestList->count()) {
+            $fileName = config('constants.export_timesheet_file_names.PENDING_TIME_MISSION_ENTRIES_XLSX');
+        
+            $excel = new ExportCSV($fileName);
 
-                $headings = [
-                    trans('messages.export_sheet_headings.MISSION_NAME'),
-                    trans('messages.export_sheet_headings.ORGANIZATION_NAME'),
-                    trans('messages.export_sheet_headings.TIME'),
-                    trans('messages.export_sheet_headings.HOURS')
-                ];
+            $headings = [
+                trans('messages.export_sheet_headings.MISSION_NAME'),
+                trans('messages.export_sheet_headings.ORGANIZATION_NAME'),
+                trans('messages.export_sheet_headings.TIME'),
+                trans('messages.export_sheet_headings.HOURS')
+            ];
 
-                $excel->setHeadlines($headings);
+            $excel->setHeadlines($headings);
 
-                foreach ($timeRequestList as $mission) {
-                    $excel->appendRow([
-                        $mission->title,
-                        $mission->organisation_name,
-                        $mission->time,
-                        $mission->hours
-                    ]);
-                }
-
-                $tenantName = $this->helpers->getSubDomainFromRequest($request);
-
-                $path = $excel->export('app/'.$tenantName.'/timesheet/'.$request->auth->user_id.'/exports');
+            foreach ($timeRequestList as $mission) {
+                $excel->appendRow([
+                    $mission->title,
+                    $mission->organisation_name,
+                    $mission->time,
+                    $mission->hours
+                ]);
             }
+
+            $tenantName = $this->helpers->getSubDomainFromRequest($request);
+            $path = $excel->export('app/'.$tenantName.'/timesheet/'.$request->auth->user_id.'/exports');
             return response()->download($path, $fileName);
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
+
+        $apiStatus = Response::HTTP_OK;
+        $apiMessage =  trans('messages.success.MESSAGE_ENABLE_TO_EXPORT_USER_PENDING_TIME_MISSION_ENTRIES');
+        return $this->responseHelper->success($apiStatus, $apiMessage);
     }
 
     /**
@@ -527,38 +526,37 @@ class TimesheetController extends Controller
      */
     public function exportPendingGoalRequests(Request $request): Object
     {
-        try {
-            $statusArray = [config('constants.timesheet_status_id.SUBMIT_FOR_APPROVAL')];
-            $goalRequestList = $this->timesheetRepository->goalRequestList($request, $statusArray, false);
-            
-            if ($goalRequestList->count()) {
-                $fileName = config('constants.export_timesheet_file_names.PENTIND_GOAL_MISSION_ENTRIES_XLSX');
+        $statusArray = [config('constants.timesheet_status_id.SUBMIT_FOR_APPROVAL')];
+        $goalRequestList = $this->timesheetRepository->goalRequestList($request, $statusArray, false);
         
-                $excel = new ExportCSV($fileName);
+        if ($goalRequestList->count()) {
+            $fileName = config('constants.export_timesheet_file_names.PENTIND_GOAL_MISSION_ENTRIES_XLSX');
+    
+            $excel = new ExportCSV($fileName);
 
-                $headings = [
-                    trans('messages.export_sheet_headings.MISSION_NAME'),
-                    trans('messages.export_sheet_headings.ORGANIZATION_NAME'),
-                    trans('messages.export_sheet_headings.ACTIONS')
-                ];
+            $headings = [
+                trans('messages.export_sheet_headings.MISSION_NAME'),
+                trans('messages.export_sheet_headings.ORGANIZATION_NAME'),
+                trans('messages.export_sheet_headings.ACTIONS')
+            ];
 
-                $excel->setHeadlines($headings);
+            $excel->setHeadlines($headings);
 
-                foreach ($goalRequestList as $mission) {
-                    $excel->appendRow([
-                        $mission->title,
-                        $mission->organisation_name,
-                        $mission->action
-                    ]);
-                }
-
-                $tenantName = $this->helpers->getSubDomainFromRequest($request);
-                
-                $path = $excel->export('app/'.$tenantName.'/timesheet/'.$request->auth->user_id.'/exports');
+            foreach ($goalRequestList as $mission) {
+                $excel->appendRow([
+                    $mission->title,
+                    $mission->organisation_name,
+                    $mission->action
+                ]);
             }
+
+            $tenantName = $this->helpers->getSubDomainFromRequest($request);
+            $path = $excel->export('app/'.$tenantName.'/timesheet/'.$request->auth->user_id.'/exports');
             return response()->download($path, $fileName);
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
+
+        $apiStatus = Response::HTTP_OK;
+        $apiMessage =  trans('messages.success.MESSAGE_ENABLE_TO_EXPORT_USER_PENDING_GOAL_MISSION_ENTRIES');
+        return $this->responseHelper->success($apiStatus, $apiMessage);
     }
 }

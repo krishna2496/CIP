@@ -80,12 +80,12 @@ class TenantOptionsController extends Controller
             // Get domain name from request and use as tenant name.
             $tenantName = $this->helpers->getSubDomainFromRequest($request);
         
-			// Database connection with master database
-			$this->helpers->switchDatabaseConnection('mysql', $request);
-			
-			// Dispatch job, that will store in master database
-			dispatch(new ResetStyleSettingsJob($tenantName));
-		} catch (TenantDomainNotFoundException $e) {
+            // Database connection with master database
+            $this->helpers->switchDatabaseConnection('mysql', $request);
+            
+            // Dispatch job, that will store in master database
+            dispatch(new ResetStyleSettingsJob($tenantName));
+        } catch (TenantDomainNotFoundException $e) {
             throw $e;
         } catch (\Exception $e) {
             return $this->badRequest('messages.custom_error_message.ERROR_OCCURRED');
@@ -302,9 +302,19 @@ class TenantOptionsController extends Controller
 
         $file = $request->file('image_file');
         $fileName = $request->image_name;
-
+        $fileNameExtension = substr(strrchr($fileName, '.'), 1);
+        
+        if ($fileNameExtension !== $file->getClientOriginalExtension()) {
+            return $this->responseHelper->error(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                config('constants.error_codes.ERROR_INVALID_EXTENSION_OF_FILE'),
+                trans('messages.custom_error_message.ERROR_NOT_VALID_IMAGE_FILE_EXTENSION')
+            );
+        }
         // If request parameter have any error
-        if (!in_array($file->getClientOriginalExtension(), $validFileTypesArray)) {
+        if (!in_array($file->getClientOriginalExtension(), $validFileTypesArray) &&
+        $fileNameExtension === $file->getClientOriginalExtension()) {
             return $this->responseHelper->error(
                 Response::HTTP_UNPROCESSABLE_ENTITY,
                 Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
