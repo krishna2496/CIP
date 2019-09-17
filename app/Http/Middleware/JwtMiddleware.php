@@ -32,6 +32,7 @@ class JwtMiddleware
      *
      * @param Illuminate\Http\ResponseHelper $responseHelper
      * @param App\Repositories\Timezone\TimezoneRepository $timezoneRepository
+     * @param App\Helpers\Helpers $helpers
      * @return void
      */
     public function __construct(
