@@ -338,19 +338,18 @@ export default {
             let allowedFileTypes = ['doc','xls','xlsx','csv','pdf','png','jpg','jpeg']
             _this.fileError = '';
             files.filter(function(data,index){
-                if(data.size > 4000000) {
-                    _this.fileError = _this.langauageData.errors.file_max_size
-                   files.splice(index,1)
+                let fileName = data.name.split('.');
+                if(!allowedFileTypes.includes(fileName[fileName.length-1])) {
+                    _this.fileError = _this.langauageData.errors.invalid_file_type
+                    files.splice(index,1)
                 } else {
-                    let fileName = data.name.split('.');
-                    if(!allowedFileTypes.includes(fileName[fileName.length-1])) {
-                        _this.fileError = _this.langauageData.errors.invalid_file_type
+                    if(data.size > 4000000) {
+                        _this.fileError = _this.langauageData.errors.file_max_size
                         files.splice(index,1)
                     }
-                }
+                } 
             });
         },
-        
         updateWorkday(value) {
             var selectedData = {
                 'selectedVal' : '',
@@ -389,9 +388,7 @@ export default {
             if (this.$v.$invalid) {
                 return;
             }
-            if(this.fileError != '') {
-                return
-            }
+            this.fileError = ''
             this.isAjaxCall = true;
             const formData = new FormData();
             let fileData = []

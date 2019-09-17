@@ -101,7 +101,7 @@
                 </b-tabs>
             <!-- Tabing grid view and list view end -->
             <!-- Pagination start -->
-                <div class="pagination-block" v-if="rows > 0">
+                <div class="pagination-block" v-if="rows > 0 && totalPages > 1">
                     <b-pagination
                     v-model="currentPage"
                     :total-rows="rows"
@@ -196,6 +196,7 @@ export default {
             isThemeDisplay : true,
             isSkillDisplay : true,
             isCountrySelectionSet: false,
+            totalPages : 0
         };
     },
 
@@ -243,7 +244,7 @@ export default {
                     this.rows = response.pagination.total;
                     this.perPage = response.pagination.per_page;
                     this.currentPage = response.pagination.current_page;
-                    
+                    this.totalPages = response.pagination.total_pages;
                 } else {
                     this.rows = 0;
                     if (this.currentPage != 1) {
@@ -281,7 +282,6 @@ export default {
 
         pageChange (page) {
             //Change pagination
-            console.log("home pagination")
             window.scrollTo({
                 'behavior': 'smooth',
                 'left': 0,

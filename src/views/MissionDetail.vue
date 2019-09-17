@@ -547,8 +547,12 @@
 		  
 	  	</div>
 		
-	  	<b-modal :title="langauageData.label.search_user" ref="userDetailModal" 
+	  	<b-modal ref="userDetailModal" 
             :modal-class="myclass" hide-footer size="lg">
+				<template slot="modal-header" slot-scope="{ close }">
+					<i class="close"  @click="close()" v-b-tooltip.hover :title="langauageData.label.close"></i>
+				<h5 class="modal-title">{{langauageData.label.search_user}}</h5>
+				</template>
 	            <b-alert show :variant="classVariant" dismissible v-model="showErrorDiv">
 	            	{{ message }}
         		</b-alert>
@@ -1066,13 +1070,14 @@ export default {
             commentData.comment = this.comment;
             // Call to store mission service with params mission_id and comments
             storeMissionComments(commentData).then( response => {
-                if(response.error == true){
+                if(response.error == true) {
                     this.makeToast("danger",response.message);
                 } else {
                 	this.comment = '';
                 	this.disableApply = true;
                 	this.applyButton = this.langauageData.label.applied
-                    this.makeToast("success",response.message);
+					this.makeToast("success",response.message);
+					this.missionComments();
                    	this.$v.$reset();
                 }
                 this.postComment = false;
