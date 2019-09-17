@@ -145,6 +145,7 @@ class AuthController extends Controller
             $data['user_id'] = isset($userDetail->user_id) ? $userDetail->user_id : '';
             $data['first_name'] = isset($userDetail->first_name) ? $userDetail->first_name : '';
             $data['last_name'] = isset($userDetail->last_name) ? $userDetail->last_name : '';
+            $data['country_id'] = isset($userDetail->country_id) ? $userDetail->country_id : '';
             $data['avatar'] = isset($userDetail->avatar) ? $userDetail->avatar :
             $this->helpers->getDefaultProfileImage($request);
             
