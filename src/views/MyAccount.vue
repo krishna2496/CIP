@@ -596,8 +596,17 @@ export default {
                     }
                     store.commit("changeAvatar",this.userData)
 
+                  
                     this.cityList = Object.keys(this.userData.city_list).map(function(key) {
                         return [Number(key), _this.userData.city_list[key]];
+                    });
+                    this.cityList.sort(function(a, b){
+                            var cityOne= a[1].toLowerCase(), cityTwo=b[1].toLowerCase();
+                            if (cityOne < cityTwo) //sort string ascending
+                            return -1;
+                            if (cityOne > cityTwo)
+                            return 1;
+                            return 0; //default return value (no sorting)
                     });
                     this.availabilityList = Object.keys(this.userData.availability_list).map(function(key) {
                         return [Number(key), _this.userData.availability_list[key]];
@@ -661,6 +670,14 @@ export default {
                 country().then(responseData => {
                     if(responseData.error == false) {
                         this.countryList = responseData.data  
+                        this.countryList.sort(function(a, b){
+                            var countryOne= a[1].toLowerCase(), countryTwo=b[1].toLowerCase();
+                            if (countryOne < countryTwo) //sort string ascending
+                            return -1;
+                            if (countryOne > countryTwo)
+                            return 1;
+                            return 0; //default return value (no sorting)
+                        });
                     }    
 
                     timezone().then(responseData => {
@@ -875,7 +892,15 @@ export default {
                     if (response.error === true) { 
                         this.cityList = []
                     } else {
-                       this.cityList = response.data
+                        this.cityList = response.data
+                        this.cityList.sort(function(a, b){
+                            var cityOne= a[1].toLowerCase(), cityTwo=b[1].toLowerCase();
+                            if (cityOne < cityTwo) //sort string ascending
+                            return -1;
+                            if (cityOne > cityTwo)
+                            return 1;
+                            return 0; //default return value (no sorting)
+                        });
                     }
                     this.cityDefault = this.langauageData.placeholder.city 
                     this.profile.city = '';

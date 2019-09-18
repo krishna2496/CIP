@@ -3,8 +3,6 @@ import store from '../../store'
 
 export default async(deletFile) => {
     let responseData = [];
-
-    console.log(deletFile);
     var defaultLanguage = '';
     if (store.state.defaultLanguage !== null) {
         defaultLanguage = (store.state.defaultLanguage).toLowerCase();
