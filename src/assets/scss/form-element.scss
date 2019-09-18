@@ -94,6 +94,7 @@ a {
   border-radius: 25px;
 
   &:active,
+  &:active:focus,
   &:hover {
     color: $white !important;
     background: $primary !important;
@@ -102,7 +103,7 @@ a {
 
   &:focus,
   &:disabled,
-  &.disabled {
+  &.disabled  {
     color: $primary !important;
     background-color: $white !important;
     border: 2px solid $primary !important;
@@ -953,9 +954,9 @@ label {
   overflow: hidden;
   width: 160px;
   margin: 0 auto;
-  
-  .content-loader-wrap{
-    z-index:1040;
+
+  .content-loader-wrap {
+    z-index: 1040;
   }
 
   .priimage {
@@ -1293,6 +1294,16 @@ label {
     .success {
       color: $success;
     }
+  }
+  .image-thumb{
+      display: inline-block;
+      height: 100px;
+      width: 100px;
+      img{
+          height: 100%;
+          width: 100%;
+          object-fit: cover;
+      }
   }
 }
 

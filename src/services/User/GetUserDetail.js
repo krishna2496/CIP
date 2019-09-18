@@ -8,7 +8,7 @@ export default async(data) => {
         defaultLanguage = (store.state.defaultLanguage).toLowerCase();
     }
     var url =process.env.VUE_APP_API_ENDPOINT + "app/user-detail";
-
+    document.body.classList.add("loader-enable");
     await axios({
             url: url,
             method: 'GET',
@@ -22,12 +22,14 @@ export default async(data) => {
             responseData.error = false;
             responseData.message = response.data.message;
             responseData.data = response.data.data;
+            document.body.classList.remove("loader-enable");
         })
         .catch(function(error) {
             if (error.response.data.errors[0].message) {
                 responseData.error = true;
                 responseData.message = error.response.data.errors[0].message;
-            }  
+            } 
+            document.body.classList.remove("loader-enable");
         });
     return responseData;
 }
