@@ -99,6 +99,10 @@ return [
         'MESSAGE_NEWS_CATEGORY_DELETED' => 'DE: News category deleted successfully',        
         'MESSAGE_NEWS_CATEGORY_CREATED' => 'DE: News category created successfully',
         'MESSAGE_NEWS_CATEGORY_UPDATED' => 'DE: News category updated successfully',
+        'MESSAGE_NEWS_CREATED' => 'DE: News created sucessfully',
+        'MESSAGE_NEWS_DELETED' => 'DE: News deleted successfully',
+        'MESSAGE_NEWS_LISTING' => 'DE: News listed sucessfully',        
+        'MESSAGE_NEWS_UPDATED' => 'DE: News updated sucessfully',
     ],
 
         
@@ -207,5 +211,6 @@ return [
 
         // For News module        
         'ERROR_NEWS_CATEGORY_NOT_FOUND' => 'DE: News category not found in the system',
+        'ERROR_NEWS_NOT_FOUND' => 'DE: News not found in the system',
     ],
 ];

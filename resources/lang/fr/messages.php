@@ -126,6 +126,10 @@ return [
         'MESSAGE_NEWS_CATEGORY_DELETED' => 'Catégorie de nouvelles supprimée avec succès',
         'MESSAGE_NEWS_CATEGORY_CREATED' => 'Catégorie de nouvelles créée avec succès',
         'MESSAGE_NEWS_CATEGORY_UPDATED' => 'Catégorie de nouvelles mise à jour avec succès',
+        'MESSAGE_NEWS_CREATED' => 'Nouvelles créées avec succès',
+        'MESSAGE_NEWS_DELETED' => 'Nouvelles supprimées avec succès',
+        'MESSAGE_NEWS_LISTING' => 'Nouvelles listées avec succès',
+        'MESSAGE_NEWS_UPDATED' => 'Nouvelles mises à jour avec succès',
     ],
 
         
@@ -242,6 +246,7 @@ return [
         
         // For News module        
         'ERROR_NEWS_CATEGORY_NOT_FOUND' => 'Catégorie de nouvelles non trouvée dans le système',
+        'ERROR_NEWS_NOT_FOUND' => 'Nouvelles non trouvées dans le système',
     ],
 
     /**

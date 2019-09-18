@@ -528,6 +528,19 @@ $router->group(['middleware' => 'localization'], function ($router) {
         }
     );
 
+    /* News management */
+    $router->group(
+        ['prefix' => '/news', 'middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware'],
+        function ($router) {
+            $router->get('/', ['middleware' => ['PaginationMiddleware'],
+            'uses' => 'Admin\News\NewsController@index']);
+            $router->get('/{newsId}', ['uses' => 'Admin\News\NewsController@show']);
+            $router->post('/', ['uses' => 'Admin\News\NewsController@store']);
+            $router->patch('/{newsId}', ['uses' => 'Admin\News\NewsController@update']);
+            $router->delete('/{newsId}', ['uses' => 'Admin\News\NewsController@destroy']);
+        }
+    );
+
 /*
 |
 |--------------------------------------------------------------------------
