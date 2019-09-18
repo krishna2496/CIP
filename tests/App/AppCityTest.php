@@ -20,7 +20,7 @@ class AppCityTest extends TestCase
         DB::setDefaultConnection('tenant');
         $countryId = App\Models\Country::get()->random()->country_id;
 
-        $token = Helpers::getJwtToken($user->user_id);
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->get('/app/city/'.$countryId, ['token' => $token])
         ->seeStatusCode(200)
         ->seeJsonStructure([
@@ -44,7 +44,7 @@ class AppCityTest extends TestCase
         $user->setConnection($connection);
         $user->save();
 
-        $token = Helpers::getJwtToken($user->user_id);
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->get('/app/city/'.rand(1000000, 5000000), ['token' => $token])
         ->seeStatusCode(404)
         ->seeJsonStructure([
@@ -108,7 +108,7 @@ class AppCityTest extends TestCase
         $city->country_id = $countryId;
         $city->save();
 
-        $token = Helpers::getJwtToken($user->user_id);
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->get('/app/city/'.$countryId, ['token' => $token])
         ->seeStatusCode(200)
         ->seeJsonStructure([

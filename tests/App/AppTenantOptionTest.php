@@ -52,7 +52,7 @@ class AppTenantOptionTest extends TestCase
             'option_name' => $tenantOptionName
         ];
 
-        $token = Helpers::getJwtToken($user->user_id);
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->post("app/tenant-option", $params, ['token' => $token])
         ->seeStatusCode(200)
         ->seeJsonStructure([
@@ -81,7 +81,7 @@ class AppTenantOptionTest extends TestCase
             'option_name' => $optionName
         ];
 
-        $token = Helpers::getJwtToken($user->user_id);
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->post("app/tenant-option", $params, ['token' => $token])
         ->seeStatusCode(200)
         ->seeJsonStructure([
@@ -107,7 +107,7 @@ class AppTenantOptionTest extends TestCase
 
         $params = [];
 
-        $token = Helpers::getJwtToken($user->user_id);
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->post("app/tenant-option", $params, ['token' => $token])
         ->seeStatusCode(422)
         ->seeJsonStructure([

@@ -21,7 +21,7 @@ class AppMissionMediaTest extends TestCase
         $user->setConnection($connection);
         $user->save();
 
-        $token = Helpers::getJwtToken($user->user_id);
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->get('/app/mission-media/'.$mission->mission_id, ['token' => $token])
           ->seeStatusCode(200)
           ->seeJsonStructure([
@@ -47,7 +47,7 @@ class AppMissionMediaTest extends TestCase
         $user->save();
         $missionId = rand(1000000, 2000000);
         
-        $token = Helpers::getJwtToken($user->user_id);
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->get('/app/mission/'.$missionId.'/comments', ['token' => $token])
         ->seeStatusCode(404)
         ->seeJsonStructure([
@@ -78,7 +78,7 @@ class AppMissionMediaTest extends TestCase
         $user->save();
         $missionId = rand(1000000, 2000000);
         
-        $token = Helpers::getJwtToken($user->user_id);
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->get('/app/mission-media/'.$missionId, ['token' => $token])
         ->seeStatusCode(404)
         ->seeJsonStructure([

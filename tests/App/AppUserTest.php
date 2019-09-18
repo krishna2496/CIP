@@ -18,7 +18,7 @@ class AppUserTest extends TestCase
         $user->setConnection($connection);
         $user->save();
 
-        $token = Helpers::getJwtToken($user->user_id);
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->get('app/search-user?search='.substr($user->first_name, 2), ['token' => $token])
         ->seeStatusCode(200)
         ->seeJsonStructure([
@@ -42,7 +42,7 @@ class AppUserTest extends TestCase
         $user->setConnection($connection);
         $user->save();
 
-        $token = Helpers::getJwtToken($user->user_id);
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->get('app/search-user?search='.substr($user->last_name, 2), ['token' => $token])
         ->seeStatusCode(200)
         ->seeJsonStructure([
@@ -66,7 +66,7 @@ class AppUserTest extends TestCase
         $user->setConnection($connection);
         $user->save();
 
-        $token = Helpers::getJwtToken($user->user_id);
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->get('app/search-user?search='.substr($user->email, 3), ['token' => $token])
         ->seeStatusCode(200)
         ->seeJsonStructure([
@@ -90,7 +90,7 @@ class AppUserTest extends TestCase
         $user->setConnection($connection);
         $user->save();
 
-        $token = Helpers::getJwtToken($user->user_id);
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->get('app/search-user?search='.str_random(5), ['token' => $token])
         ->seeStatusCode(200)
         ->seeJsonStructure([
@@ -139,7 +139,7 @@ class AppUserTest extends TestCase
 
         ];
     
-        $token = Helpers::getJwtToken($user->user_id);
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
 
         $this->patch('app/user/', $params, ['token' => $token])
         ->seeStatusCode(200)
@@ -199,7 +199,7 @@ class AppUserTest extends TestCase
 
         ];
     
-        $token = Helpers::getJwtToken($user->user_id);
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
 
         $this->patch('app/user/', $params, ['token' => $token])
         ->seeStatusCode(422)
@@ -236,7 +236,7 @@ class AppUserTest extends TestCase
             'availability_id' => rand(1000000, 2000000)
         ];
 
-        $token = Helpers::getJwtToken($user->user_id);
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->patch('app/user/', $params, ['token' => $token])
         ->seeStatusCode(422)
         ->seeJsonStructure([
@@ -273,7 +273,7 @@ class AppUserTest extends TestCase
             'password' => "12345678",
             'confirm_password' => "12345678"
         ];
-        $token = Helpers::getJwtToken($user->user_id);
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->patch('app/change-password', $params, ['token' => $token])
         ->seeStatusCode(200)
         ->seeJsonStructure(
@@ -307,7 +307,7 @@ class AppUserTest extends TestCase
             'password' => "12345678",
             'confirm_password' => "12345678"
         ];
-        $token = Helpers::getJwtToken($user->user_id);
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->patch('app/change-password', $params, ['token' => $token])
         ->seeStatusCode(422)
         ->seeJsonStructure([
@@ -344,7 +344,7 @@ class AppUserTest extends TestCase
             'password' => "12345678",
             'confirm_password' => "1234567800"
         ];
-        $token = Helpers::getJwtToken($user->user_id);
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->patch('app/change-password', $params, ['token' => $token])
         ->seeStatusCode(422)
         ->seeJsonStructure([
@@ -379,7 +379,7 @@ class AppUserTest extends TestCase
             'password' => "",
             'confirm_password' => ""
         ];
-        $token = Helpers::getJwtToken($user->user_id);
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->patch('app/change-password', $params, ['token' => $token])
         ->seeStatusCode(422)
         ->seeJsonStructure([
@@ -416,7 +416,7 @@ class AppUserTest extends TestCase
         $params = [
             'avatar' => $base64
         ];
-        $token = Helpers::getJwtToken($user->user_id);
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->patch('app/user/upload-profile-image', $params, ['token' => $token])
         ->seeStatusCode(200)
         ->seeJsonStructure(
@@ -445,7 +445,7 @@ class AppUserTest extends TestCase
         $params = [
             'avatar' => ""
         ];
-        $token = Helpers::getJwtToken($user->user_id);
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->patch('app/user/upload-profile-image', $params, ['token' => $token])
         ->seeStatusCode(422)
         ->seeJsonStructure([
@@ -493,7 +493,7 @@ class AppUserTest extends TestCase
         $userSkill->skill_id = $skill->skill_id;
         $userSkill->save();        
 
-        $token = Helpers::getJwtToken($user->user_id);
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->get('/app/user-detail', ['token' => $token])
         ->seeStatusCode(200)
         ->seeJsonStructure([
@@ -576,7 +576,7 @@ class AppUserTest extends TestCase
             'first_name' => str_random(300)
         ];
 
-        $token = Helpers::getJwtToken($user->user_id);
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->patch('app/user/', $params, ['token' => $token])
         ->seeStatusCode(422)
         ->seeJsonStructure([
@@ -610,7 +610,7 @@ class AppUserTest extends TestCase
             'linked_in_url' => str_random(20)
         ];
 
-        $token = Helpers::getJwtToken($user->user_id);
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->patch('app/user/', $params, ['token' => $token])
         ->seeStatusCode(422)
         ->seeJsonStructure([
@@ -648,7 +648,7 @@ class AppUserTest extends TestCase
         $params = [
             'avatar' => $base64
         ];
-        $token = Helpers::getJwtToken($user->user_id);
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->patch('app/user/upload-profile-image', $params, ['token' => $token])
         ->seeStatusCode(422)
         ->seeJsonStructure([
@@ -678,7 +678,7 @@ class AppUserTest extends TestCase
         $user->setConnection($connection);
         $user->save();
 
-        $token = Helpers::getJwtToken($user->user_id);
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->get('app/get-user-language?email='.$user->email, ['token' => $token])
         ->seeStatusCode(200)
         ->seeJsonStructure([
@@ -704,7 +704,7 @@ class AppUserTest extends TestCase
         $user->setConnection($connection);
         $user->save();
 
-        $token = Helpers::getJwtToken($user->user_id);
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->get('app/get-user-language?email=test', ['token' => $token])
         ->seeStatusCode(404)
         ->seeJsonStructure([
@@ -757,7 +757,7 @@ class AppUserTest extends TestCase
 
         ];
     
-        $token = Helpers::getJwtToken($user->user_id);
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
 
         $this->patch('app/user/', $params, ['token' => $token])
         ->seeStatusCode(422)

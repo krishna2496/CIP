@@ -27,7 +27,7 @@ class CommentsTest extends TestCase
             "mission_id" => $mission->mission_id
         ];
 
-        $token = Helpers::getJwtToken($user->user_id);
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->post('/app/mission/comment', $params, ['token' => $token])
           ->seeStatusCode(201)
           ->seeJsonStructure([
@@ -103,7 +103,7 @@ class CommentsTest extends TestCase
         $user->save();
         $missionId = rand(1000000,2000000);
         
-        $token = Helpers::getJwtToken($user->user_id);
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->get('/missions/'.$missionId.'/comments', ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
         ->seeStatusCode(404)
         ->seeJsonStructure([
@@ -142,7 +142,7 @@ class CommentsTest extends TestCase
             "mission_id" => $mission->mission_id
         ];
 
-        $token = Helpers::getJwtToken($user->user_id);
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->post('/app/mission/comment', $params, ['token' => $token])
           ->seeStatusCode(201)
           ->seeJsonStructure([
@@ -226,7 +226,7 @@ class CommentsTest extends TestCase
             "mission_id" => $mission->mission_id
         ];
 
-        $token = Helpers::getJwtToken($user->user_id);
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->post('/app/mission/comment', $params, ['token' => $token])
           ->seeStatusCode(201)
           ->seeJsonStructure([
@@ -277,7 +277,7 @@ class CommentsTest extends TestCase
             "mission_id" => $mission->mission_id
         ];
 
-        $token = Helpers::getJwtToken($user->user_id);
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->post('/app/mission/comment', $params, ['token' => $token])
           ->seeStatusCode(201)
           ->seeJsonStructure([
@@ -325,7 +325,7 @@ class CommentsTest extends TestCase
             "mission_id" => $mission->mission_id
         ];
 
-        $token = Helpers::getJwtToken($user->user_id);
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->post('/app/mission/comment', $params, ['token' => $token])
           ->seeStatusCode(201)
           ->seeJsonStructure([
@@ -379,7 +379,7 @@ class CommentsTest extends TestCase
             "mission_id" => $mission->mission_id
         ];
 
-        $token = Helpers::getJwtToken($user->user_id);
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->post('/app/mission/comment', $params, ['token' => $token])
           ->seeStatusCode(201)
           ->seeJsonStructure([
@@ -433,7 +433,7 @@ class CommentsTest extends TestCase
             "mission_id" => $mission->mission_id
         ];
 
-        $token = Helpers::getJwtToken($user->user_id);
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->post('/app/mission/comment', $params, ['token' => $token])
           ->seeStatusCode(201)
           ->seeJsonStructure([
@@ -517,7 +517,7 @@ class CommentsTest extends TestCase
             "mission_id" => $mission->mission_id
         ];
 
-        $token = Helpers::getJwtToken($user->user_id);
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->post('/app/mission/comment', $params, ['token' => $token])
           ->seeStatusCode(201)
           ->seeJsonStructure([
@@ -572,7 +572,7 @@ class CommentsTest extends TestCase
             "mission_id" => $mission->mission_id
         ];
 
-        $token = Helpers::getJwtToken($user->user_id);
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->post('/app/mission/comment', $params, ['token' => $token])
           ->seeStatusCode(201)
           ->seeJsonStructure([
@@ -659,7 +659,7 @@ class CommentsTest extends TestCase
             "mission_id" => $mission->mission_id
         ];
 
-        $token = Helpers::getJwtToken($user->user_id);
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->post('/app/mission/comment', $params, ['token' => $token])
           ->seeStatusCode(201)
           ->seeJsonStructure([

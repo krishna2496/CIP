@@ -146,3 +146,26 @@ $factory->define(App\Models\City::class, function (Faker\Generator $faker) {
         'name' => 'test'
     ];
 });
+
+$factory->define(App\Models\UserNotification::class, function (Faker\Generator $faker) {
+    return [
+        'user_id' => 1,
+        'notification_type_id' => 1
+    ];
+});
+
+$factory->define(App\Models\MissionLanguage::class, function (Faker\Generator $faker) {
+    return [
+        'mission_id' => 1,
+        'language_id' => 1,
+        'title' => 1,
+        'short_description' => str_random(10),
+        'objective' => str_random(10),
+        'description' => [
+            [
+                'title' => str_random(10),
+                'description' => str_random(100)
+            ]            
+        ]
+    ];
+});

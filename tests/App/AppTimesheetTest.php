@@ -67,7 +67,7 @@ class AppTimesheetTest extends TestCase
             ];
         DB::setDefaultConnection('mysql');
         
-        $token = Helpers::getJwtToken($user->user_id);
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->post('app/mission/application', $params, ['token' => $token])
           ->seeStatusCode(201);
                 
@@ -97,7 +97,7 @@ class AppTimesheetTest extends TestCase
             'message',
         ]);
 
-        $token = Helpers::getJwtToken($user->user_id);
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->get('/app/timesheet', ['token' => $token])
         ->seeJsonStructure([
             "status",
@@ -122,7 +122,7 @@ class AppTimesheetTest extends TestCase
         $user->setConnection($connection);
         $user->save();
 
-        $token = Helpers::getJwtToken($user->user_id);
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->get('/app/timesheet', ['token' => $token])
         ->seeJsonStructure([
             "status",
@@ -218,7 +218,7 @@ class AppTimesheetTest extends TestCase
             ];
         DB::setDefaultConnection('mysql');
         
-        $token = Helpers::getJwtToken($user->user_id);
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->post('app/mission/application', $params, ['token' => $token])
           ->seeStatusCode(201);
                 
@@ -321,7 +321,7 @@ class AppTimesheetTest extends TestCase
         ];
         DB::setDefaultConnection('mysql');
         
-        $token = Helpers::getJwtToken($user->user_id);
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->post('app/timesheet', $params, ['token' => $token])
         ->seeStatusCode(422)
         ->seeJsonStructure([
@@ -407,7 +407,7 @@ class AppTimesheetTest extends TestCase
         ];
         DB::setDefaultConnection('mysql');
         
-        $token = Helpers::getJwtToken($user->user_id);
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->post('app/timesheet', $params, ['token' => $token])
         ->seeStatusCode(422)
         ->seeJsonStructure([
@@ -493,7 +493,7 @@ class AppTimesheetTest extends TestCase
         ];
         DB::setDefaultConnection('mysql');
         
-        $token = Helpers::getJwtToken($user->user_id);
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->post('app/timesheet', $params, ['token' => $token])
         ->seeStatusCode(422)
         ->seeJsonStructure([
@@ -536,7 +536,7 @@ class AppTimesheetTest extends TestCase
         ];
         DB::setDefaultConnection('mysql');
         
-        $token = Helpers::getJwtToken($user->user_id);
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->post('app/timesheet', $params, ['token' => $token])
         ->seeStatusCode(422)
         ->seeJsonStructure([
@@ -617,7 +617,7 @@ class AppTimesheetTest extends TestCase
             ];
         DB::setDefaultConnection('mysql');
         
-        $token = Helpers::getJwtToken($user->user_id);
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->post('app/mission/application', $params, ['token' => $token])
           ->seeStatusCode(201);
                 
@@ -717,7 +717,7 @@ class AppTimesheetTest extends TestCase
             ];
         DB::setDefaultConnection('mysql');
         
-        $token = Helpers::getJwtToken($user->user_id);
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->post('app/mission/application', $params, ['token' => $token])
           ->seeStatusCode(201);
                 
@@ -832,7 +832,7 @@ class AppTimesheetTest extends TestCase
             ];
         DB::setDefaultConnection('mysql');
         
-        $token = Helpers::getJwtToken($user->user_id);
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->post('app/mission/application', $params, ['token' => $token])
           ->seeStatusCode(201);
                 
@@ -947,7 +947,7 @@ class AppTimesheetTest extends TestCase
             ];
         DB::setDefaultConnection('mysql');
         
-        $token = Helpers::getJwtToken($user->user_id);
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->post('app/mission/application', $params, ['token' => $token])
           ->seeStatusCode(201);
                 
@@ -1062,7 +1062,7 @@ class AppTimesheetTest extends TestCase
             ];
         DB::setDefaultConnection('mysql');
         
-        $token = Helpers::getJwtToken($user->user_id);
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->post('app/mission/application', $params, ['token' => $token])
           ->seeStatusCode(201);
                 
@@ -1094,7 +1094,7 @@ class AppTimesheetTest extends TestCase
 
         $timesheet = App\Models\Timesheet::where("mission_id", $mission[0]['mission_id'])->get();
 
-        $token = Helpers::getJwtToken($user->user_id);
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->get('/app/timesheet/'.$timesheet[0]['timesheet_id'], ['token' => $token])
         ->seeStatusCode(200)
         ->seeJsonStructure([
@@ -1128,7 +1128,7 @@ class AppTimesheetTest extends TestCase
         $user->setConnection($connection);
         $user->save();
 
-        $token = Helpers::getJwtToken($user->user_id);
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->get('/app/timesheet/'.rand(100000, 500000), ['token' => $token])
         ->seeStatusCode(404)
         ->seeJsonStructure([
@@ -1208,7 +1208,7 @@ class AppTimesheetTest extends TestCase
             ];
         DB::setDefaultConnection('mysql');
         
-        $token = Helpers::getJwtToken($user->user_id);
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->post('app/mission/application', $params, ['token' => $token])
           ->seeStatusCode(201);
                 
@@ -1324,7 +1324,7 @@ class AppTimesheetTest extends TestCase
             ];
         DB::setDefaultConnection('mysql');
         
-        $token = Helpers::getJwtToken($user->user_id);
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->post('app/mission/application', $params, ['token' => $token])
           ->seeStatusCode(201);
                 
@@ -1393,7 +1393,7 @@ class AppTimesheetTest extends TestCase
         $user->setConnection($connection);
         $user->save();
         
-        $token = Helpers::getJwtToken($user->user_id);
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->delete(
             "app/timesheet/".rand(1000000, 5000000)."/document/".rand(1000000, 5000000),
             [],
@@ -1477,7 +1477,7 @@ class AppTimesheetTest extends TestCase
             ];
         DB::setDefaultConnection('mysql');
         
-        $token = Helpers::getJwtToken($user->user_id);
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->post('app/mission/application', $params, ['token' => $token])
           ->seeStatusCode(201);
                 
@@ -1591,7 +1591,7 @@ class AppTimesheetTest extends TestCase
             ];
         DB::setDefaultConnection('mysql');
         
-        $token = Helpers::getJwtToken($user->user_id);
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->post('app/mission/application', $params, ['token' => $token])
           ->seeStatusCode(201);
                 
@@ -1663,7 +1663,7 @@ class AppTimesheetTest extends TestCase
                 ]
             ]
         ];
-        $token = Helpers::getJwtToken($user->user_id);
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->post('/app/timesheet/submit', $params, ['token' => $token])
         ->seeStatusCode(422)
         ->seeJsonStructure([
@@ -1743,7 +1743,7 @@ class AppTimesheetTest extends TestCase
             ];
         DB::setDefaultConnection('mysql');
         
-        $token = Helpers::getJwtToken($user->user_id);
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->post('app/mission/application', $params, ['token' => $token])
           ->seeStatusCode(201);
                 
@@ -1869,7 +1869,7 @@ class AppTimesheetTest extends TestCase
             ];
         DB::setDefaultConnection('mysql');
         
-        $token = Helpers::getJwtToken($user->user_id);
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->post('app/mission/application', $params, ['token' => $token])
           ->seeStatusCode(201);
                 
@@ -1932,7 +1932,7 @@ class AppTimesheetTest extends TestCase
         $user->setConnection($connection);
         $user->save();
 
-        $token = Helpers::getJwtToken($user->user_id);
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->get('/app/timesheet/time-requests', ['token' => $token])
         ->seeJsonStructure([
             "status",
@@ -2005,7 +2005,7 @@ class AppTimesheetTest extends TestCase
             ];
         DB::setDefaultConnection('mysql');
         
-        $token = Helpers::getJwtToken($user->user_id);
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->post('app/mission/application', $params, ['token' => $token])
           ->seeStatusCode(201);
                 
@@ -2066,7 +2066,7 @@ class AppTimesheetTest extends TestCase
         $user->setConnection($connection);
         $user->save();
 
-        $token = Helpers::getJwtToken($user->user_id);
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->get('/app/timesheet/goal-requests', ['token' => $token])
         ->seeJsonStructure([
             "status",
@@ -2139,7 +2139,7 @@ class AppTimesheetTest extends TestCase
             ];
         DB::setDefaultConnection('mysql');
         
-        $token = Helpers::getJwtToken($user->user_id);
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->post('app/mission/application', $params, ['token' => $token])
           ->seeStatusCode(201);
                 
@@ -2190,7 +2190,7 @@ class AppTimesheetTest extends TestCase
         $user->setConnection($connection);
         $user->save();
 
-        $token = Helpers::getJwtToken($user->user_id);
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->get('/app/timesheet/time-requests/export', ['token' => $token])
         ->seeStatusCode(200);
         $user->delete();
@@ -2260,7 +2260,7 @@ class AppTimesheetTest extends TestCase
             ];
         DB::setDefaultConnection('mysql');
         
-        $token = Helpers::getJwtToken($user->user_id);
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->post('app/mission/application', $params, ['token' => $token])
           ->seeStatusCode(201);
                 
@@ -2310,7 +2310,7 @@ class AppTimesheetTest extends TestCase
         $user->setConnection($connection);
         $user->save();
 
-        $token = Helpers::getJwtToken($user->user_id);
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->get('/app/timesheet/goal-requests/export', ['token' => $token])
         ->seeStatusCode(200);
         $user->delete();
@@ -2380,7 +2380,7 @@ class AppTimesheetTest extends TestCase
             ];
         DB::setDefaultConnection('mysql');
         
-        $token = Helpers::getJwtToken($user->user_id);
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->post('app/mission/application', $params, ['token' => $token])
           ->seeStatusCode(201);
                 
@@ -2492,7 +2492,7 @@ class AppTimesheetTest extends TestCase
             ];
         DB::setDefaultConnection('mysql');
         
-        $token = Helpers::getJwtToken($user->user_id);
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->post('app/mission/application', $params, ['token' => $token])
           ->seeStatusCode(201);
                 
@@ -2604,7 +2604,7 @@ class AppTimesheetTest extends TestCase
             ];
         DB::setDefaultConnection('mysql');
         
-        $token = Helpers::getJwtToken($user->user_id);
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->post('app/mission/application', $params, ['token' => $token])
           ->seeStatusCode(201);
                 
@@ -2702,7 +2702,7 @@ class AppTimesheetTest extends TestCase
             ];
         DB::setDefaultConnection('mysql');
         
-        $token = Helpers::getJwtToken($user->user_id);
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->post('app/mission/application', $params, ['token' => $token])
           ->seeStatusCode(201);
                 
@@ -2800,7 +2800,7 @@ class AppTimesheetTest extends TestCase
             ];
         DB::setDefaultConnection('mysql');
         
-        $token = Helpers::getJwtToken($user->user_id);
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->post('app/mission/application', $params, ['token' => $token])
           ->seeStatusCode(201);
                 
@@ -2898,7 +2898,7 @@ class AppTimesheetTest extends TestCase
             ];
         DB::setDefaultConnection('mysql');
         
-        $token = Helpers::getJwtToken($user->user_id);
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->post('app/mission/application', $params, ['token' => $token])
           ->seeStatusCode(201);
                 
