@@ -429,9 +429,9 @@ class TimesheetController extends Controller
      * Export all pending time mission time entries.
      *
      * @param Illuminate\Http\Request $request
-     * @return Symfony\Component\HttpFoundation\BinaryFileResponse
+     * @return Object
      */
-    public function exportPendingTimeRequests(Request $request): BinaryFileResponse
+    public function exportPendingTimeRequests(Request $request): Object
     {
         $statusArray = [config('constants.timesheet_status_id.SUBMIT_FOR_APPROVAL')];
 
@@ -461,26 +461,22 @@ class TimesheetController extends Controller
             }
 
             $tenantName = $this->helpers->getSubDomainFromRequest($request);
-
             $path = $excel->export('app/'.$tenantName.'/timesheet/'.$request->auth->user_id.'/exports');
+            return response()->download($path, $fileName);
         }
 
         $apiStatus = Response::HTTP_OK;
-        $apiMessage =  ($timeRequestList->count()) ?
-        trans('messages.success.MESSAGE_USER_PENDING_TIME_MISSION_ENTRIES_EXPORTED'):
-        trans('messages.success.MESSAGE_ENABLE_TO_EXPORT_USER_PENDING_TIME_MISSION_ENTRIES');
-        $apiData = ($timeRequestList->count()) ? ['path' => $path] : [];
-
-        return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
+        $apiMessage =  trans('messages.success.MESSAGE_ENABLE_TO_EXPORT_USER_PENDING_TIME_MISSION_ENTRIES');
+        return $this->responseHelper->success($apiStatus, $apiMessage);
     }
 
     /**
      * Export user's goal mission history
      *
      * @param \Illuminate\Http\Request $request
-     * @return Symfony\Component\HttpFoundation\BinaryFileResponse
+     * @return Object
      */
-    public function exportPendingGoalRequests(Request $request): BinaryFileResponse
+    public function exportPendingGoalRequests(Request $request): Object
     {
         $statusArray = [config('constants.timesheet_status_id.SUBMIT_FOR_APPROVAL')];
         $goalRequestList = $this->timesheetRepository->goalRequestList($request, $statusArray, false);
@@ -507,10 +503,12 @@ class TimesheetController extends Controller
             }
 
             $tenantName = $this->helpers->getSubDomainFromRequest($request);
-            
             $path = $excel->export('app/'.$tenantName.'/timesheet/'.$request->auth->user_id.'/exports');
-
             return response()->download($path, $fileName);
         }
+
+        $apiStatus = Response::HTTP_OK;
+        $apiMessage =  trans('messages.success.MESSAGE_ENABLE_TO_EXPORT_USER_PENDING_GOAL_MISSION_ENTRIES');
+        return $this->responseHelper->success($apiStatus, $apiMessage);
     }
 }

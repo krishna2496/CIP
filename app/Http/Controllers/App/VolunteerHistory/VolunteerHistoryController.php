@@ -190,9 +190,9 @@ class VolunteerHistoryController extends Controller
      * Export user's goal mission history
      *
      * @param \Illuminate\Http\Request $request
-     * @return Symfony\Component\HttpFoundation\BinaryFileResponse
+     * @return Object
      */
-    public function exportGoalMissionHistory(Request $request): BinaryFileResponse
+    public function exportGoalMissionHistory(Request $request): Object
     {
         $statusArray = [
             config('constants.timesheet_status_id.AUTOMATICALLY_APPROVED'),
@@ -223,19 +223,22 @@ class VolunteerHistoryController extends Controller
             }
 
             $tenantName = $this->helpers->getSubDomainFromRequest($request);
-
             $path = $excel->export('app/'.$tenantName.'/timesheet/'.$request->auth->user_id.'/exports');
             return response()->download($path, $fileName);
         }
+    
+        $apiStatus = Response::HTTP_OK;
+        $apiMessage =  trans('messages.success.MESSAGE_ENABLE_TO_EXPORT_USER_TIME_MISSION_HISTORY');
+        return $this->responseHelper->success($apiStatus, $apiMessage);
     }
 
     /**
      * Export user's time mission history
      *
      * @param \Illuminate\Http\Request $request
-     * @return Symfony\Component\HttpFoundation\BinaryFileResponse
+     * @return Object
      */
-    public function exportTimeMissionHistory(Request $request): BinaryFileResponse
+    public function exportTimeMissionHistory(Request $request): Object
     {
         $statusArray = [
             config('constants.timesheet_status_id.AUTOMATICALLY_APPROVED'),
@@ -268,9 +271,11 @@ class VolunteerHistoryController extends Controller
             }
 
             $tenantName = $this->helpers->getSubDomainFromRequest($request);
-
             $path = $excel->export('app/'.$tenantName.'/timesheet/'.$request->auth->user_id.'/exports');
             return response()->download($path, $fileName);
         }
+        $apiStatus = Response::HTTP_OK;
+        $apiMessage =  trans('messages.success.MESSAGE_ENABLE_TO_EXPORT_USER_TIME_MISSION_HISTORY');
+        return $this->responseHelper->success($apiStatus, $apiMessage);
     }
 }

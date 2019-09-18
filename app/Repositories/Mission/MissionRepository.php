@@ -921,11 +921,21 @@ class MissionRepository implements MissionInterface
     {
         // Check mission id exists or not
         $mission = $this->mission->findOrFail($missionId);
+        $relatedCityCount = $this->mission->where('city_id', $mission->city_id)
+        ->whereNotIn('mission.mission_id', [$missionId])->count();
+
+        $relatedCountryCount = $this->mission->where('country_id', $mission->country_id)
+        ->whereNotIn('mission.mission_id', [$missionId])->count();
 
         // Get  mission data
-        $missionQuery = $this->mission->where('theme_id', $mission->theme_id)
+        $missionQuery = $this->mission
         ->whereNotIn('mission.mission_id', [$missionId])
         ->select('mission.*')->take(config("constants.RELATED_MISSION_LIMIT"));
+
+        $missionQuery = ($relatedCityCount > 0) ? $missionQuery->where('city_id', $mission->city_id)
+        : (($relatedCityCount == 0) && ($relatedCountryCount > 0))
+        ? $missionQuery->where('country_id', $mission->country_id)
+        : $missionQuery->where('theme_id', $mission->theme_id);
 
         $missionQuery->where('publication_status', config("constants.publication_status")["APPROVED"])
         ->with(['missionTheme', 'missionMedia', 'goalMission', 'timeMission'

@@ -221,6 +221,7 @@ return [
         'ERROR_REQUIRED_FIELDS_FOR_UPDATE_STYLING' => 'Requis soit en couleur primaire, soit en champ de fichier SCSS personnalisé',
         'ERROR_WHILE_UPLOADING_FILE_ON_S3' => 'Une erreur lors du téléchargement du fichier sur S3',
         'ERROR_SLIDER_NOT_FOUND' => 'Aucun curseur trouvé',
+        'ERROR_NOT_VALID_IMAGE_FILE_EXTENSION' => 'L\'extension d\'image est valide pour cette image',
 
         
         //For timesheet module
@@ -235,6 +236,7 @@ return [
         'ERROR_INVALID_DATA_FOR_TIMESHEET_ENTRY' => 'Vous ne pouvez pas ajouter de temps',
         'ERROR_TIMESHEET_ENTRY_NOT_FOUND' => 'ID de saisie de la feuille de temps introuvable',
         'ERROR_SAME_DATE_TIME_ENTRY' => 'Vous ne pouvez pas ajouter plus de 24 heures à la même date',
+        'ERROR_UNAUTHORIZED_USER' => 'Utilisateur non autorisé'
     ],
 
     /**

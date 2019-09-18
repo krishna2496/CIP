@@ -287,9 +287,19 @@ class TenantOptionsController extends Controller
 
         $file = $request->file('image_file');
         $fileName = $request->image_name;
-
+        $fileNameExtension = substr(strrchr($fileName, '.'), 1);
+        
+        if ($fileNameExtension !== $file->getClientOriginalExtension()) {
+            return $this->responseHelper->error(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                config('constants.error_codes.ERROR_INVALID_EXTENSION_OF_FILE'),
+                trans('messages.custom_error_message.ERROR_NOT_VALID_IMAGE_FILE_EXTENSION')
+            );
+        }
         // If request parameter have any error
-        if (!in_array($file->getClientOriginalExtension(), $validFileTypesArray)) {
+        if (!in_array($file->getClientOriginalExtension(), $validFileTypesArray) &&
+        $fileNameExtension === $file->getClientOriginalExtension()) {
             return $this->responseHelper->error(
                 Response::HTTP_UNPROCESSABLE_ENTITY,
                 Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
