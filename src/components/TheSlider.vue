@@ -1,7 +1,11 @@
 <template>
     <div class="signin-slider">
-        <b-carousel  id="carousel-1" fade :interval="2000" indicators v-if="isDynamicCarsousetSet">
+        <b-carousel  id="carousel-1" fade :interval="2000" 
+		:sliding-start="0" 
+		:sliding-end = "1"
+		indicators v-if="isDynamicCarsousetSet">
 			<b-carousel-slide 
+				:no-wrap="wrap"
 				v-for="item in carouselItems"
 				:key="item.sort_order"
 				:caption="getTitle(item.slider_detail)"
@@ -10,7 +14,7 @@
 			</b-carousel-slide>
         </b-carousel>
         
-		<b-carousel id fade :interval="2000" indicators v-else>
+		<b-carousel id fade :interval="0" indicators v-else>
 			<b-carousel-slide :img-src="$store.state.imagePath+'/assets/images/sliderimg1.png'" ></b-carousel-slide>
         </b-carousel>
     </div>
@@ -27,7 +31,8 @@ export default {
 	data() {
 		return {
 			carouselItems: [],
-			isDynamicCarsousetSet : false
+			isDynamicCarsousetSet : false,
+			wrap : true
 		};
 	},
 	created(){		

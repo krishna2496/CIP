@@ -49,14 +49,14 @@ export default new Vuex.Store({
             localStorage.setItem('firstName', data.first_name)
             localStorage.setItem('lastName', data.last_name)
             localStorage.setItem('avatar', data.avatar)
-            localStorage.setItem('defaultCountryId',data.user_id)
+            localStorage.setItem('defaultCountryId',data.country_id)
             state.isLoggedIn = true;
             state.token = data.token;
             state.userId = data.user_id;
             state.firstName = data.first_name;
             state.lastName = data.last_name;
             state.avatar = data.avatar;
-            state.defaultCountryId = data.user_id;
+            state.defaultCountryId = data.country_id;
         },
         // Remove login data in state and local storage
         logoutUser(state) {
