@@ -99,10 +99,19 @@
                           </ul>
                         </li>
                         <li class="has-menu no-dropdown" v-if="isStoryDisplay">
-                          <a href="Javascript:void(0)" :title='langauageData.label.stories'>{{ langauageData.label.stories}}</a>
+                            <a href="Javascript:void(0)" :title='langauageData.label.stories'>{{ langauageData.label.stories}}</a>
+                            <!-- <router-link 
+                                :to="{ path: '/stories'}" @click.native="menuBarclickHandler"
+                                >
+                                {{langauageData.label.stories}}
+                            </router-link> -->
                         </li>
                         <li class="has-menu no-dropdown" v-if="isNewsDisplay">
-                          <a href="Javascript:void(0)" :title='langauageData.label.news'>{{ langauageData.label.news}}</a>
+                            <router-link 
+                                :to="{ path: '/news'}" @click.native="menuBarclickHandler"
+                                >
+                                {{langauageData.label.news}}
+                            </router-link>
                         </li>
 
                         <li class="has-menu" v-if="isPolicyDisplay">

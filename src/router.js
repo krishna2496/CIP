@@ -1,7 +1,5 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Home from './views/Home.vue'
-import TermsofUse from './views/Cms.vue'
 
 Vue.use(Router)
 
@@ -41,13 +39,31 @@ let routes = [{
             import ('./views/VolunteeringHistory.vue')
 },
 {
-        path: '/dashboard',
-        name: 'dashboard',
-        meta: {
-            requiresAuth: true
-        },
-        component: () =>
-            import ('./views/Dashboard.vue')
+    path: '/news',
+    name: 'News',
+    meta: {
+        requiresAuth: true
+    },
+    component: () =>
+        import ('./views/News.vue')
+},
+{
+    path: '/news-detail',
+    name: 'NewsDetail',
+    meta: {
+        requiresAuth: true
+    },
+    component: () =>
+        import ('./views/NewsDetail.vue')
+},
+{
+    path: '/dashboard',
+    name: 'dashboard',
+    meta: {
+        requiresAuth: true
+    },
+    component: () =>
+        import ('./views/Dashboard.vue')
 },
 {
     path: '/home',
