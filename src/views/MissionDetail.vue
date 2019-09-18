@@ -1080,22 +1080,22 @@ export default {
         	commentData.missionId = this.$route.params.misisonId;
         	commentData.page = this.page;
         	missionComments(commentData).then(response => {
-					if(response.error == false) {
-						if(this.missionComment.length) {
-							var _this = this;
-							response.data.map(function(value, key) {
-							     _this.missionComment.push(value);
-						    });
-						} else {
-							this.missionComment = response.data;
-						}
-						if(response.pagination) {
-							this.nextUrl = response.pagination.next_url;
-						}
+				if(response.error == false) {
+					if(this.missionComment.length) {
+						var _this = this;
+						response.data.map(function(value, key) {
+							_this.missionComment.push(value);
+						});
+					} else {
+						this.missionComment = response.data;
 					}
-				  	setTimeout(() => {
-					  	this.loadMoreComment = false;	
-				  	},100)			
+					if(response.pagination) {
+						this.nextUrl = response.pagination.next_url;
+					}
+				}
+				setTimeout(() => {
+					this.loadMoreComment = false;	
+				},100)			
 			});
         },
 
@@ -1122,6 +1122,11 @@ export default {
                 	this.disableApply = true;
                 	this.applyButton = this.langauageData.label.applied
 					this.makeToast("success",response.message);
+					this.missionComment = []
+					this.nextUrl = null,
+					this.postComment = false,
+					this.loadMoreComment = false,
+					this.page = 1;
 					this.missionComments();
                    	this.$v.$reset();
                 }
