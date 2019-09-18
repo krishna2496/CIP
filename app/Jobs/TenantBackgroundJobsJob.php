@@ -4,15 +4,13 @@ namespace App\Jobs;
 
 use App\Models\Tenant;
 use Queue;
-use App\Traits\SendEmailTrait;
 use App\Jobs\TenantDefaultLanguageJob;
 use App\Jobs\TenantMigrationJob;
 use Illuminate\Support\Facades\Log;
+use App\Helpers\EmailHelper;
 
 class TenantBackgroundJobsJob extends Job
 {
-    use SendEmailTrait;
-
     /**
      * @var App\Models\Tenant
      */
@@ -33,6 +31,11 @@ class TenantBackgroundJobsJob extends Job
     public $timeout = 0;
 
     /**
+     * @var App\Helpers\EmailHelper
+     */
+    private $emailHelper;
+
+    /**
      * Create a new job instance.
      * @param App\Models\Tenant $tenant
      * @return void
@@ -40,6 +43,7 @@ class TenantBackgroundJobsJob extends Job
     public function __construct(Tenant $tenant)
     {
         $this->tenant = $tenant;
+        $this->emailHelper = new EmailHelper();
     }
 
     /**
@@ -63,13 +67,13 @@ class TenantBackgroundJobsJob extends Job
         
             // Job dispatched to create new tenant's database and migrations
             dispatch(new TenantMigrationJob($this->tenant));
-		
+        
             // Copy local default_theme folder
-			dispatch(new DownloadAssestFromS3ToLocalStorageJob($this->tenant->name));
+            dispatch(new DownloadAssestFromS3ToLocalStorageJob($this->tenant->name));
             
             // Create assets folder for tenant on AWS s3 bucket
-			dispatch(new CreateFolderInS3BucketJob($this->tenant));
-			
+            dispatch(new CreateFolderInS3BucketJob($this->tenant));
+            
             // Compile CSS file and upload on s3
             dispatch(new CompileScssFiles($this->tenant));
 
@@ -79,7 +83,6 @@ class TenantBackgroundJobsJob extends Job
                 ]
             );
         } catch (\Exception $e) {
-            Log::info('Exception in tenant background job execution '. $e);
             $this->tenant->update(
                 [
                     'background_process_status' => config('constants.background_process_status.FAILED')
@@ -90,7 +93,7 @@ class TenantBackgroundJobsJob extends Job
 
     /**
      * The job failed to process.
-     *
+     * @codeCoverageIgnore
      * @param  Exception  $exception
      * @return void
      */
@@ -102,6 +105,7 @@ class TenantBackgroundJobsJob extends Job
 
     /**
      * Send email notification to admin
+     * @codeCoverageIgnore
      * @param bool $isFail
      * @return void
      */
@@ -128,6 +132,6 @@ class TenantBackgroundJobsJob extends Job
 
         $params['data'] = $data;
 
-        $this->sendEmail($params);
+        $this->emailHelper->sendEmail($params);
     }
 }

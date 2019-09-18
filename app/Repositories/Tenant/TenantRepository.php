@@ -43,7 +43,7 @@ class TenantRepository implements TenantInterface
             $tenantQuery->orderBy('tenant_id', $orderDirection);
         }
 
-        return $tenantQuery->paginate(config('constants.PER_PAGE_LIMIT'));
+        return $tenantQuery->paginate($request->perPage);
     }
 
     /**

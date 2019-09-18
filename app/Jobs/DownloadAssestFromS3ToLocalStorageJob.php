@@ -26,9 +26,9 @@ class DownloadAssestFromS3ToLocalStorageJob extends Job
     public function handle()
     {
         $sourceFolder = storage_path('app/'.config('constants.AWS_S3_DEFAULT_THEME_FOLDER_NAME'));
-		$destinationFolder = storage_path('app/'.$this->tenantName);
+        $destinationFolder = storage_path('app/'.$this->tenantName);
 
-		exec('mkdir '.$destinationFolder);
-		exec('cp -r '.$sourceFolder.'/* '.$destinationFolder.' ');
+        mkdir($destinationFolder);
+        exec('cp -r '.$sourceFolder.'/'.config('constants.AWS_S3_ASSETS_FOLDER_NAME').' '.$destinationFolder.' ');
     }
 }

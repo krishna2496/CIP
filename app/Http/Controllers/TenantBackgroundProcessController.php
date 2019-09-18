@@ -30,15 +30,11 @@ class TenantBackgroundProcessController extends Controller
 
     public function runBackgroundProcess()
     {
-        try {
-            $tenants = $this->tenantRepository->getPendingTenantsForProcess();
-            if ($tenants->count()) {
-                foreach ($tenants as $tenant) {
-                    dispatch(new TenantBackgroundJobsJob($tenant));
-                }
+        $tenants = $this->tenantRepository->getPendingTenantsForProcess();
+        if ($tenants->count()) {
+            foreach ($tenants as $tenant) {
+                dispatch(new TenantBackgroundJobsJob($tenant));
             }
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
 }

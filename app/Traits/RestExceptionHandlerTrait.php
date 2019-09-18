@@ -21,11 +21,11 @@ trait RestExceptionHandlerTrait
      * @param int $statusCode
      * @return \Illuminate\Http\JsonResponse
      */
-    protected function badRequest(string $message = 'Bad request')
+    protected function internalServerError(string $message = 'Bad request')
     {
         return $this->jsonResponse(
-            Response::HTTP_BAD_REQUEST,
-            Response::$statusTexts[Response::HTTP_BAD_REQUEST],
+            Response::HTTP_INTERNAL_SERVER_ERROR,
+            Response::$statusTexts[Response::HTTP_INTERNAL_SERVER_ERROR],
             '',
             $message
         );
@@ -63,88 +63,6 @@ trait RestExceptionHandlerTrait
         );
     }
     
-    /**
-     * Returns json response for Query exception
-     *
-     * @param string $message
-     * @return \Illuminate\Http\JsonResponse
-     */
-    protected function PDO(string $customErrorCode = '', string $message = 'Database operational error')
-    {
-        return $this->jsonResponse(
-            Response::HTTP_BAD_GATEWAY,
-            Response::$statusTexts[Response::HTTP_BAD_GATEWAY],
-            $customErrorCode,
-            $message
-        );
-    }
-    
-    /**
-     * Returns json response for method not allowed http exception
-     *
-     * @param string $message
-     * @return \Illuminate\Http\JsonResponse
-     */
-    protected function methodNotAllowedHttp(string $message = 'Method not allowed')
-    {
-        return $this->jsonResponse(
-            Response::HTTP_METHOD_NOT_ALLOWED,
-            Response::$statusTexts[Response::HTTP_METHOD_NOT_ALLOWED],
-            '',
-            $message
-        );
-    }
-
-    /**
-     * Returns json response for AWS S3 exception
-     *
-     * @param string $message
-     * @return \Illuminate\Http\JsonResponse
-     */
-    protected function s3Exception(string $customErrorCode = '', string $message = 'Internal Server Error')
-    {
-        return $this->jsonResponse(
-            Response::HTTP_INTERNAL_SERVER_ERROR,
-            Response::$statusTexts[Response::HTTP_INTERNAL_SERVER_ERROR],
-            $customErrorCode,
-            $message
-        );
-    }
-
-    /**
-     * Returns json response for files not found on s3 for bucket folder
-     *
-     * @param string $customErrorCode
-     * @param string $message
-     * @return \Illuminate\Http\JsonResponse
-     */
-    protected function fileNotFound(string $customErrorCode = '', string $message = 'Assets bucket not found on S3')
-    {
-        return $this->jsonResponse(
-            Response::HTTP_NOT_FOUND,
-            Response::$statusTexts[Response::HTTP_NOT_FOUND],
-            $customErrorCode,
-            $message
-        );
-    }
-
-    /**
-     * Returns json response for file download error.
-     *
-     * @param string $customErrorCode
-     * @param string $message
-     * @return \Illuminate\Http\JsonResponse
-     */
-    protected function fileDownloadError(string $customErrorCode = '', string $message = 'Failed to download files')
-    {
-        return $this->jsonResponse(
-            Response::HTTP_UNPROCESSABLE_ENTITY,
-            Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-            $customErrorCode,
-            $message
-        );
-    }
-
     /**
      * Returns json response.
      *

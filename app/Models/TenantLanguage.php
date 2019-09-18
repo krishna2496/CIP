@@ -1,7 +1,8 @@
 <?php
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\{Model, SoftDeletes};
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\Language;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
@@ -52,13 +53,5 @@ class TenantLanguage extends Model
     public function language(): HasOne
     {
         return $this->hasOne(Language::class, 'language_id', 'language_id');
-    }
-    /**
-     * Get the language code from language.
-     * @return string
-     */
-    public function getLanguageCodeAttribute(): string
-    {
-        return $this->language->code;
     }
 }
