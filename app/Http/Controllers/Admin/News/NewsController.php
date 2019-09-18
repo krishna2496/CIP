@@ -15,6 +15,7 @@ use Validator;
 use App\Models\News;
 use App\Transformations\NewsTransformable;
 use App\Helpers\LanguageHelper;
+use App\Helpers\Helpers;
 
 //!  News Controller
 /*!
@@ -39,21 +40,29 @@ class NewsController extends Controller
     private $languageHelper;
 
     /**
+     * @var App\Helpers\Helpers
+     */
+    private $helpers;
+
+    /**
      * Create a new controller instance.
      *
      * @param App\Repositories\News\NewsRepository $newsRepository
      * @param App\Helpers\ResponseHelper $responseHelper
      * @param App\Helpers\LanguageHelper $languageHelper
+     * @param App\Helpers\Helpers $helpers
      * @return void
      */
     public function __construct(
         NewsRepository $newsRepository,
         ResponseHelper $responseHelper,
-        LanguageHelper $languageHelper
+        LanguageHelper $languageHelper,
+        Helpers $helpers
     ) {
         $this->newsRepository = $newsRepository;
         $this->responseHelper = $responseHelper;
         $this->languageHelper = $languageHelper;
+        $this->helpers = $helpers;
     }
 
     /**
@@ -66,10 +75,13 @@ class NewsController extends Controller
     {
         try {
             $languageId = $this->languageHelper->getLanguageId($request);
-            $news = $this->newsRepository->getNewsList($request, $languageId, config('constants.news_status.UNPUBLISHED'));
+            $news = $this->newsRepository->getNewsList(
+                $request, $languageId, 
+                config('constants.news_status.UNPUBLISHED')
+            );
             $newsTransform = $news
-            ->map(function (News $news) {
-                return $this->transformNews($news, '');
+            ->map(function (News $newsTransform) {
+                return $this->transformNews($newsTransform, '');
             })->all();
 
             $requestString = $request->except(['page','perPage']);

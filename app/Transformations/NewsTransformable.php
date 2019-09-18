@@ -2,9 +2,17 @@
 namespace App\Transformations;
 
 use App\Models\News;
+use App\Helpers\Helpers;
 
 trait NewsTransformable
 {
+    private $helpers;
+
+    public function __construct(Helpers $helpers)
+    {
+        $this->helpers = $helpers;
+    }
+
     /**
      * Select news listing
      *
@@ -34,12 +42,17 @@ trait NewsTransformable
      * @param bool $sortDescription 
      * @return array
      */
-    protected function getTransformedNews(News $news,bool $sortDescription = null): array
+    protected function getTransformedNews(News $news, bool $sortDescription = null): array
     {
         $newsLanguage['title'] = array();
         $newsLanguage['description'] = array();
         $newsData = array();
         $newsCategory = null;
+        $newsData['user_thumbnail'] = null;
+        $newsData['news_image'] = null;
+        $newsData['user_title'] = null;
+        $newsData['user_name'] = null;
+        $description = null;
         $newsDetails = $news->toArray();
 
         if (isset($newsDetails['news_id'])) {
@@ -50,12 +63,16 @@ trait NewsTransformable
             foreach ($newsDetails['news_language'] as $key => $value) {
                 $newsDetails[$key] = ['title' => $value['title']];
                 $newsLanguage['title'][$key] = $newsDetails[$key];
-                
-                // News language description
+            
                 $description = $value['description'];
                 if ($sortDescription) {
-                    $sortDescription = substr($description, 0, config('constants.NEWS_DESCRIPTION_CHARACTER_LIMIT'));
-                    $newsDetails[$key] = ['description' => $sortDescription.'...'];
+                    $sortDescription = isset($description) ? 
+                    $this->helpers->shortDescription(
+                        $description,
+                        config('constants.NEWS_SHORT_DESCRIPTION_WORD_LIMIT')
+                    ) : null;
+                    
+                    $newsDetails[$key] = ['description' => $sortDescription];
                     $newsLanguage['description'][$key] = $newsDetails[$key];
                 } else {
                     $newsDetails[$key] = ['description' => $description];
@@ -93,10 +110,21 @@ trait NewsTransformable
         if (isset($newsDetails['user_thumbnail'])) {
             $newsData['user_thumbnail'] = $newsDetails['user_thumbnail'];
         }
+
         
+        if (isset($newsData['user_thumbnail'])
+            || isset($newsData['news_image'])
+            || isset($newsData['user_title'])
+            || isset($newsData['user_name'])
+        ) {
+           $newsDataArray = $newsData;
+        } else {
+            unset($newsData);
+        }
+
         unset($newsDetails);
         $newsDetails['news_id'] = $newsId;
-        $newsDetails = isset($newsData) ? array_merge($newsDetails, $newsData) : $newsDetails;
+        $newsDetails = isset($newsDataArray) ? array_merge($newsDetails, $newsDataArray) : $newsDetails;
         $newsDetails['news_category'] = $newsCategory;
         $newsDetails['news_language'] = array_merge($newsLanguage['title'], $newsLanguage['description']);
         return $newsDetails;

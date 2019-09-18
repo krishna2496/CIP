@@ -267,6 +267,17 @@ $router->group(['middleware' => 'localization'], function ($router) {
         $router->get('/app/volunteer/history/goal-mission/export', ['as' => 'app.volunteer.history.goal-mission.export',
         'middleware' => 'tenant.connection|jwt.auth',
         'uses' => 'App\VolunteerHistory\VolunteerHistoryController@exportGoalMissionHistory']);
+
+        /* News listing */
+        $router->get('/app/news',['as' => 'app.news.list',
+        'middleware' => 'localization|tenant.connection|jwt.auth|PaginationMiddleware',
+        'uses' => 'App\News\NewsController@index']);
+        
+        /* Fetch news details*/
+        $router->get('/app/news/{newsId}',['as' => 'app.news.show',
+        'middleware' => 'localization|tenant.connection|jwt.auth',
+        'uses' => 'App\News\NewsController@show']);
+      
     });
 
 /*

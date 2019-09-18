@@ -357,4 +357,18 @@ class Helpers
         $totalHours = $hours + $minutes;
         return number_format((float) $totalHours, 2, '.', '');
     }
+
+    /**
+     * Get short text description
+     *
+     * @param string $phrase
+     * @param int maxWords
+     * @return null|string
+     */
+    public function shortDescription(string $phrase, int $maxWords) {
+        $phrase_array = explode(' ',$phrase);
+        if(count($phrase_array) > $maxWords && $maxWords > 0)
+           $phrase = implode(' ',array_slice($phrase_array, 0, $maxWords)).'...';
+        return $phrase;
+     }
 }
