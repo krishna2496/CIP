@@ -21,7 +21,7 @@ class AppMissionTest extends TestCase
         $mission->setConnection($connection);
         $mission->save();
 
-        $token = Helpers::getJwtToken($user->user_id);
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->get(route('app.missions'), ['token' => $token])
           ->seeStatusCode(200)
           ->seeJsonStructure([
@@ -51,7 +51,7 @@ class AppMissionTest extends TestCase
         $user->setConnection($connection);
         $user->save();
         DB::setDefaultConnection('mysql');
-        $token = Helpers::getJwtToken($user->user_id);
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         
         $this->get(route('app.missions'), ['token' => $token])
           ->seeStatusCode(200)
@@ -93,7 +93,7 @@ class AppMissionTest extends TestCase
         $params = [
                 'mission_id' => rand(1000000, 2000000)
             ];
-        $token = Helpers::getJwtToken($user->user_id);
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->post('app/mission/favourite', $params, ['token' => $token])
           ->seeStatusCode(404)
           ->seeJsonStructure([
@@ -130,7 +130,7 @@ class AppMissionTest extends TestCase
                 'mission_id' => $mission->mission_id
             ];
 
-        $token = Helpers::getJwtToken($user->user_id);
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->post('app/mission/favourite', $params, ['token' => $token])
           ->seeStatusCode(201)
           ->seeJsonStructure([
@@ -164,7 +164,7 @@ class AppMissionTest extends TestCase
                 'mission_id' => $mission->mission_id
             ];
 
-        $token = Helpers::getJwtToken($user->user_id);
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         //Code for add mission to favourite
         $this->post('app/mission/favourite', $params, ['token' => $token])
           ->seeStatusCode(201)
@@ -202,7 +202,7 @@ class AppMissionTest extends TestCase
         $user->setConnection($connection);
         $user->save();
 
-        $token = Helpers::getJwtToken($user->user_id);
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->get('app/mission/'.$mission->mission_id, ['token' => $token])
           ->seeStatusCode(200)
           ->seeJsonStructure([
@@ -264,7 +264,7 @@ class AppMissionTest extends TestCase
         $user->save();
         $missionId = rand(1000000,2000000);
         
-        $token = Helpers::getJwtToken($user->user_id);
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->get('/app/mission/'.$missionId, ['token' => $token])
         ->seeStatusCode(404)
         ->seeJsonStructure([
@@ -302,7 +302,7 @@ class AppMissionTest extends TestCase
         $user->setConnection($connection);
         $user->save();
 
-        $token = Helpers::getJwtToken($user->user_id);
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->get('/app/related-missions/'.$mission->mission_id, ['token' => $token])
           ->seeStatusCode(200)
           ->seeJsonStructure([
@@ -363,7 +363,7 @@ class AppMissionTest extends TestCase
         $user->save();
         $missionId = rand(1000000,2000000);
         
-        $token = Helpers::getJwtToken($user->user_id);
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->get('/app/related-missions/'.$missionId, ['token' => $token])
         ->seeStatusCode(404)
         ->seeJsonStructure([
@@ -396,7 +396,7 @@ class AppMissionTest extends TestCase
         $user->setConnection($connection);
         $user->save();
 
-        $token = Helpers::getJwtToken($user->user_id);
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->get('app/mission/'.$mission->mission_id.'/volunteers', ['token' => $token])
           ->seeStatusCode(200)
           ->seeJsonStructure([
@@ -422,7 +422,7 @@ class AppMissionTest extends TestCase
         $user->save();
         $missionId = rand(1000000,2000000);
         
-        $token = Helpers::getJwtToken($user->user_id);
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->get('app/mission/'.$missionId.'/volunteers', ['token' => $token])
         ->seeStatusCode(404)
         ->seeJsonStructure([
@@ -436,5 +436,157 @@ class AppMissionTest extends TestCase
             ]
         ]);  
         $user->delete();    
+    }
+
+    /**
+     * @test
+     *
+     * It should validate data for add mission to favourite
+     *
+     * @return void
+     */
+    public function it_should_validate_mission_id_for_add_mission_to_favourite()
+    {
+        $connection = 'tenant';
+        $user = factory(\App\User::class)->make();
+        $user->setConnection($connection);
+        $user->save();
+        DB::setDefaultConnection('mysql');
+
+        $params = [
+                'mission_id' => "test"
+            ];
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
+        $this->post('app/mission/favourite', $params, ['token' => $token])
+          ->seeStatusCode(422)
+          ->seeJsonStructure([
+            "errors" => [
+                [
+                    "status",
+                    "type",
+                    "message",
+                    "code"
+                ]
+            ]
+        ]); 
+        $user->delete();
+    }
+
+    /**
+     * @test
+     *
+     * Get all mission
+     *
+     * @return void
+     */
+    public function it_should_return_all_top_recommended_app_missions()
+    {
+        $connection = 'tenant';
+        $user = factory(\App\User::class)->make();
+        $user->setConnection($connection);
+        $user->save();
+        $mission = factory(\App\Models\Mission::class)->make();
+        $mission->setConnection($connection);
+        $mission->save();
+
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
+        $this->get('app/missions?explore_mission_type=recommended-missions', ['token' => $token])
+          ->seeStatusCode(200)
+          ->seeJsonStructure([
+            "status",
+            "meta_data" => [
+                "filters" => [
+                    "search"
+                ]
+            ],
+            "message"
+        ]);
+        $user->delete();
+        $mission->delete();
+    }
+
+    /**
+     * @test
+     *
+     * Get all mission
+     *
+     * @return void
+     */
+    public function it_should_return_blank_app_missions()
+    {
+        $connection = 'tenant';
+        $user = factory(\App\User::class)->make();
+        $user->setConnection($connection);
+        $user->save();
+        $mission = factory(\App\Models\Mission::class)->make();
+        $mission->setConnection($connection);
+        $mission->save();
+
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
+        $this->get('app/missions?explore_mission_type=recommended-missions1', ['token' => $token])
+          ->seeStatusCode(200)
+          ->seeJsonStructure([
+            "status",
+            "meta_data" => [
+                "filters" => [
+                    "search"
+                ]
+            ],
+            "message"
+        ]);
+        $user->delete();
+        $mission->delete();
+    }
+
+    /**
+     * @test
+     *
+     * Explore mission
+     *
+     * @return void
+     */
+    public function it_should_return_explore_missions()
+    {
+        $connection = 'tenant';
+        $user = factory(\App\User::class)->make();
+        $user->setConnection($connection);
+        $user->save();
+
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
+        $this->get('app/explore-mission', ['token' => $token])
+          ->seeStatusCode(200)
+          ->seeJsonStructure([
+            "status",
+            "data"
+        ]);
+        $user->delete();
+    }
+
+    /**
+     * @test
+     *
+     * Get all mission
+     *
+     * @return void
+     */
+    public function it_should_return_filter_data()
+    {
+        $connection = 'tenant';
+        $user = factory(\App\User::class)->make();
+        $user->setConnection($connection);
+        $user->save();
+
+        $mission = factory(\App\Models\Mission::class)->make();
+        $mission->setConnection($connection);
+        $mission->save();
+
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
+        $this->get('app/filter-data?country_id='.$mission->country_id.'&city_id='.$mission->city_id, ['token' => $token])
+          ->seeStatusCode(200)
+          ->seeJsonStructure([
+            "status",
+            "data"
+        ]);
+        $user->delete();
     }
 }

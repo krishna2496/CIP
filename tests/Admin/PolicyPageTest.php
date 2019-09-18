@@ -668,4 +668,26 @@ class PolicyPageTest extends TestCase
         ]);
         App\Models\PolicyPage::where('slug', $slug)->delete();
     }
+
+    /**
+     * @test
+     *
+     * Return invalid argument error on get policy page listing
+     *
+     * @return void
+     */
+    public function it_should_return_invalid_argument_error_on_policy_page_listing()
+    {
+        $this->get('/policy?order=test', ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+          ->seeStatusCode(400)
+          ->seeJsonStructure([
+              "errors" => [
+                  [
+                    "status",
+                    "type",
+                    "message"
+                  ]
+              ]
+        ]);
+    }
 }

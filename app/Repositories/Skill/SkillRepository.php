@@ -50,8 +50,13 @@ class SkillRepository implements SkillInterface
      */
     public function skillDetails(Request $request): LengthAwarePaginator
     {
-        return $this->skill->select('skill_id', 'skill_name', 'translations', 'parent_skill')
-        ->paginate($request->perPage);
+        $skillQuery = $this->skill->select('skill_id', 'skill_name', 'translations', 'parent_skill');
+
+        if ($request->has('order')) {
+            $orderDirection = $request->input('order', 'asc');
+            $skillQuery = $skillQuery->orderBy('skill_id', $orderDirection);
+        }
+        return $skillQuery->paginate($request->perPage);
     }
     
     /**

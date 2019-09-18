@@ -6,12 +6,12 @@ use Illuminate\Http\Response;
 use App\Repositories\MissionApplication\MissionApplicationRepository;
 use App\Helpers\ResponseHelper;
 use App\Http\Controllers\Controller;
-use PDOException;
 use Illuminate\Http\JsonResponse;
 use App\Traits\RestExceptionHandlerTrait;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Validator;
 use Illuminate\Validation\Rule;
+use InvalidArgumentException;
 
 class MissionApplicationController extends Controller
 {
@@ -66,8 +66,6 @@ class MissionApplicationController extends Controller
                 config('constants.error_codes.ERROR_INVALID_ARGUMENT'),
                 trans('messages.custom_error_message.ERROR_INVALID_ARGUMENT')
             );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
 
@@ -80,29 +78,15 @@ class MissionApplicationController extends Controller
      */
     public function missionApplication(int $missionId, int $applicationId): JsonResponse
     {
-        try {
-            $applicationList = $this->missionApplicationRepository->missionApplication($missionId, $applicationId);
-            $responseMessage = (count($applicationList) > 0) ? trans('messages.success.MESSAGE_APPLICATION_LISTING')
-             : trans('messages.success.MESSAGE_NO_RECORD_FOUND');
-            
-            return $this->responseHelper->success(Response::HTTP_OK, $responseMessage, $applicationList);
-        } catch (PDOException $e) {
-            return $this->PDO(
-                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
-                trans('messages.custom_error_message.ERROR_DATABASE_OPERATIONAL')
-            );
-        } catch (InvalidArgumentException $e) {
-            return $this->invalidArgument(
-                config('constants.error_codes.ERROR_INVALID_ARGUMENT'),
-                trans('messages.custom_error_message.ERROR_INVALID_ARGUMENT')
-            );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
-        }
+        $applicationList = $this->missionApplicationRepository->missionApplication($missionId, $applicationId);
+        $responseMessage = (count($applicationList) > 0) ? trans('messages.success.MESSAGE_APPLICATION_LISTING')
+            : trans('messages.success.MESSAGE_NO_RECORD_FOUND');
+        
+        return $this->responseHelper->success(Response::HTTP_OK, $responseMessage, $applicationList);
     }
 
     /**
-     * Update resource.
+     * Update mission application
      *
      * @param \Illuminate\Http\Request $request
      * @param int $missionId
@@ -111,51 +95,37 @@ class MissionApplicationController extends Controller
      */
     public function updateApplication(Request $request, int $missionId, int $applicationId): JsonResponse
     {
-        try {
-            $validator = Validator::make($request->toArray(), [
-                'approval_status' => ['required',Rule::in(config('constants.application_status'))],
-            ]);
+        $validator = Validator::make($request->toArray(), [
+            'approval_status' => ['required',Rule::in(config('constants.application_status'))],
+        ]);
 
-            // If request parameter have any error
-            if ($validator->fails()) {
-                return $this->responseHelper->error(
-                    Response::HTTP_UNPROCESSABLE_ENTITY,
-                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                    config('constants.error_codes.ERROR_INVALID_MISSION_APPLICATION_DATA'),
-                    $validator->errors()->first()
-                );
-            }
-
-            try {
-                $application = $this->missionApplicationRepository->updateApplication(
-                    $request,
-                    $missionId,
-                    $applicationId
-                );
-            } catch (ModelNotFoundException $e) {
-                return $this->modelNotFound(
-                    config('constants.error_codes.ERROR_MISSION_NOT_FOUND'),
-                    $e->getMessage()
-                );
-            }
-            
-            // Set response data
-            $apiStatus = Response::HTTP_OK;
-            $apiMessage = trans('messages.success.MESSAGE_APPLICATION_UPDATED');
-            
-            return $this->responseHelper->success($apiStatus, $apiMessage);
-        } catch (InvalidArgumentException $e) {
-            return $this->invalidArgument(
-                config('constants.error_codes.ERROR_INVALID_ARGUMENT'),
-                trans('messages.custom_error_message.ERROR_INVALID_ARGUMENT')
+        // If request parameter have any error
+        if ($validator->fails()) {
+            return $this->responseHelper->error(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                config('constants.error_codes.ERROR_INVALID_MISSION_APPLICATION_DATA'),
+                $validator->errors()->first()
             );
-        } catch (PDOException $e) {
-            return $this->PDO(
-                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
-                trans('messages.custom_error_message.ERROR_DATABASE_OPERATIONAL')
-            );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
+
+        try {
+            $application = $this->missionApplicationRepository->updateApplication(
+                $request,
+                $missionId,
+                $applicationId
+            );
+        } catch (ModelNotFoundException $e) {
+            return $this->modelNotFound(
+                config('constants.error_codes.ERROR_MISSION_NOT_FOUND'),
+                $e->getMessage()
+            );
+        }
+        
+        // Set response data
+        $apiStatus = Response::HTTP_OK;
+        $apiMessage = trans('messages.success.MESSAGE_APPLICATION_UPDATED');
+        
+        return $this->responseHelper->success($apiStatus, $apiMessage);
     }
 }

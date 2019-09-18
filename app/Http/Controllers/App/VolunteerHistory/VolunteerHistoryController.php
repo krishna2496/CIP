@@ -14,7 +14,6 @@ use InvalidArgumentException;
 use Validator;
 use Illuminate\Validation\Rule;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use PDOException;
 use App\Repositories\MissionTheme\MissionThemeRepository;
 use App\Repositories\MissionSkill\MissionSkillRepository;
 use App\Helpers\LanguageHelper;
@@ -92,20 +91,16 @@ class VolunteerHistoryController extends Controller
      */
     public function themeHistory(Request $request): JsonResponse
     {
-        try {
-            $userId = $request->auth->user_id;
-            $themeTimeHistory = $this->missionThemeRepository->getHoursPerTheme($request->year, $userId);
+        $userId = $request->auth->user_id;
+        $themeTimeHistory = $this->missionThemeRepository->getHoursPerTheme($request->year, $userId);
 
-            $apiStatus = Response::HTTP_OK;
-            $apiMessage = (!empty($themeTimeHistory->toArray())) ?
-            trans('messages.success.MESSAGE_THEME_HISTORY_PER_HOUR_LISTED'):
-            trans('messages.success.MESSAGE_THEME_HISTORY_NOT_FOUND');
-            $apiData = $themeTimeHistory->toArray();
-            
-            return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
-        }
+        $apiStatus = Response::HTTP_OK;
+        $apiMessage = (!empty($themeTimeHistory->toArray())) ?
+        trans('messages.success.MESSAGE_THEME_HISTORY_PER_HOUR_LISTED'):
+        trans('messages.success.MESSAGE_THEME_HISTORY_NOT_FOUND');
+        $apiData = $themeTimeHistory->toArray();
+        
+        return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
     }
 
     /**
@@ -116,25 +111,21 @@ class VolunteerHistoryController extends Controller
      */
     public function skillHistory(Request $request): JsonResponse
     {
-        try {
-            $languages = $this->languageHelper->getLanguages($request);
-            $language = ($request->hasHeader('X-localization')) ?
-            $request->header('X-localization') : env('TENANT_DEFAULT_LANGUAGE_CODE');
-            $languageCode = $languages->where('code', $language)->first()->code;
+        $languages = $this->languageHelper->getLanguages($request);
+        $language = ($request->hasHeader('X-localization')) ?
+        $request->header('X-localization') : env('TENANT_DEFAULT_LANGUAGE_CODE');
+        $languageCode = $languages->where('code', $language)->first()->code;
 
-            $userId = $request->auth->user_id;
-            $skillTimeHistory = $this->missionSkillRepository->getHoursPerSkill($request->year, $userId);
+        $userId = $request->auth->user_id;
+        $skillTimeHistory = $this->missionSkillRepository->getHoursPerSkill($request->year, $userId);
 
-            $apiStatus = Response::HTTP_OK;
-            $apiMessage =  (!empty($skillTimeHistory->toArray())) ?
-            trans('messages.success.MESSAGE_SKILL_HISTORY_PER_HOUR_LISTED'):
-            trans('messages.success.MESSAGE_SKILL_HISTORY_NOT_FOUND');
-            $apiData = $skillTimeHistory->toArray();
+        $apiStatus = Response::HTTP_OK;
+        $apiMessage =  (!empty($skillTimeHistory->toArray())) ?
+        trans('messages.success.MESSAGE_SKILL_HISTORY_PER_HOUR_LISTED'):
+        trans('messages.success.MESSAGE_SKILL_HISTORY_NOT_FOUND');
+        $apiData = $skillTimeHistory->toArray();
 
-            return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
-        }
+        return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
     }
 
     /**
@@ -163,8 +154,6 @@ class VolunteerHistoryController extends Controller
                 config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
                 trans('messages.custom_error_message.ERROR_DATABASE_OPERATIONAL')
             );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
 
@@ -194,8 +183,6 @@ class VolunteerHistoryController extends Controller
                 config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
                 trans('messages.custom_error_message.ERROR_DATABASE_OPERATIONAL')
             );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
 

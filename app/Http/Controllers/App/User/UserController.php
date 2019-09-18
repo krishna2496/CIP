@@ -106,32 +106,23 @@ class UserController extends Controller
      */
     public function index(Request $request): JsonResponse
     {
-        try {
-            $userList = $this->userRepository->listUsers($request->auth->user_id);
-            if ($request->has('search')) {
-                $userList = $this->userRepository->searchUsers($request->input('search'), $request->auth->user_id);
-            }
-
-            $users = $userList->map(function (User $user) use ($request) {
-                $user = $this->transformUser($user);
-                $user->avatar = isset($user->avatar) ? $user->avatar :
-                $this->helpers->getDefaultProfileImage($request);
-                return $user;
-            })->all();
-
-            // Set response data
-            $apiStatus = Response::HTTP_OK;
-            $apiMessage = (empty($users)) ? trans('messages.success.MESSAGE_NO_RECORD_FOUND')
-             : trans('messages.success.MESSAGE_USER_LISTING');
-            return $this->responseHelper->success(Response::HTTP_OK, $apiMessage, $users);
-        } catch (InvalidArgumentException $e) {
-            return $this->invalidArgument(
-                config('constants.error_codes.ERROR_INVALID_ARGUMENT'),
-                trans('messages.custom_error_message.ERROR_INVALID_ARGUMENT')
-            );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
+        $userList = $this->userRepository->listUsers($request->auth->user_id);
+        if ($request->has('search')) {
+            $userList = $this->userRepository->searchUsers($request->input('search'), $request->auth->user_id);
         }
+
+        $users = $userList->map(function (User $user) use ($request) {
+            $user = $this->transformUser($user);
+            $user->avatar = isset($user->avatar) ? $user->avatar :
+            $this->helpers->getDefaultProfileImage($request);
+            return $user;
+        })->all();
+
+        // Set response data
+        $apiStatus = Response::HTTP_OK;
+        $apiMessage = (empty($users)) ? trans('messages.success.MESSAGE_NO_RECORD_FOUND')
+            : trans('messages.success.MESSAGE_USER_LISTING');
+        return $this->responseHelper->success(Response::HTTP_OK, $apiMessage, $users);
     }
 
     /**
@@ -155,13 +146,6 @@ class UserController extends Controller
                 config('constants.error_codes.ERROR_USER_NOT_FOUND'),
                 trans('messages.custom_error_message.ERROR_USER_NOT_FOUND')
             );
-        } catch (\PDOException $e) {
-            return $this->PDO(
-                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
-                trans('messages.custom_error_message.ERROR_DATABASE_OPERATIONAL')
-            );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
 
@@ -173,95 +157,86 @@ class UserController extends Controller
      */
     public function show(Request $request): JsonResponse
     {
-        try {
-            $userId = $request->auth->user_id;
-            $userDetail = $this->userRepository->findUserDetail($userId);
-            $customFields = $this->userCustomFieldRepository->getUserCustomFields($request);
-            $userSkillList = $this->userRepository->userSkills($userId);
-            $cityList = $this->cityRepository->cityList($userDetail->country_id);
-            $tenantLanguages = $this->languageHelper->getTenantLanguageList($request);
-            $tenantLanguageCodes = $this->languageHelper->getTenantLanguageCodeList($request);
-            $availabilityList = $this->userRepository->getAvailability();
+        $userId = $request->auth->user_id;
+        $userDetail = $this->userRepository->findUserDetail($userId);
+        $customFields = $this->userCustomFieldRepository->getUserCustomFields($request);
+        $userSkillList = $this->userRepository->userSkills($userId);
+        $cityList = $this->cityRepository->cityList($userDetail->country_id);
+        $tenantLanguages = $this->languageHelper->getTenantLanguageList($request);
+        $tenantLanguageCodes = $this->languageHelper->getTenantLanguageCodeList($request);
+        $availabilityList = $this->userRepository->getAvailability();
 
-            $languages = $this->languageHelper->getLanguages($request);
-            $language = ($request->hasHeader('X-localization')) ?
-            $request->header('X-localization') : env('TENANT_DEFAULT_LANGUAGE_CODE');
-            $languageCode = $languages->where('code', $language)->first()->code;
-            $userLanguageCode = $languages->where('language_id', $userDetail->language_id)->first()->code;
-            $userCustomFieldData = [];
-            $userSkillData = [];
-            $customFieldsData = $customFields->toArray();
-            $customFieldsValue = $userDetail->userCustomFieldValue;
-            unset($userDetail->userCustomFieldValue);
+        $languages = $this->languageHelper->getLanguages($request);
+        $language = ($request->hasHeader('X-localization')) ?
+        $request->header('X-localization') : env('TENANT_DEFAULT_LANGUAGE_CODE');
+        $languageCode = $languages->where('code', $language)->first()->code;
+        $userLanguageCode = $languages->where('language_id', $userDetail->language_id)->first()->code;
+        $userCustomFieldData = [];
+        $userSkillData = [];
+        $customFieldsData = $customFields->toArray();
+        $customFieldsValue = $userDetail->userCustomFieldValue;
+        unset($userDetail->userCustomFieldValue);
 
-            if (!empty($customFieldsData) && (isset($customFieldsData))) {
-                $returnData = [];
-                foreach ($customFieldsData as $key => $value) {
-                    if ($value) {
-                        $arrayKey = array_search($languageCode, array_column($value['translations'], 'lang'));
-                        $returnData = $value;
-                        unset($returnData['translations']);
-                        if (isset($value['translations'][$arrayKey])) {
-                            if ($arrayKey !== '') {
-                                $returnData['translations']['lang'] = $value['translations'][$arrayKey]['lang'];
-                                $returnData['translations']['name'] = $value['translations'][$arrayKey]['name'];
-                                if (isset($value['translations'][$arrayKey]['values'])) {
-                                    $returnData['translations']['values'] = $value['translations'][$arrayKey]['values'];
-                                }
-
-                                $userCustomFieldValue = $customFieldsValue->where('field_id', $value['field_id'])
-                                ->where('user_id', $userId)->first();
-                                $returnData['user_custom_field_value'] = $userCustomFieldValue->value ?? '';
-                            }
-                        }
-                    }
-                    if (!empty($returnData)) {
-                        $userCustomFieldData[] = $returnData;
-                    }
-                }
-            }
-
-            if (!empty($userSkillList) && (isset($userSkillList))) {
-                $returnData = [];
-                foreach ($userSkillList as $key => $value) {
-                    if ($value['skill']) {
-                        $arrayKey = array_search($languageCode, array_column($value['skill']['translations'], 'lang'));
+        if (!empty($customFieldsData) && (isset($customFieldsData))) {
+            $returnData = [];
+            foreach ($customFieldsData as $key => $value) {
+                if ($value) {
+                    $arrayKey = array_search($languageCode, array_column($value['translations'], 'lang'));
+                    $returnData = $value;
+                    unset($returnData['translations']);
+                    if (isset($value['translations'][$arrayKey])) {
                         if ($arrayKey !== '') {
-                            $returnData[config('constants.SKILL')][$key]['skill_id'] =
-                            $value['skill']['skill_id'];
-                            $returnData[config('constants.SKILL')][$key]['skill_name'] =
-                            $value['skill']['skill_name'];
-                            $returnData[config('constants.SKILL')][$key]['translations'] =
-                            $value['skill']['translations'][$arrayKey]['title'];
+                            $returnData['translations']['lang'] = $value['translations'][$arrayKey]['lang'];
+                            $returnData['translations']['name'] = $value['translations'][$arrayKey]['name'];
+                            if (isset($value['translations'][$arrayKey]['values'])) {
+                                $returnData['translations']['values'] = $value['translations'][$arrayKey]['values'];
+                            }
+
+                            $userCustomFieldValue = $customFieldsValue->where('field_id', $value['field_id'])
+                            ->where('user_id', $userId)->first();
+                            $returnData['user_custom_field_value'] = $userCustomFieldValue->value ?? '';
                         }
                     }
                 }
                 if (!empty($returnData)) {
-                    $userSkillData = $returnData[config('constants.SKILL')];
+                    $userCustomFieldData[] = $returnData;
                 }
             }
-
-            $apiData = $userDetail->toArray();
-            $apiData['language_code'] = $userLanguageCode;
-            $apiData['custom_fields'] = $userCustomFieldData;
-            $apiData['user_skills'] = $userSkillData;
-            $apiData['city_list'] = $cityList;
-            $apiData['language_list'] = $tenantLanguages;
-            $apiData['language_code_list'] = $tenantLanguageCodes;
-            $apiData['availability_list'] = $availabilityList;
-            
-            $apiStatus = Response::HTTP_OK;
-            $apiMessage = trans('messages.success.MESSAGE_USER_FOUND');
-            
-            return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
-        } catch (InvalidArgumentException $e) {
-            return $this->invalidArgument(
-                config('constants.error_codes.ERROR_INVALID_ARGUMENT'),
-                trans('messages.custom_error_message.ERROR_INVALID_ARGUMENT')
-            );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
+
+        if (!empty($userSkillList) && (isset($userSkillList))) {
+            $returnData = [];
+            foreach ($userSkillList as $key => $value) {
+                if ($value['skill']) {
+                    $arrayKey = array_search($languageCode, array_column($value['skill']['translations'], 'lang'));
+                    if ($arrayKey !== '') {
+                        $returnData[config('constants.SKILL')][$key]['skill_id'] =
+                        $value['skill']['skill_id'];
+                        $returnData[config('constants.SKILL')][$key]['skill_name'] =
+                        $value['skill']['skill_name'];
+                        $returnData[config('constants.SKILL')][$key]['translations'] =
+                        $value['skill']['translations'][$arrayKey]['title'];
+                    }
+                }
+            }
+            if (!empty($returnData)) {
+                $userSkillData = $returnData[config('constants.SKILL')];
+            }
+        }
+
+        $apiData = $userDetail->toArray();
+        $apiData['language_code'] = $userLanguageCode;
+        $apiData['custom_fields'] = $userCustomFieldData;
+        $apiData['user_skills'] = $userSkillData;
+        $apiData['city_list'] = $cityList;
+        $apiData['language_list'] = $tenantLanguages;
+        $apiData['language_code_list'] = $tenantLanguageCodes;
+        $apiData['availability_list'] = $availabilityList;
+        
+        $apiStatus = Response::HTTP_OK;
+        $apiMessage = trans('messages.success.MESSAGE_USER_FOUND');
+        
+        return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
     }
     
     /**
@@ -332,6 +307,9 @@ class UserController extends Controller
                 }
             }
 
+            //Remove params
+            $request->request->remove("email");
+
             // Update user filter
             $this->userFilterRepository->saveFilter($request);
 
@@ -358,13 +336,6 @@ class UserController extends Controller
                 config('constants.error_codes.ERROR_USER_NOT_FOUND'),
                 trans('messages.custom_error_message.ERROR_USER_NOT_FOUND')
             );
-        } catch (PDOException $e) {
-            return $this->PDO(
-                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
-                trans('messages.custom_error_message.ERROR_DATABASE_OPERATIONAL')
-            );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
     
@@ -405,16 +376,9 @@ class UserController extends Controller
             return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
         } catch (S3Exception $e) {
             return $this->s3Exception(
-                config('constants.error_codes.ERROR_FAILED_TO_RESET_STYLING'),
-                trans('messages.custom_error_message.ERROR_FAILED_TO_RESET_STYLING')
+                config('constants.error_codes.ERROR_FAILD_TO_UPLOAD_PROFILE_IMAGE_ON_S3'),
+                trans('messages.custom_error_message.ERROR_FAILD_TO_UPLOAD_PROFILE_IMAGE_ON_S3')
             );
-        } catch (\PDOException $e) {
-            return $this->PDO(
-                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
-                trans('messages.custom_error_message.ERROR_DATABASE_OPERATIONAL')
-            );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
 }

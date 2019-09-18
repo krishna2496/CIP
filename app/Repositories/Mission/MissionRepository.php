@@ -474,7 +474,7 @@ class MissionRepository implements MissionInterface
     public function missionList(Request $request): LengthAwarePaginator
     {
         $languages = $this->languageHelper->getLanguages($request);
-        $mission = Mission::select(
+        $missionQuery = $this->mission->select(
             'mission.mission_id',
             'mission.theme_id',
             'mission.city_id',
@@ -489,8 +489,13 @@ class MissionRepository implements MissionInterface
         )
         ->with(['city', 'country', 'missionTheme',
         'missionLanguage', 'missionMedia', 'missionDocument', 'goalMission', 'timeMission'])
-        ->withCount('missionApplication')
-        ->paginate($request->perPage);
+        ->withCount('missionApplication');
+
+        if ($request->has('order')) {
+            $orderDirection = $request->input('order', 'asc');
+            $missionQuery->orderBy('mission_id', $orderDirection);
+        }
+        $mission = $missionQuery->paginate($request->perPage);
 
         foreach ($mission as $key => $value) {
             foreach ($value->missionLanguage as $languageValue) {

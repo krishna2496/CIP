@@ -20,7 +20,7 @@ class AppCommentsTest extends TestCase
         $user->setConnection($connection);
         $user->save();
 
-        $token = Helpers::getJwtToken($user->user_id);
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->get('/app/mission/'.$mission->mission_id.'/comments', ['token' => $token])
           ->seeStatusCode(200)
           ->seeJsonStructure([
@@ -48,7 +48,7 @@ class AppCommentsTest extends TestCase
         $user->setConnection($connection);
         $user->save();
 
-        $token = Helpers::getJwtToken($user->user_id);
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->get('/app/mission/'.$mission->mission_id.'/comments', ['token' => $token])
           ->seeStatusCode(200)
           ->seeJsonStructure([
@@ -74,7 +74,7 @@ class AppCommentsTest extends TestCase
         $user->save();
         $missionId = rand(1000000,2000000);
         
-        $token = Helpers::getJwtToken($user->user_id);
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->get('/app/mission/'.$missionId.'/comments', ['token' => $token])
         ->seeStatusCode(404)
         ->seeJsonStructure([
@@ -113,7 +113,7 @@ class AppCommentsTest extends TestCase
             "mission_id" => $mission->mission_id
         ];
 
-        $token = Helpers::getJwtToken($user->user_id);
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->post('/app/mission/comment', $params, ['token' => $token])
           ->seeStatusCode(201)
           ->seeJsonStructure([
@@ -143,7 +143,7 @@ class AppCommentsTest extends TestCase
             "mission_id" => rand(1000000, 5000000)
         ];
 
-        $token = Helpers::getJwtToken($user->user_id);
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->post('/app/mission/comment', $params, ['token' => $token])
         ->seeStatusCode(422)
         ->seeJsonStructure([
@@ -180,7 +180,7 @@ class AppCommentsTest extends TestCase
             "comment" => '',
             "mission_id" => $mission->mission_id
         ];
-        $token = Helpers::getJwtToken($user->user_id);
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->post('/app/mission/comment', $params, ['token' => $token])
         ->seeStatusCode(422)
         ->seeJsonStructure([
@@ -218,7 +218,7 @@ class AppCommentsTest extends TestCase
             "comment" => str_random(500),
             "mission_id" => $mission->mission_id
         ];
-        $token = Helpers::getJwtToken($user->user_id);
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->post('/app/mission/comment', $params, ['token' => $token])
         ->seeStatusCode(422)
         ->seeJsonStructure([

@@ -45,21 +45,12 @@ class TimezoneController extends Controller
     */
     public function index() : JsonResponse
     {
-        try {
-            $timezoneList = $this->timeZoneRepository->getTimezoneList();
-            $apiData = $timezoneList->toArray();
-            $apiStatus = Response::HTTP_OK;
-            $apiMessage = (!empty($apiData)) ?
-            trans('messages.success.MESSAGE_TIMEZONE_LISTING') :
-            trans('messages.success.MESSAGE_NO_TIMEZONE_FOUND');
-            return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
-        } catch (InvalidArgumentException $e) {
-            return $this->invalidArgument(
-                config('constants.error_codes.ERROR_INVALID_ARGUMENT'),
-                trans('messages.custom_error_message.ERROR_INVALID_ARGUMENT')
-            );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
-        }
+        $timezoneList = $this->timeZoneRepository->getTimezoneList();
+        $apiData = $timezoneList->toArray();
+        $apiStatus = Response::HTTP_OK;
+        $apiMessage = (!empty($apiData)) ?
+        trans('messages.success.MESSAGE_TIMEZONE_LISTING') :
+        trans('messages.success.MESSAGE_NO_TIMEZONE_FOUND');
+        return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
     }
 }

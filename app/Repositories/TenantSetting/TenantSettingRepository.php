@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Collection;
 use App\Helpers\ResponseHelper;
 use App\Models\TenantSetting;
 use Illuminate\Http\Request;
-use PDOException;
 use Validator;
 use DB;
 

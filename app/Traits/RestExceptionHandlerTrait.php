@@ -112,7 +112,7 @@ trait RestExceptionHandlerTrait
      * @param string $message
      * @return \Illuminate\Http\JsonResponse
      */
-    protected function internaServerError(string $customErrorCode = '', string $message = 'Internal server error')
+    protected function internalServerError(string $customErrorCode = '', string $message = 'Internal server error')
     {
         return $this->jsonResponse(
             Response::HTTP_INTERNAL_SERVER_ERROR,

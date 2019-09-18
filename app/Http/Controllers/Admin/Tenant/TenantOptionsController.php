@@ -11,7 +11,6 @@ use Illuminate\Http\JsonResponse;
 use App\Helpers\S3Helper;
 use App\Helpers\Helpers;
 use Validator;
-use PDOException;
 use App\Jobs\DownloadAssestFromS3ToLocalStorageJob;
 use App\Jobs\CreateFolderInS3BucketJob;
 use App\Traits\RestExceptionHandlerTrait;
@@ -87,8 +86,6 @@ class TenantOptionsController extends Controller
             dispatch(new ResetStyleSettingsJob($tenantName));
         } catch (TenantDomainNotFoundException $e) {
             throw $e;
-        } catch (\Exception $e) {
-            return $this->badRequest('messages.custom_error_message.ERROR_OCCURRED');
         }
         // Database connection with tenant database
         $this->helpers->switchDatabaseConnection('tenant', $request);
@@ -121,22 +118,13 @@ class TenantOptionsController extends Controller
         
         try {
             $this->tenantOptionRepository->updateStyleSettings($request);
-        } catch (PDOException $e) {
-            return $this->PDO(
-                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
-                trans(
-                    'messages.custom_error_message.ERROR_DATABASE_OPERATIONAL'
-                )
-            );
         } catch (\ErrorException $e) {
-            return $this->internaServerError(
+            return $this->internalServerError(
                 config('constants.error_codes.ERROR_ON_UPDATING_STYLING_VARIBLE_IN_DATABASE'),
                 trans(
                     'messages.custom_error_message.ERROR_ON_UPDATING_STYLING_VARIBLE_IN_DATABASE'
                 )
             );
-        } catch (\Exception $e) {
-            return $this->badRequest('messages.custom_error_message.ERROR_OCCURRED');
         }
 
         $file = $request->file('custom_scss_file');
@@ -146,8 +134,6 @@ class TenantOptionsController extends Controller
             $tenantName = $this->helpers->getSubDomainFromRequest($request);
         } catch (TenantDomainNotFoundException $e) {
             throw $e;
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
 
         if ($request->hasFile('custom_scss_file')) {
@@ -250,9 +236,8 @@ class TenantOptionsController extends Controller
             $tenantName = $this->helpers->getSubDomainFromRequest($request);
         } catch (TenantDomainNotFoundException $e) {
             throw $e;
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
+
         try {
             $assetFilesArray = $this->s3helper->getAllScssFiles($tenantName);
         } catch (BucketNotFoundException $e) {
@@ -328,8 +313,6 @@ class TenantOptionsController extends Controller
             $tenantName = $this->helpers->getSubDomainFromRequest($request);
         } catch (TenantDomainNotFoundException $e) {
             throw $e;
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
 
         if (Storage::disk('s3')->exists($tenantName)) {
@@ -398,20 +381,11 @@ class TenantOptionsController extends Controller
             $apiMessage = trans('messages.success.MESSAGE_TENANT_OPTION_CREATED');
             
             return $this->responseHelper->success($apiStatus, $apiMessage);
-        } catch (PDOException $e) {
-            return $this->PDO(
-                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
-                trans(
-                    'messages.custom_error_message.ERROR_DATABASE_OPERATIONAL'
-                )
-            );
         } catch (InvalidArgumentException $e) {
             return $this->invalidArgument(
                 config('constants.error_codes.ERROR_INVALID_ARGUMENT'),
                 trans('messages.custom_error_message.ERROR_INVALID_ARGUMENT')
             );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
 
@@ -459,8 +433,6 @@ class TenantOptionsController extends Controller
                 config('constants.error_codes.ERROR_TENANT_OPTION_NOT_FOUND'),
                 trans('messages.custom_error_message.ERROR_TENANT_OPTION_NOT_FOUND')
             );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
 
@@ -477,8 +449,6 @@ class TenantOptionsController extends Controller
             $tenantName = $this->helpers->getSubDomainFromRequest($request);
         } catch (TenantDomainNotFoundException $e) {
             throw $e;
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
         
         try {
@@ -491,8 +461,6 @@ class TenantOptionsController extends Controller
             );
         } catch (BucketNotFoundException $e) {
             throw $e;
-        } catch (\Exception $e) {
-            throw new \Exception(trans('messages.custom_error_message.ERROR_FAILED_TO_RESET_ASSET_IMAGE'));
         }
 
         // Set response data

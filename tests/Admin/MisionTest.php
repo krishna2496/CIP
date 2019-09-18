@@ -76,6 +76,10 @@ class MissionTest extends TestCase
                             "default" => "1"
                         ]
                     ],
+                    "documents" => [[
+                            "document_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/test/sample.pdf"
+                        ]
+                    ],
                     "start_date" => "2019-05-15 10:40:00",
                     "end_date" => "2019-10-15 10:40:00",
                     "mission_type" => config("constants.mission_type.GOAL"),
@@ -153,7 +157,7 @@ class MissionTest extends TestCase
         $mission->setConnection($connection);
         $mission->save();
 
-        $this->get('missions', ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->get('missions?order=desc', ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
           ->seeStatusCode(200)
           ->seeJsonStructure([
             "status",
@@ -418,5 +422,67 @@ class MissionTest extends TestCase
                 ]
             ]
         ]); 
+    }
+
+    /**
+     * @test
+     *
+     * Validate data for update mission api
+     *
+     * @return void
+     */
+    public function it_should_validate_data_for_update_mission()
+    {
+        $params = [
+                    "publication_status" => "test",
+                ];
+
+        $connection = 'tenant';
+        $mission = factory(\App\Models\Mission::class)->make();
+        $mission->setConnection($connection);
+        $mission->save();
+
+        $this->patch("missions/".$mission->mission_id, $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(422)
+        ->seeJsonStructure([
+            "errors" => [
+                [
+                    "status",
+                    "type",
+                    "message",
+                    "code"
+                ]
+            ]
+        ]); 
+        $mission->delete();
+    }
+
+    /**
+     * @test
+     *
+     * Return invalid argument for get all mission
+     *
+     * @return void
+     */
+    public function it_should_return_invalid_argument_for_get_all_mission()
+    {
+        $connection = 'tenant';
+        $mission = factory(\App\Models\Mission::class)->make();
+        $mission->setConnection($connection);
+        $mission->save();
+
+        $this->get('missions?order=test', ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(400)
+        ->seeJsonStructure([
+            'errors' => [
+                [
+                    'status',
+                    'type',
+                    'code',
+                    'message'
+                ]
+            ]
+        ]);
+        $mission->delete();
     }
 }

@@ -50,18 +50,19 @@ interface PolicyPageInterface
     public function delete(int $id): bool;
 
     /**
-    * Get a listing of resource.
-    * @param int $languageId
-    * @return Illuminate\Support\Collection
-    */
-    public function getPageList(int $languageId): Collection;
+     * Get a listing of resource.
+     * @param int $languageId
+     * @param Illuminate\Http\Request $request
+     * @return Illuminate\Support\Collection
+     */
+    public function getPageList(int $languageId, Request $request): Collection;
     
     /**
-    * Get a listing of resource.
-    *
-    * @param string $slug
-    * @param int $languageId
-    * @return App\Models\PolicyPage
-    */
+     * Get a listing of resource.
+     *
+     * @param string $slug
+     * @param int $languageId
+     * @return App\Models\PolicyPage
+     */
     public function getPageDetail(string $slug, int $languageId): PolicyPage;
 }

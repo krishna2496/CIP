@@ -28,7 +28,7 @@ class UserTest extends TestCase
                 'city_id' => 1,
                 'country_id' => 233,
                 'profile_text' => str_random(10),
-                'linked_in_url' => 'https://www.'.str_random(10).'.com'
+                'linked_in_url' => 'https://in.linkedin.com/in/test-test-2b52238b'
             ];
 
         $this->post("users/", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
@@ -224,7 +224,7 @@ class UserTest extends TestCase
             'city_id' => 1,
             'country_id' => 233,
             'profile_text' => str_random(10),
-            'linked_in_url' => 'https://www.'.str_random(10).'.com'
+            'linked_in_url' => 'https://in.linkedin.com/in/test-test-2b52238b'
         ];
 
         $connection = 'tenant';
@@ -267,7 +267,7 @@ class UserTest extends TestCase
             'city_id' => 1,
             'country_id' => 233,
             'profile_text' => str_random(10),
-            'linked_in_url' => 'https://www.'.str_random(10).'.com'
+            'linked_in_url' => 'https://in.linkedin.com/in/test-test-2b52238b'
         ];
 
         $this->patch(
@@ -402,7 +402,7 @@ class UserTest extends TestCase
                 'city_id' => 1,
                 'country_id' => 233,
                 'profile_text' => str_random(10),
-                'linked_in_url' => 'https://www.'.str_random(10).'.com'
+                'linked_in_url' => 'https://in.linkedin.com/in/test-test-2b52238b'
             ];
 
         $this->post("users/", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
@@ -469,7 +469,7 @@ class UserTest extends TestCase
             'city_id' => 1,
             'country_id' => 233,
             'profile_text' => str_random(10),
-            'linked_in_url' => 'https://www.'.str_random(10).'.com'
+            'linked_in_url' => 'https://in.linkedin.com/in/test-test-2b52238b'
         ];
 
         $connection = 'tenant';
@@ -731,10 +731,232 @@ class UserTest extends TestCase
                 'city_id' => 1,
                 'country_id' => 233,
                 'profile_text' => str_random(10),
-                'linked_in_url' => 'https://www.'.str_random(10).'.com'
+                'linked_in_url' => 'https://in.linkedin.com/in/test-test-2b52238b'
             ];
 
         $this->post("users/", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(422)
+        ->seeJsonStructure([
+            'errors' => [
+                [
+                    'status',
+                    'type',
+                    'code',
+                    'message'
+                ]
+            ]
+        ]);
+        $user->delete();
+    }
+
+    /**
+     * @test
+     *
+     * Return error for invalid argument
+     *
+     * @return void
+     */
+    public function it_should_return_invalid_argument_error_for_get_users()
+    {
+        $this->get("users?order=test", ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(400)
+        ->seeJsonStructure([
+            'errors' => [
+                [
+                    'status',
+                    'type',
+                    'code',
+                    'message'
+                ]
+            ]
+        ]);
+    }
+
+    /**
+     * @test
+     *
+     * Return error if language id is invalid
+     *
+     * @return void
+     */
+    public function it_should_return_error_while_language_id_is_invalid_for_create_user()
+    {
+        $name = str_random(10);
+        $params = [
+                'first_name' => $name,
+                'last_name' => str_random(10),
+                'email' => str_random(10).'@email.com',
+                'password' => str_random(10),
+                'timezone_id' => 1,
+                'language_id' => rand(1000000, 5000000),
+                'availability_id' => 1,
+                'why_i_volunteer' => str_random(10),
+                'employee_id' => str_random(10),
+                'department' => str_random(10),
+                'manager_name' => str_random(10),
+                'city_id' => 1,
+                'country_id' => 233,
+                'profile_text' => str_random(10),
+                'linked_in_url' => 'https://in.linkedin.com/in/test-test-2b52238b'
+            ];
+
+        $this->post("users/", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(422)
+        ->seeJsonStructure([
+            'errors' => [
+                [
+                    'status',
+                    'type',
+                    'code',
+                    'message'
+                ]
+            ]
+        ]);
+    }
+
+    /**
+     * @test
+     *
+     * Return invalid data error for update user api
+     *
+     * @return void
+     */
+    public function it_should_return_error_for_invalid_data_on_update_user()
+    {
+        $params = [
+            'first_name' => '',
+            'last_name' => str_random(10),
+            'email' => str_random(10).'@email.com',
+            'password' => str_random(10),
+            'timezone_id' => 1,
+            'language_id' => 1,
+            'availability_id' => 1,
+            'why_i_volunteer' => str_random(10),
+            'employee_id' => str_random(10),
+            'department' => str_random(10),
+            'manager_name' => str_random(10),
+            'city_id' => 1,
+            'country_id' => 233,
+            'profile_text' => str_random(10),
+            'linked_in_url' => 'https://in.linkedin.com/in/test-test-2b52238b'
+        ];
+
+        $connection = 'tenant';
+        $user = factory(\App\User::class)->make();
+        $user->setConnection($connection);
+        $user->save();
+
+        $this->patch("users/".$user->user_id, $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(422)
+        ->seeJsonStructure([
+            'errors' => [
+                [
+                    'status',
+                    'type',
+                    'code',
+                    'message'
+                ]
+            ]
+        ]);
+        $user->delete();
+    }
+ 
+        /**
+     * @test
+     *
+     * Return invalid language id error for update user api
+     *
+     * @return void
+     */
+    public function it_should_return_error_for_invalid_language_id_on_update_user()
+    {
+        $params = [
+            'last_name' => str_random(10),
+            'email' => str_random(10).'@email.com',
+            'password' => str_random(10),
+            'timezone_id' => 1,
+            'language_id' => rand(100000, 500000),
+            'availability_id' => 1,
+            'why_i_volunteer' => str_random(10),
+            'employee_id' => str_random(10),
+            'department' => str_random(10),
+            'manager_name' => str_random(10),
+            'city_id' => 1,
+            'country_id' => 233,
+            'profile_text' => str_random(10),
+            'linked_in_url' => 'https://in.linkedin.com/in/test-test-2b52238b'
+        ];
+
+        $connection = 'tenant';
+        $user = factory(\App\User::class)->make();
+        $user->setConnection($connection);
+        $user->save();
+
+        $this->patch("users/".$user->user_id, $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(422)
+        ->seeJsonStructure([
+            'errors' => [
+                [
+                    'status',
+                    'type',
+                    'code',
+                    'message'
+                ]
+            ]
+        ]);
+        $user->delete();
+    }
+
+    /**
+     * @test
+     *
+     * Return error if data is invalid for link skill to user
+     *
+     * @return void
+     */
+    public function it_should_return_error_for_invalid_data_for_link_skill_to_user()
+    {
+        $connection = 'tenant';
+ 
+        $user = factory(\App\User::class)->make();
+        $user->setConnection($connection);
+        $user->save();
+
+        $params = [];
+
+        $this->post('user/skills/'.$user->user_id, $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(422)
+        ->seeJsonStructure([
+            'errors' => [
+                [
+                    'status',
+                    'type',
+                    'code',
+                    'message'
+                ]
+            ]
+        ]);
+        $user->delete();
+    }
+
+    /**
+     * @test
+     *
+     * Return error if data is invalid for unlink skill to user
+     *
+     * @return void
+     */
+    public function it_should_return_error_for_invalid_data_for_unlink_skill_to_user()
+    {
+        $connection = 'tenant';
+ 
+        $user = factory(\App\User::class)->make();
+        $user->setConnection($connection);
+        $user->save();
+
+        $params = [];
+
+        $this->delete('user/skills/'.$user->user_id, $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
         ->seeStatusCode(422)
         ->seeJsonStructure([
             'errors' => [
