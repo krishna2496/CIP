@@ -11,7 +11,7 @@
                 @click="handleSelect"
             >
                 <img v-bind:data-id="tagId" 
-                v-if="type != 'country' && tagId  != defaultCountry"
+                v-if="!(type == 'country' && tagId  == defaultCountry)"
                 v-bind:data-type="type" :src="$store.state.imagePath+'/assets/images/cross-ic.svg'" alt="close"/>
             </i>
         </span>

@@ -337,6 +337,11 @@ export default {
             var _this = this
             let allowedFileTypes = ['doc','xls','xlsx','csv','pdf','png','jpg','jpeg']
             _this.fileError = '';
+            let latestUpload = files[files.length-1];
+            let latestUploadName = latestUpload.name
+            let latestUploadSize = latestUpload.size
+            let latestUploadType = latestUpload.type
+
             files.filter(function(data,index){
                 let fileName = data.name.split('.');
                 if(!allowedFileTypes.includes(fileName[fileName.length-1])) {
@@ -348,6 +353,13 @@ export default {
                         files.splice(index,1)
                     }
                 } 
+                if(index != files.length-1) {
+                    if(data.name == latestUploadName && data.size == latestUploadSize && data.type == latestUploadType) {
+                        
+                        _this.fileError = _this.langauageData.errors.file_already_uploaded
+                        files.splice(files.length-1,1)
+                    }
+                }
             });
         },
         updateWorkday(value) {

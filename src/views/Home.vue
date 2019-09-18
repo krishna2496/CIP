@@ -348,7 +348,7 @@ export default {
             this.getMissions(); 
         },
         changeTag(data){
-            if(data.selectedType == "country" && data.selectedId == this.defaultCountry) {
+            if(data.selectedType == "country" && data.selectedId == store.state.defaultCountryId) {
                 return
             }
             this.$refs.secondaryHeader.removeItems(data);

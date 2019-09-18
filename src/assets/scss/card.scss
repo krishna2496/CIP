@@ -39,6 +39,17 @@
               fill: $white;
             }
           }
+          &:focus {
+            svg {
+              fill: $primary;
+            }
+          }
+          &:active:focus,
+          &:hover:focus {
+            svg {
+              fill: $white;
+            }
+          }
         }
       }
     }
@@ -253,7 +264,6 @@
         line-height: 18px;
         display: inline-block;
         max-width: 100%;
-        @extend .control_shadow;
         @include lg-max {
           font-size: 15px;
           padding: 6px 14px;

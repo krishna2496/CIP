@@ -119,8 +119,7 @@ export default {
                 var start = moment(year+"-"+month,"YYYY-MMM");
                 for(var end = moment(start).add(1,'month');  start.isBefore(end); start.add(1,'day')){
                 	let dayName = start.format('dddd').toLowerCase();
-                	this.weekNameArray[start.format('D')] = this.langauageData.label[dayName]; 
-                  
+                	this.weekNameArray[start.format('D')] = this.langauageData.label[dayName];  
                 }         
             },
             goPrev () {
