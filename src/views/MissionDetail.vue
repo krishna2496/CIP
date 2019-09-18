@@ -5,7 +5,7 @@
     	</header>
 
       	<main>
-			<social-sharing 
+			<!-- <social-sharing 
 				v-bind:url="socialSharingUrl"
 				:title="missionDetail.title"
 				:description="missionDetail.short_description"
@@ -26,7 +26,7 @@
 						</i>
 					</network>
 				</div>
-			</social-sharing>
+			</social-sharing> -->
 			<b-container>
 		  	<div class="slider-banner-block">
 				<b-row>
@@ -97,6 +97,51 @@
 						</div>
 
 						<p>{{missionDetail.short_description}}</p>
+						<div class="share-block">
+						<social-sharing 
+							v-bind:url="socialSharingUrl"
+							:title="missionDetail.title"
+							:description="missionDetail.short_description"
+							inline-template
+							>
+								<div class="social-block">
+									<network network="facebook" v-if="$store.state.isFacebookDisplay" class="social-icon">
+											<img 
+											:src="$store.state.imagePath+'/assets/images/facebook-ic-gray.svg'" 
+											:alt="`${JSON.parse(this.$store.state.languageLabel).label.facebook}`"
+											:title="`${JSON.parse(this.$store.state.languageLabel).label.facebook}`"
+											 class="normal-img"/>
+											<img :src="$store.state.imagePath+'/assets/images/facebook-ic-gray-h.svg'" 
+											:alt="`${JSON.parse(this.$store.state.languageLabel).label.facebook}`"
+											:title="`${JSON.parse(this.$store.state.languageLabel).label.facebook}`"
+											class="hover-img"/>
+			
+									</network>
+									<network network="twitter" v-if="$store.state.isTwitterDisplay" class="social-icon">
+											<img :src="$store.state.imagePath+'/assets/images/twitter-ic-gray.svg'" 
+											:alt="`${JSON.parse(this.$store.state.languageLabel).label.twitter}`"
+											:title="`${JSON.parse(this.$store.state.languageLabel).label.twitter}`"
+											class="normal-img"/>
+											<img :src="$store.state.imagePath+'/assets/images/twitter-ic-gray-h.svg'" 
+											:alt="`${JSON.parse(this.$store.state.languageLabel).label.twitter}`"
+											:title="`${JSON.parse(this.$store.state.languageLabel).label.twitter}`"
+											class="hover-img"/>
+									</network>
+								</div>
+						</social-sharing>
+							</div>
+						<!-- <div class="share-block">
+								<div class="social-block">
+									<b-link href="#" class="social-icon">
+										<img src="../assets/images/facebook-ic-gray.svg" class="normal-img" alt="facebook img"/>
+										<img src="../assets/images/facebook-ic-gray-h.svg" class="hover-img" alt="facebook img"/>
+									</b-link>
+									<b-link href="#" class="social-icon">
+										<img src="../assets/images/twitter-ic-gray.svg" class="normal-img" alt="twitter img"/>
+                   						<img src="../assets/images/twitter-ic-gray-h.svg" class="hover-img" alt="twitter img" />
+									</b-link>
+								</div>
+						</div> -->
 						<div class="group-details">
 							<div class="top-strip">
 				                    <span>

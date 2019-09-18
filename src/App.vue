@@ -65,23 +65,9 @@ export default {
         }
       }
     },
-    handleSocialShare() {
-      setTimeout(function() {
-        var socialWrap = document.querySelector(".social-sharing");
-        var app = document.getElementById("app");
-        if (socialWrap != null) {
-          if (screen.width < 992) {
-            app.classList.add("social-share");
-          } else {
-            app.classList.remove("social-share");
-          }
-        }
-      });
-    }
   },
   beforeMount() {
     this.signinAdj();
-    this.handleSocialShare();
   },
   created() {
     
@@ -101,7 +87,6 @@ export default {
   updated() {
     window.scrollTo(0, 0);
     this.signinAdj();
-    this.handleSocialShare();
     setTimeout(function() {
       var selectorList = document.querySelectorAll(".nav-link");
       var dropdownList = document.querySelectorAll(

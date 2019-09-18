@@ -196,7 +196,8 @@ export default {
             isThemeDisplay : true,
             isSkillDisplay : true,
             isCountrySelectionSet: false,
-            totalPages : 0
+            totalPages : 0,
+            defaultCountry : 0
         };
     },
 
@@ -347,6 +348,9 @@ export default {
             this.getMissions(); 
         },
         changeTag(data){
+            if(data.selectedType == "country" && data.selectedId == this.defaultCountry) {
+                return
+            }
             this.$refs.secondaryHeader.removeItems(data);
         },
         clearMissionFilter(){
@@ -381,7 +385,7 @@ export default {
         this.isThemeDisplay = this.settingEnabled(constants.THEMES_ENABLED);
         this.isSkillDisplay = this.settingEnabled(constants.SKILLS_ENABLED);
         this.isCountrySelectionSet = this.settingEnabled(constants.IS_COUNTRY_SELECTION);
-
+        this.defaultCountry = store.state.defaultCountryId
         searchUser().then(response => {
             this.userList = response;
         });
