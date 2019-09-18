@@ -8,7 +8,7 @@ export default async(data) => {
         defaultLanguage = (store.state.defaultLanguage).toLowerCase();
     }
     var url =process.env.VUE_APP_API_ENDPOINT + "app/user";
-
+    document.body.classList.add("loader-enable");
     await axios({
             url: url,
             method: 'PATCH',
