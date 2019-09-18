@@ -54,6 +54,26 @@
       @include lg-max {
         height: 190px;
       }
+      .card-alert {
+        position: absolute;
+        top: 15px;
+        left: 0;
+        border: none;
+        margin: 0;
+        padding: 7px 18px 9px;
+        border-radius: 0 50px 50px 0;
+        height: auto;
+        line-height: normal;
+        display: inline-block;
+        text-transform: uppercase;
+        color: $white;
+        &.alert-success {
+          background: $success;
+        }
+        &.alert-warning {
+          background: $primary;
+        }
+      }
       .header-img-block {
         position: relative;
         height: 100%;

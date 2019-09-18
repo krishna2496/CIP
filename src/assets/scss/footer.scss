@@ -1,15 +1,14 @@
 /** primary footer style **/
-
 .primary-footer {
-  padding: 36px 0 20px;
+  padding: 20px 0 4px;
   border-top: 1px solid $border-color;
 
   @include md-max {
-    padding: 30px 0 20px;
+    padding: 20px 0 10px;
   }
 
   @include sm-max {
-    padding: 20px 0 10px;
+    padding: 15px 0 20px;
   }
 
   .list-group {
@@ -22,9 +21,9 @@
 
     a {
       color: $black-primary;
-      font-size: 14px;
+      font-size: 12px;
       font-weight: 300;
-      line-height: 18px;
+      line-height: 16px;
       display: inline-block;
       width: auto;
       background: transparent;
@@ -55,12 +54,12 @@
       }
 
       @include md-max {
-        margin-right:32px;
+        margin-right: 32px;
         margin-bottom: 10px;
       }
 
       @include sm-max {
-        margin-right:20px;
+        margin-right: 20px;
         font-size: 13px;
       }
     }
@@ -75,8 +74,8 @@
 
     p {
       color: $black-primary;
-      font-size: 14px;
-      line-height: 18px;
+      font-size: 12px;
+      line-height: 16px;
       margin: 0;
 
       @include sm-max {
@@ -109,9 +108,9 @@
       display: inline-block;
       width: auto;
       color: $black-primary;
-      font-size: 14px;
+      font-size: 12px;
       font-weight: 300;
-      line-height: 18px;
+      line-height: 16px;
       background: transparent;
     }
 
@@ -130,11 +129,11 @@
     p {
       margin: 0;
       color: $gray-primary;
-      font-size: 14px;
-      line-height: 18px;
+      font-size: 12px;
+      line-height: 16px;
 
       a {
-        text-decoration: underline;
+        text-decoration: none;
 
         &:hover,
         &:focus {

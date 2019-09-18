@@ -6,6 +6,7 @@
                 <b-card no-body>
                     <b-card-header>
                         <div class="header-img-block">
+							<!-- <b-alert show variant="success" class="card-alert">Applied</b-alert> -->
                             <div  v-if="checkDefaultMediaFormat(mission.default_media_type)"  class="group-img" 
                                 :style="{backgroundImage: 'url('+mission.default_media_path+')'}">
                                 <img src="mission.default_media_path" alt="mission.default_media_path">
