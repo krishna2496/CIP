@@ -1,5 +1,6 @@
 <?php
 use App\Helpers\Helpers;
+use Firebase\JWT\JWT;
 
 class AppUserTest extends TestCase
 {
@@ -772,5 +773,107 @@ class AppUserTest extends TestCase
         ]);
         $user->delete();
         $userCustomField->delete();
+    }
+
+    /**
+     * @test
+     * 
+     * Show error if jwt token is blank
+     *
+     * @return void
+     */
+    public function it_should_show_error_if_jwt_token_is_blank()
+    {
+        $token = '';
+        $this->patch('app/change-password', [], ['token' => $token])
+        ->seeStatusCode(401)
+        ->seeJsonStructure([
+            'errors' => [
+                [
+                    'status',
+                    'type',
+                    'code',
+                    'message'
+                ]
+            ]
+        ]);
+    }
+
+    /**
+     * @test
+     * 
+     * Show error if jwt token is blank
+     *
+     * @return void
+     */
+    public function it_should_show_error_on_jwt_token_expiration()
+    {
+        $connection = 'tenant';
+        $user = factory(\App\User::class)->make();
+        $user->setConnection($connection);
+        $user->save();
+
+        $payload = [
+            'iss' => "lumen-jwt", // Issuer of the token
+            'sub' => $user->user_id, // Subject of the token
+            'iat' => time(), // Time when JWT was issued.
+            'exp' => time(), // Expiration time
+            'fqdn' => env('DEFAULT_TENANT')
+        ];
+
+        $token = JWT::encode($payload, env('JWT_SECRET'));
+
+        $this->patch('app/change-password', [], ['token' => $token])
+        ->seeStatusCode(401)
+        ->seeJsonStructure([
+            'errors' => [
+                [
+                    'status',
+                    'type',
+                    'code',
+                    'message'
+                ]
+            ]
+        ]);
+        $user->delete();
+    }
+
+    /**
+     * @test
+     * 
+     * Show error if jwt signature is invalid
+     *
+     * @return void
+     */
+    public function it_should_show_error_on_jwt_signature_invalid()
+    {
+        $connection = 'tenant';
+        $user = factory(\App\User::class)->make();
+        $user->setConnection($connection);
+        $user->save();
+
+        $payload = [
+            'iss' => "lumen-jwt", // Issuer of the token
+            'sub' => $user->user_id, // Subject of the token
+            'iat' => time(), // Time when JWT was issued.
+            'exp' => time() * 60 * 60, // Expiration time
+            'fqdn' => env('DEFAULT_TENANT')
+        ];
+
+        $token = JWT::encode($payload, 'test');
+
+        $this->patch('app/change-password', [], ['token' => $token])
+        ->seeStatusCode(401)
+        ->seeJsonStructure([
+            'errors' => [
+                [
+                    'status',
+                    'type',
+                    'code',
+                    'message'
+                ]
+            ]
+        ]);
+        $user->delete();
     }
 }

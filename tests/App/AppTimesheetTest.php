@@ -2172,13 +2172,7 @@ class AppTimesheetTest extends TestCase
         ->update(['status_id' => config("constants.timesheet_status_id")["SUBMIT_FOR_APPROVAL"]]);
         
         $this->get('/app/timesheet/time-requests/export', ['token' => $token])
-        ->seeJsonStructure([
-            "status",
-            "data" => [
-                "path"
-            ],
-            "message"
-        ]);
+        ->seeStatusCode(200);
         $user->delete();
     }
 
@@ -2198,10 +2192,7 @@ class AppTimesheetTest extends TestCase
 
         $token = Helpers::getJwtToken($user->user_id);
         $this->get('/app/timesheet/time-requests/export', ['token' => $token])
-        ->seeJsonStructure([
-            "status",
-            "message"
-        ]);
+        ->seeStatusCode(200);
         $user->delete();
     }
 
@@ -2301,13 +2292,7 @@ class AppTimesheetTest extends TestCase
         ->update(['status_id' => config("constants.timesheet_status_id")["SUBMIT_FOR_APPROVAL"]]);
         
         $this->get('/app/timesheet/goal-requests/export', ['token' => $token])
-        ->seeJsonStructure([
-            "status",
-            "data" => [
-                "path"
-            ],
-            "message"
-        ]);
+        ->seeStatusCode(200);
         $user->delete();
     }
 
@@ -2327,10 +2312,7 @@ class AppTimesheetTest extends TestCase
 
         $token = Helpers::getJwtToken($user->user_id);
         $this->get('/app/timesheet/goal-requests/export', ['token' => $token])
-        ->seeJsonStructure([
-            "status",
-            "message"
-        ]);
+        ->seeStatusCode(200);
         $user->delete();
     }
 
