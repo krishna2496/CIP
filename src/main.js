@@ -72,6 +72,13 @@ Vue.filter('formatDate', function(value) {
     }
 })
 
+Vue.filter('firstLetterCapital', function(value) {
+    if (value) {
+        value = value.toLowerCase()
+        return value.charAt(0).toUpperCase() + value.slice(1)
+    }
+})
+
 Vue.filter('substring', function(value, data) {
     if (value.length <= data) {
         return value
