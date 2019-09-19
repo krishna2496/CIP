@@ -73,17 +73,6 @@ class UserSkill extends Model
     }
 
     /**
-     * Find the specified resource.
-     *
-     * @param  int  $userId
-     * @return Skill
-     */
-    public function find(int $userId): Skill
-    {
-        return static::with('skill')->find($userId);
-    }
-
-    /**
      * Delete user skills
      *
      * @param int $userId

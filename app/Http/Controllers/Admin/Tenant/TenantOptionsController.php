@@ -371,22 +371,16 @@ class TenantOptionsController extends Controller
                 $validator->errors()->first()
             );
         }
-        try {
-            $data = $request->toArray();
-            $data['option_value'] = (gettype($request->option_value)=="array") ? serialize($request->option_value)
-            : $request->option_value;
+        
+        $data = $request->toArray();
+        $data['option_value'] = (gettype($request->option_value)=="array") ? serialize($request->option_value)
+        : $request->option_value;
 
-            $tenantOption = $this->tenantOptionRepository->store($data);
-            $apiStatus = Response::HTTP_CREATED;
-            $apiMessage = trans('messages.success.MESSAGE_TENANT_OPTION_CREATED');
-            
-            return $this->responseHelper->success($apiStatus, $apiMessage);
-        } catch (InvalidArgumentException $e) {
-            return $this->invalidArgument(
-                config('constants.error_codes.ERROR_INVALID_ARGUMENT'),
-                trans('messages.custom_error_message.ERROR_INVALID_ARGUMENT')
-            );
-        }
+        $tenantOption = $this->tenantOptionRepository->store($data);
+        $apiStatus = Response::HTTP_CREATED;
+        $apiMessage = trans('messages.success.MESSAGE_TENANT_OPTION_CREATED');
+        
+        return $this->responseHelper->success($apiStatus, $apiMessage);
     }
 
     /**
@@ -420,8 +414,8 @@ class TenantOptionsController extends Controller
             
             $tenantOption = $this->tenantOptionRepository->getOptionWithCondition($data);
 
-            $updateData['option_value'] = (gettype($request->option_value)=="array") ? serialize($request->option_value)
-            : $request->option_value;
+            $updateData['option_value'] = (gettype($request->option_value)=="array")
+            ? serialize($request->option_value) : $request->option_value;
             $tenantOption->update($updateData);
 
             $apiStatus = Response::HTTP_OK;
