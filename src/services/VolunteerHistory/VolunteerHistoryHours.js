@@ -2,7 +2,6 @@ import axios from "axios";
 import store from "../../store";
 
 export default async (type = "theme", year = "") => {
-  console.log("type : " + type);
   let responseData = [];
   var defaultLanguage = "";
   if (store.state.defaultLanguage !== null) {
