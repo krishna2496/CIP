@@ -4,15 +4,15 @@ import moment from 'moment';
 
 export default async(data) => {
     let responseData = {
-        'error' : true
+        'error': true
     };
 
     var defaultLanguage = '';
     if (store.state.defaultLanguage !== null) {
         defaultLanguage = (store.state.defaultLanguage).toLowerCase();
     }
-    var url =process.env.VUE_APP_API_ENDPOINT + "app/timesheet/submit";
-   
+    var url = process.env.VUE_APP_API_ENDPOINT + "app/timesheet/submit";
+
     await axios({
             url: url,
             method: 'POST',
@@ -22,17 +22,17 @@ export default async(data) => {
                 'token': store.state.token,
             }
         })
-        .then((response) => {          
-            if(response.data.message) { 
+        .then((response) => {
+            if (response.data.message) {
                 responseData.error = false
-                responseData.message =  response.data.message
-            } 
+                responseData.message = response.data.message
+            }
         })
         .catch(function(error) {
             if (error.response.data.errors[0].message) {
                 responseData.error = true;
                 responseData.message = error.response.data.errors[0].message;
-            }  
+            }
         });
     return responseData;
 }

@@ -18,27 +18,27 @@ export default new Vuex.Store({
         avatar: localStorage.getItem('avatar'),
         isloaderSet: true,
         logo: localStorage.getItem('logo'),
-        search : localStorage.getItem('search'),
-        exploreMissionType : '',
-        exploreMissionParams : '',
-        menubar : localStorage.getItem('menubar'),
+        search: localStorage.getItem('search'),
+        exploreMissionType: '',
+        exploreMissionParams: '',
+        menubar: localStorage.getItem('menubar'),
         imagePath: localStorage.getItem('imagePath'),
-        countryId : localStorage.getItem('countryId'),
-        cityId : localStorage.getItem('cityId'),
-        themeId : localStorage.getItem('themeId'),
-        skillId : localStorage.getItem('skillId'),
-        tags : localStorage.getItem('tags'),
-        sortBy : localStorage.getItem('sortBy'),
-        tenantSetting : localStorage.getItem('tenantSetting'),
-        missionNotFoundText : localStorage.getItem('missionNotFoundText'),
-        languageLabel : localStorage.getItem('languageLabel'),
-        currentSkill : null,
-        currentFromSkill : null,
-        isTwitterDisplay:false,
-        isFacebookDisplay : false,
-        missionId : localStorage.getItem('missionId'),
-        missionType : localStorage.getItem('missionType'),
-        defaultCountryId : localStorage.getItem('defaultCountryId') 
+        countryId: localStorage.getItem('countryId'),
+        cityId: localStorage.getItem('cityId'),
+        themeId: localStorage.getItem('themeId'),
+        skillId: localStorage.getItem('skillId'),
+        tags: localStorage.getItem('tags'),
+        sortBy: localStorage.getItem('sortBy'),
+        tenantSetting: localStorage.getItem('tenantSetting'),
+        missionNotFoundText: localStorage.getItem('missionNotFoundText'),
+        languageLabel: localStorage.getItem('languageLabel'),
+        currentSkill: null,
+        currentFromSkill: null,
+        isTwitterDisplay: false,
+        isFacebookDisplay: false,
+        missionId: localStorage.getItem('missionId'),
+        missionType: localStorage.getItem('missionType'),
+        defaultCountryId: localStorage.getItem('defaultCountryId')
     },
     mutations: {
         // Set login data in state and local storage       
@@ -49,7 +49,7 @@ export default new Vuex.Store({
             localStorage.setItem('firstName', data.first_name)
             localStorage.setItem('lastName', data.last_name)
             localStorage.setItem('avatar', data.avatar)
-            localStorage.setItem('defaultCountryId',data.country_id)
+            localStorage.setItem('defaultCountryId', data.country_id)
             state.isLoggedIn = true;
             state.token = data.token;
             state.userId = data.user_id;
@@ -103,16 +103,16 @@ export default new Vuex.Store({
             state.logo = logo;
         },
         // User filter data
-        userFilter(state,filters) {
-            
-            localStorage.setItem('search',filters.search)
-            localStorage.setItem('countryId',filters.countryId)
-            localStorage.setItem('cityId',filters.cityId)
-            localStorage.setItem('themeId',filters.themeId)
-            localStorage.setItem('skillId',filters.skillId)
-            localStorage.setItem('tags',JSON.stringify(filters.tags))
-            localStorage.setItem('sortBy',filters.sortBy),
-            state.search = filters.search
+        userFilter(state, filters) {
+
+            localStorage.setItem('search', filters.search)
+            localStorage.setItem('countryId', filters.countryId)
+            localStorage.setItem('cityId', filters.cityId)
+            localStorage.setItem('themeId', filters.themeId)
+            localStorage.setItem('skillId', filters.skillId)
+            localStorage.setItem('tags', JSON.stringify(filters.tags))
+            localStorage.setItem('sortBy', filters.sortBy),
+                state.search = filters.search
             state.countryId = filters.countryId
             state.cityId = filters.cityId
             state.themeId = filters.themeId
@@ -120,18 +120,17 @@ export default new Vuex.Store({
             state.tags = JSON.stringify(filters.tags)
             state.sortBy = filters.sortBy
         },
-        
+
         // Explore data
-        exploreFilter(state,filters) {
-            localStorage.setItem('exploreMissionType',filters.exploreMissionType)
-            localStorage.setItem('exploreMissionParams',filters.exploreMissionParams)   
+        exploreFilter(state, filters) {
+            localStorage.setItem('exploreMissionType', filters.exploreMissionType)
+            localStorage.setItem('exploreMissionParams', filters.exploreMissionParams)
             state.exploreMissionType = filters.exploreMissionType
             state.exploreMissionParams = filters.exploreMissionParams
         },
         // User filter data
-        headerMenu(state,headerMenuData)
-         {
-            localStorage.setItem('menubar',JSON.stringify(headerMenuData)) 
+        headerMenu(state, headerMenuData) {
+            localStorage.setItem('menubar', JSON.stringify(headerMenuData))
             state.menubar = JSON.stringify(headerMenuData)
         },
         setImagePath(state, path) {
@@ -139,46 +138,46 @@ export default new Vuex.Store({
             state.imagePath = path;
         },
         // Set Sort by
-        sortByFilter(state,data){
-            localStorage.setItem("sortBy",data);
+        sortByFilter(state, data) {
+            localStorage.setItem("sortBy", data);
             state.sortBy = data;
         },
         // Set tenant option
-        setTenantSetting(state,data) {
-            if(data != null) {
-                localStorage.setItem("tenantSetting",JSON.stringify(data));
+        setTenantSetting(state, data) {
+            if (data != null) {
+                localStorage.setItem("tenantSetting", JSON.stringify(data));
                 state.tenantSetting = JSON.stringify(data);
             } else {
-                localStorage.setItem("tenantSetting",data);
+                localStorage.setItem("tenantSetting", data);
                 state.tenantSetting = data;
             }
         },
         // Set mission not found text
-        missionNotFound(state,data){
-            localStorage.setItem("missionNotFoundText",JSON.stringify(data));
+        missionNotFound(state, data) {
+            localStorage.setItem("missionNotFoundText", JSON.stringify(data));
             state.missionNotFoundText = JSON.stringify(data);
         },
         // Set language label
-        setlanguageLabel(state,data){
-            localStorage.setItem("languageLabel",JSON.stringify(data));
+        setlanguageLabel(state, data) {
+            localStorage.setItem("languageLabel", JSON.stringify(data));
             state.languageLabel = JSON.stringify(data);
         },
-        changeToken(state,data) {
+        changeToken(state, data) {
             localStorage.setItem('token', data)
             state.token = data;
         },
-        changeAvatar(state,data) {
-            localStorage.setItem('avatar', data.avatar) 
+        changeAvatar(state, data) {
+            localStorage.setItem('avatar', data.avatar)
             state.avatar = data.avatar;
         },
-        changeUserDetail(state, data) {        
-            var langaugeCode = data.languageCode; 
+        changeUserDetail(state, data) {
+            var langaugeCode = data.languageCode;
             localStorage.setItem('firstName', data.firstName)
             localStorage.setItem('lastName', data.lastName)
             localStorage.setItem('defaultLanguage', langaugeCode.toUpperCase())
             localStorage.setItem('defaultLanguageId', data.language);
-            localStorage.setItem('countryId',data.country)
-            localStorage.setItem('cityId',data.city)
+            localStorage.setItem('countryId', data.country)
+            localStorage.setItem('cityId', data.city)
             state.defaultLanguage = langaugeCode.toUpperCase()
             state.defaultLanguageId = data.language;
             state.firstName = data.firstName;
@@ -186,24 +185,24 @@ export default new Vuex.Store({
             state.countryId = data.country
             state.cityId = data.city
         },
-        saveCurrentSkill(state,data) {
+        saveCurrentSkill(state, data) {
             // state.currentSkill = data;
-             localStorage.setItem('currentSkill', JSON.stringify(data))
+            localStorage.setItem('currentSkill', JSON.stringify(data))
         },
-        saveCurrentFromSkill(state,data) {
+        saveCurrentFromSkill(state, data) {
             // state.currentSkill = data;
-             localStorage.setItem('currentFromSkill', JSON.stringify(data))
+            localStorage.setItem('currentFromSkill', JSON.stringify(data))
         },
         clearFilter(state) {
             let tag = []
-            localStorage.setItem('search','')
-            localStorage.setItem('countryId','')
-            localStorage.setItem('cityId','')
-            localStorage.setItem('themeId','')
-            localStorage.setItem('skillId','')
-            localStorage.setItem('tags',JSON.stringify(tag))
-            localStorage.setItem('sortBy',''),
-            state.search = ''
+            localStorage.setItem('search', '')
+            localStorage.setItem('countryId', '')
+            localStorage.setItem('cityId', '')
+            localStorage.setItem('themeId', '')
+            localStorage.setItem('skillId', '')
+            localStorage.setItem('tags', JSON.stringify(tag))
+            localStorage.setItem('sortBy', ''),
+                state.search = ''
             state.countryId = ''
             state.cityId = ''
             state.themeId = ''
@@ -217,17 +216,17 @@ export default new Vuex.Store({
             state.defaultLanguage = language;
         },
 
-        timeSheetEntryDetail(state,data) {
-            localStorage.setItem('missionId',data.missionId)
-            localStorage.setItem('missionType',data.missionType)
-            state.missionId  = data.missionId
-            state.missionType  = data.missionType
+        timeSheetEntryDetail(state, data) {
+            localStorage.setItem('missionId', data.missionId)
+            localStorage.setItem('missionType', data.missionType)
+            state.missionId = data.missionId
+            state.missionType = data.missionType
         },
         removeTimeSheetDetail(state) {
             localStorage.removeItem('missionId');
             localStorage.removeItem('missionType');
-            state.missionId  =  null
-            state.missionType  =  null
+            state.missionId = null
+            state.missionType = null
         }
     },
     getters: {},
