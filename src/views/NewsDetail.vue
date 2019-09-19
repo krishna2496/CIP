@@ -8,7 +8,7 @@
 				<div class="news-detail-container">
 					<div class="news-detail-block">
 						<h2>Grow Trees – On the path to environment sustainability</h2>
-						<h3 class="author-name">Charles Vigue -<sapn>CEO</sapn></h3>
+						<h3 class="author-name">Charles Vigue -<span>CEO</span></h3>
 						<p class="publish-date">Published on 23/07/2019</p>
 						<div class="news-img-wrap" :style="{backgroundImage: 'url('+bgImg[0]+')'}"></div>
 						<div class="news-content cms-content">
