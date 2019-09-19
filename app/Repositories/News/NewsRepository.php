@@ -49,7 +49,7 @@ class NewsRepository implements NewsInterface
      * Create a new news repository instance.
      *
      * @param  App\Models\News $news
-     * @param  App\Models\NewsToCategory $newsToCategory 
+     * @param  App\Models\NewsToCategory $newsToCategory
      * @param  App\Models\NewsLanguage $newsLanguage
      * @param  App\Helpers\LanguageHelper $languageHelper
      * @param  App\Helpers\Helpers $helpers
@@ -62,9 +62,9 @@ class NewsRepository implements NewsInterface
         NewsLanguage $newsLanguage,
         LanguageHelper $languageHelper,
         Helpers $helpers,
-        S3Helper $s3helper        
+        S3Helper $s3helper
     ) {
-        $this->news = $news;        
+        $this->news = $news;
         $this->newsToCategory = $newsToCategory;
         $this->newsLanguage = $newsLanguage;
         $this->languageHelper = $languageHelper;
@@ -80,41 +80,31 @@ class NewsRepository implements NewsInterface
      * @param string $newsStatus
      * @return \Illuminate\Pagination\LengthAwarePaginator
      */
-    public function getNewsList(Request $request, int $languageId, string $newsStatus = null): LengthAwarePaginator
-    {
+    public function getNewsList(
+        Request $request,
+        int $languageId = null,
+        string $newsStatus = null
+    ): LengthAwarePaginator {
         $newsData = $this->news->select('news_id')
-        ->with(['newsLanguage' => function ($query) use ($languageId) {
-            $query->select('news_id', 'language_id', 'title', 'description')->where('language_id' , $languageId);
-        }])
         ->with(['newsToCategory' => function ($query) {
             $query->with(['newsCategory' => function ($query) {
                 $query->select('news_category_id', 'category_name', 'translations');
             }]);
         }]);
+
+        if ($languageId) {
+            $newsData->with(['newsLanguage' => function ($query) use ($languageId) {
+                $query->select('news_id', 'language_id', 'title', 'description')->where('language_id', $languageId);
+            }]);
+        } else {
+            $newsData->with(['newsLanguage' => function ($query) {
+                $query->select('news_id', 'language_id', 'title', 'description');
+            }]);
+        }
 
         if ($newsStatus) {
             $newsData->where('status', $newsStatus);
         }
-        return $newsData->paginate($request->perPage);
-    }
-
-    /**
-     * Display news lists admin.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Pagination\LengthAwarePaginator
-     */
-    public function getNewsListAdmin(Request $request): LengthAwarePaginator
-    {
-        $newsData = $this->news->select('news_id')
-        ->with(['newsLanguage' => function ($query) {
-            $query->select('news_id', 'language_id', 'title', 'description');
-        }])
-        ->with(['newsToCategory' => function ($query) {
-            $query->with(['newsCategory' => function ($query) {
-                $query->select('news_category_id', 'category_name', 'translations');
-            }]);
-        }]);
         return $newsData->paginate($request->perPage);
     }
 
@@ -127,13 +117,13 @@ class NewsRepository implements NewsInterface
     public function store(Request $request): News
     {
         // Store news details
-        $tenantName = $this->helpers->getSubDomainFromRequest($request);    
+        $tenantName = $this->helpers->getSubDomainFromRequest($request);
         $newsImage = ($request->has('news_image')) ?
         $this->s3helper->uploadFileOnS3Bucket($request->news_image, $tenantName) : null;
 
         $newsArray = array(
             'news_image' => $newsImage,
-            'user_name' => $request->user_name,            
+            'user_name' => $request->user_name,
             'user_title' => $request->user_title,
             'user_thumbnail' => $request->user_thumbnail,
         );
@@ -178,18 +168,18 @@ class NewsRepository implements NewsInterface
         
         // Update news details
         if ($request->has('news_image')) {
-            $tenantName = $this->helpers->getSubDomainFromRequest($request);    
+            $tenantName = $this->helpers->getSubDomainFromRequest($request);
             $newsImage = $this->s3helper->uploadFileOnS3Bucket($request->news_image, $tenantName);
             $request->request->add(['news_image' => $newsImage]);
-        }        
+        }
         $newsData = $newsDetails->update($request->toArray());
  
         // Update news_to_category
         if ($request->news_category_id) {
                 $newsToCategoryArray = array(
                 'news_category_id' => $request->news_category_id
-            );
-            $this->newsToCategory->where('news_id', $newsId)->update($newsToCategoryArray);
+                );
+                $this->newsToCategory->where('news_id', $newsId)->update($newsToCategoryArray);
         }
         
         // Update into news_language
@@ -222,36 +212,26 @@ class NewsRepository implements NewsInterface
      * @param string $newsStatus
      * @return App\Models\News
      */
-    public function getNewsDetails(int $id, int $languageId, string $newsStatus): News
+    public function getNewsDetails(int $id, int $languageId = null, string $newsStatus = null): News
     {
         $newsData = $this->news
-        ->with(['newsLanguage' => function ($query) use ($languageId) {
-            $query->where('language_id' , $languageId);
-        }])
         ->with(['newsToCategory' => function ($query) {
             $query->with('newsCategory');
-        }])
-        ->where('status', $newsStatus)
-        ->findOrFail($id);
-        
-        return $newsData;
-    }
+        }]);
+    
+        if ($languageId) {
+            $newsData->with(['newsLanguage' => function ($query) use ($languageId) {
+                $query->where('language_id', $languageId);
+            }]);
+        } else {
+            $newsData->with('newsLanguage');
+        }
 
-    /**
-     * Get news details.
-     *
-     * @param int $id
-     * @return App\Models\News
-     */
-    public function getNewsDetailsAdmin(int $id): News
-    {
-        $newsData = $this->news
-        ->with('newsLanguage')
-        ->with(['newsToCategory' => function ($query) {
-            $query->with('newsCategory');
-        }])
-        ->findOrFail($id);
-        
+        if ($newsStatus) {
+            $newsData->where('status', $newsStatus);
+        }
+
+        $newsData = $newsData->findOrFail($id);
         return $newsData;
     }
 
@@ -264,8 +244,8 @@ class NewsRepository implements NewsInterface
     public function delete(int $id): bool
     {
         $news = $this->news->findOrFail($id);
-        $newsStatus = $news->delete();        
-        // Delete news language data 
+        $newsStatus = $news->delete();
+        // Delete news language data
         $news->newsLanguage()->delete();
 
         //Delete news_to_category data

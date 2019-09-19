@@ -33,7 +33,7 @@ interface NewsInterface
      * @param string $newsStatus
      * @return App\Models\News
      */
-    public function getNewsDetails(int $id, int $languageId, string $newsStatus): News;
+    public function getNewsDetails(int $id, int $languageId = null, string $newsStatus = null): News;
 
     /**
      * Remove news.
@@ -51,21 +51,9 @@ interface NewsInterface
      * @param string $newsStatus
      * @return \Illuminate\Pagination\LengthAwarePaginator
      */
-    public function getNewsList(Request $request, int $languageId, string $newsStatus = null): LengthAwarePaginator;
-    
-    /**
-     * Display news lists admin.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Pagination\LengthAwarePaginator
-     */
-    public function getNewsListAdmin(Request $request): LengthAwarePaginator;
-
-    /**
-     * Get news details admin.
-     *
-     * @param int $id
-     * @return App\Models\News
-     */
-    public function getNewsDetailsAdmin(int $id): News;
+    public function getNewsList(
+        Request $request,
+        int $languageId = null,
+        string $newsStatus = null
+    ): LengthAwarePaginator;
 }

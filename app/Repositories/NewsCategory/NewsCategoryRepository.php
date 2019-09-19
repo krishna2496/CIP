@@ -32,7 +32,7 @@ class NewsCategoryRepository implements NewsCategoryInterface
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Pagination\LengthAwarePaginator
      */
-    public function newsCategoryDetails(Request $request): LengthAwarePaginator
+    public function getNewsCategoryDetails(Request $request): LengthAwarePaginator
     {
         return $this->newsCategory->paginate($request->perPage);
     }

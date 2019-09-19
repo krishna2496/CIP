@@ -74,7 +74,7 @@ class NewsController extends Controller
     public function index(Request $request): JsonResponse
     {
         try {
-            $news = $this->newsRepository->getNewsListAdmin($request);
+            $news = $this->newsRepository->getNewsList($request);
             $newsTransform = $news
             ->map(function (News $newsTransform) {
                 return $this->transformNews($newsTransform, '');
@@ -166,7 +166,7 @@ class NewsController extends Controller
 
     /**
      * Display the specified news.
-     * 
+     *
      * @param \Illuminate\Http\Request $request
      * @param int $newsId
      * @return Illuminate\Http\JsonResponse
@@ -175,7 +175,7 @@ class NewsController extends Controller
     {
         try {
             // Get news details
-            $news = $this->newsRepository->getNewsDetailsAdmin($newsId);
+            $news = $this->newsRepository->getNewsDetails($newsId);
             // Transform news details
             $newsTransform = $this->transformNewsDetails($news);
             
