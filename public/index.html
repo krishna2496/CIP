@@ -1,55 +1,58 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"
-    />
-        <link rel="icon" href="<%= BASE_URL %>favicon.ico">
-        <title>Optimy</title>
-        <script
-        src="https://code.jquery.com/jquery-3.4.1.min.js"
-        integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
-        crossorigin="anonymous"></script>
-        <script src="https://unpkg.com/babel-polyfill@latest/dist/polyfill.min.js"></script>
-        <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/lodash.js/0.10.0/lodash.min.js"></script>
-        <style>
-        .loader-enable{overflow: hidden;}
-        .loader-wrap{display: none!important; }
-        .loader-enable .loader-wrap{display: flex!important;}
-        </style>
-    </head>
-    <body>
-        <div class="loader-wrap">
-            <div class="loader"></div>
-        </div>
-        <noscript>
-            <strong>We're sorry but ci_platform doesn't work properly without JavaScript enabled. Please enable it to
-            continue.</strong>
-        </noscript>
-        <div id="app"></div>
 
-        <!-- built files will be auto injected -->
-        <link rel="stylesheet" href="" id="customCss"/>
-        <script type="text/javascript">
-            $(document ).ready(function() {
-                var apiUrl = '<%= VUE_APP_API_ENDPOINT %>'
-                getDynamicCssUrl = apiUrl+'app/custom-css';    
-                $.ajax({
-                    type: "GET",
-                    url: getDynamicCssUrl,
-                    cache: false,           
-                    success: function (result)
-                    {
-                        if (result.data.custom_css) {
-                            $("#customCss").attr("href",result.data.custom_css);
-                        }
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+    <link rel="icon" href="<%= BASE_URL %>favicon.ico">
+    <title>Optimy</title>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/babel-polyfill@latest/dist/polyfill.min.js"></script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/lodash.js/0.10.0/lodash.min.js"></script>
+    <style>
+        .loader-enable {
+            overflow: hidden;
+        }
+        
+        .loader-wrap {
+            display: none !important;
+        }
+        
+        .loader-enable .loader-wrap {
+            display: flex !important;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="loader-wrap">
+        <div class="loader"></div>
+    </div>
+    <noscript>
+        <strong>We're sorry but ci_platform doesn't work properly without JavaScript enabled. Please enable it to
+            continue.</strong>
+    </noscript>
+    <div id="app"></div>
+
+    <!-- built files will be auto injected -->
+    <link rel="stylesheet" href="" id="customCss" />
+    <script type="text/javascript">
+        $(document).ready(function() {
+            var apiUrl = '<%= VUE_APP_API_ENDPOINT %>'
+            getDynamicCssUrl = apiUrl + 'app/custom-css';
+            $.ajax({
+                type: "GET",
+                url: getDynamicCssUrl,
+                cache: false,
+                success: function(result) {
+                    if (result.data.custom_css) {
+                        // $("#customCss").attr("href", result.data.custom_css);
                     }
-                });
+                }
             });
+        });
     </script>
-    </body>
+</body>
 
 </html>

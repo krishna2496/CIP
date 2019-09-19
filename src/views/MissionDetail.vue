@@ -297,7 +297,7 @@
 										</div>
 									</b-list-group-item>
 								</b-list-group>
-								<div class="btn-wrap">
+								<div class="btn-wrap group-btns">
 									<b-button class="btn-borderprimary icon-btn" @click="handleModal(missionId)"
 										v-if="isInviteCollegueDisplay">
 										<i>
