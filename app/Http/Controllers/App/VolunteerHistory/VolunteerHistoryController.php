@@ -203,95 +203,92 @@ class VolunteerHistoryController extends Controller
      * Export user's goal mission history
      *
      * @param \Illuminate\Http\Request $request
-     * @return Symfony\Component\HttpFoundation\BinaryFileResponse
+     * @return Object
      */
-    public function exportGoalMissionHistory(Request $request): BinaryFileResponse
+    public function exportGoalMissionHistory(Request $request): Object
     {
-        try {
-            $statusArray = [
-                config('constants.timesheet_status_id.AUTOMATICALLY_APPROVED'),
-                config('constants.timesheet_status_id.APPROVED')
+        $statusArray = [
+            config('constants.timesheet_status_id.AUTOMATICALLY_APPROVED'),
+            config('constants.timesheet_status_id.APPROVED')
+        ];
+
+        $goalMissionList = $this->timesheetRepository->goalRequestList($request, $statusArray, false);
+
+        if ($goalMissionList->count()) {
+            $fileName = config('constants.export_timesheet_file_names.GOAL_MISSION_HISTORY_XLSX');
+    
+            $excel = new ExportCSV($fileName);
+
+            $headings = [
+                trans('messages.export_sheet_headings.MISSION_NAME'),
+                trans('messages.export_sheet_headings.ORGANIZATION_NAME'),
+                trans('messages.export_sheet_headings.ACTIONS')
             ];
 
-            $goalMissionList = $this->timesheetRepository->goalRequestList($request, $statusArray, false);
+            $excel->setHeadlines($headings);
 
-            if ($goalMissionList->count()) {
-                $fileName = config('constants.export_timesheet_file_names.GOAL_MISSION_HISTORY_XLSX');
-        
-                $excel = new ExportCSV($fileName);
-
-                $headings = [
-                    trans('messages.export_sheet_headings.MISSION_NAME'),
-                    trans('messages.export_sheet_headings.ORGANIZATION_NAME'),
-                    trans('messages.export_sheet_headings.ACTIONS')
-                ];
-
-                $excel->setHeadlines($headings);
-
-                foreach ($goalMissionList as $mission) {
-                    $excel->appendRow([
-                        $mission->title,
-                        $mission->organisation_name,
-                        $mission->action
-                    ]);
-                }
-
-                $tenantName = $this->helpers->getSubDomainFromRequest($request);
-
-                $path = $excel->export('app/'.$tenantName.'/timesheet/'.$request->auth->user_id.'/exports');
+            foreach ($goalMissionList as $mission) {
+                $excel->appendRow([
+                    $mission->title,
+                    $mission->organisation_name,
+                    $mission->action
+                ]);
             }
+
+            $tenantName = $this->helpers->getSubDomainFromRequest($request);
+            $path = $excel->export('app/'.$tenantName.'/timesheet/'.$request->auth->user_id.'/exports');
             return response()->download($path, $fileName);
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
+    
+        $apiStatus = Response::HTTP_OK;
+        $apiMessage =  trans('messages.success.MESSAGE_ENABLE_TO_EXPORT_USER_TIME_MISSION_HISTORY');
+        return $this->responseHelper->success($apiStatus, $apiMessage);
     }
 
     /**
      * Export user's time mission history
      *
      * @param \Illuminate\Http\Request $request
-     * @return Symfony\Component\HttpFoundation\BinaryFileResponse
+     * @return Object
      */
-    public function exportTimeMissionHistory(Request $request): BinaryFileResponse
+    public function exportTimeMissionHistory(Request $request): Object
     {
-        try {
-            $statusArray = [
-                config('constants.timesheet_status_id.AUTOMATICALLY_APPROVED'),
-                config('constants.timesheet_status_id.APPROVED')
+        $statusArray = [
+            config('constants.timesheet_status_id.AUTOMATICALLY_APPROVED'),
+            config('constants.timesheet_status_id.APPROVED')
+        ];
+
+        $timeRequestList = $this->timesheetRepository->timeRequestList($request, $statusArray, false);
+
+        if ($timeRequestList->count()) {
+            $fileName = config('constants.export_timesheet_file_names.TIME_MISSION_HISTORY_XLSX');
+        
+            $excel = new ExportCSV($fileName);
+
+            $headings = [
+                trans('messages.export_sheet_headings.MISSION_NAME'),
+                trans('messages.export_sheet_headings.ORGANIZATION_NAME'),
+                trans('messages.export_sheet_headings.TIME'),
+                trans('messages.export_sheet_headings.HOURS')
             ];
 
-            $timeRequestList = $this->timesheetRepository->timeRequestList($request, $statusArray, false);
+            $excel->setHeadlines($headings);
 
-            if ($timeRequestList->count()) {
-                $fileName = config('constants.export_timesheet_file_names.TIME_MISSION_HISTORY_XLSX');
-            
-                $excel = new ExportCSV($fileName);
-
-                $headings = [
-                    trans('messages.export_sheet_headings.MISSION_NAME'),
-                    trans('messages.export_sheet_headings.ORGANIZATION_NAME'),
-                    trans('messages.export_sheet_headings.TIME'),
-                    trans('messages.export_sheet_headings.HOURS')
-                ];
-
-                $excel->setHeadlines($headings);
-
-                foreach ($timeRequestList as $mission) {
-                    $excel->appendRow([
-                        $mission->title,
-                        $mission->organisation_name,
-                        $mission->time,
-                        $mission->hours
-                    ]);
-                }
-
-                $tenantName = $this->helpers->getSubDomainFromRequest($request);
-
-                $path = $excel->export('app/'.$tenantName.'/timesheet/'.$request->auth->user_id.'/exports');
+            foreach ($timeRequestList as $mission) {
+                $excel->appendRow([
+                    $mission->title,
+                    $mission->organisation_name,
+                    $mission->time,
+                    $mission->hours
+                ]);
             }
+
+            $tenantName = $this->helpers->getSubDomainFromRequest($request);
+            $path = $excel->export('app/'.$tenantName.'/timesheet/'.$request->auth->user_id.'/exports');
             return response()->download($path, $fileName);
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
+        $apiStatus = Response::HTTP_OK;
+        $apiMessage =  trans('messages.success.MESSAGE_ENABLE_TO_EXPORT_USER_TIME_MISSION_HISTORY');
+        return $this->responseHelper->success($apiStatus, $apiMessage);
     }
 }

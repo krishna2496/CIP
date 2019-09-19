@@ -327,7 +327,9 @@ class MissionController extends Controller
                         $value->mission_count;
                     }
                 }
-                $apiData[config('constants.COUNTRY')] = $returnData[config('constants.COUNTRY')];
+				if (isset($returnData[config('constants.COUNTRY')])) {
+					$apiData[config('constants.COUNTRY')] = $returnData[config('constants.COUNTRY')];
+				}
             }
 
             if (!empty($missionCity->toArray())) {
@@ -339,7 +341,9 @@ class MissionController extends Controller
                     $returnData[config('constants.CITY')][$key]['mission_count'] =
                         $value->mission_count;
                 }
-                $apiData[config('constants.CITY')] = $returnData[config('constants.CITY')];
+				if (isset($returnData[config('constants.CITY')])) {
+					$apiData[config('constants.CITY')] = $returnData[config('constants.CITY')];
+				}
             }
             
             if (!empty($missionTheme->toArray())) {
@@ -356,7 +360,9 @@ class MissionController extends Controller
                         }
                     }
                 }
-                $apiData[config('constants.THEME')] = $returnData[config('constants.THEME')];
+				if (isset($returnData[config('constants.THEME')])) {
+					$apiData[config('constants.THEME')] = $returnData[config('constants.THEME')];
+				}
             }
             
             if (!empty($missionSkill->toArray())) {
@@ -373,8 +379,9 @@ class MissionController extends Controller
                         }
                     }
                 }
-
-                $apiData[config('constants.SKILL')] = $returnData[config('constants.SKILL')];
+				if (isset($returnData[config('constants.SKILL')])) {
+					$apiData[config('constants.SKILL')] = $returnData[config('constants.SKILL')];
+				}
             }
             
             $apiStatus = Response::HTTP_OK;

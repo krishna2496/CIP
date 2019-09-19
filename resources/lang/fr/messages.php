@@ -229,6 +229,7 @@ return [
         'ERROR_REQUIRED_FIELDS_FOR_UPDATE_STYLING' => 'Requis soit en couleur primaire, soit en champ de fichier SCSS personnalisé',
         'ERROR_WHILE_UPLOADING_FILE_ON_S3' => 'Une erreur lors du téléchargement du fichier sur S3',
         'ERROR_SLIDER_NOT_FOUND' => 'Aucun curseur trouvé',
+        'ERROR_NOT_VALID_IMAGE_FILE_EXTENSION' => 'L\'extension d\'image est valide pour cette image',
 
         
         //For timesheet module
@@ -247,6 +248,7 @@ return [
         // For News module        
         'ERROR_NEWS_CATEGORY_NOT_FOUND' => 'Catégorie de nouvelles non trouvée dans le système',
         'ERROR_NEWS_NOT_FOUND' => 'Nouvelles non trouvées dans le système',
+        'ERROR_UNAUTHORIZED_USER' => 'Utilisateur non autorisé'
     ],
 
     /**

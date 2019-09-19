@@ -186,7 +186,8 @@
 		"day_volunteered" : "Day volunteered",
 		"no_volunteer_history_found" : "The heart of a volunteer is never measured in size, but by the depth of the commitment to make a difference in the lives of others.",
 		"empty_volunteer_history_text" : "The heart of a volunteer is never measured in size, but by the depth of the commitment to make a difference in the lives of others.",
-		"start_volunteering" : "Start Volunteering"
+		"start_volunteering" : "Start Volunteering",
+		"volunteering_timesheet_not_found" : "The heart of a volunteer is never measured in size, but by the depth of the commitment to make a difference in the lives of others."
 
 	},
 
@@ -249,10 +250,13 @@
 		 "minute_or_hours_is_required" : "Please select hours or minutes",
 		 "date_volunteer_is_required" : "Volunteer date is required",
 		 "work_day" : "Please select day volunteered",
-		 "notes" : "Notes is required",
-		 "action_required" : "Action is required",
-		 "file_max_size" : "Document may not be greater than 5mb",
-		 "minimum_action" :"The action must be at least 1"
+		 "notes" : "Please enter notes",
+		 "action_required" : "Please select action",
+		 "file_max_size" : "Document should not be greater than 4 MB",
+		 "minimum_action" :"The action must be at least 1",
+	     "hours_is_required" : "Please select hours",
+		 "minute_is_required" : "Please select minutes",
+		 "invalid_file_type" : "Invalid document type: valid document types are doc, xls, xlsx, csv, pdf, png, jpg, jpeg"
 	},
 	
 	"export_timesheet_file_names" : {

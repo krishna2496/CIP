@@ -15,7 +15,7 @@ use stdClass;
 class Helpers
 {
     use RestExceptionHandlerTrait;
-
+    
     /**
      * It will return tenant name from request
      * @param Illuminate\Http\Request $request
@@ -181,16 +181,17 @@ class Helpers
      * Get JWT token
      *
      * @param int $userId
+     * @param string $tenantName
      * @return string
      */
-    public static function getJwtToken(int $userId): string
+    public static function getJwtToken(int $userId, string $tenantName) : string
     {
         $payload = [
             'iss' => "lumen-jwt", // Issuer of the token
             'sub' => $userId, // Subject of the token
             'iat' => time(), // Time when JWT was issued.
             'exp' => time() + 60 * 60 * 4, // Expiration time
-            'fqdn' => env('DEFAULT_TENANT'),
+            'fqdn' => $tenantName
         ];
         // As you can see we are passing `JWT_SECRET` as the second parameter that will
         // be used to decode the token in the future.

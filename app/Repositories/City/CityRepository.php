@@ -41,7 +41,7 @@ class CityRepository implements CityInterface
     public function cityList(int $countryId): Collection
     {
         $this->country->findOrFail($countryId);
-        return $this->city->where('country_id', $countryId)->pluck('name', 'city_id');
+        return $this->city->orderBy('name')->where('country_id', $countryId)->pluck('name', 'city_id');
     }
 
     /**
