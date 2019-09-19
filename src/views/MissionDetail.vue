@@ -619,7 +619,7 @@
 					</div>
 				</div>
 				<b-form>
-					<div class="btn-wrap">
+					<div class="btn-wrap group-btns">
 						<b-button @click="$refs.userDetailModal.hide()" class="btn-borderprimary">
 							{{ langauageData.label.close }}</b-button>
 						<b-button class="btn-bordersecondary" @click="inviteColleagues" ref="autosuggestSubmit"

@@ -49,7 +49,7 @@
 			DatePicker,
 			AppCustomDropdown
 		},
-		props: [],
+		props: {},
 		data: function () {
 			return {
 				time1: "",

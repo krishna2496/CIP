@@ -8,35 +8,35 @@ export default async(data) => {
     if (store.state.defaultLanguage !== null) {
         defaultLanguage = (store.state.defaultLanguage).toLowerCase();
     }
-    var url =process.env.VUE_APP_API_ENDPOINT + "app/missions?page=" + data.page
+    var url = process.env.VUE_APP_API_ENDPOINT + "app/missions?page=" + data.page
 
-    if(data.search != '' && data.search != null){
-        url = url+"&search=" + data.search
-    }
-
-    if(data.countryId != '' && data.countryId != null){
-        url = url+"&country_id=" + data.countryId
-    }
-    if(data.cityId != '' && data.cityId != null){
-        url = url+"&city_id=" + data.cityId
-    }
-    if(data.themeId != '' && data.themeId != null){
-        url = url+"&theme_id=" + data.themeId
-    }
-    if(data.skillId != '' && data.skillId != null){
-        url = url+"&skill_id=" + data.skillId
+    if (data.search != '' && data.search != null) {
+        url = url + "&search=" + data.search
     }
 
-    if(data.sortBy != '' && data.sortBy != null){
-        url = url+"&sort_by=" + data.sortBy
+    if (data.countryId != '' && data.countryId != null) {
+        url = url + "&country_id=" + data.countryId
+    }
+    if (data.cityId != '' && data.cityId != null) {
+        url = url + "&city_id=" + data.cityId
+    }
+    if (data.themeId != '' && data.themeId != null) {
+        url = url + "&theme_id=" + data.themeId
+    }
+    if (data.skillId != '' && data.skillId != null) {
+        url = url + "&skill_id=" + data.skillId
     }
 
-    if(data.exploreMissionType != ''){
-        url = url+"&explore_mission_type=" + data.exploreMissionType
+    if (data.sortBy != '' && data.sortBy != null) {
+        url = url + "&sort_by=" + data.sortBy
     }
 
-    if(data.exploreMissionParams != ''){
-        url = url+"&explore_mission_params=" + data.exploreMissionParams
+    if (data.exploreMissionType != '') {
+        url = url + "&explore_mission_type=" + data.exploreMissionType
+    }
+
+    if (data.exploreMissionParams != '') {
+        url = url + "&explore_mission_params=" + data.exploreMissionParams
     }
     document.body.classList.add("loader-enable");
     await axios({
@@ -48,7 +48,7 @@ export default async(data) => {
             }
         })
         .then((response) => {
-            responseData = response.data;           
+            responseData = response.data;
             // Set filter data
             if (response.data.meta_data.filters) {
                 let filterData = {};
@@ -59,7 +59,7 @@ export default async(data) => {
                 filterData.skillId = response.data.meta_data.filters.skill_id;
                 filterData.tags = response.data.meta_data.filters.tags;
                 filterData.sortBy = response.data.meta_data.filters.sort_by;
-                store.commit('userFilter',filterData)
+                store.commit('userFilter', filterData)
             } else {
                 let filterData = {};
                 filterData.search = '';
@@ -69,8 +69,8 @@ export default async(data) => {
                 filterData.skillId = '';
                 filterData.tags = '';
                 filterData.sortBy = '';
-                store.commit('userFilter',filterData)
-            }         
+                store.commit('userFilter', filterData)
+            }
             document.body.classList.remove("loader-enable");
         })
         .catch(function(error) {
