@@ -59,7 +59,7 @@ export {
     applyMission,
     storeMissionRating,
     missionVolunteers,
-	missionCarousel,
+    missionCarousel,
     missionDetail,
     relatedMissions,
     missionComments,

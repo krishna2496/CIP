@@ -1,5 +1,4 @@
 <template>
-
     <div class="signin-page-wrapper" v-if="isPageShown">
         <TheSlider v-if="isShowComponent"/>
         <div class="signin-form-wrapper">
@@ -155,7 +154,6 @@ export default {
     created() {
         //Database connection and fetching tenant options api
         this.createConnection()
-        
         var domain = '';
         var imagePath = '';
         var currentUrl = (((window.location.origin).split('.')));
@@ -167,10 +165,6 @@ export default {
                 store.commit('setImagePath', imagePath);
             }
         }
-         //Autofocus
-
-            
-         
     },
 };
 </script>

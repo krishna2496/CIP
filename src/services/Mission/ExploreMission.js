@@ -5,11 +5,11 @@ export default async() => {
     let responseData;
     var defaultLanguage = '';
     let headerMenuData = {}
-    
+
     if (store.state.defaultLanguage !== null) {
         defaultLanguage = (store.state.defaultLanguage).toLowerCase();
     }
-    var url =process.env.VUE_APP_API_ENDPOINT + "app/explore-mission";
+    var url = process.env.VUE_APP_API_ENDPOINT + "app/explore-mission";
 
     await axios({
             url: url,
@@ -26,7 +26,7 @@ export default async() => {
                 headerMenuData.top_country = response.data.data.top_countries;
                 headerMenuData.top_organization = response.data.data.top_organization;
             }
-            store.commit('headerMenu',headerMenuData);   
+            store.commit('headerMenu', headerMenuData);
         })
         .catch(function(error) {});
     return responseData;
