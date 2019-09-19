@@ -297,7 +297,7 @@
 										</div>
 									</b-list-group-item>
 								</b-list-group>
-								<div class="btn-wrap">
+								<div class="btn-wrap group-btns">
 									<b-button class="btn-borderprimary icon-btn" @click="handleModal(missionId)"
 										v-if="isInviteCollegueDisplay">
 										<i>
@@ -619,7 +619,7 @@
 					</div>
 				</div>
 				<b-form>
-					<div class="btn-wrap group-btns">
+					<div class="btn-wrap">
 						<b-button @click="$refs.userDetailModal.hide()" class="btn-borderprimary">
 							{{ langauageData.label.close }}</b-button>
 						<b-button class="btn-bordersecondary" @click="inviteColleagues" ref="autosuggestSubmit"

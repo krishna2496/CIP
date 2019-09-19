@@ -17,7 +17,9 @@
                             <div class="table-outer">
                                 <div class="table-inner">
                                     <h3>{{langauageData.label.volunteering_hours}}</h3>
-                                    <VolunteeringTimesheetTableHeader @updateCall="changeVolunteeringHours" />
+                                    <VolunteeringTimesheetTableHeader 
+                                    :currentDate="timeSheetCurrentDate"
+                                    @updateCall="changeVolunteeringHours" />
                                     <div class="table-wrapper-outer">
                                         <div
                                             v-bind:class="{ 'content-loader-wrap': true, 'loader-active': tableLoaderActive}">
@@ -82,7 +84,9 @@
                             <div class="table-outer timesheet-table-outer">
                                 <div class="table-inner">
                                     <h3>{{langauageData.label.volunteering_goals}}</h3>
-                                    <VolunteeringTimesheetTableHeader @updateCall="changeVolunteeringGoals" />
+                                    <VolunteeringTimesheetTableHeader 
+                                    :currentDate="timeSheetCurrentDate"
+                                    @updateCall="changeVolunteeringGoals" />
                                     <div class="table-wrapper-outer">
                                         <div
                                             v-bind:class="{ 'content-loader-wrap': true, 'loader-active': goalTableLoaderActive}">
@@ -303,7 +307,10 @@
                 todaysDate: moment().format("D"),
                 currentYear: moment().format("YYYY"),
                 currentMonth: moment().format("M"),
-                isComponentLoaded: false
+                isComponentLoaded: false,
+                timeSheetCurrentDate : moment(),
+                timeSheetStartDate : '',
+                timeSheetEndDate : '',
             };
         },
         updated() {
@@ -566,6 +573,7 @@
                 }
             },
             changeVolunteeringHours(data) {
+                console.log(data);
                 this.enableSubmitTimeTimeSheet = true;
                 var _this = this;
                 this.tableLoaderActive = true
@@ -1062,6 +1070,9 @@
             this.timeRequestLabel = this.langauageData.label.hours_requests
             this.goalRequestLabel = this.langauageData.label.goals_requests
             this.getVolunteerHoursData();
+            //  this.timeSheetEndDate = moment().week();
+            // this.timeSheetStartDate =  moment().startOf('week')
+            // this.timeSheetEndDate =  this.timeSheetCurrentDate.endOf('week')
             this.isShownComponent = true;
             setTimeout(function () {
                 globalThis.getTimeRequestData(globalThis.hourRequestCurrentPage);
