@@ -3,12 +3,12 @@ import store from '../../store'
 
 export default async(data) => {
 
-    let responseData ={};
+    let responseData = {};
     var defaultLanguage = '';
     if (store.state.defaultLanguage !== null) {
         defaultLanguage = (store.state.defaultLanguage).toLowerCase();
     }
-    var url =process.env.VUE_APP_API_ENDPOINT + "app/change-password";
+    var url = process.env.VUE_APP_API_ENDPOINT + "app/change-password";
 
     await axios({
             url: url,
@@ -19,7 +19,7 @@ export default async(data) => {
                 'token': store.state.token,
             }
         })
-        .then((response) => { 
+        .then((response) => {
             responseData.error = false;
             responseData.message = response.data.message;
             responseData.data = response.data.data;
@@ -28,7 +28,7 @@ export default async(data) => {
             if (error.response.data.errors[0].message) {
                 responseData.error = true;
                 responseData.message = error.response.data.errors[0].message;
-            }  
+            }
         });
     return responseData;
 }

@@ -12,7 +12,7 @@ function setI18nLanguage(lang) {
     return lang;
 }
 
-export default async (lang) => {
+export default async(lang) => {
 
     if (lang) {
         lang = lang.toLowerCase();
@@ -21,7 +21,7 @@ export default async (lang) => {
     if ((lang != 'null')) {
         await axios.get(`${process.env.VUE_APP_LANGUAGE_API_ENDPOINT + lang}`, {
             method: "get",
-        }).then(function (res) {
+        }).then(function(res) {
             store.commit('setlanguageLabel', res.data.data);
             if (res.data) {
                 i18n.setLocaleMessage(
@@ -31,6 +31,6 @@ export default async (lang) => {
                 loadedLanguages.push(res.data.locale)
                 return Promise.resolve(setI18nLanguage(res.data.locale))
             }
-        }).catch(error => { });
+        }).catch(error => {});
     }
 }

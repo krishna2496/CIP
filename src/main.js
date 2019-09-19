@@ -18,7 +18,9 @@ import "aos/dist/aos.css";
 import BackToTop from "vue-backtotop";
 import moment from 'moment'
 import constants from './constant';
-import {messages} from 'vue-bootstrap-calendar';
+import {
+    messages
+} from 'vue-bootstrap-calendar';
 
 Vue.use(Vuelidate, VueAxios, axios);
 Vue.config.devtools = true
@@ -42,9 +44,9 @@ let entryUrl = null;
 router.beforeEach((to, from, next) => {
     if (store.state.isLoggedIn) {
         if (entryUrl) {
-          const url = entryUrl;
-          entryUrl = null;
-          return next(url); // goto stored url
+            const url = entryUrl;
+            entryUrl = null;
+            return next(url); // goto stored url
         }
     }
     if (to.meta.requiresAuth && !store.state.isLoggedIn) {
@@ -65,35 +67,35 @@ router.beforeEach((to, from, next) => {
 });
 
 Vue.filter('formatDate', function(value) {
-      if (value) {
+    if (value) {
         return moment(String(value)).format('DD/MM/YYYY')
-      }
+    }
 })
 
-Vue.filter('substring', function (value,data) {
+Vue.filter('substring', function(value, data) {
     if (value.length <= data) {
         return value
     } else {
-        return value.substring(0,data)+"...";
+        return value.substring(0, data) + "...";
     }
 });
 
 Vue.mixin({
-  methods: {
-    settingEnabled (key) {
-        let settingArray =  JSON.parse(store.state.tenantSetting)
-       
-        if(settingArray != null) {
-            if(settingArray.indexOf(key) !== -1){
-                return true;
-            } else{
+    methods: {
+        settingEnabled(key) {
+            let settingArray = JSON.parse(store.state.tenantSetting)
+
+            if (settingArray != null) {
+                if (settingArray.indexOf(key) !== -1) {
+                    return true;
+                } else {
+                    return false;
+                }
+            } else {
                 return false;
             }
-        } else {
-            return false;
         }
     }
-  }
 })
 
 new Vue({
