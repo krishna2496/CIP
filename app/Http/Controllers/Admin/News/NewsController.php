@@ -128,10 +128,10 @@ class NewsController extends Controller
                     "user_thumbnail" => "url|valid_media_path",
                     "news_category_id" => "required|exists:news_category,news_category_id,deleted_at,NULL",
                     "news_content" => "required",
-                    "news_content.translations" => "required",
-                    "news_content.translations.*.lang" => "required|max:2",
-                    "news_content.translations.*.title" => "required",
-                    "news_content.translations.*.description" => "required",
+                    "news_content.translations" => "required_with:news_content",
+                    "news_content.translations.*.lang" => "required_with:news_content.translations|max:2",
+                    "news_content.translations.*.title" => "required_with:news_content.translations",
+                    "news_content.translations.*.description" => "required_with:news_content.translations",
                 ]
             );
 
@@ -194,7 +194,7 @@ class NewsController extends Controller
     }
 
     /**
-     * Update policy news
+     * Update news details
      *
      * @param \Illuminate\Http\Request $request
      * @param int $newsId
@@ -209,13 +209,13 @@ class NewsController extends Controller
                 [
                     "news_image" => "url|valid_media_path",
                     "user_thumbnail" => "url|valid_media_path",
-                    "news_category_id" => "required|exists:news_category,news_category_id,deleted_at,NULL",
+                    "news_category_id" => "exists:news_category,news_category_id,deleted_at,NULL",
                     "status" => [Rule::in(config('constants.news_status'))],
-                    "news_content" => "required",
-                    "news_content.translations" => "required",
-                    "news_content.translations.*.lang" => "required|max:2",
-                    "news_content.translations.*.title" => "required",
-                    "news_content.translations.*.description" => "required",
+                    "news_content" => "sometimes|required",
+                    "news_content.translations" => "required_with:news_content",
+                    "news_content.translations.*.lang" => "required_with:news_content.translations|max:2",
+                    "news_content.translations.*.title" => "required_with:news_content.translations",
+                    "news_content.translations.*.description" => "required_with:news_content.translations",
                 ]
             );
 

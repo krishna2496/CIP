@@ -148,19 +148,20 @@ class NewsRepository implements NewsInterface
         
         // Insert into news_language
         $languages = $this->languageHelper->getLanguages($request);
-        $newsContent = $request->news_content;
-        foreach ($newsContent['translations'] as $value) {
-            // Get language_id from language code - It will fetch data from `ci_admin` database
-            $language = $languages->where('code', $value['lang'])->first();
-            
-            $newsLanguageData = array('news_id' => $news->news_id,
-                                      'language_id' => $language->language_id,
-                                      'title' => $value['title'],
-                                      'description' => $value['description']);
-                                      
-            $this->newsLanguage->create($newsLanguageData);
+        if ($request->has('news_content')) {
+            $newsContent = $request->news_content;
+            foreach ($newsContent['translations'] as $value) {
+                // Get language_id from language code - It will fetch data from `ci_admin` database
+                $language = $languages->where('code', $value['lang'])->first();
+                
+                $newsLanguageData = array('news_id' => $news->news_id,
+                                        'language_id' => $language->language_id,
+                                        'title' => $value['title'],
+                                        'description' => $value['description']);
+                                        
+                $this->newsLanguage->create($newsLanguageData);
+            }
         }
-
         return $news;
     }
 
@@ -193,19 +194,22 @@ class NewsRepository implements NewsInterface
         
         // Update into news_language
         $languages = $this->languageHelper->getLanguages($request);
-        $newsContent = $request->news_content;
-        foreach ($newsContent['translations'] as $value) {
-             // Get language_id from language code - It will fetch data from `ci_admin` database
-            $language = $languages->where('code', $value['lang'])->first();
-             
-            $newsLanguageData = array('language_id' => $language->language_id,
-                                    'title' => $value['title'],
-                                    'description' => $value['description']
-                                );
 
-            $this->newsLanguage->createOrUpdateNewsLanguage(['news_id' => $newsId,
-            'language_id' => $language->language_id], $newsLanguageData);
-         }
+        if ($request->has('news_content')) {
+            $newsContent = $request->news_content;
+            foreach ($newsContent['translations'] as $value) {
+                // Get language_id from language code - It will fetch data from `ci_admin` database
+                $language = $languages->where('code', $value['lang'])->first();
+                
+                $newsLanguageData = array('language_id' => $language->language_id,
+                                        'title' => $value['title'],
+                                        'description' => $value['description']
+                                    );
+
+                $this->newsLanguage->createOrUpdateNewsLanguage(['news_id' => $newsId,
+                'language_id' => $language->language_id], $newsLanguageData);
+            }
+        }
 
         return $newsDetails;
     }
