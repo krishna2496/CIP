@@ -181,6 +181,11 @@ class MissionTest extends TestCase
      */
     public function it_should_update_mission()
     {
+        $connection = 'tenant';
+        $skill = factory(\App\Models\Skill::class)->make();
+        $skill->setConnection($connection);
+        $skill->save();
+ 
         $params = [
                     "organisation" => [
                         "organisation_id" => 1,
@@ -249,7 +254,12 @@ class MissionTest extends TestCase
                     "application_deadline" => "2019-07-28 11:40:00",
                     "publication_status" => config("constants.publication_status.APPROVED"),
                     "theme_id" => 1,
-                    "availability_id" => 1
+                    "availability_id" => 1,
+                    'skills' => [
+                        [
+                            "skill_id" => $skill->skill_id
+                        ]
+                    ]
                 ];
 
         $connection = 'tenant';
