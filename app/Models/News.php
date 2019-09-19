@@ -29,14 +29,22 @@ class News extends Model
      *
      * @var array
      */
-    protected $fillable = ['news_image', 'user_name', 'user_title', 'user_thumbnail'];
+    protected $fillable = ['news_image', 'user_name', 'user_title', 'user_thumbnail', 'status'];
 
     /**
      * The attributes that should be visible in arrays.
      *
      * @var array
      */
-    protected $visible = ['news_id', 'news_image', 'user_name', 'user_title', 'user_thumbnail', 'newsLanguage', 'newsToCategory'];
+    protected $visible = [
+        'news_id',
+        'news_image',
+        'user_name',
+        'user_title',
+        'user_thumbnail',
+        'newsLanguage',
+        'newsToCategory'
+    ];
 
     /**
      * Find news by id.

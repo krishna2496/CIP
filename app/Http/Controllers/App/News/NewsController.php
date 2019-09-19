@@ -17,7 +17,7 @@ use App\Helpers\Helpers;
 
 //!  News Controller
 /*!
-This controller is responsible for handling news store, update, listing, show and delete operation.
+This controller is responsible for handling news show and listing operation.
  */
 class NewsController extends Controller
 {
@@ -76,7 +76,7 @@ class NewsController extends Controller
             $news = $this->newsRepository->getNewsList(
                 $request,
                 $languageId,
-                config('constants.news_status.UNPUBLISHED')
+                config('constants.news_status.PUBLISHED')
             );
             $newsTransform = $news
             ->map(function (News $newsTransform) {
@@ -125,8 +125,9 @@ class NewsController extends Controller
     {
         try {
             $languageId = $this->languageHelper->getLanguageId($request);
-            // Get details
-            $news = $this->newsRepository->getNewsDetails($newsId, $languageId);
+            // Get news details
+            $news = $this->newsRepository
+            ->getNewsDetails($newsId, $languageId, config('constants.news_status.PUBLISHED'));
             // Transform news details
             $newsTransform = $this->transformNewsDetails($news);
             

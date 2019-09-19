@@ -74,11 +74,7 @@ class NewsController extends Controller
     public function index(Request $request): JsonResponse
     {
         try {
-            $languageId = $this->languageHelper->getLanguageId($request);
-            $news = $this->newsRepository->getNewsList(
-                $request, $languageId, 
-                config('constants.news_status.UNPUBLISHED')
-            );
+            $news = $this->newsRepository->getNewsListAdmin($request);
             $newsTransform = $news
             ->map(function (News $newsTransform) {
                 return $this->transformNews($newsTransform, '');
@@ -178,9 +174,8 @@ class NewsController extends Controller
     public function show(Request $request, int $newsId): JsonResponse
     {
         try {
-            $languageId = $this->languageHelper->getLanguageId($request);
-            // Get details
-            $news = $this->newsRepository->getNewsDetails($newsId, $languageId);
+            // Get news details
+            $news = $this->newsRepository->getNewsDetailsAdmin($newsId);
             // Transform news details
             $newsTransform = $this->transformNewsDetails($news);
             
@@ -215,6 +210,7 @@ class NewsController extends Controller
                     "news_image" => "url|valid_media_path",
                     "user_thumbnail" => "url|valid_media_path",
                     "news_category_id" => "required|exists:news_category,news_category_id,deleted_at,NULL",
+                    "status" => [Rule::in(config('constants.news_status'))],
                     "news_content" => "required",
                     "news_content.translations" => "required",
                     "news_content.translations.*.lang" => "required|max:2",

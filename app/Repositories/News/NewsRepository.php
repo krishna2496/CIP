@@ -84,7 +84,7 @@ class NewsRepository implements NewsInterface
     {
         $newsData = $this->news->select('news_id')
         ->with(['newsLanguage' => function ($query) use ($languageId) {
-            $query->select('news_id', 'title', 'description')->where('language_id' , $languageId);
+            $query->select('news_id', 'language_id', 'title', 'description')->where('language_id' , $languageId);
         }])
         ->with(['newsToCategory' => function ($query) {
             $query->with(['newsCategory' => function ($query) {
@@ -95,6 +95,26 @@ class NewsRepository implements NewsInterface
         if ($newsStatus) {
             $newsData->where('status', $newsStatus);
         }
+        return $newsData->paginate($request->perPage);
+    }
+
+    /**
+     * Display news lists admin.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Pagination\LengthAwarePaginator
+     */
+    public function getNewsListAdmin(Request $request): LengthAwarePaginator
+    {
+        $newsData = $this->news->select('news_id')
+        ->with(['newsLanguage' => function ($query) {
+            $query->select('news_id', 'language_id', 'title', 'description');
+        }])
+        ->with(['newsToCategory' => function ($query) {
+            $query->with(['newsCategory' => function ($query) {
+                $query->select('news_category_id', 'category_name', 'translations');
+            }]);
+        }]);
         return $newsData->paginate($request->perPage);
     }
 
@@ -195,14 +215,34 @@ class NewsRepository implements NewsInterface
      *
      * @param int $id
      * @param int $languageId
+     * @param string $newsStatus
      * @return App\Models\News
      */
-    public function getNewsDetails(int $id, int $languageId): News
+    public function getNewsDetails(int $id, int $languageId, string $newsStatus): News
     {
         $newsData = $this->news
         ->with(['newsLanguage' => function ($query) use ($languageId) {
             $query->where('language_id' , $languageId);
         }])
+        ->with(['newsToCategory' => function ($query) {
+            $query->with('newsCategory');
+        }])
+        ->where('status', $newsStatus)
+        ->findOrFail($id);
+        
+        return $newsData;
+    }
+
+    /**
+     * Get news details.
+     *
+     * @param int $id
+     * @return App\Models\News
+     */
+    public function getNewsDetailsAdmin(int $id): News
+    {
+        $newsData = $this->news
+        ->with('newsLanguage')
         ->with(['newsToCategory' => function ($query) {
             $query->with('newsCategory');
         }])
