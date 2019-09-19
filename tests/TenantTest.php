@@ -306,7 +306,7 @@ class TenantTest extends TestCase
 
         $tenantId = $tenant->response->getData()->data->tenant_id;
         
-        $this->get("/tenant/runBackgroundProcess", [])
+        $this->get("/tenant/runBackgroundProcess/".$tenantId, [])
         ->seeStatusCode(200);
 
         

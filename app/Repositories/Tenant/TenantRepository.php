@@ -105,14 +105,18 @@ class TenantRepository implements TenantInterface
 
     /**
      * Get pending tenant list to execute their background process
-     *
+     * @param int $tenantId
      * @return null|Illuminate\Support\Collection
      */
-    public function getPendingTenantsForProcess(): Collection
+    public function getPendingTenantsForProcess(int $tenantId = null)
     {
-        return $this->tenant->where(
+        $query = $this->tenant->where(
             'background_process_status',
             config('constants.background_process_status.PENDING')
-        )->get();
+        );
+        if ($tenantId) {
+            $query->where('tenant_id', $tenantId);
+        }
+        return $query->get();
     }
 }

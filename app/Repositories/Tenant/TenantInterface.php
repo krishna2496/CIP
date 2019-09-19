@@ -48,4 +48,11 @@ interface TenantInterface
      * @return bool
      */
     public function delete(int $id): bool;
+
+    /**
+     * Get pending tenant list to execute their background process
+     * @param int $tenantId
+     * @return null|Illuminate\Support\Collection
+     */
+    public function getPendingTenantsForProcess(int $tenantId = null);
 }

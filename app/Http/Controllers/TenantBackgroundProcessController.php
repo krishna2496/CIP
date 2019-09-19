@@ -27,10 +27,15 @@ class TenantBackgroundProcessController extends Controller
         $this->tenantRepository = $tenantRepository;
     }
     
-
-    public function runBackgroundProcess()
+    /**
+     * Cron Job : Run tenant's background jobs for tenant create
+     *
+     * @param  int $tenantId
+     * @return void
+     */
+    public function runBackgroundProcess($tenantId = null)
     {
-        $tenants = $this->tenantRepository->getPendingTenantsForProcess();
+        $tenants = $this->tenantRepository->getPendingTenantsForProcess($tenantId);
         if ($tenants->count()) {
             foreach ($tenants as $tenant) {
                 dispatch(new TenantBackgroundJobsJob($tenant));

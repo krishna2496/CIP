@@ -29,4 +29,16 @@ class FunctionsTest extends TestCase
 
         $this->assertTrue($emailHelper->sendEmail($params));
     }
+
+    /**
+     * It should throw internal server error
+     * 
+     * @test
+     * @return bool
+     */
+    public function it_should_return_internal_server_error_exception()
+    {
+        $this->get("", [])
+        ->seeStatusCode(500);
+    }
 }

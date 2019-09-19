@@ -15,13 +15,13 @@ trait RestExceptionHandlerTrait
     }
 
     /**
-     * Returns json response for generic bad request.
+     * Returns json response for generic Internal Server Error.
      *
      * @param string $message
      * @param int $statusCode
      * @return \Illuminate\Http\JsonResponse
      */
-    protected function internalServerError(string $message = 'Bad request')
+    protected function internalServerError(string $message = 'Internal Server Error')
     {
         return $this->jsonResponse(
             Response::HTTP_INTERNAL_SERVER_ERROR,

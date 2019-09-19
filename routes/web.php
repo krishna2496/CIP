@@ -11,6 +11,7 @@
 |
 */
 /* Route to run background process for tenant. To perform SCSS and assets operations */
+$router->get('/tenant/runBackgroundProcess/{tenantId}', 'TenantBackgroundProcessController@runBackgroundProcess');
 $router->get('/tenant/runBackgroundProcess', 'TenantBackgroundProcessController@runBackgroundProcess');
 
 $router->group(
