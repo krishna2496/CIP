@@ -52,7 +52,7 @@
                     </b-list-group>
                 </b-col>
 
-                <div class="filter-icon" @click="handleFilter" @click.stop>
+                <div class="filter-icon" @click="handleFilter" @click.stop v-if="quickAccessFilterSet">
                     <img :src="$store.state.imagePath+'/assets/images/filter-ic.svg'" alt="filter">
                 </div>
             </b-row>

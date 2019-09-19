@@ -19,7 +19,7 @@ export default function setup() {
 
         //if token expired
         if ((error.response.data.errors[0].status == '401' || error.response.data.errors[0].status == '400') &&
-            (error.response.data.errors[0].code == '210009' || error.response.data.errors[0].code == '210012' || error.response.data.errors[0].code == '210010') ||  error.response.data.errors[0].code == '400043') {
+            (error.response.data.errors[0].code == '210009' || error.response.data.errors[0].code == '210012' || error.response.data.errors[0].code == '210010') || error.response.data.errors[0].code == '400043') {
             store.commit('logoutUser')
             router.push({
                 name: 'login'

@@ -7,7 +7,7 @@ export default async(deletFile) => {
     if (store.state.defaultLanguage !== null) {
         defaultLanguage = (store.state.defaultLanguage).toLowerCase();
     }
-    var url =process.env.VUE_APP_API_ENDPOINT + "app/timesheet/"+deletFile.timesheet_id+"/document/"+deletFile.document_id;
+    var url = process.env.VUE_APP_API_ENDPOINT + "app/timesheet/" + deletFile.timesheet_id + "/document/" + deletFile.document_id;
     await axios({
             url: url,
             method: 'DELETE',
@@ -16,10 +16,10 @@ export default async(deletFile) => {
                 'token': store.state.token,
             }
         })
-        .then((response) => {          
-            if(response.data.message) { 
-                responseData =  response.data.message
-            } 
+        .then((response) => {
+            if (response.data.message) {
+                responseData = response.data.message
+            }
         })
         .catch(function() {});
     return responseData;

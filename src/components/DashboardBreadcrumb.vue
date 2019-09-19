@@ -27,20 +27,19 @@
 		data() {
 			return {
 				langauageData: [],
-				dashboard : '',
 				items: [{
 						id: 1,
-						name: dashboard,
+						name: '',
 						link: "dashboard"
 					},
 					{
 						id: 2,
-						name: "Volunteering History",
+						name: '',
 						link: "volunteering-history"
 					},
 					{
 						id: 3,
-						name: "Volunteering Timesheet",
+						name: '',
 						link: "volunteering-timesheet"
 					},
 				]
@@ -70,7 +69,9 @@
 				}
 			});
 			this.langauageData = JSON.parse(store.state.languageLabel);
-			this.dashboard  = langauageDat.label.dashboard 
+			this.items[0].name = this.langauageData.label.dashboard
+			this.items[1].name = this.langauageData.label.volunteering_history
+			this.items[2].name = this.langauageData.label.volunteering_timesheet
 		}
 	};
 </script>

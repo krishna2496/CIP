@@ -1,14 +1,14 @@
 import store from '../../store'
 import axios from 'axios'
 
-export default async(langList,defautLang) => {
+export default async(langList, defautLang) => {
     let responseData = {}
     responseData.error = false;
     defautLang = "en";
     await axios.get(process.env.VUE_APP_API_ENDPOINT + "app/connect")
         .then((response) => {
             if (response.data.data) {
-                
+
                 let data = response.data.data;
                 // Store slider in Local Storage
                 if (data.sliders) {
@@ -29,7 +29,7 @@ export default async(langList,defautLang) => {
                     let defaultLanguageDataChange = true
 
                     let listOfObjects = Object.entries(data.language);
-                    
+
                     listOfObjects.forEach(function(listOfLangauge) {
                         if (listOfLangauge[0] == store.state.defaultLanguageId && listOfLangauge[1] == store.state.defaultLanguage) {
                             defaultLanguageDataChange = false;
@@ -68,7 +68,7 @@ export default async(langList,defautLang) => {
                 var logo = '';
                 if (data.custom_logo) {
                     var logo = data.custom_logo;
-                } 
+                }
                 store.commit('setLogo', logo)
 
             } else {
@@ -89,10 +89,10 @@ export default async(langList,defautLang) => {
             }
 
             // Set no mission found message
-            if(response.data.data.no_mission_custom_text) {
-                store.commit('missionNotFound',response.data.data.no_mission_custom_text.translations);
+            if (response.data.data.no_mission_custom_text) {
+                store.commit('missionNotFound', response.data.data.no_mission_custom_text.translations);
             } else {
-                store.commit('missionNotFound','');
+                store.commit('missionNotFound', '');
             }
 
         })

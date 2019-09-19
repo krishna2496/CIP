@@ -7,7 +7,7 @@ export default async(data) => {
     if (store.state.defaultLanguage !== null) {
         defaultLanguage = (store.state.defaultLanguage).toLowerCase();
     }
-    var url =process.env.VUE_APP_API_ENDPOINT + "app/policy/listing";
+    var url = process.env.VUE_APP_API_ENDPOINT + "app/policy/listing";
 
     await axios({
             url: url,
@@ -19,12 +19,12 @@ export default async(data) => {
         })
         .then((response) => {
             responseData.error = false;
-            if(response.data.data){
+            if (response.data.data) {
                 responseData.data = response.data.data;
             }
         })
-    .catch(function(error) {
-        responseData.error = true;
-    });
+        .catch(function(error) {
+            responseData.error = true;
+        });
     return responseData;
 }

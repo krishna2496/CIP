@@ -9,7 +9,7 @@ export default async(data) => {
             url: process.env.VUE_APP_API_ENDPOINT + "app/user-filter",
             method: 'get',
             headers: {
-               'token': store.state.token,
+                'token': store.state.token,
             }
         })
         .then((response) => {
@@ -22,7 +22,7 @@ export default async(data) => {
                 filterData.skillId = response.data.data.filters.skill_id;
                 filterData.tags = response.data.data.filters.tags;
                 filterData.sortBy = response.data.data.filters.sort_by;
-                store.commit('userFilter',filterData)
+                store.commit('userFilter', filterData)
             } else {
                 let filterData = {};
                 filterData.search = '';
@@ -32,7 +32,7 @@ export default async(data) => {
                 filterData.skillId = '';
                 filterData.tags = '';
                 filterData.sortBy = '';
-                store.commit('userFilter',filterData)
+                store.commit('userFilter', filterData)
             }
         })
         .catch(function(error) {});
