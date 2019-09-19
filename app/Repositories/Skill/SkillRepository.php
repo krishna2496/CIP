@@ -84,13 +84,7 @@ class SkillRepository implements SkillInterface
     {
         if (isset($request['parent_skill'])) {
             if ($request['parent_skill'] != 0) {
-                try {
-                    $this->skill->findOrFail($request['parent_skill']);
-                } catch (ModelNotFoundException $e) {
-                    throw new ModelNotFoundException(
-                        trans('messages.custom_error_message.ERROR_PARENT_SKILL_NOT_FOUND')
-                    );
-                }
+                $this->skill->findOrFail($request['parent_skill']);
             }
         }
         

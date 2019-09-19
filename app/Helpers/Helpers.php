@@ -1,7 +1,6 @@
 <?php
 namespace App\Helpers;
 
-use App\Helpers\ResponseHelper;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Config;
 use Firebase\JWT\JWT;
@@ -59,16 +58,11 @@ class Helpers
      */
     public function getRefererFromRequest(Request $request)
     {
-        try {
-            if (isset($request->headers->all()['referer'])) {
-                $parseUrl = parse_url($request->headers->all()['referer'][0]);
-                return $parseUrl['scheme'].'://'.$parseUrl['host'].env('APP_PATH');
-            } else {
-                return env('APP_MAIL_BASE_URL');
-            }
-        } catch (\Exception $e) {
-            // error unable to find domain referer
-            throw new \Exception(trans('messages.custom_error_message.ERROR_TENANT_DOMAIN_NOT_FOUND'));
+        if (isset($request->headers->all()['referer'])) {
+            $parseUrl = parse_url($request->headers->all()['referer'][0]);
+            return $parseUrl['scheme'].'://'.$parseUrl['host'].env('APP_PATH');
+        } else {
+            return env('APP_MAIL_BASE_URL');
         }
     }
     
@@ -100,17 +94,13 @@ class Helpers
      */
     public function switchDatabaseConnection(string $connection, Request $request)
     {
-        try {
-            // Set master connection
-            $pdo = DB::connection('mysql')->getPdo();
-            Config::set('database.default', 'mysql');
+        // Set master connection
+        $pdo = DB::connection('mysql')->getPdo();
+        Config::set('database.default', 'mysql');
 
-            if ($connection=="tenant") {
-                $pdo = DB::connection('tenant')->getPdo();
-                Config::set('database.default', 'tenant');
-            }
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
+        if ($connection=="tenant") {
+            $pdo = DB::connection('tenant')->getPdo();
+            Config::set('database.default', 'tenant');
         }
     }
     
@@ -154,21 +144,6 @@ class Helpers
             return $date->setTimezone(config('constants.TIMEZONE'))->format(config('constants.DB_DATE_TIME_FORMAT'));
         }
         return $date;
-    }
-
-    /**
-     * Check url extension
-     *
-     * @param string $url
-     * @param string $type
-     * @return bool
-     */
-    public function checkUrlExtension(string $url, string $type) : bool
-    {
-        $urlExtension = pathinfo($url, PATHINFO_EXTENSION);
-        $constants = ($type == config('constants.IMAGE')) ? config('constants.image_types')
-        : config('constants.document_types');
-        return (!in_array($urlExtension, $constants)) ? false : true;
     }
 
     /**
@@ -239,38 +214,34 @@ class Helpers
      */
     public function getAllTenantSetting(Request $request)
     {
-        try {
-            $tenant = $this->getTenantDetail($request);
-            // Connect master database to get tenant settings
-            $this->switchDatabaseConnection('mysql', $request);
-            
-            $tenantSetting = DB::table('tenant_has_setting')
-            ->select(
-                'tenant_has_setting.tenant_setting_id',
-                'tenant_setting.key',
-                'tenant_setting.tenant_setting_id',
-                'tenant_setting.description',
-                'tenant_setting.title'
-            )
-            ->leftJoin(
-                'tenant_setting',
-                'tenant_setting.tenant_setting_id',
-                '=',
-                'tenant_has_setting.tenant_setting_id'
-            )
-            ->whereNull('tenant_has_setting.deleted_at')
-            ->whereNull('tenant_setting.deleted_at')
-            ->where('tenant_id', $tenant->tenant_id)
-            ->orderBy('tenant_has_setting.tenant_setting_id')
-            ->get();
+        $tenant = $this->getTenantDetail($request);
+        // Connect master database to get tenant settings
+        $this->switchDatabaseConnection('mysql', $request);
+        
+        $tenantSetting = DB::table('tenant_has_setting')
+        ->select(
+            'tenant_has_setting.tenant_setting_id',
+            'tenant_setting.key',
+            'tenant_setting.tenant_setting_id',
+            'tenant_setting.description',
+            'tenant_setting.title'
+        )
+        ->leftJoin(
+            'tenant_setting',
+            'tenant_setting.tenant_setting_id',
+            '=',
+            'tenant_has_setting.tenant_setting_id'
+        )
+        ->whereNull('tenant_has_setting.deleted_at')
+        ->whereNull('tenant_setting.deleted_at')
+        ->where('tenant_id', $tenant->tenant_id)
+        ->orderBy('tenant_has_setting.tenant_setting_id')
+        ->get();
 
-            // Connect tenant database
-            $this->switchDatabaseConnection('tenant', $request);
-            
-            return $tenantSetting;
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
-        }
+        // Connect tenant database
+        $this->switchDatabaseConnection('tenant', $request);
+        
+        return $tenantSetting;
     }
     
     /**

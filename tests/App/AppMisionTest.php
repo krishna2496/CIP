@@ -17,6 +17,86 @@ class AppMissionTest extends TestCase
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
         $user->save();
+        $params = [
+            "organisation" => [
+                "organisation_id" => 1,
+                "organisation_name" => str_random(10),
+                "organisation_detail" => [  
+                    [  
+                       "lang"=>"en",
+                       "detail"=>"Testing organisation description in English"
+                    ],
+                    [  
+                       "lang"=>"fr",
+                       "detail"=>"Testing organisation description in French"
+                    ]
+                ]
+            ],
+            "location" => [
+                "city_id" => 1,
+                "country_code" => "US"
+            ],
+            "mission_detail" => [[
+                    "lang" => "en",
+                    "title" => str_random(10),
+                    "short_description" => str_random(20),
+                    "objective" => str_random(20),
+                    "section" => [
+                        [
+                            "title" => str_random(10),
+                            "description" => str_random(100),
+                        ],
+                        [
+                            "title" => str_random(10),
+                            "description" => str_random(100),
+                        ]
+                    ]
+                ],
+                [
+                    "lang" => "fr",
+                    "title" => str_random(10),
+                    "short_description" => str_random(20),
+                    "objective" => str_random(20),
+                    "section" => [
+                        [
+                            "title" => str_random(10),
+                            "description" => str_random(100),
+                        ],
+                        [
+                            "title" => str_random(10),
+                            "description" => str_random(100),
+                        ]
+                    ]
+                ]
+            ],
+            "media_images" => [[
+                    "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer9.png",
+                    "default" => "1"
+                ]
+            ],
+            "documents" => [[
+                    "document_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/test/sample.pdf"
+                ]
+            ],
+            "media_videos"=> [[
+                "media_name" => "youtube_small",
+                "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg"
+                ]
+            ],
+            "start_date" => "2019-05-15 10:40:00",
+            "end_date" => "2019-10-15 10:40:00",
+            "mission_type" => config("constants.mission_type.GOAL"),
+            "goal_objective" => rand(1, 1000),
+            "total_seats" => rand(1, 1000),
+            "application_deadline" => "2019-07-28 11:40:00",
+            "publication_status" => config("constants.publication_status.APPROVED"),
+            "theme_id" => 1,
+            "availability_id" => 1
+        ];
+
+        $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(201);
+
         $mission = factory(\App\Models\Mission::class)->make();
         $mission->setConnection($connection);
         $mission->save();
@@ -33,8 +113,8 @@ class AppMissionTest extends TestCase
             ],
             "message"
         ]);
-        $user->delete();
-        $mission->delete();
+        $user->delete();        
+        App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->delete();
     }
 
     /**
@@ -580,13 +660,15 @@ class AppMissionTest extends TestCase
         $mission->setConnection($connection);
         $mission->save();
 
+        $missionLanguage = factory(\App\Models\MissionLanguage::class)->make();
+        $missionLanguage->setConnection($connection);
+        $missionLanguage->save();
+        
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
-        $this->get('app/filter-data?country_id='.$mission->country_id.'&city_id='.$mission->city_id, ['token' => $token])
-          ->seeStatusCode(200)
-          ->seeJsonStructure([
-            "status",
-            "data"
-        ]);
+        $this->get('app/filter-data?country_id='.$mission->country_id.'&city_id='.$mission->city_id.'&search=test', ['token' => $token])
+        ->seeStatusCode(200);
+
         $user->delete();
+        $mission->delete();
     }
 }

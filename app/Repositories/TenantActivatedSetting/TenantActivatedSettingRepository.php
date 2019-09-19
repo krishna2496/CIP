@@ -93,7 +93,6 @@ class TenantActivatedSettingRepository implements TenantActivatedSettingInterfac
      */
     public function checkTenantSettingStatus(string $settingKeyName, Request $request): bool
     {
-        // dd($settingKey, $request);
         // Fetch tenant all settings details - From super admin
         $getTenantSettings =  $this->helpers->getAllTenantSetting($request);
 

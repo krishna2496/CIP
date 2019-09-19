@@ -175,8 +175,8 @@
 		"sunday" : "Sun",
 		"hour_entry_modal_title" : "Please input below time you spent on this mission",
 		"goal_entry_modal_title" : "Please input below action you spent on this mission",
-		"file_upload" : "Document upload",
-		"drop_files" : "Or drop documents here",
+		"file_upload" : "File upload",
+		"drop_files" : "Or drop files here",
 		"browse" : "Browse",
 		"delete" : "Delete",
 		"actions" : "Actions",
@@ -187,7 +187,9 @@
 		"no_volunteer_history_found" : "The heart of a volunteer is never measured in size, but by the depth of the commitment to make a difference in the lives of others.",
 		"empty_volunteer_history_text" : "The heart of a volunteer is never measured in size, but by the depth of the commitment to make a difference in the lives of others.",
 		"start_volunteering" : "Start Volunteering",
-		"volunteering_timesheet_not_found" : "The heart of a volunteer is never measured in size, but by the depth of the commitment to make a difference in the lives of others."
+		"volunteering_timesheet_not_found" : "The heart of a volunteer is never measured in size, but by the depth of the commitment to make a difference in the lives of others.",
+		"no_skill_found" : "Skill not found",
+		"news" : "News"
 
 	},
 
@@ -252,12 +254,13 @@
 		 "work_day" : "Please select day volunteered",
 		 "notes" : "Please enter notes",
 		 "action_required" : "Please select action",
-		 "file_max_size" : "Document should not be greater than 4 MB",
+		 "file_max_size" : "File should not be greater than 4 MB",
 		 "minimum_action" :"The action must be at least 1",
 	     "hours_is_required" : "Please select hours",
 		 "minute_is_required" : "Please select minutes",
-		 "invalid_file_type" : "Invalid document type: valid document types are doc, xls, xlsx, csv, pdf, png, jpg, jpeg"
-	},
+		 "invalid_file_type" : "Invalid file type: valid file types are doc, xls, xlsx, csv, pdf, png, jpg, jpeg",
+		 "file_already_uploaded" : "File is already uploaded"
+		},
 	
 	"export_timesheet_file_names" : {
 		"PENDING_TIME_MISSION_ENTRIES_XLSX" : "Pending_Time_Mission_Entries.xlsx",

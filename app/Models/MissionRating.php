@@ -32,16 +32,6 @@ class MissionRating extends Model
     protected $fillable = ['mission_id', 'user_id', 'rating'];
     
     /**
-     * Get the mission that has rating.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function mission(): BelongsTo
-    {
-        return $this->belongsTo(Mission::class, 'mission_id', 'mission_id');
-    }
-
-    /**
      * Store/update specified resource.
      *
      * @param  array $condition
