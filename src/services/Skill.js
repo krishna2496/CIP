@@ -17,17 +17,17 @@ export default async(countryId) => {
                 'X-localization': defaultLanguage,
                 'token': store.state.token,
             }
-        }).then((response) => { 
-                responseData.error = false;
-                responseData.message = response.data.message;
-                if(response.data.data ) {
-                   
-                    responseData.data  =response.data.data
-                }
-            })
+        }).then((response) => {
+            responseData.error = false;
+            responseData.message = response.data.message;
+            if (response.data.data) {
+
+                responseData.data = response.data.data
+            }
+        })
         .catch(function(error) {
             responseData.error = true;
-               
+
         });
     return responseData;
 }

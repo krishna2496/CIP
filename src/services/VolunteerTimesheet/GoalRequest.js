@@ -3,15 +3,15 @@ import store from '../../store'
 
 export default async(page) => {
     let responseData = {
-        error : 'true'
+        error: 'true'
     };
- 
-    
+
+
     var defaultLanguage = '';
     if (store.state.defaultLanguage !== null) {
         defaultLanguage = (store.state.defaultLanguage).toLowerCase();
     }
-    var url =process.env.VUE_APP_API_ENDPOINT + "app/timesheet/goal-requests?page="+page;
+    var url = process.env.VUE_APP_API_ENDPOINT + "app/timesheet/goal-requests?page=" + page;
 
     await axios({
             url: url,
@@ -22,15 +22,15 @@ export default async(page) => {
             }
         })
         .then((response) => {
-            if(response.data.data) { 
+            if (response.data.data) {
                 responseData.error = false;
                 responseData.data = response.data.data
                 responseData.pagination = response.data.pagination
                 responseData.message = response.data.message
-            } 
+            }
         })
         .catch(function(error) {
-           if (error.response.data.errors[0].message) {
+            if (error.response.data.errors[0].message) {
                 responseData.error = true;
                 responseData.message = error.response.data.errors[0].message;
             }

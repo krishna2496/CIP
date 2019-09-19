@@ -10,7 +10,7 @@ export default async(timeSheetId) => {
     if (store.state.defaultLanguage !== null) {
         defaultLanguage = (store.state.defaultLanguage).toLowerCase();
     }
-    var url =process.env.VUE_APP_API_ENDPOINT + "app/timesheet/"+timeSheetId;
+    var url = process.env.VUE_APP_API_ENDPOINT + "app/timesheet/" + timeSheetId;
 
     await axios({
             url: url,
@@ -22,9 +22,9 @@ export default async(timeSheetId) => {
         })
         .then((response) => {
             let settingArray = [];
-            if(response.data.data) { 
-               responseData =  response.data.data
-            }  
+            if (response.data.data) {
+                responseData = response.data.data
+            }
         })
         .catch(function(error) {});
     return responseData;

@@ -8,8 +8,8 @@ export default async(missionId) => {
     if (store.state.defaultLanguage !== null) {
         defaultLanguage = (store.state.defaultLanguage).toLowerCase();
     }
-
-    var url =process.env.VUE_APP_API_ENDPOINT + "app/mission/"+missionId
+    document.body.classList.add("loader-enable");
+    var url = process.env.VUE_APP_API_ENDPOINT + "app/mission/" + missionId
     await axios({
             url: url,
             method: 'get',
@@ -17,17 +17,18 @@ export default async(missionId) => {
                 'X-localization': defaultLanguage,
                 'token': store.state.token,
             }
-        }).then((response) => { 
-                responseData.error = false;
-                if(response.data.data){
-                    responseData.data = response.data.data;
-                } else {
-                    responseData.data = [];
-                }
-                
-            })
+        }).then((response) => {
+            responseData.error = false;
+            if (response.data.data) {
+                responseData.data = response.data.data;
+            } else {
+                responseData.data = [];
+            }
+            document.body.classList.remove("loader-enable");
+        })
         .catch(function(error) {
             responseData.error = true;
+            document.body.classList.remove("loader-enable");
         });
     return responseData;
 }
