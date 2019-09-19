@@ -80,6 +80,11 @@ class MissionTest extends TestCase
                             "document_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/test/sample.pdf"
                         ]
                     ],
+                    "media_videos"=> [[
+                        "media_name" => "youtube_small",
+                        "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg"
+                        ]
+                    ],
                     "start_date" => "2019-05-15 10:40:00",
                     "end_date" => "2019-10-15 10:40:00",
                     "mission_type" => config("constants.mission_type.GOAL"),
@@ -177,7 +182,74 @@ class MissionTest extends TestCase
     public function it_should_update_mission()
     {
         $params = [
-                    "publication_status" => "DRAFT",
+                    "organisation" => [
+                        "organisation_id" => 1,
+                        "organisation_name" => str_random(10),
+                        "organisation_detail" => ''
+                    ],
+                    "location" => [
+                        "city_id" => 1,
+                        "country_code" => "US"
+                    ],
+                    "mission_detail" => [[
+                            "lang" => "en",
+                            "title" => str_random(10),
+                            "short_description" => str_random(20),
+                            "objective" => str_random(20),
+                            "section" => [
+                                [
+                                    "title" => str_random(10),
+                                    "description" => str_random(100),
+                                ],
+                                [
+                                    "title" => str_random(10),
+                                    "description" => str_random(100),
+                                ]
+                            ]
+                        ],
+                        [
+                            "lang" => "fr",
+                            "title" => str_random(10),
+                            "short_description" => str_random(20),
+                            "objective" => str_random(20),
+                            "section" => [
+                                [
+                                    "title" => str_random(10),
+                                    "description" => str_random(100),
+                                ],
+                                [
+                                    "title" => str_random(10),
+                                    "description" => str_random(100),
+                                ]
+                            ]
+                        ]
+                    ],
+                    "media_images" => [[
+                            "media_id" => "",
+                            "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer9.png",
+                            "default" => "1"
+                        ]
+                    ],
+                    "documents" => [[
+                            "document_id" => "",
+                            "document_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/test/sample.pdf"
+                        ]
+                    ],
+                    "media_videos"=> [[
+                        "media_id" => "",
+                        "media_name" => "youtube_small",
+                        "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg"
+                        ]
+                    ],
+                    "start_date" => "2019-05-15 10:40:00",
+                    "end_date" => "2019-10-15 10:40:00",
+                    "mission_type" => config("constants.mission_type.GOAL"),
+                    "goal_objective" => rand(1, 1000),
+                    "total_seats" => rand(1, 1000),
+                    "application_deadline" => "2019-07-28 11:40:00",
+                    "publication_status" => config("constants.publication_status.APPROVED"),
+                    "theme_id" => 1,
+                    "availability_id" => 1
                 ];
 
         $connection = 'tenant';

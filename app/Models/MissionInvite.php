@@ -33,7 +33,7 @@ class MissionInvite extends Model
     protected $fillable = ['mission_id', 'from_user_id', 'to_user_id'];
 
     /**
-     * Get the mission that has media.
+     * Get the mission.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */

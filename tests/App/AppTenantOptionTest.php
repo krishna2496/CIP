@@ -45,7 +45,8 @@ class AppTenantOptionTest extends TestCase
         $user->save();
 
         DB::setDefaultConnection('tenant');
-        $tenantOptionName = App\Models\TenantOption::where('option_name', '<>', config('constants.TENANT_OPTION_SLIDER'))->get()->random()->option_name;
+        $tenantOptionName = App\Models\TenantOption
+        ::where('option_name', '<>', config('constants.TENANT_OPTION_SLIDER'))->get()->random()->option_name;
         DB::setDefaultConnection('mysql');
 
         $params = [

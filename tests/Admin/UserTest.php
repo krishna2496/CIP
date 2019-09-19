@@ -56,8 +56,9 @@ class UserTest extends TestCase
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
         $user->save();
+        $search = substr($user->first_name, 1,3);
 
-        $this->get(route('users'), ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->get('users?search='.$search, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
           ->seeStatusCode(200)
           ->seeJsonStructure([
             "status",

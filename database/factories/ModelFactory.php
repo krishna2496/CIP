@@ -158,7 +158,7 @@ $factory->define(App\Models\MissionLanguage::class, function (Faker\Generator $f
     return [
         'mission_id' => 1,
         'language_id' => 1,
-        'title' => 1,
+        'title' => 'mission title',
         'short_description' => str_random(10),
         'objective' => str_random(10),
         'description' => [

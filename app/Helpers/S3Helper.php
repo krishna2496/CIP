@@ -97,8 +97,6 @@ class S3Helper
                 trans('messages.custom_error_message.ERROR_WHILE_COMPILING_SCSS_FILES'),
                 config('constants.error_codes.ERROR_WHILE_COMPILING_SCSS_FILES')
             );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
 
         // Set response data
@@ -188,23 +186,16 @@ class S3Helper
      */
     public function uploadProfileImageOnS3Bucket(string $avatar, string $tenantName, int $userId): string
     {
-        try {
-            // Get file type from base64
-            $fileOpen = finfo_open();
-            $mime_type = finfo_buffer($fileOpen, base64_decode($avatar), FILEINFO_MIME_TYPE);
+        // Get file type from base64
+        $fileOpen = finfo_open();
+        $mime_type = finfo_buffer($fileOpen, base64_decode($avatar), FILEINFO_MIME_TYPE);
 
-            $type = explode('/', $mime_type);
-            
-            $imagePath = $tenantName.'/profile_images/'.$userId.'_'.time().'.'.$type[1];
-            Storage::disk('s3')->put($imagePath, base64_decode($avatar), 'public');
-            $filePath =  Storage::disk('s3')->url($imagePath);
-            return $filePath;
-        } catch (S3Exception $e) {
-            return $this->s3Exception(
-                config('constants.error_codes.ERROR_FAILD_TO_UPLOAD_PROFILE_IMAGE_ON_S3'),
-                trans('messages.custom_error_message.ERROR_FAILD_TO_UPLOAD_PROFILE_IMAGE_ON_S3')
-            );
-        }
+        $type = explode('/', $mime_type);
+        
+        $imagePath = $tenantName.'/profile_images/'.$userId.'_'.time().'.'.$type[1];
+        Storage::disk('s3')->put($imagePath, base64_decode($avatar), 'public');
+        $filePath =  Storage::disk('s3')->url($imagePath);
+        return $filePath;
     }
 
     /**
@@ -218,22 +209,18 @@ class S3Helper
      */
     public function uploadDocumentOnS3Bucket($file, string $tenantName, int $userId, int $timesheetId): string
     {
-        try {
-            $disk = Storage::disk('s3');
-            $fileName = pathinfo($file->getClientOriginalName())['filename'].'_'.time();
-            $fileExtension = pathinfo($file->getClientOriginalName())['extension'];
-            $documentName = $fileName.'.'.$fileExtension;
-            $documentPath = $tenantName.'/users/'.$userId.'/timesheet/'.$documentName;
-            $pathInS3 = 'https://'.env('AWS_S3_BUCKET_NAME').'.s3.'
-            .env("AWS_REGION").'.amazonaws.com/'. $documentPath;
+        $disk = Storage::disk('s3');
+        $fileName = pathinfo($file->getClientOriginalName())['filename'].'_'.time();
+        $fileExtension = pathinfo($file->getClientOriginalName())['extension'];
+        $documentName = $fileName.'.'.$fileExtension;
+        $documentPath = $tenantName.'/users/'.$userId.'/timesheet/'.$documentName;
+        $pathInS3 = 'https://'.env('AWS_S3_BUCKET_NAME').'.s3.'
+        .env("AWS_REGION").'.amazonaws.com/'. $documentPath;
 
-            if ($disk->put($documentPath, file_get_contents($file))) {
-                return $pathInS3;
-            } else {
-                return 0;
-            }
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
+        if ($disk->put($documentPath, file_get_contents($file))) {
+            return $pathInS3;
+        } else {
+            return 0;
         }
     }
 }

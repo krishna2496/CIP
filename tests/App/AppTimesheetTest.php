@@ -973,10 +973,10 @@ class AppTimesheetTest extends TestCase
         $params = [
             'mission_id' => $mission[0]['mission_id'],
             'date_volunteered' => date('Y-m-d'),
-            'day_volunteered' => 'HOLIDAY',
+            'day_volunteered' => 'TEST',
             'notes' => str_random(10),
             'hours' => rand(1, 5),
-            'minutes' => rand(60, 100),
+            'minutes' => rand(1, 59),
             'documents[]' =>[]
         ];
 

@@ -1109,19 +1109,6 @@ class MissionRepository implements MissionInterface
         return $mission;
     }
 
-
-    /**
-     * Get goal objective
-     *
-     * @param int $missionId
-     * @return App\Models\GoalMission|null
-     */
-    public function getGoalObjective(int $missionId): ?GoalMission
-    {
-        return $this->goalMission->select('goal_objective')->where('mission_id', $missionId)
-        ->first();
-    }
-
     /** Get mission application details by mission id, user id and status
      *
      * @param int $missionId
