@@ -112,7 +112,7 @@ class NewsRepository implements NewsInterface
                 $query->select('news_id', 'language_id', 'title', 'description')
                 ->where('title', 'like', '%' . $request->input('search') . '%');
             }]);
-        }        
+        }
         if ($request->has('order')) {
             $orderDirection = $request->input('order', 'asc');
             $newsData->orderBy('created_at', $orderDirection);
