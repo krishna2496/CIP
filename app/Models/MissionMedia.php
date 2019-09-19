@@ -41,16 +41,6 @@ class MissionMedia extends Model
     protected $appends = ['video_thumbnail'];
 
     /**
-     * Get the mission that has media.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function mission(): BelongsTo
-    {
-        return $this->belongsTo(Mission::class, 'mission_id', 'mission_id');
-    }
-
-    /**
      * Store/update specified resource.
      *
      * @param  array $condition
@@ -64,7 +54,7 @@ class MissionMedia extends Model
 
     /**
      * Return youtube thumbnail from video URL
-     *
+     * @codeCoverageIgnore
      * @return string|null
      */
     public function getMediaImageAttribute(): ?string

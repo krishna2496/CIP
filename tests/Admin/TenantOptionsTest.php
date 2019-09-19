@@ -130,4 +130,95 @@ class TenantOptionsTest extends TestCase
             ]
         ]);
     }
+
+    /**
+     * @test
+     *
+     * Update tenant option
+     *
+     * @return void
+     */
+    public function it_should_update_tenant_option()
+    {
+        $optionName = str_random(20);
+        $params = [
+            'option_name' => $optionName,
+            'option_value' =>
+                [
+                'translations' =>  [
+                    [
+                        'lang' => 'en',
+                        'message' => str_random(20)
+                    ]
+                ],
+            ],
+        ];
+
+        $this->post("tenant-option/", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(201);
+        DB::setDefaultConnection('mysql');
+        $this->patch("tenant-option/", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(200)
+        ->seeJsonStructure([
+            'status',
+            'message',
+        ]);
+        App\Models\TenantOption::where("option_name", $optionName)->orderBy("tenant_option_id", "DESC")->take(1)->delete();
+    }
+
+        /**
+     * @test
+     *
+     * Return error if data is invalid
+     *
+     * @return void
+     */
+    public function it_should_return_error_for_invalid_data_for_update_tenant_option()
+    {
+        $optionName = str_random(20);
+        $params = [
+            'option_name' => $optionName,
+            'option_value' =>
+                [
+                'translations' =>  [
+                    [
+                        'lang' => 'en',
+                        'message' => str_random(20)
+                    ]
+                ],
+            ],
+        ];
+
+        $this->post("tenant-option/", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(201);
+        DB::setDefaultConnection('mysql');
+
+        $optionName = str_random(20);
+        $params = [
+            'option_name' => $optionName,
+            'option_value' =>
+                [
+                'translations' =>  [
+                    [
+                        'lang' => 'enq',
+                        'message' => str_random(20)
+                    ]
+                ],
+            ],
+        ];
+        
+        $this->patch("tenant-option/", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(422)
+        ->seeJsonStructure([
+            'errors' => [
+                [
+                    'status',
+                    'type',
+                    'code',
+                    'message'
+                ]
+            ]
+        ]);
+    }
+
 }
