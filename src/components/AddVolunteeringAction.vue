@@ -437,11 +437,12 @@
                         this.message = response.message
                         this.submitted = false;
                         this.$emit("getTimeSheetData");
+                        this.$emit("changeTimeSheetView",volunteeredDate);
                         setTimeout(function () {
                             _this.$refs.goalActionModal.hide();
                             _this.hideModal();
                         }, 700)
-
+                       
                     }
                     this.isAjaxCall = false;
                 })

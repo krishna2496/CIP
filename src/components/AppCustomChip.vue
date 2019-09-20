@@ -5,8 +5,8 @@
                 <img :src="url" alt="document" />
             </i>
             {{textVal}}
-            <i class="chip-close" v-bind:data-id="tagId" v-bind:data-type="type" @click="handleSelect">
-                <img v-bind:data-id="tagId" v-if="!(type == 'country' && tagId  == defaultCountry)"
+            <i class="chip-close" v-bind:data-id="tagId" v-bind:data-type="type" @click="handleSelect" v-if="!(type == 'country' && tagId  == defaultCountry)"> 
+                <img v-bind:data-id="tagId" 
                     v-bind:data-type="type" :src="$store.state.imagePath+'/assets/images/cross-ic.svg'" alt="close" />
             </i>
         </span>

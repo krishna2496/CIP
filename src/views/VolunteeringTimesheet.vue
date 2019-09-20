@@ -18,7 +18,7 @@
                                 <div class="table-inner">
                                     <h3>{{langauageData.label.volunteering_hours}}</h3>
                                     <VolunteeringTimesheetTableHeader 
-                                    :currentWeek="timeSheetCurrentDate"
+                                    :currentWeek="timeSheetHourCurrentDate"
                                     @updateCall="changeVolunteeringHours" />
                                     <div class="table-wrapper-outer">
                                         <div
@@ -86,7 +86,7 @@
                                 <div class="table-inner">
                                     <h3>{{langauageData.label.volunteering_goals}}</h3>
                                     <VolunteeringTimesheetTableHeader 
-                                    :currentWeek="timeSheetCurrentDate"
+                                    :currentWeek="timeSheetGoalCurrentDate"
                                     @updateCall="changeVolunteeringGoals" />
                                     <div class="table-wrapper-outer">
                                         <div
@@ -170,10 +170,12 @@
                             :defaultHours="defaultHours" :defaultMinutes="defaultMinutes" :files="files"
                             :timeEntryDefaultData="currentTimeData" :disableDates="volunteerHourDisableDates"
                             @getTimeSheetData="getVolunteerHoursData" @resetModal="hideModal" :workDayList="workDayList"
+                            @changeTimeSheetView="changeTimeSheetHourView"
                             @updateCall="updateDefaultValue" @changeDocument="changeTimeDocument" />
                         <AddVolunteeringAction ref="goalModal" :defaultWorkday="defaultWorkday"
                             :defaultHours="defaultHours" :defaultMinutes="defaultMinutes" :files="files"
                             :timeEntryDefaultData="currentTimeData" :disableDates="volunteerHourDisableDates"
+                            @changeTimeSheetView="changeTimeSheetGoalView"
                             @getTimeSheetData="getVolunteerHoursData" @resetModal="hideModal" :workDayList="workDayList"
                             @updateCall="updateDefaultValue" @changeDocument="changeGoalDocument" />
                     </div>
@@ -315,7 +317,8 @@
                 currentYear: moment().format("YYYY"),
                 currentMonth: moment().format("M"),
                 isComponentLoaded: false,
-                timeSheetCurrentDate :  moment().week(),
+                timeSheetHourCurrentDate :  moment().week(),
+                timeSheetGoalCurrentDate :  moment().week(),
                 timeSheetStartDate : '',
                 timeSheetEndDate : '',
             };
@@ -333,6 +336,12 @@
                 }
                 return weekArray[item]
               
+            },
+            changeTimeSheetGoalView(data) {
+                this.timeSheetGoalCurrentDate =  moment(data).week();
+            },
+            changeTimeSheetHourView(data){
+                this.timeSheetHourCurrentDate =  moment(data).week();
             },
             changeTimeDocument(date) {
                 var _this = this;
@@ -1151,9 +1160,6 @@
             this.timeRequestLabel = this.langauageData.label.hours_requests
             this.goalRequestLabel = this.langauageData.label.goals_requests
             this.getVolunteerHoursData();
-            //  this.timeSheetEndDate = moment().week();
-            // this.timeSheetStartDate =  moment().startOf('week')
-            // this.timeSheetEndDate =  this.timeSheetCurrentDate.endOf('week')
             this.isShownComponent = true;
             setTimeout(function () {
                 globalThis.getTimeRequestData(globalThis.hourRequestCurrentPage);

@@ -463,11 +463,12 @@
                         this.message = response.message
                         this.submitted = false;
                         this.$emit("getTimeSheetData");
+                        this.$emit("changeTimeSheetView",volunteeredDate);
                         setTimeout(function () {
                             _this.$refs.timeHoursModal.hide();
                             _this.hideModal();
                         }, 700)
-
+                        
                     }
                     this.isAjaxCall = false;
                 })

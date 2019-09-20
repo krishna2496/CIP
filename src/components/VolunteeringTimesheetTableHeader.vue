@@ -22,6 +22,7 @@
 				<AppCustomDropdown :optionList="yearListing" @updateCall="changeYear" :defaultText="defaultYear"
 					translationEnable="false" />
 			</div>
+
 		</div>
 		</div>
 
@@ -32,7 +33,8 @@
 					<img :src="$store.state.imagePath+'/assets/images/back-arrow-black.svg'"
 						:alt="langauageData.label.previous" />
 				</button>
-				<span></span>
+
+				<span>{{currentWeak}}</span>
 				<button class="next-btn picker-btn" v-b-tooltip.hover  :title="langauageData.label.next+' '+langauageData.label.week.toLowerCase()"
 					v-bind:class="{disabled :disableNextWeek}" @click.stop="goNextWeek">
 					<img :src="$store.state.imagePath+'/assets/images/next-arrow-black.svg'"
@@ -109,6 +111,13 @@
 				monthArray : [],
 				previousButtonDisable : false,
 				lastYear : ''
+			}
+		},
+		watch: { 
+			currentWeek: function(newVal, oldVal) { // watch it
+				this.currentWeak = newVal
+				let payload = moment().startOf('date').week(this.currentWeak)
+				this.changeMonth(payload);
 			}
 		},
 		mounted() {
@@ -192,7 +201,7 @@
 
 				if ((parseInt(this.currentMonthFix.format('M')) <= parseInt(this.currentMonth.format('M'))) && (parseInt(this.currentMonthFix.format(
 						'YYYY')) <= parseInt(this.currentMonth.format('YYYY')))) {		
-					this.isPreviousButtonDisable = true;
+					this.ispreviousButtonDisable = true;
 
 					// previousButtonDisable
 				} else {
