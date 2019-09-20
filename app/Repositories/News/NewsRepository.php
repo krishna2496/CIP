@@ -93,26 +93,48 @@ class NewsRepository implements NewsInterface
         }]);
 
         if ($languageId) {
-            $newsData->with(['newsLanguage' => function ($query) use ($languageId) {
-                $query->select('news_id', 'language_id', 'title', 'description')->where('language_id', $languageId);
-            }]);
+            // Search filters
+            if ($request->has('search')) {
+                $newsData
+                ->whereHas('newsLanguage', function ($query) use ($request, $languageId) {
+                    $query->select('news_id', 'language_id', 'title', 'description')
+                    ->where('language_id', $languageId)
+                    ->where('title', 'like', '%' . $request->input('search') . '%');
+                })
+                ->with(['newsLanguage' => function ($query) use ($request, $languageId) {
+                    $query->select('news_id', 'language_id', 'title', 'description')
+                    ->where('language_id', $languageId)
+                    ->where('title', 'like', '%' . $request->input('search') . '%');
+                }]);
+            } else {
+                $newsData->with(['newsLanguage' => function ($query) use ($languageId) {
+                    $query->select('news_id', 'language_id', 'title', 'description')->where('language_id', $languageId);
+                }]);
+            }
         } else {
-            $newsData->with(['newsLanguage' => function ($query) {
-                $query->select('news_id', 'language_id', 'title', 'description');
-            }]);
+            //Filters for search and order
+            if ($request->has('search')) {
+                $newsData
+                ->whereHas('newsLanguage', function ($query) use ($request) {
+                    $query->select('news_id', 'language_id', 'title', 'description')
+                    ->where('title', 'like', '%' . $request->input('search') . '%');
+                })
+                ->with(['newsLanguage' => function ($query) use ($request) {
+                    $query->select('news_id', 'language_id', 'title', 'description')
+                    ->where('title', 'like', '%' . $request->input('search') . '%');
+                }]);
+            } else {
+                $newsData->with(['newsLanguage' => function ($query) {
+                    $query->select('news_id', 'language_id', 'title', 'description');
+                }]);
+            }
         }
 
         if ($newsStatus) {
             $newsData->where('status', $newsStatus);
         }
-       
-        // Filters for search and order
-        if ($request->has('search')) {
-            $newsData->with(['newsLanguage' => function ($query) use ($request) {
-                $query->select('news_id', 'language_id', 'title', 'description')
-                ->where('title', 'like', '%' . $request->input('search') . '%');
-            }]);
-        }
+      
+        // Order by filters
         if ($request->has('order')) {
             $orderDirection = $request->input('order', 'asc');
             $newsData->orderBy('created_at', $orderDirection);
