@@ -169,3 +169,10 @@ $factory->define(App\Models\MissionLanguage::class, function (Faker\Generator $f
         ]
     ];
 });
+
+$factory->define(App\Models\UserFilter::class, function (Faker\Generator $faker) {
+    return [
+        'user_id' => 1,
+        'filters' => 'a:6:{s:6:"search";s:0:"";s:10:"country_id";s:3:"233";s:7:"city_id";s:0:"";s:8:"theme_id";s:0:"";s:8:"skill_id";s:0:"";s:7:"sort_by";s:0:"";}'
+    ];
+});
