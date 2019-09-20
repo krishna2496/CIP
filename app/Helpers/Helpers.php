@@ -1,29 +1,27 @@
 <?php
 namespace App\Helpers;
 
-use App\Helpers\ResponseHelper;
+use App\Exceptions\TenantDomainNotFoundException;
+use App\Traits\RestExceptionHandlerTrait;
+use Carbon\Carbon;
+use DB;
+use Firebase\JWT\JWT;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Config;
-use Firebase\JWT\JWT;
-use DB;
-use App\Traits\RestExceptionHandlerTrait;
-use PDOException;
-use Throwable;
-use App\Exceptions\TenantDomainNotFoundException;
-use Carbon\Carbon;
-use stdClass;
 use Illuminate\Support\Facades\Hash;
+use PDOException;
+use stdClass;
 
 class Helpers
 {
     use RestExceptionHandlerTrait;
     
     /**
-    * It will return tenant name from request
-    * @param Illuminate\Http\Request $request
-    * @return string
-    */
-    public function getSubDomainFromRequest(Request $request) : string
+     * It will return tenant name from request
+     * @param Illuminate\Http\Request $request
+     * @return string
+     */
+    public function getSubDomainFromRequest(Request $request): string
     {
         // Check admin request
         if ($request->header('php-auth-pw') && $request->header('php-auth-user')) {
@@ -39,7 +37,7 @@ class Helpers
                         return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
                     }
                 } else {
-                    if ((env('APP_ENV')=='local' || env('APP_ENV')=='testing')) {
+                    if ((env('APP_ENV') == 'local' || env('APP_ENV') == 'testing')) {
                         return env('DEFAULT_TENANT');
                     } else {
                         throw new TenantDomainNotFoundException(
@@ -63,7 +61,7 @@ class Helpers
         try {
             if (isset($request->headers->all()['referer'])) {
                 $parseUrl = parse_url($request->headers->all()['referer'][0]);
-                return $parseUrl['scheme'].'://'.$parseUrl['host'].env('APP_PATH');
+                return $parseUrl['scheme'] . '://' . $parseUrl['host'] . env('APP_PATH');
             } else {
                 return env('APP_MAIL_BASE_URL');
             }
@@ -72,7 +70,7 @@ class Helpers
             throw new \Exception(trans('messages.custom_error_message.ERROR_TENANT_DOMAIN_NOT_FOUND'));
         }
     }
-    
+
     /**
      * It will retrive tenant details from tenant table
      *
@@ -87,7 +85,7 @@ class Helpers
         $tenant = DB::table('tenant')->where('name', $tenantName)->whereNull('deleted_at')->first();
         // Connect tenant database
         $this->switchDatabaseConnection('tenant', $request);
-                
+
         return $tenant;
     }
 
@@ -106,7 +104,7 @@ class Helpers
             $pdo = DB::connection('mysql')->getPdo();
             Config::set('database.default', 'mysql');
 
-            if ($connection=="tenant") {
+            if ($connection == "tenant") {
                 $pdo = DB::connection('tenant')->getPdo();
                 Config::set('database.default', 'tenant');
             }
@@ -121,7 +119,7 @@ class Helpers
             return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
-    
+
     /**
      * Create database connection runtime
      *
@@ -130,11 +128,11 @@ class Helpers
     public function createConnection(int $tenantId)
     {
         Config::set('database.connections.tenant', array(
-            'driver'    => 'mysql',
-            'host'      => env('DB_HOST'),
-            'database'  => 'ci_tenant_'.$tenantId,
-            'username'  => env('DB_USERNAME'),
-            'password'  => env('DB_PASSWORD'),
+            'driver' => 'mysql',
+            'host' => env('DB_HOST'),
+            'database' => 'ci_tenant_' . $tenantId,
+            'username' => env('DB_USERNAME'),
+            'password' => env('DB_PASSWORD'),
         ));
         // Create connection for the tenant database
         $pdo = DB::connection('tenant')->getPdo();
@@ -148,7 +146,7 @@ class Helpers
      * @param string $date
      * @return string
      */
-    public function getUserTimeZoneDate(string $date) : string
+    public function getUserTimeZoneDate(string $date): string
     {
         if (config('constants.TIMEZONE') != '' && $date !== null) {
             if (!($date instanceof Carbon)) {
@@ -171,7 +169,7 @@ class Helpers
      * @param string $type
      * @return bool
      */
-    public function checkUrlExtension(string $url, string $type) : bool
+    public function checkUrlExtension(string $url, string $type): bool
     {
         $urlExtension = pathinfo($url, PATHINFO_EXTENSION);
         $constants = ($type == config('constants.IMAGE')) ? config('constants.image_types')
@@ -210,9 +208,9 @@ class Helpers
     {
         $tenantName = $this->getSubDomainFromRequest($request);
 
-        return 'https://s3.'.config('constants.AWS_REGION').'.amazonaws.com/'.
-        config('constants.AWS_S3_BUCKET_NAME').'/'.$tenantName.'/'.config('constants.AWS_S3_ASSETS_FOLDER_NAME').
-        '/'.config('constants.AWS_S3_IMAGES_FOLDER_NAME').'/'.config('constants.AWS_S3_DEFAULT_PROFILE_IMAGE');
+        return 'https://s3.' . config('constants.AWS_REGION') . '.amazonaws.com/' .
+        config('constants.AWS_S3_BUCKET_NAME') . '/' . $tenantName . '/' . config('constants.AWS_S3_ASSETS_FOLDER_NAME') .
+        '/' . config('constants.AWS_S3_IMAGES_FOLDER_NAME') . '/' . config('constants.AWS_S3_DEFAULT_PROFILE_IMAGE');
     }
 
     /**
@@ -251,30 +249,30 @@ class Helpers
             $tenant = $this->getTenantDetail($request);
             // Connect master database to get tenant settings
             $this->switchDatabaseConnection('mysql', $request);
-            
+
             $tenantSetting = DB::table('tenant_has_setting')
-            ->select(
-                'tenant_has_setting.tenant_setting_id',
-                'tenant_setting.key',
-                'tenant_setting.tenant_setting_id',
-                'tenant_setting.description',
-                'tenant_setting.title'
-            )
-            ->leftJoin(
-                'tenant_setting',
-                'tenant_setting.tenant_setting_id',
-                '=',
-                'tenant_has_setting.tenant_setting_id'
-            )
-            ->whereNull('tenant_has_setting.deleted_at')
-            ->whereNull('tenant_setting.deleted_at')
-            ->where('tenant_id', $tenant->tenant_id)
-            ->orderBy('tenant_has_setting.tenant_setting_id')
-            ->get();
+                ->select(
+                    'tenant_has_setting.tenant_setting_id',
+                    'tenant_setting.key',
+                    'tenant_setting.tenant_setting_id',
+                    'tenant_setting.description',
+                    'tenant_setting.title'
+                )
+                ->leftJoin(
+                    'tenant_setting',
+                    'tenant_setting.tenant_setting_id',
+                    '=',
+                    'tenant_has_setting.tenant_setting_id'
+                )
+                ->whereNull('tenant_has_setting.deleted_at')
+                ->whereNull('tenant_setting.deleted_at')
+                ->where('tenant_id', $tenant->tenant_id)
+                ->orderBy('tenant_has_setting.tenant_setting_id')
+                ->get();
 
             // Connect tenant database
             $this->switchDatabaseConnection('tenant', $request);
-            
+
             return $tenantSetting;
         } catch (PDOException $e) {
             return $this->PDO(
@@ -287,7 +285,7 @@ class Helpers
             return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
-    
+
     /**
      * Get domain from user API key
      *
@@ -300,13 +298,13 @@ class Helpers
         $this->switchDatabaseConnection('mysql', $request);
         // authenticate api user based on basic auth parameters
         $apiUser = DB::table('api_user')
-                    ->leftJoin('tenant', 'tenant.tenant_id', '=', 'api_user.tenant_id')
-                    ->where('api_key', base64_encode($request->header('php-auth-user')))
-                    ->where('api_user.status', '1')
-                    ->where('tenant.status', '1')
-                    ->whereNull('api_user.deleted_at')
-                    ->whereNull('tenant.deleted_at')
-                    ->first();
+            ->leftJoin('tenant', 'tenant.tenant_id', '=', 'api_user.tenant_id')
+            ->where('api_key', base64_encode($request->header('php-auth-user')))
+            ->where('api_user.status', '1')
+            ->where('tenant.status', '1')
+            ->whereNull('api_user.deleted_at')
+            ->whereNull('tenant.deleted_at')
+            ->first();
 
         $this->switchDatabaseConnection('tenant', $request);
         // If user authenticates successfully
@@ -332,19 +330,19 @@ class Helpers
     {
         return date($dateFormat, strtotime($date));
     }
-    
+
     /**
      * Convert in report time format
      *
      * @param string $totalHours
      * @return string
      */
-    public function convertInReportTimeFormat(string $totalHours) : string
+    public function convertInReportTimeFormat(string $totalHours): string
     {
-        $convertedHours = (int)($totalHours / 60);
-        $hours = $convertedHours."h";
+        $convertedHours = (int) ($totalHours / 60);
+        $hours = $convertedHours . "h";
         $minutes = $totalHours % 60;
-        return $hours.$minutes;
+        return $hours . $minutes;
     }
 
     /**
@@ -353,11 +351,25 @@ class Helpers
      * @param string $totalHours
      * @return string
      */
-    public function convertInReportHoursFormat(string $totalHours) : string
+    public function convertInReportHoursFormat(string $totalHours): string
     {
-        $hours = (int)($totalHours / 60);
+        $hours = (int) ($totalHours / 60);
         $minutes = ($totalHours % 60) / 60;
         $totalHours = $hours + $minutes;
-        return number_format((float)$totalHours, 2, '.', '');
+        return number_format((float) $totalHours, 2, '.', '');
     }
+
+    /**
+     * Get short text description
+     *
+     * @param string $phrase
+     * @param int maxWords
+     * @return null|string
+     */
+    public function shortDescription(string $phrase, int $maxWords) {
+        $phrase_array = explode(' ',$phrase);
+        if(count($phrase_array) > $maxWords && $maxWords > 0)
+           $phrase = implode(' ',array_slice($phrase_array, 0, $maxWords)).'...';
+        return $phrase;
+     }
 }

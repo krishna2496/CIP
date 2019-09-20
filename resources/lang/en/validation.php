@@ -115,6 +115,12 @@ return [
         'date_volunteered' => [
             'before' => 'You cannot add time entry for future dates',
         ],
+        'news_image' => [
+            'valid_media_path' => 'Please enter valid media image',
+        ],
+        'user_thumbnail' => [
+            'valid_media_path' => 'Please enter valid media image',
+        ],
     ],
 
     /*
@@ -163,6 +169,10 @@ return [
         'settings.*.value' => 'value',
         'option_value.translations.*.lang' => 'language code',
         'timesheet_entries.*.timesheet_id' => 'timesheet id',
+        'news_content.translations' => 'translations',
+        'news_content.translations.*.lang' => 'language code',
+        'news_content.translations.*.title' => 'title',
+        'news_content.translations.*.description' => 'description',
         ],
 
 ];

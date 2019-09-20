@@ -1,19 +1,17 @@
 <?php
 namespace App\Helpers;
 
-use App\Jobs\UploadAssetsFromLocalToS3StorageJob;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Http\Request;
-use Leafo\ScssPhp\Compiler;
-use App\Helpers\ResponseHelper;
-use App\Traits\RestExceptionHandlerTrait;
 use App;
-use DB;
-use Leafo\ScssPhp\Exception\ParserException;
-use App\Exceptions\FileDownloadException;
 use App\Exceptions\BucketNotFoundException;
-use Aws\S3\Exception\S3Exception;
+use App\Exceptions\FileDownloadException;
 use App\Exceptions\FileNotFoundException;
+use App\Helpers\ResponseHelper;
+use App\Jobs\UploadAssetsFromLocalToS3StorageJob;
+use App\Traits\RestExceptionHandlerTrait;
+use Aws\S3\Exception\S3Exception;
+use Illuminate\Support\Facades\Storage;
+use Leafo\ScssPhp\Compiler;
+use Leafo\ScssPhp\Exception\ParserException;
 
 class S3Helper
 {
@@ -39,20 +37,20 @@ class S3Helper
     public function compileLocalScss(string $tenantName, array $options = [])
     {
         $scss = new Compiler();
-        $scss->addImportPath(realpath(storage_path().'/app/'.$tenantName.'/assets/scss'));
-        
-        $assetUrl = 'https://'.env("AWS_S3_BUCKET_NAME").'.s3.'
-        .env("AWS_REGION", "eu-central-1").'.amazonaws.com/'.$tenantName.'/assets/images';
+        $scss->addImportPath(realpath(storage_path() . '/app/' . $tenantName . '/assets/scss'));
+
+        $assetUrl = 'https://' . env("AWS_S3_BUCKET_NAME") . '.s3.'
+        . env("AWS_REGION", "eu-central-1") . '.amazonaws.com/' . $tenantName . '/assets/images';
 
         $importScss = '@import "_variables";';
-        
+
         // Color set & other file || Color set & no file
         if ((isset($options['primary_color']) && $options['isVariableScss'] == 0)) {
-            $importScss .= '$primary: '.$options['primary_color'].';';
+            $importScss .= '$primary: ' . $options['primary_color'] . ';';
         }
 
-        if (!file_exists(base_path()."/node_modules/bootstrap/scss/bootstrap.scss")
-            || !file_exists(base_path()."/node_modules/bootstrap-vue/src/index.js")) {
+        if (!file_exists(base_path() . "/node_modules/bootstrap/scss/bootstrap.scss")
+            || !file_exists(base_path() . "/node_modules/bootstrap-vue/src/index.js")) {
             // Send error like bootstrap.scss not found while compile files
             throw new FileNotFoundException(
                 trans('messages.custom_error_message.ERROR_BOOSTRAP_SCSS_NOT_FOUND'),
@@ -62,21 +60,21 @@ class S3Helper
 
         try {
             $importScss .= '@import "_assets";
-            $assetUrl: "'.$assetUrl.'";                        
+            $assetUrl: "' . $assetUrl . '";
             @import "../../../../../node_modules/bootstrap/scss/bootstrap";
             @import "../../../../../node_modules/bootstrap-vue/src/index";
             @import "custom";';
 
             $css = $scss->compile($importScss);
-        
+
             // Delete if folder is already there
-            if (Storage::disk('local')->exists($tenantName.'\assets\css\style.css')) {
+            if (Storage::disk('local')->exists($tenantName . '\assets\css\style.css')) {
                 // Delete existing one
-                Storage::disk('local')->delete($tenantName.'\assets\css\style.css');
+                Storage::disk('local')->delete($tenantName . '\assets\css\style.css');
             }
 
             // Put compiled css file into local storage
-            if (Storage::disk('local')->put($tenantName.'\assets\css\style.css', $css)) {
+            if (Storage::disk('local')->put($tenantName . '\assets\css\style.css', $css)) {
                 // Copy default theme folder to tenant folder on s3
                 try {
                     dispatch(new UploadAssetsFromLocalToS3StorageJob($tenantName));
@@ -120,14 +118,14 @@ class S3Helper
     {
         $disk = Storage::disk('s3');
         if ($disk->put(
-            $tenantName.'/'.config('constants.AWS_S3_ASSETS_FOLDER_NAME').'/'
-            .config('constants.AWS_S3_IMAGES_FOLDER_NAME')
-            .'/'.basename($url),
+            $tenantName . '/' . config('constants.AWS_S3_ASSETS_FOLDER_NAME') . '/'
+            . config('constants.AWS_S3_IMAGES_FOLDER_NAME')
+            . '/' . basename($url),
             file_get_contents($url)
         )) {
-            $pathInS3 = 'https://'.env('AWS_S3_BUCKET_NAME').'.s3.'
-            .env("AWS_REGION").'.amazonaws.com/'.$tenantName.'/'.config('constants.AWS_S3_ASSETS_FOLDER_NAME')
-            .'/'.config('constants.AWS_S3_IMAGES_FOLDER_NAME').'/'.basename($url);
+            $pathInS3 = 'https://' . env('AWS_S3_BUCKET_NAME') . '.s3.'
+            . env("AWS_REGION") . '.amazonaws.com/' . $tenantName . '/' . config('constants.AWS_S3_ASSETS_FOLDER_NAME')
+            . '/' . config('constants.AWS_S3_IMAGES_FOLDER_NAME') . '/' . basename($url);
             return $pathInS3;
         } else {
             return 0;
@@ -150,20 +148,20 @@ class S3Helper
                 foreach ($allFiles as $key => $file) {
                     // Only scss and css copy
                     if (!strpos($file, "/images") && strpos($file, "/scss")
-                    && !strpos($file, "custom.scss") && !strpos($file, "assets.scss")) {
+                        && !strpos($file, "custom.scss") && !strpos($file, "assets.scss")) {
                         $scssFilesArray['scss_files'][$i++] = [
                             "scss_file_path" =>
-                            'https://s3.' . env('AWS_REGION') . '.amazonaws.com/'.env('AWS_S3_BUCKET_NAME').'/'.$file,
-                            "scss_file_name" => basename($file)
+                            'https://s3.' . env('AWS_REGION') . '.amazonaws.com/' . env('AWS_S3_BUCKET_NAME') . '/' . $file,
+                            "scss_file_name" => basename($file),
                         ];
                     }
                     if (strpos($file, "/images") && !strpos($file, "/scss")
-                    && !strpos($file, "custom.scss") && !strpos($file, "assets.scss")) {
+                        && !strpos($file, "custom.scss") && !strpos($file, "assets.scss")) {
                         $scssFilesArray['image_files'][$j++] = [
                             "image_file_path" =>
                             'https://s3.' . env('AWS_REGION') . '.amazonaws.com/' . env('AWS_S3_BUCKET_NAME')
-                            . '/'.$file,
-                            "image_file_name" => basename($file)
+                            . '/' . $file,
+                            "image_file_name" => basename($file),
                         ];
                     }
                 }
@@ -194,10 +192,10 @@ class S3Helper
             $mime_type = finfo_buffer($fileOpen, base64_decode($avatar), FILEINFO_MIME_TYPE);
 
             $type = explode('/', $mime_type);
-            
-            $imagePath = $tenantName.'/profile_images/'.$userId.'_'.time().'.'.$type[1];
+
+            $imagePath = $tenantName . '/profile_images/' . $userId . '_' . time() . '.' . $type[1];
             Storage::disk('s3')->put($imagePath, base64_decode($avatar), 'public');
-            $filePath =  Storage::disk('s3')->url($imagePath);
+            $filePath = Storage::disk('s3')->url($imagePath);
             return $filePath;
         } catch (S3Exception $e) {
             return $this->s3Exception(
@@ -220,12 +218,12 @@ class S3Helper
     {
         try {
             $disk = Storage::disk('s3');
-            $fileName = pathinfo($file->getClientOriginalName())['filename'].'_'.time();
-			$fileExtension = pathinfo($file->getClientOriginalName())['extension'];
-			$documentName = $fileName.'.'.$fileExtension;
-			$documentPath = $tenantName.'/users/'.$userId.'/timesheet/'.$documentName;
-            $pathInS3 = 'https://'.env('AWS_S3_BUCKET_NAME').'.s3.'
-            .env("AWS_REGION").'.amazonaws.com/'. $documentPath;
+            $fileName = pathinfo($file->getClientOriginalName())['filename'] . '_' . time();
+            $fileExtension = pathinfo($file->getClientOriginalName())['extension'];
+            $documentName = $fileName . '.' . $fileExtension;
+            $documentPath = $tenantName . '/users/' . $userId . '/timesheet/' . $documentName;
+            $pathInS3 = 'https://' . env('AWS_S3_BUCKET_NAME') . '.s3.'
+            . env("AWS_REGION") . '.amazonaws.com/' . $documentPath;
 
             if ($disk->put($documentPath, file_get_contents($file))) {
                 return $pathInS3;
