@@ -85,7 +85,7 @@ class NewsRepository implements NewsInterface
         int $languageId = null,
         string $newsStatus = null
     ): LengthAwarePaginator {
-        $newsData = $this->news->select('news_id')
+        $newsData = $this->news->select('news_id', 'user_name', 'user_title', 'user_thumbnail', 'news_image')
         ->with(['newsToCategory' => function ($query) {
             $query->with(['newsCategory' => function ($query) {
                 $query->select('news_category_id', 'category_name', 'translations');
@@ -113,14 +113,14 @@ class NewsRepository implements NewsInterface
                     $query->select('news_id', 'language_id', 'title', 'description');
                 }]);
             }
-
-            // Order by filters for admin side
-            if ($request->has('order')) {
-                $orderDirection = $request->input('order', 'asc');
-                $newsData->orderBy('created_at', $orderDirection);
-            }
         }
-
+		
+		// Order by filters for admin side
+		if ($request->has('order')) {
+			$orderDirection = $request->input('order', 'asc');
+			$newsData->orderBy('created_at', $orderDirection);
+		}
+		
         if ($newsStatus) {
             $newsData->where('status', $newsStatus);
         }
@@ -140,6 +140,7 @@ class NewsRepository implements NewsInterface
             'user_name' => $request->user_name,
             'user_title' => $request->user_title,
             'user_thumbnail' => $request->user_thumbnail,
+			'status' => $request->status
         );
         
         if ($request->has('news_image')) {
