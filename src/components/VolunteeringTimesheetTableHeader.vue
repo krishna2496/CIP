@@ -1,13 +1,12 @@
 <template>
 	<div class="tab-with-picker">
+		<div class="table-header">
 		<h2>{{langauageData.label[currentMonthName]}} {{currentYearNumber}}</h2>
 		<div class="inner-wrap">
-			<!-- <button class="add-entry"  @click="$refs.timeHoursModal.show()">
-				<img :src="$store.state.imagePath+'/assets/images/plus-ic-black'.svg" alt="plus-ic"/>
-			</button> -->
-
 			<div class="picker-btn-wrap">
-				<button class="prev-btn picker-btn" :title="langauageData.label.previous" @click.stop="goPrev">
+				<button class="prev-btn picker-btn" 
+				v-bind:class="{disabled :previousButtonDisable}"
+				:title="langauageData.label.previous" @click.stop="goPrev">
 					<img :src="$store.state.imagePath+'/assets/images/back-arrow-black.svg'"
 						:alt="langauageData.label.previous" />
 				</button>
@@ -18,37 +17,28 @@
 					<img :src="$store.state.imagePath+'/assets/images/next-arrow-black.svg'"
 						:alt="langauageData.label.next" />
 				</button>
+			</div>		
+			<div>
+				<AppCustomDropdown :optionList="yearListing" @updateCall="changeYear" :defaultText="defaultYear"
+					translationEnable="false" />
 			</div>
-				<div class="picker-btn-wrap">
-				<button class="prev-btn picker-btn" :title="langauageData.label.previous" @click.stop="goPrevWeek">
+		</div>
+		</div>
+
+		<div class="picker-btn-wrap table-action-btn">
+				<button class="prev-btn picker-btn" 
+				v-bind:class="{disabled :previousButtonDisable}"
+				v-b-tooltip.hover :title="langauageData.label.previous +' '+langauageData.label.week.toLowerCase()" @click.stop="goPrevWeek">
 					<img :src="$store.state.imagePath+'/assets/images/back-arrow-black.svg'"
 						:alt="langauageData.label.previous" />
 				</button>
-
 				<span>{{currentWeak}}</span>
-				<button class="next-btn picker-btn" :title="langauageData.label.next"
+				<button class="next-btn picker-btn" v-b-tooltip.hover  :title="langauageData.label.next+' '+langauageData.label.week.toLowerCase()"
 					v-bind:class="{disabled :disableNextWeek}" @click.stop="goNextWeek">
 					<img :src="$store.state.imagePath+'/assets/images/next-arrow-black.svg'"
 						:alt="langauageData.label.next" />
 				</button>
 			</div>
-			
-			<div>
-				<AppCustomDropdown :optionList="yearListing" @updateCall="changeYear" :defaultText="defaultYear"
-					translationEnable="false" />
-			</div>
-			<!-- <div class="picker-wrapper">
-    			<div class="select-time-period">
-    				<span>{{langauageData.label.day}}</span>
-    				<span>{{langauageData.label.week}}</span>
-    				<span class="current">{{langauageData.label.month}}</span>
-    			</div>
-    			 <div class="datepicker-block">
-                  <img :src="$store.state.imagePath+'/assets/images/datepicker-ic.svg'" alt="datepicker-ic" />
-                  <date-picker v-model="value2" range appendToBody :lang="lang" confirm></date-picker>
-            </div>
-          </div> -->
-		</div>
 	</div>
 </template>
 
@@ -116,7 +106,9 @@
 				currentFixWeek : moment().week(),
 				disableNextWeek : false,
 				yearArray : [],
-				monthArray : []
+				monthArray : [],
+				previousButtonDisable : false,
+				lastYear : ''
 			}
 		},
 		mounted() {
@@ -126,6 +118,7 @@
 				yearsList.push([index, index]);
 			}
 			this.yearListing = yearsList;
+			this.lastYear = parseInt(yearsList[yearsList.length -1][1]);
 		},
 		directives: {},
 		computed: {
@@ -198,19 +191,10 @@
 				this.defaultYear = this.currentMonth.format('Y');
 
 				if ((parseInt(this.currentMonthFix.format('M')) <= parseInt(this.currentMonth.format('M'))) && (parseInt(this.currentMonthFix.format(
-						'YYYY')) <= parseInt(this.currentMonth.format('YYYY')))) {
-							
+						'YYYY')) <= parseInt(this.currentMonth.format('YYYY')))) {		
 					this.isPreviousButtonDisable = true;
-					
-			
-					// let payload = moment().startOf('date');
-					// this.currentMonth = payload;
-					// this.daysInCurrentMonth = this.currentMonth.daysInMonth();
-					// this.currentMonthName = this.currentMonth.format('MMMM').toLowerCase();
-					// this.currentMonthNumber = this.currentMonth.format('M');
-					// this.currentYearNumber = this.currentMonth.format('Y');
-					// this.sortNameOfMonth = this.currentMonth.format('MMM')
-					// this.defaultYear = this.currentMonth.format('Y');
+
+					// previousButtonDisable
 				} else {
 					this.isPreviousButtonDisable = false;
 				}
@@ -220,6 +204,12 @@
 					this.disableNextWeek = true
 				} else {
 					this.disableNextWeek = false
+				}
+				
+				if(this.lastYear == parseInt(this.currentYearNumber) && (this.currentMonthNumber <= 1)) {
+					this.previousButtonDisable = true
+				} else {
+					this.previousButtonDisable = false
 				}
 				this.getWeekDayNameOfMonth(this.sortNameOfMonth, this.currentYearNumber)
 				var selectedData = []

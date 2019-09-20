@@ -559,8 +559,6 @@
                     .volunteeringGoalCurrentMonth + '-' + date).format("YYYY-MM-DD");
                 }
 
-               
-
                 timeArray.filter(function (timeSheetItem, timeSheetIndex) {
                     let currentArrayDate = timeSheetItem.date
                     let currentArrayYear = timeSheetItem.year
