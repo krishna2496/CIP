@@ -14,6 +14,7 @@ class JsonApiMiddleware
 
     /**
      * Handle an incoming request.
+     * @codeCoverageIgnore
      *
      * @param object $request
      * @param \Closure $next

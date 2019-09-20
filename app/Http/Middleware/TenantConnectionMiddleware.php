@@ -47,16 +47,12 @@ class TenantConnectionMiddleware
                 $domain = $credentials->fqdn;
             } catch (ExpiredException $e) {
                 throw new ExpiredException();
-            } catch (\Exception $e) {
-                throw new \Exception();
             }
         } else {
             try {
                 $domain = $this->helpers->getSubDomainFromRequest($request);
             } catch (TenantDomainNotFoundException $e) {
                 throw $e;
-            } catch (\Exception $e) {
-                throw new \Exception();
             }
         }
         $this->helpers->switchDatabaseConnection('mysql', $request);

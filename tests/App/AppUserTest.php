@@ -876,4 +876,28 @@ class AppUserTest extends TestCase
         ]);
         $user->delete();
     }
+
+    /**
+     * @test
+     * 
+     * Show error if jwt token is expired
+     *
+     * @return void
+     */
+    public function it_should_show_error_if_jwt_token_is_expired()
+    {
+        $token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJsdW1lbi1qd3QiLCJzdWIiOjIsImlhdCI6MTU2ODExNDA5NCwiZXhwIjoxNTY4MTI4NDk0LCJmcWRuIjoidGF0dmEifQ.x5mLYFU619-xnxSqJbRUt7iQz_Pwx5kka1YjWnNAhkc';
+        $this->patch('app/change-password', [], ['token' => $token])
+        ->seeStatusCode(401)
+        ->seeJsonStructure([
+            'errors' => [
+                [
+                    'status',
+                    'type',
+                    'code',
+                    'message'
+                ]
+            ]
+        ]);
+    }
 }
