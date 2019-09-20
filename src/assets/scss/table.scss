@@ -1,492 +1,493 @@
 /** Common dashboard table style **/
-
 .dashboard-table {
-    .table-col {
-        @include sm-max {
-            margin-bottom: 30px;
-        }
-        &:last-child {
-            margin-bottom: 0;
-        }
-    }
-    .table-outer {
-        padding: 20px 20px 30px;
-        border: 1px solid $border-color;
-        @extend .message_shadow;
+  .table-col {
+    .table-col-inner{
         height: 100%;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        @include sm-max {
-            padding: 15px 15px 25px;
-        }
-        &.timesheet-table-outer {
-            margin-bottom: 20px;
-        }
-        h3 {
-            margin-bottom: 20px;
-            @include sm-max {
-                margin-bottom: 15px;
-            }
-        }
-        h2 {
-            font-size: 24px;
-            line-height: 28px;
-            font-weight: 700;
-            @include sm-max {
-                font-size: 20px;
-                line-height: 26px;
-                margin-bottom: 10px;
-                width: 100%;
-            }
-        }
-        .table-responsive {
-            margin-bottom: 20px;
-        }
-        .table {
-            margin-bottom: 5px;
-            tr {
-                td,
-                th {
-                    border-color: $border-color;
-                    @include md-max {
-                        white-space: nowrap;
-                    }
-                }
-                th {
-                    border-bottom: none;
-                    height: 70px;
-                    @include sm-max {
-                        height: 56px;
-                    }
-                    @include xxs-max {
-                        height: 50px;
-                    }
-                }
-                &:last-child {
-                    td {
-                        border-bottom: 1px solid $border-color;
-                    }
-                }
-                .action-col {
-                    text-align: right;
-                    .btn {
-                        background: transparent !important;
-                        border: none !important;
-                        width: 20px;
-                        height: 20px;
-                        padding: 0;
-                        margin: 0 0 0 15px;
-                        display: inline-block !important;
-                        &:first-child {
-                            margin-left: 0;
-                        }
-                        img {
-                            width: 100%;
-                            height: 100%;
-                            vertical-align: top;
-                        }
-                    }
-                }
-            }
-            .table-link {
-                color: $black;
-                &:hover {
-                    color: $gray-primary;
-                }
-            }
-        }
     }
-    .pagination-block {
-        margin-bottom: 40px;
-        display: flex;
-        flex: 1;
-        -ms-flex: 1;
-        justify-content: flex-end;
-        .pagination {
-            li {
-                margin-bottom: 8px !important;
-            }
-        }
+    @include sm-max {
+      margin-bottom: 30px;
     }
-}
 
-
-/** Dashboard volunteer-table table style **/
-
-.volunteery-table {
-    table {
-        td {
-            &.mission-col {
-                width: 35%;
-            }
-            &.organisation-col {
-                width: 26%;
-            }
-            &.goal-col {
-                width: 30%;
-            }
-            &.comment-col {
-                width: 40%;
-                max-width: 1px;
-                white-space: nowrap;
-                overflow: hidden;
-                text-overflow: ellipsis;
-                &.remove-truncate {
-                    white-space: normal;
-                }
-            }
-        }
+    &:last-child {
+      margin-bottom: 0;
     }
-}
+  }
 
+  .table-outer {
+    padding: 20px 20px 30px;
+    border: 1px solid $border-color;
+    @extend .message_shadow;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 
-/** Dashboard history-table table style **/
-
-.history-table {
-    table {
-        td {
-            &.mission-col {
-                width: 25%;
-            }
-            &.expand-col {
-                width: 40%;
-                max-width: 1px;
-                white-space: nowrap;
-                overflow: hidden;
-                text-overflow: ellipsis;
-                &.remove-truncate {
-                    white-space: normal;
-                }
-            }
-        }
+    @include sm-max {
+      padding: 15px 15px 25px;
     }
-}
-
-
-/** Timesheet Table style **/
-
-.timesheet-table {
-    &.timesheethours-table {
-        table {
-            tr {
-                &:last-child {
-                    td {
-                        &.status-col {
-                            display: none;
-                        }
-                    }
-                }
-            }
-        }
+    &.timesheet-table-outer {
+      margin-bottom: 20px;
     }
-    table {
+
+    h3 {
+      margin-bottom: 20px;
+      @include sm-max {
+        margin-bottom: 15px;
+      }
+    }
+
+    h2 {
+      font-size: 24px;
+      line-height: 28px;
+      font-weight: 700;
+      @include sm-max {
+        font-size: 20px;
+        line-height: 26px;
+        margin-bottom: 10px;
+        width: 100%;
+      }
+    }
+
+    .table-responsive {
+      margin-bottom: 20px;
+    }
+
+    .table {
+      margin-bottom: 5px;
+
+      tr {
         td,
         th {
-            font-size: 15px;
-            line-height: 18px;
-            padding: 5px 24px;
-            vertical-align: middle;
-            @include sm-max {
-                padding: 5px 15px;
-            }
-            @include xxs-max {
-                padding: 5px 10px;
-            }
-            &:not(.mission-col) {
-                text-align: center;
-            }
-        }
-        tr {
-            &.total-row {
-                td {
-                    font-weight: 700;
-                    cursor: default !important;
-                    pointer-events: none;
-                    &::before {
-                        content: none;
-                        display: none;
-                    }
-                }
-            }
+          border-color: $border-color;
+          @include md-max {
+            white-space: nowrap;
+          }
         }
         th {
-            span {
-                display: block;
-                font-weight: 400;
-                font-size: 13px;
-            }
-        }
-        td {
-            min-width: 140px;
+          border-bottom: none;
+          height: 70px;
+          @include sm-max {
             height: 56px;
-            @include sm-max {
-                height: 45px;
-                min-width: 85px;
-            }
-            @include xxs-max {
-                height: 40px;
-                min-width: 70px;
-            }
-            &:not(.mission-col):not(.approved):not(.total-col) {
-                cursor: pointer;
-                position: relative;
-                z-index: 1;
-                background: transparent;
-                &:hover {
-                    background: $light-gray url($assetUrl+"/plus-ic-black.svg") no-repeat !important;
-                    background-size: 20px !important;
-                    background-position: center center !important;
-                    z-index: 3;
-                    color: transparent;
-                    &:after {
-                        content: none;
-                    }
-                }
-            }
-            &.approved,
-            &.declined,
-            &.approval {
-                position: relative;
-                &:after {
-                    position: absolute;
-                    content: "";
-                    border-style: solid;
-                    border-width: 15px 22px 0 0;
-                    right: 0;
-                    bottom: 0;
-                }
-            }
-            &.approved {
-                pointer-events: none;
-                &:after {
-                    border-color: transparent $success $success;
-                }
-            }
-            &.declined {
-                &:after {
-                    border-color: transparent $error $error;
-                }
-            }
-            &.approval {
-                &:after {
-                    border-color: transparent $info $info;
-                }
-            }
-            &.disabled {
-                cursor: default;
-                pointer-events: none;
-            }
+          }
+          @include xxs-max {
+            height: 50px;
+          }
         }
-        th,
-        td {
-            &.currentdate-col {
-                background: $light-gray !important;
-            }
+        &:last-child {
+          td {
+            border-bottom: 1px solid $border-color;
+          }
         }
-        .mission-col {
-            text-align: left;
-            min-width: 270px;
-            @include sm-max {
-                min-width: 230px;
-            }
-            @include xxs-max {
-                min-width: 200px;
-            }
-        }
-        .total-col {
-            font-weight: 700;
-        }
-    }
-}
+        .action-col {
+          text-align: right;
 
+          .btn {
+            background: transparent !important;
+            border: none !important;
+            width: 20px;
+            height: 20px;
+            padding: 0;
+            margin: 0 0 0 15px;
+            display: inline-block !important;
 
-/** Table modal style **/
-
-.table-modal {
-    .modal-dialog {
-        max-width: 1150px;
-    }
-}
-
-.tab-with-picker {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 30px;
-    flex-wrap: wrap;
-    .inner-wrap {
-        display: inline-flex;
-        align-items: center;
-        margin-bottom: 0;
-        flex-wrap: wrap;
-        >div {
-            margin-right: 20px;
-            margin-bottom: 8px;
-            &:last-child {
-                margin-right: 0;
+            &:first-child {
+              margin-left: 0;
             }
-            @include sm-max {
-                margin-right: 10px;
-            }
-        }
-        p {
-            margin-bottom: 0;
-        }
-        .picker-wrapper {
-            margin-bottom: 8px;
-            display: inline-flex;
-            align-items: center;
-        }
-        .datepicker-block {
-            position: relative;
+
             img {
-                height: 22px;
-                width: 22px;
+              width: 100%;
+              height: 100%;
+              vertical-align: top;
             }
-            .mx-datepicker {
-                position: absolute;
-                opacity: 0;
-                top: 0;
-                left: 0;
-                height: 100%;
-                width: 100%;
-            }
-            .mx-input-wrapper {
-                height: 100%;
-            }
-            .mx-input {
-                height: 100% !important;
-                width: 100% !important;
-                padding: 0 !important;
-                cursor: pointer;
-            }
-            .mx-input-append {
-                display: none;
-            }
+          }
         }
-        .select-time-period {
-            display: inline-flex;
-            @include border-radius(3px);
-            margin-right: 20px;
-            @include xxs-max {
-                margin-right: 15px;
-            }
-            span {
-                cursor: pointer;
-                color: $gray-primary;
-                border: 1px solid $border-color;
-                padding: 3px 9px;
-                &:first-child {
-                    border-radius: 3px 0 0 3px;
-                }
-                &:last-child {
-                    border-radius: 0 3px 3px 0;
-                }
-                &.current {
-                    background: $light-gray;
-                    cursor: default;
-                }
-            }
+      }
+      .table-link {
+        color: $black;
+        &:hover {
+          color: $gray-primary;
         }
-        .custom-dropdown {
-            width: 102px;
-        }
-        .picker-btn-wrap {
-            display: inline-flex;
-            border: 1px solid $border-color;
-            @include border-radius(3px);
-            span {
-                padding: 3px 11px;
-                color: $gray-primary;
-                width: 114px;
-                text-align: center;
-            }
-        }
-        .picker-btn {
-            background: $light-gray;
-            border: none;
-            display: inline-flex;
-            align-items: center;
-            border-radius: 3px;
-            &.prev-btn {
-                border-radius: 3px 0 0 3px;
-                padding: 5px 10px 5px 13px;
-            }
-            &.next-btn {
-                border-radius: 0 3px 3px 0;
-                padding: 5px 13px 5px 10px;
-            }
-            &.disabled {
-                pointer-events: none;
-                cursor: default;
-            }
-            img {
-                width: 12px;
-                height: 12px;
-            }
-            &:last-child {
-                margin-right: 0;
-            }
-        }
+      }
     }
-}
-
-.meta-data-list {
+  }
+  .pagination-block {
+    margin-bottom: 40px;
     display: flex;
     flex: 1;
     -ms-flex: 1;
-    margin: 10px 0 50px;
-    li {
-        margin-right: 15px;
-        padding-left: 21px;
-        position: relative;
-        font-size: 14px;
-        line-height: 28px;
-        &:before {
-            position: absolute;
-            height: 12px;
-            width: 15px;
-            content: "";
-            border-radius: 3px;
-            top: 50%;
-            transform: translateY(-50%);
-            left: 0;
-        }
-        &.approve-indication {
-            &:before {
-                background: $success;
-            }
-        }
-        &.decline-indication {
-            &:before {
-                background: $error;
-            }
-        }
-        &.approval-indication {
-            &:before {
-                background: $info;
-            }
-        }
+    justify-content: flex-end;
+    .pagination {
+      li {
+        margin-bottom: 8px !important;
+      }
     }
+  }
+}
+
+/** Dashboard volunteer-table table style **/
+.volunteery-table {
+  table {
+    td {
+      &.mission-col {
+        width: 35%;
+      }
+      &.organisation-col {
+        width: 26%;
+      }
+      &.goal-col {
+        width: 30%;
+      }
+      &.comment-col {
+        width: 40%;
+        max-width: 1px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        &.remove-truncate {
+          white-space: normal;
+        }
+      }
+    }
+  }
+}
+/** Dashboard history-table table style **/
+.history-table {
+  table {
+    td {
+      &.mission-col {
+        width: 25%;
+      }
+      &.expand-col {
+        width: 40%;
+        max-width: 1px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        &.remove-truncate {
+          white-space: normal;
+        }
+      }
+    }
+  }
+}
+/** Timesheet Table style **/
+.timesheet-table {
+  &.timesheethours-table {
+    table {
+      tr {
+        &:last-child {
+          td {
+            &.status-col {
+              display: none;
+            }
+          }
+        }
+      }
+    }
+  }
+  table {
+    td,
+    th {
+      font-size: 15px;
+      line-height: 18px;
+      padding: 5px 24px;
+      vertical-align: middle;
+      @include sm-max {
+        padding: 5px 15px;
+      }
+      @include xxs-max {
+        padding: 5px 10px;
+      }
+      &:not(.mission-col) {
+        text-align: center;
+      }
+    }
+    tr {
+      &.total-row {
+        td {
+          font-weight: 700;
+          cursor: default !important;
+          pointer-events: none;
+          &::before {
+            content: none;
+            display: none;
+          }
+        }
+      }
+    }
+    th {
+      span {
+        display: block;
+        font-weight: 400;
+        font-size: 13px;
+      }
+    }
+    td {
+      min-width: 140px;
+      height: 56px;
+      @include sm-max {
+        height: 45px;
+        min-width: 85px;
+      }
+      @include xxs-max {
+        height: 40px;
+        min-width: 70px;
+      }
+      &:not(.mission-col):not(.approved):not(.total-col) {
+        cursor: pointer;
+        position: relative;
+        z-index: 1;
+        background: transparent;
+        &:hover {
+          background: $light-gray url($assetUrl+"/plus-ic-black.svg") no-repeat !important;
+          background-size: 20px !important;
+          background-position: center center !important;
+          z-index: 3;
+          color: transparent;
+          &:after {
+            content: none;
+          }
+        }
+      }
+      &.approved,
+      &.declined,
+      &.approval {
+        position: relative;
+        &:after {
+          position: absolute;
+          content: "";
+          border-style: solid;
+
+          border-width: 15px 22px 0 0;
+          right: 0;
+          bottom: 0;
+        }
+      }
+      &.approved {
+        pointer-events: none;
+        &:after {
+          border-color: transparent $success $success;
+        }
+      }
+      &.declined {
+        &:after {
+          border-color: transparent $error $error;
+        }
+      }
+      &.approval {
+        &:after {
+          border-color: transparent $info $info;
+        }
+      }
+      &.disabled {
+        cursor: default;
+        pointer-events: none;
+      }
+    }
+    th,
+    td {
+      &.currentdate-col {
+        background: $light-gray !important;
+      }
+    }
+    .mission-col {
+      text-align: left;
+      min-width: 270px;
+      @include sm-max {
+        min-width: 230px;
+      }
+      @include xxs-max {
+        min-width: 200px;
+      }
+    }
+    .total-col {
+      font-weight: 700;
+    }
+  }
+}
+
+/** Table modal style **/
+.table-modal {
+  .modal-dialog {
+    max-width: 1150px;
+  }
+}
+
+.tab-with-picker {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  flex-wrap: wrap;
+  .inner-wrap {
+    display: inline-flex;
+    align-items: center;
+    margin-bottom: 0;
+    flex-wrap: wrap;
+    > div {
+      margin-right: 20px;
+      margin-bottom: 8px;
+      &:last-child {
+        margin-right: 0;
+      }
+      @include sm-max {
+        margin-right: 10px;
+      }
+    }
+    p {
+      margin-bottom: 0;
+    }
+    .picker-wrapper {
+      margin-bottom: 8px;
+      display: inline-flex;
+      align-items: center;
+    }
+    .datepicker-block {
+      position: relative;
+      img {
+        height: 22px;
+        width: 22px;
+      }
+      .mx-datepicker {
+        position: absolute;
+        opacity: 0;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 100%;
+      }
+      .mx-input-wrapper {
+        height: 100%;
+      }
+      .mx-input {
+        height: 100% !important;
+        width: 100% !important;
+        padding: 0 !important;
+        cursor: pointer;
+      }
+      .mx-input-append {
+        display: none;
+      }
+    }
+    .select-time-period {
+      display: inline-flex;
+      @include border-radius(3px);
+      margin-right: 20px;
+      @include xxs-max {
+        margin-right: 15px;
+      }
+      span {
+        cursor: pointer;
+        color: $gray-primary;
+        border: 1px solid $border-color;
+        padding: 3px 9px;
+        &:first-child {
+          border-radius: 3px 0 0 3px;
+        }
+        &:last-child {
+          border-radius: 0 3px 3px 0;
+        }
+        &.current {
+          background: $light-gray;
+          cursor: default;
+        }
+      }
+    }
+    .custom-dropdown {
+      width: 102px;
+    }
+    .picker-btn-wrap {
+      display: inline-flex;
+      border: 1px solid $border-color;
+      @include border-radius(3px);
+      span {
+        padding: 3px 11px;
+        color: $gray-primary;
+        width: 114px;
+        text-align: center;
+      }
+    }
+    .picker-btn {
+      background: $light-gray;
+      border: none;
+      display: inline-flex;
+      align-items: center;
+      border-radius: 3px;
+      &.prev-btn {
+        border-radius: 3px 0 0 3px;
+        padding: 5px 10px 5px 13px;
+      }
+      &.next-btn {
+        border-radius: 0 3px 3px 0;
+        padding: 5px 13px 5px 10px;
+      }
+      &.disabled {
+        pointer-events: none;
+        cursor: default;
+      }
+      img {
+        width: 12px;
+        height: 12px;
+      }
+      &:last-child {
+        margin-right: 0;
+      }
+    }
+  }
+}
+
+.meta-data-list {
+  display: flex;
+  flex: 1;
+  -ms-flex: 1;
+  margin: 10px 0 50px;
+  li {
+    margin-right: 15px;
+    padding-left: 21px;
+    position: relative;
+    font-size: 14px;
+    line-height: 28px;
+    &:before {
+      position: absolute;
+      height: 12px;
+      width: 15px;
+      content: "";
+      border-radius: 3px;
+      top: 50%;
+      transform: translateY(-50%);
+      left: 0;
+    }
+    &.approve-indication {
+      &:before {
+        background: $success;
+      }
+    }
+    &.decline-indication {
+      &:before {
+        background: $error;
+      }
+    }
+    &.approval-indication {
+      &:before {
+        background: $info;
+      }
+    }
+  }
 }
 
 .table {
-    &.b-table {
-        >thead,
-        >tbody {
-            >tr {
-                >.b-table-sticky-column:last-child {
-                    right: 0;
-                    left: auto;
-                }
-            }
+  &.b-table {
+    > thead,
+    > tbody {
+      > tr {
+        > .b-table-sticky-column:last-child {
+          right: 0;
+          left: auto;
         }
+      }
     }
+  }
 }
-
-.timesheet-request {
-    tr {
-        line-height: 32px !important
-    }
+.table-wrapper-outer {
+  position: relative;
 }

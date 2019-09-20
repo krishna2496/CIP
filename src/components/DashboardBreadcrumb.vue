@@ -2,10 +2,10 @@
 	<div class="breadcrumb-wrap">
 		<b-container>
 			<div class="breadcrumb-dropdown-wrap">
-				<span class="breadcrumb-current" @touchend.stop></span>
+				<span class="breadcrumb-current" @click.stop></span>
 				<div class="breadcrumb-dropdown">
 					<b-breadcrumb>
-						<b-breadcrumb-item v-for="(item, idx) in items" :key="idx" :to="item.link" @touchend.stop>
+						<b-breadcrumb-item v-for="(item, idx) in items" :key="idx" :to="item.link" @click.stop>
 							{{item.name}}
 						</b-breadcrumb-item>
 					</b-breadcrumb>

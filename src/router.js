@@ -50,6 +50,24 @@ let routes = [{
             import ('./views/Dashboard.vue')
     },
     {
+        path: '/calaendar',
+        name: 'calaendar',
+        meta: {
+            requiresAuth: true
+        },
+        component: () =>
+            import ('./views/calaendar.vue')
+    },
+    {
+        path: '/calaendar2',
+        name: 'calaendar2',
+        meta: {
+            requiresAuth: true
+        },
+        component: () =>
+            import ('./views/calaendar2.vue')
+    },
+    {
         path: '/home',
         name: 'home',
         meta: {

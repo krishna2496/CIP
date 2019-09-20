@@ -17,11 +17,9 @@ import AOS from "aos";
 import "aos/dist/aos.css";
 import BackToTop from "vue-backtotop";
 import moment from 'moment'
-import constants from './constant';
-import {
-    messages
-} from 'vue-bootstrap-calendar';
-
+import { messages } from 'vue-bootstrap-calendar';
+import VueI18n from 'vue-i18n'
+Vue.use(VueI18n);
 Vue.use(Vuelidate, VueAxios, axios);
 Vue.config.devtools = true
 Vue.config.productionTip = false;
@@ -29,7 +27,10 @@ Vue.use(BootstrapVue);
 Vue.use(VueScrollTo);
 Vue.use(BackToTop);
 Vue.use(toast);
-
+window.i18n = new VueI18n({
+    locale: 'en',
+    messages
+});
 AOS.init({
     once: true,
     easing: "ease-in-out",

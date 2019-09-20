@@ -5,6 +5,7 @@
 			<!-- <button class="add-entry"  @click="$refs.timeHoursModal.show()">
 				<img :src="$store.state.imagePath+'/assets/images/plus-ic-black'.svg" alt="plus-ic"/>
 			</button> -->
+
 			<div class="picker-btn-wrap">
 				<button class="prev-btn picker-btn" :title="langauageData.label.previous" @click.stop="goPrev">
 					<img :src="$store.state.imagePath+'/assets/images/back-arrow-black.svg'"
@@ -18,6 +19,20 @@
 						:alt="langauageData.label.next" />
 				</button>
 			</div>
+				<div class="picker-btn-wrap">
+				<button class="prev-btn picker-btn" :title="langauageData.label.previous" @click.stop="goPrevWeek">
+					<img :src="$store.state.imagePath+'/assets/images/back-arrow-black.svg'"
+						:alt="langauageData.label.previous" />
+				</button>
+
+				<span>{{currentWeak}}</span>
+				<button class="next-btn picker-btn" :title="langauageData.label.next"
+					v-bind:class="{disabled :disableNextWeek}" @click.stop="goNextWeek">
+					<img :src="$store.state.imagePath+'/assets/images/next-arrow-black.svg'"
+						:alt="langauageData.label.next" />
+				</button>
+			</div>
+			
 			<div>
 				<AppCustomDropdown :optionList="yearListing" @updateCall="changeYear" :defaultText="defaultYear"
 					translationEnable="false" />
@@ -49,11 +64,14 @@
 			DatePicker,
 			AppCustomDropdown
 		},
-		props: [],
+		props: {
+            currentWeek: Number
+        },
 		data: function () {
 			return {
 				time1: "",
 				value2: "",
+				currentWeak : this.currentWeek,
 				lang: {
 					days: [" Sun ", " Mon ", " Tue ", " Wed ", " You ", " Fri ", " Sat "],
 					months: [
@@ -84,7 +102,7 @@
 				defaultYear: "",
 				yearListing: [],
 				langauageData: [],
-				currentMonth: moment().startOf('month'),
+				currentMonth: '',
 				daysInCurrentMonth: 0,
 				currentMonthName: '',
 				currentMonthNumber: '',
@@ -92,8 +110,13 @@
 				dayName: "",
 				sortNameOfMonth: "",
 				weekNameArray: [],
+				daysArray : [],
 				isPreviousButtonDisable: false,
-				currentMonthFix: moment().startOf('month')
+				currentMonthFix: moment().startOf('date'),
+				currentFixWeek : moment().week(),
+				disableNextWeek : false,
+				yearArray : [],
+				monthArray : []
 			}
 		},
 		mounted() {
@@ -109,25 +132,60 @@
 
 		},
 		methods: {
+			goPrevWeek() {
+				let payload = moment(this.currentMonth).year(this.currentYearNumber).subtract(7, 'day')
+				this.currentWeak = moment(this.currentMonth).year(this.currentYearNumber).subtract(7, 'day').week()
+				this.changeMonth(payload);
+			},
+			goNextWeek() {
+				let payload = moment(this.currentMonth).year(this.currentYearNumber).add(7, 'day')
+				this.currentWeak = moment(this.currentMonth).year(this.currentYearNumber).add(7, 'day').week()
+				this.changeMonth(payload);
+			},
 			getWeekDayNameOfMonth(month, year) {
+				//pass week number
+				//stating date of week	
 				let _this = this
-				var start = moment(year + "-" + month, "YYYY-MMM");
-				for (var end = moment(start).add(1, 'month'); start.isBefore(end); start.add(1, 'day')) {
+				var start = moment().day("Monday").year(this.currentYearNumber).week(this.currentWeak);
+				
+				this.weekNameArray = []
+				this.daysArray = []
+				let i=0;
+				let j = 1;
+				for (var end = moment(start).add(1, 'week'); start.isBefore(end); start.add(1, 'day')) {
 					let dayName = start.format('dddd').toLowerCase();
-					this.weekNameArray[start.format('D')] = this.langauageData.label[dayName];
+						this.weekNameArray[j] = this.langauageData.label[dayName];
+						this.daysArray[i] = start.format('D')-1
+						this.yearArray[i] = start.format('YYYY')
+						this.monthArray[i] = start.format('M')
+						i++;
+						j++;
 				}
 			},
 			goPrev() {
 				let payload = moment(this.currentMonth).year(this.currentYearNumber).subtract(1, 'months').startOf(
 				'month');
+				this.currentWeak= moment(this.currentMonth).year(this.currentYearNumber).subtract(1, 'months').startOf(
+				'month').week()
+				
 				this.changeMonth(payload);
 			},
 			goNext() {
 				let payload = moment(this.currentMonth).year(this.currentYearNumber).add(1, 'months').startOf('month');
+				this.currentWeak= moment(this.currentMonth).year(this.currentYearNumber).add(1, 'months').startOf(
+				'month').week()
 				this.changeMonth(payload);
 			},
 			changeYear(year) {
 				let payload = moment(this.currentMonth).year(year.selectedId)
+				
+				if ((parseInt(this.currentMonthFix.format('M')) <= parseInt(payload.format('M'))) && (parseInt(this.currentMonthFix.format(
+						'YYYY')) <= parseInt(payload.format('YYYY')))) {
+					payload = moment().startOf('date');
+					this.currentWeak= this.currentFixWeek;
+				} else {
+					this.currentWeak= moment(this.currentMonth).year(this.currentYearNumber).startOf('month').week()
+				}
 				this.changeMonth(payload);
 			},
 			changeMonth(payload) {
@@ -138,22 +196,47 @@
 				this.currentYearNumber = this.currentMonth.format('Y');
 				this.sortNameOfMonth = this.currentMonth.format('MMM')
 				this.defaultYear = this.currentMonth.format('Y');
-				if (this.currentMonthFix.format('M') == this.currentMonth.format('M') && this.currentMonthFix.format(
-						'YYYY') == this.currentMonth.format('YYYY')) {
+
+				if ((parseInt(this.currentMonthFix.format('M')) <= parseInt(this.currentMonth.format('M'))) && (parseInt(this.currentMonthFix.format(
+						'YYYY')) <= parseInt(this.currentMonth.format('YYYY')))) {
+							
 					this.isPreviousButtonDisable = true;
+					
+			
+					// let payload = moment().startOf('date');
+					// this.currentMonth = payload;
+					// this.daysInCurrentMonth = this.currentMonth.daysInMonth();
+					// this.currentMonthName = this.currentMonth.format('MMMM').toLowerCase();
+					// this.currentMonthNumber = this.currentMonth.format('M');
+					// this.currentYearNumber = this.currentMonth.format('Y');
+					// this.sortNameOfMonth = this.currentMonth.format('MMM')
+					// this.defaultYear = this.currentMonth.format('Y');
 				} else {
 					this.isPreviousButtonDisable = false;
+				}
+			
+				if(this.currentFixWeek  <= this.currentWeak && (parseInt(this.currentMonthFix.format(
+						'YYYY')) <= parseInt(this.currentMonth.format('YYYY'))) ) {
+					this.disableNextWeek = true
+				} else {
+					this.disableNextWeek = false
 				}
 				this.getWeekDayNameOfMonth(this.sortNameOfMonth, this.currentYearNumber)
 				var selectedData = []
 				selectedData['month'] = this.currentMonthNumber;
 				selectedData['year'] = this.currentYearNumber;
 				selectedData['weekdays'] = this.weekNameArray;
+				selectedData['days'] = this.daysArray;
+					// this.yearArray[day] = start.format('YYYY')
+					// 	this.monthArray[day] = start.format('MMM')
+				selectedData['yearArray'] = this.yearArray;
+				selectedData['monthArray'] = this.monthArray;
 				this.$emit("updateCall", selectedData);
 			},
 		},
 		created() {
 			this.langauageData = JSON.parse(store.state.languageLabel);
+			this.currentMonth = moment().startOf('date').week(this.currentWeak);
 			this.changeMonth(this.currentMonth);
 		}
 	};
