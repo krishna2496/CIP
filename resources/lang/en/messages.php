@@ -127,7 +127,7 @@ return [
         'MESSAGE_USER_PENDING_GOAL_MISSION_ENTRIES_EXPORTED' => 'Pending time entries for goal missions, generated successfully',
         'MESSAGE_ENABLE_TO_EXPORT_USER_PENDING_GOAL_MISSION_ENTRIES' => 'No data found, to generate pending time entries for goal mission',
         'MESSAGE_AUTO_APPROVED_COMMENT_ADDED' => 'Thanks for your comment.',        
-        'MESSAGE_NEWS_CATEGORY_LISTING' => 'News category listed successfully',
+        'MESSAGE_NEWS_CATEGORY_LISTING' => 'News categories listed successfully',
         'MESSAGE_NEWS_CATEGORY_DELETED' => 'News category deleted successfully',
         'MESSAGE_NEWS_CATEGORY_CREATED' => 'News category created successfully',
         'MESSAGE_NEWS_CATEGORY_UPDATED' => 'News category updated successfully',
@@ -135,6 +135,7 @@ return [
         'MESSAGE_NEWS_DELETED' => 'News deleted successfully',
         'MESSAGE_NEWS_LISTING' => 'News listed sucessfully',
         'MESSAGE_NEWS_UPDATED' => 'News updated sucessfully',
+        'MESSAGE_NEWS_CATEGORY_FOUND' => 'News category found sucessfully',
 	],
         
     /**
@@ -253,6 +254,7 @@ return [
 
         // For News module        
         'ERROR_NEWS_CATEGORY_NOT_FOUND' => 'News category not found in the system',
+        'ERROR_NEWS_CATEGORIES_NOT_FOUND' => 'News categories not found in the system',
         'ERROR_NEWS_NOT_FOUND' => 'News not found in the system',
         'ERROR_UNAUTHORIZED_USER' => 'Unauthorized user'
     ],

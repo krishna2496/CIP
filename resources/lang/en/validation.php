@@ -173,6 +173,7 @@ return [
         'news_content.translations.*.lang' => 'language code',
         'news_content.translations.*.title' => 'title',
         'news_content.translations.*.description' => 'description',
+        'translations.*.title' => 'title',
         ],
 
 ];

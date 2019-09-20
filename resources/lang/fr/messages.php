@@ -130,6 +130,7 @@ return [
         'MESSAGE_NEWS_DELETED' => 'Nouvelles supprimées avec succès',
         'MESSAGE_NEWS_LISTING' => 'Nouvelles listées avec succès',
         'MESSAGE_NEWS_UPDATED' => 'Nouvelles mises à jour avec succès',
+		'MESSAGE_NEWS_CATEGORY_FOUND' => 'News category found sucessfully',
     ],
 
         
@@ -247,6 +248,7 @@ return [
         
         // For News module        
         'ERROR_NEWS_CATEGORY_NOT_FOUND' => 'Catégorie de nouvelles non trouvée dans le système',
+		'ERROR_NEWS_CATEGORIES_NOT_FOUND' => 'News categories not found in the system',
         'ERROR_NEWS_NOT_FOUND' => 'Nouvelles non trouvées dans le système',
         'ERROR_UNAUTHORIZED_USER' => 'Utilisateur non autorisé'
     ],

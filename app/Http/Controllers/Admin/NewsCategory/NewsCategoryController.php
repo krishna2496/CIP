@@ -53,7 +53,7 @@ class NewsCategoryController extends Controller
             // Set response data
             $apiStatus = Response::HTTP_OK;
             $apiMessage = ($newsCategoryDetails->isEmpty()) ?
-            trans('messages.custom_error_message.ERROR_NEWS_CATEGORY_NOT_FOUND')
+            trans('messages.custom_error_message.ERROR_NEWS_CATEGORIES_NOT_FOUND')
             : trans('messages.success.MESSAGE_NEWS_CATEGORY_LISTING');
             
             return $this->responseHelper->successWithPagination($apiStatus, $apiMessage, $newsCategoryDetails);
@@ -83,7 +83,8 @@ class NewsCategoryController extends Controller
                     "category_name" => "required|max:255|
                     unique:news_category,category_name,NULL,news_category_id,deleted_at,NULL",
                     "translations" => "required",
-                    "translations.*.lang" => "required_with:translations|max:2"
+                    "translations.*.lang" => "required_with:translations|max:2",
+                    "translations.*.title" => "required_with:translations"
                 ]
             );
 
@@ -183,7 +184,7 @@ class NewsCategoryController extends Controller
                 
             $apiData = $newsCategoryDetail->toArray();
             $apiStatus = Response::HTTP_OK;
-            $apiMessage = trans('messages.success.MESSAGE_NEWS_CATEGORY_LISTING');
+            $apiMessage = trans('messages.success.MESSAGE_NEWS_CATEGORY_FOUND');
             
             return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
         } catch (ModelNotFoundException $e) {
