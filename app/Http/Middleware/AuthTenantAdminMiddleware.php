@@ -47,40 +47,38 @@ class AuthTenantAdminMiddleware
      */
     public function handle($request, Closure $next)
     {
-        try {
-            // Check basic auth passed or not
-            if ($request->header('php-auth-user') == null && $request->header('php-auth-pw') == null
-                || (empty($request->header('php-auth-user')) && empty($request->header('php-auth-pw')))
-            ) {
-                return $this->responseHelper->error(
-                    Response::HTTP_UNAUTHORIZED,
-                    Response::$statusTexts[Response::HTTP_UNAUTHORIZED],
-                    config('constants.error_codes.ERROR_API_AND_SECRET_KEY_REQUIRED'),
-                    trans('messages.custom_error_message.ERROR_API_AND_SECRET_KEY_REQUIRED')
-                );
-            }
-            // authenticate api user based on basic auth parameters
-            $apiUser = DB::table('api_user')
-                        ->where('api_key', base64_encode($request->header('php-auth-user')))
-                        ->where('status', '1')
-                        ->whereNull('deleted_at')
-                        ->first();
-            
-            // If user authenticates successfully
-            if ($apiUser && Hash::check($request->header('php-auth-pw'), $apiUser->api_secret)) {
-                // Create connection with their tenant database
-                $this->helpers->createConnection($apiUser->tenant_id);
-                return $next($request);
-            }
-            // Send authentication error response if api user not found in master database
+        // Check basic auth passed or not
+        if ($request->header('php-auth-user') == null && $request->header('php-auth-pw') == null
+            || (empty($request->header('php-auth-user')) && empty($request->header('php-auth-pw')))
+        ) {
+            // @codeCoverageIgnoreStart
             return $this->responseHelper->error(
                 Response::HTTP_UNAUTHORIZED,
                 Response::$statusTexts[Response::HTTP_UNAUTHORIZED],
-                config('constants.error_codes.ERROR_INVALID_API_AND_SECRET_KEY'),
-                trans('messages.custom_error_message.ERROR_INVALID_API_AND_SECRET_KEY')
+                config('constants.error_codes.ERROR_API_AND_SECRET_KEY_REQUIRED'),
+                trans('messages.custom_error_message.ERROR_API_AND_SECRET_KEY_REQUIRED')
             );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
+            // @codeCoverageIgnoreEnd
         }
+        // authenticate api user based on basic auth parameters
+        $apiUser = DB::table('api_user')
+                    ->where('api_key', base64_encode($request->header('php-auth-user')))
+                    ->where('status', '1')
+                    ->whereNull('deleted_at')
+                    ->first();
+        
+        // If user authenticates successfully
+        if ($apiUser && Hash::check($request->header('php-auth-pw'), $apiUser->api_secret)) {
+            // Create connection with their tenant database
+            $this->helpers->createConnection($apiUser->tenant_id);
+            return $next($request);
+        }
+        // Send authentication error response if api user not found in master database
+        return $this->responseHelper->error(
+            Response::HTTP_UNAUTHORIZED,
+            Response::$statusTexts[Response::HTTP_UNAUTHORIZED],
+            config('constants.error_codes.ERROR_INVALID_API_AND_SECRET_KEY'),
+            trans('messages.custom_error_message.ERROR_INVALID_API_AND_SECRET_KEY')
+        );
     }
 }

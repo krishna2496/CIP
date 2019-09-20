@@ -51,22 +51,6 @@ class AppMissionTest extends TestCase
                             "description" => str_random(100),
                         ]
                     ]
-                ],
-                [
-                    "lang" => "fr",
-                    "title" => str_random(10),
-                    "short_description" => str_random(20),
-                    "objective" => str_random(20),
-                    "section" => [
-                        [
-                            "title" => str_random(10),
-                            "description" => str_random(100),
-                        ],
-                        [
-                            "title" => str_random(10),
-                            "description" => str_random(100),
-                        ]
-                    ]
                 ]
             ],
             "media_images" => [[
