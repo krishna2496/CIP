@@ -135,6 +135,7 @@ return [
         'MESSAGE_NEWS_DELETED' => 'News deleted successfully',
         'MESSAGE_NEWS_LISTING' => 'News listed sucessfully',
         'MESSAGE_NEWS_UPDATED' => 'News updated sucessfully',
+        'MESSAGE_NEWS_FOUND' => 'News found sucessfully',
 	],
         
     /**

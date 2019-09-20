@@ -124,14 +124,17 @@ class NewsController extends Controller
             $validator = Validator::make(
                 $request->all(),
                 [
-                    "news_image" => "url|valid_media_path",
-                    "user_thumbnail" => "url|valid_media_path",
-                    "news_category_id" => "required|exists:news_category,news_category_id,deleted_at,NULL",
                     "news_content" => "required",
                     "news_content.translations" => "required_with:news_content",
                     "news_content.translations.*.lang" => "required_with:news_content.translations|max:2",
                     "news_content.translations.*.title" => "required_with:news_content.translations",
-                    "news_content.translations.*.description" => "required_with:news_content.translations",
+                    "news_content.translations.*.description" =>
+                    "required_with:news_content.translations",                    
+                    "news_category_id" =>
+                    "required|exists:news_category,news_category_id,deleted_at,NULL",                    
+                    "user_name" => "sometimes|required",   
+                    "news_image" => "sometimes|required|url|valid_media_path",
+                    "user_thumbnail" => "sometimes|required|url|valid_media_path",               
                 ]
             );
 
@@ -165,35 +168,6 @@ class NewsController extends Controller
     }
 
     /**
-     * Display the specified news.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @param int $newsId
-     * @return Illuminate\Http\JsonResponse
-     */
-    public function show(Request $request, int $newsId): JsonResponse
-    {
-        try {
-            // Get news details
-            $news = $this->newsRepository->getNewsDetails($newsId);
-            // Transform news details
-            $newsTransform = $this->transformNewsDetails($news);
-            
-            $apiStatus = Response::HTTP_OK;
-            $apiMessage = trans('messages.success.MESSAGE_NEWS_LISTING');
-            
-            return $this->responseHelper->success($apiStatus, $apiMessage, $newsTransform);
-        } catch (ModelNotFoundException $e) {
-            return $this->modelNotFound(
-                config('constants.error_codes.ERROR_NEWS_NOT_FOUND'),
-                trans('messages.custom_error_message.ERROR_NEWS_NOT_FOUND')
-            );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
-        }
-    }
-
-    /**
      * Update news details
      *
      * @param \Illuminate\Http\Request $request
@@ -207,15 +181,17 @@ class NewsController extends Controller
             $validator = Validator::make(
                 $request->all(),
                 [
-                    "news_image" => "url|valid_media_path",
-                    "user_thumbnail" => "url|valid_media_path",
-                    "news_category_id" => "exists:news_category,news_category_id,deleted_at,NULL",
-                    "status" => [Rule::in(config('constants.news_status'))],
                     "news_content" => "sometimes|required",
                     "news_content.translations" => "required_with:news_content",
-                    "news_content.translations.*.lang" => "required_with:news_content.translations|max:2",
+                    "news_content.translations.*.lang" =>
+                    "required_with:news_content.translations|max:2",
                     "news_content.translations.*.title" => "required_with:news_content.translations",
-                    "news_content.translations.*.description" => "required_with:news_content.translations",
+                    "news_content.translations.*.description" => "required_with:news_content.translations",                    
+                    "news_category_id" => "sometimes|required|exists:news_category,news_category_id,deleted_at,NULL",
+                    "user_name" => "sometimes|required", 
+                    "status" => [Rule::in(config('constants.news_status'))],
+                    "news_image" => "sometimes|required|url|valid_media_path",
+                    "user_thumbnail" => "sometimes|required|url|valid_media_path",
                 ]
             );
 
@@ -237,6 +213,35 @@ class NewsController extends Controller
             $apiMessage = trans('messages.success.MESSAGE_NEWS_UPDATED');
             $apiData = ['news_id' => $news->news_id];
             return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
+        } catch (ModelNotFoundException $e) {
+            return $this->modelNotFound(
+                config('constants.error_codes.ERROR_NEWS_NOT_FOUND'),
+                trans('messages.custom_error_message.ERROR_NEWS_NOT_FOUND')
+            );
+        } catch (\Exception $e) {
+            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
+        }
+    }
+
+    /**
+     * Display the news details.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param int $newsId
+     * @return Illuminate\Http\JsonResponse
+     */
+    public function show(Request $request, int $newsId): JsonResponse
+    {
+        try {
+            // Get news details
+            $news = $this->newsRepository->getNewsDetails($newsId);
+            // Transform news details
+            $newsTransform = $this->transformNewsDetails($news);
+            
+            $apiStatus = Response::HTTP_OK;
+            $apiMessage = trans('messages.success.MESSAGE_NEWS_FOUND');
+            
+            return $this->responseHelper->success($apiStatus, $apiMessage, $newsTransform);
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
                 config('constants.error_codes.ERROR_NEWS_NOT_FOUND'),

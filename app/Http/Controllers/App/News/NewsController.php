@@ -115,7 +115,7 @@ class NewsController extends Controller
     }
 
     /**
-     * Display the specified news.
+     * Display news details.
      *
      * @param \Illuminate\Http\Request $request
      * @param int $newsId
@@ -132,7 +132,7 @@ class NewsController extends Controller
             $newsTransform = $this->transformNewsDetails($news);
             
             $apiStatus = Response::HTTP_OK;
-            $apiMessage = trans('messages.success.MESSAGE_NEWS_LISTING');
+            $apiMessage = trans('messages.success.MESSAGE_NEWS_FOUND');
             
             return $this->responseHelper->success($apiStatus, $apiMessage, $newsTransform);
         } catch (ModelNotFoundException $e) {

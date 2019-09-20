@@ -130,6 +130,7 @@ return [
         'MESSAGE_NEWS_DELETED' => 'Nouvelles supprimées avec succès',
         'MESSAGE_NEWS_LISTING' => 'Nouvelles listées avec succès',
         'MESSAGE_NEWS_UPDATED' => 'Nouvelles mises à jour avec succès',
+        'MESSAGE_NEWS_FOUND' => 'Nouvelles trouvées avec succès',
     ],
 
         
