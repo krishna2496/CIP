@@ -255,9 +255,13 @@
                                     <MultiSelect v-if="isShownComponent" :fromList="skillListing"
                                         :toList="userSkillList" @resetData="resetSkillListingData"
                                         @saveSkillData="saveSkillData" @resetPreviousData="resetPreviousData" />
+                                    
+                                </b-col>
+                                <b-col cols="12" v-if="isSkillDisplay">
                                     <div class="btn-wrapper">
                                         <b-button class="btn-bordersecondary" @click="handleSubmit">
-                                            {{langauageData.label.save}}</b-button>
+                                            {{langauageData.label.save}}
+                                        </b-button>
                                     </div>
                                 </b-col>
                             </b-row>
