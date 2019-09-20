@@ -131,6 +131,7 @@ return [
         'MESSAGE_NEWS_LISTING' => 'Nouvelles listées avec succès',
         'MESSAGE_NEWS_UPDATED' => 'Nouvelles mises à jour avec succès',
 		'MESSAGE_NEWS_CATEGORY_FOUND' => 'News category found sucessfully',
+        'MESSAGE_NEWS_FOUND' => 'Nouvelles trouvées avec succès',
     ],
 
         
