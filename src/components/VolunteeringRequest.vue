@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="table-col-inner">
         <div class="table-outer timesheet-table-outer">
             <div class="table-inner">
                 <h3>{{headerLable}}</h3>

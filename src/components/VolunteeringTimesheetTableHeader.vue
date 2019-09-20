@@ -1,12 +1,12 @@
 <template>
 	<div class="tab-with-picker">
+		<div class="table-header">
 		<h2>{{langauageData.label[currentMonthName]}} {{currentYearNumber}}</h2>
 		<div class="inner-wrap">
-			<!-- <button class="add-entry"  @click="$refs.timeHoursModal.show()">
-				<img :src="$store.state.imagePath+'/assets/images/plus-ic-black'.svg" alt="plus-ic"/>
-			</button> -->
 			<div class="picker-btn-wrap">
-				<button class="prev-btn picker-btn" :title="langauageData.label.previous" @click.stop="goPrev">
+				<button class="prev-btn picker-btn" 
+				v-bind:class="{disabled :previousButtonDisable}"
+				:title="langauageData.label.previous" @click.stop="goPrev">
 					<img :src="$store.state.imagePath+'/assets/images/back-arrow-black.svg'"
 						:alt="langauageData.label.previous" />
 				</button>
@@ -17,23 +17,28 @@
 					<img :src="$store.state.imagePath+'/assets/images/next-arrow-black.svg'"
 						:alt="langauageData.label.next" />
 				</button>
-			</div>
+			</div>		
 			<div>
 				<AppCustomDropdown :optionList="yearListing" @updateCall="changeYear" :defaultText="defaultYear"
 					translationEnable="false" />
 			</div>
-			<!-- <div class="picker-wrapper">
-    			<div class="select-time-period">
-    				<span>{{langauageData.label.day}}</span>
-    				<span>{{langauageData.label.week}}</span>
-    				<span class="current">{{langauageData.label.month}}</span>
-    			</div>
-    			 <div class="datepicker-block">
-                  <img :src="$store.state.imagePath+'/assets/images/datepicker-ic.svg'" alt="datepicker-ic" />
-                  <date-picker v-model="value2" range appendToBody :lang="lang" confirm></date-picker>
-            </div>
-          </div> -->
 		</div>
+		</div>
+
+		<div class="picker-btn-wrap table-action-btn">
+				<button class="prev-btn picker-btn" 
+				v-bind:class="{disabled :previousButtonDisable}"
+				v-b-tooltip.hover :title="langauageData.label.previous +' '+langauageData.label.week.toLowerCase()" @click.stop="goPrevWeek">
+					<img :src="$store.state.imagePath+'/assets/images/back-arrow-black.svg'"
+						:alt="langauageData.label.previous" />
+				</button>
+				<span></span>
+				<button class="next-btn picker-btn" v-b-tooltip.hover  :title="langauageData.label.next+' '+langauageData.label.week.toLowerCase()"
+					v-bind:class="{disabled :disableNextWeek}" @click.stop="goNextWeek">
+					<img :src="$store.state.imagePath+'/assets/images/next-arrow-black.svg'"
+						:alt="langauageData.label.next" />
+				</button>
+			</div>
 	</div>
 </template>
 
@@ -49,11 +54,14 @@
 			DatePicker,
 			AppCustomDropdown
 		},
-		props: [],
+		props: {
+            currentWeek: Number
+        },
 		data: function () {
 			return {
 				time1: "",
 				value2: "",
+				currentWeak : this.currentWeek,
 				lang: {
 					days: [" Sun ", " Mon ", " Tue ", " Wed ", " You ", " Fri ", " Sat "],
 					months: [
@@ -84,7 +92,7 @@
 				defaultYear: "",
 				yearListing: [],
 				langauageData: [],
-				currentMonth: moment().startOf('month'),
+				currentMonth: '',
 				daysInCurrentMonth: 0,
 				currentMonthName: '',
 				currentMonthNumber: '',
@@ -92,8 +100,15 @@
 				dayName: "",
 				sortNameOfMonth: "",
 				weekNameArray: [],
+				daysArray : [],
 				isPreviousButtonDisable: false,
-				currentMonthFix: moment().startOf('month')
+				currentMonthFix: moment().startOf('date'),
+				currentFixWeek : moment().week(),
+				disableNextWeek : false,
+				yearArray : [],
+				monthArray : [],
+				previousButtonDisable : false,
+				lastYear : ''
 			}
 		},
 		mounted() {
@@ -103,31 +118,67 @@
 				yearsList.push([index, index]);
 			}
 			this.yearListing = yearsList;
+			this.lastYear = parseInt(yearsList[yearsList.length -1][1]);
 		},
 		directives: {},
 		computed: {
 
 		},
 		methods: {
+			goPrevWeek() {
+				let payload = moment(this.currentMonth).year(this.currentYearNumber).subtract(7, 'day')
+				this.currentWeak = moment(this.currentMonth).year(this.currentYearNumber).subtract(7, 'day').week()
+				this.changeMonth(payload);
+			},
+			goNextWeek() {
+				let payload = moment(this.currentMonth).year(this.currentYearNumber).add(7, 'day')
+				this.currentWeak = moment(this.currentMonth).year(this.currentYearNumber).add(7, 'day').week()
+				this.changeMonth(payload);
+			},
 			getWeekDayNameOfMonth(month, year) {
+				//pass week number
+				//stating date of week	
 				let _this = this
-				var start = moment(year + "-" + month, "YYYY-MMM");
-				for (var end = moment(start).add(1, 'month'); start.isBefore(end); start.add(1, 'day')) {
+				var start = moment().day("Monday").year(this.currentYearNumber).week(this.currentWeak);
+				
+				this.weekNameArray = []
+				this.daysArray = []
+				let i=0;
+				let j = 1;
+				for (var end = moment(start).add(1, 'week'); start.isBefore(end); start.add(1, 'day')) {
 					let dayName = start.format('dddd').toLowerCase();
-					this.weekNameArray[start.format('D')] = this.langauageData.label[dayName];
+						this.weekNameArray[j] = this.langauageData.label[dayName];
+						this.daysArray[i] = start.format('D')-1
+						this.yearArray[i] = start.format('YYYY')
+						this.monthArray[i] = start.format('M')
+						i++;
+						j++;
 				}
 			},
 			goPrev() {
 				let payload = moment(this.currentMonth).year(this.currentYearNumber).subtract(1, 'months').startOf(
 				'month');
+				this.currentWeak= moment(this.currentMonth).year(this.currentYearNumber).subtract(1, 'months').startOf(
+				'month').week()
+				
 				this.changeMonth(payload);
 			},
 			goNext() {
 				let payload = moment(this.currentMonth).year(this.currentYearNumber).add(1, 'months').startOf('month');
+				this.currentWeak= moment(this.currentMonth).year(this.currentYearNumber).add(1, 'months').startOf(
+				'month').week()
 				this.changeMonth(payload);
 			},
 			changeYear(year) {
 				let payload = moment(this.currentMonth).year(year.selectedId)
+				
+				if ((parseInt(this.currentMonthFix.format('M')) <= parseInt(payload.format('M'))) && (parseInt(this.currentMonthFix.format(
+						'YYYY')) <= parseInt(payload.format('YYYY')))) {
+					payload = moment().startOf('date');
+					this.currentWeak= this.currentFixWeek;
+				} else {
+					this.currentWeak= moment(this.currentMonth).year(this.currentYearNumber).startOf('month').week()
+				}
 				this.changeMonth(payload);
 			},
 			changeMonth(payload) {
@@ -138,22 +189,44 @@
 				this.currentYearNumber = this.currentMonth.format('Y');
 				this.sortNameOfMonth = this.currentMonth.format('MMM')
 				this.defaultYear = this.currentMonth.format('Y');
-				if (this.currentMonthFix.format('M') == this.currentMonth.format('M') && this.currentMonthFix.format(
-						'YYYY') == this.currentMonth.format('YYYY')) {
+
+				if ((parseInt(this.currentMonthFix.format('M')) <= parseInt(this.currentMonth.format('M'))) && (parseInt(this.currentMonthFix.format(
+						'YYYY')) <= parseInt(this.currentMonth.format('YYYY')))) {		
 					this.isPreviousButtonDisable = true;
+
+					// previousButtonDisable
 				} else {
 					this.isPreviousButtonDisable = false;
+				}
+			
+				if(this.currentFixWeek  <= this.currentWeak && (parseInt(this.currentMonthFix.format(
+						'YYYY')) <= parseInt(this.currentMonth.format('YYYY'))) ) {
+					this.disableNextWeek = true
+				} else {
+					this.disableNextWeek = false
+				}
+				
+				if(this.lastYear == parseInt(this.currentYearNumber) && (this.currentMonthNumber <= 1)) {
+					this.previousButtonDisable = true
+				} else {
+					this.previousButtonDisable = false
 				}
 				this.getWeekDayNameOfMonth(this.sortNameOfMonth, this.currentYearNumber)
 				var selectedData = []
 				selectedData['month'] = this.currentMonthNumber;
 				selectedData['year'] = this.currentYearNumber;
 				selectedData['weekdays'] = this.weekNameArray;
+				selectedData['days'] = this.daysArray;
+					// this.yearArray[day] = start.format('YYYY')
+					// 	this.monthArray[day] = start.format('MMM')
+				selectedData['yearArray'] = this.yearArray;
+				selectedData['monthArray'] = this.monthArray;
 				this.$emit("updateCall", selectedData);
 			},
 		},
 		created() {
 			this.langauageData = JSON.parse(store.state.languageLabel);
+			this.currentMonth = moment().startOf('date').week(this.currentWeak);
 			this.changeMonth(this.currentMonth);
 		}
 	};
