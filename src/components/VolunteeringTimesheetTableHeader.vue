@@ -32,7 +32,7 @@
 					<img :src="$store.state.imagePath+'/assets/images/back-arrow-black.svg'"
 						:alt="langauageData.label.previous" />
 				</button>
-				<span>{{currentWeak}}</span>
+				<span></span>
 				<button class="next-btn picker-btn" v-b-tooltip.hover  :title="langauageData.label.next+' '+langauageData.label.week.toLowerCase()"
 					v-bind:class="{disabled :disableNextWeek}" @click.stop="goNextWeek">
 					<img :src="$store.state.imagePath+'/assets/images/next-arrow-black.svg'"
