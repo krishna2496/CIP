@@ -15,7 +15,12 @@ return [
         'MESSAGE_API_USER_FOUND' => 'Utilisateur de l\'API trouvé avec succès',
         'MESSAGE_API_USER_CREATED_SUCCESSFULLY' => 'Utilisateur de l\'API créé avec succès',
         'MESSAGE_API_USER_DELETED' => 'Utilisateur de l\'API supprimé avec succès',
-        'MESSAGE_API_USER_UPDATED_SUCCESSFULLY' => 'La clé secrète de l\'utilisateur de l\'API a été mise à jour avec succès'
+        'MESSAGE_API_USER_UPDATED_SUCCESSFULLY' => 'La clé secrète de l\'utilisateur de l\'API a été mise à jour avec succès',
+        'MESSAGE_LANGUAGE_FOUND' => 'Langue trouvée avec succès',
+        'MESSAGE_LANGUAGE_LISTING' => 'Langue listée avec succès',
+        'MESSAGE_LANGUAGE_CREATED' => 'Langue créée avec succès',
+        'MESSAGE_LANGUAGE_UPDATED' => 'Détails de la langue mis à jour avec succès',
+        'MESSAGE_NEWS_DELETED' => 'Langue supprimée avec succès',
     ],
     
     /**
@@ -36,6 +41,7 @@ return [
         'ERROR_WHILE_STORE_COMPILED_CSS_FILE_TO_LOCAL' => 'Erreur lors du stockage de CSS compilé au niveau local',
         'ERROR_FAILD_TO_UPLOAD_COMPILE_FILE_ON_S3' => 'Erreur lors du téléchargement du fichier CSS compilé vers S3',
         'ERROR_WHILE_COMPILING_SCSS_FILES' => 'Erreur lors de la compilation des fichiers SCSS',
+        'ERROR_LANGUAGE_NOT_FOUND' => 'Langue non trouvée dans le système',
     ]
     
 ];

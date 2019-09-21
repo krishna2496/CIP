@@ -28,4 +28,11 @@ class Language extends Model
      * @var array
      */
     protected $fillable = ['name','code','status'];
+
+    /**
+     * The attributes that should be visible in arrays.
+     *
+     * @var array
+     */
+    protected $visible = ['language_id', 'name', 'code', 'status'];
 }

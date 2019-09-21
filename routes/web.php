@@ -67,5 +67,35 @@ $router->group(
             ['as' => 'tenants.delete-api-user',
             'uses' => 'ApiUserController@deleteApiUser']
         );
+        // Get language detail
+        $router->get(
+            '/language/{languageId}',
+            ['as' => 'language.get-language-details',
+            'uses' => 'LanguageController@getLanguageDetail']
+        );
+        // Get language lists
+        $router->get(
+            '/language',
+            ['as' => 'language.get-language-lists', 'middleware' => ['PaginationMiddleware'],
+            'uses' => 'LanguageController@index']
+        );
+        // Delete language details
+        $router->delete(
+            '/language/{languageId}',
+            ['as' => 'language.delete-language',
+            'uses' => 'LanguageController@destroy']
+        );
+        // Store language details
+        $router->post(
+            '/language',
+            ['as' => 'language.store-language',
+            'uses' => 'LanguageController@store']
+        );
+        // Update language details
+        $router->patch(
+            '/language/{languageId}',
+            ['as' => 'language.update-language',
+            'uses' => 'LanguageController@update']
+        );
     }
 );

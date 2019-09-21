@@ -17,6 +17,8 @@
             'ERROR_WHILE_STORE_COMPILED_CSS_FILE_TO_LOCAL' => '200011',
             'ERROR_FAILD_TO_UPLOAD_COMPILE_FILE_ON_S3' => '200012',
             'ERROR_WHILE_COMPILING_SCSS_FILES' => '200013',
+            'ERROR_LANGUAGE_NOT_FOUND' => '200021',
+            'ERROR_LANGUAGE_REQUIRED_FIELDS_EMPTY' => '200022',
         ],
         'background_process_status' => [
             'PENDING' => '0',
