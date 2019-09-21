@@ -77,7 +77,7 @@ class LanguageRepository implements LanguageInterface
      */
     public function update(array $languageData, int $id): Language
     {
-        $languageDetails = $this->language->findOrFail($id);
+        $languageDetails = $this->find($id);
         $languageDetails->update($languageData);
         return $languageDetails;
     }
@@ -90,7 +90,7 @@ class LanguageRepository implements LanguageInterface
      */
     public function delete(int $id): bool
     {
-        $languageData = $this->language->findOrFail($id);
+        $languageData = $this->find($id);
         return $languageData->delete();
     }
 }
