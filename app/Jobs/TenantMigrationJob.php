@@ -7,12 +7,10 @@ use Illuminate\Support\Facades\Artisan;
 use App\Helpers\DatabaseHelper;
 use App\Models\Tenant;
 use DB;
-use App\Traits\SendEmailTrait;
+use App\Helpers\EmailHelper;
 
 class TenantMigrationJob extends Job
 {
-    use SendEmailTrait;
-
     /**
      * @var App\Models\Tenant
      */
@@ -41,11 +39,17 @@ class TenantMigrationJob extends Job
      * @var int
      */
     public $timeout = 0;
+
+    /**
+     * @var App\Helpers\EmailHelper
+     */
+    private $emailHelper;
     
     /**
      * Create a new job instance.
      *
      * @param  App\Tenant $tenant Tenant model object
+     *
      * @return void
      */
     public function __construct(Tenant $tenant)
@@ -53,6 +57,7 @@ class TenantMigrationJob extends Job
         $this->tenant = $tenant;
         $this->databaseHelper = new DatabaseHelper;
         $this->emailMessage = trans("messages.email_text.JOB_PASSED_SUCCESSFULLY");
+        $this->emailHelper = new EmailHelper();
     }
 
     /**
@@ -62,36 +67,27 @@ class TenantMigrationJob extends Job
      */
     public function handle()
     {
-        try {
-            // Create database
-            DB::statement("CREATE DATABASE IF NOT EXISTS `ci_tenant_{$this->tenant->tenant_id}`");
+        // Create database
+        DB::statement("CREATE DATABASE IF NOT EXISTS `ci_tenant_{$this->tenant->tenant_id}`");
 
-            // Connect with newly created database
-            $this->databaseHelper->connectWithTenantDatabase($this->tenant->tenant_id);
+        // Connect with newly created database
+        $this->databaseHelper->connectWithTenantDatabase($this->tenant->tenant_id);
 
-            // Call artisan command to create table for newly created tenant's database
-            Artisan::call('migrate --path=database/migrations/tenant');
+        // Call artisan command to create table for newly created tenant's database
+        Artisan::call('migrate --path=database/migrations/tenant');
 
-            // Call artisan command to run database seeder for default values
-            Artisan::call('db:seed');
-            
-            // Disconnect and reconnect with default database
-            DB::disconnect('tenant');
-            DB::reconnect('mysql');
-            DB::setDefaultConnection('mysql');
-        } catch (\Exception $e) {
-            Log::info('error tenant migration for tenant : '. $this->tenant->name . ' : ' . $e);
-
-            $this->emailMessage = 'Error while creating migration for tenant';
-            $this->sendEmailNotification(true);
-            
-            $this->tenant->delete();
-            DB::statement("DROP DATABASE IF EXISTS `ci_tenant_{$this->tenant->tenant_id}`");
-        }
+        // Call artisan command to run database seeder for default values
+        Artisan::call('db:seed');
+        
+        // Disconnect and reconnect with default database
+        DB::disconnect('tenant');
+        DB::reconnect('mysql');
+        DB::setDefaultConnection('mysql');
     }
 
     /**
      * Send email notification to admin
+     * @codeCoverageIgnore
      * @param bool $isFail
      * @param bool $errorMessage
      * @return void
@@ -119,12 +115,12 @@ class TenantMigrationJob extends Job
         trans("messages.email_text.SUCCESS"). " : " .trans('messages.email_text.TENANT_MIGRATION'). " " . trans('messages.email_text.JOB_FOR') . $this->tenant->name. " " .trans("messages.email_text.TENANT"); //optional
         $params['data'] = $data;
 
-        $this->sendEmail($params);
+        $this->emailHelper->sendEmail($params);
     }
 
     /**
      * The job failed to process.
-     *
+     * @codeCoverageIgnore
      * @param  Exception  $exception
      * @return void
      */

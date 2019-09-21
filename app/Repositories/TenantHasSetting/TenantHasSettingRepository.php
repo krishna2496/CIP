@@ -14,7 +14,7 @@ class TenantHasSettingRepository implements TenantHasSettingInterface
     /**
      * @var App\Models\TenantHasSetting
      */
-    public $tenantHasSetting;
+    private $tenantHasSetting;
 
     /**
      * Create a new Tenant has setting repository instance.
@@ -64,10 +64,11 @@ class TenantHasSettingRepository implements TenantHasSettingInterface
     public function store(array $data, int $tenantId): bool
     {
         foreach ($data['settings'] as $value) {
-			if ($value['value'] == 1) 
-				$this->tenantHasSetting->enableSetting($tenantId, $value['tenant_setting_id']);
-			else 
-				$this->tenantHasSetting->disableSetting($tenantId, $value['tenant_setting_id']);
+            if ($value['value'] == 1) {
+                $this->tenantHasSetting->enableSetting($tenantId, $value['tenant_setting_id']);
+            } else {
+                $this->tenantHasSetting->disableSetting($tenantId, $value['tenant_setting_id']);
+            }
         }
         return true;
     }
