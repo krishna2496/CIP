@@ -141,4 +141,24 @@ class TenantSettingsTest extends TestCase
             ]
         ]);
     }
+
+    /**
+     * @test
+     *
+     * It should get empty data
+     *
+     * @return void
+     */
+    public function tenant_settings_it_should_return_no_tenant_settings_found()
+    {
+        DB::setDefaultConnection('tenant');
+
+        \App\Models\TenantSetting::whereNull('deleted_at')->delete();
+
+        DB::setDefaultConnection('mysql');
+        $this->get('tenant-settings', ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(200);
+        
+        \App\Models\TenantSetting::whereNotNull('deleted_at')->restore();
+    }
 }
