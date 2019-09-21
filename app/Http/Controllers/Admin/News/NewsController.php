@@ -77,7 +77,7 @@ class NewsController extends Controller
             $news = $this->newsRepository->getNewsList($request);
             $newsTransform = $news
             ->map(function (News $newsTransform) {
-                return $this->transformNews($newsTransform, '');
+                return $this->getTransformedNews($newsTransform, true);
             })->all();
 
             $requestString = $request->except(['page','perPage']);
@@ -237,7 +237,7 @@ class NewsController extends Controller
             // Get news details
             $news = $this->newsRepository->getNewsDetails($newsId);
             // Transform news details
-            $newsTransform = $this->transformNewsDetails($news);
+            $newsTransform = $this->getTransformedNews($news);
             
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_NEWS_FOUND');

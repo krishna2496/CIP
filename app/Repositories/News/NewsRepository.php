@@ -85,7 +85,7 @@ class NewsRepository implements NewsInterface
         int $languageId = null,
         string $newsStatus = null
     ): LengthAwarePaginator {
-        $newsData = $this->news->select('news_id', 'user_name', 'user_title', 'user_thumbnail', 'news_image')
+        $newsData = $this->news
         ->with(['newsToCategory' => function ($query) {
             $query->with(['newsCategory' => function ($query) {
                 $query->select('news_category_id', 'category_name', 'translations');

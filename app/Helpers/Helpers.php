@@ -360,7 +360,7 @@ class Helpers
     }
 
     /**
-     * Get short text description
+     * Trim text after x words
      *
      * @param string $phrase
      * @param int maxWords
