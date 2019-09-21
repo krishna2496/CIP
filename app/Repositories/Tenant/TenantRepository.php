@@ -43,7 +43,7 @@ class TenantRepository implements TenantInterface
             $tenantQuery->orderBy('tenant_id', $orderDirection);
         }
 
-        return $tenantQuery->paginate(config('constants.PER_PAGE_LIMIT'));
+        return $tenantQuery->paginate($request->perPage);
     }
 
     /**
@@ -92,27 +92,31 @@ class TenantRepository implements TenantInterface
     /**
      * Update the specified resource in storage.
      *
-     * @param  array  $requestArray
+     * @param  \Illuminate\Http\Request $request
      * @param  int  $id
      * @return App\Models\Tenant $tenant
      */
-    public function update(array $requestArray, int $id): Tenant
+    public function update(Request $request, int $id): Tenant
     {
         $tenant = $this->tenant->findOrFail($id);
-        $tenant->update($requestArray);
+        $tenant->update($request->toArray());
         return $tenant;
     }
 
     /**
      * Get pending tenant list to execute their background process
-     *
+     * @param int $tenantId
      * @return null|Illuminate\Support\Collection
      */
-    public function getPendingTenantsForProcess(): Collection
+    public function getPendingTenantsForProcess(int $tenantId = null)
     {
-        return $this->tenant->where(
+        $query = $this->tenant->where(
             'background_process_status',
             config('constants.background_process_status.PENDING')
-        )->get();
+        );
+        if ($tenantId) {
+            $query->where('tenant_id', $tenantId);
+        }
+        return $query->get();
     }
 }

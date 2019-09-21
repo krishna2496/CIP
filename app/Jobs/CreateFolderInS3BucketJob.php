@@ -6,12 +6,10 @@ use Illuminate\Support\Facades\Storage;
 use App\Models\Tenant;
 use App\Helpers\DatabaseHelper;
 use DB;
-use App\Traits\SendEmailTrait;
+use App\Helpers\EmailHelper;
 
 class CreateFolderInS3BucketJob extends Job
 {
-    use SendEmailTrait;
-
     /**
      * @var App\Models\Tenant
      */
@@ -42,8 +40,13 @@ class CreateFolderInS3BucketJob extends Job
     public $timeout = 0;
 
     /**
+     * @var App\Helpers\EmailHelper
+     */
+    private $emailHelper;
+
+    /**
      * Create a new job instance.
-     *
+     * @param App\Models\Tenant $tenant
      * @return void
      */
     public function __construct(Tenant $tenant)
@@ -51,6 +54,7 @@ class CreateFolderInS3BucketJob extends Job
         $this->tenant = $tenant;
         $this->databaseHelper = new DatabaseHelper;
         $this->emailMessage = trans("messages.email_text.JOB_PASSED_SUCCESSFULLY");
+        $this->emailHelper = new EmailHelper();
     }
 
     /**
@@ -60,58 +64,57 @@ class CreateFolderInS3BucketJob extends Job
      */
     public function handle()
     {
-        try {
-            exec('aws s3 cp --recursive s3://'.config('constants.AWS_S3_BUCKET_NAME').
+        exec('aws s3 cp --recursive s3://'.config('constants.AWS_S3_BUCKET_NAME').
             '/'.config('constants.AWS_S3_DEFAULT_THEME_FOLDER_NAME').' s3://'
             .config('constants.AWS_S3_BUCKET_NAME').'/'
             .$this->tenant->name);
-			
-			// Insert default logo image in database
-			if (Storage::disk('s3')->has($this->tenant->name.'/'.env('AWS_S3_ASSETS_FOLDER_NAME').'/'.env('AWS_S3_IMAGES_FOLDER_NAME').'/'.config('constants.AWS_S3_LOGO_IMAGE_NAME'))) {
-				$logoPathInS3 = 'https://s3.'.env('AWS_REGION').'.amazonaws.com/'.
-				env('AWS_S3_BUCKET_NAME').'/'.$this->tenant->name.'/'.env('AWS_S3_ASSETS_FOLDER_NAME').
-				'/'.env('AWS_S3_IMAGES_FOLDER_NAME').'/'.config('constants.AWS_S3_LOGO_IMAGE_NAME');
+            
+        // Insert default logo image in database
+        if (Storage::disk('s3')->has($this->tenant->name.'/'.env('AWS_S3_ASSETS_FOLDER_NAME').
+        '/'.env('AWS_S3_IMAGES_FOLDER_NAME').
+        '/'.config('constants.AWS_S3_LOGO_IMAGE_NAME'))) {
+            $logoPathInS3 = 'https://s3.'.env('AWS_REGION').'.amazonaws.com/'.
+                env('AWS_S3_BUCKET_NAME').'/'.$this->tenant->name.'/'.env('AWS_S3_ASSETS_FOLDER_NAME').
+                '/'.env('AWS_S3_IMAGES_FOLDER_NAME').'/'.config('constants.AWS_S3_LOGO_IMAGE_NAME');
 
-				// Connect with tenant database
-				$tenantOptionData['option_name'] = "custom_logo";
-				$tenantOptionData['option_value'] = $logoPathInS3;
+            // Connect with tenant database
+            $tenantOptionData['option_name'] = "custom_logo";
+            $tenantOptionData['option_value'] = $logoPathInS3;
 
-				// Create connection with tenant database
-				$this->databaseHelper->connectWithTenantDatabase($this->tenant->tenant_id);
-				DB::table('tenant_option')->insert($tenantOptionData);
+            // Create connection with tenant database
+            $this->databaseHelper->connectWithTenantDatabase($this->tenant->tenant_id);
+            DB::table('tenant_option')->insert($tenantOptionData);
 
-				// Disconnect tenant database and reconnect with default database
-				DB::disconnect('tenant');
-				DB::reconnect('mysql');
-				DB::setDefaultConnection('mysql');
-			}
-			
-			if (Storage::disk('s3')->has($this->tenant->name.'/'.env('AWS_S3_ASSETS_FOLDER_NAME').'/css/'.env('S3_CUSTOME_CSS_NAME'))) {
-				$pathInS3 = 'https://s3.'.env('AWS_REGION').'.amazonaws.com/'.
-				env('AWS_S3_BUCKET_NAME').'/'.$this->tenant->name.'/'.env('AWS_S3_ASSETS_FOLDER_NAME').'/css/'.env('S3_CUSTOME_CSS_NAME');
-				
-				// Connect with tenant database
-				$tenantOptionData['option_name'] = "custom_css";
-				$tenantOptionData['option_value'] = $pathInS3;
+            // Disconnect tenant database and reconnect with default database
+            DB::disconnect('tenant');
+            DB::reconnect('mysql');
+            DB::setDefaultConnection('mysql');
+        }
+            
+        if (Storage::disk('s3')->has($this->tenant->name.'/'.env('AWS_S3_ASSETS_FOLDER_NAME').
+        '/css/'.env('S3_CUSTOME_CSS_NAME'))) {
+            $pathInS3 = 'https://s3.'.env('AWS_REGION').'.amazonaws.com/'.
+                env('AWS_S3_BUCKET_NAME').'/'.$this->tenant->name.'/'.env('AWS_S3_ASSETS_FOLDER_NAME').
+                '/css/'.env('S3_CUSTOME_CSS_NAME');
+                
+            // Connect with tenant database
+            $tenantOptionData['option_name'] = "custom_css";
+            $tenantOptionData['option_value'] = $pathInS3;
 
-				// Create connection with tenant database
-				$this->databaseHelper->connectWithTenantDatabase($this->tenant->tenant_id);
-				DB::table('tenant_option')->insert($tenantOptionData);
+            // Create connection with tenant database
+            $this->databaseHelper->connectWithTenantDatabase($this->tenant->tenant_id);
+            DB::table('tenant_option')->insert($tenantOptionData);
 
-				// Disconnect tenant database and reconnect with default database
-				DB::disconnect('tenant');
-				DB::reconnect('mysql');
-				DB::setDefaultConnection('mysql');
-			}
-			
-        } catch (\Exception $e) {
-            throw $e;
-            $this->emailMessage = "Error while creating folder on S3 bucket";
+            // Disconnect tenant database and reconnect with default database
+            DB::disconnect('tenant');
+            DB::reconnect('mysql');
+            DB::setDefaultConnection('mysql');
         }
     }
 
     /**
      * Send email notification to admin
+     * @codeCoverageIgnore
      * @param bool $isFail
      * @return void
      */
@@ -136,12 +139,12 @@ class CreateFolderInS3BucketJob extends Job
         trans("messages.email_text.SUCCESS"). " : " .trans('messages.email_text.CREATE_FOLDER_ON_S3_BUCKET'). " " . trans('messages.email_text.JOB_FOR') . $this->tenant->name. " " .trans("messages.email_text.TENANT"); //optional
         $params['data'] = $data;
 
-        $this->sendEmail($params);
+        $this->emailHelper->sendEmail($params);
     }
 
     /**
      * The job failed to process.
-     *
+     * @codeCoverageIgnore
      * @param  Exception  $exception
      * @return void
      */

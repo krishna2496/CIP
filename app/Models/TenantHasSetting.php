@@ -94,12 +94,13 @@ class TenantHasSetting extends Model
      */
     public function enableSetting(int $tenantId, int $tenantSettingId): bool
     {
-		return $this->where(['tenant_id' => $tenantId, 'tenant_setting_id' => $tenantSettingId])->withTrashed()->first() ?
-				$this->where(['tenant_id' => $tenantId, 'tenant_setting_id' => $tenantSettingId])->restore():
-				static::firstOrNew(array('tenant_id' => $tenantId, 'tenant_setting_id' => $tenantSettingId))->save();
+        return $this->where(['tenant_id' => $tenantId, 'tenant_setting_id' => $tenantSettingId])
+        ->withTrashed()->first() ?
+            $this->where(['tenant_id' => $tenantId, 'tenant_setting_id' => $tenantSettingId])->restore():
+            static::firstOrNew(array('tenant_id' => $tenantId, 'tenant_setting_id' => $tenantSettingId))->save();
     }
-	
-	/**
+    
+    /**
      * disable settings
      *
      * @param  int  $tenantId
