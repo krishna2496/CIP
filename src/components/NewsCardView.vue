@@ -2,16 +2,16 @@
     <div class="cards-wrapper">
         <div class="card-grid">
             <b-row>
-                <b-col lg="4" sm="6" class="card-outer" data-aos="fade-up">
+                <b-col lg="4" sm="6" class="card-outer" data-aos="fade-up" v-for="(data,key) in newsListing" v-bind:key="key">
                     <b-card no-body>
                         <b-card-header>
                             <div class="header-img-block">
-                                <b-link class="group-img" :style="{backgroundImage: 'url('+grpImages[0]+')'}"></b-link>
+                                <b-link class="group-img" :style="{backgroundImage: 'url('+data.news_image+')'}"></b-link>
                             </div>
                             <div class="group-category">
-                                <span class="category-text">Customer Experience</span>
+                                <span class="category-text">{{data.news_category[0]}}</span>
                             </div>
-                            <b-link class="btn btn-borderwhite icon-btn" :title="langauageData.label.view_detail" to="/news-detail">
+                            <b-link class="btn btn-borderwhite icon-btn" :title="langauageData.label.view_detail" :to="'/news-detail/'+data.news_id">
                                 <span>{{langauageData.label.view_detail}}</span>
                                 <i>
                                     <svg
@@ -37,23 +37,22 @@
                         </b-card-header>
                         <b-card-body>
                             <div class="content-block">
-                                <div class="top-block">
+                                <div class="top-block" v-if="data.news_content">
                                     <b-link
-                                        target="_blank"
-                                        title="Grow Trees"
+                                        :to="'/news-detail/'+data.news_id"
+                                        :title="data.news_content.title"
                                         class="card-title mb-2"
-                                        >10 User and Customer Engagement Strategies for 2019
+                                        v-if="data.news_content.title"
+                                        >{{data.news_content.title | substring(40)}}
                                     </b-link>
-                                    <b-card-text>
-                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-                                    incididunt ut labore...
+                                    <b-card-text v-if="data.news_content.description" v-html="getDescription(data.news_content.description)"> 
                                     </b-card-text>
                                 </div>
                                 <div class="bottom-block">
-                                    <b-card-text class="publish-date">Published on 23/07/2019</b-card-text>
+                                    <b-card-text class="publish-date" v-if="data.published_on != null">{{langauageData.label.published_on}} {{data.published_on | formatDate}}</b-card-text>
                                     <div class="author-block">
-                                        <i :style="{backgroundImage: 'url('+profileImages[0]+')'}"></i>
-                                        <span>Andrew Johnson</span>
+                                        <i :style="{backgroundImage: 'url('+data.user_thumbnail+')'}"></i>
+                                        <span>{{data.user_name}}</span>
                                     </div>
                                 </div>
                             </div>
@@ -70,6 +69,9 @@ import store from '../store';
 export default {
     name: "NewsCard",
     components: {},
+    props : {
+        newsListing : Array
+    },
     data() {
         return {
             langauageData : [],
@@ -94,7 +96,12 @@ export default {
             ]
         };
     },
-    methods: {},
+    methods: {
+        getDescription(description) {       
+            let data = description.substring(0,150);
+            return data
+        }
+    },
     created() {
         this.langauageData = JSON.parse(store.state.languageLabel);
         

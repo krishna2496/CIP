@@ -5,22 +5,40 @@
 		</header>
 		<main>
 			<b-container>
+				
 				<div class="banner-wrap">
-					<div :style="{backgroundImage: 'url('+bgImg+')'}" class="banner-section">
+					<div :style="{backgroundImage: 'url('+bannerUrl+')'}" class="banner-section">
 						<b-container>
 							<h1>{{langauageData.label.news}}</h1>
+							<p>	{{bannerText}}</p>
 						</b-container>
 					</div>
 				</div>
-				<NewsCard />
-				<div class="pagination-block" data-aos="fade-up">
-					<b-pagination
-						v-model="currentPage"
-						:total-rows="rows"
-						:per-page="perPage"
-						align="center"
-						aria-controls="my-cardlist"
-					></b-pagination>
+			
+				<div class="news-detail-container" v-if="showErrorDiv">
+					<b-alert show variant="danger" dismissible v-model="showErrorDiv">
+						{{ message }}
+					</b-alert>
+				</div>
+				<div v-if="!showErrorDiv">
+					<div v-if="newsListing.length > 0">
+						<NewsCard
+						:newsListing="newsListing"
+						/>
+					</div>
+					<div v-else class="text-center news-detail-container">
+						 <h2>{{langauageData.label.news}} {{langauageData.label.not_found}}</h2>
+					</div>
+					<div class="pagination-block" data-aos="fade-up" v-if="pagination.totalPages > 1">
+						<b-pagination
+							v-model="pagination.currentPage"
+							:total-rows="pagination.total"
+							:per-page="pagination.perPage"
+							align="center"
+							@change="pageChange"
+							aria-controls="my-cardlist"
+						></b-pagination>
+					</div>
 				</div>
 			</b-container>
 		</main>
@@ -40,7 +58,11 @@
 import NewsCard from "../components/NewsCardView";
 import store from '../store';
 import constants from '../constant';
-
+import {
+		newsListing,
+	} from "../services/service";
+    
+    
 export default {
 	components: {
 		ThePrimaryHeader : () => import("../components/Layouts/ThePrimaryHeader"),
@@ -55,15 +77,55 @@ export default {
 			currentPage: 1,
 			langauageData : [],
 			isNewsDisplay : true,
+			showErrorDiv: false,
+			message: null,
+			newsListing : [],
+			pagination : {
+				'currentPage' :1,
+				"total": 0,
+				"perPage": 1,
+				"currentPage": 1, 
+				"totalPages": 0,
+			},
+			bannerUrl : '',
+			bannerText : ''
 		};
 	},
-	methods: {},
+	methods: {
+		pageChange(page){
+			this.getNewsListing(page);
+		},
+		getNewsListing(currentPage) {
+			newsListing(currentPage).then(response => {
+				if(response.error == false) {
+					this.newsListing = response.data
+					this.pagination.currentPage = response.pagination.current_page
+					this.pagination.total = response.pagination.total
+					this.pagination.perPage = response.pagination.per_page
+					this.pagination.currentPage = response.pagination.current_page
+					this.pagination.totalPages = response.pagination.total_pages
+				} else {
+					this.showErrorDiv = true;
+					this.message = response.message
+				}
+			}) 
+		}
+	},
 	created() {
+		let _this = this
 		this.langauageData = JSON.parse(store.state.languageLabel);
 		this.isNewsDisplay = this.settingEnabled(constants.NEWS_ENABLED);
 		if(!this.isNewsDisplay) {
 			this.$router.push('/home')
 		}
+		this.bannerUrl = store.state.newsBanner
+		let bannerTextArray = JSON.parse(store.state.newsBannerText)
+		bannerTextArray.filter(function(data,index){
+			if(data.lang == store.state.defaultLanguage.toLowerCase()) {
+				_this.bannerText = data.message
+			}
+		})
+		this.getNewsListing(this.pagination.currentPage);
 	},
 	destroyed() {}
 };

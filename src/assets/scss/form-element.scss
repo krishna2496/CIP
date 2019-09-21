@@ -114,6 +114,8 @@ a {
     &.icon-btn {
         i {
             svg {
+                height: 100%;
+                width: 100%;
                 fill: $primary;
             }
         }
@@ -171,6 +173,8 @@ a {
     &.icon-btn {
         i {
             svg {
+                height: 100%;
+                width: 100%;
                 fill: $gray-primary;
             }
         }
@@ -217,6 +221,8 @@ a {
     &.icon-btn {
         i {
             svg {
+                height: 100%;
+                width: 100%;
                 fill: $white;
             }
         }
@@ -250,6 +256,8 @@ a {
             margin-left: 12px;
         }
         svg {
+            height: 100%;
+            width: 100%;
             @include transition(all 0.3s);
         }
     }
@@ -1044,6 +1052,7 @@ label {
 
 .mx-datepicker-popup {
     z-index: 1040 !important;
+    margin-top: 15px !important;
 }
 
 .mx-input {

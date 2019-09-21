@@ -310,11 +310,54 @@
 }
 
 .tab-with-picker {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 30px;
-    flex-wrap: wrap;
+    .table-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+    }
+    .table-action-btn {
+        display: flex;
+        justify-content: flex-end;
+        margin-bottom: 10px;
+        .picker-btn {
+            border: 1px solid $border-color;
+            padding: 5px 8px!important;
+            margin-right: 8px;
+            &.disabled {
+                img {
+                    opacity: 0.4;
+                }
+            }
+        }
+    }
+    .picker-btn {
+        background: $light-gray;
+        border: none;
+        display: inline-flex;
+        align-items: center;
+        border-radius: 3px;
+        &.prev-btn {
+            border-radius: 3px 0 0 3px;
+            padding: 5px 10px 5px 13px;
+        }
+        &.next-btn {
+            border-radius: 0 3px 3px 0;
+            padding: 5px 13px 5px 10px;
+        }
+        &.disabled {
+            pointer-events: none;
+            cursor: default;
+        }
+        img {
+            width: 12px;
+            height: 12px;
+        }
+        &:last-child {
+            margin-right: 0;
+        }
+    }
     .inner-wrap {
         display: inline-flex;
         align-items: center;
@@ -403,32 +446,6 @@
                 text-align: center;
             }
         }
-        .picker-btn {
-            background: $light-gray;
-            border: none;
-            display: inline-flex;
-            align-items: center;
-            border-radius: 3px;
-            &.prev-btn {
-                border-radius: 3px 0 0 3px;
-                padding: 5px 10px 5px 13px;
-            }
-            &.next-btn {
-                border-radius: 0 3px 3px 0;
-                padding: 5px 13px 5px 10px;
-            }
-            &.disabled {
-                pointer-events: none;
-                cursor: default;
-            }
-            img {
-                width: 12px;
-                height: 12px;
-            }
-            &:last-child {
-                margin-right: 0;
-            }
-        }
     }
 }
 
@@ -485,8 +502,6 @@
     }
 }
 
-.timesheet-request {
-    tr {
-        line-height: 32px !important
-    }
+.table-wrapper-outer {
+    position: relative;
 }

@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="table-col-inner">
         <div class="table-outer timesheet-table-outer">
             <div class="table-inner">
                 <h3>{{headerLable}}</h3>
@@ -11,7 +11,7 @@
                     </template>
                 </b-table>
                 <div class="text-center" v-else>
-                    <h5>{{langauageData.label.no_record_found}}</h5>
+                    <h5>{{headerLable | firstLetterCapital}} {{langauageData.label.not_found}}</h5>
                 </div>
             </div>
             <div class="btn-block" v-if="items.length > 0">

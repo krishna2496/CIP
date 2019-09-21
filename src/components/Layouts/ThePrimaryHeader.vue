@@ -89,50 +89,12 @@
                                     :title='langauageData.label.stories'>{{ langauageData.label.stories}}</a>
                             </li>
                             <li class="has-menu no-dropdown" v-if="isNewsDisplay">
-                                <a href="Javascript:void(0)"
-                                    :title='langauageData.label.news'>{{ langauageData.label.news}}</a>
-                            </li>
-<<<<<<< HEAD
-                            <li class="no-dropdown">
-                                <router-link 
-                                    :to="{ path: '/home/favourite-missions'}" @click.native="menuBarclickHandler"
+                               
+                                <router-link :to="{ path: '/news'}"
                                     >
-                                    {{langauageData.label.top_favourite}}
+                                    {{langauageData.label.news}}
                                 </router-link>
                             </li>
-                            <li class="no-dropdown">
-                                <router-link 
-                                    :to="{ path: '/home/recommended-missions'}" @click.native="menuBarclickHandler"
-                                    >
-                                    {{langauageData.label.recommended}}
-                                </router-link>
-                            </li>
-                            <li class="no-dropdown">
-                                <router-link 
-                                    :to="{ path: '/home/random-missions'}" @click.native="menuBarclickHandler"
-                                    >
-                                    {{langauageData.label.random}}
-                                </router-link>
-                            </li>
-                          </ul>
-                        </li>
-                        <li class="has-menu no-dropdown" v-if="isStoryDisplay">
-                            <a href="Javascript:void(0)" :title='langauageData.label.stories'>{{ langauageData.label.stories}}</a>
-                            <!-- <router-link 
-                                :to="{ path: '/stories'}" @click.native="menuBarclickHandler"
-                                >
-                                {{langauageData.label.stories}}
-                            </router-link> -->
-                        </li>
-                        <li class="has-menu no-dropdown" v-if="isNewsDisplay">
-                            <router-link 
-                                :to="{ path: '/news'}" @click.native="menuBarclickHandler"
-                                >
-                                {{langauageData.label.news}}
-                            </router-link>
-                        </li>
-=======
->>>>>>> a675337c33e1a1055fe63165fc748458395fa0e8
 
                             <li class="has-menu" v-if="isPolicyDisplay">
                                 <a href="Javascript:void(0)"

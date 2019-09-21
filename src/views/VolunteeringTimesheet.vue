@@ -1,11 +1,9 @@
 <template>
-
     <div class="dashboard-timesheet inner-pages">
         <header>
             <ThePrimaryHeader v-if="isShownComponent"></ThePrimaryHeader>
         </header>
         <main>
-
             <DashboardBreadcrumb />
             <div class="dashboard-tab-content" v-if="isComponentLoaded">
                 <b-container v-if="isAllVisible">
@@ -19,7 +17,9 @@
                             <div class="table-outer">
                                 <div class="table-inner">
                                     <h3>{{langauageData.label.volunteering_hours}}</h3>
-                                    <VolunteeringTimesheetTableHeader @updateCall="changeVolunteeringHours" />
+                                    <VolunteeringTimesheetTableHeader 
+                                    :currentWeek="timeSheetHourCurrentDate"
+                                    @updateCall="changeVolunteeringHours" />
                                     <div class="table-wrapper-outer">
                                         <div
                                             v-bind:class="{ 'content-loader-wrap': true, 'loader-active': tableLoaderActive}">
@@ -30,15 +30,17 @@
                                             <b-thead>
                                                 <b-tr>
                                                     <b-th class="mission-col">{{langauageData.label.mission}}</b-th>
-                                                    <b-th v-for="(item,key) in volunteeringHoursWeeks"
+                                                    <b-th v-for="(key,item) in volunteeringHoursWeeks"
+                                                        v-bind:key="key"
+                                                        v-if="item != null"
                                                         v-bind:class="{'currentdate-col' : highLightCurrentDate(key+1,'time')}">
-                                                        {{key+1}}<span>{{item}}</span>
+                                                        {{key+1}}<span>{{getTimeSheetWeekName(item,'time')}}</span>
                                                     </b-th>
                                                     <b-th class="total-col">{{langauageData.label.total}}</b-th>
                                                 </b-tr>
                                             </b-thead>
                                             <b-tbody v-if="timeMissionData.length > 0">
-                                                <b-tr v-for="(timeItem,key) in timeMissionData">
+                                                <b-tr v-for="(timeItem,key) in timeMissionData" v-bind:key="key">
                                                     <b-td class="mission-col">
                                                         <a target="_blank"
                                                             :href="`mission-detail/${timeItem.mission_id}`">{{timeItem.title}}</a>
@@ -46,7 +48,7 @@
                                                     <b-td :mission-id="timeItem.mission_id" :date="key+1"
                                                         v-on:click="getRelatedTimeData(key+1,timeItem,'time')"
                                                         v-bind:class="[getTimeSheetHourClass(key+1,timeItem,'time')]"
-                                                        v-for="(item,key) in volunteeringHoursWeeks">
+                                                        v-for="(key,item) in volunteeringHoursWeeks" v-if="item != null" v-bind:key="key">
                                                         {{getTime(key,timeItem.timesheet,'time')}}
                                                     </b-td>
                                                     <b-td class="total-col">
@@ -54,7 +56,7 @@
                                                 </b-tr>
                                                 <b-tr class="total-row">
                                                     <b-td class="mission-col">{{langauageData.label.total}}:</b-td>
-                                                    <b-td v-for="(item,key) in volunteeringHoursWeeks">
+                                                    <b-td v-for="(key,item) in volunteeringHoursWeeks" v-if="item != null" v-bind:key="key">
                                                         {{getColumnHourTotal(key+1,'time')}}
                                                     </b-td>
                                                     <b-td>
@@ -83,7 +85,9 @@
                             <div class="table-outer timesheet-table-outer">
                                 <div class="table-inner">
                                     <h3>{{langauageData.label.volunteering_goals}}</h3>
-                                    <VolunteeringTimesheetTableHeader @updateCall="changeVolunteeringGoals" />
+                                    <VolunteeringTimesheetTableHeader 
+                                    :currentWeek="timeSheetGoalCurrentDate"
+                                    @updateCall="changeVolunteeringGoals" />
                                     <div class="table-wrapper-outer">
                                         <div
                                             v-bind:class="{ 'content-loader-wrap': true, 'loader-active': goalTableLoaderActive}">
@@ -96,14 +100,14 @@
                                                     <b-th class="mission-col">{{langauageData.label.mission}}</b-th>
                                                     <b-th
                                                         v-bind:class="{'currentdate-col' : highLightCurrentDate(key+1,'goal')}"
-                                                        v-for="(item,key) in volunteeringGoalWeeks">
-                                                        {{key+1}}<span>{{item}}</span>
+                                                        v-for="(key,item) in volunteeringGoalWeeks" v-bind:key="key">
+                                                        {{key+1}}<span>{{getTimeSheetWeekName(item,'goal')}}</span>
                                                     </b-th>
                                                     <b-th class="total-col">{{langauageData.label.total}}</b-th>
                                                 </b-tr>
                                             </b-thead>
                                             <b-tbody v-if="goalMissionData.length > 0">
-                                                <b-tr v-for="(timeItem,key) in goalMissionData">
+                                                <b-tr v-for="(timeItem,key) in goalMissionData" v-bind:key="key">
                                                     <b-td class="mission-col">
                                                         <a target="_blank"
                                                             :href="`mission-detail/${timeItem.mission_id}`">{{timeItem.title}}</a>
@@ -111,7 +115,9 @@
                                                     <b-td :mission-id="timeItem.mission_id" :date="key+1"
                                                         v-on:click="getRelatedTimeData(key+1,timeItem,'goal')"
                                                         v-bind:class="[getTimeSheetHourClass(key+1,timeItem,'goal')]"
-                                                        v-for="(item,key) in volunteeringGoalWeeks">
+                                                        v-for="(key,item) in volunteeringGoalWeeks"
+                                                        v-bind:key="key"
+                                                        >
                                                         {{getTime(key,timeItem.timesheet,'goal')}}
                                                     </b-td>
                                                     <b-td class="total-col">
@@ -119,7 +125,7 @@
                                                 </b-tr>
                                                 <b-tr class="total-row">
                                                     <b-td class="mission-col">{{langauageData.label.total}}:</b-td>
-                                                    <b-td v-for="(item,key) in volunteeringGoalWeeks">
+                                                    <b-td v-for="(key,item) in volunteeringGoalWeeks" v-bind:key="key">
                                                         {{getColumnHourTotal(key+1,'goal')}}
                                                     </b-td>
                                                     <b-td>
@@ -160,15 +166,16 @@
                                 :fileName="langauageData.export_timesheet_file_names.PENTIND_GOAL_MISSION_ENTRIES_XLSX"
                                 :totalPages="goalMissionTotalPage" />
                         </div>
-
                         <AddVolunteeringHours ref="timeModal" :defaultWorkday="defaultWorkday"
                             :defaultHours="defaultHours" :defaultMinutes="defaultMinutes" :files="files"
                             :timeEntryDefaultData="currentTimeData" :disableDates="volunteerHourDisableDates"
                             @getTimeSheetData="getVolunteerHoursData" @resetModal="hideModal" :workDayList="workDayList"
+                            @changeTimeSheetView="changeTimeSheetHourView"
                             @updateCall="updateDefaultValue" @changeDocument="changeTimeDocument" />
                         <AddVolunteeringAction ref="goalModal" :defaultWorkday="defaultWorkday"
                             :defaultHours="defaultHours" :defaultMinutes="defaultMinutes" :files="files"
                             :timeEntryDefaultData="currentTimeData" :disableDates="volunteerHourDisableDates"
+                            @changeTimeSheetView="changeTimeSheetGoalView"
                             @getTimeSheetData="getVolunteerHoursData" @resetModal="hideModal" :workDayList="workDayList"
                             @updateCall="updateDefaultValue" @changeDocument="changeGoalDocument" />
                     </div>
@@ -183,9 +190,7 @@
                         </div>
                     </div>
                 </b-container>
-
             </div>
-
         </main>
         <footer>
             <TheSecondaryFooter v-if="isShownComponent"></TheSecondaryFooter>
@@ -208,6 +213,7 @@
     import store from '../store';
     import DatePicker from "vue2-datepicker";
     import FileUpload from 'vue-upload-component';
+
     import {
         volunteerTimesheetHours,
         fetchTimeSheetDocuments,
@@ -264,9 +270,15 @@
                 volunteeringHoursCurrentMonth: '',
                 volunteeringHoursCurrentYear: '',
                 volunteeringHoursWeeks: [],
+                volunteeringHoursWeekName: [],
+                volunteeringHoursMonthArray: [],
+                volunteeringHoursYearArray: [],
+                volunteeringGoalMonthArray: [],
+                volunteeringGoalYearArray: [],
                 volunteeringGoalCurrentMonth: '',
                 volunteeringGoalCurrentYear: '',
                 volunteeringGoalWeeks: [],
+                volunteeringGoalWeekName: [],
                 timeMissionData: [],
                 goalMissionData: [],
                 timeRequestLabel: "",
@@ -304,13 +316,33 @@
                 todaysDate: moment().format("D"),
                 currentYear: moment().format("YYYY"),
                 currentMonth: moment().format("M"),
-                isComponentLoaded: false
+                isComponentLoaded: false,
+                timeSheetHourCurrentDate :  moment().week(),
+                timeSheetGoalCurrentDate :  moment().week(),
+                timeSheetStartDate : '',
+                timeSheetEndDate : '',
             };
         },
         updated() {
 
         },
         methods: {
+            getTimeSheetWeekName(item,timeSheetType){
+                let weekArray = [];
+                if(timeSheetType == "time") {
+                    weekArray = this.volunteeringHoursWeekName
+                } else {
+                    weekArray = this.volunteeringGoalWeekName   
+                }
+                return weekArray[item]
+              
+            },
+            changeTimeSheetGoalView(data) {
+                this.timeSheetGoalCurrentDate =  moment(data).week();
+            },
+            changeTimeSheetHourView(data){
+                this.timeSheetHourCurrentDate =  moment(data).week();
+            },
             changeTimeDocument(date) {
                 var _this = this;
                 let year = moment(date).format("YYYY");
@@ -504,18 +536,38 @@
                 } else {
                     disableEndDate = endDate
                 }
-                let currentDate = moment(_this.volunteeringHoursCurrentYear + '-' + _this
-                    .volunteeringHoursCurrentMonth + '-' + date).format("YYYY-MM-DD");
+              
                 let timeArray = timeSheetArray.timesheet;
                 let currentTimeSheetYear = '';
                 let currentTimeSheetMonth = '';
+                let currentDate = ''
+                let currentDataArray = []
+
                 if (timeSheetType == 'time') {
-                    currentTimeSheetYear = _this.volunteeringHoursCurrentYear;
-                    currentTimeSheetMonth = _this.volunteeringHoursCurrentMonth;
+                    currentDataArray = this.volunteeringHoursWeeks
+
+                    currentDataArray.filter(function(data,index){
+                        if(data+1 == date) {
+                            currentTimeSheetMonth = parseInt(_this.volunteeringHoursMonthArray[index])
+                            currentTimeSheetYear = parseInt(_this.volunteeringHoursYearArray[index])
+                        }
+                    })
+
+                     currentDate = moment(_this.volunteeringHoursCurrentYear + '-' + _this
+                    .volunteeringHoursCurrentMonth + '-' + date).format("YYYY-MM-DD");
                 } else {
-                    currentTimeSheetYear = _this.volunteeringGoalCurrentYear;
-                    currentTimeSheetMonth = _this.volunteeringGoalCurrentMonth;
+                    currentDataArray = this.volunteeringGoalWeeks
+
+                    currentDataArray.filter(function(data,index){
+                        if(data+1 == date) { 
+                            currentTimeSheetMonth = parseInt(_this.volunteeringGoalMonthArray[index])
+                            currentTimeSheetYear = parseInt(_this.volunteeringGoalYearArray[index])
+                        }
+                    })
+                     currentDate = moment(_this.volunteeringGoalCurrentYear + '-' + _this
+                    .volunteeringGoalCurrentMonth + '-' + date).format("YYYY-MM-DD");
                 }
+
                 timeArray.filter(function (timeSheetItem, timeSheetIndex) {
                     let currentArrayDate = timeSheetItem.date
                     let currentArrayYear = timeSheetItem.year
@@ -538,7 +590,6 @@
                         }
                     }
                 });
-
                 if (currentDate < disabledPastDates && timeSheetArray.start_date != null) {
                     returnData.push("disabled")
                 }
@@ -573,12 +624,14 @@
                 this.volunteeringHoursCurrentMonth = data.month
                 this.volunteeringHoursCurrentYear = data.year
                 data.weekdays.shift();
-                this.volunteeringHoursWeeks = data.weekdays;
+                this.volunteeringHoursWeeks = data.days;
+                this.volunteeringHoursWeekName = data.weekdays
+                this.volunteeringHoursMonthArray = data.monthArray,
+                this.volunteeringHoursYearArray = data.yearArray,
                 setTimeout(function () {
                     _this.tableLoaderActive = false
                 })
             },
-
             changeVolunteeringGoals(data) {
                 this.enableSubmitGoalTimeSheet = true;
                 var _this = this;
@@ -586,16 +639,17 @@
                 this.volunteeringGoalCurrentMonth = data.month
                 this.volunteeringGoalCurrentYear = data.year
                 data.weekdays.shift();
-                this.volunteeringGoalWeeks = data.weekdays
+                this.volunteeringGoalWeeks = data.days
+                this.volunteeringGoalWeekName = data.weekdays
+                this.volunteeringGoalMonthArray = data.monthArray,
+                this.volunteeringGoalYearArray = data.yearArray,
                 setTimeout(function () {
                     _this.goalTableLoaderActive = false
                 })
             },
-
             updateWorkday(value) {
                 this.defaultWorkday = value.selectedVal;
             },
-
             updateDefaultValue(value) {
                 if (value.fieldId == "workday") {
                     this.defaultWorkday = value.selectedVal;
@@ -607,11 +661,9 @@
                     this.defaultMinutes = value.selectedVal
                 }
             },
-
             updateMission(value) {
                 this.defaultMission = value;
             },
-
             async getVolunteerHoursData() {
                 this.tableLoaderActive = true
                 var _this = this;
@@ -629,27 +681,47 @@
                     _this.tableLoaderActive = false
                 })
             },
-
             getTime(date, timeArray, timeSheetType) {
                 let _this = this
                 let returnData = '';
                 var dates = date + 1;
+                let currentValueYear = ''
+                let currentValueMonth = ''
+                let currentDataArray = []
+                if (timeSheetType == "time") {
+                    currentDataArray = this.volunteeringHoursWeeks
+                    currentDataArray.filter(function(data,index){
+                        if(data == date) {
+                            currentValueMonth = parseInt(_this.volunteeringHoursMonthArray[index])
+                            currentValueYear = parseInt(_this.volunteeringHoursYearArray[index])
+                        }
+                    })
+                } else {
+                    currentDataArray = this.volunteeringGoalWeeks
+                    currentDataArray.filter(function(data,index){
+                        if(data == date) {
+                            currentValueMonth = parseInt(_this.volunteeringGoalMonthArray[index])
+                            currentValueYear = parseInt(_this.volunteeringGoalYearArray[index])
+                        }
+                    })
+                }    
+
                 timeArray.filter(function (timeSheetItem, timeSheetIndex) {
 
-                    let currentArrayDate = timeSheetItem.date
-                    let currentArrayYear = timeSheetItem.year
-                    let currentArrayMonth = timeSheetItem.month
+                    let currentArrayDate = parseInt(timeSheetItem.date)
+                    let currentArrayYear = parseInt(timeSheetItem.year)
+                    let currentArrayMonth = parseInt(timeSheetItem.month)
                     if (timeSheetType == "time") {
-                        if (_this.volunteeringHoursCurrentYear == currentArrayYear) {
-                            if (_this.volunteeringHoursCurrentMonth == currentArrayMonth) {
+                        if (currentValueYear == currentArrayYear) {
+                            if (currentValueMonth == currentArrayMonth) {
                                 if (dates == currentArrayDate) {
                                     returnData = timeSheetItem.time
                                 }
                             }
                         }
                     } else {
-                        if (_this.volunteeringGoalCurrentYear == currentArrayYear) {
-                            if (_this.volunteeringGoalCurrentMonth == currentArrayMonth) {
+                        if (currentValueYear == currentArrayYear) {
+                            if (currentValueMonth == currentArrayMonth) {
                                 if (dates == currentArrayDate) {
                                     returnData = timeSheetItem.action
                                 }
@@ -661,13 +733,13 @@
                 });
                 return returnData
             },
-
             getRawHourTotal(timeArray, timeSheetType) {
                 let _this = this
                 var time1 = "00:00";
                 var hour = 0
                 var minute = 0
                 var action = 0
+                
                 if (timeArray) {
                     timeArray.filter(function (timeSheetItem, timeSheetIndex) {
                         let currentArrayDate = timeSheetItem.date
@@ -684,8 +756,14 @@
                                     minute = parseInt(splitTime1[1]) + parseInt(splitTime2[1]);
                                     hour = hour + minute / 60;
                                     minute = minute % 60;
-                                    time1 = ("0" + Math.floor(hour)).slice(-2) + ':' + ("0" + Math.floor(
+                                    if(Math.floor(hour) < 10) {
+                                        time1 = ("0" + Math.floor(hour)).slice(-2) + ':' + ("0" + Math.floor(
                                         minute)).slice(-2);
+                                    } else {
+                                        time1 = Math.floor(hour) + ':' + ("0" + Math.floor(
+                                        minute)).slice(-2);
+                                    }
+                                    
                                 }
                             }
                         } else {
@@ -711,7 +789,6 @@
 
                 }
             },
-
             getColumnHourTotal(day, timeSheetType) {
 
                 let _this = this
@@ -720,11 +797,31 @@
                 var minute = 0;
                 var action = 0;
                 let timeArray = []
+
+                let currentValueYear = ''
+                let currentValueMonth = ''
+                let currentDataArray = []
+
                 if (timeSheetType == "time") {
                     timeArray = this.timeMissionData;
+                    currentDataArray = this.volunteeringHoursWeeks
+                    currentDataArray.filter(function(data,index){
+                        if(data+1 == day) {
+                            currentValueMonth = parseInt(_this.volunteeringHoursMonthArray[index])
+                            currentValueYear = parseInt(_this.volunteeringHoursYearArray[index])
+                        }
+                    })
                 } else {
                     timeArray = this.goalMissionData;
-                }
+                    currentDataArray = this.volunteeringGoalWeeks
+                    currentDataArray.filter(function(data,index){
+                        if(data+1 == day) {
+                            currentValueMonth = parseInt(_this.volunteeringGoalMonthArray[index])
+                            currentValueYear = parseInt(_this.volunteeringGoalYearArray[index])
+                        }
+                    })
+                }  
+
                 if (timeArray.length > 0) {
                     timeArray.filter(function (timeSheetItem, timeSheetIndex) {
                         let timeEntryData = timeSheetItem.timesheet;
@@ -735,8 +832,8 @@
                             let currentArrayMonth = timeEntry.month
                             var time2 = timeEntry.time;
                             if (timeSheetType == "time") {
-                                if (_this.volunteeringHoursCurrentYear == currentArrayYear) {
-                                    if (_this.volunteeringHoursCurrentMonth == currentArrayMonth) {
+                                if (currentValueYear == currentArrayYear) {
+                                    if (currentValueMonth == currentArrayMonth) {
                                         if (day == currentArrayDate) {
 
                                             var splitTime1 = time1.split(':');
@@ -745,16 +842,20 @@
                                             minute = parseInt(splitTime1[1]) + parseInt(splitTime2[1]);
                                             hour = hour + minute / 60;
                                             minute = minute % 60;
-
-                                            time1 = ("0" + Math.floor(hour)).slice(-2) + ':' + ("0" +
+                                            if(Math.floor(hour) < 10) { 
+                                                time1 = ("0" + Math.floor(hour)).slice(-2) + ':' + ("0" +
                                                 Math.floor(minute)).slice(-2);
+                                            } else {
+                                                 time1 = Math.floor(hour) + ':' + ("0" +
+                                                Math.floor(minute)).slice(-2);
+                                            }
 
                                         }
                                     }
                                 }
                             } else {
-                                if (_this.volunteeringGoalCurrentYear == currentArrayYear) {
-                                    if (_this.volunteeringGoalCurrentMonth == currentArrayMonth) {
+                                if (currentValueYear == currentArrayYear) {
+                                    if (currentValueMonth == currentArrayMonth) {
                                         if (day == currentArrayDate) {
                                             action = action + timeEntry.action
                                         }
@@ -780,7 +881,6 @@
 
                 }
             },
-
             getTotalHours(timeSheetType) {
                 let _this = this
                 var time1 = "00:00";
@@ -815,7 +915,7 @@
                                     minute = parseInt(splitTime1[1]) + parseInt(splitTime2[1]);
                                     hour = hour + minute / 60;
                                     minute = minute % 60;
-                                    time1 = ("0" + Math.floor(hour)).slice(-2) + ':' + ("0" + Math
+                                    time1 = Math.floor(hour) + ':' + ("0" + Math
                                         .floor(minute)).slice(-2);
                                     if (timeEntry.timesheet_status.status != "APPROVED" && timeEntry
                                         .timesheet_status.status != "AUTOMATICALLY_APPROVED") {
@@ -827,8 +927,14 @@
                                             splitTime2[1]);
                                         hourApproved = hourApproved + minuteApproved / 60;
                                         minuteApproved = minuteApproved % 60;
-                                        timeApproved = ("0" + Math.floor(hourApproved)).slice(-2) +
+                                       
+                                        if(Math.floor(hourApproved) < 10) { 
+                                            timeApproved = ("0" + Math.floor(hourApproved)).slice(-2) +
                                             ':' + ("0" + Math.floor(minuteApproved)).slice(-2);
+                                        } else {
+                                            timeApproved =  Math.floor(hourApproved) +
+                                            ':' + ("0" + Math.floor(minuteApproved)).slice(-2);
+                                        }
                                     }
 
                                 }
@@ -867,14 +973,9 @@
 
                 }
             },
-
-
-
-
             updateMinutes(value) {
                 this.defaultMinutes = value.selectedVal
             },
-
             hideModal() {
                 store.commit('removeTimeSheetDetail');
                 this.currentTimeData.missionId = '';
@@ -897,7 +998,6 @@
                 this.defaultWorkday = this.langauageData.placeholder.workday
 
             },
-
             submitVolunteerTimeSheet(timeSheetType) {
                 var _this = this;
                 let timeSheetId = {
@@ -952,7 +1052,6 @@
                 })
 
             },
-
             makeToast(variant = null, message) {
                 this.$bvToast.toast(message, {
                     variant: variant,
@@ -997,7 +1096,6 @@
             },
             getGoalRequest(currentPage) {
                 this.getGoalRequestData(currentPage);
-
             },
             getGoalRequestData(currentPage) {
                 var _this = this;
@@ -1025,9 +1123,7 @@
                         }, 500)
                     }
                 }, 200)
-
                 let currentData = [];
-
                 goalRequest(currentPage).then(response => {
                     if (response.data) {
                         let data = response.data;
@@ -1096,7 +1192,6 @@
                     "key": data
                 })
             });
-
         }
     };
 </script>

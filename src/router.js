@@ -13,13 +13,14 @@ let routes = [{
         component: () =>
             import ('./views/404.vue')
     },
-
     {
         path: '/',
         name: 'login',
         component: () =>
             import ('./views/Auth/Login.vue')
     },
+
+
     {
         path: '/volunteering-timesheet',
         name: 'Volunteering timesheet ',
@@ -55,6 +56,18 @@ let routes = [{
         },
         component: () =>
             import ('./views/Home.vue')
+    },
+    {
+        path: '/news',
+        name: 'news',
+        component: () =>
+            import ('./views/News.vue')
+    },
+    {
+        path: '/news-detail/:newsId',
+        name: 'NewsDetail',
+        component: () =>
+            import ('./views/NewsDetail.vue')
     },
     {
         path: '/home/:searchParamsType/:searchParams',

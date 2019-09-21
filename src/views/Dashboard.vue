@@ -9,11 +9,11 @@
 				<b-container>
 					<div class="heading-section">
 						<h1>Dashboard</h1>
-						<div class="date-filter">
+						<!-- <div class="date-filter">
 							<CustomDropdown :optionList="yearList" @updateCall="updateYear" :default_text="yearText" />
 							<CustomDropdown :optionList="monthList" @updateCall="updateMonth" :default_text="monthText"
 								class="month-dropdown" />
-						</div>
+						</div> -->
 					</div>
 					<div class="inner-content-wrap">
 						<b-list-group class="status-bar">

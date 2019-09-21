@@ -349,6 +349,8 @@
                 var _this = this
                 let allowedFileTypes = ['doc', 'xls', 'xlsx', 'csv', 'pdf', 'png', 'jpg', 'jpeg']
                 _this.fileError = '';
+                let error = false
+                let duplicateUpload = false
                 let latestUpload = files[files.length - 1];
                 let latestUploadName = latestUpload.name
                 let latestUploadSize = latestUpload.size
@@ -358,11 +360,12 @@
                     let fileName = data.name.split('.');
                     if (!allowedFileTypes.includes(fileName[fileName.length - 1])) {
                         _this.fileError = _this.langauageData.errors.invalid_file_type
-                        files.splice(index, 1)
+                        error = true
                     } else {
                         if (data.size > 4000000) {
                             _this.fileError = _this.langauageData.errors.file_max_size
-                            files.splice(index, 1)
+                          
+                            error = true
                         }
                     }
                     if (index != files.length - 1) {
@@ -370,6 +373,15 @@
                             latestUploadType) {
                             _this.fileError = _this.langauageData.errors.file_already_uploaded
                             files.splice(files.length - 1, 1)
+                            error = true
+                            duplicateUpload = true;
+                        }
+                    }
+                    if(error == true) {
+                        if(duplicateUpload == true) {
+                            files.splice(files.length - 1, 1)
+                        } else {
+                            files.splice(index, 1)
                         }
                     }
                 });
@@ -451,11 +463,12 @@
                         this.message = response.message
                         this.submitted = false;
                         this.$emit("getTimeSheetData");
+                        this.$emit("changeTimeSheetView",volunteeredDate);
                         setTimeout(function () {
                             _this.$refs.timeHoursModal.hide();
                             _this.hideModal();
                         }, 700)
-
+                        
                     }
                     this.isAjaxCall = false;
                 })
