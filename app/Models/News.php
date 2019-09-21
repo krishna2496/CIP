@@ -43,7 +43,8 @@ class News extends Model
         'user_title',
         'user_thumbnail',
         'newsLanguage',
-        'newsToCategory'
+        'newsToCategory',
+		'created_at'
     ];
 
     /**
