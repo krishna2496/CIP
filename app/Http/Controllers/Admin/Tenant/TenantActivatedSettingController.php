@@ -29,6 +29,7 @@ class TenantActivatedSettingController extends Controller
 
     /**
      * Create a new controller instance.
+     * @codeCoverageIgnore
      *
      * @param App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository $tenantActivatedSettingRepository
      * @param App\Helpers\ResponseHelper $responseHelper
@@ -45,6 +46,7 @@ class TenantActivatedSettingController extends Controller
        
     /**
      * Store a newly created tenant activated settings into database
+     * @codeCoverageIgnore
      *
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\JsonResponse;

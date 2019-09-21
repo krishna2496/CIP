@@ -2239,4 +2239,32 @@ class AppMissionTest extends TestCase
         $user->delete();        
         App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->delete();
     }
+
+    /**
+     * It should return social sharing view with social sharing meta data
+     *
+     * @return void
+     */
+    public function it_should_return_social_sharing_view_with_meta_data()
+    {
+        $fqdn = env('DEFAULT_TENANT');
+
+        $connection = 'tenant';
+
+        $mission = factory(\App\Models\Mission::class)->make();
+        $mission->setConnection($connection);
+        $mission->save();
+        
+        $missionId = $mission->mission_id;
+
+        $missionLanguage = factory(\App\Models\MissionLanguage::class)->make();
+        $missionLanguage->setConnection($connection);
+        $missionLanguage->mission_id = $mission->mission_id;
+        $missionLanguage->save();
+        
+        $langId = 1;
+
+        $this->get('/social-sharing/'.$fqdn.'/'.$missionId.'/'.$langId)
+        ->seeStatusCode(200);
+    }
 }

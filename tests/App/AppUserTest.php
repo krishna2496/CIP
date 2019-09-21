@@ -900,4 +900,26 @@ class AppUserTest extends TestCase
             ]
         ]);
     }
+
+    /**
+     * @test
+     *
+     * It should return invalid FQDN error
+     *
+     * @return void
+     */
+    public function it_should_return_invalid_fqdn_error()
+    {
+        $connection = 'tenant';
+        $user = factory(\App\User::class)->make();
+        $user->setConnection($connection);
+        $user->save();
+
+        $token = Helpers::getJwtToken($user->user_id, str_random('5'));
+
+        $this->get('/app/search-user', ['token' => $token])
+        ->seeStatusCode(401);
+        $user->delete();        
+    }
+
 }

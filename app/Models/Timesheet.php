@@ -48,7 +48,7 @@ class Timesheet extends Model
     
     /**
      * Get date volunteered attribute on the model.
-     *
+     * @codeCoverageIgnore
      * @return null|string
      */
     public function getDateVolunteeredAttribute(): ?string
@@ -59,7 +59,7 @@ class Timesheet extends Model
 
     /**
      * Get the timesheet document record associated with the timesheet.
-     *
+     * @codeCoverageIgnore
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function timesheetDocument(): HasMany
@@ -69,7 +69,7 @@ class Timesheet extends Model
 
     /**
      * Find the specified resource.
-     *
+     * @codeCoverageIgnore
      * @param  int  $id
      * @return array
      */
@@ -81,7 +81,7 @@ class Timesheet extends Model
 
     /**
      * Get the timesheet status record associated with the timesheet.
-     *
+     * @codeCoverageIgnore
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function timesheetStatus(): BelongsTo
@@ -91,7 +91,7 @@ class Timesheet extends Model
 
     /**
      * Get time attribute on the model.
-     *
+     * @codeCoverageIgnore
      * @return null|string
      */
     public function getTimeAttribute(): ?string
@@ -101,7 +101,7 @@ class Timesheet extends Model
     
     /**
      * Set note attribute on the model.
-     *
+     * @codeCoverageIgnore
      * @param string $value
      * @return void
      */

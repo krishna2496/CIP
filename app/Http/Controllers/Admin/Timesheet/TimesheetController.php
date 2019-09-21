@@ -35,6 +35,7 @@ class TimesheetController extends Controller
     
     /**
      * Create a new controller instance.
+     * @codeCoverageIgnore
      *
      * @param App\Repositories\User\UserRepository $userRepository
      * @param App\Repositories\Timesheet\TimesheetRepository $timesheetRepository
@@ -54,6 +55,7 @@ class TimesheetController extends Controller
 
     /**
      * Display a listing of the resource.
+     * @codeCoverageIgnore
      *
      * @param int $userId
      * @return Illuminate\Http\JsonResponse
@@ -87,6 +89,7 @@ class TimesheetController extends Controller
 
     /**
      * Approve/decline timehseet entry
+     * @codeCoverageIgnore
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $timesheetId

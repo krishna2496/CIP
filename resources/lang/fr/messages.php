@@ -193,6 +193,7 @@ return [
         // Custom error code for common exception
         'ERROR_OCCURRED' => 'Une erreur est survenue',
         'ERROR_INVALID_JSON' => 'Format Json invalide',
+        'ERROR_INTERNAL_SERVER_ERROR' => 'Erreur Interne du Serveur',
         
         // Custom erro code for other errors - 800000 - 809999
         'ERROR_ON_UPDATING_STYLING_VARIBLE_IN_DATABASE' => 'Une erreur est survenue lors de la mise à jour des couleurs dans la base de données.',

@@ -24,6 +24,7 @@ class TenantActivatedSettingRepository implements TenantActivatedSettingInterfac
 
     /**
      * Create a new repository instance.
+     * @codeCoverageIgnore
      *
      * @param App\Models\TenantActivatedSetting $tenantActivatedSetting
      * @param  App\Helpers\Helpers $helpers
@@ -37,6 +38,7 @@ class TenantActivatedSettingRepository implements TenantActivatedSettingInterfac
     
     /**
      * Create new activated settings
+     * @codeCoverageIgnore
      *
      * @param array $data
      * @return bool
@@ -51,6 +53,7 @@ class TenantActivatedSettingRepository implements TenantActivatedSettingInterfac
 
     /**
      * Fetch all tenant settings
+     * @codeCoverageIgnore
      *
      * @return Illuminate\Database\Eloquent\Collection
      */
@@ -61,6 +64,7 @@ class TenantActivatedSettingRepository implements TenantActivatedSettingInterfac
 
     /**
      * Get fetch all activated tenant settings
+     * @codeCoverageIgnore
      *
      * @param \Illuminate\Http\Request $request
      * @return array
@@ -87,6 +91,7 @@ class TenantActivatedSettingRepository implements TenantActivatedSettingInterfac
 
     /**
      * Get fetch all activated tenant settings
+     * @codeCoverageIgnore
      *
      * @param \Illuminate\Http\Request $request
      * @return bool

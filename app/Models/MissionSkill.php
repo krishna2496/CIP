@@ -41,16 +41,6 @@ class MissionSkill extends Model
     protected $fillable = ['mission_skill_id','skill_id', 'mission_id'];
 
     /**
-     * Get the skill associated with the mission skill.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
-     */
-    public function skill(): HasOne
-    {
-        return $this->hasOne(Skill::class, 'skill_id', 'skill_id');
-    }
-
-    /**
      * Get the mission associated with the mission skill.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne

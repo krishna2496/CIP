@@ -40,6 +40,7 @@ class TimezoneController extends Controller
 
     /**
     * Get timezone list
+    * @codeCoverageIgnore
     *
     * @return Illuminate\Http\JsonResponse
     */

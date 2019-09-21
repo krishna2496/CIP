@@ -23,6 +23,7 @@ class TenantSettingRepository implements TenantSettingInterface
 
     /**
      * Create a new repository instance.
+     * @codeCoverageIgnore
      *
      * @param App\Models\TenantSetting $tenantSetting
      * @return void
@@ -34,6 +35,7 @@ class TenantSettingRepository implements TenantSettingInterface
     
     /**
      * Update setting value
+     * @codeCoverageIgnore
      *
      * @param array $data
      * @param int $settingId
@@ -48,6 +50,7 @@ class TenantSettingRepository implements TenantSettingInterface
 
     /**
      * Get all tenant's settings data
+     * @codeCoverageIgnore
      *
      * @param Illuminate\Http\Request $request
      * @return Illuminate\Pagination\LengthAwarePaginator
@@ -59,6 +62,7 @@ class TenantSettingRepository implements TenantSettingInterface
 
     /**
      * Get all tenant's settings data.
+     * @codeCoverageIgnore
      *
      * @return Illuminate\Database\Eloquent\Collection
      */
