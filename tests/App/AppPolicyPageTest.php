@@ -188,7 +188,7 @@ class AppPolicyPageTest extends TestCase
 
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->get('/app/policy/listing?order=test', ['token' => $token])
-          ->seeStatusCode(400)
+          ->seeStatusCode(500)
           ->seeJsonStructure([
               "errors" => [
                   [
@@ -199,5 +199,41 @@ class AppPolicyPageTest extends TestCase
               ]
         ]);
         $user->delete();
+    }
+
+    /**
+     * @test
+     *
+     * Get policy page list
+     *
+     * @return void
+     */
+    public function it_should_return_policy_page_list_with_other_language()
+    {
+        $connection = 'tenant';
+        $user = factory(\App\User::class)->make();
+        $user->setConnection($connection);
+        $user->save();
+        $policyPage = factory(\App\Models\PolicyPage::class)->make();
+        $policyPage->setConnection($connection);
+        $policyPage->save();
+        
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
+        $this->get('/app/policy/listing', ['token' => $token, 'X-localization' => 'fr'])
+          ->seeStatusCode(200)
+          ->seeJsonStructure([
+            "status",
+            "data" => [
+                "*" => [
+                    "page_id",
+                    "slug",
+                    "status",
+                    "pages"
+                ]
+            ],
+            "message"
+        ]);
+        $user->delete();
+        $policyPage->delete();
     }
 }

@@ -39,7 +39,7 @@ class TimesheetDocument extends Model
 
     /**
      * Soft delete the model from the database.
-     *
+     * @codeCoverageIgnore
      * @param int $documentId
      * @param int $timesheetId
      * @return bool

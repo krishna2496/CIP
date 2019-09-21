@@ -487,8 +487,8 @@ class SliderTest extends TestCase
         $slider->delete();
     }
 
-        /**
-     * @test
+    /**
+     * 
      *
      * Return error for invalid slider id on update slider
      *
@@ -520,5 +520,31 @@ class SliderTest extends TestCase
                 ]
             ]
         ]);
+    }
+
+    /**
+     * @test
+     *
+     * It should return error on slider update
+     *
+     * @return void
+     */
+    public function it_should_return_error_update_slider()
+    {
+        $params = [
+            'url' => 'https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer9.png',
+            'sort_order' => "1",        
+            'translations' =>  [
+                [
+                    'lang' => 'en',
+                    'slider_title' => str_random(20),
+                    'slider_description' => str_random(200)
+                ]
+            ],
+        ];
+
+        $this->patch("slider/".rand(500000000,8000000000), $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(404);
+        
     }
 }

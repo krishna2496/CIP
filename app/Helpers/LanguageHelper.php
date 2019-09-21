@@ -140,7 +140,7 @@ class LanguageHelper
 
     /**
      * Get language id from request
-     *
+     * @codeCoverageIgnore
      * @param \Illuminate\Http\Request $request
      * @return int
      */

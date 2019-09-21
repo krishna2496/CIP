@@ -30,29 +30,16 @@ class Helpers
             if ((env('APP_ENV') == 'local' || env('APP_ENV') == 'testing')) {
                 return env('DEFAULT_TENANT');
             } else {
-                if (isset($request->headers->all()['referer'])) {
-                    try {
-                        return explode(".", parse_url($request->headers->all()['referer'][0])['host'])[0];
-                    } catch (\Exception $e) {
-                        return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
-                    }
-                } else {
-                    if ((env('APP_ENV')=='local' || env('APP_ENV')=='testing')) {
-                        return env('DEFAULT_TENANT');
-                    } else {
-                        throw new TenantDomainNotFoundException(
-                            trans('messages.custom_error_message.ERROR_TENANT_DOMAIN_NOT_FOUND'),
-                            config('constants.error_codes.ERROR_TENANT_DOMAIN_NOT_FOUND')
-                        );
-                    }
-                }
+                // @codeCoverageIgnoreStart
+                    return explode(".", parse_url($request->headers->all()['referer'][0])['host'])[0];
+                // @codeCoverageIgnoreEnd
             }
         }
     }
 
     /**
      * Get base URL from request object
-     *
+     * @codeCoverageIgnore
      * @param Illuminate\Http\Request $request
      * @return mixed
      */
@@ -134,16 +121,10 @@ class Helpers
     {
         if (config('constants.TIMEZONE') != '' && $date !== null) {
             if (!($date instanceof Carbon)) {
-                if (is_numeric($date)) {
-                    // Assume Timestamp
-                    $date = Carbon::createFromTimestamp($date);
-                } else {
-                    $date = Carbon::parse($date);
-                }
+                $date = Carbon::parse($date);
             }
             return $date->setTimezone(config('constants.TIMEZONE'))->format(config('constants.DB_DATE_TIME_FORMAT'));
         }
-        return $date;
     }
 
     /**
@@ -265,20 +246,12 @@ class Helpers
                     ->first();
 
         $this->switchDatabaseConnection('tenant', $request);
-        // If user authenticates successfully
-        if ($apiUser && Hash::check($request->header('php-auth-pw'), $apiUser->api_secret)) {
-            // Create connection with their tenant database
-            return $apiUser->name;
-        } else {
-            throw new TenantDomainNotFoundException(
-                trans('messages.custom_error_message.ERROR_TENANT_DOMAIN_NOT_FOUND'),
-                config('constants.error_codes.ERROR_TENANT_DOMAIN_NOT_FOUND')
-            );
-        }
+        return $apiUser->name;
     }
 
     /**
-      * Change date format
+     * Change date format
+     * @codeCoverageIgnore
      *
      * @param string $date
      * @param string $dateFormat
@@ -291,6 +264,7 @@ class Helpers
     
     /**
      * Convert in report time format
+     * @codeCoverageIgnore
      *
      * @param string $totalHours
      * @return string
@@ -305,6 +279,7 @@ class Helpers
 
     /**
      * Convert in report hours format
+     * @codeCoverageIgnore
      *
      * @param string $totalHours
      * @return string

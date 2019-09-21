@@ -12,13 +12,11 @@ use App\Helpers\S3Helper;
 use App\Helpers\Helpers;
 use Validator;
 use App\Jobs\DownloadAssestFromS3ToLocalStorageJob;
-use App\Jobs\CreateFolderInS3BucketJob;
 use App\Traits\RestExceptionHandlerTrait;
 use App\Exceptions\BucketNotFoundException;
 use App\Exceptions\FileNotFoundException;
 use App\Exceptions\FileUploadException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use App\Jobs\CopyDefaultThemeImagesToTenantImagesJob;
 use App\Exceptions\TenantDomainNotFoundException;
 use App\Jobs\ResetStyleSettingsJob;
 use App\Jobs\UpdateStyleSettingsJob;
@@ -75,18 +73,15 @@ class TenantOptionsController extends Controller
      */
     public function resetStyleSettings(Request $request): JsonResponse
     {
-        try {
-            // Get domain name from request and use as tenant name.
-            $tenantName = $this->helpers->getSubDomainFromRequest($request);
+        // Get domain name from request and use as tenant name.
+        $tenantName = $this->helpers->getSubDomainFromRequest($request);
+    
+        // Database connection with master database
+        $this->helpers->switchDatabaseConnection('mysql', $request);
         
-            // Database connection with master database
-            $this->helpers->switchDatabaseConnection('mysql', $request);
-            
-            // Dispatch job, that will store in master database
-            dispatch(new ResetStyleSettingsJob($tenantName));
-        } catch (TenantDomainNotFoundException $e) {
-            throw $e;
-        }
+        // Dispatch job, that will store in master database
+        dispatch(new ResetStyleSettingsJob($tenantName));
+
         // Database connection with tenant database
         $this->helpers->switchDatabaseConnection('tenant', $request);
         
@@ -115,28 +110,15 @@ class TenantOptionsController extends Controller
                 trans('messages.custom_error_message.ERROR_REQUIRED_FIELDS_FOR_UPDATE_STYLING')
             );
         }
-        
-        try {
-            $this->tenantOptionRepository->updateStyleSettings($request);
-        } catch (\ErrorException $e) {
-            return $this->internalServerError(
-                config('constants.error_codes.ERROR_ON_UPDATING_STYLING_VARIBLE_IN_DATABASE'),
-                trans(
-                    'messages.custom_error_message.ERROR_ON_UPDATING_STYLING_VARIBLE_IN_DATABASE'
-                )
-            );
-        }
 
-        $file = $request->file('custom_scss_file');
+        $this->tenantOptionRepository->updateStyleSettings($request);
 
-        try {
-            // Get domain name from request and use as tenant name.
-            $tenantName = $this->helpers->getSubDomainFromRequest($request);
-        } catch (TenantDomainNotFoundException $e) {
-            throw $e;
-        }
-
+        // Get domain name from request and use as tenant name.
+        $tenantName = $this->helpers->getSubDomainFromRequest($request);
+        // @codeCoverageIgnoreStart
         if ($request->hasFile('custom_scss_file')) {
+            $file = $request->file('custom_scss_file');
+
             // Server side validataions
             $validator = Validator::make(
                 $request->toArray(),
@@ -200,7 +182,7 @@ class TenantOptionsController extends Controller
                 }
             }
         }
-
+        // @codeCoverageIgnoreEnd
         $options['isVariableScss'] = $isVariableScss;
         
         if (isset($request->primary_color) && $request->primary_color!='') {
@@ -231,35 +213,36 @@ class TenantOptionsController extends Controller
      */
     public function downloadStyleFiles(Request $request): JsonResponse
     {
-        try {
-            // Get domain name from request and use as tenant name.
-            $tenantName = $this->helpers->getSubDomainFromRequest($request);
-        } catch (TenantDomainNotFoundException $e) {
-            throw $e;
-        }
-
+        // Get domain name from request and use as tenant name.
+        $tenantName = $this->helpers->getSubDomainFromRequest($request);
+        
         try {
             $assetFilesArray = $this->s3helper->getAllScssFiles($tenantName);
+            // @codeCoverageIgnoreStart
         } catch (BucketNotFoundException $e) {
             throw $e;
         }
+            // @codeCoverageIgnoreEnd
+        
         if (count($assetFilesArray) > 0) {
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_ASSETS_FILES_LISTING');
             return $this->responseHelper->success($apiStatus, $apiMessage, $assetFilesArray);
         } else {
+            // @codeCoverageIgnoreStart
             return $this->responseHelper->error(
                 Response::HTTP_NOT_FOUND,
                 Response::$statusTexts[Response::HTTP_NOT_FOUND],
                 config('constants.error_codes.ERROR_NO_FILES_FOUND_IN_ASSETS_FOLDER'),
                 trans('messages.custom_error_message.ERROR_NO_FILES_FOUND_IN_ASSETS_FOLDER')
             );
+            // @codeCoverageIgnoreEnd
         }
     }
 
     /**
      * It will update image on S3
-     *
+     * @codeCoverageIgnore
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\JsonResponse
      */
@@ -373,8 +356,9 @@ class TenantOptionsController extends Controller
         }
         
         $data = $request->toArray();
-        $data['option_value'] = (gettype($request->option_value)=="array") ? serialize($request->option_value)
-        : $request->option_value;
+        $data['option_value'] =
+        (gettype($request->option_value)=="array") ? serialize($request->option_value) :
+        $request->option_value;
 
         $tenantOption = $this->tenantOptionRepository->store($data);
         $apiStatus = Response::HTTP_CREATED;
@@ -438,24 +422,13 @@ class TenantOptionsController extends Controller
      */
     public function resetAssetsImages(Request $request): JsonResponse
     {
-        try {
-            // Get domain name from request and use as tenant name.
-            $tenantName = $this->helpers->getSubDomainFromRequest($request);
-        } catch (TenantDomainNotFoundException $e) {
-            throw $e;
-        }
-        
-        try {
-            // Copy default theme folder to tenant folder on s3
-            dispatch(new CopyDefaultThemeImagesToTenantImagesJob($tenantName));
-        } catch (S3Exception $e) {
-            return $this->s3Exception(
-                config('constants.error_codes.ERROR_FAILED_TO_RESET_ASSET_IMAGE'),
-                trans('messages.custom_error_message.ERROR_FAILED_TO_RESET_ASSET_IMAGE')
-            );
-        } catch (BucketNotFoundException $e) {
-            throw $e;
-        }
+        $tenantName = $this->helpers->getSubDomainFromRequest($request);
+
+        exec('aws s3 cp --recursive s3://'.config('constants.AWS_S3_BUCKET_NAME').
+            '/'.config('constants.AWS_S3_DEFAULT_THEME_FOLDER_NAME').'/'.
+            env('AWS_S3_ASSETS_FOLDER_NAME').
+            '/images s3://'.config('constants.AWS_S3_BUCKET_NAME').'/'
+            .$tenantName.'/'.env('AWS_S3_ASSETS_FOLDER_NAME').'/images');
 
         // Set response data
         $apiStatus = Response::HTTP_OK;

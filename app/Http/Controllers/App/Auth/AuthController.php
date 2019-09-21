@@ -100,61 +100,57 @@ class AuthController extends Controller
      */
     public function authenticate(User $user, Request $request): JsonResponse
     {
-        try {
-            // Server side validataions
-            $validator = Validator::make($request->toArray(), [
-                'email' => 'required|email',
-                'password' => 'required'
-            ]);
+        // Server side validataions
+        $validator = Validator::make($request->toArray(), [
+            'email' => 'required|email',
+            'password' => 'required'
+        ]);
 
-            if ($validator->fails()) {
-                return $this->responseHelper->error(
-                    Response::HTTP_UNPROCESSABLE_ENTITY,
-                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                    config('constants.error_codes.ERROR_INVALID_DETAIL'),
-                    $validator->errors()->first()
-                );
-            }
-            
-            // Fetch user by email address
-            $userDetail = $user->where('email', $this->request->input('email'))->first();
-
-            if (!$userDetail) {
-                return $this->responseHelper->error(
-                    Response::HTTP_FORBIDDEN,
-                    Response::$statusTexts[Response::HTTP_FORBIDDEN],
-                    config('constants.error_codes.ERROR_EMAIL_NOT_EXIST'),
-                    trans('messages.custom_error_message.ERROR_EMAIL_NOT_EXIST')
-                );
-            }
-            // Verify user's password
-            if (!Hash::check($this->request->input('password'), $userDetail->password)) {
-                return $this->responseHelper->error(
-                    Response::HTTP_UNPROCESSABLE_ENTITY,
-                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                    config('constants.error_codes.ERROR_INVALID_PASSWORD'),
-                    trans('messages.custom_error_message.ERROR_INVALID_PASSWORD')
-                );
-            }
-            
-            // Generate JWT token
-            $tenantName = $this->helpers->getSubDomainFromRequest($request);
-
-            $data["token"] = $this->helpers->getJwtToken($userDetail->user_id, $tenantName);
-            $data['user_id'] = isset($userDetail->user_id) ? $userDetail->user_id : '';
-            $data['first_name'] = isset($userDetail->first_name) ? $userDetail->first_name : '';
-            $data['last_name'] = isset($userDetail->last_name) ? $userDetail->last_name : '';
-            $data['country_id'] = isset($userDetail->country_id) ? $userDetail->country_id : '';
-            $data['avatar'] = isset($userDetail->avatar) ? $userDetail->avatar :
-            $this->helpers->getDefaultProfileImage($request);
-            
-            $apiData = $data;
-            $apiStatus = Response::HTTP_OK;
-            $apiMessage = trans('messages.success.MESSAGE_USER_LOGGED_IN');
-            return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
-        } catch (TenantDomainNotFoundException $e) {
-            throw $e;
+        if ($validator->fails()) {
+            return $this->responseHelper->error(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                config('constants.error_codes.ERROR_INVALID_DETAIL'),
+                $validator->errors()->first()
+            );
         }
+        
+        // Fetch user by email address
+        $userDetail = $user->where('email', $this->request->input('email'))->first();
+
+        if (!$userDetail) {
+            return $this->responseHelper->error(
+                Response::HTTP_FORBIDDEN,
+                Response::$statusTexts[Response::HTTP_FORBIDDEN],
+                config('constants.error_codes.ERROR_EMAIL_NOT_EXIST'),
+                trans('messages.custom_error_message.ERROR_EMAIL_NOT_EXIST')
+            );
+        }
+        // Verify user's password
+        if (!Hash::check($this->request->input('password'), $userDetail->password)) {
+            return $this->responseHelper->error(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                config('constants.error_codes.ERROR_INVALID_PASSWORD'),
+                trans('messages.custom_error_message.ERROR_INVALID_PASSWORD')
+            );
+        }
+        
+        // Generate JWT token
+        $tenantName = $this->helpers->getSubDomainFromRequest($request);
+
+        $data["token"] = $this->helpers->getJwtToken($userDetail->user_id, $tenantName);
+        $data['user_id'] = isset($userDetail->user_id) ? $userDetail->user_id : '';
+        $data['first_name'] = isset($userDetail->first_name) ? $userDetail->first_name : '';
+        $data['last_name'] = isset($userDetail->last_name) ? $userDetail->last_name : '';
+        $data['country_id'] = isset($userDetail->country_id) ? $userDetail->country_id : '';
+        $data['avatar'] = isset($userDetail->avatar) ? $userDetail->avatar :
+        $this->helpers->getDefaultProfileImage($request);
+        
+        $apiData = $data;
+        $apiStatus = Response::HTTP_OK;
+        $apiMessage = trans('messages.success.MESSAGE_USER_LOGGED_IN');
+        return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
     }
     
     /**

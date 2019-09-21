@@ -73,7 +73,7 @@ class AppCityTest extends TestCase
 
         $token = str_random(50);
         $this->get('/app/city/', ['token' => $token])
-        ->seeStatusCode(400)
+        ->seeStatusCode(500)
         ->seeJsonStructure([
             "errors" => [
                 [

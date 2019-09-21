@@ -12,7 +12,6 @@ class AppMailer extends Mailable
     public $from_email;
     public $from_name;
     public $template;
-    public $template_type;
     public $data;
 
     /**
@@ -35,7 +34,6 @@ class AppMailer extends Mailable
         : env('MAIL_FROM_NAME', 'Optimy');
 
         $this->template = $this->params['template'];
-        $this->template_type = isset($this->params['template_type']) ? $this->params['template_type'] : 'view';
     }
 
     /**
@@ -45,15 +43,8 @@ class AppMailer extends Mailable
      */
     public function build()
     {
-        if ($this->template_type == 'view') {
-            return $this->view($this->template)
-                        ->from($this->from_email, $this->from_name)
-                        ->with('data', $this->data);
-        } else {
-            return $this->markdown($this->template)
-                        ->from($this->from_email, $this->from_name)
-                        ->with('data', $this->data)
-                        ->subject($this->subject);
-        }
+        return $this->view($this->template)
+        ->from($this->from_email, $this->from_name)
+        ->with('data', $this->data);
     }
 }

@@ -42,6 +42,7 @@ class TimesheetStatus extends Model
 
     /**
      * Get the success statuses' ids
+     * @codeCoverageIgnore
      *
      * @return Illuminate\Support\Collection
      */

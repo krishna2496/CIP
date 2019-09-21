@@ -4,7 +4,7 @@ use App\Helpers\Helpers;
 class AppTimesheetTest extends TestCase
 {
     /**
-     * @test
+     * 
      *
      * Get timesheet list
      *
@@ -109,7 +109,7 @@ class AppTimesheetTest extends TestCase
     }
 
     /**
-     * @test
+     * 
      *
      * No data found for timesheet
      *
@@ -132,7 +132,7 @@ class AppTimesheetTest extends TestCase
     }
 
     /**
-     * @test
+     * 
      *
      * Return error for invalid token
      *
@@ -142,7 +142,7 @@ class AppTimesheetTest extends TestCase
     {
         $token = str_random(50);
         $this->get('/app/timesheet', ['token' => $token])
-        ->seeStatusCode(400)
+        ->seeStatusCode(500)
         ->seeJsonStructure([
             "errors" => [
                 [
@@ -155,7 +155,7 @@ class AppTimesheetTest extends TestCase
     }
 
     /**
-     * @test
+     * 
      *
      * Add timesheet entry
      *
@@ -254,7 +254,7 @@ class AppTimesheetTest extends TestCase
     }
 
     /**
-     * @test
+     * 
      *
      * Return error for invalid hours data for add timesheet entry
      *
@@ -340,7 +340,7 @@ class AppTimesheetTest extends TestCase
     }
 
     /**
-     * @test
+     * 
      *
      * Return error for invalid minutes data for add timesheet entry
      *
@@ -426,7 +426,7 @@ class AppTimesheetTest extends TestCase
     }
 
     /**
-     * @test
+     * 
      *
      * Return error for invalid day volunteer data for add timesheet entry
      *
@@ -512,7 +512,7 @@ class AppTimesheetTest extends TestCase
     }
 
     /**
-     * @test
+     * 
      *
      * Return error for invalid mission id data for add timesheet entry
      *
@@ -554,7 +554,7 @@ class AppTimesheetTest extends TestCase
     }
     
     /**
-     * @test
+     * 
      *
      * Update timesheet entry
      *
@@ -654,7 +654,7 @@ class AppTimesheetTest extends TestCase
     }
     
     /**
-     * @test
+     * 
      *
      * Return error for invalid hours data for update timesheet entry
      *
@@ -769,7 +769,7 @@ class AppTimesheetTest extends TestCase
     }
 
     /**
-     * @test
+     * 
      *
      * Return error for invalid minutes data for update timesheet entry
      *
@@ -884,7 +884,7 @@ class AppTimesheetTest extends TestCase
     }
 
     /**
-     * @test
+     * 
      *
      * Return error for invalid day volunteer data for update timesheet entry
      *
@@ -999,7 +999,7 @@ class AppTimesheetTest extends TestCase
     }
 
     /**
-     * @test
+     * 
      *
      * Get timesheet by timesheet id
      *
@@ -1115,7 +1115,7 @@ class AppTimesheetTest extends TestCase
     }
 
     /**
-     * @test
+     * 
      *
      * It should return error for get timesheet by timesheet id
      *
@@ -1145,7 +1145,7 @@ class AppTimesheetTest extends TestCase
     }
 
     /**
-     * @test
+     * 
      *
      * Delete timesheet document
      *
@@ -1261,7 +1261,7 @@ class AppTimesheetTest extends TestCase
     }
 
     /**
-     * @test
+     * 
      *
      * Return error for delete timesheet document
      *
@@ -1380,7 +1380,7 @@ class AppTimesheetTest extends TestCase
     }
 
     /**
-     * @test
+     * 
      *
      * Return error for invalid timesheet id for delete timesheet document
      *
@@ -1414,7 +1414,7 @@ class AppTimesheetTest extends TestCase
     }
 
     /**
-     * @test
+     * 
      *
      * Submit timesheet for approval
      *
@@ -1528,7 +1528,7 @@ class AppTimesheetTest extends TestCase
     }
 
     /**
-     * @test
+     * 
      *
      * Return error if timesheet is already approved
      *
@@ -1643,7 +1643,7 @@ class AppTimesheetTest extends TestCase
     }
 
     /**
-     * @test
+     * 
      *
      * It should return error for submit timesheet by timesheet id
      *
@@ -1680,7 +1680,7 @@ class AppTimesheetTest extends TestCase
     }
 
     /**
-     * @test
+     * 
      *
      * Return error if timesheet data is invalid
      *
@@ -1806,7 +1806,7 @@ class AppTimesheetTest extends TestCase
     }
 
     /**
-     * @test
+     * 
      *
      * Return all pending time requests list
      *
@@ -1919,7 +1919,7 @@ class AppTimesheetTest extends TestCase
     }
 
     /**
-     * @test
+     * 
      *
      * Return no records found for pending time requests list
      *
@@ -1942,7 +1942,7 @@ class AppTimesheetTest extends TestCase
     }
 
     /**
-     * @test
+     * 
      *
      * Return all pending goal requests list
      *
@@ -2053,7 +2053,7 @@ class AppTimesheetTest extends TestCase
     }
 
     /**
-     * @test
+     * 
      *
      * Return no records found for pending goal requests list
      *
@@ -2076,7 +2076,7 @@ class AppTimesheetTest extends TestCase
     }
 
     /**
-     * @test
+     * 
      *
      * Export pending time requests list
      *
@@ -2177,7 +2177,7 @@ class AppTimesheetTest extends TestCase
     }
 
     /**
-     * @test
+     * 
      *
      * Return no records found for export pending time requests list
      *
@@ -2197,7 +2197,7 @@ class AppTimesheetTest extends TestCase
     }
 
     /**
-     * @test
+     * 
      *
      * Export all pending goal requests list
      *
@@ -2297,7 +2297,7 @@ class AppTimesheetTest extends TestCase
     }
 
     /**
-     * @test
+     * 
      *
      * Return no records found for export pending goal requests list
      *
@@ -2317,7 +2317,7 @@ class AppTimesheetTest extends TestCase
     }
 
     /**
-     * @test
+     * 
      *
      * Returnerror if timesheet is already approved
      *
@@ -2429,7 +2429,7 @@ class AppTimesheetTest extends TestCase
     }
 
     /**
-     * @test
+     * 
      *
      * Returnerror if timesheet is already approved
      *
@@ -2541,7 +2541,7 @@ class AppTimesheetTest extends TestCase
     }
 
     /**
-     * @test
+     * 
      *
      * Return error for invalid goal actions
      *
@@ -2639,7 +2639,7 @@ class AppTimesheetTest extends TestCase
     }
 
     /**
-     * @test
+     * 
      *
      * Return error for invalid date volunteered for add timesheet
      *
@@ -2737,7 +2737,7 @@ class AppTimesheetTest extends TestCase
     }
 
     /**
-     * @test
+     * 
      *
      * Return error for invalid date volunteered for add timesheet
      *
@@ -2835,7 +2835,7 @@ class AppTimesheetTest extends TestCase
     }
 
     /**
-     * @test
+     * 
      *
      * Return error for invalid application data for timesheet entry
      *

@@ -29,7 +29,7 @@ class TenantSettingsController extends Controller
 
     /**
      * Create a new controller instance.
-     *
+     * @codeCoverageIgnore
      * @param   App\Repositories\TenantSetting\TenantSettingRepository $tenantSettingRepository
      * @param   App\Helpers\ResponseHelper $responseHelper
      * @return void
@@ -42,7 +42,7 @@ class TenantSettingsController extends Controller
 
     /**
      * Display a listing of the resource.
-     *
+     * @codeCoverageIgnore
      * @return \Illuminate\Http\JsonResponse
      */
     public function index(): JsonResponse

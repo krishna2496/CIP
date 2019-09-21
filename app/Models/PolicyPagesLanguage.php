@@ -40,6 +40,7 @@ class PolicyPagesLanguage extends Model
      
     /**
      * Set description attribute on the model.
+     * @codeCoverageIgnore
      *
      * @param  array $value
      * @return void
@@ -51,7 +52,7 @@ class PolicyPagesLanguage extends Model
     
     /**
      * Get an attribute from the model.
-     *
+     * @codeCoverageIgnore
      * @param  string $value
      * @return array
      */
@@ -62,7 +63,7 @@ class PolicyPagesLanguage extends Model
 
     /**
      * Get an attribute from the model.
-     *
+     * @codeCoverageIgnore
      * @param  string $value
      * @return array
      */
@@ -73,7 +74,7 @@ class PolicyPagesLanguage extends Model
 
     /**
      * Store/update specified resource.
-     *
+     * @codeCoverageIgnore
      * @param  array $condition
      * @param  array $data
      * @return App\Models\PolicyPagesLanguage

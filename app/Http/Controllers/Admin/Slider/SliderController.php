@@ -99,6 +99,7 @@ class SliderController extends Controller
                     trans('messages.custom_error_message.ERROR_SLIDER_LIMIT')
                 );
             } else {
+                // @codeCoverageIgnoreStart
                 // Upload slider image on S3 server
                 $tenantName = $this->helpers->getSubDomainFromRequest($request);
                 $imageUrl = "";
@@ -113,9 +114,8 @@ class SliderController extends Controller
                 $apiStatus = Response::HTTP_CREATED;
                 $apiMessage = trans('messages.success.MESSAGE_SLIDER_ADD_SUCCESS');
                 return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
+                // @codeCoverageIgnoreEnd
             }
-        } catch (TenantDomainNotFoundException $e) {
-            throw $e;
         } catch (\ErrorException $e) {
             // Response error unable to upload file on S3
             return $this->responseHelper->error(
@@ -174,8 +174,6 @@ class SliderController extends Controller
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_SLIDER_UPDATED_SUCCESS');
             return $this->responseHelper->success($apiStatus, $apiMessage);
-        } catch (TenantDomainNotFoundException $e) {
-            throw $e;
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
                 config('constants.error_codes.ERROR_SLIDER_NOT_FOUND'),

@@ -361,7 +361,7 @@ class UserCustomFieldTest extends TestCase
         $userCustomField->save();
 
         $this->get('metadata/users/custom_fields?order=test', ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
-        ->seeStatusCode(400)
+        ->seeStatusCode(500)
         ->seeJsonStructure([
             "errors" => [
                 [

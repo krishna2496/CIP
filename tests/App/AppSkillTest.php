@@ -63,7 +63,7 @@ class AppSkillTest extends TestCase
     {
         $token = str_random(50);
         $this->get('/app/user-detail', ['token' => $token])
-        ->seeStatusCode(400)
+        ->seeStatusCode(500)
         ->seeJsonStructure([
             "errors" => [
                 [
