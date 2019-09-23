@@ -435,9 +435,8 @@ class MissionController extends Controller
                     }
                 }
             }
-
+            
             if ($filterData["filters"]["theme_id"] && $filterData["filters"]["theme_id"] != "") {
-                // @codeCoverageStart
                 $themeTag = $this->themeRepository->missionThemeList($request, $filterData["filters"]["theme_id"]);
                 if ($themeTag) {
                     foreach ($themeTag as $value) {
@@ -450,11 +449,9 @@ class MissionController extends Controller
                         }
                     }
                 }
-                // @codeCoverageEnd
             }
 
             if ($filterData["filters"]["skill_id"] && $filterData["filters"]["skill_id"] != "") {
-                // @codeCoverageStart
                 $skillTag = $this->skillRepository->skillList($request, $filterData["filters"]["skill_id"]);
                 if ($skillTag) {
                     foreach ($skillTag as $value) {
@@ -467,7 +464,6 @@ class MissionController extends Controller
                         }
                     }
                 }
-                // @codeCoverageEnd
             }
         }
 

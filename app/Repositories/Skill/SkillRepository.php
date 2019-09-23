@@ -67,9 +67,6 @@ class SkillRepository implements SkillInterface
      */
     public function store(array $request): Skill
     {
-        if ($request['parent_skill'] != 0) {
-            $this->skill->findOrFail($request['parent_skill']);
-        }
         return $this->skill->create($request);
     }
 
@@ -82,12 +79,6 @@ class SkillRepository implements SkillInterface
      */
     public function update(array $request, int $id): Skill
     {
-        if (isset($request['parent_skill'])) {
-            if ($request['parent_skill'] != 0) {
-                $this->skill->findOrFail($request['parent_skill']);
-            }
-        }
-        
         try {
             $skill = $this->skill->findOrFail($id);
         } catch (ModelNotFoundException $e) {

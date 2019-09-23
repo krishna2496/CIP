@@ -247,96 +247,89 @@ class UserController extends Controller
      */
     public function update(Request $request): JsonResponse
     {
-        try {
-            $id = $request->auth->user_id;
-            // Server side validataions
-            $validator = Validator::make(
-                $request->all(),
-                ["first_name" => "sometimes|required|max:16",
-                "last_name" => "sometimes|required|max:16",
-                "password" => "sometimes|required|min:8",
-                "employee_id" => [
-                    "sometimes",
-                    "required",
-                    "max:16",
-                    Rule::unique('user')->ignore($id, 'user_id,deleted_at,NULL')],
-                "department" => "max:16",
-                "manager_name" => "max:16",
-                "linked_in_url" => "url|valid_linkedin_url",
-                "why_i_volunteer" => "sometimes|required",
-                "availability_id" => "integer|exists:availability,availability_id,deleted_at,NULL",
-                "timezone_id" => "integer|exists:timezone,timezone_id,deleted_at,NULL",
-                "city_id" => "integer|exists:city,city_id,deleted_at,NULL",
-                "country_id" => "integer|exists:country,country_id,deleted_at,NULL",
-                "custom_fields.*.field_id" => "sometimes|required|exists:user_custom_field,field_id,deleted_at,NULL",
-                'skills' => 'present|array',
-                'skills.*.skill_id' => 'integer|required|exists:skill,skill_id,deleted_at,NULL']
-            );
+        $id = $request->auth->user_id;
+        // Server side validataions
+        $validator = Validator::make(
+            $request->all(),
+            ["first_name" => "sometimes|required|max:16",
+            "last_name" => "sometimes|required|max:16",
+            "password" => "sometimes|required|min:8",
+            "employee_id" => [
+                "sometimes",
+                "required",
+                "max:16",
+                Rule::unique('user')->ignore($id, 'user_id,deleted_at,NULL')],
+            "department" => "max:16",
+            "manager_name" => "max:16",
+            "linked_in_url" => "url|valid_linkedin_url",
+            "why_i_volunteer" => "sometimes|required",
+            "availability_id" => "integer|exists:availability,availability_id,deleted_at,NULL",
+            "timezone_id" => "integer|exists:timezone,timezone_id,deleted_at,NULL",
+            "city_id" => "integer|exists:city,city_id,deleted_at,NULL",
+            "country_id" => "integer|exists:country,country_id,deleted_at,NULL",
+            "custom_fields.*.field_id" => "sometimes|required|exists:user_custom_field,field_id,deleted_at,NULL",
+            'skills' => 'present|array',
+            'skills.*.skill_id' => 'integer|required|exists:skill,skill_id,deleted_at,NULL']
+        );
 
-            // If request parameter have any error
-            if ($validator->fails()) {
+        // If request parameter have any error
+        if ($validator->fails()) {
+            return $this->responseHelper->error(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                config('constants.error_codes.ERROR_USER_INVALID_DATA'),
+                $validator->errors()->first()
+            );
+        }
+
+        // Check language id
+        if (isset($request->language_id)) {
+            if (!$this->languageHelper->validateLanguageId($request)) {
                 return $this->responseHelper->error(
                     Response::HTTP_UNPROCESSABLE_ENTITY,
                     Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
                     config('constants.error_codes.ERROR_USER_INVALID_DATA'),
-                    $validator->errors()->first()
+                    trans('messages.custom_error_message.ERROR_USER_INVALID_LANGUAGE')
                 );
             }
-
-            // Check language id
-            if (isset($request->language_id)) {
-                if (!$this->languageHelper->validateLanguageId($request)) {
-                    return $this->responseHelper->error(
-                        Response::HTTP_UNPROCESSABLE_ENTITY,
-                        Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                        config('constants.error_codes.ERROR_USER_INVALID_DATA'),
-                        trans('messages.custom_error_message.ERROR_USER_INVALID_LANGUAGE')
-                    );
-                }
-            }
-
-            // Check if skills reaches maximum limit
-            if (!empty($request->skills)) {
-                if (count($request->skills) > config('constants.SKILL_LIMIT')) {
-                    return $this->responseHelper->error(
-                        Response::HTTP_UNPROCESSABLE_ENTITY,
-                        Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                        config('constants.error_codes.ERROR_SKILL_LIMIT'),
-                        trans('messages.custom_error_message.SKILL_LIMIT')
-                    );
-                }
-            }
-
-            //Remove params
-            $request->request->remove("email");
-
-            // Update user filter
-            $this->userFilterRepository->saveFilter($request);
-
-            // Update user
-            $user = $this->userRepository->update($request->toArray(), $id);
-
-            // Update user custom fields
-            if (!empty($request->custom_fields) && isset($request->custom_fields)) {
-                $userCustomFields = $this->userRepository->updateCustomFields($request->custom_fields, $id);
-            }
-
-            // Update user skills
-            $this->userRepository->deleteSkills($id);
-            $this->userRepository->linkSkill($request->toArray(), $id);
-
-            // Set response data
-            $apiData = ['user_id' => $user->user_id];
-            $apiStatus = Response::HTTP_OK;
-            $apiMessage = trans('messages.success.MESSAGE_USER_UPDATED');
-            
-            return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
-        } catch (ModelNotFoundException $e) {
-            return $this->modelNotFound(
-                config('constants.error_codes.ERROR_USER_NOT_FOUND'),
-                trans('messages.custom_error_message.ERROR_USER_NOT_FOUND')
-            );
         }
+
+        // Check if skills reaches maximum limit
+        if (!empty($request->skills)) {
+            if (count($request->skills) > config('constants.SKILL_LIMIT')) {
+                return $this->responseHelper->error(
+                    Response::HTTP_UNPROCESSABLE_ENTITY,
+                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                    config('constants.error_codes.ERROR_SKILL_LIMIT'),
+                    trans('messages.custom_error_message.SKILL_LIMIT')
+                );
+            }
+        }
+
+        //Remove params
+        $request->request->remove("email");
+
+        // Update user filter
+        $this->userFilterRepository->saveFilter($request);
+
+        // Update user
+        $user = $this->userRepository->update($request->toArray(), $id);
+
+        // Update user custom fields
+        if (!empty($request->custom_fields) && isset($request->custom_fields)) {
+            $userCustomFields = $this->userRepository->updateCustomFields($request->custom_fields, $id);
+        }
+
+        // Update user skills
+        $this->userRepository->deleteSkills($id);
+        $this->userRepository->linkSkill($request->toArray(), $id);
+
+        // Set response data
+        $apiData = ['user_id' => $user->user_id];
+        $apiStatus = Response::HTTP_OK;
+        $apiMessage = trans('messages.success.MESSAGE_USER_UPDATED');
+        
+        return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
     }
     
     /**
@@ -374,11 +367,15 @@ class UserController extends Controller
             $apiMessage = trans('messages.success.MESSAGE_PROFILE_IMAGE_UPLOADED');
             $apiStatus = Response::HTTP_OK;
             return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
+            // @codeCoverageIgnoreStart
         } catch (S3Exception $e) {
+            // This exception will be thrown if bucket not found and we have bucket defined in env.
+            //This is not covered in unit test.
             return $this->s3Exception(
                 config('constants.error_codes.ERROR_FAILD_TO_UPLOAD_PROFILE_IMAGE_ON_S3'),
                 trans('messages.custom_error_message.ERROR_FAILD_TO_UPLOAD_PROFILE_IMAGE_ON_S3')
             );
+            // @codeCoverageIgnoreEnd
         }
     }
 }

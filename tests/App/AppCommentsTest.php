@@ -234,4 +234,48 @@ class AppCommentsTest extends TestCase
         $user->delete();
         $mission->delete();
     }
+
+    /**
+     * @test
+     *
+     * Add Comment
+     *
+     * @return void
+     */
+    public function it_should_add_auto_approve_comment()
+    {
+        $connection = 'tenant';
+        $mission = factory(\App\Models\Mission::class)->make();
+        $mission->setConnection($connection);
+        $mission->save();
+
+        $user = factory(\App\User::class)->make();
+        $user->setConnection($connection);
+        $user->save();
+
+        $setting = factory(\App\Models\TenantSetting::class)->make();
+        $setting->setConnection($connection);
+        $setting->setting_id = 24;
+        $setting->save();
+
+        $activatedSetting = factory(\App\Models\TenantActivatedSetting::class)->make();
+        $activatedSetting->setConnection($connection);
+        $activatedSetting->tenant_setting_id = $setting->tenant_setting_id;
+        $activatedSetting->save();
+
+        $params = [
+            "comment" => str_random('100'),
+            "mission_id" => $mission->mission_id
+        ];
+
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
+        $this->post('/app/mission/comment', $params, ['token' => $token])
+          ->seeStatusCode(201)
+          ->seeJsonStructure([
+            "status",
+            "message"
+        ]);
+        $user->delete();
+        $mission->delete();
+    }
 }

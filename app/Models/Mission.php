@@ -233,6 +233,7 @@ class Mission extends Model
 
     /**
      * Get timesheet associated with the mission.
+     * @codeCoverageIgnore
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */

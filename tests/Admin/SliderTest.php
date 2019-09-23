@@ -418,6 +418,8 @@ class SliderTest extends TestCase
      */
     public function it_should_return_error_on_file_upload_on_s3_for_create_slider()
     {
+        DB::setDefaultConnection('tenant');
+        App\Models\Slider::where('deleted_at', '<>', '')->delete();
         $params = [
             'url' => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/test.png",
             'sort_order' => "1",        
@@ -429,7 +431,7 @@ class SliderTest extends TestCase
                 ]
             ],
         ];
-
+        DB::setDefaultConnection('mysql');
         $this->post("slider", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
         ->seeJsonStructure([
             'errors' => [
@@ -546,4 +548,5 @@ class SliderTest extends TestCase
         ->seeStatusCode(404);
         
     }
+
 }

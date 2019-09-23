@@ -114,17 +114,13 @@ class MissionController extends Controller
             );
         }
 
-        try {
-            $mission = $this->missionRepository->store($request);
-                       
-            // Set response data
-            $apiStatus = Response::HTTP_CREATED;
-            $apiMessage = trans('messages.success.MESSAGE_MISSION_ADDED');
-            $apiData = ['mission_id' => $mission->mission_id];
-            return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
-        } catch (TenantDomainNotFoundException $e) {
-            throw $e;
-        }
+        $mission = $this->missionRepository->store($request);
+                    
+        // Set response data
+        $apiStatus = Response::HTTP_CREATED;
+        $apiMessage = trans('messages.success.MESSAGE_MISSION_ADDED');
+        $apiData = ['mission_id' => $mission->mission_id];
+        return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
     }
 
     /**

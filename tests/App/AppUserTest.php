@@ -175,9 +175,9 @@ class AppUserTest extends TestCase
         $skill->save();
 
         $skillsArray = [];
-        for ($i = 0; $i <= config('constants.SKILL_LIMIT'); $i++ ) {
+        for ($i = 0; $i <= config('constants.SKILL_LIMIT'); $i++) {
             $skillsArray[] = ["skill_id" => $skill->skill_id];
-        }       
+        }
 
         $params = [
             'first_name' => str_random(10),
@@ -254,7 +254,7 @@ class AppUserTest extends TestCase
 
     /**
      * @test
-     * 
+     *
      * Change password
      *
      * @return void
@@ -290,7 +290,7 @@ class AppUserTest extends TestCase
 
     /**
      * @test
-     * 
+     *
      * Show error if incorrect old password
      *
      * @return void
@@ -362,7 +362,7 @@ class AppUserTest extends TestCase
 
     /**
      * @test
-     * 
+     *
      * Show error if required fields are empty
      *
      * @return void
@@ -396,7 +396,7 @@ class AppUserTest extends TestCase
 
     /**
      * @test
-     * 
+     *
      * Upload profile image
      *
      * @return void
@@ -491,7 +491,7 @@ class AppUserTest extends TestCase
         $userSkill->setConnection($connection);
         $userSkill->user_id = $user->user_id;
         $userSkill->skill_id = $skill->skill_id;
-        $userSkill->save();        
+        $userSkill->save();
 
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->get('/app/user-detail', ['token' => $token])
@@ -529,7 +529,7 @@ class AppUserTest extends TestCase
             ],
             "message"
         ]);
-        $userSkill->delete();   
+        $userSkill->delete();
         $userCustomField->delete();
         $skill->delete();
         $user->delete();
@@ -537,7 +537,7 @@ class AppUserTest extends TestCase
 
     /**
      * @test
-     * 
+     *
      * Return error for invalid token
      *
      * @return void
@@ -692,7 +692,7 @@ class AppUserTest extends TestCase
 
     /**
      * @test
-     * 
+     *
      * Return error for invalid token
      *
      * @return void
@@ -777,7 +777,7 @@ class AppUserTest extends TestCase
 
     /**
      * @test
-     * 
+     *
      * Show error if jwt token is blank
      *
      * @return void
@@ -801,7 +801,7 @@ class AppUserTest extends TestCase
 
     /**
      * @test
-     * 
+     *
      * Show error if jwt token is blank
      *
      * @return void
@@ -840,7 +840,7 @@ class AppUserTest extends TestCase
 
     /**
      * @test
-     * 
+     *
      * Show error if jwt signature is invalid
      *
      * @return void
@@ -879,7 +879,7 @@ class AppUserTest extends TestCase
 
     /**
      * @test
-     * 
+     *
      * Show error if jwt token is expired
      *
      * @return void
@@ -919,7 +919,6 @@ class AppUserTest extends TestCase
 
         $this->get('/app/search-user', ['token' => $token])
         ->seeStatusCode(401);
-        $user->delete();        
+        $user->delete();
     }
-
 }
