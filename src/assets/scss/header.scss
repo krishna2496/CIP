@@ -1177,6 +1177,35 @@ header {
             }
         }
     }
+    &.zero-filter{
+        .search-block{
+           @include md-min{
+               flex: 0 0 100%;
+               max-width: 100%;
+           }
+           @include lg-min{
+               flex: 0 0 100%;
+               max-width: 100%;
+           }
+           .icon-input{
+            .form-control{
+                @include md-max{
+                    padding-right: 30px;
+                    }
+                }
+           } 
+       }
+       .filter-block , .filter-icon{
+           display: none;
+       }
+       &.active{
+        .search-block{
+            .clear-btn {
+                right: 15px;
+                }
+            }
+        }      
+    }
 }
 
 .filter-block {

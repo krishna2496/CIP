@@ -551,6 +551,7 @@
             this.langauageData = JSON.parse(store.state.languageLabel)
             this.isFileUploadDisplay = this.settingEnabled(constants.TIMESHEET_DOCUMENT_UPLOAD)
             this.lang = (store.state.defaultLanguage).toLowerCase();
+            
         }
     };
 </script>

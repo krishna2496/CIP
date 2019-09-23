@@ -624,11 +624,9 @@
                 this.skillList = [];
             }
              var globalThis = this;
-            if (window.innerWidth > 991) {
             setTimeout(function() {
                 globalThis.handleFilterCount();
             });
-            }
         }
     };
 </script>

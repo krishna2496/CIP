@@ -22,6 +22,7 @@ export default async() => {
         })
         .then((response) => {
             if (response.data.data) {
+                console.log(response.data.data)
                 if (response.data.data['TIME']) {
                     let timeData = response.data.data['TIME']
                     timeData.filter(function(toItem, toIndex) {
@@ -29,9 +30,12 @@ export default async() => {
                         timeDataArray = timeData[toIndex];
 
                         timeSheet.filter(function(timeSheetItem, timeSheetIndex) {
-                            response.data.data['TIME'][toIndex].timesheet[timeSheetIndex]['date'] = moment(timeData[toIndex].timesheet[timeSheetIndex].date_volunteered).format('D')
-                            response.data.data['TIME'][toIndex].timesheet[timeSheetIndex]['year'] = moment(timeData[toIndex].timesheet[timeSheetIndex].date_volunteered).format('YYYY')
-                            response.data.data['TIME'][toIndex].timesheet[timeSheetIndex]['month'] = moment(timeData[toIndex].timesheet[timeSheetIndex].date_volunteered).format('M')
+
+                            var momentObj = moment(timeData[toIndex].timesheet[timeSheetIndex].date_volunteered, 'MM-DD-YYYY');
+                            var dateVolunteered = momentObj.format('YYYY-MM-DD');
+                            response.data.data['TIME'][toIndex].timesheet[timeSheetIndex]['date'] = moment(dateVolunteered).format('D')
+                            response.data.data['TIME'][toIndex].timesheet[timeSheetIndex]['year'] = moment(dateVolunteered).format('YYYY')
+                            response.data.data['TIME'][toIndex].timesheet[timeSheetIndex]['month'] = moment(dateVolunteered).format('M')
                         });
 
 
@@ -44,15 +48,18 @@ export default async() => {
                         goalDataArray = timeData[toIndex];
 
                         goalSheet.filter(function(timeSheetItem, timeSheetIndex) {
-                            response.data.data['GOAL'][toIndex].timesheet[timeSheetIndex]['date'] = moment(timeData[toIndex].timesheet[timeSheetIndex].date_volunteered).format('D')
-                            response.data.data['GOAL'][toIndex].timesheet[timeSheetIndex]['year'] = moment(timeData[toIndex].timesheet[timeSheetIndex].date_volunteered).format('YYYY')
-                            response.data.data['GOAL'][toIndex].timesheet[timeSheetIndex]['month'] = moment(timeData[toIndex].timesheet[timeSheetIndex].date_volunteered).format('M')
+                            var momentObj = moment(timeData[toIndex].timesheet[timeSheetIndex].date_volunteered, 'MM-DD-YYYY');
+                            var dateVolunteered = momentObj.format('YYYY-MM-DD');
+                            response.data.data['GOAL'][toIndex].timesheet[timeSheetIndex]['date'] = moment(dateVolunteered).format('D')
+                            response.data.data['GOAL'][toIndex].timesheet[timeSheetIndex]['year'] = moment(dateVolunteered).format('YYYY')
+                            response.data.data['GOAL'][toIndex].timesheet[timeSheetIndex]['month'] = moment(dateVolunteered).format('M')
                         });
 
 
                     });
                 }
             }
+
             responseData = response.data.data
         })
         .catch(function() {});

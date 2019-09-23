@@ -20,7 +20,15 @@ let routes = [{
             import ('./views/Auth/Login.vue')
     },
 
-
+    {
+        path: '/home',
+        name: 'home',
+        meta: {
+            requiresAuth: true
+        },
+        component: () =>
+            import ('./views/Home.vue')
+    },
     {
         path: '/volunteering-timesheet',
         name: 'Volunteering timesheet ',
@@ -48,15 +56,7 @@ let routes = [{
         component: () =>
             import ('./views/Dashboard.vue')
     },
-    {
-        path: '/home',
-        name: 'home',
-        meta: {
-            requiresAuth: true
-        },
-        component: () =>
-            import ('./views/Home.vue')
-    },
+
     {
         path: '/home/:searchParamsType/:searchParams',
         name: 'exploreMission',

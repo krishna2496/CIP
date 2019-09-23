@@ -4,7 +4,7 @@
                 <b-container>
                     <div class="navbar-toggler" @click.stop v-if="this.$store.state.isLoggedIn">
                         <b-link title="Menu" @click="openMenu" class="toggler-icon">
-                            <img src="../../assets/images/menu-ic.svg" alt />
+                            <img :src="$store.state.imagePath+'/assets/images/menu-ic.svg'" alt />
                         </b-link>
                     </div>
                     <b-navbar-brand :to="{ name: 'home' }" :style="{backgroundImage: 'url('+this.$store.state.logo+')'}"
