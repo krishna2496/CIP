@@ -20,7 +20,7 @@ return [
         'MESSAGE_TENANT_SETTINGS_UPDATED' => 'Tenant settings updated successfully',
         'MESSAGE_LANGUAGE_FOUND' => 'Language found successfully',
         'MESSAGE_LANGUAGE_LISTING' => 'Language listed sucessfully',
-        'MESSAGE_LANGUAGE_CREATED' => 'Language created sucessfully',
+        'MESSAGE_LANGUAGE_CREATED' => 'Language added sucessfully',
         'MESSAGE_LANGUAGE_UPDATED' => 'Language details updated sucessfully',
         'MESSAGE_NEWS_DELETED' => 'Language deleted sucessfully',
     ],

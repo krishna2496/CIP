@@ -33,14 +33,19 @@ class LanguageRepository implements LanguageInterface
     public function getLanguageList(Request $request): LengthAwarePaginator
     {
         $languageQuery = $this->language;
-
-        // Order by filters
-        if ($request->has('order')) {
-            $languageQuery = $languageQuery->orderBy('created_at', $request->order);
-        }
-        // Search filter
+		// Search filter
         if ($request->has('search')) {
             $languageQuery = $languageQuery->where('name', 'like', '%' . $request->search . '%');
+        }
+		
+		// fetch only active languages
+		if ($request->has('status') && $request->status == 'true') {
+            $languageQuery = $languageQuery->where('status', '1');
+        }
+		
+		// Order by filters
+        if ($request->has('order')) {
+            $languageQuery = $languageQuery->orderBy('created_at', $request->order);
         }
 
         return $languageQuery->paginate($request->perPage);

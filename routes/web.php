@@ -70,8 +70,8 @@ $router->group(
         // Get language detail
         $router->get(
             '/language/{languageId}',
-            ['as' => 'language.get-language-details',
-            'uses' => 'LanguageController@getLanguageDetail']
+            ['as' => 'language.show',
+            'uses' => 'LanguageController@show']
         );
         // Get language lists
         $router->get(

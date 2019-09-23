@@ -59,9 +59,9 @@ class LanguageController extends Controller
     public function index(Request $request): JsonResponse
     {
         try {
-            $languageLists = $this->languageRepository->getLanguageList($request);
+            $languages = $this->languageRepository->getLanguageList($request);
             $paginatedData = $this->helpers->paginationTransform(
-                $languageLists,
+                $languages,
                 $request->except(['page','perPage']),
                 $request->url()
             );
@@ -170,7 +170,7 @@ class LanguageController extends Controller
      * @param int $languageId
      * @return \Illuminate\Http\JsonResponse;
      */
-    public function getLanguageDetail(int $languageId): JsonResponse
+    public function show(int $languageId): JsonResponse
     {
         try {
             $languageDetail = $this->languageRepository->find($languageId);
