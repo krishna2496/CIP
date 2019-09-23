@@ -9,10 +9,13 @@
   "basePath":"/team4/cip-admin-api",
   "tags":[  
       {  
-         "name":"Tenant"
+         "name":"Tenant (Milestone - 1)"
       },
 	  {  
-         "name":"API user"
+         "name":"API user (Milestone - 2)"
+      },
+	  {  
+         "name":"Tenant settings (Milestone - 3)"
       }
    ],
   "paths": {
@@ -21,7 +24,7 @@
         "operationId": "POST_team4-cip-admin-api-tenants",
         "summary": "Create tenent",
 		"tags":[  
-               "Tenant"
+               "Tenant (Milestone - 1)"
             ],
         "consumes": [
           "application/json"
@@ -49,7 +52,7 @@
         "operationId": "GET_team4-cip-admin-api-tenants",
         "summary": "Listing Tenant",
         "tags":[  
-               "Tenant"
+               "Tenant (Milestone - 1)"
             ],
         "consumes": [
           "application/json"
@@ -61,12 +64,12 @@
         }
       }
     },
-    "/tenants/{tenantId}": {
+    "/tenants/{tenantId}/": {
       "get": {
         "operationId": "GET_team4-cip-admin-api-tenants-1",
         "summary": "Get tenant detail by id ",
         "tags":[  
-               "Tenant"
+               "Tenant (Milestone - 1)"
             ],
         "consumes": [
           "application/json"
@@ -94,7 +97,7 @@
         "operationId": "PATCH_team4-cip-admin-api-tenants-1",
         "summary": "Update tenant details",
         "tags":[  
-               "Tenant"
+               "Tenant (Milestone - 1)"
             ],
         "consumes": [
           "application/json"
@@ -133,7 +136,7 @@
         "operationId": "DELETE_team4-cip-admin-api-tenants-2",
         "summary": "Delete tenant",
 		"tags":[  
-               "Tenant"
+               "Tenant (Milestone - 1)"
             ],
         "consumes": [
           "multipart/form-data"
@@ -163,7 +166,7 @@
         "operationId": "POST_team4-cip-admin-api-tenants-create-api-user",
         "summary": "Create API User",
 		"tags":[  
-               "API user"
+               "API user (Milestone - 2)"
             ],
         "consumes": [
           "multipart/form-data"
@@ -191,7 +194,7 @@
         "operationId": "POST_team4-cip-admin-api-tenants-list-api-user",
         "summary": "Listing API users of a tenant",
         "tags":[  
-               "API user"
+               "API user (Milestone - 2)"
             ],
         "consumes": [
           "multipart/form-data"
@@ -221,7 +224,7 @@
         "operationId": "POST_team4-cip-admin-api-tenants-api-user-detail",
         "summary": "Get API User detail",
 		"tags":[  
-               "API user"
+               "API user (Milestone - 2)"
             ],
         "consumes": [
           "multipart/form-data"
@@ -257,7 +260,7 @@
         "operationId": "POST_team4-cip-admin-api-tenants-api-user-update",
         "summary": "Renew API user's secret key",
 		"tags":[  
-               "API user"
+               "API user (Milestone - 2)"
             ],
         "consumes": [
           "multipart/form-data"
@@ -293,7 +296,7 @@
         "operationId": "POST_team4-cip-admin-api-tenants-api-user-delete",
         "summary": "Delete API user",
 		"tags":[  
-               "API user"
+               "API user (Milestone - 2)"
             ],
         "consumes": [
           "multipart/form-data"
@@ -326,6 +329,101 @@
         }
       }
     },
+	"/tenants/{tenantId}/settings": {
+		"get": {
+			"operationId": "POST_team4-cip-admin-api-get-tenant-settings",
+			"summary": "List tenant settings",
+			"description": "It will show all available tenant options/settings. Example: skills, themes, news etc.",
+			"tags":[  
+				   "Tenant settings (Milestone - 3)"
+				],
+			"consumes": [
+			  "multipart/form-data"
+			],
+			"parameters": [
+			  {  
+				  "name":"tenantId",
+				  "in":"path",
+				  "description":"Tenant id",
+				  "required":true,
+				  "type":"integer",
+				  "format":"int64"
+			  }
+			],
+			"responses": {
+				"400":{  
+				  "description":"Bad request"
+				},
+				"404":{  
+				  "description":"Tenant not found in the system"
+				}
+			}
+		},
+	},
+	"/tenants/{tenantId}/settings/": {
+		"post": {
+			"operationId": "POST_team4-cip-admin-api-store-tenant-settings",
+			"summary": "Enable/disable tenant settings",
+			"description": "Super admin(Optimy) will enable/disable tenant options/settings.",
+			"tags":[  
+				   "Tenant settings (Milestone - 3)"
+				],
+			"consumes": [
+			  "application/json"
+			],
+			"parameters": [
+			  {  
+				  "name":"tenantId",
+				  "in":"path",
+				  "description":"Tenant id",
+				  "required":true,
+				  "type":"integer",
+				  "format":"int64"
+			  },
+			  {
+				"name": "body",
+				"in": "body",
+				"required": true,
+				"schema": {
+				  "type": "object",
+				  "properties": {
+					"settings": {
+					  "type": "array",
+					  "items": {
+						"type": "object",
+						"properties": {
+						  "tenant_setting_id": {
+							"type":"integer",
+							"format":"int32"
+						  },
+						  "value": {
+							"type": "integer",
+							"description": "If enable, value should be passed 1 and for disable value should be passed 0",
+							"enum":[  
+								"1",
+								"0"
+							]
+						  }
+						}
+					  }
+					}
+				  }
+				}
+             }
+			],
+			"responses": {
+				"400":{  
+				  "description":"Bad request"
+				},
+				"404":{  
+				  "description":"Tenant not found in the system"
+				},
+				"422":{  
+				  "description":"Invalid input data"
+				}
+			}
+		},
+	},
   },
   "definitions": {
 	"Tenant":{
@@ -337,32 +435,6 @@
                 "sponsor_id": {
                   "type":"integer",
                   "format":"int64"
-                },
-                "options": {
-                  "type": "object",
-                  "properties": {
-                    "theme_enabled": {
-                      "type": "integer",
-					  "enum":[  
-						"1",
-						"0",
-					  ]
-                    },
-                    "skills_enabled": {
-                      "type": "integer",
-					  "enum":[  
-						"1",
-						"0",
-					  ]
-                    },
-					"news_enabled": {
-                      "type": "integer",
-					  "enum":[  
-						"1",
-						"0",
-					  ]
-                    }
-                  }
                 }
               }
         }
