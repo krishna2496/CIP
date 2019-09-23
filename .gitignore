@@ -11,3 +11,4 @@ Homestead.yaml
 /package-lock.json
 /composer.lock
 composer.lock
+/storage/reports

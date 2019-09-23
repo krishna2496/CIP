@@ -65,7 +65,7 @@ class TenantSettingsController extends Controller
 
         // Fetch all tenant settings data
         $tenantSettings = $this->tenantSettingRepository->fetchAllTenantSettings();
-        // dd($getTenantSettings);
+
         $tenantSettingData = array();
 
         if ($tenantSettings->count() &&  $getTenantSettings->count()) {
