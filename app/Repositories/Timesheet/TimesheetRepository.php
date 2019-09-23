@@ -98,13 +98,11 @@ class TimesheetRepository implements TimesheetInterface
         'mission_id' => $request->mission_id,
         'date_volunteered' => $request->date_volunteered
         ], $request->toArray());
-        dd($request->file('documents'));
-        dd($request->hasFile('documents'));
+
         if ($request->hasFile('documents')) {
             $tenantName = $this->helpers->getSubDomainFromRequest($request);
             $files = $request->file('documents');
             foreach ($files as $file) {
-                dd($file);
                 $filePath = $this->s3helper
                 ->uploadDocumentOnS3Bucket(
                     $file,

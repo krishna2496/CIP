@@ -316,6 +316,6 @@ class TenantOptionsTest extends TestCase
             'custom_scss_file_name' => 'modal.scss'
         ];
         $response = $this->post('style/update-style', $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))]);
-        dd($response->response->getContent());
+        $response->response->getContent();
     }
 }

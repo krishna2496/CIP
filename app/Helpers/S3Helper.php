@@ -118,6 +118,7 @@ class S3Helper
 
     /**
      * Upload document on AWS s3 bucket
+     * @codeCoverageIgnore
      *
      * @param $file
      * @param string $tenantName
