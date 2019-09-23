@@ -37,8 +37,8 @@ trait NewsTransformable
                 foreach ($newsDetails['news_language'] as $key => $value) {
                     $newsContent[$key]['language_id'] = $value['language_id'];
                     $newsContent[$key]['title'] = $value['title'];
-                    $newsContent[$key]['description'] = ($sortDescription) ? $this->helpers->shortDescription(
-                            $value['description'],
+                    $newsContent[$key]['description'] = ($sortDescription) ? $this->helpers->trimText(
+                            strip_tags($value['description']),
                             config('constants.NEWS_SHORT_DESCRIPTION_WORD_LIMIT')
                         ) : $value['description'];
                 }                
@@ -46,8 +46,8 @@ trait NewsTransformable
                 $description = $newsDetails['news_language'][0]['description'];
                 $newsContent['language_id'] = $newsDetails['news_language'][0]['language_id'];
                 $newsContent['title'] = $newsDetails['news_language'][0]['title'];
-                $newsContent['description'] = ($sortDescription) ? $this->helpers->shortDescription(
-                            $description,
+                $newsContent['description'] = ($sortDescription) ? $this->helpers->trimText(
+                            strip_tags($description),
                             config('constants.NEWS_SHORT_DESCRIPTION_WORD_LIMIT')
                         ) : $description;
             }  	

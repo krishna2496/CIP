@@ -366,7 +366,7 @@ class Helpers
      * @param int maxWords
      * @return null|string
      */
-    public function shortDescription(string $phrase, int $maxWords) {
+    public function trimText(string $phrase, int $maxWords) {
         $phrase_array = explode(' ',$phrase);
         if(count($phrase_array) > $maxWords && $maxWords > 0)
            $phrase = implode(' ',array_slice($phrase_array, 0, $maxWords)).'...';
