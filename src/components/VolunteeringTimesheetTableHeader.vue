@@ -201,7 +201,7 @@
 
 				if ((parseInt(this.currentMonthFix.format('M')) <= parseInt(this.currentMonth.format('M'))) && (parseInt(this.currentMonthFix.format(
 						'YYYY')) <= parseInt(this.currentMonth.format('YYYY')))) {		
-					this.ispreviousButtonDisable = true;
+					this.isPreviousButtonDisable = true;
 
 					// previousButtonDisable
 				} else {
