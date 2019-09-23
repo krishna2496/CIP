@@ -8,19 +8,12 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 use App\Helpers\ResponseHelper;
 use App\Repositories\Timesheet\TimesheetRepository;
-use App\Repositories\Mission\MissionRepository;
 use App\Traits\RestExceptionHandlerTrait;
-use InvalidArgumentException;
-use Validator;
-use Illuminate\Validation\Rule;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Repositories\MissionTheme\MissionThemeRepository;
 use App\Repositories\MissionSkill\MissionSkillRepository;
 use App\Helpers\LanguageHelper;
 use App\Helpers\ExportCSV;
-use Carbon\Carbon;
 use App\Helpers\Helpers;
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class VolunteerHistoryController extends Controller
 {
@@ -136,25 +129,18 @@ class VolunteerHistoryController extends Controller
      */
     public function timeMissionHistory(Request $request): JsonResponse
     {
-        try {
-            $statusArray = [
-                config('constants.timesheet_status_id.AUTOMATICALLY_APPROVED'),
-                config('constants.timesheet_status_id.APPROVED')
-            ];
+        $statusArray = [
+            config('constants.timesheet_status_id.AUTOMATICALLY_APPROVED'),
+            config('constants.timesheet_status_id.APPROVED')
+        ];
 
-            $timeMissionList = $this->timesheetRepository->timeRequestList($request, $statusArray);
+        $timeMissionList = $this->timesheetRepository->timeRequestList($request, $statusArray);
 
-            $apiMessage = (count($timeMissionList) > 0) ?
-            trans('messages.success.MESSAGE_TIME_MISSION_TIME_ENTRY_LISTED') :
-            trans('messages.success.MESSAGE_NO_TIME_MISSION_TIME_ENTRY_FOUND');
-            
-            return $this->responseHelper->successWithPagination(Response::HTTP_OK, $apiMessage, $timeMissionList);
-        } catch (PDOException $e) {
-            return $this->PDO(
-                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
-                trans('messages.custom_error_message.ERROR_DATABASE_OPERATIONAL')
-            );
-        }
+        $apiMessage = (count($timeMissionList) > 0) ?
+        trans('messages.success.MESSAGE_TIME_MISSION_TIME_ENTRY_LISTED') :
+        trans('messages.success.MESSAGE_NO_TIME_MISSION_TIME_ENTRY_FOUND');
+        
+        return $this->responseHelper->successWithPagination(Response::HTTP_OK, $apiMessage, $timeMissionList);
     }
 
     /**
@@ -165,25 +151,18 @@ class VolunteerHistoryController extends Controller
      */
     public function goalMissionHistory(Request $request): JsonResponse
     {
-        try {
-            $statusArray = [
-                config('constants.timesheet_status_id.AUTOMATICALLY_APPROVED'),
-                config('constants.timesheet_status_id.APPROVED')
-            ];
+        $statusArray = [
+            config('constants.timesheet_status_id.AUTOMATICALLY_APPROVED'),
+            config('constants.timesheet_status_id.APPROVED')
+        ];
 
-            $goalMissionList = $this->timesheetRepository->goalRequestList($request, $statusArray);
+        $goalMissionList = $this->timesheetRepository->goalRequestList($request, $statusArray);
 
-            $apiMessage = (count($goalMissionList) > 0) ?
-            trans('messages.success.MESSAGE_GOAL_MISSION_TIME_ENTRY_LISTED') :
-            trans('messages.success.MESSAGE_NO_GOAL_MISSION_TIME_ENTRY_FOUND');
-            
-            return $this->responseHelper->successWithPagination(Response::HTTP_OK, $apiMessage, $goalMissionList);
-        } catch (PDOException $e) {
-            return $this->PDO(
-                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
-                trans('messages.custom_error_message.ERROR_DATABASE_OPERATIONAL')
-            );
-        }
+        $apiMessage = (count($goalMissionList) > 0) ?
+        trans('messages.success.MESSAGE_GOAL_MISSION_TIME_ENTRY_LISTED') :
+        trans('messages.success.MESSAGE_NO_GOAL_MISSION_TIME_ENTRY_FOUND');
+        
+        return $this->responseHelper->successWithPagination(Response::HTTP_OK, $apiMessage, $goalMissionList);
     }
 
     /**
