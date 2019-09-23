@@ -89,11 +89,8 @@
                                     :title='langauageData.label.stories'>{{ langauageData.label.stories}}</a>
                             </li>
                             <li class="has-menu no-dropdown" v-if="isNewsDisplay">
-                               
-                                <router-link :to="{ path: '/news'}"
-                                    >
-                                    {{langauageData.label.news}}
-                                </router-link>
+                                <a href="Javascript:void(0)"
+                                    :title='langauageData.label.news'> {{langauageData.label.news}}</a>
                             </li>
 
                             <li class="has-menu" v-if="isPolicyDisplay">
