@@ -10,7 +10,7 @@
 					<div :style="{backgroundImage: 'url('+bannerUrl+')'}" class="banner-section">
 						<b-container>
 							<h1>{{langauageData.label.news}}</h1>
-							<p>	{{bannerText}}</p>
+							<p>{{bannerText}}</p>
 						</b-container>
 					</div>
 				</div>
@@ -120,11 +120,13 @@ export default {
 		}
 		this.bannerUrl = store.state.newsBanner
 		let bannerTextArray = JSON.parse(store.state.newsBannerText)
-		bannerTextArray.filter(function(data,index){
-			if(data.lang == store.state.defaultLanguage.toLowerCase()) {
-				_this.bannerText = data.message
-			}
-		})
+		if(bannerTextArray) {
+			bannerTextArray.filter(function(data,index){
+				if(data.lang == store.state.defaultLanguage.toLowerCase()) {
+					_this.bannerText = data.message
+				}
+			})
+		}
 		this.getNewsListing(this.pagination.currentPage);
 	},
 	destroyed() {}

@@ -235,8 +235,8 @@ export default new Vuex.Store({
             state.newsBanner = data
         },
         newsBannerText(state, data) {
-            localStorage.setItem('newsBannerText', JSON.stringify(data.translations))
-            state.newsBannerText = JSON.stringify(data.translations)
+            localStorage.setItem('newsBannerText', JSON.stringify(data))
+            state.newsBannerText = JSON.stringify(data)
         }
     },
     getters: {},
