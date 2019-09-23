@@ -16,6 +16,9 @@
       },
 	  {  
          "name":"Tenant settings (Milestone - 3)"
+      },
+	  {  
+         "name":"Language management (Milestone - 4)"
       }
    ],
   "paths": {
@@ -424,6 +427,143 @@
 			}
 		},
 	},
+	"/tenants/language/": {
+      "post": {
+        "operationId": "POST_team4-cip-admin-api-add-language",
+        "summary": "Add language",
+		"tags":[  
+               "Language management (Milestone - 4)"
+            ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+			"required": true,
+            "schema": {
+              "$ref":"#/definitions/Language"
+            }
+          }
+        ],
+        "responses": {
+            "400":{  
+			  "description":"Bad request"
+			},
+			"422":{  
+			  "description":"Unprocessable entity - Invalid input"
+			}
+        }
+      },
+      "get": {
+        "operationId": "GET_team4-cip-admin-api-get-languages",
+        "summary": "Listing languages",
+		"description": "To fetch only active languages, append status=true in endpoint. e.g. /tenants/language?status=true",
+        "tags":[  
+               "Language management (Milestone - 4)"
+            ],
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "responses": {
+            "400":{  
+			  "description":"Bad request"
+			}
+        }
+      }
+    },
+	"/tenants/language/{languageId}/": {
+		"patch": {
+			"operationId": "POST_team4-cip-admin-api-update-language",
+			"summary": "Edit language details",
+			"tags":[  
+				   "Language management (Milestone - 4)"
+				],
+			"consumes": [
+			  "application/json"
+			],
+			"parameters": [
+			  {
+				"description":"language id to get details",
+				"required":true,
+				"type":"integer",
+				"format":"int64"
+			  },
+			  {
+				"name": "body",
+				"in": "body",
+				"required": true,
+				"schema": {
+				  "$ref":"#/definitions/Language"
+				}
+			  }
+			],
+			"responses": {
+				"400":{  
+				  "description":"Bad request"
+				},
+				"404":{  
+				  "description":"Language not found in the system"
+				},
+				"422":{  
+				  "description":"Unprocessable entity - Invalid input"
+				}
+			}
+      },
+	  "get": {
+			"operationId": "POST_team4-cip-admin-api-get-language-detail",
+			"summary": "Get language details",
+			"tags":[  
+				   "Language management (Milestone - 4)"
+				],
+			"consumes": [
+			  "multipart/form-data"
+			],
+			"parameters": [
+			  {
+				"description":"language id to get details",
+				"required":true,
+				"type":"integer",
+				"format":"int64"
+			  }
+			],
+			"responses": {
+				"400":{  
+				  "description":"Bad request"
+				},
+				"404":{  
+				  "description":"Language not found in the system"
+				}
+			}
+      },
+	  "delete": {
+			"operationId": "POST_team4-cip-admin-api-delete-language-detail",
+			"summary": "Delete language",
+			"tags":[  
+				   "Language management (Milestone - 4)"
+				],
+			"consumes": [
+			  "multipart/form-data"
+			],
+			"parameters": [
+			  {
+				"description":"language id to delete",
+				"required":true,
+				"type":"integer",
+				"format":"int64"
+			  }
+			],
+			"responses": {
+				"400":{  
+				  "description":"Bad request"
+				},
+				"404":{  
+				  "description":"Language not found in the system"
+				}
+			}
+      }
+	}
   },
   "definitions": {
 	"Tenant":{
@@ -435,6 +575,26 @@
                 "sponsor_id": {
                   "type":"integer",
                   "format":"int64"
+                }
+              }
+        },
+	"Language":{
+		"type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "code": {
+                  "type":"string",
+                  "description":"Language code.(i.e. en, fr etc)",
+                },
+				"status": {
+                  "type":"integer",
+                  "description":"1 => Active, 0 => Inactive",
+				  "enum":[  
+						"1",
+						"0"
+			      ]
                 }
               }
         }
