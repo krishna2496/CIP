@@ -8,18 +8,11 @@ use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
 use App\Repositories\Tenant\TenantRepository;
 use App\Helpers\ResponseHelper;
-use App\Jobs\TenantDefaultLanguageJob;
-use App\Jobs\TenantMigrationJob;
-use App\Jobs\CompileScssFiles;
-use App\Jobs\CreateFolderInS3BucketJob;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Traits\RestExceptionHandlerTrait;
 use Validator;
-use PDOException;
 use InvalidArgumentException;
-use Aws\S3\Exception\S3Exception;
-use App\Jobs\DownloadAssestFromS3ToLocalStorageJob;
-use Queue;
+use App\Helpers\Helpers;
 
 class TenantController extends Controller
 {
@@ -34,24 +27,32 @@ class TenantController extends Controller
      * @var App\Helpers\ResponseHelper
      */
     private $responseHelper;
+    
+    /**
+     * @var App\Helpers\Helpers
+     */
+    private $helpers;
 
     /**
      * Create a new Tenant controller instance.
      *
      * @param  App\Repositories\Tenant\TenantRepository $tenantRepository
      * @param  App\Helpers\ResponseHelper $responseHelper
+     * @param  App\Helpers\Helpers $helpers
      * @return void
      */
     public function __construct(
         TenantRepository $tenantRepository,
-        ResponseHelper $responseHelper
+        ResponseHelper $responseHelper,
+        Helpers $helpers
     ) {
         $this->tenantRepository = $tenantRepository;
         $this->responseHelper = $responseHelper;
+        $this->helpers = $helpers;
     }
     
     /**
-     * Display a listing of the tenants.
+     * Get listing of the tenants.
      *
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\JsonResponse;
@@ -60,10 +61,15 @@ class TenantController extends Controller
     {
         try {
             $tenantList = $this->tenantRepository->tenantList($request);
-            
-            $responseMessage = (count($tenantList) > 0) ? trans('messages.success.MESSAGE_TENANT_LISTING') :
+            $paginatedData = $this->helpers->paginationTransform(
+                $tenantList,
+                $request->except(['page','perPage']),
+                $request->url()
+            );
+            $apiData = $paginatedData;
+            $responseMessage = (count($apiData) > 0) ? trans('messages.success.MESSAGE_TENANT_LISTING') :
             trans('messages.success.MESSAGE_NO_RECORD_FOUND');
-            return $this->responseHelper->successWithPagination($tenantList, Response::HTTP_OK, $responseMessage);
+            return $this->responseHelper->successWithPagination($apiData, Response::HTTP_OK, $responseMessage);
         } catch (InvalidArgumentException $e) {
             return $this->invalidArgument(
                 config('constants.error_codes.ERROR_INVALID_ARGUMENT'),
@@ -80,55 +86,28 @@ class TenantController extends Controller
      */
     public function store(Request $request): JsonResponse
     {
-        try {
-            $validator = Validator::make($request->toArray(), [
-                'name' => 'required|regex:/(^[A-Za-z0-9]+$)+/|
-                max:512|unique:tenant,name,NULL,tenant_id,deleted_at,NULL',
-                'sponsor_id'  => 'required|numeric']);
+        $validator = Validator::make($request->toArray(), [
+            'name' => 'required|regex:/(^[A-Za-z0-9]+$)+/|
+            max:512|unique:tenant,name,NULL,tenant_id,deleted_at,NULL',
+            'sponsor_id'  => 'required|numeric']);
 
-            if ($validator->fails()) {
-                return $this->responseHelper->error(
-                    Response::HTTP_UNPROCESSABLE_ENTITY,
-                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                    config('constants.error_codes.ERROR_TENANT_REQUIRED_FIELDS_EMPTY'),
-                    $validator->errors()->first()
-                );
-            }
-
-            $tenant = $this->tenantRepository->store($request);
-            
-            // Set response data
-            $apiStatus = Response::HTTP_CREATED;
-            $apiData = ['tenant_id' => $tenant->tenant_id];
-            $apiMessage =  trans('messages.success.MESSAGE_TENANT_CREATED');
-            
-            return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
-        } catch (PDOException $e) {
-            // Delete created tenant
-            $this->destroy($tenant->tenant_id);
-            return $this->PDO(
-                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
-                trans('messages.custom_error_message.ERROR_DATABASE_OPERATIONAL')
+        if ($validator->fails()) {
+            return $this->responseHelper->error(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                config('constants.error_codes.ERROR_TENANT_REQUIRED_FIELDS_EMPTY'),
+                $validator->errors()->first()
             );
-        } catch (InvalidArgumentException $e) {
-            // Delete created tenant
-            $this->destroy($tenant->tenant_id);
-            return $this->invalidArgument(
-                config('constants.error_codes.ERROR_INVALID_ARGUMENT'),
-                trans('messages.custom_error_message.ERROR_INVALID_ARGUMENT')
-            );
-        } catch (S3Exception $e) {
-            // Delete created tenant
-            $this->destroy($tenant->tenant_id);
-            return $this->s3Exception(
-                config('constants.error_codes.FAILED_TO_CREATE_FOLDER_ON_S3'),
-                trans('messages.custom_error_message.FAILED_TO_CREATE_FOLDER_ON_S3')
-            );
-        } catch (\Exception $e) {
-            // Delete created tenant
-            $this->destroy($tenant->tenant_id);
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
+        
+        $tenant = $this->tenantRepository->store($request);
+    
+        // Set response data
+        $apiStatus = Response::HTTP_CREATED;
+        $apiData = ['tenant_id' => $tenant->tenant_id];
+        $apiMessage =  trans('messages.success.MESSAGE_TENANT_CREATED');
+        
+        return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
     }
 
     /**
@@ -140,10 +119,10 @@ class TenantController extends Controller
     public function show(int $tenantId): JsonResponse
     {
         try {
-            $tenantDetail = $this->tenantRepository->find($tenantId);
+            $tenantDetails = $this->tenantRepository->find($tenantId);
 
             $apiStatus = Response::HTTP_OK;
-            $apiData = $tenantDetail->toArray();
+            $apiData = $tenantDetails->toArray();
             $apiMessage =  trans('messages.success.MESSAGE_TENANT_FOUND');
 
             return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
@@ -152,8 +131,6 @@ class TenantController extends Controller
                 config('constants.error_codes.ERROR_TENANT_NOT_FOUND'),
                 trans('messages.custom_error_message.ERROR_TENANT_NOT_FOUND')
             );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
 
@@ -183,7 +160,7 @@ class TenantController extends Controller
                     $validator->errors()->first()
                 );
             }
-            $tenant = $this->tenantRepository->update($request->toArray(), $id);
+            $tenant = $this->tenantRepository->update($request, $id);
             
             $apiStatus = Response::HTTP_OK;
             $apiData = ['tenant_id' => $id];
@@ -195,13 +172,6 @@ class TenantController extends Controller
                 config('constants.error_codes.ERROR_TENANT_NOT_FOUND'),
                 trans('messages.custom_error_message.ERROR_TENANT_NOT_FOUND')
             );
-        } catch (PDOException $e) {
-            return $this->PDO(
-                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
-                trans('messages.custom_error_message.ERROR_DATABASE_OPERATIONAL')
-            );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
 
@@ -226,8 +196,6 @@ class TenantController extends Controller
                 config('constants.error_codes.ERROR_TENANT_NOT_FOUND'),
                 trans('messages.custom_error_message.ERROR_TENANT_NOT_FOUND')
             );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
 }

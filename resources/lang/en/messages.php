@@ -18,6 +18,11 @@ return [
         'MESSAGE_API_USER_UPDATED_SUCCESSFULLY' => 'API user\'s secret key updated successfully',
         'MESSAGE_TENANT_SETTING_LISTING' => 'Tenant setting listed successfully',
         'MESSAGE_TENANT_SETTINGS_UPDATED' => 'Tenant settings updated successfully',
+        'MESSAGE_LANGUAGE_FOUND' => 'Language found successfully',
+        'MESSAGE_LANGUAGE_LISTING' => 'Language listed sucessfully',
+        'MESSAGE_LANGUAGE_CREATED' => 'Language created sucessfully',
+        'MESSAGE_LANGUAGE_UPDATED' => 'Language details updated sucessfully',
+        'MESSAGE_NEWS_DELETED' => 'Language deleted sucessfully',
     ],
     
     /**
@@ -38,6 +43,7 @@ return [
         'ERROR_WHILE_STORE_COMPILED_CSS_FILE_TO_LOCAL' => 'Error while storing compiled CSS to local',
         'ERROR_FAILD_TO_UPLOAD_COMPILE_FILE_ON_S3' => 'Error while uploading compiled CSS to S3',
         'ERROR_WHILE_COMPILING_SCSS_FILES' => 'Error while compiling SCSS files',
+        'ERROR_LANGUAGE_NOT_FOUND' => 'Language not found in the system',
     ],
     'email_text' => [
         'ERROR' => 'Error',

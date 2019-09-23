@@ -1,9 +1,9 @@
 <?php
-namespace App\Repositories\Tenant;
+namespace App\Repositories\Language;
 
 use Illuminate\Support\ServiceProvider;
 
-class TenantRepoServiceProvide extends ServiceProvider
+class LanguageRepoServiceProvide extends ServiceProvider
 {
     /**
      * Bootstrap the application services.
@@ -12,7 +12,6 @@ class TenantRepoServiceProvide extends ServiceProvider
      */
     public function boot()
     {
-        
     }
 
     /**
@@ -22,6 +21,9 @@ class TenantRepoServiceProvide extends ServiceProvider
      */
     public function register()
     {
-        $this->app->bind('App\Repositories\Tenant\TenantInterface', 'App\Repositories\Tenant\TenantRepository');
+        $this->app->bind(
+            'App\Repositories\Language\LanguageInterface',
+            'App\Repositories\Language\LanguageRepository'
+        );
     }
 }

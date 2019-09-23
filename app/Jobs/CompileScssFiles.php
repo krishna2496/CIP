@@ -2,20 +2,15 @@
 
 namespace App\Jobs;
 
-use Leafo\ScssPhp\Exception\ParserException;
-use App\Exceptions\FileDownloadException;
-use Aws\S3\Exception\S3Exception;
-use App\Exceptions\FileNotFoundException;
 use Leafo\ScssPhp\Compiler;
 use App\Traits\RestExceptionHandlerTrait;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Log;
-use App\Traits\SendEmailTrait;
 use App\Models\Tenant;
+use App\Helpers\EmailHelper;
 
 class CompileScssFiles extends Job
 {
-    use RestExceptionHandlerTrait, SendEmailTrait;
+    use RestExceptionHandlerTrait;
 
     /**
      * @var App\Models\Tenant
@@ -42,6 +37,11 @@ class CompileScssFiles extends Job
     public $tries = 1;
 
     /**
+     * @var App\Helpers\EmailHelper
+     */
+    private $emailHelper;
+
+    /**
      * Create a new job instance.
      * @param App\Models\Tenant $tenant
      * @return void
@@ -50,6 +50,7 @@ class CompileScssFiles extends Job
     {
         $this->tenant = $tenant;
         $this->emailMessage = trans("messages.email_text.JOB_PASSED_SUCCESSFULLY");
+        $this->emailHelper = new EmailHelper();
     }
 
     /**
@@ -65,18 +66,8 @@ class CompileScssFiles extends Job
 
         $assetUrl = 'https://'.env("AWS_S3_BUCKET_NAME").'.s3.'
         .env("AWS_REGION", "eu-central-1").'.amazonaws.com/'.$this->tenant->name.'/assets/images';
-        
-        if (!file_exists(base_path()."/node_modules/bootstrap/scss/bootstrap.scss")
-            || !file_exists(base_path()."/node_modules/bootstrap-vue/src/index.js")) {
-            // Send error like bootstrap.scss not found while compile files
-            throw new FileNotFoundException(
-                trans('messages.custom_error_message.ERROR_BOOSTRAP_SCSS_NOT_FOUND'),
-                config('constants.error_codes.ERROR_BOOSTRAP_SCSS_NOT_FOUND')
-            );
-        }
 
-        try {
-            $importScss =
+        $importScss =
             '@import "_assets";
             $assetUrl: "'.$assetUrl.'";
             @import "_variables";
@@ -84,51 +75,21 @@ class CompileScssFiles extends Job
             @import "../../../../../node_modules/bootstrap-vue/src/index";
             @import "custom";';
 
-            $css = $scss->compile($importScss);
+        $css = $scss->compile($importScss);
         
-            // Put compiled css file into local storage
-            if (Storage::disk('local')->put($this->tenant->name.'\assets\css\style.css', $css)) {
-                // Copy default theme folder to tenant folder on s3
-                try {
-                    Storage::disk('s3')->put(
-                        $this->tenant->name.'/assets/css/style.css',
-                        Storage::disk('local')->get($this->tenant->name.'\assets\css\style.css')
-                    );
-                } catch (S3Exception $e) {
-                    $this->emailMessage = trans(
-                        'messages.custom_error_message.ERROR_FAILD_TO_UPLOAD_COMPILE_FILE_ON_S3'
-                    );
+        // Put compiled css file into local storage
+        Storage::disk('local')->put($this->tenant->name.'\assets\css\style.css', $css);
 
-                    return $this->s3Exception(
-                        config('constants.error_codes.ERROR_FAILD_TO_UPLOAD_COMPILE_FILE_ON_S3'),
-                        trans('messages.custom_error_message.ERROR_FAILD_TO_UPLOAD_COMPILE_FILE_ON_S3')
-                    );
-                }
-            } else {
-                $this->emailMessage = trans(
-                    'messages.custom_error_message.ERROR_WHILE_STORE_COMPILED_CSS_FILE_TO_LOCAL'
-                );
-                
-                throw new FileDownloadException(
-                    trans('messages.custom_error_message.ERROR_WHILE_STORE_COMPILED_CSS_FILE_TO_LOCAL'),
-                    config('constants.error_codes.ERROR_WHILE_STORE_COMPILED_CSS_FILE_TO_LOCAL')
-                );
-            }
-        } catch (ParserException $e) {
-            $this->emailMessage = trans('messages.custom_error_message.ERROR_WHILE_COMPILING_SCSS_FILES');
-
-            throw new ParserException(
-                trans('messages.custom_error_message.ERROR_WHILE_COMPILING_SCSS_FILES'),
-                config('constants.error_codes.ERROR_WHILE_COMPILING_SCSS_FILES')
-            );
-        } catch (\Exception $e) {
-            $this->emailMessage = trans('messages.custom_error_message.ERROR_WHILE_COMPILING_SCSS_FILES');
-            throw $e;
-        }
+        // Copy default theme folder to tenant folder on s3
+        Storage::disk('s3')->put(
+            $this->tenant->name.'/assets/css/style.css',
+            Storage::disk('local')->get($this->tenant->name.'\assets\css\style.css')
+        );
     }
 
     /**
      * Send email notification to admin
+     * @codeCoverageIgnore
      * @param bool $isFail
      * @return void
      */
@@ -153,12 +114,12 @@ class CompileScssFiles extends Job
         trans("messages.email_text.SUCCESS").": " .trans('messages.email_text.COMPILE_SCSS_FILES'). " " .trans('messages.email_text.JOB_FOR'). $this->tenant->name. " " .trans("messages.email_text.TENANT"); //optional
         $params['data'] = $data;
 
-        $this->sendEmail($params);
+        $this->emailHelper->sendEmail($params);
     }
 
     /**
      * The job failed to process.
-     *
+     * @codeCoverageIgnore
      * @param  Exception  $exception
      * @return void
      */
