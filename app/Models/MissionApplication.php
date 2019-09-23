@@ -52,7 +52,6 @@ class MissionApplication extends Model
 
     /**
      * Defined relation for the mission table.
-     * @codeCoverageIgnore
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
@@ -63,7 +62,6 @@ class MissionApplication extends Model
 
     /**
      * Defined relation for the user table.
-     * @codeCoverageIgnore
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */

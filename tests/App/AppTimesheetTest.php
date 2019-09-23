@@ -4,7 +4,7 @@ use App\Helpers\Helpers;
 class AppTimesheetTest extends TestCase
 {
     /**
-     * 
+     * @test
      *
      * Get timesheet list
      *
@@ -109,7 +109,7 @@ class AppTimesheetTest extends TestCase
     }
 
     /**
-     * 
+     * @test
      *
      * No data found for timesheet
      *
@@ -132,7 +132,7 @@ class AppTimesheetTest extends TestCase
     }
 
     /**
-     * 
+     * @test
      *
      * Return error for invalid token
      *
@@ -142,7 +142,7 @@ class AppTimesheetTest extends TestCase
     {
         $token = str_random(50);
         $this->get('/app/timesheet', ['token' => $token])
-        ->seeStatusCode(500)
+        ->seeStatusCode(400)
         ->seeJsonStructure([
             "errors" => [
                 [
@@ -155,7 +155,7 @@ class AppTimesheetTest extends TestCase
     }
 
     /**
-     * 
+     * @test
      *
      * Add timesheet entry
      *
@@ -254,7 +254,7 @@ class AppTimesheetTest extends TestCase
     }
 
     /**
-     * 
+     * @test
      *
      * Return error for invalid hours data for add timesheet entry
      *
@@ -340,7 +340,7 @@ class AppTimesheetTest extends TestCase
     }
 
     /**
-     * 
+     * @test
      *
      * Return error for invalid minutes data for add timesheet entry
      *
@@ -426,7 +426,7 @@ class AppTimesheetTest extends TestCase
     }
 
     /**
-     * 
+     * @test
      *
      * Return error for invalid day volunteer data for add timesheet entry
      *
@@ -512,7 +512,7 @@ class AppTimesheetTest extends TestCase
     }
 
     /**
-     * 
+     * @test
      *
      * Return error for invalid mission id data for add timesheet entry
      *
@@ -554,7 +554,7 @@ class AppTimesheetTest extends TestCase
     }
     
     /**
-     * 
+     * @test
      *
      * Update timesheet entry
      *
@@ -654,7 +654,7 @@ class AppTimesheetTest extends TestCase
     }
     
     /**
-     * 
+     * @test
      *
      * Return error for invalid hours data for update timesheet entry
      *
@@ -769,7 +769,7 @@ class AppTimesheetTest extends TestCase
     }
 
     /**
-     * 
+     * @test
      *
      * Return error for invalid minutes data for update timesheet entry
      *
@@ -884,7 +884,7 @@ class AppTimesheetTest extends TestCase
     }
 
     /**
-     * 
+     * @test
      *
      * Return error for invalid day volunteer data for update timesheet entry
      *
@@ -999,7 +999,7 @@ class AppTimesheetTest extends TestCase
     }
 
     /**
-     * 
+     * @test
      *
      * Get timesheet by timesheet id
      *
@@ -1115,7 +1115,7 @@ class AppTimesheetTest extends TestCase
     }
 
     /**
-     * 
+     * @test
      *
      * It should return error for get timesheet by timesheet id
      *
@@ -1145,7 +1145,7 @@ class AppTimesheetTest extends TestCase
     }
 
     /**
-     * 
+     * @test
      *
      * Delete timesheet document
      *
@@ -1261,7 +1261,7 @@ class AppTimesheetTest extends TestCase
     }
 
     /**
-     * 
+     * @test
      *
      * Return error for delete timesheet document
      *
@@ -1380,7 +1380,7 @@ class AppTimesheetTest extends TestCase
     }
 
     /**
-     * 
+     * @test
      *
      * Return error for invalid timesheet id for delete timesheet document
      *
@@ -1414,7 +1414,7 @@ class AppTimesheetTest extends TestCase
     }
 
     /**
-     * 
+     * @test
      *
      * Submit timesheet for approval
      *
@@ -1528,7 +1528,7 @@ class AppTimesheetTest extends TestCase
     }
 
     /**
-     * 
+     * @test
      *
      * Return error if timesheet is already approved
      *
@@ -1643,7 +1643,7 @@ class AppTimesheetTest extends TestCase
     }
 
     /**
-     * 
+     * @test
      *
      * It should return error for submit timesheet by timesheet id
      *
@@ -1680,7 +1680,7 @@ class AppTimesheetTest extends TestCase
     }
 
     /**
-     * 
+     * @test
      *
      * Return error if timesheet data is invalid
      *
@@ -1806,7 +1806,7 @@ class AppTimesheetTest extends TestCase
     }
 
     /**
-     * 
+     * @test
      *
      * Return all pending time requests list
      *
@@ -1919,7 +1919,7 @@ class AppTimesheetTest extends TestCase
     }
 
     /**
-     * 
+     * @test
      *
      * Return no records found for pending time requests list
      *
@@ -1942,7 +1942,7 @@ class AppTimesheetTest extends TestCase
     }
 
     /**
-     * 
+     * @test
      *
      * Return all pending goal requests list
      *
@@ -2053,7 +2053,7 @@ class AppTimesheetTest extends TestCase
     }
 
     /**
-     * 
+     * @test
      *
      * Return no records found for pending goal requests list
      *
@@ -2076,7 +2076,7 @@ class AppTimesheetTest extends TestCase
     }
 
     /**
-     * 
+     * @test
      *
      * Export pending time requests list
      *
@@ -2177,7 +2177,7 @@ class AppTimesheetTest extends TestCase
     }
 
     /**
-     * 
+     * @test
      *
      * Return no records found for export pending time requests list
      *
@@ -2197,7 +2197,7 @@ class AppTimesheetTest extends TestCase
     }
 
     /**
-     * 
+     * @test
      *
      * Export all pending goal requests list
      *
@@ -2297,7 +2297,7 @@ class AppTimesheetTest extends TestCase
     }
 
     /**
-     * 
+     * @test
      *
      * Return no records found for export pending goal requests list
      *
@@ -2317,7 +2317,7 @@ class AppTimesheetTest extends TestCase
     }
 
     /**
-     * 
+     * @test
      *
      * Returnerror if timesheet is already approved
      *
@@ -2429,7 +2429,7 @@ class AppTimesheetTest extends TestCase
     }
 
     /**
-     * 
+     * @test
      *
      * Returnerror if timesheet is already approved
      *
@@ -2541,7 +2541,7 @@ class AppTimesheetTest extends TestCase
     }
 
     /**
-     * 
+     * @test
      *
      * Return error for invalid goal actions
      *
@@ -2639,7 +2639,7 @@ class AppTimesheetTest extends TestCase
     }
 
     /**
-     * 
+     * @test
      *
      * Return error for invalid date volunteered for add timesheet
      *
@@ -2737,7 +2737,7 @@ class AppTimesheetTest extends TestCase
     }
 
     /**
-     * 
+     * @test
      *
      * Return error for invalid date volunteered for add timesheet
      *
@@ -2835,7 +2835,7 @@ class AppTimesheetTest extends TestCase
     }
 
     /**
-     * 
+     * @test
      *
      * Return error for invalid application data for timesheet entry
      *
@@ -3111,6 +3111,110 @@ class AppTimesheetTest extends TestCase
         DB::setDefaultConnection('mysql');
         $this->post('app/timesheet', $params, ['token' => $token])
         ->seeStatusCode(422);
+
+        $user->delete();
+        App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->delete();
+        App\Models\MissionApplication::where("mission_id", $mission[0]['mission_id'])->delete();
+    }
+
+    /**
+     * @test
+     *
+     * Add timesheet with document
+     *
+     * @return void
+     */
+    public function it_should_add_timesheet_with_document()
+    {
+        // $image = \Illuminate\Http\UploadedFile::fake()->image('avatar.jpg', 100, 100)->size(100);
+        // $image1 = \Illuminate\Http\UploadedFile::fake()->image('avatar1.jpg', 100, 100)->size(100);
+        
+        $connection = 'tenant';
+        $user = factory(\App\User::class)->make();
+        $user->setConnection($connection);
+        $user->save();
+
+        $params = [
+            "organisation" => [
+                "organisation_id" => 1,
+                "organisation_name" => str_random(10),
+                "organisation_detail" => ''
+            ],
+            "location" => [
+                "city_id" => 1,
+                "country_code" => "US"
+            ],
+            "mission_detail" => [[
+                    "lang" => "en",
+                    "title" => str_random(10),
+                    "short_description" => str_random(20),
+                    "objective" => str_random(20),
+                    "section" => [
+                        [
+                            "title" => str_random(10),
+                            "description" => str_random(100),
+                        ]
+                    ]
+                ]
+            ],
+            "media_images" => [[
+                    "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer9.png",
+                    "default" => "1"
+                ]
+            ],
+            "start_date" => "2019-05-15 10:40:00",
+            "end_date" => "2020-10-15 10:40:00",
+            "mission_type" => config("constants.mission_type.TIME"),
+            "goal_objective" => rand(1, 1000),
+            "total_seats" => rand(1, 10),
+            "application_deadline" => "2020-10-15 10:40:00",
+            "publication_status" => config("constants.publication_status.APPROVED"),
+            "theme_id" => 1,
+            "availability_id" => 1
+        ];
+
+        $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(201);
+        $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->get();
+       
+        $params = [
+                'mission_id' => $mission[0]['mission_id'],
+                'motivation' => str_random(10),
+                'availability_id' => 1
+            ];
+        DB::setDefaultConnection('mysql');
+        
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
+        $this->post('app/mission/application', $params, ['token' => $token])
+          ->seeStatusCode(201);
+                
+        $missionApplication = App\Models\MissionApplication::orderBy("mission_application_id", "DESC")->take(1)->get();
+        
+        App\Models\MissionApplication::where("mission_application_id", $missionApplication[0]['mission_application_id'])
+        ->update(['approval_status' => config("constants.application_status")["AUTOMATICALLY_APPROVED"]]);
+      
+        $image = new \Illuminate\Http\UploadedFile(resource_path('\images\volunteer9.png'), 'large-avatar.jpg', null, null, null, true);
+    
+        $params = [
+            'mission_id' => $mission[0]['mission_id'],
+            'date_volunteered' => date('Y-m-d'),
+            'day_volunteered' => 'HOLIDAY',
+            'notes' => str_random(10),
+            'hours' => rand(1, 5),
+            'minutes' => rand(1, 59),
+            'documents[]' => $image
+        ];
+        DB::setDefaultConnection('mysql');
+        
+        $this->post('app/timesheet', $params, ['token' => $token])
+          ->seeStatusCode(201)
+          ->seeJsonStructure([
+            'status',
+            'data' => [
+                "timesheet_id"
+            ],
+            'message',
+        ]);
 
         $user->delete();
         App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->delete();

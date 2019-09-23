@@ -51,7 +51,6 @@ class TimesheetController extends Controller
 
     /**
      * Create a new controller instance.
-     * @codeCoverageIgnore
      *
      * @param App\Repositories\Timesheet\TimesheetRepository $timesheetRepository
      * @param App\Helpers\ResponseHelper $responseHelper
@@ -77,7 +76,6 @@ class TimesheetController extends Controller
 
     /**
      * Get all timesheet entries
-     * @codeCoverageIgnore
      *
      * @param Illuminate\Http\Request $request
      * @return Illuminate\Http\JsonResponse
@@ -97,7 +95,6 @@ class TimesheetController extends Controller
 
     /**
      * Store/Update timesheet
-     * @codeCoverageIgnore
      *
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\JsonResponse;
@@ -110,7 +107,7 @@ class TimesheetController extends Controller
             $getmissionType->count() > 0 ?
             $request->request->add(['mission_type' => $getmissionType[0]['mission_type']]) : null;
         }
-            
+           
         $documentSizeLimit = config('constants.TIMESHEET_DOCUMENT_SIZE_LIMIT');
         $validator = Validator::make(
             $request->toArray(),
@@ -287,7 +284,7 @@ class TimesheetController extends Controller
 
     /**
      * Show timesheet data
-     * @codeCoverageIgnore
+     *
      * @param \Illuminate\Http\Request $request
      * @param int $timesheetId
      * @return \Illuminate\Http\JsonResponse
@@ -317,7 +314,6 @@ class TimesheetController extends Controller
 
     /**
      * Remove the timesheet documents.
-     * @codeCoverageIgnore
      *
      * @param \Illuminate\Http\Request $request
      * @param int  $timesheetId
@@ -355,7 +351,6 @@ class TimesheetController extends Controller
 
     /**
      * Submit timesheet for approval
-     * @codeCoverageIgnore
      *
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\JsonResponse
@@ -398,7 +393,6 @@ class TimesheetController extends Controller
 
     /**
      * Get Request timesheet
-     * @codeCoverageIgnore
      *
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\JsonResponse
@@ -417,7 +411,6 @@ class TimesheetController extends Controller
 
     /**
      * Fetch pending goal requests
-     * @codeCoverageIgnore
      *
      * @param Illuminate\Http\Request $request
      * @return Illuminate\Http\JsonResponse
@@ -434,7 +427,6 @@ class TimesheetController extends Controller
 
     /**
      * Export all pending time mission time entries.
-     * @codeCoverageIgnore
      *
      * @param Illuminate\Http\Request $request
      * @return Object
@@ -480,7 +472,6 @@ class TimesheetController extends Controller
 
     /**
      * Export user's goal mission history
-     * @codeCoverageIgnore
      *
      * @param \Illuminate\Http\Request $request
      * @return Object

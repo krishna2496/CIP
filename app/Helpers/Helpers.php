@@ -39,7 +39,7 @@ class Helpers
 
     /**
      * Get base URL from request object
-     * @codeCoverageIgnore
+     *
      * @param Illuminate\Http\Request $request
      * @return mixed
      */
@@ -251,7 +251,6 @@ class Helpers
 
     /**
      * Change date format
-     * @codeCoverageIgnore
      *
      * @param string $date
      * @param string $dateFormat
@@ -264,7 +263,6 @@ class Helpers
     
     /**
      * Convert in report time format
-     * @codeCoverageIgnore
      *
      * @param string $totalHours
      * @return string
@@ -279,7 +277,6 @@ class Helpers
 
     /**
      * Convert in report hours format
-     * @codeCoverageIgnore
      *
      * @param string $totalHours
      * @return string

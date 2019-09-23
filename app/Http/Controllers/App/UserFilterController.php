@@ -54,7 +54,7 @@ class UserFilterController extends Controller
 
     /**
      * Create a new controller instance.
-     * @codeCoverageIgnore
+     *
      *
      * @param App\Repositories\UserFilter\UserFilterRepository $filters
      * @param App\Repositories\MissionTheme\MissionThemeRepository $theme
@@ -85,7 +85,7 @@ class UserFilterController extends Controller
     
     /**
      * Display listing of user filter
-     * @codeCoverageIgnore
+     *
      *
      * @param Illuminate\Http\Request $request
      * @return Illuminate\Http\JsonResponse

@@ -54,7 +54,7 @@ class MissionMedia extends Model
 
     /**
      * Return youtube thumbnail from video URL
-     * @codeCoverageIgnore
+     *
      * @return string|null
      */
     public function getMediaImageAttribute(): ?string

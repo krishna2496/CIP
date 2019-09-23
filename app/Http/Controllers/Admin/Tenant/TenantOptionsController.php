@@ -242,7 +242,7 @@ class TenantOptionsController extends Controller
 
     /**
      * It will update image on S3
-     * @codeCoverageIgnore
+     *
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\JsonResponse
      */
