@@ -498,7 +498,7 @@ tspan {
     }
 
     @include md-max {
-        bottom: 55px !important;
+        bottom: 36px !important;
     }
 
     @include sm-max {
@@ -534,6 +534,7 @@ tspan {
     align-items: center;
     margin-bottom: 27px;
     padding-top: 8px;
+    min-height: 50px;
 
     h2 {
         font-size: 24px;
@@ -1087,7 +1088,6 @@ main {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 23px;
             flex-wrap: wrap;
 
             @include lg-max {
@@ -1101,7 +1101,8 @@ main {
             .btn {
 				padding: 6px 18px;
 				border-width: 1px!important;
-				min-height: 40px;
+                min-height: 40px;
+                margin-bottom: 23px;
 				&.icon-btn{
 					i{
 						margin: 0 10px 0 5px;
@@ -1323,7 +1324,8 @@ main {
 
         .rating-block {
 			position: relative;
-			margin-right: 10px;
+            margin-right: 10px;
+            margin-bottom: 23px;
         }
 
         .star-rating {
@@ -1874,7 +1876,6 @@ main {
 
 .platform-details-wrap {
     padding-bottom: 94px;
-    border-bottom: 1px solid $border-color;
 
     @include lg-max {
         padding-bottom: 50px;
@@ -1889,6 +1890,11 @@ main {
     }
 
     .platform-details-right {
+        > div {
+            &:last-child{
+                margin-bottom: 0;
+            }
+        }
         @include lg-max {
             padding-left: 30px;
         }
@@ -2051,15 +2057,32 @@ main {
 }
 
 .mission-block {
-    padding: 73px 0 60px;
     position: relative;
 
-    @include lg-max {
-        padding: 60px 0 40px;
-    }
 
-    @include md-max {
-        padding-top: 45px;
+    .card-grid{
+        padding-top:73px;
+        padding-bottom:60px;
+        position: relative;
+        
+        &::before{
+            position: absolute;
+            content:'';
+            height: 1px;
+            width: calc(100% - 30px);
+            left:15px;
+            top:0;
+            background:$gray-bg;
+        }
+
+        @include lg-max {
+            padding-top: 60px;
+            padding-bottom: 40px;
+        }
+    
+        @include md-max {
+            padding-top: 45px;
+        }
     }
 
     h2 {
@@ -3433,39 +3456,39 @@ main {
     }
 }
 
-// ::-webkit-scrollbar {
-//   -webkit-appearance: none;
-//   height: 10px;
-//   width: 6px;
-// }
+::-webkit-scrollbar {
+  -webkit-appearance: none;
+  height: 10px;
+  width: 6px;
+}
 
-// ::-webkit-scrollbar-thumb {
-//   border-radius: 16px;
-// background-color: rgba(0,0,0,.08);
+::-webkit-scrollbar-thumb {
+  border-radius: 16px;
+background-color: $border-color;
 
-// }
-// ::-ms-scrollbar {
-//   -webkit-appearance: none;
-//   height: 10px;
-//   width: 6px;
-// }
+}
+::-ms-scrollbar {
+  -webkit-appearance: none;
+  height: 10px;
+  width: 6px;
+}
 
-// ::-ms-scrollbar-thumb {
-//   border-radius: 16px;
-// background-color: rgba(0,0,0,.08);
+::-ms-scrollbar-thumb {
+  border-radius: 16px;
+background-color: $border-color;
 
-// }
-// ::-moz-scrollbar {
-//   -webkit-appearance: none;
-//   height: 10px;
-//   width: 6px;
-// }
+}
+::-moz-scrollbar {
+  -webkit-appearance: none;
+  height: 10px;
+  width: 6px;
+}
 
-// ::-moz-scrollbar-thumb {
-//   border-radius: 16px;
-// background-color: rgba(0,0,0,.08);
+::-moz-scrollbar-thumb {
+  border-radius: 16px;
+background-color: $border-color;
 
-// }
+}
 
 /** Social Sharing style **/
 .social-sharing {
@@ -3801,60 +3824,111 @@ main {
 }
 .share-stories-page{
 	h1{
-		margin: 50px 0 20px;
+		margin: 50px 0 16px;
+		@include md-max{
+			margin-top: 35px;
+		}
+		@include sm-max{
+			margin-top:28px;
+		}
 	}
 	.story-form-wrap{
 		margin-bottom: 60px;
+		@include md-max{
+			margin-bottom: 50px;
+		}
+		@include sm-max{
+			margin-bottom: 35px;
+		}
 	}
 	.story-form{
 		border: 1px solid $border-color;
-		padding: 20px;
+		padding: 23px 30px 10px;
 		 @extend .message_shadow;
-		
-        .custom-file {
-          height: 120px;
-          cursor: pointer;
-          outline: none;
+		 @include md-max{
+			 padding: 20px 25px 10px;
+		 }
+		  @include sm-max{
+			 padding: 15px 20px 10px;
+		 }
+		 .form-group{
+			 margin-bottom: 23px;
+			 @include md-max{
+				 margin-bottom: 18px;
+			 }
+			 .text-editor{
+				 @include md-max{
+				 	height: 300px;
+				 }
+				 @include sm-max{
+					 height: 260px;
+				 }
+			 }
+		 }
+		.custom-dropdown{
+			>span{
+				padding: 9px 35px 9px 15px;
+			}
+			&.dropdown-open{
+				>span{
+					border-color:$gray-primary;
+				}
+				.option-list-wrap{
+					border-top-color: $gray-primary;
+				}
+			}
+		}
+        .btn {
+			&.file-uploads{
+				width: 100%;
+				margin: 0;
+				background: transparent;
+				position: relative;
+				height: 100%;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				padding: 68px 20px 30px;
+				border: 1px dashed $input-border;
+				cursor: pointer;
+				outline: none;
+				box-shadow: none;
+				text-align: center;
+				font-size: 14px;
+				line-height: 18px;
+				border-radius: 3px;
+				@include sm-max{
+					padding: 50px 20px 20px;
+				}
+				&:focus {
+					border-color: $gray-primary;
+				}
+				&::after {
+					position: absolute;
+					border: none;
+					content: "";
+					background: transparent url($assetUrl+"/plus-ic.svg") no-repeat;
+					padding: 0;
+					background-size: 32px;
+					width: 32px;
+					height: 32px;
+					left: 50%;
+					@include transformX(-50%);
+					margin: 0 auto;
+					top: 25px;
 
-          .custom-file-input {
-            height: 0;
-          }
-
-          .custom-file-label {
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 60px 20px 20px;
-            border: 1px dashed $input-border;
-            cursor: pointer;
-            outline: none;
-            box-shadow: none;
-            text-align: center;
-
-            &:focus {
-              border-color: $gray-primary;
-            }
-
-            &::after {
-              border: none;
-              content: "";
-              background: transparent url($assetUrl+"/plus-ic.svg") no-repeat;
-              padding: 0;
-              background-size: 32px;
-              width: 32px;
-              height: 32px;
-              left: 0;
-              margin: 0 auto;
-              top: 25px;
-
-              @include sm-max {
-                background-size: 25px;
-                width: 25px;
-                height: 25px;
-              }
-            }
-          }
+					@include sm-max {
+						background-size: 20px;
+						width: 20px;
+						height: 20px;
+					}
+				}
+				label{
+					&:focus{
+						border: 1px dashed $gray-primary;
+					}
+				}
+			}
         }
 		.uploaded-block {
         display: flex;
@@ -3862,12 +3936,60 @@ main {
         flex: 1;
         -ms-flex: 1;
         justify-content: flex-start;
-		margin-top: 20px;
-        max-height: 400px;	
-        
+		margin: 30px -15px 15px;
+        max-height: 373px;	
+		overflow-y:auto; 
+		@include sm-max{
+			margin: 20px -10px 10px;
+			max-height: 280px;
+		}
         .uploaded-file-details{
             border: none;
-            padding:0 10px 15px;
+			padding:0 15px 30px;
+			@include sm-max{
+				padding: 0 10px 20px;
+			}
+			.image-thumb {
+				display: inline-block;
+				height: 102px;
+				width: 102px;
+				position: relative;
+				background: $border-color;
+				border: 1px solid $border-color;
+				@include sm-max{
+					height: 85px;
+					width: 85px;
+				}
+				img {
+					height: 100%;
+					width: 100%;
+					object-fit: cover;
+				}
+				.remove-btn{
+					position: absolute;
+					top: 0;
+					right: 0;
+					height: 20px;
+					width: 20px;
+					background: $rgb-black-hover;
+					cursor: pointer;
+					min-width: 1px;
+					padding: 0;
+					border-radius: 0;
+					border: none;
+					line-height: 20px;
+					vertical-align: inherit;
+					@include transition(all 0.3s);
+					&:hover{
+						background: $rgb-black-dark;
+					}
+					img{
+						width: 11px;
+						height: 11px;
+						vertical-align: inherit;
+					}
+				}
+			}
         }
 
         .img-col {
@@ -3907,14 +4029,37 @@ main {
 	.btn-row{
 		display: flex;
 		margin-top: 30px;
+		flex-wrap: wrap;
+		@include md-max{
+			margin-top: 20px;
+			justify-content: flex-end;
+		}
 		.btn{
-			margin-right: 10px;
-			&:last-child{
-				margin-right: 0;
+			margin-left: 10px;
+			min-width: 116px;
+			@include sm-max{
+				min-width: 105px;
+				margin-bottom: 10px;
+			}
+			&:first-child{
+				margin-left: 0;
 			}
 		}
 	}
 	.right-col{
+		height: auto;
+		@include md-max{
+			margin-top: 30px;
+		}
+		@include sm-max{
+			margin-top: 20px;
+		}
+		.story-form{
+			height: calc(100% - 78px);
+			@include md-max{
+				height: auto;
+			}
+		}
 		.btn-row{
 			justify-content: flex-end;
 		}
@@ -3925,8 +4070,7 @@ main {
 	display: flex;
 	align-items: center;
 	justify-content: flex-end;
-}
-.social-block {
+	.social-block {
 	display: inline-flex;
     align-content: center;
     span{
@@ -3944,6 +4088,7 @@ main {
 		display: inline-flex;
 		align-items: center;
 		justify-content: center;
+		outline: none;
 		@include transition(all 0.3s);
 		img {
 		width: 20px;
@@ -3966,15 +4111,6 @@ main {
 		}
 	}
 }
-.select2-container--open .select2-dropdown{
-	max-height: 200px;
+
 }
-.select2-container--default .select2-results>.select2-results__options{
-	max-height: 100%!important;
-}
-.select2-container{
-	width: 200px!important;
-}
-.select2-search{
-	display: none!important;
-}
+

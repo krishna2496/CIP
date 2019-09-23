@@ -37,8 +37,8 @@
 						<b-col lg="6" class="ml-auto banner-content-wrap">
 							<div class="banner-content-block">
 								<h1>{{missionDetail.title}}</h1>
-								<div class="rating-with-btn" v-if="isStarDisplay">
-									<div class="rating-block">
+								<div v-bind:class="{'rating-with-btn' : true , 'justify-content-end' : !isStarDisplay }">
+									<div class="rating-block" v-if="isStarDisplay">
 										<star-rating v-bind:increment="0.5" v-bind:max-rating="5"
 											inactive-color="#dddddd" active-color="#F7D341" v-bind:star-size="23"
 											:rating="missionDetail.rating" @rating-selected="setRating">

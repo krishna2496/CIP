@@ -43,7 +43,7 @@ header {
 
 .top-header {
     padding: 6px 0;
-	border-bottom: 1px solid $border-color;
+    border-bottom: 1px solid $border-color;
 	@include md-max{
 		.small-header &{
 			border: none;
@@ -1111,6 +1111,72 @@ header {
             display: flex;
         }
     }
+    &.three-filters{
+        .search-block{
+			@include md-min{
+				flex: 0 0 45.67%;
+				max-width: 45.67%;
+			}
+            @include lg-min{
+                flex: 0 0 62.2%;
+                max-width: 62.2%;
+            }
+        }
+        .filter-block{
+			 @include md-min{
+                flex: 0 0 54.33%;
+                max-width: 54.33%;
+            }
+            @include lg-min{
+                flex: 0 0 37.8%;
+                max-width: 37.8%;
+            }
+        }
+    }
+    &.two-filters{
+        .search-block{
+			 @include md-min{
+                flex: 0 0 63.34%;
+                max-width: 63.34%;
+            }
+            @include lg-min{
+                flex: 0 0 75.5%;
+                max-width: 75.5%;
+            }
+        }
+        .filter-block{
+			@include md-min{
+                flex: 0 0 36.33%;
+                max-width: 36.33%;
+            }
+            @include lg-min{
+                flex: 0 0 24.5%;
+                max-width: 24.5%;
+            }
+        }
+    }
+    &.one-filter{
+        .search-block{
+			 @include md-min{
+                flex: 0 0 81.67%;
+                max-width: 81.67%;
+            }
+            @include lg-min{
+                flex: 0 0 86.7%;
+                max-width: 86.7%;
+            }
+        }
+        .filter-block{
+			 @include md-min{
+                flex: 0 0 18.33%;
+                max-width: 18.33%;
+            }
+            @include lg-min{
+                flex: 0 0 13.3%;
+                max-width: 13.3%;
+            }
+        }
+    }
 }
 
 .filter-block {
@@ -1121,7 +1187,8 @@ header {
 		@include md-max{
 			max-height: 100%;
 		}
-	}
+    }
+    
 
     @include md-max {
         position: fixed;
@@ -1156,7 +1223,7 @@ header {
         .list-group-item {
             display: inline-flex;
             align-items: center;
-            width: 25%;
+            width: 180px;
             height: 100%;
             padding: 0;
             border: none;
