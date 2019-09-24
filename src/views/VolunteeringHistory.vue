@@ -5,12 +5,12 @@
 		</header>
 		<main>
 			<DashboardBreadcrumb />
-			<div class="dashboard-tab-content">
+			<div class="dashboard-tab-content" v-if="!isLoading">
 				<b-container>
-					<div class="heading-section" v-if="isAllVisible">
+					<div class="heading-section" v-if="isAllVisible && !isLoading">
 						<h1>{{langauageData.label.volunteering_history}}</h1>
 					</div>
-					<div class="inner-content-wrap" v-if="isAllVisible">
+					<div class="inner-content-wrap" v-if="isAllVisible && !isLoading">
 						<b-row class="chart-block">
 							<b-col lg="6" class="chart-col">
 								<div class="inner-chart-col">
@@ -19,12 +19,16 @@
 										<AppCustomDropdown :optionList="themeYearList" @updateCall="updateThemeYear"
 											:defaultText="ThemeYearText" translationEnable="false" />
 									</div>
-									<div class="line-chart" v-if="perHourApiDataTheme.length">
+									<div
+										v-bind:class="{ 'content-loader-wrap': true, 'loader-active': updatingThemeYear}">
+										<div class="content-loader"></div>
+									</div>
+									<div class="line-chart" v-if="perHourApiDataTheme.length && !updatingThemeYear">
 										<horizontal-chart :labels="getThemeLabels" :data="getThemeValue">
 										</horizontal-chart>
 									</div>
-									<div v-else class="text-center">
-										<h5>{{langauageData.label.no_record_found}}</h5>
+									<div v-if="perHourApiDataTheme.length == 0 && !updatingThemeYear" class="text-center">
+										<h5>{{perHourDataNotFoundForTheme}}</h5>
 									</div>
 								</div>
 							</b-col>
@@ -35,12 +39,16 @@
 										<AppCustomDropdown :optionList="skillYearList" @updateCall="updateSkillYear"
 											:defaultText="skillYearText" translationEnable="false" />
 									</div>
-									<div class="line-chart" v-if="perHourApiDataSkill.length">
+									<div
+										v-bind:class="{ 'content-loader-wrap': true, 'loader-active': updatingSkillYear}">
+										<div class="content-loader"></div>
+									</div>
+									<div class="line-chart" v-if="perHourApiDataSkill.length && !updatingSkillYear">
 										<horizontal-chart :labels="getSkillLabels" :data="getSkillValue">
 										</horizontal-chart>
 									</div>
-									<div v-else class="text-center">
-										<h5>{{langauageData.label.no_record_found}}</h5>
+									<div v-if="perHourApiDataSkill.length == 0 && !updatingSkillYear" class="text-center">
+										<h5>{{perHourDataNotFoundForSkill}}</h5>
 									</div>
 								</div>
 							</b-col>
@@ -77,6 +85,10 @@
 						</div>
 					</div>
 				</b-container>
+			</div>
+			<div v-else
+				v-bind:class="{ 'content-loader-wrap': true, 'loader-active': isLoading}">
+				<div class="content-loader"></div>
 			</div>
 		</main>
 		<footer>
@@ -126,6 +138,7 @@
 				timeMissionCurrentPage: 1,
 				timeMissionTotalRow: 0,
 				timeMissionTotalPage: null,
+				
 
 				goalMissionTimesheetLabel: "",
 				goalMissionTimesheetFields: [],
@@ -137,13 +150,19 @@
 				ThemeYearText: "Year",
 				skillYearText: "Year",
 				skillYearList: [],
+				themeYearList: [],
+				updatingThemeYear: false,
+				updatingSkillYear: false,
 				hourRequestPerPage: 5,
 				goalRequestPerPage: 5,
 				hourRequestNextUrl: null,
-				goalRequestNextUrl: null
+				goalRequestNextUrl: null,
+				perHourDataNotFoundForTheme: null,
+				perHourDataNotFoundForSkill: null,
+				isLoading: true
 			};
 		},
-		mounted() {
+		mounted() {			 
 			var currentYear = new Date().getFullYear();
 			var yearsList = [];
 			for (var index = currentYear; index > (currentYear - 5); index--) {
@@ -155,21 +174,27 @@
 		methods: {
 			updateThemeYear(value) {
 				this.ThemeYearText = value.selectedVal;
+				this.updatingThemeYear = true;
 				this.getVolunteerHistoryHoursOfType("theme", this.ThemeYearText);
 			},
 			updateSkillYear(value) {
 				this.skillYearText = value.selectedVal;
+				this.updatingSkillYear = true;
 				this.getVolunteerHistoryHoursOfType("skill", this.skillYearText);
 			},
 			getVolunteerHistoryHoursOfType(type = "theme", year = "") {
 				VolunteerHistoryHours(type, year).then(response => {
 					let typeName =
 						"perHourApiData" + type.charAt(0).toUpperCase() + type.slice(1);
+					let perHourDataNotFoundForType = "perHourDataNotFoundFor" + type.charAt(0).toUpperCase() + type.slice(1);
 					if (typeof response.data !== "undefined") {
 						this[typeName] = Object.values(response.data);
 					} else {
 						this[typeName] = [];
+						this[perHourDataNotFoundForType] = response.message
 					}
+					this.updatingThemeYear = false;
+					this.updatingSkillYear = false;
 				});
 			},
 			getVolunteerMissionsHours(currentPage) {
@@ -229,6 +254,7 @@
 							})
 						})
 					}
+					this.isLoading = false;
 				})
 			}
 		},
