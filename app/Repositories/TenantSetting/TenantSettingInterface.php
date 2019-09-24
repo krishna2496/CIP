@@ -20,14 +20,6 @@ interface TenantSettingInterface
     /**
      * Get all tenant's settings data
      *
-     * @param Illuminate\Http\Request $request
-     * @return Illuminate\Pagination\LengthAwarePaginator
-     */
-    public function getAllSettings(Request $request): LengthAwarePaginator;
-
-    /**
-     * Get all tenant's settings data
-     *
      * @return Illuminate\Database\Eloquent\Collection
      */
     public function fetchAllTenantSettings(): Collection;
