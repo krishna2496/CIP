@@ -17,7 +17,7 @@ class AppSkillTest extends TestCase
         $user->setConnection($connection);
         $user->save();
 
-        $token = Helpers::getJwtToken($user->user_id);
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->get('/app/skill', ['token' => $token])
         ->seeJsonStructure([
             "status",
@@ -43,7 +43,7 @@ class AppSkillTest extends TestCase
         $user->setConnection($connection);
         $user->save();
 
-        $token = Helpers::getJwtToken($user->user_id);
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->get('/app/skill', ['token' => $token])
         ->seeJsonStructure([
             "status",
@@ -63,7 +63,7 @@ class AppSkillTest extends TestCase
     {
         $token = str_random(50);
         $this->get('/app/user-detail', ['token' => $token])
-        ->seeStatusCode(400)
+        ->seeStatusCode(500)
         ->seeJsonStructure([
             "errors" => [
                 [

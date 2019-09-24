@@ -45,30 +45,10 @@ class Timesheet extends Model
      */
     protected $visible = ['timesheet_id', 'user_id', 'mission_id', 'time', 'action', 'date_volunteered',
         'day_volunteered', 'notes', 'timesheetDocument', 'timesheetStatus', 'mission'];
-
-    /**
-     * Get the mission associated with timesheet.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
-     */
-    public function mission(): HasOne
-    {
-        return $this->hasOne(Mission::class, 'mission_id', 'mission_id');
-    }
-
-    /**
-     * Get the user associated with timesheet.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
-     */
-    public function user(): HasOne
-    {
-        return $this->hasOne(User::class, 'user_id', 'user_id');
-    }
-
+    
     /**
      * Get date volunteered attribute on the model.
-     *
+     * @codeCoverageIgnore
      * @return null|string
      */
     public function getDateVolunteeredAttribute(): ?string
@@ -79,7 +59,7 @@ class Timesheet extends Model
 
     /**
      * Get the timesheet document record associated with the timesheet.
-     *
+     * @codeCoverageIgnore
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function timesheetDocument(): HasMany
@@ -89,7 +69,7 @@ class Timesheet extends Model
 
     /**
      * Find the specified resource.
-     *
+     * @codeCoverageIgnore
      * @param  int  $id
      * @return array
      */
@@ -101,7 +81,7 @@ class Timesheet extends Model
 
     /**
      * Get the timesheet status record associated with the timesheet.
-     *
+     * @codeCoverageIgnore
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function timesheetStatus(): BelongsTo
@@ -111,7 +91,7 @@ class Timesheet extends Model
 
     /**
      * Get time attribute on the model.
-     *
+     * @codeCoverageIgnore
      * @return null|string
      */
     public function getTimeAttribute(): ?string
@@ -121,7 +101,7 @@ class Timesheet extends Model
     
     /**
      * Set note attribute on the model.
-     *
+     * @codeCoverageIgnore
      * @param string $value
      * @return void
      */

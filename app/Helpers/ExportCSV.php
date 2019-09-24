@@ -25,7 +25,7 @@ class ExportCSV
 
     /**
      * Create a new class instance.
-     *
+     * @codeCoverageIgnore
      * @param string $fileName
      * @return void
      */
@@ -36,7 +36,7 @@ class ExportCSV
     
     /**
      * Set headLine variable
-     *
+     * @codeCoverageIgnore
      * @param array $headLines
      * @return void
      */
@@ -47,7 +47,7 @@ class ExportCSV
 
     /**
      * Push row into, data variable
-     *
+     * @codeCoverageIgnore
      * @param array $row
      * @return void
      */
@@ -58,6 +58,7 @@ class ExportCSV
 
     /**
      * Set data variable
+     * @codeCoverageIgnore
      *
      * @param array $data
      * @return void
@@ -69,7 +70,7 @@ class ExportCSV
 
     /**
      * Write and store file on given path
-     *
+     * @codeCoverageIgnore
      * @param string $path
      * @return string
      */
@@ -96,6 +97,5 @@ class ExportCSV
         if (\file_exists($this->path)) {
             return $this->path.'/'.$this->fileName;
         }
-        return '';
     }
 }

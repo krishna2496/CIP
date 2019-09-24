@@ -115,12 +115,64 @@ $factory->define(App\Models\PolicyPage::class, function (Faker\Generator $faker)
 
 $factory->define(App\Models\TenantSetting::class, function (Faker\Generator $faker) {
     return [
-        'setting_id' => 1
+        'setting_id' => 2
     ];
 });
 
 $factory->define(App\Models\TenantActivatedSetting::class, function (Faker\Generator $faker) {
     return [
         'tenant_setting_id' => 114
+    ];
+});
+
+$factory->define(App\Models\TimesheetDocument::class, function (Faker\Generator $faker) {
+    return [
+        'document_name' => 'volunteer9.png',
+        'document_path' => 'https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer9.png',
+        'document_type' => 'png'
+    ];
+});
+
+$factory->define(App\Models\UserSkill::class, function (Faker\Generator $faker) {
+    return [
+        'user_id' => 1,
+        'skill_id' => 1
+    ];
+});
+
+$factory->define(App\Models\City::class, function (Faker\Generator $faker) {
+    return [
+        'country_id' => 1,
+        'name' => 'test'
+    ];
+});
+
+$factory->define(App\Models\UserNotification::class, function (Faker\Generator $faker) {
+    return [
+        'user_id' => 1,
+        'notification_type_id' => 1
+    ];
+});
+
+$factory->define(App\Models\MissionLanguage::class, function (Faker\Generator $faker) {
+    return [
+        'mission_id' => 1,
+        'language_id' => 1,
+        'title' => 'mission title',
+        'short_description' => str_random(10),
+        'objective' => str_random(10),
+        'description' => [
+            [
+                'title' => str_random(10),
+                'description' => str_random(100)
+            ]            
+        ]
+    ];
+});
+
+$factory->define(App\Models\UserFilter::class, function (Faker\Generator $faker) {
+    return [
+        'user_id' => 1,
+        'filters' => 'a:6:{s:6:"search";s:0:"";s:10:"country_id";s:3:"233";s:7:"city_id";s:0:"";s:8:"theme_id";s:0:"";s:8:"skill_id";s:0:"";s:7:"sort_by";s:0:"";}'
     ];
 });

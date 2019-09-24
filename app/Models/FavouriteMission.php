@@ -30,17 +30,7 @@ class FavouriteMission extends Model
      * @var array
      */
     protected $fillable = ['mission_id', 'user_id'];
-    
-    /**
-     * Get the mission that has media.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function mission(): BelongsTo
-    {
-        return $this->belongsTo(Mission::class, 'mission_id', 'mission_id');
-    }
-   
+       
     /**
      * Store/update specified resource.
      *

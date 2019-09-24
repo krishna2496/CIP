@@ -14,7 +14,7 @@
             <meta property="og:title" content="{{$mission->missionLanguage->first()->title}}" />
             <meta property="og:description" content="{{$mission->missionLanguage->first()->short_description}}" />
         @endif
-        <meta property="og:image" content="{{$mission->missionMedia->first()->media_image}}" />
+        <meta property="og:image" content="{{($mission->missionMedia->count())?$mission->missionMedia->first()->media_image:''}}" />
         <meta property="og:image:width" content="450"/>
         <meta property="og:image:height" content="298"/>
 

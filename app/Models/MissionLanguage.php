@@ -42,16 +42,6 @@ class MissionLanguage extends Model
                          'description'];
 
     /**
-     * Get the mission that has language titles.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function mission(): BelongsTo
-    {
-        return $this->belongsTo(Mission::class, 'mission_id', 'mission_id');
-    }
-
-    /**
      * Set description attribute on the model.
      *
      * @param array $value

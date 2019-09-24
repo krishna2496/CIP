@@ -38,36 +38,19 @@ class TenantConnectionMiddleware
      */
     public function handle($request, Closure $next)
     {
-        // Pre-Middleware Action
-        $token = $request->get('token');
+        $domain = $this->helpers->getSubDomainFromRequest($request);
 
-        if ($token) {
-            try {
-                $credentials = JWT::decode($token, env('JWT_SECRET'), ['HS256']);
-                $domain = $credentials->fqdn;
-            } catch (ExpiredException $e) {
-                throw new ExpiredException();
-            } catch (\Exception $e) {
-                throw new \Exception();
-            }
-        } else {
-            try {
-                $domain = $this->helpers->getSubDomainFromRequest($request);
-            } catch (TenantDomainNotFoundException $e) {
-                throw $e;
-            } catch (\Exception $e) {
-                throw new \Exception();
-            }
-        }
         $this->helpers->switchDatabaseConnection('mysql', $request);
         $tenant = DB::table('tenant')->select('tenant_id')
         ->where('name', $domain)->whereNull('deleted_at')->first();
+        // @codeCoverageIgnoreStart
         if (!$tenant) {
             throw new TenantDomainNotFoundException(
                 trans('messages.custom_error_message.ERROR_TENANT_DOMAIN_NOT_FOUND'),
                 config('constants.error_codes.ERROR_TENANT_DOMAIN_NOT_FOUND')
             );
         }
+        // @codeCoverageIgnoreEnd
         $this->helpers->createConnection($tenant->tenant_id);
         return $next($request);
     }

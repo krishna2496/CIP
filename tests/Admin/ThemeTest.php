@@ -87,7 +87,7 @@ class ThemeTest extends TestCase
         $this->post("entities/themes", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))]);
         DB::setDefaultConnection('mysql');
 
-        $this->get('entities/themes', ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->get('entities/themes?perPage=test', ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
           ->seeStatusCode(200)
           ->seeJsonStructure([
             "status",
@@ -332,4 +332,89 @@ class ThemeTest extends TestCase
             ]
         ]);
     }
+
+    /**
+     * @test
+     *
+     * Return invalid argument error
+     *
+     * @return void
+     */
+    public function it_should_return_invalid_argument_error_for_get_all_themes_for_admin()
+    {
+        $themeName = str_random(20);
+        $params = [        
+            "theme_name" => $themeName,
+            "translations" => [
+                [
+                    "lang" => "en",
+                    "title" => "theme testing"
+                ]
+            ]
+        ];
+
+        $this->post("entities/themes", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))]);
+        DB::setDefaultConnection('mysql');
+
+        $this->get('entities/themes?order=test', ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(400)
+        ->seeJsonStructure([
+            'errors' => [
+                [
+                    'status',
+                    'type',
+                    'code',
+                    'message'
+                ]
+            ]
+        ]);
+        App\Models\MissionTheme::where("theme_name", $themeName)->orderBy("mission_theme_id", "DESC")->take(1)->delete();
+    }
+
+    /**
+     * @test
+     *
+     * Return error for invalid API keys 
+     *
+     * @return void
+     */
+    public function it_should_return_error_for_invalid_api_key()
+    {
+        $this->get('entities/themes', ['Authorization' => 'Basic '.base64_encode('test'.':'.env('API_SECRET'))])
+        ->seeStatusCode(401)
+        ->seeJsonStructure([
+            'errors' => [
+                [
+                    'status',
+                    'type',
+                    'code',
+                    'message'
+                ]
+            ]
+        ]);
+    }
+
+    /**
+     * @test
+     *
+     * Return error for invalid API keys 
+     *
+     * @return void
+     */
+    public function it_should_return_error_for_invalid_api_key_and_secret_key()
+    {
+        $this->get('entities/themes', ['Authorization' => 'Basic '.base64_encode(':'.env('API_SECRET'))])
+        ->seeStatusCode(401)
+        ->seeJsonStructure([
+            'errors' => [
+                [
+                    'status',
+                    'type',
+                    'code',
+                    'message'
+                ]
+            ]
+        ]);
+    }
+
 }

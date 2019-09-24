@@ -10,7 +10,7 @@ class AuthServiceProvider extends ServiceProvider
 {
     /**
      * Register any application services.
-     *
+     * @codeCoverageIgnore
      * @return void
      */
     public function register()
@@ -20,7 +20,7 @@ class AuthServiceProvider extends ServiceProvider
 
     /**
      * Boot the authentication services for the application.
-     *
+     * @codeCoverageIgnore
      * @return void
      */
     public function boot()

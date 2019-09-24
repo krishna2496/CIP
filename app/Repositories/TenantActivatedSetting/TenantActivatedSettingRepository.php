@@ -24,6 +24,7 @@ class TenantActivatedSettingRepository implements TenantActivatedSettingInterfac
 
     /**
      * Create a new repository instance.
+     * @codeCoverageIgnore
      *
      * @param App\Models\TenantActivatedSetting $tenantActivatedSetting
      * @param  App\Helpers\Helpers $helpers
@@ -37,6 +38,7 @@ class TenantActivatedSettingRepository implements TenantActivatedSettingInterfac
     
     /**
      * Create new activated settings
+     * @codeCoverageIgnore
      *
      * @param array $data
      * @return bool
@@ -51,6 +53,7 @@ class TenantActivatedSettingRepository implements TenantActivatedSettingInterfac
 
     /**
      * Fetch all tenant settings
+     * @codeCoverageIgnore
      *
      * @return Illuminate\Database\Eloquent\Collection
      */
@@ -61,48 +64,40 @@ class TenantActivatedSettingRepository implements TenantActivatedSettingInterfac
 
     /**
      * Get fetch all activated tenant settings
+     * @codeCoverageIgnore
      *
      * @param \Illuminate\Http\Request $request
      * @return array
      */
     public function getAllTenantActivatedSetting(Request $request): array
     {
-        try {
-            // Fetch tenant all settings details - From super admin
-            $getTenantSettings = $this->helpers->getAllTenantSetting($request);
+        // Fetch tenant all settings details - From super admin
+        $getTenantSettings = $this->helpers->getAllTenantSetting($request);
 
-            // Get data from tenant database
-            $tenantActivatedSettings = $this->tenantActivatedSetting->whereHas('settings')->get();
+        // Get data from tenant database
+        $tenantActivatedSettings = $this->tenantActivatedSetting->whereHas('settings')->get();
 
-            $tenantSettingData = array();
-            if ($tenantActivatedSettings->count() &&  $getTenantSettings->count()) {
-                foreach ($tenantActivatedSettings as $settingKey => $tenantSetting) {
-                    $index = $getTenantSettings->search(function ($value, $key) use ($tenantSetting) {
-                        return $value->tenant_setting_id == $tenantSetting->settings->setting_id;
-                    });
-                    $tenantSettingData[] = $getTenantSettings[$index]->key;
-                }
+        $tenantSettingData = array();
+        if ($tenantActivatedSettings->count() &&  $getTenantSettings->count()) {
+            foreach ($tenantActivatedSettings as $settingKey => $tenantSetting) {
+                $index = $getTenantSettings->search(function ($value, $key) use ($tenantSetting) {
+                    return $value->tenant_setting_id == $tenantSetting->settings->setting_id;
+                });
+                $tenantSettingData[] = $getTenantSettings[$index]->key;
             }
-            return $tenantSettingData;
-        } catch (PDOException $e) {
-            return $this->PDO(
-                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
-                trans('messages.custom_error_message.ERROR_DATABASE_OPERATIONAL')
-            );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
+        return $tenantSettingData;
     }
 
     /**
      * Get fetch all activated tenant settings
+     * @codeCoverageIgnore
      *
      * @param \Illuminate\Http\Request $request
      * @return bool
      */
     public function checkTenantSettingStatus(string $settingKeyName, Request $request): bool
     {
-        // dd($settingKey, $request);
         // Fetch tenant all settings details - From super admin
         $getTenantSettings =  $this->helpers->getAllTenantSetting($request);
 

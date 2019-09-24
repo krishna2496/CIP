@@ -74,6 +74,19 @@ class MissionTest extends TestCase
                     "media_images" => [[
                             "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer9.png",
                             "default" => "1"
+                        ],
+                        [
+                            "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer9.png",
+                            "default" => ""
+                        ]
+                    ],
+                    "documents" => [[
+                            "document_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/test/sample.pdf"
+                        ]
+                    ],
+                    "media_videos"=> [[
+                        "media_name" => "youtube_small",
+                        "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg"
                         ]
                     ],
                     "start_date" => "2019-05-15 10:40:00",
@@ -148,19 +161,85 @@ class MissionTest extends TestCase
      */
     public function it_should_return_all_mission()
     {
-        $connection = 'tenant';
-        $mission = factory(\App\Models\Mission::class)->make();
-        $mission->setConnection($connection);
-        $mission->save();
+        $params = [
+            "organisation" => [
+                "organisation_id" => 1,
+                "organisation_name" => str_random(10),
+                "organisation_detail" => ''
+            ],
+            "location" => [
+                "city_id" => 1,
+                "country_code" => "US"
+            ],
+            "mission_detail" => [[
+                    "lang" => "en",
+                    "title" => str_random(10),
+                    "short_description" => str_random(20),
+                    "objective" => str_random(20),
+                    "section" => [
+                        [
+                            "title" => str_random(10),
+                            "description" => str_random(100),
+                        ],
+                        [
+                            "title" => str_random(10),
+                            "description" => str_random(100),
+                        ]
+                    ]
+                ],
+                [
+                    "lang" => "fr",
+                    "title" => str_random(10),
+                    "short_description" => str_random(20),
+                    "objective" => str_random(20),
+                    "section" => [
+                        [
+                            "title" => str_random(10),
+                            "description" => str_random(100),
+                        ],
+                        [
+                            "title" => str_random(10),
+                            "description" => str_random(100),
+                        ]
+                    ]
+                ]
+            ],
+            "media_images" => [[
+                    "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer9.png",
+                    "default" => "1"
+                ]
+            ],
+            "documents" => [[
+                    "document_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/test/sample.pdf"
+                ]
+            ],
+            "media_videos"=> [[
+                "media_name" => "youtube_small",
+                "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg"
+                ]
+            ],
+            "start_date" => "2019-05-15 10:40:00",
+            "end_date" => "2019-10-15 10:40:00",
+            "mission_type" => config("constants.mission_type.GOAL"),
+            "goal_objective" => rand(1, 1000),
+            "total_seats" => rand(1, 1000),
+            "application_deadline" => "2019-07-28 11:40:00",
+            "publication_status" => config("constants.publication_status.APPROVED"),
+            "theme_id" => 1,
+            "availability_id" => 1
+        ];
 
-        $this->get('missions', ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(201);
+
+        DB::setDefaultConnection('mysql');
+        $this->get('missions?order=desc', ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
           ->seeStatusCode(200)
           ->seeJsonStructure([
             "status",
             "data",
             "message"
         ]);
-        $mission->delete();
     }
 
     /**
@@ -172,8 +251,94 @@ class MissionTest extends TestCase
      */
     public function it_should_update_mission()
     {
+        $connection = 'tenant';
+        $skill = factory(\App\Models\Skill::class)->make();
+        $skill->setConnection($connection);
+        $skill->save();
+ 
         $params = [
-                    "publication_status" => "DRAFT",
+                    "organisation" => [
+                        "organisation_id" => 1,
+                        "organisation_name" => str_random(10),
+                        "organisation_detail" => ''
+                    ],
+                    "location" => [
+                        "city_id" => 1,
+                        "country_code" => "US"
+                    ],
+                    "mission_detail" => [[
+                            "lang" => "en",
+                            "title" => str_random(10),
+                            "short_description" => str_random(20),
+                            "objective" => str_random(20),
+                            "section" => [
+                                [
+                                    "title" => str_random(10),
+                                    "description" => str_random(100),
+                                ],
+                                [
+                                    "title" => str_random(10),
+                                    "description" => str_random(100),
+                                ]
+                            ]
+                        ],
+                        [
+                            "lang" => "fr",
+                            "title" => str_random(10),
+                            "short_description" => str_random(20),
+                            "objective" => str_random(20),
+                            "section" => [
+                                [
+                                    "title" => str_random(10),
+                                    "description" => str_random(100),
+                                ],
+                                [
+                                    "title" => str_random(10),
+                                    "description" => str_random(100),
+                                ]
+                            ]
+                        ]
+                    ],
+                    "media_images" => [[
+                            "media_id" => "",
+                            "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer9.png",
+                            "default" => "1"
+                        ],
+                        [
+                            "media_id" => "",
+                            "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer9.png",
+                            "default" => ""
+                        ]
+                    ],
+                    "documents" => [[
+                            "document_id" => "",
+                            "document_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/test/sample.pdf"
+                        ]
+                    ],
+                    "media_videos"=> [[
+                        "media_id" => "",
+                        "media_name" => "youtube_small",
+                        "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg"
+                        ]
+                    ],
+                    "start_date" => "2019-05-15 10:40:00",
+                    "end_date" => "2019-10-15 10:40:00",
+                    "mission_type" => config("constants.mission_type.TIME"),
+                    "goal_objective" => rand(1, 1000),
+                    "total_seats" => rand(1, 1000),
+                    "application_deadline" => "2019-07-28 11:40:00",
+                    "application_start_date" => "2019-05-15 10:40:00",
+                    "application_end_date" => "2020-05-15 10:40:00",
+                    "application_start_time" => "2019-05-15 10:40:00",
+                    "application_end_time" => "2020-05-15 10:40:00",
+                    "publication_status" => config("constants.publication_status.APPROVED"),
+                    "theme_id" => 1,
+                    "availability_id" => 1,
+                    'skills' => [
+                        [
+                            "skill_id" => $skill->skill_id
+                        ]
+                    ]
                 ];
 
         $connection = 'tenant';
@@ -181,7 +346,8 @@ class MissionTest extends TestCase
         $mission->setConnection($connection);
         $mission->save();
 
-        $this->patch("missions/".$mission->mission_id, $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->patch("missions/".$mission->mission_id, $params,
+        ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
         ->seeStatusCode(200)
         ->seeJsonStructure([
             'message',
@@ -418,5 +584,67 @@ class MissionTest extends TestCase
                 ]
             ]
         ]); 
+    }
+
+    /**
+     * @test
+     *
+     * Validate data for update mission api
+     *
+     * @return void
+     */
+    public function it_should_validate_data_for_update_mission()
+    {
+        $params = [
+                    "publication_status" => "test",
+                ];
+
+        $connection = 'tenant';
+        $mission = factory(\App\Models\Mission::class)->make();
+        $mission->setConnection($connection);
+        $mission->save();
+
+        $this->patch("missions/".$mission->mission_id, $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(422)
+        ->seeJsonStructure([
+            "errors" => [
+                [
+                    "status",
+                    "type",
+                    "message",
+                    "code"
+                ]
+            ]
+        ]); 
+        $mission->delete();
+    }
+
+    /**
+     * @test
+     *
+     * Return invalid argument for get all mission
+     *
+     * @return void
+     */
+    public function it_should_return_invalid_argument_for_get_all_mission()
+    {
+        $connection = 'tenant';
+        $mission = factory(\App\Models\Mission::class)->make();
+        $mission->setConnection($connection);
+        $mission->save();
+
+        $this->get('missions?order=test', ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(400)
+        ->seeJsonStructure([
+            'errors' => [
+                [
+                    'status',
+                    'type',
+                    'code',
+                    'message'
+                ]
+            ]
+        ]);
+        $mission->delete();
     }
 }

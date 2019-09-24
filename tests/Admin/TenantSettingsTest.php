@@ -3,7 +3,7 @@
 class TenantSettingsTest extends TestCase
 {
     /**
-     * @test
+     * 
      *
      * Get all tenant settings
      *
@@ -28,7 +28,7 @@ class TenantSettingsTest extends TestCase
     }
 
     /**
-     * @test
+     * 
      *
      * Update tenant setting
      *
@@ -53,7 +53,7 @@ class TenantSettingsTest extends TestCase
     }
 
     /**
-     * @test
+     * 
      *
      * Update tenant setting return error if user enter wrong value
      *
@@ -84,7 +84,7 @@ class TenantSettingsTest extends TestCase
     }
 
     /**
-     * @test
+     * 
      *
      * Update tenant setting return error if user enter invalid setting id
      *
@@ -112,7 +112,7 @@ class TenantSettingsTest extends TestCase
     }
 
     /**
-     * @test
+     * 
      *
      * Update tenant setting return error if user enter blank value
      *

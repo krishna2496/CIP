@@ -474,7 +474,7 @@ class MissionRepository implements MissionInterface
     public function missionList(Request $request): LengthAwarePaginator
     {
         $languages = $this->languageHelper->getLanguages($request);
-        $mission = Mission::select(
+        $missionQuery = $this->mission->select(
             'mission.mission_id',
             'mission.theme_id',
             'mission.city_id',
@@ -489,8 +489,13 @@ class MissionRepository implements MissionInterface
         )
         ->with(['city', 'country', 'missionTheme',
         'missionLanguage', 'missionMedia', 'missionDocument', 'goalMission', 'timeMission'])
-        ->withCount('missionApplication')
-        ->paginate($request->perPage);
+        ->withCount('missionApplication');
+
+        if ($request->has('order')) {
+            $orderDirection = $request->input('order', 'asc');
+            $missionQuery->orderBy('mission_id', $orderDirection);
+        }
+        $mission = $missionQuery->paginate($request->perPage);
 
         foreach ($mission as $key => $value) {
             foreach ($value->missionLanguage as $languageValue) {
@@ -613,13 +618,17 @@ class MissionRepository implements MissionInterface
         }
 
         if ($userFilterData['theme_id'] && $userFilterData['theme_id'] != '') {
+            // @codeCoverageIgnoreStart
             $missionQuery->whereIn("mission.theme_id", explode(",", $userFilterData['theme_id']));
+            // @codeCoverageIgnoreEnd
         }
 
         if ($userFilterData['skill_id'] && $userFilterData['skill_id'] != '') {
+            // @codeCoverageIgnoreStart
             $missionQuery->wherehas('missionSkill', function ($skillQuery) use ($userFilterData) {
                 $skillQuery->whereIn("skill_id", explode(",", $userFilterData['skill_id']));
             });
+            // @codeCoverageIgnoreEnd
         }
 
         if ($userFilterData['sort_by'] && $userFilterData['sort_by'] != '') {
@@ -636,11 +645,13 @@ class MissionRepository implements MissionInterface
                 $missionQuery->orderByRaw('total_seats - mission_application_count desc');
             }
             if ($userFilterData['sort_by'] == config('constants.MY_FAVOURITE')) {
+                // @codeCoverageIgnoreStart
                 $missionQuery->withCount(['favouriteMission as favourite_mission_count'
                     => function ($query) use ($request) {
                         $query->Where('user_id', $request->auth->user_id);
                     }]);
                 $missionQuery->orderBY('favourite_mission_count', 'desc');
+                // @codeCoverageIgnoreEnd
             }
             if ($userFilterData['sort_by'] == config('constants.DEADLINE')) {
                 $missionQuery->orderBy(
@@ -653,9 +664,11 @@ class MissionRepository implements MissionInterface
         //Explore mission by top favourite
         if ($request->has('explore_mission_type') &&
         ($request->input('explore_mission_type') == config('constants.TOP_FAVOURITE'))) {
+            // @codeCoverageIgnoreStart
             $missionQuery->withCount(['favouriteMission as favourite_mission_counts']);
             $missionQuery = $missionQuery->having("favourite_mission_counts", '>', '0');
             $missionQuery->orderBY('favourite_mission_counts', 'desc');
+            // @codeCoverageIgnoreEnd
         }
 
         //Explore mission by most ranked
@@ -1082,6 +1095,7 @@ class MissionRepository implements MissionInterface
 
     /**
      * Get mission details from mission id and language id
+     * @codeCoverageIgnore
      *
      * @param int $missionId
      * @param int $langId
@@ -1104,20 +1118,8 @@ class MissionRepository implements MissionInterface
         return $mission;
     }
 
-
-    /**
-     * Get goal objective
-     *
-     * @param int $missionId
-     * @return App\Models\GoalMission|null
-     */
-    public function getGoalObjective(int $missionId): ?GoalMission
-    {
-        return $this->goalMission->select('goal_objective')->where('mission_id', $missionId)
-        ->first();
-    }
-
     /** Get mission application details by mission id, user id and status
+     * @codeCoverageIgnore
      *
      * @param int $missionId
      * @param int $userId
@@ -1133,6 +1135,7 @@ class MissionRepository implements MissionInterface
 
     /**
      * Get Mission data for timesheet
+     * @codeCoverageIgnore
      *
      * @param int $id
      * @return App\Models\Mission
@@ -1146,6 +1149,7 @@ class MissionRepository implements MissionInterface
     
     /**
      * Get Mission type
+     * @codeCoverageIgnore
      *
      * @param int $id
      * @return null|Collection

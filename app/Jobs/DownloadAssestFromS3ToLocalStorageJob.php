@@ -2,7 +2,6 @@
 namespace App\Jobs;
 
 use Illuminate\Support\Facades\Storage;
-use App\Exceptions\FileDownloadException;
 
 class DownloadAssestFromS3ToLocalStorageJob extends Job
 {

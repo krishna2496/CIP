@@ -17,7 +17,7 @@ class AppTimezoneTest extends TestCase
         $user->setConnection($connection);
         $user->save();
 
-        $token = Helpers::getJwtToken($user->user_id);
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->get('/app/timezone', ['token' => $token])
         ->seeJsonStructure([
             "status",
@@ -43,7 +43,7 @@ class AppTimezoneTest extends TestCase
         $user->setConnection($connection);
         $user->save();
 
-        $token = Helpers::getJwtToken($user->user_id);
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->get('/app/timezone', ['token' => $token])
         ->seeJsonStructure([
             "status",
