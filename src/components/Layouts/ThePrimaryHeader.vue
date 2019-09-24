@@ -418,7 +418,12 @@
 
                 async clearFilter($event) {
                     if (store.state.isLoggedIn) {
-                        location.reload()
+                        this.$router.push({
+                           name: 'home'
+                        })
+                        setTimeout(function(){
+                            location.reload()
+                        },15)
                     }
                 },
 
