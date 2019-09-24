@@ -181,7 +181,8 @@ return [
         'ERROR_INVALID_MISSION_MEDIA_DATA' => 'Invalid mission media data',
         'ERROR_INVALID_MISSION_DOCUMENT_DATA' => 'Invalid mission document data',
         'ERROR_TIMESHEET_ENTRY_NOT_FOUND' => 'Timesheet entry not found',
-
+        'ERROR_APPROVED_TIMESHEET_DOCUMENTS' => 'You can not delete approved timesheet document',
+        
         // Custom error code for Tenant Authorization - 210000 - 219999
         'ERROR_INVALID_API_AND_SECRET_KEY' => 'Invalid API key or secret key',
         'ERROR_API_AND_SECRET_KEY_REQUIRED' => 'API key and secret key are required',

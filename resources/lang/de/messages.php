@@ -200,5 +200,6 @@ return [
         'ERROR_INVALID_DATA_FOR_TIMESHEET_ENTRY' => 'DE: You cannot add time entry',
         'ERROR_TIMESHEET_ENTRY_NOT_FOUND' => 'DE: Timesheet entry id not found',
         'ERROR_SAME_DATE_TIME_ENTRY' => 'DE: You cannot add more than 24 hours timeentry for same date',
+        'ERROR_APPROVED_TIMESHEET_DOCUMENTS' => 'You can not delete approved timesheet entry documents',
     ],
 ];

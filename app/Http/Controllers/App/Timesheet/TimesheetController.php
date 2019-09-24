@@ -326,6 +326,18 @@ class TimesheetController extends Controller
             // Fetch timesheet data
             $timesheetData = $this->timesheetRepository->getTimesheetData($timesheetId, $request->auth->user_id);
 
+            $statusArray = [
+                config('constants.timesheet_status_id.AUTOMATICALLY_APPROVED'),
+                config('constants.timesheet_status_id.APPROVED')
+            ];
+            if (in_array($timesheetData['status_id'], $statusArray)) {
+                return $this->responseHelper->error(
+                    Response::HTTP_UNPROCESSABLE_ENTITY,
+                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                    config('constants.error_codes.ERROR_APPROVED_TIMESHEET_DOCUMENTS'),
+                    trans('messages.custom_error_message.ERROR_APPROVED_TIMESHEET_DOCUMENTS')
+                );
+            }
             // Delete timesheet document
             try {
                 $timesheetDocument = $this->timesheetRepository->delete($documentId, $timesheetId);
