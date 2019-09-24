@@ -9,7 +9,7 @@ class TenantSettingsTest extends TestCase
      *
      * @return void
      */
-    public function it_should_return_all_tenant_settings()
+    public function tenant_settings_it_should_return_all_tenant_settings()
     {
         $this->get('tenant-settings', ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
           ->seeStatusCode(200)
@@ -18,9 +18,9 @@ class TenantSettingsTest extends TestCase
             "data" => [
                "*" => [
                     "tenant_setting_id",
-                    "key",
+                    "title",
                     "description",
-                    "title"
+                    "key"
                 ]
             ],
             "message"
@@ -34,7 +34,7 @@ class TenantSettingsTest extends TestCase
      *
      * @return void
      */
-    public function it_should_update_tenant_settings()
+    public function tenant_settings_it_should_update_tenant_settings()
     {
         DB::setDefaultConnection('tenant');
         $settingId = \App\Models\TenantSetting::get()->random()->tenant_setting_id;
@@ -59,7 +59,7 @@ class TenantSettingsTest extends TestCase
      *
      * @return void
      */
-    public function it_should_return_error_if_user_enter_wrong_value()
+    public function tenant_settings_it_should_return_error_if_user_enter_wrong_value()
     {
         DB::setDefaultConnection('tenant');
         $settingId = \App\Models\TenantSetting::get()->random()->tenant_setting_id;
@@ -90,7 +90,7 @@ class TenantSettingsTest extends TestCase
      *
      * @return void
      */
-    public function it_should_return_error_if_user_enter_invalid_setting_id()
+    public function tenant_settings_it_should_return_error_if_user_enter_invalid_setting_id()
     {
         $settingId = rand(100000, 500000);
         $params = [
@@ -118,7 +118,7 @@ class TenantSettingsTest extends TestCase
      *
      * @return void
      */
-    public function it_should_return_error_if_user_enter_blank_value()
+    public function tenant_settings_it_should_return_error_if_user_enter_blank_value()
     {
         DB::setDefaultConnection('tenant');
         $settingId = \App\Models\TenantSetting::get()->random()->tenant_setting_id;
@@ -140,5 +140,25 @@ class TenantSettingsTest extends TestCase
                 ]
             ]
         ]);
+    }
+
+    /**
+     * @test
+     *
+     * It should get empty data
+     *
+     * @return void
+     */
+    public function tenant_settings_it_should_return_no_tenant_settings_found()
+    {
+        DB::setDefaultConnection('tenant');
+
+        \App\Models\TenantSetting::whereNull('deleted_at')->delete();
+
+        DB::setDefaultConnection('mysql');
+        $this->get('tenant-settings', ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(200);
+        
+        \App\Models\TenantSetting::whereNotNull('deleted_at')->restore();
     }
 }
