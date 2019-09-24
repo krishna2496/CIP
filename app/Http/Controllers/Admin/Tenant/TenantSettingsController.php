@@ -36,6 +36,7 @@ class TenantSettingsController extends Controller
 
     /**
      * Create a new controller instance.
+     * @codeCoverageIgnore
      *
      * @param App\Repositories\TenantSetting\TenantSettingRepository $tenantSettingRepository
      * @param App\Helpers\ResponseHelper $responseHelper
@@ -54,57 +55,50 @@ class TenantSettingsController extends Controller
 
     /**
      * Display a listing of tenant settings.
+     * @codeCoverageIgnore
      *
      * @param Illuminate\Http\Request $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function index(Request $request): JsonResponse
     {
-        try {
-            // Fetch all tenant settings details from super admin
-            $getTenantSettings = $this->helpers->getAllTenantSetting($request);
+        // Fetch all tenant settings details from super admin
+        $getTenantSettings = $this->helpers->getAllTenantSetting($request);
 
-            // Fetch all tenant settings data
-            $tenantSettings = $this->tenantSettingRepository->fetchAllTenantSettings();
-            
-            $tenantSettingData = array();
+        // Fetch all tenant settings data
+        $tenantSettings = $this->tenantSettingRepository->fetchAllTenantSettings();
 
-            if ($tenantSettings->count() &&  $getTenantSettings->count()) {
-                foreach ($tenantSettings as $settingKey => $tenantSetting) {
-                    $index = $getTenantSettings->search(function ($value, $key) use ($tenantSetting) {
-                        return $value->tenant_setting_id == $tenantSetting->setting_id;
-                    });
-                    
-                    $tenantSettingData[$index]['tenant_setting_id'] = $tenantSettings[$index]
-                    ->tenant_setting_id;
-                    $tenantSettingData[$index]['key'] = $getTenantSettings[$index]->key;
-                    $tenantSettingData[$index]['description'] = $getTenantSettings[$index]
-                    ->description;
-                    $tenantSettingData[$index]['title'] = $getTenantSettings[$index]
-                    ->title;
-                }
+        $tenantSettingData = array();
+
+        if ($tenantSettings->count() &&  $getTenantSettings->count()) {
+            foreach ($tenantSettings as $settingKey => $tenantSetting) {
+                $index = $getTenantSettings->search(function ($value, $key) use ($tenantSetting) {
+                    return $value->tenant_setting_id == $tenantSetting->setting_id;
+                });
+                
+                $tenantSettingData[$index]['tenant_setting_id'] = $tenantSettings[$index]
+                ->tenant_setting_id;
+                $tenantSettingData[$index]['key'] = $getTenantSettings[$index]->key;
+                $tenantSettingData[$index]['description'] = $getTenantSettings[$index]
+                ->description;
+                $tenantSettingData[$index]['title'] = $getTenantSettings[$index]
+                ->title;
             }
-            $apiData = $tenantSettingData;
-
-            // Set response data
-            $apiStatus = Response::HTTP_OK;
-            $apiMessage = ($tenantSettings->isEmpty() || $getTenantSettings->isEmpty()) ?
-            trans('messages.success.MESSAGE_NO_RECORD_FOUND'):
-            trans('messages.success.MESSAGE_TENANT_SETTINGS_LISTING');
-
-            return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
-        } catch (InvalidArgumentException $e) {
-            return $this->invalidArgument(
-                config('constants.error_codes.ERROR_INVALID_ARGUMENT'),
-                trans('messages.custom_error_message.ERROR_INVALID_ARGUMENT')
-            );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
+        $apiData = $tenantSettingData;
+
+        // Set response data
+        $apiStatus = Response::HTTP_OK;
+        $apiMessage = ($tenantSettings->isEmpty() || $getTenantSettings->isEmpty()) ?
+        trans('messages.success.MESSAGE_NO_RECORD_FOUND'):
+        trans('messages.success.MESSAGE_TENANT_SETTINGS_LISTING');
+
+        return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
     }
 
     /**
      * Update the specified resource in storage.
+     * @codeCoverageIgnore
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $settingId
@@ -143,8 +137,6 @@ class TenantSettingsController extends Controller
                 config('constants.error_codes.ERROR_SETTING_FOUND'),
                 trans('messages.custom_error_message.ERROR_SETTING_FOUND')
             );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
 }

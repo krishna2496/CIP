@@ -39,6 +39,7 @@ class TenantSetting extends Model
 
     /**
      * Fetch all tenant settings.
+     * @codeCoverageIgnore
      *
      * @return Illuminate\Support\Collection
      */

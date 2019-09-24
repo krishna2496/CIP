@@ -41,17 +41,8 @@ class TimesheetStatus extends Model
     protected $visible = ['timesheet_status_id','status'];
 
     /**
-     * Get the mission that has theme
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function timesheet(): HasMany
-    {
-        return $this->hasMany(Timesheet::class, 'timesheet_status_id', 'status_id');
-    }
-
-    /**
      * Get the success statuses' ids
+     * @codeCoverageIgnore
      *
      * @return Illuminate\Support\Collection
      */

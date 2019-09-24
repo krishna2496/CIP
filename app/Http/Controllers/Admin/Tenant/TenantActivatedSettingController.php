@@ -29,6 +29,7 @@ class TenantActivatedSettingController extends Controller
 
     /**
      * Create a new controller instance.
+     * @codeCoverageIgnore
      *
      * @param App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository $tenantActivatedSettingRepository
      * @param App\Helpers\ResponseHelper $responseHelper
@@ -45,50 +46,35 @@ class TenantActivatedSettingController extends Controller
        
     /**
      * Store a newly created tenant activated settings into database
+     * @codeCoverageIgnore
      *
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\JsonResponse;
      */
     public function store(Request $request): JsonResponse
     {
-        try {
-            $validator = Validator::make($request->toArray(), [
-                'settings' => 'required',
-                'settings.*.tenant_setting_id' => 'required|exists:tenant_setting,tenant_setting_id,deleted_at,NULL',
-                'settings.*.value' => 'required|in:0,1',
-                ]);
+        $validator = Validator::make($request->toArray(), [
+            'settings' => 'required',
+            'settings.*.tenant_setting_id' => 'required|exists:tenant_setting,tenant_setting_id,deleted_at,NULL',
+            'settings.*.value' => 'required|in:0,1',
+            ]);
 
-            if ($validator->fails()) {
-                return $this->responseHelper->error(
-                    Response::HTTP_UNPROCESSABLE_ENTITY,
-                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                    config('constants.error_codes.ERROR_TENANT_SETTING_REQUIRED_FIELDS_EMPTY'),
-                    $validator->errors()->first()
-                );
-            }
-            
-            // Store settings
-            $this->tenantActivatedSettingRepository->store($request->toArray());
- 
-            // Set response data
-            $apiStatus = Response::HTTP_OK;
-            $apiMessage =  trans('messages.success.MESSAGE_TENANT_SETTINGS_UPDATED');
-            
-            return $this->responseHelper->success($apiStatus, $apiMessage);
-        } catch (PDOException $e) {
-            return $this->PDO(
-                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
-                trans(
-                    'messages.custom_error_message.'.config('constants.error_codes.ERROR_DATABASE_OPERATIONAL')
-                )
+        if ($validator->fails()) {
+            return $this->responseHelper->error(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                config('constants.error_codes.ERROR_TENANT_SETTING_REQUIRED_FIELDS_EMPTY'),
+                $validator->errors()->first()
             );
-        } catch (InvalidArgumentException $e) {
-            return $this->invalidArgument(
-                config('constants.error_codes.ERROR_INVALID_ARGUMENT'),
-                trans('messages.custom_error_message.ERROR_INVALID_ARGUMENT')
-            );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
+        
+        // Store settings
+        $this->tenantActivatedSettingRepository->store($request->toArray());
+
+        // Set response data
+        $apiStatus = Response::HTTP_OK;
+        $apiMessage =  trans('messages.success.MESSAGE_TENANT_SETTINGS_UPDATED');
+        
+        return $this->responseHelper->success($apiStatus, $apiMessage);
     }
 }

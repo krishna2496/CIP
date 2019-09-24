@@ -56,6 +56,7 @@ class TenantActivatedSetting extends Model
    
     /**
      * Store/update settings.
+     * @codeCoverageIgnore
      *
      * @param  int  $tenantSettingId
      * @param  int  $value
@@ -72,6 +73,7 @@ class TenantActivatedSetting extends Model
 
     /**
      * Fetch tenant settings.
+     * @codeCoverageIgnore
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */

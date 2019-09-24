@@ -53,27 +53,18 @@ class PolicyPageController extends Controller
      */
     public function index(Request $request): JsonResponse
     {
-        try {
-            $languages = $this->languageHelper->getLanguages($request);
+        $languages = $this->languageHelper->getLanguages($request);
 
-            $language = ($request->hasHeader('X-localization')) ?
-            $request->header('X-localization') : env('TENANT_DEFAULT_LANGUAGE_CODE');
-            $languageId = $languages->where('code', $language)->first()->language_id;
-            
-            $pageList = $this->policyPageRepository->getPageList($languageId);
-            $apiStatus = Response::HTTP_OK;
-            $apiMessage = trans('messages.success.MESSAGE_POLICY_PAGE_LISTING');
-            $apiMessage = ($pageList->isEmpty()) ? trans('messages.success.MESSAGE_NO_RECORD_FOUND') :
-             trans('messages.success.MESSAGE_POLICY_PAGE_LISTING');
-            return $this->responseHelper->success($apiStatus, $apiMessage, $pageList->toArray());
-        } catch (InvalidArgumentException $e) {
-            return $this->invalidArgument(
-                config('constants.error_codes.ERROR_INVALID_ARGUMENT'),
-                trans('messages.custom_error_message.ERROR_INVALID_ARGUMENT')
-            );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
-        }
+        $language = ($request->hasHeader('X-localization')) ?
+        $request->header('X-localization') : env('TENANT_DEFAULT_LANGUAGE_CODE');
+        $languageId = $languages->where('code', $language)->first()->language_id;
+        
+        $pageList = $this->policyPageRepository->getPageList($languageId, $request);
+        $apiStatus = Response::HTTP_OK;
+        $apiMessage = trans('messages.success.MESSAGE_POLICY_PAGE_LISTING');
+        $apiMessage = ($pageList->isEmpty()) ? trans('messages.success.MESSAGE_NO_RECORD_FOUND') :
+            trans('messages.success.MESSAGE_POLICY_PAGE_LISTING');
+        return $this->responseHelper->success($apiStatus, $apiMessage, $pageList->toArray());
     }
 
     /**
@@ -97,20 +88,11 @@ class PolicyPageController extends Controller
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_PAGE_FOUND');
             return $this->responseHelper->success($apiStatus, $apiMessage, $policyPage->toArray());
-        } catch (PDOException $e) {
-            return $this->PDO(
-                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
-                trans(
-                    'messages.custom_error_message.ERROR_DATABASE_OPERATIONAL'
-                )
-            );
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
                 config('constants.error_codes.ERROR_NO_DATA_FOUND_FOR_SLUG'),
                 trans('messages.custom_error_message.ERROR_NO_DATA_FOUND_FOR_SLUG')
             );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
 }

@@ -52,6 +52,7 @@ class MissionApplication extends Model
 
     /**
      * Defined relation for the mission table.
+     * @codeCoverageIgnore
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
@@ -62,6 +63,7 @@ class MissionApplication extends Model
 
     /**
      * Defined relation for the user table.
+     * @codeCoverageIgnore
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
@@ -104,7 +106,6 @@ class MissionApplication extends Model
     public function findDetail(int $missionId, int $applicationId): array
     {
         $applicationQuery = $this;
-        $applicationQuery = $applicationQuery->orderBy('mission_application_id', 'asc');
 
         $missionApplication = $applicationQuery->where(
             ['mission_id' => $missionId, 'mission_application_id' => $applicationId]
