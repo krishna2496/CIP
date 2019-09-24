@@ -67,9 +67,13 @@
                                                     </b-td>
                                                 </b-tr>
                                             </b-tbody>
-                                            <div v-else class="text-center">
-                                                <h3>{{langauageData.label.volunteering_hours | firstLetterCapital}} {{langauageData.label.not_found}}</h3>
-                                            </div>
+                                            <b-tbody v-else>
+                                                <b-tr>
+                                                    <b-td colspan="9" class="disabled">
+                                                        {{langauageData.label.volunteering_hours | firstLetterCapital}} {{langauageData.label.not_found}}
+                                                    </b-td>
+                                                </b-tr>
+                                            </b-tbody>
 
                                         </b-table-simple>
                                     </div>
@@ -139,9 +143,13 @@
                                                     </b-td>
                                                 </b-tr>
                                             </b-tbody>
-                                            <div v-else class="text-center">
-                                                <h3>{{langauageData.label.volunteering_goals | firstLetterCapital}} {{langauageData.label.not_found}}</h3>
-                                            </div>
+                                            <b-tbody v-else>
+                                                <b-tr>
+                                                    <b-td colspan="9" class="disabled">
+                                                        {{langauageData.label.volunteering_goals | firstLetterCapital}} {{langauageData.label.not_found}}
+                                                    </b-td>
+                                                </b-tr>
+                                            </b-tbody>
                                         </b-table-simple>
                                     </div>
                                 </div>
