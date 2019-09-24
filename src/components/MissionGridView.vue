@@ -6,8 +6,8 @@
                     <b-card no-body>
                         <b-card-header>
                             <div class="header-img-block">
-                                <b-alert show class="alert card-alert alert-success" v-if="getAppliedStatus(mission)">Applied</b-alert>
-                                <b-alert show class="alert card-alert alert-warning"  v-if="getClosedStatus(mission)">closed</b-alert>
+                                <b-alert show class="alert card-alert alert-success" v-if="getAppliedStatus(mission)">{{langauageData.label.applied}}</b-alert>
+                                <b-alert show class="alert card-alert alert-warning"  v-if="getClosedStatus(mission)">{{langauageData.label.closed}}</b-alert>
                                 <div v-if="checkDefaultMediaFormat(mission.default_media_type)" class="group-img"
                                     :style="{backgroundImage: 'url('+mission.default_media_path+')'}">
                                     <img :src="mission.default_media_path" alt="mission.default_media_path">
@@ -24,6 +24,7 @@
                                     </i>
                                     {{mission.city_name}}
                                 </div>
+                                <div class="btn-ic-wrap">
                                 <b-button v-bind:class="{ 'favourite-icon' : true,
                                             active : mission.is_favourite == 1
                                         }" v-b-tooltip.hover
@@ -63,6 +64,7 @@
                                     <img :src="$store.state.imagePath+'/assets/images/add-group-ic.svg'"
                                         :alt="langauageData.label.invite_colleague">
                                 </b-button>
+                                </div>
                             </div>
                             <div class="group-category" v-if="mission.mission_theme != null && isThemeSet"><span
                                     class="category-text">{{getThemeTitle(mission.mission_theme.translations)}}</span>

@@ -230,7 +230,6 @@
                     ".filter-block .list-group-item"
                 ).length;
                 var bottomHeader = document.querySelector(".bottom-header");
-                console.log(filterCount);
                 if (filterCount != null) {
                     if (filterCount == 3) {
                     bottomHeader.classList.add("three-filters");
