@@ -67,6 +67,7 @@ class TenantSettingsController extends Controller
 
         // Fetch all tenant settings data
         $tenantSettings = $this->tenantSettingRepository->fetchAllTenantSettings();
+
         $tenantSettingData = array();
 
         if ($tenantSettings->count() &&  $getTenantSettings->count()) {
@@ -88,9 +89,9 @@ class TenantSettingsController extends Controller
 
         // Set response data
         $apiStatus = Response::HTTP_OK;
-        $apiMessage = ($tenantSettings->isEmpty() || $getTenantSettings->isEmpty())
-        ? trans('messages.success.MESSAGE_NO_RECORD_FOUND')
-        : trans('messages.success.MESSAGE_TENANT_SETTINGS_LISTING');
+        $apiMessage = ($tenantSettings->isEmpty() || $getTenantSettings->isEmpty()) ?
+        trans('messages.success.MESSAGE_NO_RECORD_FOUND'):
+        trans('messages.success.MESSAGE_TENANT_SETTINGS_LISTING');
 
         return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
     }
