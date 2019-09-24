@@ -5,7 +5,8 @@
                 <b-card no-body>
                     <b-card-header>
                         <div class="header-img-block">
-                            <!-- <b-alert show variant="success" class="card-alert">Applied</b-alert> -->
+                            <b-alert show class="alert card-alert alert-success" v-if="getAppliedStatus(mission)">{{langauageData.label.applied}}</b-alert>
+                            <b-alert show class="alert card-alert alert-warning"  v-if="getClosedStatus(mission)">closed</b-alert>
                             <div v-if="checkDefaultMediaFormat(mission.default_media_type)" class="group-img"
                                 :style="{backgroundImage: 'url('+mission.default_media_path+')'}">
                                 <img src="mission.default_media_path" alt="mission.default_media_path">
@@ -276,6 +277,7 @@
     import store from '../store';
     import constants from '../constant';
     import StarRating from 'vue-star-rating';
+    import moment from 'moment';
     import {
         favoriteMission,
         inviteColleague,
@@ -492,6 +494,28 @@
                     autoHideDelay: 1000
                 })
             },
+            getAppliedStatus(missionDetail) {
+                let currentDate = moment().format("YYYY-MM-DD");
+                let missionEndDate = moment(missionDetail.end_date).format("YYYY-MM-DD");
+                let checkEndDateExist = true;
+                if(missionDetail.end_date != '' && missionDetail.end_date != null) {
+                    if(currentDate > missionEndDate) {
+                        checkEndDateExist = false
+                    }
+                }
+                if(missionDetail.user_application_count == 1 && checkEndDateExist) {
+                    return true;
+                }
+            },
+            getClosedStatus(missionDetail) {
+                let currentDate = moment().format("YYYY-MM-DD");
+                let missionEndDate = moment(missionDetail.end_date).format("YYYY-MM-DD");
+                if(missionDetail.end_date != '' && missionDetail.end_date != null) {
+                    if(currentDate > missionEndDate) {
+                        return true;
+                    }
+                }
+            }
         },
         created() {
             this.langauageData = JSON.parse(store.state.languageLabel);
