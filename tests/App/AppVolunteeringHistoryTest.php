@@ -1,5 +1,6 @@
 <?php
 use App\Helpers\Helpers;
+use Carbon\Carbon;
 
 class AppVolunteeringHistoryTest extends TestCase
 {
@@ -161,6 +162,12 @@ class AppVolunteeringHistoryTest extends TestCase
                 "message"
             ]
         );
+        
+        DB::setDefaultConnection('mysql');
+        // For specific year
+        $response = $this->get('/app/volunteer/history/theme?year='.Carbon::now()->format('Y'), ['token' => $token])
+        ->seeStatusCode(200);
+
         $user->delete();
     }
 
@@ -521,7 +528,12 @@ class AppVolunteeringHistoryTest extends TestCase
                 ],
                 "message"
             ]
-        );        
+        );
+        DB::setDefaultConnection('mysql');
+        // For specific year
+        $response = $this->get('/app/volunteer/history/skill?year='.Carbon::now()->format('Y'), ['token' => $token])
+        ->seeStatusCode(200);
+
         $user->delete();
     }
 
