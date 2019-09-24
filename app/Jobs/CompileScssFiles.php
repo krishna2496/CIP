@@ -83,14 +83,13 @@ class CompileScssFiles extends Job
                         $this->tenantName.'/assets/css/style.css',
                         Storage::disk('local')->get($this->tenantName.'\assets\css\style.css')
                     );
-				} catch (S3Exception $e) {
+                } catch (S3Exception $e) {
                     return $this->s3Exception(
                         config('constants.error_codes.ERROR_FAILD_TO_UPLOAD_COMPILE_FILE_ON_S3'),
                         trans('messages.custom_error_message.ERROR_FAILD_TO_UPLOAD_COMPILE_FILE_ON_S3')
                     );
                 }
             } else {
-                
                 throw new FileDownloadException(
                     trans('messages.custom_error_message.ERROR_WHILE_STORE_COMPILED_CSS_FILE_TO_LOCAL'),
                     config('constants.error_codes.ERROR_WHILE_STORE_COMPILED_CSS_FILE_TO_LOCAL')

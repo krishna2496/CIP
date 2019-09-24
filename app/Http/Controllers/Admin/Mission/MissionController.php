@@ -106,7 +106,7 @@ class MissionController extends Controller
                 "skills.*.skill_id" => "integer|exists:skill,skill_id,deleted_at,NULL",
             ]
         );
-
+        
         // If request parameter have any error
         if ($validator->fails()) {
             return $this->responseHelper->error(

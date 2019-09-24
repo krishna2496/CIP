@@ -9,7 +9,7 @@ class AppTenantSettingTest extends TestCase
      *
      * @return void
      */
-    public function it_should_return_tenant_setting_details()
+    public function tenant_settings_it_should_return_tenant_setting_details()
     {
         $connection = 'tenant';
         $tenantSetting = factory(\App\Models\TenantSetting::class)->make();
