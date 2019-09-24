@@ -116,6 +116,7 @@ class SliderController extends Controller
                 return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
                 // @codeCoverageIgnoreEnd
             }
+            // @codeCoverageIgnoreStart
         } catch (\ErrorException $e) {
             // Response error unable to upload file on S3
             return $this->responseHelper->error(
@@ -124,6 +125,7 @@ class SliderController extends Controller
                 config('constants.error_codes.ERROR_SLIDER_IMAGE_UPLOAD'),
                 trans('messages.custom_error_message.ERROR_SLIDER_IMAGE_UPLOAD')
             );
+            // @codeCoverageIgnoreEnd
         }
     }
     
