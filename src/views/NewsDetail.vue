@@ -11,8 +11,10 @@
 						<h2>{{newsDetailList.news_content.title}}</h2>
 						<h3 class="author-name">{{newsDetailList.user_name}} - <span>{{newsDetailList.user_title}}</span></h3>
 						<p class="publish-date" v-if="newsDetailList.published_on != null">{{langauageData.label.published_on}} {{newsDetailList.published_on | formatDate}}</p>
-						<div class="news-img-wrap" :style="{backgroundImage: 'url('+newsDetailList.news_image+')'}"></div>
-						<div class="news-content cms-content" v-html="newsDetailList.news_content.description">
+						<div class="news-img-wrap" :style="{backgroundImage: 'url('+newsDetailList.news_image+')'}" v-if="newsDetailList.news_image"></div>
+						<div class="news-content cms-content"
+						v-bind:class="{'news-img-wrap' : !newsDetailList.news_image}"
+						 v-html="newsDetailList.news_content.description">
 							
 						</div>
 					</div>

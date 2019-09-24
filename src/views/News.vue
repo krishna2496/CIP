@@ -20,7 +20,7 @@
 						{{ message }}
 					</b-alert>
 				</div>
-				<div v-if="!showErrorDiv">
+				<div v-if="!showErrorDiv && isPageLoaded">
 					<div v-if="newsListing.length > 0">
 						<NewsCard
 						:newsListing="newsListing"
@@ -47,8 +47,8 @@
 	</footer>
 	<back-to-top bottom="68px" right="40px" title="back to top">
 		<i class="icon-wrap">
-			<img class="img-normal" src="../assets/images/down-arrow.svg" alt="Down Arrow" />
-			<img class="img-rollover" src="../assets/images/down-arrow-black.svg" alt="Down Arrow" />
+			<img class="img-normal" :src="$store.state.imagePath+'/assets/images/down-arrow.svg'" alt="Down Arrow" />
+			<img class="img-rollover" :src="$store.state.imagePath+'/assets/images/down-arrow-black.svg'" alt="Down Arrow" />
 		</i>
 	</back-to-top>
 	</div>
@@ -78,6 +78,7 @@ export default {
 			langauageData : [],
 			isNewsDisplay : true,
 			showErrorDiv: false,
+			isPageLoaded : false,
 			message: null,
 			newsListing : [],
 			pagination : {
@@ -108,6 +109,7 @@ export default {
 					this.showErrorDiv = true;
 					this.message = response.message
 				}
+				this.isPageLoaded = true
 			}) 
 		}
 	},
