@@ -75,7 +75,7 @@ class TenantLanguage extends Model
      */
     public function resetDefaultTenantLanguage(int $tenantId)
     {
-        return static::where('tenant_id', $tenantId)
+        return static::where(['tenant_id' => $tenantId, 'default' => config('constants.language_status.ACTIVE')])
         ->update(['default'=> config('constants.language_status.INACTIVE')]);
     }
 }

@@ -66,6 +66,11 @@ class TenantLanguageController extends Controller
                 config('constants.error_codes.ERROR_INVALID_ARGUMENT'),
                 trans('messages.custom_error_message.ERROR_INVALID_ARGUMENT')
             );
+        } catch (ModelNotFoundException $e) {
+            return $this->modelNotFound(
+                config('constants.error_codes.ERROR_TENANT_NOT_FOUND'),
+                trans('messages.custom_error_message.ERROR_TENANT_NOT_FOUND')
+            );
         }
     }
 
