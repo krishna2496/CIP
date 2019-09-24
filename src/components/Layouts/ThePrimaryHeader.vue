@@ -270,7 +270,7 @@
             eventBus
         } from "../../main";
         import constants from '../../constant';
-
+        import { setTimeout } from 'timers';
         export default {
             components: {},
             name: "PrimaryHeader",
