@@ -132,7 +132,7 @@ class AppInviteColleagueTest extends TestCase
      *
      * @return void
      */
-    public function it_should_invite_user_to_a_mission()
+    public function it_should_invite_user_to_a_mission_and_send_notification()
     {
         $connection = 'tenant';
         $mission = factory(\App\Models\Mission::class)->make();
@@ -176,5 +176,56 @@ class AppInviteColleagueTest extends TestCase
         $user->delete();
         $toUser->delete();
         $mission->delete();
+    }
+
+    /**
+     * @test
+     *
+     * It should validate user before invite
+     *
+     * @return void
+     */
+    public function it_should_invite_user_to_a_mission()
+    {
+        $connection = 'tenant';
+        $mission = factory(\App\Models\Mission::class)->make();
+        $mission->setConnection($connection);
+        $mission->save();
+
+        $user = factory(\App\User::class)->make();
+        $user->setConnection($connection);
+        $user->save();
+
+        $toUser = factory(\App\User::class)->make();
+        $toUser->setConnection($connection);
+        $toUser->save();
+
+        DB::setDefaultConnection('tenant');
+        $settings = App\Models\TenantSetting::where(['setting_id' =>27])->get();
+        App\Models\TenantActivatedSetting::where(['tenant_setting_id' => $settings[0]['tenant_setting_id']])->delete();
+        App\Models\TenantSetting::where(['setting_id' => 27])->delete();
+        DB::setDefaultConnection('mysql');
+
+        $params = [
+            'mission_id' => $mission->mission_id,
+            'to_user_id' => $toUser->user_id
+        ];
+        
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
+        $this->post('/app/mission/invite', $params, ['token' => $token])
+        ->seeStatusCode(201)
+        ->seeJsonStructure([
+            'status',
+            'data' => [
+                "mission_invite_id"
+            ],
+            'message',
+        ]);
+        App\Models\MissionInvite::where(['mission_id' =>$mission->mission_id, 'to_user_id' => $toUser->user_id, 'from_user_id' => $user->user_id ])->take(1)->delete();
+        $user->delete();
+        $toUser->delete();
+        $mission->delete();
+        $setting = App\Models\TenantSetting::create(['setting_id' =>27]);
+        App\Models\TenantActivatedSetting::create(['tenant_setting_id' =>$setting->tenant_setting_id]);
     }
 }

@@ -53,7 +53,7 @@ class UserCustomFieldTest extends TestCase
         $userCustomField->setConnection($connection);
         $userCustomField->save();
 
-        $this->get(route('metadata.users.custom_fields'), ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->get('metadata/users/custom_fields?search='.$userCustomField->name, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
           ->seeStatusCode(200)
           ->seeJsonStructure([
             "status",
@@ -236,7 +236,7 @@ class UserCustomFieldTest extends TestCase
         $userCustomField->setConnection($connection);
         $userCustomField->save();
 
-        $this->get('metadata.users.custom_fields?order=test', ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->get('metadata/users/custom_fields?order=test', ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
         ->seeStatusCode(400)
         ->seeJsonStructure([
             "errors" => [
@@ -361,7 +361,7 @@ class UserCustomFieldTest extends TestCase
         $userCustomField->save();
 
         $this->get('metadata/users/custom_fields?order=test', ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
-        ->seeStatusCode(500)
+        ->seeStatusCode(400)
         ->seeJsonStructure([
             "errors" => [
                 [

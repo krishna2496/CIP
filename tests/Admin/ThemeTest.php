@@ -87,7 +87,7 @@ class ThemeTest extends TestCase
         $this->post("entities/themes", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))]);
         DB::setDefaultConnection('mysql');
 
-        $this->get('entities/themes?perPage=test', ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->get('entities/themes?perPage=test&search='.$themeName, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
           ->seeStatusCode(200)
           ->seeJsonStructure([
             "status",

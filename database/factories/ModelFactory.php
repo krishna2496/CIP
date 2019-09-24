@@ -176,3 +176,10 @@ $factory->define(App\Models\UserFilter::class, function (Faker\Generator $faker)
         'filters' => 'a:6:{s:6:"search";s:0:"";s:10:"country_id";s:3:"233";s:7:"city_id";s:0:"";s:8:"theme_id";s:0:"";s:8:"skill_id";s:0:"";s:7:"sort_by";s:0:"";}'
     ];
 });
+
+$factory->define(App\Models\MissionSkill::class, function (Faker\Generator $faker) {
+    return [
+        'mission_id' => 1,
+        'skill_id' => 1
+    ];
+});

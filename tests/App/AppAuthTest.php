@@ -312,4 +312,47 @@ class AppAuthTest extends TestCase
               ]
           ]);
     }
+
+    /**
+     * @test
+     *
+     * Return error for reset password
+     *
+     * @return void
+     */
+    public function it_should_return_error_for_reset_password()
+    {
+        Notification::fake();
+        $token = '';
+        
+        $connection = 'tenant';
+        $user = factory(\App\User::class)->make();
+        $user->setConnection($connection);
+        $user->save();
+
+        $this->post('app/request-password-reset', ['email' => $user->email])
+            ->seeStatusCode(200);
+
+        Notification::assertSentTo(
+            $user,
+            \Illuminate\Auth\Notifications\ResetPassword::class,
+            function ($notification, $channels) use (&$token) {
+                $token = $notification->token;
+
+                return true;
+            }
+        );
+
+        DB::setDefaultConnection('mysql');
+
+        $response = $this->put('app/password-reset', [
+            'reset_password_token' => 'test',
+            'email' => $user->email,
+            'password' => 'password',
+            'password_confirmation' => 'password'
+        ]);
+        
+        $this->assertFalse(Hash::check('password', $user->fresh()->password));
+        $user->delete();
+    }
 }

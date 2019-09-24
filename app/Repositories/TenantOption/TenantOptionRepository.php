@@ -29,16 +29,6 @@ class TenantOptionRepository implements TenantOptionInterface
     {
         $this->tenantOption = $tenantOption;
     }
-    
-    /**
-    * Get a listing of slider.
-    *
-    * @return Illuminate\Database\Eloquent\Collection
-    */
-    public function getAllSlider()
-    {
-        return $this->tenantOption->where('option_name', config('constants.TENANT_OPTION_SLIDER'))->get();
-    }
 
     /**
      * Update style settings.

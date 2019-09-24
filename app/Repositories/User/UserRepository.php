@@ -215,9 +215,6 @@ class UserRepository implements UserInterface
      */
     public function searchUsers(string $text = null, int $userId): Collection
     {
-        if (is_null($text)) {
-            return $this->all();
-        }
         return $this->user->searchUser($text, $userId)->get();
     }
 

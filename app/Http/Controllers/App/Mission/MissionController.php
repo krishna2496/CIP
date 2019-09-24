@@ -435,7 +435,7 @@ class MissionController extends Controller
                     }
                 }
             }
-
+            
             if ($filterData["filters"]["theme_id"] && $filterData["filters"]["theme_id"] != "") {
                 $themeTag = $this->themeRepository->missionThemeList($request, $filterData["filters"]["theme_id"]);
                 if ($themeTag) {

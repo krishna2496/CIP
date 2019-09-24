@@ -2932,4 +2932,188 @@ class AppTimesheetTest extends TestCase
         App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->delete();
         App\Models\MissionApplication::where("mission_id", $mission[0]['mission_id'])->delete();
     }
+
+    /**
+     * @test
+     *
+     * Add timesheet entry and validate end date
+     *
+     * @return void
+     */
+    public function it_should_add_timesheet_entry_and_validate_end_date()
+    {
+        $connection = 'tenant';
+        $user = factory(\App\User::class)->make();
+        $user->setConnection($connection);
+        $user->save();
+        $date = date("Y-m-d");
+
+        $params = [
+            "organisation" => [
+                "organisation_id" => 1,
+                "organisation_name" => str_random(10),
+                "organisation_detail" => ''
+            ],
+            "location" => [
+                "city_id" => 1,
+                "country_code" => "US"
+            ],
+            "mission_detail" => [[
+                    "lang" => "en",
+                    "title" => str_random(10),
+                    "short_description" => str_random(20),
+                    "objective" => str_random(20),
+                    "section" => [
+                        [
+                            "title" => str_random(10),
+                            "description" => str_random(100),
+                        ]
+                    ]
+                ]
+            ],
+            "media_images" => [[
+                    "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer9.png",
+                    "default" => "1"
+                ]
+            ],
+            "start_date" => date( "Y-m-d", strtotime( "$date -50 day" ) ),
+            "end_date" => date( "Y-m-d", strtotime( "$date -20 day" ) ),
+            "mission_type" => config("constants.mission_type.TIME"),
+            "goal_objective" => rand(1, 1000),
+            "total_seats" => rand(1, 10),
+            "application_deadline" => date( "Y-m-d", strtotime( "$date +10 day" ) ),
+            "publication_status" => config("constants.publication_status.APPROVED"),
+            "theme_id" => 1,
+            "availability_id" => 1
+        ];
+
+        $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(201);
+        $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->get();
+       
+        $params = [
+                'mission_id' => $mission[0]['mission_id'],
+                'motivation' => str_random(10),
+                'availability_id' => 1
+            ];
+        DB::setDefaultConnection('mysql');
+
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
+        $this->post('app/mission/application', $params, ['token' => $token])
+          ->seeStatusCode(201);
+
+        $missionApplication = App\Models\MissionApplication::orderBy("mission_application_id", "DESC")->take(1)->get();
+        
+        App\Models\MissionApplication::where("mission_application_id", $missionApplication[0]['mission_application_id'])
+        ->update(['approval_status' => config("constants.application_status")["AUTOMATICALLY_APPROVED"]]);
+        
+        $params = [
+            'mission_id' => $mission[0]['mission_id'],
+            'date_volunteered' => date( "Y-m-d", strtotime( "$date -15 day" ) ),
+            'day_volunteered' => 'HOLIDAY',
+            'notes' => str_random(10),
+            'hours' => rand(1, 5),
+            'minutes' => rand(1, 59),
+            'documents[]' =>[]
+        ];
+        DB::setDefaultConnection('mysql');
+        $this->post('app/timesheet', $params, ['token' => $token])
+        ->seeStatusCode(201);
+
+        $user->delete();
+        App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->delete();
+        App\Models\MissionApplication::where("mission_id", $mission[0]['mission_id'])->delete();
+    }
+
+    /**
+     * @test
+     *
+     * Add timesheet entry and validate end date
+     *
+     * @return void
+     */
+    public function it_should_return_error_on_add_timesheet_entry_for_invalid_date()
+    {
+        $connection = 'tenant';
+        $user = factory(\App\User::class)->make();
+        $user->setConnection($connection);
+        $user->save();
+        $date = date("Y-m-d");
+
+        $params = [
+            "organisation" => [
+                "organisation_id" => 1,
+                "organisation_name" => str_random(10),
+                "organisation_detail" => ''
+            ],
+            "location" => [
+                "city_id" => 1,
+                "country_code" => "US"
+            ],
+            "mission_detail" => [[
+                    "lang" => "en",
+                    "title" => str_random(10),
+                    "short_description" => str_random(20),
+                    "objective" => str_random(20),
+                    "section" => [
+                        [
+                            "title" => str_random(10),
+                            "description" => str_random(100),
+                        ]
+                    ]
+                ]
+            ],
+            "media_images" => [[
+                    "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer9.png",
+                    "default" => "1"
+                ]
+            ],
+            "start_date" => date( "Y-m-d", strtotime( "$date -50 day" ) ),
+            "end_date" => date( "Y-m-d", strtotime( "$date -30 day" ) ),
+            "mission_type" => config("constants.mission_type.TIME"),
+            "goal_objective" => rand(1, 1000),
+            "total_seats" => rand(1, 10),
+            "application_deadline" => date( "Y-m-d", strtotime( "$date +10 day" ) ),
+            "publication_status" => config("constants.publication_status.APPROVED"),
+            "theme_id" => 1,
+            "availability_id" => 1
+        ];
+
+        $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(201);
+        $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->get();
+       
+        $params = [
+                'mission_id' => $mission[0]['mission_id'],
+                'motivation' => str_random(10),
+                'availability_id' => 1
+            ];
+        DB::setDefaultConnection('mysql');
+
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
+        $this->post('app/mission/application', $params, ['token' => $token])
+          ->seeStatusCode(201);
+
+        $missionApplication = App\Models\MissionApplication::orderBy("mission_application_id", "DESC")->take(1)->get();
+        
+        App\Models\MissionApplication::where("mission_application_id", $missionApplication[0]['mission_application_id'])
+        ->update(['approval_status' => config("constants.application_status")["AUTOMATICALLY_APPROVED"]]);
+        
+        $params = [
+            'mission_id' => $mission[0]['mission_id'],
+            'date_volunteered' => date( "Y-m-d", strtotime( "$date -8 day" ) ),
+            'day_volunteered' => 'HOLIDAY',
+            'notes' => str_random(10),
+            'hours' => rand(1, 5),
+            'minutes' => rand(1, 59),
+            'documents[]' =>[]
+        ];
+        DB::setDefaultConnection('mysql');
+        $this->post('app/timesheet', $params, ['token' => $token])
+        ->seeStatusCode(422);
+
+        $user->delete();
+        App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->delete();
+        App\Models\MissionApplication::where("mission_id", $mission[0]['mission_id'])->delete();
+    }
 }
