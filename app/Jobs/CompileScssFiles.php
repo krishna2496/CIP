@@ -59,8 +59,7 @@ class CompileScssFiles extends Job
 
         $assetUrl = 'https://'.env("AWS_S3_BUCKET_NAME").'.s3.'
         .env("AWS_REGION", "eu-central-1").'.amazonaws.com/'.$this->tenantName.'/assets/images';
-        
-        
+                
         $importScss =
         '@import "_assets";
         $assetUrl: "'.$assetUrl.'";
