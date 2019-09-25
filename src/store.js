@@ -38,7 +38,9 @@ export default new Vuex.Store({
         isFacebookDisplay: false,
         missionId: localStorage.getItem('missionId'),
         missionType: localStorage.getItem('missionType'),
-        defaultCountryId: localStorage.getItem('defaultCountryId')
+        defaultCountryId: localStorage.getItem('defaultCountryId'),
+        newsBanner: localStorage.getItem('newsBanner'),
+        newsBannerText: localStorage.getItem('newsBannerText')
     },
     mutations: {
         // Set login data in state and local storage       
@@ -227,8 +229,16 @@ export default new Vuex.Store({
             localStorage.removeItem('missionType');
             state.missionId = null
             state.missionType = null
+        },
+        newsBanner(state, data) {
+            localStorage.setItem('newsBanner', data)
+            state.newsBanner = data
+        },
+        newsBannerText(state, data) {
+            localStorage.setItem('newsBannerText', JSON.stringify(data.translations))
+            state.newsBannerText = JSON.stringify(data.translations)
         }
     },
     getters: {},
     actions: {}
-});
+})

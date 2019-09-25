@@ -21,7 +21,7 @@
                             :title="langauageData.label.clear_search" alt="clear" />
                     </i>
                 </b-col>
-                <b-col xl="6" lg="7" class="filter-block">
+                <b-col xl="6" lg="7" class="filter-block"  v-if="quickAccessFilterSet">
                     <div class="mobile-top-block">
                         <b-button class="btn btn-back" @click="handleBack">
                             <img :src="$store.state.imagePath+'/assets/images/down-arrow.svg'" alt="Back Icon">
@@ -30,7 +30,7 @@
                         </b-button>
                     </div>
 
-                    <b-list-group v-if="quickAccessFilterSet">
+                    <b-list-group>
                         <b-list-group-item v-if="isCountrySelectionSet">
                             <AppFilterDropdown :optionList="countryList" :defaultText="defautCountry"
                                 translationEnable="false" @updateCall="changeCountry" v-if="isComponentVisible" />
@@ -126,11 +126,13 @@
         },
         mounted() {
             var mobile_filter = document.querySelector(".filter-block");
+            if(mobile_filter != null){
             mobile_filter.addEventListener("click", function (e) {
                 if (window.innerWidth < 992) {
                     e.stopPropagation();
                 }
             });
+            }
         },
         methods: {
             changeThemeParmas() {
@@ -222,6 +224,23 @@
                 body.forEach(function (e) {
                     e.classList.remove("open-filter");
                 });
+            },
+            handleFilterCount() {
+                var filterCount = document.querySelectorAll(
+                    ".filter-block .list-group-item"
+                ).length;
+                var bottomHeader = document.querySelector(".bottom-header");
+                if (filterCount != null) {
+                    if (filterCount == 3) {
+                    bottomHeader.classList.add("three-filters");
+                    } else if (filterCount == 2) {
+                    bottomHeader.classList.add("two-filters");
+                    } else if (filterCount == 1) {
+                    bottomHeader.classList.add("one-filter");
+                    }else if( filterCount == 0){
+                    bottomHeader.classList.add("zero-filter");
+                    }
+                }
             },
 
             async changeCountry(country) {
@@ -603,6 +622,10 @@
                 this.themeList = [];
                 this.skillList = [];
             }
+             var globalThis = this;
+            setTimeout(function() {
+                globalThis.handleFilterCount();
+            });
         }
     };
 </script>

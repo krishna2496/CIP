@@ -4,12 +4,15 @@ import axios from 'axios'
 export default async(data) => {
     let responseData;
     var defaultLanguage = '';
-
+    if (store.state.defaultLanguage !== null) {
+        defaultLanguage = (store.state.defaultLanguage).toLowerCase();
+    }
     await axios({
             url: process.env.VUE_APP_API_ENDPOINT + "app/user-filter",
             method: 'get',
             headers: {
                 'token': store.state.token,
+                'X-localization': defaultLanguage,
             }
         })
         .then((response) => {

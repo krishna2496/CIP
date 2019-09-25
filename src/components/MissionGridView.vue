@@ -6,8 +6,8 @@
                     <b-card no-body>
                         <b-card-header>
                             <div class="header-img-block">
-                                <!-- <b-alert show class="alert card-alert alert-success">Applied</b-alert> -->
-                                <!-- <b-alert show class="alert card-alert alert-warning">closed</b-alert> -->
+                                <b-alert show class="alert card-alert alert-success" v-if="getAppliedStatus(mission)">{{langauageData.label.applied}}</b-alert>
+                                <b-alert show class="alert card-alert alert-warning"  v-if="getClosedStatus(mission)">{{langauageData.label.closed}}</b-alert>
                                 <div v-if="checkDefaultMediaFormat(mission.default_media_type)" class="group-img"
                                     :style="{backgroundImage: 'url('+mission.default_media_path+')'}">
                                     <img :src="mission.default_media_path" alt="mission.default_media_path">
@@ -24,6 +24,7 @@
                                     </i>
                                     {{mission.city_name}}
                                 </div>
+                                <div class="btn-ic-wrap">
                                 <b-button v-bind:class="{ 'favourite-icon' : true,
                                             active : mission.is_favourite == 1
                                         }" v-b-tooltip.hover
@@ -63,6 +64,7 @@
                                     <img :src="$store.state.imagePath+'/assets/images/add-group-ic.svg'"
                                         :alt="langauageData.label.invite_colleague">
                                 </b-button>
+                                </div>
                             </div>
                             <div class="group-category" v-if="mission.mission_theme != null && isThemeSet"><span
                                     class="category-text">{{getThemeTitle(mission.mission_theme.translations)}}</span>
@@ -250,7 +252,7 @@
             <div class="autocomplete-control">
                 <div class="autosuggest-container">
                     <VueAutosuggest ref="autosuggest" name="user" v-model="query" :suggestions="filteredOptions"
-                        @input="onInputChange" @selected="onSelected" @keydown="tabHandler"
+                        @input="onInputChange" @selected="onSelected"
                         :get-suggestion-value="getSuggestionValue" :input-props="{
                         id:'autosuggest__input', 
                         placeholder:autoSuggestPlaceholder,
@@ -310,14 +312,12 @@
     import {
         VueAutosuggest
     } from 'vue-autosuggest';
-    import SimpleBar from 'simplebar';
-
+    import moment from 'moment'
     export default {
         name: "MissionGridView",
         components: {
             StarRating,
             VueAutosuggest,
-            SimpleBar
         },
         props: {
             items: Array,
@@ -351,14 +351,6 @@
                             var lastName = option.last_name.toLowerCase();
                             var email = option.email.toLowerCase();
                             var searchString = firstName + '' + lastName + '' + email;
-                            setTimeout(function () {
-                                var myElement = document.querySelector('.autosuggest__results');
-                                if (myElement != null) {
-                                    new SimpleBar(myElement, {
-                                        autoHide: false
-                                    });
-                                }
-                            });
                             return searchString.indexOf(this.query.toLowerCase()) > -1;
                         })
                     }];
@@ -369,6 +361,28 @@
             // Submit new mission
             submitNewMission() {
 
+            },
+            getAppliedStatus(missionDetail) {
+                let currentDate = moment().format("YYYY-MM-DD");
+                let missionEndDate = moment(missionDetail.end_date).format("YYYY-MM-DD");
+                let checkEndDateExist = true;
+                if(missionDetail.end_date != '' && missionDetail.end_date != null) {
+                    if(currentDate > missionEndDate) {
+                        checkEndDateExist = false
+                    }
+                }
+                if(missionDetail.user_application_count == 1 && checkEndDateExist) {
+                    return true;
+                }
+            },
+            getClosedStatus(missionDetail) {
+                let currentDate = moment().format("YYYY-MM-DD");
+                let missionEndDate = moment(missionDetail.end_date).format("YYYY-MM-DD");
+                if(missionDetail.end_date != '' && missionDetail.end_date != null) {
+                    if(currentDate > missionEndDate) {
+                        return true;
+                    }
+                }
             },
             //No record found
             noRecordFound() {
@@ -448,14 +462,6 @@
                 this.submitDisable = false;
                 this.invitedUserId = item.item.user_id;
             },
-            tabHandler() {
-                setTimeout(() => {
-                    var myElement = document.querySelector('.autosuggest__results');
-                    new SimpleBar(myElement, {
-                        autoHide: false
-                    });
-                });
-            },
             //This is what the <input/> value is set to when you are selecting a suggestion.
             getSuggestionValue(suggestion) {
                 var firstName = suggestion.item.first_name;
@@ -469,17 +475,6 @@
                 this.message = null;
                 this.$refs.userDetailModal.show();
                 this.currentMission = missionId;
-                setTimeout(() => {
-                    var onFocus = document.getElementById('autosuggest');
-                    onFocus.addEventListener("click", function () {
-                        var myElement = document.querySelector('.autosuggest__results');
-                        if (myElement != null) {
-                            new SimpleBar(myElement, {
-                                autoHide: true
-                            });
-                        }
-                    });
-                });
             },
             // invite collegues api call
             inviteColleagues() {

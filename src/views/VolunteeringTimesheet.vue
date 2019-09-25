@@ -5,6 +5,7 @@
         </header>
         <main>
             <DashboardBreadcrumb />
+           
             <div class="dashboard-tab-content" v-if="isComponentLoaded">
                 <b-container v-if="isAllVisible">
                     <div class="heading-section">
@@ -12,6 +13,7 @@
                             {{langauageData.label.volunteering_timesheet}}
                         </h1>
                     </div>
+                  
                     <div class="inner-content-wrap">
                         <div class="dashboard-table">
                             <div class="table-outer">
@@ -26,7 +28,8 @@
                                             <div class="content-loader"></div>
                                         </div>
                                         <b-table-simple small responsive bordered
-                                            class="timesheet-table timesheethours-table">
+                                            class="timesheet-table timesheethours-table"
+                                            >
                                             <b-thead>
                                                 <b-tr>
                                                     <b-th class="mission-col">{{langauageData.label.mission}}</b-th>
@@ -61,6 +64,13 @@
                                                     </b-td>
                                                     <b-td>
                                                         {{getTotalHours('time')}}
+                                                    </b-td>
+                                                </b-tr>
+                                            </b-tbody>
+                                            <b-tbody v-else>
+                                                <b-tr>
+                                                    <b-td colspan="9" class="disabled">
+                                                        {{langauageData.label.volunteering_hours | firstLetterCapital}} {{langauageData.label.not_found}}
                                                     </b-td>
                                                 </b-tr>
                                             </b-tbody>
@@ -133,6 +143,13 @@
                                                     </b-td>
                                                 </b-tr>
                                             </b-tbody>
+                                            <b-tbody v-else>
+                                                <b-tr>
+                                                    <b-td colspan="9" class="disabled">
+                                                        {{langauageData.label.volunteering_goals | firstLetterCapital}} {{langauageData.label.not_found}}
+                                                    </b-td>
+                                                </b-tr>
+                                            </b-tbody>
                                         </b-table-simple>
                                     </div>
                                 </div>
@@ -166,13 +183,19 @@
                                 :fileName="langauageData.export_timesheet_file_names.PENTIND_GOAL_MISSION_ENTRIES_XLSX"
                                 :totalPages="goalMissionTotalPage" />
                         </div>
-                        <AddVolunteeringHours ref="timeModal" :defaultWorkday="defaultWorkday"
-                            :defaultHours="defaultHours" :defaultMinutes="defaultMinutes" :files="files"
-                            :timeEntryDefaultData="currentTimeData" :disableDates="volunteerHourDisableDates"
+                        <AddVolunteeringHours 
+                            ref="timeModal" 
+                            :defaultWorkday="defaultWorkday"
+                            :defaultHours="defaultHours" 
+                            :defaultMinutes="defaultMinutes" :files="files"
+                            :timeEntryDefaultData="currentTimeData" 
+                            :disableDates="volunteerHourDisableDates"
                             @getTimeSheetData="getVolunteerHoursData" @resetModal="hideModal" :workDayList="workDayList"
                             @changeTimeSheetView="changeTimeSheetHourView"
                             @updateCall="updateDefaultValue" @changeDocument="changeTimeDocument" />
-                        <AddVolunteeringAction ref="goalModal" :defaultWorkday="defaultWorkday"
+                        <AddVolunteeringAction 
+                            ref="goalModal" 
+                            :defaultWorkday="defaultWorkday"
                             :defaultHours="defaultHours" :defaultMinutes="defaultMinutes" :files="files"
                             :timeEntryDefaultData="currentTimeData" :disableDates="volunteerHourDisableDates"
                             @changeTimeSheetView="changeTimeSheetGoalView"
@@ -498,8 +521,9 @@
                 var _this = this
                 fetchTimeSheetDocuments(timeSheetId).then(response => {
                     if (response) {
-
-                        _this.currentTimeData.dateVolunteered = response.date_volunteered
+                        var momentObj = moment(response.date_volunteered, 'MM-DD-YYYY');
+                        var dateVolunteered = momentObj.format('YYYY-MM-DD');
+                        _this.currentTimeData.dateVolunteered = dateVolunteered;
                         _this.currentTimeData.workDay = response.day_volunteered
                         _this.currentTimeData.notes = response.notes
                         _this.currentTimeData.documents = response.timesheet_document
@@ -801,7 +825,7 @@
                 let currentValueYear = ''
                 let currentValueMonth = ''
                 let currentDataArray = []
-
+                
                 if (timeSheetType == "time") {
                     timeArray = this.timeMissionData;
                     currentDataArray = this.volunteeringHoursWeeks
@@ -898,6 +922,7 @@
                 } else {
                     timeArray = this.goalMissionData;
                 }
+               
                 timeArray.filter(function (timeSheetItem, timeSheetIndex) {
                     let timeEntryData = timeSheetItem.timesheet;
                     timeEntryData.filter(function (timeEntry, timeEntryIndex) {
@@ -939,6 +964,7 @@
 
                                 }
                             }
+                             
                         } else {
                             if (_this.volunteeringGoalCurrentYear == currentArrayYear) {
                                 if (_this.volunteeringGoalCurrentMonth == currentArrayMonth) {
