@@ -8,7 +8,6 @@
             <b-alert show :variant="classVariant" dismissible v-model="showErrorDiv">
                 {{ message }}
             </b-alert>
-
             <div class="table-wrapper-outer">
                 <div v-bind:class="{ 'content-loader-wrap': true, 'loader-active': isAjaxCall}">
                     <div class="content-loader"></div>
