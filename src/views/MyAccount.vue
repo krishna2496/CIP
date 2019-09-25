@@ -5,7 +5,14 @@
         </header>
         <main>
             <b-container>
-                <b-row class="profile-content" v-if="showPage">
+                <b-row class="dashboard-tab-content" v-if="errorPage && pageLoaded">
+                    <b-col xl="12" lg="12" md="12" >
+                        <b-alert show variant="danger" >
+                        {{errorPageMessage}}
+                        </b-alert>
+                    </b-col>
+                </b-row>
+                <b-row class="profile-content" v-if="showPage && (!errorPage) && pageLoaded">
                     <b-col xl="3" lg="4" md="12" class="profile-left-col">
                         <div class="profile-details">
                             <div class="profile-block">
@@ -15,9 +22,9 @@
 
                                 <picture-input :title="changePhoto" ref="pictureInput" @change="changeImage"
                                     accept="image/jpeg,image/png" :prefill="newUrl" buttonClass="btn" :customStrings="{
-                    upload: '<h1>Bummer!</h1>',
-                    drag: 'Drag a 😺 GIF or GTFO'
-                    }">
+                                        upload: '<h1>Bummer!</h1>',
+                                        drag: 'Drag a 😺 GIF or GTFO'
+                                    }">
                                 </picture-input>
                             </div>
                             <h4>{{userData.first_name}} {{userData.last_name}}</h4>
@@ -372,6 +379,9 @@
         data() {
             return {
                 languageList: [],
+                errorPage : false,
+                pageLoaded : false,
+                errorPageMessage : false,
                 isQuickAccessFilterDisplay: true,
                 isSkillDisplay: true,
                 languageDefault: "",
@@ -563,15 +573,23 @@
             // Get user detail
             async getUserProfileDetail() {
                 await getUserDetail().then(response => {
+                    this.pageLoaded = true;
                     if (response.error == true) {
-                        this.$router.push('/404');
+                        this.isShownComponent = true
+                        this.errorPage = true
+                        this.errorPageMessage = response.message
                     } else {
+                        this.errorPage = false
                         var _this = this;
                         this.userData = response.data;
                         this.newUrl = this.userData.avatar;
                         const img = new Image();
-                        img.src = this.newUrl;
-                        img.onload = () => {
+                        if(this.newUrl != '' && this.newUrl != null) {
+                            img.src = this.newUrl;
+                            img.onload = () => {
+                                this.isPrefilLoaded = false
+                            }
+                        } else {
                             this.isPrefilLoaded = false
                         }
                         store.commit("changeAvatar", this.userData)

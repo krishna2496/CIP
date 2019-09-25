@@ -334,7 +334,6 @@
                         if (data.name == latestUploadName && data.size == latestUploadSize && data.type ==
                             latestUploadType) {
                             _this.fileError = _this.langauageData.errors.file_already_uploaded
-                            files.splice(files.length - 1, 1)
                             error = true
                             duplicateUpload = true;
                         }

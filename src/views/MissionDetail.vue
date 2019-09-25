@@ -383,7 +383,7 @@
 													<div class="mission-tab-inner">
 														<p v-if="missionDetail.goal_objective">
 															{{missionDetail.goal_objective}}<span>Trees</span></p>
-														<p else>
+														<p v-else>
 															0<span>Trees</span>
 														</p>
 													</div>
@@ -393,7 +393,7 @@
 														<p v-if="missionDetail.achieved_goal">
 															{{missionDetail.achieved_goal}} <span>Planted</span>
 														</p>
-														<p else>
+														<p v-else>
 															0<span>Planted</span>
 														</p>
 													</div>
