@@ -218,7 +218,8 @@ class TenantOptionsController extends Controller
 
         try {
             $assetFilesArray = $this->s3helper->getAllScssFiles($tenantName);
-            // This error will be triggered in case of bucket not found on S3 for any tenant. So it is not covered in unit test-case
+            // This error will be triggered in case of bucket not found on S3 for any tenant.
+            // So it is not covered in unit test-case
             // @codeCoverageIgnoreStart
         } catch (BucketNotFoundException $e) {
             throw $e;
@@ -230,7 +231,8 @@ class TenantOptionsController extends Controller
             $apiMessage = trans('messages.success.MESSAGE_ASSETS_FILES_LISTING');
             return $this->responseHelper->success($apiStatus, $apiMessage, $assetFilesArray);
         } else {
-            // This error will be triggered in case of tenant's bucket don't have any SCSS files. So it is not covered in unit test-case
+            // This error will be triggered in case of tenant's bucket don't have any SCSS files.
+            // So it is not covered in unit test-case
             // @codeCoverageIgnoreStart
             return $this->responseHelper->error(
                 Response::HTTP_NOT_FOUND,
