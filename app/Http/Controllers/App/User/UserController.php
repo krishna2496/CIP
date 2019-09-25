@@ -174,6 +174,7 @@ class UserController extends Controller
         $userCustomFieldData = [];
         $userSkillData = [];
         $customFieldsData = $customFields->toArray();
+        
         $customFieldsValue = $userDetail->userCustomFieldValue;
         unset($userDetail->userCustomFieldValue);
 
@@ -226,6 +227,8 @@ class UserController extends Controller
 
         $apiData = $userDetail->toArray();
         $apiData['language_code'] = $userLanguageCode;
+        $apiData['avatar'] =(isset($apiData['avatar']) && ($apiData['avatar'] != "")) ?
+        $apiData['avatar'] : config('constants.USER_DEFAULT_IMAGE');
         $apiData['custom_fields'] = $userCustomFieldData;
         $apiData['user_skills'] = $userSkillData;
         $apiData['city_list'] = $cityList;
