@@ -58,7 +58,7 @@ class SliderTest extends TestCase
             ],
         ];
 
-        for ($i = 0; $i < 4; $i++) {
+        for ($i = 0; $i < config('constants.SLIDER_LIMIT'); $i++) {
             DB::setDefaultConnection('mysql');
             $this->post("slider/", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
             ->seeStatusCode(201);
