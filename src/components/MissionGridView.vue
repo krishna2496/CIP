@@ -252,7 +252,7 @@
             <div class="autocomplete-control">
                 <div class="autosuggest-container">
                     <VueAutosuggest ref="autosuggest" name="user" v-model="query" :suggestions="filteredOptions"
-                        @input="onInputChange" @selected="onSelected" @keydown="tabHandler"
+                        @input="onInputChange" @selected="onSelected"
                         :get-suggestion-value="getSuggestionValue" :input-props="{
                         id:'autosuggest__input', 
                         placeholder:autoSuggestPlaceholder,
@@ -312,14 +312,12 @@
     import {
         VueAutosuggest
     } from 'vue-autosuggest';
-    import SimpleBar from 'simplebar';
     import moment from 'moment'
     export default {
         name: "MissionGridView",
         components: {
             StarRating,
             VueAutosuggest,
-            SimpleBar
         },
         props: {
             items: Array,
@@ -353,14 +351,6 @@
                             var lastName = option.last_name.toLowerCase();
                             var email = option.email.toLowerCase();
                             var searchString = firstName + '' + lastName + '' + email;
-                            setTimeout(function () {
-                                var myElement = document.querySelector('.autosuggest__results');
-                                if (myElement != null) {
-                                    new SimpleBar(myElement, {
-                                        autoHide: false
-                                    });
-                                }
-                            });
                             return searchString.indexOf(this.query.toLowerCase()) > -1;
                         })
                     }];
@@ -472,14 +462,6 @@
                 this.submitDisable = false;
                 this.invitedUserId = item.item.user_id;
             },
-            tabHandler() {
-                setTimeout(() => {
-                    var myElement = document.querySelector('.autosuggest__results');
-                    new SimpleBar(myElement, {
-                        autoHide: false
-                    });
-                });
-            },
             //This is what the <input/> value is set to when you are selecting a suggestion.
             getSuggestionValue(suggestion) {
                 var firstName = suggestion.item.first_name;
@@ -493,17 +475,6 @@
                 this.message = null;
                 this.$refs.userDetailModal.show();
                 this.currentMission = missionId;
-                setTimeout(() => {
-                    var onFocus = document.getElementById('autosuggest');
-                    onFocus.addEventListener("click", function () {
-                        var myElement = document.querySelector('.autosuggest__results');
-                        if (myElement != null) {
-                            new SimpleBar(myElement, {
-                                autoHide: true
-                            });
-                        }
-                    });
-                });
             },
             // invite collegues api call
             inviteColleagues() {
