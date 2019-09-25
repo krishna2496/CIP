@@ -1,79 +1,87 @@
 <template>
 	<div class="user-dashboard inner-pages">
 		<header>
-			<TopHeader></TopHeader>
+			<ThePrimaryHeader v-if="isShownComponent"></ThePrimaryHeader>
 		</header>
 		<main>
 			<DashboardBreadcrumb />
 			<div class="dashboard-tab-content">
-				<b-container>
+				<b-container v-if="isPageLoaded">
 					<div class="heading-section">
-						<h1>Dashboard</h1>
-						<!-- <div class="date-filter">
-							<CustomDropdown :optionList="yearList" @updateCall="updateYear" :default_text="yearText" />
-							<CustomDropdown :optionList="monthList" @updateCall="updateMonth" :default_text="monthText"
+						<h1>{{languageData.label.dashboard}}</h1>
+						<div class="date-filter">
+							<AppCustomDropdown 
+								:optionList="yearList" 
+								@updateCall="updateYear" 
+								:defaultText="defaultYear" 
+								translationEnable="false"/>
+							<AppCustomDropdown 
+								:optionList="monthList" 
+								@updateCall="updateMonth" 
+								:defaultText="defaultMonth" 
+								translationEnable="true"
 								class="month-dropdown" />
-						</div> -->
+						</div>
 					</div>
 					<div class="inner-content-wrap">
 						<b-list-group class="status-bar">
 							<b-list-group-item>
 								<div class="list-item">
 									<i>
-										<img src="../assets/images/clock-ic.svg" alt />
+										<img :src="$store.state.imagePath+'/assets/images/clock-ic.svg'" alt />
 									</i>
 									<p>
-										<span>1h50</span>Hours
+										<span>1h50</span>{{languageData.label.hours}}
 									</p>
 								</div>
 							</b-list-group-item>
 							<b-list-group-item>
 								<div class="list-item">
 									<i>
-										<img src="../assets/images/certified-ic.svg" alt />
+										<img :src="$store.state.imagePath+'/assets/images/certified-ic.svg'" alt />
 									</i>
 									<p>
-										<span>Top 2%</span>Volunteering Rank
+										<span>{{languageData.label.top}} 2%</span>{{languageData.label.volunteering_rank}}
 									</p>
 								</div>
 							</b-list-group-item>
 							<b-list-group-item>
 								<div class="list-item">
 									<i>
-										<img src="../assets/images/request-ic.svg" alt />
+										<img :src="$store.state.imagePath+'/assets/images/request-ic.svg'" alt />
 									</i>
 									<p>
-										<span>25</span>Open Volunteering Requests
+										<span>25</span>{{languageData.label.open_volunteering_requests}}
 									</p>
 								</div>
 							</b-list-group-item>
 							<b-list-group-item>
 								<div class="list-item">
 									<i>
-										<img src="../assets/images/target-ic.svg" alt />
+										<img :src="$store.state.imagePath+'/assets/images/target-ic.svg'" alt />
 									</i>
 									<p>
-										<span>10</span>Mission
+										<span>10</span>{{languageData.label.mission}}
 									</p>
 								</div>
 							</b-list-group-item>
 							<b-list-group-item>
 								<div class="list-item">
 									<i>
-										<img src="../assets/images/vote-ic.svg" alt />
+										<img :src="$store.state.imagePath+'/assets/images/vote-ic.svg'" alt />
 									</i>
 									<p>
-										<span>55</span>Voted Missions
+										<span>55</span>{{languageData.label.voted_missions}}
 									</p>
 								</div>
 							</b-list-group-item>
 							<b-list-group-item>
 								<div class="list-item">
 									<i>
-										<img src="../assets/images/group-ic.svg" alt />
+										<img :src="$store.state.imagePath+'/assets/images/group-ic.svg'" alt />
 									</i>
 									<p>
-										<span>101</span>Organization
+										<span>101</span>{{languageData.label.organisation}}
 									</p>
 								</div>
 							</b-list-group-item>
@@ -82,32 +90,34 @@
 							<b-col lg="6" class="chart-col">
 								<div class="inner-chart-col">
 									<div class="chart-title">
-										<h5>Hours tracked this year</h5>
+										<h5>{{languageData.label.hours_tracked_this_year}}</h5>
 									</div>
 									<div class="progress-chart">
-										<!-- <img src="../assets/images/progress-ch.png" alt /> -->
 										<b-progress :max="max">
 											<b-progress-bar :value="value">
-												Completed:
-												<span>{{ value }} hours</span>
+												{{languageData.label.completed}}:
+												<span>{{ value }} {{languageData.label.hours}}</span>
 											</b-progress-bar>
 										</b-progress>
 										<ul class="progress-axis">
 											<li v-for="xvalue in xvalues" :key="xvalue">{{xvalue}}</li>
 										</ul>
-										<p class="progress-label">Goal: 500 Hours</p>
+										<p class="progress-label">{{languageData.label.goal}}: 500 {{languageData.label.hours}}</p>
 									</div>
 								</div>
 							</b-col>
 							<b-col lg="6" class="chart-col">
 								<div class="inner-chart-col">
 									<div class="chart-title">
-										<h5>Hours per month</h5>
-										<CustomDropdown :optionList="missionTitle" @updateCall="updateMissionTitle"
-											:default_text="missionTitleText" class="month-dropdown" />
+										<h5>{{languageData.label.hours_per_month}}</h5>
+										<AppCustomDropdown 
+											:optionList="missionTitle" 
+											@updateCall="updateMissionTitle"
+											translationEnable="false"
+											:defaultText="defaultMissionTitle" 
+											class="month-dropdown"/>
 									</div>
 									<div class="line-chart">
-										<!-- <img src="../assets/images/line-ch.png" alt /> -->
 										<canvas ref="lineChartRefs"></canvas>
 									</div>
 								</div>
@@ -118,82 +128,60 @@
 			</div>
 		</main>
 		<footer>
-			<PrimaryFooter></PrimaryFooter>
+			<TheSecondaryFooter v-if="isShownComponent"></TheSecondaryFooter>
 		</footer>
 	</div>
 </template>
 
 <script>
-	import TopHeader from "../components/Layouts/ThePrimaryHeader";
-	import PrimaryFooter from "../components/Layouts/TheSecondaryFooter";
-	import CustomDropdown from "../components/AppCustomDropdown";
+	import ThePrimaryHeader from "../components/Layouts/ThePrimaryHeader";
+	import TheSecondaryFooter from "../components/Layouts/TheSecondaryFooter";
+	import AppCustomDropdown from "../components/AppCustomDropdown";
 	import DashboardBreadcrumb from "../components/DashboardBreadcrumb";
 	import Chart from "chart.js";
+	import store from '../store';
 
 	export default {
 		components: {
-			TopHeader,
-			CustomDropdown,
-			PrimaryFooter,
+			ThePrimaryHeader,
+			AppCustomDropdown,
+			TheSecondaryFooter,
 			Chart,
 			DashboardBreadcrumb
 		},
 
-		name: "dashboard",
+		name: "Dashboard",
 
 		data() {
 			return {
+				isShownComponent : true,
+				isPageLoaded : true,
 				value: 210,
 				max: 500,
 				xvalues: [0, 50, 100, 150, 200, 250, 300, 350, 400, 450, 500],
-				yearText: "Year",
-				monthText: "Month",
-				missionTitleText: "Mission title",
-				yearList: [
-					"1996",
-					"1997",
-					"1998",
-					"1999",
-					"2000",
-					"2001",
-					"2002",
-					"2003",
-					"2004",
-					"2005",
-					"2006",
-					"2007",
-					"2008",
-					"2009",
-					"2010",
-					"2011",
-					"2012",
-					"2013",
-					"2014",
-					"2015",
-					"2016",
-					"2017",
-					"2018",
-					"2019"
-				],
+				defaultYear: "",
+				defaultMonth: "",
+				defaultMissionTitle: "",
+				yearList: [],
 				missionTitle: [
-					"Mission title1",
-					"Mission title2",
-					"Mission title3",
-					"Mission title4"
+					["title1","Mission title1"],
+					["title2","Mission title2"],
+					["title3","Mission title3"],
+					["title4","Mission title4"]
 				],
 				monthList: [
-					"January",
-					"february",
-					"march",
-					"april",
-					"may",
-					"june",
-					"july",
-					"august",
-					"september",
-					"october",
-					"november",
-					"december"
+					["1","january"],
+					["2","february"],
+					["3","march"],
+					["4","april"],
+					["5","may"],
+					["6","june"],
+					["7","july"],
+					["8","august"],
+					["9","september"],
+					["10","october"],
+					["11","november"],
+					["12","december"]
 				],
 				chartdata: {
 					labels: [
@@ -207,7 +195,8 @@
 						"Aug 18"
 					]
 				},
-				currentpage: "dashboard"
+				currentpage: "dashboard",
+				languageData : []
 			};
 		},
 		mounted() {
@@ -280,18 +269,31 @@
 					}
 				}
 			});
+
+			var currentYear = new Date().getFullYear();
+			var yearsListing = [];
+			for (var index = currentYear; index > (currentYear - 5); index--) {
+				yearsListing.push([index, index]);
+			}
+			this.yearList = yearsListing;
 		},
 		methods: {
 			updateYear(value) {
-				this.yearText = value;
+				this.defaultYear = value.selectedVal;
 			},
 			updateMonth(value) {
-				this.monthText = value;
+				this.defaultMonth = value.selectedVal;
 			},
 			updateMissionTitle(value) {
-				this.missionTitleText = value;
+				this.defaultMissionTitle = value.selectedVal;
 			},
 			handleActive() {}
+		},
+		created() {
+			this.languageData = JSON.parse(store.state.languageLabel);
+			this.defaultYear =  this.languageData.label.years
+			this.defaultMonth =  this.languageData.label.month
+			this.defaultMissionTitle =  this.languageData.label.mission_title
 		}
 	};
 </script>
