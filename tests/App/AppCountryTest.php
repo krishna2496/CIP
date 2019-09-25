@@ -17,7 +17,7 @@ class AppCountryTest extends TestCase
         $user->setConnection($connection);
         $user->save();
 
-        $token = Helpers::getJwtToken($user->user_id);
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->get('/app/country', ['token' => $token])
         ->seeJsonStructure([
             "status",
@@ -32,7 +32,7 @@ class AppCountryTest extends TestCase
     /**
      * @test
      *
-     * No data found for Country 
+     * No data found for Country
      *
      * @return void
      */
@@ -43,7 +43,7 @@ class AppCountryTest extends TestCase
         $user->setConnection($connection);
         $user->save();
 
-        $token = Helpers::getJwtToken($user->user_id);
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->get('/app/country', ['token' => $token])
         ->seeJsonStructure([
             "status",
@@ -54,7 +54,7 @@ class AppCountryTest extends TestCase
 
     /**
      * @test
-     * 
+     *
      * Return error for invalid token
      *
      * @return void

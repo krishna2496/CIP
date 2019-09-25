@@ -229,4 +229,130 @@ class AppAuthTest extends TestCase
         $this->post('app/login', $params, [])
           ->seeStatusCode(403);
     }
+
+    /**
+     * @test
+     *
+     * Show error if email is invalid
+     *
+     * @return void
+     */
+    public function it_should_show_error_if_email_is_blank()
+    {
+        $connection = 'tenant';
+        $user = factory(\App\User::class)->make();
+        $user->setConnection($connection);
+        $user->save();
+
+        $params = [];
+
+        $this->post('app/login', $params, [])
+          ->seeStatusCode(422)
+          ->seeJsonStructure([
+              'errors' => [
+                  [
+                      'status',
+                      'type',
+                      'code',
+                      'message'
+                  ]
+              ]
+          ]);
+        $user->delete();
+    }
+
+    /**
+     * @test
+     *
+     * Return error if no data found for request password reset
+     *
+     * @return void
+     */
+    public function it_should_return_error_if_no_data_found_for_request_for_reset_password()
+    {       
+        $params = [
+            'email' => 'test@email.com',
+        ];
+
+        $this->post('app/request-password-reset', $params, [])
+        ->seeStatusCode(403)
+        ->seeJsonStructure([
+              'errors' => [
+                  [
+                      'status',
+                      'type',
+                      'message'
+                  ]
+              ]
+        ]);
+    }
+
+    /**
+     * @test
+     *
+     * Show error if json is invalid
+     *
+     * @return void
+     */
+    public function it_should_check_json_for_reset_password()
+    {
+        $params = [
+            'email',","
+        ];
+        $this->post('app/request-password-reset', $params, [])
+          ->seeStatusCode(422)
+          ->seeJsonStructure([
+              'errors' => [
+                  [
+                      'status',
+                      'type',
+                      'code',
+                      'message'
+                  ]
+              ]
+          ]);
+    }
+
+    /**
+     * @test
+     *
+     * Return error for reset password
+     *
+     * @return void
+     */
+    public function it_should_return_error_for_reset_password()
+    {
+        Notification::fake();
+        $token = '';
+        
+        $connection = 'tenant';
+        $user = factory(\App\User::class)->make();
+        $user->setConnection($connection);
+        $user->save();
+
+        $this->post('app/request-password-reset', ['email' => $user->email])
+            ->seeStatusCode(200);
+
+        Notification::assertSentTo(
+            $user,
+            \Illuminate\Auth\Notifications\ResetPassword::class,
+            function ($notification, $channels) use (&$token) {
+                $token = $notification->token;
+
+                return true;
+            }
+        );
+
+        DB::setDefaultConnection('mysql');
+
+        $response = $this->put('app/password-reset', [
+            'reset_password_token' => 'test',
+            'email' => $user->email,
+            'password' => 'password',
+            'password_confirmation' => 'password'
+        ]);
+        
+        $this->assertFalse(Hash::check('password', $user->fresh()->password));
+        $user->delete();
+    }
 }

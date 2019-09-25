@@ -15,7 +15,7 @@ class Authenticate
 
     /**
      * Create a new middleware instance.
-     *
+     * @codeCoverageIgnore
      * @param  \Illuminate\Contracts\Auth\Factory  $auth
      * @return void
      */
@@ -26,6 +26,7 @@ class Authenticate
 
     /**
      * Handle an incoming request.
+     * @codeCoverageIgnore
      *
      * @param $request
      * @param \Closure $next

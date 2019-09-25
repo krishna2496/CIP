@@ -2,17 +2,9 @@
 namespace App\Transformations;
 
 use App\Models\Mission;
-use App\Helpers\Helpers;
 
 trait MissionTransformable
 {
-    private $helpers;
-
-    public function __construct(Helpers $helpers)
-    {
-        $this->helpers = $helpers;
-    }
-
     /**
      * Select mission fields
      *
@@ -22,7 +14,7 @@ trait MissionTransformable
      */
     protected function transformMission(Mission $mission, string $languageCode): Mission
     {
-        if (isset($mission['goalMission']) && is_numeric($mission['goalMission'])) {
+        if (isset($mission['goalMission']) && is_numeric($mission['goalMission']['goal_objective'])) {
             $mission['goal_objective']  = $mission['goalMission']['goal_objective'];
             $mission['achieved_goal']  = ($mission['goalMission']['goal_objective']*0.6);
         }
@@ -107,7 +99,8 @@ trait MissionTransformable
             }
         }
 
-        if (!empty($mission['organisation_detail']) && (isset($mission['organisation_detail']))) {
+        if (!empty($mission['organisation_detail']) && (isset($mission['organisation_detail']))
+        && (is_array($mission['organisation_detail']))) {
             if ($mission['organisation_detail']) {
                 $arrayKey = array_search($languageCode, array_column($mission['organisation_detail'], 'lang'));
                 if ($arrayKey  !== '') {

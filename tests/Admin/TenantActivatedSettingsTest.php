@@ -24,7 +24,7 @@ class TenantActivatedSettingsTest extends TestCase
                 ],
                 [
                     "tenant_setting_id" => $settings->last()->tenant_setting_id,
-                    "value" => 1
+                    "value" => 0
                 ]
             ]
         ];

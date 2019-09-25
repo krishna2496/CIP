@@ -8,7 +8,6 @@ use Illuminate\Http\JsonResponse;
 use App\Helpers\ResponseHelper;
 use App\Http\Controllers\Controller;
 use App\Traits\RestExceptionHandlerTrait;
-use PDOException;
 use Validator;
 
 class MissionRatingController extends Controller
@@ -47,42 +46,33 @@ class MissionRatingController extends Controller
      */
     public function store(Request $request): JsonResponse
     {
-        try {
-            // Server side validataions
-            $validator = Validator::make(
-                $request->all(),
-                [
-                    "rating" => "required|numeric|min:0.5|max:5",
-                    "mission_id" => "integer|required|exists:mission,mission_id,deleted_at,NULL"
-                ]
-            );
+        // Server side validataions
+        $validator = Validator::make(
+            $request->all(),
+            [
+                "rating" => "required|numeric|min:0.5|max:5",
+                "mission_id" => "integer|required|exists:mission,mission_id,deleted_at,NULL"
+            ]
+        );
 
-            // If request parameter have any error
-            if ($validator->fails()) {
-                return $this->responseHelper->error(
-                    Response::HTTP_UNPROCESSABLE_ENTITY,
-                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                    config('constants.error_codes.ERROR_MISSION_RATING_INVALID_DATA'),
-                    $validator->errors()->first()
-                );
-            }
-            
-            // Store mission rating
-            $missionRating = $this->missionRepository->storeMissionRating($request->auth->user_id, $request->toArray());
-
-            // Set response data
-            $apiStatus = ($missionRating->wasRecentlyCreated) ? Response::HTTP_CREATED : Response::HTTP_OK;
-            $apiMessage = ($missionRating->wasRecentlyCreated) ? trans('messages.success.MESSAGE_RATING_ADDED')
-            : trans('messages.success.MESSAGE_RATING_UPDATED');
-            
-            return $this->responseHelper->success($apiStatus, $apiMessage);
-        } catch (PDOException $e) {
-            return $this->PDO(
-                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
-                trans('messages.custom_error_message.ERROR_DATABASE_OPERATIONAL')
+        // If request parameter have any error
+        if ($validator->fails()) {
+            return $this->responseHelper->error(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                config('constants.error_codes.ERROR_MISSION_RATING_INVALID_DATA'),
+                $validator->errors()->first()
             );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
+        
+        // Store mission rating
+        $missionRating = $this->missionRepository->storeMissionRating($request->auth->user_id, $request->toArray());
+
+        // Set response data
+        $apiStatus = ($missionRating->wasRecentlyCreated) ? Response::HTTP_CREATED : Response::HTTP_OK;
+        $apiMessage = ($missionRating->wasRecentlyCreated) ? trans('messages.success.MESSAGE_RATING_ADDED')
+        : trans('messages.success.MESSAGE_RATING_UPDATED');
+        
+        return $this->responseHelper->success($apiStatus, $apiMessage);
     }
 }

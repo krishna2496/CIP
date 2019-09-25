@@ -3,9 +3,7 @@
 namespace App\Jobs;
 
 use Leafo\ScssPhp\Exception\ParserException;
-use App\Exceptions\FileDownloadException;
 use Aws\S3\Exception\S3Exception;
-use App\Exceptions\FileNotFoundException;
 use Leafo\ScssPhp\Compiler;
 use App\Traits\RestExceptionHandlerTrait;
 use Illuminate\Support\Facades\Storage;
@@ -76,32 +74,19 @@ class CompileScssFiles extends Job
             $css = $scss->compile($importScss);
         
             // Put compiled css file into local storage
-            if (Storage::disk('local')->put($this->tenantName.'\assets\css\style.css', $css)) {
-                // Copy default theme folder to tenant folder on s3
-                try {
-                    Storage::disk('s3')->put(
-                        $this->tenantName.'/assets/css/style.css',
-                        Storage::disk('local')->get($this->tenantName.'\assets\css\style.css')
-                    );
-                } catch (S3Exception $e) {
-                    return $this->s3Exception(
-                        config('constants.error_codes.ERROR_FAILD_TO_UPLOAD_COMPILE_FILE_ON_S3'),
-                        trans('messages.custom_error_message.ERROR_FAILD_TO_UPLOAD_COMPILE_FILE_ON_S3')
-                    );
-                }
-            } else {
-                throw new FileDownloadException(
-                    trans('messages.custom_error_message.ERROR_WHILE_STORE_COMPILED_CSS_FILE_TO_LOCAL'),
-                    config('constants.error_codes.ERROR_WHILE_STORE_COMPILED_CSS_FILE_TO_LOCAL')
-                );
-            }
+            Storage::disk('local')->put($this->tenantName.'\assets\css\style.css', $css);
+            // Copy default theme folder to tenant folder on s3
+            Storage::disk('s3')->put(
+                $this->tenantName.'/assets/css/style.css',
+                Storage::disk('local')->get($this->tenantName.'\assets\css\style.css')
+            );
+            // @codeCoverageIgnoreStart
         } catch (ParserException $e) {
             throw new ParserException(
                 trans('messages.custom_error_message.ERROR_WHILE_COMPILING_SCSS_FILES'),
                 config('constants.error_codes.ERROR_WHILE_COMPILING_SCSS_FILES')
             );
-        } catch (\Exception $e) {
-            throw $e;
         }
+        // @codeCoverageIgnoreEnd
     }
 }

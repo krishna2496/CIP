@@ -5,7 +5,6 @@ use App\Repositories\TenantOption\TenantOptionInterface;
 use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Collection;
 use Validator;
-use PDOException;
 use DB;
 use App\Models\TenantOption;
 use App\Helpers\ResponseHelper;
@@ -29,16 +28,6 @@ class TenantOptionRepository implements TenantOptionInterface
     public function __construct(TenantOption $tenantOption)
     {
         $this->tenantOption = $tenantOption;
-    }
-    
-    /**
-    * Get a listing of slider.
-    *
-    * @return Illuminate\Database\Eloquent\Collection
-    */
-    public function getAllSlider()
-    {
-        return $this->tenantOption->where('option_name', config('constants.TENANT_OPTION_SLIDER'))->get();
     }
 
     /**

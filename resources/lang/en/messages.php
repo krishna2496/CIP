@@ -201,6 +201,7 @@ return [
         // Custom error code for common exception
         'ERROR_OCCURRED' => 'An error has occurred',
         'ERROR_INVALID_JSON' => 'Invalid Json format',
+        'ERROR_INTERNAL_SERVER_ERROR' => 'Internal server error',
         
         // Custom erro code for other errors - 800000 - 809999
         'ERROR_ON_UPDATING_STYLING_VARIBLE_IN_DATABASE' => "An error has occured, while updating colors in database",

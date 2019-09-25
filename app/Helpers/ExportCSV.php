@@ -58,6 +58,7 @@ class ExportCSV
 
     /**
      * Set data variable
+     * @codeCoverageIgnore
      *
      * @param array $data
      * @return void
@@ -96,6 +97,5 @@ class ExportCSV
         if (\file_exists($this->path)) {
             return $this->path.'/'.$this->fileName;
         }
-        return '';
     }
 }

@@ -100,7 +100,7 @@ class SliderTest extends TestCase
     {
         $params = [
             'url' => 'https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer9.png',
-            'sort_order' => str_random(2),        
+            'sort_order' => str_random(20),        
             'translations' =>  [
                 [
                     'lang' => 'en',
@@ -408,4 +408,145 @@ class SliderTest extends TestCase
             ]
         ]);
     }    
+
+    /**
+     * @test
+     *
+     * Validate URL
+     *
+     * @return void
+     */
+    public function it_should_return_error_on_file_upload_on_s3_for_create_slider()
+    {
+        DB::setDefaultConnection('tenant');
+        App\Models\Slider::where('deleted_at', '<>', '')->delete();
+        $params = [
+            'url' => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/test.png",
+            'sort_order' => "1",        
+            'translations' =>  [
+                [
+                    'lang' => 'en',
+                    'slider_title' => str_random(20),
+                    'slider_description' => str_random(200)
+                ]
+            ],
+        ];
+        DB::setDefaultConnection('mysql');
+        $this->post("slider", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeJsonStructure([
+            'errors' => [
+                [
+                    'status',
+                    'type',
+                    'code',
+                    'message'
+                ]
+            ]
+        ]);
+    }
+
+    /**
+     * @test
+     *
+     * Return error for file upload on update slider
+     *
+     * @return void
+     */
+    public function it_should_return_error_on_file_upload_on_s3_for_update_slider()
+    {
+        $params = [
+            'url' => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/test.png",
+            'sort_order' => "1",        
+            'translations' =>  [
+                [
+                    'lang' => 'en',
+                    'slider_title' => str_random(20),
+                    'slider_description' => str_random(200)
+                ]
+            ],
+        ];
+
+        $connection = 'tenant';
+        $slider = factory(\App\Models\Slider::class)->make();
+        $slider->setConnection($connection);
+        $slider->save();
+
+        $this->patch("slider/".$slider->slider_id, $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(422)
+        ->seeJsonStructure([
+            'errors' => [
+                [
+                    'status',
+                    'type',
+                    'code',
+                    'message'
+                ]
+            ]
+        ]);
+
+        App\Models\Slider::orderBy("slider_id", "DESC")->take(1)->delete();
+        $slider->delete();
+    }
+
+    /**
+     * 
+     *
+     * Return error for invalid slider id on update slider
+     *
+     * @return void
+     */
+    public function it_should_return_error_for_invalid_slider_id_on_update_slider()
+    {
+        $params = [
+            'url' => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer9.png",
+            'sort_order' => "1",        
+            'translations' =>  [
+                [
+                    'lang' => 'en',
+                    'slider_title' => str_random(20),
+                    'slider_description' => str_random(200)
+                ]
+            ],
+        ];
+
+        $this->patch("slider/".rand(1000000, 5000000), $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(404)
+        ->seeJsonStructure([
+            'errors' => [
+                [
+                    'status',
+                    'type',
+                    'code',
+                    'message'
+                ]
+            ]
+        ]);
+    }
+
+    /**
+     * @test
+     *
+     * It should return error on slider update
+     *
+     * @return void
+     */
+    public function it_should_return_error_update_slider()
+    {
+        $params = [
+            'url' => 'https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer9.png',
+            'sort_order' => "1",        
+            'translations' =>  [
+                [
+                    'lang' => 'en',
+                    'slider_title' => str_random(20),
+                    'slider_description' => str_random(200)
+                ]
+            ],
+        ];
+
+        $this->patch("slider/".rand(500000000,8000000000), $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(404);
+        
+    }
+
 }

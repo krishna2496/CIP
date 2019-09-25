@@ -171,13 +171,19 @@ class FooterPageRepository implements FooterPageInterface
     }
 
     /**
-    * Get a listing of resource.
-    *
-    * @return Illuminate\Support\Collection
-    */
-    public function getPageList(): Collection
+     * Get a listing of resource.
+     *
+     * @param Illuminate\Http\Request $request
+     * @return Illuminate\Support\Collection
+     */
+    public function getPageList(Request $request): Collection
     {
-        return $this->page->with(['pages:page_id,language_id,title'])->get();
+        $pageQuery = $this->page->with(['pages:page_id,language_id,title']);
+        if ($request->has('order')) {
+            $orderDirection = $request->input('order', 'asc');
+            $pageQuery->orderBy('page_id', $orderDirection);
+        }
+        return $pageQuery->get();
     }
 
     /**
