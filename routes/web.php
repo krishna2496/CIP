@@ -157,6 +157,11 @@ $router->group(['middleware' => 'localization'], function ($router) {
     /* Get country list */
     $router->get('/app/country', ['middleware' => 'tenant.connection|jwt.auth',
     'uses' => 'App\Country\CountryController@index']);
+
+    /* Get user mission */
+    $router->get('/app/user/missions', [
+        'middleware' => 'tenant.connection|jwt.auth|JsonApiMiddleware',
+        'uses' => 'App\Mission\MissionController@getUserMissions']);
 });
 
     /* Policy pages  */

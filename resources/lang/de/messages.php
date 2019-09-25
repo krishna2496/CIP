@@ -152,6 +152,7 @@ return [
         'ERROR_MISSION_COMMENT_INVALID_DATA' => 'DE: Mission comment creation failed. Please check input parameters',
         'ERROR_INVALID_MISSION_MEDIA_DATA' => 'DE: Invalid mission media data',
         'ERROR_INVALID_MISSION_DOCUMENT_DATA' => 'DE: Invalid mission document data',
+        'ERROR_USER_MISSIONS_NOT_FOUND' => 'DE: Missions not found',
         
         // Custom error code for Tenant Authorization - 210000 - 219999
         'ERROR_INVALID_API_AND_SECRET_KEY' => 'DE: Invalid API Key or Secret key',

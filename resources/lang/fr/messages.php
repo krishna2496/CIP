@@ -183,6 +183,7 @@ return [
         'ERROR_INVALID_MISSION_DOCUMENT_DATA' => 'Données de média de mission non valides',
         'ERROR_INVALID_INVITE_MISSION_DATA' => 'Détail de la mission d\'invitation non valide',
         'ERROR_INVITE_MISSION_ALREADY_EXIST' => 'L\'utilisateur est déjà invité pour cette mission',
+        'ERROR_USER_MISSIONS_NOT_FOUND' => 'Missions non trouvées',
         
         // Custom error code for Tenant Authorization - 210000 - 219999
         'ERROR_INVALID_API_AND_SECRET_KEY' => 'Clé API ou clé secrète invalide',
