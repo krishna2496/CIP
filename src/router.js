@@ -59,9 +59,15 @@ let routes = [{
     },
     {
         path: '/news',
-        name: 'news',
+        name: 'News',
         component: () =>
             import ('./views/News.vue')
+    },
+    {
+        path: '/stories',
+        name: 'Stories',
+        component: () =>
+            import ('./views/Stories.vue')
     },
     {
         path: '/news-detail/:newsId',

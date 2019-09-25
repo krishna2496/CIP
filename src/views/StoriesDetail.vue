@@ -145,14 +145,12 @@
 <script>
 import PrimaryFooter from "../components/Footer/PrimaryFooter";
 import TopHeader from "../components/Header/TopHeader";
-import BottomHeader from "../components/Header/BottomHeader";
 import Slick from "vue-slick";
 
 export default {
   components: {
     PrimaryFooter,
     TopHeader,
-    BottomHeader,
     Slick
   },
   data() {
