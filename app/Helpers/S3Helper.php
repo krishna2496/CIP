@@ -8,9 +8,7 @@ use App\Helpers\ResponseHelper;
 use App\Traits\RestExceptionHandlerTrait;
 use App;
 use DB;
-use Leafo\ScssPhp\Exception\ParserException;
 use App\Exceptions\BucketNotFoundException;
-use Aws\S3\Exception\S3Exception;
 use App\Exceptions\FileNotFoundException;
 
 class S3Helper
@@ -118,7 +116,6 @@ class S3Helper
 
     /**
      * Upload document on AWS s3 bucket
-     * @codeCoverageIgnore
      *
      * @param $file
      * @param string $tenantName
@@ -136,10 +133,7 @@ class S3Helper
         $pathInS3 = 'https://'.env('AWS_S3_BUCKET_NAME').'.s3.'
         .env("AWS_REGION").'.amazonaws.com/'. $documentPath;
 
-        if ($disk->put($documentPath, file_get_contents($file))) {
-            return $pathInS3;
-        } else {
-            return 0;
-        }
+        $disk->put($documentPath, file_get_contents($file));
+        return $pathInS3;
     }
 }

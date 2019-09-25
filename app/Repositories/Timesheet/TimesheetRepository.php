@@ -14,7 +14,6 @@ use App\Helpers\LanguageHelper;
 use Illuminate\Support\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use App\Repositories\Timesheet\TimesheetInterface;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Repositories\TenantOption\TenantOptionRepository;
 
 class TimesheetRepository implements TimesheetInterface
@@ -97,7 +96,6 @@ class TimesheetRepository implements TimesheetInterface
         'date_volunteered' => $request->date_volunteered
         ], $request->toArray());
 
-        // @codeCoverageIgnoreStart
         if ($request->hasFile('documents')) {
             $tenantName = $this->helpers->getSubDomainFromRequest($request);
             $files = $request->file('documents');
@@ -116,7 +114,6 @@ class TimesheetRepository implements TimesheetInterface
                 $this->timesheetDocument->create($timesheetDocument);
             }
         }
-        //  @codeCoverageIgnoreEnd
         return $timesheet;
     }
 

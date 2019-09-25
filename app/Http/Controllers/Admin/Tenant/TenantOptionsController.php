@@ -215,20 +215,22 @@ class TenantOptionsController extends Controller
     {
         // Get domain name from request and use as tenant name.
         $tenantName = $this->helpers->getSubDomainFromRequest($request);
-        
+
         try {
             $assetFilesArray = $this->s3helper->getAllScssFiles($tenantName);
+            // This error will be triggered in case of bucket not found on S3 for any tenant. So it is not covered in unit test-case
             // @codeCoverageIgnoreStart
         } catch (BucketNotFoundException $e) {
             throw $e;
         }
-            // @codeCoverageIgnoreEnd
+        // @codeCoverageIgnoreEnd
         
         if (count($assetFilesArray) > 0) {
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_ASSETS_FILES_LISTING');
             return $this->responseHelper->success($apiStatus, $apiMessage, $assetFilesArray);
         } else {
+            // This error will be triggered in case of tenant's bucket don't have any SCSS files. So it is not covered in unit test-case
             // @codeCoverageIgnoreStart
             return $this->responseHelper->error(
                 Response::HTTP_NOT_FOUND,
@@ -242,7 +244,6 @@ class TenantOptionsController extends Controller
 
     /**
      * It will update image on S3
-     * @codeCoverageIgnore
      *
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\JsonResponse
