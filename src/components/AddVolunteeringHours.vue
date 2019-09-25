@@ -274,7 +274,7 @@
                     hours: {
                         required,
                         numeric,
-                        between: between(0, 24),
+                        between: between(0, 23),
                         requiredHourValidation},
                     minutes : {
                         required,
@@ -314,6 +314,7 @@
                 let error = false
                 let duplicateUpload = false
                 let latestUpload = files[files.length - 1];
+                let latestUploadIndex = files.length - 1;
                 let latestUploadName = latestUpload.name
                 let latestUploadSize = latestUpload.size
                 let latestUploadType = latestUpload.type
@@ -326,7 +327,6 @@
                     } else {
                         if (data.size > 4000000) {
                             _this.fileError = _this.langauageData.errors.file_max_size
-                          
                             error = true
                         }
                     }
@@ -340,7 +340,7 @@
                     }
                     if(error == true) {
                         if(duplicateUpload == true) {
-                            files.splice(files.length - 1, 1)
+                            files.splice(latestUploadIndex, 1)
                         } else {
                             files.splice(index, 1)
                         }
