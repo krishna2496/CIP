@@ -30,9 +30,7 @@ class Helpers
             if ((env('APP_ENV') == 'local' || env('APP_ENV') == 'testing')) {
                 return env('DEFAULT_TENANT');
             } else {
-                // @codeCoverageIgnoreStart
-                    return explode(".", parse_url($request->headers->all()['referer'][0])['host'])[0];
-                // @codeCoverageIgnoreEnd
+                return explode(".", parse_url($request->headers->all()['referer'][0])['host'])[0];
             }
         }
     }

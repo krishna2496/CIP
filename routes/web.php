@@ -193,7 +193,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
  
     /* Fetch pending goal requests */
     $router->get('/app/timesheet/goal-requests', ['as' => 'app.timesheet.goal-requests',
-    'middleware' => 'localization|tenant.connection|jwt.auth',
+    'middleware' => 'localization|tenant.connection|jwt.auth|PaginationMiddleware',
     'uses' => 'App\Timesheet\TimesheetController@getPendingGoalRequests']);
 
     /* Export pending goal requests */
@@ -213,7 +213,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
     
     /* Fetch pending time requests */
     $router->get('/app/timesheet/time-requests', ['as' => 'app.timesheet.time-requests',
-    'middleware' => 'tenant.connection|jwt.auth',
+    'middleware' => 'tenant.connection|jwt.auth|PaginationMiddleware',
     'uses' => 'App\Timesheet\TimesheetController@getPendingTimeRequests']);
 
     /* Export pending time requests */

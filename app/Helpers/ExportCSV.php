@@ -57,18 +57,6 @@ class ExportCSV
     }
 
     /**
-     * Set data variable
-     * @codeCoverageIgnore
-     *
-     * @param array $data
-     * @return void
-     */
-    public function setData(array $data)
-    {
-        $this->data = $data;
-    }
-
-    /**
      * Write and store file on given path
      *
      * @param string $path

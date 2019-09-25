@@ -207,7 +207,7 @@ class TenantOptionsController extends Controller
     {
         // Get domain name from request and use as tenant name.
         $tenantName = $this->helpers->getSubDomainFromRequest($request);
-        
+
         try {
             $assetFilesArray = $this->s3helper->getAllScssFiles($tenantName);
         } catch (BucketNotFoundException $e) {

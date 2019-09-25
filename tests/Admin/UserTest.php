@@ -971,4 +971,17 @@ class UserTest extends TestCase
         ]);
         $user->delete();
     }
+
+    /**
+     * @test
+     *
+     * It should return authorization error
+     *
+     * @return void
+     */
+    public function it_should_return_authorization_error()
+    {
+        $this->get('users/', [])
+          ->seeStatusCode(401);
+    }
 }

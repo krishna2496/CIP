@@ -2,6 +2,7 @@
 
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Hash;
 
 class TenantOptionsTest extends TestCase
 {
@@ -549,5 +550,52 @@ class TenantOptionsTest extends TestCase
             'message',
         ]);
         App\Models\TenantOption::where("option_name", $optionName)->orderBy("tenant_option_id", "DESC")->take(1)->delete();
+    }
+
+    /**
+    * @test
+    * it should return error bucket not found for update primary color
+    * 
+    * @return void
+    */
+    public function it_should_return_error_bucket_not_found_for_update_primary_color()
+    {
+        DB::setDefaultConnection('mysql');
+        
+        $tenantId = DB::table('tenant')->insertGetId(
+            [
+                'name' => str_random('5'),
+                'sponsor_id' => rand(1,9999)
+            ]
+        );
+
+        $apiKey = base64_encode(str_random('8'));
+        $randomString = str_random('8');
+        $apiSecret = Hash::make($randomString);
+        
+        $apiUserId = DB::table('api_user')->insertGetId(
+            [
+                'tenant_id' => $tenantId,
+                'api_key' => $apiKey,
+                'api_secret' => $apiSecret,
+                'status' => 1
+            ]
+        );
+
+        $apiUser = DB::table('api_user')->where('api_user_id', $apiUserId)->first();
+
+        $apiKey = base64_decode($apiUser->api_key);
+        $apiSecret = $randomString;
+
+        DB::statement("CREATE DATABASE IF NOT EXISTS `ci_tenant_{$tenantId}`");
+
+        $this->get('style/download-style', ['Authorization' => 'Basic '.base64_encode($apiKey.':'.$apiSecret)])
+        ->seeStatusCode(404);
+
+        DB::setDefaultConnection('mysql');
+
+        DB::statement("DROP DATABASE ci_tenant_{$tenantId}");
+
+        DB::table('tenant')->where('tenant_id', $tenantId)->delete();
     }
 }

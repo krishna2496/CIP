@@ -75,8 +75,8 @@ return [
         'MESSAGE_NO_MISSION_MEDIA_FOUND' => 'Mission media not found',
         'MESSAGE_NO_MISSION_COMMENT_FOUND' => 'Mission comments not found',
         'MESSAGE_COMMENT_ADDED' => 'Thanks for your comment. Your comment will only be visible after moderation',
-        'MESSAGE_POLICY_PAGE_LISTING' => 'Policy pages listed successfully.',        
-        'MESSAGE_POLICY_PAGE_CREATED' => 'Policy page created successfully',        
+        'MESSAGE_POLICY_PAGE_LISTING' => 'Policy pages listed successfully.',
+        'MESSAGE_POLICY_PAGE_CREATED' => 'Policy page created successfully',
         'MESSAGE_POLICY_PAGE_DELETED' => 'Page deleted successfully',
         'MESSAGE_POLICY_PAGE_UPDATED' => 'Policy page updated successfully',
         'MESSAGE_NO_CITY_FOUND' => 'City not found',
@@ -98,10 +98,10 @@ return [
         'MESSAGE_TIMESHEET_ENTRIES_LISTING' => 'Timesheet entries listed successfully',
         'MESSAGE_NO_TIMESHEET_ENTRIES_FOUND' => 'No timesheet entries found',
         'TIMESHEET_ENTRY_UPDATED_SUCESSFULLY' => 'Timesheet entry updated successfully',
-        'MESSAGE_TIMESHEET_LISTING' => 'Timesheet listed successfully',        
+        'MESSAGE_TIMESHEET_LISTING' => 'Timesheet listed successfully',
         'MESSAGE_TIMESHEET_DOCUMENT_DELETED' => 'Timesheet document deleted successfully',
         'MESSAGE_TIMESETTING_STATUS_UPDATED' => 'Timesheet status updated successfully',
-        'MESSAGE_TIMESHEET_LISTING' => 'Timesheet listed sucessfully',        
+        'MESSAGE_TIMESHEET_LISTING' => 'Timesheet listed sucessfully',
         'MESSAGE_TIMESHEET_DOCUMENT_DELETED' => 'Timesheet document deleted sucessfully',
         'TIMESHEET_SUBMITTED_SUCESSFULLY' => 'Timesheet submitted sucessfully',
         'TIMESHEET_ALREADY_SUBMITTED_FOR_APPROVAL' => 'Timesheet already submitted for approval',
@@ -126,8 +126,8 @@ return [
         'MESSAGE_ENABLE_TO_EXPORT_USER_PENDING_TIME_MISSION_ENTRIES' => 'No data found, to generate pending time entries for time mission',
         'MESSAGE_USER_PENDING_GOAL_MISSION_ENTRIES_EXPORTED' => 'Pending time entries for goal missions, generated successfully',
         'MESSAGE_ENABLE_TO_EXPORT_USER_PENDING_GOAL_MISSION_ENTRIES' => 'No data found, to generate pending time entries for goal mission',
-        'MESSAGE_AUTO_APPROVED_COMMENT_ADDED' => 'Thanks for your comment.'
-	],
+        'MESSAGE_AUTO_APPROVED_COMMENT_ADDED' => 'Thanks for your comment.',
+    ],
         
     /**
     * API Error Codes and Message
@@ -181,7 +181,8 @@ return [
         'ERROR_INVALID_MISSION_MEDIA_DATA' => 'Invalid mission media data',
         'ERROR_INVALID_MISSION_DOCUMENT_DATA' => 'Invalid mission document data',
         'ERROR_TIMESHEET_ENTRY_NOT_FOUND' => 'Timesheet entry not found',
-
+        'ERROR_APPROVED_TIMESHEET_DOCUMENTS' => 'You can not delete approved timesheet document',
+        
         // Custom error code for Tenant Authorization - 210000 - 219999
         'ERROR_INVALID_API_AND_SECRET_KEY' => 'Invalid API key or secret key',
         'ERROR_API_AND_SECRET_KEY_REQUIRED' => 'API key and secret key are required',
@@ -235,12 +236,12 @@ return [
         //For timesheet module
         'ERROR_INVALID_ACTION' => 'Entered goal action should not be greater than goal objective',
         'TIMESHEET_NOT_FOUND' => 'Timesheet entry not found' ,
-        'ERROR_TIMESHEET_ALREADY_APPROVED' => 'You can not update approved timesheet',        
+        'ERROR_TIMESHEET_ALREADY_APPROVED' => 'You can not update approved timesheet',
         'TIMESHEET_DOCUMENT_NOT_FOUND' => 'Timesheet document does not exists',
         'ERROR_MISSION_STARTDATE' => 'Invalid date: selected date should not be before start date',
         'ERROR_MISSION_ENDDATE' => 'Selected date should not be greater than mission end date',
         'MISSION_APPLICATION_NOT_APPROVED' => 'Mission application is not approved',
-        'ERROR_TIMESHEET_ALREADY_DONE_FOR_DATE' => 'Time entry is already approved for given date', 
+        'ERROR_TIMESHEET_ALREADY_DONE_FOR_DATE' => 'Time entry is already approved for given date',
         'ERROR_INVALID_DATA_FOR_TIMESHEET_ENTRY' => 'You cannot add time entry, either mission application not found or not approved',
         'ERROR_SAME_DATE_TIME_ENTRY' => 'You cannot add more than 24 hours timeentry for same date',
         'ERROR_UNAUTHORIZED_USER' => 'Unauthorized user'

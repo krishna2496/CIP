@@ -59,7 +59,7 @@ class AppMissionTest extends TestCase
                 ]
             ],
             "media_images" => [[
-                    "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer9.png",
+                    "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer6.png",
                     "default" => "1"
                 ]
             ],
@@ -326,7 +326,7 @@ class AppMissionTest extends TestCase
                 ]
             ],
             "media_images" => [[
-                    "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer9.png",
+                    "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer6.png",
                     "default" => "1"
                 ]
             ],
@@ -495,7 +495,7 @@ class AppMissionTest extends TestCase
                 ]
             ],
             "media_images" => [[
-                    "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer9.png",
+                    "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer6.png",
                     "default" => "1"
                 ]
             ],
@@ -798,7 +798,7 @@ class AppMissionTest extends TestCase
     /**
      * @test
      *
-     * Get all mission expore random
+     * Get all mission explore random
      *
      * @return void
      */
@@ -845,7 +845,7 @@ class AppMissionTest extends TestCase
                 ]
             ],
             "media_images" => [[
-                    "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer9.png",
+                    "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer6.png",
                     "default" => "1"
                 ]
             ],
@@ -896,7 +896,7 @@ class AppMissionTest extends TestCase
     /**
      * @test
      *
-     * Get all mission expore theme
+     * Get all mission explore theme
      *
      * @return void
      */
@@ -943,7 +943,7 @@ class AppMissionTest extends TestCase
                 ]
             ],
             "media_images" => [[
-                    "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer9.png",
+                    "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer6.png",
                     "default" => "1"
                 ]
             ],
@@ -994,7 +994,7 @@ class AppMissionTest extends TestCase
     /**
      * @test
      *
-     * Get all mission expore country
+     * Get all mission explore country
      *
      * @return void
      */
@@ -1041,7 +1041,7 @@ class AppMissionTest extends TestCase
                 ]
             ],
             "media_images" => [[
-                    "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer9.png",
+                    "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer6.png",
                     "default" => "1"
                 ]
             ],
@@ -1092,7 +1092,7 @@ class AppMissionTest extends TestCase
     /**
      * @test
      *
-     * Get all mission expore organization
+     * Get all mission explore organization
      *
      * @return void
      */
@@ -1140,7 +1140,7 @@ class AppMissionTest extends TestCase
                 ]
             ],
             "media_images" => [[
-                    "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer9.png",
+                    "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer6.png",
                     "default" => "1"
                 ]
             ],
@@ -1191,7 +1191,7 @@ class AppMissionTest extends TestCase
     /**
      * @test
      *
-     * Get all mission expore top recommended
+     * Get all mission explore top recommended
      *
      * @return void
      */
@@ -1239,7 +1239,7 @@ class AppMissionTest extends TestCase
                 ]
             ],
             "media_images" => [[
-                    "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer9.png",
+                    "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer6.png",
                     "default" => "1"
                 ]
             ],
@@ -1290,7 +1290,7 @@ class AppMissionTest extends TestCase
     /**
      * @test
      *
-     * Get all mission expore top favourite
+     * Get all mission explore top favourite
      *
      * @return void
      */
@@ -1338,14 +1338,11 @@ class AppMissionTest extends TestCase
                 ]
             ],
             "media_images" => [[
-                    "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer9.png",
+                    "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer6.png",
                     "default" => "1"
                 ]
             ],
-            "documents" => [[
-                    "document_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/test/sample.pdf"
-                ]
-            ],
+            "documents" => [],
             "media_videos"=> [[
                 "media_name" => "youtube_small",
                 "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg"
@@ -1362,16 +1359,27 @@ class AppMissionTest extends TestCase
             "availability_id" => 1
         ];
 
-        $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $res = $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
         ->seeStatusCode(201);
 
+        $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
         DB::setDefaultConnection('mysql');
-        $mission = factory(\App\Models\Mission::class)->make();
-        $mission->setConnection($connection);
-        $mission->save();
+
+        $params = [
+            'mission_id' => $mission->mission_id
+        ];
 
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
-        $this->get('app/missions?explore_mission_type=recommended-missions&explore_mission_params='.$organizationName, ['token' => $token])
+        $this->post('app/mission/favourite', $params, ['token' => $token])
+        ->seeStatusCode(201)
+        ->seeJsonStructure([
+            "status",
+            "message"
+        ]);
+        
+        DB::setDefaultConnection('mysql');
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
+        $this->get('app/missions?explore_mission_type=favourite-missions&explore_mission_params='.$organizationName, ['token' => $token])
           ->seeStatusCode(200);
         $user->delete();        
         App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->delete();
@@ -1380,7 +1388,7 @@ class AppMissionTest extends TestCase
     /**
      * @test
      *
-     * Get all mission expore most ranked
+     * Get all mission explore most ranked
      *
      * @return void
      */
@@ -1428,7 +1436,7 @@ class AppMissionTest extends TestCase
                 ]
             ],
             "media_images" => [[
-                    "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer9.png",
+                    "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer6.png",
                     "default" => "1"
                 ]
             ],
@@ -1470,7 +1478,7 @@ class AppMissionTest extends TestCase
     /**
      * @test
      *
-     * Get all mission expore country
+     * Get all mission explore country
      *
      * @return void
      */
@@ -1517,7 +1525,7 @@ class AppMissionTest extends TestCase
                 ]
             ],
             "media_images" => [[
-                    "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer9.png",
+                    "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer6.png",
                     "default" => "1"
                 ]
             ],
@@ -1568,7 +1576,7 @@ class AppMissionTest extends TestCase
     /**
      * @test
      *
-     * Get all mission expore organization
+     * Get all mission explore organization
      *
      * @return void
      */
@@ -1616,7 +1624,7 @@ class AppMissionTest extends TestCase
                 ]
             ],
             "media_images" => [[
-                    "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer9.png",
+                    "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer6.png",
                     "default" => "1"
                 ]
             ],
@@ -1715,7 +1723,7 @@ class AppMissionTest extends TestCase
                 ]
             ],
             "media_images" => [[
-                    "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer9.png",
+                    "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer6.png",
                     "default" => "1"
                 ]
             ],
@@ -1814,7 +1822,7 @@ class AppMissionTest extends TestCase
                 ]
             ],
             "media_images" => [[
-                    "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer9.png",
+                    "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer6.png",
                     "default" => "1"
                 ]
             ],
@@ -1913,7 +1921,7 @@ class AppMissionTest extends TestCase
                 ]
             ],
             "media_images" => [[
-                    "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer9.png",
+                    "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer6.png",
                     "default" => "1"
                 ]
             ],
@@ -2012,7 +2020,7 @@ class AppMissionTest extends TestCase
                 ]
             ],
             "media_images" => [[
-                    "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer9.png",
+                    "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer6.png",
                     "default" => "1"
                 ]
             ],
@@ -2111,7 +2119,7 @@ class AppMissionTest extends TestCase
                 ]
             ],
             "media_images" => [[
-                    "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer9.png",
+                    "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer6.png",
                     "default" => "1"
                 ]
             ],
@@ -2209,7 +2217,7 @@ class AppMissionTest extends TestCase
                 ]
             ],
             "media_images" => [[
-                    "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer9.png",
+                    "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer6.png",
                     "default" => "1"
                 ]
             ],
@@ -2250,7 +2258,7 @@ class AppMissionTest extends TestCase
         DB::setDefaultConnection('mysql');
 
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
-        $this->get('app/filter-data?search=title&country_id='.$mission->country_id.'&city_id='.$mission->city_id, ['token' => $token])
+        $this->get('app/filter-data?search=title&country_id='.$mission->country_id.'&city_id='.$mission->city_id.'&theme_id=1', ['token' => $token])
           ->seeStatusCode(200)
           ->seeJsonStructure([
             "status",
@@ -2338,7 +2346,7 @@ class AppMissionTest extends TestCase
                 ]
             ],
             "media_images" => [[
-                    "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer9.png",
+                    "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer6.png",
                     "default" => "1"
                 ]
             ],
@@ -2471,7 +2479,7 @@ class AppMissionTest extends TestCase
                 ]
             ],
             "media_images" => [[
-                    "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer9.png",
+                    "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer6.png",
                     "default" => "1"
                 ]
             ],
@@ -2580,7 +2588,7 @@ class AppMissionTest extends TestCase
                 ]
             ],
             "media_images" => [[
-                    "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer9.png",
+                    "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer6.png",
                     "default" => "1"
                 ]
             ],
@@ -2684,7 +2692,7 @@ class AppMissionTest extends TestCase
                 ]
             ],
             "media_images" => [[
-                    "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer9.png",
+                    "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer6.png",
                     "default" => "1"
                 ]
             ],
@@ -2730,6 +2738,104 @@ class AppMissionTest extends TestCase
         $this->get('app/user-filter', ['token' => $token])
           ->seeStatusCode(200);
         $user->delete();
+        App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->delete();
+    }
+
+    /**
+     * @test
+     *
+     * Get all mission sort by my favourite
+     *
+     * @return void
+     */
+    public function it_should_return_all_app_missions_sort_by_my_favourite()
+    {
+        $organizationName = str_random(10);
+        $connection = 'tenant';
+        $user = factory(\App\User::class)->make();
+        $user->setConnection($connection);
+        $user->save();
+        $params = [
+            "organisation" => [
+                "organisation_id" => 1,
+                "organisation_name" => $organizationName,
+                "organisation_detail" => [  
+                    [  
+                       "lang"=>"en",
+                       "detail"=>"Testing organisation description in English"
+                    ],
+                    [  
+                       "lang"=>"fr",
+                       "detail"=>"Testing organisation description in French"
+                    ]
+                ]
+            ],
+            "location" => [
+                "city_id" => 1,
+                "country_code" => "US"
+            ],
+            "mission_detail" => [[
+                    "lang" => "en",
+                    "title" => 'title',
+                    "short_description" => str_random(20),
+                    "objective" => str_random(20),
+                    "section" => [
+                        [
+                            "title" => str_random(10),
+                            "description" => str_random(100),
+                        ],
+                        [
+                            "title" => str_random(10),
+                            "description" => str_random(100),
+                        ]
+                    ]
+                ]
+            ],
+            "media_images" => [[
+                    "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer6.png",
+                    "default" => "1"
+                ]
+            ],
+            "documents" => [],
+            "media_videos"=> [[
+                "media_name" => "youtube_small",
+                "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg"
+                ]
+            ],
+            "start_date" => "2019-05-15 10:40:00",
+            "end_date" => "2019-10-15 10:40:00",
+            "mission_type" => config("constants.mission_type.GOAL"),
+            "goal_objective" => rand(1, 1000),
+            "total_seats" => rand(1, 1000),
+            "application_deadline" => "2019-07-28 11:40:00",
+            "publication_status" => config("constants.publication_status.APPROVED"),
+            "theme_id" => 1,
+            "availability_id" => 1
+        ];
+
+        $res = $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(201);
+
+        $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
+        DB::setDefaultConnection('mysql');
+
+        $params = [
+            'mission_id' => $mission->mission_id
+        ];
+
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
+        $this->post('app/mission/favourite', $params, ['token' => $token])
+        ->seeStatusCode(201)
+        ->seeJsonStructure([
+            "status",
+            "message"
+        ]);
+        
+        DB::setDefaultConnection('mysql');
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
+        $this->get('app/missions?sort_by=my_favourite', ['token' => $token])
+          ->seeStatusCode(200);
+        $user->delete();        
         App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->delete();
     }
 }
