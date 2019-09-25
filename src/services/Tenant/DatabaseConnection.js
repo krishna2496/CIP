@@ -95,6 +95,17 @@ export default async(langList, defautLang) => {
                 store.commit('missionNotFound', '');
             }
 
+            if (response.data.data.news_banner) {
+                store.commit('newsBanner', response.data.data.news_banner);
+            } else {
+                store.commit('newsBanner', '');
+            }
+            if (response.data.data.news_banner_text) {
+                store.commit('newsBannerText', response.data.data.news_banner_text);
+            } else {
+                store.commit('newsBannerText', '');
+            }
+
         })
         .catch(error => {})
     return responseData;

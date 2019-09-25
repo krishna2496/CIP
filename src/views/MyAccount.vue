@@ -5,7 +5,7 @@
         </header>
         <main>
             <b-container>
-                <b-row class="profile-content">
+                <b-row class="profile-content" v-if="showPage">
                     <b-col xl="3" lg="4" md="12" class="profile-left-col">
                         <div class="profile-details">
                             <div class="profile-block">
@@ -435,6 +435,7 @@
                 resetUserSkillList: [],
                 imageLoader: true,
                 changePhoto: "",
+                showPage:true,
                 saveProfileData: {
                     first_name: "",
                     last_name: "",
@@ -820,16 +821,20 @@
                 saveUserProfile(this.saveProfileData).then(response => {
                     if (response.error == true) {
                         this.makeToast("danger", response.message);
-                    } else {
+                    } else { 
                         store.commit('setDefaultLanguageCode', this.languageCode)
+                        this.showPage = false;
                         this.getUserProfileDetail().then(getResponse => {
-                            this.isShownComponent = false;
+                            // this.isShownComponent = false;
+                            this.showPage = true;
                             loadLocaleMessages(this.profile.languageCode).then(langaugeResponse => {
                                 this.langauageData = JSON.parse(store.state.languageLabel);
                                 this.makeToast("success", response.message);
                                 this.isShownComponent = true;
-                            });
+                            });       
+                                                
                             store.commit("changeUserDetail", this.profile)
+                            
                         });
                     }
                 });

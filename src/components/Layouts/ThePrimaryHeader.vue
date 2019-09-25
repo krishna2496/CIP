@@ -4,7 +4,7 @@
                 <b-container>
                     <div class="navbar-toggler" @click.stop v-if="this.$store.state.isLoggedIn">
                         <b-link title="Menu" @click="openMenu" class="toggler-icon">
-                            <img src="../../assets/images/menu-ic.svg" alt />
+                            <img :src="$store.state.imagePath+'/assets/images/menu-ic.svg'" alt />
                         </b-link>
                     </div>
                     <b-navbar-brand :to="{ name: 'home' }" :style="{backgroundImage: 'url('+this.$store.state.logo+')'}"
@@ -90,7 +90,7 @@
                             </li>
                             <li class="has-menu no-dropdown" v-if="isNewsDisplay">
                                 <a href="Javascript:void(0)"
-                                    :title='langauageData.label.news'>{{ langauageData.label.news}}</a>
+                                    :title='langauageData.label.news'> {{langauageData.label.news}}</a>
                             </li>
 
                             <li class="has-menu" v-if="isPolicyDisplay">
@@ -270,7 +270,7 @@
             eventBus
         } from "../../main";
         import constants from '../../constant';
-
+        import { setTimeout } from 'timers';
         export default {
             components: {},
             name: "PrimaryHeader",
@@ -418,7 +418,12 @@
 
                 async clearFilter($event) {
                     if (store.state.isLoggedIn) {
-                        location.reload()
+                        this.$router.push({
+                           name: 'home'
+                        })
+                        setTimeout(function(){
+                            location.reload()
+                        },15)
                     }
                 },
 

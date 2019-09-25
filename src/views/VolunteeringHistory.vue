@@ -24,7 +24,7 @@
 										</horizontal-chart>
 									</div>
 									<div v-else class="text-center">
-										<h5>{{langauageData.label.no_record_found}}</h5>
+										<h5>{{langauageData.label.volunteering_history| firstLetterCapital}} {{langauageData.label.not_found}}</h5>
 									</div>
 								</div>
 							</b-col>
@@ -40,7 +40,7 @@
 										</horizontal-chart>
 									</div>
 									<div v-else class="text-center">
-										<h5>{{langauageData.label.no_record_found}}</h5>
+										<h5>{{langauageData.label.volunteering_history | firstLetterCapital}} {{langauageData.label.not_found}}</h5>
 									</div>
 								</div>
 							</b-col>
