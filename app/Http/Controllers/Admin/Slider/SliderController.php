@@ -99,7 +99,6 @@ class SliderController extends Controller
                     trans('messages.custom_error_message.ERROR_SLIDER_LIMIT')
                 );
             } else {
-                // @codeCoverageIgnoreStart
                 // Upload slider image on S3 server
                 $tenantName = $this->helpers->getSubDomainFromRequest($request);
                 $imageUrl = "";
@@ -114,7 +113,6 @@ class SliderController extends Controller
                 $apiStatus = Response::HTTP_CREATED;
                 $apiMessage = trans('messages.success.MESSAGE_SLIDER_ADD_SUCCESS');
                 return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
-                // @codeCoverageIgnoreEnd
             }
         } catch (\ErrorException $e) {
             // Response error unable to upload file on S3

@@ -30,16 +30,14 @@ class Helpers
             if ((env('APP_ENV') == 'local' || env('APP_ENV') == 'testing')) {
                 return env('DEFAULT_TENANT');
             } else {
-                // @codeCoverageIgnoreStart
-                    return explode(".", parse_url($request->headers->all()['referer'][0])['host'])[0];
-                // @codeCoverageIgnoreEnd
+                return explode(".", parse_url($request->headers->all()['referer'][0])['host'])[0];
             }
         }
     }
 
     /**
      * Get base URL from request object
-     * @codeCoverageIgnore
+     *
      * @param Illuminate\Http\Request $request
      * @return mixed
      */
@@ -251,7 +249,6 @@ class Helpers
 
     /**
      * Change date format
-     * @codeCoverageIgnore
      *
      * @param string $date
      * @param string $dateFormat
@@ -264,7 +261,6 @@ class Helpers
     
     /**
      * Convert in report time format
-     * @codeCoverageIgnore
      *
      * @param string $totalHours
      * @return string
@@ -279,7 +275,6 @@ class Helpers
 
     /**
      * Convert in report hours format
-     * @codeCoverageIgnore
      *
      * @param string $totalHours
      * @return string

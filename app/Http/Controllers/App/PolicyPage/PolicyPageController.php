@@ -86,7 +86,7 @@ class PolicyPageController extends Controller
             $policyPage = $this->policyPageRepository->getPageDetail($slug, $languageId);
           
             $apiStatus = Response::HTTP_OK;
-            $apiMessage = trans('messages.success.MESSAGE_PAGE_FOUND');
+            $apiMessage = trans('messages.success.MESSAGE_POLICY_PAGE_FOUND');
             return $this->responseHelper->success($apiStatus, $apiMessage, $policyPage->toArray());
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(

@@ -73,11 +73,11 @@ return [
         'MESSAGE_NO_MISSION_MEDIA_FOUND' => 'Média de mission introuvable',
         'MESSAGE_NO_MISSION_COMMENT_FOUND' => 'Commentaires de mission non trouvés',
         'MESSAGE_COMMENT_ADDED' => 'Merci pour votre commentaire. Votre commentaire ne sera visible qu\'après modération',
-        'MESSAGE_POLICY_PAGE_LISTING' => 'Liste des pages de règles correctement.',        
-        'MESSAGE_POLICY_PAGE_CREATED' => 'Page de stratégie créée avec succès',        
+        'MESSAGE_POLICY_PAGE_LISTING' => 'Liste des pages de règles correctement.',
+        'MESSAGE_POLICY_PAGE_CREATED' => 'Page de stratégie créée avec succès',
         'MESSAGE_POLICY_PAGE_DELETED' => 'Page supprimée avec succès',
         'MESSAGE_POLICY_PAGE_UPDATED' => 'La page de politique a été mise à jour avec succès',
-        'MESSAGE_NO_CITY_FOUND' => 'Ville non trouvée', 
+        'MESSAGE_NO_CITY_FOUND' => 'Ville non trouvée',
         'MESSAGE_COMMENT_FOUND' => 'Commentaire trouvé avec succès',
         'MESSAGE_COMMENT_UPDATED' => 'Commentaire mis à jour avec succès',
         'MESSAGE_COMMENT_DELETED' => 'Commentaire supprimé avec succès',
@@ -112,7 +112,7 @@ return [
         'MESSAGE_GOAL_MISSION_TIME_ENTRY_LISTED' => 'Entrée de la feuille de temps des missions d\'objectif répertoriée',
         'MESSAGE_NO_GOAL_MISSION_TIME_ENTRY_FOUND' => 'Entrée de la feuille de temps des missions d\'objectif non trouvée',
         'MESSAGE_TIME_MISSION_TIME_ENTRY_LISTED' => 'Saisie des feuilles de temps des missions répertoriées',
-        'MESSAGE_NO_TIME_MISSION_TIME_ENTRY_FOUND' => 'Entrée dans la feuille de temps des missions non trouvée',        
+        'MESSAGE_NO_TIME_MISSION_TIME_ENTRY_FOUND' => 'Entrée dans la feuille de temps des missions non trouvée',
         'MESSAGE_USER_GOAL_MISSION_HISTORY_EXPORTED' => 'Fichier historique généré avec succès pour les missions d\'objectif',
         'MESSAGE_ENABLE_TO_EXPORT_USER_GOAL_MISSION_HISTORY' => 'Aucune donnée trouvée, pour générer un fichier d\'historique pour les missions d\'objectif',
         'MESSAGE_USER_TIME_MISSION_HISTORY_EXPORTED' => 'Fichier historique généré avec succès pour les missions temporelles',
@@ -121,7 +121,8 @@ return [
         'MESSAGE_ENABLE_TO_EXPORT_USER_PENDING_TIME_MISSION_ENTRIES' => 'Aucune donnée trouvée, pour générer des entrées de temps en attente pour une mission temporelle',
         'MESSAGE_USER_PENDING_GOAL_MISSION_ENTRIES_EXPORTED' => 'Entrées de temps en attente pour les missions de but, générées avec succès',
         'MESSAGE_ENABLE_TO_EXPORT_USER_PENDING_GOAL_MISSION_ENTRIES' => 'Aucune donnée trouvée, pour générer des entrées de temps en attente pour la mission de l\'objectif',
-        'MESSAGE_AUTO_APPROVED_COMMENT_ADDED' => 'Merci pour votre commentaire.'
+        'MESSAGE_AUTO_APPROVED_COMMENT_ADDED' => 'Merci pour votre commentaire.',
+        'MESSAGE_Footer_PAGE_FOUND' => 'Pied de page trouvé avec succès',
     ],
 
         
@@ -226,18 +227,19 @@ return [
 
         
         //For timesheet module
-        'ERROR_INVALID_ACTION' => 'Action de but invalide',        
+        'ERROR_INVALID_ACTION' => 'Action de but invalide',
         'TIMESHEET_NOT_FOUND' => 'La feuille de temps n\'existe pas',
         'ERROR_TIMESHEET_ALREADY_APPROVED' => 'Vous ne pouvez pas mettre à jour la feuille de temps approuvée',
-        'TIMESHEET_DOCUMENT_NOT_FOUND' => 'La feuille de temps n\'existe pas',        
+        'TIMESHEET_DOCUMENT_NOT_FOUND' => 'La feuille de temps n\'existe pas',
         'ERROR_MISSION_STARTDATE' => 'Date invalide: la date sélectionnée ne doit pas être antérieure à la date de début',
         'ERROR_MISSION_ENDDATE' => 'La date sélectionnée ne doit pas être supérieure à la date de fin de la mission.',
         'MISSION_APPLICATION_NOT_APPROVED' => 'L\'application de la mission n\'est pas approuvée',
-        'ERROR_TIMESHEET_ALREADY_DONE_FOR_DATE' => 'La saisie du temps est déjà approuvée pour une date donnée', 
+        'ERROR_TIMESHEET_ALREADY_DONE_FOR_DATE' => 'La saisie du temps est déjà approuvée pour une date donnée',
         'ERROR_INVALID_DATA_FOR_TIMESHEET_ENTRY' => 'Vous ne pouvez pas ajouter de temps',
         'ERROR_TIMESHEET_ENTRY_NOT_FOUND' => 'ID de saisie de la feuille de temps introuvable',
         'ERROR_SAME_DATE_TIME_ENTRY' => 'Vous ne pouvez pas ajouter plus de 24 heures à la même date',
-        'ERROR_UNAUTHORIZED_USER' => 'Utilisateur non autorisé'
+        'ERROR_UNAUTHORIZED_USER' => 'Utilisateur non autorisé',
+        'ERROR_APPROVED_TIMESHEET_DOCUMENTS' => 'Vous ne pouvez pas supprimer les documents d\'entrée de feuille de temps approuvés',
     ],
 
     /**

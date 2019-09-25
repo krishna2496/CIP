@@ -51,7 +51,6 @@ class VolunteerHistoryController extends Controller
 
     /**
      * Create a new controller instance.
-     * @codeCoverageIgnore
      *
      * @param App\Repositories\Timesheet\TimesheetRepository $timesheetRepository
      * @param App\Repositories\MissionTheme\MissionThemeRepository $missionThemeRepository
@@ -79,7 +78,6 @@ class VolunteerHistoryController extends Controller
 
     /**
      * Get all themes history with total minutes logged, based on year and all years.
-     * @codeCoverageIgnore
      *
      * @param \Illuminate\Http\Request $request
      * @return Illuminate\Http\JsonResponse
@@ -100,7 +98,6 @@ class VolunteerHistoryController extends Controller
 
     /**
      * Get all skill history with total minutes logged, based on year and all years.
-     * @codeCoverageIgnore
      *
      * @param \Illuminate\Http\Request $request
      * @return Illuminate\Http\JsonResponse
@@ -126,7 +123,6 @@ class VolunteerHistoryController extends Controller
 
     /**
      * Get all user mission with total time entry for each mission
-     * @codeCoverageIgnore
      *
      * @param \Illuminate\Http\Request $request
      * @return Illuminate\Http\JsonResponse
@@ -149,7 +145,6 @@ class VolunteerHistoryController extends Controller
 
     /**
      * Get all skill history with total minutes logged, based on year and all years.
-     * @codeCoverageIgnore
      *
      * @param \Illuminate\Http\Request $request
      * @return Illuminate\Http\JsonResponse
@@ -172,7 +167,6 @@ class VolunteerHistoryController extends Controller
 
     /**
      * Export user's goal mission history
-     * @codeCoverageIgnore
      *
      * @param \Illuminate\Http\Request $request
      * @return Object
@@ -219,7 +213,6 @@ class VolunteerHistoryController extends Controller
 
     /**
      * Export user's time mission history
-     * @codeCoverageIgnore
      *
      * @param \Illuminate\Http\Request $request
      * @return Object

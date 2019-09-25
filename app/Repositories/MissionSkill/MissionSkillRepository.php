@@ -23,7 +23,6 @@ class MissionSkillRepository implements MissionSkillInterface
  
     /**
      * Create a new MissionSkill repository instance.
-     * @codeCoverageIgnore
      *
      * @param  App\Models\MissionSkill $missionSkill
      * @param App\Models\TimesheetStatus $timesheetStatus
@@ -37,7 +36,6 @@ class MissionSkillRepository implements MissionSkillInterface
 
     /**
      * Get all skill history with total minutes logged, based on year and all years.
-     * @codeCoverageIgnore
      *
      * @param int $year
      * @param int $userId

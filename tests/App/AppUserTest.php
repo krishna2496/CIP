@@ -1,7 +1,7 @@
 <?php
 use App\Helpers\Helpers;
 use Firebase\JWT\JWT;
-
+use Carbon\Carbon;
 class AppUserTest extends TestCase
 {
     /**
@@ -920,5 +920,34 @@ class AppUserTest extends TestCase
         $this->get('/app/search-user', ['token' => $token])
         ->seeStatusCode(401);
         $user->delete();
+    }
+
+    /**
+     * @test
+     *
+     * It should return an error, tenant not found
+     *
+     * @return void
+     */
+    public function it_should_return_tenant_not_found()
+    {
+        $connection = 'tenant';
+        $user = factory(\App\User::class)->make();
+        $user->setConnection($connection);
+        $user->save();
+
+        DB::setDefaultConnection('mysql');
+        
+        DB::table('tenant')->where('name', env('DEFAULT_TENANT'))->update(['deleted_at' => Carbon::now()]);
+
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
+        $this->get('app/search-user?search='.substr($user->first_name, 2), ['token' => $token])
+        ->seeStatusCode(404);
+
+        $user->delete();
+        
+        DB::setDefaultConnection('mysql');
+        DB::table('tenant')->where('name', env('DEFAULT_TENANT'))->update(['deleted_at' => null]);
+        
     }
 }
