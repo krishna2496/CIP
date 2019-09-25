@@ -76,6 +76,18 @@ let routes = [{
             import ('./views/NewsDetail.vue')
     },
     {
+        path: '/story-detail/:newsId',
+        name: 'StoryDetail',
+        component: () =>
+            import ('./views/StoryDetail.vue')
+    },
+    {
+        path: '/share-story',
+        name: 'ShareStory',
+        component: () =>
+            import ('./views/ShareStory.vue')
+    },
+    {
         path: '/home/:searchParamsType/:searchParams',
         name: 'exploreMission',
         meta: {
