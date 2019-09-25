@@ -36,7 +36,6 @@ class TenantSettingsController extends Controller
 
     /**
      * Create a new controller instance.
-     * @codeCoverageIgnore
      *
      * @param App\Repositories\TenantSetting\TenantSettingRepository $tenantSettingRepository
      * @param App\Helpers\ResponseHelper $responseHelper
@@ -55,7 +54,6 @@ class TenantSettingsController extends Controller
 
     /**
      * Display a listing of tenant settings.
-     * @codeCoverageIgnore
      *
      * @param Illuminate\Http\Request $request
      * @return \Illuminate\Http\JsonResponse
@@ -67,7 +65,6 @@ class TenantSettingsController extends Controller
 
         // Fetch all tenant settings data
         $tenantSettings = $this->tenantSettingRepository->fetchAllTenantSettings();
-
         $tenantSettingData = array();
 
         if ($tenantSettings->count() &&  $getTenantSettings->count()) {
@@ -98,7 +95,6 @@ class TenantSettingsController extends Controller
 
     /**
      * Update the specified resource in storage.
-     * @codeCoverageIgnore
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $settingId

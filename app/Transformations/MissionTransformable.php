@@ -99,7 +99,8 @@ trait MissionTransformable
             }
         }
 
-        if (!empty($mission['organisation_detail']) && (isset($mission['organisation_detail']))) {
+        if (!empty($mission['organisation_detail']) && (isset($mission['organisation_detail']))
+        && (is_array($mission['organisation_detail']))) {
             if ($mission['organisation_detail']) {
                 $arrayKey = array_search($languageCode, array_column($mission['organisation_detail'], 'lang'));
                 if ($arrayKey  !== '') {

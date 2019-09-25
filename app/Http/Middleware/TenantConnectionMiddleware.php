@@ -39,18 +39,17 @@ class TenantConnectionMiddleware
     public function handle($request, Closure $next)
     {
         $domain = $this->helpers->getSubDomainFromRequest($request);
-
+        
         $this->helpers->switchDatabaseConnection('mysql', $request);
         $tenant = DB::table('tenant')->select('tenant_id')
         ->where('name', $domain)->whereNull('deleted_at')->first();
-        // @codeCoverageIgnoreStart
+        
         if (!$tenant) {
             throw new TenantDomainNotFoundException(
                 trans('messages.custom_error_message.ERROR_TENANT_DOMAIN_NOT_FOUND'),
                 config('constants.error_codes.ERROR_TENANT_DOMAIN_NOT_FOUND')
             );
         }
-        // @codeCoverageIgnoreEnd
         $this->helpers->createConnection($tenant->tenant_id);
         return $next($request);
     }

@@ -108,25 +108,8 @@ trait RestExceptionHandlerTrait
     }
     
     /**
-     * Returns json response for failed to perform S3 opration
-     * @codeCoverageIgnore
-     * @param string $customErrorCode
-     * @param string $message
-     * @return \Illuminate\Http\JsonResponse
-     */
-    protected function s3Exception(string $customErrorCode = '', string $message = 'S3 exception')
-    {
-        return $this->jsonResponse(
-            Response::HTTP_UNPROCESSABLE_ENTITY,
-            Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-            $customErrorCode,
-            $message
-        );
-    }
-
-    /**
      * Returns json response for bucket not found on s3
-     * @codeCoverageIgnore
+     *
      * @param string $customErrorCode
      * @param string $message
      * @return \Illuminate\Http\JsonResponse
@@ -143,7 +126,7 @@ trait RestExceptionHandlerTrait
 
     /**
      * Returns json response for files not found on s3 for bucket folder
-     * @codeCoverageIgnore
+     *
      * @param string $customErrorCode
      * @param string $message
      * @return \Illuminate\Http\JsonResponse

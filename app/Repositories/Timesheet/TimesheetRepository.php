@@ -14,7 +14,6 @@ use App\Helpers\LanguageHelper;
 use Illuminate\Support\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use App\Repositories\Timesheet\TimesheetInterface;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Repositories\TenantOption\TenantOptionRepository;
 
 class TimesheetRepository implements TimesheetInterface
@@ -56,7 +55,6 @@ class TimesheetRepository implements TimesheetInterface
 
     /**
      * Create a new Timesheet repository instance.
-     * @codeCoverageIgnore
      *
      * @param  App\Models\Timesheet $timesheet
      * @param  App\Models\Mission $mission
@@ -87,7 +85,6 @@ class TimesheetRepository implements TimesheetInterface
     
     /**
      * Store/Update timesheet
-     * @codeCoverageIgnore
      *
      * @param \Illuminate\Http\Request $request
      * @return App\Models\Timesheet
@@ -98,7 +95,7 @@ class TimesheetRepository implements TimesheetInterface
         'mission_id' => $request->mission_id,
         'date_volunteered' => $request->date_volunteered
         ], $request->toArray());
-       
+
         if ($request->hasFile('documents')) {
             $tenantName = $this->helpers->getSubDomainFromRequest($request);
             $files = $request->file('documents');
@@ -122,7 +119,6 @@ class TimesheetRepository implements TimesheetInterface
 
     /**
      * Get timesheet entries
-     * @codeCoverageIgnore
      *
      * @param Illuminate\Http\Request $request
      * @return array
@@ -154,7 +150,6 @@ class TimesheetRepository implements TimesheetInterface
     
     /**
      * Fetch timesheet details
-     * @codeCoverageIgnore
      *
      * @param int $timesheetId
      * @return null|Timesheet
@@ -166,7 +161,6 @@ class TimesheetRepository implements TimesheetInterface
 
     /**
      * Fetch timesheet details
-     * @codeCoverageIgnore
      *
      * @param int $timesheetId
      * @param int $userId
@@ -179,7 +173,6 @@ class TimesheetRepository implements TimesheetInterface
     
     /**
     * Remove the timesheet document.
-    * @codeCoverageIgnore
     *
     * @param  int  $id
     * @param  int  $timesheetId
@@ -192,7 +185,6 @@ class TimesheetRepository implements TimesheetInterface
 
     /**
      * Display a listing of specified resources.
-     * @codeCoverageIgnore
      *
      * @param int $userId
      * @param \Illuminate\Http\Request $request
@@ -221,7 +213,6 @@ class TimesheetRepository implements TimesheetInterface
 
     /**
      * Update timesheet field value, based on timesheet_id condition
-     * @codeCoverageIgnore
      *
      * @param int $statusId
      * @param int $timesheetId
@@ -234,7 +225,6 @@ class TimesheetRepository implements TimesheetInterface
     }
 
     /** Update timesheet status on submit
-    * @codeCoverageIgnore
     *
     * @param \Illuminate\Http\Request $request
     * @param int $userId
@@ -260,7 +250,6 @@ class TimesheetRepository implements TimesheetInterface
 
     /**
      * Get time request details.
-     * @codeCoverageIgnore
      *
      * @param \Illuminate\Http\Request $request
      * @param array $statusArray
@@ -311,7 +300,7 @@ class TimesheetRepository implements TimesheetInterface
 
     /**
      * Fetch goal time details.
-     * @codeCoverageIgnore
+     *
      * @param Illuminate\Http\Request $request
      * @param array $statusArray
      * @param bool $withPagination
@@ -356,7 +345,6 @@ class TimesheetRepository implements TimesheetInterface
 
     /**
      * Fetch timesheet details by mission and date
-     * @codeCoverageIgnore
      *
      * @param int $missionId
      * @param string $date
@@ -371,7 +359,6 @@ class TimesheetRepository implements TimesheetInterface
 
     /**
      * Get timesheet entries
-     * @codeCoverageIgnore
      *
      * @param Illuminate\Http\Request $request
      * @param string $missionType
@@ -419,7 +406,6 @@ class TimesheetRepository implements TimesheetInterface
 
     /**
      * Fetch timesheet details
-     * @codeCoverageIgnore
      *
      * @param int $missionId
      * @param int $userId
@@ -444,7 +430,6 @@ class TimesheetRepository implements TimesheetInterface
 
     /**
      * get submitted action count
-     * @codeCoverageIgnore
      *
      * @param int $missionId
      * @return int

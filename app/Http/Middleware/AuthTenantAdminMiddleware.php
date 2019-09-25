@@ -51,14 +51,12 @@ class AuthTenantAdminMiddleware
         if ($request->header('php-auth-user') == null && $request->header('php-auth-pw') == null
             || (empty($request->header('php-auth-user')) && empty($request->header('php-auth-pw')))
         ) {
-            // @codeCoverageIgnoreStart
             return $this->responseHelper->error(
                 Response::HTTP_UNAUTHORIZED,
                 Response::$statusTexts[Response::HTTP_UNAUTHORIZED],
                 config('constants.error_codes.ERROR_API_AND_SECRET_KEY_REQUIRED'),
                 trans('messages.custom_error_message.ERROR_API_AND_SECRET_KEY_REQUIRED')
             );
-            // @codeCoverageIgnoreEnd
         }
         // authenticate api user based on basic auth parameters
         $apiUser = DB::table('api_user')

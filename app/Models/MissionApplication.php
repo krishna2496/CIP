@@ -5,9 +5,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use App\Models\Mission;
-use App\User;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 class MissionApplication extends Model
@@ -49,28 +46,6 @@ class MissionApplication extends Model
      */
     protected $visible = ['mission_application_id', 'mission_id', 'user_id', 'applied_at', 'motivation',
     'availability_id', 'approval_status', 'user', 'first_name', 'last_name', 'avatar'];
-
-    /**
-     * Defined relation for the mission table.
-     * @codeCoverageIgnore
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function mission(): BelongsTo
-    {
-        return $this->belongsTo(Mission::class, 'mission_id', 'mission_id');
-    }
-
-    /**
-     * Defined relation for the user table.
-     * @codeCoverageIgnore
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function user(): BelongsTo
-    {
-        return $this->belongsTo(User::class, 'user_id', 'user_id');
-    }
 
     /**
      * Find listing of a resource.
