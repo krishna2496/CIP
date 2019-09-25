@@ -115,7 +115,6 @@ class TenantOptionsController extends Controller
 
         // Get domain name from request and use as tenant name.
         $tenantName = $this->helpers->getSubDomainFromRequest($request);
-        // @codeCoverageIgnoreStart
         if ($request->hasFile('custom_scss_file')) {
             $file = $request->file('custom_scss_file');
 
@@ -173,16 +172,9 @@ class TenantOptionsController extends Controller
                 $filePath = $tenantName.'/'.config('constants.AWS_S3_ASSETS_FOLDER_NAME').'/'.
                 config('constants.AWS_S3_SCSS_FOLDER_NAME').'/'. $fileName;
                 
-                if (!Storage::disk('s3')->put($filePath, file_get_contents($file))) {
-                    // Throw exception file not uploaded successfully
-                    throw new FileUploadException(
-                        trans('messages.custom_error_message.ERROR_WHILE_UPLOADING_FILE_ON_S3'),
-                        config('constants.error_codes.ERROR_WHILE_UPLOADING_FILE_ON_S3')
-                    );
-                }
+                Storage::disk('s3')->put($filePath, file_get_contents($file));
             }
         }
-        // @codeCoverageIgnoreEnd
         $options['isVariableScss'] = $isVariableScss;
         
         if (isset($request->primary_color) && $request->primary_color!='') {
@@ -218,29 +210,21 @@ class TenantOptionsController extends Controller
 
         try {
             $assetFilesArray = $this->s3helper->getAllScssFiles($tenantName);
-            // This error will be triggered in case of bucket not found on S3 for any tenant.
-            // So it is not covered in unit test-case
-            // @codeCoverageIgnoreStart
         } catch (BucketNotFoundException $e) {
             throw $e;
         }
-        // @codeCoverageIgnoreEnd
         
         if (count($assetFilesArray) > 0) {
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_ASSETS_FILES_LISTING');
             return $this->responseHelper->success($apiStatus, $apiMessage, $assetFilesArray);
         } else {
-            // This error will be triggered in case of tenant's bucket don't have any SCSS files.
-            // So it is not covered in unit test-case
-            // @codeCoverageIgnoreStart
             return $this->responseHelper->error(
                 Response::HTTP_NOT_FOUND,
                 Response::$statusTexts[Response::HTTP_NOT_FOUND],
                 config('constants.error_codes.ERROR_NO_FILES_FOUND_IN_ASSETS_FOLDER'),
                 trans('messages.custom_error_message.ERROR_NO_FILES_FOUND_IN_ASSETS_FOLDER')
             );
-            // @codeCoverageIgnoreEnd
         }
     }
 
@@ -310,15 +294,12 @@ class TenantOptionsController extends Controller
                 );
             }
             // Upload file on s3
-            if (!Storage::disk('s3')->put(
+            Storage::disk('s3')->put(
                 '/'.$tenantName.'/assets/images/'.$fileName,
-                file_get_contents($file->getRealPath())
-            )) {
-                throw new FileUploadException(
-                    trans('messages.custom_error_message.ERROR_WHILE_UPLOADING_IMAGE_ON_S3'),
-                    config('constants.error_codes.ERROR_WHILE_UPLOADING_IMAGE_ON_S3')
-                );
-            }
+                file_get_contents(
+                    $file->getRealPath()
+                )
+            );
         } else {
             throw new BucketNotFoundException(
                 trans('messages.custom_error_message.ERROR_TENANT_ASSET_FOLDER_NOT_FOUND_ON_S3'),
