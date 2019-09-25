@@ -163,11 +163,19 @@
         }
       }
     }
-    .favourite-icon {
-      position: absolute;
+    .btn-ic-wrap {
       position: absolute;
       right: 15px;
-      bottom: 80px;
+      bottom: 15px;
+      .card-listing & {
+        bottom: 55px;
+      }
+      @include lg-max {
+        right: 10px;
+        bottom: 35px;
+      }
+    }
+    .favourite-icon {
       display: inline-flex;
       justify-content: center;
       align-items: center;
@@ -183,7 +191,6 @@
       @include lg-max {
         height: 38px;
         width: 38px;
-        right: 10px;
       }
       svg {
         height: 19px;
@@ -217,9 +224,7 @@
       }
     }
     .add-icon {
-      position: absolute;
-      right: 15px;
-      bottom: 28px;
+      margin-top: 10px;
       display: inline-flex;
       justify-content: center;
       align-items: center;
@@ -235,7 +240,6 @@
       @include lg-max {
         height: 38px;
         width: 38px;
-        right: 10px;
       }
       &:hover,
       &:active {
@@ -580,7 +584,7 @@
                 margin: 10px 0;
               }
               .group-name {
-                margin: 0 18px 0 0;
+                margin: 10px 18px 10px 0;
               }
             }
           }
@@ -708,6 +712,7 @@
           opacity: 0;
           @include transition(opacity 0.3s);
           z-index: 11;
+          min-width: 185px;
         }
       }
       .card-text {

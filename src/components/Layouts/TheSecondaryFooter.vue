@@ -44,6 +44,7 @@
             this.getPageListing();
             // loadLocaleMessages(store.state.defaultLanguage);
             this.footerAdj();
+            window.addEventListener("resize", this.footerAdj);
         },
         methods: {
             async getPageListing() {
@@ -88,7 +89,6 @@
         },
         updated() {
             this.footerAdj();
-            window.addEventListener("resize", this.footerAdj);
         }
     };
 </script>

@@ -40,6 +40,7 @@
     position: relative;
     border-bottom: none;
     padding: 24px 60px 0 30px;
+    justify-content:flex-start;
     @include sm-max {
       padding: 20px 60px 0 18px;
     }

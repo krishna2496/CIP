@@ -4,7 +4,6 @@ import axios from 'axios'
 export default async(data) => {
     let responseData;
     var defaultLanguage = '';
-    let headerMenuData = {}
     if (store.state.defaultLanguage !== null) {
         defaultLanguage = (store.state.defaultLanguage).toLowerCase();
     }

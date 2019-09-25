@@ -3,6 +3,21 @@
 		<div class="table-header">
 		<h2>{{langauageData.label[currentMonthName]}} {{currentYearNumber}}</h2>
 		<div class="inner-wrap">
+			<div class="picker-btn-wrap table-action-btn">
+				<button class="prev-btn picker-btn" 
+				v-bind:class="{disabled :previousButtonDisable}"
+				v-b-tooltip.hover :title="langauageData.label.previous +' '+langauageData.label.week.toLowerCase()" @click.stop="goPrevWeek">
+					<img :src="$store.state.imagePath+'/assets/images/back-arrow-black.svg'"
+						:alt="langauageData.label.previous" />
+				</button>
+
+				<!-- <span>{{currentWeak}}</span> -->
+				<button class="next-btn picker-btn" v-b-tooltip.hover  :title="langauageData.label.next+' '+langauageData.label.week.toLowerCase()"
+					v-bind:class="{disabled :disableNextWeek}" @click.stop="goNextWeek">
+					<img :src="$store.state.imagePath+'/assets/images/next-arrow-black.svg'"
+						:alt="langauageData.label.next" />
+				</button>
+			</div>
 			<div class="picker-btn-wrap">
 				<button class="prev-btn picker-btn" 
 				v-bind:class="{disabled :previousButtonDisable}"
@@ -25,22 +40,6 @@
 
 		</div>
 		</div>
-
-		<div class="picker-btn-wrap table-action-btn">
-				<button class="prev-btn picker-btn" 
-				v-bind:class="{disabled :previousButtonDisable}"
-				v-b-tooltip.hover :title="langauageData.label.previous +' '+langauageData.label.week.toLowerCase()" @click.stop="goPrevWeek">
-					<img :src="$store.state.imagePath+'/assets/images/back-arrow-black.svg'"
-						:alt="langauageData.label.previous" />
-				</button>
-
-				<!-- <span>{{currentWeak}}</span> -->
-				<button class="next-btn picker-btn" v-b-tooltip.hover  :title="langauageData.label.next+' '+langauageData.label.week.toLowerCase()"
-					v-bind:class="{disabled :disableNextWeek}" @click.stop="goNextWeek">
-					<img :src="$store.state.imagePath+'/assets/images/next-arrow-black.svg'"
-						:alt="langauageData.label.next" />
-				</button>
-			</div>
 	</div>
 </template>
 
@@ -201,7 +200,7 @@
 
 				if ((parseInt(this.currentMonthFix.format('M')) <= parseInt(this.currentMonth.format('M'))) && (parseInt(this.currentMonthFix.format(
 						'YYYY')) <= parseInt(this.currentMonth.format('YYYY')))) {		
-					this.ispreviousButtonDisable = true;
+					this.isPreviousButtonDisable = true;
 
 					// previousButtonDisable
 				} else {

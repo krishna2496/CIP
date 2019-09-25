@@ -8,7 +8,6 @@
             <b-alert show :variant="classVariant" dismissible v-model="showErrorDiv">
                 {{ message }}
             </b-alert>
-
             <div class="table-wrapper-outer">
                 <div v-bind:class="{ 'content-loader-wrap': true, 'loader-active': isAjaxCall}">
                     <div class="content-loader"></div>
@@ -26,27 +25,53 @@
                             <b-col>
                                 <b-form-group>
                                     <label for>{{langauageData.label.hours}}*</label>
-                                    <AppCustomDropdown v-model="timeEntryDefaultData.hours" :optionList="hourList"
-                                        :errorClass="submitted && ($v.timeEntryDefaultData.hours.required || $v.timeEntryDefaultData.hours.$invalid)"
-                                        :defaultText="defaultHours" @updateCall="updateHours"
-                                        translationEnable="false" />
-                                    <div v-if="submitted && (!$v.timeEntryDefaultData.hours.required || !$v.timeEntryDefaultData.hours.$invalid)"
+
+                                    <b-form-input id 
+                                        :placeholder="langauageData.placeholder.spent_hours" 
+                                        :class="{'is-invalid' :submitted && ((!$v.timeEntryDefaultData.hours.required) || ($v.timeEntryDefaultData.hours.requiredHourValidation.$invalid) || (!$v.timeEntryDefaultData.hours.numeric) || (!$v.timeEntryDefaultData.hours.between)) }"
+                                        type="text" 
+                                        maxlength="2"
+                                        @input="hourChange"
+                                        v-model.trim="timeEntryDefaultData.hours"
+                                        ></b-form-input>
+
+                                    <div v-if="submitted && ((!$v.timeEntryDefaultData.hours.required) || ($v.timeEntryDefaultData.hours.requiredHourValidation.$invalid))"
                                         class="invalid-feedback">
                                         {{ langauageData.errors.hours_is_required }}</div>
+                                    <div v-if="submitted && (!$v.timeEntryDefaultData.hours.numeric)"
+                                        class="invalid-feedback">
+                                       {{ langauageData.errors.hours_numeric }}
+                                    </div>
+                                    <div v-if="submitted && (!$v.timeEntryDefaultData.hours.between) && ($v.timeEntryDefaultData.hours.numeric)"
+                                        class="invalid-feedback">
+                                       {{ langauageData.errors.hours_is_between }}
+                                    </div>
                                 </b-form-group>
 
                             </b-col>
                             <b-col sm="6">
-
                                 <b-form-group>
                                     <label for>{{langauageData.label.minutes}}*</label>
-                                    <AppCustomDropdown v-model="timeEntryDefaultData.minutes" :optionList="minuteList"
-                                        :errorClass="submitted && ($v.timeEntryDefaultData.hours.required || $v.timeEntryDefaultData.hours.$invalid)"
-                                        :defaultText="defaultMinutes" @updateCall="updateMinutes"
-                                        translationEnable="false" />
-                                    <div v-if="submitted && (!$v.timeEntryDefaultData.hours.required || !$v.timeEntryDefaultData.hours.$invalid)"
+                                     <b-form-input id 
+                                        :placeholder="langauageData.placeholder.spent_minutes" 
+                                        :class="{'is-invalid' :submitted && ((!$v.timeEntryDefaultData.minutes.required) || ($v.timeEntryDefaultData.minutes.requiredMinuteValidation.$invalid) || (!$v.timeEntryDefaultData.minutes.numeric) || (!$v.timeEntryDefaultData.minutes.between)) }"
+                                        type="text"            
+                                        maxlength="2"
+                                        @input="minuteChange"
+                                        v-model.trim="timeEntryDefaultData.minutes"
+                                        ></b-form-input>
+                                    
+                                    <div v-if="submitted && ((!$v.timeEntryDefaultData.minutes.required) || ($v.timeEntryDefaultData.minutes.requiredMinuteValidation.$invalid))"
                                         class="invalid-feedback">
                                         {{ langauageData.errors.minute_is_required }}</div>
+                                    <div v-if="submitted && (!$v.timeEntryDefaultData.minutes.numeric)"
+                                        class="invalid-feedback">
+                                       {{ langauageData.errors.minute_numeric }}
+                                    </div>
+                                    <div v-if="submitted && (!$v.timeEntryDefaultData.minutes.between) && ($v.timeEntryDefaultData.minutes.numeric)"
+                                        class="invalid-feedback">
+                                       {{ langauageData.errors.minute_between }}
+                                    </div>
                                 </b-form-group>
 
                             </b-col>
@@ -105,7 +130,7 @@
                     <b-form-group v-if="isFileUploadDisplay">
                         <b-row>
                             <b-col sm="12"><span class="error-message" v-if="fileError">{{fileError}}</span></b-col>
-                            <b-col sm="6" class="date-col">
+                            <b-col md="6" class="date-col">
 
                                 <label for>{{langauageData.label.file_upload}}</label>
                                 <div class="file-upload-wrap"
@@ -215,95 +240,7 @@
                 classVariant: "success",
                 isFileUploadDisplay: false,
                 isAjaxCall: false,
-                hourList: [
-                    ["00", "00"],
-                    ["01", "01"],
-                    ["02", "02"],
-                    ["03", "03"],
-                    ["04", "04"],
-                    ["05", "05"],
-                    ["06", "06"],
-                    ["07", "07"],
-                    ["08", "08"],
-                    ["09", "09"],
-                    ["10", "10"],
-                    ["11", "11"],
-                    ["12", "12"],
-                    ["13", "13"],
-                    ["14", "14"],
-                    ["15", "15"],
-                    ["16", "16"],
-                    ["17", "17"],
-                    ["18", "18"],
-                    ["19", "19"],
-                    ["20", "20"],
-                    ["21", "21"],
-                    ["22", "22"],
-                    ["23", "23"]
-                ],
-                minuteList: [
-                    ["00", "00"],
-                    ["01", "01"],
-                    ["02", "02"],
-                    ["03", "03"],
-                    ["04", "04"],
-                    ["05", "05"],
-                    ["06", "06"],
-                    ["07", "07"],
-                    ["08", "08"],
-                    ["09", "09"],
-                    ["10", "10"],
-                    ["11", "11"],
-                    ["12", "12"],
-                    ["13", "13"],
-                    ["14", "14"],
-                    ["15", "15"],
-                    ["16", "16"],
-                    ["17", "17"],
-                    ["18", "18"],
-                    ["19", "19"],
-                    ["20", "20"],
-                    ["21", "21"],
-                    ["22", "22"],
-                    ["23", "23"],
-                    ["24", "20"],
-                    ["25", "2"],
-                    ["26", "22"],
-                    ["27", "27"],
-                    ["28", "28"],
-                    ["29", "29"],
-                    ["30", "30"],
-                    ["31", "31"],
-                    ["32", "32"],
-                    ["33", "33"],
-                    ["34", "34"],
-                    ["35", "35"],
-                    ["36", "36"],
-                    ["37", "37"],
-                    ["38", "38"],
-                    ["39", "39"],
-                    ["40", "40"],
-                    ["41", "41"],
-                    ["42", "42"],
-                    ["43", "43"],
-                    ["44", "44"],
-                    ["45", "45"],
-                    ["46", "46"],
-                    ["47", "47"],
-                    ["48", "48"],
-                    ["49", "49"],
-                    ["50", "50"],
-                    ["51", "51"],
-                    ["52", "52"],
-                    ["53", "53"],
-                    ["54", "50"],
-                    ["55", "51"],
-                    ["56", "52"],
-                    ["57", "57"],
-                    ["58", "58"],
-                    ["59", "59"]
 
-                ],
                 saveVolunteerHours: {
                     mission_id: "",
                     date_volunteered: "",
@@ -318,17 +255,31 @@
         validations() {
 
             const requiredHourValidation = (
-                (this.timeEntryDefaultData.minutes == '' || this.timeEntryDefaultData.hours == '') ||
-                (this.timeEntryDefaultData.minutes == '00' && this.timeEntryDefaultData.hours == '00') ||
-                (this.timeEntryDefaultData.minutes == '00' && this.timeEntryDefaultData.hours == '') ||
-                (this.timeEntryDefaultData.minutes == '' && this.timeEntryDefaultData.hours == '00')
+                (this.timeEntryDefaultData.hours == '') ||
+                (this.timeEntryDefaultData.minutes == '0' && this.timeEntryDefaultData.hours == '0') 
+            ) ? {
+                required
+            } : {};
+            
+            const requiredMinuteValidation = (
+                (this.timeEntryDefaultData.minutes == '') ||
+                (this.timeEntryDefaultData.minutes == '0' && this.timeEntryDefaultData.hours == '0')
             ) ? {
                 required
             } : {};
 
             return {
                 timeEntryDefaultData: {
-                    hours: requiredHourValidation,
+                    hours: {
+                        required,
+                        numeric,
+                        between: between(0, 23),
+                        requiredHourValidation},
+                    minutes : {
+                        required,
+                        numeric,
+                        between: between(0, 59),
+                        requiredMinuteValidation},
                     workDay: {
                         required
                     },
@@ -342,6 +293,16 @@
             }
         },
         methods: {
+            hourChange() {
+                if(this.timeEntryDefaultData.hours == "00") {
+                    this.timeEntryDefaultData.hours = Math.floor(this.timeEntryDefaultData.hours).toString()
+                }
+            },
+            minuteChange() {
+                if(this.timeEntryDefaultData.minutes == "00") {
+                    this.timeEntryDefaultData.minutes = Math.floor(this.timeEntryDefaultData.minutes).toString()
+                }
+            },
             dateChange() {
                 this.$emit('changeDocument', this.timeEntryDefaultData.dateVolunteered)
             },
@@ -352,6 +313,7 @@
                 let error = false
                 let duplicateUpload = false
                 let latestUpload = files[files.length - 1];
+                let latestUploadIndex = files.length - 1;
                 let latestUploadName = latestUpload.name
                 let latestUploadSize = latestUpload.size
                 let latestUploadType = latestUpload.type
@@ -364,7 +326,6 @@
                     } else {
                         if (data.size > 4000000) {
                             _this.fileError = _this.langauageData.errors.file_max_size
-                          
                             error = true
                         }
                     }
@@ -372,14 +333,13 @@
                         if (data.name == latestUploadName && data.size == latestUploadSize && data.type ==
                             latestUploadType) {
                             _this.fileError = _this.langauageData.errors.file_already_uploaded
-                            files.splice(files.length - 1, 1)
                             error = true
                             duplicateUpload = true;
                         }
                     }
                     if(error == true) {
                         if(duplicateUpload == true) {
-                            files.splice(files.length - 1, 1)
+                            files.splice(latestUploadIndex, 1)
                         } else {
                             files.splice(index, 1)
                         }
@@ -423,10 +383,12 @@
                 if (this.$v.$invalid) {
                     return;
                 }
-                if ((this.timeEntryDefaultData.hours == '' || this.timeEntryDefaultData.hours == '00') &&
-                    (this.timeEntryDefaultData.minutes == "00" || this.timeEntryDefaultData.minutes == "")) {
+            
+                if ((this.timeEntryDefaultData.hours == '' || this.timeEntryDefaultData.hours == '0') &&
+                    (this.timeEntryDefaultData.minutes == "0" || this.timeEntryDefaultData.minutes == "")) {
                     return
                 }
+                
                 this.fileError = '';
                 this.isAjaxCall = true;
                 const formData = new FormData();
@@ -516,6 +478,7 @@
             this.langauageData = JSON.parse(store.state.languageLabel)
             this.isFileUploadDisplay = this.settingEnabled(constants.TIMESHEET_DOCUMENT_UPLOAD)
             this.lang = (store.state.defaultLanguage).toLowerCase();
+            
         }
     };
 </script>
