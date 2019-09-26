@@ -236,7 +236,7 @@ class TenantOptionsController extends Controller
      */
     public function updateImage(Request $request): JsonResponse
     {
-        $validFileTypesArray = ['jpeg','jpg','svg','png'];
+        $validFileTypesArray = ['image/jpeg','image/svg+xml','image/png'];
 
         // Server side validataions
         $validator = Validator::make(
@@ -268,8 +268,9 @@ class TenantOptionsController extends Controller
                 trans('messages.custom_error_message.ERROR_NOT_VALID_IMAGE_FILE_EXTENSION')
             );
         }
+
         // If request parameter have any error
-        if (!in_array($file->getClientOriginalExtension(), $validFileTypesArray) &&
+        if (!in_array($file->getClientMimeType(), $validFileTypesArray) &&
         $fileNameExtension === $file->getClientOriginalExtension()) {
             return $this->responseHelper->error(
                 Response::HTTP_UNPROCESSABLE_ENTITY,
@@ -298,7 +299,10 @@ class TenantOptionsController extends Controller
                 '/'.$tenantName.'/assets/images/'.$fileName,
                 file_get_contents(
                     $file->getRealPath()
-                )
+                ),
+                [
+                    'mimetype' => $file->getClientMimeType()
+                ]
             );
         } else {
             throw new BucketNotFoundException(
