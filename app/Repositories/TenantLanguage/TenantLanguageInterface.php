@@ -32,13 +32,4 @@ interface TenantLanguageInterface
      * @return bool
      */
     public function delete(int $id): bool;
-
-    /**
-     * Check language status.
-     *
-     * @param  int $id
-     * @param  string $status
-     * @return null|Collection
-     */
-    public function checkLanguageStatus(int $id, string $status): ?Collection;
 }

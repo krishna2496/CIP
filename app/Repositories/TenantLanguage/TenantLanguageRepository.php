@@ -57,7 +57,6 @@ class TenantLanguageRepository implements TenantLanguageInterface
         ->with(['language' => function ($query) {
             $query->select('language_id', 'name', 'code');
         }])->where('tenant_id', $tenantId)->paginate($request->perPage);
-
         foreach ($tenantLanguageData as $value) {
             $value->name = $value->language->name;
             $value->code = $value->language->code;
@@ -104,17 +103,5 @@ class TenantLanguageRepository implements TenantLanguageInterface
     {
         $tenantLanguageData =  $this->tenantLanguage->findOrFail($id);
         return $tenantLanguageData->delete();
-    }
-
-    /**
-     * Check language status.
-     *
-     * @param  int $id
-     * @param  string $status
-     * @return null|Collection
-     */
-    public function checkLanguageStatus(int $id, string $status): ?Collection
-    {
-        return $this->language->checkStatus($id, $status);
     }
 }

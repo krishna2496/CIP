@@ -86,7 +86,7 @@ class TenantLanguageController extends Controller
             $request->toArray(),
             [
                 'tenant_id' => 'required|exists:tenant,tenant_id,deleted_at,NULL',
-                'language_id'  => 'required|exists:language,language_id,deleted_at,NULL',
+                'language_id'  => 'required|exists:language,language_id,deleted_at,NULL,status,1',
                 'default'  => 'required|in:1,0'
             ]
         );
@@ -97,20 +97,6 @@ class TenantLanguageController extends Controller
                 Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
                 config('constants.error_codes.ERROR_TENANT_LANGUAGE_REQUIRED_FIELDS_EMPTY'),
                 $validator->errors()->first()
-            );
-        }
-
-        // Check for active status of language
-        $languageStatus = $this->tenantLanguageRepository->checkLanguageStatus(
-            $request->language_id,
-            config('constants.language_status.ACTIVE')
-        );
-        if ($languageStatus->isEmpty()) {
-            return $this->responseHelper->error(
-                Response::HTTP_UNPROCESSABLE_ENTITY,
-                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                config('constants.error_codes.ERROR_LANGUAGE_NOT_ACTIVE'),
-                trans('messages.custom_error_message.ERROR_LANGUAGE_NOT_ACTIVE')
             );
         }
 
@@ -136,7 +122,7 @@ class TenantLanguageController extends Controller
     public function destroy(int $tenantLanguageId): JsonResponse
     {
         try {
-            $tenantLanguageStatus = $this->tenantLanguageRepository->delete($tenantLanguageId);
+            $this->tenantLanguageRepository->delete($tenantLanguageId);
 
             // Set response data
             $apiStatus = Response::HTTP_NO_CONTENT;

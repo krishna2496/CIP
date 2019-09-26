@@ -43,7 +43,7 @@ class TenantLanguage extends Model
      *
      * @var array
      */
-    protected $visible = ['language_id', 'default', 'language', 'name', 'code'];
+    protected $visible = ['language_id', 'default', 'language', 'name', 'code', 'tenant_language_id'];
 
     /**
     * Define a one-to-one relationship.
