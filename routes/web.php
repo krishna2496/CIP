@@ -96,6 +96,23 @@ $router->group(
             '/language/{languageId}',
             ['as' => 'language.update-language',
             'uses' => 'LanguageController@update']
+        // Store/Update tenant language
+        $router->post(
+            '/tenant-language',
+            ['as' => 'tenants.store-tenantlanguage-data',
+            'uses' => 'TenantLanguageController@store']
+        );
+        // Get tenant language list
+        $router->get(
+            '/tenant-language/{tenantId}',
+            ['as' => 'tenants.language-lists', 'middleware' => ['PaginationMiddleware'],
+            'uses' => 'TenantLanguageController@index']
+        );
+        // Delete tenant language details
+        $router->delete(
+            '/tenant-language/{tenantLanguageId}',
+            ['as' => 'tenants.delete-tenantlanguage-data',
+            'uses' => 'TenantLanguageController@destroy']
         );
     }
 );

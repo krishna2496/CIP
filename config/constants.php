@@ -19,6 +19,9 @@
             'ERROR_WHILE_COMPILING_SCSS_FILES' => '200013',
             'ERROR_LANGUAGE_NOT_FOUND' => '200021',
             'ERROR_LANGUAGE_REQUIRED_FIELDS_EMPTY' => '200022',
+            'ERROR_TENANT_LANGUAGE_REQUIRED_FIELDS_EMPTY' => '200101',
+            'ERROR_LANGUAGE_NOT_ACTIVE' => '200102',
+            'ERROR_TENANT_LANGUAGE_NOT_FOUND' => '200103',
         ],
         'background_process_status' => [
             'PENDING' => '0',
@@ -35,5 +38,9 @@
         'EMAIL_TEMPLATE_FOLDER' => 'emails',
         'EMAIL_TEMPLATE_JOB_NOTIFICATION' => 'tenant-notification',
         'EMAIL_TESTING_TEMPLATE' => 'test-email',
-        'ADMIN_EMAIL_ADDRESS' => 'siddharajsinh.zala@tatvasoft.com'
+        'ADMIN_EMAIL_ADDRESS' => 'siddharajsinh.zala@tatvasoft.com',
+        'language_status' => [
+            'ACTIVE' => '1',
+            'INACTIVE' => '0'
+        ]
     ];
