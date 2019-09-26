@@ -68,6 +68,14 @@ Vue.filter('formatDate', function(value) {
     }
 })
 
+Vue.filter('formatTime', function(value) {
+    if (value) {
+        let splitArray = value.split(":");
+
+        return splitArray[0] + ':' + splitArray[1]
+    }
+})
+
 Vue.filter('firstLetterCapital', function(value) {
     if (value) {
         value = value.toLowerCase()
