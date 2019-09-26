@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Hash;
 use App\Models\City;
 use App\Models\Country;
 use App\Models\Timezone;
-use App\Models\missionApplication;
+use App\Models\MissionApplication;
 use App\Models\Availability;
 use App\Models\UserCustomFieldValue;
 use App\Models\Timesheet;
@@ -210,5 +210,26 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     public function findUserDetail(int $userId): User
     {
         return static::with('city', 'country', 'timezone', 'availability', 'userCustomFieldValue')->findOrFail($userId);
+    }
+
+    /**
+     * Defined has many relation for the mission application table.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function timesheet(): HasMany
+    {
+        return $this->hasMany(Timesheet::class, 'user_id', 'user_id');
+    }
+
+    /**
+     * Get user detail
+     *
+     * @param int $userId
+     * @return int
+     */
+    public function missionCount(int $userId): User
+    {
+        return static::with('timesheet')->where(['user_id' => $userId])->groupBy('mission_id')->count();
     }
 }
