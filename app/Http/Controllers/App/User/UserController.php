@@ -110,8 +110,8 @@ class UserController extends Controller
         if ($request->has('search')) {
             $userList = $this->userRepository->searchUsers($request->input('search'), $request->auth->user_id);
         }
-        $tenantName = $this->getSubDomainFromRequest($request);
-        $users = $userList->map(function (User $user) use ($request) {
+        $tenantName = $this->helpers->getSubDomainFromRequest($request);
+        $users = $userList->map(function (User $user) use ($request, $tenantName) {
             $user = $this->transformUser($user, $tenantName);
             return $user;
         })->all();
