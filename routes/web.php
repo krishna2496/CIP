@@ -282,6 +282,11 @@ $router->group(['middleware' => 'localization'], function ($router) {
         $router->get('/app/news/{newsId}',['as' => 'app.news.show',
         'middleware' => 'localization|tenant.connection|jwt.auth',
         'uses' => 'App\News\NewsController@show']);
+        
+        /* Store story detail */
+        $router->post('/app/story',['as' => 'app.story.store',
+        'middleware' => 'localization|tenant.connection|jwt.auth',
+        'uses' => 'App\Story\StoryController@store']);
       
     });
 

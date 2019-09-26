@@ -211,17 +211,17 @@ class S3Helper
      * @param $file
      * @param string $tenantName
      * @param int $userId
-     * @param int $timesheetId
+     * @param string $folderName
      * @return string
      */
-    public function uploadDocumentOnS3Bucket($file, string $tenantName, int $userId, int $timesheetId): string
+    public function uploadDocumentOnS3Bucket($file, string $tenantName, int $userId, string $folderName): string
     {
         try {
             $disk = Storage::disk('s3');
             $fileName = pathinfo($file->getClientOriginalName())['filename'] . '_' . time();
             $fileExtension = pathinfo($file->getClientOriginalName())['extension'];
             $documentName = $fileName . '.' . $fileExtension;
-            $documentPath = $tenantName . '/users/' . $userId . '/timesheet/' . $documentName;
+            $documentPath = $tenantName . '/users/' . $userId . '/'.$folderName.'/' . $documentName;
             $pathInS3 = 'https://' . env('AWS_S3_BUCKET_NAME') . '.s3.'
             . env("AWS_REGION") . '.amazonaws.com/' . $documentPath;
 

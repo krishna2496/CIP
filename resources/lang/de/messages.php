@@ -103,6 +103,7 @@ return [
         'MESSAGE_NEWS_DELETED' => 'DE: News deleted successfully',
         'MESSAGE_NEWS_LISTING' => 'DE: News listed sucessfully',        
         'MESSAGE_NEWS_UPDATED' => 'DE: News updated sucessfully',
+        'STORY_ADDED_SUCESSFULLY' => 'DE: Story added successfully',
     ],
 
         
