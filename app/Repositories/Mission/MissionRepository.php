@@ -980,6 +980,12 @@ class MissionRepository implements MissionInterface
                 $query->select(DB::raw("AVG(rating) as rating"));
             }
         ]);
+        $missionQuery->withCount([
+            'timesheet AS achieved_goal' => function ($query) use ($request) {
+                $query->select(DB::raw("SUM(action) as action"));
+                $query->whereIn('status_id', array(config('constants.timesheet_status_id.APPROVED'),
+                config('constants.timesheet_status_id.AUTOMATICALLY_APPROVED')));
+            }]);
         $missionQuery->with(['missionRating']);
         return $missionQuery->inRandomOrder()->get();
     }
@@ -1046,6 +1052,12 @@ class MissionRepository implements MissionInterface
             ])->withCount([
                 'missionRating as mission_rating_total_volunteers'
             ]);
+            $missionQuery->withCount([
+                'timesheet AS achieved_goal' => function ($query) use ($request) {
+                    $query->select(DB::raw("SUM(action) as action"));
+                    $query->whereIn('status_id', array(config('constants.timesheet_status_id.APPROVED'),
+                    config('constants.timesheet_status_id.AUTOMATICALLY_APPROVED')));
+                }]);
         return $missionQuery->get();
     }
 
