@@ -117,24 +117,6 @@
       }
     }
   }
-  .badge {
-    &.status-label {
-      background: transparent;
-      color: $black-primary;
-      border: 1px solid $border-color;
-      border-radius: 50px;
-      white-space: nowrap;
-      text-overflow: ellipsis;
-      max-width: 100%;
-      overflow: hidden;
-      position: relative;
-      display: inline-block;
-      padding: 5px 18px;
-      vertical-align: middle;
-      font-size: 15px;
-      font-weight: 400;
-    }
-  }
 }
 
 .btn-cross {
@@ -278,4 +260,25 @@ body {
   .modal-dialog {
     padding-top: 50px;
   }
+}
+
+
+
+.badge {
+    &.status-label {
+      background: transparent;
+      color: $black-primary;
+      border: 1px solid $border-color;
+      border-radius: 50px;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      max-width: 100%;
+      overflow: hidden;
+      position: relative;
+      display: inline-block;
+      padding: 5px 18px;
+      vertical-align: middle;
+      font-size: 15px;
+      font-weight: 400;
+    }
 }
