@@ -546,6 +546,11 @@ class MissionRepository implements MissionInterface
                 $query->whereIn('approval_status', [config("constants.application_status")["AUTOMATICALLY_APPROVED"],
                 config("constants.application_status")["PENDING"]]);
             }])
+            ->withCount(['missionApplication as user_application_count' => function ($query) use ($request) {
+                $query->where('user_id', $request->auth->user_id)
+                ->whereIn('approval_status', [config("constants.application_status")["AUTOMATICALLY_APPROVED"],
+                config("constants.application_status")["PENDING"]]);
+            }])
             ->withCount(['favouriteMission as favourite_mission_count' => function ($query) use ($request) {
                 $query->Where('user_id', $request->auth->user_id);
             }]);
@@ -554,6 +559,12 @@ class MissionRepository implements MissionInterface
                     $query->select(DB::raw("AVG(rating) as rating"));
                 }
             ]);
+        $missionQuery->withCount([
+            'timesheet AS achieved_goal' => function ($query) use ($request) {
+                $query->select(DB::raw("SUM(action) as action"));
+                $query->whereIn('status_id', array(config('constants.timesheet_status_id.APPROVED'),
+                config('constants.timesheet_status_id.AUTOMATICALLY_APPROVED')));
+            }]);
         $missionQuery->with(['missionRating']);
        
         //Explore mission recommended to user

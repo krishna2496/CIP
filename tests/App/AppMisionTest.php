@@ -2838,4 +2838,108 @@ class AppMissionTest extends TestCase
         $user->delete();        
         App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->delete();
     }
+
+    /**
+     * @test
+     *
+     * Get user filters
+     *
+     * @return void
+     */
+    public function it_should_return_all_user_filters_without_city()
+    {
+        $connection = 'tenant';
+        $user = factory(\App\User::class)->make();
+        $user->setConnection($connection);
+        $user->save();
+
+        $skill = factory(\App\Models\Skill::class)->make();
+        $skill->setConnection($connection);
+        $skill->save();
+        
+        $params = [
+            "organisation" => [
+                "organisation_id" => 1,
+                "organisation_name" => str_random(10),
+                "organisation_detail" => [  
+                    [  
+                       "lang"=>"en",
+                       "detail"=>"Testing organisation description in English"
+                    ],
+                    [  
+                       "lang"=>"fr",
+                       "detail"=>"Testing organisation description in French"
+                    ]
+                ]
+            ],
+            "location" => [
+                "city_id" => 1,
+                "country_code" => "US"
+            ],
+            "mission_detail" => [[
+                    "lang" => "en",
+                    "title" => 'title',
+                    "short_description" => str_random(20),
+                    "objective" => str_random(20),
+                    "section" => [
+                        [
+                            "title" => str_random(10),
+                            "description" => str_random(100),
+                        ],
+                        [
+                            "title" => str_random(10),
+                            "description" => str_random(100),
+                        ]
+                    ]
+                ]
+            ],
+            "media_images" => [[
+                    "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer6.png",
+                    "default" => "1"
+                ]
+            ],
+            "documents" => [],
+            "media_videos"=> [],
+            "start_date" => "2019-05-15 10:40:00",
+            "end_date" => "2019-10-15 10:40:00",
+            "mission_type" => config("constants.mission_type.GOAL"),
+            "goal_objective" => rand(1, 1000),
+            "total_seats" => rand(1, 1000),
+            "application_deadline" => "2019-07-28 11:40:00",
+            "publication_status" => config("constants.publication_status.APPROVED"),
+            "theme_id" => 1,
+            "availability_id" => 1,
+            "skills" => [
+                [
+                    "skill_id" => $skill->skill_id
+                ]
+            ]
+        ];
+
+        $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(201);
+
+        $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
+        DB::setDefaultConnection('mysql');
+      
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
+        
+        $this->get('app/missions?search=title&country_id='.$mission->country_id.'&theme_id=1&skill_id='.$skill->skill_id, ['token' => $token])
+          ->seeStatusCode(200)
+          ->seeJsonStructure([
+            "status",
+            "meta_data" => [
+                "filters" => [
+                    "search"
+                ]
+            ],
+            "message"
+        ]);
+
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
+        $this->get('app/user-filter', ['token' => $token])
+          ->seeStatusCode(200);
+        $user->delete();
+        App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->delete();
+    }
 }
