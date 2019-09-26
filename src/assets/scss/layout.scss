@@ -1786,7 +1786,7 @@ main {
         padding: 20px;
 		margin: 32px 0 0;	
 		.comment-list-inner{
-			max-height: 490px;
+			max-height: 568px;
 		}
 
         @include sm-max {
@@ -1875,11 +1875,11 @@ main {
 }
 
 .platform-details-wrap {
-    padding-bottom: 94px;
+    padding-bottom: 50px;
 
-    @include lg-max {
-        padding-bottom: 50px;
-    }
+    // @include lg-max {
+    //     padding-bottom: 50px;
+    // }
 
     .platform-details-left {
         padding-right: 66px;
@@ -3570,6 +3570,18 @@ background-color: $border-color;
 				margin: 20px 0;
 			}
         }
+        h2{
+            display: flex;
+            flex:1;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            .badge{
+                &.status-label{
+                    margin-top: 5px;
+                }
+            }
+        }
         .author-name{
            margin: 15px 0 4px;
             color:$gray-primary;
@@ -4114,3 +4126,76 @@ background-color: $border-color;
 
 }
 
+
+.cookies-block{
+    background: $rgb-black-darker;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    left: 0;
+    padding: 50px 0;
+    z-index: 1001;
+    opacity: 1;
+    visibility: visible;
+    @include transition(all 0.3s);
+    display: none;
+    &.hidden{
+        opacity: 0;
+        visibility: hidden;
+    }
+    @include sm-max{
+        padding: 40px 0;
+    }
+    .container{
+        display: flex;
+        flex:1;
+        justify-content: space-between;
+        color: $light-gray;
+        align-items: flex-start;
+        font-family: $general-font;
+        font-weight: 300;
+        font-size: 16px;
+        @include lmd-max{
+            font-size: 15px;
+        }
+        @include sm-max{
+            flex-wrap: wrap;
+        }
+        p{
+            margin-bottom: 0;
+        }
+        .text-wrap{
+            padding-right: 15px;
+            @include sm-max{
+                margin-bottom:15px; 
+            }
+        }
+    }
+    a{
+        color: $primary;
+        text-decoration: underline;
+        &:hover{
+            text-decoration: none;
+        }
+    }
+    .btn{
+        background: transparent;
+        min-width: 122px;
+        @include lg-max{
+            min-height: 40px;
+        }
+    }
+    .close{
+        cursor: pointer;
+        padding: 5px;
+        position: absolute;
+        top:16px;
+        right: 12px;
+        line-height: 0;
+        opacity: 1;
+        img{
+            height: 15px;
+            width: 15px;
+        }
+    }
+}
