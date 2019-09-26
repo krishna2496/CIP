@@ -28,7 +28,9 @@
                             @click="clearMissionFilterData">{{langauageData.label.clear_all}}</b-button>
                     </div>
                 </div>
-                <div class="heading-section" v-if="missionList.length > 0">
+                <div v-bind:class="{ 'heading-section': true, 
+					'justify-content-end' : !isTotalMissionDisplay
+										}" v-if="missionList.length > 0">
                     <h2 v-if="isTotalMissionDisplay">
                         <template v-if="rows > 0">{{ langauageData.label.explore}}
                             <strong>{{rows}}</strong>
@@ -87,7 +89,7 @@
         <footer>
             <TheSecondaryFooter></TheSecondaryFooter>
         </footer>
-        <back-to-top bottom="68px" right="40px" :title="langauageData.label.back_to_top">
+        <back-to-top bottom="34px" right="40px" :title="langauageData.label.back_to_top">
             <i class="icon-wrap">
                 <img class="img-normal" :src="$store.state.imagePath+'/assets/images/down-arrow.svg'"
                     alt="Down Arrow" />

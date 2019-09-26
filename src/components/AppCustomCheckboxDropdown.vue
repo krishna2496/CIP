@@ -98,6 +98,15 @@
 							minwidth_style.setAttribute("style", "left: 0 !important");
 						}
 					}
+					 setTimeout(function(){
+			  	var dropdown_list_child = dropdown_list.childNodes[1];
+          		var optionlist_height = parseInt(window.getComputedStyle(optionlist).getPropertyValue("height"));
+				var dropdown_list_height = parseInt(window.getComputedStyle(dropdown_list_child).getPropertyValue("height"));
+				var minheight_style = dropdown_list.querySelector(".dropdown-option-wrap");
+		    	if (dropdown_list_height > optionlist_height){
+            		minheight_style.setAttribute("style", "overflow-x:hidden");
+				  }
+			});
 				}
 			}
 		},

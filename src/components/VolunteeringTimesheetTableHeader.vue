@@ -142,7 +142,7 @@
 				let payload = moment(this.currentMonth).year(this.currentYearNumber).add(7, 'day')
 				this.currentWeak = moment(this.currentMonth).year(this.currentYearNumber).add(7, 'day').week()
 				this.changeMonth(payload);
-                this.$root.$emit('bv::hide::tooltip');
+				this.$root.$emit('bv::hide::tooltip');
 			},
 			getWeekDayNameOfMonth(month, year) {
 				//pass week number
