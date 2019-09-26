@@ -5,28 +5,6 @@
 		</header>
 
 		<main>
-			<!-- <social-sharing 
-				v-bind:url="socialSharingUrl"
-				:title="missionDetail.title"
-				:description="missionDetail.short_description"
-				inline-template
-			>
-				<div class="social-sharing">
-					<network network="facebook" v-if="$store.state.isFacebookDisplay">
-						<i class="social-icon facebook-icon">
-							<img :src="$store.state.imagePath+'/assets/images/facebook-ic.svg'" :alt="`${JSON.parse(this.$store.state.languageLabel).label.facebook}`"
-							:title="`${JSON.parse(this.$store.state.languageLabel).label.facebook}`"/>
-						</i>
-					</network>
-					<network network="twitter" v-if="$store.state.isTwitterDisplay">
-						<i class="social-icon twitter-icon">
-							<img :src="$store.state.imagePath+'/assets/images/twitter-ic.svg'" :alt="`${JSON.parse(this.$store.state.languageLabel).label.twitter}`"
-							:title="`${JSON.parse(this.$store.state.languageLabel).label.twitter}`"
-							/>
-						</i>
-					</network>
-				</div>
-			</social-sharing> -->
 			<b-container>
 				<div class="slider-banner-block">
 					<b-row>
@@ -124,18 +102,6 @@
 										</div>
 									</social-sharing>
 								</div>
-								<!-- <div class="share-block">
-								<div class="social-block">
-									<b-link href="#" class="social-icon">
-										<img src="../assets/images/facebook-ic-gray.svg" class="normal-img" alt="facebook img"/>
-										<img src="../assets/images/facebook-ic-gray-h.svg" class="hover-img" alt="facebook img"/>
-									</b-link>
-									<b-link href="#" class="social-icon">
-										<img src="../assets/images/twitter-ic-gray.svg" class="normal-img" alt="twitter img"/>
-                   						<img src="../assets/images/twitter-ic-gray-h.svg" class="hover-img" alt="twitter img" />
-									</b-link>
-								</div>
-						</div> -->
 								<div class="group-details">
 									<div class="top-strip">
 										<span>
@@ -196,11 +162,29 @@
 														<img :src="$store.state.imagePath+'/assets/images/clock.svg'"
 															alt="user">
 													</i>
-													<div class="text-wrap">
+													<div class="text-wrap" v-if="!missionDetail.application_deadline != '' && missionDetail.application_deadline != null">
 														<span
-															class="title-text mb-1">{{missionDetail.application_deadline | formatDate}}</span>
+															class="title-text mb-1">{{missionDetail.application_deadline | formatDate}}
+														</span>
 														<span
-															class="subtitle-text">{{ langauageData.label.deadline }}</span>
+															class="subtitle-text">{{ langauageData.label.deadline }}
+														</span>
+													</div>
+													<div v-else>
+														<span
+															class="title-text mb-1">
+															<span>
+															{{ langauageData.label.from }}	
+															{{missionDetail.application_start_date | formatDate}} 
+															{{missionDetail.application_start_time | formatTime}}
+															</span>
+															<span>
+															{{ langauageData.label.until }}	
+															{{missionDetail.application_end_date | formatDate}} 
+															{{missionDetail.application_end_time | formatTime}}
+															</span>
+														</span>
+														<span class="subtitle-text"><p>{{ langauageData.label.deadline }}</p></span>
 													</div>
 												</div>
 											</template>
@@ -254,7 +238,7 @@
 									<b-list-group-item>
 										<div>
 											<i class="img-wrap">
-												<img src="../assets/images/location-black.svg" alt="" />
+												<img :src="$store.state.imagePath+'/assets/images/location-black.svg'" alt="" />
 											</i>
 											<span class="label">{{ langauageData.label.city}}</span>
 											<p class="text-wrap">{{missionDetail.city_name}}</p>
@@ -263,25 +247,31 @@
 									<b-list-group-item v-if="isThemeDisplay">
 										<div>
 											<i class="img-wrap">
-												<img src="../assets/images/earth-ic.svg" alt="" />
+												<img :src="$store.state.imagePath+'/assets/images/earth-ic.svg'" alt="" />
 											</i>
 											<span class="label">{{ langauageData.label.theme}}</span>
 											<p class="text-wrap">{{getThemeTitle(missionDetail.mission_theme)}}</p>
 										</div>
 									</b-list-group-item>
 									<b-list-group-item>
+										
 										<div>
 											<i class="img-wrap">
-												<img src="../assets/images/calendar.svg" alt="" />
+												<img :src="$store.state.imagePath+'/assets/images/calendar.svg'" alt="" />
 											</i>
 											<span class="label">{{ langauageData.label.date}}</span>
 											<template
-												v-if="missionDetail.application_deadline && missionDetail.application_deadline != null">
-												<p class="text-wrap">{{missionDetail.application_deadline | formatDate}}
+												v-if="missionDetail.application_start_date && missionDetail.application_start_date != null">
+												<p class="text-wrap">{{missionDetail.application_start_date | formatDate}}
 												</p>
 											</template>
 											<template v-else>
-												<p class="text-wrap">{{ langauageData.label.on_going_opportunities }}
+												<p class="text-wrap" 
+												v-if="missionDetail.application_start_date != '' && missionDetail.application_start_date != null"
+												>{{ missionDetail.application_start_date | formatDate}}
+												</p>
+												<p v-else>
+													{{ langauageData.label.on_going_opportunities }}
 												</p>
 											</template>
 
@@ -290,7 +280,7 @@
 									<b-list-group-item>
 										<div>
 											<i class="img-wrap">
-												<img src="../assets/images/group-ic.svg" alt="" />
+												<img :src="$store.state.imagePath+'/assets/images/group-ic.svg'" alt="" />
 											</i>
 											<span class="label">{{ langauageData.label.organisation}}</span>
 											<p class="text-wrap">{{missionDetail.organisation_name}}</p>
@@ -382,19 +372,21 @@
 												<div class="col-sm-4 mission-tab-col" v-if="isMissionGoalDisplay">
 													<div class="mission-tab-inner">
 														<p v-if="missionDetail.goal_objective">
-															{{missionDetail.goal_objective}}<span>Trees</span></p>
+															{{missionDetail.goal_objective}}<span>
+																{ langauageData.label.goal_objective }}
+															</span></p>
 														<p v-else>
-															0<span>Trees</span>
+															0<span>{{ langauageData.label.goal_objective }}</span>
 														</p>
 													</div>
 												</div>
 												<div class="col-sm-4 mission-tab-col" v-if="isCurrentStatusDisplay">
 													<div class="mission-tab-inner">
 														<p v-if="missionDetail.achieved_goal">
-															{{missionDetail.achieved_goal}} <span>Planted</span>
+															{{missionDetail.achieved_goal}} <span>{{ langauageData.label.achieved }}</span>
 														</p>
 														<p v-else>
-															0<span>Planted</span>
+															0<span>{{ langauageData.label.achieved }}</span>
 														</p>
 													</div>
 												</div>
@@ -416,12 +408,9 @@
 											<div v-if="missionDetail.mission_document 
 									&& missionDetail.mission_document.length > 0">
 												<h2>{{ langauageData.label.documents }}</h2>
-
 												<div class="document-list-wrap">
-
 													<div class="document-list-block"
 														v-for="document in missionDetail.mission_document">
-
 														<!-- pdf -->
 														<template v-if="document.document_type =='pdf'">
 															<b-link :href="document.document_path" target="_blank"
@@ -439,7 +428,6 @@
 																	class="has-img no-close" :url="bgImage[1]" />
 															</b-link>
 														</template>
-
 														<!-- xls  xlsx-->
 														<template
 															v-if="document.document_type =='xls' || document.document_type =='xlsx ' ">
@@ -449,7 +437,6 @@
 																	class="has-img no-close" :url="bgImage[2]" />
 															</b-link>
 														</template>
-
 													</div>
 
 												</div>
@@ -458,7 +445,6 @@
 									</div>
 									<div class="tabs">
 										<div class="tab-title">
-
 											<h3 v-b-toggle.organization>{{ langauageData.label.organisation }}</h3>
 										</div>
 										<b-collapse id="organization" accordion="my-accordion" role="tabpanel"
@@ -466,14 +452,12 @@
 											<div v-html="missionDetail.organisation_detail"></div>
 										</b-collapse>
 									</div>
-
 									<div class="tabs" v-if="isCommentDisplay">
 										<div class="tab-title" @click="missionComments">
 											<h3 v-b-toggle.comments>{{ langauageData.label.comment }}</h3>
 										</div>
 										<b-collapse id="comments" accordion="my-accordion" role="tabpanel"
-											class="			tab-content comment-block">
-
+											class="tab-content comment-block">
 											<b-form class="comment-form">
 												<b-form-textarea id="" :placeholder="langauageData.placeholder.comment"
 													v-model="comment" :class="{ 'is-invalid': $v.comment.$error }"
@@ -587,12 +571,11 @@
 							<div class="content-loader"></div>
 						</div>
 						<GridView id="gridView" :items="missionListing" v-if="isShownComponent" :userList="userList"
+							:relatedMission=relatedMission
 							@getMissions="getRelatedMissions" small />
 					</div>
 				</b-container>
-
 			</div>
-
 			<b-modal ref="userDetailModal" :modal-class="myclass" hide-footer size="lg">
 				<template slot="modal-header" slot-scope="{ close }">
 					<i class="close" @click="close()" v-b-tooltip.hover :title="langauageData.label.close"></i>
@@ -680,6 +663,7 @@
 		},
 		data() {
 			return {
+				relatedMission:true,
 				defaultWorkday: "",
 				workDayList: [
 					["WORKDAY", "workday"],

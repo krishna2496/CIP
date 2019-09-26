@@ -8,7 +8,6 @@
                 v-if="isShownComponent"></TheSecondaryHeader>
         </header>
         <main>
-
             <b-container class="home-content-wrapper">
                 <div v-if="missionList.length > 0 && isQuickAccessDisplay">
                     <div class="chip-container" v-if="tags != ''">
@@ -26,7 +25,7 @@
                         </span>
                         <b-button class="clear-btn"
                             v-if="isCountrySelectionSet || tags.city || (tags.theme && isThemeDisplay) || (tags.skill && isSkillDisplay)"
-                            @click="clearMissionFilter">{{langauageData.label.clear_all}}</b-button>
+                            @click="clearMissionFilterData">{{langauageData.label.clear_all}}</b-button>
                     </div>
                 </div>
                 <div v-bind:class="{ 'heading-section': true, 
@@ -58,6 +57,7 @@
                             </i>
                         </template>
                         <GridView id="gridView" :items="missionList" :p:per-page="perPage" :current-page="currentPage"
+                            :relatedMission=relatedMission
                             v-if="isShownComponent" :userList="userList" @getMissions="getMissions" small />
                     </b-tab>
                     <!-- list view -->
@@ -71,7 +71,7 @@
                                     alt="Down Arrow" />
                             </i>
                         </template>
-                        <ListView id="listView" :items="missionList" :p:per-page="perPage" :current-page="currentPage"
+                        <ListView id="listView" :items="missionList" :per-page="perPage" :current-page="currentPage"
                             v-if="isShownComponent" :userList="userList" @getMissions="getMissions" small />
                     </b-tab>
 
@@ -116,6 +116,7 @@
         searchUser
     } from '../services/service';
     import constants from '../constant';
+import { setTimeout } from 'timers';
 
     export default {
         components: {
@@ -133,6 +134,7 @@
         data() {
             return {
                 rows: 0,
+                relatedMission: false,
                 perPage: 10,
                 currentPage: 1,
                 sortByOptions: [
@@ -333,6 +335,13 @@
             },
             clearMissionFilter() {
                 this.$refs.secondaryHeader.clearAllFilter();
+            },
+            clearMissionFilterData() {
+                document.body.classList.add("loader-enable");
+                store.commit('clearFilterClick', 'true');
+                this.$refs.secondaryHeader.clearAllFilter();
+                document.body.classList.remove("loader-enable");
+                store.commit('clearFilterClick', '');
             }
         },
         created() {

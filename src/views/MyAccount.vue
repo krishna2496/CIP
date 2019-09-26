@@ -103,7 +103,7 @@
                                     <b-form-group>
                                         <label for>{{langauageData.label.employee_id}}</label>
                                         <b-form-input id type="text" v-model.trim="profile.employeeId"
-                                            @keypress="alphaNumeric($event)" maxlength="16"
+                                             maxlength="16"
                                             :placeholder="langauageData.placeholder.employee_id">
                                         </b-form-input>
                                     </b-form-group>
@@ -112,7 +112,6 @@
                                     <b-form-group>
                                         <label for>{{langauageData.label.manager}}</label>
                                         <b-form-input id type="text" v-model.trim="profile.managerName"
-                                            @keypress="alphaNumeric($event)"
                                             :placeholder="langauageData.placeholder.manager" maxlength="16">
                                         </b-form-input>
                                     </b-form-group>
@@ -121,7 +120,6 @@
                                     <b-form-group>
                                         <label for>{{langauageData.label.title}}</label>
                                         <b-form-input id type="text" v-model.trim="profile.title"
-                                            @keypress="alphaNumeric($event)"
                                             :placeholder="langauageData.placeholder.title" maxlength="25">
                                         </b-form-input>
                                     </b-form-group>
@@ -130,7 +128,7 @@
                                     <b-form-group>
                                         <label for>{{langauageData.label.department}}</label>
                                         <b-form-input id type="text" v-model.trim="profile.department"
-                                            @keypress="alphaNumeric($event)" maxlength="16"
+                                            maxlength="16"
                                             :placeholder="langauageData.placeholder.department"></b-form-input>
 
                                     </b-form-group>
@@ -139,7 +137,7 @@
                                     <b-form-group>
                                         <label>{{langauageData.label.my_profile}}*</label>
                                         <b-form-textarea id :placeholder="langauageData.placeholder.my_profile"
-                                            size="lg" no-resize @keypress="alphaNumeric($event)"
+                                            size="lg" no-resize 
                                             v-model.trim="profile.profileText"
                                             :class="{ 'is-invalid': submitted && $v.profile.profileText.$error }"
                                             rows="5"></b-form-textarea>
@@ -155,7 +153,6 @@
                                     <b-form-group>
                                         <label>{{langauageData.label.why_i_volunteer}}*</label>
                                         <b-form-textarea id v-model.trim="profile.whyiVolunteer"
-                                            @keypress="alphaNumeric($event)"
                                             :class="{ 'is-invalid': submitted && $v.profile.whyiVolunteer.$error }"
                                             :placeholder="langauageData.placeholder.why_i_volunteer" size="lg" no-resize
                                             rows="5"></b-form-textarea>
