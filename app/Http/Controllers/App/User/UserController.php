@@ -110,11 +110,9 @@ class UserController extends Controller
         if ($request->has('search')) {
             $userList = $this->userRepository->searchUsers($request->input('search'), $request->auth->user_id);
         }
-
+        $tenantName = $this->getSubDomainFromRequest($request);
         $users = $userList->map(function (User $user) use ($request) {
-            $user = $this->transformUser($user);
-            $user->avatar = isset($user->avatar) ? $user->avatar :
-            $this->helpers->getDefaultProfileImage($request);
+            $user = $this->transformUser($user, $tenantName);
             return $user;
         })->all();
 
@@ -225,10 +223,12 @@ class UserController extends Controller
             }
         }
 
+        $tenantName = $this->helpers->getSubDomainFromRequest($request);
+
         $apiData = $userDetail->toArray();
         $apiData['language_code'] = $userLanguageCode;
-        $apiData['avatar'] =(isset($apiData['avatar']) && ($apiData['avatar'] != "")) ?
-        $apiData['avatar'] : config('constants.USER_DEFAULT_IMAGE');
+        $apiData['avatar'] = ((isset($apiData['avatar'])) && $apiData['avatar'] !="") ? $apiData['avatar'] :
+        $this->helpers->getUserDefaultProfileImage($tenantName);
         $apiData['custom_fields'] = $userCustomFieldData;
         $apiData['user_skills'] = $userSkillData;
         $apiData['city_list'] = $cityList;

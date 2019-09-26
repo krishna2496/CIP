@@ -149,13 +149,11 @@ class Helpers
     /**
      * Get tenant default profile image for user
      *
-     * @param \Illuminate\Http\Request $request
+     * @param string $tenantName
      * @return string
      */
-    public function getDefaultProfileImage(Request $request): string
+    public function getUserDefaultProfileImage(string $tenantName): string
     {
-        $tenantName = $this->getSubDomainFromRequest($request);
-
         return 'https://s3.'.config('constants.AWS_REGION').'.amazonaws.com/'.
         config('constants.AWS_S3_BUCKET_NAME').'/'.$tenantName.'/'.config('constants.AWS_S3_ASSETS_FOLDER_NAME').
         '/'.config('constants.AWS_S3_IMAGES_FOLDER_NAME').'/'.config('constants.AWS_S3_DEFAULT_PROFILE_IMAGE');

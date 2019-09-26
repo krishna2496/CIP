@@ -16,7 +16,6 @@ trait MissionTransformable
     {
         if (isset($mission['goalMission']) && is_numeric($mission['goalMission']['goal_objective'])) {
             $mission['goal_objective']  = $mission['goalMission']['goal_objective'];
-            $mission['achieved_goal']  = ($mission['goalMission']['goal_objective']*0.6);
         }
         if (isset($mission['timeMission'])) {
             $mission['application_deadline'] = $mission['timeMission']['application_deadline'];
@@ -28,6 +27,7 @@ trait MissionTransformable
         unset($mission['goalMission']);
         unset($mission['timeMission']);
 
+        $mission['achieved_goal']  = $mission['achieved_goal'] ?? '';
         $mission['user_application_status']  = ($mission['missionApplication'][0]['approval_status']) ?? '';
         $mission['rating']  = ($mission['missionRating'][0]['rating']) ?? 0;
         $mission['is_favourite']  = ($mission['favourite_mission_count'] && ($mission['favourite_mission_count'] != 0))
