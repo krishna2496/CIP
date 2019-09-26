@@ -222,7 +222,7 @@ class TenantOptionsController extends Controller
         } catch (BucketNotFoundException $e) {
             throw $e;
         }
-            // @codeCoverageIgnoreEnd
+        // @codeCoverageIgnoreEnd
         
         if (count($assetFilesArray) > 0) {
             $apiStatus = Response::HTTP_OK;
@@ -248,7 +248,7 @@ class TenantOptionsController extends Controller
      */
     public function updateImage(Request $request): JsonResponse
     {
-        $validFileTypesArray = ['jpeg','jpg','svg','png'];
+        $validFileTypesArray = ['image/jpeg','image/svg+xml','image/png'];
 
         // Server side validataions
         $validator = Validator::make(
@@ -280,8 +280,9 @@ class TenantOptionsController extends Controller
                 trans('messages.custom_error_message.ERROR_NOT_VALID_IMAGE_FILE_EXTENSION')
             );
         }
+
         // If request parameter have any error
-        if (!in_array($file->getClientOriginalExtension(), $validFileTypesArray) &&
+        if (!in_array($file->getClientMimeType(), $validFileTypesArray) &&
         $fileNameExtension === $file->getClientOriginalExtension()) {
             return $this->responseHelper->error(
                 Response::HTTP_UNPROCESSABLE_ENTITY,
@@ -306,15 +307,15 @@ class TenantOptionsController extends Controller
                 );
             }
             // Upload file on s3
-            if (!Storage::disk('s3')->put(
+            Storage::disk('s3')->put(
                 '/'.$tenantName.'/assets/images/'.$fileName,
-                file_get_contents($file->getRealPath())
-            )) {
-                throw new FileUploadException(
-                    trans('messages.custom_error_message.ERROR_WHILE_UPLOADING_IMAGE_ON_S3'),
-                    config('constants.error_codes.ERROR_WHILE_UPLOADING_IMAGE_ON_S3')
-                );
-            }
+                file_get_contents(
+                    $file->getRealPath()
+                ),
+                [
+                    'mimetype' => $file->getClientMimeType()
+                ]
+            );
         } else {
             throw new BucketNotFoundException(
                 trans('messages.custom_error_message.ERROR_TENANT_ASSET_FOLDER_NOT_FOUND_ON_S3'),
