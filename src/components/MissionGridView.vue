@@ -1,6 +1,6 @@
 <template>
     <div class="cards-wrapper" v-if="items.length > 0">
-        <div class="card-grid">
+        <div v-bind:class="{'card-grid' : !relatedMission}">
             <b-row>
                 <b-col lg="4" sm="6" class="card-outer" data-aos="fade-up" v-for="mission in items">
                     <b-card no-body>
@@ -321,7 +321,8 @@
         },
         props: {
             items: Array,
-            userList: Array
+            userList: Array,
+            relatedMission: Boolean
         },
         data() {
             return {

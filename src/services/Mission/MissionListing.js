@@ -37,7 +37,9 @@ export default async(data) => {
     if (data.exploreMissionParams != '') {
         url = url + "&explore_mission_params=" + data.exploreMissionParams
     }
-    document.body.classList.add("loader-enable");
+    if (store.state.clearFilterSet == "") {
+        document.body.classList.add("loader-enable");
+    }
     await axios({
             url: url,
             method: 'get',
@@ -70,10 +72,14 @@ export default async(data) => {
                 filterData.sortBy = '';
                 store.commit('userFilter', filterData)
             }
-            document.body.classList.remove("loader-enable");
+            if (store.state.clearFilterSet == "") {
+                document.body.classList.remove("loader-enable");
+            }
         })
         .catch(function(error) {
-            document.body.classList.remove("loader-enable");
+            if (store.state.clearFilterSet == "") {
+                document.body.classList.remove("loader-enable");
+            }
         });
     return responseData;
 }

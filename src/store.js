@@ -40,7 +40,8 @@ export default new Vuex.Store({
         missionType: localStorage.getItem('missionType'),
         defaultCountryId: localStorage.getItem('defaultCountryId'),
         newsBanner: localStorage.getItem('newsBanner'),
-        newsBannerText: localStorage.getItem('newsBannerText')
+        newsBannerText: localStorage.getItem('newsBannerText'),
+        clearFilterSet: ''
     },
     mutations: {
         // Set login data in state and local storage       
@@ -237,6 +238,9 @@ export default new Vuex.Store({
         newsBannerText(state, data) {
             localStorage.setItem('newsBannerText', JSON.stringify(data.translations))
             state.newsBannerText = JSON.stringify(data.translations)
+        },
+        clearFilterClick(state, data) {
+            state.clearFilterSet = data
         }
     },
     getters: {},
