@@ -8,7 +8,7 @@ export default async(data) => {
         defaultLanguage = (store.state.defaultLanguage).toLowerCase();
     }
     var url = process.env.VUE_APP_API_ENDPOINT + "app/missions?page=" + data.page
-    console.log(store.state)
+
     if (data.search != '' && data.search != null) {
         url = url + "&search=" + data.search
     }
