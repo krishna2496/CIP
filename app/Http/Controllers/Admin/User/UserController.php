@@ -15,6 +15,7 @@ use App\User;
 use InvalidArgumentException;
 use Illuminate\Validation\Rule;
 use App\Helpers\LanguageHelper;
+use App\Helpers\Helpers;
 
 class UserController extends Controller
 {
@@ -33,22 +34,31 @@ class UserController extends Controller
      * @var App\Helpers\LanguageHelper
      */
     private $languageHelper;
+
+    /**
+     * @var App\Helpers\Helpers
+     */
+    private $helpers;
     
     /**
      * Create a new controller instance.
      *
      * @param App\Repositories\User\UserRepository $userRepository
-     * @param Illuminate\Http\ResponseHelper $responseHelper
+     * @param App\Helpers\ResponseHelper $responseHelper
+     * @param App\Helpers\ResponseHelper $languageHelper
+     * @param App\Helpers\Helpers $helpers
      * @return void
      */
     public function __construct(
         UserRepository $userRepository,
         ResponseHelper $responseHelper,
-        LanguageHelper $languageHelper
+        LanguageHelper $languageHelper,
+        Helpers $helpers
     ) {
         $this->userRepository = $userRepository;
         $this->responseHelper = $responseHelper;
         $this->languageHelper = $languageHelper;
+        $this->helpers = $helpers;
     }
     
     /**
@@ -140,15 +150,19 @@ class UserController extends Controller
     /**
      * Display the specified user detail.
      *
+     * @param \Illuminate\Http\Request $request
      * @param int $id
      * @return Illuminate\Http\JsonResponse
      */
-    public function show(int $id): JsonResponse
+    public function show(Request $request, int $id): JsonResponse
     {
         try {
             $userDetail = $this->userRepository->find($id);
                 
             $apiData = $userDetail->toArray();
+            $tenantName = $this->helpers->getSubDomainFromRequest($request);
+            $apiData['avatar'] = ((isset($apiData['avatar'])) && $apiData['avatar'] !="") ? $apiData['avatar'] :
+            $this->helpers->getUserDefaultProfileImage($tenantName);
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_USER_FOUND');
             
