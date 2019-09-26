@@ -30,16 +30,14 @@ class Helpers
             if ((env('APP_ENV') == 'local' || env('APP_ENV') == 'testing')) {
                 return env('DEFAULT_TENANT');
             } else {
-                // @codeCoverageIgnoreStart
-                    return explode(".", parse_url($request->headers->all()['referer'][0])['host'])[0];
-                // @codeCoverageIgnoreEnd
+                return explode(".", parse_url($request->headers->all()['referer'][0])['host'])[0];
             }
         }
     }
 
     /**
      * Get base URL from request object
-     * @codeCoverageIgnore
+     *
      * @param Illuminate\Http\Request $request
      * @return mixed
      */
@@ -151,13 +149,11 @@ class Helpers
     /**
      * Get tenant default profile image for user
      *
-     * @param \Illuminate\Http\Request $request
+     * @param string $tenantName
      * @return string
      */
-    public function getDefaultProfileImage(Request $request): string
+    public function getUserDefaultProfileImage(string $tenantName): string
     {
-        $tenantName = $this->getSubDomainFromRequest($request);
-
         return 'https://s3.'.config('constants.AWS_REGION').'.amazonaws.com/'.
         config('constants.AWS_S3_BUCKET_NAME').'/'.$tenantName.'/'.config('constants.AWS_S3_ASSETS_FOLDER_NAME').
         '/'.config('constants.AWS_S3_IMAGES_FOLDER_NAME').'/'.config('constants.AWS_S3_DEFAULT_PROFILE_IMAGE');
@@ -251,7 +247,6 @@ class Helpers
 
     /**
      * Change date format
-     * @codeCoverageIgnore
      *
      * @param string $date
      * @param string $dateFormat
@@ -264,7 +259,6 @@ class Helpers
     
     /**
      * Convert in report time format
-     * @codeCoverageIgnore
      *
      * @param string $totalHours
      * @return string
@@ -279,7 +273,6 @@ class Helpers
 
     /**
      * Convert in report hours format
-     * @codeCoverageIgnore
      *
      * @param string $totalHours
      * @return string

@@ -36,7 +36,6 @@ class SliderRepository implements SliderInterface
     
     /**
      * Store tenant slider data.
-     * @codeCoverageIgnore
      *
      * @param  array $data
      * @return App\Models\Slider

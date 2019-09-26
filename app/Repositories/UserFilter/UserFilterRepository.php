@@ -65,6 +65,10 @@ class UserFilterRepository implements UserFilterInterface
             }
         }
 
+        if ($request->has('country_id') && (!$request->has('city_id'))) {
+            $defaultCityId = '';
+        }
+        
         if ($request->has('explore_mission_type') && $request->input('explore_mission_type') != '') {
             $defaultCountryId = $defaultCityId = '';
         }

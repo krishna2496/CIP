@@ -110,11 +110,9 @@ class UserController extends Controller
         if ($request->has('search')) {
             $userList = $this->userRepository->searchUsers($request->input('search'), $request->auth->user_id);
         }
-
-        $users = $userList->map(function (User $user) use ($request) {
-            $user = $this->transformUser($user);
-            $user->avatar = isset($user->avatar) ? $user->avatar :
-            $this->helpers->getDefaultProfileImage($request);
+        $tenantName = $this->helpers->getSubDomainFromRequest($request);
+        $users = $userList->map(function (User $user) use ($request, $tenantName) {
+            $user = $this->transformUser($user, $tenantName);
             return $user;
         })->all();
 
@@ -174,6 +172,7 @@ class UserController extends Controller
         $userCustomFieldData = [];
         $userSkillData = [];
         $customFieldsData = $customFields->toArray();
+        
         $customFieldsValue = $userDetail->userCustomFieldValue;
         unset($userDetail->userCustomFieldValue);
 
@@ -224,8 +223,12 @@ class UserController extends Controller
             }
         }
 
+        $tenantName = $this->helpers->getSubDomainFromRequest($request);
+
         $apiData = $userDetail->toArray();
         $apiData['language_code'] = $userLanguageCode;
+        $apiData['avatar'] = ((isset($apiData['avatar'])) && $apiData['avatar'] !="") ? $apiData['avatar'] :
+        $this->helpers->getUserDefaultProfileImage($tenantName);
         $apiData['custom_fields'] = $userCustomFieldData;
         $apiData['user_skills'] = $userSkillData;
         $apiData['city_list'] = $cityList;
@@ -340,42 +343,31 @@ class UserController extends Controller
      */
     public function uploadProfileImage(Request $request): JsonResponse
     {
-        try {
-            $validator = Validator::make($request->toArray(), [
-                'avatar' => 'required|valid_profile_image'
-            ]);
+        $validator = Validator::make($request->toArray(), [
+            'avatar' => 'required|valid_profile_image'
+        ]);
 
-            // If request parameter have any error
-            if ($validator->fails()) {
-                return $this->responseHelper->error(
-                    Response::HTTP_UNPROCESSABLE_ENTITY,
-                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                    config('constants.error_codes.ERROR_USER_INVALID_DATA'),
-                    $validator->errors()->first()
-                );
-            }
-
-            $userId = $request->auth->user_id;
-            $tenantName = $this->helpers->getSubDomainFromRequest($request);
-            $avatar = preg_replace('#^data:image/\w+;base64,#i', '', $request->avatar);
-            $imagePath = $this->s3helper->uploadProfileImageOnS3Bucket($avatar, $tenantName, $userId);
-            
-            $userData['avatar'] = $imagePath;
-            $this->userRepository->update($userData, $userId);
-            
-            $apiData = ['avatar' => $imagePath];
-            $apiMessage = trans('messages.success.MESSAGE_PROFILE_IMAGE_UPLOADED');
-            $apiStatus = Response::HTTP_OK;
-            return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
-            // @codeCoverageIgnoreStart
-        } catch (S3Exception $e) {
-            // This exception will be thrown if bucket not found and we have bucket defined in env.
-            //This is not covered in unit test.
-            return $this->s3Exception(
-                config('constants.error_codes.ERROR_FAILD_TO_UPLOAD_PROFILE_IMAGE_ON_S3'),
-                trans('messages.custom_error_message.ERROR_FAILD_TO_UPLOAD_PROFILE_IMAGE_ON_S3')
+        // If request parameter have any error
+        if ($validator->fails()) {
+            return $this->responseHelper->error(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                config('constants.error_codes.ERROR_USER_INVALID_DATA'),
+                $validator->errors()->first()
             );
-            // @codeCoverageIgnoreEnd
         }
+
+        $userId = $request->auth->user_id;
+        $tenantName = $this->helpers->getSubDomainFromRequest($request);
+        $avatar = preg_replace('#^data:image/\w+;base64,#i', '', $request->avatar);
+        $imagePath = $this->s3helper->uploadProfileImageOnS3Bucket($avatar, $tenantName, $userId);
+        
+        $userData['avatar'] = $imagePath;
+        $this->userRepository->update($userData, $userId);
+        
+        $apiData = ['avatar' => $imagePath];
+        $apiMessage = trans('messages.success.MESSAGE_PROFILE_IMAGE_UPLOADED');
+        $apiStatus = Response::HTTP_OK;
+        return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
     }
 }

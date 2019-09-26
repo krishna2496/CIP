@@ -62,15 +62,31 @@ class ExceptionTest extends TestCase
     }
 
     /**
-     * It should throw internal server error
-     * 
      * @test
-     * @return bool
+     *
+     * It should throw internal server error
+     *
+     * @return void
      */
     public function it_should_return_internal_server_error_exception()
     {
-        $this->get("", [])
+        $connection = 'tenant';
+        $user = factory(\App\User::class)->make();
+        $user->setConnection($connection);
+        $user->save();
+
+        DB::setDefaultConnection('tenant');
+
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
+        $appEnv = env('APP_ENV');
+        $_ENV["APP_ENV"] = str_random('5');
+        
+        $this->get('/app/filter-data', ['token' => $token])
         ->seeStatusCode(500);
+        
+        $user->delete();
+
+        $_ENV["APP_ENV"] = $appEnv;
     }
     
     

@@ -2,8 +2,6 @@
 
 namespace App\Jobs;
 
-use Leafo\ScssPhp\Exception\ParserException;
-use Aws\S3\Exception\S3Exception;
 use Leafo\ScssPhp\Compiler;
 use App\Traits\RestExceptionHandlerTrait;
 use Illuminate\Support\Facades\Storage;
@@ -61,32 +59,23 @@ class CompileScssFiles extends Job
 
         $assetUrl = 'https://'.env("AWS_S3_BUCKET_NAME").'.s3.'
         .env("AWS_REGION", "eu-central-1").'.amazonaws.com/'.$this->tenantName.'/assets/images';
-        
-        try {
-            $importScss =
-            '@import "_assets";
-            $assetUrl: "'.$assetUrl.'";
-            @import "_variables";
-            @import "../../../../../node_modules/bootstrap/scss/bootstrap";
-            @import "../../../../../node_modules/bootstrap-vue/src/index";
-            @import "custom";';
+                
+        $importScss =
+        '@import "_assets";
+        $assetUrl: "'.$assetUrl.'";
+        @import "_variables";
+        @import "../../../../../node_modules/bootstrap/scss/bootstrap";
+        @import "../../../../../node_modules/bootstrap-vue/src/index";
+        @import "custom";';
 
-            $css = $scss->compile($importScss);
-        
-            // Put compiled css file into local storage
-            Storage::disk('local')->put($this->tenantName.'\assets\css\style.css', $css);
-            // Copy default theme folder to tenant folder on s3
-            Storage::disk('s3')->put(
-                $this->tenantName.'/assets/css/style.css',
-                Storage::disk('local')->get($this->tenantName.'\assets\css\style.css')
-            );
-            // @codeCoverageIgnoreStart
-        } catch (ParserException $e) {
-            throw new ParserException(
-                trans('messages.custom_error_message.ERROR_WHILE_COMPILING_SCSS_FILES'),
-                config('constants.error_codes.ERROR_WHILE_COMPILING_SCSS_FILES')
-            );
-        }
-        // @codeCoverageIgnoreEnd
+        $css = $scss->compile($importScss);
+    
+        // Put compiled css file into local storage
+        Storage::disk('local')->put($this->tenantName.'\assets\css\style.css', $css);
+        // Copy default theme folder to tenant folder on s3
+        Storage::disk('s3')->put(
+            $this->tenantName.'/assets/css/style.css',
+            Storage::disk('local')->get($this->tenantName.'\assets\css\style.css')
+        );
     }
 }

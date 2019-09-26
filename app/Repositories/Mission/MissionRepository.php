@@ -546,6 +546,11 @@ class MissionRepository implements MissionInterface
                 $query->whereIn('approval_status', [config("constants.application_status")["AUTOMATICALLY_APPROVED"],
                 config("constants.application_status")["PENDING"]]);
             }])
+            ->withCount(['missionApplication as user_application_count' => function ($query) use ($request) {
+                $query->where('user_id', $request->auth->user_id)
+                ->whereIn('approval_status', [config("constants.application_status")["AUTOMATICALLY_APPROVED"],
+                config("constants.application_status")["PENDING"]]);
+            }])
             ->withCount(['favouriteMission as favourite_mission_count' => function ($query) use ($request) {
                 $query->Where('user_id', $request->auth->user_id);
             }]);
@@ -554,6 +559,12 @@ class MissionRepository implements MissionInterface
                     $query->select(DB::raw("AVG(rating) as rating"));
                 }
             ]);
+        $missionQuery->withCount([
+            'timesheet AS achieved_goal' => function ($query) use ($request) {
+                $query->select(DB::raw("SUM(action) as action"));
+                $query->whereIn('status_id', array(config('constants.timesheet_status_id.APPROVED'),
+                config('constants.timesheet_status_id.AUTOMATICALLY_APPROVED')));
+            }]);
         $missionQuery->with(['missionRating']);
        
         //Explore mission recommended to user
@@ -618,17 +629,13 @@ class MissionRepository implements MissionInterface
         }
 
         if ($userFilterData['theme_id'] && $userFilterData['theme_id'] != '') {
-            // @codeCoverageIgnoreStart
             $missionQuery->whereIn("mission.theme_id", explode(",", $userFilterData['theme_id']));
-            // @codeCoverageIgnoreEnd
         }
 
         if ($userFilterData['skill_id'] && $userFilterData['skill_id'] != '') {
-            // @codeCoverageIgnoreStart
             $missionQuery->wherehas('missionSkill', function ($skillQuery) use ($userFilterData) {
                 $skillQuery->whereIn("skill_id", explode(",", $userFilterData['skill_id']));
             });
-            // @codeCoverageIgnoreEnd
         }
 
         if ($userFilterData['sort_by'] && $userFilterData['sort_by'] != '') {
@@ -645,13 +652,11 @@ class MissionRepository implements MissionInterface
                 $missionQuery->orderByRaw('total_seats - mission_application_count desc');
             }
             if ($userFilterData['sort_by'] == config('constants.MY_FAVOURITE')) {
-                // @codeCoverageIgnoreStart
                 $missionQuery->withCount(['favouriteMission as favourite_mission_count'
                     => function ($query) use ($request) {
                         $query->Where('user_id', $request->auth->user_id);
                     }]);
                 $missionQuery->orderBY('favourite_mission_count', 'desc');
-                // @codeCoverageIgnoreEnd
             }
             if ($userFilterData['sort_by'] == config('constants.DEADLINE')) {
                 $missionQuery->orderBy(
@@ -664,11 +669,9 @@ class MissionRepository implements MissionInterface
         //Explore mission by top favourite
         if ($request->has('explore_mission_type') &&
         ($request->input('explore_mission_type') == config('constants.TOP_FAVOURITE'))) {
-            // @codeCoverageIgnoreStart
             $missionQuery->withCount(['favouriteMission as favourite_mission_counts']);
             $missionQuery = $missionQuery->having("favourite_mission_counts", '>', '0');
             $missionQuery->orderBY('favourite_mission_counts', 'desc');
-            // @codeCoverageIgnoreEnd
         }
 
         //Explore mission by most ranked
@@ -977,6 +980,12 @@ class MissionRepository implements MissionInterface
                 $query->select(DB::raw("AVG(rating) as rating"));
             }
         ]);
+        $missionQuery->withCount([
+            'timesheet AS achieved_goal' => function ($query) use ($request) {
+                $query->select(DB::raw("SUM(action) as action"));
+                $query->whereIn('status_id', array(config('constants.timesheet_status_id.APPROVED'),
+                config('constants.timesheet_status_id.AUTOMATICALLY_APPROVED')));
+            }]);
         $missionQuery->with(['missionRating']);
         return $missionQuery->inRandomOrder()->get();
     }
@@ -1043,6 +1052,12 @@ class MissionRepository implements MissionInterface
             ])->withCount([
                 'missionRating as mission_rating_total_volunteers'
             ]);
+            $missionQuery->withCount([
+                'timesheet AS achieved_goal' => function ($query) use ($request) {
+                    $query->select(DB::raw("SUM(action) as action"));
+                    $query->whereIn('status_id', array(config('constants.timesheet_status_id.APPROVED'),
+                    config('constants.timesheet_status_id.AUTOMATICALLY_APPROVED')));
+                }]);
         return $missionQuery->get();
     }
 
@@ -1095,7 +1110,6 @@ class MissionRepository implements MissionInterface
 
     /**
      * Get mission details from mission id and language id
-     * @codeCoverageIgnore
      *
      * @param int $missionId
      * @param int $langId
@@ -1119,7 +1133,6 @@ class MissionRepository implements MissionInterface
     }
 
     /** Get mission application details by mission id, user id and status
-     * @codeCoverageIgnore
      *
      * @param int $missionId
      * @param int $userId
@@ -1135,7 +1148,6 @@ class MissionRepository implements MissionInterface
 
     /**
      * Get Mission data for timesheet
-     * @codeCoverageIgnore
      *
      * @param int $id
      * @return App\Models\Mission
@@ -1149,7 +1161,6 @@ class MissionRepository implements MissionInterface
     
     /**
      * Get Mission type
-     * @codeCoverageIgnore
      *
      * @param int $id
      * @return null|Collection

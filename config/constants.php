@@ -40,6 +40,7 @@ return [
     'DEFAULT_FQDN_FOR_FRONT' => 'web8',
     'PER_PAGE_MAX' => '50',
     'AWS_S3_DEFAULT_THEME_FOLDER_NAME' => 'default_theme',
+    
     /*
      * User custom field types
      */
@@ -310,6 +311,7 @@ return [
         'ERROR_INVALID_DATA_FOR_TIMESHEET_ENTRY' => '400041',
         'ERROR_SAME_DATE_TIME_ENTRY' => '400042',
         'ERROR_UNAUTHORIZED_USER' => '400043',
+        'ERROR_APPROVED_TIMESHEET_DOCUMENTS' => '400044',
                 
         'ERROR_OCCURRED' => '999999',
         'ERROR_INVALID_JSON' => '900000',

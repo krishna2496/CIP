@@ -136,6 +136,12 @@ class TimesheetTest extends TestCase
         $response = $this->get('timesheet/'.$user->user_id, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
         ->seeStatusCode(200);
 
+        \App\Models\Timesheet::where('timesheet_id', $timeSheetId)->delete();
+        
+        DB::setDefaultConnection('mysql');
+        $response = $this->get('timesheet/'.$user->user_id, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(200);
+
         $user->delete();
     }
 

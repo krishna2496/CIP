@@ -115,7 +115,6 @@ class TenantOptionsController extends Controller
 
         // Get domain name from request and use as tenant name.
         $tenantName = $this->helpers->getSubDomainFromRequest($request);
-        // @codeCoverageIgnoreStart
         if ($request->hasFile('custom_scss_file')) {
             $file = $request->file('custom_scss_file');
 
@@ -173,16 +172,9 @@ class TenantOptionsController extends Controller
                 $filePath = $tenantName.'/'.config('constants.AWS_S3_ASSETS_FOLDER_NAME').'/'.
                 config('constants.AWS_S3_SCSS_FOLDER_NAME').'/'. $fileName;
                 
-                if (!Storage::disk('s3')->put($filePath, file_get_contents($file))) {
-                    // Throw exception file not uploaded successfully
-                    throw new FileUploadException(
-                        trans('messages.custom_error_message.ERROR_WHILE_UPLOADING_FILE_ON_S3'),
-                        config('constants.error_codes.ERROR_WHILE_UPLOADING_FILE_ON_S3')
-                    );
-                }
+                Storage::disk('s3')->put($filePath, file_get_contents($file));
             }
         }
-        // @codeCoverageIgnoreEnd
         $options['isVariableScss'] = $isVariableScss;
         
         if (isset($request->primary_color) && $request->primary_color!='') {
@@ -215,34 +207,30 @@ class TenantOptionsController extends Controller
     {
         // Get domain name from request and use as tenant name.
         $tenantName = $this->helpers->getSubDomainFromRequest($request);
-        
+
         try {
             $assetFilesArray = $this->s3helper->getAllScssFiles($tenantName);
-            // @codeCoverageIgnoreStart
         } catch (BucketNotFoundException $e) {
             throw $e;
         }
-        // @codeCoverageIgnoreEnd
         
         if (count($assetFilesArray) > 0) {
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_ASSETS_FILES_LISTING');
             return $this->responseHelper->success($apiStatus, $apiMessage, $assetFilesArray);
         } else {
-            // @codeCoverageIgnoreStart
             return $this->responseHelper->error(
                 Response::HTTP_NOT_FOUND,
                 Response::$statusTexts[Response::HTTP_NOT_FOUND],
                 config('constants.error_codes.ERROR_NO_FILES_FOUND_IN_ASSETS_FOLDER'),
                 trans('messages.custom_error_message.ERROR_NO_FILES_FOUND_IN_ASSETS_FOLDER')
             );
-            // @codeCoverageIgnoreEnd
         }
     }
 
     /**
      * It will update image on S3
-     * @codeCoverageIgnore
+     *
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\JsonResponse
      */

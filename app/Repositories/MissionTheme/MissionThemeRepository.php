@@ -122,7 +122,6 @@ class MissionThemeRepository implements MissionThemeInterface
 
     /**
      * Get all theme history with total minutes logged, based on year and all years.
-     * @codeCoverageIgnore
      *
      * @param int $year
      * @param int $userId
