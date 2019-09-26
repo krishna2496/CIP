@@ -38,15 +38,13 @@ export default async(data) => {
             url = url + "?search=" + data.search
         }
     }
-    // document.body.classList.add("loader-enable");
-    // console.log("in");
+
     await axios({
             url: url,
             method: 'get',
             headers: {
                 'X-localization': defaultLanguage,
-                'token': store.state.token,
-                'loader': 'true'
+                'token': store.state.token
             },
 
         })
@@ -56,10 +54,7 @@ export default async(data) => {
             } else {
                 responseData = ''
             }
-            // document.body.classList.remove("loader-enable");
         })
-        .catch(function(error) {
-            // document.body.classList.remove("loader-enable");
-        });
+        .catch(function(error) {});
     return responseData;
 }

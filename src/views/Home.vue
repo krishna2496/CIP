@@ -337,7 +337,6 @@ import { setTimeout } from 'timers';
                 this.$refs.secondaryHeader.clearAllFilter();
             },
             clearMissionFilterData() {
-                // console.log("in");
                 document.body.classList.add("loader-enable");
                 store.commit('clearFilterClick', 'true');
                 this.$refs.secondaryHeader.clearAllFilter();
