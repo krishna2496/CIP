@@ -13,4 +13,13 @@ interface StoryInterface
      * @return App\Models\Story
      */
     public function store(Request $request): Story;
+    
+    /**
+    * Remove the story details.
+    *
+    * @param  int  $storyId
+    * @param  int  $userId
+    * @return bool
+    */
+    public function delete(int $storyId, int $userId): bool;
 }

@@ -100,4 +100,16 @@ class StoryRepository implements StoryInterface
 
         return $storyData;
     }
+    
+    /**
+    * Remove the story details.
+    *
+    * @param  int  $storyId
+    * @param  int  $userId
+    * @return bool
+    */
+    public function delete(int $storyId, int $userId): bool
+    {
+        return $this->story->deleteStory($storyId, $userId);
+    }
 }

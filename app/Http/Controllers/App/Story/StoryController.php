@@ -11,6 +11,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 use App\Traits\RestExceptionHandlerTrait;
 use Validator;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class StoryController extends Controller
 {
@@ -85,6 +86,33 @@ class StoryController extends Controller
             $apiData = ['story_id' => $storyData->story_id];
 
             return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
+        } catch (\Exception $e) {
+            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
+        }
+    }
+
+    /**
+     * Remove the story details.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param int  $storyId
+     * @return Illuminate\Http\JsonResponse
+     */
+    public function destroy(Request $request, int $storyId): JsonResponse
+    {
+        try {
+            $this->storyRepository->delete($storyId, $request->auth->user_id);
+           
+            // Set response data
+            $apiStatus = Response::HTTP_NO_CONTENT;
+            $apiMessage = trans('messages.success.MESSAGE_STORY_DELETED');
+
+            return $this->responseHelper->success($apiStatus, $apiMessage);
+        } catch (ModelNotFoundException $e) {
+            return $this->modelNotFound(
+                config('constants.error_codes.ERROR_STORY_NOT_FOUND'),
+                trans('messages.custom_error_message.ERROR_STORY_NOT_FOUND')
+            );
         } catch (\Exception $e) {
             return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }

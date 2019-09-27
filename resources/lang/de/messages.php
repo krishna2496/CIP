@@ -104,6 +104,7 @@ return [
         'MESSAGE_NEWS_LISTING' => 'DE: News listed sucessfully',        
         'MESSAGE_NEWS_UPDATED' => 'DE: News updated sucessfully',
         'STORY_ADDED_SUCESSFULLY' => 'DE: Story added successfully',
+        'MESSAGE_STORY_DELETED' => 'DE: Story deleted sucessfully',
     ],
 
         
@@ -214,5 +215,8 @@ return [
         // For News module        
         'ERROR_NEWS_CATEGORY_NOT_FOUND' => 'DE: News category not found in the system',
         'ERROR_NEWS_NOT_FOUND' => 'DE: News not found in the system',
+
+        // For story module
+        'ERROR_STORY_NOT_FOUND' => 'DE: Story not found in the system',
     ],
 ];

@@ -138,6 +138,7 @@ return [
         'MESSAGE_NEWS_CATEGORY_FOUND' => 'News category found sucessfully',
         'MESSAGE_NEWS_FOUND' => 'News found sucessfully',
         'STORY_ADDED_SUCESSFULLY' => 'Story added successfully',
+        'MESSAGE_STORY_DELETED' => 'Story deleted sucessfully',
 	],
         
     /**
@@ -259,7 +260,10 @@ return [
         'ERROR_NEWS_CATEGORY_NOT_FOUND' => 'News category not found in the system',
         'ERROR_NEWS_CATEGORIES_NOT_FOUND' => 'News categories not found in the system',
         'ERROR_NEWS_NOT_FOUND' => 'News not found in the system',
-        'ERROR_UNAUTHORIZED_USER' => 'Unauthorized user'
+        'ERROR_UNAUTHORIZED_USER' => 'Unauthorized user',
+
+        // For story module
+        'ERROR_STORY_NOT_FOUND' => 'Story not found in the system',
     ],
 
     /**

@@ -133,6 +133,7 @@ return [
 		'MESSAGE_NEWS_CATEGORY_FOUND' => 'News category found sucessfully',
         'MESSAGE_NEWS_FOUND' => 'Nouvelles trouvées avec succès',
         'STORY_ADDED_SUCESSFULLY' => 'Histoire ajoutée avec succès',
+        'MESSAGE_STORY_DELETED' => 'Histoire supprimée avec succès',
     ],
 
         
@@ -253,7 +254,10 @@ return [
         'ERROR_NEWS_CATEGORY_NOT_FOUND' => 'Catégorie de nouvelles non trouvée dans le système',
 		'ERROR_NEWS_CATEGORIES_NOT_FOUND' => 'News categories not found in the system',
         'ERROR_NEWS_NOT_FOUND' => 'Nouvelles non trouvées dans le système',
-        'ERROR_UNAUTHORIZED_USER' => 'Utilisateur non autorisé'
+        'ERROR_UNAUTHORIZED_USER' => 'Utilisateur non autorisé',
+
+        // For story module
+        'ERROR_STORY_NOT_FOUND' => 'Histoire non trouvée dans le système',
     ],
 
     /**

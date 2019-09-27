@@ -339,6 +339,7 @@ return [
         'ERROR_NEWS_NOT_FOUND' => '500004',
 
         'ERROR_STORY_REQUIRED_FIELDS_EMPTY' => '700001',
+        'ERROR_STORY_NOT_FOUND' => '700002',
         
                 
         'ERROR_OCCURRED' => '999999',

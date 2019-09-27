@@ -46,4 +46,17 @@ class Story extends Model
     {
         $this->attributes['description'] = trim($value);
     }
+    
+    /**
+     * Soft delete the model from the database.
+     *
+     * @param int $storyId
+     * @param int $userId
+     * @return bool
+     */
+    public function deleteStory(int $storyId, int $userId): bool
+    {
+        return static::where(['story_id' => $storyId,
+        'user_id' => $userId])->firstOrFail()->delete();
+    }
 }
