@@ -37,14 +37,21 @@ export const eventBus = new Vue();
 // call vue axios interceptors
 interceptorsSetup();
 let entryUrl = null;
+
+
+
 // check requirment of authentication for path
 router.beforeEach(async (to, from, next) => {
     // if from path is (/) then we need to call custom css call and wait for its reponse    
     if ((from.path == '/' && to.path == '/') || from.path == '/'){
+        console.log('calling...')
         document.body.classList.add("loader-enable");
-        await customCss();
-        document.body.classList.remove("loader-enable");
-    }    
+        await customCss().then( () => {
+            document.body.classList.remove("loader-enable");
+            console.log('loader off');
+        });
+    }
+    console.log('moved')
     if (store.state.isLoggedIn) {
         if (entryUrl) {
             const url = entryUrl;
