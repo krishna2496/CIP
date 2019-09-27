@@ -364,7 +364,7 @@
 													<div class="mission-tab-inner">
 														<p v-if="missionDetail.goal_objective">
 															{{missionDetail.goal_objective}}<span>
-																{ langauageData.label.goal_objective }}
+																{{langauageData.label.goal_objective }}
 															</span></p>
 														<p v-else>
 															0<span>{{ langauageData.label.goal_objective }}</span>
