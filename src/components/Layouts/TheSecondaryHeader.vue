@@ -1,8 +1,7 @@
 <template>
-    <div v-bind:class="{
-        'bottom-header' :true,
-        'active':searchString != '' ? true :false,
-      }">
+    <div 
+      v-bind:class="[handleFilterCount()]"
+      >
         <b-container>
             <b-row>
                 <b-col xl="6" lg="5" class="search-block">
@@ -226,21 +225,30 @@
                 });
             },
             handleFilterCount() {
+                let returnData = [];
+               
+                if(this.searchString != '') {
+                    returnData.push('active')
+                } else {
+                    returnData = [];
+                }
+                returnData.push('bottom-header')
                 var filterCount = document.querySelectorAll(
                     ".filter-block .list-group-item"
                 ).length;
                 var bottomHeader = document.querySelector(".bottom-header");
                 if (filterCount != null) {
                     if (filterCount == 3) {
-                    bottomHeader.classList.add("three-filters");
+                        returnData.push('three-filters')
                     } else if (filterCount == 2) {
-                    bottomHeader.classList.add("two-filters");
+                    returnData.push('two-filters')
                     } else if (filterCount == 1) {
-                    bottomHeader.classList.add("one-filter");
+                    returnData.push('one-filter')
                     }else if( filterCount == 0){
-                    bottomHeader.classList.add("zero-filter");
+                    returnData.push('zero-filter')
                     }
                 }
+                return returnData;
             },
 
             async changeCountry(country) {
