@@ -123,7 +123,6 @@
 											</template>
 										</span>
 									</div>
-									<!-- {{missionDetail}} -->
 									<template v-if="checkMissionTypeTime(missionDetail.mission_type)">
 										<div class="group-details-inner">
 											<template
@@ -173,12 +172,12 @@
 													<div v-else>
 														<span
 															class="title-text mb-1">
-															<span>
+															<span v-if="missionDetail.application_start_date != '' && missionDetail.application_start_date != null">
 															{{ langauageData.label.from }}	
 															{{missionDetail.application_start_date | formatDate}} 
 															{{missionDetail.application_start_time | formatTime}}
 															</span>
-															<span>
+															<span v-if="missionDetail.application_end_date != '' && missionDetail.application_end_date != null">
 															{{ langauageData.label.until }}	
 															{{missionDetail.application_end_date | formatDate}} 
 															{{missionDetail.application_end_time | formatTime}}
@@ -260,19 +259,11 @@
 												<img :src="$store.state.imagePath+'/assets/images/calendar.svg'" alt="" />
 											</i>
 											<span class="label">{{ langauageData.label.date}}</span>
-											<template
-												v-if="missionDetail.application_start_date && missionDetail.application_start_date != null">
-												<p class="text-wrap">{{missionDetail.application_start_date | formatDate}}
-												</p>
+											<template v-if="missionDetail.start_date != '' && missionDetail.start_date != null && missionDetail.end_date != '' && missionDetail.end_date != null">
+												<p class="text-wrap">{{missionDetail.start_date | formatDate}}</p>
 											</template>
 											<template v-else>
-												<p class="text-wrap" 
-												v-if="missionDetail.application_start_date != '' && missionDetail.application_start_date != null"
-												>{{ missionDetail.application_start_date | formatDate}}
-												</p>
-												<p v-else>
-													{{ langauageData.label.on_going_opportunities }}
-												</p>
+												<p class="text-wrap">{{ langauageData.label.on_going_opportunities }}</p>
 											</template>
 
 										</div>
@@ -373,7 +364,7 @@
 													<div class="mission-tab-inner">
 														<p v-if="missionDetail.goal_objective">
 															{{missionDetail.goal_objective}}<span>
-																{ langauageData.label.goal_objective }}
+																{{langauageData.label.goal_objective }}
 															</span></p>
 														<p v-else>
 															0<span>{{ langauageData.label.goal_objective }}</span>
