@@ -109,8 +109,6 @@ class NewsController extends Controller
                 config('constants.error_codes.ERROR_INVALID_ARGUMENT'),
                 trans('messages.custom_error_message.ERROR_INVALID_ARGUMENT')
             );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
 
@@ -140,8 +138,6 @@ class NewsController extends Controller
                 config('constants.error_codes.ERROR_NEWS_NOT_FOUND'),
                 trans('messages.custom_error_message.ERROR_NEWS_NOT_FOUND')
             );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
 }

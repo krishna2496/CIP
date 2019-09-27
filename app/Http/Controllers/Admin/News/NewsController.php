@@ -106,8 +106,6 @@ class NewsController extends Controller
                 config('constants.error_codes.ERROR_INVALID_ARGUMENT'),
                 trans('messages.custom_error_message.ERROR_INVALID_ARGUMENT')
             );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
 
@@ -119,53 +117,44 @@ class NewsController extends Controller
      */
     public function store(Request $request): JsonResponse
     {
-        try {
-            // Server side validations
-            $validator = Validator::make(
-                $request->all(),
-                [
-                    "news_content" => "required",
-                    "news_content.translations" => "required_with:news_content",
-                    "news_content.translations.*.lang" => "required_with:news_content.translations|max:2",
-                    "news_content.translations.*.title" => "required_with:news_content.translations",
-                    "news_content.translations.*.description" =>
-                    "required_with:news_content.translations",                    
-                    "news_category_id" =>
-                    "required|exists:news_category,news_category_id,deleted_at,NULL",
-                    "status" => ['required', Rule::in(config('constants.news_status'))],		
-                    "user_name" => "sometimes|required",   
-                    "news_image" => "sometimes|required|url|valid_media_path",
-                    "user_thumbnail" => "sometimes|required|url|valid_media_path",               
-                ]
-            );
+        // Server side validations
+        $validator = Validator::make(
+            $request->all(),
+            [
+                "news_content" => "required",
+                "news_content.translations" => "required_with:news_content",
+                "news_content.translations.*.lang" => "required_with:news_content.translations|max:2",
+                "news_content.translations.*.title" => "required_with:news_content.translations",
+                "news_content.translations.*.description" =>
+                "required_with:news_content.translations",                    
+                "news_category_id" =>
+                "required|exists:news_category,news_category_id,deleted_at,NULL",
+                "status" => ['required', Rule::in(config('constants.news_status'))],		
+                "user_name" => "sometimes|required",   
+                "news_image" => "sometimes|required|url|valid_media_path",
+                "user_thumbnail" => "sometimes|required|url|valid_media_path",               
+            ]
+        );
 
-            // If request parameter have any error
-            if ($validator->fails()) {
-                return $this->responseHelper->error(
-                    Response::HTTP_UNPROCESSABLE_ENTITY,
-                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                    config('constants.error_codes.ERROR_NEWS_REQUIRED_FIELDS_EMPTY'),
-                    $validator->errors()->first()
-                );
-            }
-
-            // Create a new record
-            $news = $this->newsRepository->store($request);
-           
-            // Set response data
-            $apiStatus = Response::HTTP_CREATED;
-            $apiMessage = trans('messages.success.MESSAGE_NEWS_CREATED');
-            $apiData = ['news_id' => $news->news_id];
-          
-            return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
-        } catch (InvalidArgumentException $e) {
-            return $this->invalidArgument(
-                config('constants.error_codes.ERROR_INVALID_ARGUMENT'),
-                trans('messages.custom_error_message.ERROR_INVALID_ARGUMENT')
+        // If request parameter have any error
+        if ($validator->fails()) {
+            return $this->responseHelper->error(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                config('constants.error_codes.ERROR_NEWS_REQUIRED_FIELDS_EMPTY'),
+                $validator->errors()->first()
             );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
+
+        // Create a new record
+        $news = $this->newsRepository->store($request);
+        
+        // Set response data
+        $apiStatus = Response::HTTP_CREATED;
+        $apiMessage = trans('messages.success.MESSAGE_NEWS_CREATED');
+        $apiData = ['news_id' => $news->news_id];
+        
+        return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
     }
 
     /**
@@ -219,8 +208,6 @@ class NewsController extends Controller
                 config('constants.error_codes.ERROR_NEWS_NOT_FOUND'),
                 trans('messages.custom_error_message.ERROR_NEWS_NOT_FOUND')
             );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
 
@@ -248,8 +235,6 @@ class NewsController extends Controller
                 config('constants.error_codes.ERROR_NEWS_NOT_FOUND'),
                 trans('messages.custom_error_message.ERROR_NEWS_NOT_FOUND')
             );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
 
@@ -273,8 +258,6 @@ class NewsController extends Controller
                 config('constants.error_codes.ERROR_NEWS_NOT_FOUND'),
                 trans('messages.custom_error_message.ERROR_NEWS_NOT_FOUND')
             );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
 }
