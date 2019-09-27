@@ -59,15 +59,33 @@ let routes = [{
     },
     {
         path: '/news',
-        name: 'news',
+        name: 'News',
         component: () =>
             import ('./views/News.vue')
+    },
+    {
+        path: '/stories',
+        name: 'Stories',
+        component: () =>
+            import ('./views/Stories.vue')
     },
     {
         path: '/news-detail/:newsId',
         name: 'NewsDetail',
         component: () =>
             import ('./views/NewsDetail.vue')
+    },
+    {
+        path: '/story-detail/:newsId',
+        name: 'StoryDetail',
+        component: () =>
+            import ('./views/StoryDetail.vue')
+    },
+    {
+        path: '/share-story',
+        name: 'ShareStory',
+        component: () =>
+            import ('./views/ShareStory.vue')
     },
     {
         path: '/home/:searchParamsType/:searchParams',

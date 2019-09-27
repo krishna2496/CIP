@@ -85,11 +85,12 @@
                                 </ul>
                             </li>
                             <li class="has-menu no-dropdown" v-if="isStoryDisplay">
-                                <a href="Javascript:void(0)"
-                                    :title='langauageData.label.stories'>{{ langauageData.label.stories}}</a>
+                                    <router-link :to="{ path: '/stories'}"
+                                    >
+                                    {{langauageData.label.stories}}
+                                </router-link>
                             </li>
                             <li class="has-menu no-dropdown" v-if="isNewsDisplay">
-                               
                                 <router-link :to="{ path: '/news'}"
                                     >
                                     {{langauageData.label.news}}

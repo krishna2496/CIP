@@ -71,10 +71,6 @@ export default {
 	},
 	data() {
 		return {
-			bgImg: require("@/assets/images/banner-img.png"),
-			rows: 25,
-			perPage: 5,
-			currentPage: 1,
 			langauageData : [],
 			isNewsDisplay : true,
 			showErrorDiv: false,

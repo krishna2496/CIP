@@ -1,0 +1,121 @@
+<template>
+	<div class="inner-pages storie-page lists-page">
+		<header>
+			<ThePrimaryHeader></ThePrimaryHeader>
+		</header>
+		<main>
+			<b-container>
+				<StoryBanner/>
+				<div class="news-detail-container" v-if="showErrorDiv">
+					<b-alert show variant="danger" dismissible v-model="showErrorDiv">
+						{{ message }}
+					</b-alert>
+				</div>
+				<div v-if="!showErrorDiv && !isPageLoaded">
+					<div v-if="!storyListing.length > 0">
+						<StoriesCard />
+					</div>
+				</div>
+				<div class="pagination-block" data-aos="fade-up">
+					<b-pagination
+							v-model="pagination.currentPage"
+							:total-rows="pagination.total"
+							:per-page="pagination.perPage"
+							align="center"
+							@change="pageChange"
+							aria-controls="my-cardlist"
+					></b-pagination>
+				</div>
+			</b-container>
+		</main>
+		<footer>
+			<TheSecondaryFooter></TheSecondaryFooter>
+		</footer>
+		<back-to-top bottom="68px" right="40px" title="back to top">
+			<i class="icon-wrap">
+				<img class="img-normal" :src="$store.state.imagePath+'/assets/images/down-arrow.svg'"
+					alt="Down Arrow" />
+				<img class="img-rollover" :src="$store.state.imagePath+'/assets/images/down-arrow-black.svg'"
+					alt="Down Arrow" />
+			</i>
+		</back-to-top>
+	</div>
+</template>
+<script>
+	import StoryBanner from "../components/StoryBanner";
+	import StoriesCard from "../components/StoriesCard";
+	import store from '../store';
+	import constants from '../constant';
+	import {
+			storyListing,
+		} from "../services/service";
+
+	export default {
+		components: {
+			ThePrimaryHeader: () => import("../components/Layouts/ThePrimaryHeader"),
+			TheSecondaryFooter: () => import("../components/Layouts/TheSecondaryFooter"),
+			StoryBanner,
+			StoriesCard
+		},
+		data() {
+			return {
+				langauageData : [],
+				isStoryDisplay : true,
+				showErrorDiv: false,
+				isPageLoaded : false,
+				message: null,
+				storyListing : [],
+				pagination : {
+					'currentPage' :1,
+					"total": 0,
+					"perPage": 1,
+					"currentPage": 1, 
+					"totalPages": 0,
+				},
+				bannerUrl : '',
+				bannerText : ''
+			};
+		},
+
+		methods: {
+			pageChange(page){
+				// this.getStoryListing(page);
+			},
+			getStoryListing(currentPage) {
+				storyListing(currentPage).then(response => {
+					if(response.error == false) {
+						this.storyListing = response.data
+						this.pagination.currentPage = response.pagination.current_page
+						this.pagination.total = response.pagination.total
+						this.pagination.perPage = response.pagination.per_page
+						this.pagination.currentPage = response.pagination.current_page
+						this.pagination.totalPages = response.pagination.total_pages
+					} else {
+						this.showErrorDiv = true;
+						this.message = response.message
+					}
+					this.isPageLoaded = true
+				}) 
+			}
+		},
+		created() {
+			let _this = this
+			this.langauageData = JSON.parse(store.state.languageLabel);
+			this.isStoryDisplay = this.settingEnabled(constants.STORIES_ENABLED);
+			if(!this.isStoryDisplay) {
+				this.$router.push('/home')
+			}
+			// this.bannerUrl = store.state.newsBanner
+			// let bannerTextArray = JSON.parse(store.state.newsBannerText)
+			// if(bannerTextArray) {
+			// 	bannerTextArray.filter(function(data,index){
+			// 		if(data.lang == store.state.defaultLanguage.toLowerCase()) {
+			// 			_this.bannerText = data.message
+			// 		}
+			// 	})
+			// }
+			// this.getStoryListing(this.pagination.currentPage);
+		},
+		destroyed() {}
+	};
+</script>

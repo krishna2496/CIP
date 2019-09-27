@@ -41,6 +41,9 @@ import goalRequest from "./VolunteerTimesheet/GoalRequest"
 import timeRequest from "./VolunteerTimesheet/TimeRequest"
 import newsDetail from "./News/NewsDetail"
 import newsListing from "./News/NewsListing"
+import storyDetail from "./Stories/StoryDetail"
+import storyListing from "./Stories/StoryListing"
+
 
 export {
     loadLocaleMessages,
@@ -85,5 +88,7 @@ export {
     goalRequest,
     timeRequest,
     newsDetail,
-    newsListing
+    newsListing,
+    storyDetail,
+    storyListing,
 }
