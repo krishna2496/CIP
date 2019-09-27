@@ -161,7 +161,7 @@
 														<img :src="$store.state.imagePath+'/assets/images/clock.svg'"
 															alt="user">
 													</i>
-													<div class="text-wrap" v-if="!missionDetail.application_deadline != '' && missionDetail.application_deadline != null">
+													<div class="text-wrap" v-if="missionDetail.application_deadline != '' && missionDetail.application_deadline != null">
 														<span
 															class="title-text mb-1">{{missionDetail.application_deadline | formatDate}}
 														</span>
@@ -171,7 +171,9 @@
 													</div>
 													<div v-else>
 														<span
-															class="title-text mb-1">
+															class="title-text mb-1"
+															v-if="missionDetail.application_start_date != '' && missionDetail.application_start_date != null && missionDetail.application_end_date != '' && missionDetail.application_end_date != null"
+															>
 															<span v-if="missionDetail.application_start_date != '' && missionDetail.application_start_date != null">
 															{{ langauageData.label.from }}	
 															{{missionDetail.application_start_date | formatDate}} 
@@ -183,7 +185,7 @@
 															{{missionDetail.application_end_time | formatTime}}
 															</span>
 														</span>
-														<span class="subtitle-text"><p>{{ langauageData.label.deadline }}</p></span>
+														<span class="subtitle-text" v-if="missionDetail.application_start_date != '' && missionDetail.application_start_date != null && missionDetail.application_end_date != '' && missionDetail.application_end_date != null"><p>{{ langauageData.label.deadline }}</p></span>
 													</div>
 												</div>
 											</template>
