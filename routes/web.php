@@ -11,28 +11,30 @@
 |
 */
 /* Route to run background process for tenant. To perform SCSS and assets operations */
+$router->get('/tenant/runBackgroundProcess/{tenantId}', 'TenantBackgroundProcessController@runBackgroundProcess');
 $router->get('/tenant/runBackgroundProcess', 'TenantBackgroundProcessController@runBackgroundProcess');
 
 $router->group(
     ['prefix' => 'tenants', 'middleware' => 'localization'],
     function ($router) {
         // Get tenants list
-        $router->get('/', ['as' => 'tenants', 'uses'=>'TenantController@index']);
+        $router->get('/', ['as' => 'tenants', 'middleware' => 'PaginationMiddleware',
+        'uses'=>'TenantController@index']);
         // Get tenant details from id
         $router->get('/{tenant_id:[0-9]+}', ['as' => 'tenants.detail', 'uses'=>'TenantController@show']);
         // Create new tenant
-        $router->post('/', ['as' => 'tenants.store', 'middleware' => 'localization|JsonApiMiddleware',
+        $router->post('/', ['as' => 'tenants.store', 'middleware' => 'JsonApiMiddleware',
         'uses'=>'TenantController@store']);
         // Update tenant details
         $router->patch('/{tenant_id}', ['as' => 'tenants.update',
-        'middleware' => 'localization|JsonApiMiddleware', 'uses'=>'TenantController@update']);
+        'middleware' => 'JsonApiMiddleware', 'uses'=>'TenantController@update']);
         // Delete tenant
         $router->delete('/{tenant_id}', ['as' => 'tenants.destroy', 'uses'=>'TenantController@destroy']);
         // Get tenant has setting detail
         $router->get('/{tenantId}/settings', ['as' => 'tenants.settings',
         'uses'=>'TenantHasSettingController@show']);
         // Store settings
-        $router->post('/{tenantId}/settings', ['as' => 'tenants.store.settings',
+        $router->post('/{tenantId}/settings', ['as' => 'tenants.store.settings', 'middleware' => 'JsonApiMiddleware',
         'uses'=>'TenantHasSettingController@store']);
         
         // Get api user list

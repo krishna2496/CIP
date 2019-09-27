@@ -85,7 +85,7 @@ class TenantHasSettingController extends Controller
                 trans('messages.custom_error_message.ERROR_TENANT_NOT_FOUND')
             );
         } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
+            return $this->internalServerError(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
     
@@ -142,20 +142,13 @@ class TenantHasSettingController extends Controller
             $apiMessage =  trans('messages.success.MESSAGE_TENANT_SETTINGS_UPDATED');
             
             return $this->responseHelper->success($apiStatus, $apiMessage);
-        } catch (PDOException $e) {
-            return $this->PDO(
-                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
-                trans(
-                    'messages.custom_error_message.ERROR_DATABASE_OPERATIONAL'
-                )
-            );
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
                 config('constants.error_codes.ERROR_TENANT_NOT_FOUND'),
                 trans('messages.custom_error_message.ERROR_TENANT_NOT_FOUND')
             );
         } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
+            return $this->internalServerError(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
 }

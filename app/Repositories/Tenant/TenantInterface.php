@@ -18,11 +18,12 @@ interface TenantInterface
     /**
      * Update resource.
      *
-     * @param  array $requestarray
+     * @param  Illuminate\Http\Request $request
      * @param  int $id
      * @return App\Models\Tenant
      */
-    public function update(array $requestarray, int $id): Tenant;
+    public function update(Request $request, int $id): Tenant;
+
 
     /**
      * Listing of a all resources.
@@ -47,4 +48,11 @@ interface TenantInterface
      * @return bool
      */
     public function delete(int $id): bool;
+
+    /**
+     * Get pending tenant list to execute their background process
+     * @param int $tenantId
+     * @return null|Illuminate\Support\Collection
+     */
+    public function getPendingTenantsForProcess(int $tenantId = null);
 }
