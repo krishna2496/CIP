@@ -119,4 +119,32 @@ class MissionApplication extends Model
         ->paginate($request->perPage);
         return $missionVolunteers;
     }
+
+    /**
+     * Get mission application count
+     *
+     * @param int $userId
+     * @return int
+     */
+    public function missionApplicationCount(int $userId): int
+    {
+        return $this->where(['user_id' => $userId])
+        ->where('approval_status', '<>', config('constants.application_status.REFUSED'))
+        ->count();
+    }
+
+    /**
+     * Get organization count
+     *
+     * @param int $userId
+     * @return int
+     */
+    public function organizationCount(int $userId): int
+    {
+        return $this->where(['user_id' => $userId])
+        ->where('approval_status1', '<>', config('constants.application_status.REFUSED'))
+        ->leftJoin('mission', 'mission_application.mission_id', '=', 'mission.mission_id')
+        ->groupBy('mission.organisation_id')
+        ->count();
+    }
 }

@@ -441,4 +441,43 @@ class TimesheetRepository implements TimesheetInterface
         config('constants.timesheet_status_id.AUTOMATICALLY_APPROVED')))
         ->sum('action')) ?? 0;
     }
+    
+    /**
+     * Get user timesheet total hours data
+     *
+     * @param int $userId
+     * @return string
+     */
+    public function getTotalHours(int $userId)
+    {
+        $statusArray = [config('constants.timesheet_status_id.APPROVED'),
+        config('constants.timesheet_status_id.AUTOMATICALLY_APPROVED')];
+
+        $missionQuery = $this->mission->select('mission.*');
+        $missionQuery->leftjoin('time_mission', 'mission.mission_id', '=', 'time_mission.mission_id');
+        $missionQuery->where('publication_status', config("constants.publication_status")["APPROVED"]);
+        $missionQuery->withCount([
+            'timesheet AS total_hours' => function ($query) use ($userId, $statusArray) {
+                $query->select(DB::raw("sum(((hour(time) * 60) + minute(time))) as 'total_minutes'"));
+                $query->where('user_id', $userId);
+                $query->whereIn('status_id', $statusArray);
+            }
+        ]);
+        return $missionQuery->get()->toArray();
+    }
+
+    /**
+     * Get total pending requests
+     *
+     * @param Illuminate\Http\Request $request
+     * @return string
+     */
+    public function getTotalPendingRequests(int $userId)
+    {
+        $statusArray = [config('constants.timesheet_status_id.SUBMIT_FOR_APPROVAL')];
+
+        $timesheetQuery = $this->timesheet->where('user_id', $userId)->whereIn('status_id', $statusArray)->count();
+
+        return $timesheetQuery;
+    }
 }

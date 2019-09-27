@@ -323,16 +323,4 @@ class UserRepository implements UserInterface
         $userDetail->password = $password;
         return $userDetail->save();
     }
-
-    /**
-     * Get user dashboard data
-     *
-     * @param Illuminate\Http\Request $request
-     * @return string
-     */
-    public function dashboard(Request $request): string
-    {
-        $missionCount = $this->user->missionCount($request->auth->user_id);
-        dd($missionCount);
-    }
 }

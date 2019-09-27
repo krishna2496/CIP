@@ -211,25 +211,4 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     {
         return static::with('city', 'country', 'timezone', 'availability', 'userCustomFieldValue')->findOrFail($userId);
     }
-
-    /**
-     * Defined has many relation for the mission application table.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function timesheet(): HasMany
-    {
-        return $this->hasMany(Timesheet::class, 'user_id', 'user_id');
-    }
-
-    /**
-     * Get user detail
-     *
-     * @param int $userId
-     * @return int
-     */
-    public function missionCount(int $userId): User
-    {
-        return static::with('timesheet')->where(['user_id' => $userId])->groupBy('mission_id')->count();
-    }
 }

@@ -146,4 +146,32 @@ class MissionApplicationRepository implements MissionApplicationInterface
         $this->mission->findOrFail($missionId);
         return $this->missionApplication->getVolunteers($request, $missionId);
     }
+
+    /**
+     * Get mission count.
+     *
+     * @param int $userId
+     * @return int
+     */
+    public function missionApplicationCount(int $userId): int
+    {
+        return $this->missionApplication->missionApplicationCount($userId);
+    }
+
+    /**
+     * Get mission application count.
+     *
+     * @param int $userId
+     * @return int
+     */
+    public function organizationCount(int $userId)
+    {
+        // return $this->missionApplication->organizationCount($userId);
+        return $this->mission
+        ->leftJoin('mission_application', 'mission_application.mission_id', '=', 'mission.mission_id')
+        ->where(['mission_application.user_id' => $userId])
+        ->where('mission_application.approval_status', '<>', config('constants.application_status.REFUSED'))
+        ->groupBy('mission.organisation_id')
+        ->get()->toArray();
+    }
 }

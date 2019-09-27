@@ -15,6 +15,8 @@ use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Storage;
 use App\User;
 use App\Repositories\User\UserRepository;
+use App\Repositories\Timesheet\TimesheetRepository;
+use App\Repositories\MissionApplication\MissionApplicationRepository;
 
 class DashboardController extends Controller
 {
@@ -23,7 +25,17 @@ class DashboardController extends Controller
      * @var App\Repositories\User\UserRepository
      */
     private $userRepository;
+
+    /**
+     * @var App\Repositories\Timesheet\TimesheetRepository
+     */
+    private $timesheetRepository;
     
+    /**
+     * @var App\Repositories\MissionApplication\MissionApplicationRepository
+     */
+    private $missionApplicationRepository;
+        
     /**
      * @var App\Helpers\ResponseHelper
      */
@@ -48,6 +60,8 @@ class DashboardController extends Controller
      * Create a new controller instance.
      *
      * @param App\Repositories\User\UserRepository $userRepository
+     * @param App\Repositories\Timesheet\TimesheetRepository $timesheetRepository
+     * @param App\Repositories\MissionApplication\MissionApplicationRepository $missionApplicationRepository
      * @param Illuminate\Http\ResponseHelper $responseHelper
      * @param App\Helpers\LanguageHelper $languageHelper
      * @param App\Helpers\Helpers $helpers
@@ -56,12 +70,16 @@ class DashboardController extends Controller
      */
     public function __construct(
         UserRepository $userRepository,
+        TimesheetRepository $timesheetRepository,
+        MissionApplicationRepository $missionApplicationRepository,
         ResponseHelper $responseHelper,
         LanguageHelper $languageHelper,
         Helpers $helpers,
         S3Helper $s3helper
     ) {
         $this->userRepository = $userRepository;
+        $this->timesheetRepository = $timesheetRepository;
+        $this->missionApplicationRepository = $missionApplicationRepository;
         $this->responseHelper = $responseHelper;
         $this->languageHelper = $languageHelper;
         $this->helpers = $helpers;
@@ -76,20 +94,28 @@ class DashboardController extends Controller
      */
     public function index(Request $request): JsonResponse
     {
-        $dashboard = $this->userRepository->dashboard($request);
-        // if ($request->has('search')) {
-        //     $userList = $this->userRepository->searchUsers($request->input('search'), $request->auth->user_id);
-        // }
-        // $tenantName = $this->getSubDomainFromRequest($request);
-        // $users = $userList->map(function (User $user) use ($request) {
-        //     $user = $this->transformUser($user, $tenantName);
-        //     return $user;
-        // })->all();
+        $userId = $request->auth->user_id;
+        $timesheetData = $this->timesheetRepository->getTotalHours($userId);
+        $timesheetCount = $this->timesheetRepository->getTotalPendingRequests($userId);
+        $missionCount = $this->missionApplicationRepository->missionApplicationCount($userId);
+        $organizationCount = $this->missionApplicationRepository->organizationCount($userId);
+        
+        $totalHours = 0;
+        foreach ($timesheetData as $timesheet) {
+            $totalHours += $timesheet['total_hours'];
+        }
+
+        $apiData['total_hours'] = $this->helpers->convertInReportTimeFormat($totalHours);
+        $apiData['volunteering_rank'] = '';
+        $apiData['open_volunteering_requests'] = $timesheetCount;
+        $apiData['mission_count'] = $missionCount;
+        $apiData['voted_missions'] = '';
+        $apiData['organization_count'] = count($organizationCount);
 
         // Set response data
         $apiStatus = Response::HTTP_OK;
-        $apiMessage = (empty($dashboard)) ? trans('messages.success.MESSAGE_NO_RECORD_FOUND')
+        $apiMessage = (empty($apiData)) ? trans('messages.success.MESSAGE_NO_RECORD_FOUND')
             : trans('messages.success.MESSAGE_USER_LISTING');
-        return $this->responseHelper->success(Response::HTTP_OK, $apiMessage, $dashboard);
+        return $this->responseHelper->success(Response::HTTP_OK, $apiMessage, $apiData);
     }
 }
