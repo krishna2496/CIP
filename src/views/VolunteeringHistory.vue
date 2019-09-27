@@ -131,22 +131,18 @@
 				languageData: [],
 				perHourApiDataTheme: [],
 				perHourApiDataSkill: [],
-
 				timeMissionTimesheetLabel: "",
 				timeMissionTimesheetFields: [],
 				timeMissionTimesheetItems: [],
 				timeMissionCurrentPage: 1,
 				timeMissionTotalRow: 0,
 				timeMissionTotalPage: null,
-				
-
 				goalMissionTimesheetLabel: "",
 				goalMissionTimesheetFields: [],
 				goalMissionTimesheetItems: [],
 				goalMissionCurrentPage: 1,
 				goalMissionTotalRow: 0,
 				goalMissionTotalPage: null,
-
 				ThemeYearText: "Year",
 				skillYearText: "Year",
 				skillYearList: [],
