@@ -534,8 +534,14 @@ class MissionRepository implements MissionInterface
                 $query->where('default', '1');
             }])
             ->with(['missionLanguage' => function ($query) use ($languageId) {
-                $query->select('mission_language_id', 'mission_id', 'title', 'short_description', 'objective')
-                ->where('language_id', $languageId);
+                $query->select(
+                    'mission_language_id',
+                    'mission_id',
+                    'language_id',
+                    'title',
+                    'short_description',
+                    'objective'
+                );
             }])
             ->withCount(['missionApplication as user_application_count' => function ($query) use ($request) {
                 $query->where('user_id', $request->auth->user_id)
@@ -955,8 +961,14 @@ class MissionRepository implements MissionInterface
             $query->where('default', '1');
         }])
         ->with(['missionLanguage' => function ($query) use ($languageId) {
-            $query->select('mission_language_id', 'mission_id', 'title', 'short_description', 'objective')
-            ->where('language_id', $languageId);
+            $query->select(
+                'mission_language_id',
+                'mission_id',
+                'language_id',
+                'title',
+                'short_description',
+                'objective'
+            );
         }])
         ->withCount(['missionApplication as user_application_count' => function ($query) use ($request) {
             $query->where('user_id', $request->auth->user_id)
@@ -1027,12 +1039,12 @@ class MissionRepository implements MissionInterface
                 $query->select(
                     'mission_language_id',
                     'mission_id',
+                    'language_id',
                     'title',
                     'short_description',
                     'objective',
                     'description'
-                )
-                ->where('language_id', $languageId);
+                );
             }])
             ->withCount(['missionApplication as user_application_count' => function ($query) use ($request) {
                 $query->where('user_id', $request->auth->user_id)
@@ -1053,7 +1065,7 @@ class MissionRepository implements MissionInterface
             ])->withCount([
                 'missionRating as mission_rating_total_volunteers'
             ]);
-            $missionQuery->withCount([
+        $missionQuery->withCount([
                 'timesheet AS achieved_goal' => function ($query) use ($request) {
                     $query->select(DB::raw("SUM(action) as action"));
                     $query->whereIn('status_id', array(config('constants.timesheet_status_id.APPROVED'),

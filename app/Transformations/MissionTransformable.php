@@ -10,10 +10,16 @@ trait MissionTransformable
      *
      * @param App\Models\Mission $mission
      * @param string $languageCode
+     * @param int $languageId
+     * @param int $defaultTenantLanguage
      * @return App\Models\Mission
      */
-    protected function transformMission(Mission $mission, string $languageCode): Mission
-    {
+    protected function transformMission(
+        Mission $mission,
+        string $languageCode,
+        int $languageId,
+        int $defaultTenantLanguage
+    ): Mission {
         if (isset($mission['goalMission']) && is_numeric($mission['goalMission']['goal_objective'])) {
             $mission['goal_objective']  = $mission['goalMission']['goal_objective'];
         }
@@ -53,13 +59,17 @@ trait MissionTransformable
         unset($mission['missionMedia']);
         unset($mission['city']);
 
+        $key = array_search($languageId, array_column($mission['missionLanguage']->toArray(), 'language_id'));
+        $language = ($key == false) ? $defaultTenantLanguage : $languageId;
+        $missionLanguage = $mission['missionLanguage']->where('language_id', $language)->first();
+
         // Set title and description
-        $mission['title'] = $mission['missionLanguage'][0]['title'] ?? '';
-        $mission['short_description'] = $mission['missionLanguage'][0]['short_description'] ?? '';
-        if (isset($mission['missionLanguage'][0]['description'])) {
-            $mission['description'] = $mission['missionLanguage'][0]['description'] ?? '';
+        $mission['title'] = $missionLanguage->title ?? '';
+        $mission['short_description'] = $missionLanguage->short_description ?? '';
+        if (isset($missionLanguage->description)) {
+            $mission['description'] = $missionLanguage->description ?? '';
         }
-        $mission['objective'] = $mission['missionLanguage'][0]['objective'] ?? '';
+        $mission['objective'] = $missionLanguage->objective ?? '';
         unset($mission['missionLanguage']);
 
         // Check for apply in mission validity
