@@ -467,9 +467,32 @@
                 if (timeArray.timesheet) {
                     let timeSheetArray = timeArray.timesheet;
                     _this.currentTimeData.missionName = timeArray.title
-                    _this.currentTimeData.dateVolunteered = _this.volunteeringHoursCurrentYear + '-' + _this
-                        .volunteeringHoursCurrentMonth + '-' + date
+
+
+                    let months = '';
+                    let dates = '';
+                    if(timeSheetType == "time") {
+                        if(Math.floor(_this.volunteeringHoursCurrentMonth) < 10) {
+                            months = ("0" + Math.floor(_this.volunteeringHoursCurrentMonth)).slice(-2);
+                            dates = ("0" + Math.floor(date)).slice(-2);
+                        } else {
+                            timeMonth = Math.floor(_this.volunteeringHoursCurrentMonth)
+                            dates = Math.floor(date)
+                        }
+                    } else {
+                        if(Math.floor(_this.volunteeringGoalCurrentMonth) < 10) {
+                            months = ("0" + Math.floor(_this.volunteeringGoalCurrentMonth)).slice(-2);
+                            dates = ("0" + Math.floor(date)).slice(-2);
+                        } else {
+                            months = Math.floor(_this.volunteeringGoalCurrentMonth)
+                            dates = Math.floor(date)
+                        }
+                    }
+
+                    _this.currentTimeData.dateVolunteered = _this.volunteeringHoursCurrentYear + '-' + months + '-' + dates
+
                     timeSheetArray.filter(function (timeSheetItem, timeSheetIndex) {
+
                         if (timeSheetItem.timesheet_status.status == "APPROVED" ||
                             timeSheetItem.timesheet_status.status == "AUTOMATICALLY_APPROVED"
                         ) {
@@ -479,6 +502,7 @@
                         let currentArrayDate = timeSheetItem.date
                         let currentArrayYear = timeSheetItem.year
                         let currentArrayMonth = timeSheetItem.month
+
                         let currentTimeSheetYear = '';
                         let currentTimeSheetMonth = '';
                         if (timeSheetType == 'time') {
@@ -576,9 +600,19 @@
                             currentTimeSheetYear = parseInt(_this.volunteeringHoursYearArray[index])
                         }
                     })
-
-                     currentDate = moment(_this.volunteeringHoursCurrentYear + '-' + _this
-                    .volunteeringHoursCurrentMonth + '-' + date).format("YYYY-MM-DD");
+                   
+                    let timeMonth = '';
+                    let timeDate = '';
+                    if(Math.floor(_this.volunteeringHoursCurrentMonth) < 10) {
+                        timeMonth = ("0" + Math.floor(_this.volunteeringHoursCurrentMonth)).slice(-2);
+                        timeDate = ("0" + Math.floor(date)).slice(-2);
+                    } else {
+                        timeMonth = Math.floor(_this.volunteeringHoursCurrentMonth)
+                        timeDate = Math.floor(date)
+                    }
+                    
+                    currentDate = moment(_this.volunteeringHoursCurrentYear + '-' + timeMonth + '-' + timeDate).format("YYYY-MM-DD");
+                    
                 } else {
                     currentDataArray = this.volunteeringGoalWeeks
 
@@ -588,8 +622,17 @@
                             currentTimeSheetYear = parseInt(_this.volunteeringGoalYearArray[index])
                         }
                     })
-                     currentDate = moment(_this.volunteeringGoalCurrentYear + '-' + _this
-                    .volunteeringGoalCurrentMonth + '-' + date).format("YYYY-MM-DD");
+                    let goalMonth = '';
+                    let goalDate = '';
+                    if(Math.floor(_this.volunteeringGoalCurrentMonth) < 10) {
+                        goalMonth = ("0" + Math.floor(_this.volunteeringGoalCurrentMonth)).slice(-2);
+                        goalDate = ("0" + Math.floor(date)).slice(-2);
+                    } else {
+                        goalMonth = Math.floor(_this.volunteeringGoalCurrentMonth)
+                        goalDate = Math.floor(date)
+                    }
+
+                     currentDate = moment(_this.volunteeringGoalCurrentYear + '-' + goalMonth + '-' + goalDate).format("YYYY-MM-DD");
                 }
 
                 timeArray.filter(function (timeSheetItem, timeSheetIndex) {

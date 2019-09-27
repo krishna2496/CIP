@@ -22,7 +22,6 @@ export default async() => {
         })
         .then((response) => {
             if (response.data.data) {
-                console.log(response.data.data)
                 if (response.data.data['TIME']) {
                     let timeData = response.data.data['TIME']
                     timeData.filter(function(toItem, toIndex) {
