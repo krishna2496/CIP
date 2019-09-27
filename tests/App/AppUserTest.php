@@ -1,6 +1,7 @@
 <?php
 use App\Helpers\Helpers;
-
+use Firebase\JWT\JWT;
+use Carbon\Carbon;
 class AppUserTest extends TestCase
 {
     /**
@@ -17,7 +18,7 @@ class AppUserTest extends TestCase
         $user->setConnection($connection);
         $user->save();
 
-        $token = Helpers::getJwtToken($user->user_id);
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->get('app/search-user?search='.substr($user->first_name, 2), ['token' => $token])
         ->seeStatusCode(200)
         ->seeJsonStructure([
@@ -41,7 +42,7 @@ class AppUserTest extends TestCase
         $user->setConnection($connection);
         $user->save();
 
-        $token = Helpers::getJwtToken($user->user_id);
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->get('app/search-user?search='.substr($user->last_name, 2), ['token' => $token])
         ->seeStatusCode(200)
         ->seeJsonStructure([
@@ -65,7 +66,7 @@ class AppUserTest extends TestCase
         $user->setConnection($connection);
         $user->save();
 
-        $token = Helpers::getJwtToken($user->user_id);
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->get('app/search-user?search='.substr($user->email, 3), ['token' => $token])
         ->seeStatusCode(200)
         ->seeJsonStructure([
@@ -89,7 +90,7 @@ class AppUserTest extends TestCase
         $user->setConnection($connection);
         $user->save();
 
-        $token = Helpers::getJwtToken($user->user_id);
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->get('app/search-user?search='.str_random(5), ['token' => $token])
         ->seeStatusCode(200)
         ->seeJsonStructure([
@@ -138,7 +139,7 @@ class AppUserTest extends TestCase
 
         ];
     
-        $token = Helpers::getJwtToken($user->user_id);
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
 
         $this->patch('app/user/', $params, ['token' => $token])
         ->seeStatusCode(200)
@@ -174,9 +175,9 @@ class AppUserTest extends TestCase
         $skill->save();
 
         $skillsArray = [];
-        for ($i = 0; $i <= config('constants.SKILL_LIMIT'); $i++ ) {
+        for ($i = 0; $i <= config('constants.SKILL_LIMIT'); $i++) {
             $skillsArray[] = ["skill_id" => $skill->skill_id];
-        }       
+        }
 
         $params = [
             'first_name' => str_random(10),
@@ -198,7 +199,7 @@ class AppUserTest extends TestCase
 
         ];
     
-        $token = Helpers::getJwtToken($user->user_id);
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
 
         $this->patch('app/user/', $params, ['token' => $token])
         ->seeStatusCode(422)
@@ -235,7 +236,7 @@ class AppUserTest extends TestCase
             'availability_id' => rand(1000000, 2000000)
         ];
 
-        $token = Helpers::getJwtToken($user->user_id);
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->patch('app/user/', $params, ['token' => $token])
         ->seeStatusCode(422)
         ->seeJsonStructure([
@@ -253,7 +254,7 @@ class AppUserTest extends TestCase
 
     /**
      * @test
-     * 
+     *
      * Change password
      *
      * @return void
@@ -272,7 +273,7 @@ class AppUserTest extends TestCase
             'password' => "12345678",
             'confirm_password' => "12345678"
         ];
-        $token = Helpers::getJwtToken($user->user_id);
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->patch('app/change-password', $params, ['token' => $token])
         ->seeStatusCode(200)
         ->seeJsonStructure(
@@ -289,7 +290,7 @@ class AppUserTest extends TestCase
 
     /**
      * @test
-     * 
+     *
      * Show error if incorrect old password
      *
      * @return void
@@ -306,7 +307,7 @@ class AppUserTest extends TestCase
             'password' => "12345678",
             'confirm_password' => "12345678"
         ];
-        $token = Helpers::getJwtToken($user->user_id);
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->patch('app/change-password', $params, ['token' => $token])
         ->seeStatusCode(422)
         ->seeJsonStructure([
@@ -343,7 +344,7 @@ class AppUserTest extends TestCase
             'password' => "12345678",
             'confirm_password' => "1234567800"
         ];
-        $token = Helpers::getJwtToken($user->user_id);
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->patch('app/change-password', $params, ['token' => $token])
         ->seeStatusCode(422)
         ->seeJsonStructure([
@@ -361,7 +362,7 @@ class AppUserTest extends TestCase
 
     /**
      * @test
-     * 
+     *
      * Show error if required fields are empty
      *
      * @return void
@@ -378,7 +379,7 @@ class AppUserTest extends TestCase
             'password' => "",
             'confirm_password' => ""
         ];
-        $token = Helpers::getJwtToken($user->user_id);
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->patch('app/change-password', $params, ['token' => $token])
         ->seeStatusCode(422)
         ->seeJsonStructure([
@@ -395,7 +396,7 @@ class AppUserTest extends TestCase
 
     /**
      * @test
-     * 
+     *
      * Upload profile image
      *
      * @return void
@@ -415,7 +416,7 @@ class AppUserTest extends TestCase
         $params = [
             'avatar' => $base64
         ];
-        $token = Helpers::getJwtToken($user->user_id);
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->patch('app/user/upload-profile-image', $params, ['token' => $token])
         ->seeStatusCode(200)
         ->seeJsonStructure(
@@ -444,7 +445,7 @@ class AppUserTest extends TestCase
         $params = [
             'avatar' => ""
         ];
-        $token = Helpers::getJwtToken($user->user_id);
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->patch('app/user/upload-profile-image', $params, ['token' => $token])
         ->seeStatusCode(422)
         ->seeJsonStructure([
@@ -482,7 +483,17 @@ class AppUserTest extends TestCase
         $skill->setConnection($connection);
         $skill->save();
 
-        $token = Helpers::getJwtToken($user->user_id);
+        $skill = factory(\App\Models\Skill::class)->make();
+        $skill->setConnection($connection);
+        $skill->save();
+
+        $userSkill = factory(\App\Models\UserSkill::class)->make();
+        $userSkill->setConnection($connection);
+        $userSkill->user_id = $user->user_id;
+        $userSkill->skill_id = $skill->skill_id;
+        $userSkill->save();
+
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->get('/app/user-detail', ['token' => $token])
         ->seeStatusCode(200)
         ->seeJsonStructure([
@@ -518,14 +529,15 @@ class AppUserTest extends TestCase
             ],
             "message"
         ]);
-        $user->delete();
+        $userSkill->delete();
         $userCustomField->delete();
         $skill->delete();
+        $user->delete();
     }
 
     /**
      * @test
-     * 
+     *
      * Return error for invalid token
      *
      * @return void
@@ -564,7 +576,7 @@ class AppUserTest extends TestCase
             'first_name' => str_random(300)
         ];
 
-        $token = Helpers::getJwtToken($user->user_id);
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->patch('app/user/', $params, ['token' => $token])
         ->seeStatusCode(422)
         ->seeJsonStructure([
@@ -598,7 +610,7 @@ class AppUserTest extends TestCase
             'linked_in_url' => str_random(20)
         ];
 
-        $token = Helpers::getJwtToken($user->user_id);
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->patch('app/user/', $params, ['token' => $token])
         ->seeStatusCode(422)
         ->seeJsonStructure([
@@ -636,7 +648,7 @@ class AppUserTest extends TestCase
         $params = [
             'avatar' => $base64
         ];
-        $token = Helpers::getJwtToken($user->user_id);
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->patch('app/user/upload-profile-image', $params, ['token' => $token])
         ->seeStatusCode(422)
         ->seeJsonStructure([
@@ -650,5 +662,292 @@ class AppUserTest extends TestCase
             ]
         ]);
         $user->delete();
+    }
+
+    /**
+     * @test
+     *
+     * Get user language
+     *
+     * @return void
+     */
+    public function it_should_return_user_language()
+    {
+        $connection = 'tenant';
+        $user = factory(\App\User::class)->make();
+        $user->setConnection($connection);
+        $user->save();
+
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
+        $this->get('app/get-user-language?email='.$user->email, ['token' => $token])
+        ->seeStatusCode(200)
+        ->seeJsonStructure([
+            "status",
+            "data" => [
+                "default_language_id"
+            ]
+        ]);
+        $user->delete();
+    }
+
+    /**
+     * @test
+     *
+     * Return error for invalid token
+     *
+     * @return void
+     */
+    public function it_should_return_error_for_invalid_email_for_get_user_language()
+    {
+        $connection = 'tenant';
+        $user = factory(\App\User::class)->make();
+        $user->setConnection($connection);
+        $user->save();
+
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
+        $this->get('app/get-user-language?email=test', ['token' => $token])
+        ->seeStatusCode(404)
+        ->seeJsonStructure([
+            "errors" => [
+                [
+                    "status",
+                    "type",
+                    "message"
+                ]
+            ]
+        ]);
+    }
+
+    /**
+     * @test
+     *
+     * Validate skill limit for add skill to user
+     *
+     * @return void
+     */
+    public function it_should_return_invalid_language_error_for_update_user_data()
+    {
+        $connection = 'tenant';
+        $user = factory(\App\User::class)->make();
+        $user->setConnection($connection);
+        $user->save();
+
+        $userCustomField = factory(\App\Models\UserCustomField::class)->make();
+        $userCustomField->setConnection($connection);
+        $userCustomField->save();
+        $fieldId = $userCustomField->field_id;
+
+        $params = [
+            'first_name' => str_random(10),
+            'last_name' => str_random(10),
+            'timezone_id' => 1,
+            'language_id' => rand(1000, 5000),
+            'availability_id' => 1,
+            'why_i_volunteer' => str_random(50),
+            'employee_id' => str_random(3),
+            'department' => str_random(5),
+            'manager_name' => str_random(5),
+            'custom_fields' => [
+                [
+                    "field_id" => $fieldId,
+                    "value" => "1"
+                ]
+            ],
+            'skills' => []
+
+        ];
+    
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
+
+        $this->patch('app/user/', $params, ['token' => $token])
+        ->seeStatusCode(422)
+        ->seeJsonStructure([
+            "errors" => [
+                [
+                    "status",
+                    "type",
+                    "message",
+                    "code"
+                ]
+            ]
+        ]);
+        $user->delete();
+        $userCustomField->delete();
+    }
+
+    /**
+     * @test
+     *
+     * Show error if jwt token is blank
+     *
+     * @return void
+     */
+    public function it_should_show_error_if_jwt_token_is_blank()
+    {
+        $token = '';
+        $this->patch('app/change-password', [], ['token' => $token])
+        ->seeStatusCode(401)
+        ->seeJsonStructure([
+            'errors' => [
+                [
+                    'status',
+                    'type',
+                    'code',
+                    'message'
+                ]
+            ]
+        ]);
+    }
+
+    /**
+     * @test
+     *
+     * Show error if jwt token is blank
+     *
+     * @return void
+     */
+    public function it_should_show_error_on_jwt_token_expiration()
+    {
+        $connection = 'tenant';
+        $user = factory(\App\User::class)->make();
+        $user->setConnection($connection);
+        $user->save();
+
+        $payload = [
+            'iss' => "lumen-jwt", // Issuer of the token
+            'sub' => $user->user_id, // Subject of the token
+            'iat' => time(), // Time when JWT was issued.
+            'exp' => time(), // Expiration time
+            'fqdn' => env('DEFAULT_TENANT')
+        ];
+
+        $token = JWT::encode($payload, env('JWT_SECRET'));
+
+        $this->patch('app/change-password', [], ['token' => $token])
+        ->seeStatusCode(401)
+        ->seeJsonStructure([
+            'errors' => [
+                [
+                    'status',
+                    'type',
+                    'code',
+                    'message'
+                ]
+            ]
+        ]);
+        $user->delete();
+    }
+
+    /**
+     * @test
+     *
+     * Show error if jwt signature is invalid
+     *
+     * @return void
+     */
+    public function it_should_show_error_on_jwt_signature_invalid()
+    {
+        $connection = 'tenant';
+        $user = factory(\App\User::class)->make();
+        $user->setConnection($connection);
+        $user->save();
+
+        $payload = [
+            'iss' => "lumen-jwt", // Issuer of the token
+            'sub' => $user->user_id, // Subject of the token
+            'iat' => time(), // Time when JWT was issued.
+            'exp' => time() * 60 * 60, // Expiration time
+            'fqdn' => env('DEFAULT_TENANT')
+        ];
+
+        $token = JWT::encode($payload, 'test');
+
+        $this->patch('app/change-password', [], ['token' => $token])
+        ->seeStatusCode(401)
+        ->seeJsonStructure([
+            'errors' => [
+                [
+                    'status',
+                    'type',
+                    'code',
+                    'message'
+                ]
+            ]
+        ]);
+        $user->delete();
+    }
+
+    /**
+     * @test
+     *
+     * Show error if jwt token is expired
+     *
+     * @return void
+     */
+    public function it_should_show_error_if_jwt_token_is_expired()
+    {
+        $token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJsdW1lbi1qd3QiLCJzdWIiOjIsImlhdCI6MTU2ODExNDA5NCwiZXhwIjoxNTY4MTI4NDk0LCJmcWRuIjoidGF0dmEifQ.x5mLYFU619-xnxSqJbRUt7iQz_Pwx5kka1YjWnNAhkc';
+        $this->patch('app/change-password', [], ['token' => $token])
+        ->seeStatusCode(401)
+        ->seeJsonStructure([
+            'errors' => [
+                [
+                    'status',
+                    'type',
+                    'code',
+                    'message'
+                ]
+            ]
+        ]);
+    }
+
+    /**
+     * @test
+     *
+     * It should return invalid FQDN error
+     *
+     * @return void
+     */
+    public function it_should_return_invalid_fqdn_error()
+    {
+        $connection = 'tenant';
+        $user = factory(\App\User::class)->make();
+        $user->setConnection($connection);
+        $user->save();
+
+        $token = Helpers::getJwtToken($user->user_id, str_random('5'));
+
+        $this->get('/app/search-user', ['token' => $token])
+        ->seeStatusCode(401);
+        $user->delete();
+    }
+
+    /**
+     * @test
+     *
+     * It should return an error, tenant not found
+     *
+     * @return void
+     */
+    public function it_should_return_tenant_not_found()
+    {
+        $connection = 'tenant';
+        $user = factory(\App\User::class)->make();
+        $user->setConnection($connection);
+        $user->save();
+
+        DB::setDefaultConnection('mysql');
+        
+        DB::table('tenant')->where('name', env('DEFAULT_TENANT'))->update(['deleted_at' => Carbon::now()]);
+
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
+        $this->get('app/search-user?search='.substr($user->first_name, 2), ['token' => $token])
+        ->seeStatusCode(404);
+
+        $user->delete();
+        
+        DB::setDefaultConnection('mysql');
+        DB::table('tenant')->where('name', env('DEFAULT_TENANT'))->update(['deleted_at' => null]);
+        
     }
 }

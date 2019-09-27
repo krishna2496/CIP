@@ -3,6 +3,7 @@ namespace App\Repositories\MissionComment;
 
 use App\Models\Comment;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Http\Request;
 
 interface MissionCommentInterface
 {
@@ -19,7 +20,9 @@ interface MissionCommentInterface
      * Get mission comments
      *
      * @param int $missionId
+     * @param array $statusList
+     * @param Illuminate\Http\Request $request
      * @return \Illuminate\Pagination\LengthAwarePaginator
      */
-    public function getComments(int $missionId): LengthAwarePaginator;
+    public function getComments(int $missionId, array $statusList = [], Request $request = null): LengthAwarePaginator;
 }

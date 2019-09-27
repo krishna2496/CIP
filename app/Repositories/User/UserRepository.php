@@ -43,13 +43,19 @@ class UserRepository implements UserInterface
     private $responseHelper;
 
     /**
+     * @var App\Helpers\Helpers
+     */
+    private $helpers;
+
+    /**
      * Create a new User repository instance.
      *
      * @param  App\User $user
      * @param  App\Models\UserSkill $userSkill
      * @param  App\Models\UserCustomFieldValue $userCustomFieldValue
      * @param  App\Models\Availability $availability
-     * @param  Illuminate\Http\ResponseHelper $responseHelper
+     * @param  App\Helpers\ResponseHelper $responseHelper
+     * @param  App\Helpers\Helpers $helpers
      * @return void
      */
     public function __construct(
@@ -57,13 +63,15 @@ class UserRepository implements UserInterface
         UserSkill $userSkill,
         UserCustomFieldValue $userCustomFieldValue,
         Availability $availability,
-        ResponseHelper $responseHelper
+        ResponseHelper $responseHelper,
+        Helpers $helpers
     ) {
         $this->user = $user;
         $this->userSkill = $userSkill;
         $this->userCustomFieldValue = $userCustomFieldValue;
         $this->availability = $availability;
         $this->responseHelper = $responseHelper;
+        $this->helpers = $helpers;
     }
     
     /**
@@ -85,7 +93,14 @@ class UserRepository implements UserInterface
      */
     public function userList(Request $request): LengthAwarePaginator
     {
-        $userQuery = $this->user->with('city', 'country', 'timezone');
+        $tenantName = $this->helpers->getSubDomainFromRequest($request);
+        $defaultAvatarImage = $this->helpers->getUserDefaultProfileImage($tenantName);
+
+        $userQuery = $this->user->selectRaw("first_name, last_name, email, password, 
+        case when(avatar = '' || avatar is null) then '$defaultAvatarImage' else avatar end as avatar, 
+        timezone_id, availability_id, why_i_volunteer, employee_id, department,
+         manager_name, city_id, country_id, profile_text, linked_in_url, status, language_id, title")
+        ->with('city', 'country', 'timezone');
         
         if ($request->has('search')) {
             $userQuery->where(function ($query) use ($request) {
@@ -215,9 +230,6 @@ class UserRepository implements UserInterface
      */
     public function searchUsers(string $text = null, int $userId): Collection
     {
-        if (is_null($text)) {
-            return $this->all();
-        }
         return $this->user->searchUser($text, $userId)->get();
     }
 

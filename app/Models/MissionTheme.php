@@ -39,16 +39,6 @@ class MissionTheme extends Model
     protected $fillable = ['theme_name', 'translations'];
 
     /**
-     * Get the mission that has theme
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function mission(): HasMany
-    {
-        return $this->hasMany(Mission::class, 'mission_theme_id', 'theme_id');
-    }
-
-    /**
      * Set translations attribute on the model.
      *
      * @param  array $value
@@ -68,10 +58,7 @@ class MissionTheme extends Model
     public function getTranslationsAttribute(string $value): array
     {
         $data = @unserialize($value);
-        if ($data !== false) {
-            return unserialize($value);
-        }
-        return [];
+        return ($data !== false) ? unserialize($value): $value;
     }
 
     /**

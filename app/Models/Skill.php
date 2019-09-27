@@ -40,16 +40,6 @@ class Skill extends Model
     protected $fillable = ['skill_name', 'translations', 'parent_skill'];
 
     /**
-     * Defined has many relation for the user skill table.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function userSkills(): HasMany
-    {
-        return $this->hasMany(UserSkill::class, 'skill_id', 'skill_id');
-    }
-    
-    /**
      * Set translations attribute on the model.
      *
      * @param  array $value

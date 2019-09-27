@@ -474,7 +474,7 @@ class MissionRepository implements MissionInterface
     public function missionList(Request $request): LengthAwarePaginator
     {
         $languages = $this->languageHelper->getLanguages($request);
-        $mission = Mission::select(
+        $missionQuery = $this->mission->select(
             'mission.mission_id',
             'mission.theme_id',
             'mission.city_id',
@@ -489,8 +489,13 @@ class MissionRepository implements MissionInterface
         )
         ->with(['city', 'country', 'missionTheme',
         'missionLanguage', 'missionMedia', 'missionDocument', 'goalMission', 'timeMission'])
-        ->withCount('missionApplication')
-        ->paginate($request->perPage);
+        ->withCount('missionApplication');
+
+        if ($request->has('order')) {
+            $orderDirection = $request->input('order', 'asc');
+            $missionQuery->orderBy('mission_id', $orderDirection);
+        }
+        $mission = $missionQuery->paginate($request->perPage);
 
         foreach ($mission as $key => $value) {
             foreach ($value->missionLanguage as $languageValue) {
@@ -541,6 +546,11 @@ class MissionRepository implements MissionInterface
                 $query->whereIn('approval_status', [config("constants.application_status")["AUTOMATICALLY_APPROVED"],
                 config("constants.application_status")["PENDING"]]);
             }])
+            ->withCount(['missionApplication as user_application_count' => function ($query) use ($request) {
+                $query->where('user_id', $request->auth->user_id)
+                ->whereIn('approval_status', [config("constants.application_status")["AUTOMATICALLY_APPROVED"],
+                config("constants.application_status")["PENDING"]]);
+            }])
             ->withCount(['favouriteMission as favourite_mission_count' => function ($query) use ($request) {
                 $query->Where('user_id', $request->auth->user_id);
             }]);
@@ -549,6 +559,12 @@ class MissionRepository implements MissionInterface
                     $query->select(DB::raw("AVG(rating) as rating"));
                 }
             ]);
+        $missionQuery->withCount([
+            'timesheet AS achieved_goal' => function ($query) use ($request) {
+                $query->select(DB::raw("SUM(action) as action"));
+                $query->whereIn('status_id', array(config('constants.timesheet_status_id.APPROVED'),
+                config('constants.timesheet_status_id.AUTOMATICALLY_APPROVED')));
+            }]);
         $missionQuery->with(['missionRating']);
        
         //Explore mission recommended to user
@@ -964,6 +980,12 @@ class MissionRepository implements MissionInterface
                 $query->select(DB::raw("AVG(rating) as rating"));
             }
         ]);
+        $missionQuery->withCount([
+            'timesheet AS achieved_goal' => function ($query) use ($request) {
+                $query->select(DB::raw("SUM(action) as action"));
+                $query->whereIn('status_id', array(config('constants.timesheet_status_id.APPROVED'),
+                config('constants.timesheet_status_id.AUTOMATICALLY_APPROVED')));
+            }]);
         $missionQuery->with(['missionRating']);
         return $missionQuery->inRandomOrder()->get();
     }
@@ -1030,6 +1052,12 @@ class MissionRepository implements MissionInterface
             ])->withCount([
                 'missionRating as mission_rating_total_volunteers'
             ]);
+            $missionQuery->withCount([
+                'timesheet AS achieved_goal' => function ($query) use ($request) {
+                    $query->select(DB::raw("SUM(action) as action"));
+                    $query->whereIn('status_id', array(config('constants.timesheet_status_id.APPROVED'),
+                    config('constants.timesheet_status_id.AUTOMATICALLY_APPROVED')));
+                }]);
         return $missionQuery->get();
     }
 
@@ -1102,19 +1130,6 @@ class MissionRepository implements MissionInterface
         )
         ->first();
         return $mission;
-    }
-
-
-    /**
-     * Get goal objective
-     *
-     * @param int $missionId
-     * @return App\Models\GoalMission|null
-     */
-    public function getGoalObjective(int $missionId): ?GoalMission
-    {
-        return $this->goalMission->select('goal_objective')->where('mission_id', $missionId)
-        ->first();
     }
 
     /** Get mission application details by mission id, user id and status
