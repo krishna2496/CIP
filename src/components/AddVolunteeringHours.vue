@@ -2,8 +2,8 @@
     <div>
         <b-modal ref="timeHoursModal" @hidden="hideModal" :modal-class="'time-hours-modal table-modal'" hide-footer>
             <template slot="modal-header" slot-scope="{ close }">
-                <i class="close" @click="close()" v-b-tooltip.hover :title="langauageData.label.close"></i>
-                <h5 class="modal-title">{{langauageData.label.hour_entry_modal_title}}</h5>
+                <i class="close" @click="close()" v-b-tooltip.hover :title="languageData.label.close"></i>
+                <h5 class="modal-title">{{languageData.label.hour_entry_modal_title}}</h5>
             </template>
             <b-alert show :variant="classVariant" dismissible v-model="showErrorDiv">
                 {{ message }}
@@ -17,17 +17,17 @@
                         <b-row>
                             <b-col sm="12">
                                 <b-form-group>
-                                    <label for>{{langauageData.label.mission}}</label>
+                                    <label for>{{languageData.label.mission}}</label>
                                     <b-form-input id type="text" v-model.trim="timeEntryDefaultData.missionName"
                                         class="disabled"></b-form-input>
                                 </b-form-group>
                             </b-col>
                             <b-col>
                                 <b-form-group>
-                                    <label for>{{langauageData.label.hours}}*</label>
+                                    <label for>{{languageData.label.hours}}*</label>
 
                                     <b-form-input id 
-                                        :placeholder="langauageData.placeholder.spent_hours" 
+                                        :placeholder="languageData.placeholder.spent_hours" 
                                         :class="{'is-invalid' :submitted && ((!$v.timeEntryDefaultData.hours.required) || ($v.timeEntryDefaultData.hours.requiredHourValidation.$invalid) || (!$v.timeEntryDefaultData.hours.numeric) || (!$v.timeEntryDefaultData.hours.between)) }"
                                         type="text" 
                                         maxlength="2"
@@ -37,23 +37,23 @@
 
                                     <div v-if="submitted && ((!$v.timeEntryDefaultData.hours.required) || ($v.timeEntryDefaultData.hours.requiredHourValidation.$invalid))"
                                         class="invalid-feedback">
-                                        {{ langauageData.errors.hours_is_required }}</div>
+                                        {{ languageData.errors.hours_is_required }}</div>
                                     <div v-if="submitted && (!$v.timeEntryDefaultData.hours.numeric)"
                                         class="invalid-feedback">
-                                       {{ langauageData.errors.hours_numeric }}
+                                       {{ languageData.errors.hours_numeric }}
                                     </div>
                                     <div v-if="submitted && (!$v.timeEntryDefaultData.hours.between) && ($v.timeEntryDefaultData.hours.numeric)"
                                         class="invalid-feedback">
-                                       {{ langauageData.errors.hours_is_between }}
+                                       {{ languageData.errors.hours_is_between }}
                                     </div>
                                 </b-form-group>
 
                             </b-col>
                             <b-col sm="6">
                                 <b-form-group>
-                                    <label for>{{langauageData.label.minutes}}*</label>
+                                    <label for>{{languageData.label.minutes}}*</label>
                                      <b-form-input id 
-                                        :placeholder="langauageData.placeholder.spent_minutes" 
+                                        :placeholder="languageData.placeholder.spent_minutes" 
                                         :class="{'is-invalid' :submitted && ((!$v.timeEntryDefaultData.minutes.required) || ($v.timeEntryDefaultData.minutes.requiredMinuteValidation.$invalid) || (!$v.timeEntryDefaultData.minutes.numeric) || (!$v.timeEntryDefaultData.minutes.between)) }"
                                         type="text"            
                                         maxlength="2"
@@ -63,14 +63,14 @@
                                     
                                     <div v-if="submitted && ((!$v.timeEntryDefaultData.minutes.required) || ($v.timeEntryDefaultData.minutes.requiredMinuteValidation.$invalid))"
                                         class="invalid-feedback">
-                                        {{ langauageData.errors.minute_is_required }}</div>
+                                        {{ languageData.errors.minute_is_required }}</div>
                                     <div v-if="submitted && (!$v.timeEntryDefaultData.minutes.numeric)"
                                         class="invalid-feedback">
-                                       {{ langauageData.errors.minute_numeric }}
+                                       {{ languageData.errors.minute_numeric }}
                                     </div>
                                     <div v-if="submitted && (!$v.timeEntryDefaultData.minutes.between) && ($v.timeEntryDefaultData.minutes.numeric)"
                                         class="invalid-feedback">
-                                       {{ langauageData.errors.minute_between }}
+                                       {{ languageData.errors.minute_between }}
                                     </div>
                                 </b-form-group>
 
@@ -81,7 +81,7 @@
                         <b-row>
                             <b-col sm="6" class="date-col">
                                 <b-form-group>
-                                    <label for>{{langauageData.label.date_volunteered}}*</label>
+                                    <label for>{{languageData.label.date_volunteered}}*</label>
                                     <date-picker v-model="timeEntryDefaultData.dateVolunteered"
                                         :notAfter="timeEntryDefaultData.disabledFutureDates"
                                         :notBefore="timeEntryDefaultData.disabledPastDates" :disabledDays="disableDates"
@@ -92,19 +92,19 @@
                                     </date-picker>
                                     <div v-if="submitted && !$v.timeEntryDefaultData.dateVolunteered.required"
                                         class="invalid-feedback">
-                                        {{ langauageData.errors.date_volunteer_is_required }}</div>
+                                        {{ languageData.errors.date_volunteer_is_required }}</div>
                                 </b-form-group>
                             </b-col>
                             <b-col sm="6" class="date-col">
                                 <b-form-group>
-                                    <label for>{{langauageData.label.day_volunteered}}*</label>
+                                    <label for>{{languageData.label.day_volunteered}}*</label>
                                     <AppCustomDropdown v-model="timeEntryDefaultData.workDay" :optionList="workDayList"
                                         :errorClass="submitted && $v.timeEntryDefaultData.workDay.$error"
                                         :defaultText="defaultWorkday" @updateCall="updateWorkday"
                                         translationEnable="true" />
                                     <div v-if="submitted && !$v.timeEntryDefaultData.workDay.required"
                                         class="invalid-feedback">
-                                        {{ langauageData.errors.work_day }}</div>
+                                        {{ languageData.errors.work_day }}</div>
                                 </b-form-group>
 
                             </b-col>
@@ -114,14 +114,14 @@
                         <b-row>
                             <b-col sm="12">
                                 <b-form-group>
-                                    <label for>{{langauageData.label.notes}}*</label>
+                                    <label for>{{languageData.label.notes}}*</label>
                                     <b-form-textarea id v-model="timeEntryDefaultData.notes"
                                         :class="{ 'is-invalid': submitted && $v.timeEntryDefaultData.notes.$error }"
-                                        :placeholder="langauageData.placeholder.notes" size="lg" rows="5">
+                                        :placeholder="languageData.placeholder.notes" size="lg" rows="5">
                                     </b-form-textarea>
                                     <div v-if="submitted && !$v.timeEntryDefaultData.notes.required"
                                         class="invalid-feedback">
-                                        {{ langauageData.errors.notes }}</div>
+                                        {{ languageData.errors.notes }}</div>
                                 </b-form-group>
 
                             </b-col>
@@ -132,7 +132,7 @@
                             <b-col sm="12"><span class="error-message" v-if="fileError">{{fileError}}</span></b-col>
                             <b-col md="6" class="date-col">
 
-                                <label for>{{langauageData.label.file_upload}}</label>
+                                <label for>{{languageData.label.file_upload}}</label>
                                 <div class="file-upload-wrap"
                                     v-bind:class="{'has-error' : fileError != '' ? true : false}">
                                     <div class="btn-wrapper"
@@ -141,9 +141,9 @@
                                     application/docx,application/xls,application/xlsx,application/csv,application/pdf"
                                             :multiple="true" :drop="true" :drop-directory="true" @input="inputUpdate"
                                             :size="1024 * 1024 *10" v-model="fileArray" ref="upload">
-                                            {{langauageData.label.browse}}
+                                            {{languageData.label.browse}}
                                         </file-upload>
-                                        <span>{{langauageData.label.drop_files}}</span>
+                                        <span>{{languageData.label.drop_files}}</span>
                                     </div>
 
                                     <div class="uploaded-file-wrap">
@@ -154,7 +154,7 @@
                                                 target="_blank">{{file.document_name}}</a>
                                             <b-button class="remove-item"
                                                 @click.prevent="deleteFile(file.timesheet_id,file.timesheet_document_id)"
-                                                :title="langauageData.label.delete">
+                                                :title="languageData.label.delete">
                                                 <img :src="$store.state.imagePath+'/assets/images/delete-ic.svg'"
                                                     alt="delete-ic" />
                                             </b-button>
@@ -164,7 +164,7 @@
                                             :key="file.id">
                                             <p class="filename">{{file.name}}</p>
                                             <b-button class="remove-item" @click.prevent="$refs.upload.remove(file)"
-                                                :title="langauageData.label.delete">
+                                                :title="languageData.label.delete">
                                                 <img :src="$store.state.imagePath+'/assets/images/delete-ic.svg'"
                                                     alt="delete-ic" />
                                             </b-button>
@@ -177,10 +177,10 @@
                 </form>
                 <div class="btn-wrap">
                     <b-button class="btn-borderprimary" @click="$refs.timeHoursModal.hide()">
-                        {{langauageData.label.cancel}}</b-button>
+                        {{languageData.label.cancel}}</b-button>
                     <b-button class="btn-bordersecondary" v-bind:class="{
                         disabled:isAjaxCall
-                    }" @click="saveTimeHours()">{{langauageData.label.submit}}
+                    }" @click="saveTimeHours()">{{languageData.label.submit}}
                     </b-button>
                 </div>
             </div>
@@ -230,7 +230,7 @@
         data: function () {
             return {
                 lang: '',
-                langauageData: [],
+                languageData: [],
                 submitted: false,
                 disabledFutureDates: new Date(),
                 fileArray: this.files,
@@ -321,18 +321,18 @@
                 files.filter(function (data, index) {
                     let fileName = data.name.split('.');
                     if (!allowedFileTypes.includes(fileName[fileName.length - 1])) {
-                        _this.fileError = _this.langauageData.errors.invalid_file_type
+                        _this.fileError = _this.languageData.errors.invalid_file_type
                         error = true
                     } else {
                         if (data.size > 4000000) {
-                            _this.fileError = _this.langauageData.errors.file_max_size
+                            _this.fileError = _this.languageData.errors.file_max_size
                             error = true
                         }
                     }
                     if (index != files.length - 1) {
                         if (data.name == latestUploadName && data.size == latestUploadSize && data.type ==
                             latestUploadType) {
-                            _this.fileError = _this.langauageData.errors.file_already_uploaded
+                            _this.fileError = _this.languageData.errors.file_already_uploaded
                             error = true
                             duplicateUpload = true;
                         }
@@ -475,7 +475,7 @@
 
         },
         created() {
-            this.langauageData = JSON.parse(store.state.languageLabel)
+            this.languageData = JSON.parse(store.state.languageLabel)
             this.isFileUploadDisplay = this.settingEnabled(constants.TIMESHEET_DOCUMENT_UPLOAD)
             this.lang = (store.state.defaultLanguage).toLowerCase();
             

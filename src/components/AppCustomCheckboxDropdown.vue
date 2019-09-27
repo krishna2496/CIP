@@ -16,7 +16,7 @@
 			</ul>
 			<ul class="chk-select-options dropdown-option-list" v-else>
 				<li>
-					<label class="no-checkbox">{{ langauageData.label.no_record_found }}</label>
+					<label class="no-checkbox">{{ languageData.label.no_record_found }}</label>
 				</li>
 			</ul>
 		</div>
@@ -43,7 +43,7 @@
 		data() {
 			return {
 				items: this.selectedItem,
-				langauageData: [],
+				languageData: [],
 			};
 		},
 		mounted() {},
@@ -123,7 +123,7 @@
 			},
 		},
 		created() {
-			this.langauageData = JSON.parse(store.state.languageLabel);
+			this.languageData = JSON.parse(store.state.languageLabel);
 			setTimeout(function () {
 				var selectDropdown = document.querySelectorAll('.select-dropdown');
 				window.addEventListener("resize", function () {

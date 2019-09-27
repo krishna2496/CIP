@@ -17,7 +17,7 @@
                     <i class="clear-btn" @click="clearSearchFilter">
 
                         <img :src="$store.state.imagePath+'/assets/images/cross-ic.svg'"
-                            :title="langauageData.label.clear_search" alt="clear" />
+                            :title="languageData.label.clear_search" alt="clear" />
                     </i>
                 </b-col>
                 <b-col xl="6" lg="7" class="filter-block"  v-if="quickAccessFilterSet">
@@ -25,7 +25,7 @@
                         <b-button class="btn btn-back" @click="handleBack">
                             <img :src="$store.state.imagePath+'/assets/images/down-arrow.svg'" alt="Back Icon">
                         </b-button>
-                        <b-button class="btn btn-clear" @click="clearMissionFilters">{{langauageData.label.clear_all}}
+                        <b-button class="btn btn-clear" @click="clearMissionFilters">{{languageData.label.clear_all}}
                         </b-button>
                     </div>
 
@@ -120,7 +120,7 @@
                 isThemeChange: false,
                 isCountrySelectionSet: false,
                 searchString: this.search,
-                langauageData: [],
+                languageData: [],
             };
         },
         mounted() {
@@ -200,7 +200,7 @@
             },
 
             handleBlur() {
-                this.searchPlaceHolder = this.langauageData.label.search + ' ' + this.langauageData.label.mission;
+                this.searchPlaceHolder = this.languageData.label.search + ' ' + this.languageData.label.mission;
                 var b_header = document.querySelector(".bottom-header");
                 var input_edit = document.querySelector(".search-block input");
                 b_header.classList.remove("active");
@@ -258,7 +258,7 @@
                     this.defautCountry = country.selectedVal.replace(/<\/?("[^"]*"|'[^']*'|[^>])*(>|$)/g, "");
                     this.defautCountry = this.defautCountry.replace(/[^a-zA-Z\s]+/g, '');
                 } else {
-                    this.defautCountry = this.langauageData.label.country;
+                    this.defautCountry = this.languageData.label.country;
                 }
                 this.selectedfilterParams.cityId = '';
                 this.selectedfilterParams.themeId = '';
@@ -379,9 +379,9 @@
                 }
                 var _this = this;
                 setTimeout(function () {
-                    _this.defautCity = _this.langauageData.label.city,
-                        _this.defautTheme = _this.langauageData.label.theme,
-                        _this.defautSkill = _this.langauageData.label.skills
+                    _this.defautCity = _this.languageData.label.city,
+                        _this.defautTheme = _this.languageData.label.theme,
+                        _this.defautSkill = _this.languageData.label.skills
                 }, 500)
 
                 this.selectedfilterParams.countryId = store.state.countryId;
@@ -423,12 +423,12 @@
                                     tags.country[0] = selectedCountryData[0][1].id + '_' + selectedCountryData[
                                         0][1].title;
                                 } else {
-                                    this.defautCountry = this.langauageData.label.country;
+                                    this.defautCountry = this.languageData.label.country;
                                     tags.country[0] = '';
                                 }
                             }
                         } else {
-                            this.defautCountry = this.langauageData.label.country;
+                            this.defautCountry = this.languageData.label.country;
                         }
 
                         if (store.state.cityId != '') {
@@ -461,7 +461,7 @@
             clearFilter() {
                 var _this = this;
                 this.selectedfilterParams.countryId = '';
-                this.defautCountry = this.langauageData.label.country;
+                this.defautCountry = this.languageData.label.country;
                 this.selectedfilterParams.cityId = '';
                 this.selectedfilterParams.themeId = '';
                 this.selectedfilterParams.skillId = '';
@@ -487,7 +487,7 @@
                         if (response.country) {
                             this.countryList = Object.entries(response.country);
                         } else {
-                            this.defautCountry = this.langauageData.label.country;
+                            this.defautCountry = this.languageData.label.country;
                         }
 
                         if (response.city) {
@@ -508,7 +508,7 @@
                             this.skillList = []
                         }
                     } else {
-                        this.defautCountry = this.langauageData.label.country;
+                        this.defautCountry = this.languageData.label.country;
                         this.cityList = []
                         this.themeList = []
                         this.skillList = []
@@ -585,7 +585,7 @@
                                     this.defautCountry = selectedCountryData[0][1].title;
                                 }
                             } else {
-                                this.defautCountry = this.langauageData.label.country;
+                                this.defautCountry = this.languageData.label.country;
                             }
 
                             if (store.state.cityId != '') {
@@ -600,8 +600,8 @@
             }
         },
         created() {
-            this.langauageData = JSON.parse(store.state.languageLabel);
-            this.searchPlaceHolder = this.langauageData.label.search + ' ' + this.langauageData.label.mission;
+            this.languageData = JSON.parse(store.state.languageLabel);
+            this.searchPlaceHolder = this.languageData.label.search + ' ' + this.languageData.label.mission;
 
             this.quickAccessFilterSet = this.settingEnabled(constants.QUICK_ACCESS_FILTERS);
             this.isThemeDisplay = this.settingEnabled(constants.THEMES_ENABLED);
@@ -612,7 +612,7 @@
                 _this.clearFilter();
             });
             eventBus.$on('setDefaultText', (message) => {
-                _this.defautCountry = this.langauageData.label.country;
+                _this.defautCountry = this.languageData.label.country;
             });
             eventBus.$on('setDefaultData', (message) => {
                 _this.filterListing();

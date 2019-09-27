@@ -11,7 +11,7 @@
 			</ul>
 			<ul class="option-list dropdown-option-list" v-else>
 				<li v-for="item in optionList" v-bind:data-id="item.value" @click="handleSelect">
-					{{langauageData.label[item.text]}}</li>
+					{{languageData.label[item.text]}}</li>
 			</ul>
 		</div>
 	</div>
@@ -32,7 +32,7 @@
 		data() {
 			return {
 				defaultTextVal: this.defaultText,
-				langauageData: []
+				languageData: []
 			};
 		},
 		mounted() {},
@@ -106,7 +106,7 @@
 			document.removeEventListener("click", this.onClick);
 		},
 		created() {
-			this.langauageData = JSON.parse(store.state.languageLabel);
+			this.languageData = JSON.parse(store.state.languageLabel);
 			setTimeout(function () {
 				var selectDropdown = document.querySelectorAll('.select-dropdown');
 				window.addEventListener("resize", function () {

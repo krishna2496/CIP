@@ -1,36 +1,36 @@
 <template>
 	<div class="tab-with-picker">
 		<div class="table-header">
-		<h2>{{langauageData.label[currentMonthName]}} {{currentYearNumber}}</h2>
+		<h2>{{languageData.label[currentMonthName]}} {{currentYearNumber}}</h2>
 		<div class="inner-wrap">
 			<div class="picker-btn-wrap table-action-btn">
 				<button class="prev-btn picker-btn" 
 				v-bind:class="{disabled :previousButtonDisable}"
-				v-b-tooltip.hover :title="langauageData.label.previous +' '+langauageData.label.week.toLowerCase()" @click.stop="goPrevWeek">
+				v-b-tooltip.hover :title="languageData.label.previous +' '+languageData.label.week.toLowerCase()" @click.stop="goPrevWeek">
 					<img :src="$store.state.imagePath+'/assets/images/back-arrow-black.svg'"
-						:alt="langauageData.label.previous" />
+						:alt="languageData.label.previous" />
 				</button>
 
 				<!-- <span>{{currentWeak}}</span> -->
-				<button class="next-btn picker-btn" v-b-tooltip.hover  :title="langauageData.label.next+' '+langauageData.label.week.toLowerCase()"
+				<button class="next-btn picker-btn" v-b-tooltip.hover  :title="languageData.label.next+' '+languageData.label.week.toLowerCase()"
 					v-bind:class="{disabled :disableNextWeek}" @click.stop="goNextWeek">
 					<img :src="$store.state.imagePath+'/assets/images/next-arrow-black.svg'"
-						:alt="langauageData.label.next" />
+						:alt="languageData.label.next" />
 				</button>
 			</div>
 			<div class="picker-btn-wrap">
 				<button class="prev-btn picker-btn" 
 				v-bind:class="{disabled :previousButtonDisable}"
-				:title="langauageData.label.previous" @click.stop="goPrev">
+				:title="languageData.label.previous" @click.stop="goPrev">
 					<img :src="$store.state.imagePath+'/assets/images/back-arrow-black.svg'"
-						:alt="langauageData.label.previous" />
+						:alt="languageData.label.previous" />
 				</button>
 
-				<span>{{langauageData.label[currentMonthName]}}</span>
-				<button class="next-btn picker-btn" :title="langauageData.label.next"
+				<span>{{languageData.label[currentMonthName]}}</span>
+				<button class="next-btn picker-btn" :title="languageData.label.next"
 					v-bind:class="{disabled :isPreviousButtonDisable}" @click.stop="goNext">
 					<img :src="$store.state.imagePath+'/assets/images/next-arrow-black.svg'"
-						:alt="langauageData.label.next" />
+						:alt="languageData.label.next" />
 				</button>
 			</div>		
 			<div>
@@ -92,7 +92,7 @@
 				},
 				defaultYear: "",
 				yearListing: [],
-				langauageData: [],
+				languageData: [],
 				currentMonth: '',
 				daysInCurrentMonth: 0,
 				currentMonthName: '',
@@ -156,7 +156,7 @@
 				let j = 1;
 				for (var end = moment(start).add(1, 'week'); start.isBefore(end); start.add(1, 'day')) {
 					let dayName = start.format('dddd').toLowerCase();
-						this.weekNameArray[j] = this.langauageData.label[dayName];
+						this.weekNameArray[j] = this.languageData.label[dayName];
 						this.daysArray[i] = start.format('D')-1
 						this.yearArray[i] = start.format('YYYY')
 						this.monthArray[i] = start.format('M')
@@ -234,7 +234,7 @@
 			},
 		},
 		created() {
-			this.langauageData = JSON.parse(store.state.languageLabel);
+			this.languageData = JSON.parse(store.state.languageLabel);
 			this.currentMonth = moment().startOf('date').week(this.currentWeak);
 			this.changeMonth(this.currentMonth);
 		}

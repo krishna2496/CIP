@@ -8,14 +8,14 @@
 			<div class="dashboard-tab-content" v-if="!isLoading">
 				<b-container>
 					<div class="heading-section" v-if="isAllVisible && !isLoading">
-						<h1>{{langauageData.label.volunteering_history}}</h1>
+						<h1>{{languageData.label.volunteering_history}}</h1>
 					</div>
 					<div class="inner-content-wrap" v-if="isAllVisible && !isLoading">
 						<b-row class="chart-block">
 							<b-col lg="6" class="chart-col">
 								<div class="inner-chart-col">
 									<div class="chart-title">
-										<h5>{{langauageData.label.hours_per_theme}}</h5>
+										<h5>{{languageData.label.hours_per_theme}}</h5>
 										<AppCustomDropdown :optionList="themeYearList" @updateCall="updateThemeYear"
 											:defaultText="ThemeYearText" translationEnable="false" />
 									</div>
@@ -35,7 +35,7 @@
 							<b-col lg="6" class="chart-col">
 								<div class="inner-chart-col">
 									<div class="chart-title">
-										<h5>{{langauageData.label.hours_per_skill}}</h5>
+										<h5>{{languageData.label.hours_per_skill}}</h5>
 										<AppCustomDropdown :optionList="skillYearList" @updateCall="updateSkillYear"
 											:defaultText="skillYearText" translationEnable="false" />
 									</div>
@@ -61,7 +61,7 @@
 									@updateCall="getVolunteerMissionsHours"
 									exportUrl="app/volunteer/history/time-mission/export" :perPage="hourRequestPerPage"
 									:nextUrl="hourRequestNextUrl"
-									:fileName="langauageData.export_timesheet_file_names.TIME_MISSION_HISTORY_XLSX"
+									:fileName="languageData.export_timesheet_file_names.TIME_MISSION_HISTORY_XLSX"
 									:totalPages="timeMissionTotalPage" />
 							</b-col>
 							<b-col lg="6" class="table-col">
@@ -71,16 +71,16 @@
 									:perPage="goalRequestPerPage" :nextUrl="goalRequestNextUrl"
 									@updateCall="getVolunteerMissionsGoals"
 									exportUrl="app/volunteer/history/goal-mission/export"
-									:fileName="langauageData.export_timesheet_file_names.GOAL_MISSION_HISTORY_XLSX"
+									:fileName="languageData.export_timesheet_file_names.GOAL_MISSION_HISTORY_XLSX"
 									:totalPages="goalMissionTotalPage" />
 							</b-col>
 						</b-row>
 					</div>
 					<div class="no-history-data" v-else>
-						<p>{{langauageData.label.empty_volunteer_history_text}}</p>
+						<p>{{languageData.label.empty_volunteer_history_text}}</p>
 						<div class="btn-row">
-							<b-button :title="langauageData.label.start_volunteering" class="btn-bordersecondary"
-								@click="$router.push({ name: 'home' })">{{langauageData.label.start_volunteering}}
+							<b-button :title="languageData.label.start_volunteering" class="btn-bordersecondary"
+								@click="$router.push({ name: 'home' })">{{languageData.label.start_volunteering}}
 							</b-button>
 						</div>
 					</div>
@@ -128,25 +128,21 @@
 
 		data() {
 			return {
-				langauageData: [],
+				languageData: [],
 				perHourApiDataTheme: [],
 				perHourApiDataSkill: [],
-
 				timeMissionTimesheetLabel: "",
 				timeMissionTimesheetFields: [],
 				timeMissionTimesheetItems: [],
 				timeMissionCurrentPage: 1,
 				timeMissionTotalRow: 0,
 				timeMissionTotalPage: null,
-				
-
 				goalMissionTimesheetLabel: "",
 				goalMissionTimesheetFields: [],
 				goalMissionTimesheetItems: [],
 				goalMissionCurrentPage: 1,
 				goalMissionTotalRow: 0,
 				goalMissionTotalPage: null,
-
 				ThemeYearText: "Year",
 				skillYearText: "Year",
 				skillYearList: [],
@@ -203,10 +199,10 @@
 					_this.timeMissionTimesheetItems = [];
 					if (response.data) {
 						let data = response.data;
-						let mission = this.langauageData.label.mission;
-						let time = this.langauageData.label.time;
-						let hours = this.langauageData.label.hours;
-						let organisation = this.langauageData.label.organisation;
+						let mission = this.languageData.label.mission;
+						let time = this.languageData.label.time;
+						let hours = this.languageData.label.hours;
+						let organisation = this.languageData.label.organisation;
 
 						if (response.pagination) {
 							_this.timeMissionTotalRow = response.pagination.total;
@@ -234,9 +230,9 @@
 					_this.goalMissionTimesheetItems = [];
 					if (response.data) {
 						let data = response.data;
-						let mission = this.langauageData.label.mission;
-						let action = this.langauageData.label.actions;
-						let organisation = this.langauageData.label.organisation;
+						let mission = this.languageData.label.mission;
+						let action = this.languageData.label.actions;
+						let organisation = this.languageData.label.organisation;
 						if (response.pagination) {
 							_this.goalMissionTotalRow = response.pagination.total;
 							_this.goalMissionCurrentPage = response.pagination.current_page;
@@ -260,18 +256,18 @@
 		},
 		created() {
 			var _this = this;
-			this.langauageData = JSON.parse(store.state.languageLabel);
-			this.timeMissionTimesheetLabel = this.langauageData.label.volunteering_hours
-			this.goalMissionTimesheetLabel = this.langauageData.label.volunteering_goals
+			this.languageData = JSON.parse(store.state.languageLabel);
+			this.timeMissionTimesheetLabel = this.languageData.label.volunteering_hours
+			this.goalMissionTimesheetLabel = this.languageData.label.volunteering_goals
 			this.getVolunteerHistoryHoursOfType("theme");
 			this.getVolunteerHistoryHoursOfType("skill");
 			this.getVolunteerMissionsHours();
 			this.getVolunteerMissionsGoals();
 			let timeRequestFieldArray = [
-				this.langauageData.label.mission,
-				this.langauageData.label.time,
-				this.langauageData.label.hours,
-				this.langauageData.label.organisation,
+				this.languageData.label.mission,
+				this.languageData.label.time,
+				this.languageData.label.hours,
+				this.languageData.label.organisation,
 			]
 
 			timeRequestFieldArray.filter(function (data, index) {
@@ -281,9 +277,9 @@
 			});
 
 			let goalRequestFieldArray = [
-				this.langauageData.label.mission,
-				this.langauageData.label.actions,
-				this.langauageData.label.organisation,
+				this.languageData.label.mission,
+				this.languageData.label.actions,
+				this.languageData.label.organisation,
 			]
 
 			goalRequestFieldArray.filter(function (data, index) {

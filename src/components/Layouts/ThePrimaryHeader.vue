@@ -20,11 +20,11 @@
                         <ul v-if="this.$store.state.isLoggedIn">
                             <li class="has-menu">
                                 <a href="Javascript:void(0)"
-                                    :title='langauageData.label.explore'>{{ langauageData.label.explore}}</a>
+                                    :title='languageData.label.explore'>{{ languageData.label.explore}}</a>
 
                                 <ul class="dropdown-menu sub-dropdown">
                                     <li v-if="isThemeDisplay" v-bind:class="topThemeClass">
-                                        <a href="Javascript:void(0)">{{ langauageData.label.top_themes}}</a>
+                                        <a href="Javascript:void(0)">{{ languageData.label.top_themes}}</a>
                                         <ul class="subdropdown-menu" v-if="topTheme != null && topTheme.length > 0">
                                             <li v-for="items in topTheme">
                                                 <router-link :to="{ path: '/home/themes/'+items.id}"
@@ -35,7 +35,7 @@
                                         </ul>
                                     </li>
                                     <li v-bind:class="topCountryClass">
-                                        <a href="Javascript:void(0)">{{langauageData.label.top_country}}</a>
+                                        <a href="Javascript:void(0)">{{languageData.label.top_country}}</a>
                                         <ul class="subdropdown-menu" v-if="topCountry != null && topCountry.length > 0">
                                             <li v-for="items in topCountry">
                                                 <router-link
@@ -47,7 +47,7 @@
                                         </ul>
                                     </li>
                                     <li v-bind:class="topOrganizationClass">
-                                        <a href="Javascript:void(0)">{{ langauageData.label.top_organisation}}</a>
+                                        <a href="Javascript:void(0)">{{ languageData.label.top_organisation}}</a>
                                         <ul class="subdropdown-menu"
                                             v-if="topOrganization != null && topOrganization.length > 0">
                                             <li v-for="items in topOrganization">
@@ -61,41 +61,41 @@
                                     <li class="no-dropdown">
                                         <router-link :to="{ path: '/home/most-ranked-missions'}"
                                             @click.native="menuBarclickHandler">
-                                            {{langauageData.label.most_ranked}}
+                                            {{languageData.label.most_ranked}}
                                         </router-link>
                                     </li>
                                     <li class="no-dropdown">
                                         <router-link :to="{ path: '/home/favourite-missions'}"
                                             @click.native="menuBarclickHandler">
-                                            {{langauageData.label.top_favourite}}
+                                            {{languageData.label.top_favourite}}
                                         </router-link>
                                     </li>
                                     <li class="no-dropdown">
                                         <router-link :to="{ path: '/home/recommended-missions'}"
                                             @click.native="menuBarclickHandler">
-                                            {{langauageData.label.recommended}}
+                                            {{languageData.label.recommended}}
                                         </router-link>
                                     </li>
                                     <li class="no-dropdown">
                                         <router-link :to="{ path: '/home/random-missions'}"
                                             @click.native="menuBarclickHandler">
-                                            {{langauageData.label.random}}
+                                            {{languageData.label.random}}
                                         </router-link>
                                     </li>
                                 </ul>
                             </li>
                             <li class="has-menu no-dropdown" v-if="isStoryDisplay">
                                 <a href="Javascript:void(0)"
-                                    :title='langauageData.label.stories'>{{ langauageData.label.stories}}</a>
+                                    :title='languageData.label.stories'>{{ languageData.label.stories}}</a>
                             </li>
                             <li class="has-menu no-dropdown" v-if="isNewsDisplay">
                                 <a href="Javascript:void(0)"
-                                    :title='langauageData.label.news'> {{langauageData.label.news}}</a>
+                                    :title='languageData.label.news'> {{languageData.label.news}}</a>
                             </li>
 
                             <li class="has-menu" v-if="isPolicyDisplay">
                                 <a href="Javascript:void(0)"
-                                    :title='langauageData.label.policy'>{{ langauageData.label.policy}}</a>
+                                    :title='languageData.label.policy'>{{ languageData.label.policy}}</a>
                                 <ul class="dropdown-menu" v-if="policyPage.length > 0">
                                     <li v-for="item in policyPage">
                                         <router-link :to="{ path: '/policy/'+item.slug}"
@@ -119,13 +119,13 @@
                                 <i :style="{backgroundImage: 'url('+this.$store.state.avatar+')'}"></i>
                                 <em>{{this.$store.state.firstName+' '+this.$store.state.lastName}}</em>
                             </template>
-                            <b-dropdown-item :to="{ name: 'dashboard' }">{{ langauageData.label.dashboard}}
+                            <b-dropdown-item :to="{ name: 'dashboard' }">{{ languageData.label.dashboard}}
                             </b-dropdown-item>
-                            <b-dropdown-item :to="{ name: 'myAccount' }">{{ langauageData.label.my_account}}
+                            <b-dropdown-item :to="{ name: 'myAccount' }">{{ languageData.label.my_account}}
                             </b-dropdown-item>
                             <!-- <b-dropdown-item href="#">Help Center</b-dropdown-item> -->
                             <b-dropdown-item v-on:click.native="logout()" replace v-if="this.$store.state.isLoggedIn">
-                                {{ langauageData.label.logout}}
+                                {{ languageData.label.logout}}
                             </b-dropdown-item>
                         </b-nav-item-dropdown>
                     </b-nav>
@@ -137,7 +137,7 @@
 
                             </b-button>
                             <span class="title">Notification</span>
-                            <b-button class="btn-clear" @click="showclearitem">{{langauageData.label.clear_all}}
+                            <b-button class="btn-clear" @click="showclearitem">{{languageData.label.clear_all}}
                             </b-button>
                         </template>
                         <div class="notification-details" data-simplebar>
@@ -284,7 +284,7 @@
                     topOrganizationClass: 'no-dropdown',
                     filterData: [],
                     topOrganization: [],
-                    langauageData: [],
+                    languageData: [],
                     policyPage: [],
                     isThemeDisplay: true,
                     isStoryDisplay: true,
@@ -436,7 +436,7 @@
                 },
             },
             created() {
-                this.langauageData = JSON.parse(store.state.languageLabel);
+                this.languageData = JSON.parse(store.state.languageLabel);
                 document.addEventListener("scroll", this.handscroller);
                 this.isThemeDisplay = this.settingEnabled(constants.THEMES_ENABLED);
                 this.isStoryDisplay = this.settingEnabled(constants.STORIES_ENABLED);

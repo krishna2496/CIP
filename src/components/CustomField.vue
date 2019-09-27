@@ -10,7 +10,7 @@
                     :errorClass="getErrorClass(item.field_id)" :validstate="getErrorState(item.field_id)"
                     :fieldId="item.field_id" translationEnable="false" @updateCall="updateCustomDropDown" />
                 <div v-if="getErrorClass(item.field_id)" class="invalid-feedback">
-                    {{item.translations.name}} {{ langauageData.errors.field_required }}
+                    {{item.translations.name}} {{ languageData.errors.field_required }}
                 </div>
             </b-form-group>
             <b-form-group v-if="item.type == 'radio'">
@@ -41,7 +41,7 @@
                     :validstate="getErrorState(item.field_id)" :fieldId="item.field_id"
                     @updateCall="changeMultiSelect" />
                 <div v-if="getErrorClass(item.field_id)" class="invalid-feedback">
-                    {{item.translations.name}} {{ langauageData.errors.field_required }}
+                    {{item.translations.name}} {{ languageData.errors.field_required }}
                 </div>
             </b-form-group>
             <b-form-group v-if="item.type == 'textarea'">
@@ -52,7 +52,7 @@
                     @change="updateChanges" max-rows="6">
                 </b-form-textarea>
                 <div v-if="getErrorClass(item.field_id)" class="invalid-feedback">
-                    {{item.translations.name}} {{ langauageData.errors.field_required }}
+                    {{item.translations.name}} {{ languageData.errors.field_required }}
                 </div>
             </b-form-group>
             <b-form-group v-if="item.type == 'text'">
@@ -62,7 +62,7 @@
                     :class="{ 'is-invalid': getErrorClass(item.field_id) }" :validstate="getErrorState(item.field_id)"
                     :placeholder='`Enter ${item.translations.name}`'></b-form-input>
                 <div v-if="getErrorClass(item.field_id)" class="invalid-feedback">
-                    {{item.translations.name}} {{ langauageData.errors.field_required }}
+                    {{item.translations.name}} {{ languageData.errors.field_required }}
                 </div>
             </b-form-group>
 
@@ -74,9 +74,9 @@
                     :placeholder='`Enter ${item.translations.name}`'></b-form-input>
                 <div v-if="getErrorClass(item.field_id)" class="invalid-feedback">
                     <span v-if="!$v.customFeildData[item.field_id].required">{{item.translations.name}}
-                        {{ langauageData.errors.field_required }}</span>
+                        {{ languageData.errors.field_required }}</span>
                     <span
-                        v-if="!$v.customFeildData[item.field_id].email">{{ langauageData.errors.invalid_email }}</span>
+                        v-if="!$v.customFeildData[item.field_id].email">{{ languageData.errors.invalid_email }}</span>
                 </div>
             </b-form-group>
         </b-col>
@@ -121,7 +121,7 @@
                 customFeildData: {},
                 submit: false,
                 defaultValue: {},
-                langauageData: []
+                languageData: []
             };
         },
         validations() {
@@ -290,8 +290,8 @@
         },
         updated() {},
         created() {
-            this.langauageData = JSON.parse(store.state.languageLabel);
-            this.defaultText = this.langauageData.label.please_select
+            this.languageData = JSON.parse(store.state.languageLabel);
+            this.defaultText = this.languageData.label.please_select
         }
     };
 </script>

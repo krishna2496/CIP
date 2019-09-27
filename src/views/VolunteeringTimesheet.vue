@@ -10,7 +10,7 @@
                 <b-container v-if="isAllVisible">
                     <div class="heading-section">
                         <h1>
-                            {{langauageData.label.volunteering_timesheet}}
+                            {{languageData.label.volunteering_timesheet}}
                         </h1>
                     </div>
                   
@@ -18,7 +18,7 @@
                         <div class="dashboard-table">
                             <div class="table-outer">
                                 <div class="table-inner">
-                                    <h3>{{langauageData.label.volunteering_hours}}</h3>
+                                    <h3>{{languageData.label.volunteering_hours}}</h3>
                                     <VolunteeringTimesheetTableHeader 
                                     :currentWeek="timeSheetHourCurrentDate"
                                     @updateCall="changeVolunteeringHours" />
@@ -32,14 +32,14 @@
                                             >
                                             <b-thead>
                                                 <b-tr>
-                                                    <b-th class="mission-col">{{langauageData.label.mission}}</b-th>
+                                                    <b-th class="mission-col">{{languageData.label.mission}}</b-th>
                                                     <b-th v-for="(key,item) in volunteeringHoursWeeks"
                                                         v-bind:key="key"
                                                         v-if="item != null"
                                                         v-bind:class="{'currentdate-col' : highLightCurrentDate(key+1,'time')}">
                                                         {{key+1}}<span>{{getTimeSheetWeekName(item,'time')}}</span>
                                                     </b-th>
-                                                    <b-th class="total-col">{{langauageData.label.total}}</b-th>
+                                                    <b-th class="total-col">{{languageData.label.total}}</b-th>
                                                 </b-tr>
                                             </b-thead>
                                             <b-tbody v-if="timeMissionData.length > 0">
@@ -58,7 +58,7 @@
                                                         {{getRawHourTotal(timeItem.timesheet,'time')}}</b-td>
                                                 </b-tr>
                                                 <b-tr class="total-row">
-                                                    <b-td class="mission-col">{{langauageData.label.total}}:</b-td>
+                                                    <b-td class="mission-col">{{languageData.label.total}}:</b-td>
                                                     <b-td v-for="(key,item) in volunteeringHoursWeeks" v-if="item != null" v-bind:key="key">
                                                         {{getColumnHourTotal(key+1,'time')}}
                                                     </b-td>
@@ -70,7 +70,7 @@
                                             <b-tbody v-else>
                                                 <b-tr>
                                                     <b-td colspan="9" class="disabled">
-                                                        {{langauageData.label.volunteering_hours | firstLetterCapital}} {{langauageData.label.not_found}}
+                                                        {{languageData.label.volunteering_hours | firstLetterCapital}} {{languageData.label.not_found}}
                                                     </b-td>
                                                 </b-tr>
                                             </b-tbody>
@@ -81,20 +81,20 @@
                                 <div class="btn-block">
                                     <b-button class="btn-bordersecondary ml-auto" v-bind:class="{
                                     disabled : enableSubmitTimeTimeSheet    
-                                }" @click="submitVolunteerTimeSheet('time')">{{langauageData.label.submit}}</b-button>
+                                }" @click="submitVolunteerTimeSheet('time')">{{languageData.label.submit}}</b-button>
                                 </div>
                             </div>
                             <ul class="meta-data-list">
-                                <li class="approve-indication">{{langauageData.label.approved}}</li>
-                                <li class="decline-indication">{{langauageData.label.declined}}</li>
+                                <li class="approve-indication">{{languageData.label.approved}}</li>
+                                <li class="decline-indication">{{languageData.label.declined}}</li>
                                 <li class="approval-indication">
-                                    {{langauageData.label.submit_for_approval}}
+                                    {{languageData.label.submit_for_approval}}
                                 </li>
                             </ul>
                             <!--    {{goalMissionData}} -->
                             <div class="table-outer timesheet-table-outer">
                                 <div class="table-inner">
-                                    <h3>{{langauageData.label.volunteering_goals}}</h3>
+                                    <h3>{{languageData.label.volunteering_goals}}</h3>
                                     <VolunteeringTimesheetTableHeader 
                                     :currentWeek="timeSheetGoalCurrentDate"
                                     @updateCall="changeVolunteeringGoals" />
@@ -107,13 +107,13 @@
                                             class="timesheet-table timesheetgoals-table">
                                             <b-thead>
                                                 <b-tr>
-                                                    <b-th class="mission-col">{{langauageData.label.mission}}</b-th>
+                                                    <b-th class="mission-col">{{languageData.label.mission}}</b-th>
                                                     <b-th
                                                         v-bind:class="{'currentdate-col' : highLightCurrentDate(key+1,'goal')}"
                                                         v-for="(key,item) in volunteeringGoalWeeks" v-bind:key="key">
                                                         {{key+1}}<span>{{getTimeSheetWeekName(item,'goal')}}</span>
                                                     </b-th>
-                                                    <b-th class="total-col">{{langauageData.label.total}}</b-th>
+                                                    <b-th class="total-col">{{languageData.label.total}}</b-th>
                                                 </b-tr>
                                             </b-thead>
                                             <b-tbody v-if="goalMissionData.length > 0">
@@ -134,7 +134,7 @@
                                                         {{getRawHourTotal(timeItem.timesheet,'goal')}}</b-td>
                                                 </b-tr>
                                                 <b-tr class="total-row">
-                                                    <b-td class="mission-col">{{langauageData.label.total}}:</b-td>
+                                                    <b-td class="mission-col">{{languageData.label.total}}:</b-td>
                                                     <b-td v-for="(key,item) in volunteeringGoalWeeks" v-bind:key="key">
                                                         {{getColumnHourTotal(key+1,'goal')}}
                                                     </b-td>
@@ -146,7 +146,7 @@
                                             <b-tbody v-else>
                                                 <b-tr>
                                                     <b-td colspan="9" class="disabled">
-                                                        {{langauageData.label.volunteering_goals | firstLetterCapital}} {{langauageData.label.not_found}}
+                                                        {{languageData.label.volunteering_goals | firstLetterCapital}} {{languageData.label.not_found}}
                                                     </b-td>
                                                 </b-tr>
                                             </b-tbody>
@@ -157,14 +157,14 @@
                                     <b-button class="btn-bordersecondary ml-auto"
                                         @click="submitVolunteerTimeSheet('goal')" v-bind:class="{
                                         disabled : enableSubmitGoalTimeSheet    
-                                    }">{{langauageData.label.submit}}</b-button>
+                                    }">{{languageData.label.submit}}</b-button>
                                 </div>
                             </div>
                             <ul class="meta-data-list">
-                                <li class="approve-indication">{{langauageData.label.approved}}</li>
-                                <li class="decline-indication">{{langauageData.label.declined}}</li>
+                                <li class="approve-indication">{{languageData.label.approved}}</li>
+                                <li class="decline-indication">{{languageData.label.declined}}</li>
                                 <li class="approval-indication">
-                                    {{langauageData.label.submit_for_approval}}
+                                    {{languageData.label.submit_for_approval}}
                                 </li>
                             </ul>
                             <VolunteeringRequest :headerField="timesheetRequestFields" requestType="time"
@@ -172,7 +172,7 @@
                                 :currentPage="hourRequestCurrentPage" :totalRow="hourRequestTotalRow"
                                 @updateCall="getTimeRequest" exportUrl="app/timesheet/time-requests/export"
                                 :perPage="hourRequestPerPage" :nextUrl="hourRequestNextUrl"
-                                :fileName="langauageData.export_timesheet_file_names.PENDING_TIME_MISSION_ENTRIES_XLSX"
+                                :fileName="languageData.export_timesheet_file_names.PENDING_TIME_MISSION_ENTRIES_XLSX"
                                 :totalPages="timeMissionTotalPage" />
 
                             <VolunteeringRequest :headerField="goalRequestFields" requestType="goal"
@@ -180,7 +180,7 @@
                                 :currentPage="goalRequestCurrentPage" :totalRow="goalRequestTotalRow"
                                 @updateCall="getGoalRequest" :perPage="goalRequestPerPage" :nextUrl="goalRequestNextUrl"
                                 exportUrl="app/timesheet/goal-requests/export"
-                                :fileName="langauageData.export_timesheet_file_names.PENTIND_GOAL_MISSION_ENTRIES_XLSX"
+                                :fileName="languageData.export_timesheet_file_names.PENTIND_GOAL_MISSION_ENTRIES_XLSX"
                                 :totalPages="goalMissionTotalPage" />
                         </div>
                         <AddVolunteeringHours 
@@ -205,10 +205,10 @@
                 </b-container>
                 <b-container v-else>
                     <div class="no-history-data">
-                        <p>{{langauageData.label.volunteering_timesheet_not_found}}</p>
+                        <p>{{languageData.label.volunteering_timesheet_not_found}}</p>
                         <div class="btn-row">
-                            <b-button :title="langauageData.label.start_volunteering" class="btn-bordersecondary"
-                                @click="$router.push({ name: 'home' })">{{langauageData.label.start_volunteering}}
+                            <b-button :title="languageData.label.start_volunteering" class="btn-bordersecondary"
+                                @click="$router.push({ name: 'home' })">{{languageData.label.start_volunteering}}
                             </b-button>
                         </div>
                     </div>
@@ -269,7 +269,7 @@
                 files: [],
                 tableLoaderActive: true,
                 goalTableLoaderActive: true,
-                langauageData: [],
+                languageData: [],
                 VolunteeringRequest: [],
                 timesheetRequestFields: [],
                 timesheetRequestItems: [],
@@ -380,7 +380,7 @@
                                 timeSheetId = timeSheetArray.timesheet_id;
                                 _this.workDayList.filter(function (workList, workIndex) {
                                     if (workList[0] == timeSheetArray.day_volunteered) {
-                                        _this.defaultWorkday = _this.langauageData.label[
+                                        _this.defaultWorkday = _this.languageData.label[
                                             workList[1]];
                                     }
                                 });
@@ -393,9 +393,9 @@
                     _this.fetchTimeSheetRealtedData(timeSheetId);
                 } else {
                     _this.currentTimeData.documents = []
-                    _this.defaultWorkday = _this.langauageData.placeholder.workday
-                    _this.defaultHours = _this.langauageData.placeholder.spent_hours
-                    _this.defaultMinutes = _this.langauageData.placeholder.spent_minutes
+                    _this.defaultWorkday = _this.languageData.placeholder.workday
+                    _this.defaultHours = _this.languageData.placeholder.spent_hours
+                    _this.defaultMinutes = _this.languageData.placeholder.spent_minutes
                     _this.currentTimeData.hours = '';
                     _this.currentTimeData.minutes = '';
                     _this.currentTimeData.workDay = '';
@@ -420,7 +420,7 @@
                                 timeSheetId = timeSheetArray.timesheet_id;
                                 _this.workDayList.filter(function (workList, workIndex) {
                                     if (workList[0] == timeSheetArray.day_volunteered) {
-                                        _this.defaultWorkday = _this.langauageData.label[
+                                        _this.defaultWorkday = _this.languageData.label[
                                             workList[1]];
                                     }
                                 });
@@ -433,9 +433,9 @@
                     _this.fetchTimeSheetRealtedData(timeSheetId);
                 } else {
                     _this.currentTimeData.documents = []
-                    _this.defaultWorkday = _this.langauageData.placeholder.workday
-                    _this.defaultHours = _this.langauageData.placeholder.spent_hours
-                    _this.defaultMinutes = _this.langauageData.placeholder.spent_minutes
+                    _this.defaultWorkday = _this.languageData.placeholder.workday
+                    _this.defaultHours = _this.languageData.placeholder.spent_hours
+                    _this.defaultMinutes = _this.languageData.placeholder.spent_minutes
                     _this.currentTimeData.hours = '';
                     _this.currentTimeData.minutes = '';
                     _this.currentTimeData.workDay = '';
@@ -522,7 +522,7 @@
 
                                     _this.workDayList.filter(function (workList, workIndex) {
                                         if (workList[0] == timeSheetItem.day_volunteered) {
-                                            _this.defaultWorkday = _this.langauageData.label[workList[
+                                            _this.defaultWorkday = _this.languageData.label[workList[
                                                 1]];
 
                                         }
@@ -1062,9 +1062,9 @@
                     this.currentTimeData.missionName = ''
                 this.currentTimeData.action = ''
                 this.files = [];
-                this.defaultHours = this.langauageData.placeholder.spent_hours
-                this.defaultMinutes = this.langauageData.placeholder.spent_minutes
-                this.defaultWorkday = this.langauageData.placeholder.workday
+                this.defaultHours = this.languageData.placeholder.spent_hours
+                this.defaultMinutes = this.languageData.placeholder.spent_minutes
+                this.defaultWorkday = this.languageData.placeholder.workday
 
             },
             submitVolunteerTimeSheet(timeSheetType) {
@@ -1137,10 +1137,10 @@
                 timeRequest(currentPage).then(response => {
                     if (response.data) {
                         let data = response.data;
-                        let mission = this.langauageData.label.mission;
-                        let time = this.langauageData.label.time;
-                        let hours = this.langauageData.label.hours;
-                        let organisation = this.langauageData.label.organisation;
+                        let mission = this.languageData.label.mission;
+                        let time = this.languageData.label.time;
+                        let hours = this.languageData.label.hours;
+                        let organisation = this.languageData.label.organisation;
 
                         if (response.pagination) {
                             this.hourRequestTotalRow = response.pagination.total;
@@ -1196,9 +1196,9 @@
                 goalRequest(currentPage).then(response => {
                     if (response.data) {
                         let data = response.data;
-                        let mission = this.langauageData.label.mission;
-                        let action = this.langauageData.label.actions;
-                        let organisation = this.langauageData.label.organisation;
+                        let mission = this.languageData.label.mission;
+                        let action = this.languageData.label.actions;
+                        let organisation = this.languageData.label.organisation;
                         if (response.pagination) {
                             this.goalRequestTotalRow = response.pagination.total;
                             this.goalRequestCurrentPage = response.pagination.current_page
@@ -1222,12 +1222,12 @@
         },
         created() {
             var globalThis = this;
-            this.langauageData = JSON.parse(store.state.languageLabel);
-            this.defaultWorkday = this.langauageData.placeholder.workday
-            this.defaultHours = this.langauageData.placeholder.spent_hours
-            this.defaultMinutes = this.langauageData.placeholder.spent_minutes
-            this.timeRequestLabel = this.langauageData.label.hours_requests
-            this.goalRequestLabel = this.langauageData.label.goals_requests
+            this.languageData = JSON.parse(store.state.languageLabel);
+            this.defaultWorkday = this.languageData.placeholder.workday
+            this.defaultHours = this.languageData.placeholder.spent_hours
+            this.defaultMinutes = this.languageData.placeholder.spent_minutes
+            this.timeRequestLabel = this.languageData.label.hours_requests
+            this.goalRequestLabel = this.languageData.label.goals_requests
             this.getVolunteerHoursData();
             this.isShownComponent = true;
             setTimeout(function () {
@@ -1238,16 +1238,16 @@
             }, 100)
 
             let timeRequestFieldArray = [
-                this.langauageData.label.mission,
-                this.langauageData.label.time,
-                this.langauageData.label.hours,
-                this.langauageData.label.organisation,
+                this.languageData.label.mission,
+                this.languageData.label.time,
+                this.languageData.label.hours,
+                this.languageData.label.organisation,
             ]
 
             let goalRequestFieldArray = [
-                this.langauageData.label.mission,
-                this.langauageData.label.actions,
-                this.langauageData.label.organisation,
+                this.languageData.label.mission,
+                this.languageData.label.actions,
+                this.languageData.label.organisation,
             ]
 
             goalRequestFieldArray.filter(function (data, index) {

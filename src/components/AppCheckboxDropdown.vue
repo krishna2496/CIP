@@ -5,7 +5,6 @@
         'dropdown-with-counter' : true,
         'no-list-item' : checkList.length > 0 ? false : true
       }">
-		<!-- {{filterTitle}} -->
 		<span class="select-text" @click="handleClick">{{filterTitle}}</span>
 		<div class="chk-select-wrap dropdown-option-wrap" data-simplebar @click.stop>
 			<ul class="chk-select-options dropdown-option-list">
@@ -36,7 +35,7 @@
 		data() {
 			return {
 				items: this.selectedItem,
-				langauageData: [],
+				languageData: [],
 			};
 		},
 		mounted() {},
@@ -103,7 +102,7 @@
 			},
 		},
 		created() {
-			this.langauageData = JSON.parse(store.state.languageLabel);
+			this.languageData = JSON.parse(store.state.languageLabel);
 			setTimeout(function () {
 				var selectDropdown = document.querySelectorAll('.select-dropdown');
 				window.addEventListener("resize", function () {

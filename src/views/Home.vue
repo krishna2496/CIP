@@ -25,17 +25,17 @@
                         </span>
                         <b-button class="clear-btn"
                             v-if="isCountrySelectionSet || tags.city || (tags.theme && isThemeDisplay) || (tags.skill && isSkillDisplay)"
-                            @click="clearMissionFilterData">{{langauageData.label.clear_all}}</b-button>
+                            @click="clearMissionFilterData">{{languageData.label.clear_all}}</b-button>
                     </div>
                 </div>
                 <div v-bind:class="{ 'heading-section': true, 
 					'justify-content-end' : !isTotalMissionDisplay
 										}" v-if="missionList.length > 0">
                     <h2 v-if="isTotalMissionDisplay">
-                        <template v-if="rows > 0">{{ langauageData.label.explore}}
+                        <template v-if="rows > 0">{{ languageData.label.explore}}
                             <strong>{{rows}}</strong>
-                            <strong v-if="rows > 1" class="ml-1">{{ langauageData.label.missions}}</strong>
-                            <strong v-else class="ml-1">{{ langauageData.label.mission}}</strong>
+                            <strong v-if="rows > 1" class="ml-1">{{ languageData.label.missions}}</strong>
+                            <strong v-else class="ml-1">{{ languageData.label.mission}}</strong>
                         </template>
                     </h2>
                     <div class="right-section" v-if="sortByFilterSet">
@@ -49,7 +49,7 @@
                     <b-tab class="grid-tab-content">
                         <template slot="title">
                             <i class="grid icon-wrap" @click="activeView = 'gridView'" v-b-tooltip.hover.bottom
-                                :title="langauageData.label.grid_view" v-if="missionList.length > 0">
+                                :title="languageData.label.grid_view" v-if="missionList.length > 0">
                                 <img class="img-normal" :src="$store.state.imagePath+'/assets/images/grid.svg'"
                                     alt="Down Arrow" />
                                 <img class="img-rollover" :src="$store.state.imagePath+'/assets/images/grid-h.svg'"
@@ -64,7 +64,7 @@
                     <b-tab class="list-tab-content">
                         <template slot="title">
                             <i class="list icon-wrap" @click="activeView = 'listView'" v-b-tooltip.hover.bottom
-                                :title="langauageData.label.list_view" v-if="missionList.length > 0">
+                                :title="languageData.label.list_view" v-if="missionList.length > 0">
                                 <img class="img-normal" :src="$store.state.imagePath+'/assets/images/list.svg'"
                                     alt="Down Arrow" />
                                 <img class="img-rollover" :src="$store.state.imagePath+'/assets/images/list-h.svg'"
@@ -89,7 +89,7 @@
         <footer>
             <TheSecondaryFooter></TheSecondaryFooter>
         </footer>
-        <back-to-top bottom="34px" right="40px" :title="langauageData.label.back_to_top">
+        <back-to-top bottom="34px" right="40px" :title="languageData.label.back_to_top">
             <i class="icon-wrap">
                 <img class="img-normal" :src="$store.state.imagePath+'/assets/images/down-arrow.svg'"
                     alt="Down Arrow" />
@@ -170,7 +170,7 @@ import { setTimeout } from 'timers';
                 tags: "",
                 sortByFilterSet: true,
                 userList: [],
-                langauageData: [],
+                languageData: [],
                 isTotalMissionDisplay: true,
                 isQuickAccessDisplay: true,
                 isThemeDisplay: true,
@@ -247,7 +247,7 @@ import { setTimeout } from 'timers';
                         setTimeout(function () {
                             var labelString = 'label.'
                             var sortByValue = labelString.concat(sortBy);
-                            _this.sortByDefault = _this.langauageData.label[sortBy];
+                            _this.sortByDefault = _this.languageData.label[sortBy];
                         }, 200);
                     }
 
@@ -315,7 +315,7 @@ import { setTimeout } from 'timers';
                 this.filterData.skillId = '';
                 this.filterData.tags = '';
                 this.filterData.sortBy = '';
-                this.sortByDefault = this.langauageData.label.sort_by;
+                this.sortByDefault = this.languageData.label.sort_by;
                 if (filters.parmasType) {
                     filteExplore.exploreMissionType = filters.parmasType;
                 }
@@ -345,7 +345,7 @@ import { setTimeout } from 'timers';
             }
         },
         created() {
-            this.langauageData = JSON.parse(store.state.languageLabel);
+            this.languageData = JSON.parse(store.state.languageLabel);
             this.sortByFilterSet = this.settingEnabled(constants.SORTING_MISSIONS)
             if (this.$route.params.searchParamsType) {
                 let filteExplore = {};
@@ -378,7 +378,7 @@ import { setTimeout } from 'timers';
             });
 
             setTimeout(function () {
-                _this.sortByDefault = _this.langauageData.label.sort_by;
+                _this.sortByDefault = _this.languageData.label.sort_by;
             }, 200);
             window.addEventListener("scroll", this.handleScroll);
         },
