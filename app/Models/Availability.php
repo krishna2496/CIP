@@ -38,27 +38,7 @@ class Availability extends Model
      * @var array
      */
     protected $visible = ['availability_id', 'type'];
-    
-    /**
-     * Get the mission that has availability.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function mission(): HasMany
-    {
-        return $this->hasMany(Mission::class, 'availability_id', 'availability_id');
-    }
-
-    /**
-     * Get the mission that has availability.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function user(): HasMany
-    {
-        return $this->hasMany(User::class, 'availability_id', 'availability_id');
-    }
-    
+            
     /**
      * Get all resources.
      *

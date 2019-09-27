@@ -22,6 +22,8 @@ use DB;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
 use Carbon\Carbon;
+use App\Models\GoalMission;
+use App\Models\MissionApplication;
 
 class MissionRepository implements MissionInterface
 {
@@ -40,7 +42,7 @@ class MissionRepository implements MissionInterface
      */
     private $responseHelper;
 
-    /*
+    /**
      * @var App\Helpers\LanguageHelper
      */
     private $languageHelper;
@@ -76,6 +78,17 @@ class MissionRepository implements MissionInterface
     private $countryRepository;
 
     /**
+    * @var App\Models\GoalMission
+    */
+    public $goalMission;
+
+    
+    /**
+    * @var App\Models\MissionApplication
+    */
+    private $missionApplication;
+
+    /**
      * Create a new Mission repository instance.
      *
      * @param  App\Models\Mission $mission
@@ -83,14 +96,16 @@ class MissionRepository implements MissionInterface
      * @param  App\Models\MissionLanguage $missionLanguage
      * @param  App\Models\MissionMedia $missionMedia
      * @param  App\Models\MissionDocument $missionDocument
-     * @param  Illuminate\Http\ResponseHelper $responseHelper
-     * @param  Illuminate\Http\LanguageHelper $languageHelper
+     * @param  App\Helpers\ResponseHelper $responseHelper
+     * @param  App\Helpers\LanguageHelper $languageHelper
      * @param  App\Helpers\Helpers $helpers
      * @param  App\Helpers\S3Helper $s3helper
      * @param  App\Models\FavouriteMission $favouriteMission
      * @param  App\Models\MissionSkill $missionSkill
      * @param  App\Models\MissionRating $missionRating
      * @param  App\Repositories\Country\CountryRepository $countryRepository
+     * @param  App\Models\GoalMission $goalMission
+     * @param  App\Models\MissionApplication $missionApplication
      * @return void
      */
     public function __construct(
@@ -106,7 +121,9 @@ class MissionRepository implements MissionInterface
         FavouriteMission $favouriteMission,
         MissionSkill $missionSkill,
         MissionRating $missionRating,
-        CountryRepository $countryRepository
+        CountryRepository $countryRepository,
+        GoalMission $goalMission,
+        MissionApplication $missionApplication
     ) {
         $this->mission = $mission;
         $this->timeMission = $timeMission;
@@ -121,6 +138,8 @@ class MissionRepository implements MissionInterface
         $this->missionSkill = $missionSkill;
         $this->missionRating = $missionRating;
         $this->countryRepository = $countryRepository;
+        $this->goalMission = $goalMission;
+        $this->missionApplication = $missionApplication;
     }
     
     /**
@@ -455,7 +474,7 @@ class MissionRepository implements MissionInterface
     public function missionList(Request $request): LengthAwarePaginator
     {
         $languages = $this->languageHelper->getLanguages($request);
-        $mission = Mission::select(
+        $missionQuery = $this->mission->select(
             'mission.mission_id',
             'mission.theme_id',
             'mission.city_id',
@@ -470,8 +489,13 @@ class MissionRepository implements MissionInterface
         )
         ->with(['city', 'country', 'missionTheme',
         'missionLanguage', 'missionMedia', 'missionDocument', 'goalMission', 'timeMission'])
-        ->withCount('missionApplication')
-        ->paginate($request->perPage);
+        ->withCount('missionApplication');
+
+        if ($request->has('order')) {
+            $orderDirection = $request->input('order', 'asc');
+            $missionQuery->orderBy('mission_id', $orderDirection);
+        }
+        $mission = $missionQuery->paginate($request->perPage);
 
         foreach ($mission as $key => $value) {
             foreach ($value->missionLanguage as $languageValue) {
@@ -522,6 +546,11 @@ class MissionRepository implements MissionInterface
                 $query->whereIn('approval_status', [config("constants.application_status")["AUTOMATICALLY_APPROVED"],
                 config("constants.application_status")["PENDING"]]);
             }])
+            ->withCount(['missionApplication as user_application_count' => function ($query) use ($request) {
+                $query->where('user_id', $request->auth->user_id)
+                ->whereIn('approval_status', [config("constants.application_status")["AUTOMATICALLY_APPROVED"],
+                config("constants.application_status")["PENDING"]]);
+            }])
             ->withCount(['favouriteMission as favourite_mission_count' => function ($query) use ($request) {
                 $query->Where('user_id', $request->auth->user_id);
             }]);
@@ -530,6 +559,12 @@ class MissionRepository implements MissionInterface
                     $query->select(DB::raw("AVG(rating) as rating"));
                 }
             ]);
+        $missionQuery->withCount([
+            'timesheet AS achieved_goal' => function ($query) use ($request) {
+                $query->select(DB::raw("SUM(action) as action"));
+                $query->whereIn('status_id', array(config('constants.timesheet_status_id.APPROVED'),
+                config('constants.timesheet_status_id.AUTOMATICALLY_APPROVED')));
+            }]);
         $missionQuery->with(['missionRating']);
        
         //Explore mission recommended to user
@@ -897,11 +932,21 @@ class MissionRepository implements MissionInterface
     {
         // Check mission id exists or not
         $mission = $this->mission->findOrFail($missionId);
+        $relatedCityCount = $this->mission->where('city_id', $mission->city_id)
+        ->whereNotIn('mission.mission_id', [$missionId])->count();
+
+        $relatedCountryCount = $this->mission->where('country_id', $mission->country_id)
+        ->whereNotIn('mission.mission_id', [$missionId])->count();
 
         // Get  mission data
-        $missionQuery = $this->mission->where('theme_id', $mission->theme_id)
+        $missionQuery = $this->mission
         ->whereNotIn('mission.mission_id', [$missionId])
         ->select('mission.*')->take(config("constants.RELATED_MISSION_LIMIT"));
+
+        $missionQuery = ($relatedCityCount > 0) ? $missionQuery->where('city_id', $mission->city_id)
+        : (($relatedCityCount == 0) && ($relatedCountryCount > 0))
+        ? $missionQuery->where('country_id', $mission->country_id)
+        : $missionQuery->where('theme_id', $mission->theme_id);
 
         $missionQuery->where('publication_status', config("constants.publication_status")["APPROVED"])
         ->with(['missionTheme', 'missionMedia', 'goalMission', 'timeMission'
@@ -918,18 +963,29 @@ class MissionRepository implements MissionInterface
             ->whereIn('approval_status', [config("constants.application_status")["AUTOMATICALLY_APPROVED"],
             config("constants.application_status")["PENDING"]]);
         }])
-        ->withCount(['missionApplication as mission_application_count' => function ($query) use ($request) {
+        ->withCount(['missionApplication as mission_application_count' => function ($query) {
             $query->whereIn('approval_status', [config("constants.application_status")["AUTOMATICALLY_APPROVED"],
             config("constants.application_status")["PENDING"]]);
         }])
         ->withCount(['favouriteMission as favourite_mission_count' => function ($query) use ($request) {
             $query->Where('user_id', $request->auth->user_id);
-        }]);
+        }])
+        ->whereNotIn('mission.mission_id', function ($query) use ($request) {
+            $query->select('mission_id')
+                ->from('mission_application')
+                ->where('user_id', $request->auth->user_id);
+        });
         $missionQuery->withCount([
             'missionRating as mission_rating_count' => function ($query) {
                 $query->select(DB::raw("AVG(rating) as rating"));
             }
         ]);
+        $missionQuery->withCount([
+            'timesheet AS achieved_goal' => function ($query) use ($request) {
+                $query->select(DB::raw("SUM(action) as action"));
+                $query->whereIn('status_id', array(config('constants.timesheet_status_id.APPROVED'),
+                config('constants.timesheet_status_id.AUTOMATICALLY_APPROVED')));
+            }]);
         $missionQuery->with(['missionRating']);
         return $missionQuery->inRandomOrder()->get();
     }
@@ -996,6 +1052,12 @@ class MissionRepository implements MissionInterface
             ])->withCount([
                 'missionRating as mission_rating_total_volunteers'
             ]);
+            $missionQuery->withCount([
+                'timesheet AS achieved_goal' => function ($query) use ($request) {
+                    $query->select(DB::raw("SUM(action) as action"));
+                    $query->whereIn('status_id', array(config('constants.timesheet_status_id.APPROVED'),
+                    config('constants.timesheet_status_id.AUTOMATICALLY_APPROVED')));
+                }]);
         return $missionQuery->get();
     }
 
@@ -1068,5 +1130,45 @@ class MissionRepository implements MissionInterface
         )
         ->first();
         return $mission;
+    }
+
+    /** Get mission application details by mission id, user id and status
+     *
+     * @param int $missionId
+     * @param int $userId
+     * @param string $status
+     * @return App\Models\MissionApplication
+     */
+    public function getMissionApplication(int $missionId, int $userId, string $status): MissionApplication
+    {
+        return $this->missionApplication->where(['user_id' => $userId,
+                'mission_id' => $missionId, 'approval_status' => $status])
+                ->firstOrFail();
+    }
+
+    /**
+     * Get Mission data for timesheet
+     *
+     * @param int $id
+     * @return App\Models\Mission
+     */
+    public function getTimesheetMissionData(int $id): Mission
+    {
+        return $this->mission->with('goalMission')
+        ->select('mission_id', 'start_date', 'end_date', 'mission_type', 'city_id')
+        ->findOrFail($id);
+    }
+    
+    /**
+     * Get Mission type
+     *
+     * @param int $id
+     * @return null|Collection
+     */
+    public function getMissionType(int $id): ?Collection
+    {
+        return $this->mission->select('mission_type', 'city_id')
+        ->where('mission_id', $id)
+        ->get();
     }
 }

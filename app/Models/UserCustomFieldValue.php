@@ -39,16 +39,6 @@ class UserCustomFieldValue extends Model
     protected $visible = ['user_custom_field_value_id', 'field_id', 'user_id', 'value'];
 
     /**
-     * Defined has one relation for the user table.
-    *
-    * @return \Illuminate\Database\Eloquent\Relations\HasOne
-    */
-    public function user(): HasOne
-    {
-        return $this->hasOne(User::class, 'user_id', 'user_id');
-    }
-
-    /**
      * Store/update specified resource.
      *
      * @param  array $condition

@@ -411,4 +411,27 @@ class SkillTest extends TestCase
             ]
         ]);
     }
+
+    /**
+     * @test
+     *
+     * Return invalid argument error for get all skills
+     *
+     * @return void
+     */
+    public function it_should_return_for_invalid_argument_for_get_all_skills_for_admin()
+    {
+        $this->get('entities/skills?order=test', ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(400)
+        ->seeJsonStructure([
+            "errors" => [
+                [
+                    "status",
+                    "type",
+                    "message",
+                    "code"
+                ]
+            ]
+        ]);
+    }
 }

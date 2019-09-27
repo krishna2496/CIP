@@ -18,6 +18,8 @@ return [
     'RELATED_MISSION_LIMIT' => '3',
     'MISSION_MEDIA_LIMIT' => '20',
     'SKILL_LIMIT' => '15',
+    'TIMESHEET_DOCUMENT_SIZE_LIMIT' => '4096',
+    'TIMESHEET_DATE_FORMAT' => 'Y-m-d',
 
     'EMAIL_TEMPLATE_FOLDER' => 'emails',
     'EMAIL_TEMPLATE_USER_INVITE' => 'invite',
@@ -36,7 +38,9 @@ return [
     'FRONT_MISSION_DETAIL_URL' => '.anasource.com/team4/ciplatform/mission-detail/',
     'FRONT_HOME_URL' => '.anasource.com/team4/ciplatform/',
     'DEFAULT_FQDN_FOR_FRONT' => 'web8',
-	'AWS_S3_DEFAULT_THEME_FOLDER_NAME' => 'default_theme',
+    'PER_PAGE_MAX' => '50',
+    'AWS_S3_DEFAULT_THEME_FOLDER_NAME' => 'default_theme',
+    
     /*
      * User custom field types
      */
@@ -85,6 +89,15 @@ return [
     ],
 
     /*
+     * Day volunteered types
+     */
+    'day_volunteered' => [
+        'WORKDAY' => 'WORKDAY',
+        'HOLIDAY' => 'HOLIDAY',
+        'WEEKEND' => 'WEEKEND'
+    ],
+
+    /*
      * Image types
      */
     'image_types' => [
@@ -121,6 +134,22 @@ return [
         'TXT' => 'txt'
     ],
 
+    
+    /*
+     * Timesheet document types
+     */
+    'timesheet_document_types' => [
+        'DOC' => 'doc',
+        'DOCX' => 'docx',
+        'XLS' => 'xls',
+        'XLSX' => 'xlsx',
+        'CSV' => 'csv',
+        'PNG' => 'png',
+        'PDF' => 'pdf',
+        'JPG' => 'jpg',
+        'JPEG' => 'jpeg'
+    ],
+
     /*
      * Application status
      */
@@ -128,6 +157,40 @@ return [
         'AUTOMATICALLY_APPROVED' => 'AUTOMATICALLY_APPROVED',
         'PENDING' => 'PENDING',
         'REFUSED' => 'REFUSED'
+    ],
+
+    /*
+     * Timesheet status
+     */
+    'timesheet_status' => [
+        'AUTOMATICALLY_APPROVED' => 'AUTOMATICALLY_APPROVED',
+        'PENDING' => 'PENDING',
+        'DECLINED' => 'DECLINED',
+        'APPROVED' => 'APPROVED',
+        'SUBMIT_FOR_APPROVAL' => 'SUBMIT_FOR_APPROVAL'
+    ],
+
+    /*
+     * Timesheet status
+     */
+    'timesheet_status_id' => [
+        'PENDING' => '1',
+        'APPROVED' => '2',
+        'DECLINED' => '3',
+        'AUTOMATICALLY_APPROVED' => '4',
+        'SUBMIT_FOR_APPROVAL' => '5'
+    ],
+
+    'ALLOW_TIMESHEET_ENTRY' => 2,
+    
+    /**
+     * Export timesheet file names
+     */
+    'export_timesheet_file_names' => [
+        'PENDING_TIME_MISSION_ENTRIES_XLSX' => 'Pending_Time_Mission_Entries.xlsx',
+        'PENTIND_GOAL_MISSION_ENTRIES_XLSX' => 'Pending_Goal_Mission_Entries.xlsx',
+        'TIME_MISSION_HISTORY_XLSX' => 'Time_Mission_History.xlsx',
+        'GOAL_MISSION_HISTORY_XLSX' => 'Goal_Mission_History.xlsx'
     ],
 
     /*
@@ -148,7 +211,8 @@ return [
      * Tenant settings
      */
     'tenant_settings' => [
-        'EMAIL_NOTIFICATION_INVITE_COLLEAGUE' => 'email_notification_invite_colleague'
+        'EMAIL_NOTIFICATION_INVITE_COLLEAGUE' => 'email_notification_invite_colleague',
+        'MISSION_COMMENT_AUTO_APPROVED' => 'mission_comment_auto_approved'
     ],
     
     'TOP_THEME' => "top_themes",
@@ -195,6 +259,7 @@ return [
         'ERROR_FILE_NAME_NOT_MATCHED_WITH_STRUCTURE' => '100016',
         'ERROR_INVALID_IMAGE_URL' => '100017',
         'ERROR_SLIDER_NOT_FOUND' => '100018',
+        'ERROR_INVALID_EXTENSION_OF_FILE' => '100020',
         'ERROR_INVALID_API_AND_SECRET_KEY' => '210000',
         'ERROR_API_AND_SECRET_KEY_REQUIRED' => '210001',
         'ERROR_EMAIL_NOT_EXIST' => '210002',
@@ -233,6 +298,20 @@ return [
         'ERROR_INVALID_MISSION_DOCUMENT_DATA' => '400028',
         'ERROR_COMMENT_NOT_FOUND' => '400029',
         'ERROR_SKILL_LIMIT' => '400030',
+        'ERROR_TIMESHEET_REQUIRED_FIELDS_EMPTY' => '400031',
+        'ERROR_INVALID_ACTION' => '400032',
+        'TIMESHEET_NOT_FOUND' => '400033',
+        'ERROR_TIMESHEET_ALREADY_APPROVED' => '400034',
+        'TIMESHEET_DOCUMENT_NOT_FOUND' => '400035',
+        'ERROR_TIMESHEET_ENTRY_NOT_FOUND' => '400036',
+        'ERROR_MISSION_STARTDATE' => '400037',
+        'ERROR_MISSION_ENDDATE' => '400038',
+        'MISSION_APPLICATION_NOT_APPROVED' => '400039',
+        'ERROR_TIMESHEET_ALREADY_DONE_FOR_DATE' => '400040',
+        'ERROR_INVALID_DATA_FOR_TIMESHEET_ENTRY' => '400041',
+        'ERROR_SAME_DATE_TIME_ENTRY' => '400042',
+        'ERROR_UNAUTHORIZED_USER' => '400043',
+        'ERROR_APPROVED_TIMESHEET_DOCUMENTS' => '400044',
                 
         'ERROR_OCCURRED' => '999999',
         'ERROR_INVALID_JSON' => '900000',

@@ -57,4 +57,13 @@ interface MissionThemeInterface
      * @return bool
      */
     public function delete(int $id): bool;
+
+    /**
+     * Get all theme history with total minutes logged, based on year and all years.
+     *
+     * @param int $year
+     * @param int $userId
+     * @return Illuminate\Support\Collection
+     */
+    public function getHoursPerTheme(int $year = null, int $userId): Collection;
 }

@@ -10,7 +10,6 @@ use App\Helpers\ResponseHelper;
 use App\Traits\RestExceptionHandlerTrait;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use InvalidArgumentException;
-use PDOException;
 use Validator;
 use DB;
 use Illuminate\Validation\Rule;
@@ -62,8 +61,6 @@ class SkillController extends Controller
                 config('constants.error_codes.ERROR_INVALID_ARGUMENT'),
                 trans('messages.custom_error_message.ERROR_INVALID_ARGUMENT')
             );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
 
@@ -75,55 +72,36 @@ class SkillController extends Controller
      */
     public function store(Request $request): JsonResponse
     {
-        try {
-            // Server side validataions
-            $validator = Validator::make(
-                $request->all(),
-                [
-                    "skill_name" => "required|max:64|unique:skill,skill_name,NULL,skill_id,deleted_at,NULL",
-                    "translations" => "required",
-                    "parent_skill" => "numeric|valid_parent_skill",
-                    "translations.*.lang" => "required_with:translations|max:2"
-                ]
-            );
+        // Server side validataions
+        $validator = Validator::make(
+            $request->all(),
+            [
+                "skill_name" => "required|max:64|unique:skill,skill_name,NULL,skill_id,deleted_at,NULL",
+                "translations" => "required",
+                "parent_skill" => "numeric|valid_parent_skill",
+                "translations.*.lang" => "required_with:translations|max:2"
+            ]
+        );
 
-            // If request parameter have any error
-            if ($validator->fails()) {
-                return $this->responseHelper->error(
-                    Response::HTTP_UNPROCESSABLE_ENTITY,
-                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                    config('constants.error_codes.ERROR_SKILL_INVALID_DATA'),
-                    $validator->errors()->first()
-                );
-            }
-            
-            // Create new skill
-            $skill = $this->skillRepository->store($request->all());
-
-            // Set response data
-            $apiData = ['skill_id' => $skill->skill_id];
-            $apiStatus = Response::HTTP_CREATED;
-            $apiMessage = trans('messages.success.MESSAGE_SKILL_CREATED');
-            
-            return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
-        } catch (PDOException $e) {
-            return $this->PDO(
-                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
-                trans('messages.custom_error_message.ERROR_DATABASE_OPERATIONAL')
+        // If request parameter have any error
+        if ($validator->fails()) {
+            return $this->responseHelper->error(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                config('constants.error_codes.ERROR_SKILL_INVALID_DATA'),
+                $validator->errors()->first()
             );
-        } catch (ModelNotFoundException $e) {
-            return $this->modelNotFound(
-                config('constants.error_codes.ERROR_PARENT_SKILL_NOT_FOUND'),
-                trans('messages.custom_error_message.ERROR_PARENT_SKILL_NOT_FOUND')
-            );
-        } catch (InvalidArgumentException $e) {
-            return $this->invalidArgument(
-                config('constants.error_codes.ERROR_INVALID_ARGUMENT'),
-                trans('messages.custom_error_message.ERROR_INVALID_ARGUMENT')
-            );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
+        
+        // Create new skill
+        $skill = $this->skillRepository->store($request->all());
+
+        // Set response data
+        $apiData = ['skill_id' => $skill->skill_id];
+        $apiStatus = Response::HTTP_CREATED;
+        $apiMessage = trans('messages.success.MESSAGE_SKILL_CREATED');
+        
+        return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
     }
 
     /**
@@ -135,58 +113,45 @@ class SkillController extends Controller
      */
     public function update(Request $request, int $id): JsonResponse
     {
-        try {
-            // Server side validataions
-            $validator = Validator::make(
-                $request->all(),
-                ["skill_name" => [
-                    "sometimes",
-                    "required",
-                    Rule::unique('skill')->ignore($id, 'skill_id,deleted_at,NULL')],
-                "parent_skill" => "numeric|valid_parent_skill",
-                "translations" => "sometimes|required",
-                "translations.*.lang" => "required_with:translations|max:2"]
+
+        // Server side validataions
+        $validator = Validator::make(
+            $request->all(),
+            ["skill_name" => [
+                "sometimes",
+                "required",
+                Rule::unique('skill')->ignore($id, 'skill_id,deleted_at,NULL')],
+            "parent_skill" => "numeric|valid_parent_skill",
+            "translations" => "sometimes|required",
+            "translations.*.lang" => "required_with:translations|max:2"]
+        );
+
+        // If request parameter have any error
+        if ($validator->fails()) {
+            return $this->responseHelper->error(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                config('constants.error_codes.ERROR_SKILL_INVALID_DATA'),
+                $validator->errors()->first()
             );
-
-            // If request parameter have any error
-            if ($validator->fails()) {
-                return $this->responseHelper->error(
-                    Response::HTTP_UNPROCESSABLE_ENTITY,
-                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                    config('constants.error_codes.ERROR_SKILL_INVALID_DATA'),
-                    $validator->errors()->first()
-                );
-            }
-         
-            // Update skill
-            try {
-                $skill = $this->skillRepository->update($request->toArray(), $id);
-            } catch (ModelNotFoundException $e) {
-                return $this->modelNotFound(
-                    config('constants.error_codes.ERROR_SKILL_NOT_FOUND'),
-                    trans('messages.custom_error_message.ERROR_SKILL_NOT_FOUND')
-                );
-            }
-
-            // Set response data
-            $apiData = ['skill_id' => $skill->skill_id];
-            $apiStatus = Response::HTTP_OK;
-            $apiMessage = trans('messages.success.MESSAGE_SKILL_UPDATED');
-            
-            return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
+        }
+        
+        // Update skill
+        try {
+            $skill = $this->skillRepository->update($request->toArray(), $id);
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
                 config('constants.error_codes.ERROR_SKILL_NOT_FOUND'),
                 trans('messages.custom_error_message.ERROR_SKILL_NOT_FOUND')
             );
-        } catch (PDOException $e) {
-            return $this->PDO(
-                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
-                trans('messages.custom_error_message.ERROR_DATABASE_OPERATIONAL')
-            );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
+
+        // Set response data
+        $apiData = ['skill_id' => $skill->skill_id];
+        $apiStatus = Response::HTTP_OK;
+        $apiMessage = trans('messages.success.MESSAGE_SKILL_UPDATED');
+        
+        return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
     }
 
     /**
@@ -210,8 +175,6 @@ class SkillController extends Controller
                 config('constants.error_codes.ERROR_SKILL_NOT_FOUND'),
                 trans('messages.custom_error_message.ERROR_SKILL_NOT_FOUND')
             );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
 
@@ -235,8 +198,6 @@ class SkillController extends Controller
                 config('constants.error_codes.ERROR_SKILL_NOT_FOUND'),
                 trans('messages.custom_error_message.ERROR_SKILL_NOT_FOUND')
             );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
 }

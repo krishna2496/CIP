@@ -1,60 +1,11 @@
 <?php
 
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Hash;
+
 class TenantOptionsTest extends TestCase
 {
-    /**
-     * @test
-     *
-     * Create slider
-     *
-     * @return void
-     */
-    public function it_should_create_slider()
-    {
-        $params = [
-            'url' => "http://new.anasource.com/team11/s3/sliderimg4.jpg",
-            'sort_order' => "1",
-            'slider_detail' =>
-                [
-                'translations' =>  [
-                    [
-                        'lang' => 'en',
-                        'slider_title' => str_random(20),
-                        'slider_description' => str_random(200)
-                    ]
-                ],
-            ],
-        ];
-
-        $connection = 'tenant';
-        $tenant = factory(\App\Models\TenantOption::class)->make();
-        $tenant->setConnection($connection);
-        $count = $tenant->where('option_name', config('constants.TENANT_OPTION_SLIDER'))->count();
-
-        if ($count >= config('constants.SLIDER_LIMIT')) {
-            $this->post("slider/", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
-            ->seeStatusCode(403)
-            ->seeJsonStructure([
-                'errors' => [
-                        [
-                            'status',
-                            'type',
-                            'code',
-                            'message'
-                        ]
-                    ]
-                ]);
-        } else {
-            $this->post("slider/", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
-            ->seeStatusCode(201)
-            ->seeJsonStructure([
-                'status',
-                'message',
-                ]);
-        }
-        App\Models\TenantOption::where("option_name", "slider")->orderBy("tenant_option_id", "DESC")->take(1)->delete();
-    }
-
     /**
      * @test
      *
@@ -62,50 +13,12 @@ class TenantOptionsTest extends TestCase
      *
      * @return void
      */
-    public function it_should_reset_style_to_default()
+    public function style_it_should_reset_style_to_default()
     {
         $this->get('style/reset-style', ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
         ->seeStatusCode(200);
     }
-
-    /**
-     * @test
-     *
-     * Validate URL
-     *
-     * @return void
-     */
-    public function it_should_return_error_for_invalid_url()
-    {
-        $params = [
-            'url' => "test",
-            'sort_order' => "1",
-            'slider_detail' =>
-                [
-                'translations' =>  [
-                    [
-                        'lang' => 'en',
-                        'slider_title' => str_random(20),
-                        'slider_description' => str_random(200)
-                    ]
-                ],
-            ],
-        ];
-
-        $this->post("slider/", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
-        ->seeStatusCode(422)
-        ->seeJsonStructure([
-            'errors' => [
-                [
-                    'status',
-                    'type',
-                    'code',
-                    'message'
-                ]
-            ]
-        ]);
-    }
-
+    
     /**
      * @test
      *
@@ -113,7 +26,7 @@ class TenantOptionsTest extends TestCase
      *
      * @return void
      */
-    public function it_should_download_style_from_s3()
+    public function style_it_should_download_style_from_s3()
     {
         $this->get('style/download-style', ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
         ->seeStatusCode(200)
@@ -130,9 +43,13 @@ class TenantOptionsTest extends TestCase
     *
     * @return void
     */
-    public function it_should_return_error_for_missing_file_while_update_style()
+    public function style_it_should_update_primary_color()
     {
-        $this->post('style/update-style', [], ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $params = [
+            'primary_color' => "#ccc"
+        ];
+
+        $this->post('style/update-style', $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
         ->seeStatusCode(200);
     }
 
@@ -143,7 +60,7 @@ class TenantOptionsTest extends TestCase
     *
     * @return void
     */
-    public function it_should_return_custom_css()
+    public function style_it_should_return_custom_css()
     {
         $this->get('app/custom-css', ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
         ->seeStatusCode(200);
@@ -156,7 +73,7 @@ class TenantOptionsTest extends TestCase
      *
      * @return void
      */
-    public function it_should_create_tenant_option()
+    public function style_it_should_create_tenant_option()
     {
         $optionName = str_random(20);
         $params = [
@@ -188,7 +105,7 @@ class TenantOptionsTest extends TestCase
      *
      * @return void
      */
-    public function it_should_return_error_for_invalid_data_for_tenant_option()
+    public function style_it_should_return_error_for_invalid_data_for_tenant_option()
     {
         $optionName = '';
         $params = [
@@ -216,5 +133,469 @@ class TenantOptionsTest extends TestCase
                 ]
             ]
         ]);
+    }
+
+    /**
+    * @test
+    *
+    * It should update assets image on S3 server
+    *
+    * @return void
+    */
+    public function style_it_should_update_assets_image_on_s3_server()
+    {
+        
+        $fileName = 'back-arrow-black.svg';
+        $path  = storage_path("unitTestFiles/$fileName");
+        
+        $params = [
+            'image_name' => $fileName
+        ];
+        
+        $res = $this->call(
+            'PATCH',
+            'style/update-image', 
+            $params, [], 
+            [
+                'image_file' => array(new \Illuminate\Http\UploadedFile($path, $fileName, '', null, null, true))[0]
+            ],
+            [
+                'HTTP_php-auth-user' => env('API_KEY'),
+                'HTTP_php-auth-pw' => env('API_SECRET')
+            ]
+        );
+        
+        $this->seeStatusCode(200);
+        $this->seeJsonStructure(['status', 'message']);
+
+        // Image name field is required
+        $params = [
+            'image_name' => ''
+        ];
+        
+        DB::setDefaultConnection('mysql');
+        $res = $this->call(
+            'PATCH',
+            'style/update-image', 
+            $params, [], 
+            [
+                'image_file' => array(new \Illuminate\Http\UploadedFile($path, $fileName, '', null, null, true))[0]
+            ],
+            [
+                'HTTP_php-auth-user' => env('API_KEY'),
+                'HTTP_php-auth-pw' => env('API_SECRET')
+            ]
+        );
+        $this->seeStatusCode(422);
+        
+        // Invalid file type
+        $invalidFileName = 'dummy.txt';
+        $path  = storage_path("unitTestFiles/$fileName");
+        $params = [
+            'image_name' => $fileName
+        ];
+        DB::setDefaultConnection('mysql');
+        $res = $this->call(
+            'PATCH',
+            'style/update-image', 
+            $params, [], 
+            [
+                'image_file' => array(new \Illuminate\Http\UploadedFile($path, $invalidFileName, '', null, null, true))[0]
+            ],
+            [
+                'HTTP_php-auth-user' => env('API_KEY'),
+                'HTTP_php-auth-pw' => env('API_SECRET')
+            ]
+        );
+        $this->seeStatusCode(422);
+
+        // Invalid file extension
+        $invalidFileName = 'dummy.txt';
+        $path  = storage_path("unitTestFiles/$invalidFileName");
+        $params = [
+            'image_name' => $invalidFileName
+        ];
+        DB::setDefaultConnection('mysql');
+        $res = $this->call(
+            'PATCH',
+            'style/update-image', 
+            $params, [], 
+            [
+                'image_file' => array(new \Illuminate\Http\UploadedFile($path, $invalidFileName, '', null, null, true))[0]
+            ],
+            [
+                'HTTP_php-auth-user' => env('API_KEY'),
+                'HTTP_php-auth-pw' => env('API_SECRET')
+            ]
+        );
+        $this->seeStatusCode(422);
+
+        // File not exist on S3
+        $invalidFileName = 'dummy.svg';
+        $path  = storage_path("unitTestFiles/$fileName");
+        $params = [
+            'image_name' => $invalidFileName
+        ];
+        DB::setDefaultConnection('mysql');
+
+        $res = $this->call(
+            'PATCH',
+            'style/update-image', 
+            $params, [], 
+            [
+                'image_file' => array(new \Illuminate\Http\UploadedFile($path, $fileName, '', null, null, true))[0]
+            ],
+            [
+                'HTTP_php-auth-user' => env('API_KEY'),
+                'HTTP_php-auth-pw' => env('API_SECRET')
+            ]
+        );
+        $this->seeStatusCode(404);
+    }
+
+    /**
+    * @test
+    *
+    * It should update SCSS changes on S3 and update new CSS
+    *
+    * @return void
+    */
+    public function style_it_should_update_scss_changes()
+    {
+        // Simple update other SCSS file
+        $fileName = 'typography.scss';
+        $path  = storage_path("unitTestFiles/$fileName");
+        $params = [
+            'custom_scss_file_name' => $fileName
+        ];
+        DB::setDefaultConnection('mysql');
+        $res = $this->call(
+            'POST',
+            'style/update-style',
+            $params,
+            [],
+            [
+                'custom_scss_file' => array(new \Illuminate\Http\UploadedFile($path, $fileName, '', null, null, true))[0]
+            ],
+            [
+                'HTTP_php-auth-user' => env('API_KEY'),
+                'HTTP_php-auth-pw' => env('API_SECRET')
+            ]
+        );
+        $this->seeStatusCode(200);
+        $this->seeJsonStructure(['status', 'message']);
+
+        // Uploading variable file with primary color
+        $fileName = '_variables.scss';
+        $path  = storage_path("unitTestFiles/$fileName");
+        $params = [
+            'primary_color' => '#69c027',
+            'custom_scss_file_name' => $fileName
+        ];
+        DB::setDefaultConnection('mysql');
+        $res = $this->call(
+            'POST',
+            'style/update-style',
+            $params,
+            [],
+            [
+                'custom_scss_file' => array(new \Illuminate\Http\UploadedFile($path, $fileName, '', null, null, true))[0]
+            ],
+            [
+                'HTTP_php-auth-user' => env('API_KEY'),
+                'HTTP_php-auth-pw' => env('API_SECRET')
+            ]
+        );
+        $this->seeStatusCode(200);
+        $this->seeJsonStructure(['status', 'message']);
+
+        // Uploading File name is require
+        $params = [
+            'custom_scss_file_name' => ''
+        ];
+        DB::setDefaultConnection('mysql');
+        $res = $this->call(
+            'POST',
+            'style/update-style',
+            $params,
+            [],
+            [
+                'custom_scss_file' => array(new \Illuminate\Http\UploadedFile($path, $fileName, '', null, null, true))[0]
+            ],
+            [
+                'HTTP_php-auth-user' => env('API_KEY'),
+                'HTTP_php-auth-pw' => env('API_SECRET')
+            ]
+        );
+        $this->seeStatusCode(422);
+
+        // Uploading File extension must be SCSS, but file name is correct
+        $invalidFileName = 'dummy.txt';
+        $path  = storage_path("unitTestFiles/$invalidFileName");
+        $params = [
+            'custom_scss_file_name' => $fileName
+        ];
+        DB::setDefaultConnection('mysql');
+        $res = $this->call(
+            'POST',
+            'style/update-style',
+            $params,
+            [],
+            [
+                'custom_scss_file' => array(new \Illuminate\Http\UploadedFile($path, $invalidFileName, '', null, null, true))[0]
+            ],
+            [
+                'HTTP_php-auth-user' => env('API_KEY'),
+                'HTTP_php-auth-pw' => env('API_SECRET')
+            ]
+        );
+        $this->seeStatusCode(422);
+
+        // Uploading File extension is correct, but file name is incorrect
+        $invalidFileName = 'dummy.txt';
+        $path  = storage_path("unitTestFiles/$fileName");
+        $params = [
+            'custom_scss_file_name' => $invalidFileName
+        ];
+        DB::setDefaultConnection('mysql');
+        $res = $this->call(
+            'POST',
+            'style/update-style',
+            $params,
+            [],
+            [
+                'custom_scss_file' => array(new \Illuminate\Http\UploadedFile($path, $fileName, '', null, null, true))[0]
+            ],
+            [
+                'HTTP_php-auth-user' => env('API_KEY'),
+                'HTTP_php-auth-pw' => env('API_SECRET')
+            ]
+        );
+        $this->seeStatusCode(422);
+
+        // Valiation error for empty data
+        $params = [
+            'custom_scss_file_name' => '',
+            'custom_scss_file' => ''
+        ];
+        DB::setDefaultConnection('mysql');
+        $this->post("style/update-style/", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(422);        
+    }
+    /**
+     * @test
+     *
+     * Update tenant option
+     *
+     * @return void
+     */
+    public function style_it_should_update_tenant_option()
+    {
+        $optionName = str_random(20);
+        $params = [
+            'option_name' => $optionName,
+            'option_value' =>
+                [
+                'translations' =>  [
+                    [
+                        'lang' => 'en',
+                        'message' => str_random(20)
+                    ]
+                ],
+            ],
+        ];
+
+        $this->post("tenant-option/", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(201);
+        DB::setDefaultConnection('mysql');
+        $this->patch("tenant-option/", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(200)
+        ->seeJsonStructure([
+            'status',
+            'message',
+        ]);
+        App\Models\TenantOption::where("option_name", $optionName)->orderBy("tenant_option_id", "DESC")->take(1)->delete();
+    }
+
+        /**
+     * @test
+     *
+     * Return error if data is invalid
+     *
+     * @return void
+     */
+    public function style_it_should_return_error_for_invalid_data_for_update_tenant_option()
+    {
+        $optionName = str_random(20);
+        $params = [
+            'option_name' => $optionName,
+            'option_value' =>
+                [
+                'translations' =>  [
+                    [
+                        'lang' => 'en',
+                        'message' => str_random(20)
+                    ]
+                ],
+            ],
+        ];
+
+        $this->post("tenant-option/", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(201);
+        DB::setDefaultConnection('mysql');
+
+        $optionName = str_random(20);
+        $params = [
+            'option_name' => $optionName,
+            'option_value' =>
+                [
+                'translations' =>  [
+                    [
+                        'lang' => str_random('3'),
+                        'message' => str_random(20)
+                    ]
+                ],
+            ],
+        ];
+        
+        $this->patch("tenant-option/", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(422)
+        ->seeJsonStructure([
+            'errors' => [
+                [
+                    'status',
+                    'type',
+                    'code',
+                    'message'
+                ]
+            ]
+        ]);
+    }
+    
+    /**
+    * @test
+    *
+    * Update style
+    *
+    * @return void
+    */
+    public function style_it_should_return_error_for_required_field_while_update_style()
+    {
+        $params = [];
+
+        $this->post('style/update-style', $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(422);
+    }
+
+    /**
+     * @test
+     *
+     * It should return error, while trying to update unavailable option
+     *
+     * @return void
+     */
+    public function style_it_should_update_tenant_option_with_unavailable_option()
+    {
+        $optionName = str_random(20);
+        $params = [
+            'option_name' => $optionName,
+            'option_value' =>
+                [
+                'translations' =>  [
+                    [
+                        'lang' => 'en',
+                        'message' => str_random(20)
+                    ]
+                ],
+            ],
+        ];
+        
+        $this->patch("tenant-option/", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(404);
+
+    }
+
+    /**
+     * @test
+     *
+     * Reset assets images to default
+     *
+     * @return void
+     */
+    public function style_it_should_reset_assets_images_to_default()
+    {
+        $this->get('style/reset-asset-images', ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(200);
+    }
+
+    /**
+     * @test
+     *
+     * Create tenant option
+     *
+     * @return void
+     */
+    public function style_it_should_create_tenant_option_value()
+    {
+        $optionName = str_random(20);
+        $params = [
+            'option_name' => $optionName,
+            'option_value' => 1            
+        ];
+
+        $this->post("tenant-option/", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(201)
+        ->seeJsonStructure([
+            'status',
+            'message',
+        ]);
+        App\Models\TenantOption::where("option_name", $optionName)->orderBy("tenant_option_id", "DESC")->take(1)->delete();
+    }
+
+    /**
+    * @test
+    * it should return error bucket not found for update primary color
+    * 
+    * @return void
+    */
+    public function it_should_return_error_bucket_not_found_for_update_primary_color()
+    {
+        DB::setDefaultConnection('mysql');
+        
+        $tenantId = DB::table('tenant')->insertGetId(
+            [
+                'name' => str_random('5'),
+                'sponsor_id' => rand(1,9999)
+            ]
+        );
+
+        $apiKey = base64_encode(str_random('8'));
+        $randomString = str_random('8');
+        $apiSecret = Hash::make($randomString);
+        
+        $apiUserId = DB::table('api_user')->insertGetId(
+            [
+                'tenant_id' => $tenantId,
+                'api_key' => $apiKey,
+                'api_secret' => $apiSecret,
+                'status' => 1
+            ]
+        );
+
+        $apiUser = DB::table('api_user')->where('api_user_id', $apiUserId)->first();
+
+        $apiKey = base64_decode($apiUser->api_key);
+        $apiSecret = $randomString;
+
+        DB::statement("CREATE DATABASE IF NOT EXISTS `ci_tenant_{$tenantId}`");
+
+        $this->get('style/download-style', ['Authorization' => 'Basic '.base64_encode($apiKey.':'.$apiSecret)])
+        ->seeStatusCode(404);
+
+        DB::setDefaultConnection('mysql');
+
+        DB::statement("DROP DATABASE ci_tenant_{$tenantId}");
+
+        DB::table('tenant')->where('tenant_id', $tenantId)->delete();
     }
 }

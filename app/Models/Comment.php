@@ -40,16 +40,6 @@ class Comment extends Model
     protected $visible = ['comment_id', 'comment', 'created_at', 'user', 'approval_status'];
     
     /**
-     * Get the mission that has comment.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function mission(): BelongsTo
-    {
-        return $this->belongsTo(Mission::class, 'mission_id', 'mission_id');
-    }
-
-    /**
      * Get the user that has comment.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
