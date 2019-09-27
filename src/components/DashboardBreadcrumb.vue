@@ -26,7 +26,7 @@
 		},
 		data() {
 			return {
-				langauageData: [],
+				languageData: [],
 				items: [{
 						id: 1,
 						name: '',
@@ -68,10 +68,10 @@
 					currentLink.addEventListener("click", this.handleBreadcrumb);
 				}
 			});
-			this.langauageData = JSON.parse(store.state.languageLabel);
-			this.items[0].name = this.langauageData.label.dashboard
-			this.items[1].name = this.langauageData.label.volunteering_history
-			this.items[2].name = this.langauageData.label.volunteering_timesheet
+			this.languageData = JSON.parse(store.state.languageLabel);
+			this.items[0].name = this.languageData.label.dashboard
+			this.items[1].name = this.languageData.label.volunteering_history
+			this.items[2].name = this.languageData.label.volunteering_timesheet
 		}
 	};
 </script>
