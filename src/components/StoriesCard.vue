@@ -195,7 +195,7 @@
 							<div class="group-category">
 								<span class="category-text">Updates</span>
 							</div>
-							<b-button class="btn-borderwhite icon-btn" title="View Details">
+							<b-button class="btn-borderwhite icon-btn" title="View Details" to="/story-detail/1">
 								<span>View Details</span>
 								<i>
 									<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 16" width="19" height="15">

@@ -79,7 +79,7 @@
 
 		methods: {
 			pageChange(page){
-				this.getStoryListing(page);
+				// this.getStoryListing(page);
 			},
 			getStoryListing(currentPage) {
 				storyListing(currentPage).then(response => {
