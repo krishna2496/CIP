@@ -29,7 +29,7 @@ class StoryController extends Controller
      * Create a new Story controller instance
      *
      * @param App\Repositories\Story\StoryRepository $storyRepository
-     * @param Illuminate\Helpers\ResponseHelper $responseHelper
+     * @param App\Helpers\ResponseHelper $responseHelper
      * @return void
      */
     public function __construct(
@@ -71,9 +71,11 @@ class StoryController extends Controller
                 );
             }
 
-            $storyVideos = explode(",", $request->story_videos); 
-            $request->request->add(["story_videos" => $storyVideos]);
-          
+            if ($request->has('story_videos')) {
+                $storyVideos = explode(",", $request->story_videos);
+                $request->request->add(["story_videos" => $storyVideos]);
+            }
+            
             // Store story data 
             $storyData = $this->storyRepository->store($request);
 

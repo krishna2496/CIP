@@ -35,4 +35,15 @@ class Story extends Model
      * @var array
      */
     protected $fillable = ['user_id', 'mission_id', 'title' , 'description', 'status', 'published_at'];
+    
+    /**
+     * Set description attribute on the model.
+     *
+     * @param string $value
+     * @return void
+     */
+    public function setDescriptionAttribute(string $value)
+    {
+        $this->attributes['description'] = trim($value);
+    }
 }
