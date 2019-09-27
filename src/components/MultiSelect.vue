@@ -2,12 +2,12 @@
     <div>
         <div class="skillset-wrap">
             <b-button class="btn-borderprimary add-skill-btn" @click="showSkillModal">
-                {{langauageData.label.add_skills}}
+                {{languageData.label.add_skills}}
             </b-button>
             <b-modal centered ref="skillModal" :modal-class="myclass" hide-footer @hidden="hideModal">
                 <template slot="modal-header" slot-scope="{ close }">
-                    <i class="close" @click="close()" v-b-tooltip.hover :title="langauageData.label.close"></i>
-                    <h5 class="modal-title">{{langauageData.label.add_your_skills}}</h5>
+                    <i class="close" @click="close()" v-b-tooltip.hover :title="languageData.label.close"></i>
+                    <h5 class="modal-title">{{languageData.label.add_your_skills}}</h5>
                 </template>
                 <b-alert show variant="danger" dismissible v-model="showErrorDiv">
                     {{ message }}
@@ -20,7 +20,7 @@
                                 <span>{{fromitem.name}}</span>
                                 <b-button @click="addToList(fromitem.id)">
                                     <img :src="$store.state.imagePath+'/assets/images/plus-ic.svg'"
-                                        :title="langauageData.label.add" alt="plus icon sss" />
+                                        :title="languageData.label.add" alt="plus icon sss" />
                                 </b-button>
                             </li>
                         </ul>
@@ -31,15 +31,15 @@
                                 <span>{{toitem.name}}</span>
                                 <b-button @click="removeFromToList(toitem.id)">
                                     <img :src="$store.state.imagePath+'/assets/images/cross-ic.svg'"
-                                        :title="langauageData.label.remove" alt="cross icon" />
+                                        :title="languageData.label.remove" alt="cross icon" />
                                 </b-button>
                             </li>
                         </ul>
                     </div>
                 </div>
                 <div class="btn-wrap">
-                    <b-button @click="resetSkill" class="btn-borderprimary">{{langauageData.label.cancel}}</b-button>
-                    <b-button @click="saveSkill" class="btn-bordersecondary">{{langauageData.label.save}}</b-button>
+                    <b-button @click="resetSkill" class="btn-borderprimary">{{languageData.label.cancel}}</b-button>
+                    <b-button @click="saveSkill" class="btn-bordersecondary">{{languageData.label.save}}</b-button>
                 </div>
             </b-modal>
 
@@ -60,7 +60,7 @@
         },
         data() {
             return {
-                langauageData: [],
+                languageData: [],
                 selectedListIndexs: [],
                 updated: false,
                 selectList: [],
@@ -122,7 +122,7 @@
                     this.showErrorDiv = false
                 } else {
                     this.showErrorDiv = true,
-                        this.message = this.langauageData.errors.max_skill_selection
+                        this.message = this.languageData.errors.max_skill_selection
                 }
             },
 
@@ -174,7 +174,7 @@
 
         },
         created() {
-            this.langauageData = JSON.parse(store.state.languageLabel);
+            this.languageData = JSON.parse(store.state.languageLabel);
 
         }
     };

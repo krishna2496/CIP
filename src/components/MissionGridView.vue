@@ -6,8 +6,8 @@
                     <b-card no-body>
                         <b-card-header>
                             <div class="header-img-block">
-                                <b-alert show class="alert card-alert alert-success" v-if="getAppliedStatus(mission)">{{langauageData.label.applied}}</b-alert>
-                                <b-alert show class="alert card-alert alert-warning"  v-if="getClosedStatus(mission)">{{langauageData.label.closed}}</b-alert>
+                                <b-alert show class="alert card-alert alert-success" v-if="getAppliedStatus(mission)">{{languageData.label.applied}}</b-alert>
+                                <b-alert show class="alert card-alert alert-warning"  v-if="getClosedStatus(mission)">{{languageData.label.closed}}</b-alert>
                                 <div v-if="checkDefaultMediaFormat(mission.default_media_type)" class="group-img"
                                     :style="{backgroundImage: 'url('+mission.default_media_path+')'}">
                                     <img :src="mission.default_media_path" alt="mission.default_media_path">
@@ -20,7 +20,7 @@
                                 <div class="location">
                                     <i>
                                         <img :src="$store.state.imagePath+'/assets/images/location.svg'"
-                                            :alt="langauageData.label.location">
+                                            :alt="languageData.label.location">
                                     </i>
                                     {{mission.city_name}}
                                 </div>
@@ -28,7 +28,7 @@
                                 <b-button v-bind:class="{ 'favourite-icon' : true,
                                             active : mission.is_favourite == 1
                                         }" v-b-tooltip.hover
-                                    :title="mission.is_favourite == 1 ?  langauageData.label.remove_from_favourite :langauageData.label.add_to_favourite"
+                                    :title="mission.is_favourite == 1 ?  languageData.label.remove_from_favourite :languageData.label.add_to_favourite"
                                     @click="favoriteMission(mission.mission_id)">
                                     <i class="normal-img">
                                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 21" width="24"
@@ -59,10 +59,10 @@
                                     </i>
                                 </b-button>
                                 <b-button class="add-icon" v-if="isInviteCollegueDisplay" v-b-tooltip.hover
-                                    :title="langauageData.label.invite_colleague"
+                                    :title="languageData.label.invite_colleague"
                                     @click="handleModal(mission.mission_id)">
                                     <img :src="$store.state.imagePath+'/assets/images/add-group-ic.svg'"
-                                        :alt="langauageData.label.invite_colleague">
+                                        :alt="languageData.label.invite_colleague">
                                 </b-button>
                                 </div>
                             </div>
@@ -94,13 +94,13 @@
                                         <!-- Mission type time -->
                                         <template v-if="checkMissionTypeTime(mission.mission_type)">
                                             <template v-if="mission.end_date !== null">
-                                                {{ langauageData.label.from }}
+                                                {{ languageData.label.from }}
                                                 {{mission.start_date | formatDate }}
-                                                {{ langauageData.label.until}}
+                                                {{ languageData.label.until}}
                                                 {{ mission.end_date | formatDate }}
                                             </template>
                                             <template v-else>
-                                                {{ langauageData.label.on_going_opportunities }}
+                                                {{ languageData.label.on_going_opportunities }}
                                             </template>
                                         </template>
                                         <!-- Mission type goal -->
@@ -121,7 +121,7 @@
                                                 <div class="text-wrap">
                                                     <span class="title-text mb-1">{{mission.seats_left}}</span>
                                                     <span
-                                                        class="subtitle-text">{{ langauageData.label.seats_left }}</span>
+                                                        class="subtitle-text">{{ languageData.label.seats_left }}</span>
                                                 </div>
                                             </div>
                                         </template>
@@ -135,7 +135,7 @@
                                                     <span
                                                         class="title-text mb-1">{{mission.mission_application_count}}</span>
                                                     <span
-                                                        class="subtitle-text">{{ langauageData.label.already_volunteered }}</span>
+                                                        class="subtitle-text">{{ languageData.label.already_volunteered }}</span>
                                                 </div>
                                             </div>
                                         </template>
@@ -149,7 +149,7 @@
                                                     <span
                                                         class="title-text mb-1">{{mission.application_deadline | formatDate}}</span>
                                                     <span
-                                                        class="subtitle-text">{{ langauageData.label.deadline }}</span>
+                                                        class="subtitle-text">{{ languageData.label.deadline }}</span>
                                                 </div>
                                             </div>
                                         </template>
@@ -166,7 +166,7 @@
                                                 <div class="text-wrap">
                                                     <span class="title-text mb-1">{{mission.seats_left}}</span>
                                                     <span
-                                                        class="subtitle-text">{{ langauageData.label.seats_left }}</span>
+                                                        class="subtitle-text">{{ languageData.label.seats_left }}</span>
                                                 </div>
                                             </template>
                                             <template v-else>
@@ -178,7 +178,7 @@
                                                     <span
                                                         class="title-text mb-1">{{mission.mission_application_count}}</span>
                                                     <span
-                                                        class="subtitle-text">{{ langauageData.label.already_volunteered }}</span>
+                                                        class="subtitle-text">{{ languageData.label.already_volunteered }}</span>
                                                 </div>
                                             </template>
                                         </div>
@@ -191,7 +191,7 @@
                                                 <b-progress :value="mission.achieved_goal" :max="mission.goal_objective"
                                                     class="mb-2"></b-progress>
                                                 <span class="subtitle-text">{{mission.achieved_goal}}
-                                                    {{ langauageData.label.achieved}}</span>
+                                                    {{ languageData.label.achieved}}</span>
                                             </div>
                                         </div>
                                     </div>
@@ -203,7 +203,7 @@
                         <b-card-footer>
                             <b-link v-if="mission.set_view_detail == 0" @click="applyForMission(mission.mission_id)">
                                 <b-button class="btn-bordersecondary icon-btn">
-                                    <span>{{ langauageData.label.apply }}</span>
+                                    <span>{{ languageData.label.apply }}</span>
                                     <i>
                                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 16" width="19"
                                             height="15">
@@ -222,7 +222,7 @@
 
                             <b-link v-if="mission.set_view_detail == 1" :to="'/mission-detail/' + mission.mission_id">
                                 <b-button class="btn-bordersecondary icon-btn">
-                                    <span>{{ langauageData.label.view_detail }}</span>
+                                    <span>{{ languageData.label.view_detail }}</span>
                                     <i>
                                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 16" width="19"
                                             height="15">
@@ -245,8 +245,8 @@
         </div>
         <b-modal ref="userDetailModal" :modal-class="myclass" size="lg" hide-footer>
             <template slot="modal-header" slot-scope="{ close }">
-                <i class="close" @click="close()" v-b-tooltip.hover :title="langauageData.label.close"></i>
-                <h5 class="modal-title">{{langauageData.label.search_user}}</h5>
+                <i class="close" @click="close()" v-b-tooltip.hover :title="languageData.label.close"></i>
+                <h5 class="modal-title">{{languageData.label.search_user}}</h5>
             </template>
             <b-alert show :variant="classVariant" dismissible v-model="showErrorDiv">{{ message }}</b-alert>
             <div class="autocomplete-control">
@@ -269,10 +269,10 @@
             <b-form>
                 <div class="btn-wrap">
                     <b-button @click="$refs.userDetailModal.hide()" class="btn-borderprimary">
-                        {{ langauageData.label.close }}</b-button>
+                        {{ languageData.label.close }}</b-button>
                     <b-button class="btn-bordersecondary" @click="inviteColleagues" ref="autosuggestSubmit"
                         v-bind:disabled="submitDisable">
-                        {{ langauageData.label.submit }}</b-button>
+                        {{ languageData.label.submit }}</b-button>
                 </div>
             </b-form>
         </b-modal>
@@ -281,7 +281,7 @@
         <h2 class="text-center">{{noRecordFound()}}</h2>
         <div class="btn-wrap" v-if="isSubmitNewMissionSet">
             <b-button :to="'/home/#'" class="btn-bordersecondary icon-btn">
-                <span>{{ langauageData.label.submit_new_mission }}</span>
+                <span>{{ languageData.label.submit_new_mission }}</span>
                 <i>
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 16" width="19" height="15">
                         <g id="Main Content">
@@ -336,7 +336,7 @@
                 classVariant: "success",
                 autoSuggestPlaceholder: '',
                 submitDisable: true,
-                langauageData: [],
+                languageData: [],
                 isInviteCollegueDisplay: true,
                 isStarRatingDisplay: true,
                 isSubmitNewMissionSet: true,
@@ -399,11 +399,11 @@
                     if (data[0] && data[0].message) {
                         return data[0].message;
                     } else {
-                        return this.langauageData.label.no_record_found;
+                        return this.languageData.label.no_record_found;
                     }
 
                 } else {
-                    return this.langauageData.label.no_record_found;
+                    return this.languageData.label.no_record_found;
                 }
             },
 
@@ -471,7 +471,7 @@
             },
             // Open auto suggest modal
             handleModal(missionId) {
-                this.autoSuggestPlaceholder = this.langauageData.label.search_user
+                this.autoSuggestPlaceholder = this.languageData.label.search_user
                 this.showErrorDiv = false;
                 this.message = null;
                 this.$refs.userDetailModal.show();
@@ -526,7 +526,7 @@
             },
         },
         created() {
-            this.langauageData = JSON.parse(store.state.languageLabel);
+            this.languageData = JSON.parse(store.state.languageLabel);
             this.isInviteCollegueDisplay = this.settingEnabled(constants.INVITE_COLLEAGUE);
             this.isStarRatingDisplay = this.settingEnabled(constants.MISSION_RATINGS);
             this.isSubmitNewMissionSet = this.settingEnabled(constants.USER_CAN_SUBMIT_MISSION);

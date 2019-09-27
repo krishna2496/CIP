@@ -11,8 +11,8 @@
                     <img :src="this.$store.state.logo">
                 </router-link>
                 <div class="form-title-block">
-                    <h1>{{ langauageData.label.forgot_password }}</h1>
-                    <p>{{ langauageData.label.forgot_password_message }}</p>
+                    <h1>{{ languageData.label.forgot_password }}</h1>
+                    <p>{{ languageData.label.forgot_password_message }}</p>
                 </div>
                 <!-- success or error msg -->
                 <b-alert show :variant="classVariant" dismissible v-model="showDismissibleAlert"> {{ message }}
@@ -20,23 +20,23 @@
                 <!-- forgot password form start -->
                 <b-form class="signin-form">
                     <b-form-group>
-                        <label for>{{ langauageData.label.email_address }}</label>
+                        <label for>{{ languageData.label.email_address }}</label>
                         <b-form-input id type="email" v-model="forgotPassword.email"
                             :class="{ 'is-invalid': $v.forgotPassword.email.$error }"
                             @keypress.enter.prevent="handleSubmit" maxlength="120"
-                            v-bind:placeholder='langauageData.placeholder.email_address' ref='email' autofocus
+                            v-bind:placeholder='languageData.placeholder.email_address' ref='email' autofocus
                             @keydown.space.prevent></b-form-input>
                         <div v-if="submitted && !$v.forgotPassword.email.required" class="invalid-feedback">
-                            {{ langauageData.errors.email_required }}</div>
+                            {{ languageData.errors.email_required }}</div>
                         <div v-if="submitted && !$v.forgotPassword.email.email" class="invalid-feedback">
-                            {{ langauageData.errors.invalid_email }}</div>
+                            {{ languageData.errors.invalid_email }}</div>
                     </b-form-group>
                     <b-button type="button" @click="handleSubmit" class="btn btn-bordersecondary">
-                        {{ langauageData.label.reset_password_button }}
+                        {{ languageData.label.reset_password_button }}
                     </b-button>
                 </b-form>
                 <div class="form-link">
-                    <b-link to="/">{{ langauageData.label.login }}</b-link>
+                    <b-link to="/">{{ languageData.label.login }}</b-link>
                 </div>
             </div>
             <ThePrimaryFooter ref="ThePrimaryFooter" />
@@ -83,7 +83,7 @@
                 classVariant: "danger",
                 message: null,
                 showDismissibleAlert: false,
-                langauageData: []
+                languageData: []
             };
         },
 
@@ -103,7 +103,7 @@
                 store.commit("setDefaultLanguage", language);
                 this.$i18n.locale = language.selectedVal.toLowerCase();
                 await loadLocaleMessages(this.$i18n.locale);
-                this.langauageData = JSON.parse(store.state.languageLabel);
+                this.languageData = JSON.parse(store.state.languageLabel);
                 _this.$forceUpdate();
                 _this.$refs.ThePrimaryFooter.$forceUpdate();
             },
@@ -119,7 +119,7 @@
 
                     this.isShowSlider = true;
                     loadLocaleMessages(store.state.defaultLanguage).then(response => {
-                        this.langauageData = JSON.parse(store.state.languageLabel);
+                        this.languageData = JSON.parse(store.state.languageLabel);
                     });
                 });
             },
@@ -158,7 +158,7 @@
         },
         created() {
             this.createConnection();
-            this.langauageData = JSON.parse(store.state.languageLabel);
+            this.languageData = JSON.parse(store.state.languageLabel);
             // Set language list and default language fetch from Local Storage
             this.langList =
                 localStorage.getItem("listOfLanguage") !== null ?
