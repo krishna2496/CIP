@@ -2,12 +2,10 @@
 namespace App\Helpers;
 
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Http\Request;
 use Leafo\ScssPhp\Compiler;
 use App\Helpers\ResponseHelper;
 use App\Traits\RestExceptionHandlerTrait;
 use App;
-use DB;
 use App\Exceptions\BucketNotFoundException;
 use App\Exceptions\FileNotFoundException;
 
@@ -64,20 +62,20 @@ class S3Helper
                 foreach ($allFiles as $key => $file) {
                     // Only scss and css copy
                     if (!strpos($file, "/images") && strpos($file, "/scss")
-                    && !strpos($file, "custom.scss") && !strpos($file, "assets.scss")) {
+                        && !strpos($file, "custom.scss") && !strpos($file, "assets.scss")) {
                         $scssFilesArray['scss_files'][$i++] = [
                             "scss_file_path" =>
-                            'https://s3.' . env('AWS_REGION') . '.amazonaws.com/'.env('AWS_S3_BUCKET_NAME').'/'.$file,
-                            "scss_file_name" => basename($file)
+                            'https://s3.' . env('AWS_REGION') . '.amazonaws.com/' . env('AWS_S3_BUCKET_NAME') . '/' . $file,
+                            "scss_file_name" => basename($file),
                         ];
                     }
                     if (strpos($file, "/images") && !strpos($file, "/scss")
-                    && !strpos($file, "custom.scss") && !strpos($file, "assets.scss")) {
+                        && !strpos($file, "custom.scss") && !strpos($file, "assets.scss")) {
                         $scssFilesArray['image_files'][$j++] = [
                             "image_file_path" =>
                             'https://s3.' . env('AWS_REGION') . '.amazonaws.com/' . env('AWS_S3_BUCKET_NAME')
-                            . '/'.$file,
-                            "image_file_name" => basename($file)
+                            . '/' . $file,
+                            "image_file_name" => basename($file),
                         ];
                     }
                 }
@@ -120,20 +118,27 @@ class S3Helper
      * @param $file
      * @param string $tenantName
      * @param int $userId
-     * @param int $timesheetId
+     * @param string $folderName
      * @return string
      */
-    public function uploadDocumentOnS3Bucket($file, string $tenantName, int $userId, int $timesheetId): string
+    public function uploadDocumentOnS3Bucket($file, string $tenantName, int $userId, string $folderName): string
     {
-        $disk = Storage::disk('s3');
-        $fileName = pathinfo($file->getClientOriginalName())['filename'].'_'.time();
-        $fileExtension = pathinfo($file->getClientOriginalName())['extension'];
-        $documentName = $fileName.'.'.$fileExtension;
-        $documentPath = $tenantName.'/users/'.$userId.'/timesheet/'.$documentName;
-        $pathInS3 = 'https://'.env('AWS_S3_BUCKET_NAME').'.s3.'
-        .env("AWS_REGION").'.amazonaws.com/'. $documentPath;
+        try {
+            $disk = Storage::disk('s3');
+            $fileName = pathinfo($file->getClientOriginalName())['filename'] . '_' . time();
+            $fileExtension = pathinfo($file->getClientOriginalName())['extension'];
+            $documentName = $fileName . '.' . $fileExtension;
+            $documentPath = $tenantName . '/users/' . $userId . '/'.$folderName.'/' . $documentName;
+            $pathInS3 = 'https://' . env('AWS_S3_BUCKET_NAME') . '.s3.'
+            . env("AWS_REGION") . '.amazonaws.com/' . $documentPath;
 
-        $disk->put($documentPath, file_get_contents($file));
-        return $pathInS3;
+            if ($disk->put($documentPath, file_get_contents($file))) {
+                return $pathInS3;
+            } else {
+                return 0;
+            }
+        } catch (\Exception $e) {
+            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
+        }
     }
 }

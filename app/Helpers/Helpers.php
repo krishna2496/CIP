@@ -10,18 +10,17 @@ use Throwable;
 use App\Exceptions\TenantDomainNotFoundException;
 use Carbon\Carbon;
 use stdClass;
-use Illuminate\Support\Facades\Hash;
 
 class Helpers
 {
     use RestExceptionHandlerTrait;
     
     /**
-    * It will return tenant name from request
-    * @param Illuminate\Http\Request $request
-    * @return string
-    */
-    public function getSubDomainFromRequest(Request $request) : string
+     * It will return tenant name from request
+     * @param Illuminate\Http\Request $request
+     * @return string
+     */
+    public function getSubDomainFromRequest(Request $request): string
     {
         // Check admin request
         if ($request->header('php-auth-pw') && $request->header('php-auth-user')) {
@@ -50,7 +49,7 @@ class Helpers
             return env('APP_MAIL_BASE_URL');
         }
     }
-    
+
     /**
      * It will retrive tenant details from tenant table
      *
@@ -65,7 +64,7 @@ class Helpers
         $tenant = DB::table('tenant')->where('name', $tenantName)->whereNull('deleted_at')->first();
         // Connect tenant database
         $this->switchDatabaseConnection('tenant', $request);
-                
+
         return $tenant;
     }
 
@@ -88,7 +87,7 @@ class Helpers
             Config::set('database.default', 'tenant');
         }
     }
-    
+
     /**
      * Create database connection runtime
      *
@@ -97,11 +96,11 @@ class Helpers
     public function createConnection(int $tenantId)
     {
         Config::set('database.connections.tenant', array(
-            'driver'    => 'mysql',
-            'host'      => env('DB_HOST'),
-            'database'  => 'ci_tenant_'.$tenantId,
-            'username'  => env('DB_USERNAME'),
-            'password'  => env('DB_PASSWORD'),
+            'driver' => 'mysql',
+            'host' => env('DB_HOST'),
+            'database' => 'ci_tenant_' . $tenantId,
+            'username' => env('DB_USERNAME'),
+            'password' => env('DB_PASSWORD'),
         ));
         // Create connection for the tenant database
         $pdo = DB::connection('tenant')->getPdo();
@@ -115,7 +114,7 @@ class Helpers
      * @param string $date
      * @return string
      */
-    public function getUserTimeZoneDate(string $date) : string
+    public function getUserTimeZoneDate(string $date): string
     {
         if (config('constants.TIMEZONE') != '' && $date !== null) {
             if (!($date instanceof Carbon)) {
@@ -220,7 +219,7 @@ class Helpers
         
         return $tenantSetting;
     }
-    
+
     /**
      * Get domain from user API key
      *
@@ -233,13 +232,13 @@ class Helpers
         $this->switchDatabaseConnection('mysql', $request);
         // authenticate api user based on basic auth parameters
         $apiUser = DB::table('api_user')
-                    ->leftJoin('tenant', 'tenant.tenant_id', '=', 'api_user.tenant_id')
-                    ->where('api_key', base64_encode($request->header('php-auth-user')))
-                    ->where('api_user.status', '1')
-                    ->where('tenant.status', '1')
-                    ->whereNull('api_user.deleted_at')
-                    ->whereNull('tenant.deleted_at')
-                    ->first();
+            ->leftJoin('tenant', 'tenant.tenant_id', '=', 'api_user.tenant_id')
+            ->where('api_key', base64_encode($request->header('php-auth-user')))
+            ->where('api_user.status', '1')
+            ->where('tenant.status', '1')
+            ->whereNull('api_user.deleted_at')
+            ->whereNull('tenant.deleted_at')
+            ->first();
 
         $this->switchDatabaseConnection('tenant', $request);
         return $apiUser->name;
@@ -256,19 +255,19 @@ class Helpers
     {
         return date($dateFormat, strtotime($date));
     }
-    
+
     /**
      * Convert in report time format
      *
      * @param string $totalHours
      * @return string
      */
-    public function convertInReportTimeFormat(string $totalHours) : string
+    public function convertInReportTimeFormat(string $totalHours): string
     {
-        $convertedHours = (int)($totalHours / 60);
-        $hours = $convertedHours."h";
+        $convertedHours = (int) ($totalHours / 60);
+        $hours = $convertedHours . "h";
         $minutes = $totalHours % 60;
-        return $hours.$minutes;
+        return $hours . $minutes;
     }
 
     /**
@@ -277,11 +276,25 @@ class Helpers
      * @param string $totalHours
      * @return string
      */
-    public function convertInReportHoursFormat(string $totalHours) : string
+    public function convertInReportHoursFormat(string $totalHours): string
     {
-        $hours = (int)($totalHours / 60);
+        $hours = (int) ($totalHours / 60);
         $minutes = ($totalHours % 60) / 60;
         $totalHours = $hours + $minutes;
-        return number_format((float)$totalHours, 2, '.', '');
+        return number_format((float) $totalHours, 2, '.', '');
     }
+
+    /**
+     * Trim text after x words
+     *
+     * @param string $phrase
+     * @param int maxWords
+     * @return null|string
+     */
+    public function trimText(string $phrase, int $maxWords) {
+        $phrase_array = explode(' ',$phrase);
+        if(count($phrase_array) > $maxWords && $maxWords > 0)
+           $phrase = implode(' ',array_slice($phrase_array, 0, $maxWords)).'...';
+        return $phrase;
+     }
 }

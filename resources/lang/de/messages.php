@@ -95,7 +95,16 @@ return [
         'MESSAGE_GOAL_REQUEST_LISTING' => 'DE: Goal requests listed successfully',
         'MESSAGE_NO_GOAL_REQUEST_FOUND' => 'DE: No pending goal requests found',
         'MESSAGE_POLICY_PAGE_FOUND' => 'DE: Policy page found successfully',
-        'MESSAGE_FOOTER_PAGE_FOUND' => 'DE: Footer page found successfully',
+        'MESSAGE_NEWS_CATEGORY_LISTING' => 'DE: News category listed successfully',
+        'MESSAGE_NEWS_CATEGORY_DELETED' => 'DE: News category deleted successfully',        
+        'MESSAGE_NEWS_CATEGORY_CREATED' => 'DE: News category created successfully',
+        'MESSAGE_NEWS_CATEGORY_UPDATED' => 'DE: News category updated successfully',
+        'MESSAGE_NEWS_CREATED' => 'DE: News created sucessfully',
+        'MESSAGE_NEWS_DELETED' => 'DE: News deleted successfully',
+        'MESSAGE_NEWS_LISTING' => 'DE: News listed sucessfully',        
+        'MESSAGE_NEWS_UPDATED' => 'DE: News updated sucessfully',
+        'STORY_ADDED_SUCESSFULLY' => 'DE: Story added successfully',
+        'MESSAGE_STORY_DELETED' => 'DE: Story deleted sucessfully',
     	'MESSAGE_STORIES_ENTRIES_LISTING' => 'DE: Story entries listed successfully',
     	'MESSAGE_NO_STORIES_ENTRIES_FOUND' => 'DE: No story entries found',
     ],
@@ -147,6 +156,7 @@ return [
         'ERROR_MISSION_COMMENT_INVALID_DATA' => 'DE: Mission comment creation failed. Please check input parameters',
         'ERROR_INVALID_MISSION_MEDIA_DATA' => 'DE: Invalid mission media data',
         'ERROR_INVALID_MISSION_DOCUMENT_DATA' => 'DE: Invalid mission document data',
+        'ERROR_USER_MISSIONS_NOT_FOUND' => 'DE: Missions not found',
         
         // Custom error code for Tenant Authorization - 210000 - 219999
         'ERROR_INVALID_API_AND_SECRET_KEY' => 'DE: Invalid API Key or Secret key',
@@ -204,5 +214,12 @@ return [
         'ERROR_TIMESHEET_ENTRY_NOT_FOUND' => 'DE: Timesheet entry id not found',
         'ERROR_SAME_DATE_TIME_ENTRY' => 'DE: You cannot add more than 24 hours timeentry for same date',
         'ERROR_APPROVED_TIMESHEET_DOCUMENTS' => 'You can not delete approved timesheet entry documents',
+
+        // For News module        
+        'ERROR_NEWS_CATEGORY_NOT_FOUND' => 'DE: News category not found in the system',
+        'ERROR_NEWS_NOT_FOUND' => 'DE: News not found in the system',
+
+        // For story module
+        'ERROR_STORY_NOT_FOUND' => 'DE: Story not found in the system',
     ],
 ];

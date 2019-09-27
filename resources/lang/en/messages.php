@@ -126,10 +126,22 @@ return [
         'MESSAGE_ENABLE_TO_EXPORT_USER_PENDING_TIME_MISSION_ENTRIES' => 'No data found, to generate pending time entries for time mission',
         'MESSAGE_USER_PENDING_GOAL_MISSION_ENTRIES_EXPORTED' => 'Pending time entries for goal missions, generated successfully',
         'MESSAGE_ENABLE_TO_EXPORT_USER_PENDING_GOAL_MISSION_ENTRIES' => 'No data found, to generate pending time entries for goal mission',
-        'MESSAGE_AUTO_APPROVED_COMMENT_ADDED' => 'Thanks for your comment.',
+        'MESSAGE_AUTO_APPROVED_COMMENT_ADDED' => 'Thanks for your comment.',        
+        'MESSAGE_NEWS_CATEGORY_LISTING' => 'News categories listed successfully',
+        'MESSAGE_NEWS_CATEGORY_DELETED' => 'News category deleted successfully',
+        'MESSAGE_NEWS_CATEGORY_CREATED' => 'News category created successfully',
+        'MESSAGE_NEWS_CATEGORY_UPDATED' => 'News category updated successfully',
+        'MESSAGE_NEWS_CREATED' => 'News created sucessfully',       
+        'MESSAGE_NEWS_DELETED' => 'News deleted successfully',
+        'MESSAGE_NEWS_LISTING' => 'News listed sucessfully',
+        'MESSAGE_NEWS_UPDATED' => 'News updated sucessfully',
+        'MESSAGE_NEWS_CATEGORY_FOUND' => 'News category found sucessfully',
+        'MESSAGE_NEWS_FOUND' => 'News found sucessfully',
+        'STORY_ADDED_SUCESSFULLY' => 'Story added successfully',
+        'MESSAGE_STORY_DELETED' => 'Story deleted sucessfully',
     	'MESSAGE_STORIES_ENTRIES_LISTING' => 'Story entries listed successfully',
     	'MESSAGE_NO_STORIES_ENTRIES_FOUND' => 'No story entries found',
-    ],
+	],
         
     /**
     * API Error Codes and Message
@@ -183,6 +195,7 @@ return [
         'ERROR_INVALID_MISSION_MEDIA_DATA' => 'Invalid mission media data',
         'ERROR_INVALID_MISSION_DOCUMENT_DATA' => 'Invalid mission document data',
         'ERROR_TIMESHEET_ENTRY_NOT_FOUND' => 'Timesheet entry not found',
+        'ERROR_USER_MISSIONS_NOT_FOUND' => 'Missions not found',
         'ERROR_APPROVED_TIMESHEET_DOCUMENTS' => 'You can not delete approved timesheet document',
         
         // Custom error code for Tenant Authorization - 210000 - 219999
@@ -246,7 +259,15 @@ return [
         'ERROR_TIMESHEET_ALREADY_DONE_FOR_DATE' => 'Time entry is already approved for given date',
         'ERROR_INVALID_DATA_FOR_TIMESHEET_ENTRY' => 'You cannot add time entry, either mission application not found or not approved',
         'ERROR_SAME_DATE_TIME_ENTRY' => 'You cannot add more than 24 hours timeentry for same date',
-        'ERROR_UNAUTHORIZED_USER' => 'Unauthorized user'
+
+        // For News module        
+        'ERROR_NEWS_CATEGORY_NOT_FOUND' => 'News category not found in the system',
+        'ERROR_NEWS_CATEGORIES_NOT_FOUND' => 'News categories not found in the system',
+        'ERROR_NEWS_NOT_FOUND' => 'News not found in the system',
+        'ERROR_UNAUTHORIZED_USER' => 'Unauthorized user',
+
+        // For story module
+        'ERROR_STORY_NOT_FOUND' => 'Story not found in the system',
     ],
 
     /**

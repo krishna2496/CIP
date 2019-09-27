@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Repositories\Story;
 
 use DB;
@@ -11,6 +10,7 @@ use App\Helpers\Helpers;
 use App\Helpers\LanguageHelper;
 use Illuminate\Support\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
+use App\Helpers\S3Helper;
 use App\Repositories\Story\StoryInterface;
 
 class StoryRepository implements StoryInterface
@@ -29,6 +29,11 @@ class StoryRepository implements StoryInterface
 	 * @var App\Models\StoryMedia
 	 */
 	private $storyMedia;
+	
+	/**
+	 * @var App\Helpers\S3Helper
+	 */
+	private $s3helper;
 	
 	/**
 	 * @var App\Helpers\Helpers
@@ -54,42 +59,79 @@ class StoryRepository implements StoryInterface
 			story $story,
 			Mission $mission,
 			StoryMedia $storyMedia,
+			S3Helper $s3helper,
 			Helpers $helpers,
 			LanguageHelper $languageHelper
 			) {
 				$this->story = $story;
 				$this->mission = $mission;
 				$this->storyMedia = $storyMedia;
+				$this->s3helper = $s3helper;
 				$this->helpers = $helpers;
 				$this->languageHelper = $languageHelper;
+				
 	}
 	
 	/**
-	 * Find the specified resource from database
-	 *
-	 * @param int $id
-	 * @return App\Models\Story
-	 */
-	public function find(int $id): Story
-	{
-		return $this->story->
-		with(
-			'storyMedia',
-			'mission',
-			'user'
-		)->findOrFail($id);
-	}
-	
-	/**
-	 * Remove the specified resource from database.
-	 *
-	 * @param  int  $id
-	 * @return bool
-	 */
-	public function delete(int $id): bool
-	{
-		return $this->story->deleteStory($id);
-	}
+     * Store story details
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return App\Models\Story
+     */
+    public function store(Request $request): Story
+    {
+        $storyDataArray = array(
+            'mission_id' => $request->mission_id,
+            'title' => $request->title,
+            'description' => $request->description,
+            'user_id' => $request->auth->user_id,
+        );
+
+        $storyData = $this->story->create($storyDataArray);
+       
+        // Store story image
+        if ($request->hasFile('story_images')) {
+            $tenantName = $this->helpers->getSubDomainFromRequest($request);
+            $files = $request->file('story_images');
+            foreach ($files as $file) {
+                $filePath = $this->s3helper
+                ->uploadDocumentOnS3Bucket(
+                    $file,
+                    $tenantName,
+                    $request->auth->user_id,
+                    config('constants.folder_name.story')
+                );
+                $storyImage = array('story_id' => $storyData->story_id,
+                                        'type' => 'image',
+                                        'path' => $filePath);
+                $this->storyMedia->create($storyImage);
+            }
+        }
+
+        // Store story video url
+        if ($request->has('story_videos')) {
+            foreach ($request->story_videos as $value) {
+                $storyVideo = array('story_id' => $storyData->story_id,
+                    'type' => 'video',
+                    'path' => $value);
+                $this->storyMedia->create($storyVideo);
+            }
+        }
+
+        return $storyData;
+    }
+    
+    /**
+    * Remove the story details.
+    *
+    * @param  int  $storyId
+    * @param  int  $userId
+    * @return bool
+    */
+    public function delete(int $storyId, int $userId): bool
+    {
+        return $this->story->deleteStory($storyId, $userId);
+    }
 	
 	/**
 	 * Display a listing of specified resources.
@@ -109,64 +151,6 @@ class StoryRepository implements StoryInterface
 		}])->where('user_id',$userId);
 		return $userStoryQuery->paginate($request->perPage);
 	}
-	
-	/**
-	 * Display a listing of specified resources.
-	 *
-	 * @param int $userId
-	 * @param \Illuminate\Http\Request $request
-	 * @return Illuminate\Database\Eloquent\Collection
-	 */
-	/*public function getUserTimesheet(int $userId, Request $request): Collection
-	{
-		$languageId = $this->languageHelper->getLanguageId($request);
-	
-		return $this->mission->select('mission.mission_id')
-		->where(['publication_status' => config("constants.publication_status")["APPROVED"]])
-		->whereHas('missionApplication', function ($query) use ($userId) {
-			$query->where('user_id', $userId)
-			->whereIn('approval_status', [config("constants.application_status")["AUTOMATICALLY_APPROVED"]]);
-		})
-		->with(['missionLanguage' => function ($query) use ($languageId) {
-			$query->select('mission_language_id', 'mission_id', 'title')
-			->where('language_id', $languageId);
-		}])
-		->with(['timesheet' => function ($query) use ($userId) {
-			$query->where('user_id', $userId);
-			$query->with('timesheetStatus');
-		}])
-		->get();
-	}
-	
-	/**
-	 * Get listing of Stories related to user
-	 *
-	 * @param Illuminate\Http\Request $request
-	 * @return \Illuminate\Pagination\LengthAwarePaginator
-	 */
-	/*public function userList(Request $request): LengthAwarePaginator
-	{
-		$tenantName = $this->helpers->getSubDomainFromRequest($request);
-		$defaultAvatarImage = $this->helpers->getUserDefaultProfileImage($tenantName);
-	
-		$userQuery = $this->user->selectRaw("first_name, last_name, email, password,
-				case when(avatar = '' || avatar is null) then '$defaultAvatarImage' else avatar end as avatar,
-				timezone_id, availability_id, why_i_volunteer, employee_id, department,
-				manager_name, city_id, country_id, profile_text, linked_in_url, status, language_id, title")
-				->with('city', 'country', 'timezone');
-	
-				if ($request->has('search')) {
-					$userQuery->where(function ($query) use ($request) {
-						$query->orWhere('first_name', 'like', '%' . $request->input('search') . '%');
-						$query->orWhere('last_name', 'like', '%' . $request->input('search') . '%');
-					});
-				}
-				if ($request->has('order')) {
-					$orderDirection = $request->input('order', 'asc');
-					$userQuery->orderBy('user_id', $orderDirection);
-				}
-	
-				return $userQuery->paginate($request->perPage);
-	}*/
-		
 }
+
+    

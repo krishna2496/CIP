@@ -9,20 +9,21 @@ use Illuminate\Pagination\LengthAwarePaginator;
 interface StoryInterface
 {
 	/**
-	 * Fetch Story details
+	 * Store story details
 	 *
-	 * @param int $timesheetId
-	 * @return null|Timesheet
+	 * @param \Illuminate\Http\Request $request
+	 * @return App\Models\Story
 	 */
-	public function find(int $timesheetId): ?Story;
+	public function store(Request $request): Story;
 	
 	/**
-	 * Remove the Story Data.
-	 *
-	 * @param  int  $id
-	 * @return bool
-	 */
-	public function delete(int $id): bool;
+    * Remove the story details.
+    *
+    * @param  int  $storyId
+    * @param  int  $userId
+    * @return bool
+    */
+    public function delete(int $storyId, int $userId): bool;
 	
 	/**
 	 * Display a user story listing.

@@ -157,6 +157,11 @@ $router->group(['middleware' => 'localization'], function ($router) {
     /* Get country list */
     $router->get('/app/country', ['middleware' => 'tenant.connection|jwt.auth',
     'uses' => 'App\Country\CountryController@index']);
+
+    /* Get user mission */
+    $router->get('/app/user/missions', [
+        'middleware' => 'tenant.connection|jwt.auth|JsonApiMiddleware',
+        'uses' => 'App\Mission\MissionController@getUserMissions']);
 });
 
     /* Policy pages  */
@@ -267,6 +272,26 @@ $router->group(['middleware' => 'localization'], function ($router) {
         $router->get('/app/volunteer/history/goal-mission/export', ['as' => 'app.volunteer.history.goal-mission.export',
         'middleware' => 'tenant.connection|jwt.auth',
         'uses' => 'App\VolunteerHistory\VolunteerHistoryController@exportGoalMissionHistory']);
+
+        /* News listing */
+        $router->get('/app/news',['as' => 'app.news.list',
+        'middleware' => 'localization|tenant.connection|jwt.auth|PaginationMiddleware',
+        'uses' => 'App\News\NewsController@index']);
+        
+        /* Fetch news details*/
+        $router->get('/app/news/{newsId}',['as' => 'app.news.show',
+        'middleware' => 'localization|tenant.connection|jwt.auth',
+        'uses' => 'App\News\NewsController@show']);
+        
+        /* Store story detail */
+        $router->post('/app/story',['as' => 'app.story.store',
+        'middleware' => 'localization|tenant.connection|jwt.auth',
+        'uses' => 'App\Story\StoryController@store']);
+      
+        /* Delete story details */
+        $router->delete('/app/story/{storyId}', ['as' => 'app.story.destroy',
+        'middleware' => 'localization|tenant.connection|jwt.auth',
+        'uses' => 'App\Story\StoryController@destroy']);
     });
 
 /*
@@ -514,6 +539,45 @@ $router->group(['middleware' => 'localization'], function ($router) {
                 'uses' => 'Admin\Timesheet\TimesheetController@update']);
         }
     );
+
+    /* News category management */
+    $router->group(
+        ['prefix' => '/news/category', 'middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware'],
+        function ($router) {
+            $router->get('/', ['middleware' => ['PaginationMiddleware'],
+            'uses' => 'Admin\NewsCategory\NewsCategoryController@index']);
+            $router->get('/{newsCategoryId}', ['uses' => 'Admin\NewsCategory\NewsCategoryController@show']);
+            $router->post('/', ['uses' => 'Admin\NewsCategory\NewsCategoryController@store']);
+            $router->patch('/{newsCategoryId}', ['uses' => 'Admin\NewsCategory\NewsCategoryController@update']);
+            $router->delete('/{newsCategoryId}', ['uses' => 'Admin\NewsCategory\NewsCategoryController@destroy']);
+        }
+    );
+
+    /* News management */
+    $router->group(
+        ['prefix' => '/news', 'middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware'],
+        function ($router) {
+            $router->get('/', ['middleware' => ['PaginationMiddleware'],
+            'uses' => 'Admin\News\NewsController@index']);
+            $router->get('/{newsId}', ['uses' => 'Admin\News\NewsController@show']);
+            $router->post('/', ['uses' => 'Admin\News\NewsController@store']);
+            $router->patch('/{newsId}', ['uses' => 'Admin\News\NewsController@update']);
+            $router->delete('/{newsId}', ['uses' => 'Admin\News\NewsController@destroy']);
+        }
+    );
+    
+    /* Set story data for tenant specific */
+    $router->group(
+    	[ 'middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware'],
+    	function ($router) {
+    		/* Get user stories */
+    		$router->get('/user/{userId}/stories', [ 'middleware' => ['PaginationMiddleware'],
+    					'uses' => 'Admin\Story\StoryController@index']);
+    		/*$router->patch('/{timesheetId}', ['as' => 'update.user.timesheet.status',
+    					'uses' => 'Admin\Timesheet\TimesheetController@update']);*/
+    	}
+   	);
+
 /*
 |
 |--------------------------------------------------------------------------

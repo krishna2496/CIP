@@ -121,8 +121,19 @@ return [
         'MESSAGE_ENABLE_TO_EXPORT_USER_PENDING_TIME_MISSION_ENTRIES' => 'Aucune donnée trouvée, pour générer des entrées de temps en attente pour une mission temporelle',
         'MESSAGE_USER_PENDING_GOAL_MISSION_ENTRIES_EXPORTED' => 'Entrées de temps en attente pour les missions de but, générées avec succès',
         'MESSAGE_ENABLE_TO_EXPORT_USER_PENDING_GOAL_MISSION_ENTRIES' => 'Aucune donnée trouvée, pour générer des entrées de temps en attente pour la mission de l\'objectif',
-        'MESSAGE_AUTO_APPROVED_COMMENT_ADDED' => 'Merci pour votre commentaire.',
-        'MESSAGE_Footer_PAGE_FOUND' => 'Pied de page trouvé avec succès',
+	    'MESSAGE_AUTO_APPROVED_COMMENT_ADDED' => 'Merci pour votre commentaire.',        
+        'MESSAGE_NEWS_CATEGORY_LISTING' => 'Catégorie de nouvelles répertoriée avec succès',
+        'MESSAGE_NEWS_CATEGORY_DELETED' => 'Catégorie de nouvelles supprimée avec succès',
+        'MESSAGE_NEWS_CATEGORY_CREATED' => 'Catégorie de nouvelles créée avec succès',
+        'MESSAGE_NEWS_CATEGORY_UPDATED' => 'Catégorie de nouvelles mise à jour avec succès',
+        'MESSAGE_NEWS_CREATED' => 'Nouvelles créées avec succès',
+        'MESSAGE_NEWS_DELETED' => 'Nouvelles supprimées avec succès',
+        'MESSAGE_NEWS_LISTING' => 'Nouvelles listées avec succès',
+        'MESSAGE_NEWS_UPDATED' => 'Nouvelles mises à jour avec succès',
+		'MESSAGE_NEWS_CATEGORY_FOUND' => 'News category found sucessfully',
+        'MESSAGE_NEWS_FOUND' => 'Nouvelles trouvées avec succès',
+        'STORY_ADDED_SUCESSFULLY' => 'Histoire ajoutée avec succès',
+        'MESSAGE_STORY_DELETED' => 'Histoire supprimée avec succès',
     	'MESSAGE_STORIES_ENTRIES_LISTING' => 'Les entr�es de l\'histoire list�es avec succ�s',
     	'MESSAGE_NO_STORIES_ENTRIES_FOUND' => 'Aucune entr�e d\'histoire trouv�e',
     ],
@@ -176,6 +187,7 @@ return [
         'ERROR_INVALID_MISSION_DOCUMENT_DATA' => 'Données de média de mission non valides',
         'ERROR_INVALID_INVITE_MISSION_DATA' => 'Détail de la mission d\'invitation non valide',
         'ERROR_INVITE_MISSION_ALREADY_EXIST' => 'L\'utilisateur est déjà invité pour cette mission',
+        'ERROR_USER_MISSIONS_NOT_FOUND' => 'Missions non trouvées',
         
         // Custom error code for Tenant Authorization - 210000 - 219999
         'ERROR_INVALID_API_AND_SECRET_KEY' => 'Clé API ou clé secrète invalide',
@@ -240,8 +252,17 @@ return [
         'ERROR_INVALID_DATA_FOR_TIMESHEET_ENTRY' => 'Vous ne pouvez pas ajouter de temps',
         'ERROR_TIMESHEET_ENTRY_NOT_FOUND' => 'ID de saisie de la feuille de temps introuvable',
         'ERROR_SAME_DATE_TIME_ENTRY' => 'Vous ne pouvez pas ajouter plus de 24 heures à la même date',
+       'ERROR_APPROVED_TIMESHEET_DOCUMENTS' => 'Vous ne pouvez pas supprimer les documents d\'entrée de feuille de temps approuvés',
+
+        
+        // For News module        
+        'ERROR_NEWS_CATEGORY_NOT_FOUND' => 'Catégorie de nouvelles non trouvée dans le système',
+		'ERROR_NEWS_CATEGORIES_NOT_FOUND' => 'News categories not found in the system',
+        'ERROR_NEWS_NOT_FOUND' => 'Nouvelles non trouvées dans le système',
         'ERROR_UNAUTHORIZED_USER' => 'Utilisateur non autorisé',
-        'ERROR_APPROVED_TIMESHEET_DOCUMENTS' => 'Vous ne pouvez pas supprimer les documents d\'entrée de feuille de temps approuvés',
+
+        // For story module
+        'ERROR_STORY_NOT_FOUND' => 'Histoire non trouvée dans le système',
     ],
 
     /**

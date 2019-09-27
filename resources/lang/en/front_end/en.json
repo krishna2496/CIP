@@ -190,7 +190,7 @@
         "volunteering_timesheet_not_found": "The heart of a volunteer is never measured in size, but by the depth of the commitment to make a difference in the lives of others.",
         "no_skill_found": "Skill not found",
         "not_found": "not found",
-        "published_on": "Published on",
+        "published_on": "Published on"
         "closed": "Closed",
         "share_your_story": "Share your story",
         "views": "Views",
@@ -258,7 +258,7 @@
         "work_day": "Please select day volunteered",
         "notes": "Please enter notes",
         "action_required": "Please select action",
-		 "file_max_size" : "File should not be greater than 4 MB",
+		"file_max_size" : "File should not be greater than 4 MB",
         "minimum_action": "The action must be numeric and minimum 1",
         "hours_is_required": "Please select hours",
         "minute_is_required": "Please select minutes",

@@ -1171,4 +1171,34 @@ class MissionRepository implements MissionInterface
         ->where('mission_id', $id)
         ->get();
     }
+
+    /**
+     * Get user mission lists 
+     *
+     * @param Illuminate\Http\Request $request
+     * @return null|array
+     */
+    public function getUserMissions(Request $request): ?array
+    {
+        $languageId = $this->languageHelper->getLanguageId($request);
+        $userId = $request->auth->user_id;
+        $missionLists = array();
+
+        $missionData = $this->mission->select('mission.mission_id', 'city_id')
+        ->whereHas('missionApplication', function ($query) use ($userId) {
+            $query->where('user_id', $userId)
+            ->whereIn('approval_status', [config("constants.application_status")["AUTOMATICALLY_APPROVED"]]);
+        })
+        ->with(['missionLanguage' => function ($query) use ($languageId) {
+            $query->select('mission_language_id', 'mission_id', 'title')
+            ->where('language_id', $languageId);
+        }])->get();
+
+        foreach ($missionData->toArray() as $key => $value) {
+            $missionLists[$key]['mission_id'] = $value['mission_id'];
+            $missionLists[$key]['title'] = $value['mission_language'][0]['title'];
+        }
+      
+        return $missionLists;
+    }
 }
