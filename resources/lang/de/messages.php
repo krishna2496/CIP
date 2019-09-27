@@ -96,6 +96,8 @@ return [
         'MESSAGE_NO_GOAL_REQUEST_FOUND' => 'DE: No pending goal requests found',
         'MESSAGE_POLICY_PAGE_FOUND' => 'DE: Policy page found successfully',
         'MESSAGE_FOOTER_PAGE_FOUND' => 'DE: Footer page found successfully',
+    	'MESSAGE_STORIES_ENTRIES_LISTING' => 'DE: Story entries listed successfully',
+    	'MESSAGE_NO_STORIES_ENTRIES_FOUND' => 'DE: No story entries found',
     ],
 
         

@@ -123,6 +123,8 @@ return [
         'MESSAGE_ENABLE_TO_EXPORT_USER_PENDING_GOAL_MISSION_ENTRIES' => 'Aucune donnÃ©e trouvÃ©e, pour gÃ©nÃ©rer des entrÃ©es de temps en attente pour la mission de l\'objectif',
         'MESSAGE_AUTO_APPROVED_COMMENT_ADDED' => 'Merci pour votre commentaire.',
         'MESSAGE_Footer_PAGE_FOUND' => 'Pied de page trouvÃ© avec succÃ¨s',
+    	'MESSAGE_STORIES_ENTRIES_LISTING' => 'Les entrées de l\'histoire listées avec succès',
+    	'MESSAGE_NO_STORIES_ENTRIES_FOUND' => 'Aucune entrée d\'histoire trouvée',
     ],
 
         

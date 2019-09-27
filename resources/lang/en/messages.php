@@ -127,6 +127,8 @@ return [
         'MESSAGE_USER_PENDING_GOAL_MISSION_ENTRIES_EXPORTED' => 'Pending time entries for goal missions, generated successfully',
         'MESSAGE_ENABLE_TO_EXPORT_USER_PENDING_GOAL_MISSION_ENTRIES' => 'No data found, to generate pending time entries for goal mission',
         'MESSAGE_AUTO_APPROVED_COMMENT_ADDED' => 'Thanks for your comment.',
+    	'MESSAGE_STORIES_ENTRIES_LISTING' => 'Story entries listed successfully',
+    	'MESSAGE_NO_STORIES_ENTRIES_FOUND' => 'No story entries found',
     ],
         
     /**
