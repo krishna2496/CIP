@@ -65,16 +65,31 @@ trait MissionTransformable
         // Check for apply in mission validity
         $mission['set_view_detail'] = 0;
         $today = $this->helpers->getUserTimeZoneDate(date(config("constants.DB_DATE_TIME_FORMAT")));
-            
+        
         if (($mission['user_application_count'] > 0) ||
-                (isset($mission['application_deadline']) && $mission['application_deadline'] < $today) ||
-                ($mission['total_seats'] != 0
-                && $mission['total_seats'] == $mission['mission_application_count']) ||
-                ($mission['end_date'] !== null && $mission['end_date'] < $today)
+            ($mission['total_seats'] != 0 && $mission['total_seats'] == $mission['mission_application_count']) ||
+            ($mission['end_date'] !== null && $mission['end_date'] < $today)
             ) {
             $mission['set_view_detail'] = 1;
         }
 
+        if (isset($mission['application_deadline']) && ($mission['application_deadline'] != null) &&
+         ($mission['application_deadline'] < $today)) {
+            $mission['set_view_detail'] = 1;
+        }
+
+        if ((isset($mission['application_start_date']) && ($mission['application_start_date'] != null)) &&
+         (isset($mission['application_end_date']) && ($mission['application_end_date'] != null)) &&
+         ($mission['application_end_date'] < $today)) {
+            $mission['set_view_detail'] = 1;
+        }
+
+        if ((isset($mission['application_start_time']) && ($mission['application_start_time'] != null)) &&
+         (isset($mission['application_end_time']) && ($mission['application_end_time'] != null)) &&
+         ($mission['application_end_time'] < $today)) {
+            $mission['set_view_detail'] = 1;
+        }
+        
         $mission['mission_rating_count'] = $mission['mission_rating_count'] ?
         ceil($mission['mission_rating_count']) : 0;
               

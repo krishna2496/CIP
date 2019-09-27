@@ -973,7 +973,8 @@ class MissionRepository implements MissionInterface
         ->whereNotIn('mission.mission_id', function ($query) use ($request) {
             $query->select('mission_id')
                 ->from('mission_application')
-                ->where('user_id', $request->auth->user_id);
+                ->where('user_id', $request->auth->user_id)
+                ->where('approval_status', '<>', config("constants.application_status")["REFUSED"]);
         });
         $missionQuery->withCount([
             'missionRating as mission_rating_count' => function ($query) {
