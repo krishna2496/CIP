@@ -152,14 +152,6 @@ interface MissionInterface
      */
     public function checkMissionApplicationDeadline(int $missionId): bool;
 
-    /**
-     * Get goal objective
-     *
-     * @param int $missionId
-     * @return App\Models\GoalMission|null
-     */
-    public function getGoalObjective(int $missionId): ?GoalMission;
-
     /** Get mission application details by mission id, user id and status
      *
      * @param int $missionId

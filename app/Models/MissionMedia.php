@@ -3,8 +3,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use App\Models\Mission;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class MissionMedia extends Model
 {
@@ -36,19 +34,9 @@ class MissionMedia extends Model
      *
      * @var array
      */
-    protected $visible = ['mission_media_id', 'media_type', 'media_name', 'media_path', 'default', 'media_image'];
+    protected $visible = ['mission_media_id', 'media_type', 'media_name', 'media_path', 'default'];
     
     protected $appends = ['video_thumbnail'];
-
-    /**
-     * Get the mission that has media.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function mission(): BelongsTo
-    {
-        return $this->belongsTo(Mission::class, 'mission_id', 'mission_id');
-    }
 
     /**
      * Store/update specified resource.
@@ -60,28 +48,5 @@ class MissionMedia extends Model
     public function createOrUpdateMedia(array $condition, array $data): MissionMedia
     {
         return static::updateOrCreate($condition, $data);
-    }
-
-    /**
-     * Return youtube thumbnail from video URL
-     *
-     * @return string|null
-     */
-    public function getMediaImageAttribute(): ?string
-    {
-        if ($this->attributes['media_type'] == 'mp4') {
-            preg_match(
-                '/^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/',
-                $this->attributes['media_path'],
-                $matches
-            );
-            if (count($matches)) {
-                return "https://img.youtube.com/vi/".$matches[2]."/mqdefault.jpg";
-            }
-        }
-        if ($this->attributes['media_type'] !== 'mp4' && !is_null($this->attributes['media_type'])) {
-            return $this->attributes['media_path'];
-        }
-        return null;
     }
 }

@@ -44,6 +44,7 @@ return [
     'DEFAULT_FQDN_FOR_FRONT' => 'web8',
     'PER_PAGE_MAX' => '50',
     'AWS_S3_DEFAULT_THEME_FOLDER_NAME' => 'default_theme',
+    
     /*
      * User custom field types
      */
@@ -332,6 +333,7 @@ return [
         'ERROR_INVALID_DATA_FOR_TIMESHEET_ENTRY' => '400041',
         'ERROR_SAME_DATE_TIME_ENTRY' => '400042',        
         'ERROR_UNAUTHORIZED_USER' => '400043',
+		'ERROR_APPROVED_TIMESHEET_DOCUMENTS' => '400044',
         
         'ERROR_NEWS_CATEGORY_NOT_FOUND' => '500001',
         'ERROR_NEWS_CATEGORY_INVALID_DATA' => '500002',
@@ -341,6 +343,7 @@ return [
         'ERROR_STORY_REQUIRED_FIELDS_EMPTY' => '700001',
         'ERROR_STORY_NOT_FOUND' => '700002',
         
+              
                 
         'ERROR_OCCURRED' => '999999',
         'ERROR_INVALID_JSON' => '900000',

@@ -45,27 +45,7 @@ class Timesheet extends Model
      */
     protected $visible = ['timesheet_id', 'user_id', 'mission_id', 'time', 'action', 'date_volunteered',
         'day_volunteered', 'notes', 'timesheetDocument', 'timesheetStatus', 'mission'];
-
-    /**
-     * Get the mission associated with timesheet.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
-     */
-    public function mission(): HasOne
-    {
-        return $this->hasOne(Mission::class, 'mission_id', 'mission_id');
-    }
-
-    /**
-     * Get the user associated with timesheet.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
-     */
-    public function user(): HasOne
-    {
-        return $this->hasOne(User::class, 'user_id', 'user_id');
-    }
-
+    
     /**
      * Get date volunteered attribute on the model.
      *

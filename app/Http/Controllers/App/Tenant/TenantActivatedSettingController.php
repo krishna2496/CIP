@@ -84,7 +84,8 @@ class TenantActivatedSettingController extends Controller
 
             // Set response data
             $apiStatus = Response::HTTP_OK;
-            $apiMessage = ($tenantSettings->isEmpty() || $getTenantSettings->isEmpty()) ? trans('messages.success.MESSAGE_NO_RECORD_FOUND') :
+            $apiMessage = ($tenantSettings->isEmpty() || $getTenantSettings->isEmpty())
+            ? trans('messages.success.MESSAGE_NO_RECORD_FOUND') :
             trans('messages.success.MESSAGE_TENANT_SETTINGS_LISTING');
 
             return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
@@ -93,8 +94,6 @@ class TenantActivatedSettingController extends Controller
                 config('constants.error_codes.ERROR_INVALID_ARGUMENT'),
                 trans('messages.custom_error_message.ERROR_INVALID_ARGUMENT')
             );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
 }

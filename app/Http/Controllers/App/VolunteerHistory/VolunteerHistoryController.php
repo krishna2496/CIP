@@ -8,20 +8,12 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 use App\Helpers\ResponseHelper;
 use App\Repositories\Timesheet\TimesheetRepository;
-use App\Repositories\Mission\MissionRepository;
 use App\Traits\RestExceptionHandlerTrait;
-use InvalidArgumentException;
-use Validator;
-use Illuminate\Validation\Rule;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
-use PDOException;
 use App\Repositories\MissionTheme\MissionThemeRepository;
 use App\Repositories\MissionSkill\MissionSkillRepository;
 use App\Helpers\LanguageHelper;
 use App\Helpers\ExportCSV;
-use Carbon\Carbon;
 use App\Helpers\Helpers;
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class VolunteerHistoryController extends Controller
 {
@@ -92,20 +84,16 @@ class VolunteerHistoryController extends Controller
      */
     public function themeHistory(Request $request): JsonResponse
     {
-        try {
-            $userId = $request->auth->user_id;
-            $themeTimeHistory = $this->missionThemeRepository->getHoursPerTheme($request->year, $userId);
+        $userId = $request->auth->user_id;
+        $themeTimeHistory = $this->missionThemeRepository->getHoursPerTheme($request->year, $userId);
 
-            $apiStatus = Response::HTTP_OK;
-            $apiMessage = (!empty($themeTimeHistory->toArray())) ?
-            trans('messages.success.MESSAGE_THEME_HISTORY_PER_HOUR_LISTED'):
-            trans('messages.success.MESSAGE_THEME_HISTORY_NOT_FOUND');
-            $apiData = $themeTimeHistory->toArray();
-            
-            return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
-        }
+        $apiStatus = Response::HTTP_OK;
+        $apiMessage = (!empty($themeTimeHistory->toArray())) ?
+        trans('messages.success.MESSAGE_THEME_HISTORY_PER_HOUR_LISTED'):
+        trans('messages.success.MESSAGE_THEME_HISTORY_NOT_FOUND');
+        $apiData = $themeTimeHistory->toArray();
+        
+        return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
     }
 
     /**
@@ -116,25 +104,21 @@ class VolunteerHistoryController extends Controller
      */
     public function skillHistory(Request $request): JsonResponse
     {
-        try {
-            $languages = $this->languageHelper->getLanguages($request);
-            $language = ($request->hasHeader('X-localization')) ?
-            $request->header('X-localization') : env('TENANT_DEFAULT_LANGUAGE_CODE');
-            $languageCode = $languages->where('code', $language)->first()->code;
+        $languages = $this->languageHelper->getLanguages($request);
+        $language = ($request->hasHeader('X-localization')) ?
+        $request->header('X-localization') : env('TENANT_DEFAULT_LANGUAGE_CODE');
+        $languageCode = $languages->where('code', $language)->first()->code;
 
-            $userId = $request->auth->user_id;
-            $skillTimeHistory = $this->missionSkillRepository->getHoursPerSkill($request->year, $userId);
+        $userId = $request->auth->user_id;
+        $skillTimeHistory = $this->missionSkillRepository->getHoursPerSkill($request->year, $userId);
 
-            $apiStatus = Response::HTTP_OK;
-            $apiMessage =  (!empty($skillTimeHistory->toArray())) ?
-            trans('messages.success.MESSAGE_SKILL_HISTORY_PER_HOUR_LISTED'):
-            trans('messages.success.MESSAGE_SKILL_HISTORY_NOT_FOUND');
-            $apiData = $skillTimeHistory->toArray();
+        $apiStatus = Response::HTTP_OK;
+        $apiMessage =  (!empty($skillTimeHistory->toArray())) ?
+        trans('messages.success.MESSAGE_SKILL_HISTORY_PER_HOUR_LISTED'):
+        trans('messages.success.MESSAGE_SKILL_HISTORY_NOT_FOUND');
+        $apiData = $skillTimeHistory->toArray();
 
-            return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
-        }
+        return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
     }
 
     /**
@@ -145,27 +129,18 @@ class VolunteerHistoryController extends Controller
      */
     public function timeMissionHistory(Request $request): JsonResponse
     {
-        try {
-            $statusArray = [
-                config('constants.timesheet_status_id.AUTOMATICALLY_APPROVED'),
-                config('constants.timesheet_status_id.APPROVED')
-            ];
+        $statusArray = [
+            config('constants.timesheet_status_id.AUTOMATICALLY_APPROVED'),
+            config('constants.timesheet_status_id.APPROVED')
+        ];
 
-            $timeMissionList = $this->timesheetRepository->timeRequestList($request, $statusArray);
+        $timeMissionList = $this->timesheetRepository->timeRequestList($request, $statusArray);
 
-            $apiMessage = (count($timeMissionList) > 0) ?
-            trans('messages.success.MESSAGE_TIME_MISSION_TIME_ENTRY_LISTED') :
-            trans('messages.success.MESSAGE_NO_TIME_MISSION_TIME_ENTRY_FOUND');
-            
-            return $this->responseHelper->successWithPagination(Response::HTTP_OK, $apiMessage, $timeMissionList);
-        } catch (PDOException $e) {
-            return $this->PDO(
-                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
-                trans('messages.custom_error_message.ERROR_DATABASE_OPERATIONAL')
-            );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
-        }
+        $apiMessage = (count($timeMissionList) > 0) ?
+        trans('messages.success.MESSAGE_TIME_MISSION_TIME_ENTRY_LISTED') :
+        trans('messages.success.MESSAGE_NO_TIME_MISSION_TIME_ENTRY_FOUND');
+        
+        return $this->responseHelper->successWithPagination(Response::HTTP_OK, $apiMessage, $timeMissionList);
     }
 
     /**
@@ -176,27 +151,18 @@ class VolunteerHistoryController extends Controller
      */
     public function goalMissionHistory(Request $request): JsonResponse
     {
-        try {
-            $statusArray = [
-                config('constants.timesheet_status_id.AUTOMATICALLY_APPROVED'),
-                config('constants.timesheet_status_id.APPROVED')
-            ];
+        $statusArray = [
+            config('constants.timesheet_status_id.AUTOMATICALLY_APPROVED'),
+            config('constants.timesheet_status_id.APPROVED')
+        ];
 
-            $goalMissionList = $this->timesheetRepository->goalRequestList($request, $statusArray);
+        $goalMissionList = $this->timesheetRepository->goalRequestList($request, $statusArray);
 
-            $apiMessage = (count($goalMissionList) > 0) ?
-            trans('messages.success.MESSAGE_GOAL_MISSION_TIME_ENTRY_LISTED') :
-            trans('messages.success.MESSAGE_NO_GOAL_MISSION_TIME_ENTRY_FOUND');
-            
-            return $this->responseHelper->successWithPagination(Response::HTTP_OK, $apiMessage, $goalMissionList);
-        } catch (PDOException $e) {
-            return $this->PDO(
-                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
-                trans('messages.custom_error_message.ERROR_DATABASE_OPERATIONAL')
-            );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
-        }
+        $apiMessage = (count($goalMissionList) > 0) ?
+        trans('messages.success.MESSAGE_GOAL_MISSION_TIME_ENTRY_LISTED') :
+        trans('messages.success.MESSAGE_NO_GOAL_MISSION_TIME_ENTRY_FOUND');
+        
+        return $this->responseHelper->successWithPagination(Response::HTTP_OK, $apiMessage, $goalMissionList);
     }
 
     /**

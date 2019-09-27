@@ -124,46 +124,6 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     }
     
     /**
-     * Defined has many relation for the user_skill table.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function userSkills(): HasMany
-    {
-        return $this->hasMany(UserSkill::class, 'user_id', 'user_id');
-    }
-
-    /**
-     * Defined has many relation for the mission_application table.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function missionApplication(): HasMany
-    {
-        return $this->hasMany(MissionApplication::class, 'user_id', 'user_id');
-    }
-
-    /**
-     * Get comment associated with the user.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function comment(): HasMany
-    {
-        return $this->hasMany(Comment::class, 'user_id', 'user_id');
-    }
-    
-    /**
-     * Get timesheet associated with the user.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function timesheet(): HasMany
-    {
-        return $this->hasMany(Timesheet::class, 'user_id', 'user_id');
-    }
-
-    /**
      * Defined has many relation for the user_custom_field_value table.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany

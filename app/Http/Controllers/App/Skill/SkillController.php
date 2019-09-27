@@ -55,43 +55,34 @@ class SkillController extends Controller
     */
     public function index(Request $request) : JsonResponse
     {
-        try {
-            $languages = $this->languageHelper->getLanguages($request);
-            $language = ($request->hasHeader('X-localization')) ?
-            $request->header('X-localization') : env('TENANT_DEFAULT_LANGUAGE_CODE');
-            $languageCode = $languages->where('code', $language)->first()->code;
+        $languages = $this->languageHelper->getLanguages($request);
+        $language = ($request->hasHeader('X-localization')) ?
+        $request->header('X-localization') : env('TENANT_DEFAULT_LANGUAGE_CODE');
+        $languageCode = $languages->where('code', $language)->first()->code;
 
-            $skillList = $this->skillRepository->skillList($request);
-            $allSkillData = [];
+        $skillList = $this->skillRepository->skillList($request);
+        $allSkillData = [];
 
-            if (!empty($skillList) && (isset($skillList))) {
-                $returnData = [];
-                foreach ($skillList as $key => $value) {
-                    if ($value) {
-                        $arrayKey = array_search($languageCode, array_column($value['translations'], 'lang'));
-                        if ($arrayKey !== '') {
-                            $returnData[$value['skill_id']] = $value['translations'][$arrayKey]['title'];
-                        }
+        if (!empty($skillList) && (isset($skillList))) {
+            $returnData = [];
+            foreach ($skillList as $key => $value) {
+                if ($value) {
+                    $arrayKey = array_search($languageCode, array_column($value['translations'], 'lang'));
+                    if ($arrayKey !== '') {
+                        $returnData[$value['skill_id']] = $value['translations'][$arrayKey]['title'];
                     }
                 }
-                if (!empty($returnData)) {
-                    $allSkillData = $returnData;
-                }
             }
-
-            $apiData = $allSkillData;
-            $apiStatus = Response::HTTP_OK;
-            $apiMessage = (!empty($apiData)) ?
-            trans('messages.success.MESSAGE_SKILL_LISTING') :
-            trans('messages.success.MESSAGE_NO_SKILL_FOUND');
-            return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
-        } catch (InvalidArgumentException $e) {
-            return $this->invalidArgument(
-                config('constants.error_codes.ERROR_INVALID_ARGUMENT'),
-                trans('messages.custom_error_message.ERROR_INVALID_ARGUMENT')
-            );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
+            if (!empty($returnData)) {
+                $allSkillData = $returnData;
+            }
         }
+
+        $apiData = $allSkillData;
+        $apiStatus = Response::HTTP_OK;
+        $apiMessage = (!empty($apiData)) ?
+        trans('messages.success.MESSAGE_SKILL_LISTING') :
+        trans('messages.success.MESSAGE_NO_SKILL_FOUND');
+        return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
     }
 }

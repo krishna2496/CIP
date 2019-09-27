@@ -37,17 +37,7 @@ class PolicyPagesLanguage extends Model
      * @var array
      */
     protected $visible = ['language_id', 'title', 'description', 'sections'];
-    
-    /**
-     * Define an inverse one-to-one or many relationship.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function page(): BelongsTo
-    {
-        return $this->belongsTo(PolicyPage::class, 'page_id', 'page_id');
-    }
-    
+     
     /**
      * Set description attribute on the model.
      *
