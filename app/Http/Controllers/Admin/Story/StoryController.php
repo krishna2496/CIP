@@ -3,6 +3,7 @@ namespace App\Http\Controllers\Admin\Story;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Validation\Rule;
 use App\Http\Controllers\Controller;
 use App\Traits\RestExceptionHandlerTrait;
 use App\Helpers\ResponseHelper;
@@ -121,30 +122,29 @@ class StoryController extends Controller
             $validator = Validator::make(
                 $request->all(),
                 [
-                    "status_id" => "required|numeric|exists:timesheet_status,timesheet_status_id"
+                    "status" => ['required', Rule::in(config('constants.story_status'))],
                 ]
-            );
-
+            );	
             // If request parameter have any error
             if ($validator->fails()) {
                 return $this->responseHelper->error(
                     Response::HTTP_UNPROCESSABLE_ENTITY,
                     Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                    config('constants.error_codes.ERROR_USER_INVALID_DATA'),
+                    config('constants.error_codes.ERROR_STORY_REQUIRED_FIELDS_EMPTY'),
                     $validator->errors()->first()
                 );
             }
-            $this->timesheetRepository->find($timesheetId);
-            $this->timesheetRepository->updateTimesheetStatus($request->status_id, $timesheetId);
+            $this->storyRepository->getStoryDetails($storyId);
+            $this->storyRepository->updateStoryStatus($request->status, $storyId);
 
             $apiStatus = Response::HTTP_OK;
-            $apiMessage = trans('messages.success.MESSAGE_TIMESETTING_STATUS_UPDATED');
-            $apiData = ['timesheet_id' => $timesheetId];
+            $apiMessage = trans('messages.success.MESSAGE_STORY_STATUS_UPDATED');
+            $apiData = ['story_id' => $storyId];
             return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
-                config('constants.error_codes.ERROR_TIMESHEET_ENTRY_NOT_FOUND'),
-                trans('messages.custom_error_message.ERROR_TIMESHEET_ENTRY_NOT_FOUND')
+                config('constants.error_codes.ERROR_STORY_NOT_FOUND'),
+                trans('messages.custom_error_message.ERROR_STORY_NOT_FOUND')
             );
         }
     }

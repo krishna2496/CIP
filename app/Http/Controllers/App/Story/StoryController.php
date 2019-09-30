@@ -10,12 +10,13 @@ use App\Helpers\ResponseHelper;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 use App\Traits\RestExceptionHandlerTrait;
+use App\Transformations\StoryTransformable;
 use Validator;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class StoryController extends Controller
 {
-    use RestExceptionHandlerTrait;
+    use RestExceptionHandlerTrait,StoryTransformable;
     /**
      * @var App\Repositories\Story\StoryRepository
      */
@@ -111,4 +112,63 @@ class StoryController extends Controller
             );
         }
     }
+    
+    /**
+     * Display story details.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param int $storyId
+     * @return Illuminate\Http\JsonResponse
+     */
+    public function show(Request $request, int $storyId): JsonResponse
+    {
+    	try {
+    		//$languageId = $this->languageHelper->getLanguageId($request);
+    		// Get Story details
+    		$story = $this->storyRepository
+    		->getStoryDetails($storyId,config('constants.story_status.PUBLISHED'));
+    		// Transform news details
+    		$storyTransform = $this->transformStory($story)->toArray();
+    		
+    		$apiStatus = Response::HTTP_OK;
+    		$apiMessage = trans('messages.success.MESSAGE_STORY_FOUND');
+    
+    		return $this->responseHelper->success($apiStatus, $apiMessage, $storyTransform);
+    	} catch (ModelNotFoundException $e) {
+    		return $this->modelNotFound(
+    			config('constants.error_codes.ERROR_STORY_NOT_FOUND'),
+    			trans('messages.custom_error_message.ERROR_STORY_NOT_FOUND')
+    		);
+    	}
+    }
+    
+    /**
+     * Do copy of declined story
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param int $storyId
+     * @return Illuminate\Http\JsonResponse
+     */
+    public function copyStoryAfterDecline(Request $request, int $storyId): JsonResponse
+    {
+    	try {
+    		// check declined story details by story id
+    		$this->storyRepository
+    		->getStoryDetails($storyId,config('constants.story_status.DECLINED'));
+    		// Do copy of declined story
+    		$newStoryId = $this->storyRepository->doCopyDeclinedStory($storyId);
+    	
+    		$apiStatus = Response::HTTP_OK;
+    		$apiMessage = trans('messages.success.MESSAGE_STORY_COPIED_SUCCESS');
+    		$apiData = ['story_id' => $newStoryId ];
+    		
+    		return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);   		
+    	} catch (ModelNotFoundException $e) {
+    		return $this->modelNotFound(
+    			config('constants.error_codes.ERROR_STORY_NOT_FOUND'),
+    			trans('messages.custom_error_message.ERROR_STORY_NOT_FOUND')
+    		);
+    	}
+    }
+    
 }

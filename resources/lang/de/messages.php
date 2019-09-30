@@ -107,6 +107,9 @@ return [
         'MESSAGE_STORY_DELETED' => 'DE: Story deleted sucessfully',
     	'MESSAGE_STORIES_ENTRIES_LISTING' => 'DE: Story entries listed successfully',
     	'MESSAGE_NO_STORIES_ENTRIES_FOUND' => 'DE: No story entries found',
+    	'MESSAGE_STORY_STATUS_UPDATED' => 'DE: Story status updated successfully',
+    	'MESSAGE_STORY_FOUND' => 'DE: Story found sucessfully',
+    	'MESSAGE_STORY_COPIED_SUCCESS' => 'DE: Story copied successfully',
     ],
 
         

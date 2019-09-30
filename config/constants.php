@@ -206,6 +206,17 @@ return [
         'PUBLISHED' => 'PUBLISHED',
         'UNPUBLISHED' => 'UNPUBLISHED'
     ],
+		
+		
+	/*
+	 * Story status
+	 */
+	'story_status' => [
+		'DRAFT' => 'DRAFT',
+		'PENDING' => 'PENDING',	
+		'PUBLISHED' => 'PUBLISHED',
+		'DECLINED' => 'DECLINED'
+	],
 
     /*
      * Folder name s3

@@ -136,6 +136,9 @@ return [
         'MESSAGE_STORY_DELETED' => 'Histoire supprimÃ©e avec succÃ¨s',
     	'MESSAGE_STORIES_ENTRIES_LISTING' => 'Les entrées de l\'histoire listées avec succès',
     	'MESSAGE_NO_STORIES_ENTRIES_FOUND' => 'Aucune entrée d\'histoire trouvée',
+    	'MESSAGE_STORY_STATUS_UPDATED' => 'Statut de l\'histoire mis à jour avec succès',
+    	'MESSAGE_STORY_FOUND' => 'Histoire trouvée avec succès',
+    	'MESSAGE_STORY_COPIED_SUCCESS' => 'Histoire copiée avec succès',
     ],
 
         

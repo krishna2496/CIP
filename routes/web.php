@@ -292,6 +292,16 @@ $router->group(['middleware' => 'localization'], function ($router) {
         $router->delete('/app/story/{storyId}', ['as' => 'app.story.destroy',
         'middleware' => 'localization|tenant.connection|jwt.auth',
         'uses' => 'App\Story\StoryController@destroy']);
+        
+        /* Fetch story details */
+        $router->get('/app/story/{storyId}', ['as' => 'app.story.show',
+        'middleware' => 'localization|tenant.connection|jwt.auth',
+        'uses' => 'App\Story\StoryController@show']);
+        
+        /* Copy story data after decline */
+        $router->get('/app/story/{story_id}/copy', ['as' => 'app.story.copyafterdecline',
+        'middleware' => 'localization|tenant.connection|jwt.auth',
+        'uses' => 'App\Story\StoryController@copyStoryAfterDecline']);
     });
 
 /*
@@ -573,8 +583,8 @@ $router->group(['middleware' => 'localization'], function ($router) {
     		/* Get user stories */
     		$router->get('/user/{userId}/stories', [ 'middleware' => ['PaginationMiddleware'],
     					'uses' => 'Admin\Story\StoryController@index']);
-    		/*$router->patch('/{timesheetId}', ['as' => 'update.user.timesheet.status',
-    					'uses' => 'Admin\Timesheet\TimesheetController@update']);*/
+    		$router->patch('/stories/{storyId}', ['as' => 'update.story.status',
+    					'uses' => 'Admin\Story\StoryController@update']);
     	}
    	);
 

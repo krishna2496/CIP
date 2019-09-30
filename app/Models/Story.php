@@ -30,7 +30,7 @@ class Story extends Model
      *
      * @var array
      */
-    protected $visible = ['story_id', 'user_id', 'mission_id', 'title', 'description', 'status', 'published_at', 'mission_title', 'mission_description'];
+    protected $visible = ['story_id', 'user_id', 'mission_id', 'title', 'description', 'status', 'published_at', 'mission_title', 'mission_description', 'first_name', 'last_name','avatar','why_i_volunteer','profile_text','storyMedia', 'city', 'country'];
 
     /**
      * The attributes that are mass assignable.
@@ -70,26 +70,13 @@ class Story extends Model
     }
     
     /**
-     * Set description attribute on the model.
+     * Soft delete from the database.
      *
-     * @param string $value
-     * @return void
-     */
-    public function setDescriptionAttribute(string $value)
-    {
-        $this->attributes['description'] = trim($value);
-    }
-    
-    /**
-     * Soft delete the model from the database.
-     *
-     * @param int $storyId
-     * @param int $userId
+     * @param  int  $id
      * @return bool
      */
-    public function deleteStory(int $storyId, int $userId): bool
+    public function deleteStory(int $id): bool
     {
-        return static::where(['story_id' => $storyId,
-        'user_id' => $userId])->firstOrFail()->delete();
+    	return static::findOrFail($id)->delete();
     }
 }

@@ -10,6 +10,7 @@ use App\Helpers\Helpers;
 use App\Helpers\LanguageHelper;
 use Illuminate\Support\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Carbon\Carbon;
 use App\Helpers\S3Helper;
 use App\Repositories\Story\StoryInterface;
 
@@ -151,6 +152,74 @@ class StoryRepository implements StoryInterface
 		}])->where('user_id',$userId);
 		return $userStoryQuery->paginate($request->perPage);
 	}
+	
+	/**
+	 * Update story status field value, based on storyId condition
+	 *
+	 * @param string $storyStatus
+	 * @param int $storyId
+	 * @return bool
+	 */
+	public function updateStoryStatus(string $storyStatus, int $storyId): bool
+	{
+		// default story array to update
+		$updateData = ['status' => $storyStatus,'published_at'=> Null];
+		
+		if($storyStatus=='PUBLISHED')
+		{
+			$updateData ['published_at'] = Carbon::now()->toDateTimeString();;
+		}
+		return $this->story->where('story_id', $storyId)
+		->update($updateData);
+	}
+	
+ 	/**
+     * Get story details.
+     *
+     * @param int $storyId
+     * @param string $storyStatus
+     * @return App\Models\Story
+     */
+    public function getStoryDetails(int $storyId, string $storyStatus = null): Story
+    {
+        $storyQuery = $this->story
+        ->with(['user','user.city','user.country','storyMedia']);
+        
+        if (!empty($storyStatus)) {
+            $storyQuery->where('status', $storyStatus);
+        }
+
+        return $storyQuery->findOrFail($storyId);
+    }
+    
+    /**
+     * Do copy of declined story data
+     * 
+     * @param Story $story
+     * @return int $newStoryId
+     */
+    public function doCopyDeclinedStory(int $storyId): int
+    {
+    	$newStory = $this->story->with(['storyMedia'])->findOrFail($storyId)->replicate();
+    	$oldStoryMedia = $newStory->storyMedia;
+    	$oldStoryId = $newStory->story_id;
+    	$newStory->title = 'Copy of '.$newStory->title;
+    	$newStory->status = config('constants.story_status.DRAFT');
+    	$newStory->save();
+    	$newStoryId = $newStory->story_id;
+    	
+    	foreach ($newStory->storyMedia as $val)
+    	{
+    		$this->storyMedia = new StoryMedia();
+    		$this->storyMedia->story_id = $newStoryId;
+    		$this->storyMedia->type = $val->type;
+    		$this->storyMedia->path = $val->path;
+    		$this->storyMedia->save();
+    	}
+    	
+    	return $newStoryId;
+    }
+	
 }
 
     

@@ -141,6 +141,9 @@ return [
         'MESSAGE_STORY_DELETED' => 'Story deleted sucessfully',
     	'MESSAGE_STORIES_ENTRIES_LISTING' => 'Story entries listed successfully',
     	'MESSAGE_NO_STORIES_ENTRIES_FOUND' => 'No story entries found',
+    	'MESSAGE_STORY_STATUS_UPDATED' => 'Story status updated successfully',
+    	'MESSAGE_STORY_FOUND' => 'Story found sucessfully',
+    	'MESSAGE_STORY_COPIED_SUCCESS' => 'Story copied successfully',
 	],
         
     /**
