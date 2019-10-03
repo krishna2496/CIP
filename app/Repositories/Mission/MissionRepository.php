@@ -518,10 +518,9 @@ class MissionRepository implements MissionInterface
      *
      * @param Illuminate\Http\Request $request
      * @param Array $userFilterData
-     * @param int $languageId
      * @return \Illuminate\Pagination\LengthAwarePaginator
      */
-    public function getMissions(Request $request, array $userFilterData, int $languageId): LengthAwarePaginator
+    public function getMissions(Request $request, array $userFilterData): LengthAwarePaginator
     {
         $missionData = [];
         // Get  mission data
@@ -533,7 +532,7 @@ class MissionRepository implements MissionInterface
                 $query->where('status', '1');
                 $query->where('default', '1');
             }])
-            ->with(['missionLanguage' => function ($query) use ($languageId) {
+            ->with(['missionLanguage' => function ($query) {
                 $query->select(
                     'mission_language_id',
                     'mission_id',
@@ -930,11 +929,10 @@ class MissionRepository implements MissionInterface
      * Display listing of related mission.
      *
      * @param Illuminate\Http\Request $request
-     * @param int $languageId
      * @param int missionId
      * @return Illuminate\Database\Eloquent\Collection
      */
-    public function getRelatedMissions(Request $request, int $languageId, int $missionId): Collection
+    public function getRelatedMissions(Request $request, int $missionId): Collection
     {
         // Check mission id exists or not
         $mission = $this->mission->findOrFail($missionId);
@@ -960,7 +958,7 @@ class MissionRepository implements MissionInterface
             $query->where('status', '1');
             $query->where('default', '1');
         }])
-        ->with(['missionLanguage' => function ($query) use ($languageId) {
+        ->with(['missionLanguage' => function ($query) {
             $query->select(
                 'mission_language_id',
                 'mission_id',
@@ -1008,11 +1006,10 @@ class MissionRepository implements MissionInterface
      * Get mission detail
      *
      * @param Illuminate\Http\Request $request
-     * @param int $languageId
      * @param int $missionId
      * @return Illuminate\Database\Eloquent\Collection
      */
-    public function getMissionDetail(Request $request, int $languageId, int $missionId): Collection
+    public function getMissionDetail(Request $request, int $missionId): Collection
     {
         $mission = $this->mission->findOrFail($missionId);
         // Get  mission detail
@@ -1036,7 +1033,7 @@ class MissionRepository implements MissionInterface
             ->with(['favouriteMission'  => function ($query) use ($request) {
                 $query->Where('user_id', $request->auth->user_id);
             }])
-            ->with(['missionLanguage' => function ($query) use ($languageId) {
+            ->with(['missionLanguage' => function ($query) {
                 $query->select(
                     'mission_language_id',
                     'mission_id',

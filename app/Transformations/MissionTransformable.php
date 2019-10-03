@@ -60,9 +60,9 @@ trait MissionTransformable
         unset($mission['city']);
 
         $key = array_search($languageId, array_column($mission['missionLanguage']->toArray(), 'language_id'));
-        $language = ($key == false) ? $defaultTenantLanguage : $languageId;
+        $language = ($key === false) ? $defaultTenantLanguage : $languageId;
         $missionLanguage = $mission['missionLanguage']->where('language_id', $language)->first();
-
+        
         // Set title and description
         $mission['title'] = $missionLanguage->title ?? '';
         $mission['short_description'] = $missionLanguage->short_description ?? '';
