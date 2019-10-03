@@ -29,8 +29,8 @@ module.exports = {
     lintOnSave: false,
 
     devServer: {
-        host: "test.optimy.com",
-        port: 8080,
+        host: host,
+        port: port,
         https: false
     },
 

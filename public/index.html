@@ -34,25 +34,8 @@
             continue.</strong>
     </noscript>
     <div id="app"></div>
-
     <!-- built files will be auto injected -->
     <link rel="stylesheet" href="" id="customCss" />
-    <script type="text/javascript">
-        $(document).ready(function() {
-            let apiUrl = '<%= VUE_APP_API_ENDPOINT %>'
-            getDynamicCssUrl = apiUrl + 'app/custom-css';
-            $.ajax({
-                type: "GET",
-                url: getDynamicCssUrl,
-                cache: false,
-                success: function(result) {
-                    if (result.data.custom_css) {
-                        $("#customCss").attr("href", result.data.custom_css);
-                    }
-                }
-            });
-        });
-    </script>
 </body>
 
 </html>
