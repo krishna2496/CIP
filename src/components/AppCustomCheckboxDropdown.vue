@@ -9,7 +9,6 @@
 		<div class="chk-select-wrap dropdown-option-wrap" data-simplebar @click.stop>
 			<ul class="chk-select-options dropdown-option-list" v-if="checkList.length > 0">
 				<li v-for="(item , i) in checkList" v-bind:data-id="item.value" :key="i">
-					<!-- <b-form-checkbox name  v-model="items" @click.native ="filterTable" v-bind:value="item.value"> -->
 					<b-form-checkbox name v-model="items" @click.native="filterTable" v-bind:value="item.value">
 						{{item.text}}</b-form-checkbox>
 				</li>
@@ -53,67 +52,64 @@
 			},
 			handleClick(e) {
 				e.stopPropagation();
-				var profile_toggle = document.querySelector(
+				let profileToggle = document.querySelector(
 					".profile-menu .dropdown-toggle"
 				);
-				var profile_menu = document.querySelector(".profile-menu");
-				if (profile_menu != null) {
-					if (profile_menu.classList.contains("show")) {
-						profile_toggle.click();
+				let profileMenu = document.querySelector(".profile-menu");
+				if (profileMenu != null) {
+					if (profileMenu.classList.contains("show")) {
+						profileToggle.click();
 					}
 				}
-				var notification_btn = document.querySelector(
+				let notificationBtn = document.querySelector(
 					".notification-menu .nav-link .btn-notification"
 				);
-				var notification_popover = document.querySelector(
+				let notificationPopover = document.querySelector(
 					".notification-popover"
 				);
-				if (notification_popover != null) {
-					notification_btn.click();
+				if (notificationPopover != null) {
+					notificationBtn.click();
 				}
 
 				e.target.parentNode.classList.toggle("dropdown-open");
-				var dropdownList = document.querySelectorAll(".dropdown-open");
-				for (var i = 0; i < dropdownList.length; ++i) {
+				let dropdownList = document.querySelectorAll(".dropdown-open");
+				for (let i = 0; i < dropdownList.length; ++i) {
 					if (dropdownList[i] != e.target.parentNode) {
 						dropdownList[i].classList.remove("dropdown-open");
 					}
 				}
-				var simplebarOffset = e.target.parentNode.querySelector(".simplebar-offset");
+				let simplebarOffset = e.target.parentNode.querySelector(".simplebar-offset");
 				if (simplebarOffset != null && window.innerWidth > 991) {
-					var simplebarOffset_width = parseInt(window.getComputedStyle(simplebarOffset).getPropertyValue(
+					let simplebarOffset_width = parseInt(window.getComputedStyle(simplebarOffset).getPropertyValue(
 						"width"));
-					var simplebarWrapper = simplebarOffset.parentNode.parentNode;
+					let simplebarWrapper = simplebarOffset.parentNode.parentNode;
 					simplebarWrapper.style.width = simplebarOffset_width + "px";
-
-					var dropdown_list = e.target.parentNode;
-					var dropdown_list_width = parseInt(window.getComputedStyle(dropdown_list).getPropertyValue("width"));
-					var optionlist_wrap = dropdown_list.querySelector(".dropdown-option-wrap");
-					var optionlist = optionlist_wrap.querySelector(".dropdown-option-list");
+					let dropdownList = e.target.parentNode;
+					let dropdownListWidth = parseInt(window.getComputedStyle(dropdownList).getPropertyValue("width"));
+					let optionlistWrap = dropdownList.querySelector(".dropdown-option-wrap");
+					let optionlist = optionlistWrap.querySelector(".dropdown-option-list");
 					if (optionlist != null) {
-						var optionlist_width = parseInt(window.getComputedStyle(optionlist).getPropertyValue("width"));
-
-						var minwidth_style = dropdown_list.querySelector(".simplebar-offset");
-						if (dropdown_list_width > optionlist_width) {
+						let optionlistWidth = parseInt(window.getComputedStyle(optionlist).getPropertyValue("width"));
+						let minwidth_style = dropdownList.querySelector(".simplebar-offset");
+						if (dropdownListWidth > optionlistWidth) {
 							minwidth_style.setAttribute("style", "left: 0 !important");
 						}
 					}
-					 setTimeout(function(){
-			  	var dropdown_list_child = dropdown_list.childNodes[1];
-          		var optionlist_height = parseInt(window.getComputedStyle(optionlist).getPropertyValue("height"));
-				var dropdown_list_height = parseInt(window.getComputedStyle(dropdown_list_child).getPropertyValue("height"));
-				var minheight_style = dropdown_list.querySelector(".dropdown-option-wrap");
-		    	if (dropdown_list_height > optionlist_height){
-            		minheight_style.setAttribute("style", "overflow-x:hidden");
-				  }
-			});
+					setTimeout(() => {
+						let dropdownListChild = dropdownList.childNodes[1];
+						let optionlistHeight = parseInt(window.getComputedStyle(optionlist).getPropertyValue("height"));
+						let dropdownListHeight = parseInt(window.getComputedStyle(dropdownListChild).getPropertyValue("height"));
+						let minHeightStyle = dropdownList.querySelector(".dropdown-option-wrap");
+						if (dropdownListHeight > optionlistHeight){
+							minHeightStyle.setAttribute("style", "overflow-x:hidden");
+						}
+					});
 				}
 			}
 		},
 		watch: {
 			items: function (val) {
-
-				var selectedData = []
+				let selectedData = []
 				selectedData['selectedVal'] = val.join(',');
 				selectedData['fieldId'] = this.fieldId;
 				this.$emit("updateCall", selectedData);
@@ -124,10 +120,10 @@
 		},
 		created() {
 			this.languageData = JSON.parse(store.state.languageLabel);
-			setTimeout(function () {
-				var selectDropdown = document.querySelectorAll('.select-dropdown');
+			setTimeout(() => {
+				let selectDropdown = document.querySelectorAll('.select-dropdown');
 				window.addEventListener("resize", function () {
-					for (var i = 0; i < selectDropdown.length; i++) {
+					for (let i = 0; i < selectDropdown.length; i++) {
 						selectDropdown[i].classList.remove('dropdown-open');
 					}
 				});

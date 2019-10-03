@@ -5,7 +5,7 @@ export default async(data) => {
     // Mission add to favorite or remove
     let responseData = {}
     responseData.error = false;
-    var defaultLanguage = '';
+    let defaultLanguage = '';
     if (store.state.defaultLanguage !== null) {
         defaultLanguage = (store.state.defaultLanguage).toLowerCase();
     }

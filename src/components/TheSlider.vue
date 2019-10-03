@@ -36,10 +36,10 @@
 		methods: {
 			getTitle: (sliderDetail) => {
 				if (typeof sliderDetail !== 'undefined') {
-					var translations = JSON.parse(JSON.stringify(sliderDetail)).translations;
+					let translations = JSON.parse(JSON.stringify(sliderDetail)).translations;
 					//Fetch slider title by language
 					if (translations) {
-						var filteredObj = translations.filter(function (item, i) {
+						let filteredObj = translations.filter( (item, i) => {
 							if (item.lang === store.state.defaultLanguage.toLowerCase()) {
 								return translations[i].slider_title;
 							}
@@ -53,10 +53,10 @@
 			getDescription: (sliderDetail) => {
 
 				if (typeof sliderDetail !== 'undefined') {
-					var translations = JSON.parse(JSON.stringify(sliderDetail)).translations;
+					let translations = JSON.parse(JSON.stringify(sliderDetail)).translations;
 					// Fetch slider description by language			
 					if (translations) {
-						var filteredObj = translations.filter(function (item, i) {
+						let filteredObj = translations.filter( (item, i) => {
 							if (item.lang === store.state.defaultLanguage.toLowerCase()) {
 								return translations[i].slider_description;
 							}

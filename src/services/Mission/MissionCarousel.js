@@ -3,7 +3,7 @@ import axios from 'axios'
 
 export default async(missionId) => {
     let responseData = {};
-    var url = process.env.VUE_APP_API_ENDPOINT + "app/mission-media/" + missionId
+    let url = process.env.VUE_APP_API_ENDPOINT + "app/mission-media/" + missionId
     await axios({
             url: url,
             method: 'get',
@@ -20,7 +20,7 @@ export default async(missionId) => {
             }
 
         })
-        .catch(function(error) {
+        .catch(function() {
             responseData.error = true;
         });
     return responseData;

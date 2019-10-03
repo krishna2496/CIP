@@ -1,17 +1,16 @@
 import axios from 'axios'
 import store from '../../store'
-import moment from 'moment';
 
 export default async(data) => {
     let responseData = {
         'error': true
     };
 
-    var defaultLanguage = '';
+    let defaultLanguage = '';
     if (store.state.defaultLanguage !== null) {
         defaultLanguage = (store.state.defaultLanguage).toLowerCase();
     }
-    var url = process.env.VUE_APP_API_ENDPOINT + "app/timesheet/submit";
+    let url = process.env.VUE_APP_API_ENDPOINT + "app/timesheet/submit";
 
     await axios({
             url: url,

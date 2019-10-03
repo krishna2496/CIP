@@ -1,23 +1,18 @@
 <template>
-	<div v-bind:class="{
+	<div v-if="optionList != null && optionList.length > 0" v-bind:class="{
         'custom-dropdown' :true,
         'select-dropdown':true,
-        'dropdown-with-counter' : true,
-        'no-list-item' : optionList.length > 0 ? false : true
+        'is-invalid' : errorClass
       }">
 		<span class="select-text" @click="handleClick">{{defaultText}}</span>
-		<div class="option-list-wrap dropdown-option-wrap" data-simplebar
-			v-if="optionList != null && optionList.length > 0">
+		<div class="option-list-wrap dropdown-option-wrap " data-simplebar>
 			<ul class="option-list dropdown-option-list" v-if="translationEnable == 'false'">
-				<li class="has-count" v-for="(item,index) in optionList" v-bind:data-id="item[1].id" :key="index"
-					@click="handleSelect">
-					{{item[1].title}}
-					<span class="counter">{{item[1].mission_count}}</span>
-				</li>
+				<li v-for="(item ,index) in optionList" v-bind:data-id="item.value" :key=index @click="handleSelect">
+					{{item.text}}</li>
 			</ul>
 			<ul class="option-list dropdown-option-list" v-else>
-				<li v-for="(item,index) in optionList" v-bind:data-id="item[0]" :key="index" @click="handleSelect">
-					{{`${languageData}.label.${item[1]}`}}</li>
+				<li v-for="(item, index) in optionList" v-bind:data-id="item.value" :key=index @click="handleSelect">
+					{{languageData.label[item.text]}}</li>
 			</ul>
 		</div>
 	</div>
@@ -26,36 +21,38 @@
 <script>
 	import store from '../store';
 	export default {
-		name: "AppFilterDropdown",
+		name: "AppCustomDropdown",
 		components: {},
 		props: {
 			optionList: Array,
 			defaultText: String,
 			translationEnable: String,
+			errorClass: Boolean,
+			fieldId: Number
 		},
 		data() {
 			return {
 				defaultTextVal: this.defaultText,
-				languageData: [],
+				languageData: []
 			};
 		},
 		mounted() {},
 		methods: {
 			handleSelect(e) {
 				let selectedData = []
-				selectedData['selectedVal'] = e.target.innerHTML
+				selectedData['selectedVal'] = e.target.innerHTML;
 				selectedData['selectedId'] = e.target.dataset.id;
+				selectedData['fieldId'] = this.fieldId;
 				this.$emit("updateCall", selectedData);
 			},
-
 			handleClick(e) {
 				e.stopPropagation();
 				let profileToggle = document.querySelector(
 					".profile-menu .dropdown-toggle"
 				);
-				let profile_menu = document.querySelector(".profile-menu");
-				if (profile_menu != null) {
-					if (profile_menu.classList.contains("show")) {
+				let profileMenu = document.querySelector(".profile-menu");
+				if (profileMenu != null) {
+					if (profileMenu.classList.contains("show")) {
 						profileToggle.click();
 					}
 				}
@@ -94,15 +91,15 @@
 							minwidthStyle.setAttribute("style", "left: 0 !important");
 						}
 					}
-					setTimeout(() => {
-						let dropdownListChild = dropdownList.childNodes[1];
-						let optionListHeight = parseInt(window.getComputedStyle(optionlist).getPropertyValue(
+					setTimeout( () =>{
+						let dropDownListChild = dropdownList.childNodes[1];
+						let optionlistHeight = parseInt(window.getComputedStyle(optionlist).getPropertyValue(
 							"height"));
-						let dropdownListHeight = parseInt(window.getComputedStyle(dropdownListChild)
+						let dropdownListHeight = parseInt(window.getComputedStyle(dropDownListChild)
 							.getPropertyValue("height"));
-						let minheightStyle = dropdownList.querySelector(".dropdown-option-wrap");
-						if (dropdownListHeight > optionListHeight) {
-							minheightStyle.setAttribute("style", "overflow-x:hidden");
+						let minHeightStyle = dropdownList.querySelector(".dropdown-option-wrap");
+						if (dropdownListHeight > optionlistHeight) {
+							minHeightStyle.setAttribute("style", "overflow-x:hidden");
 						}
 					}, 500);
 				}
@@ -113,7 +110,7 @@
 		},
 		created() {
 			this.languageData = JSON.parse(store.state.languageLabel);
-			setTimeout( () => {
+			setTimeout(() => {
 				let selectDropdown = document.querySelectorAll('.select-dropdown');
 				window.addEventListener("resize", function () {
 					for (let i = 0; i < selectDropdown.length; i++) {

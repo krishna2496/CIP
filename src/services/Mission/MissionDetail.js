@@ -3,13 +3,13 @@ import axios from 'axios'
 
 export default async(missionId) => {
     let responseData = {};
-    var defaultLanguage = '';
+    let defaultLanguage = '';
 
     if (store.state.defaultLanguage !== null) {
         defaultLanguage = (store.state.defaultLanguage).toLowerCase();
     }
     document.body.classList.add("loader-enable");
-    var url = process.env.VUE_APP_API_ENDPOINT + "app/mission/" + missionId
+    let url = process.env.VUE_APP_API_ENDPOINT + "app/mission/" + missionId
     await axios({
             url: url,
             method: 'get',
@@ -26,7 +26,7 @@ export default async(missionId) => {
             }
             document.body.classList.remove("loader-enable");
         })
-        .catch(function(error) {
+        .catch(function() {
             responseData.error = true;
             document.body.classList.remove("loader-enable");
         });

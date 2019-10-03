@@ -22,10 +22,10 @@
 		},
 		methods: {
 			onClick(event) {
-				var dropdownList = document.querySelectorAll(".dropdown-open");
-				var body = document.querySelectorAll("body, html");
+				let dropdownList = document.querySelectorAll(".dropdown-open");
+				let body = document.querySelectorAll("body, html");
 				if (dropdownList.length > 0) {
-					for (var i = 0; i < dropdownList.length; ++i) {
+					for (let i = 0; i < dropdownList.length; ++i) {
 						dropdownList[i].classList.remove("dropdown-open");
 					}
 				}
@@ -37,7 +37,7 @@
 				}
 				if (screen.width < 992) {
 					body.forEach(function (e) {
-						var breadcrumbDropdown = document.querySelector(
+						let breadcrumbDropdown = document.querySelector(
 							".breadcrumb-dropdown-wrap"
 						);
 						if (document.querySelector(".breadcrumb") != null) {
@@ -47,9 +47,9 @@
 				}
 			},
 			signinAdj() {
-				setTimeout(function () {
+				setTimeout(() => {
 					if (document.querySelector(".signin-form-wrapper") != null) {
-						var contentH = document.body.clientHeight;
+						let contentH = document.body.clientHeight;
 						document.querySelector(".signin-form-wrapper").style.minHeight =
 							contentH + "px";
 					}
@@ -57,9 +57,9 @@
 			},
 			handleScroll() {
 				if (document.querySelector(".inner-pages > header") != null) {
-					var body = document.querySelector("body");
-					var bheader = document.querySelector("header");
-					var bheader_top = bheader.offsetHeight;
+					let body = document.querySelector("body");
+					let bheader = document.querySelector("header");
+					let bheader_top = bheader.offsetHeight;
 					if (window.scrollY > bheader_top) {
 						body.classList.add("small-header");
 					} else {
@@ -73,7 +73,7 @@
 		},
 		created() {
 
-			var ua = navigator.userAgent.toLowerCase();
+			let ua = navigator.userAgent.toLowerCase();
 			if (ua.indexOf("safari") != -1) {
 				if (ua.indexOf("chrome") > -1) {
 					document.querySelector("body").classList.add("browser-chrome"); // Chrome
@@ -89,22 +89,22 @@
 		updated() {
 			window.scrollTo(0, 0);
 			this.signinAdj();
-			setTimeout(function () {
-				var selectorList = document.querySelectorAll(".nav-link");
-				var dropdownList = document.querySelectorAll(
+			setTimeout(() => {
+				let selectorList = document.querySelectorAll(".nav-link");
+				let dropdownList = document.querySelectorAll(
 					".custom-dropdown, .checkbox-select"
 				);
-				var notification_btn = document.querySelector(
+				let notification_btn = document.querySelector(
 					".notification-menu .nav-link .btn-notification"
 				);
-				var notification_menu = document.querySelector(
+				let notification_menu = document.querySelector(
 					".notification-menu .nav-link"
 				);
-				for (var i = 0; i < selectorList.length; i++) {
+				for (let i = 0; i < selectorList.length; i++) {
 					if (notification_menu != selectorList[i]) {
-						var selector_click = selectorList[i];
+						let selector_click = selectorList[i];
 						selector_click.addEventListener("click", function () {
-							var notification_popover = document.querySelector(
+							let notification_popover = document.querySelector(
 								".notification-popover"
 							);
 							if (notification_popover != null) {
@@ -124,7 +124,7 @@
 					});
 				});
 
-				var pagination_item = document.querySelectorAll(
+				let pagination_item = document.querySelectorAll(
 					".pagination-block .page-item .page-link"
 				);
 				pagination_item.forEach(function (pageLink) {
@@ -134,7 +134,7 @@
 				});
 
 				// favourite-icon clickable
-				var btn_active = document.querySelectorAll(".favourite-icon");
+				let btn_active = document.querySelectorAll(".favourite-icon");
 				btn_active.forEach(function (event) {
 					event.addEventListener("click", function () {
 						event.classList.toggle("active");

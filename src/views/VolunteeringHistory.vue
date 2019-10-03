@@ -103,13 +103,10 @@
 	import AppCustomDropdown from "../components/AppCustomDropdown";
 	import DashboardBreadcrumb from "../components/DashboardBreadcrumb";
 	import HorizontalChart from "../components/HorizontalChart";
-
 	import VolunteerHistoryHours from "../services/VolunteerHistory/VolunteerHistoryHours";
-
 	import VolunteerMissionHours from "../services/VolunteerHistory/VolunteerMissionHours";
 	import VolunteerMissionGoals from "../services/VolunteerHistory/VolunteerMissionGoals";
 	import VolunteeringRequest from "../components/VolunteeringRequest";
-
 	import store from "../store";
 	import Chart from "chart.js";
 
@@ -159,9 +156,9 @@
 			};
 		},
 		mounted() {			 
-			var currentYear = new Date().getFullYear();
-			var yearsList = [];
-			for (var index = currentYear; index > (currentYear - 5); index--) {
+			let currentYear = new Date().getFullYear();
+			let yearsList = [];
+			for (let index = currentYear; index > (currentYear - 5); index--) {
 				yearsList.push([index, index]);
 			}
 			this.skillYearList = yearsList;
@@ -195,8 +192,7 @@
 			},
 			getVolunteerMissionsHours(currentPage) {
 				VolunteerMissionHours(currentPage).then(response => {
-					var _this = this;
-					_this.timeMissionTimesheetItems = [];
+					this.timeMissionTimesheetItems = [];
 					if (response.data) {
 						let data = response.data;
 						let mission = this.languageData.label.mission;
@@ -205,15 +201,15 @@
 						let organisation = this.languageData.label.organisation;
 
 						if (response.pagination) {
-							_this.timeMissionTotalRow = response.pagination.total;
-							_this.timeMissionCurrentPage = response.pagination.current_page
-							_this.hourRequestPerPage = response.pagination.per_page;
-							_this.hourRequestNextUrl = response.pagination.next_url;
-							_this.timeMissionTotalPage = response.pagination.total_pages;
+							this.timeMissionTotalRow = response.pagination.total;
+							this.timeMissionCurrentPage = response.pagination.current_page
+							this.hourRequestPerPage = response.pagination.per_page;
+							this.hourRequestNextUrl = response.pagination.next_url;
+							this.timeMissionTotalPage = response.pagination.total_pages;
 						}
 
-						data.filter(function (item, index) {
-							_this.timeMissionTimesheetItems.push({
+						data.filter( (item, index) => {
+							this.timeMissionTimesheetItems.push({
 								[mission]: item.title,
 								[time]: item.time,
 								[hours]: item.hours,
@@ -226,7 +222,7 @@
 			},
 			getVolunteerMissionsGoals(currentPage) {
 				VolunteerMissionGoals(currentPage).then(response => {
-					var _this = this;
+					let _this = this;
 					_this.goalMissionTimesheetItems = [];
 					if (response.data) {
 						let data = response.data;
@@ -241,7 +237,7 @@
 							_this.goalMissionTotalPage = response.pagination.total_pages;
 						}
 
-						data.filter(function (item, index) {
+						data.filter( (item, index) => {
 							_this.goalMissionTimesheetItems.push({
 								[mission]: item.title,
 								[action]: item.action,
@@ -255,7 +251,7 @@
 			}
 		},
 		created() {
-			var _this = this;
+
 			this.languageData = JSON.parse(store.state.languageLabel);
 			this.timeMissionTimesheetLabel = this.languageData.label.volunteering_hours
 			this.goalMissionTimesheetLabel = this.languageData.label.volunteering_goals
@@ -270,8 +266,8 @@
 				this.languageData.label.organisation,
 			]
 
-			timeRequestFieldArray.filter(function (data, index) {
-				_this.timeMissionTimesheetFields.push({
+			timeRequestFieldArray.filter( (data, index) => {
+				this.timeMissionTimesheetFields.push({
 					"key": data
 				})
 			});
@@ -282,8 +278,8 @@
 				this.languageData.label.organisation,
 			]
 
-			goalRequestFieldArray.filter(function (data, index) {
-				_this.goalMissionTimesheetFields.push({
+			goalRequestFieldArray.filter((data, index) => {
+				this.goalMissionTimesheetFields.push({
 					"key": data
 				})
 			});
@@ -291,7 +287,7 @@
 		computed: {
 			getThemeLabels: {
 				get: function () {
-					var labelArray = [];
+					let labelArray = [];
 					if (this.perHourApiDataTheme.length > 0) {
 						this.perHourApiDataTheme.map(function (data) {
 							labelArray.push(data.theme_name);
@@ -304,7 +300,7 @@
 			},
 			getThemeValue: {
 				get: function () {
-					var valueArray = [];
+					let valueArray = [];
 					if (this.perHourApiDataTheme.length > 0) {
 						this.perHourApiDataTheme.map(function (data) {
 							valueArray.push((data.total_minutes / 60).toFixed(2));
@@ -317,7 +313,7 @@
 			},
 			getSkillLabels: {
 				get: function () {
-					var labelArray = [];
+					let labelArray = [];
 					if (this.perHourApiDataSkill.length > 0) {
 						this.perHourApiDataSkill.map(function (data) {
 							labelArray.push(data.skill_name);
@@ -330,7 +326,7 @@
 			},
 			getSkillValue: {
 				get: function () {
-					var valueArray = [];
+					let valueArray = [];
 					if (this.perHourApiDataSkill.length > 0) {
 						this.perHourApiDataSkill.map(function (data) {
 							valueArray.push((data.total_minutes / 60).toFixed(2));

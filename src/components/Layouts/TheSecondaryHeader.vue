@@ -124,9 +124,9 @@
             };
         },
         mounted() {
-            var mobile_filter = document.querySelector(".filter-block");
-            if(mobile_filter != null){
-            mobile_filter.addEventListener("click", function (e) {
+            let mobileFilter = document.querySelector(".filter-block");
+            if(mobileFilter != null){
+            mobileFilter.addEventListener("click", function (e) {
                 if (window.innerWidth < 992) {
                     e.stopPropagation();
                 }
@@ -157,7 +157,7 @@
 
             handleFocus() {
                 this.searchPlaceHolder = '';
-                var b_header = document.querySelector(".bottom-header");
+                let b_header = document.querySelector(".bottom-header");
                 b_header.classList.add("active");
             },
 
@@ -171,7 +171,7 @@
                     this.isCityChange = false;
                     this.isThemeChange = false;
                     let selectedData = store.state.cityId.toString().split(',');
-                    var filteredCity = selectedData.filter(function (value, index, arr) {
+                    let filteredCity = selectedData.filter((value, index, arr) =>  {
                         return value != data.selectedId;
                     });
                     this.selectedCity = filteredCity;
@@ -183,7 +183,7 @@
                     this.isCityChange = false;
                     this.isThemeChange = false;
                     let selectedData = store.state.themeId.toString().split(',');
-                    var filteredTheme = selectedData.filter(function (value, index, arr) {
+                    let filteredTheme = selectedData.filter((value, index, arr) => {
                         return value != data.selectedId;
                     });
                     this.selectedSkill = [];
@@ -192,7 +192,7 @@
                 }
                 if (data.selectedType == "skill") {
                     let selectedData = store.state.skillId.toString().split(',');
-                    var filteredSkill = selectedData.filter(function (value, index, arr) {
+                    let filteredSkill = selectedData.filter( (value, index, arr) => {
                         return value != data.selectedId;
                     });
                     this.selectedSkill = filteredSkill;
@@ -201,8 +201,8 @@
 
             handleBlur() {
                 this.searchPlaceHolder = this.languageData.label.search + ' ' + this.languageData.label.mission;
-                var b_header = document.querySelector(".bottom-header");
-                var input_edit = document.querySelector(".search-block input");
+                let b_header = document.querySelector(".bottom-header");
+                let input_edit = document.querySelector(".search-block input");
                 b_header.classList.remove("active");
                 if (input_edit.value.length > 0) {
                     b_header.classList.add("active");
@@ -212,14 +212,14 @@
             },
 
             handleFilter() {
-                var body = document.querySelectorAll("body, html");
+                let body = document.querySelectorAll("body, html");
                 body.forEach(function (e) {
                     e.classList.add("open-filter");
                 });
             },
 
             handleBack() {
-                var body = document.querySelectorAll("body, html");
+                let body = document.querySelectorAll("body, html");
                 body.forEach(function (e) {
                     e.classList.remove("open-filter");
                 });
@@ -232,20 +232,21 @@
                 } else {
                     returnData = [];
                 }
+
                 returnData.push('bottom-header')
-                var filterCount = document.querySelectorAll(
+                let filterCount = document.querySelectorAll(
                     ".filter-block .list-group-item"
                 ).length;
-                var bottomHeader = document.querySelector(".bottom-header");
+                let bottomHeader = document.querySelector(".bottom-header");
                 if (filterCount != null) {
                     if (filterCount == 3) {
                         returnData.push('three-filters')
                     } else if (filterCount == 2) {
-                    returnData.push('two-filters')
+                        returnData.push('two-filters')
                     } else if (filterCount == 1) {
-                    returnData.push('one-filter')
+                        returnData.push('one-filter')
                     }else if( filterCount == 0){
-                    returnData.push('zero-filter')
+                        returnData.push('zero-filter')
                     }
                 }
                 return returnData;
@@ -377,11 +378,11 @@
                     'theme': [],
                     'skill': []
                 }
-                var _this = this;
-                setTimeout(function () {
-                    _this.defautCity = _this.languageData.label.city,
-                        _this.defautTheme = _this.languageData.label.theme,
-                        _this.defautSkill = _this.languageData.label.skills
+                
+                setTimeout( () => {
+                    this.defautCity = this.languageData.label.city,
+                        this.defautTheme = this.languageData.label.theme,
+                        this.defautSkill = this.languageData.label.skills
                 }, 500)
 
                 this.selectedfilterParams.countryId = store.state.countryId;
@@ -413,7 +414,7 @@
 
                         if (store.state.countryId != '') {
                             if (this.countryList) {
-                                let selectedCountryData = this.countryList.filter(function (country) {
+                                let selectedCountryData = this.countryList.filter((country) => {
                                     if (store.state.countryId == country[1].id) {
                                         return country;
                                     }
@@ -459,7 +460,7 @@
             },
 
             clearFilter() {
-                var _this = this;
+                
                 this.selectedfilterParams.countryId = '';
                 this.defautCountry = this.languageData.label.country;
                 this.selectedfilterParams.cityId = '';
@@ -523,9 +524,9 @@
                 this.selectedfilterParams.search = '';
                 this.$parent.searchMissions(this.searchString, this.selectedfilterParams);
                 this.filterSearchListing();
-                var _this = this;
-                setTimeout(function () {
-                    _this.handleBlur()
+                
+                setTimeout(() => {
+                    this.handleBlur()
                 }, 200)
 
             },
@@ -576,8 +577,8 @@
                             }
                             if (store.state.countryId != '') {
                                 if (this.countryList) {
-                                    let selectedCountryData = this.countryList.filter(function (
-                                    country) {
+                                    let selectedCountryData = this.countryList.filter((
+                                    country) => {
                                         if (store.state.countryId == country[1].id) {
                                             return country;
                                         }
@@ -601,24 +602,21 @@
         },
         created() {
             this.languageData = JSON.parse(store.state.languageLabel);
+            
             this.searchPlaceHolder = this.languageData.label.search + ' ' + this.languageData.label.mission;
-
             this.quickAccessFilterSet = this.settingEnabled(constants.QUICK_ACCESS_FILTERS);
             this.isThemeDisplay = this.settingEnabled(constants.THEMES_ENABLED);
             this.isSkillDisplay = this.settingEnabled(constants.SKILLS_ENABLED);
             this.isCountrySelectionSet = this.settingEnabled(constants.IS_COUNTRY_SELECTION);
-            var _this = this;
             eventBus.$on('clearAllFilters', (message) => {
-                _this.clearFilter();
+                this.clearFilter();
             });
             eventBus.$on('setDefaultText', (message) => {
-                _this.defautCountry = this.languageData.label.country;
+                this.defautCountry = this.languageData.label.country;
             });
             eventBus.$on('setDefaultData', (message) => {
-                _this.filterListing();
+                this.filterListing();
             });
-
-
             // Fetch Filters
             this.filterListing();
             if (store.state.search != null) {
@@ -630,9 +628,8 @@
                 this.themeList = [];
                 this.skillList = [];
             }
-             var globalThis = this;
-            setTimeout(function() {
-                globalThis.handleFilterCount();
+            setTimeout(() => {
+                this.handleFilterCount();
             });
         }
     };

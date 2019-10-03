@@ -3,11 +3,11 @@ import store from '../../store'
 
 export default async(deletFile) => {
     let responseData = [];
-    var defaultLanguage = '';
+    let defaultLanguage = '';
     if (store.state.defaultLanguage !== null) {
         defaultLanguage = (store.state.defaultLanguage).toLowerCase();
     }
-    var url = process.env.VUE_APP_API_ENDPOINT + "app/timesheet/" + deletFile.timesheet_id + "/document/" + deletFile.document_id;
+    let url = process.env.VUE_APP_API_ENDPOINT + "app/timesheet/" + deletFile.timesheet_id + "/document/" + deletFile.document_id;
     await axios({
             url: url,
             method: 'DELETE',

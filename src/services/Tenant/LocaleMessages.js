@@ -3,7 +3,6 @@ import i18n from "../../i18n"
 import store from '../../store'
 
 const loadedLanguages = []
-var _this = this
 
 function setI18nLanguage(lang) {
     i18n.locale = lang
@@ -31,6 +30,6 @@ export default async(lang) => {
                 loadedLanguages.push(res.data.locale)
                 return Promise.resolve(setI18nLanguage(res.data.locale))
             }
-        }).catch(error => {});
+        })
     }
 }

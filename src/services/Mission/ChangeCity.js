@@ -6,7 +6,7 @@ export default async(countryId) => {
     let responseData = {}
     responseData.error = false;
     responseData.data = [];
-    var defaultLanguage = '';
+    let defaultLanguage = '';
     if (store.state.defaultLanguage !== null) {
         defaultLanguage = (store.state.defaultLanguage).toLowerCase();
     }
@@ -27,9 +27,8 @@ export default async(countryId) => {
                 });
             }
         })
-        .catch(function(error) {
+        .catch(function() {
             responseData.error = true;
-
         });
     return responseData;
 }

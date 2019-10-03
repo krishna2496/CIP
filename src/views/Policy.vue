@@ -13,7 +13,8 @@
                 <b-row>
                     <b-col lg="3" md="4" class="cms-nav">
                         <b-nav>
-                            <b-nav-item v-for="(item,key) in footerItems.pages[0].sections"
+                            <b-nav-item v-for="(item, key) in footerItems.pages[0].sections"
+                                :key=key
                                 v-scroll-to="{ el: '#block-'+key , offset :getOffset}">
                                 {{item.title}}
                             </b-nav-item>
@@ -21,7 +22,8 @@
                     </b-col>
                     <b-col lg="9" md="8">
                         <div class="cms-content cms-accordian" id="cms-content">
-                            <div class="cms-content-block" v-for="(item,key) in footerItems.pages[0].sections"
+                            <div class="cms-content-block" v-for="(item, key) in footerItems.pages[0].sections"
+                                :key=key
                                 :id="'block-'+key">
                                 <h2 v-b-toggle="'content-' + key" class="accordian-title">{{item.title}}</h2>
                                 <b-collapse :id="'content-'+key" class="accordian-content" accordion="my-accordion"
@@ -64,24 +66,24 @@
         methods: {
             // left menu sticky function
             handleScroll() {
-                var nav_ = document.querySelector(".cms-nav");
-                var nav_top = nav_.offsetTop;
-                var screen_height = document.body.clientHeight;
-                var header_height = document.querySelector("header").offsetHeight;
-                var footer_height = document.querySelector("footer").offsetHeight
-                var window_top = window.pageYOffset + (header_height + 1);
-                var nav_height = document.querySelector(".cms-nav .nav").offsetHeight;
-                var nav_bottom = nav_height + nav_top;
-                var footer_top = document.querySelector("footer").getBoundingClientRect()
+                let nav_ = document.querySelector(".cms-nav");
+                let navTop = nav_.offsetTop;
+                let screenHeight = document.body.clientHeight;
+                let headerHeight = document.querySelector("header").offsetHeight;
+                let footerHeight = document.querySelector("footer").offsetHeight
+                let windowTop = window.pageYOffset + (headerHeight + 1);
+                let navHeight = document.querySelector(".cms-nav .nav").offsetHeight;
+                let navBottom = navHeight + navTop;
+                let footerTop = document.querySelector("footer").getBoundingClientRect()
                     .top;
 
-                var content_height = document.querySelector('.cms-content').offsetHeight - parseInt(window
+                let contentHeight = document.querySelector('.cms-content').offsetHeight - parseInt(window
                     .getComputedStyle(document.querySelector('.cms-content'), null).getPropertyValue(
                         "padding-bottom"));
-                var scroll_height = screen_height - nav_top - footer_height + header_height;
+                let scroll_height = screenHeight - navTop - footerHeight + headerHeight;
                 if (screen.width > 767 && screen.width < 1025) {
-                    if (content_height > scroll_height) {
-                        if (window_top > nav_top) {
+                    if (contentHeight > scroll_height) {
+                        if (windowTop > navTop) {
                             nav_.classList.add("fixed");
                         } else {
                             nav_.classList.remove("fixed");
@@ -92,8 +94,8 @@
                 }
 
                 if (screen.width > 1024) {
-                    if (window_top > nav_top) {
-                        if (nav_bottom >= footer_top + 100) {
+                    if (windowTop > navTop) {
+                        if (navBottom >= footerTop + 100) {
                             nav_.classList.add("absolute");
                             nav_.classList.remove("fixed");
                         } else {
@@ -105,13 +107,13 @@
                     }
                 }
 
-                var link_list = document.querySelectorAll(".cms-nav .nav-item");
-                var block_list = document.querySelectorAll(".cms-content-block");
-                for (var i = 0; i < block_list.length; ++i) {
-                    if (block_list[i].getBoundingClientRect().top < header_height + 42) {
-                        for (var j = 0; j < link_list.length; j++) {
-                            var link_siblings = link_list[j].parentNode.childNodes;
-                            for (var k = 0; k < link_siblings.length; ++k) {
+                let link_list = document.querySelectorAll(".cms-nav .nav-item");
+                let block_list = document.querySelectorAll(".cms-content-block");
+                for (let i = 0; i < block_list.length; ++i) {
+                    if (block_list[i].getBoundingClientRect().top < headerHeight + 42) {
+                        for (let j = 0; j < link_list.length; j++) {
+                            let link_siblings = link_list[j].parentNode.childNodes;
+                            for (let k = 0; k < link_siblings.length; ++k) {
                                 link_siblings[k].childNodes[0].classList.remove("active");
                             }
                             link_siblings[i].childNodes[0].classList.add("active");
@@ -121,8 +123,8 @@
             },
 
             getOffset() {
-                var header_height = document.querySelector("header").offsetHeight;
-                return -header_height;
+                let headerHeight = document.querySelector("header").offsetHeight;
+                return -headerHeight;
             },
             //List cms pages
             async policyListing(slug) {

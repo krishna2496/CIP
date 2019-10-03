@@ -9,7 +9,7 @@
                     <i class="close" @click="close()" v-b-tooltip.hover :title="languageData.label.close"></i>
                     <h5 class="modal-title">{{languageData.label.add_your_skills}}</h5>
                 </template>
-                <b-alert show variant="danger" dismissible v-model="showErrorDiv">
+                <b-alert show letiant="danger" dismissible v-model="showErrorDiv">
                     {{ message }}
                 </b-alert>
                 <div class="multiselect-options">
@@ -73,21 +73,20 @@
             };
         },
         mounted() {
-            var a = this.$refs.skillModal;
+            let skillModel = this.$refs.skillModal;
         },
         methods: {
             handleclick() {
-                var fromlist_group = document.querySelectorAll(".fromlist-group li");
-                for (var i = 0; i < fromlist_group.length; ++i) {
-                    fromlist_group[i].addEventListener("click", this.handleSelected);
+                let fromListGroup = document.querySelectorAll(".fromlist-group li");
+                for (let i = 0; i < fromListGroup.length; ++i) {
+                    fromListGroup[i].addEventListener("click", this.handleSelected);
                 }
             },
             showSkillModal: function () {
-                var _this = this
-                var filteredObj = this.toList.filter(function (toItem, toIndex) {
-                    var filteredObj = _this.fromList.filter(function (fromItem, fromIndex) {
+                let filteredObj = this.toList.filter((toItem, toIndex) => {
+                    let filteredObj = this.fromList.filter( (fromItem, fromIndex) => {
                         if (toItem.id == fromItem.id) {
-                            _this.fromList.splice(fromIndex, 1);
+                            this.fromList.splice(fromIndex, 1);
                         }
                     });
                 });
@@ -110,11 +109,10 @@
             // Add to list
             addToList(id) {
                 this.closeClick = true;
-                var _this = this;
                 if (this.toList.length <= 14) {
-                    var filteredObj = this.fromList.filter(function (item, i) {
+                    let filteredObj = this.fromList.filter( (item, i) => {
                         if (item.id == id) {
-                            _this.fromList.splice(i, 1);
+                            this.fromList.splice(i, 1);
                             return item;
                         }
                     });
@@ -122,21 +120,18 @@
                     this.showErrorDiv = false
                 } else {
                     this.showErrorDiv = true,
-                        this.message = this.languageData.errors.max_skill_selection
+                    this.message = this.languageData.errors.max_skill_selection
                 }
             },
-
             // Remove data from to list 
             removeFromToList(id) {
                 this.closeClick = true;
-                var _this = this;
-                var filteredObj = this.toList.filter(function (item, i) {
+                let filteredObj = this.toList.filter( (item, i) => {
                     if (item.id == id) {
-                        _this.toList.splice(i, 1);
+                        this.toList.splice(i, 1);
                         return item;
                     }
                 });
-                // this.fromList
                 this.fromList.push(filteredObj[0])
                 this.fromList.sort();
                 this.fromList.sort(function (first, next) {
@@ -154,9 +149,6 @@
                     this.dataToList = [];
                     this.$emit("resetData");
                 }
-                // this.fromList = [];
-                // this.toList = [],
-                // this.$emit("resetData");
                 this.closeClick = false;
             },
             saveSkill() {
@@ -168,14 +160,8 @@
                 this.closeClick = false;
             }
         },
-
-        updated() {},
-        watch: {
-
-        },
         created() {
             this.languageData = JSON.parse(store.state.languageLabel);
-
         }
     };
 </script>
