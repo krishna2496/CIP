@@ -135,13 +135,13 @@ class StoryRepository implements StoryInterface
     }
 	
 	/**
-	 * Display a listing of specified resources.
+	 * Display a listing of specified resources with pagination.
 	 *
 	 * @param Illuminate\Http\Request $request
 	 * @param int $userId
 	 * @return \Illuminate\Pagination\LengthAwarePaginator
 	 */
-	public function getUserStories(Request $request,int $userId): LengthAwarePaginator
+	public function getUserStoriesWithPagination(Request $request,int $userId): LengthAwarePaginator
 	{
 		$languageId = $this->languageHelper->getLanguageId($request);
 		
@@ -195,7 +195,7 @@ class StoryRepository implements StoryInterface
     /**
      * Do copy of declined story data
      * 
-     * @param Story $story
+     * @param int $storyId
      * @return int $newStoryId
      */
     public function doCopyDeclinedStory(int $storyId): int
@@ -219,14 +219,24 @@ class StoryRepository implements StoryInterface
     	
     	return $newStoryId;
     }
-
+    
     /**
-     * Used for get the list of all story data
-     * @return Story
+     * Display a listing of specified resources without pagination.
+     *
+     * @param Illuminate\Http\Request $request
+     * @param int $userId
+     * @return Object
      */
-    public function gatAllStoryList(): Object
+    public function getUserStoriesWithOutPagination(Request $request,int $userId): Object
     {
-    	return $this->story->get();
+    	$languageId = $this->languageHelper->getLanguageId($request);
+    
+    	$userStoryQuery = $this->story->select('story_id','mission_id','title','description','status')
+    	->with(['mission','storyMedia','mission.missionLanguage' => function ($query) use ($languageId) {
+    		$query->select('mission_language_id', 'mission_id', 'title','short_description')
+    		->where('language_id', $languageId);
+    	}])->where('user_id',$userId);
+    	return $userStoryQuery->get();
     }
 }
 

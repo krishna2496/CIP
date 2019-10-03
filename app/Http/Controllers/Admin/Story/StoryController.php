@@ -70,7 +70,7 @@ class StoryController extends Controller
             );
         }
         
-        $userStories = $this->storyRepository->getUserStories($request, $userId);
+        $userStories = $this->storyRepository->getUserStoriesWithPagination($request, $userId);
         $responceData = [];
         $storyTransformed = $userStories
         ->getCollection()

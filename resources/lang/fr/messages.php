@@ -267,6 +267,8 @@ return [
 
         // For story module
         'ERROR_STORY_NOT_FOUND' => 'Histoire non trouvÃ©e dans le systÃ¨me',
+    	'ERROR_PUBLISHED_STORY_NOT_FOUND' => 'Histoire publiée non trouvée dans le système',
+    	'ERROR_DECLINED_STORY_NOT_FOUND' => 'Vous ne pouvez pas copier l\'histoire, en raison de cette histoire n\'est pas refusée',
     ],
 
     /**

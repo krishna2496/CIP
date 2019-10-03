@@ -145,8 +145,8 @@ class StoryController extends Controller
     		return $this->responseHelper->success($apiStatus, $apiMessage, $storyTransform);
     	} catch (ModelNotFoundException $e) {
     		return $this->modelNotFound(
-    			config('constants.error_codes.ERROR_STORY_NOT_FOUND'),
-    			trans('messages.custom_error_message.ERROR_STORY_NOT_FOUND')
+    			config('constants.error_codes.ERROR_PUBLISHED_STORY_NOT_FOUND'),
+    			trans('messages.custom_error_message.ERROR_PUBLISHED_STORY_NOT_FOUND')
     		);
     	}
     }
@@ -174,8 +174,8 @@ class StoryController extends Controller
     		return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);   		
     	} catch (ModelNotFoundException $e) {
     		return $this->modelNotFound(
-    			config('constants.error_codes.ERROR_STORY_NOT_FOUND'),
-    			trans('messages.custom_error_message.ERROR_STORY_NOT_FOUND')
+    			config('constants.error_codes.ERROR_DECLINED_STORY_NOT_FOUND'),
+    			trans('messages.custom_error_message.ERROR_DECLINED_STORY_NOT_FOUND')
     		);
     	}
     }
@@ -189,23 +189,21 @@ class StoryController extends Controller
      */
     public function exportStory(Request $request): Object
     {
-    	//get story data
-    	$storyList = $this->storyRepository->gatAllStoryList();
-    
+    	//get login user story data
+    	$storyList = $this->storyRepository->getUserStoriesWithOutPagination($request,$request->auth->user_id);
     	if ($storyList->count()) {
     		$fileName = config('constants.export_story_file_names.STORY_XLSX');
     
     		$excel = new ExportCSV($fileName);
     
     		$headings = [
-    				trans('messages.export_story_headings.STORY_TITLE'),
-    				trans('messages.export_story_headings.STORY_DESCRIPTION'),
-    				trans('messages.export_story_headings.STORY_STATUS'),
-    				trans('messages.export_story_headings.PUBLISH_DATE'),
+    			trans('messages.export_story_headings.STORY_TITLE'),
+    			trans('messages.export_story_headings.STORY_DESCRIPTION'),
+    			trans('messages.export_story_headings.STORY_STATUS'),
+    			trans('messages.export_story_headings.PUBLISH_DATE'),
     		];
-    
     		$excel->setHeadlines($headings);
-    		//dump($storyList->toArray());
+    		
     		foreach ($storyList as $story) {
     			$excel->appendRow([
     					$story->title,

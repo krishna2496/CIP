@@ -26,13 +26,13 @@ interface StoryInterface
     public function delete(int $storyId, int $userId): bool;
 	
 	/**
-	 * Display a user story listing.
+	 * Display a user story listing with pagination.
 	 *
 	 * @param Illuminate\Http\Request $request
 	 * @param int $userId
 	 * @return \Illuminate\Pagination\LengthAwarePaginator
 	 */
-	public function getUserStories(Request $request, int $userId): LengthAwarePaginator;
+	public function getUserStoriesWithPagination(Request $request, int $userId): LengthAwarePaginator;
 
 	/**
 	 * Get story details.
@@ -62,8 +62,12 @@ interface StoryInterface
 	public function doCopyDeclinedStory(int $storyId): int;
 	
 	/**
-	 * Used for get the list of all story data
-	 * @return Story
+	 * Display a listing of specified resources without pagination.
+	 *
+	 * @param Illuminate\Http\Request $request
+	 * @param int $userId
+	 * @return Object
 	 */
-	public function gatAllStoryList(): Object;
+	public function getUserStoriesWithOutPagination(Request $request,int $userId): Object;
+
 }

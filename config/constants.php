@@ -360,8 +360,8 @@ return [
 
         'ERROR_STORY_REQUIRED_FIELDS_EMPTY' => '700001',
         'ERROR_STORY_NOT_FOUND' => '700002',
-        
-              
+    	'ERROR_PUBLISHED_STORY_NOT_FOUND' => '700003',
+    	'ERROR_DECLINED_STORY_NOT_FOUND' => '700004',
                 
         'ERROR_OCCURRED' => '999999',
         'ERROR_INVALID_JSON' => '900000',

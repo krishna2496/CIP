@@ -272,6 +272,8 @@ return [
 
         // For story module
         'ERROR_STORY_NOT_FOUND' => 'Story not found in the system',
+    	'ERROR_PUBLISHED_STORY_NOT_FOUND' => 'Published story not found in the system',
+    	'ERROR_DECLINED_STORY_NOT_FOUND' => 'You can not copy story, due to this is not declined story',
     ],
 
     /**
