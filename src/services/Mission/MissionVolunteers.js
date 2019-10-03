@@ -1,16 +1,18 @@
 import store from '../../store'
 import axios from 'axios'
+import constants from '../../constant';
 
 export default async(data) => {
     let responseData = {};
-    var defaultLanguage = '';
-    var missionId = data.mission_id;
+    let defaultLanguage = '';
+    let missionId = data.mission_id;
+    let perPage = constants.RECENT_VOLUNTEERES_PER_PAGE
 
     if (store.state.defaultLanguage !== null) {
         defaultLanguage = (store.state.defaultLanguage).toLowerCase();
     }
 
-    var url = process.env.VUE_APP_API_ENDPOINT + "app/mission/" + missionId + "/volunteers?page=" + data.page + "&perPage=" + 12
+    let url = process.env.VUE_APP_API_ENDPOINT + "app/mission/" + missionId + "/volunteers?page=" + data.page + "&perPage=" + perPage
     await axios({
             url: url,
             method: 'get',
@@ -29,7 +31,7 @@ export default async(data) => {
             }
 
         })
-        .catch(function(error) {
+        .catch(function() {
             responseData.error = true;
         });
     return responseData;

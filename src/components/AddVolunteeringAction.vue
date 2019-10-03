@@ -37,7 +37,6 @@
                                                     class="invalid-feedback">
                                                     {{ languageData.errors.action_required }}
                                                 </div>
-
                                                 <div v-if="submitted && !$v.timeEntryDefaultData.dateVolunteered.minValue"
                                                     class="invalid-feedback">
                                                     {{ languageData.errors.minimum_action }}
@@ -46,7 +45,6 @@
                                         </b-col>
                                     </b-row>
                                 </b-form-group>
-
                             </b-col>
                         </b-row>
                     </b-form-group>
@@ -61,7 +59,6 @@
                                         @change="dateChange()"
                                         :class="{ 'is-invalid': submitted && $v.timeEntryDefaultData.dateVolunteered.$error }"
                                         :lang="lang">
-
                                     </date-picker>
                                     <div v-if="submitted && !$v.timeEntryDefaultData.dateVolunteered.required"
                                         class="invalid-feedback">
@@ -119,6 +116,7 @@
                                     </div>
                                     <div class="uploaded-file-wrap">
                                         <div class="uploaded-file-details"
+                                            v-bind:key=index
                                             v-for="(file, index) in timeEntryDefaultData.documents">
 
                                             <a class="filename" :href="file.document_path"
@@ -131,7 +129,7 @@
                                             </b-button>
 
                                         </div>
-                                        <div class="uploaded-file-details" v-for="(file, index) in fileArray"
+                                        <div class="uploaded-file-details" v-for="file in fileArray"
                                             :key="file.id">
                                             <p class="filename">{{file.name}}</p>
                                             <b-button class="remove-item" @click.prevent="$refs.upload.remove(file)"
@@ -246,9 +244,8 @@
                 this.$emit('changeDocument', this.timeEntryDefaultData.dateVolunteered)
             },
             inputUpdate(files) {
-                var _this = this
-                let allowedFileTypes = ['doc', 'xls', 'xlsx', 'csv', 'pdf', 'png', 'jpg', 'jpeg']
-                _this.fileError = '';
+                let allowedFileTypes = constants.FILE_ALLOWED_FILE_TYPES 
+                this.fileError = '';
                 let error = false
                 let duplicateUpload = false
                 let latestUpload = files[files.length - 1];
@@ -257,22 +254,21 @@
                 let latestUploadSize = latestUpload.size
                 let latestUploadType = latestUpload.type
 
-                files.filter(function (data, index) {
+                files.filter((data, index) => {
                     let fileName = data.name.split('.');
                     if (!allowedFileTypes.includes(fileName[fileName.length - 1])) {
-                        _this.fileError = _this.languageData.errors.invalid_file_type
+                        this.fileError = this.languageData.errors.invalid_file_type
                         error = true
                     } else {
-                        if (data.size > 4000000) {
-                            _this.fileError = _this.languageData.errors.file_max_size
-                          
+                        if (data.size > constants.FILE_MAX_SIZE_BYTE) {
+                            this.fileError = this.languageData.errors.file_max_size
                             error = true
                         }
                     }
                     if (index != files.length - 1) {
                         if (data.name == latestUploadName && data.size == latestUploadSize && data.type ==
                             latestUploadType) {
-                            _this.fileError = _this.languageData.errors.file_already_uploaded
+                            this.fileError = this.languageData.errors.file_already_uploaded
                             error = true
                             duplicateUpload = true;
                         }
@@ -287,7 +283,7 @@
                 });
             },
             updateWorkday(value) {
-                var selectedData = {
+                let selectedData = {
                     'selectedVal': '',
                     'fieldId': ''
                 }
@@ -297,7 +293,7 @@
                 this.$emit("updateCall", selectedData)
             },
             updateHours(value) {
-                var selectedData = {
+                let selectedData = {
                     'selectedVal': '',
                     'fieldId': ''
                 }
@@ -307,7 +303,7 @@
                 this.$emit("updateCall", selectedData)
             },
             updateMinutes(value) {
-                var selectedData = {
+                let selectedData = {
                     'selectedVal': '',
                     'fieldId': ''
                 }
@@ -317,7 +313,6 @@
                 this.$emit("updateCall", selectedData)
             },
             saveAction() {
-                var _this = this;
                 this.submitted = true;
                 this.$v.$touch();
 
@@ -330,7 +325,7 @@
                 let fileData = []
                 let file = this.fileArray;
                 if (file) {
-                    file.filter(function (fileItem, fileIndex) {
+                    file.filter((fileItem, fileIndex) => {
                         fileData.push(fileItem.file);
                         formData.append('documents[]', fileItem.file);
                     })
@@ -360,9 +355,9 @@
                         this.submitted = false;
                         this.$emit("getTimeSheetData");
                         this.$emit("changeTimeSheetView",volunteeredDate);
-                        setTimeout(function () {
-                            _this.$refs.goalActionModal.hide();
-                            _this.hideModal();
+                        setTimeout(() => {
+                            this.$refs.goalActionModal.hide();
+                            this.hideModal();
                         }, 700)
                        
                     }
@@ -371,7 +366,6 @@
 
             },
             deleteFile(timeSheetId, documentId) {
-                var _this = this
                 let deletFile = {
                     'timesheet_id': timeSheetId,
                     'document_id': documentId
@@ -384,10 +378,10 @@
                         this.showErrorDiv = true
                         this.classVariant = 'success'
                         this.message = response
-                        this.timeEntryDefaultData.documents.filter(function (document, index) {
+                        this.timeEntryDefaultData.documents.filter((document, index) => {
                             if (document.timesheet_document_id == documentId && document.timesheet_id ==
                                 timeSheetId) {
-                                _this.timeEntryDefaultData.documents.splice(index, 1);
+                                this.timeEntryDefaultData.documents.splice(index, 1);
                             }
                         });
                     } else {
@@ -406,7 +400,6 @@
                 this.$emit("resetModal");
                 document.querySelector('html').classList.remove('modal-open');
             }
-
         },
         created() {
             this.languageData = JSON.parse(store.state.languageLabel)

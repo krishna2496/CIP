@@ -1,9 +1,9 @@
 import store from '../../store'
 import axios from 'axios'
 
-export default async(data) => {
+export default async() => {
     let responseData;
-    var defaultLanguage = '';
+    let defaultLanguage = '';
     if (store.state.defaultLanguage !== null) {
         defaultLanguage = (store.state.defaultLanguage).toLowerCase();
     }
@@ -38,6 +38,5 @@ export default async(data) => {
                 store.commit('userFilter', filterData)
             }
         })
-        .catch(function(error) {});
     return responseData;
 }

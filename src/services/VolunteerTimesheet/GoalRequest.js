@@ -6,12 +6,11 @@ export default async(page) => {
         error: 'true'
     };
 
-
-    var defaultLanguage = '';
+    let defaultLanguage = '';
     if (store.state.defaultLanguage !== null) {
         defaultLanguage = (store.state.defaultLanguage).toLowerCase();
     }
-    var url = process.env.VUE_APP_API_ENDPOINT + "app/timesheet/goal-requests?page=" + page;
+    let url = process.env.VUE_APP_API_ENDPOINT + "app/timesheet/goal-requests?page=" + page;
 
     await axios({
             url: url,

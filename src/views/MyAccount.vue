@@ -6,9 +6,9 @@
         <main>
             <b-container>
                 <b-row class="dashboard-tab-content" v-if="errorPage && pageLoaded">
-                    <b-col xl="12" lg="12" md="12" >
-                        <b-alert show variant="danger" >
-                        {{errorPageMessage}}
+                    <b-col xl="12" lg="12" md="12">
+                        <b-alert show letiant="danger">
+                            {{errorPageMessage}}
                         </b-alert>
                     </b-col>
                 </b-row>
@@ -30,7 +30,7 @@
                             <h4>{{userData.first_name}} {{userData.last_name}}</h4>
                             <b-list-group class="social-nav">
 
-                                </b-list-group-item>
+
                                 <b-list-group-item
                                     v-if="userData.linked_in_url != null && userData.linked_in_url != ''  ">
                                     <b-link :href="userData.linked_in_url" target="_blank" title="linked in"
@@ -102,8 +102,7 @@
                                 <b-col md="6">
                                     <b-form-group>
                                         <label for>{{languageData.label.employee_id}}</label>
-                                        <b-form-input id type="text" v-model.trim="profile.employeeId"
-                                             maxlength="16"
+                                        <b-form-input id type="text" v-model.trim="profile.employeeId" maxlength="16"
                                             :placeholder="languageData.placeholder.employee_id">
                                         </b-form-input>
                                     </b-form-group>
@@ -127,8 +126,7 @@
                                 <b-col md="6">
                                     <b-form-group>
                                         <label for>{{languageData.label.department}}</label>
-                                        <b-form-input id type="text" v-model.trim="profile.department"
-                                            maxlength="16"
+                                        <b-form-input id type="text" v-model.trim="profile.department" maxlength="16"
                                             :placeholder="languageData.placeholder.department"></b-form-input>
 
                                     </b-form-group>
@@ -136,9 +134,8 @@
                                 <b-col md="12">
                                     <b-form-group>
                                         <label>{{languageData.label.my_profile}}*</label>
-                                        <b-form-textarea id :placeholder="languageData.placeholder.my_profile"
-                                            size="lg" no-resize 
-                                            v-model.trim="profile.profileText"
+                                        <b-form-textarea id :placeholder="languageData.placeholder.my_profile" size="lg"
+                                            no-resize v-model.trim="profile.profileText"
                                             :class="{ 'is-invalid': submitted && $v.profile.profileText.$error }"
                                             rows="5"></b-form-textarea>
                                         <div v-if="submitted && !$v.profile.profileText.required"
@@ -228,14 +225,14 @@
 
                                 </b-col>
                             </b-row>
-                            <b-row class="row-form" v-if="isShownComponent && customFieldList.length > 0">
+                            <b-row class="row-form" v-if="isShownComponent && CustomFieldList.length > 0">
                                 <b-col cols="12">
                                     <h2 class="title-with-border">
                                         <span>{{languageData.label.custom_field}}</span>
                                     </h2>
                                 </b-col>
                                 <b-col cols="12">
-                                    <CustomField :optionList="customFieldList" :optionListValue="customFieldValue"
+                                    <CustomField :optionList="CustomFieldList" :optionListValue="CustomFieldValue"
                                         :isSubmit="isCustomFieldSubmit"
                                         @detectChangeInCustomFeild="detectChangeInCustomFeild" />
                                 </b-col>
@@ -251,7 +248,8 @@
                                 <b-col cols="12" v-if="isSkillDisplay">
                                     <ul class="skill-list-wrapper"
                                         v-if="resetUserSkillList != null && resetUserSkillList.length > 0">
-                                        <li v-for="(toitem, idx) in resetUserSkillList">{{toitem.name}}</li>
+                                        <li v-for="(toitem, index) in resetUserSkillList" :key=index>{{toitem.name}}
+                                        </li>
                                     </ul>
                                     <ul v-else class="skill-list-wrapper">
                                         <li>{{languageData.label.no_skill_found}}</li>
@@ -259,7 +257,7 @@
                                     <MultiSelect v-if="isShownComponent" :fromList="skillListing"
                                         :toList="userSkillList" @resetData="resetSkillListingData"
                                         @saveSkillData="saveSkillData" @resetPreviousData="resetPreviousData" />
-                                    
+
                                 </b-col>
                                 <b-col cols="12" v-if="isSkillDisplay">
                                     <div class="btn-wrapper">
@@ -278,7 +276,7 @@
                         <i class="close" @click="close()" v-b-tooltip.hover :title="languageData.label.close"></i>
                         <h5 class="modal-title">{{languageData.label.change_password}}</h5>
                     </template>
-                    <b-alert show :variant="classVariant" dismissible v-model="showErrorDiv">
+                    <b-alert show :letiant="classletiant" dismissible v-model="showErrorDiv">
                         {{ message }}
                     </b-alert>
                     <form action class="form-wrap">
@@ -376,9 +374,9 @@
         data() {
             return {
                 languageList: [],
-                errorPage : false,
-                pageLoaded : false,
-                errorPageMessage : false,
+                errorPage: false,
+                pageLoaded: false,
+                errorPageMessage: false,
                 isQuickAccessFilterDisplay: true,
                 isSkillDisplay: true,
                 languageDefault: "",
@@ -412,7 +410,7 @@
                 },
                 showErrorDiv: false,
                 message: null,
-                classVariant: "success",
+                classletiant: "success",
                 profile: {
                     firstName: "",
                     lastName: "",
@@ -435,14 +433,14 @@
                 language: '',
                 languageCode: null,
                 time: '',
-                customFieldList: [],
-                customFieldValue: [],
+                CustomFieldList: [],
+                CustomFieldValue: [],
                 returnCustomFeildData: [],
                 userSkillList: [],
                 resetUserSkillList: [],
                 imageLoader: true,
                 changePhoto: "",
-                showPage:true,
+                showPage: true,
                 saveProfileData: {
                     first_name: "",
                     last_name: "",
@@ -577,11 +575,11 @@
                         this.errorPageMessage = response.message
                     } else {
                         this.errorPage = false
-                        var _this = this;
+
                         this.userData = response.data;
                         this.newUrl = this.userData.avatar;
                         const img = new Image();
-                        if(this.newUrl != '' && this.newUrl != null) {
+                        if (this.newUrl != '' && this.newUrl != null) {
                             img.src = this.newUrl;
                             img.onload = () => {
                                 this.isPrefilLoaded = false
@@ -592,11 +590,11 @@
                         store.commit("changeAvatar", this.userData)
 
 
-                        this.cityList = Object.keys(this.userData.city_list).map(function (key) {
-                            return [Number(key), _this.userData.city_list[key]];
+                        this.cityList = Object.keys(this.userData.city_list).map((key) => {
+                            return [Number(key), this.userData.city_list[key]];
                         });
-                        this.cityList.sort(function (a, b) {
-                            var cityOne = a[1].toLowerCase(),
+                        this.cityList.sort((a, b) => {
+                            let cityOne = a[1].toLowerCase(),
                                 cityTwo = b[1].toLowerCase();
                             if (cityOne < cityTwo) //sort string ascending
                                 return -1;
@@ -604,28 +602,27 @@
                                 return 1;
                             return 0; //default return value (no sorting)
                         });
-                        this.availabilityList = Object.keys(this.userData.availability_list).map(function (
-                            key) {
-                            return [Number(key), _this.userData.availability_list[key]];
+                        this.availabilityList = Object.keys(this.userData.availability_list).map((key) => {
+                            return [Number(key), this.userData.availability_list[key]];
                         });
-                        this.languageList = Object.keys(this.userData.language_list).map(function (key) {
-                            return [Number(key), _this.userData.language_list[key]];
+                        this.languageList = Object.keys(this.userData.language_list).map((key) => {
+                            return [Number(key), this.userData.language_list[key]];
                         });
 
-                        this.customFieldList = this.userData.custom_fields
+                        this.CustomFieldList = this.userData.custom_fields
 
                         if (this.userData.user_custom_field_value) {
-                            this.customFieldValue = Object.keys(this.userData.user_custom_field_value).map(
-                                function (key) {
-                                    return [
-                                        Number(_this.userData.user_custom_field_value[key]
+                            this.CustomFieldValue = Object.keys(this.userData.user_custom_field_value).map((
+                                key) => {
+                                return [
+                                    Number(this.userData.user_custom_field_value[key]
                                         .field_id),
-                                        _this.userData.user_custom_field_value[key].value
-                                    ];
-                                });
+                                    this.userData.user_custom_field_value[key].value
+                                ];
+                            });
                         }
 
-                        this.profile.firstName = this.userData.first_name,
+                            this.profile.firstName = this.userData.first_name,
                             this.profile.lastName = this.userData.last_name,
                             this.profile.employeeId = this.userData.employee_id,
                             this.profile.managerName = this.userData.manager_name,
@@ -636,12 +633,12 @@
                             this.profile.department = this.userData.department,
                             this.profile.availability = this.userData.availability_id,
                             this.profile.userSkills = this.userData.user_skills
-                        this.profile.country = this.userData.country_id,
+                            this.profile.country = this.userData.country_id,
                             this.profile.city = this.userData.city_id,
                             this.profile.availability = this.userData.availability_id,
                             this.profile.language = this.userData.language_id,
                             this.profile.time = this.userData.timezone_id
-                        this.profile.languageCode = this.userData.language_code
+                            this.profile.languageCode = this.userData.language_code
 
                         if (this.userData.country.name != '' && this.userData.country.name != null) {
                             this.countryDefault = this.userData.country.name
@@ -654,9 +651,9 @@
                             this.availabilityDefault = this.userData.availability.type
                         }
                         if (this.userData.language_id != '' && this.userData.language_id != null) {
-                            Object.keys(_this.userData.language_list).map(function (key) {
-                                if (key == _this.userData.language_id) {
-                                    _this.languageDefault = _this.userData.language_list[key]
+                            Object.keys(this.userData.language_list).map((key) => {
+                                if (key == this.userData.language_id) {
+                                    this.languageDefault = this.userData.language_list[key]
                                 }
                             });
                         }
@@ -671,9 +668,9 @@
                         country().then(responseData => {
                             if (responseData.error == false) {
                                 this.countryList = responseData.data
-                                this.countryList.sort(function (a, b) {
-                                    var countryOne = a[1].toLowerCase(),
-                                        countryTwo = b[1].toLowerCase();
+                                this.countryList.sort((countryA, countryB) => {
+                                    let countryOne = countryA[1].toLowerCase(),
+                                        countryTwo = countryB[1].toLowerCase();
                                     if (countryOne < countryTwo) //sort string ascending
                                         return -1;
                                     if (countryOne > countryTwo)
@@ -691,11 +688,11 @@
                                     if (responseData.error == false) {
                                         this.userData.skill_list = responseData.data
                                         Object.keys(this.userData.skill_list).map(
-                                            function (key) {
-                                                if (_this.userData.skill_list[
+                                            (key) => {
+                                                if (this.userData.skill_list[
                                                         key]) {
-                                                    _this.skillListing.push({
-                                                        name: _this
+                                                    this.skillListing.push({
+                                                        name: this
                                                             .userData
                                                             .skill_list[
                                                                 key],
@@ -710,15 +707,15 @@
                         })
 
                         if (this.userData.user_skills) {
-                            Object.keys(this.userData.user_skills).map(function (key) {
-                                if (_this.userData.user_skills[key].translations) {
-                                    _this.userSkillList.push({
-                                        name: _this.userData.user_skills[key].translations,
-                                        id: _this.userData.user_skills[key].skill_id
+                            Object.keys(this.userData.user_skills).map((key) => {
+                                if (this.userData.user_skills[key].translations) {
+                                    this.userSkillList.push({
+                                        name: this.userData.user_skills[key].translations,
+                                        id: this.userData.user_skills[key].skill_id
                                     });
-                                    _this.resetUserSkillList.push({
-                                        name: _this.userData.user_skills[key].translations,
-                                        id: _this.userData.user_skills[key].skill_id
+                                    this.resetUserSkillList.push({
+                                        name: this.userData.user_skills[key].translations,
+                                        id: this.userData.user_skills[key].skill_id
                                     });
                                 }
                             });
@@ -731,31 +728,30 @@
             resetSkillListingData() {
                 this.skillListing = [];
                 this.userSkillList = [];
-                var _this = this;
                 if (this.userData.skill_list) {
-                    Object.keys(this.userData.skill_list).map(function (key) {
-                        if (_this.userData.skill_list[key]) {
-                            _this.skillListing.push({
-                                name: _this.userData.skill_list[key],
+                    Object.keys(this.userData.skill_list).map((key) => {
+                        if (this.userData.skill_list[key]) {
+                            this.skillListing.push({
+                                name: this.userData.skill_list[key],
                                 id: key
                             });
                         }
                     });
                 }
                 if (this.userData.user_skills) {
-                    Object.keys(this.userData.user_skills).map(function (key) {
-                        if (_this.userData.user_skills[key].translations) {
-                            _this.userSkillList.push({
-                                name: _this.userData.user_skills[key].translations,
-                                id: _this.userData.user_skills[key].skill_id
+                    Object.keys(this.userData.user_skills).map((key) => {
+                        if (this.userData.user_skills[key].translations) {
+                            this.userSkillList.push({
+                                name: this.userData.user_skills[key].translations,
+                                id: this.userData.user_skills[key].skill_id
                             });
                         }
                     });
                 }
-                var filteredObj = this.userSkillList.filter(function (toItem, toIndex) {
-                    var filteredObj = _this.skillListing.filter(function (fromItem, fromIndex) {
+                let filteredObj = this.userSkillList.filter((toItem, toIndex) => {
+                    let filteredObj = this.skillListing.filter((fromItem, fromIndex) => {
                         if (toItem.id == fromItem.id) {
-                            _this.skillListing.splice(fromIndex, 1);
+                            this.skillListing.splice(fromIndex, 1);
                         }
                     });
                 });
@@ -773,14 +769,14 @@
             },
             //submit form
             handleSubmit(e) {
-                var _this = this;
+
                 this.submitted = true;
                 this.$v.$touch();
-                var isCustomFieldInvalid = false;
-                var isNormalFieldInvalid = false;
+                let isCustomFieldInvalid = false;
+                let isNormalFieldInvalid = false;
                 let validationData = document.querySelectorAll('[validstate="true"]');
                 this.isCustomFieldSubmit = true;
-                validationData.forEach(function (validateData) {
+                validationData.forEach((validateData) => {
                     validateData.classList.add("is-invalid");
                     isCustomFieldInvalid = true;
                 });
@@ -794,40 +790,40 @@
                 }
 
                 let returnData = {};
-                _this.saveProfileData.first_name = _this.profile.firstName,
-                    _this.saveProfileData.last_name = _this.profile.lastName,
-                    _this.saveProfileData.title = _this.profile.title,
-                    _this.saveProfileData.timezone_id = _this.profile.time,
-                    _this.saveProfileData.language_id = _this.profile.language,
-                    _this.saveProfileData.availability_id = _this.profile.availability,
-                    _this.saveProfileData.why_i_volunteer = _this.profile.whyiVolunteer,
-                    _this.saveProfileData.employee_id = _this.profile.employeeId,
-                    _this.saveProfileData.department = _this.profile.department,
-                    _this.saveProfileData.manager_name = _this.profile.managerName,
-                    _this.saveProfileData.city_id = _this.profile.city,
-                    _this.saveProfileData.country_id = _this.profile.country,
-                    _this.saveProfileData.profile_text = _this.profile.profileText,
-                    _this.saveProfileData.linked_in_url = _this.profile.linkedInUrl,
-                    _this.saveProfileData.custom_fields = []
-                _this.saveProfileData.skills = []
+                this.saveProfileData.first_name = this.profile.firstName,
+                    this.saveProfileData.last_name = this.profile.lastName,
+                    this.saveProfileData.title = this.profile.title,
+                    this.saveProfileData.timezone_id = this.profile.time,
+                    this.saveProfileData.language_id = this.profile.language,
+                    this.saveProfileData.availability_id = this.profile.availability,
+                    this.saveProfileData.why_i_volunteer = this.profile.whyiVolunteer,
+                    this.saveProfileData.employee_id = this.profile.employeeId,
+                    this.saveProfileData.department = this.profile.department,
+                    this.saveProfileData.manager_name = this.profile.managerName,
+                    this.saveProfileData.city_id = this.profile.city,
+                    this.saveProfileData.country_id = this.profile.country,
+                    this.saveProfileData.profile_text = this.profile.profileText,
+                    this.saveProfileData.linked_in_url = this.profile.linkedInUrl,
+                    this.saveProfileData.custom_fields = []
+                this.saveProfileData.skills = []
 
-                Object.keys(this.returnCustomFeildData).map(function (key) {
-                    let customValue = _this.returnCustomFeildData[key];
+                Object.keys(this.returnCustomFeildData).map((key) => {
+                    let customValue = this.returnCustomFeildData[key];
 
                     if (Array.isArray(customValue)) {
                         customValue = customValue.join();
                     }
 
-                    _this.saveProfileData.custom_fields.push({
+                    this.saveProfileData.custom_fields.push({
                         field_id: key,
                         value: customValue
                     });
                 });
 
                 if (this.userSkillList.length > 0 && this.isSkillDisplay) {
-                    Object.keys(this.userSkillList).map(function (key) {
-                        _this.saveProfileData['skills'].push({
-                            skill_id: _this.userSkillList[key].id,
+                    Object.keys(this.userSkillList).map((key) => {
+                        this.saveProfileData['skills'].push({
+                            skill_id: this.userSkillList[key].id,
                         });
                     });
                 }
@@ -836,7 +832,7 @@
                 saveUserProfile(this.saveProfileData).then(response => {
                     if (response.error == true) {
                         this.makeToast("danger", response.message);
-                    } else { 
+                    } else {
                         store.commit('setDefaultLanguageCode', this.languageCode)
                         this.showPage = false;
                         this.getUserProfileDetail().then(getResponse => {
@@ -846,17 +842,17 @@
                                 this.languageData = JSON.parse(store.state.languageLabel);
                                 this.makeToast("success", response.message);
                                 this.isShownComponent = true;
-                            });       
-                                                
+                            });
+
                             store.commit("changeUserDetail", this.profile)
-                            
+
                         });
                     }
                 });
             },
             // changePassword
             changePassword() {
-                var _this = this;
+
                 this.passwordSubmit = true;
                 this.$v.$touch();
                 // stop here if form is invalid 
@@ -873,13 +869,13 @@
                     if (response.error === true) {
                         this.message = null;
                         this.showErrorDiv = true
-                        this.classVariant = 'danger'
+                        this.classletiant = 'danger'
                         //set error msg
                         this.message = response.message
                     } else {
                         this.message = null;
                         this.showErrorDiv = true
-                        this.classVariant = 'success'
+                        this.classletiant = 'success'
                         //set success msg
                         this.message = response.message
                         //Reset to blank
@@ -889,9 +885,9 @@
                         this.resetPassword.confirmPassword = ''
                         this.$v.$reset();
                         store.commit("changeToken", response.data.token)
-                        setTimeout(function () {
-                            _this.$refs.changePasswordModal.hide();
-                            _this.showErrorDiv = false
+                        setTimeout(() => {
+                            this.$refs.changePasswordModal.hide();
+                            this.showErrorDiv = false
                         }, 1000)
                     }
                 });
@@ -904,8 +900,8 @@
                             this.cityList = []
                         } else {
                             this.cityList = response.data
-                            this.cityList.sort(function (a, b) {
-                                var cityOne = a[1].toLowerCase(),
+                            this.cityList.sort((a, b) => {
+                                let cityOne = a[1].toLowerCase(),
                                     cityTwo = b[1].toLowerCase();
                                 if (cityOne < cityTwo) //sort string ascending
                                     return -1;
@@ -919,16 +915,16 @@
                     });
                 }
             },
-            makeToast(variant = null, message) {
+            makeToast(letiant = null, message) {
                 this.$bvToast.toast(message, {
-                    variant: variant,
+                    letiant: letiant,
                     solid: true,
                     autoHideDelay: 1000
                 })
             },
             alphaNumeric(evt) {
                 evt = (evt) ? evt : window.event;
-                var keyCode = (evt.which) ? evt.which : evt.keyCode;
+                let keyCode = (evt.which) ? evt.which : evt.keyCode;
                 if (!((keyCode >= 48 && keyCode <= 57) ||
                         (keyCode >= 65 && keyCode <= 90) ||
                         (keyCode >= 97 && keyCode <= 122)) &&
@@ -938,14 +934,14 @@
             },
             handleModel() {
                 this.$refs.changePasswordModal.show()
-                let _this = this
-                setTimeout(function () {
-                    _this.$refs.oldPassword.focus();
+
+                setTimeout(() => {
+                    this.$refs.oldPassword.focus();
                 }, 100)
             }
         },
         created() {
-            var _this = this
+
             this.languageData = JSON.parse(store.state.languageLabel);
             this.countryDefault = this.languageData.placeholder.country
             this.cityDefault = this.languageData.placeholder.city

@@ -98,7 +98,7 @@
         computed: {},
         methods: {
             async setLanguage(language) {
-                var _this = this;
+                let _this = this;
                 this.defautLang = language.selectedVal;
                 store.commit("setDefaultLanguage", language);
                 this.$i18n.locale = language.selectedVal.toLowerCase();

@@ -1,11 +1,11 @@
 <template>
-    <div class="row custom-field" v-if="customFieldList != null && customFieldList.length > 0">
-        <b-col :md="getColumn(item.type)" v-for="(item,key) in optionList">
+    <div class="row custom-field" v-if="CustomFieldList != null && CustomFieldList.length > 0">
+        <b-col :md="getColumn(item.type)" v-for="(item,key) in optionList" :key=key>
             <b-form-group v-if="item.type == 'drop-down'">
                 <label>{{item.translations.name}}
                     <span v-if="item.is_mandatory == 1">*</span>
                 </label>
-                <AppCustomFeildDropdown v-model="customFeildData[item.field_id]"
+                <AppCustomFieldDropdown v-model="customFeildData[item.field_id]"
                     :defaultText="defaultValue[item.field_id]" :optionList="getArrayValue(item.translations.values)"
                     :errorClass="getErrorClass(item.field_id)" :validstate="getErrorState(item.field_id)"
                     :fieldId="item.field_id" translationEnable="false" @updateCall="updateCustomDropDown" />
@@ -86,7 +86,7 @@
 </template>
 <script>
     import store from "../store";
-    import AppCustomFeildDropdown from "../components/AppCustomFeildDropdown";
+    import AppCustomFieldDropdown from "../components/AppCustomFieldDropdown";
     import MultiSelect from "../components/MultiSelect";
     import AppCustomCheckboxDropdown from "../components/AppCustomCheckboxDropdown";
     import {
@@ -101,11 +101,11 @@
     } from 'vuelidate/lib/validators';
     export default {
         components: {
-            AppCustomFeildDropdown,
+            AppCustomFieldDropdown,
             MultiSelect,
             AppCustomCheckboxDropdown
         },
-        name: "customField",
+        name: "CustomField",
         props: {
             optionList: Array,
             optionListValue: Array,
@@ -113,10 +113,10 @@
         },
         data() {
             return {
-                customFieldList: this.optionList,
-                customField: [],
+                CustomFieldList: this.optionList,
+                CustomField: [],
                 list: [],
-                customFieldValidation: {},
+                CustomFieldValidation: {},
                 defaultText: "",
                 customFeildData: {},
                 submit: false,
@@ -128,9 +128,9 @@
             const validations = {
                 customFeildData: {}
             };
-            var _this = this;
+            let _this = this;
 
-            _.each(this.customFieldList, wrr => {
+            _.each(this.CustomFieldList, wrr => {
                 if (wrr.is_mandatory == 1) {
                     validations.customFeildData[wrr.field_id] = {
                         required

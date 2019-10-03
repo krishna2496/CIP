@@ -2,7 +2,7 @@
 	<div class="signin-footer">
 		<div class="footer-menu" v-if="isDynamicFooterItemsSet">
 			<b-list-group>
-				<b-list-group-item v-for="item in footerItems" :to="'/'+item.slug" :title="getTitle(item)">
+				<b-list-group-item v-for="(item,key) in footerItems" v-bind:key=key :to="'/'+item.slug" :title="getTitle(item)">
 					{{getTitle(item)}}
 				</b-list-group-item>
 			</b-list-group>
@@ -53,7 +53,7 @@
 				//Get title according to language
 				items = items.pages;
 				if (items) {
-					var filteredObj = items.filter(function (item, i) {
+					let filteredObj = items.filter((item, i) => {
 						if (item.language_id == store.state.defaultLanguageId) {
 							return item;
 						}

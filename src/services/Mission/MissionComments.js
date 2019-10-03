@@ -3,13 +3,13 @@ import axios from 'axios'
 
 export default async(data) => {
     let responseData = {};
-    var defaultLanguage = '';
+    let defaultLanguage = '';
 
     if (store.state.defaultLanguage !== null) {
         defaultLanguage = (store.state.defaultLanguage).toLowerCase();
     }
 
-    var url = process.env.VUE_APP_API_ENDPOINT + "app/mission/" + data.missionId + "/comments?page=" + data.page
+    let url = process.env.VUE_APP_API_ENDPOINT + "app/mission/" + data.missionId + "/comments?page=" + data.page
     await axios({
             url: url,
             method: 'get',
@@ -24,7 +24,7 @@ export default async(data) => {
                 responseData.pagination = response.data.pagination;
             }
         })
-        .catch(function(error) {
+        .catch(function() {
             responseData.error = true;
         });
     return responseData;

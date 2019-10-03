@@ -26,7 +26,7 @@
                                     <li v-if="isThemeDisplay" v-bind:class="topThemeClass">
                                         <a href="Javascript:void(0)">{{ languageData.label.top_themes}}</a>
                                         <ul class="subdropdown-menu" v-if="topTheme != null && topTheme.length > 0">
-                                            <li v-for="items in topTheme">
+                                            <li v-for="(items, key) in topTheme" v-bind:key=key>
                                                 <router-link :to="{ path: '/home/themes/'+items.id}"
                                                     @click.native="menuBarclickHandler">
                                                     {{ items.title}}
@@ -37,7 +37,7 @@
                                     <li v-bind:class="topCountryClass">
                                         <a href="Javascript:void(0)">{{languageData.label.top_country}}</a>
                                         <ul class="subdropdown-menu" v-if="topCountry != null && topCountry.length > 0">
-                                            <li v-for="items in topCountry">
+                                            <li v-for="(items, key) in topCountry" v-bind:key=key>
                                                 <router-link
                                                     :to="{ path: '/home/country/'+items.title.toLowerCase().trim()}"
                                                     @click.native="menuBarclickHandler">
@@ -50,7 +50,7 @@
                                         <a href="Javascript:void(0)">{{ languageData.label.top_organisation}}</a>
                                         <ul class="subdropdown-menu"
                                             v-if="topOrganization != null && topOrganization.length > 0">
-                                            <li v-for="items in topOrganization">
+                                            <li v-for="(items, key) in topOrganization" v-bind:key=key>
                                                 <router-link :to="{ path: '/home/organization/'+items.title}"
                                                     @click.native="menuBarclickHandler">
                                                     {{ items.title}}
@@ -93,11 +93,12 @@
                                     :title='languageData.label.news'> {{languageData.label.news}}</a>
                             </li>
 
-                            <li class="has-menu" v-if="isPolicyDisplay">
+                            <li class="has-menu" v-if="isPolicyDisplay && policyPage.length > 0">
                                 <a href="Javascript:void(0)"
-                                    :title='languageData.label.policy'>{{ languageData.label.policy}}</a>
+                                    :title='languageData.label.policy'>{{ languageData.label.policy}}
+                                </a>
                                 <ul class="dropdown-menu" v-if="policyPage.length > 0">
-                                    <li v-for="item in policyPage">
+                                    <li v-for="(item, key) in policyPage" v-bind:key=key>
                                         <router-link :to="{ path: '/policy/'+item.slug}"
                                             @click.native="menuBarclickHandler">
                                             {{item.pages[0].title}}
@@ -123,7 +124,6 @@
                             </b-dropdown-item>
                             <b-dropdown-item :to="{ name: 'myAccount' }">{{ languageData.label.my_account}}
                             </b-dropdown-item>
-                            <!-- <b-dropdown-item href="#">Help Center</b-dropdown-item> -->
                             <b-dropdown-item v-on:click.native="logout()" replace v-if="this.$store.state.isLoggedIn">
                                 {{ languageData.label.logout}}
                             </b-dropdown-item>
@@ -293,30 +293,28 @@
                 };
             },
             mounted() {
-                // var mob_nav_list = document
-                var hasmenu_li = document.querySelectorAll(".menu-wrap li"); //array of parentchlid
-
-                for (var i = 0; i < hasmenu_li.length; ++i) {
-                    var anchor_val = hasmenu_li[i].firstChild; // anchor tag variable
+                let hasmenu_li = document.querySelectorAll(".menu-wrap li"); //array of parentchlid
+                for (let i = 0; i < hasmenu_li.length; ++i) {
+                    let anchorVal = hasmenu_li[i].firstChild; // anchor tag letiable
                     //Anchor tag click function
-                    anchor_val.addEventListener("click", function (e) {
+                    anchorVal.addEventListener("click", function (e) {
                         if (screen.width < 992) {
                             e.stopPropagation();
-                            var parent_li = e.target.parentNode;
-                            var parent_ul = parent_li.parentNode;
-                            var sibling_li = parent_ul.childNodes;
-                            if (parent_li.classList.contains("active")) {
-                                parent_li.classList.remove("active");
+                            let parentLi = e.target.parentNode;
+                            let parentUl = parentLi.parentNode;
+                            let siblingLi = parentUl.childNodes;
+                            if (parentLi.classList.contains("active")) {
+                                parentLi.classList.remove("active");
                             } else {
-                                parent_li.classList.add("active");
+                                parentLi.classList.add("active");
                             }
-                            for (var j = 0; j < sibling_li.length; ++j) {
-                                if (sibling_li[j] != parent_li) {
-                                    sibling_li[j].classList.remove("active");
+                            for (let j = 0; j < siblingLi.length; ++j) {
+                                if (siblingLi[j] != parentLi) {
+                                    siblingLi[j].classList.remove("active");
                                 } else {
-                                    var child_li = parent_li.getElementsByClassName("has-submenu");
-                                    for (var k = 0; k < child_li.length; ++k) {
-                                        child_li[k].classList.remove("active");
+                                    let childLi = parentLi.getElementsByClassName("has-submenu");
+                                    for (let k = 0; k < childLi.length; ++k) {
+                                        childLi[k].classList.remove("active");
                                     }
                                 }
                             }
@@ -324,12 +322,12 @@
                     });
                 }
 
-                var back_btn = document.querySelectorAll(".btn-back");
-                back_btn.forEach(function (e) {
+                let backBtn = document.querySelectorAll(".btn-back");
+                backBtn.forEach(function (e) {
                     e.addEventListener("click", function () {
                         if (screen.width < 992) {
-                            var active_item = e.parentNode.parentNode;
-                            active_item.classList.remove("active");
+                            let activeItem = e.parentNode.parentNode;
+                            activeItem.classList.remove("active");
                         }
                     });
                 });
@@ -342,32 +340,32 @@
                         .classList.add("notification-popover");
                 },
                 showclearitem() {
-                    var popover_body = document.querySelector(".popover-body");
-                    popover_body.classList.add("clear-item");
+                    let popoverBody = document.querySelector(".popover-body");
+                    popoverBody.classList.add("clear-item");
                 },
                 showsetting() {
-                    var notify_setting = document.querySelector(".notification-setting");
-                    notify_setting.classList.toggle("show-setting");
+                    let notifySetting = document.querySelector(".notification-setting");
+                    notifySetting.classList.toggle("show-setting");
                 },
                 cancelsetting() {
-                    var cancel_setting = document.querySelector(".notification-setting");
-                    cancel_setting.classList.remove("show-setting");
+                    let cancelSetting = document.querySelector(".notification-setting");
+                    cancelSetting.classList.remove("show-setting");
                     this.$root.$emit("bv::show::popover", "notificationPopover");
                 },
                 openMenu() {
-                    var body = document.querySelectorAll("body, html");
+                    let body = document.querySelectorAll("body, html");
                     body.forEach(function (e) {
                         e.classList.add("open-nav");
                     });
                 },
                 closeMenu() {
-                    var body = document.querySelectorAll("body, html");
+                    let body = document.querySelectorAll("body, html");
                     body.forEach(function (e) {
                         e.classList.remove("open-nav");
                     });
                 },
                 searchMenu() {
-                    var body = document.querySelectorAll("body, html");
+                    let body = document.querySelectorAll("body, html");
                     body.forEach(function (e) {
                         e.classList.toggle("open-search");
                     });
@@ -421,7 +419,7 @@
                         this.$router.push({
                            name: 'home'
                         })
-                        setTimeout(function(){
+                        setTimeout(() => {
                             location.reload()
                         },15)
                     }

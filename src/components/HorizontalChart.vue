@@ -42,8 +42,8 @@
         methods: {
             renderChart() {
                 this.themeChart = null;
-                var chartRefs = this.$refs.chartRefs;
-                var chartContent = chartRefs.getContext("2d");
+                let chartRefs = this.$refs.chartRefs;
+                let chartContent = chartRefs.getContext("2d");
                 chartContent.clearRect(0, 0, chartContent.width, chartRefs.height);
                 this.themeChart = new Chart(chartContent, {
                     type: "horizontalBar",

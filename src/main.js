@@ -41,17 +41,14 @@ let entryUrl = null;
 
 
 // check requirment of authentication for path
-router.beforeEach(async (to, from, next) => {
+router.beforeEach(async(to, from, next) => {
     // if from path is (/) then we need to call custom css call and wait for its reponse    
-    if ((from.path == '/' && to.path == '/') || from.path == '/'){
-        console.log('calling...')
+    if ((from.path == '/' && to.path == '/') || from.path == '/') {
         document.body.classList.add("loader-enable");
-        await customCss().then( () => {
+        await customCss().then(() => {
             document.body.classList.remove("loader-enable");
-            console.log('loader off');
         });
     }
-    console.log('moved')
     if (store.state.isLoggedIn) {
         if (entryUrl) {
             const url = entryUrl;
@@ -80,6 +77,10 @@ Vue.filter('formatDate', function(value) {
     if (value) {
         return moment(String(value)).format('DD/MM/YYYY')
     }
+})
+
+Vue.filter('filterGoal', function(value) {
+    return parseInt(value)
 })
 
 Vue.filter('formatTime', function(value) {

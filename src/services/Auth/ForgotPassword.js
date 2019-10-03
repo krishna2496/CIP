@@ -5,7 +5,7 @@ export default async(data) => {
     // Forgot Password API call with params email address
     let responseData = {}
     responseData.error = false;
-    var defaultLanguage = '';
+    let defaultLanguage = '';
     if (store.state.defaultLanguage !== null) {
         defaultLanguage = (store.state.defaultLanguage).toLowerCase();
     }

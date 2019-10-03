@@ -3371,6 +3371,10 @@ main {
     &.recent-loader {
         display: flex;
     }
+    &.fixed-loader{
+        position:fixed;
+        z-index:99999;
+    }
 }
 
 .content-loader {

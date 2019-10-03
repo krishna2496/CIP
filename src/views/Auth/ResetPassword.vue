@@ -128,7 +128,7 @@
 
         methods: {
             async setLanguage(language) {
-                var _this = this;
+                let _this = this;
                 this.defautLang = language.selectedVal;
                 store.commit('setDefaultLanguage', language);
                 this.$i18n.locale = language.selectedVal.toLowerCase()
@@ -162,7 +162,7 @@
 
                 if (typeof response.error === "undefined") {
 
-                    languageCode = this.langList.filter(function (language) {
+                    languageCode = this.langList.filter( (language) => {
                         if (language['0'] == response.data.default_language_id) {
                             return language;
                         }
