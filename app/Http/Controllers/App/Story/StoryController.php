@@ -222,4 +222,46 @@ class StoryController extends Controller
     	$apiMessage =  trans('messages.success.MESSAGE_ENABLE_TO_EXPORT_USER_STORIES_ENTRIES');
     	return $this->responseHelper->success($apiStatus, $apiMessage);
     }
+    
+    /**
+     * Used for get login user's all stories data
+     * 
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function getUserStories(Request $request): JsonResponse
+    {
+    	// get user's all story data  
+    	$userStories = $this->storyRepository->getUserStoriesWithPagination($request, $request->auth->user_id);
+    	
+    	$storyTransformedData = $this->transformUserRelatedStory($userStories);
+    	
+    	$requestString = $request->except(['page','perPage']);
+    	$storyPaginated = new \Illuminate\Pagination\LengthAwarePaginator(
+    		$storyTransformedData,
+    		$userStories->total(),
+    		$userStories->perPage(),
+    		$userStories->currentPage(),
+    		[
+    			'path' => $request->url().'?'.http_build_query($requestString),
+    			'query' => [
+    				'page' => $userStories->currentPage()
+    			]
+    		]
+    	);
+    	
+    	
+    	$apiData = $storyPaginated;
+    	$apiStatus = Response::HTTP_OK;
+    	$apiMessage = (!empty($apiData)) ?
+    		trans('messages.success.MESSAGE_STORIES_ENTRIES_LISTING') :
+    		trans('messages.success.MESSAGE_NO_STORIES_ENTRIES_FOUND');
+    	
+    	return $this->responseHelper->successWithPagination(
+    			$apiStatus,
+    			$apiMessage,
+    			$apiData,
+    			[]
+    	); 
+    }
 }

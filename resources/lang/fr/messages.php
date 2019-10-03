@@ -291,4 +291,11 @@ return [
 		'STORY_STATUS' => 'Statut',
 		'PUBLISH_DATE' => 'Date de publication',
 	],
+		
+	'status' => [
+		'DRAFT' => 'Brouillon',
+		'PENDING' => 'En attente',
+		'PUBLISHED' => 'Publié',
+		'DECLINED' => 'Diminuée',
+	],
 ];

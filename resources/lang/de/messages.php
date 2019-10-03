@@ -237,5 +237,12 @@ return [
 		'STORY_DESCRIPTION' => 'DE: Description',
 		'STORY_STATUS' => 'DE: Status',
 		'PUBLISH_DATE' => 'DE: Publish Date',
-	]
+	],
+	
+	'status' => [
+		'DRAFT' => 'DE: Draft',
+		'PENDING' => 'DE: Pending',
+		'PUBLISHED' => 'DE: Published',
+		'DECLINED' => 'DE: Declined',
+	],
 ];

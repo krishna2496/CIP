@@ -30,9 +30,10 @@ interface StoryInterface
 	 *
 	 * @param Illuminate\Http\Request $request
 	 * @param int $userId
+	 * @param string $status
 	 * @return \Illuminate\Pagination\LengthAwarePaginator
 	 */
-	public function getUserStoriesWithPagination(Request $request, int $userId): LengthAwarePaginator;
+	public function getUserStoriesWithPagination(Request $request, int $userId = Null, string $status = Null): LengthAwarePaginator;
 
 	/**
 	 * Get story details.

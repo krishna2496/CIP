@@ -298,6 +298,12 @@ $router->group(['middleware' => 'localization'], function ($router) {
          'middleware' => 'localization|tenant.connection|jwt.auth',
          'uses' => 'App\Story\StoryController@exportStory']);
         
+        /* login user story listing */
+        $router->get('/app/story/my-stories', ['as' => 'app.story.getallstories',
+        'middleware' => 'localization|tenant.connection|jwt.auth',
+        'uses' => 'App\Story\StoryController@getUserStories']);
+        
+        
         /* Fetch story details */
         $router->get('/app/story/{storyId}', ['as' => 'app.story.show',
         'middleware' => 'localization|tenant.connection|jwt.auth',
@@ -307,7 +313,6 @@ $router->group(['middleware' => 'localization'], function ($router) {
         $router->get('/app/story/{story_id}/copy', ['as' => 'app.story.copyafterdecline',
         'middleware' => 'localization|tenant.connection|jwt.auth',
         'uses' => 'App\Story\StoryController@copyStoryAfterDecline']);
-        
       
     });
 

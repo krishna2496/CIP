@@ -139,17 +139,24 @@ class StoryRepository implements StoryInterface
 	 *
 	 * @param Illuminate\Http\Request $request
 	 * @param int $userId
+	 * @param string $status
 	 * @return \Illuminate\Pagination\LengthAwarePaginator
 	 */
-	public function getUserStoriesWithPagination(Request $request,int $userId): LengthAwarePaginator
+	public function getUserStoriesWithPagination(Request $request, int $userId = Null, string $status = Null): LengthAwarePaginator
 	{
 		$languageId = $this->languageHelper->getLanguageId($request);
 		
-		$userStoryQuery = $this->story->select('story_id','mission_id','title','description','status')
+		$userStoryQuery = $this->story->select('story_id','mission_id','title','description','status','created_at')
 		->with(['mission','storyMedia','mission.missionLanguage' => function ($query) use ($languageId) {
 			$query->select('mission_language_id', 'mission_id', 'title','short_description')
 			->where('language_id', $languageId);
-		}])->where('user_id',$userId);
+		}])
+		->when($userId, function ($query, $userId) {
+        	return $query->where('user_id',$userId);
+        })
+        ->when($status, function ($query, $status) {
+        	return $query->where('status', $status);
+        });
 		return $userStoryQuery->paginate($request->perPage);
 	}
 	

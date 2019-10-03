@@ -71,7 +71,7 @@ class StoryController extends Controller
         }
         
         $userStories = $this->storyRepository->getUserStoriesWithPagination($request, $userId);
-        $responceData = [];
+        
         $storyTransformed = $userStories
         ->getCollection()
         ->map(function ($story) use ($request){

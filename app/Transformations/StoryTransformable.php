@@ -2,11 +2,12 @@
 namespace App\Transformations;
 
 use App\Models\Story;
+use Carbon\Carbon;
 
 trait StoryTransformable
 {
     /**
-     * Select story fields
+     * Get Transfered stories
      *
      * @param App\Models\Story $story
      * @return App\Models\Story
@@ -18,7 +19,7 @@ trait StoryTransformable
         $prop->mission_id = $story->mission_id;
         $prop->title = $story->title;
         $prop->description = $story->description;
-        $prop->status = $story->status;
+        $prop->status = trans('messages.status.'.$story->status);
         
         if (!empty($story->user)) {
         	$prop->user_id = $story->user_id;
@@ -40,5 +41,53 @@ trait StoryTransformable
         	$prop->mission_description = $story->mission->missionLanguage[0]->short_description;
         }       
         return $prop;
+    }
+    
+    /**
+     * Used for transform user stories 
+     * 
+     * @param Object $story
+     * @return array
+     */
+    protected function transformUserRelatedStory(Object $story): array
+    {	
+    	$userStories = $story->toArray();
+    	$transformedUserStories = array();
+    	
+    	$draftStory = $publishedStory = $pendingStories = $declinedStories = 0;
+    	foreach($story as $storyData)
+    	{
+    		switch ($storyData->status){
+    			case "DRAFT":
+    				$draftStory++;
+    				break;
+    			case "PENDING":
+    				$pendingStories++;
+    				break;
+    			case "PUBLISHED":
+    				$publishedStory++;
+    				break;
+    			case "DECLINED":
+    				$declinedStories++;
+    				break;
+    		}
+    		
+    		$transformedUserStories [] = [
+    			'story_id' => (int) $storyData->story_id,
+    			'mission_id' => $storyData->mission_id,
+    			'title' => $storyData->title,
+    			'description' => $storyData->description,
+    			'status' => trans('messages.status.'.$storyData->status),
+    			'storyMedia' => $storyData->storyMedia->first(),
+    			'created' =>  Carbon::parse($storyData->created_at)->format('d/m/Y'),
+    		];
+    	}
+    	
+    	$transformedUserStories ['draft_story_count'] = $draftStory;
+    	$transformedUserStories ['published_story_count'] = $publishedStory;
+    	$transformedUserStories ['pending_story_count'] = $pendingStories;
+    	$transformedUserStories ['declined_story_count'] = $declinedStories;
+    	
+    	return $transformedUserStories;
     }
 }
