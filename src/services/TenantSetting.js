@@ -1,9 +1,9 @@
 import axios from 'axios'
 import store from '../store'
 
-export default async(data) => {
+export default async() => {
     let responseData;
-    var url = process.env.VUE_APP_API_ENDPOINT + "app/tenant-settings";
+    let url = process.env.VUE_APP_API_ENDPOINT + "app/tenant-settings";
 
     await axios({
             url: url,
@@ -12,10 +12,11 @@ export default async(data) => {
         .then((response) => {
             let settingArray = [];
             if (response.data.data) {
-                $.each(response.data.data, function(index, module) {
-                    var key = module.key;
+                let responseDataArray = response.data.data;
+                responseDataArray.filter((module, index) => {
                     settingArray[index] = module.key
                 });
+
                 responseData = response.data.data;
 
             } else {
@@ -24,6 +25,6 @@ export default async(data) => {
             store.commit("setTenantSetting", settingArray);
 
         })
-        .catch(function(error) {});
+        .catch(function() {});
     return responseData;
 }

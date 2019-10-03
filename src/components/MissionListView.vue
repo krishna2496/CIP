@@ -1,7 +1,7 @@
 <template>
     <div class="cards-wrapper" v-if="items.length > 0">
         <div class="card-listing">
-            <div class="card-outer" v-for="mission in items">
+            <div class="card-outer" v-for="(mission, index) in items" :key=index>
                 <b-card no-body>
                     <b-card-header>
                         <div class="header-img-block">
@@ -203,7 +203,7 @@
                                                     alt="user">
                                             </i>
                                             <div class="text-wrap">
-                                                <b-progress :value="mission.achieved_goal" :max="mission.goal_objective"
+                                                <b-progress :value="mission.achieved_goal | filterGoal" :max="mission.goal_objective"
                                                     class="mb-2"></b-progress>
                                                 <span class="subtitle-text">
                                                     {{mission.achieved_goal}} {{ languageData.label.achieved}}
@@ -324,12 +324,12 @@
                 if (this.userList) {
                     return [{
                         data: this.userList.filter(option => {
-                            var firstName = option.first_name.toLowerCase();
-                            var lastName = option.last_name.toLowerCase();
-                            var email = option.email.toLowerCase();
-                            var searchString = firstName + '' + lastName + '' + email;
-                            setTimeout(function () {
-                                var myElement = document.querySelector('.autosuggest__results');
+                            let firstName = option.first_name.toLowerCase();
+                            let lastName = option.last_name.toLowerCase();
+                            let email = option.email.toLowerCase();
+                            let searchString = firstName + '' + lastName + '' + email;
+                            setTimeout(() => {
+                                let myElement = document.querySelector('.autosuggest__results');
                                 if (myElement != null) {
                                     new SimpleBar(myElement, {
                                         autoHide: false
@@ -344,10 +344,10 @@
         },
         methods: {
             noRecordFound() {
-                var defaultLang = (store.state.defaultLanguage).toLowerCase();
+                let defaultLang = (store.state.defaultLanguage).toLowerCase();
                 if (JSON.parse(store.state.missionNotFoundText) != "") {
                     let missionNotFoundArray = JSON.parse(store.state.missionNotFoundText);
-                    let data = missionNotFoundArray.filter(function (item, i) {
+                    let data = missionNotFoundArray.filter( (item, i) => {
                         if (item.lang == defaultLang) {
                             return item
                         }
@@ -366,7 +366,7 @@
             // Get theme title
             getThemeTitle(translations) {
                 if (translations) {
-                    var filteredObj = translations.filter(function (item, i) {
+                    let filteredObj = translations.filter( (item, i) => {
                         if (item.lang === store.state.defaultLanguage.toLowerCase()) {
                             return translations[i].title;
                         }
@@ -416,7 +416,7 @@
             },
             tabHandler() {
                 setTimeout(() => {
-                    var myElement = document.querySelector('.autosuggest__results');
+                    let myElement = document.querySelector('.autosuggest__results');
                     new SimpleBar(myElement, {
                         autoHide: false
                     });
@@ -424,8 +424,8 @@
             },
             //This is what the <input/> value is set to when you are selecting a suggestion.
             getSuggestionValue(suggestion) {
-                var firstName = suggestion.item.first_name;
-                var lastName = suggestion.item.last_name;
+                let firstName = suggestion.item.first_name;
+                let lastName = suggestion.item.last_name;
                 return firstName + ' ' + lastName;
             },
             // Open auto suggest modal
@@ -436,9 +436,9 @@
                 this.$refs.userDetailModal.show();
                 this.currentMission = missionId;
                 setTimeout(() => {
-                    var onFocus = document.getElementById('autosuggest');
+                    let onFocus = document.getElementById('autosuggest');
                     onFocus.addEventListener("click", function () {
-                        var myElement = document.querySelector('.autosuggest__results');
+                        let myElement = document.querySelector('.autosuggest__results');
                         if (myElement != null) {
                             new SimpleBar(myElement, {
                                 autoHide: true

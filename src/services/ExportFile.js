@@ -2,7 +2,7 @@ import store from "../store";
 import axios from "axios";
 
 export default async(exportUrl, fileName) => {
-    var url = `${process.env.VUE_APP_API_ENDPOINT}${exportUrl}`;
+    let url = `${process.env.VUE_APP_API_ENDPOINT}${exportUrl}`;
     await axios({
         url: url,
         responseType: "arraybuffer",

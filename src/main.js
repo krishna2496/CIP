@@ -68,6 +68,10 @@ Vue.filter('formatDate', function(value) {
     }
 })
 
+Vue.filter('filterGoal', function(value) {
+    return parseInt(value)
+})
+
 Vue.filter('formatTime', function(value) {
     if (value) {
         let splitArray = value.split(":");

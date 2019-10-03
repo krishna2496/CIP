@@ -3352,7 +3352,7 @@ main {
     position: absolute;
     left: 0;
     right: 0;
-    z-index: 3;
+    z-index: 6;
     top: 0;
     bottom: 0;
     width: 100%;
@@ -3365,6 +3365,10 @@ main {
     &.loader-active,
     &.recent-loader {
         display: flex;
+    }
+    &.fixed-loader{
+        position:fixed;
+        z-index:99999;
     }
 }
 

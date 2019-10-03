@@ -29,7 +29,7 @@
         },
         methods: {
             handleSelect(e) {
-                var selectedData = []
+                let selectedData = []
                 selectedData['selectedId'] = e.target.dataset.id;
                 selectedData['selectedType'] = e.target.dataset.type;
                 this.$emit("updateCall", selectedData);

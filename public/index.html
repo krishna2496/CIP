@@ -39,7 +39,7 @@
     <link rel="stylesheet" href="" id="customCss" />
     <script type="text/javascript">
         $(document).ready(function() {
-            var apiUrl = '<%= VUE_APP_API_ENDPOINT %>'
+            let apiUrl = '<%= VUE_APP_API_ENDPOINT %>'
             getDynamicCssUrl = apiUrl + 'app/custom-css';
             $.ajax({
                 type: "GET",

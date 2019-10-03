@@ -393,17 +393,16 @@
 											</div>
 											<div
 												v-if="missionDetail.description && missionDetail.description.length > 0">
-												<div v-for="section in missionDetail.description">
+												<div v-for="(section, index) in missionDetail.description" :key=index>
 													<h2>{{section.title}}</h2>
 													<p>{{section.description}}</p>
 												</div>
 											</div>
-											<div v-if="missionDetail.mission_document 
-									&& missionDetail.mission_document.length > 0">
+											<div v-if="missionDetail.mission_document && missionDetail.mission_document.length > 0">
 												<h2>{{ languageData.label.documents }}</h2>
 												<div class="document-list-wrap">
 													<div class="document-list-block"
-														v-for="document in missionDetail.mission_document">
+														v-for="(document ,index) in missionDetail.mission_document" :key=index>
 														<!-- pdf -->
 														<template v-if="document.document_type =='pdf'">
 															<b-link :href="document.document_path" target="_blank"
@@ -481,7 +480,7 @@
 												<div class="comment-list-inner" data-simplebar>
 													<div class="more-inner-list">
 														<div class="comment-list-item"
-															v-for="comments in missionComment">
+															v-for="(comments, index) in missionComment" :key=index>
 															<b-media class="comment-media">
 																<i slot="aside" class="user-profile-icon"
 																	:style="{backgroundImage: 'url(' + comments.user.avatar + ')'}">
@@ -672,9 +671,6 @@
 				selected: "",
 				search: "",
 				userList: [],
-				missionList: [{
-					mission: 1
-				}],
 				myclass: ["userdetail-modal"],
 				currentMissionId: 0,
 				invitedUserId: 0,
@@ -744,13 +740,13 @@
 			};
 		},
 		mounted() {
-			var tabItem = document.querySelectorAll(".platform-details-tab .nav-tabs li a")
+			let tabItem = document.querySelectorAll(".platform-details-tab .nav-tabs li a")
 			tabItem.forEach(function (tabItemEvent) {
 				tabItemEvent.addEventListener("click", tabsHandle);
 			});
 
 			function tabsHandle(tabsEvent) {
-				var i, tabContent, tabLinks;
+				let i, tabContent, tabLinks;
 				tabContent = document.getElementsByClassName("tab-content");
 				for (i = 0; i < tabContent.length; i++) {
 					tabContent[i].style.display = "none";
@@ -765,7 +761,7 @@
 				tabsEvent.currentTarget.className += " active";
 			}
 
-			var currentUrl = (((window.location.origin).split('.')));
+			let currentUrl = (((window.location.origin).split('.')));
 
 			if (currentUrl[0]) {
 				if (process.env.NODE_ENV == 'production') {
@@ -783,12 +779,12 @@
 				if (this.userList) {
 					return [{
 						data: this.userList.filter(option => {
-							var firstName = option.first_name.toLowerCase();
-							var lastName = option.last_name.toLowerCase();
-							var email = option.email.toLowerCase();
-							var searchString = firstName + '' + lastName + '' + email;
-							setTimeout(function () {
-								var myElement = document.querySelector('.autosuggest__results');
+							let firstName = option.first_name.toLowerCase();
+							let lastName = option.last_name.toLowerCase();
+							let email = option.email.toLowerCase();
+							let searchString = firstName + '' + lastName + '' + email;
+							setTimeout(() => {
+								let myElement = document.querySelector('.autosuggest__results');
 								if (myElement != null) {
 									new SimpleBar(myElement, {
 										autoHide: false
@@ -821,8 +817,8 @@
 			// Get comment create date format
 			getCommentDate(commentDate) {
 				if (commentDate != null) {
-					var day = moment(commentDate, "YYYY-MM-DD HH:mm:ss").format('dddd');
-					var date = moment(String(commentDate)).format('MMMM DD, YYYY, h:mm A')
+					let day = moment(commentDate, "YYYY-MM-DD HH:mm:ss").format('dddd');
+					let date = moment(String(commentDate)).format('MMMM DD, YYYY, h:mm A')
 					return day + ', ' + date;
 				} else {
 					return '';
@@ -875,7 +871,7 @@
 			},
 			tabHandler() {
 				setTimeout(() => {
-					var myElement = document.querySelector('.autosuggest__results');
+					let myElement = document.querySelector('.autosuggest__results');
 					new SimpleBar(myElement, {
 						autoHide: false
 					});
@@ -883,8 +879,8 @@
 			},
 			//This is what the <input/> value is set to when you are selecting a suggestion.
 			getSuggestionValue(suggestion) {
-				var firstName = suggestion.item.first_name;
-				var lastName = suggestion.item.last_name;
+				let firstName = suggestion.item.first_name;
+				let lastName = suggestion.item.last_name;
 				return firstName + ' ' + lastName;
 			},
 			// Open auto suggest modal
@@ -895,9 +891,9 @@
 				this.$refs.userDetailModal.show();
 				this.currentMission = missionId;
 				setTimeout(() => {
-					var onFocus = document.getElementById('autosuggest');
+					let onFocus = document.getElementById('autosuggest');
 					onFocus.addEventListener("click", function () {
-						var myElement = document.querySelector('.autosuggest__results');
+						let myElement = document.querySelector('.autosuggest__results');
 						if (myElement != null) {
 							new SimpleBar(myElement, {
 								autoHide: true
@@ -1040,7 +1036,7 @@
 				if (missionTheme) {
 					let translations = missionTheme.translations
 					if (translations) {
-						var filteredObj = translations.filter(function (item, i) {
+						let filteredObj = translations.filter( (item, i) => {
 							if (item.lang === store.state.defaultLanguage.toLowerCase()) {
 								return translations[i].title;
 							}
@@ -1054,7 +1050,7 @@
 			getSkills(missionDetail) {
 				let skills = '';
 				if (missionDetail.skill) {
-					var filteredObj = (missionDetail.skill).filter(function (item, i) {
+					let filteredObj = (missionDetail.skill).filter( (item, i) => {
 						if (skills == '') {
 							skills = item.title;
 						} else {
@@ -1075,9 +1071,8 @@
 				missionComments(commentData).then(response => {
 					if (response.error == false) {
 						if (this.missionComment.length) {
-							var _this = this;
-							response.data.map(function (value, key) {
-								_this.missionComment.push(value);
+							response.data.map((value, key) =>{
+								this.missionComment.push(value);
 							});
 						} else {
 							this.missionComment = response.data;
@@ -1129,10 +1124,10 @@
 
 			showMoreComment() {
 				this.page++;
-				var simplebarContent = document.querySelector(".comment-list-inner .simplebar-content");
-				var simplebarHeight = simplebarContent.offsetHeight
-				setTimeout(function () {
-					var simplebarWrapper = document.querySelector(".comment-list .simplebar-content-wrapper");
+				let simplebarContent = document.querySelector(".comment-list-inner .simplebar-content");
+				let simplebarHeight = simplebarContent.offsetHeight
+				setTimeout(() => {
+					let simplebarWrapper = document.querySelector(".comment-list .simplebar-content-wrapper");
 					simplebarWrapper.scrollTop = simplebarHeight;
 				}, 100);
 				this.missionComments();
@@ -1140,7 +1135,7 @@
 		},
 		created() {
 			this.sharingUrl = document.URL
-			var _this = this;
+			let _this = this;
 			// Get mission detail
 			this.getMissionDetail();
 			if (store.state.search != null) {
@@ -1196,14 +1191,14 @@
 				this.relatedMissionlLoader = true
 				this.isShownMediaComponent = false
 				this.max = 100,
-					this.value = 70,
-					this.missionListing = [],
-					this.missionComment = [],
-					this.submitted = false,
-					this.nextUrl = null,
-					this.postComment = false,
-					this.loadMoreComment = false,
-					this.languageData = JSON.parse(store.state.languageLabel);
+				this.value = 70,
+				this.missionListing = [],
+				this.missionComment = [],
+				this.submitted = false,
+				this.nextUrl = null,
+				this.postComment = false,
+				this.loadMoreComment = false,
+				this.languageData = JSON.parse(store.state.languageLabel);
 				this.applyButton = this.languageData.label.apply_now;
 				this.page = 1;
 				this.isFacebookSharingDisplay = false

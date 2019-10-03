@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import axios from "axios";
 import router from './router'
 Vue.use(Vuex)
 
@@ -174,7 +173,7 @@ export default new Vuex.Store({
             state.avatar = data.avatar;
         },
         changeUserDetail(state, data) {
-            var langaugeCode = data.languageCode;
+            let langaugeCode = data.languageCode;
             localStorage.setItem('firstName', data.firstName)
             localStorage.setItem('lastName', data.lastName)
             localStorage.setItem('defaultLanguage', langaugeCode.toUpperCase())

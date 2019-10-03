@@ -4,7 +4,7 @@
             <b-row>
                 <b-col md="6" class="footer-menu">
                     <b-list-group v-if="isDynamicFooterItemsSet">
-                        <b-list-group-item v-for="item in footerItems" :to="{ path: '/'+item.slug}"
+                        <b-list-group-item v-for="(item, key) in footerItems" v-bind:key=key :to="{ path: '/'+item.slug}"
                             :title="getTitle(item)" @click.native="clickHandler">{{getTitle(item)}}
                         </b-list-group-item>
                     </b-list-group>
@@ -58,7 +58,7 @@
                 //Get title according to language
                 items = items.pages;
                 if (items) {
-                    var filteredObj = items.filter(function (item, i) {
+                    let filteredObj = items.filter((item, i) => {
                         if (item.language_id == store.state.defaultLanguageId) {
                             return item;
                         }
@@ -78,9 +78,10 @@
             clickHandler($event) {
                 this.$emit('cmsListing', this.$route.params.slug);
             },
+            
             footerAdj() {
                 if (document.querySelector("footer") != null) {
-                    var footerH = document.querySelector("footer").offsetHeight;
+                    let footerH = document.querySelector("footer").offsetHeight;
                     document.querySelector("footer").style.marginTop = -footerH + "px";
                     document.querySelector(".inner-pages").style.paddingBottom =
                         footerH + "px";

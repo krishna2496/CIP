@@ -105,8 +105,8 @@ export default {
                     loadLocaleMessages(store.state.defaultLanguage).then(response =>{
                         this.languageData = JSON.parse(store.state.languageLabel);
                         this.isPageShown = true
-                        var _this =this;
-                        setTimeout(function(){
+                        let _this =this;
+                        setTimeout(() => {
                             _this.$refs.email.focus();
                         },500)
                     });
@@ -114,7 +114,7 @@ export default {
         },
         
         async setLanguage(language){
-            var _this = this;
+            let _this = this;
             this.defautLang = language.selectedVal;
             store.commit('setDefaultLanguage',language);
             this.$i18n.locale = language.selectedVal.toLowerCase()
@@ -154,9 +154,9 @@ export default {
     created() {
         //Database connection and fetching tenant options api
         this.createConnection()
-        var domain = '';
-        var imagePath = '';
-        var currentUrl = (((window.location.origin).split('.')));
+        let domain = '';
+        let imagePath = '';
+        let currentUrl = (((window.location.origin).split('.')));
         if (currentUrl[0]) {
             domain = ((currentUrl[0]).split('//'));
             if(domain[1]) {

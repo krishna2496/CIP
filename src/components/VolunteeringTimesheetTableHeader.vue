@@ -120,9 +120,9 @@
 			}
 		},
 		mounted() {
-			var currentYear = new Date().getFullYear();
-			var yearsList = [];
-			for (var index = currentYear; index > (currentYear - 5); index--) {
+			let currentYear = new Date().getFullYear();
+			let yearsList = [];
+			for (let index = currentYear; index > (currentYear - 5); index--) {
 				yearsList.push([index, index]);
 			}
 			this.yearListing = yearsList;
@@ -145,16 +145,15 @@
 				this.$root.$emit('bv::hide::tooltip');
 			},
 			getWeekDayNameOfMonth(month, year) {
-				//pass week number
 				//stating date of week	
 				let _this = this
-				var start = moment().day("Monday").year(this.currentYearNumber).week(this.currentWeak);
+				let start = moment().day("Monday").year(this.currentYearNumber).week(this.currentWeak);
 				
 				this.weekNameArray = []
 				this.daysArray = []
 				let i=0;
 				let j = 1;
-				for (var end = moment(start).add(1, 'week'); start.isBefore(end); start.add(1, 'day')) {
+				for (let end = moment(start).add(1, 'week'); start.isBefore(end); start.add(1, 'day')) {
 					let dayName = start.format('dddd').toLowerCase();
 						this.weekNameArray[j] = this.languageData.label[dayName];
 						this.daysArray[i] = start.format('D')-1
@@ -180,7 +179,6 @@
 			},
 			changeYear(year) {
 				let payload = moment(this.currentMonth).year(year.selectedId)
-				
 				if ((parseInt(this.currentMonthFix.format('M')) <= parseInt(payload.format('M'))) && (parseInt(this.currentMonthFix.format(
 						'YYYY')) <= parseInt(payload.format('YYYY')))) {
 					payload = moment().startOf('date');
@@ -221,13 +219,11 @@
 					this.previousButtonDisable = false
 				}
 				this.getWeekDayNameOfMonth(this.sortNameOfMonth, this.currentYearNumber)
-				var selectedData = []
+				let selectedData = []
 				selectedData['month'] = this.currentMonthNumber;
 				selectedData['year'] = this.currentYearNumber;
 				selectedData['weekdays'] = this.weekNameArray;
 				selectedData['days'] = this.daysArray;
-					// this.yearArray[day] = start.format('YYYY')
-					// 	this.monthArray[day] = start.format('MMM')
 				selectedData['yearArray'] = this.yearArray;
 				selectedData['monthArray'] = this.monthArray;
 				this.$emit("updateCall", selectedData);

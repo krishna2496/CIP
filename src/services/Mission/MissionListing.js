@@ -3,11 +3,11 @@ import axios from 'axios'
 
 export default async(data) => {
     let responseData;
-    var defaultLanguage = '';
+    let defaultLanguage = '';
     if (store.state.defaultLanguage !== null) {
         defaultLanguage = (store.state.defaultLanguage).toLowerCase();
     }
-    var url = process.env.VUE_APP_API_ENDPOINT + "app/missions?page=" + data.page
+    let url = process.env.VUE_APP_API_ENDPOINT + "app/missions?page=" + data.page
 
     if (data.search != '' && data.search != null) {
         url = url + "&search=" + data.search
@@ -37,9 +37,9 @@ export default async(data) => {
     if (data.exploreMissionParams != '') {
         url = url + "&explore_mission_params=" + data.exploreMissionParams
     }
-    if (store.state.clearFilterSet == "") {
-        document.body.classList.add("loader-enable");
-    }
+    // if (store.state.clearFilterSet == "") {
+    //     document.body.classList.add("loader-enable");
+    // }
     await axios({
             url: url,
             method: 'get',
@@ -76,10 +76,10 @@ export default async(data) => {
                 document.body.classList.remove("loader-enable");
             }
         })
-        .catch(function(error) {
-            if (store.state.clearFilterSet == "") {
-                document.body.classList.remove("loader-enable");
-            }
+        .catch(function() {
+            // if (store.state.clearFilterSet == "") {
+            //     document.body.classList.remove("loader-enable");
+            // }
         });
     return responseData;
 }

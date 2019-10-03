@@ -5,7 +5,7 @@
 				<span class="breadcrumb-current" @click.stop></span>
 				<div class="breadcrumb-dropdown">
 					<b-breadcrumb>
-						<b-breadcrumb-item v-for="(item, idx) in items" :key="idx" :to="item.link" @click.stop>
+						<b-breadcrumb-item v-for="(item, index) in items" :key="index" :to="item.link" @click.stop>
 							{{item.name}}
 						</b-breadcrumb-item>
 					</b-breadcrumb>
@@ -48,7 +48,7 @@
 		methods: {
 			handleBreadcrumb() {
 				if (screen.width < 768) {
-					var breadcrumbDropdown = document.querySelector(
+					let breadcrumbDropdown = document.querySelector(
 						".breadcrumb-dropdown-wrap"
 					);
 					breadcrumbDropdown.classList.toggle("open");
@@ -58,13 +58,13 @@
 		created() {
 			setTimeout(() => {
 				if (document.querySelector(".breadcrumb") != null) {
-					var currentDashboard = document.querySelector(
+					let currentDashboard = document.querySelector(
 						".breadcrumb .router-link-active"
 					).innerHTML;
 					this.currentDashboardPage = currentDashboard;
-					var currentLink = document.querySelector(".breadcrumb-current");
+					let currentLink = document.querySelector(".breadcrumb-current");
 					currentLink.innerHTML = this.currentDashboardPage;
-					var breadcrumbItem = document.querySelectorAll(".breadcrumb-item");
+					let breadcrumbItem = document.querySelectorAll(".breadcrumb-item");
 					currentLink.addEventListener("click", this.handleBreadcrumb);
 				}
 			});
