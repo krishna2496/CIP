@@ -293,7 +293,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
         'middleware' => 'localization|tenant.connection|jwt.auth',
         'uses' => 'App\Story\StoryController@destroy']);
         
-        /* Copy story data after decline */
+        /* Export all Story Data */
         $router->get('/app/story/export', ['as' => 'app.story.export',
          'middleware' => 'localization|tenant.connection|jwt.auth',
          'uses' => 'App\Story\StoryController@exportStory']);
