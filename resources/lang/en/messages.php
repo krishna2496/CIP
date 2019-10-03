@@ -137,6 +137,9 @@ return [
         'MESSAGE_NEWS_UPDATED' => 'News updated sucessfully',
         'MESSAGE_NEWS_CATEGORY_FOUND' => 'News category found sucessfully',
         'MESSAGE_NEWS_FOUND' => 'News found sucessfully',
+        'STORY_ADDED_SUCESSFULLY' => 'Story added successfully',
+        'MESSAGE_STORY_DELETED' => 'Story deleted sucessfully',
+        'MESSAGE_STORY_UPDATED' => 'Story updated successfully',
 	],
         
     /**
@@ -191,6 +194,7 @@ return [
         'ERROR_INVALID_MISSION_MEDIA_DATA' => 'Invalid mission media data',
         'ERROR_INVALID_MISSION_DOCUMENT_DATA' => 'Invalid mission document data',
         'ERROR_TIMESHEET_ENTRY_NOT_FOUND' => 'Timesheet entry not found',
+        'ERROR_USER_MISSIONS_NOT_FOUND' => 'Missions not found',
         'ERROR_APPROVED_TIMESHEET_DOCUMENTS' => 'You can not delete approved timesheet document',
         
         // Custom error code for Tenant Authorization - 210000 - 219999
@@ -259,7 +263,11 @@ return [
         'ERROR_NEWS_CATEGORY_NOT_FOUND' => 'News category not found in the system',
         'ERROR_NEWS_CATEGORIES_NOT_FOUND' => 'News categories not found in the system',
         'ERROR_NEWS_NOT_FOUND' => 'News not found in the system',
-        'ERROR_UNAUTHORIZED_USER' => 'Unauthorized user'
+        'ERROR_UNAUTHORIZED_USER' => 'Unauthorized user',
+
+        // For story module
+        'ERROR_STORY_NOT_FOUND' => 'Story not found in the system',
+        'ERROR_STORY_PUBLISHED_OR_DECLINED' => 'You cannot update published or declined story',
     ],
 
     /**

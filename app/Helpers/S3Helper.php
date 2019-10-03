@@ -118,20 +118,27 @@ class S3Helper
      * @param $file
      * @param string $tenantName
      * @param int $userId
-     * @param int $timesheetId
+     * @param string $folderName
      * @return string
      */
-    public function uploadDocumentOnS3Bucket($file, string $tenantName, int $userId, int $timesheetId): string
+    public function uploadDocumentOnS3Bucket($file, string $tenantName, int $userId, string $folderName): string
     {
-        $disk = Storage::disk('s3');
-        $fileName = pathinfo($file->getClientOriginalName())['filename'].'_'.time();
-        $fileExtension = pathinfo($file->getClientOriginalName())['extension'];
-        $documentName = $fileName.'.'.$fileExtension;
-        $documentPath = $tenantName.'/users/'.$userId.'/timesheet/'.$documentName;
-        $pathInS3 = 'https://'.env('AWS_S3_BUCKET_NAME').'.s3.'
-        .env("AWS_REGION").'.amazonaws.com/'. $documentPath;
+        try {
+            $disk = Storage::disk('s3');
+            $fileName = pathinfo($file->getClientOriginalName())['filename'] . '_' . time();
+            $fileExtension = pathinfo($file->getClientOriginalName())['extension'];
+            $documentName = $fileName . '.' . $fileExtension;
+            $documentPath = $tenantName . '/users/' . $userId . '/'.$folderName.'/' . $documentName;
+            $pathInS3 = 'https://' . env('AWS_S3_BUCKET_NAME') . '.s3.'
+            . env("AWS_REGION") . '.amazonaws.com/' . $documentPath;
 
-        $disk->put($documentPath, file_get_contents($file));
-        return $pathInS3;
+            if ($disk->put($documentPath, file_get_contents($file))) {
+                return $pathInS3;
+            } else {
+                return 0;
+            }
+        } catch (\Exception $e) {
+            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
+        }
     }
 }

@@ -157,6 +157,11 @@ $router->group(['middleware' => 'localization'], function ($router) {
     /* Get country list */
     $router->get('/app/country', ['middleware' => 'tenant.connection|jwt.auth',
     'uses' => 'App\Country\CountryController@index']);
+
+    /* Get user mission */
+    $router->get('/app/user/missions', [
+        'middleware' => 'tenant.connection|jwt.auth|JsonApiMiddleware',
+        'uses' => 'App\Mission\MissionController@getUserMissions']);
 });
 
     /* Policy pages  */
@@ -277,7 +282,21 @@ $router->group(['middleware' => 'localization'], function ($router) {
         $router->get('/app/news/{newsId}',['as' => 'app.news.show',
         'middleware' => 'localization|tenant.connection|jwt.auth',
         'uses' => 'App\News\NewsController@show']);
+        
+        /* Store story detail */
+        $router->post('/app/story',['as' => 'app.story.store',
+        'middleware' => 'localization|tenant.connection|jwt.auth',
+        'uses' => 'App\Story\StoryController@store']);
       
+        /* Delete story details */
+        $router->delete('/app/story/{storyId}', ['as' => 'app.story.destroy',
+        'middleware' => 'localization|tenant.connection|jwt.auth',
+        'uses' => 'App\Story\StoryController@destroy']);
+
+        /* Update story details */
+        $router->patch('/app/story/{storyId}', ['as' => 'app.story.update',
+        'middleware' => 'localization|tenant.connection|jwt.auth',
+        'uses' => 'App\Story\StoryController@update']);
     });
 
 /*

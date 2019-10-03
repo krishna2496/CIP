@@ -62,8 +62,6 @@ class NewsCategoryController extends Controller
                 config('constants.error_codes.ERROR_INVALID_ARGUMENT'),
                 trans('messages.custom_error_message.ERROR_INVALID_ARGUMENT')
             );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
 
@@ -75,46 +73,37 @@ class NewsCategoryController extends Controller
      */
     public function store(Request $request): JsonResponse
     {
-        try {
-            // Server side validations
-            $validator = Validator::make(
-                $request->all(),
-                [
-                    "category_name" => "required|max:255|
-                    unique:news_category,category_name,NULL,news_category_id,deleted_at,NULL",
-                    "translations" => "required",
-                    "translations.*.lang" => "required_with:translations|max:2",
-                    "translations.*.title" => "required_with:translations"
-                ]
-            );
+        // Server side validations
+        $validator = Validator::make(
+            $request->all(),
+            [
+                "category_name" => "required|max:255|
+                unique:news_category,category_name,NULL,news_category_id,deleted_at,NULL",
+                "translations" => "required",
+                "translations.*.lang" => "required_with:translations|max:2",
+                "translations.*.title" => "required_with:translations"
+            ]
+        );
 
-            // If request parameter have any error
-            if ($validator->fails()) {
-                return $this->responseHelper->error(
-                    Response::HTTP_UNPROCESSABLE_ENTITY,
-                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                    config('constants.error_codes.ERROR_NEWS_CATEGORY_INVALID_DATA'),
-                    $validator->errors()->first()
-                );
-            }
-            
-            // Create news category
-            $newsCategory = $this->newsCategoryRepository->store($request->all());
-
-            // Set response data
-            $apiData = ['news_category_id' => $newsCategory->news_category_id];
-            $apiStatus = Response::HTTP_CREATED;
-            $apiMessage = trans('messages.success.MESSAGE_NEWS_CATEGORY_CREATED');
-            
-            return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
-        } catch (InvalidArgumentException $e) {
-            return $this->invalidArgument(
-                config('constants.error_codes.ERROR_INVALID_ARGUMENT'),
-                trans('messages.custom_error_message.ERROR_INVALID_ARGUMENT')
+        // If request parameter have any error
+        if ($validator->fails()) {
+            return $this->responseHelper->error(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                config('constants.error_codes.ERROR_NEWS_CATEGORY_INVALID_DATA'),
+                $validator->errors()->first()
             );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
+        
+        // Create news category
+        $newsCategory = $this->newsCategoryRepository->store($request->all());
+
+        // Set response data
+        $apiData = ['news_category_id' => $newsCategory->news_category_id];
+        $apiStatus = Response::HTTP_CREATED;
+        $apiMessage = trans('messages.success.MESSAGE_NEWS_CATEGORY_CREATED');
+        
+        return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
     }
 
     /**
@@ -166,8 +155,6 @@ class NewsCategoryController extends Controller
                 config('constants.error_codes.ERROR_NEWS_CATEGORY_NOT_FOUND'),
                 trans('messages.custom_error_message.ERROR_NEWS_CATEGORY_NOT_FOUND')
             );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
 
@@ -192,8 +179,6 @@ class NewsCategoryController extends Controller
                 config('constants.error_codes.ERROR_NEWS_CATEGORY_NOT_FOUND'),
                 trans('messages.custom_error_message.ERROR_NEWS_CATEGORY_NOT_FOUND')
             );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
 
@@ -218,8 +203,6 @@ class NewsCategoryController extends Controller
                 config('constants.error_codes.ERROR_NEWS_CATEGORY_NOT_FOUND'),
                 trans('messages.custom_error_message.ERROR_NEWS_CATEGORY_NOT_FOUND')
             );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
 }

@@ -121,6 +121,18 @@ return [
         'user_thumbnail' => [
             'valid_media_path' => 'Please enter valid media image',
         ],
+        'story_images.*' => [
+            'valid_story_image_type' => 'Please select valid image type',
+            'max' => 'Image size must be ' .
+            (config('constants.STORY_IMAGE_SIZE_LIMIT') / 1024) . 'mb or below',
+        ],
+        'story_videos' => [
+            'valid_story_video_url' => 'Please enter valid video url',
+            'max_video_url' => 'Maximum '.config('constants.STORY_MAX_VIDEO_LIMIT').' video url can be added',
+        ],
+        'story_images' => [
+            'max' => 'Maximum '.config('constants.STORY_MAX_IMAGE_LIMIT').' images can be added',
+        ],
     ],
 
     /*
