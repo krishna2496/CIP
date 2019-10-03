@@ -164,7 +164,7 @@ class UserController extends Controller
         $tenantLanguageCodes = $this->languageHelper->getTenantLanguageCodeList($request);
         $availabilityList = $this->userRepository->getAvailability();
 
-        $defaultLanguage = $this->getDefaultTenantLanguage($request);
+        $defaultLanguage = $this->languageHelper->getDefaultTenantLanguage($request);
         $languages = $this->languageHelper->getLanguages($request);
         $language = ($request->hasHeader('X-localization')) ?
         $request->header('X-localization') : $defaultLanguage->code;
