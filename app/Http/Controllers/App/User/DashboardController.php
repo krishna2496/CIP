@@ -95,7 +95,11 @@ class DashboardController extends Controller
     public function index(Request $request): JsonResponse
     {
         $userId = $request->auth->user_id;
-        $timesheetData = $this->timesheetRepository->getTotalHours($userId);
+        $year = $request->year;
+        $month = $request->month;
+        $missionId = $request->mission_id;
+
+        $timesheetData = $this->timesheetRepository->getTotalHours($userId, $year, $month);
         $timesheetCount = $this->timesheetRepository->getTotalPendingRequests($userId);
         $missionCount = $this->missionApplicationRepository->missionApplicationCount($userId);
         $organizationCount = $this->missionApplicationRepository->organizationCount($userId);

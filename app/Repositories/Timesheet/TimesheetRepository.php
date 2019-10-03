@@ -446,9 +446,11 @@ class TimesheetRepository implements TimesheetInterface
      * Get user timesheet total hours data
      *
      * @param int $userId
+     * @param int $year
+     * @param int $month
      * @return string
      */
-    public function getTotalHours(int $userId)
+    public function getTotalHours(int $userId, int $year, int $month)
     {
         $statusArray = [config('constants.timesheet_status_id.APPROVED'),
         config('constants.timesheet_status_id.AUTOMATICALLY_APPROVED')];
