@@ -973,11 +973,11 @@ class MissionRepository implements MissionInterface
         ->withCount(['missionApplication as user_application_count' => function ($query) use ($request) {
             $query->where('user_id', $request->auth->user_id)
             ->whereIn('approval_status', [config("constants.application_status")["AUTOMATICALLY_APPROVED"],
-            config("constants.application_status")["PENDING"]]);
+            config("constants.application_status")["PENDING"]])->whereNull('deleted_at');
         }])
         ->withCount(['missionApplication as mission_application_count' => function ($query) {
             $query->whereIn('approval_status', [config("constants.application_status")["AUTOMATICALLY_APPROVED"],
-            config("constants.application_status")["PENDING"]]);
+            config("constants.application_status")["PENDING"]])->whereNull('deleted_at');
         }])
         ->withCount(['favouriteMission as favourite_mission_count' => function ($query) use ($request) {
             $query->Where('user_id', $request->auth->user_id);
@@ -986,7 +986,8 @@ class MissionRepository implements MissionInterface
             $query->select('mission_id')
                 ->from('mission_application')
                 ->where('user_id', $request->auth->user_id)
-                ->where('approval_status', '<>', config("constants.application_status")["REFUSED"]);
+                ->where('approval_status', '<>', config("constants.application_status")["REFUSED"])
+                ->whereNull('deleted_at');
         });
         $missionQuery->withCount([
             'missionRating as mission_rating_count' => function ($query) {
