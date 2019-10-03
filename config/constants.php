@@ -218,6 +218,13 @@ return [
 		'DECLINED' => 'DECLINED'
 	],
 
+	/**
+	 * Export story file names
+	 */
+	'export_story_file_names' => [
+		'STORY_XLSX' => 'Story.xlsx',
+	],
+		
     /*
      * Folder name s3
      */

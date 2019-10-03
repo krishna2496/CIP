@@ -60,4 +60,10 @@ interface StoryInterface
 	 * @return int $newStoryId
 	 */
 	public function doCopyDeclinedStory(int $storyId): int;
+	
+	/**
+	 * Used for get the list of all story data
+	 * @return Story
+	 */
+	public function gatAllStoryList(): Object;
 }

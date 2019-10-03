@@ -8,6 +8,7 @@ use App\Models\Story;
 use App\Helpers\Helpers;
 use App\Helpers\ResponseHelper;
 use App\Http\Controllers\Controller;
+use App\Helpers\ExportCSV;
 use Illuminate\Http\JsonResponse;
 use App\Traits\RestExceptionHandlerTrait;
 use App\Transformations\StoryTransformable;
@@ -28,18 +29,26 @@ class StoryController extends Controller
     private $responseHelper;
     
     /**
+     * @var App\Helpers\Helpers
+     */
+    private $helpers;
+    
+    /**
      * Create a new Story controller instance
      *
      * @param App\Repositories\Story\StoryRepository $storyRepository
      * @param App\Helpers\ResponseHelper $responseHelper
+     * @param App\Helpers\Helpers $helpers
      * @return void
      */
     public function __construct(
         StoryRepository $storyRepository,
-        ResponseHelper $responseHelper
+        ResponseHelper $responseHelper,
+    	Helpers $helpers
     ) {
         $this->storyRepository = $storyRepository;
         $this->responseHelper = $responseHelper;
+        $this->helpers = $helpers;
     }
        
     /**
@@ -171,4 +180,48 @@ class StoryController extends Controller
     	}
     }
     
+    
+    /**
+     * Export user's story
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return Object
+     */
+    public function exportStory(Request $request): Object
+    {
+    	//get story data
+    	$storyList = $this->storyRepository->gatAllStoryList();
+    
+    	if ($storyList->count()) {
+    		$fileName = config('constants.export_story_file_names.STORY_XLSX');
+    
+    		$excel = new ExportCSV($fileName);
+    
+    		$headings = [
+    				trans('messages.export_story_headings.STORY_TITLE'),
+    				trans('messages.export_story_headings.STORY_DESCRIPTION'),
+    				trans('messages.export_story_headings.STORY_STATUS'),
+    				trans('messages.export_story_headings.PUBLISH_DATE'),
+    		];
+    
+    		$excel->setHeadlines($headings);
+    		//dump($storyList->toArray());
+    		foreach ($storyList as $story) {
+    			$excel->appendRow([
+    					$story->title,
+    					$story->description,
+    					$story->status,
+    					$story->published_at
+    			]);
+    		}
+    
+    		$tenantName = $this->helpers->getSubDomainFromRequest($request);
+    		$path = $excel->export('app/'.$tenantName.'/story/'.$request->auth->user_id.'/exports');
+    		return response()->download($path, $fileName);
+    	}
+    
+    	$apiStatus = Response::HTTP_OK;
+    	$apiMessage =  trans('messages.success.MESSAGE_ENABLE_TO_EXPORT_USER_STORIES_ENTRIES');
+    	return $this->responseHelper->success($apiStatus, $apiMessage);
+    }
 }

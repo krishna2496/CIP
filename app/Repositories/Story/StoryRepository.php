@@ -219,7 +219,15 @@ class StoryRepository implements StoryInterface
     	
     	return $newStoryId;
     }
-	
+
+    /**
+     * Used for get the list of all story data
+     * @return Story
+     */
+    public function gatAllStoryList(): Object
+    {
+    	return $this->story->get();
+    }
 }
 
     

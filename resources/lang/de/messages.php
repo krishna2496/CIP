@@ -110,6 +110,7 @@ return [
     	'MESSAGE_STORY_STATUS_UPDATED' => 'DE: Story status updated successfully',
     	'MESSAGE_STORY_FOUND' => 'DE: Story found sucessfully',
     	'MESSAGE_STORY_COPIED_SUCCESS' => 'DE: Story copied successfully',
+    	'MESSAGE_ENABLE_TO_EXPORT_USER_STORIES_ENTRIES' => 'DE: No data found, to generate story entries',
     ],
 
         
@@ -225,4 +226,14 @@ return [
         // For story module
         'ERROR_STORY_NOT_FOUND' => 'DE: Story not found in the system',
     ],
+		
+	/**
+	 * Export story sheet's headings
+	 */
+	'export_story_headings' => [
+		'STORY_TITLE' => 'DE: Title',
+		'STORY_DESCRIPTION' => 'DE: Description',
+		'STORY_STATUS' => 'DE: Status',
+		'PUBLISH_DATE' => 'DE: Publish Date',
+	]
 ];
