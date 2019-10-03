@@ -292,6 +292,11 @@ $router->group(['middleware' => 'localization'], function ($router) {
         $router->delete('/app/story/{storyId}', ['as' => 'app.story.destroy',
         'middleware' => 'localization|tenant.connection|jwt.auth',
         'uses' => 'App\Story\StoryController@destroy']);
+
+        /* Update story details */
+        $router->patch('/app/story/{storyId}', ['as' => 'app.story.update',
+        'middleware' => 'localization|tenant.connection|jwt.auth',
+        'uses' => 'App\Story\StoryController@update']);
     });
 
 /*

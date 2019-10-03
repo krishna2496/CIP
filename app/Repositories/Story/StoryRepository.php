@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Helpers\Helpers;
 use App\Helpers\S3Helper;
 use App\Repositories\Story\StoryInterface;
+use Illuminate\Support\Collection;
 
 class StoryRepository implements StoryInterface
 {
@@ -67,49 +68,119 @@ class StoryRepository implements StoryInterface
             'user_id' => $request->auth->user_id,
         );
 
-        $storyData = $this->story->create($storyDataArray);
-       
-        // Store story image
+        $storyData = $this->story->create($storyDataArray);       
+        
         if ($request->hasFile('story_images')) {
-            $tenantName = $this->helpers->getSubDomainFromRequest($request);
-            $files = $request->file('story_images');
-            foreach ($files as $file) {
-                $filePath = $this->s3helper
-                ->uploadDocumentOnS3Bucket(
-                    $file,
-                    $tenantName,
-                    $request->auth->user_id,
-                    config('constants.folder_name.story')
-                );
-                $storyImage = array('story_id' => $storyData->story_id,
-                                        'type' => 'image',
-                                        'path' => $filePath);
-                $this->storyMedia->create($storyImage);
-            }
+            // Store story images
+            $this->storeStoryImages($request, $storyData->story_id);
         }
 
-        // Store story video url
-        if ($request->has('story_videos')) {
-            foreach ($request->story_videos as $value) {
-                $storyVideo = array('story_id' => $storyData->story_id,
-                    'type' => 'video',
-                    'path' => $value);
-                $this->storyMedia->create($storyVideo);
-            }
+        if ($request->has('story_videos')) {          
+            // Store story video url
+            $this->storeStoryVideoUrl($request->story_videos, $storyData->story_id);
         }
 
         return $storyData;
     }
     
     /**
-    * Remove the story details.
-    *
-    * @param  int  $storyId
-    * @param  int  $userId
-    * @return bool
-    */
+     * Update story details
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param int $storyId
+     * @return App\Models\Story
+     */
+    public function update(Request $request, int $storyId): Story
+    {
+        // Find story
+        $storyData = $this->story->where(['story_id' => $storyId,
+        'user_id' => $request->auth->user_id])->firstOrFail();
+
+        $storyDataArray = $request->except(['user_id', 'published_at', 'status']);
+        $storyData->update($storyDataArray);
+
+        if($request->hasFile('story_images')) {
+            // Store story images
+            $this->storeStoryImages($request, $storyData->story_id);
+        }
+
+        if ($request->has('story_videos')) {
+            // Store story video url
+            $this->storeStoryVideoUrl($request->story_videos, $storyData->story_id);
+        }
+
+        return $storyData;
+    }
+
+    /**
+     * Remove the story details.
+     *
+     * @param  int  $storyId
+     * @param  int  $userId
+     * @return bool
+     */
     public function delete(int $storyId, int $userId): bool
     {
         return $this->story->deleteStory($storyId, $userId);
+    }
+
+    /**
+    * Store story images.
+    *
+    * @param \Illuminate\Http\Request $request
+    * @param int $storyId
+    * @return void
+    */
+    public function storeStoryImages(Request $request, int $storyId): void
+    {
+        $tenantName = $this->helpers->getSubDomainFromRequest($request);
+        $files = $request->file('story_images');
+        foreach ($files as $file) {
+            $filePath = $this->s3helper
+            ->uploadDocumentOnS3Bucket(
+                $file,
+                $tenantName,
+                $request->auth->user_id,
+                config('constants.folder_name.story')
+            );
+            $storyImage = array('story_id' => $storyId,
+                                    'type' => 'image',
+                                    'path' => $filePath);
+            $this->storyMedia->create($storyImage);
+        }
+    }
+
+    /**
+     * Store story video url.
+     *
+     * @param array $videoUrls
+     * @param int $storyId
+     * @return void
+     */
+    public function storeStoryVideoUrl(array $videoUrls, int $storyId): void
+    {
+        foreach ($videoUrls as $value) {
+            $storyVideo = array('story_id' => $storyId,
+                'type' => 'video',
+                'path' => $value);
+            $this->storyMedia->create($storyVideo);
+        }
+    }
+
+    /**
+     * Fetch story details
+     *
+     * @param int $userId
+     * @param int $storyId
+     * @param array $storyStatus
+     *
+     * @return null|Illuminate\Support\Collection
+     */
+    public function getStoryDetails(int $userId, int $storyId, array $storyStatus): ?Collection
+    {
+        return $this->story
+        ->where(['user_id' => $userId, 'story_id' => $storyId])
+        ->whereIn('status', $storyStatus)
+        ->get();
     }
 }

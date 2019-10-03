@@ -134,6 +134,7 @@ return [
         'MESSAGE_NEWS_FOUND' => 'Nouvelles trouvées avec succès',
         'STORY_ADDED_SUCESSFULLY' => 'Histoire ajoutée avec succès',
         'MESSAGE_STORY_DELETED' => 'Histoire supprimée avec succès',
+        'MESSAGE_STORY_UPDATED' => 'Histoire mise à jour avec succès',
     ],
 
         
@@ -261,6 +262,7 @@ return [
 
         // For story module
         'ERROR_STORY_NOT_FOUND' => 'Histoire non trouvée dans le système',
+        'ERROR_STORY_PUBLISHED_OR_DECLINED' => 'Vous ne pouvez pas mettre à jour une histoire publiée ou refusée',
     ],
 
     /**

@@ -88,6 +88,75 @@ class StoryController extends Controller
     }
 
     /**
+     * Update story details
+     *
+     * @param  \Illuminate\Http\Request $request
+     * @param  int $storyId
+     * @return Illuminate\Http\JsonResponse
+     */
+    public function update(Request $request, int $storyId): JsonResponse
+    {
+        try {
+            $validator = Validator::make(
+                $request->toArray(),
+                [
+                    'mission_id' => 'sometimes|required|exists:mission,mission_id,deleted_at,NULL',
+                    'title' => 'sometimes|required|max:255',
+                    'story_images' => 'max:'.config("constants.STORY_MAX_IMAGE_LIMIT"),
+                    'story_images.*' => 'max:'.config("constants.STORY_IMAGE_SIZE_LIMIT").'|valid_story_image_type',
+                    'story_videos' => 'valid_story_video_url|max_video_url',
+                    'description' => 'sometimes|required|max:40000'
+                ]
+            );
+            
+            // If validator fails
+            if ($validator->fails()) {
+                return $this->responseHelper->error(
+                    Response::HTTP_UNPROCESSABLE_ENTITY,
+                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                    config('constants.error_codes.ERROR_STORY_REQUIRED_FIELDS_EMPTY'),
+                    $validator->errors()->first()
+                );
+            }   
+    
+            if ($request->has('story_videos')) {
+                $storyVideos = explode(",", $request->story_videos);
+                $request->request->add(["story_videos" => $storyVideos]);
+            }
+            
+            $storyStatus = array(config('constants.story_status.PUBLISHED'),
+            config('constants.story_status.DECLINED'));
+
+            // Get story details
+            $storyDetails = $this->storyRepository->getStoryDetails($request->auth->user_id, $storyId, $storyStatus);
+
+            if ($storyDetails->count() > 0) {
+                return $this->responseHelper->error(
+                    Response::HTTP_UNPROCESSABLE_ENTITY,
+                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                    config('constants.error_codes.ERROR_STORY_PUBLISHED_OR_DECLINED'),
+                    trans('messages.custom_error_message.ERROR_STORY_PUBLISHED_OR_DECLINED')
+                );
+            }
+
+            // Update story data 
+            $storyData = $this->storyRepository->update($request, $storyId);
+            
+            // Set response data
+            $apiStatus = Response::HTTP_OK;
+            $apiMessage = trans('messages.success.MESSAGE_STORY_UPDATED');
+            $apiData = ['story_id' => $storyData->story_id];
+            
+            return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
+        } catch (ModelNotFoundException $e) {
+            return $this->modelNotFound(
+                config('constants.error_codes.ERROR_STORY_NOT_FOUND'),
+                trans('messages.custom_error_message.ERROR_STORY_NOT_FOUND')
+            );
+        }
+    }
+
+    /**
      * Remove the story details.
      *
      * @param \Illuminate\Http\Request $request

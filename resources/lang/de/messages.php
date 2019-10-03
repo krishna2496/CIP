@@ -105,7 +105,8 @@ return [
         'MESSAGE_NEWS_UPDATED' => 'DE: News updated sucessfully',
         'STORY_ADDED_SUCESSFULLY' => 'DE: Story added successfully',
         'MESSAGE_STORY_DELETED' => 'DE: Story deleted sucessfully',
-    ],
+        'MESSAGE_STORY_UPDATED' => 'DE: Story updated successfully',
+	],
 
         
     /**
@@ -219,5 +220,6 @@ return [
 
         // For story module
         'ERROR_STORY_NOT_FOUND' => 'DE: Story not found in the system',
+        'ERROR_STORY_PUBLISHED_OR_DECLINED' => 'DE: You cannot update published or declined story',
     ],
 ];

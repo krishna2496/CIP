@@ -216,6 +216,17 @@ return [
     ],
 
     /*
+     * Story status
+     */
+    'story_status' => [        
+        'DRAFT' => 'DRAFT',    
+        'PUBLISHED' => 'PUBLISHED',
+        'PENDING' => 'PENDING',
+        'DECLINED' => 'DECLINED'       
+    ],
+
+
+    /*
      * User notification types
      */
     'notification_types' => [
@@ -342,6 +353,7 @@ return [
 
         'ERROR_STORY_REQUIRED_FIELDS_EMPTY' => '700001',
         'ERROR_STORY_NOT_FOUND' => '700002',
+        'ERROR_STORY_PUBLISHED_OR_DECLINED' => '700003',
         
               
                 
