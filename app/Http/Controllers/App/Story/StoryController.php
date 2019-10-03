@@ -5,7 +5,6 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Repositories\Story\StoryRepository;
 use App\Models\Story;
-use App\Helpers\Helpers;
 use App\Helpers\ResponseHelper;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
@@ -56,7 +55,7 @@ class StoryController extends Controller
                 'title' => 'required|max:255',
                 'story_images' => 'max:'.config("constants.STORY_MAX_IMAGE_LIMIT"),
                 'story_images.*' => 'max:'.config("constants.STORY_IMAGE_SIZE_LIMIT").'|valid_story_image_type',
-                'story_videos' => 'valid_story_video_url|max_video_url',
+                'story_videos' => 'valid_story_video_url|max_video_url|sometimes|required',
                 'description' => 'required|max:40000'
             ]
         );
@@ -69,11 +68,6 @@ class StoryController extends Controller
                 config('constants.error_codes.ERROR_STORY_REQUIRED_FIELDS_EMPTY'),
                 $validator->errors()->first()
             );
-        }
-
-        if ($request->has('story_videos')) {
-            $storyVideos = explode(",", $request->story_videos);
-            $request->request->add(["story_videos" => $storyVideos]);
         }
         
         // Store story data 
@@ -104,7 +98,7 @@ class StoryController extends Controller
                     'title' => 'sometimes|required|max:255',
                     'story_images' => 'max:'.config("constants.STORY_MAX_IMAGE_LIMIT"),
                     'story_images.*' => 'max:'.config("constants.STORY_IMAGE_SIZE_LIMIT").'|valid_story_image_type',
-                    'story_videos' => 'valid_story_video_url|max_video_url',
+                    'story_videos' => 'valid_story_video_url|max_video_url|sometimes|required',
                     'description' => 'sometimes|required|max:40000'
                 ]
             );
@@ -119,18 +113,13 @@ class StoryController extends Controller
                 );
             }   
     
-            if ($request->has('story_videos')) {
-                $storyVideos = explode(",", $request->story_videos);
-                $request->request->add(["story_videos" => $storyVideos]);
-            }
-            
             $storyStatus = array(config('constants.story_status.PUBLISHED'),
             config('constants.story_status.DECLINED'));
 
-            // Get story details
-            $storyDetails = $this->storyRepository->getStoryDetails($request->auth->user_id, $storyId, $storyStatus);
+            // Check if approved or declined story
+            $validStoryStatus = $this->storyRepository->checkStoryStatus($request->auth->user_id, $storyId, $storyStatus);
 
-            if ($storyDetails->count() > 0) {
+            if ($validStoryStatus) {
                 return $this->responseHelper->error(
                     Response::HTTP_UNPROCESSABLE_ENTITY,
                     Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],

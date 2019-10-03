@@ -212,7 +212,7 @@ return [
      */
     'folder_name' => [
         'timesheet' => 'timesheet',
-        'story' => 'Story'
+        'story' => 'story'
     ],
 
     /*

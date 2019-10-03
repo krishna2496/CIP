@@ -71,11 +71,17 @@ class StoryRepository implements StoryInterface
         $storyData = $this->story->create($storyDataArray);       
         
         if ($request->hasFile('story_images')) {
+            $tenantName = $this->helpers->getSubDomainFromRequest($request);
             // Store story images
-            $this->storeStoryImages($request, $storyData->story_id);
+            $this->storeStoryImages(
+                $tenantName,
+                $storyData->story_id,
+                $request->file('story_images'),
+                $request->auth->user_id
+            );
         }
 
-        if ($request->has('story_videos')) {          
+        if ($request->has('story_videos')) {
             // Store story video url
             $this->storeStoryVideoUrl($request->story_videos, $storyData->story_id);
         }
@@ -99,9 +105,15 @@ class StoryRepository implements StoryInterface
         $storyDataArray = $request->except(['user_id', 'published_at', 'status']);
         $storyData->update($storyDataArray);
 
-        if($request->hasFile('story_images')) {
+        if($request->hasFile('story_images')) {            
+            $tenantName = $this->helpers->getSubDomainFromRequest($request);
             // Store story images
-            $this->storeStoryImages($request, $storyData->story_id);
+            $this->storeStoryImages(
+                $tenantName,
+                $storyData->story_id,
+                $request->file('story_images'),
+                $request->auth->user_id
+            );
         }
 
         if ($request->has('story_videos')) {
@@ -127,20 +139,25 @@ class StoryRepository implements StoryInterface
     /**
     * Store story images.
     *
-    * @param \Illuminate\Http\Request $request
+    * @param string $tenantName
     * @param int $storyId
+    * @param array $storyImages
+    * @param int $userId
     * @return void
     */
-    public function storeStoryImages(Request $request, int $storyId): void
+    public function storeStoryImages(
+        string $tenantName,
+        int $storyId,
+        array $storyImages,
+        int $userId
+    ): void 
     {
-        $tenantName = $this->helpers->getSubDomainFromRequest($request);
-        $files = $request->file('story_images');
-        foreach ($files as $file) {
+        foreach ($storyImages as $file) {
             $filePath = $this->s3helper
             ->uploadDocumentOnS3Bucket(
                 $file,
                 $tenantName,
-                $request->auth->user_id,
+                $userId,
                 config('constants.folder_name.story')
             );
             $storyImage = array('story_id' => $storyId,
@@ -151,15 +168,16 @@ class StoryRepository implements StoryInterface
     }
 
     /**
-     * Store story video url.
+     * Store story videos url.
      *
-     * @param array $videoUrls
+     * @param string $storyVideosUrl
      * @param int $storyId
      * @return void
      */
-    public function storeStoryVideoUrl(array $videoUrls, int $storyId): void
+    public function storeStoryVideoUrl(string $storyVideosUrl, int $storyId): void
     {
-        foreach ($videoUrls as $value) {
+        $videosUrl = explode(",", $storyVideosUrl);
+        foreach ($videosUrl as $value) {
             $storyVideo = array('story_id' => $storyId,
                 'type' => 'video',
                 'path' => $value);
@@ -168,19 +186,21 @@ class StoryRepository implements StoryInterface
     }
 
     /**
-     * Fetch story details
+     * Check story status
      *
      * @param int $userId
      * @param int $storyId
      * @param array $storyStatus
      *
-     * @return null|Illuminate\Support\Collection
+     * @return bool
      */
-    public function getStoryDetails(int $userId, int $storyId, array $storyStatus): ?Collection
+    public function checkStoryStatus(int $userId, int $storyId, array $storyStatus): bool
     {
-        return $this->story
+        $storyDetails = $this->story
         ->where(['user_id' => $userId, 'story_id' => $storyId])
         ->whereIn('status', $storyStatus)
         ->get();
+        $storyStatus = ($storyDetails->count() > 0) ? true : false;
+        return $storyStatus;
     }
 }

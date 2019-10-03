@@ -25,41 +25,48 @@ interface StoryInterface
     public function update(Request $request, int $storyId): Story;
     
     /**
-    * Remove the story details.
-    *
-    * @param  int  $storyId
-    * @param  int  $userId
-    * @return bool
-    */
+     * Remove the story details.
+     *
+     * @param  int  $storyId
+     * @param  int  $userId
+     * @return bool
+     */
     public function delete(int $storyId, int $userId): bool;
 
     /**
-    * Store story images.
-    *
-    * @param \Illuminate\Http\Request $request
-    * @param int $storyId
-    * @return void
-    */
-    public function storeStoryImages(Request $request, int $storyId): void;
+     * Store story images.
+     *
+     * @param string $tenantName
+     * @param int $storyId
+     * @param array $storyImages
+     * @param int $userId
+     * @return void
+     */
+    public function storeStoryImages(
+        string $tenantName,
+        int $storyId,
+        array $storyImages,
+        int $userId
+    ): void;
 
     /**
-     * Store story video url.
+     * Store story videos url.
      *
-     * @param array $videoUrls
+     * @param string $storyVideosUrl
      * @param int $storyId
      * @return void
      */
-    public function storeStoryVideoUrl(array $videoUrls, int $storyId): void;
+    public function storeStoryVideoUrl(string $storyVideosUrl, int $storyId): void;
 
     /**
-     * Fetch story details
+     * Check story status
      *
      * @param int $userId
      * @param int $storyId
      * @param array $storyStatus
      *
-     * @return null|Illuminate\Support\Collection
+     * @return bool
      */
-    public function getStoryDetails(int $userId, int $storyId, array $storyStatus): ?Collection;
+    public function checkStoryStatus(int $userId, int $storyId, array $storyStatus): bool;
 
 }
