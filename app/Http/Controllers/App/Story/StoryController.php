@@ -119,7 +119,7 @@ class StoryController extends Controller
             // Check if approved or declined story
             $validStoryStatus = $this->storyRepository->checkStoryStatus($request->auth->user_id, $storyId, $storyStatus);
 
-            if ($validStoryStatus) {
+            if (!$validStoryStatus) {
                 return $this->responseHelper->error(
                     Response::HTTP_UNPROCESSABLE_ENTITY,
                     Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
@@ -146,7 +146,7 @@ class StoryController extends Controller
     }
 
     /**
-     * Remove the story details.
+     * Remove story details.
      *
      * @param \Illuminate\Http\Request $request
      * @param int  $storyId

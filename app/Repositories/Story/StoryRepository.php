@@ -200,7 +200,7 @@ class StoryRepository implements StoryInterface
         ->where(['user_id' => $userId, 'story_id' => $storyId])
         ->whereIn('status', $storyStatus)
         ->get();
-        $storyStatus = ($storyDetails->count() > 0) ? true : false;
+        $storyStatus = ($storyDetails->count() > 0) ? false : true;
         return $storyStatus;
     }
 }
