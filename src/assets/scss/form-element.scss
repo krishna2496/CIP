@@ -316,6 +316,9 @@ input,
 textarea {
   appearance: none;
   -webkit-appearance: none;
+  &::-ms-clear {
+    display: none;
+	}
 }
 textarea {
   &.form-control {
@@ -1463,3 +1466,4 @@ span {
     visibility: hidden !important;
   }
 }
+
