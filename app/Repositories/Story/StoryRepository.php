@@ -16,64 +16,63 @@ use App\Repositories\Story\StoryInterface;
 
 class StoryRepository implements StoryInterface
 {
-	/**
-	 * @var App\Models\Story
-	 */
-	private $story;
-	
-	/**
-	 * @var App\Models\Mission
-	 */
-	private $mission;
-	
-	/**
-	 * @var App\Models\StoryMedia
-	 */
-	private $storyMedia;
-	
-	/**
-	 * @var App\Helpers\S3Helper
-	 */
-	private $s3helper;
-	
-	/**
-	 * @var App\Helpers\Helpers
-	 */
-	private $helpers;
-	
-	/**
-	 * @var App\Helpers\LanguageHelper
-	 */
-	private $languageHelper;
-	
-	/**
-	 * Create a new Story repository instance.
-	 *
-	 * @param  App\Models\Story $story
-	 * @param  App\Models\Mission $mission
-	 * @param  App\Models\StoryMedia $storyMedia
-	 * @param  App\Helpers\Helpers $helpers
-	 * @param  App\Helpers\LanguageHelper $languageHelper	
-	 * @return void
-	 */
-	public function __construct(
-			story $story,
-			Mission $mission,
-			StoryMedia $storyMedia,
-			S3Helper $s3helper,
-			Helpers $helpers,
-			LanguageHelper $languageHelper
-			) {
-				$this->story = $story;
-				$this->mission = $mission;
-				$this->storyMedia = $storyMedia;
-				$this->s3helper = $s3helper;
-				$this->helpers = $helpers;
-				$this->languageHelper = $languageHelper;
-				
-	}
-	
-	/**
+    /**
+     * @var App\Models\Story
+     */
+    private $story;
+    
+    /**
+     * @var App\Models\Mission
+     */
+    private $mission;
+    
+    /**
+     * @var App\Models\StoryMedia
+     */
+    private $storyMedia;
+    
+    /**
+     * @var App\Helpers\S3Helper
+     */
+    private $s3helper;
+    
+    /**
+     * @var App\Helpers\Helpers
+     */
+    private $helpers;
+    
+    /**
+     * @var App\Helpers\LanguageHelper
+     */
+    private $languageHelper;
+    
+    /**
+     * Create a new Story repository instance.
+     *
+     * @param  App\Models\Story $story
+     * @param  App\Models\Mission $mission
+     * @param  App\Models\StoryMedia $storyMedia
+     * @param  App\Helpers\Helpers $helpers
+     * @param  App\Helpers\LanguageHelper $languageHelper
+     * @return void
+     */
+    public function __construct(
+        story $story,
+        Mission $mission,
+        StoryMedia $storyMedia,
+        S3Helper $s3helper,
+        Helpers $helpers,
+        LanguageHelper $languageHelper
+    ) {
+        $this->story = $story;
+        $this->mission = $mission;
+        $this->storyMedia = $storyMedia;
+        $this->s3helper = $s3helper;
+        $this->helpers = $helpers;
+        $this->languageHelper = $languageHelper;
+    }
+    
+    /**
      * Store story details
      *
      * @param \Illuminate\Http\Request $request
@@ -133,47 +132,54 @@ class StoryRepository implements StoryInterface
     {
         return $this->story->deleteStory($storyId, $userId);
     }
-	
-	/**
-	 * Display a listing of specified resources with pagination.
-	 *
-	 * @param Illuminate\Http\Request $request
-	 * @param int $userId
-	 * @return \Illuminate\Pagination\LengthAwarePaginator
-	 */
-	public function getUserStoriesWithPagination(Request $request,int $userId): LengthAwarePaginator
-	{
-		$languageId = $this->languageHelper->getLanguageId($request);
-		
-		$userStoryQuery = $this->story->select('story_id','mission_id','title','description','status')
-		->with(['mission','storyMedia','mission.missionLanguage' => function ($query) use ($languageId) {
-			$query->select('mission_language_id', 'mission_id', 'title','short_description')
-			->where('language_id', $languageId);
-		}])->where('user_id',$userId);
-		return $userStoryQuery->paginate($request->perPage);
-	}
-	
-	/**
-	 * Update story status field value, based on storyId condition
-	 *
-	 * @param string $storyStatus
-	 * @param int $storyId
-	 * @return bool
-	 */
-	public function updateStoryStatus(string $storyStatus, int $storyId): bool
-	{
-		// default story array to update
-		$updateData = ['status' => $storyStatus,'published_at'=> Null];
-		
-		if($storyStatus=='PUBLISHED')
-		{
-			$updateData ['published_at'] = Carbon::now()->toDateTimeString();;
-		}
-		return $this->story->where('story_id', $storyId)
-		->update($updateData);
-	}
-	
- 	/**
+    
+    /**
+     * Display a listing of specified resources with pagination.
+     *
+     * @param Illuminate\Http\Request $request
+     * @param int $userId
+     * @return \Illuminate\Pagination\LengthAwarePaginator
+     */
+    public function getUserStoriesWithPagination(Request $request, int $userId): LengthAwarePaginator
+    {
+        $language = $this->languageHelper->getLanguageDetails($request);
+        
+        $userStoryQuery = $this->story->select(
+            'story_id',
+            'mission_id',
+            'title',
+            'description',
+            'status',
+            'published_at'
+        )
+        ->with(['mission','storyMedia','mission.missionLanguage' => function ($query) use ($language) {
+            $query->select('mission_language_id', 'mission_id', 'language_id', 'title', 'short_description')
+            ->where('language_id', $language->language_id);
+        }])->where('user_id', $userId);
+        return $userStoryQuery->paginate($request->perPage);
+    }
+    
+    /**
+     * Update story status field value, based on storyId condition
+     *
+     * @param string $storyStatus
+     * @param int $storyId
+     * @return bool
+     */
+    public function updateStoryStatus(string $storyStatus, int $storyId): bool
+    {
+        // default story array to update
+        $updateData = ['status' => $storyStatus,'published_at'=> null];
+        
+        if ($storyStatus=='PUBLISHED') {
+            $updateData ['published_at'] = Carbon::now()->toDateTimeString();
+            ;
+        }
+        return $this->story->where('story_id', $storyId)
+        ->update($updateData);
+    }
+    
+    /**
      * Get story details.
      *
      * @param int $storyId
@@ -194,30 +200,29 @@ class StoryRepository implements StoryInterface
     
     /**
      * Do copy of declined story data
-     * 
+     *
      * @param int $storyId
      * @return int $newStoryId
      */
     public function doCopyDeclinedStory(int $storyId): int
     {
-    	$newStory = $this->story->with(['storyMedia'])->findOrFail($storyId)->replicate();
-    	$oldStoryMedia = $newStory->storyMedia;
-    	$oldStoryId = $newStory->story_id;
-    	$newStory->title = 'Copy of '.$newStory->title;
-    	$newStory->status = config('constants.story_status.DRAFT');
-    	$newStory->save();
-    	$newStoryId = $newStory->story_id;
-    	
-    	foreach ($newStory->storyMedia as $val)
-    	{
-    		$this->storyMedia = new StoryMedia();
-    		$this->storyMedia->story_id = $newStoryId;
-    		$this->storyMedia->type = $val->type;
-    		$this->storyMedia->path = $val->path;
-    		$this->storyMedia->save();
-    	}
-    	
-    	return $newStoryId;
+        $newStory = $this->story->with(['storyMedia'])->findOrFail($storyId)->replicate();
+
+        $newStory->title = 'Copy of '.$newStory->title;
+        $newStory->status = config('constants.story_status.DRAFT');
+        $newStory->save();
+        
+        $newStoryId = $newStory->story_id;
+        
+        foreach ($newStory->storyMedia as $val) {
+            $this->storyMedia = new StoryMedia();
+            $this->storyMedia->story_id = $newStoryId;
+            $this->storyMedia->type = $val->type;
+            $this->storyMedia->path = $val->path;
+            $this->storyMedia->save();
+        }
+        
+        return $newStoryId;
     }
     
     /**
@@ -227,17 +232,15 @@ class StoryRepository implements StoryInterface
      * @param int $userId
      * @return Object
      */
-    public function getUserStoriesWithOutPagination(Request $request,int $userId): Object
+    public function getUserStoriesWithOutPagination(Request $request, int $userId): Object
     {
-    	$languageId = $this->languageHelper->getLanguageId($request);
+        $language = $this->languageHelper->getLanguageDetails($request);
     
-    	$userStoryQuery = $this->story->select('story_id','mission_id','title','description','status')
-    	->with(['mission','storyMedia','mission.missionLanguage' => function ($query) use ($languageId) {
-    		$query->select('mission_language_id', 'mission_id', 'title','short_description')
-    		->where('language_id', $languageId);
-    	}])->where('user_id',$userId);
-    	return $userStoryQuery->get();
+        $userStoryQuery = $this->story->select('story_id', 'mission_id', 'title', 'description', 'status')
+        ->with(['mission','storyMedia','mission.missionLanguage' => function ($query) use ($language) {
+            $query->select('mission_language_id', 'mission_id', 'title', 'short_description')
+            ->where('language_id', $language->language_id);
+        }])->where('user_id', $userId);
+        return $userStoryQuery->get();
     }
 }
-
-    

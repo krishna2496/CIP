@@ -7,6 +7,7 @@ use App\Repositories\Story\StoryRepository;
 use App\Models\Story;
 use App\Helpers\Helpers;
 use App\Helpers\ResponseHelper;
+use App\Helpers\LanguageHelper;
 use App\Http\Controllers\Controller;
 use App\Helpers\ExportCSV;
 use Illuminate\Http\JsonResponse;
@@ -32,6 +33,11 @@ class StoryController extends Controller
      * @var App\Helpers\Helpers
      */
     private $helpers;
+
+    /**
+     * @var App\Helpers\LanguageHelper
+     */
+    private $languageHelper;
     
     /**
      * Create a new Story controller instance
@@ -39,16 +45,19 @@ class StoryController extends Controller
      * @param App\Repositories\Story\StoryRepository $storyRepository
      * @param App\Helpers\ResponseHelper $responseHelper
      * @param App\Helpers\Helpers $helpers
+     * @param App\Helpers\LanguageHelper $languageHelper
      * @return void
      */
     public function __construct(
         StoryRepository $storyRepository,
         ResponseHelper $responseHelper,
-    	Helpers $helpers
+        Helpers $helpers,
+        LanguageHelper $languageHelper
     ) {
         $this->storyRepository = $storyRepository;
         $this->responseHelper = $responseHelper;
         $this->helpers = $helpers;
+        $this->languageHelper = $languageHelper;
     }
        
     /**
@@ -86,7 +95,7 @@ class StoryController extends Controller
             $request->request->add(["story_videos" => $storyVideos]);
         }
         
-        // Store story data 
+        // Store story data
         $storyData = $this->storyRepository->store($request);
 
         // Set response data
@@ -131,24 +140,28 @@ class StoryController extends Controller
      */
     public function show(Request $request, int $storyId): JsonResponse
     {
-    	try {
-    		//$languageId = $this->languageHelper->getLanguageId($request);
-    		// Get Story details
-    		$story = $this->storyRepository
-    		->getStoryDetails($storyId,config('constants.story_status.PUBLISHED'));
-    		// Transform news details
-    		$storyTransform = $this->transformStory($story)->toArray();
-    		
-    		$apiStatus = Response::HTTP_OK;
-    		$apiMessage = trans('messages.success.MESSAGE_STORY_FOUND');
+        try {
+            // Get Story details
+            $story = $this->storyRepository
+            ->getStoryDetails($storyId, config('constants.story_status.PUBLISHED'));
+            
+            $defaultTenantLanguage = $this->languageHelper->getDefaultTenantLanguage($request);
+            $language = $this->languageHelper->getLanguageDetails($request);
+
+            // Transform news details
+            $storyTransform = $this->transformStory($story, $defaultTenantLanguage->language_id, $language->language_id)
+            ->toArray();
+            
+            $apiStatus = Response::HTTP_OK;
+            $apiMessage = trans('messages.success.MESSAGE_STORY_FOUND');
     
-    		return $this->responseHelper->success($apiStatus, $apiMessage, $storyTransform);
-    	} catch (ModelNotFoundException $e) {
-    		return $this->modelNotFound(
-    			config('constants.error_codes.ERROR_PUBLISHED_STORY_NOT_FOUND'),
-    			trans('messages.custom_error_message.ERROR_PUBLISHED_STORY_NOT_FOUND')
-    		);
-    	}
+            return $this->responseHelper->success($apiStatus, $apiMessage, $storyTransform);
+        } catch (ModelNotFoundException $e) {
+            return $this->modelNotFound(
+                config('constants.error_codes.ERROR_PUBLISHED_STORY_NOT_FOUND'),
+                trans('messages.custom_error_message.ERROR_PUBLISHED_STORY_NOT_FOUND')
+            );
+        }
     }
     
     /**
@@ -160,24 +173,33 @@ class StoryController extends Controller
      */
     public function copyStoryAfterDecline(Request $request, int $storyId): JsonResponse
     {
-    	try {
-    		// check declined story details by story id
-    		$this->storyRepository
-    		->getStoryDetails($storyId,config('constants.story_status.DECLINED'));
-    		// Do copy of declined story
-    		$newStoryId = $this->storyRepository->doCopyDeclinedStory($storyId);
-    	
-    		$apiStatus = Response::HTTP_OK;
-    		$apiMessage = trans('messages.success.MESSAGE_STORY_COPIED_SUCCESS');
-    		$apiData = ['story_id' => $newStoryId ];
-    		
-    		return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);   		
-    	} catch (ModelNotFoundException $e) {
-    		return $this->modelNotFound(
-    			config('constants.error_codes.ERROR_DECLINED_STORY_NOT_FOUND'),
-    			trans('messages.custom_error_message.ERROR_DECLINED_STORY_NOT_FOUND')
-    		);
-    	}
+
+        try {
+            // Do copy of declined story
+            $newStoryId = $this->storyRepository->doCopyDeclinedStory($storyId);
+        } catch (ModelNotFoundException $e) {
+            return $this->modelNotFound(
+                config('constants.error_codes.ERROR_STORY_NOT_FOUND'),
+                trans('messages.custom_error_message.ERROR_STORY_NOT_FOUND')
+            );
+        }
+
+        try {
+            // check declined story details by story id
+            $this->storyRepository
+            ->getStoryDetails($storyId, config('constants.story_status.DECLINED'));
+        } catch (ModelNotFoundException $e) {
+            return $this->modelNotFound(
+                config('constants.error_codes.ERROR_DECLINED_STORY_NOT_FOUND'),
+                trans('messages.custom_error_message.ERROR_DECLINED_STORY_NOT_FOUND')
+            );
+        }
+        
+        $apiStatus = Response::HTTP_OK;
+        $apiMessage = trans('messages.success.MESSAGE_STORY_COPIED_SUCCESS');
+        $apiData = ['story_id' => $newStoryId ];
+            
+        return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
     }
     
     
@@ -189,37 +211,37 @@ class StoryController extends Controller
      */
     public function exportStory(Request $request): Object
     {
-    	//get login user story data
-    	$storyList = $this->storyRepository->getUserStoriesWithOutPagination($request,$request->auth->user_id);
-    	if ($storyList->count()) {
-    		$fileName = config('constants.export_story_file_names.STORY_XLSX');
+        //get login user story data
+        $storyList = $this->storyRepository->getUserStoriesWithOutPagination($request, $request->auth->user_id);
+        if ($storyList->count()) {
+            $fileName = config('constants.export_story_file_names.STORY_XLSX');
     
-    		$excel = new ExportCSV($fileName);
+            $excel = new ExportCSV($fileName);
     
-    		$headings = [
-    			trans('messages.export_story_headings.STORY_TITLE'),
-    			trans('messages.export_story_headings.STORY_DESCRIPTION'),
-    			trans('messages.export_story_headings.STORY_STATUS'),
-    			trans('messages.export_story_headings.PUBLISH_DATE'),
-    		];
-    		$excel->setHeadlines($headings);
-    		
-    		foreach ($storyList as $story) {
-    			$excel->appendRow([
-    					$story->title,
-    					$story->description,
-    					$story->status,
-    					$story->published_at
-    			]);
-    		}
+            $headings = [
+                trans('messages.export_story_headings.STORY_TITLE'),
+                trans('messages.export_story_headings.STORY_DESCRIPTION'),
+                trans('messages.export_story_headings.STORY_STATUS'),
+                trans('messages.export_story_headings.PUBLISH_DATE'),
+            ];
+            $excel->setHeadlines($headings);
+            
+            foreach ($storyList as $story) {
+                $excel->appendRow([
+                    $story->title,
+                    $story->description,
+                    $story->status,
+                    $story->published_at
+                ]);
+            }
     
-    		$tenantName = $this->helpers->getSubDomainFromRequest($request);
-    		$path = $excel->export('app/'.$tenantName.'/story/'.$request->auth->user_id.'/exports');
-    		return response()->download($path, $fileName);
-    	}
+            $tenantName = $this->helpers->getSubDomainFromRequest($request);
+            $path = $excel->export('app/'.$tenantName.'/story/'.$request->auth->user_id.'/exports');
+            return response()->download($path, $fileName);
+        }
     
-    	$apiStatus = Response::HTTP_OK;
-    	$apiMessage =  trans('messages.success.MESSAGE_ENABLE_TO_EXPORT_USER_STORIES_ENTRIES');
-    	return $this->responseHelper->success($apiStatus, $apiMessage);
+        $apiStatus = Response::HTTP_OK;
+        $apiMessage =  trans('messages.success.MESSAGE_ENABLE_TO_EXPORT_USER_STORIES_ENTRIES');
+        return $this->responseHelper->success($apiStatus, $apiMessage);
     }
 }

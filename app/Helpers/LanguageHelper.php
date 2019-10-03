@@ -149,4 +149,37 @@ class LanguageHelper
         $languages = $this->getTenantLanguages($request);
         return $languages->where('code', config('app.locale'))->first()->language_id;
     }
+
+    /**
+     * Get language details from request
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return null|Object
+     */
+    public function getLanguageDetails(Request $request): ?Object
+    {
+        $languages = $this->getTenantLanguages($request);
+        $languageCode = ($request->hasHeader('X-localization')) ?
+        $request->header('X-localization') : $this->getDefaultTenantLanguage($request);
+        
+        $language = $languages->where('code', $languageCode)->first();
+
+        if (!is_null($language)) {
+            return $language;
+        }
+        
+        return $this->getDefaultTenantLanguage($request);
+    }
+
+    /**
+     * Get language id from request
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return Object
+     */
+    public function getDefaultTenantLanguage(Request $request): Object
+    {
+        $languages = $this->getTenantLanguages($request);
+        return $languages->where('default', 1)->first();
+    }
 }

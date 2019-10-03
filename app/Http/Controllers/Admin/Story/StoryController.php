@@ -7,6 +7,7 @@ use Illuminate\Validation\Rule;
 use App\Http\Controllers\Controller;
 use App\Traits\RestExceptionHandlerTrait;
 use App\Helpers\ResponseHelper;
+use App\Helpers\LanguageHelper;
 use App\Repositories\User\UserRepository;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Repositories\Story\StoryRepository;
@@ -35,21 +36,29 @@ class StoryController extends Controller
     private $responseHelper;
     
     /**
+     * @var App\Helpers\LanguageHelper
+     */
+    private $languageHelper;
+    
+    /**
      * Create a new controller instance.
      *
      * @param App\Repositories\User\UserRepository $userRepository
      * @param App\Repositories\Story\StoryRepository $storyRepository
      * @param App\Helpers\ResponseHelper $responseHelper
+     * @param App\Helpers\LanguageHelper $languageHelper
      * @return void
      */
     public function __construct(
         UserRepository $userRepository,
         StoryRepository $storyRepository,
-        ResponseHelper $responseHelper
+        ResponseHelper $responseHelper,
+        LanguageHelper $languageHelper
     ) {
         $this->userRepository = $userRepository;
         $this->storyRepository = $storyRepository;
         $this->responseHelper = $responseHelper;
+        $this->languageHelper = $languageHelper;
     }
 
 
@@ -57,6 +66,7 @@ class StoryController extends Controller
      * Display a listing of the resource.
      *
      * @param int $userId
+     * @param Illuminate\Http\Request $request
      * @return Illuminate\Http\JsonResponse
      */
     public function index(int $userId, Request $request): JsonResponse
@@ -70,42 +80,43 @@ class StoryController extends Controller
             );
         }
         
+        $defaultTenantLanguage = $this->languageHelper->getDefaultTenantLanguage($request);
+        $language = $this->languageHelper->getLanguageDetails($request);
+                
         $userStories = $this->storyRepository->getUserStoriesWithPagination($request, $userId);
-        $responceData = [];
         $storyTransformed = $userStories
         ->getCollection()
-        ->map(function ($story) use ($request){
-        $story = $this->transformStory($story); 
+        ->map(function ($story) use ($request, $defaultTenantLanguage, $language) {
+            $story = $this->transformStory($story, $defaultTenantLanguage->language_id, $language->language_id);
             return $story;
         });
 
         $requestString = $request->except(['page','perPage']);
         $storyPaginated = new \Illuminate\Pagination\LengthAwarePaginator(
-        	$storyTransformed,
-        	$userStories->total(),
-        	$userStories->perPage(),
-        	$userStories->currentPage(),
-        	[
-        		'path' => $request->url().'?'.http_build_query($requestString),
-        		'query' => [
-        			'page' => $userStories->currentPage()
-        			]
-        		]
-        	);
-        
+            $storyTransformed,
+            $userStories->total(),
+            $userStories->perPage(),
+            $userStories->currentPage(),
+            [
+                'path' => $request->url().'?'.http_build_query($requestString),
+                'query' => [
+                    'page' => $userStories->currentPage()
+                    ]
+                ]
+        );
         
         $apiData = $storyPaginated;
         $apiStatus = Response::HTTP_OK;
-        $apiMessage = (!empty($apiData)) ?
+        $apiMessage = ($apiData->count()) ?
         trans('messages.success.MESSAGE_STORIES_ENTRIES_LISTING') :
         trans('messages.success.MESSAGE_NO_STORIES_ENTRIES_FOUND');
         
         return $this->responseHelper->successWithPagination(
-        		$apiStatus,
-        		$apiMessage,
-        		$apiData,
-        		[]
-        	);
+            $apiStatus,
+            $apiMessage,
+            $apiData,
+            []
+        );
     }
 
     /**
@@ -124,7 +135,7 @@ class StoryController extends Controller
                 [
                     "status" => ['required', Rule::in(config('constants.story_status'))],
                 ]
-            );	
+            );
             // If request parameter have any error
             if ($validator->fails()) {
                 return $this->responseHelper->error(
