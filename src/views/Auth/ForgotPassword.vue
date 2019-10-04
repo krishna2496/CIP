@@ -98,14 +98,13 @@
         computed: {},
         methods: {
             async setLanguage(language) {
-                let _this = this;
                 this.defautLang = language.selectedVal;
                 store.commit("setDefaultLanguage", language);
                 this.$i18n.locale = language.selectedVal.toLowerCase();
                 await loadLocaleMessages(this.$i18n.locale);
                 this.languageData = JSON.parse(store.state.languageLabel);
-                _this.$forceUpdate();
-                _this.$refs.ThePrimaryFooter.$forceUpdate();
+                this.$forceUpdate();
+                this.$refs.ThePrimaryFooter.$forceUpdate();
             },
             async createConnection() {
                 await databaseConnection(this.langList).then(response => {

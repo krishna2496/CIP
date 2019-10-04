@@ -29,7 +29,7 @@
     "bugs": {
         "url": "https://github.com/alessiomaffeis/vue-picture-input/issues"
     },
-    "bundleDependencies": false,
+    "bundleDependencies": [],
     "deprecated": false,
     "description": "Mobile-friendly picture file input component with image preview and drag and drop.",
     "devDependencies": {

@@ -58,7 +58,7 @@
 							</b-form>
 						</div>
 						<div class="btn-row">
-							<b-button class="btn-borderprimary" title="Cancel">{{languageData.label.cancel}}</b-button>
+							<b-button class="btn-borderprimary" @click="cancleShareStory">{{languageData.label.cancel}}</b-button>
 						</div>
 					</b-col>
 					<b-col xl="4" lg="5" class="right-col">
@@ -176,7 +176,7 @@
 				submitButtonAjaxCall : false,
 				saveButtonEnable : false,
 				submitButtonEnable : true,
-				previewButtonEnable : false,
+				previewButtonEnable : true,
 			};
 		},
 		validations: {
@@ -214,13 +214,18 @@
 				this.saveButtonAjaxCall = true
 				this.submitStoryDetail();
 			},
+			cancleShareStory() {
+				this.storyId = ''
+				this.$router.push({ name: 'Stories'})
+			},
+
 			submitStory() {
 				this.submitted = true;
                 this.$v.$touch();
 			},
 			previewStory() {
 				if(this.storyId != '') {
-					router.push({ name: 'StoryPreview', params: { storyId: this.storyId } })
+					this.$router.push({ name: 'StoryPreview', params: { storyId: this.storyId } })
 				}
 			},
 			updateMissionTitle(value) {

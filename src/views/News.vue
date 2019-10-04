@@ -110,7 +110,6 @@ export default {
 		}
 	},
 	created() {
-		let _this = this
 		this.languageData = JSON.parse(store.state.languageLabel);
 		this.isNewsDisplay = this.settingEnabled(constants.NEWS_ENABLED);
 		if(!this.isNewsDisplay) {
@@ -119,9 +118,9 @@ export default {
 		this.bannerUrl = store.state.newsBanner
 		let bannerTextArray = JSON.parse(store.state.newsBannerText)
 		if(bannerTextArray) {
-			bannerTextArray.filter(function(data,index){
+			bannerTextArray.filter((data,index) => {
 				if(data.lang == store.state.defaultLanguage.toLowerCase()) {
-					_this.bannerText = data.message
+					this.bannerText = data.message
 				}
 			})
 		}

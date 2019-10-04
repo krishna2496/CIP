@@ -1,13 +1,13 @@
 import axios from 'axios'
 import store from '../../store'
 
-export default async(newsId) => {
+export default async(storyId) => {
     let responseData = {};
     var defaultLanguage = '';
     if (store.state.defaultLanguage !== null) {
         defaultLanguage = (store.state.defaultLanguage).toLowerCase();
     }
-    var url = process.env.VUE_APP_API_ENDPOINT + "app/news/" + newsId;
+    var url = process.env.VUE_APP_API_ENDPOINT + "app/story/" + storyId;
     document.body.classList.add("loader-enable");
     await axios({
             url: url,
@@ -23,7 +23,7 @@ export default async(newsId) => {
             responseData.data = response.data.data;
             document.body.classList.remove("loader-enable");
         })
-        .catch(function(error) {
+        .catch((error) => {
             if (error.response.data.errors[0].message) {
                 responseData.error = true;
                 responseData.message = error.response.data.errors[0].message;

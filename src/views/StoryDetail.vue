@@ -150,7 +150,9 @@
 	import Slick from "vue-slick";
 	import store from '../store';
 	import constants from '../constant';
-
+	import {
+		storyDetail,
+	} from "../services/service";
 	export default {
 		components: {
 			ThePrimaryHeader : () => import("../components/Layouts/ThePrimaryHeader"),
@@ -181,6 +183,7 @@
 					adaptiveHeight: true,
 					languageData : [],
 					isStoryDisplay : true,
+					storyDetailList : [],
 					// verticalSwiping: true
 					responsive: [{
 							breakpoint: 1200,
@@ -225,6 +228,18 @@
 					galleryImg.style.display = "block";
 					hideVideo.style.display = "none";
 				}
+			},
+			getStoryDetail() {
+				alert(this.storyId);
+				storyDetail(this.storyId).then(response => {
+					// console.log(response);
+					// if(response.error == false) {
+					// 	this.storyDetailList = response.data
+					// 	this.isContentLoaded = true
+					// } else {
+					// 	this.$router.push('/404');
+					// }
+				})
 			}
 		},
 		created() {
@@ -233,28 +248,27 @@
 			if(!this.isStoryDisplay) {
 				this.$router.push('/home')
 			}
-
+			this.getStoryDetail();
 			setTimeout(() => {
 				var thumbImg = document.querySelectorAll(
 					".gallery-thumbs .slick-slide img, .gallery-thumbs .slick-slide .btn-play"
 				);
-				thumbImg.forEach(function (itemEvent) {
+				thumbImg.forEach((itemEvent) => {
 					itemEvent.removeEventListener("click", this.handleSliderClick);
 					itemEvent.addEventListener("click", this.handleSliderClick);
 				});
 			});
-			window.addEventListener("resize", function () {
+			window.addEventListener("resize", () => {
 				setTimeout(() => {
 					var thumbImg = document.querySelectorAll(
 						".gallery-thumbs .slick-slide img, .gallery-thumbs .slick-slide .btn-play"
 					);
-					thumbImg.forEach(function (itemEvent) {
+					thumbImg.forEach((itemEvent) => {
 						itemEvent.removeEventListener("click", this.handleSliderClick);
 						itemEvent.addEventListener("click", this.handleSliderClick);
 					});
 				}, 2000);
 			});
-		},
-		updated() {}
+		}
 	};
 </script>

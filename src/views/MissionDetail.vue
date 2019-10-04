@@ -1135,7 +1135,6 @@
 		},
 		created() {
 			this.sharingUrl = document.URL
-			let _this = this;
 			// Get mission detail
 			this.getMissionDetail();
 			if (store.state.search != null) {

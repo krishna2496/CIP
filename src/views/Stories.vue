@@ -99,22 +99,11 @@
 			}
 		},
 		created() {
-			let _this = this
 			this.languageData = JSON.parse(store.state.languageLabel);
 			this.isStoryDisplay = this.settingEnabled(constants.STORIES_ENABLED);
 			if(!this.isStoryDisplay) {
 				this.$router.push('/home')
 			}
-			// this.bannerUrl = store.state.newsBanner
-			// let bannerTextArray = JSON.parse(store.state.newsBannerText)
-			// if(bannerTextArray) {
-			// 	bannerTextArray.filter(function(data,index){
-			// 		if(data.lang == store.state.defaultLanguage.toLowerCase()) {
-			// 			_this.bannerText = data.message
-			// 		}
-			// 	})
-			// }
-			// this.getStoryListing(this.pagination.currentPage);
 		},
 		destroyed() {}
 	};
