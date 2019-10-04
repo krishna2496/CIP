@@ -6,14 +6,8 @@ use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
 use App\Traits\RestExceptionHandlerTrait;
-use App\Helpers\LanguageHelper;
 use App\Helpers\ResponseHelper;
 use App\Helpers\Helpers;
-use App\Helpers\S3Helper;
-use Validator;
-use Illuminate\Validation\Rule;
-use Illuminate\Support\Facades\Storage;
-use App\User;
 use App\Repositories\User\UserRepository;
 use App\Repositories\Timesheet\TimesheetRepository;
 use App\Repositories\MissionApplication\MissionApplicationRepository;
@@ -48,20 +42,10 @@ class DashboardController extends Controller
     private $responseHelper;
     
     /**
-     * @var App\Helpers\LanguageHelper
-     */
-    private $languageHelper;
-    
-    /**
      * @var App\Helpers\Helpers
      */
     private $helpers;
 
-    /**
-     * @var App\Helpers\S3Helper
-     */
-    private $s3helper;
-    
     /**
      * Create a new controller instance.
      *
@@ -70,9 +54,7 @@ class DashboardController extends Controller
      * @param App\Repositories\MissionApplication\MissionApplicationRepository $missionApplicationRepository
      * @param App\Repositories\TenantOption\TenantOptionRepository $tenantOptionRepository
      * @param Illuminate\Http\ResponseHelper $responseHelper
-     * @param App\Helpers\LanguageHelper $languageHelper
      * @param App\Helpers\Helpers $helpers
-     * @param App\Helpers\S3Helper $s3helper
      * @return void
      */
     public function __construct(
@@ -81,18 +63,14 @@ class DashboardController extends Controller
         MissionApplicationRepository $missionApplicationRepository,
         TenantOptionRepository $tenantOptionRepository,
         ResponseHelper $responseHelper,
-        LanguageHelper $languageHelper,
-        Helpers $helpers,
-        S3Helper $s3helper
+        Helpers $helpers
     ) {
         $this->userRepository = $userRepository;
         $this->timesheetRepository = $timesheetRepository;
         $this->missionApplicationRepository = $missionApplicationRepository;
         $this->tenantOptionRepository = $tenantOptionRepository;
         $this->responseHelper = $responseHelper;
-        $this->languageHelper = $languageHelper;
         $this->helpers = $helpers;
-        $this->s3helper = $s3helper;
     }
     
     /**
