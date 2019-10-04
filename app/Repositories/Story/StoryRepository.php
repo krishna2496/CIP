@@ -8,7 +8,6 @@ use Illuminate\Http\Request;
 use App\Helpers\Helpers;
 use App\Helpers\S3Helper;
 use App\Repositories\Story\StoryInterface;
-use Illuminate\Support\Collection;
 
 class StoryRepository implements StoryInterface
 {
@@ -66,6 +65,7 @@ class StoryRepository implements StoryInterface
             'title' => $request->title,
             'description' => $request->description,
             'user_id' => $request->auth->user_id,
+            'status' => config('constants.story_status.DRAFT')
         );
 
         $storyData = $this->story->create($storyDataArray);       
@@ -103,6 +103,7 @@ class StoryRepository implements StoryInterface
         'user_id' => $request->auth->user_id])->firstOrFail();
 
         $storyDataArray = $request->except(['user_id', 'published_at', 'status']);
+        $storyDataArray['status'] = config('constants.story_status.DRAFT');
         $storyData->update($storyDataArray);
 
         if($request->hasFile('story_images')) {            
