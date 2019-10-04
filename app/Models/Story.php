@@ -30,7 +30,7 @@ class Story extends Model
      *
      * @var array
      */
-    protected $visible = ['story_id', 'user_id', 'mission_id', 'title', 'description', 'status', 'published_at', 'created_at', 'mission_title', 'mission_description', 'first_name', 'last_name','avatar','why_i_volunteer','profile_text','storyMedia', 'city', 'country'];
+    protected $visible = ['story_id', 'user_id', 'mission_id', 'title', 'description', 'status', 'published_at', 'created_at', 'mission_title', 'mission_description', 'first_name', 'last_name','avatar','why_i_volunteer','profile_text','storyMedia','user','mission','missionTheme', 'city', 'country'];
 
     /**
      * The attributes that are mass assignable.

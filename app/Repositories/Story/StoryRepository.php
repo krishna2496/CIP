@@ -146,8 +146,8 @@ class StoryRepository implements StoryInterface
 	{
 		$languageId = $this->languageHelper->getLanguageId($request);
 		
-		$userStoryQuery = $this->story->select('story_id','mission_id','title','description','status','created_at')
-		->with(['mission','storyMedia','mission.missionLanguage' => function ($query) use ($languageId) {
+		$userStoryQuery = $this->story->select('story_id','user_id','mission_id','title','description','status','published_at','created_at')
+		->with(['user','mission','mission.missionTheme','storyMedia','mission.missionLanguage' => function ($query) use ($languageId) {
 			$query->select('mission_language_id', 'mission_id', 'title','short_description')
 			->where('language_id', $languageId);
 		}])

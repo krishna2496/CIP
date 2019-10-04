@@ -299,10 +299,14 @@ $router->group(['middleware' => 'localization'], function ($router) {
          'uses' => 'App\Story\StoryController@exportStory']);
         
         /* login user story listing */
-        $router->get('/app/story/my-stories', ['as' => 'app.story.getallstories',
+        $router->get('/app/story/my-stories', ['as' => 'app.story.getuserstories',
         'middleware' => 'localization|tenant.connection|jwt.auth',
         'uses' => 'App\Story\StoryController@getUserStories']);
         
+        /* all users published story listing */
+        $router->get('/app/story/list', ['as' => 'app.story.getallpublishedstories',
+        'middleware' => 'localization|tenant.connection|jwt.auth',
+        'uses' => 'App\Story\StoryController@getAllPublishedStories']);
         
         /* Fetch story details */
         $router->get('/app/story/{storyId}', ['as' => 'app.story.show',

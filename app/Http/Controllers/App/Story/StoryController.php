@@ -264,4 +264,39 @@ class StoryController extends Controller
     			[]
     	); 
     }
+    
+    public function getAllPublishedStories(Request $request): JsonResponse
+    {
+    	// get all published stories of users
+    	$publishedStories = $this->storyRepository->getUserStoriesWithPagination($request,null,config('constants.story_status.PUBLISHED'));
+    	
+    	$storyTransformedData = $this->transformPublishedStory($publishedStories);
+    	$requestString = $request->except(['page','perPage']);
+    	$storyPaginated = new \Illuminate\Pagination\LengthAwarePaginator(
+    		$storyTransformedData,
+    		$publishedStories->total(),
+    		$publishedStories->perPage(),
+    		$publishedStories->currentPage(),
+    		[
+    			'path' => $request->url().'?'.http_build_query($requestString),
+    			'query' => [
+    				'page' => $publishedStories->currentPage()
+    			]
+    		]
+    	);
+    	 
+    	$apiData = $storyPaginated;
+    	$apiStatus = Response::HTTP_OK;
+    	$apiMessage = (!empty($apiData)) ?
+    	trans('messages.success.MESSAGE_STORIES_ENTRIES_LISTING') :
+    	trans('messages.success.MESSAGE_NO_STORIES_ENTRIES_FOUND');
+    	 
+    	return $this->responseHelper->successWithPagination(
+    		$apiStatus,
+    		$apiMessage,
+    		$apiData,
+    		[]
+    	);
+    }
+    
 }
