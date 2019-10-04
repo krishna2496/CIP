@@ -448,9 +448,9 @@ class TimesheetRepository implements TimesheetInterface
      * @param int $userId
      * @param int $year
      * @param int $month
-     * @return string
+     * @return null|array
      */
-    public function getTotalHours(int $userId, int $year, int $month)
+    public function getTotalHours(int $userId, int $year, int $month): ?array
     {
         $statusArray = [config('constants.timesheet_status_id.APPROVED'),
         config('constants.timesheet_status_id.AUTOMATICALLY_APPROVED')];
@@ -476,9 +476,9 @@ class TimesheetRepository implements TimesheetInterface
      * @param int $userId
      * @param int $year
      * @param int $month
-     * @return string
+     * @return null|int
      */
-    public function getTotalPendingRequests(int $userId, int $year, int $month)
+    public function getTotalPendingRequests(int $userId, int $year, int $month): ?int
     {
         $statusArray = [config('constants.timesheet_status_id.SUBMIT_FOR_APPROVAL')];
 
@@ -495,9 +495,9 @@ class TimesheetRepository implements TimesheetInterface
      *
      * @param int $userId
      * @param int $year
-     * @return string
+     * @return null|array
      */
-    public function getTotalGoalActions(int $userId, int $year)
+    public function getTotalGoalActions(int $userId, int $year): ?array
     {
         $statusArray = [config('constants.timesheet_status_id.APPROVED'),
         config('constants.timesheet_status_id.AUTOMATICALLY_APPROVED')];
@@ -522,9 +522,9 @@ class TimesheetRepository implements TimesheetInterface
      *
      * @param int $userId
      * @param int $year
-     * @return string
+     * @return null|array
      */
-    public function getTotalHoursForYear(int $userId, int $year)
+    public function getTotalHoursForYear(int $userId, int $year): ?array
     {
         $statusArray = [config('constants.timesheet_status_id.APPROVED'),
         config('constants.timesheet_status_id.AUTOMATICALLY_APPROVED')];
@@ -548,9 +548,9 @@ class TimesheetRepository implements TimesheetInterface
      *
      * @param int $userId
      * @param int $year
-     * @return string
+     * @return null|array
      */
-    public function getTotalHoursbyMonth(int $userId, int $year, $missionId)
+    public function getTotalHoursbyMonth(int $userId, int $year, $missionId): ?array
     {
         $statusArray = [config('constants.timesheet_status_id.APPROVED'),
         config('constants.timesheet_status_id.AUTOMATICALLY_APPROVED')];
@@ -567,6 +567,52 @@ class TimesheetRepository implements TimesheetInterface
             $missionQuery->where('timesheet.mission_id', $missionId);
         }
         $missionQuery->groupBy(DB::raw("MONTH(date_volunteered)"));
-        return $missionQuery->get();
+        $chartData = $missionQuery->get();
+
+        $months = array();
+        foreach ($chartData as $chart) {
+            array_push($months, $chart['month']);
+            $chart['total_hours'] = (int)($chart['total_minutes'] / 60);
+        }
+
+        $chart = $chartData->toArray();
+        $lastMonth = ($year == (int) date('Y')) ? date('m') : 12;
+        for ($i = 1; $i <= $lastMonth; $i++) {
+            if (!in_array($i, $months)) {
+                $chartArray['month'] = $i;
+                $chartArray['total_hours'] = '';
+                $chart[] = $chartArray;
+            }
+        }
+        return $chart;
+    }
+
+    /**
+     * Get all user's timesheet total hours data
+     *
+     * @param int $year
+     * @param int $month
+     * @return null|array
+     */
+    public function getUsersTotalHours(int $year, int $month): ?array
+    {
+        $statusArray = [config('constants.timesheet_status_id.APPROVED'),
+        config('constants.timesheet_status_id.AUTOMATICALLY_APPROVED')];
+
+        $timesheetQuery = $this->timesheet
+        ->select(DB::raw("user_id, MONTH(date_volunteered) as month,
+        sum(((hour(time) * 60) + minute(time))) as 'total_hours'"));
+        $timesheetQuery->leftjoin('mission', 'timesheet.mission_id', '=', 'mission.mission_id')
+        ->where('mission.publication_status', config("constants.publication_status")["APPROVED"]);
+        $timesheetQuery->whereYear('date_volunteered', $year);
+        $timesheetQuery->whereMonth('date_volunteered', $month);
+        $timesheetQuery->whereIn('status_id', $statusArray);
+
+        $timesheetQuery->orderBy(DB::raw("total_hours"), "DESC");
+        // $timesheetQuery->orderBy(DB::raw("total_hours"));
+
+        $timesheetQuery->groupBy(DB::raw("user_id"));
+
+        return $timesheetQuery->get()->toArray();
     }
 }

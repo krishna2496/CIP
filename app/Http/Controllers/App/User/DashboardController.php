@@ -96,7 +96,7 @@ class DashboardController extends Controller
     }
     
     /**
-     * Display a listing of the resource.
+     * Get dashboard statistics
      *
      * @param Illuminate\Http\Request $request
      * @return Illuminate\Http\JsonResponse
@@ -104,8 +104,8 @@ class DashboardController extends Controller
     public function index(Request $request): JsonResponse
     {
         $userId = $request->auth->user_id;
-        $year = $request->year ?? (int) date('Y');
-        $month = $request->month ?? (int) date('m');
+        $year = ((!is_null($request->year)) && ($request->year != "")) ? $request->year : (int) date('Y');
+        $month = ((!is_null($request->month)) && ($request->month != "")) ? $request->month : (int) date('m');
         $missionId = $request->mission_id ?? null;
 
         $timesheetData = $this->timesheetRepository->getTotalHours($userId, $year, $month);
@@ -114,43 +114,39 @@ class DashboardController extends Controller
         $organizationCount = $this->missionApplicationRepository->organizationCount($userId, $year, $month);
         $goalHours = $this->userRepository->getUserGoalHours($userId);
         $tenantGoalHours = $this->tenantOptionRepository->getOptionValueFromOptionName('goal_hours');
-        $totalGoalHours = $this->timesheetRepository->getTotalHoursForYear($userId, $year);
         $chartData = $this->timesheetRepository->getTotalHoursbyMonth($userId, $year, $missionId);
-
-        $userGoalHours = (!is_null($goalHours)) ? $goalHours : $tenantGoalHours;
+        $allUsersTimesheetData = $this->timesheetRepository->getUsersTotalHours($year, $month);
+        $totalGoalHours = $this->timesheetRepository->getTotalHoursForYear($userId, $year);
         
+        // For total hours
         $totalHours = 0;
         foreach ($timesheetData as $timesheet) {
             $totalHours += $timesheet['total_hours'];
         }
 
+        // For hours tracked this year
         $totalGoals = 0;
         foreach ($totalGoalHours as $timesheetHours) {
             $totalGoals += $timesheetHours['total_hours'];
         }
-        
-        foreach ($chartData as $chart) {
-            if ($year == (int) date('Y')) {
-                $month = date('m');
-            }
-            $chart['total_hours'] = (int)($chart['total_minutes'] / 60);
-        }
 
+        // for volunteering Rank
+        $key = array_search($userId, array_column($allUsersTimesheetData, 'user_id'));
+        $volunteeringRank = (count($allUsersTimesheetData) != 0) ? (($key+1) / count($allUsersTimesheetData)) * 100 : 0;
+     
         $apiData['total_hours'] = $this->helpers->convertInReportTimeFormat($totalHours);
-        $apiData['volunteering_rank'] = '';
+        $apiData['volunteering_rank'] = (int)$volunteeringRank;
         $apiData['open_volunteering_requests'] = $timesheetCount;
         $apiData['mission_count'] = $missionCount;
         $apiData['voted_missions'] = '';
         $apiData['organization_count'] = count($organizationCount);
-        $apiData['total_goal_hours'] = $userGoalHours;
+        $apiData['total_goal_hours'] = (!is_null($goalHours)) ? $goalHours : $tenantGoalHours;
         $apiData['completed_goal_hours'] = (int)($totalGoals / 60);
-        $apiData['chart'] = $chartData->toArray();
+        $apiData['chart'] = $chartData;
         
-
         // Set response data
         $apiStatus = Response::HTTP_OK;
-        $apiMessage = (empty($apiData)) ? trans('messages.success.MESSAGE_NO_RECORD_FOUND')
-            : trans('messages.success.MESSAGE_USER_LISTING');
+        $apiMessage = trans('messages.success.MESSAGE_DASHBOARD_STATISTICS_LISTING');
         return $this->responseHelper->success(Response::HTTP_OK, $apiMessage, $apiData);
     }
 }
