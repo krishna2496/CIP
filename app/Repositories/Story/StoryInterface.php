@@ -3,7 +3,6 @@ namespace App\Repositories\Story;
 
 use Illuminate\Http\Request;
 use App\Models\Story;
-use Illuminate\Support\Collection;
 
 interface StoryInterface
 {
