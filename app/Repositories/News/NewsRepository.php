@@ -94,8 +94,8 @@ class NewsRepository implements NewsInterface
 
         if ($languageId) {
                 $newsData->with(['newsLanguage' => function ($query) use ($languageId) {
-                $query->select('news_id', 'language_id', 'title', 'description')->where('language_id', $languageId);
-            }]);            
+                    $query->select('news_id', 'language_id', 'title', 'description')->where('language_id', $languageId);
+                }]);
         } else {
             // Search filters for admin side
             if ($request->has('search')) {
@@ -114,13 +114,13 @@ class NewsRepository implements NewsInterface
                 }]);
             }
         }
-		
-		// Order by filters for admin side
-		if ($request->has('order')) {
-			$orderDirection = $request->input('order', 'asc');
-			$newsData->orderBy('created_at', $orderDirection);
-		}
-		
+        
+        // Order by filters for admin side
+        if ($request->has('order')) {
+            $orderDirection = $request->input('order', 'asc');
+            $newsData->orderBy('created_at', $orderDirection);
+        }
+        
         if ($newsStatus) {
             $newsData->where('status', $newsStatus);
         }
@@ -140,7 +140,7 @@ class NewsRepository implements NewsInterface
             'user_name' => $request->user_name,
             'user_title' => $request->user_title,
             'user_thumbnail' => $request->user_thumbnail,
-			'status' => $request->status
+            'status' => $request->status
         );
         
         if ($request->has('news_image')) {
@@ -205,7 +205,7 @@ class NewsRepository implements NewsInterface
         }
         
         // Update into news_language
-        if ($request->has('news_content')) {            
+        if ($request->has('news_content')) {
             $languages = $this->languageHelper->getLanguages($request);
             $newsContent = $request->news_content;
             foreach ($newsContent['translations'] as $value) {
