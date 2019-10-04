@@ -193,9 +193,10 @@ class PolicyPageRepository implements PolicyPageInterface
         foreach ($pageList as $list) {
             $key = array_search($languageId, array_column($list['pages']->toArray(), 'language_id'));
             $language = ($key === false) ? $defaultTenantLanguageId : $languageId;
-            $pages = $list['pages']->where('language_id', $language)->first();
+            $pages[] = $list['pages']->where('language_id', $language)->first();
             unset($list['pages']);
             $list['pages'] = $pages;
+            unset($pages);
         }
         return $pageList;
     }
@@ -220,7 +221,7 @@ class PolicyPageRepository implements PolicyPageInterface
         
         $key = array_search($languageId, array_column($policyPage['pages']->toArray(), 'language_id'));
         $language = ($key === false) ? $defaultTenantLanguageId : $languageId;
-        $pages = $policyPage['pages']->where('language_id', $language)->first();
+        $pages[] = $policyPage['pages']->where('language_id', $language)->first();
         unset($policyPage['pages']);
         $policyPage['pages'] = $pages;
         return $policyPage;
