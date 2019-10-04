@@ -5,7 +5,6 @@
         </header>
         <main>
             <DashboardBreadcrumb />
-           
             <div class="dashboard-tab-content" v-if="isComponentLoaded">
                 <b-container v-if="isAllVisible">
                     <div class="heading-section">
@@ -35,7 +34,6 @@
                                                     <b-th class="mission-col">{{languageData.label.mission}}</b-th>
                                                     <b-th v-for="(key,item) in volunteeringHoursWeeks"
                                                         v-bind:key="key"
-                                                        v-if="item != null"
                                                         v-bind:class="{'currentdate-col' : highLightCurrentDate(key+1,'time')}">
                                                         {{key+1}}<span>{{getTimeSheetWeekName(item,'time')}}</span>
                                                     </b-th>
@@ -59,7 +57,7 @@
                                                 </b-tr>
                                                 <b-tr class="total-row">
                                                     <b-td class="mission-col">{{languageData.label.total}}:</b-td>
-                                                    <b-td v-for="(key,item) in volunteeringHoursWeeks" v-if="item != null" v-bind:key="key">
+                                                    <b-td v-for="(key,item) in volunteeringHoursWeeks" v-bind:key="key">
                                                         {{getColumnHourTotal(key+1,'time')}}
                                                     </b-td>
                                                     <b-td>
@@ -224,18 +222,12 @@
 <script>
     import ThePrimaryHeader from "../components/Layouts/ThePrimaryHeader";
     import TheSecondaryFooter from "../components/Layouts/TheSecondaryFooter";
-    import AppCustomDropdown from "../components/CustomFieldDropdown";
     import DashboardBreadcrumb from "../components/DashboardBreadcrumb";
     import VolunteeringTimesheetTableHeader from "../components/VolunteeringTimesheetTableHeader"
     import AddVolunteeringHours from "../components/AddVolunteeringHours";
     import AddVolunteeringAction from "../components/AddVolunteeringAction";
     import VolunteeringRequest from "../components/VolunteeringRequest";
-    import SimpleBar from "simplebar";
-    import constants from '../constant';
-    import axios from "axios";
     import store from '../store';
-    import DatePicker from "vue2-datepicker";
-    import FileUpload from 'vue-upload-component';
 
     import {
         volunteerTimesheetHours,
@@ -253,13 +245,9 @@
         components: {
             ThePrimaryHeader,
             TheSecondaryFooter,
-            AppCustomDropdown,
-            SimpleBar,
             DashboardBreadcrumb,
             VolunteeringTimesheetTableHeader,
             AddVolunteeringAction,
-            DatePicker,
-            FileUpload,
             AddVolunteeringHours,
             VolunteeringRequest
         },
@@ -371,13 +359,13 @@
                 let month = moment(date).format("M");
                 let dates = moment(date).format("D");
                 let timeSheetId = '';
-                this.timeMissionData.filter( (timeArray, timeIndex) =>{
+                this.timeMissionData.filter( (timeArray) =>{
                     if (timeArray.mission_id == this.currentTimeData.missionId && timeArray.timesheet) {
-                        timeArray.timesheet.filter((timeSheetArray, timeSheetIndex) => {
+                        timeArray.timesheet.filter((timeSheetArray) => {
                             if (timeSheetArray.month == month && timeSheetArray.year == year &&
                                 timeSheetArray.date == dates) {
                                 timeSheetId = timeSheetArray.timesheet_id;
-                                this.workDayList.filter( (workList, workIndex) => {
+                                this.workDayList.filter( (workList) => {
                                     if (workList[0] == timeSheetArray.day_volunteered) {
                                         this.defaultWorkday = this.languageData.label[
                                             workList[1]];
@@ -410,13 +398,13 @@
                 let month = moment(date).format("M");
                 let dates = moment(date).format("D");
                 let timeSheetId = '';
-                this.goalMissionData.filter( (timeArray, timeIndex)=>  {
+                this.goalMissionData.filter( (timeArray)=>  {
                     if (timeArray.mission_id == this.currentTimeData.missionId && timeArray.timesheet) {
-                        timeArray.timesheet.filter( (timeSheetArray, timeSheetIndex) => {
+                        timeArray.timesheet.filter( (timeSheetArray) => {
                             if (timeSheetArray.month == month && timeSheetArray.year == year &&
                                 timeSheetArray.date == dates) {
                                 timeSheetId = timeSheetArray.timesheet_id;
-                                this.workDayList.filter( (workList, workIndex) => {
+                                this.workDayList.filter( (workList) => {
                                     if (workList[0] == timeSheetArray.day_volunteered) {
                                         this.defaultWorkday = this.languageData.label[
                                             workList[1]];
@@ -467,7 +455,7 @@
                             months = ("0" + Math.floor(this.volunteeringHoursCurrentMonth)).slice(-2);
                             dates = ("0" + Math.floor(date)).slice(-2);
                         } else {
-                            timeMonth = Math.floor(this.volunteeringHoursCurrentMonth)
+                            // let timeMonth = Math.floor(this.volunteeringHoursCurrentMonth)
                             dates = Math.floor(date)
                         }
                     } else {
@@ -482,7 +470,7 @@
 
                     this.currentTimeData.dateVolunteered = this.volunteeringHoursCurrentYear + '-' + months + '-' + dates
 
-                    timeSheetArray.filter( (timeSheetItem, timeSheetIndex) => {
+                    timeSheetArray.filter( (timeSheetItem) => {
 
                         if (timeSheetItem.timesheet_status.status == "APPROVED" ||
                             timeSheetItem.timesheet_status.status == "AUTOMATICALLY_APPROVED"
@@ -511,7 +499,7 @@
 
                                     this.fetchTimeSheetRealtedData(timeSheetId);
 
-                                    this.workDayList.filter((workList, workIndex) => {
+                                    this.workDayList.filter((workList) => {
                                         if (workList[0] == timeSheetItem.day_volunteered) {
                                             this.defaultWorkday = this.languageData.label[workList[
                                                 1]];
@@ -624,7 +612,7 @@
                      currentDate = moment(this.volunteeringGoalCurrentYear + '-' + goalMonth + '-' + goalDate).format("YYYY-MM-DD");
                 }
 
-                timeArray.filter((timeSheetItem, timeSheetIndex) => {
+                timeArray.filter((timeSheetItem) => {
                     let currentArrayDate = timeSheetItem.date
                     let currentArrayYear = timeSheetItem.year
                     let currentArrayMonth = timeSheetItem.month
@@ -758,8 +746,7 @@
                     })
                 }    
 
-                timeArray.filter( (timeSheetItem, timeSheetIndex) => {
-
+                timeArray.filter( (timeSheetItem) => {
                     let currentArrayDate = parseInt(timeSheetItem.date)
                     let currentArrayYear = parseInt(timeSheetItem.year)
                     let currentArrayMonth = parseInt(timeSheetItem.month)
@@ -779,9 +766,7 @@
                                 }
                             }
                         }
-
                     }
-
                 });
                 return returnData
             },
@@ -792,8 +777,7 @@
                 let action = 0
                 
                 if (timeArray) {
-                    timeArray.filter( (timeSheetItem, timeSheetIndex) => {
-                        let currentArrayDate = timeSheetItem.date
+                    timeArray.filter( (timeSheetItem) => {
                         let currentArrayYear = timeSheetItem.year
                         let currentArrayMonth = timeSheetItem.month
                         let time2 = timeSheetItem.time;
@@ -872,9 +856,9 @@
                 }  
 
                 if (timeArray.length > 0) {
-                    timeArray.filter( (timeSheetItem, timeSheetIndex) => {
+                    timeArray.filter( (timeSheetItem) => {
                         let timeEntryData = timeSheetItem.timesheet;
-                        timeEntryData.filter( (timeEntry, timeEntryIndex) => {
+                        timeEntryData.filter( (timeEntry) => {
 
                             let currentArrayDate = timeEntry.date
                             let currentArrayYear = timeEntry.year
@@ -947,11 +931,9 @@
                     timeArray = this.goalMissionData;
                 }
                
-                timeArray.filter((timeSheetItem, timeSheetIndex) => {
+                timeArray.filter((timeSheetItem) => {
                     let timeEntryData = timeSheetItem.timesheet;
-                    timeEntryData.filter((timeEntry, timeEntryIndex) => {
-
-                        let currentArrayDate = timeEntry.date
+                    timeEntryData.filter((timeEntry) => {
                         let currentArrayYear = timeEntry.year
                         let currentArrayMonth = timeEntry.month
                         let time2 = timeEntry.time;
@@ -1038,21 +1020,20 @@
                 this.currentTimeData.timeSheetId = '';
                 this.currentTimeData.documents = [];
                 this.volunteerHourDisableDates = [],
-                    this.currentTimeData.disabledPastDates = '',
-                    this.currentTimeData.disabledFutureDates = '',
-                    this.currentTimeData.missionName = ''
+                this.currentTimeData.disabledPastDates = '',
+                this.currentTimeData.disabledFutureDates = '',
+                this.currentTimeData.missionName = ''
                 this.currentTimeData.action = ''
                 this.files = [];
                 this.defaultHours = this.languageData.placeholder.spent_hours
                 this.defaultMinutes = this.languageData.placeholder.spent_minutes
                 this.defaultWorkday = this.languageData.placeholder.workday
-
             },
             submitVolunteerTimeSheet(timeSheetType) {
                 let timeSheetId = {
                     'timesheet_entries': []
                 }
-                let timeSheetEntry = []
+
                 let timeArray = [];
                 let currentYear = ''
                 let currentMonth = ''
@@ -1066,10 +1047,10 @@
                     currentMonth = this.volunteeringGoalCurrentMonth
                 }
                 if (timeArray) {
-                    timeArray.filter( (timeMission, timeMissionIndex) => {
+                    timeArray.filter( (timeMission) => {
                         let timeSheetArray = timeMission.timesheet;
                         if (timeSheetArray) {
-                            timeSheetArray.filter( (timeSheet, timeSheetIndex) => {
+                            timeSheetArray.filter( (timeSheet) => {
                                 let currentArrayYear = timeSheet.year
                                 let currentArrayMonth = timeSheet.month
                                 if (currentYear == currentArrayYear) {
@@ -1129,7 +1110,7 @@
                             this.timeMissionTotalPage = response.pagination.total_pages;
                         }
 
-                        data.filter( (item, index) => {
+                        data.filter( (item) => {
                             currentData.push({
                                 [mission]: item.title,
                                 [time]: item.time,
@@ -1158,7 +1139,7 @@
                         } else {
                             timeArray = this.goalMissionData
                         }
-                        timeArray.filter( (timeArray, timeIndex) => {
+                        timeArray.filter( (timeArray) => {
                             if (timeArray.mission_id == missionId) {
                                 timeSheetArray = timeArray;
                             }
@@ -1185,7 +1166,7 @@
                             this.goalMissionTotalPage = response.pagination.total_pages;
                         }
 
-                        data.filter( (item, index) => {
+                        data.filter( (item) => {
                             currentData.push({
                                 [mission]: item.title,
                                 [action]: item.action,
@@ -1227,13 +1208,13 @@
                 this.languageData.label.organisation,
             ]
 
-            goalRequestFieldArray.filter( (data, index) => {
+            goalRequestFieldArray.filter( (data) => {
                 this.goalRequestFields.push({
                     "key": data
                 })
             });
 
-            timeRequestFieldArray.filter( (data, index) => {
+            timeRequestFieldArray.filter( (data) => {
                 this.timesheetRequestFields.push({
                     "key": data
                 })

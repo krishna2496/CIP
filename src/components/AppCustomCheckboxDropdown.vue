@@ -23,7 +23,6 @@
 </template>
 
 <script>
-	import Vue from "vue";
 	import store from '../store';
 	export default {
 		name: "AppCheckboxDropdown",
@@ -114,7 +113,7 @@
 				selectedData['fieldId'] = this.fieldId;
 				this.$emit("updateCall", selectedData);
 			},
-			selectedItem: function (val) {
+			selectedItem: function () {
 				this.items = this.selectedItem;
 			},
 		},

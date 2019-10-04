@@ -23,7 +23,7 @@
                         <label>{{ languageData.label.new_password }}</label>
                         <b-form-input id="" type="password" v-model="resetPassword.password"
                             :class="{ 'is-invalid': $v.resetPassword.password.$error }" value="Password" maxlength="120"
-                            v-bind:placeholder='languageData.placeholder.password' autofocus @keydown.space.prevent>
+                            v-bind:placeholder='languageData.placeholder.password' autofocus @keydown.space.prevent autocomplete="password">
                         </b-form-input>
                         <div v-if="submitted && !$v.resetPassword.password.required" class="invalid-feedback">
                             {{ languageData.errors.password_required }}
@@ -37,7 +37,7 @@
                         <b-form-input id="" type="password" v-model="resetPassword.confirmPassword"
                             :class="{ 'is-invalid': $v.resetPassword.confirmPassword.$error }" maxlength="120"
                             v-bind:placeholder='languageData.placeholder.password'
-                            @keypress.enter.prevent="handleSubmit" value="Password" @keydown.space.prevent>
+                            @keypress.enter.prevent="handleSubmit" value="Password" @keydown.space.prevent autocomplete="password">
                         </b-form-input>
                         <div v-if="submitted && !$v.resetPassword.confirmPassword.required" class="invalid-feedback">
                             {{ languageData.errors.password_required }}
@@ -70,10 +70,8 @@
     import store from '../../store';
     import {
         required,
-        email,
         sameAs,
-        minLength,
-        between
+        minLength
     } from 'vuelidate/lib/validators';
     import {
         loadLocaleMessages,
@@ -82,7 +80,7 @@
         databaseConnection,
         tenantSetting
     } from '../../services/service';
-    import axios from "axios";
+ 
     import constants from '../../constant';
 
     export default {
@@ -137,7 +135,7 @@
                 this.$refs.ThePrimaryFooter.$forceUpdate()
             },
             async createConnection() {
-                await databaseConnection(this.langList).then(response => {
+                await databaseConnection(this.langList).then(() => {
                     this.isShowComponent = true
                     //Get langauage list from Local Storage
                     this.langList = JSON.parse(store.state.listOfLanguage)
@@ -148,7 +146,7 @@
 
                     this.fetchUserLanguage(this.$route.query.email);
                     this.isShowSlider = true;
-                    loadLocaleMessages(store.state.defaultLanguage).then(response => {
+                    loadLocaleMessages(store.state.defaultLanguage).then(() => {
                         this.languageData = JSON.parse(store.state.languageLabel);
                     });
                 })
@@ -179,7 +177,7 @@
                 }
 
             },
-            handleSubmit(e) {
+            handleSubmit() {
                 this.submitted = true;
                 this.$v.$touch();
                 // stop here if form is invalid

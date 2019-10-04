@@ -85,16 +85,14 @@
                                 </ul>
                             </li>
                             <li class="has-menu no-dropdown" v-if="isStoryDisplay">
-                                <router-link :to="{ path: '/stories'}"
-                                    >
-                                    {{languageData.label.stories}}
-                                </router-link>
+                                <a href="Javascript:void(0)"
+                                    :title='languageData.label.stories'>{{ languageData.label.stories}}
+                                </a>
                             </li>
                             <li class="has-menu no-dropdown" v-if="isNewsDisplay">
-                                <router-link :to="{ path: '/news'}"
-                                    >
-                                    {{languageData.label.news}}
-                                </router-link>
+                                 <a href="Javascript:void(0)"
+                                    :title='languageData.label.news'>{{ languageData.label.news}}
+                                </a>
                             </li>
 
                             <li class="has-menu" v-if="isPolicyDisplay && policyPage.length > 0">
@@ -383,7 +381,7 @@
                     document.querySelector('body').classList.remove('small-header');
                     this.$store.commit('logoutUser');
                 },
-                menuBarclickHandler($event) {
+                menuBarclickHandler() {
 
                     if (this.$route.params.searchParamsType) {
                         this.filterData['parmasType'] = this.$route.params.searchParamsType;
@@ -391,7 +389,7 @@
                     if (this.$route.params.searchParams) {
                         this.filterData['parmas'] = this.$route.params.searchParams;
                     }
-                    const doSomething = async () => {
+                    async () => {
                         await eventBus.$emit('clearAllFilters');
                     }
                     eventBus.$emit('setDefaultText');
@@ -399,7 +397,7 @@
                 },
 
                 async exploreMissions() {
-                    await exploreMission().then(response => {
+                    await exploreMission().then(() => {
                         let menuBar = JSON.parse(store.state.menubar);
                         this.topTheme = menuBar.top_theme;
                         this.topCountry = menuBar.top_country;
@@ -418,7 +416,7 @@
                     });
                 },
 
-                async clearFilter($event) {
+                async clearFilter() {
                     if (store.state.isLoggedIn) {
                         this.$router.push({
                            name: 'home'

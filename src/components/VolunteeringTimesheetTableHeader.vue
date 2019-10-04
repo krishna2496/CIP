@@ -46,13 +46,11 @@
 <script>
 	import store from '../store';
 	import moment from 'moment'
-	import DatePicker from "vue2-datepicker";
 	import AppCustomDropdown from "../components/AppCustomDropdown";
 
 	export default {
 		name: "VolunteeringTimesheetHeader",
 		components: {
-			DatePicker,
 			AppCustomDropdown
 		},
 		props: {

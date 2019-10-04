@@ -86,7 +86,7 @@
 							minWidthStyle.setAttribute("style", "left: 0 !important");
 						}
 					}
-					 setTimeout(() => {
+					setTimeout(() => {
 						let dropdownListChild = dropdownList.childNodes[1];
 						let optionlistHeight = parseInt(window.getComputedStyle(optionlist).getPropertyValue("height"));
 						let dropdownListHeight = parseInt(window.getComputedStyle(dropdownListChild).getPropertyValue("height"));
@@ -94,7 +94,7 @@
 						if (dropdownListHeight > optionlistHeight){
 							minHeightStyle.setAttribute("style", "overflow-x:hidden");
 						}
-      				},500);
+					},500);
 				}
 			}
 		},

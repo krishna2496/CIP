@@ -195,14 +195,8 @@
     import AppCustomDropdown from "../components/CustomFieldDropdown";
     import {
         required,
-        maxLength,
-        email,
-        sameAs,
-        minLength,
         between,
-        helpers,
-        numeric,
-        requiredIf
+        numeric
     } from 'vuelidate/lib/validators';
     import FileUpload from 'vue-upload-component';
     import {
@@ -393,7 +387,7 @@
                 let fileData = []
                 let file = this.fileArray;
                 if (file) {
-                    file.filter((fileItem, fileIndex) => {
+                    file.filter((fileItem) => {
                         fileData.push(fileItem.file);
                         formData.append('documents[]', fileItem.file);
                     })

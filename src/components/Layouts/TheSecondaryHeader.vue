@@ -63,8 +63,7 @@
     import AppFilterDropdown from "../AppFilterDropdown";
     import AppCheckboxDropdown from "../AppCheckboxDropdown";
     import {
-        filterList,
-        missionFilterListing
+        filterList
     } from "../../services/service";
     import store from "../../store";
     import {
@@ -171,7 +170,7 @@
                     this.isCityChange = false;
                     this.isThemeChange = false;
                     let selectedData = store.state.cityId.toString().split(',');
-                    let filteredCity = selectedData.filter((value, index, arr) =>  {
+                    let filteredCity = selectedData.filter((value) =>  {
                         return value != data.selectedId;
                     });
                     this.selectedCity = filteredCity;
@@ -183,7 +182,7 @@
                     this.isCityChange = false;
                     this.isThemeChange = false;
                     let selectedData = store.state.themeId.toString().split(',');
-                    let filteredTheme = selectedData.filter((value, index, arr) => {
+                    let filteredTheme = selectedData.filter((value) => {
                         return value != data.selectedId;
                     });
                     this.selectedSkill = [];
@@ -192,7 +191,7 @@
                 }
                 if (data.selectedType == "skill") {
                     let selectedData = store.state.skillId.toString().split(',');
-                    let filteredSkill = selectedData.filter( (value, index, arr) => {
+                    let filteredSkill = selectedData.filter( (value) => {
                         return value != data.selectedId;
                     });
                     this.selectedSkill = filteredSkill;
@@ -237,7 +236,7 @@
                 let filterCount = document.querySelectorAll(
                     ".filter-block .list-group-item"
                 ).length;
-                let bottomHeader = document.querySelector(".bottom-header");
+
                 if (filterCount != null) {
                     if (filterCount == 3) {
                         returnData.push('three-filters')
@@ -449,7 +448,7 @@
                 });
             },
 
-            searchMission($event) {
+            searchMission() {
                 this.$parent.searchMissions(this.search, this.selectedfilterParams);
                 this.selectedfilterParams.search = this.search
                 this.filterSearchListing();
@@ -608,13 +607,13 @@
             this.isThemeDisplay = this.settingEnabled(constants.THEMES_ENABLED);
             this.isSkillDisplay = this.settingEnabled(constants.SKILLS_ENABLED);
             this.isCountrySelectionSet = this.settingEnabled(constants.IS_COUNTRY_SELECTION);
-            eventBus.$on('clearAllFilters', (message) => {
+            eventBus.$on('clearAllFilters', () => {
                 this.clearFilter();
             });
-            eventBus.$on('setDefaultText', (message) => {
+            eventBus.$on('setDefaultText', () => {
                 this.defautCountry = this.languageData.label.country;
             });
-            eventBus.$on('setDefaultData', (message) => {
+            eventBus.$on('setDefaultData', () => {
                 this.filterListing();
             });
             // Fetch Filters

@@ -47,8 +47,6 @@
     import {
         policyDetail
     } from '../services/service';
-    import axios from "axios";
-    import store from '../store';
 
     export default {
         components: {

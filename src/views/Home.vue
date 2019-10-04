@@ -114,7 +114,6 @@
     import ListView from "../components/MissionListView";
     import AppCustomDropdown from "../components/AppCustomDropdown";
     import AppCustomChip from "../components/AppCustomChip";
-    import axios from "axios";
     import store from '../store';
     import {
         missionListing,
@@ -255,8 +254,6 @@ import { setTimeout } from 'timers';
                         let sortBy = store.state.sortBy;
                         
                         setTimeout(() => {
-                            let labelString = 'label.'
-                            let sortByValue = labelString.concat(sortBy);
                             this.sortByDefault = this.languageData.label[sortBy];
                         }, 200);
                     }
@@ -266,7 +263,7 @@ import { setTimeout } from 'timers';
 
             async missionFilter() {
 
-                await missionFilterListing().then(response => {
+                await missionFilterListing().then(() => {
                     this.getMissions();
                 });
             },

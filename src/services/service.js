@@ -39,12 +39,6 @@ import removeDocument from "./VolunteerTimesheet/RemoveDocument"
 import submitVolunteerHourTimeSheet from "./VolunteerTimesheet/SubmitVolunteerHourTimeSheet"
 import goalRequest from "./VolunteerTimesheet/GoalRequest"
 import timeRequest from "./VolunteerTimesheet/TimeRequest"
-import newsDetail from "./News/NewsDetail"
-import newsListing from "./News/NewsListing"
-import storyDetail from "./Stories/StoryDetail"
-import storyListing from "./Stories/StoryListing"
-import storyMissionListing from "./Stories/StoryMissionListing"
-import submitStory from "./Stories/SubmitStory"
 
 export {
     loadLocaleMessages,
@@ -87,11 +81,5 @@ export {
     removeDocument,
     submitVolunteerHourTimeSheet,
     goalRequest,
-    timeRequest,
-    newsDetail,
-    newsListing,
-    storyDetail,
-    storyListing,
-    storyMissionListing,
-    submitStory
+    timeRequest
 }

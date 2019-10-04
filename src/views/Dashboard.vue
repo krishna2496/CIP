@@ -138,15 +138,14 @@
 	import TheSecondaryFooter from "../components/Layouts/TheSecondaryFooter";
 	import AppCustomDropdown from "../components/AppCustomDropdown";
 	import DashboardBreadcrumb from "../components/DashboardBreadcrumb";
-	import Chart from "chart.js";
 	import store from '../store';
+	import Chart from "chart.js";
 
 	export default {
 		components: {
 			ThePrimaryHeader,
 			AppCustomDropdown,
 			TheSecondaryFooter,
-			Chart,
 			DashboardBreadcrumb
 		},
 
@@ -203,7 +202,7 @@
 			var lineChartRefs = this.$refs.lineChartRefs;
 			var lineContent = lineChartRefs.getContext("2d");
 			lineChartRefs.height = 350;
-			var lineChart = new Chart(lineContent, {
+			new Chart(lineContent, {
 				type: "line",
 				data: {
 					labels: [

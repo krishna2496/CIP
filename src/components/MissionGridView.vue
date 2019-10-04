@@ -389,7 +389,7 @@
 				let defaultLang = store.state.defaultLanguage.toLowerCase();
 				if (JSON.parse(store.state.missionNotFoundText) != "") {
 					let missionNotFoundArray = JSON.parse(store.state.missionNotFoundText);
-					let data = missionNotFoundArray.filter((item, i) => {
+					let data = missionNotFoundArray.filter((item) => {
 						if (item.lang == defaultLang) {
 							return item;
 						}
@@ -453,7 +453,7 @@
 					}
 				});
 			},
-			onInputChange(text) {
+			onInputChange() {
 				this.submitDisable = true;
 			},
 			// For selected user id.

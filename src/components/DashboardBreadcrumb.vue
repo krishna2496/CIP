@@ -64,7 +64,6 @@
 					this.currentDashboardPage = currentDashboard;
 					let currentLink = document.querySelector(".breadcrumb-current");
 					currentLink.innerHTML = this.currentDashboardPage;
-					let breadcrumbItem = document.querySelectorAll(".breadcrumb-item");
 					currentLink.addEventListener("click", this.handleBreadcrumb);
 				}
 			});

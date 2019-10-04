@@ -15,7 +15,8 @@
 						<b-col lg="6" class="ml-auto banner-content-wrap">
 							<div class="banner-content-block">
 								<h1>{{missionDetail.title}}</h1>
-								<div v-bind:class="{'rating-with-btn' : true , 'justify-content-end' : !isStarDisplay }">
+								<div
+									v-bind:class="{'rating-with-btn' : true , 'justify-content-end' : !isStarDisplay }">
 									<div class="rating-block" v-if="isStarDisplay">
 										<star-rating v-bind:increment="0.5" v-bind:max-rating="5"
 											inactive-color="#dddddd" active-color="#F7D341" v-bind:star-size="23"
@@ -161,31 +162,34 @@
 														<img :src="$store.state.imagePath+'/assets/images/clock.svg'"
 															alt="user">
 													</i>
-													<div class="text-wrap" v-if="missionDetail.application_deadline != '' && missionDetail.application_deadline != null">
+													<div class="text-wrap"
+														v-if="missionDetail.application_deadline != '' && missionDetail.application_deadline != null">
 														<span
 															class="title-text mb-1">{{missionDetail.application_deadline | formatDate}}
 														</span>
-														<span
-															class="subtitle-text">{{ languageData.label.deadline }}
+														<span class="subtitle-text">{{ languageData.label.deadline }}
 														</span>
 													</div>
 													<div v-else>
-														<span
-															class="title-text mb-1"
-															v-if="missionDetail.application_start_date != '' && missionDetail.application_start_date != null && missionDetail.application_end_date != '' && missionDetail.application_end_date != null"
-															>
-															<span v-if="missionDetail.application_start_date != '' && missionDetail.application_start_date != null">
-															{{ languageData.label.from }}	
-															{{missionDetail.application_start_date | formatDate}} 
-															{{missionDetail.application_start_time | formatTime}}
+														<span class="title-text mb-1"
+															v-if="missionDetail.application_start_date != '' && missionDetail.application_start_date != null && missionDetail.application_end_date != '' && missionDetail.application_end_date != null">
+															<span
+																v-if="missionDetail.application_start_date != '' && missionDetail.application_start_date != null">
+																{{ languageData.label.from }}
+																{{missionDetail.application_start_date | formatDate}}
+																{{missionDetail.application_start_time | formatTime}}
 															</span>
-															<span v-if="missionDetail.application_end_date != '' && missionDetail.application_end_date != null">
-															{{ languageData.label.until }}	
-															{{missionDetail.application_end_date | formatDate}} 
-															{{missionDetail.application_end_time | formatTime}}
+															<span
+																v-if="missionDetail.application_end_date != '' && missionDetail.application_end_date != null">
+																{{ languageData.label.until }}
+																{{missionDetail.application_end_date | formatDate}}
+																{{missionDetail.application_end_time | formatTime}}
 															</span>
 														</span>
-														<span class="subtitle-text" v-if="missionDetail.application_start_date != '' && missionDetail.application_start_date != null && missionDetail.application_end_date != '' && missionDetail.application_end_date != null"><p>{{ languageData.label.deadline }}</p></span>
+														<span class="subtitle-text"
+															v-if="missionDetail.application_start_date != '' && missionDetail.application_start_date != null && missionDetail.application_end_date != '' && missionDetail.application_end_date != null">
+															<p>{{ languageData.label.deadline }}</p>
+														</span>
 													</div>
 												</div>
 											</template>
@@ -239,7 +243,8 @@
 									<b-list-group-item>
 										<div>
 											<i class="img-wrap">
-												<img :src="$store.state.imagePath+'/assets/images/location-black.svg'" alt="" />
+												<img :src="$store.state.imagePath+'/assets/images/location-black.svg'"
+													alt="" />
 											</i>
 											<span class="label">{{ languageData.label.city}}</span>
 											<p class="text-wrap">{{missionDetail.city_name}}</p>
@@ -248,20 +253,23 @@
 									<b-list-group-item v-if="isThemeDisplay">
 										<div>
 											<i class="img-wrap">
-												<img :src="$store.state.imagePath+'/assets/images/earth-ic.svg'" alt="" />
+												<img :src="$store.state.imagePath+'/assets/images/earth-ic.svg'"
+													alt="" />
 											</i>
 											<span class="label">{{ languageData.label.theme}}</span>
 											<p class="text-wrap">{{getThemeTitle(missionDetail.mission_theme)}}</p>
 										</div>
 									</b-list-group-item>
 									<b-list-group-item>
-										
+
 										<div>
 											<i class="img-wrap">
-												<img :src="$store.state.imagePath+'/assets/images/calendar.svg'" alt="" />
+												<img :src="$store.state.imagePath+'/assets/images/calendar.svg'"
+													alt="" />
 											</i>
 											<span class="label">{{ languageData.label.date}}</span>
-											<template v-if="missionDetail.start_date != '' && missionDetail.start_date != null && missionDetail.end_date != '' && missionDetail.end_date != null">
+											<template
+												v-if="missionDetail.start_date != '' && missionDetail.start_date != null && missionDetail.end_date != '' && missionDetail.end_date != null">
 												<p class="text-wrap">{{missionDetail.start_date | formatDate}}</p>
 											</template>
 											<template v-else>
@@ -273,7 +281,8 @@
 									<b-list-group-item>
 										<div>
 											<i class="img-wrap">
-												<img :src="$store.state.imagePath+'/assets/images/group-ic.svg'" alt="" />
+												<img :src="$store.state.imagePath+'/assets/images/group-ic.svg'"
+													alt="" />
 											</i>
 											<span class="label">{{ languageData.label.organisation}}</span>
 											<p class="text-wrap">{{missionDetail.organisation_name}}</p>
@@ -376,7 +385,8 @@
 												<div class="col-sm-4 mission-tab-col" v-if="isCurrentStatusDisplay">
 													<div class="mission-tab-inner">
 														<p v-if="missionDetail.achieved_goal">
-															{{missionDetail.achieved_goal}} <span>{{ languageData.label.achieved }}</span>
+															{{missionDetail.achieved_goal}}
+															<span>{{ languageData.label.achieved }}</span>
 														</p>
 														<p v-else>
 															0<span>{{ languageData.label.achieved }}</span>
@@ -398,11 +408,13 @@
 													<p>{{section.description}}</p>
 												</div>
 											</div>
-											<div v-if="missionDetail.mission_document && missionDetail.mission_document.length > 0">
+											<div
+												v-if="missionDetail.mission_document && missionDetail.mission_document.length > 0">
 												<h2>{{ languageData.label.documents }}</h2>
 												<div class="document-list-wrap">
 													<div class="document-list-block"
-														v-for="(document ,index) in missionDetail.mission_document" :key=index>
+														v-for="(document ,index) in missionDetail.mission_document"
+														:key=index>
 														<!-- pdf -->
 														<template v-if="document.document_type =='pdf'">
 															<b-link :href="document.document_path" target="_blank"
@@ -563,8 +575,7 @@
 							<div class="content-loader"></div>
 						</div>
 						<GridView id="gridView" :items="missionListing" v-if="isShownComponent" :userList="userList"
-							:relatedMission=relatedMission
-							@getMissions="getRelatedMissions" small />
+							:relatedMission=relatedMission @getMissions="getRelatedMissions" small />
 					</div>
 				</b-container>
 			</div>
@@ -579,10 +590,10 @@
 				<div class="autocomplete-control">
 					<div class="autosuggest-container">
 						<VueAutosuggest ref="autosuggest" name="user" v-model="query" :suggestions="filteredOptions"
-							@input="onInputChange" @selected="onSelected" @keydown="tabHandler"
-							:get-suggestion-value="getSuggestionValue" :input-props="{
-	                        id:'autosuggest__input', 
-	                        placeholder:autoSuggestPlaceholder,
+							@input="onInputChange" @selected="onSelected" :get-suggestion-value="getSuggestionValue"
+							:input-props="{
+								id:'autosuggest__input', 
+								placeholder:autoSuggestPlaceholder,
 	                        }">
 							<div slot-scope="{suggestion}">
 								<img :src="suggestion.item.avatar" />
@@ -626,14 +637,11 @@
 		missionDetail,
 		relatedMissions,
 		missionComments,
-		storeMissionComments,
-		volunteerTimesheetHours
+		storeMissionComments
 	} from "../services/service";
 	import SimpleBar from 'simplebar';
 	import store from "../store";
 	import moment from 'moment';
-	import AddVolunteeringHours from "../components/AddVolunteeringHours";
-	import AddVolunteeringAction from "../components/AddVolunteeringAction";
 	import {
 		required,
 		maxLength
@@ -655,7 +663,7 @@
 		},
 		data() {
 			return {
-				relatedMission:true,
+				relatedMission: true,
 				defaultWorkday: "",
 				workDayList: [
 					["WORKDAY", "workday"],
@@ -783,14 +791,6 @@
 							let lastName = option.last_name.toLowerCase();
 							let email = option.email.toLowerCase();
 							let searchString = firstName + '' + lastName + '' + email;
-							setTimeout(() => {
-								let myElement = document.querySelector('.autosuggest__results');
-								if (myElement != null) {
-									new SimpleBar(myElement, {
-										autoHide: false
-									});
-								}
-							});
 							return searchString.indexOf(this.query.toLowerCase()) > -1;
 						})
 					}];
@@ -860,7 +860,7 @@
 				});
 
 			},
-			onInputChange(text) {
+			onInputChange() {
 				this.submitDisable = true;
 			},
 			// For selected user id.
@@ -868,14 +868,6 @@
 				this.selected = item.item;
 				this.submitDisable = false;
 				this.invitedUserId = item.item.user_id;
-			},
-			tabHandler() {
-				setTimeout(() => {
-					let myElement = document.querySelector('.autosuggest__results');
-					new SimpleBar(myElement, {
-						autoHide: false
-					});
-				});
 			},
 			//This is what the <input/> value is set to when you are selecting a suggestion.
 			getSuggestionValue(suggestion) {
@@ -890,17 +882,6 @@
 				this.message = null;
 				this.$refs.userDetailModal.show();
 				this.currentMission = missionId;
-				setTimeout(() => {
-					let onFocus = document.getElementById('autosuggest');
-					onFocus.addEventListener("click", function () {
-						let myElement = document.querySelector('.autosuggest__results');
-						if (myElement != null) {
-							new SimpleBar(myElement, {
-								autoHide: true
-							});
-						}
-					});
-				});
 			},
 
 			defaultMediaPathDetail(defaultImage) {
@@ -995,7 +976,7 @@
 								this.missionDetail = response.data[0];
 								if (response.data[0].user_application_status ==
 									constants.AUTOMATICALLY_APPROVED && response.data[0].user_application_count > 0
-									) {
+								) {
 									this.allowAddEntry = true
 								}
 								if (response.data[0].is_favourite == 1) {
@@ -1036,7 +1017,7 @@
 				if (missionTheme) {
 					let translations = missionTheme.translations
 					if (translations) {
-						let filteredObj = translations.filter( (item, i) => {
+						let filteredObj = translations.filter((item, i) => {
 							if (item.lang === store.state.defaultLanguage.toLowerCase()) {
 								return translations[i].title;
 							}
@@ -1050,7 +1031,7 @@
 			getSkills(missionDetail) {
 				let skills = '';
 				if (missionDetail.skill) {
-					let filteredObj = (missionDetail.skill).filter( (item, i) => {
+					(missionDetail.skill).filter((item) => {
 						if (skills == '') {
 							skills = item.title;
 						} else {
@@ -1071,7 +1052,7 @@
 				missionComments(commentData).then(response => {
 					if (response.error == false) {
 						if (this.missionComment.length) {
-							response.data.map((value, key) =>{
+							response.data.map((value) => {
 								this.missionComment.push(value);
 							});
 						} else {
@@ -1087,7 +1068,7 @@
 				});
 			},
 
-			handleSubmit(e) {
+			handleSubmit() {
 				this.submitted = true;
 				this.$v.$touch();
 				// stop here if form is invalid
@@ -1190,14 +1171,14 @@
 				this.relatedMissionlLoader = true
 				this.isShownMediaComponent = false
 				this.max = 100,
-				this.value = 70,
-				this.missionListing = [],
-				this.missionComment = [],
-				this.submitted = false,
-				this.nextUrl = null,
-				this.postComment = false,
-				this.loadMoreComment = false,
-				this.languageData = JSON.parse(store.state.languageLabel);
+					this.value = 70,
+					this.missionListing = [],
+					this.missionComment = [],
+					this.submitted = false,
+					this.nextUrl = null,
+					this.postComment = false,
+					this.loadMoreComment = false,
+					this.languageData = JSON.parse(store.state.languageLabel);
 				this.applyButton = this.languageData.label.apply_now;
 				this.page = 1;
 				this.isFacebookSharingDisplay = false

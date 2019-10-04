@@ -50,19 +50,15 @@
     import AppCustomDropdown from "../../components/AppCustomDropdown";
     import {
         required,
-        email,
-        minLength,
-        between
+        email
     } from "vuelidate/lib/validators";
     import {
         loadLocaleMessages,
         forgotPassword,
-        getUserLanguage,
         databaseConnection,
         tenantSetting
     } from "../../services/service";
     import store from "../../store";
-    import axios from "axios";
 
     export default {
         components: {
@@ -107,7 +103,7 @@
                 this.$refs.ThePrimaryFooter.$forceUpdate();
             },
             async createConnection() {
-                await databaseConnection(this.langList).then(response => {
+                await databaseConnection(this.langList).then(() => {
                     this.isShowComponent = true;
                     //Get langauage list from Local Storage
                     this.langList = JSON.parse(store.state.listOfLanguage);
@@ -117,12 +113,12 @@
                     tenantSetting();
 
                     this.isShowSlider = true;
-                    loadLocaleMessages(store.state.defaultLanguage).then(response => {
+                    loadLocaleMessages(store.state.defaultLanguage).then(() => {
                         this.languageData = JSON.parse(store.state.languageLabel);
                     });
                 });
             },
-            handleSubmit(e) {
+            handleSubmit() {
                 this.submitted = true;
                 // Stop here if form is invalid
                 this.$v.$touch();

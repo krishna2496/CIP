@@ -128,7 +128,7 @@
                     .then((response) => {
                         if (response.data.data) {
                             let dataList = [];
-                            response.data.data.pages.forEach(function (value, key) {
+                            response.data.data.pages.forEach(function (value) {
 
                                 if (value.language_id == store.state.defaultLanguageId) {
                                     dataList.push(value);

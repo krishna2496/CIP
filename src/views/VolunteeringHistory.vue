@@ -108,14 +108,12 @@
 	import VolunteerMissionGoals from "../services/VolunteerHistory/VolunteerMissionGoals";
 	import VolunteeringRequest from "../components/VolunteeringRequest";
 	import store from "../store";
-	import Chart from "chart.js";
 
 	export default {
 		components: {
 			TopHeader,
 			PrimaryFooter,
 			AppCustomDropdown,
-			Chart,
 			DashboardBreadcrumb,
 			HorizontalChart,
 			VolunteeringRequest
@@ -208,7 +206,7 @@
 							this.timeMissionTotalPage = response.pagination.total_pages;
 						}
 
-						data.filter( (item, index) => {
+						data.filter( (item) => {
 							this.timeMissionTimesheetItems.push({
 								[mission]: item.title,
 								[time]: item.time,
@@ -236,7 +234,7 @@
 							this.goalMissionTotalPage = response.pagination.total_pages;
 						}
 
-						data.filter( (item, index) => {
+						data.filter( (item) => {
 							this.goalMissionTimesheetItems.push({
 								[mission]: item.title,
 								[action]: item.action,
@@ -265,7 +263,7 @@
 				this.languageData.label.organisation,
 			]
 
-			timeRequestFieldArray.filter( (data, index) => {
+			timeRequestFieldArray.filter( (data) => {
 				this.timeMissionTimesheetFields.push({
 					"key": data
 				})
@@ -277,7 +275,7 @@
 				this.languageData.label.organisation,
 			]
 
-			goalRequestFieldArray.filter((data, index) => {
+			goalRequestFieldArray.filter((data) => {
 				this.goalMissionTimesheetFields.push({
 					"key": data
 				})

@@ -340,12 +340,10 @@
     import PictureInput from '../components/vue-picture-input'
     import {
         getUserDetail,
-        saveProfile,
         changeUserPassword,
         changeProfilePicture,
         changeCity,
         saveUserProfile,
-        saveSkill,
         loadLocaleMessages,
         country,
         skill,
@@ -354,11 +352,8 @@
     import {
         required,
         maxLength,
-        email,
         sameAs,
-        minLength,
-        between,
-        helpers
+        minLength
     } from 'vuelidate/lib/validators';
     import constants from '../constant';
 
@@ -748,8 +743,8 @@
                         }
                     });
                 }
-                let filteredObj = this.userSkillList.filter((toItem, toIndex) => {
-                    let filteredObj = this.skillListing.filter((fromItem, fromIndex) => {
+                this.userSkillList.filter((toItem) => {
+                    this.skillListing.filter((fromItem, fromIndex) => {
                         if (toItem.id == fromItem.id) {
                             this.skillListing.splice(fromIndex, 1);
                         }
@@ -768,7 +763,7 @@
                 this.returnCustomFeildData = data;
             },
             //submit form
-            handleSubmit(e) {
+            handleSubmit() {
 
                 this.submitted = true;
                 this.$v.$touch();
@@ -789,7 +784,6 @@
                     return
                 }
 
-                let returnData = {};
                 this.saveProfileData.first_name = this.profile.firstName,
                     this.saveProfileData.last_name = this.profile.lastName,
                     this.saveProfileData.title = this.profile.title,
@@ -835,10 +829,9 @@
                     } else {
                         store.commit('setDefaultLanguageCode', this.languageCode)
                         this.showPage = false;
-                        this.getUserProfileDetail().then(getResponse => {
-                            // this.isShownComponent = false;
+                        this.getUserProfileDetail().then(() => {
                             this.showPage = true;
-                            loadLocaleMessages(this.profile.languageCode).then(langaugeResponse => {
+                            loadLocaleMessages(this.profile.languageCode).then(() => {
                                 this.languageData = JSON.parse(store.state.languageLabel);
                                 this.makeToast("success", response.message);
                                 this.isShownComponent = true;

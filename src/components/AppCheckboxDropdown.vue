@@ -18,7 +18,6 @@
 </template>
 
 <script>
-	import Vue from "vue";
 	import store from '../store';
 	export default {
 		name: "AppCheckboxDropdown",
@@ -95,7 +94,7 @@
 			items: function (val) {
 				this.$emit("updateCall", val.join(','));
 			},
-			selectedItem: function (val) {
+			selectedItem: function () {
 				this.items = this.selectedItem;
 			},
 		},

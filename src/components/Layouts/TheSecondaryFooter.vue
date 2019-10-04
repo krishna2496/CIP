@@ -18,11 +18,8 @@
 </template>
 
 <script>
-    import axios from "axios";
     import store from '../../store';
-    import router from "../../router";
     import {
-        loadLocaleMessages,
         cmsPages
     } from "../../services/service";
 
@@ -42,7 +39,6 @@
             this.languageData = JSON.parse(store.state.languageLabel);
             // Fetching footer CMS pages
             this.getPageListing();
-            // loadLocaleMessages(store.state.defaultLanguage);
             this.footerAdj();
             window.addEventListener("resize", this.footerAdj);
         },
@@ -58,7 +54,7 @@
                 //Get title according to language
                 items = items.pages;
                 if (items) {
-                    let filteredObj = items.filter((item, i) => {
+                    let filteredObj = items.filter((item) => {
                         if (item.language_id == store.state.defaultLanguageId) {
                             return item;
                         }
@@ -75,7 +71,7 @@
                 }
             },
 
-            clickHandler($event) {
+            clickHandler() {
                 this.$emit('cmsListing', this.$route.params.slug);
             },
             

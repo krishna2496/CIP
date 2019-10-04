@@ -47,9 +47,6 @@
     </div>
 </template>
 <script>
-    import {
-        setTimeout
-    } from "timers";
     import store from "../store";
 
     export default {
@@ -72,9 +69,7 @@
                 dataToList: this.toList
             };
         },
-        mounted() {
-            let skillModel = this.$refs.skillModal;
-        },
+
         methods: {
             handleclick() {
                 let fromListGroup = document.querySelectorAll(".fromlist-group li");
@@ -83,8 +78,8 @@
                 }
             },
             showSkillModal: function () {
-                let filteredObj = this.toList.filter((toItem, toIndex) => {
-                    let filteredObj = this.fromList.filter( (fromItem, fromIndex) => {
+                this.toList.filter((toItem) => {
+                    this.fromList.filter( (fromItem, fromIndex) => {
                         if (toItem.id == fromItem.id) {
                             this.fromList.splice(fromIndex, 1);
                         }
