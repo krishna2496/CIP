@@ -518,10 +518,9 @@ class MissionRepository implements MissionInterface
      *
      * @param Illuminate\Http\Request $request
      * @param Array $userFilterData
-     * @param int $languageId
      * @return \Illuminate\Pagination\LengthAwarePaginator
      */
-    public function getMissions(Request $request, array $userFilterData, int $languageId): LengthAwarePaginator
+    public function getMissions(Request $request, array $userFilterData): LengthAwarePaginator
     {
         $missionData = [];
         // Get  mission data
@@ -533,9 +532,15 @@ class MissionRepository implements MissionInterface
                 $query->where('status', '1');
                 $query->where('default', '1');
             }])
-            ->with(['missionLanguage' => function ($query) use ($languageId) {
-                $query->select('mission_language_id', 'mission_id', 'title', 'short_description', 'objective')
-                ->where('language_id', $languageId);
+            ->with(['missionLanguage' => function ($query) {
+                $query->select(
+                    'mission_language_id',
+                    'mission_id',
+                    'language_id',
+                    'title',
+                    'short_description',
+                    'objective'
+                );
             }])
             ->withCount(['missionApplication as user_application_count' => function ($query) use ($request) {
                 $query->where('user_id', $request->auth->user_id)
@@ -924,11 +929,10 @@ class MissionRepository implements MissionInterface
      * Display listing of related mission.
      *
      * @param Illuminate\Http\Request $request
-     * @param int $languageId
      * @param int missionId
      * @return Illuminate\Database\Eloquent\Collection
      */
-    public function getRelatedMissions(Request $request, int $languageId, int $missionId): Collection
+    public function getRelatedMissions(Request $request, int $missionId): Collection
     {
         // Check mission id exists or not
         $mission = $this->mission->findOrFail($missionId);
@@ -954,18 +958,24 @@ class MissionRepository implements MissionInterface
             $query->where('status', '1');
             $query->where('default', '1');
         }])
-        ->with(['missionLanguage' => function ($query) use ($languageId) {
-            $query->select('mission_language_id', 'mission_id', 'title', 'short_description', 'objective')
-            ->where('language_id', $languageId);
+        ->with(['missionLanguage' => function ($query) {
+            $query->select(
+                'mission_language_id',
+                'mission_id',
+                'language_id',
+                'title',
+                'short_description',
+                'objective'
+            );
         }])
         ->withCount(['missionApplication as user_application_count' => function ($query) use ($request) {
             $query->where('user_id', $request->auth->user_id)
             ->whereIn('approval_status', [config("constants.application_status")["AUTOMATICALLY_APPROVED"],
-            config("constants.application_status")["PENDING"]]);
+            config("constants.application_status")["PENDING"]])->whereNull('deleted_at');
         }])
         ->withCount(['missionApplication as mission_application_count' => function ($query) {
             $query->whereIn('approval_status', [config("constants.application_status")["AUTOMATICALLY_APPROVED"],
-            config("constants.application_status")["PENDING"]]);
+            config("constants.application_status")["PENDING"]])->whereNull('deleted_at');
         }])
         ->withCount(['favouriteMission as favourite_mission_count' => function ($query) use ($request) {
             $query->Where('user_id', $request->auth->user_id);
@@ -973,7 +983,9 @@ class MissionRepository implements MissionInterface
         ->whereNotIn('mission.mission_id', function ($query) use ($request) {
             $query->select('mission_id')
                 ->from('mission_application')
-                ->where('user_id', $request->auth->user_id);
+                ->where('user_id', $request->auth->user_id)
+                ->where('approval_status', '<>', config("constants.application_status")["REFUSED"])
+                ->whereNull('deleted_at');
         });
         $missionQuery->withCount([
             'missionRating as mission_rating_count' => function ($query) {
@@ -994,11 +1006,10 @@ class MissionRepository implements MissionInterface
      * Get mission detail
      *
      * @param Illuminate\Http\Request $request
-     * @param int $languageId
      * @param int $missionId
      * @return Illuminate\Database\Eloquent\Collection
      */
-    public function getMissionDetail(Request $request, int $languageId, int $missionId): Collection
+    public function getMissionDetail(Request $request, int $missionId): Collection
     {
         $mission = $this->mission->findOrFail($missionId);
         // Get  mission detail
@@ -1022,16 +1033,16 @@ class MissionRepository implements MissionInterface
             ->with(['favouriteMission'  => function ($query) use ($request) {
                 $query->Where('user_id', $request->auth->user_id);
             }])
-            ->with(['missionLanguage' => function ($query) use ($languageId) {
+            ->with(['missionLanguage' => function ($query) {
                 $query->select(
                     'mission_language_id',
                     'mission_id',
+                    'language_id',
                     'title',
                     'short_description',
                     'objective',
                     'description'
-                )
-                ->where('language_id', $languageId);
+                );
             }])
             ->withCount(['missionApplication as user_application_count' => function ($query) use ($request) {
                 $query->where('user_id', $request->auth->user_id)
@@ -1052,7 +1063,7 @@ class MissionRepository implements MissionInterface
             ])->withCount([
                 'missionRating as mission_rating_total_volunteers'
             ]);
-            $missionQuery->withCount([
+        $missionQuery->withCount([
                 'timesheet AS achieved_goal' => function ($query) use ($request) {
                     $query->select(DB::raw("SUM(action) as action"));
                     $query->whereIn('status_id', array(config('constants.timesheet_status_id.APPROVED'),
