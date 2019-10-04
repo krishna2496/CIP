@@ -318,7 +318,7 @@ textarea {
   -webkit-appearance: none;
   &::-ms-clear {
     display: none;
-	}
+  }
 }
 textarea {
   &.form-control {
@@ -1127,6 +1127,15 @@ label {
       display: block;
     }
   }
+  .mx-clear-icon {
+    &:before {
+      content: "";
+      height: 10px;
+      width: 10px;
+      background-size: 10px;
+      background: url($assetUrl+"/cross-ic.svg") no-repeat;
+    }
+  }
 }
 .mx-datepicker-popup {
   z-index: 1040 !important;
@@ -1466,4 +1475,3 @@ span {
     visibility: hidden !important;
   }
 }
-
