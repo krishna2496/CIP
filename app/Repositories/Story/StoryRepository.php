@@ -177,13 +177,10 @@ class StoryRepository implements StoryInterface
      */
     public function storeStoryVideoUrl(string $storyVideosUrl, int $storyId): void
     {
-        $videosUrl = explode(",", $storyVideosUrl);
-        foreach ($videosUrl as $value) {
-            $storyVideo = array('story_id' => $storyId,
-                'type' => 'video',
-                'path' => $value);
-            $this->storyMedia->create($storyVideo);
-        }
+        $storyVideo = array('story_id' => $storyId,
+        'type' => 'video',
+        'path' => $storyVideosUrl);
+         $this->storyMedia->updateOrCreate(['story_id' => $storyId, 'type' => 'video'], ['path' => $storyVideosUrl]);
     }
 
     /**

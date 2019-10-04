@@ -53,9 +53,10 @@ interface StoryInterface
      *
      * @param string $storyVideosUrl
      * @param int $storyId
+     * @param bool $status
      * @return void
      */
-    public function storeStoryVideoUrl(string $storyVideosUrl, int $storyId): void;
+    public function storeStoryVideoUrl(string $storyVideosUrl, int $storyId, bool $status = false): void;
 
     /**
      * Check story status

@@ -97,7 +97,7 @@ class StoryController extends Controller
                     'mission_id' => 'sometimes|required|exists:mission,mission_id,deleted_at,NULL',
                     'title' => 'sometimes|required|max:255',
                     'story_images' => 'max:'.config("constants.STORY_MAX_IMAGE_LIMIT"),
-                    'story_images.*' => 'max:'.config("constants.STORY_IMAGE_SIZE_LIMIT").'|valid_story_image_type',
+                    'story_images.*' => 'valid_story_image_type|max:'.config("constants.STORY_IMAGE_SIZE_LIMIT"),
                     'story_videos' => 'valid_story_video_url|max_video_url',
                     'description' => 'sometimes|required|max:40000'
                 ]
