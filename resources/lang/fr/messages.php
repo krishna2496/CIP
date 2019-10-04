@@ -134,12 +134,12 @@ return [
         'MESSAGE_NEWS_FOUND' => 'Nouvelles trouvÃ©es avec succÃ¨s',
         'STORY_ADDED_SUCESSFULLY' => 'Histoire ajoutÃ©e avec succÃ¨s',
         'MESSAGE_STORY_DELETED' => 'Histoire supprimÃ©e avec succÃ¨s',
-    	'MESSAGE_STORIES_ENTRIES_LISTING' => 'Les entrées de l\'histoire listées avec succès',
-    	'MESSAGE_NO_STORIES_ENTRIES_FOUND' => 'Aucune entrée d\'histoire trouvée',
-    	'MESSAGE_STORY_STATUS_UPDATED' => 'Statut de l\'histoire mis à jour avec succès',
-    	'MESSAGE_STORY_FOUND' => 'Histoire trouvée avec succès',
-    	'MESSAGE_STORY_COPIED_SUCCESS' => 'Histoire copiée avec succès',
-    	'MESSAGE_ENABLE_TO_EXPORT_USER_STORIES_ENTRIES' => 'Aucune donnée trouvée, pour générer des entrées de récit',
+    	'MESSAGE_STORIES_ENTRIES_LISTING' => 'Les entrÃ©es de l\'histoire listÃ©es avec succÃ¨s',
+    	'MESSAGE_NO_STORIES_ENTRIES_FOUND' => 'Aucune entrÃ©e d\'histoire trouvÃ©e',
+    	'MESSAGE_STORY_STATUS_UPDATED' => 'Statut de l\'histoire mis Ã  jour avec succÃ¨s',
+    	'MESSAGE_STORY_FOUND' => 'Histoire trouvÃ©e avec succÃ¨s',
+    	'MESSAGE_STORY_COPIED_SUCCESS' => 'Histoire copiÃ©e avec succÃ¨s',
+    	'MESSAGE_ENABLE_TO_EXPORT_USER_STORIES_ENTRIES' => 'Aucune donnÃ©e trouvÃ©e, pour gÃ©nÃ©rer des entrÃ©es de rÃ©cit',
     ],
 
         
@@ -267,8 +267,8 @@ return [
 
         // For story module
         'ERROR_STORY_NOT_FOUND' => 'Histoire non trouvÃ©e dans le systÃ¨me',
-    	'ERROR_PUBLISHED_STORY_NOT_FOUND' => 'Histoire publiée non trouvée dans le système',
-    	'ERROR_DECLINED_STORY_NOT_FOUND' => 'Vous ne pouvez pas copier l\'histoire, en raison de cette histoire n\'est pas refusée',
+    	'ERROR_PUBLISHED_STORY_NOT_FOUND' => 'Histoire publiï¿½e non trouvï¿½e dans le systï¿½me',
+    	'ERROR_DECLINED_STORY_NOT_FOUND' => 'Vous ne pouvez pas copier l\'histoire, en raison de cette histoire n\'est pas refusï¿½e',
     ],
 
     /**
