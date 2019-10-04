@@ -337,7 +337,7 @@ class StoryController extends Controller
     	
     	$apiData = $storyPaginated;
     	$apiStatus = Response::HTTP_OK;
-    	$apiMessage = (!empty($apiData)) ?
+    	$apiMessage = ($apiData->count()) ?
     		trans('messages.success.MESSAGE_STORIES_ENTRIES_LISTING') :
     		trans('messages.success.MESSAGE_NO_STORIES_ENTRIES_FOUND');
     	
@@ -377,7 +377,7 @@ class StoryController extends Controller
     	 
     	$apiData = $storyPaginated;
     	$apiStatus = Response::HTTP_OK;
-    	$apiMessage = (!empty($apiData)) ?
+    	$apiMessage = ($apiData->count()) ?
     	trans('messages.success.MESSAGE_STORIES_ENTRIES_LISTING') :
     	trans('messages.success.MESSAGE_NO_STORIES_ENTRIES_FOUND');
     	 
