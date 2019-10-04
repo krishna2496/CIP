@@ -274,17 +274,17 @@ $router->group(['middleware' => 'localization'], function ($router) {
         'uses' => 'App\VolunteerHistory\VolunteerHistoryController@exportGoalMissionHistory']);
 
         /* News listing */
-        $router->get('/app/news',['as' => 'app.news.list',
+        $router->get('/app/news', ['as' => 'app.news.list',
         'middleware' => 'localization|tenant.connection|jwt.auth|PaginationMiddleware',
         'uses' => 'App\News\NewsController@index']);
         
         /* Fetch news details*/
-        $router->get('/app/news/{newsId}',['as' => 'app.news.show',
+        $router->get('/app/news/{newsId}', ['as' => 'app.news.show',
         'middleware' => 'localization|tenant.connection|jwt.auth',
         'uses' => 'App\News\NewsController@show']);
         
         /* Store story detail */
-        $router->post('/app/story',['as' => 'app.story.store',
+        $router->post('/app/story', ['as' => 'app.story.store',
         'middleware' => 'localization|tenant.connection|jwt.auth',
         'uses' => 'App\Story\StoryController@store']);
       
@@ -292,6 +292,21 @@ $router->group(['middleware' => 'localization'], function ($router) {
         $router->delete('/app/story/{storyId}', ['as' => 'app.story.destroy',
         'middleware' => 'localization|tenant.connection|jwt.auth',
         'uses' => 'App\Story\StoryController@destroy']);
+        
+        /* Export all Story Data */
+        $router->get('/app/story/export', ['as' => 'app.story.export',
+         'middleware' => 'localization|tenant.connection|jwt.auth',
+         'uses' => 'App\Story\StoryController@exportStory']);
+        
+        /* Fetch story details */
+        $router->get('/app/story/{storyId}', ['as' => 'app.story.show',
+        'middleware' => 'localization|tenant.connection|jwt.auth',
+        'uses' => 'App\Story\StoryController@show']);
+        
+        /* Copy story data after decline */
+        $router->get('/app/story/{story_id}/copy', ['as' => 'app.story.copyafterdecline',
+        'middleware' => 'localization|tenant.connection|jwt.auth',
+        'uses' => 'App\Story\StoryController@copyStoryAfterDecline']);
 
         /* Update story details */
         $router->patch('/app/story/{storyId}', ['as' => 'app.story.update',
@@ -568,6 +583,18 @@ $router->group(['middleware' => 'localization'], function ($router) {
             $router->post('/', ['uses' => 'Admin\News\NewsController@store']);
             $router->patch('/{newsId}', ['uses' => 'Admin\News\NewsController@update']);
             $router->delete('/{newsId}', ['uses' => 'Admin\News\NewsController@destroy']);
+        }
+    );
+    
+    /* Set story data for tenant specific */
+    $router->group(
+        [ 'middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware'],
+        function ($router) {
+            /* Get user stories */
+            $router->get('/user/{userId}/stories', [ 'middleware' => ['PaginationMiddleware'],
+                        'uses' => 'Admin\Story\StoryController@index']);
+            $router->patch('/stories/{storyId}', ['as' => 'update.story.status',
+                        'uses' => 'Admin\Story\StoryController@update']);
         }
     );
 

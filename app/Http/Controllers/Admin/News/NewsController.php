@@ -126,13 +126,13 @@ class NewsController extends Controller
                 "news_content.translations.*.lang" => "required_with:news_content.translations|max:2",
                 "news_content.translations.*.title" => "required_with:news_content.translations",
                 "news_content.translations.*.description" =>
-                "required_with:news_content.translations",                    
+                "required_with:news_content.translations",
                 "news_category_id" =>
                 "required|exists:news_category,news_category_id,deleted_at,NULL",
-                "status" => ['required', Rule::in(config('constants.news_status'))],		
-                "user_name" => "sometimes|required",   
+                "status" => ['required', Rule::in(config('constants.news_status'))],
+                "user_name" => "sometimes|required",
                 "news_image" => "sometimes|required|url|valid_media_path",
-                "user_thumbnail" => "sometimes|required|url|valid_media_path",               
+                "user_thumbnail" => "sometimes|required|url|valid_media_path",
             ]
         );
 
@@ -176,9 +176,9 @@ class NewsController extends Controller
                     "news_content.translations.*.lang" =>
                     "required_with:news_content.translations|max:2",
                     "news_content.translations.*.title" => "required_with:news_content.translations",
-                    "news_content.translations.*.description" => "required_with:news_content.translations",                    
+                    "news_content.translations.*.description" => "required_with:news_content.translations",
                     "news_category_id" => "sometimes|required|exists:news_category,news_category_id,deleted_at,NULL",
-                    "user_name" => "sometimes|required", 
+                    "user_name" => "sometimes|required",
                     "status" => ['sometimes', 'required', Rule::in(config('constants.news_status'))],
                     "news_image" => "sometimes|required|url|valid_media_path",
                     "user_thumbnail" => "sometimes|required|url|valid_media_path",

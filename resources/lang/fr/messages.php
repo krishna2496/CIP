@@ -121,7 +121,7 @@ return [
         'MESSAGE_ENABLE_TO_EXPORT_USER_PENDING_TIME_MISSION_ENTRIES' => 'Aucune donnée trouvée, pour générer des entrées de temps en attente pour une mission temporelle',
         'MESSAGE_USER_PENDING_GOAL_MISSION_ENTRIES_EXPORTED' => 'Entrées de temps en attente pour les missions de but, générées avec succès',
         'MESSAGE_ENABLE_TO_EXPORT_USER_PENDING_GOAL_MISSION_ENTRIES' => 'Aucune donnée trouvée, pour générer des entrées de temps en attente pour la mission de l\'objectif',
-        'MESSAGE_AUTO_APPROVED_COMMENT_ADDED' => 'Merci pour votre commentaire.',        
+	    'MESSAGE_AUTO_APPROVED_COMMENT_ADDED' => 'Merci pour votre commentaire.',        
         'MESSAGE_NEWS_CATEGORY_LISTING' => 'Catégorie de nouvelles répertoriée avec succès',
         'MESSAGE_NEWS_CATEGORY_DELETED' => 'Catégorie de nouvelles supprimée avec succès',
         'MESSAGE_NEWS_CATEGORY_CREATED' => 'Catégorie de nouvelles créée avec succès',
@@ -134,6 +134,12 @@ return [
         'MESSAGE_NEWS_FOUND' => 'Nouvelles trouvées avec succès',
         'STORY_ADDED_SUCESSFULLY' => 'Histoire ajoutée avec succès',
         'MESSAGE_STORY_DELETED' => 'Histoire supprimée avec succès',
+    	'MESSAGE_STORIES_ENTRIES_LISTING' => 'Les entrées de l\'histoire listées avec succès',
+    	'MESSAGE_NO_STORIES_ENTRIES_FOUND' => 'Aucune entrée d\'histoire trouvée',
+    	'MESSAGE_STORY_STATUS_UPDATED' => 'Statut de l\'histoire mis à jour avec succès',
+    	'MESSAGE_STORY_FOUND' => 'Histoire trouvée avec succès',
+    	'MESSAGE_STORY_COPIED_SUCCESS' => 'Histoire copiée avec succès',
+    	'MESSAGE_ENABLE_TO_EXPORT_USER_STORIES_ENTRIES' => 'Aucune donnée trouvée, pour générer des entrées de récit',
         'MESSAGE_STORY_UPDATED' => 'Histoire mise à jour avec succès',
     ],
 
@@ -262,6 +268,8 @@ return [
 
         // For story module
         'ERROR_STORY_NOT_FOUND' => 'Histoire non trouvée dans le système',
+    	'ERROR_PUBLISHED_STORY_NOT_FOUND' => 'Histoire publiée non trouvée dans le système',
+    	'ERROR_DECLINED_STORY_NOT_FOUND' => 'Vous ne pouvez pas copier l\'histoire, en raison de cette histoire n\'est pas refusée',
         'ERROR_STORY_PUBLISHED_OR_DECLINED' => 'Vous ne pouvez pas mettre à jour une histoire publiée ou refusée',
     ],
 
@@ -274,5 +282,15 @@ return [
         'ACTIONS' => 'actes',
         'TIME' => 'Temps',
         'HOURS' => 'Heures'
-    ]
+    ],
+		
+	/**
+	 * Export story sheet's headings
+	 */
+	'export_story_headings' => [
+		'STORY_TITLE' => 'Titre',
+		'STORY_DESCRIPTION' => 'La description',
+		'STORY_STATUS' => 'Statut',
+		'PUBLISH_DATE' => 'Date de publication',
+	],
 ];

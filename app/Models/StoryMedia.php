@@ -23,16 +23,16 @@ class StoryMedia extends Model
     protected $primaryKey = 'story_media_id';
 
     /**
-     * The attributes that should be visible in arrays.
-     *
-     * @var array
-     */
-    protected $visible = ['story_id', 'type', 'path'];
-
-    /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = ['story_id', 'type', 'path'];
+
+    /**
+     * The attributes that should be visible in arrays.
+     *
+     * @var array
+     */
+    protected $visible = ['story_id', 'type', 'path'];
 }
