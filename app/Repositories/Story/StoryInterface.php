@@ -114,4 +114,13 @@ interface StoryInterface
      * @return bool
      */
     public function checkStoryStatus(int $userId, int $storyId, array $storyStatus): bool;
+
+    /**
+     * Submit story details
+     *
+     * @param int $userId
+     * @param int $storyId
+     * @return App\Models\Story
+     */
+    public function submitStory(int $userId, int $storyId): Story;
 }

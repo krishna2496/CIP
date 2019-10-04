@@ -14,6 +14,7 @@ use App\Traits\RestExceptionHandlerTrait;
 use App\Transformations\StoryTransformable;
 use Validator;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Helpers\Helpers;
 
 class StoryController extends Controller
 {
@@ -304,5 +305,53 @@ class StoryController extends Controller
         $apiStatus = Response::HTTP_OK;
         $apiMessage =  trans('messages.success.MESSAGE_ENABLE_TO_EXPORT_USER_STORIES_ENTRIES');
         return $this->responseHelper->success($apiStatus, $apiMessage);
+    }
+
+    /**
+     * Submit story details.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param int $storyId
+     * @return Illuminate\Http\JsonResponse
+     */
+    public function submitStory(Request $request, int $storyId): JsonResponse
+    {
+        try {
+            $storyStatus = array(
+                config('constants.story_status.PUBLISHED'),
+                config('constants.story_status.DECLINED')
+            );
+
+            // Check if approved or declined story
+            $validStoryStatus = $this->storyRepository->checkStoryStatus(
+                $request->auth->user_id,
+                $storyId,
+                $storyStatus
+            );
+
+            if (!$validStoryStatus) {
+                return $this->responseHelper->error(
+                    Response::HTTP_UNPROCESSABLE_ENTITY,
+                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                    config('constants.error_codes.ERROR_STORY_PUBLISHED_OR_DECLINED'),
+                    trans('messages.custom_error_message.ERROR_STORY_PUBLISHED_OR_DECLINED')
+                );
+            }
+
+            // Submit story
+            $storyData = $this->storyRepository->submitStory($request->auth->user_id, $storyId);
+            
+            // Set response data
+            $apiStatus = Response::HTTP_OK;
+            $apiMessage = trans('messages.success.MESSAGE_STORY_SUBMITTED_SUCESSFULLY');
+            $apiData = ['story_id' => $storyData->story_id];
+            
+            return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
+        } catch (ModelNotFoundException $e) {
+            return $this->modelNotFound(
+                config('constants.error_codes.ERROR_STORY_NOT_FOUND'),
+                trans('messages.custom_error_message.ERROR_STORY_NOT_FOUND')
+            );
+        }
     }
 }

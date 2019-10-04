@@ -312,6 +312,11 @@ $router->group(['middleware' => 'localization'], function ($router) {
         $router->patch('/app/story/{storyId}', ['as' => 'app.story.update',
         'middleware' => 'localization|tenant.connection|jwt.auth',
         'uses' => 'App\Story\StoryController@update']);
+
+        /* Submit story detail */
+        $router->post('/app/story/{storyId}/submit', ['as' => 'app.story.submit',
+        'middleware' => 'localization|tenant.connection|jwt.auth',
+        'uses' => 'App\Story\StoryController@submitStory']);
     });
 
 /*
