@@ -99,19 +99,19 @@ class StoryRepository implements StoryInterface
     public function update(Request $request, int $storyId): Story
     {
         // Find story
-        $storyData = $this->story->where(['story_id' => $storyId,
+        $story = $this->story->where(['story_id' => $storyId,
         'user_id' => $request->auth->user_id])->firstOrFail();
 
         $storyDataArray = $request->except(['user_id', 'published_at', 'status']);
         $storyDataArray['status'] = config('constants.story_status.DRAFT');
-        $storyData->update($storyDataArray);
+        $story->update($storyDataArray);
 
         if($request->hasFile('story_images')) {            
             $tenantName = $this->helpers->getSubDomainFromRequest($request);
             // Store story images
             $this->storeStoryImages(
                 $tenantName,
-                $storyData->story_id,
+                $story->story_id,
                 $request->file('story_images'),
                 $request->auth->user_id
             );
@@ -119,10 +119,10 @@ class StoryRepository implements StoryInterface
 
         if ($request->has('story_videos')) {
             // Store story video url
-            $this->storeStoryVideoUrl($request->story_videos, $storyData->story_id, true);
+            $this->storeStoryVideoUrl($request->story_videos, $story->story_id);
         }
 
-        return $storyData;
+        return $story;
     }
 
     /**
@@ -173,20 +173,14 @@ class StoryRepository implements StoryInterface
      *
      * @param string $storyVideosUrl
      * @param int $storyId
-     * @param bool $status
      * @return void
      */
-    public function storeStoryVideoUrl(string $storyVideosUrl, int $storyId, bool $status = false): void
+    public function storeStoryVideoUrl(string $storyVideosUrl, int $storyId): void
     {
         $storyVideo = array('story_id' => $storyId,
         'type' => 'video',
         'path' => $storyVideosUrl);
-     
-        if ($status) {
-            $this->storyMedia->updateOrCreate(['story_id' => $storyId, 'type' => 'video'], ['path' => $storyVideosUrl]);
-        } else {
-            $this->storyMedia->create($storyVideo);
-        }
+         $this->storyMedia->updateOrCreate(['story_id' => $storyId, 'type' => 'video'], ['path' => $storyVideosUrl]);
     }
 
     /**
