@@ -607,10 +607,7 @@ class TimesheetRepository implements TimesheetInterface
         $timesheetQuery->whereYear('date_volunteered', $year);
         $timesheetQuery->whereMonth('date_volunteered', $month);
         $timesheetQuery->whereIn('status_id', $statusArray);
-
         $timesheetQuery->orderBy(DB::raw("total_hours"), "DESC");
-        // $timesheetQuery->orderBy(DB::raw("total_hours"));
-
         $timesheetQuery->groupBy(DB::raw("user_id"));
 
         return $timesheetQuery->get()->toArray();
