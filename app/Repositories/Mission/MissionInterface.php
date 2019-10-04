@@ -152,14 +152,6 @@ interface MissionInterface
      */
     public function checkMissionApplicationDeadline(int $missionId): bool;
 
-    /**
-     * Get goal objective
-     *
-     * @param int $missionId
-     * @return App\Models\GoalMission|null
-     */
-    public function getGoalObjective(int $missionId): ?GoalMission;
-
     /** Get mission application details by mission id, user id and status
      *
      * @param int $missionId
@@ -184,4 +176,12 @@ interface MissionInterface
      * @return null|Collection
      */
     public function getMissionType(int $id): ?Collection;
+    
+    /**
+     * Get user mission lists 
+     *
+     * @param Illuminate\Http\Request $request
+     * @return null|array
+     */
+    public function getUserMissions(Request $request): ?array;
 }

@@ -8,7 +8,6 @@ use Illuminate\Http\JsonResponse;
 use App\Repositories\MissionApplication\MissionApplicationRepository;
 use App\Repositories\Mission\MissionRepository;
 use App\Helpers\ResponseHelper;
-use PDOException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Traits\RestExceptionHandlerTrait;
 use Validator;
@@ -58,78 +57,69 @@ class MissionApplicationController extends Controller
      */
     public function missionApplication(Request $request): JsonResponse
     {
-        try {
-            // Server side validataions
-            $validator = Validator::make(
-                $request->all(),
-                [
-                    "mission_id" => "integer|required|exists:mission,mission_id,deleted_at,NULL",
-                    "availability_id" => "integer|exists:availability,availability_id,deleted_at,NULL"
-                ]
+        // Server side validataions
+        $validator = Validator::make(
+            $request->all(),
+            [
+                "mission_id" => "integer|required|exists:mission,mission_id,deleted_at,NULL",
+                "availability_id" => "integer|exists:availability,availability_id,deleted_at,NULL"
+            ]
+        );
+        // If request parameter have any error
+        if ($validator->fails()) {
+            return $this->responseHelper->error(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                config('constants.error_codes.ERROR_INVALID_MISSION_APPLICATION_DATA'),
+                $validator->errors()->first()
             );
-            // If request parameter have any error
-            if ($validator->fails()) {
-                return $this->responseHelper->error(
-                    Response::HTTP_UNPROCESSABLE_ENTITY,
-                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                    config('constants.error_codes.ERROR_INVALID_MISSION_APPLICATION_DATA'),
-                    $validator->errors()->first()
-                );
-            }
-
-            $applicationCount = $this->missionApplicationRepository->checkApplyMission(
-                $request->mission_id,
-                $request->auth->user_id
-            );
-            if ($applicationCount > 0) {
-                return $this->responseHelper->error(
-                    Response::HTTP_UNPROCESSABLE_ENTITY,
-                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                    config('constants.error_codes.ERROR_MISSION_APPLICATION_ALREADY_ADDED'),
-                    trans('messages.custom_error_message.ERROR_MISSION_APPLICATION_ALREADY_ADDED')
-                );
-            }
-
-            $seatAvailable = $this->missionRepository->checkAvailableSeats($request->mission_id);
-            if ($seatAvailable === false) {
-                return $this->responseHelper->error(
-                    Response::HTTP_UNPROCESSABLE_ENTITY,
-                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                    config('constants.error_codes.ERROR_MISSION_APPLICATION_SEATS_NOT_AVAILABLE'),
-                    trans('messages.custom_error_message.ERROR_MISSION_APPLICATION_SEATS_NOT_AVAILABLE')
-                );
-            }
-
-            $applicationDeadline = $this->missionRepository->checkMissionApplicationDeadline($request->mission_id);
-            if (!$applicationDeadline) {
-                return $this->responseHelper->error(
-                    Response::HTTP_UNPROCESSABLE_ENTITY,
-                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                    config('constants.error_codes.ERROR_MISSION_APPLICATION_DEADLINE_PASSED'),
-                    trans('messages.custom_error_message.ERROR_MISSION_APPLICATION_DEADLINE_PASSED')
-                );
-            }
-
-            // Create new mission application
-            $missionApplication = $this->missionApplicationRepository->storeApplication(
-                $request->all(),
-                $request->auth->user_id
-            );
-
-            // Set response data
-            $apiData = ['mission_application_id' => $missionApplication->mission_application_id];
-            $apiStatus = Response::HTTP_CREATED;
-            $apiMessage = trans('messages.success.MESSAGE_APPLICATION_CREATED');
-            
-            return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
-        } catch (PDOException $e) {
-            return $this->PDO(
-                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
-                trans('messages.custom_error_message.ERROR_DATABASE_OPERATIONAL')
-            );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
+
+        $applicationCount = $this->missionApplicationRepository->checkApplyMission(
+            $request->mission_id,
+            $request->auth->user_id
+        );
+        if ($applicationCount > 0) {
+            return $this->responseHelper->error(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                config('constants.error_codes.ERROR_MISSION_APPLICATION_ALREADY_ADDED'),
+                trans('messages.custom_error_message.ERROR_MISSION_APPLICATION_ALREADY_ADDED')
+            );
+        }
+
+        $seatAvailable = $this->missionRepository->checkAvailableSeats($request->mission_id);
+        if ($seatAvailable === false) {
+            return $this->responseHelper->error(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                config('constants.error_codes.ERROR_MISSION_APPLICATION_SEATS_NOT_AVAILABLE'),
+                trans('messages.custom_error_message.ERROR_MISSION_APPLICATION_SEATS_NOT_AVAILABLE')
+            );
+        }
+
+        $applicationDeadline = $this->missionRepository->checkMissionApplicationDeadline($request->mission_id);
+        if (!$applicationDeadline) {
+            return $this->responseHelper->error(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                config('constants.error_codes.ERROR_MISSION_APPLICATION_DEADLINE_PASSED'),
+                trans('messages.custom_error_message.ERROR_MISSION_APPLICATION_DEADLINE_PASSED')
+            );
+        }
+
+        // Create new mission application
+        $missionApplication = $this->missionApplicationRepository->storeApplication(
+            $request->all(),
+            $request->auth->user_id
+        );
+
+        // Set response data
+        $apiData = ['mission_application_id' => $missionApplication->mission_application_id];
+        $apiStatus = Response::HTTP_CREATED;
+        $apiMessage = trans('messages.success.MESSAGE_APPLICATION_CREATED');
+        
+        return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
     }
 
     /**
@@ -156,13 +146,6 @@ class MissionApplicationController extends Controller
                 config('constants.error_codes.ERROR_MISSION_NOT_FOUND'),
                 trans('messages.custom_error_message.ERROR_MISSION_NOT_FOUND')
             );
-        } catch (PDOException $e) {
-            return $this->PDO(
-                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
-                trans('messages.custom_error_message.ERROR_DATABASE_OPERATIONAL')
-            );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
 }

@@ -50,8 +50,13 @@ class SkillRepository implements SkillInterface
      */
     public function skillDetails(Request $request): LengthAwarePaginator
     {
-        return $this->skill->select('skill_id', 'skill_name', 'translations', 'parent_skill')
-        ->paginate($request->perPage);
+        $skillQuery = $this->skill->select('skill_id', 'skill_name', 'translations', 'parent_skill');
+
+        if ($request->has('order')) {
+            $orderDirection = $request->input('order', 'asc');
+            $skillQuery = $skillQuery->orderBy('skill_id', $orderDirection);
+        }
+        return $skillQuery->paginate($request->perPage);
     }
     
     /**
@@ -62,9 +67,6 @@ class SkillRepository implements SkillInterface
      */
     public function store(array $request): Skill
     {
-        if ($request['parent_skill'] != 0) {
-            $this->skill->findOrFail($request['parent_skill']);
-        }
         return $this->skill->create($request);
     }
 
@@ -77,18 +79,6 @@ class SkillRepository implements SkillInterface
      */
     public function update(array $request, int $id): Skill
     {
-        if (isset($request['parent_skill'])) {
-            if ($request['parent_skill'] != 0) {
-                try {
-                    $this->skill->findOrFail($request['parent_skill']);
-                } catch (ModelNotFoundException $e) {
-                    throw new ModelNotFoundException(
-                        trans('messages.custom_error_message.ERROR_PARENT_SKILL_NOT_FOUND')
-                    );
-                }
-            }
-        }
-        
         try {
             $skill = $this->skill->findOrFail($id);
         } catch (ModelNotFoundException $e) {

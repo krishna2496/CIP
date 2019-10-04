@@ -10,7 +10,6 @@ use App\Helpers\ResponseHelper;
 use App\Repositories\User\UserRepository;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Repositories\Timesheet\TimesheetRepository;
-use PDOException;
 use Validator;
 use App\Models\TimesheetStatus;
 use Illuminate\Http\JsonResponse;
@@ -69,29 +68,22 @@ class TimesheetController extends Controller
                 trans('messages.custom_error_message.ERROR_USER_NOT_FOUND')
             );
         }
-        try {
-            $userTimesheet = $this->timesheetRepository->getUserTimesheet($userId, $request);
-            foreach ($userTimesheet as $value) {
-                if ($value->missionLanguage) {
-                    $value->setAttribute('title', $value->missionLanguage[0]->title);
-                    unset($value->missionLanguage);
-                }
-                $value->setAppends([]);
-            }
 
-            $apiStatus = Response::HTTP_OK;
-            $apiMessage = (!empty($userTimesheet)) ?
-            trans('messages.success.MESSAGE_TIMESHEET_ENTRIES_LISTING') :
-            trans('messages.success.MESSAGE_NO_TIMESHEET_ENTRIES_FOUND');
-            return $this->responseHelper->success($apiStatus, $apiMessage, $userTimesheet->toArray());
-        } catch (PDOException $e) {
-            return $this->PDO(
-                config('constants.error_codes.ERROR_DATABASE_OPERATIONAL'),
-                trans('messages.custom_error_message.ERROR_DATABASE_OPERATIONAL')
-            );
-        } catch (\Exception $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
+        $userTimesheet = $this->timesheetRepository->getUserTimesheet($userId, $request);
+        foreach ($userTimesheet as $value) {
+            if ($value->missionLanguage) {
+                $value->setAttribute('title', $value->missionLanguage[0]->title);
+                unset($value->missionLanguage);
+            }
+            $value->setAppends([]);
         }
+
+        $apiData = $userTimesheet->toArray();
+        $apiStatus = Response::HTTP_OK;
+        $apiMessage = (!empty($apiData)) ?
+        trans('messages.success.MESSAGE_TIMESHEET_ENTRIES_LISTING') :
+        trans('messages.success.MESSAGE_NO_TIMESHEET_ENTRIES_FOUND');
+        return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
     }
 
     /**
@@ -133,8 +125,6 @@ class TimesheetController extends Controller
                 config('constants.error_codes.ERROR_TIMESHEET_ENTRY_NOT_FOUND'),
                 trans('messages.custom_error_message.ERROR_TIMESHEET_ENTRY_NOT_FOUND')
             );
-        } catch (\Execption $e) {
-            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
 }

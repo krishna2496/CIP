@@ -36,11 +36,11 @@ $router->group(['middleware' => 'localization'], function ($router) {
      'uses' => 'App\Auth\AuthController@passwordReset']);
 
     /* CMS footer pages  */
-    $router->get('/app/cms/listing', ['as' => 'cms.listing', 'middleware' => 'tenant.connection',
+    $router->get('/app/cms/listing', ['as' => 'app.cms.listing', 'middleware' => 'tenant.connection',
      'uses' => 'App\FooterPage\FooterPageController@index']);
-    $router->get('/app/cms/detail', ['as' => 'cms.detail', 'middleware' => 'tenant.connection',
+    $router->get('/app/cms/detail', ['as' => 'app.cms.detail', 'middleware' => 'tenant.connection',
      'uses' => 'App\FooterPage\FooterPageController@cmsList']);
-    $router->get('/app/cms/{slug}', ['as' => 'cms.show', 'middleware' => 'tenant.connection',
+    $router->get('/app/cms/{slug}', ['as' => 'app.cms.show', 'middleware' => 'tenant.connection',
      'uses' => 'App\FooterPage\FooterPageController@show']);
     
     /* Get custom css url  */
@@ -157,6 +157,11 @@ $router->group(['middleware' => 'localization'], function ($router) {
     /* Get country list */
     $router->get('/app/country', ['middleware' => 'tenant.connection|jwt.auth',
     'uses' => 'App\Country\CountryController@index']);
+
+    /* Get user mission */
+    $router->get('/app/user/missions', [
+        'middleware' => 'tenant.connection|jwt.auth|JsonApiMiddleware',
+        'uses' => 'App\Mission\MissionController@getUserMissions']);
 });
 
     /* Policy pages  */
@@ -193,7 +198,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
  
     /* Fetch pending goal requests */
     $router->get('/app/timesheet/goal-requests', ['as' => 'app.timesheet.goal-requests',
-    'middleware' => 'localization|tenant.connection|jwt.auth',
+    'middleware' => 'localization|tenant.connection|jwt.auth|PaginationMiddleware',
     'uses' => 'App\Timesheet\TimesheetController@getPendingGoalRequests']);
 
     /* Export pending goal requests */
@@ -213,7 +218,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
     
     /* Fetch pending time requests */
     $router->get('/app/timesheet/time-requests', ['as' => 'app.timesheet.time-requests',
-    'middleware' => 'tenant.connection|jwt.auth',
+    'middleware' => 'tenant.connection|jwt.auth|PaginationMiddleware',
     'uses' => 'App\Timesheet\TimesheetController@getPendingTimeRequests']);
 
     /* Export pending time requests */
@@ -277,7 +282,21 @@ $router->group(['middleware' => 'localization'], function ($router) {
         $router->get('/app/news/{newsId}',['as' => 'app.news.show',
         'middleware' => 'localization|tenant.connection|jwt.auth',
         'uses' => 'App\News\NewsController@show']);
+        
+        /* Store story detail */
+        $router->post('/app/story',['as' => 'app.story.store',
+        'middleware' => 'localization|tenant.connection|jwt.auth',
+        'uses' => 'App\Story\StoryController@store']);
       
+        /* Delete story details */
+        $router->delete('/app/story/{storyId}', ['as' => 'app.story.destroy',
+        'middleware' => 'localization|tenant.connection|jwt.auth',
+        'uses' => 'App\Story\StoryController@destroy']);
+
+        /* Update story details */
+        $router->patch('/app/story/{storyId}', ['as' => 'app.story.update',
+        'middleware' => 'localization|tenant.connection|jwt.auth',
+        'uses' => 'App\Story\StoryController@update']);
     });
 
 /*

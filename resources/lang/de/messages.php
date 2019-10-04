@@ -86,7 +86,7 @@ return [
         'MESSAGE_TIMESHEET_ENTRIES_LISTING' => 'DE: Timesheet entries listed successfully',
         'MESSAGE_NO_TIMESHEET_ENTRIES_FOUND' => 'DE: No timesheet entries found',
         'TIMESHEET_ENTRY_UPDATED_SUCESSFULLY' => 'DE: Timesheet entry updated successfully',
-        'MESSAGE_TIMESHEET_LISTING' => 'DE: Timesheet listed sucessfully',        
+        'MESSAGE_TIMESHEET_LISTING' => 'DE: Timesheet listed sucessfully',
         'MESSAGE_TIMESHEET_DOCUMENT_DELETED' => 'DE: Timesheet document deleted sucessfully',
         'TIMESHEET_SUBMITTED_SUCESSFULLY' => 'DE: Timesheet submitted sucessfully',
         'TIMESHEET_ALREADY_SUBMITTED_FOR_APPROVAL' => 'DE: Timesheet already submitted for approval',
@@ -103,7 +103,10 @@ return [
         'MESSAGE_NEWS_DELETED' => 'DE: News deleted successfully',
         'MESSAGE_NEWS_LISTING' => 'DE: News listed sucessfully',        
         'MESSAGE_NEWS_UPDATED' => 'DE: News updated sucessfully',
-    ],
+        'STORY_ADDED_SUCESSFULLY' => 'DE: Story added successfully',
+        'MESSAGE_STORY_DELETED' => 'DE: Story deleted sucessfully',
+        'MESSAGE_STORY_UPDATED' => 'DE: Story updated successfully',
+	],
 
         
     /**
@@ -152,6 +155,7 @@ return [
         'ERROR_MISSION_COMMENT_INVALID_DATA' => 'DE: Mission comment creation failed. Please check input parameters',
         'ERROR_INVALID_MISSION_MEDIA_DATA' => 'DE: Invalid mission media data',
         'ERROR_INVALID_MISSION_DOCUMENT_DATA' => 'DE: Invalid mission document data',
+        'ERROR_USER_MISSIONS_NOT_FOUND' => 'DE: Missions not found',
         
         // Custom error code for Tenant Authorization - 210000 - 219999
         'ERROR_INVALID_API_AND_SECRET_KEY' => 'DE: Invalid API Key or Secret key',
@@ -200,17 +204,22 @@ return [
         'ERROR_INVALID_ACTION' => 'DE: Invalid goal action',
         'TIMESHEET_NOT_FOUND' => 'DE: Timesheet does not exists',
         'ERROR_TIMESHEET_ALREADY_APPROVED' => 'DE: You can not update approved timesheet',
-        'TIMESHEET_DOCUMENT_NOT_FOUND' => 'DE: Timesheet document does not exists',        
+        'TIMESHEET_DOCUMENT_NOT_FOUND' => 'DE: Timesheet document does not exists',
         'ERROR_MISSION_STARTDATE' => 'DE: Invalid date: selected date should not be before start date',
         'ERROR_MISSION_ENDDATE' => 'DE: Selected date should not be greater than mission end date',
         'MISSION_APPLICATION_NOT_APPROVED' => 'DE: Mission application is not approved',
-        'ERROR_TIMESHEET_ALREADY_DONE_FOR_DATE' => 'DE: Time entry is already approved for given date',         
+        'ERROR_TIMESHEET_ALREADY_DONE_FOR_DATE' => 'DE: Time entry is already approved for given date',
         'ERROR_INVALID_DATA_FOR_TIMESHEET_ENTRY' => 'DE: You cannot add time entry',
         'ERROR_TIMESHEET_ENTRY_NOT_FOUND' => 'DE: Timesheet entry id not found',
         'ERROR_SAME_DATE_TIME_ENTRY' => 'DE: You cannot add more than 24 hours timeentry for same date',
+        'ERROR_APPROVED_TIMESHEET_DOCUMENTS' => 'You can not delete approved timesheet entry documents',
 
         // For News module        
         'ERROR_NEWS_CATEGORY_NOT_FOUND' => 'DE: News category not found in the system',
         'ERROR_NEWS_NOT_FOUND' => 'DE: News not found in the system',
+
+        // For story module
+        'ERROR_STORY_NOT_FOUND' => 'DE: Story not found in the system',
+        'ERROR_STORY_PUBLISHED_OR_DECLINED' => 'DE: You cannot update published or declined story',
     ],
 ];

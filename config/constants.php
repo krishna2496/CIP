@@ -21,6 +21,9 @@ return [
     'TIMESHEET_DOCUMENT_SIZE_LIMIT' => '4096',
     'TIMESHEET_DATE_FORMAT' => 'Y-m-d',
     'NEWS_SHORT_DESCRIPTION_WORD_LIMIT' => 10,
+    'STORY_IMAGE_SIZE_LIMIT' => '4096', 
+    'STORY_MAX_IMAGE_LIMIT' => 20,
+    'STORY_MAX_VIDEO_LIMIT' => 20,
 
     'EMAIL_TEMPLATE_FOLDER' => 'emails',
     'EMAIL_TEMPLATE_USER_INVITE' => 'invite',
@@ -41,6 +44,7 @@ return [
     'DEFAULT_FQDN_FOR_FRONT' => 'web8',
     'PER_PAGE_MAX' => '50',
     'AWS_S3_DEFAULT_THEME_FOLDER_NAME' => 'default_theme',
+    
     /*
      * User custom field types
      */
@@ -204,6 +208,25 @@ return [
     ],
 
     /*
+     * Folder name s3
+     */
+    'folder_name' => [
+        'timesheet' => 'timesheet',
+        'story' => 'story'
+    ],
+
+    /*
+     * Story status
+     */
+    'story_status' => [        
+        'DRAFT' => 'DRAFT',    
+        'PUBLISHED' => 'PUBLISHED',
+        'PENDING' => 'PENDING',
+        'DECLINED' => 'DECLINED'       
+    ],
+
+
+    /*
      * User notification types
      */
     'notification_types' => [
@@ -321,12 +344,18 @@ return [
         'ERROR_INVALID_DATA_FOR_TIMESHEET_ENTRY' => '400041',
         'ERROR_SAME_DATE_TIME_ENTRY' => '400042',        
         'ERROR_UNAUTHORIZED_USER' => '400043',
+		'ERROR_APPROVED_TIMESHEET_DOCUMENTS' => '400044',
         
         'ERROR_NEWS_CATEGORY_NOT_FOUND' => '500001',
         'ERROR_NEWS_CATEGORY_INVALID_DATA' => '500002',
         'ERROR_NEWS_REQUIRED_FIELDS_EMPTY' => '500003',
         'ERROR_NEWS_NOT_FOUND' => '500004',
+
+        'ERROR_STORY_REQUIRED_FIELDS_EMPTY' => '700001',
+        'ERROR_STORY_NOT_FOUND' => '700002',
+        'ERROR_STORY_PUBLISHED_OR_DECLINED' => '700003',
         
+              
                 
         'ERROR_OCCURRED' => '999999',
         'ERROR_INVALID_JSON' => '900000',

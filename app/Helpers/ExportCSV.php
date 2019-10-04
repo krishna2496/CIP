@@ -57,17 +57,6 @@ class ExportCSV
     }
 
     /**
-     * Set data variable
-     *
-     * @param array $data
-     * @return void
-     */
-    public function setData(array $data)
-    {
-        $this->data = $data;
-    }
-
-    /**
      * Write and store file on given path
      *
      * @param string $path
@@ -96,6 +85,5 @@ class ExportCSV
         if (\file_exists($this->path)) {
             return $this->path.'/'.$this->fileName;
         }
-        return '';
     }
 }

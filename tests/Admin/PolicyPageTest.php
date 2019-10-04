@@ -94,7 +94,7 @@ class PolicyPageTest extends TestCase
      */
     public function it_should_return_all_policy_pages()
     {
-        $this->get(route('policy'), ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->get('policy?search=a', ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
           ->seeStatusCode(200)
           ->seeJsonStructure([
             "status",
@@ -132,8 +132,9 @@ class PolicyPageTest extends TestCase
         $params = [
             'page_details' =>
                 [
-                'slug' => $slug
-                ],
+                'slug' => $slug,
+                'status' => 1
+                ]
             ];
 
         $connection = 'tenant';
@@ -667,5 +668,27 @@ class PolicyPageTest extends TestCase
             'status',
         ]);
         App\Models\PolicyPage::where('slug', $slug)->delete();
+    }
+
+    /**
+     * @test
+     *
+     * Return invalid argument error on get policy page listing
+     *
+     * @return void
+     */
+    public function it_should_return_invalid_argument_error_on_policy_page_listing()
+    {
+        $this->get('/policy?order=test', ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+          ->seeStatusCode(400)
+          ->seeJsonStructure([
+              "errors" => [
+                  [
+                    "status",
+                    "type",
+                    "message"
+                  ]
+              ]
+        ]);
     }
 }
