@@ -184,7 +184,7 @@ class FooterPageRepository implements FooterPageInterface
             $pageQuery->orderBy('page_id', $orderDirection);
         }
         $pageList = $pageQuery->get();
-        
+
         $language = $this->languageHelper->getLanguageDetails($request);
         $languageId = $language->language_id;
         $defaultTenantLanguage = $this->languageHelper->getDefaultTenantLanguage($request);
@@ -192,9 +192,11 @@ class FooterPageRepository implements FooterPageInterface
         foreach ($pageList as $list) {
             $key = array_search($languageId, array_column($list['pages']->toArray(), 'language_id'));
             $language = ($key === false) ? $defaultTenantLanguageId : $languageId;
-            $pages = $list['pages']->where('language_id', $language)->first();
+            $pages[] = $list['pages']->where('language_id', $language)->first();
+            
             unset($list['pages']);
             $list['pages'] = $pages;
+            unset($pages);
         }
         return $pageList;
     }
@@ -228,7 +230,7 @@ class FooterPageRepository implements FooterPageInterface
 
         $key = array_search($languageId, array_column($footerPage['pages']->toArray(), 'language_id'));
         $language = ($key === false) ? $defaultTenantLanguageId : $languageId;
-        $pages = $footerPage['pages']->where('language_id', $language)->first();
+        $pages[] = $footerPage['pages']->where('language_id', $language)->first();
         unset($footerPage['pages']);
         $footerPage['pages'] = $pages;
         return $footerPage;
