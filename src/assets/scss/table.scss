@@ -70,13 +70,6 @@
         }
         th {
           border-bottom: none;
-          height: 70px;
-          @include sm-max {
-            height: 56px;
-          }
-          @include xxs-max {
-            height: 50px;
-          }
         }
         &:last-child {
           td {
@@ -229,6 +222,13 @@
       }
     }
     th {
+      height: 70px;
+      @include sm-max {
+        height: 56px;
+      }
+      @include xxs-max {
+        height: 50px;
+      }
       .dashboard-table .table-outer & {
         @include xl-max {
           height: 60px;
