@@ -105,6 +105,17 @@ export default async(langList, defautLang) => {
                 store.commit('newsBannerText', '');
             }
 
+            if (response.data.data.story_banner) {
+                store.commit('storyBanner', response.data.data.story_banner);
+            } else {
+                store.commit('storyBanner', '');
+            }
+            if (response.data.data.story_banner_text) {
+                store.commit('storyBannerText', response.data.data.story_banner_text);
+            } else {
+                store.commit('storyBannerText', '');
+            }
+
         })
         .catch(function() {
 

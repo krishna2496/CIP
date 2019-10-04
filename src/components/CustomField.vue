@@ -128,7 +128,6 @@
             const validations = {
                 customFeildData: {}
             };
-            let _this = this;
 
             _.each(this.CustomFieldList, wrr => {
                 if (wrr.is_mandatory == 1) {

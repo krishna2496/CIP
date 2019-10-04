@@ -1,0 +1,372 @@
+<template>
+	<div class="share-stories-page inner-pages">
+		<header>
+			<ThePrimaryHeader></ThePrimaryHeader>
+		</header>
+		<main>
+			<b-container>
+				<h1>{{languageData.label.share_your_story}}</h1>
+				<b-alert show :variant="classVariant" dismissible v-model="showDismissibleAlert">{{ message }}</b-alert>
+				<b-row class="story-form-wrap">
+					<b-col xl="8" lg="7" class="left-col">
+						<div class="story-form">
+							<b-form>
+								<b-form-group>
+									<label for>{{languageData.label.my_story_title}}*</label>
+									<b-form-input id 
+										v-model.trim="story.title"
+										:class="{ 'is-invalid': submitted && $v.story.title.$error }"
+										type="text" 
+										maxLength="255"
+										:placeholder="languageData.placeholder.story_title">
+									</b-form-input>
+									<div v-if="submitted && !$v.story.title.required" class="invalid-feedback">
+										{{ languageData.errors.story_title_required }}
+									</div>
+								</b-form-group>
+								<b-row>
+									<b-col md="12">
+										<b-form-group>
+											<label for>{{languageData.label.select_mission}}*</label>
+											<AppCustomDropdown 
+												v-model="story.mission"
+												:errorClass="submitted && $v.story.mission.$error"
+												:optionList="missionTitle" 
+												@updateCall="updateMissionTitle" 
+												translationEnable="false"
+												:defaultText="defaultMissionTitle"
+											/>
+											<div v-if="submitted && !$v.story.mission.required" class="invalid-feedback">
+												{{ languageData.errors.mission_required }}
+											</div>
+									    </b-form-group>
+									</b-col>
+								</b-row>
+								<b-form-group>
+									<label for>{{languageData.label.my_story}}*</label>
+									<b-form-textarea id 
+										v-model.trim="story.myStory"
+										:class="{ 'is-invalid': submitted && $v.story.myStory.$error }"
+										:placeholder="languageData.placeholder.story_detail"
+										size="lg" rows="25"
+										class="text-editor">
+									</b-form-textarea>
+									<div v-if="submitted && !$v.story.myStory.required" class="invalid-feedback">
+										{{ languageData.errors.story_description_required }}
+									</div>
+								</b-form-group>
+							</b-form>
+						</div>
+						<div class="btn-row">
+							<b-button class="btn-borderprimary" @click="cancleShareStory">{{languageData.label.cancel}}</b-button>
+						</div>
+					</b-col>
+					<b-col xl="4" lg="5" class="right-col">
+						<div class="story-form">
+							<b-form-group>
+								<label for>{{languageData.label.enter_video_url}}<span>({{languageData.label.new_line_to_enter_multiple_urls}})</span></label>
+								<b-form-textarea id 
+									v-model.trim="story.videoUrl"
+									:class="{ 'is-invalid': submitted && youtubeUrlError }"
+									:placeholder="languageData.placeholder.video_url" 
+									size="lg" 
+									rows="5">
+								</b-form-textarea>
+								<div v-if="submitted && youtubeUrlError" class="invalid-feedback">
+									{{ languageData.errors.valid_video_url }}
+								</div>
+							</b-form-group>
+							<b-form-group>
+								<span class="error-message" v-if="fileError">{{fileError}}</span>
+								<label for>{{languageData.label.upload_your_photos}}</label>
+								<div class="btn-wrapper" v-bind:class="{'has-error' : fileError != '' ? true : false}">
+									<file-upload class="btn" 
+										v-model="story.files"
+										accept="image/png,image/jpeg" 
+										:multiple="true" :drop="true"
+										:drop-directory="true" 
+										:size="1024 * 1024 * 10"
+										@input="inputUpdate"
+										@input-filter="inputFilter" 
+										ref="upload">
+										{{languageData.label.drag_and_drop_pictures}}
+									</file-upload>
+								</div>
+							</b-form-group>
+							<div class="uploaded-block">
+								<div class="uploaded-file-details" v-for="(file, index) in story.files" :key="index">
+									<span v-if="file.thumb" class="image-thumb">
+										<img 
+											:src="file.thumb" 
+											width="40" 
+											height="auto" 
+										/>
+										<b-button type="button" @click.prevent="remove(file)" class="remove-btn">
+											<img :src="$store.state.imagePath+'/assets/images/cross-ic-white.svg'" alt />
+										</b-button>
+									</span>
+									<span v-else>{{languageData.label.no_image}}</span>
+								</div>
+							</div>
+						</div>
+						<div class="btn-row">
+							<b-button class="btn-borderprimary" @click="previewStory" 
+							v-bind:class="{disabled:previewButtonEnable}"> {{languageData.label.preview}}</b-button>
+							<b-button class="btn-bordersecondary" v-bind:class="{disabled:saveButtonEnable || saveButtonAjaxCall}"  @click="saveStory">{{languageData.label.save}}</b-button>
+							<b-button class="btn-bordersecondary btn-submit" v-bind:class="{disabled:submitButtonEnable || submitButtonAjaxCall}" @click="submitStory">{{languageData.label.submit}}</b-button>
+						</div>
+					</b-col>
+				</b-row>
+			</b-container>
+		</main>
+		<footer>
+			<TheSecondaryFooter></TheSecondaryFooter>
+		</footer>
+	</div>
+</template>
+<script>
+	import AppCustomDropdown from "../components/CustomFieldDropdown";
+	import FileUpload from "vue-upload-component";
+	import DatePicker from "vue2-datepicker";
+	import store from '../store';
+	import constants from '../constant';
+	import {
+        required,
+        maxLength,
+        email,
+        sameAs,
+        minLength,
+        between,
+        helpers
+    } from 'vuelidate/lib/validators';
+	import {
+		storyMissionListing,
+    	submitStory
+	} from "../services/service";
+	export default {
+		components: {
+			ThePrimaryHeader : () => import("../components/Layouts/ThePrimaryHeader"),
+			TheSecondaryFooter: () => import("../components/Layouts/TheSecondaryFooter"),
+			AppCustomDropdown,
+			FileUpload,
+			DatePicker
+		},
+		data() {
+			return {
+				languageData : [],
+				isStoryDisplay : true,
+				submitted : false,
+				defaultMissionTitle: "",
+				fileError : "",
+				missionTitle: [],
+				classVariant: 'danger',
+            	message: null,
+				time1: "",
+				story: {
+						title: "",
+						mission: "",
+						myStory: "",
+						videoUrl: "",
+						files: []
+				},
+				youtubeUrlError : false,
+				showDismissibleAlert: false,
+				storyId : '',
+				saveButtonAjaxCall : false,
+				submitButtonAjaxCall : false,
+				saveButtonEnable : false,
+				submitButtonEnable : true,
+				previewButtonEnable : true,
+			};
+		},
+		validations: {
+            story: {
+                title: {
+					required
+                },
+                mission: {
+					required
+                },
+                myStory: {
+                    required
+				}
+            }
+        },
+		methods: {
+			saveStory() {
+				this.youtubeUrlError = false
+				this.submitted = true;
+                this.$v.$touch();
+				let youtubeUrl = [];
+				if (this.story.videoUrl.toString() != '') {
+					youtubeUrl =  this.story.videoUrl.toString().split("\n")
+					youtubeUrl.filter((url,index) => {
+						var valid = /^(https?\:\/\/)?(www\.youtube\.com|youtu\.?be)\/.+$/;
+						if(!valid.test(url)) {
+							this.youtubeUrlError = true
+							return false;
+						}
+					})
+				}
+				if (this.$v.$invalid) {
+                	return;
+				} 
+				this.saveButtonAjaxCall = true
+				this.submitStoryDetail();
+			},
+			cancleShareStory() {
+				this.storyId = ''
+				this.$router.push({ name: 'Stories'})
+			},
+
+			submitStory() {
+				this.submitted = true;
+                this.$v.$touch();
+			},
+			previewStory() {
+				if(this.storyId != '') {
+					this.$router.push({ name: 'StoryPreview', params: { storyId: this.storyId } })
+				}
+			},
+			updateMissionTitle(value) {
+				this.defaultMissionTitle = value.selectedVal;
+				this.story.mission = value.selectedId;
+			},
+			inputUpdate(files) {
+					let allowedFileTypes = constants.ALLOWED_PICTURE_TYPES 
+					this.fileError = '';
+					let error = false
+					let duplicateUpload = false
+					let latestUpload = files[files.length - 1];
+					if(files.length > 0 ) {
+						let latestUploadIndex = files.length - 1;
+						let latestUploadName = latestUpload.name
+						let latestUploadSize = latestUpload.size
+						let latestUploadType = latestUpload.type
+					
+						files.filter((data, index) => {
+							let fileName = data.name.split('.');
+							if (!allowedFileTypes.includes(fileName[fileName.length - 1])) {
+								this.fileError = this.languageData.errors.invalid_file_type
+								error = true
+							} else {
+								if (data.size > constants.FILE_MAX_SIZE_BYTE) {
+									this.fileError = this.languageData.errors.file_max_size
+									error = true
+								}
+							}
+							if (index != files.length - 1) {
+								if (data.name == latestUploadName && data.size == latestUploadSize && data.type ==
+									latestUploadType) {
+									this.fileError = this.languageData.errors.file_already_uploaded
+									error = true
+									duplicateUpload = true;
+								}
+							}
+							if(error == true) {
+								if(duplicateUpload == true) {
+									files.splice(latestUploadIndex, 1)
+								} else {
+									files.splice(index, 1)
+								}
+							}
+						});
+					}
+            },
+			inputFilter(newFile, prevent) {
+				let allowedFileTypes = constants.ALLOWED_PICTURE_MIME_TYPES
+				if (newFile && (allowedFileTypes.includes(newFile.type)) && newFile.size < constants.FILE_MAX_SIZE_BYTE) {
+					if (/(\/|^)(Thumbs\.db|desktop\.ini|\..+)$/.test(newFile.name)) {
+						return prevent();
+					}
+					// Filter php html js file
+					if (/\.(php5?|html?|jsx?)$/i.test(newFile.name)) {
+						return prevent();
+					}
+				}
+				if (newFile) {
+					// Create a blob field
+					newFile.blob = "";
+					let URL = window.URL || window.webkitURL;
+					if (URL && URL.createObjectURL) {
+						newFile.blob = URL.createObjectURL(newFile.file);
+					}
+					// Thumbnails
+					newFile.thumb = "";
+					if (newFile.blob && newFile.type.substr(0, 6) === "image/") {
+						newFile.thumb = newFile.blob;
+					}
+				}
+			},
+			remove(file) {
+				this.$refs.upload.remove(file);
+			},
+			missionListing() {
+				storyMissionListing().then(response => {
+					// missionTitle
+					var array = [];
+					if(response.error == false) {
+						let missionArray = response.data
+						if(missionArray) {
+							missionArray.filter((data,index) => {
+								array[index] = new Array(2);
+								array[index][0] = data.mission_id
+								array[index][1] = data.title
+							})
+							this.missionTitle = array
+						}
+					}
+				})
+			},
+
+			submitStoryDetail() {
+				const formData = new FormData();
+				this.message = null;
+				
+                let file = this.story.files;
+                if (file) {
+                    file.filter((fileItem, fileIndex) => {
+						formData.append('story_images[]', fileItem.file);
+                    })
+                }
+
+                formData.append('mission_id', this.story.mission);
+                formData.append('title', this.story.title);
+				formData.append('description', this.story.myStory);
+				if(this.story.videoUrl != '') {
+					let videoUrl =  this.story.videoUrl.replace("\n",',')
+					formData.append('story_videos', videoUrl);
+				}
+				submitStory(formData).then(response => {
+					
+					this.showDismissibleAlert = true
+					if (response.error === true) { 
+						this.classVariant = 'danger'
+						//set error msg
+						this.message = response.message
+					} else {
+						this.storyId = response.data
+						if(this.storyId != '') {
+							this.previewButtonEnable = false
+							this.submitButtonEnable = false
+						}
+						this.classVariant = 'success'
+						//set error msg
+						this.message = response.message
+					}
+					this.saveButtonAjaxCall = false
+				})	
+			}
+		},
+		created() {
+			this.languageData = JSON.parse(store.state.languageLabel);
+			this.isStoryDisplay = this.settingEnabled(constants.STORIES_ENABLED);
+			if(!this.isStoryDisplay) {
+				this.$router.push('/home')
+			}
+			this.defaultMissionTitle =  this.languageData.label.mission_title
+			this.missionListing();
+		},
+		updated() {}
+	};
+</script>

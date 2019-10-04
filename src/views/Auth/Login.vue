@@ -105,23 +105,21 @@ export default {
                     loadLocaleMessages(store.state.defaultLanguage).then(response =>{
                         this.languageData = JSON.parse(store.state.languageLabel);
                         this.isPageShown = true
-                        let _this =this;
                         setTimeout(() => {
-                            _this.$refs.email.focus();
+                            this.$refs.email.focus();
                         },500)
                     });
             })       
         },
         
         async setLanguage(language){
-            let _this = this;
             this.defautLang = language.selectedVal;
             store.commit('setDefaultLanguage',language);
             this.$i18n.locale = language.selectedVal.toLowerCase()
             await loadLocaleMessages(this.$i18n.locale);   
             this.languageData = JSON.parse(store.state.languageLabel);
-            _this.$forceUpdate();
-            _this.$refs.ThePrimaryFooter.$forceUpdate()
+            this.$forceUpdate();
+            this.$refs.ThePrimaryFooter.$forceUpdate()
         },
 
         handleSubmit(e) {

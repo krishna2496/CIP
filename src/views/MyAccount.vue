@@ -7,7 +7,7 @@
             <b-container>
                 <b-row class="dashboard-tab-content" v-if="errorPage && pageLoaded">
                     <b-col xl="12" lg="12" md="12">
-                        <b-alert show letiant="danger">
+                        <b-alert show variant="danger">
                             {{errorPageMessage}}
                         </b-alert>
                     </b-col>

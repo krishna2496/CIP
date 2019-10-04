@@ -73,17 +73,17 @@ router.beforeEach(async(to, from, next) => {
     next();
 });
 
-Vue.filter('formatDate', function(value) {
+Vue.filter('formatDate', (value) => {
     if (value) {
         return moment(String(value)).format('DD/MM/YYYY')
     }
 })
 
-Vue.filter('filterGoal', function(value) {
+Vue.filter('filterGoal', (value) => {
     return parseInt(value)
 })
 
-Vue.filter('formatTime', function(value) {
+Vue.filter('formatTime', (value) => {
     if (value) {
         let splitArray = value.split(":");
 
@@ -91,14 +91,14 @@ Vue.filter('formatTime', function(value) {
     }
 })
 
-Vue.filter('firstLetterCapital', function(value) {
+Vue.filter('firstLetterCapital', (value) => {
     if (value) {
         value = value.toLowerCase()
         return value.charAt(0).toUpperCase() + value.slice(1)
     }
 })
 
-Vue.filter('substring', function(value, data) {
+Vue.filter('substring', (value, data) => {
     if (value.length <= data) {
         return value
     } else {
