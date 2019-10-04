@@ -111,7 +111,8 @@ return [
     	'MESSAGE_STORY_FOUND' => 'DE: Story found sucessfully',
     	'MESSAGE_STORY_COPIED_SUCCESS' => 'DE: Story copied successfully',
     	'MESSAGE_ENABLE_TO_EXPORT_USER_STORIES_ENTRIES' => 'DE: No data found, to generate story entries',
-    ],
+        'MESSAGE_STORY_UPDATED' => 'DE: Story updated successfully',
+	],
 
         
     /**
@@ -227,6 +228,7 @@ return [
         'ERROR_STORY_NOT_FOUND' => 'DE: Story not found in the system',
     	'ERROR_PUBLISHED_STORY_NOT_FOUND' => 'DE: Published story not found in the system',
     	'ERROR_DECLINED_STORY_NOT_FOUND' => 'DE: You can not copy story, due to this is not declined story',
+        'ERROR_STORY_PUBLISHED_OR_DECLINED' => 'DE: You cannot update published or declined story',
     ],
 		
 	/**

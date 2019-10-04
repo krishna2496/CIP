@@ -140,6 +140,7 @@ return [
     	'MESSAGE_STORY_FOUND' => 'Histoire trouvée avec succès',
     	'MESSAGE_STORY_COPIED_SUCCESS' => 'Histoire copiée avec succès',
     	'MESSAGE_ENABLE_TO_EXPORT_USER_STORIES_ENTRIES' => 'Aucune donnée trouvée, pour générer des entrées de récit',
+        'MESSAGE_STORY_UPDATED' => 'Histoire mise à jour avec succès',
     ],
 
         
@@ -269,6 +270,7 @@ return [
         'ERROR_STORY_NOT_FOUND' => 'Histoire non trouvée dans le système',
     	'ERROR_PUBLISHED_STORY_NOT_FOUND' => 'Histoire publiée non trouvée dans le système',
     	'ERROR_DECLINED_STORY_NOT_FOUND' => 'Vous ne pouvez pas copier l\'histoire, en raison de cette histoire n\'est pas refusée',
+        'ERROR_STORY_PUBLISHED_OR_DECLINED' => 'Vous ne pouvez pas mettre à jour une histoire publiée ou refusée',
     ],
 
     /**

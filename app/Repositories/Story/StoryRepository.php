@@ -85,49 +85,73 @@ class StoryRepository implements StoryInterface
             'title' => $request->title,
             'description' => $request->description,
             'user_id' => $request->auth->user_id,
+            'status' => config('constants.story_status.DRAFT')
         );
 
         $storyData = $this->story->create($storyDataArray);
-       
-        // Store story image
+        
         if ($request->hasFile('story_images')) {
             $tenantName = $this->helpers->getSubDomainFromRequest($request);
-            $files = $request->file('story_images');
-            foreach ($files as $file) {
-                $filePath = $this->s3helper
-                ->uploadDocumentOnS3Bucket(
-                    $file,
-                    $tenantName,
-                    $request->auth->user_id,
-                    config('constants.folder_name.story')
-                );
-                $storyImage = array('story_id' => $storyData->story_id,
-                                        'type' => 'image',
-                                        'path' => $filePath);
-                $this->storyMedia->create($storyImage);
-            }
+            // Store story images
+            $this->storeStoryImages(
+                $tenantName,
+                $storyData->story_id,
+                $request->file('story_images'),
+                $request->auth->user_id
+            );
         }
 
-        // Store story video url
         if ($request->has('story_videos')) {
-            foreach ($request->story_videos as $value) {
-                $storyVideo = array('story_id' => $storyData->story_id,
-                    'type' => 'video',
-                    'path' => $value);
-                $this->storyMedia->create($storyVideo);
-            }
+            // Store story video url
+            $this->storeStoryVideoUrl($request->story_videos, $storyData->story_id);
         }
 
         return $storyData;
     }
     
     /**
-    * Remove the story details.
-    *
-    * @param  int  $storyId
-    * @param  int  $userId
-    * @return bool
-    */
+     * Update story details
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param int $storyId
+     * @return App\Models\Story
+     */
+    public function update(Request $request, int $storyId): Story
+    {
+        // Find story
+        $story = $this->story->where(['story_id' => $storyId,
+        'user_id' => $request->auth->user_id])->firstOrFail();
+
+        $storyDataArray = $request->except(['user_id', 'published_at', 'status']);
+        $storyDataArray['status'] = config('constants.story_status.DRAFT');
+        $story->update($storyDataArray);
+
+        if ($request->hasFile('story_images')) {
+            $tenantName = $this->helpers->getSubDomainFromRequest($request);
+            // Store story images
+            $this->storeStoryImages(
+                $tenantName,
+                $story->story_id,
+                $request->file('story_images'),
+                $request->auth->user_id
+            );
+        }
+
+        if ($request->has('story_videos')) {
+            // Store story video url
+            $this->storeStoryVideoUrl($request->story_videos, $story->story_id);
+        }
+
+        return $story;
+    }
+
+    /**
+     * Remove the story details.
+     *
+     * @param  int  $storyId
+     * @param  int  $userId
+     * @return bool
+     */
     public function delete(int $storyId, int $userId): bool
     {
         return $this->story->deleteStory($storyId, $userId);
@@ -242,5 +266,69 @@ class StoryRepository implements StoryInterface
             ->where('language_id', $language->language_id);
         }])->where('user_id', $userId);
         return $userStoryQuery->get();
+    }
+
+    /**
+    * Store story images.
+    *
+    * @param string $tenantName
+    * @param int $storyId
+    * @param array $storyImages
+    * @param int $userId
+    * @return void
+    */
+    public function storeStoryImages(
+        string $tenantName,
+        int $storyId,
+        array $storyImages,
+        int $userId
+    ): void {
+        foreach ($storyImages as $file) {
+            $filePath = $this->s3helper
+            ->uploadDocumentOnS3Bucket(
+                $file,
+                $tenantName,
+                $userId,
+                config('constants.folder_name.story')
+            );
+            $storyImage = array('story_id' => $storyId,
+                                    'type' => 'image',
+                                    'path' => $filePath);
+            $this->storyMedia->create($storyImage);
+        }
+    }
+
+    /**
+     * Store story videos url.
+     *
+     * @param string $storyVideosUrl
+     * @param int $storyId
+     * @return void
+     */
+    public function storeStoryVideoUrl(string $storyVideosUrl, int $storyId): void
+    {
+        $storyVideo = array('story_id' => $storyId,
+        'type' => 'video',
+        'path' => $storyVideosUrl);
+        $this->storyMedia->updateOrCreate(['story_id' => $storyId, 'type' => 'video'], ['path' => $storyVideosUrl]);
+    }
+
+    /**
+     * Check story status
+     *
+     * @param int $userId
+     * @param int $storyId
+     * @param array $storyStatus
+     *
+     * @return bool
+     */
+    public function checkStoryStatus(int $userId, int $storyId, array $storyStatus): bool
+    {
+        $storyDetails = $this->story
+        ->where(['user_id' => $userId, 'story_id' => $storyId])
+        ->whereIn('status', $storyStatus)
+        ->get();
+        $storyStatus = ($storyDetails->count() > 0) ? false : true;
+        return $storyStatus;
     }
 }

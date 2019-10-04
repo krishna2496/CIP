@@ -6,7 +6,8 @@ use App\Models\Skill;
 
 class CustomValidationRules
 {
-    public static function validate() {
+    public static function validate()
+    {
         Validator::extend('valid_media_path', function ($attribute, $value) {
             $urlExtension = pathinfo($value, PATHINFO_EXTENSION);
             $validExtensions = ($attribute == 'url') ?
@@ -19,7 +20,7 @@ class CustomValidationRules
             return (!in_array($urlExtension, config('constants.document_types'))) ? false : true;
         });
         
-        Validator::extend('valid_video_url', function ($attribute, $value) {            
+        Validator::extend('valid_video_url', function ($attribute, $value) {
             return (preg_match(
                 '~^(?:https?://)?(?:www[.])?(?:youtube[.]com/watch[?]v=|youtu[.]be/)([^&]{11}) ~x',
                 $value
@@ -59,10 +60,10 @@ class CustomValidationRules
         });
         
         Validator::extend('valid_story_video_url', function ($attribute, $value) {
-            $storyVideos = explode(",", $value); 
+            $storyVideos = explode(",", $value);
             $val = true;
             for ($i=0; $i < count($storyVideos); $i++) {
-               $val = (preg_match(
+                $val = (preg_match(
                     '~^(?:https?://)?(?:www[.])?(?:youtube[.]com/watch[?]v=|youtu[.]be/)([^&]{11}) ~x',
                     $storyVideos[$i]
                 )) ? true : false;
@@ -83,4 +84,3 @@ class CustomValidationRules
         });
     }
 }
-?>

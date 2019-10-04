@@ -307,6 +307,11 @@ $router->group(['middleware' => 'localization'], function ($router) {
         $router->get('/app/story/{story_id}/copy', ['as' => 'app.story.copyafterdecline',
         'middleware' => 'localization|tenant.connection|jwt.auth',
         'uses' => 'App\Story\StoryController@copyStoryAfterDecline']);
+
+        /* Update story details */
+        $router->patch('/app/story/{storyId}', ['as' => 'app.story.update',
+        'middleware' => 'localization|tenant.connection|jwt.auth',
+        'uses' => 'App\Story\StoryController@update']);
     });
 
 /*

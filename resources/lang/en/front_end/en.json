@@ -175,8 +175,8 @@
         "sunday": "Sun",
         "hour_entry_modal_title": "Please input below time you spent on this mission",
         "goal_entry_modal_title": "Please input below action you spent on this mission",
-		"file_upload" : "File upload",
-		"drop_files" : "Or drop files here",
+        "file_upload": "File upload",
+        "drop_files": "Or drop files here",
         "browse": "Browse",
         "delete": "Delete",
         "actions": "Actions",
@@ -190,11 +190,12 @@
         "volunteering_timesheet_not_found": "The heart of a volunteer is never measured in size, but by the depth of the commitment to make a difference in the lives of others.",
         "no_skill_found": "Skill not found",
         "not_found": "not found",
-        "published_on": "Published on"
+        "published_on": "Published on",
         "closed": "Closed",
         "share_your_story": "Share your story",
         "views": "Views",
-        "open_mission": "Open mission"
+        "open_mission": "Open mission",
+        "goal_objective": "Goal objective"
     },
 
     "placeholder": {
@@ -258,11 +259,11 @@
         "work_day": "Please select day volunteered",
         "notes": "Please enter notes",
         "action_required": "Please select action",
-		"file_max_size" : "File should not be greater than 4 MB",
+        "file_max_size": "File should not be greater than 4 MB",
         "minimum_action": "The action must be numeric and minimum 1",
         "hours_is_required": "Please select hours",
         "minute_is_required": "Please select minutes",
-		 "invalid_file_type" : "Invalid file type: valid file types are doc, xls, xlsx, csv, pdf, png, jpg, jpeg",
+        "invalid_file_type": "Invalid file type: valid file types are doc, xls, xlsx, csv, pdf, png, jpg, jpeg",
         "file_already_uploaded": "File is already uploaded",
         "hours_numeric": "Hours must be numeric",
         "hours_is_between": "Hours must be between 0 to 23",
