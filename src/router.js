@@ -56,7 +56,48 @@ let routes = [{
         component: () =>
             import ('./views/Dashboard.vue')
     },
-
+    {
+        path: '/news',
+        name: 'News',
+        component: () =>
+            import ('./views/News.vue')
+    },
+    {
+        path: '/stories',
+        name: 'Stories',
+        component: () =>
+            import ('./views/Stories.vue')
+    },
+    {
+        path: '/news-detail/:newsId',
+        name: 'NewsDetail',
+        component: () =>
+            import ('./views/NewsDetail.vue')
+    },
+    {
+        path: '/news-detail/:newsId',
+        name: 'NewsDetail',
+        component: () =>
+            import ('./views/NewsDetail.vue')
+    },
+    {
+        path: '/story-detail/:storyId',
+        name: 'StoryDetail',
+        component: () =>
+            import ('./views/StoryDetail.vue')
+    },
+    {
+        path: '/story-preview/:storyId',
+        name: 'StoryPreview',
+        component: () =>
+            import ('./views/StoryDetail.vue')
+    },
+    {
+        path: '/share-story',
+        name: 'ShareStory',
+        component: () =>
+            import ('./views/ShareStory.vue')
+    },
     {
         path: '/home/:searchParamsType/:searchParams',
         name: 'exploreMission',

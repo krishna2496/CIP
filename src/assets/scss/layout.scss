@@ -287,7 +287,7 @@ tspan {
                     content: "";
                     left: 0;
                     width: 0;
-                    bottom: 0;
+                    bottom: -1px;
                     height: 3px;
                     background: $primary;
                     @include transition(all 0.3s);
@@ -3883,6 +3883,13 @@ img {
           }
           @include sm-max{
               height: 260px;
+          }
+      }
+      label{
+          span{
+              font-size: 13px;
+              line-height:17px;
+              color: $gray-primary;
           }
       }
   }
