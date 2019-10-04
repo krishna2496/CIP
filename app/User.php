@@ -169,7 +169,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     /**
      * Get specified resource.
      *
-     * @param int $missionId
+     * @param int $userId
      * @return string
      */
     public function getUserName(int $userId): string
@@ -210,5 +210,16 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     public function findUserDetail(int $userId): User
     {
         return static::with('city', 'country', 'timezone', 'availability', 'userCustomFieldValue')->findOrFail($userId);
+    }
+
+    /**
+     * Get specified resource.
+     *
+     * @param int $userId
+     * @return null|string
+     */
+    public function getUserGoalHours(int $userId): ?string
+    {
+        return static::select('goal_hours')->where(['user_id' => $userId])->value('goal_hours');
     }
 }

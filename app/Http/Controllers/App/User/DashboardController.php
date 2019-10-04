@@ -17,6 +17,7 @@ use App\User;
 use App\Repositories\User\UserRepository;
 use App\Repositories\Timesheet\TimesheetRepository;
 use App\Repositories\MissionApplication\MissionApplicationRepository;
+use App\Repositories\TenantOption\TenantOptionRepository;
 
 class DashboardController extends Controller
 {
@@ -35,6 +36,11 @@ class DashboardController extends Controller
      * @var App\Repositories\MissionApplication\MissionApplicationRepository
      */
     private $missionApplicationRepository;
+
+    /**
+     * @var App\Repositories\TenantOption\TenantOptionRepository
+     */
+    private $tenantOptionRepository;
         
     /**
      * @var App\Helpers\ResponseHelper
@@ -62,6 +68,7 @@ class DashboardController extends Controller
      * @param App\Repositories\User\UserRepository $userRepository
      * @param App\Repositories\Timesheet\TimesheetRepository $timesheetRepository
      * @param App\Repositories\MissionApplication\MissionApplicationRepository $missionApplicationRepository
+     * @param App\Repositories\TenantOption\TenantOptionRepository $tenantOptionRepository
      * @param Illuminate\Http\ResponseHelper $responseHelper
      * @param App\Helpers\LanguageHelper $languageHelper
      * @param App\Helpers\Helpers $helpers
@@ -72,6 +79,7 @@ class DashboardController extends Controller
         UserRepository $userRepository,
         TimesheetRepository $timesheetRepository,
         MissionApplicationRepository $missionApplicationRepository,
+        TenantOptionRepository $tenantOptionRepository,
         ResponseHelper $responseHelper,
         LanguageHelper $languageHelper,
         Helpers $helpers,
@@ -80,6 +88,7 @@ class DashboardController extends Controller
         $this->userRepository = $userRepository;
         $this->timesheetRepository = $timesheetRepository;
         $this->missionApplicationRepository = $missionApplicationRepository;
+        $this->tenantOptionRepository = $tenantOptionRepository;
         $this->responseHelper = $responseHelper;
         $this->languageHelper = $languageHelper;
         $this->helpers = $helpers;
@@ -95,18 +104,36 @@ class DashboardController extends Controller
     public function index(Request $request): JsonResponse
     {
         $userId = $request->auth->user_id;
-        $year = $request->year;
-        $month = $request->month;
-        $missionId = $request->mission_id;
+        $year = $request->year ?? (int) date('Y');
+        $month = $request->month ?? (int) date('m');
+        $missionId = $request->mission_id ?? null;
 
         $timesheetData = $this->timesheetRepository->getTotalHours($userId, $year, $month);
-        $timesheetCount = $this->timesheetRepository->getTotalPendingRequests($userId);
-        $missionCount = $this->missionApplicationRepository->missionApplicationCount($userId);
-        $organizationCount = $this->missionApplicationRepository->organizationCount($userId);
+        $timesheetCount = $this->timesheetRepository->getTotalPendingRequests($userId, $year, $month);
+        $missionCount = $this->missionApplicationRepository->missionApplicationCount($userId, $year, $month);
+        $organizationCount = $this->missionApplicationRepository->organizationCount($userId, $year, $month);
+        $goalHours = $this->userRepository->getUserGoalHours($userId);
+        $tenantGoalHours = $this->tenantOptionRepository->getOptionValueFromOptionName('goal_hours');
+        $totalGoalHours = $this->timesheetRepository->getTotalHoursForYear($userId, $year);
+        $chartData = $this->timesheetRepository->getTotalHoursbyMonth($userId, $year, $missionId);
+
+        $userGoalHours = (!is_null($goalHours)) ? $goalHours : $tenantGoalHours;
         
         $totalHours = 0;
         foreach ($timesheetData as $timesheet) {
             $totalHours += $timesheet['total_hours'];
+        }
+
+        $totalGoals = 0;
+        foreach ($totalGoalHours as $timesheetHours) {
+            $totalGoals += $timesheetHours['total_hours'];
+        }
+        
+        foreach ($chartData as $chart) {
+            if ($year == (int) date('Y')) {
+                $month = date('m');
+            }
+            $chart['total_hours'] = (int)($chart['total_minutes'] / 60);
         }
 
         $apiData['total_hours'] = $this->helpers->convertInReportTimeFormat($totalHours);
@@ -115,6 +142,10 @@ class DashboardController extends Controller
         $apiData['mission_count'] = $missionCount;
         $apiData['voted_missions'] = '';
         $apiData['organization_count'] = count($organizationCount);
+        $apiData['total_goal_hours'] = $userGoalHours;
+        $apiData['completed_goal_hours'] = (int)($totalGoals / 60);
+        $apiData['chart'] = $chartData->toArray();
+        
 
         // Set response data
         $apiStatus = Response::HTTP_OK;

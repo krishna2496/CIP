@@ -151,26 +151,31 @@ class MissionApplicationRepository implements MissionApplicationInterface
      * Get mission count.
      *
      * @param int $userId
+     * @param int $year
+     * @param int $month
      * @return int
      */
-    public function missionApplicationCount(int $userId): int
+    public function missionApplicationCount(int $userId, int $year, int $month): int
     {
-        return $this->missionApplication->missionApplicationCount($userId);
+        return $this->missionApplication->missionApplicationCount($userId, $year, $month);
     }
 
     /**
      * Get mission application count.
      *
      * @param int $userId
-     * @return int
+     * @param int $year
+     * @param int $month
+     * @return array
      */
-    public function organizationCount(int $userId)
+    public function organizationCount(int $userId, int $year, int $month): array
     {
-        // return $this->missionApplication->organizationCount($userId);
         return $this->mission
         ->leftJoin('mission_application', 'mission_application.mission_id', '=', 'mission.mission_id')
         ->where(['mission_application.user_id' => $userId])
         ->where('mission_application.approval_status', '<>', config('constants.application_status.REFUSED'))
+        ->whereYear('applied_at', $year)
+        ->whereMonth('applied_at', $month)
         ->groupBy('mission.organisation_id')
         ->get()->toArray();
     }

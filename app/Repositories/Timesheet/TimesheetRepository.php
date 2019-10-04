@@ -188,7 +188,7 @@ class TimesheetRepository implements TimesheetInterface
      *
      * @param int $userId
      * @param \Illuminate\Http\Request $request
-     * @return Illuminate\Database\Eloquent\Collection
+     * @return Illuminate\Support\Collection
      */
     public function getUserTimesheet(int $userId, Request $request): Collection
     {
@@ -362,7 +362,7 @@ class TimesheetRepository implements TimesheetInterface
      *
      * @param Illuminate\Http\Request $request
      * @param string $missionType
-     * @return Illuminate\Database\Eloquent\Collection
+     * @return Illuminate\Support\Collection
      */
     public function getTimesheetEntries(Request $request, string $missionType): Collection
     {
@@ -459,9 +459,11 @@ class TimesheetRepository implements TimesheetInterface
         $missionQuery->leftjoin('time_mission', 'mission.mission_id', '=', 'time_mission.mission_id');
         $missionQuery->where('publication_status', config("constants.publication_status")["APPROVED"]);
         $missionQuery->withCount([
-            'timesheet AS total_hours' => function ($query) use ($userId, $statusArray) {
+            'timesheet AS total_hours' => function ($query) use ($userId, $statusArray, $year, $month) {
                 $query->select(DB::raw("sum(((hour(time) * 60) + minute(time))) as 'total_minutes'"));
                 $query->where('user_id', $userId);
+                $query->whereYear('date_volunteered', $year);
+                $query->whereMonth('date_volunteered', $month);
                 $query->whereIn('status_id', $statusArray);
             }
         ]);
@@ -471,15 +473,100 @@ class TimesheetRepository implements TimesheetInterface
     /**
      * Get total pending requests
      *
-     * @param Illuminate\Http\Request $request
+     * @param int $userId
+     * @param int $year
+     * @param int $month
      * @return string
      */
-    public function getTotalPendingRequests(int $userId)
+    public function getTotalPendingRequests(int $userId, int $year, int $month)
     {
         $statusArray = [config('constants.timesheet_status_id.SUBMIT_FOR_APPROVAL')];
 
-        $timesheetQuery = $this->timesheet->where('user_id', $userId)->whereIn('status_id', $statusArray)->count();
+        $timesheetQuery = $this->timesheet->where('user_id', $userId)
+                        ->whereYear('date_volunteered', $year)
+                        ->whereMonth('date_volunteered', $month)
+                        ->whereIn('status_id', $statusArray)->count();
 
         return $timesheetQuery;
+    }
+
+    /**
+     * Get user timesheet total goal actions data
+     *
+     * @param int $userId
+     * @param int $year
+     * @return string
+     */
+    public function getTotalGoalActions(int $userId, int $year)
+    {
+        $statusArray = [config('constants.timesheet_status_id.APPROVED'),
+        config('constants.timesheet_status_id.AUTOMATICALLY_APPROVED')];
+
+        $missionQuery = $this->mission->select('mission.*');
+        $missionQuery->leftjoin('time_mission', 'mission.mission_id', '=', 'time_mission.mission_id');
+        $missionQuery->where('publication_status', config("constants.publication_status")["APPROVED"]);
+        $missionQuery->where('mission_type', config('constants.mission_type.GOAL'));
+        $missionQuery->withCount([
+            'timesheet AS action' => function ($query) use ($userId, $statusArray, $year) {
+                $query->select(DB::raw("SUM(action) as action"));
+                $query->where('user_id', $userId);
+                $query->whereYear('date_volunteered', $year);
+                $query->whereIn('status_id', $statusArray);
+            }
+        ]);
+        return $missionQuery->get()->toArray();
+    }
+
+    /**
+     * Get user timesheet total hours data
+     *
+     * @param int $userId
+     * @param int $year
+     * @return string
+     */
+    public function getTotalHoursForYear(int $userId, int $year)
+    {
+        $statusArray = [config('constants.timesheet_status_id.APPROVED'),
+        config('constants.timesheet_status_id.AUTOMATICALLY_APPROVED')];
+
+        $missionQuery = $this->mission->select('mission.*');
+        $missionQuery->leftjoin('time_mission', 'mission.mission_id', '=', 'time_mission.mission_id');
+        $missionQuery->where('publication_status', config("constants.publication_status")["APPROVED"]);
+        $missionQuery->withCount([
+            'timesheet AS total_hours' => function ($query) use ($userId, $statusArray, $year) {
+                $query->select(DB::raw("sum(((hour(time) * 60) + minute(time))) as 'total_minutes'"));
+                $query->where('user_id', $userId);
+                $query->whereYear('date_volunteered', $year);
+                $query->whereIn('status_id', $statusArray);
+            }
+        ]);
+        return $missionQuery->get()->toArray();
+    }
+
+    /**
+     * Get user timesheet total hours data
+     *
+     * @param int $userId
+     * @param int $year
+     * @return string
+     */
+    public function getTotalHoursbyMonth(int $userId, int $year, $missionId)
+    {
+        $statusArray = [config('constants.timesheet_status_id.APPROVED'),
+        config('constants.timesheet_status_id.AUTOMATICALLY_APPROVED')];
+
+        $missionQuery = $this->timesheet
+        ->select(DB::raw("MONTH(date_volunteered) as month,
+        sum(((hour(time) * 60) + minute(time))) as 'total_minutes'"));
+        $missionQuery->leftjoin('mission', 'timesheet.mission_id', '=', 'mission.mission_id')
+        ->where('mission.publication_status', config("constants.publication_status")["APPROVED"]);
+        $missionQuery->where('user_id', $userId);
+        $missionQuery->whereYear('date_volunteered', $year);
+        $missionQuery->whereIn('status_id', $statusArray);
+        if (!is_null($missionId)) {
+            $missionQuery->where('timesheet.mission_id', $missionId);
+        }
+        $missionQuery->groupBy(DB::raw("MONTH(date_volunteered)"));
+        return $missionQuery->get();
     }
 }
