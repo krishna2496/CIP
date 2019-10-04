@@ -30,7 +30,11 @@ class Story extends Model
      *
      * @var array
      */
-    protected $visible = ['story_id', 'user_id', 'mission_id', 'title', 'description', 'status', 'published_at', 'created_at', 'mission_title', 'mission_description', 'first_name', 'last_name','avatar','why_i_volunteer','profile_text','storyMedia','user','mission','missionTheme', 'city', 'country'];
+
+    protected $visible = ['story_id', 'user_id', 'mission_id', 'title', 'description', 'status', 'published_at',
+    'mission_title', 'mission_description', 'first_name', 'last_name','avatar','why_i_volunteer',
+    'profile_text', 'storyMedia', 'city', 'country'];
+
 
     /**
      * The attributes that are mass assignable.
@@ -46,7 +50,7 @@ class Story extends Model
      */
     public function user(): HasOne
     {
-    	return $this->hasOne(User::class, 'user_id', 'user_id');
+        return $this->hasOne(User::class, 'user_id', 'user_id');
     }
     
     /**
@@ -56,7 +60,7 @@ class Story extends Model
      */
     public function mission(): HasOne
     {
-    	return $this->hasOne(Mission::class, 'mission_id', 'mission_id');
+        return $this->hasOne(Mission::class, 'mission_id', 'mission_id');
     }
     
     /**
@@ -66,7 +70,7 @@ class Story extends Model
      */
     public function storyMedia(): HasMany
     {
-    	return $this->hasMany(StoryMedia::class, 'story_id', 'story_id');
+        return $this->hasMany(StoryMedia::class, 'story_id', 'story_id');
     }
     
     /**
@@ -77,6 +81,6 @@ class Story extends Model
      */
     public function deleteStory(int $id): bool
     {
-    	return static::findOrFail($id)->delete();
+        return static::findOrFail($id)->delete();
     }
 }

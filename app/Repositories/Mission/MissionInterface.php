@@ -178,7 +178,7 @@ interface MissionInterface
     public function getMissionType(int $id): ?Collection;
     
     /**
-     * Get user mission lists 
+     * Get user mission lists
      *
      * @param Illuminate\Http\Request $request
      * @return null|array

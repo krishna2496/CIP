@@ -35,5 +35,4 @@ class StoryMedia extends Model
      * @var array
      */
     protected $visible = ['story_id', 'type', 'path'];
-    
 }

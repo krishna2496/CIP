@@ -273,6 +273,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
         'middleware' => 'tenant.connection|jwt.auth',
         'uses' => 'App\VolunteerHistory\VolunteerHistoryController@exportGoalMissionHistory']);
 
+
     /* News listing */
     $router->get('/app/news', ['as' => 'app.news.list',
         'middleware' => 'localization|tenant.connection|jwt.auth|PaginationMiddleware',
@@ -318,7 +319,13 @@ $router->group(['middleware' => 'localization'], function ($router) {
         'middleware' => 'localization|tenant.connection|jwt.auth',
         'uses' => 'App\Story\StoryController@copyStoryAfterDecline']);
 
+    /* Update story details */
+    $router->patch('/app/story/{storyId}', ['as' => 'app.story.update',
+   		'middleware' => 'localization|tenant.connection|jwt.auth',
+   		'uses' => 'App\Story\StoryController@update']);
 });
+        
+   
 
 /*
 |
@@ -584,7 +591,7 @@ $router->group(
     ['prefix' => '/news', 'middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware'],
     function ($router) {
         $router->get('/', ['middleware' => ['PaginationMiddleware'],
-            'uses' => 'Admin\News\NewsController@index']);
+        'uses' => 'Admin\News\NewsController@index']);
         $router->get('/{newsId}', ['uses' => 'Admin\News\NewsController@show']);
         $router->post('/', ['uses' => 'Admin\News\NewsController@store']);
         $router->patch('/{newsId}', ['uses' => 'Admin\News\NewsController@update']);
@@ -603,6 +610,7 @@ $router->group(
             'uses' => 'Admin\Story\StoryController@update']);
     }
 );
+
 
 /*
 |

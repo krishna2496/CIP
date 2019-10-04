@@ -10,9 +10,11 @@ trait StoryTransformable
      * Get Transfered stories
      *
      * @param App\Models\Story $story
+     * @param int $defaultTenantLanguageId
+     * @param int $languageId
      * @return App\Models\Story
      */
-    protected function transformStory(Story $story): Story
+    protected function transformStory(Story $story, int $defaultTenantLanguageId, int $languageId):Story
     {
         $prop = new Story;
         $prop->story_id = (int) $story->story_id;
@@ -20,6 +22,8 @@ trait StoryTransformable
         $prop->title = $story->title;
         $prop->description = $story->description;
         $prop->status = trans('messages.status.' . $story->status);
+        $prop->published_at = $story->published_at;
+        
 
         if (!empty($story->user)) {
             $prop->user_id = $story->user_id;
@@ -36,9 +40,14 @@ trait StoryTransformable
             $prop->storyMedia = $story->storyMedia;
         }
 
-        if ($story->mission->missionLanguage->isNotEmpty()) {
-            $prop->mission_title = $story->mission->missionLanguage[0]->title;
-            $prop->mission_description = $story->mission->missionLanguage[0]->short_description;
+        $key = array_search($languageId, array_column($story->mission->missionLanguage->toArray(), 'language_id'));
+        $language = ($key === false) ? $defaultTenantLanguageId : $languageId;
+        $missionLanguage = $story->mission->missionLanguage->where('language_id', $language)->first();
+
+        if (!is_null($missionLanguage)) {
+            $prop->mission_title = $missionLanguage->title;
+            $prop->mission_description = $missionLanguage->short_description;
+
         }
         return $prop;
     }
