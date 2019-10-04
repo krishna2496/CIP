@@ -32,7 +32,11 @@ interface StoryInterface
      * @param string $status
      * @return \Illuminate\Pagination\LengthAwarePaginator
      */
-    public function getUserStoriesWithPagination(Request $request, int $userId = null, string $status = null): LengthAwarePaginator;
+    public function getUserStoriesWithPagination(
+        Request $request,
+        int $userId = null,
+        string $status = null
+    ): LengthAwarePaginator;
 
     /**
      * Get story details.
@@ -68,5 +72,4 @@ interface StoryInterface
      * @return Object
      */
     public function getUserStoriesWithOutPagination(Request $request, int $userId): Object;
-
 }
