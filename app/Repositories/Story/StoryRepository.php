@@ -62,7 +62,7 @@ class StoryRepository implements StoryInterface
      * @return void
      */
     public function __construct(
-        story $story,
+        Story $story,
         Mission $mission,
         StoryMedia $storyMedia,
         S3Helper $s3helper,

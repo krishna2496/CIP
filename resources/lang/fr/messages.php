@@ -141,6 +141,7 @@ return [
     	'MESSAGE_STORY_COPIED_SUCCESS' => 'Histoire copiée avec succès',
     	'MESSAGE_ENABLE_TO_EXPORT_USER_STORIES_ENTRIES' => 'Aucune donnée trouvée, pour générer des entrées de récit',
         'MESSAGE_STORY_UPDATED' => 'Histoire mise à jour avec succès',
+        'MESSAGE_STORY_VISITOR_ADDED_SUCESSFULLY' => 'Le visiteur de l\'histoire a été ajouté avec succès',
     ],
 
         
@@ -297,7 +298,7 @@ return [
 	'status' => [
 		'DRAFT' => 'Brouillon',
 		'PENDING' => 'En attente',
-		'PUBLISHED' => 'Publi�',
-		'DECLINED' => 'Diminu�e',
+		'PUBLISHED' => 'Publi�',
+		'DECLINED' => 'Diminu�e',
 	],
 ];
