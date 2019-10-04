@@ -265,6 +265,12 @@ class StoryController extends Controller
     	); 
     }
     
+    /**
+     * Used for get all published stories data
+     *  
+     * @param Request $request
+     * @return JsonResponse
+     */
     public function getAllPublishedStories(Request $request): JsonResponse
     {
     	// get all published stories of users
