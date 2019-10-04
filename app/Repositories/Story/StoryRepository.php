@@ -119,7 +119,7 @@ class StoryRepository implements StoryInterface
 
         if ($request->has('story_videos')) {
             // Store story video url
-            $this->storeStoryVideoUrl($request->story_videos, $storyData->story_id);
+            $this->storeStoryVideoUrl($request->story_videos, $storyData->story_id, true);
         }
 
         return $storyData;
@@ -173,15 +173,18 @@ class StoryRepository implements StoryInterface
      *
      * @param string $storyVideosUrl
      * @param int $storyId
+     * @param bool $status
      * @return void
      */
-    public function storeStoryVideoUrl(string $storyVideosUrl, int $storyId): void
+    public function storeStoryVideoUrl(string $storyVideosUrl, int $storyId, bool $status = false): void
     {
-        $videosUrl = explode(",", $storyVideosUrl);
-        foreach ($videosUrl as $value) {
-            $storyVideo = array('story_id' => $storyId,
-                'type' => 'video',
-                'path' => $value);
+        $storyVideo = array('story_id' => $storyId,
+        'type' => 'video',
+        'path' => $storyVideosUrl);
+     
+        if ($status) {
+            $this->storyMedia->updateOrCreate(['story_id' => $storyId, 'type' => 'video'], ['path' => $storyVideosUrl]);
+        } else {
             $this->storyMedia->create($storyVideo);
         }
     }
