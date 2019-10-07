@@ -108,11 +108,6 @@ $router->group(['middleware' => 'localization'], function ($router) {
     'middleware' => 'tenant.connection|jwt.auth|PaginationMiddleware',
     'uses' => 'App\User\UserController@index']);
 
-    /* Fetch dashboard data for users */
-    $router->get('/app/dashboard', ['as' =>'app.user',
-    'middleware' => 'tenant.connection|jwt.auth',
-    'uses' => 'App\User\DashboardController@index']);
-
     /* Get mission detail  */
     $router->get('/app/mission/{missionId}', [
     'middleware' => 'tenant.connection|jwt.auth',
