@@ -326,7 +326,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
         /* Delete story image */
         $router->delete('/app/story/{storyId}/image/{imageId}', ['as' => 'app.story.removeStoryImage',
         'middleware' => 'localization|tenant.connection|jwt.auth',
-        'uses' => 'App\Story\StoryController@removeStoryImage']);
+        'uses' => 'App\Story\StoryController@deleteStoryImage']);
     });
 
 /*

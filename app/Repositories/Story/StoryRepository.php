@@ -119,8 +119,7 @@ class StoryRepository implements StoryInterface
     public function update(Request $request, int $storyId): Story
     {
         // Find story
-        $story = $this->story->where(['story_id' => $storyId,
-        'user_id' => $request->auth->user_id])->firstOrFail();
+        $story = $this->findStoryByUserId($request->auth->user_id, $storyId);
 
         $storyDataArray = $request->except(['user_id', 'published_at', 'status']);
         $storyDataArray['status'] = config('constants.story_status.DRAFT');
@@ -342,8 +341,7 @@ class StoryRepository implements StoryInterface
     public function submitStory(int $userId, int $storyId): Story
     {
         // Find story
-        $story = $this->story->where(['story_id' => $storyId,
-        'user_id' => $userId])->firstOrFail();
+        $story = $this->findStoryByUserId($userId, $storyId);
         if ($story->status == config('constants.story_status.DRAFT')) {
             $story->update(['status' => config('constants.story_status.PENDING')]);
         }

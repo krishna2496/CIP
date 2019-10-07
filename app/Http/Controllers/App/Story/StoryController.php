@@ -356,14 +356,14 @@ class StoryController extends Controller
     }
 
     /**
-     * Remove story image.
+     * Delete story image.
      *
      * @param \Illuminate\Http\Request $request
      * @param int $storyId
      * @param int $mediaId
      * @return Illuminate\Http\JsonResponse
      */
-    public function removeStoryImage(Request $request, int $storyId, int $mediaId): JsonResponse
+    public function deleteStoryImage(Request $request, int $storyId, int $mediaId): JsonResponse
     {
         try {
             // Fetch story data
