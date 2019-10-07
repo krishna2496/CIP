@@ -328,6 +328,11 @@ $router->group(['middleware' => 'localization'], function ($router) {
     $router->patch('/app/story/{storyId}', ['as' => 'app.story.update',
    		'middleware' => 'localization|tenant.connection|jwt.auth',
    		'uses' => 'App\Story\StoryController@update']);
+    
+    /* store story visitor details */
+    $router->get('/app/story/{storyId}/views', ['as' => 'app.storyvisitor.store',
+    	'middleware' => 'localization|tenant.connection|jwt.auth',
+    	'uses' => 'App\StoryVisitor\StoryVisitorController@store']);
 });
         
    

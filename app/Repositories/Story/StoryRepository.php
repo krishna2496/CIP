@@ -50,7 +50,7 @@ class StoryRepository implements StoryInterface
      * @var App\Helpers\LanguageHelper
      */
     private $languageHelper;
-   
+
     /**
      * Create a new Story repository instance.
      *
@@ -62,7 +62,7 @@ class StoryRepository implements StoryInterface
      * @return void
      */
     public function __construct(
-        story $story,
+        Story $story,
         Mission $mission,
         StoryMedia $storyMedia,
         S3Helper $s3helper,
@@ -76,7 +76,6 @@ class StoryRepository implements StoryInterface
         $this->helpers = $helpers;
         $this->languageHelper = $languageHelper;
     }
-    
 
     /**
      * Store story details
@@ -91,11 +90,11 @@ class StoryRepository implements StoryInterface
             'title' => $request->title,
             'description' => $request->description,
             'user_id' => $request->auth->user_id,
-            'status' => config('constants.story_status.DRAFT')
+            'status' => config('constants.story_status.DRAFT'),
         );
 
         $storyData = $this->story->create($storyDataArray);
-      
+
         if ($request->hasFile('story_images')) {
             $tenantName = $this->helpers->getSubDomainFromRequest($request);
             // Store story images
@@ -125,7 +124,7 @@ class StoryRepository implements StoryInterface
     {
         // Find story
         $story = $this->story->where(['story_id' => $storyId,
-        'user_id' => $request->auth->user_id])->firstOrFail();
+            'user_id' => $request->auth->user_id])->firstOrFail();
 
         $storyDataArray = $request->except(['user_id', 'published_at', 'status']);
         $storyDataArray['status'] = config('constants.story_status.DRAFT');
@@ -161,7 +160,7 @@ class StoryRepository implements StoryInterface
     {
         return $this->story->deleteStory($storyId, $userId);
     }
-    
+
     /**
      * Display a listing of specified resources with pagination.
      *
@@ -170,17 +169,34 @@ class StoryRepository implements StoryInterface
      * @param string $status
      * @return \Illuminate\Pagination\LengthAwarePaginator
      */
-    public function getUserStoriesWithPagination(Request $request, int $userId = null, string $status = null): LengthAwarePaginator
-    {
+    public function getUserStoriesWithPagination(
+        Request $request,
+        int $userId = null,
+        string $status = null
+    ): LengthAwarePaginator {
         $languageId = $this->languageHelper->getLanguageId($request);
 
-        $userStoryQuery = $this->story->select('story_id', 'user_id', 'mission_id', 'title', 'description', 'status', 'published_at', 'created_at')->with([
+        $userStoryQuery = $this->story->select(
+            'story_id',
+            'user_id',
+            'mission_id',
+            'title',
+            'description',
+            'status',
+            'published_at',
+            'created_at'
+        )->with([
             'user',
             'mission',
             'mission.missionTheme',
             'storyMedia',
             'mission.missionLanguage' => function ($query) use ($languageId) {
-                $query->select('mission_language_id', 'mission_id', 'title', 'short_description')->where('language_id', $languageId);
+                $query->select(
+                    'mission_language_id',
+                    'mission_id',
+                    'title',
+                    'short_description'
+                )->where('language_id', $languageId);
             },
         ])->when($userId, function ($query, $userId) {
             return $query->where('user_id', $userId);
@@ -225,7 +241,7 @@ class StoryRepository implements StoryInterface
             'user.city',
             'user.country',
             'storyMedia',
-        ]);
+        ])->withCount('storyVisitor');
 
         if (!empty($storyStatus)) {
             $storyQuery->where('status', $storyStatus);
@@ -244,10 +260,10 @@ class StoryRepository implements StoryInterface
     {
         $newStory = $this->story->with(['storyMedia'])->findOrFail($storyId)->replicate();
 
-        $newStory->title = 'Copy of '.$newStory->title;
+        $newStory->title = 'Copy of ' . $newStory->title;
         $newStory->status = config('constants.story_status.DRAFT');
         $newStory->save();
-        
+
         $newStoryId = $newStory->story_id;
 
         foreach ($newStory->storyMedia as $val) {
@@ -271,24 +287,24 @@ class StoryRepository implements StoryInterface
     {
 
         $language = $this->languageHelper->getLanguageDetails($request);
-    
+
         $userStoryQuery = $this->story->select('story_id', 'mission_id', 'title', 'description', 'status')
-        ->with(['mission','storyMedia','mission.missionLanguage' => function ($query) use ($language) {
-            $query->select('mission_language_id', 'mission_id', 'title', 'short_description')
-            ->where('language_id', $language->language_id);
-        }])->where('user_id', $userId);
+            ->with(['mission', 'storyMedia', 'mission.missionLanguage' => function ($query) use ($language) {
+                $query->select('mission_language_id', 'mission_id', 'title', 'short_description')
+                    ->where('language_id', $language->language_id);
+            }])->where('user_id', $userId);
         return $userStoryQuery->get();
     }
 
     /**
-    * Store story images.
-    *
-    * @param string $tenantName
-    * @param int $storyId
-    * @param array $storyImages
-    * @param int $userId
-    * @return void
-    */
+     * Store story images.
+     *
+     * @param string $tenantName
+     * @param int $storyId
+     * @param array $storyImages
+     * @param int $userId
+     * @return void
+     */
     public function storeStoryImages(
         string $tenantName,
         int $storyId,
@@ -297,15 +313,15 @@ class StoryRepository implements StoryInterface
     ): void {
         foreach ($storyImages as $file) {
             $filePath = $this->s3helper
-            ->uploadDocumentOnS3Bucket(
-                $file,
-                $tenantName,
-                $userId,
-                config('constants.folder_name.story')
-            );
+                ->uploadDocumentOnS3Bucket(
+                    $file,
+                    $tenantName,
+                    $userId,
+                    config('constants.folder_name.story')
+                );
             $storyImage = array('story_id' => $storyId,
-                                    'type' => 'image',
-                                    'path' => $filePath);
+                'type' => 'image',
+                'path' => $filePath);
             $this->storyMedia->create($storyImage);
         }
     }
@@ -320,8 +336,8 @@ class StoryRepository implements StoryInterface
     public function storeStoryVideoUrl(string $storyVideosUrl, int $storyId): void
     {
         $storyVideo = array('story_id' => $storyId,
-        'type' => 'video',
-        'path' => $storyVideosUrl);
+            'type' => 'video',
+            'path' => $storyVideosUrl);
         $this->storyMedia->updateOrCreate(['story_id' => $storyId, 'type' => 'video'], ['path' => $storyVideosUrl]);
     }
 
@@ -337,10 +353,21 @@ class StoryRepository implements StoryInterface
     public function checkStoryStatus(int $userId, int $storyId, array $storyStatus): bool
     {
         $storyDetails = $this->story
-        ->where(['user_id' => $userId, 'story_id' => $storyId])
-        ->whereIn('status', $storyStatus)
-        ->get();
+            ->where(['user_id' => $userId, 'story_id' => $storyId])
+            ->whereIn('status', $storyStatus)
+            ->get();
         $storyStatus = ($storyDetails->count() > 0) ? false : true;
         return $storyStatus;
+    }
+
+    /**
+     * Used for check if story exist or not
+     *
+     * @param int $storyId
+     * @return Story
+     */
+    public function checkStoryExist(int $storyId): Story
+    {
+        return $this->story->findOrFail($storyId);
     }
 }
