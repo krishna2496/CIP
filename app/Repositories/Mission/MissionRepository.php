@@ -980,6 +980,12 @@ class MissionRepository implements MissionInterface
                 $query->select(DB::raw("AVG(rating) as rating"));
             }
         ]);
+        $missionQuery->withCount([
+            'timesheet AS achieved_goal' => function ($query) use ($request) {
+                $query->select(DB::raw("SUM(action) as action"));
+                $query->whereIn('status_id', array(config('constants.timesheet_status_id.APPROVED'),
+                config('constants.timesheet_status_id.AUTOMATICALLY_APPROVED')));
+            }]);
         $missionQuery->with(['missionRating']);
         return $missionQuery->inRandomOrder()->get();
     }
@@ -1046,6 +1052,12 @@ class MissionRepository implements MissionInterface
             ])->withCount([
                 'missionRating as mission_rating_total_volunteers'
             ]);
+            $missionQuery->withCount([
+                'timesheet AS achieved_goal' => function ($query) use ($request) {
+                    $query->select(DB::raw("SUM(action) as action"));
+                    $query->whereIn('status_id', array(config('constants.timesheet_status_id.APPROVED'),
+                    config('constants.timesheet_status_id.AUTOMATICALLY_APPROVED')));
+                }]);
         return $missionQuery->get();
     }
 
@@ -1158,5 +1170,35 @@ class MissionRepository implements MissionInterface
         return $this->mission->select('mission_type', 'city_id')
         ->where('mission_id', $id)
         ->get();
+    }
+
+    /**
+     * Get user mission lists
+     *
+     * @param Illuminate\Http\Request $request
+     * @return null|array
+     */
+    public function getUserMissions(Request $request): ?array
+    {
+        $languageId = $this->languageHelper->getLanguageId($request);
+        $userId = $request->auth->user_id;
+        $missionLists = array();
+
+        $missionData = $this->mission->select('mission.mission_id', 'city_id')
+        ->whereHas('missionApplication', function ($query) use ($userId) {
+            $query->where('user_id', $userId)
+            ->whereIn('approval_status', [config("constants.application_status")["AUTOMATICALLY_APPROVED"]]);
+        })
+        ->with(['missionLanguage' => function ($query) use ($languageId) {
+            $query->select('mission_language_id', 'mission_id', 'title')
+            ->where('language_id', $languageId);
+        }])->get();
+
+        foreach ($missionData->toArray() as $key => $value) {
+            $missionLists[$key]['mission_id'] = $value['mission_id'];
+            $missionLists[$key]['title'] = $value['mission_language'][0]['title'];
+        }
+      
+        return $missionLists;
     }
 }

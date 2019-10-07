@@ -105,7 +105,7 @@ class TimesheetRepository implements TimesheetInterface
                     $file,
                     $tenantName,
                     $request->auth->user_id,
-                    $timesheet->timesheet_id
+                    config('constants.folder_name.timesheet')
                 );
                 $timesheetDocument = array('timesheet_id' => $timesheet->timesheet_id,
                                         'document_name' => basename($filePath),
