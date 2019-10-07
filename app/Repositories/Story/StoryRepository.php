@@ -349,4 +349,31 @@ class StoryRepository implements StoryInterface
         }
         return $story;
     }
+
+    /**
+     * Find story by user id 
+     *
+     * @param int $userId
+     * @param int $storyId
+     * @return App\Models\Story
+     */
+    public function findStoryByUserId(int $userId, int $storyId): Story
+    {
+        $story = $this->story->where(['story_id' => $storyId,
+        'user_id' => $userId])->firstOrFail();
+      
+        return $story;
+    }
+
+    /**
+     * Remove story image.
+     *
+     * @param int $mediaId
+     * @param int $storyId
+     * @return bool
+     */
+    public function deleteStoryImage(int $mediaId, int $storyId): bool
+    {
+        return $this->storyMedia->deleteStoryImage($mediaId, $storyId);
+    }
 }

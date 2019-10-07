@@ -354,4 +354,56 @@ class StoryController extends Controller
             );
         }
     }
+
+    /**
+     * Remove story image.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param int $storyId
+     * @param int $mediaId
+     * @return Illuminate\Http\JsonResponse
+     */
+    public function removeStoryImage(Request $request, int $storyId, int $mediaId): JsonResponse
+    {
+        try {
+            // Fetch story data
+            $storyData = $this->storyRepository->findStoryByUserId($request->auth->user_id, $storyId);
+            
+            $statusArray = [
+                config('constants.story_status.PUBLISHED'),
+                config('constants.story_status.DECLINED')
+            ];
+            
+            // User cannot remove story image if story is published or declined            
+            if (in_array($storyData->status, $statusArray)) {
+                return $this->responseHelper->error(
+                    Response::HTTP_UNPROCESSABLE_ENTITY,
+                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                    config('constants.error_codes.ERROR_STORY_IMAGE_DELETE'),
+                    trans('messages.custom_error_message.ERROR_STORY_IMAGE_DELETE')
+                );
+            }
+            
+            // Delete story image
+            try {
+                $storyImage = $this->storyRepository->deleteStoryImage($mediaId, $storyId);
+            } catch (ModelNotFoundException $e) {
+                return $this->modelNotFound(
+                    config('constants.error_codes.ERROR_STORY_IMAGE_NOT_FOUND'),
+                    trans('messages.custom_error_message.ERROR_STORY_IMAGE_NOT_FOUND')
+                );
+            }
+
+            // Set response data
+            $apiStatus = Response::HTTP_NO_CONTENT;
+            $apiMessage = trans('messages.success.MESSAGE_STORY_IMAGE_DELETED');
+
+            return $this->responseHelper->success($apiStatus, $apiMessage);
+        } catch (ModelNotFoundException $e) {
+            return $this->modelNotFound(
+                config('constants.error_codes.ERROR_STORY_NOT_FOUND'),
+                trans('messages.custom_error_message.ERROR_STORY_NOT_FOUND')
+            );
+        }
+    }
 }

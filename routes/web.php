@@ -317,6 +317,11 @@ $router->group(['middleware' => 'localization'], function ($router) {
         $router->post('/app/story/{storyId}/submit', ['as' => 'app.story.submit',
         'middleware' => 'localization|tenant.connection|jwt.auth',
         'uses' => 'App\Story\StoryController@submitStory']);
+
+        /* Delete story image */
+        $router->delete('/app/story/{storyId}/image/{imageId}', ['as' => 'app.story.removeStoryImage',
+        'middleware' => 'localization|tenant.connection|jwt.auth',
+        'uses' => 'App\Story\StoryController@removeStoryImage']);
     });
 
 /*

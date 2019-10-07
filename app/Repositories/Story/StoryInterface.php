@@ -123,4 +123,15 @@ interface StoryInterface
      * @return App\Models\Story
      */
     public function submitStory(int $userId, int $storyId): Story;
+
+    /**
+     * Find story by user id 
+     *
+     * @param int $userId
+     * @param int $storyId
+     * @return App\Models\Story
+     */
+    public function findStoryByUserId(int $userId, int $storyId): Story;
+
+    
 }
