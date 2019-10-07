@@ -109,9 +109,9 @@ $router->group(['middleware' => 'localization'], function ($router) {
         'uses' => 'App\User\UserController@index']);
 
     /* Fetch dashboard data for users */
-    $router->get('/app/dashboard', ['as' =>'app.user',
-    'middleware' => 'tenant.connection|jwt.auth',
-    'uses' => 'App\User\DashboardController@index']);
+    $router->get('/app/dashboard', ['as' => 'app.user',
+        'middleware' => 'tenant.connection|jwt.auth',
+        'uses' => 'App\User\DashboardController@index']);
 
     /* Get mission detail  */
     $router->get('/app/mission/{missionId}', [
@@ -278,7 +278,6 @@ $router->group(['middleware' => 'localization'], function ($router) {
         'middleware' => 'tenant.connection|jwt.auth',
         'uses' => 'App\VolunteerHistory\VolunteerHistoryController@exportGoalMissionHistory']);
 
-
     /* News listing */
     $router->get('/app/news', ['as' => 'app.news.list',
         'middleware' => 'localization|tenant.connection|jwt.auth|PaginationMiddleware',
@@ -326,16 +325,19 @@ $router->group(['middleware' => 'localization'], function ($router) {
 
     /* Update story details */
     $router->patch('/app/story/{storyId}', ['as' => 'app.story.update',
-   		'middleware' => 'localization|tenant.connection|jwt.auth',
-   		'uses' => 'App\Story\StoryController@update']);
-    
+        'middleware' => 'localization|tenant.connection|jwt.auth',
+        'uses' => 'App\Story\StoryController@update']);
+
     /* store story visitor details */
     $router->get('/app/story/{storyId}/views', ['as' => 'app.storyvisitor.store',
-    	'middleware' => 'localization|tenant.connection|jwt.auth',
-    	'uses' => 'App\StoryVisitor\StoryVisitorController@store']);
+        'middleware' => 'localization|tenant.connection|jwt.auth',
+        'uses' => 'App\StoryVisitor\StoryVisitorController@store']);
+
+    /* store contact form details */
+    $router->post('/app/submit-contact-form', ['as' => 'app.contactform.store',
+        'middleware' => 'localization|tenant.connection|jwt.auth',
+        'uses' => 'App\ContactForm\ContactFormController@store']);
 });
-        
-   
 
 /*
 |
@@ -601,7 +603,7 @@ $router->group(
     ['prefix' => '/news', 'middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware'],
     function ($router) {
         $router->get('/', ['middleware' => ['PaginationMiddleware'],
-        'uses' => 'Admin\News\NewsController@index']);
+            'uses' => 'Admin\News\NewsController@index']);
         $router->get('/{newsId}', ['uses' => 'Admin\News\NewsController@show']);
         $router->post('/', ['uses' => 'Admin\News\NewsController@store']);
         $router->patch('/{newsId}', ['uses' => 'Admin\News\NewsController@update']);
@@ -620,7 +622,6 @@ $router->group(
             'uses' => 'Admin\Story\StoryController@update']);
     }
 );
-
 
 /*
 |

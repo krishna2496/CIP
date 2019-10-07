@@ -149,6 +149,9 @@ return [
     	'MESSAGE_ENABLE_TO_EXPORT_USER_STORIES_ENTRIES' => 'No data found, to generate story entries',
         'MESSAGE_STORY_UPDATED' => 'Story updated successfully',
         'MESSAGE_STORY_VISITOR_ADDED_SUCESSFULLY' => 'Story visitor added successfully',
+        // For contact form module
+        'CONTACT_FORM_ADDED_SUCESSFULLY' => 'Your feedback added successfully.',
+        
 	],
         
     /**

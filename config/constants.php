@@ -375,7 +375,7 @@ return [
         'ERROR_DECLINED_STORY_NOT_FOUND' => '700004',
         'ERROR_STORY_PUBLISHED_OR_DECLINED' => '700005',
         
-              
+        'ERROR_CONTACT_FORM_REQUIRED_FIELDS_EMPTY' => '1000001',      
                 
         'ERROR_OCCURRED' => '999999',
         'ERROR_INVALID_JSON' => '900000',

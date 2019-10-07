@@ -115,6 +115,9 @@ return [
     	'MESSAGE_ENABLE_TO_EXPORT_USER_STORIES_ENTRIES' => 'DE: No data found, to generate story entries',
         'MESSAGE_STORY_UPDATED' => 'DE: Story updated successfully',
         'MESSAGE_STORY_VISITOR_ADDED_SUCESSFULLY' => 'DE: Story visitor added successfully',
+        
+         // For contact form module
+         'CONTACT_FORM_ADDED_SUCESSFULLY' => 'DE: Your feedback added successfully.',
 	],
 
         
@@ -232,6 +235,7 @@ return [
     	'ERROR_PUBLISHED_STORY_NOT_FOUND' => 'DE: Published story not found in the system',
     	'ERROR_DECLINED_STORY_NOT_FOUND' => 'DE: You can not copy story, due to this is not declined story',
         'ERROR_STORY_PUBLISHED_OR_DECLINED' => 'DE: You cannot update published or declined story',
+
     ],
 		
 	/**
