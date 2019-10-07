@@ -95,6 +95,8 @@ return [
         'MESSAGE_GOAL_REQUEST_LISTING' => 'DE: Goal requests listed successfully',
         'MESSAGE_NO_GOAL_REQUEST_FOUND' => 'DE: No pending goal requests found',
         'MESSAGE_POLICY_PAGE_FOUND' => 'DE: Policy page found successfully',
+        'MESSAGE_FOOTER_PAGE_FOUND' => 'DE: Footer page found successfully',
+        'MESSAGE_DASHBOARD_STATISTICS_LISTING' => 'DE: Dashboard statistics listed successfully',
         'MESSAGE_NEWS_CATEGORY_LISTING' => 'DE: News category listed successfully',
         'MESSAGE_NEWS_CATEGORY_DELETED' => 'DE: News category deleted successfully',        
         'MESSAGE_NEWS_CATEGORY_CREATED' => 'DE: News category created successfully',

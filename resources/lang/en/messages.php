@@ -126,6 +126,8 @@ return [
         'MESSAGE_ENABLE_TO_EXPORT_USER_PENDING_TIME_MISSION_ENTRIES' => 'No data found, to generate pending time entries for time mission',
         'MESSAGE_USER_PENDING_GOAL_MISSION_ENTRIES_EXPORTED' => 'Pending time entries for goal missions, generated successfully',
         'MESSAGE_ENABLE_TO_EXPORT_USER_PENDING_GOAL_MISSION_ENTRIES' => 'No data found, to generate pending time entries for goal mission',
+        'MESSAGE_AUTO_APPROVED_COMMENT_ADDED' => 'Thanks for your comment.',
+        'MESSAGE_DASHBOARD_STATISTICS_LISTING' => 'Dashboard statistics listed successfully',
         'MESSAGE_AUTO_APPROVED_COMMENT_ADDED' => 'Thanks for your comment.',        
         'MESSAGE_NEWS_CATEGORY_LISTING' => 'News categories listed successfully',
         'MESSAGE_NEWS_CATEGORY_DELETED' => 'News category deleted successfully',
