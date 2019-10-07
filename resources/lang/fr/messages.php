@@ -123,7 +123,6 @@ return [
         'MESSAGE_ENABLE_TO_EXPORT_USER_PENDING_GOAL_MISSION_ENTRIES' => 'Aucune donnée trouvée, pour générer des entrées de temps en attente pour la mission de l\'objectif',
         'MESSAGE_AUTO_APPROVED_COMMENT_ADDED' => 'Merci pour votre commentaire.',
         'MESSAGE_Footer_PAGE_FOUND' => 'Pied de page trouvé avec succès',
-        'MESSAGE_DASHBOARD_STATISTICS_LISTING' => 'Statistiques du tableau de bord répertoriées avec succès',
     ],
 
         
