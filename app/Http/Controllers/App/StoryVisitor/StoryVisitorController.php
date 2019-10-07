@@ -5,7 +5,9 @@ use App\Helpers\ResponseHelper;
 use App\Http\Controllers\Controller;
 use App\Models\StoryVisitor;
 use App\Repositories\StoryVisitor\StoryVisitorRepository;
+use App\Repositories\Story\StoryRepository;
 use App\Traits\RestExceptionHandlerTrait;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -17,6 +19,11 @@ class StoryVisitorController extends Controller
      * @var App\Repositories\StoryVisitor\StoryVisitorRepository;
      */
     private $storyVisitorRepository;
+
+    /**
+     * @var App\Repositories\Story\StoryRepository;
+     */
+    private $storyRepository;
 
     /**
      * @var App\Helpers\ResponseHelper
@@ -32,9 +39,11 @@ class StoryVisitorController extends Controller
      */
     public function __construct(
         StoryVisitorRepository $storyVisitorRepository,
+        StoryRepository $storyRepository,
         ResponseHelper $responseHelper
     ) {
         $this->storyVisitorRepository = $storyVisitorRepository;
+        $this->storyRepository = $storyRepository;
         $this->responseHelper = $responseHelper;
     }
 
@@ -47,6 +56,28 @@ class StoryVisitorController extends Controller
      */
     public function store(Request $request, int $storyId): JsonResponse
     {
+        // check for story exist or not
+        try {
+            $story = $this->storyRepository
+                ->checkStoryExist($storyId);
+        } catch (ModelNotFoundException $e) {
+            return $this->modelNotFound(
+                config('constants.error_codes.ERROR_STORY_NOT_FOUND'),
+                trans('messages.custom_error_message.ERROR_STORY_NOT_FOUND')
+            );
+        }
+
+        // check for story published, then only store story visitor data
+        try {
+            $story = $this->storyRepository
+                ->getStoryDetails($storyId, config('constants.story_status.PUBLISHED'));
+        } catch (ModelNotFoundException $e) {
+            return $this->modelNotFound(
+                config('constants.error_codes.ERROR_PUBLISHED_STORY_NOT_FOUND'),
+                trans('messages.custom_error_message.ERROR_PUBLISHED_STORY_NOT_FOUND')
+            );
+        }
+
         // Store story visitor data
         $storyVisitor = $this->storyVisitorRepository->store($request, $storyId);
 

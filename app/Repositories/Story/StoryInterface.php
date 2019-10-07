@@ -117,4 +117,12 @@ interface StoryInterface
      * @return bool
      */
     public function checkStoryStatus(int $userId, int $storyId, array $storyStatus): bool;
+    
+    /**
+     * Used for check if story exist or not
+     *
+     * @param int $storyId
+     * @return Story
+     */
+    public function checkStoryExist(int $storyId): Story;
 }
