@@ -374,6 +374,8 @@ return [
         'ERROR_PUBLISHED_STORY_NOT_FOUND' => '700003',
         'ERROR_DECLINED_STORY_NOT_FOUND' => '700004',
         'ERROR_STORY_PUBLISHED_OR_DECLINED' => '700005',
+        'ERROR_STORY_IMAGE_NOT_FOUND' => '700006',
+        'ERROR_STORY_IMAGE_DELETE' => '700007',
         
               
                 

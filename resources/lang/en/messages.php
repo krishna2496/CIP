@@ -148,6 +148,8 @@ return [
     	'MESSAGE_STORY_COPIED_SUCCESS' => 'Story copied successfully',
     	'MESSAGE_ENABLE_TO_EXPORT_USER_STORIES_ENTRIES' => 'No data found, to generate story entries',
         'MESSAGE_STORY_UPDATED' => 'Story updated successfully',
+        'MESSAGE_STORY_SUBMITTED_SUCESSFULLY' => 'Story submitted sucessfully',
+        'MESSAGE_STORY_IMAGE_DELETED' => 'Story image deleted sucessfully',
 	],
         
     /**
@@ -278,6 +280,8 @@ return [
     	'ERROR_PUBLISHED_STORY_NOT_FOUND' => 'Published story not found in the system',
     	'ERROR_DECLINED_STORY_NOT_FOUND' => 'You can not copy story, due to this is not declined story',
         'ERROR_STORY_PUBLISHED_OR_DECLINED' => 'You cannot update published or declined story',
+        'ERROR_STORY_IMAGE_NOT_FOUND' => 'Story image not found in the system',        
+        'ERROR_STORY_IMAGE_DELETE' => 'You cannot delete image of published or declined story',
     ],
 
     /**

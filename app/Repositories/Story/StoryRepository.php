@@ -331,4 +331,49 @@ class StoryRepository implements StoryInterface
         $storyStatus = ($storyDetails->count() > 0) ? false : true;
         return $storyStatus;
     }
+    
+    /**
+     * Submit story details
+     *
+     * @param int $userId
+     * @param int $storyId
+     * @return App\Models\Story
+     */
+    public function submitStory(int $userId, int $storyId): Story
+    {
+        // Find story
+        $story = $this->story->where(['story_id' => $storyId,
+        'user_id' => $userId])->firstOrFail();
+        if ($story->status == config('constants.story_status.DRAFT')) {
+            $story->update(['status' => config('constants.story_status.PENDING')]);
+        }
+        return $story;
+    }
+
+    /**
+     * Find story by user id 
+     *
+     * @param int $userId
+     * @param int $storyId
+     * @return App\Models\Story
+     */
+    public function findStoryByUserId(int $userId, int $storyId): Story
+    {
+        $story = $this->story->where(['story_id' => $storyId,
+        'user_id' => $userId])->firstOrFail();
+      
+        return $story;
+    }
+
+    /**
+     * Remove story image.
+     *
+     * @param int $mediaId
+     * @param int $storyId
+     * @return bool
+     */
+    public function deleteStoryImage(int $mediaId, int $storyId): bool
+    {
+        return $this->storyMedia->deleteStoryImage($mediaId, $storyId);
+    }
 }
