@@ -235,6 +235,7 @@ return [
         'ERROR_STORY_PUBLISHED_OR_DECLINED' => 'DE: You cannot update published or declined story',
         'ERROR_STORY_IMAGE_NOT_FOUND' => 'DE: Story image not found in the system',
         'ERROR_STORY_IMAGE_DELETE' => 'DE: You cannot delete image of published or declined story',
+		'ERROR_SUBMIT_STORY_PUBLISHED_OR_DECLINED' => 'You cannot submit published or declined story',
     ],
 		
 	/**

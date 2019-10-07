@@ -333,7 +333,7 @@ class StoryRepository implements StoryInterface
     }
     
     /**
-     * Submit story details
+     * Submit story for admin approval
      *
      * @param int $userId
      * @param int $storyId

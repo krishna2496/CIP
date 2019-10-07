@@ -322,7 +322,7 @@ class StoryController extends Controller
                 config('constants.story_status.DECLINED')
             );
 
-            // Check if approved or declined story
+            // User can't submit story if its published or declined
             $validStoryStatus = $this->storyRepository->checkStoryStatus(
                 $request->auth->user_id,
                 $storyId,
@@ -333,8 +333,8 @@ class StoryController extends Controller
                 return $this->responseHelper->error(
                     Response::HTTP_UNPROCESSABLE_ENTITY,
                     Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                    config('constants.error_codes.ERROR_STORY_PUBLISHED_OR_DECLINED'),
-                    trans('messages.custom_error_message.ERROR_STORY_PUBLISHED_OR_DECLINED')
+                    config('constants.error_codes.ERROR_SUBMIT_STORY_PUBLISHED_OR_DECLINED'),
+                    trans('messages.custom_error_message.ERROR_SUBMIT_STORY_PUBLISHED_OR_DECLINED')
                 );
             }
 
