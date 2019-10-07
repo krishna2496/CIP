@@ -22,6 +22,7 @@ trait StoryTransformable
         $prop->title = $story->title;
         $prop->description = $story->description;
         $prop->status = trans('messages.status.' . $story->status);
+        $prop->story_visitor_count = (int) $story->story_visitor_count;
         $prop->published_at = $story->published_at;
 
         if (!empty($story->user)) {

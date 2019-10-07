@@ -225,7 +225,7 @@ class StoryRepository implements StoryInterface
             'user.city',
             'user.country',
             'storyMedia',
-        ]);
+        ])->withCount('storyVisitor');
 
         if (!empty($storyStatus)) {
             $storyQuery->where('status', $storyStatus);

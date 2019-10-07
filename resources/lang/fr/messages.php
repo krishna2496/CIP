@@ -298,7 +298,7 @@ return [
 	'status' => [
 		'DRAFT' => 'Brouillon',
 		'PENDING' => 'En attente',
-		'PUBLISHED' => 'Publi�',
-		'DECLINED' => 'Diminu�e',
+		'PUBLISHED' => 'Publié',
+		'DECLINED' => 'DIMINUÉE',
 	],
 ];
