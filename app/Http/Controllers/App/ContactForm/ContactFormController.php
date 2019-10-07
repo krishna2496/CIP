@@ -51,7 +51,7 @@ class ContactFormController extends Controller
     	$validator = Validator::make(
             $request->toArray(),
             [
-                'phone_no' => 'required|regex:/^([0-9\s\-\+\(\)]*)$/|min:10|max:15',
+                'phone_no' => 'required|regex:/^([0-9\s\-\+\(\)]*)$/|min:10|max:11',
                 'message' => 'required|max:60000',
             ]
         );
