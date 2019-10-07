@@ -563,7 +563,7 @@ class TimesheetRepository implements TimesheetInterface
         $missionQuery->where('user_id', $userId);
         $missionQuery->whereYear('date_volunteered', $year);
         $missionQuery->whereIn('status_id', $statusArray);
-        if (!is_null($missionId)) {
+        if (!is_null($missionId) && ($missionId != "")) {
             $missionQuery->where('timesheet.mission_id', $missionId);
         }
         $missionQuery->groupBy(DB::raw("MONTH(date_volunteered)"));
