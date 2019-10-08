@@ -279,34 +279,5 @@ return [
         'ERROR_STORY_IMAGE_NOT_FOUND' => 'L\'image de l\'histoire ne se trouve pas dans le système',
         'ERROR_STORY_IMAGE_DELETE' => 'Vous ne pouvez pas supprimer l\'image d\'un article publié ou refusé',
 		'ERROR_SUBMIT_STORY_PUBLISHED_OR_DECLINED' => 'You cannot submit published or declined story',
-    ],
-
-    /**
-     * Export sheet's headings
-     */
-    'export_sheet_headings' => [
-        'MISSION_NAME' => 'Nom de la mission',
-        'ORGANIZATION_NAME' => 'nom de l\'organisation',
-        'ACTIONS' => 'actes',
-        'TIME' => 'Temps',
-        'HOURS' => 'Heures'
-    ],
-		
-	/**
-	 * Export story sheet's headings
-	 */
-	'export_story_headings' => [
-		'STORY_TITLE' => 'Titre de l\'histoire',
-		'STORY_DESCRIPTION' => 'Description de l\'histoire',
-        'STORY_STATUS' => 'Statut de l\'histoire',
-        'MISSION' => 'Mission',
-		'PUBLISHED_DATE' => 'date de publication',
-	],
-	
-	/**
-	 * General labels
-	 */
-	'labels' => [
-		'TEXT_STORY_COPY_OF' => 'Copie de '
-	]
+    ]
 ];

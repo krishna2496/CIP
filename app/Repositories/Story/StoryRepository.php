@@ -217,19 +217,21 @@ class StoryRepository implements StoryInterface
     {
         $newStory = $this->story->with(['storyMedia'])->findOrFail($oldStoryId)->replicate();
 
-        $newStory->title = trans('messages.labels.TEXT_STORY_COPY_OF') . $newStory->title;
+        $newStory->title = trans('general.labels.TEXT_STORY_COPY_OF') . $newStory->title;
         $newStory->status = config('constants.story_status.DRAFT');
         $newStory->save();
 
         $newStoryId = $newStory->story_id;
-
+        
+        $storyMedia =[];
         foreach ($newStory->storyMedia as $media) {
-			$this->storyMedia = new StoryMedia();
-            $this->storyMedia->story_id = $newStoryId;
-            $this->storyMedia->type = $media->type;
-            $this->storyMedia->path = $media->path;
-            $this->storyMedia->save();
+            $storyMedia[] = new StoryMedia([
+                'type' => $media->type,
+                'path' => $media->path
+            ]);
         }
+
+        $newStory->storyMedia()->saveMany($storyMedia);
 
         return $newStoryId;
     }
@@ -253,7 +255,7 @@ class StoryRepository implements StoryInterface
         )->with(['mission', 'mission.missionLanguage' => function ($query) use ($languageId) {
                 $query->select('mission_language_id', 'mission_id', 'title')
                     ->where('language_id', $languageId);
-            }])->where('user_id', $userId);
+        }])->where('user_id', $userId);
         return $userStoryQuery->get();
     }
 
@@ -317,7 +319,7 @@ class StoryRepository implements StoryInterface
             ->where(['user_id' => $userId, 'story_id' => $storyId])
             ->whereIn('status', $storyStatus)
             ->get();
-	    $storyStatus = ($storyDetails->count() > 0) ? false : true;
+        $storyStatus = ($storyDetails->count() > 0) ? false : true;
         return $storyStatus;
     }
 

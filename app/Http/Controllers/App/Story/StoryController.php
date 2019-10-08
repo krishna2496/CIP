@@ -237,8 +237,7 @@ class StoryController extends Controller
     public function copyStory(Request $request, int $oldStoryId): JsonResponse
     {
         try {
-			
-			$storyStatus = array(
+            $storyStatus = array(
                 config('constants.story_status.DECLINED')
             );
 
@@ -248,7 +247,7 @@ class StoryController extends Controller
                 $oldStoryId,
                 $storyStatus
             );
-			
+            
             if ($notDeclinedStory) {
                 return $this->responseHelper->error(
                     Response::HTTP_UNPROCESSABLE_ENTITY,
@@ -257,7 +256,7 @@ class StoryController extends Controller
                     trans('messages.custom_error_message.ERROR_COPY_DECLINED_STORY')
                 );
             }
-			$newStoryId = $this->storyRepository->createStoryCopy($oldStoryId);
+            $newStoryId = $this->storyRepository->createStoryCopy($oldStoryId);
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
                 config('constants.error_codes.ERROR_STORY_NOT_FOUND'),
@@ -282,34 +281,34 @@ class StoryController extends Controller
     public function exportStories(Request $request): Object
     {
         //get login user story data
-    	$language = $this->languageHelper->getLanguageDetails($request);
+        $language = $this->languageHelper->getLanguageDetails($request);
         $stories = $this->storyRepository->getUserStories($language->language_id, $request->auth->user_id);
         
         if ($stories->count() == 0) {
-        	$apiStatus = Response::HTTP_OK;
-        	$apiMessage =  trans('messages.success.MESSAGE_UNABLE_TO_EXPORT_USER_STORIES_ENTRIES');
-        	return $this->responseHelper->success($apiStatus, $apiMessage);
+            $apiStatus = Response::HTTP_OK;
+            $apiMessage =  trans('messages.success.MESSAGE_UNABLE_TO_EXPORT_USER_STORIES_ENTRIES');
+            return $this->responseHelper->success($apiStatus, $apiMessage);
         }
         
         $fileName = config('constants.export_story_file_names.STORY_XLSX');
         $excel = new ExportCSV($fileName);
         $headings = [
-        	trans("messages.export_story_headings.STORY_TITLE"),
-        	trans("messages.export_story_headings.STORY_DESCRIPTION"),
-        	trans("messages.export_story_headings.STORY_STATUS"),
-        	trans("messages.export_story_headings.MISSION"),
-        	trans("messages.export_story_headings.PUBLISHED_DATE"),
+            trans("general.export_story_headings.STORY_TITLE"),
+            trans("general.export_story_headings.STORY_DESCRIPTION"),
+            trans("general.export_story_headings.STORY_STATUS"),
+            trans("general.export_story_headings.MISSION"),
+            trans("general.export_story_headings.PUBLISHED_DATE"),
         ];
         
         $excel->setHeadlines($headings);
         foreach ($stories as $story) {
-        	$excel->appendRow([
-        		$story->title,
-        		$story->description,
-        		$story->status,
-        		$story->mission->missionLanguage[0]->title,
-        		$story->published_at
-        	]);
+            $excel->appendRow([
+                $story->title,
+                $story->description,
+                $story->status,
+                $story->mission->missionLanguage[0]->title,
+                $story->published_at
+            ]);
         }
         
         $tenantName = $this->helpers->getSubDomainFromRequest($request);
@@ -384,7 +383,7 @@ class StoryController extends Controller
                 config('constants.story_status.DECLINED')
             ];
             
-            // User cannot remove story image if story is published or declined            
+            // User cannot remove story image if story is published or declined
             if (in_array($storyData->status, $statusArray)) {
                 return $this->responseHelper->error(
                     Response::HTTP_UNPROCESSABLE_ENTITY,
