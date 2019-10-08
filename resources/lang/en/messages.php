@@ -283,34 +283,5 @@ return [
         'ERROR_STORY_IMAGE_NOT_FOUND' => 'Story image not found in the system',        
         'ERROR_STORY_IMAGE_DELETE' => 'You cannot delete image of published or declined story',
         'ERROR_SUBMIT_STORY_PUBLISHED_OR_DECLINED' => 'You cannot submit published or declined story',
-    ],
-
-    /**
-     * Export sheet's headings
-     */
-    'export_sheet_headings' => [
-        'MISSION_NAME' => 'Mission Name',
-        'ORGANIZATION_NAME' => 'Organization Name',
-        'ACTIONS' => 'Actions',
-        'TIME' => 'Time',
-        'HOURS' => 'Hours'
-    ],
-		
-	/**
-	 * Export story sheet's headings
-	 */
-	'export_story_headings' => [
-		'STORY_TITLE' => 'Story title',
-		'STORY_DESCRIPTION' => 'Story description',
-        'STORY_STATUS' => 'Story status',
-        'MISSION_TITLE' => 'Mission title',
-		'PUBLISHED_DATE' => 'Published date',
-	],
-	
-	/**
-	 * General labels
-	 */
-	'labels' => [
-		'TEXT_STORY_COPY_OF' => 'Copy of '
-	]
+    ]    
 ];

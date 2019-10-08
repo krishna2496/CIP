@@ -309,7 +309,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
         'uses' => 'App\Story\StoryController@show']);
         
         /* Copy story data after decline */
-        $router->get('/app/story/{story_id}/copy', ['as' => 'app.story.copyafterdecline',
+        $router->get('/app/story/{story_id}/copy', ['as' => 'app.story.copystory',
         'middleware' => 'localization|tenant.connection|jwt.auth',
         'uses' => 'App\Story\StoryController@copyStory']);
 
