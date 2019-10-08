@@ -14,6 +14,7 @@ use App\Traits\RestExceptionHandlerTrait;
 use App\Transformations\StoryTransformable;
 use Validator;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Helpers\Helpers;
 
 class StoryController extends Controller
 {
@@ -304,5 +305,105 @@ class StoryController extends Controller
         $apiStatus = Response::HTTP_OK;
         $apiMessage =  trans('messages.success.MESSAGE_ENABLE_TO_EXPORT_USER_STORIES_ENTRIES');
         return $this->responseHelper->success($apiStatus, $apiMessage);
+    }
+
+    /**
+     * Submit story details.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param int $storyId
+     * @return Illuminate\Http\JsonResponse
+     */
+    public function submitStory(Request $request, int $storyId): JsonResponse
+    {
+        try {
+            $storyStatus = array(
+                config('constants.story_status.PUBLISHED'),
+                config('constants.story_status.DECLINED')
+            );
+
+            // User can't submit story if its published or declined
+            $validStoryStatus = $this->storyRepository->checkStoryStatus(
+                $request->auth->user_id,
+                $storyId,
+                $storyStatus
+            );
+
+            if (!$validStoryStatus) {
+                return $this->responseHelper->error(
+                    Response::HTTP_UNPROCESSABLE_ENTITY,
+                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                    config('constants.error_codes.ERROR_SUBMIT_STORY_PUBLISHED_OR_DECLINED'),
+                    trans('messages.custom_error_message.ERROR_SUBMIT_STORY_PUBLISHED_OR_DECLINED')
+                );
+            }
+
+            // Submit story
+            $storyData = $this->storyRepository->submitStory($request->auth->user_id, $storyId);
+            
+            // Set response data
+            $apiStatus = Response::HTTP_OK;
+            $apiMessage = trans('messages.success.MESSAGE_STORY_SUBMITTED_SUCESSFULLY');
+            $apiData = ['story_id' => $storyData->story_id];
+            
+            return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
+        } catch (ModelNotFoundException $e) {
+            return $this->modelNotFound(
+                config('constants.error_codes.ERROR_STORY_NOT_FOUND'),
+                trans('messages.custom_error_message.ERROR_STORY_NOT_FOUND')
+            );
+        }
+    }
+
+    /**
+     * Delete story image.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param int $storyId
+     * @param int $mediaId
+     * @return Illuminate\Http\JsonResponse
+     */
+    public function deleteStoryImage(Request $request, int $storyId, int $mediaId): JsonResponse
+    {
+        try {
+            // Fetch story data
+            $storyData = $this->storyRepository->findStoryByUserId($request->auth->user_id, $storyId);
+            
+            $statusArray = [
+                config('constants.story_status.PUBLISHED'),
+                config('constants.story_status.DECLINED')
+            ];
+            
+            // User cannot remove story image if story is published or declined            
+            if (in_array($storyData->status, $statusArray)) {
+                return $this->responseHelper->error(
+                    Response::HTTP_UNPROCESSABLE_ENTITY,
+                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                    config('constants.error_codes.ERROR_STORY_IMAGE_DELETE'),
+                    trans('messages.custom_error_message.ERROR_STORY_IMAGE_DELETE')
+                );
+            }
+            
+            // Delete story image
+            try {
+                $storyImage = $this->storyRepository->deleteStoryImage($mediaId, $storyId);
+            } catch (ModelNotFoundException $e) {
+                return $this->modelNotFound(
+                    config('constants.error_codes.ERROR_STORY_IMAGE_NOT_FOUND'),
+                    trans('messages.custom_error_message.ERROR_STORY_IMAGE_NOT_FOUND')
+                );
+            }
+
+            // Set response data
+            $apiStatus = Response::HTTP_NO_CONTENT;
+            $apiMessage = trans('messages.success.MESSAGE_STORY_IMAGE_DELETED');
+
+            return $this->responseHelper->success($apiStatus, $apiMessage);
+        } catch (ModelNotFoundException $e) {
+            return $this->modelNotFound(
+                config('constants.error_codes.ERROR_STORY_NOT_FOUND'),
+                trans('messages.custom_error_message.ERROR_STORY_NOT_FOUND')
+            );
+        }
     }
 }
