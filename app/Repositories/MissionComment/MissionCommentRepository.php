@@ -144,4 +144,17 @@ class MissionCommentRepository implements MissionCommentInterface
 
         return $userCommentsData;
     }
+
+    /**
+     * Delete comment by commentId
+     *
+     * @param int $commentId
+     * @param int $userId
+     * @return bool
+     */
+    public function deleteUsersComment(int $commentId, int $userId): bool
+    {
+        return $this->comment->where(['comment_id' => $commentId,
+        'user_id' => $userId])->firstOrFail()->delete();
+    }
 }

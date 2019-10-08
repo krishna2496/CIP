@@ -332,6 +332,11 @@ $router->group(['middleware' => 'localization'], function ($router) {
         $router->delete('/app/story/{storyId}/image/{imageId}', ['as' => 'app.story.removeStoryImage',
         'middleware' => 'localization|tenant.connection|jwt.auth',
         'uses' => 'App\Story\StoryController@deleteStoryImage']);
+
+        /* Delete user mission comments */
+        $router->delete('/app/dashboard/comments/{commentId}', ['as' => 'app.dashboard.comment.destroy',
+        'middleware' => 'localization|tenant.connection|jwt.auth',
+        'uses' => 'App\Mission\MissionCommentController@destroy']);
     });
 
 /*

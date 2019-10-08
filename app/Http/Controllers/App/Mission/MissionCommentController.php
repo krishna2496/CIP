@@ -156,4 +156,29 @@ class MissionCommentController extends Controller
         
         return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
     }
+
+    /**
+     * Delete comment by commentId
+     *
+     * 
+     * @param Illuminate\Http\Request $request
+     * @param  int  $commentId
+     * @return Illuminate\Http\JsonResponse
+     */
+    public function destroy(Request $request, int $commentId): JsonResponse
+    {
+        try {
+            $apiData = $this->missionCommentRepository->deleteUsersComment($commentId, $request->auth->user_id);
+
+            $apiStatus = Response::HTTP_NO_CONTENT;
+            $apiMessage = trans('messages.success.MESSAGE_COMMENT_DELETED');
+            
+            return $this->responseHelper->success($apiStatus, $apiMessage);
+        } catch (ModelNotFoundException $e) {
+            return $this->modelNotFound(
+                config('constants.error_codes.ERROR_COMMENT_NOT_FOUND'),
+                trans('messages.custom_error_message.ERROR_COMMENT_NOT_FOUND')
+            );
+        }
+    }
 }
