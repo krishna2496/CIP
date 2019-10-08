@@ -318,7 +318,7 @@ class StoryController extends Controller
     }
 
     /**
-     * Submit story details.
+     * Submit story for admin approval
      *
      * @param \Illuminate\Http\Request $request
      * @param int $storyId

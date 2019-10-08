@@ -44,7 +44,6 @@ trait StoryTransformable
 
         if (!is_null($missionLanguage)) {
             $prop->mission_title = $missionLanguage->title;
-            $prop->mission_description = $missionLanguage->short_description;
         }
         return $prop;
     }

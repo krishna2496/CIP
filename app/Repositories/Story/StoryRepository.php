@@ -163,7 +163,7 @@ class StoryRepository implements StoryInterface
             'status',
             'published_at'
         )->with(['mission', 'storyMedia', 'mission.missionLanguage' => function ($query) use ($languageId) {
-            $query->select('mission_language_id', 'mission_id', 'language_id', 'title', 'short_description')
+            $query->select('mission_language_id', 'mission_id', 'language_id', 'title')
                 ->where('language_id', $languageId);
         }])->where('user_id', $userId);
         return $userStoryQuery->paginate($request->perPage);
