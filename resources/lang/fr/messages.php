@@ -141,8 +141,8 @@ return [
     	'MESSAGE_NO_STORIES_ENTRIES_FOUND' => 'Aucune entrée d\'histoire trouvée',
     	'MESSAGE_STORY_STATUS_UPDATED' => 'Statut de l\'histoire mis à jour avec succès',
     	'MESSAGE_STORY_FOUND' => 'Histoire trouvée avec succès',
-    	'MESSAGE_STORY_COPIED_SUCCESS' => 'Histoire copiée avec succès',
-    	'MESSAGE_ENABLE_TO_EXPORT_USER_STORIES_ENTRIES' => 'Aucune donnée trouvée, pour générer des entrées de récit',
+    	'MESSAGE_STORY_COPIED_SUCCESS' => 'Histoire copiée avec succès',        
+        'MESSAGE_UNABLE_TO_EXPORT_USER_STORIES_ENTRIES' => 'Aucune histoire trouvée',
         'MESSAGE_STORY_UPDATED' => 'Histoire mise à jour avec succès',
         'MESSAGE_STORY_SUBMITTED_SUCESSFULLY' => 'Histoire soumise avec succès',
         'MESSAGE_STORY_IMAGE_DELETED' => 'Image de l\'histoire supprimée avec succès',
@@ -296,9 +296,10 @@ return [
 	 * Export story sheet's headings
 	 */
 	'export_story_headings' => [
-		'STORY_TITLE' => 'Titre',
-		'STORY_DESCRIPTION' => 'La description',
-		'STORY_STATUS' => 'Statut',
-		'PUBLISH_DATE' => 'Date de publication',
+		'STORY_TITLE' => 'Titre de l\'histoire',
+		'STORY_DESCRIPTION' => 'Description de l\'histoire',
+        'STORY_STATUS' => 'Statut de l\'histoire',
+        'MISSION' => 'Mission',
+		'PUBLISH_DATE' => 'date de publication',
 	],
 ];
