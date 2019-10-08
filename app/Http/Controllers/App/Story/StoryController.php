@@ -276,38 +276,37 @@ class StoryController extends Controller
         //get login user story data
     	$language = $this->languageHelper->getLanguageDetails($request);
         $storyList = $this->storyRepository->getUserStories($language->language_id, $request->auth->user_id);
-        if ($storyList->count() > 0) {
-            $fileName = config('constants.export_story_file_names.STORY_XLSX');
-    
-            $excel = new ExportCSV($fileName);
-    
-            $headings = [
-                trans("messages.export_story_headings.STORY_TITLE"),
-                trans("messages.export_story_headings.STORY_DESCRIPTION"),
-                trans("messages.export_story_headings.STORY_STATUS"),
-            	trans("messages.export_story_headings.MISSION"),
-                trans("messages.export_story_headings.PUBLISH_DATE"),
-            ];
-            
-            $excel->setHeadlines($headings);
-            foreach ($storyList as $story) {
-                $excel->appendRow([
-                    $story->title,
-                    $story->description,
-                    $story->status,
-                	$story->mission->missionLanguage[0]->title,
-                    $story->published_at
-                ]);
-            }
-    
-            $tenantName = $this->helpers->getSubDomainFromRequest($request);
-            $path = $excel->export('app/'.$tenantName.'/story/'.$request->auth->user_id.'/exports');
-            return response()->download($path, $fileName);
+        
+        if ($storyList->count()==0) {
+        	$apiStatus = Response::HTTP_OK;
+        	$apiMessage =  trans('messages.success.MESSAGE_UNABLE_TO_EXPORT_USER_STORIES_ENTRIES');
+        	return $this->responseHelper->success($apiStatus, $apiMessage);
         }
-    
-        $apiStatus = Response::HTTP_OK;
-        $apiMessage =  trans('messages.success.MESSAGE_UNABLE_TO_EXPORT_USER_STORIES_ENTRIES');
-        return $this->responseHelper->success($apiStatus, $apiMessage);
+        
+        $fileName = config('constants.export_story_file_names.STORY_XLSX');
+        $excel = new ExportCSV($fileName);
+        $headings = [
+        	trans("messages.export_story_headings.STORY_TITLE"),
+        	trans("messages.export_story_headings.STORY_DESCRIPTION"),
+        	trans("messages.export_story_headings.STORY_STATUS"),
+        	trans("messages.export_story_headings.MISSION"),
+        	trans("messages.export_story_headings.PUBLISH_DATE"),
+        ];
+        
+        $excel->setHeadlines($headings);
+        foreach ($storyList as $story) {
+        	$excel->appendRow([
+        		$story->title,
+        		$story->description,
+        		$story->status,
+        		$story->mission->missionLanguage[0]->title,
+        		$story->published_at
+        	]);
+        }
+        
+        $tenantName = $this->helpers->getSubDomainFromRequest($request);
+        $path = $excel->export('app/'.$tenantName.'/story/'.$request->auth->user_id.'/exports');
+        return response()->download($path, $fileName);
     }
 
     /**
