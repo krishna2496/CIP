@@ -144,6 +144,7 @@ return [
     	'MESSAGE_STORY_COPIED_SUCCESS' => 'Histoire copiée avec succès',
     	'MESSAGE_ENABLE_TO_EXPORT_USER_STORIES_ENTRIES' => 'Aucune donnée trouvée, pour générer des entrées de récit',
         'MESSAGE_STORY_UPDATED' => 'Histoire mise à jour avec succès',
+        'MESSAGE_USER_COMMENTS_LISTING' => 'Commentaires d\'utilisateurs listés avec succès',
     ],
 
         

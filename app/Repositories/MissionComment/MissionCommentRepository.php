@@ -6,6 +6,7 @@ use App\Repositories\MissionComment\MissionCommentInterface;
 use App\Models\Comment;
 use App\Models\Mission;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Collection;
 
 class MissionCommentRepository implements MissionCommentInterface
 {
@@ -106,5 +107,41 @@ class MissionCommentRepository implements MissionCommentInterface
     {
         $comment = $this->comment->findOrFail($commentId);
         return $comment->delete();
+    }
+
+    /**
+     * Display user mission comments.
+     *
+     * @param int $userId
+     * @param int $languageId
+     * @return Illuminate\Database\Eloquent\Collection
+     */
+    public function getUserComments(int $userId, int $languageId): Collection
+    {
+        $commentsData = $this->comment->where('user_id', $userId)
+        ->orderby('created_at', 'desc')
+        ->with(['mission' => function ($query) use ($languageId) {
+            $query->with(['missionLanguage' => function ($query) use ($languageId) {
+                $query->select('mission_language_id', 'mission_id', 'title')
+                ->where('language_id', $languageId);
+            }]);
+        }])->get();
+
+        // Count status
+        $statusCount = $this->comment
+        ->selectRaw("COUNT(CASE WHEN approval_status = 'PUBLISHED' THEN 1 END) AS published,
+        COUNT(CASE WHEN approval_status = 'PENDING' THEN 1 END) AS pending,
+        COUNT(CASE WHEN approval_status = 'DECLINED' THEN 1 END) AS declined")
+        ->where('user_id', $userId)->get();
+
+        foreach ($commentsData as $value) {
+            if ($value->mission->missionLanguage) {
+                $value->title = $value->mission->missionLanguage[0]->title;
+                unset($value->mission);
+            }
+        }
+        $userCommentsData =  $commentsData->merge($statusCount);
+
+        return $userCommentsData;
     }
 }

@@ -114,6 +114,7 @@ return [
     	'MESSAGE_STORY_COPIED_SUCCESS' => 'DE: Story copied successfully',
     	'MESSAGE_ENABLE_TO_EXPORT_USER_STORIES_ENTRIES' => 'DE: No data found, to generate story entries',
         'MESSAGE_STORY_UPDATED' => 'DE: Story updated successfully',
+        'MESSAGE_USER_COMMENTS_LISTING' => 'DE: User comments listed successfully',
 	],
 
         

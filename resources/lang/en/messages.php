@@ -148,6 +148,7 @@ return [
     	'MESSAGE_STORY_COPIED_SUCCESS' => 'Story copied successfully',
     	'MESSAGE_ENABLE_TO_EXPORT_USER_STORIES_ENTRIES' => 'No data found, to generate story entries',
         'MESSAGE_STORY_UPDATED' => 'Story updated successfully',
+        'MESSAGE_USER_COMMENTS_LISTING' => 'User comments listed successfully',
 	],
         
     /**

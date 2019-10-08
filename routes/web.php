@@ -317,6 +317,11 @@ $router->group(['middleware' => 'localization'], function ($router) {
         $router->patch('/app/story/{storyId}', ['as' => 'app.story.update',
         'middleware' => 'localization|tenant.connection|jwt.auth',
         'uses' => 'App\Story\StoryController@update']);
+
+        /* Get user mission comments  */
+        $router->get('/app/dashboard/comments', [
+        'middleware' => 'tenant.connection|jwt.auth',
+        'uses' => 'App\Mission\MissionCommentController@getUserMissionComment']);
     });
 
 /*

@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Validator;
 use App\Helpers\Helpers;
 use App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository;
+use App\Helpers\LanguageHelper;
 
 class MissionCommentController extends Controller
 {
@@ -33,24 +34,32 @@ class MissionCommentController extends Controller
     private $tenantActivatedSettingRepository;
     
     /**
+     * @var App\Helpers\LanguageHelper
+     */
+    private $languageHelper;
+    
+    /**
      * Create a new comment controller instance
      *
      * @param App\Repositories\Mission\MissionCommentRepository $missionCommentRepository
      * @param Illuminate\Http\ResponseHelper $responseHelper
      * @param App\Helpers\Helpers
      * @param App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository
+     * @param  App\Helpers\LanguageHelper $languageHelper
      * @return void
      */
     public function __construct(
         MissionCommentRepository $missionCommentRepository,
         ResponseHelper $responseHelper,
         Helpers $helpers,
-        TenantActivatedSettingRepository $tenantActivatedSettingRepository
+        TenantActivatedSettingRepository $tenantActivatedSettingRepository,
+        LanguageHelper $languageHelper
     ) {
         $this->missionCommentRepository = $missionCommentRepository;
         $this->responseHelper = $responseHelper;
         $this->helpers = $helpers;
         $this->tenantActivatedSettingRepository = $tenantActivatedSettingRepository;
+        $this->languageHelper = $languageHelper;
     }
 
     /**
@@ -122,6 +131,28 @@ class MissionCommentController extends Controller
         $apiData = ['comment_id' => $missionComment->comment_id];
         $apiMessage = ($isAutoApproved) ? trans('messages.success.MESSAGE_AUTO_APPROVED_COMMENT_ADDED') :
         trans('messages.success.MESSAGE_COMMENT_ADDED');
+        
+        return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
+    }
+
+    /**
+     * Display user mission comments
+     *
+     * @param Illuminate\Http\Request $request
+     * @return Illuminate\Http\JsonResponse
+     */
+    public function getUserMissionComment(Request $request): JsonResponse
+    {
+        $languageId = $this->languageHelper->getLanguageId($request);
+        $userMissionCommentsData = $this->missionCommentRepository->getUserComments(
+            $request->auth->user_id,
+            $languageId
+        );
+        
+        // Set response data
+        $apiData = $userMissionCommentsData->toArray();
+        $apiStatus = Response::HTTP_OK;
+        $apiMessage = trans('messages.success.MESSAGE_USER_COMMENTS_LISTING');
         
         return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
     }
