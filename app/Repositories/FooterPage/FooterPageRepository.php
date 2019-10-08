@@ -8,7 +8,6 @@ use App\Models\FooterPage;
 use App\Models\FooterPagesLanguage;
 use App\Helpers\Helpers;
 use App\Helpers\LanguageHelper;
-use DB;
 use Illuminate\Support\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 

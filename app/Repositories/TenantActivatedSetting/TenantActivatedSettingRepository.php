@@ -2,8 +2,6 @@
 namespace App\Repositories\TenantActivatedSetting;
 
 use App\Repositories\TenantActivatedSetting\TenantActivatedSettingInterface;
-use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Database\Eloquent\Collection;
 use App\Models\TenantActivatedSetting;
 use App\Helpers\Helpers;
 use Illuminate\Http\Request;
@@ -77,7 +75,7 @@ class TenantActivatedSettingRepository implements TenantActivatedSettingInterfac
         if ($tenantActivatedSettings->count() &&  $getTenantSettings->count()) {
             foreach ($tenantActivatedSettings as $settingKey => $tenantSetting) {
                 $index = $getTenantSettings->search(function ($value, $key) use ($tenantSetting) {
-                    return $value->tenant_setting_id == $tenantSetting->settings->setting_id;
+                    return $value->tenant_setting_id === $tenantSetting->settings->setting_id;
                 });
                 $tenantSettingData[] = $getTenantSettings[$index]->key;
             }
@@ -103,7 +101,7 @@ class TenantActivatedSettingRepository implements TenantActivatedSettingInterfac
         if ($tenantActivatedSettings->count() &&  $getTenantSettings->count()) {
             foreach ($tenantActivatedSettings as $settingKey => $tenantSetting) {
                 $index = $getTenantSettings->search(function ($value, $key) use ($tenantSetting) {
-                    return $value->tenant_setting_id == $tenantSetting->settings->setting_id;
+                    return $value->tenant_setting_id === $tenantSetting->settings->setting_id;
                 });
                 $tenantSettingData[] = $getTenantSettings[$index]->key;
             }

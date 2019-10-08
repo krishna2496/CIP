@@ -154,10 +154,8 @@ class TenantOptionsController extends Controller
                 if ($fileName === config('constants.AWS_CUSTOM_STYLE_VARIABLE_FILE_NAME')) {
                     $isVariableScss = 1;
                 }
-                // Need to get list SCSS files from S3 server and match name with passed file name
-                $allSCSSFiles = $this->s3helper->getAllScssFiles($tenantName);
                 // if it is not exist then need to throw error
-                if (array_search($fileName, array_column($allSCSSFiles['scss_files'], 'scss_file_name')) === false) {
+                if (!Storage::disk('s3')->exists($tenantName.'/assets/scss/'.$fileName)) {
                     // Error: Return like uploaded file name doesn't match with structure.
                     return $this->responseHelper->error(
                         Response::HTTP_UNPROCESSABLE_ENTITY,

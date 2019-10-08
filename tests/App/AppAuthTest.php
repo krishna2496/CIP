@@ -98,7 +98,7 @@ class AppAuthTest extends TestCase
             'email' => $user->email,
         ];
 
-        $this->post('app/request-password-reset', $params, [])
+        $this->post('app/request-password-reset', $params, ['HTTP_REFERER' => env('DEFAULT_TENANT')])
           ->seeStatusCode(200)
           ->seeJsonStructure(
               [
@@ -275,7 +275,7 @@ class AppAuthTest extends TestCase
         ];
 
         $this->post('app/request-password-reset', $params, [])
-        ->seeStatusCode(403)
+        ->seeStatusCode(404)
         ->seeJsonStructure([
               'errors' => [
                   [

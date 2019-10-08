@@ -10,7 +10,6 @@ use Illuminate\Validation\Rule;
 use App\Repositories\Mission\MissionRepository;
 use App\Helpers\ResponseHelper;
 use Validator;
-use DB;
 use App\Traits\RestExceptionHandlerTrait;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use InvalidArgumentException;

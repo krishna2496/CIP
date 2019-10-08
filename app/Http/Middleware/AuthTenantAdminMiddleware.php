@@ -48,7 +48,7 @@ class AuthTenantAdminMiddleware
     public function handle($request, Closure $next)
     {
         // Check basic auth passed or not
-        if ($request->header('php-auth-user') == null && $request->header('php-auth-pw') == null
+        if ($request->header('php-auth-user') === null && $request->header('php-auth-pw') === null
             || (empty($request->header('php-auth-user')) && empty($request->header('php-auth-pw')))
         ) {
             return $this->responseHelper->error(

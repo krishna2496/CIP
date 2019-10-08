@@ -101,7 +101,7 @@ class TenantOptionController extends Controller
 
         if ($tenantLanguages->count() > 0) {
             foreach ($tenantLanguages as $key => $value) {
-                if ($value->default == 1) {
+                if ($value->default === "1") {
                     $optionData['defaultLanguage'] = strtoupper($value->code);
                     $optionData['defaultLanguageId'] = $value->language_id;
                 }

@@ -44,7 +44,7 @@ class MissionThemeRepository implements MissionThemeInterface
     public function missionThemeList(Request $request, String $theme_id = ''): Collection
     {
         $themeQuery = $this->missionTheme->select('mission_theme_id', 'theme_name', 'translations');
-        if ($theme_id != '') {
+        if ($theme_id !== '') {
             $themeQuery->whereIn("mission_theme_id", explode(",", $theme_id));
         }
         $theme = $themeQuery->get();

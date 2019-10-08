@@ -9,7 +9,6 @@ use Illuminate\Http\JsonResponse;
 use App\Helpers\ResponseHelper;
 use App\Traits\RestExceptionHandlerTrait;
 use Validator;
-use DB;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use InvalidArgumentException;
 use Illuminate\Validation\Rule;
