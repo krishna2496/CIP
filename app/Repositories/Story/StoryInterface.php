@@ -1,9 +1,8 @@
 <?php
 namespace App\Repositories\Story;
 
-use Illuminate\Http\Request;
 use App\Models\Story;
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 interface StoryInterface
@@ -24,7 +23,7 @@ interface StoryInterface
      * @return App\Models\Story
      */
     public function update(Request $request, int $storyId): Story;
-    
+
     /**
      * Remove the story details.
      *
@@ -33,15 +32,16 @@ interface StoryInterface
      * @return bool
      */
     public function delete(int $storyId, int $userId): bool;
-    
+
     /**
      * Display a user story listing with pagination.
      *
-     * @param Illuminate\Http\Request $request
+     * @param \Illuminate\Http\Request $request
+     * @param int $languageId
      * @param int $userId
      * @return \Illuminate\Pagination\LengthAwarePaginator
      */
-    public function getUserStoriesWithPagination(Request $request, int $userId): LengthAwarePaginator;
+    public function getUserStoriesWithPagination(Request $request, int $languageId, int $userId): LengthAwarePaginator;
 
     /**
      * Get story details.
@@ -51,7 +51,7 @@ interface StoryInterface
      * @return null|App\Models\Story
      */
     public function getStoryDetails(int $storyId, string $storyStatus = null): Story;
-    
+
     /**
      * Update story status field value, based on story_id condition
      *
@@ -60,8 +60,7 @@ interface StoryInterface
      * @return bool
      */
     public function updateStoryStatus(string $storyStatus, int $storyId): bool;
-    
-    
+
     /**
      * Do copy of declined story data
      *
@@ -69,15 +68,15 @@ interface StoryInterface
      * @return int $newStoryId
      */
     public function doCopyDeclinedStory(int $storyId): int;
-    
+
     /**
      * Display a listing of specified resources without pagination.
      *
-     * @param Illuminate\Http\Request $request
+     * @param int $languageId
      * @param int $userId
      * @return Object
      */
-    public function getUserStoriesWithOutPagination(Request $request, int $userId): Object;
+    public function getUserStories(int $languageId, int $userId): Object;
 
     /**
      * Store story images.
@@ -125,13 +124,11 @@ interface StoryInterface
     public function submitStory(int $userId, int $storyId): Story;
 
     /**
-     * Find story by user id 
+     * Find story by user id
      *
      * @param int $userId
      * @param int $storyId
      * @return App\Models\Story
      */
     public function findStoryByUserId(int $userId, int $storyId): Story;
-
-    
 }
