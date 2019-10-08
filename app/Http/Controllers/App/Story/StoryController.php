@@ -228,17 +228,36 @@ class StoryController extends Controller
     }
     
     /**
-     * Do copy of declined story
+     * User can copy story if its declined
      *
      * @param \Illuminate\Http\Request $request
-     * @param int $storyId
+     * @param int $oldStoryId
      * @return Illuminate\Http\JsonResponse
      */
-    public function copyStoryAfterDecline(Request $request, int $storyId): JsonResponse
+    public function copyStory(Request $request, int $oldStoryId): JsonResponse
     {
         try {
-            // Do copy of declined story
-            $newStoryId = $this->storyRepository->doCopyDeclinedStory($storyId);
+			
+			$storyStatus = array(
+                config('constants.story_status.DECLINED')
+            );
+
+            // User can't submit story if its published or declined
+            $notDeclinedStory = $this->storyRepository->checkStoryStatus(
+                $request->auth->user_id,
+                $oldStoryId,
+                $storyStatus
+            );
+			
+            if ($notDeclinedStory) {
+                return $this->responseHelper->error(
+                    Response::HTTP_UNPROCESSABLE_ENTITY,
+                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                    config('constants.error_codes.ERROR_COPY_DECLINED_STORY'),
+                    trans('messages.custom_error_message.ERROR_COPY_DECLINED_STORY')
+                );
+            }
+			$newStoryId = $this->storyRepository->createStoryCopy($oldStoryId);
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
                 config('constants.error_codes.ERROR_STORY_NOT_FOUND'),
@@ -246,17 +265,6 @@ class StoryController extends Controller
             );
         }
 
-        try {
-            // check declined story details by story id
-            $this->storyRepository
-            ->getStoryDetails($storyId, config('constants.story_status.DECLINED'));
-        } catch (ModelNotFoundException $e) {
-            return $this->modelNotFound(
-                config('constants.error_codes.ERROR_DECLINED_STORY_NOT_FOUND'),
-                trans('messages.custom_error_message.ERROR_DECLINED_STORY_NOT_FOUND')
-            );
-        }
-        
         $apiStatus = Response::HTTP_OK;
         $apiMessage = trans('messages.success.MESSAGE_STORY_COPIED_SUCCESS');
         $apiData = ['story_id' => $newStoryId ];
@@ -271,13 +279,13 @@ class StoryController extends Controller
      * @param \Illuminate\Http\Request $request
      * @return Object
      */
-    public function exportStory(Request $request): Object
+    public function exportStories(Request $request): Object
     {
         //get login user story data
     	$language = $this->languageHelper->getLanguageDetails($request);
-        $storyList = $this->storyRepository->getUserStories($language->language_id, $request->auth->user_id);
+        $stories = $this->storyRepository->getUserStories($language->language_id, $request->auth->user_id);
         
-        if ($storyList->count()==0) {
+        if ($stories->count() == 0) {
         	$apiStatus = Response::HTTP_OK;
         	$apiMessage =  trans('messages.success.MESSAGE_UNABLE_TO_EXPORT_USER_STORIES_ENTRIES');
         	return $this->responseHelper->success($apiStatus, $apiMessage);
@@ -290,11 +298,11 @@ class StoryController extends Controller
         	trans("messages.export_story_headings.STORY_DESCRIPTION"),
         	trans("messages.export_story_headings.STORY_STATUS"),
         	trans("messages.export_story_headings.MISSION"),
-        	trans("messages.export_story_headings.PUBLISH_DATE"),
+        	trans("messages.export_story_headings.PUBLISHED_DATE"),
         ];
         
         $excel->setHeadlines($headings);
-        foreach ($storyList as $story) {
+        foreach ($stories as $story) {
         	$excel->appendRow([
         		$story->title,
         		$story->description,

@@ -145,7 +145,7 @@ return [
         'MESSAGE_UNABLE_TO_EXPORT_USER_STORIES_ENTRIES' => 'Aucune histoire trouvée',
         'MESSAGE_STORY_UPDATED' => 'Histoire mise à jour avec succès',
         'MESSAGE_STORY_SUBMITTED_SUCESSFULLY' => 'Histoire soumise avec succès',
-        'MESSAGE_STORY_IMAGE_DELETED' => 'Image de l\'histoire supprimée avec succès',
+        'MESSAGE_STORY_IMAGE_DELETED' => 'Image de l\'histoire supprimée avec succès'
     ],
 
         
@@ -274,7 +274,7 @@ return [
         // For story module
         'ERROR_STORY_NOT_FOUND' => 'Histoire non trouvée dans le système',
     	'ERROR_PUBLISHED_STORY_NOT_FOUND' => 'Histoire publiée non trouvée dans le système',
-    	'ERROR_DECLINED_STORY_NOT_FOUND' => 'Vous ne pouvez pas copier l\'histoire, en raison de cette histoire n\'est pas refusée',
+    	'ERROR_COPY_DECLINED_STORY' => 'Vous ne pouvez pas copier l\'histoire, en raison de cette histoire n\'est pas refusée',
         'ERROR_STORY_PUBLISHED_OR_DECLINED' => 'Vous ne pouvez pas mettre à jour une histoire publiée ou refusée',
         'ERROR_STORY_IMAGE_NOT_FOUND' => 'L\'image de l\'histoire ne se trouve pas dans le système',
         'ERROR_STORY_IMAGE_DELETE' => 'Vous ne pouvez pas supprimer l\'image d\'un article publié ou refusé',
@@ -300,6 +300,13 @@ return [
 		'STORY_DESCRIPTION' => 'Description de l\'histoire',
         'STORY_STATUS' => 'Statut de l\'histoire',
         'MISSION' => 'Mission',
-		'PUBLISH_DATE' => 'date de publication',
+		'PUBLISHED_DATE' => 'date de publication',
 	],
+	
+	/**
+	 * General labels
+	 */
+	'labels' => [
+		'TEXT_STORY_COPY_OF' => 'Copie de '
+	]
 ];

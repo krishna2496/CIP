@@ -149,7 +149,7 @@ return [
     	'MESSAGE_UNABLE_TO_EXPORT_USER_STORIES_ENTRIES' => 'No stories found',
         'MESSAGE_STORY_UPDATED' => 'Story updated successfully',
         'MESSAGE_STORY_SUBMITTED_SUCESSFULLY' => 'Story submitted sucessfully',
-        'MESSAGE_STORY_IMAGE_DELETED' => 'Story image deleted sucessfully',
+        'MESSAGE_STORY_IMAGE_DELETED' => 'Story image deleted sucessfully'
 	],
         
     /**
@@ -278,7 +278,7 @@ return [
         // For story module
         'ERROR_STORY_NOT_FOUND' => 'Story not found in the system',
     	'ERROR_PUBLISHED_STORY_NOT_FOUND' => 'Published story not found in the system',
-    	'ERROR_DECLINED_STORY_NOT_FOUND' => 'You can not copy story, due to this is not declined story',
+    	'ERROR_COPY_DECLINED_STORY' => 'You can only create copy of declined story',
         'ERROR_STORY_PUBLISHED_OR_DECLINED' => 'You cannot update published or declined story',
         'ERROR_STORY_IMAGE_NOT_FOUND' => 'Story image not found in the system',        
         'ERROR_STORY_IMAGE_DELETE' => 'You cannot delete image of published or declined story',
@@ -300,10 +300,17 @@ return [
 	 * Export story sheet's headings
 	 */
 	'export_story_headings' => [
-		'STORY_TITLE' => 'Story Title',
-		'STORY_DESCRIPTION' => 'Story Description',
-        'STORY_STATUS' => 'Story Status',
-        'MISSION' => 'Mission',
-		'PUBLISH_DATE' => 'Published Date',
+		'STORY_TITLE' => 'Story title',
+		'STORY_DESCRIPTION' => 'Story description',
+        'STORY_STATUS' => 'Story status',
+        'MISSION_TITLE' => 'Mission title',
+		'PUBLISHED_DATE' => 'Published date',
+	],
+	
+	/**
+	 * General labels
+	 */
+	'labels' => [
+		'TEXT_STORY_COPY_OF' => 'Copy of '
 	]
 ];

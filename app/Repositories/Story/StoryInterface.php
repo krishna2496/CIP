@@ -64,10 +64,10 @@ interface StoryInterface
     /**
      * Do copy of declined story data
      *
-     * @param int $storyId
+     * @param int $oldStoryId
      * @return int $newStoryId
      */
-    public function doCopyDeclinedStory(int $storyId): int;
+    public function createStoryCopy(int $oldStoryId): int;
 
     /**
      * Display a listing of specified resources without pagination.

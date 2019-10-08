@@ -208,26 +208,26 @@ class StoryRepository implements StoryInterface
     }
 
     /**
-     * Do copy of declined story data
+     * Create story copy from old story
      *
-     * @param int $storyId
+     * @param int $oldStoryId
      * @return int $newStoryId
      */
-    public function doCopyDeclinedStory(int $storyId): int
+    public function createStoryCopy(int $oldStoryId): int
     {
-        $newStory = $this->story->with(['storyMedia'])->findOrFail($storyId)->replicate();
+        $newStory = $this->story->with(['storyMedia'])->findOrFail($oldStoryId)->replicate();
 
-        $newStory->title = 'Copy of ' . $newStory->title;
+        $newStory->title = trans('messages.labels.TEXT_STORY_COPY_OF') . $newStory->title;
         $newStory->status = config('constants.story_status.DRAFT');
         $newStory->save();
 
         $newStoryId = $newStory->story_id;
 
-        foreach ($newStory->storyMedia as $val) {
-            $this->storyMedia = new StoryMedia();
+        foreach ($newStory->storyMedia as $media) {
+			$this->storyMedia = new StoryMedia();
             $this->storyMedia->story_id = $newStoryId;
-            $this->storyMedia->type = $val->type;
-            $this->storyMedia->path = $val->path;
+            $this->storyMedia->type = $media->type;
+            $this->storyMedia->path = $media->path;
             $this->storyMedia->save();
         }
 
@@ -250,8 +250,8 @@ class StoryRepository implements StoryInterface
             'description',
             'status',
             'published_at'
-        )->with(['mission', 'storyMedia', 'mission.missionLanguage' => function ($query) use ($languageId) {
-                $query->select('mission_language_id', 'mission_id', 'language_id', 'title', 'short_description')
+        )->with(['mission', 'mission.missionLanguage' => function ($query) use ($languageId) {
+                $query->select('mission_language_id', 'mission_id', 'title')
                     ->where('language_id', $languageId);
             }])->where('user_id', $userId);
         return $userStoryQuery->get();
@@ -317,7 +317,7 @@ class StoryRepository implements StoryInterface
             ->where(['user_id' => $userId, 'story_id' => $storyId])
             ->whereIn('status', $storyStatus)
             ->get();
-        $storyStatus = ($storyDetails->count() > 0) ? false : true;
+	    $storyStatus = ($storyDetails->count() > 0) ? false : true;
         return $storyStatus;
     }
 
