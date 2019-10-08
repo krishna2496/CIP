@@ -272,8 +272,8 @@ class UserController extends Controller
             "city_id" => "integer|exists:city,city_id,deleted_at,NULL",
             "country_id" => "integer|exists:country,country_id,deleted_at,NULL",
             "custom_fields.*.field_id" => "sometimes|required|exists:user_custom_field,field_id,deleted_at,NULL",
-            'skills' => 'present|array',
-            'skills.*.skill_id' => 'integer|required|exists:skill,skill_id,deleted_at,NULL']
+            'skills' => 'sometimes|required|array',
+            'skills.*.skill_id' => 'required_with:skills|integer|exists:skill,skill_id,deleted_at,NULL']
         );
 
         // If request parameter have any error
