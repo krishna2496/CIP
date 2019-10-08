@@ -237,7 +237,7 @@ return [
         'ERROR_INVALID_ACTION' => 'Entered goal action should not be greater than goal objective',
         'TIMESHEET_NOT_FOUND' => 'Timesheet entry not found' ,
         'ERROR_TIMESHEET_ALREADY_APPROVED' => 'You can not update approved timesheet',
-        'TIMESHEET_DOCUMENT_NOT_FOUND' => 'Timesheet document does not exists',
+        'TIMESHEET_DOCUMENT_NOT_FOUND' => 'Timesheet document does not exist',
         'ERROR_MISSION_STARTDATE' => 'Invalid date: selected date should not be before start date',
         'ERROR_MISSION_ENDDATE' => 'Selected date should not be greater than mission end date',
         'MISSION_APPLICATION_NOT_APPROVED' => 'Mission application is not approved',
