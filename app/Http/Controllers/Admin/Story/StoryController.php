@@ -18,7 +18,7 @@ use App\Transformations\StoryTransformable;
 
 class StoryController extends Controller
 {
-    use RestExceptionHandlerTrait,StoryTransformable;
+        use RestExceptionHandlerTrait,StoryTransformable;
 
     /**
      * @var App\Repositories\User\UserRepository
