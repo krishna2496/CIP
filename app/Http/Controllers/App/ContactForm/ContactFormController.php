@@ -6,11 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Models\ContactForm;
 use App\Repositories\ContactForm\ContactFormRepository;
 use App\Traits\RestExceptionHandlerTrait;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
-use Validator;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Validator;
 
 class ContactFormController extends Controller
 {
@@ -43,19 +42,19 @@ class ContactFormController extends Controller
     /**
      * Store contact form details
      *
-     * @param \Illuminate\Http\Request $request     
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function store(Request $request): JsonResponse
-    { 
-    	$validator = Validator::make(
+    {
+        $validator = Validator::make(
             $request->toArray(),
             [
                 'phone_no' => 'required|regex:/^([0-9\s\-\+\(\)]*)$/|min:10|max:11',
                 'message' => 'required|max:60000',
             ]
         );
-        
+
         // If validator fails
         if ($validator->fails()) {
             return $this->responseHelper->error(
@@ -65,7 +64,7 @@ class ContactFormController extends Controller
                 $validator->errors()->first()
             );
         }
-        
+
         // Store contact form data
         $contactFormData = $this->contactFormRepository->store($request);
 
