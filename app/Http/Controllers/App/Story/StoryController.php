@@ -358,7 +358,11 @@ class StoryController extends Controller
     public function getAllPublishedStories(Request $request): JsonResponse
     {
         // get all published stories of users
-        $publishedStories = $this->storyRepository->getUserStoriesWithPagination($request, null, config('constants.story_status.PUBLISHED'));
+        $publishedStories = $this->storyRepository->getUserStoriesWithPagination(
+            $request,
+            null,
+            config('constants.story_status.PUBLISHED')
+        );
         
         $storyTransformedData = $this->transformPublishedStory($publishedStories);
         $requestString = $request->except(['page','perPage']);
