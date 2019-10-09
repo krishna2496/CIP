@@ -137,29 +137,30 @@ class MissionCommentController extends Controller
     }
 
     /**
-     * Display user mission comments
+     * Fetch user's comments on mission for dashboard
      *
      * @param Illuminate\Http\Request $request
      * @return Illuminate\Http\JsonResponse
      */
-    public function getUserMissionComment(Request $request): JsonResponse
+    public function getUserMissionComments(Request $request): JsonResponse
     {
         $languageId = $this->languageHelper->getLanguageId($request);
-        $userMissionCommentsData = $this->missionCommentRepository->getUserComments(
+        $userMissionComments = $this->missionCommentRepository->getUserComments(
             $request->auth->user_id,
             $languageId
         );
         
         // Set response data
-        $apiData = $userMissionCommentsData->toArray();
+        $apiData = $userMissionComments->toArray();
         $apiStatus = Response::HTTP_OK;
-        $apiMessage = trans('messages.success.MESSAGE_USER_COMMENTS_LISTING');
+        $apiMessage = (count($apiData) > 0 ) ? trans('messages.success.MESSAGE_USER_COMMENTS_LISTING')
+		: trans('messages.success.MESSAGE_NO_MISSION_COMMENTS_ENTRIES');
         
         return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
     }
 
     /**
-     * Delete comment by commentId
+     * User can delete comment from dashboard by comment id
      *
      * 
      * @param Illuminate\Http\Request $request
@@ -184,7 +185,7 @@ class MissionCommentController extends Controller
     }
 
     /**
-     * Export user comments
+     * User can export comments
      *
      * @param \Illuminate\Http\Request $request
      * @return Object
@@ -197,9 +198,9 @@ class MissionCommentController extends Controller
             $languageId
         );
 
-        if ($userMissionCommentsData->count() <= 1) {
+        if ($userMissionCommentsData->count() == 0) {
             $apiStatus = Response::HTTP_OK;
-            $apiMessage = trans('messages.success.MESSAGE_UNABLE_TO_EXPORT_MISSION_COMMENTS_ENTRIES');
+            $apiMessage = trans('messages.success.MESSAGE_NO_MISSION_COMMENTS_ENTRIES');
             return $this->responseHelper->success($apiStatus, $apiMessage);
         }
         

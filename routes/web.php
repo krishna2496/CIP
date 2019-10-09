@@ -357,7 +357,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
     /* Get user mission comments */
     $router->get('/app/dashboard/comments', [
         'middleware' => 'tenant.connection|jwt.auth',
-        'uses' => 'App\Mission\MissionCommentController@getUserMissionComment']);
+        'uses' => 'App\Mission\MissionCommentController@getUserMissionComments']);
     });
 
 /*

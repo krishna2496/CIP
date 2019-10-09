@@ -110,7 +110,7 @@ class MissionCommentRepository implements MissionCommentInterface
     }
 
     /**
-     * Display user mission comments.
+     * Fetch user's comments on mission for dashboard
      *
      * @param int $userId
      * @param int $languageId
@@ -118,7 +118,7 @@ class MissionCommentRepository implements MissionCommentInterface
      */
     public function getUserComments(int $userId, int $languageId): Collection
     {
-        $commentsData = $this->comment->where('user_id', $userId)
+        $comments = $this->comment->where('user_id', $userId)
         ->orderby('created_at', 'desc')
         ->with(['mission' => function ($query) use ($languageId) {
             $query->with(['missionLanguage' => function ($query) use ($languageId) {
@@ -127,22 +127,24 @@ class MissionCommentRepository implements MissionCommentInterface
             }]);
         }])->get();
 
-        // Count status
-        $statusCount = $this->comment
-        ->selectRaw("COUNT(CASE WHEN approval_status = 'PUBLISHED' THEN 1 END) AS published,
-        COUNT(CASE WHEN approval_status = 'PENDING' THEN 1 END) AS pending,
-        COUNT(CASE WHEN approval_status = 'DECLINED' THEN 1 END) AS declined")
-        ->where('user_id', $userId)->get();
+        // Fetch comment counts by status
+		if (count($comments) > 0) {
+			foreach ($comments as $comment) {
+				if ($comment->mission->missionLanguage) {
+					$comment->title = $comment->mission->missionLanguage[0]->title;
+					unset($comment->mission);
+				}
+			}
+			
+			$statusCount = $this->comment
+			->selectRaw("COUNT(CASE WHEN approval_status = 'PUBLISHED' THEN 1 END) AS published,
+			COUNT(CASE WHEN approval_status = 'PENDING' THEN 1 END) AS pending,
+			COUNT(CASE WHEN approval_status = 'DECLINED' THEN 1 END) AS declined")
+			->where('user_id', $userId)->get();
 
-        foreach ($commentsData as $value) {
-            if ($value->mission->missionLanguage) {
-                $value->title = $value->mission->missionLanguage[0]->title;
-                unset($value->mission);
-            }
-        }
-        $userCommentsData =  $commentsData->merge($statusCount);
-
-        return $userCommentsData;
+			$comments =  $comments->merge($statusCount);
+		}
+        return $comments;
     }
 
     /**
