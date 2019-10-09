@@ -1,24 +1,24 @@
 <?php
 namespace App\Http\Controllers\Admin\Story;
 
+use App\Helpers\LanguageHelper;
+use App\Helpers\ResponseHelper;
+use App\Http\Controllers\Controller;
+use App\Models\Story;
+use App\Repositories\Story\StoryRepository;
+use App\Repositories\User\UserRepository;
+use App\Traits\RestExceptionHandlerTrait;
+use App\Transformations\StoryTransformable;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Validation\Rule;
-use App\Http\Controllers\Controller;
-use App\Traits\RestExceptionHandlerTrait;
-use App\Helpers\ResponseHelper;
-use App\Helpers\LanguageHelper;
-use App\Repositories\User\UserRepository;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
-use App\Repositories\Story\StoryRepository;
 use Validator;
-use App\Models\Story;
-use Illuminate\Http\JsonResponse;
-use App\Transformations\StoryTransformable;
 
 class StoryController extends Controller
 {
-    use RestExceptionHandlerTrait,StoryTransformable;
+    use RestExceptionHandlerTrait, StoryTransformable;
 
     /**
      * @var App\Repositories\User\UserRepository
@@ -34,12 +34,12 @@ class StoryController extends Controller
      * @var App\Helpers\ResponseHelper
      */
     private $responseHelper;
-    
+
     /**
      * @var App\Helpers\LanguageHelper
      */
     private $languageHelper;
-    
+
     /**
      * Create a new controller instance.
      *
@@ -61,7 +61,6 @@ class StoryController extends Controller
         $this->languageHelper = $languageHelper;
     }
 
-
     /**
      * Display a listing of the resource.
      *
@@ -79,39 +78,44 @@ class StoryController extends Controller
                 trans('messages.custom_error_message.ERROR_USER_NOT_FOUND')
             );
         }
-        
+
         $defaultTenantLanguage = $this->languageHelper->getDefaultTenantLanguage($request);
         $language = $this->languageHelper->getLanguageDetails($request);
+<<<<<<< HEAD
                 
         $userStories = $this->storyRepository->getUserStoriesWithPagination($request, $userId);
+=======
+        
+        $userStories = $this->storyRepository->getUserStoriesWithPagination($request, $language->language_id, $userId);
+>>>>>>> 46bb7c8cf7cab5f60dc6769a4d76ab4958106596
 
         $storyTransformed = $userStories
-        ->getCollection()
-        ->map(function ($story) use ($request, $defaultTenantLanguage, $language) {
-            $story = $this->transformStory($story, $defaultTenantLanguage->language_id, $language->language_id);
-            return $story;
-        });
+            ->getCollection()
+            ->map(function ($story) use ($request, $defaultTenantLanguage, $language) {
+                $story = $this->transformStory($story, $defaultTenantLanguage->language_id, $language->language_id);
+                return $story;
+            });
 
-        $requestString = $request->except(['page','perPage']);
+        $requestString = $request->except(['page', 'perPage']);
         $storyPaginated = new \Illuminate\Pagination\LengthAwarePaginator(
             $storyTransformed,
             $userStories->total(),
             $userStories->perPage(),
             $userStories->currentPage(),
             [
-                'path' => $request->url().'?'.http_build_query($requestString),
+                'path' => $request->url() . '?' . http_build_query($requestString),
                 'query' => [
-                    'page' => $userStories->currentPage()
-                    ]
-                ]
+                    'page' => $userStories->currentPage(),
+                ],
+            ]
         );
-        
+
         $apiData = $storyPaginated;
         $apiStatus = Response::HTTP_OK;
         $apiMessage = ($apiData->count()) ?
         trans('messages.success.MESSAGE_STORIES_ENTRIES_LISTING') :
         trans('messages.success.MESSAGE_NO_STORIES_ENTRIES_FOUND');
-        
+
         return $this->responseHelper->successWithPagination(
             $apiStatus,
             $apiMessage,

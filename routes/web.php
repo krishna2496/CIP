@@ -108,6 +108,12 @@ $router->group(['middleware' => 'localization'], function ($router) {
         'middleware' => 'tenant.connection|jwt.auth|PaginationMiddleware',
         'uses' => 'App\User\UserController@index']);
 
+    /* Fetch dashboard data for users */
+    $router->get('/app/dashboard', ['as' =>'app.user',
+    'middleware' => 'tenant.connection|jwt.auth',
+    'uses' => 'App\User\DashboardController@index']);
+
+
     /* Get mission detail  */
     $router->get('/app/mission/{missionId}', [
         'middleware' => 'tenant.connection|jwt.auth',
@@ -294,38 +300,52 @@ $router->group(['middleware' => 'localization'], function ($router) {
         'middleware' => 'localization|tenant.connection|jwt.auth',
         'uses' => 'App\Story\StoryController@destroy']);
 
-    /* Export all Story Data */
-    $router->get('/app/story/export', ['as' => 'app.story.export',
-        'middleware' => 'localization|tenant.connection|jwt.auth',
-        'uses' => 'App\Story\StoryController@exportStory']);
-
-    /* login user story listing */
-    $router->get('/app/story/my-stories', ['as' => 'app.story.getuserstories',
-        'middleware' => 'localization|tenant.connection|jwt.auth',
-        'uses' => 'App\Story\StoryController@getUserStories']);
 
     /* all users published story listing */
-    $router->get('/app/story/list', ['as' => 'app.story.getallpublishedstories',
+    $router->get('/app/story/list', ['as' => 'app.story.publishedStories',
         'middleware' => 'localization|tenant.connection|jwt.auth',
-        'uses' => 'App\Story\StoryController@getAllPublishedStories']);
+        'uses' => 'App\Story\StoryController@publishedStories']);
 
-    /* Fetch story details */
-    $router->get('/app/story/{storyId}', ['as' => 'app.story.show',
+        
+    /* Export all Story Data */
+    $router->get('/app/story/export', ['as' => 'app.story.export',
+         'middleware' => 'localization|tenant.connection|jwt.auth',
+         'uses' => 'App\Story\StoryController@exportStories']);
+        
+    /* Copy declined story */
+    $router->get('/app/story/{story_id}/copy', ['as' => 'app.story.copystory',
         'middleware' => 'localization|tenant.connection|jwt.auth',
-        'uses' => 'App\Story\StoryController@show']);
+        'uses' => 'App\Story\StoryController@copyStory']);
 
-    /* Copy story data after decline */
-    $router->get('/app/story/{story_id}/copy', ['as' => 'app.story.copyafterdecline',
+    /* Get User's story Listing */
+    $router->get('/app/story/my-stories', ['as' => 'app.story.userstories',
         'middleware' => 'localization|tenant.connection|jwt.auth',
-        'uses' => 'App\Story\StoryController@copyStoryAfterDecline']);
+        'uses' => 'App\Story\StoryController@getUserStories']);
+    
 
     /* Update story details */
     $router->patch('/app/story/{storyId}', ['as' => 'app.story.update',
-   		'middleware' => 'localization|tenant.connection|jwt.auth',
-   		'uses' => 'App\Story\StoryController@update']);
+        'middleware' => 'localization|tenant.connection|jwt.auth',
+        'uses' => 'App\Story\StoryController@update']);
+
+    /* Fetch story details */
+    $router->get('/app/story/{storyId}', ['as' => 'app.story.show',
+     'middleware' => 'localization|tenant.connection|jwt.auth',
+     'uses' => 'App\Story\StoryController@show']);
+
+
+    /* Submit story detail */
+    $router->post('/app/story/{storyId}/submit', ['as' => 'app.story.submit',
+        'middleware' => 'localization|tenant.connection|jwt.auth',
+        'uses' => 'App\Story\StoryController@submitStory']);
+
+    /* Delete story image */
+    $router->delete('/app/story/{storyId}/image/{imageId}', ['as' => 'app.story.removeStoryImage',
+        'middleware' => 'localization|tenant.connection|jwt.auth',
+        'uses' => 'App\Story\StoryController@deleteStoryImage']);
 });
-        
-   
+
+
 
 /*
 |

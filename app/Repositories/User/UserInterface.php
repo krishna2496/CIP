@@ -118,4 +118,12 @@ interface UserInterface
      * @return bool
      */
     public function changePassword(int $id, string $password): bool;
+
+    /**
+     * Get user goal hours
+     *
+     * @param int $userId
+     * @return null|int
+     */
+    public function getUserGoalHours(int $userId): ?int;
 }
