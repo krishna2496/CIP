@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Repositories\Story;
 
 use App\Helpers\Helpers;
@@ -14,26 +15,31 @@ use Illuminate\Pagination\LengthAwarePaginator;
 class StoryRepository implements StoryInterface
 {
     /**
+     *
      * @var App\Models\Story
      */
     private $story;
 
     /**
+     *
      * @var App\Models\Mission
      */
     private $mission;
 
     /**
+     *
      * @var App\Models\StoryMedia
      */
     private $storyMedia;
 
     /**
+     *
      * @var App\Helpers\S3Helper
      */
     private $s3helper;
 
     /**
+     *
      * @var App\Helpers\Helpers
      */
     private $helpers;
@@ -61,6 +67,7 @@ class StoryRepository implements StoryInterface
         $this->helpers = $helpers;
     }
 
+
     /**
      * Store story details
      *
@@ -78,7 +85,6 @@ class StoryRepository implements StoryInterface
         );
 
         $storyData = $this->story->create($storyDataArray);
-
         if ($request->hasFile('story_images')) {
             $tenantName = $this->helpers->getSubDomainFromRequest($request);
             // Store story images
@@ -94,7 +100,6 @@ class StoryRepository implements StoryInterface
             // Store story video url
             $this->storeStoryVideoUrl($request->story_videos, $storyData->story_id);
         }
-
         return $storyData;
     }
 
@@ -151,21 +156,43 @@ class StoryRepository implements StoryInterface
      * @param \Illuminate\Http\Request $request
      * @param int $languageId
      * @param int $userId
+     * @param string $status
      * @return \Illuminate\Pagination\LengthAwarePaginator
      */
-    public function getUserStoriesWithPagination(Request $request, int $languageId, int $userId): LengthAwarePaginator
-    {
+
+    public function getUserStoriesWithPagination(
+        Request $request,
+        int $languageId,
+        int $userId = null,
+        string $status = null
+    ): LengthAwarePaginator {
         $userStoryQuery = $this->story->select(
             'story_id',
+            'user_id',
             'mission_id',
             'title',
             'description',
             'status',
-            'published_at'
-        )->with(['mission', 'storyMedia', 'mission.missionLanguage' => function ($query) use ($languageId) {
-            $query->select('mission_language_id', 'mission_id', 'language_id', 'title', 'short_description')
-                ->where('language_id', $languageId);
-        }])->where('user_id', $userId);
+            'published_at',
+            'created_at'
+        )->with([
+            'user',
+            'mission',
+            'mission.missionTheme',
+            'storyMedia',
+            'mission.missionLanguage' => function ($query) use ($languageId) {
+                $query->select(
+                    'mission_language_id',
+                    'mission_id',
+                    'title',
+                    'short_description'
+                )->where('language_id', $languageId);
+            },
+        ])->when($userId, function ($query, $userId) {
+            return $query->where('user_id', $userId);
+        })->when($status, function ($query, $status) {
+            return $query->where('status', $status);
+        });
         return $userStoryQuery->paginate($request->perPage);
     }
 
@@ -179,7 +206,12 @@ class StoryRepository implements StoryInterface
     public function updateStoryStatus(string $storyStatus, int $storyId): bool
     {
         // default story array to update
-        $updateData = ['status' => $storyStatus, 'published_at' => null];
+
+        $updateData = [
+            'status' => $storyStatus,
+            'published_at' => null,
+        ];
+
 
         if ($storyStatus == 'PUBLISHED') {
             $updateData['published_at'] = Carbon::now()->toDateTimeString();
@@ -197,8 +229,12 @@ class StoryRepository implements StoryInterface
      */
     public function getStoryDetails(int $storyId, string $storyStatus = null): Story
     {
-        $storyQuery = $this->story
-            ->with(['user', 'user.city', 'user.country', 'storyMedia']);
+        $storyQuery = $this->story->with([
+            'user',
+            'user.city',
+            'user.country',
+            'storyMedia',
+        ]);
 
         if (!empty($storyStatus)) {
             $storyQuery->where('status', $storyStatus);
@@ -230,9 +266,7 @@ class StoryRepository implements StoryInterface
                 'path' => $media->path
             ]);
         }
-
         $newStory->storyMedia()->saveMany($storyMedia);
-
         return $newStoryId;
     }
 
@@ -253,7 +287,7 @@ class StoryRepository implements StoryInterface
             'status',
             'published_at'
         )->with(['mission', 'mission.missionLanguage' => function ($query) use ($languageId) {
-                $query->select('mission_language_id', 'mission_id', 'title')
+            $query->select('mission_language_id', 'mission_id', 'title')
                     ->where('language_id', $languageId);
         }])->where('user_id', $userId);
         return $userStoryQuery->get();

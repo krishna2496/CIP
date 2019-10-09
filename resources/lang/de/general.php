@@ -1,14 +1,14 @@
 <?php
 
 return [
-	/**
-	 * General labels
-	 */
-	'labels' => [
-		'TEXT_STORY_COPY_OF' => 'DE: Copy of '
-	],
-	
-	/**
+    /**
+     * General labels
+     */
+    'labels' => [
+        'TEXT_STORY_COPY_OF' => 'DE: Copy of '
+    ],
+    
+    /**
      * Export sheet's headings
      */
     'export_sheet_headings' => [
@@ -18,15 +18,22 @@ return [
         'TIME' => 'DE: Time',
         'HOURS' => 'DE: Hours'
     ],
-		
-	/**
-	 * Export story sheet's headings
-	 */
-	'export_story_headings' => [
-		'STORY_TITLE' => 'DE: Story title',
-		'STORY_DESCRIPTION' => 'DE: Story description',
+        
+    /**
+     * Export story sheet's headings
+     */
+    'export_story_headings' => [
+        'STORY_TITLE' => 'DE: Story title',
+        'STORY_DESCRIPTION' => 'DE: Story description',
         'STORY_STATUS' => 'DE: Story status',
         'MISSION_TITLE' => 'DE: Mission title',
-		'PUBLISHED_DATE' => 'DE: Published date',
-	]
+        'PUBLISHED_DATE' => 'DE: Published date',
+    ],
+
+    'status' => [
+        'DRAFT' => 'DE: Draft',
+        'PENDING' => 'DE: Pending',
+        'PUBLISHED' => 'DE: Published',
+        'DECLINED' => 'DE: Declined',
+    ],
 ];
