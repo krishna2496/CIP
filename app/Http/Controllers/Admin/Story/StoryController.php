@@ -81,13 +81,8 @@ class StoryController extends Controller
 
         $defaultTenantLanguage = $this->languageHelper->getDefaultTenantLanguage($request);
         $language = $this->languageHelper->getLanguageDetails($request);
-<<<<<<< HEAD
-                
-        $userStories = $this->storyRepository->getUserStoriesWithPagination($request, $userId);
-=======
         
         $userStories = $this->storyRepository->getUserStoriesWithPagination($request, $language->language_id, $userId);
->>>>>>> 46bb7c8cf7cab5f60dc6769a4d76ab4958106596
 
         $storyTransformed = $userStories
             ->getCollection()
