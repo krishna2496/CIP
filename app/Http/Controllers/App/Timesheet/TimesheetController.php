@@ -455,10 +455,10 @@ class TimesheetController extends Controller
             $excel = new ExportCSV($fileName);
 
             $headings = [
-                trans('messages.export_sheet_headings.MISSION_NAME'),
-                trans('messages.export_sheet_headings.ORGANIZATION_NAME'),
-                trans('messages.export_sheet_headings.TIME'),
-                trans('messages.export_sheet_headings.HOURS')
+                trans('general.export_sheet_headings.MISSION_NAME'),
+                trans('general.export_sheet_headings.ORGANIZATION_NAME'),
+                trans('general.export_sheet_headings.TIME'),
+                trans('general.export_sheet_headings.HOURS')
             ];
 
             $excel->setHeadlines($headings);
@@ -499,9 +499,9 @@ class TimesheetController extends Controller
             $excel = new ExportCSV($fileName);
 
             $headings = [
-                trans('messages.export_sheet_headings.MISSION_NAME'),
-                trans('messages.export_sheet_headings.ORGANIZATION_NAME'),
-                trans('messages.export_sheet_headings.ACTIONS')
+                trans('general.export_sheet_headings.MISSION_NAME'),
+                trans('general.export_sheet_headings.ORGANIZATION_NAME'),
+                trans('general.export_sheet_headings.ACTIONS')
             ];
 
             $excel->setHeadlines($headings);

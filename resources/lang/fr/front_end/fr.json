@@ -186,7 +186,8 @@
         "volunteering_timesheet_not_found": "Le cœur d'un volontaire ne se mesure jamais à sa taille, mais à la profondeur de son engagement à faire une différence dans la vie des autres.",
         "no_skill_found": "Compétence non trouvée",
         "not_found": "pas trouvé",
-        "published_on": "Publié le"
+        "published_on": "Publié le",
+        "goal_objective": "Objectif objectif"
     },
 
     "placeholder": {
