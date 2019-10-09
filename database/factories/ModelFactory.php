@@ -183,3 +183,32 @@ $factory->define(App\Models\MissionSkill::class, function (Faker\Generator $fake
         'skill_id' => 1
     ];
 });
+
+$factory->define(App\Models\News::class, function (Faker\Generator $faker) {
+    return [
+        "news_image" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/unitTestFiles/sliderimg4.jpg",
+        "user_name" => str_random('5'),
+        "user_title" => strtoupper(str_random('3')),
+        "user_thumbnail" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/unitTestFiles/sliderimg4.jpg",
+        "status" => "PUBLISHED"
+    ];
+});
+
+$factory->define(App\Models\NewsLanguage::class, function (Faker\Generator $faker) {
+    return [
+        "news_id" => null,
+        "language_id" => 1,
+        "title" => strtoupper(str_random('3')),
+        "description" => "Nous avons collecté les informations suivantes: intitulé du poste, informations de contact, y compris adresse électronique, informations démographiques telles que code postal, préférences et intérêts, autres informations"
+    ];
+});
+
+$factory->define(App\Models\NewsToCategory::class, function (Faker\Generator $faker) {
+    \DB::setDefaultConnection('tenant');
+    $newsCategoryId = App\Models\NewsCategory::all()->random(1)->first()->news_category_id;
+    \DB::setDefaultConnection('mysql');
+    return [
+        "news_id" => 1,
+        "news_category_id" => $newsCategoryId
+    ];
+});
