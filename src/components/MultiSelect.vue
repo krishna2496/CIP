@@ -38,7 +38,7 @@
                     </div>
                 </div>
                 <div class="btn-wrap">
-                    <b-button @click="resetSkill" class="btn-borderprimary">{{languageData.label.cancel}}</b-button>
+                    <b-button @click="resetSkill" class="btn-borderprimary" v-bind:class="{disabled:resetButtonDisable}">{{languageData.label.reset}}</b-button>
                     <b-button @click="saveSkill" class="btn-bordersecondary">{{languageData.label.save}}</b-button>
                 </div>
             </b-modal>
@@ -69,7 +69,8 @@
                 message: '',
                 closeClick: true,
                 dataFromList: this.fromList,
-                dataToList: this.toList
+                dataToList: this.toList,
+                resetButtonDisable:true
             };
         },
         mounted() {
@@ -122,6 +123,8 @@
                     this.showErrorDiv = true,
                     this.message = this.languageData.errors.max_skill_selection
                 }
+                
+                this.resetButtonDisable = false
             },
             // Remove data from to list 
             removeFromToList(id) {
@@ -135,10 +138,11 @@
                 this.fromList.push(filteredObj[0])
                 this.fromList.sort();
                 this.fromList.sort(function (first, next) {
-                    first = first.id;
-                    next = next.id;
+                    first = first.name;
+                    next = next.name;
                     return first < next ? -1 : (first > next ? 1 : 0);
                 });
+                this.resetButtonDisable = false
             },
             resetSkill() {
                 if (localStorage.getItem("currentSkill") !== null && localStorage.getItem("currentFromSkill") !==

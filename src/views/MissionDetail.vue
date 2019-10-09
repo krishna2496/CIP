@@ -260,7 +260,7 @@
 											<i class="img-wrap">
 												<img :src="$store.state.imagePath+'/assets/images/calendar.svg'" alt="" />
 											</i>
-											<span class="label">{{ languageData.label.date}}</span>
+											<span class="label">{{ languageData.label.start_date}}</span>
 											<template v-if="missionDetail.start_date != '' && missionDetail.start_date != null && missionDetail.end_date != '' && missionDetail.end_date != null">
 												<p class="text-wrap">{{missionDetail.start_date | formatDate}}</p>
 											</template>
