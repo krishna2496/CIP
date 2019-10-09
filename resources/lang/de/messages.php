@@ -114,9 +114,11 @@ return [
         'MESSAGE_STORY_COPIED_SUCCESS' => 'DE: Story copied successfully',
         'MESSAGE_UNABLE_TO_EXPORT_USER_STORIES_ENTRIES' => 'DE: No stories found',
         'MESSAGE_STORY_UPDATED' => 'DE: Story updated successfully',
-
+        'MESSAGE_USER_COMMENTS_LISTING' => 'DE: User comments listed successfully',
+        'MESSAGE_STORY_SUBMITTED_SUCESSFULLY' => 'DE: Story submitted sucessfully',
+        'MESSAGE_STORY_IMAGE_DELETED' => 'DE: Story image deleted sucessfully',
+    	'MESSAGE_UNABLE_TO_EXPORT_MISSION_COMMENTS_ENTRIES' => 'DE: No mission comments found',
         'MESSAGE_STORY_VISITOR_ADDED_SUCESSFULLY' => 'DE: Story visitor added successfully',
-
         'MESSAGE_STORY_SUBMITTED_SUCESSFULLY' => 'DE: Story submitted sucessfully',
         'MESSAGE_STORY_IMAGE_DELETED' => 'DE: Story image deleted sucessfully',
     ],

@@ -279,7 +279,6 @@ $router->group(['middleware' => 'localization'], function ($router) {
         'middleware' => 'tenant.connection|jwt.auth',
         'uses' => 'App\VolunteerHistory\VolunteerHistoryController@exportGoalMissionHistory']);
 
-
     /* News listing */
     $router->get('/app/news', ['as' => 'app.news.list',
         'middleware' => 'localization|tenant.connection|jwt.auth|PaginationMiddleware',
@@ -300,12 +299,10 @@ $router->group(['middleware' => 'localization'], function ($router) {
         'middleware' => 'localization|tenant.connection|jwt.auth',
         'uses' => 'App\Story\StoryController@destroy']);
 
-
     /* all users published story listing */
     $router->get('/app/story/list', ['as' => 'app.story.publishedStories',
         'middleware' => 'localization|tenant.connection|jwt.auth',
         'uses' => 'App\Story\StoryController@publishedStories']);
-
         
     /* Export all Story Data */
     $router->get('/app/story/export', ['as' => 'app.story.export',
@@ -321,24 +318,21 @@ $router->group(['middleware' => 'localization'], function ($router) {
     $router->get('/app/story/my-stories', ['as' => 'app.story.userstories',
         'middleware' => 'localization|tenant.connection|jwt.auth',
         'uses' => 'App\Story\StoryController@getUserStories']);
-    
 
     /* Update story details */
     $router->patch('/app/story/{storyId}', ['as' => 'app.story.update',
         'middleware' => 'localization|tenant.connection|jwt.auth',
         'uses' => 'App\Story\StoryController@update']);
-
+        
     /* Fetch story details */
     $router->get('/app/story/{storyId}', ['as' => 'app.story.show',
      'middleware' => 'localization|tenant.connection|jwt.auth',
      'uses' => 'App\Story\StoryController@show']);
 
-
     /* Submit story detail */
     $router->post('/app/story/{storyId}/submit', ['as' => 'app.story.submit',
         'middleware' => 'localization|tenant.connection|jwt.auth',
         'uses' => 'App\Story\StoryController@submitStory']);
-
 
     /* store story visitor details */
     $router->get('/app/story/{storyId}/views', ['as' => 'app.storyvisitor.store',
@@ -349,9 +343,22 @@ $router->group(['middleware' => 'localization'], function ($router) {
     $router->delete('/app/story/{storyId}/image/{imageId}', ['as' => 'app.story.removeStoryImage',
         'middleware' => 'localization|tenant.connection|jwt.auth',
         'uses' => 'App\Story\StoryController@deleteStoryImage']);
-});
 
+    /* Delete user mission comments */
+    $router->delete('/app/dashboard/comments/{commentId}', ['as' => 'app.dashboard.comment.destroy',
+        'middleware' => 'localization|tenant.connection|jwt.auth',
+        'uses' => 'App\Mission\MissionCommentController@destroy']);
+        
+    /* Export user mission comments */
+    $router->get('/app/dashboard/comments/export', [
+        'middleware' => 'tenant.connection|jwt.auth',
+        'uses' => 'App\Mission\MissionCommentController@exportComments']);
 
+    /* Get user mission comments */
+    $router->get('/app/dashboard/comments', [
+        'middleware' => 'tenant.connection|jwt.auth',
+        'uses' => 'App\Mission\MissionCommentController@getUserMissionComment']);
+    });
 
 /*
 |

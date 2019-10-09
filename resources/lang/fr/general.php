@@ -25,8 +25,19 @@ return [
         'STORY_TITLE' => 'Titre de l\'histoire',
         'STORY_DESCRIPTION' => 'Description de l\'histoire',
         'STORY_STATUS' => 'Statut de l\'histoire',
-        'MISSION_TITLE' => 'Titre de la mission',
-        'PUBLISHED_DATE' => 'date de publication',
+        'MISSION' => 'Mission',
+		'PUBLISHED_DATE' => 'date de publication',
+	],
+	
+	/**
+	* Export user comment sheet's headings
+	*/
+   'export_mission_comment_headings' => [
+	   'MISSION_TITLE' => 'Titre de la mission',
+	   'COMMENT' => 'Commentaire',
+	   'STATUS' => 'Statut du commentaire',
+       'MISSION_TITLE' => 'Titre de la mission',
+       'PUBLISHED_DATE' => 'date de publication',
     ],
 
     'status' => [

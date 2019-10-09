@@ -73,14 +73,16 @@ class Story extends Model
     }
 
     /**
-     * Soft delete from the database.
+     * Soft delete the model from the database.
      *
-     * @param  int  $id
+     * @param int $storyId
+     * @param int $userId
      * @return bool
      */
-    public function deleteStory(int $id): bool
+    public function deleteStory(int $storyId, int $userId): bool
     {
-        return static::findOrFail($id)->delete();
+        return static::where(['story_id' => $storyId,
+        'user_id' => $userId])->firstOrFail()->delete();
     }
 
     /**
