@@ -7,6 +7,7 @@
 			<b-container>
 				<div class="slider-banner-block">
 					<b-row>
+						{{storyDetailList}}
 						<b-col xl="9" lg="8" class="slider-col">
 							<div class="title-block">
 								<h1>Grow Tress - On the path to environment sustainbility</h1>
@@ -62,9 +63,9 @@
 							<div class="profile-box">
 								<div class="user-profile">
 									<i class="user-profile-icon"
-										:style="{backgroundImage: 'url(' + profileImg[0] + ')'}"></i>
-									<h4>Charles Vigue</h4>
-									<p>New York, USA</p>
+										:style="{backgroundImage: 'url(' + storyDetailList.avatar + ')'}"></i>
+									<h4>{{storyDetailList.first_name}}  {{storyDetailList.last_name}}</h4>
+									<p>{{storyDetailList.city.name}}, {{storyDetailList.country.name}}</p>
 								</div>
 								<div class="profile-content">
 									<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
@@ -166,6 +167,8 @@
 					require("@/assets/images/volunteer3.png")
 				],
 				storyId : this.$route.params.storyId,
+				isStoryDisplay : true,
+				languageData : [],
 				slickOptions: {
 					autoplay: false,
 					arrows: true,
@@ -181,10 +184,6 @@
 					vertical: true,
 					useTransform: true,
 					adaptiveHeight: true,
-					languageData : [],
-					isStoryDisplay : true,
-					storyDetailList : [],
-					// verticalSwiping: true
 					responsive: [{
 							breakpoint: 1200,
 							settings: {
@@ -200,7 +199,8 @@
 						}
 					]
 					// Any other options that can be got from plugin documentation
-				}
+				},
+				storyDetailList:[]
 			};
 		},
 		mounted() {},
@@ -230,15 +230,14 @@
 				}
 			},
 			getStoryDetail() {
-				alert(this.storyId);
+				
 				storyDetail(this.storyId).then(response => {
-					// console.log(response);
-					// if(response.error == false) {
-					// 	this.storyDetailList = response.data
-					// 	this.isContentLoaded = true
-					// } else {
-					// 	this.$router.push('/404');
-					// }
+					if(response.error == false) {
+						this.storyDetailList = response.data
+						this.isContentLoaded = true
+					} else {
+						this.$router.push('/404');
+					}
 				})
 			}
 		},

@@ -85,14 +85,14 @@
                                 </ul>
                             </li>
                             <li class="has-menu no-dropdown" v-if="isStoryDisplay">
-                                <a href="Javascript:void(0)"
-                                    :title='languageData.label.stories'>{{ languageData.label.stories}}
-                                </a>
+                                <router-link :to="{ path: '/stories'}">
+                                    {{languageData.label.stories}}
+                                </router-link>
                             </li>
                             <li class="has-menu no-dropdown" v-if="isNewsDisplay">
-                                 <a href="Javascript:void(0)"
-                                    :title='languageData.label.news'>{{ languageData.label.news}}
-                                </a>
+                                <router-link :to="{ path: '/news'}">
+                                    {{languageData.label.news}}
+                                </router-link>
                             </li>
 
                             <li class="has-menu" v-if="isPolicyDisplay && policyPage.length > 0">
