@@ -67,7 +67,6 @@ class StoryRepository implements StoryInterface
         $this->helpers = $helpers;
     }
 
-
     /**
      * Store story details
      *
@@ -159,7 +158,6 @@ class StoryRepository implements StoryInterface
      * @param string $status
      * @return \Illuminate\Pagination\LengthAwarePaginator
      */
-
     public function getUserStoriesWithPagination(
         Request $request,
         int $languageId,
@@ -206,12 +204,10 @@ class StoryRepository implements StoryInterface
     public function updateStoryStatus(string $storyStatus, int $storyId): bool
     {
         // default story array to update
-
         $updateData = [
             'status' => $storyStatus,
             'published_at' => null,
         ];
-
 
         if ($storyStatus == 'PUBLISHED') {
             $updateData['published_at'] = Carbon::now()->toDateTimeString();
@@ -258,7 +254,6 @@ class StoryRepository implements StoryInterface
         $newStory->save();
 
         $newStoryId = $newStory->story_id;
-        
         $storyMedia =[];
         foreach ($newStory->storyMedia as $media) {
             $storyMedia[] = new StoryMedia([

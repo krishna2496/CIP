@@ -113,6 +113,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
     'middleware' => 'tenant.connection|jwt.auth',
     'uses' => 'App\User\DashboardController@index']);
 
+
     /* Get mission detail  */
     $router->get('/app/mission/{missionId}', [
         'middleware' => 'tenant.connection|jwt.auth',
@@ -298,6 +299,13 @@ $router->group(['middleware' => 'localization'], function ($router) {
     $router->delete('/app/story/{storyId}', ['as' => 'app.story.destroy',
         'middleware' => 'localization|tenant.connection|jwt.auth',
         'uses' => 'App\Story\StoryController@destroy']);
+
+
+    /* all users published story listing */
+    $router->get('/app/story/list', ['as' => 'app.story.publishedStories',
+        'middleware' => 'localization|tenant.connection|jwt.auth',
+        'uses' => 'App\Story\StoryController@publishedStories']);
+
         
     /* Export all Story Data */
     $router->get('/app/story/export', ['as' => 'app.story.export',
@@ -336,6 +344,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
         'middleware' => 'localization|tenant.connection|jwt.auth',
         'uses' => 'App\Story\StoryController@deleteStoryImage']);
 });
+
 
 
 /*

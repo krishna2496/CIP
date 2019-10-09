@@ -75,7 +75,6 @@ interface StoryInterface
      */
     public function createStoryCopy(int $oldStoryId): int;
 
-
     /**
      * Display a listing of specified resources without pagination.
      *

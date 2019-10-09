@@ -14,6 +14,7 @@ trait StoryTransformable
      * @param int $languageId
      * @return App\Models\Story
      */
+
     protected function transformStory(Story $story, int $defaultTenantLanguageId, int $languageId):Story
     {
         $prop = new Story;
@@ -23,7 +24,6 @@ trait StoryTransformable
         $prop->description = $story->description;
         $prop->status = trans('general.status.' . $story->status);
         $prop->published_at = $story->published_at;
-        
 
         if (!empty($story->user)) {
             $prop->user_id = $story->user_id;
@@ -97,7 +97,7 @@ trait StoryTransformable
 
         return $transformedUserStories;
     }
-    
+
     /**
      * Used for transform published stories
      *
@@ -107,17 +107,14 @@ trait StoryTransformable
     protected function transformPublishedStory(Object $story): array
     {
         $transformedPublishedStories = array();
-        
         $languageCode = config('app.locale');
         foreach ($story as $storyData) {
             // get the theme name based on language set
             $themeName = $storyData->mission->missionTheme->theme_name;
-            
             $arrayKey = array_search($languageCode, array_column(
                 $storyData->mission->missionTheme['translations'],
                 'lang'
             ));
-            
             if ($arrayKey  !== false) {
                 $themeName = $storyData->mission->missionTheme['translations'][$arrayKey]['title'];
             }
@@ -131,13 +128,13 @@ trait StoryTransformable
                     'user_avatar' => $storyData->user->avatar,
                     'title' => $storyData->title,
                     'description' => $storyData->description,
-                    'status' => trans('messages.status.'.$storyData->status),
+                    'status' => trans('general.status.'.$storyData->status),
                     'storyMedia' => $storyData->storyMedia->first(),
                     'published_at' =>  Carbon::parse($storyData->published_at)->format('d/m/Y'),
                     'theme_name' => $themeName
             ];
         }
-        
+
         return $transformedPublishedStories;
     }
 }

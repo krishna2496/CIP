@@ -10,11 +10,11 @@ use App\Helpers\LanguageHelper;
 use App\Http\Controllers\Controller;
 use App\Helpers\ExportCSV;
 use Illuminate\Http\JsonResponse;
+use App\Helpers\Helpers;
 use App\Traits\RestExceptionHandlerTrait;
 use App\Transformations\StoryTransformable;
 use Validator;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use App\Helpers\Helpers;
 
 class StoryController extends Controller
 {
@@ -453,10 +453,58 @@ class StoryController extends Controller
         
         $apiData = $storyPaginated;
         $apiStatus = Response::HTTP_OK;
-        $apiMessage = (!empty($apiData)) ?
+        $apiMessage = ($apiData->count()) ?
             trans('messages.success.MESSAGE_STORIES_ENTRIES_LISTING') :
             trans('messages.success.MESSAGE_NO_STORIES_ENTRIES_FOUND');
         
+        return $this->responseHelper->successWithPagination(
+            $apiStatus,
+            $apiMessage,
+            $apiData,
+            []
+        );
+    }
+    
+    /**
+     * Used for get all published stories data
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function publishedStories(Request $request): JsonResponse
+    {
+        // get user's all story data
+        $language = $this->languageHelper->getLanguageDetails($request);
+
+        // get all published stories of users
+        $publishedStories = $this->storyRepository->getUserStoriesWithPagination(
+            $request,
+            $language->language_id,
+            null,
+            config('constants.story_status.PUBLISHED')
+        );
+        
+        $storyTransformedData = $this->transformPublishedStory($publishedStories);
+        $requestString = $request->except(['page','perPage']);
+        $storyPaginated = new \Illuminate\Pagination\LengthAwarePaginator(
+            $storyTransformedData,
+            $publishedStories->total(),
+            $publishedStories->perPage(),
+            $publishedStories->currentPage(),
+            [
+                'path' => $request->url().'?'.http_build_query($requestString),
+                'query' => [
+                    'page' => $publishedStories->currentPage()
+                ]
+            ]
+        );
+         
+        $apiData = $storyPaginated;
+        $apiStatus = Response::HTTP_OK;
+        $apiMessage = ($apiData->count()) ?
+        trans('messages.success.MESSAGE_STORIES_ENTRIES_LISTING') :
+        trans('messages.success.MESSAGE_NO_STORIES_ENTRIES_FOUND');
+         
         return $this->responseHelper->successWithPagination(
             $apiStatus,
             $apiMessage,
