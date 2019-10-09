@@ -111,6 +111,15 @@ return [
     ],
 
     /*
+     * Story image types
+     */
+    'story_image_types' => [
+        'PNG' => 'png',
+        'JPG' => 'jpg',
+        'JPEG' => 'jpeg',
+    ],
+
+    /*
      * Slider image types
      */
     'slider_image_types' => [
