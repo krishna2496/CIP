@@ -224,6 +224,13 @@ return [
     'export_story_file_names' => [
         'STORY_XLSX' => 'Stories.xlsx',
     ],
+
+    /**
+     * Export mission comments file names
+     */
+    'export_mission_comment_file_names' => [
+        'MISSION_COMMENT_XLSX' => 'MissionComments.xlsx',
+    ],
         
     /*
      * Folder name s3

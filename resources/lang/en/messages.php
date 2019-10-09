@@ -150,7 +150,8 @@ return [
         'MESSAGE_STORY_UPDATED' => 'Story updated successfully',
         'MESSAGE_USER_COMMENTS_LISTING' => 'User comments listed successfully',
         'MESSAGE_STORY_SUBMITTED_SUCESSFULLY' => 'Story submitted sucessfully',
-        'MESSAGE_STORY_IMAGE_DELETED' => 'Story image deleted sucessfully'
+        'MESSAGE_STORY_IMAGE_DELETED' => 'Story image deleted sucessfully',
+    	'MESSAGE_UNABLE_TO_EXPORT_MISSION_COMMENTS_ENTRIES' => 'No mission comments found',
 	],
         
     /**

@@ -28,4 +28,14 @@ return [
         'MISSION' => 'Mission',
 		'PUBLISHED_DATE' => 'date de publication',
 	],
+	
+	/**
+	* Export user comment sheet's headings
+	*/
+   'export_mission_comment_headings' => [
+	   'MISSION_TITLE' => 'Titre de la mission',
+	   'COMMENT' => 'Commentaire',
+	   'STATUS' => 'Statut du commentaire',
+	   'PUBLISHED_DATE' => 'Date de publication',
+   ]
 ];

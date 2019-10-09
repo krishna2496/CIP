@@ -27,5 +27,15 @@ return [
         'STORY_STATUS' => 'Story status',
         'MISSION_TITLE' => 'Mission title',
 		'PUBLISHED_DATE' => 'Published date',
+	],
+
+	/**
+	 * Export user comment sheet's headings
+	 */
+	'export_mission_comment_headings' => [
+		'MISSION_TITLE' => 'Mission title',
+		'COMMENT' => 'Comment',
+        'STATUS' => 'Comment status',
+        'PUBLISHED_DATE' => 'Published date',
 	]
 ];

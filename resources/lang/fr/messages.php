@@ -146,7 +146,8 @@ return [
         'MESSAGE_STORY_UPDATED' => 'Histoire mise à jour avec succès',
         'MESSAGE_USER_COMMENTS_LISTING' => 'Commentaires d\'utilisateurs listés avec succès',
         'MESSAGE_STORY_SUBMITTED_SUCESSFULLY' => 'Histoire soumise avec succès',
-        'MESSAGE_STORY_IMAGE_DELETED' => 'Image de l\'histoire supprimée avec succès'
+        'MESSAGE_STORY_IMAGE_DELETED' => 'Image de l\'histoire supprimée avec succès',
+    	'MESSAGE_UNABLE_TO_EXPORT_MISSION_COMMENTS_ENTRIES' => 'Aucun commentaire de mission trouvé',
     ],
 
         

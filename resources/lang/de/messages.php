@@ -117,6 +117,7 @@ return [
         'MESSAGE_USER_COMMENTS_LISTING' => 'DE: User comments listed successfully',
         'MESSAGE_STORY_SUBMITTED_SUCESSFULLY' => 'DE: Story submitted sucessfully',
         'MESSAGE_STORY_IMAGE_DELETED' => 'DE: Story image deleted sucessfully',
+    	'MESSAGE_UNABLE_TO_EXPORT_MISSION_COMMENTS_ENTRIES' => 'DE: No mission comments found',
 	],
 
         

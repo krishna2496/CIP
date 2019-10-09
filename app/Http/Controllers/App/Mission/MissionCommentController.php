@@ -13,6 +13,7 @@ use Validator;
 use App\Helpers\Helpers;
 use App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository;
 use App\Helpers\LanguageHelper;
+use App\Helpers\ExportCSV;
 
 class MissionCommentController extends Controller
 {
@@ -180,5 +181,49 @@ class MissionCommentController extends Controller
                 trans('messages.custom_error_message.ERROR_COMMENT_NOT_FOUND')
             );
         }
+    }
+
+    /**
+     * Export user comments
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return Object
+     */
+    public function exportComments(Request $request): Object
+    {
+        $languageId = $this->languageHelper->getLanguageId($request);
+        $userMissionCommentsData = $this->missionCommentRepository->getUserComments(
+            $request->auth->user_id,
+            $languageId
+        );
+
+        if ($userMissionCommentsData->count() <= 1) {
+            $apiStatus = Response::HTTP_OK;
+            $apiMessage = trans('messages.success.MESSAGE_UNABLE_TO_EXPORT_MISSION_COMMENTS_ENTRIES');
+            return $this->responseHelper->success($apiStatus, $apiMessage);
+        }
+        
+        $fileName = config('constants.export_mission_comment_file_names.MISSION_COMMENT_XLSX');
+        $excel = new ExportCSV($fileName);
+        $headings = [
+            trans("general.export_mission_comment_headings.MISSION_TITLE"),
+            trans("general.export_mission_comment_headings.COMMENT"),
+            trans("general.export_mission_comment_headings.STATUS"),
+            trans("general.export_mission_comment_headings.PUBLISHED_DATE"),
+        ];
+        
+        $excel->setHeadlines($headings);
+        foreach ($userMissionCommentsData as $comments) {
+            $excel->appendRow([
+                $comments->title,
+                $comments->comment,
+                $comments->approval_status,
+                $comments->created_at
+            ]);
+        }
+    
+        $tenantName = $this->helpers->getSubDomainFromRequest($request);
+        $path = $excel->export('app/'.$tenantName.'/MissionComments/'.$request->auth->user_id.'/exports');
+        return response()->download($path, $fileName);
     }
 }

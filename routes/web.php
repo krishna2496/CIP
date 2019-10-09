@@ -337,6 +337,11 @@ $router->group(['middleware' => 'localization'], function ($router) {
         $router->delete('/app/dashboard/comments/{commentId}', ['as' => 'app.dashboard.comment.destroy',
         'middleware' => 'localization|tenant.connection|jwt.auth',
         'uses' => 'App\Mission\MissionCommentController@destroy']);
+        
+        /* Export user mission comments  */
+        $router->get('/app/dashboard/comments/export', [
+            'middleware' => 'tenant.connection|jwt.auth',
+            'uses' => 'App\Mission\MissionCommentController@exportComments']);
     });
 
 /*
