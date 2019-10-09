@@ -434,7 +434,7 @@ class StoryController extends Controller
             $request->auth->user_id
         );
         
-        $storyTransformedData = $this->transformUserRelatedStory($userStories);
+        $storyTransformedData = $this->transformUserStories($userStories);
         
         $requestString = $request->except(['page','perPage']);
         $storyPaginated = new \Illuminate\Pagination\LengthAwarePaginator(
@@ -453,20 +453,19 @@ class StoryController extends Controller
         
         $apiData = $storyPaginated;
         $apiStatus = Response::HTTP_OK;
-        $apiMessage = ($apiData->count()) ?
+        $apiMessage = ($apiData->total() > 0) ?
             trans('messages.success.MESSAGE_STORIES_ENTRIES_LISTING') :
             trans('messages.success.MESSAGE_NO_STORIES_ENTRIES_FOUND');
         
         return $this->responseHelper->successWithPagination(
             $apiStatus,
             $apiMessage,
-            $apiData,
-            []
-        );
+            $apiData
+			);
     }
     
     /**
-     * Used for get all published stories data
+     * Story listing on front end
      *
      * @param Request $request
      * @return JsonResponse

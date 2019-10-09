@@ -54,25 +54,24 @@ trait StoryTransformable
     /**
      * Used for transform user stories
      *
-     * @param Object $story
+     * @param Object $stories
      * @return array
      */
-    protected function transformUserRelatedStory(Object $story): array
+    protected function transformUserStories(Object $stories): array
     {
-        $userStories = $story->toArray();
         $transformedUserStories = array();
 
-        $draftStory = $publishedStory = $pendingStories = $declinedStories = 0;
-        foreach ($story as $storyData) {
-            switch ($storyData->status) {
+        $draftStories = $publishedStories = $pendingStories = $declinedStories = 0;
+        foreach ($stories as $story) {
+            switch ($story->status) {
                 case "DRAFT":
-                    $draftStory++;
+                    $draftStories++;
                     break;
                 case "PENDING":
                     $pendingStories++;
                     break;
                 case "PUBLISHED":
-                    $publishedStory++;
+                    $publishedStories++;
                     break;
                 case "DECLINED":
                     $declinedStories++;
@@ -80,21 +79,22 @@ trait StoryTransformable
             }
 
             $transformedUserStories['story_data'][] = [
-                'story_id' => (int) $storyData->story_id,
-                'mission_id' => $storyData->mission_id,
-                'title' => $storyData->title,
-                'description' => $storyData->description,
-                'status' => trans('general.status.' . $storyData->status),
-                'storyMedia' => $storyData->storyMedia->first(),
-                'created' => Carbon::parse($storyData->created_at)->format('d/m/Y'),
+                'story_id' => (int) $story->story_id,
+                'mission_id' => $story->mission_id,
+                'title' => $story->title,
+                'description' => $story->description,
+                'status' => trans('general.status.' . $story->status),
+                'storyMedia' => $story->storyMedia->first(),
+                'created' => Carbon::parse($story->created_at)->format('d/m/Y'),
             ];
         }
-
-        $transformedUserStories['draft_story_count'] = $draftStory;
-        $transformedUserStories['published_story_count'] = $publishedStory;
-        $transformedUserStories['pending_story_count'] = $pendingStories;
-        $transformedUserStories['declined_story_count'] = $declinedStories;
-
+		if (count($stories) > 0) {
+			$transformedUserStories['stats']['draft'] = $draftStories;
+			$transformedUserStories['stats']['published'] = $publishedStories;
+			$transformedUserStories['stats']['pending'] = $pendingStories;
+			$transformedUserStories['stats']['declined'] = $declinedStories;
+		}
+        
         return $transformedUserStories;
     }
 
