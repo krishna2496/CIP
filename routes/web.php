@@ -301,7 +301,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
         /* Export all Story Data */
         $router->get('/app/story/export', ['as' => 'app.story.export',
          'middleware' => 'localization|tenant.connection|jwt.auth',
-         'uses' => 'App\Story\StoryController@exportStory']);
+         'uses' => 'App\Story\StoryController@exportStories']);
         
         /* Fetch story details */
         $router->get('/app/story/{storyId}', ['as' => 'app.story.show',
@@ -309,9 +309,9 @@ $router->group(['middleware' => 'localization'], function ($router) {
         'uses' => 'App\Story\StoryController@show']);
         
         /* Copy story data after decline */
-        $router->get('/app/story/{story_id}/copy', ['as' => 'app.story.copyafterdecline',
+        $router->get('/app/story/{story_id}/copy', ['as' => 'app.story.copystory',
         'middleware' => 'localization|tenant.connection|jwt.auth',
-        'uses' => 'App\Story\StoryController@copyStoryAfterDecline']);
+        'uses' => 'App\Story\StoryController@copyStory']);
 
         /* Update story details */
         $router->patch('/app/story/{storyId}', ['as' => 'app.story.update',

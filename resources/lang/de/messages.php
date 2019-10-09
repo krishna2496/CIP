@@ -112,7 +112,7 @@ return [
     	'MESSAGE_STORY_STATUS_UPDATED' => 'DE: Story status updated successfully',
     	'MESSAGE_STORY_FOUND' => 'DE: Story found sucessfully',
     	'MESSAGE_STORY_COPIED_SUCCESS' => 'DE: Story copied successfully',
-    	'MESSAGE_ENABLE_TO_EXPORT_USER_STORIES_ENTRIES' => 'DE: No data found, to generate story entries',
+    	'MESSAGE_UNABLE_TO_EXPORT_USER_STORIES_ENTRIES' => 'DE: No stories found',
         'MESSAGE_STORY_UPDATED' => 'DE: Story updated successfully',
         'MESSAGE_USER_COMMENTS_LISTING' => 'DE: User comments listed successfully',
         'MESSAGE_STORY_SUBMITTED_SUCESSFULLY' => 'DE: Story submitted sucessfully',
@@ -237,15 +237,5 @@ return [
         'ERROR_STORY_IMAGE_NOT_FOUND' => 'DE: Story image not found in the system',
         'ERROR_STORY_IMAGE_DELETE' => 'DE: You cannot delete image of published or declined story',
 		'ERROR_SUBMIT_STORY_PUBLISHED_OR_DECLINED' => 'You cannot submit published or declined story',
-    ],
-		
-	/**
-	 * Export story sheet's headings
-	 */
-	'export_story_headings' => [
-		'STORY_TITLE' => 'DE: Title',
-		'STORY_DESCRIPTION' => 'DE: Description',
-		'STORY_STATUS' => 'DE: Status',
-		'PUBLISH_DATE' => 'DE: Publish Date',
-	]
+    ]
 ];
