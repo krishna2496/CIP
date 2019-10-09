@@ -270,7 +270,7 @@ class TenantOptionsController extends Controller
         }
 
         // If request parameter have any error
-        if (!in_array($file->getClientMimeType(), $validFileTypesArray) &&
+        if (!in_array($file->getMimeType(), $validFileTypesArray) &&
         $fileNameExtension === $file->getClientOriginalExtension()) {
             return $this->responseHelper->error(
                 Response::HTTP_UNPROCESSABLE_ENTITY,
@@ -301,7 +301,7 @@ class TenantOptionsController extends Controller
                     $file->getRealPath()
                 ),
                 [
-                    'mimetype' => $file->getClientMimeType()
+                    'mimetype' => $file->getMimeType()
                 ]
             );
         } else {
