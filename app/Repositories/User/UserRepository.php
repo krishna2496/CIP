@@ -323,4 +323,15 @@ class UserRepository implements UserInterface
         $userDetail->password = $password;
         return $userDetail->save();
     }
+
+    /**
+     * Get user goal hours
+     *
+     * @param int $userId
+     * @return null|int
+     */
+    public function getUserGoalHours(int $userId): ?int
+    {
+        return $this->user->getUserGoalHours($userId);
+    }
 }
