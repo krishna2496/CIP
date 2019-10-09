@@ -39,9 +39,15 @@ interface StoryInterface
      * @param \Illuminate\Http\Request $request
      * @param int $languageId
      * @param int $userId
+     * @param string $status
      * @return \Illuminate\Pagination\LengthAwarePaginator
      */
-    public function getUserStoriesWithPagination(Request $request, int $languageId, int $userId): LengthAwarePaginator;
+    public function getUserStoriesWithPagination(
+        Request $request,
+        int $languageId,
+        int $userId = null,
+        string $status = null
+    ): LengthAwarePaginator;
 
     /**
      * Get story details.
@@ -78,6 +84,7 @@ interface StoryInterface
      */
     public function getUserStories(int $languageId, int $userId): Object;
 
+
     /**
      * Store story images.
      *
@@ -113,6 +120,16 @@ interface StoryInterface
      * @return bool
      */
     public function checkStoryStatus(int $userId, int $storyId, array $storyStatus): bool;
+
+    
+    /**
+     * Used for check if story exist or not
+     *
+     * @param int $storyId
+     * @return Story
+     */
+    public function checkStoryExist(int $storyId): Story;
+
 
     /**
      * Submit story details

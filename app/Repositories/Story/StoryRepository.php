@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Repositories\Story;
 
 use App\Helpers\Helpers;
@@ -14,26 +15,31 @@ use Illuminate\Pagination\LengthAwarePaginator;
 class StoryRepository implements StoryInterface
 {
     /**
+     *
      * @var App\Models\Story
      */
     private $story;
 
     /**
+     *
      * @var App\Models\Mission
      */
     private $mission;
 
     /**
+     *
      * @var App\Models\StoryMedia
      */
     private $storyMedia;
 
     /**
+     *
      * @var App\Helpers\S3Helper
      */
     private $s3helper;
 
     /**
+     *
      * @var App\Helpers\Helpers
      */
     private $helpers;
@@ -48,7 +54,7 @@ class StoryRepository implements StoryInterface
      * @return void
      */
     public function __construct(
-        story $story,
+        Story $story,
         Mission $mission,
         StoryMedia $storyMedia,
         S3Helper $s3helper,
@@ -94,7 +100,6 @@ class StoryRepository implements StoryInterface
             // Store story video url
             $this->storeStoryVideoUrl($request->story_videos, $storyData->story_id);
         }
-
         return $storyData;
     }
 
@@ -109,6 +114,7 @@ class StoryRepository implements StoryInterface
     {
         // Find story
         $story = $this->findStoryByUserId($request->auth->user_id, $storyId);
+
 
         $storyDataArray = $request->except(['user_id', 'published_at', 'status']);
         $storyDataArray['status'] = config('constants.story_status.DRAFT');
@@ -151,21 +157,42 @@ class StoryRepository implements StoryInterface
      * @param \Illuminate\Http\Request $request
      * @param int $languageId
      * @param int $userId
+     * @param string $status
      * @return \Illuminate\Pagination\LengthAwarePaginator
      */
-    public function getUserStoriesWithPagination(Request $request, int $languageId, int $userId): LengthAwarePaginator
-    {
+    public function getUserStoriesWithPagination(
+        Request $request,
+        int $languageId,
+        int $userId = null,
+        string $status = null
+    ): LengthAwarePaginator {
         $userStoryQuery = $this->story->select(
             'story_id',
+            'user_id',
             'mission_id',
             'title',
             'description',
             'status',
-            'published_at'
-        )->with(['mission', 'storyMedia', 'mission.missionLanguage' => function ($query) use ($languageId) {
-            $query->select('mission_language_id', 'mission_id', 'language_id', 'title')
-                ->where('language_id', $languageId);
-        }])->where('user_id', $userId);
+            'published_at',
+            'created_at'
+        )->with([
+            'user',
+            'mission',
+            'mission.missionTheme',
+            'storyMedia',
+            'mission.missionLanguage' => function ($query) use ($languageId) {
+                $query->select(
+                    'mission_language_id',
+                    'mission_id',
+                    'title',
+                    'short_description'
+                )->where('language_id', $languageId);
+            },
+        ])->when($userId, function ($query, $userId) {
+            return $query->where('user_id', $userId);
+        })->when($status, function ($query, $status) {
+            return $query->where('status', $status);
+        });
         return $userStoryQuery->paginate($request->perPage);
     }
 
@@ -179,7 +206,10 @@ class StoryRepository implements StoryInterface
     public function updateStoryStatus(string $storyStatus, int $storyId): bool
     {
         // default story array to update
-        $updateData = ['status' => $storyStatus, 'published_at' => null];
+        $updateData = [
+            'status' => $storyStatus,
+            'published_at' => null,
+        ];
 
         if ($storyStatus == 'PUBLISHED') {
             $updateData['published_at'] = Carbon::now()->toDateTimeString();
@@ -197,8 +227,12 @@ class StoryRepository implements StoryInterface
      */
     public function getStoryDetails(int $storyId, string $storyStatus = null): Story
     {
-        $storyQuery = $this->story
-            ->with(['user', 'user.city', 'user.country', 'storyMedia']);
+        $storyQuery = $this->story->with([
+            'user',
+            'user.city',
+            'user.country',
+            'storyMedia',
+        ])->withCount('storyVisitor');
 
         if (!empty($storyStatus)) {
             $storyQuery->where('status', $storyStatus);
@@ -216,13 +250,12 @@ class StoryRepository implements StoryInterface
     public function createStoryCopy(int $oldStoryId): int
     {
         $newStory = $this->story->with(['storyMedia'])->findOrFail($oldStoryId)->replicate();
-
         $newStory->title = trans('general.labels.TEXT_STORY_COPY_OF') . $newStory->title;
         $newStory->status = config('constants.story_status.DRAFT');
         $newStory->save();
 
+
         $newStoryId = $newStory->story_id;
-        
         $storyMedia =[];
         foreach ($newStory->storyMedia as $media) {
             $storyMedia[] = new StoryMedia([
@@ -230,9 +263,7 @@ class StoryRepository implements StoryInterface
                 'path' => $media->path
             ]);
         }
-
         $newStory->storyMedia()->saveMany($storyMedia);
-
         return $newStoryId;
     }
 
@@ -253,9 +284,10 @@ class StoryRepository implements StoryInterface
             'status',
             'published_at'
         )->with(['mission', 'mission.missionLanguage' => function ($query) use ($languageId) {
-                $query->select('mission_language_id', 'mission_id', 'title')
+            $query->select('mission_language_id', 'mission_id', 'title')
                     ->where('language_id', $languageId);
         }])->where('user_id', $userId);
+
         return $userStoryQuery->get();
     }
 
@@ -365,5 +397,17 @@ class StoryRepository implements StoryInterface
     public function deleteStoryImage(int $mediaId, int $storyId): bool
     {
         return $this->storyMedia->deleteStoryImage($mediaId, $storyId);
+    }
+
+
+    /**
+     * Used for check if story exist or not
+     *
+     * @param int $storyId
+     * @return Story
+     */
+    public function checkStoryExist(int $storyId): Story
+    {
+        return $this->story->findOrFail($storyId);
     }
 }
