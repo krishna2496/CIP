@@ -7,15 +7,15 @@
 			<b-container>
 				<div class="slider-banner-block">
 					<b-row>
-						{{storyDetailList}}
+						{{storyDetailList.storyMedia}}
 						<b-col xl="9" lg="8" class="slider-col">
 							<div class="title-block">
-								<h1>Grow Tress - On the path to environment sustainbility</h1>
+								<h1>{{storyDetailList.title}}</h1>
 								<div class="view-tag">
 									<i>
 										<img :src="$store.state.imagePath+'/assets/images/eye-ic.svg'" alt="Eye Icon" />
 									</i>
-									<span>12,000 {{languageData.label.views}}</span>
+									<span>0 {{languageData.label.views}}</span>
 								</div>
 							</div>
 							<b-row class="thumb-slider">
@@ -34,27 +34,23 @@
 								</b-col>
 								<b-col xl="2" class="right-col">
 									<slick ref="slick" :options="slickOptions" class="gallery-thumbs">
-										<div class="img-block thumbs-col">
-											<img :src="$store.state.imagePath+'/assets/images/gallery-img01.jpg'" />
-										</div>
-										<div class="img-block thumbs-col">
-											<img :src="$store.state.imagePath+'/assets/images/gallery-img02.jpg'" />
-										</div>
-										<div class="img-block thumbs-col">
-											<img :src="$store.state.imagePath+'/assets/images/gallery-img03.jpg'" />
-										</div>
-										<div class="img-block thumbs-col">
-											<img :src="$store.state.imagePath+'/assets/images/gallery-img04.jpg'" />
-										</div>
-										<div class="img-block thumbs-col">
-											<img :src="$store.state.imagePath+'/assets/images/gallery-img05.jpg'" />
-										</div>
-										<div class="video-block thumbs-col">
+										<div v-for="(media , v) in storyDetailList.storyMedia" :key="v">
+											
+											<div @click="handleSliderClick"
+												v-bind:class="{'img-block': media.type != 'video',
+												'video-item': media.type == 'video',
+												'thumbs-col': media.type != 'video'
+												}"
+											>
+												<img :src="media.path"/>
+											</div>		
+										</div>	
+										<!-- <div class="video-block thumbs-col">
 											<img src="http://i3.ytimg.com/vi/YE7VzlLtp-4/hqdefault.jpg"
 												data-src="https://www.youtube.com/embed/YE7VzlLtp-4"
 												class="video-item" />
 											<i class="btn-play"></i>
-										</div>
+										</div> -->
 									</slick>
 								</b-col>
 							</b-row>
@@ -65,52 +61,18 @@
 									<i class="user-profile-icon"
 										:style="{backgroundImage: 'url(' + storyDetailList.avatar + ')'}"></i>
 									<h4>{{storyDetailList.first_name}}  {{storyDetailList.last_name}}</h4>
-									<p>{{storyDetailList.city.name}}, {{storyDetailList.country.name}}</p>
+									<!-- <p>{{storyDetailList.city.name}}, {{storyDetailList.country.name}}</p> -->
 								</div>
-								<div class="profile-content">
-									<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-										incididunt ut labore et dolore magna aliqua.</p>
-									<p>Ut enim ad minim veniam. Sed ut perspiciatis unde omnis iste natus error sit
-										voluptatem accusantium doloremque laudantium.</p>
-									<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-										incididunt ut labore et dolore magna aliqua.</p>
+								<div class="profile-content" v-if="storyDetailList.why_i_volunteer != ''">
+									{{storyDetailList.why_i_volunteer}}
 								</div>
 							</div>
 						</b-col>
 					</b-row>
 				</div>
 				<div class="story-content-wrap">
-					<div class="story-content cms-content">
-						<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
-							labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
-							laboris nisi ut aliquip ex ea commodo consequat.</p>
-						<p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-							pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt
-							mollit anim id est laborum.</p>
-						<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
-							labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
-							laboris nisi ut aliquip ex ea commodo consequat.Duis aute irure dolor in reprehenderit in
-							voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat
-							cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-						<p class="list-title">We use these technologies for a number of purposes, such as:</p>
-						<b-list-group>
-							<b-list-group-item>But I must explain to you how all this mistaken idea of denouncing
-								pleasure and praising pain.</b-list-group-item>
-							<b-list-group-item>At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis
-								praesentium voluptatum deleniti atque excepturi sint occaecati cupiditate non provident,
-								similique sunt in culpa qui officia deserunt mollitia animi.</b-list-group-item>
-							<b-list-group-item>On the other hand, we denounce with righteous indignation and dislike men
-								who are so beguiled and demoralized</b-list-group-item>
-							<b-list-group-item>But I must explain to you how all this mistaken idea of denouncing
-								pleasure and praising pain.</b-list-group-item>
-							<b-list-group-item>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-								tempor incididunt ut labore et dolore</b-list-group-item>
-						</b-list-group>
-						<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
-							labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
-							laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in
-							voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat
-							cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+					<div class="story-content cms-content" v-html="storyDetailList.description">
+						
 					</div>
 					<div class="btn-wrap group-btns">
 						<b-button class="btn-borderprimary icon-btn">
@@ -230,11 +192,11 @@
 				}
 			},
 			getStoryDetail() {
-				
 				storyDetail(this.storyId).then(response => {
 					if(response.error == false) {
 						this.storyDetailList = response.data
 						this.isContentLoaded = true
+						console.log(this.storyDetailList.city.name);
 					} else {
 						this.$router.push('/404');
 					}
@@ -248,15 +210,15 @@
 				this.$router.push('/home')
 			}
 			this.getStoryDetail();
-			setTimeout(() => {
-				var thumbImg = document.querySelectorAll(
-					".gallery-thumbs .slick-slide img, .gallery-thumbs .slick-slide .btn-play"
-				);
-				thumbImg.forEach((itemEvent) => {
-					itemEvent.removeEventListener("click", this.handleSliderClick);
-					itemEvent.addEventListener("click", this.handleSliderClick);
-				});
-			});
+			// setTimeout(() => {
+			// 	var thumbImg = document.querySelectorAll(
+			// 		".gallery-thumbs .slick-slide img, .gallery-thumbs .slick-slide .btn-play"
+			// 	);
+			// 	thumbImg.forEach((itemEvent) => {
+			// 		itemEvent.removeEventListener("click", this.handleSliderClick);
+			// 		itemEvent.addEventListener("click", this.handleSliderClick);
+			// 	});
+			// });
 			window.addEventListener("resize", () => {
 				setTimeout(() => {
 					var thumbImg = document.querySelectorAll(

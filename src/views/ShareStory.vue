@@ -43,20 +43,21 @@
 									    </b-form-group>
 									</b-col>
 								</b-row>
-								<b-form-group>
-									<label for>{{languageData.label.my_story}}*</label>
-									<b-form-textarea id 
-										v-model.trim="story.myStory"
-										:class="{ 'is-invalid': submitted && $v.story.myStory.$error }"
-										:placeholder="languageData.placeholder.story_detail"
-										size="lg" rows="25"
-										class="text-editor">
-									</b-form-textarea>
-									<div v-if="submitted && !$v.story.myStory.required" class="invalid-feedback">
-										{{ languageData.errors.story_description_required }}
-									</div>
-								</b-form-group>
+								<b-row>
+									<label for>{{languageData.label.my_story}}*</label>		
+										<vue-ckeditor 
+											:config="config"
+											v-model="story.myStory" 
+											:class="{ 'is-invalid': submitted && $v.story.myStory.$error }"
+											:placeholder="languageData.placeholder.story_detail"
+										/>
+										<div v-if="submitted && !$v.story.myStory.required" class="invalid-feedback">
+											{{ languageData.errors.story_description_required }}
+										</div>
+							</b-row>
 							</b-form>
+							
+
 						</div>
 						<div class="btn-row">
 							<b-button class="btn-borderprimary" @click="cancleShareStory">{{languageData.label.cancel}}</b-button>
@@ -144,13 +145,15 @@
 		storyMissionListing,
     	submitStory
 	} from "../services/service";
+	import VueCkeditor from 'vue-ckeditor2'
 	export default {
 		components: {
 			ThePrimaryHeader : () => import("../components/Layouts/ThePrimaryHeader"),
 			TheSecondaryFooter: () => import("../components/Layouts/TheSecondaryFooter"),
 			AppCustomDropdown,
 			FileUpload,
-			DatePicker
+			DatePicker,
+			VueCkeditor 
 		},
 		data() {
 			return {
@@ -178,7 +181,11 @@
 				saveButtonEnable : false,
 				submitButtonEnable : true,
 				previewButtonEnable : true,
-			};
+				content: '',
+				config: {
+					height: 300
+				}
+			}
 		},
 		validations: {
             story: {
@@ -329,8 +336,8 @@
                     file.filter((fileItem, fileIndex) => {
 						formData.append('story_images[]', fileItem.file);
                     })
-                }
-
+				}
+				
                 formData.append('mission_id', this.story.mission);
                 formData.append('title', this.story.title);
 				formData.append('description', this.story.myStory);
@@ -367,6 +374,7 @@
 			}
 			this.defaultMissionTitle =  this.languageData.label.mission_title
 			this.missionListing();
+			
 		},
 		updated() {}
 	};
