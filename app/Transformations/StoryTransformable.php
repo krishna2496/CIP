@@ -22,6 +22,7 @@ trait StoryTransformable
         $prop->mission_id = $story->mission_id;
         $prop->title = $story->title;
         $prop->description = $story->description;
+        $prop->story_visitor_count = (int) $story->story_visitor_count;
         $prop->status = trans('general.status.' . $story->status);
         $prop->published_at = $story->published_at;
 

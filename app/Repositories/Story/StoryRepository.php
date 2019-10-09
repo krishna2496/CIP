@@ -54,7 +54,7 @@ class StoryRepository implements StoryInterface
      * @return void
      */
     public function __construct(
-        story $story,
+        Story $story,
         Mission $mission,
         StoryMedia $storyMedia,
         S3Helper $s3helper,
@@ -84,6 +84,7 @@ class StoryRepository implements StoryInterface
         );
 
         $storyData = $this->story->create($storyDataArray);
+
         if ($request->hasFile('story_images')) {
             $tenantName = $this->helpers->getSubDomainFromRequest($request);
             // Store story images
@@ -113,6 +114,7 @@ class StoryRepository implements StoryInterface
     {
         // Find story
         $story = $this->findStoryByUserId($request->auth->user_id, $storyId);
+
 
         $storyDataArray = $request->except(['user_id', 'published_at', 'status']);
         $storyDataArray['status'] = config('constants.story_status.DRAFT');
@@ -230,7 +232,7 @@ class StoryRepository implements StoryInterface
             'user.city',
             'user.country',
             'storyMedia',
-        ]);
+        ])->withCount('storyVisitor');
 
         if (!empty($storyStatus)) {
             $storyQuery->where('status', $storyStatus);
@@ -248,10 +250,10 @@ class StoryRepository implements StoryInterface
     public function createStoryCopy(int $oldStoryId): int
     {
         $newStory = $this->story->with(['storyMedia'])->findOrFail($oldStoryId)->replicate();
-
         $newStory->title = trans('general.labels.TEXT_STORY_COPY_OF') . $newStory->title;
         $newStory->status = config('constants.story_status.DRAFT');
         $newStory->save();
+
 
         $newStoryId = $newStory->story_id;
         $storyMedia =[];
@@ -285,6 +287,7 @@ class StoryRepository implements StoryInterface
             $query->select('mission_language_id', 'mission_id', 'title')
                     ->where('language_id', $languageId);
         }])->where('user_id', $userId);
+
         return $userStoryQuery->get();
     }
 
@@ -394,5 +397,17 @@ class StoryRepository implements StoryInterface
     public function deleteStoryImage(int $mediaId, int $storyId): bool
     {
         return $this->storyMedia->deleteStoryImage($mediaId, $storyId);
+    }
+
+
+    /**
+     * Used for check if story exist or not
+     *
+     * @param int $storyId
+     * @return Story
+     */
+    public function checkStoryExist(int $storyId): Story
+    {
+        return $this->story->findOrFail($storyId);
     }
 }

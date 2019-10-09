@@ -339,6 +339,12 @@ $router->group(['middleware' => 'localization'], function ($router) {
         'middleware' => 'localization|tenant.connection|jwt.auth',
         'uses' => 'App\Story\StoryController@submitStory']);
 
+
+    /* store story visitor details */
+    $router->get('/app/story/{storyId}/views', ['as' => 'app.storyvisitor.store',
+        'middleware' => 'localization|tenant.connection|jwt.auth',
+        'uses' => 'App\StoryVisitor\StoryVisitorController@store']);
+
     /* Delete story image */
     $router->delete('/app/story/{storyId}/image/{imageId}', ['as' => 'app.story.removeStoryImage',
         'middleware' => 'localization|tenant.connection|jwt.auth',
