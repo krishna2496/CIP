@@ -511,4 +511,49 @@ class StoryController extends Controller
             []
         );
     }
+
+    /**
+     * Fetch edit story details.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param int $storyId
+     * @return Illuminate\Http\JsonResponse
+     */
+    public function editStory(Request $request, int $storyId): JsonResponse
+    {
+        try {
+            // Fetch story details           
+            $storyData = $this->storyRepository->findStoryByUserId($request->auth->user_id, $storyId);
+            
+            $statusArray = [
+                config('constants.story_status.DRAFT'),
+                config('constants.story_status.PENDING')
+            ];
+            // User cannot edit story if story is published or declined
+            if (!in_array($storyData->status, $statusArray)) {
+                return $this->responseHelper->error(
+                    Response::HTTP_UNPROCESSABLE_ENTITY,
+                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                    config('constants.error_codes.ERROR_STORY_PUBLISHED_OR_DECLINED'),
+                    trans('messages.custom_error_message.ERROR_STORY_PUBLISHED_OR_DECLINED')
+                );
+            }
+            
+            // Fetch edit story details
+            $story = $this->storyRepository
+            ->getStoryDetails($storyData->story_id);
+
+            $apiStatus = Response::HTTP_OK;
+            $apiData = $story->toArray();
+            $apiMessage = trans('messages.success.MESSAGE_STORY_FOUND');
+    
+            return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
+
+        } catch (ModelNotFoundException $e) {
+            return $this->modelNotFound(
+                config('constants.error_codes.ERROR_STORY_NOT_FOUND'),
+                trans('messages.custom_error_message.ERROR_STORY_NOT_FOUND')
+            );
+        }
+    }
 }
