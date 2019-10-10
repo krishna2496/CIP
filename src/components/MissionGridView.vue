@@ -11,8 +11,8 @@
 								<b-alert show class="alert card-alert alert-warning" v-if="getClosedStatus(mission)">
 									{{languageData.label.closed}}</b-alert>
 								<div v-if="checkDefaultMediaFormat(mission.default_media_type)" class="group-img"
-									:style="{backgroundImage: 'url('+mission.default_media_path+')'}">
-									<img :src="mission.default_media_path" alt="mission.default_media_path">
+									:style="{backgroundImage: 'url('+getMediaPath(mission.default_media_path)+')'}">
+									<img :src="getMediaPath(mission.default_media_path)" alt="mission.default_media_path">
 								</div>
 
 								<div v-else class="group-img"
@@ -467,6 +467,13 @@
 				let firstName = suggestion.item.first_name;
 				let lastName = suggestion.item.last_name;
 				return firstName + " " + lastName;
+			},
+			getMediaPath(mediaPath) {
+				if(mediaPath != '') {
+					return mediaPath;
+				} else {
+					return store.state.imagePath+'/assets/images/'+constants.MISSION_DEFAULT_PLACEHOLDER;
+				}
 			},
 			// Open auto suggest modal
 			handleModal(missionId) {
