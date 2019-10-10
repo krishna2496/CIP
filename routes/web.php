@@ -355,6 +355,11 @@ $router->group(['middleware' => 'localization'], function ($router) {
         'uses' => 'App\Mission\MissionCommentController@getUserMissionComments']);
     });
 
+    /* Fetch edit story details */
+    $router->get('/app/edit/story/{storyId}', ['as' => 'app.edit.story',
+        'middleware' => 'localization|tenant.connection|jwt.auth',
+        'uses' => 'App\Story\StoryController@editStory']);
+
 /*
 |
 |--------------------------------------------------------------------------
