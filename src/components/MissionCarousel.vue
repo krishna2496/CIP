@@ -13,7 +13,7 @@
 					<img :src="mediaCarouselList[0].media_path">
 				</div>
 				<div class="video-wrap inner-gallery-block">
-					<iframe id="video" width="560" height="315" :src="getDefaultEmbededPath(mediaCarouselList[0])"
+					<iframe id="video" width="560" height="315" :src="getEmbededPath(mediaCarouselList[0])"
 						frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
 						allowfullscreen>
 					</iframe>
@@ -90,14 +90,6 @@
 					return "https://www.youtube.com/embed/" + videoId;
 				} else {
 					return media.media_path;
-				}
-			},
-
-			getDefaultEmbededPath(media) {
-				if (media.media_type == 'mp4') {
-					let videoPath = media.media_path;
-					let data = videoPath.split("=");
-					return "https://www.youtube.com/embed/" + data.slice(-1)[0];
 				}
 			},
 
