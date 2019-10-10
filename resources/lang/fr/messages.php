@@ -144,6 +144,8 @@ return [
         'MESSAGE_STORY_COPIED_SUCCESS' => 'Histoire copiée avec succès',
         'MESSAGE_UNABLE_TO_EXPORT_USER_STORIES_ENTRIES' => 'Aucune histoire trouvée',
         'MESSAGE_STORY_UPDATED' => 'Histoire mise à jour avec succès',
+        'CONTACT_FORM_ADDED_SUCESSFULLY' => 'Vos commentaires ajoutés avec succès.',
+
         'MESSAGE_USER_COMMENTS_LISTING' => 'Commentaires d\'utilisateurs listés avec succès',
         'MESSAGE_STORY_SUBMITTED_SUCESSFULLY' => 'Histoire soumise avec succès',
         'MESSAGE_STORY_IMAGE_DELETED' => 'Image de l\'histoire supprimée avec succès',
@@ -267,7 +269,7 @@ return [
         'ERROR_INVALID_DATA_FOR_TIMESHEET_ENTRY' => 'Vous ne pouvez pas ajouter de temps',
         'ERROR_TIMESHEET_ENTRY_NOT_FOUND' => 'ID de saisie de la feuille de temps introuvable',
         'ERROR_SAME_DATE_TIME_ENTRY' => 'Vous ne pouvez pas ajouter plus de 24 heures à la même date',
-       'ERROR_APPROVED_TIMESHEET_DOCUMENTS' => 'Vous ne pouvez pas supprimer les documents d\'entrée de feuille de temps approuvés',
+        'ERROR_APPROVED_TIMESHEET_DOCUMENTS' => 'Vous ne pouvez pas supprimer les documents d\'entrée de feuille de temps approuvés',
 
         
         // For News module

@@ -169,7 +169,7 @@ class MissionController extends Controller
                 return $this->transformMission($item, $languageCode);
             })->toArray();
             
-                $requestString = $request->except(['page','perPage']);
+        $requestString = $request->except(['page','perPage']);
         $missionsPaginated = new \Illuminate\Pagination\LengthAwarePaginator(
             $missionsTransformed,
             $missionList->total(),

@@ -80,14 +80,17 @@ class StoryController extends Controller
         }
 
         $defaultTenantLanguage = $this->languageHelper->getDefaultTenantLanguage($request);
-        $language = $this->languageHelper->getLanguageDetails($request);
         
-        $userStories = $this->storyRepository->getUserStoriesWithPagination($request, $language->language_id, $userId);
+        $userStories = $this->storyRepository->getUserStoriesWithPagination(
+            $request,
+            $defaultTenantLanguage->language_id,
+            $userId
+        );
 
         $storyTransformed = $userStories
             ->getCollection()
-            ->map(function ($story) use ($request, $defaultTenantLanguage, $language) {
-                $story = $this->transformStory($story, $defaultTenantLanguage->language_id, $language->language_id);
+            ->map(function ($story) use ($request, $defaultTenantLanguage) {
+                $story = $this->transformStory($story, $defaultTenantLanguage->language_id);
                 return $story;
             });
 
@@ -145,7 +148,7 @@ class StoryController extends Controller
                     $validator->errors()->first()
                 );
             }
-            $this->storyRepository->getStoryDetails($storyId);
+            $this->storyRepository->checkStoryExist($storyId);
             $this->storyRepository->updateStoryStatus($request->status, $storyId);
 
             $apiStatus = Response::HTTP_OK;

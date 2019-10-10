@@ -25,7 +25,7 @@ interface NewsInterface
      */
     public function update(Request $request, int $newsId): News;
 
-      /**
+    /**
      * Get news details.
      *
      * @param int $id

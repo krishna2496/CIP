@@ -118,7 +118,7 @@ class MissionCommentRepository implements MissionCommentInterface
     }
 
     /**
-     * Display user mission comments.
+     * Fetch user's comments on mission for dashboard
      *
      * @param int $userId
      * @param int $languageId
@@ -126,27 +126,30 @@ class MissionCommentRepository implements MissionCommentInterface
      */
     public function getUserComments(int $userId, int $languageId, int $defaultTenantLanguageId): Collection
     {
-        $commentsData = $this->comment->where('user_id', $userId)
+        $comments = $this->comment->where('user_id', $userId)
         ->orderby('created_at', 'desc')
         ->with(['mission' => function ($query) use ($languageId) {
             $query->select('mission_id');
         }])->get();
 
-        // Count status
-        $statusCount = $this->comment
-        ->selectRaw("COUNT(CASE WHEN approval_status = 'PUBLISHED' THEN 1 END) AS published,
-        COUNT(CASE WHEN approval_status = 'PENDING' THEN 1 END) AS pending,
-        COUNT(CASE WHEN approval_status = 'DECLINED' THEN 1 END) AS declined")
-        ->where('user_id', $userId)->get();
-        
-        foreach ($commentsData as $value) {
-            $value->title = $this->missionRepository
-            ->getMissionTitle($value->mission_id, $languageId, $defaultTenantLanguageId);
-            unset($value->mission);
-        }
-        $userCommentsData =  $commentsData->merge($statusCount);
 
-        return $userCommentsData;
+        // Fetch comment counts by status
+        if (count($comments) > 0) {
+            // Count status
+            $statusCount = $this->comment
+            ->selectRaw("COUNT(CASE WHEN approval_status = 'PUBLISHED' THEN 1 END) AS published,
+            COUNT(CASE WHEN approval_status = 'PENDING' THEN 1 END) AS pending,
+            COUNT(CASE WHEN approval_status = 'DECLINED' THEN 1 END) AS declined")
+            ->where('user_id', $userId)->get();
+            
+            foreach ($comments as $value) {
+                $value->title = $this->missionRepository
+                ->getMissionTitle($value->mission_id, $languageId, $defaultTenantLanguageId);
+                unset($value->mission);
+            }            
+            $comments =  $comments->merge($statusCount);
+        }
+        return $comments;
     }
 
     /**

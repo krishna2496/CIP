@@ -93,9 +93,9 @@ class NewsRepository implements NewsInterface
         }]);
 
         if ($languageId) {
-                $newsData->with(['newsLanguage' => function ($query) use ($languageId) {
-                    $query->select('news_id', 'language_id', 'title', 'description')->where('language_id', $languageId);
-                }]);
+            $newsData->with(['newsLanguage' => function ($query) use ($languageId) {
+                $query->select('news_id', 'language_id', 'title', 'description')->where('language_id', $languageId);
+            }]);
         } else {
             // Search filters for admin side
             if ($request->has('search')) {
@@ -198,10 +198,10 @@ class NewsRepository implements NewsInterface
  
         // Update news_to_category
         if ($request->news_category_id) {
-                $newsToCategoryArray = array(
+            $newsToCategoryArray = array(
                 'news_category_id' => $request->news_category_id
                 );
-                $this->newsToCategory->where('news_id', $newsId)->update($newsToCategoryArray);
+            $this->newsToCategory->where('news_id', $newsId)->update($newsToCategoryArray);
         }
         
         // Update into news_language

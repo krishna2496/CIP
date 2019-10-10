@@ -385,7 +385,7 @@ return [
         'ERROR_STORY_IMAGE_DELETE' => '700007',
         'ERROR_SUBMIT_STORY_PUBLISHED_OR_DECLINED' => '700008',
         
-              
+        'ERROR_CONTACT_FORM_REQUIRED_FIELDS_EMPTY' => '1000001',
                 
         'ERROR_OCCURRED' => '999999',
         'ERROR_INVALID_JSON' => '900000',

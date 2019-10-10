@@ -1052,7 +1052,7 @@ class MissionRepository implements MissionInterface
             ])->withCount([
                 'missionRating as mission_rating_total_volunteers'
             ]);
-            $missionQuery->withCount([
+        $missionQuery->withCount([
                 'timesheet AS achieved_goal' => function ($query) use ($request) {
                     $query->select(DB::raw("SUM(action) as action"));
                     $query->whereIn('status_id', array(config('constants.timesheet_status_id.APPROVED'),

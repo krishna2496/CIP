@@ -4,13 +4,13 @@ namespace App\Repositories\Story;
 
 use App\Helpers\Helpers;
 use App\Helpers\S3Helper;
-use App\Models\Mission;
 use App\Models\Story;
 use App\Models\StoryMedia;
 use App\Repositories\Story\StoryInterface;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Collection;
 
 class StoryRepository implements StoryInterface
 {
@@ -19,12 +19,6 @@ class StoryRepository implements StoryInterface
      * @var App\Models\Story
      */
     private $story;
-
-    /**
-     *
-     * @var App\Models\Mission
-     */
-    private $mission;
 
     /**
      *
@@ -55,13 +49,11 @@ class StoryRepository implements StoryInterface
      */
     public function __construct(
         Story $story,
-        Mission $mission,
         StoryMedia $storyMedia,
         S3Helper $s3helper,
         Helpers $helpers
     ) {
         $this->story = $story;
-        $this->mission = $mission;
         $this->storyMedia = $storyMedia;
         $this->s3helper = $s3helper;
         $this->helpers = $helpers;
@@ -184,8 +176,7 @@ class StoryRepository implements StoryInterface
                 $query->select(
                     'mission_language_id',
                     'mission_id',
-                    'title',
-                    'short_description'
+                    'title'
                 )->where('language_id', $languageId);
             },
         ])->when($userId, function ($query, $userId) {
@@ -223,22 +214,43 @@ class StoryRepository implements StoryInterface
      *
      * @param int $storyId
      * @param string $storyStatus
-     * @return App\Models\Story
+     * @param int $userId
+     * @param string $allowedStoryStatus
+     * @return Illuminate\Database\Eloquent\Collection
      */
-    public function getStoryDetails(int $storyId, string $storyStatus = null): Story
-    {
+    public function getStoryDetails(
+        int $storyId,
+        string $storyStatus = null,
+        int $userId = 0,
+        string $allowedStoryStatus = null
+    ): Collection {
         $storyQuery = $this->story->with([
             'user',
             'user.city',
             'user.country',
             'storyMedia',
-        ])->withCount('storyVisitor');
+            'mission',
+            'mission.missionLanguage',
+        ]);
 
-        if (!empty($storyStatus)) {
-            $storyQuery->where('status', $storyStatus);
+        $storyQuery->Where(function ($query) use ($storyId, $storyStatus) {
+            $query->when($storyId, function ($subQuery) use ($storyId) {
+                return $subQuery->where('story_id', $storyId);
+            })->when($storyStatus, function ($subQuery) use ($storyStatus) {
+                return $subQuery->where('status', $storyStatus);
+            });
+        });
+       
+        // Only story creater can access DRAFT story
+        if (!empty($userId) && !empty($allowedStoryStatus)) {
+            $storyQuery->orWhere(function ($query) use ($userId, $allowedStoryStatus, $storyId) {
+                $query->where('user_id', $userId)
+                ->where('story_id', $storyId)
+                ->where('status', $allowedStoryStatus);
+            });
         }
 
-        return $storyQuery->findOrFail($storyId);
+        return $storyQuery->get();
     }
 
     /**
