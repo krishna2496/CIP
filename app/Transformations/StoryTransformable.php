@@ -144,12 +144,11 @@ trait StoryTransformable
      * Get Transfomed story detail
      *
      * @param App\Models\Story $story
-     * @param int $languageId
      * @param int $storyViewCount
      * @return Array
      */
 
-    protected function transformStoryDetail(Story $story, int $languageId, int $storyViewCount):array
+    protected function transformStoryDetail(Story $story, int $storyViewCount):array
     {
         $storyData['story_id'] = (int) $story->story_id;
         $storyData['mission_id'] = $story->mission_id;
@@ -159,7 +158,7 @@ trait StoryTransformable
         $storyData['status'] = trans('general.status.' . $story->status);
         $storyData['published_at'] = $story->published_at;
 
-        if (!empty($storyData->user)) {
+        if (!empty($story->user)) {
             $storyData['user_id'] = $story->user_id;
             $storyData['first_name'] = $story->user->first_name;
             $storyData['last_name'] = $story->user->last_name;
@@ -170,19 +169,8 @@ trait StoryTransformable
             $storyData['country'] = $story->user->country;
         }
 
-        if (!empty($storyData->storyMedia)) {
+        if (!empty($story->storyMedia)) {
             $storyData['storyMedia'] = $story->storyMedia;
-        }
-        
-        $key = array_search($languageId, array_column($story->mission->missionLanguage->toArray(), 'language_id'));
-        $language = ($key === false) ? 'en' : $languageId;
-        
-        $missionLanguage = $story->mission->missionLanguage->where('language_id', $language)->first();
-        
-        if (!is_null($missionLanguage)) {
-            $storyData['mission_title'] = $missionLanguage->title;
-            $storyData['mission_short_description'] = $missionLanguage->short_description;
-            $storyData['mission_description'] = $missionLanguage->description;
         }
         return $storyData;
     }

@@ -232,10 +232,8 @@ class StoryController extends Controller
             // conditions for story view count manage
             $storyViewCount = $this->storyVisitorRepository->updateStoryViewCount($story[0], $request->auth->user_id);
 
-            $language = $this->languageHelper->getLanguageDetails($request);
-
             // Transform news details
-            $storyTransform = $this->transformStoryDetail($story[0], $language->language_id, $storyViewCount);
+            $storyTransform = $this->transformStoryDetail($story[0], $storyViewCount);
             
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_STORY_FOUND');

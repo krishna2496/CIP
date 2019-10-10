@@ -11,7 +11,6 @@ use App\Repositories\Story\StoryInterface;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
-use DB;
 use Illuminate\Database\Eloquent\Collection;
 
 class StoryRepository implements StoryInterface
@@ -234,8 +233,6 @@ class StoryRepository implements StoryInterface
         int $userId = 0,
         string $allowedStoryStatus = null
     ): Collection {
-        $storyQuery = $this->story->findOrFail($storyId);
-        //DB::enableQueryLog();
         $storyQuery = $this->story->with([
             'user',
             'user.city',
