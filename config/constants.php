@@ -222,7 +222,14 @@ return [
      * Export story file names
      */
     'export_story_file_names' => [
-        'STORY_XLSX' => 'Story.xlsx',
+        'STORY_XLSX' => 'Stories.xlsx',
+    ],
+
+    /**
+     * Export mission comments file names
+     */
+    'export_mission_comment_file_names' => [
+        'MISSION_COMMENT_XLSX' => 'MissionComments.xlsx',
     ],
         
     /*
@@ -372,10 +379,13 @@ return [
         'ERROR_STORY_REQUIRED_FIELDS_EMPTY' => '700001',
         'ERROR_STORY_NOT_FOUND' => '700002',
         'ERROR_PUBLISHED_STORY_NOT_FOUND' => '700003',
-        'ERROR_DECLINED_STORY_NOT_FOUND' => '700004',
+        'ERROR_COPY_DECLINED_STORY' => '700004',
         'ERROR_STORY_PUBLISHED_OR_DECLINED' => '700005',
+        'ERROR_STORY_IMAGE_NOT_FOUND' => '700006',
+        'ERROR_STORY_IMAGE_DELETE' => '700007',
+        'ERROR_SUBMIT_STORY_PUBLISHED_OR_DECLINED' => '700008',
         
-        'ERROR_CONTACT_FORM_REQUIRED_FIELDS_EMPTY' => '1000001',      
+        'ERROR_CONTACT_FORM_REQUIRED_FIELDS_EMPTY' => '1000001',
                 
         'ERROR_OCCURRED' => '999999',
         'ERROR_INVALID_JSON' => '900000',

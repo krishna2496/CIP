@@ -124,7 +124,7 @@ return [
         'MESSAGE_AUTO_APPROVED_COMMENT_ADDED' => 'Merci pour votre commentaire.',
         'MESSAGE_Footer_PAGE_FOUND' => 'Pied de page trouvé avec succès',
         'MESSAGE_DASHBOARD_STATISTICS_LISTING' => 'Statistiques du tableau de bord répertoriées avec succès',
-	    'MESSAGE_AUTO_APPROVED_COMMENT_ADDED' => 'Merci pour votre commentaire.',        
+        'MESSAGE_AUTO_APPROVED_COMMENT_ADDED' => 'Merci pour votre commentaire.',
         'MESSAGE_NEWS_CATEGORY_LISTING' => 'Catégorie de nouvelles répertoriée avec succès',
         'MESSAGE_NEWS_CATEGORY_DELETED' => 'Catégorie de nouvelles supprimée avec succès',
         'MESSAGE_NEWS_CATEGORY_CREATED' => 'Catégorie de nouvelles créée avec succès',
@@ -133,20 +133,26 @@ return [
         'MESSAGE_NEWS_DELETED' => 'Nouvelles supprimées avec succès',
         'MESSAGE_NEWS_LISTING' => 'Nouvelles listées avec succès',
         'MESSAGE_NEWS_UPDATED' => 'Nouvelles mises à jour avec succès',
-		'MESSAGE_NEWS_CATEGORY_FOUND' => 'News category found sucessfully',
+        'MESSAGE_NEWS_CATEGORY_FOUND' => 'News category found sucessfully',
         'MESSAGE_NEWS_FOUND' => 'Nouvelles trouvées avec succès',
         'STORY_ADDED_SUCESSFULLY' => 'Histoire ajoutée avec succès',
         'MESSAGE_STORY_DELETED' => 'Histoire supprimée avec succès',
-    	'MESSAGE_STORIES_ENTRIES_LISTING' => 'Les entrées de l\'histoire listées avec succès',
-    	'MESSAGE_NO_STORIES_ENTRIES_FOUND' => 'Aucune entrée d\'histoire trouvée',
-    	'MESSAGE_STORY_STATUS_UPDATED' => 'Statut de l\'histoire mis à jour avec succès',
-    	'MESSAGE_STORY_FOUND' => 'Histoire trouvée avec succès',
-    	'MESSAGE_STORY_COPIED_SUCCESS' => 'Histoire copiée avec succès',
-    	'MESSAGE_ENABLE_TO_EXPORT_USER_STORIES_ENTRIES' => 'Aucune donnée trouvée, pour générer des entrées de récit',
+        'MESSAGE_STORIES_ENTRIES_LISTING' => 'Les entrées de l\'histoire listées avec succès',
+        'MESSAGE_NO_STORIES_ENTRIES_FOUND' => 'Aucune entrée d\'histoire trouvée',
+        'MESSAGE_STORY_STATUS_UPDATED' => 'Statut de l\'histoire mis à jour avec succès',
+        'MESSAGE_STORY_FOUND' => 'Histoire trouvée avec succès',
+        'MESSAGE_STORY_COPIED_SUCCESS' => 'Histoire copiée avec succès',
+        'MESSAGE_UNABLE_TO_EXPORT_USER_STORIES_ENTRIES' => 'Aucune histoire trouvée',
         'MESSAGE_STORY_UPDATED' => 'Histoire mise à jour avec succès',
-        'MESSAGE_STORY_VISITOR_ADDED_SUCESSFULLY' => 'Le visiteur de l\'histoire a été ajouté avec succès',        
-         // For contact form module
-         'CONTACT_FORM_ADDED_SUCESSFULLY' => 'Vos commentaires ajoutés avec succès.',
+        'CONTACT_FORM_ADDED_SUCESSFULLY' => 'Vos commentaires ajoutés avec succès.',
+
+        'MESSAGE_USER_COMMENTS_LISTING' => 'Commentaires d\'utilisateurs listés avec succès',
+        'MESSAGE_STORY_SUBMITTED_SUCESSFULLY' => 'Histoire soumise avec succès',
+        'MESSAGE_STORY_IMAGE_DELETED' => 'Image de l\'histoire supprimée avec succès',
+    	'MESSAGE_UNABLE_TO_EXPORT_MISSION_COMMENTS_ENTRIES' => 'Aucun commentaire de mission trouvé',
+        'MESSAGE_STORY_VISITOR_ADDED_SUCESSFULLY' => 'Le visiteur de l\'histoire a été ajouté avec succès',
+        'MESSAGE_STORY_SUBMITTED_SUCESSFULLY' => 'Histoire soumise avec succès',
+        'MESSAGE_STORY_IMAGE_DELETED' => 'Image de l\'histoire supprimée avec succès'
     ],
 
         
@@ -266,44 +272,21 @@ return [
         'ERROR_APPROVED_TIMESHEET_DOCUMENTS' => 'Vous ne pouvez pas supprimer les documents d\'entrée de feuille de temps approuvés',
 
         
-        // For News module        
+        // For News module
         'ERROR_NEWS_CATEGORY_NOT_FOUND' => 'Catégorie de nouvelles non trouvée dans le système',
-		'ERROR_NEWS_CATEGORIES_NOT_FOUND' => 'News categories not found in the system',
+        'ERROR_NEWS_CATEGORIES_NOT_FOUND' => 'News categories not found in the system',
         'ERROR_NEWS_NOT_FOUND' => 'Nouvelles non trouvées dans le système',
         'ERROR_UNAUTHORIZED_USER' => 'Utilisateur non autorisé',
 
         // For story module
         'ERROR_STORY_NOT_FOUND' => 'Histoire non trouvée dans le système',
-    	'ERROR_PUBLISHED_STORY_NOT_FOUND' => 'Histoire publiée non trouvée dans le système',
-    	'ERROR_DECLINED_STORY_NOT_FOUND' => 'Vous ne pouvez pas copier l\'histoire, en raison de cette histoire n\'est pas refusée',
+        'ERROR_PUBLISHED_STORY_NOT_FOUND' => 'Histoire publiée non trouvée dans le système',
+        'ERROR_COPY_DECLINED_STORY' => 'Vous ne pouvez pas copier l\'histoire, en raison de cette histoire n\'est pas refusée',
         'ERROR_STORY_PUBLISHED_OR_DECLINED' => 'Vous ne pouvez pas mettre à jour une histoire publiée ou refusée',
-    ],
+    
+        'ERROR_STORY_IMAGE_NOT_FOUND' => 'L\'image de l\'histoire ne se trouve pas dans le système',
+        'ERROR_STORY_IMAGE_DELETE' => 'Vous ne pouvez pas supprimer l\'image d\'un article publié ou refusé',
+        'ERROR_SUBMIT_STORY_PUBLISHED_OR_DECLINED' => 'You cannot submit published or declined story',
+    ]
 
-    /**
-     * Export sheet's headings
-     */
-    'export_sheet_headings' => [
-        'MISSION_NAME' => 'Nom de la mission',
-        'ORGANIZATION_NAME' => 'nom de l\'organisation',
-        'ACTIONS' => 'actes',
-        'TIME' => 'Temps',
-        'HOURS' => 'Heures'
-    ],
-		
-	/**
-	 * Export story sheet's headings
-	 */
-	'export_story_headings' => [
-		'STORY_TITLE' => 'Titre',
-		'STORY_DESCRIPTION' => 'La description',
-		'STORY_STATUS' => 'Statut',
-		'PUBLISH_DATE' => 'Date de publication',
-	],
-		
-	'status' => [
-		'DRAFT' => 'Brouillon',
-		'PENDING' => 'En attente',
-		'PUBLISHED' => 'Publié',
-		'DECLINED' => 'DIMINUÉE',
-	],
 ];

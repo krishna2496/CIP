@@ -113,6 +113,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
         'middleware' => 'tenant.connection|jwt.auth',
         'uses' => 'App\User\DashboardController@index']);
 
+
     /* Get mission detail  */
     $router->get('/app/mission/{missionId}', [
         'middleware' => 'tenant.connection|jwt.auth',
@@ -298,30 +299,45 @@ $router->group(['middleware' => 'localization'], function ($router) {
         'middleware' => 'localization|tenant.connection|jwt.auth',
         'uses' => 'App\Story\StoryController@destroy']);
 
+    /* all users published story listing */
+    $router->get('/app/story/list', ['as' => 'app.story.publishedStories',
+        'middleware' => 'localization|tenant.connection|jwt.auth',
+        'uses' => 'App\Story\StoryController@publishedStories']);
+        
     /* Export all Story Data */
     $router->get('/app/story/export', ['as' => 'app.story.export',
+         'middleware' => 'localization|tenant.connection|jwt.auth',
+         'uses' => 'App\Story\StoryController@exportStories']);
+        
+    /* Copy declined story */
+    $router->get('/app/story/{story_id}/copy', ['as' => 'app.story.copystory',
         'middleware' => 'localization|tenant.connection|jwt.auth',
-        'uses' => 'App\Story\StoryController@exportStory']);
+        'uses' => 'App\Story\StoryController@copyStory']);
 
-    /* login user story listing */
-    $router->get('/app/story/my-stories', ['as' => 'app.story.getuserstories',
+    /* Get User's story Listing */
+    $router->get('/app/story/my-stories', ['as' => 'app.story.userstories',
         'middleware' => 'localization|tenant.connection|jwt.auth',
         'uses' => 'App\Story\StoryController@getUserStories']);
 
-    /* all users published story listing */
-    $router->get('/app/story/list', ['as' => 'app.story.getallpublishedstories',
+    /* Update story details */
+    $router->patch('/app/story/{storyId}', ['as' => 'app.story.update',
         'middleware' => 'localization|tenant.connection|jwt.auth',
-        'uses' => 'App\Story\StoryController@getAllPublishedStories']);
-
+        'uses' => 'App\Story\StoryController@update']);
+        
     /* Fetch story details */
     $router->get('/app/story/{storyId}', ['as' => 'app.story.show',
-        'middleware' => 'localization|tenant.connection|jwt.auth',
-        'uses' => 'App\Story\StoryController@show']);
+     'middleware' => 'localization|tenant.connection|jwt.auth',
+     'uses' => 'App\Story\StoryController@show']);
 
-    /* Copy story data after decline */
-    $router->get('/app/story/{story_id}/copy', ['as' => 'app.story.copyafterdecline',
+    /* Submit story detail */
+    $router->post('/app/story/{storyId}/submit', ['as' => 'app.story.submit',
         'middleware' => 'localization|tenant.connection|jwt.auth',
-        'uses' => 'App\Story\StoryController@copyStoryAfterDecline']);
+        'uses' => 'App\Story\StoryController@submitStory']);
+
+    /* Delete story image */
+    $router->delete('/app/story/{storyId}/image/{imageId}', ['as' => 'app.story.removeStoryImage',
+        'middleware' => 'localization|tenant.connection|jwt.auth',
+        'uses' => 'App\Story\StoryController@deleteStoryImage']);
 
     /* Update story details */
     $router->patch('/app/story/{storyId}', ['as' => 'app.story.update',
@@ -337,7 +353,23 @@ $router->group(['middleware' => 'localization'], function ($router) {
     $router->post('/app/submit-contact-form', ['as' => 'app.contactform.store',
         'middleware' => 'localization|tenant.connection|jwt.auth',
         'uses' => 'App\ContactForm\ContactFormController@store']);
+
+    /* Delete user mission comments */
+    $router->delete('/app/dashboard/comments/{commentId}', ['as' => 'app.dashboard.comment.destroy',
+        'middleware' => 'localization|tenant.connection|jwt.auth',
+        'uses' => 'App\Mission\MissionCommentController@destroy']);
+        
+    /* Export user mission comments */
+    $router->get('/app/dashboard/comments/export', [
+        'middleware' => 'tenant.connection|jwt.auth',
+        'uses' => 'App\Mission\MissionCommentController@exportComments']);
+
+    /* Get user mission comments */
+    $router->get('/app/dashboard/comments', [
+        'middleware' => 'tenant.connection|jwt.auth',
+        'uses' => 'App\Mission\MissionCommentController@getUserMissionComments']);
 });
+
 
 /*
 |

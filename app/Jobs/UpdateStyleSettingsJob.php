@@ -49,7 +49,7 @@ class UpdateStyleSettingsJob extends Job
     public function handle()
     {
         // First need to check is scss files folder available in local or not?
-        // Need to check local copy for tenant assest is there or not?        
+        // Need to check local copy for tenant assest is there or not?
         // If yes then skip download files from s3 to local
         // @codeCoverageIgnoreStart
         if (Storage::disk('local')->exists($this->tenantName) && !empty($this->fileName)) {
@@ -57,7 +57,7 @@ class UpdateStyleSettingsJob extends Job
             $file = $this->tenantName.'/'.config('constants.AWS_S3_ASSETS_FOLDER_NAME').
             '/'.config('constants.AWS_S3_SCSS_FOLDER_NAME').'/'.$this->fileName;
             Storage::disk('local')->put($file, Storage::disk('s3')->get($file));
-        } 
+        }
         if (!Storage::disk('local')->exists($this->tenantName)) { // Else download files from S3 to local
             // Create new job that will take tenantName, options, and uploaded file path as an argument.
             // Dispatch job, that will store in master database
@@ -100,7 +100,7 @@ class UpdateStyleSettingsJob extends Job
     
         // Put compiled css file into local storage
         if (Storage::disk('local')->put($this->tenantName.'\assets\css\style.css', $css)) {
-                Storage::disk('s3')->put($this->tenantName.'\assets\css\style.css', Storage::disk('local')->get($this->tenantName.'\assets\css\style.css'));
-        } 
+            Storage::disk('s3')->put($this->tenantName.'\assets\css\style.css', Storage::disk('local')->get($this->tenantName.'\assets\css\style.css'));
+        }
     }
 }

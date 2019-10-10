@@ -4,6 +4,7 @@ namespace App\Http\Controllers\App\Story;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Repositories\Story\StoryRepository;
+use App\Repositories\StoryVisitor\StoryVisitorRepository;
 use App\Models\Story;
 use App\Helpers\ResponseHelper;
 use App\Helpers\LanguageHelper;
@@ -23,6 +24,11 @@ class StoryController extends Controller
      * @var App\Repositories\Story\StoryRepository
      */
     private $storyRepository;
+
+    /**
+     * @var App\Repositories\StoryVisitor\StoryVisitorRepository
+     */
+    private $storyVisitorRepository;
     
     /**
      * @var App\Helpers\ResponseHelper
@@ -43,6 +49,7 @@ class StoryController extends Controller
      * Create a new Story controller instance
      *
      * @param App\Repositories\Story\StoryRepository $storyRepository
+     * @param App\Repositories\StoryVisitor\StoryVisitorRepository $storyVisitorRepository
      * @param App\Helpers\ResponseHelper $responseHelper
      * @param App\Helpers\Helpers $helpers
      * @param App\Helpers\LanguageHelper $languageHelper
@@ -50,11 +57,13 @@ class StoryController extends Controller
      */
     public function __construct(
         StoryRepository $storyRepository,
+        StoryVisitorRepository $storyVisitorRepository,
         ResponseHelper $responseHelper,
         Helpers $helpers,
         LanguageHelper $languageHelper
     ) {
         $this->storyRepository = $storyRepository;
+        $this->storyVisitorRepository = $storyVisitorRepository;
         $this->responseHelper = $responseHelper;
         $this->helpers = $helpers;
         $this->languageHelper = $languageHelper;
@@ -195,7 +204,7 @@ class StoryController extends Controller
     }
     
     /**
-     * Display story details.
+     * Get story details.
      *
      * @param \Illuminate\Http\Request $request
      * @param int $storyId
@@ -206,39 +215,72 @@ class StoryController extends Controller
         try {
             // Get Story details
             $story = $this->storyRepository
-            ->getStoryDetails($storyId, config('constants.story_status.PUBLISHED'));
+            ->getStoryDetails(
+                $storyId,
+                config('constants.story_status.PUBLISHED'),
+                $request->auth->user_id,
+                config('constants.story_status.DRAFT')
+            );
             
-            $defaultTenantLanguage = $this->languageHelper->getDefaultTenantLanguage($request);
-            $language = $this->languageHelper->getLanguageDetails($request);
+            if ($story->count() == 0) {
+                return $this->modelNotFound(
+                    config('constants.error_codes.ERROR_STORY_NOT_FOUND'),
+                    trans('messages.custom_error_message.ERROR_STORY_NOT_FOUND')
+                );
+            }
 
-            // Transform news details
-            $storyTransform = $this->transformStory($story, $defaultTenantLanguage->language_id, $language->language_id)
-            ->toArray();
+            // conditions for story view count manage
+            $storyArray = array('story_id' => $story[0]->story_id,
+                                'story_user_id' => $story[0]->user_id,
+                                'status' => $story[0]->status);
+                                
+            $storyViewCount = $this->storyVisitorRepository->updateStoryViewCount($storyArray, $request->auth->user_id);
+
+            // Transform story details
+            $storyTransformedData = $this->transformStoryDetails($story[0], $storyViewCount);
             
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_STORY_FOUND');
     
-            return $this->responseHelper->success($apiStatus, $apiMessage, $storyTransform);
+            return $this->responseHelper->success($apiStatus, $apiMessage, $storyTransformedData);
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
-                config('constants.error_codes.ERROR_PUBLISHED_STORY_NOT_FOUND'),
-                trans('messages.custom_error_message.ERROR_PUBLISHED_STORY_NOT_FOUND')
+                config('constants.error_codes.ERROR_STORY_NOT_FOUND'),
+                trans('messages.custom_error_message.ERROR_STORY_NOT_FOUND')
             );
         }
     }
     
     /**
-     * Do copy of declined story
+     * User can copy story if its declined
      *
      * @param \Illuminate\Http\Request $request
-     * @param int $storyId
+     * @param int $oldStoryId
      * @return Illuminate\Http\JsonResponse
      */
-    public function copyStoryAfterDecline(Request $request, int $storyId): JsonResponse
+    public function copyStory(Request $request, int $oldStoryId): JsonResponse
     {
         try {
-            // Do copy of declined story
-            $newStoryId = $this->storyRepository->doCopyDeclinedStory($storyId);
+            $storyStatus = array(
+                config('constants.story_status.DECLINED')
+            );
+
+            // User can't submit story if its published or declined
+            $notDeclinedStory = $this->storyRepository->checkStoryStatus(
+                $request->auth->user_id,
+                $oldStoryId,
+                $storyStatus
+            );
+            
+            if ($notDeclinedStory) {
+                return $this->responseHelper->error(
+                    Response::HTTP_UNPROCESSABLE_ENTITY,
+                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                    config('constants.error_codes.ERROR_COPY_DECLINED_STORY'),
+                    trans('messages.custom_error_message.ERROR_COPY_DECLINED_STORY')
+                );
+            }
+            $newStoryId = $this->storyRepository->createStoryCopy($oldStoryId);
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
                 config('constants.error_codes.ERROR_STORY_NOT_FOUND'),
@@ -246,17 +288,6 @@ class StoryController extends Controller
             );
         }
 
-        try {
-            // check declined story details by story id
-            $this->storyRepository
-            ->getStoryDetails($storyId, config('constants.story_status.DECLINED'));
-        } catch (ModelNotFoundException $e) {
-            return $this->modelNotFound(
-                config('constants.error_codes.ERROR_DECLINED_STORY_NOT_FOUND'),
-                trans('messages.custom_error_message.ERROR_DECLINED_STORY_NOT_FOUND')
-            );
-        }
-        
         $apiStatus = Response::HTTP_OK;
         $apiMessage = trans('messages.success.MESSAGE_STORY_COPIED_SUCCESS');
         $apiData = ['story_id' => $newStoryId ];
@@ -271,40 +302,142 @@ class StoryController extends Controller
      * @param \Illuminate\Http\Request $request
      * @return Object
      */
-    public function exportStory(Request $request): Object
+    public function exportStories(Request $request): Object
     {
         //get login user story data
-        $storyList = $this->storyRepository->getUserStoriesWithOutPagination($request, $request->auth->user_id);
-        if ($storyList->count()) {
-            $fileName = config('constants.export_story_file_names.STORY_XLSX');
-    
-            $excel = new ExportCSV($fileName);
-    
-            $headings = [
-                trans('messages.export_story_headings.STORY_TITLE'),
-                trans('messages.export_story_headings.STORY_DESCRIPTION'),
-                trans('messages.export_story_headings.STORY_STATUS'),
-                trans('messages.export_story_headings.PUBLISH_DATE'),
-            ];
-            $excel->setHeadlines($headings);
-            
-            foreach ($storyList as $story) {
-                $excel->appendRow([
-                    $story->title,
-                    $story->description,
-                    $story->status,
-                    $story->published_at
-                ]);
-            }
-    
-            $tenantName = $this->helpers->getSubDomainFromRequest($request);
-            $path = $excel->export('app/'.$tenantName.'/story/'.$request->auth->user_id.'/exports');
-            return response()->download($path, $fileName);
+        $language = $this->languageHelper->getLanguageDetails($request);
+        $stories = $this->storyRepository->getUserStories($language->language_id, $request->auth->user_id);
+        
+        if ($stories->count() == 0) {
+            $apiStatus = Response::HTTP_OK;
+            $apiMessage =  trans('messages.success.MESSAGE_UNABLE_TO_EXPORT_USER_STORIES_ENTRIES');
+            return $this->responseHelper->success($apiStatus, $apiMessage);
         }
-    
-        $apiStatus = Response::HTTP_OK;
-        $apiMessage =  trans('messages.success.MESSAGE_ENABLE_TO_EXPORT_USER_STORIES_ENTRIES');
-        return $this->responseHelper->success($apiStatus, $apiMessage);
+        
+        $fileName = config('constants.export_story_file_names.STORY_XLSX');
+        $excel = new ExportCSV($fileName);
+        $headings = [
+            trans("general.export_story_headings.STORY_TITLE"),
+            trans("general.export_story_headings.STORY_DESCRIPTION"),
+            trans("general.export_story_headings.STORY_STATUS"),
+            trans("general.export_story_headings.MISSION_TITLE"),
+            trans("general.export_story_headings.PUBLISHED_DATE"),
+        ];
+        
+        $excel->setHeadlines($headings);
+        foreach ($stories as $story) {
+            $excel->appendRow([
+                $story->title,
+                $story->description,
+                $story->status,
+                $story->mission->missionLanguage[0]->title,
+                $story->published_at
+            ]);
+        }
+        
+        $tenantName = $this->helpers->getSubDomainFromRequest($request);
+        $path = $excel->export('app/'.$tenantName.'/story/'.$request->auth->user_id.'/exports');
+        return response()->download($path, $fileName);
+    }
+
+    /**
+     * Submit story for admin approval
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param int $storyId
+     * @return Illuminate\Http\JsonResponse
+     */
+    public function submitStory(Request $request, int $storyId): JsonResponse
+    {
+        try {
+            $storyStatus = array(
+                config('constants.story_status.PUBLISHED'),
+                config('constants.story_status.DECLINED')
+            );
+
+            // User can't submit story if its published or declined
+            $validStoryStatus = $this->storyRepository->checkStoryStatus(
+                $request->auth->user_id,
+                $storyId,
+                $storyStatus
+            );
+
+            if (!$validStoryStatus) {
+                return $this->responseHelper->error(
+                    Response::HTTP_UNPROCESSABLE_ENTITY,
+                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                    config('constants.error_codes.ERROR_SUBMIT_STORY_PUBLISHED_OR_DECLINED'),
+                    trans('messages.custom_error_message.ERROR_SUBMIT_STORY_PUBLISHED_OR_DECLINED')
+                );
+            }
+
+            // Submit story
+            $storyData = $this->storyRepository->submitStory($request->auth->user_id, $storyId);
+            
+            // Set response data
+            $apiStatus = Response::HTTP_OK;
+            $apiMessage = trans('messages.success.MESSAGE_STORY_SUBMITTED_SUCESSFULLY');
+            $apiData = ['story_id' => $storyData->story_id];
+            
+            return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
+        } catch (ModelNotFoundException $e) {
+            return $this->modelNotFound(
+                config('constants.error_codes.ERROR_STORY_NOT_FOUND'),
+                trans('messages.custom_error_message.ERROR_STORY_NOT_FOUND')
+            );
+        }
+    }
+
+    /**
+     * Delete story image.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param int $storyId
+     * @param int $mediaId
+     * @return Illuminate\Http\JsonResponse
+     */
+    public function deleteStoryImage(Request $request, int $storyId, int $mediaId): JsonResponse
+    {
+        try {
+            // Fetch story data
+            $storyData = $this->storyRepository->findStoryByUserId($request->auth->user_id, $storyId);
+            
+            $statusArray = [
+                config('constants.story_status.PUBLISHED'),
+                config('constants.story_status.DECLINED')
+            ];
+            
+            // User cannot remove story image if story is published or declined
+            if (in_array($storyData->status, $statusArray)) {
+                return $this->responseHelper->error(
+                    Response::HTTP_UNPROCESSABLE_ENTITY,
+                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                    config('constants.error_codes.ERROR_STORY_IMAGE_DELETE'),
+                    trans('messages.custom_error_message.ERROR_STORY_IMAGE_DELETE')
+                );
+            }
+            
+            // Delete story image
+            try {
+                $storyImage = $this->storyRepository->deleteStoryImage($mediaId, $storyId);
+            } catch (ModelNotFoundException $e) {
+                return $this->modelNotFound(
+                    config('constants.error_codes.ERROR_STORY_IMAGE_NOT_FOUND'),
+                    trans('messages.custom_error_message.ERROR_STORY_IMAGE_NOT_FOUND')
+                );
+            }
+
+            // Set response data
+            $apiStatus = Response::HTTP_NO_CONTENT;
+            $apiMessage = trans('messages.success.MESSAGE_STORY_IMAGE_DELETED');
+
+            return $this->responseHelper->success($apiStatus, $apiMessage);
+        } catch (ModelNotFoundException $e) {
+            return $this->modelNotFound(
+                config('constants.error_codes.ERROR_STORY_NOT_FOUND'),
+                trans('messages.custom_error_message.ERROR_STORY_NOT_FOUND')
+            );
+        }
     }
     
     /**
@@ -316,9 +449,15 @@ class StoryController extends Controller
     public function getUserStories(Request $request): JsonResponse
     {
         // get user's all story data
-        $userStories = $this->storyRepository->getUserStoriesWithPagination($request, $request->auth->user_id);
+        $language = $this->languageHelper->getLanguageDetails($request);
         
-        $storyTransformedData = $this->transformUserRelatedStory($userStories);
+        $userStories = $this->storyRepository->getUserStoriesWithPagination(
+            $request,
+            $language->language_id,
+            $request->auth->user_id
+        );
+        
+        $storyTransformedData = $this->transformUserStories($userStories);
         
         $requestString = $request->except(['page','perPage']);
         $storyPaginated = new \Illuminate\Pagination\LengthAwarePaginator(
@@ -334,10 +473,9 @@ class StoryController extends Controller
             ]
         );
         
-        
         $apiData = $storyPaginated;
         $apiStatus = Response::HTTP_OK;
-        $apiMessage = ($apiData->count()) ?
+        $apiMessage = ($apiData->total() > 0) ?
             trans('messages.success.MESSAGE_STORIES_ENTRIES_LISTING') :
             trans('messages.success.MESSAGE_NO_STORIES_ENTRIES_FOUND');
         
@@ -350,16 +488,20 @@ class StoryController extends Controller
     }
     
     /**
-     * Used for get all published stories data
+     * Story listing on front end
      *
      * @param Request $request
      * @return JsonResponse
      */
-    public function getAllPublishedStories(Request $request): JsonResponse
+    public function publishedStories(Request $request): JsonResponse
     {
+        // get user's all story data
+        $language = $this->languageHelper->getLanguageDetails($request);
+
         // get all published stories of users
         $publishedStories = $this->storyRepository->getUserStoriesWithPagination(
             $request,
+            $language->language_id,
             null,
             config('constants.story_status.PUBLISHED')
         );

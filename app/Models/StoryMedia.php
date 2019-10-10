@@ -35,4 +35,17 @@ class StoryMedia extends Model
      * @var array
      */
     protected $visible = ['story_id', 'type', 'path'];
+    
+    /**
+     * Soft delete story image from the database.
+     *
+     * @param int $mediaId
+     * @param int $storyId
+     * @return bool
+     */
+    public function deleteStoryImage(int $mediaId, int $storyId): bool
+    {
+        return static::where(['story_id' => $storyId,
+        'story_media_id' => $mediaId])->firstOrFail()->delete();
+    }
 }

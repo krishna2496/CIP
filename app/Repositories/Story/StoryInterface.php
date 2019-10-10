@@ -4,6 +4,7 @@ namespace App\Repositories\Story;
 use App\Models\Story;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Collection;
 
 interface StoryInterface
 {
@@ -23,7 +24,7 @@ interface StoryInterface
      * @return App\Models\Story
      */
     public function update(Request $request, int $storyId): Story;
-    
+
     /**
      * Remove the story details.
      *
@@ -36,26 +37,35 @@ interface StoryInterface
     /**
      * Display a user story listing with pagination.
      *
-     * @param Illuminate\Http\Request $request
+     * @param \Illuminate\Http\Request $request
+     * @param int $languageId
      * @param int $userId
      * @param string $status
      * @return \Illuminate\Pagination\LengthAwarePaginator
      */
     public function getUserStoriesWithPagination(
         Request $request,
+        int $languageId,
         int $userId = null,
         string $status = null
     ): LengthAwarePaginator;
 
+    
     /**
      * Get story details.
      *
      * @param int $storyId
      * @param string $storyStatus
-     * @return null|App\Models\Story
+     * @param int $userId
+     * @param string $allowedStoryStatus
+     * @return Illuminate\Database\Eloquent\Collection
      */
-    public function getStoryDetails(int $storyId, string $storyStatus = null): Story;
-
+    public function getStoryDetails(
+        int $storyId,
+        string $storyStatus = null,
+        int $userId = 0,
+        string $allowedStoryStatus = null
+    ): Collection;
     /**
      * Update story status field value, based on story_id condition
      *
@@ -68,20 +78,21 @@ interface StoryInterface
     /**
      * Do copy of declined story data
      *
-     * @param int $storyId
+     * @param int $oldStoryId
      * @return int $newStoryId
      */
-    public function doCopyDeclinedStory(int $storyId): int;
+    public function createStoryCopy(int $oldStoryId): int;
 
     /**
      * Display a listing of specified resources without pagination.
      *
-     * @param Illuminate\Http\Request $request
+     * @param int $languageId
      * @param int $userId
      * @return Object
      */
-    public function getUserStoriesWithOutPagination(Request $request, int $userId): Object;
-    
+    public function getUserStories(int $languageId, int $userId): Object;
+
+
     /**
      * Store story images.
      *
@@ -117,6 +128,7 @@ interface StoryInterface
      * @return bool
      */
     public function checkStoryStatus(int $userId, int $storyId, array $storyStatus): bool;
+
     
     /**
      * Used for check if story exist or not
@@ -125,4 +137,23 @@ interface StoryInterface
      * @return Story
      */
     public function checkStoryExist(int $storyId): Story;
+
+
+    /**
+     * Submit story details
+     *
+     * @param int $userId
+     * @param int $storyId
+     * @return App\Models\Story
+     */
+    public function submitStory(int $userId, int $storyId): Story;
+
+    /**
+     * Find story by user id
+     *
+     * @param int $userId
+     * @param int $storyId
+     * @return App\Models\Story
+     */
+    public function findStoryByUserId(int $userId, int $storyId): Story;
 }
