@@ -6,6 +6,7 @@ use App\Repositories\MissionComment\MissionCommentInterface;
 use App\Models\Comment;
 use App\Models\Mission;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Collection;
 
 class MissionCommentRepository implements MissionCommentInterface
 {
@@ -106,5 +107,56 @@ class MissionCommentRepository implements MissionCommentInterface
     {
         $comment = $this->comment->findOrFail($commentId);
         return $comment->delete();
+    }
+
+    /**
+     * Fetch user's comments on mission for dashboard
+     *
+     * @param int $userId
+     * @param int $languageId
+     * @return Illuminate\Database\Eloquent\Collection
+     */
+    public function getUserComments(int $userId, int $languageId): Collection
+    {
+        $comments = $this->comment->where('user_id', $userId)
+        ->orderby('created_at', 'desc')
+        ->with(['mission' => function ($query) use ($languageId) {
+            $query->with(['missionLanguage' => function ($query) use ($languageId) {
+                $query->select('mission_language_id', 'mission_id', 'title')
+                ->where('language_id', $languageId);
+            }]);
+        }])->get();
+
+        // Fetch comment counts by status
+        if (count($comments) > 0) {
+            foreach ($comments as $comment) {
+                if ($comment->mission->missionLanguage) {
+                    $comment->title = $comment->mission->missionLanguage[0]->title;
+                    unset($comment->mission);
+                }
+            }
+            
+            $statusCount = $this->comment
+            ->selectRaw("COUNT(CASE WHEN approval_status = 'PUBLISHED' THEN 1 END) AS published,
+			COUNT(CASE WHEN approval_status = 'PENDING' THEN 1 END) AS pending,
+			COUNT(CASE WHEN approval_status = 'DECLINED' THEN 1 END) AS declined")
+            ->where('user_id', $userId)->get();
+
+            $comments =  $comments->merge($statusCount);
+        }
+        return $comments;
+    }
+
+    /**
+     * Delete comment by commentId
+     *
+     * @param int $commentId
+     * @param int $userId
+     * @return bool
+     */
+    public function deleteUsersComment(int $commentId, int $userId): bool
+    {
+        return $this->comment->where(['comment_id' => $commentId,
+        'user_id' => $userId])->firstOrFail()->delete();
     }
 }

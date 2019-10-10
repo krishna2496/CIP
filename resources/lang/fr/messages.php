@@ -123,6 +123,34 @@ return [
         'MESSAGE_ENABLE_TO_EXPORT_USER_PENDING_GOAL_MISSION_ENTRIES' => 'Aucune donnée trouvée, pour générer des entrées de temps en attente pour la mission de l\'objectif',
         'MESSAGE_AUTO_APPROVED_COMMENT_ADDED' => 'Merci pour votre commentaire.',
         'MESSAGE_Footer_PAGE_FOUND' => 'Pied de page trouvé avec succès',
+        'MESSAGE_DASHBOARD_STATISTICS_LISTING' => 'Statistiques du tableau de bord répertoriées avec succès',
+        'MESSAGE_AUTO_APPROVED_COMMENT_ADDED' => 'Merci pour votre commentaire.',
+        'MESSAGE_NEWS_CATEGORY_LISTING' => 'Catégorie de nouvelles répertoriée avec succès',
+        'MESSAGE_NEWS_CATEGORY_DELETED' => 'Catégorie de nouvelles supprimée avec succès',
+        'MESSAGE_NEWS_CATEGORY_CREATED' => 'Catégorie de nouvelles créée avec succès',
+        'MESSAGE_NEWS_CATEGORY_UPDATED' => 'Catégorie de nouvelles mise à jour avec succès',
+        'MESSAGE_NEWS_CREATED' => 'Nouvelles créées avec succès',
+        'MESSAGE_NEWS_DELETED' => 'Nouvelles supprimées avec succès',
+        'MESSAGE_NEWS_LISTING' => 'Nouvelles listées avec succès',
+        'MESSAGE_NEWS_UPDATED' => 'Nouvelles mises à jour avec succès',
+        'MESSAGE_NEWS_CATEGORY_FOUND' => 'News category found sucessfully',
+        'MESSAGE_NEWS_FOUND' => 'Nouvelles trouvées avec succès',
+        'STORY_ADDED_SUCESSFULLY' => 'Histoire ajoutée avec succès',
+        'MESSAGE_STORY_DELETED' => 'Histoire supprimée avec succès',
+        'MESSAGE_STORIES_ENTRIES_LISTING' => 'Les entrées de l\'histoire listées avec succès',
+        'MESSAGE_NO_STORIES_ENTRIES_FOUND' => 'Aucune entrée d\'histoire trouvée',
+        'MESSAGE_STORY_STATUS_UPDATED' => 'Statut de l\'histoire mis à jour avec succès',
+        'MESSAGE_STORY_FOUND' => 'Histoire trouvée avec succès',
+        'MESSAGE_STORY_COPIED_SUCCESS' => 'Histoire copiée avec succès',
+        'MESSAGE_UNABLE_TO_EXPORT_USER_STORIES_ENTRIES' => 'Aucune histoire trouvée',
+        'MESSAGE_STORY_UPDATED' => 'Histoire mise à jour avec succès',
+        'MESSAGE_USER_COMMENTS_LISTING' => 'Commentaires d\'utilisateurs listés avec succès',
+        'MESSAGE_STORY_SUBMITTED_SUCESSFULLY' => 'Histoire soumise avec succès',
+        'MESSAGE_STORY_IMAGE_DELETED' => 'Image de l\'histoire supprimée avec succès',
+    	'MESSAGE_UNABLE_TO_EXPORT_MISSION_COMMENTS_ENTRIES' => 'Aucun commentaire de mission trouvé',
+        'MESSAGE_STORY_VISITOR_ADDED_SUCESSFULLY' => 'Le visiteur de l\'histoire a été ajouté avec succès',
+        'MESSAGE_STORY_SUBMITTED_SUCESSFULLY' => 'Histoire soumise avec succès',
+        'MESSAGE_STORY_IMAGE_DELETED' => 'Image de l\'histoire supprimée avec succès'
     ],
 
         
@@ -174,6 +202,7 @@ return [
         'ERROR_INVALID_MISSION_DOCUMENT_DATA' => 'Données de média de mission non valides',
         'ERROR_INVALID_INVITE_MISSION_DATA' => 'Détail de la mission d\'invitation non valide',
         'ERROR_INVITE_MISSION_ALREADY_EXIST' => 'L\'utilisateur est déjà invité pour cette mission',
+        'ERROR_USER_MISSIONS_NOT_FOUND' => 'Missions non trouvées',
         
         // Custom error code for Tenant Authorization - 210000 - 219999
         'ERROR_INVALID_API_AND_SECRET_KEY' => 'Clé API ou clé secrète invalide',
@@ -238,18 +267,24 @@ return [
         'ERROR_INVALID_DATA_FOR_TIMESHEET_ENTRY' => 'Vous ne pouvez pas ajouter de temps',
         'ERROR_TIMESHEET_ENTRY_NOT_FOUND' => 'ID de saisie de la feuille de temps introuvable',
         'ERROR_SAME_DATE_TIME_ENTRY' => 'Vous ne pouvez pas ajouter plus de 24 heures à la même date',
-        'ERROR_UNAUTHORIZED_USER' => 'Utilisateur non autorisé',
-        'ERROR_APPROVED_TIMESHEET_DOCUMENTS' => 'Vous ne pouvez pas supprimer les documents d\'entrée de feuille de temps approuvés',
-    ],
+       'ERROR_APPROVED_TIMESHEET_DOCUMENTS' => 'Vous ne pouvez pas supprimer les documents d\'entrée de feuille de temps approuvés',
 
-    /**
-     * Export sheet's headings
-     */
-    'export_sheet_headings' => [
-        'MISSION_NAME' => 'Nom de la mission',
-        'ORGANIZATION_NAME' => 'nom de l\'organisation',
-        'ACTIONS' => 'actes',
-        'TIME' => 'Temps',
-        'HOURS' => 'Heures'
+        
+        // For News module
+        'ERROR_NEWS_CATEGORY_NOT_FOUND' => 'Catégorie de nouvelles non trouvée dans le système',
+        'ERROR_NEWS_CATEGORIES_NOT_FOUND' => 'News categories not found in the system',
+        'ERROR_NEWS_NOT_FOUND' => 'Nouvelles non trouvées dans le système',
+        'ERROR_UNAUTHORIZED_USER' => 'Utilisateur non autorisé',
+
+        // For story module
+        'ERROR_STORY_NOT_FOUND' => 'Histoire non trouvée dans le système',
+        'ERROR_PUBLISHED_STORY_NOT_FOUND' => 'Histoire publiée non trouvée dans le système',
+        'ERROR_COPY_DECLINED_STORY' => 'Vous ne pouvez pas copier l\'histoire, en raison de cette histoire n\'est pas refusée',
+        'ERROR_STORY_PUBLISHED_OR_DECLINED' => 'Vous ne pouvez pas mettre à jour une histoire publiée ou refusée',
+    
+        'ERROR_STORY_IMAGE_NOT_FOUND' => 'L\'image de l\'histoire ne se trouve pas dans le système',
+        'ERROR_STORY_IMAGE_DELETE' => 'Vous ne pouvez pas supprimer l\'image d\'un article publié ou refusé',
+        'ERROR_SUBMIT_STORY_PUBLISHED_OR_DECLINED' => 'You cannot submit published or declined story',
     ]
+
 ];

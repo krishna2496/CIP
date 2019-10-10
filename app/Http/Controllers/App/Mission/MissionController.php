@@ -544,4 +544,32 @@ class MissionController extends Controller
             );
         }
     }
+
+    /**
+     * Get user mission lists
+     *
+     * @param Illuminate\Http\Request $request
+     * @return Illuminate\Http\JsonResponse
+     */
+    public function getUserMissions(Request $request): JsonResponse
+    {
+        try {
+            $missionLists = $this->missionRepository->getUserMissions($request);
+   
+            // Set response data
+            $apiStatus = Response::HTTP_OK;
+            $apiData = $missionLists;
+            $apiMessage = (empty($apiData)) ? trans('messages.custom_error_message.ERROR_USER_MISSIONS_NOT_FOUND')
+            : trans('messages.success.MESSAGE_MISSION_LISTING');
+
+            return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
+        } catch (InvalidArgumentException $e) {
+            return $this->invalidArgument(
+                config('constants.error_codes.ERROR_INVALID_ARGUMENT'),
+                trans('messages.custom_error_message.ERROR_INVALID_ARGUMENT')
+            );
+        } catch (\Exception $e) {
+            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
+        }
+    }
 }
