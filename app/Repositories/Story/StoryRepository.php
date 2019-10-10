@@ -4,7 +4,6 @@ namespace App\Repositories\Story;
 
 use App\Helpers\Helpers;
 use App\Helpers\S3Helper;
-use App\Models\Mission;
 use App\Models\Story;
 use App\Models\StoryMedia;
 use App\Repositories\Story\StoryInterface;
@@ -20,12 +19,6 @@ class StoryRepository implements StoryInterface
      * @var App\Models\Story
      */
     private $story;
-
-    /**
-     *
-     * @var App\Models\Mission
-     */
-    private $mission;
 
     /**
      *
@@ -56,13 +49,11 @@ class StoryRepository implements StoryInterface
      */
     public function __construct(
         Story $story,
-        Mission $mission,
         StoryMedia $storyMedia,
         S3Helper $s3helper,
         Helpers $helpers
     ) {
         $this->story = $story;
-        $this->mission = $mission;
         $this->storyMedia = $storyMedia;
         $this->s3helper = $s3helper;
         $this->helpers = $helpers;
@@ -250,7 +241,7 @@ class StoryRepository implements StoryInterface
             });
         });
        
-        // check other conditions for login user & story status allowed
+        // Only story creater can access DRAFT story
         if (!empty($userId) && !empty($allowedStoryStatus)) {
             $storyQuery->orWhere(function ($query) use ($userId, $allowedStoryStatus, $storyId) {
                 $query->where('user_id', $userId)

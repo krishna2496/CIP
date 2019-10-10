@@ -222,7 +222,7 @@ class StoryController extends Controller
                 config('constants.story_status.DRAFT')
             );
             
-            if ($story->count()==0) {
+            if ($story->count() == 0) {
                 return $this->modelNotFound(
                     config('constants.error_codes.ERROR_STORY_NOT_FOUND'),
                     trans('messages.custom_error_message.ERROR_STORY_NOT_FOUND')
@@ -230,7 +230,11 @@ class StoryController extends Controller
             }
 
             // conditions for story view count manage
-            $storyViewCount = $this->storyVisitorRepository->updateStoryViewCount($story[0], $request->auth->user_id);
+			$storyArray = array('story_id' => $story[0]->story_id, 
+								'story_user_id' => $story[0]->user_id, 
+								'status' => $story[0]->status);
+								
+            $storyViewCount = $this->storyVisitorRepository->updateStoryViewCount($storyArray, $request->auth->user_id);
 
             // Transform story details
             $storyTransformedData = $this->transformStoryDetails($story[0], $storyViewCount);

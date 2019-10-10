@@ -29,22 +29,22 @@ class StoryVisitorRepository implements StoryVisitorInterface
     }
 
     /**
-     * Update story view count by store story visitor data & return story view count
+     * Update story view count per visitor & return story view count
      *
-     * @param App\Models\Story $story
-     * @param integer $loginUserId
+     * @param array $story
+     * @param integer $userId
      * @return int $storyViewCount
      */
-    public function updateStoryViewCount(Story $story, int $loginUserId): int
+    public function updateStoryViewCount(array $story, int $userId): int
     {
         // not found same story user & login user & story status is published then only count story view
-        if ($story->user_id!=$loginUserId && $story->status ==  config('constants.story_status.PUBLISHED')) {
+        if ($story['story_user_id'] != $userId && $story['status'] ==  config('constants.story_status.PUBLISHED')) {
             $storyVisitorDataArray = array(
-                'story_id' => $story->story_id,
-                'user_id' => $loginUserId,
+                'story_id' => $story['story_id'],
+                'user_id' => $userId,
             );
             $storyVisitorData = $this->storyVisitor->updateOrCreate($storyVisitorDataArray);
         }
-        return $storyViewCount = $this->storyVisitor->where('story_id', $story->story_id)->count();
+        return $storyViewCount = $this->storyVisitor->where('story_id', $story['story_id'])->count();
     }
 }
