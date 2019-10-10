@@ -76,7 +76,8 @@ class FooterPageController extends Controller
             $request->all(),
             [
                 "page_details" => "required",
-                "page_details.slug" => "required|max:255|unique:footer_page,slug,NULL,page_id,deleted_at,NULL",
+                "page_details.slug" =>
+                "required|max:255|alpha_dash|unique:footer_page,slug,NULL,page_id,deleted_at,NULL",
                 "page_details.translations" => "required",
                 "page_details.translations.*.lang" => "required|max:2",
                 "page_details.translations.*.title" => "required",
