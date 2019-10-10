@@ -27,6 +27,7 @@ return [
 
     'EMAIL_TEMPLATE_FOLDER' => 'emails',
     'EMAIL_TEMPLATE_USER_INVITE' => 'invite',
+    'EMAIL_TEMPLATE_STORY_USER_INVITE' => 'invite-story',
 
     'AWS_S3_ASSETS_FOLDER_NAME' => 'assets',
     'AWS_S3_IMAGES_FOLDER_NAME' => 'images',
@@ -262,7 +263,8 @@ return [
         'MY-STORIES' => 'My stories',
         'NEW_STORIES_HOURS' => 'New stories hours',
         'NEW_MISSIONS' => 'New missions',
-        'NEW_MESSAGES' => 'New messages'
+        'NEW_MESSAGES' => 'New messages',
+        'RECOMMENDED_STORY' => 'Recommended story'
     ],
     
     /*
@@ -384,8 +386,9 @@ return [
         'ERROR_STORY_IMAGE_NOT_FOUND' => '700006',
         'ERROR_STORY_IMAGE_DELETE' => '700007',
         'ERROR_SUBMIT_STORY_PUBLISHED_OR_DECLINED' => '700008',
-        
-              
+        'ERROR_INVALID_INVITE_STORY_DATA' => '700009',
+        'ERROR_INVITE_STORY_ALREADY_EXIST' => '700010',
+                      
                 
         'ERROR_OCCURRED' => '999999',
         'ERROR_INVALID_JSON' => '900000',

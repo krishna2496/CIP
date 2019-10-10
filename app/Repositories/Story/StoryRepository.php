@@ -42,8 +42,8 @@ class StoryRepository implements StoryInterface
      * Create a new Story repository instance.
      *
      * @param  App\Models\Story $story
-     * @param  App\Models\Mission $mission
      * @param  App\Models\StoryMedia $storyMedia
+     * @param  App\Helpers\S3Helper $s3helper
      * @param  App\Helpers\Helpers $helpers
      * @return void
      */
@@ -410,7 +410,6 @@ class StoryRepository implements StoryInterface
     {
         return $this->storyMedia->deleteStoryImage($mediaId, $storyId);
     }
-
 
     /**
      * Used for check if story exist or not

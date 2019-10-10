@@ -481,7 +481,6 @@ class MissionController extends Controller
         try {
             $language = $this->languageHelper->getLanguageDetails($request);
             $languageId = $language->language_id;
-            $languageCode = $language->code;
 
             $defaultTenantLanguage = $this->languageHelper->getDefaultTenantLanguage($request);
             $defaultTenantLanguageId = $defaultTenantLanguage->language_id;

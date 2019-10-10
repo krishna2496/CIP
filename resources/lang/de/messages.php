@@ -120,7 +120,8 @@ return [
     	'MESSAGE_UNABLE_TO_EXPORT_MISSION_COMMENTS_ENTRIES' => 'DE: No mission comments found',
         'MESSAGE_STORY_VISITOR_ADDED_SUCESSFULLY' => 'DE: Story visitor added successfully',
         'MESSAGE_STORY_SUBMITTED_SUCESSFULLY' => 'DE: Story submitted sucessfully',
-        'MESSAGE_STORY_IMAGE_DELETED' => 'DE: Story image deleted sucessfully',
+        'MESSAGE_STORY_IMAGE_DELETED' => 'DE: Story image deleted sucessfully',,
+        'MESSAGE_INVITED_FOR_STORY' => 'DE: User invited to story successfully',
     ],
 
 
@@ -242,5 +243,6 @@ return [
         'ERROR_STORY_IMAGE_NOT_FOUND' => 'DE: Story image not found in the system',
         'ERROR_STORY_IMAGE_DELETE' => 'DE: You cannot delete image of published or declined story',
         'ERROR_SUBMIT_STORY_PUBLISHED_OR_DECLINED' => 'You cannot submit published or declined story',
+        'ERROR_INVITE_STORY_ALREADY_EXIST' => 'DE: User is already invited for this story',
     ]
 ];

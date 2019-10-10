@@ -338,6 +338,11 @@ $router->group(['middleware' => 'localization'], function ($router) {
         'middleware' => 'localization|tenant.connection|jwt.auth',
         'uses' => 'App\Story\StoryController@deleteStoryImage']);
 
+    /* Mission Invite  */
+    $router->post('/app/story/invite', ['as' => 'app.story.invite',
+        'middleware' => 'tenant.connection|jwt.auth',
+        'uses' => 'App\Story\StoryInviteController@storyInvite']);
+
     /* Delete user mission comments */
     $router->delete('/app/dashboard/comments/{commentId}', ['as' => 'app.dashboard.comment.destroy',
         'middleware' => 'localization|tenant.connection|jwt.auth',
