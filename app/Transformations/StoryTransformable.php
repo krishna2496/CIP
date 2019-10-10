@@ -26,7 +26,7 @@ trait StoryTransformable
         $storyData->status = trans('general.status.' . $story->status);
         $storyData->published_at = $story->published_at;
 
-        if (!empty($storyData->user)) {
+        if (!empty($story->user)) {
             $storyData->user_id = $story->user_id;
             $storyData->first_name = $story->user->first_name;
             $storyData->last_name = $story->user->last_name;
@@ -37,7 +37,7 @@ trait StoryTransformable
             $storyData->country = $story->user->country;
         }
 
-        if (!empty($storyData->storyMedia)) {
+        if (!empty($story->storyMedia)) {
             $storyData->storyMedia = $story->storyMedia;
         }
 
