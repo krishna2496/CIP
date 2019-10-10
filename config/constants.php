@@ -388,7 +388,8 @@ return [
         'ERROR_SUBMIT_STORY_PUBLISHED_OR_DECLINED' => '700008',
         'ERROR_INVALID_INVITE_STORY_DATA' => '700009',
         'ERROR_INVITE_STORY_ALREADY_EXIST' => '700010',
-                      
+                              
+        'ERROR_CONTACT_FORM_REQUIRED_FIELDS_EMPTY' => '1000001',
                 
         'ERROR_OCCURRED' => '999999',
         'ERROR_INVALID_JSON' => '900000',

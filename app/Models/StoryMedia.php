@@ -34,7 +34,7 @@ class StoryMedia extends Model
      *
      * @var array
      */
-    protected $visible = ['story_id', 'type', 'path'];
+    protected $visible = ['story_media_id','story_id', 'type', 'path'];
     
     /**
      * Soft delete story image from the database.
