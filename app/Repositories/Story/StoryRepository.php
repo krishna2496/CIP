@@ -243,10 +243,10 @@ class StoryRepository implements StoryInterface
         ]);
 
         $storyQuery->Where(function ($query) use ($storyId, $storyStatus) {
-            $query->when($storyId, function ($q) use ($storyId) {
-                return $q->where('story_id', $storyId);
-            })->when($storyStatus, function ($q) use ($storyStatus) {
-                return $q->where('status', $storyStatus);
+            $query->when($storyId, function ($subQuery) use ($storyId) {
+                return $subQuery->where('story_id', $storyId);
+            })->when($storyStatus, function ($subQuery) use ($storyStatus) {
+                return $subQuery->where('status', $storyStatus);
             });
         });
        
