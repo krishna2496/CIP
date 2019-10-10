@@ -141,14 +141,14 @@ trait StoryTransformable
     }
 
     /**
-     * Get Transfomed story detail
+     * Get Transfomed story details
      *
      * @param App\Models\Story $story
      * @param int $storyViewCount
      * @return Array
      */
 
-    protected function transformStoryDetail(Story $story, int $storyViewCount):array
+    protected function transformStoryDetails(Story $story, int $storyViewCount):array
     {
         $storyData['story_id'] = (int) $story->story_id;
         $storyData['mission_id'] = $story->mission_id;

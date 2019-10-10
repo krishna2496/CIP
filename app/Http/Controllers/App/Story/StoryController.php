@@ -232,13 +232,13 @@ class StoryController extends Controller
             // conditions for story view count manage
             $storyViewCount = $this->storyVisitorRepository->updateStoryViewCount($story[0], $request->auth->user_id);
 
-            // Transform news details
-            $storyTransform = $this->transformStoryDetail($story[0], $storyViewCount);
+            // Transform story details
+            $storyTransformedData = $this->transformStoryDetails($story[0], $storyViewCount);
             
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_STORY_FOUND');
     
-            return $this->responseHelper->success($apiStatus, $apiMessage, $storyTransform);
+            return $this->responseHelper->success($apiStatus, $apiMessage, $storyTransformedData);
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
                 config('constants.error_codes.ERROR_STORY_NOT_FOUND'),
