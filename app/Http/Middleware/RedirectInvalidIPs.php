@@ -23,7 +23,7 @@ class RedirectInvalidIPs
      */
     public function __construct()
     {
-        $this->validIP = env('VALID_IP_1_FOR_SECURE_API');
+        $this->validIP = env('VALID_IP_FOR_SECURE_API');
         array_push($this->ips, $this->validIP);
     }
 
