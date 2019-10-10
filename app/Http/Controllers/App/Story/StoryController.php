@@ -4,6 +4,7 @@ namespace App\Http\Controllers\App\Story;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Repositories\Story\StoryRepository;
+use App\Repositories\StoryVisitor\StoryVisitorRepository;
 use App\Models\Story;
 use App\Helpers\ResponseHelper;
 use App\Helpers\LanguageHelper;
@@ -23,6 +24,11 @@ class StoryController extends Controller
      * @var App\Repositories\Story\StoryRepository
      */
     private $storyRepository;
+
+    /**
+     * @var App\Repositories\StoryVisitor\StoryVisitorRepository
+     */
+    private $storyVisitorRepository;
     
     /**
      * @var App\Helpers\ResponseHelper
@@ -43,6 +49,7 @@ class StoryController extends Controller
      * Create a new Story controller instance
      *
      * @param App\Repositories\Story\StoryRepository $storyRepository
+     * @param App\Repositories\StoryVisitor\StoryVisitorRepository $storyVisitorRepository
      * @param App\Helpers\ResponseHelper $responseHelper
      * @param App\Helpers\Helpers $helpers
      * @param App\Helpers\LanguageHelper $languageHelper
@@ -50,11 +57,13 @@ class StoryController extends Controller
      */
     public function __construct(
         StoryRepository $storyRepository,
+        StoryVisitorRepository $storyVisitorRepository,
         ResponseHelper $responseHelper,
         Helpers $helpers,
         LanguageHelper $languageHelper
     ) {
         $this->storyRepository = $storyRepository;
+        $this->storyVisitorRepository = $storyVisitorRepository;
         $this->responseHelper = $responseHelper;
         $this->helpers = $helpers;
         $this->languageHelper = $languageHelper;
@@ -195,7 +204,7 @@ class StoryController extends Controller
     }
     
     /**
-     * Display story details.
+     * Get story details.
      *
      * @param \Illuminate\Http\Request $request
      * @param int $storyId
@@ -206,23 +215,34 @@ class StoryController extends Controller
         try {
             // Get Story details
             $story = $this->storyRepository
-            ->getStoryDetails($storyId, config('constants.story_status.PUBLISHED'));
+            ->getStoryDetails(
+                $storyId,
+                config('constants.story_status.PUBLISHED'),
+                $request->auth->user_id,
+                config('constants.story_status.DRAFT')
+            );
             
-            $defaultTenantLanguage = $this->languageHelper->getDefaultTenantLanguage($request);
-            $language = $this->languageHelper->getLanguageDetails($request);
+            if ($story->count()==0) {
+                return $this->modelNotFound(
+                    config('constants.error_codes.ERROR_STORY_NOT_FOUND'),
+                    trans('messages.custom_error_message.ERROR_STORY_NOT_FOUND')
+                );
+            }
 
-            // Transform news details
-            $storyTransform = $this->transformStory($story, $defaultTenantLanguage->language_id, $language->language_id)
-            ->toArray();
+            // conditions for story view count manage
+            $storyViewCount = $this->storyVisitorRepository->updateStoryViewCount($story[0], $request->auth->user_id);
+
+            // Transform story details
+            $storyTransformedData = $this->transformStoryDetails($story[0], $storyViewCount);
             
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_STORY_FOUND');
     
-            return $this->responseHelper->success($apiStatus, $apiMessage, $storyTransform);
+            return $this->responseHelper->success($apiStatus, $apiMessage, $storyTransformedData);
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
-                config('constants.error_codes.ERROR_PUBLISHED_STORY_NOT_FOUND'),
-                trans('messages.custom_error_message.ERROR_PUBLISHED_STORY_NOT_FOUND')
+                config('constants.error_codes.ERROR_STORY_NOT_FOUND'),
+                trans('messages.custom_error_message.ERROR_STORY_NOT_FOUND')
             );
         }
     }
@@ -461,7 +481,7 @@ class StoryController extends Controller
             $apiStatus,
             $apiMessage,
             $apiData
-			);
+        );
     }
     
     /**

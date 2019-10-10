@@ -3,52 +3,54 @@ namespace App\Transformations;
 
 use App\Models\Story;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Collection;
 
 trait StoryTransformable
 {
     /**
-     * Get Transfered stories
+     * Get Transfomed stories
      *
      * @param App\Models\Story $story
-     * @param int $defaultTenantLanguageId
      * @param int $languageId
      * @return App\Models\Story
      */
 
-    protected function transformStory(Story $story, int $defaultTenantLanguageId, int $languageId):Story
+    protected function transformStory(Story $story, int $languageId):Story
     {
-        $prop = new Story;
-        $prop->story_id = (int) $story->story_id;
-        $prop->mission_id = $story->mission_id;
-        $prop->title = $story->title;
-        $prop->description = $story->description;
-        $prop->story_visitor_count = (int) $story->story_visitor_count;
-        $prop->status = trans('general.status.' . $story->status);
-        $prop->published_at = $story->published_at;
+        $storyData = new Story;
+        $storyData->story_id = (int) $story->story_id;
+        $storyData->mission_id = $story->mission_id;
+        $storyData->title = $story->title;
+        $storyData->description = $story->description;
+        $storyData->story_visitor_count = (int) $story->story_visitor_count;
+        $storyData->status = trans('general.status.' . $story->status);
+        $storyData->published_at = $story->published_at;
 
         if (!empty($story->user)) {
-            $prop->user_id = $story->user_id;
-            $prop->first_name = $story->user->first_name;
-            $prop->last_name = $story->user->last_name;
-            $prop->avatar = $story->user->avatar;
-            $prop->profile_text = $story->user->profile_text;
-            $prop->why_i_volunteer = $story->user->why_i_volunteer;
-            $prop->city = $story->user->city;
-            $prop->country = $story->user->country;
+            $storyData->user_id = $story->user_id;
+            $storyData->first_name = $story->user->first_name;
+            $storyData->last_name = $story->user->last_name;
+            $storyData->avatar = $story->user->avatar;
+            $storyData->profile_text = $story->user->profile_text;
+            $storyData->why_i_volunteer = $story->user->why_i_volunteer;
+            $storyData->city = $story->user->city;
+            $storyData->country = $story->user->country;
         }
 
         if (!empty($story->storyMedia)) {
-            $prop->storyMedia = $story->storyMedia;
+            $storyData->storyMedia = $story->storyMedia;
         }
 
-        $key = array_search($languageId, array_column($story->mission->missionLanguage->toArray(), 'language_id'));
-        $language = ($key === false) ? $defaultTenantLanguageId : $languageId;
-        $missionLanguage = $story->mission->missionLanguage->where('language_id', $language)->first();
-
+        
+        $key = array_search($languageId, array_column($storyData->mission->missionLanguage->toArray(), 'language_id'));
+        $language = ($key === false) ? 'en' : $languageId;
+        $missionLanguage = $storyData->mission->missionLanguage->where('language_id', $language)->first();
+        
         if (!is_null($missionLanguage)) {
-            $prop->mission_title = $missionLanguage->title;
+            $storyData->mission_title = $missionLanguage->title;
         }
-        return $prop;
+
+        return $storyData;
     }
 
     /**
@@ -88,12 +90,12 @@ trait StoryTransformable
                 'created' => Carbon::parse($story->created_at)->format('d/m/Y'),
             ];
         }
-		if (count($stories) > 0) {
-			$transformedUserStories['stats']['draft'] = $draftStories;
-			$transformedUserStories['stats']['published'] = $publishedStories;
-			$transformedUserStories['stats']['pending'] = $pendingStories;
-			$transformedUserStories['stats']['declined'] = $declinedStories;
-		}
+        if (count($stories) > 0) {
+            $transformedUserStories['stats']['draft'] = $draftStories;
+            $transformedUserStories['stats']['published'] = $publishedStories;
+            $transformedUserStories['stats']['pending'] = $pendingStories;
+            $transformedUserStories['stats']['declined'] = $declinedStories;
+        }
         
         return $transformedUserStories;
     }
@@ -136,5 +138,40 @@ trait StoryTransformable
         }
 
         return $transformedPublishedStories;
+    }
+
+    /**
+     * Get Transfomed story details
+     *
+     * @param App\Models\Story $story
+     * @param int $storyViewCount
+     * @return Array
+     */
+
+    protected function transformStoryDetails(Story $story, int $storyViewCount):array
+    {
+        $storyData['story_id'] = (int) $story->story_id;
+        $storyData['mission_id'] = $story->mission_id;
+        $storyData['title'] = $story->title;
+        $storyData['description'] = $story->description;
+        $storyData['story_visitor_count'] = $storyViewCount;
+        $storyData['status'] = trans('general.status.' . $story->status);
+        $storyData['published_at'] = $story->published_at;
+
+        if (!empty($story->user)) {
+            $storyData['user_id'] = $story->user_id;
+            $storyData['first_name'] = $story->user->first_name;
+            $storyData['last_name'] = $story->user->last_name;
+            $storyData['avatar'] = $story->user->avatar;
+            $storyData['profile_text'] = $story->user->profile_text;
+            $storyData['why_i_volunteer'] = $story->user->why_i_volunteer;
+            $storyData['city'] = $story->user->city;
+            $storyData['country'] = $story->user->country;
+        }
+
+        if (!empty($story->storyMedia)) {
+            $storyData['storyMedia'] = $story->storyMedia;
+        }
+        return $storyData;
     }
 }
