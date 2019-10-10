@@ -351,7 +351,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
 
     /* store contact form details */
     $router->post('/app/submit-contact-form', ['as' => 'app.contactform.store',
-        'middleware' => 'localization|tenant.connection|jwt.auth',
+'middleware' => 'localization|tenant.connection|jwt.auth|JsonApiMiddleware',
         'uses' => 'App\ContactForm\ContactFormController@store']);
 
     /* Delete user mission comments */

@@ -148,7 +148,7 @@ return [
         'MESSAGE_STORY_COPIED_SUCCESS' => 'Story copied successfully',
         'MESSAGE_UNABLE_TO_EXPORT_USER_STORIES_ENTRIES' => 'No stories found',
         'MESSAGE_STORY_UPDATED' => 'Story updated successfully',
-        'CONTACT_FORM_ADDED_SUCESSFULLY' => 'Your feedback added successfully.',
+        'CONTACT_FORM_ADDED_SUCESSFULLY' => 'Your feedback submitted successfully.',
        
         'MESSAGE_USER_COMMENTS_LISTING' => 'User comments listed successfully',
         'MESSAGE_STORY_SUBMITTED_SUCESSFULLY' => 'Story submitted sucessfully',

@@ -36,7 +36,7 @@ class ContactFormRepository implements ContactFormInterface
     {
         $storyVisitorDataArray = array(
             'user_id' => $request->auth->user_id,
-            'phone_no' => $request->phone_no,
+            'phone_number' => $request->phone_number,
             'message' => $request->message,
         );
 
