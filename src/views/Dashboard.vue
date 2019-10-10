@@ -140,7 +140,9 @@
 	import DashboardBreadcrumb from "../components/DashboardBreadcrumb";
 	import store from '../store';
 	import Chart from "chart.js";
-
+	import {
+		storyMissionListing
+	} from "../services/service";
 	export default {
 		components: {
 			ThePrimaryHeader,
@@ -162,12 +164,7 @@
 				defaultMonth: "",
 				defaultMissionTitle: "",
 				yearList: [],
-				missionTitle: [
-					["title1","Mission title1"],
-					["title2","Mission title2"],
-					["title3","Mission title3"],
-					["title4","Mission title4"]
-				],
+				missionTitle: [],
 				monthList: [
 					["1","january"],
 					["2","february"],
@@ -286,13 +283,31 @@
 			updateMissionTitle(value) {
 				this.defaultMissionTitle = value.selectedVal;
 			},
-			handleActive() {}
+			handleActive() {},
+			missionListing() {
+				storyMissionListing().then(response => {
+					// missionTitle
+					var array = [];
+					if(response.error == false) {
+						let missionArray = response.data
+						if(missionArray) {
+							missionArray.filter((data,index) => {
+								array[index] = new Array(2);
+								array[index][0] = data.mission_id
+								array[index][1] = data.title
+							})
+							this.missionTitle = array
+						}
+					}
+				})
+			}
 		},
 		created() {
 			this.languageData = JSON.parse(store.state.languageLabel);
 			this.defaultYear =  this.languageData.label.years
 			this.defaultMonth =  this.languageData.label.month
 			this.defaultMissionTitle =  this.languageData.label.mission_title
+			this.missionListing()
 		}
 	};
 </script>

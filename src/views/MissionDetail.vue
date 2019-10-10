@@ -914,7 +914,7 @@
 					}
 				})
 			},
-
+			
 			searchUsers() {
 				searchUser().then(userResponse => {
 					this.userList = userResponse;

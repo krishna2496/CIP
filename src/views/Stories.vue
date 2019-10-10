@@ -11,9 +11,9 @@
 						{{ message }}
 					</b-alert>
 				</div>
-				<div v-if="!showErrorDiv && !isPageLoaded">
-					<div v-if="!storyListing.length > 0">
-						<StoriesCard />
+				<div v-if="!showErrorDiv && isPageLoaded">
+					<div v-if="storyListing.length > 0">
+						<StoriesCard :storyListing="storyListing"/>
 					</div>
 				</div>
 				<div class="pagination-block" data-aos="fade-up">
@@ -79,7 +79,7 @@
 
 		methods: {
 			pageChange(page){
-				// this.getStoryListing(page);
+				this.getStoryListing(page);
 			},
 			getStoryListing(currentPage) {
 				storyListing(currentPage).then(response => {
@@ -104,6 +104,7 @@
 			if(!this.isStoryDisplay) {
 				this.$router.push('/home')
 			}
+			this.getStoryListing(this.pagination.currentPage)
 		},
 		destroyed() {}
 	};

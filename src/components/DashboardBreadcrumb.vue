@@ -42,6 +42,9 @@
 						name: '',
 						link: "volunteering-timesheet"
 					},
+					{ id: 4, name: "Messages", link: "messages" },
+					{ id: 5, name: "Comments History", link: "comment-history" },
+					{ id: 6, name: "My Stories", link: "my-stroies" }
 				]
 			};
 		},

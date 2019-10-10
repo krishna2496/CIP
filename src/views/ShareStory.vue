@@ -44,6 +44,7 @@
 									</b-col>
 								</b-row>
 								<b-row>
+									<b-col md="12">
 									<label for>{{languageData.label.my_story}}*</label>		
 										<vue-ckeditor 
 											:config="config"
@@ -54,6 +55,7 @@
 										<div v-if="submitted && !$v.story.myStory.required" class="invalid-feedback">
 											{{ languageData.errors.story_description_required }}
 										</div>
+										</b-col>
 							</b-row>
 							</b-form>
 							
@@ -96,6 +98,18 @@
 								</div>
 							</b-form-group>
 							<div class="uploaded-block">
+								<div class="uploaded-file-details"  v-if="fileArray.length > 0" v-for="(fileData, index) in fileArray" :key=index>
+										<span class="image-thumb">
+											<img 
+												:src="fileData[1]" 
+												width="40" 
+												height="auto" 
+											/>
+											<b-button type="button" @click.prevent="removeFiles(fileData[0],index)" class="remove-btn">
+												<img :src="$store.state.imagePath+'/assets/images/cross-ic-white.svg'" alt />
+											</b-button>
+										</span>
+								</div>
 								<div class="uploaded-file-details" v-for="(file, index) in story.files" :key="index">
 									<span v-if="file.thumb" class="image-thumb">
 										<img 
@@ -107,8 +121,8 @@
 											<img :src="$store.state.imagePath+'/assets/images/cross-ic-white.svg'" alt />
 										</b-button>
 									</span>
-									<span v-else>{{languageData.label.no_image}}</span>
 								</div>
+								
 							</div>
 						</div>
 						<div class="btn-row">
@@ -143,7 +157,11 @@
     } from 'vuelidate/lib/validators';
 	import {
 		storyMissionListing,
-    	submitStory
+		submitStory,
+		updateStory,
+		storyDetail,
+		updateStoryStatus,
+		deleteStoryImage
 	} from "../services/service";
 	import VueCkeditor from 'vue-ckeditor2'
 	export default {
@@ -184,7 +202,8 @@
 				content: '',
 				config: {
 					height: 300
-				}
+				},
+				fileArray : []
 			}
 		},
 		validations: {
@@ -229,7 +248,24 @@
 
 			submitStory() {
 				this.submitted = true;
-                this.$v.$touch();
+				this.$v.$touch();
+				if (this.$v.$invalid) {
+                	return;
+				}
+				this.submitButtonAjaxCall = true;
+				updateStoryStatus(this.storyId).then(response => {
+					this.showDismissibleAlert = true
+					if (response.error === true) { 
+						this.classVariant = 'danger'
+						//set error msg
+						this.message = response.message
+					} else {
+						this.classVariant = 'success'
+						//set error msg
+						this.message = response.message
+					}
+					this.submitButtonAjaxCall = false
+				})
 			},
 			previewStory() {
 				if(this.storyId != '') {
@@ -345,25 +381,97 @@
 					let videoUrl =  this.story.videoUrl.replace("\n",',')
 					formData.append('story_videos', videoUrl);
 				}
-				submitStory(formData).then(response => {
+				if(this.storyId == '') {
+					submitStory(formData).then(response => {
+						this.showDismissibleAlert = true
+						if (response.error === true) { 
+							this.classVariant = 'danger'
+							//set error msg
+							this.message = response.message
+						} else {
+							this.storyId = response.data
+							if(this.storyId != '') {
+								this.previewButtonEnable = false
+								this.submitButtonEnable = false
+							}
+							this.classVariant = 'success'
+							//set error msg
+							this.message = response.message
+						}
+						this.saveButtonAjaxCall = false
+					})	
+				} else {
+					formData.append('_method','PATCH');
+					updateStory(formData,this.storyId).then(response => {
+						this.showDismissibleAlert = true
+						if (response.error === true) { 
+							this.classVariant = 'danger'
+							//set error msg
+							this.message = response.message
+						} else {
+							this.classVariant = 'success'
+							//set error msg
+							this.message = response.message
+						}
+						this.saveButtonAjaxCall = false
+					})	
+				}
+			},
+
+			removeFiles(id,index) {
+				let data = {
+					'storyId' : '',
+					'imageId' : ''
+				}
+				data.imageId = id;
+				// data.imageId = 5
+				data.storyId = this.storyId;
+				deleteStoryImage(data).then(response => {
 					
 					this.showDismissibleAlert = true
 					if (response.error === true) { 
 						this.classVariant = 'danger'
 						//set error msg
 						this.message = response.message
-					} else {
-						this.storyId = response.data
-						if(this.storyId != '') {
-							this.previewButtonEnable = false
-							this.submitButtonEnable = false
-						}
-						this.classVariant = 'success'
-						//set error msg
-						this.message = response.message
+					} else {			
+						this.fileArray.splice(index,1)
 					}
 					this.saveButtonAjaxCall = false
-				})	
+				})
+			},
+
+			getStoryDetail() {
+				storyDetail(this.$route.params.storyId).then(response => {
+					if(response.error == false) {
+						this.story.title = response.data.title
+						this.story.myStory = response.data.description
+						this.defaultMissionTitle = response.data.mission_title
+						let videoUrl = '';
+						let imageUrl = []
+						if( response.data.storyMedia) {
+							let storyMedia = response.data.storyMedia;
+								storyMedia.filter((data,index) => {console.log(data)
+									if(data.type == 'video') {
+										videoUrl = data.path
+									} else {
+										imageUrl[index] = new Array(2);
+										imageUrl[index][0] = data.story_id
+										imageUrl[index][1] = data.path
+								
+									}
+								})
+							
+						}
+						this.story.videoUrl = videoUrl.replace(",","\n")
+						this.fileArray = imageUrl
+						
+						this.story.mission = response.data.mission_id
+						this.submitButtonEnable = false
+						this.previewButtonEnable = false
+					} else {
+						this.$router.push('/404');
+					}
+				})
 			}
 		},
 		created() {
@@ -371,6 +479,10 @@
 			this.isStoryDisplay = this.settingEnabled(constants.STORIES_ENABLED);
 			if(!this.isStoryDisplay) {
 				this.$router.push('/home')
+			}
+			if(this.$route.params.storyId) {
+				this.storyId = this.$route.params.storyId;
+				this.getStoryDetail();
 			}
 			this.defaultMissionTitle =  this.languageData.label.mission_title
 			this.missionListing();

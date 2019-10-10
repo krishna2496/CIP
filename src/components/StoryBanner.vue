@@ -33,7 +33,6 @@
 		components: {},
 		data() {
 			return {
-				bgImg: require("@/assets/images/banner-img.png"),
 				images: [],
 				languageData : [],
 				bannerUrl : '',
@@ -41,12 +40,8 @@
 			};
 		},
 		mounted() {},
-		computed: {},
-		watch: {},
-		methods: {},
 		created() {
 			this.languageData = JSON.parse(store.state.languageLabel);
-
 			this.bannerUrl = store.state.storyBanner
 			let bannerTextArray = JSON.parse(store.state.storyBannerText)
 			if(bannerTextArray) {

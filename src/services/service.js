@@ -45,6 +45,9 @@ import storyDetail from "./Stories/StoryDetail"
 import storyListing from "./Stories/StoryListing"
 import storyMissionListing from "./Stories/StoryMissionListing"
 import submitStory from "./Stories/SubmitStory"
+import updateStory from "./Stories/UpdateStory"
+import updateStoryStatus from "./Stories/UpdateStoryStatus"
+import deleteStoryImage from "./Stories/DeleteStoryImage"
 
 export {
     loadLocaleMessages,
@@ -93,5 +96,8 @@ export {
     storyDetail,
     storyListing,
     storyMissionListing,
-    submitStory
+    submitStory,
+    updateStory,
+    updateStoryStatus,
+    deleteStoryImage
 }

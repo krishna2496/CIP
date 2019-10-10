@@ -78,7 +78,6 @@ export default {
 			message: null,
 			newsListing : [],
 			pagination : {
-				'currentPage' :1,
 				"total": 0,
 				"perPage": 1,
 				"currentPage": 1, 

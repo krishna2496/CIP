@@ -99,6 +99,30 @@ let routes = [{
             import ('./views/ShareStory.vue')
     },
     {
+        path: '/edit-story/:storyId',
+        name: 'ShareStory',
+        component: () =>
+            import ('./views/ShareStory.vue')
+    },
+    {
+        path: '/messages',
+        name: 'DashboardMessage',
+        component: () =>
+            import ('./views/DashboardMessage.vue')
+    },
+    {
+        path: '/comment-history',
+        name: 'DashboardComments',
+        component: () =>
+            import ('./views/DashboardComments.vue')
+    },
+    {
+        path: '/my-stroies',
+        name: 'DashboardStories',
+        component: () =>
+            import ('./views/DashboardStories.vue')
+    },
+    {
         path: '/home/:searchParamsType/:searchParams',
         name: 'exploreMission',
         meta: {
