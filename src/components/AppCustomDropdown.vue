@@ -3,7 +3,7 @@
         'custom-dropdown' :true,
         'select-dropdown':true
       }">
-		<span class="select-text" @click="handleClick">{{defaultText}}</span>
+		<span class="select-text"  @click="handleClick">{{defaultText}}</span>
 		<div class="option-list-wrap dropdown-option-wrap " data-simplebar>
 			<ul class="option-list dropdown-option-list" v-if="translationEnable == 'false'">
 				<li v-for="(item, index) in optionList" v-bind:data-id="item[0]" :key="index" @click="handleSelect">{{item[1]}}</li>
@@ -62,6 +62,10 @@
 				}
 
 				e.target.parentNode.classList.toggle("dropdown-open");
+				var simplebarScrollTop = e.target.parentNode.querySelector(
+					".simplebar-content-wrapper"
+				);
+				simplebarScrollTop.scrollTop = 0;
 				let dropdownList = document.querySelectorAll(".dropdown-open");
 				for (let i = 0; i < dropdownList.length; ++i) {
 					if (dropdownList[i] != e.target.parentNode) {

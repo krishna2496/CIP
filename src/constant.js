@@ -46,5 +46,5 @@ export default Object.freeze({
     FILE_MAX_SIZE_BYTE: 4000000,
     FILE_ALLOWED_FILE_TYPES: ['doc', 'xls', 'xlsx', 'csv', 'pdf', 'png', 'jpg', 'jpeg'],
     RECENT_VOLUNTEERES_PER_PAGE: 12,
-    MISSION_DEFAULT_PLACEHOLDER: "location.svg"
+    MISSION_DEFAULT_PLACEHOLDER: "placeholder-img.jpg"
 })
