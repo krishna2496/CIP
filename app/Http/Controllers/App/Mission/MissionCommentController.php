@@ -218,7 +218,7 @@ class MissionCommentController extends Controller
         ];
         
         $excel->setHeadlines($headings);
-        foreach ($userMissionCommentsData as $comments) {
+        foreach ($userMissionComments as $comments) {
             $excel->appendRow([
                 $comments->title,
                 $comments->comment,
