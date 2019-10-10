@@ -345,20 +345,6 @@ class TimesheetRepository implements TimesheetInterface
     }
 
     /**
-     * Fetch timesheet details by mission and date
-     *
-     * @param int $missionId
-     * @param string $date
-     * @return null|Illuminate\Support\Collection
-     */
-    public function getTimesheetDetailByDate(int $missionId, string $date): ? Collection
-    {
-        return ($this->timesheet->where(['mission_id' => $missionId, 'date_volunteered' => $date])
-        ->whereIn('status_id', array(config('constants.timesheet_status_id.APPROVED'),
-        config('constants.timesheet_status_id.AUTOMATICALLY_APPROVED'))))->get();
-    }
-
-    /**
      * Get timesheet entries
      *
      * @param Illuminate\Http\Request $request

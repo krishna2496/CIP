@@ -143,7 +143,9 @@ return [
         'ERROR_NOT_VALID_EXTENSION' => 'Le fichier doit avoir le type .scss',
         'ERROR_FILE_NAME_NOT_MATCHED_WITH_STRUCTURE' => 'Le nom du fichier ne correspond pas à la structure',
         'ERROR_INVALID_IMAGE_URL' => 'L\'URL doit être un fichier de type: jpeg, png, jpg',
+        'ERROR_INVALID_EMAIL_OR_PASSWORD' => 'L\'adresse e-mail ou le mot de passe est incorrect',
         
+
         // Custom error code for CMS Module - 300000 - 309999
         'ERROR_INVALID_ARGUMENT' => 'Argument invalide',
         'ERROR_FOOTER_PAGE_NOT_FOUND' => 'Page de pied de page introuvable dans le système',

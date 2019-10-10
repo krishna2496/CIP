@@ -97,6 +97,7 @@ class AuthController extends Controller
         $this->languageHelper = $languageHelper;
         $this->userRepository = $userRepository;
         $this->passwordReset = $passwordReset;
+        $this->passwordBrokerManager = new PasswordBrokerManager(app());
     }
 
     /**
@@ -130,8 +131,8 @@ class AuthController extends Controller
             return $this->responseHelper->error(
                 Response::HTTP_FORBIDDEN,
                 Response::$statusTexts[Response::HTTP_FORBIDDEN],
-                config('constants.error_codes.ERROR_EMAIL_NOT_EXIST'),
-                trans('messages.custom_error_message.ERROR_EMAIL_NOT_EXIST')
+                config('constants.error_codes.ERROR_INVALID_EMAIL_OR_PASSWORD'),
+                trans('messages.custom_error_message.ERROR_INVALID_EMAIL_OR_PASSWORD')
             );
         }
         // Verify user's password
@@ -139,8 +140,8 @@ class AuthController extends Controller
             return $this->responseHelper->error(
                 Response::HTTP_UNPROCESSABLE_ENTITY,
                 Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                config('constants.error_codes.ERROR_INVALID_PASSWORD'),
-                trans('messages.custom_error_message.ERROR_INVALID_PASSWORD')
+                config('constants.error_codes.ERROR_INVALID_EMAIL_OR_PASSWORD'),
+                trans('messages.custom_error_message.ERROR_INVALID_EMAIL_OR_PASSWORD')
             );
         }
         
@@ -319,8 +320,7 @@ class AuthController extends Controller
      */
     public function broker()
     {
-        $passwordBrokerManager = new PasswordBrokerManager(app());
-        return $passwordBrokerManager->broker();
+        return $this->passwordBrokerManager->broker();
     }
     
     /**

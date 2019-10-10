@@ -116,61 +116,9 @@ class TenantOptionsController extends Controller
         // Get domain name from request and use as tenant name.
         $tenantName = $this->helpers->getSubDomainFromRequest($request);
         if ($request->hasFile('custom_scss_file')) {
-            $file = $request->file('custom_scss_file');
-
-            // Server side validataions
-            $validator = Validator::make(
-                $request->toArray(),
-                [
-                    "custom_scss_file_name" => "required"
-                ]
-            );
-
-            // If post parameter have any missing parameter
-            if ($validator->fails()) {
-                return $this->responseHelper->error(
-                    Response::HTTP_UNPROCESSABLE_ENTITY,
-                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                    config('constants.error_codes.ERROR_IMAGE_UPLOAD_INVALID_DATA'),
-                    $validator->errors()->first()
-                );
-            }
-
-            // If request parameter have any error
-            if ($file->getClientOriginalExtension() !== "scss") {
-                return $this->responseHelper->error(
-                    Response::HTTP_UNPROCESSABLE_ENTITY,
-                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                    config('constants.error_codes.ERROR_NOT_VALID_EXTENSION'),
-                    trans('messages.custom_error_message.ERROR_NOT_VALID_EXTENSION')
-                );
-            }
-            
-            if ($file->isValid()) {
-                $fileName = $request->custom_scss_file_name;
-
-                /* Check user uploading custom style variable file,
-                then we need to make it as high priority instead of passed colors. */
-                if ($fileName === config('constants.AWS_CUSTOM_STYLE_VARIABLE_FILE_NAME')) {
-                    $isVariableScss = 1;
-                }
-                // if it is not exist then need to throw error
-                if (!Storage::disk('s3')->exists($tenantName.'/assets/scss/'.$fileName)) {
-                    // Error: Return like uploaded file name doesn't match with structure.
-                    return $this->responseHelper->error(
-                        Response::HTTP_UNPROCESSABLE_ENTITY,
-                        Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                        config('constants.error_codes.ERROR_FILE_NAME_NOT_MATCHED_WITH_STRUCTURE'),
-                        trans('messages.custom_error_message.ERROR_FILE_NAME_NOT_MATCHED_WITH_STRUCTURE')
-                    );
-                }
-                // Need to upload file on S3 and that function will return uploaded file URL.
-                $file = $request->file('custom_scss_file');
-                
-                $filePath = $tenantName.'/'.config('constants.AWS_S3_ASSETS_FOLDER_NAME').'/'.
-                config('constants.AWS_S3_SCSS_FOLDER_NAME').'/'. $fileName;
-                
-                Storage::disk('s3')->put($filePath, file_get_contents($file));
+            $response = $this->uploadImage($request);
+            if (!is_null($response)) {
+                return $response;
             }
         }
         $options['isVariableScss'] = $isVariableScss;
@@ -234,8 +182,6 @@ class TenantOptionsController extends Controller
      */
     public function updateImage(Request $request): JsonResponse
     {
-        $validFileTypesArray = ['image/jpeg','image/svg+xml','image/png'];
-
         // Server side validataions
         $validator = Validator::make(
             $request->toArray(),
@@ -258,24 +204,9 @@ class TenantOptionsController extends Controller
         $fileName = $request->image_name;
         $fileNameExtension = substr(strrchr($fileName, '.'), 1);
         
-        if ($fileNameExtension !== $file->getClientOriginalExtension()) {
-            return $this->responseHelper->error(
-                Response::HTTP_UNPROCESSABLE_ENTITY,
-                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                config('constants.error_codes.ERROR_INVALID_EXTENSION_OF_FILE'),
-                trans('messages.custom_error_message.ERROR_NOT_VALID_IMAGE_FILE_EXTENSION')
-            );
-        }
-
-        // If request parameter have any error
-        if (!in_array($file->getClientMimeType(), $validFileTypesArray) &&
-        $fileNameExtension === $file->getClientOriginalExtension()) {
-            return $this->responseHelper->error(
-                Response::HTTP_UNPROCESSABLE_ENTITY,
-                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                config('constants.error_codes.ERROR_NOT_VALID_EXTENSION'),
-                trans('messages.custom_error_message.ERROR_NOT_VALID_IMAGE_FILE_EXTENSION')
-            );
+        $validateResponse = $this->checkFileValidations($request);
+        if (!is_null($validateResponse)) {
+            return $validateResponse;
         }
 
         try {
@@ -286,22 +217,10 @@ class TenantOptionsController extends Controller
         }
 
         if (Storage::disk('s3')->exists($tenantName)) {
-            if (!Storage::disk('s3')->exists($tenantName.'/assets/images/'.$fileName)) {
-                throw new FileNotFoundException(
-                    trans('messages.custom_error_message.ERROR_IMAGE_FILE_NOT_FOUND_ON_S3'),
-                    config('constants.error_codes.ERROR_IMAGE_FILE_NOT_FOUND_ON_S3')
-                );
+            $response = $this->uploadFileOnS3($request);
+            if (!is_null($response)) {
+                return $response;
             }
-            // Upload file on s3
-            Storage::disk('s3')->put(
-                '/'.$tenantName.'/assets/images/'.$fileName,
-                file_get_contents(
-                    $file->getRealPath()
-                ),
-                [
-                    'mimetype' => $file->getClientMimeType()
-                ]
-            );
         } else {
             throw new BucketNotFoundException(
                 trans('messages.custom_error_message.ERROR_TENANT_ASSET_FOLDER_NOT_FOUND_ON_S3'),
@@ -311,9 +230,10 @@ class TenantOptionsController extends Controller
                   
         $apiStatus = Response::HTTP_OK;
         $apiMessage = "Image uploaded successfully";
+
         return $this->responseHelper->success($apiStatus, $apiMessage);
     }
-    
+
     /**
      * Store tenant option values
      *
@@ -421,5 +341,147 @@ class TenantOptionsController extends Controller
         $apiStatus = Response::HTTP_OK;
         $apiMessage = trans('messages.success.MESSAGE_ASSET_IMAGES_RESET_SUCCESS');
         return $this->responseHelper->success($apiStatus, $apiMessage);
+    }
+
+    /**
+     * Upload file on S3 and validate it
+     *
+     * @param Illuminate\Http\Request $request
+     * @return null
+     */
+    private function uploadFileOnS3(Request $request)
+    {
+        try {
+            // Get domain name from request and use as tenant name.
+            $tenantName = $this->helpers->getSubDomainFromRequest($request);
+        } catch (TenantDomainNotFoundException $e) {
+            throw $e;
+        }
+
+        $file = $request->file('image_file');
+        $fileName = $request->image_name;
+
+        if (!Storage::disk('s3')->exists($tenantName.'/assets/images/'.$fileName)) {
+            throw new FileNotFoundException(
+                trans('messages.custom_error_message.ERROR_IMAGE_FILE_NOT_FOUND_ON_S3'),
+                config('constants.error_codes.ERROR_IMAGE_FILE_NOT_FOUND_ON_S3')
+            );
+        }
+        // Upload file on s3
+        Storage::disk('s3')->put(
+            '/'.$tenantName.'/assets/images/'.$fileName,
+            file_get_contents(
+                $file->getRealPath()
+            ),
+            [
+                'mimetype' => $file->getMimeType()
+            ]
+        );
+        return null;
+    }
+
+    /**
+     * It will upload image on S3 after check validations
+     *
+     * @param Illuminate\Http\Request $request
+     * @return Null|JsonResponse
+     */
+    private function uploadImage(Request $request): ?JsonResponse
+    {
+        $tenantName = $this->helpers->getSubDomainFromRequest($request);
+
+        $file = $request->file('custom_scss_file');
+
+        // Server side validataions
+        $validator = Validator::make(
+            $request->toArray(),
+            [
+                "custom_scss_file_name" => "required"
+            ]
+        );
+
+        // If post parameter have any missing parameter
+        if ($validator->fails()) {
+            return $this->responseHelper->error(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                config('constants.error_codes.ERROR_IMAGE_UPLOAD_INVALID_DATA'),
+                $validator->errors()->first()
+            );
+        }
+
+        // If request parameter have any error
+        if ($file->getClientOriginalExtension() != "scss") {
+            return $this->responseHelper->error(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                config('constants.error_codes.ERROR_NOT_VALID_EXTENSION'),
+                trans('messages.custom_error_message.ERROR_NOT_VALID_EXTENSION')
+            );
+        }
+        
+        if ($file->isValid()) {
+            $fileName = $request->custom_scss_file_name;
+
+            /* Check user uploading custom style variable file,
+            then we need to make it as high priority instead of passed colors. */
+            if ($fileName === config('constants.AWS_CUSTOM_STYLE_VARIABLE_FILE_NAME')) {
+                $isVariableScss = 1;
+            }
+            // if it is not exist then need to throw error
+            if (!Storage::disk('s3')->exists($tenantName.'/assets/scss/'.$fileName)) {
+                // Error: Return like uploaded file name doesn't match with structure.
+                return $this->responseHelper->error(
+                    Response::HTTP_UNPROCESSABLE_ENTITY,
+                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                    config('constants.error_codes.ERROR_FILE_NAME_NOT_MATCHED_WITH_STRUCTURE'),
+                    trans('messages.custom_error_message.ERROR_FILE_NAME_NOT_MATCHED_WITH_STRUCTURE')
+                );
+            }
+            // Need to upload file on S3 and that function will return uploaded file URL.
+            $file = $request->file('custom_scss_file');
+            
+            $filePath = $tenantName.'/'.config('constants.AWS_S3_ASSETS_FOLDER_NAME').'/'.
+            config('constants.AWS_S3_SCSS_FOLDER_NAME').'/'. $fileName;
+            
+            Storage::disk('s3')->put($filePath, file_get_contents($file));
+        }
+        return null;
+    }
+
+    /**
+     * It will check uploading file validation
+     *
+     * @param Illuminate\Http\Request $request
+     * @return Null|JsonResponse
+     */
+    private function checkFileValidations(Request $request): ?JsonResponse
+    {
+        $validFileTypesArray = ['image/jpeg','image/svg+xml','image/png'];
+
+        $file = $request->file('image_file');
+        $fileName = $request->image_name;
+        $fileNameExtension = substr(strrchr($fileName, '.'), 1);
+
+        if ($fileNameExtension !== $file->getClientOriginalExtension()) {
+            return $this->responseHelper->error(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                config('constants.error_codes.ERROR_INVALID_EXTENSION_OF_FILE'),
+                trans('messages.custom_error_message.ERROR_NOT_VALID_IMAGE_FILE_EXTENSION')
+            );
+        }
+
+        // If request parameter have any error
+        if (!in_array($file->getMimeType(), $validFileTypesArray) &&
+        $fileNameExtension === $file->getClientOriginalExtension()) {
+            return $this->responseHelper->error(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                config('constants.error_codes.ERROR_NOT_VALID_EXTENSION'),
+                trans('messages.custom_error_message.ERROR_NOT_VALID_IMAGE_FILE_EXTENSION')
+            );
+        }
+        return null;
     }
 }

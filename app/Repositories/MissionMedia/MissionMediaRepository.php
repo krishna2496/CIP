@@ -138,10 +138,10 @@ class MissionMediaRepository implements MissionMediaInterface
      * Update media videos
      *
      * @param array $mediaVideos
-     * @param int $missionId
+     * @param int $id
      * @return void
      */
-    public function updateMediaVideos(array $mediaVideos, int $missionId): void
+    public function updateMediaVideos(array $mediaVideos, int $id): void
     {
         foreach ($mediaVideos as $value) {
             $missionMedia = array('mission_id' => $id,

@@ -135,7 +135,7 @@ class TimeMission extends Model
     {
         if (isset($this->attributes['application_start_time']) && !empty(config('constants.TIMEZONE'))) {
             return Carbon::parse($this->attributes['application_start_time'])
-            ->setTimezone(config('constants.TIMEZONE'))->format(config('constants.DB_TIME_FORMAT'));
+            ->setTimezone(config('constants.TIMEZONE'))->format(config('constants.DB_DATE_TIME_FORMAT'));
         }
     }
 
@@ -160,7 +160,7 @@ class TimeMission extends Model
     {
         if (isset($this->attributes['application_end_time']) && !empty(config('constants.TIMEZONE'))) {
             return Carbon::parse($this->attributes['application_end_time'])
-            ->setTimezone(config('constants.TIMEZONE'))->format(config('constants.DB_TIME_FORMAT'));
+            ->setTimezone(config('constants.TIMEZONE'))->format(config('constants.DB_DATE_TIME_FORMAT'));
         }
     }
 

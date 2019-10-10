@@ -5,6 +5,7 @@ use App\Repositories\TenantActivatedSetting\TenantActivatedSettingInterface;
 use App\Models\TenantActivatedSetting;
 use App\Helpers\Helpers;
 use Illuminate\Http\Request;
+use Illuminate\Database\Eloquent\Collection;
 
 class TenantActivatedSettingRepository implements TenantActivatedSettingInterface
 {

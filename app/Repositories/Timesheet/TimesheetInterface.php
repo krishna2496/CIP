@@ -78,15 +78,6 @@ interface TimesheetInterface
     public function goalRequestList(Request $request, array $statusArray): Object;
 
     /**
-     * Fetch timesheet details by missionId and date
-     *
-     * @param int $missionId
-     * @param string $date
-     * @return null|Illuminate\Support\Collection
-     */
-    public function getTimesheetDetailByDate(int $missionId, string $date): ? Collection;
-
-    /**
      * Fetch timesheet details
      *
      * @param int $missionId

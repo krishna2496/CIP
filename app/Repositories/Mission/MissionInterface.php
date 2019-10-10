@@ -7,7 +7,6 @@ use App\Models\Mission;
 use App\Models\FavouriteMission;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
-use App\Models\GoalMission;
 use App\Models\MissionApplication;
 
 interface MissionInterface

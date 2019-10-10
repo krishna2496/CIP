@@ -21,7 +21,7 @@ class Helpers
     private $db;
 
     /**
-     * Create a new middleware instance.
+     * Create a new helper instance.
      *
      * @return void
      */
