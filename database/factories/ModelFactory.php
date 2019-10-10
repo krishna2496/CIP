@@ -199,7 +199,7 @@ $factory->define(App\Models\NewsLanguage::class, function (Faker\Generator $fake
         "news_id" => null,
         "language_id" => 1,
         "title" => strtoupper(str_random('3')),
-        "description" => "Nous avons collecté les informations suivantes: intitulé du poste, informations de contact, y compris adresse électronique, informations démographiques telles que code postal, préférences et intérêts, autres informations"
+        "description" => "We have collected the following information: job title, contact information, including email address, demographic information such as zip code, preferences and interests, other information"
     ];
 });
 

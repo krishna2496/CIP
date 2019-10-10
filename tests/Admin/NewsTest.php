@@ -11,7 +11,7 @@ class NewsTest extends TestCase
      * Get listing of all news categories
      * @return void
      */
-    public function news_it_should_create_news()
+    public function admin_news_it_should_create_news()
     {
         DB::setDefaultConnection('tenant');
         $params = [
@@ -53,7 +53,7 @@ class NewsTest extends TestCase
      * 
      * @return void
      */
-    public function news_it_should_return_error_for_invalid_news_category_on_create()
+    public function admin_news_it_should_return_error_for_invalid_news_category_on_create()
     {
         DB::setDefaultConnection('tenant');
         $params = [
@@ -90,7 +90,7 @@ class NewsTest extends TestCase
      * 
      * @return void
      */
-    public function news_it_should_return_error_for_blank_user_name_on_create()
+    public function admin_news_it_should_return_error_for_blank_user_name_on_create()
     {
         DB::setDefaultConnection('tenant');        
         $params = [
@@ -127,7 +127,7 @@ class NewsTest extends TestCase
      * 
      * @return void
      */
-    public function news_it_should_return_error_for_invalid_language_code_on_create()
+    public function admin_news_it_should_return_error_for_invalid_language_code_on_create()
     {
         DB::setDefaultConnection('tenant');        
         $params = [
@@ -164,7 +164,7 @@ class NewsTest extends TestCase
      * 
      * @return void
      */
-    public function news_it_should_return_error_for_invalid_news_image_on_create()
+    public function admin_news_it_should_return_error_for_invalid_news_image_on_create()
     {
         DB::setDefaultConnection('tenant');        
         $params = [
@@ -201,7 +201,7 @@ class NewsTest extends TestCase
      * 
      * @return void
      */
-    public function news_it_should_return_error_for_invalid_status_on_create()
+    public function admin_news_it_should_return_error_for_invalid_status_on_create()
     {
         DB::setDefaultConnection('tenant');        
         $params = [
@@ -232,11 +232,13 @@ class NewsTest extends TestCase
     }
 
     /**
+     * @test
+     * 
      * It should return list of news
      * 
      * @return void
      */
-    public function news_it_should_news_listing()
+    public function admin_news_it_should_news_listing()
     {
         $newsIdsArray = [];
         $connection = 'tenant';
@@ -273,7 +275,7 @@ class NewsTest extends TestCase
      * 
      * @return void
      */
-    public function news_it_should_update_news_details()
+    public function admin_news_it_should_update_news_details()
     {        
         DB::setDefaultConnection('tenant');
 
@@ -325,7 +327,7 @@ class NewsTest extends TestCase
      * 
      * @return void
      */
-    public function news_it_should_return_error_for_invalid_news_id_update_news_details()
+    public function admin_news_it_should_return_error_for_invalid_news_id_update_news_details()
     {        
         DB::setDefaultConnection('tenant');
         $params = [
@@ -365,7 +367,7 @@ class NewsTest extends TestCase
      * 
      * @return void
      */
-    public function news_it_return_validation_error_on_update_news_details()
+    public function admin_news_it_return_validation_error_on_update_news_details()
     {        
         DB::setDefaultConnection('tenant');
 
@@ -417,7 +419,7 @@ class NewsTest extends TestCase
      * 
      * @return void
      */
-    public function news_it_return_validation_error_for_language_code_on_update_news_details()
+    public function admin_news_it_return_validation_error_for_language_code_on_update_news_details()
     {        
         DB::setDefaultConnection('tenant');
 
@@ -467,7 +469,7 @@ class NewsTest extends TestCase
      * 
      * @return void
      */
-    public function news_it_return_validation_error_for_invalid_media_url_on_update_news_details()
+    public function admin_news_it_return_validation_error_for_invalid_media_url_on_update_news_details()
     {        
         DB::setDefaultConnection('tenant');
 
@@ -517,7 +519,7 @@ class NewsTest extends TestCase
      * 
      * @return void
      */
-    public function news_it_return_validation_error_for_invalid_status_on_update_news_details()
+    public function admin_news_it_return_validation_error_for_invalid_status_on_update_news_details()
     {        
         DB::setDefaultConnection('tenant');
 
@@ -561,13 +563,13 @@ class NewsTest extends TestCase
     }
 
     /**
-     *  
+     * @test
      * 
      * It should return validation error for invalid status on update news details
      * 
      * @return void
      */
-    public function news_it_return_news_details()
+    public function admin_news_it_return_news_details()
     {        
         DB::setDefaultConnection('tenant');
 
@@ -615,7 +617,7 @@ class NewsTest extends TestCase
      * 
      * @return void
      */
-    public function news_it_return_error_news_not_found_on_news_details()
+    public function admin_news_it_return_error_news_not_found_on_news_details()
     {        
         $newsId = rand(50000000, 500000000);
 
@@ -631,7 +633,7 @@ class NewsTest extends TestCase
      * 
      * @return void
      */
-    public function news_it_should_delete_news()
+    public function admin_news_it_should_delete_news()
     {        
         DB::setDefaultConnection('tenant');
 
@@ -676,7 +678,7 @@ class NewsTest extends TestCase
      * 
      * @return void
      */
-    public function news_it_should_return_error_news_not_found_on_delete_news()
+    public function admin_news_it_should_return_error_news_not_found_on_delete_news()
     {
         $newsId = rand(50000000, 500000000);
         DB::setDefaultConnection('mysql');

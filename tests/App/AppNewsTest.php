@@ -6,28 +6,48 @@ use App\Models\NewsCategory;
 class AppNewsTest extends TestCase
 {
     /**
-     * 
+     * @test
      *
-     * It should return all news of passed category id
+     * It should return all news
      * @return void
      */
-    public function app_news_it_should_list_category_news()
+    public function app_news_it_should_list_news()
     {
         $connection = 'tenant';
-        $mission = factory(\App\Models\Mission::class)->make();
-        $mission->setConnection($connection);
-        $mission->save();
+        $newsIdsArray = [];
+
+        for ($i=0; $i<5; $i++) {
+
+            $news = factory(\App\Models\News::class)->make();
+            $news->setConnection($connection);
+            $news->save();
+
+            $newsToCategory = factory(\App\Models\NewsToCategory::class)->make();
+            $newsToCategory->setConnection($connection);
+            $newsToCategory->news_id = $news->news_id;
+            $newsToCategory->save();
+
+            $newsLanguage = factory(\App\Models\NewsLanguage::class)->make();
+            $newsLanguage->setConnection($connection);
+            $newsLanguage->news_id = $news->news_id;            
+            $newsLanguage->save();
+            
+            array_push($newsIdsArray, $news->news_id); 
+        } 
+
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
         $user->save();
 
         \DB::setDefaultConnection('mysql');
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));        
-        $response = $this->get('app/news/', ['token' => $token]);
+        $response = $this->get('app/news', ['token' => $token])->seeStatusCode(200);
+        
+        News::whereIn('news_id', $newsIdsArray)->delete();
     }
 
     /**
-     * 
+     * @test
      *
      * It should news details
      * @return void
@@ -35,9 +55,6 @@ class AppNewsTest extends TestCase
     public function app_news_it_should_return_news_details()
     {
         $connection = 'tenant';
-        $mission = factory(\App\Models\Mission::class)->make();
-        $mission->setConnection($connection);
-        $mission->save();
         $user = factory(\App\User::class)->make();
         $user->setConnection($connection);
         $user->save();
@@ -75,7 +92,7 @@ class AppNewsTest extends TestCase
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
 
         $response = $this->get('app/news/'.$newsId, ['token' => $token])
-        ->seeStatusCode(201);
+        ->seeStatusCode(200);
     }
 
     /**

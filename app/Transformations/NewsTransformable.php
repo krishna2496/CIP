@@ -53,7 +53,7 @@ trait NewsTransformable
             }
             $transformedNews['news_content'] = $newsContent;
         }
-        
+        $newsCategory = [];
         if (isset($newsDetails['news_to_category'])) {
             $newsCategoryArray = array();
             foreach ($newsDetails['news_to_category'] as $key => $value) {
