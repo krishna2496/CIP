@@ -153,8 +153,8 @@ class MissionCommentController extends Controller
         // Set response data
         $apiData = $userMissionComments->toArray();
         $apiStatus = Response::HTTP_OK;
-        $apiMessage = (count($apiData) > 0 ) ? trans('messages.success.MESSAGE_USER_COMMENTS_LISTING')
-		: trans('messages.success.MESSAGE_NO_MISSION_COMMENTS_ENTRIES');
+        $apiMessage = (count($apiData) > 0) ? trans('messages.success.MESSAGE_USER_COMMENTS_LISTING')
+        : trans('messages.success.MESSAGE_NO_MISSION_COMMENTS_ENTRIES');
         
         return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
     }
@@ -162,7 +162,7 @@ class MissionCommentController extends Controller
     /**
      * User can delete comment from dashboard by comment id
      *
-     * 
+     *
      * @param Illuminate\Http\Request $request
      * @param  int  $commentId
      * @return Illuminate\Http\JsonResponse

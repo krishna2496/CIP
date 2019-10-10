@@ -128,22 +128,22 @@ class MissionCommentRepository implements MissionCommentInterface
         }])->get();
 
         // Fetch comment counts by status
-		if (count($comments) > 0) {
-			foreach ($comments as $comment) {
-				if ($comment->mission->missionLanguage) {
-					$comment->title = $comment->mission->missionLanguage[0]->title;
-					unset($comment->mission);
-				}
-			}
-			
-			$statusCount = $this->comment
-			->selectRaw("COUNT(CASE WHEN approval_status = 'PUBLISHED' THEN 1 END) AS published,
+        if (count($comments) > 0) {
+            foreach ($comments as $comment) {
+                if ($comment->mission->missionLanguage) {
+                    $comment->title = $comment->mission->missionLanguage[0]->title;
+                    unset($comment->mission);
+                }
+            }
+            
+            $statusCount = $this->comment
+            ->selectRaw("COUNT(CASE WHEN approval_status = 'PUBLISHED' THEN 1 END) AS published,
 			COUNT(CASE WHEN approval_status = 'PENDING' THEN 1 END) AS pending,
 			COUNT(CASE WHEN approval_status = 'DECLINED' THEN 1 END) AS declined")
-			->where('user_id', $userId)->get();
+            ->where('user_id', $userId)->get();
 
-			$comments =  $comments->merge($statusCount);
-		}
+            $comments =  $comments->merge($statusCount);
+        }
         return $comments;
     }
 

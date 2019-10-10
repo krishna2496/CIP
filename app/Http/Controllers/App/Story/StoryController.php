@@ -230,10 +230,10 @@ class StoryController extends Controller
             }
 
             // conditions for story view count manage
-			$storyArray = array('story_id' => $story[0]->story_id, 
-								'story_user_id' => $story[0]->user_id, 
-								'status' => $story[0]->status);
-								
+            $storyArray = array('story_id' => $story[0]->story_id,
+                                'story_user_id' => $story[0]->user_id,
+                                'status' => $story[0]->status);
+                                
             $storyViewCount = $this->storyVisitorRepository->updateStoryViewCount($storyArray, $request->auth->user_id);
 
             // Transform story details
@@ -449,7 +449,6 @@ class StoryController extends Controller
     public function getUserStories(Request $request): JsonResponse
     {
         // get user's all story data
-        
         $language = $this->languageHelper->getLanguageDetails($request);
         
         $userStories = $this->storyRepository->getUserStoriesWithPagination(
@@ -474,7 +473,6 @@ class StoryController extends Controller
             ]
         );
         
-        
         $apiData = $storyPaginated;
         $apiStatus = Response::HTTP_OK;
         $apiMessage = ($apiData->total() > 0) ?
@@ -484,7 +482,8 @@ class StoryController extends Controller
         return $this->responseHelper->successWithPagination(
             $apiStatus,
             $apiMessage,
-            $apiData
+            $apiData,
+            []
         );
     }
     
