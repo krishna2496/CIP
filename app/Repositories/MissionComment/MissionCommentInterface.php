@@ -34,7 +34,7 @@ interface MissionCommentInterface
      * @param int $languageId
      * @return Illuminate\Database\Eloquent\Collection
      */
-    public function getUserComments(int $userId, int $languageId): Collection;
+    public function getUserComments(int $userId, int $languageId, int $defaultTenantLanguageId): Collection;
     
     /**
      * Delete comment by commentId
