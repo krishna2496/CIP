@@ -215,14 +215,14 @@ class StoryRepository implements StoryInterface
      * @param int $storyId
      * @param string $storyStatus
      * @param int $userId
-     * @param string $allowedStoryStatus
+     * @param array $allowedStoryStatus
      * @return Illuminate\Database\Eloquent\Collection
      */
     public function getStoryDetails(
         int $storyId,
         string $storyStatus = null,
         int $userId = 0,
-        string $allowedStoryStatus = null
+        array $allowedStoryStatus = []
     ): Collection {
         $storyQuery = $this->story->with([
             'user',
@@ -246,7 +246,7 @@ class StoryRepository implements StoryInterface
             $storyQuery->orWhere(function ($query) use ($userId, $allowedStoryStatus, $storyId) {
                 $query->where('user_id', $userId)
                 ->where('story_id', $storyId)
-                ->where('status', $allowedStoryStatus);
+                ->whereIn('status', $allowedStoryStatus);
             });
         }
 
