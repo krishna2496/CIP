@@ -130,8 +130,9 @@
 							</div>
 						</div>
 						<div class="btn-row">
-							<b-button class="btn-borderprimary" @click="previewStory" 
-							v-bind:class="{disabled:previewButtonEnable}"> {{languageData.label.preview}}</b-button>
+							<b-button class="btn-borderprimary" 
+							target="_blank" :to="'/story-preview/'+storyId"
+							v-bind:class="{disabled:previewButtonEnable}"><span>{{languageData.label.preview}}</span></b-button>
 							<b-button class="btn-bordersecondary" v-bind:class="{disabled:saveButtonEnable || saveButtonAjaxCall}"  @click="saveStory('save')">{{languageData.label.save}}</b-button>
 							<b-button class="btn-bordersecondary btn-submit" v-bind:class="{disabled:submitButtonEnable || submitButtonAjaxCall}" @click="saveStory('submit')">{{languageData.label.submit}}</b-button>
 						</div>
@@ -408,6 +409,9 @@
 							if(this.storyId != '') {
 								this.previewButtonEnable = false
 								this.submitButtonEnable = false
+							} else {
+								this.previewButtonEnable = true
+								this.submitButtonEnable = true
 							}
 							this.classVariant = 'success'
 							//set error msg
@@ -417,6 +421,9 @@
 						this.saveButtonAjaxCall = false
 					})	
 				} else {
+					if(this.story.videoUrl == '') {
+						formData.append('story_videos', '');
+					}
 					formData.append('_method','PATCH');
 					updateStory(formData,this.storyId).then(response => {
 						this.showDismissibleAlert = true
@@ -425,6 +432,13 @@
 							//set error msg
 							this.message = response.message
 						} else {
+							if(this.storyId != '') {
+								this.previewButtonEnable = false
+								this.submitButtonEnable = false
+							} else {
+								this.previewButtonEnable = true
+								this.submitButtonEnable = true
+							}
 							this.classVariant = 'success'
 							//set error msg
 							this.message = response.message
@@ -460,7 +474,6 @@
 			getStoryDetail() {
 				this.isLoaderActive = true
 				editStory(this.$route.params.storyId).then(response => {
-					// console.log(response);
 					if(response.error == false) {
 						this.story.title = response.data.title
 						this.story.myStory = response.data.description
@@ -491,6 +504,9 @@
 						
 						this.story.mission = response.data.mission_id
 						this.submitButtonEnable = false
+						if(response.data.status == constants.PENDING) {
+							this.submitButtonEnable = true
+						}
 						this.previewButtonEnable = false
 						this.isLoaderActive = false
 					} else {

@@ -44,7 +44,7 @@
 					},
 					{ id: 4, name: "", link: "messages" },
 					{ id: 5, name: "", link: "comment-history" },
-					{ id: 6, name: "", link: "my-stroies" }
+					{ id: 6, name: "", link: "my-stories" }
 				]
 			};
 		},

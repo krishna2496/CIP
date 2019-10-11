@@ -246,7 +246,6 @@
 		methods: {
 			inviteColleagues() {},
 			handleSliderClick(event) {
-				console.log(event.target.classList);
 				event.stopPropagation();
 				var hideVideo = document.querySelector(".video-wrap");
 				var galleryImg = document.querySelector(".gallery-top .img-wrap");
@@ -257,7 +256,7 @@
 					videoSrc.src = dataSrc;
 					hideVideo.style.display = "block";
 					galleryImg.style.display = "none";
-				} else if (event.target.classList.contains("btn-play")) {console.log(2);
+				} else if (event.target.classList.contains("btn-play")) {
 					var parentBtn = event.target.parentNode;
 					var siblingBtn = parentBtn.childNodes;
 					hideVideo.style.display = "block";
@@ -313,7 +312,6 @@
 						setTimeout(() => {
 							this.sliderToShow = true
 						},200)
-						// console.log(this.storyDetailList.city.name);
 					} else {
 						this.$router.push('/404');
 					}

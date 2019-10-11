@@ -141,9 +141,9 @@
                                         <div v-if="submitted && !$v.profile.profileText.required"
                                             class="invalid-feedback">
                                             {{ languageData.errors.my_profile_required }}</div>
-                                        <div v-if="submitted && !$v.profile.profileText.maxLength && $v.profile.profileText.required"
+                                        <!-- <div v-if="submitted && !$v.profile.profileText.maxLength && $v.profile.profileText.required"
                                             class="invalid-feedback">
-                                            {{ languageData.errors.my_profile_max_length }}</div>
+                                            {{ languageData.errors.my_profile_max_length }}</div> -->
                                     </b-form-group>
                                 </b-col>
                                 <b-col md="12">
@@ -156,9 +156,9 @@
                                         <div v-if="submitted && !$v.profile.whyiVolunteer.required"
                                             class="invalid-feedback">
                                             {{ languageData.errors.why_i_volunteer_required }}</div>
-                                        <div v-if="submitted && !$v.profile.whyiVolunteer.maxLength && $v.profile.whyiVolunteer.required"
+                                        <!-- <div v-if="submitted && !$v.profile.whyiVolunteer.maxLength && $v.profile.whyiVolunteer.required"
                                             class="invalid-feedback">
-                                            {{ languageData.errors.why_i_volunteer_max_length }}</div>
+                                            {{ languageData.errors.why_i_volunteer_max_length }}</div> -->
                                     </b-form-group>
                                 </b-col>
                             </b-row>
@@ -476,12 +476,10 @@
                     required
                 },
                 profileText: {
-                    required,
-                    maxLength: maxLength(255)
+                    required
                 },
                 whyiVolunteer: {
-                    required,
-                    maxLength: maxLength(255)
+                    required
                 },
                 linkedInUrl: {
                     validLinkedInUrl(linkedInUrl) {
