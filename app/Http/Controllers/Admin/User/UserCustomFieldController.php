@@ -84,8 +84,8 @@ class UserCustomFieldController extends Controller
             "translations" => "required",
             "translations.*.lang" => "max:2",
             "translations.*.values" => Rule::requiredIf(
-                $request->type == config('constants.custom_field_types.DROP-DOWN') ||
-                $request->type == config('constants.custom_field_types.RADIO')
+                $request->type === config('constants.custom_field_types.DROP-DOWN') ||
+                $request->type === config('constants.custom_field_types.RADIO')
             ),
             ]
         );
@@ -134,8 +134,8 @@ class UserCustomFieldController extends Controller
                     Rule::in(config('constants.custom_field_types'))],
                 "translations.*.lang" => "max:2",
                 "translations.*.values" =>
-                Rule::requiredIf($request->type == config('constants.custom_field_types.DROP-DOWN')
-                    || $request->type == config('constants.custom_field_types.RADIO')),
+                Rule::requiredIf($request->type === config('constants.custom_field_types.DROP-DOWN')
+                    || $request->type === config('constants.custom_field_types.RADIO')),
                 ]
             );
             // If post parameter have any missing parameter

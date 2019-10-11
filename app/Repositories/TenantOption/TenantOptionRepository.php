@@ -5,9 +5,7 @@ use App\Repositories\TenantOption\TenantOptionInterface;
 use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Collection;
 use Validator;
-use DB;
 use App\Models\TenantOption;
-use App\Helpers\ResponseHelper;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class TenantOptionRepository implements TenantOptionInterface

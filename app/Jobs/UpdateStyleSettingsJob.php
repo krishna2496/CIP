@@ -86,7 +86,7 @@ class UpdateStyleSettingsJob extends Job
         $importScss = '@import "_variables";';
         
         // Color set & other file || Color set & no file
-        if ((isset($this->options['primary_color']) && $this->options['isVariableScss'] == 0)) {
+        if ((isset($this->options['primary_color']) && $this->options['isVariableScss'] === 0)) {
             $importScss .= '$primary: '.$this->options['primary_color'].';';
         }
 

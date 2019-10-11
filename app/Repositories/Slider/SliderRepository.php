@@ -2,7 +2,6 @@
 namespace App\Repositories\Slider;
 
 use App\Repositories\Slider\SliderInterface;
-use Illuminate\Http\Request;
 use App\Models\Slider;
 use Illuminate\Database\Eloquent\Collection;
 

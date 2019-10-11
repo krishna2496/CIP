@@ -3,12 +3,9 @@ namespace App\Repositories\PolicyPage;
 
 use App\Repositories\PolicyPage\PolicyPageInterface;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use App\Models\PolicyPage;
 use App\Models\PolicyPagesLanguage;
-use App\Helpers\Helpers;
 use App\Helpers\LanguageHelper;
-use DB;
 use Illuminate\Support\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 

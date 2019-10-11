@@ -110,14 +110,14 @@ class UserFilterController extends Controller
         $filterData = $filters->toArray();
 
         if (!empty($filterData["filters"])) {
-            if ($filterData["filters"]["country_id"] && $filterData["filters"]["country_id"] != "") {
+            if ($filterData["filters"]["country_id"] && $filterData["filters"]["country_id"] !== "") {
                 $countryTag = $this->countryRepository->getCountry($filterData["filters"]["country_id"]);
                 if ($countryTag["name"]) {
                     $filterTagArray["country"][$countryTag["country_id"]] = $countryTag["name"];
                 }
             }
 
-            if ($filterData["filters"]["city_id"] && $filterData["filters"]["city_id"] != "") {
+            if ($filterData["filters"]["city_id"] && $filterData["filters"]["city_id"] !== "") {
                 $cityTag = $this->cityRepository->getCity($filterData["filters"]["city_id"]);
                 if ($cityTag) {
                     foreach ($cityTag as $key => $value) {
@@ -126,7 +126,7 @@ class UserFilterController extends Controller
                 }
             }
 
-            if ($filterData["filters"]["theme_id"] && $filterData["filters"]["theme_id"] != "") {
+            if ($filterData["filters"]["theme_id"] && $filterData["filters"]["theme_id"] !== "") {
                 $themeTag = $this->theme->missionThemeList($request, $filterData["filters"]["theme_id"]);
                 
                 if ($themeTag) {
@@ -142,7 +142,7 @@ class UserFilterController extends Controller
                 }
             }
 
-            if ($filterData["filters"]["skill_id"] && $filterData["filters"]["skill_id"] != "") {
+            if ($filterData["filters"]["skill_id"] && $filterData["filters"]["skill_id"] !== "") {
                 $skillTag = $this->skill->skillList($request, $filterData["filters"]["skill_id"]);
                 if ($skillTag) {
                     foreach ($skillTag as $value) {

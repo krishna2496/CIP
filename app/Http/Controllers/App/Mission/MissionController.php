@@ -125,17 +125,15 @@ class MissionController extends Controller
         $userFilters = $this->userFilterRepository->userFilter($request);
         $filterTagArray = $this->missionFiltersTag($request, $language, $userFilters);
         $userFilterData = $userFilters->toArray()["filters"];
+        
         // Checking explore mission type is out of list or not
-        if ($request->has('explore_mission_type') && $request->input('explore_mission_type') != '') {
+        if ($request->has('explore_mission_type') && $request->input('explore_mission_type') !== '') {
             $exploreMissionType = $request->input('explore_mission_type');
-            if ($exploreMissionType != config('constants.TOP_RECOMMENDED') &&
-                $exploreMissionType != config('constants.RANDOM') &&
-                $exploreMissionType !=config('constants.THEME') &&
-                $exploreMissionType != config('constants.COUNTRY') &&
-                $exploreMissionType != config('constants.ORGANIZATION') &&
-                $exploreMissionType != config('constants.ORGANIZATION') &&
-                $exploreMissionType != config('constants.MOST_RANKED') &&
-                $exploreMissionType != config('constants.TOP_FAVOURITE')
+            $authorizedMissionTypes = array(config('constants.TOP_RECOMMENDED'), config('constants.RANDOM'),
+                config('constants.THEME'), config('constants.COUNTRY'), config('constants.ORGANIZATION'),
+                config('constants.MOST_RANKED'), config('constants.TOP_FAVOURITE'));
+                
+            if (!in_array($exploreMissionType, $authorizedMissionTypes)
             ) {
                 $metaData['filters'] = $userFilterData;
                 $metaData['filters']["tags"] = $filterTagArray;
@@ -203,16 +201,18 @@ class MissionController extends Controller
     public function exploreMission(Request $request): JsonResponse
     {
         $apiData = [];
+        // Get language code
         $language = $this->languageHelper->getLanguageDetails($request);
         $languageCode = $language->code;
 
-        // Get Data by top theme
+        // Get data by top theme
         $topTheme = $this->missionRepository->exploreMission($request, config('constants.TOP_THEME'));
-        // Get Data by top country
+        // Get data by top country
         $topCountry = $this->missionRepository->exploreMission($request, config('constants.TOP_COUNTRY'));
-        // Get Data by top organization
+        // Get data by top organization
         $topOrganisation = $this->missionRepository->exploreMission($request, config('constants.TOP_ORGANISATION'));
 
+        // Return data by top theme
         if (!empty($topTheme->toArray())) {
             foreach ($topTheme as $key => $value) {
                 if ($value->missionTheme && $value->missionTheme->translations) {
@@ -230,6 +230,8 @@ class MissionController extends Controller
             }
             $apiData[config('constants.TOP_THEME')] = $returnData[config('constants.TOP_THEME')];
         }
+
+        // Return data by top country
         if (!empty($topCountry->toArray())) {
             foreach ($topCountry as $key => $value) {
                 if ($value->country) {
@@ -241,9 +243,11 @@ class MissionController extends Controller
             }
             $apiData[config('constants.TOP_COUNTRY')] = $returnData[config('constants.TOP_COUNTRY')];
         }
+
+        // Return data by top organisation
         if (!empty($topOrganisation->toArray())) {
             foreach ($topOrganisation as $key => $value) {
-                if ($value->organisation_name != '') {
+                if ($value->organisation_name !== '') {
                     $returnData[config('constants.TOP_ORGANISATION')][$key]['title'] =
                     $value->organisation_name;
                     $returnData[config('constants.TOP_ORGANISATION')][$key]['id'] =
@@ -384,15 +388,14 @@ class MissionController extends Controller
                 );
             }
             $missionId = $request->mission_id;
-            $missionFavourite = $this->missionRepository
-            ->missionFavourite($request->auth->user_id, $missionId);
+            $missionFavourite = $this->missionRepository->missionFavourite($request->auth->user_id, $missionId);
 
             // Set response data
-            $apiData = ($missionFavourite != null)
+            $apiData = ($missionFavourite !== null)
             ? ['favourite_mission_id' => $missionFavourite->favourite_mission_id] : [];
-            $apiStatus = ($missionFavourite != null) ? Response::HTTP_CREATED
+            $apiStatus = ($missionFavourite !== null) ? Response::HTTP_CREATED
             : Response::HTTP_OK;
-            $apiMessage = ($missionFavourite != null) ?
+            $apiMessage = ($missionFavourite !== null) ?
             trans('messages.success.MESSAGE_MISSION_ADDED_TO_FAVOURITE') :
             trans('messages.success.MESSAGE_MISSION_DELETED_FROM_FAVOURITE');
             return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
@@ -419,14 +422,14 @@ class MissionController extends Controller
         $filterData= $userFilters->toArray();
 
         if (!empty($filterData["filters"])) {
-            if ($filterData["filters"]["country_id"] && $filterData["filters"]["country_id"] != "") {
+            if ($filterData["filters"]["country_id"] && $filterData["filters"]["country_id"] !== "") {
                 $countryTag = $this->countryRepository->getCountry($filterData["filters"]["country_id"]);
                 if ($countryTag["name"]) {
                     $filterTagArray["country"][$countryTag["country_id"]] = $countryTag["name"];
                 }
             }
 
-            if ($filterData["filters"]["city_id"] && $filterData["filters"]["city_id"] != "") {
+            if ($filterData["filters"]["city_id"] && $filterData["filters"]["city_id"] !== "") {
                 $cityTag = $this->cityRepository->getCity($filterData["filters"]["city_id"]);
                 if ($cityTag) {
                     foreach ($cityTag as $key => $value) {
@@ -435,7 +438,7 @@ class MissionController extends Controller
                 }
             }
             
-            if ($filterData["filters"]["theme_id"] && $filterData["filters"]["theme_id"] != "") {
+            if ($filterData["filters"]["theme_id"] && $filterData["filters"]["theme_id"] !== "") {
                 $themeTag = $this->themeRepository->missionThemeList($request, $filterData["filters"]["theme_id"]);
                 if ($themeTag) {
                     foreach ($themeTag as $value) {
@@ -450,7 +453,7 @@ class MissionController extends Controller
                 }
             }
 
-            if ($filterData["filters"]["skill_id"] && $filterData["filters"]["skill_id"] != "") {
+            if ($filterData["filters"]["skill_id"] && $filterData["filters"]["skill_id"] !== "") {
                 $skillTag = $this->skillRepository->skillList($request, $filterData["filters"]["skill_id"]);
                 if ($skillTag) {
                     foreach ($skillTag as $value) {
