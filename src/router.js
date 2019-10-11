@@ -123,7 +123,7 @@ let routes = [{
             import ('./views/DashboardComments.vue')
     },
     {
-        path: '/my-stroies',
+        path: '/my-stories',
         name: 'DashboardStories',
         component: () =>
             import ('./views/DashboardStories.vue')

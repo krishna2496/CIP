@@ -48,6 +48,14 @@ a {
       }
     }
   }
+  &.btn-borderprimary {
+        &:not(.icon-btn) {
+            span {
+                position: relative;
+                top: 3px;
+            }
+        }
+    }
 }
 .btn {
   text-align: center;

@@ -16,6 +16,10 @@
 					<div v-if="storyListing.length > 0">
 						<StoriesCard :storyListing="storyListing"/>
 					</div>
+				
+				</div>
+				<div v-else class="cards-wrapper text-center">
+					 <h2>{{languageData.label.stories}} {{languageData.label.not_found}}</h2>
 				</div>
 				<div class="pagination-block" data-aos="fade-up" v-if="pagination.totalPages > 1">
 					<b-pagination

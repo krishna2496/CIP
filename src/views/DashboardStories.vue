@@ -67,9 +67,9 @@
                             </div>
                         </b-list-group-item>
                     </b-list-group>
-                    <div class="story-card-wrap">
+                    <div class="story-card-wrap" v-if="storyData.length > 0">
                         <h2>{{languageData.label.story_history}}</h2>
-                        <b-row class="story-card-row" v-if="storyData.length > 0">
+                        <b-row class="story-card-row">
                             <b-col class="story-card-block" md="6" lg="4" v-for="(data,index) in storyData" :key=index>
                                 <div class="story-img"  :style="{backgroundImage: 'url('+getMediaPath(data)+')'}"></div>
                                 <div class="story-card">
@@ -92,7 +92,7 @@
                                             <b-button class="btn-action" v-b-tooltip.hover :title="languageData.label.delete" v-if="getDeleteAction(data.status)" @click="deleteStory(data.story_id)">
                                                 <img :src="$store.state.imagePath+'/assets/images/gray-delete-ic.svg'" alt="Delete" />
                                             </b-button>
-                                            <b-link class="btn-action" v-b-tooltip.hover :title="languageData.label.redirect"  :to="'/story-detail/' + data.story_id" v-if="getRedirectAction(data.status)">
+                                            <b-link class="btn-action" v-b-tooltip.hover :title="languageData.label.redirect"  target="_blank" :to="'/story-detail/' + data.story_id" v-if="getRedirectAction(data.status)">
                                                 <img :src="$store.state.imagePath+'/assets/images/external-link.svg'" alt="Redirect" />
                                             </b-link>
                                             <b-button class="btn-action" v-b-tooltip.hover :title="languageData.label.copy" v-if="getCopyAction(data.status)" @click="copyStory(data.story_id)">
