@@ -232,7 +232,7 @@ return [
         'ERROR_REQUIRED_FIELDS_FOR_UPDATE_STYLING' => 'Required either primary color or custom SCSS file field',
         'ERROR_SLIDER_NOT_FOUND' => 'Slider not found',
         'ERROR_WHILE_UPLOADING_FILE_ON_S3' => 'An error while uploading file on S3',
-        'ERROR_NOT_VALID_IMAGE_FILE_EXTENSION' => 'Image extension does valid for this image',
+        'ERROR_NOT_VALID_IMAGE_FILE_EXTENSION' => 'File path is not valid for this image',
 
         //For timesheet module
         'ERROR_INVALID_ACTION' => 'Entered goal action should not be greater than goal objective',
