@@ -15,6 +15,7 @@ use App\Traits\RestExceptionHandlerTrait;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use InvalidArgumentException;
 use App\Exceptions\TenantDomainNotFoundException;
+use App\Notifications\NewMissionCreated;
 
 class MissionController extends Controller
 {
@@ -76,6 +77,9 @@ class MissionController extends Controller
      */
     public function store(Request $request): JsonResponse
     {
+        $mission = \App\Models\Mission::first();
+        $mission->notify(new NewMissionCreated(20, 50, 'MISSION_CREATE'));
+        exit;
         // Server side validataions
         $validator = Validator::make(
             $request->all(),
@@ -120,6 +124,10 @@ class MissionController extends Controller
         $apiStatus = Response::HTTP_CREATED;
         $apiMessage = trans('messages.success.MESSAGE_MISSION_ADDED');
         $apiData = ['mission_id' => $mission->mission_id];
+
+        // Send notification to all users
+        $user = \App\User::first();
+        
         return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
     }
 

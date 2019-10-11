@@ -4,7 +4,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Notification extends Model
+class Notifications extends Model
 {
     use SoftDeletes;
 
@@ -13,7 +13,7 @@ class Notification extends Model
      *
      * @var string
      */
-    protected $table = 'notification';
+    protected $table = 'notifications';
 
     /**
      * The primary key for the model.
@@ -28,5 +28,5 @@ class Notification extends Model
      * @var array
      */
     protected $fillable = ['notification_id', 'notification_type_id',
-    'user_id', 'is_read', 'to_user_id', 'mission_id', 'comment_id', 'message_id', 'story_id'];
+    'user_id', 'is_read', 'entity_id', 'action'];
 }
