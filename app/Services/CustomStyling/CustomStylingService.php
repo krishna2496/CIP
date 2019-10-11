@@ -39,12 +39,7 @@ class CustomStylingService
      */
     public function uploadFileOnS3(Request $request)
     {
-        try {
-            // Get domain name from request and use as tenant name.
-            $tenantName = $this->helpers->getSubDomainFromRequest($request);
-        } catch (TenantDomainNotFoundException $e) {
-            throw $e;
-        }
+        $tenantName = $this->helpers->getSubDomainFromRequest($request);
 
         $file = $request->file('image_file');
         $fileName = $request->image_name;

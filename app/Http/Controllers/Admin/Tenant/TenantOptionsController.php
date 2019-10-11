@@ -219,12 +219,8 @@ class TenantOptionsController extends Controller
             return $validateResponse;
         }
 
-        try {
-            // Get domain name from request and use as tenant name.
-            $tenantName = $this->helpers->getSubDomainFromRequest($request);
-        } catch (TenantDomainNotFoundException $e) {
-            throw $e;
-        }
+        // Get domain name from request and use as tenant name.
+        $tenantName = $this->helpers->getSubDomainFromRequest($request);
 
         if (Storage::disk('s3')->exists($tenantName)) {
             $response = $this->customStylingService->uploadFileOnS3($request);
@@ -351,5 +347,5 @@ class TenantOptionsController extends Controller
         $apiStatus = Response::HTTP_OK;
         $apiMessage = trans('messages.success.MESSAGE_ASSET_IMAGES_RESET_SUCCESS');
         return $this->responseHelper->success($apiStatus, $apiMessage);
-    }    
+    }
 }
