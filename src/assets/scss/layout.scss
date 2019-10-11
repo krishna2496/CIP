@@ -797,22 +797,27 @@ main {
     &.filter-header {
         .search-menu {
             display: none;
-
             @include md-max {
                 display: flex;
                 margin-right: 17px;
-
                 a {
                     padding: 0;
-
                     &:after {
                         display: none;
                     }
                 }
-
                 i {
                     width: 23px;
                     height: 23px;
+                }
+            }
+            @include xxs-max{
+                margin-right: 10px;
+                a{
+                    i{
+                        width: 18px;
+                        height: 18px;
+                    }
                 }
             }
         }

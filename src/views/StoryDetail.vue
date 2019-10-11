@@ -4,7 +4,7 @@
 			<ThePrimaryHeader></ThePrimaryHeader>
 		</header>
 		<main>
-			<b-container>
+			<b-container v-if="storyDetailList != null">
 				<div class="slider-banner-block">
 					<b-row>
 						<b-col xl="9" lg="8" class="slider-col">
@@ -77,7 +77,7 @@
 									<i class="user-profile-icon"
 										:style="{backgroundImage: 'url(' + storyDetailList.avatar + ')'}"></i>
 									<h4>{{storyDetailList.first_name}}  {{storyDetailList.last_name}}</h4>
-									<p>{{storyDetailList.city['name']}}, {{storyDetailList.country['name']}}</p>
+									<p>{{storyDetailList.city.name}}, {{storyDetailList.country.name}}</p>
 								</div>
 								<div class="profile-content" v-if="storyDetailList.why_i_volunteer != ''">
 									{{storyDetailList.why_i_volunteer}}
@@ -223,7 +223,7 @@
 					]
 					// Any other options that can be got from plugin documentation
 				},
-				storyDetailList:[],
+				storyDetailList: null,
 				userList:[]
 			};
 		},
