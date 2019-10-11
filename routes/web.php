@@ -378,6 +378,11 @@ $router->group(['middleware' => 'localization'], function ($router) {
     $router->post('/app/accept-cookie-agreement', ['as' => 'app.cookieagreement.accept',
         'middleware' => 'localization|tenant.connection|jwt.auth|JsonApiMiddleware',
         'uses' => 'App\User\UserController@saveCookieAggrement']);
+
+    /* send message to admin*/
+    $router->post('/app/message/send', ['as' => 'app.message.send',
+        'middleware' => 'localization|tenant.connection|jwt.auth|JsonApiMiddleware',
+        'uses' => 'App\Message\MessageController@sendMessage']);
 });
 
 

@@ -250,6 +250,13 @@ return [
         'DECLINED' => 'DECLINED'
     ],
 
+    /*
+     * send message froms
+     */
+    'send_message_from' => [
+        'admin' => 2,
+        'user' => 1,
+    ],
 
     /*
      * User notification types
@@ -417,6 +424,8 @@ return [
         'ERROR_WHILE_UPLOADING_FILE_ON_S3' => '800024',
         
         'ERROR_POLICY_PAGE_NOT_FOUND' => '300010',
-        'ERROR_POLICY_PAGE_REQUIRED_FIELDS_EMPTY' => '300011'
+        'ERROR_POLICY_PAGE_REQUIRED_FIELDS_EMPTY' => '300011',
+
+        'ERROR_MESSAGE_REQUIRED_FIELDS_EMPTY' =>'1100001',
     ]
 ];

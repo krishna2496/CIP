@@ -154,6 +154,7 @@ return [
         'MESSAGE_STORY_SUBMITTED_SUCESSFULLY' => 'Histoire soumise avec succès',
         'MESSAGE_STORY_IMAGE_DELETED' => 'Image de l\'histoire supprimée avec succès',
         'MESSAGE_USER_COOKIE_AGGREMENT_ACCEPTED' => 'Agrégation de cookies acceptée avec succès',
+        'MESSAGE_SEND_SUCESSFULLY' => 'message envoyé avec succès',
     ],
 
         
