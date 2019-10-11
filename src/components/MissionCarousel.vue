@@ -30,6 +30,17 @@
 				</div>
 			</carousel>
 		</div>
+		<div class="thumb-slider" v-else>
+			<div v-bind:class="{
+				'gallery-top' : true,
+				'default-img': true
+				}">
+				<div class="img-wrap inner-gallery-block">
+					<img :src="getDefaultImage()">
+				</div>
+				
+			</div>
+		</div>
 	</div>
 </template>
 
@@ -38,7 +49,8 @@
 		missionCarousel
 	} from "../services/service";
 	import carousel from 'vue-owl-carousel';
-
+	import store from "../store";
+	import constants from '../constant';
 	export default {
 		name: "MissionCarousel",
 		components: {
@@ -60,6 +72,10 @@
 
 		},
 		methods: {
+			getDefaultImage() {
+				return store.state.imagePath+'/assets/images/'+constants.MISSION_DEFAULT_PLACEHOLDER;
+			},
+			
 			getMediaPath(media) {
 				if (media.media_type == 'mp4') {
 					let videoPath = media.media_path;
@@ -131,12 +147,13 @@
 							this.loop = false
 						}
 						this.carouselLoader = false;
-
-						if (this.mediaCarouselList[0].media_type == "mp4") {
-							this.deafultVideo = true;
-							this.deafultImage = false;
-						}
-						this.defaultMediaPath = this.getMediaPath(this.mediaCarouselList[0]);
+						if (this.mediaCarouselList && this.mediaCarouselList[0]) {
+							if (this.mediaCarouselList[0].media_type == "mp4") {
+								this.deafultVideo = true;
+								this.deafultImage = false;
+							}
+							this.defaultMediaPath = this.getMediaPath(this.mediaCarouselList[0]);
+						} 
 						this.$emit("defaultMediaPathDetail", this.defaultMediaPath);
 					}
 				})
