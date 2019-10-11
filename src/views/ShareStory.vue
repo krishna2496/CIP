@@ -246,6 +246,7 @@
 				if (this.$v.$invalid) {
                 	return;
 				} 
+				this.isLoaderActive = true
 				if(params == 'save') {
 					this.saveButtonAjaxCall = true
 					this.submitStoryDetail();
@@ -271,6 +272,7 @@
 						//set error msg
 						this.message = response.message
 					}
+					this.isLoaderActive = false
 					this.submitButtonAjaxCall = false
 				})
 			},
@@ -349,9 +351,11 @@
 					}
 				}
 			},
+
 			remove(file) {
 				this.$refs.upload.remove(file);
 			},
+
 			missionListing() {
 				storyMissionListing().then(response => {
 					// missionTitle
@@ -377,7 +381,7 @@
 			submitStoryDetail() {
 				const formData = new FormData();
 				this.message = null;
-				
+				this.showDismissibleAlert = false
                 let file = this.story.files;
                 if (file) {
                     file.filter((fileItem, fileIndex) => {
@@ -409,6 +413,7 @@
 							//set error msg
 							this.message = response.message
 						}
+						this.isLoaderActive = false
 						this.saveButtonAjaxCall = false
 					})	
 				} else {
@@ -424,12 +429,14 @@
 							//set error msg
 							this.message = response.message
 						}
+						this.isLoaderActive = false
 						this.saveButtonAjaxCall = false
 					})	
 				}
 			},
 
 			removeFiles(id,index) {
+				this.showDismissibleAlert = false
 				let data = {
 					'storyId' : '',
 					'imageId' : ''
@@ -438,8 +445,6 @@
 				// data.imageId = 5
 				data.storyId = this.storyId;
 				deleteStoryImage(data).then(response => {
-					
-					
 					if (response.error === true) { 
 						this.showDismissibleAlert = true
 						this.classVariant = 'danger'
@@ -455,21 +460,23 @@
 			getStoryDetail() {
 				this.isLoaderActive = true
 				editStory(this.$route.params.storyId).then(response => {
+					// console.log(response);
 					if(response.error == false) {
 						this.story.title = response.data.title
 						this.story.myStory = response.data.description
 						let videoUrl = '';
 						let imageUrl = []
+						let i = 0;
 						if( response.data.story_media) {
 							let storyMedia = response.data.story_media;
 								storyMedia.filter((data,index) => {
 									if(data.type == 'video') {
 										videoUrl = data.path
 									} else {
-										imageUrl[index] = new Array(2);
-										imageUrl[index][0] = data.story_media_id
-										imageUrl[index][1] = data.path
-								
+										imageUrl[i] = new Array(2);
+										imageUrl[i][0] = data.story_media_id
+										imageUrl[i][1] = data.path
+										i++;
 									}
 								})
 							

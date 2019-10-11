@@ -251,12 +251,14 @@
             },
 
             deleteStory(storyId) {
+                this.isLoaderActive = true
                 deleteStory(storyId).then(response => {
                     this.showDismissibleAlert = true
 					if (response.error === true) { 
 						this.classVariant = 'danger'
 						//set error msg
-						this.message = response.message
+                        this.message = response.message
+                        this.isLoaderActive = false
 					} else {
 						this.classVariant = 'success'
 						//set error msg
@@ -266,12 +268,14 @@
                 })
             },
             copyStory(storyId) {
+                this.isLoaderActive = true
                 copyStory(storyId).then(response => {
                     this.showDismissibleAlert = true
 					if (response.error === true) { 
 						this.classVariant = 'danger'
 						//set error msg
-						this.message = response.message
+                        this.message = response.message
+                        this.isLoaderActive = false
 					} else {
 						this.classVariant = 'success'
 						//set error msg
@@ -281,9 +285,11 @@
                 })
             },
             exportFile() {
+                this.isLoaderActive = true
                 let fileName = this.languageData.export_timesheet_file_names.MY_STORIES_XLSX
                 let exportUrl = "/app/story/export"
                 ExportFile(exportUrl,fileName);
+                this.isLoaderActive = false
             }
         },
 

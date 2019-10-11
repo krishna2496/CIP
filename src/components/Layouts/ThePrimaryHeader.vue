@@ -111,158 +111,159 @@
 
                         </ul>
                     </div>
-
-                    <b-nav class="ml-auto">
+                    <div class="header-right ml-auto"> 
                         <div class="lang-drodown-wrap">
                             <AppCustomDropdown :optionList="langList" :defaultText="defautLang"
                                 translationEnable="false" @updateCall="setLanguage" />
-                        </div>
-                        <b-nav-item right class="search-menu" @click="searchMenu">
-                            <i>
-                                <img :src="$store.state.imagePath+'/assets/images/search-ic.svg'" alt>
-                            </i>
-                        </b-nav-item>
-                        <b-nav-item-dropdown right class="profile-menu" v-if="this.$store.state.isLoggedIn">
-                            <template slot="button-content">
-                                <i :style="{backgroundImage: 'url('+this.$store.state.avatar+')'}"></i>
-                                <em>{{this.$store.state.firstName+' '+this.$store.state.lastName}}</em>
-                            </template>
-                            <b-dropdown-item :to="{ name: 'dashboard' }">{{ languageData.label.dashboard}}
-                            </b-dropdown-item>
-                            <b-dropdown-item :to="{ name: 'myAccount' }">{{ languageData.label.my_account}}
-                            </b-dropdown-item>
-                            <b-dropdown-item v-on:click.native="logout()" replace v-if="this.$store.state.isLoggedIn">
-                                {{ languageData.label.logout}}
-                            </b-dropdown-item>
-                        </b-nav-item-dropdown>
-                    </b-nav>
-                    <b-popover target="notificationPopover" placement="topleft" container="notifyPopoverWrap"
-                        @show="onPopoverShow" ref="notficationPopover" triggers="click blur" :show="popoverShow">
-                        <template slot="title">
-                            <b-button class="btn-setting" title="Setting" @click="showsetting">
-                                <img :src="$store.state.imagePath+'/assets/images/settings-ic.svg'" alt="Setting icon">
-
-                            </b-button>
-                            <span class="title">Notification</span>
-                            <b-button class="btn-clear" @click="showclearitem">{{languageData.label.clear_all}}
-                            </b-button>
-                        </template>
-                        <div class="notification-details" data-simplebar>
-                            <b-list-group>
-                                <b-list-group-item href="#" class="unread-item">
-                                    <i>
-                                        <img :src="$store.state.imagePath+'/assets/images/user.png'" alt>
-                                    </i>
-                                    <p>
-                                        John Doe: Recommend this mission -<b>Grow Trees</b>
-                                    </p>
-                                    <span class="status"></span>
-                                </b-list-group-item>
-                                <b-list-group-item href="#" class="read-item">
-                                    <i>
-                                        <img :src="$store.state.imagePath+'/assets/images/circle-plus.png'" alt>
-
-                                    </i>
-                                    <p>
-                                        John Doe: Recommend this mission -
-                                        <b>Save the Children</b>
-                                    </p>
-                                    <span class="status"></span>
-                                </b-list-group-item>
-                                <b-list-group-item href="#" class="read-item">
-                                    <i>
-                                        <img :src="$store.state.imagePath+'/assets/images/circle-plus.png'" alt>
-                                    </i>
-                                    <p>New Mission -<b>Save the world</b></p>
-                                    <span class="status"></span>
-                                </b-list-group-item>
-                                <b-list-group-item href="#" class="unread-item">
-                                    <i>
-                                        <img :src="$store.state.imagePath+'/assets/images/warning.png'" alt>
-
-                                    </i>
-                                    <p>New Message -<b>Message title goes here</b></p>
-                                    <span class="status"></span>
-                                </b-list-group-item>
-                            </b-list-group>
-                            <div class="slot-title">
-                                <span>Yesterday</span>
-                            </div>
-                            <b-list-group>
-                                <b-list-group-item href="#" class="unread-item">
-                                    <i>
-                                        <img :src="$store.state.imagePath+'/assets/images/warning.png'" alt>
-                                    </i>
-                                    <p>
-                                        Volunteering hours<b>submitted the 17/05/2019 approved</b>
-                                    </p>
-                                    <span class="status"></span>
-                                </b-list-group-item>
-                                <b-list-group-item href="#" class="unread-item">
-                                    <i>
-                                        <img :src="$store.state.imagePath+'/assets/images/warning.png'" alt>
-                                    </i>
-                                    <p>Volunteering hours<b>submitted the 17/05/2019 approved</b></p>
-                                    <span class="status"></span>
-                                </b-list-group-item>
-                                <b-list-group-item href="#" class="unread-item">
-                                    <i>
-                                        <img :src="$store.state.imagePath+'/assets/images/warning.png'" alt>
-                                    </i>
-                                    <p>Volunteering hours<b>submitted the 17/05/2019 approved</b></p>
-                                    <span class="status"></span>
-                                </b-list-group-item>
-                            </b-list-group>
-                        </div>
-                        <div class="notification-clear">
-                            <div class="clear-content">
+                        </div> 
+                        <b-nav>
+                            <b-nav-item right class="search-menu" @click="searchMenu">
                                 <i>
-                                    <img :src="$store.state.imagePath+'/assets/images/gray-bell-ic.svg'" alt>
+                                    <img :src="$store.state.imagePath+'/assets/images/search-ic.svg'" alt>
                                 </i>
-                                <p>You do not have any new notifications</p>
-                            </div>
-                        </div>
-                        <div class="notification-setting">
-                            <h3 class="setting-header">Notification Settings</h3>
-                            <div class="setting-body">
-                                <div class="setting-bar">
-                                    <span>Get a notification for</span>
+                            </b-nav-item>
+                            <b-nav-item-dropdown right class="profile-menu" v-if="this.$store.state.isLoggedIn">
+                                <template slot="button-content">
+                                    <i :style="{backgroundImage: 'url('+this.$store.state.avatar+')'}"></i>
+                                    <em>{{this.$store.state.firstName+' '+this.$store.state.lastName}}</em>
+                                </template>
+                                <b-dropdown-item :to="{ name: 'dashboard' }">{{ languageData.label.dashboard}}
+                                </b-dropdown-item>
+                                <b-dropdown-item :to="{ name: 'myAccount' }">{{ languageData.label.my_account}}
+                                </b-dropdown-item>
+                                <b-dropdown-item v-on:click.native="logout()" replace v-if="this.$store.state.isLoggedIn">
+                                    {{ languageData.label.logout}}
+                                </b-dropdown-item>
+                            </b-nav-item-dropdown>
+                        </b-nav>
+                        <b-popover target="notificationPopover" placement="topleft" container="notifyPopoverWrap"
+                            @show="onPopoverShow" ref="notficationPopover" triggers="click blur" :show="popoverShow">
+                            <template slot="title">
+                                <b-button class="btn-setting" title="Setting" @click="showsetting">
+                                    <img :src="$store.state.imagePath+'/assets/images/settings-ic.svg'" alt="Setting icon">
+
+                                </b-button>
+                                <span class="title">Notification</span>
+                                <b-button class="btn-clear" @click="showclearitem">{{languageData.label.clear_all}}
+                                </b-button>
+                            </template>
+                            <div class="notification-details" data-simplebar>
+                                <b-list-group>
+                                    <b-list-group-item href="#" class="unread-item">
+                                        <i>
+                                            <img :src="$store.state.imagePath+'/assets/images/user.png'" alt>
+                                        </i>
+                                        <p>
+                                            John Doe: Recommend this mission -<b>Grow Trees</b>
+                                        </p>
+                                        <span class="status"></span>
+                                    </b-list-group-item>
+                                    <b-list-group-item href="#" class="read-item">
+                                        <i>
+                                            <img :src="$store.state.imagePath+'/assets/images/circle-plus.png'" alt>
+
+                                        </i>
+                                        <p>
+                                            John Doe: Recommend this mission -
+                                            <b>Save the Children</b>
+                                        </p>
+                                        <span class="status"></span>
+                                    </b-list-group-item>
+                                    <b-list-group-item href="#" class="read-item">
+                                        <i>
+                                            <img :src="$store.state.imagePath+'/assets/images/circle-plus.png'" alt>
+                                        </i>
+                                        <p>New Mission -<b>Save the world</b></p>
+                                        <span class="status"></span>
+                                    </b-list-group-item>
+                                    <b-list-group-item href="#" class="unread-item">
+                                        <i>
+                                            <img :src="$store.state.imagePath+'/assets/images/warning.png'" alt>
+
+                                        </i>
+                                        <p>New Message -<b>Message title goes here</b></p>
+                                        <span class="status"></span>
+                                    </b-list-group-item>
+                                </b-list-group>
+                                <div class="slot-title">
+                                    <span>Yesterday</span>
                                 </div>
-                                <b-list-group data-simplebar>
-                                    <b-list-group-item>
-                                        <b-form-checkbox id="" value="accepted">Recommended Missions</b-form-checkbox>
+                                <b-list-group>
+                                    <b-list-group-item href="#" class="unread-item">
+                                        <i>
+                                            <img :src="$store.state.imagePath+'/assets/images/warning.png'" alt>
+                                        </i>
+                                        <p>
+                                            Volunteering hours<b>submitted the 17/05/2019 approved</b>
+                                        </p>
+                                        <span class="status"></span>
                                     </b-list-group-item>
-                                    <b-list-group-item>
-                                        <b-form-checkbox id="" value="accepted">Volunteering Hours</b-form-checkbox>
+                                    <b-list-group-item href="#" class="unread-item">
+                                        <i>
+                                            <img :src="$store.state.imagePath+'/assets/images/warning.png'" alt>
+                                        </i>
+                                        <p>Volunteering hours<b>submitted the 17/05/2019 approved</b></p>
+                                        <span class="status"></span>
                                     </b-list-group-item>
-                                    <b-list-group-item>
-                                        <b-form-checkbox id="" value="accepted">Volunteering Goals</b-form-checkbox>
-                                    </b-list-group-item>
-                                    <b-list-group-item>
-                                        <b-form-checkbox id="" value="accepted">My Comments</b-form-checkbox>
-                                    </b-list-group-item>
-                                    <b-list-group-item>
-                                        <b-form-checkbox id="" value="accepted">My Stories</b-form-checkbox>
-                                    </b-list-group-item>
-                                    <b-list-group-item>
-                                        <b-form-checkbox id="" value="accepted">New Stories</b-form-checkbox>
-                                    </b-list-group-item>
-                                    <b-list-group-item>
-                                        <b-form-checkbox id="" value="accepted">New Missions</b-form-checkbox>
-                                    </b-list-group-item>
-                                    <b-list-group-item>
-                                        <b-form-checkbox id="" value="accepted">New Messages</b-form-checkbox>
+                                    <b-list-group-item href="#" class="unread-item">
+                                        <i>
+                                            <img :src="$store.state.imagePath+'/assets/images/warning.png'" alt>
+                                        </i>
+                                        <p>Volunteering hours<b>submitted the 17/05/2019 approved</b></p>
+                                        <span class="status"></span>
                                     </b-list-group-item>
                                 </b-list-group>
                             </div>
-
-                            <div class="setting-footer">
-                                <b-button class="btn-bordersecondary" title="Save">Save</b-button>
-                                <b-button class="btn-borderprimary" title="Cancel" @click="cancelsetting">Cancel
-                                </b-button>
+                            <div class="notification-clear">
+                                <div class="clear-content">
+                                    <i>
+                                        <img :src="$store.state.imagePath+'/assets/images/gray-bell-ic.svg'" alt>
+                                    </i>
+                                    <p>You do not have any new notifications</p>
+                                </div>
                             </div>
-                        </div>
-                    </b-popover>
+                            <div class="notification-setting">
+                                <h3 class="setting-header">Notification Settings</h3>
+                                <div class="setting-body">
+                                    <div class="setting-bar">
+                                        <span>Get a notification for</span>
+                                    </div>
+                                    <b-list-group data-simplebar>
+                                        <b-list-group-item>
+                                            <b-form-checkbox id="" value="accepted">Recommended Missions</b-form-checkbox>
+                                        </b-list-group-item>
+                                        <b-list-group-item>
+                                            <b-form-checkbox id="" value="accepted">Volunteering Hours</b-form-checkbox>
+                                        </b-list-group-item>
+                                        <b-list-group-item>
+                                            <b-form-checkbox id="" value="accepted">Volunteering Goals</b-form-checkbox>
+                                        </b-list-group-item>
+                                        <b-list-group-item>
+                                            <b-form-checkbox id="" value="accepted">My Comments</b-form-checkbox>
+                                        </b-list-group-item>
+                                        <b-list-group-item>
+                                            <b-form-checkbox id="" value="accepted">My Stories</b-form-checkbox>
+                                        </b-list-group-item>
+                                        <b-list-group-item>
+                                            <b-form-checkbox id="" value="accepted">New Stories</b-form-checkbox>
+                                        </b-list-group-item>
+                                        <b-list-group-item>
+                                            <b-form-checkbox id="" value="accepted">New Missions</b-form-checkbox>
+                                        </b-list-group-item>
+                                        <b-list-group-item>
+                                            <b-form-checkbox id="" value="accepted">New Messages</b-form-checkbox>
+                                        </b-list-group-item>
+                                    </b-list-group>
+                                </div>
+
+                                <div class="setting-footer">
+                                    <b-button class="btn-bordersecondary" title="Save">Save</b-button>
+                                    <b-button class="btn-borderprimary" title="Cancel" @click="cancelsetting">Cancel
+                                    </b-button>
+                                </div>
+                            </div>
+                        </b-popover>
+                    </div>
                 </b-container>
             </b-navbar>
         </div>
