@@ -4,7 +4,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Notifications extends Model
+class Notification extends Model
 {
     use SoftDeletes;
 
@@ -13,7 +13,7 @@ class Notifications extends Model
      *
      * @var string
      */
-    protected $table = 'notifications';
+    protected $table = 'notification';
 
     /**
      * The primary key for the model.

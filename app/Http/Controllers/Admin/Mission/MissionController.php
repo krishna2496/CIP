@@ -77,9 +77,6 @@ class MissionController extends Controller
      */
     public function store(Request $request): JsonResponse
     {
-        $mission = \App\Models\Mission::first();
-        $mission->notify(new NewMissionCreated(20, 50, 'MISSION_CREATE'));
-        exit;
         // Server side validataions
         $validator = Validator::make(
             $request->all(),
