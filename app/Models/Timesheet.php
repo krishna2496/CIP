@@ -53,7 +53,7 @@ class Timesheet extends Model
      */
     public function getDateVolunteeredAttribute(): ?string
     {
-        return ($this->attributes['date_volunteered'] != null) ?
+        return ($this->attributes['date_volunteered'] !== null) ?
         (new Carbon($this->attributes['date_volunteered']))->format('m-d-Y') : null;
     }
 
@@ -96,7 +96,7 @@ class Timesheet extends Model
      */
     public function getTimeAttribute(): ?string
     {
-        return ($this->attributes['time'] != null) ? date('H:i', strtotime($this->attributes['time'])) : null;
+        return ($this->attributes['time'] !== null) ? date('H:i', strtotime($this->attributes['time'])) : null;
     }
     
     /**

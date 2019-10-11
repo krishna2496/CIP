@@ -160,6 +160,7 @@ return [
         'ERROR_IN_TOKEN_DECODE' => 'DE: An error while decoding token',
         'ERROR_TOKEN_NOT_PROVIDED' => 'DE: Token not provided',
         'ERROR_OLD_PASSWORD_NOT_MATCHED' => 'DE: Sorry old password dosen\'t matched',
+        'ERROR_INVALID_EMAIL_OR_PASSWORD' => 'DE: Either email address or password is incorrect',
         
 
         // Custom error code for common exception

@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\DB;
 
 class AppAuthTest extends TestCase
-{    
+{
     /**
      * @test
      *
@@ -98,7 +98,7 @@ class AppAuthTest extends TestCase
             'email' => $user->email,
         ];
 
-        $this->post('app/request-password-reset', $params, [])
+        $this->post('app/request-password-reset', $params, ['HTTP_REFERER' => env('DEFAULT_TENANT')])
           ->seeStatusCode(200)
           ->seeJsonStructure(
               [
@@ -269,13 +269,13 @@ class AppAuthTest extends TestCase
      * @return void
      */
     public function it_should_return_error_if_no_data_found_for_request_for_reset_password()
-    {       
+    {
         $params = [
             'email' => 'test@email.com',
         ];
 
         $this->post('app/request-password-reset', $params, [])
-        ->seeStatusCode(403)
+        ->seeStatusCode(404)
         ->seeJsonStructure([
               'errors' => [
                   [

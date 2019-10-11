@@ -184,7 +184,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
 
     /* Fetch Language json file */
     $router->get('language/{lang}', ['as' => 'language',
-    'uses' => 'App\Language\LanguageController@fetchLangaugeFile']);
+    'uses' => 'App\Language\LanguageController@fetchLanguageFile']);
     
     /* Upload profile image */
     $router->patch('/app/user/upload-profile-image', ['as' => 'upload.profile.image',
