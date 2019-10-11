@@ -327,10 +327,10 @@ class StoryController extends Controller
         $excel->setHeadlines($headings);
         foreach ($stories as $story) {
             $excel->appendRow([
-                strip_tags($story->title),
-                strip_tags($story->description),
+                $story->title,
+                $story->description,
                 $story->status,
-                strip_tags($story->mission->missionLanguage[0]->title),
+                $story->mission->missionLanguage[0]->title,
                 $story->published_at
             ]);
         }
