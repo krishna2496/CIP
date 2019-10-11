@@ -48,6 +48,10 @@ import submitStory from "./Stories/SubmitStory"
 import updateStory from "./Stories/UpdateStory"
 import updateStoryStatus from "./Stories/UpdateStoryStatus"
 import deleteStoryImage from "./Stories/DeleteStoryImage"
+import myStory from "./Stories/MyStory"
+import copyStory from "./Stories/CopyStory"
+import deleteStory from "./Stories/DeleteStory"
+import editStory from "./Stories/EditStory"
 
 export {
     loadLocaleMessages,
@@ -99,5 +103,9 @@ export {
     submitStory,
     updateStory,
     updateStoryStatus,
-    deleteStoryImage
+    deleteStoryImage,
+    myStory,
+    copyStory,
+    deleteStory,
+    editStory
 }

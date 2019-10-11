@@ -1,28 +1,26 @@
 import axios from 'axios'
 import store from '../../store'
 
-export default async(data, storyId) => {
+export default async(newsId) => {
     let responseData = {};
     var defaultLanguage = '';
     if (store.state.defaultLanguage !== null) {
         defaultLanguage = (store.state.defaultLanguage).toLowerCase();
     }
-    var url = process.env.VUE_APP_API_ENDPOINT + "app/story/" + storyId;
-
+    var url = process.env.VUE_APP_API_ENDPOINT + "app/news/" + newsId;
+    document.body.classList.add("loader-enable");
     await axios({
             url: url,
-            method: 'POST',
-            data,
+            method: 'GET',
             headers: {
                 'X-localization': defaultLanguage,
                 'token': store.state.token,
-                'Content-Type': 'multipart/form-data'
             }
         })
         .then((response) => {
             responseData.error = false;
-            responseData.data = response.data.data.story_id
             responseData.message = response.data.message;
+            responseData.data = response.data.data;
             document.body.classList.remove("loader-enable");
         })
         .catch(function(error) {

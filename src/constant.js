@@ -47,5 +47,10 @@ export default Object.freeze({
     FILE_ALLOWED_FILE_TYPES: ['doc', 'xls', 'xlsx', 'csv', 'pdf', 'png', 'jpg', 'jpeg'],
     RECENT_VOLUNTEERES_PER_PAGE: 12,
     ALLOWED_PICTURE_MIME_TYPES: ['image/png', 'image/jpeg'],
-    ALLOWED_PICTURE_TYPES: ['png', 'jpg', 'jpeg']
+    ALLOWED_PICTURE_TYPES: ['png', 'jpg', 'jpeg'],
+    MISSION_DEFAULT_PLACEHOLDER: "placeholder-img.jpg",
+    PUBLISHED_STORY: "Published",
+    DRAFT_STORY: "Draft",
+    DECLINED_STORY: "Declined",
+    PENDING_STORY: "Pending"
 })

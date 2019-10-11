@@ -42,9 +42,9 @@
 						name: '',
 						link: "volunteering-timesheet"
 					},
-					{ id: 4, name: "Messages", link: "messages" },
-					{ id: 5, name: "Comments History", link: "comment-history" },
-					{ id: 6, name: "My Stories", link: "my-stroies" }
+					{ id: 4, name: "", link: "messages" },
+					{ id: 5, name: "", link: "comment-history" },
+					{ id: 6, name: "", link: "my-stroies" }
 				]
 			};
 		},
@@ -74,6 +74,9 @@
 			this.items[0].name = this.languageData.label.dashboard
 			this.items[1].name = this.languageData.label.volunteering_history
 			this.items[2].name = this.languageData.label.volunteering_timesheet
+			this.items[3].name = this.languageData.label.messages
+			this.items[4].name = this.languageData.label.comment_history
+			this.items[5].name = this.languageData.label.my_stories
 		}
 	};
 </script>

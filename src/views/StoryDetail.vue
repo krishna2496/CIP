@@ -56,6 +56,20 @@
 									</slick>
 								</b-col>
 							</b-row>
+							<b-row class="thumb-slider" v-else>
+								<b-col xl="10" class="left-col">
+									<div class="gallery-top" 
+										v-bind:class="{
+											'gallery-top' : true,
+											'default-img': true
+										
+										}">
+										<div class="img-wrap inner-gallery-block">
+											<img :src="getDefaultImage()" />
+										</div>
+									</div>
+								</b-col>
+							</b-row>
 						</b-col>
 						<b-col xl="3" lg="4" class="ml-auto profile-box-outer">
 							<div class="profile-box">
@@ -166,10 +180,6 @@
 		},
 		data() {
 			return {
-				profileImg: [
-					require("@/assets/images/volunteer2.png"),
-					require("@/assets/images/volunteer3.png")
-				],
 				storyId : this.$route.params.storyId,
 				isStoryDisplay : true,
 				languageData : [],
@@ -333,6 +343,9 @@
 				let firstName = suggestion.item.first_name;
 				let lastName = suggestion.item.last_name;
 				return firstName + ' ' + lastName;
+			},
+			getDefaultImage() {
+				return store.state.imagePath+'/assets/images/'+constants.MISSION_DEFAULT_PLACEHOLDER;
 			}
 		},
 		created() {

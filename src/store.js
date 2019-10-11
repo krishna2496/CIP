@@ -43,6 +43,9 @@ export default new Vuex.Store({
         storyBanner: localStorage.getItem('storyBanner'),
         storyBannerText: localStorage.getItem('storyBannerText'),
         clearFilterSet: '',
+        storyDashboardText: localStorage.getItem('storyDashboardText'),
+        slideInterval: localStorage.getItem('slideInterval'),
+        slideEffect: localStorage.getItem('slideEffect')
 
     },
     mutations: {
@@ -251,6 +254,18 @@ export default new Vuex.Store({
         },
         clearFilterClick(state, data) {
             state.clearFilterSet = data
+        },
+        storyDashboardText(state, data) {
+            localStorage.setItem('storyDashboardText', JSON.stringify(data.translations))
+            state.storyDashboardText = JSON.stringify(data.translations)
+        },
+        slideInterval(state, data) {
+            localStorage.setItem('slideInterval', data)
+            state.slideInterval = data
+        },
+        slideEffect(state, data) {
+            localStorage.setItem('slideEffect', data)
+            state.slideEffect = data
         }
     },
     getters: {},

@@ -18,7 +18,6 @@ export default async(currentPage) => {
             }
         })
         .then((response) => {
-            console.log(response);
             responseData.error = false;
             responseData.message = response.data.message;
             responseData.data = response.data.data;

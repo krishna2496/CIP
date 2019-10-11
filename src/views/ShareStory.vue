@@ -9,6 +9,10 @@
 				<h1>{{languageData.label.share_your_story}}</h1>
 				<b-alert show :variant="classVariant" dismissible v-model="showDismissibleAlert">{{ message }}</b-alert>
 				<b-row class="story-form-wrap">
+					<div
+                        v-bind:class="{ 'content-loader-wrap': true, 'loader-active': isLoaderActive}">
+                        <div class="content-loader"></div>
+                    </div>
 					<b-col xl="8" lg="7" class="left-col">
 						<div class="story-form">
 							<b-form>
@@ -128,8 +132,8 @@
 						<div class="btn-row">
 							<b-button class="btn-borderprimary" @click="previewStory" 
 							v-bind:class="{disabled:previewButtonEnable}"> {{languageData.label.preview}}</b-button>
-							<b-button class="btn-bordersecondary" v-bind:class="{disabled:saveButtonEnable || saveButtonAjaxCall}"  @click="saveStory">{{languageData.label.save}}</b-button>
-							<b-button class="btn-bordersecondary btn-submit" v-bind:class="{disabled:submitButtonEnable || submitButtonAjaxCall}" @click="submitStory">{{languageData.label.submit}}</b-button>
+							<b-button class="btn-bordersecondary" v-bind:class="{disabled:saveButtonEnable || saveButtonAjaxCall}"  @click="saveStory('save')">{{languageData.label.save}}</b-button>
+							<b-button class="btn-bordersecondary btn-submit" v-bind:class="{disabled:submitButtonEnable || submitButtonAjaxCall}" @click="saveStory('submit')">{{languageData.label.submit}}</b-button>
 						</div>
 					</b-col>
 				</b-row>
@@ -159,7 +163,7 @@
 		storyMissionListing,
 		submitStory,
 		updateStory,
-		storyDetail,
+		editStory,
 		updateStoryStatus,
 		deleteStoryImage
 	} from "../services/service";
@@ -203,7 +207,8 @@
 				config: {
 					height: 300
 				},
-				fileArray : []
+				fileArray : [],
+				isLoaderActive : false
 			}
 		},
 		validations: {
@@ -220,7 +225,7 @@
             }
         },
 		methods: {
-			saveStory() {
+			saveStory(params) {
 				this.youtubeUrlError = false
 				this.submitted = true;
                 this.$v.$touch();
@@ -228,18 +233,25 @@
 				if (this.story.videoUrl.toString() != '') {
 					youtubeUrl =  this.story.videoUrl.toString().split("\n")
 					youtubeUrl.filter((url,index) => {
-						var valid = /^(https?\:\/\/)?(www\.youtube\.com|youtu\.?be)\/.+$/;
+						var valid = /^(?:https?:\/\/)?(?:www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})?$/;
 						if(!valid.test(url)) {
 							this.youtubeUrlError = true
-							return false;
+							return
 						}
 					})
+				}
+				if(this.youtubeUrlError == true) {
+					return
 				}
 				if (this.$v.$invalid) {
                 	return;
 				} 
-				this.saveButtonAjaxCall = true
-				this.submitStoryDetail();
+				if(params == 'save') {
+					this.saveButtonAjaxCall = true
+					this.submitStoryDetail();
+				} else {
+					this.submitStory();
+				}
 			},
 			cancleShareStory() {
 				this.storyId = ''
@@ -247,11 +259,6 @@
 			},
 
 			submitStory() {
-				this.submitted = true;
-				this.$v.$touch();
-				if (this.$v.$invalid) {
-                	return;
-				}
 				this.submitButtonAjaxCall = true;
 				updateStoryStatus(this.storyId).then(response => {
 					this.showDismissibleAlert = true
@@ -360,6 +367,10 @@
 							this.missionTitle = array
 						}
 					}
+					if(this.$route.params.storyId) {
+						this.storyId = this.$route.params.storyId;
+						this.getStoryDetail();
+					}
 				})
 			},
 
@@ -428,8 +439,9 @@
 				data.storyId = this.storyId;
 				deleteStoryImage(data).then(response => {
 					
-					this.showDismissibleAlert = true
+					
 					if (response.error === true) { 
+						this.showDismissibleAlert = true
 						this.classVariant = 'danger'
 						//set error msg
 						this.message = response.message
@@ -441,21 +453,21 @@
 			},
 
 			getStoryDetail() {
-				storyDetail(this.$route.params.storyId).then(response => {
+				this.isLoaderActive = true
+				editStory(this.$route.params.storyId).then(response => {
 					if(response.error == false) {
 						this.story.title = response.data.title
 						this.story.myStory = response.data.description
-						this.defaultMissionTitle = response.data.mission_title
 						let videoUrl = '';
 						let imageUrl = []
-						if( response.data.storyMedia) {
-							let storyMedia = response.data.storyMedia;
-								storyMedia.filter((data,index) => {console.log(data)
+						if( response.data.story_media) {
+							let storyMedia = response.data.story_media;
+								storyMedia.filter((data,index) => {
 									if(data.type == 'video') {
 										videoUrl = data.path
 									} else {
 										imageUrl[index] = new Array(2);
-										imageUrl[index][0] = data.story_id
+										imageUrl[index][0] = data.story_media_id
 										imageUrl[index][1] = data.path
 								
 									}
@@ -464,10 +476,16 @@
 						}
 						this.story.videoUrl = videoUrl.replace(",","\n")
 						this.fileArray = imageUrl
+						this.missionTitle.filter((data,index) => {
+							if(data[0] == response.data.mission_id) {
+								this.defaultMissionTitle = data[1]
+							}
+						})
 						
 						this.story.mission = response.data.mission_id
 						this.submitButtonEnable = false
 						this.previewButtonEnable = false
+						this.isLoaderActive = false
 					} else {
 						this.$router.push('/404');
 					}
@@ -480,12 +498,9 @@
 			if(!this.isStoryDisplay) {
 				this.$router.push('/home')
 			}
-			if(this.$route.params.storyId) {
-				this.storyId = this.$route.params.storyId;
-				this.getStoryDetail();
-			}
 			this.defaultMissionTitle =  this.languageData.label.mission_title
 			this.missionListing();
+			
 			
 		},
 		updated() {}

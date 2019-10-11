@@ -4,6 +4,7 @@
 			<ThePrimaryHeader></ThePrimaryHeader>
 		</header>
 		<main>
+			
 			<b-container>
 				<StoryBanner/>
 				<div class="news-detail-container" v-if="showErrorDiv">
@@ -16,7 +17,7 @@
 						<StoriesCard :storyListing="storyListing"/>
 					</div>
 				</div>
-				<div class="pagination-block" data-aos="fade-up">
+				<div class="pagination-block" data-aos="fade-up" v-if="pagination.totalPages > 1">
 					<b-pagination
 							v-model="pagination.currentPage"
 							:total-rows="pagination.total"

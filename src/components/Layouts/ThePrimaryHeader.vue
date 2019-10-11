@@ -101,7 +101,7 @@
                                 </a>
                                 <ul class="dropdown-menu" v-if="policyPage.length > 0">
                                     <li v-for="(item, key) in policyPage" v-bind:key=key>
-                                        <router-link :to="{ path: '/policy/'+item.slug}"
+                                        <router-link :to="{ path: '/policy/'+item.slug}" v-if="item.pages[0]"
                                             @click.native="menuBarclickHandler">
                                             {{item.pages[0].title}}
                                         </router-link>
@@ -111,7 +111,12 @@
 
                         </ul>
                     </div>
+
                     <b-nav class="ml-auto">
+                        <div class="lang-drodown-wrap">
+                            <AppCustomDropdown :optionList="langList" :defaultText="defautLang"
+                                translationEnable="false" @updateCall="setLanguage" />
+                        </div>
                         <b-nav-item right class="search-menu" @click="searchMenu">
                             <i>
                                 <img :src="$store.state.imagePath+'/assets/images/search-ic.svg'" alt>
@@ -250,6 +255,7 @@
                                     </b-list-group-item>
                                 </b-list-group>
                             </div>
+
                             <div class="setting-footer">
                                 <b-button class="btn-bordersecondary" title="Save">Save</b-button>
                                 <b-button class="btn-borderprimary" title="Cancel" @click="cancelsetting">Cancel
@@ -266,18 +272,26 @@
         import store from '../../store';
         import {
             exploreMission,
-            policy
+            policy,
+            loadLocaleMessages
         } from '../../services/service';
         import {
             eventBus
         } from "../../main";
         import constants from '../../constant';
-        import { setTimeout } from 'timers';
+        import {
+            setTimeout
+        } from 'timers';
+        import AppCustomDropdown from '../../components/AppCustomDropdown';
         export default {
-            components: {},
+            components: {
+                AppCustomDropdown
+            },
             name: "PrimaryHeader",
             data() {
                 return {
+                    langList: [],
+                    defautLang: '',
                     popoverShow: false,
                     topTheme: [],
                     topCountry: [],
@@ -336,6 +350,13 @@
                 document.addEventListener("click", this.onClick);
             },
             methods: {
+                async setLanguage(language) {
+                    this.defautLang = language.selectedVal;
+                    store.commit('setDefaultLanguage', language);
+                    this.$i18n.locale = language.selectedVal.toLowerCase()
+                    await loadLocaleMessages(this.$i18n.locale);
+                    location.reload();
+                },
                 onPopoverShow() {
                     this.$refs.notficationPopover._toolpop
                         .getTipElement()
@@ -419,11 +440,11 @@
                 async clearFilter() {
                     if (store.state.isLoggedIn) {
                         this.$router.push({
-                           name: 'home'
+                            name: 'home'
                         })
                         setTimeout(() => {
                             location.reload()
-                        },15)
+                        }, 15)
                     }
                 },
 
@@ -442,7 +463,8 @@
                 this.isStoryDisplay = this.settingEnabled(constants.STORIES_ENABLED);
                 this.isNewsDisplay = this.settingEnabled(constants.NEWS_ENABLED);
                 this.isPolicyDisplay = this.settingEnabled(constants.POLICIES_ENABLED);
-
+                this.langList = JSON.parse(store.state.listOfLanguage)
+                this.defautLang = store.state.defaultLanguage
                 if (store.state.isLoggedIn) {
                     this.exploreMissions();
                 }

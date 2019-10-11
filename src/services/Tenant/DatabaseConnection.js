@@ -115,6 +115,21 @@ export default async(langList, defautLang) => {
             } else {
                 store.commit('storyBannerText', '');
             }
+            if (response.data.data.story_dashboard_text) {
+                store.commit('storyDashboardText', response.data.data.story_dashboard_text);
+            } else {
+                store.commit('storyDashboardText', '');
+            }
+            if (response.data.data.slide_interval) {
+                store.commit('slideInterval', response.data.data.slide_interval);
+            } else {
+                store.commit('slideInterval', '');
+            }
+            if (response.data.data.slide_effect) {
+                store.commit('slideEffect', response.data.data.slide_effect);
+            } else {
+                store.commit('slideEffect', '');
+            }
 
         })
         .catch(function() {

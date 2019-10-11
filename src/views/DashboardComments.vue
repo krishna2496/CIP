@@ -101,7 +101,6 @@
 <script>
 import ThePrimaryHeader from "../components/Layouts/ThePrimaryHeader";
 import TheSecondaryFooter from "../components/Layouts/TheSecondaryFooter";
-  
 import DashboardBreadcrumb from "../components/DashboardBreadcrumb";
 export default {
   components: {

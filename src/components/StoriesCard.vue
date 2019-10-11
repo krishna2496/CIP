@@ -6,7 +6,7 @@
                     <b-card no-body>
                         <b-card-header>
                             <div class="header-img-block">
-                                <b-link class="group-img" v-if="data.storyMedia" :style="{backgroundImage: 'url('+getMediaPath(data)+')'}"></b-link>
+                                <b-link class="group-img" :style="{backgroundImage: 'url('+getMediaPath(data)+')'}"></b-link>
                             </div>
 							<div class="group-category" v-if="data.theme_name != ''">
                                 <span class="category-text">{{data.theme_name}}</span>
@@ -65,6 +65,7 @@
 </template>
 <script>
 import store from '../store';
+import constants from '../constant';
 
 export default {
     name: "StoryCard",
@@ -100,7 +101,7 @@ export default {
 					return media.path;
 				}
 			} else {
-				
+				return store.state.imagePath+'/assets/images/'+constants.MISSION_DEFAULT_PLACEHOLDER;
 			}
 		}
     },

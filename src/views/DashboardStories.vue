@@ -1,245 +1,303 @@
 <template>
-  <div class="dashboard-stories inner-pages">
-    <header>
-      <ThePrimaryHeader></ThePrimaryHeader>
-    </header>
-    <main>
-      <DashboardBreadcrumb />
-      <div class="dashboard-tab-content">
-        <b-container>
-          <div class="heading-section">
-            <h1>My Stories</h1>
-            <b-button
-              title="Publish a new story"
-              type="button"
-              class="btn-bordersecondary"
-            >Publish a new story</b-button>
-          </div>
-          <div class="dashboard-story-content">
-            <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
-              labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
-              laboris nisi ut aliquip.
-            </p>
-          </div>
-          <b-list-group class="status-bar inner-statusbar">
-            <b-list-group-item>
-              <div class="list-item">
-                <i>
-                  <img src="../assets/images/published-ic.svg" alt />
-                </i>
-                <p>
-                  <span>1</span>Published
-                </p>
-              </div>
-            </b-list-group-item>
-            <b-list-group-item>
-              <div class="list-item">
-                <i>
-                  <img src="../assets/images/pending-ic.svg" alt="Pending" />
-                </i>
-                <p>
-                  <span>2</span>Pending
-                </p>
-              </div>
-            </b-list-group-item>
-            <b-list-group-item>
-              <div class="list-item">
-                <i>
-                  <img src="../assets/images/decline.svg" alt="Decline" />
-                </i>
-                <p>
-                  <span>25</span>Declined
-                </p>
-              </div>
-            </b-list-group-item>
-            <b-list-group-item>
-              <div class="list-item">
-                <i>
-                  <img src="../assets/images/draft.svg" alt="Draft" />
-                </i>
-                <p>
-                  <span>25</span>Draft
-                </p>
-              </div>
-            </b-list-group-item>
-          </b-list-group>
-          <div class="story-card-wrap">
-            <h2>Story History</h2>
-            <b-row class="story-card-row">
-              <b-col class="story-card-block" md="6" lg="4">
-                <div class="story-img" :style="{backgroundImage: 'url('+grpImages[1]+')'}"></div>
-                <div class="story-card">
-                  <h4 class="story-card-title">Help Old People</h4>
-                  <div class="story-card-body">
-                    <span>20/07/2019</span>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore...</p>
-                  </div>
-                  <div class="story-card-footer">
-                    <span class="status-label">Published</span>
-                    <div class="action-block">
-                      <b-button class="btn-action" v-b-tooltip.hover title="Delete">
-                        <img src="../assets/images/gray-delete-ic.svg" alt="Delete" />
-                      </b-button>
-                      <b-link class="btn-action" v-b-tooltip.hover title="Redirect" to="/stories">
-                        <img src="../assets/images/external-link.svg" alt="Redirect" />
-                      </b-link>
+    <div class="dashboard-stories inner-pages">
+        <header>
+            <ThePrimaryHeader></ThePrimaryHeader>
+        </header>
+        <main>
+            <DashboardBreadcrumb />
+            
+            <div class="dashboard-tab-content">
+                <b-container>
+                    <div
+                        v-bind:class="{ 'content-loader-wrap': true, 'loader-active': isLoaderActive}">
+                        <div class="content-loader"></div>
                     </div>
-                  </div>
-                </div>
-              </b-col>
-              <b-col class="story-card-block" md="6" lg="4">
-                <div class="story-img" :style="{backgroundImage: 'url('+grpImages[2]+')'}"></div>
-                <div class="story-card">
-                  <h4 class="story-card-title">Help Young Kids</h4>
-                  <div class="story-card-body">
-                    <span>15/06/2019</span>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore...</p>
-                  </div>
-                  <div class="story-card-footer">
-                    <span class="status-label">Pending</span>
-                    <div class="action-block">
-                      <b-button
-                        class="btn-action"
-                        @click="$refs.storyEditModal.show()"
-                        v-b-tooltip.hover
-                        title="Edit"
-                      >
-                        <img src="../assets/images/edit-ic.svg" alt="Edit" />
-                      </b-button>
-                      <b-button class="btn-action" v-b-tooltip.hover title="Delete">
-                        <img src="../assets/images/gray-delete-ic.svg" alt="Delete" />
-                      </b-button>
-                      <b-link class="btn-action" v-b-tooltip.hover title="Redirect" to="/stories">
-                        <img src="../assets/images/external-link.svg" alt="Redirect" />
-                      </b-link>
+                    <div class="heading-section">
+                        <h1>{{languageData.label.my_stories}}</h1>
+                        <b-button type="button" class="btn-bordersecondary" @click="publishNewStory">
+                            {{languageData.label.publish_new_story}}
+                        </b-button>
                     </div>
-                  </div>
-                </div>
-              </b-col>
-              <b-col class="story-card-block" md="6" lg="4">
-                <div class="story-img" :style="{backgroundImage: 'url('+grpImages[3]+')'}"></div>
-                <div class="story-card">
-                  <h4 class="story-card-title">Plant House</h4>
-                  <div class="story-card-body">
-                    <span>25/03/2019</span>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore...</p>
-                  </div>
-                  <div class="story-card-footer">
-                    <span class="status-label">Declined</span>
-                    <div class="action-block">
-                      <b-button class="btn-action" v-b-tooltip.hover title="Delete">
-                        <img src="../assets/images/gray-delete-ic.svg" alt="Delete" />
-                      </b-button>
-                      <b-button class="btn-action" v-b-tooltip.hover title="Copy">
-                        <img src="../assets/images/copy.svg" alt="Copy" />
-                      </b-button>
+                    <div class="dashboard-story-content">
+                        <p>
+                            {{storyText}}
+                        </p>
                     </div>
-                  </div>
-                </div>
-              </b-col>
-              <b-col class="story-card-block" md="6" lg="4">
-                <div class="story-img" :style="{backgroundImage: 'url('+grpImages[4]+')'}"></div>
-                <div class="story-card">
-                  <h4 class="story-card-title">Plant House</h4>
-                  <div class="story-card-body">
-                    <span>25/03/2019</span>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore...</p>
-                  </div>
-                  <div class="story-card-footer">
-                    <span class="status-label">Draft</span>
-                    <div class="action-block">
-                      <b-button
-                        class="btn-action"
-                        @click="$refs.storyEditModal.show()"
-                        v-b-tooltip.hover
-                        title="Edit"
-                      >
-                        <img src="../assets/images/edit-ic.svg" alt="Edit" />
-                      </b-button>
-                      <b-button class="btn-action" v-b-tooltip.hover title="Delete">
-                        <img src="../assets/images/gray-delete-ic.svg" alt="Delete" />
-                      </b-button>
+                    <b-alert show :variant="classVariant" dismissible v-model="showDismissibleAlert">{{ message }}</b-alert>
+                   
+                    <b-list-group class="status-bar inner-statusbar">
+                        <b-list-group-item>
+                            <div class="list-item">
+                                <i>
+                                    <img :src="$store.state.imagePath+'/assets/images/published-ic.svg'" alt />
+                                </i>
+                                <p>
+                                    <span v-if="stats.published"> {{stats.published}}</span><span v-else>0</span>{{languageData.label.published}}
+                                </p>
+                            </div>
+                        </b-list-group-item>
+                        <b-list-group-item>
+                            <div class="list-item">
+                                <i>
+                                    <img :src="$store.state.imagePath+'/assets/images/pending-ic.svg'" alt="Pending" />
+                                </i>
+                                <p>
+                                    <span v-if="stats.pending"> {{stats.pending}}</span><span v-else>0</span>{{languageData.label.pending}}
+                                </p>
+                            </div>
+                        </b-list-group-item>
+                        <b-list-group-item>
+                            <div class="list-item">
+                                <i>
+                                    <img :src="$store.state.imagePath+'/assets/images/decline.svg'" alt="Decline" />
+                                </i>
+                                <p>
+                                    <span v-if="stats.declined"> {{stats.declined}}</span><span v-else>0</span>{{languageData.label.declined}}
+                                </p>
+                            </div>
+                        </b-list-group-item>
+                        <b-list-group-item>
+                            <div class="list-item">
+                                <i>
+                                    <img :src="$store.state.imagePath+'/assets/images/draft.svg'" alt="Draft" />
+                                </i>
+                                <p>
+                                    <span v-if="stats.draft"> {{stats.draft}}</span><span v-else>0</span>{{languageData.label.draft}}
+                                </p>
+                            </div>
+                        </b-list-group-item>
+                    </b-list-group>
+                    <div class="story-card-wrap">
+                        <h2>{{languageData.label.story_history}}</h2>
+                        <b-row class="story-card-row" v-if="storyData.length > 0">
+                            <b-col class="story-card-block" md="6" lg="4" v-for="(data,index) in storyData" :key=index>
+                                <div class="story-img"  :style="{backgroundImage: 'url('+getMediaPath(data)+')'}"></div>
+                                <div class="story-card">
+                                   
+                                    <h4 class="story-card-title">
+                                        <b-link
+                                            :to="'/story-detail/'+data.story_id"
+                                            :title="data.title"
+                                            v-if="data.title"
+                                            >{{data.title | substring(40)}}
+                                        </b-link>
+                                    </h4>
+                                    <div class="story-card-body">
+                                        <span>{{data.created | formatDate}}</span>
+                                        <p v-if="data.description" v-html="getDescription(data.description)"></p>
+                                    </div>
+                                    <div class="story-card-footer">
+                                        <span class="status-label" v-if="data.status != ''">{{data.status}}</span>
+                                        <div class="action-block">
+                                            <b-button class="btn-action" v-b-tooltip.hover :title="languageData.label.delete" v-if="getDeleteAction(data.status)" @click="deleteStory(data.story_id)">
+                                                <img :src="$store.state.imagePath+'/assets/images/gray-delete-ic.svg'" alt="Delete" />
+                                            </b-button>
+                                            <b-link class="btn-action" v-b-tooltip.hover :title="languageData.label.redirect"  :to="'/story-detail/' + data.story_id" v-if="getRedirectAction(data.status)">
+                                                <img :src="$store.state.imagePath+'/assets/images/external-link.svg'" alt="Redirect" />
+                                            </b-link>
+                                            <b-button class="btn-action" v-b-tooltip.hover :title="languageData.label.copy" v-if="getCopyAction(data.status)" @click="copyStory(data.story_id)">
+                                                <img :src="$store.state.imagePath+'/assets/images/copy.svg'" alt="Copy" />
+                                            </b-button>
+                                            <b-link class="btn-action" v-if="getEditAction(data.status)"
+                                                :to="'/edit-story/' + data.story_id"
+                                                v-b-tooltip.hover :title="languageData.label.edit">
+                                                <img :src="$store.state.imagePath+'/assets/images/edit-ic.svg'" alt="Edit" />
+                                            </b-link>
+                                        </div>
+                                    </div>
+                                </div>
+                            </b-col>
+                            
+                        </b-row>
+                        <div class="pagination-block" data-aos="fade-up" v-if="pagination.totalPages > 1">
+                            <b-pagination
+                                    v-model="pagination.currentPage"
+                                    :total-rows="pagination.total"
+                                    :per-page="pagination.perPage"
+                                    align="center"
+                                    @change="pageChange"
+                                    aria-controls="my-cardlist"
+                            ></b-pagination>
+				        </div>
+                        <div class="btn-row" v-if="storyData.length > 0">
+                            <b-button class="btn-bordersecondary ml-auto"  @click="exportFile()">{{languageData.label.export}}</b-button>
+                        </div>
                     </div>
-                  </div>
-                </div>
-              </b-col>
-            </b-row>
-            <div class="btn-row">
-              <b-button class="btn-bordersecondary ml-auto" title="Export">Export</b-button>
+                   
+                </b-container>
             </div>
-          </div>
-          <b-modal ref="storyEditModal" :modal-class="'table-edit-modal table-modal'" hide-footer>
-            <template slot="modal-title">
-              Edit Story &nbsp;&nbsp;
-              <b-badge class="status-label">Published</b-badge>
-            </template>
-            <form action class="form-wrap">
-              <b-form-group>
-                <label for>Mission Title</label>
-                <b-form-input id type="text" placeholder="Help old people"></b-form-input>
-              </b-form-group>
-              <b-form-group>
-                <label for>Date</label>
-                <b-form-input id type="date" placeholder="4/28/2018"></b-form-input>
-              </b-form-group>
-              <b-form-group>
-                <label for>Story Description</label>
-                <b-form-textarea
-                  id
-                  placeholder="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip."
-                  size="lg"
-                  no-resize
-                  rows="5"
-                ></b-form-textarea>
-              </b-form-group>
-            </form>
-            <div class="btn-wrap">
-              <b-button
-                class="btn-borderprimary"
-                @click="$refs.storyEditModal.hide()"
-                title="Cancel"
-              >Cancel</b-button>
-              <b-button class="btn-bordersecondary" @click="save()" title="Save">Save</b-button>
-            </div>
-          </b-modal>
-        </b-container>
-      </div>
-    </main>
-    <footer>
-      <TheSecondaryFooter></TheSecondaryFooter>
-    </footer>
-  </div>
+        </main>
+        <footer>
+            <TheSecondaryFooter></TheSecondaryFooter>
+        </footer>
+    </div>
 </template>
 
 <script>
-import ThePrimaryHeader from "../components/Layouts/ThePrimaryHeader";
-import TheSecondaryFooter from "../components/Layouts/TheSecondaryFooter";
-import DashboardBreadcrumb from "../components/DashboardBreadcrumb";
-export default {
-  components: {
-    ThePrimaryHeader,
-    TheSecondaryFooter,
-    DashboardBreadcrumb
-  },
+    import constants from '../constant';
+    import ThePrimaryHeader from "../components/Layouts/ThePrimaryHeader";
+    import TheSecondaryFooter from "../components/Layouts/TheSecondaryFooter";
+    import DashboardBreadcrumb from "../components/DashboardBreadcrumb";
+    import {
+        myStory,
+        copyStory,
+        deleteStory,
+    } from "../services/service";
+    import ExportFile from "../services/ExportFile";
+    import store from '../store';
+    export default {
+        components: {
+            ThePrimaryHeader,
+            TheSecondaryFooter,
+            DashboardBreadcrumb
+        },
+        name: "dashboardstories",
+        data() {
+            return {
+                stats : [],
+                storyData : [],
+                languageData : [],
+                pagination : {
+					'currentPage' :1,
+					"total": 0,
+					"perPage": 1,
+					"totalPages": 0,
+                },
+                classVariant: 'danger',
+                message: null,
+                showDismissibleAlert : false,
+                storyText : '',
+                isLoaderActive : false
+            };
+        },
+        methods: {
+            pageChange(page){
+				this.getStoryListing(page);
+			},
+            getMyStory() {
+                this.isLoaderActive = true
+                myStory().then(response => {
+                    if(response.error == false) {
+                        this.stats = response.data.stats
+                        this.storyData = response.data.story_data
+                        this.pagination.currentPage = response.pagination.current_page
+						this.pagination.total = response.pagination.total
+						this.pagination.perPage = response.pagination.per_page
+						this.pagination.totalPages = response.pagination.total_pages
+                    }
+                })
+                this.isLoaderActive = false
+            },
+            publishNewStory() {
+                this.$router.push({
+                    name: 'ShareStory'
+                })
+            },
+            getDescription(description) {       
+                let data = description.substring(0,150);
+                return data
+            },
+            getMediaPath(data) {
+			    if(data.storyMedia && data.storyMedia.path != '') {
+                    let media = data.storyMedia;
+                    if (media.type == 'video') {
+                        let videoPath = media.path;
+                        let videoId = '';
+                        let regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+                        let match = videoPath.match(regExp);
+                        if (match && match[2].length == 11) {
+                            videoId = match[2];
+                        }
+                        return "https://img.youtube.com/vi/" + videoId + "/mqdefault.jpg";
+                    } else {
+                        return media.path;
+                    }
+                } else {
+                    return store.state.imagePath+'/assets/images/'+constants.MISSION_DEFAULT_PLACEHOLDER;
+                }
+            },
+            getDeleteAction(status) {
+                if(status != '') {
+                    return true
+                }
+            },
+            getRedirectAction(status) {
+                if(status != '') {
+                    if(status == constants.PUBLISHED_STORY || status == constants.PENDING_STORY) {
+                        return true
+                    } else {
+                        return false
+                    }
+                }
+            },
+            getCopyAction(status) {
+                if(status != '') {
+                    if(status == constants.DECLINED_STORY) {
+                        return true
+                    } else {
+                        return false
+                    }
+                }
+            },
+            
+            getEditAction(status) {
+                if(status != '') {
+                    if(status == constants.DRAFT_STORY || status == constants.PENDING_STORY) {
+                        return true
+                    } else {
+                        return false
+                    }
+                }
+            },
 
-  name: "dashboardstories",
+            deleteStory(storyId) {
+                deleteStory(storyId).then(response => {
+                    this.showDismissibleAlert = true
+					if (response.error === true) { 
+						this.classVariant = 'danger'
+						//set error msg
+						this.message = response.message
+					} else {
+						this.classVariant = 'success'
+						//set error msg
+                        this.message = this.languageData.label.story_deleted
+                        this.getMyStory();
+					}
+                })
+            },
+            copyStory(storyId) {
+                copyStory(storyId).then(response => {
+                    this.showDismissibleAlert = true
+					if (response.error === true) { 
+						this.classVariant = 'danger'
+						//set error msg
+						this.message = response.message
+					} else {
+						this.classVariant = 'success'
+						//set error msg
+                        this.message = response.message
+                        this.getMyStory();
+					}
+                })
+            },
+            exportFile() {
+                let fileName = this.languageData.export_timesheet_file_names.MY_STORIES_XLSX
+                let exportUrl = "/app/story/export"
+                ExportFile(exportUrl,fileName);
+            }
+        },
 
-  data() {
-    return {
-      grpImages: [
-        require("@/assets/images/storie-img01.png"),
-        require("@/assets/images/storie-img02.png"),
-        require("@/assets/images/storie-img03.png"),
-        require("@/assets/images/storie-img04.png"),
-        require("@/assets/images/storie-img05.png"),
-        require("@/assets/images/storie-img06.png"),
-        require("@/assets/images/storie-img01.png"),
-        require("@/assets/images/storie-img02.png"),
-        require("@/assets/images/storie-img03.png")
-      ]
+        created() {
+            this.getMyStory();
+            this.languageData = JSON.parse(store.state.languageLabel);
+            let storyArray = JSON.parse(store.state.storyDashboardText)
+			if(storyArray) {
+				storyArray.filter((data,index) => {
+					if(data.lang == store.state.defaultLanguage.toLowerCase()) {
+						this.storyText = data.message
+					}
+				})
+			}
+        }
     };
-  },
-  methods: {}
-};
 </script>

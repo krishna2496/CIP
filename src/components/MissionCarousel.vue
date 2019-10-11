@@ -30,6 +30,17 @@
 				</div>
 			</carousel>
 		</div>
+		<div class="thumb-slider" v-else>
+			<div v-bind:class="{
+				'gallery-top' : true,
+				'default-img': true
+				}">
+				<div class="img-wrap inner-gallery-block">
+					<img :src="getDefaultImage()">
+				</div>
+				
+			</div>
+		</div>
 	</div>
 </template>
 
@@ -60,6 +71,10 @@
 
 		},
 		methods: {
+			getDefaultImage() {
+				return store.state.imagePath+'/assets/images/'+constants.MISSION_DEFAULT_PLACEHOLDER;
+			},
+			
 			getMediaPath(media) {
 				if (media.media_type == 'mp4') {
 					let videoPath = media.media_path;
