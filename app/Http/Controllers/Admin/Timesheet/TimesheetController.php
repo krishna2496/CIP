@@ -69,16 +69,16 @@ class TimesheetController extends Controller
             );
         }
 
-        $userTimesheet = $this->timesheetRepository->getUserTimesheet($userId, $request);
-        foreach ($userTimesheet as $value) {
-            if ($value->missionLanguage) {
-                $value->setAttribute('title', $value->missionLanguage[0]->title);
-                unset($value->missionLanguage);
+        $userTimesheetData = $this->timesheetRepository->getUserTimesheet($userId, $request);
+        foreach ($userTimesheetData as $userTimesheet) {
+            if ($userTimesheet->missionLanguage) {
+                $userTimesheet->setAttribute('title', $userTimesheet->missionLanguage[0]->title);
+                unset($userTimesheet->missionLanguage);
             }
-            $value->setAppends([]);
+            $userTimesheet->setAppends([]);
         }
 
-        $apiData = $userTimesheet->toArray();
+        $apiData = $userTimesheetData->toArray();
         $apiStatus = Response::HTTP_OK;
         $apiMessage = (!empty($apiData)) ?
         trans('messages.success.MESSAGE_TIMESHEET_ENTRIES_LISTING') :

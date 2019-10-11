@@ -36,7 +36,7 @@ trait MissionTransformable
         $mission['achieved_goal']  = $mission['achieved_goal'] ?? '';
         $mission['user_application_status']  = ($mission['missionApplication'][0]['approval_status']) ?? '';
         $mission['rating']  = ($mission['missionRating'][0]['rating']) ?? 0;
-        $mission['is_favourite']  = ($mission['favourite_mission_count'] && ($mission['favourite_mission_count'] != 0))
+        $mission['is_favourite']  = ($mission['favourite_mission_count'] && ($mission['favourite_mission_count'] !== 0))
         ? 1 : 0;
         unset($mission['missionRating']);
         unset($mission['favouriteMission']);
@@ -47,7 +47,7 @@ trait MissionTransformable
             unset($mission['availability']);
         }
         // Set seats_left or already_volunteered
-        if ($mission['total_seats'] != 0 && $mission['total_seats'] !== null) {
+        if ($mission['total_seats'] !== 0 && $mission['total_seats'] !== null) {
             $mission['seats_left'] = ($mission['total_seats']) - ($mission['mission_application_count']);
         } else {
             $mission['already_volunteered'] = $mission['mission_application_count'];
@@ -71,32 +71,32 @@ trait MissionTransformable
         }
         $mission['objective'] = $missionLanguage->objective ?? '';
         unset($mission['missionLanguage']);
-
         // Check for apply in mission validity
         $mission['set_view_detail'] = 0;
         $today = $this->helpers->getUserTimeZoneDate(date(config("constants.DB_DATE_TIME_FORMAT")));
-        
+        $todayTime = $this->helpers->getUserTimeZoneDate(date(config("constants.DB_DATE_TIME_FORMAT")));
+       
         if (($mission['user_application_count'] > 0) ||
-            ($mission['total_seats'] != 0 && $mission['total_seats'] == $mission['mission_application_count']) ||
-            ($mission['end_date'] !== null && $mission['end_date'] < $today)
+            ($mission['total_seats'] !== 0 && $mission['total_seats'] === $mission['mission_application_count']) ||
+            ($mission['end_date'] !== null && $mission['end_date'] <= $today)
             ) {
             $mission['set_view_detail'] = 1;
         }
 
-        if (isset($mission['application_deadline']) && ($mission['application_deadline'] != null) &&
-         ($mission['application_deadline'] < $today)) {
+        if (isset($mission['application_deadline']) && ($mission['application_deadline'] !== null) &&
+         ($mission['application_deadline'] <= $today)) {
             $mission['set_view_detail'] = 1;
         }
 
-        if ((isset($mission['application_start_date']) && ($mission['application_start_date'] != null)) &&
-         (isset($mission['application_end_date']) && ($mission['application_end_date'] != null)) &&
-         ($mission['application_end_date'] < $today)) {
+        if ((isset($mission['application_start_date']) && ($mission['application_start_date'] !== null)) &&
+         (isset($mission['application_end_date']) && ($mission['application_end_date'] !== null)) &&
+         ($mission['application_end_date'] <= $today)) {
             $mission['set_view_detail'] = 1;
         }
 
-        if ((isset($mission['application_start_time']) && ($mission['application_start_time'] != null)) &&
-         (isset($mission['application_end_time']) && ($mission['application_end_time'] != null)) &&
-         ($mission['application_end_time'] < $today)) {
+        if ((isset($mission['application_start_time']) && ($mission['application_start_time'] !== null)) &&
+         (isset($mission['application_end_time']) && ($mission['application_end_time'] !== null)) &&
+         ($mission['application_end_time'] <= $todayTime)) {
             $mission['set_view_detail'] = 1;
         }
         

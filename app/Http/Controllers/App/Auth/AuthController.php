@@ -63,6 +63,11 @@ class AuthController extends Controller
      * @var App\Repositories\User\UserRepository
      */
     private $userRepository;
+
+    /**
+     * @var App\Models\PasswordReset
+     */
+    private $passwordReset;
     
     /**
      * Create a new controller instance.
@@ -71,8 +76,9 @@ class AuthController extends Controller
      * @param Illuminate\Http\ResponseHelper $responseHelper
      * @param App\Repositories\TenantOption\TenantOptionRepository $tenantOptionRepository
      * @param App\Helpers\Helpers $helpers
-     * @param  Illuminate\Helpers\LanguageHelper $languageHelper
+     * @param Illuminate\Helpers\LanguageHelper $languageHelper
      * @param App\Repositories\User\UserRepository $userRepository
+     * @param App\Models\PasswordReset $passwordReset
      * @return void
      */
     public function __construct(
@@ -81,7 +87,8 @@ class AuthController extends Controller
         TenantOptionRepository $tenantOptionRepository,
         Helpers $helpers,
         LanguageHelper $languageHelper,
-        UserRepository $userRepository
+        UserRepository $userRepository,
+        PasswordReset $passwordReset
     ) {
         $this->request = $request;
         $this->responseHelper = $responseHelper;
@@ -89,6 +96,8 @@ class AuthController extends Controller
         $this->helpers = $helpers;
         $this->languageHelper = $languageHelper;
         $this->userRepository = $userRepository;
+        $this->passwordReset = $passwordReset;
+        $this->passwordBrokerManager = new PasswordBrokerManager(app());
     }
 
     /**
@@ -122,8 +131,8 @@ class AuthController extends Controller
             return $this->responseHelper->error(
                 Response::HTTP_FORBIDDEN,
                 Response::$statusTexts[Response::HTTP_FORBIDDEN],
-                config('constants.error_codes.ERROR_EMAIL_NOT_EXIST'),
-                trans('messages.custom_error_message.ERROR_EMAIL_NOT_EXIST')
+                config('constants.error_codes.ERROR_INVALID_EMAIL_OR_PASSWORD'),
+                trans('messages.custom_error_message.ERROR_INVALID_EMAIL_OR_PASSWORD')
             );
         }
         // Verify user's password
@@ -131,8 +140,8 @@ class AuthController extends Controller
             return $this->responseHelper->error(
                 Response::HTTP_UNPROCESSABLE_ENTITY,
                 Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                config('constants.error_codes.ERROR_INVALID_PASSWORD'),
-                trans('messages.custom_error_message.ERROR_INVALID_PASSWORD')
+                config('constants.error_codes.ERROR_INVALID_EMAIL_OR_PASSWORD'),
+                trans('messages.custom_error_message.ERROR_INVALID_EMAIL_OR_PASSWORD')
             );
         }
         
@@ -176,12 +185,12 @@ class AuthController extends Controller
             );
         }
 
-        $userDetail = $user->where('email', $request->get('email'))->first();
+        $userDetail = $this->userRepository->findUserByEmail($request->get('email'));
         
         if (!$userDetail) {
             return $this->responseHelper->error(
-                Response::HTTP_FORBIDDEN,
-                Response::$statusTexts[Response::HTTP_FORBIDDEN],
+                Response::HTTP_NOT_FOUND,
+                Response::$statusTexts[Response::HTTP_NOT_FOUND],
                 config('constants.error_codes.ERROR_EMAIL_NOT_EXIST'),
                 trans('messages.custom_error_message.ERROR_EMAIL_NOT_EXIST')
             );
@@ -206,7 +215,7 @@ class AuthController extends Controller
         // If reset password link didn't sent
         // This error will be triggered in case of mail server issue. So it is not covered in unit test-case
         // @codeCoverageIgnoreStart
-        if (!$response == Password::RESET_LINK_SENT) {
+        if (!$response === $this->passwordReset->RESET_LINK_SENT) {
             return $this->responseHelper->error(
                 Response::HTTP_INTERNAL_SERVER_ERROR,
                 Response::$statusTexts[Response::HTTP_INTERNAL_SERVER_ERROR],
@@ -249,7 +258,7 @@ class AuthController extends Controller
         }
 
         //get record of user by checking password expiry time
-        $record = PasswordReset::where('email', $request->get('email'))
+        $record = $this->passwordReset->where('email', $request->get('email'))
         ->where(
             'created_at',
             '>',
@@ -311,8 +320,7 @@ class AuthController extends Controller
      */
     public function broker()
     {
-        $passwordBrokerManager = new PasswordBrokerManager(app());
-        return $passwordBrokerManager->broker();
+        return $this->passwordBrokerManager->broker();
     }
     
     /**

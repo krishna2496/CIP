@@ -147,6 +147,7 @@ return [
         'ERROR_FILE_NAME_NOT_MATCHED_WITH_STRUCTURE' => 'File name doesn`t match with structure',
         'ERROR_NOT_VALID_IMAGE_FILE_EXTENSION' => 'The image file must be a file of type: jpeg, jpg, svg, png.',
         'ERROR_USER_INVALID_LANGUAGE' => 'Please enter valid language id',
+        'ERROR_INVALID_EMAIL_OR_PASSWORD' => 'Either email address or password is incorrect',
         
                 
         // Custom error code for CMS Module - 300000 - 309999

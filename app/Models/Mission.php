@@ -270,7 +270,7 @@ class Mission extends Model
      */
     public function setStartDateAttribute(string $value): void
     {
-        $this->attributes['start_date'] = ($value != null) ?
+        $this->attributes['start_date'] = ($value !== null) ?
         Carbon::parse($value, config('constants.TIMEZONE'))->setTimezone(config('app.TIMEZONE')) : null;
     }
 
@@ -295,7 +295,7 @@ class Mission extends Model
      */
     public function setEndDateAttribute(string $value): void
     {
-        $this->attributes['end_date'] = ($value != null) ?
+        $this->attributes['end_date'] = ($value !== null) ?
         Carbon::parse($value, config('constants.TIMEZONE'))->setTimezone(config('app.TIMEZONE')) : null;
     }
     
@@ -349,10 +349,10 @@ class Mission extends Model
      */
     public function getOrganisationDetailAttribute($value)
     {
-        if (!is_null($value) && ($value != '')) {
+        if (!is_null($value) && ($value !== '')) {
             $data = @unserialize($value);
             if ($data !== false) {
-                return (!is_null($value) && ($value != '')) ? unserialize($value) : null;
+                return (!is_null($value) && ($value !== '')) ? unserialize($value) : null;
             }
         }
         return null;

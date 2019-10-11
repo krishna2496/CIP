@@ -2,8 +2,6 @@
 namespace App\Repositories\MissionSkill;
 
 use App\Repositories\MissionSkill\MissionSkillInterface;
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use App\Models\MissionSkill;
 use App\Models\TimesheetStatus;
 use Illuminate\Support\Collection;

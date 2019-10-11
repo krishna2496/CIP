@@ -2,18 +2,12 @@
 namespace App\Repositories\Notification;
 
 use App\Repositories\Notification\NotificationInterface;
-use App\Helpers\ResponseHelper;
 use App\Models\Notification;
 use App\Models\NotificationType;
 use App\Models\UserNotification;
 
 class NotificationRepository implements NotificationInterface
 {
-    /**
-     * @var App\Helpers\ResponseHelper
-     */
-    private $responseHelper;
-
     /**
      * @var App\Models\Notification
      */
@@ -32,19 +26,16 @@ class NotificationRepository implements NotificationInterface
     /**
      * Create a new Notification repository instance.
      *
-     * @param  Illuminate\Http\ResponseHelper $responseHelper
      * @param  App\Models\Notification $notification
      * @param  App\Models\NotificationType $notificationType
      * @param  App\Models\UserNotification $userNotification
      * @return void
      */
     public function __construct(
-        ResponseHelper $responseHelper,
         Notification $notification,
         NotificationType $notificationType,
         UserNotification $userNotification
     ) {
-        $this->responseHelper = $responseHelper;
         $this->notification = $notification;
         $this->notificationType = $notificationType;
         $this->userNotification = $userNotification;

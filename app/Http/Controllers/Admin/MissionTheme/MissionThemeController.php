@@ -11,7 +11,6 @@ use App\Traits\RestExceptionHandlerTrait;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use InvalidArgumentException;
 use Validator;
-use DB;
 use Illuminate\Validation\Rule;
 
 class MissionThemeController extends Controller
