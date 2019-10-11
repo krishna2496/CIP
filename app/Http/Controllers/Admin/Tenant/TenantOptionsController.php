@@ -229,7 +229,7 @@ class TenantOptionsController extends Controller
         }
                   
         $apiStatus = Response::HTTP_OK;
-        $apiMessage = "Image uploaded successfully";
+        $apiMessage = trans('messages.success.MESSAGE_IMAGE_UPLOADED_SUCCESSFULLY');
 
         return $this->responseHelper->success($apiStatus, $apiMessage);
     }

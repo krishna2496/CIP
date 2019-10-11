@@ -96,6 +96,7 @@ return [
         'MESSAGE_NO_GOAL_REQUEST_FOUND' => 'DE: No pending goal requests found',
         'MESSAGE_POLICY_PAGE_FOUND' => 'DE: Policy page found successfully',
         'MESSAGE_FOOTER_PAGE_FOUND' => 'DE: Footer page found successfully',
+        'MESSAGE_TENANT_OPTION_CREATED' => 'Image uploaded successfully'
     ],
 
         
