@@ -6,7 +6,7 @@ use App\Jobs\DownloadAssestFromS3ToLocalStorageJob;
 use App\Jobs\CompileScssFiles;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
-use Leafo\ScssPhp\Compiler;
+use ScssPhp\ScssPhp\Compiler;
 
 class UpdateStyleSettingsJob extends Job
 {
