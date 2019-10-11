@@ -134,9 +134,7 @@ class AppUserTest extends TestCase
                     "field_id" => $fieldId,
                     "value" => "1"
                 ]
-            ],
-            'skills' => []
-
+            ]
         ];
     
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
