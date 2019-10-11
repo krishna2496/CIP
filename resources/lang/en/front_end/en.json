@@ -197,7 +197,8 @@
         "open_mission": "Open mission",
         "goal_objective": "Goal objective",
      	"start_date": "Start date",
-        "reset": "Reset"
+        "reset": "Reset",
+        "year": "year"
     },
 
     "placeholder": {
