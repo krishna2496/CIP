@@ -115,7 +115,6 @@ export default {
 			this.$router.push('/home')
 		}
 		this.bannerUrl = store.state.newsBanner
-		console.log(store.state.newsBannerText);
 		let bannerTextArray = JSON.parse(store.state.newsBannerText)
 		if(bannerTextArray) {
 			bannerTextArray.filter((data,index) => {
