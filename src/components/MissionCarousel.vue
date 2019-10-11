@@ -13,7 +13,7 @@
 					<img :src="mediaCarouselList[0].media_path">
 				</div>
 				<div class="video-wrap inner-gallery-block">
-					<iframe id="video" width="560" height="315" :src="getDefaultEmbededPath(mediaCarouselList[0])"
+					<iframe id="video" width="560" height="315" :src="getEmbededPath(mediaCarouselList[0])"
 						frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
 						allowfullscreen>
 					</iframe>
@@ -29,6 +29,17 @@
 					<i v-if="media.media_type == 'mp4'" class="btn-play"></i>
 				</div>
 			</carousel>
+		</div>
+		<div class="thumb-slider" v-else>
+			<div v-bind:class="{
+				'gallery-top' : true,
+				'default-img': true
+				}">
+				<div class="img-wrap inner-gallery-block">
+					<img :src="getDefaultImage()">
+				</div>
+				
+			</div>
 		</div>
 	</div>
 </template>
@@ -60,12 +71,16 @@
 
 		},
 		methods: {
+			getDefaultImage() {
+				return store.state.imagePath+'/assets/images/'+constants.MISSION_DEFAULT_PLACEHOLDER;
+			},
+			
 			getMediaPath(media) {
 				if (media.media_type == 'mp4') {
 					let videoPath = media.media_path;
 					let videoId = '';
-					var regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
-					var match = videoPath.match(regExp);
+					let regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+					let match = videoPath.match(regExp);
 
 					if (match && match[2].length == 11) {
 						videoId = match[2];
@@ -80,8 +95,8 @@
 				if (media.media_type == 'mp4') {
 					let videoPath = media.media_path;
 					let videoId = '';
-					var regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
-					var match = videoPath.match(regExp);
+					let regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+					let match = videoPath.match(regExp);
 
 					if (match && match[2].length == 11) {
 						videoId = match[2];
@@ -93,34 +108,26 @@
 				}
 			},
 
-			getDefaultEmbededPath(media) {
-				if (media.media_type == 'mp4') {
-					let videoPath = media.media_path;
-					let data = videoPath.split("=");
-					return "https://www.youtube.com/embed/" + data.slice(-1)[0];
-				}
-			},
-
 			handleSliderClick(event) {
 				event.stopPropagation()
-				var hideVideo = document.querySelector(".video-wrap");
-				var galleryImg = document.querySelector(".gallery-top .img-wrap");
-				var galleryImgSrc = document.querySelector(".gallery-top .img-wrap img");
-				var videoSrc = document.querySelector(".video-wrap iframe");
-				var dataSrc = event.target.getAttribute('data-src');
+				let hideVideo = document.querySelector(".video-wrap");
+				let galleryImg = document.querySelector(".gallery-top .img-wrap");
+				let galleryImgSrc = document.querySelector(".gallery-top .img-wrap img");
+				let videoSrc = document.querySelector(".video-wrap iframe");
+				let dataSrc = event.target.getAttribute('data-src');
 				if (event.target.classList.contains("video-item")) {
 					videoSrc.src = dataSrc
 					hideVideo.style.display = "block";
 					galleryImg.style.display = "none";
 				} else if (event.target.classList.contains("btn-play")) {
-					var parentBtn = event.target.parentNode;
-					var siblingBtn = parentBtn.childNodes;
+					let parentBtn = event.target.parentNode;
+					let siblingBtn = parentBtn.childNodes;
 					hideVideo.style.display = "block";
 					galleryImg.style.display = "none";
 					videoSrc.src = siblingBtn[0].getAttribute('data-src')
 				} else {
-					var iframe = document.querySelector('iframe');
-					var iframeSrc = iframe.src;
+					let iframe = document.querySelector('iframe');
+					let iframeSrc = iframe.src;
 					iframe.src = iframeSrc;
 					galleryImgSrc.src = event.target.src;
 					galleryImg.style.display = "block";
@@ -149,22 +156,22 @@
 					}
 				})
 			}
-			var globalThis = this;
+			
 			setTimeout(() => {
-				var thumbImg = document.querySelectorAll(
+				let thumbImg = document.querySelectorAll(
 					".gallery-thumbs .owl-item img, .gallery-thumbs .owl-item .btn-play");
-				thumbImg.forEach(function (itemEvent) {
-					itemEvent.addEventListener("click", globalThis.handleSliderClick);
+				thumbImg.forEach((itemEvent) => {
+					itemEvent.addEventListener("click", this.handleSliderClick);
 				});
 
 			}, 1000);
-			window.addEventListener('resize', function () {
+			window.addEventListener('resize', () =>  {
 				setTimeout(() => {
-					var thumbImg = document.querySelectorAll(
+					let thumbImg = document.querySelectorAll(
 						".gallery-thumbs .owl-item img, .gallery-thumbs .owl-item .btn-play");
-					thumbImg.forEach(function (itemEvent) {
-						itemEvent.removeEventListener("click", globalThis.handleSliderClick);
-						itemEvent.addEventListener("click", globalThis.handleSliderClick);
+					thumbImg.forEach((itemEvent) => {
+						itemEvent.removeEventListener("click", this.handleSliderClick);
+						itemEvent.addEventListener("click", this.handleSliderClick);
 					});
 				}, 2000);
 			});

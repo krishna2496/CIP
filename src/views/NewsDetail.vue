@@ -40,11 +40,6 @@ export default {
 	},
 	data() {
 		return {
-			bgImg: [
-				require("@/assets/images/group-img1.png"),
-				require("@/assets/images/group-img9.png"),
-				require("@/assets/images/group-img6.png")
-			],
 			isNewsDisplay : true,
 			isContentLoaded : false,
 			newsDetailList : [],

@@ -11,7 +11,8 @@ body {
     font-size: 15px;
     font-weight: 400;
     line-height: 24px;
-    overflow-x: hidden;
+	overflow-x: hidden;
+	-webkit-tap-highlight-color: transparent;
 
     @include lmd-max{
     	cursor: pointer;
@@ -287,7 +288,7 @@ tspan {
                     content: "";
                     left: 0;
                     width: 0;
-                    bottom: 0;
+                    bottom: -1px;
                     height: 3px;
                     background: $primary;
                     @include transition(all 0.3s);
@@ -2503,28 +2504,21 @@ main {
 
         .list-group {
             margin-bottom: 10px;
-        }
+		}
+	}
+	.btn-wrap{
+		.btn{
+			line-height: 40px;
+		}
+	}
 
-            // .group-btns{
-            //    &.btn-wrap{
-            //     .btn{
-            //         &.btn-bordersecondary{
-            //             @include sm-max{
-            //                 margin: 12px 0;
-            //             }
-            //         } 
-            //     }
-            //    } 
-            // }
-        }
-
-        .title-with-border {
-            span {
-                &:after {
-                    width: 125px;
-                }
-            }
-        }
+	.title-with-border {
+		span {
+			&:after {
+				width: 125px;
+			}
+		}
+	}
     }
 }
 
@@ -3357,7 +3351,7 @@ main {
     position: absolute;
     left: 0;
     right: 0;
-    z-index: 3;
+    z-index: 6;
     top: 0;
     bottom: 0;
     width: 100%;
@@ -3370,6 +3364,10 @@ main {
     &.loader-active,
     &.recent-loader {
         display: flex;
+    }
+    &.fixed-loader{
+        position:fixed;
+        z-index:99999;
     }
 }
 
@@ -3834,7 +3832,12 @@ img {
                     }
                 }
             }
-        }
+		}
+		&.btn-apply{
+			&.disabled, &:disabled{
+				opacity: 1;
+			}
+		}
     }
 }
 
@@ -3879,6 +3882,13 @@ img {
           }
           @include sm-max{
               height: 260px;
+          }
+      }
+      label{
+          span{
+              font-size: 13px;
+              line-height:17px;
+              color: $gray-primary;
           }
       }
   }

@@ -17,6 +17,7 @@ import AOS from "aos";
 import "aos/dist/aos.css";
 import BackToTop from "vue-backtotop";
 import moment from 'moment'
+import customCss from './services/CustomCss'
 
 Vue.use(Vuelidate, VueAxios, axios);
 Vue.config.devtools = true
@@ -36,8 +37,18 @@ export const eventBus = new Vue();
 // call vue axios interceptors
 interceptorsSetup();
 let entryUrl = null;
+
+
+
 // check requirment of authentication for path
-router.beforeEach((to, from, next) => {
+router.beforeEach(async(to, from, next) => {
+    // if from path is (/) then we need to call custom css call and wait for its reponse    
+    if ((from.path == '/' && to.path == '/') || from.path == '/') {
+        document.body.classList.add("loader-enable");
+        await customCss().then(() => {
+            document.body.classList.remove("loader-enable");
+        });
+    }
     if (store.state.isLoggedIn) {
         if (entryUrl) {
             const url = entryUrl;
@@ -62,20 +73,32 @@ router.beforeEach((to, from, next) => {
     next();
 });
 
-Vue.filter('formatDate', function(value) {
+Vue.filter('formatDate', (value) => {
     if (value) {
         return moment(String(value)).format('DD/MM/YYYY')
     }
 })
 
-Vue.filter('firstLetterCapital', function(value) {
+Vue.filter('filterGoal', (value) => {
+    return parseInt(value)
+})
+
+Vue.filter('formatTime', (value) => {
+    if (value) {
+        let splitArray = value.split(":");
+
+        return splitArray[0] + ':' + splitArray[1]
+    }
+})
+
+Vue.filter('firstLetterCapital', (value) => {
     if (value) {
         value = value.toLowerCase()
         return value.charAt(0).toUpperCase() + value.slice(1)
     }
 })
 
-Vue.filter('substring', function(value, data) {
+Vue.filter('substring', (value, data) => {
     if (value.length <= data) {
         return value
     } else {

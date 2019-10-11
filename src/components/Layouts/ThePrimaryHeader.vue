@@ -4,7 +4,7 @@
                 <b-container>
                     <div class="navbar-toggler" @click.stop v-if="this.$store.state.isLoggedIn">
                         <b-link title="Menu" @click="openMenu" class="toggler-icon">
-                            <img src="../../assets/images/menu-ic.svg" alt />
+                            <img :src="$store.state.imagePath+'/assets/images/menu-ic.svg'" alt />
                         </b-link>
                     </div>
                     <b-navbar-brand :to="{ name: 'home' }" :style="{backgroundImage: 'url('+this.$store.state.logo+')'}"
@@ -20,13 +20,13 @@
                         <ul v-if="this.$store.state.isLoggedIn">
                             <li class="has-menu">
                                 <a href="Javascript:void(0)"
-                                    :title='langauageData.label.explore'>{{ langauageData.label.explore}}</a>
+                                    :title='languageData.label.explore'>{{ languageData.label.explore}}</a>
 
                                 <ul class="dropdown-menu sub-dropdown">
                                     <li v-if="isThemeDisplay" v-bind:class="topThemeClass">
-                                        <a href="Javascript:void(0)">{{ langauageData.label.top_themes}}</a>
+                                        <a href="Javascript:void(0)">{{ languageData.label.top_themes}}</a>
                                         <ul class="subdropdown-menu" v-if="topTheme != null && topTheme.length > 0">
-                                            <li v-for="items in topTheme">
+                                            <li v-for="(items, key) in topTheme" v-bind:key=key>
                                                 <router-link :to="{ path: '/home/themes/'+items.id}"
                                                     @click.native="menuBarclickHandler">
                                                     {{ items.title}}
@@ -35,9 +35,9 @@
                                         </ul>
                                     </li>
                                     <li v-bind:class="topCountryClass">
-                                        <a href="Javascript:void(0)">{{langauageData.label.top_country}}</a>
+                                        <a href="Javascript:void(0)">{{languageData.label.top_country}}</a>
                                         <ul class="subdropdown-menu" v-if="topCountry != null && topCountry.length > 0">
-                                            <li v-for="items in topCountry">
+                                            <li v-for="(items, key) in topCountry" v-bind:key=key>
                                                 <router-link
                                                     :to="{ path: '/home/country/'+items.title.toLowerCase().trim()}"
                                                     @click.native="menuBarclickHandler">
@@ -47,10 +47,10 @@
                                         </ul>
                                     </li>
                                     <li v-bind:class="topOrganizationClass">
-                                        <a href="Javascript:void(0)">{{ langauageData.label.top_organisation}}</a>
+                                        <a href="Javascript:void(0)">{{ languageData.label.top_organisation}}</a>
                                         <ul class="subdropdown-menu"
                                             v-if="topOrganization != null && topOrganization.length > 0">
-                                            <li v-for="items in topOrganization">
+                                            <li v-for="(items, key) in topOrganization" v-bind:key=key>
                                                 <router-link :to="{ path: '/home/organization/'+items.title}"
                                                     @click.native="menuBarclickHandler">
                                                     {{ items.title}}
@@ -61,48 +61,47 @@
                                     <li class="no-dropdown">
                                         <router-link :to="{ path: '/home/most-ranked-missions'}"
                                             @click.native="menuBarclickHandler">
-                                            {{langauageData.label.most_ranked}}
+                                            {{languageData.label.most_ranked}}
                                         </router-link>
                                     </li>
                                     <li class="no-dropdown">
                                         <router-link :to="{ path: '/home/favourite-missions'}"
                                             @click.native="menuBarclickHandler">
-                                            {{langauageData.label.top_favourite}}
+                                            {{languageData.label.top_favourite}}
                                         </router-link>
                                     </li>
                                     <li class="no-dropdown">
                                         <router-link :to="{ path: '/home/recommended-missions'}"
                                             @click.native="menuBarclickHandler">
-                                            {{langauageData.label.recommended}}
+                                            {{languageData.label.recommended}}
                                         </router-link>
                                     </li>
                                     <li class="no-dropdown">
                                         <router-link :to="{ path: '/home/random-missions'}"
                                             @click.native="menuBarclickHandler">
-                                            {{langauageData.label.random}}
+                                            {{languageData.label.random}}
                                         </router-link>
                                     </li>
                                 </ul>
                             </li>
                             <li class="has-menu no-dropdown" v-if="isStoryDisplay">
-                                    <router-link :to="{ path: '/stories'}"
-                                    >
-                                    {{langauageData.label.stories}}
+                                <router-link :to="{ path: '/stories'}">
+                                    {{languageData.label.stories}}
                                 </router-link>
                             </li>
                             <li class="has-menu no-dropdown" v-if="isNewsDisplay">
-                                <router-link :to="{ path: '/news'}"
-                                    >
-                                    {{langauageData.label.news}}
+                                <router-link :to="{ path: '/news'}">
+                                    {{languageData.label.news}}
                                 </router-link>
                             </li>
 
-                            <li class="has-menu" v-if="isPolicyDisplay">
+                            <li class="has-menu" v-if="isPolicyDisplay && policyPage.length > 0">
                                 <a href="Javascript:void(0)"
-                                    :title='langauageData.label.policy'>{{ langauageData.label.policy}}</a>
+                                    :title='languageData.label.policy'>{{ languageData.label.policy}}
+                                </a>
                                 <ul class="dropdown-menu" v-if="policyPage.length > 0">
-                                    <li v-for="item in policyPage">
-                                        <router-link :to="{ path: '/policy/'+item.slug}"
+                                    <li v-for="(item, key) in policyPage" v-bind:key=key>
+                                        <router-link :to="{ path: '/policy/'+item.slug}" v-if="item.pages[0]"
                                             @click.native="menuBarclickHandler">
                                             {{item.pages[0].title}}
                                         </router-link>
@@ -112,7 +111,12 @@
 
                         </ul>
                     </div>
+
                     <b-nav class="ml-auto">
+                        <div class="lang-drodown-wrap">
+                            <AppCustomDropdown :optionList="langList" :defaultText="defautLang"
+                                translationEnable="false" @updateCall="setLanguage" />
+                        </div>
                         <b-nav-item right class="search-menu" @click="searchMenu">
                             <i>
                                 <img :src="$store.state.imagePath+'/assets/images/search-ic.svg'" alt>
@@ -123,13 +127,12 @@
                                 <i :style="{backgroundImage: 'url('+this.$store.state.avatar+')'}"></i>
                                 <em>{{this.$store.state.firstName+' '+this.$store.state.lastName}}</em>
                             </template>
-                            <b-dropdown-item :to="{ name: 'dashboard' }">{{ langauageData.label.dashboard}}
+                            <b-dropdown-item :to="{ name: 'dashboard' }">{{ languageData.label.dashboard}}
                             </b-dropdown-item>
-                            <b-dropdown-item :to="{ name: 'myAccount' }">{{ langauageData.label.my_account}}
+                            <b-dropdown-item :to="{ name: 'myAccount' }">{{ languageData.label.my_account}}
                             </b-dropdown-item>
-                            <!-- <b-dropdown-item href="#">Help Center</b-dropdown-item> -->
                             <b-dropdown-item v-on:click.native="logout()" replace v-if="this.$store.state.isLoggedIn">
-                                {{ langauageData.label.logout}}
+                                {{ languageData.label.logout}}
                             </b-dropdown-item>
                         </b-nav-item-dropdown>
                     </b-nav>
@@ -141,7 +144,7 @@
 
                             </b-button>
                             <span class="title">Notification</span>
-                            <b-button class="btn-clear" @click="showclearitem">{{langauageData.label.clear_all}}
+                            <b-button class="btn-clear" @click="showclearitem">{{languageData.label.clear_all}}
                             </b-button>
                         </template>
                         <div class="notification-details" data-simplebar>
@@ -252,6 +255,7 @@
                                     </b-list-group-item>
                                 </b-list-group>
                             </div>
+
                             <div class="setting-footer">
                                 <b-button class="btn-bordersecondary" title="Save">Save</b-button>
                                 <b-button class="btn-borderprimary" title="Cancel" @click="cancelsetting">Cancel
@@ -268,18 +272,26 @@
         import store from '../../store';
         import {
             exploreMission,
-            policy
+            policy,
+            loadLocaleMessages
         } from '../../services/service';
         import {
             eventBus
         } from "../../main";
         import constants from '../../constant';
-
+        import {
+            setTimeout
+        } from 'timers';
+        import AppCustomDropdown from '../../components/AppCustomDropdown';
         export default {
-            components: {},
+            components: {
+                AppCustomDropdown
+            },
             name: "PrimaryHeader",
             data() {
                 return {
+                    langList: [],
+                    defautLang: '',
                     popoverShow: false,
                     topTheme: [],
                     topCountry: [],
@@ -288,7 +300,7 @@
                     topOrganizationClass: 'no-dropdown',
                     filterData: [],
                     topOrganization: [],
-                    langauageData: [],
+                    languageData: [],
                     policyPage: [],
                     isThemeDisplay: true,
                     isStoryDisplay: true,
@@ -297,30 +309,28 @@
                 };
             },
             mounted() {
-                // var mob_nav_list = document
-                var hasmenu_li = document.querySelectorAll(".menu-wrap li"); //array of parentchlid
-
-                for (var i = 0; i < hasmenu_li.length; ++i) {
-                    var anchor_val = hasmenu_li[i].firstChild; // anchor tag variable
+                let hasmenu_li = document.querySelectorAll(".menu-wrap li"); //array of parentchlid
+                for (let i = 0; i < hasmenu_li.length; ++i) {
+                    let anchorVal = hasmenu_li[i].firstChild; // anchor tag letiable
                     //Anchor tag click function
-                    anchor_val.addEventListener("click", function (e) {
+                    anchorVal.addEventListener("click", function (e) {
                         if (screen.width < 992) {
                             e.stopPropagation();
-                            var parent_li = e.target.parentNode;
-                            var parent_ul = parent_li.parentNode;
-                            var sibling_li = parent_ul.childNodes;
-                            if (parent_li.classList.contains("active")) {
-                                parent_li.classList.remove("active");
+                            let parentLi = e.target.parentNode;
+                            let parentUl = parentLi.parentNode;
+                            let siblingLi = parentUl.childNodes;
+                            if (parentLi.classList.contains("active")) {
+                                parentLi.classList.remove("active");
                             } else {
-                                parent_li.classList.add("active");
+                                parentLi.classList.add("active");
                             }
-                            for (var j = 0; j < sibling_li.length; ++j) {
-                                if (sibling_li[j] != parent_li) {
-                                    sibling_li[j].classList.remove("active");
+                            for (let j = 0; j < siblingLi.length; ++j) {
+                                if (siblingLi[j] != parentLi) {
+                                    siblingLi[j].classList.remove("active");
                                 } else {
-                                    var child_li = parent_li.getElementsByClassName("has-submenu");
-                                    for (var k = 0; k < child_li.length; ++k) {
-                                        child_li[k].classList.remove("active");
+                                    let childLi = parentLi.getElementsByClassName("has-submenu");
+                                    for (let k = 0; k < childLi.length; ++k) {
+                                        childLi[k].classList.remove("active");
                                     }
                                 }
                             }
@@ -328,50 +338,57 @@
                     });
                 }
 
-                var back_btn = document.querySelectorAll(".btn-back");
-                back_btn.forEach(function (e) {
+                let backBtn = document.querySelectorAll(".btn-back");
+                backBtn.forEach(function (e) {
                     e.addEventListener("click", function () {
                         if (screen.width < 992) {
-                            var active_item = e.parentNode.parentNode;
-                            active_item.classList.remove("active");
+                            let activeItem = e.parentNode.parentNode;
+                            activeItem.classList.remove("active");
                         }
                     });
                 });
                 document.addEventListener("click", this.onClick);
             },
             methods: {
+                async setLanguage(language) {
+                    this.defautLang = language.selectedVal;
+                    store.commit('setDefaultLanguage', language);
+                    this.$i18n.locale = language.selectedVal.toLowerCase()
+                    await loadLocaleMessages(this.$i18n.locale);
+                    location.reload();
+                },
                 onPopoverShow() {
                     this.$refs.notficationPopover._toolpop
                         .getTipElement()
                         .classList.add("notification-popover");
                 },
                 showclearitem() {
-                    var popover_body = document.querySelector(".popover-body");
-                    popover_body.classList.add("clear-item");
+                    let popoverBody = document.querySelector(".popover-body");
+                    popoverBody.classList.add("clear-item");
                 },
                 showsetting() {
-                    var notify_setting = document.querySelector(".notification-setting");
-                    notify_setting.classList.toggle("show-setting");
+                    let notifySetting = document.querySelector(".notification-setting");
+                    notifySetting.classList.toggle("show-setting");
                 },
                 cancelsetting() {
-                    var cancel_setting = document.querySelector(".notification-setting");
-                    cancel_setting.classList.remove("show-setting");
+                    let cancelSetting = document.querySelector(".notification-setting");
+                    cancelSetting.classList.remove("show-setting");
                     this.$root.$emit("bv::show::popover", "notificationPopover");
                 },
                 openMenu() {
-                    var body = document.querySelectorAll("body, html");
+                    let body = document.querySelectorAll("body, html");
                     body.forEach(function (e) {
                         e.classList.add("open-nav");
                     });
                 },
                 closeMenu() {
-                    var body = document.querySelectorAll("body, html");
+                    let body = document.querySelectorAll("body, html");
                     body.forEach(function (e) {
                         e.classList.remove("open-nav");
                     });
                 },
                 searchMenu() {
-                    var body = document.querySelectorAll("body, html");
+                    let body = document.querySelectorAll("body, html");
                     body.forEach(function (e) {
                         e.classList.toggle("open-search");
                     });
@@ -385,7 +402,7 @@
                     document.querySelector('body').classList.remove('small-header');
                     this.$store.commit('logoutUser');
                 },
-                menuBarclickHandler($event) {
+                menuBarclickHandler() {
 
                     if (this.$route.params.searchParamsType) {
                         this.filterData['parmasType'] = this.$route.params.searchParamsType;
@@ -393,7 +410,7 @@
                     if (this.$route.params.searchParams) {
                         this.filterData['parmas'] = this.$route.params.searchParams;
                     }
-                    const doSomething = async () => {
+                    async () => {
                         await eventBus.$emit('clearAllFilters');
                     }
                     eventBus.$emit('setDefaultText');
@@ -401,7 +418,7 @@
                 },
 
                 async exploreMissions() {
-                    await exploreMission().then(response => {
+                    await exploreMission().then(() => {
                         let menuBar = JSON.parse(store.state.menubar);
                         this.topTheme = menuBar.top_theme;
                         this.topCountry = menuBar.top_country;
@@ -420,9 +437,14 @@
                     });
                 },
 
-                async clearFilter($event) {
+                async clearFilter() {
                     if (store.state.isLoggedIn) {
-                        location.reload()
+                        this.$router.push({
+                            name: 'home'
+                        })
+                        setTimeout(() => {
+                            location.reload()
+                        }, 15)
                     }
                 },
 
@@ -435,13 +457,14 @@
                 },
             },
             created() {
-                this.langauageData = JSON.parse(store.state.languageLabel);
+                this.languageData = JSON.parse(store.state.languageLabel);
                 document.addEventListener("scroll", this.handscroller);
                 this.isThemeDisplay = this.settingEnabled(constants.THEMES_ENABLED);
                 this.isStoryDisplay = this.settingEnabled(constants.STORIES_ENABLED);
                 this.isNewsDisplay = this.settingEnabled(constants.NEWS_ENABLED);
                 this.isPolicyDisplay = this.settingEnabled(constants.POLICIES_ENABLED);
-
+                this.langList = JSON.parse(store.state.listOfLanguage)
+                this.defautLang = store.state.defaultLanguage
                 if (store.state.isLoggedIn) {
                     this.exploreMissions();
                 }

@@ -1,11 +1,12 @@
 <template>
     <div class="cards-wrapper" v-if="items.length > 0">
         <div class="card-listing">
-            <div class="card-outer" v-for="mission in items">
+            <div class="card-outer" v-for="(mission, index) in items" :key=index>
                 <b-card no-body>
                     <b-card-header>
                         <div class="header-img-block">
-                            <!-- <b-alert show variant="success" class="card-alert">Applied</b-alert> -->
+                            <b-alert show class="alert card-alert alert-success" v-if="getAppliedStatus(mission)">{{languageData.label.applied}}</b-alert>
+                            <b-alert show class="alert card-alert alert-warning"  v-if="getClosedStatus(mission)">{{languageData.label.closed}}</b-alert>
                             <div v-if="checkDefaultMediaFormat(mission.default_media_type)" class="group-img"
                                 :style="{backgroundImage: 'url('+mission.default_media_path+')'}">
                                 <img src="mission.default_media_path" alt="mission.default_media_path">
@@ -16,48 +17,50 @@
                             <div class="location">
                                 <i>
                                     <img :src="$store.state.imagePath+'/assets/images/location.svg'"
-                                        :alt="langauageData.label.location">
+                                        :alt="languageData.label.location">
                                 </i>{{mission.city_name}}
                             </div>
-                            <b-button v-bind:class="{ 
-                                    'favourite-icon' : true,
-                                    active : mission.is_favourite == 1
-                                }" v-b-tooltip.hover
-                                :title="mission.is_favourite == 1 ?  langauageData.label.remove_from_favourite :langauageData.label.add_to_favourite"
-                                @click="favoriteMission(mission.mission_id)">
-                                <i class="normal-img">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 21" width="24" height="21">
-                                        <g id="Main Content">
-                                            <g id="1">
-                                                <g id="Image content">
-                                                    <path id="Forma 1"
-                                                        d="M22.1 2.86C20.9 1.66 19.3 1 17.59 1C15.89 1 14.29 1.66 13.08 2.86L12.49 3.45L11.89 2.86C10.69 1.66 9.08 1 7.38 1C5.67 1 4.07 1.66 2.87 2.86C0.38 5.34 0.38 9.36 2.87 11.84L11.78 20.71C11.93 20.86 12.11 20.95 12.3 20.98C12.36 20.99 12.43 21 12.49 21C12.74 21 13 20.9 13.19 20.71L22.1 11.84C24.59 9.36 24.59 5.34 22.1 2.86ZM20.71 10.45L12.49 18.64L4.26 10.45C2.54 8.74 2.54 5.96 4.26 4.25C5.09 3.42 6.2 2.96 7.38 2.96C8.56 2.96 9.66 3.42 10.5 4.25L11.79 5.53C12.16 5.9 12.81 5.9 13.18 5.53L14.47 4.25C15.31 3.42 16.41 2.96 17.59 2.96C18.77 2.96 19.88 3.42 20.71 4.25C22.43 5.96 22.43 8.74 20.71 10.45Z" />
+                            <div class="btn-ic-wrap">
+                                <b-button v-bind:class="{ 
+                                        'favourite-icon' : true,
+                                        active : mission.is_favourite == 1
+                                    }" v-b-tooltip.hover
+                                    :title="mission.is_favourite == 1 ?  languageData.label.remove_from_favourite :languageData.label.add_to_favourite"
+                                    @click="favoriteMission(mission.mission_id)">
+                                    <i class="normal-img">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 21" width="24" height="21">
+                                            <g id="Main Content">
+                                                <g id="1">
+                                                    <g id="Image content">
+                                                        <path id="Forma 1"
+                                                            d="M22.1 2.86C20.9 1.66 19.3 1 17.59 1C15.89 1 14.29 1.66 13.08 2.86L12.49 3.45L11.89 2.86C10.69 1.66 9.08 1 7.38 1C5.67 1 4.07 1.66 2.87 2.86C0.38 5.34 0.38 9.36 2.87 11.84L11.78 20.71C11.93 20.86 12.11 20.95 12.3 20.98C12.36 20.99 12.43 21 12.49 21C12.74 21 13 20.9 13.19 20.71L22.1 11.84C24.59 9.36 24.59 5.34 22.1 2.86ZM20.71 10.45L12.49 18.64L4.26 10.45C2.54 8.74 2.54 5.96 4.26 4.25C5.09 3.42 6.2 2.96 7.38 2.96C8.56 2.96 9.66 3.42 10.5 4.25L11.79 5.53C12.16 5.9 12.81 5.9 13.18 5.53L14.47 4.25C15.31 3.42 16.41 2.96 17.59 2.96C18.77 2.96 19.88 3.42 20.71 4.25C22.43 5.96 22.43 8.74 20.71 10.45Z" />
+                                                    </g>
                                                 </g>
                                             </g>
-                                        </g>
-                                    </svg>
-                                </i>
-                                <i class="hover-img">
-                                    <svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg"
-                                        xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-                                        viewBox="0 0 492.7 426.8" style="enable-background:new 0 0 492.7 426.8;"
-                                        xml:space="preserve">
-                                        <g>
-                                            <g id="Icons_18_">
-                                                <path d="M492.7,133.1C492.7,59.6,433.1,0,359.7,0c-48,0-89.9,25.5-113.3,63.6C222.9,25.5,181,0,133,0
-                                                C59.6,0,0,59.6,0,133.1c0,40,17.7,75.8,45.7,100.2l188.5,188.6c3.2,3.2,7.6,5,12.1,5s8.9-1.8,12.1-5L447,233.2
-                                                C475,208.9,492.7,173.1,492.7,133.1z" />
+                                        </svg>
+                                    </i>
+                                    <i class="hover-img">
+                                        <svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg"
+                                            xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+                                            viewBox="0 0 492.7 426.8" style="enable-background:new 0 0 492.7 426.8;"
+                                            xml:space="preserve">
+                                            <g>
+                                                <g id="Icons_18_">
+                                                    <path d="M492.7,133.1C492.7,59.6,433.1,0,359.7,0c-48,0-89.9,25.5-113.3,63.6C222.9,25.5,181,0,133,0
+                                                    C59.6,0,0,59.6,0,133.1c0,40,17.7,75.8,45.7,100.2l188.5,188.6c3.2,3.2,7.6,5,12.1,5s8.9-1.8,12.1-5L447,233.2
+                                                    C475,208.9,492.7,173.1,492.7,133.1z" />
+                                                </g>
                                             </g>
-                                        </g>
-                                    </svg>
-                                </i>
-                            </b-button>
-                            <b-button class="add-icon" v-if="isInviteCollegueDisplay"
-                                @click="handleModal(mission.mission_id)" v-b-tooltip.hover
-                                :title="langauageData.label.invite_colleague">
-                                <img :src="$store.state.imagePath+'/assets/images/add-group-ic.svg'"
-                                    :alt="langauageData.label.invite_colleague">
-                            </b-button>
+                                        </svg>
+                                    </i>
+                                </b-button>
+                                <b-button class="add-icon" v-if="isInviteCollegueDisplay"
+                                    @click="handleModal(mission.mission_id)" v-b-tooltip.hover
+                                    :title="languageData.label.invite_colleague">
+                                    <img :src="$store.state.imagePath+'/assets/images/add-group-ic.svg'"
+                                        :alt="languageData.label.invite_colleague">
+                                </b-button>
+                            </div>
                         </div>
                         <div class="group-category" v-if="mission.mission_theme != null && isThemeSet"><span
                                 class="category-text">{{getThemeTitle(mission.mission_theme.translations)}}</span>
@@ -89,7 +92,7 @@
                                     <b-link v-if="mission.set_view_detail == 0"
                                         @click="applyForMission(mission.mission_id)">
                                         <b-button class="btn-bordersecondary icon-btn">
-                                            <span>{{ langauageData.label.apply }}</span>
+                                            <span>{{ languageData.label.apply }}</span>
                                             <i>
                                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 16" width="19"
                                                     height="15">
@@ -108,7 +111,7 @@
                                     <b-link v-if="mission.set_view_detail == 1"
                                         :to="'/mission-detail/' + mission.mission_id">
                                         <b-button class="btn-bordersecondary icon-btn">
-                                            <span>{{ langauageData.label.view_detail }}</span>
+                                            <span>{{ languageData.label.view_detail }}</span>
                                             <i>
                                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 16" width="19"
                                                     height="15">
@@ -133,13 +136,13 @@
                                             <!-- Mission type time -->
                                             <template v-if="checkMissionTypeTime(mission.mission_type)">
                                                 <template v-if="mission.end_date !== null">
-                                                    {{ langauageData.label.from }}
+                                                    {{ languageData.label.from }}
                                                     {{mission.start_date | formatDate }}
-                                                    {{ langauageData.label.until}}
+                                                    {{ languageData.label.until}}
                                                     {{ mission.end_date | formatDate }}
                                                 </template>
                                                 <template v-else>
-                                                    {{ langauageData.label.on_going_opportunities }}
+                                                    {{ languageData.label.on_going_opportunities }}
                                                 </template>
                                             </template>
                                             <!-- Mission type goal -->
@@ -158,7 +161,7 @@
                                             </i>
                                             <div class="text-wrap">
                                                 <span class="title-text mb-1">{{mission.seats_left}}</span>
-                                                <span class="subtitle-text">{{ langauageData.label.seats_left }}</span>
+                                                <span class="subtitle-text">{{ languageData.label.seats_left }}</span>
                                             </div>
                                         </div>
                                     </template>
@@ -172,7 +175,7 @@
                                                 <span
                                                     class="title-text mb-1">{{mission.mission_application_count}}</span>
                                                 <span
-                                                    class="subtitle-text">{{ langauageData.label.already_volunteered }}</span>
+                                                    class="subtitle-text">{{ languageData.label.already_volunteered }}</span>
                                             </div>
                                         </div>
                                     </template>
@@ -189,7 +192,7 @@
                                             <div class="text-wrap">
                                                 <span
                                                     class="title-text mb-1">{{mission.application_deadline | formatDate}}</span>
-                                                <span class="subtitle-text">{{ langauageData.label.deadline }}</span>
+                                                <span class="subtitle-text">{{ languageData.label.deadline }}</span>
                                             </div>
                                         </div>
                                     </template>
@@ -200,10 +203,10 @@
                                                     alt="user">
                                             </i>
                                             <div class="text-wrap">
-                                                <b-progress :value="mission.achieved_goal" :max="mission.goal_objective"
+                                                <b-progress :value="mission.achieved_goal | filterGoal" :max="mission.goal_objective"
                                                     class="mb-2"></b-progress>
                                                 <span class="subtitle-text">
-                                                    {{mission.achieved_goal}} {{ langauageData.label.achieved}}
+                                                    {{mission.achieved_goal}} {{ languageData.label.achieved}}
                                                 </span>
                                             </div>
                                         </div>
@@ -217,14 +220,14 @@
         </div>
         <b-modal ref="userDetailModal" :modal-class="myclass" size="lg" hide-footer>
             <template slot="modal-header" slot-scope="{ close }">
-                <i class="close" @click="close()" v-b-tooltip.hover :title="langauageData.label.close"></i>
-                <h5 class="modal-title">{{langauageData.label.search_user}}</h5>
+                <i class="close" @click="close()" v-b-tooltip.hover :title="languageData.label.close"></i>
+                <h5 class="modal-title">{{languageData.label.search_user}}</h5>
             </template>
             <b-alert show :variant="classVariant" dismissible v-model="showErrorDiv">{{ message }}</b-alert>
             <div class="autocomplete-control">
                 <div class="autosuggest-container">
                     <VueAutosuggest ref="autosuggest" name="user" v-model="query" :suggestions="filteredOptions"
-                        @input="onInputChange" @selected="onSelected" @keydown="tabHandler"
+                        @input="onInputChange" @selected="onSelected"
                         :get-suggestion-value="getSuggestionValue" :input-props="{
                         id:'autosuggest__input', 
                         placeholder:autoSuggestPlaceholder,
@@ -241,10 +244,10 @@
             <b-form>
                 <div class="btn-wrap">
                     <b-button @click="$refs.userDetailModal.hide()" class="btn-borderprimary">
-                        {{ langauageData.label.close }}</b-button>
+                        {{ languageData.label.close }}</b-button>
                     <b-button class="btn-bordersecondary" @click="inviteColleagues" ref="autosuggestSubmit"
                         v-bind:disabled="submitDisable">
-                        {{ langauageData.label.submit }}</b-button>
+                        {{ languageData.label.submit }}</b-button>
                 </div>
             </b-form>
         </b-modal>
@@ -253,7 +256,7 @@
         <h2 class="text-center">{{noRecordFound()}}</h2>
         <div class="btn-wrap" v-if="isSubmitNewMissionSet">
             <b-button :to="'/home/#'" class="btn-bordersecondary icon-btn">
-                <span>{{ langauageData.label.submit_new_mission }}</span>
+                <span>{{ languageData.label.submit_new_mission }}</span>
                 <i>
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 16" width="19" height="15">
                         <g id="Main Content">
@@ -274,6 +277,7 @@
     import store from '../store';
     import constants from '../constant';
     import StarRating from 'vue-star-rating';
+    import moment from 'moment';
     import {
         favoriteMission,
         inviteColleague,
@@ -282,7 +286,6 @@
     import {
         VueAutosuggest
     } from 'vue-autosuggest';
-    import SimpleBar from 'simplebar';
 
     export default {
         name: "MissionListView",
@@ -292,8 +295,7 @@
         },
         components: {
             StarRating,
-            VueAutosuggest,
-            SimpleBar
+            VueAutosuggest
         },
         data() {
             return {
@@ -307,7 +309,7 @@
                 classVariant: "success",
                 autoSuggestPlaceholder: '',
                 submitDisable: true,
-                langauageData: [],
+                languageData: [],
                 isInviteCollegueDisplay: true,
                 isStarRatingDisplay: true,
                 isQuickAccessSet: true,
@@ -320,18 +322,10 @@
                 if (this.userList) {
                     return [{
                         data: this.userList.filter(option => {
-                            var firstName = option.first_name.toLowerCase();
-                            var lastName = option.last_name.toLowerCase();
-                            var email = option.email.toLowerCase();
-                            var searchString = firstName + '' + lastName + '' + email;
-                            setTimeout(function () {
-                                var myElement = document.querySelector('.autosuggest__results');
-                                if (myElement != null) {
-                                    new SimpleBar(myElement, {
-                                        autoHide: false
-                                    });
-                                }
-                            });
+                            let firstName = option.first_name.toLowerCase();
+                            let lastName = option.last_name.toLowerCase();
+                            let email = option.email.toLowerCase();
+                            let searchString = firstName + '' + lastName + '' + email;
                             return searchString.indexOf(this.query.toLowerCase()) > -1;
                         })
                     }];
@@ -340,10 +334,10 @@
         },
         methods: {
             noRecordFound() {
-                var defaultLang = (store.state.defaultLanguage).toLowerCase();
+                let defaultLang = (store.state.defaultLanguage).toLowerCase();
                 if (JSON.parse(store.state.missionNotFoundText) != "") {
                     let missionNotFoundArray = JSON.parse(store.state.missionNotFoundText);
-                    let data = missionNotFoundArray.filter(function (item, i) {
+                    let data = missionNotFoundArray.filter((item) => {
                         if (item.lang == defaultLang) {
                             return item
                         }
@@ -352,17 +346,17 @@
                     if (data[0] && data[0].message) {
                         return data[0].message;
                     } else {
-                        return this.langauageData.label.no_record_found;
+                        return this.languageData.label.no_record_found;
                     }
 
                 } else {
-                    return this.langauageData.label.no_record_found;
+                    return this.languageData.label.no_record_found;
                 }
             },
             // Get theme title
             getThemeTitle(translations) {
                 if (translations) {
-                    var filteredObj = translations.filter(function (item, i) {
+                    let filteredObj = translations.filter( (item, i) => {
                         if (item.lang === store.state.defaultLanguage.toLowerCase()) {
                             return translations[i].title;
                         }
@@ -401,7 +395,7 @@
                 });
 
             },
-            onInputChange(text) {
+            onInputChange() {
                 this.submitDisable = true;
             },
             // For selected user id.
@@ -410,38 +404,19 @@
                 this.submitDisable = false;
                 this.invitedUserId = item.item.user_id;
             },
-            tabHandler() {
-                setTimeout(() => {
-                    var myElement = document.querySelector('.autosuggest__results');
-                    new SimpleBar(myElement, {
-                        autoHide: false
-                    });
-                });
-            },
             //This is what the <input/> value is set to when you are selecting a suggestion.
             getSuggestionValue(suggestion) {
-                var firstName = suggestion.item.first_name;
-                var lastName = suggestion.item.last_name;
+                let firstName = suggestion.item.first_name;
+                let lastName = suggestion.item.last_name;
                 return firstName + ' ' + lastName;
             },
             // Open auto suggest modal
             handleModal(missionId) {
-                this.autoSuggestPlaceholder = this.langauageData.label.search_user
+                this.autoSuggestPlaceholder = this.languageData.label.search_user
                 this.showErrorDiv = false;
                 this.message = null;
                 this.$refs.userDetailModal.show();
                 this.currentMission = missionId;
-                setTimeout(() => {
-                    var onFocus = document.getElementById('autosuggest');
-                    onFocus.addEventListener("click", function () {
-                        var myElement = document.querySelector('.autosuggest__results');
-                        if (myElement != null) {
-                            new SimpleBar(myElement, {
-                                autoHide: true
-                            });
-                        }
-                    });
-                });
             },
             // invite collegues api call
             inviteColleagues() {
@@ -490,9 +465,31 @@
                     autoHideDelay: 1000
                 })
             },
+            getAppliedStatus(missionDetail) {
+                let currentDate = moment().format("YYYY-MM-DD");
+                let missionEndDate = moment(missionDetail.end_date).format("YYYY-MM-DD");
+                let checkEndDateExist = true;
+                if(missionDetail.end_date != '' && missionDetail.end_date != null) {
+                    if(currentDate > missionEndDate) {
+                        checkEndDateExist = false
+                    }
+                }
+                if(missionDetail.user_application_count == 1 && checkEndDateExist) {
+                    return true;
+                }
+            },
+            getClosedStatus(missionDetail) {
+                let currentDate = moment().format("YYYY-MM-DD");
+                let missionEndDate = moment(missionDetail.end_date).format("YYYY-MM-DD");
+                if(missionDetail.end_date != '' && missionDetail.end_date != null) {
+                    if(currentDate > missionEndDate) {
+                        return true;
+                    }
+                }
+            }
         },
         created() {
-            this.langauageData = JSON.parse(store.state.languageLabel);
+            this.languageData = JSON.parse(store.state.languageLabel);
             this.isInviteCollegueDisplay = this.settingEnabled(constants.INVITE_COLLEAGUE);
             this.isStarRatingDisplay = this.settingEnabled(constants.MISSION_RATINGS);
             this.isQuickAccessSet = this.settingEnabled(constants.QUICK_ACCESS_FILTERS);

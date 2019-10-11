@@ -20,7 +20,15 @@ let routes = [{
             import ('./views/Auth/Login.vue')
     },
 
-
+    {
+        path: '/home',
+        name: 'home',
+        meta: {
+            requiresAuth: true
+        },
+        component: () =>
+            import ('./views/Home.vue')
+    },
     {
         path: '/volunteering-timesheet',
         name: 'Volunteering timesheet ',
@@ -49,19 +57,16 @@ let routes = [{
             import ('./views/Dashboard.vue')
     },
     {
-        path: '/home',
-        name: 'home',
-        meta: {
-            requiresAuth: true
-        },
-        component: () =>
-            import ('./views/Home.vue')
-    },
-    {
         path: '/news',
         name: 'News',
         component: () =>
             import ('./views/News.vue')
+    },
+    {
+        path: '/stories',
+        name: 'Stories',
+        component: () =>
+            import ('./views/Stories.vue')
     },
     {
         path: '/stories',
@@ -76,8 +81,20 @@ let routes = [{
             import ('./views/NewsDetail.vue')
     },
     {
-        path: '/story-detail/:newsId',
+        path: '/news-detail/:newsId',
+        name: 'NewsDetail',
+        component: () =>
+            import ('./views/NewsDetail.vue')
+    },
+    {
+        path: '/story-detail/:storyId',
         name: 'StoryDetail',
+        component: () =>
+            import ('./views/StoryDetail.vue')
+    },
+    {
+        path: '/story-preview/:storyId',
+        name: 'StoryPreview',
         component: () =>
             import ('./views/StoryDetail.vue')
     },
@@ -86,6 +103,30 @@ let routes = [{
         name: 'ShareStory',
         component: () =>
             import ('./views/ShareStory.vue')
+    },
+    {
+        path: '/edit-story/:storyId',
+        name: 'ShareStory',
+        component: () =>
+            import ('./views/ShareStory.vue')
+    },
+    {
+        path: '/messages',
+        name: 'DashboardMessage',
+        component: () =>
+            import ('./views/DashboardMessage.vue')
+    },
+    {
+        path: '/comment-history',
+        name: 'DashboardComments',
+        component: () =>
+            import ('./views/DashboardComments.vue')
+    },
+    {
+        path: '/my-stroies',
+        name: 'DashboardStories',
+        component: () =>
+            import ('./views/DashboardStories.vue')
     },
     {
         path: '/home/:searchParamsType/:searchParams',

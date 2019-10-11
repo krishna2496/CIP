@@ -316,6 +316,9 @@ input,
 textarea {
   appearance: none;
   -webkit-appearance: none;
+  &::-ms-clear {
+    display: none;
+  }
 }
 textarea {
   &.form-control {
@@ -1124,6 +1127,15 @@ label {
       display: block;
     }
   }
+  .mx-clear-icon {
+    &:before {
+      content: "";
+      height: 10px;
+      width: 10px;
+      background-size: 10px;
+      background: url($assetUrl+"/cross-ic.svg") no-repeat;
+    }
+  }
 }
 .mx-datepicker-popup {
   z-index: 1040 !important;
@@ -1462,4 +1474,46 @@ span {
   .simplebar-horizontal {
     visibility: hidden !important;
   }
+}
+
+
+.ckeditor{
+    .cke_top{
+        background: $gray-bg;
+        border-radius: 3px 3px 0 0;
+        -webkit-border-radius: 3px 3px 0 0;
+        -ms-border-radius: 3px 3px 0 0;
+        -moz-border-radius: 3px 3px 0 0;
+        border-bottom-color: $control-border;
+    }
+    .cke_inner{
+        border-color: $control-border;
+        border-radius: 3px;
+        -webkit-border-radius: 3px;
+        -ms-border-radius: 3px;
+        -moz-border-radius: 3px;
+    }
+    .cke_reset{
+        border-color: $control-border;
+        border-radius: 3px;
+        -webkit-border-radius: 3px;
+        -ms-border-radius: 3px;
+        -moz-border-radius: 3px;
+    }
+    .cke_bottom{
+        border-radius: 0 0 3px 3px;
+        -webkit-border-radius: 0 0 3px 3px;
+        -ms-border-radius: 0 0 3px 3px;
+        -moz-border-radius: 0 0 3px 3px;
+        background: $gray-bg;
+        border-color: $control-border;
+    }
+    .cke_resizer{
+        border-color: transparent $black-primary transparent transparent;
+    }
+    &.is-invalid {
+        ~ .invalid-feedback {
+            display: block;
+          }
+    }
 }

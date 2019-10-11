@@ -4,6 +4,9 @@ import axios from 'axios'
 export default async(langList, defautLang) => {
     let responseData = {}
     responseData.error = false;
+    let defaultLanguageData = []
+    let sliderData = [];
+    let logo = '';
     defautLang = "en";
     await axios.get(process.env.VUE_APP_API_ENDPOINT + "app/connect")
         .then((response) => {
@@ -13,13 +16,13 @@ export default async(langList, defautLang) => {
                 // Store slider in Local Storage
                 if (data.sliders) {
                     // Convert slider object to array
-                    let listOfSliderObjects = Object.keys(data.sliders).map((key) => {
+                    Object.keys(data.sliders).map((key) => {
                         return data.sliders[key]
                     })
 
                     store.commit('setSlider', JSON.stringify(data.sliders))
                 } else {
-                    var sliderData = [];
+                    sliderData = [];
                     store.commit('setSlider', JSON.stringify(sliderData))
                 }
 
@@ -40,9 +43,7 @@ export default async(langList, defautLang) => {
                     if (listOfObjects) {
 
                         store.commit('setLanguageList', JSON.stringify(listOfObjects))
-
                         if (defaultLanguageDataChange == true) {
-                            var defaultLanguageData = []
                             defaultLanguageData["selectedVal"] = (data.defaultLanguage) ? data.defaultLanguage : listOfObjects[0][1];
                             defaultLanguageData["selectedId"] = (data.defaultLanguageId) ? data.defaultLanguageId : listOfObjects[0][0];
                             store.commit('setDefaultLanguage', defaultLanguageData)
@@ -50,7 +51,6 @@ export default async(langList, defautLang) => {
 
                     } else {
                         store.commit('setLanguageList', JSON.stringify(langList))
-                        var defaultLanguageData = []
                         defaultLanguageData["selectedVal"] = (data.defaultLanguage) ? data.defaultLanguage : defautLang;
                         defaultLanguageData["selectedId"] = (data.defaultLanguageId) ? data.defaultLanguageId : "";
                         store.commit('setDefaultLanguage', defaultLanguageData)
@@ -58,16 +58,15 @@ export default async(langList, defautLang) => {
 
                 } else {
                     store.commit('setLanguageList', JSON.stringify(langList))
-                    var defaultLanguageData = []
                     defaultLanguageData["selectedVal"] = defautLang;
                     defaultLanguageData["selectedId"] = "";
                     store.commit('setDefaultLanguage', defaultLanguageData)
                 }
 
                 //Set logo in local storage
-                var logo = '';
+
                 if (data.custom_logo) {
-                    var logo = data.custom_logo;
+                    logo = data.custom_logo;
                 }
                 store.commit('setLogo', logo)
 
@@ -82,9 +81,9 @@ export default async(langList, defautLang) => {
                 defaultLanguageData["selectedVal"] = defautLang;
                 defaultLanguageData["selectedId"] = "";
                 store.commit('setDefaultLanguage', defaultLanguageData)
-                var logo = '';
+                logo = '';
                 store.commit('setLogo', logo)
-                var sliderData = [];
+                sliderData = [];
                 store.commit('setSlider', JSON.stringify(sliderData))
             }
 
@@ -106,7 +105,35 @@ export default async(langList, defautLang) => {
                 store.commit('newsBannerText', '');
             }
 
+            if (response.data.data.story_banner) {
+                store.commit('storyBanner', response.data.data.story_banner);
+            } else {
+                store.commit('storyBanner', '');
+            }
+            if (response.data.data.story_banner_text) {
+                store.commit('storyBannerText', response.data.data.story_banner_text);
+            } else {
+                store.commit('storyBannerText', '');
+            }
+            if (response.data.data.story_dashboard_text) {
+                store.commit('storyDashboardText', response.data.data.story_dashboard_text);
+            } else {
+                store.commit('storyDashboardText', '');
+            }
+            if (response.data.data.slide_interval) {
+                store.commit('slideInterval', response.data.data.slide_interval);
+            } else {
+                store.commit('slideInterval', '');
+            }
+            if (response.data.data.slide_effect) {
+                store.commit('slideEffect', response.data.data.slide_effect);
+            } else {
+                store.commit('slideEffect', '');
+            }
+
         })
-        .catch(error => {})
+        .catch(function() {
+
+        });
     return responseData;
 }

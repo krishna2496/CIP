@@ -3,11 +3,11 @@ import store from '../../store'
 
 export default async(data) => {
     let responseData = {};
-    var defaultLanguage = '';
+    let defaultLanguage = '';
     if (store.state.defaultLanguage !== null) {
         defaultLanguage = (store.state.defaultLanguage).toLowerCase();
     }
-    var url = process.env.VUE_APP_API_ENDPOINT + "app/user";
+    let url = process.env.VUE_APP_API_ENDPOINT + "app/user";
     document.body.classList.add("loader-enable");
     await axios({
             url: url,
@@ -22,11 +22,13 @@ export default async(data) => {
             responseData.error = false;
             responseData.message = response.data.message;
             responseData.data = response.data.data;
+            document.body.classList.remove("loader-enable");
         })
         .catch(function(error) {
             if (error.response.data.errors[0].message) {
                 responseData.error = true;
                 responseData.message = error.response.data.errors[0].message;
+                document.body.classList.remove("loader-enable");
             }
         });
     return responseData;

@@ -8,15 +8,15 @@
 				<div class="error-page-wrap">
 					<div class="error-img" :style="{backgroundImage: 'url('+bgImg+')'}"></div>
 					<div class="error-content">
-						<!-- <h2>{{langauageData.label.page_not_found}}</h2> -->
+						<!-- <h2>{{languageData.label.page_not_found}}</h2> -->
 						<h1>
-							<b>{{langauageData.label.oops}}</b>{{langauageData.label.page_not_found_message_heading}}
+							<b>{{languageData.label.oops}}</b>{{languageData.label.page_not_found_message_heading}}
 						</h1>
-						<p>{{langauageData.label.page_not_found_message_text}}</p>
+						<p>{{languageData.label.page_not_found_message_text}}</p>
 						<div class="btn-row">
 							<b-link class="btn btn-bordersecondary icon-btn"
-								:title="langauageData.label.go_to_home_page" to="/home">
-								<span>{{langauageData.label.go_to_home_page}}</span>
+								:title="languageData.label.go_to_home_page" to="/home">
+								<span>{{languageData.label.go_to_home_page}}</span>
 								<i>
 									<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 16" width="19" height="15">
 										<g id="Main Content">
@@ -35,31 +35,22 @@
 				</div>
 			</b-container>
 		</main>
-		<footer>
-			<PrimaryFooter></PrimaryFooter>
-		</footer>
 	</div>
 </template>
 
 <script>
 	import store from "../store";
 	export default {
-		components: {
-			ThePrimaryHeader: () => import("../components/Layouts/ThePrimaryHeader"),
-			TheSecondaryFooter: () => import("../components/Layouts/TheSecondaryFooter"),
-		},
-
+		components: {},
 		name: "404",
-
 		data() {
 			return {
-				// bgImg: require("@/assets/images/404-img.png")
 				bgImg: store.state.imagePath + '/assets/images/404-img.png',
-				langauageData: []
+				languageData: []
 			};
 		},
 		created() {
-			this.langauageData = JSON.parse(store.state.languageLabel);
+			this.languageData = JSON.parse(store.state.languageLabel);
 		},
 		methods: {}
 	};

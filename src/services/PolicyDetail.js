@@ -3,11 +3,11 @@ import store from '../store'
 
 export default async(slug) => {
     let responseData = {};
-    var defaultLanguage = '';
+    let defaultLanguage = '';
     if (store.state.defaultLanguage !== null) {
         defaultLanguage = (store.state.defaultLanguage).toLowerCase();
     }
-    var url = process.env.VUE_APP_API_ENDPOINT + "app/policy/" + slug;
+    let url = process.env.VUE_APP_API_ENDPOINT + "app/policy/" + slug;
 
     await axios({
             url: url,
@@ -23,7 +23,7 @@ export default async(slug) => {
                 responseData.data = response.data.data;
             }
         })
-        .catch(function(error) {
+        .catch(function() {
             responseData.error = true;
         });
     return responseData;

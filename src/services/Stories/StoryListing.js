@@ -7,7 +7,7 @@ export default async(currentPage) => {
     if (store.state.defaultLanguage !== null) {
         defaultLanguage = (store.state.defaultLanguage).toLowerCase();
     }
-    var url = process.env.VUE_APP_API_ENDPOINT + "app/news?page=" + currentPage;
+    var url = process.env.VUE_APP_API_ENDPOINT + "app/story/list?page=" + currentPage;
     document.body.classList.add("loader-enable");
     await axios({
             url: url,
@@ -32,4 +32,4 @@ export default async(currentPage) => {
             document.body.classList.remove("loader-enable");
         });
     return responseData;
-}
+};

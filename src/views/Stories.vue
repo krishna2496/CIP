@@ -4,6 +4,7 @@
 			<ThePrimaryHeader></ThePrimaryHeader>
 		</header>
 		<main>
+			
 			<b-container>
 				<StoryBanner/>
 				<div class="news-detail-container" v-if="showErrorDiv">
@@ -11,12 +12,12 @@
 						{{ message }}
 					</b-alert>
 				</div>
-				<div v-if="!showErrorDiv && !isPageLoaded">
-					<div v-if="!storyListing.length > 0">
-						<StoriesCard />
+				<div v-if="!showErrorDiv && isPageLoaded">
+					<div v-if="storyListing.length > 0">
+						<StoriesCard :storyListing="storyListing"/>
 					</div>
 				</div>
-				<div class="pagination-block" data-aos="fade-up">
+				<div class="pagination-block" data-aos="fade-up" v-if="pagination.totalPages > 1">
 					<b-pagination
 							v-model="pagination.currentPage"
 							:total-rows="pagination.total"
@@ -59,7 +60,7 @@
 		},
 		data() {
 			return {
-				langauageData : [],
+				languageData : [],
 				isStoryDisplay : true,
 				showErrorDiv: false,
 				isPageLoaded : false,
@@ -79,7 +80,7 @@
 
 		methods: {
 			pageChange(page){
-				// this.getStoryListing(page);
+				this.getStoryListing(page);
 			},
 			getStoryListing(currentPage) {
 				storyListing(currentPage).then(response => {
@@ -99,22 +100,12 @@
 			}
 		},
 		created() {
-			let _this = this
-			this.langauageData = JSON.parse(store.state.languageLabel);
+			this.languageData = JSON.parse(store.state.languageLabel);
 			this.isStoryDisplay = this.settingEnabled(constants.STORIES_ENABLED);
 			if(!this.isStoryDisplay) {
 				this.$router.push('/home')
 			}
-			// this.bannerUrl = store.state.newsBanner
-			// let bannerTextArray = JSON.parse(store.state.newsBannerText)
-			// if(bannerTextArray) {
-			// 	bannerTextArray.filter(function(data,index){
-			// 		if(data.lang == store.state.defaultLanguage.toLowerCase()) {
-			// 			_this.bannerText = data.message
-			// 		}
-			// 	})
-			// }
-			// this.getStoryListing(this.pagination.currentPage);
+			this.getStoryListing(this.pagination.currentPage)
 		},
 		destroyed() {}
 	};

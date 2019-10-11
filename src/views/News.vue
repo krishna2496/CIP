@@ -9,7 +9,7 @@
 				<div class="banner-wrap">
 					<div :style="{backgroundImage: 'url('+bannerUrl+')'}" class="banner-section">
 						<b-container>
-							<h1>{{langauageData.label.news}}</h1>
+							<h1>{{languageData.label.news}}</h1>
 							<p>{{bannerText}}</p>
 						</b-container>
 					</div>
@@ -27,7 +27,7 @@
 						/>
 					</div>
 					<div v-else class="text-center news-detail-container">
-						 <h2>{{langauageData.label.news}} {{langauageData.label.not_found}}</h2>
+						 <h2>{{languageData.label.news}} {{languageData.label.not_found}}</h2>
 					</div>
 					<div class="pagination-block" data-aos="fade-up" v-if="pagination.totalPages > 1">
 						<b-pagination
@@ -71,14 +71,13 @@ export default {
 	},
 	data() {
 		return {
-			langauageData : [],
+			languageData : [],
 			isNewsDisplay : true,
 			showErrorDiv: false,
 			isPageLoaded : false,
 			message: null,
 			newsListing : [],
 			pagination : {
-				'currentPage' :1,
 				"total": 0,
 				"perPage": 1,
 				"currentPage": 1, 
@@ -110,8 +109,7 @@ export default {
 		}
 	},
 	created() {
-		let _this = this
-		this.langauageData = JSON.parse(store.state.languageLabel);
+		this.languageData = JSON.parse(store.state.languageLabel);
 		this.isNewsDisplay = this.settingEnabled(constants.NEWS_ENABLED);
 		if(!this.isNewsDisplay) {
 			this.$router.push('/home')
@@ -119,9 +117,9 @@ export default {
 		this.bannerUrl = store.state.newsBanner
 		let bannerTextArray = JSON.parse(store.state.newsBannerText)
 		if(bannerTextArray) {
-			bannerTextArray.filter(function(data,index){
+			bannerTextArray.filter((data,index) => {
 				if(data.lang == store.state.defaultLanguage.toLowerCase()) {
-					_this.bannerText = data.message
+					this.bannerText = data.message
 				}
 			})
 		}

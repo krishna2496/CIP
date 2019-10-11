@@ -1,8 +1,7 @@
 <template>
-    <div v-bind:class="{
-        'bottom-header' :true,
-        'active':searchString != '' ? true :false,
-      }">
+    <div 
+      v-bind:class="[handleFilterCount()]"
+      >
         <b-container>
             <b-row>
                 <b-col xl="6" lg="5" class="search-block">
@@ -18,19 +17,19 @@
                     <i class="clear-btn" @click="clearSearchFilter">
 
                         <img :src="$store.state.imagePath+'/assets/images/cross-ic.svg'"
-                            :title="langauageData.label.clear_search" alt="clear" />
+                            :title="languageData.label.clear_search" alt="clear" />
                     </i>
                 </b-col>
-                <b-col xl="6" lg="7" class="filter-block">
+                <b-col xl="6" lg="7" class="filter-block"  v-if="quickAccessFilterSet">
                     <div class="mobile-top-block">
                         <b-button class="btn btn-back" @click="handleBack">
                             <img :src="$store.state.imagePath+'/assets/images/down-arrow.svg'" alt="Back Icon">
                         </b-button>
-                        <b-button class="btn btn-clear" @click="clearMissionFilters">{{langauageData.label.clear_all}}
+                        <b-button class="btn btn-clear" @click="clearMissionFilters">{{languageData.label.clear_all}}
                         </b-button>
                     </div>
 
-                    <b-list-group v-if="quickAccessFilterSet">
+                    <b-list-group>
                         <b-list-group-item v-if="isCountrySelectionSet">
                             <AppFilterDropdown :optionList="countryList" :defaultText="defautCountry"
                                 translationEnable="false" @updateCall="changeCountry" v-if="isComponentVisible" />
@@ -64,8 +63,7 @@
     import AppFilterDropdown from "../AppFilterDropdown";
     import AppCheckboxDropdown from "../AppCheckboxDropdown";
     import {
-        filterList,
-        missionFilterListing
+        filterList
     } from "../../services/service";
     import store from "../../store";
     import {
@@ -121,16 +119,18 @@
                 isThemeChange: false,
                 isCountrySelectionSet: false,
                 searchString: this.search,
-                langauageData: [],
+                languageData: [],
             };
         },
         mounted() {
-            var mobile_filter = document.querySelector(".filter-block");
-            mobile_filter.addEventListener("click", function (e) {
+            let mobileFilter = document.querySelector(".filter-block");
+            if(mobileFilter != null){
+            mobileFilter.addEventListener("click", function (e) {
                 if (window.innerWidth < 992) {
                     e.stopPropagation();
                 }
             });
+            }
         },
         methods: {
             changeThemeParmas() {
@@ -156,7 +156,7 @@
 
             handleFocus() {
                 this.searchPlaceHolder = '';
-                var b_header = document.querySelector(".bottom-header");
+                let b_header = document.querySelector(".bottom-header");
                 b_header.classList.add("active");
             },
 
@@ -170,7 +170,7 @@
                     this.isCityChange = false;
                     this.isThemeChange = false;
                     let selectedData = store.state.cityId.toString().split(',');
-                    var filteredCity = selectedData.filter(function (value, index, arr) {
+                    let filteredCity = selectedData.filter((value) =>  {
                         return value != data.selectedId;
                     });
                     this.selectedCity = filteredCity;
@@ -182,7 +182,7 @@
                     this.isCityChange = false;
                     this.isThemeChange = false;
                     let selectedData = store.state.themeId.toString().split(',');
-                    var filteredTheme = selectedData.filter(function (value, index, arr) {
+                    let filteredTheme = selectedData.filter((value) => {
                         return value != data.selectedId;
                     });
                     this.selectedSkill = [];
@@ -191,7 +191,7 @@
                 }
                 if (data.selectedType == "skill") {
                     let selectedData = store.state.skillId.toString().split(',');
-                    var filteredSkill = selectedData.filter(function (value, index, arr) {
+                    let filteredSkill = selectedData.filter( (value) => {
                         return value != data.selectedId;
                     });
                     this.selectedSkill = filteredSkill;
@@ -199,9 +199,9 @@
             },
 
             handleBlur() {
-                this.searchPlaceHolder = this.langauageData.label.search + ' ' + this.langauageData.label.mission;
-                var b_header = document.querySelector(".bottom-header");
-                var input_edit = document.querySelector(".search-block input");
+                this.searchPlaceHolder = this.languageData.label.search + ' ' + this.languageData.label.mission;
+                let b_header = document.querySelector(".bottom-header");
+                let input_edit = document.querySelector(".search-block input");
                 b_header.classList.remove("active");
                 if (input_edit.value.length > 0) {
                     b_header.classList.add("active");
@@ -211,17 +211,44 @@
             },
 
             handleFilter() {
-                var body = document.querySelectorAll("body, html");
+                let body = document.querySelectorAll("body, html");
                 body.forEach(function (e) {
                     e.classList.add("open-filter");
                 });
             },
 
             handleBack() {
-                var body = document.querySelectorAll("body, html");
+                let body = document.querySelectorAll("body, html");
                 body.forEach(function (e) {
                     e.classList.remove("open-filter");
                 });
+            },
+            handleFilterCount() {
+                let returnData = [];
+               
+                if(this.searchString != '') {
+                    returnData.push('active')
+                } else {
+                    returnData = [];
+                }
+
+                returnData.push('bottom-header')
+                let filterCount = document.querySelectorAll(
+                    ".filter-block .list-group-item"
+                ).length;
+
+                if (filterCount != null) {
+                    if (filterCount == 3) {
+                        returnData.push('three-filters')
+                    } else if (filterCount == 2) {
+                        returnData.push('two-filters')
+                    } else if (filterCount == 1) {
+                        returnData.push('one-filter')
+                    }else if( filterCount == 0){
+                        returnData.push('zero-filter')
+                    }
+                }
+                return returnData;
             },
 
             async changeCountry(country) {
@@ -231,7 +258,7 @@
                     this.defautCountry = country.selectedVal.replace(/<\/?("[^"]*"|'[^']*'|[^>])*(>|$)/g, "");
                     this.defautCountry = this.defautCountry.replace(/[^a-zA-Z\s]+/g, '');
                 } else {
-                    this.defautCountry = this.langauageData.label.country;
+                    this.defautCountry = this.languageData.label.country;
                 }
                 this.selectedfilterParams.cityId = '';
                 this.selectedfilterParams.themeId = '';
@@ -350,11 +377,11 @@
                     'theme': [],
                     'skill': []
                 }
-                var _this = this;
-                setTimeout(function () {
-                    _this.defautCity = _this.langauageData.label.city,
-                        _this.defautTheme = _this.langauageData.label.theme,
-                        _this.defautSkill = _this.langauageData.label.skills
+                
+                setTimeout( () => {
+                    this.defautCity = this.languageData.label.city,
+                        this.defautTheme = this.languageData.label.theme,
+                        this.defautSkill = this.languageData.label.skills
                 }, 500)
 
                 this.selectedfilterParams.countryId = store.state.countryId;
@@ -386,7 +413,7 @@
 
                         if (store.state.countryId != '') {
                             if (this.countryList) {
-                                let selectedCountryData = this.countryList.filter(function (country) {
+                                let selectedCountryData = this.countryList.filter((country) => {
                                     if (store.state.countryId == country[1].id) {
                                         return country;
                                     }
@@ -396,12 +423,12 @@
                                     tags.country[0] = selectedCountryData[0][1].id + '_' + selectedCountryData[
                                         0][1].title;
                                 } else {
-                                    this.defautCountry = this.langauageData.label.country;
+                                    this.defautCountry = this.languageData.label.country;
                                     tags.country[0] = '';
                                 }
                             }
                         } else {
-                            this.defautCountry = this.langauageData.label.country;
+                            this.defautCountry = this.languageData.label.country;
                         }
 
                         if (store.state.cityId != '') {
@@ -421,7 +448,7 @@
                 });
             },
 
-            searchMission($event) {
+            searchMission() {
                 this.$parent.searchMissions(this.search, this.selectedfilterParams);
                 this.selectedfilterParams.search = this.search
                 this.filterSearchListing();
@@ -432,9 +459,9 @@
             },
 
             clearFilter() {
-                var _this = this;
+                
                 this.selectedfilterParams.countryId = '';
-                this.defautCountry = this.langauageData.label.country;
+                this.defautCountry = this.languageData.label.country;
                 this.selectedfilterParams.cityId = '';
                 this.selectedfilterParams.themeId = '';
                 this.selectedfilterParams.skillId = '';
@@ -460,7 +487,7 @@
                         if (response.country) {
                             this.countryList = Object.entries(response.country);
                         } else {
-                            this.defautCountry = this.langauageData.label.country;
+                            this.defautCountry = this.languageData.label.country;
                         }
 
                         if (response.city) {
@@ -481,7 +508,7 @@
                             this.skillList = []
                         }
                     } else {
-                        this.defautCountry = this.langauageData.label.country;
+                        this.defautCountry = this.languageData.label.country;
                         this.cityList = []
                         this.themeList = []
                         this.skillList = []
@@ -496,9 +523,9 @@
                 this.selectedfilterParams.search = '';
                 this.$parent.searchMissions(this.searchString, this.selectedfilterParams);
                 this.filterSearchListing();
-                var _this = this;
-                setTimeout(function () {
-                    _this.handleBlur()
+                
+                setTimeout(() => {
+                    this.handleBlur()
                 }, 200)
 
             },
@@ -549,8 +576,8 @@
                             }
                             if (store.state.countryId != '') {
                                 if (this.countryList) {
-                                    let selectedCountryData = this.countryList.filter(function (
-                                    country) {
+                                    let selectedCountryData = this.countryList.filter((
+                                    country) => {
                                         if (store.state.countryId == country[1].id) {
                                             return country;
                                         }
@@ -558,7 +585,7 @@
                                     this.defautCountry = selectedCountryData[0][1].title;
                                 }
                             } else {
-                                this.defautCountry = this.langauageData.label.country;
+                                this.defautCountry = this.languageData.label.country;
                             }
 
                             if (store.state.cityId != '') {
@@ -573,25 +600,22 @@
             }
         },
         created() {
-            this.langauageData = JSON.parse(store.state.languageLabel);
-            this.searchPlaceHolder = this.langauageData.label.search + ' ' + this.langauageData.label.mission;
-
+            this.languageData = JSON.parse(store.state.languageLabel);
+            
+            this.searchPlaceHolder = this.languageData.label.search + ' ' + this.languageData.label.mission;
             this.quickAccessFilterSet = this.settingEnabled(constants.QUICK_ACCESS_FILTERS);
             this.isThemeDisplay = this.settingEnabled(constants.THEMES_ENABLED);
             this.isSkillDisplay = this.settingEnabled(constants.SKILLS_ENABLED);
             this.isCountrySelectionSet = this.settingEnabled(constants.IS_COUNTRY_SELECTION);
-            var _this = this;
-            eventBus.$on('clearAllFilters', (message) => {
-                _this.clearFilter();
+            eventBus.$on('clearAllFilters', () => {
+                this.clearFilter();
             });
-            eventBus.$on('setDefaultText', (message) => {
-                _this.defautCountry = this.langauageData.label.country;
+            eventBus.$on('setDefaultText', () => {
+                this.defautCountry = this.languageData.label.country;
             });
-            eventBus.$on('setDefaultData', (message) => {
-                _this.filterListing();
+            eventBus.$on('setDefaultData', () => {
+                this.filterListing();
             });
-
-
             // Fetch Filters
             this.filterListing();
             if (store.state.search != null) {
@@ -603,6 +627,9 @@
                 this.themeList = [];
                 this.skillList = [];
             }
+            setTimeout(() => {
+                this.handleFilterCount();
+            });
         }
     };
 </script>

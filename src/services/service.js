@@ -43,7 +43,15 @@ import newsDetail from "./News/NewsDetail"
 import newsListing from "./News/NewsListing"
 import storyDetail from "./Stories/StoryDetail"
 import storyListing from "./Stories/StoryListing"
-
+import storyMissionListing from "./Stories/StoryMissionListing"
+import submitStory from "./Stories/SubmitStory"
+import updateStory from "./Stories/UpdateStory"
+import updateStoryStatus from "./Stories/UpdateStoryStatus"
+import deleteStoryImage from "./Stories/DeleteStoryImage"
+import myStory from "./Stories/MyStory"
+import copyStory from "./Stories/CopyStory"
+import deleteStory from "./Stories/DeleteStory"
+import editStory from "./Stories/EditStory"
 
 export {
     loadLocaleMessages,
@@ -91,4 +99,13 @@ export {
     newsListing,
     storyDetail,
     storyListing,
+    storyMissionListing,
+    submitStory,
+    updateStory,
+    updateStoryStatus,
+    deleteStoryImage,
+    myStory,
+    copyStory,
+    deleteStory,
+    editStory
 }

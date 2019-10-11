@@ -16,36 +16,36 @@
                 <!-- login form start -->
                 <b-form class="signin-form">
                     <b-form-group>
-                        <label for="">{{ langauageData.label.email_address }}</label>
+                        <label for="">{{ languageData.label.email_address }}</label>
                         <b-form-input id="" type="email" 
                         v-model="login.email" 
-                        v-bind:placeholder='langauageData.placeholder.email_address'
+                        v-bind:placeholder='languageData.placeholder.email_address'
                         :class="{ 'is-invalid': $v.login.email.$error }" ref='email' autofocus 
                         maxlength="120"
                         @keypress.enter.prevent="handleSubmit"
                         @keydown.space.prevent></b-form-input>
                         <div v-if="submitted && !$v.login.email.required" class="invalid-feedback">
-                        {{ langauageData.errors.email_required }}</div>
+                        {{ languageData.errors.email_required }}</div>
                         <div v-if="submitted && !$v.login.email.email" class="invalid-feedback">
-                        {{ langauageData.errors.invalid_email }}</div>
+                        {{ languageData.errors.invalid_email }}</div>
                     </b-form-group>
                     <b-form-group>
-                        <label for="">{{ langauageData.label.password }}</label>
+                        <label for="">{{ languageData.label.password }}</label>
                         <b-form-input id="" type="password" v-model="login.password" required 
-                        v-bind:placeholder='langauageData.placeholder.password' 
+                        v-bind:placeholder='languageData.placeholder.password' 
                         :class="{ 'is-invalid': $v.login.password.$error }" 
                         maxlength="120"
                         @keypress.enter.prevent="handleSubmit"
-                        @keydown.space.prevent></b-form-input>
+                        @keydown.space.prevent autocomplete="password"></b-form-input>
                         <div v-if="submitted && !$v.login.password.required" class="invalid-feedback">
-                        {{ langauageData.errors.password_required }}</div>
+                        {{ languageData.errors.password_required }}</div>
                     </b-form-group>
                     <b-button type="button" @click="handleSubmit" class=" btn-bordersecondary">
-                    {{ langauageData.label.login }}</b-button>
+                    {{ languageData.label.login }}</b-button>
                 </b-form>
                 <!-- link to forgot-password -->
                 <div class="form-link">
-                    <b-link to="/forgot-password">{{ langauageData.label.lost_password }}</b-link>
+                    <b-link to="/forgot-password">{{ languageData.label.lost_password }}</b-link>
                 </div>
             </div>
             <ThePrimaryFooter ref="ThePrimaryFooter" v-if="isShowComponent"/>
@@ -57,7 +57,7 @@
 import TheSlider from '../../components/TheSlider';
 import ThePrimaryFooter from "../../components/Layouts/ThePrimaryFooter";
 import AppCustomDropdown from '../../components/AppCustomDropdown';
-import { required, email, between } from 'vuelidate/lib/validators';
+import { required, email } from 'vuelidate/lib/validators';
 import store from '../../store';
 import {loadLocaleMessages,login,databaseConnection,tenantSetting} from '../../services/service';
 import constants from '../../constant';
@@ -83,7 +83,7 @@ export default {
             message: null,
             showDismissibleAlert: false,
             isShowComponent : false,
-            langauageData : [],
+            languageData : [],
             isPageShown : false
         };
     },
@@ -95,36 +95,34 @@ export default {
     },
     methods: {
         async createConnection(){
-            await databaseConnection(this.langList).then(response => {
+            await databaseConnection(this.langList).then(() => {
                     this.isShowComponent = true
                     //Get langauage list from Local Storage
                     this.langList = JSON.parse(store.state.listOfLanguage)
                     this.defautLang = store.state.defaultLanguage
                     // Get tenant setting
                     tenantSetting(); 
-                    loadLocaleMessages(store.state.defaultLanguage).then(response =>{
-                        this.langauageData = JSON.parse(store.state.languageLabel);
+                    loadLocaleMessages(store.state.defaultLanguage).then(() =>{
+                        this.languageData = JSON.parse(store.state.languageLabel);
                         this.isPageShown = true
-                        var _this =this;
-                        setTimeout(function(){
-                            _this.$refs.email.focus();
+                        setTimeout(() => {
+                            this.$refs.email.focus();
                         },500)
                     });
             })       
         },
         
         async setLanguage(language){
-            var _this = this;
             this.defautLang = language.selectedVal;
             store.commit('setDefaultLanguage',language);
             this.$i18n.locale = language.selectedVal.toLowerCase()
             await loadLocaleMessages(this.$i18n.locale);   
-            this.langauageData = JSON.parse(store.state.languageLabel);
-            _this.$forceUpdate();
-            _this.$refs.ThePrimaryFooter.$forceUpdate()
+            this.languageData = JSON.parse(store.state.languageLabel);
+            this.$forceUpdate();
+            this.$refs.ThePrimaryFooter.$forceUpdate()
         },
 
-        handleSubmit(e) {
+        handleSubmit() {
             this.submitted = true;
             this.$v.$touch();
             // stop here if form is invalid
@@ -154,9 +152,9 @@ export default {
     created() {
         //Database connection and fetching tenant options api
         this.createConnection()
-        var domain = '';
-        var imagePath = '';
-        var currentUrl = (((window.location.origin).split('.')));
+        let domain = '';
+        let imagePath = '';
+        let currentUrl = (((window.location.origin).split('.')));
         if (currentUrl[0]) {
             domain = ((currentUrl[0]).split('//'));
             if(domain[1]) {

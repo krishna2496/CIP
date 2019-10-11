@@ -6,7 +6,8 @@
                     <b-card no-body>
                         <b-card-header>
                             <div class="header-img-block">
-                                <b-link class="group-img" :style="{backgroundImage: 'url('+data.news_image+')'}"></b-link>
+                                <b-link class="group-img" v-if="data.news_image != '' && data.news_image != null" :style="{backgroundImage: 'url('+data.news_image+')'}"></b-link>
+                                <b-link class="group-img" v-else :style="{backgroundImage: 'url('+getDefaultImage()+')'}"></b-link>
                             </div>
                             <div class="group-category">
                                 <span class="category-text">{{data.news_category[0]}}</span>
@@ -65,7 +66,7 @@
 </template>
 <script>
 import store from '../store';
-
+import constants from '../constant';
 export default {
     name: "NewsCard",
     components: {},
@@ -77,29 +78,16 @@ export default {
             langauageData : [],
             showBlock: false,
             max: 100,
-            value: 80,
-            grpImages: [
-                require("@/assets/images/storie-img01.png"),
-                require("@/assets/images/storie-img02.png"),
-                require("@/assets/images/storie-img03.png"),
-                require("@/assets/images/storie-img04.png"),
-                require("@/assets/images/storie-img05.png"),
-                require("@/assets/images/storie-img06.png"),
-                require("@/assets/images/storie-img01.png"),
-                require("@/assets/images/storie-img02.png"),
-                require("@/assets/images/storie-img03.png")
-            ],
-            profileImages: [
-                require("@/assets/images/volunteer1.png"),
-                require("@/assets/images/volunteer2.png"),
-                require("@/assets/images/volunteer7.png")
-            ]
+            value: 80
         };
     },
     methods: {
         getDescription(description) {       
             let data = description.substring(0,150);
             return data
+        },
+        getDefaultImage() {
+            return store.state.imagePath+'/assets/images/'+constants.MISSION_DEFAULT_PLACEHOLDER;
         }
     },
     created() {

@@ -1,17 +1,16 @@
 <template>
 	<div v-bind:class="{ 
-	   'recent-volunteer-block': true,
-	   'no-volunteer' : noVolunteerFound,
-	   'hide-pagination' : hidePagination,
+		'recent-volunteer-block': true,
+		'no-volunteer' : noVolunteerFound,
+		'hide-pagination' : hidePagination,
 	}">
 		<div v-bind:class="{ 
 			'content-loader-wrap': true, 
 			'recent-loader': recentVolunterLoader,
-				
 		}">
 			<div class="content-loader"></div>
 		</div>
-		<h2 class="title-with-border"><span>{{ langauageData.label.recent_volunteers }} </span></h2>
+		<h2 class="title-with-border"><span>{{ languageData.label.recent_volunteers }} </span></h2>
 		<div class="recent-details-block" v-if="volunteerList.length > 0">
 			<b-list-group class="volunteers-list" :current-page="currentPage">
 				<b-list-group-item v-for="(volunteer , v) in volunteerList" :key="v">
@@ -27,11 +26,11 @@
 				</b-pagination>
 				<span>
 					{{((currentPage - 1 ) * perPage ) + 1}} - {{Math.min(perPage * currentPage , rows )}} of {{rows}}
-					{{ langauageData.label.recent_volunteers }}</span>
+					{{ languageData.label.recent_volunteers }}</span>
 			</div>
 		</div>
 		<p v-else>
-			{{ langauageData.label.no_volunteers }}
+			{{ languageData.label.no_volunteers }}
 		</p>
 	</div>
 </template>
@@ -54,7 +53,7 @@
 				perPage: 12,
 				noVolunteerFound: false,
 				hidePagination: true,
-				langauageData: [],
+				languageData: [],
 			}
 		},
 		directives: {},
@@ -100,7 +99,7 @@
 			},
 		},
 		created() {
-			this.langauageData = JSON.parse(store.state.languageLabel);
+			this.languageData = JSON.parse(store.state.languageLabel);
 			this.getMissionVolunteers();
 		}
 	};

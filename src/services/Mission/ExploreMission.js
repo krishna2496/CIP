@@ -3,13 +3,13 @@ import axios from 'axios'
 
 export default async() => {
     let responseData;
-    var defaultLanguage = '';
+    let defaultLanguage = '';
     let headerMenuData = {}
 
     if (store.state.defaultLanguage !== null) {
         defaultLanguage = (store.state.defaultLanguage).toLowerCase();
     }
-    var url = process.env.VUE_APP_API_ENDPOINT + "app/explore-mission";
+    let url = process.env.VUE_APP_API_ENDPOINT + "app/explore-mission";
 
     await axios({
             url: url,
@@ -28,6 +28,6 @@ export default async() => {
             }
             store.commit('headerMenu', headerMenuData);
         })
-        .catch(function(error) {});
+        .catch(function() {});
     return responseData;
 }

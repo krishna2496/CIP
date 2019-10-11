@@ -1,6 +1,6 @@
 <template>
 	<div class="signin-slider">
-		<b-carousel id="carousel-1" fade :interval="2000" :sliding-start="0" :sliding-end="1" indicators
+		<b-carousel id="carousel-1" :fade="slideEffect" :interval="slideInterval" :sliding-start="0" :sliding-end="1" indicators
 			v-if="isDynamicCarsousetSet">
 			<b-carousel-slide :no-wrap="wrap" v-for="item in carouselItems" :key="item.sort_order"
 				:caption="getTitle(item.slider_detail)" :text="getDescription(item.slider_detail)" :img-src="item.url">
@@ -16,7 +16,6 @@
 
 <script>
 	import store from '../store';
-	import axios from "axios";
 
 	export default {
 		name: "TheSlider",
@@ -24,7 +23,9 @@
 			return {
 				carouselItems: [],
 				isDynamicCarsousetSet: false,
-				wrap: true
+				wrap: true,
+				slideInterval : 2000,
+				slideEffect : true
 			};
 		},
 		created() {
@@ -32,14 +33,21 @@
 				this.carouselItems = JSON.parse(store.state.slider);
 				this.isDynamicCarsousetSet = true
 			}
+			if(store.state.slideInterval != '') {
+				this.slideInterval = store.state.slideInterval
+			}
+			let slideEffects = store.state.slideEffect
+			if(slideEffects != '' && slideEffects != "fade") {
+				this.slideEffect = false
+			}
 		},
 		methods: {
 			getTitle: (sliderDetail) => {
 				if (typeof sliderDetail !== 'undefined') {
-					var translations = JSON.parse(JSON.stringify(sliderDetail)).translations;
+					let translations = JSON.parse(JSON.stringify(sliderDetail)).translations;
 					//Fetch slider title by language
 					if (translations) {
-						var filteredObj = translations.filter(function (item, i) {
+						let filteredObj = translations.filter( (item, i) => {
 							if (item.lang === store.state.defaultLanguage.toLowerCase()) {
 								return translations[i].slider_title;
 							}
@@ -53,10 +61,10 @@
 			getDescription: (sliderDetail) => {
 
 				if (typeof sliderDetail !== 'undefined') {
-					var translations = JSON.parse(JSON.stringify(sliderDetail)).translations;
+					let translations = JSON.parse(JSON.stringify(sliderDetail)).translations;
 					// Fetch slider description by language			
 					if (translations) {
-						var filteredObj = translations.filter(function (item, i) {
+						let filteredObj = translations.filter( (item, i) => {
 							if (item.lang === store.state.defaultLanguage.toLowerCase()) {
 								return translations[i].slider_description;
 							}

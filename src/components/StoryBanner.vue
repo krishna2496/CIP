@@ -1,12 +1,10 @@
 <template>
 	<div class="banner-wrap">
-		<div :style="{backgroundImage: 'url('+bgImg+')'}" class="banner-section">
+		<div :style="{backgroundImage: 'url('+bannerUrl+')'}" class="banner-section">
 			<b-container>
-				<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore
-					et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-					aliquip.</p>
-				<b-link class="btn btn-secondary btn-borderwhite icon-btn" title="Share your Story" to="/share-story">
-					<span>{{langauageData.label.share_your_story}}</span>
+				<p>{{bannerText}}</p>
+				<b-link class="btn btn-secondary btn-borderwhite icon-btn"  to="/share-story">
+					<span>{{languageData.label.share_your_story}}</span>
 					<i>
 						<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 16" width="19" height="15">
 							<g id="Main Content">
@@ -35,17 +33,24 @@
 		components: {},
 		data() {
 			return {
-				bgImg: require("@/assets/images/banner-img.png"),
 				images: [],
-				langauageData : [],
+				languageData : [],
+				bannerUrl : '',
+				bannerText : ''
 			};
 		},
 		mounted() {},
-		computed: {},
-		watch: {},
-		methods: {},
 		created() {
-			this.langauageData = JSON.parse(store.state.languageLabel);
+			this.languageData = JSON.parse(store.state.languageLabel);
+			this.bannerUrl = store.state.storyBanner
+			let bannerTextArray = JSON.parse(store.state.storyBannerText)
+			if(bannerTextArray) {
+				bannerTextArray.filter((data,index) => {
+					if(data.lang == store.state.defaultLanguage.toLowerCase()) {
+						this.bannerText = data.message
+					}
+				})
+			}
 		}
 	};
 </script>

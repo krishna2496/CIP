@@ -15,8 +15,6 @@ export default function setup() {
         return response;
     }, function(error) {
 
-        if (error.response.status == '403' && error.response.data.errors[0].code == '40008') {}
-
         //if token expired
         if ((error.response.data.errors[0].status == '401' || error.response.data.errors[0].status == '400') &&
             (error.response.data.errors[0].code == '210009' || error.response.data.errors[0].code == '210012' || error.response.data.errors[0].code == '210010') || error.response.data.errors[0].code == '400043') {

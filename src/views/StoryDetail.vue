@@ -9,52 +9,65 @@
 					<b-row>
 						<b-col xl="9" lg="8" class="slider-col">
 							<div class="title-block">
-								<h1>Grow Tress - On the path to environment sustainbility</h1>
+								<h1>{{storyDetailList.title}}</h1>
 								<div class="view-tag">
 									<i>
 										<img :src="$store.state.imagePath+'/assets/images/eye-ic.svg'" alt="Eye Icon" />
 									</i>
-									<span>12,000 {{langauageData.label.views}}</span>
+									<span>{{storyDetailList.story_visitor_count}} {{languageData.label.views}}</span>
 								</div>
 							</div>
-							<b-row class="thumb-slider">
+							<b-row class="thumb-slider" v-if="storyDetailList.storyMedia && storyDetailList.storyMedia.length > 0">
 								<b-col xl="10" class="left-col">
-									<div class="gallery-top default-img">
+									<div class="gallery-top" 
+										v-bind:class="{
+											'gallery-top' : true,
+											'default-img': storyDetailList.storyMedia[0].type != 'video',
+											'default-video': storyDetailList.storyMedia[0].type == 'video'
+										}">
 										<div class="img-wrap inner-gallery-block">
-											<img :src="$store.state.imagePath+'/assets/images/gallery-img03.jpg'" />
+											<img :src="storyDetailList.storyMedia[0].path" />
 										</div>
 										<div class="video-wrap inner-gallery-block">
 											<iframe id="video" width="560" height="315"
-												src="https://www.youtube.com/embed/YE7VzlLtp-4" frameborder="0"
+												:src="getEmbededPath(storyDetailList.storyMedia[0])" frameborder="0"
 												allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
 												allowfullscreen></iframe>
 										</div>
 									</div>
 								</b-col>
-								<b-col xl="2" class="right-col">
+								<b-col xl="2" class="right-col" >
 									<slick ref="slick" :options="slickOptions" class="gallery-thumbs">
-										<div class="img-block thumbs-col">
-											<img :src="$store.state.imagePath+'/assets/images/gallery-img01.jpg'" />
-										</div>
-										<div class="img-block thumbs-col">
-											<img :src="$store.state.imagePath+'/assets/images/gallery-img02.jpg'" />
-										</div>
-										<div class="img-block thumbs-col">
-											<img :src="$store.state.imagePath+'/assets/images/gallery-img03.jpg'" />
-										</div>
-										<div class="img-block thumbs-col">
-											<img :src="$store.state.imagePath+'/assets/images/gallery-img04.jpg'" />
-										</div>
-										<div class="img-block thumbs-col">
-											<img :src="$store.state.imagePath+'/assets/images/gallery-img05.jpg'" />
-										</div>
-										<div class="video-block thumbs-col">
-											<img src="http://i3.ytimg.com/vi/YE7VzlLtp-4/hqdefault.jpg"
-												data-src="https://www.youtube.com/embed/YE7VzlLtp-4"
-												class="video-item" />
-											<i class="btn-play"></i>
-										</div>
+										<!-- <div v-for="(media , v) in storyDetailList.storyMedia" :key="v">	 -->
+											<div 
+											 v-for="(media , v) in storyDetailList.storyMedia" :key="v"
+												v-bind:class="{
+													'img-block': media.type != 'video',
+												'video-block': media.type == 'video',
+												'thumbs-col': true
+												}"
+											>
+												<img :src="getMediaPath(media)" :data-src="getEmbededPath(media)"
+												v-bind:class="{'video-item': media.type == 'video'}"
+												/>
+												<i v-if="media.type == 'video'" class="btn-play"></i>
+											</div>		
+										<!-- </div>	 -->
 									</slick>
+								</b-col>
+							</b-row>
+							<b-row class="thumb-slider" v-else>
+								<b-col xl="10" class="left-col">
+									<div class="gallery-top" 
+										v-bind:class="{
+											'gallery-top' : true,
+											'default-img': true
+										
+										}">
+										<div class="img-wrap inner-gallery-block">
+											<img :src="getDefaultImage()" />
+										</div>
+									</div>
 								</b-col>
 							</b-row>
 						</b-col>
@@ -62,57 +75,23 @@
 							<div class="profile-box">
 								<div class="user-profile">
 									<i class="user-profile-icon"
-										:style="{backgroundImage: 'url(' + profileImg[0] + ')'}"></i>
-									<h4>Charles Vigue</h4>
-									<p>New York, USA</p>
+										:style="{backgroundImage: 'url(' + storyDetailList.avatar + ')'}"></i>
+									<h4>{{storyDetailList.first_name}}  {{storyDetailList.last_name}}</h4>
+									<p>{{storyDetailList.city['name']}}, {{storyDetailList.country['name']}}</p>
 								</div>
-								<div class="profile-content">
-									<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-										incididunt ut labore et dolore magna aliqua.</p>
-									<p>Ut enim ad minim veniam. Sed ut perspiciatis unde omnis iste natus error sit
-										voluptatem accusantium doloremque laudantium.</p>
-									<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-										incididunt ut labore et dolore magna aliqua.</p>
+								<div class="profile-content" v-if="storyDetailList.why_i_volunteer != ''">
+									{{storyDetailList.why_i_volunteer}}
 								</div>
 							</div>
 						</b-col>
 					</b-row>
 				</div>
 				<div class="story-content-wrap">
-					<div class="story-content cms-content">
-						<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
-							labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
-							laboris nisi ut aliquip ex ea commodo consequat.</p>
-						<p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-							pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt
-							mollit anim id est laborum.</p>
-						<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
-							labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
-							laboris nisi ut aliquip ex ea commodo consequat.Duis aute irure dolor in reprehenderit in
-							voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat
-							cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-						<p class="list-title">We use these technologies for a number of purposes, such as:</p>
-						<b-list-group>
-							<b-list-group-item>But I must explain to you how all this mistaken idea of denouncing
-								pleasure and praising pain.</b-list-group-item>
-							<b-list-group-item>At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis
-								praesentium voluptatum deleniti atque excepturi sint occaecati cupiditate non provident,
-								similique sunt in culpa qui officia deserunt mollitia animi.</b-list-group-item>
-							<b-list-group-item>On the other hand, we denounce with righteous indignation and dislike men
-								who are so beguiled and demoralized</b-list-group-item>
-							<b-list-group-item>But I must explain to you how all this mistaken idea of denouncing
-								pleasure and praising pain.</b-list-group-item>
-							<b-list-group-item>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-								tempor incididunt ut labore et dolore</b-list-group-item>
-						</b-list-group>
-						<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
-							labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
-							laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in
-							voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat
-							cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+					<div class="story-content cms-content" v-html="storyDetailList.description">
+						
 					</div>
 					<div class="btn-wrap group-btns">
-						<b-button class="btn-borderprimary icon-btn">
+						<b-button class="btn-borderprimary icon-btn" @click="searchUsers">
 							<i>
 								<svg height="512pt" viewBox="0 0 512 512" width="512pt"
 									xmlns="http://www.w3.org/2000/svg">
@@ -120,10 +99,10 @@
 										d="m512 428h-84v84h-40v-84h-84v-40h84v-84h40v84h84zm-212.695312-204.5625c1.757812 7.910156 2.695312 16.128906 2.695312 24.5625 0 34.550781-15.59375 65.527344-40.105469 86.269531.699219.277344 1.40625.546875 2.105469.832031v44.199219c-21.414062-11.667969-45.945312-18.300781-72-18.300781v-.039062c-.332031.007812-.667969.007812-1 .015624v.023438c-83.261719 0-151 67.738281-151 151h-40c0-79.371094 48.671875-147.582031 117.730469-176.378906-25.449219-20.734375-41.730469-52.3125-41.730469-87.621094 0-62.308594 50.691406-113 113-113 7.40625 0 14.644531.722656 21.65625 2.089844-1.734375-7.84375-2.65625-15.988282-2.65625-24.34375 0-62.167969 50.578125-112.746094 112.746094-112.746094 62.167968 0 112.746094 50.578125 112.746094 112.746094 0 34.894531-15.9375 66.136718-40.910157 86.832031 33.011719 13.109375 61.464844 35.117187 82.304688 63.421875h-53.847657c-24.847656-22.023438-56.976562-36-92.273437-37.796875-2.652344.1875-5.324219.289063-8.019531.289063-7.332032 0-14.5-.710938-21.441406-2.054688zm-51.304688-110.691406c0 40.113281 32.632812 72.746094 72.746094 72.746094 40.109375 0 72.746094-32.632813 72.746094-72.746094 0-40.113282-32.636719-72.746094-72.746094-72.746094-40.113282 0-72.746094 32.632812-72.746094 72.746094zm14 135.253906c0-40.253906-32.746094-73-73-73s-73 32.746094-73 73 32.746094 73 73 73 73-32.746094 73-73zm0 0" />
 								</svg>
 							</i>
-							<span>{{langauageData.label.recommend_to_co_worker}}</span>
+							<span>{{languageData.label.recommend_to_co_worker}}</span>
 						</b-button>
-						<b-button class="btn-bordersecondary icon-btn">
-							<span>{{langauageData.label.open_mission}}</span>
+						<b-link :to="{ path: '/mission-detail/'+storyDetailList.mission_id}" v-if="storyDetailList.mission_id != ''" class="btn-bordersecondary icon-btn btn">
+							<span>{{languageData.label.open_mission}}</span>
 							<i>
 								<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 16" width="19" height="15">
 									<g id="Main Content">
@@ -136,9 +115,44 @@
 									</g>
 								</svg>
 							</i>
-						</b-button>
+						</b-link>
 					</div>
 				</div>
+				<b-modal ref="userDetailModal" modal-class="userdetail-modal" hide-footer size="lg">
+				<template slot="modal-header" slot-scope="{ close }">
+					<i class="close" @click="close()" v-b-tooltip.hover :title="languageData.label.close"></i>
+					<h5 class="modal-title">{{languageData.label.search_user}}</h5>
+				</template>
+				<b-alert show :variant="classVariant" dismissible v-model="showErrorDiv">
+					{{ message }}
+				</b-alert>
+				<div class="autocomplete-control">
+					<div class="autosuggest-container">
+						<VueAutosuggest ref="autosuggest" name="user" v-model="query" :suggestions="filteredOptions"
+							@input="onInputChange" @selected="onSelected" :get-suggestion-value="getSuggestionValue"
+							:input-props="{
+								id:'autosuggest__input', 
+								placeholder:autoSuggestPlaceholder,
+	                        }">
+							<div slot-scope="{suggestion}">
+								<img :src="suggestion.item.avatar" />
+								<div>
+									{{suggestion.item.first_name}} {{suggestion.item.last_name}}
+								</div>
+							</div>
+						</VueAutosuggest>
+					</div>
+				</div>
+				<b-form>
+					<div class="btn-wrap">
+						<b-button @click="$refs.userDetailModal.hide()" class="btn-borderprimary">
+							{{ languageData.label.close }}</b-button>
+						<b-button class="btn-bordersecondary" @click="inviteColleagues" ref="autosuggestSubmit"
+							v-bind:disabled="submitDisable">
+							{{ languageData.label.submit }}</b-button>
+					</div>
+				</b-form>
+			</b-modal>
 			</b-container>
 		</main>
 		<footer>
@@ -150,19 +164,34 @@
 	import Slick from "vue-slick";
 	import store from '../store';
 	import constants from '../constant';
-
+	import {
+		storyDetail,
+		searchUser
+	} from "../services/service";
+	import {
+		VueAutosuggest
+	} from 'vue-autosuggest';
 	export default {
 		components: {
 			ThePrimaryHeader : () => import("../components/Layouts/ThePrimaryHeader"),
 			TheSecondaryFooter: () => import("../components/Layouts/TheSecondaryFooter"),
-			Slick
+			Slick,
+			VueAutosuggest
 		},
 		data() {
 			return {
-				profileImg: [
-					require("@/assets/images/volunteer2.png"),
-					require("@/assets/images/volunteer3.png")
-				],
+				storyId : this.$route.params.storyId,
+				isStoryDisplay : true,
+				languageData : [],
+				sliderToShow : false,
+				showErrorDiv: false,
+				message: null,
+				classVariant: "success",
+				autoSuggestPlaceholder: '',
+				submitDisable: true,
+				query :"",
+				selected :"",
+				currentStory : '',
 				slickOptions: {
 					autoplay: false,
 					arrows: true,
@@ -178,9 +207,6 @@
 					vertical: true,
 					useTransform: true,
 					adaptiveHeight: true,
-					langauageData : [],
-					isStoryDisplay : true,
-					// verticalSwiping: true
 					responsive: [{
 							breakpoint: 1200,
 							settings: {
@@ -196,13 +222,31 @@
 						}
 					]
 					// Any other options that can be got from plugin documentation
-				}
+				},
+				storyDetailList:[],
+				userList:[]
 			};
 		},
 		mounted() {},
-		computed: {},
+		computed: {
+			filteredOptions() {
+				if (this.userList) {
+					return [{
+						data: this.userList.filter(option => {
+							let firstName = option.first_name.toLowerCase();
+							let lastName = option.last_name.toLowerCase();
+							let email = option.email.toLowerCase();
+							let searchString = firstName + '' + lastName + '' + email;
+							return searchString.indexOf(this.query.toLowerCase()) > -1;
+						})
+					}];
+				}
+			}
+		},
 		methods: {
+			inviteColleagues() {},
 			handleSliderClick(event) {
+				console.log(event.target.classList);
 				event.stopPropagation();
 				var hideVideo = document.querySelector(".video-wrap");
 				var galleryImg = document.querySelector(".gallery-top .img-wrap");
@@ -213,7 +257,7 @@
 					videoSrc.src = dataSrc;
 					hideVideo.style.display = "block";
 					galleryImg.style.display = "none";
-				} else if (event.target.classList.contains("btn-play")) {
+				} else if (event.target.classList.contains("btn-play")) {console.log(2);
 					var parentBtn = event.target.parentNode;
 					var siblingBtn = parentBtn.childNodes;
 					hideVideo.style.display = "block";
@@ -224,37 +268,113 @@
 					galleryImg.style.display = "block";
 					hideVideo.style.display = "none";
 				}
+			},
+
+			getMediaPath(media) {
+				if (media.type == 'video') {
+					let videoPath = media.path;
+					let videoId = '';
+					let regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+					let match = videoPath.match(regExp);
+
+					if (match && match[2].length == 11) {
+						videoId = match[2];
+					}
+					return "https://img.youtube.com/vi/" + videoId + "/mqdefault.jpg";
+				} else {
+					return media.path;
+				}
+			},
+
+			
+
+			getEmbededPath(media) {
+				if (media.type == 'video') {
+					let videoPath = media.path;
+					let videoId = '';
+					let regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+					let match = videoPath.match(regExp);
+
+					if (match && match[2].length == 11) {
+						videoId = match[2];
+					}
+
+					return "https://www.youtube.com/embed/" + videoId;
+				} else {
+					return media.path;
+				}
+			},
+			
+			getStoryDetail() {
+				storyDetail(this.storyId).then(response => {
+					if(response.error == false) {
+						this.storyDetailList = response.data
+						this.isContentLoaded = true
+						setTimeout(() => {
+							this.sliderToShow = true
+						},200)
+						// console.log(this.storyDetailList.city.name);
+					} else {
+						this.$router.push('/404');
+					}
+				})
+			},
+			searchUsers() {
+				searchUser().then(userResponse => {
+					this.userList = userResponse;
+					this.autoSuggestPlaceholder = this.languageData.label.search_user
+					this.showErrorDiv = false;
+					this.message = null;
+					this.$refs.userDetailModal.show();
+					this.currentStory = 1;
+				});
+			},
+			onInputChange() {
+				this.submitDisable = true;
+			},
+			// For selected user id.
+			onSelected(item) {
+				this.selected = item.item;
+				this.submitDisable = false;
+				this.invitedUserId = item.item.user_id;
+			},
+			//This is what the <input/> value is set to when you are selecting a suggestion.
+			getSuggestionValue(suggestion) {
+				let firstName = suggestion.item.first_name;
+				let lastName = suggestion.item.last_name;
+				return firstName + ' ' + lastName;
+			},
+			getDefaultImage() {
+				return store.state.imagePath+'/assets/images/'+constants.MISSION_DEFAULT_PLACEHOLDER;
 			}
 		},
 		created() {
-			var globalThis = this;
-			this.langauageData = JSON.parse(store.state.languageLabel);
+			this.languageData = JSON.parse(store.state.languageLabel);
 			this.isStoryDisplay = this.settingEnabled(constants.STORIES_ENABLED);
 			if(!this.isStoryDisplay) {
 				this.$router.push('/home')
 			}
-
+			this.getStoryDetail();
 			setTimeout(() => {
 				var thumbImg = document.querySelectorAll(
 					".gallery-thumbs .slick-slide img, .gallery-thumbs .slick-slide .btn-play"
 				);
-				thumbImg.forEach(function (itemEvent) {
-					itemEvent.removeEventListener("click", globalThis.handleSliderClick);
-					itemEvent.addEventListener("click", globalThis.handleSliderClick);
+				thumbImg.forEach((itemEvent) => {
+					itemEvent.removeEventListener("click", this.handleSliderClick);
+					itemEvent.addEventListener("click", this.handleSliderClick);
 				});
-			});
-			window.addEventListener("resize", function () {
+			},3000);
+			window.addEventListener("resize", () => {
 				setTimeout(() => {
 					var thumbImg = document.querySelectorAll(
 						".gallery-thumbs .slick-slide img, .gallery-thumbs .slick-slide .btn-play"
 					);
-					thumbImg.forEach(function (itemEvent) {
-						itemEvent.removeEventListener("click", globalThis.handleSliderClick);
-						itemEvent.addEventListener("click", globalThis.handleSliderClick);
+					thumbImg.forEach((itemEvent) => {
+						itemEvent.removeEventListener("click", this.handleSliderClick);
+						itemEvent.addEventListener("click", this.handleSliderClick);
 					});
 				}, 2000);
 			});
-		},
-		updated() {}
+		}
 	};
 </script>

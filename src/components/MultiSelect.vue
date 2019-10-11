@@ -2,14 +2,14 @@
     <div>
         <div class="skillset-wrap">
             <b-button class="btn-borderprimary add-skill-btn" @click="showSkillModal">
-                {{langauageData.label.add_skills}}
+                {{languageData.label.add_skills}}
             </b-button>
             <b-modal centered ref="skillModal" :modal-class="myclass" hide-footer @hidden="hideModal">
                 <template slot="modal-header" slot-scope="{ close }">
-                    <i class="close" @click="close()" v-b-tooltip.hover :title="langauageData.label.close"></i>
-                    <h5 class="modal-title">{{langauageData.label.add_your_skills}}</h5>
+                    <i class="close" @click="close()" v-b-tooltip.hover :title="languageData.label.close"></i>
+                    <h5 class="modal-title">{{languageData.label.add_your_skills}}</h5>
                 </template>
-                <b-alert show variant="danger" dismissible v-model="showErrorDiv">
+                <b-alert show letiant="danger" dismissible v-model="showErrorDiv">
                     {{ message }}
                 </b-alert>
                 <div class="multiselect-options">
@@ -20,7 +20,7 @@
                                 <span>{{fromitem.name}}</span>
                                 <b-button @click="addToList(fromitem.id)">
                                     <img :src="$store.state.imagePath+'/assets/images/plus-ic.svg'"
-                                        :title="langauageData.label.add" alt="plus icon sss" />
+                                        :title="languageData.label.add" alt="plus icon sss" />
                                 </b-button>
                             </li>
                         </ul>
@@ -31,15 +31,15 @@
                                 <span>{{toitem.name}}</span>
                                 <b-button @click="removeFromToList(toitem.id)">
                                     <img :src="$store.state.imagePath+'/assets/images/cross-ic.svg'"
-                                        :title="langauageData.label.remove" alt="cross icon" />
+                                        :title="languageData.label.remove" alt="cross icon" />
                                 </b-button>
                             </li>
                         </ul>
                     </div>
                 </div>
                 <div class="btn-wrap">
-                    <b-button @click="resetSkill" class="btn-borderprimary">{{langauageData.label.cancel}}</b-button>
-                    <b-button @click="saveSkill" class="btn-bordersecondary">{{langauageData.label.save}}</b-button>
+                    <b-button @click="resetSkill" class="btn-borderprimary">{{languageData.label.cancel}}</b-button>
+                    <b-button @click="saveSkill" class="btn-bordersecondary">{{languageData.label.save}}</b-button>
                 </div>
             </b-modal>
 
@@ -47,9 +47,6 @@
     </div>
 </template>
 <script>
-    import {
-        setTimeout
-    } from "timers";
     import store from "../store";
 
     export default {
@@ -60,7 +57,7 @@
         },
         data() {
             return {
-                langauageData: [],
+                languageData: [],
                 selectedListIndexs: [],
                 updated: false,
                 selectList: [],
@@ -72,22 +69,19 @@
                 dataToList: this.toList
             };
         },
-        mounted() {
-            var a = this.$refs.skillModal;
-        },
+
         methods: {
             handleclick() {
-                var fromlist_group = document.querySelectorAll(".fromlist-group li");
-                for (var i = 0; i < fromlist_group.length; ++i) {
-                    fromlist_group[i].addEventListener("click", this.handleSelected);
+                let fromListGroup = document.querySelectorAll(".fromlist-group li");
+                for (let i = 0; i < fromListGroup.length; ++i) {
+                    fromListGroup[i].addEventListener("click", this.handleSelected);
                 }
             },
             showSkillModal: function () {
-                var _this = this
-                var filteredObj = this.toList.filter(function (toItem, toIndex) {
-                    var filteredObj = _this.fromList.filter(function (fromItem, fromIndex) {
+                this.toList.filter((toItem) => {
+                    this.fromList.filter( (fromItem, fromIndex) => {
                         if (toItem.id == fromItem.id) {
-                            _this.fromList.splice(fromIndex, 1);
+                            this.fromList.splice(fromIndex, 1);
                         }
                     });
                 });
@@ -110,11 +104,10 @@
             // Add to list
             addToList(id) {
                 this.closeClick = true;
-                var _this = this;
                 if (this.toList.length <= 14) {
-                    var filteredObj = this.fromList.filter(function (item, i) {
+                    let filteredObj = this.fromList.filter( (item, i) => {
                         if (item.id == id) {
-                            _this.fromList.splice(i, 1);
+                            this.fromList.splice(i, 1);
                             return item;
                         }
                     });
@@ -122,21 +115,18 @@
                     this.showErrorDiv = false
                 } else {
                     this.showErrorDiv = true,
-                        this.message = this.langauageData.errors.max_skill_selection
+                    this.message = this.languageData.errors.max_skill_selection
                 }
             },
-
             // Remove data from to list 
             removeFromToList(id) {
                 this.closeClick = true;
-                var _this = this;
-                var filteredObj = this.toList.filter(function (item, i) {
+                let filteredObj = this.toList.filter( (item, i) => {
                     if (item.id == id) {
-                        _this.toList.splice(i, 1);
+                        this.toList.splice(i, 1);
                         return item;
                     }
                 });
-                // this.fromList
                 this.fromList.push(filteredObj[0])
                 this.fromList.sort();
                 this.fromList.sort(function (first, next) {
@@ -154,9 +144,6 @@
                     this.dataToList = [];
                     this.$emit("resetData");
                 }
-                // this.fromList = [];
-                // this.toList = [],
-                // this.$emit("resetData");
                 this.closeClick = false;
             },
             saveSkill() {
@@ -168,14 +155,8 @@
                 this.closeClick = false;
             }
         },
-
-        updated() {},
-        watch: {
-
-        },
         created() {
-            this.langauageData = JSON.parse(store.state.languageLabel);
-
+            this.languageData = JSON.parse(store.state.languageLabel);
         }
     };
 </script>

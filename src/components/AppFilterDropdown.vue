@@ -9,14 +9,15 @@
 		<div class="option-list-wrap dropdown-option-wrap" data-simplebar
 			v-if="optionList != null && optionList.length > 0">
 			<ul class="option-list dropdown-option-list" v-if="translationEnable == 'false'">
-				<li class="has-count" v-for="item in optionList" v-bind:data-id="item[1].id" @click="handleSelect">
+				<li class="has-count" v-for="(item,index) in optionList" v-bind:data-id="item[1].id" :key="index"
+					@click="handleSelect">
 					{{item[1].title}}
 					<span class="counter">{{item[1].mission_count}}</span>
 				</li>
 			</ul>
 			<ul class="option-list dropdown-option-list" v-else>
-				<li v-for="item in optionList" v-bind:data-id="item[0]" @click="handleSelect">
-					{{`${langauageData}.label.${item[1]}`}}</li>
+				<li v-for="(item,index) in optionList" v-bind:data-id="item[0]" :key="index" @click="handleSelect">
+					{{`${languageData}.label.${item[1]}`}}</li>
 			</ul>
 		</div>
 	</div>
@@ -35,13 +36,13 @@
 		data() {
 			return {
 				defaultTextVal: this.defaultText,
-				langauageData: [],
+				languageData: [],
 			};
 		},
 		mounted() {},
 		methods: {
 			handleSelect(e) {
-				var selectedData = []
+				let selectedData = []
 				selectedData['selectedVal'] = e.target.innerHTML
 				selectedData['selectedId'] = e.target.dataset.id;
 				this.$emit("updateCall", selectedData);
@@ -49,50 +50,61 @@
 
 			handleClick(e) {
 				e.stopPropagation();
-				var profile_toggle = document.querySelector(
+				let profileToggle = document.querySelector(
 					".profile-menu .dropdown-toggle"
 				);
-				var profile_menu = document.querySelector(".profile-menu");
+				let profile_menu = document.querySelector(".profile-menu");
 				if (profile_menu != null) {
 					if (profile_menu.classList.contains("show")) {
-						profile_toggle.click();
+						profileToggle.click();
 					}
 				}
-				var notification_btn = document.querySelector(
+				let notificationBtn = document.querySelector(
 					".notification-menu .nav-link .btn-notification"
 				);
-				var notification_popover = document.querySelector(
+				let notificationPopover = document.querySelector(
 					".notification-popover"
 				);
-				if (notification_popover != null) {
-					notification_btn.click();
+				if (notificationPopover != null) {
+					notificationBtn.click();
 				}
 
 				e.target.parentNode.classList.toggle("dropdown-open");
-				var dropdownList = document.querySelectorAll(".dropdown-open");
-				for (var i = 0; i < dropdownList.length; ++i) {
+				let dropdownList = document.querySelectorAll(".dropdown-open");
+				for (let i = 0; i < dropdownList.length; ++i) {
 					if (dropdownList[i] != e.target.parentNode) {
 						dropdownList[i].classList.remove("dropdown-open");
 					}
 				}
-				var simplebarOffset = e.target.parentNode.querySelector(".simplebar-offset");
+				let simplebarOffset = e.target.parentNode.querySelector(".simplebar-offset");
 				if (simplebarOffset != null && window.innerWidth > 1024) {
-					var simplebarOffset_width = parseInt(window.getComputedStyle(simplebarOffset).getPropertyValue(
+					let simplebarOffset_width = parseInt(window.getComputedStyle(simplebarOffset).getPropertyValue(
 						"width"));
-					var simplebarWrapper = simplebarOffset.parentNode.parentNode;
+					let simplebarWrapper = simplebarOffset.parentNode.parentNode;
 					simplebarWrapper.style.width = simplebarOffset_width + "px";
 
-					var dropdown_list = e.target.parentNode;
-					var dropdown_list_width = parseInt(window.getComputedStyle(dropdown_list).getPropertyValue("width"));
-					var optionlist_wrap = dropdown_list.querySelector(".dropdown-option-wrap");
-					var optionlist = optionlist_wrap.querySelector(".dropdown-option-list");
+					let dropdownList = e.target.parentNode;
+					let dropdownListWidth = parseInt(window.getComputedStyle(dropdownList).getPropertyValue("width"));
+					let optionlistWrap = dropdownList.querySelector(".dropdown-option-wrap");
+					let optionlist = optionlistWrap.querySelector(".dropdown-option-list");
 					if (optionlist != null) {
-						var optionlist_width = parseInt(window.getComputedStyle(optionlist).getPropertyValue("width"));
-						var minwidth_style = dropdown_list.querySelector(".simplebar-offset");
-						if (dropdown_list_width > optionlist_width) {
-							minwidth_style.setAttribute("style", "left: 0 !important");
+						let optionlistWidth = parseInt(window.getComputedStyle(optionlist).getPropertyValue("width"));
+						let minwidthStyle = dropdownList.querySelector(".simplebar-offset");
+						if (dropdownListWidth > optionlistWidth) {
+							minwidthStyle.setAttribute("style", "left: 0 !important");
 						}
 					}
+					setTimeout(() => {
+						let dropdownListChild = dropdownList.childNodes[1];
+						let optionListHeight = parseInt(window.getComputedStyle(optionlist).getPropertyValue(
+							"height"));
+						let dropdownListHeight = parseInt(window.getComputedStyle(dropdownListChild)
+							.getPropertyValue("height"));
+						let minheightStyle = dropdownList.querySelector(".dropdown-option-wrap");
+						if (dropdownListHeight > optionListHeight) {
+							minheightStyle.setAttribute("style", "overflow-x:hidden");
+						}
+					}, 500);
 				}
 			}
 		},
@@ -100,11 +112,11 @@
 			document.removeEventListener("click", this.onClick);
 		},
 		created() {
-			this.langauageData = JSON.parse(store.state.languageLabel);
-			setTimeout(function () {
-				var selectDropdown = document.querySelectorAll('.select-dropdown');
+			this.languageData = JSON.parse(store.state.languageLabel);
+			setTimeout( () => {
+				let selectDropdown = document.querySelectorAll('.select-dropdown');
 				window.addEventListener("resize", function () {
-					for (var i = 0; i < selectDropdown.length; i++) {
+					for (let i = 0; i < selectDropdown.length; i++) {
 						selectDropdown[i].classList.remove('dropdown-open');
 					}
 				});

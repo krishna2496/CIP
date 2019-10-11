@@ -11,11 +11,11 @@
                     </template>
                 </b-table>
                 <div class="text-center" v-else>
-                    <h5>{{headerLable | firstLetterCapital}} {{langauageData.label.not_found}}</h5>
+                    <h5>{{headerLable | firstLetterCapital}} {{languageData.label.not_found}}</h5>
                 </div>
             </div>
             <div class="btn-block" v-if="items.length > 0">
-                <b-button class="btn-bordersecondary ml-auto" @click="exportFile">{{langauageData.label.export}}
+                <b-button class="btn-bordersecondary ml-auto" @click="exportFile">{{languageData.label.export}}
                 </b-button>
             </div>
         </div>
@@ -28,7 +28,6 @@
 
 <script>
     import store from '../store';
-    import moment from 'moment';
     import ExportFile from "../services/ExportFile";
 
     export default {
@@ -48,7 +47,7 @@
         },
         data: function () {
             return {
-                langauageData: [],
+                languageData: [],
                 page: this.currentPage
             }
         },
@@ -65,7 +64,7 @@
             }
         },
         created() {
-            this.langauageData = JSON.parse(store.state.languageLabel)
+            this.languageData = JSON.parse(store.state.languageLabel)
         }
     };
 </script>

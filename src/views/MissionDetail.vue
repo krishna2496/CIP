@@ -5,28 +5,6 @@
 		</header>
 
 		<main>
-			<!-- <social-sharing 
-				v-bind:url="socialSharingUrl"
-				:title="missionDetail.title"
-				:description="missionDetail.short_description"
-				inline-template
-			>
-				<div class="social-sharing">
-					<network network="facebook" v-if="$store.state.isFacebookDisplay">
-						<i class="social-icon facebook-icon">
-							<img :src="$store.state.imagePath+'/assets/images/facebook-ic.svg'" :alt="`${JSON.parse(this.$store.state.languageLabel).label.facebook}`"
-							:title="`${JSON.parse(this.$store.state.languageLabel).label.facebook}`"/>
-						</i>
-					</network>
-					<network network="twitter" v-if="$store.state.isTwitterDisplay">
-						<i class="social-icon twitter-icon">
-							<img :src="$store.state.imagePath+'/assets/images/twitter-ic.svg'" :alt="`${JSON.parse(this.$store.state.languageLabel).label.twitter}`"
-							:title="`${JSON.parse(this.$store.state.languageLabel).label.twitter}`"
-							/>
-						</i>
-					</network>
-				</div>
-			</social-sharing> -->
 			<b-container>
 				<div class="slider-banner-block">
 					<b-row>
@@ -37,8 +15,9 @@
 						<b-col lg="6" class="ml-auto banner-content-wrap">
 							<div class="banner-content-block">
 								<h1>{{missionDetail.title}}</h1>
-								<div class="rating-with-btn" v-if="isStarDisplay">
-									<div class="rating-block">
+								<div
+									v-bind:class="{'rating-with-btn' : true , 'justify-content-end' : !isStarDisplay }">
+									<div class="rating-block" v-if="isStarDisplay">
 										<star-rating v-bind:increment="0.5" v-bind:max-rating="5"
 											inactive-color="#dddddd" active-color="#F7D341" v-bind:star-size="23"
 											:rating="missionDetail.rating" @rating-selected="setRating">
@@ -78,11 +57,11 @@
 												</svg>
 											</i>
 											<span v-if="missionAddedToFavoriteByUser">
-												{{ langauageData.label.remove_from_favourite }}
+												{{ languageData.label.remove_from_favourite }}
 											</span>
 
 											<span v-else>
-												{{ langauageData.label.add_to_favourite }}
+												{{ languageData.label.add_to_favourite }}
 											</span>
 
 										</b-button>
@@ -124,31 +103,19 @@
 										</div>
 									</social-sharing>
 								</div>
-								<!-- <div class="share-block">
-								<div class="social-block">
-									<b-link href="#" class="social-icon">
-										<img src="../assets/images/facebook-ic-gray.svg" class="normal-img" alt="facebook img"/>
-										<img src="../assets/images/facebook-ic-gray-h.svg" class="hover-img" alt="facebook img"/>
-									</b-link>
-									<b-link href="#" class="social-icon">
-										<img src="../assets/images/twitter-ic-gray.svg" class="normal-img" alt="twitter img"/>
-                   						<img src="../assets/images/twitter-ic-gray-h.svg" class="hover-img" alt="twitter img" />
-									</b-link>
-								</div>
-						</div> -->
 								<div class="group-details">
 									<div class="top-strip">
 										<span>
 											<!-- Mission type time -->
 											<template v-if="checkMissionTypeTime(missionDetail.mission_type)">
 												<template v-if="missionDetail.end_date !== null">
-													{{ langauageData.label.from }}
+													{{ languageData.label.from }}
 													{{missionDetail.start_date | formatDate }}
-													{{ langauageData.label.until}}
+													{{ languageData.label.until}}
 													{{ missionDetail.end_date | formatDate }}
 												</template>
 												<template v-else>
-													{{ langauageData.label.on_going_opportunities }}
+													{{ languageData.label.on_going_opportunities }}
 												</template>
 											</template>
 											<!-- Mission type goal -->
@@ -157,7 +124,6 @@
 											</template>
 										</span>
 									</div>
-									<!-- {{missionDetail}} -->
 									<template v-if="checkMissionTypeTime(missionDetail.mission_type)">
 										<div class="group-details-inner">
 											<template
@@ -172,7 +138,7 @@
 														<span
 															class="title-text mb-1">{{missionDetail.seats_left}}</span>
 														<span
-															class="subtitle-text">{{ langauageData.label.seats_left }}</span>
+															class="subtitle-text">{{ languageData.label.seats_left }}</span>
 													</div>
 												</div>
 											</template>
@@ -186,7 +152,7 @@
 														<span
 															class="title-text mb-1">{{missionDetail.mission_application_count}}</span>
 														<span
-															class="subtitle-text">{{ langauageData.label.already_volunteered }}</span>
+															class="subtitle-text">{{ languageData.label.already_volunteered }}</span>
 													</div>
 												</div>
 											</template>
@@ -196,11 +162,34 @@
 														<img :src="$store.state.imagePath+'/assets/images/clock.svg'"
 															alt="user">
 													</i>
-													<div class="text-wrap">
+													<div class="text-wrap"
+														v-if="missionDetail.application_deadline != '' && missionDetail.application_deadline != null">
 														<span
-															class="title-text mb-1">{{missionDetail.application_deadline | formatDate}}</span>
-														<span
-															class="subtitle-text">{{ langauageData.label.deadline }}</span>
+															class="title-text mb-1">{{missionDetail.application_deadline | formatDate}}
+														</span>
+														<span class="subtitle-text">{{ languageData.label.deadline }}
+														</span>
+													</div>
+													<div v-else>
+														<span class="title-text mb-1"
+															v-if="missionDetail.application_start_date != '' && missionDetail.application_start_date != null && missionDetail.application_end_date != '' && missionDetail.application_end_date != null">
+															<span
+																v-if="missionDetail.application_start_date != '' && missionDetail.application_start_date != null">
+																{{ languageData.label.from }}
+																{{missionDetail.application_start_date | formatDate}}
+																{{missionDetail.application_start_time | formatTime}}
+															</span>
+															<span
+																v-if="missionDetail.application_end_date != '' && missionDetail.application_end_date != null">
+																{{ languageData.label.until }}
+																{{missionDetail.application_end_date | formatDate}}
+																{{missionDetail.application_end_time | formatTime}}
+															</span>
+														</span>
+														<span class="subtitle-text"
+															v-if="missionDetail.application_start_date != '' && missionDetail.application_start_date != null && missionDetail.application_end_date != '' && missionDetail.application_end_date != null">
+															<p>{{ languageData.label.deadline }}</p>
+														</span>
 													</div>
 												</div>
 											</template>
@@ -219,7 +208,7 @@
 														<span
 															class="title-text mb-1">{{missionDetail.seats_left}}</span>
 														<span
-															class="subtitle-text">{{ langauageData.label.seats_left }}</span>
+															class="subtitle-text">{{ languageData.label.seats_left }}</span>
 													</div>
 												</template>
 												<template v-else>
@@ -231,7 +220,7 @@
 														<span
 															class="title-text mb-1">{{missionDetail.mission_application_count}}</span>
 														<span
-															class="subtitle-text">{{ langauageData.label.already_volunteered }}</span>
+															class="subtitle-text">{{ languageData.label.already_volunteered }}</span>
 													</div>
 												</template>
 											</div>
@@ -244,7 +233,7 @@
 													<b-progress :value="missionDetail.achieved_goal"
 														:max="missionDetail.goal_objective" class="mb-2"></b-progress>
 													<span class="subtitle-text">{{missionDetail.achieved_goal}}
-														{{ langauageData.label.achieved}}</span>
+														{{ languageData.label.achieved}}</span>
 												</div>
 											</div>
 										</div>
@@ -254,35 +243,37 @@
 									<b-list-group-item>
 										<div>
 											<i class="img-wrap">
-												<img src="../assets/images/location-black.svg" alt="" />
+												<img :src="$store.state.imagePath+'/assets/images/location-black.svg'"
+													alt="" />
 											</i>
-											<span class="label">{{ langauageData.label.city}}</span>
+											<span class="label">{{ languageData.label.city}}</span>
 											<p class="text-wrap">{{missionDetail.city_name}}</p>
 										</div>
 									</b-list-group-item>
 									<b-list-group-item v-if="isThemeDisplay">
 										<div>
 											<i class="img-wrap">
-												<img src="../assets/images/earth-ic.svg" alt="" />
+												<img :src="$store.state.imagePath+'/assets/images/earth-ic.svg'"
+													alt="" />
 											</i>
-											<span class="label">{{ langauageData.label.theme}}</span>
+											<span class="label">{{ languageData.label.theme}}</span>
 											<p class="text-wrap">{{getThemeTitle(missionDetail.mission_theme)}}</p>
 										</div>
 									</b-list-group-item>
 									<b-list-group-item>
+
 										<div>
 											<i class="img-wrap">
-												<img src="../assets/images/calendar.svg" alt="" />
+												<img :src="$store.state.imagePath+'/assets/images/calendar.svg'"
+													alt="" />
 											</i>
-											<span class="label">{{ langauageData.label.date}}</span>
+											<span class="label">{{ languageData.label.date}}</span>
 											<template
-												v-if="missionDetail.application_deadline && missionDetail.application_deadline != null">
-												<p class="text-wrap">{{missionDetail.application_deadline | formatDate}}
-												</p>
+												v-if="missionDetail.start_date != '' && missionDetail.start_date != null && missionDetail.end_date != '' && missionDetail.end_date != null">
+												<p class="text-wrap">{{missionDetail.start_date | formatDate}}</p>
 											</template>
 											<template v-else>
-												<p class="text-wrap">{{ langauageData.label.on_going_opportunities }}
-												</p>
+												<p class="text-wrap">{{ languageData.label.on_going_opportunities }}</p>
 											</template>
 
 										</div>
@@ -290,9 +281,10 @@
 									<b-list-group-item>
 										<div>
 											<i class="img-wrap">
-												<img src="../assets/images/group-ic.svg" alt="" />
+												<img :src="$store.state.imagePath+'/assets/images/group-ic.svg'"
+													alt="" />
 											</i>
-											<span class="label">{{ langauageData.label.organisation}}</span>
+											<span class="label">{{ languageData.label.organisation}}</span>
 											<p class="text-wrap">{{missionDetail.organisation_name}}</p>
 										</div>
 									</b-list-group-item>
@@ -307,12 +299,12 @@
 													d="m512 428h-84v84h-40v-84h-84v-40h84v-84h40v84h84zm-212.695312-204.5625c1.757812 7.910156 2.695312 16.128906 2.695312 24.5625 0 34.550781-15.59375 65.527344-40.105469 86.269531.699219.277344 1.40625.546875 2.105469.832031v44.199219c-21.414062-11.667969-45.945312-18.300781-72-18.300781v-.039062c-.332031.007812-.667969.007812-1 .015624v.023438c-83.261719 0-151 67.738281-151 151h-40c0-79.371094 48.671875-147.582031 117.730469-176.378906-25.449219-20.734375-41.730469-52.3125-41.730469-87.621094 0-62.308594 50.691406-113 113-113 7.40625 0 14.644531.722656 21.65625 2.089844-1.734375-7.84375-2.65625-15.988282-2.65625-24.34375 0-62.167969 50.578125-112.746094 112.746094-112.746094 62.167968 0 112.746094 50.578125 112.746094 112.746094 0 34.894531-15.9375 66.136718-40.910157 86.832031 33.011719 13.109375 61.464844 35.117187 82.304688 63.421875h-53.847657c-24.847656-22.023438-56.976562-36-92.273437-37.796875-2.652344.1875-5.324219.289063-8.019531.289063-7.332032 0-14.5-.710938-21.441406-2.054688zm-51.304688-110.691406c0 40.113281 32.632812 72.746094 72.746094 72.746094 40.109375 0 72.746094-32.632813 72.746094-72.746094 0-40.113282-32.636719-72.746094-72.746094-72.746094-40.113282 0-72.746094 32.632812-72.746094 72.746094zm14 135.253906c0-40.253906-32.746094-73-73-73s-73 32.746094-73 73 32.746094 73 73 73 73-32.746094 73-73zm0 0" />
 											</svg>
 										</i>
-										<span>{{ langauageData.label.recommend_to_co_worker }}</span>
+										<span>{{ languageData.label.recommend_to_co_worker }}</span>
 									</b-button>
 									<b-button class="btn-bordersecondary icon-btn" v-if="missionDetail.user_application_status == 'AUTOMATICALLY_APPROVED' ||
 									missionDetail.user_application_status == 'PENDING'" :disabled="true">
 										<span>
-											{{ langauageData.label.applied }}
+											{{ languageData.label.applied }}
 										</span>
 										<i>
 											<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 16" width="19"
@@ -360,19 +352,19 @@
 							<div class="platform-details-tab tabs">
 								<ul class="nav-tabs nav">
 									<li><a href="javascript:void(0)" data-id="mission" class="tablinks active">
-											{{ langauageData.label.mission }}</a></li>
+											{{ languageData.label.mission }}</a></li>
 									<li><a href="javascript:void(0)" data-id="organization" class="tablinks">
-											{{ langauageData.label.organisation }}</a></li>
+											{{ languageData.label.organisation }}</a></li>
 
 									<li @click="missionComments"><a href="javascript:void(0)" data-id="comments"
-											class="tablinks" v-if="isCommentDisplay">{{ langauageData.label.comments }}
+											class="tablinks" v-if="isCommentDisplay">{{ languageData.label.comments }}
 										</a></li>
 								</ul>
 
 								<div class="tab-content-wrap">
 									<div class="tabs">
 										<div class="tab-title">
-											<h3 v-b-toggle.mission>{{ langauageData.label.mission }}</h3>
+											<h3 v-b-toggle.mission>{{ languageData.label.mission }}</h3>
 										</div>
 										<b-collapse id="mission" visible accordion="my-accordion" role="tabpanel"
 											class="tab-content">
@@ -382,46 +374,47 @@
 												<div class="col-sm-4 mission-tab-col" v-if="isMissionGoalDisplay">
 													<div class="mission-tab-inner">
 														<p v-if="missionDetail.goal_objective">
-															{{missionDetail.goal_objective}}<span>Trees</span></p>
-														<p else>
-															0<span>Trees</span>
+															{{missionDetail.goal_objective}}<span>
+																{{languageData.label.goal_objective }}
+															</span></p>
+														<p v-else>
+															0<span>{{ languageData.label.goal_objective }}</span>
 														</p>
 													</div>
 												</div>
 												<div class="col-sm-4 mission-tab-col" v-if="isCurrentStatusDisplay">
 													<div class="mission-tab-inner">
 														<p v-if="missionDetail.achieved_goal">
-															{{missionDetail.achieved_goal}} <span>Planted</span>
+															{{missionDetail.achieved_goal}}
+															<span>{{ languageData.label.achieved }}</span>
 														</p>
-														<p else>
-															0<span>Planted</span>
+														<p v-else>
+															0<span>{{ languageData.label.achieved }}</span>
 														</p>
 													</div>
 												</div>
 												<div class="col-sm-4 mission-tab-col" v-if="isRemainingGoalDisplay">
 													<div class="mission-tab-inner">
 														<p>{{pendingGoal(missionDetail)}}<span>
-																{{langauageData.label.remaining}}
+																{{languageData.label.remaining}}
 															</span></p>
 													</div>
 												</div>
 											</div>
 											<div
 												v-if="missionDetail.description && missionDetail.description.length > 0">
-												<div v-for="section in missionDetail.description">
+												<div v-for="(section, index) in missionDetail.description" :key=index>
 													<h2>{{section.title}}</h2>
 													<p>{{section.description}}</p>
 												</div>
 											</div>
-											<div v-if="missionDetail.mission_document 
-									&& missionDetail.mission_document.length > 0">
-												<h2>{{ langauageData.label.documents }}</h2>
-
+											<div
+												v-if="missionDetail.mission_document && missionDetail.mission_document.length > 0">
+												<h2>{{ languageData.label.documents }}</h2>
 												<div class="document-list-wrap">
-
 													<div class="document-list-block"
-														v-for="document in missionDetail.mission_document">
-
+														v-for="(document ,index) in missionDetail.mission_document"
+														:key=index>
 														<!-- pdf -->
 														<template v-if="document.document_type =='pdf'">
 															<b-link :href="document.document_path" target="_blank"
@@ -439,7 +432,6 @@
 																	class="has-img no-close" :url="bgImage[1]" />
 															</b-link>
 														</template>
-
 														<!-- xls  xlsx-->
 														<template
 															v-if="document.document_type =='xls' || document.document_type =='xlsx ' ">
@@ -449,7 +441,6 @@
 																	class="has-img no-close" :url="bgImage[2]" />
 															</b-link>
 														</template>
-
 													</div>
 
 												</div>
@@ -458,38 +449,35 @@
 									</div>
 									<div class="tabs">
 										<div class="tab-title">
-
-											<h3 v-b-toggle.organization>{{ langauageData.label.organisation }}</h3>
+											<h3 v-b-toggle.organization>{{ languageData.label.organisation }}</h3>
 										</div>
 										<b-collapse id="organization" accordion="my-accordion" role="tabpanel"
 											class="tab-content">
 											<div v-html="missionDetail.organisation_detail"></div>
 										</b-collapse>
 									</div>
-
 									<div class="tabs" v-if="isCommentDisplay">
 										<div class="tab-title" @click="missionComments">
-											<h3 v-b-toggle.comments>{{ langauageData.label.comment }}</h3>
+											<h3 v-b-toggle.comments>{{ languageData.label.comment }}</h3>
 										</div>
 										<b-collapse id="comments" accordion="my-accordion" role="tabpanel"
-											class="			tab-content comment-block">
-
+											class="tab-content comment-block">
 											<b-form class="comment-form">
-												<b-form-textarea id="" :placeholder="langauageData.placeholder.comment"
+												<b-form-textarea id="" :placeholder="languageData.placeholder.comment"
 													v-model="comment" :class="{ 'is-invalid': $v.comment.$error }"
 													rows="4" size="lg" no-resize>
 												</b-form-textarea>
 
 												<div v-if="submitted && !$v.comment.required" class="invalid-feedback">
-													{{ langauageData.errors.comment_required }}
+													{{ languageData.errors.comment_required }}
 												</div>
 												<div v-if="submitted && !$v.comment.maxLength" class="invalid-feedback">
-													{{ langauageData.errors.comment_max_length }}
+													{{ languageData.errors.comment_max_length }}
 												</div>
 												<div class="btn-with-loader">
 													<b-button class="btn-bordersecondary" @click="handleSubmit"
 														v-bind:disabled="postComment">
-														{{ langauageData.label.post_comment }}
+														{{ languageData.label.post_comment }}
 													</b-button>
 													<div class="spinner btn-loader" v-if="postComment">
 														<div class="bounce1"></div>
@@ -504,7 +492,7 @@
 												<div class="comment-list-inner" data-simplebar>
 													<div class="more-inner-list">
 														<div class="comment-list-item"
-															v-for="comments in missionComment">
+															v-for="(comments, index) in missionComment" :key=index>
 															<b-media class="comment-media">
 																<i slot="aside" class="user-profile-icon"
 																	:style="{backgroundImage: 'url(' + comments.user.avatar + ')'}">
@@ -525,10 +513,10 @@
 
 													<div class="more-comment-list" v-if="nextUrl != null">
 														<b-button v-if="loadMoreComment" class="comment-btn">
-															<span>{{ langauageData.label.loading }}</span>
+															<span>{{ languageData.label.loading }}</span>
 														</b-button>
 														<b-button v-else @click="showMoreComment" class="comment-btn">
-															<span>{{ langauageData.label.read_more_comment }}</span>
+															<span>{{ languageData.label.read_more_comment }}</span>
 														</b-button>
 													</div>
 
@@ -543,32 +531,32 @@
 						</b-col>
 						<b-col xl="4" lg="5" class="platform-details-right">
 							<div class="info-block">
-								<h2 class="title-with-border"><span>{{ langauageData.label.information }}</span></h2>
+								<h2 class="title-with-border"><span>{{ languageData.label.information }}</span></h2>
 								<div class="table-wrap">
 									<div class="table-row" v-if="isSkillDispaly">
-										<span class="label-col">{{langauageData.label.skills}}</span>
+										<span class="label-col">{{languageData.label.skills}}</span>
 										<span class="detail-col">{{getSkills(missionDetail)}}</span>
 									</div>
 									<div class="table-row">
-										<span class="label-col">{{langauageData.label.days}}</span>
+										<span class="label-col">{{languageData.label.days}}</span>
 										<span class="detail-col"
 											v-if="missionDetail.availability_type != ''">{{missionDetail.availability_type}}</span>
 										<span class="detail-col" v-else>-</span>
 									</div>
 									<div class="table-row" v-if="isStarDisplay">
-										<span class="label-col">{{langauageData.label.rating}}</span>
+										<span class="label-col">{{languageData.label.rating}}</span>
 										<span class="detail-col">
 											<star-rating :rating="missionDetail.mission_rating_count" :read-only="true"
 												:increment="0.01" v-bind:max-rating="5" inactive-color="#dddddd"
 												active-color="#F7D341" v-bind:star-size="23">
 											</star-rating>
 											<em>(
-												{{ langauageData.label.by}}
+												{{ languageData.label.by}}
 												{{missionDetail.mission_rating_total_volunteers}}
 											</em>
 											<em v-if="missionDetail.mission_rating_total_volunteers <=1"
-												class="volunteery-counter"> {{ langauageData.label.volunteer}} )</em>
-											<em v-else class="volunteery-counter"> {{ langauageData.label.volunteers}}
+												class="volunteery-counter"> {{ languageData.label.volunteer}} )</em>
+											<em v-else class="volunteery-counter"> {{ languageData.label.volunteers}}
 												)</em>
 										</span>
 									</div>
@@ -581,22 +569,20 @@
 			</b-container>
 			<div class="mission-block" v-if="missionListing && missionListing.length > 0 && relatedMissionsDisplay">
 				<b-container class="card-grid">
-					<h2>{{langauageData.label.related_missions}}</h2>
+					<h2>{{languageData.label.related_missions}}</h2>
 					<div>
 						<div v-bind:class="{ 'content-loader-wrap': true, 'mission-loader': relatedMissionlLoader}">
 							<div class="content-loader"></div>
 						</div>
 						<GridView id="gridView" :items="missionListing" v-if="isShownComponent" :userList="userList"
-							@getMissions="getRelatedMissions" small />
+							:relatedMission=relatedMission @getMissions="getRelatedMissions" small />
 					</div>
 				</b-container>
-
 			</div>
-
 			<b-modal ref="userDetailModal" :modal-class="myclass" hide-footer size="lg">
 				<template slot="modal-header" slot-scope="{ close }">
-					<i class="close" @click="close()" v-b-tooltip.hover :title="langauageData.label.close"></i>
-					<h5 class="modal-title">{{langauageData.label.search_user}}</h5>
+					<i class="close" @click="close()" v-b-tooltip.hover :title="languageData.label.close"></i>
+					<h5 class="modal-title">{{languageData.label.search_user}}</h5>
 				</template>
 				<b-alert show :variant="classVariant" dismissible v-model="showErrorDiv">
 					{{ message }}
@@ -604,10 +590,10 @@
 				<div class="autocomplete-control">
 					<div class="autosuggest-container">
 						<VueAutosuggest ref="autosuggest" name="user" v-model="query" :suggestions="filteredOptions"
-							@input="onInputChange" @selected="onSelected" @keydown="tabHandler"
-							:get-suggestion-value="getSuggestionValue" :input-props="{
-	                        id:'autosuggest__input', 
-	                        placeholder:autoSuggestPlaceholder,
+							@input="onInputChange" @selected="onSelected" :get-suggestion-value="getSuggestionValue"
+							:input-props="{
+								id:'autosuggest__input', 
+								placeholder:autoSuggestPlaceholder,
 	                        }">
 							<div slot-scope="{suggestion}">
 								<img :src="suggestion.item.avatar" />
@@ -621,10 +607,10 @@
 				<b-form>
 					<div class="btn-wrap">
 						<b-button @click="$refs.userDetailModal.hide()" class="btn-borderprimary">
-							{{ langauageData.label.close }}</b-button>
+							{{ languageData.label.close }}</b-button>
 						<b-button class="btn-bordersecondary" @click="inviteColleagues" ref="autosuggestSubmit"
 							v-bind:disabled="submitDisable">
-							{{ langauageData.label.submit }}</b-button>
+							{{ languageData.label.submit }}</b-button>
 					</div>
 				</b-form>
 			</b-modal>
@@ -651,14 +637,11 @@
 		missionDetail,
 		relatedMissions,
 		missionComments,
-		storeMissionComments,
-		volunteerTimesheetHours
+		storeMissionComments
 	} from "../services/service";
 	import SimpleBar from 'simplebar';
 	import store from "../store";
 	import moment from 'moment';
-	import AddVolunteeringHours from "../components/AddVolunteeringHours";
-	import AddVolunteeringAction from "../components/AddVolunteeringAction";
 	import {
 		required,
 		maxLength
@@ -680,6 +663,7 @@
 		},
 		data() {
 			return {
+				relatedMission: true,
 				defaultWorkday: "",
 				workDayList: [
 					["WORKDAY", "workday"],
@@ -695,9 +679,6 @@
 				selected: "",
 				search: "",
 				userList: [],
-				missionList: [{
-					mission: 1
-				}],
 				myclass: ["userdetail-modal"],
 				currentMissionId: 0,
 				invitedUserId: 0,
@@ -725,7 +706,7 @@
 				missionComment: [],
 				defaultMedia: '',
 				isShareComponentShown: false,
-				langauageData: [],
+				languageData: [],
 				applyButton: '',
 				submitted: false,
 				comment: '',
@@ -767,13 +748,13 @@
 			};
 		},
 		mounted() {
-			var tabItem = document.querySelectorAll(".platform-details-tab .nav-tabs li a")
+			let tabItem = document.querySelectorAll(".platform-details-tab .nav-tabs li a")
 			tabItem.forEach(function (tabItemEvent) {
 				tabItemEvent.addEventListener("click", tabsHandle);
 			});
 
 			function tabsHandle(tabsEvent) {
-				var i, tabContent, tabLinks;
+				let i, tabContent, tabLinks;
 				tabContent = document.getElementsByClassName("tab-content");
 				for (i = 0; i < tabContent.length; i++) {
 					tabContent[i].style.display = "none";
@@ -788,7 +769,7 @@
 				tabsEvent.currentTarget.className += " active";
 			}
 
-			var currentUrl = (((window.location.origin).split('.')));
+			let currentUrl = (((window.location.origin).split('.')));
 
 			if (currentUrl[0]) {
 				if (process.env.NODE_ENV == 'production') {
@@ -806,18 +787,10 @@
 				if (this.userList) {
 					return [{
 						data: this.userList.filter(option => {
-							var firstName = option.first_name.toLowerCase();
-							var lastName = option.last_name.toLowerCase();
-							var email = option.email.toLowerCase();
-							var searchString = firstName + '' + lastName + '' + email;
-							setTimeout(function () {
-								var myElement = document.querySelector('.autosuggest__results');
-								if (myElement != null) {
-									new SimpleBar(myElement, {
-										autoHide: false
-									});
-								}
-							});
+							let firstName = option.first_name.toLowerCase();
+							let lastName = option.last_name.toLowerCase();
+							let email = option.email.toLowerCase();
+							let searchString = firstName + '' + lastName + '' + email;
 							return searchString.indexOf(this.query.toLowerCase()) > -1;
 						})
 					}];
@@ -844,8 +817,8 @@
 			// Get comment create date format
 			getCommentDate(commentDate) {
 				if (commentDate != null) {
-					var day = moment(commentDate, "YYYY-MM-DD HH:mm:ss").format('dddd');
-					var date = moment(String(commentDate)).format('MMMM DD, YYYY, h:mm A')
+					let day = moment(commentDate, "YYYY-MM-DD HH:mm:ss").format('dddd');
+					let date = moment(String(commentDate)).format('MMMM DD, YYYY, h:mm A')
 					return day + ', ' + date;
 				} else {
 					return '';
@@ -887,7 +860,7 @@
 				});
 
 			},
-			onInputChange(text) {
+			onInputChange() {
 				this.submitDisable = true;
 			},
 			// For selected user id.
@@ -896,38 +869,19 @@
 				this.submitDisable = false;
 				this.invitedUserId = item.item.user_id;
 			},
-			tabHandler() {
-				setTimeout(() => {
-					var myElement = document.querySelector('.autosuggest__results');
-					new SimpleBar(myElement, {
-						autoHide: false
-					});
-				});
-			},
 			//This is what the <input/> value is set to when you are selecting a suggestion.
 			getSuggestionValue(suggestion) {
-				var firstName = suggestion.item.first_name;
-				var lastName = suggestion.item.last_name;
+				let firstName = suggestion.item.first_name;
+				let lastName = suggestion.item.last_name;
 				return firstName + ' ' + lastName;
 			},
 			// Open auto suggest modal
 			handleModal(missionId) {
-				this.autoSuggestPlaceholder = this.langauageData.label.search_user
+				this.autoSuggestPlaceholder = this.languageData.label.search_user
 				this.showErrorDiv = false;
 				this.message = null;
 				this.$refs.userDetailModal.show();
 				this.currentMission = missionId;
-				setTimeout(() => {
-					var onFocus = document.getElementById('autosuggest');
-					onFocus.addEventListener("click", function () {
-						var myElement = document.querySelector('.autosuggest__results');
-						if (myElement != null) {
-							new SimpleBar(myElement, {
-								autoHide: true
-							});
-						}
-					});
-				});
 			},
 
 			defaultMediaPathDetail(defaultImage) {
@@ -960,7 +914,7 @@
 					}
 				})
 			},
-
+			
 			searchUsers() {
 				searchUser().then(userResponse => {
 					this.userList = userResponse;
@@ -978,7 +932,7 @@
 						this.makeToast("danger", response.message);
 					} else {
 						this.disableApply = true;
-						this.applyButton = this.langauageData.label.applied
+						this.applyButton = this.languageData.label.applied
 						this.makeToast("success", response.message);
 						this.$emit("getMissions");
 					}
@@ -1022,7 +976,7 @@
 								this.missionDetail = response.data[0];
 								if (response.data[0].user_application_status ==
 									constants.AUTOMATICALLY_APPROVED && response.data[0].user_application_count > 0
-									) {
+								) {
 									this.allowAddEntry = true
 								}
 								if (response.data[0].is_favourite == 1) {
@@ -1063,7 +1017,7 @@
 				if (missionTheme) {
 					let translations = missionTheme.translations
 					if (translations) {
-						var filteredObj = translations.filter(function (item, i) {
+						let filteredObj = translations.filter((item, i) => {
 							if (item.lang === store.state.defaultLanguage.toLowerCase()) {
 								return translations[i].title;
 							}
@@ -1077,7 +1031,7 @@
 			getSkills(missionDetail) {
 				let skills = '';
 				if (missionDetail.skill) {
-					var filteredObj = (missionDetail.skill).filter(function (item, i) {
+					(missionDetail.skill).filter((item) => {
 						if (skills == '') {
 							skills = item.title;
 						} else {
@@ -1098,9 +1052,8 @@
 				missionComments(commentData).then(response => {
 					if (response.error == false) {
 						if (this.missionComment.length) {
-							var _this = this;
-							response.data.map(function (value, key) {
-								_this.missionComment.push(value);
+							response.data.map((value) => {
+								this.missionComment.push(value);
 							});
 						} else {
 							this.missionComment = response.data;
@@ -1115,7 +1068,7 @@
 				});
 			},
 
-			handleSubmit(e) {
+			handleSubmit() {
 				this.submitted = true;
 				this.$v.$touch();
 				// stop here if form is invalid
@@ -1136,7 +1089,7 @@
 					} else {
 						this.comment = '';
 						this.disableApply = true;
-						this.applyButton = this.langauageData.label.applied
+						this.applyButton = this.languageData.label.applied
 						this.makeToast("success", response.message);
 						this.missionComment = []
 						this.nextUrl = null,
@@ -1152,10 +1105,10 @@
 
 			showMoreComment() {
 				this.page++;
-				var simplebarContent = document.querySelector(".comment-list-inner .simplebar-content");
-				var simplebarHeight = simplebarContent.offsetHeight
-				setTimeout(function () {
-					var simplebarWrapper = document.querySelector(".comment-list .simplebar-content-wrapper");
+				let simplebarContent = document.querySelector(".comment-list-inner .simplebar-content");
+				let simplebarHeight = simplebarContent.offsetHeight
+				setTimeout(() => {
+					let simplebarWrapper = document.querySelector(".comment-list .simplebar-content-wrapper");
 					simplebarWrapper.scrollTop = simplebarHeight;
 				}, 100);
 				this.missionComments();
@@ -1163,7 +1116,6 @@
 		},
 		created() {
 			this.sharingUrl = document.URL
-			var _this = this;
 			// Get mission detail
 			this.getMissionDetail();
 			if (store.state.search != null) {
@@ -1171,8 +1123,8 @@
 			} else {
 				this.search = '';
 			}
-			this.langauageData = JSON.parse(store.state.languageLabel);
-			this.applyButton = this.langauageData.label.apply_now
+			this.languageData = JSON.parse(store.state.languageLabel);
+			this.applyButton = this.languageData.label.apply_now
 
 			this.isFacebookSharingDisplay = this.settingEnabled(constants.SHARE_MISSION_FACEBOOK)
 			store.state.isFacebookDisplay = this.isFacebookSharingDisplay
@@ -1226,8 +1178,8 @@
 					this.nextUrl = null,
 					this.postComment = false,
 					this.loadMoreComment = false,
-					this.langauageData = JSON.parse(store.state.languageLabel);
-				this.applyButton = this.langauageData.label.apply_now;
+					this.languageData = JSON.parse(store.state.languageLabel);
+				this.applyButton = this.languageData.label.apply_now;
 				this.page = 1;
 				this.isFacebookSharingDisplay = false
 				this.isTwitterSharingDisplay = false

@@ -4,12 +4,12 @@ import store from '../store'
 export default async(data) => {
 
     let responseData;
-    var defaultLanguage = '';
+    let defaultLanguage = '';
     if (store.state.defaultLanguage !== null) {
         defaultLanguage = (store.state.defaultLanguage).toLowerCase();
     }
 
-    var url = process.env.VUE_APP_API_ENDPOINT + "app/filter-data";
+    let url = process.env.VUE_APP_API_ENDPOINT + "app/filter-data";
 
     if (data.countryId != '') {
         url = url + "?country_id=" + data.countryId
@@ -44,8 +44,9 @@ export default async(data) => {
             method: 'get',
             headers: {
                 'X-localization': defaultLanguage,
-                'token': store.state.token,
-            }
+                'token': store.state.token
+            },
+
         })
         .then((response) => {
             if (response.data.data) {
@@ -54,6 +55,6 @@ export default async(data) => {
                 responseData = ''
             }
         })
-        .catch(function(error) {});
+        .catch(function() {});
     return responseData;
 }

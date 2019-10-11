@@ -1,21 +1,36 @@
 <template>
 	<div class="tab-with-picker">
 		<div class="table-header">
-		<h2>{{langauageData.label[currentMonthName]}} {{currentYearNumber}}</h2>
+		<h2>{{languageData.label[currentMonthName]}} {{currentYearNumber}}</h2>
 		<div class="inner-wrap">
+			<div class="picker-btn-wrap table-action-btn">
+				<button class="prev-btn picker-btn" 
+				v-bind:class="{disabled :previousButtonDisable}"
+				v-b-tooltip.hover :title="languageData.label.previous +' '+languageData.label.week.toLowerCase()" @click.stop="goPrevWeek">
+					<img :src="$store.state.imagePath+'/assets/images/back-arrow-black.svg'"
+						:alt="languageData.label.previous" />
+				</button>
+
+				<!-- <span>{{currentWeak}}</span> -->
+				<button class="next-btn picker-btn" v-b-tooltip.hover  :title="languageData.label.next+' '+languageData.label.week.toLowerCase()"
+					v-bind:class="{disabled :disableNextWeek}" @click.stop="goNextWeek">
+					<img :src="$store.state.imagePath+'/assets/images/next-arrow-black.svg'"
+						:alt="languageData.label.next" />
+				</button>
+			</div>
 			<div class="picker-btn-wrap">
 				<button class="prev-btn picker-btn" 
 				v-bind:class="{disabled :previousButtonDisable}"
-				:title="langauageData.label.previous" @click.stop="goPrev">
+				:title="languageData.label.previous" @click.stop="goPrev">
 					<img :src="$store.state.imagePath+'/assets/images/back-arrow-black.svg'"
-						:alt="langauageData.label.previous" />
+						:alt="languageData.label.previous" />
 				</button>
 
-				<span>{{langauageData.label[currentMonthName]}}</span>
-				<button class="next-btn picker-btn" :title="langauageData.label.next"
+				<span>{{languageData.label[currentMonthName]}}</span>
+				<button class="next-btn picker-btn" :title="languageData.label.next"
 					v-bind:class="{disabled :isPreviousButtonDisable}" @click.stop="goNext">
 					<img :src="$store.state.imagePath+'/assets/images/next-arrow-black.svg'"
-						:alt="langauageData.label.next" />
+						:alt="languageData.label.next" />
 				</button>
 			</div>		
 			<div>
@@ -25,35 +40,17 @@
 
 		</div>
 		</div>
-
-		<div class="picker-btn-wrap table-action-btn">
-				<button class="prev-btn picker-btn" 
-				v-bind:class="{disabled :previousButtonDisable}"
-				v-b-tooltip.hover :title="langauageData.label.previous +' '+langauageData.label.week.toLowerCase()" @click.stop="goPrevWeek">
-					<img :src="$store.state.imagePath+'/assets/images/back-arrow-black.svg'"
-						:alt="langauageData.label.previous" />
-				</button>
-
-				<!-- <span>{{currentWeak}}</span> -->
-				<button class="next-btn picker-btn" v-b-tooltip.hover  :title="langauageData.label.next+' '+langauageData.label.week.toLowerCase()"
-					v-bind:class="{disabled :disableNextWeek}" @click.stop="goNextWeek">
-					<img :src="$store.state.imagePath+'/assets/images/next-arrow-black.svg'"
-						:alt="langauageData.label.next" />
-				</button>
-			</div>
 	</div>
 </template>
 
 <script>
 	import store from '../store';
 	import moment from 'moment'
-	import DatePicker from "vue2-datepicker";
 	import AppCustomDropdown from "../components/AppCustomDropdown";
 
 	export default {
 		name: "VolunteeringTimesheetHeader",
 		components: {
-			DatePicker,
 			AppCustomDropdown
 		},
 		props: {
@@ -93,7 +90,7 @@
 				},
 				defaultYear: "",
 				yearListing: [],
-				langauageData: [],
+				languageData: [],
 				currentMonth: '',
 				daysInCurrentMonth: 0,
 				currentMonthName: '',
@@ -121,9 +118,9 @@
 			}
 		},
 		mounted() {
-			var currentYear = new Date().getFullYear();
-			var yearsList = [];
-			for (var index = currentYear; index > (currentYear - 5); index--) {
+			let currentYear = new Date().getFullYear();
+			let yearsList = [];
+			for (let index = currentYear; index > (currentYear - 5); index--) {
 				yearsList.push([index, index]);
 			}
 			this.yearListing = yearsList;
@@ -143,20 +140,19 @@
 				let payload = moment(this.currentMonth).year(this.currentYearNumber).add(7, 'day')
 				this.currentWeak = moment(this.currentMonth).year(this.currentYearNumber).add(7, 'day').week()
 				this.changeMonth(payload);
+				this.$root.$emit('bv::hide::tooltip');
 			},
 			getWeekDayNameOfMonth(month, year) {
-				//pass week number
 				//stating date of week	
-				let _this = this
-				var start = moment().day("Monday").year(this.currentYearNumber).week(this.currentWeak);
+				let start = moment().day("Monday").year(this.currentYearNumber).week(this.currentWeak);
 				
 				this.weekNameArray = []
 				this.daysArray = []
 				let i=0;
 				let j = 1;
-				for (var end = moment(start).add(1, 'week'); start.isBefore(end); start.add(1, 'day')) {
+				for (let end = moment(start).add(1, 'week'); start.isBefore(end); start.add(1, 'day')) {
 					let dayName = start.format('dddd').toLowerCase();
-						this.weekNameArray[j] = this.langauageData.label[dayName];
+						this.weekNameArray[j] = this.languageData.label[dayName];
 						this.daysArray[i] = start.format('D')-1
 						this.yearArray[i] = start.format('YYYY')
 						this.monthArray[i] = start.format('M')
@@ -180,7 +176,6 @@
 			},
 			changeYear(year) {
 				let payload = moment(this.currentMonth).year(year.selectedId)
-				
 				if ((parseInt(this.currentMonthFix.format('M')) <= parseInt(payload.format('M'))) && (parseInt(this.currentMonthFix.format(
 						'YYYY')) <= parseInt(payload.format('YYYY')))) {
 					payload = moment().startOf('date');
@@ -221,20 +216,18 @@
 					this.previousButtonDisable = false
 				}
 				this.getWeekDayNameOfMonth(this.sortNameOfMonth, this.currentYearNumber)
-				var selectedData = []
+				let selectedData = []
 				selectedData['month'] = this.currentMonthNumber;
 				selectedData['year'] = this.currentYearNumber;
 				selectedData['weekdays'] = this.weekNameArray;
 				selectedData['days'] = this.daysArray;
-					// this.yearArray[day] = start.format('YYYY')
-					// 	this.monthArray[day] = start.format('MMM')
 				selectedData['yearArray'] = this.yearArray;
 				selectedData['monthArray'] = this.monthArray;
 				this.$emit("updateCall", selectedData);
 			},
 		},
 		created() {
-			this.langauageData = JSON.parse(store.state.languageLabel);
+			this.languageData = JSON.parse(store.state.languageLabel);
 			this.currentMonth = moment().startOf('date').week(this.currentWeak);
 			this.changeMonth(this.currentMonth);
 		}

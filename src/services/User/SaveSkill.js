@@ -5,7 +5,7 @@ export default async(data) => {
     let skills = {
         skills: []
     }
-    let skillArray = [];
+
     if (data.length > 0) {
         Object.keys(data).map(function(key) {
             skills['skills'].push({
@@ -16,12 +16,11 @@ export default async(data) => {
 
 
     let responseData = {};
-    var defaultLanguage = '';
+    let defaultLanguage = '';
     if (store.state.defaultLanguage !== null) {
         defaultLanguage = (store.state.defaultLanguage).toLowerCase();
     }
-    var url = process.env.VUE_APP_API_ENDPOINT + "app/user/skills";
-
+    let url = process.env.VUE_APP_API_ENDPOINT + "app/user/skills";
     await axios({
             url: url,
             method: 'POST',
