@@ -652,4 +652,139 @@ class TenantOptionsTest extends TestCase
         ->seeStatusCode(422);  
         
     }
+
+    /**
+     * @test
+     *
+     * Download style and images from s3
+     *
+     * @return void
+     */
+    public function it_should_return_error_bucket_not_found_on_download_style_from_s3()
+    {
+        DB::setDefaultConnection('mysql');
+        
+        $tenantId = DB::table('tenant')->insertGetId([
+            'name' => str_random('5'),
+            'sponsor_id' => rand(1, 100000)
+        ]);
+
+        $apiKey = str_random(16);
+        $apiSecret = str_random(16);
+
+        $apiKeys['api_key'] = base64_encode($apiKey);
+        $apiKeys['api_secret'] = \Illuminate\Support\Facades\Hash::make($apiSecret);
+        $apiKeys['tenant_id'] = $tenantId;
+        
+        $apiUserId = DB::table('api_user')->insertGetId($apiKeys);
+
+        DB::statement("CREATE DATABASE IF NOT EXISTS `ci_tenant_{$tenantId}`");
+        
+        $this->get('style/download-style', ['Authorization' => 'Basic '.base64_encode($apiKey.':'.$apiSecret)])
+        ->seeStatusCode(404);
+        
+        DB::statement("DROP DATABASE `ci_tenant_{$tenantId}`");
+        DB::setDefaultConnection('mysql');
+        DB::table('tenant')->where('tenant_id', $tenantId)->delete();
+        DB::table('api_user')->where('api_user_id', $apiUserId)->delete();
+    }
+
+    /**
+    * @test
+    *
+    * It should return error bucket not found on update assets image on s3 server
+    *
+    * @return void
+    */
+    public function it_should_return_error_bucket_not_found_on_update_assets_image_on_s3_server()
+    {
+        DB::setDefaultConnection('mysql');
+        
+        $tenantId = DB::table('tenant')->insertGetId([
+            'name' => str_random('5'),
+            'sponsor_id' => rand(1, 100000)
+        ]);
+
+        $apiKey = str_random(16);
+        $apiSecret = str_random(16);
+
+        $apiKeys['api_key'] = base64_encode($apiKey);
+        $apiKeys['api_secret'] = \Illuminate\Support\Facades\Hash::make($apiSecret);
+        $apiKeys['tenant_id'] = $tenantId;
+        
+        $apiUserId = DB::table('api_user')->insertGetId($apiKeys);
+
+        DB::statement("CREATE DATABASE IF NOT EXISTS `ci_tenant_{$tenantId}`");
+
+        $fileName = 'back-arrow-black.svg';
+        $path  = storage_path("unitTestFiles/$fileName");
+        $params = [
+            'image_name' => $fileName
+        ];
+        
+        $res = $this->call(
+            'PATCH',
+            'style/update-image', 
+            $params, [], 
+            [
+                'image_file' => array(new \Illuminate\Http\UploadedFile($path, $fileName, 'image/svg+xml', null, null, true))[0]
+            ],
+            [
+                'HTTP_php-auth-user' => $apiKey,
+                'HTTP_php-auth-pw' => $apiSecret
+            ]
+        );
+
+        $this->seeStatusCode(404);
+
+        DB::statement("DROP DATABASE `ci_tenant_{$tenantId}`");
+        DB::setDefaultConnection('mysql');
+        DB::table('tenant')->where('tenant_id', $tenantId)->delete();
+        DB::table('api_user')->where('api_user_id', $apiUserId)->delete();
+    }
+
+    /**
+     * @test
+     *
+     * It should return error no file found on s3 when downloading style from s3
+     *
+     * @return void
+     */
+    public function it_should_return_error_no_file_found_on_s3_when_downloading_style_from_s3()
+    {
+        DB::setDefaultConnection('mysql');
+        
+        $tenantId = DB::table('tenant')->insertGetId([
+            'name' => str_random('5'),
+            'sponsor_id' => rand(1, 100000)
+        ]);
+        
+        $tenant = DB::table('tenant')->where('tenant_id', $tenantId)->first();
+        $apiKey = str_random(16);
+        $apiSecret = str_random(16);
+
+        $apiKeys['api_key'] = base64_encode($apiKey);
+        $apiKeys['api_secret'] = \Illuminate\Support\Facades\Hash::make($apiSecret);
+        $apiKeys['tenant_id'] = $tenantId;
+        
+        $apiUserId = DB::table('api_user')->insertGetId($apiKeys);
+
+        DB::statement("CREATE DATABASE IF NOT EXISTS `ci_tenant_{$tenantId}`");
+
+        Storage::disk('s3')->put(
+            $tenant->name.'/assets/css/style.css',
+            $path  = storage_path().'/unitTestFiles/dummy.css'
+        );
+
+        $this->get('style/download-style', ['Authorization' => 'Basic '.base64_encode($apiKey.':'.$apiSecret)])
+        ->seeStatusCode(404);
+
+        DB::statement("DROP DATABASE `ci_tenant_{$tenantId}`");
+        DB::setDefaultConnection('mysql');
+        DB::table('tenant')->where('tenant_id', $tenantId)->delete();
+        DB::table('api_user')->where('api_user_id', $apiUserId)->delete();
+
+        Storage::disk('s3')->deleteDirectory($tenant->name);
+    }
+    
 }

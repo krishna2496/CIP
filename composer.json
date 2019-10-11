@@ -21,6 +21,7 @@
         "nicolaslopezj/searchable": "^1.11",
         "orumad/lumen-config-cache": "^1.0",
         "ramsey/uuid": "^3.8",
+        "scssphp/scssphp": "^1.0",
         "squizlabs/php_codesniffer": "^3.4",
         "vlucas/phpdotenv": "^3.3"
     },
