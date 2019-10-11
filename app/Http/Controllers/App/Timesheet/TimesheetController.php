@@ -270,8 +270,8 @@ class TimesheetController extends Controller
 
         // Set response data
         $apiStatus = ($timesheet->wasRecentlyCreated) ? Response::HTTP_CREATED : Response::HTTP_OK;
-        $apiMessage = ($timesheet->wasRecentlyCreated) ? trans('messages.success.TIMESHEET_ENTRY_ADDED_SUCESSFULLY')
-        : trans('messages.success.TIMESHEET_ENTRY_UPDATED_SUCESSFULLY');
+        $apiMessage = ($timesheet->wasRecentlyCreated) ? trans('messages.success.TIMESHEET_ENTRY_ADDED_SUCCESSFULLY')
+        : trans('messages.success.TIMESHEET_ENTRY_UPDATED_SUCCESSFULLY');
         $apiData = ['timesheet_id' => $timesheet->timesheet_id];
 
         return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
@@ -387,7 +387,7 @@ class TimesheetController extends Controller
 
             $apiStatus = Response::HTTP_OK;
             $apiMessage = (!$timesheet) ? trans('messages.success.TIMESHEET_ALREADY_SUBMITTED_FOR_APPROVAL') :
-            trans('messages.success.TIMESHEET_SUBMITTED_SUCESSFULLY');
+            trans('messages.success.TIMESHEET_SUBMITTED_SUCCESSFULLY');
 
             return $this->responseHelper->success($apiStatus, $apiMessage);
         } catch (ModelNotFoundException $e) {
