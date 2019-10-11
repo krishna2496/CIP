@@ -156,7 +156,8 @@ return [
     	'MESSAGE_NO_MISSION_COMMENTS_ENTRIES' => 'No mission comments found',
 	    'MESSAGE_STORY_VISITOR_ADDED_SUCESSFULLY' => 'Story visitor added successfully',
         'MESSAGE_STORY_SUBMITTED_SUCESSFULLY' => 'Story submitted sucessfully',
-        'MESSAGE_STORY_IMAGE_DELETED' => 'Story image deleted sucessfully'
+        'MESSAGE_STORY_IMAGE_DELETED' => 'Story image deleted sucessfully',
+        'MESSAGE_NOTIFICATION_SETTINGS_LISTING' => 'Notification settings listed successfully',
     ],
 
         
