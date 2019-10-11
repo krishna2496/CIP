@@ -1,6 +1,8 @@
 @import url("https://fonts.googleapis.com/css?family=Noto+Sans");
 $general-font: "Noto Sans", sans-serif;
 
+$primary: #f88634;
+
 $black: #000;
 $white: #fff;
 
@@ -22,13 +24,13 @@ $linkedin-color: #007bb6;
 $envelope-color: #7d7d7d;
 $light-blue: #d1e4f8;
 
-$success: #10AA3A;
-$info : #0c5460;
-$disabled-bg:#f5f5f5;
+$success: #10aa3a;
+$info: #0c5460;
+$disabled-bg: #f5f5f5;
 
 // rgba color variable
 $rgb-black: rgba(0, 0, 0, 0.4);
-$rgb-black-darker: rgba(0,0,0,0.9);
+$rgb-black-darker: rgba(0, 0, 0, 0.9);
 $rgb-black-dark: rgba(0, 0, 0, 0.5);
 $rgb-black-hover: rgba(0, 0, 0, 0.8);
 $rgb-white: rgba(255, 255, 255, 0.4);

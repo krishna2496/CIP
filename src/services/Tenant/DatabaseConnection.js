@@ -99,8 +99,8 @@ export default async(langList, defautLang) => {
             } else {
                 store.commit('newsBanner', '');
             }
-            if (response.data.data.news_banner_text) {
-                store.commit('newsBannerText', response.data.data.news_banner_text);
+            if (response.data.data.news_banner_text && response.data.data.news_banner_text.translations) {
+                store.commit('newsBannerText', response.data.data.news_banner_text.translations);
             } else {
                 store.commit('newsBannerText', '');
             }

@@ -69,6 +69,12 @@ let routes = [{
             import ('./views/Stories.vue')
     },
     {
+        path: '/stories',
+        name: 'Stories',
+        component: () =>
+            import ('./views/Stories.vue')
+    },
+    {
         path: '/news-detail/:newsId',
         name: 'NewsDetail',
         component: () =>
