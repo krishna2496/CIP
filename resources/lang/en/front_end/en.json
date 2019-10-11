@@ -95,13 +95,13 @@
         "loading": "Loading...",
         "cancel": "Cancel",
         "save": "Save",
-        "name": "Name",
+        "name": "First name",
         "surname": "Surname",
         "employee_id": "Employee ID",
         "manager": "Manager",
         "title": "Title",
         "department": "Department",
-        "my_profile": "My profile",
+        "my_profile": "Profile summary",
         "why_i_volunteer": "Why I volunteer?",
         "availability": "Availability",
         "my_skills": "My skills",
@@ -194,7 +194,10 @@
         "closed": "Closed",
         "share_your_story": "Share your story",
         "views": "Views",
-        "open_mission": "Open mission"
+        "open_mission": "Open mission",
+        "goal_objective": "Goal objective",
+     	"start_date": "Start date",
+        "reset": "Reset"
     },
 
     "placeholder": {
