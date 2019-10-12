@@ -1201,4 +1201,27 @@ class MissionRepository implements MissionInterface
       
         return $missionLists;
     }
+
+    /** Get mission title
+     *
+     * @param int $missionId
+     * @param int $languageId
+     * @param int $defaultTenantLanguageId
+     * @return string
+     */
+    public function getMissionTitle(int $missionId, int $languageId, int $defaultTenantLanguageId): string
+    {
+        $languageData = $this->missionLanguage->select('title')
+        ->where(['mission_id' => $missionId, 'language_id' => $languageId])
+        ->get();
+        if ($languageData->count() > 0) {
+            return $languageData[0]->title;
+        } else {
+            $defaultTenantLanguageData = $this->missionLanguage
+                ->select('title')
+                ->where(['mission_id' => $missionId, 'language_id' => $defaultTenantLanguageId])
+                ->get();
+            return $defaultTenantLanguageData[0]->title;
+        }
+    }
 }

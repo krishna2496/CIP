@@ -376,6 +376,16 @@ $router->group(['middleware' => 'localization'], function ($router) {
         'middleware' => 'localization|tenant.connection|jwt.auth',
         'uses' => 'App\Story\StoryController@editStory']);
 
+    /* Fetch notification settings */
+    $router->get('/app/notification-settings', ['as' => 'app.notification-settings',
+        'middleware' => 'localization|tenant.connection|jwt.auth',
+        'uses' => 'App\Notification\NotificationTypeController@index']);
+
+    /* Store or update user notification settings */
+    $router->post('/app/user-notification-settings/update', ['as' => 'app.user-notification-settings.update',
+        'middleware' => 'localization|tenant.connection|jwt.auth|JsonApiMiddleware',
+        'uses' => 'App\Notification\NotificationTypeController@storeOrUpdate']);
+
 /*
 |
 |--------------------------------------------------------------------------
