@@ -418,5 +418,31 @@ return [
         
         'ERROR_POLICY_PAGE_NOT_FOUND' => '300010',
         'ERROR_POLICY_PAGE_REQUIRED_FIELDS_EMPTY' => '300011'
+    ],
+
+    /**
+     * Notification types
+     */
+    'notification_types' => [
+        'RECOMMENDED_MISSIONS' => 'recommended_missions',
+        'VOLUNTEERING_HOURS' => 'volunteering_hours',
+        'VOLUNTEERING_GOALS' => 'volunteering_goals',
+        'MY_COMMENTS' => 'my_comments',
+        'MY_STORIES' => 'my_stories',
+        'NEW_MISSIONS' => 'new_missions',
+        'NEW_MESSAGES' => 'new_messages',
+    ],
+
+    /**
+     * Notification actions
+     */
+    'notification_actions' => [
+        'CREATED' => 'CREATED',
+        'APPROVED' => 'APPROVED',
+        'REJECTED' => 'APPROVED',
+        'PUBLISHED' => 'PUBLISHED',
+        'PENDING' => 'PENDING',
+        'DECLINED' => 'DECLINED',
+        'INVITE' => 'INVITE'
     ]
 ];
