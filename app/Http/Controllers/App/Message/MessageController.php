@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Models\Message;
 use App\Repositories\Message\MessageRepository;
 use App\Traits\RestExceptionHandlerTrait;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -105,6 +104,7 @@ class MessageController extends Controller
             ]
         );
         
+        // generate responce data
         $apiData = $messagesPaginated->total()  > 0 ? $messagesPaginated : $userMessages;
         $apiStatus = Response::HTTP_OK;
         $apiMessage = ($messagesPaginated->total() > 0) ?

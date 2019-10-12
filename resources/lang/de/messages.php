@@ -129,6 +129,7 @@ return [
         'MESSAGE_SEND_SUCESSFULLY' => 'DE: Message sent successfully',
         'MESSAGE_MESSAGES_ENTRIES_LISTING' => 'DE: Messages listed successfully',
         'MESSAGE_NO_MESSAGES_ENTRIES_FOUND' => 'DE: No messages found',
+        'MESSAGE_NOTIFICATION_SETTINGS_LISTING' => 'DE: Notification settings listed successfully',
     ],
 
 

@@ -52,22 +52,23 @@ class MessageRepository implements MessageInterface
      * Display a listing of specified resources with pagination.
      *
      * @param \Illuminate\Http\Request $request
-     * @param int $sendFrom
+     * @param int $sentFrom
      * @param int $userId
      * @return \Illuminate\Pagination\LengthAwarePaginator
      */
     public function getUserMessages(
         Request $request,
-        int $sendFrom,
+        int $sentFrom,
         int $userId = null
     ): LengthAwarePaginator {
-        $userMessageQuery = $this->message->where('sent_from', $sendFrom)
+        $userMessageQuery = $this->message->where('sent_from', $sentFrom)
                             ->when(
                                 $userId,
                                 function ($query, $userId) {
                                     return $query->where('user_id', $userId);
                                 }
                             )->orderBy('created_at', 'desc');
+
         return $userMessageQuery->paginate($request->perPage);
     }
 }

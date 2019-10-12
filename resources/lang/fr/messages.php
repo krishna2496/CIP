@@ -157,6 +157,7 @@ return [
         'MESSAGE_SEND_SUCESSFULLY' => 'message envoyé avec succès',
         'MESSAGE_MESSAGES_ENTRIES_LISTING' => 'Messages listés avec succès',
         'MESSAGE_NO_MESSAGES_ENTRIES_FOUND' => 'Aucun message trouvé',
+        'MESSAGE_NOTIFICATION_SETTINGS_LISTING' => 'Paramètres de notification répertoriés avec succès',
     ],
 
         

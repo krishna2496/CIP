@@ -20,13 +20,13 @@ interface MessageInterface
     * Display a listing of specified resources with pagination.
     *
     * @param \Illuminate\Http\Request $request
-    * @param int $sendFrom
+    * @param int $sentFrom
     * @param int $userId
     * @return \Illuminate\Pagination\LengthAwarePaginator
     */
     public function getUserMessages(
         Request $request,
-        int $sendFrom,
+        int $sentFrom,
         int $userId = null
     ): LengthAwarePaginator;
 }

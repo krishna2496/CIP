@@ -162,6 +162,7 @@ return [
         'MESSAGE_MESSAGES_ENTRIES_LISTING' => 'Messages listed successfully',
         'MESSAGE_NO_MESSAGES_ENTRIES_FOUND' => 'No messages found',
 
+        'MESSAGE_NOTIFICATION_SETTINGS_LISTING' => 'Notification settings listed successfully',
     ],
 
         
