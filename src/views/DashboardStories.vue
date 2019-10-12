@@ -135,7 +135,7 @@
     import {
         myStory,
         copyStory,
-        deleteStory,
+        deleteStory
     } from "../services/service";
     import ExportFile from "../services/ExportFile";
     import store from '../store';

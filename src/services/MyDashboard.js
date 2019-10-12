@@ -1,5 +1,5 @@
 import axios from 'axios'
-import store from '../../store'
+import store from '../store'
 
 export default async(filterData) => {
     let responseData = {};
@@ -8,10 +8,19 @@ export default async(filterData) => {
         defaultLanguage = (store.state.defaultLanguage).toLowerCase();
     }
     var url = process.env.VUE_APP_API_ENDPOINT + "app/dashboard";
-    // if (filterData.year != '') {
 
-    // }
-    document.body.classList.add("loader-enable");
+    if (filterData.year != '' && filterData.year != null) {
+        url = url + "?year=" + parseInt(filterData.year)
+    }
+
+    if (filterData.month != '' && filterData.month != null) {
+        url = url + "&month=" + filterData.month
+    }
+
+    if (filterData.mission_id != '' && filterData.mission_id != null) {
+        url = url + "&mission_id=" + filterData.mission_id
+    }
+
     await axios({
             url: url,
             method: 'GET',
@@ -24,15 +33,12 @@ export default async(filterData) => {
             responseData.error = false;
             responseData.message = response.data.message;
             responseData.data = response.data.data;
-            responseData.pagination = response.data.pagination;
-            document.body.classList.remove("loader-enable");
         })
         .catch(function(error) {
             if (error.response.data.errors[0].message) {
                 responseData.error = true;
                 responseData.message = error.response.data.errors[0].message;
             }
-            document.body.classList.remove("loader-enable");
         });
     return responseData;
-};
+}

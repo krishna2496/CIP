@@ -31,7 +31,7 @@
 										<img :src="$store.state.imagePath+'/assets/images/clock-ic.svg'" alt />
 									</i>
 									<p>
-										<span>1h50</span>{{languageData.label.hours}}
+										<span>{{stats.totalHours}}</span>{{languageData.label.hours}}
 									</p>
 								</div>
 							</b-list-group-item>
@@ -41,7 +41,7 @@
 										<img :src="$store.state.imagePath+'/assets/images/certified-ic.svg'" alt />
 									</i>
 									<p>
-										<span>{{languageData.label.top}} 2%</span>{{languageData.label.volunteering_rank}}
+										<span>{{languageData.label.top}} {{stats.volunteeringRank}}%</span>{{languageData.label.volunteering_rank}}
 									</p>
 								</div>
 							</b-list-group-item>
@@ -51,7 +51,7 @@
 										<img :src="$store.state.imagePath+'/assets/images/request-ic.svg'" alt />
 									</i>
 									<p>
-										<span>25</span>{{languageData.label.open_volunteering_requests}}
+										<span>{{stats.openVolunteeringRequests}}</span>{{languageData.label.open_volunteering_requests}}
 									</p>
 								</div>
 							</b-list-group-item>
@@ -61,7 +61,7 @@
 										<img :src="$store.state.imagePath+'/assets/images/target-ic.svg'" alt />
 									</i>
 									<p>
-										<span>10</span>{{languageData.label.mission}}
+										<span>{{stats.missionCount}}</span>{{languageData.label.mission}}
 									</p>
 								</div>
 							</b-list-group-item>
@@ -71,7 +71,7 @@
 										<img :src="$store.state.imagePath+'/assets/images/vote-ic.svg'" alt />
 									</i>
 									<p>
-										<span>55</span>{{languageData.label.voted_missions}}
+										<span>{{stats.votedMissions}}</span>{{languageData.label.voted_missions}}
 									</p>
 								</div>
 							</b-list-group-item>
@@ -81,7 +81,7 @@
 										<img :src="$store.state.imagePath+'/assets/images/group-ic.svg'" alt />
 									</i>
 									<p>
-										<span>101</span>{{languageData.label.organisation}}
+										<span>{{stats.organizationCount}}</span>{{languageData.label.organisation}}
 									</p>
 								</div>
 							</b-list-group-item>
@@ -93,16 +93,16 @@
 										<h5>{{languageData.label.hours_tracked_this_year}}</h5>
 									</div>
 									<div class="progress-chart">
-										<b-progress :max="max">
-											<b-progress-bar :value="value">
+										<b-progress :max="totalGoalHours">
+											<b-progress-bar :value="max">
 												{{languageData.label.completed}}:
-												<span>{{ value }} {{languageData.label.hours}}</span>
+												<span>{{ completedGoalHours }} {{languageData.label.hours}}</span>
 											</b-progress-bar>
 										</b-progress>
 										<ul class="progress-axis">
 											<li v-for="xvalue in xvalues" :key="xvalue">{{xvalue}}</li>
 										</ul>
-										<p class="progress-label">{{languageData.label.goal}}: 500 {{languageData.label.hours}}</p>
+										<p class="progress-label">{{languageData.label.goal}}: {{ totalGoalHours }} {{languageData.label.hours}}</p>
 									</div>
 								</div>
 							</b-col>
@@ -141,8 +141,10 @@
 	import store from '../store';
 	import Chart from "chart.js";
 	import {
-		storyMissionListing
+		storyMissionListing,
+		myDashboard
 	} from "../services/service";
+	import moment from 'moment'
 	export default {
 		components: {
 			ThePrimaryHeader,
@@ -157,24 +159,23 @@
 			return {
 				isShownComponent : true,
 				isPageLoaded : true,
-				value: 210,
-				max: 500,
-				xvalues: [0, 50, 100, 150, 200, 250, 300, 350, 400, 450, 500],
+				max: 0,
+				xvalues: [0],
 				defaultYear: "",
 				defaultMonth: "",
 				defaultMissionTitle: "",
 				yearList: [],
 				missionTitle: [],
 				monthList: [
-					["1","january"],
-					["2","february"],
-					["3","march"],
-					["4","april"],
-					["5","may"],
-					["6","june"],
-					["7","july"],
-					["8","august"],
-					["9","september"],
+					["01","january"],
+					["02","february"],
+					["03","march"],
+					["04","april"],
+					["05","may"],
+					["06","june"],
+					["07","july"],
+					["08","august"],
+					["09","september"],
 					["10","october"],
 					["11","november"],
 					["12","december"]
@@ -192,7 +193,22 @@
 					]
 				},
 				currentpage: "dashboard",
-				languageData : []
+				languageData : [],
+				filterData : {
+					year : '',
+					month : '',
+					mission_id : ''
+				},
+				stats :{
+					'totalHours' : 0,
+					'volunteeringRank' : 0,
+					'openVolunteeringRequests' : 0,
+					'missionCount' : 0,
+					'votedMissions' : 0,
+					'organizationCount' : 0
+				},
+				totalGoalHours : 0,
+				completedGoalHours : 0
 			};
 		},
 		mounted() {
@@ -276,9 +292,13 @@
 		methods: {
 			updateYear(value) {
 				this.defaultYear = value.selectedVal;
+				this.filterData.year = value.selectedId
+				this.getDashboardData(this.filterData)
 			},
 			updateMonth(value) {
 				this.defaultMonth = value.selectedVal;
+				this.filterData.month = value.selectedId
+				this.getDashboardData(this.filterData)
 			},
 			updateMissionTitle(value) {
 				this.defaultMissionTitle = value.selectedVal;
@@ -300,6 +320,45 @@
 						}
 					}
 				})
+			},
+			getDashboardData(filterData) {
+				myDashboard(filterData).then(response => {
+					if(response.error == false) {
+						if(response.data) {
+							if(response.data.total_hours && response.data.total_hours != '') {
+								this.stats.totalHours = response.data.total_hours 
+							}
+							if(response.data.volunteering_rank && response.data.volunteering_rank != '') {
+								this.stats.volunteeringRank = response.data.volunteering_rank
+							}
+							if(response.data.open_volunteering_requests && response.data.open_volunteering_requests != '') {
+								this.stats.openVolunteeringRequests = response.data.open_volunteering_requests
+							}
+							if(response.data.mission_count && response.data.mission_count != '') {
+								this.stats.missionCount = response.data.mission_count
+							}
+							if(response.data.voted_missions && response.data.voted_missions != '') {
+								this.stats.votedMissions = response.data.voted_missions
+							}
+							if(response.data.organization_count && response.data.organization_count != '') {
+								this.stats.organizationCount = response.data.organization_count
+							}
+							if(response.data.completed_goal_hours && response.data.completed_goal_hours != '') {
+								this.completedGoalHours = response.data.completed_goal_hours
+							}
+							if(response.data.total_goal_hours && response.data.total_goal_hours != '') {
+								this.totalGoalHours = response.data.total_goal_hours
+								let axes = (this.totalGoalHours/10);
+								this.max = Math.ceil(axes)
+								let xValue = 0;
+								for(var i=0;i<10;i++) {
+									xValue = xValue + this.max;
+									this.xvalues.push(xValue)
+								}
+							}
+						}
+					}
+				})
 			}
 		},
 		created() {
@@ -307,7 +366,18 @@
 			this.defaultYear =  this.languageData.label.years
 			this.defaultMonth =  this.languageData.label.month
 			this.defaultMissionTitle =  this.languageData.label.mission_title
+			let currentYear = new Date().getFullYear()
+			let currentMonth = moment().format('MM')
+			this.defaultYear = currentYear.toString();
+			this.monthList.filter((data,index) => {
+				if(data[0] == currentMonth) {
+					this.defaultMonth = data[1]
+				}
+			})
+			this.filterData.year = currentYear
+			this.filterData.month = currentMonth
 			this.missionListing()
+			this.getDashboardData(this.filterData)
 		}
 	};
 </script>

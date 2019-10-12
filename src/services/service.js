@@ -55,6 +55,7 @@ import editStory from "./Stories/EditStory"
 import commentListing from "./Comment/CommentListing"
 import deleteComment from "./Comment/DeleteComment"
 import cookieAgreement from "./CookieAgreement"
+import myDashboard from "./MyDashboard"
 
 export {
     loadLocaleMessages,
@@ -113,5 +114,6 @@ export {
     editStory,
     commentListing,
     deleteComment,
-    cookieAgreement
+    cookieAgreement,
+    myDashboard
 }
