@@ -376,6 +376,11 @@ $router->group(['middleware' => 'localization'], function ($router) {
         'middleware' => 'localization|tenant.connection|jwt.auth',
         'uses' => 'App\Story\StoryController@editStory']);
 
+    /* Fetch notification settings */
+    $router->get('/app/notification-settings', ['as' => 'app.notification-settings',
+        'middleware' => 'localization|tenant.connection|jwt.auth',
+        'uses' => 'App\Notification\NotificationTypeController@index']);
+
 /*
 |
 |--------------------------------------------------------------------------
