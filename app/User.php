@@ -59,8 +59,8 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      'password', 'avatar', 'timezone_id', 'availability_id', 'why_i_volunteer',
      'employee_id', 'department', 'manager_name', 'city_id', 'country_id',
      'profile_text', 'linked_in_url', 'status', 'title', 'city', 'country', 'timezone', 'language_id', 'availability',
-    'userCustomFieldValue', 'hours_goal'];
-    
+    'userCustomFieldValue', 'cookie_agreement_date','hours_goal'];
+
     /**
      * The attributes excluded from the model's JSON form.
      *

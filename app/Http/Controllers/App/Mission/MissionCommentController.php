@@ -145,13 +145,15 @@ class MissionCommentController extends Controller
     public function getUserMissionComments(Request $request): JsonResponse
     {
         $languageId = $this->languageHelper->getLanguageId($request);
+        $defaultTenantLanguage = $this->languageHelper->getDefaultTenantLanguage($request);
         $userMissionComments = $this->missionCommentRepository->getUserComments(
             $request->auth->user_id,
-            $languageId
+            $languageId,
+            $defaultTenantLanguage->language_id
         );
         
         // Set response data
-        $apiData = $userMissionComments->toArray();
+        $apiData = $userMissionComments;
         $apiStatus = Response::HTTP_OK;
         $apiMessage = (count($apiData) > 0) ? trans('messages.success.MESSAGE_USER_COMMENTS_LISTING')
         : trans('messages.success.MESSAGE_NO_MISSION_COMMENTS_ENTRIES');
@@ -193,12 +195,14 @@ class MissionCommentController extends Controller
     public function exportComments(Request $request): Object
     {
         $languageId = $this->languageHelper->getLanguageId($request);
-        $userMissionCommentsData = $this->missionCommentRepository->getUserComments(
+        $defaultTenantLanguage = $this->languageHelper->getDefaultTenantLanguage($request);
+        $userMissionComments = $this->missionCommentRepository->getUserComments(
             $request->auth->user_id,
-            $languageId
+            $languageId,
+            $defaultTenantLanguage->language_id
         );
 
-        if ($userMissionCommentsData->count() == 0) {
+        if ($userMissionComments->count() == 0) {
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_NO_MISSION_COMMENTS_ENTRIES');
             return $this->responseHelper->success($apiStatus, $apiMessage);
@@ -214,7 +218,7 @@ class MissionCommentController extends Controller
         ];
         
         $excel->setHeadlines($headings);
-        foreach ($userMissionCommentsData as $comments) {
+        foreach ($userMissionComments as $comments) {
             $excel->appendRow([
                 $comments->title,
                 $comments->comment,
