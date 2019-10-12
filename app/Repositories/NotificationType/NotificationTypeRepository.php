@@ -4,6 +4,7 @@ namespace App\Repositories\NotificationType;
 use App\Repositories\NotificationType\NotificationTypeInterface;
 use App\Models\NotificationType;
 use Illuminate\Database\Eloquent\Collection;
+use App\Models\UserNotification;
 
 class NotificationTypeRepository implements NotificationTypeInterface
 {
@@ -13,14 +14,21 @@ class NotificationTypeRepository implements NotificationTypeInterface
     private $notificationType;
 
     /**
+     * @var App\Models\UserNotification
+     */
+    private $userNotification;
+
+    /**
      * Create a new notification type repository instance.
      *
      * @param  App\Models\NotificationType $notificationType
+     * @param  App\Models\UserNotification $userNotification
      * @return void
      */
-    public function __construct(NotificationType $notificationType)
+    public function __construct(NotificationType $notificationType, UserNotification $userNotification)
     {
         $this->notificationType = $notificationType;
+        $this->userNotification = $userNotification;
     }
 
     /**
@@ -46,4 +54,24 @@ class NotificationTypeRepository implements NotificationTypeInterface
 
         return $notificationSettings;
     }
+
+    /**
+     * Store or update user notification settings
+     *
+     * @param array $data
+     * @param int $userId
+     * @return bool
+     */
+    public function storeOrUpdateUserNotification(array $data, int $userId): bool
+    {
+        foreach ($data['settings'] as $value) {
+            if ($value['value'] == 1) {
+                $this->userNotification->enableUserNotification($userId, $value['notification_type_id']);
+            } else {
+                $this->userNotification->disableUserNotification($userId, $value['notification_type_id']);
+            }
+        }
+        return true;
+    }
+    
 }
