@@ -179,4 +179,17 @@ class MissionApplicationRepository implements MissionApplicationInterface
         ->groupBy('mission.organisation_id')
         ->get()->toArray();
     }
+
+    /**
+     * Get pending application count.
+     *
+     * @param int $userId
+     * @param int $year
+     * @param int $month
+     * @return null|int
+     */
+    public function pendingApplicationCount(int $userId, int $year, int $month): ?int
+    {
+        return $this->missionApplication->pendingApplicationCount($userId, $year, $month);
+    }
 }

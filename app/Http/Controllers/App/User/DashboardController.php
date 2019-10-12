@@ -87,11 +87,15 @@ class DashboardController extends Controller
         $missionId = $request->mission_id ?? null;
 
         $timesheetData = $this->timesheetRepository->getTotalHours($userId, $year, $month);
-        $timesheetCount = $this->timesheetRepository->getTotalPendingRequests($userId, $year, $month);
-        $missionCount = $this->missionApplicationRepository->missionApplicationCount($userId, $year, $month);
+        $pendingApplicationCount = $this->missionApplicationRepository->pendingApplicationCount($userId, $year, $month);
+        $approvedApplicationCount = $this->missionApplicationRepository->missionApplicationCount(
+            $userId,
+            $year,
+            $month
+        );
         $organizationCount = $this->missionApplicationRepository->organizationCount($userId, $year, $month);
         $goalHours = $this->userRepository->getUserGoalHours($userId);
-        $tenantGoalHours = $this->tenantOptionRepository->getOptionValueFromOptionName('goal_hours');
+        $tenantGoalHours = $this->tenantOptionRepository->getOptionValueFromOptionName('default_user_goal_hours');
         $chartData = $this->timesheetRepository->getTotalHoursbyMonth($userId, $year, $missionId);
         $allUsersTimesheetData = $this->timesheetRepository->getUsersTotalHours($year, $month);
         $totalGoalHours = $this->timesheetRepository->getTotalHoursForYear($userId, $year);
@@ -99,23 +103,32 @@ class DashboardController extends Controller
         // For total hours
         $totalHours = 0;
         foreach ($timesheetData as $timesheet) {
-            $totalHours += $timesheet['total_hours'];
+            $totalHours += $timesheet['total_minutes'];
         }
 
         // For hours tracked this year
         $totalGoals = 0;
         foreach ($totalGoalHours as $timesheetHours) {
-            $totalGoals += $timesheetHours['total_hours'];
+            $totalGoals += $timesheetHours['total_minutes'];
         }
 
         // for volunteering Rank
-        $key = array_search($userId, array_column($allUsersTimesheetData, 'user_id'));
-        $volunteeringRank = (count($allUsersTimesheetData) != 0) ? (($key+1) / count($allUsersTimesheetData)) * 100 : 0;
-     
+        $userRankArray = array();
+        foreach ($allUsersTimesheetData as $allUsersTimesheet) {
+            array_push($userRankArray, $allUsersTimesheet['total_minutes']);
+            if ($userId == $allUsersTimesheet['user_id']) {
+                $usertimesheetMinutes = $allUsersTimesheet['total_minutes'];
+            }
+        }
+        $userRank = array_values(array_unique($userRankArray));
+        $arrKey = array_search($usertimesheetMinutes, $userRank);
+        $volunteeringRank = (count($allUsersTimesheetData) !== 0) ?
+        (100/count($allUsersTimesheetData)) * ($arrKey+1) : 0;
+       
         $apiData['total_hours'] = $this->helpers->convertInReportTimeFormat($totalHours);
         $apiData['volunteering_rank'] = (int)$volunteeringRank;
-        $apiData['open_volunteering_requests'] = $timesheetCount;
-        $apiData['mission_count'] = $missionCount;
+        $apiData['open_volunteering_requests'] = $pendingApplicationCount;
+        $apiData['mission_count'] = $approvedApplicationCount;
         $apiData['voted_missions'] = '';
         $apiData['organization_count'] = count($organizationCount);
         $apiData['total_goal_hours'] = (!is_null($goalHours)) ? $goalHours : $tenantGoalHours;

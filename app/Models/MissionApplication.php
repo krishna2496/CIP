@@ -133,7 +133,24 @@ class MissionApplication extends Model
         return $this->where(['user_id' => $userId])
         ->whereYear('applied_at', $year)
         ->whereMonth('applied_at', $month)
-        ->where('approval_status', '<>', config('constants.application_status.REFUSED'))
+        ->where('approval_status', config('constants.application_status.AUTOMATICALLY_APPROVED'))
+        ->count();
+    }
+
+    /**
+     * Get mission application count
+     *
+     * @param int $userId
+     * @param int $year
+     * @param int $month
+     * @return int
+     */
+    public function pendingApplicationCount(int $userId, int $year, int $month): int
+    {
+        return $this->where(['user_id' => $userId])
+        ->whereYear('applied_at', $year)
+        ->whereMonth('applied_at', $month)
+        ->where('approval_status', config('constants.application_status.PENDING'))
         ->count();
     }
 }

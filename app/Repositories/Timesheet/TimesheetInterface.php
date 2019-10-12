@@ -126,16 +126,6 @@ interface TimesheetInterface
     public function getTotalHours(int $userId, int $year, int $month): ?array;
 
     /**
-     * Get total pending requests
-     *
-     * @param int $userId
-     * @param int $year
-     * @param int $month
-     * @return null|int
-     */
-    public function getTotalPendingRequests(int $userId, int $year, int $month): ?int;
-
-    /**
      * Get user timesheet total goal actions data
      *
      * @param int $userId
