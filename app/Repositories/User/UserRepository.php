@@ -14,6 +14,7 @@ use App\Models\UserSkill;
 use App\Models\UserCustomFieldValue;
 use App\Models\Availability;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Carbon\Carbon;
 
 class UserRepository implements UserInterface
 {
@@ -333,5 +334,20 @@ class UserRepository implements UserInterface
     public function getUserGoalHours(int $userId): ?int
     {
         return $this->user->getUserGoalHours($userId);
+    }
+
+    /**
+     * Update cookie agreement related to user
+     *
+     * @param bool $acceptAgreement
+     * @param int $userId
+     * @return null|bool
+     */
+    public function updateCookiAgreement(bool $acceptAgreement, int $userId): ?bool
+    {
+        $todayDateTime = Carbon::now()->toDateTimeString();
+        
+        return $acceptAgreement ?
+        $this->user->where('user_id', $userId)->update(['cookie_agreement_date' => $todayDateTime]) : null;
     }
 }

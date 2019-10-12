@@ -146,9 +146,9 @@ class MissionCommentRepository implements MissionCommentInterface
                 ->getMissionTitle($value->mission_id, $languageId, $defaultTenantLanguageId);
                 unset($value->mission);
             }
-            $commentData['comments'] = $comments;    
+            $commentData['comments'] = $comments;
             $commentData['stats'] = $statusCount;
-        }        
+        }
         $comments = $commentData;
         return $comments;
     }

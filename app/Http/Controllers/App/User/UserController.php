@@ -370,4 +370,38 @@ class UserController extends Controller
         $apiStatus = Response::HTTP_OK;
         return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
     }
+
+    /**
+     * store cookie agreement date
+     *
+     * @param Illuminate\Http\Request $request
+     * @return Illuminate\Http\JsonResponse
+     */
+    public function saveCookieAgreement(Request $request): JsonResponse
+    {
+        $validator = Validator::make($request->toArray(), [
+            'agreement' => 'required|boolean'
+        ]);
+
+        // If request parameter have any error
+        if ($validator->fails()) {
+            return $this->responseHelper->error(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                config('constants.error_codes.ERROR_USER_INVALID_DATA'),
+                $validator->errors()->first()
+            );
+        }
+
+        $userId = $request->auth->user_id;
+        // Update cookie agreement related to user
+        $this->userRepository->updateCookiAgreement($request->agreement, $userId);
+
+        // Set response data
+        $apiData = ['user_id' => $userId];
+        $apiStatus = Response::HTTP_OK;
+        $apiMessage = trans('messages.success.MESSAGE_USER_COOKIE_AGREEMENT_ACCEPTED');
+        
+        return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
+    }
 }
