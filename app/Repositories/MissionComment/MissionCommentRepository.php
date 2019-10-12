@@ -6,7 +6,7 @@ use App\Repositories\MissionComment\MissionCommentInterface;
 use App\Models\Comment;
 use App\Models\Mission;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Database\Eloquent\Collection;
+use App\Repositories\Mission\MissionRepository;
 
 class MissionCommentRepository implements MissionCommentInterface
 {
@@ -19,18 +19,25 @@ class MissionCommentRepository implements MissionCommentInterface
      * @var App\Models\Mission
      */
     private $mission;
- 
+
+    /**
+     * @var App\Repositories\Mission\MissionRepository
+     */
+    private $missionRepository;
+
     /**
      * Create a new mission comment repository instance.
      *
      * @param  App\Models\Comment $comment
      * @param  App\Models\Mission $mission
+     * @param  App\Repositories\Mission\MissionRepository $missionRepository
      * @return void
      */
-    public function __construct(Comment $comment, Mission $mission)
+    public function __construct(Comment $comment, Mission $mission, MissionRepository $missionRepository)
     {
         $this->comment = $comment;
         $this->mission = $mission;
+        $this->missionRepository = $missionRepository;
     }
     
     /**
@@ -114,36 +121,35 @@ class MissionCommentRepository implements MissionCommentInterface
      *
      * @param int $userId
      * @param int $languageId
-     * @return Illuminate\Database\Eloquent\Collection
+     * @return array
      */
-    public function getUserComments(int $userId, int $languageId): Collection
+    public function getUserComments(int $userId, int $languageId, int $defaultTenantLanguageId): array
     {
         $comments = $this->comment->where('user_id', $userId)
         ->orderby('created_at', 'desc')
         ->with(['mission' => function ($query) use ($languageId) {
-            $query->with(['missionLanguage' => function ($query) use ($languageId) {
-                $query->select('mission_language_id', 'mission_id', 'title')
-                ->where('language_id', $languageId);
-            }]);
+            $query->select('mission_id');
         }])->get();
 
+        $commentData = array();
         // Fetch comment counts by status
         if (count($comments) > 0) {
-            foreach ($comments as $comment) {
-                if ($comment->mission->missionLanguage) {
-                    $comment->title = $comment->mission->missionLanguage[0]->title;
-                    unset($comment->mission);
-                }
-            }
-            
+            // Count status
             $statusCount = $this->comment
             ->selectRaw("COUNT(CASE WHEN approval_status = 'PUBLISHED' THEN 1 END) AS published,
-			COUNT(CASE WHEN approval_status = 'PENDING' THEN 1 END) AS pending,
-			COUNT(CASE WHEN approval_status = 'DECLINED' THEN 1 END) AS declined")
+            COUNT(CASE WHEN approval_status = 'PENDING' THEN 1 END) AS pending,
+            COUNT(CASE WHEN approval_status = 'DECLINED' THEN 1 END) AS declined")
             ->where('user_id', $userId)->get();
-
-            $comments =  $comments->merge($statusCount);
-        }
+            
+            foreach ($comments as $value) {
+                $value->title = $this->missionRepository
+                ->getMissionTitle($value->mission_id, $languageId, $defaultTenantLanguageId);
+                unset($value->mission);
+            }
+            $commentData['comments'] = $comments;    
+            $commentData['stats'] = $statusCount;
+        }        
+        $comments = $commentData;
         return $comments;
     }
 
