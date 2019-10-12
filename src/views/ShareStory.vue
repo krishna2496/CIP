@@ -1,4 +1,3 @@
-</script>
 <template>
 	<div class="share-stories-page inner-pages">
 		<header>

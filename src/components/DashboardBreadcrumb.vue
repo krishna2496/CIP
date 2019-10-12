@@ -18,6 +18,7 @@
 	import {
 		setTimeout
 	} from "timers";
+	import constants from '../constant';
 	import store from "../store";
 	export default {
 		name: "Breadcrumb",
@@ -26,6 +27,7 @@
 		},
 		data() {
 			return {
+				isStoryDisplay: true,
 				languageData: [],
 				items: [{
 						id: 1,
@@ -70,13 +72,19 @@
 					currentLink.addEventListener("click", this.handleBreadcrumb);
 				}
 			});
+			this.isStoryDisplay = this.settingEnabled(constants.STORIES_ENABLED);
+			
 			this.languageData = JSON.parse(store.state.languageLabel);
 			this.items[0].name = this.languageData.label.dashboard
 			this.items[1].name = this.languageData.label.volunteering_history
 			this.items[2].name = this.languageData.label.volunteering_timesheet
 			this.items[3].name = this.languageData.label.messages
 			this.items[4].name = this.languageData.label.comment_history
-			this.items[5].name = this.languageData.label.my_stories
+			if(!this.isStoryDisplay) {
+				this.items.splice(5,1)
+			} else {
+				this.items[5].name = this.languageData.label.my_stories
+			}
 		}
 	};
 </script>

@@ -73,14 +73,8 @@
                             <b-col class="story-card-block" md="6" lg="4" v-for="(data,index) in storyData" :key=index>
                                 <div class="story-img"  :style="{backgroundImage: 'url('+getMediaPath(data)+')'}"></div>
                                 <div class="story-card">
-                                   
-                                    <h4 class="story-card-title">
-                                        <b-link
-                                            :to="'/story-detail/'+data.story_id"
-                                            :title="data.title"
-                                            v-if="data.title"
-                                            >{{data.title | substring(40)}}
-                                        </b-link>
+                                    <h4 class="story-card-title">                  
+                                        {{data.title | substring(40)}}
                                     </h4>
                                     <div class="story-card-body">
                                         <span>{{data.created | formatDate}}</span>
@@ -167,7 +161,8 @@
                 message: null,
                 showDismissibleAlert : false,
                 storyText : '',
-                isLoaderActive : false
+                isLoaderActive : false,
+                isStoryDisplay: true,
             };
         },
         methods: {
@@ -296,6 +291,10 @@
         created() {
             this.getMyStory();
             this.languageData = JSON.parse(store.state.languageLabel);
+            this.isStoryDisplay = this.settingEnabled(constants.STORIES_ENABLED);
+            if(!this.isStoryDisplay) {
+				this.$router.push('/home')
+			}
             let storyArray = JSON.parse(store.state.storyDashboardText)
 			if(storyArray) {
 				storyArray.filter((data,index) => {
