@@ -378,13 +378,12 @@ $router->group(['middleware' => 'localization'], function ($router) {
     $router->post('/app/accept-cookie-agreement', ['as' => 'app.cookie-agreement.accept',
         'middleware' => 'localization|tenant.connection|jwt.auth|JsonApiMiddleware',
         'uses' => 'App\User\UserController@saveCookieAggrement']);
+});
 
     /* Fetch notification settings */
     $router->get('/app/notification-settings', ['as' => 'app.notification-settings',
         'middleware' => 'localization|tenant.connection|jwt.auth',
         'uses' => 'App\Notification\NotificationTypeController@index']);
-});
-
 
 /*
 |
