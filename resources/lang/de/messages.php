@@ -125,6 +125,7 @@ return [
 
         'MESSAGE_STORY_SUBMITTED_SUCESSFULLY' => 'DE: Story submitted sucessfully',
         'MESSAGE_STORY_IMAGE_DELETED' => 'DE: Story image deleted sucessfully',
+        'MESSAGE_USER_COOKIE_AGREEMENT_ACCEPTED' => 'DE: Cookie agreement accepted successfully',
         'MESSAGE_NOTIFICATION_SETTINGS_LISTING' => 'DE: Notification settings listed successfully',
         'MESSAGE_USER_NOTIFICATION_SETTINGS_UPDATED' => 'DE: User notification settings updated successfully',
     ],
