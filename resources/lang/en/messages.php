@@ -163,6 +163,7 @@ return [
         'MESSAGE_NO_MESSAGES_ENTRIES_FOUND' => 'No messages found',
 
         'MESSAGE_NOTIFICATION_SETTINGS_LISTING' => 'Notification settings listed successfully',
+        'MESSAGE_USER_NOTIFICATION_SETTINGS_UPDATED' => 'User notification settings updated successfully',
     ],
 
         

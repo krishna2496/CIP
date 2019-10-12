@@ -130,6 +130,7 @@ return [
         'MESSAGE_MESSAGES_ENTRIES_LISTING' => 'DE: Messages listed successfully',
         'MESSAGE_NO_MESSAGES_ENTRIES_FOUND' => 'DE: No messages found',
         'MESSAGE_NOTIFICATION_SETTINGS_LISTING' => 'DE: Notification settings listed successfully',
+        'MESSAGE_USER_NOTIFICATION_SETTINGS_UPDATED' => 'DE: User notification settings updated successfully',
     ],
 
 

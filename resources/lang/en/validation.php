@@ -186,6 +186,7 @@ return [
         'news_content.translations.*.title' => 'title',
         'news_content.translations.*.description' => 'description',
         'translations.*.title' => 'title',
+        'settings.*.notification_type_id' => 'notification type id',
         ],
 
 ];
