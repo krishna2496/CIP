@@ -153,13 +153,15 @@ return [
         'MESSAGE_STORY_VISITOR_ADDED_SUCESSFULLY' => 'Le visiteur de l\'histoire a été ajouté avec succès',
         'MESSAGE_STORY_SUBMITTED_SUCESSFULLY' => 'Histoire soumise avec succès',
         'MESSAGE_STORY_IMAGE_DELETED' => 'Image de l\'histoire supprimée avec succès',
-        'MESSAGE_USER_COOKIE_AGGREMENT_ACCEPTED' => 'Agrégation de cookies acceptée avec succès',
+        
         'MESSAGE_SEND_SUCESSFULLY' => 'message envoyé avec succès',
         'MESSAGE_MESSAGES_ENTRIES_LISTING' => 'Messages listés avec succès',
-        'MESSAGE_NO_MESSAGES_ENTRIES_FOUND' => 'Aucun message trouvé',
-        'MESSAGE_NOTIFICATION_SETTINGS_LISTING' => 'Paramètres de notification répertoriés avec succès',
-        'MESSAGE_USER_NOTIFICATION_SETTINGS_UPDATED' => 'Paramètres de notification utilisateur mis à jour avec succès',
+        'MESSAGE_NO_MESSAGES_ENTRIES_FOUND' => 'Aucun message trouvé',                
         'MESSAGE_USER_MESSAGE_DELETED' => 'Message supprimé avec succès',
+
+        'MESSAGE_USER_COOKIE_AGREEMENT_ACCEPTED' => 'Contrat de cookie accepté avec succès',
+        'MESSAGE_NOTIFICATION_SETTINGS_LISTING' => 'Paramètres de notification répertoriés avec succès',
+        'MESSAGE_USER_NOTIFICATION_SETTINGS_UPDATED' => 'Paramètres de notification utilisateur mis à jour avec succès'
     ],
 
         

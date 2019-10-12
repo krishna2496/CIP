@@ -395,12 +395,11 @@ $router->group(['middleware' => 'localization'], function ($router) {
         'uses' => 'App\Message\MessageController@destroy']);
 });
 
-
-
     /* Fetch notification settings */
     $router->get('/app/notification-settings', ['as' => 'app.notification-settings',
         'middleware' => 'localization|tenant.connection|jwt.auth',
-        'uses' => 'App\Notification\NotificationTypeController@index']);
+          'uses' => 'App\Notification\NotificationTypeController@index']);
+
 
     /* Store or update user notification settings */
     $router->post('/app/user-notification-settings/update', ['as' => 'app.user-notification-settings.update',
