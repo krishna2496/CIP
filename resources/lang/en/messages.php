@@ -158,6 +158,7 @@ return [
         'MESSAGE_STORY_SUBMITTED_SUCESSFULLY' => 'Story submitted sucessfully',
         'MESSAGE_STORY_IMAGE_DELETED' => 'Story image deleted sucessfully',
         'MESSAGE_NOTIFICATION_SETTINGS_LISTING' => 'Notification settings listed successfully',
+        'MESSAGE_USER_NOTIFICATION_SETTINGS_UPDATED' => 'User notification settings updated successfully',
     ],
 
         
