@@ -86,7 +86,8 @@ $app->singleton(
 $app->routeMiddleware([
     'localization' => App\Http\Middleware\LocalizationMiddleware::class,
     'JsonApiMiddleware' => App\Http\Middleware\JsonApiMiddleware::class,
-    'PaginationMiddleware' => App\Http\Middleware\PaginationMiddleware::class
+    'PaginationMiddleware' => App\Http\Middleware\PaginationMiddleware::class,
+    'RedirectInvalidIps' => App\Http\Middleware\RedirectInvalidIPs::class
 ]);
 
 /*
