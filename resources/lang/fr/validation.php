@@ -174,6 +174,7 @@ return [
         'option_value.translations.*.lang' => 'language code',
         'timesheet_entries.*.timesheet_id' => 'timesheet id',
 		'translations.*.title' => 'title',
+        'settings.*.notification_type_id' => 'notification type id',
         ],
 
 ];
