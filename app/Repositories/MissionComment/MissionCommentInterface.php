@@ -4,7 +4,6 @@ namespace App\Repositories\MissionComment;
 use App\Models\Comment;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Http\Request;
-use Illuminate\Database\Eloquent\Collection;
 
 interface MissionCommentInterface
 {
@@ -32,9 +31,9 @@ interface MissionCommentInterface
      *
      * @param int $userId
      * @param int $languageId
-     * @return Illuminate\Database\Eloquent\Collection
+     * @return array
      */
-    public function getUserComments(int $userId, int $languageId): Collection;
+    public function getUserComments(int $userId, int $languageId, int $defaultTenantLanguageId): array;
     
     /**
      * Delete comment by commentId

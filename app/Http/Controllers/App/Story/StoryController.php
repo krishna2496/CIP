@@ -219,7 +219,7 @@ class StoryController extends Controller
                 $storyId,
                 config('constants.story_status.PUBLISHED'),
                 $request->auth->user_id,
-                config('constants.story_status.DRAFT')
+                array(config('constants.story_status.DRAFT'), config('constants.story_status.PENDING'))
             );
             
             if ($story->count() == 0) {
@@ -328,7 +328,7 @@ class StoryController extends Controller
         foreach ($stories as $story) {
             $excel->appendRow([
                 $story->title,
-                $story->description,
+                strip_tags($story->description),
                 $story->status,
                 $story->mission->missionLanguage[0]->title,
                 $story->published_at

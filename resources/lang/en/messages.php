@@ -158,6 +158,7 @@ return [
         'MESSAGE_STORY_SUBMITTED_SUCESSFULLY' => 'Story submitted sucessfully',
         'MESSAGE_STORY_IMAGE_DELETED' => 'Story image deleted sucessfully',
         'MESSAGE_USER_COOKIE_AGGREMENT_ACCEPTED' => 'Cookie aggrement accepted successfully',
+        'MESSAGE_NOTIFICATION_SETTINGS_LISTING' => 'Notification settings listed successfully',
     ],
 
         
