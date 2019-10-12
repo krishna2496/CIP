@@ -375,7 +375,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
         'uses' => 'App\Story\StoryController@editStory']);
 
     /* accept cookie agreement date*/
-    $router->post('/app/accept-cookie-agreement', ['as' => 'app.cookieagreement.accept',
+    $router->post('/app/accept-cookie-agreement', ['as' => 'app.cookie-agreement.accept',
         'middleware' => 'localization|tenant.connection|jwt.auth|JsonApiMiddleware',
         'uses' => 'App\User\UserController@saveCookieAggrement']);
 
@@ -386,7 +386,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
             
     /* Get User's message Listing*/
     $router->get('/app/message/list', ['as' => 'app.message.list',
-        'middleware' => 'localization|tenant.connection|jwt.auth|JsonApiMiddleware',
+        'middleware' => 'localization|tenant.connection|jwt.auth',
         'uses' => 'App\Message\MessageController@getUserMessages']);
 });
 
