@@ -184,4 +184,13 @@ interface MissionInterface
      * @return null|array
      */
     public function getUserMissions(Request $request): ?array;
+    
+    /** Get mission title
+     *
+     * @param int $missionId
+     * @param int $languageId
+     * @param int $defaultTenantLanguageId
+     * @return string
+     */
+    public function getMissionTitle(int $missionId, int $languageId, int $defaultTenantLanguageId): string;
 }
