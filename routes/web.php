@@ -388,6 +388,11 @@ $router->group(['middleware' => 'localization'], function ($router) {
     $router->get('/app/message/list', ['as' => 'app.message.list',
         'middleware' => 'localization|tenant.connection|jwt.auth',
         'uses' => 'App\Message\MessageController@getUserMessages']);
+
+    /* Delete Message details */
+    $router->delete('/app/message/{messageId}', ['as' => 'app.message.destroy',
+        'middleware' => 'localization|tenant.connection|jwt.auth',
+        'uses' => 'App\Message\MessageController@destroy']);
 });
 
 
