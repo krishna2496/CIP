@@ -1333,7 +1333,7 @@ class AppStoryTest extends TestCase
         $this->call('POST', 'app/story', $params, [], ['story_images' => $storyImages], ['HTTP_token' => $token]);
         $this->seeStatusCode(201);
         $story = App\Models\Story::orderBy("story_id", "DESC")->take(1)->first();
-        
+
         $params = [
             'mission_id' => $mission->mission_id,
             'title' => str_random(10),
@@ -1345,6 +1345,242 @@ class AppStoryTest extends TestCase
         $storyImages = array(
             new \Illuminate\Http\UploadedFile($path, 'dummy.svg', '', null, null, true)
         );
+        $this->call('PATCH', 'app/story/'.$story->story_id, $params, [], ['story_images' => $storyImages], ['HTTP_token' => $token]);
+        $this->seeStatusCode(422);
+
+        App\Models\Story::where('mission_id', $mission->mission_id)->delete();
+        $user->delete();
+        $mission->delete();
+        $story->delete();
+    }
+
+    /**
+     * @test
+     *
+     * It should return error for invalid video url for update story
+     *
+     * @return void
+     */
+    public function it_should_return_error_invalid_video_url_for_update_story()
+    {
+        $connection = 'tenant';
+        $user = factory(\App\User::class)->make();
+        $user->setConnection($connection);
+        $user->save();
+
+        $params = [
+            "organisation" => [
+                "organisation_id" => 1,
+                "organisation_name" => str_random(10),
+                "organisation_detail" => [
+                    [
+                       "lang"=>"en",
+                       "detail"=>"Testing organisation description in English"
+                    ],
+                    [
+                       "lang"=>"fr",
+                       "detail"=>"Testing organisation description in French"
+                    ]
+                ]
+            ],
+            "location" => [
+                "city_id" => 1,
+                "country_code" => "US"
+            ],
+            "mission_detail" => [[
+                    "lang" => "en",
+                    "title" => 'title',
+                    "short_description" => str_random(20),
+                    "objective" => str_random(20),
+                    "section" => [
+                        [
+                            "title" => str_random(10),
+                            "description" => str_random(100),
+                        ],
+                        [
+                            "title" => str_random(10),
+                            "description" => str_random(100),
+                        ]
+                    ]
+                ]
+            ],
+            "media_images" => [[
+                    "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer6.png",
+                    "default" => "1"
+                ]
+            ],
+            "documents" => [[
+                    "document_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/test/sample.pdf"
+                ]
+            ],
+            "media_videos"=> [[
+                "media_name" => "youtube_small",
+                "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg"
+                ]
+            ],
+            "start_date" => "2019-05-15 10:40:00",
+            "end_date" => "2019-10-15 10:40:00",
+            "mission_type" => config("constants.mission_type.GOAL"),
+            "goal_objective" => rand(1, 1000),
+            "total_seats" => rand(1, 1000),
+            "application_deadline" => "2019-07-28 11:40:00",
+            "publication_status" => config("constants.publication_status.APPROVED"),
+            "theme_id" => 1,
+            "availability_id" => 1,
+            "skills" => []
+        ];
+
+        $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(201);
+        $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
+        DB::setDefaultConnection('mysql');
+    
+        $params = [
+            'mission_id' => $mission->mission_id,
+            'title' => str_random(10),
+            'description' => str_random(50),
+            'story_videos' => 'https://www.youtube.com/watch?v=PCwL3-hkKrg,https://www.youtube.com/watch?v=PCwL3-hkKrg1'
+        ];
+        DB::setDefaultConnection('mysql');
+        
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
+        $path  = storage_path().'/unitTestFiles/test.jpg';
+        $storyImages = array(
+            new \Illuminate\Http\UploadedFile($path, 'test.jpg', '', null, null, true)
+        );
+        $this->call('POST', 'app/story', $params, [], ['story_images' => $storyImages], ['HTTP_token' => $token]);
+        $this->seeStatusCode(201);
+        $story = App\Models\Story::orderBy("story_id", "DESC")->take(1)->first();
+
+        $params = [
+            'mission_id' => $mission->mission_id,
+            'title' => str_random(10),
+            'description' => str_random(50),
+            'story_videos' => str_random(10)
+        ];
+        DB::setDefaultConnection('mysql');
+        
+        $this->call('PATCH', 'app/story/'.$story->story_id, $params, [], ['story_images' => $storyImages], ['HTTP_token' => $token]);
+        $this->seeStatusCode(422);
+
+        App\Models\Story::where('mission_id', $mission->mission_id)->delete();
+        $user->delete();
+        $mission->delete();
+        $story->delete();
+    }
+
+    /**
+     * @test
+     *
+     * It should return error for maximum video url for update story
+     *
+     * @return void
+     */
+    public function it_should_return_error_for_maximum_video_url_limit_for_update_story()
+    {
+        $connection = 'tenant';
+        $user = factory(\App\User::class)->make();
+        $user->setConnection($connection);
+        $user->save();
+
+        $params = [
+            "organisation" => [
+                "organisation_id" => 1,
+                "organisation_name" => str_random(10),
+                "organisation_detail" => [
+                    [
+                       "lang"=>"en",
+                       "detail"=>"Testing organisation description in English"
+                    ],
+                    [
+                       "lang"=>"fr",
+                       "detail"=>"Testing organisation description in French"
+                    ]
+                ]
+            ],
+            "location" => [
+                "city_id" => 1,
+                "country_code" => "US"
+            ],
+            "mission_detail" => [[
+                    "lang" => "en",
+                    "title" => 'title',
+                    "short_description" => str_random(20),
+                    "objective" => str_random(20),
+                    "section" => [
+                        [
+                            "title" => str_random(10),
+                            "description" => str_random(100),
+                        ],
+                        [
+                            "title" => str_random(10),
+                            "description" => str_random(100),
+                        ]
+                    ]
+                ]
+            ],
+            "media_images" => [[
+                    "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer6.png",
+                    "default" => "1"
+                ]
+            ],
+            "documents" => [[
+                    "document_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/test/sample.pdf"
+                ]
+            ],
+            "media_videos"=> [[
+                "media_name" => "youtube_small",
+                "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg"
+                ]
+            ],
+            "start_date" => "2019-05-15 10:40:00",
+            "end_date" => "2019-10-15 10:40:00",
+            "mission_type" => config("constants.mission_type.GOAL"),
+            "goal_objective" => rand(1, 1000),
+            "total_seats" => rand(1, 1000),
+            "application_deadline" => "2019-07-28 11:40:00",
+            "publication_status" => config("constants.publication_status.APPROVED"),
+            "theme_id" => 1,
+            "availability_id" => 1,
+            "skills" => []
+        ];
+
+        $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(201);
+        $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
+        DB::setDefaultConnection('mysql');
+    
+        $params = [
+            'mission_id' => $mission->mission_id,
+            'title' => str_random(10),
+            'description' => str_random(50),
+            'story_videos' => 'https://www.youtube.com/watch?v=PCwL3-hkKrg,https://www.youtube.com/watch?v=PCwL3-hkKrg1'
+        ];
+        DB::setDefaultConnection('mysql');
+        
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
+        $path  = storage_path().'/unitTestFiles/test.jpg';
+        $storyImages = array(
+            new \Illuminate\Http\UploadedFile($path, 'test.jpg', '', null, null, true)
+        );
+        $this->call('POST', 'app/story', $params, [], ['story_images' => $storyImages], ['HTTP_token' => $token]);
+        $this->seeStatusCode(201);
+        $story = App\Models\Story::orderBy("story_id", "DESC")->take(1)->first();
+
+        $storyVideos = '';
+        $storyVideoUrl = 'https://www.youtube.com/watch?v=PCwL3-hkKrg,';
+        for ($i=0; $i<=config("constants.STORY_MAX_VIDEO_LIMIT")+1 ; $i++) {
+            $storyVideos .= $storyVideoUrl;
+        }
+
+        $params = [
+            'mission_id' => $mission->mission_id,
+            'title' => str_random(10),
+            'description' => str_random(50),
+            'story_videos' => $storyVideos
+        ];
+        DB::setDefaultConnection('mysql');
+        
         $this->call('PATCH', 'app/story/'.$story->story_id, $params, [], ['story_images' => $storyImages], ['HTTP_token' => $token]);
         $this->seeStatusCode(422);
 
