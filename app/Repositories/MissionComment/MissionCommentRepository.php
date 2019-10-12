@@ -6,7 +6,6 @@ use App\Repositories\MissionComment\MissionCommentInterface;
 use App\Models\Comment;
 use App\Models\Mission;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Database\Eloquent\Collection;
 use App\Repositories\Mission\MissionRepository;
 
 class MissionCommentRepository implements MissionCommentInterface
@@ -122,9 +121,9 @@ class MissionCommentRepository implements MissionCommentInterface
      *
      * @param int $userId
      * @param int $languageId
-     * @return Illuminate\Database\Eloquent\Collection
+     * @return array
      */
-    public function getUserComments(int $userId, int $languageId, int $defaultTenantLanguageId): Collection
+    public function getUserComments(int $userId, int $languageId, int $defaultTenantLanguageId): array
     {
         $comments = $this->comment->where('user_id', $userId)
         ->orderby('created_at', 'desc')
@@ -132,7 +131,7 @@ class MissionCommentRepository implements MissionCommentInterface
             $query->select('mission_id');
         }])->get();
 
-
+        $commentData = array();
         // Fetch comment counts by status
         if (count($comments) > 0) {
             // Count status
@@ -146,9 +145,11 @@ class MissionCommentRepository implements MissionCommentInterface
                 $value->title = $this->missionRepository
                 ->getMissionTitle($value->mission_id, $languageId, $defaultTenantLanguageId);
                 unset($value->mission);
-            }            
-            $comments =  $comments->merge($statusCount);
-        }
+            }
+            $commentData['comments'] = $comments;    
+            $commentData['stats'] = $statusCount;
+        }        
+        $comments = $commentData;
         return $comments;
     }
 

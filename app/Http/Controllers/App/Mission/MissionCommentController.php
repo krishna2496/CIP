@@ -153,7 +153,7 @@ class MissionCommentController extends Controller
         );
         
         // Set response data
-        $apiData = $userMissionComments->toArray();
+        $apiData = $userMissionComments;
         $apiStatus = Response::HTTP_OK;
         $apiMessage = (count($apiData) > 0) ? trans('messages.success.MESSAGE_USER_COMMENTS_LISTING')
         : trans('messages.success.MESSAGE_NO_MISSION_COMMENTS_ENTRIES');
