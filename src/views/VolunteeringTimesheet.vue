@@ -467,7 +467,7 @@
                             months = ("0" + Math.floor(this.volunteeringHoursCurrentMonth)).slice(-2);
                             dates = ("0" + Math.floor(date)).slice(-2);
                         } else {
-                            timeMonth = Math.floor(this.volunteeringHoursCurrentMonth)
+                            months = Math.floor(this.volunteeringHoursCurrentMonth)
                             dates = Math.floor(date)
                         }
                     } else {
