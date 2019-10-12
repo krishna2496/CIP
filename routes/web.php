@@ -377,7 +377,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
     /* accept cookie agreement date*/
     $router->post('/app/accept-cookie-agreement', ['as' => 'app.cookie-agreement.accept',
         'middleware' => 'localization|tenant.connection|jwt.auth|JsonApiMiddleware',
-        'uses' => 'App\User\UserController@saveCookieAggrement']);
+        'uses' => 'App\User\UserController@saveCookieAgreement']);
 });
 
     /* Fetch notification settings */

@@ -337,17 +337,17 @@ class UserRepository implements UserInterface
     }
 
     /**
-     * Update cookie aggrement related to user
+     * Update cookie agreement related to user
      *
-     * @param bool $acceptAggrement
+     * @param bool $acceptAgreement
      * @param int $userId
      * @return null|bool
      */
-    public function updateCookiAggrement(bool $acceptAggrement, int $userId): ?bool
+    public function updateCookiAgreement(bool $acceptAgreement, int $userId): ?bool
     {
         $todayDateTime = Carbon::now()->toDateTimeString();
         
-        return $acceptAggrement ?
+        return $acceptAgreement ?
         $this->user->where('user_id', $userId)->update(['cookie_agreement_date' => $todayDateTime]) : null;
     }
 }

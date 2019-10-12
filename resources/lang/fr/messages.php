@@ -153,7 +153,7 @@ return [
         'MESSAGE_STORY_VISITOR_ADDED_SUCESSFULLY' => 'Le visiteur de l\'histoire a été ajouté avec succès',
         'MESSAGE_STORY_SUBMITTED_SUCESSFULLY' => 'Histoire soumise avec succès',
         'MESSAGE_STORY_IMAGE_DELETED' => 'Image de l\'histoire supprimée avec succès',
-        'MESSAGE_USER_COOKIE_AGGREMENT_ACCEPTED' => 'Agrégation de cookies acceptée avec succès',
+        'MESSAGE_USER_COOKIE_AGREEMENT_ACCEPTED' => 'Contrat de cookie accepté avec succès',
         'MESSAGE_NOTIFICATION_SETTINGS_LISTING' => 'Paramètres de notification répertoriés avec succès',
     ],
 
