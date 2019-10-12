@@ -14,7 +14,8 @@
 									<i>
 										<img :src="$store.state.imagePath+'/assets/images/eye-ic.svg'" alt="Eye Icon" />
 									</i>
-									<span>{{storyDetailList.story_visitor_count}} {{languageData.label.views}}</span>
+									<span v-if="storyDetailList.story_visitor_count > 1">{{storyDetailList.story_visitor_count}} {{languageData.label.views}}</span>
+									<span v-else>{{storyDetailList.story_visitor_count}} {{languageData.label.view}}</span>
 								</div>
 							</div>
 							<b-row class="thumb-slider" v-if="storyDetailList.storyMedia && storyDetailList.storyMedia.length > 0">

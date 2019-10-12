@@ -52,6 +52,10 @@ import myStory from "./Stories/MyStory"
 import copyStory from "./Stories/CopyStory"
 import deleteStory from "./Stories/DeleteStory"
 import editStory from "./Stories/EditStory"
+import commentListing from "./Comment/CommentListing"
+import deleteComment from "./Comment/DeleteComment"
+import cookieAgreement from "./CookieAgreement"
+import myDashboard from "./MyDashboard"
 
 export {
     loadLocaleMessages,
@@ -107,5 +111,9 @@ export {
     myStory,
     copyStory,
     deleteStory,
-    editStory
+    editStory,
+    commentListing,
+    deleteComment,
+    cookieAgreement,
+    myDashboard
 }

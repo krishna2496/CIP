@@ -3752,7 +3752,6 @@ main {
     opacity: 1;
     visibility: visible;
     @include transition(all 0.3s);
-    display: none;
     &.hidden {
         opacity: 0;
         visibility: hidden;

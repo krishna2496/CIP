@@ -1,11 +1,31 @@
 <template>
     <div class="primary-footer">
         <b-container>
+            
+            <!-- <div class="cookies-block">
+                <div class="container">
+                    <div class="text-wrap">
+                        <p>This website makes use of cookies to enhance browsing experience and provide additional
+                            functionality.</p>
+                        <p>
+                            <b-link to="#" title="Privacy policy">Privacy policy</b-link>
+                        </p>
+                    </div>
+                    <b-button class="btn-bordersecondary" title="I Agree">
+                        <span>I Agree</span>
+                    </b-button>
+                </div>
+                <i class="close" title="Close">
+                    <img :src="$store.state.imagePath+'/assets/images/cross-ic-white.svg'" alt="cross-ic" />
+                </i>
+            </div> -->
+
             <b-row>
                 <b-col md="6" class="footer-menu">
                     <b-list-group v-if="isDynamicFooterItemsSet">
-                        <b-list-group-item v-for="(item, key) in footerItems" v-bind:key=key :to="{ path: '/'+item.slug}"
-                            :title="getTitle(item)" @click.native="clickHandler">{{getTitle(item)}}
+                        <b-list-group-item v-for="(item, key) in footerItems" v-bind:key=key
+                            :to="{ path: '/'+item.slug}" :title="getTitle(item)" @click.native="clickHandler">
+                            {{getTitle(item)}}
                         </b-list-group-item>
                     </b-list-group>
                 </b-col>
@@ -20,7 +40,8 @@
 <script>
     import store from '../../store';
     import {
-        cmsPages
+        cmsPages,
+        cookieAgreement
     } from "../../services/service";
 
     export default {
@@ -40,7 +61,24 @@
             // Fetching footer CMS pages
             this.getPageListing();
             this.footerAdj();
+
+            // setTimeout(function () {
+            //     var closeCookies = document.querySelector('.cookies-block .close');
+            //     var agreeBtn = document.querySelector('.cookies-block .btn');
+            //     var cookiesBlock = document.querySelector('.cookies-block');
+
+            //     agreeBtn.addEventListener('click', function () {
+            //         cookiesBlock.classList.add('hidden')
+            //     })
+
+            //     closeCookies.addEventListener('click', function () {
+            //         cookiesBlock.classList.add('hidden')
+            //     })
+            // })
+
+
             window.addEventListener("resize", this.footerAdj);
+
         },
         methods: {
             async getPageListing() {
@@ -74,7 +112,7 @@
             clickHandler() {
                 this.$emit('cmsListing', this.$route.params.slug);
             },
-            
+
             footerAdj() {
                 if (document.querySelector("footer") != null) {
                     let footerH = document.querySelector("footer").offsetHeight;

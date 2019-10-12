@@ -1,16 +1,29 @@
 import axios from 'axios'
-import store from '../../store'
+import store from '../store'
 
-export default async(commentId) => {
+export default async(filterData) => {
     let responseData = {};
     var defaultLanguage = '';
     if (store.state.defaultLanguage !== null) {
         defaultLanguage = (store.state.defaultLanguage).toLowerCase();
     }
-    var url = process.env.VUE_APP_API_ENDPOINT + "/app/dashboard/comments/" + commentId
+    var url = process.env.VUE_APP_API_ENDPOINT + "app/dashboard";
+
+    if (filterData.year != '' && filterData.year != null) {
+        url = url + "?year=" + parseInt(filterData.year)
+    }
+
+    if (filterData.month != '' && filterData.month != null) {
+        url = url + "&month=" + filterData.month
+    }
+
+    if (filterData.mission_id != '' && filterData.mission_id != null) {
+        url = url + "&mission_id=" + filterData.mission_id
+    }
+
     await axios({
             url: url,
-            method: 'DELETE',
+            method: 'GET',
             headers: {
                 'X-localization': defaultLanguage,
                 'token': store.state.token,
