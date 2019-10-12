@@ -125,6 +125,10 @@ return [
 
         'MESSAGE_STORY_SUBMITTED_SUCESSFULLY' => 'DE: Story submitted sucessfully',
         'MESSAGE_STORY_IMAGE_DELETED' => 'DE: Story image deleted sucessfully',
+        'MESSAGE_USER_COOKIE_AGGREMENT_ACCEPTED' => 'DE: Cookie aggrement accepted successfully',
+        'MESSAGE_SEND_SUCESSFULLY' => 'DE: Message sent successfully',
+        'MESSAGE_MESSAGES_ENTRIES_LISTING' => 'DE: Messages listed successfully',
+        'MESSAGE_NO_MESSAGES_ENTRIES_FOUND' => 'DE: No messages found',
     ],
 
 
