@@ -129,17 +129,21 @@ class MessageController extends Controller
     public function destroy(Request $request, int $messageId): JsonResponse
     {
         try {
-            $this->messageRepository->delete($messageId, $request->auth->user_id);
+            $this->messageRepository->delete(
+                $messageId,
+                config('constants.send_message_from.admin'),
+                $request->auth->user_id
+            );
            
             // Set response data
             $apiStatus = Response::HTTP_NO_CONTENT;
-            $apiMessage = trans('messages.success.MESSAGE_MESSAGE_DELETED');
-
+            $apiMessage = trans('messages.success.MESSAGE_USER_MESSAGE_DELETED');
+            
             return $this->responseHelper->success($apiStatus, $apiMessage);
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
-                config('constants.error_codes.ERROR_MESSAGE_NOT_FOUND'),
-                trans('messages.custom_error_message.ERROR_MESSAGE_NOT_FOUND')
+                config('constants.error_codes.ERROR_MESSAGE_USER_MESSAGE_NOT_FOUND'),
+                trans('messages.custom_error_message.ERROR_MESSAGE_USER_MESSAGE_NOT_FOUND')
             );
         }
     }

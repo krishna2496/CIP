@@ -159,6 +159,7 @@ return [
         'MESSAGE_NO_MESSAGES_ENTRIES_FOUND' => 'Aucun message trouvé',
         'MESSAGE_NOTIFICATION_SETTINGS_LISTING' => 'Paramètres de notification répertoriés avec succès',
         'MESSAGE_USER_NOTIFICATION_SETTINGS_UPDATED' => 'Paramètres de notification utilisateur mis à jour avec succès',
+        'MESSAGE_USER_MESSAGE_DELETED' => 'Message supprimé avec succès',
     ],
 
         
@@ -293,6 +294,8 @@ return [
         'ERROR_STORY_IMAGE_NOT_FOUND' => 'L\'image de l\'histoire ne se trouve pas dans le système',
         'ERROR_STORY_IMAGE_DELETE' => 'Vous ne pouvez pas supprimer l\'image d\'un article publié ou refusé',
         'ERROR_SUBMIT_STORY_PUBLISHED_OR_DECLINED' => 'You cannot submit published or declined story',
+        // For message module
+        'ERROR_MESSAGE_USER_MESSAGE_NOT_FOUND' => 'Message introuvable dans le système'
     ]
 
 ];

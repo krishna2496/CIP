@@ -155,8 +155,7 @@ return [
         'MESSAGE_STORY_IMAGE_DELETED' => 'Story image deleted sucessfully',
     	'MESSAGE_NO_MISSION_COMMENTS_ENTRIES' => 'No mission comments found',
 	    'MESSAGE_STORY_VISITOR_ADDED_SUCESSFULLY' => 'Story visitor added successfully',
-        'MESSAGE_STORY_SUBMITTED_SUCESSFULLY' => 'Story submitted sucessfully',
-        'MESSAGE_STORY_IMAGE_DELETED' => 'Story image deleted sucessfully',
+        'MESSAGE_STORY_SUBMITTED_SUCESSFULLY' => 'Story submitted sucessfully',        
         'MESSAGE_USER_COOKIE_AGGREMENT_ACCEPTED' => 'Cookie aggrement accepted successfully',
         'MESSAGE_SEND_SUCESSFULLY' => 'Message sent successfully',
         'MESSAGE_MESSAGES_ENTRIES_LISTING' => 'Messages listed successfully',
@@ -164,6 +163,7 @@ return [
 
         'MESSAGE_NOTIFICATION_SETTINGS_LISTING' => 'Notification settings listed successfully',
         'MESSAGE_USER_NOTIFICATION_SETTINGS_UPDATED' => 'User notification settings updated successfully',
+        'MESSAGE_USER_MESSAGE_DELETED' => 'Message deleted sucessfully',
     ],
 
         
@@ -298,5 +298,8 @@ return [
         'ERROR_STORY_IMAGE_NOT_FOUND' => 'Story image not found in the system',
         'ERROR_STORY_IMAGE_DELETE' => 'You cannot delete image of published or declined story',
         'ERROR_SUBMIT_STORY_PUBLISHED_OR_DECLINED' => 'You cannot submit published or declined story',
+
+        // For message module
+        'ERROR_MESSAGE_USER_MESSAGE_NOT_FOUND' => 'Message not found in the system',
     ]
 ];

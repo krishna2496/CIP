@@ -83,7 +83,7 @@ class MessageRepository implements MessageInterface
      */
     public function delete(int $messageId, int $sentFrom, int $userId): bool
     {
-        return $this->story->where(
+        return $this->message->where(
             [
                 'message_id' => $messageId,
                 'sent_from' => $sentFrom,
