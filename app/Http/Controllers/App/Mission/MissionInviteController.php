@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\Mail;
 use App\Jobs\AppMailerJob;
 use App\Exceptions\TenantDomainNotFoundException;
 use App\Repositories\TenantOption\TenantOptionRepository;
+use App\Events\User\UserNotificationEvent;
 
 class MissionInviteController extends Controller
 {
@@ -198,7 +199,15 @@ class MissionInviteController extends Controller
             )->option_value;
             dispatch(new AppMailerJob($params));
         }
+
+        // Send notification to user
+        $notificationType = config('constants.notification_type_keys.RECOMMENDED_MISSIONS');
+        $entityId = $inviteMission->mission_invite_id;
+        $action = config('constants.notification_actions.INVITE');
+        $userId = $request->to_user_id;
         
+        event(new UserNotificationEvent($notificationType, $entityId, $action, $userId));
+
         return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
     }
 }

@@ -57,6 +57,7 @@ $app->singleton(
 |
 */
 $app->register(Flipbox\LumenGenerator\LumenGeneratorServiceProvider::class);
+$app->register(Laravel\Lumen\Providers\EventServiceProvider::class);
 
 $app->middleware([
      Barryvdh\Cors\HandleCors::class //cross origin support
@@ -115,6 +116,7 @@ $app->withFacades();
 */
 
  $app->register(App\Providers\AppServiceProvider::class);
+ $app->register(App\Providers\EventServiceProvider::class);
 
 /*
 |--------------------------------------------------------------------------
