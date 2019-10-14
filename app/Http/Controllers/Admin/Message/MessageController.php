@@ -111,4 +111,49 @@ class MessageController extends Controller
             );
         }
     }
+
+
+    /**
+     * Get admin messages data
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function getUserMessages(Request $request): JsonResponse
+    {
+        $userIds = !empty($request->get("userIds")) ? explode(',', $request->get("userIds")) : [];
+
+        $userMessages = $this->messageRepository->getUserMessages(
+            $request,
+            config('constants.message.send_message_from.user'),
+            $userIds
+        );
+        
+        $requestString = $request->except(['page','perPage']);
+        $messagesPaginated = new \Illuminate\Pagination\LengthAwarePaginator(
+            $userMessages,
+            $userMessages->total(),
+            $userMessages->perPage(),
+            $userMessages->currentPage(),
+            [
+                'path' => $request->url().'?'.http_build_query($requestString),
+                'query' => [
+                    'page' => $userMessages->currentPage()
+                ]
+            ]
+        );
+        
+        // generate responce data
+        $apiData = $messagesPaginated->total()  > 0 ? $messagesPaginated : $userMessages;
+        $apiStatus = Response::HTTP_OK;
+        $apiMessage = ($messagesPaginated->total() > 0) ?
+            trans('messages.success.MESSAGE_MESSAGES_ENTRIES_LISTING') :
+            trans('messages.success.MESSAGE_NO_MESSAGES_ENTRIES_FOUND');
+        
+        return $this->responseHelper->successWithPagination(
+            $apiStatus,
+            $apiMessage,
+            $apiData
+        );
+    }
 }

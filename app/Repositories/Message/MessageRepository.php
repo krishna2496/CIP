@@ -81,19 +81,19 @@ class MessageRepository implements MessageInterface
      *
      * @param \Illuminate\Http\Request $request
      * @param int $sentFrom
-     * @param int $userId
+     * @param Array $userIds
      * @return \Illuminate\Pagination\LengthAwarePaginator
      */
     public function getUserMessages(
         Request $request,
         int $sentFrom,
-        int $userId = null
+        array $userIds = []
     ): LengthAwarePaginator {
         $userMessageQuery = $this->message->where('sent_from', $sentFrom)
                             ->when(
-                                $userId,
-                                function ($query, $userId) {
-                                    return $query->where('user_id', $userId);
+                                $userIds,
+                                function ($query, $userIds) {
+                                    return $query->whereIn('user_id', $userIds);
                                 }
                             )->orderBy('created_at', 'desc');
 

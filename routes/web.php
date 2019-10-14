@@ -706,6 +706,9 @@ $router->group(['middleware' => 'localization'], function ($router) {
               
             $router->delete('/{messageId}', ['as' => 'message.destroy',
                 'uses' => 'Admin\Message\MessageController@destroy']);
+
+            $router->get('/list', ['as' => 'message.list',
+                'uses' => 'Admin\Message\MessageController@getUserMessages']);
         }
     );
 /*

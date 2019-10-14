@@ -88,7 +88,7 @@ class MessageController extends Controller
         $userMessages = $this->messageRepository->getUserMessages(
             $request,
             config('constants.message.send_message_from.admin'),
-            $request->auth->user_id
+            [$request->auth->user_id]
         );
         
         $requestString = $request->except(['page','perPage']);
