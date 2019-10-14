@@ -345,7 +345,12 @@ class StoryRepository implements StoryInterface
         $storyVideo = array('story_id' => $storyId,
             'type' => 'video',
             'path' => $storyVideosUrl);
-        $this->storyMedia->updateOrCreate(['story_id' => $storyId, 'type' => 'video'], ['path' => $storyVideosUrl]);
+        if (strlen(trim($storyVideosUrl)) == 0) {
+            $this->storyMedia->where(['story_id' => $storyId,
+            'type' => 'video'])->delete();
+        } else {
+            $this->storyMedia->updateOrCreate(['story_id' => $storyId, 'type' => 'video'], ['path' => $storyVideosUrl]);
+        }
     }
 
     /**

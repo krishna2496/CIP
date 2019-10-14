@@ -9,6 +9,7 @@ use Illuminate\Http\JsonResponse;
 use App\Helpers\ResponseHelper;
 use Illuminate\Http\Response;
 use Illuminate\Http\Request;
+use Validator;
 
 class NotificationTypeController extends Controller
 {
@@ -58,5 +59,39 @@ class NotificationTypeController extends Controller
         trans('messages.success.MESSAGE_NOTIFICATION_SETTINGS_LISTING');
 
         return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
+    }
+      
+    /**
+     * Store or update user notification settings into database
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\JsonResponse;
+     */
+    public function storeOrUpdate(Request $request): JsonResponse
+    {
+        $validator = Validator::make($request->toArray(), [
+            'settings' => 'required',
+            'settings.*.notification_type_id' =>
+            'required|exists:notification_type,notification_type_id,deleted_at,NULL',
+            'settings.*.value' => 'required|in:0,1',
+            ]);
+
+        if ($validator->fails()) {
+            return $this->responseHelper->error(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                config('constants.error_codes.ERROR_USER_NOTIFICATION_REQUIRED_FIELDS_EMPTY'),
+                $validator->errors()->first()
+            );
+        }
+        
+        // Store or update user notification settings
+        $this->notificationTypeRepository->storeOrUpdateUserNotification($request->toArray(), $request->auth->user_id);
+        
+        // Set response data
+        $apiStatus = Response::HTTP_OK;
+        $apiMessage =  trans('messages.success.MESSAGE_USER_NOTIFICATION_SETTINGS_UPDATED');
+        
+        return $this->responseHelper->success($apiStatus, $apiMessage);
     }
 }

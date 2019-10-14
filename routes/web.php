@@ -376,8 +376,18 @@ $router->group(['middleware' => 'localization'], function ($router) {
 
     /* accept cookie agreement date*/
     $router->post('/app/accept-cookie-agreement', ['as' => 'app.cookie-agreement.accept',
+        'middleware' => 'localization|tenant.connection|jwt.auth',
+        'uses' => 'App\User\UserController@saveCookieAgreement']);
+
+    /* Fetch notification settings */
+    $router->get('/app/notification-settings', ['as' => 'app.notification-settings',
+        'middleware' => 'localization|tenant.connection|jwt.auth',
+          'uses' => 'App\Notification\NotificationTypeController@index']);
+
+    /* Store or update user notification settings */
+    $router->post('/app/user-notification-settings/update', ['as' => 'app.user-notification-settings.update',
         'middleware' => 'localization|tenant.connection|jwt.auth|JsonApiMiddleware',
-        'uses' => 'App\User\UserController@saveCookieAggrement']);
+        'uses' => 'App\Notification\NotificationTypeController@storeOrUpdate']);
 
     /* send message to admin*/
     $router->post('/app/message/send', ['as' => 'app.message.send',
@@ -392,10 +402,6 @@ $router->group(['middleware' => 'localization'], function ($router) {
 
 
 
-    /* Fetch notification settings */
-    $router->get('/app/notification-settings', ['as' => 'app.notification-settings',
-        'middleware' => 'localization|tenant.connection|jwt.auth',
-        'uses' => 'App\Notification\NotificationTypeController@index']);
 
 /*
 |
