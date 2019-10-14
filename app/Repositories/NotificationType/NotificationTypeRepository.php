@@ -73,5 +73,4 @@ class NotificationTypeRepository implements NotificationTypeInterface
         }
         return true;
     }
-    
 }

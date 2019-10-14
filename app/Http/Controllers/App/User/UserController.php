@@ -381,7 +381,7 @@ class UserController extends Controller
     {
         $userId = $request->auth->user_id;
         
-		// Update cookie agreement date
+        // Update cookie agreement date
         $this->userRepository->updateCookieAgreement($userId);
 
         // Set response data

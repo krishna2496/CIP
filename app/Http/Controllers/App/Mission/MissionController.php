@@ -121,16 +121,16 @@ class MissionController extends Controller
         $language = $languages->where('code', $language)->first();
         $languageId = $language->language_id;
         $languageCode = $language->code;
-		$userFilterData = [];
+        $userFilterData = [];
 
         //Save User search data
         $this->userFilterRepository->saveFilter($request);
         // Get users filter
         $userFilters = $this->userFilterRepository->userFilter($request);
         $filterTagArray = $this->missionFiltersTag($request, $language, $userFilters);
-		if ($userFilters !== null) {
-			$userFilterData = $userFilters->toArray()["filters"];
-		}
+        if ($userFilters !== null) {
+            $userFilterData = $userFilters->toArray()["filters"];
+        }
         // Checking explore mission type is out of list or not
         if ($request->has('explore_mission_type') && $request->input('explore_mission_type') != '') {
             $exploreMissionType = $request->input('explore_mission_type');

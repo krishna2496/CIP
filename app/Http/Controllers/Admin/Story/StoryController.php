@@ -15,6 +15,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Validation\Rule;
 use Validator;
+use App\Events\User\UserNotificationEvent;
 
 class StoryController extends Controller
 {
@@ -148,12 +149,21 @@ class StoryController extends Controller
                     $validator->errors()->first()
                 );
             }
-            $this->storyRepository->checkStoryExist($storyId);
+            $storyDetails = $this->storyRepository->checkStoryExist($storyId);
             $this->storyRepository->updateStoryStatus($request->status, $storyId);
 
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_STORY_STATUS_UPDATED');
             $apiData = ['story_id' => $storyId];
+            
+            // Send notification to user
+            $notificationType = config('constants.notification_type_keys.MY_STORIES');
+            $entityId = $storyId;
+            $action = config('constants.notification_actions.'.$request->status);
+            $userId = $storyDetails->user_id;
+
+            event(new UserNotificationEvent($notificationType, $entityId, $action, $userId));
+
             return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(

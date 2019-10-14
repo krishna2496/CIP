@@ -97,9 +97,9 @@ class UserFilterController extends Controller
         $language = ($request->hasHeader('X-localization')) ?
         $request->header('X-localization') : env('TENANT_DEFAULT_LANGUAGE_CODE');
         $filters = $this->filters->userFilter($request);
-		if ($filters !== null) {
-			$filterData = $filters->toArray();
-		}
+        if ($filters !== null) {
+            $filterData = $filters->toArray();
+        }
 
         if (!empty($filterData["filters"])) {
             if ($filterData["filters"]["country_id"] && $filterData["filters"]["country_id"] != "") {
