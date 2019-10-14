@@ -155,6 +155,8 @@ return [
         'MESSAGE_STORY_IMAGE_DELETED' => 'Image de l\'histoire supprimée avec succès',
         'MESSAGE_NOTIFICATION_SETTINGS_LISTING' => 'Paramètres de notification répertoriés avec succès',
         'MESSAGE_USER_NOTIFICATION_SETTINGS_UPDATED' => 'Paramètres de notification utilisateur mis à jour avec succès',
+        'MESSAGE_USER_COOKIE_AGGREMENT_ACCEPTED' => 'Agrégation de cookies acceptée avec succès',
+        'MESSAGE_SEND_SUCESSFULLY' => 'message envoyé avec succès',
     ],
 
         

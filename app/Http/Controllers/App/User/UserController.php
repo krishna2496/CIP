@@ -370,4 +370,38 @@ class UserController extends Controller
         $apiStatus = Response::HTTP_OK;
         return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
     }
+
+    /**
+     * store cookie aggrement date
+     *
+     * @param Illuminate\Http\Request $request
+     * @return Illuminate\Http\JsonResponse
+     */
+    public function saveCookieAggrement(Request $request): JsonResponse
+    {
+        $validator = Validator::make($request->toArray(), [
+            'aggrement' => 'required|boolean'
+        ]);
+
+        // If request parameter have any error
+        if ($validator->fails()) {
+            return $this->responseHelper->error(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                config('constants.error_codes.ERROR_USER_INVALID_DATA'),
+                $validator->errors()->first()
+            );
+        }
+
+        $userId = $request->auth->user_id;
+        // Update cookie aggrement related to user
+        $this->userRepository->updateCookiAggrement($request->aggrement, $userId);
+
+        // Set response data
+        $apiData = ['user_id' => $userId];
+        $apiStatus = Response::HTTP_OK;
+        $apiMessage = trans('messages.success.MESSAGE_USER_COOKIE_AGGREMENT_ACCEPTED');
+        
+        return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
+    }
 }

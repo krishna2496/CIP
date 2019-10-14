@@ -327,10 +327,10 @@ class StoryController extends Controller
         $excel->setHeadlines($headings);
         foreach ($stories as $story) {
             $excel->appendRow([
-                $story->title,
+                strip_tags($story->title),
                 strip_tags($story->description),
                 $story->status,
-                $story->mission->missionLanguage[0]->title,
+                strip_tags($story->mission->missionLanguage[0]->title),
                 $story->published_at
             ]);
         }
@@ -545,7 +545,7 @@ class StoryController extends Controller
     public function editStory(Request $request, int $storyId): JsonResponse
     {
         try {
-            // Fetch story details           
+            // Fetch story details
             $storyData = $this->storyRepository->findStoryByUserId($request->auth->user_id, $storyId);
             
             $statusArray = [
@@ -571,7 +571,6 @@ class StoryController extends Controller
             $apiMessage = trans('messages.success.MESSAGE_STORY_FOUND');
     
             return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
-
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
                 config('constants.error_codes.ERROR_STORY_NOT_FOUND'),
