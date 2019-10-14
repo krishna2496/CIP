@@ -134,10 +134,9 @@ interface StoryInterface
      * Used for check if story exist or not
      *
      * @param int $storyId
-     * @param int $userId
      * @return Story
      */
-    public function checkStoryExist(int $storyId, int $userId = null): Story;
+    public function checkStoryExist(int $storyId): Story;
 
 
     /**
