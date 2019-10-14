@@ -55,7 +55,7 @@ class MessageController extends Controller
                 'message' => 'required|max:60000',
                 'admin' => 'string|max:255',
                 'user_ids' =>'required|Array',
-                'user_ids.*' =>'required|integer|distinct|min:1|integer',
+                'user_ids.*' =>'required|integer|distinct|min:1|integer|exists:user,user_id,deleted_at,NULL',
             ]
         );
         
