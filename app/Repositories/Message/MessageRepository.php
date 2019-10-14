@@ -109,14 +109,18 @@ class MessageRepository implements MessageInterface
      * @param int $userId
      * @return bool
      */
-    public function delete(int $messageId, int $sentFrom, int $userId): bool
+    public function delete(int $messageId, int $sentFrom, int $userId = null): bool
     {
         return $this->message->where(
             [
                 'message_id' => $messageId,
-                'sent_from' => $sentFrom,
-                'user_id' => $userId
+                'sent_from' => $sentFrom
             ]
+        ) ->when(
+            $userId,
+            function ($query, $userId) {
+                return $query->where('user_id', $userId);
+            }
         )->firstOrFail()->delete();
     }
 }

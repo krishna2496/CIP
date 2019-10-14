@@ -120,12 +120,12 @@ class MessageController extends Controller
     }
 
     /**
-    * Remove Message details.
-    *
-    * @param \Illuminate\Http\Request $request
-    * @param int $messageId
-    * @return Illuminate\Http\JsonResponse
-    */
+     * Remove Message details.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param int $messageId
+     * @return Illuminate\Http\JsonResponse
+     */
     public function destroy(Request $request, int $messageId): JsonResponse
     {
         try {

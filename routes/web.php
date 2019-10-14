@@ -696,6 +696,9 @@ $router->group(['middleware' => 'localization'], function ($router) {
         function ($router) {
             $router->post('/send', ['as' => 'message.send',
                'uses' => 'Admin\Message\MessageController@sendMessage']);
+              
+            $router->delete('/{messageId}', ['as' => 'message.destroy',
+                'uses' => 'Admin\Message\MessageController@destroy']);
         }
     );
 /*
