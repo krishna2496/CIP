@@ -121,7 +121,8 @@ return [
         'MESSAGE_STORY_VISITOR_ADDED_SUCESSFULLY' => 'DE: Story visitor added successfully',
      
          // For contact form module
-         'CONTACT_FORM_ADDED_SUCESSFULLY' => 'DE: Your feedback added successfully.',
+
+        'CONTACT_FORM_ADDED_SUCESSFULLY' => 'DE: Your feedback added successfully.',
 
         'MESSAGE_STORY_SUBMITTED_SUCESSFULLY' => 'DE: Story submitted sucessfully',
         'MESSAGE_STORY_IMAGE_DELETED' => 'DE: Story image deleted sucessfully',
@@ -134,6 +135,9 @@ return [
         'MESSAGE_USER_MESSAGE_DELETED' => 'DE: Message deleted sucessfully',
 
         'MESSAGE_USER_COOKIE_AGREEMENT_ACCEPTED' => 'DE: Cookie agreement accepted successfully',
+      
+        'CONTACT_FORM_ADDED_SUCESSFULLY' => 'DE: Your feedback added successfully.',
+        
         'MESSAGE_NOTIFICATION_SETTINGS_LISTING' => 'DE: Notification settings listed successfully',
         'MESSAGE_USER_NOTIFICATION_SETTINGS_UPDATED' => 'DE: User notification settings updated successfully',
 
