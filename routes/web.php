@@ -687,6 +687,9 @@ $router->group(['middleware' => 'localization'], function ($router) {
                 'uses' => 'Admin\Story\StoryController@index']);
             $router->patch('/stories/{storyId}', ['as' => 'update.story.status',
                 'uses' => 'Admin\Story\StoryController@update']);
+             /* send message to user*/
+            $router->post('/message/send', ['as' => 'message.send',
+                'uses' => 'Admin\Message\MessageController@sendMessage']);
         }
     );
 

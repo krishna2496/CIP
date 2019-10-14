@@ -156,7 +156,8 @@ return [
     	'MESSAGE_NO_MISSION_COMMENTS_ENTRIES' => 'No mission comments found',
 	    'MESSAGE_STORY_VISITOR_ADDED_SUCESSFULLY' => 'Story visitor added successfully',
        
-        'MESSAGE_SEND_SUCESSFULLY' => 'Message sent successfully',
+        'MESSAGE_USER_MESSAGE_SEND_SUCESSFULLY' => 'Message sent successfully',
+        'MESSAGE_USER_MESSAGES_SEND_SUCESSFULLY' => 'Messages sent successfully',
         'MESSAGE_MESSAGES_ENTRIES_LISTING' => 'Messages listed successfully',
         'MESSAGE_NO_MESSAGES_ENTRIES_FOUND' => 'No messages found',
 

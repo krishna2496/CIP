@@ -1,5 +1,5 @@
 <?php
-namespace App\Http\Controllers\App\Message;
+namespace App\Http\Controllers\Admin\Message;
 
 use App\Helpers\ResponseHelper;
 use App\Http\Controllers\Controller;
@@ -41,7 +41,7 @@ class MessageController extends Controller
     }
 
     /**
-     * Send message to admin
+     * Send message to users
      *
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\JsonResponse
@@ -52,7 +52,10 @@ class MessageController extends Controller
             $request->toArray(),
             [
                 'subject' => 'required|max:255',
-                'message' => 'required|max:60000'
+                'message' => 'required|max:60000',
+                'admin' => 'string|max:255',
+                'user_ids' =>'required|Array',
+                'user_ids.*' =>'required|integer|distinct|min:1|integer',
             ]
         );
         
@@ -67,12 +70,15 @@ class MessageController extends Controller
         }
         
         // Store message data
-        $messageId = $this->messageRepository->store($request, config('constants.message.send_message_from.user'));
+        $this->messageRepository->store($request, config('constants.message.send_message_from.admin'));
 
         // Set response data
         $apiStatus = Response::HTTP_CREATED;
-        $apiMessage = trans('messages.success.MESSAGE_USER_MESSAGE_SEND_SUCESSFULLY');
-        $apiData = ['message_id' => $messageId];
+
+        $apiMessage = (count($request->user_ids) > 1) ?
+            trans('messages.success.MESSAGE_USER_MESSAGES_SEND_SUCESSFULLY') :
+            trans('messages.success.MESSAGE_USER_MESSAGE_SEND_SUCESSFULLY');
+        $apiData = [];
 
         return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
     }

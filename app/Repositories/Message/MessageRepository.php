@@ -6,6 +6,7 @@ use App\Models\Message;
 use App\Repositories\Message\MessageInterface;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Carbon\Carbon;
 
 class MessageRepository implements MessageInterface
 {
@@ -32,20 +33,47 @@ class MessageRepository implements MessageInterface
      *
      * @param \Illuminate\Http\Request $request
      * @param int $sendMessageFrom
-     * @return App\Models\Message
+     * @return null|int messageId
      */
-    public function store(Request $request, $sendMessageFrom): Message
+    public function store(Request $request, int $sendMessageFrom): ?int
     {
-        $messageDataArray = array(
-            'user_id' => $request->auth->user_id,
-            'sent_from' => $sendMessageFrom,
-            'subject' => $request->subject,
-            'message' => $request->message,
-            'is_read' => 1,
-            'is_anonymous' => 1
-        );
-        $messageData = $this->message->create($messageDataArray);
-        return $messageData;
+        $adminName =  !empty($request->admin) ? $request->admin : null;
+        $isAnonymous = !empty($request->admin) ?
+                       config('constants.message.not_anonymous_name') :
+                       config('constants.message.anonymous_name');
+
+        // found message from admin
+        if ($sendMessageFrom==config('constants.message.send_message_from.admin')) {
+            $now = Carbon::now()->toDateTimeString();
+            foreach ($request->user_ids as $userId) {
+                $messageDataArray [] = [
+                    'user_id' => $userId,
+                    'sent_from' => $sendMessageFrom,
+                    'admin_name' => $adminName,
+                    'subject' => $request->subject,
+                    'message' => $request->message,
+                    'is_read' => config('constants.message.unread'),
+                    'is_anonymous' => $isAnonymous,
+                    'created_at'=>$now,
+                    'updated_at'=>$now,
+                ];
+            }
+            
+            $messageData = $this->message->insert($messageDataArray);
+        } else {
+            $messageDataArray = array(
+                'user_id' => $request->auth->user_id,
+                'sent_from' => $sendMessageFrom,
+                'admin_name' => $adminName,
+                'subject' => $request->subject,
+                'message' => $request->message,
+                'is_read' => config('constants.message.read'),
+                'is_anonymous' => $isAnonymous,
+            );
+            $messageData = $this->message->create($messageDataArray);
+        }
+
+        return !empty($messageData->message_id) ? $messageData->message_id : null;
     }
 
     /**
