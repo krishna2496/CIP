@@ -164,6 +164,7 @@ return [
         'MESSAGE_NOTIFICATION_SETTINGS_LISTING' => 'Notification settings listed successfully',
         'MESSAGE_USER_NOTIFICATION_SETTINGS_UPDATED' => 'User notification settings updated successfully',
         'MESSAGE_USER_MESSAGE_DELETED' => 'Message deleted sucessfully',
+
         'MESSAGE_USER_COOKIE_AGREEMENT_ACCEPTED' => 'Cookie agreement accepted successfully',
     ],
 
