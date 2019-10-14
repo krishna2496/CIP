@@ -219,7 +219,7 @@ class StoryController extends Controller
                 $storyId,
                 config('constants.story_status.PUBLISHED'),
                 $request->auth->user_id,
-                config('constants.story_status.DRAFT')
+                array(config('constants.story_status.DRAFT'), config('constants.story_status.PENDING'))
             );
             
             if ($story->count() == 0) {

@@ -21,6 +21,7 @@ use App\Models\Timesheet;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Nicolaslopezj\Searchable\SearchableTrait;
+use App\Models\Notification;
 
 class User extends Model implements AuthenticatableContract, AuthorizableContract, CanResetPasswordInterface
 {
@@ -59,7 +60,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      'password', 'avatar', 'timezone_id', 'availability_id', 'why_i_volunteer',
      'employee_id', 'department', 'manager_name', 'city_id', 'country_id',
      'profile_text', 'linked_in_url', 'status', 'title', 'city', 'country', 'timezone', 'language_id', 'availability',
-    'userCustomFieldValue'];
+    'userCustomFieldValue','cookie_agreement_date'];
     
     /**
      * The attributes excluded from the model's JSON form.
@@ -221,5 +222,13 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     public function getUserGoalHours(int $userId): ?string
     {
         return static::select('goal_hours')->where(['user_id' => $userId])->value('goal_hours');
+    }
+
+    /**
+     * A User can have many Notifications
+     */
+    public function notification()
+    {
+        return $this->hasMany(Notification::class, 'user_id', 'user_id');
     }
 }
