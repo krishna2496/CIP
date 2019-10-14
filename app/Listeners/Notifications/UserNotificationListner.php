@@ -37,7 +37,29 @@ class UserNotificationListner
      */
     public function handle(UserNotificationEvent $data)
     {
-    // Checking user have activated notification setting or not
+        // Checking user have activated notification setting or not
+        if ($data->userId !== null) {
+            $user = User::where('user_id', $data->userId)->first();
+            $data->userId = $data->userId;
+        } else {
+            $users = User::all();
+            foreach ($users as $userDetails) {
+                $data->userId = $userDetails->user_id;
+                $this->sendNotificationToUser($data);
+            }
+            return true;
+        }
+        $this->sendNotificationToUser($data);
+        return true;
+    }
+
+    /**
+     * Store notification data into database
+     * @param UserNotificationEvent $data
+     * @return void
+     */
+    public function sendNotificationToUser(UserNotificationEvent $data)
+    {
         $isNotificationActive = $this->notificationRepository->userNotificationSetting(
             $data->userId,
             $data->notificationTypeId

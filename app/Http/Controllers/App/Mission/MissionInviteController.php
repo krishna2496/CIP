@@ -146,6 +146,14 @@ class MissionInviteController extends Controller
         $apiMessage = trans('messages.success.MESSAGE_INVITED_FOR_MISSION');
         $apiData = ['mission_invite_id' => $inviteMission->mission_invite_id];
 
+        // Send notification to user
+        $notificationType = config('constants.notification_type_keys.RECOMMENDED_MISSIONS');
+        $entityId = $inviteMission->mission_invite_id;
+        $action = config('constants.notification_actions.INVITE');
+        $userId = $request->to_user_id;
+        
+        event(new UserNotificationEvent($notificationType, $entityId, $action, $userId));
+
         $getActivatedTenantSettings = $this->tenantActivatedSettingRepository
         ->getAllTenantActivatedSetting($request);
 
@@ -200,13 +208,7 @@ class MissionInviteController extends Controller
             dispatch(new AppMailerJob($params));
         }
 
-        // Send notification to user
-        $notificationType = config('constants.notification_type_keys.RECOMMENDED_MISSIONS');
-        $entityId = $inviteMission->mission_invite_id;
-        $action = config('constants.notification_actions.INVITE');
-        $userId = $request->to_user_id;
         
-        event(new UserNotificationEvent($notificationType, $entityId, $action, $userId));
 
         return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
     }
