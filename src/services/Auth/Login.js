@@ -17,7 +17,8 @@ export default async(data) => {
                 'X-localization': defaultLanguage
             }
         }).then((response) => {
-            //Store login data in local storage
+            console.log(response.data.data)
+                //Store login data in local storage
             store.commit('loginUser', response.data.data)
         })
         .catch(error => {

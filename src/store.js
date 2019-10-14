@@ -45,7 +45,9 @@ export default new Vuex.Store({
         clearFilterSet: '',
         storyDashboardText: localStorage.getItem('storyDashboardText'),
         slideInterval: localStorage.getItem('slideInterval'),
-        slideEffect: localStorage.getItem('slideEffect')
+        slideEffect: localStorage.getItem('slideEffect'),
+        cookieAgreementDate: localStorage.getItem('cookieAgreementDate'),
+        cookiePolicyText: localStorage.getItem('cookiePolicyText'),
 
     },
     mutations: {
@@ -58,6 +60,7 @@ export default new Vuex.Store({
             localStorage.setItem('lastName', data.last_name)
             localStorage.setItem('avatar', data.avatar)
             localStorage.setItem('defaultCountryId', data.country_id)
+            localStorage.setItem('cookieAgreementDate', data.cookie_agreement_date)
             state.isLoggedIn = true;
             state.token = data.token;
             state.userId = data.user_id;
@@ -65,6 +68,7 @@ export default new Vuex.Store({
             state.lastName = data.last_name;
             state.avatar = data.avatar;
             state.defaultCountryId = data.country_id;
+            state.cookieAgreementDate = data.cookie_agreement_date;
         },
         // Remove login data in state and local storage
         logoutUser(state) {
@@ -73,12 +77,15 @@ export default new Vuex.Store({
             localStorage.removeItem('firstName')
             localStorage.removeItem('lastName')
             localStorage.removeItem('avatar')
+            localStorage.removeItem('cookieAgreementDate')
+
             state.isLoggedIn = false;
             state.token = null;
             state.userId = null;
             state.firstName = null;
             state.lastName = null;
             state.avatar = null;
+            state.cookieAgreementDate = null;
             router.push({
                 name: 'login'
             })
@@ -266,6 +273,14 @@ export default new Vuex.Store({
         slideEffect(state, data) {
             localStorage.setItem('slideEffect', data)
             state.slideEffect = data
+        },
+        removeCookieBlock(state) {
+            localStorage.setItem('cookieAgreementDate', 1)
+            state.cookieAgreementDate = 1;
+        },
+        cookiePolicyText(state, data) {
+            localStorage.setItem('cookiePolicyText', JSON.stringify(data.translations))
+            state.cookiePolicyText = JSON.stringify(data.translations)
         }
     },
     getters: {},

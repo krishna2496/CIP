@@ -16,11 +16,11 @@
 					<div v-if="storyListing.length > 0">
 						<StoriesCard :storyListing="storyListing"/>
 					</div>
+					<div v-else class="cards-wrapper text-center">
+					 	<h2>{{languageData.label.stories}} {{languageData.label.not_found}}</h2>
+					</div>
+				</div>
 				
-				</div>
-				<div v-else class="cards-wrapper text-center">
-					 <h2>{{languageData.label.stories}} {{languageData.label.not_found}}</h2>
-				</div>
 				<div class="pagination-block" data-aos="fade-up" v-if="pagination.totalPages > 1">
 					<b-pagination
 							v-model="pagination.currentPage"
@@ -90,11 +90,13 @@
 				storyListing(currentPage).then(response => {
 					if(response.error == false) {
 						this.storyListing = response.data
-						this.pagination.currentPage = response.pagination.current_page
-						this.pagination.total = response.pagination.total
-						this.pagination.perPage = response.pagination.per_page
-						this.pagination.currentPage = response.pagination.current_page
-						this.pagination.totalPages = response.pagination.total_pages
+						if(response.pagination) {
+							this.pagination.currentPage = response.pagination.current_page
+							this.pagination.total = response.pagination.total
+							this.pagination.perPage = response.pagination.per_page
+							this.pagination.currentPage = response.pagination.current_page
+							this.pagination.totalPages = response.pagination.total_pages
+						}
 					} else {
 						this.showErrorDiv = true;
 						this.message = response.message

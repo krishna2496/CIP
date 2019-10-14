@@ -2648,6 +2648,9 @@ main {
                 align-items: center;
                 flex-direction: column;
                 justify-content: center;
+                .progress-status{
+                    margin-bottom: 10px;
+                }
                 .progress {
                     height: 45px;
                     border-radius: 50px;

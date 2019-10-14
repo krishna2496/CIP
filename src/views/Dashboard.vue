@@ -5,22 +5,18 @@
 		</header>
 		<main>
 			<DashboardBreadcrumb />
+			<div v-bind:class="{ 'content-loader-wrap': true, 'loader-active': isLoaderActive}">
+				<div class="content-loader"></div>
+			</div>
 			<div class="dashboard-tab-content">
 				<b-container v-if="isPageLoaded">
 					<div class="heading-section">
 						<h1>{{languageData.label.dashboard}}</h1>
 						<div class="date-filter">
-							<AppCustomDropdown 
-								:optionList="yearList" 
-								@updateCall="updateYear" 
-								:defaultText="defaultYear" 
-								translationEnable="false"/>
-							<AppCustomDropdown 
-								:optionList="monthList" 
-								@updateCall="updateMonth" 
-								:defaultText="defaultMonth" 
-								translationEnable="true"
-								class="month-dropdown" />
+							<AppCustomDropdown :optionList="yearList" @updateCall="updateYear"
+								:defaultText="defaultYear" translationEnable="false" />
+							<AppCustomDropdown :optionList="monthList" @updateCall="updateMonth"
+								:defaultText="defaultMonth" translationEnable="true" class="month-dropdown" />
 						</div>
 					</div>
 					<div class="inner-content-wrap">
@@ -41,7 +37,8 @@
 										<img :src="$store.state.imagePath+'/assets/images/certified-ic.svg'" alt />
 									</i>
 									<p>
-										<span>{{languageData.label.top}} {{stats.volunteeringRank}}%</span>{{languageData.label.volunteering_rank}}
+										<span>{{languageData.label.top}}
+											{{stats.volunteeringRank}}%</span>{{languageData.label.volunteering_rank}}
 									</p>
 								</div>
 							</b-list-group-item>
@@ -93,16 +90,16 @@
 										<h5>{{languageData.label.hours_tracked_this_year}}</h5>
 									</div>
 									<div class="progress-chart">
+										<span class="progress-status">{{languageData.label.completed}}: {{ completedGoalHours }} {{languageData.label.hours}}</span>
 										<b-progress :max="totalGoalHours">
-											<b-progress-bar :value="max">
-												{{languageData.label.completed}}:
-												<span>{{ completedGoalHours }} {{languageData.label.hours}}</span>
+											<b-progress-bar :value="completedGoalHours">
 											</b-progress-bar>
 										</b-progress>
 										<ul class="progress-axis">
 											<li v-for="xvalue in xvalues" :key="xvalue">{{xvalue}}</li>
 										</ul>
-										<p class="progress-label">{{languageData.label.goal}}: {{ totalGoalHours }} {{languageData.label.hours}}</p>
+										<p class="progress-label">{{languageData.label.goal}}: {{ totalGoalHours }}
+											{{languageData.label.hours}}</p>
 									</div>
 								</div>
 							</b-col>
@@ -110,12 +107,12 @@
 								<div class="inner-chart-col">
 									<div class="chart-title">
 										<h5>{{languageData.label.hours_per_month}}</h5>
-										<AppCustomDropdown 
-											:optionList="missionTitle" 
-											@updateCall="updateMissionTitle"
-											translationEnable="false"
-											:defaultText="defaultMissionTitle" 
-											class="month-dropdown"/>
+										<AppCustomDropdown :optionList="missionTitle" @updateCall="updateMissionTitle"
+											translationEnable="false" :defaultText="defaultMissionTitle"
+											class="month-dropdown" />
+									</div>
+									<div v-bind:class="{ 'content-loader-wrap': true, 'loader-active': hoursMonthActive}">
+										<div class="content-loader"></div>
 									</div>
 									<div class="line-chart">
 										<canvas ref="lineChartRefs"></canvas>
@@ -157,8 +154,9 @@
 
 		data() {
 			return {
-				isShownComponent : true,
-				isPageLoaded : true,
+				isShownComponent: false,
+				isPageLoaded: true,
+				isLoaderActive: true,
 				max: 0,
 				xvalues: [0],
 				defaultYear: "",
@@ -167,121 +165,59 @@
 				yearList: [],
 				missionTitle: [],
 				monthList: [
-					["01","january"],
-					["02","february"],
-					["03","march"],
-					["04","april"],
-					["05","may"],
-					["06","june"],
-					["07","july"],
-					["08","august"],
-					["09","september"],
-					["10","october"],
-					["11","november"],
-					["12","december"]
+					["01", "january"],
+					["02", "february"],
+					["03", "march"],
+					["04", "april"],
+					["05", "may"],
+					["06", "june"],
+					["07", "july"],
+					["08", "august"],
+					["09", "september"],
+					["10", "october"],
+					["11", "november"],
+					["12", "december"]
 				],
-				chartdata: {
-					labels: [
-						"Jan 18",
-						"Feb 18",
-						"Apr 18",
-						"Mar 18",
-						"May 18",
-						"Jun 18",
-						"Jul 18",
-						"Aug 18"
-					]
-				},
+				chartMonthList: [
+					["1", "jan"],
+					["2", "feb"],
+					["3", "mar"],
+					["4", "apr"],
+					["5", "may"],
+					["6", "jun"],
+					["7", "jul"],
+					["8", "aug"],
+					["9", "sep"],
+					["10", "oct"],
+					["11", "nov"],
+					["12", "dec"]
+				],
+				chartdata: [],
+				chartHourdata: [],
 				currentpage: "dashboard",
-				languageData : [],
-				filterData : {
-					year : '',
-					month : '',
-					mission_id : ''
+				languageData: [],
+				filterData: {
+					year: '',
+					month: '',
+					mission_id: ''
 				},
-				stats :{
-					'totalHours' : 0,
-					'volunteeringRank' : 0,
-					'openVolunteeringRequests' : 0,
-					'missionCount' : 0,
-					'votedMissions' : 0,
-					'organizationCount' : 0
+				stats: {
+					'totalHours': 0,
+					'volunteeringRank': 0,
+					'openVolunteeringRequests': 0,
+					'missionCount': 0,
+					'votedMissions': 0,
+					'organizationCount': 0
 				},
-				totalGoalHours : 0,
-				completedGoalHours : 0
+				totalGoalHours: 0,
+				completedGoalHours: 0,
+				chartStep: 0,
+				chartMaxValue: 0,
+				hoursMonthActive : false,
+				goalHourPart :10
 			};
 		},
 		mounted() {
-			var lineChartRefs = this.$refs.lineChartRefs;
-			var lineContent = lineChartRefs.getContext("2d");
-			lineChartRefs.height = 350;
-			new Chart(lineContent, {
-				type: "line",
-				data: {
-					labels: [
-						"Jan 18",
-						"Feb 18",
-						"Apr 18",
-						"Mar 18",
-						"May 18",
-						"Jun 18",
-						"Jul 18",
-						"Aug 18"
-					],
-					datasets: [{
-						data: [25, 10, 0, 20, 15, 10, 48, 0],
-						backgroundColor: "#b2cc9d",
-						borderColor: "#4b6d30",
-						pointBackgroundColor: "#4b6d30"
-					}]
-				},
-				options: {
-					responsive: true,
-					maintainAspectRatio: false,
-					legend: {
-						display: false
-					},
-					scales: {
-						xAxes: [{
-							gridLines: {
-								display: false
-							},
-							ticks: {
-								fontColor: "#414141",
-								fontSize: 14
-							},
-							scaleLabel: {
-								display: true,
-								labelString: "Month",
-								fontSize: 16,
-								fontColor: "#414141"
-							}
-						}],
-						yAxes: [{
-							stacked: true,
-							ticks: {
-								max: 75,
-								min: 0,
-								stepSize: 25,
-								fontColor: "#414141",
-								fontSize: 14
-							},
-							scaleLabel: {
-								display: true,
-								labelString: "Hours",
-								fontSize: 16,
-								fontColor: "#414141"
-							}
-						}]
-					},
-					elements: {
-						line: {
-							tension: 0
-						}
-					}
-				}
-			});
-
 			var currentYear = new Date().getFullYear();
 			var yearsListing = [];
 			for (var index = currentYear; index > (currentYear - 5); index--) {
@@ -293,25 +229,29 @@
 			updateYear(value) {
 				this.defaultYear = value.selectedVal;
 				this.filterData.year = value.selectedId
-				this.getDashboardData(this.filterData)
+				this.getDashboardData(this.filterData,'dashboad')
 			},
 			updateMonth(value) {
 				this.defaultMonth = value.selectedVal;
 				this.filterData.month = value.selectedId
-				this.getDashboardData(this.filterData)
+				
+				this.getDashboardData(this.filterData,'dashboad')
+				
 			},
 			updateMissionTitle(value) {
 				this.defaultMissionTitle = value.selectedVal;
+				this.filterData.mission_id = value.selectedId
+				this.getDashboardData(this.filterData,'graph')
 			},
 			handleActive() {},
 			missionListing() {
 				storyMissionListing().then(response => {
 					// missionTitle
 					var array = [];
-					if(response.error == false) {
+					if (response.error == false) {
 						let missionArray = response.data
-						if(missionArray) {
-							missionArray.filter((data,index) => {
+						if (missionArray) {
+							missionArray.filter((data, index) => {
 								array[index] = new Array(2);
 								array[index][0] = data.mission_id
 								array[index][1] = data.title
@@ -321,63 +261,184 @@
 					}
 				})
 			},
-			getDashboardData(filterData) {
+			getDashboardData(filterData , params){
+				if(params != 'graph') {
+					this.isLoaderActive = true;
+				} else {
+					this.hoursMonthActive = true;
+				}
 				myDashboard(filterData).then(response => {
-					if(response.error == false) {
-						if(response.data) {
-							if(response.data.total_hours && response.data.total_hours != '') {
-								this.stats.totalHours = response.data.total_hours 
+					if (response.error == false) {
+						this.xvalues = [0]
+						this.max = 0
+						this.stats.totalHours = 0
+						this.stats.volunteeringRank = 0
+						this.stats.openVolunteeringRequests = 0
+						this.stats.missionCount = 0
+						this.stats.votedMissions = 0
+						this.stats.organizationCount = 0
+						this.totalGoalHours = 0
+						this.completedGoalHours = 0
+						if (response.data) {
+							if (response.data.total_hours && response.data.total_hours != '') {
+								this.stats.totalHours = response.data.total_hours
 							}
-							if(response.data.volunteering_rank && response.data.volunteering_rank != '') {
+							if (response.data.volunteering_rank && response.data.volunteering_rank != '') {
 								this.stats.volunteeringRank = response.data.volunteering_rank
 							}
-							if(response.data.open_volunteering_requests && response.data.open_volunteering_requests != '') {
+							if (response.data.open_volunteering_requests && response.data
+								.open_volunteering_requests != '') {
 								this.stats.openVolunteeringRequests = response.data.open_volunteering_requests
 							}
-							if(response.data.mission_count && response.data.mission_count != '') {
+							if (response.data.mission_count && response.data.mission_count != '') {
 								this.stats.missionCount = response.data.mission_count
 							}
-							if(response.data.voted_missions && response.data.voted_missions != '') {
+							if (response.data.voted_missions && response.data.voted_missions != '') {
 								this.stats.votedMissions = response.data.voted_missions
 							}
-							if(response.data.organization_count && response.data.organization_count != '') {
+							if (response.data.organization_count && response.data.organization_count != '') {
 								this.stats.organizationCount = response.data.organization_count
 							}
-							if(response.data.completed_goal_hours && response.data.completed_goal_hours != '') {
+							if (response.data.completed_goal_hours && response.data.completed_goal_hours != '') {
 								this.completedGoalHours = response.data.completed_goal_hours
 							}
-							if(response.data.total_goal_hours && response.data.total_goal_hours != '') {
+							if (response.data.total_goal_hours && response.data.total_goal_hours != '') {
 								this.totalGoalHours = response.data.total_goal_hours
-								let axes = (this.totalGoalHours/10);
+								
+								if(screen.width < 576){
+									this.goalHourPart = 5
+								} else {
+									this.goalHourPart = 10
+								}
+								let axes = (this.totalGoalHours / this.goalHourPart);
 								this.max = Math.ceil(axes)
 								let xValue = 0;
-								for(var i=0;i<10;i++) {
+								
+								for (var i = 0; i < this.goalHourPart; i++) {
 									xValue = xValue + this.max;
 									this.xvalues.push(xValue)
 								}
 							}
+							if (response.data.chart) {
+								let chartData = response.data.chart;
+								let chartList = [];
+								let chartListData = []
+								let chartListHourData = []
+								let chartMaxValue = {
+									totalMaxValue: 0
+								};
+								chartData.filter((data, index) => {
+									if (data.total_hours && data.total_hours != '') {
+										chartMaxValue.totalMaxValue = chartMaxValue.totalMaxValue + data
+											.total_hours
+										chartList[data.month] = data.total_hours
+									} else {
+										chartList[data.month] = 0
+									}
+								})
+								chartList.filter((data, index) => {
+									let monthLabel = this.languageData.label[this.chartMonthList[index - 1]
+										[1]];
+									chartListData.push(monthLabel + ' ' + moment().format('YY'));
+									chartListHourData.push(data);
+								})
+								this.chartdata = chartListData
+								this.chartHourdata = chartListHourData
+
+								if (chartMaxValue.totalMaxValue <= 0) {
+									this.chartStep = 1
+									this.chartMaxValue = 1
+								} else {
+									let step = Math.ceil((chartMaxValue.totalMaxValue) / 4)
+									this.chartStep = step
+									this.chartMaxValue = step * 4
+								}
+								// chart js
+								var lineChartRefs = this.$refs.lineChartRefs;
+								var lineContent = lineChartRefs.getContext("2d");
+								lineChartRefs.height = 350;
+								new Chart(lineContent, {
+									type: "line",
+									data: {
+										labels: this.chartdata,
+										datasets: [{
+											data: this.chartHourdata,
+											backgroundColor: "#b2cc9d",
+											borderColor: "#4b6d30",
+											pointBackgroundColor: "#4b6d30"
+										}]
+									},
+									options: {
+										responsive: true,
+										maintainAspectRatio: false,
+										legend: {
+											display: false
+										},
+										scales: {
+											xAxes: [{
+												gridLines: {
+													display: false
+												},
+												ticks: {
+													fontColor: "#414141",
+													fontSize: 14
+												},
+												scaleLabel: {
+													display: true,
+													labelString: this.languageData.label.month,
+													fontSize: 16,
+													fontColor: "#414141"
+												}
+											}],
+											yAxes: [{
+												stacked: true,
+												ticks: {
+													max: this.chartMaxValue,
+													min: 0,
+													stepSize: this.chartStep,
+													fontColor: "#414141",
+													fontSize: 14
+												},
+												scaleLabel: {
+													display: true,
+													labelString: this.languageData.label.hours,
+													fontSize: 16,
+													fontColor: "#414141"
+												}
+											}]
+										}
+									}
+								});
+							}
 						}
 					}
+
+					this.isShownComponent = true
+					this.isLoaderActive = false;
+					this.hoursMonthActive = false;
 				})
 			}
 		},
 		created() {
 			this.languageData = JSON.parse(store.state.languageLabel);
-			this.defaultYear =  this.languageData.label.years
-			this.defaultMonth =  this.languageData.label.month
-			this.defaultMissionTitle =  this.languageData.label.mission_title
+			this.defaultYear = this.languageData.label.years
+			this.defaultMonth = this.languageData.label.month
+			this.defaultMissionTitle = this.languageData.label.mission_title
 			let currentYear = new Date().getFullYear()
 			let currentMonth = moment().format('MM')
 			this.defaultYear = currentYear.toString();
-			this.monthList.filter((data,index) => {
-				if(data[0] == currentMonth) {
+			this.monthList.filter((data, index) => {
+				if (data[0] == currentMonth) {
 					this.defaultMonth = data[1]
 				}
 			})
 			this.filterData.year = currentYear
 			this.filterData.month = currentMonth
 			this.missionListing()
-			this.getDashboardData(this.filterData)
+			this.getDashboardData(this.filterData,'dashboad')
+			window.addEventListener('resize' , ()=> {
+				this.getDashboardData(this.filterData);
+			})
 		}
 	};
 </script>

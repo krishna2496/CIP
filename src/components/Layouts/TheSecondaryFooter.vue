@@ -2,23 +2,21 @@
     <div class="primary-footer">
         <b-container>
             
-            <!-- <div class="cookies-block">
+            <div class="cookies-block" v-bind:class="{
+                'hidden' : isCookieHidden
+            }">
                 <div class="container">
-                    <div class="text-wrap">
-                        <p>This website makes use of cookies to enhance browsing experience and provide additional
-                            functionality.</p>
-                        <p>
-                            <b-link to="#" title="Privacy policy">Privacy policy</b-link>
-                        </p>
+                    <div class="text-wrap" v-html="cookiePolicyText">
+                       
                     </div>
-                    <b-button class="btn-bordersecondary" title="I Agree">
-                        <span>I Agree</span>
+                    <b-button class="btn-bordersecondary">
+                        <span>{{ languageData.label.i_agree }}</span>
                     </b-button>
                 </div>
                 <i class="close" title="Close">
                     <img :src="$store.state.imagePath+'/assets/images/cross-ic-white.svg'" alt="cross-ic" />
                 </i>
-            </div> -->
+            </div>
 
             <b-row>
                 <b-col md="6" class="footer-menu">
@@ -53,32 +51,47 @@
                 isDynamicFooterItemsSet: false,
                 year: new Date().getFullYear(),
                 languageData: [],
+                isCookieHidden : true,
+                cookiePolicyText : ''
             };
         },
         created() {
-
+            var _this = this;
             this.languageData = JSON.parse(store.state.languageLabel);
             // Fetching footer CMS pages
             this.getPageListing();
             this.footerAdj();
+            
+            if(store.state.cookieAgreementDate == '' || store.state.cookieAgreementDate == null) {
+                this.isCookieHidden = false;
+            }
 
-            // setTimeout(function () {
-            //     var closeCookies = document.querySelector('.cookies-block .close');
-            //     var agreeBtn = document.querySelector('.cookies-block .btn');
-            //     var cookiesBlock = document.querySelector('.cookies-block');
+            setTimeout(function () {
+                var closeCookies = document.querySelector('.cookies-block .close');
+                var agreeBtn = document.querySelector('.cookies-block .btn');
+                var cookiesBlock = document.querySelector('.cookies-block');
 
-            //     agreeBtn.addEventListener('click', function () {
-            //         cookiesBlock.classList.add('hidden')
-            //     })
+                agreeBtn.addEventListener('click', () => {
+                    cookiesBlock.classList.add('hidden')
+                    _this.agreeCookie();
+                })
 
-            //     closeCookies.addEventListener('click', function () {
-            //         cookiesBlock.classList.add('hidden')
-            //     })
-            // })
+                closeCookies.addEventListener('click', () => {
+                    cookiesBlock.classList.add('hidden')
+                    _this.hideCookieBlock();
+                })
+            })
 
-
+            let cookiePolicyTextArray = JSON.parse(store.state.cookiePolicyText)
+            if(cookiePolicyTextArray) {
+                cookiePolicyTextArray.filter((data,index) => {
+                    if(data.lang == store.state.defaultLanguage.toLowerCase()) {
+                        this.cookiePolicyText = data.message
+                    }
+                })
+            }
+        
             window.addEventListener("resize", this.footerAdj);
-
         },
         methods: {
             async getPageListing() {
@@ -102,7 +115,7 @@
                     }
                 }
             },
-
+            
             getUrl(items) {
                 if (items) {
                     return items.slug
@@ -120,6 +133,19 @@
                     document.querySelector(".inner-pages").style.paddingBottom =
                         footerH + "px";
                 }
+            },
+            
+            agreeCookie() {
+                let data = {
+                    "agreement": true
+                }
+                cookieAgreement(data).then(response => {
+                    this.hideCookieBlock();
+                })
+            },
+
+            hideCookieBlock() {
+                this.$store.commit('removeCookieBlock');
             }
         },
         updated() {
