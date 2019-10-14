@@ -416,10 +416,13 @@ class StoryRepository implements StoryInterface
      * Used for check if story exist or not
      *
      * @param int $storyId
+     * @param int $userId
      * @return Story
      */
-    public function checkStoryExist(int $storyId): Story
+    public function checkStoryExist(int $storyId, int $userId = null): Story
     {
-        return $this->story->findOrFail($storyId);
+        return $this->story->when($userId, function ($query) use ($userId) {
+            return $query->where('user_id', $userId);
+        })->findOrFail($storyId);
     }
 }

@@ -262,7 +262,7 @@ class StoryController extends Controller
     {
         try {
             //check for story exist?
-            $this->storyRepository->checkStoryExist($oldStoryId);
+            $this->storyRepository->checkStoryExist($oldStoryId, $request->auth->user_id);
 
             $storyStatus = array(
                 config('constants.story_status.DECLINED')
