@@ -121,11 +121,14 @@ return [
         'MESSAGE_STORY_VISITOR_ADDED_SUCESSFULLY' => 'DE: Story visitor added successfully',
      
          // For contact form module
-        'CONTACT_FORM_ADDED_SUCESSFULLY' => 'DE: Your feedback added successfully.',        
+        'CONTACT_FORM_ADDED_SUCESSFULLY' => 'DE: Your feedback added successfully.',
         'MESSAGE_NOTIFICATION_SETTINGS_LISTING' => 'DE: Notification settings listed successfully',
         'MESSAGE_USER_NOTIFICATION_SETTINGS_UPDATED' => 'DE: User notification settings updated successfully',
         'MESSAGE_USER_COOKIE_AGGREMENT_ACCEPTED' => 'DE: Cookie aggrement accepted successfully',
         'MESSAGE_SEND_SUCESSFULLY' => 'DE: Message sent successfully',
+        'MESSAGE_USER_COOKIE_AGREEMENT_ACCEPTED' => 'DE: Cookie agreement accepted successfully',
+        'MESSAGE_NOTIFICATION_SETTINGS_LISTING' => 'DE: Notification settings listed successfully',
+        'MESSAGE_USER_NOTIFICATION_SETTINGS_UPDATED' => 'DE: User notification settings updated successfully',
     ],
 
 

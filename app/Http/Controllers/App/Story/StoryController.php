@@ -330,7 +330,7 @@ class StoryController extends Controller
                 strip_tags($story->title),
                 strip_tags($story->description),
                 $story->status,
-                strip_tags($story->mission->missionLanguage[0]->title),
+                $story->mission->missionLanguage[0]->title,
                 $story->published_at
             ]);
         }
