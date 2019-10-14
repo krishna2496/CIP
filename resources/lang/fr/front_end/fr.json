@@ -187,7 +187,42 @@
         "no_skill_found": "Compétence non trouvée",
         "not_found": "pas trouvé",
         "published_on": "Publié le",
-        "goal_objective": "Objectif objectif"
+        "volunteering_rank": "Rang de bénévolat",
+        "open_volunteering_requests": "Demandes de volontariat ouvertes",
+        "voted_missions": "Missions Votées",
+        "completed": "Terminé",
+        "hours_per_month": "Heures par mois",
+        "hours_tracked_this_year": "Heures suivies cette année",
+        "top": "Haut",
+        "mission_title": "Sélectionnez le titre de la mission",
+        "closed": "Fermée",
+        "share_your_story": "Partagez votre histoire",
+        "views": "Les vues",
+        "open_mission": "Mission ouverte",
+        "my_story_title": "Mon titre d'histoire",
+        "select_mission": "Sélectionnez mission",
+        "my_story": "Mon histoire",
+        "enter_video_url": "Entrer l'URL de la vidéo",
+        "drag_and_drop_pictures": "Glisser-déposer des images",
+        "no_image": "Pas d'image",
+        "preview": "Aperçu",
+        "goal_objective": "Objectif objectif",
+        "upload_your_photos": "Téléchargez vos photos",
+        "new_line_to_enter_multiple_urls": "Utiliser une nouvelle ligne pour entrer plusieurs URL",
+        "start_date": "Date de début",
+        "reset": "Réinitialiser",
+        "year": "année",
+        "publish_new_story": "Publier une nouvelle histoire",
+        "draft": "Brouillon",
+        "pending": "En attente",
+        "published": "Publié",
+        "story_history": "Histoire Histoire",
+        "redirect": "Réorienter",
+        "copy": "Copie",
+        "my_stories": "Mes histoires",
+        "story_deleted": "Histoire supprimée avec succès",
+        "messages": "Messages",
+        "comment_history": "Histoire des commentaires"
     },
 
     "placeholder": {
@@ -215,7 +250,10 @@
         "spent_minutes": "Entrer les minutes passées",
         "notes": "Entrer des notes",
         "workday": "Veuillez choisir un jour de travail",
-        "action": "Entrez l'action"
+        "action": "Entrez l'action",
+        "story_title": "Entrez le titre de l'histoire",
+        "story_detail": "Entrez vos histoires",
+        "video_url": "Entrez votre URL de vidéo"
     },
 
     "errors": {
@@ -260,13 +298,19 @@
         "hours_numeric": "Les heures doivent être numériques",
         "hours_is_between": "Les heures doivent être comprises entre 0 et 24",
         "minute_numeric": "La minute doit être numérique",
-        "minute_between": "La minute doit être comprise entre 0 et 59 "
+        "minute_between": "La minute doit être comprise entre 0 et 59 ",
+        "file_deleted_successfully": "Fichier supprimé avec succès",
+        "story_title_required": "Le titre de l'histoire est obligatoire",
+        "mission_required": "S'il vous plaît sélectionnez mission",
+        "story_description_required": "S'il vous plaît entrer la description de l'histoire",
+        "valid_video_url": "Veuillez entrer une URL youtube valide."
     },
 
     "export_timesheet_file_names": {
         "PENDING_TIME_MISSION_ENTRIES_XLSX": "Pending_Time_Mission_Entries.xlsx",
         "PENTIND_GOAL_MISSION_ENTRIES_XLSX": "Pending_Goal_Mission_Entries.xlsx",
         "TIME_MISSION_HISTORY_XLSX": "Time_Mission_History.xlsx",
-        "GOAL_MISSION_HISTORY_XLSX": "Goal_Mission_History.xlsx"
+        "GOAL_MISSION_HISTORY_XLSX": "Goal_Mission_History.xlsx",
+        "MY_STORIES_XLSX": "My_Stories_Listing.xlsx"
     }
 }

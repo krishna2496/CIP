@@ -126,4 +126,12 @@ interface UserInterface
      * @return null|int
      */
     public function getUserGoalHours(int $userId): ?int;
+
+    /**
+     * Update cookie agreement date
+     *
+     * @param int $userId
+     * @return bool
+     */
+    public function updateCookieAgreement(int $userId): bool;
 }

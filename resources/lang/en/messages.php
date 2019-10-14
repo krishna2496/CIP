@@ -159,6 +159,9 @@ return [
         'MESSAGE_STORY_IMAGE_DELETED' => 'Story image deleted sucessfully',
         'MESSAGE_USER_COOKIE_AGGREMENT_ACCEPTED' => 'Cookie aggrement accepted successfully',
         'MESSAGE_SEND_SUCESSFULLY' => 'Message sent successfully',
+        'MESSAGE_USER_COOKIE_AGREEMENT_ACCEPTED' => 'Cookie agreement accepted successfully',
+        'MESSAGE_NOTIFICATION_SETTINGS_LISTING' => 'Notification settings listed successfully',
+        'MESSAGE_USER_NOTIFICATION_SETTINGS_UPDATED' => 'User notification settings updated successfully',
     ],
 
         
