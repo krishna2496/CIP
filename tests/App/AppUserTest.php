@@ -948,4 +948,59 @@ class AppUserTest extends TestCase
         DB::table('tenant')->where('name', env('DEFAULT_TENANT'))->update(['deleted_at' => null]);
         
     }
+    
+    /**
+     * @test
+     *
+     * Return error if language id is invalid
+     *
+     * @return void
+     */
+    public function it_should_return_error_if_language_id_is_invalid_on_save_user_data()
+    {
+        $connection = 'tenant';
+        $user = factory(\App\User::class)->make();
+        $user->setConnection($connection);
+        $user->save();
+
+        $userCustomField = factory(\App\Models\UserCustomField::class)->make();
+        $userCustomField->setConnection($connection);
+        $userCustomField->save();
+        $fieldId = $userCustomField->field_id;
+
+        $params = [
+            'first_name' => str_random(10),
+            'last_name' => str_random(10),
+            'timezone_id' => 1,
+            'language_id' => rand(1000000, 50000000),
+            'availability_id' => 1,
+            'why_i_volunteer' => str_random(50),
+            'employee_id' => str_random(3),
+            'department' => str_random(5),
+            'manager_name' => str_random(5),
+            'custom_fields' => [
+                [
+                    "field_id" => $fieldId,
+                    "value" => "1"
+                ]
+            ]
+        ];
+    
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
+
+        $this->patch('app/user/', $params, ['token' => $token])
+        ->seeStatusCode(422)
+        ->seeJsonStructure([
+            'errors' => [
+                [
+                    'status',
+                    'type',
+                    'code',
+                    'message'
+                ]
+            ]
+        ]);
+        $user->delete();
+        $userCustomField->delete();
+    }
 }
