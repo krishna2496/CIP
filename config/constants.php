@@ -425,7 +425,7 @@ return [
     /**
      * Notification types
      */
-    'notification_types' => [
+    'notification_type_keys' => [
         'RECOMMENDED_MISSIONS' => 'recommended_missions',
         'VOLUNTEERING_HOURS' => 'volunteering_hours',
         'VOLUNTEERING_GOALS' => 'volunteering_goals',
@@ -445,6 +445,8 @@ return [
         'PUBLISHED' => 'PUBLISHED',
         'PENDING' => 'PENDING',
         'DECLINED' => 'DECLINED',
-        'INVITE' => 'INVITE'
+        'INVITE' => 'INVITE',
+        'AUTOMATICALLY_APPROVED' => 'AUTOMATICALLY_APPROVED',
+        'SUBMIT_FOR_APPROVAL' => 'SUBMIT_FOR_APPROVAL'
     ]
 ];
