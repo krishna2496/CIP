@@ -240,8 +240,12 @@ class StoryController extends Controller
                                 
             $storyViewCount = $this->storyVisitorRepository->updateStoryViewCount($storyArray, $request->auth->user_id);
 
+            // get default user avatar
+            $tenantName = $this->helpers->getSubDomainFromRequest($request);
+            $defaultAvatar = $this->helpers->getUserDefaultProfileImage($tenantName);
+
             // Transform story details
-            $storyTransformedData = $this->transformStoryDetails($story[0], $storyViewCount);
+            $storyTransformedData = $this->transformStoryDetails($story[0], $storyViewCount, $defaultAvatar);
             
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_STORY_FOUND');
@@ -513,7 +517,11 @@ class StoryController extends Controller
             config('constants.story_status.PUBLISHED')
         );
         
-        $storyTransformedData = $this->transformPublishedStory($publishedStories);
+        // get default avatar
+        $tenantName = $this->helpers->getSubDomainFromRequest($request);
+        $defaultAvatar = $this->helpers->getUserDefaultProfileImage($tenantName);
+
+        $storyTransformedData = $this->transformPublishedStory($publishedStories, $defaultAvatar);
         $requestString = $request->except(['page','perPage']);
         $storyPaginated = new \Illuminate\Pagination\LengthAwarePaginator(
             $storyTransformedData,

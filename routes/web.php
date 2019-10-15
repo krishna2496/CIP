@@ -406,7 +406,6 @@ $router->group(['middleware' => 'localization'], function ($router) {
     $router->post('/app/user-notification-settings/update', ['as' => 'app.user-notification-settings.update',
         'middleware' => 'localization|tenant.connection|jwt.auth|JsonApiMiddleware',
         'uses' => 'App\Notification\NotificationTypeController@storeOrUpdate']);
-
 });
 
 
