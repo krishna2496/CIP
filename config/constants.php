@@ -1,7 +1,7 @@
 <?php
 
 return [
-    
+
     /*
      * constants to use any where in system
      */
@@ -27,6 +27,7 @@ return [
 
     'EMAIL_TEMPLATE_FOLDER' => 'emails',
     'EMAIL_TEMPLATE_USER_INVITE' => 'invite',
+    'EMAIL_TEMPLATE_STORY_USER_INVITE' => 'invite-story',
 
     'AWS_S3_ASSETS_FOLDER_NAME' => 'assets',
     'AWS_S3_IMAGES_FOLDER_NAME' => 'images',
@@ -262,9 +263,15 @@ return [
     /*
      * send message froms
      */
-    'send_message_from' => [
-        'admin' => 2,
-        'user' => 1,
+    'message' => [
+        'read' => '1',
+        'unread' => '0',
+        'anonymous_name' => '1',
+        'not_anonymous_name' => '0',
+        'send_message_from' => [
+            'admin' => 2,
+            'user' => 1,
+        ]
     ],
 
     /*
@@ -278,7 +285,8 @@ return [
         'MY-STORIES' => 'My stories',
         'NEW_STORIES_HOURS' => 'New stories hours',
         'NEW_MISSIONS' => 'New missions',
-        'NEW_MESSAGES' => 'New messages'
+        'NEW_MESSAGES' => 'New messages',
+        'RECOMMENDED_STORY' => 'Recommended story'
     ],
     
     /*
@@ -400,7 +408,9 @@ return [
         'ERROR_STORY_IMAGE_NOT_FOUND' => '700006',
         'ERROR_STORY_IMAGE_DELETE' => '700007',
         'ERROR_SUBMIT_STORY_PUBLISHED_OR_DECLINED' => '700008',
-        
+        'ERROR_INVALID_INVITE_STORY_DATA' => '700009',
+        'ERROR_INVITE_STORY_ALREADY_EXIST' => '700010',
+                              
         'ERROR_CONTACT_FORM_REQUIRED_FIELDS_EMPTY' => '1000001',
 
         'ERROR_USER_NOTIFICATION_REQUIRED_FIELDS_EMPTY' => '600001',
@@ -435,8 +445,10 @@ return [
         'ERROR_WHILE_UPLOADING_FILE_ON_S3' => '800024',
         'ERROR_POLICY_PAGE_NOT_FOUND' => '300010',
         'ERROR_POLICY_PAGE_REQUIRED_FIELDS_EMPTY' => '300011',
-        'ERROR_MESSAGE_REQUIRED_FIELDS_EMPTY' =>'1100001'
+        'ERROR_MESSAGE_REQUIRED_FIELDS_EMPTY' =>'1100001',
+        'ERROR_MESSAGE_USER_MESSAGE_NOT_FOUND' => '1100002'
     ],
+
 
     /**
      * Notification types

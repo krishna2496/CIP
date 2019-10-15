@@ -94,4 +94,15 @@ class Story extends Model
     {
         return $this->hasMany(StoryVisitor::class, 'story_id', 'story_id');
     }
+    
+    /**
+     * Get story title
+     *
+     * @param int $storyId
+     * @return string
+     */
+    public function getStoryName(int $storyId): string
+    {
+        return static::select('title')->where(['story_id' => $storyId])->value('title');
+    }
 }

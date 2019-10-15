@@ -112,7 +112,7 @@ class DashboardController extends Controller
             $totalGoals += $timesheetHours['total_minutes'];
         }
 
-        // for volunteering Rank
+        // For volunteering Rank
         $userRankArray = array();
         foreach ($allUsersTimesheetData as $allUsersTimesheet) {
             array_push($userRankArray, $allUsersTimesheet['total_minutes']);
