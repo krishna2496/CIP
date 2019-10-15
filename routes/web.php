@@ -407,10 +407,6 @@ $router->group(['middleware' => 'localization'], function ($router) {
         'middleware' => 'localization|tenant.connection|jwt.auth|JsonApiMiddleware',
         'uses' => 'App\Notification\NotificationTypeController@storeOrUpdate']);
 
-    /* send message to admin*/
-    $router->post('/app/message/send', ['as' => 'app.message.send',
-        'middleware' => 'localization|tenant.connection|jwt.auth|JsonApiMiddleware',
-        'uses' => 'App\Message\MessageController@sendMessage']);
 });
 
 

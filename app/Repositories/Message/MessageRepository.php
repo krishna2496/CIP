@@ -32,10 +32,10 @@ class MessageRepository implements MessageInterface
      * Store message details
      *
      * @param \Illuminate\Http\Request $request
-     * @param int $sendMessageFrom
+     * @param int $messageSentFrom
      * @return null|int messageId
      */
-    public function store(Request $request, int $sendMessageFrom): ?int
+    public function store(Request $request, int $messageSentFrom): ?int
     {
         $adminName =  !empty($request->admin) ? $request->admin : null;
         $isAnonymous = !empty($request->admin) ?
@@ -43,12 +43,12 @@ class MessageRepository implements MessageInterface
                        config('constants.message.anonymous_name');
 
         // found message from admin
-        if ($sendMessageFrom==config('constants.message.send_message_from.admin')) {
+        if ($messageSentFrom==config('constants.message.send_message_from.admin')) {
             $now = Carbon::now()->toDateTimeString();
             foreach ($request->user_ids as $userId) {
                 $messageDataArray [] = [
                     'user_id' => $userId,
-                    'sent_from' => $sendMessageFrom,
+                    'sent_from' => $messageSentFrom,
                     'admin_name' => $adminName,
                     'subject' => $request->subject,
                     'message' => $request->message,
@@ -63,7 +63,7 @@ class MessageRepository implements MessageInterface
         } else {
             $messageDataArray = array(
                 'user_id' => $request->auth->user_id,
-                'sent_from' => $sendMessageFrom,
+                'sent_from' => $messageSentFrom,
                 'admin_name' => $adminName,
                 'subject' => $request->subject,
                 'message' => $request->message,

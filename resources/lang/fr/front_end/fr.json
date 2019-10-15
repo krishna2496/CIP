@@ -95,7 +95,7 @@
         "loading": "Chargement...",
         "cancel": "Annuler",
         "save": "sauvegarder",
-        "name": "prénom",
+        "first_name": "prénom",
         "surname": "nom de famille",
         "employee_id": "Numéro d'employé",
         "manager": "Directrice",
@@ -222,7 +222,27 @@
         "my_stories": "Mes histoires",
         "story_deleted": "Histoire supprimée avec succès",
         "messages": "Messages",
-        "comment_history": "Histoire des commentaires"
+        "comment_history": "Histoire des commentaires",
+        "action": "action",
+        "deleted_successfully": "Supprimé avec succès",
+        "view": "Vue",
+        "jan": "Jan",
+        "feb": "fév",
+        "mar": "Mar",
+        "apr": "avr",
+        "jun": "Juin",
+        "jul": "juil",
+        "aug": "Août",
+        "sep": "Sep",
+        "oct": "Oct",
+        "nov": "Nov",
+        "dec": "déc",
+        "i_agree": "Je suis d'accord",
+        "contact_us": "Contactez-nous",
+        "name": "Nom",
+        "phone_number": "Numéro de téléphone",
+        "message": "Message",
+        "send": "Envoyer"
     },
 
     "placeholder": {
@@ -253,7 +273,9 @@
         "action": "Entrez l'action",
         "story_title": "Entrez le titre de l'histoire",
         "story_detail": "Entrez vos histoires",
-        "video_url": "Entrez votre URL de vidéo"
+        "video_url": "Entrez votre URL de vidéo",
+        "phone_number": "Entrez le numéro de téléphone",
+        "message": "Entrez le message"
     },
 
     "errors": {
@@ -303,7 +325,10 @@
         "story_title_required": "Le titre de l'histoire est obligatoire",
         "mission_required": "S'il vous plaît sélectionnez mission",
         "story_description_required": "S'il vous plaît entrer la description de l'histoire",
-        "valid_video_url": "Veuillez entrer une URL youtube valide."
+        "valid_video_url": "Veuillez entrer une URL youtube valide.",
+        "valid_phone_number": "S'il vous plait entrez un numéro de téléphone valide",
+        "message_required": "Message est requis",
+        "phone_number_min_length": "Le numéro de téléphone doit être au moins 10"
     },
 
     "export_timesheet_file_names": {

@@ -269,8 +269,8 @@ return [
         'anonymous_name' => '1',
         'not_anonymous_name' => '0',
         'send_message_from' => [
-            'admin' => 2,
             'user' => 1,
+            'admin' => 2,
         ]
     ],
 
