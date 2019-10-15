@@ -111,6 +111,15 @@ return [
     ],
 
     /*
+     * Story image types
+     */
+    'story_image_types' => [
+        'PNG' => 'png',
+        'JPG' => 'jpg',
+        'JPEG' => 'jpeg',
+    ],
+
+    /*
      * Slider image types
      */
     'slider_image_types' => [
@@ -250,6 +259,13 @@ return [
         'DECLINED' => 'DECLINED'
     ],
 
+    /*
+     * send message froms
+     */
+    'send_message_from' => [
+        'admin' => 2,
+        'user' => 1,
+    ],
 
     /*
      * User notification types
@@ -386,6 +402,8 @@ return [
         'ERROR_SUBMIT_STORY_PUBLISHED_OR_DECLINED' => '700008',
         
         'ERROR_CONTACT_FORM_REQUIRED_FIELDS_EMPTY' => '1000001',
+
+        'ERROR_USER_NOTIFICATION_REQUIRED_FIELDS_EMPTY' => '600001',
                 
         'ERROR_OCCURRED' => '999999',
         'ERROR_INVALID_JSON' => '900000',
@@ -415,8 +433,36 @@ return [
         'ERROR_FAILD_TO_UPLOAD_PROFILE_IMAGE_ON_S3' => '800022',
         'ERROR_REQUIRED_FIELDS_FOR_UPDATE_STYLING' => '800023',
         'ERROR_WHILE_UPLOADING_FILE_ON_S3' => '800024',
-        
         'ERROR_POLICY_PAGE_NOT_FOUND' => '300010',
-        'ERROR_POLICY_PAGE_REQUIRED_FIELDS_EMPTY' => '300011'
+        'ERROR_POLICY_PAGE_REQUIRED_FIELDS_EMPTY' => '300011',
+        'ERROR_MESSAGE_REQUIRED_FIELDS_EMPTY' =>'1100001'
+    ],
+
+    /**
+     * Notification types
+     */
+    'notification_type_keys' => [
+        'RECOMMENDED_MISSIONS' => 'recommended_missions',
+        'VOLUNTEERING_HOURS' => 'volunteering_hours',
+        'VOLUNTEERING_GOALS' => 'volunteering_goals',
+        'MY_COMMENTS' => 'my_comments',
+        'MY_STORIES' => 'my_stories',
+        'NEW_MISSIONS' => 'new_missions',
+        'NEW_MESSAGES' => 'new_messages',
+    ],
+
+    /**
+     * Notification actions
+     */
+    'notification_actions' => [
+        'CREATED' => 'CREATED',
+        'APPROVED' => 'APPROVED',
+        'REJECTED' => 'APPROVED',
+        'PUBLISHED' => 'PUBLISHED',
+        'PENDING' => 'PENDING',
+        'DECLINED' => 'DECLINED',
+        'INVITE' => 'INVITE',
+        'AUTOMATICALLY_APPROVED' => 'AUTOMATICALLY_APPROVED',
+        'SUBMIT_FOR_APPROVAL' => 'SUBMIT_FOR_APPROVAL'
     ]
 ];

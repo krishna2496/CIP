@@ -80,7 +80,9 @@ class StoryController extends Controller
         $validator = Validator::make(
             $request->toArray(),
             [
-                'mission_id' => 'required|exists:mission,mission_id,deleted_at,NULL',
+                'mission_id' =>
+                'required|exists:mission,mission_id,deleted_at,NULL,publication_status,'.
+                config("constants.publication_status.APPROVED"),
                 'title' => 'required|max:255',
                 'story_images' => 'max:'.config("constants.STORY_MAX_IMAGE_LIMIT"),
                 'story_images.*' => 'valid_story_image_type|max:'.config("constants.STORY_IMAGE_SIZE_LIMIT"),
@@ -123,7 +125,9 @@ class StoryController extends Controller
             $validator = Validator::make(
                 $request->toArray(),
                 [
-                    'mission_id' => 'sometimes|required|exists:mission,mission_id,deleted_at,NULL',
+                    'mission_id' =>
+                    'sometimes|required|exists:mission,mission_id,deleted_at,NULL,publication_status,'.
+                    config("constants.publication_status.APPROVED"),
                     'title' => 'sometimes|required|max:255',
                     'story_images' => 'max:'.config("constants.STORY_MAX_IMAGE_LIMIT"),
                     'story_images.*' => 'valid_story_image_type|max:'.config("constants.STORY_IMAGE_SIZE_LIMIT"),
@@ -219,7 +223,7 @@ class StoryController extends Controller
                 $storyId,
                 config('constants.story_status.PUBLISHED'),
                 $request->auth->user_id,
-                config('constants.story_status.DRAFT')
+                array(config('constants.story_status.DRAFT'), config('constants.story_status.PENDING'))
             );
             
             if ($story->count() == 0) {
@@ -327,8 +331,8 @@ class StoryController extends Controller
         $excel->setHeadlines($headings);
         foreach ($stories as $story) {
             $excel->appendRow([
-                $story->title,
-                $story->description,
+                strip_tags($story->title),
+                strip_tags($story->description),
                 $story->status,
                 $story->mission->missionLanguage[0]->title,
                 $story->published_at
@@ -545,7 +549,7 @@ class StoryController extends Controller
     public function editStory(Request $request, int $storyId): JsonResponse
     {
         try {
-            // Fetch story details           
+            // Fetch story details
             $storyData = $this->storyRepository->findStoryByUserId($request->auth->user_id, $storyId);
             
             $statusArray = [
@@ -571,7 +575,6 @@ class StoryController extends Controller
             $apiMessage = trans('messages.success.MESSAGE_STORY_FOUND');
     
             return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
-
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
                 config('constants.error_codes.ERROR_STORY_NOT_FOUND'),

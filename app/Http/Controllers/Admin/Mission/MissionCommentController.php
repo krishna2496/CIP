@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Repositories\Mission\MissionRepository;
 use Validator;
 use Illuminate\Validation\Rule;
+use App\Events\User\UserNotificationEvent;
 
 class MissionCommentController extends Controller
 {
@@ -127,7 +128,6 @@ class MissionCommentController extends Controller
      */
     public function update(Request $request, int $missionId, int $commentId): JsonResponse
     {
-        
         // First find mission
         try {
             $mission = $this->missionRepository->find($missionId);
@@ -162,6 +162,15 @@ class MissionCommentController extends Controller
             $apiData = $this->missionCommentRepository->updateComment($commentId, $data);
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_COMMENT_UPDATED');
+
+            // Send notification to user
+            $notificationType = config('constants.notification_type_keys.MY_COMMENTS');
+            $entityId = $commentId;
+            $action = config('constants.notification_actions.'.$request->approval_status);
+            $userId = $apiData->user_id;
+
+            event(new UserNotificationEvent($notificationType, $entityId, $action, $userId));
+
             return $this->responseHelper->success($apiStatus, $apiMessage, $apiData->toArray());
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(

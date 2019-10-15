@@ -57,14 +57,14 @@ interface StoryInterface
      * @param int $storyId
      * @param string $storyStatus
      * @param int $userId
-     * @param string $allowedStoryStatus
+     * @param array $allowedStoryStatus
      * @return Illuminate\Database\Eloquent\Collection
      */
     public function getStoryDetails(
         int $storyId,
         string $storyStatus = null,
         int $userId = 0,
-        string $allowedStoryStatus = null
+        array $allowedStoryStatus = []
     ): Collection;
     /**
      * Update story status field value, based on story_id condition
