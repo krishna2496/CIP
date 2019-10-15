@@ -89,7 +89,9 @@ class MessageRepository implements MessageInterface
         int $sentFrom,
         array $userIds = []
     ): LengthAwarePaginator {
-        $userMessageQuery = $this->message->where('sent_from', $sentFrom)
+        $userMessageQuery = $this->message->select('*')->with(['user' => function ($query) {
+            $query->select('user_id', 'first_name', 'last_name');
+        }])->where('sent_from', $sentFrom)
                             ->when(
                                 $userIds,
                                 function ($query, $userIds) {

@@ -349,11 +349,6 @@ $router->group(['middleware' => 'localization'], function ($router) {
         'middleware' => 'localization|tenant.connection|jwt.auth',
         'uses' => 'App\StoryVisitor\StoryVisitorController@store']);
 
-    /* store contact form details */
-    $router->post('/app/submit-contact-form', ['as' => 'app.contactform.store',
-        'middleware' => 'localization|tenant.connection|jwt.auth|JsonApiMiddleware',
-        'uses' => 'App\ContactForm\ContactFormController@store']);
-
     /* Delete user mission comments */
     $router->delete('/app/dashboard/comments/{commentId}', ['as' => 'app.dashboard.comment.destroy',
         'middleware' => 'localization|tenant.connection|jwt.auth',

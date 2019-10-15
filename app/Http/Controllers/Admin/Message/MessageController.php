@@ -10,11 +10,12 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Validator;
+use App\Transformations\MessageTransformable;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class MessageController extends Controller
 {
-    use RestExceptionHandlerTrait;
+    use RestExceptionHandlerTrait,MessageTransformable;
     /**
      * @var App\Repositories\Message\MessageRepository;
      */
@@ -121,7 +122,7 @@ class MessageController extends Controller
      */
     public function getUserMessages(Request $request): JsonResponse
     {
-        $userIds = !empty($request->get("userIds")) ? explode(',', $request->get("userIds")) : [];
+        $userIds = !empty($request->get("users")) ? explode(',', $request->get("users")) : [];
 
         $userMessages = $this->messageRepository->getUserMessages(
             $request,
@@ -129,9 +130,16 @@ class MessageController extends Controller
             $userIds
         );
         
+        $messageTransformed = $userMessages
+            ->getCollection()
+            ->map(function ($message) use ($request) {
+                $message = $this->transformMessage($message);
+                return $message;
+            });
+
         $requestString = $request->except(['page','perPage']);
         $messagesPaginated = new \Illuminate\Pagination\LengthAwarePaginator(
-            $userMessages,
+            $messageTransformed,
             $userMessages->total(),
             $userMessages->perPage(),
             $userMessages->currentPage(),
@@ -144,7 +152,7 @@ class MessageController extends Controller
         );
         
         // generate responce data
-        $apiData = $messagesPaginated->total()  > 0 ? $messagesPaginated : $userMessages;
+        $apiData = $messagesPaginated;
         $apiStatus = Response::HTTP_OK;
         $apiMessage = ($messagesPaginated->total() > 0) ?
             trans('messages.success.MESSAGE_MESSAGES_ENTRIES_LISTING') :
