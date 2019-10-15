@@ -73,7 +73,7 @@ trait MissionTransformable
         unset($mission['missionLanguage']);
         // Check for apply in mission validity
         $mission['set_view_detail'] = 0;
-        $today = $this->helpers->getUserTimeZoneDate(date(config("constants.DB_DATE_TIME_FORMAT")));
+        $today = $this->helpers->getUserTimeZoneDate(date(config("constants.DB_DATE_FORMAT")));
         $todayTime = $this->helpers->getUserTimeZoneDate(date(config("constants.DB_DATE_TIME_FORMAT")));
        
         if (($mission['user_application_count'] > 0) ||

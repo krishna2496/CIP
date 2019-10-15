@@ -75,7 +75,7 @@ trait RestExceptionHandlerTrait
 
     /**
      * Returns json response for internal server error.
-     * @codeCoverageIgnore
+     *
      * @param string $message
      * @return \Illuminate\Http\JsonResponse
      */
@@ -85,23 +85,6 @@ trait RestExceptionHandlerTrait
             Response::HTTP_INTERNAL_SERVER_ERROR,
             Response::$statusTexts[Response::HTTP_INTERNAL_SERVER_ERROR],
             '',
-            $message
-        );
-    }
-
-    /**
-     * Returns json response for failed to compile scss files
-     * @codeCoverageIgnore
-     * @param string $customErrorCode
-     * @param string $message
-     * @return \Illuminate\Http\JsonResponse
-     */
-    protected function parserError(string $customErrorCode = '', string $message = 'Failed to compile SCSS files')
-    {
-        return $this->jsonResponse(
-            Response::HTTP_UNPROCESSABLE_ENTITY,
-            Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-            $customErrorCode,
             $message
         );
     }

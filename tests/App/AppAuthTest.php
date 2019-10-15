@@ -355,4 +355,47 @@ class AppAuthTest extends TestCase
         $this->assertFalse(Hash::check('password', $user->fresh()->password));
         $user->delete();
     }
+
+    /**
+     * @test
+     *
+     * Allows a user to reset their password.
+     *
+     * @return void
+     */
+    public function it_should_reset_password_invalid_reset_password_link()
+    {
+        Notification::fake();
+        $token = '';
+        
+        $connection = 'tenant';
+        $user = factory(\App\User::class)->make();
+        $user->setConnection($connection);
+        $user->save();
+
+        $this->post('app/request-password-reset', ['email' => $user->email])
+            ->seeStatusCode(200);
+
+        Notification::assertSentTo(
+            $user,
+            \Illuminate\Auth\Notifications\ResetPassword::class,
+            function ($notification, $channels) use (&$token) {
+                $token = $notification->token;
+
+                return true;
+            }
+        );
+
+        DB::setDefaultConnection('mysql');
+
+        $response = $this->put('app/password-reset', [
+            'reset_password_token' => $token,
+            'email' => 'test@gmail.com',
+            'password' => 'password',
+            'password_confirmation' => 'password'
+        ]);
+        
+        $this->assertFalse(Hash::check('password', $user->fresh()->password));
+        $user->delete();
+    }
 }
