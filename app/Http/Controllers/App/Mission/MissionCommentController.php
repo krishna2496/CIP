@@ -202,7 +202,7 @@ class MissionCommentController extends Controller
             $defaultTenantLanguage->language_id
         );
 
-        if ($userMissionComments->count() == 0) {
+        if (count($userMissionComments) == 0) {
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_NO_MISSION_COMMENTS_ENTRIES');
             return $this->responseHelper->success($apiStatus, $apiMessage);
@@ -218,14 +218,15 @@ class MissionCommentController extends Controller
         ];
         
         $excel->setHeadlines($headings);
-        foreach ($userMissionComments as $comments) {
-            $excel->appendRow([
-                $comments->title,
-                $comments->comment,
-                $comments->approval_status,
-                $comments->created_at
+		foreach ($userMissionComments['comments'] as $comment) {
+			$comment = $comment->toArray();
+			$excel->appendRow([
+                $comment['title'],
+                $comment['comment'],
+                $comment['approval_status'],
+                $comment['created_at']
             ]);
-        }
+		}
     
         $tenantName = $this->helpers->getSubDomainFromRequest($request);
         $path = $excel->export('app/'.$tenantName.'/MissionComments/'.$request->auth->user_id.'/exports');
