@@ -5,6 +5,7 @@ namespace App\Repositories\Message;
 use App\Models\Message;
 use App\Repositories\Message\MessageInterface;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class MessageRepository implements MessageInterface
 {
@@ -45,5 +46,29 @@ class MessageRepository implements MessageInterface
         );
         $messageData = $this->message->create($messageDataArray);
         return $messageData;
+    }
+
+    /**
+     * Display a listing of specified resources with pagination.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param int $sentFrom
+     * @param int $userId
+     * @return \Illuminate\Pagination\LengthAwarePaginator
+     */
+    public function getUserMessages(
+        Request $request,
+        int $sentFrom,
+        int $userId = null
+    ): LengthAwarePaginator {
+        $userMessageQuery = $this->message->where('sent_from', $sentFrom)
+                            ->when(
+                                $userId,
+                                function ($query, $userId) {
+                                    return $query->where('user_id', $userId);
+                                }
+                            )->orderBy('created_at', 'desc');
+
+        return $userMessageQuery->paginate($request->perPage);
     }
 }

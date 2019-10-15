@@ -396,6 +396,11 @@ $router->group(['middleware' => 'localization'], function ($router) {
     $router->post('/app/message/send', ['as' => 'app.message.send',
         'middleware' => 'localization|tenant.connection|jwt.auth|JsonApiMiddleware',
         'uses' => 'App\Message\MessageController@sendMessage']);
+            
+    /* Get User's message Listing*/
+    $router->get('/app/message/list', ['as' => 'app.message.list',
+        'middleware' => 'localization|tenant.connection|jwt.auth',
+        'uses' => 'App\Message\MessageController@getUserMessages']);
 });
 
 

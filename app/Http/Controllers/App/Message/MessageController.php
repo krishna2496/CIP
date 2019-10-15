@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Models\Message;
 use App\Repositories\Message\MessageRepository;
 use App\Traits\RestExceptionHandlerTrait;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -75,5 +74,47 @@ class MessageController extends Controller
         $apiData = ['message_id' => $messageData->message_id];
 
         return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
+    }
+
+    /**
+     * Get user's all messages data from admin
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function getUserMessages(Request $request): JsonResponse
+    {
+        $userMessages = $this->messageRepository->getUserMessages(
+            $request,
+            config('constants.send_message_from.admin'),
+            $request->auth->user_id
+        );
+        
+        $requestString = $request->except(['page','perPage']);
+        $messagesPaginated = new \Illuminate\Pagination\LengthAwarePaginator(
+            $userMessages,
+            $userMessages->total(),
+            $userMessages->perPage(),
+            $userMessages->currentPage(),
+            [
+                'path' => $request->url().'?'.http_build_query($requestString),
+                'query' => [
+                    'page' => $userMessages->currentPage()
+                ]
+            ]
+        );
+        
+        // generate responce data
+        $apiData = $messagesPaginated->total()  > 0 ? $messagesPaginated : $userMessages;
+        $apiStatus = Response::HTTP_OK;
+        $apiMessage = ($messagesPaginated->total() > 0) ?
+            trans('messages.success.MESSAGE_MESSAGES_ENTRIES_LISTING') :
+            trans('messages.success.MESSAGE_NO_MESSAGES_ENTRIES_FOUND');
+        
+        return $this->responseHelper->successWithPagination(
+            $apiStatus,
+            $apiMessage,
+            $apiData
+        );
     }
 }

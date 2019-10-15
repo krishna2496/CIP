@@ -127,9 +127,10 @@ return [
         'MESSAGE_STORY_IMAGE_DELETED' => 'DE: Story image deleted sucessfully',,
         'MESSAGE_INVITED_FOR_STORY' => 'DE: User invited to story successfully',
         'CONTACT_FORM_ADDED_SUCESSFULLY' => 'DE: Your feedback added successfully.',
-        'MESSAGE_NOTIFICATION_SETTINGS_LISTING' => 'DE: Notification settings listed successfully',
-        'MESSAGE_USER_NOTIFICATION_SETTINGS_UPDATED' => 'DE: User notification settings updated successfully',
-        'MESSAGE_USER_COOKIE_AGGREMENT_ACCEPTED' => 'DE: Cookie aggrement accepted successfully',
+        
+        'MESSAGE_MESSAGES_ENTRIES_LISTING' => 'DE: Messages listed successfully',
+        'MESSAGE_NO_MESSAGES_ENTRIES_FOUND' => 'DE: No messages found',
+        
         'MESSAGE_SEND_SUCESSFULLY' => 'DE: Message sent successfully',
         'MESSAGE_USER_COOKIE_AGREEMENT_ACCEPTED' => 'DE: Cookie agreement accepted successfully',
         'MESSAGE_NOTIFICATION_SETTINGS_LISTING' => 'DE: Notification settings listed successfully',
