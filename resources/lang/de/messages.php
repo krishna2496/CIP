@@ -121,6 +121,11 @@ return [
         'MESSAGE_STORY_VISITOR_ADDED_SUCESSFULLY' => 'DE: Story visitor added successfully',
      
          // For contact form module
+         'CONTACT_FORM_ADDED_SUCESSFULLY' => 'DE: Your feedback added successfully.',
+
+        'MESSAGE_STORY_SUBMITTED_SUCESSFULLY' => 'DE: Story submitted sucessfully',
+        'MESSAGE_STORY_IMAGE_DELETED' => 'DE: Story image deleted sucessfully',,
+        'MESSAGE_INVITED_FOR_STORY' => 'DE: User invited to story successfully',
         'CONTACT_FORM_ADDED_SUCESSFULLY' => 'DE: Your feedback added successfully.',
         'MESSAGE_NOTIFICATION_SETTINGS_LISTING' => 'DE: Notification settings listed successfully',
         'MESSAGE_USER_NOTIFICATION_SETTINGS_UPDATED' => 'DE: User notification settings updated successfully',
@@ -251,6 +256,7 @@ return [
         'ERROR_STORY_IMAGE_NOT_FOUND' => 'DE: Story image not found in the system',
         'ERROR_STORY_IMAGE_DELETE' => 'DE: You cannot delete image of published or declined story',
         'ERROR_SUBMIT_STORY_PUBLISHED_OR_DECLINED' => 'You cannot submit published or declined story',
+        'ERROR_INVITE_STORY_ALREADY_EXIST' => 'DE: User is already invited for this story',
     ]
 
 ];
