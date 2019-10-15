@@ -73,6 +73,7 @@ return [
     'unique'               => 'The :attribute has already been taken.',
     'url'                  => 'The :attribute format is invalid.',
     'present'              => 'The :attribute field is required',
+	'distinct'             => 'The :attribute field has a duplicate value.',
 
     /*
     |--------------------------------------------------------------------------
@@ -187,6 +188,7 @@ return [
         'news_content.translations.*.description' => 'description',
         'translations.*.title' => 'title',
         'settings.*.notification_type_id' => 'notification type id',
-        ],
+		'user_ids.*' => 'user id'
+		],
 
 ];

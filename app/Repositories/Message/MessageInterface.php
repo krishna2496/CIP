@@ -31,7 +31,7 @@ interface MessageInterface
     ): LengthAwarePaginator;
 
     /**
-     * Remove the message details.
+     * Remove message details.
      *
      * @param int $messageId
      * @param int $sentFrom

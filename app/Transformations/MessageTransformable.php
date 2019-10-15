@@ -27,8 +27,6 @@ trait MessageTransformable
         if (!empty($message->user)) {
             $messageData->first_name = $message->user->first_name;
             $messageData->last_name = $message->user->last_name;
-            $messageData->avatar = $message->user->avatar;
-            $messageData->email = $message->user->email;
         }
         
         return $messageData;

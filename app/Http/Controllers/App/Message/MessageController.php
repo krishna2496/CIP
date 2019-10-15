@@ -92,23 +92,11 @@ class MessageController extends Controller
         );
         
         $requestString = $request->except(['page','perPage']);
-        $messagesPaginated = new \Illuminate\Pagination\LengthAwarePaginator(
-            $userMessages,
-            $userMessages->total(),
-            $userMessages->perPage(),
-            $userMessages->currentPage(),
-            [
-                'path' => $request->url().'?'.http_build_query($requestString),
-                'query' => [
-                    'page' => $userMessages->currentPage()
-                ]
-            ]
-        );
         
         // generate responce data
-        $apiData = $messagesPaginated->total()  > 0 ? $messagesPaginated : $userMessages;
+        $apiData = $userMessages;
         $apiStatus = Response::HTTP_OK;
-        $apiMessage = ($messagesPaginated->total() > 0) ?
+        $apiMessage = ($userMessages->total() > 0) ?
             trans('messages.success.MESSAGE_MESSAGES_ENTRIES_LISTING') :
             trans('messages.success.MESSAGE_NO_MESSAGES_ENTRIES_FOUND');
         

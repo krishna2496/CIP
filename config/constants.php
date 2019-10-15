@@ -266,8 +266,8 @@ return [
     'message' => [
         'read' => '1',
         'unread' => '0',
-        'anonymous_name' => '1',
-        'not_anonymous_name' => '0',
+        'anonymous' => '1',
+        'not_anonymous' => '0',
         'send_message_from' => [
             'user' => 1,
             'admin' => 2,

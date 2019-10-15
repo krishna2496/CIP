@@ -85,36 +85,6 @@ class MessageController extends Controller
     }
 
     /**
-     * Remove Message details.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @param int $messageId
-     * @return Illuminate\Http\JsonResponse
-     */
-    public function destroy(Request $request, int $messageId): JsonResponse
-    {
-        try {
-            $this->messageRepository->delete(
-                $messageId,
-                config('constants.message.send_message_from.user'),
-                null
-            );
-           
-            // Set response data
-            $apiStatus = Response::HTTP_NO_CONTENT;
-            $apiMessage = trans('messages.success.MESSAGE_USER_MESSAGE_DELETED');
-            
-            return $this->responseHelper->success($apiStatus, $apiMessage);
-        } catch (ModelNotFoundException $e) {
-            return $this->modelNotFound(
-                config('constants.error_codes.ERROR_MESSAGE_USER_MESSAGE_NOT_FOUND'),
-                trans('messages.custom_error_message.ERROR_MESSAGE_USER_MESSAGE_NOT_FOUND')
-            );
-        }
-    }
-
-
-    /**
      * Get admin messages data
      *
      * @param Request $request
@@ -163,5 +133,34 @@ class MessageController extends Controller
             $apiMessage,
             $apiData
         );
+    }
+	
+	/**
+     * Remove Message details.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param int $messageId
+     * @return Illuminate\Http\JsonResponse
+     */
+    public function destroy(Request $request, int $messageId): JsonResponse
+    {
+        try {
+            $this->messageRepository->delete(
+                $messageId,
+                config('constants.message.send_message_from.user'),
+                null
+            );
+           
+            // Set response data
+            $apiStatus = Response::HTTP_NO_CONTENT;
+            $apiMessage = trans('messages.success.MESSAGE_USER_MESSAGE_DELETED');
+            
+            return $this->responseHelper->success($apiStatus, $apiMessage);
+        } catch (ModelNotFoundException $e) {
+            return $this->modelNotFound(
+                config('constants.error_codes.ERROR_MESSAGE_USER_MESSAGE_NOT_FOUND'),
+                trans('messages.custom_error_message.ERROR_MESSAGE_USER_MESSAGE_NOT_FOUND')
+            );
+        }
     }
 }

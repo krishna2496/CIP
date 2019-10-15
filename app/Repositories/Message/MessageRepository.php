@@ -38,38 +38,35 @@ class MessageRepository implements MessageInterface
     public function store(Request $request, int $messageSentFrom): ?int
     {
         $adminName =  !empty($request->admin) ? $request->admin : null;
-        $isAnonymous = !empty($request->admin) ?
-                       config('constants.message.not_anonymous_name') :
-                       config('constants.message.anonymous_name');
-
+        
         // found message from admin
-        if ($messageSentFrom==config('constants.message.send_message_from.admin')) {
+		$message = ['sent_from' => $messageSentFrom, 
+					'admin_name' => $adminName, 
+					'subject' => $request->subject,
+					'message' => $request->message
+					];
+        if ($messageSentFrom == config('constants.message.send_message_from.admin')) {
+			$isAnonymous = !empty($request->admin) ?
+                       config('constants.message.not_anonymous') :
+                       config('constants.message.anonymous');
             $now = Carbon::now()->toDateTimeString();
             foreach ($request->user_ids as $userId) {
-                $messageDataArray [] = [
+                $messageDataArray = [
                     'user_id' => $userId,
-                    'sent_from' => $messageSentFrom,
-                    'admin_name' => $adminName,
-                    'subject' => $request->subject,
-                    'message' => $request->message,
                     'is_read' => config('constants.message.unread'),
-                    'is_anonymous' => $isAnonymous,
-                    'created_at'=>$now,
-                    'updated_at'=>$now,
+					'is_anonymous' => $isAnonymous,
+                    'created_at' => $now,
+                    'updated_at' => $now,
                 ];
+				$batchMessageArray[] = array_merge($message, $messageDataArray);
             }
-            
-            $messageData = $this->message->insert($messageDataArray);
+            $messageData = $this->message->insert($batchMessageArray);
         } else {
             $messageDataArray = array(
                 'user_id' => $request->auth->user_id,
-                'sent_from' => $messageSentFrom,
-                'admin_name' => $adminName,
-                'subject' => $request->subject,
-                'message' => $request->message,
                 'is_read' => config('constants.message.read'),
-                'is_anonymous' => $isAnonymous,
             );
+			$messageDataArray = array_merge($message, $messageDataArray);
             $messageData = $this->message->create($messageDataArray);
         }
 
@@ -104,7 +101,7 @@ class MessageRepository implements MessageInterface
 
 
     /**
-     * Remove the message details.
+     * Remove message details.
      *
      * @param int $messageId
      * @param int $sentFrom
