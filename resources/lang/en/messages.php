@@ -153,6 +153,10 @@ return [
         'MESSAGE_USER_COMMENTS_LISTING' => 'User comments listed successfully',
         'MESSAGE_STORY_SUBMITTED_SUCESSFULLY' => 'Story submitted sucessfully',
         'MESSAGE_STORY_IMAGE_DELETED' => 'Story image deleted sucessfully',
+
+    	'MESSAGE_NOTIFICATION_SETTINGS_LISTING' => 'Notification settings listed successfully',
+        'MESSAGE_USER_NOTIFICATION_SETTINGS_UPDATED' => 'User notification settings updated successfully',
+        'MESSAGE_USER_MESSAGE_DELETED' => 'Message deleted sucessfully',
         'MESSAGE_NO_MISSION_COMMENTS_ENTRIES' => 'No mission comments found',
         'MESSAGE_STORY_VISITOR_ADDED_SUCESSFULLY' => 'Story visitor added successfully',
         'MESSAGE_STORY_SUBMITTED_SUCESSFULLY' => 'Story submitted sucessfully',
@@ -299,6 +303,9 @@ return [
         'ERROR_STORY_IMAGE_NOT_FOUND' => 'Story image not found in the system',
         'ERROR_STORY_IMAGE_DELETE' => 'You cannot delete image of published or declined story',
         'ERROR_SUBMIT_STORY_PUBLISHED_OR_DECLINED' => 'You cannot submit published or declined story',
+        // For message module
+        'ERROR_MESSAGE_USER_MESSAGE_NOT_FOUND' => 'Message not found in the system',
         'ERROR_INVITE_STORY_ALREADY_EXIST' => 'User is already invited for this story',
+
     ]
 ];

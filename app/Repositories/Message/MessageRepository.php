@@ -71,4 +71,24 @@ class MessageRepository implements MessageInterface
 
         return $userMessageQuery->paginate($request->perPage);
     }
+
+
+    /**
+     * Remove the message details.
+     *
+     * @param int $messageId
+     * @param int $sentFrom
+     * @param int $userId
+     * @return bool
+     */
+    public function delete(int $messageId, int $sentFrom, int $userId): bool
+    {
+        return $this->message->where(
+            [
+                'message_id' => $messageId,
+                'sent_from' => $sentFrom,
+                'user_id' => $userId
+            ]
+        )->firstOrFail()->delete();
+    }
 }
