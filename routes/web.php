@@ -344,11 +344,6 @@ $router->group(['middleware' => 'localization'], function ($router) {
         'middleware' => 'localization|tenant.connection|jwt.auth',
         'uses' => 'App\Story\StoryController@update']);
 
-    /* store story visitor details */
-    $router->get('/app/story/{storyId}/views', ['as' => 'app.storyvisitor.store',
-        'middleware' => 'localization|tenant.connection|jwt.auth',
-        'uses' => 'App\StoryVisitor\StoryVisitorController@store']);
-
     /* store contact form details */
     $router->post('/app/submit-contact-form', ['as' => 'app.contactform.store',
         'middleware' => 'localization|tenant.connection|jwt.auth|JsonApiMiddleware',
