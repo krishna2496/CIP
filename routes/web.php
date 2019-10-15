@@ -382,6 +382,22 @@ $router->group(['middleware' => 'localization'], function ($router) {
         'middleware' => 'localization|tenant.connection|jwt.auth',
         'uses' => 'App\User\UserController@saveCookieAgreement']);
 
+    /* send message to admin*/
+    $router->post('/app/message/send', ['as' => 'app.message.send',
+        'middleware' => 'localization|tenant.connection|jwt.auth|JsonApiMiddleware',
+        'uses' => 'App\Message\MessageController@sendMessage']);
+            
+    /* Get User's message Listing*/
+    $router->get('/app/message/list', ['as' => 'app.message.list',
+        'middleware' => 'localization|tenant.connection|jwt.auth',
+        'uses' => 'App\Message\MessageController@getUserMessages']);
+
+    /* Delete Message details */
+    $router->delete('/app/message/{messageId}', ['as' => 'app.message.destroy',
+        'middleware' => 'localization|tenant.connection|jwt.auth',
+        'uses' => 'App\Message\MessageController@destroy']);
+
+
     /* Fetch notification settings */
     $router->get('/app/notification-settings', ['as' => 'app.notification-settings',
         'middleware' => 'localization|tenant.connection|jwt.auth',
@@ -685,6 +701,14 @@ $router->group(['middleware' => 'localization'], function ($router) {
         }
     );
 
+     /* message management */
+    $router->group(
+        ['prefix' => '/message', 'middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware'],
+        function ($router) {
+            $router->post('/send', ['as' => 'message.send',
+               'uses' => 'Admin\Message\MessageController@sendMessage']);
+        }
+    );
 /*
 |
 |--------------------------------------------------------------------------

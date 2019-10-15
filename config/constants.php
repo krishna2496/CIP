@@ -1,7 +1,7 @@
 <?php
 
 return [
-    
+
     /*
      * constants to use any where in system
      */
@@ -263,9 +263,15 @@ return [
     /*
      * send message froms
      */
-    'send_message_from' => [
-        'admin' => 2,
-        'user' => 1,
+    'message' => [
+        'read' => '1',
+        'unread' => '0',
+        'anonymous_name' => '1',
+        'not_anonymous_name' => '0',
+        'send_message_from' => [
+            'admin' => 2,
+            'user' => 1,
+        ]
     ],
 
     /*
@@ -439,9 +445,11 @@ return [
         'ERROR_WHILE_UPLOADING_FILE_ON_S3' => '800024',
         'ERROR_POLICY_PAGE_NOT_FOUND' => '300010',
         'ERROR_POLICY_PAGE_REQUIRED_FIELDS_EMPTY' => '300011',
-        'ERROR_MESSAGE_REQUIRED_FIELDS_EMPTY' =>'1100001'
+        'ERROR_MESSAGE_REQUIRED_FIELDS_EMPTY' =>'1100001',
+        'ERROR_MESSAGE_USER_MESSAGE_NOT_FOUND' => '1100002'
     ],
 
+       
     /**
      * Notification types
      */

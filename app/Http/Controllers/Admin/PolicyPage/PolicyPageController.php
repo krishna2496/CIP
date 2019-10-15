@@ -81,7 +81,8 @@ class PolicyPageController extends Controller
             $request->all(),
             [
                 "page_details" => "required",
-                "page_details.slug" => "required|max:255|alpha_dash|unique:policy_page,slug,NULL,page_id,deleted_at,NULL",
+                "page_details.slug" =>
+                    "required|max:255|alpha_dash|unique:policy_page,slug,NULL,page_id,deleted_at,NULL",
                 "page_details.translations" => "required",
                 "page_details.translations.*.lang" => "required|max:2",
                 "page_details.translations.*.title" => "required",

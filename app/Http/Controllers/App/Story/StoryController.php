@@ -265,6 +265,9 @@ class StoryController extends Controller
     public function copyStory(Request $request, int $oldStoryId): JsonResponse
     {
         try {
+            //check for story exist?
+            $storyData = $this->storyRepository->findStoryByUserId($request->auth->user_id, $oldStoryId);
+
             $storyStatus = array(
                 config('constants.story_status.DECLINED')
             );
@@ -331,7 +334,7 @@ class StoryController extends Controller
         $excel->setHeadlines($headings);
         foreach ($stories as $story) {
             $excel->appendRow([
-                strip_tags($story->title),
+                $story->title,
                 strip_tags($story->description),
                 $story->status,
                 $story->mission->missionLanguage[0]->title,
