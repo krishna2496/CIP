@@ -2403,7 +2403,7 @@ class AppStoryTest extends TestCase
     }
             
     /**
-     *
+     * @test
      *
      * It should return error if story id not found on copy story
      *
@@ -3436,7 +3436,6 @@ class AppStoryTest extends TestCase
 
         $user->delete();
     }
-
     
     /**
      * @test
@@ -3560,5 +3559,121 @@ class AppStoryTest extends TestCase
 
         $user->delete();
         $mission->delete();
+    }
+
+    /**
+     * @test
+     *
+     * It should return story details by story id
+     *
+     * @return void
+     */
+    public function it_should_return_detail_of_story()
+    {
+        $connection = 'tenant';
+        $user = factory(\App\User::class)->make();
+        $user->setConnection($connection);
+        $user->save();
+
+        $params = [
+            "organisation" => [
+                "organisation_id" => 1,
+                "organisation_name" => str_random(10),
+                "organisation_detail" => [
+                    [
+                       "lang"=>"en",
+                       "detail"=>"Testing organisation description in English"
+                    ],
+                    [
+                       "lang"=>"fr",
+                       "detail"=>"Testing organisation description in French"
+                    ]
+                ]
+            ],
+            "location" => [
+                "city_id" => 1,
+                "country_code" => "US"
+            ],
+            "mission_detail" => [[
+                    "lang" => "en",
+                    "title" => 'title',
+                    "short_description" => str_random(20),
+                    "objective" => str_random(20),
+                    "section" => [
+                        [
+                            "title" => str_random(10),
+                            "description" => str_random(100),
+                        ],
+                        [
+                            "title" => str_random(10),
+                            "description" => str_random(100),
+                        ]
+                    ]
+                ]
+            ],
+            "media_images" => [[
+                    "media_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/default_theme/assets/images/volunteer6.png",
+                    "default" => "1"
+                ]
+            ],
+            "documents" => [[
+                    "document_path" => "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/test/sample.pdf"
+                ]
+            ],
+            "media_videos"=> [[
+                "media_name" => "youtube_small",
+                "media_path" => "https://www.youtube.com/watch?v=PCwL3-hkKrg"
+                ]
+            ],
+            "start_date" => "2019-05-15 10:40:00",
+            "end_date" => "2019-10-15 10:40:00",
+            "mission_type" => config("constants.mission_type.GOAL"),
+            "goal_objective" => rand(1, 1000),
+            "total_seats" => rand(1, 1000),
+            "application_deadline" => "2019-07-28 11:40:00",
+            "publication_status" => config("constants.publication_status.APPROVED"),
+            "theme_id" => 1,
+            "availability_id" => 1,
+            "skills" => []
+        ];
+
+        $this->post("missions", $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(201);
+        $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
+        DB::setDefaultConnection('mysql');
+    
+        $params = [
+            'mission_id' => $mission->mission_id,
+            'title' => str_random(10),
+            'description' => str_random(50),
+            'story_videos' => 'https://www.youtube.com/watch?v=PCwL3-hkKrg,https://www.youtube.com/watch?v=PCwL3-hkKrg1'
+        ];
+        DB::setDefaultConnection('mysql');
+        
+        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
+        $path  = storage_path().'/unitTestFiles/test.jpg';
+        $storyImages = array(
+            new \Illuminate\Http\UploadedFile($path, 'test.jpg', '', null, null, true)
+        );
+        $this->call('POST', 'app/story', $params, [], ['story_images' => $storyImages], ['HTTP_token' => $token]);
+        $this->seeStatusCode(201);
+        $story = App\Models\Story::orderBy("story_id", "DESC")->take(1)->first();
+        DB::setDefaultConnection('mysql');
+        $this->get('app/story/'.$story->story_id, ['token' => $token])
+        ->seeStatusCode(200);
+        
+        DB::setDefaultConnection('mysql');
+        $story->update(['status' => config('constants.story_status.DECLINED')]);
+        $this->get('app/story/'.$story->story_id, ['token' => $token])
+        ->seeStatusCode(404);
+
+        DB::setDefaultConnection('mysql');
+        $this->get('app/story/'.rand(1000000, 50000000), ['token' => $token])
+        ->seeStatusCode(404);
+
+        App\Models\Story::where('mission_id', $mission->mission_id)->delete();
+        $user->delete();
+        $mission->delete();
+        $story->delete();
     }
 }
