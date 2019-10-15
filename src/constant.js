@@ -52,5 +52,6 @@ export default Object.freeze({
     PUBLISHED_STORY: "Published",
     DRAFT_STORY: "Draft",
     DECLINED_STORY: "Declined",
-    PENDING_STORY: "Pending"
+    PENDING_STORY: "Pending",
+    CONTACT_US: "contact_us_enabled"
 })

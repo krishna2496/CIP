@@ -1995,11 +1995,8 @@ main {
 
 .stories-detail-page {
     .slider-banner-block {
-        padding-top: 50px;
+        padding-top: 30px;
         margin-bottom: 5px;
-        @include sm-max {
-            padding-top: 35px;
-        }
         .slider-col {
             @include md-max {
                 padding-left: 15px;
@@ -2065,10 +2062,15 @@ main {
     .profile-box-outer {
         padding-top: 69px;
         padding-left: 25px;
+        margin-top: 66px;
+        @include lg-max {
+            margin-top: 120px;
+        }
         @include md-max {
             padding-left: 15px;
             padding-right: 15px;
             padding-top: 25px;
+            margin: 0;
         }
         .profile-box {
             text-align: center;
@@ -2648,7 +2650,7 @@ main {
                 align-items: center;
                 flex-direction: column;
                 justify-content: center;
-                .progress-status{
+                .progress-status {
                     margin-bottom: 10px;
                 }
                 .progress {
@@ -2921,11 +2923,7 @@ main {
     .dashboard-story-content {
         margin-bottom: 40px;
         p {
-            max-width: 62%;
             margin-bottom: 16px;
-            @include md-max {
-                max-width: 100%;
-            }
         }
         .btn {
             padding: 0 22px;
@@ -3452,10 +3450,7 @@ main {
 
 .share-stories-page {
     h1 {
-        margin: 50px 0 16px;
-        @include md-max {
-            margin-top: 35px;
-        }
+        margin: 30px 0 16px;
         @include sm-max {
             margin-top: 28px;
         }

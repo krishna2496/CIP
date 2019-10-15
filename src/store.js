@@ -48,7 +48,7 @@ export default new Vuex.Store({
         slideEffect: localStorage.getItem('slideEffect'),
         cookieAgreementDate: localStorage.getItem('cookieAgreementDate'),
         cookiePolicyText: localStorage.getItem('cookiePolicyText'),
-
+        email: localStorage.getItem('email')
     },
     mutations: {
         // Set login data in state and local storage       
@@ -61,6 +61,7 @@ export default new Vuex.Store({
             localStorage.setItem('avatar', data.avatar)
             localStorage.setItem('defaultCountryId', data.country_id)
             localStorage.setItem('cookieAgreementDate', data.cookie_agreement_date)
+            localStorage.setItem('email', data.email)
             state.isLoggedIn = true;
             state.token = data.token;
             state.userId = data.user_id;
@@ -69,6 +70,7 @@ export default new Vuex.Store({
             state.avatar = data.avatar;
             state.defaultCountryId = data.country_id;
             state.cookieAgreementDate = data.cookie_agreement_date;
+            state.email = data.email;
         },
         // Remove login data in state and local storage
         logoutUser(state) {

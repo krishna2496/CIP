@@ -1,13 +1,11 @@
 <template>
     <div class="primary-footer">
         <b-container>
-            
             <div class="cookies-block" v-bind:class="{
-                'hidden' : isCookieHidden
-            }">
+                    'hidden' : isCookieHidden
+                }">
                 <div class="container">
                     <div class="text-wrap" v-html="cookiePolicyText">
-                       
                     </div>
                     <b-button class="btn-bordersecondary">
                         <span>{{ languageData.label.i_agree }}</span>
@@ -17,7 +15,6 @@
                     <img :src="$store.state.imagePath+'/assets/images/cross-ic-white.svg'" alt="cross-ic" />
                 </i>
             </div>
-
             <b-row>
                 <b-col md="6" class="footer-menu">
                     <b-list-group v-if="isDynamicFooterItemsSet">
@@ -25,12 +22,78 @@
                             :to="{ path: '/'+item.slug}" :title="getTitle(item)" @click.native="clickHandler">
                             {{getTitle(item)}}
                         </b-list-group-item>
+                         <b-list-group-item @click="showModal" href="javascript:void(0)" v-if="contactUsDisplay">
+                            {{ languageData.label.contact_us }}
+                        </b-list-group-item>
                     </b-list-group>
                 </b-col>
                 <b-col md="6" class="copyright-text">
                     <p>© {{year}} Optimy.com. {{ languageData.label.all_rights_reserved }}.</p>
                 </b-col>
+
             </b-row>
+
+            <b-modal ref="contactModal" :modal-class="'contact-modal'" hide-footer centered>
+                <template slot="modal-header" slot-scope="{ close }">
+                    <i class="close" @click="close()" v-b-tooltip.hover :title="languageData.label.close"></i>
+                    <h5 class="modal-title">{{ languageData.label.contact_us }}</h5>
+                </template>
+                <b-alert show :variant="classVariant" dismissible v-model="showDismissibleAlert">{{ message }}</b-alert>
+                <b-form>
+                    <b-form-group>
+                        <label for>{{ languageData.label.name }}</label>
+                        <b-form-input id type="text" 
+                        v-model.trim="contactUs.name" 
+                        maxLength="128"
+                        :placeholder="languageData.placeholder.name"></b-form-input>
+                    </b-form-group>
+                    <b-form-group>
+                        <label for>{{ languageData.label.email_address }}</label>
+                        <b-form-input id type="text" :placeholder="languageData.placeholder.email_address"
+                            v-model.trim="contactUs.email" 
+                            maxLength="128"
+                            :class="{ 'is-invalid': submitted && $v.contactUs.email.$error }"></b-form-input>
+                        <div v-if="submitted && !$v.contactUs.email.required" class="invalid-feedback">
+                            {{ languageData.errors.email_required }}
+                        </div>
+                        <div v-if="submitted && !$v.contactUs.email.email" class="invalid-feedback">
+                            {{ languageData.errors.invalid_email }}
+                        </div>
+                    </b-form-group>
+                    <b-form-group>
+                        <label for>{{ languageData.label.phone_number }}</label>
+                        <b-form-input id 
+                            v-model.trim="contactUs.phone" 
+                            maxLength="11"
+                            :class="{ 'is-invalid': submitted && $v.contactUs.phone.$error }"
+                            type="text" :placeholder="languageData.placeholder.phone_number">
+                        </b-form-input>
+                        <div v-if="submitted && !$v.contactUs.phone.numeric" class="invalid-feedback">
+                            {{ languageData.errors.valid_phone_number }}
+                        </div>
+                        <div v-if="submitted && $v.contactUs.phone.numeric && !$v.contactUs.phone.minLength" class="invalid-feedback">
+                           safsaf {{ languageData.errors.phone_number_min_length }}
+                        </div>
+                    </b-form-group>
+                    <b-form-group>
+                        <label for>{{ languageData.label.message }}</label>
+                        <b-form-textarea id :placeholder="languageData.placeholder.message" size="lg" no-resize rows="5"
+                            v-model.trim="contactUs.message" 
+                            :class="{ 'is-invalid': submitted && $v.contactUs.message.$error }"></b-form-textarea>
+                        <div v-if="submitted && !$v.contactUs.message.required" class="invalid-feedback">
+                            {{ languageData.errors.message_required }}
+                        </div>
+                    </b-form-group>
+                    <div class="btn-wrap">
+                        <b-button class="btn-borderprimary" title="Cancel" @click="$refs.contactModal.hide()">
+                            {{ languageData.label.cancel }}
+                        </b-button>
+                        <b-button class="btn-bordersecondary" title="Send" @click="submitContact">
+                            {{ languageData.label.send }}</b-button>
+                    </div>
+                </b-form>
+            </b-modal>
+
         </b-container>
     </div>
 </template>
@@ -39,9 +102,16 @@
     import store from '../../store';
     import {
         cmsPages,
-        cookieAgreement
+        cookieAgreement,
+        contactUs
     } from "../../services/service";
-
+    import constants from '../../constant';
+    import {
+        required,
+        email,
+        numeric,
+        minLength
+    } from 'vuelidate/lib/validators';
     export default {
         components: {},
         name: "TheSecondaryFooter",
@@ -51,46 +121,78 @@
                 isDynamicFooterItemsSet: false,
                 year: new Date().getFullYear(),
                 languageData: [],
-                isCookieHidden : true,
-                cookiePolicyText : ''
+                isCookieHidden: true,
+                cookiePolicyText: '',
+                submitted: false,
+                message : '',
+                contactUs: {
+                    'name': '',
+                    'email': '',
+                    'phone': '',
+                    'message': ''
+                },
+                classVariant : '',
+                showDismissibleAlert : false,
+                contactUsDisplay:true
             };
         },
+        validations: {
+            contactUs: {
+                email: {
+                    required,
+                    email
+                },
+                message: {
+                    required
+                },
+                phone: {
+                    numeric,
+                    minLength:minLength(10)
+                }
+            }
+        },
         created() {
-            var _this = this;
             this.languageData = JSON.parse(store.state.languageLabel);
             // Fetching footer CMS pages
             this.getPageListing();
             this.footerAdj();
-            
-            if(store.state.cookieAgreementDate == '' || store.state.cookieAgreementDate == null) {
+            this.contactUsDisplay = this.settingEnabled(constants.CONTACT_US);
+            if(!this.contactUsDisplay) {
+                this.contactUsDisplay = false
+            }
+            if (store.state.cookieAgreementDate == '' || store.state.cookieAgreementDate == null) {
                 this.isCookieHidden = false;
             }
-
-            setTimeout(function () {
+            
+            setTimeout(() => {
                 var closeCookies = document.querySelector('.cookies-block .close');
                 var agreeBtn = document.querySelector('.cookies-block .btn');
                 var cookiesBlock = document.querySelector('.cookies-block');
 
                 agreeBtn.addEventListener('click', () => {
                     cookiesBlock.classList.add('hidden')
-                    _this.agreeCookie();
+                    this.agreeCookie();
                 })
 
                 closeCookies.addEventListener('click', () => {
                     cookiesBlock.classList.add('hidden')
-                    _this.hideCookieBlock();
+                    this.hideCookieBlock();
                 })
             })
 
             let cookiePolicyTextArray = JSON.parse(store.state.cookiePolicyText)
-            if(cookiePolicyTextArray) {
-                cookiePolicyTextArray.filter((data,index) => {
-                    if(data.lang == store.state.defaultLanguage.toLowerCase()) {
+            if (cookiePolicyTextArray) {
+                cookiePolicyTextArray.filter((data, index) => {
+                    if (data.lang == store.state.defaultLanguage.toLowerCase()) {
                         this.cookiePolicyText = data.message
                     }
                 })
             }
-        
+
+            if(store.state.isLoggedIn == true) {
+                this.contactUs.name = store.state.firstName+' '+store.state.lastName 
+                this.contactUs.email = store.state.email
+            }
             window.addEventListener("resize", this.footerAdj);
         },
         methods: {
@@ -115,7 +217,7 @@
                     }
                 }
             },
-            
+
             getUrl(items) {
                 if (items) {
                     return items.slug
@@ -134,7 +236,7 @@
                         footerH + "px";
                 }
             },
-            
+
             agreeCookie() {
                 let data = {
                     "agreement": true
@@ -146,6 +248,38 @@
 
             hideCookieBlock() {
                 this.$store.commit('removeCookieBlock');
+            },
+            showModal() {
+                this.$refs.contactModal.show()
+            },
+
+            submitContact() {
+                this.submitted = true;
+                this.$v.$touch();
+                if (this.$v.$invalid) {
+                    return
+                }
+                let contactData = {
+                    'name':'',
+                    'phone_number' : '',
+                    'email' :'',
+                    'message' : ''
+                }
+
+                contactData.name = this.contactUs.name;
+                contactData.phone_number = this.contactUs.phone;
+                contactData.email = this.contactUs.email;
+                contactData.message = this.contactUs.message;
+                contactUs(contactData).then(response => {
+                    this.showDismissibleAlert = true
+                    if(response.error == false) {
+                        this.classVariant = 'success';
+                        this.message = response.message
+                    } else {
+                        this.classVariant = 'danger';
+                        this.message = response.message
+                    }
+                })
             }
         },
         updated() {

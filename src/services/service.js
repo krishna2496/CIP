@@ -56,6 +56,7 @@ import commentListing from "./Comment/CommentListing"
 import deleteComment from "./Comment/DeleteComment"
 import cookieAgreement from "./CookieAgreement"
 import myDashboard from "./MyDashboard"
+import contactUs from "./ContactUs"
 
 export {
     loadLocaleMessages,
@@ -115,5 +116,6 @@ export {
     commentListing,
     deleteComment,
     cookieAgreement,
-    myDashboard
+    myDashboard,
+    contactUs
 }
