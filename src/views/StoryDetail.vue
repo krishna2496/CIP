@@ -58,7 +58,7 @@
 								</b-col>
 							</b-row>
 							<b-row class="thumb-slider" v-else>
-								<b-col xl="10" class="left-col">
+								<b-col xl="12" class="left-col">
 									<div class="gallery-top" 
 										v-bind:class="{
 											'gallery-top' : true,

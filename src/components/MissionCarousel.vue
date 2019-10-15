@@ -49,7 +49,8 @@
 		missionCarousel
 	} from "../services/service";
 	import carousel from 'vue-owl-carousel';
-
+	import store from "../store";
+	import constants from '../constant';
 	export default {
 		name: "MissionCarousel",
 		components: {

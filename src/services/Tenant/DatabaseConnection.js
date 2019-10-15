@@ -131,6 +131,12 @@ export default async(langList, defautLang) => {
                 store.commit('slideEffect', '');
             }
 
+            if (response.data.data.cookie_policy_text) {
+                store.commit('cookiePolicyText', response.data.data.cookie_policy_text);
+            } else {
+                store.commit('cookiePolicyText', '');
+            }
+
         })
         .catch(function() {
 

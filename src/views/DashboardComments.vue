@@ -5,8 +5,7 @@
 		</header>
 		<main>
 			<DashboardBreadcrumb />
-			<div
-				v-bind:class="{ 'content-loader-wrap': true, 'loader-active': isLoaderActive}">
+			<div v-bind:class="{ 'content-loader-wrap': true, 'loader-active': isLoaderActive}">
 				<div class="content-loader"></div>
 			</div>
 			<div class="dashboard-tab-content">
@@ -14,7 +13,8 @@
 					<div class="heading-section">
 						<h1>{{languageData.label.comments}}</h1>
 					</div>
-					<b-alert show :variant="classVariant" dismissible v-model="showDismissibleAlert">{{ message }}</b-alert>
+					<b-alert show :variant="classVariant" dismissible v-model="showDismissibleAlert">{{ message }}
+					</b-alert>
 					<div class="inner-content-wrap">
 						<b-list-group class="status-bar inner-statusbar">
 							<b-list-group-item>
@@ -81,7 +81,8 @@
 									</b-table>
 								</div>
 								<div class="btn-row">
-									<b-button class="btn-bordersecondary ml-auto"  @click="exportFile()">{{languageData.label.export}}</b-button>
+									<b-button class="btn-bordersecondary ml-auto" @click="exportFile()">
+										{{languageData.label.export}}</b-button>
 								</div>
 							</div>
 						</div>
@@ -166,16 +167,16 @@
 					}
 				],
 				commentItems: [],
-				statsField : {
-					'published' : 0,
-					'pending' : 0,
-					'declined' : 0
+				statsField: {
+					'published': 0,
+					'pending': 0,
+					'declined': 0
 				},
-				languageData : [],
+				languageData: [],
 				classVariant: 'danger',
-                message: null,
-                showDismissibleAlert : false,
-                isLoaderActive : true
+				message: null,
+				showDismissibleAlert: false,
+				isLoaderActive: true
 			};
 		},
 		methods: {
@@ -183,16 +184,16 @@
 				this.isLoaderActive = true
 				this.showDismissibleAlert = false;
 				commentListing().then(response => {
-					if(response.error == false) {
-						if(response.data && response.data.comments) {
+					if (response.error == false) {
+						if (response.data && response.data.comments) {
 							let mission = this.languageData.label.mission;
 							let date = this.languageData.label.date;
 							let comment = this.languageData.label.comment;
-							let status = this.languageData.label.status;	
+							let status = this.languageData.label.status;
 							let data = response.data.comments
 							let currentData = [];
-							if(data.length > 0) {
-								data.filter( (item) => {
+							if (data.length > 0) {
+								data.filter((item) => {
 									currentData.push({
 										[mission]: item.title,
 										[date]: item.created_at,
@@ -200,23 +201,23 @@
 										[status]: item.approval_status,
 										['comment_id']: item.comment_id
 									})
-									
+
 								})
 								this.commentItems = currentData
 							}
-							if(response.data.stats) {
+							if (response.data.stats) {
 								this.statsField.published = response.data.stats[0].published;
 								this.statsField.pending = response.data.stats[0].pending;
 								this.statsField.declined = response.data.stats[0].declined;
 							}
 						}
-                        this.isLoaderActive = false
+						this.isLoaderActive = false
 					} else {
 						this.showDismissibleAlert = true;
 						this.classVariant = 'danger'
 						//set error msg
-                        this.message = response.message
-                        this.getMyStory();
+						this.message = response.message
+						this.getMyStory();
 					}
 				})
 			},
@@ -225,21 +226,22 @@
 				this.isLoaderActive = true
 				deleteComment(commentId).then(response => {
 					this.showDismissibleAlert = true;
-					if(response.error == false) {
+					if (response.error == false) {
 						this.classVariant = 'success'
 						//set error msg
-                        this.message = this.languageData.label.comment+' '+this.languageData.label.deleted_successfully
+						this.message = this.languageData.label.comment + ' ' + this.languageData.label
+							.deleted_successfully
 					}
 					this.isLoaderActive = false
 				});
 			},
 			exportFile() {
-                this.isLoaderActive = true
-                let fileName = this.languageData.export_timesheet_file_names.COMMENT_LISTING_XLSX
-                let exportUrl = "/app/dashboard/comments/export"
-                ExportFile(exportUrl,fileName);
-                this.isLoaderActive = false
-            }
+				this.isLoaderActive = true
+				let fileName = this.languageData.export_timesheet_file_names.COMMENT_LISTING_XLSX
+				let exportUrl = "/app/dashboard/comments/export"
+				ExportFile(exportUrl, fileName);
+				this.isLoaderActive = false
+			}
 		},
 		created() {
 			this.languageData = JSON.parse(store.state.languageLabel);
@@ -248,23 +250,25 @@
 				buttonExpand.forEach(function (event) {
 					event.addEventListener("click", function () {
 						var getcommentCell = this.parentNode.parentNode.childNodes[2];
+
 						var getcommenthtml = getcommentCell.innerHTML;
-						//   var ellipsestext = "...";
 						var strlenght = getcommenthtml.length;
 						var rowParent = this.parentNode.parentNode.parentNode;
 						var rowSibling = rowParent.childNodes;
-						for (var i = 0; i < rowSibling.length; i++) {
-							var siblingChild = rowSibling[i].childNodes;
-							for (var j = 0; j < siblingChild.length; j++) {
-								siblingChild[j].classList.remove("remove-truncate");
-							}
-						}
 						if (strlenght > 30) {
 							getcommentCell.classList.toggle("remove-truncate");
 						}
+						for (var i = 0; i < rowSibling.length; i++) {
+							var siblingChild = rowSibling[i].childNodes;
+							for (var j = 0; j < siblingChild.length; j++) {
+								if (siblingChild[j] != getcommentCell) {
+									siblingChild[j].classList.remove("remove-truncate");
+								}
+							}
+						}
 					});
 				});
-			},2000);
+			}, 2000);
 			this.commentfields[0].label = this.languageData.label.mission
 			this.commentfields[1].label = this.languageData.label.date
 			this.commentfields[2].label = this.languageData.label.comment

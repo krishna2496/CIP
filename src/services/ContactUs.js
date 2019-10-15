@@ -1,8 +1,7 @@
-import store from '../../store'
+import store from '../store'
 import axios from 'axios'
 
 export default async(data) => {
-    // login api call with params email address and password
     let responseData = {}
     responseData.error = false;
     let defaultLanguage = '';
@@ -10,18 +9,19 @@ export default async(data) => {
         defaultLanguage = (store.state.defaultLanguage).toLowerCase();
     }
     await axios({
-            url: process.env.VUE_APP_API_ENDPOINT + "app/login",
+            url: process.env.VUE_APP_API_ENDPOINT + "app/submit-contact-form",
             data,
             method: 'post',
             headers: {
-                'X-localization': defaultLanguage
+                'X-localization': defaultLanguage,
+                'token': store.state.token,
             }
         }).then((response) => {
-            console.log(response.data.data)
-                //Store login data in local storage
-            store.commit('loginUser', response.data.data)
+            responseData.error = false;
+            responseData.message = response.data.message;
         })
         .catch(error => {
+            console.log(error.response.data.errors[0].message);
             if (error.response.data.errors[0].message) {
                 responseData.error = true;
                 responseData.message = error.response.data.errors[0].message;

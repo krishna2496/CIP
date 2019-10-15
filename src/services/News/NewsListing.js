@@ -20,8 +20,16 @@ export default async(currentPage) => {
         .then((response) => {
             responseData.error = false;
             responseData.message = response.data.message;
-            responseData.data = response.data.data;
-            responseData.pagination = response.data.pagination;
+            if (response.data.data) {
+                responseData.data = response.data.data;
+            } else {
+                responseData.data = []
+            }
+            if (response.data.pagination) {
+                responseData.pagination = response.data.pagination;
+            } else {
+                responseData.pagination = []
+            }
             document.body.classList.remove("loader-enable");
         })
         .catch(function(error) {

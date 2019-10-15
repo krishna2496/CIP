@@ -150,17 +150,23 @@
 }
 /** Dashboard history-table table style **/
 .history-table {
+    max-height: 300px;
   table {
     td {
       &.mission-col {
         width: 25%;
+        min-width: 270px;
+        white-space: normal !important;
       }
       &.expand-col {
         width: 40%;
-        max-width: 1px;
+        max-width:1px;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
+        @include md-max{
+            min-width: 300px;
+        }
         &.remove-truncate {
           white-space: normal;
         }
