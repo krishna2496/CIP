@@ -331,9 +331,9 @@ class UserRepository implements UserInterface
      * @param int $userId
      * @return null|int
      */
-    public function getUserGoalHours(int $userId): ?int
+    public function getUserHoursGoal(int $userId): ?int
     {
-        return $this->user->getUserGoalHours($userId);
+        return $this->user->getUserHoursGoal($userId);
     }
 
     /**

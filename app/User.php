@@ -219,7 +219,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      * @param int $userId
      * @return null|string
      */
-    public function getUserGoalHours(int $userId): ?string
+    public function getUserHoursGoal(int $userId): ?string
     {
         return static::select('hours_goal')->where(['user_id' => $userId])->value('hours_goal');
     }
