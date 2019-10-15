@@ -104,11 +104,6 @@ class VolunteerHistoryController extends Controller
      */
     public function skillHistory(Request $request): JsonResponse
     {
-        $languages = $this->languageHelper->getLanguages($request);
-        $language = ($request->hasHeader('X-localization')) ?
-        $request->header('X-localization') : env('TENANT_DEFAULT_LANGUAGE_CODE');
-        $languageCode = $languages->where('code', $language)->first()->code;
-
         $userId = $request->auth->user_id;
         $skillTimeHistory = $this->missionSkillRepository->getHoursPerSkill($request->year, $userId);
 

@@ -80,7 +80,9 @@ class StoryController extends Controller
         $validator = Validator::make(
             $request->toArray(),
             [
-                'mission_id' => 'required|exists:mission,mission_id,deleted_at,NULL',
+                'mission_id' =>
+                'required|exists:mission,mission_id,deleted_at,NULL,publication_status,'.
+                config("constants.publication_status.APPROVED"),
                 'title' => 'required|max:255',
                 'story_images' => 'max:'.config("constants.STORY_MAX_IMAGE_LIMIT"),
                 'story_images.*' => 'valid_story_image_type|max:'.config("constants.STORY_IMAGE_SIZE_LIMIT"),
@@ -123,7 +125,9 @@ class StoryController extends Controller
             $validator = Validator::make(
                 $request->toArray(),
                 [
-                    'mission_id' => 'sometimes|required|exists:mission,mission_id,deleted_at,NULL',
+                    'mission_id' =>
+                    'sometimes|required|exists:mission,mission_id,deleted_at,NULL,publication_status,'.
+                    config("constants.publication_status.APPROVED"),
                     'title' => 'sometimes|required|max:255',
                     'story_images' => 'max:'.config("constants.STORY_MAX_IMAGE_LIMIT"),
                     'story_images.*' => 'valid_story_image_type|max:'.config("constants.STORY_IMAGE_SIZE_LIMIT"),
@@ -261,6 +265,9 @@ class StoryController extends Controller
     public function copyStory(Request $request, int $oldStoryId): JsonResponse
     {
         try {
+            //check for story exist?
+            $storyData = $this->storyRepository->findStoryByUserId($request->auth->user_id, $oldStoryId);
+
             $storyStatus = array(
                 config('constants.story_status.DECLINED')
             );

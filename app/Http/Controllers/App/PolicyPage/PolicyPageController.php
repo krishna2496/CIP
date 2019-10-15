@@ -53,15 +53,8 @@ class PolicyPageController extends Controller
      */
     public function index(Request $request): JsonResponse
     {
-        $languages = $this->languageHelper->getLanguages($request);
-
-        $language = ($request->hasHeader('X-localization')) ?
-        $request->header('X-localization') : env('TENANT_DEFAULT_LANGUAGE_CODE');
-        $languageId = $languages->where('code', $language)->first()->language_id;
-        
-        $pageList = $this->policyPageRepository->getPageList($languageId, $request);
+        $pageList = $this->policyPageRepository->getPageList($request);
         $apiStatus = Response::HTTP_OK;
-        $apiMessage = trans('messages.success.MESSAGE_POLICY_PAGE_LISTING');
         $apiMessage = ($pageList->isEmpty()) ? trans('messages.success.MESSAGE_NO_RECORD_FOUND') :
             trans('messages.success.MESSAGE_POLICY_PAGE_LISTING');
         return $this->responseHelper->success($apiStatus, $apiMessage, $pageList->toArray());
@@ -77,13 +70,7 @@ class PolicyPageController extends Controller
     public function show(Request $request, string $slug): JsonResponse
     {
         try {
-            $languages = $this->languageHelper->getLanguages($request);
-
-            $language = ($request->hasHeader('X-localization')) ?
-            $request->header('X-localization') : env('TENANT_DEFAULT_LANGUAGE_CODE');
-            $languageId = $languages->where('code', $language)->first()->language_id;
-           
-            $policyPage = $this->policyPageRepository->getPageDetail($slug, $languageId);
+            $policyPage = $this->policyPageRepository->getPageDetail($request, $slug);
           
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_POLICY_PAGE_FOUND');
