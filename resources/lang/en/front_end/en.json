@@ -340,6 +340,7 @@
         "PENTIND_GOAL_MISSION_ENTRIES_XLSX": "Pending_Goal_Mission_Entries.xlsx",
         "TIME_MISSION_HISTORY_XLSX": "Time_Mission_History.xlsx",
         "GOAL_MISSION_HISTORY_XLSX": "Goal_Mission_History.xlsx",
-        "MY_STORIES_XLSX": "My_Stories_Listing.xlsx"
+        "MY_STORIES_XLSX": "My_Stories_Listing.xlsx",
+		"COMMENT_LISTING_XLSX" : "mission_comments.xlsx"
     }
 }
