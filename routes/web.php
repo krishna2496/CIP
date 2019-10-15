@@ -39,7 +39,10 @@ $router->group(
         // Store settings
         $router->post('/{tenantId}/settings', ['as' => 'tenants.store.settings', 'middleware' => 'JsonApiMiddleware',
         'uses'=>'TenantHasSettingController@store']);
-        
+        // Get all available settings
+        $router->get('/settings', ['as' => 'settings',
+        'uses'=>'TenantSettingController@index']);
+
         // Get api user list
         $router->get(
             '/{tenant_id}/api_users',

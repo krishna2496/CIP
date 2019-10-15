@@ -84,8 +84,6 @@ class TenantHasSettingController extends Controller
                 config('constants.error_codes.ERROR_TENANT_NOT_FOUND'),
                 trans('messages.custom_error_message.ERROR_TENANT_NOT_FOUND')
             );
-        } catch (\Exception $e) {
-            return $this->internalServerError(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
     
@@ -147,8 +145,6 @@ class TenantHasSettingController extends Controller
                 config('constants.error_codes.ERROR_TENANT_NOT_FOUND'),
                 trans('messages.custom_error_message.ERROR_TENANT_NOT_FOUND')
             );
-        } catch (\Exception $e) {
-            return $this->internalServerError(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
 }
