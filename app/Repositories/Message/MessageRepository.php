@@ -81,19 +81,21 @@ class MessageRepository implements MessageInterface
      *
      * @param \Illuminate\Http\Request $request
      * @param int $sentFrom
-     * @param int $userId
+     * @param Array $userIds
      * @return \Illuminate\Pagination\LengthAwarePaginator
      */
     public function getUserMessages(
         Request $request,
         int $sentFrom,
-        int $userId = null
+        array $userIds = []
     ): LengthAwarePaginator {
-        $userMessageQuery = $this->message->where('sent_from', $sentFrom)
+        $userMessageQuery = $this->message->select('*')->with(['user' => function ($query) {
+            $query->select('user_id', 'first_name', 'last_name');
+        }])->where('sent_from', $sentFrom)
                             ->when(
-                                $userId,
-                                function ($query, $userId) {
-                                    return $query->where('user_id', $userId);
+                                $userIds,
+                                function ($query, $userIds) {
+                                    return $query->whereIn('user_id', $userIds);
                                 }
                             )->orderBy('created_at', 'desc');
 
@@ -109,14 +111,18 @@ class MessageRepository implements MessageInterface
      * @param int $userId
      * @return bool
      */
-    public function delete(int $messageId, int $sentFrom, int $userId): bool
+    public function delete(int $messageId, int $sentFrom, int $userId = null): bool
     {
         return $this->message->where(
             [
                 'message_id' => $messageId,
-                'sent_from' => $sentFrom,
-                'user_id' => $userId
+                'sent_from' => $sentFrom
             ]
+        ) ->when(
+            $userId,
+            function ($query, $userId) {
+                return $query->where('user_id', $userId);
+            }
         )->firstOrFail()->delete();
     }
 }

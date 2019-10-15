@@ -21,13 +21,13 @@ interface MessageInterface
      *
      * @param \Illuminate\Http\Request $request
      * @param int $sentFrom
-     * @param int $userId
+     * @param Array $userIds
      * @return \Illuminate\Pagination\LengthAwarePaginator
      */
     public function getUserMessages(
         Request $request,
         int $sentFrom,
-        int $userId = null
+        array $userIds = []
     ): LengthAwarePaginator;
 
     /**

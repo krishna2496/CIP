@@ -144,15 +144,13 @@ return [
         'MESSAGE_STORY_COPIED_SUCCESS' => 'Histoire copiée avec succès',
         'MESSAGE_UNABLE_TO_EXPORT_USER_STORIES_ENTRIES' => 'Aucune histoire trouvée',
         'MESSAGE_STORY_UPDATED' => 'Histoire mise à jour avec succès',
-        'CONTACT_FORM_ADDED_SUCESSFULLY' => 'Vos commentaires ajoutés avec succès.',
-
+        
         'MESSAGE_USER_COMMENTS_LISTING' => 'Commentaires d\'utilisateurs listés avec succès',
         'MESSAGE_STORY_SUBMITTED_SUCESSFULLY' => 'Histoire soumise avec succès',
         'MESSAGE_STORY_IMAGE_DELETED' => 'Image de l\'histoire supprimée avec succès',
     	'MESSAGE_UNABLE_TO_EXPORT_MISSION_COMMENTS_ENTRIES' => 'Aucun commentaire de mission trouvé',
         'MESSAGE_STORY_SUBMITTED_SUCESSFULLY' => 'Histoire soumise avec succès',
-        'MESSAGE_STORY_IMAGE_DELETED' => 'Image de l\'histoire supprimée avec succès',
-		'MESSAGE_USER_MESSAGE_SEND_SUCESSFULLY' => 'message envoyé avec succès',
+        'MESSAGE_USER_MESSAGE_SEND_SUCESSFULLY' => 'message envoyé avec succès',
         'MESSAGE_USER_MESSAGES_SEND_SUCESSFULLY' => 'Messages envoyés avec succès',
         'MESSAGE_USER_MESSAGE_DELETED' => 'Message supprimé avec succès',
         'MESSAGE_INVITED_FOR_STORY' => 'Utilisateur invité à raconter une histoire avec succès',

@@ -10,10 +10,12 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Validator;
+use App\Transformations\MessageTransformable;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class MessageController extends Controller
 {
-    use RestExceptionHandlerTrait;
+    use RestExceptionHandlerTrait,MessageTransformable;
     /**
      * @var App\Repositories\Message\MessageRepository;
      */
@@ -80,5 +82,86 @@ class MessageController extends Controller
         $apiData = [];
 
         return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
+    }
+
+    /**
+     * Remove Message details.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param int $messageId
+     * @return Illuminate\Http\JsonResponse
+     */
+    public function destroy(Request $request, int $messageId): JsonResponse
+    {
+        try {
+            $this->messageRepository->delete(
+                $messageId,
+                config('constants.message.send_message_from.user'),
+                null
+            );
+           
+            // Set response data
+            $apiStatus = Response::HTTP_NO_CONTENT;
+            $apiMessage = trans('messages.success.MESSAGE_USER_MESSAGE_DELETED');
+            
+            return $this->responseHelper->success($apiStatus, $apiMessage);
+        } catch (ModelNotFoundException $e) {
+            return $this->modelNotFound(
+                config('constants.error_codes.ERROR_MESSAGE_USER_MESSAGE_NOT_FOUND'),
+                trans('messages.custom_error_message.ERROR_MESSAGE_USER_MESSAGE_NOT_FOUND')
+            );
+        }
+    }
+
+
+    /**
+     * Get admin messages data
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function getUserMessages(Request $request): JsonResponse
+    {
+        $userIds = !empty($request->get("users")) ? explode(',', $request->get("users")) : [];
+
+        $userMessages = $this->messageRepository->getUserMessages(
+            $request,
+            config('constants.message.send_message_from.user'),
+            $userIds
+        );
+        
+        $messageTransformed = $userMessages
+            ->getCollection()
+            ->map(function ($message) use ($request) {
+                $message = $this->transformMessage($message);
+                return $message;
+            });
+
+        $requestString = $request->except(['page','perPage']);
+        $messagesPaginated = new \Illuminate\Pagination\LengthAwarePaginator(
+            $messageTransformed,
+            $userMessages->total(),
+            $userMessages->perPage(),
+            $userMessages->currentPage(),
+            [
+                'path' => $request->url().'?'.http_build_query($requestString),
+                'query' => [
+                    'page' => $userMessages->currentPage()
+                ]
+            ]
+        );
+        
+        // generate responce data
+        $apiData = $messagesPaginated;
+        $apiStatus = Response::HTTP_OK;
+        $apiMessage = ($messagesPaginated->total() > 0) ?
+            trans('messages.success.MESSAGE_MESSAGES_ENTRIES_LISTING') :
+            trans('messages.success.MESSAGE_NO_MESSAGES_ENTRIES_FOUND');
+        
+        return $this->responseHelper->successWithPagination(
+            $apiStatus,
+            $apiMessage,
+            $apiData
+        );
     }
 }

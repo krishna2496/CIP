@@ -88,7 +88,7 @@ class MessageController extends Controller
         $userMessages = $this->messageRepository->getUserMessages(
             $request,
             config('constants.message.send_message_from.admin'),
-            $request->auth->user_id
+            [$request->auth->user_id]
         );
         
         $requestString = $request->except(['page','perPage']);
@@ -120,12 +120,12 @@ class MessageController extends Controller
     }
 
     /**
-    * Remove Message details.
-    *
-    * @param \Illuminate\Http\Request $request
-    * @param int $messageId
-    * @return Illuminate\Http\JsonResponse
-    */
+     * Remove Message details.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param int $messageId
+     * @return Illuminate\Http\JsonResponse
+     */
     public function destroy(Request $request, int $messageId): JsonResponse
     {
         try {

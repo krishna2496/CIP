@@ -32,7 +32,7 @@ class Message extends Model
      */
 
     protected $visible = ['message_id', 'user_id', 'sent_from', 'admin_name', 'subject', 'message', 'is_read',
-        'is_anonymous'];
+        'is_anonymous','first_name','last_name','avatar','email'];
 
     /**
      * The attributes that are mass assignable.

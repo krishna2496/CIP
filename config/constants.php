@@ -449,7 +449,7 @@ return [
         'ERROR_MESSAGE_USER_MESSAGE_NOT_FOUND' => '1100002'
     ],
 
-       
+
     /**
      * Notification types
      */

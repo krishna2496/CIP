@@ -352,11 +352,6 @@ $router->group(['middleware' => 'localization'], function ($router) {
         'middleware' => 'localization|tenant.connection|jwt.auth',
         'uses' => 'App\StoryVisitor\StoryVisitorController@store']);
 
-    /* store contact form details */
-    $router->post('/app/submit-contact-form', ['as' => 'app.contactform.store',
-        'middleware' => 'localization|tenant.connection|jwt.auth|JsonApiMiddleware',
-        'uses' => 'App\ContactForm\ContactFormController@store']);
-
     /* Delete user mission comments */
     $router->delete('/app/dashboard/comments/{commentId}', ['as' => 'app.dashboard.comment.destroy',
         'middleware' => 'localization|tenant.connection|jwt.auth',
@@ -382,11 +377,6 @@ $router->group(['middleware' => 'localization'], function ($router) {
         'middleware' => 'localization|tenant.connection|jwt.auth',
         'uses' => 'App\User\UserController@saveCookieAgreement']);
 
-    /* Fetch notification settings */
-    $router->get('/app/notification-settings', ['as' => 'app.notification-settings',
-        'middleware' => 'localization|tenant.connection|jwt.auth',
-          'uses' => 'App\Notification\NotificationTypeController@index']);
-
     /* Store or update user notification settings */
     $router->post('/app/user-notification-settings/update', ['as' => 'app.user-notification-settings.update',
         'middleware' => 'localization|tenant.connection|jwt.auth|JsonApiMiddleware',
@@ -407,6 +397,10 @@ $router->group(['middleware' => 'localization'], function ($router) {
         'middleware' => 'localization|tenant.connection|jwt.auth',
         'uses' => 'App\Message\MessageController@destroy']);
 
+    /* Fetch notification settings */
+    $router->get('/app/notification-settings', ['as' => 'app.notification-settings',
+        'middleware' => 'localization|tenant.connection|jwt.auth',
+          'uses' => 'App\Notification\NotificationTypeController@index']);
 
     /* Store or update user notification settings */
     $router->post('/app/user-notification-settings/update', ['as' => 'app.user-notification-settings.update',
@@ -712,6 +706,12 @@ $router->group(['middleware' => 'localization'], function ($router) {
         function ($router) {
             $router->post('/send', ['as' => 'message.send',
                'uses' => 'Admin\Message\MessageController@sendMessage']);
+              
+            $router->delete('/{messageId}', ['as' => 'message.destroy',
+                'uses' => 'Admin\Message\MessageController@destroy']);
+
+            $router->get('/list', ['as' => 'message.list',
+                'uses' => 'Admin\Message\MessageController@getUserMessages']);
         }
     );
 /*
