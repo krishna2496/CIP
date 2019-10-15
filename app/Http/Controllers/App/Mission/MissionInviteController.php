@@ -154,7 +154,7 @@ class MissionInviteController extends Controller
         }
         
         $notificationTypeId = $this->notificationRepository
-        ->getNotificationTypeID(config('constants.notification_types.RECOMMENDED_MISSIONS'));
+        ->getNotificationTypeID(config('constants.notification_type_keys.RECOMMENDED_MISSIONS'));
         
         // Check if to_user_id (colleague) has enabled notification for Recommended missions
         $notifyColleague = $this->notificationRepository
@@ -175,8 +175,8 @@ class MissionInviteController extends Controller
             $notificationData = array(
                 'notification_type_id' => $notificationTypeId,
                 'user_id' => $request->auth->user_id,
-                'to_user_id' => $request->to_user_id,
-                'mission_id' => $request->mission_id,
+                'entity_id' => $inviteMission->mission_invite_id,
+                'action' => config('constants.notification_actions.INVITE')
             );
             $notification = $this->notificationRepository->createNotification($notificationData);
             
@@ -190,8 +190,13 @@ class MissionInviteController extends Controller
         
             $params['tenant_name'] = $tenantName;
             $params['to'] = $colleagueEmail; //required
-            $params['template'] = config('constants.EMAIL_TEMPLATE_FOLDER').'.'.config('constants.EMAIL_TEMPLATE_USER_INVITE'); //path to the email template
-            $params['subject'] = trans('mail.recommonded_mission.MAIL_MISSION_RECOMMENDATION', [], $colleagueLanguage); //optional
+            $params['template'] = config('constants.EMAIL_TEMPLATE_FOLDER').'.'
+            .config('constants.EMAIL_TEMPLATE_USER_INVITE'); //path to the email template
+            $params['subject'] = trans(
+                'mail.recommonded_mission.MAIL_MISSION_RECOMMENDATION',
+                [],
+                $colleagueLanguage
+            ); //optional
             $params['data'] = $data;
             $params['data']['logo'] = $this->tenantOptionRepository->getOptionWithCondition(
                 ['option_name' => 'custom_logo']
