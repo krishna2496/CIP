@@ -563,6 +563,93 @@
 				}
 			}
       }
+	},
+	"/tenants/tenant-language/": {
+		"post": {
+			"operationId": "POST_team4-cip-admin-api-add-edit-tenant-language",
+			"summary": "Add/edit tenant language",
+			"description": "Admin can also set default language for a tenant",
+			"tags":[  
+				   "Language management (Milestone - 4)"
+				],
+			"consumes": [
+			  "application/json"
+			],
+			"parameters": [
+			  {
+				"description":"language id to get details",
+				"required":true,
+				"type":"integer",
+				"format":"int64"
+			  },
+			  {
+				"name": "body",
+				"in": "body",
+				"required": true,
+				"schema": {
+				  "$ref":"#/definitions/TenantLanguage"
+				}
+			  }
+			],
+			"responses": {
+				"500":{  
+				  "description":"Internal server error"
+				},
+				"422":{  
+				  "description":"Unprocessable entity - Invalid input"
+				}
+			}
+      },
+	},
+	"/tenants/tenant-language/{tenantId}": {
+		"get": {
+			"operationId": "POST_team4-cip-admin-api-list-tenant-language",
+			"summary": "List tenant languages",
+			"tags":[  
+				   "Language management (Milestone - 4)"
+				],
+			"consumes": [
+			  "multipart/form-data"
+			],
+			"responses": {
+				"500":{  
+				  "description":"Internal server error"
+				},
+				"404":{  
+				  "description":"Tenant not found in system"
+				}
+			}
+      },
+	},
+	"/tenants/tenant-language/{tenantLanguageId}/": {
+		"post": {
+			"operationId": "POST_team4-cip-admin-api-add-edit-tenant-language",
+			"summary": "Remove tenant language",
+			"tags":[  
+				   "Language management (Milestone - 4)"
+				],
+			"consumes": [
+			  "multipart/form-data"
+			],
+			"parameters": [
+			  {
+			    "name": "tenantLanguageId",
+				"description":"Tenant language id to delete",
+				"required":true,
+				"type":"integer",
+				"format":"int64",
+				"in": "path"
+			  }
+			],
+			"responses": {
+				"500":{  
+				  "description":"Internal server error"
+				},
+				"404":{  
+				  "description":"Tenant language not found in the system"
+				}
+			}
+      },
 	}
   },
   "definitions": {
@@ -591,6 +678,25 @@
 				"status": {
                   "type":"integer",
                   "description":"1 => Active, 0 => Inactive",
+				  "enum":[  
+						"1",
+						"0"
+			      ]
+                }
+              }
+        },
+	"TenantLanguage":{
+		"type": "object",
+              "properties": {
+                "tenant_id": {
+                  "type": "integer"
+                },
+                "language_id": {
+                  "type":"integer"
+				},
+				"default": {
+                  "type":"integer",
+                  "description":"Set default language of the platform",
 				  "enum":[  
 						"1",
 						"0"
