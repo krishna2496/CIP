@@ -9,17 +9,6 @@ class MiddlewaresTest extends TestCase
 {
 
     /**
-     * 
-     *
-     * It should return an error, when invalid json passed in request
-     * @return void
-     */
-    public function it_should_return_error_for_invalid_json_request()
-    {        
-        //
-    }
-
-    /**
      * @test
      *
      * It should apply max pagination number, If passed perPage parameter with more number then default max page number.

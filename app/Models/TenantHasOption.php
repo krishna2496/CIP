@@ -54,14 +54,4 @@ class TenantHasOption extends Model
     public static $rules = [
         // Validation rules
     ];
-    
-    /**
-    * Defined has many relation for the tenant_option table.
-    *
-    * @return \Illuminate\Database\Eloquent\Relations\HasOne
-    */
-    public function option(): HasOne
-    {
-        return $this->hasOne(TenantOption::class, 'tenant_option_id', 'tenant_option_id');
-    }
 }

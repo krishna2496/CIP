@@ -161,4 +161,35 @@ class TenantSettingTest extends TestCase
         $this->post(route('tenants.store.settings', ['tenantId' => env('DEFAULT_TENANT_ID')]), $params)
         ->seeStatusCode(422);
     }
+
+    /**
+     * @test
+     * 
+     * It should return all settings
+     * @return void
+     */
+    public function it_should_return_all_settings()
+    {
+        $this->get(route('settings'))->seeStatusCode(200);
+    }
+
+    /**
+     * @test
+     * 
+     * It should return tenant not found error on add tenant setting
+     * @return void
+     */
+    public function it_should_return_error_tenant_not_found_on_add_setting_for_tenant()
+    {   
+        // Create random settings array     
+        for ($i=0; $i<3; $i++) {
+            $params['settings'][$i] = [
+                'tenant_setting_id' => TenantSetting::get()->random()->tenant_setting_id,
+                'value' => 1,
+            ];
+        }
+        // Add settings into tenant_has_setting (master database) and tenant_setting in (tenant's database)
+        $this->post(route('tenants.store.settings', ['tenantId' => rand(500000,5000000)]), $params)
+        ->seeStatusCode(404);
+    }
 }
