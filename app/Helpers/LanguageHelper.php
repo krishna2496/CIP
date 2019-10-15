@@ -139,18 +139,6 @@ class LanguageHelper
     }
 
     /**
-     * Get language id from request
-     *
-     * @param \Illuminate\Http\Request $request
-     * @return int
-     */
-    public function getLanguageId(Request $request): int
-    {
-        $languages = $this->getTenantLanguages($request);
-        return $languages->where('code', config('app.locale'))->first()->language_id;
-    }
-
-    /**
      * Get language details from request
      *
      * @param \Illuminate\Http\Request $request

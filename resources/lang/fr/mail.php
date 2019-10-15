@@ -20,5 +20,11 @@ return [
     ],
     'other_text' => [
         'ALL_RIGHTS_RESERVED' => 'Tous les droits sont réservés.'
-    ]
+    ],
+    'recommonded_story' => [
+        'HAS_RECOMMENDED_A_STORY_TO_YOU' => 'vous a recommandé une story',
+        'STORY' => 'STORY :',
+        'ALL_RIGHTS_RESERVED' => 'Tous les droits sont réservés.',
+        'MAIL_STORY_RECOMMENDATION' => 'Recommandation de story'
+    ],
 ];
