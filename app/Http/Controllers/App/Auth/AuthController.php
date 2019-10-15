@@ -189,9 +189,7 @@ class AuthController extends Controller
             );
         }
 
-        $languages = $this->languageHelper->getLanguages($request);
-        $language = $languages->where('language_id', $userDetail->language_id)->first();
-        
+        $language = $this->languageHelper->getLanguageDetails($request);
         $languageCode = $language->code;
         config(['app.user_language_code' => $languageCode]);
         

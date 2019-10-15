@@ -119,21 +119,4 @@ class MissionApplication extends Model
         ->paginate($request->perPage);
         return $missionVolunteers;
     }
-
-    /**
-     * Get mission application count
-     *
-     * @param int $userId
-     * @param int $year
-     * @param int $month
-     * @return int
-     */
-    public function missionApplicationCount(int $userId, int $year, int $month): int
-    {
-        return $this->where(['user_id' => $userId])
-        ->whereYear('applied_at', $year)
-        ->whereMonth('applied_at', $month)
-        ->where('approval_status', '<>', config('constants.application_status.REFUSED'))
-        ->count();
-    }
 }

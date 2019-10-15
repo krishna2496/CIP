@@ -55,10 +55,8 @@ class SkillController extends Controller
     */
     public function index(Request $request) : JsonResponse
     {
-        $languages = $this->languageHelper->getLanguages($request);
-        $language = ($request->hasHeader('X-localization')) ?
-        $request->header('X-localization') : env('TENANT_DEFAULT_LANGUAGE_CODE');
-        $languageCode = $languages->where('code', $language)->first()->code;
+        $language = $this->languageHelper->getLanguageDetails($request);
+        $languageCode = $language->code;
 
         $skillList = $this->skillRepository->skillList($request);
         $allSkillData = [];
