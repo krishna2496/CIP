@@ -56,7 +56,8 @@ class CustomValidationRules
 
         Validator::extend('valid_story_image_type', function ($attribute, $value) {
             $urlExtension = $value->getClientOriginalExtension();
-            return (!in_array($urlExtension, config('constants.image_types'))) ? false : true;
+            $imageUrlExtension = strtolower($urlExtension);
+            return (!in_array($imageUrlExtension, config('constants.story_image_types'))) ? false : true;
         });
         
         Validator::extend('valid_story_video_url', function ($attribute, $value) {

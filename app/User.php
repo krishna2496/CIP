@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Hash;
 use App\Models\City;
 use App\Models\Country;
 use App\Models\Timezone;
-use App\Models\MissionApplication;
+use App\Models\missionApplication;
 use App\Models\Availability;
 use App\Models\UserCustomFieldValue;
 use App\Models\Timesheet;
@@ -170,7 +170,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     /**
      * Get specified resource.
      *
-     * @param int $userId
+     * @param int $missionId
      * @return string
      */
     public function getUserName(int $userId): string

@@ -113,7 +113,6 @@ $router->group(['middleware' => 'localization'], function ($router) {
         'middleware' => 'tenant.connection|jwt.auth',
         'uses' => 'App\User\DashboardController@index']);
 
-
     /* Get mission detail  */
     $router->get('/app/mission/{missionId}', [
         'middleware' => 'tenant.connection|jwt.auth',
@@ -339,6 +338,10 @@ $router->group(['middleware' => 'localization'], function ($router) {
         'middleware' => 'localization|tenant.connection|jwt.auth',
         'uses' => 'App\Story\StoryController@deleteStoryImage']);
 
+    /* Mission Invite  */
+    $router->post('/app/story/invite', ['as' => 'app.story.invite',
+        'middleware' => 'tenant.connection|jwt.auth',
+        'uses' => 'App\Story\StoryInviteController@storyInvite']);
     /* Update story details */
     $router->patch('/app/story/{storyId}', ['as' => 'app.story.update',
         'middleware' => 'localization|tenant.connection|jwt.auth',
