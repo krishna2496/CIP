@@ -27,7 +27,7 @@ class StoryVisitorController extends Controller
     /**
      * Create a new Story Visitor controller instance
      *
-     * @param pp\Repositories\StoryVisitor\StoryVisitorRepository;
+     * @param App\Repositories\StoryVisitor\StoryVisitorRepository;
      * @param App\Helpers\ResponseHelper $responseHelper
      * @return void
      */

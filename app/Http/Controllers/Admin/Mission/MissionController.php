@@ -15,6 +15,7 @@ use App\Traits\RestExceptionHandlerTrait;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use InvalidArgumentException;
 use App\Exceptions\TenantDomainNotFoundException;
+use App\Events\User\UserNotificationEvent;
 
 class MissionController extends Controller
 {
@@ -120,6 +121,14 @@ class MissionController extends Controller
         $apiStatus = Response::HTTP_CREATED;
         $apiMessage = trans('messages.success.MESSAGE_MISSION_ADDED');
         $apiData = ['mission_id' => $mission->mission_id];
+
+        // Send notification to all users
+        $notificationType = config('constants.notification_type_keys.NEW_MISSIONS');
+        $entityId = $mission->mission_id;
+        $action =config('constants.notification_actions.CREATED');
+        
+        event(new UserNotificationEvent($notificationType, $entityId, $action));
+        
         return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
     }
 

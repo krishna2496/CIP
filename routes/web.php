@@ -371,12 +371,35 @@ $router->group(['middleware' => 'localization'], function ($router) {
     $router->get('/app/dashboard/comments', [
         'middleware' => 'tenant.connection|jwt.auth',
         'uses' => 'App\Mission\MissionCommentController@getUserMissionComments']);
-});
 
     /* Fetch edit story details */
     $router->get('/app/edit/story/{storyId}', ['as' => 'app.edit.story',
         'middleware' => 'localization|tenant.connection|jwt.auth',
         'uses' => 'App\Story\StoryController@editStory']);
+
+    /* accept cookie agreement date*/
+    $router->post('/app/accept-cookie-agreement', ['as' => 'app.cookie-agreement.accept',
+        'middleware' => 'localization|tenant.connection|jwt.auth',
+        'uses' => 'App\User\UserController@saveCookieAgreement']);
+
+    /* Fetch notification settings */
+    $router->get('/app/notification-settings', ['as' => 'app.notification-settings',
+        'middleware' => 'localization|tenant.connection|jwt.auth',
+          'uses' => 'App\Notification\NotificationTypeController@index']);
+
+    /* Store or update user notification settings */
+    $router->post('/app/user-notification-settings/update', ['as' => 'app.user-notification-settings.update',
+        'middleware' => 'localization|tenant.connection|jwt.auth|JsonApiMiddleware',
+        'uses' => 'App\Notification\NotificationTypeController@storeOrUpdate']);
+
+    /* send message to admin*/
+    $router->post('/app/message/send', ['as' => 'app.message.send',
+        'middleware' => 'localization|tenant.connection|jwt.auth|JsonApiMiddleware',
+        'uses' => 'App\Message\MessageController@sendMessage']);
+});
+
+
+
 
 /*
 |
@@ -388,7 +411,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
 |
  */
 
-/* Set user data for tenant specific */
+    /* Set user data for tenant specific */
     $router->group(
         ['prefix' => 'users', 'middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware'],
         function ($router) {
