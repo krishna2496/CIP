@@ -84,21 +84,19 @@ interface MissionInterface
      * Display listing of related mission.
      *
      * @param Illuminate\Http\Request $request
-     * @param int $languageId
      * @param int $missionId
      * @return Illuminate\Database\Eloquent\Collection
      */
-    public function getRelatedMissions(Request $request, int $languageId, int $missionId): Collection;
+    public function getRelatedMissions(Request $request, int $missionId): Collection;
 
     /**
      * Get mission detail.
      *
      * @param Illuminate\Http\Request $request
-     * @param int $languageId
      * @param int $missionId
      * @return Illuminate\Database\Eloquent\Collection
      */
-    public function getMissionDetail(Request $request, int $languageId, int $missionId): Collection;
+    public function getMissionDetail(Request $request, int $missionId): Collection;
 
     /**
      * Display a listing of mission.
@@ -113,10 +111,9 @@ interface MissionInterface
      *
      * @param Illuminate\Http\Request $request
      * @param Array $userFilterData
-     * @param int $languageId
      * @return \Illuminate\Pagination\LengthAwarePaginator
      */
-    public function getMissions(Request $request, array $userFilterData, int $languageId): LengthAwarePaginator;
+    public function getMissions(Request $request, array $userFilterData): LengthAwarePaginator;
 
     /**
      * Display a Explore mission data.

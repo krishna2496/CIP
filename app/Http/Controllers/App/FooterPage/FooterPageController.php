@@ -67,14 +67,15 @@ class FooterPageController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  string  $slug
+     * @param Illuminate\Http\Request $request
+     * @param string $slug
      * @return Illuminate\Http\JsonResponse
      */
-    public function show(string $slug): JsonResponse
+    public function show(Request $request, string $slug): JsonResponse
     {
         try {
             // Get data for parent table
-            $footerPage = $this->footerPageRepository->getPageDetail($slug);
+            $footerPage = $this->footerPageRepository->getPageDetail($request, $slug);
           
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_FOOTER_PAGE_FOUND');

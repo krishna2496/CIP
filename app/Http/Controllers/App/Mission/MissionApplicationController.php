@@ -61,7 +61,9 @@ class MissionApplicationController extends Controller
         $validator = Validator::make(
             $request->all(),
             [
-                "mission_id" => "integer|required|exists:mission,mission_id,deleted_at,NULL",
+                "mission_id" => "integer|required|exists:mission,mission_id,deleted_at,NULL,
+                        publication_status,".config("constants.publication_status")["APPROVED"].",
+                        publication_status,".config("constants.publication_status")["PUBLISHED_FOR_APPLYING"],
                 "availability_id" => "integer|exists:availability,availability_id,deleted_at,NULL"
             ]
         );

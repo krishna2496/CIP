@@ -188,11 +188,12 @@ class TimesheetRepository implements TimesheetInterface
      *
      * @param int $userId
      * @param \Illuminate\Http\Request $request
-     * @return Illuminate\Support\Collection
+     * @return Illuminate\Database\Eloquent\Collection
      */
     public function getUserTimesheet(int $userId, Request $request): Collection
     {
-        $languageId = $this->languageHelper->getLanguageId($request);
+        $language = $this->languageHelper->getLanguageDetails($request);
+        $languageId = $language->language_id;
 
         return $this->mission->select('mission.mission_id')
         ->where(['publication_status' => config("constants.publication_status")["APPROVED"]])
@@ -258,7 +259,8 @@ class TimesheetRepository implements TimesheetInterface
      */
     public function timeRequestList(Request $request, array $statusArray, bool $withPagination = true) : Object
     {
-        $languageId = $this->languageHelper->getLanguageId($request);
+        $language = $this->languageHelper->getLanguageDetails($request);
+        $languageId = $language->language_id;
         
         $timeRequests = $this->mission->query()
         ->select('mission.mission_id', 'mission.organisation_name');
@@ -308,7 +310,8 @@ class TimesheetRepository implements TimesheetInterface
      */
     public function goalRequestList(Request $request, array $statusArray, bool $withPagination = true): Object
     {
-        $languageId = $this->languageHelper->getLanguageId($request);
+        $language = $this->languageHelper->getLanguageDetails($request);
+        $languageId = $language->language_id;
        
         $goalRequests = $this->mission->query()
         ->select('mission.mission_id', 'mission.organisation_name');
@@ -362,11 +365,12 @@ class TimesheetRepository implements TimesheetInterface
      *
      * @param Illuminate\Http\Request $request
      * @param string $missionType
-     * @return Illuminate\Support\Collection
+     * @return Illuminate\Database\Eloquent\Collection
      */
     public function getTimesheetEntries(Request $request, string $missionType): Collection
     {
-        $languageId = $this->languageHelper->getLanguageId($request);
+        $language = $this->languageHelper->getLanguageDetails($request);
+        $languageId = $language->language_id;
         $userId = $request->auth->user_id;
         
         // Fetch tenant options value

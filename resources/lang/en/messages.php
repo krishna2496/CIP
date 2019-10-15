@@ -148,24 +148,20 @@ return [
         'MESSAGE_STORY_COPIED_SUCCESS' => 'Story copied successfully',
         'MESSAGE_UNABLE_TO_EXPORT_USER_STORIES_ENTRIES' => 'No stories found',
         'MESSAGE_STORY_UPDATED' => 'Story updated successfully',
-        'CONTACT_FORM_ADDED_SUCESSFULLY' => 'Your feedback submitted successfully.',
        
         'MESSAGE_USER_COMMENTS_LISTING' => 'User comments listed successfully',
         'MESSAGE_STORY_SUBMITTED_SUCESSFULLY' => 'Story submitted sucessfully',
         'MESSAGE_STORY_IMAGE_DELETED' => 'Story image deleted sucessfully',
     	'MESSAGE_NO_MISSION_COMMENTS_ENTRIES' => 'No mission comments found',
-	    'MESSAGE_STORY_VISITOR_ADDED_SUCESSFULLY' => 'Story visitor added successfully',
-       
         'MESSAGE_USER_MESSAGE_SEND_SUCESSFULLY' => 'Message sent successfully',
         'MESSAGE_USER_MESSAGES_SEND_SUCESSFULLY' => 'Messages sent successfully',
         'MESSAGE_MESSAGES_ENTRIES_LISTING' => 'Messages listed successfully',
         'MESSAGE_NO_MESSAGES_ENTRIES_FOUND' => 'No messages found',
-
         'MESSAGE_NOTIFICATION_SETTINGS_LISTING' => 'Notification settings listed successfully',
         'MESSAGE_USER_NOTIFICATION_SETTINGS_UPDATED' => 'User notification settings updated successfully',
         'MESSAGE_USER_MESSAGE_DELETED' => 'Message deleted sucessfully',
-
         'MESSAGE_USER_COOKIE_AGREEMENT_ACCEPTED' => 'Cookie agreement accepted successfully',
+        'MESSAGE_INVITED_FOR_STORY' => 'User invited to story successfully',
     ],
 
         
@@ -278,7 +274,7 @@ return [
         'ERROR_INVALID_ACTION' => 'Entered goal action should not be greater than goal objective',
         'TIMESHEET_NOT_FOUND' => 'Timesheet entry not found' ,
         'ERROR_TIMESHEET_ALREADY_APPROVED' => 'You can not update approved timesheet',
-        'TIMESHEET_DOCUMENT_NOT_FOUND' => 'Timesheet document does not exists',
+        'TIMESHEET_DOCUMENT_NOT_FOUND' => 'Timesheet document does not exist',
         'ERROR_MISSION_STARTDATE' => 'Invalid date: selected date should not be before start date',
         'ERROR_MISSION_ENDDATE' => 'Selected date should not be greater than mission end date',
         'MISSION_APPLICATION_NOT_APPROVED' => 'Mission application is not approved',
@@ -300,8 +296,7 @@ return [
         'ERROR_STORY_IMAGE_NOT_FOUND' => 'Story image not found in the system',
         'ERROR_STORY_IMAGE_DELETE' => 'You cannot delete image of published or declined story',
         'ERROR_SUBMIT_STORY_PUBLISHED_OR_DECLINED' => 'You cannot submit published or declined story',
-
-        // For message module
         'ERROR_MESSAGE_USER_MESSAGE_NOT_FOUND' => 'Message not found in the system',
+        'ERROR_INVITE_STORY_ALREADY_EXIST' => 'User is already invited for this story',
     ]
 ];

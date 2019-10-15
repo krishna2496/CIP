@@ -144,25 +144,24 @@ return [
         'MESSAGE_STORY_COPIED_SUCCESS' => 'Histoire copiée avec succès',
         'MESSAGE_UNABLE_TO_EXPORT_USER_STORIES_ENTRIES' => 'Aucune histoire trouvée',
         'MESSAGE_STORY_UPDATED' => 'Histoire mise à jour avec succès',
-        'CONTACT_FORM_ADDED_SUCESSFULLY' => 'Vos commentaires ajoutés avec succès.',
-
+        
         'MESSAGE_USER_COMMENTS_LISTING' => 'Commentaires d\'utilisateurs listés avec succès',
         'MESSAGE_STORY_SUBMITTED_SUCESSFULLY' => 'Histoire soumise avec succès',
         'MESSAGE_STORY_IMAGE_DELETED' => 'Image de l\'histoire supprimée avec succès',
     	'MESSAGE_UNABLE_TO_EXPORT_MISSION_COMMENTS_ENTRIES' => 'Aucun commentaire de mission trouvé',
-        'MESSAGE_STORY_VISITOR_ADDED_SUCESSFULLY' => 'Le visiteur de l\'histoire a été ajouté avec succès',
         'MESSAGE_STORY_SUBMITTED_SUCESSFULLY' => 'Histoire soumise avec succès',
-        'MESSAGE_STORY_IMAGE_DELETED' => 'Image de l\'histoire supprimée avec succès',
-        
+        'MESSAGE_STORY_IMAGE_DELETED' => 'Image de l\'histoire supprimée avec succès',        
         'MESSAGE_USER_MESSAGE_SEND_SUCESSFULLY' => 'message envoyé avec succès',
         'MESSAGE_USER_MESSAGES_SEND_SUCESSFULLY' => 'Messages envoyés avec succès',
         'MESSAGE_MESSAGES_ENTRIES_LISTING' => 'Messages listés avec succès',
         'MESSAGE_NO_MESSAGES_ENTRIES_FOUND' => 'Aucun message trouvé',                
         'MESSAGE_USER_MESSAGE_DELETED' => 'Message supprimé avec succès',
-
         'MESSAGE_USER_COOKIE_AGREEMENT_ACCEPTED' => 'Contrat de cookie accepté avec succès',
         'MESSAGE_NOTIFICATION_SETTINGS_LISTING' => 'Paramètres de notification répertoriés avec succès',
         'MESSAGE_USER_NOTIFICATION_SETTINGS_UPDATED' => 'Paramètres de notification utilisateur mis à jour avec succès',
+        'MESSAGE_USER_COOKIE_AGGREMENT_ACCEPTED' => 'Agrégation de cookies acceptée avec succès',
+        'MESSAGE_SEND_SUCESSFULLY' => 'message envoyé avec succès',
+        'MESSAGE_INVITED_FOR_STORY' => 'Utilisateur invité à raconter une histoire avec succès',
         'MESSAGE_USER_COOKIE_AGGREMENT_ACCEPTED' => 'Agrégation de cookies acceptée avec succès',
         'MESSAGE_SEND_SUCESSFULLY' => 'message envoyé avec succès',
     ],
@@ -299,8 +298,7 @@ return [
         'ERROR_STORY_IMAGE_NOT_FOUND' => 'L\'image de l\'histoire ne se trouve pas dans le système',
         'ERROR_STORY_IMAGE_DELETE' => 'Vous ne pouvez pas supprimer l\'image d\'un article publié ou refusé',
         'ERROR_SUBMIT_STORY_PUBLISHED_OR_DECLINED' => 'You cannot submit published or declined story',
-        // For message module
-        'ERROR_MESSAGE_USER_MESSAGE_NOT_FOUND' => 'Message introuvable dans le système'
+        'ERROR_MESSAGE_USER_MESSAGE_NOT_FOUND' => 'Message introuvable dans le système',
+        'ERROR_INVITE_STORY_ALREADY_EXIST' => 'L\'utilisateur est déjà invité pour cette histoire',
     ]
-
 ];

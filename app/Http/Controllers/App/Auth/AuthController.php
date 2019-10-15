@@ -147,6 +147,7 @@ class AuthController extends Controller
         $data['avatar'] = ((isset($userDetail->avatar)) && $userDetail->avatar !="") ? $userDetail->avatar : '';
         $data['cookie_agreement_date'] = isset($userDetail->cookie_agreement_date) ?
                                          $userDetail->cookie_agreement_date : '';
+        $data['email'] = ((isset($userDetail->email)) && $userDetail->email !="") ? $userDetail->email : '';
         $this->helpers->getUserDefaultProfileImage($tenantName);
         
         $apiData = $data;
@@ -189,9 +190,7 @@ class AuthController extends Controller
             );
         }
 
-        $languages = $this->languageHelper->getLanguages($request);
-        $language = $languages->where('language_id', $userDetail->language_id)->first();
-        
+        $language = $this->languageHelper->getLanguageDetails($request);
         $languageCode = $language->code;
         config(['app.user_language_code' => $languageCode]);
         
