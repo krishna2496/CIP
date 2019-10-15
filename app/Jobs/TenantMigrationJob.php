@@ -22,11 +22,6 @@ class TenantMigrationJob extends Job
     protected $databaseHelper;
 
     /**
-     * @var string
-     */
-    private $emailMessage;
-
-    /**
      * The number of times the job may be attempted.
      *
      * @var int
@@ -41,11 +36,6 @@ class TenantMigrationJob extends Job
     public $timeout = 0;
 
     /**
-     * @var App\Helpers\EmailHelper
-     */
-    private $emailHelper;
-    
-    /**
      * Create a new job instance.
      *
      * @param  App\Tenant $tenant Tenant model object
@@ -56,8 +46,6 @@ class TenantMigrationJob extends Job
     {
         $this->tenant = $tenant;
         $this->databaseHelper = new DatabaseHelper;
-        $this->emailMessage = trans("messages.email_text.JOB_PASSED_SUCCESSFULLY");
-        $this->emailHelper = new EmailHelper();
     }
 
     /**
@@ -83,49 +71,5 @@ class TenantMigrationJob extends Job
         DB::disconnect('tenant');
         DB::reconnect('mysql');
         DB::setDefaultConnection('mysql');
-    }
-
-    /**
-     * Send email notification to admin
-     * @codeCoverageIgnore
-     * @param bool $isFail
-     * @param bool $errorMessage
-     * @return void
-     */
-    public function sendEmailNotification(bool $isFail = false, string $errorMessage = '')
-    {
-        $status = ($isFail===false) ? trans('messages.email_text.PASSED') : trans('messages.email_text.FAILED');
-        $message = "<p> ".trans('messages.email_text.TENANT')." : " .$this->tenant->name. "<br>";
-        $message .= trans('messages.email_text.BACKGROUND_JOB_NAME')." : ".trans('messages.email_text.TENANT_MIGRATION')
-        ." <br>";
-        $message .= trans('messages.email_text.BACKGROUND_JOB_STATUS')." : ".$status." <br>";
-        if (!empty($errorMessage)) {
-            $message .= trans('messages.email_text.BACKGROUND_JOB_EXCEPTION_MESSAGE')." : ".$errorMessage." <br>";
-        }
-        $data = array(
-            'message'=> $message,
-            'tenant_name' => $this->tenant->name
-        );
-
-        $params['to'] = config('constants.ADMIN_EMAIL_ADDRESS'); //required
-        $params['template'] = config('constants.EMAIL_TEMPLATE_FOLDER').'.'.config('constants.EMAIL_TEMPLATE_JOB_NOTIFICATION'); //path to the email template
-        $params['subject'] = ($isFail) ? trans("messages.email_text.ERROR"). " : "
-        .trans('messages.email_text.TENANT_MIGRATION'). " "
-        . trans('messages.email_text.JOB_FOR') . " "  . $this->tenant->name . " " .trans("messages.email_text.TENANT") :
-        trans("messages.email_text.SUCCESS"). " : " .trans('messages.email_text.TENANT_MIGRATION'). " " . trans('messages.email_text.JOB_FOR') . $this->tenant->name. " " .trans("messages.email_text.TENANT"); //optional
-        $params['data'] = $data;
-
-        $this->emailHelper->sendEmail($params);
-    }
-
-    /**
-     * The job failed to process.
-     * @codeCoverageIgnore
-     * @param  Exception  $exception
-     * @return void
-     */
-    public function failed(\Exception $exception)
-    {
-        $this->sendEmailNotification(true, $exception->getMessage());
     }
 }

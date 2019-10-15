@@ -69,7 +69,7 @@ class TenantBackgroundJobsJob extends Job
             dispatch(new TenantMigrationJob($this->tenant));
         
             // Copy local default_theme folder
-            dispatch(new DownloadAssestFromS3ToLocalStorageJob($this->tenant->name));
+            dispatch(new DownloadAssestFromLocalDefaultThemeToLocalStorageJob($this->tenant->name));
             
             // Create assets folder for tenant on AWS s3 bucket
             dispatch(new CreateFolderInS3BucketJob($this->tenant));
@@ -93,27 +93,25 @@ class TenantBackgroundJobsJob extends Job
 
     /**
      * The job failed to process.
-     * @codeCoverageIgnore
      * @param  Exception  $exception
      * @return void
      */
     public function failed(\Exception $exception)
     {
         $this->tenant->update(['background_process_status' => config('constants.background_process_status.FAILED')]);
-        $this->sendEmailNotification(true);
+        $this->sendEmailNotification();
     }
 
     /**
      * Send email notification to admin
-     * @codeCoverageIgnore
      * @param bool $isFail
      * @return void
      */
-    public function sendEmailNotification(bool $isFail = false)
+    public function sendEmailNotification()
     {
-        $status = ($isFail===false) ? trans('messages.email_text.PASSED') : trans('messages.email_text.FAILED');
         $message = "<p> ".trans('messages.email_text.TENANT')." : " .$this->tenant->name. "<br>";
-        $message .= trans('messages.email_text.BACKGROUND_JOB_STATUS')." : ".$status." <br>";
+        $message .= trans('messages.email_text.BACKGROUND_JOB_STATUS')." : ".trans('messages.email_text.FAILED')
+        ." <br>";
 
         $data = array(
             'message'=> $message,
@@ -122,13 +120,9 @@ class TenantBackgroundJobsJob extends Job
 
         $params['to'] = config('constants.ADMIN_EMAIL_ADDRESS'); //required
         $params['template'] = config('constants.EMAIL_TEMPLATE_FOLDER').'.'.config('constants.EMAIL_TEMPLATE_JOB_NOTIFICATION'); //path to the email template
-        $params['subject'] = ($isFail)
-        ?
-        trans("messages.email_text.ERROR"). " : " .trans('messages.email_text.ON_BACKGROUND_JOBS'). " "
-        . $this->tenant->name . " " .trans("messages.email_text.TENANT")
-        :
-        trans("messages.email_text.SUCCESS"). " : " .trans('messages.email_text.ON_BACKGROUND_JOBS'). " "
-        . $this->tenant->name. " " .trans("messages.email_text.TENANT"); //optional
+        $params['subject'] = trans("messages.email_text.ERROR"). " : "
+        .trans('messages.email_text.ON_BACKGROUND_JOBS')." ". $this->tenant->name . " "
+        .trans("messages.email_text.TENANT");
 
         $params['data'] = $data;
 
