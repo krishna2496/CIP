@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Traits\RestExceptionHandlerTrait;
 use Validator;
 use InvalidArgumentException;
+use App\Helpers\Helpers;
 
 class TenantController extends Controller
 {
@@ -26,20 +27,28 @@ class TenantController extends Controller
      * @var App\Helpers\ResponseHelper
      */
     private $responseHelper;
+    
+    /**
+     * @var App\Helpers\Helpers
+     */
+    private $helpers;
 
     /**
      * Create a new Tenant controller instance.
      *
      * @param  App\Repositories\Tenant\TenantRepository $tenantRepository
      * @param  App\Helpers\ResponseHelper $responseHelper
+     * @param  App\Helpers\Helpers $helpers
      * @return void
      */
     public function __construct(
         TenantRepository $tenantRepository,
-        ResponseHelper $responseHelper
+        ResponseHelper $responseHelper,
+        Helpers $helpers
     ) {
         $this->tenantRepository = $tenantRepository;
         $this->responseHelper = $responseHelper;
+        $this->helpers = $helpers;
     }
     
     /**
@@ -52,10 +61,15 @@ class TenantController extends Controller
     {
         try {
             $tenantList = $this->tenantRepository->tenantList($request);
-            
-            $responseMessage = (count($tenantList) > 0) ? trans('messages.success.MESSAGE_TENANT_LISTING') :
+            $paginatedData = $this->helpers->paginationTransform(
+                $tenantList,
+                $request->except(['page','perPage']),
+                $request->url()
+            );
+            $apiData = $paginatedData;
+            $responseMessage = (count($apiData) > 0) ? trans('messages.success.MESSAGE_TENANT_LISTING') :
             trans('messages.success.MESSAGE_NO_RECORD_FOUND');
-            return $this->responseHelper->successWithPagination($tenantList, Response::HTTP_OK, $responseMessage);
+            return $this->responseHelper->successWithPagination($apiData, Response::HTTP_OK, $responseMessage);
         } catch (InvalidArgumentException $e) {
             return $this->invalidArgument(
                 config('constants.error_codes.ERROR_INVALID_ARGUMENT'),
