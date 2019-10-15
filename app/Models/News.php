@@ -44,7 +44,8 @@ class News extends Model
         'user_thumbnail',
         'newsLanguage',
         'newsToCategory',
-        'created_at'
+        'created_at',
+        'status'
     ];
 
     /**

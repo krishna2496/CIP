@@ -3,10 +3,8 @@
 namespace App\Repositories\StoryVisitor;
 
 use App\Models\StoryVisitor;
-use App\Models\Story;
 use App\Repositories\StoryVisitor\StoryVisitorInterface;
 use Illuminate\Http\Request;
-use Illuminate\Database\Eloquent\Collection;
 
 class StoryVisitorRepository implements StoryVisitorInterface
 {

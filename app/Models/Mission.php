@@ -20,10 +20,11 @@ use App\Models\TimeMission;
 use App\Models\Comment;
 use App\Models\Availability;
 use App\Models\Timesheet;
+use Illuminate\Notifications\Notifiable;
 
 class Mission extends Model
 {
-    use SoftDeletes;
+    use SoftDeletes, Notifiable;
 
     /**
      * The table associated with the model.

@@ -592,4 +592,16 @@ class TimesheetRepository implements TimesheetInterface
 
         return $timesheetQuery->get()->toArray();
     }
+
+    /**
+     * Get details of timesheet from timesheetId
+     *
+     * @param int $timesheetId
+     * @return App\Models\Timesheet
+     */
+    public function getDetailsOfTimesheetEntry(int $timesheetId): Timesheet
+    {
+        return $this->timesheet->with(['mission','user','timesheetStatus'])
+        ->where('timesheet_id', $timesheetId)->first();
+    }
 }

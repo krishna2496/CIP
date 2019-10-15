@@ -21,6 +21,7 @@ use App\Models\Timesheet;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Nicolaslopezj\Searchable\SearchableTrait;
+use App\Models\Notification;
 
 class User extends Model implements AuthenticatableContract, AuthorizableContract, CanResetPasswordInterface
 {
@@ -221,5 +222,13 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     public function getUserGoalHours(int $userId): ?string
     {
         return static::select('hours_goal')->where(['user_id' => $userId])->value('hours_goal');
+    }
+
+    /**
+     * A User can have many Notifications
+     */
+    public function notification()
+    {
+        return $this->hasMany(Notification::class, 'user_id', 'user_id');
     }
 }
