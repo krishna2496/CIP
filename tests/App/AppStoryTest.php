@@ -2494,7 +2494,7 @@ class AppStoryTest extends TestCase
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         
         $this->get('app/story/'.rand(1000000, 5000000).'/copy', ['token' => $token])
-        ->seeStatusCode(422)
+        ->seeStatusCode(404)
         ->seeJsonStructure([
             "errors" => [
                 [

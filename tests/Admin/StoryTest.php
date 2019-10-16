@@ -255,7 +255,7 @@ class StoryTest extends TestCase
         DB::setDefaultConnection('mysql');
         $params = ["status" => config('constants.story_status.DECLINED')];
         $this->patch('stories/'.rand(1000000, 5000000), $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
-        ->seeStatusCode(422);
+        ->seeStatusCode(404);
         
         App\Models\Story::where('mission_id', $mission->mission_id)->delete();
         $user->delete();
