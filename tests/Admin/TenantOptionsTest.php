@@ -13,7 +13,7 @@ class TenantOptionsTest extends TestCase
      *
      * @return void
      */
-    public function it_should_reset_style_to_default()
+    public function tenant_option_testing_it_should_reset_style_to_default()
     {
         $this->get('style/reset-style', ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
         ->seeStatusCode(200);
@@ -26,7 +26,7 @@ class TenantOptionsTest extends TestCase
      *
      * @return void
      */
-    public function it_should_download_style_from_s3()
+    public function tenant_option_testing_it_should_download_style_from_s3()
     {
         $this->get('style/download-style', ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
         ->seeStatusCode(200)
@@ -43,7 +43,7 @@ class TenantOptionsTest extends TestCase
     *
     * @return void
     */
-    public function it_should_update_primary_color()
+    public function tenant_option_testing_it_should_update_primary_color()
     {
         $params = [
             'primary_color' => "#ccc"
@@ -60,7 +60,7 @@ class TenantOptionsTest extends TestCase
     *
     * @return void
     */
-    public function style_it_should_return_custom_css()
+    public function tenant_option_testing_style_it_should_return_custom_css()
     {
         $this->get('app/custom-css', ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
         ->seeStatusCode(200);
@@ -73,7 +73,7 @@ class TenantOptionsTest extends TestCase
      *
      * @return void
      */
-    public function it_should_create_tenant_option()
+    public function tenant_option_testing_it_should_create_tenant_option()
     {
         $optionName = str_random(20);
         $params = [
@@ -105,7 +105,7 @@ class TenantOptionsTest extends TestCase
      *
      * @return void
      */
-    public function it_should_return_error_for_invalid_data_for_tenant_option()
+    public function tenant_option_testing_it_should_return_error_for_invalid_data_for_tenant_option()
     {
         $optionName = '';
         $params = [
@@ -142,7 +142,7 @@ class TenantOptionsTest extends TestCase
     *
     * @return void
     */
-    public function style_update_it_should_update_assets_image_on_s3_server()
+    public function tenant_option_testing_style_update_it_should_update_assets_image_on_s3_server()
     {
         
         $fileName = 'back-arrow-black.svg';
@@ -259,7 +259,7 @@ class TenantOptionsTest extends TestCase
     *
     * @return void
     */
-    public function style_update_it_should_update_scss_changes()
+    public function tenant_option_testing_style_update_it_should_update_scss_changes()
     {
         // Simple update other SCSS file
         $fileName = 'typography.scss';
@@ -292,7 +292,7 @@ class TenantOptionsTest extends TestCase
      *
      * @return void
      */
-    public function it_should_update_tenant_option()
+    public function tenant_option_testing_it_should_update_tenant_option()
     {
         $optionName = str_random(20);
         $params = [
@@ -327,7 +327,7 @@ class TenantOptionsTest extends TestCase
      *
      * @return void
      */
-    public function it_should_return_error_for_invalid_data_for_update_tenant_option()
+    public function tenant_option_testing_it_should_return_error_for_invalid_data_for_update_tenant_option()
     {
         $optionName = str_random(20);
         $params = [
@@ -382,7 +382,7 @@ class TenantOptionsTest extends TestCase
     *
     * @return void
     */
-    public function it_should_return_error_for_required_field_while_update_style()
+    public function tenant_option_testing_it_should_return_error_for_required_field_while_update_style()
     {
         $params = [];
 
@@ -397,7 +397,7 @@ class TenantOptionsTest extends TestCase
      *
      * @return void
      */
-    public function it_should_update_tenant_option_with_unavailable_option()
+    public function tenant_option_testing_it_should_update_tenant_option_with_unavailable_option()
     {
         $optionName = str_random(20);
         $params = [
@@ -425,7 +425,7 @@ class TenantOptionsTest extends TestCase
      *
      * @return void
      */
-    public function it_should_reset_assets_images_to_default()
+    public function tenant_option_testing_it_should_reset_assets_images_to_default()
     {
         $this->get('style/reset-asset-images', ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
         ->seeStatusCode(200);
@@ -438,7 +438,7 @@ class TenantOptionsTest extends TestCase
      *
      * @return void
      */
-    public function it_should_create_tenant_option_value()
+    public function tenant_option_testing_it_should_create_tenant_option_value()
     {
         $optionName = str_random(20);
         $params = [
@@ -461,7 +461,7 @@ class TenantOptionsTest extends TestCase
     * 
     * @return void
     */
-    public function it_should_return_error_bucket_not_found_for_update_primary_color()
+    public function tenant_option_testing_it_should_return_error_bucket_not_found_for_update_primary_color()
     {
         DB::setDefaultConnection('mysql');
         
@@ -509,7 +509,7 @@ class TenantOptionsTest extends TestCase
     *
     * @return void
     */
-    public function style_update_it_should_uploading_variable_file_with_primary_color()
+    public function tenant_option_testing_style_update_it_should_uploading_variable_file_with_primary_color()
     {
         $fileName = '_variables.scss';
         $path  = storage_path("unitTestFiles/$fileName");
@@ -542,7 +542,7 @@ class TenantOptionsTest extends TestCase
     *
     * @return void
     */
-    public function style_update_it_should_return_error_uploading_File_name_is_require_onupdate_scss_changes()
+    public function tenant_option_testing_style_update_it_should_return_error_uploading_File_name_is_require_onupdate_scss_changes()
     {
         $fileName = 'typography.scss';
         $path  = storage_path("unitTestFiles/$fileName");
@@ -575,7 +575,7 @@ class TenantOptionsTest extends TestCase
     *
     * @return void
     */
-    public function style_update_it_should_return_error_for_invalid_extension_on_update_scss_changes()
+    public function tenant_option_testing_style_update_it_should_return_error_for_invalid_extension_on_update_scss_changes()
     {
         $fileName = 'typography.scss';
         $invalidFileName = 'dummy.txt';
@@ -608,7 +608,7 @@ class TenantOptionsTest extends TestCase
     *
     * @return void
     */
-    public function style_update_it_should_return_error_for_invalid_file_name_on_update_scss_changes()
+    public function tenant_option_testing_style_update_it_should_return_error_for_invalid_file_name_on_update_scss_changes()
     {
         $fileName = 'typography.scss';
         $invalidFileName = 'dummy.txt';
@@ -641,7 +641,7 @@ class TenantOptionsTest extends TestCase
     *
     * @return void
     */
-    public function style_update_it_should_error_for_empty_date_on_update_scss_changes()
+    public function tenant_option_testing_style_update_it_should_error_for_empty_date_on_update_scss_changes()
     {
         $params = [
             'custom_scss_file_name' => '',
@@ -660,7 +660,7 @@ class TenantOptionsTest extends TestCase
      *
      * @return void
      */
-    public function it_should_return_error_bucket_not_found_on_download_style_from_s3()
+    public function tenant_option_testing_it_should_return_error_bucket_not_found_on_download_style_from_s3()
     {
         DB::setDefaultConnection('mysql');
         
@@ -696,7 +696,7 @@ class TenantOptionsTest extends TestCase
     *
     * @return void
     */
-    public function it_should_return_error_bucket_not_found_on_update_assets_image_on_s3_server()
+    public function tenant_option_testing_it_should_return_error_bucket_not_found_on_update_assets_image_on_s3_server()
     {
         DB::setDefaultConnection('mysql');
         
@@ -750,7 +750,7 @@ class TenantOptionsTest extends TestCase
      *
      * @return void
      */
-    public function it_should_return_error_no_file_found_on_s3_when_downloading_style_from_s3()
+    public function tenant_option_testing_it_should_return_error_no_file_found_on_s3_when_downloading_style_from_s3()
     {
         DB::setDefaultConnection('mysql');
         

@@ -504,7 +504,7 @@ class UserTest extends TestCase
         $user->setConnection($connection);
         $user->save();
         
-        $this->get('user/skills/'.$user->user_id, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->get('users/'.$user->user_id.'/skills/', ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
           ->seeStatusCode(200)
           ->seeJsonStructure([
             "status",
@@ -522,7 +522,7 @@ class UserTest extends TestCase
      */
     public function it_should_return_error_if_user_is_not_exist()
     {
-        $this->get('user/skills/'.rand(100000, 500000), ['Authorization' => 'Basic '
+        $this->get('users/'.rand(100000, 500000).'/skills/', ['Authorization' => 'Basic '
         .base64_encode(env('API_KEY').':'.env('API_SECRET'))])
         ->seeStatusCode(404)
         ->seeJsonStructure([
@@ -551,7 +551,7 @@ class UserTest extends TestCase
         $user->setConnection($connection);
         $user->save();
         
-        $this->get('user/skills/'.$user->user_id, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->get('users/'.$user->user_id.'/skills/', ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
           ->seeStatusCode(200)
           ->seeJsonStructure([
             "status",
@@ -586,7 +586,7 @@ class UserTest extends TestCase
             ]
         ];
 
-        $this->post('user/skills/'.$user->user_id, $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post('users/'.$user->user_id.'/skills/', $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
           ->seeStatusCode(201)
           ->seeJsonStructure([
             "status",
@@ -618,7 +618,7 @@ class UserTest extends TestCase
             ]
         ];
 
-        $this->post('user/skills/'.rand(100000, 5000000), $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post('users/'.rand(100000, 5000000).'/skills/', $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
           ->seeStatusCode(404)
           ->seeJsonStructure([
               "errors" => [
@@ -657,7 +657,7 @@ class UserTest extends TestCase
             ]
         ];
 
-        $this->delete('user/skills/'.$user->user_id, $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->delete('users/'.$user->user_id.'/skills/', $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
           ->seeStatusCode(200)
           ->seeJsonStructure([
             "status",
@@ -689,7 +689,7 @@ class UserTest extends TestCase
             ]
         ];
 
-        $this->delete('user/skills/'.rand(100000, 5000000), $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->delete('users/'.rand(100000, 5000000).'/skills/', $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
           ->seeStatusCode(404)
           ->seeJsonStructure([
               "errors" => [
@@ -925,7 +925,7 @@ class UserTest extends TestCase
 
         $params = [];
 
-        $this->post('user/skills/'.$user->user_id, $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->post('users/'.$user->user_id.'/skills/', $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
         ->seeStatusCode(422)
         ->seeJsonStructure([
             'errors' => [
@@ -957,7 +957,7 @@ class UserTest extends TestCase
 
         $params = [];
 
-        $this->delete('user/skills/'.$user->user_id, $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->delete('users/'.$user->user_id.'/skills/', $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
         ->seeStatusCode(422)
         ->seeJsonStructure([
             'errors' => [

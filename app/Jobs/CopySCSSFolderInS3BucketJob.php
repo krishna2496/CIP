@@ -29,9 +29,23 @@ class CopySCSSFolderInS3BucketJob extends Job
      */
     public function handle()
     {
-        exec('aws s3 cp --recursive s3://'.config('constants.AWS_S3_BUCKET_NAME').
-            '/'.config('constants.AWS_S3_DEFAULT_THEME_FOLDER_NAME').'/'.env('AWS_S3_ASSETS_FOLDER_NAME').'/scss s3://'
-            .config('constants.AWS_S3_BUCKET_NAME').'/'
-            .$this->tenantName.'/'.env('AWS_S3_ASSETS_FOLDER_NAME').'/scss');
+        // Create folder on S3 using tenant's FQDN
+        Storage::disk('s3')->makeDirectory($this->tenantName);
+
+        // Copy default_theme folder which is already present on S3
+        $files = Storage::disk('s3')->allFiles(env('AWS_S3_DEFAULT_THEME_FOLDER_NAME').'/assets/scss');
+        
+        // Fetched files copy to created s3 folder
+        foreach ($files as $key => $file) {
+            // Remove default_theme path from file URL
+            $sourcePath = str_replace(env('AWS_S3_DEFAULT_THEME_FOLDER_NAME'), '', $file);
+
+            // If file exist then delete it
+            if (Storage::disk('s3')->exists($this->tenantName.'/'.$sourcePath)) {
+                Storage::disk('s3')->delete($this->tenantName.'/'.$sourcePath);
+            }
+            // Copy and paste file into tenant's folders
+            Storage::disk('s3')->copy($file, $this->tenantName.''.$sourcePath);
+        }
     }
 }

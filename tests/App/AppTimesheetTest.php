@@ -3584,7 +3584,7 @@ class AppTimesheetTest extends TestCase
             'mission_id' => $mission[0]['mission_id'],
             'date_volunteered' => date('Y-m-d'),
             'day_volunteered' => 'HOLIDAY',
-            'action' => rand(10, 500),
+            'action' => rand(10, 20),
             'documents[]' =>[]
         ];
         DB::setDefaultConnection('mysql');
