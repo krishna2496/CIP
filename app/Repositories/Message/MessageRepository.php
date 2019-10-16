@@ -122,4 +122,19 @@ class MessageRepository implements MessageInterface
             }
         )->firstOrFail()->delete();
     }
+
+    /**
+     * Read message.
+     *
+     * @param int $messageId
+     * @param int $userId
+     * @param int $sentFrom
+     * @return App\Models\Message
+     */
+    public function readMessage(int $messageId, int $userId, int $sentFrom): Message
+    {
+        $messageDetails = $this->message->findMessage($messageId, $userId, $sentFrom);
+        $messageDetails->update(['is_read' => config('constants.message.read')]);
+        return $messageDetails;
+    }
 }
