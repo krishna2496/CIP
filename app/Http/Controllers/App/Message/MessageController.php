@@ -91,8 +91,6 @@ class MessageController extends Controller
             [$request->auth->user_id]
         );
         
-        $requestString = $request->except(['page','perPage']);
-        
         // generate responce data
         $apiData = $userMessages;
         $apiStatus = Response::HTTP_OK;

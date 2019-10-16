@@ -389,7 +389,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
             
     /* Get User's message Listing*/
     $router->get('/app/message/list', ['as' => 'app.message.list',
-        'middleware' => 'localization|tenant.connection|jwt.auth',
+        'middleware' => 'localization|tenant.connection|jwt.auth|PaginationMiddleware',
         'uses' => 'App\Message\MessageController@getUserMessages']);
 
     /* Delete Message details */
