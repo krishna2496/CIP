@@ -39,6 +39,9 @@
                     <h5 class="modal-title">{{ languageData.label.contact_us }}</h5>
                 </template>
                 <b-alert show :variant="classVariant" dismissible v-model="showDismissibleAlert">{{ message }}</b-alert>
+                <div v-bind:class="{ 'content-loader-wrap': true, 'loader-active ': isAjaxCall}">
+                    <div class="content-loader"></div>
+                </div>
                 <b-form>
                     <b-form-group>
                         <label for>{{ languageData.label.name }}</label>
@@ -61,18 +64,15 @@
                         </div>
                     </b-form-group>
                     <b-form-group>
-                        <label for>{{ languageData.label.phone_number }}</label>
+                        <label for>{{ languageData.label.subject }}</label>
                         <b-form-input id 
-                            v-model.trim="contactUs.phone" 
-                            maxLength="11"
-                            :class="{ 'is-invalid': submitted && $v.contactUs.phone.$error }"
-                            type="text" :placeholder="languageData.placeholder.phone_number">
+                            v-model.trim="contactUs.subject" 
+                            maxLength="255"
+                            :class="{ 'is-invalid': submitted && $v.contactUs.subject.$error }"
+                            type="text" :placeholder="languageData.placeholder.subject">
                         </b-form-input>
-                        <div v-if="submitted && !$v.contactUs.phone.numeric" class="invalid-feedback">
-                            {{ languageData.errors.valid_phone_number }}
-                        </div>
-                        <div v-if="submitted && $v.contactUs.phone.numeric && !$v.contactUs.phone.minLength" class="invalid-feedback">
-                           safsaf {{ languageData.errors.phone_number_min_length }}
+                        <div v-if="submitted && !$v.contactUs.subject.required" class="invalid-feedback">
+                            {{ languageData.errors.subject_required }}
                         </div>
                     </b-form-group>
                     <b-form-group>
@@ -85,10 +85,10 @@
                         </div>
                     </b-form-group>
                     <div class="btn-wrap">
-                        <b-button class="btn-borderprimary" title="Cancel" @click="$refs.contactModal.hide()">
+                        <b-button class="btn-borderprimary"  @click="$refs.contactModal.hide()">
                             {{ languageData.label.cancel }}
                         </b-button>
-                        <b-button class="btn-bordersecondary" title="Send" @click="submitContact">
+                        <b-button class="btn-bordersecondary" v-bind:class="{disabled : isAjaxCall}" @click="submitContact">
                             {{ languageData.label.send }}</b-button>
                     </div>
                 </b-form>
@@ -128,12 +128,13 @@
                 contactUs: {
                     'name': '',
                     'email': '',
-                    'phone': '',
+                    'subject': '',
                     'message': ''
                 },
                 classVariant : '',
                 showDismissibleAlert : false,
-                contactUsDisplay:true
+                contactUsDisplay:true,
+                isAjaxCall : false
             };
         },
         validations: {
@@ -145,9 +146,8 @@
                 message: {
                     required
                 },
-                phone: {
-                    numeric,
-                    minLength:minLength(10)
+                subject: {
+                    required
                 }
             }
         },
@@ -259,25 +259,25 @@
                 if (this.$v.$invalid) {
                     return
                 }
+                this.isAjaxCall = true;
                 let contactData = {
-                    'name':'',
-                    'phone_number' : '',
-                    'email' :'',
-                    'message' : ''
+                    'subject' : '',
+                    'message' : '',
+                    'admin' : null
                 }
-
-                contactData.name = this.contactUs.name;
-                contactData.phone_number = this.contactUs.phone;
-                contactData.email = this.contactUs.email;
+                contactData.subject = this.contactUs.subject;
                 contactData.message = this.contactUs.message;
                 contactUs(contactData).then(response => {
                     this.showDismissibleAlert = true
+                    this.isAjaxCall = false;
                     if(response.error == false) {
                         this.classVariant = 'success';
                         this.message = response.message
                     } else {
                         this.classVariant = 'danger';
                         this.message = response.message
+                        contactUs.subject =  ''
+                        contactUs.message =  ''
                     }
                 })
             }
