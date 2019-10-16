@@ -51,6 +51,7 @@ return [
         'ERROR_LANGUAGE_NOT_FOUND' => 'Language not found in the system',
         'ERROR_LANGUAGE_NOT_ACTIVE' => 'Selected language is not active',
         'ERROR_TENANT_LANGUAGE_NOT_FOUND' => 'Tenant language not found in the system',
+        'ERROR_TENANT_DEFAULT_LANGUAGE_REQUIRED' => 'Atleast one default language is required',
     ],
     'email_text' => [
         'ERROR' => 'Error',

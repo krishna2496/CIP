@@ -32,4 +32,13 @@ interface TenantLanguageInterface
      * @return bool
      */
     public function delete(int $id): bool;
+    
+    /**
+     * Check default language settings.
+     *
+     * @param  int $tenantId
+     * @param  int $languageId
+     * @return bool
+     */
+    public function checkDefaultLanguageSettings(int $tenantId, int $languageId): bool;
 }

@@ -100,6 +100,21 @@ class TenantLanguageController extends Controller
             );
         }
 
+        if ($request['default'] == config('constants.language_status.INACTIVE')) {
+            $defaultLanguageStatus = $this->tenantLanguageRepository->checkDefaultLanguageSettings(
+                $request->tenant_id,
+                $request->language_id
+            );
+            if ($defaultLanguageStatus) {
+                return $this->responseHelper->error(
+                    Response::HTTP_UNPROCESSABLE_ENTITY,
+                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                    config('constants.error_codes.ERROR_TENANT_DEFAULT_LANGUAGE_REQUIRED'),
+                    trans('messages.custom_error_message.ERROR_TENANT_DEFAULT_LANGUAGE_REQUIRED')
+                );
+            }
+        }
+
         // Store or update tenant language details
         $tenantLanguageData = $this->tenantLanguageRepository->storeOrUpdate($request->toArray());
 

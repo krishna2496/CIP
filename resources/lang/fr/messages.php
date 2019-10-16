@@ -48,6 +48,7 @@ return [
         'ERROR_LANGUAGE_NOT_FOUND' => 'Langue non trouvée dans le système',
         'ERROR_LANGUAGE_NOT_ACTIVE' => 'La langue sélectionnée n\'est pas active',
         'ERROR_TENANT_LANGUAGE_NOT_FOUND' => 'Langue du locataire introuvable dans le système',
+        'ERROR_TENANT_DEFAULT_LANGUAGE_REQUIRED' => 'Au moins une langue par défaut est requise',
     ]
     
 ];
