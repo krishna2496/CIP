@@ -114,4 +114,50 @@ interface TimesheetInterface
      * @return array
      */
     public function getAllTimesheetEntries(Request $request): array;
+
+    /**
+     * Get user timesheet total hours data
+     *
+     * @param int $userId
+     * @param int $year
+     * @param int $month
+     * @return null|array
+     */
+    public function getTotalHours(int $userId, int $year, int $month): ?array;
+
+    /**
+     * Get user timesheet total goal actions data
+     *
+     * @param int $userId
+     * @param int $year
+     * @return null|array
+     */
+    public function getTotalGoalActions(int $userId, int $year): ?array;
+
+    /**
+     * Get user timesheet total hours data
+     *
+     * @param int $userId
+     * @param int $year
+     * @return null|array
+     */
+    public function getTotalHoursForYear(int $userId, int $year): ?array;
+
+    /**
+     * Get user timesheet total hours data
+     *
+     * @param int $userId
+     * @param int $year
+     * @return null|array
+     */
+    public function getTotalHoursbyMonth(int $userId, int $year, $missionId): ?array;
+
+    /**
+     * Get all user's timesheet total hours data
+     *
+     * @param int $year
+     * @param int $month
+     * @return null|array
+     */
+    public function getUsersTotalHours(int $year, int $month): ?array;
 }
