@@ -57,6 +57,11 @@ import deleteComment from "./Comment/DeleteComment"
 import cookieAgreement from "./CookieAgreement"
 import myDashboard from "./MyDashboard"
 import contactUs from "./ContactUs"
+import notificationSettingListing from "./Notification/NotificationSettingListing"
+import updateNotificationSetting from "./Notification/UpdateNotificationSetting"
+import deleteMessage from "./Message/DeleteMessage"
+import messageListing from "./Message/MessageListing"
+import sendMessage from "./Message/SendMessage"
 
 export {
     loadLocaleMessages,
@@ -117,5 +122,10 @@ export {
     deleteComment,
     cookieAgreement,
     myDashboard,
-    contactUs
+    contactUs,
+    notificationSettingListing,
+    updateNotificationSetting,
+    deleteMessage,
+    messageListing,
+    sendMessage
 }

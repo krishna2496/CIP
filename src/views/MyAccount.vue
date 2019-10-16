@@ -19,7 +19,6 @@
                                 <div v-bind:class="{ 'content-loader-wrap': true, 'loader-active ': isPrefilLoaded}">
                                     <div class="content-loader"></div>
                                 </div>
-
                                 <picture-input :title="changePhoto" ref="pictureInput" @change="changeImage"
                                     accept="image/jpeg,image/png" :prefill="newUrl" buttonClass="btn" :customStrings="{
                                         upload: '<h1>Bummer!</h1>',

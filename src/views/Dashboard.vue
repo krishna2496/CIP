@@ -437,7 +437,24 @@
 			this.missionListing()
 			this.getDashboardData(this.filterData,'dashboad')
 			window.addEventListener('resize' , ()=> {
-				this.getDashboardData(this.filterData);
+				this.xvalues = [0]
+				this.max = 0
+				// this.getDashboardData(this.filterData);
+				if(screen.width < 576){
+					this.goalHourPart = 5
+				} else {
+					this.goalHourPart = 10
+				}
+				if(this.totalGoalHours != 0) {
+					let axes = (this.totalGoalHours / this.goalHourPart);
+					this.max = Math.ceil(axes)
+					let xValue = 0;
+					
+					for (var i = 0; i < this.goalHourPart; i++) {
+						xValue = xValue + this.max;
+						this.xvalues.push(xValue)
+					}
+				}
 			})
 		}
 	};

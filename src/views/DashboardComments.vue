@@ -56,19 +56,20 @@
 									<h3>{{languageData.label.comment_history}}</h3>
 									<b-table :items="commentItems" responsive :fields="commentfields"
 										class="history-table">
-										<template slot="mission" slot-scope="data">
-											<b-link to="/home" class="table-link">{{ data.item.Mission }}</b-link>
+										<template :slot="languageData.label.mission" slot-scope="data">
+											<b-link to="/home" class="table-link">
+												{{ data.item[languageData.label.mission] }}</b-link>
 										</template>
-										<template slot="date" slot-scope="data">
-											{{ data.item.Date | formatDate }}
+										<template :slot="languageData.label.date" slot-scope="data">
+											{{ data.item[languageData.label.date] | formatDate }}
 										</template>
-										<template slot="comment" slot-scope="data">
-											{{ data.item.Comment }}
+										<template :slot="languageData.label.comment" slot-scope="data">
+											{{ data.item[languageData.label.comment] }}
 										</template>
-										<template slot="status" slot-scope="data">
-											{{ data.item.Status }}
+										<template :slot="languageData.label.status" slot-scope="data">
+											{{data.item[languageData.label.status] }}
 										</template>
-										<template slot="actions" slot-scope="data">
+										<template :slot="languageData.label.action" slot-scope="data">
 											<b-button class="btn-action btn-expand">
 												<img :src="$store.state.imagePath+'/assets/images/expand-ic.svg'"
 													alt="Expand" />
@@ -87,28 +88,6 @@
 							</div>
 						</div>
 					</div>
-					<!-- <b-modal ref="my-modal" :modal-class="'table-expand-modal table-modal'">
-						<template slot="modal-title">Help old people</template>
-						<h4>
-							Date:
-							<span>4/28/2018</span>
-						</h4>
-						<h4>
-							Status:
-							<span>Published</span>
-						</h4>
-						<div class="mission-row">
-							<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
-								ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation
-								ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in
-								reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur
-								sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id
-								est laborum.</p>
-						</div>
-						<template slot="modal-footer" slot-scope="{ cancel}">
-							<b-button class="btn-bordersecondary" @click="cancel()">Cancel</b-button>
-						</template>
-					</b-modal> -->
 				</b-container>
 			</div>
 		</main>
@@ -128,6 +107,9 @@
 		commentListing,
 		deleteComment
 	} from "../services/service";
+	import {
+		setTimeout
+	} from 'timers';
 	export default {
 		components: {
 			ThePrimaryHeader,
@@ -141,27 +123,27 @@
 			return {
 				selectedMonth: false,
 				commentfields: [{
-						key: "mission",
+						key: "",
 						class: "mission-col",
 						label: ""
 					},
 					{
-						key: "date",
+						key: "",
 						class: "date-col",
 						label: ""
 					},
 					{
-						key: "comment",
+						key: "",
 						class: "expand-col",
 						label: ""
 					},
 					{
-						key: "status",
+						key: "",
 						class: "status-col",
 						label: ""
 					},
 					{
-						key: "actions",
+						key: "",
 						class: "action-col",
 						label: ""
 					}
@@ -182,7 +164,7 @@
 		methods: {
 			getCommentListing() {
 				this.isLoaderActive = true
-				this.showDismissibleAlert = false;
+				// this.showDismissibleAlert = false;
 				commentListing().then(response => {
 					if (response.error == false) {
 						if (response.data && response.data.comments) {
@@ -211,14 +193,13 @@
 								this.statsField.declined = response.data.stats[0].declined;
 							}
 						}
-						this.isLoaderActive = false
 					} else {
 						this.showDismissibleAlert = true;
 						this.classVariant = 'danger'
 						//set error msg
 						this.message = response.message
-						this.getMyStory();
 					}
+					this.isLoaderActive = false
 				})
 			},
 			deleteComments(commentId) {
@@ -227,6 +208,7 @@
 				deleteComment(commentId).then(response => {
 					this.showDismissibleAlert = true;
 					if (response.error == false) {
+						this.getCommentListing();
 						this.classVariant = 'success'
 						//set error msg
 						this.message = this.languageData.label.comment + ' ' + this.languageData.label
@@ -250,7 +232,6 @@
 				buttonExpand.forEach(function (event) {
 					event.addEventListener("click", function () {
 						var getcommentCell = this.parentNode.parentNode.childNodes[2];
-
 						var getcommenthtml = getcommentCell.innerHTML;
 						var strlenght = getcommenthtml.length;
 						var rowParent = this.parentNode.parentNode.parentNode;
@@ -274,8 +255,15 @@
 			this.commentfields[2].label = this.languageData.label.comment
 			this.commentfields[3].label = this.languageData.label.status
 			this.commentfields[4].label = this.languageData.label.action
+			this.commentfields[0].key = this.languageData.label.mission
+			this.commentfields[1].key = this.languageData.label.date
+			this.commentfields[2].key = this.languageData.label.comment
+			this.commentfields[3].key = this.languageData.label.status
+			this.commentfields[4].key = this.languageData.label.action
+			setTimeout(() => {
+				this.getCommentListing()
+			}, 50);
 
-			this.getCommentListing()
 		}
 	};
 </script>

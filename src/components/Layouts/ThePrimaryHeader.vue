@@ -111,16 +111,26 @@
 
                         </ul>
                     </div>
-                    <div class="header-right ml-auto"> 
+                    <div class="header-right ml-auto">
                         <div class="lang-drodown-wrap">
                             <AppCustomDropdown :optionList="langList" :defaultText="defautLang"
                                 translationEnable="false" @updateCall="setLanguage" />
-                        </div> 
+                        </div>
                         <b-nav>
                             <b-nav-item right class="search-menu" @click="searchMenu">
                                 <i>
                                     <img :src="$store.state.imagePath+'/assets/images/search-ic.svg'" alt>
                                 </i>
+                            </b-nav-item>
+                            <b-nav-item right class="notification-menu" id="notifyPopoverWrap"
+                                v-if="this.$store.state.isLoggedIn">
+                                <button id="notificationPopover" class="btn-notification"
+                                    @click="getNotificationListing">
+                                    <i>
+                                        <img :src="$store.state.imagePath+'/assets/images/bell-ic.svg'" alt="Notification Icon" />
+                                    </i>
+                                    <b-badge>2</b-badge>
+                                </button>
                             </b-nav-item>
                             <b-nav-item-dropdown right class="profile-menu" v-if="this.$store.state.isLoggedIn">
                                 <template slot="button-content">
@@ -131,23 +141,28 @@
                                 </b-dropdown-item>
                                 <b-dropdown-item :to="{ name: 'myAccount' }">{{ languageData.label.my_account}}
                                 </b-dropdown-item>
-                                <b-dropdown-item v-on:click.native="logout()" replace v-if="this.$store.state.isLoggedIn">
+                                <b-dropdown-item v-on:click.native="logout()" replace
+                                    v-if="this.$store.state.isLoggedIn">
                                     {{ languageData.label.logout}}
                                 </b-dropdown-item>
                             </b-nav-item-dropdown>
                         </b-nav>
+                       
                         <b-popover target="notificationPopover" placement="topleft" container="notifyPopoverWrap"
                             @show="onPopoverShow" ref="notficationPopover" triggers="click blur" :show="popoverShow">
                             <template slot="title">
                                 <b-button class="btn-setting" title="Setting" @click="showsetting">
-                                    <img :src="$store.state.imagePath+'/assets/images/settings-ic.svg'" alt="Setting icon">
+                                    <img :src="$store.state.imagePath+'/assets/images/settings-ic.svg'"
+                                        alt="Setting icon">
 
                                 </b-button>
-                                <span class="title">Notification</span>
+                                <span class="title">{{languageData.label.notification}}</span>
                                 <b-button class="btn-clear" @click="showclearitem">{{languageData.label.clear_all}}
                                 </b-button>
                             </template>
+                            
                             <div class="notification-details" data-simplebar>
+                                
                                 <b-list-group>
                                     <b-list-group-item href="#" class="unread-item">
                                         <i>
@@ -179,7 +194,6 @@
                                     <b-list-group-item href="#" class="unread-item">
                                         <i>
                                             <img :src="$store.state.imagePath+'/assets/images/warning.png'" alt>
-
                                         </i>
                                         <p>New Message -<b>Message title goes here</b></p>
                                         <span class="status"></span>
@@ -219,50 +233,36 @@
                                     <i>
                                         <img :src="$store.state.imagePath+'/assets/images/gray-bell-ic.svg'" alt>
                                     </i>
-                                    <p>You do not have any new notifications</p>
+                                    <p>{{languageData.label.no_new_notifications}}</p>
                                 </div>
                             </div>
                             <div class="notification-setting">
-                                <h3 class="setting-header">Notification Settings</h3>
-                                <div class="setting-body">
+                                <!-- {{notificationSettingList}} -->
+                                <h3 class="setting-header">{{languageData.label.notification_settings}}</h3>
+                                <div class="setting-body" v-if="notificationSettingList.length > 0">
                                     <div class="setting-bar">
-                                        <span>Get a notification for</span>
+                                        <span>{{languageData.label.get_notification_for}}</span>
                                     </div>
-                                    <b-list-group data-simplebar>
-                                        <b-list-group-item>
-                                            <b-form-checkbox id="" value="accepted">Recommended Missions</b-form-checkbox>
-                                        </b-list-group-item>
-                                        <b-list-group-item>
-                                            <b-form-checkbox id="" value="accepted">Volunteering Hours</b-form-checkbox>
-                                        </b-list-group-item>
-                                        <b-list-group-item>
-                                            <b-form-checkbox id="" value="accepted">Volunteering Goals</b-form-checkbox>
-                                        </b-list-group-item>
-                                        <b-list-group-item>
-                                            <b-form-checkbox id="" value="accepted">My Comments</b-form-checkbox>
-                                        </b-list-group-item>
-                                        <b-list-group-item>
-                                            <b-form-checkbox id="" value="accepted">My Stories</b-form-checkbox>
-                                        </b-list-group-item>
-                                        <b-list-group-item>
-                                            <b-form-checkbox id="" value="accepted">New Stories</b-form-checkbox>
-                                        </b-list-group-item>
-                                        <b-list-group-item>
-                                            <b-form-checkbox id="" value="accepted">New Missions</b-form-checkbox>
-                                        </b-list-group-item>
-                                        <b-list-group-item>
-                                            <b-form-checkbox id="" value="accepted">New Messages</b-form-checkbox>
-                                        </b-list-group-item>
+                                    <b-list-group data-simplebar >
+                                       
+                                            <b-form-checkbox-group id="checkbox-group-2" v-model="selectedNotification" name="flavour-2">
+                                                <b-list-group-item v-for="(data, index) in notificationSettingList">
+                                                    <b-form-checkbox :value="data.notification_type_id">{{data.notification_type}}</b-form-checkbox>
+                                                </b-list-group-item>
+                                            </b-form-checkbox-group>
+                                        
                                     </b-list-group>
                                 </div>
 
                                 <div class="setting-footer">
-                                    <b-button class="btn-bordersecondary" title="Save">Save</b-button>
-                                    <b-button class="btn-borderprimary" title="Cancel" @click="cancelsetting">Cancel
+                                    <b-button class="btn-bordersecondary" @click="saveNotificationSetting">{{languageData.label.save}}</b-button>
+                                    <b-button class="btn-borderprimary" @click="cancelsetting">
+                                        {{languageData.label.cancel}}
                                     </b-button>
                                 </div>
                             </div>
                         </b-popover>
+
                     </div>
                 </b-container>
             </b-navbar>
@@ -274,7 +274,9 @@
         import {
             exploreMission,
             policy,
-            loadLocaleMessages
+            loadLocaleMessages,
+            notificationSettingListing,
+            updateNotificationSetting
         } from '../../services/service';
         import {
             eventBus
@@ -306,7 +308,11 @@
                     isThemeDisplay: true,
                     isStoryDisplay: true,
                     isNewsDisplay: true,
-                    isPolicyDisplay: true
+                    isPolicyDisplay: true,
+                    isNotificationAjaxCall: false,
+                    notificationSettingList : [],
+                    selectedNotification :[],
+                    notificationSettingId : []
                 };
             },
             mounted() {
@@ -364,40 +370,41 @@
                         .classList.add("notification-popover");
                 },
                 showclearitem() {
-                    let popoverBody = document.querySelector(".popover-body");
-                    popoverBody.classList.add("clear-item");
+                    var popover_body = document.querySelector(".popover-body");
+                    popover_body.classList.add("clear-item");
                 },
                 showsetting() {
-                    let notifySetting = document.querySelector(".notification-setting");
-                    notifySetting.classList.toggle("show-setting");
+                    var popover_body = document.querySelector(".popover-body");
+                    popover_body.classList.toggle("show-setting");
                 },
                 cancelsetting() {
-                    let cancelSetting = document.querySelector(".notification-setting");
-                    cancelSetting.classList.remove("show-setting");
+                    this.selectedNotification = []
+                    var popover_body = document.querySelector(".popover-body");
+                    popover_body.classList.remove("show-setting");
                     this.$root.$emit("bv::show::popover", "notificationPopover");
+                    this.notificationSettingList.filter((data,index) => {
+                        if(data.is_active == 1) {
+                            this.selectedNotification.push(data.notification_type_id)
+                        }         
+                    })
                 },
                 openMenu() {
-                    let body = document.querySelectorAll("body, html");
+                    var body = document.querySelectorAll("body, html");
                     body.forEach(function (e) {
                         e.classList.add("open-nav");
                     });
                 },
                 closeMenu() {
-                    let body = document.querySelectorAll("body, html");
+                    var body = document.querySelectorAll("body, html");
                     body.forEach(function (e) {
                         e.classList.remove("open-nav");
                     });
                 },
                 searchMenu() {
-                    let body = document.querySelectorAll("body, html");
+                    var body = document.querySelectorAll("body, html");
                     body.forEach(function (e) {
                         e.classList.toggle("open-search");
                     });
-                },
-                handscroller() {
-                    if (screen.width > 768) {
-                        this.$root.$emit("bv::hide::popover", "notificationPopover");
-                    }
                 },
                 logout() {
                     document.querySelector('body').classList.remove('small-header');
@@ -456,9 +463,79 @@
                         }
                     });
                 },
+
+                getNotificationListing() {
+                    this.isNotificationAjaxCall = true;
+                    notificationSettingListing().then(response => {
+                        this.isNotificationAjaxCall = false;
+                        if(response.error == false) {
+                            if(response.data) {
+                                this.notificationSettingList = response.data
+                                this.notificationSettingList.filter((data,index) => {
+                                    this.notificationSettingId.push(data.notification_type_id);
+                                    if(data.is_active == 1) {
+                                        this.selectedNotification.push(data.notification_type_id)
+                                    }         
+                                })
+                            }
+                        }
+                    })
+                },
+                saveNotificationSetting() {
+                    let data = {
+                        'settings' : []
+                    }
+                    let settingArray = []
+                    
+                    this.notificationSettingId.filter((data,index) => {
+                        let values = 0;
+                        if(this.selectedNotification.includes(data)) {
+                            values = 1;
+                        }
+                        settingArray.push({
+                            'notification_type_id' : data,
+                            'value' :values
+                        })
+                       
+                    })
+                    data.settings = settingArray  
+                    updateNotificationSetting(data).then(response => {
+                        let classVariant = 'success'
+                        if(response.error == true) {
+                            classVariant = 'danger'
+                        }
+                        this.makeToast(classVariant,response.message)
+                    })
+                },
+                makeToast(variant = null, message) {
+                    this.$bvToast.toast(message, {
+                        variant: variant,
+                        solid: true,
+                        autoHideDelay: 3000
+                    })
+			    },
             },
             created() {
                 this.languageData = JSON.parse(store.state.languageLabel);
+                setTimeout(function () {
+                    var body = document.querySelector("body");
+                    var notification_btn = document.querySelector(".btn-notification");
+                    body.addEventListener("click", function () {
+                        var notification_popover = document.querySelector(
+                            ".notification-popover"
+                        );
+                        if (notification_popover != null) {
+                            notification_btn.click();
+                        }
+                    });
+
+                    var notificationMenu = document.querySelector(".notification-menu");
+                    if (notificationMenu != null) {
+                        notificationMenu.addEventListener("click", function (e) {
+                            e.stopPropagation();
+                        });
+                    }
+                }, 1000);
                 document.addEventListener("scroll", this.handscroller);
                 this.isThemeDisplay = this.settingEnabled(constants.THEMES_ENABLED);
                 this.isStoryDisplay = this.settingEnabled(constants.STORIES_ENABLED);

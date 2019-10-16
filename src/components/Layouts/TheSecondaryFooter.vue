@@ -39,6 +39,9 @@
                     <h5 class="modal-title">{{ languageData.label.contact_us }}</h5>
                 </template>
                 <b-alert show :variant="classVariant" dismissible v-model="showDismissibleAlert">{{ message }}</b-alert>
+                <div v-bind:class="{ 'content-loader-wrap': true, 'loader-active ': isAjaxCall}">
+                    <div class="content-loader"></div>
+                </div>
                 <b-form>
                     <b-form-group>
                         <label for>{{ languageData.label.name }}</label>
@@ -85,10 +88,10 @@
                         </div>
                     </b-form-group>
                     <div class="btn-wrap">
-                        <b-button class="btn-borderprimary" title="Cancel" @click="$refs.contactModal.hide()">
+                        <b-button class="btn-borderprimary"  @click="$refs.contactModal.hide()">
                             {{ languageData.label.cancel }}
                         </b-button>
-                        <b-button class="btn-bordersecondary" title="Send" @click="submitContact">
+                        <b-button class="btn-bordersecondary" v-bind:class="{disabled : isAjaxCall}" @click="submitContact">
                             {{ languageData.label.send }}</b-button>
                     </div>
                 </b-form>
@@ -133,7 +136,8 @@
                 },
                 classVariant : '',
                 showDismissibleAlert : false,
-                contactUsDisplay:true
+                contactUsDisplay:true,
+                isAjaxCall : false
             };
         },
         validations: {
@@ -259,6 +263,7 @@
                 if (this.$v.$invalid) {
                     return
                 }
+                this.isAjaxCall = true;
                 let contactData = {
                     'name':'',
                     'phone_number' : '',
@@ -272,6 +277,7 @@
                 contactData.message = this.contactUs.message;
                 contactUs(contactData).then(response => {
                     this.showDismissibleAlert = true
+                    this.isAjaxCall = false;
                     if(response.error == false) {
                         this.classVariant = 'success';
                         this.message = response.message
