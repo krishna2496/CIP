@@ -245,21 +245,18 @@ class StoryTest extends TestCase
             "message"
         ]);        
 
-        /* DB::setDefaultConnection('mysql');
-        
         // If no data found for story
-        $this->get('user/'.$user->user_id.'/stories', ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
-          ->seeStatusCode(200)
-          ->seeJsonStructure([
-            "status",
-            "message"
-        ]);
-
         DB::setDefaultConnection('mysql');
+        $params = ["status" => 'test'];
+        $this->patch('stories/'.$story->story_id, $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(422);
+
         // If user is is invalid
-        $this->get('user/'.rand(1000000, 5000000).'/stories', ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
-          ->seeStatusCode(404);
-         */
+        DB::setDefaultConnection('mysql');
+        $params = ["status" => config('constants.story_status.DECLINED')];
+        $this->patch('stories/'.rand(1000000, 5000000), $params, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        ->seeStatusCode(422);
+        
         App\Models\Story::where('mission_id', $mission->mission_id)->delete();
         $user->delete();
         $mission->delete();
