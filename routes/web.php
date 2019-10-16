@@ -370,11 +370,11 @@ $router->group(['middleware' => 'localization'], function ($router) {
 
     /* Set skill data for tenant user specific */
     $router->group(
-        ['prefix' => 'user/skills', 'middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware'],
+        ['prefix' => 'users', 'middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware'],
         function ($router) {
-            $router->get('/{userId}', ['uses' => 'Admin\User\UserController@userSkills']);
-            $router->post('/{userId}', ['uses' => 'Admin\User\UserController@linkSkill']);
-            $router->delete('/{userId}', ['uses' => 'Admin\User\UserController@unlinkSkill']);
+            $router->get('/{userId}/skills', ['uses' => 'Admin\User\UserController@userSkills']);
+            $router->post('/{userId}/skills', ['uses' => 'Admin\User\UserController@linkSkill']);
+            $router->delete('/{userId}/skills', ['uses' => 'Admin\User\UserController@unlinkSkill']);
         }
     );
 

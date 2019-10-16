@@ -13,7 +13,6 @@ use App\Traits\RestExceptionHandlerTrait;
 use App\Models\TenantActivatedSetting;
 use Validator;
 use App\Helpers\Helpers;
-use InvalidArgumentException;
 
 class TenantActivatedSettingController extends Controller
 {
@@ -62,38 +61,31 @@ class TenantActivatedSettingController extends Controller
      */
     public function index(Request $request): JsonResponse
     {
-        try {
-            // Fetch tenant all settings details
-            $getTenantSettings = $this->helpers->getAllTenantSetting($request);
-           
-            // Fetch activated settings data
-            $tenantSettings = $this->tenantActivatedSettingRepository->fetchAllTenantSettings();
-            $tenantSettingData = array();
+        // Fetch tenant all settings details
+        $getTenantSettings = $this->helpers->getAllTenantSetting($request);
+        
+        // Fetch activated settings data
+        $tenantSettings = $this->tenantActivatedSettingRepository->fetchAllTenantSettings();
+        $tenantSettingData = array();
 
-            if ($tenantSettings->count() &&  $getTenantSettings->count()) {
-                foreach ($tenantSettings as $settingKey => $tenantSetting) {
-                    $index = $getTenantSettings->search(function ($value, $key) use ($tenantSetting) {
-                        return $value->tenant_setting_id === $tenantSetting->settings->setting_id;
-                    });
-                    $tenantSettingData[$settingKey]['key'] = $getTenantSettings[$index]->key;
-                    $tenantSettingData[$settingKey]['tenant_setting_id'] = $getTenantSettings[$index]
-                    ->tenant_setting_id;
-                }
+        if ($tenantSettings->count() &&  $getTenantSettings->count()) {
+            foreach ($tenantSettings as $settingKey => $tenantSetting) {
+                $index = $getTenantSettings->search(function ($value, $key) use ($tenantSetting) {
+                    return $value->tenant_setting_id === $tenantSetting->settings->setting_id;
+                });
+                $tenantSettingData[$settingKey]['key'] = $getTenantSettings[$index]->key;
+                $tenantSettingData[$settingKey]['tenant_setting_id'] = $getTenantSettings[$index]
+                ->tenant_setting_id;
             }
-            $apiData = $tenantSettingData;
-
-            // Set response data
-            $apiStatus = Response::HTTP_OK;
-            $apiMessage = ($tenantSettings->isEmpty() || $getTenantSettings->isEmpty())
-            ? trans('messages.success.MESSAGE_NO_RECORD_FOUND') :
-            trans('messages.success.MESSAGE_TENANT_SETTINGS_LISTING');
-
-            return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
-        } catch (InvalidArgumentException $e) {
-            return $this->invalidArgument(
-                config('constants.error_codes.ERROR_INVALID_ARGUMENT'),
-                trans('messages.custom_error_message.ERROR_INVALID_ARGUMENT')
-            );
         }
+        $apiData = $tenantSettingData;
+
+        // Set response data
+        $apiStatus = Response::HTTP_OK;
+        $apiMessage = ($tenantSettings->isEmpty() || $getTenantSettings->isEmpty())
+        ? trans('messages.success.MESSAGE_NO_RECORD_FOUND') :
+        trans('messages.success.MESSAGE_TENANT_SETTINGS_LISTING');
+
+        return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
     }
 }

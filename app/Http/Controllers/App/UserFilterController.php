@@ -103,11 +103,14 @@ class UserFilterController extends Controller
     {
         $language = $this->languageHelper->getLanguageDetails($request);
         $languageCode = $language->code;
-        
+        $filterData = [];
+
         // Get data of user's filter
         $filterTagArray = [];
         $filters = $this->filters->userFilter($request);
-        $filterData = $filters->toArray();
+        if ($filters !== null) {
+            $filterData = $filters->toArray();
+        }
 
         if (!empty($filterData["filters"])) {
             if ($filterData["filters"]["country_id"] && $filterData["filters"]["country_id"] !== "") {

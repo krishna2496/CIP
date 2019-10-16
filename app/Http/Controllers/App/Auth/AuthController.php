@@ -213,8 +213,6 @@ class AuthController extends Controller
         );
 
         // If reset password link didn't sent
-        // This error will be triggered in case of mail server issue. So it is not covered in unit test-case
-        // @codeCoverageIgnoreStart
         if (!$response === $this->passwordReset->RESET_LINK_SENT) {
             return $this->responseHelper->error(
                 Response::HTTP_INTERNAL_SERVER_ERROR,
@@ -223,7 +221,6 @@ class AuthController extends Controller
                 trans('messages.custom_error_message.ERROR_SEND_RESET_PASSWORD_LINK')
             );
         }
-        // @codeCoverageIgnoreEnd
 
         $apiStatus = Response::HTTP_OK;
         $apiMessage = trans('messages.success.MESSAGE_PASSWORD_RESET_LINK_SEND_SUCCESS');
@@ -266,8 +263,6 @@ class AuthController extends Controller
         )->first();
         
         //if record not found
-        // This error is ignored in unit test as created date will always be greater than expiry date in test case
-        // @codeCoverageIgnoreStart
         if (!$record) {
             return $this->responseHelper->error(
                 Response::HTTP_UNPROCESSABLE_ENTITY,
@@ -276,7 +271,6 @@ class AuthController extends Controller
                 trans('messages.custom_error_message.ERROR_INVALID_RESET_PASSWORD_LINK')
             );
         }
-        // @codeCoverageIgnoreEnd
 
         if (!Hash::check($request->get('token'), $record->token)) {
             //invalid hash

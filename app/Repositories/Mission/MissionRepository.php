@@ -368,7 +368,7 @@ class MissionRepository implements MissionInterface
                 $languageValue->lang = $languageData->code;
             }
             foreach ($value->missionMedia as $mediaValue) {
-                if ($mediaValue->default === 1) {
+                if ($mediaValue->default === '1') {
                     $value->default_media_name = $mediaValue->media_name;
                     $value->default_media_type = $mediaValue->media_type;
                     $value->default_media_path = $mediaValue->media_path;

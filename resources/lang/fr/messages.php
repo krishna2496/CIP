@@ -91,14 +91,14 @@ return [
         'MESSAGE_NO_SLIDER_FOUND' => 'Aucun curseur trouvé',
         'MESSAGE_SLIDER_UPDATED_SUCCESS' => 'Image du curseur mise à jour avec succès',
         'MESSAGE_SLIDER_DELETED' => 'Slider supprimé avec succès',
-        'TIMESHEET_ENTRY_ADDED_SUCESSFULLY' => 'Entrée de la feuille de temps ajoutée avec succès',
+        'TIMESHEET_ENTRY_ADDED_SUCCESSFULLY' => 'Entrée de la feuille de temps ajoutée avec succès',
         'MESSAGE_TIMESHEET_ENTRIES_LISTING' => 'Entrées de la feuille de temps listées avec succès',
         'MESSAGE_NO_TIMESHEET_ENTRIES_FOUND' => 'Aucune entrée de feuille de temps trouvée',
-        'TIMESHEET_ENTRY_UPDATED_SUCESSFULLY' => 'Entrée de la feuille de temps mise à jour avec succès',
+        'TIMESHEET_ENTRY_UPDATED_SUCCESSFULLY' => 'Entrée de la feuille de temps mise à jour avec succès',
         'MESSAGE_TIMESHEET_LISTING' => 'Feuille de temps listée avec succès',
         'MESSAGE_TIMESHEET_DOCUMENT_DELETED' => 'La feuille de temps du document a été supprimée avec succès',
         'MESSAGE_TIMESETTING_STATUS_UPDATED' => 'Statut de la feuille de temps mis à jour avec succès',
-        'TIMESHEET_SUBMITTED_SUCESSFULLY' => 'Feuille de temps soumise avec succès',
+        'TIMESHEET_SUBMITTED_SUCCESSFULLY' => 'Feuille de temps soumise avec succès',
         'TIMESHEET_ALREADY_SUBMITTED_FOR_APPROVAL' => 'Feuille de temps déjà soumise pour approbation',
         'MESSAGE_THEME_HISTORY_PER_HOUR_LISTED' => 'Heures de bénévolat par thème répertorié avec succès',
         'MESSAGE_SKILL_HISTORY_PER_HOUR_LISTED' => 'Heures de bénévolat par compétence répertoriée avec succès',
@@ -123,6 +123,7 @@ return [
         'MESSAGE_ENABLE_TO_EXPORT_USER_PENDING_GOAL_MISSION_ENTRIES' => 'Aucune donnée trouvée, pour générer des entrées de temps en attente pour la mission de l\'objectif',
         'MESSAGE_AUTO_APPROVED_COMMENT_ADDED' => 'Merci pour votre commentaire.',
         'MESSAGE_Footer_PAGE_FOUND' => 'Pied de page trouvé avec succès',
+        'MESSAGE_TENANT_OPTION_CREATED' => 'Image téléchargée avec succès'
     ],
 
         

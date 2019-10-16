@@ -3,6 +3,7 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Schema;
+use App\Rules\CustomValidationRules;
 use Validator;
 use App\Models\Skill;
 
