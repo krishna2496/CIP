@@ -11,7 +11,7 @@ use Illuminate\Http\JsonResponse;
 use App\Helpers\S3Helper;
 use App\Helpers\Helpers;
 use Validator;
-use App\Jobs\DownloadAssestFromS3ToLocalStorageJob;
+use App\Jobs\DownloadAssestFromLocalDefaultThemeToLocalStorageJob;
 use App\Traits\RestExceptionHandlerTrait;
 use App\Exceptions\BucketNotFoundException;
 use App\Exceptions\FileNotFoundException;
@@ -21,6 +21,7 @@ use App\Exceptions\TenantDomainNotFoundException;
 use App\Jobs\ResetStyleSettingsJob;
 use App\Jobs\UpdateStyleSettingsJob;
 use App\Services\CustomStyling\CustomStylingService;
+use App\Jobs\CopyDefaultThemeImagesToTenantImagesJob;
 
 class TenantOptionsController extends Controller
 {
@@ -44,7 +45,7 @@ class TenantOptionsController extends Controller
      * @var App\Helpers\S3Helper
      */
     private $s3helper;
-    
+
     /**
      * @var App\Services\CustomStyling\CustomStylingService
      */
@@ -124,7 +125,7 @@ class TenantOptionsController extends Controller
 
         // Get domain name from request and use as tenant name.
         $tenantName = $this->helpers->getSubDomainFromRequest($request);
-
+        
         if ($request->hasFile('custom_scss_file')) {
             $response = $this->customStylingService->uploadImage($request);
             if (!is_null($response)) {
@@ -239,7 +240,7 @@ class TenantOptionsController extends Controller
 
         return $this->responseHelper->success($apiStatus, $apiMessage);
     }
-
+    
     /**
      * Store tenant option values
      *
@@ -335,13 +336,11 @@ class TenantOptionsController extends Controller
      */
     public function resetAssetsImages(Request $request): JsonResponse
     {
+        // Get domain name from request and use as tenant name.
         $tenantName = $this->helpers->getSubDomainFromRequest($request);
-
-        exec('aws s3 cp --recursive s3://'.config('constants.AWS_S3_BUCKET_NAME').
-            '/'.config('constants.AWS_S3_DEFAULT_THEME_FOLDER_NAME').'/'.
-            env('AWS_S3_ASSETS_FOLDER_NAME').
-            '/images s3://'.config('constants.AWS_S3_BUCKET_NAME').'/'
-            .$tenantName.'/'.env('AWS_S3_ASSETS_FOLDER_NAME').'/images');
+        
+        // Copy default theme folder to tenant folder on s3
+        dispatch(new CopyDefaultThemeImagesToTenantImagesJob($tenantName));
 
         // Set response data
         $apiStatus = Response::HTTP_OK;
