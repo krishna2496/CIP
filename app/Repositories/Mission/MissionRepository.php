@@ -354,7 +354,10 @@ class MissionRepository implements MissionInterface
         )
         ->with(['city', 'country', 'missionTheme',
         'missionLanguage', 'missionMedia', 'missionDocument', 'goalMission', 'timeMission'])
-        ->withCount('missionApplication');
+        ->withCount('missionApplication')
+        ->with(['missionSkill' => function ($query) {
+            $query->with('mission', 'skill');
+        }]);
 
         if ($request->has('order')) {
             $orderDirection = $request->input('order', 'asc');
