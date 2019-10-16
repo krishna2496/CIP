@@ -5,8 +5,12 @@
 		</header>
 		<main>
 			<DashboardBreadcrumb />
+			<div v-bind:class="{ 'content-loader-wrap': true, 'loader-active': isLoaderActive}">
+			<div class="content-loader"></div>
+			</div>
 			<div class="dashboard-tab-content">
 				<b-container>
+					
 					<div class="heading-section">
 						<h1>{{languageData.label.messages}}</h1>
 						<b-button title="Send Message" class="btn-bordersecondary"
@@ -14,8 +18,10 @@
 					</div>
 					<div class="inner-content-wrap">
 						<div class="message-count-block">
-							<span class="highlighted-text">(2) {{languageData.label.new}} {{languageData.label.messages}}  </span>
-							<span>(3) {{languageData.label.messages}}</span>
+							<span class="highlighted-text" v-if="newMessage > 1">({{newMessage}}) {{languageData.label.new}} {{languageData.label.messages}}</span>
+							<span class="highlighted-text" v-else>({{newMessage}}) {{languageData.label.new}} {{languageData.label.message}}  </span>
+							<span v-if="message > 1">({{message}}) {{languageData.label.messages}}</span>
+							<span v-else>({{message}}) {{languageData.label.message}}</span>
 						</div>
 						<ul class="message-box">
 							<li v-for="(message, idx) in messageList" :key="idx">
@@ -98,9 +104,12 @@
 					"perPage": 1,
 					"totalPages": 0,
                 },
-                classVariant: 'danger',
+				classVariant: 'danger',
+				isLoaderActive:true,
                 message: null,
-                showDismissibleAlert : false,
+				showDismissibleAlert : false,
+				newMessage : 0,
+				message : 0,
 				messageList: [{
 						person: "Andrew Johnson",
 						date: "20/07/2019, 08:30 PM",
@@ -162,7 +171,19 @@
 		methods: {
 			getMessageListing() {
 				messageListing().then(response => {
-					// console.log(response);
+					if(response.error == false) {
+						let data = response.data
+						this.message = data.length
+						let count = 0;
+						data.filter((data,index) => {
+							if(data.is_read == 0) {
+								count++;
+							}
+						})
+					} else {
+						
+					}
+					this.isLoaderActive = false
 				})
 			}
 		}

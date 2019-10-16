@@ -9,7 +9,7 @@ export default async(data) => {
         defaultLanguage = (store.state.defaultLanguage).toLowerCase();
     }
     await axios({
-            url: process.env.VUE_APP_API_ENDPOINT + "app/submit-contact-form",
+            url: process.env.VUE_APP_API_ENDPOINT + "app/message/send",
             data,
             method: 'post',
             headers: {

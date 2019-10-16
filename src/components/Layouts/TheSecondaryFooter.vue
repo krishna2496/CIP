@@ -64,18 +64,15 @@
                         </div>
                     </b-form-group>
                     <b-form-group>
-                        <label for>{{ languageData.label.phone_number }}</label>
+                        <label for>{{ languageData.label.subject }}</label>
                         <b-form-input id 
-                            v-model.trim="contactUs.phone" 
-                            maxLength="11"
-                            :class="{ 'is-invalid': submitted && $v.contactUs.phone.$error }"
-                            type="text" :placeholder="languageData.placeholder.phone_number">
+                            v-model.trim="contactUs.subject" 
+                            maxLength="255"
+                            :class="{ 'is-invalid': submitted && $v.contactUs.subject.$error }"
+                            type="text" :placeholder="languageData.placeholder.subject">
                         </b-form-input>
-                        <div v-if="submitted && !$v.contactUs.phone.numeric" class="invalid-feedback">
-                            {{ languageData.errors.valid_phone_number }}
-                        </div>
-                        <div v-if="submitted && $v.contactUs.phone.numeric && !$v.contactUs.phone.minLength" class="invalid-feedback">
-                           safsaf {{ languageData.errors.phone_number_min_length }}
+                        <div v-if="submitted && !$v.contactUs.subject.required" class="invalid-feedback">
+                            {{ languageData.errors.subject_required }}
                         </div>
                     </b-form-group>
                     <b-form-group>
@@ -131,7 +128,7 @@
                 contactUs: {
                     'name': '',
                     'email': '',
-                    'phone': '',
+                    'subject': '',
                     'message': ''
                 },
                 classVariant : '',
@@ -149,9 +146,8 @@
                 message: {
                     required
                 },
-                phone: {
-                    numeric,
-                    minLength:minLength(10)
+                subject: {
+                    required
                 }
             }
         },
@@ -265,15 +261,11 @@
                 }
                 this.isAjaxCall = true;
                 let contactData = {
-                    'name':'',
-                    'phone_number' : '',
-                    'email' :'',
-                    'message' : ''
+                    'subject' : '',
+                    'message' : '',
+                    'admin' : null
                 }
-
-                contactData.name = this.contactUs.name;
-                contactData.phone_number = this.contactUs.phone;
-                contactData.email = this.contactUs.email;
+                contactData.subject = this.contactUs.subject;
                 contactData.message = this.contactUs.message;
                 contactUs(contactData).then(response => {
                     this.showDismissibleAlert = true
@@ -284,6 +276,8 @@
                     } else {
                         this.classVariant = 'danger';
                         this.message = response.message
+                        contactUs.subject =  ''
+                        contactUs.message =  ''
                     }
                 })
             }
