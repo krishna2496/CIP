@@ -60,24 +60,4 @@ interface MissionApplicationInterface
      * @return \Illuminate\Pagination\LengthAwarePaginator
      */
     public function missionVolunteerDetail(Request $request, int $missionId): LengthAwarePaginator;
-
-    /**
-     * Get mission application count.
-     *
-     * @param int $userId
-     * @param int $year
-     * @param int $month
-     * @return null|int
-     */
-    public function missionApplicationCount(int $userId, int $year, int $month): ?int;
-    
-    /**
-     * Get organization count.
-     *
-     * @param int $userId
-     * @param int $year
-     * @param int $month
-     * @return null|array
-     */
-    public function organizationCount(int $userId, int $year, int $month): ?array;
 }

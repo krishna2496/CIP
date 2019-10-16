@@ -92,13 +92,7 @@ class AppPolicyPageTest extends TestCase
                 "page_id",
                 "slug",
                 "status",
-                "pages" => [
-                    "*" => [
-                        "page_id",
-                        "language_id",
-                        "title"
-                    ]
-                ]
+                "pages"
             ],
             "message"
         ]);

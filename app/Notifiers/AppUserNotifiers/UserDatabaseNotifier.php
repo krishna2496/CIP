@@ -26,7 +26,6 @@ class UserDatabaseNotifier
         string $action,
         int $userId = null
     ): bool {
-
         $user = User::where('user_id', $userId)->first();
 
         $data['notification_type_id'] = $notificationTypeId;

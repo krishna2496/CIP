@@ -1,5 +1,5 @@
 <?php
-namespace App\Http\Controllers\App\Message;
+namespace App\Http\Controllers\Admin\Message;
 
 use App\Helpers\ResponseHelper;
 use App\Http\Controllers\Controller;
@@ -10,11 +10,12 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Validator;
+use App\Transformations\MessageTransformable;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class MessageController extends Controller
 {
-    use RestExceptionHandlerTrait;
+    use RestExceptionHandlerTrait,MessageTransformable;
     /**
      * @var App\Repositories\Message\MessageRepository;
      */
@@ -41,7 +42,7 @@ class MessageController extends Controller
     }
 
     /**
-     * Send message to admin
+     * Send message to users
      *
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\JsonResponse
@@ -52,7 +53,10 @@ class MessageController extends Controller
             $request->toArray(),
             [
                 'subject' => 'required|max:255',
-                'message' => 'required|max:60000'
+                'message' => 'required|max:60000',
+                'admin' => 'string|max:255',
+                'user_ids' =>'required|Array',
+                'user_ids.*' =>'required|integer|distinct|min:1|integer|exists:user,user_id,deleted_at,NULL',
             ]
         );
         
@@ -67,36 +71,60 @@ class MessageController extends Controller
         }
         
         // Store message data
-        $messageId = $this->messageRepository->store($request, config('constants.message.send_message_from.user'));
+        $this->messageRepository->store($request, config('constants.message.send_message_from.admin'));
 
         // Set response data
         $apiStatus = Response::HTTP_CREATED;
-        $apiMessage = trans('messages.success.MESSAGE_USER_MESSAGE_SEND_SUCESSFULLY');
-        $apiData = ['message_id' => $messageId];
+
+        $apiMessage = (count($request->user_ids) > 1) ?
+            trans('messages.success.MESSAGE_USER_MESSAGES_SEND_SUCESSFULLY') :
+            trans('messages.success.MESSAGE_USER_MESSAGE_SEND_SUCESSFULLY');
+        $apiData = [];
 
         return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
     }
 
     /**
-     * Get user's all messages data from admin
+     * Get admin messages data
      *
      * @param Request $request
      * @return JsonResponse
      */
     public function getUserMessages(Request $request): JsonResponse
     {
+        $userIds = !empty($request->get("users")) ? explode(',', $request->get("users")) : [];
+
         $userMessages = $this->messageRepository->getUserMessages(
             $request,
-            config('constants.message.send_message_from.admin'),
-            [$request->auth->user_id]
+            config('constants.message.send_message_from.user'),
+            $userIds
         );
         
+        $messageTransformed = $userMessages
+            ->getCollection()
+            ->map(function ($message) use ($request) {
+                $message = $this->transformMessage($message);
+                return $message;
+            });
+
         $requestString = $request->except(['page','perPage']);
+        $messagesPaginated = new \Illuminate\Pagination\LengthAwarePaginator(
+            $messageTransformed,
+            $userMessages->total(),
+            $userMessages->perPage(),
+            $userMessages->currentPage(),
+            [
+                'path' => $request->url().'?'.http_build_query($requestString),
+                'query' => [
+                    'page' => $userMessages->currentPage()
+                ]
+            ]
+        );
         
         // generate responce data
-        $apiData = $userMessages;
+        $apiData = $messagesPaginated;
         $apiStatus = Response::HTTP_OK;
-        $apiMessage = ($userMessages->total() > 0) ?
+        $apiMessage = ($messagesPaginated->total() > 0) ?
             trans('messages.success.MESSAGE_MESSAGES_ENTRIES_LISTING') :
             trans('messages.success.MESSAGE_NO_MESSAGES_ENTRIES_FOUND');
         
@@ -106,7 +134,7 @@ class MessageController extends Controller
             $apiData
         );
     }
-
+    
     /**
      * Remove Message details.
      *
@@ -119,8 +147,8 @@ class MessageController extends Controller
         try {
             $this->messageRepository->delete(
                 $messageId,
-                config('constants.message.send_message_from.admin'),
-                $request->auth->user_id
+                config('constants.message.send_message_from.user'),
+                null
             );
            
             // Set response data

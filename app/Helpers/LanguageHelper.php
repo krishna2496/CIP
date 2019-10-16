@@ -137,7 +137,7 @@ class LanguageHelper
 
         return $tenantLanguagesCodes;
     }
-
+    
     /**
      * Get language id from request
      *
