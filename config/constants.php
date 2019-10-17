@@ -275,21 +275,6 @@ return [
     ],
 
     /*
-     * User notification types
-     */
-    'notification_types' => [
-        'RECOMMENDED_MISSIONS' => 'Recommended missions',
-        'VOLUNTEERING_HOURS' => 'Volunteering hours',
-        'VOLUNTEERING_GOALS' => 'Volunteering goals',
-        'MY-COMMENTS' => 'My comments',
-        'MY-STORIES' => 'My stories',
-        'NEW_STORIES_HOURS' => 'New stories hours',
-        'NEW_MISSIONS' => 'New missions',
-        'NEW_MESSAGES' => 'New messages',
-        'RECOMMENDED_STORY' => 'Recommended story'
-    ],
-    
-    /*
      * Tenant settings
      */
     'tenant_settings' => [
@@ -449,7 +434,6 @@ return [
         'ERROR_MESSAGE_USER_MESSAGE_NOT_FOUND' => '1100002'
     ],
 
-
     /**
      * Notification types
      */
@@ -461,6 +445,7 @@ return [
         'MY_STORIES' => 'my_stories',
         'NEW_MISSIONS' => 'new_missions',
         'NEW_MESSAGES' => 'new_messages',
+        'RECOMMENDED_STORY' => 'recommended_story',
     ],
 
     /**
@@ -476,5 +461,17 @@ return [
         'INVITE' => 'INVITE',
         'AUTOMATICALLY_APPROVED' => 'AUTOMATICALLY_APPROVED',
         'SUBMIT_FOR_APPROVAL' => 'SUBMIT_FOR_APPROVAL'
-    ]
+    ],
+
+    /**
+     * Notification type icons
+     */
+    'notification_type_icons' => [
+        'VOLUNTEERING_HOURS' => 'warning.png',
+        'VOLUNTEERING_GOALS' => 'warning.png',
+        'MY_COMMENTS' => 'warning.png',
+        'MY_STORIES' => 'warning.png',
+        'NEW_MISSIONS' => 'circle-plus.png',
+        'NEW_MESSAGES' => 'circle-plus.png',
+    ],
 ];

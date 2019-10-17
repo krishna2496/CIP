@@ -40,13 +40,13 @@ class MessageRepository implements MessageInterface
         $adminName =  !empty($request->admin) ? $request->admin : null;
         
         // found message from admin
-		$message = ['sent_from' => $messageSentFrom, 
-					'admin_name' => $adminName, 
-					'subject' => $request->subject,
-					'message' => $request->message
-					];
+        $message = ['sent_from' => $messageSentFrom,
+                    'admin_name' => $adminName,
+                    'subject' => $request->subject,
+                    'message' => $request->message
+                    ];
         if ($messageSentFrom == config('constants.message.send_message_from.admin')) {
-			$isAnonymous = !empty($request->admin) ?
+            $isAnonymous = !empty($request->admin) ?
                        config('constants.message.not_anonymous') :
                        config('constants.message.anonymous');
             $now = Carbon::now()->toDateTimeString();
@@ -54,11 +54,11 @@ class MessageRepository implements MessageInterface
                 $messageDataArray = [
                     'user_id' => $userId,
                     'is_read' => config('constants.message.unread'),
-					'is_anonymous' => $isAnonymous,
+                    'is_anonymous' => $isAnonymous,
                     'created_at' => $now,
                     'updated_at' => $now,
                 ];
-				$batchMessageArray[] = array_merge($message, $messageDataArray);
+                $batchMessageArray[] = array_merge($message, $messageDataArray);
             }
             $messageData = $this->message->insert($batchMessageArray);
         } else {
@@ -66,7 +66,7 @@ class MessageRepository implements MessageInterface
                 'user_id' => $request->auth->user_id,
                 'is_read' => config('constants.message.read'),
             );
-			$messageDataArray = array_merge($message, $messageDataArray);
+            $messageDataArray = array_merge($message, $messageDataArray);
             $messageData = $this->message->create($messageDataArray);
         }
 
@@ -121,5 +121,16 @@ class MessageRepository implements MessageInterface
                 return $query->where('user_id', $userId);
             }
         )->firstOrFail()->delete();
+    }
+    
+    /**
+     * Get message detail
+     *
+     * @param int $messageId
+     * @return App\Models\Message
+     */
+    public function getMessage(int $messageId): Message
+    {
+        return $this->message->findOrFail($messageId);
     }
 }

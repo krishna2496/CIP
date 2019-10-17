@@ -6,6 +6,10 @@ use App\Helpers\ResponseHelper;
 use App\Models\Notification;
 use App\Models\NotificationType;
 use App\Models\UserNotification;
+use Illuminate\Database\Eloquent\Collection;
+use App\Repositories\MissionInvite\MissionInviteRepository;
+use App\Repositories\User\UserRepository;
+use App\Repositories\Mission\MissionRepository;
 
 class NotificationRepository implements NotificationInterface
 {
@@ -30,24 +34,48 @@ class NotificationRepository implements NotificationInterface
     public $userNotification;
 
     /**
+     * @var App\Repositories\MissionInvite\MissionInviteRepository
+     */
+    public $missionInviteRepository;
+
+    /**
+     * @var App\Repositories\User\UserRepository
+     */
+    public $userRepository;
+
+    /**
+     * @var App\Repositories\Mission\MissionRepository
+     */
+    public $missionRepository;
+
+    /**
      * Create a new Notification repository instance.
      *
      * @param  Illuminate\Http\ResponseHelper $responseHelper
      * @param  App\Models\Notification $notification
      * @param  App\Models\NotificationType $notificationType
      * @param  App\Models\UserNotification $userNotification
+     * @param  App\Repositories\MissionInvite\MissionInviteRepository $missionInviteRepository
+     * @param  App\Repositories\User\UserRepository $userRepository
+     * @param  App\Repositories\Mission\MissionRepository $missionRepository
      * @return void
      */
     public function __construct(
         ResponseHelper $responseHelper,
         Notification $notification,
         NotificationType $notificationType,
-        UserNotification $userNotification
+        UserNotification $userNotification,
+        MissionInviteRepository $missionInviteRepository,
+        UserRepository $userRepository,
+        MissionRepository $missionRepository
     ) {
         $this->responseHelper = $responseHelper;
         $this->notification = $notification;
         $this->notificationType = $notificationType;
         $this->userNotification = $userNotification;
+        $this->missionInviteRepository = $missionInviteRepository;
+        $this->userRepository = $userRepository;
+        $this->missionRepository = $missionRepository;
     }
 
     /**
@@ -85,5 +113,28 @@ class NotificationRepository implements NotificationInterface
     {
         return $this->userNotification->where(['user_id' => $userId,
                 'notification_type_id' => $notificationTypeId])->first();
+    }
+
+    /**
+     * Get notifications
+     *
+     * @param int $userId
+     * @return Illuminate\Database\Eloquent\Collection
+     */
+    public function getNotifications(int $userId): Collection
+    {
+        return $this->notification->with('notificationType')->where(['user_id' => $userId])
+        ->orderBy('notification.created_at', 'DESC')->get();
+    }
+
+    /**
+     * Get notifications count
+     *
+     * @param int $userId
+     * @return int
+     */
+    public function getNotificationsCount(int $userId): int
+    {
+        return $this->notification->where(['user_id' => $userId, 'is_read' => '0'])->get()->count();
     }
 }
