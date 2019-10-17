@@ -3,12 +3,9 @@ namespace App\Repositories\PolicyPage;
 
 use App\Repositories\PolicyPage\PolicyPageInterface;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use App\Models\PolicyPage;
 use App\Models\PolicyPagesLanguage;
-use App\Helpers\Helpers;
 use App\Helpers\LanguageHelper;
-use DB;
 use Illuminate\Support\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 
@@ -172,35 +169,58 @@ class PolicyPageRepository implements PolicyPageInterface
 
     /**
      * Get a listing of resource.
-     * @param int $languageId
      * @param Illuminate\Http\Request $request
      * @return Illuminate\Support\Collection
      */
-    public function getPageList(int $languageId, Request $request): Collection
+    public function getPageList(Request $request): Collection
     {
-        $pageQuery = $this->page->with(['pages' => function ($query) use ($languageId) {
-            $query->select('page_id', 'language_id', 'title')
-            ->where('language_id', $languageId);
+        $pageQuery = $this->page->with(['pages' => function ($query) {
+            $query->select('page_id', 'language_id', 'title');
         }]);
         if ($request->has('order')) {
             $orderDirection = $request->input('order', 'asc');
             $pageQuery->orderBy('page_id', $orderDirection);
         }
-        return $pageQuery->get();
+        $pageList = $pageQuery->get();
+        
+        $language = $this->languageHelper->getLanguageDetails($request);
+        $languageId = $language->language_id;
+        $defaultTenantLanguage = $this->languageHelper->getDefaultTenantLanguage($request);
+        $defaultTenantLanguageId = $defaultTenantLanguage->language_id;
+        foreach ($pageList as $list) {
+            $key = array_search($languageId, array_column($list['pages']->toArray(), 'language_id'));
+            $language = ($key === false) ? $defaultTenantLanguageId : $languageId;
+            $pages[] = $list['pages']->where('language_id', $language)->first();
+            unset($list['pages']);
+            $list['pages'] = $pages;
+            unset($pages);
+        }
+        return $pageList;
     }
 
     /**
      * Get a listing of resource.
      *
+     * @param Illuminate\Http\Request $request
      * @param string $slug
-     * @param int $languageId
      * @return App\Models\PolicyPage
      */
-    public function getPageDetail(string $slug, int $languageId): PolicyPage
+    public function getPageDetail(Request $request, string $slug): PolicyPage
     {
-        return $this->page->with(['pages' => function ($query) use ($languageId) {
-            $query->select('page_id', 'language_id', 'title', 'description as sections')
-            ->where('language_id', $languageId);
+        $language = $this->languageHelper->getLanguageDetails($request);
+        $languageId = $language->language_id;
+        $defaultTenantLanguage = $this->languageHelper->getDefaultTenantLanguage($request);
+        $defaultTenantLanguageId = $defaultTenantLanguage->language_id;
+
+        $policyPage = $this->page->with(['pages' => function ($query) {
+            $query->select('page_id', 'language_id', 'title', 'description as sections');
         }])->whereSlug($slug)->firstorfail();
+        
+        $key = array_search($languageId, array_column($policyPage['pages']->toArray(), 'language_id'));
+        $language = ($key === false) ? $defaultTenantLanguageId : $languageId;
+        $pages[] = $policyPage['pages']->where('language_id', $language)->first();
+        unset($policyPage['pages']);
+        $policyPage['pages'] = $pages;
+        return $policyPage;
     }
 }

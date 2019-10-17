@@ -3,28 +3,13 @@ namespace App\Helpers;
 
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
-use Leafo\ScssPhp\Compiler;
-use App\Helpers\ResponseHelper;
 use App\Traits\RestExceptionHandlerTrait;
-use App;
-use DB;
 use App\Exceptions\BucketNotFoundException;
-use App\Exceptions\FileNotFoundException;
 
 class S3Helper
 {
     use RestExceptionHandlerTrait;
-    /**
-     * Create a new middleware instance.
-     *
-     * @param App\Helpers\ResponseHelper $responseHelper
-     * @return void
-     */
-    public function __construct(ResponseHelper $responseHelper)
-    {
-        $this->responseHelper = $responseHelper;
-    }
-
+   
     /**
      * Upload file on AWS s3 bucket
      *
@@ -55,38 +40,38 @@ class S3Helper
      */
     public function getAllScssFiles(string $tenantName)
     {
-        if (Storage::disk('s3')->exists($tenantName)) {
-            $allFiles = Storage::disk('s3')->allFiles($tenantName.'/'.config('constants.AWS_S3_ASSETS_FOLDER_NAME'));
-            $scssFilesArray = [];
-            $i = $j = 0;
-
-            if (count($allFiles) > 0) {
-                foreach ($allFiles as $key => $file) {
-                    // Only scss and css copy
-                    if (!strpos($file, "/images") && strpos($file, "/scss")
-                    && !strpos($file, "custom.scss") && !strpos($file, "assets.scss")) {
-                        $scssFilesArray['scss_files'][$i++] = [
-                            "scss_file_path" =>
-                            'https://s3.' . env('AWS_REGION') . '.amazonaws.com/'.env('AWS_S3_BUCKET_NAME').'/'.$file,
-                            "scss_file_name" => basename($file)
-                        ];
-                    }
-                    if (strpos($file, "/images") && !strpos($file, "/scss")
-                    && !strpos($file, "custom.scss") && !strpos($file, "assets.scss")) {
-                        $scssFilesArray['image_files'][$j++] = [
-                            "image_file_path" =>
-                            'https://s3.' . env('AWS_REGION') . '.amazonaws.com/' . env('AWS_S3_BUCKET_NAME')
-                            . '/'.$file,
-                            "image_file_name" => basename($file)
-                        ];
-                    }
-                }
-            }
-        } else {
+        if (!Storage::disk('s3')->exists($tenantName)) {
             throw new BucketNotFoundException(
                 trans('messages.custom_error_message.ERROR_TENANT_ASSET_FOLDER_NOT_FOUND_ON_S3'),
                 config('constants.error_codes.ERROR_TENANT_ASSET_FOLDER_NOT_FOUND_ON_S3')
             );
+        }
+        
+        $allFiles = Storage::disk('s3')->allFiles($tenantName.'/'.config('constants.AWS_S3_ASSETS_FOLDER_NAME'));
+        $scssFilesArray = [];
+        $i = $j = 0;
+
+        if (count($allFiles) > 0) {
+            foreach ($allFiles as $key => $file) {
+                // Only scss and css copy
+                if (!strpos($file, "/images") && strpos($file, "/scss")
+                && !strpos($file, "custom.scss") && !strpos($file, "assets.scss")) {
+                    $scssFilesArray['scss_files'][$i++] = [
+                        "scss_file_path" =>
+                        'https://s3.' . env('AWS_REGION') . '.amazonaws.com/'.env('AWS_S3_BUCKET_NAME').'/'.$file,
+                        "scss_file_name" => basename($file)
+                    ];
+                }
+                if (strpos($file, "/images") && !strpos($file, "/scss")
+                && !strpos($file, "custom.scss") && !strpos($file, "assets.scss")) {
+                    $scssFilesArray['image_files'][$j++] = [
+                        "image_file_path" =>
+                        'https://s3.' . env('AWS_REGION') . '.amazonaws.com/' . env('AWS_S3_BUCKET_NAME')
+                        . '/'.$file,
+                        "image_file_name" => basename($file)
+                    ];
+                }
+            }
         }
         return $scssFilesArray;
     }

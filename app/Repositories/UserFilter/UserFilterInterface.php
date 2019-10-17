@@ -10,9 +10,9 @@ interface UserFilterInterface
      * Display a listing of User filter.
      *
      * @param Illuminate\Http\Request $request
-     * @return App\Models\UserFilter
+     * @return null|App\Models\UserFilter
      */
-    public function userFilter(Request $request): UserFilter;
+    public function userFilter(Request $request): ?UserFilter;
 
     /**
      * Store or Update created resource.

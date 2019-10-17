@@ -184,7 +184,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
 
     /* Fetch Language json file */
     $router->get('language/{lang}', ['as' => 'language',
-    'uses' => 'App\Language\LanguageController@fetchLangaugeFile']);
+    'uses' => 'App\Language\LanguageController@fetchLanguageFile']);
     
     /* Upload profile image */
     $router->patch('/app/user/upload-profile-image', ['as' => 'upload.profile.image',
@@ -370,11 +370,11 @@ $router->group(['middleware' => 'localization'], function ($router) {
 
     /* Set skill data for tenant user specific */
     $router->group(
-        ['prefix' => 'user/skills', 'middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware'],
+        ['prefix' => 'users', 'middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware'],
         function ($router) {
-            $router->get('/{userId}', ['uses' => 'Admin\User\UserController@userSkills']);
-            $router->post('/{userId}', ['uses' => 'Admin\User\UserController@linkSkill']);
-            $router->delete('/{userId}', ['uses' => 'Admin\User\UserController@unlinkSkill']);
+            $router->get('/{userId}/skills', ['uses' => 'Admin\User\UserController@userSkills']);
+            $router->post('/{userId}/skills', ['uses' => 'Admin\User\UserController@linkSkill']);
+            $router->delete('/{userId}/skills', ['uses' => 'Admin\User\UserController@unlinkSkill']);
         }
     );
 

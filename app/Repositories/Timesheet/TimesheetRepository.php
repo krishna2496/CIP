@@ -5,14 +5,12 @@ namespace App\Repositories\Timesheet;
 use DB;
 use App\Models\Mission;
 use App\Models\Timesheet;
-use Carbon\Carbon;
 use App\Models\TimesheetDocument;
 use Illuminate\Http\Request;
 use App\Helpers\Helpers;
 use App\Helpers\S3Helper;
 use App\Helpers\LanguageHelper;
 use Illuminate\Support\Collection;
-use Illuminate\Pagination\LengthAwarePaginator;
 use App\Repositories\Timesheet\TimesheetInterface;
 use App\Repositories\TenantOption\TenantOptionRepository;
 
@@ -192,7 +190,8 @@ class TimesheetRepository implements TimesheetInterface
      */
     public function getUserTimesheet(int $userId, Request $request): Collection
     {
-        $languageId = $this->languageHelper->getLanguageId($request);
+        $language = $this->languageHelper->getLanguageDetails($request);
+        $languageId = $language->language_id;
 
         return $this->mission->select('mission.mission_id')
         ->where(['publication_status' => config("constants.publication_status")["APPROVED"]])
@@ -239,7 +238,7 @@ class TimesheetRepository implements TimesheetInterface
                 'timesheet_id' => $data['timesheet_id']])
                 ->firstOrFail();
                 $timesheetDetails = $timesheetData->toArray();
-                if ($timesheetDetails["timesheet_status"]["status"] == config('constants.timesheet_status.PENDING')) {
+                if ($timesheetDetails["timesheet_status"]["status"] === config('constants.timesheet_status.PENDING')) {
                     $timesheetData->status_id = config('constants.timesheet_status_id.SUBMIT_FOR_APPROVAL');
                     $status = $timesheetData->update();
                 }
@@ -258,7 +257,8 @@ class TimesheetRepository implements TimesheetInterface
      */
     public function timeRequestList(Request $request, array $statusArray, bool $withPagination = true) : Object
     {
-        $languageId = $this->languageHelper->getLanguageId($request);
+        $language = $this->languageHelper->getLanguageDetails($request);
+        $languageId = $language->language_id;
         
         $timeRequests = $this->mission->query()
         ->select('mission.mission_id', 'mission.organisation_name');
@@ -308,7 +308,8 @@ class TimesheetRepository implements TimesheetInterface
      */
     public function goalRequestList(Request $request, array $statusArray, bool $withPagination = true): Object
     {
-        $languageId = $this->languageHelper->getLanguageId($request);
+        $language = $this->languageHelper->getLanguageDetails($request);
+        $languageId = $language->language_id;
        
         $goalRequests = $this->mission->query()
         ->select('mission.mission_id', 'mission.organisation_name');
@@ -344,20 +345,6 @@ class TimesheetRepository implements TimesheetInterface
     }
 
     /**
-     * Fetch timesheet details by mission and date
-     *
-     * @param int $missionId
-     * @param string $date
-     * @return null|Illuminate\Support\Collection
-     */
-    public function getTimesheetDetailByDate(int $missionId, string $date): ? Collection
-    {
-        return ($this->timesheet->where(['mission_id' => $missionId, 'date_volunteered' => $date])
-        ->whereIn('status_id', array(config('constants.timesheet_status_id.APPROVED'),
-        config('constants.timesheet_status_id.AUTOMATICALLY_APPROVED'))))->get();
-    }
-
-    /**
      * Get timesheet entries
      *
      * @param Illuminate\Http\Request $request
@@ -366,7 +353,8 @@ class TimesheetRepository implements TimesheetInterface
      */
     public function getTimesheetEntries(Request $request, string $missionType): Collection
     {
-        $languageId = $this->languageHelper->getLanguageId($request);
+        $language = $this->languageHelper->getLanguageDetails($request);
+        $languageId = $language->language_id;
         $userId = $request->auth->user_id;
         
         // Fetch tenant options value
@@ -388,7 +376,7 @@ class TimesheetRepository implements TimesheetInterface
             ->where('language_id', $languageId);
         }])
         ->with(['timesheet' => function ($query) use ($missionType, $userId) {
-            $type = ($missionType == config('constants.mission_type.TIME')) ? 'time' : 'action';
+            $type = ($missionType === config('constants.mission_type.TIME')) ? 'time' : 'action';
             $query->select(
                 'timesheet_id',
                 'mission_id',

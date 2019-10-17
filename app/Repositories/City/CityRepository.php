@@ -2,7 +2,6 @@
 namespace App\Repositories\City;
 
 use App\Repositories\City\CityInterface;
-use Illuminate\Http\Request;
 use App\Models\City;
 use App\Models\Country;
 use Illuminate\Support\Collection;

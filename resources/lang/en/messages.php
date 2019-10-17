@@ -94,16 +94,16 @@ return [
         'MESSAGE_NO_SLIDER_FOUND' => 'No sliders found',
         'MESSAGE_SLIDER_UPDATED_SUCCESS' => 'Slider image updated successfully',
         'MESSAGE_SLIDER_DELETED' => 'Slider deleted successfully',
-        'TIMESHEET_ENTRY_ADDED_SUCESSFULLY' => 'Timesheet entry added successfully',
+        'TIMESHEET_ENTRY_ADDED_SUCCESSFULLY' => 'Timesheet entry added successfully',
         'MESSAGE_TIMESHEET_ENTRIES_LISTING' => 'Timesheet entries listed successfully',
         'MESSAGE_NO_TIMESHEET_ENTRIES_FOUND' => 'No timesheet entries found',
-        'TIMESHEET_ENTRY_UPDATED_SUCESSFULLY' => 'Timesheet entry updated successfully',
+        'TIMESHEET_ENTRY_UPDATED_SUCCESSFULLY' => 'Timesheet entry updated successfully',
         'MESSAGE_TIMESHEET_LISTING' => 'Timesheet listed successfully',
         'MESSAGE_TIMESHEET_DOCUMENT_DELETED' => 'Timesheet document deleted successfully',
         'MESSAGE_TIMESETTING_STATUS_UPDATED' => 'Timesheet status updated successfully',
-        'MESSAGE_TIMESHEET_LISTING' => 'Timesheet listed sucessfully',
-        'MESSAGE_TIMESHEET_DOCUMENT_DELETED' => 'Timesheet document deleted sucessfully',
-        'TIMESHEET_SUBMITTED_SUCESSFULLY' => 'Timesheet submitted sucessfully',
+        'MESSAGE_TIMESHEET_LISTING' => 'Timesheet listed successfully',
+        'MESSAGE_TIMESHEET_DOCUMENT_DELETED' => 'Timesheet document deleted successfully',
+        'TIMESHEET_SUBMITTED_SUCCESSFULLY' => 'Timesheet submitted successfully',
         'TIMESHEET_ALREADY_SUBMITTED_FOR_APPROVAL' => 'Timesheet already submitted for approval',
         'MESSAGE_THEME_HISTORY_PER_HOUR_LISTED' => 'Volunteer hours per theme listed successfully',
         'MESSAGE_SKILL_HISTORY_PER_HOUR_LISTED' => 'Volunteer hours per skill listed successfully',
@@ -114,9 +114,9 @@ return [
         'MESSAGE_POLICY_PAGE_FOUND' => 'Policy page found successfully',
         'MESSAGE_TIME_REQUEST_LISTING' => 'Time requests listed successfully',
         'MESSAGE_TIME_REQUEST_NOT_FOUND' => 'No pending time requests found',
-        'MESSAGE_GOAL_MISSION_TIME_ENTRY_LISTED' => 'Goal missions timesheet entry listed sucessfully',
+        'MESSAGE_GOAL_MISSION_TIME_ENTRY_LISTED' => 'Goal missions timesheet entry listed successfully',
         'MESSAGE_NO_GOAL_MISSION_TIME_ENTRY_FOUND' => 'Goal missions timesheet entry not found',
-        'MESSAGE_TIME_MISSION_TIME_ENTRY_LISTED' => 'Time missions timesheet entry listed sucessfully',
+        'MESSAGE_TIME_MISSION_TIME_ENTRY_LISTED' => 'Time missions timesheet entry listed successfully',
         'MESSAGE_NO_TIME_MISSION_TIME_ENTRY_FOUND' => 'Time missions timesheet entry not found',
         'MESSAGE_USER_GOAL_MISSION_HISTORY_EXPORTED' => 'History file generated successfully for goal missions',
         'MESSAGE_ENABLE_TO_EXPORT_USER_GOAL_MISSION_HISTORY' => 'No data found, to generate history file for goal missions',
@@ -127,6 +127,7 @@ return [
         'MESSAGE_USER_PENDING_GOAL_MISSION_ENTRIES_EXPORTED' => 'Pending time entries for goal missions, generated successfully',
         'MESSAGE_ENABLE_TO_EXPORT_USER_PENDING_GOAL_MISSION_ENTRIES' => 'No data found, to generate pending time entries for goal mission',
         'MESSAGE_AUTO_APPROVED_COMMENT_ADDED' => 'Thanks for your comment.',
+        'MESSAGE_TENANT_OPTION_CREATED' => 'Image uploaded successfully'
     ],
         
     /**
@@ -147,6 +148,7 @@ return [
         'ERROR_FILE_NAME_NOT_MATCHED_WITH_STRUCTURE' => 'File name doesn`t match with structure',
         'ERROR_NOT_VALID_IMAGE_FILE_EXTENSION' => 'The image file must be a file of type: jpeg, jpg, svg, png.',
         'ERROR_USER_INVALID_LANGUAGE' => 'Please enter valid language id',
+        'ERROR_INVALID_EMAIL_OR_PASSWORD' => 'Either email address or password is incorrect',
         
                 
         // Custom error code for CMS Module - 300000 - 309999
@@ -231,13 +233,13 @@ return [
         'ERROR_REQUIRED_FIELDS_FOR_UPDATE_STYLING' => 'Required either primary color or custom SCSS file field',
         'ERROR_SLIDER_NOT_FOUND' => 'Slider not found',
         'ERROR_WHILE_UPLOADING_FILE_ON_S3' => 'An error while uploading file on S3',
-        'ERROR_NOT_VALID_IMAGE_FILE_EXTENSION' => 'Image extension does valid for this image',
+        'ERROR_NOT_VALID_IMAGE_FILE_EXTENSION' => 'File path is not valid for this image',
 
         //For timesheet module
         'ERROR_INVALID_ACTION' => 'Entered goal action should not be greater than goal objective',
         'TIMESHEET_NOT_FOUND' => 'Timesheet entry not found' ,
         'ERROR_TIMESHEET_ALREADY_APPROVED' => 'You can not update approved timesheet',
-        'TIMESHEET_DOCUMENT_NOT_FOUND' => 'Timesheet document does not exists',
+        'TIMESHEET_DOCUMENT_NOT_FOUND' => 'Timesheet document does not exist',
         'ERROR_MISSION_STARTDATE' => 'Invalid date: selected date should not be before start date',
         'ERROR_MISSION_ENDDATE' => 'Selected date should not be greater than mission end date',
         'MISSION_APPLICATION_NOT_APPROVED' => 'Mission application is not approved',

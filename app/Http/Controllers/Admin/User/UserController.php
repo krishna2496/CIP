@@ -9,7 +9,6 @@ use App\Repositories\User\UserRepository;
 use App\Helpers\ResponseHelper;
 use App\Traits\RestExceptionHandlerTrait;
 use Validator;
-use DB;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\User;
 use InvalidArgumentException;

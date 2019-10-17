@@ -17,6 +17,11 @@ class LanguageHelper
     private $helpers;
 
     /**
+     * @var DB
+     */
+    private $db;
+
+    /**
      * Create a new helper instance.
      *
      * @param App\Helpers\Helpers $helpers
@@ -25,6 +30,7 @@ class LanguageHelper
     public function __construct(Helpers $helpers)
     {
         $this->helpers = $helpers;
+        $this->db = app()->make('db');
     }
 
     /**
@@ -37,7 +43,7 @@ class LanguageHelper
     {
         // Connect master database to get language details
         $this->helpers->switchDatabaseConnection('mysql', $request);
-        $languages = DB::table('language')->whereNull('deleted_at')->get();
+        $languages = $this->db->table('language')->whereNull('deleted_at')->get();
         
         // Connect tenant database
         $this->helpers->switchDatabaseConnection('tenant', $request);
@@ -57,7 +63,7 @@ class LanguageHelper
         // Connect master database to get language details
         $this->helpers->switchDatabaseConnection('mysql', $request);
         
-        $tenantLanguages = DB::table('tenant_language')
+        $tenantLanguages = $this->db->table('tenant_language')
         ->select('language.language_id', 'language.code', 'language.name', 'tenant_language.default')
         ->leftJoin('language', 'language.language_id', '=', 'tenant_language.language_id')
         ->where('tenant_id', $tenant->tenant_id)
@@ -81,7 +87,7 @@ class LanguageHelper
         // Connect master database to get language details
         $this->helpers->switchDatabaseConnection('mysql', $request);
         
-        $tenantLanguage = DB::table('tenant_language')
+        $tenantLanguage = $this->db->table('tenant_language')
         ->where('tenant_id', $tenant->tenant_id)
         ->where('language_id', $request->language_id);
 
@@ -103,7 +109,7 @@ class LanguageHelper
         // Connect master database to get language details
         $this->helpers->switchDatabaseConnection('mysql', $request);
 
-        $tenantLanguages = DB::table('tenant_language')
+        $tenantLanguages = $this->db->table('tenant_language')
         ->select('language.language_id', 'language.code', 'language.name', 'tenant_language.default')
         ->leftJoin('language', 'language.language_id', '=', 'tenant_language.language_id')
         ->where('tenant_id', $tenant->tenant_id)
@@ -127,7 +133,7 @@ class LanguageHelper
         // Connect master database to get language details
         $this->helpers->switchDatabaseConnection('mysql', $request);
 
-        $tenantLanguagesCodes = DB::table('tenant_language')
+        $tenantLanguagesCodes = $this->db->table('tenant_language')
         ->select('language.language_id', 'language.code', 'language.name', 'tenant_language.default')
         ->leftJoin('language', 'language.language_id', '=', 'tenant_language.language_id')
         ->where('tenant_id', $tenant->tenant_id)
@@ -139,14 +145,32 @@ class LanguageHelper
     }
 
     /**
+     * Get language details from request
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return null|Object
+     */
+    public function getLanguageDetails(Request $request): ?Object
+    {
+        $languages = $this->getTenantLanguages($request);
+        $defaultLanguage = $this->getDefaultTenantLanguage($request);
+        $defaultCode = $defaultLanguage->code;
+        $languageCode = ($request->hasHeader('X-localization')) ?
+        $request->header('X-localization') : $defaultCode;
+        
+        $language = $languages->where('code', $languageCode)->first();
+        return (!is_null($language)) ? $language : $this->getDefaultTenantLanguage($request);
+    }
+
+    /**
      * Get language id from request
      *
      * @param \Illuminate\Http\Request $request
-     * @return int
+     * @return Object
      */
-    public function getLanguageId(Request $request): int
+    public function getDefaultTenantLanguage(Request $request): Object
     {
         $languages = $this->getTenantLanguages($request);
-        return $languages->where('code', config('app.locale'))->first()->language_id;
+        return $languages->where('default', 1)->first();
     }
 }

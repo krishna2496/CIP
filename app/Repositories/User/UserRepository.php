@@ -5,11 +5,9 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Collection as SupportCollection;
 use App\Repositories\User\UserInterface;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\Pagination\LengthAwarePaginator;
 use App\User;
 use App\Helpers\Helpers;
-use App\Helpers\ResponseHelper;
 use App\Models\UserSkill;
 use App\Models\UserCustomFieldValue;
 use App\Models\Availability;
@@ -38,11 +36,6 @@ class UserRepository implements UserInterface
     public $availability;
     
     /**
-     * @var App\Helpers\ResponseHelper
-     */
-    private $responseHelper;
-
-    /**
      * @var App\Helpers\Helpers
      */
     private $helpers;
@@ -54,7 +47,6 @@ class UserRepository implements UserInterface
      * @param  App\Models\UserSkill $userSkill
      * @param  App\Models\UserCustomFieldValue $userCustomFieldValue
      * @param  App\Models\Availability $availability
-     * @param  App\Helpers\ResponseHelper $responseHelper
      * @param  App\Helpers\Helpers $helpers
      * @return void
      */
@@ -63,14 +55,12 @@ class UserRepository implements UserInterface
         UserSkill $userSkill,
         UserCustomFieldValue $userCustomFieldValue,
         Availability $availability,
-        ResponseHelper $responseHelper,
         Helpers $helpers
     ) {
         $this->user = $user;
         $this->userSkill = $userSkill;
         $this->userCustomFieldValue = $userCustomFieldValue;
         $this->availability = $availability;
-        $this->responseHelper = $responseHelper;
         $this->helpers = $helpers;
     }
     
@@ -96,7 +86,7 @@ class UserRepository implements UserInterface
         $tenantName = $this->helpers->getSubDomainFromRequest($request);
         $defaultAvatarImage = $this->helpers->getUserDefaultProfileImage($tenantName);
 
-        $userQuery = $this->user->selectRaw("first_name, last_name, email, password, 
+        $userQuery = $this->user->selectRaw("user_id, first_name, last_name, email, password, 
         case when(avatar = '' || avatar is null) then '$defaultAvatarImage' else avatar end as avatar, 
         timezone_id, availability_id, why_i_volunteer, employee_id, department,
          manager_name, city_id, country_id, profile_text, linked_in_url, status, language_id, title")
@@ -322,5 +312,16 @@ class UserRepository implements UserInterface
         $userDetail = $this->user->find($id);
         $userDetail->password = $password;
         return $userDetail->save();
+    }
+
+    /**
+     * Get user's detail by email
+     *
+     * @param string $email
+     * @return null||App/User
+     */
+    public function findUserByEmail(string $email): ?User
+    {
+        return $this->user->where('email', $email)->first();
     }
 }

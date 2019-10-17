@@ -8,7 +8,6 @@ use App\Models\FooterPage;
 use App\Models\FooterPagesLanguage;
 use App\Helpers\Helpers;
 use App\Helpers\LanguageHelper;
-use DB;
 use Illuminate\Support\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 
@@ -183,7 +182,22 @@ class FooterPageRepository implements FooterPageInterface
             $orderDirection = $request->input('order', 'asc');
             $pageQuery->orderBy('page_id', $orderDirection);
         }
-        return $pageQuery->get();
+        $pageList = $pageQuery->get();
+
+        $language = $this->languageHelper->getLanguageDetails($request);
+        $languageId = $language->language_id;
+        $defaultTenantLanguage = $this->languageHelper->getDefaultTenantLanguage($request);
+        $defaultTenantLanguageId = $defaultTenantLanguage->language_id;
+        foreach ($pageList as $list) {
+            $key = array_search($languageId, array_column($list['pages']->toArray(), 'language_id'));
+            $language = ($key === false) ? $defaultTenantLanguageId : $languageId;
+            $pages[] = $list['pages']->where('language_id', $language)->first();
+            
+            unset($list['pages']);
+            $list['pages'] = $pages;
+            unset($pages);
+        }
+        return $pageList;
     }
 
     /**
@@ -197,13 +211,27 @@ class FooterPageRepository implements FooterPageInterface
     }
 
     /**
-    * Get a listing of resource.
-    *
-    * @return App\Models\FooterPage
-    */
-    public function getPageDetail($slug): FooterPage
+     * Get a listing of resource.
+     *
+     * @param Illuminate\Http\Request $request
+     * @param string $slug
+     * @return App\Models\FooterPage
+     */
+    public function getPageDetail(Request $request, string $slug): FooterPage
     {
-        return $this->page->with(['pages:page_id,language_id,title,description as sections'])
+        $language = $this->languageHelper->getLanguageDetails($request);
+        $languageId = $language->language_id;
+        $defaultTenantLanguage = $this->languageHelper->getDefaultTenantLanguage($request);
+        $defaultTenantLanguageId = $defaultTenantLanguage->language_id;
+
+        $footerPage = $this->page->with(['pages:page_id,language_id,title,description as sections'])
         ->whereSlug($slug)->firstorfail();
+
+        $key = array_search($languageId, array_column($footerPage['pages']->toArray(), 'language_id'));
+        $language = ($key === false) ? $defaultTenantLanguageId : $languageId;
+        $pages[] = $footerPage['pages']->where('language_id', $language)->first();
+        unset($footerPage['pages']);
+        $footerPage['pages'] = $pages;
+        return $footerPage;
     }
 }

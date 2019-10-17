@@ -3,6 +3,7 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Schema;
+use App\Rules\CustomValidationRules;
 use Validator;
 use App\Models\Skill;
 
@@ -12,7 +13,7 @@ class AppServiceProvider extends ServiceProvider
     {
         Validator::extend('valid_media_path', function ($attribute, $value) {
             $urlExtension = pathinfo($value, PATHINFO_EXTENSION);
-            $validExtensions = ($attribute == 'url') ?
+            $validExtensions = ($attribute === 'url') ?
             config('constants.slider_image_types') : config('constants.image_types');
             return (!in_array($urlExtension, $validExtensions)) ? false : true;
         });
@@ -38,7 +39,7 @@ class AppServiceProvider extends ServiceProvider
         });
 
         Validator::extend('valid_parent_skill', function ($attribute, $value) {
-            return ($value == 0) ? true : ((empty(Skill::where('skill_id', $value)->get()->toArray())) ? false : true);
+            return ($value === 0) ? true : ((empty(Skill::where('skill_id', $value)->get()->toArray())) ? false : true);
         });
 
         Validator::extend('valid_linkedin_url', function ($attribute, $value) {

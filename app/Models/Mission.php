@@ -65,7 +65,7 @@ class Mission extends Model
     'country_id', 'start_date', 'end_date', 'total_seats', 'available_seats',
     'publication_status', 'organisation_id', 'organisation_name', 'organisation_detail', 'mission_type',
     'missionDocument', 'missionMedia', 'missionLanguage', 'missionTheme', 'city',
-    'default_media_type','default_media_path','title','short_description',
+    'default_media_type','default_media_path', 'default_media_name', 'title','short_description',
     'description','objective','set_view_detail','city_name',
     'seats_left','user_application_count','mission_application_count','missionSkill','city_name','missionApplication',
     'country','favouriteMission','missionInvite','missionRating', 'goalMission', 'timeMission', 'application_deadline',
@@ -270,7 +270,7 @@ class Mission extends Model
      */
     public function setStartDateAttribute(string $value): void
     {
-        $this->attributes['start_date'] = ($value != null) ?
+        $this->attributes['start_date'] = ($value !== null) ?
         Carbon::parse($value, config('constants.TIMEZONE'))->setTimezone(config('app.TIMEZONE')) : null;
     }
 
@@ -295,7 +295,7 @@ class Mission extends Model
      */
     public function setEndDateAttribute(string $value): void
     {
-        $this->attributes['end_date'] = ($value != null) ?
+        $this->attributes['end_date'] = ($value !== null) ?
         Carbon::parse($value, config('constants.TIMEZONE'))->setTimezone(config('app.TIMEZONE')) : null;
     }
     
@@ -349,10 +349,10 @@ class Mission extends Model
      */
     public function getOrganisationDetailAttribute($value)
     {
-        if (!is_null($value) && ($value != '')) {
+        if (!is_null($value) && ($value !== '')) {
             $data = @unserialize($value);
             if ($data !== false) {
-                return (!is_null($value) && ($value != '')) ? unserialize($value) : null;
+                return (!is_null($value) && ($value !== '')) ? unserialize($value) : null;
             }
         }
         return null;

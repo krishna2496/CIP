@@ -115,30 +115,28 @@ class MissionController extends Controller
      */
     public function getMissionList(Request $request): JsonResponse
     {
-        $languages = $this->languageHelper->getLanguages($request);
-        $language = ($request->hasHeader('X-localization')) ?
-        $request->header('X-localization') : env('TENANT_DEFAULT_LANGUAGE_CODE');
-        $language = $languages->where('code', $language)->first();
+        $language = $this->languageHelper->getLanguageDetails($request);
         $languageId = $language->language_id;
         $languageCode = $language->code;
+        $userFilterData = [];
 
         //Save User search data
         $this->userFilterRepository->saveFilter($request);
         // Get users filter
         $userFilters = $this->userFilterRepository->userFilter($request);
         $filterTagArray = $this->missionFiltersTag($request, $language, $userFilters);
-        $userFilterData = $userFilters->toArray()["filters"];
+        if ($userFilters !== null) {
+            $userFilterData = $userFilters->toArray()["filters"];
+        }
+        
         // Checking explore mission type is out of list or not
-        if ($request->has('explore_mission_type') && $request->input('explore_mission_type') != '') {
+        if ($request->has('explore_mission_type') && $request->input('explore_mission_type') !== '') {
             $exploreMissionType = $request->input('explore_mission_type');
-            if ($exploreMissionType != config('constants.TOP_RECOMMENDED') &&
-                $exploreMissionType != config('constants.RANDOM') &&
-                $exploreMissionType !=config('constants.THEME') &&
-                $exploreMissionType != config('constants.COUNTRY') &&
-                $exploreMissionType != config('constants.ORGANIZATION') &&
-                $exploreMissionType != config('constants.ORGANIZATION') &&
-                $exploreMissionType != config('constants.MOST_RANKED') &&
-                $exploreMissionType != config('constants.TOP_FAVOURITE')
+            $authorizedMissionTypes = array(config('constants.TOP_RECOMMENDED'), config('constants.RANDOM'),
+                config('constants.THEME'), config('constants.COUNTRY'), config('constants.ORGANIZATION'),
+                config('constants.MOST_RANKED'), config('constants.TOP_FAVOURITE'));
+                
+            if (!in_array($exploreMissionType, $authorizedMissionTypes)
             ) {
                 $metaData['filters'] = $userFilterData;
                 $metaData['filters']["tags"] = $filterTagArray;
@@ -160,16 +158,17 @@ class MissionController extends Controller
             }
         }
 
-
-        $missionList = $this->missionRepository->getMissions($request, $userFilterData, $languageId);
-
+        $missionList = $this->missionRepository->getMissions($request, $userFilterData);
+        $defaultTenantLanguage = $this->languageHelper->getDefaultTenantLanguage($request);
+        $defaultTenantLanguageId = $defaultTenantLanguage->language_id;
+        
         $missionsTransformed = $missionList
             ->getCollection()
-            ->map(function ($item) use ($languageCode) {
-                return $this->transformMission($item, $languageCode);
+            ->map(function ($item) use ($languageCode, $languageId, $defaultTenantLanguageId) {
+                return $this->transformMission($item, $languageCode, $languageId, $defaultTenantLanguageId);
             })->toArray();
             
-                $requestString = $request->except(['page','perPage']);
+        $requestString = $request->except(['page','perPage']);
         $missionsPaginated = new \Illuminate\Pagination\LengthAwarePaginator(
             $missionsTransformed,
             $missionList->total(),
@@ -205,19 +204,22 @@ class MissionController extends Controller
     public function exploreMission(Request $request): JsonResponse
     {
         $apiData = [];
-        $language = ($request->hasHeader('X-localization')) ?
-        $request->header('X-localization') : env('TENANT_DEFAULT_LANGUAGE_CODE');
-        // Get Data by top theme
+        // Get language code
+        $language = $this->languageHelper->getLanguageDetails($request);
+        $languageCode = $language->code;
+
+        // Get data by top theme
         $topTheme = $this->missionRepository->exploreMission($request, config('constants.TOP_THEME'));
-        // Get Data by top country
+        // Get data by top country
         $topCountry = $this->missionRepository->exploreMission($request, config('constants.TOP_COUNTRY'));
-        // Get Data by top organization
+        // Get data by top organization
         $topOrganisation = $this->missionRepository->exploreMission($request, config('constants.TOP_ORGANISATION'));
 
+        // Return data by top theme
         if (!empty($topTheme->toArray())) {
             foreach ($topTheme as $key => $value) {
                 if ($value->missionTheme && $value->missionTheme->translations) {
-                    $arrayKey = array_search($language, array_column($value->missionTheme->translations, 'lang'));
+                    $arrayKey = array_search($languageCode, array_column($value->missionTheme->translations, 'lang'));
             
                     if ($arrayKey  !== '') {
                         $returnData[config('constants.TOP_THEME')][$key]['title'] =
@@ -231,6 +233,8 @@ class MissionController extends Controller
             }
             $apiData[config('constants.TOP_THEME')] = $returnData[config('constants.TOP_THEME')];
         }
+
+        // Return data by top country
         if (!empty($topCountry->toArray())) {
             foreach ($topCountry as $key => $value) {
                 if ($value->country) {
@@ -242,9 +246,11 @@ class MissionController extends Controller
             }
             $apiData[config('constants.TOP_COUNTRY')] = $returnData[config('constants.TOP_COUNTRY')];
         }
+
+        // Return data by top organisation
         if (!empty($topOrganisation->toArray())) {
             foreach ($topOrganisation as $key => $value) {
-                if ($value->organisation_name != '') {
+                if ($value->organisation_name !== '') {
                     $returnData[config('constants.TOP_ORGANISATION')][$key]['title'] =
                     $value->organisation_name;
                     $returnData[config('constants.TOP_ORGANISATION')][$key]['id'] =
@@ -271,8 +277,8 @@ class MissionController extends Controller
     public function filters(Request $request): JsonResponse
     {
         $returnData = $apiData = [];
-        $language = ($request->hasHeader('X-localization')) ?
-        $request->header('X-localization') : env('TENANT_DEFAULT_LANGUAGE_CODE');
+        $language = $this->languageHelper->getLanguageDetails($request);
+        $languageCode = $language->code;
         // Get Data by country
         $missionCountry = $this->missionRepository->missionFilter($request, config('constants.COUNTRY'));
         // Get Data by top theme
@@ -316,7 +322,7 @@ class MissionController extends Controller
         if (!empty($missionTheme->toArray())) {
             foreach ($missionTheme as $key => $value) {
                 if ($value->missionTheme && $value->missionTheme->translations) {
-                    $arrayKey = array_search($language, array_column($value->missionTheme->translations, 'lang'));
+                    $arrayKey = array_search($languageCode, array_column($value->missionTheme->translations, 'lang'));
                     if ($arrayKey  !== '') {
                         $returnData[config('constants.THEME')][$key]['title'] =
                         $value->missionTheme->translations[$arrayKey]['title'];
@@ -335,7 +341,7 @@ class MissionController extends Controller
         if (!empty($missionSkill->toArray())) {
             foreach ($missionSkill as $key => $value) {
                 if ($value->skill) {
-                    $arrayKey = array_search($language, array_column($value->skill->translations, 'lang'));
+                    $arrayKey = array_search($languageCode, array_column($value->skill->translations, 'lang'));
                     if ($arrayKey  !== '') {
                         $returnData[config('constants.SKILL')][$key]['title'] =
                         $value->skill->translations[$arrayKey]['title'];
@@ -385,15 +391,14 @@ class MissionController extends Controller
                 );
             }
             $missionId = $request->mission_id;
-            $missionFavourite = $this->missionRepository
-            ->missionFavourite($request->auth->user_id, $missionId);
+            $missionFavourite = $this->missionRepository->missionFavourite($request->auth->user_id, $missionId);
 
             // Set response data
-            $apiData = ($missionFavourite != null)
+            $apiData = ($missionFavourite !== null)
             ? ['favourite_mission_id' => $missionFavourite->favourite_mission_id] : [];
-            $apiStatus = ($missionFavourite != null) ? Response::HTTP_CREATED
+            $apiStatus = ($missionFavourite !== null) ? Response::HTTP_CREATED
             : Response::HTTP_OK;
-            $apiMessage = ($missionFavourite != null) ?
+            $apiMessage = ($missionFavourite !== null) ?
             trans('messages.success.MESSAGE_MISSION_ADDED_TO_FAVOURITE') :
             trans('messages.success.MESSAGE_MISSION_DELETED_FROM_FAVOURITE');
             return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
@@ -420,14 +425,14 @@ class MissionController extends Controller
         $filterData= $userFilters->toArray();
 
         if (!empty($filterData["filters"])) {
-            if ($filterData["filters"]["country_id"] && $filterData["filters"]["country_id"] != "") {
+            if ($filterData["filters"]["country_id"] && $filterData["filters"]["country_id"] !== "") {
                 $countryTag = $this->countryRepository->getCountry($filterData["filters"]["country_id"]);
                 if ($countryTag["name"]) {
                     $filterTagArray["country"][$countryTag["country_id"]] = $countryTag["name"];
                 }
             }
 
-            if ($filterData["filters"]["city_id"] && $filterData["filters"]["city_id"] != "") {
+            if ($filterData["filters"]["city_id"] && $filterData["filters"]["city_id"] !== "") {
                 $cityTag = $this->cityRepository->getCity($filterData["filters"]["city_id"]);
                 if ($cityTag) {
                     foreach ($cityTag as $key => $value) {
@@ -436,7 +441,7 @@ class MissionController extends Controller
                 }
             }
             
-            if ($filterData["filters"]["theme_id"] && $filterData["filters"]["theme_id"] != "") {
+            if ($filterData["filters"]["theme_id"] && $filterData["filters"]["theme_id"] !== "") {
                 $themeTag = $this->themeRepository->missionThemeList($request, $filterData["filters"]["theme_id"]);
                 if ($themeTag) {
                     foreach ($themeTag as $value) {
@@ -451,7 +456,7 @@ class MissionController extends Controller
                 }
             }
 
-            if ($filterData["filters"]["skill_id"] && $filterData["filters"]["skill_id"] != "") {
+            if ($filterData["filters"]["skill_id"] && $filterData["filters"]["skill_id"] !== "") {
                 $skillTag = $this->skillRepository->skillList($request, $filterData["filters"]["skill_id"]);
                 if ($skillTag) {
                     foreach ($skillTag as $value) {
@@ -480,15 +485,15 @@ class MissionController extends Controller
     public function getRelatedMissions(Request $request, int $missionId): JsonResponse
     {
         try {
-            $languages = $this->languageHelper->getLanguages($request);
-            $language = ($request->hasHeader('X-localization')) ?
-            $request->header('X-localization') : env('TENANT_DEFAULT_LANGUAGE_CODE');
-            $language = $languages->where('code', $language)->first();
+            $language = $this->languageHelper->getLanguageDetails($request);
             $languageId = $language->language_id;
+            $languageCode = $language->code;
 
-            $missionData = $this->missionRepository->getRelatedMissions($request, $languageId, $missionId);
-            $mission = $missionData->map(function (Mission $mission) {
-                return $this->transformMission($mission, '');
+            $defaultTenantLanguage = $this->languageHelper->getDefaultTenantLanguage($request);
+            $defaultTenantLanguageId = $defaultTenantLanguage->language_id;
+            $missionData = $this->missionRepository->getRelatedMissions($request, $missionId);
+            $mission = $missionData->map(function (Mission $mission) use ($languageId, $defaultTenantLanguageId) {
+                return $this->transformMission($mission, '', $languageId, $defaultTenantLanguageId);
             })->all();
 
             $apiData = $mission;
@@ -519,17 +524,19 @@ class MissionController extends Controller
     public function getMissionDetail(Request $request, int $missionId): JsonResponse
     {
         try {
-            $languages = $this->languageHelper->getLanguages($request);
-            $language = ($request->hasHeader('X-localization')) ?
-            $request->header('X-localization') : env('TENANT_DEFAULT_LANGUAGE_CODE');
-            $language = $languages->where('code', $language)->first();
+            $language = $this->languageHelper->getLanguageDetails($request);
             $languageId = $language->language_id;
             $languageCode = $language->code;
 
-            $missionData = $this->missionRepository->getMissionDetail($request, $languageId, $missionId);
-            $mission = $missionData->map(function (Mission $mission) use ($languageCode) {
-                return $this->transformMission($mission, $languageCode);
-            })->all();
+            $missionData = $this->missionRepository->getMissionDetail($request, $missionId);
+            $defaultTenantLanguage = $this->languageHelper->getDefaultTenantLanguage($request);
+            $defaultTenantLanguageId = $defaultTenantLanguage->language_id;
+            $mission = $missionData->map(
+                function (Mission $mission) use ($languageCode, $languageId, $defaultTenantLanguageId
+                ) {
+                    return $this->transformMission($mission, $languageCode, $languageId, $defaultTenantLanguageId);
+                }
+            )->all();
 
             $apiData = $mission;
             $apiStatus = (empty($mission)) ? Response::HTTP_NOT_FOUND : Response::HTTP_OK;

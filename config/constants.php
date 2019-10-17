@@ -193,18 +193,17 @@ return [
         'GOAL_MISSION_HISTORY_XLSX' => 'Goal_Mission_History.xlsx'
     ],
 
-    /*
-     * User notification types
+    /**
+     * Notification types
      */
-    'notification_types' => [
-        'RECOMMENDED_MISSIONS' => 'Recommended missions',
-        'VOLUNTEERING_HOURS' => 'Volunteering hours',
-        'VOLUNTEERING_GOALS' => 'Volunteering goals',
-        'MY-COMMENTS' => 'My comments',
-        'MY-STORIES' => 'My stories',
-        'NEW_STORIES_HOURS' => 'New stories hours',
-        'NEW_MISSIONS' => 'New missions',
-        'NEW_MESSAGES' => 'New messages'
+    'notification_type_keys' => [
+        'RECOMMENDED_MISSIONS' => 'recommended_missions',
+        'VOLUNTEERING_HOURS' => 'volunteering_hours',
+        'VOLUNTEERING_GOALS' => 'volunteering_goals',
+        'MY_COMMENTS' => 'my_comments',
+        'MY_STORIES' => 'my_stories',
+        'NEW_MISSIONS' => 'new_missions',
+        'NEW_MESSAGES' => 'new_messages',
     ],
     
     /*
@@ -272,6 +271,7 @@ return [
         'ERROR_TOKEN_EXPIRED' => '210009',
         'ERROR_IN_TOKEN_DECODE' => '210010',
         'ERROR_TOKEN_NOT_PROVIDED' => '210012',
+        'ERROR_INVALID_EMAIL_OR_PASSWORD' => '210013',
         'ERROR_INVALID_MISSION_APPLICATION_DATA' => '400000',
         'ERROR_INVALID_MISSION_DATA' => '400001',
         'ERROR_MISSION_NOT_FOUND' => '400003',
@@ -344,5 +344,23 @@ return [
         
         'ERROR_POLICY_PAGE_NOT_FOUND' => '300010',
         'ERROR_POLICY_PAGE_REQUIRED_FIELDS_EMPTY' => '300011'
+    ],
+
+    
+    /**
+     * Notification actions
+     */
+    'notification_actions' => [
+        'CREATED' => 'CREATED',
+        'APPROVED' => 'APPROVED',
+        'REJECTED' => 'APPROVED',
+        'PUBLISHED' => 'PUBLISHED',
+        'PENDING' => 'PENDING',
+        'DECLINED' => 'DECLINED',
+        'INVITE' => 'INVITE',
+        'AUTOMATICALLY_APPROVED' => 'AUTOMATICALLY_APPROVED',
+        'SUBMIT_FOR_APPROVAL' => 'SUBMIT_FOR_APPROVAL'
     ]
+
+
 ];
