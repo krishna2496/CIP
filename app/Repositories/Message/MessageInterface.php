@@ -44,7 +44,7 @@ interface MessageInterface
      * Read message.
      *
      * @param int $messageId
-     * @param int $userId
+     * @param int $userId | null
      * @param int $sentFrom
      * @return App\Models\Message
      */

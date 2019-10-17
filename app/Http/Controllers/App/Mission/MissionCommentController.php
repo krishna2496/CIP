@@ -218,15 +218,15 @@ class MissionCommentController extends Controller
         ];
         
         $excel->setHeadlines($headings);
-		foreach ($userMissionComments['comments'] as $comment) {
-			$comment = $comment->toArray();
-			$excel->appendRow([
+        foreach ($userMissionComments['comments'] as $comment) {
+            $comment = $comment->toArray();
+            $excel->appendRow([
                 $comment['title'],
                 $comment['comment'],
                 $comment['approval_status'],
                 $comment['created_at']
             ]);
-		}
+        }
     
         $tenantName = $this->helpers->getSubDomainFromRequest($request);
         $path = $excel->export('app/'.$tenantName.'/MissionComments/'.$request->auth->user_id.'/exports');

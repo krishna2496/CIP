@@ -59,9 +59,13 @@ class Message extends Model
      * @param int $sentFrom
      * @return App\Models\Message
      */
-    public function findMessage(int $messageId, int $userId, int $sentFrom): Message
+    public function findMessage(int $messageId, int $userId = null, int $sentFrom): Message
     {
-        return $this->where(['message_id' => $messageId,
-        'user_id' => $userId, 'sent_from' => $sentFrom])->firstOrFail();
+        return $this->where([
+            'message_id' => $messageId,
+            'sent_from' => $sentFrom
+            ])->when($userId, function ($query, $userId) {
+                return $query->where('user_id', $userId);
+            })->firstOrFail();
     }
 }

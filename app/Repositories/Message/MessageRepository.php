@@ -40,13 +40,13 @@ class MessageRepository implements MessageInterface
         $adminName =  !empty($request->admin) ? $request->admin : null;
         
         // found message from admin
-		$message = ['sent_from' => $messageSentFrom, 
-					'admin_name' => $adminName, 
-					'subject' => $request->subject,
-					'message' => $request->message
-					];
+        $message = ['sent_from' => $messageSentFrom,
+                    'admin_name' => $adminName,
+                    'subject' => $request->subject,
+                    'message' => $request->message
+                    ];
         if ($messageSentFrom == config('constants.message.send_message_from.admin')) {
-			$isAnonymous = !empty($request->admin) ?
+            $isAnonymous = !empty($request->admin) ?
                        config('constants.message.not_anonymous') :
                        config('constants.message.anonymous');
             $now = Carbon::now()->toDateTimeString();
@@ -54,19 +54,19 @@ class MessageRepository implements MessageInterface
                 $messageDataArray = [
                     'user_id' => $userId,
                     'is_read' => config('constants.message.unread'),
-					'is_anonymous' => $isAnonymous,
+                    'is_anonymous' => $isAnonymous,
                     'created_at' => $now,
                     'updated_at' => $now,
                 ];
-				$batchMessageArray[] = array_merge($message, $messageDataArray);
+                $batchMessageArray[] = array_merge($message, $messageDataArray);
             }
             $messageData = $this->message->insert($batchMessageArray);
         } else {
             $messageDataArray = array(
                 'user_id' => $request->auth->user_id,
-                'is_read' => config('constants.message.read'),
+                'is_read' => config('constants.message.unread'),
             );
-			$messageDataArray = array_merge($message, $messageDataArray);
+            $messageDataArray = array_merge($message, $messageDataArray);
             $messageData = $this->message->create($messageDataArray);
         }
 
@@ -89,12 +89,12 @@ class MessageRepository implements MessageInterface
         $userMessageQuery = $this->message->select('*')->with(['user' => function ($query) {
             $query->select('user_id', 'first_name', 'last_name');
         }])->where('sent_from', $sentFrom)
-                            ->when(
-                                $userIds,
-                                function ($query, $userIds) {
-                                    return $query->whereIn('user_id', $userIds);
-                                }
-                            )->orderBy('created_at', 'desc');
+            ->when(
+                $userIds,
+                function ($query, $userIds) {
+                    return $query->whereIn('user_id', $userIds);
+                }
+            )->orderBy('created_at', 'desc');
 
         return $userMessageQuery->paginate($request->perPage);
     }
@@ -127,11 +127,11 @@ class MessageRepository implements MessageInterface
      * Read message.
      *
      * @param int $messageId
-     * @param int $userId
+     * @param int $userId | null
      * @param int $sentFrom
      * @return App\Models\Message
      */
-    public function readMessage(int $messageId, int $userId, int $sentFrom): Message
+    public function readMessage(int $messageId, int $userId = null, int $sentFrom): Message
     {
         $messageDetails = $this->message->findMessage($messageId, $userId, $sentFrom);
         $messageDetails->update(['is_read' => config('constants.message.read')]);

@@ -145,7 +145,7 @@ class AuthController extends Controller
         $data['last_name'] = isset($userDetail->last_name) ? $userDetail->last_name : '';
         $data['country_id'] = isset($userDetail->country_id) ? $userDetail->country_id : '';
         $data['avatar'] = ((isset($userDetail->avatar)) && $userDetail->avatar !="") ? $userDetail->avatar :
-		$this->helpers->getUserDefaultProfileImage($tenantName);
+        $this->helpers->getUserDefaultProfileImage($tenantName);
         $data['cookie_agreement_date'] = isset($userDetail->cookie_agreement_date) ?
                                          $userDetail->cookie_agreement_date : '';
         $data['email'] = ((isset($userDetail->email)) && $userDetail->email !="") ? $userDetail->email : '';

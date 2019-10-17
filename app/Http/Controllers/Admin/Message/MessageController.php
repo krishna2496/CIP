@@ -56,7 +56,7 @@ class MessageController extends Controller
                 'message' => 'required|max:60000',
                 'admin' => 'string|max:255',
                 'user_ids' =>'required|Array',
-                'user_ids.*' =>'required|integer|distinct|min:1|integer|exists:user,user_id,deleted_at,NULL',
+                'user_ids.*' =>'required|integer|distinct|min:1|exists:user,user_id,deleted_at,NULL',
             ]
         );
         
@@ -77,8 +77,8 @@ class MessageController extends Controller
         $apiStatus = Response::HTTP_CREATED;
 
         $apiMessage = (count($request->user_ids) > 1) ?
-            trans('messages.success.MESSAGE_USER_MESSAGES_SEND_SUCESSFULLY') :
-            trans('messages.success.MESSAGE_USER_MESSAGE_SEND_SUCESSFULLY');
+            trans('messages.success.MESSAGE_USER_MESSAGES_SEND_SUCCESSFULLY') :
+            trans('messages.success.MESSAGE_USER_MESSAGE_SEND_SUCCESSFULLY');
         $apiData = [];
 
         return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
@@ -134,8 +134,8 @@ class MessageController extends Controller
             $apiData
         );
     }
-	
-	/**
+    
+    /**
      * Remove Message details.
      *
      * @param \Illuminate\Http\Request $request
@@ -156,6 +156,36 @@ class MessageController extends Controller
             $apiMessage = trans('messages.success.MESSAGE_USER_MESSAGE_DELETED');
             
             return $this->responseHelper->success($apiStatus, $apiMessage);
+        } catch (ModelNotFoundException $e) {
+            return $this->modelNotFound(
+                config('constants.error_codes.ERROR_MESSAGE_USER_MESSAGE_NOT_FOUND'),
+                trans('messages.custom_error_message.ERROR_MESSAGE_USER_MESSAGE_NOT_FOUND')
+            );
+        }
+    }
+
+    /**
+     * Read message send by User.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param int $messageId
+     * @return Illuminate\Http\JsonResponse
+     */
+    public function readMessage(Request $request, int $messageId): JsonResponse
+    {
+        try {
+            $messageDetails = $this->messageRepository->readMessage(
+                $messageId,
+                null,
+                config('constants.message.send_message_from.user')
+            );
+           
+            // Set response data
+            $apiStatus = Response::HTTP_OK;
+            $apiMessage = trans('messages.success.MESSAGE_READ_SUCESSFULLY');
+            $apiData = ['message_id' => $messageDetails->message_id];
+
+            return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
                 config('constants.error_codes.ERROR_MESSAGE_USER_MESSAGE_NOT_FOUND'),
