@@ -100,7 +100,10 @@ header {
                 display: inline-block;
                 width: 21px;
                 height: 24px;
-
+				@include xxs-max{
+					width: 18px;
+					height: 19px;
+				}
                 img {
                     width: 100%;
                     height: 100%;
@@ -122,7 +125,10 @@ header {
 
         @include sm-max {
             width: 85px;
-        }
+		}
+		@include xxs-max{
+			width: 70px;
+		}
 
         img {
             width: 100%;
@@ -149,21 +155,59 @@ header {
                     line-height: 22px;
                 }
 
-                &:after {
-                    position: absolute;
+                // &:after {
+                //     position: absolute;
+                //     content: "";
+                //     background: url($assetUrl+"/down-arrow.svg") no-repeat;
+                //     border: none !important;
+                //     background-size: 11px;
+                //     width: 11px;
+                //     height: 9px;
+                //     right: -17px;
+                //     top: 50%;
+                //     @include transformY(-50%);
+                //     margin: 0;
+                //     @include transition(all 0.3s);
+				// }
+			}
+			.collapse-toggle{
+				position: absolute;
+				right: 7px;
+				top: 0;
+				vertical-align: middle;
+				display: inline-flex;
+				align-items: center;
+				justify-content: center;
+				@include md-min{
+					top: 50%;
+					@include transformY(-50%);
+					width: 11px;
+					height: 9px;
+					right: 7px;
+				}
+				@include md-max{
+					height: 52px;
+					width: 26px;
+				}
+				&:after{
+					 position: absolute;
                     content: "";
                     background: url($assetUrl+"/down-arrow.svg") no-repeat;
                     border: none !important;
                     background-size: 11px;
                     width: 11px;
                     height: 9px;
-                    right: -17px;
-                    top: 50%;
-                    @include transformY(-50%);
+                    right: 0;
+                    top: 0;
                     margin: 0;
-                    @include transition(all 0.3s);
+					@include transition(all 0.3s);
+					@include md-max{
+						top: 50%;
+						left: 50%;
+						@include translate(-50%, -50%);
+					}
 				}
-            }
+			}
 
             &.no-dropdown {
                 a {
@@ -226,7 +270,7 @@ header {
     }
 
     .notification-menu {
-        margin-right: 44px;
+        margin-right: 30px;
 
         @include lg-max {
             margin-right: 25px;
@@ -235,7 +279,9 @@ header {
         @include md-max {
             margin-right: 16px;
         }
-
+		@include xxs-max{
+			margin-right: 10px;
+		}
         .btn-notification {
             background: transparent !important;
             border: none !important;
@@ -256,7 +302,11 @@ header {
                 @include sm-max {
                     width: 28px;
                     height: 22px;
-                }
+				}
+				@include xxs-max{
+					width: 21px;
+					height: 20px;
+				}
             }
 
             .badge-secondary {
@@ -298,6 +348,18 @@ header {
             padding: 0 !important;
 
             &:after {
+				position: absolute;
+				content: "";
+				background: url($assetUrl+"/down-arrow.svg") no-repeat;
+				border: none !important;
+				background-size: 11px;
+				width: 11px;
+				height: 9px;
+				right: -17px;
+				top: 50%;
+				@include transformY(-50%);
+				margin: 0;
+				@include transition(all 0.3s);
                 @include md-max {
                     display: none;
                 }
@@ -340,7 +402,10 @@ header {
                 background-repeat: no-repeat;
 				background-size: cover;
 				background-color: $border-color;
-
+				@include sm-max{
+					height: 35px;
+					width: 35px;
+				}
                 @include md-max {
                     margin: 0;
                 }
@@ -370,7 +435,39 @@ header {
 
     .search-menu {
         display: none;
-    }
+	}
+	.header-right{
+		display: flex;
+    	align-items: center;
+	}
+	.lang-drodown-wrap{
+		margin-right: 25px;
+		@include lg-max{
+			margin-right: 20px;
+		}
+		@include sm-max{
+			margin-right: 10px;
+		}
+		.custom-dropdown{
+			.select-text{
+				padding: 6px 26px 6px 12px;
+				width: 70px;
+				@include xxs-max{
+					padding: 6px 20px 6px 10px;
+					width: 65px;
+				}
+				&:after{
+					right: 11px;
+					@include xxs-max{
+						right: 7px;
+						background-size: 9px;
+    					width: 9px;
+    					height: 9px;
+					}
+				}
+			}
+		}
+	}
 }
 
 .menu-wrap {
@@ -428,11 +525,14 @@ header {
                         margin-bottom: 4px;
                     }
 
-                    a {
-                        &:after {
-                            @include transform(translateY(-50%) rotate(-90deg));
-                            right: 14px;
-                        }
+                    .collapse-toggle {
+						 @include transform(translateY(-50%) rotate(-90deg));
+						right: 14px;
+						@include md-max{
+							@include transform(translateY(0) rotate(0));
+							height: 35px;
+							right: 7px;
+						}
                     }
 
                     &:hover {
@@ -469,14 +569,6 @@ header {
                     border: none;
                     padding: 0;
                     margin-top: 5px;
-                }
-
-                li {
-                    a {
-                        &::after {
-                            display: none;
-                        }
-                    }
                 }
             }
         }
@@ -523,13 +615,6 @@ header {
             min-width: 290px;
             left: 10px !important;
         }
-
-        a {
-            &:after {
-                display: none;
-            }
-        }
-
         .arrow {
             display: none;
         }
@@ -568,8 +653,8 @@ header {
                     bottom: 0;
                     height: 100%;
                     left: 0;
-                    padding-left: 15px;
-
+                    margin-left: 15px;
+					width: 20px;
                     img {
                         width: 100%;
                         height: 100%;
@@ -829,7 +914,9 @@ header {
             }
 
             .custom-checkbox {
-                padding: 7px 30px 8px 15px;
+				padding: 7px 30px 8px 15px;
+				display: block;
+				margin: 0;
 
                 .custom-control-label {
                     line-height: 18px;
@@ -889,27 +976,18 @@ header {
                     display: block;
                 }
 
-                >a {
-                    &:after {
-                        transform: translateY(-50%) rotate(-180deg);
-                        -webkit-transform: translateY(-50%) rotate(-180deg);
-                        -ms-transform: translateY(-50%) rotate(-180deg);
-                        -moz-transform: translateY(-50%) rotate(-180deg);
-                    }
+                >.collapse-toggle {
+					&:after{
+                        transform: translate(-50%, -50%) rotate(-180deg);
+                        -webkit-transform: translate(-50%, -50%) rotate(-180deg);
+                        -ms-transform: translate(-50%, -50%) rotate(-180deg);
+						-moz-transform: translate(-50%, -50%) rotate(-180deg);
+					}
                 }
 
                 .active {
                     .subdropdown-menu {
                         display: block;
-                    }
-
-                    >a {
-                        &:after {
-                            transform: translateY(-50%) rotate(-180deg);
-                            -webkit-transform: translateY(-50%) rotate(-180deg);
-                            -ms-transform: translateY(-50%) rotate(-180deg);
-                            -moz-transform: translateY(-50%) rotate(-180deg);
-                        }
                     }
                 }
             }
@@ -942,16 +1020,6 @@ header {
                             border-bottom: 1px solid $border-color;
                             padding: 5px 15px 7px 0;
                             background: transparent !important;
-
-                            &:after {
-                                right: 0;
-                                @include transition(all 0.3s);
-                                transform: translateY(-50%) rotate(0deg);
-                                -webkit-transform: translateY(-50%) rotate(0deg);
-                                -ms-transform: translateY(-50%) rotate(0deg);
-                                -moz-transform: translateY(-50%) rotate(0deg);
-                            }
-
                             &:hover {
                                 background: transparent !important;
                             }
@@ -967,11 +1035,6 @@ header {
                 a {
                     display: block;
                     padding: 15px 40px 15px 22px;
-
-                    &:after {
-                        right: 15px;
-                        @include transition(all 0.3s);
-                    }
                 }
             }
         }
@@ -1064,6 +1127,7 @@ header {
                 opacity: 1;
                 @include md-max{
                     right: 50px;
+                    z-index: 2;
                 }
             }
         }
@@ -1123,6 +1187,12 @@ header {
             }
         }
         .filter-block{
+			.list-group {
+				.list-group-item{
+					max-width: 33.33%;
+					flex: 0 0 33.33%;
+				}
+			}
 			 @include md-min{
                 flex: 0 0 54.33%;
                 max-width: 54.33%;
@@ -1145,6 +1215,12 @@ header {
             }
         }
         .filter-block{
+			.list-group {
+				.list-group-item{
+					max-width: 50%;
+					flex: 0 0 50%;
+				}
+			}
 			@include md-min{
                 flex: 0 0 36.33%;
                 max-width: 36.33%;
@@ -1167,6 +1243,12 @@ header {
             }
         }
         .filter-block{
+			.list-group {
+				.list-group-item{
+					max-width: 100%;
+					flex: 0 0 100%;
+				}
+			}
 			 @include md-min{
                 flex: 0 0 18.33%;
                 max-width: 18.33%;
@@ -1252,7 +1334,8 @@ header {
         .list-group-item {
             display: inline-flex;
             align-items: center;
-            width: 180px;
+		  	max-width: 25%;
+		  	flex: 0 0 25%;
             height: 100%;
             padding: 0;
             border: none;
@@ -1263,7 +1346,9 @@ header {
                 width: 100%;
                 height: auto;
                 border: none;
-                margin: 0 0 16px;
+				margin: 0 0 16px;
+				max-width: 100%!important;
+				flex: 0 0 100%!important;
             }
 
             &:last-child {

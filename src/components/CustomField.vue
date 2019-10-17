@@ -87,22 +87,14 @@
 <script>
     import store from "../store";
     import AppCustomFieldDropdown from "../components/AppCustomFieldDropdown";
-    import MultiSelect from "../components/MultiSelect";
     import AppCustomCheckboxDropdown from "../components/AppCustomCheckboxDropdown";
     import {
         required,
-        maxLength,
-        email,
-        sameAs,
-        minLength,
-        between,
-        helpers,
-        decimal
+        email
     } from 'vuelidate/lib/validators';
     export default {
         components: {
             AppCustomFieldDropdown,
-            MultiSelect,
             AppCustomCheckboxDropdown
         },
         name: "CustomField",
@@ -128,7 +120,6 @@
             const validations = {
                 customFeildData: {}
             };
-            let _this = this;
 
             _.each(this.CustomFieldList, wrr => {
                 if (wrr.is_mandatory == 1) {
@@ -234,7 +225,7 @@
             getArrayValue(data) {
                 let returnData = [];
                 if (data) {
-                    let listData = Object.keys(data).map(function (key) {
+                    Object.keys(data).map(function (key) {
                         let newData = data[key]
                         Object.keys(newData).map(function (key) {
                             returnData.push({
@@ -263,7 +254,7 @@
             getRadioArrayValue(data) {
                 let radioData = [];
                 if (data) {
-                    let listData = Object.keys(data).map(function (key) {
+                    Object.keys(data).map(function (key) {
                         let newData = data[key]
                         Object.keys(newData).map(function (key) {
                             radioData.push({

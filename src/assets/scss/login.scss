@@ -66,8 +66,9 @@
     }
 
     .lang-drodown-wrap {
-      display: inline-flex;
-      width: 100%;
+      display: flex;
+      flex:0 0 100%;
+      max-width: 100%;
       justify-content: flex-end;
 
       .custom-dropdown {
@@ -329,15 +330,12 @@
   }
 }
 
+
 .alert-danger{
     line-height: 18px;  
-    padding-left: 12px;
-    padding-right: 40px;
-    &.alert-dismissible{
+    .alert-dismissible{
         .close{
             line-height: 18px;
-            padding:10px;
-            top: 3px;
         }
     } 
 }

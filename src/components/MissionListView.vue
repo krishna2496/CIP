@@ -218,7 +218,7 @@
                 </b-card>
             </div>
         </div>
-        <b-modal ref="userDetailModal" :modal-class="myclass" size="lg" hide-footer>
+        <b-modal  @hidden="hideModal" ref="userDetailModal" :modal-class="myclass" size="lg" hide-footer>
             <template slot="modal-header" slot-scope="{ close }">
                 <i class="close" @click="close()" v-b-tooltip.hover :title="languageData.label.close"></i>
                 <h5 class="modal-title">{{languageData.label.search_user}}</h5>
@@ -227,7 +227,7 @@
             <div class="autocomplete-control">
                 <div class="autosuggest-container">
                     <VueAutosuggest ref="autosuggest" name="user" v-model="query" :suggestions="filteredOptions"
-                        @input="onInputChange" @selected="onSelected" @keydown="tabHandler"
+                        @input="onInputChange" @selected="onSelected"
                         :get-suggestion-value="getSuggestionValue" :input-props="{
                         id:'autosuggest__input', 
                         placeholder:autoSuggestPlaceholder,
@@ -235,7 +235,7 @@
                         <div slot-scope="{suggestion}">
                             <img :src="suggestion.item.avatar" />
                             <div>
-                                {{suggestion.item.first_name}} {{suggestion.item.last_name}}
+                                {{suggestion.item.first_name}} {{suggestion.item.last_name}} <span>({{suggestion.item.email}})</span>
                             </div>
                         </div>
                     </VueAutosuggest>
@@ -286,7 +286,6 @@
     import {
         VueAutosuggest
     } from 'vue-autosuggest';
-    import SimpleBar from 'simplebar';
 
     export default {
         name: "MissionListView",
@@ -296,8 +295,7 @@
         },
         components: {
             StarRating,
-            VueAutosuggest,
-            SimpleBar
+            VueAutosuggest
         },
         data() {
             return {
@@ -328,14 +326,6 @@
                             let lastName = option.last_name.toLowerCase();
                             let email = option.email.toLowerCase();
                             let searchString = firstName + '' + lastName + '' + email;
-                            setTimeout(() => {
-                                let myElement = document.querySelector('.autosuggest__results');
-                                if (myElement != null) {
-                                    new SimpleBar(myElement, {
-                                        autoHide: false
-                                    });
-                                }
-                            });
                             return searchString.indexOf(this.query.toLowerCase()) > -1;
                         })
                     }];
@@ -343,11 +333,18 @@
             }
         },
         methods: {
+            hideModal() {
+				this.autoSuggestPlaceholder = ""
+				this.submitDisable  = true
+				this.invitedUserId  = ""
+				this.query = ""
+				this.selected = ""
+			},
             noRecordFound() {
                 let defaultLang = (store.state.defaultLanguage).toLowerCase();
                 if (JSON.parse(store.state.missionNotFoundText) != "") {
                     let missionNotFoundArray = JSON.parse(store.state.missionNotFoundText);
-                    let data = missionNotFoundArray.filter( (item, i) => {
+                    let data = missionNotFoundArray.filter((item) => {
                         if (item.lang == defaultLang) {
                             return item
                         }
@@ -412,7 +409,7 @@
                 });
 
             },
-            onInputChange(text) {
+            onInputChange() {
                 this.submitDisable = true;
             },
             // For selected user id.
@@ -420,14 +417,6 @@
                 this.selected = item.item;
                 this.submitDisable = false;
                 this.invitedUserId = item.item.user_id;
-            },
-            tabHandler() {
-                setTimeout(() => {
-                    let myElement = document.querySelector('.autosuggest__results');
-                    new SimpleBar(myElement, {
-                        autoHide: false
-                    });
-                });
             },
             //This is what the <input/> value is set to when you are selecting a suggestion.
             getSuggestionValue(suggestion) {
@@ -442,17 +431,6 @@
                 this.message = null;
                 this.$refs.userDetailModal.show();
                 this.currentMission = missionId;
-                setTimeout(() => {
-                    let onFocus = document.getElementById('autosuggest');
-                    onFocus.addEventListener("click", function () {
-                        let myElement = document.querySelector('.autosuggest__results');
-                        if (myElement != null) {
-                            new SimpleBar(myElement, {
-                                autoHide: true
-                            });
-                        }
-                    });
-                });
             },
             // invite collegues api call
             inviteColleagues() {

@@ -244,7 +244,7 @@
 				</b-col>
 			</b-row>
 		</div>
-		<b-modal ref="userDetailModal" :modal-class="myclass" size="lg" hide-footer>
+		<b-modal  @hidden="hideModal" ref="userDetailModal" :modal-class="myclass" size="lg" hide-footer>
 			<template slot="modal-header" slot-scope="{ close }">
 				<i class="close" @click="close()" v-b-tooltip.hover :title="languageData.label.close"></i>
 				<h5 class="modal-title">{{languageData.label.search_user}}</h5>
@@ -261,7 +261,7 @@
 						<div slot-scope="{suggestion}">
 							<img :src="suggestion.item.avatar" />
 							<div>
-								{{suggestion.item.first_name}} {{suggestion.item.last_name}}
+								{{suggestion.item.first_name}} {{suggestion.item.last_name}} <span>({{suggestion.item.email}})</span>
 							</div>
 						</div>
 					</VueAutosuggest>
@@ -362,6 +362,13 @@
 		methods: {
 			// Submit new mission
 			submitNewMission() {},
+			hideModal() {
+				this.autoSuggestPlaceholder = ""
+				this.submitDisable  = true
+				this.invitedUserId  = ""
+				this.query = ""
+				this.selected = ""
+			},
 			getAppliedStatus(missionDetail) {
 				let currentDate = moment().format("YYYY-MM-DD");
 				let missionEndDate = moment(missionDetail.end_date).format("YYYY-MM-DD");
@@ -389,7 +396,7 @@
 				let defaultLang = store.state.defaultLanguage.toLowerCase();
 				if (JSON.parse(store.state.missionNotFoundText) != "") {
 					let missionNotFoundArray = JSON.parse(store.state.missionNotFoundText);
-					let data = missionNotFoundArray.filter((item, i) => {
+					let data = missionNotFoundArray.filter((item) => {
 						if (item.lang == defaultLang) {
 							return item;
 						}
@@ -453,7 +460,7 @@
 					}
 				});
 			},
-			onInputChange(text) {
+			onInputChange() {
 				this.submitDisable = true;
 			},
 			// For selected user id.

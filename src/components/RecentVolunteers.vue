@@ -1,13 +1,12 @@
 <template>
 	<div v-bind:class="{ 
-	   'recent-volunteer-block': true,
-	   'no-volunteer' : noVolunteerFound,
-	   'hide-pagination' : hidePagination,
+		'recent-volunteer-block': true,
+		'no-volunteer' : noVolunteerFound,
+		'hide-pagination' : hidePagination,
 	}">
 		<div v-bind:class="{ 
 			'content-loader-wrap': true, 
 			'recent-loader': recentVolunterLoader,
-				
 		}">
 			<div class="content-loader"></div>
 		</div>

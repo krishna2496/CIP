@@ -1,8 +1,8 @@
 import axios from "axios";
 
 export default async() => {
-    var apiUrl = process.env.VUE_APP_API_ENDPOINT;
-    var getDynamicCssUrl = apiUrl + "app/custom-css";
+    let apiUrl = process.env.VUE_APP_API_ENDPOINT;
+    let getDynamicCssUrl = apiUrl + "app/custom-css";
     await axios.get(getDynamicCssUrl).then(response => {
         document
             .getElementById("customCss")

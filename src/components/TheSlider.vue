@@ -1,6 +1,6 @@
 <template>
 	<div class="signin-slider">
-		<b-carousel id="carousel-1" fade :interval="2000" :sliding-start="0" :sliding-end="1" indicators
+		<b-carousel id="carousel-1" :fade="slideEffect" :interval="slideInterval" :sliding-start="0" :sliding-end="1" indicators
 			v-if="isDynamicCarsousetSet">
 			<b-carousel-slide :no-wrap="wrap" v-for="item in carouselItems" :key="item.sort_order"
 				:caption="getTitle(item.slider_detail)" :text="getDescription(item.slider_detail)" :img-src="item.url">
@@ -16,7 +16,6 @@
 
 <script>
 	import store from '../store';
-	import axios from "axios";
 
 	export default {
 		name: "TheSlider",
@@ -24,13 +23,22 @@
 			return {
 				carouselItems: [],
 				isDynamicCarsousetSet: false,
-				wrap: true
+				wrap: true,
+				slideInterval : 2000,
+				slideEffect : true
 			};
 		},
 		created() {
 			if (store.state.slider != null && JSON.parse(store.state.slider).length > 0) {
 				this.carouselItems = JSON.parse(store.state.slider);
 				this.isDynamicCarsousetSet = true
+			}
+			if(store.state.slideInterval != '') {
+				this.slideInterval = store.state.slideInterval
+			}
+			let slideEffects = store.state.slideEffect
+			if(slideEffects != '' && slideEffects != "fade") {
+				this.slideEffect = false
 			}
 		},
 		methods: {

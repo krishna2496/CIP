@@ -36,7 +36,7 @@
                         :class="{ 'is-invalid': $v.login.password.$error }" 
                         maxlength="120"
                         @keypress.enter.prevent="handleSubmit"
-                        @keydown.space.prevent></b-form-input>
+                        @keydown.space.prevent autocomplete="password"></b-form-input>
                         <div v-if="submitted && !$v.login.password.required" class="invalid-feedback">
                         {{ languageData.errors.password_required }}</div>
                     </b-form-group>
@@ -57,7 +57,7 @@
 import TheSlider from '../../components/TheSlider';
 import ThePrimaryFooter from "../../components/Layouts/ThePrimaryFooter";
 import AppCustomDropdown from '../../components/AppCustomDropdown';
-import { required, email, between } from 'vuelidate/lib/validators';
+import { required, email } from 'vuelidate/lib/validators';
 import store from '../../store';
 import {loadLocaleMessages,login,databaseConnection,tenantSetting} from '../../services/service';
 import constants from '../../constant';
@@ -95,36 +95,34 @@ export default {
     },
     methods: {
         async createConnection(){
-            await databaseConnection(this.langList).then(response => {
+            await databaseConnection(this.langList).then(() => {
                     this.isShowComponent = true
                     //Get langauage list from Local Storage
                     this.langList = JSON.parse(store.state.listOfLanguage)
                     this.defautLang = store.state.defaultLanguage
                     // Get tenant setting
                     tenantSetting(); 
-                    loadLocaleMessages(store.state.defaultLanguage).then(response =>{
+                    loadLocaleMessages(store.state.defaultLanguage).then(() =>{
                         this.languageData = JSON.parse(store.state.languageLabel);
                         this.isPageShown = true
-                        let _this =this;
                         setTimeout(() => {
-                            _this.$refs.email.focus();
+                            this.$refs.email.focus();
                         },500)
                     });
             })       
         },
         
         async setLanguage(language){
-            let _this = this;
             this.defautLang = language.selectedVal;
             store.commit('setDefaultLanguage',language);
             this.$i18n.locale = language.selectedVal.toLowerCase()
             await loadLocaleMessages(this.$i18n.locale);   
             this.languageData = JSON.parse(store.state.languageLabel);
-            _this.$forceUpdate();
-            _this.$refs.ThePrimaryFooter.$forceUpdate()
+            this.$forceUpdate();
+            this.$refs.ThePrimaryFooter.$forceUpdate()
         },
 
-        handleSubmit(e) {
+        handleSubmit() {
             this.submitted = true;
             this.$v.$touch();
             // stop here if form is invalid

@@ -164,14 +164,7 @@
     import AppCustomDropdown from "../components/CustomFieldDropdown";
     import {
         required,
-        maxLength,
-        email,
-        sameAs,
-        minLength,
-        between,
-        helpers,
         numeric,
-        requiredIf,
         minValue
     } from 'vuelidate/lib/validators';
     import FileUpload from 'vue-upload-component';
@@ -325,14 +318,12 @@
                 let fileData = []
                 let file = this.fileArray;
                 if (file) {
-                    file.filter((fileItem, fileIndex) => {
+                    file.filter((fileItem) => {
                         fileData.push(fileItem.file);
                         formData.append('documents[]', fileItem.file);
                     })
                 }
                 let volunteeredDate = moment(String(this.timeEntryDefaultData.dateVolunteered)).format('YYYY-MM-DD');
-                let hours = this.timeEntryDefaultData.hours == '' ? 0 : this.timeEntryDefaultData.hours
-                let minutes = this.timeEntryDefaultData.minutes == '' ? 0 : this.timeEntryDefaultData.minutes
                 formData.append('mission_id', this.timeEntryDefaultData.missionId);
                 formData.append('date_volunteered', volunteeredDate);
                 formData.append('day_volunteered', this.timeEntryDefaultData.workDay);

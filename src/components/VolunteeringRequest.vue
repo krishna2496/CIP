@@ -28,7 +28,6 @@
 
 <script>
     import store from '../store';
-    import moment from 'moment';
     import ExportFile from "../services/ExportFile";
 
     export default {

@@ -18,6 +18,7 @@
 	import {
 		setTimeout
 	} from "timers";
+	import constants from '../constant';
 	import store from "../store";
 	export default {
 		name: "Breadcrumb",
@@ -26,6 +27,7 @@
 		},
 		data() {
 			return {
+				isStoryDisplay: true,
 				languageData: [],
 				items: [{
 						id: 1,
@@ -42,6 +44,9 @@
 						name: '',
 						link: "volunteering-timesheet"
 					},
+					{ id: 4, name: "", link: "messages" },
+					{ id: 5, name: "", link: "comment-history" },
+					{ id: 6, name: "", link: "my-stories" }
 				]
 			};
 		},
@@ -64,14 +69,22 @@
 					this.currentDashboardPage = currentDashboard;
 					let currentLink = document.querySelector(".breadcrumb-current");
 					currentLink.innerHTML = this.currentDashboardPage;
-					let breadcrumbItem = document.querySelectorAll(".breadcrumb-item");
 					currentLink.addEventListener("click", this.handleBreadcrumb);
 				}
 			});
+			this.isStoryDisplay = this.settingEnabled(constants.STORIES_ENABLED);
+			
 			this.languageData = JSON.parse(store.state.languageLabel);
 			this.items[0].name = this.languageData.label.dashboard
 			this.items[1].name = this.languageData.label.volunteering_history
 			this.items[2].name = this.languageData.label.volunteering_timesheet
+			this.items[3].name = this.languageData.label.messages
+			this.items[4].name = this.languageData.label.comment_history
+			if(!this.isStoryDisplay) {
+				this.items.splice(5,1)
+			} else {
+				this.items[5].name = this.languageData.label.my_stories
+			}
 		}
 	};
 </script>
