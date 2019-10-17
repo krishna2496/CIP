@@ -49,7 +49,7 @@
                                     </b-card-text>
                                 </div>
                                 <div class="bottom-block">
-                                    <b-card-text class="publish-date" v-if="data.published_at != null">{{langauageData.label.published_on}} {{data.published_at | formatDate}}</b-card-text>
+                                    <b-card-text class="publish-date" v-if="data.published_at != null">{{langauageData.label.published_on}} {{data.published_at | formatStoryDate}}</b-card-text>
                                     <div class="author-block">
                                         <i :style="{backgroundImage: 'url('+data.user_avatar+')'}"></i>
                                         <span>{{data.user_first_name}} {{data.user_last_name}}</span>

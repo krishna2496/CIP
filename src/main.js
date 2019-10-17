@@ -79,6 +79,16 @@ Vue.filter('formatDate', (value) => {
     }
 })
 
+Vue.filter('formatStoryDate', (value) => {
+    return moment(value, 'DD/MM/YYYY HH:mm:ss').format('DD/MM/YYYY');
+})
+
+Vue.filter('formatDateTime', (value) => {
+    return moment(String(value)).format('DD/MM/YYYY, LT')
+})
+
+
+
 Vue.filter('filterGoal', (value) => {
     return parseInt(value)
 })
@@ -97,6 +107,13 @@ Vue.filter('firstLetterCapital', (value) => {
         return value.charAt(0).toUpperCase() + value.slice(1)
     }
 })
+
+Vue.filter('firstLetterSmall', (value) => {
+    if (value) {
+        return value.toLowerCase()
+    }
+})
+
 
 Vue.filter('substring', (value, data) => {
     if (value.length <= data) {

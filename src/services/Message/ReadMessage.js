@@ -1,26 +1,25 @@
 import axios from 'axios'
 import store from '../../store'
 
-export default async(page) => {
+export default async(messageId) => {
     let responseData = {};
     var defaultLanguage = '';
     if (store.state.defaultLanguage !== null) {
         defaultLanguage = (store.state.defaultLanguage).toLowerCase();
     }
-    var url = process.env.VUE_APP_API_ENDPOINT + "app/message/list?page=" + page;
+    var url = process.env.VUE_APP_API_ENDPOINT + "app/message/read/" + messageId;
+
     await axios({
             url: url,
-            method: 'GET',
+            method: 'POST',
             headers: {
                 'X-localization': defaultLanguage,
-                'token': store.state.token,
+                'token': store.state.token
             }
         })
         .then((response) => {
             responseData.error = false;
             responseData.message = response.data.message;
-            responseData.data = response.data.data;
-            responseData.pagination = response.data.pagination;
         })
         .catch(function(error) {
             if (error.response.data.errors[0].message) {

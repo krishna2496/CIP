@@ -121,7 +121,7 @@
         searchUser
     } from '../services/service';
     import constants from '../constant';
-import { setTimeout } from 'timers';
+    import { setTimeout } from 'timers';
 
     export default {
         components: {

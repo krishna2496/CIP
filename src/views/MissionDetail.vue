@@ -267,7 +267,7 @@
 												<img :src="$store.state.imagePath+'/assets/images/calendar.svg'"
 													alt="" />
 											</i>
-											<span class="label">{{ languageData.label.date}}</span>
+											<span class="label">{{ languageData.label.start_date}}</span>
 											<template
 												v-if="missionDetail.start_date != '' && missionDetail.start_date != null && missionDetail.end_date != '' && missionDetail.end_date != null">
 												<p class="text-wrap">{{missionDetail.start_date | formatDate}}</p>
@@ -579,7 +579,7 @@
 					</div>
 				</b-container>
 			</div>
-			<b-modal ref="userDetailModal" :modal-class="myclass" hide-footer size="lg">
+			<b-modal  @hidden="hideModal" ref="userDetailModal" :modal-class="myclass" hide-footer size="lg">
 				<template slot="modal-header" slot-scope="{ close }">
 					<i class="close" @click="close()" v-b-tooltip.hover :title="languageData.label.close"></i>
 					<h5 class="modal-title">{{languageData.label.search_user}}</h5>
@@ -598,7 +598,7 @@
 							<div slot-scope="{suggestion}">
 								<img :src="suggestion.item.avatar" />
 								<div>
-									{{suggestion.item.first_name}} {{suggestion.item.last_name}}
+									{{suggestion.item.first_name}} {{suggestion.item.last_name}} <span>({{suggestion.item.email}})</span>
 								</div>
 							</div>
 						</VueAutosuggest>
@@ -804,6 +804,13 @@
 			},
 		},
 		methods: {
+			hideModal() {
+				this.autoSuggestPlaceholder = ""
+				this.submitDisable  = true
+				this.invitedUserId  = ""
+				this.query = ""
+				this.selected = ""
+			},
 			addEntry() {
 				let missionData = {
 					"missionId": '',

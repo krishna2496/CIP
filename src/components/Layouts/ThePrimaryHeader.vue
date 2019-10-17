@@ -21,10 +21,11 @@
                             <li class="has-menu">
                                 <a href="Javascript:void(0)"
                                     :title='languageData.label.explore'>{{ languageData.label.explore}}</a>
-
+                                <i class="collapse-toggle"></i>
                                 <ul class="dropdown-menu sub-dropdown">
                                     <li v-if="isThemeDisplay" v-bind:class="topThemeClass">
                                         <a href="Javascript:void(0)">{{ languageData.label.top_themes}}</a>
+                                        <i class="collapse-toggle"></i>
                                         <ul class="subdropdown-menu" v-if="topTheme != null && topTheme.length > 0">
                                             <li v-for="(items, key) in topTheme" v-bind:key=key>
                                                 <router-link :to="{ path: '/home/themes/'+items.id}"
@@ -36,6 +37,7 @@
                                     </li>
                                     <li v-bind:class="topCountryClass">
                                         <a href="Javascript:void(0)">{{languageData.label.top_country}}</a>
+                                        <i class="collapse-toggle"></i>
                                         <ul class="subdropdown-menu" v-if="topCountry != null && topCountry.length > 0">
                                             <li v-for="(items, key) in topCountry" v-bind:key=key>
                                                 <router-link
@@ -48,6 +50,7 @@
                                     </li>
                                     <li v-bind:class="topOrganizationClass">
                                         <a href="Javascript:void(0)">{{ languageData.label.top_organisation}}</a>
+                                        <i class="collapse-toggle"></i>
                                         <ul class="subdropdown-menu"
                                             v-if="topOrganization != null && topOrganization.length > 0">
                                             <li v-for="(items, key) in topOrganization" v-bind:key=key>
@@ -99,6 +102,7 @@
                                 <a href="Javascript:void(0)"
                                     :title='languageData.label.policy'>{{ languageData.label.policy}}
                                 </a>
+                                <i class="collapse-toggle"></i>
                                 <ul class="dropdown-menu" v-if="policyPage.length > 0">
                                     <li v-for="(item, key) in policyPage" v-bind:key=key>
                                         <router-link :to="{ path: '/policy/'+item.slug}" v-if="item.pages[0]"
@@ -127,7 +131,8 @@
                                 <button id="notificationPopover" class="btn-notification"
                                     @click="getNotificationListing">
                                     <i>
-                                        <img :src="$store.state.imagePath+'/assets/images/bell-ic.svg'" alt="Notification Icon" />
+                                        <img :src="$store.state.imagePath+'/assets/images/bell-ic.svg'"
+                                            alt="Notification Icon" />
                                     </i>
                                     <b-badge>2</b-badge>
                                 </button>
@@ -147,8 +152,132 @@
                                 </b-dropdown-item>
                             </b-nav-item-dropdown>
                         </b-nav>
-                       
                         <b-popover target="notificationPopover" placement="topleft" container="notifyPopoverWrap"
+                            @show="onPopoverShow" ref="notficationPopover" triggers="click">
+                            <template slot="title">
+                                <b-button class="btn-setting" title="Setting" @click="showsetting">
+                                    <img :src="$store.state.imagePath+'/assets/images/settings-ic.svg'"
+                                        alt="Setting icon">
+
+                                </b-button>
+                                <span class="title">{{languageData.label.notification}}</span>
+                                <b-button class="btn-clear" @click="showclearitem">{{languageData.label.clear_all}}
+                                </b-button>
+                            </template>
+                            <div class="notification-details" data-simplebar>
+                                <b-list-group>
+                                    <b-list-group-item href="#" class="unread-item">
+                                        <i>
+                                            <img :src="$store.state.imagePath+'/assets/images/user.png'" alt />
+                                        </i>
+                                        <p>
+                                            John Doe: Recommend this mission -
+                                            <b>Grow Trees</b>
+                                        </p>
+                                        <span class="status"></span>
+                                    </b-list-group-item>
+                                    <b-list-group-item href="#" class="read-item">
+                                        <i>
+                                            <img :src="$store.state.imagePath+'/assets/images/circle-plus.png'" alt />
+                                        </i>
+                                        <p>
+                                            John Doe: Recommend this mission -
+                                            <b>Save the Children</b>
+                                        </p>
+                                        <span class="status"></span>
+                                    </b-list-group-item>
+                                    <b-list-group-item href="#" class="read-item">
+                                        <i>
+                                            <img :src="$store.state.imagePath+'/assets/images/circle-plus.png'" alt />
+                                        </i>
+                                        <p>
+                                            New Mission -
+                                            <b>Save the world</b>
+                                        </p>
+                                        <span class="status"></span>
+                                    </b-list-group-item>
+                                    <b-list-group-item href="#" class="unread-item">
+                                        <i>
+                                            <img :src="$store.state.imagePath+'/assets/images/warning.png'" alt />
+                                        </i>
+                                        <p>
+                                            New Message -
+                                            <b>Message title goes here</b>
+                                        </p>
+                                        <span class="status"></span>
+                                    </b-list-group-item>
+                                </b-list-group>
+                                <div class="slot-title">
+                                    <span>Yesterday</span>
+                                </div>
+                                <b-list-group>
+                                    <b-list-group-item href="#" class="unread-item">
+                                        <i>
+                                            <img :src="$store.state.imagePath+'/assets/images/warning.png'" alt />
+                                        </i>
+                                        <p>
+                                            Volunteering hours
+                                            <b>submitted the 17/05/2019 approved</b>
+                                        </p>
+                                        <span class="status"></span>
+                                    </b-list-group-item>
+                                    <b-list-group-item href="#" class="unread-item">
+                                        <i>
+                                            <img :src="$store.state.imagePath+'/assets/images/warning.png'" alt />
+                                        </i>
+                                        <p>
+                                            Volunteering hours
+                                            <b>submitted the 17/05/2019 approved</b>
+                                        </p>
+                                        <span class="status"></span>
+                                    </b-list-group-item>
+                                    <b-list-group-item href="#" class="unread-item">
+                                        <i>
+                                            <img :src="$store.state.imagePath+'/assets/images/warning.png'" alt />
+                                        </i>
+                                        <p>
+                                            Volunteering hours
+                                            <b>submitted the 17/05/2019 approved</b>
+                                        </p>
+                                        <span class="status"></span>
+                                    </b-list-group-item>
+                                </b-list-group>
+                            </div>
+                            <div class="notification-clear">
+                                <div class="clear-content">
+                                    <i>
+                                        <img :src="$store.state.imagePath+'/assets/images/gray-bell-ic.svg'" alt />
+                                    </i>
+                                    <p>You do not have any new notifications</p>
+                                </div>
+                            </div>
+                            <div class="notification-setting">
+                                <h3 class="setting-header">Notification Settings</h3>
+                                <div class="setting-body" v-if="notificationSettingList.length > 0">
+                                    <div class="setting-bar">
+                                        <span>{{languageData.label.get_notification_for}}</span>
+                                    </div>
+                                    <b-list-group data-simplebar>
+                                        <b-form-checkbox-group id="checkbox-group-2" v-model="selectedNotification"
+                                            name="flavour-2">
+                                            <b-list-group-item v-for="(data, index) in notificationSettingList"
+                                                :key="index">
+                                                <b-form-checkbox :value="data.notification_type_id">
+                                                    {{data.notification_type}} </b-form-checkbox>
+                                            </b-list-group-item>
+                                        </b-form-checkbox-group>
+                                    </b-list-group>
+                                </div>
+                                <div class="setting-footer">
+                                    <b-button class="btn-bordersecondary" @click="saveNotificationSetting">
+                                        {{languageData.label.save}}</b-button>
+                                    <b-button class="btn-borderprimary" @click="cancelsetting">
+                                        {{languageData.label.cancel}}
+                                    </b-button>
+                                </div>
+                            </div>
+                        </b-popover>
+                        <!-- <b-popover target="notificationPopover" placement="topleft" container="notifyPopoverWrap"
                             @show="onPopoverShow" ref="notficationPopover" triggers="click blur" :show="popoverShow">
                             <template slot="title">
                                 <b-button class="btn-setting" title="Setting" @click="showsetting">
@@ -237,7 +366,6 @@
                                 </div>
                             </div>
                             <div class="notification-setting">
-                                <!-- {{notificationSettingList}} -->
                                 <h3 class="setting-header">{{languageData.label.notification_settings}}</h3>
                                 <div class="setting-body" v-if="notificationSettingList.length > 0">
                                     <div class="setting-bar">
@@ -261,7 +389,7 @@
                                     </b-button>
                                 </div>
                             </div>
-                        </b-popover>
+                        </b-popover> -->
 
                     </div>
                 </b-container>
@@ -310,41 +438,69 @@
                     isNewsDisplay: true,
                     isPolicyDisplay: true,
                     isNotificationAjaxCall: false,
-                    notificationSettingList : [],
-                    selectedNotification :[],
-                    notificationSettingId : []
+                    notificationSettingList: [],
+                    selectedNotification: [],
+                    notificationSettingId: []
                 };
             },
             mounted() {
-                let hasmenu_li = document.querySelectorAll(".menu-wrap li"); //array of parentchlid
-                for (let i = 0; i < hasmenu_li.length; ++i) {
-                    let anchorVal = hasmenu_li[i].firstChild; // anchor tag letiable
-                    //Anchor tag click function
-                    anchorVal.addEventListener("click", function (e) {
+                let hasmenuIcon = document.querySelectorAll(
+                    ".menu-wrap li .collapse-toggle"
+                );
+                for (let i = 0; i < hasmenuIcon.length; ++i) {
+                    let iconValue = hasmenuIcon[i];
+                    iconValue.addEventListener("click", function (e) {
                         if (screen.width < 992) {
                             e.stopPropagation();
-                            let parentLi = e.target.parentNode;
-                            let parentUl = parentLi.parentNode;
-                            let siblingLi = parentUl.childNodes;
-                            if (parentLi.classList.contains("active")) {
-                                parentLi.classList.remove("active");
+                            let parentList = e.target.parentNode;
+                            let parentUl = parentList.parentNode;
+                            let siblingList = parentUl.childNodes;
+                            if (parentList.classList.contains("active")) {
+                                parentList.classList.remove("active");
                             } else {
-                                parentLi.classList.add("active");
+                                parentList.classList.add("active");
                             }
-                            for (let j = 0; j < siblingLi.length; ++j) {
-                                if (siblingLi[j] != parentLi) {
-                                    siblingLi[j].classList.remove("active");
+                            for (let j = 0; j < siblingList.length; ++j) {
+                                if (siblingList[j] != parentList) {
+                                    siblingList[j].classList.remove("active");
                                 } else {
-                                    let childLi = parentLi.getElementsByClassName("has-submenu");
-                                    for (let k = 0; k < childLi.length; ++k) {
-                                        childLi[k].classList.remove("active");
+                                    let childList = parentList.getElementsByClassName("has-submenu");
+                                    for (let k = 0; k < childList.length; ++k) {
+                                        childList[k].classList.remove("active");
                                     }
                                 }
                             }
                         }
                     });
                 }
-
+                let hasmenuList = document.querySelectorAll(".menu-wrap li");
+                let removeActive = document.querySelector(".navbar-toggler");
+                let breadcrumbDropdown = document.querySelector(
+                    ".breadcrumb-dropdown-wrap"
+                );
+                for (let i = 0; i < hasmenuList.length; i++) {
+                    let anchor_val = hasmenuList[i].firstChild;
+                    anchor_val.addEventListener("click", function (e) {
+                        if (screen.width < 992) {
+                            let body = document.querySelectorAll("body, html");
+                            body.forEach(function (e) {
+                                e.classList.remove("open-nav");
+                            });
+                        }
+                    });
+                }
+                removeActive.addEventListener("click", function () {
+                    if (screen.width < 992) {
+                        for (let i = 0; i < hasmenuList.length; ++i) {
+                            hasmenuList[i].classList.remove("active");
+                        }
+                    }
+                    if (screen.width < 768) {
+                        if (breadcrumbDropdown != null) {
+                            breadcrumbDropdown.classList.remove("open");
+                        }
+                    }
+                });
                 let backBtn = document.querySelectorAll(".btn-back");
                 backBtn.forEach(function (e) {
                     e.addEventListener("click", function () {
@@ -382,10 +538,10 @@
                     var popover_body = document.querySelector(".popover-body");
                     popover_body.classList.remove("show-setting");
                     this.$root.$emit("bv::show::popover", "notificationPopover");
-                    this.notificationSettingList.filter((data,index) => {
-                        if(data.is_active == 1) {
+                    this.notificationSettingList.filter((data, index) => {
+                        if (data.is_active == 1) {
                             this.selectedNotification.push(data.notification_type_id)
-                        }         
+                        }
                     })
                 },
                 openMenu() {
@@ -423,6 +579,10 @@
                     }
                     eventBus.$emit('setDefaultText');
                     this.$emit('exploreMisison', this.filterData);
+                     var body = document.querySelectorAll("body, html");
+                    body.forEach(function (e) {
+                        e.classList.remove("open-nav");
+                    });
                 },
 
                 async exploreMissions() {
@@ -468,14 +628,17 @@
                     this.isNotificationAjaxCall = true;
                     notificationSettingListing().then(response => {
                         this.isNotificationAjaxCall = false;
-                        if(response.error == false) {
-                            if(response.data) {
+                        if (response.error == false) {
+                            if (response.data) {
                                 this.notificationSettingList = response.data
-                                this.notificationSettingList.filter((data,index) => {
+                                this.notificationSettingList.filter((data, index) => {
+                                    // console.log(data.notification_type)
+                                    data.notification_type = this.languageData.label[data
+                                        .notification_type]
                                     this.notificationSettingId.push(data.notification_type_id);
-                                    if(data.is_active == 1) {
+                                    if (data.is_active == 1) {
                                         this.selectedNotification.push(data.notification_type_id)
-                                    }         
+                                    }
                                 })
                             }
                         }
@@ -483,28 +646,28 @@
                 },
                 saveNotificationSetting() {
                     let data = {
-                        'settings' : []
+                        'settings': []
                     }
                     let settingArray = []
-                    
-                    this.notificationSettingId.filter((data,index) => {
+
+                    this.notificationSettingId.filter((data, index) => {
                         let values = 0;
-                        if(this.selectedNotification.includes(data)) {
+                        if (this.selectedNotification.includes(data)) {
                             values = 1;
                         }
                         settingArray.push({
-                            'notification_type_id' : data,
-                            'value' :values
+                            'notification_type_id': data,
+                            'value': values
                         })
-                       
+
                     })
-                    data.settings = settingArray  
+                    data.settings = settingArray
                     updateNotificationSetting(data).then(response => {
                         let classVariant = 'success'
-                        if(response.error == true) {
+                        if (response.error == true) {
                             classVariant = 'danger'
                         }
-                        this.makeToast(classVariant,response.message)
+                        this.makeToast(classVariant, response.message)
                     })
                 },
                 makeToast(variant = null, message) {
@@ -513,7 +676,7 @@
                         solid: true,
                         autoHideDelay: 3000
                     })
-			    },
+                },
             },
             created() {
                 this.languageData = JSON.parse(store.state.languageLabel);
@@ -546,6 +709,16 @@
                 if (store.state.isLoggedIn) {
                     this.exploreMissions();
                 }
+
+                window.addEventListener("resize", function () {
+                    let body = document.querySelectorAll("body, html");
+                    if (screen.width > 991) {
+                        body.forEach(function (e) {
+                            e.classList.remove("open-nav");
+                            e.classList.remove("open-filter");
+                        });
+                    }
+                });
             }
         };
     </script>

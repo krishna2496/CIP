@@ -52,6 +52,7 @@ import myStory from "./Stories/MyStory"
 import copyStory from "./Stories/CopyStory"
 import deleteStory from "./Stories/DeleteStory"
 import editStory from "./Stories/EditStory"
+import storyInviteColleague from "./Stories/StoryInviteColleague"
 import commentListing from "./Comment/CommentListing"
 import deleteComment from "./Comment/DeleteComment"
 import cookieAgreement from "./CookieAgreement"
@@ -61,7 +62,7 @@ import notificationSettingListing from "./Notification/NotificationSettingListin
 import updateNotificationSetting from "./Notification/UpdateNotificationSetting"
 import deleteMessage from "./Message/DeleteMessage"
 import messageListing from "./Message/MessageListing"
-import sendMessage from "./Message/SendMessage"
+import readMessage from "./Message/ReadMessage"
 
 export {
     loadLocaleMessages,
@@ -127,5 +128,6 @@ export {
     updateNotificationSetting,
     deleteMessage,
     messageListing,
-    sendMessage
+    readMessage,
+    storyInviteColleague
 }

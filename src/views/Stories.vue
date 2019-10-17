@@ -36,7 +36,7 @@
 		<footer>
 			<TheSecondaryFooter></TheSecondaryFooter>
 		</footer>
-		<back-to-top bottom="68px" right="40px" title="back to top">
+		<back-to-top bottom="34px" right="40px" title="back to top">
 			<i class="icon-wrap">
 				<img class="img-normal" :src="$store.state.imagePath+'/assets/images/down-arrow.svg'"
 					alt="Down Arrow" />
