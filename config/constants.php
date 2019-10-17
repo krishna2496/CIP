@@ -289,6 +289,14 @@ return [
         'RECOMMENDED_STORY' => 'Recommended story'
     ],
     
+    /**
+     * notification status
+     */
+    'notification' => [
+        'read' => '1',
+        'unread' => '0'
+    ],
+
     /*
      * Tenant settings
      */
@@ -414,6 +422,7 @@ return [
         'ERROR_CONTACT_FORM_REQUIRED_FIELDS_EMPTY' => '1000001',
 
         'ERROR_USER_NOTIFICATION_REQUIRED_FIELDS_EMPTY' => '600001',
+        'ERROR_USER_NOTIFICATION_NOT_FOUND' => '600002',
                 
         'ERROR_OCCURRED' => '999999',
         'ERROR_INVALID_JSON' => '900000',
