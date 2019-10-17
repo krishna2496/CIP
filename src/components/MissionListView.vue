@@ -218,7 +218,7 @@
                 </b-card>
             </div>
         </div>
-        <b-modal ref="userDetailModal" :modal-class="myclass" size="lg" hide-footer>
+        <b-modal  @hidden="hideModal" ref="userDetailModal" :modal-class="myclass" size="lg" hide-footer>
             <template slot="modal-header" slot-scope="{ close }">
                 <i class="close" @click="close()" v-b-tooltip.hover :title="languageData.label.close"></i>
                 <h5 class="modal-title">{{languageData.label.search_user}}</h5>
@@ -235,7 +235,7 @@
                         <div slot-scope="{suggestion}">
                             <img :src="suggestion.item.avatar" />
                             <div>
-                                {{suggestion.item.first_name}} {{suggestion.item.last_name}}
+                                {{suggestion.item.first_name}} {{suggestion.item.last_name}} <span>({{suggestion.item.email}})</span>
                             </div>
                         </div>
                     </VueAutosuggest>
@@ -333,6 +333,13 @@
             }
         },
         methods: {
+            hideModal() {
+				this.autoSuggestPlaceholder = ""
+				this.submitDisable  = true
+				this.invitedUserId  = ""
+				this.query = ""
+				this.selected = ""
+			},
             noRecordFound() {
                 let defaultLang = (store.state.defaultLanguage).toLowerCase();
                 if (JSON.parse(store.state.missionNotFoundText) != "") {

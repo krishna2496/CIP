@@ -14,10 +14,6 @@
 			return {};
 		},
 		mounted() {
-			//ios browser detection
-			if (navigator.userAgent.match(/iP(hone|od|ad)/i)) {
-				document.querySelector("body").classList.add("browser-ios");
-			}
 			document.addEventListener("click", this.onClick);
 		},
 		methods: {
@@ -79,6 +75,14 @@
 					document.querySelector("body , html").classList.add("browser-safari"); // Safari
 				}
 			}
+			//ios browser detection
+
+			let isIOS =
+				/iPad|iPhone|iPod/.test(navigator.platform) ||
+				(navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+			if (isIOS) {
+				document.querySelector("body").classList.add("browser-ios");
+			}
 			window.addEventListener("resize", this.signinAdj);
 			window.addEventListener("scroll", this.handleScroll);
 			window.scrollTo(0, 0);
@@ -88,6 +92,7 @@
 			this.signinAdj();
 			setTimeout(function () {
 				let selectorList = document.querySelectorAll(".nav-link");
+				let menuLinkList = document.querySelectorAll(".menu-wrap a");
 				let dropdownList = document.querySelectorAll(".custom-dropdown, .checkbox-select");
 				let notificationButton = document.querySelector(".notification-menu .nav-link .btn-notification");
 				let notificationMenu = document.querySelector(".notification-menu .nav-link");
@@ -107,6 +112,13 @@
 						event.removeAttribute("href");
 					});
 					event.addEventListener("click", function () {
+						dropdownList.forEach(function (removeDropdown) {
+							removeDropdown.classList.remove("dropdown-open");
+						});
+					});
+				});
+				menuLinkList.forEach(function (linkEvent) {
+					linkEvent.addEventListener("click", function () {
 						dropdownList.forEach(function (removeDropdown) {
 							removeDropdown.classList.remove("dropdown-open");
 						});

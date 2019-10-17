@@ -8,21 +8,17 @@
 				<h1>{{languageData.label.share_your_story}}</h1>
 				<b-alert show :variant="classVariant" dismissible v-model="showDismissibleAlert">{{ message }}</b-alert>
 				<b-row class="story-form-wrap">
-					<div
-                        v-bind:class="{ 'content-loader-wrap': true, 'loader-active': isLoaderActive}">
-                        <div class="content-loader"></div>
-                    </div>
+					<div v-bind:class="{ 'content-loader-wrap': true, 'loader-active': isLoaderActive}">
+						<div class="content-loader"></div>
+					</div>
 					<b-col xl="8" lg="7" class="left-col">
 						<div class="story-form">
 							<b-form>
 								<b-form-group>
 									<label for>{{languageData.label.my_story_title}}*</label>
-									<b-form-input id 
-										v-model.trim="story.title"
-										:class="{ 'is-invalid': submitted && $v.story.title.$error }"
-										type="text" 
-										maxLength="255"
-										:placeholder="languageData.placeholder.story_title">
+									<b-form-input id v-model.trim="story.title"
+										:class="{ 'is-invalid': submitted && $v.story.title.$error }" type="text"
+										maxLength="255" :placeholder="languageData.placeholder.story_title">
 									</b-form-input>
 									<div v-if="submitted && !$v.story.title.required" class="invalid-feedback">
 										{{ languageData.errors.story_title_required }}
@@ -32,108 +28,100 @@
 									<b-col md="12">
 										<b-form-group>
 											<label for>{{languageData.label.select_mission}}*</label>
-											<AppCustomDropdown 
-												v-model="story.mission"
+											<AppCustomDropdown v-model="story.mission"
 												:errorClass="submitted && $v.story.mission.$error"
-												:optionList="missionTitle" 
-												@updateCall="updateMissionTitle" 
-												translationEnable="false"
-												:defaultText="defaultMissionTitle"
-											/>
-											<div v-if="submitted && !$v.story.mission.required" class="invalid-feedback">
+												:optionList="missionTitle" @updateCall="updateMissionTitle"
+												translationEnable="false" :defaultText="defaultMissionTitle" />
+											<div v-if="submitted && !$v.story.mission.required"
+												class="invalid-feedback">
 												{{ languageData.errors.mission_required }}
 											</div>
-									    </b-form-group>
+										</b-form-group>
 									</b-col>
 								</b-row>
 								<b-row>
 									<b-col md="12">
-									<label for>{{languageData.label.my_story}}*</label>		
-										<vue-ckeditor 
-											:config="config"
-											v-model="story.myStory" 
+										<label for>{{languageData.label.my_story}}*</label>
+										<vue-ckeditor :config="config" v-model="story.myStory"
 											:class="{ 'is-invalid': submitted && $v.story.myStory.$error }"
-											:placeholder="languageData.placeholder.story_detail"
-										/>
+											:placeholder="languageData.placeholder.story_detail" />
 										<div v-if="submitted && !$v.story.myStory.required" class="invalid-feedback">
 											{{ languageData.errors.story_description_required }}
 										</div>
-										</b-col>
-							</b-row>
+									</b-col>
+								</b-row>
 							</b-form>
-							
+
 
 						</div>
 						<div class="btn-row">
-							<b-button class="btn-borderprimary" @click="cancleShareStory">{{languageData.label.cancel}}</b-button>
+							<b-button class="btn-borderprimary" @click="cancleShareStory">{{languageData.label.cancel}}
+							</b-button>
 						</div>
 					</b-col>
 					<b-col xl="4" lg="5" class="right-col">
 						<div class="story-form">
 							<b-form-group>
-								<label for>{{languageData.label.enter_video_url}}<span>({{languageData.label.new_line_to_enter_multiple_urls}})</span></label>
-								<b-form-textarea id 
-									v-model.trim="story.videoUrl"
-									:class="{ 'is-invalid': submitted && youtubeUrlError }"
-									:placeholder="languageData.placeholder.video_url" 
-									size="lg" 
-									rows="5">
+								<label
+									for>{{languageData.label.enter_video_url}}<span>({{languageData.label.new_line_to_enter_multiple_urls}})</span></label>
+								<b-form-textarea id v-model.trim="story.videoUrl"
+									:class="{ 'is-invalid': submitted && (youtubeUrlError || maxYoutubeUrlError)}"
+									:placeholder="languageData.placeholder.video_url" size="lg" rows="5">
 								</b-form-textarea>
 								<div v-if="submitted && youtubeUrlError" class="invalid-feedback">
 									{{ languageData.errors.valid_video_url }}
+								</div>
+								<div v-if="submitted && !youtubeUrlError && maxYoutubeUrlError"
+									class="invalid-feedback">
+									max{{ languageData.errors.valid_video_url }}
 								</div>
 							</b-form-group>
 							<b-form-group>
 								<span class="error-message" v-if="fileError">{{fileError}}</span>
 								<label for>{{languageData.label.upload_your_photos}}</label>
 								<div class="btn-wrapper" v-bind:class="{'has-error' : fileError != '' ? true : false}">
-									<file-upload class="btn" 
-										v-model="story.files"
-										accept="image/png,image/jpeg" 
-										:multiple="true" :drop="true"
-										:drop-directory="true" 
-										:size="1024 * 1024 * 10"
-										@input="inputUpdate"
-										@input-filter="inputFilter" 
-										ref="upload">
+									<file-upload class="btn" v-model="story.files" accept="image/png,image/jpeg"
+										:multiple="true" :drop="true" :drop-directory="true" :size="1024 * 1024 * 10"
+										@input="inputUpdate" @input-filter="inputFilter" ref="upload">
 										{{languageData.label.drag_and_drop_pictures}}
 									</file-upload>
 								</div>
 							</b-form-group>
 							<div class="uploaded-block">
-								<div class="uploaded-file-details"  v-if="fileArray.length > 0" v-for="(fileData, index) in fileArray" :key=index>
-										<span class="image-thumb">
-											<img 
-												:src="fileData[1]" 
-												width="40" 
-												height="auto" 
-											/>
-											<b-button type="button" @click.prevent="removeFiles(fileData[0],index)" class="remove-btn">
-												<img :src="$store.state.imagePath+'/assets/images/cross-ic-white.svg'" alt />
-											</b-button>
-										</span>
-								</div>
-								<div class="uploaded-file-details" v-for="(file, index) in story.files" :key="index">
-									<span v-if="file.thumb" class="image-thumb">
-										<img 
-											:src="file.thumb" 
-											width="40" 
-											height="auto" 
-										/>
-										<b-button type="button" @click.prevent="remove(file)" class="remove-btn">
-											<img :src="$store.state.imagePath+'/assets/images/cross-ic-white.svg'" alt />
+								<div class="uploaded-file-details" v-if="fileArray.length > 0"
+									v-for="(fileData, index) in fileArray" :key=index>
+									<span class="image-thumb">
+										<img :src="fileData[1]" width="40" height="auto" />
+										<b-button type="button" @click.prevent="removeFiles(fileData[0],index)"
+											class="remove-btn" v-b-tooltip.hover :title="languageData.label.delete">
+											<img :src="$store.state.imagePath+'/assets/images/cross-ic-white.svg'"
+												alt />
 										</b-button>
 									</span>
 								</div>
-								
+								<div class="uploaded-file-details" v-for="(file, index) in story.files" :key="index">
+									<span v-if="file.thumb" class="image-thumb">
+										<img :src="file.thumb" width="40" height="auto" />
+										<b-button type="button" @click.prevent="remove(file)" class="remove-btn"
+											v-b-tooltip.hover :title="languageData.label.delete">
+											<img :src="$store.state.imagePath+'/assets/images/cross-ic-white.svg'"
+												alt />
+										</b-button>
+									</span>
+								</div>
+
 							</div>
 						</div>
 						<div class="btn-row">
-							<b-button class="btn-borderprimary" 
-							target="_blank" :to="'/story-preview/'+storyId"
-							v-bind:class="{disabled:previewButtonEnable}"><span>{{languageData.label.preview}}</span></b-button>
-							<b-button class="btn-bordersecondary" v-bind:class="{disabled:saveButtonEnable || saveButtonAjaxCall}"  @click="saveStory('save')">{{languageData.label.save}}</b-button>
-							<b-button class="btn-bordersecondary btn-submit" v-bind:class="{disabled:submitButtonEnable || submitButtonAjaxCall}" @click="saveStory('submit')">{{languageData.label.submit}}</b-button>
+							<b-button class="btn-borderprimary" target="_blank" :to="'/story-preview/'+storyId"
+								v-bind:class="{disabled:previewButtonEnable}"><span>{{languageData.label.preview}}
+									{{previewButtonEnable}}</span></b-button>
+							<b-button class="btn-bordersecondary"
+								v-bind:class="{disabled:saveButtonEnable || saveButtonAjaxCall}"
+								@click="saveStory('save')">{{languageData.label.save}}</b-button>
+							<b-button class="btn-bordersecondary btn-submit"
+								v-bind:class="{disabled:submitButtonEnable || submitButtonAjaxCall}"
+								@click="saveStory('submit')">{{languageData.label.submit}}</b-button>
 						</div>
 					</b-col>
 				</b-row>
@@ -151,14 +139,14 @@
 	import store from '../store';
 	import constants from '../constant';
 	import {
-        required,
-        maxLength,
-        email,
-        sameAs,
-        minLength,
-        between,
-        helpers
-    } from 'vuelidate/lib/validators';
+		required,
+		maxLength,
+		email,
+		sameAs,
+		minLength,
+		between,
+		helpers
+	} from 'vuelidate/lib/validators';
 	import {
 		storyMissionListing,
 		submitStory,
@@ -170,84 +158,94 @@
 	import VueCkeditor from 'vue-ckeditor2'
 	export default {
 		components: {
-			ThePrimaryHeader : () => import("../components/Layouts/ThePrimaryHeader"),
+			ThePrimaryHeader: () => import("../components/Layouts/ThePrimaryHeader"),
 			TheSecondaryFooter: () => import("../components/Layouts/TheSecondaryFooter"),
 			AppCustomDropdown,
 			FileUpload,
 			DatePicker,
-			VueCkeditor 
+			VueCkeditor
 		},
 		data() {
 			return {
-				languageData : [],
-				isStoryDisplay : true,
-				submitted : false,
+				languageData: [],
+				isStoryDisplay: true,
+				submitted: false,
 				defaultMissionTitle: "",
-				fileError : "",
+				fileError: "",
 				missionTitle: [],
 				classVariant: 'danger',
-            	message: null,
+				message: null,
 				time1: "",
 				story: {
-						title: "",
-						mission: "",
-						myStory: "",
-						videoUrl: "",
-						files: []
+					title: "",
+					mission: "",
+					myStory: "",
+					videoUrl: "",
+					files: []
 				},
-				youtubeUrlError : false,
+				youtubeUrlError: false,
+				maxYoutubeUrlError: false,
 				showDismissibleAlert: false,
-				storyId : '',
-				saveButtonAjaxCall : false,
-				submitButtonAjaxCall : false,
-				saveButtonEnable : false,
-				submitButtonEnable : true,
-				previewButtonEnable : true,
+				storyId: '',
+				saveButtonAjaxCall: false,
+				submitButtonAjaxCall: false,
+				saveButtonEnable: false,
+				submitButtonEnable: true,
+				previewButtonEnable: true,
 				content: '',
 				config: {
 					height: 300
 				},
-				fileArray : [],
-				isLoaderActive : false
+				fileArray: [],
+				isLoaderActive: false
 			}
 		},
 		validations: {
-            story: {
-                title: {
+			story: {
+				title: {
 					required
-                },
-                mission: {
+				},
+				mission: {
 					required
-                },
-                myStory: {
-                    required
+				},
+				myStory: {
+					required
 				}
-            }
-        },
+			}
+		},
 		methods: {
 			saveStory(params) {
 				this.youtubeUrlError = false
 				this.submitted = true;
-                this.$v.$touch();
+				this.$v.$touch();
 				let youtubeUrl = [];
 				if (this.story.videoUrl.toString() != '') {
-					youtubeUrl =  this.story.videoUrl.toString().split("\n")
-					youtubeUrl.filter((url,index) => {
-						var valid = /^(?:https?:\/\/)?(?:www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})?$/;
-						if(!valid.test(url)) {
+					youtubeUrl = this.story.videoUrl.toString().split("\n")
+
+					if (youtubeUrl.length > constants.MAX_FILE_NUMBER) {
+						this.maxYoutubeUrlError = true
+						return
+					} else {
+						this.maxYoutubeUrlError = false
+					}
+
+					youtubeUrl.filter((url, index) => {
+						var valid =
+							/^(?:https?:\/\/)?(?:www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})?$/;
+						if (!valid.test(url)) {
 							this.youtubeUrlError = true
 							return
 						}
 					})
 				}
-				if(this.youtubeUrlError == true) {
+				if (this.youtubeUrlError == true || this.maxYoutubeUrlError == true) {
 					return
 				}
 				if (this.$v.$invalid) {
-                	return;
-				} 
+					return;
+				}
 				this.isLoaderActive = true
-				if(params == 'save') {
+				if (params == 'save') {
 					this.saveButtonAjaxCall = true
 					this.submitStoryDetail();
 				} else {
@@ -256,14 +254,14 @@
 			},
 			cancleShareStory() {
 				this.storyId = ''
-				this.$router.push({ name: 'Stories'})
+				this.$router.go(-1)
 			},
 
 			submitStory() {
 				this.submitButtonAjaxCall = true;
 				updateStoryStatus(this.storyId).then(response => {
 					this.showDismissibleAlert = true
-					if (response.error === true) { 
+					if (response.error === true) {
 						this.classVariant = 'danger'
 						//set error msg
 						this.message = response.message
@@ -277,8 +275,13 @@
 				})
 			},
 			previewStory() {
-				if(this.storyId != '') {
-					this.$router.push({ name: 'StoryPreview', params: { storyId: this.storyId } })
+				if (this.storyId != '') {
+					this.$router.push({
+						name: 'StoryPreview',
+						params: {
+							storyId: this.storyId
+						}
+					})
 				}
 			},
 			updateMissionTitle(value) {
@@ -286,21 +289,27 @@
 				this.story.mission = value.selectedId;
 			},
 			inputUpdate(files) {
-					let allowedFileTypes = constants.ALLOWED_PICTURE_TYPES 
-					this.fileError = '';
-					let error = false
-					let duplicateUpload = false
-					let latestUpload = files[files.length - 1];
-					if(files.length > 0 ) {
-						let latestUploadIndex = files.length - 1;
-						let latestUploadName = latestUpload.name
-						let latestUploadSize = latestUpload.size
-						let latestUploadType = latestUpload.type
-					
+				let allowedFileTypes = constants.ALLOWED_PICTURE_TYPES
+				let availableFileCount = this.fileArray.length
+
+				this.fileError = '';
+				let error = false
+				let duplicateUpload = false
+				let latestUpload = files[files.length - 1];
+				if (files.length > 0) {
+					let latestUploadIndex = files.length - 1;
+					let latestUploadName = latestUpload.name
+					let latestUploadSize = latestUpload.size
+					let latestUploadType = latestUpload.type
+					let totalFiles = availableFileCount + files.length
+					if (totalFiles > constants.MAX_FILE_NUMBER) {
+						files.splice(latestUploadIndex, 1)
+						this.fileError = this.languageData.errors.max_image_upload
+					} else {
 						files.filter((data, index) => {
 							let fileName = data.name.split('.');
 							if (!allowedFileTypes.includes(fileName[fileName.length - 1])) {
-								this.fileError = this.languageData.errors.invalid_file_type
+								this.fileError = this.languageData.errors.invalid_image_type
 								error = true
 							} else {
 								if (data.size > constants.FILE_MAX_SIZE_BYTE) {
@@ -316,8 +325,8 @@
 									duplicateUpload = true;
 								}
 							}
-							if(error == true) {
-								if(duplicateUpload == true) {
+							if (error == true) {
+								if (duplicateUpload == true) {
 									files.splice(latestUploadIndex, 1)
 								} else {
 									files.splice(index, 1)
@@ -325,7 +334,8 @@
 							}
 						});
 					}
-            },
+				}
+			},
 			inputFilter(newFile, prevent) {
 				let allowedFileTypes = constants.ALLOWED_PICTURE_MIME_TYPES
 				if (newFile && (allowedFileTypes.includes(newFile.type)) && newFile.size < constants.FILE_MAX_SIZE_BYTE) {
@@ -360,10 +370,10 @@
 				storyMissionListing().then(response => {
 					// missionTitle
 					var array = [];
-					if(response.error == false) {
+					if (response.error == false) {
 						let missionArray = response.data
-						if(missionArray) {
-							missionArray.filter((data,index) => {
+						if (missionArray) {
+							missionArray.filter((data, index) => {
 								array[index] = new Array(2);
 								array[index][0] = data.mission_id
 								array[index][1] = data.title
@@ -371,7 +381,7 @@
 							this.missionTitle = array
 						}
 					}
-					if(this.$route.params.storyId) {
+					if (this.$route.params.storyId) {
 						this.storyId = this.$route.params.storyId;
 						this.getStoryDetail();
 					}
@@ -382,30 +392,30 @@
 				const formData = new FormData();
 				this.message = null;
 				this.showDismissibleAlert = false
-                let file = this.story.files;
-                if (file) {
-                    file.filter((fileItem, fileIndex) => {
+				let file = this.story.files;
+				if (file) {
+					file.filter((fileItem, fileIndex) => {
 						formData.append('story_images[]', fileItem.file);
-                    })
+					})
 				}
-				
-                formData.append('mission_id', this.story.mission);
-                formData.append('title', this.story.title);
+
+				formData.append('mission_id', this.story.mission);
+				formData.append('title', this.story.title);
 				formData.append('description', this.story.myStory);
-				if(this.story.videoUrl != '') {
-					let videoUrl =  this.story.videoUrl.replace("\n",',')
+				if (this.story.videoUrl != '') {
+					let videoUrl = this.story.videoUrl.replace("\n", ',')
 					formData.append('story_videos', videoUrl);
 				}
-				if(this.storyId == '') {
+				if (this.storyId == '') {
 					submitStory(formData).then(response => {
 						this.showDismissibleAlert = true
-						if (response.error === true) { 
+						if (response.error === true) {
 							this.classVariant = 'danger'
 							//set error msg
 							this.message = response.message
 						} else {
 							this.storyId = response.data
-							if(this.storyId != '') {
+							if (this.storyId != '') {
 								this.previewButtonEnable = false
 								this.submitButtonEnable = false
 							} else {
@@ -418,20 +428,20 @@
 						}
 						this.isLoaderActive = false
 						this.saveButtonAjaxCall = false
-					})	
+					})
 				} else {
-					if(this.story.videoUrl == '') {
+					if (this.story.videoUrl == '') {
 						formData.append('story_videos', '');
 					}
-					formData.append('_method','PATCH');
-					updateStory(formData,this.storyId).then(response => {
+					formData.append('_method', 'PATCH');
+					updateStory(formData, this.storyId).then(response => {
 						this.showDismissibleAlert = true
-						if (response.error === true) { 
+						if (response.error === true) {
 							this.classVariant = 'danger'
 							//set error msg
 							this.message = response.message
 						} else {
-							if(this.storyId != '') {
+							if (this.storyId != '') {
 								this.previewButtonEnable = false
 								this.submitButtonEnable = false
 							} else {
@@ -444,27 +454,28 @@
 						}
 						this.isLoaderActive = false
 						this.saveButtonAjaxCall = false
-					})	
+					})
 				}
+				this.fileError = ''
 			},
 
-			removeFiles(id,index) {
+			removeFiles(id, index) {
 				this.showDismissibleAlert = false
 				let data = {
-					'storyId' : '',
-					'imageId' : ''
+					'storyId': '',
+					'imageId': ''
 				}
 				data.imageId = id;
 				// data.imageId = 5
 				data.storyId = this.storyId;
 				deleteStoryImage(data).then(response => {
-					if (response.error === true) { 
+					if (response.error === true) {
 						this.showDismissibleAlert = true
 						this.classVariant = 'danger'
 						//set error msg
 						this.message = response.message
-					} else {			
-						this.fileArray.splice(index,1)
+					} else {
+						this.fileArray.splice(index, 1)
 					}
 					this.saveButtonAjaxCall = false
 				})
@@ -473,37 +484,37 @@
 			getStoryDetail() {
 				this.isLoaderActive = true
 				editStory(this.$route.params.storyId).then(response => {
-					if(response.error == false) {
+					if (response.error == false) {
 						this.story.title = response.data.title
 						this.story.myStory = response.data.description
 						let videoUrl = '';
 						let imageUrl = []
 						let i = 0;
-						if( response.data.story_media) {
+						if (response.data.story_media) {
 							let storyMedia = response.data.story_media;
-								storyMedia.filter((data,index) => {
-									if(data.type == 'video') {
-										videoUrl = data.path
-									} else {
-										imageUrl[i] = new Array(2);
-										imageUrl[i][0] = data.story_media_id
-										imageUrl[i][1] = data.path
-										i++;
-									}
-								})
-							
+							storyMedia.filter((data, index) => {
+								if (data.type == 'video') {
+									videoUrl = data.path
+								} else {
+									imageUrl[i] = new Array(2);
+									imageUrl[i][0] = data.story_media_id
+									imageUrl[i][1] = data.path
+									i++;
+								}
+							})
+
 						}
-						this.story.videoUrl = videoUrl.replace(",","\n")
+						this.story.videoUrl = videoUrl.replace(",", "\n")
 						this.fileArray = imageUrl
-						this.missionTitle.filter((data,index) => {
-							if(data[0] == response.data.mission_id) {
+						this.missionTitle.filter((data, index) => {
+							if (data[0] == response.data.mission_id) {
 								this.defaultMissionTitle = data[1]
 							}
 						})
-						
+
 						this.story.mission = response.data.mission_id
 						this.submitButtonEnable = false
-						if(response.data.status == constants.PENDING) {
+						if (response.data.status == constants.PENDING) {
 							this.submitButtonEnable = true
 						}
 						this.previewButtonEnable = false
@@ -517,13 +528,13 @@
 		created() {
 			this.languageData = JSON.parse(store.state.languageLabel);
 			this.isStoryDisplay = this.settingEnabled(constants.STORIES_ENABLED);
-			if(!this.isStoryDisplay) {
+			if (!this.isStoryDisplay) {
 				this.$router.push('/home')
 			}
-			this.defaultMissionTitle =  this.languageData.label.mission_title
+			this.defaultMissionTitle = this.languageData.label.mission_title
 			this.missionListing();
-			
-			
+
+
 		},
 		updated() {}
 	};

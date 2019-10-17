@@ -69,18 +69,6 @@ let routes = [{
             import ('./views/Stories.vue')
     },
     {
-        path: '/stories',
-        name: 'Stories',
-        component: () =>
-            import ('./views/Stories.vue')
-    },
-    {
-        path: '/news-detail/:newsId',
-        name: 'NewsDetail',
-        component: () =>
-            import ('./views/NewsDetail.vue')
-    },
-    {
         path: '/news-detail/:newsId',
         name: 'NewsDetail',
         component: () =>
@@ -106,7 +94,7 @@ let routes = [{
     },
     {
         path: '/edit-story/:storyId',
-        name: 'ShareStory',
+        name: 'EditStory',
         component: () =>
             import ('./views/ShareStory.vue')
     },

@@ -119,7 +119,7 @@
 						</b-link>
 					</div>
 				</div>
-				<b-modal ref="userDetailModal" modal-class="userdetail-modal" hide-footer size="lg">
+				<b-modal  @hidden="hideModal" ref="userDetailModal" modal-class="userdetail-modal" hide-footer size="lg">
 				<template slot="modal-header" slot-scope="{ close }">
 					<i class="close" @click="close()" v-b-tooltip.hover :title="languageData.label.close"></i>
 					<h5 class="modal-title">{{languageData.label.search_user}}</h5>
@@ -138,7 +138,7 @@
 							<div slot-scope="{suggestion}">
 								<img :src="suggestion.item.avatar" />
 								<div>
-									{{suggestion.item.first_name}} {{suggestion.item.last_name}}
+									{{suggestion.item.first_name}} {{suggestion.item.last_name}} <span>({{suggestion.item.email}})</span>
 								</div>
 							</div>
 						</VueAutosuggest>
@@ -148,7 +148,7 @@
 					<div class="btn-wrap">
 						<b-button @click="$refs.userDetailModal.hide()" class="btn-borderprimary">
 							{{ languageData.label.close }}</b-button>
-						<b-button class="btn-bordersecondary" @click="inviteColleagues" ref="autosuggestSubmit"
+						<b-button class="btn-bordersecondary" @click="inviteColleaguesStory" ref="autosuggestSubmit"
 							v-bind:disabled="submitDisable">
 							{{ languageData.label.submit }}</b-button>
 					</div>
@@ -167,7 +167,8 @@
 	import constants from '../constant';
 	import {
 		storyDetail,
-		searchUser
+		searchUser,
+		storyInviteColleague
 	} from "../services/service";
 	import {
 		VueAutosuggest
@@ -179,6 +180,7 @@
 			Slick,
 			VueAutosuggest
 		},
+		name: "StoryDetail",
 		data() {
 			return {
 				storyId : this.$route.params.storyId,
@@ -190,6 +192,7 @@
 				classVariant: "success",
 				autoSuggestPlaceholder: '',
 				submitDisable: true,
+				invitedUserId : '',
 				query :"",
 				selected :"",
 				currentStory : '',
@@ -245,7 +248,13 @@
 			}
 		},
 		methods: {
-			inviteColleagues() {},
+			hideModal() {
+				this.autoSuggestPlaceholder = ""
+				this.submitDisable  = true
+				this.invitedUserId  = ""
+				this.query = ""
+				this.selected = ""
+			},
 			handleSliderClick(event) {
 				event.stopPropagation();
 				var hideVideo = document.querySelector(".video-wrap");
@@ -345,6 +354,34 @@
 			},
 			getDefaultImage() {
 				return store.state.imagePath+'/assets/images/'+constants.MISSION_DEFAULT_PLACEHOLDER;
+			},
+			inviteColleaguesStory() {
+				let data = {
+					'story_id' : '',
+					'to_user_id' : ''
+				}
+				data.story_id = this.storyId;
+				data.to_user_id = this.invitedUserId;
+				storyInviteColleague(data).then(response => {
+					this.submitDisable = true;
+					if (response.error == true) {
+						this.classVariant = "danger";
+						this.message = response.message;
+						this.$refs.autosuggest.$data.currentIndex = null;
+						this.$refs.autosuggest.$data.internalValue = '';
+						this.showErrorDiv = true;
+					} else {
+						this.query = "";
+						this.selected = "";
+						this.currentMissionId = 0;
+						this.invitedUserId = 0;
+						this.$refs.autosuggest.$data.currentIndex = null;
+						this.$refs.autosuggest.$data.internalValue = '';
+						this.classVariant = "success";
+						this.message = response.message;
+						this.showErrorDiv = true;
+					}
+				})
 			}
 		},
 		created() {

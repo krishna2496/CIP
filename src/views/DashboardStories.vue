@@ -23,8 +23,6 @@
                             {{storyText}}
                         </p>
                     </div>
-                    <b-alert show :variant="classVariant" dismissible v-model="showDismissibleAlert">{{ message }}</b-alert>
-                   
                     <b-list-group class="status-bar inner-statusbar">
                         <b-list-group-item>
                             <div class="list-item">
@@ -71,14 +69,17 @@
                         <h2>{{languageData.label.story_history}}</h2>
                         <b-row class="story-card-row">
                             <b-col class="story-card-block" md="6" lg="4" v-for="(data,index) in storyData" :key=index>
+                                <div class="story-card-inner">
                                 <div class="story-img"  :style="{backgroundImage: 'url('+getMediaPath(data)+')'}"></div>
                                 <div class="story-card">
+                                    <div class="card-body-outer">
                                     <h4 class="story-card-title">                  
                                         {{data.title | substring(40)}}
                                     </h4>
                                     <div class="story-card-body">
-                                        <span>{{data.created | formatDate}}</span>
+                                        <span>{{data.created | formatStoryDate}}</span>
                                         <p v-if="data.description" v-html="getDescription(data.description)"></p>
+                                    </div>
                                     </div>
                                     <div class="story-card-footer">
                                         <span class="status-label" v-if="data.status != ''">{{data.status}}</span>
@@ -99,6 +100,7 @@
                                             </b-link>
                                         </div>
                                     </div>
+                                </div>
                                 </div>
                             </b-col>
                             
@@ -157,9 +159,6 @@
 					"perPage": 1,
 					"totalPages": 0,
                 },
-                classVariant: 'danger',
-                message: null,
-                showDismissibleAlert : false,
                 storyText : '',
                 isLoaderActive : false,
                 isStoryDisplay: true,
@@ -167,18 +166,27 @@
         },
         methods: {
             pageChange(page){
-				this.getStoryListing(page);
+				this.getMyStory(page);
 			},
-            getMyStory() {
+            getMyStory(page) {
                 this.isLoaderActive = true
-                myStory().then(response => {
+                myStory(page).then(response => {
                     if(response.error == false) {
-                        this.stats = response.data.stats
-                        this.storyData = response.data.story_data
-                        this.pagination.currentPage = response.pagination.current_page
-						this.pagination.total = response.pagination.total
-						this.pagination.perPage = response.pagination.per_page
-						this.pagination.totalPages = response.pagination.total_pages
+                        if(response.data) {
+                            this.stats = response.data.stats
+                            this.storyData = response.data.story_data
+                            this.pagination.currentPage = response.pagination.current_page
+                            this.pagination.total = response.pagination.total
+                            this.pagination.perPage = response.pagination.per_page
+                            this.pagination.totalPages = response.pagination.total_pages
+                        } else {
+                            this.stats = [];
+                            this.storyData = []
+                            this.pagination.currentPage = 1,
+                            this.pagination.total = 0,
+                            this.pagination.perPage = 1,
+                            this.pagination.totalPages = 0
+                        }
                     }
                 })
                 this.isLoaderActive = false
@@ -248,48 +256,47 @@
             deleteStory(storyId) {
                 this.isLoaderActive = true
                 deleteStory(storyId).then(response => {
-                    this.showDismissibleAlert = true
 					if (response.error === true) { 
-						this.classVariant = 'danger'
-						//set error msg
-                        this.message = response.message
+                        this.makeToast('danger',response.message)
                         this.isLoaderActive = false
 					} else {
-						this.classVariant = 'success'
-						//set error msg
-                        this.message = this.languageData.label.story_deleted
-                        this.getMyStory();
+                        this.makeToast('success',this.languageData.label.story_deleted)
+                        this.getMyStory(this.pagination.currentPage);
 					}
                 })
             },
+            
             copyStory(storyId) {
                 this.isLoaderActive = true
                 copyStory(storyId).then(response => {
-                    this.showDismissibleAlert = true
 					if (response.error === true) { 
-						this.classVariant = 'danger'
-						//set error msg
-                        this.message = response.message
+                        this.makeToast('danger',response.message)
                         this.isLoaderActive = false
 					} else {
-						this.classVariant = 'success'
-						//set error msg
-                        this.message = response.message
-                        this.getMyStory();
+                        this.makeToast('success',response.message)
+                        this.getMyStory(this.pagination.currentPage);
 					}
                 })
             },
+
+            makeToast(variant = null, message) {
+				this.$bvToast.toast(message, {
+					variant: variant,
+					solid: true,
+					autoHideDelay: 3000
+				})
+			},
             exportFile() {
                 this.isLoaderActive = true
                 let fileName = this.languageData.export_timesheet_file_names.MY_STORIES_XLSX
-                let exportUrl = "/app/story/export"
+                let exportUrl = "app/story/export"
                 ExportFile(exportUrl,fileName);
                 this.isLoaderActive = false
             }
         },
 
         created() {
-            this.getMyStory();
+            this.getMyStory(this.pagination.currentPage);
             this.languageData = JSON.parse(store.state.languageLabel);
             this.isStoryDisplay = this.settingEnabled(constants.STORIES_ENABLED);
             if(!this.isStoryDisplay) {

@@ -13,8 +13,6 @@
 					<div class="heading-section">
 						<h1>{{languageData.label.comments}}</h1>
 					</div>
-					<b-alert show :variant="classVariant" dismissible v-model="showDismissibleAlert">{{ message }}
-					</b-alert>
 					<div class="inner-content-wrap">
 						<b-list-group class="status-bar inner-statusbar">
 							<b-list-group-item>
@@ -155,16 +153,13 @@
 					'declined': 0
 				},
 				languageData: [],
-				classVariant: 'danger',
 				message: null,
-				showDismissibleAlert: false,
 				isLoaderActive: true
 			};
 		},
 		methods: {
 			getCommentListing() {
 				this.isLoaderActive = true
-				// this.showDismissibleAlert = false;
 				commentListing().then(response => {
 					if (response.error == false) {
 						if (response.data && response.data.comments) {
@@ -194,25 +189,23 @@
 							}
 						}
 					} else {
-						this.showDismissibleAlert = true;
-						this.classVariant = 'danger'
-						//set error msg
 						this.message = response.message
+						this.makeToast('danger',response.message)
 					}
 					this.isLoaderActive = false
 				})
 			},
 			deleteComments(commentId) {
-				this.showDismissibleAlert = false;
 				this.isLoaderActive = true
 				deleteComment(commentId).then(response => {
-					this.showDismissibleAlert = true;
 					if (response.error == false) {
 						this.getCommentListing();
-						this.classVariant = 'success'
-						//set error msg
-						this.message = this.languageData.label.comment + ' ' + this.languageData.label
+						let message = this.languageData.label.comment + ' ' + this.languageData.label
 							.deleted_successfully
+
+						this.makeToast('success',message)
+					} else {
+						this.makeToast('danger',response.message)
 					}
 					this.isLoaderActive = false
 				});
@@ -220,10 +213,17 @@
 			exportFile() {
 				this.isLoaderActive = true
 				let fileName = this.languageData.export_timesheet_file_names.COMMENT_LISTING_XLSX
-				let exportUrl = "/app/dashboard/comments/export"
+				let exportUrl = "app/dashboard/comments/export"
 				ExportFile(exportUrl, fileName);
 				this.isLoaderActive = false
-			}
+			},
+			makeToast(variant = null, message) {
+				this.$bvToast.toast(message, {
+					variant: variant,
+					solid: true,
+					autoHideDelay: 3000
+				})
+			},
 		},
 		created() {
 			this.languageData = JSON.parse(store.state.languageLabel);
