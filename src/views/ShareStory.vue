@@ -254,9 +254,7 @@
 			},
 			cancleShareStory() {
 				this.storyId = ''
-				this.$router.push({
-					name: 'Stories'
-				})
+				this.$router.go(-1)
 			},
 
 			submitStory() {

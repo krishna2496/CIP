@@ -1,14 +1,14 @@
 import axios from 'axios'
 import store from '../../store'
 
-export default async() => {
+export default async(page) => {
     let responseData = {};
     var defaultLanguage = '';
     if (store.state.defaultLanguage !== null) {
         defaultLanguage = (store.state.defaultLanguage).toLowerCase();
     }
 
-    var url = process.env.VUE_APP_API_ENDPOINT + "app/story/my-stories";
+    var url = process.env.VUE_APP_API_ENDPOINT + "app/story/my-stories?page=" + page;
 
     await axios({
             url: url,
