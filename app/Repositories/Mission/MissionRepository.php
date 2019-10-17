@@ -490,7 +490,20 @@ class MissionRepository implements MissionInterface
         ->with(['city', 'country', 'missionTheme',
         'missionLanguage', 'missionMedia', 'missionDocument', 'goalMission', 'timeMission'])
         ->withCount('missionApplication');
-
+		
+		if ($request->has('search') && $request->has('search') !== '') {
+			$searchString = $request->search;
+            $missionQuery->where(function ($query) use ($searchString) {
+                $query->wherehas('missionLanguage', function ($missionLanguageQuery) use ($searchString) {
+                    $missionLanguageQuery->where('title', 'like', '%' . $searchString . '%');
+                    $missionLanguageQuery->orWhere('short_description', 'like', '%' . $searchString . '%');
+                });
+                $query->orWhere(function ($organizationQuery) use ($searchString) {
+                    $organizationQuery->orWhere('organisation_name', 'like', '%' . $searchString . '%');
+                });
+            });
+        }
+		
         if ($request->has('order')) {
             $orderDirection = $request->input('order', 'asc');
             $missionQuery->orderBy('mission_id', $orderDirection);
