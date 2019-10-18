@@ -11,10 +11,11 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Validator;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Transformations\MessageTransformable;
 
 class MessageController extends Controller
 {
-    use RestExceptionHandlerTrait;
+    use RestExceptionHandlerTrait,MessageTransformable;
     /**
      * @var App\Repositories\Message\MessageRepository;
      */
@@ -91,8 +92,25 @@ class MessageController extends Controller
             [$request->auth->user_id]
         );
         
-        // generate responce data
-        $apiData = $userMessages;
+        $unreadMessageCount = $this->messageRepository->getUnreadMessageCount($request->auth->user_id);
+        $messageTransformed = $this->transformMessage($userMessages, $unreadMessageCount[0]->unread);
+        
+        $requestString = $request->except(['page','perPage']);
+        $messagesPaginated = new \Illuminate\Pagination\LengthAwarePaginator(
+            $messageTransformed,
+            $userMessages->total(),
+            $userMessages->perPage(),
+            $userMessages->currentPage(),
+            [
+                'path' => $request->url().'?'.http_build_query($requestString),
+                'query' => [
+                    'page' => $userMessages->currentPage()
+                ]
+            ]
+        );
+    
+        // Set response data
+        $apiData = $messagesPaginated;
         $apiStatus = Response::HTTP_OK;
         $apiMessage = ($userMessages->total() > 0) ?
             trans('messages.success.MESSAGE_MESSAGES_ENTRIES_LISTING') :

@@ -184,7 +184,7 @@ class StoryInviteController extends Controller
             $tenantName = $this->helpers->getSubDomainFromRequest($request);
         
             $params['tenant_name'] = $tenantName;
-            $params['to'] = 'surbhi.ladhava@tatvasoft.com'; //$colleagueEmail; //required
+            $params['to'] = $colleagueEmail; //required
             $params['template'] = config('constants.EMAIL_TEMPLATE_FOLDER').'.'.config('constants.EMAIL_TEMPLATE_STORY_USER_INVITE'); //path to the email template
             $params['subject'] = trans('mail.recommonded_story.MAIL_STORY_RECOMMENDATION', [], $colleagueLanguage); //optional
             $params['data'] = $data;

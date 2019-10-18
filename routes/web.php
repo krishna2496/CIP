@@ -714,7 +714,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
             $router->delete('/{messageId}', ['as' => 'message.destroy',
                 'uses' => 'Admin\Message\MessageController@destroy']);
 
-            $router->get('/list', ['as' => 'message.list',
+            $router->get('/list', ['as' => 'message.list', 'middleware' => 'PaginationMiddleware',
                 'uses' => 'Admin\Message\MessageController@getUserMessages']);
 
             $router->post('/read/{messageId}', ['as' => 'message.read',

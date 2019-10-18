@@ -474,4 +474,25 @@ return [
         'NEW_MISSIONS' => 'circle-plus.png',
         'NEW_MESSAGES' => 'circle-plus.png',
     ],
+    
+    'activity_log_types' => [
+        'AUTH' => 'AUTH',
+        'USERS' => 'USERS',
+        'MISSION' => 'MISSION',
+        'COMMENT' => 'COMMENT',
+        'MESSAGE' => 'MESSAGE'
+    ],
+
+    'activity_log_actions' => [
+        'CREATED' => 'CREATED',
+        'UPDATED' => 'UPDATED',
+        'DELETED' => 'DELETED',
+        'INVITED' => 'INVITED',
+        'LOGGEDIN' => 'LOGGEDIN'
+    ],
+
+    'activity_log_user_types' => [
+        'API' => 'API',
+        'REGULAR' => 'REGULAR'
+    ]
 ];
