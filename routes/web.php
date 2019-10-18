@@ -300,7 +300,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
 
     /* all users published story listing */
     $router->get('/app/story/list', ['as' => 'app.story.publishedStories',
-        'middleware' => 'localization|tenant.connection|jwt.auth',
+        'middleware' => 'localization|tenant.connection|jwt.auth|PaginationMiddleware',
         'uses' => 'App\Story\StoryController@publishedStories']);
         
     /* Export all Story Data */
@@ -315,7 +315,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
 
     /* Get User's story Listing */
     $router->get('/app/story/my-stories', ['as' => 'app.story.userstories',
-        'middleware' => 'localization|tenant.connection|jwt.auth',
+        'middleware' => 'localization|tenant.connection|jwt.auth|PaginationMiddleware',
         'uses' => 'App\Story\StoryController@getUserStories']);
 
     /* Update story details */

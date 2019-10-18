@@ -58,29 +58,16 @@ trait StoryTransformable
      * Used for transform user stories
      *
      * @param Object $stories
+     * @param App\Models\Story $storyStatusCount
      * @return array
      */
-    protected function transformUserStories(Object $stories): array
+    protected function transformUserStories(Object $stories, Story $storyStatusCount): array
     {
         $transformedUserStories = array();
 
         $draftStories = $publishedStories = $pendingStories = $declinedStories = 0;
-        foreach ($stories as $story) {
-            switch ($story->status) {
-                case "DRAFT":
-                    $draftStories++;
-                    break;
-                case "PENDING":
-                    $pendingStories++;
-                    break;
-                case "PUBLISHED":
-                    $publishedStories++;
-                    break;
-                case "DECLINED":
-                    $declinedStories++;
-                    break;
-            }
 
+        foreach ($stories as $story) {
             $transformedUserStories['story_data'][] = [
                 'story_id' => (int) $story->story_id,
                 'mission_id' => $story->mission_id,
@@ -92,10 +79,10 @@ trait StoryTransformable
             ];
         }
         if (count($stories) > 0) {
-            $transformedUserStories['stats']['draft'] = $draftStories;
-            $transformedUserStories['stats']['published'] = $publishedStories;
-            $transformedUserStories['stats']['pending'] = $pendingStories;
-            $transformedUserStories['stats']['declined'] = $declinedStories;
+            $transformedUserStories['stats']['draft'] = $storyStatusCount->draft;
+            $transformedUserStories['stats']['published'] =  $storyStatusCount->published;
+            $transformedUserStories['stats']['pending'] =  $storyStatusCount->pending;
+            $transformedUserStories['stats']['declined'] =  $storyStatusCount->declined;
         }
         
         return $transformedUserStories;
