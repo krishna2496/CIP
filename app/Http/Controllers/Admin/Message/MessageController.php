@@ -182,7 +182,7 @@ class MessageController extends Controller
            
             // Set response data
             $apiStatus = Response::HTTP_OK;
-            $apiMessage = trans('messages.success.MESSAGE_READ_SUCESSFULLY');
+            $apiMessage = trans('messages.success.MESSAGE_READ_SUCCESSFULLY');
             $apiData = ['message_id' => $messageDetails->message_id];
 
             return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
