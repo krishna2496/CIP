@@ -137,7 +137,9 @@ class MissionController extends Controller
             config('constants.activity_log_user_types.API'),
             $request->header('php-auth-user'),
             get_class($this),
-            $request->toArray()
+            $request->toArray(),
+            null,
+            $mission->mission_id
         ));
         return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
     }
