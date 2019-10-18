@@ -16,6 +16,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use InvalidArgumentException;
 use App\Exceptions\TenantDomainNotFoundException;
 use App\Events\User\UserNotificationEvent;
+use App\Events\User\UserActivityLogEvent;
 
 class MissionController extends Controller
 {
@@ -125,10 +126,21 @@ class MissionController extends Controller
         // Send notification to all users
         $notificationType = config('constants.notification_type_keys.NEW_MISSIONS');
         $entityId = $mission->mission_id;
-        $action =config('constants.notification_actions.CREATED');
+        $action = config('constants.notification_actions.CREATED');
         
         event(new UserNotificationEvent($notificationType, $entityId, $action));
-        
+
+        // Make activity log
+        event(new UserActivityLogEvent(
+            config('constants.activity_log_types.MISSION'),
+            config('constants.activity_log_actions.CREATED'),
+            config('constants.activity_log_user_types.API'),
+            $request->header('php-auth-user'),
+            get_class($this),
+            $request->toArray(),
+            null,
+            $mission->mission_id
+        ));
         return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
     }
 

@@ -11,73 +11,41 @@ class UserActivityLogEvent extends Event
     use SerializesModels;
 
     /**
-     * @var string
+     * @var array
      */
-    public $type;
+    public $activityDataArray;
 
-    /**
-     * @var string
-     */
-    public $action;
-
-    /**
-     * @var string
-     */
-    public $object_class;
-
-    /**
-     * @var int|null
-     */
-    public $object_id = null;
-
-    /**
-     * @var string|null
-     */
-    public $object_value = null;
-
-    /**
-     * @var int
-     */
-    public $user_id;
-
-    /**
-     * @var string
-     */
-    public $user_type;
 
     /**
      * Create a new event instance.
      *
-     * @param string $notificationType
-     * @param int $entityId
+     * @param string $type
      * @param string $action
-     * @param int|null $userId
+     * @param string $userType
+     * @param string $userValue
+     * @param string  $objectClass = null,
+     * @param string  $objectValue = null,
+     * @param int  $userId = null,
+     * @param int  $objectId = null
      * @return void
      */
     public function __construct(
         $type,
         $action,
-        $userId,
         $userType,
+        $userValue,
         $objectClass = null,
         $objectValue = null,
+        $userId = null,
         $objectId = null
     ) {
-        $notificationTypeDetails = NotificationType::where('notification_type', $notificationType)->first();
-        
-        $this->notificationTypeId = $notificationTypeDetails->notification_type_id;
-        $this->entityId = $entityId;
-        $this->action = $action;
-        $this->userId = $userId;
-    }
-
-    /**
-     * Get the channels the event should be broadcast on.
-     *
-     * @return array
-     */
-    public function broadcastOn()
-    {
-        return [];
+        $this->activityDataArray['type'] = $type;
+        $this->activityDataArray['action'] = $action;
+        $this->activityDataArray['user_type'] = $userType;
+        $this->activityDataArray['user_value'] = $userValue;
+        $this->activityDataArray['object_class'] = $objectClass;
+        $this->activityDataArray['object_id'] = $objectId;
+        $this->activityDataArray['object_value'] = $objectValue;
+        $this->activityDataArray['user_id'] = $userId;
     }
 }

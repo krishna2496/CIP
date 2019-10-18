@@ -150,7 +150,7 @@ class StoryInviteController extends Controller
         }
         
         $notificationTypeId = $this->notificationRepository
-        ->getNotificationTypeID(config('constants.notification_types.RECOMMENDED_STORY'));
+        ->getNotificationTypeID(config('constants.notification_type_keys.RECOMMENDED_STORY'));
         
         // Check if to_user_id (colleague) has enabled notification for Recommended story
         $notifyColleague = $this->notificationRepository
@@ -182,7 +182,7 @@ class StoryInviteController extends Controller
             $tenantName = $this->helpers->getSubDomainFromRequest($request);
         
             $params['tenant_name'] = $tenantName;
-            $params['to'] = 'surbhi.ladhava@tatvasoft.com'; //$colleagueEmail; //required
+            $params['to'] = $colleagueEmail; //required
             $params['template'] = config('constants.EMAIL_TEMPLATE_FOLDER').'.'.config('constants.EMAIL_TEMPLATE_STORY_USER_INVITE'); //path to the email template
             $params['subject'] = trans('mail.recommonded_story.MAIL_STORY_RECOMMENDATION', [], $colleagueLanguage); //optional
             $params['data'] = $data;

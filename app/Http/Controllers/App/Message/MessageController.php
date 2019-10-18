@@ -133,4 +133,34 @@ class MessageController extends Controller
             );
         }
     }
+    
+    /**
+     * Read message send by admin.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param int $messageId
+     * @return Illuminate\Http\JsonResponse
+     */
+    public function readMessage(Request $request, int $messageId): JsonResponse
+    {
+        try {
+            $messageDetails = $this->messageRepository->readMessage(
+                $messageId,
+                $request->auth->user_id,
+                config('constants.message.send_message_from.admin')
+            );
+           
+            // Set response data
+            $apiStatus = Response::HTTP_OK;
+            $apiMessage = trans('messages.success.MESSAGE_READ_SUCCESSFULLY');
+            $apiData = ['message_id' => $messageDetails->message_id];
+
+            return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
+        } catch (ModelNotFoundException $e) {
+            return $this->modelNotFound(
+                config('constants.error_codes.ERROR_MESSAGE_USER_MESSAGE_NOT_FOUND'),
+                trans('messages.custom_error_message.ERROR_MESSAGE_USER_MESSAGE_NOT_FOUND')
+            );
+        }
+    }
 }
