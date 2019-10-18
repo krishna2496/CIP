@@ -68,11 +68,11 @@
 											{{data.item[languageData.label.status] }}
 										</template>
 										<template :slot="languageData.label.action" slot-scope="data">
-											<b-button class="btn-action btn-expand">
+											<b-button class="btn-action btn-expand"  v-b-tooltip.hover :title="languageData.label.expand">
 												<img :src="$store.state.imagePath+'/assets/images/expand-ic.svg'"
 													alt="Expand" />
 											</b-button>
-											<b-button class="btn-action" @click="deleteComments(data.item.comment_id)">
+											<b-button class="btn-action"  v-b-tooltip.hover :title="languageData.label.delete" @click="deleteComments(data.item.comment_id)">
 												<img :src="$store.state.imagePath+'/assets/images/gray-delete-ic.svg'"
 													alt="Delete" />
 											</b-button>
@@ -188,6 +188,11 @@
 								this.statsField.pending = response.data.stats[0].pending;
 								this.statsField.declined = response.data.stats[0].declined;
 							}
+						} else {
+							this.commentItems = []
+							this.statsField.published = 0;
+							this.statsField.pending = 0;
+							this.statsField.declined = 0;
 						}
 					} else {
 						this.message = response.message

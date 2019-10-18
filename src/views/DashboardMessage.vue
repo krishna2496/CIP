@@ -32,6 +32,7 @@
 									<span v-if="messageCount > 1">({{messageCount}}) {{languageData.label.total}} {{languageData.label.messages | firstLetterSmall}}</span>
 									<span v-else>({{messageCount}}) {{languageData.label.message | firstLetterSmall}}</span>
 								</div>
+								
 								<ul class="message-box" v-if="messageList.length > 0">
 									<li v-for="(message, idx) in messageList" :key="idx" v-bind:class="{'new-message' :message.is_read == 0}" @click="readMessages(message.messageId,message.is_read)">
 										<b-button :title="languageData.label.delete" class="delete-btn">
@@ -45,7 +46,7 @@
 									</li>
 								</ul>
 								<ul v-else class="text-center">
-									<h2>{{languageData.label.message}} {{languageData.label.not_found}}</h2>
+									<h2>{{languageData.label.no_messages}}</h2>
 								</ul>
 							</div>
 							<div class="pagination-block" data-aos="fade-up" v-if="pagination.totalPages > 1">
@@ -266,6 +267,7 @@
 						} else {
 							this.messageList = []
 							this.newMessage = 0
+							this.messageCount = 0
 						}
 					} else {
 						this.showErrorDiv = true;
@@ -277,7 +279,6 @@
 
 			deleteMessage(messageId) {
 				this.isLoaderActive = true
-				console.log("in delete ");
 				deleteMessage(messageId).then(response => {
 					let variant = 'success'
 					let message = '';
