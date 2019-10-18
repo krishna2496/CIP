@@ -14,7 +14,7 @@ trait MessageTransformable
      * @return Array
      */
 
-    protected function transformMessage(Object $messages, int $messageUnreadCount = null): Array
+    protected function transformMessage(Object $messages, int $messageUnreadCount = null): array
     {
         $messageData = array();
         foreach ($messages as $message) {

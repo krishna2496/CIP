@@ -45,5 +45,16 @@ return [
         'PENDING' => 'En attente',
         'PUBLISHED' => 'Publié',
         'DECLINED' => 'DIMINUÉE',
-    ]
+    ],
+    
+    'notification' => [
+        'RECOMMENDS_THIS_MISSION' => 'Recommande cette mission',
+        'VOLUNTEERING_HOURS_SUBMITTED_THE' => 'Heures de bénévolat soumises le',
+        'VOLUNTEERING_GOALS_SUBMITTED_THE' => 'Les objectifs de volontariat soumis le',
+        'COMMENT_OF' => 'Commentaire de',
+        'STORY' => 'Récit',
+        'NEW_MISSION' => 'Nouvelle mission',
+        'NEW_MESSAGE' => 'Nouveau message',
+        'RECOMMENDS_THIS_STORY' => 'Recommande cette histoire',        
+    ],
 ];
