@@ -100,12 +100,7 @@ class MessageController extends Controller
             $userIds
         );
         
-        $messageTransformed = $userMessages
-            ->getCollection()
-            ->map(function ($message) use ($request) {
-                $message = $this->transformMessage($message);
-                return $message;
-            });
+        $messageTransformed = $this->transformMessage($userMessages);
 
         $requestString = $request->except(['page','perPage']);
         $messagesPaginated = new \Illuminate\Pagination\LengthAwarePaginator(
@@ -121,7 +116,7 @@ class MessageController extends Controller
             ]
         );
         
-        // generate responce data
+        // Set response data
         $apiData = $messagesPaginated;
         $apiStatus = Response::HTTP_OK;
         $apiMessage = ($messagesPaginated->total() > 0) ?
