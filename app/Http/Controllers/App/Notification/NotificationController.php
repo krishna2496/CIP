@@ -14,7 +14,7 @@ use Illuminate\Http\Request;
 use Validator;
 use App\Services\NotificationService;
 use App\Helpers\Helpers;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Carbon\Carbon;
 
 class NotificationController extends Controller
 {
@@ -87,40 +87,37 @@ class NotificationController extends Controller
     {
         $languageId = $this->languageHelper->getLanguageId($request);
         $defaultTenantLanguage = $this->languageHelper->getDefaultTenantLanguage($request);
-        $defaultTenantLanguageId = $defaultTenantLanguage->language_id;
+
+        //Fetch unread notification count
+        $notificationsCount = $this->notificationRepository->getNotificationsCount($request->auth->user_id);
+        $notificationData['unread_notifications'] = $notificationsCount;
 
         //Fetch notification
         $notifications = $this->notificationRepository->getNotifications($request->auth->user_id);
-
-        // dd($notifications);
-
-        $notificationData = [];
+        
         foreach ($notifications as $notification) {
-            $methodName =  lcfirst(str_replace(" ", "", ucwords(
-                str_replace("_", " ", $notification->notificationType->notification_type)
-            )));
+            $notificaionType = str_replace("_", " ", $notification->notificationType->notification_type);
+            $methodName =  lcfirst(str_replace(" ", "", ucwords($notificaionType)));
             $tenantName = $this->helpers->getSubDomainFromRequest($request);
             $notificationDetails = $this->notificationService->$methodName(
                 $notification,
+                $tenantName,
                 $languageId,
-                $defaultTenantLanguageId,
-                $tenantName
+                $defaultTenantLanguage->language_id
             );
-            $notificationDetails['created_at'] = $notification->created_at;
-            $notificationData[] = $notificationDetails;
-            echo $notification->notificationType->notification_type;
-            echo "<br>";
+            $notificationDetails['created_at'] = Carbon::parse($notification->created_at)->format('Y-m-d H:i:s');
+            $notificationData['notifications'][] = $notificationDetails;
         }
-        dd($notificationData);
+
         // Set response data
         $apiData = $notificationData;
         $apiStatus = Response::HTTP_OK;
-        $apiMessage = (count($notificationData) < 0) ?
-        trans('messages.success.MESSAGE_NO_RECORD_FOUND'):
-        trans('messages.success.MESSAGE_NOTIFICATION_LISTING');
+        $apiMessage = (count($notifications) < 0) ?
+        trans('messages.success.MESSAGE_NO_RECORD_FOUND') : trans('messages.success.MESSAGE_NOTIFICATION_LISTING');
 
         return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
     }
+
 
     /**
      * read unread notification
@@ -137,12 +134,12 @@ class NotificationController extends Controller
                 $notificationId,
                 $request->auth->user_id
             );
-           
+       
             // Set response data
             $apiStatus = Response::HTTP_OK;
-            $apiMessage = trans('messages.success.MESSAGE_USER_NOTIFICATION_READ_UNREAD_SUCCESS');
+            $apiMessage = trans('messages.success.MESSAGE_USER_NOTIFICATION_READ_UNREAD_SUCCESSFULLY');
             $apiData = ['notification_id' => $notificationId ];
-            
+        
             return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
@@ -164,7 +161,7 @@ class NotificationController extends Controller
 
         // Set response data
         $apiStatus = Response::HTTP_NO_CONTENT;
-        $apiMessage = trans('messages.success.MESSAGE_USER_NOTIFICATIONS_CLEAR_SUCCESS');
+        $apiMessage = trans('messages.success.MESSAGE_USER_NOTIFICATIONS_CLEAR_SUCCESSFULLY');
 
         return $this->responseHelper->success($apiStatus, $apiMessage);
     }

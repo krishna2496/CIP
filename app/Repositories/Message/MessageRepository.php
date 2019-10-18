@@ -122,4 +122,15 @@ class MessageRepository implements MessageInterface
             }
         )->firstOrFail()->delete();
     }
+    
+    /**
+     * Get message detail
+     *
+     * @param int $messageId
+     * @return App\Models\Message
+     */
+    public function getMessage(int $messageId): Message
+    {
+        return $this->message->findOrFail($messageId);
+    }
 }

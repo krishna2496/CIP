@@ -19,6 +19,7 @@ use Validator;
 use Illuminate\Support\Facades\Mail;
 use App\Jobs\AppMailerJob;
 use App\Exceptions\TenantDomainNotFoundException;
+use App\Events\User\UserNotificationEvent;
 
 class StoryInviteController extends Controller
 {
@@ -165,13 +166,14 @@ class StoryInviteController extends Controller
             $colleagueLanguage = $language->code;
             $fromUserName = $this->userRepository->getUserName($request->auth->user_id);
             $storyName = $this->storyInviteRepository->getStoryName($request->story_id);
-            $notificationData = array(
-                'notification_type_id' => $notificationTypeId,
-                'user_id' => $request->auth->user_id,
-                'to_user_id' => $request->to_user_id,
-                'story_id' => $request->story_id,
-            );
-            $notification = $this->notificationRepository->createNotification($notificationData);
+            
+            // Send notification to user
+            $notificationType = config('constants.notification_type_keys.RECOMMENDED_STORY');
+            $entityId = $inviteStory->story_invite_id;
+            $action = config('constants.notification_actions.INVITE');
+            $userId = $request->to_user_id;
+            
+            event(new UserNotificationEvent($notificationType, $entityId, $action, $userId));
             
             $data = array(
                 'storyName'=> $storyName,

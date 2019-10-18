@@ -458,7 +458,6 @@ return [
         'ERROR_MESSAGE_USER_MESSAGE_NOT_FOUND' => '1100002'
     ],
 
-
     /**
      * Notification types
      */
@@ -486,5 +485,17 @@ return [
         'INVITE' => 'INVITE',
         'AUTOMATICALLY_APPROVED' => 'AUTOMATICALLY_APPROVED',
         'SUBMIT_FOR_APPROVAL' => 'SUBMIT_FOR_APPROVAL'
-    ]
+    ],
+
+    /**
+     * Notification type icons
+     */
+    'notification_type_icons' => [
+        'VOLUNTEERING_HOURS' => 'warning.png',
+        'VOLUNTEERING_GOALS' => 'warning.png',
+        'MY_COMMENTS' => 'warning.png',
+        'MY_STORIES' => 'warning.png',
+        'NEW_MISSIONS' => 'circle-plus.png',
+        'NEW_MESSAGES' => 'circle-plus.png',
+    ],
 ];

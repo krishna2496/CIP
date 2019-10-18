@@ -160,8 +160,9 @@ return [
         'MESSAGE_USER_COOKIE_AGREEMENT_ACCEPTED' => 'Contrat de cookie accepté avec succès',
         'MESSAGE_NOTIFICATION_SETTINGS_LISTING' => 'Paramètres de notification répertoriés avec succès',
         'MESSAGE_USER_NOTIFICATION_SETTINGS_UPDATED' => 'Paramètres de notification utilisateur mis à jour avec succès',
-        'MESSAGE_USER_NOTIFICATION_READ_UNREAD_SUCCESS' => 'Statut de notification utilisateur mis à jour avec succès',
-        'MESSAGE_USER_NOTIFICATIONS_CLEAR_SUCCESS' => 'Notification d\'utilisateur effacée avec succès',
+        'MESSAGE_USER_NOTIFICATION_READ_UNREAD_SUCCESSFULLY' => 'Statut de notification utilisateur mis à jour avec succès',
+        'MESSAGE_USER_NOTIFICATIONS_CLEAR_SUCCESSFULLY' => 'Notification d\'utilisateur effacée avec succès',
+        'MESSAGE_NOTIFICATION_LISTING' => 'Notification répertoriée avec succès',
     ],
 
         

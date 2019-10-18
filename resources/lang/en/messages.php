@@ -168,8 +168,9 @@ return [
         'MESSAGE_USER_COOKIE_AGREEMENT_ACCEPTED' => 'Cookie agreement accepted successfully',
         'MESSAGE_NOTIFICATION_SETTINGS_LISTING' => 'Notification settings listed successfully',
         'MESSAGE_USER_NOTIFICATION_SETTINGS_UPDATED' => 'User notification settings updated successfully',
-        'MESSAGE_USER_NOTIFICATION_READ_UNREAD_SUCCESS' => 'User notification status updated successfully',
-        'MESSAGE_USER_NOTIFICATIONS_CLEAR_SUCCESS' => 'User notification cleared successfully',
+        'MESSAGE_USER_NOTIFICATION_READ_UNREAD_SUCCESSFULLY' => 'User notification status updated successfully',
+        'MESSAGE_USER_NOTIFICATIONS_CLEAR_SUCCESSFULLY' => 'User notification cleared successfully',
+        'MESSAGE_NOTIFICATION_LISTING' => 'Notification listed successfully',
     ],
 
         

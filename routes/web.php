@@ -407,10 +407,15 @@ $router->group(['middleware' => 'localization'], function ($router) {
         'middleware' => 'localization|tenant.connection|jwt.auth',
         'uses' => 'App\Notification\NotificationController@readUnreadNotification']);
 
-     /* Clear User notification */
-     $router->delete('/app/notification/clear', ['as' => 'app.user-notification.clear',
-     'middleware' => 'localization|tenant.connection|jwt.auth',
-     'uses' => 'App\Notification\NotificationController@clearAllNotifications']);
+    /* Clear User notification */
+    $router->delete('/app/notification/clear', ['as' => 'app.user-notification.clear',
+        'middleware' => 'localization|tenant.connection|jwt.auth',
+        'uses' => 'App\Notification\NotificationController@clearAllNotifications']);
+        
+    /* Fetch notification settings */
+    $router->get('/app/notification', ['as' => 'app.notification',
+        'middleware' => 'localization|tenant.connection|jwt.auth',
+          'uses' => 'App\Notification\NotificationController@index']);
 });
 
 

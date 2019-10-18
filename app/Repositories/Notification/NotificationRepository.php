@@ -116,7 +116,7 @@ class NotificationRepository implements NotificationInterface
     }
 
     /**
-     * Get notification type id
+     * Get notifications
      *
      * @param int $userId
      * @return Illuminate\Database\Eloquent\Collection
@@ -161,5 +161,16 @@ class NotificationRepository implements NotificationInterface
         return $this->notification->where([
             'user_id' => $userId
         ])->delete();
+    }
+
+    /**
+     * Get notifications count
+     *
+     * @param int $userId
+     * @return int
+     */
+    public function getNotificationsCount(int $userId): int
+    {
+        return $this->notification->where(['user_id' => $userId, 'is_read' => '0'])->get()->count();
     }
 }
