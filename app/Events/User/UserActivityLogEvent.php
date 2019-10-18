@@ -19,10 +19,14 @@ class UserActivityLogEvent extends Event
     /**
      * Create a new event instance.
      *
-     * @param string $notificationType
-     * @param int $entityId
+     * @param string $type
      * @param string $action
-     * @param int|null $userId
+     * @param string $userType
+     * @param string $userValue
+     * @param string  $objectClass = null,
+     * @param string  $objectValue = null,
+     * @param int  $userId = null,
+     * @param int  $objectId = null
      * @return void
      */
     public function __construct(
@@ -43,15 +47,5 @@ class UserActivityLogEvent extends Event
         $this->activityDataArray['object_id'] = $objectId;
         $this->activityDataArray['object_value'] = $objectValue;
         $this->activityDataArray['user_id'] = $userId;
-    }
-
-    /**
-     * Get the channels the event should be broadcast on.
-     *
-     * @return array
-     */
-    public function broadcastOn()
-    {
-        return [];
     }
 }
