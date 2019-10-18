@@ -55,7 +55,7 @@
 									<b-table :items="commentItems" responsive :fields="commentfields"
 										class="history-table">
 										<template :slot="languageData.label.mission" slot-scope="data">
-											<b-link :to="`/mission-detail/${data.item.mission_id}`" class="table-link">
+											<b-link :to="`/mission-detail/${data.item.mission_id}`" target="_blank" class="table-link">
 												{{ data.item[languageData.label.mission] }}</b-link>
 										</template>
 										<template :slot="languageData.label.date" slot-scope="data">
