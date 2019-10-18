@@ -12,6 +12,7 @@ use Illuminate\Http\Response;
 use Validator;
 use App\Transformations\MessageTransformable;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Events\User\UserNotificationEvent;
 
 class MessageController extends Controller
 {
@@ -71,8 +72,8 @@ class MessageController extends Controller
         }
         
         // Store message data
-        $this->messageRepository->store($request, config('constants.message.send_message_from.admin'));
-
+        $messageIds = $this->messageRepository->store($request, config('constants.message.send_message_from.admin'));
+        
         // Set response data
         $apiStatus = Response::HTTP_CREATED;
 
@@ -80,6 +81,16 @@ class MessageController extends Controller
             trans('messages.success.MESSAGE_USER_MESSAGES_SEND_SUCCESSFULLY') :
             trans('messages.success.MESSAGE_USER_MESSAGE_SEND_SUCCESSFULLY');
         $apiData = [];
+
+        // Send notification to all users
+        foreach ($messageIds as $message) {
+            $notificationType = config('constants.notification_type_keys.NEW_MESSAGES');
+            $entityId = $message['message_id'];
+            $action = config('constants.notification_actions.CREATED');
+            $userId = $message['user_id'];
+            event(new UserNotificationEvent($notificationType, $entityId, $action, $userId));
+        }
+        
 
         return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
     }

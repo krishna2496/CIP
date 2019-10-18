@@ -33,12 +33,12 @@ class MessageRepository implements MessageInterface
      *
      * @param \Illuminate\Http\Request $request
      * @param int $messageSentFrom
-     * @return null|int messageId
+     * @return array
      */
-    public function store(Request $request, int $messageSentFrom): ?int
+    public function store(Request $request, int $messageSentFrom): array
     {
         $adminName =  !empty($request->admin) ? $request->admin : null;
-        
+        $messageIds = [];
         // found message from admin
         $message = ['sent_from' => $messageSentFrom,
                     'admin_name' => $adminName,
@@ -58,9 +58,9 @@ class MessageRepository implements MessageInterface
                     'created_at' => $now,
                     'updated_at' => $now,
                 ];
-                $batchMessageArray[] = array_merge($message, $messageDataArray);
+                $messageData = $this->message->create(array_merge($message, $messageDataArray));
+                array_push($messageIds, ['message_id' => $messageData->message_id, 'user_id' => $userId]);
             }
-            $messageData = $this->message->insert($batchMessageArray);
         } else {
             $messageDataArray = array(
                 'user_id' => $request->auth->user_id,
@@ -68,9 +68,9 @@ class MessageRepository implements MessageInterface
             );
             $messageDataArray = array_merge($message, $messageDataArray);
             $messageData = $this->message->create($messageDataArray);
+            array_push($messageIds, $messageData->message_id);
         }
-
-        return !empty($messageData->message_id) ? $messageData->message_id : null;
+        return $messageIds;
     }
 
     /**

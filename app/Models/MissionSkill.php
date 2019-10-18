@@ -7,6 +7,7 @@ use App\Models\Skill;
 use App\Models\Mission;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class MissionSkill extends Model
 {
@@ -71,5 +72,15 @@ class MissionSkill extends Model
     {
         return static::firstOrNew(array('mission_id' => $missionId, 'skill_id' => $skillId, 'deleted_at' => null))
             ->save();
+    }
+    
+    /**
+     * Get user skills based on mission's skills
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function skilledUsers(): HasMany
+    {
+        return $this->hasMany('App\Models\UserSkill', 'skill_id', 'skill_id');
     }
 }
