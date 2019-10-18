@@ -486,6 +486,9 @@ return [
         'COMMENT' => 'COMMENT',
         'MESSAGE' => 'MESSAGE',
         'NEWS_CATEGORY' => 'NEWS_CATEGORY',
+        'NEWS' => 'NEWS',
+        'VOLUNTEERING_TIMESHEET' => 'VOLUNTEERING_TIMESHEET',
+        'VOLUNTEERING_TIMESHEET_DOCUMENT' => 'VOLUNTEERING_TIMESHEET_DOCUMENT'
     ],
 
     'activity_log_actions' => [

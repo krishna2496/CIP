@@ -14,6 +14,7 @@ use Validator;
 use App\Models\TimesheetStatus;
 use Illuminate\Http\JsonResponse;
 use App\Events\User\UserNotificationEvent;
+use App\Events\User\UserActivityLogEvent;
 
 class TimesheetController extends Controller
 {
@@ -33,6 +34,11 @@ class TimesheetController extends Controller
      * @var App\Helpers\ResponseHelper
      */
     private $responseHelper;
+
+    /**
+     * @var string
+     */
+    private $userApiKey;
     
     /**
      * Create a new controller instance.
@@ -40,16 +46,19 @@ class TimesheetController extends Controller
      * @param App\Repositories\User\UserRepository $userRepository
      * @param App\Repositories\Timesheet\TimesheetRepository $timesheetRepository
      * @param  App\Helpers\ResponseHelper $responseHelper
+     * @param \Illuminate\Http\Request $request
      * @return void
      */
     public function __construct(
         UserRepository $userRepository,
         TimesheetRepository $timesheetRepository,
-        ResponseHelper $responseHelper
+        ResponseHelper $responseHelper,
+        Request $request
     ) {
         $this->userRepository = $userRepository;
         $this->timesheetRepository = $timesheetRepository;
         $this->responseHelper = $responseHelper;
+        $this->userApiKey =$request->header('php-auth-user');
     }
 
 
@@ -134,6 +143,18 @@ class TimesheetController extends Controller
             
             event(new UserNotificationEvent($notificationType, $entityId, $action, $userId));
             
+            // Make activity log
+            event(new UserActivityLogEvent(
+                config('constants.activity_log_types.VOLUNTEERING_TIMESHEET'),
+                config('constants.activity_log_actions.UPDATED'),
+                config('constants.activity_log_user_types.API'),
+                $this->userApiKey,
+                get_class($this),
+                $request->toArray(),
+                null,
+                $timesheetId
+            ));
+
             return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(

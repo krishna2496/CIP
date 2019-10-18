@@ -608,4 +608,15 @@ class TimesheetRepository implements TimesheetInterface
         return $this->timesheet->with(['mission','user','timesheetStatus'])
         ->where('timesheet_id', $timesheetId)->first();
     }
+
+    /**
+     * Get Time sheet Documents
+     * @param int $timesheetId
+     * @return Illuminate\Support\Collection;
+     */
+    public function getUploadedTimesheetDocuments(int $timesheetId, $documentCount): Collection
+    {
+        return $this->timesheetDocument->where('timesheet_id', $timesheetId)
+                ->orderBy('timesheet_document_id', 'DESC')->take($documentCount)->get();
+    }
 }
