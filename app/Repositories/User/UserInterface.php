@@ -125,7 +125,7 @@ interface UserInterface
      * @param int $userId
      * @return null|int
      */
-    public function getUserGoalHours(int $userId): ?int;
+    public function getUserHoursGoal(int $userId): ?int;
 
     /**
      * Update cookie agreement date

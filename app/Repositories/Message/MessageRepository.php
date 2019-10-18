@@ -33,20 +33,20 @@ class MessageRepository implements MessageInterface
      *
      * @param \Illuminate\Http\Request $request
      * @param int $messageSentFrom
-     * @return null|int messageId
+     * @return array
      */
-    public function store(Request $request, int $messageSentFrom): ?int
+    public function store(Request $request, int $messageSentFrom): array
     {
         $adminName =  !empty($request->admin) ? $request->admin : null;
-        
+        $messageIds = [];
         // found message from admin
-		$message = ['sent_from' => $messageSentFrom, 
-					'admin_name' => $adminName, 
-					'subject' => $request->subject,
-					'message' => $request->message
-					];
+        $message = ['sent_from' => $messageSentFrom,
+                    'admin_name' => $adminName,
+                    'subject' => $request->subject,
+                    'message' => $request->message
+                    ];
         if ($messageSentFrom == config('constants.message.send_message_from.admin')) {
-			$isAnonymous = !empty($request->admin) ?
+            $isAnonymous = !empty($request->admin) ?
                        config('constants.message.not_anonymous') :
                        config('constants.message.anonymous');
             $now = Carbon::now()->toDateTimeString();
@@ -54,23 +54,23 @@ class MessageRepository implements MessageInterface
                 $messageDataArray = [
                     'user_id' => $userId,
                     'is_read' => config('constants.message.unread'),
-					'is_anonymous' => $isAnonymous,
+                    'is_anonymous' => $isAnonymous,
                     'created_at' => $now,
                     'updated_at' => $now,
                 ];
-				$batchMessageArray[] = array_merge($message, $messageDataArray);
+                $messageData = $this->message->create(array_merge($message, $messageDataArray));
+                array_push($messageIds, ['message_id' => $messageData->message_id, 'user_id' => $userId]);
             }
-            $messageData = $this->message->insert($batchMessageArray);
         } else {
             $messageDataArray = array(
                 'user_id' => $request->auth->user_id,
-                'is_read' => config('constants.message.read'),
+                'is_read' => config('constants.message.unread'),
             );
-			$messageDataArray = array_merge($message, $messageDataArray);
+            $messageDataArray = array_merge($message, $messageDataArray);
             $messageData = $this->message->create($messageDataArray);
+            array_push($messageIds, $messageData->message_id);
         }
-
-        return !empty($messageData->message_id) ? $messageData->message_id : null;
+        return $messageIds;
     }
 
     /**
@@ -89,12 +89,12 @@ class MessageRepository implements MessageInterface
         $userMessageQuery = $this->message->select('*')->with(['user' => function ($query) {
             $query->select('user_id', 'first_name', 'last_name');
         }])->where('sent_from', $sentFrom)
-                            ->when(
-                                $userIds,
-                                function ($query, $userIds) {
-                                    return $query->whereIn('user_id', $userIds);
-                                }
-                            )->orderBy('created_at', 'desc');
+            ->when(
+                $userIds,
+                function ($query, $userIds) {
+                    return $query->whereIn('user_id', $userIds);
+                }
+            )->orderBy('created_at', 'desc');
 
         return $userMessageQuery->paginate($request->perPage);
     }
@@ -121,5 +121,20 @@ class MessageRepository implements MessageInterface
                 return $query->where('user_id', $userId);
             }
         )->firstOrFail()->delete();
+    }
+
+    /**
+     * Read message.
+     *
+     * @param int $messageId
+     * @param int $userId | null
+     * @param int $sentFrom
+     * @return App\Models\Message
+     */
+    public function readMessage(int $messageId, int $userId = null, int $sentFrom): Message
+    {
+        $messageDetails = $this->message->findMessage($messageId, $userId, $sentFrom);
+        $messageDetails->update(['is_read' => config('constants.message.read')]);
+        return $messageDetails;
     }
 }

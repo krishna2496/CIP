@@ -300,7 +300,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
 
     /* all users published story listing */
     $router->get('/app/story/list', ['as' => 'app.story.publishedStories',
-        'middleware' => 'localization|tenant.connection|jwt.auth',
+        'middleware' => 'localization|tenant.connection|jwt.auth|PaginationMiddleware',
         'uses' => 'App\Story\StoryController@publishedStories']);
         
     /* Export all Story Data */
@@ -315,7 +315,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
 
     /* Get User's story Listing */
     $router->get('/app/story/my-stories', ['as' => 'app.story.userstories',
-        'middleware' => 'localization|tenant.connection|jwt.auth',
+        'middleware' => 'localization|tenant.connection|jwt.auth|PaginationMiddleware',
         'uses' => 'App\Story\StoryController@getUserStories']);
 
     /* Update story details */
@@ -389,7 +389,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
             
     /* Get User's message Listing*/
     $router->get('/app/message/list', ['as' => 'app.message.list',
-        'middleware' => 'localization|tenant.connection|jwt.auth',
+        'middleware' => 'localization|tenant.connection|jwt.auth|PaginationMiddleware',
         'uses' => 'App\Message\MessageController@getUserMessages']);
 
     /* Delete Message details */
@@ -407,6 +407,10 @@ $router->group(['middleware' => 'localization'], function ($router) {
         'middleware' => 'localization|tenant.connection|jwt.auth|JsonApiMiddleware',
         'uses' => 'App\Notification\NotificationTypeController@storeOrUpdate']);
 
+    /* Read message send by admin */
+    $router->post('/app/message/read/{messageId}', ['as' => 'app.message.read',
+        'middleware' => 'localization|tenant.connection|jwt.auth',
+        'uses' => 'App\Message\MessageController@readMessage']);
 });
 
 
@@ -698,9 +702,9 @@ $router->group(['middleware' => 'localization'], function ($router) {
 
      /* message management */
     $router->group(
-        ['prefix' => '/message', 'middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware'],
+        ['prefix' => '/message', 'middleware' => 'localization|auth.tenant.admin'],
         function ($router) {
-            $router->post('/send', ['as' => 'message.send',
+            $router->post('/send', ['as' => 'message.send','middleware' => ['JsonApiMiddleware'],
                'uses' => 'Admin\Message\MessageController@sendMessage']);
               
             $router->delete('/{messageId}', ['as' => 'message.destroy',
@@ -708,6 +712,9 @@ $router->group(['middleware' => 'localization'], function ($router) {
 
             $router->get('/list', ['as' => 'message.list',
                 'uses' => 'Admin\Message\MessageController@getUserMessages']);
+
+            $router->post('/read/{messageId}', ['as' => 'message.read',
+                'uses' => 'Admin\Message\MessageController@readMessage']);
         }
     );
 /*

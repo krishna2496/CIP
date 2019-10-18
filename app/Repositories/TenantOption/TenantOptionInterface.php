@@ -45,4 +45,12 @@ interface TenantOptionInterface
      * @return Illuminate\Support\Collection
      */
     public function getOptionValue(string $data);
+
+    /**
+     * Get option value by option name
+     *
+     * @param String $data
+     * @return null|int
+     */
+    public function getOptionValueFromOptionName(string $data): ?int;
 }
