@@ -11,10 +11,11 @@ trait MessageTransformable
      *
      * @param Object $messages
      * @param int $messageUnreadCount
+     * @param string $timezone
      * @return Array
      */
 
-    protected function transformMessage(Object $messages, int $messageUnreadCount = null): Array
+    protected function transformMessage(Object $messages, int $messageUnreadCount = null, string $timezone): Array
     {
         $messageData = array();
         foreach ($messages as $message) {
@@ -28,7 +29,8 @@ trait MessageTransformable
                 'is_anonymous' =>  $message->is_anonymous,
                 'first_name' => !empty($message->user) ?  $message->user->first_name : null,
                 'last_name' => !empty($message->user) ? $message->user->last_name : null,
-                'created_at' => Carbon::parse($message->created_at)->format(config('constants.MESSAGE_DATE_FORMAT')),
+                'created_at' => Carbon::parse($message->created_at, config('constants.TIMEZONE'))
+                ->setTimezone($timezone)->toDateTimeString(),
             ];
         }
         

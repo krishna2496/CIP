@@ -348,4 +348,15 @@ class UserRepository implements UserInterface
         
         return $this->user->where('user_id', $userId)->update(['cookie_agreement_date' => $now]);
     }
+
+    /**
+     * Get timezone from user id
+     *
+     * @param int $userId
+     * @return string
+     */
+    public function getUserTimezone(int $userId): string
+    {
+        return $this->user->with('timezone')->where('user_id', $userId)->first()->timezone['timezone'];
+    }
 }
