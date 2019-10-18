@@ -65,16 +65,6 @@
 							<b-list-group-item>
 								<div class="list-item">
 									<i>
-										<img :src="$store.state.imagePath+'/assets/images/vote-ic.svg'" alt />
-									</i>
-									<p>
-										<span>{{stats.votedMissions}}</span>{{languageData.label.voted_missions}}
-									</p>
-								</div>
-							</b-list-group-item>
-							<b-list-group-item>
-								<div class="list-item">
-									<i>
 										<img :src="$store.state.imagePath+'/assets/images/group-ic.svg'" alt />
 									</i>
 									<p>

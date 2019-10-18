@@ -16,7 +16,8 @@
     @include sm-max {
       display: block;
       text-align: center;
-      margin-bottom: 15px;
+      margin-bottom: 10px;
+      width: 100%;
     }
 
     a {
@@ -54,33 +55,88 @@
       }
 
       @include md-max {
-        margin-right: 32px;
+        margin-right: 25px;
         margin-bottom: 10px;
       }
 
       @include sm-max {
-        margin-right: 20px;
+        margin: 0 10px 10px;
         font-size: 13px;
       }
     }
   }
 
+  .footer-menu{
+      display: inline-flex;
+      align-items: center;
+  }
+
   .copyright-text {
     text-align: right;
+    display: inline-flex;
+    align-items: center;
+    justify-content: flex-end;
 
     @include sm-max {
       text-align: center;
+      justify-content: center;
+      flex-wrap: wrap;
     }
 
     p {
       color: $black-primary;
       font-size: 12px;
       line-height: 16px;
-      margin: 0;
-
+      margin: 0 0 16px;
+      display: inline-block;
+      @include md-max {
+        margin-bottom: 10px;
+      }
       @include sm-max {
         font-size: 13px;
+        display: block;
+        width: 100%;
+        order:2;
+        margin-bottom: 0;
       }
+    }
+    .lang-drodown-wrap{
+      display: inline-block;
+      margin-bottom: 16px;
+      margin-left: 10px;
+	  width:71px;
+      @include md-max {
+        margin-bottom: 15px;
+      }
+        @include sm-max {
+        order:1;
+      }
+      .custom-dropdown{
+        > span{
+            &:after{
+                transform: translateY(-50%) rotate(180deg);
+                -webkit-transform: translateY(-50%) rotate(180deg);
+                -ms-transform: translateY(-50%) rotate(180deg);
+                -moz-transform: translateY(-50%) rotate(180deg);
+                -o-transform: translateY(-50%) rotate(180deg);
+            }
+        }
+        .option-list-wrap{
+            top: auto;
+            bottom: 100%;
+            margin-top:0;
+            margin-bottom: -1px;
+            border-radius: 3px 3px 0 0;
+        }
+        &.dropdown-open{
+            span{
+                border-radius: 0 0 3px 3px;
+                &:after{
+                    @include transformY(-50%);
+                }
+            }
+        } 
+      } 
     }
   }
 }

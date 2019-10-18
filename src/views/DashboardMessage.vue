@@ -178,12 +178,14 @@
 		},
 		created() {
 			this.languageData = JSON.parse(store.state.languageLabel);
+			this.isLoaderActive = true;
 			this.getMessageListing()
 		},
 		updated() {},
 		methods: {
 			pageChange(page){
 				this.pagination.currentPage = page
+				this.isLoaderActive = true;
 				this.getMessageListing();
 			},
 			makeToast(variant = null, message) {
@@ -227,7 +229,6 @@
 			},
 			
 			getMessageListing() {
-				this.isLoaderActive = true;
 				messageListing(this.pagination.currentPage).then(response => {
 					this.messageList =[];
 					if(response.error == false) {

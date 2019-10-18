@@ -3891,7 +3891,7 @@ main {
 		@extend .message_shadow;
 
 		@include md-max {
-			padding: 20px 25px 10px;
+			padding: 20px 25px 20px;
 		}
 
 		@include sm-max {
@@ -3993,12 +3993,12 @@ main {
 			flex: 1;
 			-ms-flex: 1;
 			justify-content: flex-start;
-			margin: 30px -15px 15px;
+			margin: 30px -15px -20px;
 			max-height: 373px;
 			overflow-y: auto;
 
 			@include sm-max {
-				margin: 20px -10px 10px;
+				margin: 20px -10px -15px;
 				max-height: 280px;
 			}
 
@@ -4006,7 +4006,11 @@ main {
 				border: none;
 				padding: 0 15px 30px;
 
-				@include sm-max {
+                @include md-max{
+                    padding: 0 15px 20px;
+                }
+
+                @include sm-max {
 					padding: 0 10px 20px;
 				}
 
@@ -4130,7 +4134,10 @@ main {
 		}
 
 		.story-form {
-			height: auto;
+            height: calc(100% - 78px);
+            @include md-max{
+                height: auto;
+            }
 		}
 
 		.btn-row {
