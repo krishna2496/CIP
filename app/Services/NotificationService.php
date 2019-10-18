@@ -189,7 +189,7 @@ class NotificationService
         // Create message
         $response['icon'] = $this->helpers->getAssetsUrl($tenantName).
         Config('constants.notification_type_icons.VOLUNTEERING_GOALS');
-        $response['notification_string'] = trans('general.notification.VOLUNTEERING_HOURS_SUBMITTED_THE')." "
+        $response['notification_string'] = trans('general.notification.VOLUNTEERING_GOALS_SUBMITTED_THE')." "
         .$date." ".$status;
         $response['is_read'] = $notification->is_read;
         $response['link'] = 'app/timesheet';
@@ -215,7 +215,7 @@ class NotificationService
         // Create message
         $response['icon'] = $this->helpers->getAssetsUrl($tenantName).
         Config('constants.notification_type_icons.MY_COMMENTS');
-        $response['notification_string'] = trans('general.notification.VOLUNTEERING_HOURS_SUBMITTED_THE')." "
+        $response['notification_string'] = trans('general.notification.COMMENT_OF')." "
         .$date." ".$status;
         $response['is_read'] = $notification->is_read;
         $response['link'] = 'app/comments/'.$commentDetails->mission_id;
