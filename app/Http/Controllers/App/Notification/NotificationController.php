@@ -15,6 +15,7 @@ use Validator;
 use App\Services\NotificationService;
 use App\Helpers\Helpers;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class NotificationController extends Controller
 {
