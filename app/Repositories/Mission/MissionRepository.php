@@ -1235,4 +1235,25 @@ class MissionRepository implements MissionInterface
             return $defaultTenantLanguageData[0]->title;
         }
     }
+
+    /**
+     * Check user has any relation with mission or not, based on availability or skill
+     * @param int $missionId
+     * @param int $userId
+     * @return int
+     */
+    public function checkIsMissionRelatedToUser(int $missionId, int $userId): int
+    {
+        return $this->mission
+            ->where('mission_id', $missionId)
+            ->where(function ($query) use ($userId) {
+                $query->whereHas('missionSkill.skilledUsers', function ($query) use ($userId) {
+                    $query->where('user_id', $userId);
+                });
+                $query->OrWhereHas('availableUsers', function ($query) use ($userId) {
+                    $query->where('user_id', $userId);
+                });
+            })
+            ->count();
+    }
 }

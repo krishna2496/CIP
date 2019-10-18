@@ -125,7 +125,7 @@ class MissionController extends Controller
         // Send notification to all users
         $notificationType = config('constants.notification_type_keys.NEW_MISSIONS');
         $entityId = $mission->mission_id;
-        $action =config('constants.notification_actions.CREATED');
+        $action = config('constants.notification_actions.CREATED');
         
         event(new UserNotificationEvent($notificationType, $entityId, $action));
         

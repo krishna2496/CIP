@@ -48,14 +48,4 @@ class UserNotificationEvent extends Event
         $this->action = $action;
         $this->userId = $userId;
     }
-
-    /**
-     * Get the channels the event should be broadcast on.
-     *
-     * @return array
-     */
-    public function broadcastOn()
-    {
-        return [];
-    }
 }
