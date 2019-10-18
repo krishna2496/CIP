@@ -317,8 +317,29 @@
 			getStoryDetail() {
 				storyDetail(this.storyId).then(response => {
 					if(response.error == false) {
+						let mediaType = []
 						this.storyDetailList = response.data
+						let newMediaType = response.data.storyMedia
+						if(newMediaType) {
+							newMediaType.filter((data,index) => {
+								if(data.type == 'video') {
+									let path = data.path.split(',')
+									path.filter((pathData) => {
+										mediaType.push({
+											'path' : pathData,
+											'story_id' : data.story_id,
+											'story_media_id' : data.story_media_id,
+											'type' : data.type
+										})
+									})
+								} else {
+									mediaType.push(data)
+								}
+							})
+						}
+						this.storyDetailList.storyMedia  = mediaType
 						this.isContentLoaded = true
+						
 						setTimeout(() => {
 							this.sliderToShow = true
 						},200)

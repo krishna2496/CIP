@@ -116,10 +116,6 @@
                         </ul>
                     </div>
                     <div class="header-right ml-auto">
-                        <div class="lang-drodown-wrap">
-                            <AppCustomDropdown :optionList="langList" :defaultText="defautLang"
-                                translationEnable="false" @updateCall="setLanguage" />
-                        </div>
                         <b-nav>
                             <b-nav-item right class="search-menu" @click="searchMenu">
                                 <i>
@@ -289,9 +285,9 @@
                                 <b-button class="btn-clear" @click="showclearitem">{{languageData.label.clear_all}}
                                 </b-button>
                             </template>
-                            
+
                             <div class="notification-details" data-simplebar>
-                                
+
                                 <b-list-group>
                                     <b-list-group-item href="#" class="unread-item">
                                         <i>
@@ -372,13 +368,13 @@
                                         <span>{{languageData.label.get_notification_for}}</span>
                                     </div>
                                     <b-list-group data-simplebar >
-                                       
+
                                             <b-form-checkbox-group id="checkbox-group-2" v-model="selectedNotification" name="flavour-2">
                                                 <b-list-group-item v-for="(data, index) in notificationSettingList">
                                                     <b-form-checkbox :value="data.notification_type_id">{{data.notification_type}}</b-form-checkbox>
                                                 </b-list-group-item>
                                             </b-form-checkbox-group>
-                                        
+
                                     </b-list-group>
                                 </div>
 
@@ -401,8 +397,7 @@
         import store from '../../store';
         import {
             exploreMission,
-            policy,
-            loadLocaleMessages,
+            policy,        
             notificationSettingListing,
             updateNotificationSetting
         } from '../../services/service';
@@ -413,16 +408,13 @@
         import {
             setTimeout
         } from 'timers';
-        import AppCustomDropdown from '../../components/AppCustomDropdown';
         export default {
             components: {
-                AppCustomDropdown
+                
             },
             name: "PrimaryHeader",
             data() {
                 return {
-                    langList: [],
-                    defautLang: '',
                     popoverShow: false,
                     topTheme: [],
                     topCountry: [],
@@ -513,13 +505,6 @@
                 document.addEventListener("click", this.onClick);
             },
             methods: {
-                async setLanguage(language) {
-                    this.defautLang = language.selectedVal;
-                    store.commit('setDefaultLanguage', language);
-                    this.$i18n.locale = language.selectedVal.toLowerCase()
-                    await loadLocaleMessages(this.$i18n.locale);
-                    location.reload();
-                },
                 onPopoverShow() {
                     this.$refs.notficationPopover._toolpop
                         .getTipElement()
@@ -600,7 +585,7 @@
                         if (this.topOrganization != null && this.topOrganization.length > 0) {
                             this.topOrganizationClass = 'has-submenu';
                         }
-                        // Call get policy service 
+                        // Call get policy service
                         this.getPolicyPage();
                     });
                 },
@@ -704,8 +689,6 @@
                 this.isStoryDisplay = this.settingEnabled(constants.STORIES_ENABLED);
                 this.isNewsDisplay = this.settingEnabled(constants.NEWS_ENABLED);
                 this.isPolicyDisplay = this.settingEnabled(constants.POLICIES_ENABLED);
-                this.langList = JSON.parse(store.state.listOfLanguage)
-                this.defautLang = store.state.defaultLanguage
                 if (store.state.isLoggedIn) {
                     this.exploreMissions();
                 }
