@@ -468,8 +468,11 @@ class StoryController extends Controller
             $request->auth->user_id
         );
         
-        $storyTransformedData = $this->transformUserStories($userStories);
+        // Get the story status count
+        $storyStatusCounts = $this->storyRepository->getUserStoriesStatusCounts($request->auth->user_id);
         
+        $storyTransformedData = $this->transformUserStories($userStories, $storyStatusCounts);
+
         $requestString = $request->except(['page','perPage']);
         $storyPaginated = new \Illuminate\Pagination\LengthAwarePaginator(
             $storyTransformedData,

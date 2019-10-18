@@ -5,6 +5,8 @@ namespace App\Providers;
 use App\Events\User\UserNotificationEvent;
 use App\Listeners\Notifications\UserNotificationListner;
 use Laravel\Lumen\Providers\EventServiceProvider as ServiceProvider;
+use App\Events\User\UserActivityLogEvent;
+use App\Listeners\ActivityLog\UserActivityLogListner;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -16,6 +18,9 @@ class EventServiceProvider extends ServiceProvider
     protected $listen = [
         UserNotificationEvent::class => [
             UserNotificationListner::class
+        ],
+        UserActivityLogEvent::class => [
+            UserActivityLogListner::class
         ]
     ];
 

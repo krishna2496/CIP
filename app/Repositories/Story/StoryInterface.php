@@ -156,4 +156,12 @@ interface StoryInterface
      * @return App\Models\Story
      */
     public function findStoryByUserId(int $userId, int $storyId): Story;
+
+    /**
+     * Get user stories status count
+     * 
+     * @param int $userId
+     * @return App\Models\Story
+     */
+    public function getUserStoriesStatusCounts(int $userId): Story;
 }

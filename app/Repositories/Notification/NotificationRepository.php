@@ -86,4 +86,17 @@ class NotificationRepository implements NotificationInterface
         return $this->userNotification->where(['user_id' => $userId,
                 'notification_type_id' => $notificationTypeId])->first();
     }
+
+    /**
+     * Get notification type id
+     *
+     * @param string $type
+     * @return string
+     */
+    public function getNotificationType(int $notificationTypeId): string
+    {
+        return $this->notificationType
+        ->where(['notification_type_id' => $notificationTypeId])
+        ->value('notification_type');
+    }
 }
