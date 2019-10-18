@@ -26,6 +26,7 @@ use App\Helpers\LanguageHelper;
 use App\Exceptions\TenantDomainNotFoundException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Repositories\User\UserRepository;
+use App\Events\User\UserActivityLogEvent;
 
 class AuthController extends Controller
 {
@@ -145,7 +146,7 @@ class AuthController extends Controller
         $data['last_name'] = isset($userDetail->last_name) ? $userDetail->last_name : '';
         $data['country_id'] = isset($userDetail->country_id) ? $userDetail->country_id : '';
         $data['avatar'] = ((isset($userDetail->avatar)) && $userDetail->avatar !="") ? $userDetail->avatar :
-		$this->helpers->getUserDefaultProfileImage($tenantName);
+        $this->helpers->getUserDefaultProfileImage($tenantName);
         $data['cookie_agreement_date'] = isset($userDetail->cookie_agreement_date) ?
                                          $userDetail->cookie_agreement_date : '';
         $data['email'] = ((isset($userDetail->email)) && $userDetail->email !="") ? $userDetail->email : '';
@@ -153,6 +154,17 @@ class AuthController extends Controller
         $apiData = $data;
         $apiStatus = Response::HTTP_OK;
         $apiMessage = trans('messages.success.MESSAGE_USER_LOGGED_IN');
+
+        // Make activity log
+        event(new UserActivityLogEvent(
+            config('constants.activity_log_types.AUTH'),
+            config('constants.activity_log_actions.LOGGEDIN'),
+            config('constants.activity_log_user_types.REGULAR'),
+            $userDetail->email,
+            get_class($this),
+            $request->toArray(),
+            $userDetail->user_id
+        ));
         return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
     }
     
