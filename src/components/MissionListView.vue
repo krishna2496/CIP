@@ -8,7 +8,7 @@
                             <b-alert show class="alert card-alert alert-success" v-if="getAppliedStatus(mission)">{{languageData.label.applied}}</b-alert>
                             <b-alert show class="alert card-alert alert-warning"  v-if="getClosedStatus(mission)">{{languageData.label.closed}}</b-alert>
                             <div v-if="checkDefaultMediaFormat(mission.default_media_type)" class="group-img"
-                                :style="{backgroundImage: 'url('+mission.default_media_path+')'}">
+                                :style="{backgroundImage: 'url('+getMediaPath(mission.default_media_path)+')'}">
                                 <img src="mission.default_media_path" alt="mission.default_media_path">
                             </div>
                             <div v-else class="group-img"
@@ -373,6 +373,13 @@
                     }
                 }
             },
+            getMediaPath(mediaPath) {
+				if(mediaPath != '') {
+					return mediaPath;
+				} else {
+					return store.state.imagePath+'/assets/images/'+constants.MISSION_DEFAULT_PLACEHOLDER;
+				}
+			},
             // Is default media is video or not
             checkDefaultMediaFormat(mediaType) {
                 return mediaType != constants.YOUTUBE_VIDEO_FORMAT

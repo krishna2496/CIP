@@ -52,6 +52,22 @@ a {
 	}
 }
 
+.visible-sm {
+	display: none;
+
+	@include sm-max {
+		display: block;
+	}
+}
+
+.hidden-sm {
+	display: block;
+
+	@include sm-max {
+		display: none;
+	}
+}
+
 .border-hover-link {
 	position: relative;
 	display: inline-block;
@@ -2334,8 +2350,8 @@ main {
 			height: 20px;
 			display: inline-block;
 			margin: 0 9px 0 4px;
-            position: relative;
-            top:-2px;
+			position: relative;
+			top: -2px;
 
 			@include sm-max {
 				margin: 0 4px;

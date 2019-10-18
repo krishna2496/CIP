@@ -39,7 +39,7 @@
 							<b-list-group-item>
 								<div class="list-item">
 									<i>
-										<img :src="$store.state.imagePath+'/assets/images/decline-ic.svg'"
+										<img :src="$store.state.imagePath+'/assets/images/decline.svg'"
 											alt="Decline" />
 									</i>
 									<p>
@@ -55,7 +55,7 @@
 									<b-table :items="commentItems" responsive :fields="commentfields"
 										class="history-table">
 										<template :slot="languageData.label.mission" slot-scope="data">
-											<b-link to="/home" class="table-link">
+											<b-link :to="`/mission-detail/${data.item.mission_id}`" target="_blank" class="table-link">
 												{{ data.item[languageData.label.mission] }}</b-link>
 										</template>
 										<template :slot="languageData.label.date" slot-scope="data">
@@ -176,7 +176,8 @@
 										[date]: item.created_at,
 										[comment]: item.comment,
 										[status]: item.approval_status,
-										['comment_id']: item.comment_id
+										['comment_id']: item.comment_id,
+										['mission_id']: item.mission_id
 									})
 
 								})

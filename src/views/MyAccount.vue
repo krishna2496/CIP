@@ -690,6 +690,12 @@
                                                                 key],
                                                         id: key
                                                     });
+                                                  
+                                                    this.skillListing.sort(function (first, next) {
+                                                        first = first.name;
+                                                        next = next.name;
+                                                        return first < next ? -1 : (first > next ? 1 : 0);
+                                                    });
                                                 }
                                             });
                                     }

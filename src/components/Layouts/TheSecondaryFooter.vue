@@ -48,20 +48,16 @@
                         <b-form-input id type="text" 
                         v-model.trim="contactUs.name" 
                         maxLength="128"
-                        :placeholder="languageData.placeholder.name"></b-form-input>
+                        :placeholder="languageData.placeholder.name"
+                        class="disabled"
+                        ></b-form-input>
                     </b-form-group>
                     <b-form-group>
                         <label for>{{ languageData.label.email_address }}</label>
                         <b-form-input id type="text" :placeholder="languageData.placeholder.email_address"
                             v-model.trim="contactUs.email" 
                             maxLength="128"
-                            :class="{ 'is-invalid': submitted && $v.contactUs.email.$error }"></b-form-input>
-                        <div v-if="submitted && !$v.contactUs.email.required" class="invalid-feedback">
-                            {{ languageData.errors.email_required }}
-                        </div>
-                        <div v-if="submitted && !$v.contactUs.email.email" class="invalid-feedback">
-                            {{ languageData.errors.invalid_email }}
-                        </div>
+                            class="disabled"></b-form-input>
                     </b-form-group>
                     <b-form-group>
                         <label for>{{ languageData.label.subject }}</label>
@@ -139,10 +135,6 @@
         },
         validations: {
             contactUs: {
-                email: {
-                    required,
-                    email
-                },
                 message: {
                     required
                 },
@@ -276,8 +268,8 @@
                     } else {
                         this.classVariant = 'danger';
                         this.message = response.message
-                        contactUs.subject =  ''
-                        contactUs.message =  ''
+                        this.contactUs.subject =  ''
+                        this.contactUs.message =  ''
                     }
                 })
             }

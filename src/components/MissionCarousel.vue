@@ -147,12 +147,13 @@
 							this.loop = false
 						}
 						this.carouselLoader = false;
-
-						if (this.mediaCarouselList[0].media_type == "mp4") {
-							this.deafultVideo = true;
-							this.deafultImage = false;
-						}
-						this.defaultMediaPath = this.getMediaPath(this.mediaCarouselList[0]);
+						if (this.mediaCarouselList && this.mediaCarouselList[0]) {
+							if (this.mediaCarouselList[0].media_type == "mp4") {
+								this.deafultVideo = true;
+								this.deafultImage = false;
+							}
+							this.defaultMediaPath = this.getMediaPath(this.mediaCarouselList[0]);
+						} 
 						this.$emit("defaultMediaPathDetail", this.defaultMediaPath);
 					}
 				})

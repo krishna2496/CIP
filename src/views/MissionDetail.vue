@@ -230,7 +230,7 @@
 														alt="user">
 												</i>
 												<div class="text-wrap">
-													<b-progress :value="missionDetail.achieved_goal"
+													<b-progress :value="parseInt(missionDetail.achieved_goal)"
 														:max="missionDetail.goal_objective" class="mb-2"></b-progress>
 													<span class="subtitle-text">{{missionDetail.achieved_goal}}
 														{{ languageData.label.achieved}}</span>

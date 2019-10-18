@@ -19,15 +19,15 @@
 				</button>
 			</div>
 			<div class="picker-btn-wrap">
-				<button class="prev-btn picker-btn" 
+				<button class="prev-btn picker-btn" v-b-tooltip.hover
 				v-bind:class="{disabled :previousButtonDisable}"
-				:title="languageData.label.previous" @click.stop="goPrev">
+				:title="languageData.label.previous+' '+languageData.label.month.toLowerCase()" @click.stop="goPrev">
 					<img :src="$store.state.imagePath+'/assets/images/back-arrow-black.svg'"
 						:alt="languageData.label.previous" />
 				</button>
 
 				<span>{{languageData.label[currentMonthName]}}</span>
-				<button class="next-btn picker-btn" :title="languageData.label.next"
+				<button class="next-btn picker-btn" v-b-tooltip.hover :title="languageData.label.next+' '+languageData.label.month.toLowerCase()"
 					v-bind:class="{disabled :isPreviousButtonDisable}" @click.stop="goNext">
 					<img :src="$store.state.imagePath+'/assets/images/next-arrow-black.svg'"
 						:alt="languageData.label.next" />
@@ -46,8 +46,8 @@
 <script>
 	import store from '../store';
 	import moment from 'moment'
-	import AppCustomDropdown from "../components/AppCustomDropdown";
-
+	import AppCustomDropdown from "../components/AppCustomDropdownToolTip";
+	
 	export default {
 		name: "VolunteeringTimesheetHeader",
 		components: {
@@ -135,6 +135,7 @@
 				let payload = moment(this.currentMonth).year(this.currentYearNumber).subtract(7, 'day')
 				this.currentWeak = moment(this.currentMonth).year(this.currentYearNumber).subtract(7, 'day').week()
 				this.changeMonth(payload);
+				this.$root.$emit('bv::hide::tooltip');
 			},
 			goNextWeek() {
 				let payload = moment(this.currentMonth).year(this.currentYearNumber).add(7, 'day')
@@ -165,7 +166,7 @@
 				'month');
 				this.currentWeak= moment(this.currentMonth).year(this.currentYearNumber).subtract(1, 'months').startOf(
 				'month').week()
-				
+				this.$root.$emit('bv::hide::tooltip');
 				this.changeMonth(payload);
 			},
 			goNext() {
@@ -173,6 +174,7 @@
 				this.currentWeak= moment(this.currentMonth).year(this.currentYearNumber).add(1, 'months').startOf(
 				'month').week()
 				this.changeMonth(payload);
+				this.$root.$emit('bv::hide::tooltip');
 			},
 			changeYear(year) {
 				let payload = moment(this.currentMonth).year(year.selectedId)
@@ -230,6 +232,7 @@
 			this.languageData = JSON.parse(store.state.languageLabel);
 			this.currentMonth = moment().startOf('date').week(this.currentWeak);
 			this.changeMonth(this.currentMonth);
+			
 		}
 	};
 </script>

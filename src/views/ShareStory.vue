@@ -83,7 +83,8 @@
 									<file-upload class="btn" v-model="story.files" accept="image/png,image/jpeg"
 										:multiple="true" :drop="true" :drop-directory="true" :size="1024 * 1024 * 10"
 										@input="inputUpdate" @input-filter="inputFilter" ref="upload">
-										{{languageData.label.drag_and_drop_pictures}}
+										<span class="hidden-sm">{{languageData.label.drag_and_drop_pictures}}</span>
+                  						<span class="visible-sm">{{languageData.label.upload_pictures}}</span>					
 									</file-upload>
 								</div>
 							</b-form-group>
@@ -115,7 +116,7 @@
 						<div class="btn-row">
 							<b-button class="btn-borderprimary" target="_blank" :to="'/story-preview/'+storyId"
 								v-bind:class="{disabled:previewButtonEnable}"><span>{{languageData.label.preview}}
-									{{previewButtonEnable}}</span></b-button>
+								</span></b-button>
 							<b-button class="btn-bordersecondary"
 								v-bind:class="{disabled:saveButtonEnable || saveButtonAjaxCall}"
 								@click="saveStory('save')">{{languageData.label.save}}</b-button>

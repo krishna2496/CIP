@@ -233,7 +233,6 @@
 					if(response.error == false) {
 						if(response.data) {
 							let data = response.data
-							this.messageCount = data.length
 							let count = 0;
 							data.filter((data,index) => {
 								if(data.is_read == 0) {
@@ -257,6 +256,7 @@
 									this.pagination.total = response.pagination.total
 									this.pagination.perPage = response.pagination.per_page
 									this.pagination.totalPages = response.pagination.total_pages
+									this.messageCount = data.length =  response.pagination.total
 								}
 							})
 							this.newMessage = count
