@@ -484,7 +484,8 @@ return [
         'USERS' => 'USERS',
         'MISSION' => 'MISSION',
         'COMMENT' => 'COMMENT',
-        'MESSAGE' => 'MESSAGE'
+        'MESSAGE' => 'MESSAGE',
+        'NEWS_CATEGORY' => 'NEWS_CATEGORY',
     ],
 
     'activity_log_actions' => [
