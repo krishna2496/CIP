@@ -137,4 +137,17 @@ class NotificationRepository implements NotificationInterface
     {
         return $this->notification->where(['user_id' => $userId, 'is_read' => '0'])->get()->count();
     }
+
+    /**
+     * Get notification type id
+     *
+     * @param string $type
+     * @return string
+     */
+    public function getNotificationType(int $notificationTypeId): string
+    {
+        return $this->notificationType
+        ->where(['notification_type_id' => $notificationTypeId])
+        ->value('notification_type');
+    }
 }
