@@ -326,10 +326,13 @@
 										chartList[data.month] = 0
 									}
 								})
+								let yearLable = (this.filterData.year.toString()).slice(2, this.filterData.year.toString().length)
+								console.log(yearLable);
 								chartList.filter((data, index) => {
 									let monthLabel = this.languageData.label[this.chartMonthList[index - 1]
 										[1]];
-									chartListData.push(monthLabel + ' ' + moment().format('YY'));
+									
+									chartListData.push(monthLabel + ' ' + yearLable);
 									chartListHourData.push(data);
 								})
 								this.chartdata = chartListData
