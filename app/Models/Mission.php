@@ -358,4 +358,14 @@ class Mission extends Model
         }
         return null;
     }
+
+    /**
+     * Get users associated with the mission availability.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function availableUsers(): HasMany
+    {
+        return $this->hasMany('App\User', 'availability_id', 'availability_id');
+    }
 }

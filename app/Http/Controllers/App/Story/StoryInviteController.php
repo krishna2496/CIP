@@ -150,7 +150,7 @@ class StoryInviteController extends Controller
         }
         
         $notificationTypeId = $this->notificationRepository
-        ->getNotificationTypeID(config('constants.notification_types.RECOMMENDED_STORY'));
+        ->getNotificationTypeID(config('constants.notification_type_keys.RECOMMENDED_STORY'));
         
         // Check if to_user_id (colleague) has enabled notification for Recommended story
         $notifyColleague = $this->notificationRepository

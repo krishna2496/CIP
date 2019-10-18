@@ -4,9 +4,6 @@ namespace App\Notifiers\AppUserNotifiers;
 use App\User;
 use App\Repositories\Notification\NotificationRepository;
 
-/**
-* DatabaseNotifier
-*/
 class UserDatabaseNotifier
 {
 

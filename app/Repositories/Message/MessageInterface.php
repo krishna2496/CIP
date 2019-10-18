@@ -12,9 +12,9 @@ interface MessageInterface
      *
      * @param \Illuminate\Http\Request $request
      * @param int $sendMessageFrom
-     * @return null|int
+     * @return array
      */
-    public function store(Request $request, int $sendMessageFrom): ?int;
+    public function store(Request $request, int $sendMessageFrom): array;
 
     /**
      * Display a listing of specified resources with pagination.
