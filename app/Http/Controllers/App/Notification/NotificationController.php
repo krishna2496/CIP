@@ -112,8 +112,8 @@ class NotificationController extends Controller
         // Set response data
         $apiData = $notificationData;
         $apiStatus = Response::HTTP_OK;
-        $apiMessage = (count($notifications) < 0) ?
-        trans('messages.success.MESSAGE_NO_RECORD_FOUND') : trans('messages.success.MESSAGE_NOTIFICATION_LISTING');
+        $apiMessage = (count($notifications) > 0) ? trans('messages.success.MESSAGE_NOTIFICATION_LISTING') :
+        trans('messages.success.MESSAGE_NO_RECORD_FOUND');
 
         return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
     }
