@@ -39,4 +39,14 @@ interface MessageInterface
      * @return bool
      */
     public function delete(int $messageId, int $sentFrom, int $userId): bool;
+      
+    /**
+     * Read message.
+     *
+     * @param int $messageId
+     * @param int $userId | null
+     * @param int $sentFrom
+     * @return App\Models\Message
+     */
+    public function readMessage(int $messageId, int $userId, int $sentFrom): Message;
 }

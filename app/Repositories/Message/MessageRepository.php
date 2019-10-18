@@ -64,7 +64,7 @@ class MessageRepository implements MessageInterface
         } else {
             $messageDataArray = array(
                 'user_id' => $request->auth->user_id,
-                'is_read' => config('constants.message.read'),
+                'is_read' => config('constants.message.unread'),
             );
             $messageDataArray = array_merge($message, $messageDataArray);
             $messageData = $this->message->create($messageDataArray);
@@ -89,12 +89,12 @@ class MessageRepository implements MessageInterface
         $userMessageQuery = $this->message->select('*')->with(['user' => function ($query) {
             $query->select('user_id', 'first_name', 'last_name');
         }])->where('sent_from', $sentFrom)
-                            ->when(
-                                $userIds,
-                                function ($query, $userIds) {
-                                    return $query->whereIn('user_id', $userIds);
-                                }
-                            )->orderBy('created_at', 'desc');
+            ->when(
+                $userIds,
+                function ($query, $userIds) {
+                    return $query->whereIn('user_id', $userIds);
+                }
+            )->orderBy('created_at', 'desc');
 
         return $userMessageQuery->paginate($request->perPage);
     }
@@ -121,5 +121,20 @@ class MessageRepository implements MessageInterface
                 return $query->where('user_id', $userId);
             }
         )->firstOrFail()->delete();
+    }
+
+    /**
+     * Read message.
+     *
+     * @param int $messageId
+     * @param int $userId | null
+     * @param int $sentFrom
+     * @return App\Models\Message
+     */
+    public function readMessage(int $messageId, int $userId = null, int $sentFrom): Message
+    {
+        $messageDetails = $this->message->findMessage($messageId, $userId, $sentFrom);
+        $messageDetails->update(['is_read' => config('constants.message.read')]);
+        return $messageDetails;
     }
 }
