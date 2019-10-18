@@ -45,6 +45,7 @@ return [
     'DEFAULT_FQDN_FOR_FRONT' => 'web8',
     'PER_PAGE_MAX' => '50',
     'AWS_S3_DEFAULT_THEME_FOLDER_NAME' => 'default_theme',
+    'MESSAGE_DATE_FORMAT' => 'Y-m-d',
     
     /*
      * User custom field types
