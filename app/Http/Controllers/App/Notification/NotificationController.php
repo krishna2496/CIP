@@ -158,11 +158,18 @@ class NotificationController extends Controller
     public function clearAllNotifications(Request $request)
     {
         //clear all notification
-        $this->notificationRepository->deleteAllNotifications($request->auth->user_id);
+        $clearNotificationStatus = $this->notificationRepository->deleteAllNotifications($request->auth->user_id);
 
         // Set response data
         $apiStatus = Response::HTTP_NO_CONTENT;
         $apiMessage = trans('messages.success.MESSAGE_USER_NOTIFICATIONS_CLEAR_SUCCESSFULLY');
+
+        if (!$clearNotificationStatus) {
+            return $this->modelNotFound(
+                config('constants.error_codes.ERROR_USER_NOTIFICATION_NOT_FOUND'),
+                trans('messages.custom_error_message.ERROR_MESSAGE_USER_NOTIFICATION_NOT_FOUND')
+            );
+        }
 
         return $this->responseHelper->success($apiStatus, $apiMessage);
     }
