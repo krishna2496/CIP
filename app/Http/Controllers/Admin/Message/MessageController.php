@@ -56,7 +56,7 @@ class MessageController extends Controller
                 'message' => 'required|max:60000',
                 'admin' => 'string|max:255',
                 'user_ids' =>'required|Array',
-                'user_ids.*' =>'required|integer|distinct|min:1|integer|exists:user,user_id,deleted_at,NULL',
+                'user_ids.*' =>'required|integer|distinct|min:1|exists:user,user_id,deleted_at,NULL',
             ]
         );
         
@@ -77,8 +77,8 @@ class MessageController extends Controller
         $apiStatus = Response::HTTP_CREATED;
 
         $apiMessage = (count($request->user_ids) > 1) ?
-            trans('messages.success.MESSAGE_USER_MESSAGES_SEND_SUCESSFULLY') :
-            trans('messages.success.MESSAGE_USER_MESSAGE_SEND_SUCESSFULLY');
+            trans('messages.success.MESSAGE_USER_MESSAGES_SEND_SUCCESSFULLY') :
+            trans('messages.success.MESSAGE_USER_MESSAGE_SEND_SUCCESSFULLY');
         $apiData = [];
 
         return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
@@ -134,8 +134,8 @@ class MessageController extends Controller
             $apiData
         );
     }
-	
-	/**
+    
+    /**
      * Remove Message details.
      *
      * @param \Illuminate\Http\Request $request
