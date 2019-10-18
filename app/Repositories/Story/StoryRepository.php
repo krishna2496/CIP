@@ -429,7 +429,7 @@ class StoryRepository implements StoryInterface
 
     /**
      * Get user stories status count
-     * 
+     *
      * @param int $userId
      * @return App\Models\Story
      */
@@ -438,6 +438,6 @@ class StoryRepository implements StoryInterface
         return $this->story->selectRaw("COUNT(CASE WHEN status = 'DRAFT' THEN 1 END) AS draft,
         COUNT(CASE WHEN status = 'PENDING' THEN 1 END) AS pending,
         COUNT(CASE WHEN status = 'PUBLISHED' THEN 1 END) AS published,
-        COUNT(CASE WHEN status = 'DECLINED' THEN 1 END) AS declined")->where('user_id',$userId)->first();
+        COUNT(CASE WHEN status = 'DECLINED' THEN 1 END) AS declined")->where('user_id', $userId)->first();
     }
 }

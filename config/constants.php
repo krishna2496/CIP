@@ -45,6 +45,7 @@ return [
     'DEFAULT_FQDN_FOR_FRONT' => 'web8',
     'PER_PAGE_MAX' => '50',
     'AWS_S3_DEFAULT_THEME_FOLDER_NAME' => 'default_theme',
+    'MESSAGE_DATE_FORMAT' => 'Y-m-d',
     
     /*
      * User custom field types
@@ -275,21 +276,6 @@ return [
     ],
 
     /*
-     * User notification types
-     */
-    'notification_types' => [
-        'RECOMMENDED_MISSIONS' => 'Recommended missions',
-        'VOLUNTEERING_HOURS' => 'Volunteering hours',
-        'VOLUNTEERING_GOALS' => 'Volunteering goals',
-        'MY-COMMENTS' => 'My comments',
-        'MY-STORIES' => 'My stories',
-        'NEW_STORIES_HOURS' => 'New stories hours',
-        'NEW_MISSIONS' => 'New missions',
-        'NEW_MESSAGES' => 'New messages',
-        'RECOMMENDED_STORY' => 'Recommended story'
-    ],
-    
-    /*
      * Tenant settings
      */
     'tenant_settings' => [
@@ -449,7 +435,6 @@ return [
         'ERROR_MESSAGE_USER_MESSAGE_NOT_FOUND' => '1100002'
     ],
 
-
     /**
      * Notification types
      */
@@ -479,6 +464,18 @@ return [
         'SUBMIT_FOR_APPROVAL' => 'SUBMIT_FOR_APPROVAL'
     ],
 
+    /**
+     * Notification type icons
+     */
+    'notification_type_icons' => [
+        'VOLUNTEERING_HOURS' => 'warning.png',
+        'VOLUNTEERING_GOALS' => 'warning.png',
+        'MY_COMMENTS' => 'warning.png',
+        'MY_STORIES' => 'warning.png',
+        'NEW_MISSIONS' => 'circle-plus.png',
+        'NEW_MESSAGES' => 'circle-plus.png',
+    ],
+    
     'activity_log_types' => [
         'AUTH' => 'AUTH',
         'USERS' => 'USERS',

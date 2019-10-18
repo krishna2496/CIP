@@ -59,6 +59,7 @@ class MessageRepository implements MessageInterface
                     'created_at' => $now,
                     'updated_at' => $now,
                 ];
+
                 $messageData = $this->message->create(array_merge($message, $messageDataArray));
                 array_push($messageIds, ['message_id' => $messageData->message_id, 'user_id' => $userId]);
             }
@@ -123,7 +124,17 @@ class MessageRepository implements MessageInterface
             }
         )->firstOrFail()->delete();
     }
-
+    
+    /**
+     * Get message detail
+     *
+     * @param int $messageId
+     * @return App\Models\Message
+     */
+    public function getMessage(int $messageId): Message
+    {
+        return $this->message->findOrFail($messageId);
+    }
     /**
      * Read message.
      *

@@ -110,7 +110,7 @@ class MessageController extends Controller
         );
     
         // Set response data
-        $apiData = $messagesPaginated;  
+        $apiData = $messagesPaginated;
         $apiStatus = Response::HTTP_OK;
         $apiMessage = ($userMessages->total() > 0) ?
             trans('messages.success.MESSAGE_MESSAGES_ENTRIES_LISTING') :

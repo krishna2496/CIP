@@ -407,6 +407,10 @@ $router->group(['middleware' => 'localization'], function ($router) {
         'middleware' => 'localization|tenant.connection|jwt.auth|JsonApiMiddleware',
         'uses' => 'App\Notification\NotificationTypeController@storeOrUpdate']);
 
+    /* Fetch notification settings */
+    $router->get('/app/notification', ['as' => 'app.notification',
+        'middleware' => 'localization|tenant.connection|jwt.auth',
+          'uses' => 'App\Notification\NotificationController@index']);
     /* Read message send by admin */
     $router->post('/app/message/read/{messageId}', ['as' => 'app.message.read',
         'middleware' => 'localization|tenant.connection|jwt.auth',
