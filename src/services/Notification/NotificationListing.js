@@ -7,7 +7,7 @@ export default async() => {
     if (store.state.defaultLanguage !== null) {
         defaultLanguage = (store.state.defaultLanguage).toLowerCase();
     }
-    var url = process.env.VUE_APP_API_ENDPOINT + "app/notification-settings";
+    var url = process.env.VUE_APP_API_ENDPOINT + "app/notification";
     await axios({
             url: url,
             method: 'GET',

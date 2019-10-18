@@ -233,35 +233,40 @@
 					this.messageList =[];
 					if(response.error == false) {
 						if(response.data) {
-							let data = response.data
-							let count = 0;
-							data.filter((data,index) => {
-								if(data.is_read == 0) {
-									count++;
-								}
-								let name = ''
-								if(data.is_anonymous == 1) {
-									name = this.languageData.label.anonymous_user
-								} else {
-									name = data.admin_name
-								}
-								this.messageList.push({
-									'person' : name,
-									'date' : data.created_at,
-									'text' : data.message,
-									'messageId' : data.message_id,
-									'is_read' : data.is_read 
+							if(response.data.message_data) {
+								let data = response.data.message_data
+								data.filter((data,index) => {
+									let name = ''
+									if(data.is_anonymous == 1) {
+										name = this.languageData.label.anonymous_user
+									} else {
+										name = data.admin_name
+									}
+									this.messageList.push({
+										'person' : name,
+										'date' : data.created_at,
+										'text' : data.message,
+										'messageId' : data.message_id,
+										'is_read' : data.is_read 
+									})
+									if(response.pagination) {
+										this.pagination.currentPage = response.pagination.current_page
+										this.pagination.total = response.pagination.total
+										this.pagination.perPage = response.pagination.per_page
+										this.pagination.totalPages = response.pagination.total_pages
+										this.messageCount = data.length =  response.pagination.total
+									}
 								})
-								if(response.pagination) {
-									this.pagination.currentPage = response.pagination.current_page
-									this.pagination.total = response.pagination.total
-									this.pagination.perPage = response.pagination.per_page
-									this.pagination.totalPages = response.pagination.total_pages
-									this.messageCount = data.length =  response.pagination.total
-								}
-							})
-							this.newMessage = count
-						}	
+							}
+							if(response.data.count) {
+								this.newMessage =  response.data.count.unread
+							} else {
+								this.newMessage = 0
+							}
+						} else {
+							this.messageList = []
+							this.newMessage = 0
+						}
 					} else {
 						this.showErrorDiv = true;
 						this.message = response.message
@@ -289,13 +294,12 @@
 			},
 
 			readMessages(messageId,isRead) {
-				console.log("in read");
 				if(isRead == 0) {
-				// readMessage(messageId).then(response => {
-				// 	if(response.error == false) {
-				// 		this.getMessageListing();
-				// 	}
-				// })
+					readMessage(messageId).then(response => {
+						if(response.error == false) {
+							this.getMessageListing();
+						}
+					})
 				}
 			}
 		}
