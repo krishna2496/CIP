@@ -453,6 +453,7 @@ return [
         'MY_STORIES' => 'my_stories',
         'NEW_MISSIONS' => 'new_missions',
         'NEW_MESSAGES' => 'new_messages',
+        'RECOMMENDED_STORY' => 'recommended_story',
     ],
 
     /**
