@@ -144,9 +144,12 @@ class TimesheetController extends Controller
             event(new UserNotificationEvent($notificationType, $entityId, $action, $userId));
             
             // Make activity log
+            $activityLogStatus = $request->status_id == config('constants.timesheet_status_id.APPROVED') ?
+                config('constants.activity_log_actions.APPROVED'): config('constants.activity_log_actions.DECLINED');
+
             event(new UserActivityLogEvent(
                 config('constants.activity_log_types.VOLUNTEERING_TIMESHEET'),
-                config('constants.activity_log_actions.UPDATED'),
+                $activityLogStatus,
                 config('constants.activity_log_user_types.API'),
                 $this->userApiKey,
                 get_class($this),

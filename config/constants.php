@@ -470,7 +470,7 @@ return [
     'notification_actions' => [
         'CREATED' => 'CREATED',
         'APPROVED' => 'APPROVED',
-        'REJECTED' => 'APPROVED',
+        'REJECTED' => 'REJECTED',
         'PUBLISHED' => 'PUBLISHED',
         'PENDING' => 'PENDING',
         'DECLINED' => 'DECLINED',
@@ -496,7 +496,10 @@ return [
         'UPDATED' => 'UPDATED',
         'DELETED' => 'DELETED',
         'INVITED' => 'INVITED',
-        'LOGGEDIN' => 'LOGGEDIN'
+        'LOGGEDIN' => 'LOGGEDIN',
+        'SUBMIT_FOR_APPROVAL' => 'SUBMIT_FOR_APPROVAL',
+        'APPROVED' => 'APPROVED',
+        'DECLINED' => 'DECLINED'
     ],
 
     'activity_log_user_types' => [

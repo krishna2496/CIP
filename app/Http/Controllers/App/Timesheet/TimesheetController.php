@@ -380,7 +380,7 @@ class TimesheetController extends Controller
             $apiStatus = Response::HTTP_NO_CONTENT;
             $apiMessage = trans('messages.success.MESSAGE_TIMESHEET_DOCUMENT_DELETED');
 
-             // Make activity log
+            // Make activity log
             event(new UserActivityLogEvent(
                 config('constants.activity_log_types.VOLUNTEERING_TIMESHEET_DOCUMENT'),
                 config('constants.activity_log_actions.DELETED'),
@@ -418,7 +418,7 @@ class TimesheetController extends Controller
                     'timesheet_entries.*.timesheet_id' => 'required|exists:timesheet,timesheet_id,deleted_at,NULL',
                 ]
             );
-
+           
             // If validator fails
             if ($validator->fails()) {
                 return $this->responseHelper->error(
@@ -428,13 +428,26 @@ class TimesheetController extends Controller
                     $validator->errors()->first()
                 );
             }
-
+            
             $timesheet = $this->timesheetRepository->submitTimesheet($request, $request->auth->user_id);
 
             $apiStatus = Response::HTTP_OK;
             $apiMessage = (!$timesheet) ? trans('messages.success.TIMESHEET_ALREADY_SUBMITTED_FOR_APPROVAL') :
             trans('messages.success.TIMESHEET_SUBMITTED_SUCESSFULLY');
 
+            // Make activity log
+            foreach ($request->timesheet_entries as $data) {
+                event(new UserActivityLogEvent(
+                    config('constants.activity_log_types.VOLUNTEERING_TIMESHEET'),
+                    config('constants.activity_log_actions.SUBMIT_FOR_APPROVAL'),
+                    config('constants.activity_log_user_types.REGULAR'),
+                    $request->auth->email,
+                    get_class($this),
+                    $request->toArray(),
+                    $request->auth->user_id,
+                    $data['timesheet_id']
+                ));
+            }
             return $this->responseHelper->success($apiStatus, $apiMessage);
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
