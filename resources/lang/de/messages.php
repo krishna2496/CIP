@@ -130,6 +130,7 @@ return [
         'MESSAGE_USER_COOKIE_AGREEMENT_ACCEPTED' => 'DE: Cookie agreement accepted successfully',
         'MESSAGE_NOTIFICATION_SETTINGS_LISTING' => 'DE: Notification settings listed successfully',
         'MESSAGE_USER_NOTIFICATION_SETTINGS_UPDATED' => 'DE: User notification settings updated successfully',
+        'MESSAGE_NOTIFICATION_LISTING' => 'DE: Notification listed successfully',
         'MESSAGE_READ_SUCCESSFULLY' => 'DE: Message read successfully',
     ],
 

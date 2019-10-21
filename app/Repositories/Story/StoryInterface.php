@@ -159,7 +159,7 @@ interface StoryInterface
 
     /**
      * Get user stories status count
-     * 
+     *
      * @param int $userId
      * @return App\Models\Story
      */

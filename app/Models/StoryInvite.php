@@ -5,7 +5,9 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\Story;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Collection;
+use App\User;
 
 class StoryInvite extends Model
 {
@@ -43,5 +45,46 @@ class StoryInvite extends Model
     {
         return static::where(['story_id' => $storyId,
         'to_user_id' => $inviteUserId, 'from_user_id' => $fromUserId])->get();
+    }
+
+    /**
+     * Get mission invite details
+     *
+     * @param int $inviteId
+     * @return App\Models\StoryInvite
+     */
+    public function getDetails(int $inviteId): StoryInvite
+    {
+        return $this->with(['toUser', 'fromUser', 'story'])->first();
+    }
+
+    /**
+     * Get the translations associated with the user
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function toUser(): HasOne
+    {
+        return $this->hasOne(User::class, 'user_id', 'to_user_id');
+    }
+
+    /**
+     * Get the translations associated with the user
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function fromUser(): HasOne
+    {
+        return $this->hasOne(User::class, 'user_id', 'from_user_id');
+    }
+
+    /**
+     * Get the translations associated with the story
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function story(): HasOne
+    {
+        return $this->hasOne(Story::class, 'story_id', 'story_id');
     }
 }

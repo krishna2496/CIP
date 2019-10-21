@@ -1,0 +1,300 @@
+<?php
+namespace App\Services;
+
+use App\Repositories\MissionInvite\MissionInviteRepository;
+use App\Repositories\StoryInvite\StoryInviteRepository;
+use App\Repositories\Mission\MissionRepository;
+use App\Repositories\Timesheet\TimesheetRepository;
+use App\Repositories\MissionComment\MissionCommentRepository;
+use App\Repositories\Message\MessageRepository;
+use App\Models\Notification;
+use App\Helpers\Helpers;
+use Carbon\Carbon;
+
+class NotificationService
+{
+    /**
+     * @var App\Repositories\MissionInvite\MissionInviteRepository
+     */
+    public $missionInviteRepository;
+
+    /**
+     * @var App\Repositories\StoryInvite\StoryInviteRepository
+     */
+    public $storyInviteRepository;
+
+    /**
+     * @var App\Repositories\Timesheet\TimesheetRepository
+     */
+    public $timesheetRepository;
+
+    /**
+     * @var App\Repositories\MissionComment\MissionCommentRepository
+     */
+    public $missionCommentRepository;
+
+    /**
+     * @var App\Repositories\Message\MessageCommentRepository
+     */
+    public $messageRepository;
+    
+    /**
+     * @var App\Repositories\Mission\MissionRepository
+     */
+    public $missionRepository;
+
+    /**
+     * @var App\Helpers\Helpers
+     */
+    public $helpers;
+
+    /**
+     * Create a new Notification repository instance.
+     *
+     * @param  App\Repositories\MissionInvite\MissionInviteRepository $missionInviteRepository
+     * @param  App\Repositories\StoryInvite\StoryInviteRepository $storyInviteRepository
+     * @param  App\Repositories\Timesheet\TimesheetRepository $timesheetRepository
+     * @param  App\Repositories\MissionComment\MissionCommentRepository $missionCommentRepository
+     * @param  App\Repositories\Mission\MissionRepository $missionRepository
+     * @param  App\Repositories\Message\MessageRepository $messageRepository
+     * @param  App\Helpers\Helpers $helpers
+     * @return void
+     */
+    public function __construct(
+        MissionInviteRepository $missionInviteRepository,
+        StoryInviteRepository $storyInviteRepository,
+        TimesheetRepository $timesheetRepository,
+        MissionCommentRepository $missionCommentRepository,
+        MissionRepository $missionRepository,
+        MessageRepository $messageRepository,
+        Helpers $helpers
+    ) {
+        $this->missionInviteRepository = $missionInviteRepository;
+        $this->storyInviteRepository = $storyInviteRepository;
+        $this->timesheetRepository = $timesheetRepository;
+        $this->missionCommentRepository = $missionCommentRepository;
+        $this->missionRepository = $missionRepository;
+        $this->messageRepository = $messageRepository;
+        $this->helpers = $helpers;
+    }
+
+    /**
+     * Returns details for recommonded mission
+     *
+     * @param App\Models\Notification $notification
+     * @param string $tenantName
+     * @param int $languageId
+     * @param int $defaultTenantLanguageId
+     * @return array
+     */
+    public function recommendedMissions(
+        Notification $notification,
+        string $tenantName = null,
+        int $languageId,
+        int $defaultTenantLanguageId
+    ): array {
+        // Get details
+        $inviteDetails = $this->missionInviteRepository->getDetails($notification->entity_id);
+
+        $missionName = $this->missionRepository->getMissionTitle(
+            $inviteDetails->mission->mission_id,
+            $languageId,
+            $defaultTenantLanguageId
+        );
+        
+        // Create message
+        $response['icon'] = empty($inviteDetails->fromUser->avatar)
+        ? $this->helpers->getUserDefaultProfileImage($tenantName)
+        : $inviteDetails->fromUser->avatar;
+        $response['notification_string'] = $inviteDetails->fromUser->first_name.
+        " ".$inviteDetails->fromUser->last_name." - "
+        .trans('general.notification.RECOMMENDS_THIS_MISSION')." - ".$missionName;
+        $response['is_read'] = $notification->is_read;
+        $response['link'] = 'app/mission/'.$inviteDetails->mission->mission_id;
+        return $response;
+    }
+
+    /**
+     * Returns details for recommonded story
+     *
+     * @param App\Models\Notification $notification
+     * @param string $tenantName
+     * @param int $languageId
+     * @param int $defaultTenantLanguageId
+     * @return array
+     */
+    public function recommendedStory(
+        Notification $notification,
+        string $tenantName = null,
+        int $languageId,
+        int $defaultTenantLanguageId
+    ): array {
+        // Get details
+        $inviteDetails = $this->storyInviteRepository->getDetails($notification->entity_id);
+
+        $storyTitle = $inviteDetails->story->title;
+       
+        // Create message
+        $response['icon'] = empty($inviteDetails->fromUser->avatar)
+        ? $this->helpers->getUserDefaultProfileImage($tenantName)
+        : $inviteDetails->fromUser->avatar;
+        $response['notification_string'] = $inviteDetails->fromUser->first_name.
+        " ".$inviteDetails->fromUser->last_name." - "
+        .trans('general.notification.RECOMMENDS_THIS_STORY')." - ".$storyTitle;
+        $response['is_read'] = $notification->is_read;
+        $response['link'] = 'app/story/'.$inviteDetails->story->story_id;
+        return $response;
+    }
+    
+    /**
+     * Returns details for volunteering hours
+     *
+     * @param App\Models\Notification $notification
+     * @param string $tenantName
+     * @return array
+     */
+    public function volunteeringHours(Notification $notification, string $tenantName): array
+    {
+        // Get details
+        $timesheetDetails = $this->timesheetRepository->getDetailsOfTimesheetEntry($notification->entity_id);
+        $formattedDate = Carbon::createFromFormat('m-d-Y', $timesheetDetails->date_volunteered);
+        $date = Carbon::parse($formattedDate)->format('d/m/Y');
+        $status = strtolower($notification->action);
+
+        // Create message
+        $response['icon'] =  $this->helpers->getAssetsUrl($tenantName).
+        Config('constants.notification_type_icons.VOLUNTEERING_HOURS');
+        $response['notification_string'] = trans('general.notification.VOLUNTEERING_HOURS_SUBMITTED_THE')." ".
+        $date." ".$status;
+        $response['is_read'] = $notification->is_read;
+        $response['link'] = 'app/timesheet';
+        return $response;
+    }
+
+    /**
+     * Returns details for volunteering goals
+     *
+     * @param App\Models\Notification $notification
+     * @param string $tenantName
+     * @return array
+     */
+    public function volunteeringGoals(Notification $notification, string $tenantName): array
+    {
+        // Get details
+        $timesheetDetails = $this->timesheetRepository->getDetailsOfTimesheetEntry($notification->entity_id);
+        $formattedDate = Carbon::createFromFormat('m-d-Y', $timesheetDetails->date_volunteered);
+        $date = Carbon::parse($formattedDate)->format('d/m/Y');
+        $status = strtolower($notification->action);
+
+        // Create message
+        $response['icon'] = $this->helpers->getAssetsUrl($tenantName).
+        Config('constants.notification_type_icons.VOLUNTEERING_GOALS');
+        $response['notification_string'] = trans('general.notification.VOLUNTEERING_GOALS_SUBMITTED_THE')." "
+        .$date." ".$status;
+        $response['is_read'] = $notification->is_read;
+        $response['link'] = 'app/timesheet';
+        return $response;
+    }
+
+    
+    /**
+     * Returns details for my comments
+     *
+     * @param App\Models\Notification $notification
+     * @param string $tenantName
+     * @return array
+     */
+    public function myComments(Notification $notification, string $tenantName): array
+    {
+        // Get details
+        $commentDetails = $this->missionCommentRepository->getComment($notification->entity_id);
+        $date = Carbon::parse($commentDetails->created_at)
+        ->setTimezone(config('constants.TIMEZONE'))->format(config('constants.FRONT_DATE_FORMAT'));
+        $status = strtolower($notification->action);
+
+        // Create message
+        $response['icon'] = $this->helpers->getAssetsUrl($tenantName).
+        Config('constants.notification_type_icons.MY_COMMENTS');
+        $response['notification_string'] = trans('general.notification.COMMENT_OF')." "
+        .$date." ".$status;
+        $response['is_read'] = $notification->is_read;
+        $response['link'] = 'app/comments/'.$commentDetails->mission_id;
+        return $response;
+    }
+
+    /**
+     * Returns details for my stories
+     *
+     * @param App\Models\Notification $notification
+     * @param string $tenantName
+     * @return array
+     */
+    public function myStories(Notification $notification, string $tenantName): array
+    {
+        // Get details
+        $commentDetails = $this->missionCommentRepository->getComment($notification->entity_id);
+        $date = Carbon::parse($commentDetails->created_at)
+        ->setTimezone(config('constants.TIMEZONE'))->format(config('constants.FRONT_DATE_FORMAT'));
+        $status = strtolower($notification->action);
+
+        // Create message
+        $response['icon'] = $this->helpers->getAssetsUrl($tenantName).
+        Config('constants.notification_type_icons.MY_STORIES');
+        $response['notification_string'] = trans('general.notification.STORY')." ".$date." ".$status;
+        $response['is_read'] = $notification->is_read;
+        $response['link'] = 'app/story/list';
+        return $response;
+    }
+
+    /**
+     * Returns details for new message
+     *
+     * @param App\Models\Notification $notification
+     * @param string $tenantName
+     * @return array
+     */
+    public function newMessages(Notification $notification, string $tenantName): array
+    {
+        // Get details
+        $messageDetails = $this->messageRepository->getMessage($notification->entity_id);
+        
+        // Create message
+        $response['icon'] = $this->helpers->getAssetsUrl($tenantName).
+        Config('constants.notification_type_icons.NEW_MESSAGES');
+        $response['notification_string'] = trans('general.notification.NEW_MESSAGE')." - ".$messageDetails->subject;
+        $response['is_read'] = $notification->is_read;
+        $response['link'] = 'app/messages';
+        return $response;
+    }
+
+    /**
+     * Returns details for new mission
+     *
+     * @param App\Models\Notification $notification
+     * @param string $tenantName
+     * @param int $languageId
+     * @param int $defaultTenantLanguageId
+     * @return array
+     */
+    public function newMissions(
+        Notification $notification,
+        string $tenantName = null,
+        int $languageId,
+        int $defaultTenantLanguageId
+    ): array {
+        // Get details
+        $missionName = $this->missionRepository->getMissionTitle(
+            $notification->entity_id,
+            $languageId,
+            $defaultTenantLanguageId
+        );
+
+        // Create message
+        $response['icon'] = $this->helpers->getAssetsUrl($tenantName).
+        Config('constants.notification_type_icons.NEW_MISSIONS');
+        $response['notification_string'] = trans('general.notification.NEW_MISSION')." - ".$missionName;
+        $response['is_read'] = $notification->is_read;
+        $response['link'] = 'app/mission/'.$notification->entity_id;
+        return $response;
+    }
+}
