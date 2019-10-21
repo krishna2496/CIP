@@ -104,4 +104,23 @@ class TenantLanguageRepository implements TenantLanguageInterface
         $tenantLanguageData =  $this->tenantLanguage->findOrFail($id);
         return $tenantLanguageData->delete();
     }
+
+    /**
+     * Check default language settings.
+     *
+     * @param  int $tenantId
+     * @param  int $languageId
+     * @return bool
+     */
+    public function checkDefaultLanguageSettings(int $tenantId, int $languageId): bool
+    {
+        $data = $this->tenantLanguage->where(
+            [
+            'tenant_id' => $tenantId,
+            'language_id' =>$languageId,
+            'default' => config('constants.language_status.ACTIVE')
+            ]
+        )->get();
+        return ($data->count() > 0) ? true : false;
+    }
 }

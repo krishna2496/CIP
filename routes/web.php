@@ -11,8 +11,11 @@
 |
 */
 /* Route to run background process for tenant. To perform SCSS and assets operations */
-$router->get('/tenant/runBackgroundProcess/{tenantId}', 'TenantBackgroundProcessController@runBackgroundProcess');
-$router->get('/tenant/runBackgroundProcess', 'TenantBackgroundProcessController@runBackgroundProcess');
+$router->group(['middleware' => 'RedirectInvalidIps'], function ($router) {
+    $router->get('/tenant/runBackgroundProcess/{tenantId}', 'TenantBackgroundProcessController@runBackgroundProcess');
+    $router->get('/tenant/runBackgroundProcess', 'TenantBackgroundProcessController@runBackgroundProcess');
+});
+
 
 $router->group(
     ['prefix' => 'tenants', 'middleware' => 'localization'],
@@ -34,9 +37,12 @@ $router->group(
         $router->get('/{tenantId}/settings', ['as' => 'tenants.settings',
         'uses'=>'TenantHasSettingController@show']);
         // Store settings
-        $router->post('/{tenantId}/settings', ['as' => 'tenants.store.settings',
+        $router->post('/{tenantId}/settings', ['as' => 'tenants.store.settings', 'middleware' => 'JsonApiMiddleware',
         'uses'=>'TenantHasSettingController@store']);
-        
+        // Get all available settings
+        $router->get('/settings', ['as' => 'settings',
+        'uses'=>'TenantSettingController@index']);
+
         // Get api user list
         $router->get(
             '/{tenant_id}/api_users',
