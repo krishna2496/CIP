@@ -8,4 +8,5 @@ Homestead.yaml
 /public/storage
 /.env
 /public/uploads
-/.htaccess
+composer.lock
+/node_modules
