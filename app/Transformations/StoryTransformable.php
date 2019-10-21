@@ -12,10 +12,11 @@ trait StoryTransformable
      *
      * @param App\Models\Story $story
      * @param int $languageId
+     * @param string $defaultAvatar
      * @return App\Models\Story
      */
 
-    protected function transformStory(Story $story, int $languageId):Story
+    protected function transformStory(Story $story, int $languageId, string $defaultAvatar):Story
     {
         $storyData = new Story;
         $storyData->story_id = (int) $story->story_id;
@@ -30,7 +31,7 @@ trait StoryTransformable
             $storyData->user_id = $story->user_id;
             $storyData->first_name = $story->user->first_name;
             $storyData->last_name = $story->user->last_name;
-            $storyData->avatar = $story->user->avatar;
+            $storyData->avatar = !empty($story->user->avatar) ? $story->user->avatar : $defaultAvatar;
             $storyData->profile_text = $story->user->profile_text;
             $storyData->why_i_volunteer = $story->user->why_i_volunteer;
             $storyData->city = $story->user->city;
@@ -57,29 +58,16 @@ trait StoryTransformable
      * Used for transform user stories
      *
      * @param Object $stories
+     * @param App\Models\Story $storyStatusCount
      * @return array
      */
-    protected function transformUserStories(Object $stories): array
+    protected function transformUserStories(Object $stories, Story $storyStatusCount): array
     {
         $transformedUserStories = array();
 
         $draftStories = $publishedStories = $pendingStories = $declinedStories = 0;
-        foreach ($stories as $story) {
-            switch ($story->status) {
-                case "DRAFT":
-                    $draftStories++;
-                    break;
-                case "PENDING":
-                    $pendingStories++;
-                    break;
-                case "PUBLISHED":
-                    $publishedStories++;
-                    break;
-                case "DECLINED":
-                    $declinedStories++;
-                    break;
-            }
 
+        foreach ($stories as $story) {
             $transformedUserStories['story_data'][] = [
                 'story_id' => (int) $story->story_id,
                 'mission_id' => $story->mission_id,
@@ -91,10 +79,10 @@ trait StoryTransformable
             ];
         }
         if (count($stories) > 0) {
-            $transformedUserStories['stats']['draft'] = $draftStories;
-            $transformedUserStories['stats']['published'] = $publishedStories;
-            $transformedUserStories['stats']['pending'] = $pendingStories;
-            $transformedUserStories['stats']['declined'] = $declinedStories;
+            $transformedUserStories['stats']['draft'] = $storyStatusCount->draft;
+            $transformedUserStories['stats']['published'] =  $storyStatusCount->published;
+            $transformedUserStories['stats']['pending'] =  $storyStatusCount->pending;
+            $transformedUserStories['stats']['declined'] =  $storyStatusCount->declined;
         }
         
         return $transformedUserStories;
@@ -104,9 +92,10 @@ trait StoryTransformable
      * Used for transform published stories
      *
      * @param Object $story
+     * @param string $defaultAvatar
      * @return array
      */
-    protected function transformPublishedStory(Object $story): array
+    protected function transformPublishedStory(Object $story, string $defaultAvatar): array
     {
         $transformedPublishedStories = array();
         $languageCode = config('app.locale');
@@ -127,7 +116,7 @@ trait StoryTransformable
                     'user_id' => $storyData->user_id,
                     'user_first_name' => $storyData->user->first_name,
                     'user_last_name' => $storyData->user->last_name,
-                    'user_avatar' => $storyData->user->avatar,
+                    'user_avatar' => !empty($storyData->user->avatar) ? $storyData->user->avatar : $defaultAvatar,
                     'title' => $storyData->title,
                     'description' => strip_tags($storyData->description),
                     'status' => trans('general.status.'.$storyData->status),
@@ -145,10 +134,11 @@ trait StoryTransformable
      *
      * @param App\Models\Story $story
      * @param int $storyViewCount
+     * @param string $defaultAvatar
      * @return Array
      */
 
-    protected function transformStoryDetails(Story $story, int $storyViewCount):array
+    protected function transformStoryDetails(Story $story, int $storyViewCount, string $defaultAvatar):array
     {
         $storyData['story_id'] = (int) $story->story_id;
         $storyData['mission_id'] = $story->mission_id;
@@ -162,7 +152,7 @@ trait StoryTransformable
             $storyData['user_id'] = $story->user_id;
             $storyData['first_name'] = $story->user->first_name;
             $storyData['last_name'] = $story->user->last_name;
-            $storyData['avatar'] = $story->user->avatar;
+            $storyData['avatar'] = !empty($story->user->avatar) ? $story->user->avatar : $defaultAvatar;
             $storyData['profile_text'] = $story->user->profile_text;
             $storyData['why_i_volunteer'] = $story->user->why_i_volunteer;
             $storyData['city'] = $story->user->city;

@@ -79,4 +79,15 @@ class StoryInviteRepository implements StoryInviteInterface
     {
         return $this->story->getStoryName($storyId);
     }
+    
+    /**
+     * Get story details
+     *
+     * @param int $inviteId
+     * @return App\Models\StoryInvite
+     */
+    public function getDetails(int $inviteId): StoryInvite
+    {
+        return $this->storyInvite->getDetails($inviteId);
+    }
 }

@@ -45,4 +45,15 @@ return [
         'PUBLISHED' => 'Published',
         'DECLINED' => 'Declined',
     ],
+
+    'notification' => [
+        'RECOMMENDS_THIS_MISSION' => 'Recommends this mission',
+        'VOLUNTEERING_HOURS_SUBMITTED_THE' => 'Volunteering hours submitted the',
+        'VOLUNTEERING_GOALS_SUBMITTED_THE' => 'Volunteering goals submitted the',
+        'COMMENT_OF' => 'Comment of',
+        'STORY' => 'Story',
+        'NEW_MISSION' => 'New mission',
+        'NEW_MESSAGE' => 'New Message',
+        'RECOMMENDS_THIS_STORY' => 'Recommends this story',        
+    ],
 ];

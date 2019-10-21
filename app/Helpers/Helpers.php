@@ -299,4 +299,17 @@ class Helpers
         }
         return $phrase;
     }
+
+    /**
+     * Get tenant default assets url
+     *
+     * @param string $tenantName
+     * @return string
+     */
+    public function getAssetsUrl(string $tenantName): string
+    {
+        return 'https://s3.'.config('constants.AWS_REGION').'.amazonaws.com/'.
+        config('constants.AWS_S3_BUCKET_NAME').'/'.$tenantName.'/'.config('constants.AWS_S3_ASSETS_FOLDER_NAME').
+        '/'.config('constants.AWS_S3_IMAGES_FOLDER_NAME').'/';
+    }
 }

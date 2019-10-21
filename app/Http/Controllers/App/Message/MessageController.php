@@ -11,10 +11,11 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Validator;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Transformations\MessageTransformable;
 
 class MessageController extends Controller
 {
-    use RestExceptionHandlerTrait;
+    use RestExceptionHandlerTrait,MessageTransformable;
     /**
      * @var App\Repositories\Message\MessageRepository;
      */
@@ -71,7 +72,7 @@ class MessageController extends Controller
 
         // Set response data
         $apiStatus = Response::HTTP_CREATED;
-        $apiMessage = trans('messages.success.MESSAGE_USER_MESSAGE_SEND_SUCESSFULLY');
+        $apiMessage = trans('messages.success.MESSAGE_USER_MESSAGE_SEND_SUCCESSFULLY');
         $apiData = ['message_id' => $messageId];
 
         return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
@@ -91,10 +92,25 @@ class MessageController extends Controller
             [$request->auth->user_id]
         );
         
-        $requestString = $request->except(['page','perPage']);
+        $unreadMessageCount = $this->messageRepository->getUnreadMessageCount($request->auth->user_id);
+        $messageTransformed = $this->transformMessage($userMessages, $unreadMessageCount[0]->unread);
         
-        // generate responce data
-        $apiData = $userMessages;
+        $requestString = $request->except(['page','perPage']);
+        $messagesPaginated = new \Illuminate\Pagination\LengthAwarePaginator(
+            $messageTransformed,
+            $userMessages->total(),
+            $userMessages->perPage(),
+            $userMessages->currentPage(),
+            [
+                'path' => $request->url().'?'.http_build_query($requestString),
+                'query' => [
+                    'page' => $userMessages->currentPage()
+                ]
+            ]
+        );
+    
+        // Set response data
+        $apiData = $messagesPaginated;
         $apiStatus = Response::HTTP_OK;
         $apiMessage = ($userMessages->total() > 0) ?
             trans('messages.success.MESSAGE_MESSAGES_ENTRIES_LISTING') :
@@ -128,6 +144,36 @@ class MessageController extends Controller
             $apiMessage = trans('messages.success.MESSAGE_USER_MESSAGE_DELETED');
             
             return $this->responseHelper->success($apiStatus, $apiMessage);
+        } catch (ModelNotFoundException $e) {
+            return $this->modelNotFound(
+                config('constants.error_codes.ERROR_MESSAGE_USER_MESSAGE_NOT_FOUND'),
+                trans('messages.custom_error_message.ERROR_MESSAGE_USER_MESSAGE_NOT_FOUND')
+            );
+        }
+    }
+    
+    /**
+     * Read message send by admin.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param int $messageId
+     * @return Illuminate\Http\JsonResponse
+     */
+    public function readMessage(Request $request, int $messageId): JsonResponse
+    {
+        try {
+            $messageDetails = $this->messageRepository->readMessage(
+                $messageId,
+                $request->auth->user_id,
+                config('constants.message.send_message_from.admin')
+            );
+           
+            // Set response data
+            $apiStatus = Response::HTTP_OK;
+            $apiMessage = trans('messages.success.MESSAGE_READ_SUCCESSFULLY');
+            $apiData = ['message_id' => $messageDetails->message_id];
+
+            return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
                 config('constants.error_codes.ERROR_MESSAGE_USER_MESSAGE_NOT_FOUND'),

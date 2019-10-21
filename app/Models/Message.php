@@ -32,7 +32,7 @@ class Message extends Model
      */
 
     protected $visible = ['message_id', 'user_id', 'admin_name', 'subject', 'message', 'is_read',
-        'is_anonymous','first_name','last_name','avatar','email'];
+        'is_anonymous','first_name','last_name','avatar','email', 'created_at', 'unread'];
 
     /**
      * The attributes that are mass assignable.
@@ -49,5 +49,23 @@ class Message extends Model
     public function user(): HasOne
     {
         return $this->hasOne(User::class, 'user_id', 'user_id');
+    }
+    
+    /**
+     * Find message.
+     *
+     * @param int $messageId
+     * @param int $userId
+     * @param int $sentFrom
+     * @return App\Models\Message
+     */
+    public function findMessage(int $messageId, int $userId = null, int $sentFrom): Message
+    {
+        return $this->where([
+            'message_id' => $messageId,
+            'sent_from' => $sentFrom
+            ])->when($userId, function ($query, $userId) {
+                return $query->where('user_id', $userId);
+            })->firstOrFail();
     }
 }

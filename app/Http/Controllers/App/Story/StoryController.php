@@ -216,16 +216,42 @@ class StoryController extends Controller
      */
     public function show(Request $request, int $storyId): JsonResponse
     {
-        // Get Story details
-        $story = $this->storyRepository
-        ->getStoryDetails(
-            $storyId,
-            config('constants.story_status.PUBLISHED'),
-            $request->auth->user_id,
-            array(config('constants.story_status.DRAFT'), config('constants.story_status.PENDING'))
-        );
-        
-        if ($story->count() == 0) {
+        try {
+            // Get Story details
+            $story = $this->storyRepository
+            ->getStoryDetails(
+                $storyId,
+                config('constants.story_status.PUBLISHED'),
+                $request->auth->user_id,
+                array(config('constants.story_status.DRAFT'), config('constants.story_status.PENDING'))
+            );
+            
+            if ($story->count() == 0) {
+                return $this->modelNotFound(
+                    config('constants.error_codes.ERROR_STORY_NOT_FOUND'),
+                    trans('messages.custom_error_message.ERROR_STORY_NOT_FOUND')
+                );
+            }
+
+            // conditions for story view count manage
+            $storyArray = array('story_id' => $story[0]->story_id,
+                                'story_user_id' => $story[0]->user_id,
+                                'status' => $story[0]->status);
+                                
+            $storyViewCount = $this->storyVisitorRepository->updateStoryViewCount($storyArray, $request->auth->user_id);
+
+            // get default user avatar
+            $tenantName = $this->helpers->getSubDomainFromRequest($request);
+            $defaultAvatar = $this->helpers->getUserDefaultProfileImage($tenantName);
+
+            // Transform story details
+            $storyTransformedData = $this->transformStoryDetails($story[0], $storyViewCount, $defaultAvatar);
+            
+            $apiStatus = Response::HTTP_OK;
+            $apiMessage = trans('messages.success.MESSAGE_STORY_FOUND');
+    
+            return $this->responseHelper->success($apiStatus, $apiMessage, $storyTransformedData);
+        } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
                 config('constants.error_codes.ERROR_STORY_NOT_FOUND'),
                 trans('messages.custom_error_message.ERROR_STORY_NOT_FOUND')
@@ -457,8 +483,11 @@ class StoryController extends Controller
             $request->auth->user_id
         );
         
-        $storyTransformedData = $this->transformUserStories($userStories);
+        // Get the story status count
+        $storyStatusCounts = $this->storyRepository->getUserStoriesStatusCounts($request->auth->user_id);
         
+        $storyTransformedData = $this->transformUserStories($userStories, $storyStatusCounts);
+
         $requestString = $request->except(['page','perPage']);
         $storyPaginated = new \Illuminate\Pagination\LengthAwarePaginator(
             $storyTransformedData,
@@ -506,7 +535,11 @@ class StoryController extends Controller
             config('constants.story_status.PUBLISHED')
         );
         
-        $storyTransformedData = $this->transformPublishedStory($publishedStories);
+        // get default avatar
+        $tenantName = $this->helpers->getSubDomainFromRequest($request);
+        $defaultAvatar = $this->helpers->getUserDefaultProfileImage($tenantName);
+
+        $storyTransformedData = $this->transformPublishedStory($publishedStories, $defaultAvatar);
         $requestString = $request->except(['page','perPage']);
         $storyPaginated = new \Illuminate\Pagination\LengthAwarePaginator(
             $storyTransformedData,

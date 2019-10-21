@@ -7,6 +7,7 @@ use App\Repositories\Message\MessageInterface;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Collection;
 
 class MessageRepository implements MessageInterface
 {
@@ -33,12 +34,12 @@ class MessageRepository implements MessageInterface
      *
      * @param \Illuminate\Http\Request $request
      * @param int $messageSentFrom
-     * @return null|int messageId
+     * @return array
      */
-    public function store(Request $request, int $messageSentFrom): ?int
+    public function store(Request $request, int $messageSentFrom): array
     {
         $adminName =  !empty($request->admin) ? $request->admin : null;
-        
+        $messageIds = [];
         // found message from admin
         $message = ['sent_from' => $messageSentFrom,
                     'admin_name' => $adminName,
@@ -58,19 +59,19 @@ class MessageRepository implements MessageInterface
                     'created_at' => $now,
                     'updated_at' => $now,
                 ];
-                $batchMessageArray[] = array_merge($message, $messageDataArray);
+                $messageData = $this->message->create(array_merge($message, $messageDataArray));
+                array_push($messageIds, ['message_id' => $messageData->message_id, 'user_id' => $userId]);
             }
-            $messageData = $this->message->insert($batchMessageArray);
         } else {
             $messageDataArray = array(
                 'user_id' => $request->auth->user_id,
-                'is_read' => config('constants.message.read'),
+                'is_read' => config('constants.message.unread'),
             );
             $messageDataArray = array_merge($message, $messageDataArray);
             $messageData = $this->message->create($messageDataArray);
+            array_push($messageIds, $messageData->message_id);
         }
-
-        return !empty($messageData->message_id) ? $messageData->message_id : null;
+        return $messageIds;
     }
 
     /**
@@ -89,12 +90,12 @@ class MessageRepository implements MessageInterface
         $userMessageQuery = $this->message->select('*')->with(['user' => function ($query) {
             $query->select('user_id', 'first_name', 'last_name');
         }])->where('sent_from', $sentFrom)
-                            ->when(
-                                $userIds,
-                                function ($query, $userIds) {
-                                    return $query->whereIn('user_id', $userIds);
-                                }
-                            )->orderBy('created_at', 'desc');
+            ->when(
+                $userIds,
+                function ($query, $userIds) {
+                    return $query->whereIn('user_id', $userIds);
+                }
+            )->orderBy('created_at', 'desc');
 
         return $userMessageQuery->paginate($request->perPage);
     }
@@ -121,5 +122,47 @@ class MessageRepository implements MessageInterface
                 return $query->where('user_id', $userId);
             }
         )->firstOrFail()->delete();
+    }
+    
+    /**
+     * Get message detail
+     *
+     * @param int $messageId
+     * @return App\Models\Message
+     */
+    public function getMessage(int $messageId): Message
+    {
+        return $this->message->findOrFail($messageId);
+    }
+    /**
+     * Read message.
+     *
+     * @param int $messageId
+     * @param int $userId | null
+     * @param int $sentFrom
+     * @return App\Models\Message
+     */
+    public function readMessage(int $messageId, int $userId = null, int $sentFrom): Message
+    {
+        $messageDetails = $this->message->findMessage($messageId, $userId, $sentFrom);
+        $messageDetails->update(['is_read' => config('constants.message.read')]);
+        return $messageDetails;
+    }
+
+    /**
+     * Count unread messages.
+     *
+     * @param int $userId
+     * @return Illuminate\Database\Eloquent\Collection
+     */
+    public function getUnreadMessageCount(int $userId): Collection
+    {
+        $messageUnreadCount = $this->message->selectRaw('COUNT(is_read) as unread')
+        ->where([
+            'is_read' => config('constants.message.unread'),
+            'sent_from' => config('constants.message.send_message_from.admin'),
+            'user_id' => $userId
+        ])->get();
+        return $messageUnreadCount;
     }
 }

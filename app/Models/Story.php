@@ -105,4 +105,15 @@ class Story extends Model
     {
         return static::select('title')->where(['story_id' => $storyId])->value('title');
     }
+
+    /**
+     * Remove the script tag from description attribute
+     *
+     * @param string $value
+     * @return void
+     */
+    public function setDescriptionAttribute($value)
+    {
+        $this->attributes['description'] = preg_replace('#<script(.*?)>(.*?)</script>#is', '', $value);
+    }
 }

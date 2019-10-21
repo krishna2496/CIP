@@ -152,23 +152,26 @@ return [
         'MESSAGE_USER_COMMENTS_LISTING' => 'User comments listed successfully',
         'MESSAGE_STORY_SUBMITTED_SUCESSFULLY' => 'Story submitted sucessfully',
         'MESSAGE_STORY_IMAGE_DELETED' => 'Story image deleted sucessfully',
-		'MESSAGE_USER_MESSAGE_SEND_SUCESSFULLY' => 'Message sent successfully',
-        'MESSAGE_USER_MESSAGES_SEND_SUCESSFULLY' => 'Messages sent successfully',
+		'MESSAGE_USER_MESSAGE_SEND_SUCCESSFULLY' => 'Message sent successfully',
+        'MESSAGE_USER_MESSAGES_SEND_SUCCESSFULLY' => 'Messages sent successfully',
     	'MESSAGE_NOTIFICATION_SETTINGS_LISTING' => 'Notification settings listed successfully',
         'MESSAGE_USER_NOTIFICATION_SETTINGS_UPDATED' => 'User notification settings updated successfully',
-        'MESSAGE_USER_MESSAGE_DELETED' => 'Message deleted sucessfully',
+        'MESSAGE_USER_MESSAGE_DELETED' => 'Message deleted successfully',
         'MESSAGE_NO_MISSION_COMMENTS_ENTRIES' => 'No mission comments found',
         'MESSAGE_STORY_VISITOR_ADDED_SUCESSFULLY' => 'Story visitor added successfully',
         'MESSAGE_STORY_SUBMITTED_SUCESSFULLY' => 'Story submitted sucessfully',
         'MESSAGE_STORY_IMAGE_DELETED' => 'Story image deleted sucessfully',
         'MESSAGE_INVITED_FOR_STORY' => 'User invited to story successfully',
-        'MESSAGE_USER_COOKIE_AGGREMENT_ACCEPTED' => 'Cookie aggrement accepted successfully',
-        'MESSAGE_SEND_SUCESSFULLY' => 'Message sent successfully',
+        'MESSAGE_USER_COOKIE_AGGREMENT_ACCEPTED' => 'Cookie aggrement accepted successfully',        
         'MESSAGE_MESSAGES_ENTRIES_LISTING' => 'Messages listed successfully',
         'MESSAGE_NO_MESSAGES_ENTRIES_FOUND' => 'No messages found',
         'MESSAGE_USER_COOKIE_AGREEMENT_ACCEPTED' => 'Cookie agreement accepted successfully',
         'MESSAGE_NOTIFICATION_SETTINGS_LISTING' => 'Notification settings listed successfully',
         'MESSAGE_USER_NOTIFICATION_SETTINGS_UPDATED' => 'User notification settings updated successfully',
+        'MESSAGE_USER_NOTIFICATION_READ_UNREAD_SUCCESSFULLY' => 'User notification status updated successfully',
+        'MESSAGE_USER_NOTIFICATIONS_CLEAR_SUCCESSFULLY' => 'User notification cleared successfully',
+        'MESSAGE_NOTIFICATION_LISTING' => 'Notification listed successfully',
+        'MESSAGE_READ_SUCCESSFULLY' => 'Message read successfully',
     ],
 
         
@@ -308,5 +311,7 @@ return [
         'ERROR_MESSAGE_USER_MESSAGE_NOT_FOUND' => 'Message not found in the system',
         'ERROR_INVITE_STORY_ALREADY_EXIST' => 'User is already invited for this story',
 
+        // For notification module
+        'ERROR_MESSAGE_USER_NOTIFICATION_NOT_FOUND' => 'Notification not found in the system',
     ]
 ];

@@ -100,7 +100,7 @@ class UserRepository implements UserInterface
         $userQuery = $this->user->selectRaw("user_id, first_name, last_name, email, password, 
         case when(avatar = '' || avatar is null) then '$defaultAvatarImage' else avatar end as avatar, 
         timezone_id, availability_id, why_i_volunteer, employee_id, department,
-         manager_name, city_id, country_id, profile_text, linked_in_url, status, language_id, title")
+         city_id, country_id, profile_text, linked_in_url, status, language_id, title")
         ->with('city', 'country', 'timezone');
         
         if ($request->has('search')) {
@@ -331,9 +331,9 @@ class UserRepository implements UserInterface
      * @param int $userId
      * @return null|int
      */
-    public function getUserGoalHours(int $userId): ?int
+    public function getUserHoursGoal(int $userId): ?int
     {
-        return $this->user->getUserGoalHours($userId);
+        return $this->user->getUserHoursGoal($userId);
     }
 
     /**

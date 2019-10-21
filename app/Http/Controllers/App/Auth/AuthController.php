@@ -26,6 +26,7 @@ use App\Helpers\LanguageHelper;
 use App\Exceptions\TenantDomainNotFoundException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Repositories\User\UserRepository;
+use App\Events\User\UserActivityLogEvent;
 
 class AuthController extends Controller
 {
@@ -153,6 +154,17 @@ class AuthController extends Controller
         $apiData = $data;
         $apiStatus = Response::HTTP_OK;
         $apiMessage = trans('messages.success.MESSAGE_USER_LOGGED_IN');
+
+        // Make activity log
+        event(new UserActivityLogEvent(
+            config('constants.activity_log_types.AUTH'),
+            config('constants.activity_log_actions.LOGGEDIN'),
+            config('constants.activity_log_user_types.REGULAR'),
+            $userDetail->email,
+            get_class($this),
+            $request->toArray(),
+            $userDetail->user_id
+        ));
         return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
     }
     

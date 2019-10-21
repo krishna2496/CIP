@@ -150,17 +150,20 @@ return [
         'MESSAGE_STORY_IMAGE_DELETED' => 'Image de l\'histoire supprimée avec succès',
     	'MESSAGE_UNABLE_TO_EXPORT_MISSION_COMMENTS_ENTRIES' => 'Aucun commentaire de mission trouvé',
         'MESSAGE_STORY_SUBMITTED_SUCESSFULLY' => 'Histoire soumise avec succès',
-        'MESSAGE_USER_MESSAGE_SEND_SUCESSFULLY' => 'message envoyé avec succès',
-        'MESSAGE_USER_MESSAGES_SEND_SUCESSFULLY' => 'Messages envoyés avec succès',
+        'MESSAGE_USER_MESSAGE_SEND_SUCCESSFULLY' => 'message envoyé avec succès',
+        'MESSAGE_USER_MESSAGES_SEND_SUCCESSFULLY' => 'Messages envoyés avec succès',
         'MESSAGE_USER_MESSAGE_DELETED' => 'Message supprimé avec succès',
         'MESSAGE_INVITED_FOR_STORY' => 'Utilisateur invité à raconter une histoire avec succès',
-        'MESSAGE_USER_COOKIE_AGGREMENT_ACCEPTED' => 'Agrégation de cookies acceptée avec succès',
-        'MESSAGE_SEND_SUCESSFULLY' => 'message envoyé avec succès',
+        'MESSAGE_USER_COOKIE_AGGREMENT_ACCEPTED' => 'Agrégation de cookies acceptée avec succès',        
         'MESSAGE_MESSAGES_ENTRIES_LISTING' => 'Messages listés avec succès',
         'MESSAGE_NO_MESSAGES_ENTRIES_FOUND' => 'Aucun message trouvé',
         'MESSAGE_USER_COOKIE_AGREEMENT_ACCEPTED' => 'Contrat de cookie accepté avec succès',
         'MESSAGE_NOTIFICATION_SETTINGS_LISTING' => 'Paramètres de notification répertoriés avec succès',
         'MESSAGE_USER_NOTIFICATION_SETTINGS_UPDATED' => 'Paramètres de notification utilisateur mis à jour avec succès',
+        'MESSAGE_USER_NOTIFICATION_READ_UNREAD_SUCCESSFULLY' => 'Statut de notification utilisateur mis à jour avec succès',
+        'MESSAGE_USER_NOTIFICATIONS_CLEAR_SUCCESSFULLY' => 'Notification d\'utilisateur effacée avec succès',
+        'MESSAGE_NOTIFICATION_LISTING' => 'Notification répertoriée avec succès',
+        'MESSAGE_READ_SUCCESSFULLY' => 'Message lu avec succès',
     ],
 
         
@@ -299,5 +302,8 @@ return [
         // For message module
         'ERROR_MESSAGE_USER_MESSAGE_NOT_FOUND' => 'Message introuvable dans le système',
         'ERROR_INVITE_STORY_ALREADY_EXIST' => 'L\'utilisateur est déjà invité pour cette histoire',
+
+        // For notification module
+        'ERROR_MESSAGE_USER_NOTIFICATION_NOT_FOUND' => 'Notification non trouvée dans le système',
     ]
 ];

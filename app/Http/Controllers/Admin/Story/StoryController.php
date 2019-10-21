@@ -15,6 +15,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Validation\Rule;
 use Validator;
+use App\Helpers\Helpers;
 use App\Events\User\UserNotificationEvent;
 
 class StoryController extends Controller
@@ -37,6 +38,11 @@ class StoryController extends Controller
     private $responseHelper;
 
     /**
+     * @var App\Helpers\Helpers
+     */
+    private $helpers;
+
+    /**
      * @var App\Helpers\LanguageHelper
      */
     private $languageHelper;
@@ -54,12 +60,14 @@ class StoryController extends Controller
         UserRepository $userRepository,
         StoryRepository $storyRepository,
         ResponseHelper $responseHelper,
-        LanguageHelper $languageHelper
+        LanguageHelper $languageHelper,
+        Helpers $helpers
     ) {
         $this->userRepository = $userRepository;
         $this->storyRepository = $storyRepository;
         $this->responseHelper = $responseHelper;
         $this->languageHelper = $languageHelper;
+        $this->helpers = $helpers;
     }
 
     /**
@@ -88,10 +96,14 @@ class StoryController extends Controller
             $userId
         );
 
+        // get default user avatar
+        $tenantName = $this->helpers->getSubDomainFromRequest($request);
+        $defaultAvatar = $this->helpers->getUserDefaultProfileImage($tenantName);
+
         $storyTransformed = $userStories
             ->getCollection()
-            ->map(function ($story) use ($request, $defaultTenantLanguage) {
-                $story = $this->transformStory($story, $defaultTenantLanguage->language_id);
+            ->map(function ($story) use ($request, $defaultTenantLanguage, $defaultAvatar) {
+                $story = $this->transformStory($story, $defaultTenantLanguage->language_id, $defaultAvatar);
                 return $story;
             });
 
