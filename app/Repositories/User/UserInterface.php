@@ -134,4 +134,12 @@ interface UserInterface
      * @return bool
      */
     public function updateCookieAgreement(int $userId): bool;
+    
+    /**
+     * Get timezone from user id
+     *
+     * @param int $userId
+     * @return string
+     */
+    public function getUserTimezone(int $userId): string;
 }

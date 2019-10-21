@@ -26,15 +26,15 @@ return [
         'STORY_DESCRIPTION' => 'Story description',
         'STORY_STATUS' => 'Story status',
         'MISSION_TITLE' => 'Mission title',
-		'PUBLISHED_DATE' => 'Published date',
-	],
+        'PUBLISHED_DATE' => 'Published date',
+    ],
 
-	/**
-	 * Export user comment sheet's headings
-	 */
-	'export_mission_comment_headings' => [
-		'MISSION_TITLE' => 'Mission title',
-		'COMMENT' => 'Comment',
+    /**
+     * Export user comment sheet's headings
+     */
+    'export_mission_comment_headings' => [
+        'MISSION_TITLE' => 'Mission title',
+        'COMMENT' => 'Comment',
         'STATUS' => 'Comment status',
         'PUBLISHED_DATE' => 'Published date',
     ],
@@ -46,6 +46,19 @@ return [
         'DECLINED' => 'Declined',
     ],
 
+    /*
+     * Notification status
+     */
+    'notification_status' => [
+        'DRAFT' => 'draft',
+        'AUTOMATICALLY_APPROVED' => 'approved',
+        'PENDING' => 'pending',
+        'DECLINED' => 'declined',
+        'REFUSED' => 'refused',
+        'PUBLISHED' => 'published',
+        
+    ],
+
     'notification' => [
         'RECOMMENDS_THIS_MISSION' => 'Recommends this mission',
         'VOLUNTEERING_HOURS_SUBMITTED_THE' => 'Volunteering hours submitted the',
@@ -54,6 +67,9 @@ return [
         'STORY' => 'Story',
         'NEW_MISSION' => 'New mission',
         'NEW_MESSAGE' => 'New Message',
-        'RECOMMENDS_THIS_STORY' => 'Recommends this story',        
+        'RECOMMENDS_THIS_STORY' => 'Recommends this story',
+        'NEW_NEWS' => 'New News',
+        'VOLUNTEERING_REQUEST' => 'Volunteering request has been',   
+        'FOR_THIS_MISSION' => 'for this mission :',  
     ],
 ];

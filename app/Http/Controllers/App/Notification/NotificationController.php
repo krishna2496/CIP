@@ -153,7 +153,7 @@ class NotificationController extends Controller
 
     /**
      * Clear all notifications
-	 *
+     *
      * @param Illuminate\Http\Request $request
      * @return \Illuminate\Http\JsonResponse
      */
