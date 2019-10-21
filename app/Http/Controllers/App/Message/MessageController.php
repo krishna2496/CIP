@@ -11,10 +11,12 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Validator;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Transformations\MessageTransformable;
+use App\Repositories\User\UserRepository;
 
 class MessageController extends Controller
 {
-    use RestExceptionHandlerTrait;
+    use RestExceptionHandlerTrait,MessageTransformable;
     /**
      * @var App\Repositories\Message\MessageRepository;
      */
@@ -24,20 +26,28 @@ class MessageController extends Controller
      * @var App\Helpers\ResponseHelper
      */
     private $responseHelper;
+    
+    /**
+     * @var App\Repositories\User\UserRepository
+     */
+    private $userRepository;
 
     /**
      * Create a new message controller instance
      *
      * @param App\Repositories\Message\MessageRepository;
      * @param App\Helpers\ResponseHelper $responseHelper
+     * @param  App\Repositories\User\UserRepository $userRepository
      * @return void
      */
     public function __construct(
         MessageRepository $messageRepository,
-        ResponseHelper $responseHelper
+        ResponseHelper $responseHelper,
+        UserRepository $userRepository
     ) {
         $this->messageRepository = $messageRepository;
         $this->responseHelper = $responseHelper;
+        $this->userRepository = $userRepository;
     }
 
     /**
@@ -91,8 +101,28 @@ class MessageController extends Controller
             [$request->auth->user_id]
         );
         
-        // generate responce data
-        $apiData = $userMessages;
+        
+        $timezone = $this->userRepository->getUserTimezone($request->auth->user_id);
+
+        $unreadMessageCount = $this->messageRepository->getUnreadMessageCount($request->auth->user_id);
+        $messageTransformed = $this->transformMessage($userMessages, $unreadMessageCount[0]->unread, $timezone);
+
+        $requestString = $request->except(['page','perPage']);
+        $messagesPaginated = new \Illuminate\Pagination\LengthAwarePaginator(
+            $messageTransformed,
+            $userMessages->total(),
+            $userMessages->perPage(),
+            $userMessages->currentPage(),
+            [
+                'path' => $request->url().'?'.http_build_query($requestString),
+                'query' => [
+                    'page' => $userMessages->currentPage()
+                ]
+            ]
+        );
+    
+        // Set response data
+        $apiData = $messagesPaginated;
         $apiStatus = Response::HTTP_OK;
         $apiMessage = ($userMessages->total() > 0) ?
             trans('messages.success.MESSAGE_MESSAGES_ENTRIES_LISTING') :

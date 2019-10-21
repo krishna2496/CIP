@@ -17,6 +17,7 @@ use App\Transformations\NewsTransformable;
 use App\Helpers\LanguageHelper;
 use App\Helpers\Helpers;
 use App\Events\User\UserActivityLogEvent;
+use App\Events\User\UserNotificationEvent;
 
 //!  News Controller
 /*!
@@ -175,6 +176,13 @@ class NewsController extends Controller
             $news->news_id
         ));
         
+        // Send notification to user
+        $notificationType = config('constants.notification_type_keys.NEW_NEWS');
+        $entityId = $news->news_id;
+        $action = config('constants.notification_actions.CREATED');
+
+        event(new UserNotificationEvent($notificationType, $entityId, $action));
+
         return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
     }
 

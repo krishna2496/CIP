@@ -13,6 +13,7 @@ use InvalidArgumentException;
 use Validator;
 use DB;
 use Illuminate\Validation\Rule;
+use App\Events\User\UserActivityLogEvent;
 
 class SkillController extends Controller
 {
@@ -26,18 +27,25 @@ class SkillController extends Controller
      * @var App\Helpers\ResponseHelper
      */
     private $responseHelper;
+
+    /**
+     * @var string
+     */
+    private $userApiKey;
     
     /**
      * Create a new controller instance.
      *
      * @param App\Repositories\User\SkillRepository $skillRepository
      * @param Illuminate\Http\ResponseHelper $responseHelper
+     * @param Illuminate\Http\Request $request
      * @return void
      */
-    public function __construct(SkillRepository $skillRepository, ResponseHelper $responseHelper)
+    public function __construct(SkillRepository $skillRepository, ResponseHelper $responseHelper, Request $request)
     {
         $this->skillRepository = $skillRepository;
         $this->responseHelper = $responseHelper;
+        $this->userApiKey = $request->header('php-auth-user');
     }
     
     /**
@@ -101,6 +109,18 @@ class SkillController extends Controller
         $apiStatus = Response::HTTP_CREATED;
         $apiMessage = trans('messages.success.MESSAGE_SKILL_CREATED');
         
+        // Make activity log
+        event(new UserActivityLogEvent(
+            config('constants.activity_log_types.SKILL'),
+            config('constants.activity_log_actions.CREATED'),
+            config('constants.activity_log_user_types.API'),
+            $this->userApiKey,
+            get_class($this),
+            $request->toArray(),
+            null,
+            $skill->skill_id
+        ));
+
         return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
     }
 
@@ -151,6 +171,18 @@ class SkillController extends Controller
         $apiStatus = Response::HTTP_OK;
         $apiMessage = trans('messages.success.MESSAGE_SKILL_UPDATED');
         
+        // Make activity log
+        event(new UserActivityLogEvent(
+            config('constants.activity_log_types.SKILL'),
+            config('constants.activity_log_actions.UPDATED'),
+            config('constants.activity_log_user_types.API'),
+            $this->userApiKey,
+            get_class($this),
+            $request->toArray(),
+            null,
+            $skill->skill_id
+        ));
+
         return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
     }
 
@@ -192,6 +224,19 @@ class SkillController extends Controller
             // Set response data
             $apiStatus = Response::HTTP_NO_CONTENT;
             $apiMessage = trans('messages.success.MESSAGE_SKILL_DELETED');
+
+            // Make activity log
+            event(new UserActivityLogEvent(
+                config('constants.activity_log_types.SKILL'),
+                config('constants.activity_log_actions.DELETED'),
+                config('constants.activity_log_user_types.API'),
+                $this->userApiKey,
+                get_class($this),
+                null,
+                null,
+                $id
+            ));
+            
             return $this->responseHelper->success($apiStatus, $apiMessage);
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(

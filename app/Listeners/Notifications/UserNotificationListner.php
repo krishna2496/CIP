@@ -71,12 +71,12 @@ class UserNotificationListner
             $data->userId,
             $data->notificationTypeId
         );
-        if (
-            config('constants.notification_type_keys.NEW_MISSIONS')
+        if (config('constants.notification_type_keys.NEW_MISSIONS')
             === $this->notificationRepository->getNotificationType($data->notificationTypeId)
             && !is_null($isNotificationActive)
         ) {
-            // This is mission create notification, here need to check user's skill and availability match with mission or not.
+            // This is mission create notification,
+            // here need to check user's skill and availability match with mission or not.
             $isUserRelatedToMission = $this->missionRepository->checkIsMissionRelatedToUser(
                 $data->entityId,
                 $data->userId

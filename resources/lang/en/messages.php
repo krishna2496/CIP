@@ -168,6 +168,9 @@ return [
         'MESSAGE_USER_COOKIE_AGREEMENT_ACCEPTED' => 'Cookie agreement accepted successfully',
         'MESSAGE_NOTIFICATION_SETTINGS_LISTING' => 'Notification settings listed successfully',
         'MESSAGE_USER_NOTIFICATION_SETTINGS_UPDATED' => 'User notification settings updated successfully',
+        'MESSAGE_USER_NOTIFICATION_READ_UNREAD_SUCCESSFULLY' => 'User notification status updated successfully',
+        'MESSAGE_USER_NOTIFICATIONS_CLEAR_SUCCESSFULLY' => 'User notification cleared successfully',
+        'MESSAGE_NOTIFICATION_LISTING' => 'Notification listed successfully',
         'MESSAGE_READ_SUCCESSFULLY' => 'Message read successfully',
     ],
 
@@ -308,5 +311,7 @@ return [
         'ERROR_MESSAGE_USER_MESSAGE_NOT_FOUND' => 'Message not found in the system',
         'ERROR_INVITE_STORY_ALREADY_EXIST' => 'User is already invited for this story',
 
+        // For notification module
+        'ERROR_MESSAGE_USER_NOTIFICATION_NOT_FOUND' => 'Notification not found in the system',
     ]
 ];

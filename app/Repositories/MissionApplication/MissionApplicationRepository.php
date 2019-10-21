@@ -192,4 +192,15 @@ class MissionApplicationRepository implements MissionApplicationInterface
     {
         return $this->missionApplication->pendingApplicationCount($userId, $year, $month);
     }
+
+    /**
+     * Get mission id from application id
+     *
+     * @param int $applicationId
+     * @return int
+     */
+    public function getMissionId(int $applicationId): int
+    {
+        return $this->missionApplication->where('mission_application_id', $applicationId)->first()->mission_id;
+    }
 }

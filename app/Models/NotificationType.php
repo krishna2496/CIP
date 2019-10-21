@@ -21,4 +21,11 @@ class NotificationType extends Model
      * @var string
      */
     protected $primaryKey = 'notification_type_id';
+
+    /**
+     * The attributes that should be visible in arrays.
+     *
+     * @var array
+     */
+    protected $visible = ['notification_type_id', 'notification_type'];
 }

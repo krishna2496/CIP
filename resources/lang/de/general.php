@@ -46,4 +46,31 @@ return [
         'PUBLISHED' => 'DE: Published',
         'DECLINED' => 'DE: Declined',
     ],
+
+    /*
+     * Notification status
+     */
+    'notification_status' => [
+        'DRAFT' => 'DE: draft',
+        'AUTOMATICALLY_APPROVED' => 'DE: approved',
+        'PENDING' => 'DE: pending',
+        'DECLINED' => 'DE: declined',
+        'REFUSED' => 'DE: refused',
+        'PUBLISHED' => 'DE: published',
+        
+    ],
+
+    'notification' => [
+        'RECOMMENDS_THIS_MISSION' => 'DE: Recommends this mission',
+        'VOLUNTEERING_HOURS_SUBMITTED_THE' => 'DE: Volunteering hours submitted the',
+        'VOLUNTEERING_GOALS_SUBMITTED_THE' => 'DE: Volunteering goals submitted the',
+        'COMMENT_OF' => 'DE: Comment of',
+        'STORY' => 'DE: Story',
+        'NEW_MISSION' => 'DE: New mission',
+        'NEW_MESSAGE' => 'DE: New Message',
+        'RECOMMENDS_THIS_STORY' => 'DE: Recommends this story',
+        'NEW_NEWS' => 'DE: New News',
+        'VOLUNTEERING_REQUEST' => 'DE: Volunteering request has been',   
+        'FOR_THIS_MISSION' => 'DE: for this mission :',  
+    ],
 ];
