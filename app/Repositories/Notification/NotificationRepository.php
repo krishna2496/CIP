@@ -139,9 +139,9 @@ class NotificationRepository implements NotificationInterface
     }
 
     /**
-     * Get notification type from type id
+     * Get notification type from notification type id
      *
-     * @param string $type
+     * @param int $notificationTypeId
      * @return string
      */
     public function getNotificationType(int $notificationTypeId): string
