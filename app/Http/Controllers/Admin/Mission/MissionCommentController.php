@@ -15,6 +15,7 @@ use App\Repositories\Mission\MissionRepository;
 use Validator;
 use Illuminate\Validation\Rule;
 use App\Events\User\UserNotificationEvent;
+use App\Events\User\UserActivityLogEvent;
 
 class MissionCommentController extends Controller
 {
@@ -36,21 +37,29 @@ class MissionCommentController extends Controller
     private $missionRepository;
 
     /**
+     * @var string
+     */
+    private $userApiKey;
+
+    /**
      * Create a new comment controller instance
      *
      * @param App\Repositories\Mission\MissionRepository $missionRepository
      * @param App\Repositories\Mission\MissionCommentRepository $missionCommentRepository
      * @param Illuminate\Http\ResponseHelper $responseHelper
+     * @param Illuminate\Http\Request $request
      * @return void
      */
     public function __construct(
         MissionRepository $missionRepository,
         MissionCommentRepository $missionCommentRepository,
-        ResponseHelper $responseHelper
+        ResponseHelper $responseHelper,
+        Request $request
     ) {
         $this->missionRepository = $missionRepository;
         $this->missionCommentRepository = $missionCommentRepository;
         $this->responseHelper = $responseHelper;
+        $this->userApiKey = $request->header('php-auth-user');
     }
 
     /**
@@ -171,6 +180,17 @@ class MissionCommentController extends Controller
 
             event(new UserNotificationEvent($notificationType, $entityId, $action, $userId));
 
+            // Make activity log
+            event(new UserActivityLogEvent(
+                config('constants.activity_log_types.MISSION'),
+                config('constants.activity_log_actions.COMMENT_UPDATED'),
+                config('constants.activity_log_user_types.API'),
+                $this->userApiKey,
+                get_class($this),
+                $request->toArray(),
+                null,
+                $missionId
+            ));
             return $this->responseHelper->success($apiStatus, $apiMessage, $apiData->toArray());
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
