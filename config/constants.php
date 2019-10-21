@@ -481,7 +481,10 @@ return [
         'USERS' => 'USERS',
         'MISSION' => 'MISSION',
         'COMMENT' => 'COMMENT',
-        'MESSAGE' => 'MESSAGE'
+        'MESSAGE' => 'MESSAGE',
+        'USERS_CUSTOM_FIELD' => 'USERS_CUSTOM_FIELD',
+        'USER_PROFILE' => 'USER_PROFILE',
+        'USER_PROFILE_IMAGE' => 'USER_PROFILE_IMAGE'
     ],
 
     'activity_log_actions' => [
