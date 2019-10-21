@@ -11,6 +11,7 @@ use App\Helpers\ResponseHelper;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Traits\RestExceptionHandlerTrait;
 use Validator;
+use App\Events\User\UserActivityLogEvent;
 
 class MissionApplicationController extends Controller
 {
@@ -119,6 +120,17 @@ class MissionApplicationController extends Controller
         $apiStatus = Response::HTTP_CREATED;
         $apiMessage = trans('messages.success.MESSAGE_APPLICATION_CREATED');
         
+        // Make activity log
+        event(new UserActivityLogEvent(
+            config('constants.activity_log_types.MISSION'),
+            config('constants.activity_log_actions.MISSION_APPLICATION_CREATED'),
+            config('constants.activity_log_user_types.REGULAR'),
+            $request->auth->email,
+            get_class($this),
+            $request->toArray(),
+            $request->auth->user_id,
+            $request->mission_id
+        ));
         return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
     }
 

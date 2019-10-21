@@ -22,6 +22,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Validator;
 use App\Models\UserFilter;
 use App\Transformations\MissionTransformable;
+use App\Events\User\UserActivityLogEvent;
 
 class MissionController extends Controller
 {
@@ -398,6 +399,22 @@ class MissionController extends Controller
             $apiMessage = ($missionFavourite != null) ?
             trans('messages.success.MESSAGE_MISSION_ADDED_TO_FAVOURITE') :
             trans('messages.success.MESSAGE_MISSION_DELETED_FROM_FAVOURITE');
+            
+            // Make activity log
+            $favouriteStatus = ($missionFavourite != null) ?
+            config('constants.activity_log_actions.ADD_TO_FAVOURITE'):
+            config('constants.activity_log_actions.REMOVE_FROM_FAVOURITE');
+            
+            event(new UserActivityLogEvent(
+                config('constants.activity_log_types.MISSION'),
+                $favouriteStatus,
+                config('constants.activity_log_user_types.REGULAR'),
+                $request->auth->email,
+                get_class($this),
+                $request->toArray(),
+                $request->auth->user_id,
+                $request->mission_id
+            ));
             return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
