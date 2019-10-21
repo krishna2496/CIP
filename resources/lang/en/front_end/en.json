@@ -198,7 +198,7 @@
         "hours_per_month": "Hours per month",
         "hours_tracked_this_year": "Hours tracked this year",
         "top": "Top",
-        "mission_title": "Select mission title",
+        "mission_title": "Select your mission",
         "closed": "Closed",
         "share_your_story": "Share your story",
         "views": "Views",
@@ -246,7 +246,26 @@
         "name": "Name",
         "phone_number": "Phone number",
         "message": "Message",
-        "send": "Send"
+        "send": "Send",
+        "status": "Status",
+     	"notification": "Notification",
+        "notification_settings": "Notification Settings",
+        "get_notification_for": "Get a notification for",
+        "no_new_notifications": "You do not have any new notifications",
+        "new": "New",
+        "send_us_a_message": "Send us a message",
+        "email": "Email",
+        "phone": "Phone",
+        "subject": "Subject",
+        "anonymous_user": "Anonymous user",
+        "recommended_missions": "Recommended missions",
+        "my_comments": "My comments",
+        "new_missions": "New missions",
+        "new_messages": "New messages",
+        "recommended_story": "Recommended story",
+        "expand" : "Expand",
+        "upload_pictures" : "Upload pictures",
+        "no_messages": "No messages"
     },
 
     "placeholder": {
@@ -275,11 +294,11 @@
         "notes": "Enter notes",
         "workday": "Please select day volunteered",
         "action": "Enter action",
-        "story_title": "Enter story title",
+        "story_title": "Please enter story title",
         "story_detail": "Enter your stories",
         "video_url": "Enter your video url",
-     	"phone_number": "Enter phone number",
-        "message": "Enter message"
+ 	 	"subject": "Enter your subject",
+        "message": "Enter your message"
     },
 
     "errors": {
@@ -330,9 +349,12 @@
         "mission_required": "Please select mission",
         "story_description_required": "Please enter story description",
         "valid_video_url": "Please enter valid youtube url",
-         "valid_phone_number": "Please enter valid phone number",
+        "subject_required": "Please enter subject",
         "message_required": "Please enter message",
-        "phone_number_min_length": "Phone number should be minimum 10 number"
+        "invalid_image_type": "Invalid file type: valid file types are png, jpg, jpeg",
+        "max_image_upload": "Maximum 20 images can be added",
+        "max_video_upload": "Maximum 20 images can be added",
+        "duplicate_video_url": "Duplicate video url are not allowed"
     },
 
     "export_timesheet_file_names": {
