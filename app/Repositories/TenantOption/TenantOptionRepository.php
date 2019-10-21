@@ -34,21 +34,36 @@ class TenantOptionRepository implements TenantOptionInterface
      * Update style settings.
      *
      * @param  Illuminate\Http\Request $request
-     * @return void
+     * @return Array
      */
-    public function updateStyleSettings(Request $request)
+    public function updateStyleSettings(Request $request): Array
     {
+        $tenantIdArray = array();
+
         if ($request->primary_color !== '') {
             $styleData['option_name'] = 'primary_color';
             $styleData['option_value'] = $request->primary_color;
             $this->tenantOption->addOrUpdateColor($styleData);
+            $tenantOptionData = $this->getOptionValue($styleData['option_name']);
+
+            if (!empty($tenantOptionData) && !empty($request->primary_color)) {
+                array_push($tenantIdArray, $tenantOptionData[0]->tenant_option_id);
+            }
         }
 
         if ($request->secondary_color !== '') {
             $styleData['option_name'] = 'secondary_color';
             $styleData['option_value'] = $request->secondary_color;
             $this->tenantOption->addOrUpdateColor($styleData);
+
+            $tenantOptionData = $this->getOptionValue($styleData['option_name']);
+            
+            if (!empty($tenantOptionData) && !empty($request->secondary_color)) {
+                array_push($tenantIdArray, $tenantOptionData[0]->tenant_option_id);
+            }
         }
+
+        return $tenantIdArray;
     }
 
     /**
