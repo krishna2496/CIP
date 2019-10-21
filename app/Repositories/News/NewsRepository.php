@@ -273,4 +273,27 @@ class NewsRepository implements NewsInterface
         
         return $newsStatus;
     }
+
+    /** Get news title
+     *
+     * @param int $newsId
+     * @param int $languageId
+     * @param int $defaultTenantLanguageId
+     * @return string
+     */
+    public function getNewsTitle(int $newsId, int $languageId, int $defaultTenantLanguageId): string
+    {
+        $languageData = $this->newsLanguage->select('title')
+        ->where(['news_id' => $newsId, 'language_id' => $languageId])
+        ->get();
+        if ($languageData->count() > 0) {
+            return $languageData[0]->title;
+        } else {
+            $defaultTenantLanguageData = $this->newsLanguage
+                ->select('title')
+                ->where(['news_id' => $newsId, 'language_id' => $defaultTenantLanguageId])
+                ->get();
+            return $defaultTenantLanguageData[0]->title;
+        }
+    }
 }

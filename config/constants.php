@@ -287,7 +287,9 @@ return [
         'NEW_STORIES_HOURS' => 'New stories hours',
         'NEW_MISSIONS' => 'New missions',
         'NEW_MESSAGES' => 'New messages',
-        'RECOMMENDED_STORY' => 'Recommended story'
+        'RECOMMENDED_STORY' => 'Recommended story',
+        'MISSION_APPLICATION' => 'Mission Application',
+        'NEW_NEWS' => 'New News'
     ],
     
     /**
@@ -502,6 +504,8 @@ return [
         'MY_STORIES' => 'warning.png',
         'NEW_MISSIONS' => 'circle-plus.png',
         'NEW_MESSAGES' => 'circle-plus.png',
+        'NEW_NEWS' => 'circle-plus.png',
+        'MISSION_APPLICATION' => 'warning.png',
     ],
     
     'activity_log_types' => [
