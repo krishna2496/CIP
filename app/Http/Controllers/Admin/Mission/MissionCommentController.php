@@ -243,6 +243,5 @@ class MissionCommentController extends Controller
         event(new UserNotificationEvent($notificationType, $entityId, $action, $userId));
 
         return $this->responseHelper->success($apiStatus, $apiMessage);
-        
     }
 }
