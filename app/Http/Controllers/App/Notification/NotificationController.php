@@ -121,7 +121,7 @@ class NotificationController extends Controller
 
 
     /**
-     * read unread notification
+     * Read/unread notification
      *
      * @param Illuminate\Http\Request $request
      * @param int $notificationId
@@ -151,25 +151,19 @@ class NotificationController extends Controller
     }
 
     /**
-     * clear user's all notifications
+     * Clear all notifications
+	 *
      * @param Illuminate\Http\Request $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function clearAllNotifications(Request $request)
     {
-        //clear all notification
+        // Clear all notification
         $clearNotificationStatus = $this->notificationRepository->deleteAllNotifications($request->auth->user_id);
 
         // Set response data
         $apiStatus = Response::HTTP_NO_CONTENT;
         $apiMessage = trans('messages.success.MESSAGE_USER_NOTIFICATIONS_CLEAR_SUCCESSFULLY');
-
-        if (!$clearNotificationStatus) {
-            return $this->modelNotFound(
-                config('constants.error_codes.ERROR_USER_NOTIFICATION_NOT_FOUND'),
-                trans('messages.custom_error_message.ERROR_MESSAGE_USER_NOTIFICATION_NOT_FOUND')
-            );
-        }
 
         return $this->responseHelper->success($apiStatus, $apiMessage);
     }
