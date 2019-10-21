@@ -48,7 +48,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      */
     protected $fillable = ['first_name', 'last_name', 'email', 'password', 'avatar',
      'timezone_id', 'availability_id', 'why_i_volunteer', 'employee_id', 'department',
-      'manager_name', 'city_id', 'country_id', 'profile_text', 'linked_in_url', 'status',
+      'city_id', 'country_id', 'profile_text', 'linked_in_url', 'status',
        'language_id', 'title', 'hours_goal'];
     
     /**
@@ -58,7 +58,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      */
     protected $visible = ['user_id', 'first_name', 'last_name', 'email',
      'password', 'avatar', 'timezone_id', 'availability_id', 'why_i_volunteer',
-     'employee_id', 'department', 'manager_name', 'city_id', 'country_id',
+     'employee_id', 'department', 'city_id', 'country_id',
      'profile_text', 'linked_in_url', 'status', 'title', 'city', 'country', 'timezone', 'language_id', 'availability',
     'userCustomFieldValue', 'cookie_agreement_date','hours_goal'];
 

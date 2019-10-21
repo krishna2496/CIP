@@ -128,6 +128,43 @@ class NotificationRepository implements NotificationInterface
     }
 
     /**
+     * Read Unread notification by notification id
+     *
+     * @param int $notificationId
+     * @param int $userId
+     * @return int $updatedNotificationId
+     */
+    public function readUnreadNotificationById(int $notificationId, int $userId): int
+    {
+        $notifications = $this->notification->where([
+            'user_id' => $userId
+        ])->findOrFail($notificationId);
+        
+        // found the notifications then update read/unread status
+        if (!empty($notifications)) {
+            $updateReadStatus = $notifications->is_read == config('constants.notification.read') ?
+                config('constants.notification.unread') : config('constants.notification.read');
+
+            $notifications->is_read = $updateReadStatus;
+            $notifications->save();
+        }
+        return $notifications->notification_id;
+    }
+
+    /**
+     * Delete user's all notifications
+	 * 
+     * @param int $userId
+     * @return bool
+     */
+    public function deleteAllNotifications($userId): bool
+    {
+        return $this->notification->where([
+            'user_id' => $userId
+        ])->delete();
+    }
+
+    /**
      * Get notifications count
      *
      * @param int $userId
