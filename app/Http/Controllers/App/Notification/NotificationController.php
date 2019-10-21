@@ -106,6 +106,7 @@ class NotificationController extends Controller
                 $defaultTenantLanguage->language_id
             );
             $notificationDetails['created_at'] = Carbon::parse($notification->created_at)->format('Y-m-d H:i:s');
+            $notificationDetails['notification_id'] = $notification->notification_id;
             $notificationData['notifications'][] = $notificationDetails;
         }
 
