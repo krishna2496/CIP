@@ -46,4 +46,15 @@ return [
         'PUBLISHED' => 'DE: Published',
         'DECLINED' => 'DE: Declined',
     ],
+
+    'notification' => [
+        'RECOMMENDS_THIS_MISSION' => 'DE: Recommends this mission',
+        'VOLUNTEERING_HOURS_SUBMITTED_THE' => 'DE: Volunteering hours submitted the',
+        'VOLUNTEERING_GOALS_SUBMITTED_THE' => 'DE: Volunteering goals submitted the',
+        'COMMENT_OF' => 'DE: Comment of',
+        'STORY' => 'DE: Story',
+        'NEW_MISSION' => 'DE: New mission',
+        'NEW_MESSAGE' => 'DE: New Message',
+        'RECOMMENDS_THIS_STORY' => 'DE: Recommends this story',        
+    ],
 ];

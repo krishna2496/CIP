@@ -128,7 +128,6 @@ class AppUserTest extends TestCase
             'why_i_volunteer' => str_random(50),
             'employee_id' => str_random(3),
             'department' => str_random(5),
-            'manager_name' => str_random(5),
             'custom_fields' => [
                 [
                     "field_id" => $fieldId,
@@ -188,7 +187,6 @@ class AppUserTest extends TestCase
             'why_i_volunteer' => str_random(50),
             'employee_id' => str_random(3),
             'department' => str_random(5),
-            'manager_name' => str_random(5),
             'custom_fields' => [
                 [
                     "field_id" => $fieldId,
@@ -510,7 +508,6 @@ class AppUserTest extends TestCase
                 "why_i_volunteer",
                 "employee_id",
                 "department",
-                "manager_name",
                 "city_id",
                 "country_id",
                 "profile_text",
@@ -746,7 +743,6 @@ class AppUserTest extends TestCase
             'why_i_volunteer' => str_random(50),
             'employee_id' => str_random(3),
             'department' => str_random(5),
-            'manager_name' => str_random(5),
             'custom_fields' => [
                 [
                     "field_id" => $fieldId,

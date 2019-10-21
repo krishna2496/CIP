@@ -4,6 +4,7 @@ namespace App\Repositories\Message;
 use App\Models\Message;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Collection;
 
 interface MessageInterface
 {
@@ -49,4 +50,12 @@ interface MessageInterface
      * @return App\Models\Message
      */
     public function readMessage(int $messageId, int $userId, int $sentFrom): Message;
+
+    /**
+     * Count unread messages.
+     *
+     * @param int $userId
+     * @return Illuminate\Database\Eloquent\Collection
+     */
+    public function getUnreadMessageCount(int $userId): Collection;
 }

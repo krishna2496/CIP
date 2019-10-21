@@ -402,13 +402,23 @@ $router->group(['middleware' => 'localization'], function ($router) {
         'middleware' => 'localization|tenant.connection|jwt.auth',
           'uses' => 'App\Notification\NotificationTypeController@index']);
 
-    /* Store or update user notification settings */
-    $router->post('/app/user-notification-settings/update', ['as' => 'app.user-notification-settings.update',
-        'middleware' => 'localization|tenant.connection|jwt.auth|JsonApiMiddleware',
-        'uses' => 'App\Notification\NotificationTypeController@storeOrUpdate']);
+    /* Read Unread User notification */
+    $router->post('/app/notification/read-unread/{notificationId}', ['as' => 'app.user-notification.read-unread',
+        'middleware' => 'localization|tenant.connection|jwt.auth',
+        'uses' => 'App\Notification\NotificationController@readUnreadNotification']);
+
+    /* Clear User notification */
+    $router->delete('/app/notification/clear', ['as' => 'app.user-notification.clear',
+        'middleware' => 'localization|tenant.connection|jwt.auth',
+        'uses' => 'App\Notification\NotificationController@clearAllNotifications']);
+        
+    /* Fetch notification settings */
+    $router->get('/app/notification', ['as' => 'app.notification',
+        'middleware' => 'localization|tenant.connection|jwt.auth',
+          'uses' => 'App\Notification\NotificationController@index']);
 
     /* Read message send by admin */
-    $router->post('/app/message/read/{messageId}', ['as' => 'app.message.read',
+	$router->post('/app/message/read/{messageId}', ['as' => 'app.message.read',
         'middleware' => 'localization|tenant.connection|jwt.auth',
         'uses' => 'App\Message\MessageController@readMessage']);
 });
@@ -710,7 +720,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
             $router->delete('/{messageId}', ['as' => 'message.destroy',
                 'uses' => 'Admin\Message\MessageController@destroy']);
 
-            $router->get('/list', ['as' => 'message.list',
+            $router->get('/list', ['as' => 'message.list', 'middleware' => 'PaginationMiddleware',
                 'uses' => 'Admin\Message\MessageController@getUserMessages']);
 
             $router->post('/read/{messageId}', ['as' => 'message.read',

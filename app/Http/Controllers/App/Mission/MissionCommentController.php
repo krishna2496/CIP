@@ -99,7 +99,7 @@ class MissionCommentController extends Controller
         $validator = Validator::make(
             $request->all(),
             [
-                "comment" => "required|max:280",
+                "comment" => "required|max:600",
                 "mission_id" => "required|integer|exists:mission,mission_id,deleted_at,NULL"
             ]
         );

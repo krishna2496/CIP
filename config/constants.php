@@ -45,6 +45,7 @@ return [
     'DEFAULT_FQDN_FOR_FRONT' => 'web8',
     'PER_PAGE_MAX' => '50',
     'AWS_S3_DEFAULT_THEME_FOLDER_NAME' => 'default_theme',
+    'MESSAGE_DATE_FORMAT' => 'Y-m-d',
     
     /*
      * User custom field types
@@ -289,6 +290,14 @@ return [
         'RECOMMENDED_STORY' => 'Recommended story'
     ],
     
+    /**
+     * notification status
+     */
+    'notification' => [
+        'read' => '1',
+        'unread' => '0'
+    ],
+
     /*
      * Tenant settings
      */
@@ -414,6 +423,7 @@ return [
         'ERROR_CONTACT_FORM_REQUIRED_FIELDS_EMPTY' => '1000001',
 
         'ERROR_USER_NOTIFICATION_REQUIRED_FIELDS_EMPTY' => '600001',
+        'ERROR_USER_NOTIFICATION_NOT_FOUND' => '600002',
                 
         'ERROR_OCCURRED' => '999999',
         'ERROR_INVALID_JSON' => '900000',
@@ -449,7 +459,6 @@ return [
         'ERROR_MESSAGE_USER_MESSAGE_NOT_FOUND' => '1100002'
     ],
 
-
     /**
      * Notification types
      */
@@ -462,6 +471,8 @@ return [
         'NEW_MISSIONS' => 'new_missions',
         'NEW_MESSAGES' => 'new_messages',
         'RECOMMENDED_STORY' => 'recommended_story',
+        'MISSION_APPLICATION' => 'mission_application',
+        'NEW_NEWS' => 'new_news'
     ],
 
     /**
@@ -476,9 +487,23 @@ return [
         'DECLINED' => 'DECLINED',
         'INVITE' => 'INVITE',
         'AUTOMATICALLY_APPROVED' => 'AUTOMATICALLY_APPROVED',
-        'SUBMIT_FOR_APPROVAL' => 'SUBMIT_FOR_APPROVAL'
+        'SUBMIT_FOR_APPROVAL' => 'SUBMIT_FOR_APPROVAL',
+        'DELETED' => 'DELETED',
+        'REFUSED' => 'REFUSED'
     ],
 
+    /**
+     * Notification type icons
+     */
+    'notification_type_icons' => [
+        'VOLUNTEERING_HOURS' => 'warning.png',
+        'VOLUNTEERING_GOALS' => 'warning.png',
+        'MY_COMMENTS' => 'warning.png',
+        'MY_STORIES' => 'warning.png',
+        'NEW_MISSIONS' => 'circle-plus.png',
+        'NEW_MESSAGES' => 'circle-plus.png',
+    ],
+    
     'activity_log_types' => [
         'AUTH' => 'AUTH',
         'USERS' => 'USERS',

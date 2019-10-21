@@ -7,6 +7,7 @@ use App\Repositories\Message\MessageInterface;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Collection;
 
 class MessageRepository implements MessageInterface
 {
@@ -122,7 +123,17 @@ class MessageRepository implements MessageInterface
             }
         )->firstOrFail()->delete();
     }
-
+    
+    /**
+     * Get message detail
+     *
+     * @param int $messageId
+     * @return App\Models\Message
+     */
+    public function getMessage(int $messageId): Message
+    {
+        return $this->message->findOrFail($messageId);
+    }
     /**
      * Read message.
      *
@@ -136,5 +147,22 @@ class MessageRepository implements MessageInterface
         $messageDetails = $this->message->findMessage($messageId, $userId, $sentFrom);
         $messageDetails->update(['is_read' => config('constants.message.read')]);
         return $messageDetails;
+    }
+
+    /**
+     * Count unread messages.
+     *
+     * @param int $userId
+     * @return Illuminate\Database\Eloquent\Collection
+     */
+    public function getUnreadMessageCount(int $userId): Collection
+    {
+        $messageUnreadCount = $this->message->selectRaw('COUNT(is_read) as unread')
+        ->where([
+            'is_read' => config('constants.message.unread'),
+            'sent_from' => config('constants.message.send_message_from.admin'),
+            'user_id' => $userId
+        ])->get();
+        return $messageUnreadCount;
     }
 }

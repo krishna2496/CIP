@@ -13,6 +13,7 @@ use Validator;
 use Illuminate\Validation\Rule;
 use InvalidArgumentException;
 use App\Events\User\UserActivityLogEvent;
+use App\Events\User\UserNotificationEvent;
 
 class MissionApplicationController extends Controller
 {
@@ -127,6 +128,7 @@ class MissionApplicationController extends Controller
         $apiStatus = Response::HTTP_OK;
         $apiMessage = trans('messages.success.MESSAGE_APPLICATION_UPDATED');
         
+<<<<<<< HEAD
         // Make activity log
         event(new UserActivityLogEvent(
             config('constants.activity_log_types.MISSION'),
@@ -138,6 +140,16 @@ class MissionApplicationController extends Controller
             null,
             $missionId
         ));
+=======
+        // Send notification to user
+        $notificationType = config('constants.notification_type_keys.MISSION_APPLICATION');
+        $entityId = $applicationId;
+        $action = config('constants.notification_actions.'.$request->approval_status);
+        $userId = $application->user_id;
+        
+        event(new UserNotificationEvent($notificationType, $entityId, $action, $userId));
+        
+>>>>>>> 0a3e8c609c9f7f764c4dd8339c7003f1d266361c
         return $this->responseHelper->success($apiStatus, $apiMessage);
     }
 }
