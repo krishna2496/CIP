@@ -45,6 +45,7 @@ return [
     'DEFAULT_FQDN_FOR_FRONT' => 'web8',
     'PER_PAGE_MAX' => '50',
     'AWS_S3_DEFAULT_THEME_FOLDER_NAME' => 'default_theme',
+    'MESSAGE_DATE_FORMAT' => 'Y-m-d',
     
     /*
      * User custom field types
@@ -275,6 +276,29 @@ return [
     ],
 
     /*
+     * User notification types
+     */
+    'notification_types' => [
+        'RECOMMENDED_MISSIONS' => 'Recommended missions',
+        'VOLUNTEERING_HOURS' => 'Volunteering hours',
+        'VOLUNTEERING_GOALS' => 'Volunteering goals',
+        'MY-COMMENTS' => 'My comments',
+        'MY-STORIES' => 'My stories',
+        'NEW_STORIES_HOURS' => 'New stories hours',
+        'NEW_MISSIONS' => 'New missions',
+        'NEW_MESSAGES' => 'New messages',
+        'RECOMMENDED_STORY' => 'Recommended story'
+    ],
+    
+    /**
+     * notification status
+     */
+    'notification' => [
+        'read' => '1',
+        'unread' => '0'
+    ],
+
+    /*
      * Tenant settings
      */
     'tenant_settings' => [
@@ -399,6 +423,7 @@ return [
         'ERROR_CONTACT_FORM_REQUIRED_FIELDS_EMPTY' => '1000001',
 
         'ERROR_USER_NOTIFICATION_REQUIRED_FIELDS_EMPTY' => '600001',
+        'ERROR_USER_NOTIFICATION_NOT_FOUND' => '600002',
                 
         'ERROR_OCCURRED' => '999999',
         'ERROR_INVALID_JSON' => '900000',
