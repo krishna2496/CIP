@@ -264,7 +264,6 @@ class UserController extends Controller
                 "max:16",
                 Rule::unique('user')->ignore($id, 'user_id,deleted_at,NULL')],
             "department" => "max:16",
-            "manager_name" => "max:16",
             "linked_in_url" => "url|valid_linkedin_url",
             "why_i_volunteer" => "sometimes|required",
             "availability_id" => "integer|exists:availability,availability_id,deleted_at,NULL",
