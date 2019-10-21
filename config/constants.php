@@ -484,7 +484,10 @@ return [
         'USERS' => 'USERS',
         'MISSION' => 'MISSION',
         'COMMENT' => 'COMMENT',
-        'MESSAGE' => 'MESSAGE'
+        'MESSAGE' => 'MESSAGE',
+        'FOOTER_PAGE' => 'FOOTER_PAGE',
+        'POLICY_PAGE' => 'POLICY_PAGE',
+        'USER_CUSTOM_FILED' => 'USER_CUSTOM_FILED'
     ],
 
     'activity_log_actions' => [
@@ -492,7 +495,17 @@ return [
         'UPDATED' => 'UPDATED',
         'DELETED' => 'DELETED',
         'INVITED' => 'INVITED',
-        'LOGGEDIN' => 'LOGGEDIN'
+        'LOGGEDIN' => 'LOGGEDIN',
+        'ADD_TO_FAVOURITE' => 'ADD_TO_FAVOURITE',
+        'REMOVE_FROM_FAVOURITE' => 'REMOVE_FROM_FAVOURITE',
+        'RATED' => 'RATED',
+        'COMMENT_ADDED' => 'COMMENT_ADDED',
+        'COMMENT_UPDATED' => 'COMMENT_UPDATED',
+        'COMMENT_DELETED' => 'COMMENT_DELETED',
+        'MISSION_APPLICATION_CREATED' => 'MISSION_APPLICATION_CREATED',
+        'MISSION_APPLICATION_STATUS_CHANGED' => 'MISSION_APPLICATION_STATUS_CHANGED',
+        'PASSWORD_RESET_REQUEST' => 'PASSWORD_RESET_REQUEST',
+        'PASSWORD_UPDATED' => 'PASSWORD_UPDATED'
     ],
 
     'activity_log_user_types' => [

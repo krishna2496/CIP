@@ -14,6 +14,7 @@ use App\Helpers\Helpers;
 use App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository;
 use App\Helpers\LanguageHelper;
 use App\Helpers\ExportCSV;
+use App\Events\User\UserActivityLogEvent;
 
 class MissionCommentController extends Controller
 {
@@ -133,6 +134,18 @@ class MissionCommentController extends Controller
         $apiMessage = ($isAutoApproved) ? trans('messages.success.MESSAGE_AUTO_APPROVED_COMMENT_ADDED') :
         trans('messages.success.MESSAGE_COMMENT_ADDED');
         
+        // Make activity log
+        event(new UserActivityLogEvent(
+            config('constants.activity_log_types.MISSION'),
+            config('constants.activity_log_actions.COMMENT_ADDED'),
+            config('constants.activity_log_user_types.REGULAR'),
+            $request->auth->email,
+            get_class($this),
+            $request->toArray(),
+            $request->auth->user_id,
+            $request->mission_id
+        ));
+
         return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
     }
 

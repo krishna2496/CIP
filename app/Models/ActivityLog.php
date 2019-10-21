@@ -31,8 +31,15 @@ class ActivityLog extends Model
     protected $fillable = ['type', 'action', 'object_class', 'object_id', 'object_value', 'date',
     'user_id', 'user_type', 'user_value'];
 
-    public function setObjectValueAttribute(array $value)
+    /**
+     * Set value in serialize form
+     * @param array $value
+     * @return void
+     */
+    public function setObjectValueAttribute(array $value = null)
     {
-        $this->attributes['object_value'] = serialize($value);
+        if (!is_null($value)) {
+            $this->attributes['object_value'] = serialize($value);
+        }
     }
 }

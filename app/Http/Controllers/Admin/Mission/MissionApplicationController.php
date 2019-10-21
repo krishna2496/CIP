@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Validator;
 use Illuminate\Validation\Rule;
 use InvalidArgumentException;
+use App\Events\User\UserActivityLogEvent;
 
 class MissionApplicationController extends Controller
 {
@@ -126,6 +127,17 @@ class MissionApplicationController extends Controller
         $apiStatus = Response::HTTP_OK;
         $apiMessage = trans('messages.success.MESSAGE_APPLICATION_UPDATED');
         
+        // Make activity log
+        event(new UserActivityLogEvent(
+            config('constants.activity_log_types.MISSION'),
+            config('constants.activity_log_actions.MISSION_APPLICATION_STATUS_CHANGED'),
+            config('constants.activity_log_user_types.API'),
+            $request->header('php-auth-user'),
+            get_class($this),
+            $request->toArray(),
+            null,
+            $missionId
+        ));
         return $this->responseHelper->success($apiStatus, $apiMessage);
     }
 }

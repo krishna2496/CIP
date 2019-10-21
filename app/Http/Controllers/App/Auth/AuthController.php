@@ -233,6 +233,17 @@ class AuthController extends Controller
 
         $apiStatus = Response::HTTP_OK;
         $apiMessage = trans('messages.success.MESSAGE_PASSWORD_RESET_LINK_SEND_SUCCESS');
+
+        // Make activity log
+        event(new UserActivityLogEvent(
+            config('constants.activity_log_types.AUTH'),
+            config('constants.activity_log_actions.PASSWORD_RESET_REQUEST'),
+            config('constants.activity_log_user_types.REGULAR'),
+            $userDetail->email,
+            get_class($this),
+            $request->toArray(),
+            $userDetail->user_id
+        ));
         return $this->responseHelper->success($apiStatus, $apiMessage);
     }
 
@@ -305,6 +316,17 @@ class AuthController extends Controller
     
         $apiStatus = Response::HTTP_OK;
         $apiMessage = trans('messages.success.MESSAGE_PASSWORD_CHANGE_SUCCESS');
+
+        // Make activity log
+        /* event(new UserActivityLogEvent(
+            config('constants.activity_log_types.AUTH'),
+            config('constants.activity_log_actions.PASSWORD_UPDATED'),
+            config('constants.activity_log_user_types.REGULAR'),
+            $userDetail->email,
+            get_class($this),
+            $request->toArray(),
+            $userDetail->user_id
+        )); */
         return $this->responseHelper->success($apiStatus, $apiMessage);
     }
 

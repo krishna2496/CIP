@@ -21,6 +21,7 @@ use App\Jobs\AppMailerJob;
 use App\Exceptions\TenantDomainNotFoundException;
 use App\Repositories\TenantOption\TenantOptionRepository;
 use App\Events\User\UserNotificationEvent;
+use App\Events\User\UserActivityLogEvent;
 
 class MissionInviteController extends Controller
 {
@@ -158,6 +159,18 @@ class MissionInviteController extends Controller
         ->getAllTenantActivatedSetting($request);
 
         $emailNotificationInviteColleague = config('constants.tenant_settings.EMAIL_NOTIFICATION_INVITE_COLLEAGUE');
+
+        // Make activity log
+        event(new UserActivityLogEvent(
+            config('constants.activity_log_types.MISSION'),
+            config('constants.activity_log_actions.INVITED'),
+            config('constants.activity_log_user_types.REGULAR'),
+            $request->auth->email,
+            get_class($this),
+            $request->toArray(),
+            $request->auth->user_id,
+            $request->mission_id
+        ));
         if (!in_array($emailNotificationInviteColleague, $getActivatedTenantSettings)) {
             return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
         }

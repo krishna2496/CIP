@@ -16,6 +16,7 @@ use InvalidArgumentException;
 use Illuminate\Validation\Rule;
 use App\Helpers\LanguageHelper;
 use App\Helpers\Helpers;
+use App\Events\User\UserActivityLogEvent;
 
 class UserController extends Controller
 {
@@ -39,6 +40,11 @@ class UserController extends Controller
      * @var App\Helpers\Helpers
      */
     private $helpers;
+
+    /**
+     * @var string
+     */
+    private $userApiKey;
     
     /**
      * Create a new controller instance.
@@ -47,18 +53,21 @@ class UserController extends Controller
      * @param App\Helpers\ResponseHelper $responseHelper
      * @param App\Helpers\ResponseHelper $languageHelper
      * @param App\Helpers\Helpers $helpers
+     * @param Illuminate\Http\Request $request
      * @return void
      */
     public function __construct(
         UserRepository $userRepository,
         ResponseHelper $responseHelper,
         LanguageHelper $languageHelper,
-        Helpers $helpers
+        Helpers $helpers,
+        Request $request
     ) {
         $this->userRepository = $userRepository;
         $this->responseHelper = $responseHelper;
         $this->languageHelper = $languageHelper;
         $this->helpers = $helpers;
+        $this->userApiKey = $request->header('php-auth-user');
     }
     
     /**
@@ -144,6 +153,18 @@ class UserController extends Controller
         $apiStatus = Response::HTTP_CREATED;
         $apiMessage = trans('messages.success.MESSAGE_USER_CREATED');
         
+        // Make activity log
+        event(new UserActivityLogEvent(
+            config('constants.activity_log_types.USER'),
+            config('constants.activity_log_actions.CREATED'),
+            config('constants.activity_log_user_types.API'),
+            $this->userApiKey,
+            get_class($this),
+            $request->toArray(),
+            null,
+            $user->user_id
+        ));
+
         return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
     }
 
@@ -241,6 +262,18 @@ class UserController extends Controller
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_USER_UPDATED');
             
+            // Make activity log
+            event(new UserActivityLogEvent(
+                config('constants.activity_log_types.USER'),
+                config('constants.activity_log_actions.UPDATED'),
+                config('constants.activity_log_user_types.API'),
+                $this->userApiKey,
+                get_class($this),
+                $request->toArray(),
+                null,
+                $id
+            ));
+            
             return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
@@ -264,6 +297,19 @@ class UserController extends Controller
             // Set response data
             $apiStatus = Response::HTTP_NO_CONTENT;
             $apiMessage = trans('messages.success.MESSAGE_USER_DELETED');
+            
+            // Make activity log
+            event(new UserActivityLogEvent(
+                config('constants.activity_log_types.USER'),
+                config('constants.activity_log_actions.DELETED'),
+                config('constants.activity_log_user_types.API'),
+                $this->userApiKey,
+                get_class($this),
+                null,
+                null,
+                $id
+            ));
+
             return $this->responseHelper->success($apiStatus, $apiMessage);
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
