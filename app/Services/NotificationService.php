@@ -8,6 +8,8 @@ use App\Repositories\Timesheet\TimesheetRepository;
 use App\Repositories\MissionComment\MissionCommentRepository;
 use App\Repositories\Message\MessageRepository;
 use App\Repositories\Story\StoryRepository;
+use App\Repositories\MissionApplication\MissionApplicationRepository;
+use App\Repositories\News\NewsRepository;
 use App\Models\Notification;
 use App\Helpers\Helpers;
 use Carbon\Carbon;
@@ -50,6 +52,16 @@ class NotificationService
     public $storyRepository;
 
     /**
+     * @var App\Repositories\MissionApplication\MissionApplicationRepository
+     */
+    public $missionApplicationRepository;
+
+    /**
+     * @var App\Repositories\News\NewsRepository
+     */
+    public $newsRepository;
+
+    /**
      * @var App\Helpers\Helpers
      */
     public $helpers;
@@ -64,6 +76,8 @@ class NotificationService
      * @param  App\Repositories\Mission\MissionRepository $missionRepository
      * @param  App\Repositories\Message\MessageRepository $messageRepository
      * @param  App\Repositories\Story\StoryRepository $storyRepository
+     * @param  App\Repositories\MissionApplication\MissionApplicationRepository $missionApplicationRepository
+     * @param  App\Repositories\News\NewsRepository $newsRepository
      * @param  App\Helpers\Helpers $helpers
      * @return void
      */
@@ -75,6 +89,8 @@ class NotificationService
         MissionRepository $missionRepository,
         MessageRepository $messageRepository,
         StoryRepository $storyRepository,
+        MissionApplicationRepository $missionApplicationRepository,
+        NewsRepository $newsRepository,
         Helpers $helpers
     ) {
         $this->missionInviteRepository = $missionInviteRepository;
@@ -84,6 +100,8 @@ class NotificationService
         $this->missionRepository = $missionRepository;
         $this->messageRepository = $messageRepository;
         $this->storyRepository = $storyRepository;
+        $this->missionApplicationRepository = $missionApplicationRepository;
+        $this->newsRepository = $newsRepository;
         $this->helpers = $helpers;
     }
 
@@ -168,7 +186,7 @@ class NotificationService
         $timesheetDetails = $this->timesheetRepository->getDetailsOfTimesheetEntry($notification->entity_id);
         $formattedDate = Carbon::createFromFormat('m-d-Y', $timesheetDetails->date_volunteered);
         $date = Carbon::parse($formattedDate)->format('d/m/Y');
-        $status = strtolower($notification->action);
+        $status = trans('general.notification_status.'.$notification->action);
 
         // Create message
         $response['icon'] =  $this->helpers->getAssetsUrl($tenantName).
@@ -193,7 +211,7 @@ class NotificationService
         $timesheetDetails = $this->timesheetRepository->getDetailsOfTimesheetEntry($notification->entity_id);
         $formattedDate = Carbon::createFromFormat('m-d-Y', $timesheetDetails->date_volunteered);
         $date = Carbon::parse($formattedDate)->format('d/m/Y');
-        $status = strtolower($notification->action);
+        $status = trans('general.notification_status.'.$notification->action);
 
         // Create message
         $response['icon'] = $this->helpers->getAssetsUrl($tenantName).
@@ -218,7 +236,7 @@ class NotificationService
         $commentDetails = $this->missionCommentRepository->getComment($notification->entity_id);
         $date = Carbon::parse($commentDetails->created_at)
         ->setTimezone(config('constants.TIMEZONE'))->format(config('constants.FRONT_DATE_FORMAT'));
-        $status = strtolower($notification->action);
+        $status = trans('general.notification_status.'.$notification->action);
 
         // Create message
         $response['icon'] = $this->helpers->getAssetsUrl($tenantName).
@@ -244,7 +262,7 @@ class NotificationService
 
         $date = Carbon::parse($commentDetails[0]['created_at'])
         ->setTimezone(config('constants.TIMEZONE'))->format(config('constants.FRONT_DATE_FORMAT'));
-        $status = strtolower($notification->action);
+        $status = trans('general.notification_status.'.$notification->action);
 
         // Create message
         $response['icon'] = $this->helpers->getAssetsUrl($tenantName).
@@ -302,6 +320,71 @@ class NotificationService
         $response['icon'] = $this->helpers->getAssetsUrl($tenantName).
         Config('constants.notification_type_icons.NEW_MISSIONS');
         $response['notification_string'] = trans('general.notification.NEW_MISSION')." - ".$missionName;
+        $response['is_read'] = $notification->is_read;
+        $response['link'] = '/mission-detail/'.$notification->entity_id;
+        return $response;
+    }
+
+    /**
+     * Returns details for new news
+     *
+     * @param App\Models\Notification $notification
+     * @param string $tenantName
+     * @param int $languageId
+     * @param int $defaultTenantLanguageId
+     * @return array
+     */
+    public function newNews(
+        Notification $notification,
+        string $tenantName = null,
+        int $languageId,
+        int $defaultTenantLanguageId
+    ): array {
+        // Get details
+        $newsTitle = $this->newsRepository->getNewsTitle(
+            $notification->entity_id,
+            $languageId,
+            $defaultTenantLanguageId
+        );
+
+        // Create message
+        $response['icon'] = $this->helpers->getAssetsUrl($tenantName).
+        Config('constants.notification_type_icons.NEW_NEWS');
+        $response['notification_string'] = trans('general.notification.NEW_NEWS')." - ".$newsTitle;
+        $response['is_read'] = $notification->is_read;
+        $response['link'] = '/news-detail/'.$notification->entity_id;
+        return $response;
+    }
+
+    /**
+     * Returns details for mission application
+     *
+     * @param App\Models\Notification $notification
+     * @param string $tenantName
+     * @param int $languageId
+     * @param int $defaultTenantLanguageId
+     * @return array
+     */
+    public function missionApplication(
+        Notification $notification,
+        string $tenantName = null,
+        int $languageId,
+        int $defaultTenantLanguageId
+    ): array {
+        // Get details
+        $missionId = $this->missionApplicationRepository->getMissionId($notification->entity_id);
+
+        $missionName = $this->missionRepository->getMissionTitle(
+            $missionId,
+            $languageId,
+            $defaultTenantLanguageId
+        );
+        $status = trans('general.notification_status.'.$notification->action);
+        // Create message
+        $response['icon'] = $this->helpers->getAssetsUrl($tenantName).
+        Config('constants.notification_type_icons.MISSION_APPLICATION');
+        $response['notification_string'] = trans('general.notification.VOLUNTEERING_REQUEST')." ".$status." ".
+        trans('general.notification.FOR_THIS_MISSION')." ".$missionName;
         $response['is_read'] = $notification->is_read;
         $response['link'] = '/mission-detail/'.$notification->entity_id;
         return $response;
