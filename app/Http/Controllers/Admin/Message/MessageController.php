@@ -111,7 +111,7 @@ class MessageController extends Controller
             $userIds
         );
         
-        $messageTransformed = $this->transformMessage($userMessages);
+        $messageTransformed = $this->transformMessage($userMessages, null, config('app.timezone'));
 
         $requestString = $request->except(['page','perPage']);
         $messagesPaginated = new \Illuminate\Pagination\LengthAwarePaginator(
