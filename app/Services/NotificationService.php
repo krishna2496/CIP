@@ -110,7 +110,7 @@ class NotificationService
         " ".$inviteDetails->fromUser->last_name." - "
         .trans('general.notification.RECOMMENDS_THIS_MISSION')." - ".$missionName;
         $response['is_read'] = $notification->is_read;
-        $response['link'] = 'app/mission/'.$inviteDetails->mission->mission_id;
+        $response['link'] = '/mission-detail/'.$inviteDetails->mission->mission_id;
         return $response;
     }
 
@@ -142,7 +142,7 @@ class NotificationService
         " ".$inviteDetails->fromUser->last_name." - "
         .trans('general.notification.RECOMMENDS_THIS_STORY')." - ".$storyTitle;
         $response['is_read'] = $notification->is_read;
-        $response['link'] = 'app/story/'.$inviteDetails->story->story_id;
+        $response['link'] = '/story-detail/'.$inviteDetails->story->story_id;
         return $response;
     }
     
@@ -167,7 +167,7 @@ class NotificationService
         $response['notification_string'] = trans('general.notification.VOLUNTEERING_HOURS_SUBMITTED_THE')." ".
         $date." ".$status;
         $response['is_read'] = $notification->is_read;
-        $response['link'] = 'app/timesheet';
+        $response['link'] = '/volunteering-timesheet';
         return $response;
     }
 
@@ -192,10 +192,9 @@ class NotificationService
         $response['notification_string'] = trans('general.notification.VOLUNTEERING_GOALS_SUBMITTED_THE')." "
         .$date." ".$status;
         $response['is_read'] = $notification->is_read;
-        $response['link'] = 'app/timesheet';
+        $response['link'] = '/volunteering-timesheet';
         return $response;
     }
-
     
     /**
      * Returns details for my comments
@@ -218,7 +217,7 @@ class NotificationService
         $response['notification_string'] = trans('general.notification.COMMENT_OF')." "
         .$date." ".$status;
         $response['is_read'] = $notification->is_read;
-        $response['link'] = 'app/comments/'.$commentDetails->mission_id;
+        $response['link'] = '/comment-history';
         return $response;
     }
 
@@ -242,7 +241,7 @@ class NotificationService
         Config('constants.notification_type_icons.MY_STORIES');
         $response['notification_string'] = trans('general.notification.STORY')." ".$date." ".$status;
         $response['is_read'] = $notification->is_read;
-        $response['link'] = 'app/story/list';
+        $response['link'] = '/story-detail/'.$notification->entity_id;
         return $response;
     }
 
@@ -263,7 +262,7 @@ class NotificationService
         Config('constants.notification_type_icons.NEW_MESSAGES');
         $response['notification_string'] = trans('general.notification.NEW_MESSAGE')." - ".$messageDetails->subject;
         $response['is_read'] = $notification->is_read;
-        $response['link'] = 'app/messages';
+        $response['link'] = '/messages';
         return $response;
     }
 
@@ -294,7 +293,7 @@ class NotificationService
         Config('constants.notification_type_icons.NEW_MISSIONS');
         $response['notification_string'] = trans('general.notification.NEW_MISSION')." - ".$missionName;
         $response['is_read'] = $notification->is_read;
-        $response['link'] = 'app/mission/'.$notification->entity_id;
+        $response['link'] = '/mission-detail/'.$notification->entity_id;
         return $response;
     }
 }
