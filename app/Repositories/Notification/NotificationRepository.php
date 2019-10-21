@@ -153,7 +153,7 @@ class NotificationRepository implements NotificationInterface
 
     /**
      * Delete user's all notifications
-	 * 
+     *
      * @param int $userId
      * @return bool
      */
