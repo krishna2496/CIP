@@ -10,7 +10,7 @@ class DatabaseSeeder extends Seeder
      *
      * @return void
      */
-     public function run()
+    public function run()
     {
         Model::unguard();
         // Register the user seeder

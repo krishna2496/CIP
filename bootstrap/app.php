@@ -59,22 +59,47 @@ $app->singleton(
 $app->register(Flipbox\LumenGenerator\LumenGeneratorServiceProvider::class);
 
 $app->middleware([
-     App\Http\Middleware\ExampleMiddleware::class
- ]);
+     Barryvdh\Cors\HandleCors::class //cross origin support
+]);
 
- $app->routeMiddleware([
+$app->routeMiddleware([
     'auth' => App\Http\Middleware\Authenticate::class,
-    'jwt.auth' => App\Http\Middleware\JwtMiddleware::class,
- ]);
- 
-$app->configure('auth');
-$app->configure('mail');
+    'jwt.auth' => App\Http\Middleware\JwtMiddleware::class, //jwt auth
+    'cros' => \Barryvdh\Cors\HandleCors::class, //cross origin support
+    'tenant.connection' => App\Http\Middleware\TenantConnectionMiddleware::class, // Middle ware that connect tenant user with their tenant
+    'auth.tenant.admin' => App\Http\Middleware\AuthTenantAdminMiddleware::class,
+    'localization' => App\Http\Middleware\LocalizationMiddleware::class,
+    'JsonApiMiddleware' => App\Http\Middleware\JsonApiMiddleware::class,
+    'PaginationMiddleware' => App\Http\Middleware\PaginationMiddleware::class
+]);
 
+/**
+ * cross origin api call support
+ */
+$app->register(Barryvdh\Cors\LumenServiceProvider::class);
+ 
+$app->configure('app'); //default authentication
+$app->configure('auth'); //default authentication
+$app->configure('mail'); //SMTP and PHP mail
+$app->configure('constants'); //constant file config
+$app->configure('cors');  //cross origin support
+$app->configure('messages');  //Message Constants config
+$app->configure('mail');  //Mail Constants config
+$app->configure('filesystems');
+$app->configure('services');
+$app->configure('queue');
+
+/**
+ * mailer package registration
+ */
 $app->register(Illuminate\Notifications\NotificationServiceProvider::class);
 $app->register(\Illuminate\Mail\MailServiceProvider::class);
 $app->alias('mailer', \Illuminate\Contracts\Mail\Mailer::class);
 $app->alias('mailer', \Illuminateminate\Mail\Mailer::class);
 $app->alias('mailer', \Illuminate\Contracts\Mail\MailQueue::class);
+
+// Config cache clear
+$app->register(Orumad\ConfigCache\ServiceProviders\ConfigCacheServiceProvider::class);
 
 $app->withFacades();
 /*
@@ -91,6 +116,9 @@ $app->withFacades();
  $app->register(App\Providers\AppServiceProvider::class);
 // $app->register(App\Providers\AuthServiceProvider::class);
 // $app->register(App\Providers\EventServiceProvider::class);
+
+// class_alias('Icyboy\LumenAws\Aws', 'Aws');
+// class_alias('Illuminate\Support\Facades\App', 'App');
 
 /*
 |--------------------------------------------------------------------------
