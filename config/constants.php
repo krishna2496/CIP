@@ -471,6 +471,8 @@ return [
         'NEW_MISSIONS' => 'new_missions',
         'NEW_MESSAGES' => 'new_messages',
         'RECOMMENDED_STORY' => 'recommended_story',
+        'MISSION_APPLICATION' => 'mission_application',
+        'NEW_NEWS' => 'new_news'
     ],
 
     /**
@@ -485,7 +487,9 @@ return [
         'DECLINED' => 'DECLINED',
         'INVITE' => 'INVITE',
         'AUTOMATICALLY_APPROVED' => 'AUTOMATICALLY_APPROVED',
-        'SUBMIT_FOR_APPROVAL' => 'SUBMIT_FOR_APPROVAL'
+        'SUBMIT_FOR_APPROVAL' => 'SUBMIT_FOR_APPROVAL',
+        'DELETED' => 'DELETED',
+        'REFUSED' => 'REFUSED'
     ],
 
     /**

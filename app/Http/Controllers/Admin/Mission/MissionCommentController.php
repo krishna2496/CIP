@@ -201,17 +201,28 @@ class MissionCommentController extends Controller
 
         // Get comment and delete it.
         try {
-            $apiData = $this->missionCommentRepository->deleteComment($commentId);
-
-            $apiStatus = Response::HTTP_NO_CONTENT;
-            $apiMessage = trans('messages.success.MESSAGE_COMMENT_DELETED');
-            
-            return $this->responseHelper->success($apiStatus, $apiMessage);
+            $commentDetails = $this->missionCommentRepository->getCommentById($commentId);
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
                 config('constants.error_codes.ERROR_COMMENT_NOT_FOUND'),
                 trans('messages.custom_error_message.ERROR_COMMENT_NOT_FOUND')
             );
         }
+
+        $apiData = $this->missionCommentRepository->deleteComment($commentId);
+
+        $apiStatus = Response::HTTP_NO_CONTENT;
+        $apiMessage = trans('messages.success.MESSAGE_COMMENT_DELETED');
+        
+        // Send notification to user
+        $notificationType = config('constants.notification_type_keys.MY_COMMENTS');
+        $entityId = $commentId;
+        $action = config('constants.notification_actions.DELETED');
+        $userId = $commentDetails->user->user_id;
+
+        event(new UserNotificationEvent($notificationType, $entityId, $action, $userId));
+
+        return $this->responseHelper->success($apiStatus, $apiMessage);
+        
     }
 }
