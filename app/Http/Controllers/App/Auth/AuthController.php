@@ -217,7 +217,7 @@ class AuthController extends Controller
         $response = $this->broker()->sendResetLink(
             $request->only('email')
         );
-
+        
         // If reset password link didn't sent
         // This error will be triggered in case of mail server issue. So it is not covered in unit test-case
         // @codeCoverageIgnoreStart
@@ -244,6 +244,7 @@ class AuthController extends Controller
             $request->toArray(),
             $userDetail->user_id
         ));
+        
         return $this->responseHelper->success($apiStatus, $apiMessage);
     }
 
@@ -294,7 +295,6 @@ class AuthController extends Controller
             );
         }
         // @codeCoverageIgnoreEnd
-
         if (!Hash::check($request->get('token'), $record->token)) {
             //invalid hash
             return $this->responseHelper->error(
@@ -318,15 +318,15 @@ class AuthController extends Controller
         $apiMessage = trans('messages.success.MESSAGE_PASSWORD_CHANGE_SUCCESS');
 
         // Make activity log
-        /* event(new UserActivityLogEvent(
+        event(new UserActivityLogEvent(
             config('constants.activity_log_types.AUTH'),
-            config('constants.activity_log_actions.PASSWORD_UPDATED'),
+            config('constants.activity_log_actions.PASSWORD_RESET'),
             config('constants.activity_log_user_types.REGULAR'),
             $userDetail->email,
             get_class($this),
             $request->toArray(),
             $userDetail->user_id
-        )); */
+        ));
         return $this->responseHelper->success($apiStatus, $apiMessage);
     }
 
@@ -396,6 +396,18 @@ class AuthController extends Controller
         $apiStatus = Response::HTTP_OK;
         $apiData = array('token' => $newToken);
         $apiMessage = trans('messages.success.MESSAGE_PASSWORD_CHANGE_SUCCESS');
+
+        // Make activity log
+        event(new UserActivityLogEvent(
+            config('constants.activity_log_types.AUTH'),
+            config('constants.activity_log_actions.PASSWORD_UPDATED'),
+            config('constants.activity_log_user_types.REGULAR'),
+            $request->auth->email,
+            get_class($this),
+            $request->toArray(),
+            $request->auth->user_id
+        ));
+
         return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
         
         // Update password

@@ -341,9 +341,21 @@ class UserController extends Controller
                     $validator->errors()->first()
                 );
             }
-
-            $this->userRepository->linkSkill($request->toArray(), $id);
-
+            $linkedSkills = $this->userRepository->linkSkill($request->toArray(), $id);
+            
+            foreach ($linkedSkills as $linkedSkill) {
+                // Make activity log
+                event(new UserActivityLogEvent(
+                    config('constants.activity_log_types.USER_SKILL'),
+                    config('constants.activity_log_actions.LINKED'),
+                    config('constants.activity_log_user_types.API'),
+                    $this->userApiKey,
+                    get_class($this),
+                    $request->toArray(),
+                    null,
+                    $linkedSkill['skill_id']
+                ));
+            }
             // Set response data
             $apiStatus = Response::HTTP_CREATED;
             $apiMessage = trans('messages.success.MESSAGE_USER_SKILLS_CREATED');
@@ -360,10 +372,10 @@ class UserController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  \Illuminate\Http\Request $request
-     * @param  int $id
+     * @param  int $userId
      * @return Illuminate\Http\JsonResponse
      */
-    public function unlinkSkill(Request $request, int $id): JsonResponse
+    public function unlinkSkill(Request $request, int $userId): JsonResponse
     {
         try {
             // Server side validataions
@@ -382,7 +394,21 @@ class UserController extends Controller
                 );
             }
 
-            $userSkill = $this->userRepository->unlinkSkill($request->toArray(), $id);
+            $unlinkedIds = $this->userRepository->unlinkSkill($request->toArray(), $userId);
+
+            foreach ($unlinkedIds as $unlinkedId) {
+                // Make activity log
+                event(new UserActivityLogEvent(
+                    config('constants.activity_log_types.USER_SKILL'),
+                    config('constants.activity_log_actions.UNLINKED'),
+                    config('constants.activity_log_user_types.API'),
+                    $this->userApiKey,
+                    get_class($this),
+                    $request->toArray(),
+                    null,
+                    $unlinkedId['skill_id']
+                ));
+            }
             // Set response data
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_USER_SKILLS_DELETED');

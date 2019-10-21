@@ -158,34 +158,35 @@ class UserRepository implements UserInterface
      *
      * @param array $request
      * @param int $id
-     * @return bool
+     * @return array
      */
-    public function linkSkill(array $request, int $id): bool
+    public function linkSkill(array $request, int $id): array
     {
         $this->user->findOrFail($id);
-        if (!empty($request['skills'])) {
-            foreach ($request['skills'] as $value) {
-                $this->userSkill->linkUserSkill($id, $value['skill_id']);
-            }
+        $skillIds = [];
+        foreach ($request['skills'] as $value) {
+            $skillDetails = $this->userSkill->linkUserSkill($id, $value['skill_id']);
+            array_push($skillIds, ['skill_id' => $skillDetails->skill_id]);
         }
-        return true;
+        return $skillIds;
     }
     
     /**
      * Remove the specified resource from storage
      *
      * @param array $request
-     * @param int $id
-     * @return bool
+     * @param int $userId
+     * @return array
      */
-    public function unlinkSkill(array $request, int $id): bool
+    public function unlinkSkill(array $request, int $userId): array
     {
-        $this->user->findOrFail($id);
-        $userSkill = $this->userSkill;
+        $this->user->findOrFail($userId);
+        $unskillIds = [];
         foreach ($request['skills'] as $value) {
-            $userSkill = $this->userSkill->deleteUserSkill($id, $value['skill_id']);
+            $this->userSkill->deleteUserSkill($userId, $value['skill_id']);
+            array_push($unskillIds, ['skill_id' => $value['skill_id']]);
         }
-        return $userSkill;
+        return $unskillIds;
     }
 
     /**

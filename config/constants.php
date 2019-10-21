@@ -512,7 +512,10 @@ return [
         'MESSAGE' => 'MESSAGE',
         'FOOTER_PAGE' => 'FOOTER_PAGE',
         'POLICY_PAGE' => 'POLICY_PAGE',
-        'USER_CUSTOM_FILED' => 'USER_CUSTOM_FILED'
+        'USER_CUSTOM_FILED' => 'USER_CUSTOM_FILED',
+        'MISSION_THEME' => 'MISSION_THEME',
+        'SKILL' => 'SKILL',
+        'USER_SKILL' => 'USER_SKILL'
     ],
 
     'activity_log_actions' => [
@@ -530,7 +533,10 @@ return [
         'MISSION_APPLICATION_CREATED' => 'MISSION_APPLICATION_CREATED',
         'MISSION_APPLICATION_STATUS_CHANGED' => 'MISSION_APPLICATION_STATUS_CHANGED',
         'PASSWORD_RESET_REQUEST' => 'PASSWORD_RESET_REQUEST',
-        'PASSWORD_UPDATED' => 'PASSWORD_UPDATED'
+        'PASSWORD_CHANGED' => 'PASSWORD_CHANGED',
+        'PASSWORD_RESET' => 'PASSWORD_RESET',
+        'LINKED' => 'LINKED',
+        'UNLINKED' => 'UNLINKED'
     ],
 
     'activity_log_user_types' => [

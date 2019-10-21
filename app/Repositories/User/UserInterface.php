@@ -63,18 +63,18 @@ interface UserInterface
      *
      * @param array $request
      * @param int $id
-     * @return bool
+     * @return array
      */
-    public function linkSkill(array $request, int $id): bool;
+    public function linkSkill(array $request, int $id): array;
 
     /**
      * Remove the specified resource from storage
      *
      * @param array $request
      * @param int $id
-     * @return bool
+     * @return array
      */
-    public function unlinkSkill(array $request, int $id): bool;
+    public function unlinkSkill(array $request, int $id): array;
 
     /**
      * List all the users
