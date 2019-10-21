@@ -79,7 +79,7 @@ class NotificationRepository implements NotificationInterface
     }
 
     /**
-     * Get notification type id
+     * Get notification type id from type
      *
      * @param string $type
      * @return int
@@ -139,7 +139,7 @@ class NotificationRepository implements NotificationInterface
     }
 
     /**
-     * Get notification type id
+     * Get notification type from type id
      *
      * @param string $type
      * @return string
