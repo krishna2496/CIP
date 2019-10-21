@@ -203,6 +203,7 @@
             getMediaPath(data) {
 			    if(data.storyMedia && data.storyMedia.path != '') {
                     let media = data.storyMedia;
+                    
                     if (media.type == 'video') {
                         let videoPath = media.path;
                         let videoId = '';
@@ -211,8 +212,10 @@
                         if (match && match[2].length == 11) {
                             videoId = match[2];
                         }
+                        return data
                         return "https://img.youtube.com/vi/" + videoId + "/mqdefault.jpg";
                     } else {
+                        console.log(data);
                         return media.path;
                     }
                 } else {

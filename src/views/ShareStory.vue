@@ -73,7 +73,7 @@
 								</div>
 								<div v-if="submitted && !youtubeUrlError && maxYoutubeUrlError"
 									class="invalid-feedback">
-									{{ languageData.errors.valid_video_url }}
+									{{ languageData.errors.max_video_upload }}
 								</div>
 								<div v-if="submitted && !youtubeUrlError && !maxYoutubeUrlError && duplicateYoutubeUrlError"
 									class="invalid-feedback">
@@ -119,8 +119,8 @@
 							</div>
 						</div>
 						<div class="btn-row">
-							<b-button class="btn-borderprimary" target="_blank" :to="'/story-preview/'+storyId"
-								v-bind:class="{disabled:previewButtonEnable}"><span>{{languageData.label.preview}}
+							<b-button class="btn-borderprimary" 
+								v-bind:class="{disabled:previewButtonEnable}" @click="previewStory(storyId)"><span>{{languageData.label.preview}}
 								</span></b-button>
 							<b-button class="btn-bordersecondary"
 								v-bind:class="{disabled:saveButtonEnable || saveButtonAjaxCall}"
@@ -221,6 +221,15 @@
 			}
 		},
 		methods: {
+// 			previewStory(storyId) {
+// // /story-preview/'+storyId
+// 				// this.$router.push({'path':"/story-preview/"+storyId})
+// 				console.log(storyId);
+// 				// let routeData = this.$router.resolve({path : "story-preview"+storyId});
+// 				// console.log(routeData);
+// 				// window.open(routeData.href, '_blank');
+// 				// this.$router.go({ path: "/story-preview/"+storyId })
+// 			},
 			saveStory(params) {
 				this.youtubeUrlError = false
 				this.duplicateYoutubeUrlError = false
@@ -229,7 +238,6 @@
 				let youtubeUrl = [];
 				if (this.story.videoUrl.toString() != '') {
 					youtubeUrl = this.story.videoUrl.toString().split("\n")
-					console.log(youtubeUrl);
 					if (youtubeUrl.length > constants.MAX_FILE_NUMBER) {
 						this.maxYoutubeUrlError = true
 						return
@@ -287,15 +295,9 @@
 					this.submitButtonAjaxCall = false
 				})
 			},
-			previewStory() {
-				if (this.storyId != '') {
-					this.$router.push({
-						name: 'StoryPreview',
-						params: {
-							storyId: this.storyId
-						}
-					})
-				}
+			previewStory(storyId) {
+				let routeData = this.$router.resolve({path : "/story-preview"+storyId});
+				window.open(routeData.href, '_blank');
 			},
 			updateMissionTitle(value) {
 				this.defaultMissionTitle = value.selectedVal;
@@ -321,9 +323,8 @@
 					} else {
 						files.filter((data, index) => {
 							let fileName = data.name.split('.');
-							// console.log(fileName);
-							// fileName = fileName.toLowerCase()
-							if (!allowedFileTypes.includes(fileName[fileName.length - 1])) {
+							fileName = fileName[fileName.length - 1].toLowerCase()
+							if (!allowedFileTypes.includes(fileName)) {
 								this.fileError = this.languageData.errors.invalid_image_type
 								error = true
 							} else {
