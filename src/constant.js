@@ -43,7 +43,7 @@ export default Object.freeze({
     IS_COUNTRY_SELECTION: "country_selection",
     RELATED_MISSIONS: "related_missions",
     TIMESHEET_DOCUMENT_UPLOAD: "timesheet_document_upload",
-    FILE_MAX_SIZE_BYTE: 4000000,
+    FILE_MAX_SIZE_BYTE: 4194304,
     FILE_ALLOWED_FILE_TYPES: ['doc', 'xls', 'xlsx', 'csv', 'pdf', 'png', 'jpg', 'jpeg'],
     RECENT_VOLUNTEERES_PER_PAGE: 12,
     MISSION_DEFAULT_PLACEHOLDER: "placeholder-img.jpg",
@@ -54,5 +54,5 @@ export default Object.freeze({
     DECLINED_STORY: "Declined",
     PENDING_STORY: "Pending",
     CONTACT_US: "contact_us_enabled",
-    MAX_FILE_NUMBER: 20,
+    MAX_FILE_NUMBER: 3,
 })

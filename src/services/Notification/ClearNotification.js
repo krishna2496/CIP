@@ -16,10 +16,8 @@ export default async() => {
                 'token': store.state.token,
             }
         })
-        .then((response) => {
-            responseData.error = false;
-            responseData.message = response.data.message;
-            responseData.data = response.data.data;
+        .then(() => {
+            responseData.error = false
         })
         .catch(function(error) {
             if (error.response.data.errors[0].message) {

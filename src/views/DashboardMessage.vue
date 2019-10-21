@@ -22,7 +22,7 @@
 							<div class="heading-section">
 								<h1>{{languageData.label.messages}}</h1>
 								<b-button title="Send Message" class="btn-bordersecondary"
-									@click="$refs.sendMessageModal.show()">{{languageData.label.send}} {{languageData.label.message}} </b-button>
+									@click="handleModal">{{languageData.label.send}} {{languageData.label.message}} </b-button>
 							</div>
 						</div>
 							<div class="inner-content-wrap">
@@ -36,7 +36,7 @@
 								<ul class="message-box" v-if="messageList.length > 0">
 									<li v-for="(message, idx) in messageList" :key="idx" v-bind:class="{'new-message' :message.is_read == 0}" @click="readMessages(message.messageId,message.is_read)">
 										<b-button :title="languageData.label.delete" class="delete-btn">
-											<img :src="$store.state.imagePath+'/assets/images/delete-ic.svg'" @click="deleteMessage(message.messageId)" alt="delete" />
+											<img :src="$store.state.imagePath+'/assets/images/delete-ic.svg'" v-on:click="deleteMessage($event,message.messageId)" alt="delete" />
 										</b-button>
 										<div class="title-wrap">
 											<h3>{{message.person }}</h3>
@@ -67,7 +67,7 @@
 		<footer>
 			<TheSecondaryFooter></TheSecondaryFooter>
 		</footer>
-		<b-modal  ref="sendMessageModal" :modal-class="'send-message-modal sm-popup'"
+		<b-modal  @hidden="hideModal" ref="sendMessageModal" :modal-class="'send-message-modal sm-popup'"
 			hide-footer centered>
 			<template slot="modal-header" slot-scope="{ close }">
 				<i class="close" @click="close()" v-b-tooltip.hover :title="languageData.label.close"></i>
@@ -89,6 +89,7 @@
 				<b-form-input id 
 					v-model.trim="contactUs.subject" 
 					maxLength="255"
+					ref="subject"
 					:class="{ 'is-invalid': submitted && $v.contactUs.subject.$error }"
 					type="text" :placeholder="languageData.placeholder.subject">
 				</b-form-input>
@@ -219,7 +220,11 @@
 						this.contactUs.message =  ''
 						this.contactUs.subject =  ''
 						this.submitted = false;
-                        this.$v.$reset();
+						this.$v.$reset();
+						setTimeout(() => {
+							this.$refs.sendMessageModal.hide();
+							
+						},800);
                     } else {
                         this.classVariant = 'danger';
                         this.sendMessage = response.message
@@ -228,7 +233,18 @@
                     }
                 })
 			},
-			
+			hideModal() {
+				this.showMessageErrorDiv = false
+				this.submitted = false;
+				this.$v.$reset();
+				
+			},
+			handleModal() {
+				this.$refs.sendMessageModal.show()
+				setTimeout(() => {
+                    this.$refs.subject.focus();
+                }, 100)
+			},
 			getMessageListing() {
 				messageListing(this.pagination.currentPage).then(response => {
 					this.messageList =[];
@@ -277,7 +293,8 @@
 				})
 			},
 
-			deleteMessage(messageId) {
+			deleteMessage(event ,messageId) {
+				event.stopPropagation();
 				this.isLoaderActive = true
 				deleteMessage(messageId).then(response => {
 					let variant = 'success'
@@ -287,7 +304,7 @@
 						this.isLoaderActive = false
 						message = response.message
 					} else {
-						message = this.languageData.label.comment + ' ' + this.languageData.label.deleted_successfully
+						message = this.languageData.label.message + ' ' + this.languageData.label.deleted_successfully
 						this.getMessageListing();
 					}
 					this.makeToast(variant,message)
