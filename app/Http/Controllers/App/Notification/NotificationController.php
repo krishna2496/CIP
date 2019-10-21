@@ -15,6 +15,7 @@ use Validator;
 use App\Services\NotificationService;
 use App\Helpers\Helpers;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class NotificationController extends Controller
 {
@@ -116,5 +117,54 @@ class NotificationController extends Controller
         trans('messages.success.MESSAGE_NO_RECORD_FOUND') : trans('messages.success.MESSAGE_NOTIFICATION_LISTING');
 
         return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
+    }
+
+
+    /**
+     * Read/unread notification
+     *
+     * @param Illuminate\Http\Request $request
+     * @param int $notificationId
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function readUnreadNotification(Request $request, int $notificationId): JsonResponse
+    {
+        try {
+            // do read unread notification
+            $this->notificationRepository->readUnreadNotificationById(
+                $notificationId,
+                $request->auth->user_id
+            );
+       
+            // Set response data
+            $apiStatus = Response::HTTP_OK;
+            $apiMessage = trans('messages.success.MESSAGE_USER_NOTIFICATION_READ_UNREAD_SUCCESSFULLY');
+            $apiData = ['notification_id' => $notificationId ];
+        
+            return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
+        } catch (ModelNotFoundException $e) {
+            return $this->modelNotFound(
+                config('constants.error_codes.ERROR_USER_NOTIFICATION_NOT_FOUND'),
+                trans('messages.custom_error_message.ERROR_MESSAGE_USER_NOTIFICATION_NOT_FOUND')
+            );
+        }
+    }
+
+    /**
+     * Clear all notifications
+	 *
+     * @param Illuminate\Http\Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function clearAllNotifications(Request $request)
+    {
+        // Clear all notification
+        $clearNotificationStatus = $this->notificationRepository->deleteAllNotifications($request->auth->user_id);
+
+        // Set response data
+        $apiStatus = Response::HTTP_NO_CONTENT;
+        $apiMessage = trans('messages.success.MESSAGE_USER_NOTIFICATIONS_CLEAR_SUCCESSFULLY');
+
+        return $this->responseHelper->success($apiStatus, $apiMessage);
     }
 }
