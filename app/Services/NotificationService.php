@@ -7,6 +7,7 @@ use App\Repositories\Mission\MissionRepository;
 use App\Repositories\Timesheet\TimesheetRepository;
 use App\Repositories\MissionComment\MissionCommentRepository;
 use App\Repositories\Message\MessageRepository;
+use App\Repositories\Story\StoryRepository;
 use App\Models\Notification;
 use App\Helpers\Helpers;
 use Carbon\Carbon;
@@ -44,6 +45,11 @@ class NotificationService
     public $missionRepository;
 
     /**
+     * @var App\Repositories\Story\StoryRepository
+     */
+    public $storyRepository;
+
+    /**
      * @var App\Helpers\Helpers
      */
     public $helpers;
@@ -57,6 +63,7 @@ class NotificationService
      * @param  App\Repositories\MissionComment\MissionCommentRepository $missionCommentRepository
      * @param  App\Repositories\Mission\MissionRepository $missionRepository
      * @param  App\Repositories\Message\MessageRepository $messageRepository
+     * @param  App\Repositories\Story\StoryRepository $storyRepository
      * @param  App\Helpers\Helpers $helpers
      * @return void
      */
@@ -67,6 +74,7 @@ class NotificationService
         MissionCommentRepository $missionCommentRepository,
         MissionRepository $missionRepository,
         MessageRepository $messageRepository,
+        StoryRepository $storyRepository,
         Helpers $helpers
     ) {
         $this->missionInviteRepository = $missionInviteRepository;
@@ -75,6 +83,7 @@ class NotificationService
         $this->missionCommentRepository = $missionCommentRepository;
         $this->missionRepository = $missionRepository;
         $this->messageRepository = $messageRepository;
+        $this->storyRepository = $storyRepository;
         $this->helpers = $helpers;
     }
 
@@ -231,8 +240,9 @@ class NotificationService
     public function myStories(Notification $notification, string $tenantName): array
     {
         // Get details
-        $commentDetails = $this->missionCommentRepository->getComment($notification->entity_id);
-        $date = Carbon::parse($commentDetails->created_at)
+        $commentDetails = $this->storyRepository->getStoryDetails($notification->entity_id);
+
+        $date = Carbon::parse($commentDetails[0]['created_at'])
         ->setTimezone(config('constants.TIMEZONE'))->format(config('constants.FRONT_DATE_FORMAT'));
         $status = strtolower($notification->action);
 
