@@ -334,6 +334,16 @@ tspan {
 			&:nth-last-child(1),
 			&:nth-last-child(2) {
 				margin: 0 5px;
+
+				.page-link {
+					&:hover {
+						@include lg-max {
+							background: transparent;
+							color: $gray-primary;
+							border-color: $border-color !important;
+						}
+					}
+				}
 			}
 
 			&:nth-child(3) {
@@ -463,13 +473,18 @@ tspan {
 		}
 	}
 
-	@include md-max {
-		bottom: 36px !important;
+	@include xlg-max {
+		bottom: 95px !important;
+		right: 25px;
 	}
+
+	// @include md-max {
+	// 	bottom: 36px !important;
+	// }
 
 	@include sm-max {
 		right: 15px !important;
-		bottom: 76px !important;
+		bottom: 45px !important;
 	}
 }
 
@@ -777,16 +792,6 @@ main {
 				}
 			}
 
-			@include xxs-max {
-				margin-right: 10px;
-
-				a {
-					i {
-						width: 18px;
-						height: 18px;
-					}
-				}
-			}
 		}
 	}
 }
@@ -2963,8 +2968,10 @@ main {
 		}
 
 		.list-group-item {
-			max-width: 16.66%;
-			flex: 0 0 16.66%;
+			// max-width: 16.66%;
+			// flex: 0 0 16.66%;
+			max-width: 20%;
+			flex: 0 0 20%;
 			padding: 0 10px;
 
 			@include lg-max {
@@ -3185,7 +3192,7 @@ main {
 
 		.story-card {
 			padding: 26px 32px;
-			flex: 1;
+			flex: 1 1 auto;
 			display: flex;
 			flex-direction: column;
 			justify-content: space-between;
@@ -3869,19 +3876,15 @@ main {
 		margin: 30px 0 16px;
 
 		@include sm-max {
-			margin-top: 28px;
+			margin-top: 20px;
 		}
 	}
 
 	.story-form-wrap {
-		margin-bottom: 60px;
+		margin-bottom: 30px;
 
 		@include md-max {
-			margin-bottom: 50px;
-		}
-
-		@include sm-max {
-			margin-bottom: 35px;
+			margin-bottom: 20px;
 		}
 	}
 
@@ -3891,7 +3894,7 @@ main {
 		@extend .message_shadow;
 
 		@include md-max {
-			padding: 20px 25px 10px;
+			padding: 20px 25px 20px;
 		}
 
 		@include sm-max {
@@ -3993,18 +3996,22 @@ main {
 			flex: 1;
 			-ms-flex: 1;
 			justify-content: flex-start;
-			margin: 30px -15px 15px;
+			margin: 30px -15px -20px;
 			max-height: 373px;
 			overflow-y: auto;
 
 			@include sm-max {
-				margin: 20px -10px 10px;
+				margin: 20px -10px -15px;
 				max-height: 280px;
 			}
 
 			.uploaded-file-details {
 				border: none;
 				padding: 0 15px 30px;
+
+				@include md-max {
+					padding: 0 15px 20px;
+				}
 
 				@include sm-max {
 					padding: 0 10px 20px;
@@ -4094,26 +4101,37 @@ main {
 	}
 
 	.btn-row {
-		display: flex;
-		margin-top: 30px;
-		flex-wrap: wrap;
+		display: block;
+		margin-bottom: 60px;
+		text-align: right;
 
 		@include md-max {
-			margin-top: 20px;
+			margin-bottom: 40px;
 			justify-content: flex-end;
+		}
+
+		@include sm-max {
+			margin-bottom: 35px;
 		}
 
 		.btn {
 			margin-left: 10px;
 			min-width: 116px;
+			display: inline-block !important;
 
 			@include sm-max {
 				min-width: 105px;
 				margin-bottom: 10px;
+				margin-left: 8px;
 			}
 
 			&:first-child {
 				margin-left: 0;
+				float: left;
+
+				@include xxs-max {
+					float: none;
+				}
 			}
 		}
 	}
@@ -4130,11 +4148,7 @@ main {
 		}
 
 		.story-form {
-			height: auto;
-		}
-
-		.btn-row {
-			justify-content: flex-end;
+			height: 100%;
 		}
 	}
 }

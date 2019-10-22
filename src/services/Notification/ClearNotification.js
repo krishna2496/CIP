@@ -3,23 +3,21 @@ import store from '../../store'
 
 export default async() => {
     let responseData = {};
-    var defaultLanguage = '';
+    let defaultLanguage = '';
     if (store.state.defaultLanguage !== null) {
         defaultLanguage = (store.state.defaultLanguage).toLowerCase();
     }
-    var url = process.env.VUE_APP_API_ENDPOINT + "app/notification-settings";
+    let url = process.env.VUE_APP_API_ENDPOINT + "app/notification/clear";
     await axios({
             url: url,
-            method: 'GET',
+            method: 'DELETE',
             headers: {
                 'X-localization': defaultLanguage,
                 'token': store.state.token,
             }
         })
-        .then((response) => {
-            responseData.error = false;
-            responseData.message = response.data.message;
-            responseData.data = response.data.data;
+        .then(() => {
+            responseData.error = false
         })
         .catch(function(error) {
             if (error.response.data.errors[0].message) {

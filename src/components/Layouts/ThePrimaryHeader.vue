@@ -116,10 +116,6 @@
                         </ul>
                     </div>
                     <div class="header-right ml-auto">
-                        <div class="lang-drodown-wrap">
-                            <AppCustomDropdown :optionList="langList" :defaultText="defautLang"
-                                translationEnable="false" @updateCall="setLanguage" />
-                        </div>
                         <b-nav>
                             <b-nav-item right class="search-menu" @click="searchMenu">
                                 <i>
@@ -129,12 +125,12 @@
                             <b-nav-item right class="notification-menu" id="notifyPopoverWrap"
                                 v-if="this.$store.state.isLoggedIn">
                                 <button id="notificationPopover" class="btn-notification"
-                                    @click="getNotificationListing">
+                                    @click="getNotificationSettingListing">
                                     <i>
                                         <img :src="$store.state.imagePath+'/assets/images/bell-ic.svg'"
                                             alt="Notification Icon" />
                                     </i>
-                                    <b-badge>2</b-badge>
+                                    <b-badge v-if="notificationCount != 0">{{notificationCount}}</b-badge>
                                 </button>
                             </b-nav-item>
                             <b-nav-item-dropdown right class="profile-menu" v-if="this.$store.state.isLoggedIn">
@@ -155,89 +151,78 @@
                         <b-popover target="notificationPopover" placement="topleft" container="notifyPopoverWrap"
                             @show="onPopoverShow" ref="notficationPopover" triggers="click">
                             <template slot="title">
-                                <b-button class="btn-setting" title="Setting" @click="showsetting">
+                                <b-button class="btn-setting" :title="languageData.label.notification_settings"  @click="showsetting">
                                     <img :src="$store.state.imagePath+'/assets/images/settings-ic.svg'"
                                         alt="Setting icon">
 
                                 </b-button>
                                 <span class="title">{{languageData.label.notification}}</span>
-                                <b-button class="btn-clear" @click="showclearitem">{{languageData.label.clear_all}}
+                                <b-button class="btn-clear" @click="showclearitem" v-if="totalNotificationCount != 0">{{languageData.label.clear_all}}
                                 </b-button>
                             </template>
                             <div class="notification-details" data-simplebar>
                                 <b-list-group>
-                                    <b-list-group-item href="#" class="unread-item">
+                                    <b-list-group-item 
+                                    v-if="notificationListing.today.length > 0"
+                                    :to="item.link"
+                                    target="_blank" 
+                                    @click="readItem(item.is_read, item.notification_id)"
+                                    v-bind:class="{
+                                        'read-item':item.is_read == 1 ,
+                                        'unread-item' : item.is_read == 0
+                                    }"
+                                    v-for="(item,index) in notificationListing.today" :key=index>
                                         <i>
-                                            <img :src="$store.state.imagePath+'/assets/images/user.png'" alt />
+                                            <img :src="item.icon" alt />
                                         </i>
                                         <p>
-                                            John Doe: Recommend this mission -
-                                            <b>Grow Trees</b>
-                                        </p>
-                                        <span class="status"></span>
-                                    </b-list-group-item>
-                                    <b-list-group-item href="#" class="read-item">
-                                        <i>
-                                            <img :src="$store.state.imagePath+'/assets/images/circle-plus.png'" alt />
-                                        </i>
-                                        <p>
-                                            John Doe: Recommend this mission -
-                                            <b>Save the Children</b>
-                                        </p>
-                                        <span class="status"></span>
-                                    </b-list-group-item>
-                                    <b-list-group-item href="#" class="read-item">
-                                        <i>
-                                            <img :src="$store.state.imagePath+'/assets/images/circle-plus.png'" alt />
-                                        </i>
-                                        <p>
-                                            New Mission -
-                                            <b>Save the world</b>
-                                        </p>
-                                        <span class="status"></span>
-                                    </b-list-group-item>
-                                    <b-list-group-item href="#" class="unread-item">
-                                        <i>
-                                            <img :src="$store.state.imagePath+'/assets/images/warning.png'" alt />
-                                        </i>
-                                        <p>
-                                            New Message -
-                                            <b>Message title goes here</b>
+                                            {{item.notification_string}}
                                         </p>
                                         <span class="status"></span>
                                     </b-list-group-item>
                                 </b-list-group>
-                                <div class="slot-title">
-                                    <span>Yesterday</span>
+                                <div class="slot-title" v-show="notificationListing.yesterday.length">
+                                    <span>{{languageData.label.yesterday}}</span>
                                 </div>
-                                <b-list-group>
-                                    <b-list-group-item href="#" class="unread-item">
+                                <b-list-group v-show="notificationListing.yesterday.length > 0">
+                                    <b-list-group-item 
+                                    :to="item.link"
+                                    @click="readItem(item.is_read, item.notification_id)"
+                                    target="_blank" 
+                                    v-bind:class="{
+                                        'read-item':item.is_read == 1 ,
+                                        'unread-item' : item.is_read == 0
+                                    }"
+                                    v-for="(item,index) in notificationListing.yesterday" :key=index>
+                                        
                                         <i>
-                                            <img :src="$store.state.imagePath+'/assets/images/warning.png'" alt />
+                                            <img :src="item.icon" alt />
                                         </i>
                                         <p>
-                                            Volunteering hours
-                                            <b>submitted the 17/05/2019 approved</b>
+                                            {{item.notification_string}}
                                         </p>
                                         <span class="status"></span>
                                     </b-list-group-item>
-                                    <b-list-group-item href="#" class="unread-item">
+                                </b-list-group>
+                                <div class="slot-title" v-show="notificationListing.older.length > 0">
+                                    <span>{{languageData.label.older}}</span>
+                                </div>
+                                <b-list-group v-show="notificationListing.older">
+                                    <b-list-group-item 
+                                    :to="item.link"
+                                    target="_blank" 
+                                    @click="readItem(item.is_read, item.notification_id)"
+                                    v-bind:class="{
+                                        'read-item':item.is_read == 1 ,
+                                        'unread-item' : item.is_read == 0
+                                    }"
+                                    v-for="(item,index) in notificationListing.older" :key=index>
+                                        
                                         <i>
-                                            <img :src="$store.state.imagePath+'/assets/images/warning.png'" alt />
+                                            <img :src="item.icon" alt />
                                         </i>
                                         <p>
-                                            Volunteering hours
-                                            <b>submitted the 17/05/2019 approved</b>
-                                        </p>
-                                        <span class="status"></span>
-                                    </b-list-group-item>
-                                    <b-list-group-item href="#" class="unread-item">
-                                        <i>
-                                            <img :src="$store.state.imagePath+'/assets/images/warning.png'" alt />
-                                        </i>
-                                        <p>
-                                            Volunteering hours
-                                            <b>submitted the 17/05/2019 approved</b>
+                                            {{item.notification_string}}
                                         </p>
                                         <span class="status"></span>
                                     </b-list-group-item>
@@ -248,11 +233,11 @@
                                     <i>
                                         <img :src="$store.state.imagePath+'/assets/images/gray-bell-ic.svg'" alt />
                                     </i>
-                                    <p>You do not have any new notifications</p>
+                                    <p>{{languageData.label.no_new_notifications}}</p>
                                 </div>
                             </div>
                             <div class="notification-setting">
-                                <h3 class="setting-header">Notification Settings</h3>
+                                <h3 class="setting-header">{{languageData.label.notification_settings}}</h3>
                                 <div class="setting-body" v-if="notificationSettingList.length > 0">
                                     <div class="setting-bar">
                                         <span>{{languageData.label.get_notification_for}}</span>
@@ -277,120 +262,6 @@
                                 </div>
                             </div>
                         </b-popover>
-                        <!-- <b-popover target="notificationPopover" placement="topleft" container="notifyPopoverWrap"
-                            @show="onPopoverShow" ref="notficationPopover" triggers="click blur" :show="popoverShow">
-                            <template slot="title">
-                                <b-button class="btn-setting" title="Setting" @click="showsetting">
-                                    <img :src="$store.state.imagePath+'/assets/images/settings-ic.svg'"
-                                        alt="Setting icon">
-
-                                </b-button>
-                                <span class="title">{{languageData.label.notification}}</span>
-                                <b-button class="btn-clear" @click="showclearitem">{{languageData.label.clear_all}}
-                                </b-button>
-                            </template>
-                            
-                            <div class="notification-details" data-simplebar>
-                                
-                                <b-list-group>
-                                    <b-list-group-item href="#" class="unread-item">
-                                        <i>
-                                            <img :src="$store.state.imagePath+'/assets/images/user.png'" alt>
-                                        </i>
-                                        <p>
-                                            John Doe: Recommend this mission -<b>Grow Trees</b>
-                                        </p>
-                                        <span class="status"></span>
-                                    </b-list-group-item>
-                                    <b-list-group-item href="#" class="read-item">
-                                        <i>
-                                            <img :src="$store.state.imagePath+'/assets/images/circle-plus.png'" alt>
-
-                                        </i>
-                                        <p>
-                                            John Doe: Recommend this mission -
-                                            <b>Save the Children</b>
-                                        </p>
-                                        <span class="status"></span>
-                                    </b-list-group-item>
-                                    <b-list-group-item href="#" class="read-item">
-                                        <i>
-                                            <img :src="$store.state.imagePath+'/assets/images/circle-plus.png'" alt>
-                                        </i>
-                                        <p>New Mission -<b>Save the world</b></p>
-                                        <span class="status"></span>
-                                    </b-list-group-item>
-                                    <b-list-group-item href="#" class="unread-item">
-                                        <i>
-                                            <img :src="$store.state.imagePath+'/assets/images/warning.png'" alt>
-                                        </i>
-                                        <p>New Message -<b>Message title goes here</b></p>
-                                        <span class="status"></span>
-                                    </b-list-group-item>
-                                </b-list-group>
-                                <div class="slot-title">
-                                    <span>Yesterday</span>
-                                </div>
-                                <b-list-group>
-                                    <b-list-group-item href="#" class="unread-item">
-                                        <i>
-                                            <img :src="$store.state.imagePath+'/assets/images/warning.png'" alt>
-                                        </i>
-                                        <p>
-                                            Volunteering hours<b>submitted the 17/05/2019 approved</b>
-                                        </p>
-                                        <span class="status"></span>
-                                    </b-list-group-item>
-                                    <b-list-group-item href="#" class="unread-item">
-                                        <i>
-                                            <img :src="$store.state.imagePath+'/assets/images/warning.png'" alt>
-                                        </i>
-                                        <p>Volunteering hours<b>submitted the 17/05/2019 approved</b></p>
-                                        <span class="status"></span>
-                                    </b-list-group-item>
-                                    <b-list-group-item href="#" class="unread-item">
-                                        <i>
-                                            <img :src="$store.state.imagePath+'/assets/images/warning.png'" alt>
-                                        </i>
-                                        <p>Volunteering hours<b>submitted the 17/05/2019 approved</b></p>
-                                        <span class="status"></span>
-                                    </b-list-group-item>
-                                </b-list-group>
-                            </div>
-                            <div class="notification-clear">
-                                <div class="clear-content">
-                                    <i>
-                                        <img :src="$store.state.imagePath+'/assets/images/gray-bell-ic.svg'" alt>
-                                    </i>
-                                    <p>{{languageData.label.no_new_notifications}}</p>
-                                </div>
-                            </div>
-                            <div class="notification-setting">
-                                <h3 class="setting-header">{{languageData.label.notification_settings}}</h3>
-                                <div class="setting-body" v-if="notificationSettingList.length > 0">
-                                    <div class="setting-bar">
-                                        <span>{{languageData.label.get_notification_for}}</span>
-                                    </div>
-                                    <b-list-group data-simplebar >
-                                       
-                                            <b-form-checkbox-group id="checkbox-group-2" v-model="selectedNotification" name="flavour-2">
-                                                <b-list-group-item v-for="(data, index) in notificationSettingList">
-                                                    <b-form-checkbox :value="data.notification_type_id">{{data.notification_type}}</b-form-checkbox>
-                                                </b-list-group-item>
-                                            </b-form-checkbox-group>
-                                        
-                                    </b-list-group>
-                                </div>
-
-                                <div class="setting-footer">
-                                    <b-button class="btn-bordersecondary" @click="saveNotificationSetting">{{languageData.label.save}}</b-button>
-                                    <b-button class="btn-borderprimary" @click="cancelsetting">
-                                        {{languageData.label.cancel}}
-                                    </b-button>
-                                </div>
-                            </div>
-                        </b-popover> -->
-
                     </div>
                 </b-container>
             </b-navbar>
@@ -404,12 +275,16 @@
             policy,
             loadLocaleMessages,
             notificationSettingListing,
-            updateNotificationSetting
+            updateNotificationSetting,
+            clearNotification,
+            readNotification,
+            notificationListing
         } from '../../services/service';
         import {
             eventBus
         } from "../../main";
         import constants from '../../constant';
+        import moment from 'moment'
         import {
             setTimeout
         } from 'timers';
@@ -421,8 +296,6 @@
             name: "PrimaryHeader",
             data() {
                 return {
-                    langList: [],
-                    defautLang: '',
                     popoverShow: false,
                     topTheme: [],
                     topCountry: [],
@@ -440,7 +313,15 @@
                     isNotificationAjaxCall: false,
                     notificationSettingList: [],
                     selectedNotification: [],
-                    notificationSettingId: []
+                    notificationSettingId: [],
+                    notificationListing: {
+                        'today': [],
+                        'yesterday': [],
+                        'older': []
+                    },
+                    notificationCount: 0,
+                    totalNotificationCount : 0,
+                    isNotificationLoaded : false
                 };
             },
             mounted() {
@@ -513,30 +394,29 @@
                 document.addEventListener("click", this.onClick);
             },
             methods: {
-                async setLanguage(language) {
-                    this.defautLang = language.selectedVal;
-                    store.commit('setDefaultLanguage', language);
-                    this.$i18n.locale = language.selectedVal.toLowerCase()
-                    await loadLocaleMessages(this.$i18n.locale);
-                    location.reload();
-                },
                 onPopoverShow() {
                     this.$refs.notficationPopover._toolpop
                         .getTipElement()
                         .classList.add("notification-popover");
                 },
                 showclearitem() {
-                    var popover_body = document.querySelector(".popover-body");
-                    popover_body.classList.add("clear-item");
+                    let popoverBody = document.querySelector(".popover-body");
+                    popoverBody.classList.add("clear-item");
+                    clearNotification().then(response => {
+                        if(response.error == false) {
+                            this.notificationCount = 0
+                            this.getNotificationListing();
+                        }
+                    })
                 },
                 showsetting() {
-                    var popover_body = document.querySelector(".popover-body");
-                    popover_body.classList.toggle("show-setting");
+                    let popoverBody = document.querySelector(".popover-body");
+                    popoverBody.classList.toggle("show-setting");
                 },
                 cancelsetting() {
                     this.selectedNotification = []
-                    var popover_body = document.querySelector(".popover-body");
-                    popover_body.classList.remove("show-setting");
+                    let popoverBody = document.querySelector(".popover-body");
+                    popoverBody.classList.remove("show-setting");
                     this.$root.$emit("bv::show::popover", "notificationPopover");
                     this.notificationSettingList.filter((data, index) => {
                         if (data.is_active == 1) {
@@ -545,19 +425,19 @@
                     })
                 },
                 openMenu() {
-                    var body = document.querySelectorAll("body, html");
+                    let body = document.querySelectorAll("body, html");
                     body.forEach(function (e) {
                         e.classList.add("open-nav");
                     });
                 },
                 closeMenu() {
-                    var body = document.querySelectorAll("body, html");
+                    let body = document.querySelectorAll("body, html");
                     body.forEach(function (e) {
                         e.classList.remove("open-nav");
                     });
                 },
                 searchMenu() {
-                    var body = document.querySelectorAll("body, html");
+                    let body = document.querySelectorAll("body, html");
                     body.forEach(function (e) {
                         e.classList.toggle("open-search");
                     });
@@ -579,7 +459,7 @@
                     }
                     eventBus.$emit('setDefaultText');
                     this.$emit('exploreMisison', this.filterData);
-                     var body = document.querySelectorAll("body, html");
+                    let body = document.querySelectorAll("body, html");
                     body.forEach(function (e) {
                         e.classList.remove("open-nav");
                     });
@@ -600,7 +480,7 @@
                         if (this.topOrganization != null && this.topOrganization.length > 0) {
                             this.topOrganizationClass = 'has-submenu';
                         }
-                        // Call get policy service 
+                        // Call get policy service
                         this.getPolicyPage();
                     });
                 },
@@ -625,6 +505,70 @@
                 },
 
                 getNotificationListing() {
+                    notificationListing().then(response => {
+                        if (response.error == false) {
+                            if (response.data) {
+                                if (response.data.notifications) {
+                                    this.notificationListing = {
+                                        'today': [],
+                                        'yesterday': [],
+                                        'older': []
+                                    }
+                                    this.totalNotificationCount = 0;
+                                    let notificationData = response.data.notifications;
+                                    notificationData.filter((data, index) => {
+
+                                        let notificationDate = moment(data.created_at).format('DD');
+                                        let todaysDate = moment().format('DD');
+                                        if (notificationDate == todaysDate) {
+                                            this.notificationListing.today.push(data)
+                                            this.totalNotificationCount++;
+                                        } else if (notificationDate == (todaysDate - 1)) {
+                                            this.notificationListing.yesterday.push(data)
+                                            this.totalNotificationCount++;
+                                        } else {
+                                            this.notificationListing.older.push(data)
+                                            this.totalNotificationCount++;
+                                        }
+
+                                    })
+                                   
+                                    //  this.notificationListing
+                                } else {
+                                    this.totalNotificationCount = 0;
+                                    this.notificationListing = {
+                                        'today': [],
+                                        'yesterday': [],
+                                        'older': []
+                                    }
+                                   
+                                }
+                                if (response.data.unread_notifications) {
+                                    this.notificationCount = response.data.unread_notifications
+                                }
+                            } else {
+                                this.totalNotificationCount = 0;
+                                this.notificationListing = {
+                                    'today': [],
+                                    'yesterday': [],
+                                    'older': []
+                                }
+                               
+                            }
+
+                        }
+                        this.isNotificationLoaded = true
+                    })
+                },
+                getNotificationSettingListing() {
+                    
+                    if(this.totalNotificationCount <= 0) {
+                        setTimeout(() => {
+                             let popoverBody = document.querySelector(".popover-body");
+                        popoverBody.classList.add("clear-item");  
+                        },100)
+                            
+                    }
                     this.isNotificationAjaxCall = true;
                     notificationSettingListing().then(response => {
                         this.isNotificationAjaxCall = false;
@@ -632,7 +576,6 @@
                             if (response.data) {
                                 this.notificationSettingList = response.data
                                 this.notificationSettingList.filter((data, index) => {
-                                    // console.log(data.notification_type)
                                     data.notification_type = this.languageData.label[data
                                         .notification_type]
                                     this.notificationSettingId.push(data.notification_type_id);
@@ -670,21 +613,30 @@
                         this.makeToast(classVariant, response.message)
                     })
                 },
-                makeToast(variant = null, message) {
+                makeToast(letiant = null, message) {
                     this.$bvToast.toast(message, {
-                        variant: variant,
+                        letiant: letiant,
                         solid: true,
                         autoHideDelay: 3000
                     })
                 },
+                readItem(isRead , notificationId) {
+                    if(isRead == 0 && notificationId) {
+                        readNotification(notificationId).then(response => {
+                            if(response.error == false) {
+                                this.getNotificationListing();
+                            }
+                        })     
+                    }
+                }
             },
             created() {
                 this.languageData = JSON.parse(store.state.languageLabel);
                 setTimeout(function () {
-                    var body = document.querySelector("body");
-                    var notification_btn = document.querySelector(".btn-notification");
+                    let body = document.querySelector("body");
+                    let notification_btn = document.querySelector(".btn-notification");
                     body.addEventListener("click", function () {
-                        var notification_popover = document.querySelector(
+                        let notification_popover = document.querySelector(
                             ".notification-popover"
                         );
                         if (notification_popover != null) {
@@ -692,7 +644,7 @@
                         }
                     });
 
-                    var notificationMenu = document.querySelector(".notification-menu");
+                    let notificationMenu = document.querySelector(".notification-menu");
                     if (notificationMenu != null) {
                         notificationMenu.addEventListener("click", function (e) {
                             e.stopPropagation();
@@ -704,10 +656,9 @@
                 this.isStoryDisplay = this.settingEnabled(constants.STORIES_ENABLED);
                 this.isNewsDisplay = this.settingEnabled(constants.NEWS_ENABLED);
                 this.isPolicyDisplay = this.settingEnabled(constants.POLICIES_ENABLED);
-                this.langList = JSON.parse(store.state.listOfLanguage)
-                this.defautLang = store.state.defaultLanguage
                 if (store.state.isLoggedIn) {
                     this.exploreMissions();
+                    this.getNotificationListing()
                 }
 
                 window.addEventListener("resize", function () {
@@ -721,4 +672,5 @@
                 });
             }
         };
+
     </script>

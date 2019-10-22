@@ -63,6 +63,9 @@ import updateNotificationSetting from "./Notification/UpdateNotificationSetting"
 import deleteMessage from "./Message/DeleteMessage"
 import messageListing from "./Message/MessageListing"
 import readMessage from "./Message/ReadMessage"
+import clearNotification from "./Notification/ClearNotification"
+import readNotification from "./Notification/ReadNotification"
+import notificationListing from "./Notification/NotificationListing"
 
 export {
     loadLocaleMessages,
@@ -129,5 +132,8 @@ export {
     deleteMessage,
     messageListing,
     readMessage,
-    storyInviteColleague
+    storyInviteColleague,
+    clearNotification,
+    readNotification,
+    notificationListing
 }

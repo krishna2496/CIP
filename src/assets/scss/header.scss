@@ -126,9 +126,6 @@ header {
         @include sm-max {
             width: 85px;
 		}
-		@include xxs-max{
-			width: 70px;
-		}
 
         img {
             width: 100%;
@@ -279,9 +276,6 @@ header {
         @include md-max {
             margin-right: 16px;
         }
-		@include xxs-max{
-			margin-right: 10px;
-		}
         .btn-notification {
             background: transparent !important;
             border: none !important;
@@ -302,10 +296,6 @@ header {
                 @include sm-max {
                     width: 28px;
                     height: 22px;
-				}
-				@include xxs-max{
-					width: 21px;
-					height: 20px;
 				}
             }
 
@@ -402,10 +392,6 @@ header {
                 background-repeat: no-repeat;
 				background-size: cover;
 				background-color: $border-color;
-				@include sm-max{
-					height: 35px;
-					width: 35px;
-				}
                 @include md-max {
                     margin: 0;
                 }
@@ -681,8 +667,8 @@ header {
 
     .popover-body {
         padding: 0;
-        height: 340px;
-        max-height: 62vh;
+        // height: 340px;
+        // max-height: calc(100vh - 150px);
 
 
         >div {
@@ -698,8 +684,13 @@ header {
 
             .notification-clear {
                 display: flex;
-                height: 100%;
+                min-height: 340px;
                 max-height: 100%;
+                @include md-max{
+                    @media (orientation: landscape) {
+                        min-height: 200px;
+                    }
+                }
             }
         }
 
@@ -716,8 +707,7 @@ header {
         }
 
         .notification-details {
-            height: 340px;
-            max-height: 62vh;
+            max-height: calc(100vh - 150px);
 
             .list-group {
                 flex-direction: column;
@@ -827,6 +817,13 @@ header {
                 display: block;
                 margin: 0 auto 9px;
 
+                @include md-max{
+                    @media (orientation: landscape) {
+                        height: 50px;
+                        width: 50px;
+                    }
+                }
+
                 @include sm-max {
                     height: 50px;
                     width: 50px;
@@ -856,14 +853,14 @@ header {
             top: -48px;
             background: $white;
             z-index: 5;
-            width: 400px;
+            width: 100%;
             height: calc(100% + 48px);
             display: flex;
             flex-direction: column;
 
-            @include sm-max {
-                width: 250px;
-            }
+            // @include sm-max {
+            //     width: 250px;
+            // }
 
             .setting-header {
                 text-align: center;

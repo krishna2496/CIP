@@ -3,6 +3,7 @@
 		<div v-bind:class="{ 'content-loader-wrap': true, 'slider-loader': carouselLoader}">
 			<div class="content-loader"></div>
 		</div>
+		<div v-if="isCarouselLoaded">
 		<div class="thumb-slider" v-if="mediaCarouselList.length > 0">
 			<div v-bind:class="{
 				'gallery-top' : true,
@@ -29,16 +30,17 @@
 					<i v-if="media.media_type == 'mp4'" class="btn-play"></i>
 				</div>
 			</carousel>
-		</div>
-		<div class="thumb-slider" v-else>
-			<div v-bind:class="{
-				'gallery-top' : true,
-				'default-img': true
-				}">
-				<div class="img-wrap inner-gallery-block">
-					<img :src="getDefaultImage()">
+			</div>
+			<div class="thumb-slider" v-else>
+				<div v-bind:class="{
+					'gallery-top' : true,
+					'default-img': true
+					}">
+					<div class="img-wrap inner-gallery-block">
+						<img :src="getDefaultImage()">
+					</div>
+					
 				</div>
-				
 			</div>
 		</div>
 	</div>
@@ -64,7 +66,8 @@
 				deafultImage: true,
 				deafultVideo: false,
 				loop: true,
-				defaultMediaPath: ''
+				defaultMediaPath: '',
+				isCarouselLoaded : false
 			}
 		},
 		directives: {},
@@ -156,6 +159,7 @@
 						} 
 						this.$emit("defaultMediaPathDetail", this.defaultMediaPath);
 					}
+					this.isCarouselLoaded = true
 				})
 			}
 			

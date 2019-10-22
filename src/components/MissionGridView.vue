@@ -261,7 +261,7 @@
 						<div slot-scope="{suggestion}">
 							<img :src="suggestion.item.avatar" />
 							<div>
-								{{suggestion.item.first_name}} {{suggestion.item.last_name}} <span>({{suggestion.item.email}})</span>
+								{{suggestion.item.first_name}} {{suggestion.item.last_name}}
 							</div>
 						</div>
 					</VueAutosuggest>

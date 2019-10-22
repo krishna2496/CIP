@@ -166,6 +166,11 @@
         },
         methods: {
             pageChange(page){
+                window.scrollTo({
+                    'behavior': 'smooth',
+                    'left': 0,
+                    'top': 0
+                }, 0);
 				this.getMyStory(page);
 			},
             getMyStory(page) {
@@ -186,6 +191,9 @@
                             this.pagination.total = 0,
                             this.pagination.perPage = 1,
                             this.pagination.totalPages = 0
+                            if(page != 1) {
+                                this.getMyStory(this.pagination.currentPage)
+                            }
                         }
                     }
                 })
@@ -261,6 +269,7 @@
                         this.isLoaderActive = false
 					} else {
                         this.makeToast('success',this.languageData.label.story_deleted)
+                        // this.pagination.currentPage = 1
                         this.getMyStory(this.pagination.currentPage);
 					}
                 })

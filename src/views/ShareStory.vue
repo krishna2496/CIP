@@ -54,10 +54,6 @@
 
 
 						</div>
-						<div class="btn-row">
-							<b-button class="btn-borderprimary" @click="cancleShareStory">{{languageData.label.cancel}}
-							</b-button>
-						</div>
 					</b-col>
 					<b-col xl="4" lg="5" class="right-col">
 						<div class="story-form">
@@ -65,7 +61,7 @@
 								<label
 									for>{{languageData.label.enter_video_url}}<span>({{languageData.label.new_line_to_enter_multiple_urls}})</span></label>
 								<b-form-textarea id v-model.trim="story.videoUrl"
-									:class="{ 'is-invalid': submitted && (youtubeUrlError || maxYoutubeUrlError)}"
+									:class="{ 'is-invalid': submitted && (youtubeUrlError || maxYoutubeUrlError || duplicateYoutubeUrlError)}"
 									:placeholder="languageData.placeholder.video_url" size="lg" rows="5">
 								</b-form-textarea>
 								<div v-if="submitted && youtubeUrlError" class="invalid-feedback">
@@ -73,11 +69,15 @@
 								</div>
 								<div v-if="submitted && !youtubeUrlError && maxYoutubeUrlError"
 									class="invalid-feedback">
-									max{{ languageData.errors.valid_video_url }}
+									{{ languageData.errors.max_video_upload }}
+								</div>
+								<div v-if="submitted && !youtubeUrlError && !maxYoutubeUrlError && duplicateYoutubeUrlError"
+									class="invalid-feedback">
+									{{languageData.errors.duplicate_video_url}}
 								</div>
 							</b-form-group>
 							<b-form-group>
-								<span class="error-message" v-if="fileError">{{fileError}}</span>
+								
 								<label for>{{languageData.label.upload_your_photos}}</label>
 								<div class="btn-wrapper" v-bind:class="{'has-error' : fileError != '' ? true : false}">
 									<file-upload class="btn" v-model="story.files" accept="image/png,image/jpeg"
@@ -87,6 +87,7 @@
                   						<span class="visible-sm">{{languageData.label.upload_pictures}}</span>					
 									</file-upload>
 								</div>
+								<span class="error-message" v-if="fileError">{{fileError}}</span>
 							</b-form-group>
 							<div class="uploaded-block">
 								<div class="uploaded-file-details" v-if="fileArray.length > 0"
@@ -113,9 +114,24 @@
 
 							</div>
 						</div>
-						<div class="btn-row">
-							<b-button class="btn-borderprimary" target="_blank" :to="'/story-preview/'+storyId"
-								v-bind:class="{disabled:previewButtonEnable}"><span>{{languageData.label.preview}}
+						<!-- <div class="btn-row">
+							<b-button class="btn-borderprimary" 
+								v-bind:class="{disabled:previewButtonEnable}" @click="previewStory(storyId)"><span>{{languageData.label.preview}}
+								</span></b-button>
+							<b-button class="btn-bordersecondary"
+								v-bind:class="{disabled:saveButtonEnable || saveButtonAjaxCall}"
+								@click="saveStory('save')">{{languageData.label.save}}</b-button>
+							<b-button class="btn-bordersecondary btn-submit"
+								v-bind:class="{disabled:submitButtonEnable || submitButtonAjaxCall}"
+								@click="saveStory('submit')">{{languageData.label.submit}}</b-button>
+						</div> -->
+					</b-col>
+				</b-row>
+				<div class="btn-row">
+							<b-button class="btn-borderprimary" @click="cancleShareStory">{{languageData.label.cancel}}
+							</b-button>
+							<b-button class="btn-borderprimary" 
+								v-bind:class="{disabled:previewButtonEnable}" @click="previewStory(storyId)"><span>{{languageData.label.preview}}
 								</span></b-button>
 							<b-button class="btn-bordersecondary"
 								v-bind:class="{disabled:saveButtonEnable || saveButtonAjaxCall}"
@@ -124,8 +140,6 @@
 								v-bind:class="{disabled:submitButtonEnable || submitButtonAjaxCall}"
 								@click="saveStory('submit')">{{languageData.label.submit}}</b-button>
 						</div>
-					</b-col>
-				</b-row>
 			</b-container>
 		</main>
 		<footer>
@@ -198,7 +212,8 @@
 					height: 300
 				},
 				fileArray: [],
-				isLoaderActive: false
+				isLoaderActive: false,
+				duplicateYoutubeUrlError : false
 			}
 		},
 		validations: {
@@ -217,20 +232,20 @@
 		methods: {
 			saveStory(params) {
 				this.youtubeUrlError = false
+				this.duplicateYoutubeUrlError = false
 				this.submitted = true;
 				this.$v.$touch();
 				let youtubeUrl = [];
 				if (this.story.videoUrl.toString() != '') {
 					youtubeUrl = this.story.videoUrl.toString().split("\n")
-
 					if (youtubeUrl.length > constants.MAX_FILE_NUMBER) {
 						this.maxYoutubeUrlError = true
 						return
 					} else {
 						this.maxYoutubeUrlError = false
 					}
-
 					youtubeUrl.filter((url, index) => {
+					url = url.trim()
 						var valid =
 							/^(?:https?:\/\/)?(?:www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})?$/;
 						if (!valid.test(url)) {
@@ -238,6 +253,10 @@
 							return
 						}
 					})
+					if((new Set(youtubeUrl)).size !== youtubeUrl.length) {
+						this.duplicateYoutubeUrlError = true
+						return
+					}
 				}
 				if (this.youtubeUrlError == true || this.maxYoutubeUrlError == true) {
 					return
@@ -245,6 +264,7 @@
 				if (this.$v.$invalid) {
 					return;
 				}
+			
 				this.isLoaderActive = true
 				if (params == 'save') {
 					this.saveButtonAjaxCall = true
@@ -275,15 +295,9 @@
 					this.submitButtonAjaxCall = false
 				})
 			},
-			previewStory() {
-				if (this.storyId != '') {
-					this.$router.push({
-						name: 'StoryPreview',
-						params: {
-							storyId: this.storyId
-						}
-					})
-				}
+			previewStory(storyId) {
+				let routeData = this.$router.resolve({path : "/story-preview"+'/'+storyId});
+				window.open(routeData.href, '_blank');
 			},
 			updateMissionTitle(value) {
 				this.defaultMissionTitle = value.selectedVal;
@@ -309,7 +323,8 @@
 					} else {
 						files.filter((data, index) => {
 							let fileName = data.name.split('.');
-							if (!allowedFileTypes.includes(fileName[fileName.length - 1])) {
+							fileName = fileName[fileName.length - 1].toLowerCase()
+							if (!allowedFileTypes.includes(fileName)) {
 								this.fileError = this.languageData.errors.invalid_image_type
 								error = true
 							} else {
@@ -404,7 +419,7 @@
 				formData.append('title', this.story.title);
 				formData.append('description', this.story.myStory);
 				if (this.story.videoUrl != '') {
-					let videoUrl = this.story.videoUrl.replace("\n", ',')
+					let videoUrl = this.story.videoUrl.split('\n').join(',');
 					formData.append('story_videos', videoUrl);
 				}
 				if (this.storyId == '') {
@@ -419,6 +434,7 @@
 							if (this.storyId != '') {
 								this.previewButtonEnable = false
 								this.submitButtonEnable = false
+								this.getStoryDetail();
 							} else {
 								this.previewButtonEnable = true
 								this.submitButtonEnable = true
@@ -445,6 +461,7 @@
 							if (this.storyId != '') {
 								this.previewButtonEnable = false
 								this.submitButtonEnable = false
+								this.getStoryDetail();
 							} else {
 								this.previewButtonEnable = true
 								this.submitButtonEnable = true
@@ -484,10 +501,19 @@
 
 			getStoryDetail() {
 				this.isLoaderActive = true
-				editStory(this.$route.params.storyId).then(response => {
+				let storyID = ''
+				if(this.$route.params.storyId) {
+					storyID = this.$route.params.storyId
+				} else {
+					storyID = this.storyId
+				}
+				this.story.files = []
+				editStory(storyID).then(response => {
 					if (response.error == false) {
 						this.story.title = response.data.title
-						this.story.myStory = response.data.description
+						setTimeout(() => {
+							this.story.myStory = response.data.description	
+						}, 200);
 						let videoUrl = '';
 						let imageUrl = []
 						let i = 0;
@@ -505,7 +531,7 @@
 							})
 
 						}
-						this.story.videoUrl = videoUrl.replace(",", "\n")
+						this.story.videoUrl = videoUrl.split(",").join("\n");
 						this.fileArray = imageUrl
 						this.missionTitle.filter((data, index) => {
 							if (data[0] == response.data.mission_id) {

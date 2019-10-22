@@ -3,11 +3,11 @@ import store from '../../store'
 
 export default async(commentId) => {
     let responseData = {};
-    var defaultLanguage = '';
+    let defaultLanguage = '';
     if (store.state.defaultLanguage !== null) {
         defaultLanguage = (store.state.defaultLanguage).toLowerCase();
     }
-    var url = process.env.VUE_APP_API_ENDPOINT + "/app/dashboard/comments/" + commentId
+    let url = process.env.VUE_APP_API_ENDPOINT + "/app/dashboard/comments/" + commentId
     await axios({
             url: url,
             method: 'DELETE',

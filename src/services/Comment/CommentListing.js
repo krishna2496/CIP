@@ -3,12 +3,12 @@ import store from '../../store'
 
 export default async() => {
     let responseData = {};
-    var defaultLanguage = '';
+    let defaultLanguage = '';
     if (store.state.defaultLanguage !== null) {
         defaultLanguage = (store.state.defaultLanguage).toLowerCase();
     }
-    var url = process.env.VUE_APP_API_ENDPOINT + "app/dashboard/comments";
-    // document.body.classList.add("loader-enable");
+    let url = process.env.VUE_APP_API_ENDPOINT + "app/dashboard/comments";
+
     await axios({
             url: url,
             method: 'GET',
@@ -21,14 +21,11 @@ export default async() => {
             responseData.error = false;
             responseData.message = response.data.message;
             responseData.data = response.data.data;
-            // document.body.classList.remove("loader-enable");
         }).catch(function(error) {
             if (error.response.data.errors[0].message) {
                 responseData.error = true;
                 responseData.message = error.response.data.errors[0].message;
             }
-            // document.body.classList.remove("loader-enable");
         });
     return responseData;
 }
-""
