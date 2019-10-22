@@ -279,9 +279,9 @@ class NotificationService
         $response['notification_string'] = trans('general.notification.STORY')." "
         .trans('general.notification.IS')." ".$status." - ".$storyDetails[0]['title'];
         $response['is_read'] = $notification->is_read;
-        $response['link'] = ($storyDetails[0]['title'] !==
+        $response['link'] = ($notification->action !==
         config('constants.story_status.DECLINED'))
-        ? '/story-detail/'.$notification->entity_id : '/story-detail/';
+        ? '/story-detail/'.$notification->entity_id : '/my-stories';
         return $response;
     }
 
