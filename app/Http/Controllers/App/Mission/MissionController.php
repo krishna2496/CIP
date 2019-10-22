@@ -23,6 +23,7 @@ use Validator;
 use App\Models\UserFilter;
 use App\Transformations\MissionTransformable;
 use App\Events\User\UserActivityLogEvent;
+use App\Repositories\User\UserRepository;
 
 class MissionController extends Controller
 {
@@ -73,6 +74,11 @@ class MissionController extends Controller
     private $cityRepository;
 
     /**
+     * @var App\Repositories\User\UserRepository
+     */
+    private $userRepository;
+
+    /**
      * Create a new Mission controller instance
      *
      * @param App\Repositories\Mission\MissionRepository $missionRepository
@@ -84,6 +90,7 @@ class MissionController extends Controller
      * @param App\Repositories\Skill\SkillRepository $skillRepository
      * @param App\Repositories\Country\CountryRepository $countryRepository
      * @param App\Repositories\City\CityRepository $cityRepository
+     * @param  App\Repositories\User\UserRepository $userRepository
      * @return void
      */
     public function __construct(
@@ -95,7 +102,8 @@ class MissionController extends Controller
         MissionThemeRepository $themeRepository,
         SkillRepository $skillRepository,
         CountryRepository $countryRepository,
-        CityRepository $cityRepository
+        CityRepository $cityRepository,
+        UserRepository $userRepository
     ) {
         $this->missionRepository = $missionRepository;
         $this->responseHelper = $responseHelper;
@@ -106,6 +114,7 @@ class MissionController extends Controller
         $this->skillRepository = $skillRepository;
         $this->countryRepository = $countryRepository;
         $this->cityRepository = $cityRepository;
+        $this->userRepository = $userRepository;
     }
 
     /**
@@ -164,11 +173,11 @@ class MissionController extends Controller
         $missionList = $this->missionRepository->getMissions($request, $userFilterData);
         $defaultTenantLanguage = $this->languageHelper->getDefaultTenantLanguage($request);
         $defaultTenantLanguageId = $defaultTenantLanguage->language_id;
-        
+        $timezone = $this->userRepository->getUserTimezone($request->auth->user_id);
         $missionsTransformed = $missionList
             ->getCollection()
-            ->map(function ($item) use ($languageCode, $languageId, $defaultTenantLanguageId) {
-                return $this->transformMission($item, $languageCode, $languageId, $defaultTenantLanguageId);
+            ->map(function ($item) use ($languageCode, $languageId, $defaultTenantLanguageId, $timezone) {
+                return $this->transformMission($item, $languageCode, $languageId, $defaultTenantLanguageId, $timezone);
             })->toArray();
             
         $requestString = $request->except(['page','perPage']);
@@ -505,8 +514,10 @@ class MissionController extends Controller
             $defaultTenantLanguage = $this->languageHelper->getDefaultTenantLanguage($request);
             $defaultTenantLanguageId = $defaultTenantLanguage->language_id;
             $missionData = $this->missionRepository->getRelatedMissions($request, $missionId);
-            $mission = $missionData->map(function (Mission $mission) use ($languageId, $defaultTenantLanguageId) {
-                return $this->transformMission($mission, '', $languageId, $defaultTenantLanguageId);
+            $timezone = $this->userRepository->getUserTimezone($request->auth->user_id);
+            $mission = $missionData->map(function (Mission $mission)
+ use ($languageId, $defaultTenantLanguageId, $timezone) {
+                return $this->transformMission($mission, '', $languageId, $defaultTenantLanguageId, $timezone);
             })->all();
 
             $apiData = $mission;
@@ -544,10 +555,18 @@ class MissionController extends Controller
             $missionData = $this->missionRepository->getMissionDetail($request, $missionId);
             $defaultTenantLanguage = $this->languageHelper->getDefaultTenantLanguage($request);
             $defaultTenantLanguageId = $defaultTenantLanguage->language_id;
+            $timezone = $this->userRepository->getUserTimezone($request->auth->user_id);
+
             $mission = $missionData->map(
-                function (Mission $mission) use ($languageCode, $languageId, $defaultTenantLanguageId
+                function (Mission $mission) use ($languageCode, $languageId, $defaultTenantLanguageId, $timezone
                 ) {
-                    return $this->transformMission($mission, $languageCode, $languageId, $defaultTenantLanguageId);
+                    return $this->transformMission(
+                        $mission,
+                        $languageCode,
+                        $languageId,
+                        $defaultTenantLanguageId,
+                        $timezone
+                    );
                 }
             )->all();
 
