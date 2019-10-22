@@ -418,7 +418,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
           'uses' => 'App\Notification\NotificationController@index']);
 
     /* Read message send by admin */
-	$router->post('/app/message/read/{messageId}', ['as' => 'app.message.read',
+    $router->post('/app/message/read/{messageId}', ['as' => 'app.message.read',
         'middleware' => 'localization|tenant.connection|jwt.auth',
         'uses' => 'App\Message\MessageController@readMessage']);
 });
@@ -725,6 +725,16 @@ $router->group(['middleware' => 'localization'], function ($router) {
 
             $router->post('/read/{messageId}', ['as' => 'message.read',
                 'uses' => 'Admin\Message\MessageController@readMessage']);
+        }
+    );
+
+    /* Get Activity Logs */
+    $router->group(
+        ['middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware'],
+        function ($router) {
+            /* Get user activity logs */
+            $router->get('/logs', ['middleware' => ['PaginationMiddleware'],
+                'uses' => 'Admin\ActivityLog\ActivityLogController@index']);
         }
     );
 /*

@@ -32,4 +32,26 @@ class ActivityLogRepository implements ActivityLogInterface
     {
         $this->activityLog->create($data);
     }
+
+    /**
+     * Display a listing of specified resources with pagination.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Pagination\LengthAwarePaginator
+     */
+    public function getActivityLogs(Request $request): LengthAwarePaginator
+    {
+        $type = $request->type;
+        $action = $request->action;
+        $userType = $request->user_type;
+        $userIds = !empty($request->users) ? explode(',', $request->users) : null;
+        $order = $request->order;
+
+        $activityLogQuery = $this->activityLog->when($userIds, function ($query, $userId) {
+            return $query->where('user_id', $userId);
+        })->when($status, function ($query, $status) {
+            return $query->where('status', $status);
+        });
+        return $userStoryQuery->paginate($request->perPage);
+    }
 }
