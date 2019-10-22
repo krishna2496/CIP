@@ -70,7 +70,7 @@ class MissionApplication extends Model
         if ($request->has('type') && $request->input('type') !== '') {
             $applicationQuery = $applicationQuery->where('mission.mission_type', strtoupper($request->type));
         }
-        if ($request->has('order')) {
+        if ($request->has('order') && $request->input('order') !== '') {
             $orderDirection = $request->input('order', 'asc');
             $applicationQuery = $applicationQuery->orderBy('mission_application_id', $orderDirection);
         }

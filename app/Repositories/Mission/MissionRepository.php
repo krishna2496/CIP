@@ -358,9 +358,9 @@ class MissionRepository implements MissionInterface
         ->with(['missionSkill' => function ($query) {
             $query->with('mission', 'skill');
         }]);
-		
-		if ($request->has('search') && $request->has('search') !== '') {
-			$searchString = $request->search;
+        
+        if ($request->has('search') && $request->has('search') !== '') {
+            $searchString = $request->search;
             $missionQuery->where(function ($query) use ($searchString) {
                 $query->wherehas('missionLanguage', function ($missionLanguageQuery) use ($searchString) {
                     $missionLanguageQuery->where('title', 'like', '%' . $searchString . '%');
@@ -371,7 +371,7 @@ class MissionRepository implements MissionInterface
                 });
             });
         }
-		
+        
         if ($request->has('order')) {
             $orderDirection = $request->input('order', 'asc');
             $missionQuery->orderBy('mission_id', $orderDirection);
