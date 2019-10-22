@@ -46,7 +46,7 @@ class MissionApplication extends Model
      */
     protected $visible = ['mission_application_id', 'mission_id', 'user_id', 'applied_at', 'motivation',
     'availability_id', 'approval_status', 'user', 'first_name', 'last_name', 'avatar'];
-
+  
     /**
      * Find listing of a resource.
      *
@@ -56,17 +56,26 @@ class MissionApplication extends Model
      */
     public function find(Request $request, int $missionId): LengthAwarePaginator
     {
-        $applicationQuery = $this;
+        $applicationQuery = $this->leftjoin('mission', 'mission.mission_id', '=', 'mission_application.mission_id');
 
         if ($request->has('search')) {
             $applicationQuery = $applicationQuery->where('motivation', 'like', '%' . $request->input('search') . '%');
         }
-        if ($request->has('order')) {
+        if ($request->has('status') && $request->input('status') !== '') {
+            $applicationQuery = $applicationQuery->where('approval_status', strtoupper($request->status));
+        }
+        if ($request->has('user_id') && $request->input('user_id') !== '') {
+            $applicationQuery = $applicationQuery->where('user_id', $request->user_id);
+        }
+        if ($request->has('type') && $request->input('type') !== '') {
+            $applicationQuery = $applicationQuery->where('mission.mission_type', strtoupper($request->type));
+        }
+        if ($request->has('order') && $request->input('order') !== '') {
             $orderDirection = $request->input('order', 'asc');
             $applicationQuery = $applicationQuery->orderBy('mission_application_id', $orderDirection);
         }
 
-        $missionApplication = $applicationQuery->where('mission_id', $missionId)
+        $missionApplication = $applicationQuery->where('mission_application.mission_id', $missionId)
                 ->paginate($request->perPage);
         return $missionApplication;
     }

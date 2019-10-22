@@ -1,5 +1,5 @@
 <?php
-namespace App\Http\Controllers\App\Country;
+namespace App\Http\Controllers\Admin\Country;
 
 use Illuminate\Http\Response;
 use App\Http\Controllers\Controller;

@@ -272,7 +272,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
 /*
 |
 |--------------------------------------------------------------------------
-| Tenant Admin Routs
+| Tenant Admin Routes
 |--------------------------------------------------------------------------
 |
 | These are tenant admin routes to manage tenant users, settings, and etc.
@@ -514,6 +514,14 @@ $router->group(['middleware' => 'localization'], function ($router) {
                 'uses' => 'Admin\Timesheet\TimesheetController@update']);
         }
     );
+
+    /* Get countries list */
+    $router->get('/countries', ['middleware' => 'localization|auth.tenant.admin',
+    'uses' => 'Admin\Country\CountryController@index']);
+
+    /* Get cities by country id */
+    $router->get('/cities/{countryId}', ['middleware' => 'localization|auth.tenant.admin',
+    'uses' => 'Admin\City\CityController@fetchCity']);
 /*
 |
 |--------------------------------------------------------------------------
