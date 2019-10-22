@@ -171,6 +171,7 @@ class MissionTest extends TestCase
      */
     public function it_should_return_all_mission()
     {
+        $description = str_random(20);
         $params = [
             "organisation" => [
                 "organisation_id" => 1,
@@ -184,7 +185,7 @@ class MissionTest extends TestCase
             "mission_detail" => [[
                     "lang" => "en",
                     "title" => str_random(10),
-                    "short_description" => str_random(20),
+                    "short_description" => $description,
                     "objective" => str_random(20),
                     "section" => [
                         [
@@ -200,7 +201,7 @@ class MissionTest extends TestCase
                 [
                     "lang" => "fr",
                     "title" => str_random(10),
-                    "short_description" => str_random(20),
+                    "short_description" => $description,
                     "objective" => str_random(20),
                     "section" => [
                         [
@@ -243,7 +244,7 @@ class MissionTest extends TestCase
         ->seeStatusCode(201);
 
         DB::setDefaultConnection('mysql');
-        $this->get('missions?order=desc', ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->get('missions?order=desc&search='.$description, ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
           ->seeStatusCode(200)
           ->seeJsonStructure([
             "status",
