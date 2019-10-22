@@ -31,7 +31,7 @@ class CountryTest extends TestCase
      */
     public function it_should_return_no_country_found()
     {
-        $this->get('/app/country', ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
+        $this->get('/countries', ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
         ->seeStatusCode(200);
     }
 

@@ -22,6 +22,7 @@ $factory->define(App\User::class, function (Faker\Generator $faker) {
         'availability_id' => 1,
         'why_i_volunteer' => str_random(10),
         'employee_id' => str_random(10),
+        'manager_name' => str_random(10),
         'department' => str_random(10),
         'city_id' => 1,
         'country_id' => 233,
