@@ -79,7 +79,7 @@ class NotificationRepository implements NotificationInterface
     }
 
     /**
-     * Get notification type id
+     * Get notification type id from type
      *
      * @param string $type
      * @return int
@@ -153,7 +153,7 @@ class NotificationRepository implements NotificationInterface
 
     /**
      * Delete user's all notifications
-	 * 
+     *
      * @param int $userId
      * @return bool
      */
@@ -176,9 +176,9 @@ class NotificationRepository implements NotificationInterface
     }
 
     /**
-     * Get notification type
+     * Get notification type from notification type id
      *
-     * @param string $type
+     * @param int $notificationTypeId
      * @return string
      */
     public function getNotificationType(int $notificationTypeId): string

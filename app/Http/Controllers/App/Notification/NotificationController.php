@@ -4,6 +4,7 @@ namespace App\Http\Controllers\App\Notification;
 
 use App\Repositories\NotificationType\NotificationTypeRepository;
 use App\Repositories\Notification\NotificationRepository;
+use App\Repositories\User\UserRepository;
 use App\Traits\RestExceptionHandlerTrait;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
@@ -32,6 +33,11 @@ class NotificationController extends Controller
     private $notificationRepository;
 
     /**
+     * @var App\Repositories\User\UserRepository
+     */
+    private $userRepository;
+
+    /**
      * @var App\Helpers\ResponseHelper
      */
     private $responseHelper;
@@ -56,6 +62,7 @@ class NotificationController extends Controller
      *
      * @param App\Repositories\NotificationType\NotificationTypeRepository $notificationTypeRepository
      * @param App\Repositories\Notification\NotificationRepository $notificationRepository
+     * @param App\Repositories\User\UserRepository $userRepository
      * @param App\Helpers\ResponseHelper $responseHelper
      * @param App\Helpers\LanguageHelper $languageHelper
      * @param App\Service\NotificationService $notificationService
@@ -64,6 +71,7 @@ class NotificationController extends Controller
      */
     public function __construct(
         NotificationTypeRepository $notificationTypeRepository,
+        UserRepository $userRepository,
         NotificationRepository $notificationRepository,
         ResponseHelper $responseHelper,
         LanguageHelper $languageHelper,
@@ -71,6 +79,7 @@ class NotificationController extends Controller
         Helpers $helpers
     ) {
         $this->notificationTypeRepository = $notificationTypeRepository;
+        $this->userRepository = $userRepository;
         $this->notificationRepository = $notificationRepository;
         $this->responseHelper = $responseHelper;
         $this->languageHelper = $languageHelper;
@@ -97,24 +106,32 @@ class NotificationController extends Controller
         $notifications = $this->notificationRepository->getNotifications($request->auth->user_id);
         
         foreach ($notifications as $notification) {
-            $notificaionType = str_replace("_", " ", $notification->notificationType->notification_type);
-            $methodName =  lcfirst(str_replace(" ", "", ucwords($notificaionType)));
             $tenantName = $this->helpers->getSubDomainFromRequest($request);
+
+            // This will create method name dynamically from notification type.
+            // Example : notification type recommended_missions will convert into recommendedMissions()
+            $notificaionType = str_replace("_", " ", $notification->notificationType->notification_type);
+            $notificationString = str_replace(" ", "", ucwords($notificaionType));
+            $methodName =  lcfirst($notificationString);
             $notificationDetails = $this->notificationService->$methodName(
                 $notification,
                 $tenantName,
                 $languageId,
                 $defaultTenantLanguage->language_id
             );
-            $notificationDetails['created_at'] = Carbon::parse($notification->created_at)->format('Y-m-d H:i:s');
+            $timezone = $this->userRepository->getUserTimezone($request->auth->user_id);
+            
+            $notificationDetails['created_at'] =  Carbon::parse($notification->created_at, config('constants.TIMEZONE'))
+            ->setTimezone($timezone)->toDateTimeString();
+            $notificationDetails['notification_id'] = $notification->notification_id;
             $notificationData['notifications'][] = $notificationDetails;
         }
 
         // Set response data
         $apiData = $notificationData;
         $apiStatus = Response::HTTP_OK;
-        $apiMessage = (count($notifications) < 0) ?
-        trans('messages.success.MESSAGE_NO_RECORD_FOUND') : trans('messages.success.MESSAGE_NOTIFICATION_LISTING');
+        $apiMessage = (count($notifications) > 0) ? trans('messages.success.MESSAGE_NOTIFICATION_LISTING') :
+        trans('messages.success.MESSAGE_NO_RECORD_FOUND');
 
         return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
     }
@@ -152,7 +169,7 @@ class NotificationController extends Controller
 
     /**
      * Clear all notifications
-	 *
+     *
      * @param Illuminate\Http\Request $request
      * @return \Illuminate\Http\JsonResponse
      */

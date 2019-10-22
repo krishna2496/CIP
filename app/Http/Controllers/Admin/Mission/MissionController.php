@@ -32,16 +32,23 @@ class MissionController extends Controller
     private $responseHelper;
     
     /**
+     * @var string
+     */
+    private $userApiKey;
+
+    /**
      * Create a new controller instance.
      *
      * @param  App\Repositories\Mission\MissionRepository $missionRepository
      * @param  App\Helpers\ResponseHelper $responseHelper
-    * @return void
+     * @param Illuminate\Http\Request $request
+     * @return void
      */
-    public function __construct(MissionRepository $missionRepository, ResponseHelper $responseHelper)
+    public function __construct(MissionRepository $missionRepository, ResponseHelper $responseHelper, Request $request)
     {
         $this->missionRepository = $missionRepository;
         $this->responseHelper = $responseHelper;
+        $this->userApiKey = $request->header('php-auth-user');
     }
 
     /**
@@ -135,7 +142,7 @@ class MissionController extends Controller
             config('constants.activity_log_types.MISSION'),
             config('constants.activity_log_actions.CREATED'),
             config('constants.activity_log_user_types.API'),
-            $request->header('php-auth-user'),
+            $this->userApiKey,
             get_class($this),
             $request->toArray(),
             null,
@@ -187,10 +194,6 @@ class MissionController extends Controller
                 "mission_detail.*.title" => "required_with:mission_detail",
                 "publication_status" => [Rule::in(config('constants.publication_status'))],
                 "goal_objective" => "required_if:mission_type,GOAL|integer|min:1",
-                "media_images.*.media_path" => "required_with:media_images|valid_media_path",
-                "media_videos.*.media_name" => "required_with:media_videos",
-                "media_videos.*.media_path" => "required_with:media_videos|valid_video_url",
-                "documents.*.document_path" => "required_with:documents|valid_document_path",
                 "start_date" => "sometimes|required_if:mission_type,TIME,required_with:end_date|date",
                 "end_date" => "sometimes|after:start_date|date",
                 "total_seats" => "integer|min:1",
@@ -216,6 +219,19 @@ class MissionController extends Controller
             // Set response data
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_MISSION_UPDATED');
+
+            // Make activity log
+            event(new UserActivityLogEvent(
+                config('constants.activity_log_types.MISSION'),
+                config('constants.activity_log_actions.UPDATED'),
+                config('constants.activity_log_user_types.API'),
+                $this->userApiKey,
+                get_class($this),
+                $request->toArray(),
+                null,
+                $id
+            ));
+            
             return $this->responseHelper->success($apiStatus, $apiMessage);
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
@@ -238,6 +254,19 @@ class MissionController extends Controller
 
             $apiStatus = Response::HTTP_NO_CONTENT;
             $apiMessage = trans('messages.success.MESSAGE_MISSION_DELETED');
+
+            // Make activity log
+            event(new UserActivityLogEvent(
+                config('constants.activity_log_types.MISSION'),
+                config('constants.activity_log_actions.DELETED'),
+                config('constants.activity_log_user_types.API'),
+                $this->userApiKey,
+                get_class($this),
+                null,
+                null,
+                $id
+            ));
+
             return $this->responseHelper->success($apiStatus, $apiMessage);
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(

@@ -26,16 +26,16 @@ return [
         'STORY_DESCRIPTION' => 'Description de l\'histoire',
         'STORY_STATUS' => 'Statut de l\'histoire',
         'MISSION' => 'Mission',
-		'PUBLISHED_DATE' => 'date de publication',
-	],
-	
-	/**
-	* Export user comment sheet's headings
-	*/
+        'PUBLISHED_DATE' => 'date de publication',
+    ],
+    
+    /**
+    * Export user comment sheet's headings
+    */
    'export_mission_comment_headings' => [
-	   'MISSION_TITLE' => 'Titre de la mission',
-	   'COMMENT' => 'Commentaire',
-	   'STATUS' => 'Statut du commentaire',
+       'MISSION_TITLE' => 'Titre de la mission',
+       'COMMENT' => 'Commentaire',
+       'STATUS' => 'Statut du commentaire',
        'MISSION_TITLE' => 'Titre de la mission',
        'PUBLISHED_DATE' => 'date de publication',
     ],
@@ -46,6 +46,20 @@ return [
         'PUBLISHED' => 'Publié',
         'DECLINED' => 'DIMINUÉE',
     ],
+
+    /*
+     * Notification status
+     */
+    'notification_status' => [
+        'DRAFT' => 'Brouillon',
+        'AUTOMATICALLY_APPROVED' => 'approuvée',
+        'PENDING' => 'en attente',
+        'APPROVED' => 'approuvé',
+        'DECLINED' => 'diminué',
+        'REFUSED' => 'refusé',
+        'PUBLISHED' => 'publié',
+        
+    ],
     
     'notification' => [
         'RECOMMENDS_THIS_MISSION' => 'Recommande cette mission',
@@ -55,6 +69,10 @@ return [
         'STORY' => 'Récit',
         'NEW_MISSION' => 'Nouvelle mission',
         'NEW_MESSAGE' => 'Nouveau message',
-        'RECOMMENDS_THIS_STORY' => 'Recommande cette histoire',        
+        'RECOMMENDS_THIS_STORY' => 'Recommande cette histoire',
+        'NEW_NEWS' => 'Nouvelles informations',
+        'VOLUNTEERING_REQUEST' => 'La demande de bénévolat a été',
+        'FOR_THIS_MISSION' => 'pour cette mission:',
+        'IS' => 'est',
     ],
 ];
