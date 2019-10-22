@@ -54,6 +54,7 @@ return [
         'DRAFT' => 'DE: draft',
         'AUTOMATICALLY_APPROVED' => 'DE: approved',
         'PENDING' => 'DE: pending',
+        'APPROVED' => 'DE: approved',
         'DECLINED' => 'DE: declined',
         'REFUSED' => 'DE: refused',
         'PUBLISHED' => 'DE: published',
@@ -71,6 +72,7 @@ return [
         'RECOMMENDS_THIS_STORY' => 'DE: Recommends this story',
         'NEW_NEWS' => 'DE: New News',
         'VOLUNTEERING_REQUEST' => 'DE: Volunteering request has been',   
-        'FOR_THIS_MISSION' => 'DE: for this mission :',  
+        'FOR_THIS_MISSION' => 'DE: for this mission:',  
+        'IS' => 'DE: is',  
     ],
 ];

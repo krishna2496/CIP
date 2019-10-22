@@ -189,10 +189,13 @@ class NotificationService
         $status = trans('general.notification_status.'.$notification->action);
 
         // Create message
-        $response['icon'] =  $this->helpers->getAssetsUrl($tenantName).
-        Config('constants.notification_type_icons.VOLUNTEERING_HOURS');
+        $icon = ($notification->action === config('constants.notification_status.APPROVED')
+        || $notification->action === config('constants.notification_status.AUTOMATICALLY_APPROVED')) ?
+        Config('constants.notification_icons.APPROVED') : Config('constants.notification_icons.DECLINED');
+        
+        $response['icon'] =  $this->helpers->getAssetsUrl($tenantName).$icon;
         $response['notification_string'] = trans('general.notification.VOLUNTEERING_HOURS_SUBMITTED_THE')." ".
-        $date." ".$status;
+        $date." ".trans('general.notification.IS')." ".$status;
         $response['is_read'] = $notification->is_read;
         $response['link'] = '/volunteering-timesheet';
         return $response;
@@ -214,10 +217,13 @@ class NotificationService
         $status = trans('general.notification_status.'.$notification->action);
 
         // Create message
-        $response['icon'] = $this->helpers->getAssetsUrl($tenantName).
-        Config('constants.notification_type_icons.VOLUNTEERING_GOALS');
+        $icon = ($notification->action === config('constants.notification_status.APPROVED')
+        || $notification->action === config('constants.notification_status.AUTOMATICALLY_APPROVED')) ?
+        Config('constants.notification_icons.APPROVED') : Config('constants.notification_icons.DECLINED');
+      
+        $response['icon'] = $this->helpers->getAssetsUrl($tenantName).$icon;
         $response['notification_string'] = trans('general.notification.VOLUNTEERING_GOALS_SUBMITTED_THE')." "
-        .$date." ".$status;
+        .$date." ".trans('general.notification.IS')." ".$status;
         $response['is_read'] = $notification->is_read;
         $response['link'] = '/volunteering-timesheet';
         return $response;
@@ -239,10 +245,12 @@ class NotificationService
         $status = trans('general.notification_status.'.$notification->action);
 
         // Create message
-        $response['icon'] = $this->helpers->getAssetsUrl($tenantName).
-        Config('constants.notification_type_icons.MY_COMMENTS');
+        $icon = ($notification->action === config('constants.notification_status.PUBLISHED')) ?
+        Config('constants.notification_icons.APPROVED') : Config('constants.notification_icons.DECLINED');
+        
+        $response['icon'] = $this->helpers->getAssetsUrl($tenantName).$icon;
         $response['notification_string'] = trans('general.notification.COMMENT_OF')." "
-        .$date." ".$status;
+        .$date." ".trans('general.notification.IS')." ".$status;
         $response['is_read'] = $notification->is_read;
         $response['link'] = '/comment-history';
         return $response;
@@ -258,18 +266,22 @@ class NotificationService
     public function myStories(Notification $notification, string $tenantName): array
     {
         // Get details
-        $commentDetails = $this->storyRepository->getStoryDetails($notification->entity_id);
+        $storyDetails = $this->storyRepository->getStoryDetails($notification->entity_id);
 
-        $date = Carbon::parse($commentDetails[0]['created_at'])
+        $date = Carbon::parse($storyDetails[0]['created_at'])
         ->setTimezone(config('constants.TIMEZONE'))->format(config('constants.FRONT_DATE_FORMAT'));
         $status = trans('general.notification_status.'.$notification->action);
 
         // Create message
-        $response['icon'] = $this->helpers->getAssetsUrl($tenantName).
-        Config('constants.notification_type_icons.MY_STORIES');
-        $response['notification_string'] = trans('general.notification.STORY')." ".$date." ".$status;
+        $icon = ($notification->action === config('constants.notification_status.PUBLISHED')) ?
+        Config('constants.notification_icons.APPROVED') : Config('constants.notification_icons.DECLINED');
+        $response['icon'] = $this->helpers->getAssetsUrl($tenantName).$icon;
+        $response['notification_string'] = trans('general.notification.STORY')." "
+        .trans('general.notification.IS')." ".$status." - ".$storyDetails[0]['title'];
         $response['is_read'] = $notification->is_read;
-        $response['link'] = '/story-detail/'.$notification->entity_id;
+        $response['link'] = ($storyDetails[0]['title'] !==
+        config('constants.story_status.DECLINED'))
+        ? '/story-detail/'.$notification->entity_id : '/story-detail/';
         return $response;
     }
 
@@ -286,8 +298,7 @@ class NotificationService
         $messageDetails = $this->messageRepository->getMessage($notification->entity_id);
         
         // Create message
-        $response['icon'] = $this->helpers->getAssetsUrl($tenantName).
-        Config('constants.notification_type_icons.NEW_MESSAGES');
+        $response['icon'] = $this->helpers->getAssetsUrl($tenantName).Config('constants.notification_icons.NEW');
         $response['notification_string'] = trans('general.notification.NEW_MESSAGE')." - ".$messageDetails->subject;
         $response['is_read'] = $notification->is_read;
         $response['link'] = '/messages';
@@ -317,8 +328,7 @@ class NotificationService
         );
 
         // Create message
-        $response['icon'] = $this->helpers->getAssetsUrl($tenantName).
-        Config('constants.notification_type_icons.NEW_MISSIONS');
+        $response['icon'] = $this->helpers->getAssetsUrl($tenantName).Config('constants.notification_icons.NEW');
         $response['notification_string'] = trans('general.notification.NEW_MISSION')." - ".$missionName;
         $response['is_read'] = $notification->is_read;
         $response['link'] = '/mission-detail/'.$notification->entity_id;
@@ -348,8 +358,7 @@ class NotificationService
         );
 
         // Create message
-        $response['icon'] = $this->helpers->getAssetsUrl($tenantName).
-        Config('constants.notification_type_icons.NEW_NEWS');
+        $response['icon'] = $this->helpers->getAssetsUrl($tenantName).Config('constants.notification_icons.NEW');
         $response['notification_string'] = trans('general.notification.NEW_NEWS')." - ".$newsTitle;
         $response['is_read'] = $notification->is_read;
         $response['link'] = '/news-detail/'.$notification->entity_id;
@@ -380,9 +389,12 @@ class NotificationService
             $defaultTenantLanguageId
         );
         $status = trans('general.notification_status.'.$notification->action);
+        
         // Create message
-        $response['icon'] = $this->helpers->getAssetsUrl($tenantName).
-        Config('constants.notification_type_icons.MISSION_APPLICATION');
+        $icon = ($notification->action === config('constants.notification_status.AUTOMATICALLY_APPROVED')) ?
+        Config('constants.notification_icons.APPROVED') : Config('constants.notification_icons.DECLINED');
+        $response['icon'] = $this->helpers->getAssetsUrl($tenantName).$icon;
+
         $response['notification_string'] = trans('general.notification.VOLUNTEERING_REQUEST')." ".$status." ".
         trans('general.notification.FOR_THIS_MISSION')." ".$missionName;
         $response['is_read'] = $notification->is_read;
