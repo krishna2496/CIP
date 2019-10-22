@@ -276,6 +276,31 @@ return [
     ],
 
     /*
+     * User notification types
+     */
+    'notification_types' => [
+        'RECOMMENDED_MISSIONS' => 'Recommended missions',
+        'VOLUNTEERING_HOURS' => 'Volunteering hours',
+        'VOLUNTEERING_GOALS' => 'Volunteering goals',
+        'MY-COMMENTS' => 'My comments',
+        'MY-STORIES' => 'My stories',
+        'NEW_STORIES_HOURS' => 'New stories hours',
+        'NEW_MISSIONS' => 'New missions',
+        'NEW_MESSAGES' => 'New messages',
+        'RECOMMENDED_STORY' => 'Recommended story',
+        'MISSION_APPLICATION' => 'Mission Application',
+        'NEW_NEWS' => 'New News'
+    ],
+    
+    /**
+     * notification status
+     */
+    'notification' => [
+        'read' => '1',
+        'unread' => '0'
+    ],
+
+    /*
      * Tenant settings
      */
     'tenant_settings' => [
@@ -400,6 +425,7 @@ return [
         'ERROR_CONTACT_FORM_REQUIRED_FIELDS_EMPTY' => '1000001',
 
         'ERROR_USER_NOTIFICATION_REQUIRED_FIELDS_EMPTY' => '600001',
+        'ERROR_USER_NOTIFICATION_NOT_FOUND' => '600002',
                 
         'ERROR_OCCURRED' => '999999',
         'ERROR_INVALID_JSON' => '900000',
@@ -447,6 +473,8 @@ return [
         'NEW_MISSIONS' => 'new_missions',
         'NEW_MESSAGES' => 'new_messages',
         'RECOMMENDED_STORY' => 'recommended_story',
+        'MISSION_APPLICATION' => 'mission_application',
+        'NEW_NEWS' => 'new_news'
     ],
 
     /**
@@ -461,21 +489,30 @@ return [
         'DECLINED' => 'DECLINED',
         'INVITE' => 'INVITE',
         'AUTOMATICALLY_APPROVED' => 'AUTOMATICALLY_APPROVED',
-        'SUBMIT_FOR_APPROVAL' => 'SUBMIT_FOR_APPROVAL'
+        'SUBMIT_FOR_APPROVAL' => 'SUBMIT_FOR_APPROVAL',
+        'DELETED' => 'DELETED',
+        'REFUSED' => 'REFUSED'
     ],
 
     /**
      * Notification type icons
      */
-    'notification_type_icons' => [
-        'VOLUNTEERING_HOURS' => 'warning.png',
-        'VOLUNTEERING_GOALS' => 'warning.png',
-        'MY_COMMENTS' => 'warning.png',
-        'MY_STORIES' => 'warning.png',
-        'NEW_MISSIONS' => 'circle-plus.png',
-        'NEW_MESSAGES' => 'circle-plus.png',
+    'notification_icons' => [
+        'APPROVED' => 'approve-ic.svg',
+        'DECLINED' => 'warning.png',
+        'NEW' => 'circle-plus.png',
     ],
     
+    'notification_status' => [
+        'AUTOMATICALLY_APPROVED' => 'AUTOMATICALLY_APPROVED',
+        'PENDING' => 'PENDING',
+        'DECLINED' => 'DECLINED',
+        'APPROVED' => 'APPROVED',
+        'REFUSED' => 'REFUSED',
+        'PUBLISHED' => 'PUBLISHED',
+        'SUBMIT_FOR_APPROVAL' => 'SUBMIT_FOR_APPROVAL'
+    ],
+
     'activity_log_types' => [
         'AUTH' => 'AUTH',
         'USERS' => 'USERS',
@@ -484,7 +521,12 @@ return [
         'MESSAGE' => 'MESSAGE',
         'USERS_CUSTOM_FIELD' => 'USERS_CUSTOM_FIELD',
         'USER_PROFILE' => 'USER_PROFILE',
-        'USER_PROFILE_IMAGE' => 'USER_PROFILE_IMAGE'
+        'USER_PROFILE_IMAGE' => 'USER_PROFILE_IMAGE',
+        'FOOTER_PAGE' => 'FOOTER_PAGE',
+        'POLICY_PAGE' => 'POLICY_PAGE',
+        'MISSION_THEME' => 'MISSION_THEME',
+        'SKILL' => 'SKILL',
+        'USER_SKILL' => 'USER_SKILL'
     ],
 
     'activity_log_actions' => [
@@ -492,7 +534,20 @@ return [
         'UPDATED' => 'UPDATED',
         'DELETED' => 'DELETED',
         'INVITED' => 'INVITED',
-        'LOGGEDIN' => 'LOGGEDIN'
+        'LOGIN' => 'LOGIN',
+        'ADD_TO_FAVOURITE' => 'ADD_TO_FAVOURITE',
+        'REMOVE_FROM_FAVOURITE' => 'REMOVE_FROM_FAVOURITE',
+        'RATED' => 'RATED',
+        'COMMENT_ADDED' => 'COMMENT_ADDED',
+        'COMMENT_UPDATED' => 'COMMENT_UPDATED',
+        'COMMENT_DELETED' => 'COMMENT_DELETED',
+        'MISSION_APPLICATION_CREATED' => 'MISSION_APPLICATION_CREATED',
+        'MISSION_APPLICATION_STATUS_CHANGED' => 'MISSION_APPLICATION_STATUS_CHANGED',
+        'PASSWORD_RESET_REQUEST' => 'PASSWORD_RESET_REQUEST',
+        'PASSWORD_CHANGED' => 'PASSWORD_CHANGED',
+        'PASSWORD_RESET' => 'PASSWORD_RESET',
+        'LINKED' => 'LINKED',
+        'UNLINKED' => 'UNLINKED'
     ],
 
     'activity_log_user_types' => [

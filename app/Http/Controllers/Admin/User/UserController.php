@@ -53,7 +53,7 @@ class UserController extends Controller
      * @param App\Helpers\ResponseHelper $responseHelper
      * @param App\Helpers\ResponseHelper $languageHelper
      * @param App\Helpers\Helpers $helpers
-     * @param \Illuminate\Http\Request $request
+     * @param Illuminate\Http\Request $request
      * @return void
      */
     public function __construct(
@@ -118,7 +118,6 @@ class UserController extends Controller
             "employee_id" => "max:16|
             unique:user,employee_id,NULL,user_id,deleted_at,NULL",
             "department" => "max:16",
-            "manager_name" => "max:16",
             "linked_in_url" => "url|valid_linkedin_url",
             "why_i_volunteer" => "required",
             ]
@@ -222,7 +221,6 @@ class UserController extends Controller
                     "max:16",
                     Rule::unique('user')->ignore($id, 'user_id,deleted_at,NULL')],
                 "department" => "sometimes|required|max:16",
-                "manager_name" => "sometimes|required|max:16",
                 "linked_in_url" => "url|valid_linkedin_url",
                 "why_i_volunteer" => "sometimes|required",
                 "timezone_id" => "integer|exists:timezone,timezone_id,deleted_at,NULL",
@@ -342,9 +340,21 @@ class UserController extends Controller
                     $validator->errors()->first()
                 );
             }
-
-            $this->userRepository->linkSkill($request->toArray(), $id);
-
+            $linkedSkills = $this->userRepository->linkSkill($request->toArray(), $id);
+            
+            foreach ($linkedSkills as $linkedSkill) {
+                // Make activity log
+                event(new UserActivityLogEvent(
+                    config('constants.activity_log_types.USER_SKILL'),
+                    config('constants.activity_log_actions.LINKED'),
+                    config('constants.activity_log_user_types.API'),
+                    $this->userApiKey,
+                    get_class($this),
+                    $request->toArray(),
+                    null,
+                    $linkedSkill['skill_id']
+                ));
+            }
             // Set response data
             $apiStatus = Response::HTTP_CREATED;
             $apiMessage = trans('messages.success.MESSAGE_USER_SKILLS_CREATED');
@@ -361,10 +371,10 @@ class UserController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  \Illuminate\Http\Request $request
-     * @param  int $id
+     * @param  int $userId
      * @return Illuminate\Http\JsonResponse
      */
-    public function unlinkSkill(Request $request, int $id): JsonResponse
+    public function unlinkSkill(Request $request, int $userId): JsonResponse
     {
         try {
             // Server side validataions
@@ -383,7 +393,21 @@ class UserController extends Controller
                 );
             }
 
-            $userSkill = $this->userRepository->unlinkSkill($request->toArray(), $id);
+            $unlinkedIds = $this->userRepository->unlinkSkill($request->toArray(), $userId);
+
+            foreach ($unlinkedIds as $unlinkedId) {
+                // Make activity log
+                event(new UserActivityLogEvent(
+                    config('constants.activity_log_types.USER_SKILL'),
+                    config('constants.activity_log_actions.UNLINKED'),
+                    config('constants.activity_log_user_types.API'),
+                    $this->userApiKey,
+                    get_class($this),
+                    $request->toArray(),
+                    null,
+                    $unlinkedId['skill_id']
+                ));
+            }
             // Set response data
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_USER_SKILLS_DELETED');

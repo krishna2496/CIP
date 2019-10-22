@@ -165,4 +165,15 @@ class MissionCommentRepository implements MissionCommentInterface
         return $this->comment->where(['comment_id' => $commentId,
         'user_id' => $userId])->firstOrFail()->delete();
     }
+
+    /**
+     * Get comment details by comment id
+     *
+     * @param int $commentId
+     * @return Comment
+     */
+    public function getCommentById(int $commentId): Comment
+    {
+        return $this->comment->with('user')->findOrFail($commentId);
+    }
 }

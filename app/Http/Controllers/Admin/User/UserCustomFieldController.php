@@ -129,7 +129,6 @@ class UserCustomFieldController extends Controller
             null,
             $customField['field_id']
         ));
-
         return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
     }
 

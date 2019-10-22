@@ -75,7 +75,8 @@ class UserNotificationListner
             === $this->notificationRepository->getNotificationType($data->notificationTypeId)
             && !is_null($isNotificationActive)
         ) {
-            // This is new mission notification, need to check user's skill and availability match with mission or not.
+            // This is mission create notification,
+            // here need to check user's skill and availability match with mission or not.
             $isUserRelatedToMission = $this->missionRepository->checkIsMissionRelatedToUser(
                 $data->entityId,
                 $data->userId

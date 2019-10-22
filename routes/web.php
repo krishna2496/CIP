@@ -388,7 +388,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
         'uses' => 'App\Message\MessageController@sendMessage']);
             
     /* Get User's message Listing*/
-    $router->get('/app/message/list', ['as' => 'app.message.list',
+    $router->get('/app/messages', ['as' => 'app.message.list',
         'middleware' => 'localization|tenant.connection|jwt.auth|PaginationMiddleware',
         'uses' => 'App\Message\MessageController@getUserMessages']);
 
@@ -402,17 +402,23 @@ $router->group(['middleware' => 'localization'], function ($router) {
         'middleware' => 'localization|tenant.connection|jwt.auth',
           'uses' => 'App\Notification\NotificationTypeController@index']);
 
-    /* Store or update user notification settings */
-    $router->post('/app/user-notification-settings/update', ['as' => 'app.user-notification-settings.update',
-        'middleware' => 'localization|tenant.connection|jwt.auth|JsonApiMiddleware',
-        'uses' => 'App\Notification\NotificationTypeController@storeOrUpdate']);
+    /* Read Unread User notification */
+    $router->post('/app/notification/read-unread/{notificationId}', ['as' => 'app.user-notification.read-unread',
+        'middleware' => 'localization|tenant.connection|jwt.auth',
+        'uses' => 'App\Notification\NotificationController@readUnreadNotification']);
 
+    /* Clear User notification */
+    $router->delete('/app/notification/clear', ['as' => 'app.user-notification.clear',
+        'middleware' => 'localization|tenant.connection|jwt.auth',
+        'uses' => 'App\Notification\NotificationController@clearAllNotifications']);
+        
     /* Fetch notification settings */
     $router->get('/app/notification', ['as' => 'app.notification',
         'middleware' => 'localization|tenant.connection|jwt.auth',
           'uses' => 'App\Notification\NotificationController@index']);
+
     /* Read message send by admin */
-    $router->post('/app/message/read/{messageId}', ['as' => 'app.message.read',
+	$router->post('/app/message/read/{messageId}', ['as' => 'app.message.read',
         'middleware' => 'localization|tenant.connection|jwt.auth',
         'uses' => 'App\Message\MessageController@readMessage']);
 });

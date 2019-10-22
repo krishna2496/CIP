@@ -59,7 +59,6 @@ class MessageRepository implements MessageInterface
                     'created_at' => $now,
                     'updated_at' => $now,
                 ];
-
                 $messageData = $this->message->create(array_merge($message, $messageDataArray));
                 array_push($messageIds, ['message_id' => $messageData->message_id, 'user_id' => $userId]);
             }

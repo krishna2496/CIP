@@ -242,7 +242,28 @@
         "name": "Nom",
         "phone_number": "Numéro de téléphone",
         "message": "Message",
-        "send": "Envoyer"
+        "send": "Envoyer",
+        "status": "Status",
+        "notification": "Notification",
+        "notification_settings": "Notification Paramètres",
+        "get_notification_for": "Recevoir une notification pour",
+        "no_new_notifications": "Vous n'avez pas de nouvelles notifications",
+        "new": "Nouvelle",
+        "send_us_a_message": "Envoie-nous un message",
+        "email": "Email",
+        "phone": "Phone",
+        "subject": "Subject",
+        "anonymous_user": "Utilisateur anonyme",
+        "recommended_missions": "Missions recommandées",
+        "my_comments": "Mes commentaires",
+        "new_missions": "Nouvelles missions",
+        "new_messages": "Nouveaux messages",
+        "recommended_story": "Histoire recommandée",
+		"expand" : "Développer",
+        "upload_pictures" : "Télécharger des photos",
+        "no_messages": "Pas de messages",
+		"yesterday": "Hier",
+        "older": "Plus âgée"
     },
 
     "placeholder": {
@@ -274,7 +295,7 @@
         "story_title": "Entrez le titre de l'histoire",
         "story_detail": "Entrez vos histoires",
         "video_url": "Entrez votre URL de vidéo",
-        "phone_number": "Entrez le numéro de téléphone",
+        "subject_required": "Entrez le numéro de téléphone",
         "message": "Entrez le message"
     },
 
@@ -326,9 +347,11 @@
         "mission_required": "S'il vous plaît sélectionnez mission",
         "story_description_required": "S'il vous plaît entrer la description de l'histoire",
         "valid_video_url": "Veuillez entrer une URL youtube valide.",
-        "valid_phone_number": "S'il vous plait entrez un numéro de téléphone valide",
-        "message_required": "Message est requis",
-        "phone_number_min_length": "Le numéro de téléphone doit être au moins 10"
+        "message_required": "S'il vous plaît entrer un message",
+        "invalid_image_type": "Type de fichier non valide: les types de fichier valides sont png, jpg, jpeg",
+        "max_image_upload": "Maximum 20 des images peuvent être ajoutées",
+        "max_video_upload": "Maximum 20 URL de la vidéo peut être ajouté",
+		"duplicate_video_url": "Les doublons d'URL de vidéos ne sont pas autorisés"
     },
 
     "export_timesheet_file_names": {
@@ -337,6 +360,6 @@
         "TIME_MISSION_HISTORY_XLSX": "Time_Mission_History.xlsx",
         "GOAL_MISSION_HISTORY_XLSX": "Goal_Mission_History.xlsx",
         "MY_STORIES_XLSX": "My_Stories_Listing.xlsx",
-		"COMMENT_LISTING_XLSX" : "mission_comments.xlsx"
+        "COMMENT_LISTING_XLSX": "Comment_listing.xlsx"
     }
 }
