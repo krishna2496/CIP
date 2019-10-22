@@ -25,7 +25,7 @@
 									@click="handleModal">{{languageData.label.send}} {{languageData.label.message}} </b-button>
 							</div>
 						</div>
-							<div class="inner-content-wrap">
+							<div class="inner-content-wrap" v-if="isPageLoaded">
 								<div class="message-count-block">
 									<span class="highlighted-text" v-if="newMessage > 1">({{newMessage}}) {{languageData.label.new}} {{languageData.label.messages | firstLetterSmall}}</span>
 									<span class="highlighted-text" v-else>({{newMessage}}) {{languageData.label.new}} {{languageData.label.message | firstLetterSmall}}  </span>
@@ -175,7 +175,8 @@
 				showMessageErrorDiv : false,
 				isAjaxCall :false,
 				name : '',
-				email:''
+				email:'',
+				isPageLoaded : false
 			};
 		},
 		created() {
@@ -186,6 +187,11 @@
 		updated() {},
 		methods: {
 			pageChange(page){
+				window.scrollTo({
+                    'behavior': 'smooth',
+                    'left': 0,
+                    'top': 0
+                }, 0);
 				this.pagination.currentPage = page
 				this.isLoaderActive = true;
 				this.getMessageListing();
@@ -281,6 +287,10 @@
 								this.newMessage = 0
 							}
 						} else {
+							if(this.pagination.currentPage != 1) {
+								this.pagination.currentPage = 1;
+                                this.getMessageListing()
+                            }
 							this.messageList = []
 							this.newMessage = 0
 							this.messageCount = 0
@@ -290,6 +300,7 @@
 						this.message = response.message
 					}
 					this.isLoaderActive = false
+					this.isPageLoaded = true;
 				})
 			},
 

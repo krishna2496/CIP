@@ -54,10 +54,6 @@
 
 
 						</div>
-						<div class="btn-row">
-							<b-button class="btn-borderprimary" @click="cancleShareStory">{{languageData.label.cancel}}
-							</b-button>
-						</div>
 					</b-col>
 					<b-col xl="4" lg="5" class="right-col">
 						<div class="story-form">
@@ -118,7 +114,22 @@
 
 							</div>
 						</div>
-						<div class="btn-row">
+						<!-- <div class="btn-row">
+							<b-button class="btn-borderprimary" 
+								v-bind:class="{disabled:previewButtonEnable}" @click="previewStory(storyId)"><span>{{languageData.label.preview}}
+								</span></b-button>
+							<b-button class="btn-bordersecondary"
+								v-bind:class="{disabled:saveButtonEnable || saveButtonAjaxCall}"
+								@click="saveStory('save')">{{languageData.label.save}}</b-button>
+							<b-button class="btn-bordersecondary btn-submit"
+								v-bind:class="{disabled:submitButtonEnable || submitButtonAjaxCall}"
+								@click="saveStory('submit')">{{languageData.label.submit}}</b-button>
+						</div> -->
+					</b-col>
+				</b-row>
+				<div class="btn-row">
+							<b-button class="btn-borderprimary" @click="cancleShareStory">{{languageData.label.cancel}}
+							</b-button>
 							<b-button class="btn-borderprimary" 
 								v-bind:class="{disabled:previewButtonEnable}" @click="previewStory(storyId)"><span>{{languageData.label.preview}}
 								</span></b-button>
@@ -129,8 +140,6 @@
 								v-bind:class="{disabled:submitButtonEnable || submitButtonAjaxCall}"
 								@click="saveStory('submit')">{{languageData.label.submit}}</b-button>
 						</div>
-					</b-col>
-				</b-row>
 			</b-container>
 		</main>
 		<footer>
@@ -221,15 +230,6 @@
 			}
 		},
 		methods: {
-// 			previewStory(storyId) {
-// // /story-preview/'+storyId
-// 				// this.$router.push({'path':"/story-preview/"+storyId})
-// 				console.log(storyId);
-// 				// let routeData = this.$router.resolve({path : "story-preview"+storyId});
-// 				// console.log(routeData);
-// 				// window.open(routeData.href, '_blank');
-// 				// this.$router.go({ path: "/story-preview/"+storyId })
-// 			},
 			saveStory(params) {
 				this.youtubeUrlError = false
 				this.duplicateYoutubeUrlError = false
@@ -296,7 +296,7 @@
 				})
 			},
 			previewStory(storyId) {
-				let routeData = this.$router.resolve({path : "/story-preview"+storyId});
+				let routeData = this.$router.resolve({path : "story-preview"+'/'+storyId});
 				window.open(routeData.href, '_blank');
 			},
 			updateMissionTitle(value) {
@@ -511,7 +511,9 @@
 				editStory(storyID).then(response => {
 					if (response.error == false) {
 						this.story.title = response.data.title
-						this.story.myStory = response.data.description
+						setTimeout(() => {
+							this.story.myStory = response.data.description	
+						}, 200);
 						let videoUrl = '';
 						let imageUrl = []
 						let i = 0;
