@@ -515,12 +515,12 @@ $router->group(['middleware' => 'localization'], function ($router) {
         }
     );
 
-    /* Get country list */
-    $router->get('/country', ['middleware' => 'localization|auth.tenant.admin',
+    /* Get countries list */
+    $router->get('/countries', ['middleware' => 'localization|auth.tenant.admin',
     'uses' => 'Admin\Country\CountryController@index']);
 
-    /* Get city by country id */
-    $router->get('/city/{countryId}', ['middleware' => 'localization|auth.tenant.admin',
+    /* Get cities by country id */
+    $router->get('/cities/{countryId}', ['middleware' => 'localization|auth.tenant.admin',
     'uses' => 'Admin\City\CityController@fetchCity']);
 /*
 |
