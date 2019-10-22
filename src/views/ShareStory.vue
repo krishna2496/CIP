@@ -296,7 +296,7 @@
 				})
 			},
 			previewStory(storyId) {
-				let routeData = this.$router.resolve({path : "story-preview"+'/'+storyId});
+				let routeData = this.$router.resolve({path : "/story-preview"+'/'+storyId});
 				window.open(routeData.href, '_blank');
 			},
 			updateMissionTitle(value) {

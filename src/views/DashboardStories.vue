@@ -220,7 +220,6 @@
                         if (match && match[2].length == 11) {
                             videoId = match[2];
                         }
-                        return data
                         return "https://img.youtube.com/vi/" + videoId + "/mqdefault.jpg";
                     } else {
                         return media.path;
