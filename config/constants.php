@@ -541,7 +541,6 @@ return [
         'UPDATED' => 'UPDATED',
         'DELETED' => 'DELETED',
         'INVITED' => 'INVITED',
-        'LOGGEDIN' => 'LOGGEDIN',
         'SUBMIT_FOR_APPROVAL' => 'SUBMIT_FOR_APPROVAL',
         'APPROVED' => 'APPROVED',
         'DECLINED' => 'DECLINED',
