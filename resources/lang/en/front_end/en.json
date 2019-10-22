@@ -204,7 +204,7 @@
         "views": "Views",
         "open_mission": "Open mission",
         "my_story_title": "My story title",
-        "select_mission": "Select mssion",
+        "select_mission": "Select mission",
         "my_story": "My story",
         "enter_video_url": "Enter video URL",
         "drag_and_drop_pictures": "Drag and drop pictures",
@@ -265,7 +265,9 @@
         "recommended_story": "Recommended story",
         "expand" : "Expand",
         "upload_pictures" : "Upload pictures",
-        "no_messages": "No messages"
+        "no_messages": "No messages",
+		"yesterday": "Yesterday",
+        "older": "Older"
     },
 
     "placeholder": {
