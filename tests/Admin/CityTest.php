@@ -10,7 +10,7 @@ class CityTest extends TestCase
      *
      * @return void
      */
-    puit_should_return_all_city_list()
+    public function it_should_return_all_city_list()
     {
         DB::setDefaultConnection('tenant');
         $countryId = App\Models\Country::get()->random()->country_id;
@@ -31,7 +31,7 @@ class CityTest extends TestCase
      *
      * @return void
      */
-    puit_should_return_no_city_found_for_country_id()
+    public function it_should_return_no_city_found_for_country_id()
     {
         $this->get('/cities/'.rand(1000000, 5000000), ['Authorization' => 'Basic '.base64_encode(env('API_KEY').':'.env('API_SECRET'))])
         ->seeStatusCode(404)
@@ -53,7 +53,7 @@ class CityTest extends TestCase
      *
      * @return void
      */
-    puit_should_return_error_for_invalid_authorization_token_for_get_city()
+    public function it_should_return_error_for_invalid_authorization_token_for_get_city()
     {
         DB::setDefaultConnection('tenant');
         $countryId = App\Models\Country::get()->random()->country_id;
