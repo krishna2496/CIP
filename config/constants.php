@@ -526,7 +526,8 @@ return [
         'POLICY_PAGE' => 'POLICY_PAGE',
         'MISSION_THEME' => 'MISSION_THEME',
         'SKILL' => 'SKILL',
-        'USER_SKILL' => 'USER_SKILL'
+        'USER_SKILL' => 'USER_SKILL',
+        'USER_COOKIE_AGREEMENT' => 'USER_COOKIE_AGREEMENT'
     ],
 
     'activity_log_actions' => [
@@ -547,7 +548,8 @@ return [
         'PASSWORD_CHANGED' => 'PASSWORD_CHANGED',
         'PASSWORD_RESET' => 'PASSWORD_RESET',
         'LINKED' => 'LINKED',
-        'UNLINKED' => 'UNLINKED'
+        'UNLINKED' => 'UNLINKED',
+        'ACCEPTED' => 'ACCEPTED'
     ],
 
     'activity_log_user_types' => [
