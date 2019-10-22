@@ -161,6 +161,7 @@ return [
         'custom_fields.*.field_id' => 'field id',
         'option_value.translations.*.lang' => 'language code',
         'timesheet_entries.*.timesheet_id' => 'timesheet id',
+		'mission_detail.*.short_description' => 'short descreption',
         ],
 
 ];
