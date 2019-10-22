@@ -3,6 +3,9 @@ namespace App\Repositories\ActivityLog;
 
 use App\Models\ActivityLog;
 use App\Repositories\ActivityLog\ActivityLogInterface;
+use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
+use DB;
 
 class ActivityLogRepository implements ActivityLogInterface
 {
@@ -45,13 +48,25 @@ class ActivityLogRepository implements ActivityLogInterface
         $action = $request->action;
         $userType = $request->user_type;
         $userIds = !empty($request->users) ? explode(',', $request->users) : null;
-        $order = $request->order;
+        $order = !empty($request->order) ? $request->order : 'desc';
+        $fromDate = $request->from_date;
+        $toDate = $request->to_date;
 
-        $activityLogQuery = $this->activityLog->when($userIds, function ($query, $userId) {
-            return $query->where('user_id', $userId);
-        })->when($status, function ($query, $status) {
-            return $query->where('status', $status);
-        });
-        return $userStoryQuery->paginate($request->perPage);
+        $activityLogQuery = $this->activityLog
+            ->when($type, function ($query, $type) {
+                return $query->where('type', $type);
+            })->when($action, function ($query, $action) {
+                return $query->where('action', $action);
+            })->when($userType, function ($query, $userType) {
+                return $query->where('user_type', $userType);
+            })->when($userIds, function ($query, $userIds) {
+                return $query->whereIN('user_id', $userIds);
+            });
+
+        if (!empty($fromDate) && !empty($toDate)) {
+            $activityLogQuery->whereBetween(DB::raw('DATE(created_at)'), [$fromDate, $toDate]);
+        }
+
+        return $activityLogQuery->orderBy('created_at', $order)->paginate($request->perPage);
     }
 }
