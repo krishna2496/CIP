@@ -27,5 +27,5 @@ class NotificationType extends Model
      *
      * @var array
      */
-    protected $visible = ['notification_type_id', 'notification_type'];
+    protected $visible = ['notification_type_id', 'notification_type', 'is_active'];
 }
