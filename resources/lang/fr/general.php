@@ -54,6 +54,7 @@ return [
         'DRAFT' => 'Brouillon',
         'AUTOMATICALLY_APPROVED' => 'approuvée',
         'PENDING' => 'en attente',
+        'APPROVED' => 'approuvé',
         'DECLINED' => 'diminué',
         'REFUSED' => 'refusé',
         'PUBLISHED' => 'publié',
@@ -71,6 +72,7 @@ return [
         'RECOMMENDS_THIS_STORY' => 'Recommande cette histoire',
         'NEW_NEWS' => 'Nouvelles informations',
         'VOLUNTEERING_REQUEST' => 'La demande de bénévolat a été',
-        'FOR_THIS' => 'pour cette mission',
+        'FOR_THIS_MISSION' => 'pour cette mission:',
+        'IS' => 'est',
     ],
 ];

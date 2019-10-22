@@ -497,17 +497,22 @@ return [
     /**
      * Notification type icons
      */
-    'notification_type_icons' => [
-        'VOLUNTEERING_HOURS' => 'warning.png',
-        'VOLUNTEERING_GOALS' => 'warning.png',
-        'MY_COMMENTS' => 'warning.png',
-        'MY_STORIES' => 'warning.png',
-        'NEW_MISSIONS' => 'circle-plus.png',
-        'NEW_MESSAGES' => 'circle-plus.png',
-        'NEW_NEWS' => 'circle-plus.png',
-        'MISSION_APPLICATION' => 'warning.png',
+    'notification_icons' => [
+        'APPROVED' => 'approve-ic.svg',
+        'DECLINED' => 'warning.png',
+        'NEW' => 'circle-plus.png',
     ],
     
+    'notification_status' => [
+        'AUTOMATICALLY_APPROVED' => 'AUTOMATICALLY_APPROVED',
+        'PENDING' => 'PENDING',
+        'DECLINED' => 'DECLINED',
+        'APPROVED' => 'APPROVED',
+        'REFUSED' => 'REFUSED',
+        'PUBLISHED' => 'PUBLISHED',
+        'SUBMIT_FOR_APPROVAL' => 'SUBMIT_FOR_APPROVAL'
+    ],
+
     'activity_log_types' => [
         'AUTH' => 'AUTH',
         'USERS' => 'USERS',
@@ -540,6 +545,7 @@ return [
         'SUBMIT_FOR_APPROVAL' => 'SUBMIT_FOR_APPROVAL',
         'APPROVED' => 'APPROVED',
         'DECLINED' => 'DECLINED',
+        'LOGIN' => 'LOGIN',
         'ADD_TO_FAVOURITE' => 'ADD_TO_FAVOURITE',
         'REMOVE_FROM_FAVOURITE' => 'REMOVE_FROM_FAVOURITE',
         'RATED' => 'RATED',
