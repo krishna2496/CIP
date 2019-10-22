@@ -26,8 +26,7 @@
                                 :id="'block-'+key">
                                 <h2 v-b-toggle="'content-' + key" class="accordian-title">{{item.title}}</h2>
                                 <b-collapse :id="'content-'+key" class="accordian-content" accordion="my-accordion"
-                                    visible>
-                                    {{item.description}}
+                                    visible v-html="item.description">
                                 </b-collapse>
                             </div>
                         </div>
