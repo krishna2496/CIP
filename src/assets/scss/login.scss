@@ -330,12 +330,16 @@
   }
 }
 
-
 .alert-danger{
     line-height: 18px;  
-    .alert-dismissible{
+    padding-left: 12px;
+    padding-right: 40px;
+    &.alert-dismissible{
         .close{
             line-height: 18px;
+            padding:10px;
+            top: 3px;
         }
     } 
 }
+

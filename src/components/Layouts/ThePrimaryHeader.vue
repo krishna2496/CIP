@@ -164,7 +164,7 @@
                                 <b-list-group>
                                     <b-list-group-item 
                                     v-if="notificationListing.today.length > 0"
-                                    :href="item.link"
+                                    :to="item.link"
                                     target="_blank" 
                                     @click="readItem(item.is_read, item.notification_id)"
                                     v-bind:class="{
@@ -186,7 +186,7 @@
                                 </div>
                                 <b-list-group v-show="notificationListing.yesterday.length > 0">
                                     <b-list-group-item 
-                                    :href="item.link"
+                                    :to="item.link"
                                     @click="readItem(item.is_read, item.notification_id)"
                                     target="_blank" 
                                     v-bind:class="{
@@ -209,7 +209,7 @@
                                 </div>
                                 <b-list-group v-show="notificationListing.older">
                                     <b-list-group-item 
-                                    :href="item.link"
+                                    :to="item.link"
                                     target="_blank" 
                                     @click="readItem(item.is_read, item.notification_id)"
                                     v-bind:class="{
@@ -404,6 +404,7 @@
                     popover_body.classList.add("clear-item");
                     clearNotification().then(response => {
                         if(response.error == false) {
+                            this.notificationCount = 0
                             this.getNotificationListing();
                         }
                     })
