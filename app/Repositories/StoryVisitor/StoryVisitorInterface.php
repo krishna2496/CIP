@@ -2,16 +2,15 @@
 namespace App\Repositories\StoryVisitor;
 
 use App\Models\StoryVisitor;
-use Illuminate\Http\Request;
 
 interface StoryVisitorInterface
 {
     /**
-     * Store story visitor details
+     * Update story view count per visitor & return story view count
      *
-     * @param \Illuminate\Http\Request $request
-     * @param integer $storyId
-     * @return App\Models\StoryVisitor;
+     * @param array $story
+     * @param integer $userId
+     * @return int $storyViewCount
      */
-    public function store(Request $request, int $storyId): StoryVisitor;
+    public function updateStoryViewCount(array $story, int $loginUserId): int;
 }

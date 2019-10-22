@@ -114,12 +114,28 @@ return [
         'MESSAGE_STORY_COPIED_SUCCESS' => 'DE: Story copied successfully',
         'MESSAGE_UNABLE_TO_EXPORT_USER_STORIES_ENTRIES' => 'DE: No stories found',
         'MESSAGE_STORY_UPDATED' => 'DE: Story updated successfully',
-
-        'MESSAGE_STORY_VISITOR_ADDED_SUCESSFULLY' => 'DE: Story visitor added successfully',
-
+        'MESSAGE_USER_COMMENTS_LISTING' => 'DE: User comments listed successfully',
         'MESSAGE_STORY_SUBMITTED_SUCESSFULLY' => 'DE: Story submitted sucessfully',
         'MESSAGE_STORY_IMAGE_DELETED' => 'DE: Story image deleted sucessfully',
+    	'MESSAGE_UNABLE_TO_EXPORT_MISSION_COMMENTS_ENTRIES' => 'DE: No mission comments found',
+		'MESSAGE_USER_MESSAGE_SEND_SUCCESSFULLY' => 'DE: Message sent successfully',
+        'MESSAGE_USER_MESSAGES_SEND_SUCCESSFULLY' => 'DE: Messages sent successfully',
+        'MESSAGE_STORY_VISITOR_ADDED_SUCESSFULLY' => 'DE: Story visitor added successfully',     
+         // For contact form module
+        'MESSAGE_USER_MESSAGE_DELETED' => 'DE: Message deleted successfully',
+        'CONTACT_FORM_ADDED_SUCESSFULLY' => 'DE: Your feedback added successfully.',
+        'MESSAGE_INVITED_FOR_STORY' => 'DE: User invited to story successfully',
+        'MESSAGE_MESSAGES_ENTRIES_LISTING' => 'DE: Messages listed successfully',
+        'MESSAGE_NO_MESSAGES_ENTRIES_FOUND' => 'DE: No messages found',
+        'MESSAGE_USER_COOKIE_AGREEMENT_ACCEPTED' => 'DE: Cookie agreement accepted successfully',
+        'MESSAGE_NOTIFICATION_SETTINGS_LISTING' => 'DE: Notification settings listed successfully',
+        'MESSAGE_USER_NOTIFICATION_SETTINGS_UPDATED' => 'DE: User notification settings updated successfully',
+        'MESSAGE_USER_NOTIFICATION_READ_UNREAD_SUCCESSFULLY' => 'DE: User notification status updated successfully',
+        'MESSAGE_USER_NOTIFICATIONS_CLEAR_SUCCESSFULLY' => 'DE: User notification cleared successfully',
+        'MESSAGE_NOTIFICATION_LISTING' => 'DE: Notification listed successfully',
+        'MESSAGE_READ_SUCCESSFULLY' => 'DE: Message read successfully',
     ],
+
 
 
         
@@ -239,6 +255,13 @@ return [
         'ERROR_STORY_PUBLISHED_OR_DECLINED' => 'DE: You cannot update published or declined story',
         'ERROR_STORY_IMAGE_NOT_FOUND' => 'DE: Story image not found in the system',
         'ERROR_STORY_IMAGE_DELETE' => 'DE: You cannot delete image of published or declined story',
-        'ERROR_SUBMIT_STORY_PUBLISHED_OR_DECLINED' => 'You cannot submit published or declined story',
+        'ERROR_SUBMIT_STORY_PUBLISHED_OR_DECLINED' => 'DE: You cannot submit published or declined story',
+
+        // For message module
+        'ERROR_MESSAGE_USER_MESSAGE_NOT_FOUND' => 'DE: Message not found in the system',        
+        'ERROR_INVITE_STORY_ALREADY_EXIST' => 'DE: User is already invited for this story',
+
+        // For notification module
+        'ERROR_MESSAGE_USER_NOTIFICATION_NOT_FOUND' => 'DE: Notification not found in the system',
     ]
 ];

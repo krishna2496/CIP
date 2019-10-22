@@ -22,6 +22,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Validator;
 use App\Models\UserFilter;
 use App\Transformations\MissionTransformable;
+use App\Events\User\UserActivityLogEvent;
 
 class MissionController extends Controller
 {
@@ -115,19 +116,19 @@ class MissionController extends Controller
      */
     public function getMissionList(Request $request): JsonResponse
     {
-        $languages = $this->languageHelper->getLanguages($request);
-        $language = ($request->hasHeader('X-localization')) ?
-        $request->header('X-localization') : env('TENANT_DEFAULT_LANGUAGE_CODE');
-        $language = $languages->where('code', $language)->first();
+        $language = $this->languageHelper->getLanguageDetails($request);
         $languageId = $language->language_id;
         $languageCode = $language->code;
+        $userFilterData = [];
 
         //Save User search data
         $this->userFilterRepository->saveFilter($request);
         // Get users filter
         $userFilters = $this->userFilterRepository->userFilter($request);
         $filterTagArray = $this->missionFiltersTag($request, $language, $userFilters);
-        $userFilterData = $userFilters->toArray()["filters"];
+        if ($userFilters !== null) {
+            $userFilterData = $userFilters->toArray()["filters"];
+        }
         // Checking explore mission type is out of list or not
         if ($request->has('explore_mission_type') && $request->input('explore_mission_type') != '') {
             $exploreMissionType = $request->input('explore_mission_type');
@@ -160,16 +161,17 @@ class MissionController extends Controller
             }
         }
 
-
-        $missionList = $this->missionRepository->getMissions($request, $userFilterData, $languageId);
-
+        $missionList = $this->missionRepository->getMissions($request, $userFilterData);
+        $defaultTenantLanguage = $this->languageHelper->getDefaultTenantLanguage($request);
+        $defaultTenantLanguageId = $defaultTenantLanguage->language_id;
+        
         $missionsTransformed = $missionList
             ->getCollection()
-            ->map(function ($item) use ($languageCode) {
-                return $this->transformMission($item, $languageCode);
+            ->map(function ($item) use ($languageCode, $languageId, $defaultTenantLanguageId) {
+                return $this->transformMission($item, $languageCode, $languageId, $defaultTenantLanguageId);
             })->toArray();
             
-                $requestString = $request->except(['page','perPage']);
+        $requestString = $request->except(['page','perPage']);
         $missionsPaginated = new \Illuminate\Pagination\LengthAwarePaginator(
             $missionsTransformed,
             $missionList->total(),
@@ -205,8 +207,9 @@ class MissionController extends Controller
     public function exploreMission(Request $request): JsonResponse
     {
         $apiData = [];
-        $language = ($request->hasHeader('X-localization')) ?
-        $request->header('X-localization') : env('TENANT_DEFAULT_LANGUAGE_CODE');
+        $language = $this->languageHelper->getLanguageDetails($request);
+        $languageCode = $language->code;
+
         // Get Data by top theme
         $topTheme = $this->missionRepository->exploreMission($request, config('constants.TOP_THEME'));
         // Get Data by top country
@@ -217,7 +220,7 @@ class MissionController extends Controller
         if (!empty($topTheme->toArray())) {
             foreach ($topTheme as $key => $value) {
                 if ($value->missionTheme && $value->missionTheme->translations) {
-                    $arrayKey = array_search($language, array_column($value->missionTheme->translations, 'lang'));
+                    $arrayKey = array_search($languageCode, array_column($value->missionTheme->translations, 'lang'));
             
                     if ($arrayKey  !== '') {
                         $returnData[config('constants.TOP_THEME')][$key]['title'] =
@@ -271,8 +274,8 @@ class MissionController extends Controller
     public function filters(Request $request): JsonResponse
     {
         $returnData = $apiData = [];
-        $language = ($request->hasHeader('X-localization')) ?
-        $request->header('X-localization') : env('TENANT_DEFAULT_LANGUAGE_CODE');
+        $language = $this->languageHelper->getLanguageDetails($request);
+        $languageCode = $language->code;
         // Get Data by country
         $missionCountry = $this->missionRepository->missionFilter($request, config('constants.COUNTRY'));
         // Get Data by top theme
@@ -316,7 +319,7 @@ class MissionController extends Controller
         if (!empty($missionTheme->toArray())) {
             foreach ($missionTheme as $key => $value) {
                 if ($value->missionTheme && $value->missionTheme->translations) {
-                    $arrayKey = array_search($language, array_column($value->missionTheme->translations, 'lang'));
+                    $arrayKey = array_search($languageCode, array_column($value->missionTheme->translations, 'lang'));
                     if ($arrayKey  !== '') {
                         $returnData[config('constants.THEME')][$key]['title'] =
                         $value->missionTheme->translations[$arrayKey]['title'];
@@ -335,7 +338,7 @@ class MissionController extends Controller
         if (!empty($missionSkill->toArray())) {
             foreach ($missionSkill as $key => $value) {
                 if ($value->skill) {
-                    $arrayKey = array_search($language, array_column($value->skill->translations, 'lang'));
+                    $arrayKey = array_search($languageCode, array_column($value->skill->translations, 'lang'));
                     if ($arrayKey  !== '') {
                         $returnData[config('constants.SKILL')][$key]['title'] =
                         $value->skill->translations[$arrayKey]['title'];
@@ -396,6 +399,22 @@ class MissionController extends Controller
             $apiMessage = ($missionFavourite != null) ?
             trans('messages.success.MESSAGE_MISSION_ADDED_TO_FAVOURITE') :
             trans('messages.success.MESSAGE_MISSION_DELETED_FROM_FAVOURITE');
+            
+            // Make activity log
+            $favouriteStatus = ($missionFavourite != null) ?
+            config('constants.activity_log_actions.ADD_TO_FAVOURITE'):
+            config('constants.activity_log_actions.REMOVE_FROM_FAVOURITE');
+            
+            event(new UserActivityLogEvent(
+                config('constants.activity_log_types.MISSION'),
+                $favouriteStatus,
+                config('constants.activity_log_user_types.REGULAR'),
+                $request->auth->email,
+                get_class($this),
+                $request->toArray(),
+                $request->auth->user_id,
+                $request->mission_id
+            ));
             return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
@@ -480,15 +499,14 @@ class MissionController extends Controller
     public function getRelatedMissions(Request $request, int $missionId): JsonResponse
     {
         try {
-            $languages = $this->languageHelper->getLanguages($request);
-            $language = ($request->hasHeader('X-localization')) ?
-            $request->header('X-localization') : env('TENANT_DEFAULT_LANGUAGE_CODE');
-            $language = $languages->where('code', $language)->first();
+            $language = $this->languageHelper->getLanguageDetails($request);
             $languageId = $language->language_id;
 
-            $missionData = $this->missionRepository->getRelatedMissions($request, $languageId, $missionId);
-            $mission = $missionData->map(function (Mission $mission) {
-                return $this->transformMission($mission, '');
+            $defaultTenantLanguage = $this->languageHelper->getDefaultTenantLanguage($request);
+            $defaultTenantLanguageId = $defaultTenantLanguage->language_id;
+            $missionData = $this->missionRepository->getRelatedMissions($request, $missionId);
+            $mission = $missionData->map(function (Mission $mission) use ($languageId, $defaultTenantLanguageId) {
+                return $this->transformMission($mission, '', $languageId, $defaultTenantLanguageId);
             })->all();
 
             $apiData = $mission;
@@ -519,17 +537,19 @@ class MissionController extends Controller
     public function getMissionDetail(Request $request, int $missionId): JsonResponse
     {
         try {
-            $languages = $this->languageHelper->getLanguages($request);
-            $language = ($request->hasHeader('X-localization')) ?
-            $request->header('X-localization') : env('TENANT_DEFAULT_LANGUAGE_CODE');
-            $language = $languages->where('code', $language)->first();
+            $language = $this->languageHelper->getLanguageDetails($request);
             $languageId = $language->language_id;
             $languageCode = $language->code;
 
-            $missionData = $this->missionRepository->getMissionDetail($request, $languageId, $missionId);
-            $mission = $missionData->map(function (Mission $mission) use ($languageCode) {
-                return $this->transformMission($mission, $languageCode);
-            })->all();
+            $missionData = $this->missionRepository->getMissionDetail($request, $missionId);
+            $defaultTenantLanguage = $this->languageHelper->getDefaultTenantLanguage($request);
+            $defaultTenantLanguageId = $defaultTenantLanguage->language_id;
+            $mission = $missionData->map(
+                function (Mission $mission) use ($languageCode, $languageId, $defaultTenantLanguageId
+                ) {
+                    return $this->transformMission($mission, $languageCode, $languageId, $defaultTenantLanguageId);
+                }
+            )->all();
 
             $apiData = $mission;
             $apiStatus = (empty($mission)) ? Response::HTTP_NOT_FOUND : Response::HTTP_OK;

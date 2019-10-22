@@ -9,14 +9,16 @@ class CustomValidationRules
     public static function validate()
     {
         Validator::extend('valid_media_path', function ($attribute, $value) {
-            $urlExtension = pathinfo($value, PATHINFO_EXTENSION);
+            $extension = pathinfo($value, PATHINFO_EXTENSION);
+            $urlExtension = strtolower($extension);
             $validExtensions = ($attribute == 'url') ?
             config('constants.slider_image_types') : config('constants.image_types');
             return (!in_array($urlExtension, $validExtensions)) ? false : true;
         });
 
         Validator::extend('valid_document_path', function ($attribute, $value) {
-            $urlExtension = pathinfo($value, PATHINFO_EXTENSION);
+            $extension = pathinfo($value, PATHINFO_EXTENSION);
+            $urlExtension = strtolower($extension);
             return (!in_array($urlExtension, config('constants.document_types'))) ? false : true;
         });
         
@@ -50,13 +52,15 @@ class CustomValidationRules
         });
 
         Validator::extend('valid_timesheet_document_type', function ($attribute, $value) {
-            $urlExtension = $value->getClientOriginalExtension();
+            $extension = $value->getClientOriginalExtension();
+            $urlExtension = strtolower($extension);
             return (!in_array($urlExtension, config('constants.timesheet_document_types'))) ? false : true;
         });
 
         Validator::extend('valid_story_image_type', function ($attribute, $value) {
             $urlExtension = $value->getClientOriginalExtension();
-            return (!in_array($urlExtension, config('constants.image_types'))) ? false : true;
+            $imageUrlExtension = strtolower($urlExtension);
+            return (!in_array($imageUrlExtension, config('constants.story_image_types'))) ? false : true;
         });
         
         Validator::extend('valid_story_video_url', function ($attribute, $value) {

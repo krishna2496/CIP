@@ -14,6 +14,7 @@ use App\Models\UserSkill;
 use App\Models\UserCustomFieldValue;
 use App\Models\Availability;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Carbon\Carbon;
 
 class UserRepository implements UserInterface
 {
@@ -96,10 +97,10 @@ class UserRepository implements UserInterface
         $tenantName = $this->helpers->getSubDomainFromRequest($request);
         $defaultAvatarImage = $this->helpers->getUserDefaultProfileImage($tenantName);
 
-        $userQuery = $this->user->selectRaw("first_name, last_name, email, password, 
+        $userQuery = $this->user->selectRaw("user_id, first_name, last_name, email, password, 
         case when(avatar = '' || avatar is null) then '$defaultAvatarImage' else avatar end as avatar, 
         timezone_id, availability_id, why_i_volunteer, employee_id, department,
-         manager_name, city_id, country_id, profile_text, linked_in_url, status, language_id, title")
+         city_id, country_id, profile_text, linked_in_url, status, language_id, title")
         ->with('city', 'country', 'timezone');
         
         if ($request->has('search')) {
@@ -157,34 +158,35 @@ class UserRepository implements UserInterface
      *
      * @param array $request
      * @param int $id
-     * @return bool
+     * @return array
      */
-    public function linkSkill(array $request, int $id): bool
+    public function linkSkill(array $request, int $id): array
     {
         $this->user->findOrFail($id);
-        if (!empty($request['skills'])) {
-            foreach ($request['skills'] as $value) {
-                $this->userSkill->linkUserSkill($id, $value['skill_id']);
-            }
+        $skillIds = [];
+        foreach ($request['skills'] as $value) {
+            $skillDetails = $this->userSkill->linkUserSkill($id, $value['skill_id']);
+            array_push($skillIds, ['skill_id' => $skillDetails->skill_id]);
         }
-        return true;
+        return $skillIds;
     }
     
     /**
      * Remove the specified resource from storage
      *
      * @param array $request
-     * @param int $id
-     * @return bool
+     * @param int $userId
+     * @return array
      */
-    public function unlinkSkill(array $request, int $id): bool
+    public function unlinkSkill(array $request, int $userId): array
     {
-        $this->user->findOrFail($id);
-        $userSkill = $this->userSkill;
+        $this->user->findOrFail($userId);
+        $unskillIds = [];
         foreach ($request['skills'] as $value) {
-            $userSkill = $this->userSkill->deleteUserSkill($id, $value['skill_id']);
+            $this->userSkill->deleteUserSkill($userId, $value['skill_id']);
+            array_push($unskillIds, ['skill_id' => $value['skill_id']]);
         }
-        return $userSkill;
+        return $unskillIds;
     }
 
     /**
@@ -330,8 +332,32 @@ class UserRepository implements UserInterface
      * @param int $userId
      * @return null|int
      */
-    public function getUserGoalHours(int $userId): ?int
+    public function getUserHoursGoal(int $userId): ?int
     {
-        return $this->user->getUserGoalHours($userId);
+        return $this->user->getUserHoursGoal($userId);
+    }
+
+    /**
+     * Update cookie agreement date
+     *
+     * @param int $userId
+     * @return bool
+     */
+    public function updateCookieAgreement(int $userId): bool
+    {
+        $now = Carbon::now()->toDateTimeString();
+        
+        return $this->user->where('user_id', $userId)->update(['cookie_agreement_date' => $now]);
+    }
+
+    /**
+     * Get timezone from user id
+     *
+     * @param int $userId
+     * @return string
+     */
+    public function getUserTimezone(int $userId): string
+    {
+        return $this->user->with('timezone')->where('user_id', $userId)->first()->timezone['timezone'];
     }
 }

@@ -26,6 +26,7 @@ use App\Helpers\LanguageHelper;
 use App\Exceptions\TenantDomainNotFoundException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Repositories\User\UserRepository;
+use App\Events\User\UserActivityLogEvent;
 
 class AuthController extends Controller
 {
@@ -146,10 +147,24 @@ class AuthController extends Controller
         $data['country_id'] = isset($userDetail->country_id) ? $userDetail->country_id : '';
         $data['avatar'] = ((isset($userDetail->avatar)) && $userDetail->avatar !="") ? $userDetail->avatar :
         $this->helpers->getUserDefaultProfileImage($tenantName);
+        $data['cookie_agreement_date'] = isset($userDetail->cookie_agreement_date) ?
+                                         $userDetail->cookie_agreement_date : '';
+        $data['email'] = ((isset($userDetail->email)) && $userDetail->email !="") ? $userDetail->email : '';
         
         $apiData = $data;
         $apiStatus = Response::HTTP_OK;
         $apiMessage = trans('messages.success.MESSAGE_USER_LOGGED_IN');
+
+        // Make activity log
+        event(new UserActivityLogEvent(
+            config('constants.activity_log_types.AUTH'),
+            config('constants.activity_log_actions.LOGIN'),
+            config('constants.activity_log_user_types.REGULAR'),
+            $userDetail->email,
+            get_class($this),
+            $request->toArray(),
+            $userDetail->user_id
+        ));
         return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
     }
     
@@ -187,9 +202,7 @@ class AuthController extends Controller
             );
         }
 
-        $languages = $this->languageHelper->getLanguages($request);
-        $language = $languages->where('language_id', $userDetail->language_id)->first();
-        
+        $language = $this->languageHelper->getLanguageDetails($request);
         $languageCode = $language->code;
         config(['app.user_language_code' => $languageCode]);
         
@@ -204,7 +217,7 @@ class AuthController extends Controller
         $response = $this->broker()->sendResetLink(
             $request->only('email')
         );
-
+        
         // If reset password link didn't sent
         // This error will be triggered in case of mail server issue. So it is not covered in unit test-case
         // @codeCoverageIgnoreStart
@@ -220,6 +233,18 @@ class AuthController extends Controller
 
         $apiStatus = Response::HTTP_OK;
         $apiMessage = trans('messages.success.MESSAGE_PASSWORD_RESET_LINK_SEND_SUCCESS');
+
+        // Make activity log
+        event(new UserActivityLogEvent(
+            config('constants.activity_log_types.AUTH'),
+            config('constants.activity_log_actions.PASSWORD_RESET_REQUEST'),
+            config('constants.activity_log_user_types.REGULAR'),
+            $userDetail->email,
+            get_class($this),
+            $request->toArray(),
+            $userDetail->user_id
+        ));
+        
         return $this->responseHelper->success($apiStatus, $apiMessage);
     }
 
@@ -270,7 +295,6 @@ class AuthController extends Controller
             );
         }
         // @codeCoverageIgnoreEnd
-
         if (!Hash::check($request->get('token'), $record->token)) {
             //invalid hash
             return $this->responseHelper->error(
@@ -292,6 +316,17 @@ class AuthController extends Controller
     
         $apiStatus = Response::HTTP_OK;
         $apiMessage = trans('messages.success.MESSAGE_PASSWORD_CHANGE_SUCCESS');
+
+        // Make activity log
+        event(new UserActivityLogEvent(
+            config('constants.activity_log_types.AUTH'),
+            config('constants.activity_log_actions.PASSWORD_RESET'),
+            config('constants.activity_log_user_types.REGULAR'),
+            $userDetail->email,
+            get_class($this),
+            $request->toArray(),
+            $userDetail->user_id
+        ));
         return $this->responseHelper->success($apiStatus, $apiMessage);
     }
 
@@ -361,6 +396,18 @@ class AuthController extends Controller
         $apiStatus = Response::HTTP_OK;
         $apiData = array('token' => $newToken);
         $apiMessage = trans('messages.success.MESSAGE_PASSWORD_CHANGE_SUCCESS');
+
+        // Make activity log
+        event(new UserActivityLogEvent(
+            config('constants.activity_log_types.AUTH'),
+            config('constants.activity_log_actions.PASSWORD_UPDATED'),
+            config('constants.activity_log_user_types.REGULAR'),
+            $request->auth->email,
+            get_class($this),
+            $request->toArray(),
+            $request->auth->user_id
+        ));
+
         return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
         
         // Update password

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\App\Story;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Repositories\Story\StoryRepository;
+use App\Repositories\StoryVisitor\StoryVisitorRepository;
 use App\Models\Story;
 use App\Helpers\ResponseHelper;
 use App\Helpers\LanguageHelper;
@@ -23,6 +24,11 @@ class StoryController extends Controller
      * @var App\Repositories\Story\StoryRepository
      */
     private $storyRepository;
+
+    /**
+     * @var App\Repositories\StoryVisitor\StoryVisitorRepository
+     */
+    private $storyVisitorRepository;
     
     /**
      * @var App\Helpers\ResponseHelper
@@ -43,6 +49,7 @@ class StoryController extends Controller
      * Create a new Story controller instance
      *
      * @param App\Repositories\Story\StoryRepository $storyRepository
+     * @param App\Repositories\StoryVisitor\StoryVisitorRepository $storyVisitorRepository
      * @param App\Helpers\ResponseHelper $responseHelper
      * @param App\Helpers\Helpers $helpers
      * @param App\Helpers\LanguageHelper $languageHelper
@@ -50,11 +57,13 @@ class StoryController extends Controller
      */
     public function __construct(
         StoryRepository $storyRepository,
+        StoryVisitorRepository $storyVisitorRepository,
         ResponseHelper $responseHelper,
         Helpers $helpers,
         LanguageHelper $languageHelper
     ) {
         $this->storyRepository = $storyRepository;
+        $this->storyVisitorRepository = $storyVisitorRepository;
         $this->responseHelper = $responseHelper;
         $this->helpers = $helpers;
         $this->languageHelper = $languageHelper;
@@ -71,7 +80,9 @@ class StoryController extends Controller
         $validator = Validator::make(
             $request->toArray(),
             [
-                'mission_id' => 'required|exists:mission,mission_id,deleted_at,NULL',
+                'mission_id' =>
+                'required|exists:mission,mission_id,deleted_at,NULL,publication_status,'.
+                config("constants.publication_status.APPROVED"),
                 'title' => 'required|max:255',
                 'story_images' => 'max:'.config("constants.STORY_MAX_IMAGE_LIMIT"),
                 'story_images.*' => 'valid_story_image_type|max:'.config("constants.STORY_IMAGE_SIZE_LIMIT"),
@@ -114,7 +125,9 @@ class StoryController extends Controller
             $validator = Validator::make(
                 $request->toArray(),
                 [
-                    'mission_id' => 'sometimes|required|exists:mission,mission_id,deleted_at,NULL',
+                    'mission_id' =>
+                    'sometimes|required|exists:mission,mission_id,deleted_at,NULL,publication_status,'.
+                    config("constants.publication_status.APPROVED"),
                     'title' => 'sometimes|required|max:255',
                     'story_images' => 'max:'.config("constants.STORY_MAX_IMAGE_LIMIT"),
                     'story_images.*' => 'valid_story_image_type|max:'.config("constants.STORY_IMAGE_SIZE_LIMIT"),
@@ -195,7 +208,7 @@ class StoryController extends Controller
     }
     
     /**
-     * Display story details.
+     * Get story details.
      *
      * @param \Illuminate\Http\Request $request
      * @param int $storyId
@@ -206,23 +219,42 @@ class StoryController extends Controller
         try {
             // Get Story details
             $story = $this->storyRepository
-            ->getStoryDetails($storyId, config('constants.story_status.PUBLISHED'));
+            ->getStoryDetails(
+                $storyId,
+                config('constants.story_status.PUBLISHED'),
+                $request->auth->user_id,
+                array(config('constants.story_status.DRAFT'), config('constants.story_status.PENDING'))
+            );
             
-            $defaultTenantLanguage = $this->languageHelper->getDefaultTenantLanguage($request);
-            $language = $this->languageHelper->getLanguageDetails($request);
+            if ($story->count() == 0) {
+                return $this->modelNotFound(
+                    config('constants.error_codes.ERROR_STORY_NOT_FOUND'),
+                    trans('messages.custom_error_message.ERROR_STORY_NOT_FOUND')
+                );
+            }
 
-            // Transform news details
-            $storyTransform = $this->transformStory($story, $defaultTenantLanguage->language_id, $language->language_id)
-            ->toArray();
+            // conditions for story view count manage
+            $storyArray = array('story_id' => $story[0]->story_id,
+                                'story_user_id' => $story[0]->user_id,
+                                'status' => $story[0]->status);
+                                
+            $storyViewCount = $this->storyVisitorRepository->updateStoryViewCount($storyArray, $request->auth->user_id);
+
+            // get default user avatar
+            $tenantName = $this->helpers->getSubDomainFromRequest($request);
+            $defaultAvatar = $this->helpers->getUserDefaultProfileImage($tenantName);
+
+            // Transform story details
+            $storyTransformedData = $this->transformStoryDetails($story[0], $storyViewCount, $defaultAvatar);
             
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_STORY_FOUND');
     
-            return $this->responseHelper->success($apiStatus, $apiMessage, $storyTransform);
+            return $this->responseHelper->success($apiStatus, $apiMessage, $storyTransformedData);
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
-                config('constants.error_codes.ERROR_PUBLISHED_STORY_NOT_FOUND'),
-                trans('messages.custom_error_message.ERROR_PUBLISHED_STORY_NOT_FOUND')
+                config('constants.error_codes.ERROR_STORY_NOT_FOUND'),
+                trans('messages.custom_error_message.ERROR_STORY_NOT_FOUND')
             );
         }
     }
@@ -237,6 +269,9 @@ class StoryController extends Controller
     public function copyStory(Request $request, int $oldStoryId): JsonResponse
     {
         try {
+            //check for story exist?
+            $storyData = $this->storyRepository->findStoryByUserId($request->auth->user_id, $oldStoryId);
+
             $storyStatus = array(
                 config('constants.story_status.DECLINED')
             );
@@ -304,7 +339,7 @@ class StoryController extends Controller
         foreach ($stories as $story) {
             $excel->appendRow([
                 $story->title,
-                $story->description,
+                strip_tags($story->description),
                 $story->status,
                 $story->mission->missionLanguage[0]->title,
                 $story->published_at
@@ -425,7 +460,6 @@ class StoryController extends Controller
     public function getUserStories(Request $request): JsonResponse
     {
         // get user's all story data
-        
         $language = $this->languageHelper->getLanguageDetails($request);
         
         $userStories = $this->storyRepository->getUserStoriesWithPagination(
@@ -434,8 +468,11 @@ class StoryController extends Controller
             $request->auth->user_id
         );
         
-        $storyTransformedData = $this->transformUserStories($userStories);
+        // Get the story status count
+        $storyStatusCounts = $this->storyRepository->getUserStoriesStatusCounts($request->auth->user_id);
         
+        $storyTransformedData = $this->transformUserStories($userStories, $storyStatusCounts);
+
         $requestString = $request->except(['page','perPage']);
         $storyPaginated = new \Illuminate\Pagination\LengthAwarePaginator(
             $storyTransformedData,
@@ -450,7 +487,6 @@ class StoryController extends Controller
             ]
         );
         
-        
         $apiData = $storyPaginated;
         $apiStatus = Response::HTTP_OK;
         $apiMessage = ($apiData->total() > 0) ?
@@ -460,8 +496,9 @@ class StoryController extends Controller
         return $this->responseHelper->successWithPagination(
             $apiStatus,
             $apiMessage,
-            $apiData
-			);
+            $apiData,
+            []
+        );
     }
     
     /**
@@ -483,7 +520,11 @@ class StoryController extends Controller
             config('constants.story_status.PUBLISHED')
         );
         
-        $storyTransformedData = $this->transformPublishedStory($publishedStories);
+        // get default avatar
+        $tenantName = $this->helpers->getSubDomainFromRequest($request);
+        $defaultAvatar = $this->helpers->getUserDefaultProfileImage($tenantName);
+
+        $storyTransformedData = $this->transformPublishedStory($publishedStories, $defaultAvatar);
         $requestString = $request->except(['page','perPage']);
         $storyPaginated = new \Illuminate\Pagination\LengthAwarePaginator(
             $storyTransformedData,
@@ -510,5 +551,49 @@ class StoryController extends Controller
             $apiData,
             []
         );
+    }
+
+    /**
+     * Fetch edit story details.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param int $storyId
+     * @return Illuminate\Http\JsonResponse
+     */
+    public function editStory(Request $request, int $storyId): JsonResponse
+    {
+        try {
+            // Fetch story details
+            $storyData = $this->storyRepository->findStoryByUserId($request->auth->user_id, $storyId);
+            
+            $statusArray = [
+                config('constants.story_status.DRAFT'),
+                config('constants.story_status.PENDING')
+            ];
+            // User cannot edit story if story is published or declined
+            if (!in_array($storyData->status, $statusArray)) {
+                return $this->responseHelper->error(
+                    Response::HTTP_UNPROCESSABLE_ENTITY,
+                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                    config('constants.error_codes.ERROR_STORY_PUBLISHED_OR_DECLINED'),
+                    trans('messages.custom_error_message.ERROR_STORY_PUBLISHED_OR_DECLINED')
+                );
+            }
+            
+            // Fetch edit story details
+            $story = $this->storyRepository
+            ->getStoryDetails($storyData->story_id);
+
+            $apiStatus = Response::HTTP_OK;
+            $apiData = $story->toArray();
+            $apiMessage = trans('messages.success.MESSAGE_STORY_FOUND');
+    
+            return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
+        } catch (ModelNotFoundException $e) {
+            return $this->modelNotFound(
+                config('constants.error_codes.ERROR_STORY_NOT_FOUND'),
+                trans('messages.custom_error_message.ERROR_STORY_NOT_FOUND')
+            );
+        }
     }
 }

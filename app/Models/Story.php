@@ -32,8 +32,8 @@ class Story extends Model
      */
 
     protected $visible = ['story_id', 'user_id', 'mission_id', 'title', 'description', 'status', 'published_at',
-        'mission_title', 'mission_description', 'first_name', 'last_name', 'avatar', 'why_i_volunteer',
-        'profile_text', 'storyMedia', 'city', 'country', 'story_visitor_count'];
+        'mission_title', 'mission_description', 'mission_short_description', 'first_name', 'last_name', 'avatar',
+        'why_i_volunteer', 'profile_text', 'storyMedia', 'city', 'country'];
 
     /**
      * The attributes that are mass assignable.
@@ -73,14 +73,16 @@ class Story extends Model
     }
 
     /**
-     * Soft delete from the database.
+     * Soft delete the model from the database.
      *
-     * @param  int  $id
+     * @param int $storyId
+     * @param int $userId
      * @return bool
      */
-    public function deleteStory(int $id): bool
+    public function deleteStory(int $storyId, int $userId): bool
     {
-        return static::findOrFail($id)->delete();
+        return static::where(['story_id' => $storyId,
+        'user_id' => $userId])->firstOrFail()->delete();
     }
 
     /**
@@ -91,5 +93,27 @@ class Story extends Model
     public function storyVisitor(): HasMany
     {
         return $this->hasMany(StoryVisitor::class, 'story_id', 'story_id');
+    }
+    
+    /**
+     * Get story title
+     *
+     * @param int $storyId
+     * @return string
+     */
+    public function getStoryName(int $storyId): string
+    {
+        return static::select('title')->where(['story_id' => $storyId])->value('title');
+    }
+
+    /**
+     * Remove the script tag from description attribute
+     *
+     * @param string $value
+     * @return void
+     */
+    public function setDescriptionAttribute($value)
+    {
+        $this->attributes['description'] = preg_replace('#<script(.*?)>(.*?)</script>#is', '', $value);
     }
 }

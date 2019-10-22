@@ -147,7 +147,6 @@ class TenantOptionsTest extends TestCase
         
         $fileName = 'back-arrow-black.svg';
         $path  = storage_path("unitTestFiles/$fileName");
-        
         $params = [
             'image_name' => $fileName
         ];
@@ -157,14 +156,14 @@ class TenantOptionsTest extends TestCase
             'style/update-image', 
             $params, [], 
             [
-                'image_file' => array(new \Illuminate\Http\UploadedFile($path, $fileName, '', null, null, true))[0]
+                'image_file' => array(new \Illuminate\Http\UploadedFile($path, $fileName, 'image/svg+xml', null, null, true))[0]
             ],
             [
                 'HTTP_php-auth-user' => env('API_KEY'),
                 'HTTP_php-auth-pw' => env('API_SECRET')
             ]
         );
-        
+
         $this->seeStatusCode(200);
         $this->seeJsonStructure(['status', 'message']);
 
@@ -179,7 +178,7 @@ class TenantOptionsTest extends TestCase
             'style/update-image', 
             $params, [], 
             [
-                'image_file' => array(new \Illuminate\Http\UploadedFile($path, $fileName, '', null, null, true))[0]
+                'image_file' => array(new \Illuminate\Http\UploadedFile($path, $fileName, 'image/svg+xml', null, null, true))[0]
             ],
             [
                 'HTTP_php-auth-user' => env('API_KEY'),
@@ -243,7 +242,7 @@ class TenantOptionsTest extends TestCase
             'style/update-image', 
             $params, [], 
             [
-                'image_file' => array(new \Illuminate\Http\UploadedFile($path, $fileName, '', null, null, true))[0]
+                'image_file' => array(new \Illuminate\Http\UploadedFile($path, $fileName, 'image/svg+xml', null, null, true))[0]
             ],
             [
                 'HTTP_php-auth-user' => env('API_KEY'),

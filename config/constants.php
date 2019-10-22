@@ -1,7 +1,7 @@
 <?php
 
 return [
-    
+
     /*
      * constants to use any where in system
      */
@@ -27,6 +27,7 @@ return [
 
     'EMAIL_TEMPLATE_FOLDER' => 'emails',
     'EMAIL_TEMPLATE_USER_INVITE' => 'invite',
+    'EMAIL_TEMPLATE_STORY_USER_INVITE' => 'invite-story',
 
     'AWS_S3_ASSETS_FOLDER_NAME' => 'assets',
     'AWS_S3_IMAGES_FOLDER_NAME' => 'images',
@@ -44,6 +45,7 @@ return [
     'DEFAULT_FQDN_FOR_FRONT' => 'web8',
     'PER_PAGE_MAX' => '50',
     'AWS_S3_DEFAULT_THEME_FOLDER_NAME' => 'default_theme',
+    'MESSAGE_DATE_FORMAT' => 'Y-m-d',
     
     /*
      * User custom field types
@@ -105,6 +107,15 @@ return [
      * Image types
      */
     'image_types' => [
+        'PNG' => 'png',
+        'JPG' => 'jpg',
+        'JPEG' => 'jpeg',
+    ],
+
+    /*
+     * Story image types
+     */
+    'story_image_types' => [
         'PNG' => 'png',
         'JPG' => 'jpg',
         'JPEG' => 'jpeg',
@@ -224,6 +235,13 @@ return [
     'export_story_file_names' => [
         'STORY_XLSX' => 'Stories.xlsx',
     ],
+
+    /**
+     * Export mission comments file names
+     */
+    'export_mission_comment_file_names' => [
+        'MISSION_COMMENT_XLSX' => 'MissionComments.xlsx',
+    ],
         
     /*
      * Folder name s3
@@ -243,6 +261,19 @@ return [
         'DECLINED' => 'DECLINED'
     ],
 
+    /*
+     * send message froms
+     */
+    'message' => [
+        'read' => '1',
+        'unread' => '0',
+        'anonymous' => '1',
+        'not_anonymous' => '0',
+        'send_message_from' => [
+            'user' => 1,
+            'admin' => 2,
+        ]
+    ],
 
     /*
      * User notification types
@@ -255,9 +286,20 @@ return [
         'MY-STORIES' => 'My stories',
         'NEW_STORIES_HOURS' => 'New stories hours',
         'NEW_MISSIONS' => 'New missions',
-        'NEW_MESSAGES' => 'New messages'
+        'NEW_MESSAGES' => 'New messages',
+        'RECOMMENDED_STORY' => 'Recommended story',
+        'MISSION_APPLICATION' => 'Mission Application',
+        'NEW_NEWS' => 'New News'
     ],
     
+    /**
+     * notification status
+     */
+    'notification' => [
+        'read' => '1',
+        'unread' => '0'
+    ],
+
     /*
      * Tenant settings
      */
@@ -377,8 +419,13 @@ return [
         'ERROR_STORY_IMAGE_NOT_FOUND' => '700006',
         'ERROR_STORY_IMAGE_DELETE' => '700007',
         'ERROR_SUBMIT_STORY_PUBLISHED_OR_DECLINED' => '700008',
-        
-              
+        'ERROR_INVALID_INVITE_STORY_DATA' => '700009',
+        'ERROR_INVITE_STORY_ALREADY_EXIST' => '700010',
+                              
+        'ERROR_CONTACT_FORM_REQUIRED_FIELDS_EMPTY' => '1000001',
+
+        'ERROR_USER_NOTIFICATION_REQUIRED_FIELDS_EMPTY' => '600001',
+        'ERROR_USER_NOTIFICATION_NOT_FOUND' => '600002',
                 
         'ERROR_OCCURRED' => '999999',
         'ERROR_INVALID_JSON' => '900000',
@@ -408,8 +455,101 @@ return [
         'ERROR_FAILD_TO_UPLOAD_PROFILE_IMAGE_ON_S3' => '800022',
         'ERROR_REQUIRED_FIELDS_FOR_UPDATE_STYLING' => '800023',
         'ERROR_WHILE_UPLOADING_FILE_ON_S3' => '800024',
-        
         'ERROR_POLICY_PAGE_NOT_FOUND' => '300010',
-        'ERROR_POLICY_PAGE_REQUIRED_FIELDS_EMPTY' => '300011'
+        'ERROR_POLICY_PAGE_REQUIRED_FIELDS_EMPTY' => '300011',
+        'ERROR_MESSAGE_REQUIRED_FIELDS_EMPTY' =>'1100001',
+        'ERROR_MESSAGE_USER_MESSAGE_NOT_FOUND' => '1100002'
+    ],
+
+    /**
+     * Notification types
+     */
+    'notification_type_keys' => [
+        'RECOMMENDED_MISSIONS' => 'recommended_missions',
+        'VOLUNTEERING_HOURS' => 'volunteering_hours',
+        'VOLUNTEERING_GOALS' => 'volunteering_goals',
+        'MY_COMMENTS' => 'my_comments',
+        'MY_STORIES' => 'my_stories',
+        'NEW_MISSIONS' => 'new_missions',
+        'NEW_MESSAGES' => 'new_messages',
+        'RECOMMENDED_STORY' => 'recommended_story',
+        'MISSION_APPLICATION' => 'mission_application',
+        'NEW_NEWS' => 'new_news'
+    ],
+
+    /**
+     * Notification actions
+     */
+    'notification_actions' => [
+        'CREATED' => 'CREATED',
+        'APPROVED' => 'APPROVED',
+        'REJECTED' => 'APPROVED',
+        'PUBLISHED' => 'PUBLISHED',
+        'PENDING' => 'PENDING',
+        'DECLINED' => 'DECLINED',
+        'INVITE' => 'INVITE',
+        'AUTOMATICALLY_APPROVED' => 'AUTOMATICALLY_APPROVED',
+        'SUBMIT_FOR_APPROVAL' => 'SUBMIT_FOR_APPROVAL',
+        'DELETED' => 'DELETED',
+        'REFUSED' => 'REFUSED'
+    ],
+
+    /**
+     * Notification type icons
+     */
+    'notification_icons' => [
+        'APPROVED' => 'approve-ic.svg',
+        'DECLINED' => 'warning.png',
+        'NEW' => 'circle-plus.png',
+    ],
+    
+    'notification_status' => [
+        'AUTOMATICALLY_APPROVED' => 'AUTOMATICALLY_APPROVED',
+        'PENDING' => 'PENDING',
+        'DECLINED' => 'DECLINED',
+        'APPROVED' => 'APPROVED',
+        'REFUSED' => 'REFUSED',
+        'PUBLISHED' => 'PUBLISHED',
+        'SUBMIT_FOR_APPROVAL' => 'SUBMIT_FOR_APPROVAL'
+    ],
+
+    'activity_log_types' => [
+        'AUTH' => 'AUTH',
+        'USERS' => 'USERS',
+        'MISSION' => 'MISSION',
+        'COMMENT' => 'COMMENT',
+        'MESSAGE' => 'MESSAGE',
+        'FOOTER_PAGE' => 'FOOTER_PAGE',
+        'POLICY_PAGE' => 'POLICY_PAGE',
+        'USER_CUSTOM_FILED' => 'USER_CUSTOM_FILED',
+        'MISSION_THEME' => 'MISSION_THEME',
+        'SKILL' => 'SKILL',
+        'USER_SKILL' => 'USER_SKILL'
+    ],
+
+    'activity_log_actions' => [
+        'CREATED' => 'CREATED',
+        'UPDATED' => 'UPDATED',
+        'DELETED' => 'DELETED',
+        'INVITED' => 'INVITED',
+        'LOGIN' => 'LOGIN',
+        'ADD_TO_FAVOURITE' => 'ADD_TO_FAVOURITE',
+        'REMOVE_FROM_FAVOURITE' => 'REMOVE_FROM_FAVOURITE',
+        'RATED' => 'RATED',
+        'COMMENT_ADDED' => 'COMMENT_ADDED',
+        'COMMENT_UPDATED' => 'COMMENT_UPDATED',
+        'COMMENT_DELETED' => 'COMMENT_DELETED',
+        'MISSION_APPLICATION_CREATED' => 'MISSION_APPLICATION_CREATED',
+        'MISSION_APPLICATION_STATUS_CHANGED' => 'MISSION_APPLICATION_STATUS_CHANGED',
+        'PASSWORD_RESET_REQUEST' => 'PASSWORD_RESET_REQUEST',
+        'PASSWORD_CHANGED' => 'PASSWORD_CHANGED',
+        'PASSWORD_RESET' => 'PASSWORD_RESET',
+        'LINKED' => 'LINKED',
+        'UNLINKED' => 'UNLINKED'
+    ],
+
+    'activity_log_user_types' => [
+        'API' => 'API',
+        'REGULAR' => 'REGULAR'
     ]
 ];

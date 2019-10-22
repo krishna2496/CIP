@@ -105,13 +105,13 @@ class TenantOptionRepository implements TenantOptionInterface
     }
 
     /**
-     * Select by option name
+     * Get option value by option name
      *
      * @param String $data
-     * @return null|string
+     * @return null|int
      */
-    public function getOptionValueFromOptionName(string $data): ?string
+    public function getOptionValueFromOptionName(string $data): ?int
     {
-        return $this->tenantOption->whereOption_name($data)->value('option_value');
+        return $this->tenantOption->whereOption_name($data)->first()->option_value;
     }
 }

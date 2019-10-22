@@ -20,6 +20,8 @@ use Illuminate\Support\Facades\Mail;
 use App\Jobs\AppMailerJob;
 use App\Exceptions\TenantDomainNotFoundException;
 use App\Repositories\TenantOption\TenantOptionRepository;
+use App\Events\User\UserNotificationEvent;
+use App\Events\User\UserActivityLogEvent;
 
 class MissionInviteController extends Controller
 {
@@ -144,17 +146,29 @@ class MissionInviteController extends Controller
         $apiStatus = Response::HTTP_CREATED;
         $apiMessage = trans('messages.success.MESSAGE_INVITED_FOR_MISSION');
         $apiData = ['mission_invite_id' => $inviteMission->mission_invite_id];
-
+        
         $getActivatedTenantSettings = $this->tenantActivatedSettingRepository
         ->getAllTenantActivatedSetting($request);
 
         $emailNotificationInviteColleague = config('constants.tenant_settings.EMAIL_NOTIFICATION_INVITE_COLLEAGUE');
+
+        // Make activity log
+        event(new UserActivityLogEvent(
+            config('constants.activity_log_types.MISSION'),
+            config('constants.activity_log_actions.INVITED'),
+            config('constants.activity_log_user_types.REGULAR'),
+            $request->auth->email,
+            get_class($this),
+            $request->toArray(),
+            $request->auth->user_id,
+            $request->mission_id
+        ));
         if (!in_array($emailNotificationInviteColleague, $getActivatedTenantSettings)) {
             return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
         }
         
         $notificationTypeId = $this->notificationRepository
-        ->getNotificationTypeID(config('constants.notification_types.RECOMMENDED_MISSIONS'));
+        ->getNotificationTypeID(config('constants.notification_type_keys.RECOMMENDED_MISSIONS'));
         
         // Check if to_user_id (colleague) has enabled notification for Recommended missions
         $notifyColleague = $this->notificationRepository
@@ -172,13 +186,14 @@ class MissionInviteController extends Controller
                 $request->mission_id,
                 $colleague->language_id
             );
-            $notificationData = array(
-                'notification_type_id' => $notificationTypeId,
-                'user_id' => $request->auth->user_id,
-                'to_user_id' => $request->to_user_id,
-                'mission_id' => $request->mission_id,
-            );
-            $notification = $this->notificationRepository->createNotification($notificationData);
+                
+            // Send notification to user
+            $notificationType = config('constants.notification_type_keys.RECOMMENDED_MISSIONS');
+            $entityId = $inviteMission->mission_invite_id;
+            $action = config('constants.notification_actions.INVITE');
+            $userId = $request->to_user_id;
+            
+            event(new UserNotificationEvent($notificationType, $entityId, $action, $userId));
             
             $data = array(
                 'missionName'=> $missionName,
@@ -198,7 +213,9 @@ class MissionInviteController extends Controller
             )->option_value;
             dispatch(new AppMailerJob($params));
         }
+
         
+
         return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
     }
 }

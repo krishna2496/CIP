@@ -15,6 +15,8 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Validation\Rule;
 use Validator;
+use App\Helpers\Helpers;
+use App\Events\User\UserNotificationEvent;
 
 class StoryController extends Controller
 {
@@ -36,6 +38,11 @@ class StoryController extends Controller
     private $responseHelper;
 
     /**
+     * @var App\Helpers\Helpers
+     */
+    private $helpers;
+
+    /**
      * @var App\Helpers\LanguageHelper
      */
     private $languageHelper;
@@ -53,12 +60,14 @@ class StoryController extends Controller
         UserRepository $userRepository,
         StoryRepository $storyRepository,
         ResponseHelper $responseHelper,
-        LanguageHelper $languageHelper
+        LanguageHelper $languageHelper,
+        Helpers $helpers
     ) {
         $this->userRepository = $userRepository;
         $this->storyRepository = $storyRepository;
         $this->responseHelper = $responseHelper;
         $this->languageHelper = $languageHelper;
+        $this->helpers = $helpers;
     }
 
     /**
@@ -80,14 +89,21 @@ class StoryController extends Controller
         }
 
         $defaultTenantLanguage = $this->languageHelper->getDefaultTenantLanguage($request);
-        $language = $this->languageHelper->getLanguageDetails($request);
         
-        $userStories = $this->storyRepository->getUserStoriesWithPagination($request, $language->language_id, $userId);
+        $userStories = $this->storyRepository->getUserStoriesWithPagination(
+            $request,
+            $defaultTenantLanguage->language_id,
+            $userId
+        );
+
+        // get default user avatar
+        $tenantName = $this->helpers->getSubDomainFromRequest($request);
+        $defaultAvatar = $this->helpers->getUserDefaultProfileImage($tenantName);
 
         $storyTransformed = $userStories
             ->getCollection()
-            ->map(function ($story) use ($request, $defaultTenantLanguage, $language) {
-                $story = $this->transformStory($story, $defaultTenantLanguage->language_id, $language->language_id);
+            ->map(function ($story) use ($request, $defaultTenantLanguage, $defaultAvatar) {
+                $story = $this->transformStory($story, $defaultTenantLanguage->language_id, $defaultAvatar);
                 return $story;
             });
 
@@ -145,12 +161,21 @@ class StoryController extends Controller
                     $validator->errors()->first()
                 );
             }
-            $this->storyRepository->getStoryDetails($storyId);
+            $storyDetails = $this->storyRepository->checkStoryExist($storyId);
             $this->storyRepository->updateStoryStatus($request->status, $storyId);
 
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_STORY_STATUS_UPDATED');
             $apiData = ['story_id' => $storyId];
+            
+            // Send notification to user
+            $notificationType = config('constants.notification_type_keys.MY_STORIES');
+            $entityId = $storyId;
+            $action = config('constants.notification_actions.'.$request->status);
+            $userId = $storyDetails->user_id;
+
+            event(new UserNotificationEvent($notificationType, $entityId, $action, $userId));
+
             return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(

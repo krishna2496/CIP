@@ -164,9 +164,10 @@ class UserController extends Controller
         $tenantLanguageCodes = $this->languageHelper->getTenantLanguageCodeList($request);
         $availabilityList = $this->userRepository->getAvailability();
 
+        $defaultLanguage = $this->languageHelper->getDefaultTenantLanguage($request);
         $languages = $this->languageHelper->getLanguages($request);
         $language = ($request->hasHeader('X-localization')) ?
-        $request->header('X-localization') : env('TENANT_DEFAULT_LANGUAGE_CODE');
+        $request->header('X-localization') : $defaultLanguage->code;
         $languageCode = $languages->where('code', $language)->first()->code;
         $userLanguageCode = $languages->where('language_id', $userDetail->language_id)->first()->code;
         $userCustomFieldData = [];
@@ -263,7 +264,6 @@ class UserController extends Controller
                 "max:16",
                 Rule::unique('user')->ignore($id, 'user_id,deleted_at,NULL')],
             "department" => "max:16",
-            "manager_name" => "max:16",
             "linked_in_url" => "url|valid_linkedin_url",
             "why_i_volunteer" => "sometimes|required",
             "availability_id" => "integer|exists:availability,availability_id,deleted_at,NULL",
@@ -271,8 +271,8 @@ class UserController extends Controller
             "city_id" => "integer|exists:city,city_id,deleted_at,NULL",
             "country_id" => "integer|exists:country,country_id,deleted_at,NULL",
             "custom_fields.*.field_id" => "sometimes|required|exists:user_custom_field,field_id,deleted_at,NULL",
-            'skills' => 'present|array',
-            'skills.*.skill_id' => 'integer|required|exists:skill,skill_id,deleted_at,NULL']
+            'skills' => 'sometimes|required|array',
+            'skills.*.skill_id' => 'required_with:skills|integer|exists:skill,skill_id,deleted_at,NULL']
         );
 
         // If request parameter have any error
@@ -368,6 +368,27 @@ class UserController extends Controller
         $apiData = ['avatar' => $imagePath];
         $apiMessage = trans('messages.success.MESSAGE_PROFILE_IMAGE_UPLOADED');
         $apiStatus = Response::HTTP_OK;
+        return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
+    }
+
+    /**
+     * store cookie agreement date
+     *
+     * @param Illuminate\Http\Request $request
+     * @return Illuminate\Http\JsonResponse
+     */
+    public function saveCookieAgreement(Request $request): JsonResponse
+    {
+        $userId = $request->auth->user_id;
+        
+        // Update cookie agreement date
+        $this->userRepository->updateCookieAgreement($userId);
+
+        // Set response data
+        $apiData = ['user_id' => $userId];
+        $apiStatus = Response::HTTP_OK;
+        $apiMessage = trans('messages.success.MESSAGE_USER_COOKIE_AGREEMENT_ACCEPTED');
+        
         return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
     }
 }

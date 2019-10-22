@@ -13,6 +13,7 @@ use App\Repositories\Timesheet\TimesheetRepository;
 use Validator;
 use App\Models\TimesheetStatus;
 use Illuminate\Http\JsonResponse;
+use App\Events\User\UserNotificationEvent;
 
 class TimesheetController extends Controller
 {
@@ -119,6 +120,20 @@ class TimesheetController extends Controller
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_TIMESETTING_STATUS_UPDATED');
             $apiData = ['timesheet_id' => $timesheetId];
+
+            // Send notification to user
+            $timsheetDetails = $this->timesheetRepository->getDetailsOfTimesheetEntry($timesheetId);
+            if ($timsheetDetails->mission->mission_type === config('constants.mission_type.TIME')) {
+                $notificationType = config('constants.notification_type_keys.VOLUNTEERING_HOURS');
+            } else {
+                $notificationType = config('constants.notification_type_keys.VOLUNTEERING_GOALS');
+            }
+            $entityId = $timesheetId;
+            $action = config('constants.notification_actions.'.$timsheetDetails->timesheetStatus->status);
+            $userId = $timsheetDetails->user_id;
+            
+            event(new UserNotificationEvent($notificationType, $entityId, $action, $userId));
+            
             return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(

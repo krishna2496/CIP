@@ -137,7 +137,7 @@ class LanguageHelper
 
         return $tenantLanguagesCodes;
     }
-
+    
     /**
      * Get language id from request
      *
@@ -181,5 +181,35 @@ class LanguageHelper
     {
         $languages = $this->getTenantLanguages($request);
         return $languages->where('default', 1)->first();
+    }
+
+    /**
+     * Get language details for localization
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return Object
+     */
+    public function checkTenantLanguage(Request $request): Object
+    {
+        // Get tenant name from request
+        $tenantName = $this->helpers->getSubDomainFromRequest($request);
+
+        // Get tenant details from tenant name
+        $tenant = DB::table('tenant')->where('name', $tenantName)->first();
+
+        // Connect master database to get language details
+        $tenantLanguagesQuery = DB::table('tenant_language')
+        ->select('language.language_id', 'language.code', 'language.name', 'tenant_language.default')
+        ->leftJoin('language', 'language.language_id', '=', 'tenant_language.language_id')
+        ->where('tenant_id', $tenant->tenant_id)
+        ->get();
+
+        $language = $tenantLanguagesQuery->where('code', config('app.locale'))->first();
+
+        // If localization language not found then use tenant default language
+        if (is_null($language)) {
+            $language = $tenantLanguagesQuery->where('default', 1)->first();
+        }
+        return $language;
     }
 }

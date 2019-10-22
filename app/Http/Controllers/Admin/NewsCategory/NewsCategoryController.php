@@ -120,7 +120,8 @@ class NewsCategoryController extends Controller
                         Rule::unique('news_category')->ignore($newsCategoryId, 'news_category_id,deleted_at,NULL')
                     ],
                     "translations" => "sometimes|required",
-                    "translations.*.lang" => "required_with:translations|max:2"
+                    "translations.*.lang" => "required_with:translations|max:2",
+                    "translations.*.title" => "required_with:translations"
                 ]
             );
             

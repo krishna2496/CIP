@@ -4,6 +4,7 @@ namespace App\Repositories\Story;
 use App\Models\Story;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Collection;
 
 interface StoryInterface
 {
@@ -49,15 +50,22 @@ interface StoryInterface
         string $status = null
     ): LengthAwarePaginator;
 
+    
     /**
      * Get story details.
      *
      * @param int $storyId
      * @param string $storyStatus
-     * @return null|App\Models\Story
+     * @param int $userId
+     * @param array $allowedStoryStatus
+     * @return Illuminate\Database\Eloquent\Collection
      */
-    public function getStoryDetails(int $storyId, string $storyStatus = null): Story;
-
+    public function getStoryDetails(
+        int $storyId,
+        string $storyStatus = null,
+        int $userId = 0,
+        array $allowedStoryStatus = []
+    ): Collection;
     /**
      * Update story status field value, based on story_id condition
      *
@@ -148,4 +156,12 @@ interface StoryInterface
      * @return App\Models\Story
      */
     public function findStoryByUserId(int $userId, int $storyId): Story;
+
+    /**
+     * Get user stories status count
+     *
+     * @param int $userId
+     * @return App\Models\Story
+     */
+    public function getUserStoriesStatusCounts(int $userId): Story;
 }

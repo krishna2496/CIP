@@ -31,6 +31,7 @@ trait NewsTransformable
         $transformedNews['user_title'] = $newsDetails['user_title'];
         $transformedNews['user_thumbnail'] = $newsDetails['user_thumbnail'];
         $transformedNews['published_on'] = $newsDetails['created_at'];
+        $transformedNews['status'] = $newsDetails['status'];
         
         if (isset($newsDetails['news_language']) && !empty($newsDetails['news_language'])) {
             if (count($newsDetails['news_language']) > 1) {
