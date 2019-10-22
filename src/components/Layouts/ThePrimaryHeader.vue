@@ -404,6 +404,7 @@
                     popover_body.classList.add("clear-item");
                     clearNotification().then(response => {
                         if(response.error == false) {
+                            this.notificationCount = 0
                             this.getNotificationListing();
                         }
                     })
