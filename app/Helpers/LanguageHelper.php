@@ -191,20 +191,20 @@ class LanguageHelper
      */
     public function checkTenantLanguage(Request $request): Object
     {
-       // Get tenant name from front user's request        
-       if (is_null($request->header('php-auth-user')) || $request->header('php-auth-user') === '') {
-        $tenantName = $this->helpers->getSubDomainFromRequest($request);
-    } else { // Get tenant name from front admin's request
-        $tenantDetails = DB::table('api_user')
-        ->leftJoin('tenant', 'tenant.tenant_id', '=', 'api_user.tenant_id')
-        ->where('api_key', base64_encode($request->header('php-auth-user')))
-        ->where('api_user.status', '1')
-        ->where('tenant.status', '1')
-        ->whereNull('api_user.deleted_at')
-        ->whereNull('tenant.deleted_at')
-        ->first();
-        $tenantName = $tenantDetails->name;
-    }
+        // Get tenant name from front user's request        
+        if (is_null($request->header('php-auth-user')) || $request->header('php-auth-user') === '') {
+            $tenantName = $this->helpers->getSubDomainFromRequest($request);
+        } else { // Get tenant name from front admin's request
+            $tenantDetails = DB::table('api_user')
+            ->leftJoin('tenant', 'tenant.tenant_id', '=', 'api_user.tenant_id')
+            ->where('api_key', base64_encode($request->header('php-auth-user')))
+            ->where('api_user.status', '1')
+            ->where('tenant.status', '1')
+            ->whereNull('api_user.deleted_at')
+            ->whereNull('tenant.deleted_at')
+            ->first();
+            $tenantName = $tenantDetails->name;
+        }
 
         // Get tenant details from tenant name
         $tenant = DB::table('tenant')->where('name', $tenantName)->first();
