@@ -258,7 +258,12 @@
         "my_comments": "Mes commentaires",
         "new_missions": "Nouvelles missions",
         "new_messages": "Nouveaux messages",
-        "recommended_story": "Histoire recommandée"
+        "recommended_story": "Histoire recommandée",
+		"expand" : "Développer",
+        "upload_pictures" : "Télécharger des photos",
+        "no_messages": "Pas de messages",
+		"yesterday": "Hier",
+        "older": "Plus âgée"
     },
 
     "placeholder": {
@@ -345,7 +350,8 @@
         "message_required": "S'il vous plaît entrer un message",
         "invalid_image_type": "Type de fichier non valide: les types de fichier valides sont png, jpg, jpeg",
         "max_image_upload": "Maximum 20 des images peuvent être ajoutées",
-        "max_video_upload": "Maximum 20 URL de la vidéo peut être ajouté"
+        "max_video_upload": "Maximum 20 URL de la vidéo peut être ajouté",
+		"duplicate_video_url": "Les doublons d'URL de vidéos ne sont pas autorisés"
     },
 
     "export_timesheet_file_names": {

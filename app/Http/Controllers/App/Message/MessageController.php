@@ -101,7 +101,6 @@ class MessageController extends Controller
             [$request->auth->user_id]
         );
         
-        
         $timezone = $this->userRepository->getUserTimezone($request->auth->user_id);
 
         $unreadMessageCount = $this->messageRepository->getUnreadMessageCount($request->auth->user_id);

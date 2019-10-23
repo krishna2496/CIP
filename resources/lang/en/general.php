@@ -53,16 +53,16 @@ return [
         'DRAFT' => 'draft',
         'AUTOMATICALLY_APPROVED' => 'approved',
         'PENDING' => 'pending',
+        'APPROVED' => 'approved',
         'DECLINED' => 'declined',
         'REFUSED' => 'refused',
-        'PUBLISHED' => 'published',
-        
+        'PUBLISHED' => 'published',        
     ],
 
     'notification' => [
         'RECOMMENDS_THIS_MISSION' => 'Recommends this mission',
-        'VOLUNTEERING_HOURS_SUBMITTED_THE' => 'Volunteering hours submitted the',
-        'VOLUNTEERING_GOALS_SUBMITTED_THE' => 'Volunteering goals submitted the',
+        'VOLUNTEERING_HOURS_SUBMITTED_THE' => 'Volunteering hours submitted on',
+        'VOLUNTEERING_GOALS_SUBMITTED_THE' => 'Volunteering goals submitted on',
         'COMMENT_OF' => 'Comment of',
         'STORY' => 'Story',
         'NEW_MISSION' => 'New mission',
@@ -70,6 +70,7 @@ return [
         'RECOMMENDS_THIS_STORY' => 'Recommends this story',
         'NEW_NEWS' => 'New News',
         'VOLUNTEERING_REQUEST' => 'Volunteering request has been',   
-        'FOR_THIS_MISSION' => 'for this mission :',  
+        'FOR_THIS_MISSION' => 'for this mission:',  
+        'IS' => 'is',  
     ],
 ];

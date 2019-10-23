@@ -388,7 +388,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
         'uses' => 'App\Message\MessageController@sendMessage']);
             
     /* Get User's message Listing*/
-    $router->get('/app/message/list', ['as' => 'app.message.list',
+    $router->get('/app/messages', ['as' => 'app.message.list',
         'middleware' => 'localization|tenant.connection|jwt.auth|PaginationMiddleware',
         'uses' => 'App\Message\MessageController@getUserMessages']);
 

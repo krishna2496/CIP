@@ -483,7 +483,7 @@ return [
     'notification_actions' => [
         'CREATED' => 'CREATED',
         'APPROVED' => 'APPROVED',
-        'REJECTED' => 'APPROVED',
+        'REJECTED' => 'REJECTED',
         'PUBLISHED' => 'PUBLISHED',
         'PENDING' => 'PENDING',
         'DECLINED' => 'DECLINED',
@@ -497,23 +497,37 @@ return [
     /**
      * Notification type icons
      */
-    'notification_type_icons' => [
-        'VOLUNTEERING_HOURS' => 'warning.png',
-        'VOLUNTEERING_GOALS' => 'warning.png',
-        'MY_COMMENTS' => 'warning.png',
-        'MY_STORIES' => 'warning.png',
-        'NEW_MISSIONS' => 'circle-plus.png',
-        'NEW_MESSAGES' => 'circle-plus.png',
-        'NEW_NEWS' => 'circle-plus.png',
-        'MISSION_APPLICATION' => 'warning.png',
+    'notification_icons' => [
+        'APPROVED' => 'approve-ic.svg',
+        'DECLINED' => 'warning.png',
+        'NEW' => 'circle-plus.png',
     ],
     
+    'notification_status' => [
+        'AUTOMATICALLY_APPROVED' => 'AUTOMATICALLY_APPROVED',
+        'PENDING' => 'PENDING',
+        'DECLINED' => 'DECLINED',
+        'APPROVED' => 'APPROVED',
+        'REFUSED' => 'REFUSED',
+        'PUBLISHED' => 'PUBLISHED',
+        'SUBMIT_FOR_APPROVAL' => 'SUBMIT_FOR_APPROVAL'
+    ],
+
     'activity_log_types' => [
         'AUTH' => 'AUTH',
         'USERS' => 'USERS',
         'MISSION' => 'MISSION',
         'COMMENT' => 'COMMENT',
         'MESSAGE' => 'MESSAGE',
+        'NEWS_CATEGORY' => 'NEWS_CATEGORY',
+        'NEWS' => 'NEWS',
+        'VOLUNTEERING_TIMESHEET' => 'VOLUNTEERING_TIMESHEET',
+        'VOLUNTEERING_TIMESHEET_DOCUMENT' => 'VOLUNTEERING_TIMESHEET_DOCUMENT',
+        'SLIDER' => 'SLIDER',
+        'STYLE_IMAGE' => 'STYLE_IMAGE',
+        'STYLE' => 'STYLE',
+        'TENANT_OPTION' => 'TENANT_OPTION',
+        'TENANT_SETTINGS' => 'TENANT_SETTINGS',
         'FOOTER_PAGE' => 'FOOTER_PAGE',
         'POLICY_PAGE' => 'POLICY_PAGE',
         'USER_CUSTOM_FILED' => 'USER_CUSTOM_FILED',
@@ -527,6 +541,9 @@ return [
         'UPDATED' => 'UPDATED',
         'DELETED' => 'DELETED',
         'INVITED' => 'INVITED',
+        'SUBMIT_FOR_APPROVAL' => 'SUBMIT_FOR_APPROVAL',
+        'APPROVED' => 'APPROVED',
+        'DECLINED' => 'DECLINED',
         'LOGIN' => 'LOGIN',
         'ADD_TO_FAVOURITE' => 'ADD_TO_FAVOURITE',
         'REMOVE_FROM_FAVOURITE' => 'REMOVE_FROM_FAVOURITE',
