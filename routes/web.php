@@ -418,7 +418,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
           'uses' => 'App\Notification\NotificationController@index']);
 
     /* Read message send by admin */
-	$router->post('/app/message/read/{messageId}', ['as' => 'app.message.read',
+    $router->post('/app/message/read/{messageId}', ['as' => 'app.message.read',
         'middleware' => 'localization|tenant.connection|jwt.auth',
         'uses' => 'App\Message\MessageController@readMessage']);
 });

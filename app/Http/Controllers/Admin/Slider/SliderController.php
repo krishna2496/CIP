@@ -12,6 +12,7 @@ use App\Helpers\Helpers;
 use App\Traits\RestExceptionHandlerTrait;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Validator;
+use App\Events\User\UserActivityLogEvent;
 
 class SliderController extends Controller
 {
@@ -37,24 +38,32 @@ class SliderController extends Controller
     private $s3helper;
 
     /**
+     * @var string
+     */
+    private $userApiKey;
+
+    /**
      * Create a new controller instance.
      *
      * @param App\Repositories\Slider\SliderRepository $sliderRepository
      * @param App\Helpers\ResponseHelper $responseHelper
      * @param  App\Helpers\Helpers $helpers
      * @param  App\Helpers\S3Helper $s3helper
+     * @param \Illuminate\Http\Request $request
      * @return void
      */
     public function __construct(
         SliderRepository $sliderRepository,
         ResponseHelper $responseHelper,
         Helpers $helpers,
-        S3Helper $s3helper
+        S3Helper $s3helper,
+        Request $request
     ) {
         $this->sliderRepository = $sliderRepository;
         $this->responseHelper = $responseHelper;
         $this->helpers = $helpers;
         $this->s3helper = $s3helper;
+        $this->userApiKey =$request->header('php-auth-user');
     }
 
     /**
@@ -112,6 +121,19 @@ class SliderController extends Controller
                 $apiData = ['slider_id' => $slider->slider_id];
                 $apiStatus = Response::HTTP_CREATED;
                 $apiMessage = trans('messages.success.MESSAGE_SLIDER_ADD_SUCCESS');
+
+                // Make activity log
+                event(new UserActivityLogEvent(
+                    config('constants.activity_log_types.SLIDER'),
+                    config('constants.activity_log_actions.CREATED'),
+                    config('constants.activity_log_user_types.API'),
+                    $this->userApiKey,
+                    get_class($this),
+                    $request->toArray(),
+                    null,
+                    $slider->slider_id
+                ));
+
                 return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
             }
         } catch (\ErrorException $e) {
@@ -171,6 +193,19 @@ class SliderController extends Controller
             // Set response data
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_SLIDER_UPDATED_SUCCESS');
+
+            // Make activity log
+            event(new UserActivityLogEvent(
+                config('constants.activity_log_types.SLIDER'),
+                config('constants.activity_log_actions.UPDATED'),
+                config('constants.activity_log_user_types.API'),
+                $this->userApiKey,
+                get_class($this),
+                $request->toArray(),
+                null,
+                $id
+            ));
+
             return $this->responseHelper->success($apiStatus, $apiMessage);
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
@@ -218,6 +253,19 @@ class SliderController extends Controller
             // Set response data
             $apiStatus = Response::HTTP_NO_CONTENT;
             $apiMessage = trans('messages.success.MESSAGE_SLIDER_DELETED');
+
+            // Make activity log
+            event(new UserActivityLogEvent(
+                config('constants.activity_log_types.SLIDER'),
+                config('constants.activity_log_actions.DELETED'),
+                config('constants.activity_log_user_types.API'),
+                $this->userApiKey,
+                get_class($this),
+                [],
+                null,
+                $id
+            ));
+
             return $this->responseHelper->success($apiStatus, $apiMessage);
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(

@@ -20,6 +20,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Exceptions\TenantDomainNotFoundException;
 use App\Jobs\ResetStyleSettingsJob;
 use App\Jobs\UpdateStyleSettingsJob;
+use App\Events\User\UserActivityLogEvent;
 
 class TenantOptionsController extends Controller
 {
@@ -51,18 +52,21 @@ class TenantOptionsController extends Controller
      * @param  App\Helpers\ResponseHelper $responseHelper
      * @param  App\Helpers\Helpers $helpers
      * @param  App\Helpers\S3Helper $s3helper
+     * @param \Illuminate\Http\Request $request
      * @return void
      */
     public function __construct(
         TenantOptionRepository $tenantOptionRepository,
         ResponseHelper $responseHelper,
         Helpers $helpers,
-        S3Helper $s3helper
+        S3Helper $s3helper,
+        Request $request
     ) {
         $this->tenantOptionRepository = $tenantOptionRepository;
         $this->responseHelper = $responseHelper;
         $this->helpers = $helpers;
         $this->s3helper = $s3helper;
+        $this->userApiKey = $request->header('php-auth-user');
     }
 
     /**
@@ -111,8 +115,26 @@ class TenantOptionsController extends Controller
             );
         }
 
-        $this->tenantOptionRepository->updateStyleSettings($request);
+        $updatedTenantOptionIds = $this->tenantOptionRepository->updateStyleSettings($request);
 
+        if (!empty($updatedTenantOptionIds)) {
+            $requestArray = $request->toArray();
+            foreach ($updatedTenantOptionIds as $tenantOptionId) {
+                $requestArray['custom_scss_file'] = '';
+                // Make activity log for tenant option primary key or secondary key
+                event(new UserActivityLogEvent(
+                    config('constants.activity_log_types.STYLE'),
+                    config('constants.activity_log_actions.UPDATED'),
+                    config('constants.activity_log_user_types.API'),
+                    $this->userApiKey,
+                    get_class($this),
+                    $requestArray,
+                    null,
+                    $tenantOptionId
+                ));
+            }
+        }
+        
         // Get domain name from request and use as tenant name.
         $tenantName = $this->helpers->getSubDomainFromRequest($request);
         if ($request->hasFile('custom_scss_file')) {
@@ -186,7 +208,26 @@ class TenantOptionsController extends Controller
         
         // Create new job that will take tenantName, options, and uploaded file path as an argument.
         // Dispatch job, that will store in master database
+
         dispatch(new UpdateStyleSettingsJob($tenantName, $options, $fileName));
+
+        if (!empty($fileName)) {
+            $requestArray = $request->toArray();
+            $requestArray['custom_scss_file'] = $filePath;
+
+            // Make activity log
+            event(new UserActivityLogEvent(
+                config('constants.activity_log_types.STYLE'),
+                config('constants.activity_log_actions.UPDATED'),
+                config('constants.activity_log_user_types.API'),
+                $this->userApiKey,
+                get_class($this),
+                $requestArray,
+                null,
+                null
+            ));
+        }
+        
 
         // Database connection with tenant database
         $this->helpers->switchDatabaseConnection('tenant', $request);
@@ -194,6 +235,7 @@ class TenantOptionsController extends Controller
         // Set response data
         $apiStatus = Response::HTTP_OK;
         $apiMessage = trans('messages.success.MESSAGE_CUSTOM_STYLE_UPLOADED_SUCCESS');
+
         return $this->responseHelper->success($apiStatus, $apiMessage);
     }
 
@@ -237,7 +279,7 @@ class TenantOptionsController extends Controller
     public function updateImage(Request $request): JsonResponse
     {
         $validFileTypesArray = ['image/jpeg','image/svg+xml','image/png'];
-
+   
         // Server side validataions
         $validator = Validator::make(
             $request->toArray(),
@@ -268,7 +310,7 @@ class TenantOptionsController extends Controller
                 trans('messages.custom_error_message.ERROR_NOT_VALID_IMAGE_FILE_EXTENSION')
             );
         }
-
+       
         // If request parameter have any error
         if (!in_array($file->getMimeType(), $validFileTypesArray) &&
         $fileNameExtension === $file->getClientOriginalExtension()) {
@@ -287,6 +329,9 @@ class TenantOptionsController extends Controller
             throw $e;
         }
 
+        // request array to make activity log
+        $requestArray = $request->toArray();
+
         if (Storage::disk('s3')->exists($tenantName)) {
             if (!Storage::disk('s3')->exists($tenantName.'/assets/images/'.$fileName)) {
                 throw new FileNotFoundException(
@@ -304,12 +349,26 @@ class TenantOptionsController extends Controller
                     'mimetype' => $file->getMimeType()
                 ]
             );
+            $requestArray['image_file'] = 'https://'.env('AWS_S3_BUCKET_NAME').'.s3.'
+                .env("AWS_REGION").'.amazonaws.com/'.$tenantName.'/assets/images/'.$fileName;
         } else {
             throw new BucketNotFoundException(
                 trans('messages.custom_error_message.ERROR_TENANT_ASSET_FOLDER_NOT_FOUND_ON_S3'),
                 config('constants.error_codes.ERROR_TENANT_ASSET_FOLDER_NOT_FOUND_ON_S3')
             );
         }
+
+        // Make activity log
+        event(new UserActivityLogEvent(
+            config('constants.activity_log_types.STYLE_IMAGE'),
+            config('constants.activity_log_actions.UPDATED'),
+            config('constants.activity_log_user_types.API'),
+            $this->userApiKey,
+            get_class($this),
+            $requestArray,
+            null,
+            null
+        ));
                   
         $apiStatus = Response::HTTP_OK;
         $apiMessage = "Image uploaded successfully";
@@ -353,6 +412,18 @@ class TenantOptionsController extends Controller
         $apiStatus = Response::HTTP_CREATED;
         $apiMessage = trans('messages.success.MESSAGE_TENANT_OPTION_CREATED');
         
+        // Make activity log
+        event(new UserActivityLogEvent(
+            config('constants.activity_log_types.TENANT_OPTION'),
+            config('constants.activity_log_actions.CREATED'),
+            config('constants.activity_log_user_types.API'),
+            $this->userApiKey,
+            get_class($this),
+            $request->toArray(),
+            null,
+            $tenantOption->tenant_option_id
+        ));
+
         return $this->responseHelper->success($apiStatus, $apiMessage);
     }
 
@@ -394,6 +465,18 @@ class TenantOptionsController extends Controller
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_TENANT_OPTION_UPDATED');
             
+             // Make activity log
+            event(new UserActivityLogEvent(
+                config('constants.activity_log_types.TENANT_OPTION'),
+                config('constants.activity_log_actions.UPDATED'),
+                config('constants.activity_log_user_types.API'),
+                $this->userApiKey,
+                get_class($this),
+                $request->toArray(),
+                null,
+                $tenantOption->tenant_option_id
+            ));
+
             return $this->responseHelper->success($apiStatus, $apiMessage);
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
