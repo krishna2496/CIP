@@ -543,7 +543,9 @@ return [
         'TIME_MISSION_TIMESHEET' => 'TIME_MISSION_TIMESHEET',
         'GOAL_MISSION_TIMESHEET' => 'GOAL_MISSION_TIMESHEET',
         'STORY' => 'STORY',
-        'MISSION_COMMENTS' => 'MISSION_COMMENTS'
+        'MISSION_COMMENTS' => 'MISSION_COMMENTS',
+        'NOTIFICATION_SETTING' => 'NOTIFICATION_SETTING',
+        'NOTIFICATION' => 'NOTIFICATION'
     ],
 
     'activity_log_actions' => [
@@ -569,7 +571,11 @@ return [
         'LINKED' => 'LINKED',
         'UNLINKED' => 'UNLINKED',
         'ACCEPTED' => 'ACCEPTED',
-        'EXPORT' => 'EXPORT'
+        'EXPORT' => 'EXPORT',
+        'READ' => 'READ',
+        'ACTIVATED' => 'ACTIVATED',
+        'DEACTIVATED' => 'DEACTIVATED',
+        'CLEAR_ALL' => 'CLEAR_ALL'
     ],
 
     'activity_log_user_types' => [
