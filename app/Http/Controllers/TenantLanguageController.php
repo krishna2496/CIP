@@ -11,6 +11,7 @@ use App\Repositories\TenantLanguage\TenantLanguageRepository;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use InvalidArgumentException;
 use Validator;
+use App\Events\ActivityLogEvent;
 
 class TenantLanguageController extends Controller
 {
@@ -125,6 +126,18 @@ class TenantLanguageController extends Controller
         : trans('messages.success.MESSAGE_TENANT_LANGUAGE_UPDATED');
         $apiData = ['tenant_language_id' => $tenantLanguageData->tenant_language_id];
 
+        $activityLogStatus = ($tenantLanguageData->wasRecentlyCreated)
+            ? config('constants.activity_log_actions.CREATED') : config('constants.activity_log_actions.UPDATED');
+
+        // Make activity log
+        event(new ActivityLogEvent(
+            config('constants.activity_log_types.TENANT_LANGUAGE'),
+            $activityLogStatus,
+            get_class($this),
+            $request->toArray(),
+            $tenantLanguageData->tenant_language_id
+        ));
+
         return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
     }
     
@@ -142,6 +155,16 @@ class TenantLanguageController extends Controller
             // Set response data
             $apiStatus = Response::HTTP_NO_CONTENT;
             $apiMessage = trans('messages.success.MESSAGE_TENANT_LANGUAGE_DELETED');
+
+            // Make activity log
+            event(new ActivityLogEvent(
+                config('constants.activity_log_types.TENANT_LANGUAGE'),
+                config('constants.activity_log_actions.DELETED'),
+                get_class($this),
+                [],
+                $tenantLanguageId
+            ));
+
             return $this->responseHelper->success($apiStatus, $apiMessage);
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(

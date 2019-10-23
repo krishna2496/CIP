@@ -45,6 +45,7 @@
             'API_USER_KEY_RENEW' => 'API_USER_KEY_RENEW',
             'TENANT_SETTINGS' => 'TENANT_SETTINGS',
             'LANGUAGE' => 'LANGUAGE',
+            'TENANT_LANGUAGE' => 'TENANT_LANGUAGE',
         ],
         'activity_log_actions' => [
             'CREATED' => 'CREATED',
