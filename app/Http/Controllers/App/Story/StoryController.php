@@ -110,6 +110,34 @@ class StoryController extends Controller
         $apiMessage = trans('messages.success.STORY_ADDED_SUCESSFULLY');
         $apiData = ['story_id' => $storyData->story_id];
 
+        // get the story media data for log
+        $requestData = $request->toArray();
+
+        if ($request->hasFile('story_images')) {
+            $storyImageArray = array();
+            $storyMedia = $this->storyRepository->getStoryMedia($storyData->story_id);
+            
+            foreach ($storyMedia as $mediaData) {
+                // found the image
+                if ($mediaData->type == 'image') {
+                    array_push($storyImageArray, $mediaData->path);
+                }
+            }
+            $requestData ['story_images'] = $storyImageArray;
+        }
+
+        //Make activity log
+        event(new UserActivityLogEvent(
+            config('constants.activity_log_types.STORY'),
+            config('constants.activity_log_actions.CREATED'),
+            config('constants.activity_log_user_types.REGULAR'),
+            $request->auth->email,
+            get_class($this),
+            $requestData,
+            $request->auth->user_id,
+            $storyData->story_id
+        ));
+
         return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
     }
 
@@ -173,6 +201,34 @@ class StoryController extends Controller
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_STORY_UPDATED');
             $apiData = ['story_id' => $storyData->story_id];
+
+            // get the story media data for log
+            $requestData = $request->toArray();
+
+            if ($request->hasFile('story_images')) {
+                $storyImageArray = array();
+                $storyMedia = $this->storyRepository->getStoryMedia($storyData->story_id);
+                
+                foreach ($storyMedia as $mediaData) {
+                    // found the image
+                    if ($mediaData->type == 'image') {
+                        array_push($storyImageArray, $mediaData->path);
+                    }
+                }
+                $requestData ['story_images'] = $storyImageArray;
+            }
+
+            //Make activity log
+            event(new UserActivityLogEvent(
+                config('constants.activity_log_types.STORY'),
+                config('constants.activity_log_actions.UPDATED'),
+                config('constants.activity_log_user_types.REGULAR'),
+                $request->auth->email,
+                get_class($this),
+                $requestData,
+                $request->auth->user_id,
+                $storyData->story_id
+            ));
             
             return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
         } catch (ModelNotFoundException $e) {
@@ -198,6 +254,18 @@ class StoryController extends Controller
             // Set response data
             $apiStatus = Response::HTTP_NO_CONTENT;
             $apiMessage = trans('messages.success.MESSAGE_STORY_DELETED');
+
+            //Make activity log
+            event(new UserActivityLogEvent(
+                config('constants.activity_log_types.STORY'),
+                config('constants.activity_log_actions.DELETED'),
+                config('constants.activity_log_user_types.REGULAR'),
+                $request->auth->email,
+                get_class($this),
+                [],
+                $request->auth->user_id,
+                $storyId
+            ));
 
             return $this->responseHelper->success($apiStatus, $apiMessage);
         } catch (ModelNotFoundException $e) {
@@ -237,8 +305,31 @@ class StoryController extends Controller
         $storyArray = array('story_id' => $story[0]->story_id,
                             'story_user_id' => $story[0]->user_id,
                             'status' => $story[0]->status);
-                            
+        
         $storyViewCount = $this->storyVisitorRepository->updateStoryViewCount($storyArray, $request->auth->user_id);
+
+        // not found same story user & login user & story status is published then story visitor count is updated
+        // so make the activiy log
+        if ($storyArray['story_user_id'] != $request->auth->user_id
+            && $storyArray['status'] ==  config('constants.story_status.PUBLISHED')) {
+                // get story visitor data to get object id
+            $storyVisitorData = $this->storyVisitorRepository->getStoryVisitorData(
+                $storyArray['story_id'],
+                $request->auth->user_id
+            );
+            
+            //Make activity log
+            event(new UserActivityLogEvent(
+                config('constants.activity_log_types.STORY_VISITOR'),
+                config('constants.activity_log_actions.COUNTED'),
+                config('constants.activity_log_user_types.REGULAR'),
+                $request->auth->email,
+                get_class($this),
+                $storyArray,
+                $request->auth->user_id,
+                $storyVisitorData->story_visitor_id
+            ));
+        }
 
         // get default user avatar
         $tenantName = $this->helpers->getSubDomainFromRequest($request);
@@ -297,6 +388,18 @@ class StoryController extends Controller
         $apiMessage = trans('messages.success.MESSAGE_STORY_COPIED_SUCCESS');
         $apiData = ['story_id' => $newStoryId ];
             
+        //Make activity log
+        event(new UserActivityLogEvent(
+            config('constants.activity_log_types.STORY'),
+            config('constants.activity_log_actions.COPIED'),
+            config('constants.activity_log_user_types.REGULAR'),
+            $request->auth->email,
+            get_class($this),
+            [],
+            $request->auth->user_id,
+            $newStoryId
+        ));
+
         return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
     }
     
@@ -395,6 +498,18 @@ class StoryController extends Controller
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_STORY_SUBMITTED_SUCESSFULLY');
             $apiData = ['story_id' => $storyData->story_id];
+
+            //Make activity log
+            event(new UserActivityLogEvent(
+                config('constants.activity_log_types.STORY'),
+                config('constants.activity_log_actions.SUBMIT_FOR_APPROVAL'),
+                config('constants.activity_log_user_types.REGULAR'),
+                $request->auth->email,
+                get_class($this),
+                [],
+                $request->auth->user_id,
+                $storyId
+            ));
             
             return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
         } catch (ModelNotFoundException $e) {
@@ -448,6 +563,18 @@ class StoryController extends Controller
             $apiStatus = Response::HTTP_NO_CONTENT;
             $apiMessage = trans('messages.success.MESSAGE_STORY_IMAGE_DELETED');
 
+            //Make activity log
+            event(new UserActivityLogEvent(
+                config('constants.activity_log_types.STORY_IMAGE'),
+                config('constants.activity_log_actions.DELETED'),
+                config('constants.activity_log_user_types.REGULAR'),
+                $request->auth->email,
+                get_class($this),
+                [],
+                $request->auth->user_id,
+                $mediaId
+            ));
+            
             return $this->responseHelper->success($apiStatus, $apiMessage);
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(

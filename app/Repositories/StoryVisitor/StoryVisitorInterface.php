@@ -13,4 +13,13 @@ interface StoryVisitorInterface
      * @return int $storyViewCount
      */
     public function updateStoryViewCount(array $story, int $loginUserId): int;
+
+    /**
+     * Get story visitor data
+     *
+     * @param int $storyId
+     * @param int $userId
+     * @return App\Models\StoryVisitor
+     */
+    public function getStoryVisitorData(int $storyId, int $userId): StoryVisitor;
 }
