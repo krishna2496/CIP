@@ -172,6 +172,8 @@ return [
         'MESSAGE_USER_NOTIFICATIONS_CLEAR_SUCCESSFULLY' => 'User notification cleared successfully',
         'MESSAGE_NOTIFICATION_LISTING' => 'Notification listed successfully',
         'MESSAGE_READ_SUCCESSFULLY' => 'Message read successfully',
+        'MESSAGE_ACTIVITY_LOGS_ENTRIES_LISTING' => 'Activity logs listed successfully',
+        'MESSAGE_NO_ACTIVITY_LOGS_ENTRIES_FOUND' => 'No activity logs found'
     ],
 
         

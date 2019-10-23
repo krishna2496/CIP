@@ -727,6 +727,16 @@ $router->group(['middleware' => 'localization'], function ($router) {
                 'uses' => 'Admin\Message\MessageController@readMessage']);
         }
     );
+
+    /* Get Activity Logs */
+    $router->group(
+        ['middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware'],
+        function ($router) {
+            /* Get user activity logs */
+            $router->get('/logs', ['middleware' => ['PaginationMiddleware'],
+                'uses' => 'Admin\ActivityLog\ActivityLogController@index']);
+        }
+    );
 /*
 |
 |--------------------------------------------------------------------------
