@@ -234,20 +234,20 @@
 		created() {
 			this.languageData = JSON.parse(store.state.languageLabel);
 			setTimeout(() => {
-				var buttonExpand = document.querySelectorAll(".btn-expand");
-				buttonExpand.forEach(function (event) {
+				let buttonExpand = document.querySelectorAll(".btn-expand");
+				buttonExpand.forEach( (event) => {
 					event.addEventListener("click", function () {
-						var getcommentCell = this.parentNode.parentNode.childNodes[2];
-						var getcommenthtml = getcommentCell.innerHTML;
-						var strlenght = getcommenthtml.length;
-						var rowParent = this.parentNode.parentNode.parentNode;
-						var rowSibling = rowParent.childNodes;
+						let getcommentCell = this.parentNode.parentNode.childNodes[2];
+						let getcommenthtml = getcommentCell.innerHTML;
+						let strlenght = getcommenthtml.length;
+						let rowParent = this.parentNode.parentNode.parentNode;
+						let rowSibling = rowParent.childNodes;
 						if (strlenght > 30) {
 							getcommentCell.classList.toggle("remove-truncate");
 						}
-						for (var i = 0; i < rowSibling.length; i++) {
-							var siblingChild = rowSibling[i].childNodes;
-							for (var j = 0; j < siblingChild.length; j++) {
+						for (let i = 0; i < rowSibling.length; i++) {
+							let siblingChild = rowSibling[i].childNodes;
+							for (let j = 0; j < siblingChild.length; j++) {
 								if (siblingChild[j] != getcommentCell) {
 									siblingChild[j].classList.remove("remove-truncate");
 								}

@@ -130,7 +130,7 @@
                                         <img :src="$store.state.imagePath+'/assets/images/bell-ic.svg'"
                                             alt="Notification Icon" />
                                     </i>
-                                    <b-badge v-if="isNotificationLoaded">{{notificationCount}}</b-badge>
+                                    <b-badge v-if="notificationCount != 0">{{notificationCount}}</b-badge>
                                 </button>
                             </b-nav-item>
                             <b-nav-item-dropdown right class="profile-menu" v-if="this.$store.state.isLoggedIn">
@@ -151,7 +151,7 @@
                         <b-popover target="notificationPopover" placement="topleft" container="notifyPopoverWrap"
                             @show="onPopoverShow" ref="notficationPopover" triggers="click">
                             <template slot="title">
-                                <b-button class="btn-setting" title="Setting" @click="showsetting">
+                                <b-button class="btn-setting" :title="languageData.label.notification_settings"  @click="showsetting">
                                     <img :src="$store.state.imagePath+'/assets/images/settings-ic.svg'"
                                         alt="Setting icon">
 
@@ -400,8 +400,8 @@
                         .classList.add("notification-popover");
                 },
                 showclearitem() {
-                    var popover_body = document.querySelector(".popover-body");
-                    popover_body.classList.add("clear-item");
+                    let popoverBody = document.querySelector(".popover-body");
+                    popoverBody.classList.add("clear-item");
                     clearNotification().then(response => {
                         if(response.error == false) {
                             this.notificationCount = 0
@@ -410,13 +410,13 @@
                     })
                 },
                 showsetting() {
-                    var popover_body = document.querySelector(".popover-body");
-                    popover_body.classList.toggle("show-setting");
+                    let popoverBody = document.querySelector(".popover-body");
+                    popoverBody.classList.toggle("show-setting");
                 },
                 cancelsetting() {
                     this.selectedNotification = []
-                    var popover_body = document.querySelector(".popover-body");
-                    popover_body.classList.remove("show-setting");
+                    let popoverBody = document.querySelector(".popover-body");
+                    popoverBody.classList.remove("show-setting");
                     this.$root.$emit("bv::show::popover", "notificationPopover");
                     this.notificationSettingList.filter((data, index) => {
                         if (data.is_active == 1) {
@@ -425,19 +425,19 @@
                     })
                 },
                 openMenu() {
-                    var body = document.querySelectorAll("body, html");
+                    let body = document.querySelectorAll("body, html");
                     body.forEach(function (e) {
                         e.classList.add("open-nav");
                     });
                 },
                 closeMenu() {
-                    var body = document.querySelectorAll("body, html");
+                    let body = document.querySelectorAll("body, html");
                     body.forEach(function (e) {
                         e.classList.remove("open-nav");
                     });
                 },
                 searchMenu() {
-                    var body = document.querySelectorAll("body, html");
+                    let body = document.querySelectorAll("body, html");
                     body.forEach(function (e) {
                         e.classList.toggle("open-search");
                     });
@@ -459,7 +459,7 @@
                     }
                     eventBus.$emit('setDefaultText');
                     this.$emit('exploreMisison', this.filterData);
-                    var body = document.querySelectorAll("body, html");
+                    let body = document.querySelectorAll("body, html");
                     body.forEach(function (e) {
                         e.classList.remove("open-nav");
                     });
@@ -564,8 +564,8 @@
                     
                     if(this.totalNotificationCount <= 0) {
                         setTimeout(() => {
-                             var popover_body = document.querySelector(".popover-body");
-                        popover_body.classList.add("clear-item");  
+                            let popoverBody = document.querySelector(".popover-body");
+                        popoverBody.classList.add("clear-item");  
                         },100)
                             
                     }
@@ -613,9 +613,9 @@
                         this.makeToast(classVariant, response.message)
                     })
                 },
-                makeToast(variant = null, message) {
+                makeToast(letiant = null, message) {
                     this.$bvToast.toast(message, {
-                        variant: variant,
+                        letiant: letiant,
                         solid: true,
                         autoHideDelay: 3000
                     })
@@ -633,10 +633,10 @@
             created() {
                 this.languageData = JSON.parse(store.state.languageLabel);
                 setTimeout(function () {
-                    var body = document.querySelector("body");
-                    var notification_btn = document.querySelector(".btn-notification");
+                    let body = document.querySelector("body");
+                    let notification_btn = document.querySelector(".btn-notification");
                     body.addEventListener("click", function () {
-                        var notification_popover = document.querySelector(
+                        let notification_popover = document.querySelector(
                             ".notification-popover"
                         );
                         if (notification_popover != null) {
@@ -644,7 +644,7 @@
                         }
                     });
 
-                    var notificationMenu = document.querySelector(".notification-menu");
+                    let notificationMenu = document.querySelector(".notification-menu");
                     if (notificationMenu != null) {
                         notificationMenu.addEventListener("click", function (e) {
                             e.stopPropagation();

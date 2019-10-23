@@ -405,7 +405,7 @@
 												v-if="missionDetail.description && missionDetail.description.length > 0">
 												<div v-for="(section, index) in missionDetail.description" :key=index>
 													<h2>{{section.title}}</h2>
-													<p>{{section.description}}</p>
+													<p v-html="section.description"></p>
 												</div>
 											</div>
 											<div
@@ -598,7 +598,7 @@
 							<div slot-scope="{suggestion}">
 								<img :src="suggestion.item.avatar" />
 								<div>
-									{{suggestion.item.first_name}} {{suggestion.item.last_name}} <span>({{suggestion.item.email}})</span>
+									{{suggestion.item.first_name}} {{suggestion.item.last_name}}
 								</div>
 							</div>
 						</VueAutosuggest>

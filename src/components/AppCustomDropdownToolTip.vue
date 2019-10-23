@@ -62,7 +62,7 @@
 				}
 
 				e.target.parentNode.classList.toggle("dropdown-open");
-				var simplebarScrollTop = e.target.parentNode.querySelector(
+				let simplebarScrollTop = e.target.parentNode.querySelector(
 					".simplebar-content-wrapper"
 				);
 				simplebarScrollTop.scrollTop = 0;

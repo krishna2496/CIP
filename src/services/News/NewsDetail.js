@@ -3,11 +3,11 @@ import store from '../../store'
 
 export default async(newsId) => {
     let responseData = {};
-    var defaultLanguage = '';
+    let defaultLanguage = '';
     if (store.state.defaultLanguage !== null) {
         defaultLanguage = (store.state.defaultLanguage).toLowerCase();
     }
-    var url = process.env.VUE_APP_API_ENDPOINT + "app/news/" + newsId;
+    let url = process.env.VUE_APP_API_ENDPOINT + "app/news/" + newsId;
     document.body.classList.add("loader-enable");
     await axios({
             url: url,

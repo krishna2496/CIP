@@ -42,7 +42,7 @@
                     <i class="close" @click="close()" v-b-tooltip.hover :title="languageData.label.close"></i>
                     <h5 class="modal-title">{{ languageData.label.contact_us }}</h5>
                 </template>
-                <b-alert show :variant="classVariant" dismissible v-model="showDismissibleAlert">{{ message }}</b-alert>
+                <b-alert show :letiant="classVariant" dismissible v-model="showDismissibleAlert">{{ message }}</b-alert>
                 <div v-bind:class="{ 'content-loader-wrap': true, 'loader-active ': isAjaxCall}">
                     <div class="content-loader"></div>
                 </div>
@@ -168,9 +168,9 @@
             this.langList = JSON.parse(store.state.listOfLanguage)
             this.defautLang = store.state.defaultLanguage
             setTimeout(() => {
-                var closeCookies = document.querySelector('.cookies-block .close');
-                var agreeBtn = document.querySelector('.cookies-block .btn');
-                var cookiesBlock = document.querySelector('.cookies-block');
+                let closeCookies = document.querySelector('.cookies-block .close');
+                let agreeBtn = document.querySelector('.cookies-block .btn');
+                let cookiesBlock = document.querySelector('.cookies-block');
 
                 agreeBtn.addEventListener('click', () => {
                     cookiesBlock.classList.add('hidden')

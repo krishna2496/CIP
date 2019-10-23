@@ -1,6 +1,5 @@
 <template>
     <div>
-
         <b-modal ref="goalActionModal" :modal-class="'goal-modal table-modal'" hide-footer @hidden="hideModal">
             <template slot="modal-header" slot-scope="{ close }">
                 <i class="close" @click="close()" v-b-tooltip.hover :title="languageData.label.close"></i>
