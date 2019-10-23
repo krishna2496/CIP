@@ -498,7 +498,7 @@ return [
      * Notification type icons
      */
     'notification_icons' => [
-        'APPROVED' => 'approve-ic.svg',
+        'APPROVED' => 'approve-ic.png',
         'DECLINED' => 'warning.png',
         'NEW' => 'circle-plus.png',
     ],
