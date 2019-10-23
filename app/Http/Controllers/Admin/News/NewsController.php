@@ -16,6 +16,7 @@ use App\Models\News;
 use App\Transformations\NewsTransformable;
 use App\Helpers\LanguageHelper;
 use App\Helpers\Helpers;
+use App\Events\User\UserActivityLogEvent;
 use App\Events\User\UserNotificationEvent;
 
 //!  News Controller
@@ -46,24 +47,32 @@ class NewsController extends Controller
     private $helpers;
 
     /**
+     * @var string
+     */
+    private $userApiKey;
+
+    /**
      * Create a new controller instance.
      *
      * @param App\Repositories\News\NewsRepository $newsRepository
      * @param App\Helpers\ResponseHelper $responseHelper
      * @param App\Helpers\LanguageHelper $languageHelper
      * @param App\Helpers\Helpers $helpers
+     * @param \Illuminate\Http\Request $request
      * @return void
      */
     public function __construct(
         NewsRepository $newsRepository,
         ResponseHelper $responseHelper,
         LanguageHelper $languageHelper,
-        Helpers $helpers
+        Helpers $helpers,
+        Request $request
     ) {
         $this->newsRepository = $newsRepository;
         $this->responseHelper = $responseHelper;
         $this->languageHelper = $languageHelper;
         $this->helpers = $helpers;
+        $this->userApiKey =$request->header('php-auth-user');
     }
 
     /**
@@ -146,7 +155,7 @@ class NewsController extends Controller
                 $validator->errors()->first()
             );
         }
-
+        
         // Create a new record
         $news = $this->newsRepository->store($request);
         
@@ -154,6 +163,18 @@ class NewsController extends Controller
         $apiStatus = Response::HTTP_CREATED;
         $apiMessage = trans('messages.success.MESSAGE_NEWS_CREATED');
         $apiData = ['news_id' => $news->news_id];
+
+        // Make activity log
+        event(new UserActivityLogEvent(
+            config('constants.activity_log_types.NEWS'),
+            config('constants.activity_log_actions.CREATED'),
+            config('constants.activity_log_user_types.API'),
+            $this->userApiKey,
+            get_class($this),
+            $request->toArray(),
+            null,
+            $news->news_id
+        ));
         
         // Send notification to user
         $notificationType = config('constants.notification_type_keys.NEW_NEWS');
@@ -210,6 +231,20 @@ class NewsController extends Controller
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_NEWS_UPDATED');
             $apiData = ['news_id' => $news->news_id];
+
+             // Make activity log
+            event(new UserActivityLogEvent(
+                config('constants.activity_log_types.NEWS'),
+                config('constants.activity_log_actions.UPDATED'),
+                config('constants.activity_log_user_types.API'),
+                $this->userApiKey,
+                get_class($this),
+                $request->toArray(),
+                null,
+                $news->news_id
+            ));
+
+            
             return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
@@ -260,6 +295,19 @@ class NewsController extends Controller
             // Set response data
             $apiStatus = Response::HTTP_NO_CONTENT;
             $apiMessage = trans('messages.success.MESSAGE_NEWS_DELETED');
+
+            // Make activity log
+            event(new UserActivityLogEvent(
+                config('constants.activity_log_types.NEWS'),
+                config('constants.activity_log_actions.DELETED'),
+                config('constants.activity_log_user_types.API'),
+                $this->userApiKey,
+                get_class($this),
+                [],
+                null,
+                $newsId
+            ));
+
             return $this->responseHelper->success($apiStatus, $apiMessage);
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
