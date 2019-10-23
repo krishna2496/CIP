@@ -1,7 +1,8 @@
 <?php
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\{Model, SoftDeletes};
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\TenantOption;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Collection;
@@ -53,14 +54,4 @@ class TenantHasOption extends Model
     public static $rules = [
         // Validation rules
     ];
-    
-    /**
-    * Defined has many relation for the tenant_option table.
-    *
-    * @return \Illuminate\Database\Eloquent\Relations\HasOne
-    */
-    public function option(): HasOne
-    {
-        return $this->hasOne(TenantOption::class, 'tenant_option_id', 'tenant_option_id');
-    }
 }

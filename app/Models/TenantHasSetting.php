@@ -44,7 +44,7 @@ class TenantHasSetting extends Model
      *
      * @var array
      */
-    protected $visible = ['tenant_setting_id', 'tenant_id', 'setting', 'getsettings'];
+    protected $visible = ['tenant_setting_id', 'tenant_id'];
 
     /**
      * The rules that should validate request.
@@ -66,26 +66,6 @@ class TenantHasSetting extends Model
     }
    
     /**
-    * Defined has many relation for the tenant_setting table.
-    *
-    * @return \Illuminate\Database\Eloquent\Relations\HasOne
-    */
-    public function settings()
-    {
-        return $this->hasOne(TenantSetting::class, 'tenant_setting_id', 'tenant_setting_id');
-    }
-
-    /**
-    * Defined has many relation for the tenant_setting table.
-    *
-    * @return \Illuminate\Database\Eloquent\Relations\HasOne
-    */
-    public function getSettings()
-    {
-        return $this->belongsTo('App\Models\TenantSetting', 'tenant_setting_id', 'tenant_setting_id');
-    }
-
-    /**
      * enable settings
      *
      * @param  int  $tenantId
@@ -94,12 +74,13 @@ class TenantHasSetting extends Model
      */
     public function enableSetting(int $tenantId, int $tenantSettingId): bool
     {
-		return $this->where(['tenant_id' => $tenantId, 'tenant_setting_id' => $tenantSettingId])->withTrashed()->first() ?
-				$this->where(['tenant_id' => $tenantId, 'tenant_setting_id' => $tenantSettingId])->restore():
-				static::firstOrNew(array('tenant_id' => $tenantId, 'tenant_setting_id' => $tenantSettingId))->save();
+        return $this->where(['tenant_id' => $tenantId, 'tenant_setting_id' => $tenantSettingId])
+        ->withTrashed()->first() ?
+            $this->where(['tenant_id' => $tenantId, 'tenant_setting_id' => $tenantSettingId])->restore():
+            static::firstOrNew(array('tenant_id' => $tenantId, 'tenant_setting_id' => $tenantSettingId))->save();
     }
-	
-	/**
+    
+    /**
      * disable settings
      *
      * @param  int  $tenantId

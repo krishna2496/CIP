@@ -52,9 +52,4 @@ class TenantSetting extends Model
     public static $rules = [
         // Validation rules
     ];
-
-    public function tenantHasSetting()
-    {
-        return $this->hasOne(TenantHasSetting::class, 'tenant_setting_id', 'tenant_setting_id');
-    }
 }

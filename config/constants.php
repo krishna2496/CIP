@@ -1,6 +1,7 @@
 <?php
     return [
         'PER_PAGE_LIMIT' => '10',
+        'PER_PAGE_MAX' => '50',
         'error_codes' => [
             'ERROR_TENANT_REQUIRED_FIELDS_EMPTY' => '200001',
             'ERROR_TENANT_ALREADY_EXIST' => '200002',
@@ -16,6 +17,12 @@
             'ERROR_WHILE_STORE_COMPILED_CSS_FILE_TO_LOCAL' => '200011',
             'ERROR_FAILD_TO_UPLOAD_COMPILE_FILE_ON_S3' => '200012',
             'ERROR_WHILE_COMPILING_SCSS_FILES' => '200013',
+            'ERROR_LANGUAGE_NOT_FOUND' => '200021',
+            'ERROR_LANGUAGE_REQUIRED_FIELDS_EMPTY' => '200022',
+            'ERROR_TENANT_LANGUAGE_REQUIRED_FIELDS_EMPTY' => '200101',
+            'ERROR_LANGUAGE_NOT_ACTIVE' => '200102',
+            'ERROR_TENANT_LANGUAGE_NOT_FOUND' => '200103',
+            'ERROR_TENANT_DEFAULT_LANGUAGE_REQUIRED' => '200104',
         ],
         'background_process_status' => [
             'PENDING' => '0',
@@ -32,7 +39,6 @@
         'EMAIL_TEMPLATE_FOLDER' => 'emails',
         'EMAIL_TEMPLATE_JOB_NOTIFICATION' => 'tenant-notification',
         'ADMIN_EMAIL_ADDRESS' => 'siddharajsinh.zala@tatvasoft.com',
-
         'activity_log_types' => [
             'TENANT' => 'TENANT',
             'API_USER' => 'API_USER',
@@ -40,7 +46,6 @@
             'TENANT_SETTINGS' => 'TENANT_SETTINGS',
             'LANGUAGE' => 'LANGUAGE',
         ],
-    
         'activity_log_actions' => [
             'CREATED' => 'CREATED',
             'UPDATED' => 'UPDATED',
@@ -48,4 +53,10 @@
             'ENABLED' => 'ENABLED',
             'DISABLED' => 'DISABLED'
         ],
+        'EMAIL_TESTING_TEMPLATE' => 'test-email',
+        'ADMIN_EMAIL_ADDRESS' => 'siddharajsinh.zala@tatvasoft.com',
+        'language_status' => [
+            'ACTIVE' => '1',
+            'INACTIVE' => '0'
+        ]
     ];
