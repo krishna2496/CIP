@@ -12,6 +12,7 @@ use App\Repositories\Language\LanguageRepository;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use InvalidArgumentException;
 use Validator;
+use App\Events\ActivityLogEvent;
 
 class LanguageController extends Controller
 {
@@ -116,6 +117,15 @@ class LanguageController extends Controller
         $apiData = ['language_id' => $languageData->language_id];
         $apiMessage =  trans('messages.success.MESSAGE_LANGUAGE_CREATED');
         
+        // Make activity log
+        event(new ActivityLogEvent(
+            config('constants.activity_log_types.LANGUAGE'),
+            config('constants.activity_log_actions.CREATED'),
+            get_class($this),
+            $request->toArray(),
+            $languageData->language_id
+        ));
+
         return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
     }
 
@@ -154,6 +164,15 @@ class LanguageController extends Controller
             $apiStatus = Response::HTTP_OK;
             $apiData = ['language_id' => $languageData->language_id];
             $apiMessage = trans('messages.success.MESSAGE_LANGUAGE_UPDATED');
+
+            // Make activity log
+            event(new ActivityLogEvent(
+                config('constants.activity_log_types.LANGUAGE'),
+                config('constants.activity_log_actions.UPDATED'),
+                get_class($this),
+                $request->toArray(),
+                $languageData->language_id
+            ));
 
             return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
         } catch (ModelNotFoundException $e) {
@@ -203,6 +222,16 @@ class LanguageController extends Controller
             // Set response data
             $apiStatus = Response::HTTP_NO_CONTENT;
             $apiMessage = trans('messages.success.MESSAGE_NEWS_DELETED');
+
+            // Make activity log
+            event(new ActivityLogEvent(
+                config('constants.activity_log_types.LANGUAGE'),
+                config('constants.activity_log_actions.DELETED'),
+                get_class($this),
+                [],
+                $languageId
+            ));
+
             return $this->responseHelper->success($apiStatus, $apiMessage);
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(

@@ -12,6 +12,10 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Traits\RestExceptionHandlerTrait;
 use Validator;
 use InvalidArgumentException;
+use Aws\S3\Exception\S3Exception;
+use App\Jobs\DownloadAssestFromS3ToLocalStorageJob;
+use Queue;
+use App\Events\ActivityLogEvent;
 use App\Helpers\Helpers;
 
 class TenantController extends Controller
@@ -106,6 +110,15 @@ class TenantController extends Controller
         $apiStatus = Response::HTTP_CREATED;
         $apiData = ['tenant_id' => $tenant->tenant_id];
         $apiMessage =  trans('messages.success.MESSAGE_TENANT_CREATED');
+
+        // Make activity log
+        event(new ActivityLogEvent(
+            config('constants.activity_log_types.TENANT'),
+            config('constants.activity_log_actions.CREATED'),
+            get_class($this),
+            $request->toArray(),
+            $tenant->tenant_id
+        ));
         
         return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
     }
@@ -166,6 +179,15 @@ class TenantController extends Controller
             $apiData = ['tenant_id' => $id];
             $apiMessage = trans('messages.success.MESSAGE_TENANT_UPDATED');
 
+            // Make activity log
+            event(new ActivityLogEvent(
+                config('constants.activity_log_types.TENANT'),
+                config('constants.activity_log_actions.UPDATED'),
+                get_class($this),
+                $request->toArray(),
+                $id
+            ));
+
             return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
@@ -189,6 +211,15 @@ class TenantController extends Controller
             // Set response data
             $apiStatus = Response::HTTP_NO_CONTENT;
             $apiMessage = trans('messages.success.MESSAGE_TENANT_DELETED');
+
+            // Make activity log
+            event(new ActivityLogEvent(
+                config('constants.activity_log_types.TENANT'),
+                config('constants.activity_log_actions.DELETED'),
+                get_class($this),
+                [],
+                $id
+            ));
 
             return $this->responseHelper->success($apiStatus, $apiMessage);
         } catch (ModelNotFoundException $e) {

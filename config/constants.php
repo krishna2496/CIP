@@ -38,6 +38,22 @@
         'AWS_S3_LOGO_IMAGE_NAME' => 'logo.png',
         'EMAIL_TEMPLATE_FOLDER' => 'emails',
         'EMAIL_TEMPLATE_JOB_NOTIFICATION' => 'tenant-notification',
+        'ADMIN_EMAIL_ADDRESS' => 'siddharajsinh.zala@tatvasoft.com',
+        'activity_log_types' => [
+            'TENANT' => 'TENANT',
+            'API_USER' => 'API_USER',
+            'API_USER_KEY_RENEW' => 'API_USER_KEY_RENEW',
+            'TENANT_SETTINGS' => 'TENANT_SETTINGS',
+            'LANGUAGE' => 'LANGUAGE',
+            'TENANT_LANGUAGE' => 'TENANT_LANGUAGE',
+        ],
+        'activity_log_actions' => [
+            'CREATED' => 'CREATED',
+            'UPDATED' => 'UPDATED',
+            'DELETED' => 'DELETED',
+            'ENABLED' => 'ENABLED',
+            'DISABLED' => 'DISABLED'
+        ],
         'EMAIL_TESTING_TEMPLATE' => 'test-email',
         'ADMIN_EMAIL_ADDRESS' => 'siddharajsinh.zala@tatvasoft.com',
         'language_status' => [

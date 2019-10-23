@@ -102,7 +102,7 @@ $router->group(
             '/language/{languageId}',
             ['as' => 'language.update-language',
             'uses' => 'LanguageController@update']
-		);
+        );
         // Store/Update tenant language
         $router->post(
             '/tenant-language',
