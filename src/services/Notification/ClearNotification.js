@@ -7,7 +7,7 @@ export default async() => {
     if (store.state.defaultLanguage !== null) {
         defaultLanguage = (store.state.defaultLanguage).toLowerCase();
     }
-    let url = process.env.VUE_APP_API_ENDPOINT + "app/notification/clear";
+    let url = process.env.VUE_APP_API_ENDPOINT + "app/notifications/clear";
     await axios({
             url: url,
             method: 'DELETE',

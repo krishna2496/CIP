@@ -164,9 +164,7 @@
                                 <b-list-group>
                                     <b-list-group-item 
                                     v-if="notificationListing.today.length > 0"
-                                    :to="item.link"
-                                    target="_blank" 
-                                    @click="readItem(item.is_read, item.notification_id)"
+                                    v-on:click="readItem($event,item.is_read, item.notification_id,item.link)"
                                     v-bind:class="{
                                         'read-item':item.is_read == 1 ,
                                         'unread-item' : item.is_read == 0
@@ -178,7 +176,7 @@
                                         <p>
                                             {{item.notification_string}}
                                         </p>
-                                        <span class="status"></span>
+                                        <span v-b-tooltip.hover title="check"  class="status" v-on:click="readUnreadItem($event, item.is_read, item.notification_id)"></span>
                                     </b-list-group-item>
                                 </b-list-group>
                                 <div class="slot-title" v-show="notificationListing.yesterday.length">
@@ -186,9 +184,7 @@
                                 </div>
                                 <b-list-group v-show="notificationListing.yesterday.length > 0">
                                     <b-list-group-item 
-                                    :to="item.link"
-                                    @click="readItem(item.is_read, item.notification_id)"
-                                    target="_blank" 
+                                    v-on:click="readItem($event,item.is_read, item.notification_id,item.link)"
                                     v-bind:class="{
                                         'read-item':item.is_read == 1 ,
                                         'unread-item' : item.is_read == 0
@@ -201,17 +197,15 @@
                                         <p>
                                             {{item.notification_string}}
                                         </p>
-                                        <span class="status"></span>
+                                        <span class="status" v-b-tooltip.hover title="check" v-on:click="readUnreadItem($event,item.is_read, item.notification_id)"></span>
                                     </b-list-group-item>
                                 </b-list-group>
                                 <div class="slot-title" v-show="notificationListing.older.length > 0">
                                     <span>{{languageData.label.older}}</span>
                                 </div>
                                 <b-list-group v-show="notificationListing.older">
-                                    <b-list-group-item 
-                                    :to="item.link"
-                                    target="_blank" 
-                                    @click="readItem(item.is_read, item.notification_id)"
+                                    <b-list-group-item
+                                    v-on:click="readItem($event,item.is_read, item.notification_id,item.link)"
                                     v-bind:class="{
                                         'read-item':item.is_read == 1 ,
                                         'unread-item' : item.is_read == 0
@@ -224,7 +218,7 @@
                                         <p>
                                             {{item.notification_string}}
                                         </p>
-                                        <span class="status"></span>
+                                        <span class="status" v-b-tooltip.hover :title="getTooltipTitle(item.is_read)" v-on:click="readUnreadItem($event,item.is_read, item.notification_id)"></span>
                                     </b-list-group-item>
                                 </b-list-group>
                             </div>
@@ -545,9 +539,11 @@
                                 }
                                 if (response.data.unread_notifications) {
                                     this.notificationCount = response.data.unread_notifications
-                                    console.log(this.notificationCount);
+                                } else {
+                                    this.notificationCount = 0
                                 }
                             } else {
+                                this.notificationCount = 0
                                 this.totalNotificationCount = 0;
                                 this.notificationListing = {
                                     'today': [],
@@ -621,13 +617,32 @@
                         autoHideDelay: 3000
                     })
                 },
-                readItem(isRead , notificationId) {
+                readItem(event, isRead , notificationId,link) {
+                    event.stopPropagation();
+                    let routeData = this.$router.resolve({path : link});
+				    window.open(routeData.href, '_blank');
                     if(isRead == 0 && notificationId) {
+                     
                         readNotification(notificationId).then(response => {
                             if(response.error == false) {
                                 this.getNotificationListing();
                             }
                         })     
+                    }
+                },
+                readUnreadItem(event, isRead , notificationId) {
+                    event.stopPropagation();
+                    readNotification(notificationId).then(response => {
+                        if(response.error == false) {
+                            this.getNotificationListing();
+                        }
+                    })   
+                },
+                getTooltipTitle(isRead) {
+                    if(isRead == 0) {
+                        return this.languageData.label.mark_as_read
+                    } else {
+                        return this.languageData.label.mark_as_un_read
                     }
                 }
             },
