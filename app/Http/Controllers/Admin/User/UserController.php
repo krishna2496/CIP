@@ -154,7 +154,7 @@ class UserController extends Controller
         
         // Make activity log
         event(new UserActivityLogEvent(
-            config('constants.activity_log_types.USER'),
+            config('constants.activity_log_types.USERS'),
             config('constants.activity_log_actions.CREATED'),
             config('constants.activity_log_user_types.API'),
             $this->userApiKey,
@@ -163,7 +163,6 @@ class UserController extends Controller
             null,
             $user->user_id
         ));
-
         return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
     }
 
@@ -262,16 +261,16 @@ class UserController extends Controller
             
             // Make activity log
             event(new UserActivityLogEvent(
-                config('constants.activity_log_types.USER'),
+                config('constants.activity_log_types.USERS'),
                 config('constants.activity_log_actions.UPDATED'),
                 config('constants.activity_log_user_types.API'),
                 $this->userApiKey,
                 get_class($this),
                 $request->toArray(),
                 null,
-                $id
+                $user->user_id
             ));
-            
+
             return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
@@ -295,15 +294,15 @@ class UserController extends Controller
             // Set response data
             $apiStatus = Response::HTTP_NO_CONTENT;
             $apiMessage = trans('messages.success.MESSAGE_USER_DELETED');
-            
+           
             // Make activity log
             event(new UserActivityLogEvent(
-                config('constants.activity_log_types.USER'),
+                config('constants.activity_log_types.USERS'),
                 config('constants.activity_log_actions.DELETED'),
                 config('constants.activity_log_user_types.API'),
                 $this->userApiKey,
                 get_class($this),
-                null,
+                [],
                 null,
                 $id
             ));
