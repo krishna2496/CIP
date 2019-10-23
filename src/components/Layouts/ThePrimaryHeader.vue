@@ -545,6 +545,7 @@
                                 }
                                 if (response.data.unread_notifications) {
                                     this.notificationCount = response.data.unread_notifications
+                                    console.log(this.notificationCount);
                                 }
                             } else {
                                 this.totalNotificationCount = 0;
@@ -613,9 +614,9 @@
                         this.makeToast(classVariant, response.message)
                     })
                 },
-                makeToast(letiant = null, message) {
+                makeToast(variant = null, message) {
                     this.$bvToast.toast(message, {
-                        letiant: letiant,
+                        variant: variant,
                         solid: true,
                         autoHideDelay: 3000
                     })

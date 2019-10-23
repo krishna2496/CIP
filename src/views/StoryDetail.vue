@@ -124,7 +124,7 @@
 					<i class="close" @click="close()" v-b-tooltip.hover :title="languageData.label.close"></i>
 					<h5 class="modal-title">{{languageData.label.search_user}}</h5>
 				</template>
-				<b-alert show :letiant="classVariant" dismissible v-model="showErrorDiv">
+				<b-alert show :variant="classVariant" dismissible v-model="showErrorDiv">
 					{{ message }}
 				</b-alert>
 				<div class="autocomplete-control">

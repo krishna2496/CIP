@@ -42,7 +42,7 @@
                     <i class="close" @click="close()" v-b-tooltip.hover :title="languageData.label.close"></i>
                     <h5 class="modal-title">{{ languageData.label.contact_us }}</h5>
                 </template>
-                <b-alert show :letiant="classVariant" dismissible v-model="showDismissibleAlert">{{ message }}</b-alert>
+                <b-alert show :variant="classVariant" dismissible v-model="showDismissibleAlert">{{ message }}</b-alert>
                 <div v-bind:class="{ 'content-loader-wrap': true, 'loader-active ': isAjaxCall}">
                     <div class="content-loader"></div>
                 </div>

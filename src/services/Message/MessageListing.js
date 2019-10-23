@@ -7,7 +7,7 @@ export default async(page) => {
     if (store.state.defaultLanguage !== null) {
         defaultLanguage = (store.state.defaultLanguage).toLowerCase();
     }
-    let url = process.env.VUE_APP_API_ENDPOINT + "app/messages/list?page=" + page;
+    let url = process.env.VUE_APP_API_ENDPOINT + "app/messages?page=" + page;
     await axios({
             url: url,
             method: 'GET',
