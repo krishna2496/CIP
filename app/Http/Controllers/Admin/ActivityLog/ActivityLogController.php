@@ -75,28 +75,7 @@ class ActivityLogController extends Controller
 
         $activityLogs = $this->activityLogRepository->getActivityLogs($request);
 
-        $activityLogsTransformed = $activityLogs
-        ->getCollection()
-        ->map(function ($activityLogs) {
-            $activityLogs = $this->transformActivityLog($activityLogs);
-            return $activityLogs;
-        });
-
-        $requestString = $request->except(['page', 'perPage']);
-        $activityLogsPaginated = new \Illuminate\Pagination\LengthAwarePaginator(
-            $activityLogsTransformed,
-            $activityLogs->total(),
-            $activityLogs->perPage(),
-            $activityLogs->currentPage(),
-            [
-                'path' => $request->url() . '?' . http_build_query($requestString),
-                'query' => [
-                    'page' => $activityLogs->currentPage(),
-                ],
-            ]
-        );
-
-        $apiData = $activityLogsPaginated;
+        $apiData = $activityLogs;
         $apiStatus = Response::HTTP_OK;
         $apiMessage = ($apiData->count()) ?
         trans('messages.success.MESSAGE_ACTIVITY_LOGS_ENTRIES_LISTING') :
@@ -105,8 +84,6 @@ class ActivityLogController extends Controller
         return $this->responseHelper->successWithPagination(
             $apiStatus,
             $apiMessage,
-            $apiData,
-            []
-        );
+            $apiData);
     }
 }
