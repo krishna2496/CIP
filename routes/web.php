@@ -413,7 +413,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
         'uses' => 'App\Notification\NotificationController@readUnreadNotification']);
 
     /* Clear User notification */
-    $router->delete('/app/notification/clear', ['as' => 'app.user-notification.clear',
+    $router->delete('/app/notifications/clear', ['as' => 'app.user-notifications.clear',
         'middleware' => 'localization|tenant.connection|jwt.auth',
         'uses' => 'App\Notification\NotificationController@clearAllNotifications']);
         
