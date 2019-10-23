@@ -211,6 +211,7 @@
             getMediaPath(data) {
 			    if(data.storyMedia && data.storyMedia.path != '') {
                     let media = data.storyMedia;
+                    
                     if (media.type == 'video') {
                         let videoPath = media.path;
                         let videoId = '';

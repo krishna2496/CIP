@@ -564,7 +564,7 @@
                     
                     if(this.totalNotificationCount <= 0) {
                         setTimeout(() => {
-                             let popoverBody = document.querySelector(".popover-body");
+                            let popoverBody = document.querySelector(".popover-body");
                         popoverBody.classList.add("clear-item");  
                         },100)
                             
