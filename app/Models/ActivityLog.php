@@ -33,6 +33,7 @@ class ActivityLog extends Model
 
     /**
      * Set value in serialize form
+	 *
      * @param array $value
      * @return void
      */
@@ -41,5 +42,17 @@ class ActivityLog extends Model
         if (!is_null($value)) {
             $this->attributes['object_value'] = serialize($value);
         }
+    }
+	
+	/**
+     * Set value in serialize form
+	 *
+     * @param string $value
+     * @return array
+     */
+    public function getObjectValueAttribute(string $value = null): array
+    {
+        $data = @unserialize($value);
+        return ($data !== false) ? unserialize($value): $value;
     }
 }
