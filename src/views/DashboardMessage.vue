@@ -187,11 +187,12 @@
 		updated() {},
 		methods: {
 			pageChange(page){
-				window.scrollTo({
-                    'behavior': 'smooth',
-                    'left': 0,
-                    'top': 0
-                }, 0);
+				setTimeout(() => {
+					window.scrollTo({
+						'behavior': 'smooth',
+						'top': 0
+					});
+				});
 				this.pagination.currentPage = page
 				this.isLoaderActive = true;
 				this.getMessageListing();

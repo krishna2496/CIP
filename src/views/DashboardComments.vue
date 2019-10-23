@@ -68,10 +68,10 @@
 											{{data.item[languageData.label.status] }}
 										</template>
 										<template :slot="languageData.label.action" slot-scope="data">
-											<b-button class="btn-action btn-expand"  v-b-tooltip.hover :title="languageData.label.expand">
+											<!-- <b-button class="btn-action btn-expand"  v-b-tooltip.hover :title="languageData.label.expand">
 												<img :src="$store.state.imagePath+'/assets/images/expand-ic.svg'"
 													alt="Expand" />
-											</b-button>
+											</b-button> -->
 											<b-button class="btn-action"  v-b-tooltip.hover :title="languageData.label.delete" @click="deleteComments(data.item.comment_id)">
 												<img :src="$store.state.imagePath+'/assets/images/gray-delete-ic.svg'"
 													alt="Delete" />
@@ -132,7 +132,7 @@
 					},
 					{
 						key: "",
-						class: "expand-col",
+						class: "expand-col remove-truncate",
 						label: ""
 					},
 					{
@@ -233,29 +233,29 @@
 		},
 		created() {
 			this.languageData = JSON.parse(store.state.languageLabel);
-			setTimeout(() => {
-				let buttonExpand = document.querySelectorAll(".btn-expand");
-				buttonExpand.forEach( (event) => {
-					event.addEventListener("click", function () {
-						let getcommentCell = this.parentNode.parentNode.childNodes[2];
-						let getcommenthtml = getcommentCell.innerHTML;
-						let strlenght = getcommenthtml.length;
-						let rowParent = this.parentNode.parentNode.parentNode;
-						let rowSibling = rowParent.childNodes;
-						if (strlenght > 30) {
-							getcommentCell.classList.toggle("remove-truncate");
-						}
-						for (let i = 0; i < rowSibling.length; i++) {
-							let siblingChild = rowSibling[i].childNodes;
-							for (let j = 0; j < siblingChild.length; j++) {
-								if (siblingChild[j] != getcommentCell) {
-									siblingChild[j].classList.remove("remove-truncate");
-								}
-							}
-						}
-					});
-				});
-			}, 2000);
+			// setTimeout(() => {
+			// 	let buttonExpand = document.querySelectorAll(".btn-expand");
+			// 	buttonExpand.forEach( (event) => {
+			// 		event.addEventListener("click", function () {
+			// 			let getcommentCell = this.parentNode.parentNode.childNodes[2];
+			// 			let getcommenthtml = getcommentCell.innerHTML;
+			// 			let strlenght = getcommenthtml.length;
+			// 			let rowParent = this.parentNode.parentNode.parentNode;
+			// 			let rowSibling = rowParent.childNodes;
+			// 			if (strlenght > 30) {
+			// 				getcommentCell.classList.toggle("remove-truncate");
+			// 			}
+			// 			for (let i = 0; i < rowSibling.length; i++) {
+			// 				let siblingChild = rowSibling[i].childNodes;
+			// 				for (let j = 0; j < siblingChild.length; j++) {
+			// 					if (siblingChild[j] != getcommentCell) {
+			// 						siblingChild[j].classList.remove("remove-truncate");
+			// 					}
+			// 				}
+			// 			}
+			// 		});
+			// 	});
+			// }, 2000);
 			this.commentfields[0].label = this.languageData.label.mission
 			this.commentfields[1].label = this.languageData.label.date
 			this.commentfields[2].label = this.languageData.label.comment

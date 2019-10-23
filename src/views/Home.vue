@@ -270,11 +270,12 @@
 
             pageChange(page) {
                 //Change pagination
-                window.scrollTo({
-                    'behavior': 'smooth',
-                    'left': 0,
-                    'top': 0
-                }, 0);
+                setTimeout(() => {
+                    window.scrollTo({
+                        'behavior': 'smooth',
+                        'top': 0
+                    }, 0);
+                });
                 this.currentPage = page;
                 this.getMissions();
             },
