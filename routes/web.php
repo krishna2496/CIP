@@ -418,7 +418,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
         'uses' => 'App\Notification\NotificationController@clearAllNotifications']);
         
     /* Fetch notification settings */
-    $router->get('/app/notification', ['as' => 'app.notification',
+    $router->get('/app/notifications', ['as' => 'app.notifications',
         'middleware' => 'localization|tenant.connection|jwt.auth',
         'uses' => 'App\Notification\NotificationController@index']);
 
