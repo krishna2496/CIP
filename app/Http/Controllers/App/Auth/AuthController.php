@@ -158,7 +158,7 @@ class AuthController extends Controller
         // Make activity log
         event(new UserActivityLogEvent(
             config('constants.activity_log_types.AUTH'),
-            config('constants.activity_log_actions.LOGGEDIN'),
+            config('constants.activity_log_actions.LOGIN'),
             config('constants.activity_log_user_types.REGULAR'),
             $userDetail->email,
             get_class($this),

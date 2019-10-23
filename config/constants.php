@@ -527,7 +527,7 @@ return [
         'UPDATED' => 'UPDATED',
         'DELETED' => 'DELETED',
         'INVITED' => 'INVITED',
-        'LOGGEDIN' => 'LOGGEDIN',
+        'LOGIN' => 'LOGIN',
         'ADD_TO_FAVOURITE' => 'ADD_TO_FAVOURITE',
         'REMOVE_FROM_FAVOURITE' => 'REMOVE_FROM_FAVOURITE',
         'RATED' => 'RATED',
