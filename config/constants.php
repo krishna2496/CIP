@@ -527,7 +527,13 @@ return [
         'MISSION_THEME' => 'MISSION_THEME',
         'SKILL' => 'SKILL',
         'USER_SKILL' => 'USER_SKILL',
-        'USER_COOKIE_AGREEMENT' => 'USER_COOKIE_AGREEMENT'
+        'USER_COOKIE_AGREEMENT' => 'USER_COOKIE_AGREEMENT',
+        'GOAL_TIMESHEET' => 'GOAL_TIMESHEET',
+        'TIME_TIMESHEET' => 'TIME_TIMESHEET',
+        'TIME_MISSION_TIMESHEET' => 'TIME_MISSION_TIMESHEET',
+        'GOAL_MISSION_TIMESHEET' => 'GOAL_MISSION_TIMESHEET',
+        'STORY' => 'STORY',
+        'MISSION_COMMENTS' => 'MISSION_COMMENTS'
     ],
 
     'activity_log_actions' => [
@@ -549,7 +555,8 @@ return [
         'PASSWORD_RESET' => 'PASSWORD_RESET',
         'LINKED' => 'LINKED',
         'UNLINKED' => 'UNLINKED',
-        'ACCEPTED' => 'ACCEPTED'
+        'ACCEPTED' => 'ACCEPTED',
+        'EXPORT' => 'EXPORT'
     ],
 
     'activity_log_user_types' => [

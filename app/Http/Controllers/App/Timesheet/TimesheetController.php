@@ -20,6 +20,7 @@ use App\Helpers\ExportCSV;
 use App\Helpers\Helpers;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use App\Models\Mission;
+use App\Events\User\UserActivityLogEvent;
 
 class TimesheetController extends Controller
 {
@@ -473,6 +474,19 @@ class TimesheetController extends Controller
             }
 
             $tenantName = $this->helpers->getSubDomainFromRequest($request);
+            
+            // Make activity log
+            event(new UserActivityLogEvent(
+                config('constants.activity_log_types.TIME_TIMESHEET'),
+                config('constants.activity_log_actions.EXPORT'),
+                config('constants.activity_log_user_types.REGULAR'),
+                $request->auth->email,
+                get_class($this),
+                $timeRequestList->toArray(),
+                null,
+                $request->auth->user_id
+            ));
+
             $path = $excel->export('app/'.$tenantName.'/timesheet/'.$request->auth->user_id.'/exports');
             return response()->download($path, $fileName);
         }
@@ -515,6 +529,19 @@ class TimesheetController extends Controller
             }
 
             $tenantName = $this->helpers->getSubDomainFromRequest($request);
+            
+            // Make activity log
+            event(new UserActivityLogEvent(
+                config('constants.activity_log_types.GOAL_TIMESHEET'),
+                config('constants.activity_log_actions.EXPORT'),
+                config('constants.activity_log_user_types.REGULAR'),
+                $request->auth->email,
+                get_class($this),
+                $goalRequestList->toArray(),
+                null,
+                $request->auth->user_id
+            ));
+
             $path = $excel->export('app/'.$tenantName.'/timesheet/'.$request->auth->user_id.'/exports');
             return response()->download($path, $fileName);
         }

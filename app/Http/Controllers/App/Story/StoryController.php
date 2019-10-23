@@ -16,6 +16,7 @@ use App\Traits\RestExceptionHandlerTrait;
 use App\Transformations\StoryTransformable;
 use Validator;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Events\User\UserActivityLogEvent;
 
 class StoryController extends Controller
 {
@@ -347,6 +348,18 @@ class StoryController extends Controller
         }
         
         $tenantName = $this->helpers->getSubDomainFromRequest($request);
+
+        // Make activity log
+        event(new UserActivityLogEvent(
+            config('constants.activity_log_types.STORY'),
+            config('constants.activity_log_actions.EXPORT'),
+            config('constants.activity_log_user_types.REGULAR'),
+            $request->auth->email,
+            get_class($this),
+            $stories->toArray(),
+            null,
+            $request->auth->user_id
+        ));
         $path = $excel->export('app/'.$tenantName.'/story/'.$request->auth->user_id.'/exports');
         return response()->download($path, $fileName);
     }
