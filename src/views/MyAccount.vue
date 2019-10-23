@@ -275,7 +275,7 @@
                         <i class="close" @click="close()" v-b-tooltip.hover :title="languageData.label.close"></i>
                         <h5 class="modal-title">{{languageData.label.change_password}}</h5>
                     </template>
-                    <b-alert show :letiant="classletiant" dismissible v-model="showErrorDiv">
+                    <b-alert show :variant="classletiant" dismissible v-model="showErrorDiv">
                         {{ message }}
                     </b-alert>
                     <form action class="form-wrap">
@@ -911,11 +911,11 @@
                     });
                 }
             },
-            makeToast(letiant = null, message) {
+            makeToast(variant = null, message) {
                 this.$bvToast.toast(message, {
-                    letiant: letiant,
+                    variant: variant,
                     solid: true,
-                    autoHideDelay: 1000
+                    autoHideDelay: 100000
                 })
             },
             alphaNumeric(evt) {
