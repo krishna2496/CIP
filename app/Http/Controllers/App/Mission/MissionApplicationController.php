@@ -140,7 +140,7 @@ class MissionApplicationController extends Controller
             get_class($this),
             $request->toArray(),
             $request->auth->user_id,
-            $request->mission_id
+            $missionApplication->mission_application_id
         ));
         return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
     }
