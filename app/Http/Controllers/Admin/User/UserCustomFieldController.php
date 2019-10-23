@@ -40,7 +40,7 @@ class UserCustomFieldController extends Controller
      *
      * @param App\Repositories\UserCustomField\UserCustomFieldRepository $userCustomFieldRepository
      * @param Illuminate\Http\ResponseHelper $responseHelper
-     * @param Illuminate\Http\Request $request
+     * @param \Illuminate\Http\Request $request
      * @return void
      */
     public function __construct(
@@ -120,7 +120,7 @@ class UserCustomFieldController extends Controller
 
         // Make activity log
         event(new UserActivityLogEvent(
-            config('constants.activity_log_types.USER_CUSTOM_FILED'),
+            config('constants.activity_log_types.USERS_CUSTOM_FIELD'),
             config('constants.activity_log_actions.CREATED'),
             config('constants.activity_log_user_types.API'),
             $this->userApiKey,
@@ -142,7 +142,7 @@ class UserCustomFieldController extends Controller
     public function update(Request $request, int $id): JsonResponse
     {
         try {
-            // Server side validataions
+            // Server side validations
             $validator = Validator::make(
                 $request->toArray(),
                 ["name" => [
@@ -180,14 +180,14 @@ class UserCustomFieldController extends Controller
 
             // Make activity log
             event(new UserActivityLogEvent(
-                config('constants.activity_log_types.USER_CUSTOM_FILED'),
+                config('constants.activity_log_types.USERS_CUSTOM_FIELD'),
                 config('constants.activity_log_actions.UPDATED'),
                 config('constants.activity_log_user_types.API'),
                 $this->userApiKey,
                 get_class($this),
                 $request->toArray(),
                 null,
-                $id
+                $customField['field_id']
             ));
 
             return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
@@ -240,12 +240,12 @@ class UserCustomFieldController extends Controller
 
             // Make activity log
             event(new UserActivityLogEvent(
-                config('constants.activity_log_types.USER_CUSTOM_FILED'),
-                config('constants.activity_log_actions.UPDATED'),
+                config('constants.activity_log_types.USERS_CUSTOM_FIELD'),
+                config('constants.activity_log_actions.DELETED'),
                 config('constants.activity_log_user_types.API'),
                 $this->userApiKey,
                 get_class($this),
-                null,
+                [],
                 null,
                 $id
             ));

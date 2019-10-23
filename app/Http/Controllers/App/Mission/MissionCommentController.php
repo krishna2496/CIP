@@ -242,6 +242,18 @@ class MissionCommentController extends Controller
         }
     
         $tenantName = $this->helpers->getSubDomainFromRequest($request);
+
+        // Make activity log
+        event(new UserActivityLogEvent(
+            config('constants.activity_log_types.MISSION_COMMENTS'),
+            config('constants.activity_log_actions.EXPORT'),
+            config('constants.activity_log_user_types.REGULAR'),
+            $request->auth->email,
+            get_class($this),
+            $userMissionComments['comments']->toArray(),
+            null,
+            $request->auth->user_id
+        ));
         $path = $excel->export('app/'.$tenantName.'/MissionComments/'.$request->auth->user_id.'/exports');
         return response()->download($path, $fileName);
     }

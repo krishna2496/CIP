@@ -21,6 +21,7 @@ use Validator;
 use Illuminate\Validation\Rule;
 use App\Helpers\S3Helper;
 use Illuminate\Support\Facades\Storage;
+use App\Events\User\UserActivityLogEvent;
 
 class UserController extends Controller
 {
@@ -332,6 +333,18 @@ class UserController extends Controller
         $apiStatus = Response::HTTP_OK;
         $apiMessage = trans('messages.success.MESSAGE_USER_UPDATED');
         
+        // Store Activity log
+        event(new UserActivityLogEvent(
+            config('constants.activity_log_types.USER_PROFILE'),
+            config('constants.activity_log_actions.UPDATED'),
+            config('constants.activity_log_user_types.REGULAR'),
+            $request->auth->email,
+            get_class($this),
+            $request->toArray(),
+            $request->auth->user_id,
+            $user->user_id
+        ));
+
         return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
     }
     
@@ -368,6 +381,19 @@ class UserController extends Controller
         $apiData = ['avatar' => $imagePath];
         $apiMessage = trans('messages.success.MESSAGE_PROFILE_IMAGE_UPLOADED');
         $apiStatus = Response::HTTP_OK;
+        
+        // Make activity log
+        event(new UserActivityLogEvent(
+            config('constants.activity_log_types.USER_PROFILE_IMAGE'),
+            config('constants.activity_log_actions.UPDATED'),
+            config('constants.activity_log_user_types.REGULAR'),
+            $request->auth->email,
+            get_class($this),
+            $apiData,
+            $request->auth->user_id,
+            $request->auth->user_id
+        ));
+
         return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
     }
 
@@ -389,6 +415,18 @@ class UserController extends Controller
         $apiStatus = Response::HTTP_OK;
         $apiMessage = trans('messages.success.MESSAGE_USER_COOKIE_AGREEMENT_ACCEPTED');
         
+        // Make activity log
+        event(new UserActivityLogEvent(
+            config('constants.activity_log_types.USER_COOKIE_AGREEMENT'),
+            config('constants.activity_log_actions.ACCEPTED'),
+            config('constants.activity_log_user_types.REGULAR'),
+            $request->auth->email,
+            get_class($this),
+            $apiData,
+            $request->auth->user_id,
+            $request->auth->user_id
+        ));
+
         return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
     }
 }

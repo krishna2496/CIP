@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Traits\RestExceptionHandlerTrait;
 use Validator;
 use App\Events\User\UserActivityLogEvent;
+use App\Helpers\Helpers;
 
 class MissionApplicationController extends Controller
 {
@@ -31,6 +32,11 @@ class MissionApplicationController extends Controller
      * @var App\Helpers\ResponseHelper
      */
     private $responseHelper;
+    
+    /**
+     * @var App\Helpers\Helpers
+     */
+    private $helpers;
 
     /**
      * Create a new mission application controller instance.
@@ -38,16 +44,19 @@ class MissionApplicationController extends Controller
      * @param App\Repositories\MissionApplication\MissionApplicationRepository $missionApplicationRepository
      * @param App\Repositories\Mission\MissionRepository $missionRepository
      * @param Illuminate\Http\ResponseHelper $responseHelper
+     * @param App\Helpers\Helpers $helpers
      * @return void
      */
     public function __construct(
         MissionApplicationRepository $missionApplicationRepository,
         MissionRepository $missionRepository,
-        ResponseHelper $responseHelper
+        ResponseHelper $responseHelper,
+        Helpers $helpers
     ) {
         $this->missionApplicationRepository = $missionApplicationRepository;
         $this->missionRepository = $missionRepository;
         $this->responseHelper = $responseHelper;
+        $this->helpers = $helpers;
     }
 
     /**
@@ -145,7 +154,17 @@ class MissionApplicationController extends Controller
     public function getVolunteers(Request $request, int $missionId): JsonResponse
     {
         try {
-            $missionVolunteers = $this->missionApplicationRepository->missionVolunteerDetail($request, $missionId);
+            $missionVolunteers = $this->missionApplicationRepository->missionVolunteerDetail($request, $missionId); 
+            
+            // Get default user avatar
+            $tenantName = $this->helpers->getSubDomainFromRequest($request);
+            $defaultAvatar = $this->helpers->getUserDefaultProfileImage($tenantName);
+            
+            foreach ($missionVolunteers as $volunteers) {
+                if (!isset($volunteers->avatar)) {
+                    $volunteers->avatar = $defaultAvatar;
+                }
+            }
 
             // Set response data
             $apiData = $missionVolunteers;
