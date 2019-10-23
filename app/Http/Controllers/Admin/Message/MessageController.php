@@ -13,6 +13,7 @@ use Validator;
 use App\Transformations\MessageTransformable;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Events\User\UserNotificationEvent;
+use App\Events\User\UserActivityLogEvent;
 
 class MessageController extends Controller
 {
@@ -28,18 +29,26 @@ class MessageController extends Controller
     private $responseHelper;
 
     /**
+     * @var string
+     */
+    private $userApiKey;
+
+    /**
      * Create a new message controller instance
      *
      * @param App\Repositories\Message\MessageRepository;
      * @param App\Helpers\ResponseHelper $responseHelper
+     * @param \Illuminate\Http\Request $request
      * @return void
      */
     public function __construct(
         MessageRepository $messageRepository,
-        ResponseHelper $responseHelper
+        ResponseHelper $responseHelper,
+        Request $request
     ) {
         $this->messageRepository = $messageRepository;
         $this->responseHelper = $responseHelper;
+        $this->userApiKey =$request->header('php-auth-user');
     }
 
     /**
@@ -89,9 +98,19 @@ class MessageController extends Controller
             $action = config('constants.notification_actions.CREATED');
             $userId = $message['user_id'];
             event(new UserNotificationEvent($notificationType, $entityId, $action, $userId));
-        }
-        
 
+            // Make activity log
+            event(new UserActivityLogEvent(
+                config('constants.activity_log_types.MESSAGE'),
+                config('constants.activity_log_actions.CREATED'),
+                config('constants.activity_log_user_types.API'),
+                $this->userApiKey,
+                get_class($this),
+                $request->toArray(),
+                null,
+                $message['user_id']
+            ));
+        }
         return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
     }
 
@@ -161,6 +180,18 @@ class MessageController extends Controller
             $apiStatus = Response::HTTP_NO_CONTENT;
             $apiMessage = trans('messages.success.MESSAGE_USER_MESSAGE_DELETED');
             
+            // Make activity log
+            event(new UserActivityLogEvent(
+                config('constants.activity_log_types.MESSAGE'),
+                config('constants.activity_log_actions.DELETED'),
+                config('constants.activity_log_user_types.API'),
+                $this->userApiKey,
+                get_class($this),
+                $request->toArray(),
+                null,
+                $messageId
+            ));
+
             return $this->responseHelper->success($apiStatus, $apiMessage);
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
@@ -190,6 +221,18 @@ class MessageController extends Controller
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_READ_SUCCESSFULLY');
             $apiData = ['message_id' => $messageDetails->message_id];
+
+            // Make activity log
+            event(new UserActivityLogEvent(
+                config('constants.activity_log_types.MESSAGE'),
+                config('constants.activity_log_actions.READ'),
+                config('constants.activity_log_user_types.API'),
+                $this->userApiKey,
+                get_class($this),
+                $request->toArray(),
+                null,
+                $messageId
+            ));
 
             return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
         } catch (ModelNotFoundException $e) {
