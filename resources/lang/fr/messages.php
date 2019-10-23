@@ -164,6 +164,8 @@ return [
         'MESSAGE_USER_NOTIFICATIONS_CLEAR_SUCCESSFULLY' => 'Notification d\'utilisateur effacée avec succès',
         'MESSAGE_NOTIFICATION_LISTING' => 'Notification répertoriée avec succès',
         'MESSAGE_READ_SUCCESSFULLY' => 'Message lu avec succès',
+        'MESSAGE_ACTIVITY_LOGS_ENTRIES_LISTING' => 'Les journaux d\'activité répertoriés avec succès',
+        'MESSAGE_NO_ACTIVITY_LOGS_ENTRIES_FOUND' => 'Aucun journal d\'activité trouvé'
     ],
 
         

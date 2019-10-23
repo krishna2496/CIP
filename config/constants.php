@@ -458,7 +458,8 @@ return [
         'ERROR_POLICY_PAGE_NOT_FOUND' => '300010',
         'ERROR_POLICY_PAGE_REQUIRED_FIELDS_EMPTY' => '300011',
         'ERROR_MESSAGE_REQUIRED_FIELDS_EMPTY' =>'1100001',
-        'ERROR_MESSAGE_USER_MESSAGE_NOT_FOUND' => '1100002'
+        'ERROR_MESSAGE_USER_MESSAGE_NOT_FOUND' => '1100002',
+        'ERROR_ACTIVITY_LOG_REQUIRED_FIELDS_EMPTY' => '1200001',
     ],
 
     /**
@@ -519,6 +520,9 @@ return [
         'MISSION' => 'MISSION',
         'COMMENT' => 'COMMENT',
         'MESSAGE' => 'MESSAGE',
+        'USERS_CUSTOM_FIELD' => 'USERS_CUSTOM_FIELD',
+        'USER_PROFILE' => 'USER_PROFILE',
+        'USER_PROFILE_IMAGE' => 'USER_PROFILE_IMAGE',
         'NEWS_CATEGORY' => 'NEWS_CATEGORY',
         'NEWS' => 'NEWS',
         'VOLUNTEERING_TIMESHEET' => 'VOLUNTEERING_TIMESHEET',
@@ -530,10 +534,16 @@ return [
         'TENANT_SETTINGS' => 'TENANT_SETTINGS',
         'FOOTER_PAGE' => 'FOOTER_PAGE',
         'POLICY_PAGE' => 'POLICY_PAGE',
-        'USER_CUSTOM_FILED' => 'USER_CUSTOM_FILED',
         'MISSION_THEME' => 'MISSION_THEME',
         'SKILL' => 'SKILL',
-        'USER_SKILL' => 'USER_SKILL'
+        'USER_SKILL' => 'USER_SKILL',
+        'USER_COOKIE_AGREEMENT' => 'USER_COOKIE_AGREEMENT',
+        'GOAL_TIMESHEET' => 'GOAL_TIMESHEET',
+        'TIME_TIMESHEET' => 'TIME_TIMESHEET',
+        'TIME_MISSION_TIMESHEET' => 'TIME_MISSION_TIMESHEET',
+        'GOAL_MISSION_TIMESHEET' => 'GOAL_MISSION_TIMESHEET',
+        'STORY' => 'STORY',
+        'MISSION_COMMENTS' => 'MISSION_COMMENTS'
     ],
 
     'activity_log_actions' => [
@@ -557,7 +567,9 @@ return [
         'PASSWORD_CHANGED' => 'PASSWORD_CHANGED',
         'PASSWORD_RESET' => 'PASSWORD_RESET',
         'LINKED' => 'LINKED',
-        'UNLINKED' => 'UNLINKED'
+        'UNLINKED' => 'UNLINKED',
+        'ACCEPTED' => 'ACCEPTED',
+        'EXPORT' => 'EXPORT'
     ],
 
     'activity_log_user_types' => [
