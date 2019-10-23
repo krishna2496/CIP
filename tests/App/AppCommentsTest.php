@@ -215,7 +215,7 @@ class AppCommentsTest extends TestCase
         $mission->save();
 
         $params = [
-            "comment" => str_random(500),
+            "comment" => str_random(1000),
             "mission_id" => $mission->mission_id
         ];
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
@@ -376,6 +376,7 @@ class AppCommentsTest extends TestCase
             "message"
         ]);
         
+        DB::setDefaultConnection('mysql');
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->get('/app/dashboard/comments', ['token' => $token])
           ->seeStatusCode(200)
