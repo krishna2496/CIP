@@ -20,6 +20,7 @@ use App\Helpers\ExportCSV;
 use App\Helpers\Helpers;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use App\Models\Mission;
+use App\Events\User\UserActivityLogEvent;
 
 class TimesheetController extends Controller
 {
@@ -272,12 +273,39 @@ class TimesheetController extends Controller
         // Store timesheet
         $request->request->add(['user_id' => $request->auth->user_id]);
         $timesheet = $this->timesheetRepository->storeOrUpdateTimesheet($request);
-
+      
         // Set response data
         $apiStatus = ($timesheet->wasRecentlyCreated) ? Response::HTTP_CREATED : Response::HTTP_OK;
         $apiMessage = ($timesheet->wasRecentlyCreated) ? trans('messages.success.TIMESHEET_ENTRY_ADDED_SUCESSFULLY')
         : trans('messages.success.TIMESHEET_ENTRY_UPDATED_SUCESSFULLY');
         $apiData = ['timesheet_id' => $timesheet->timesheet_id];
+
+        $requestArray = $request->toArray();
+        $activityLogStatus = ($timesheet->wasRecentlyCreated) ?
+            config('constants.activity_log_actions.CREATED') : config('constants.activity_log_actions.UPDATED');
+        
+        // get the uplaoded file data
+        if ($request->hasFile('documents')) {
+            //get documents data related to Timesheet that is uploded
+            $documentsPath = $this->timesheetRepository->getUploadedTimesheetDocuments(
+                $timesheet->timesheet_id,
+                count($request->documents)
+            );
+            $documents = $documentsPath->map->only(['document_path'])->toArray();
+            $requestArray ['documents'] = $documents;
+        }
+
+        // Make activity log
+        event(new UserActivityLogEvent(
+            config('constants.activity_log_types.VOLUNTEERING_TIMESHEET'),
+            $activityLogStatus,
+            config('constants.activity_log_user_types.REGULAR'),
+            $request->auth->email,
+            get_class($this),
+            $requestArray,
+            $request->auth->user_id,
+            $timesheet->timesheet_id
+        ));
 
         return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
     }
@@ -352,6 +380,19 @@ class TimesheetController extends Controller
             $apiStatus = Response::HTTP_NO_CONTENT;
             $apiMessage = trans('messages.success.MESSAGE_TIMESHEET_DOCUMENT_DELETED');
 
+            // Make activity log
+            event(new UserActivityLogEvent(
+                config('constants.activity_log_types.VOLUNTEERING_TIMESHEET_DOCUMENT'),
+                config('constants.activity_log_actions.DELETED'),
+                config('constants.activity_log_user_types.REGULAR'),
+                $request->auth->email,
+                get_class($this),
+                [],
+                $request->auth->user_id,
+                $documentId
+            ));
+
+
             return $this->responseHelper->success($apiStatus, $apiMessage);
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
@@ -377,7 +418,7 @@ class TimesheetController extends Controller
                     'timesheet_entries.*.timesheet_id' => 'required|exists:timesheet,timesheet_id,deleted_at,NULL',
                 ]
             );
-
+           
             // If validator fails
             if ($validator->fails()) {
                 return $this->responseHelper->error(
@@ -387,13 +428,26 @@ class TimesheetController extends Controller
                     $validator->errors()->first()
                 );
             }
-
+            
             $timesheet = $this->timesheetRepository->submitTimesheet($request, $request->auth->user_id);
 
             $apiStatus = Response::HTTP_OK;
             $apiMessage = (!$timesheet) ? trans('messages.success.TIMESHEET_ALREADY_SUBMITTED_FOR_APPROVAL') :
             trans('messages.success.TIMESHEET_SUBMITTED_SUCESSFULLY');
 
+            // Make activity log
+            foreach ($request->timesheet_entries as $data) {
+                event(new UserActivityLogEvent(
+                    config('constants.activity_log_types.VOLUNTEERING_TIMESHEET'),
+                    config('constants.activity_log_actions.SUBMIT_FOR_APPROVAL'),
+                    config('constants.activity_log_user_types.REGULAR'),
+                    $request->auth->email,
+                    get_class($this),
+                    $request->toArray(),
+                    $request->auth->user_id,
+                    $data['timesheet_id']
+                ));
+            }
             return $this->responseHelper->success($apiStatus, $apiMessage);
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
