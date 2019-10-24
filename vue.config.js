@@ -1,5 +1,5 @@
-const host = "test.optimy.com";
-const port = 8080;
+const host = "localhost";
+const port = 7000;
 module.exports = {
     chainWebpack: config => {
         config.module
@@ -31,7 +31,7 @@ module.exports = {
     devServer: {
         host: host,
         port: port,
-        https: false
+        https: false,
     },
 
     pluginOptions: {
