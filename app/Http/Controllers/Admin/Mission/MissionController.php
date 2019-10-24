@@ -14,6 +14,8 @@ use App\Traits\RestExceptionHandlerTrait;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use InvalidArgumentException;
 use App\Exceptions\TenantDomainNotFoundException;
+use App\Events\User\UserNotificationEvent;
+use App\Events\User\UserActivityLogEvent;
 
 class MissionController extends Controller
 {
@@ -29,16 +31,23 @@ class MissionController extends Controller
     private $responseHelper;
     
     /**
+     * @var string
+     */
+    private $userApiKey;
+
+    /**
      * Create a new controller instance.
      *
      * @param  App\Repositories\Mission\MissionRepository $missionRepository
      * @param  App\Helpers\ResponseHelper $responseHelper
-    * @return void
+     * @param Illuminate\Http\Request $request
+     * @return void
      */
-    public function __construct(MissionRepository $missionRepository, ResponseHelper $responseHelper)
+    public function __construct(MissionRepository $missionRepository, ResponseHelper $responseHelper, Request $request)
     {
         $this->missionRepository = $missionRepository;
         $this->responseHelper = $responseHelper;
+        $this->userApiKey = $request->header('php-auth-user');
     }
 
     /**
@@ -101,6 +110,10 @@ class MissionController extends Controller
                 "goal_objective" => "required_if:mission_type,GOAL|integer|min:1",
                 "skills.*.skill_id" => "integer|exists:skill,skill_id,deleted_at,NULL",
                 "mission_detail.*.short_description" => "max:255",
+                "mission_detail.*.custom_information" =>"sometimes|required",
+                "mission_detail.*.custom_information.*.title" => "required_with:mission_detail.*.custom_information",
+                "mission_detail.*.custom_information.*.description" =>
+                "required_with:mission_detail.*.custom_information",
             ]
         );
         
@@ -120,6 +133,25 @@ class MissionController extends Controller
         $apiStatus = Response::HTTP_CREATED;
         $apiMessage = trans('messages.success.MESSAGE_MISSION_ADDED');
         $apiData = ['mission_id' => $mission->mission_id];
+
+        // Send notification to all users
+        $notificationType = config('constants.notification_type_keys.NEW_MISSIONS');
+        $entityId = $mission->mission_id;
+        $action = config('constants.notification_actions.CREATED');
+        
+        event(new UserNotificationEvent($notificationType, $entityId, $action));
+
+        // Make activity log
+        event(new UserActivityLogEvent(
+            config('constants.activity_log_types.MISSION'),
+            config('constants.activity_log_actions.CREATED'),
+            config('constants.activity_log_user_types.API'),
+            $this->userApiKey,
+            get_class($this),
+            $request->toArray(),
+            null,
+            $mission->mission_id
+        ));
         return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
     }
 
@@ -166,10 +198,6 @@ class MissionController extends Controller
                 "mission_detail.*.title" => "required_with:mission_detail",
                 "publication_status" => [Rule::in(config('constants.publication_status'))],
                 "goal_objective" => "required_if:mission_type,GOAL|integer|min:1",
-                "media_images.*.media_path" => "required_with:media_images|valid_media_path",
-                "media_videos.*.media_name" => "required_with:media_videos",
-                "media_videos.*.media_path" => "required_with:media_videos|valid_video_url",
-                "documents.*.document_path" => "required_with:documents|valid_document_path",
                 "start_date" => "sometimes|required_if:mission_type,TIME,required_with:end_date|date",
                 "end_date" => "sometimes|after:start_date|date",
                 "total_seats" => "integer|min:1",
@@ -178,6 +206,10 @@ class MissionController extends Controller
                 "theme_id" => "sometimes|required|integer|exists:mission_theme,mission_theme_id,deleted_at,NULL",
                 "application_deadline" => "date",
                 "mission_detail.*.short_description" => "max:255",
+                "mission_detail.*.custom_information" =>"sometimes|required",
+                "mission_detail.*.custom_information.*.title" => "required_with:mission_detail.*.custom_information",
+                "mission_detail.*.custom_information.*.description" =>
+                "required_with:mission_detail.*.custom_information",
             ]
         );
         
@@ -196,6 +228,19 @@ class MissionController extends Controller
             // Set response data
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_MISSION_UPDATED');
+
+            // Make activity log
+            event(new UserActivityLogEvent(
+                config('constants.activity_log_types.MISSION'),
+                config('constants.activity_log_actions.UPDATED'),
+                config('constants.activity_log_user_types.API'),
+                $this->userApiKey,
+                get_class($this),
+                $request->toArray(),
+                null,
+                $id
+            ));
+            
             return $this->responseHelper->success($apiStatus, $apiMessage);
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
@@ -218,6 +263,19 @@ class MissionController extends Controller
 
             $apiStatus = Response::HTTP_NO_CONTENT;
             $apiMessage = trans('messages.success.MESSAGE_MISSION_DELETED');
+
+            // Make activity log
+            event(new UserActivityLogEvent(
+                config('constants.activity_log_types.MISSION'),
+                config('constants.activity_log_actions.DELETED'),
+                config('constants.activity_log_user_types.API'),
+                $this->userApiKey,
+                get_class($this),
+                null,
+                null,
+                $id
+            ));
+
             return $this->responseHelper->success($apiStatus, $apiMessage);
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(

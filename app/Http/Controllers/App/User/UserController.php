@@ -21,6 +21,7 @@ use Validator;
 use Illuminate\Validation\Rule;
 use App\Helpers\S3Helper;
 use Illuminate\Support\Facades\Storage;
+use App\Events\User\UserActivityLogEvent;
 
 class UserController extends Controller
 {
@@ -264,7 +265,6 @@ class UserController extends Controller
                 "max:16",
                 Rule::unique('user')->ignore($id, 'user_id,deleted_at,NULL')],
             "department" => "max:16",
-            "manager_name" => "max:16",
             "linked_in_url" => "url|valid_linkedin_url",
             "why_i_volunteer" => "sometimes|required",
             "availability_id" => "integer|exists:availability,availability_id,deleted_at,NULL",
@@ -333,6 +333,18 @@ class UserController extends Controller
         $apiStatus = Response::HTTP_OK;
         $apiMessage = trans('messages.success.MESSAGE_USER_UPDATED');
         
+        // Store Activity log
+        event(new UserActivityLogEvent(
+            config('constants.activity_log_types.USER_PROFILE'),
+            config('constants.activity_log_actions.UPDATED'),
+            config('constants.activity_log_user_types.REGULAR'),
+            $request->auth->email,
+            get_class($this),
+            $request->toArray(),
+            $request->auth->user_id,
+            $user->user_id
+        ));
+
         return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
     }
     
@@ -369,6 +381,52 @@ class UserController extends Controller
         $apiData = ['avatar' => $imagePath];
         $apiMessage = trans('messages.success.MESSAGE_PROFILE_IMAGE_UPLOADED');
         $apiStatus = Response::HTTP_OK;
+        
+        // Make activity log
+        event(new UserActivityLogEvent(
+            config('constants.activity_log_types.USER_PROFILE_IMAGE'),
+            config('constants.activity_log_actions.UPDATED'),
+            config('constants.activity_log_user_types.REGULAR'),
+            $request->auth->email,
+            get_class($this),
+            $apiData,
+            $request->auth->user_id,
+            $request->auth->user_id
+        ));
+
+        return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
+    }
+
+    /**
+     * store cookie agreement date
+     *
+     * @param Illuminate\Http\Request $request
+     * @return Illuminate\Http\JsonResponse
+     */
+    public function saveCookieAgreement(Request $request): JsonResponse
+    {
+        $userId = $request->auth->user_id;
+        
+        // Update cookie agreement date
+        $this->userRepository->updateCookieAgreement($userId);
+
+        // Set response data
+        $apiData = ['user_id' => $userId];
+        $apiStatus = Response::HTTP_OK;
+        $apiMessage = trans('messages.success.MESSAGE_USER_COOKIE_AGREEMENT_ACCEPTED');
+        
+        // Make activity log
+        event(new UserActivityLogEvent(
+            config('constants.activity_log_types.USER_COOKIE_AGREEMENT'),
+            config('constants.activity_log_actions.ACCEPTED'),
+            config('constants.activity_log_user_types.REGULAR'),
+            $request->auth->email,
+            get_class($this),
+            $apiData,
+            $request->auth->user_id,
+            $request->auth->user_id
+        ));
+
         return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
     }
 }

@@ -96,8 +96,50 @@ return [
         'MESSAGE_NO_GOAL_REQUEST_FOUND' => 'DE: No pending goal requests found',
         'MESSAGE_POLICY_PAGE_FOUND' => 'DE: Policy page found successfully',
         'MESSAGE_FOOTER_PAGE_FOUND' => 'DE: Footer page found successfully',
-        'MESSAGE_TENANT_OPTION_CREATED' => 'Image uploaded successfully'
+        'MESSAGE_TENANT_OPTION_CREATED' => 'Image uploaded successfully',
+        'MESSAGE_DASHBOARD_STATISTICS_LISTING' => 'DE: Dashboard statistics listed successfully',
+        'MESSAGE_NEWS_CATEGORY_LISTING' => 'DE: News category listed successfully',
+        'MESSAGE_NEWS_CATEGORY_DELETED' => 'DE: News category deleted successfully',
+        'MESSAGE_NEWS_CATEGORY_CREATED' => 'DE: News category created successfully',
+        'MESSAGE_NEWS_CATEGORY_UPDATED' => 'DE: News category updated successfully',
+        'MESSAGE_NEWS_CREATED' => 'DE: News created sucessfully',
+        'MESSAGE_NEWS_DELETED' => 'DE: News deleted successfully',
+        'MESSAGE_NEWS_LISTING' => 'DE: News listed sucessfully',
+        'MESSAGE_NEWS_UPDATED' => 'DE: News updated sucessfully',
+        'STORY_ADDED_SUCESSFULLY' => 'DE: Story added successfully',
+        'MESSAGE_STORY_DELETED' => 'DE: Story deleted sucessfully',
+        'MESSAGE_STORIES_ENTRIES_LISTING' => 'DE: Story entries listed successfully',
+        'MESSAGE_NO_STORIES_ENTRIES_FOUND' => 'DE: No story entries found',
+        'MESSAGE_STORY_STATUS_UPDATED' => 'DE: Story status updated successfully',
+        'MESSAGE_STORY_FOUND' => 'DE: Story found sucessfully',
+        'MESSAGE_STORY_COPIED_SUCCESS' => 'DE: Story copied successfully',
+        'MESSAGE_UNABLE_TO_EXPORT_USER_STORIES_ENTRIES' => 'DE: No stories found',
+        'MESSAGE_STORY_UPDATED' => 'DE: Story updated successfully',
+        'MESSAGE_USER_COMMENTS_LISTING' => 'DE: User comments listed successfully',
+        'MESSAGE_STORY_SUBMITTED_SUCESSFULLY' => 'DE: Story submitted sucessfully',
+        'MESSAGE_STORY_IMAGE_DELETED' => 'DE: Story image deleted sucessfully',
+    	'MESSAGE_UNABLE_TO_EXPORT_MISSION_COMMENTS_ENTRIES' => 'DE: No mission comments found',
+		'MESSAGE_USER_MESSAGE_SEND_SUCCESSFULLY' => 'DE: Message sent successfully',
+        'MESSAGE_USER_MESSAGES_SEND_SUCCESSFULLY' => 'DE: Messages sent successfully',
+        'MESSAGE_STORY_VISITOR_ADDED_SUCESSFULLY' => 'DE: Story visitor added successfully',     
+         // For contact form module
+        'MESSAGE_USER_MESSAGE_DELETED' => 'DE: Message deleted successfully',
+        'CONTACT_FORM_ADDED_SUCESSFULLY' => 'DE: Your feedback added successfully.',
+        'MESSAGE_INVITED_FOR_STORY' => 'DE: User invited to story successfully',
+        'MESSAGE_MESSAGES_ENTRIES_LISTING' => 'DE: Messages listed successfully',
+        'MESSAGE_NO_MESSAGES_ENTRIES_FOUND' => 'DE: No messages found',
+        'MESSAGE_USER_COOKIE_AGREEMENT_ACCEPTED' => 'DE: Cookie agreement accepted successfully',
+        'MESSAGE_NOTIFICATION_SETTINGS_LISTING' => 'DE: Notification settings listed successfully',
+        'MESSAGE_USER_NOTIFICATION_SETTINGS_UPDATED' => 'DE: User notification settings updated successfully',
+        'MESSAGE_USER_NOTIFICATION_READ_UNREAD_SUCCESSFULLY' => 'DE: User notification status updated successfully',
+        'MESSAGE_USER_NOTIFICATIONS_CLEAR_SUCCESSFULLY' => 'DE: User notification cleared successfully',
+        'MESSAGE_NOTIFICATION_LISTING' => 'DE: Notification listed successfully',
+        'MESSAGE_READ_SUCCESSFULLY' => 'DE: Message read successfully',
+        'MESSAGE_ACTIVITY_LOGS_ENTRIES_LISTING' => 'DE: Activity logs listed successfully',
+        'MESSAGE_NO_ACTIVITY_LOGS_ENTRIES_FOUND' => 'DE: No activity logs found'
     ],
+
+
 
         
     /**
@@ -146,6 +188,7 @@ return [
         'ERROR_MISSION_COMMENT_INVALID_DATA' => 'DE: Mission comment creation failed. Please check input parameters',
         'ERROR_INVALID_MISSION_MEDIA_DATA' => 'DE: Invalid mission media data',
         'ERROR_INVALID_MISSION_DOCUMENT_DATA' => 'DE: Invalid mission document data',
+        'ERROR_USER_MISSIONS_NOT_FOUND' => 'DE: Missions not found',
         
         // Custom error code for Tenant Authorization - 210000 - 219999
         'ERROR_INVALID_API_AND_SECRET_KEY' => 'DE: Invalid API Key or Secret key',
@@ -204,5 +247,25 @@ return [
         'ERROR_TIMESHEET_ENTRY_NOT_FOUND' => 'DE: Timesheet entry id not found',
         'ERROR_SAME_DATE_TIME_ENTRY' => 'DE: You cannot add more than 24 hours timeentry for same date',
         'ERROR_APPROVED_TIMESHEET_DOCUMENTS' => 'You can not delete approved timesheet entry documents',
-    ],
+
+        // For News module
+        'ERROR_NEWS_CATEGORY_NOT_FOUND' => 'DE: News category not found in the system',
+        'ERROR_NEWS_NOT_FOUND' => 'DE: News not found in the system',
+
+        // For story module
+        'ERROR_STORY_NOT_FOUND' => 'DE: Story not found in the system',
+        'ERROR_PUBLISHED_STORY_NOT_FOUND' => 'DE: Published story not found in the system',
+        'ERROR_DECLINED_STORY_NOT_FOUND' => 'DE: You can not copy story, due to this is not declined story',
+        'ERROR_STORY_PUBLISHED_OR_DECLINED' => 'DE: You cannot update published or declined story',
+        'ERROR_STORY_IMAGE_NOT_FOUND' => 'DE: Story image not found in the system',
+        'ERROR_STORY_IMAGE_DELETE' => 'DE: You cannot delete image of published or declined story',
+        'ERROR_SUBMIT_STORY_PUBLISHED_OR_DECLINED' => 'DE: You cannot submit published or declined story',
+
+        // For message module
+        'ERROR_MESSAGE_USER_MESSAGE_NOT_FOUND' => 'DE: Message not found in the system',        
+        'ERROR_INVITE_STORY_ALREADY_EXIST' => 'DE: User is already invited for this story',
+
+        // For notification module
+        'ERROR_MESSAGE_USER_NOTIFICATION_NOT_FOUND' => 'DE: Notification not found in the system',
+    ]
 ];

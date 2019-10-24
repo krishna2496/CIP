@@ -14,6 +14,7 @@ use App\Repositories\MissionSkill\MissionSkillRepository;
 use App\Helpers\LanguageHelper;
 use App\Helpers\ExportCSV;
 use App\Helpers\Helpers;
+use App\Events\User\UserActivityLogEvent;
 
 class VolunteerHistoryController extends Controller
 {
@@ -181,9 +182,9 @@ class VolunteerHistoryController extends Controller
             $excel = new ExportCSV($fileName);
 
             $headings = [
-                trans('messages.export_sheet_headings.MISSION_NAME'),
-                trans('messages.export_sheet_headings.ORGANIZATION_NAME'),
-                trans('messages.export_sheet_headings.ACTIONS')
+                trans('general.export_sheet_headings.MISSION_NAME'),
+                trans('general.export_sheet_headings.ORGANIZATION_NAME'),
+                trans('general.export_sheet_headings.ACTIONS')
             ];
 
             $excel->setHeadlines($headings);
@@ -197,6 +198,19 @@ class VolunteerHistoryController extends Controller
             }
 
             $tenantName = $this->helpers->getSubDomainFromRequest($request);
+               
+            // Make activity log
+            event(new UserActivityLogEvent(
+                config('constants.activity_log_types.GOAL_MISSION_TIMESHEET'),
+                config('constants.activity_log_actions.EXPORT'),
+                config('constants.activity_log_user_types.REGULAR'),
+                $request->auth->email,
+                get_class($this),
+                $goalMissionList->toArray(),
+                null,
+                $request->auth->user_id
+            ));
+
             $path = $excel->export('app/'.$tenantName.'/timesheet/'.$request->auth->user_id.'/exports');
             return response()->download($path, $fileName);
         }
@@ -227,10 +241,10 @@ class VolunteerHistoryController extends Controller
             $excel = new ExportCSV($fileName);
 
             $headings = [
-                trans('messages.export_sheet_headings.MISSION_NAME'),
-                trans('messages.export_sheet_headings.ORGANIZATION_NAME'),
-                trans('messages.export_sheet_headings.TIME'),
-                trans('messages.export_sheet_headings.HOURS')
+                trans('general.export_sheet_headings.MISSION_NAME'),
+                trans('general.export_sheet_headings.ORGANIZATION_NAME'),
+                trans('general.export_sheet_headings.TIME'),
+                trans('general.export_sheet_headings.HOURS')
             ];
 
             $excel->setHeadlines($headings);
@@ -245,6 +259,18 @@ class VolunteerHistoryController extends Controller
             }
 
             $tenantName = $this->helpers->getSubDomainFromRequest($request);
+           
+            // Make activity log
+            event(new UserActivityLogEvent(
+                config('constants.activity_log_types.TIME_MISSION_TIMESHEET'),
+                config('constants.activity_log_actions.EXPORT'),
+                config('constants.activity_log_user_types.REGULAR'),
+                $request->auth->email,
+                get_class($this),
+                $timeRequestList->toArray(),
+                null,
+                $request->auth->user_id
+            ));
             $path = $excel->export('app/'.$tenantName.'/timesheet/'.$request->auth->user_id.'/exports');
             return response()->download($path, $fileName);
         }
