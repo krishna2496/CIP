@@ -55,7 +55,7 @@ class StoryInvite extends Model
      */
     public function getDetails(int $inviteId): StoryInvite
     {
-        return $this->with(['toUser', 'fromUser', 'story'])->where('mission_invite_id', $inviteId)->first();
+        return $this->with(['toUser', 'fromUser', 'story'])->where('story_invite_id', $inviteId)->first();
     }
 
     /**
