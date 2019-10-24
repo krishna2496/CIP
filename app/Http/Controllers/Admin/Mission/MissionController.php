@@ -110,6 +110,9 @@ class MissionController extends Controller
                 "total_seats" => "integer|min:1",
                 "goal_objective" => "required_if:mission_type,GOAL|integer|min:1",
                 "skills.*.skill_id" => "integer|exists:skill,skill_id,deleted_at,NULL",
+                "mission_detail.*.custom_information" =>"sometimes|required",
+                "mission_detail.*.custom_information.*.title" => "required_with:mission_detail.*.custom_information",
+                "mission_detail.*.custom_information.*.description" => "required_with:mission_detail.*.custom_information",
             ]
         );
         
@@ -200,7 +203,10 @@ class MissionController extends Controller
                 "availability_id" => "sometimes|required|integer|exists:availability,availability_id,deleted_at,NULL",
                 "skills.*.skill_id" => "integer|exists:skill,skill_id,deleted_at,NULL",
                 "theme_id" => "sometimes|required|integer|exists:mission_theme,mission_theme_id,deleted_at,NULL",
-                "application_deadline" => "date"
+                "application_deadline" => "date",
+                "mission_detail.*.custom_information" =>"sometimes|required",
+                "mission_detail.*.custom_information.*.title" => "required_with:mission_detail.*.custom_information",
+                "mission_detail.*.custom_information.*.description" => "required_with:mission_detail.*.custom_information",
             ]
         );
         
