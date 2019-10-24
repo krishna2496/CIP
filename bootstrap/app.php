@@ -59,13 +59,14 @@ $app->singleton(
 $app->register(Flipbox\LumenGenerator\LumenGeneratorServiceProvider::class);
 
 $app->middleware([
-     Barryvdh\Cors\HandleCors::class //cross origin support
+     \App\Http\Middleware\CorsMiddleware::class //cross origin support
+
 ]);
 
 $app->routeMiddleware([
     'auth' => App\Http\Middleware\Authenticate::class,
     'jwt.auth' => App\Http\Middleware\JwtMiddleware::class, //jwt auth
-    'cros' => \Barryvdh\Cors\HandleCors::class, //cross origin support
+    'cors' => \App\Http\Middleware\CorsMiddleware::class,
     'tenant.connection' => App\Http\Middleware\TenantConnectionMiddleware::class, // Middle ware that connect tenant user with their tenant
     'auth.tenant.admin' => App\Http\Middleware\AuthTenantAdminMiddleware::class,
     'localization' => App\Http\Middleware\LocalizationMiddleware::class,
@@ -76,7 +77,7 @@ $app->routeMiddleware([
 /**
  * cross origin api call support
  */
-$app->register(Barryvdh\Cors\LumenServiceProvider::class);
+$app->register(Barryvdh\Cors\ServiceProvider::class);
  
 $app->configure('app'); //default authentication
 $app->configure('auth'); //default authentication

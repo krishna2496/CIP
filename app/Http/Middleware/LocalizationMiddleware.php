@@ -14,13 +14,14 @@ class LocalizationMiddleware
      */
     public function handle($request, Closure $next)
     {
+
         // Check header request and determine localizaton
         $local = (!empty($request->header('X-localization')) && $request->hasHeader('X-localization'))
         ? $request->header('X-localization') : env('TENANT_DEFAULT_LANGUAGE_CODE');
         
         // set laravel localization
         config(['app.locale' => $local]);
-        
+
         // continue request
         return $next($request);
     }
