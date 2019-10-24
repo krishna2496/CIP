@@ -260,7 +260,7 @@
                                 </b-col>
                                 <b-col cols="12" v-if="isSkillDisplay">
                                     <div class="btn-wrapper">
-                                        <b-button class="btn-bordersecondary" @click="handleSubmit">
+                                        <b-button class="btn-bordersecondary btn-save" @click="handleSubmit">
                                             {{languageData.label.save}}
                                         </b-button>
                                     </div>
@@ -912,7 +912,7 @@
                 this.$bvToast.toast(message, {
                     variant: variant,
                     solid: true,
-                    autoHideDelay: 100000
+                    autoHideDelay: 3000
                 })
             },
             alphaNumeric(evt) {
