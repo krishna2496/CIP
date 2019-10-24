@@ -507,7 +507,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
 
     /* Set mission data for tenant specific */
     $router->group(
-        ['prefix' => 'missions', 'middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware'],
+        ['prefix' => 'missions', 'middleware' => 'auth.tenant.admin|JsonApiMiddleware|localization'],
         function ($router) {
             $router->get('', ['as' => 'missions', 'middleware' => ['PaginationMiddleware'],
                 'uses' => 'Admin\Mission\MissionController@index']);
