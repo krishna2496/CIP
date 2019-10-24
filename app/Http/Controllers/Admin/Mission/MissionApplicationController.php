@@ -137,7 +137,7 @@ class MissionApplicationController extends Controller
             get_class($this),
             $request->toArray(),
             null,
-            $missionId
+            $applicationId
         ));
         // Send notification to user
         $notificationType = config('constants.notification_type_keys.MISSION_APPLICATION');

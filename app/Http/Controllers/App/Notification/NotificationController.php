@@ -17,6 +17,7 @@ use App\Services\NotificationService;
 use App\Helpers\Helpers;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Events\User\UserActivityLogEvent;
 
 class NotificationController extends Controller
 {
@@ -157,7 +158,19 @@ class NotificationController extends Controller
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_USER_NOTIFICATION_READ_UNREAD_SUCCESSFULLY');
             $apiData = ['notification_id' => $notificationId ];
-        
+
+            // Make activity log
+            event(new UserActivityLogEvent(
+                config('constants.activity_log_types.NOTIFICATION'),
+                config('constants.activity_log_actions.READ'),
+                config('constants.activity_log_user_types.REGULAR'),
+                $request->auth->email,
+                get_class($this),
+                $request->toArray(),
+                $request->auth->user_id,
+                $notificationId
+            ));
+
             return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
@@ -181,6 +194,18 @@ class NotificationController extends Controller
         // Set response data
         $apiStatus = Response::HTTP_NO_CONTENT;
         $apiMessage = trans('messages.success.MESSAGE_USER_NOTIFICATIONS_CLEAR_SUCCESSFULLY');
+
+        // Make activity log
+        event(new UserActivityLogEvent(
+            config('constants.activity_log_types.NOTIFICATION'),
+            config('constants.activity_log_actions.CLEAR_ALL'),
+            config('constants.activity_log_user_types.REGULAR'),
+            $request->auth->email,
+            get_class($this),
+            null,
+            $request->auth->user_id,
+            null
+        ));
 
         return $this->responseHelper->success($apiStatus, $apiMessage);
     }

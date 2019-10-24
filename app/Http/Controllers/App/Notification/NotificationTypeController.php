@@ -10,6 +10,7 @@ use App\Helpers\ResponseHelper;
 use Illuminate\Http\Response;
 use Illuminate\Http\Request;
 use Validator;
+use App\Events\User\UserActivityLogEvent;
 
 class NotificationTypeController extends Controller
 {
@@ -84,8 +85,26 @@ class NotificationTypeController extends Controller
         }
         
         // Store or update user notification settings
-        $this->notificationTypeRepository->storeOrUpdateUserNotification($request->toArray(), $request->auth->user_id);
-        
+        $notificationSettings = $this->notificationTypeRepository->storeOrUpdateUserNotification($request->toArray(), $request->auth->user_id);
+                
+        for ($i=0; $i<count($notificationSettings); $i++) {
+            if ($notificationSettings[$i]['value']) {
+                $settingStatus = config('constants.activity_log_actions.ACTIVATED');
+            } else {
+                $settingStatus = config('constants.activity_log_actions.DEACTIVATED');
+            }
+            // Make activity log
+            event(new UserActivityLogEvent(
+                config('constants.activity_log_types.NOTIFICATION_SETTING'),
+                $settingStatus,
+                config('constants.activity_log_user_types.REGULAR'),
+                $request->auth->email,
+                get_class($this),
+                $request->toArray(),
+                $request->auth->user_id,
+                $notificationSettings[$i]['notification_type_id']
+            ));
+        }
         // Set response data
         $apiStatus = Response::HTTP_OK;
         $apiMessage =  trans('messages.success.MESSAGE_USER_NOTIFICATION_SETTINGS_UPDATED');
