@@ -10,12 +10,11 @@ use App\Helpers\ResponseHelper;
 use App\Repositories\ActivityLog\ActivityLogRepository;
 use Validator;
 use App\Models\ActivityLog;
-use App\Transformations\ActivityLogTransformable;
 use Illuminate\Http\JsonResponse;
 
 class ActivityLogController extends Controller
 {
-    use RestExceptionHandlerTrait, ActivityLogTransformable;
+    use RestExceptionHandlerTrait;
 
     /**
      * @var App\Repositories\ActivityLog\ActivityLogRepository
@@ -84,6 +83,7 @@ class ActivityLogController extends Controller
         return $this->responseHelper->successWithPagination(
             $apiStatus,
             $apiMessage,
-            $apiData);
+            $apiData
+        );
     }
 }

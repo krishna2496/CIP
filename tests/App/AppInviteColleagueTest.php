@@ -267,7 +267,7 @@ class AppInviteColleagueTest extends TestCase
             'story_id' => $story->story_id,
             'to_user_id' => rand(1000000, 2000000)
         ];
-        
+        DB::setDefaultConnection('mysql');
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->post('/app/story/invite', $params, ['token' => $token])
         ->seeStatusCode(422)

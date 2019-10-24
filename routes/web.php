@@ -507,7 +507,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
 
     /* Set mission data for tenant specific */
     $router->group(
-        ['prefix' => 'missions', 'middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware'],
+        ['prefix' => 'missions', 'middleware' => 'auth.tenant.admin|JsonApiMiddleware|localization'],
         function ($router) {
             $router->get('', ['as' => 'missions', 'middleware' => ['PaginationMiddleware'],
                 'uses' => 'Admin\Mission\MissionController@index']);
@@ -564,7 +564,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
 
     /* Set mission theme data for tenant specific */
     $router->group(
-        ['prefix' => '/entities/themes', 'middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware'],
+        ['prefix' => '/entities/themes', 'middleware' => 'auth.tenant.admin|localization|JsonApiMiddleware'],
         function ($router) {
             $router->get('/', ['middleware' => ['PaginationMiddleware'],
                 'uses' => 'Admin\MissionTheme\MissionThemeController@index']);

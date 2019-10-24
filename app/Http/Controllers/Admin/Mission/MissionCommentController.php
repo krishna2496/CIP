@@ -182,7 +182,7 @@ class MissionCommentController extends Controller
 
             // Make activity log
             event(new UserActivityLogEvent(
-                config('constants.activity_log_types.MISSION'),
+                config('constants.activity_log_types.MISSION_COMMENTS'),
                 config('constants.activity_log_actions.COMMENT_UPDATED'),
                 config('constants.activity_log_user_types.API'),
                 $this->userApiKey,
@@ -244,12 +244,12 @@ class MissionCommentController extends Controller
 
         // Make activity log
         event(new UserActivityLogEvent(
-            config('constants.activity_log_types.MISSION'),
+            config('constants.activity_log_types.MISSION_COMMENTS'),
             config('constants.activity_log_actions.DELETED'),
             config('constants.activity_log_user_types.API'),
             $this->userApiKey,
             get_class($this),
-            $request->toArray(),
+            null,
             null,
             $commentId
         ));
