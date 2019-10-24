@@ -2,7 +2,6 @@
 /.idea
 Homestead.json
 Homestead.yaml
-.env
 /public/storage
 /.env
 /public/uploads
