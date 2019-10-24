@@ -191,7 +191,7 @@
 					window.scrollTo({
 						'behavior': 'smooth',
 						'top': 0
-					});
+					}, 0);
 				});
 				this.pagination.currentPage = page
 				this.isLoaderActive = true;
@@ -244,7 +244,8 @@
 				this.showMessageErrorDiv = false
 				this.submitted = false;
 				this.$v.$reset();
-				
+				this.contactUs.message = '';
+				this.contactUs.subject = '';
 			},
 			handleModal() {
 				this.$refs.sendMessageModal.show()

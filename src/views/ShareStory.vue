@@ -42,7 +42,7 @@
                                 <b-row>
                                     <b-col md="12">
                                         <label for>{{languageData.label.my_story}}*</label>
-                                        <vue-ckeditor :config="config" :toolbar="ckEditorOption" v-model="story.myStory"
+                                        <vue-ckeditor :config="config"  v-model="story.myStory"
                                             :class="{ 'is-invalid': submitted && $v.story.myStory.$error }"
                                             :placeholder="languageData.placeholder.story_detail" />
                                         <div v-if="submitted && !$v.story.myStory.required" class="invalid-feedback">
@@ -133,7 +133,7 @@
                     <b-button class="btn-borderprimary" v-bind:class="{disabled:previewButtonEnable}"
                         @click="previewStory(storyId)"><span>{{languageData.label.preview}}
                         </span></b-button>
-                    <b-button class="btn-bordersecondary"
+                    <b-button class="btn-bordersecondary btn-save"
                         v-bind:class="{disabled:saveButtonEnable || saveButtonAjaxCall}" @click="saveStory('save')">
                         {{languageData.label.save}}</b-button>
                     <b-button class="btn-bordersecondary btn-submit"
@@ -575,8 +575,6 @@
             }
             this.defaultMissionTitle = this.languageData.label.mission_title
             this.missionListing();
-
-
         },
         updated() {}
     };

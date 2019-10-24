@@ -320,73 +320,8 @@
                 };
             },
             mounted() {
-                let hasmenuIcon = document.querySelectorAll(
-                    ".menu-wrap li .collapse-toggle"
-                );
-                for (let i = 0; i < hasmenuIcon.length; ++i) {
-                    let iconValue = hasmenuIcon[i];
-                    iconValue.addEventListener("click", function (e) {
-                        if (screen.width < 992) {
-                            e.stopPropagation();
-                            let parentList = e.target.parentNode;
-                            let parentUl = parentList.parentNode;
-                            let siblingList = parentUl.childNodes;
-                            if (parentList.classList.contains("active")) {
-                                parentList.classList.remove("active");
-                            } else {
-                                parentList.classList.add("active");
-                            }
-                            for (let j = 0; j < siblingList.length; ++j) {
-                                if (siblingList[j] != parentList) {
-                                    siblingList[j].classList.remove("active");
-                                } else {
-                                    let childList = parentList.getElementsByClassName("has-submenu");
-                                    for (let k = 0; k < childList.length; ++k) {
-                                        childList[k].classList.remove("active");
-                                    }
-                                }
-                            }
-                        }
-                    });
-                }
-                let hasmenuList = document.querySelectorAll(".menu-wrap li");
-                let removeActive = document.querySelector(".navbar-toggler");
-                let breadcrumbDropdown = document.querySelector(
-                    ".breadcrumb-dropdown-wrap"
-                );
-                for (let i = 0; i < hasmenuList.length; i++) {
-                    let anchor_val = hasmenuList[i].firstChild;
-                    anchor_val.addEventListener("click", function (e) {
-                        if (screen.width < 992) {
-                            let body = document.querySelectorAll("body, html");
-                            body.forEach(function (e) {
-                                e.classList.remove("open-nav");
-                            });
-                        }
-                    });
-                }
-                removeActive.addEventListener("click", function () {
-                    if (screen.width < 992) {
-                        for (let i = 0; i < hasmenuList.length; ++i) {
-                            hasmenuList[i].classList.remove("active");
-                        }
-                    }
-                    if (screen.width < 768) {
-                        if (breadcrumbDropdown != null) {
-                            breadcrumbDropdown.classList.remove("open");
-                        }
-                    }
-                });
-                let backBtn = document.querySelectorAll(".btn-back");
-                backBtn.forEach(function (e) {
-                    e.addEventListener("click", function () {
-                        if (screen.width < 992) {
-                            let activeItem = e.parentNode.parentNode;
-                            activeItem.classList.remove("active");
-                        }
-                    });
-                });
-                document.addEventListener("click", this.onClick);
+
+
             },
             methods: {
                 onPopoverShow() {
@@ -678,6 +613,75 @@
                             });
                         });
                     });
+
+
+
+                    let hasmenuIcon = document.querySelectorAll(".menu-wrap li .collapse-toggle");
+                    for (let i = 0; i < hasmenuIcon.length; ++i) {
+                        let iconValue = hasmenuIcon[i];
+                        iconValue.addEventListener("click", function (e) {
+                            if (screen.width < 992) {
+                                e.stopPropagation();
+                                let parentList = e.target.parentNode;
+                                let parentUl = parentList.parentNode;
+                                let siblingList = parentUl.childNodes;
+                                if (parentList.classList.contains("active")) {
+                                    parentList.classList.remove("active");
+                                } else {
+                                    parentList.classList.add("active");
+                                }
+                                for (let j = 0; j < siblingList.length; ++j) {
+                                    if (siblingList[j] != parentList) {
+                                        siblingList[j].classList.remove("active");
+                                    } else {
+                                        let childList = parentList.getElementsByClassName(
+                                        "has-submenu");
+                                        for (let k = 0; k < childList.length; ++k) {
+                                            childList[k].classList.remove("active");
+                                        }
+                                    }
+                                }
+                            }
+                        });
+                    }
+                    let hasmenuList = document.querySelectorAll(".menu-wrap li");
+                    let removeActive = document.querySelector(".navbar-toggler");
+                    let breadcrumbDropdown = document.querySelector(
+                        ".breadcrumb-dropdown-wrap"
+                    );
+                    for (let i = 0; i < hasmenuList.length; i++) {
+                        let anchor_val = hasmenuList[i].firstChild;
+                        anchor_val.addEventListener("click", function (e) {
+                            if (screen.width < 992) {
+                                let body = document.querySelectorAll("body, html");
+                                body.forEach(function (e) {
+                                    e.classList.remove("open-nav");
+                                });
+                            }
+                        });
+                    }
+                    removeActive.addEventListener("click", function () {
+                        if (screen.width < 992) {
+                            for (let i = 0; i < hasmenuList.length; ++i) {
+                                hasmenuList[i].classList.remove("active");
+                            }
+                        }
+                        if (screen.width < 768) {
+                            if (breadcrumbDropdown != null) {
+                                breadcrumbDropdown.classList.remove("open");
+                            }
+                        }
+                    });
+                    let backBtn = document.querySelectorAll(".btn-back");
+                    backBtn.forEach(function (e) {
+                        e.addEventListener("click", function () {
+                            if (screen.width < 992) {
+                                let activeItem = e.parentNode.parentNode;
+                                activeItem.classList.remove("active");
+                            }
+                        });
+                    });
+
                 }, 1000);
                 document.addEventListener("scroll", this.handscroller);
                 this.isThemeDisplay = this.settingEnabled(constants.THEMES_ENABLED);

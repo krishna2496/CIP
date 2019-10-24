@@ -45,7 +45,7 @@ export default Object.freeze({
     TIMESHEET_DOCUMENT_UPLOAD: "timesheet_document_upload",
     FILE_MAX_SIZE_BYTE: 4194304,
     FILE_ALLOWED_FILE_TYPES: ['doc', 'xls', 'xlsx', 'csv', 'pdf', 'png', 'jpg', 'jpeg'],
-    RECENT_VOLUNTEERES_PER_PAGE: 12,
+    RECENT_VOLUNTEERES_PER_PAGE: 9,
     MISSION_DEFAULT_PLACEHOLDER: "placeholder-img.jpg",
     ALLOWED_PICTURE_MIME_TYPES: ['image/png', 'image/jpeg'],
     ALLOWED_PICTURE_TYPES: ['png', 'jpg', 'jpeg'],

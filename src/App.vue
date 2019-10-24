@@ -155,8 +155,31 @@
                         });
                     });
                 });
+
+                let validationButton = document.querySelectorAll(".btn");
+                validationButton.forEach((saveButton) => {
+                    saveButton.addEventListener("click", () => {
+                        let windowTop = window.pageYOffset;
+                        let controlError = document.querySelector(".is-invalid");
+                        setTimeout(() => {
+                            let alertPopup = document.querySelector(".alert");
+                            if (alertPopup) {
+                                window.scrollTo(0, 0);
+                            }
+                        }, 100)
+
+                        if (controlError) {
+                            let headerHeight = document.querySelector("header").offsetHeight;
+                            let offsetTopValue = controlError.getBoundingClientRect().top +
+                                windowTop - headerHeight - 40;
+                            window.scrollTo(0, offsetTopValue);
+                        }
+                    });
+                });
+
+
             }, 1000);
-            
+
         },
         destroyed() {
             window.removeEventListener("scroll", this.handleScroll);
