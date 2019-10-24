@@ -440,4 +440,15 @@ class StoryRepository implements StoryInterface
         COUNT(CASE WHEN status = 'PUBLISHED' THEN 1 END) AS published,
         COUNT(CASE WHEN status = 'DECLINED' THEN 1 END) AS declined")->where('user_id', $userId)->first();
     }
+
+    /**
+     * Get story media from storyid
+     *
+     * @param int $stroyId
+     * @return Illuminate\Database\Eloquent\Collection
+     */
+    public function getStoryMedia(int $storyId): Collection
+    {
+        return $this->storyMedia->where('story_id', $storyId)->get();
+    }
 }

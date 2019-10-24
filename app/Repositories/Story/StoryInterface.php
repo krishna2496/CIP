@@ -2,6 +2,7 @@
 namespace App\Repositories\Story;
 
 use App\Models\Story;
+use App\Models\StoryMedia;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
@@ -164,4 +165,12 @@ interface StoryInterface
      * @return App\Models\Story
      */
     public function getUserStoriesStatusCounts(int $userId): Story;
+
+    /**
+     * Get story media from storyid
+     *
+     * @param int $stroyId
+     * @return Illuminate\Database\Eloquent\Collection
+     */
+    public function getStoryMedia(int $storyId): Collection;
 }

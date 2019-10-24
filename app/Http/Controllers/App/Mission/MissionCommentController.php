@@ -190,6 +190,18 @@ class MissionCommentController extends Controller
             $apiStatus = Response::HTTP_NO_CONTENT;
             $apiMessage = trans('messages.success.MESSAGE_COMMENT_DELETED');
             
+            //Make activity log
+            event(new UserActivityLogEvent(
+                config('constants.activity_log_types.MISSION_COMMENTS'),
+                config('constants.activity_log_actions.DELETED'),
+                config('constants.activity_log_user_types.REGULAR'),
+                $request->auth->email,
+                get_class($this),
+                [],
+                $request->auth->user_id,
+                $commentId
+            ));
+
             return $this->responseHelper->success($apiStatus, $apiMessage);
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(

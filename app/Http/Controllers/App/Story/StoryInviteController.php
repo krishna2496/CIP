@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\Mail;
 use App\Jobs\AppMailerJob;
 use App\Exceptions\TenantDomainNotFoundException;
 use App\Events\User\UserNotificationEvent;
+use App\Events\User\UserActivityLogEvent;
 
 class StoryInviteController extends Controller
 {
@@ -141,6 +142,18 @@ class StoryInviteController extends Controller
         $apiStatus = Response::HTTP_CREATED;
         $apiMessage = trans('messages.success.MESSAGE_INVITED_FOR_STORY');
         $apiData = ['story_invite_id' => $inviteStory->story_invite_id];
+
+        //Make activity log
+        event(new UserActivityLogEvent(
+            config('constants.activity_log_types.STORY'),
+            config('constants.activity_log_actions.INVITED'),
+            config('constants.activity_log_user_types.REGULAR'),
+            $request->auth->email,
+            get_class($this),
+            $request->toArray(),
+            $request->auth->user_id,
+            $inviteStory->story_invite_id
+        ));
 
         $getActivatedTenantSettings = $this->tenantActivatedSettingRepository
         ->getAllTenantActivatedSetting($request);
