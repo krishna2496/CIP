@@ -36,12 +36,13 @@ class RedirectInvalidIPs
      */
     public function handle($request, Closure $next)
     {
-
-        foreach ($request->getClientIps() as $ip) {
-            if (! $this->isValidIp($ip)) {
-                return redirect('/');
-            }
-        }
+		if (env('APP_ENV')!='local' && env('APP_ENV')!='testing') {
+			foreach ($request->getClientIps() as $ip) {
+				if (!$this->isValidIp($ip)) {
+					return redirect('/');
+				}
+			}
+		}
         return $next($request);
     }
 

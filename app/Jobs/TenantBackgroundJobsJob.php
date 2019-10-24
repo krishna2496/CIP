@@ -54,20 +54,19 @@ class TenantBackgroundJobsJob extends Job
     public function handle()
     {
         try {
-            $this->tenant->update(
-                [
-                    'background_process_status' => config('constants.background_process_status.IN_PROGRESS')
-                ]
-            );
+//            $this->tenant->update(
+//                [
+//                    'background_process_status' => config('constants.background_process_status.IN_PROGRESS')
+//                ]
+//            );
 
             // ONLY FOR DEVELOPMENT MODE. (PLEASE REMOVE THIS CODE IN PRODUCTION MODE)
             if (env('APP_ENV')=='local' || env('APP_ENV')=='testing') {
                 dispatch(new TenantDefaultLanguageJob($this->tenant));
             }
-        
             // Job dispatched to create new tenant's database and migrations
             dispatch(new TenantMigrationJob($this->tenant));
-        
+
             // Copy local default_theme folder
             dispatch(new DownloadAssestFromLocalDefaultThemeToLocalStorageJob($this->tenant->name));
             
@@ -83,6 +82,7 @@ class TenantBackgroundJobsJob extends Job
                 ]
             );
         } catch (\Exception $e) {
+        	var_dump($e->getMessage());die();
             $this->tenant->update(
                 [
                     'background_process_status' => config('constants.background_process_status.FAILED')
@@ -98,6 +98,7 @@ class TenantBackgroundJobsJob extends Job
      */
     public function failed(\Exception $exception)
     {
+    	var_dump($exception->getMessage());die();
         $this->tenant->update(['background_process_status' => config('constants.background_process_status.FAILED')]);
         $this->sendEmailNotification();
     }
