@@ -106,14 +106,14 @@
                                         </b-form-input>
                                     </b-form-group>
                                 </b-col>
-                                <b-col md="6">
+                                <!-- <b-col md="6">
                                     <b-form-group>
                                         <label for>{{languageData.label.manager}}</label>
                                         <b-form-input id type="text" v-model.trim="profile.managerName"
                                             :placeholder="languageData.placeholder.manager" maxlength="16">
                                         </b-form-input>
                                     </b-form-group>
-                                </b-col>
+                                </b-col> -->
                                 <b-col md="6">
                                     <b-form-group>
                                         <label for>{{languageData.label.title}}</label>
@@ -409,7 +409,6 @@
                     firstName: "",
                     lastName: "",
                     employeeId: "",
-                    managerName: "",
                     profileText: "",
                     title: "",
                     whyiVolunteer: "",
@@ -617,7 +616,6 @@
                             this.profile.firstName = this.userData.first_name,
                             this.profile.lastName = this.userData.last_name,
                             this.profile.employeeId = this.userData.employee_id,
-                            this.profile.managerName = this.userData.manager_name,
                             this.profile.profileText = this.userData.profile_text,
                             this.profile.title = this.userData.title,
                             this.profile.whyiVolunteer = this.userData.why_i_volunteer,
@@ -796,7 +794,6 @@
                 this.saveProfileData.why_i_volunteer = this.profile.whyiVolunteer,
                 this.saveProfileData.employee_id = this.profile.employeeId,
                 this.saveProfileData.department = this.profile.department,
-                this.saveProfileData.manager_name = this.profile.managerName,
                 this.saveProfileData.city_id = this.profile.city,
                 this.saveProfileData.country_id = this.profile.country,
                 this.saveProfileData.profile_text = this.profile.profileText,

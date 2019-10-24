@@ -208,23 +208,21 @@
                 submitButtonEnable: true,
                 previewButtonEnable: true,
                 content: '',
-                config: {
-                    height: 300
-                },
                 fileArray: [],
                 isLoaderActive: false,
                 duplicateYoutubeUrlError: false,
                 config: {
                     toolbar: [
-                        ['Source','Iframe','Image','ShowBlocks','Table','-','Link','Unlink','Flash','Smiley','TextColor','BGColor','Maximize','Preview','Print','Templates','PasteAsPlainText','PasteFromWord'],
-                        ['Replace','SelectAll','SpellChecker','Subscript','Superscript','CopyFormatting','RemoveFormat','Insert/RemoveNumberedList'],
-                        '/',
-                        ['Bold','Italic','Underline','Strike','StrikeThrough','-','Undo','Redo','-','Cut','Copy','Paste','Find','Replace','-','Outdent','Indent','-','Print'],
-                        ['DecreaseIndent','IncreaseIndent','CreateDivContainer','TextDirectionDFromLeftToRight','TextDirectionFromRightToLeft','SetLanguage','Anchor'],
-                        '/',
-                        ['NumberedList','BulletedList','-','JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock','Blockquote'],
-                        '/',
-                        ['Styles','Format','Font','FontSize','BackgroundColor','Maximize','TextColor'],
+                        ['Source','-','NewPage','DocProps','Preview','Print','-','Templates'],
+                        ['Cut','Copy','Paste','PasteText','PasteFromWord','-','Undo','Redo'],
+                        ['Bold','Italic','Underline','Strike','Subscript','Superscript','-','RemoveFormat'],
+                        ['NumberedList','BulletedList','-','Outdent','Indent','-','Blockquote','CreateDiv',
+                        '-','JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock','-','BidiLtr','BidiRtl'],
+                        [ 'Link','Unlink','Anchor' ],
+                        ['Image','Flash','Table','HorizontalRule','Smiley','SpecialChar','PageBreak','Iframe' ],
+                        ['Styles','Format','Font','FontSize'],
+                        [ 'TextColor','BGColor'],
+                        ['Maximize', 'ShowBlocks','-','About' ]
                     ]
                 }
             }
