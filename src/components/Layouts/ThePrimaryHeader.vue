@@ -151,32 +151,33 @@
                         <b-popover target="notificationPopover" placement="topleft" container="notifyPopoverWrap"
                             @show="onPopoverShow" ref="notficationPopover" triggers="click">
                             <template slot="title">
-                                <b-button class="btn-setting" :title="languageData.label.notification_settings"  @click="showsetting">
+                                <b-button class="btn-setting" :title="languageData.label.notification_settings"
+                                    @click="showsetting">
                                     <img :src="$store.state.imagePath+'/assets/images/settings-ic.svg'"
                                         alt="Setting icon">
 
                                 </b-button>
                                 <span class="title">{{languageData.label.notification}}</span>
-                                <b-button class="btn-clear" @click="showclearitem" v-if="totalNotificationCount != 0">{{languageData.label.clear_all}}
+                                <b-button class="btn-clear" @click="showclearitem" v-if="totalNotificationCount != 0">
+                                    {{languageData.label.clear_all}}
                                 </b-button>
                             </template>
                             <div class="notification-details" data-simplebar>
                                 <b-list-group>
-                                    <b-list-group-item
-                                    v-if="notificationListing.today.length > 0"
-                                    v-on:click="readItem($event,item.is_read, item.notification_id,item.link)"
-                                    v-bind:class="{
+                                    <b-list-group-item v-if="notificationListing.today.length > 0"
+                                        v-on:click="readItem($event,item.is_read, item.notification_id,item.link)"
+                                        v-bind:class="{
                                         'read-item':item.is_read == 1 ,
                                         'unread-item' : item.is_read == 0
-                                    }"
-                                    v-for="(item,index) in notificationListing.today" :key=index>
+                                    }" v-for="(item,index) in notificationListing.today" :key=index>
                                         <i>
                                             <img :src="item.icon" alt />
                                         </i>
                                         <p>
                                             {{item.notification_string}}
                                         </p>
-                                        <span v-b-tooltip.hover title="check"  class="status" v-on:click="readUnreadItem($event, item.is_read, item.notification_id)"></span>
+                                        <span v-b-tooltip.hover :title="getTooltipTitle(item.is_read)" class="status"
+                                            v-on:click="readUnreadItem($event, item.is_read, item.notification_id)"></span>
                                     </b-list-group-item>
                                 </b-list-group>
                                 <div class="slot-title" v-show="notificationListing.yesterday.length">
@@ -184,12 +185,11 @@
                                 </div>
                                 <b-list-group v-show="notificationListing.yesterday.length > 0">
                                     <b-list-group-item
-                                    v-on:click="readItem($event,item.is_read, item.notification_id,item.link)"
-                                    v-bind:class="{
+                                        v-on:click="readItem($event,item.is_read, item.notification_id,item.link)"
+                                        v-bind:class="{
                                         'read-item':item.is_read == 1 ,
                                         'unread-item' : item.is_read == 0
-                                    }"
-                                    v-for="(item,index) in notificationListing.yesterday" :key=index>
+                                    }" v-for="(item,index) in notificationListing.yesterday" :key=index>
 
                                         <i>
                                             <img :src="item.icon" alt />
@@ -197,7 +197,8 @@
                                         <p>
                                             {{item.notification_string}}
                                         </p>
-                                        <span class="status" v-b-tooltip.hover title="check" v-on:click="readUnreadItem($event,item.is_read, item.notification_id)"></span>
+                                        <span class="status" v-b-tooltip.hover :title="getTooltipTitle(item.is_read)"
+                                            v-on:click="readUnreadItem($event,item.is_read, item.notification_id)"></span>
                                     </b-list-group-item>
                                 </b-list-group>
                                 <div class="slot-title" v-show="notificationListing.older.length > 0">
@@ -205,12 +206,11 @@
                                 </div>
                                 <b-list-group v-show="notificationListing.older">
                                     <b-list-group-item
-                                    v-on:click="readItem($event,item.is_read, item.notification_id,item.link)"
-                                    v-bind:class="{
+                                        v-on:click="readItem($event,item.is_read, item.notification_id,item.link)"
+                                        v-bind:class="{
                                         'read-item':item.is_read == 1 ,
                                         'unread-item' : item.is_read == 0
-                                    }"
-                                    v-for="(item,index) in notificationListing.older" :key=index>
+                                    }" v-for="(item,index) in notificationListing.older" :key=index>
 
                                         <i>
                                             <img :src="item.icon" alt />
@@ -218,7 +218,8 @@
                                         <p>
                                             {{item.notification_string}}
                                         </p>
-                                        <span class="status" v-b-tooltip.hover :title="getTooltipTitle(item.is_read)" v-on:click="readUnreadItem($event,item.is_read, item.notification_id)"></span>
+                                        <span class="status" v-b-tooltip.hover :title="getTooltipTitle(item.is_read)"
+                                            v-on:click="readUnreadItem($event,item.is_read, item.notification_id)"></span>
                                     </b-list-group-item>
                                 </b-list-group>
                             </div>
@@ -314,8 +315,8 @@
                         'older': []
                     },
                     notificationCount: 0,
-                    totalNotificationCount : 0,
-                    isNotificationLoaded : false
+                    totalNotificationCount: 0,
+                    isNotificationLoaded: false
                 };
             },
             mounted() {
@@ -397,7 +398,7 @@
                     let popoverBody = document.querySelector(".popover-body");
                     popoverBody.classList.add("clear-item");
                     clearNotification().then(response => {
-                        if(response.error == false) {
+                        if (response.error == false) {
                             this.notificationCount = 0
                             this.getNotificationListing();
                         }
@@ -559,11 +560,11 @@
                 },
                 getNotificationSettingListing() {
 
-                    if(this.totalNotificationCount <= 0) {
+                    if (this.totalNotificationCount <= 0) {
                         setTimeout(() => {
                             let popoverBody = document.querySelector(".popover-body");
-                        popoverBody.classList.add("clear-item");
-                        },100)
+                            popoverBody.classList.add("clear-item");
+                        }, 100)
 
                     }
                     this.isNotificationAjaxCall = true;
@@ -617,29 +618,31 @@
                         autoHideDelay: 3000
                     })
                 },
-                readItem(event, isRead , notificationId,link) {
+                readItem(event, isRead, notificationId, link) {
                     event.stopPropagation();
-                    let routeData = this.$router.resolve({path : link});
-				    window.open(routeData.href, '_blank');
-                    if(isRead == 0 && notificationId) {
+                    let routeData = this.$router.resolve({
+                        path: link
+                    });
+                    window.open(routeData.href, '_blank');
+                    if (isRead == 0 && notificationId) {
 
                         readNotification(notificationId).then(response => {
-                            if(response.error == false) {
+                            if (response.error == false) {
                                 this.getNotificationListing();
                             }
                         })
                     }
                 },
-                readUnreadItem(event, isRead , notificationId) {
+                readUnreadItem(event, isRead, notificationId) {
                     event.stopPropagation();
                     readNotification(notificationId).then(response => {
-                        if(response.error == false) {
+                        if (response.error == false) {
                             this.getNotificationListing();
                         }
                     })
                 },
                 getTooltipTitle(isRead) {
-                    if(isRead == 0) {
+                    if (isRead == 0) {
                         return this.languageData.label.mark_as_read
                     } else {
                         return this.languageData.label.mark_as_un_read
@@ -666,15 +669,15 @@
                             e.stopPropagation();
                         });
                     }
-                              var notifyStatus = document.querySelectorAll(".status");
-      notifyStatus.forEach(function(statusEvent) {
-        statusEvent.addEventListener("mouseover", function() {
-          setTimeout(function() {
-            var tooltip = document.querySelector(".tooltip");
-            tooltip.classList.add("notify-tooltip");
-          });
-        });
-      });
+                    var notifyStatus = document.querySelectorAll(".status");
+                    notifyStatus.forEach(function (statusEvent) {
+                        statusEvent.addEventListener("mouseover", function () {
+                            setTimeout(function () {
+                                var tooltip = document.querySelector(".tooltip");
+                                tooltip.classList.add("notify-tooltip");
+                            });
+                        });
+                    });
                 }, 1000);
                 document.addEventListener("scroll", this.handscroller);
                 this.isThemeDisplay = this.settingEnabled(constants.THEMES_ENABLED);
