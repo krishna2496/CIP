@@ -52,10 +52,25 @@
       },
 	  {  
          "name":"Story"
+      },
+	  {  
+         "name":"Dashboard - Comment History"
+      },
+	  {  
+         "name":"User Dashboard"
+      },
+	  {  
+         "name":"Messages"
+      },
+	  {  
+         "name":"Notifications"
+      },
+	  {  
+         "name":"Activity Log"
       }
    ],
   "paths": {
-    "/missions": {
+    "/missions?search={searchText}": {
 	  "get": {
         "operationId": "GET_team4-cip-api-missions",
         "summary": "Admin - Missions Listing (Milestone - 1)",
@@ -73,6 +88,13 @@
             "required": true,
             "type": "string",
             "default": ""
+          },
+		  {
+            "name": "searchText",
+            "in": "path",
+            "required": false,
+            "type": "string",
+            "default": ""
           }
         ],
         "responses": {
@@ -85,6 +107,8 @@
           }
         }
       },	
+	},
+	"/missions": {
 	  "post": {
         "operationId": "POST_team4-cip-api-missions",
         "summary": "Admin - Create Mission (Milestone - 1)",
@@ -1701,10 +1725,11 @@
 		}
       }
     },
-	"/users": {
+	"/users?search={searchText}": {
       "get": {
         "operationId": "GET_team4-cip-api-users",
         "summary": "Admin - List of users (Milestone - 1)",
+		"description": "This endpoint will list all users. To search users by their first name or last name append ?search=john in endpoint",
 		"tags":[  
                "User"
             ],
@@ -1716,6 +1741,13 @@
             "name": "Authorization",
             "in": "header",
             "required": true,
+            "type": "string",
+            "default": ""
+          },
+		  {
+            "name": "searchText",
+            "in": "path",
+            "required": false,
             "type": "string",
             "default": ""
           }
@@ -2425,6 +2457,33 @@
 				"400":{  
 				  "description":"Bad Request"
 				},
+				 "401":{  
+				  "description":"Unauthorized - Invalid token"
+				}
+			}
+		  }
+	},
+	"/app/accept-cookie-agreement": {
+		"patch": {
+			"operationId": "GET_team4-cip-api-accept-cookie-agreement",
+			"summary": "App - Accept cookie agreement (Milestone - 4)",
+			"description": "Store agreement date to db when user accepts cookie agreement policy after logged in",
+			"tags":[  
+				   "User"
+				],
+			"consumes": [
+			  "application/json"
+			],
+			"parameters": [
+			  {
+				"name": "token",
+				"in": "header",
+				"required": true,
+				"type": "string",
+				"default": ""
+			  }
+			],
+			"responses": {
 				 "401":{  
 				  "description":"Unauthorized - Invalid token"
 				}
@@ -3188,6 +3247,65 @@
         }
       }
     },
+	"/countries":{
+		"get": {
+			"operationId": "GET_team4-cip-api-get-countries",
+			"summary": "Admin - Get country list (Milestone - 3)",
+			"tags":[  
+				   "Tenant - Admin"
+				],
+			"consumes": [
+			  "multipart/form-data"
+			],
+			"parameters": [
+			  {
+				"name": "Authorization",
+				"in": "header",
+				"required": true,
+				"type": "string",
+				"default": ""
+			  }
+			],
+			"responses": {
+			   "401":{  
+				  "description":"Unauthorized - Invalid API key or secret key"
+				}
+			}
+		},
+	},
+	"/cities/{countryId}":{
+		"get": {
+			"operationId": "GET_team4-cip-api-get-city-by-country",
+			"summary": "Admin - Get cities by country id (Milestone - 3)",
+			"tags":[  
+				   "Tenant - Admin"
+				],
+			"consumes": [
+			  "multipart/form-data"
+			],
+			"parameters": [
+			  {
+				"name": "Authorization",
+				"in": "header",
+				"required": true,
+				"type": "string",
+				"default": ""
+			  },
+			  {
+				"name": "countryId",
+				"in": "path",
+				"required": true,
+				"type": "integer",
+				"format": "int32"
+			  }
+			],
+			"responses": {
+			   "401":{  
+				  "description":"Unauthorized - Invalid API key or secret key"
+				}
+			}
+		},
+	},
 	"/language/{lang}": {
       "get": {
         "operationId": "GET_team4-cip-api-skill",
@@ -5076,6 +5194,36 @@
 			}
 		}
 	},
+	"/app/user/missions": {
+		"get": {
+			"operationId": "POST_team4-cip-api-get-user-missions",
+			"summary": "App - Fetch user's missions (Milestone - 4)",
+			"description": "This endpoint is created to select mission(from drop-down) while creating story from platform. It will return mission title and id for which user has applied and application is approved by admin",
+			"tags":[  
+				   "Story"
+				],
+			"consumes": [
+			  "multipart/form-data"
+			],
+			"parameters": [
+			  {
+				"name": "Token",
+				"in": "header",
+				"required": true,
+				"type": "string",
+				"default": ""
+			  }
+			],
+			"responses": {
+				"401":{  
+				  "description":"Unauthorized - Invalid token"
+				},
+				"500":{  
+				  "description":"Internal server error"
+				}
+			}
+		}
+	},
 	"/app/story": {
 		"post": {
 			"operationId": "POST_team4-cip-api-add-story",
@@ -5185,7 +5333,7 @@
 		},
 		"post": {
 			"operationId": "POST_team4-cip-api-update-story",
-			"summary": "App - Add story from front end (Milestone - 4)",
+			"summary": "App - Update story from front end (Milestone - 4)",
 			"description": "User can update story details from platform.",
 			"tags":[  
 				   "Story"
@@ -5582,6 +5730,777 @@
 				},
 				"404":{  
 				  "description":"Story not found in the system"
+				},
+				"500":{  
+				  "description":"Internal server error"
+				}
+			}
+		}
+	},
+	"/app/story/my-stories": {
+		"get": {
+			"operationId": "POST_team4-cip-api-get-my-stories",
+			"summary": "App - My stories (Milestone - 4)",
+			"description": "Fetch my stories for user dashboard on platform",
+			"tags":[  
+				   "Story"
+				],
+			"consumes": [
+			  "multipart/form-data"
+			],
+			"parameters": [
+			  {
+				"name": "Token",
+				"in": "header",
+				"required": true,
+				"type": "string",
+				"default": ""
+			  }
+			],
+			"responses": {
+				"401":{  
+				  "description":"Unauthorized - Invalid token"
+				},
+				"500":{  
+				  "description":"Internal server error"
+				}
+			}
+		}
+	},
+	"/app/dashboard?year={year}&month={month}&mission_id={missionId}": {
+		"get": {
+			"operationId": "POST_team4-cip-api-get-user-dashboard-data",
+			"summary": "App - Fetch user's dashboard data (Milestone - 4)",
+			"description": "This endpoint will fetch data for dashboard statistics and charts.",
+			"tags":[  
+				   "User Dashboard"
+				],
+			"consumes": [
+			  "multipart/form-data"
+			],
+			"parameters": [
+			  {
+				"name": "Token",
+				"in": "header",
+				"required": true,
+				"type": "string",
+				"default": ""
+			  },
+			  {
+				"name": "year",
+				"in": "path",
+				"type": "integer",
+				"format": "int64",
+				"default": 2019,
+			  },
+			  {
+				"name": "month",
+				"in": "path",
+				"description": "Month from 01-12",
+				"type": "integer",
+				"format": "int64",
+				"default": 10,
+			  },
+			  {
+				"name": "missionId",
+				"in": "path",
+				"description": "Filter by mission ID",
+				"type": "integer",
+				"format": "int32",
+			  }
+			],
+			"responses": {
+				"401":{  
+				  "description":"Unauthorized - Invalid token"
+				},
+				"500":{  
+				  "description":"Internal server error"
+				}
+			}
+		}
+	},
+	"/app/dashboard/comments": {
+		"get": {
+			"operationId": "POST_team4-cip-api-get-my-comments",
+			"summary": "App - Fetch user's comments (Milestone - 4)",
+			"description": "This endpoint will fetch all comments posted by user on missions for user dashboard comment history page",
+			"tags":[  
+				   "Dashboard - Comment History"
+				],
+			"consumes": [
+			  "multipart/form-data"
+			],
+			"parameters": [
+			  {
+				"name": "Token",
+				"in": "header",
+				"required": true,
+				"type": "string",
+				"default": ""
+			  }
+			],
+			"responses": {
+				"401":{  
+				  "description":"Unauthorized - Invalid token"
+				},
+				"500":{  
+				  "description":"Internal server error"
+				}
+			}
+		}
+	},
+	"/app/dashboard/comments/export": {
+		"get": {
+			"operationId": "POST_team4-cip-api-export-my-comments",
+			"summary": "App - Export user's comments (Milestone - 4)",
+			"description": "This endpoint will export all comments posted by user on missions",
+			"tags":[  
+				   "Dashboard - Comment History"
+				],
+			"consumes": [
+			  "multipart/form-data"
+			],
+			"parameters": [
+			  {
+				"name": "Token",
+				"in": "header",
+				"required": true,
+				"type": "string",
+				"default": ""
+			  }
+			],
+			"responses": {
+				"401":{  
+				  "description":"Unauthorized - Invalid token"
+				},
+				"500":{  
+				  "description":"Internal server error"
+				}
+			}
+		}
+	},
+	"/app/dashboard/comments/{commentId}": {
+		"delete": {
+			"operationId": "POST_team4-cip-api-delete-comment",
+			"summary": "App - Delete comment from history page (Milestone - 4)",
+			"description": "User can delete his comment from Comment history page in platform",
+			"tags":[  
+				   "Dashboard - Comment History"
+				],
+			"consumes": [
+			  "multipart/form-data"
+			],
+			"parameters": [
+			  {
+				"name": "Token",
+				"in": "header",
+				"required": true,
+				"type": "string",
+				"default": ""
+			  },
+			  {
+				"name": "commentId",
+				"in": "path",
+				"required": true,
+				"type": "integer",
+				"format": "int32"
+			  }
+			],
+			"responses": {
+				"401":{  
+				  "description":"Unauthorized - Invalid token"
+				},
+				"404":{  
+				  "description":"Comment not found in the system"
+				},
+				"500":{  
+				  "description":"Internal server error"
+				}
+			}
+		}
+	},
+	"/message/send": {
+		"post": {
+			"operationId": "POST_team4-cip-api-send-message-to-user",
+			"summary": "Admin - Send message to user (Milestone - 4)",
+			"Description": "Admin can send messages to a user using this endpoint",
+			"tags":[  
+				   "Messages"
+				],
+			"consumes": [
+			  "application/json"
+			],
+			"parameters": [
+			  {
+				"name": "Authorization",
+				"in": "header",
+				"required": true,
+				"type": "string",
+				"default": ""
+			  },
+			  {
+				"name": "body",
+				"in": "body",
+				"required": true,
+				"schema": {
+					"type": "object",
+						"properties": {
+							"subject": {
+								"type": "string",
+								"description": "Maximum 255 characters are allowed"
+							},
+							"message": {
+								"type": "string"
+							},
+							"admin": {
+								"type": "string",
+								"description": "Admin can write his name which will display on platform. If its left blank then 'Anonymous user' will be seen to user"
+							},
+							"user_ids": {
+								"type": "array",
+								"items": {
+									"type": "string",
+									"description": "Use comma to separate multiple user ids",
+									"default": "1,2",
+								},
+							}
+						}
+					}
+				}
+			],
+			"responses": {
+				"401":{  
+				  "description":"Unauthorized - Invalid API key or secret key"
+				},
+				"422":{  
+				  "description":"Invalid input"
+				},
+				"500":{  
+				  "description":"Internal server error"
+				}
+			}
+		}
+	},
+	"/message/list": {
+		"get": {
+			"operationId": "POST_team4-cip-api-fetch-message-list",
+			"summary": "Admin - Fetch message list (Milestone - 4)",
+			"description": "This endpoint will list all messages for backend. To filter messages by users append ?users=1,2,3",
+			"tags":[  
+				   "Messages"
+				],
+			"consumes": [
+			  "multipart/form-data"
+			],
+			"parameters": [
+			  {
+				"name": "Authorization",
+				"in": "header",
+				"required": true,
+				"type": "string",
+				"default": ""
+			  }
+			],
+			"responses": {
+				"401":{  
+				  "description":"Unauthorized - Invalid API key or secret key"
+				},
+				"500":{  
+				  "description":"Internal server error"
+				}
+			}
+		}
+	},
+	"/message/{messageId}": {
+		"delete": {
+			"operationId": "POST_team4-cip-api-delete-message",
+			"summary": "Admin - Delete message from admin (Milestone - 4)",
+			"description": "Delete message from admin",
+			"tags":[  
+				   "Messages"
+				],
+			"consumes": [
+			  "multipart/form-data"
+			],
+			"parameters": [
+			  {
+				"name": "Authorization",
+				"in": "header",
+				"required": true,
+				"type": "string",
+				"default": ""
+			  },
+			  {
+				"name": "messageId",
+				"in": "path",
+				"required": true,
+				"type": "integer",
+				"format": "int32"
+			  }
+			],
+			"responses": {
+				"401":{  
+				  "description":"Unauthorized - Invalid API key or secret key"
+				},
+				"404":{  
+				  "description":"Message not found in the system"
+				},
+				"500":{  
+				  "description":"Internal server error"
+				}
+			}
+		}
+	},
+	"/message/read/{messageId}": {
+		"post": {
+			"operationId": "POST_team4-cip-api-read-unread-admin-message",
+			"summary": "Admin - Read/unread message from admin (Milestone - 4)",
+			"tags":[  
+				   "Messages"
+				],
+			"consumes": [
+			  "multipart/form-data"
+			],
+			"parameters": [
+			  {
+				"name": "Authorization",
+				"in": "header",
+				"required": true,
+				"type": "string",
+				"default": ""
+			  },
+			  {
+				"name": "messageId",
+				"in": "path",
+				"required": true,
+				"type": "integer",
+				"format": "int32"
+			  }
+			],
+			"responses": {
+				"401":{  
+				  "description":"Unauthorized - Invalid API key or secret key"
+				},
+				"404":{  
+				  "description":"Message not found in the system"
+				},
+				"500":{  
+				  "description":"Internal server error"
+				}
+			}
+		}
+	},
+	"/app/message/send": {
+		"post": {
+			"operationId": "POST_team4-cip-api-send-message-to-admin",
+			"summary": "App - Send message to admin (Milestone - 4)",
+			"Description": "User can send messages/report a bug to admin using this endpoint",
+			"tags":[  
+				   "Messages"
+				],
+			"consumes": [
+			  "application/json"
+			],
+			"parameters": [
+			  {
+				"name": "Token",
+				"in": "header",
+				"required": true,
+				"type": "string",
+				"default": ""
+			  },
+			  {
+				"name": "body",
+				"in": "body",
+				"required": true,
+				"schema": {
+					"type": "object",
+						"properties": {
+							"subject": {
+								"type": "string",
+								"description": "Maximum 255 characters are allowed"
+							},
+							"message": {
+								"type": "string"
+							}
+						}
+					}
+				}
+			],
+			"responses": {
+				"401":{  
+				  "description":"Unauthorized - Invalid token"
+				},
+				"422":{  
+				  "description":"Invalid input"
+				},
+				"500":{  
+				  "description":"Internal server error"
+				}
+			}
+		}
+	},
+	"/app/messages": {
+		"get": {
+			"operationId": "POST_team4-cip-api-fetch-messages-for-user-dashboard",
+			"summary": "App - Fetch messages sent to user (Milestone - 4)",
+			"description": "This endpoint will fetch all messages which are sent to user by admin",
+			"tags":[  
+				   "Messages"
+				],
+			"consumes": [
+			  "multipart/form-data"
+			],
+			"parameters": [
+			  {
+				"name": "Token",
+				"in": "header",
+				"required": true,
+				"type": "string",
+				"default": ""
+			  }
+			],
+			"responses": {
+				"401":{  
+				  "description":"Unauthorized - Invalid token"
+				},
+				"500":{  
+				  "description":"Internal server error"
+				}
+			}
+		}
+	},
+	"/app/messages/{messageId}": {
+		"delete": {
+			"operationId": "POST_team4-cip-api-delete-message",
+			"summary": "App - Delete message (Milestone - 4)",
+			"description": "User can delete message which is sent by admin",
+			"tags":[  
+				   "Messages"
+				],
+			"consumes": [
+			  "multipart/form-data"
+			],
+			"parameters": [
+			  {
+				"name": "Token",
+				"in": "header",
+				"required": true,
+				"type": "string",
+				"default": ""
+			  },
+			  {
+				"name": "messageId",
+				"in": "path",
+				"required": true,
+				"type": "integer",
+				"format": "int32"
+			  }
+			],
+			"responses": {
+				"401":{  
+				  "description":"Unauthorized - Invalid token"
+				},
+				"404":{  
+				  "description":"Message not found in the system"
+				},
+				"500":{  
+				  "description":"Internal server error"
+				}
+			}
+		}
+	},
+	"/app/message/read/{messageId}": {
+		"post": {
+			"operationId": "POST_team4-cip-api-read-unread-user-message",
+			"summary": "App - Read/unread message (Milestone - 4)",
+			"tags":[  
+				   "Messages"
+				],
+			"consumes": [
+			  "multipart/form-data"
+			],
+			"parameters": [
+			  {
+				"name": "Authorization",
+				"in": "header",
+				"required": true,
+				"type": "string",
+				"default": ""
+			  },
+			  {
+				"name": "messageId",
+				"in": "path",
+				"required": true,
+				"type": "integer",
+				"format": "int32"
+			  }
+			],
+			"responses": {
+				"401":{  
+				  "description":"Unauthorized - Invalid token"
+				},
+				"404":{  
+				  "description":"Message not found in the system"
+				},
+				"500":{  
+				  "description":"Internal server error"
+				}
+			}
+		}
+	},
+	"/app/notification-settings": {
+		"get": {
+			"operationId": "POST_team4-cip-api-get-notification-settings",
+			"summary": "App - Fetch notification settings (Milestone - 4)",
+			"description": "This endpoint will fetch all notification types available in system, so user can select for which type he wants to receive notifications",
+			"tags":[  
+				   "Notifications"
+				],
+			"consumes": [
+			  "multipart/form-data"
+			],
+			"parameters": [
+			  {
+				"name": "Token",
+				"in": "header",
+				"required": true,
+				"type": "string",
+				"default": ""
+			  }
+			],
+			"responses": {
+				"401":{  
+				  "description":"Unauthorized - Invalid token"
+				},
+				"500":{  
+				  "description":"Internal server error"
+				}
+			}
+		}
+	},
+	"/app/user-notification-settings/update": {
+		"post": {
+			"operationId": "POST_team4-cip-api-get-enable-disable-notification-settings",
+			"summary": "App - User can enable/disable notification types/settings (Milestone - 4)",
+			"description": "Using this endpoint, user can select for which notification type he wants to receive notifications",
+			"tags":[  
+				   "Notifications"
+				],
+			"consumes": [
+			  "multipart/form-data"
+			],
+			"parameters": [
+			  {
+				"name": "Token",
+				"in": "header",
+				"required": true,
+				"type": "string",
+				"default": ""
+			  },
+			  {
+				"name": "body",
+				"in": "body",
+				"required": true,
+				"schema": {
+					"type": "object",
+						"properties": {
+							"settings": {
+								"type": "array",
+								"items": {
+									"type": "object",
+									"properties": {
+										"notification_type_id": {
+											"type":"integer",
+											"format":"int32"
+										},
+										"value": {
+											"type":"integer",
+											"format":"int32",
+											"enum": [1,0]
+										}
+									}
+								}
+							}							
+						}
+					}
+				}
+			],
+			"responses": {
+				"401":{  
+				  "description":"Unauthorized - Invalid token"
+				},
+				"422":{  
+				  "description":"Invalid input"
+				},
+				"500":{  
+				  "description":"Internal server error"
+				}
+			}
+		}
+	},
+	"/app/notifications": {
+		"get": {
+			"operationId": "POST_team4-cip-api-get-notifications",
+			"summary": "App - Fetch user's notifications (Milestone - 4)",
+			"tags":[  
+				   "Notifications"
+				],
+			"consumes": [
+			  "multipart/form-data"
+			],
+			"parameters": [
+			  {
+				"name": "Token",
+				"in": "header",
+				"required": true,
+				"type": "string",
+				"default": ""
+			  }
+			],
+			"responses": {
+				"401":{  
+				  "description":"Unauthorized - Invalid token"
+				},
+				"500":{  
+				  "description":"Internal server error"
+				}
+			}
+		}
+	},
+	"/app/notification/read-unread/{notificationId}": {
+		"post": {
+			"operationId": "POST_team4-cip-api-read-unread-notifications",
+			"summary": "App - Read/unread user's notifications (Milestone - 4)",
+			"tags":[  
+				   "Notifications"
+				],
+			"consumes": [
+			  "multipart/form-data"
+			],
+			"parameters": [
+			  {
+				"name": "Token",
+				"in": "header",
+				"required": true,
+				"type": "string",
+				"default": ""
+			  },
+			  {
+				"name": "notificationId",
+				"in": "path",
+				"required": true,
+				"type": "integer",
+				"format": "int32"
+			  }
+			],
+			"responses": {
+				"401":{  
+				  "description":"Unauthorized - Invalid token"
+				},
+				"404":{  
+				  "description":"Notification not found in the system"
+				},
+				"500":{  
+				  "description":"Internal server error"
+				}
+			}
+		}
+	},
+	"/app/notifications/clear": {
+		"delete": {
+			"operationId": "POST_team4-cip-api-clear-all-notifications",
+			"summary": "App - Clear all notifications (Milestone - 4)",
+			"tags":[  
+				   "Notifications"
+				],
+			"consumes": [
+			  "multipart/form-data"
+			],
+			"parameters": [
+			  {
+				"name": "Token",
+				"in": "header",
+				"required": true,
+				"type": "string",
+				"default": ""
+			  }
+			],
+			"responses": {
+				"401":{  
+				  "description":"Unauthorized - Invalid token"
+				},
+				"500":{  
+				  "description":"Internal server error"
+				}
+			}
+		}
+	},
+	"/logs?type={type}&action={action}&user_type={userType}&users={users}&from_date={fromDate}&to_date={toDate}&order={order}": {
+		"get": {
+			"operationId": "POST_team4-cip-api-get-activity-logs",
+			"summary": "Admin - Fetch activity logs (Milestone - 4)",
+			"tags":[  
+				   "Activity Log"
+				],
+			"consumes": [
+			  "multipart/form-data"
+			],
+			"parameters": [
+			  {
+				"name": "Authorization",
+				"in": "header",
+				"required": true,
+				"type": "string",
+				"default": ""
+			  },
+			  {
+				"name": "type",
+				"in": "path",
+				"type": "string",
+			  },
+			  {
+				"name": "action",
+				"in": "path",
+				"type": "string",
+			  },
+			  {
+				"name": "userType",
+				"in": "path",
+				"type": "string",
+				"enum": ["REGULAR", "API"],
+			  },
+			  {
+				"name": "users",
+				"in": "path",
+				"type": "integer",
+				"description": "Use comma to separate multiple user ids",
+				"format": "int32"
+			  },
+			  {
+				"name": "from_date",
+				"in": "path",
+				"type": "string",
+				"format":"date-time",
+				"description":"yyyy-mm-dd",
+			  },
+			  {
+				"name": "to_date",
+				"in": "path",
+				"type": "string",
+				"format":"date-time",
+				"description":"yyyy-mm-dd",
+			  },
+			  {
+				"name": "order",
+				"in": "path",
+				"type": "string",
+				"enum": ["asc", "desc"],
+			  },
+			],
+			"responses": {
+				"401":{  
+				  "description":"Unauthorized - Invalid API key or secret key"
 				},
 				"500":{  
 				  "description":"Internal server error"
