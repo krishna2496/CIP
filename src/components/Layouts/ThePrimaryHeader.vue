@@ -162,7 +162,7 @@
                             </template>
                             <div class="notification-details" data-simplebar>
                                 <b-list-group>
-                                    <b-list-group-item 
+                                    <b-list-group-item
                                     v-if="notificationListing.today.length > 0"
                                     v-on:click="readItem($event,item.is_read, item.notification_id,item.link)"
                                     v-bind:class="{
@@ -183,14 +183,14 @@
                                     <span>{{languageData.label.yesterday}}</span>
                                 </div>
                                 <b-list-group v-show="notificationListing.yesterday.length > 0">
-                                    <b-list-group-item 
+                                    <b-list-group-item
                                     v-on:click="readItem($event,item.is_read, item.notification_id,item.link)"
                                     v-bind:class="{
                                         'read-item':item.is_read == 1 ,
                                         'unread-item' : item.is_read == 0
                                     }"
                                     v-for="(item,index) in notificationListing.yesterday" :key=index>
-                                        
+
                                         <i>
                                             <img :src="item.icon" alt />
                                         </i>
@@ -211,7 +211,7 @@
                                         'unread-item' : item.is_read == 0
                                     }"
                                     v-for="(item,index) in notificationListing.older" :key=index>
-                                        
+
                                         <i>
                                             <img :src="item.icon" alt />
                                         </i>
@@ -526,7 +526,7 @@
                                         }
 
                                     })
-                                   
+
                                     //  this.notificationListing
                                 } else {
                                     this.totalNotificationCount = 0;
@@ -535,7 +535,7 @@
                                         'yesterday': [],
                                         'older': []
                                     }
-                                   
+
                                 }
                                 if (response.data.unread_notifications) {
                                     this.notificationCount = response.data.unread_notifications
@@ -550,7 +550,7 @@
                                     'yesterday': [],
                                     'older': []
                                 }
-                               
+
                             }
 
                         }
@@ -558,13 +558,13 @@
                     })
                 },
                 getNotificationSettingListing() {
-                    
+
                     if(this.totalNotificationCount <= 0) {
                         setTimeout(() => {
                             let popoverBody = document.querySelector(".popover-body");
-                        popoverBody.classList.add("clear-item");  
+                        popoverBody.classList.add("clear-item");
                         },100)
-                            
+
                     }
                     this.isNotificationAjaxCall = true;
                     notificationSettingListing().then(response => {
@@ -622,12 +622,12 @@
                     let routeData = this.$router.resolve({path : link});
 				    window.open(routeData.href, '_blank');
                     if(isRead == 0 && notificationId) {
-                     
+
                         readNotification(notificationId).then(response => {
                             if(response.error == false) {
                                 this.getNotificationListing();
                             }
-                        })     
+                        })
                     }
                 },
                 readUnreadItem(event, isRead , notificationId) {
@@ -636,7 +636,7 @@
                         if(response.error == false) {
                             this.getNotificationListing();
                         }
-                    })   
+                    })
                 },
                 getTooltipTitle(isRead) {
                     if(isRead == 0) {
@@ -666,6 +666,15 @@
                             e.stopPropagation();
                         });
                     }
+                              var notifyStatus = document.querySelectorAll(".status");
+      notifyStatus.forEach(function(statusEvent) {
+        statusEvent.addEventListener("mouseover", function() {
+          setTimeout(function() {
+            var tooltip = document.querySelector(".tooltip");
+            tooltip.classList.add("notify-tooltip");
+          });
+        });
+      });
                 }, 1000);
                 document.addEventListener("scroll", this.handscroller);
                 this.isThemeDisplay = this.settingEnabled(constants.THEMES_ENABLED);

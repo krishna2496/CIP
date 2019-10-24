@@ -4297,3 +4297,9 @@ main {
 		}
 	}
 }
+
+.tooltip {
+	&.notify-tooltip {
+		z-index: 99999;
+	}
+}
