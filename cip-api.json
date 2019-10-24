@@ -1,0 +1,4975 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "",
+    "title": "CI Platform",
+    "description": ""
+  },
+  "host":"web8.anasource.com",
+  "basePath":"/team4/cip-api",
+  "tags":[  
+      {  
+         "name":"Mission",
+	  },
+	  {  
+         "name":"Mission Comment",
+	  },
+	  {  
+         "name":"Mission application",
+	  },
+	  {  
+         "name":"Footer pages"
+      },
+	  {  
+         "name":"Policy pages"
+      },
+      {  
+         "name":"User"
+      },
+	  {  
+         "name":"User skills"
+      },
+	  {  
+         "name":"Theme management"
+      },
+	  {  
+         "name":"Skill management"
+      },
+	  {  
+         "name":"Tenant - Admin"
+      },
+	  {  
+         "name":"Tenant - App"
+      },
+	  {  
+         "name":"Volunteering Timesheet"
+      },
+	  {  
+         "name":"Volunteering History"
+      }
+   ],
+  "paths": {
+    "/missions": {
+	  "get": {
+        "operationId": "GET_team4-cip-api-missions",
+        "summary": "Admin - Missions Listing (Milestone - 1)",
+		"tags":[  
+               "Mission"
+            ],
+		"consumes": [
+          "multipart/form-data"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": ""
+          }
+        ],
+        "responses": {
+		  "400":{  
+			  "description":"Bad request"
+		   },
+          "default": {
+            "description": "",
+            "schema": {}
+          }
+        }
+      },	
+	  "post": {
+        "operationId": "POST_team4-cip-api-missions",
+        "summary": "Admin - Create Mission (Milestone - 1)",
+		"tags":[  
+               "Mission"
+            ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+			"required":true,
+            "schema": {
+              "$ref":"#/definitions/Mission"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": ""
+          }
+        ],
+        "responses": {
+			"400":{  
+			  "description":"Bad request"
+			},
+			"401":{  
+			  "description":"Unauthorized - Invalid API key or secret key"
+			},
+			"422":{  
+			  "description":"Unprocessable entity - Invalid input"
+			},
+			"502":{  
+			  "description":"Bad Gateway - Database operational error"
+			}
+        }
+      }
+	  },
+	  "/missions/{missionId}": {
+	  "get": {
+        "operationId": "GET_team4-cip-api-missions_get_by_id",
+        "summary": "Admin - Get mission detail by ID (Milestone - 1)",
+		"tags":[  
+               "Mission"
+            ],
+        "consumes": [
+          "multipart/form-data"
+        ],
+		"parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": ""
+          },
+		  {  
+			  "name":"missionId",
+			  "in":"path",
+			  "description":"Mission id to get detail",
+			  "required":true,
+			  "type":"integer",
+			  "format":"int64"
+		  }
+        ],
+        "responses": {
+			"400":{  
+			  "description":"Bad request"
+			},
+			"401":{  
+			  "description":"Unauthorized - Invalid API key or secret key"
+			},
+			"404":{  
+			  "description":"Mission not found in the system"
+			}
+        }
+      },
+      "patch": {
+        "operationId": "PATCH_team4-cip-api-missions-1",
+        "summary": "Admin - Update mission (Milestone - 1)",
+		"tags":[  
+               "Mission"
+            ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+			"required":true,
+            "schema": {
+              "$ref":"#/definitions/Mission"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": ""
+          },
+		  {  
+			  "name":"missionId",
+			  "in":"path",
+			  "description":"Mission id to update",
+			  "required":true,
+			  "type":"integer",
+			  "format":"int64"
+		  }
+        ],
+        "responses": {
+			"400":{  
+			  "description":"Bad request"
+			},
+			"401":{  
+			  "description":"Unauthorized - Invalid API key or secret key"
+			},
+			"404":{  
+			  "description":"Mission not found in the system"
+			},
+			"422":{  
+			  "description":"Unprocessable entity - Invalid input"
+			},
+			"502":{  
+			  "description":"Bad Gateway - Database operational error"
+			}
+        }
+      },
+	  "delete": {
+        "operationId": "DELETE_team4-cip-api-missions-8",
+        "summary": "Admin - Delete mission (Milestone - 1)",
+		"tags":[  
+               "Mission"
+            ],
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": ""
+          },
+		  {  
+			  "name":"missionId",
+			  "in":"path",
+			  "description":"Mission id to delete",
+			  "required":true,
+			  "type":"integer",
+			  "format":"int64"
+		  }
+        ],
+        "responses": {
+          "403":{  
+			  "description":"Forbidden - Mission deletion failed"
+			},
+		  "404":{  
+			  "description":"Not Found - Requested mission does not exist"
+			},
+        }
+      }
+	},
+	"/app/missions?country_id={country_id}&city_id={city_id}&theme_id={theme_id}&skill_id={skill_id}&sort_by={sort_by}": {
+      "get": {
+        "operationId": "GET_team4-cip-api-app-missions-listing",
+        "summary": "App - Listing of missions (Milestone - 1)",
+		"tags":[  
+               "Mission"
+            ],
+        "consumes": [
+          "multipart/form-data"
+        ],
+		"parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": ""
+          },
+		  {  
+			  "name":"country_id",
+			  "in":"path",
+			  "description":"Country ID",
+			  "required":false,
+			  "type":"integer",
+			  "format":"int64"
+		  }	,
+		  {  
+			  "name":"city_id",
+			  "in":"path",
+			  "description":"City ID",
+			  "required":false,
+			  "type":"integer",
+			  "format":"int64"
+		  },
+		  {  
+			  "name":"theme_id",
+			  "in":"path",
+			  "description":"Theme ID",
+			  "required":false,
+			  "type":"integer",
+			  "format":"int64"
+		  },
+		  {  
+			  "name":"skill_id",
+			  "in":"path",
+			  "description":"Skill ID",
+			  "required":false,
+			  "type":"integer",
+			  "format":"int64"
+		  },
+		  {  
+			  "name":"sort_by",
+			  "in":"path",
+			  "description":"newest, oldest, lowest_available_seats, highest_available_seats, my_favourite, deadline",
+			  "required":false,
+			  "type":"string"
+		  }			  
+        ],
+        "responses": {
+			"400":{  
+			  "description":"Bad request"
+			},
+			"401":{  
+			  "description":"Unauthorized - Invalid token"
+			}
+        }
+      }
+    },
+	"/app/mission/favourite": {
+      "post": {
+        "operationId": "GET_team4-cip-api-missions-favourite",
+        "summary": "App - Add/Remove favourite mission (Milestone - 2)",
+		"tags":[  
+               "Mission"
+            ],
+        "consumes": [
+          "application/json"
+        ],
+		"parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": ""
+          },
+		  {
+            "name": "body",
+            "in": "body",
+			"required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "mission_id": {
+                  "type": "integer",
+				  "format":"int64"
+                }
+              }
+            }
+          },
+        ],
+        "responses": {
+			"400":{  
+			  "description":"Bad request"
+			},
+			"401":{  
+			  "description":"Unauthorized - Invalid token"
+			},
+			"404":{  
+			  "description":"Mission not found in the system"
+			}
+        }
+      }
+    },
+	"/app/mission/invite": {
+		"post": {
+        "operationId": "GET_team4-cip-api-invite-mission",
+        "summary": "App - Recommend mission to co-worker(Invite to a colleague) (Milestone - 2)",
+		"tags":[  
+               "Mission"
+            ],
+        "consumes": [
+          "application/json"
+        ],
+		"parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": ""
+          },
+		  {
+            "name": "body",
+            "in": "body",
+			"required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "mission_id": {
+                  "type": "integer",
+				  "format":"int64"
+                },
+				"to_user_id": {
+                  "type": "integer",
+				  "format":"int64"
+                }
+              }
+            }
+          },
+        ],
+        "responses": {
+			"400":{  
+			  "description":"Bad request"
+			},
+			"401":{  
+			  "description":"Unauthorized - Invalid token"
+			},
+			"404":{  
+			  "description":"Mission not found in the system"
+			},
+			"422":{  
+			  "description":"Invalid input data"
+			}
+        }
+      }
+	},
+	"/app/mission/rating": {
+		"post": {
+        "operationId": "GET_team4-cip-api-app-store-mission-rating",
+        "summary": "App - Add/Edit mission ratings(0-5) (Milestone - 2)",
+		"tags":[  
+               "Mission"
+            ],
+        "consumes": [
+          "application/json"
+        ],
+		"parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": ""
+          },
+		  {
+            "name": "body",
+            "in": "body",
+			"required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "mission_id": {
+                  "type": "integer",
+				  "format":"int64"
+                },
+				"rating": {
+                  "type": "number",
+				  "format":"float"
+                }
+              }
+            }
+          },
+        ],
+        "responses": {
+			"400":{  
+			  "description":"Bad request"
+			},
+			"401":{  
+			  "description":"Unauthorized - Invalid token"
+			},
+			"404":{  
+			  "description":"Mission not found in the system"
+			},
+			"422":{  
+			  "description":"Invalid input data"
+			}
+        }
+      }
+	},
+	"/app/mission/{missionId}": {
+      "get": {
+        "operationId": "GET_team4-cip-api-get-mission-detail",
+        "summary": "App - Get mission detail (Milestone - 2)",
+		"tags":[  
+               "Mission"
+            ],
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": ""
+          },
+		  {  
+			  "name":"missionId",
+			  "in":"path",
+			  "description":"Mission id",
+			  "required":true,
+			  "type":"integer",
+			  "format":"int64"
+		  }
+        ],
+        "responses": {
+			"400":{  
+			  "description":"Bad request"
+			},
+			"401":{  
+			  "description":"Unauthorized - Invalid token"
+			},
+			"404":{  
+			  "description":"Mission not found in the system"
+			},
+        }
+      }
+    },
+	"/app/related-missions/{missionId}": {
+      "get": {
+        "operationId": "GET_team4-cip-api-get-related-mission",
+        "summary": "App - Get related missions (Milestone - 2)",
+		"tags":[  
+               "Mission"
+            ],
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": ""
+          },
+		  {  
+			  "name":"missionId",
+			  "in":"path",
+			  "description":"Mission id",
+			  "required":true,
+			  "type":"integer",
+			  "format":"int64"
+		  }
+        ],
+        "responses": {
+			"400":{  
+			  "description":"Bad request"
+			},
+			"401":{  
+			  "description":"Unauthorized - Invalid token"
+			},
+			"404":{  
+			  "description":"Mission not found in the system"
+			},
+        }
+      }
+    },
+	"/app/mission-media/{missionId}": {
+      "get": {
+        "operationId": "GET_team4-cip-api-get-mission-media",
+        "summary": "App - Get mission media (Milestone - 2)",
+		"tags":[  
+               "Mission"
+            ],
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": ""
+          },
+		  {  
+			  "name":"missionId",
+			  "in":"path",
+			  "description":"Mission id",
+			  "required":true,
+			  "type":"integer",
+			  "format":"int64"
+		  }
+        ],
+        "responses": {
+			"400":{  
+			  "description":"Bad request"
+			},
+			"401":{  
+			  "description":"Unauthorized - Invalid token"
+			},
+			"404":{  
+			  "description":"Mission not found in the system"
+			},
+        }
+      }
+    },
+	"/missions/{missionId}/comments":{
+		"get": {
+        "operationId": "GET_team4-cip-api-admin-get-mission-comments",
+        "summary": "Admin - Get mission comments (Milestone - 3)",
+		"tags":[  
+               "Mission Comment"
+            ],
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": ""
+          },
+		  {  
+			  "name":"missionId",
+			  "in":"path",
+			  "description":"Mission id",
+			  "required":true,
+			  "type":"integer",
+			  "format":"int64"
+		  }
+        ],
+        "responses": {
+			"400":{  
+			  "description":"Bad request"
+			},
+			"401":{  
+			  "description":"Unauthorized - Invalid API key or secret key"
+			},
+			"404":{  
+			  "description":"Requested mission not found"
+			},
+        }
+      }
+	},
+	"/missions/{missionId}/comments/{commentId}":{
+		"get": {
+			"operationId": "GET_team4-cip-api-admin-get-mission-comment-detail",
+			"summary": "Admin - View mission comment detail (Milestone - 3)",
+			"tags":[  
+				   "Mission Comment"
+				],
+			"consumes": [
+			  "multipart/form-data"
+			],
+			"parameters": [
+			  {
+				"name": "Authorization",
+				"in": "header",
+				"required": true,
+				"type": "string",
+				"default": ""
+			  },
+			  {  
+				  "name":"missionId",
+				  "in":"path",
+				  "description":"Mission id",
+				  "required":true,
+				  "type":"integer",
+				  "format":"int64"
+			  },
+			  {  
+				  "name":"commentId",
+				  "in":"path",
+				  "description":"Comment id",
+				  "required":true,
+				  "type":"integer",
+				  "format":"int64"
+			  }
+			],
+			"responses": {
+				"400":{  
+				  "description":"Bad request"
+				},
+				"401":{  
+				  "description":"Unauthorized - Invalid API key or secret key"
+				},
+				"404":{  
+				  "description":"Requested mission not found"
+				},
+			}
+		},
+		"patch": {
+			"operationId": "GET_team4-cip-api-approve-decline-mission-comment",
+			"summary": "Admin - Approve/Decline mission comment (Milestone - 3)",
+			"tags":[  
+				   "Mission Comment"
+				],
+			"consumes": [
+			  "application/json"
+			],
+			"parameters": [
+			  {
+				"name": "Authorization",
+				"in": "header",
+				"required": true,
+				"type": "string",
+				"default": ""
+			  },
+			  {  
+				  "name":"missionId",
+				  "in":"path",
+				  "description":"Mission id",
+				  "required":true,
+				  "type":"integer",
+				  "format":"int64"
+			  },
+			  {  
+				  "name":"commentId",
+				  "in":"path",
+				  "description":"Comment id",
+				  "required":true,
+				  "type":"integer",
+				  "format":"int64"
+			  },
+			  {
+				"name": "body",
+				"in": "body",
+				"required": true,
+				"schema": {
+				  "type": "object",
+				  "properties": {
+					"approval_status": {
+					  "type": "string",
+					  "enum":[  
+						"PUBLISHED",
+						"DECLINED"
+					  ]
+					}
+				  }
+				}
+				}
+			],
+			"responses": {
+				"400":{  
+				  "description":"Bad request"
+				},
+				"401":{  
+				  "description":"Unauthorized - Invalid token"
+				},
+				"404":{  
+				  "description":"Requested mission not found"
+				}
+			}
+      },
+	  "delete": {
+			"operationId": "GET_team4-cip-api-admin-delete-mission-comment",
+			"summary": "Admin - Remove mission comment (Milestone - 3)",
+			"tags":[  
+				   "Mission Comment"
+				],
+			"consumes": [
+			  "multipart/form-data"
+			],
+			"parameters": [
+			  {
+				"name": "Authorization",
+				"in": "header",
+				"required": true,
+				"type": "string",
+				"default": ""
+			  },
+			  {  
+				  "name":"missionId",
+				  "in":"path",
+				  "description":"Mission id",
+				  "required":true,
+				  "type":"integer",
+				  "format":"int64"
+			  },
+			  {  
+				  "name":"commentId",
+				  "in":"path",
+				  "description":"Comment id",
+				  "required":true,
+				  "type":"integer",
+				  "format":"int64"
+			  }
+			],
+			"responses": {
+				"400":{  
+				  "description":"Bad request"
+				},
+				"401":{  
+				  "description":"Unauthorized - Invalid API key or secret key"
+				},
+				"404":{  
+				  "description":"Requested mission not found"
+				},
+			}
+		},
+	},
+	"/app/mission/{missionId}/comments": {
+      "get": {
+        "operationId": "GET_team4-cip-api-get-mission-comments",
+        "summary": "App - Get mission comments (Milestone - 3)",
+		"tags":[  
+               "Mission Comment"
+            ],
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": ""
+          },
+		  {  
+			  "name":"missionId",
+			  "in":"path",
+			  "description":"Mission id",
+			  "required":true,
+			  "type":"integer",
+			  "format":"int64"
+		  }
+        ],
+        "responses": {
+			"400":{  
+			  "description":"Bad request"
+			},
+			"401":{  
+			  "description":"Unauthorized - Invalid token"
+			},
+			"404":{  
+			  "description":"Mission not found in the system"
+			},
+        }
+      }
+    },
+	"/app/mission/comment": {
+		"post": {
+			"operationId": "GET_team4-cip-api-store-mission-comment",
+			"summary": "App - Post comment to a mission (Milestone - 3)",
+			"tags":[  
+				   "Mission Comment"
+				],
+			"consumes": [
+			  "application/json"
+			],
+			"parameters": [
+			  {
+				"name": "token",
+				"in": "header",
+				"required": true,
+				"type": "string",
+				"default": ""
+			  },
+			  {
+				"name": "body",
+				"in": "body",
+				"required": true,
+				"schema": {
+				  "type": "object",
+				  "properties": {
+					"mission_id": {
+					  "type": "integer",
+					  "format":"int64"
+					},
+					"comment": {
+					  "type": "string",
+					}
+				  }
+				}
+				}
+			],
+			"responses": {
+				"400":{  
+				  "description":"Bad request"
+				},
+				"401":{  
+				  "description":"Unauthorized - Invalid token"
+				},
+				"404":{  
+				  "description":"Requested mission not found"
+				},
+				"422":{  
+				  "description":"Invalid input data"
+				}
+			}
+      }
+	},
+	"/missions/{missionId}/applications": {
+      "get": {
+        "operationId": "GET_team4-cip-api-missions-2-applications",
+        "summary": "Admin - List of mission's applications (Milestone - 1)",
+		"tags":[  
+               "Mission application"
+            ],
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": ""
+          },
+		  {  
+			  "name":"missionId",
+			  "in":"path",
+			  "description":"Mission id",
+			  "required":true,
+			  "type":"integer",
+			  "format":"int64"
+		  }
+        ],
+        "responses": {
+			"400":{  
+			  "description":"Bad request"
+			},
+			"401":{  
+			  "description":"Unauthorized - Invalid API key or secret key"
+			}
+        }
+      }
+    },
+	"/missions/{missionId}/applications/{applicationId}": {
+	  "get": {
+        "operationId": "GET_team4-cip-api--missions-2-applications-1",
+        "summary": "Admin - Get mission application detail (Milestone - 1)",
+		"tags":[  
+               "Mission application"
+            ],
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": ""
+          },
+		  {  
+			  "name":"missionId",
+			  "in":"path",
+			  "description":"Mission id",
+			  "required":true,
+			  "type":"integer",
+			  "format":"int64"
+		  },
+		  {  
+			  "name":"applicationId",
+			  "in":"path",
+			  "description":"Application id",
+			  "required":true,
+			  "type":"integer",
+			  "format":"int64"
+		  }
+        ],
+        "responses": {
+           "400":{  
+			  "description":"Bad request"
+			},
+			"401":{  
+			  "description":"Unauthorized - Invalid API key or secret key"
+			}
+        }
+      },
+      "patch": {
+        "operationId": "PATCH_team4-cip-api-missions-1-applications-1",
+        "summary": "Admin - Update mission application (Milestone - 1)",
+		"tags":[  
+               "Mission application"
+            ],
+        "consumes": [
+           "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+			"required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "approval_status": {
+                  "type": "string",
+				  "enum":[  
+					"AUTOMATICALLY_APPROVED",
+					"PENDING",
+					"REFUSED"
+				  ]
+                }
+              }
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": ""
+          },
+		  {  
+			  "name":"missionId",
+			  "in":"path",
+			  "description":"Mission id",
+			  "required":true,
+			  "type":"integer",
+			  "format":"int64"
+		  },
+		  {  
+			  "name":"applicationId",
+			  "in":"path",
+			  "description":"Application id",
+			  "required":true,
+			  "type":"integer",
+			  "format":"int64"
+		  }
+        ],
+        "responses": {
+			"400":{  
+			  "description":"Bad request"
+			},
+			"401":{  
+			  "description":"Unauthorized - Invalid API key or secret key"
+			}
+        }
+      }
+    },
+	"/app/mission/application": {
+		"post": {
+			"operationId": "GET_team4-cip-api-apply-mission",
+			"summary": "App - Apply to a mission (Milestone - 2)",
+			"tags":[  
+				   "Mission application"
+				],
+			"consumes": [
+			  "application/json"
+			],
+			"parameters": [
+			  {
+				"name": "token",
+				"in": "header",
+				"required": true,
+				"type": "string",
+				"default": ""
+			  },
+			  {
+				"name": "body",
+				"in": "body",
+				"required": true,
+				"schema": {
+				  "type": "object",
+				  "properties": {
+					"mission_id": {
+					  "type": "integer",
+					  "format":"int64"
+					},
+					"motivation": {
+					  "type": "string",
+					},
+					"availability_id": {
+					  "type": "integer",
+					  "format":"int64"
+					},
+				  }
+				}
+				}
+			],
+			"responses": {
+				"400":{  
+				  "description":"Bad request"
+				},
+				"401":{  
+				  "description":"Unauthorized - Invalid token"
+				},
+				"404":{  
+				  "description":"Requested mission not found"
+				},
+				"422":{  
+				  "description":"Invalid input data"
+				}
+			}
+      }
+	},
+	"/app/mission/{missionId}/volunteers": {
+		"get": {
+			"operationId": "GET_team4-cip-api-get-mission-volunteers",
+			"summary": "App - Get mission volunteers(applications) (Milestone - 2)",
+			"tags":[  
+				   "Mission application"
+				],
+			"consumes": [
+			  "multipart/form-data"
+			],
+			"parameters": [
+			  {
+				"name": "token",
+				"in": "header",
+				"required": true,
+				"type": "string",
+				"default": ""
+			  },
+			  {  
+				  "name":"missionId",
+				  "in":"path",
+				  "description":"Mission id",
+				  "required":true,
+				  "type":"integer",
+				  "format":"int64"
+			  }
+			],
+			"responses": {
+				"400":{  
+				  "description":"Bad request"
+				},
+				"401":{  
+				  "description":"Unauthorized - Invalid token"
+				},
+				"404":{  
+				  "description":"Requested mission not found"
+				}
+			}
+      }
+	},
+	"/cms": {
+      "get": {
+        "operationId": "GET_team4-cip-api-cms",
+        "summary": "Admin - List of footer pages (Milestone - 1)",
+		"tags":[  
+               "Footer pages"
+            ],
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": ""
+          },
+        ],
+        "responses": {
+			"400":{  
+			  "description":"Bad request"
+			},
+			"401":{  
+			  "description":"Unauthorized - Invalid API key or secret key"
+			}
+        }
+      },
+      "post": {
+        "operationId": "POST_team4-cip-api-cms",
+        "summary": "Admin - Create Footer Page (Milestone - 1)",
+		"tags":[  
+               "Footer pages"
+            ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+			"required": true,
+            "schema": {
+              "$ref":"#/definitions/FooterPage"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": ""
+          }
+        ],
+        "responses": {
+			"400":{  
+			  "description":"Bad request"
+			},
+			"401":{  
+			  "description":"Unauthorized - Invalid API key or secret key"
+			},
+			"422":{  
+			  "description":"Invalid input"
+			},
+			"502":{  
+			  "description":"Bad Gateway - Database operational error"
+			}
+        }
+      }
+    },	
+	"/cms/{pageId}": {
+	  "get": {
+        "operationId": "GET_team4-cip-api-footer-page-by-id",
+        "summary": "Admin - Get page detail by ID (Milestone - 1)",
+		"tags":[  
+               "Footer pages"
+            ],
+        "consumes": [
+          "multipart/form-data"
+        ],
+		"parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": ""
+          },
+		  {  
+			  "name":"pageId",
+			  "in":"path",
+			  "description":"Page id to get detail",
+			  "required":true,
+			  "type":"integer",
+			  "format":"int64"
+		  }
+        ],
+        "responses": {
+			"400":{  
+			  "description":"Bad request"
+			},
+			"401":{  
+			  "description":"Unauthorized - Invalid API key or secret key"
+			},
+			"404":{  
+			  "description":"Footer page not found in the system"
+			}
+        }
+      },
+      "patch": {
+        "operationId": "PATCH_team4-cip-api-cms-2",
+        "summary": "Admin - Update footer page (Milestone - 1)",
+        "consumes": [
+          "application/json"
+        ],
+		"tags":[  
+               "Footer pages"
+            ],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+			"required": true,
+            "schema": {
+				"$ref":"#/definitions/FooterPage"
+			}
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": ""
+          },
+		  {  
+			  "name":"pageId",
+			  "in":"path",
+			  "description":"Page id to update",
+			  "required":true,
+			  "type":"integer",
+			  "format":"int64"
+		  }
+        ],
+        "responses": {
+			"400":{  
+			  "description":"Bad request"
+			},
+			"401":{  
+			  "description":"Unauthorized - Invalid API key or secret key"
+			},
+			"404":{  
+			  "description":"Footer page not found in the system"
+			},
+			"422":{  
+			  "description":"Invalid input"
+			},
+			"502":{  
+			  "description":"Bad Gateway - Database operational error"
+			}
+        }
+      },
+	  "delete": {
+        "operationId": "DELETE_team4-cip-api-cms-2",
+        "summary": "Admin - Delete footer page (Milestone - 1)",
+		"tags":[  
+               "Footer pages"
+            ],
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": ""
+          },
+		  {  
+			  "name":"pageId",
+			  "in":"path",
+			  "description":"Page id to delete",
+			  "required":true,
+			  "type":"integer",
+			  "format":"int64"
+		  }
+        ],
+        "responses": {
+          "401":{  
+			  "description":"Unauthorized - Invalid API key or secret key"
+			},
+			"404":{  
+			  "description":"Footer page not found in the system"
+			}
+        }
+      },
+    },
+	"/app/cms/{slug}": {
+      "get": {
+        "operationId": "GET_team4-cip-api-cms-privacy-policy",
+        "summary": "App - Get footer page content by slug (Milestone - 1)",
+		"tags":[  
+               "Footer pages"
+            ],
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "parameters": [
+		  {  
+			  "name":"slug",
+			  "in":"path",
+			  "description":"Slug of page",
+			  "required":true,
+			  "type":"string"
+		  }
+        ],
+        "responses": {
+            "400":{  
+			  "description":"Bad Request"
+			},
+			"502":{  
+			  "description":"Bad Gateway - Database operational error"
+			}
+        }
+      }
+    },
+	"/app/cms/listing": {
+      "get": {
+        "operationId": "GET_team4-cip-api-cms-listing",
+        "summary": "App - Get footer pages listing (Milestone - 1)",
+		"tags":[  
+               "Footer pages"
+            ],
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "responses": {
+          
+        }
+      }
+    },
+	"/app/cms/detail": {
+      "get": {
+        "operationId": "GET_team4-cip-api-cms-detail",
+        "summary": "App - Get Page detail (Milestone - 1)",
+		"tags":[  
+               "Footer pages"
+            ],
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "responses": {
+          "default": {
+            "description": "",
+            "schema": {}
+          }
+        }
+      }
+    },
+    "/policy":{
+		"get": {
+			"operationId": "GET_team4-cip-api-get-policy-pages",
+			"summary": "Admin - List of policy pages (Milestone - 3)",
+			"tags":[  
+				   "Policy pages"
+				],
+			"consumes": [
+			  "multipart/form-data"
+			],
+			"parameters": [
+			  {
+				"name": "Authorization",
+				"in": "header",
+				"required": true,
+				"type": "string",
+				"default": ""
+			  },
+			],
+			"responses": {
+				"400":{  
+				  "description":"Bad request"
+				},
+				"401":{  
+				  "description":"Unauthorized - Invalid API key or secret key"
+				}
+			}
+		},
+		"post": {
+			"operationId": "POST_team4-cip-api-create-policy",
+			"summary": "Admin - Create Policy Page (Milestone - 3)",
+			"tags":[  
+				   "Policy pages"
+				],
+			"consumes": [
+			  "application/json"
+			],
+			"parameters": [
+			  {
+				"name": "Authorization",
+				"in": "header",
+				"required": true,
+				"type": "string",
+				"default": ""
+			  },
+			  {
+				"name": "body",
+				"in": "body",
+				"required": true,
+				"schema": {
+				  "$ref":"#/definitions/PolicyPage"
+				}
+			  }
+			],
+			"responses": {
+				"400":{  
+				  "description":"Bad request"
+				},
+				"401":{  
+				  "description":"Unauthorized - Invalid API key or secret key"
+				},
+				"422":{  
+				  "description":"Invalid input"
+				},
+				"502":{  
+				  "description":"Bad Gateway - Database operational error"
+				}
+			}
+		  }
+	},
+	"/policy/{pageId}":{
+		"get": {
+			"operationId": "GET_team4-cip-api-policy-page-by-id",
+			"summary": "Admin - Get policy page detail by ID (Milestone - 3)",
+			"tags":[  
+				   "Policy pages"
+				],
+			"consumes": [
+			  "multipart/form-data"
+			],
+			"parameters": [
+			  {
+				"name": "Authorization",
+				"in": "header",
+				"required": true,
+				"type": "string",
+				"default": ""
+			  },
+			  {  
+				  "name":"pageId",
+				  "in":"path",
+				  "description":"Page id to get detail",
+				  "required":true,
+				  "type":"integer",
+				  "format":"int64"
+			  }
+			],
+			"responses": {
+				"400":{  
+				  "description":"Bad request"
+				},
+				"401":{  
+				  "description":"Unauthorized - Invalid API key or secret key"
+				},
+				"404":{  
+				  "description":"Policy page not found in the system"
+				}
+			}
+		},
+		"patch": {
+			"operationId": "GET_team4-cip-api-update-policy-page-by",
+			"summary": "Admin - Update policy page detail(Milestone - 3)",
+			"tags":[  
+				   "Policy pages"
+				],
+			"consumes": [
+			  "application/json"
+			],
+			"parameters": [
+			  {
+				"name": "Authorization",
+				"in": "header",
+				"required": true,
+				"type": "string",
+				"default": ""
+			  },
+			  {  
+				  "name":"pageId",
+				  "in":"path",
+				  "description":"Page id to update",
+				  "required":true,
+				  "type":"integer",
+				  "format":"int64"
+			  },
+			  {
+				  "name": "body",
+				  "in": "body",
+				  "required": true,
+				  "schema": {
+					"$ref":"#/definitions/FooterPage"
+					}
+			   },
+			],
+			"responses": {
+				"400":{  
+				  "description":"Bad request"
+				},
+				"401":{  
+				  "description":"Unauthorized - Invalid API key or secret key"
+				},
+				"404":{  
+				  "description":"Policy page not found in the system"
+				},
+				"422":{  
+				  "description":"Invalid input"
+				},
+				"502":{  
+				 "description":"Bad Gateway - Database operational error"
+				}
+			}
+		},
+		"delete": {
+			"operationId": "GET_team4-cip-api-delete-policy-page",
+			"summary": "Admin - delete policy page (Milestone - 3)",
+			"tags":[  
+				   "Policy pages"
+				],
+			"consumes": [
+			  "multipart/form-data"
+			],
+			"parameters": [
+			  {
+				"name": "Authorization",
+				"in": "header",
+				"required": true,
+				"type": "string",
+				"default": ""
+			  },
+			  {  
+				  "name":"pageId",
+				  "in":"path",
+				  "description":"Page id to get detail",
+				  "required":true,
+				  "type":"integer",
+				  "format":"int64"
+			  }
+			],
+			"responses": {
+				"400":{  
+				  "description":"Bad request"
+				},
+				"401":{  
+				  "description":"Unauthorized - Invalid API key or secret key"
+				},
+				"404":{  
+				  "description":"Policy page not found in the system"
+				}
+			}
+		}
+	},
+	"/app/policy/listing": {
+      "get": {
+        "operationId": "GET_team4-cip-api-policy-listing",
+        "summary": "App - Get policy pages listing (Milestone - 3)",
+		"description": "It will list policy pages titles for top menu in platform",
+		"tags":[  
+               "Policy pages"
+            ],
+		"consumes": [
+			  "multipart/form-data"
+		],
+		"parameters": [
+			{
+				"name": "token",
+				"in": "header",
+				"required": true,
+				"type": "string",
+				"default": ""
+		    },
+		],
+        "responses": {
+			"400":{  
+			  "description":"Bad request"
+			},
+			"401":{  
+			  "description":"Unauthorized - Invalid token"
+			},
+			"502":{  
+			  "description":"Bad Gateway - Database operational error"
+			}
+		}
+      }
+    },
+	"/app/policy/{slug}": {
+      "get": {
+        "operationId": "GET_team4-cip-api-policy-detail-by-slug",
+        "summary": "App - Get policy pages detail by slug (Milestone - 3)",
+		"tags":[  
+               "Policy pages"
+            ],
+		"consumes": [
+			  "multipart/form-data"
+		],
+		"parameters": [
+			{
+				"name": "token",
+				"in": "header",
+				"required": true,
+				"type": "string",
+				"default": ""
+		    },
+			{
+				"name": "slug",
+				"in": "path",
+				"required": true,
+				"description": "Slug of page",
+				"type": "string",
+				"default": ""
+		    },
+		],
+        "responses": {
+			"400":{  
+			  "description":"Bad request"
+			},
+			"401":{  
+			  "description":"Unauthorized - Invalid token"
+			}
+		}
+      }
+    },
+	"/users": {
+      "get": {
+        "operationId": "GET_team4-cip-api-users",
+        "summary": "Admin - List of users (Milestone - 1)",
+		"tags":[  
+               "User"
+            ],
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": ""
+          }
+        ],
+        "responses": {
+            "400":{  
+			  "description":"Bad Request"
+			},
+			 "401":{  
+			  "description":"Unauthorized - Invalid API key or secret key"
+			}
+        }
+      },
+      "post": {
+        "operationId": "POST_team4-cip-api-users",
+        "summary": "Admin - Create user (Milestone - 1)",
+		"tags":[  
+               "User"
+            ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+			"required": false,
+            "schema": {
+              "$ref":"#/definitions/User"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": ""
+          }
+        ],
+        "responses": {
+            "400":{  
+			  "description":"Bad Request"
+			},
+			"401":{  
+			  "description":"Unauthorized - Invalid API key or secret key"
+			},
+			"422":{  
+			  "description":"Invalid input"
+			},
+			"502":{  
+			  "description":"Bad Gateway - Database operational error"
+			}
+        }
+      }
+	  },
+    "/users/{userId}": {
+	  "patch": {
+        "operationId": "POST_team4-cip-api-users-update",
+        "summary": "Admin - Update user detail (Milestone - 1)",
+		"tags":[  
+               "User"
+            ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+			"required": false,
+            "schema": {
+              "$ref":"#/definitions/User"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": ""
+          },
+		  {  
+			  "name":"userId",
+			  "in":"path",
+			  "description":"User id",
+			  "required":true,
+			  "type":"integer",
+			  "format":"int64"
+		  }
+        ],
+        "responses": {
+           "400":{  
+			  "description":"Bad Request"
+			},
+			"401":{  
+			  "description":"Unauthorized - Invalid API key or secret key"
+			},
+			"404":{  
+			  "description":"Not found - User does not found in system"
+			},
+			"422":{  
+			  "description":"Invalid input"
+			},
+			"502":{  
+			  "description":"Bad Gateway - Database operational error"
+			}
+        }
+      },
+	  "get": {
+        "operationId": "GET_team4-cip-api-users-5",
+        "summary": "Admin - Get user by ID (Milestone - 1)",
+		"tags":[  
+               "User"
+            ],
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": ""
+          },
+		  {  
+			  "name":"userId",
+			  "in":"path",
+			  "description":"User id",
+			  "required":true,
+			  "type":"integer",
+			  "format":"int64"
+		  }
+        ],
+        "responses": {
+            "400":{  
+			  "description":"Bad Request"
+			},
+			"401":{  
+			  "description":"Unauthorized - Invalid API key or secret key"
+			},
+			"404":{  
+			  "description":"Not found - User does not found in system"
+			}
+        }
+      },
+	  "delete": {
+        "operationId": "DELETE_team4-cip-api-users-delete",
+        "summary": "Admin - Delete user (Milestone - 1)",
+		"tags":[  
+               "User"
+            ],
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": ""
+          },
+		  {  
+			  "name":"userId",
+			  "in":"path",
+			  "description":"User id",
+			  "required":true,
+			  "type":"integer",
+			  "format":"int64"
+		  }
+        ],
+        "responses": {
+            "400":{  
+			  "description":"Bad Request"
+			},
+			"401":{  
+			  "description":"Unauthorized - Invalid API key or secret key"
+			},
+			"404":{  
+			  "description":"Not found - User does not found in system"
+			}
+        }
+      }
+    },
+	"/metadata/users/custom_fields": {
+	  "get": {
+        "operationId": "GET_team4-cip-api-metadata-users-custom_fields",
+        "summary": "Admin - List of user custom fields (Milestone - 1)",
+		"tags":[  
+               "User"
+            ],
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": ""
+          }
+        ],
+        "responses": {
+            "400":{  
+			  "description":"Bad Request"
+			},
+			"401":{  
+			  "description":"Unauthorized - Invalid API key or secret key"
+			}
+        }
+      },
+	  "post": {
+        "operationId": "POST_team4-cip-api-metadata-users-custom_fields",
+        "summary": "Admin - Create user custom fields (Milestone - 1)",
+		"tags":[  
+               "User"
+            ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+			"required": true,
+            "schema": {
+              "$ref":"#/definitions/UserCustomField"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": ""
+          }
+        ],
+        "responses": {
+            "400":{  
+			  "description":"Bad Request"
+			},
+			"401":{  
+			  "description":"Unauthorized - Invalid API key or secret key"
+			},
+			"502":{  
+			  "description":"Bad Gateway - Database operational error"
+			}
+        }
+      },
+    },
+	"/metadata/users/custom_fields/{fieldId}": {
+	  "get": {
+        "operationId": "GET_team4-cip-api-metadata-users-custom-field-detail",
+        "summary": "Admin - View user custom field detail by ID (Milestone - 1)",
+		"tags":[  
+               "User"
+            ],
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": ""
+          },
+		  {
+            "name": "fieldId",
+            "in": "path",
+            "required": true,
+            "type":"integer",
+			"format":"int64"
+          }
+        ],
+        "responses": {
+            "400":{  
+			  "description":"Bad Request"
+			},
+			"401":{  
+			  "description":"Unauthorized - Invalid API key or secret key"
+			},
+			"404":{  
+			  "description":"Not Found - Requested user custom field not exist"
+			},
+        }
+      },
+      "patch": {
+        "operationId": "PATCH_team4-cip-api-metadata-users-custom_fields-1",
+        "summary": "Admin - Update user custom field (Milestone - 1)",
+		"tags":[  
+               "User"
+            ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+			"required": true,
+            "schema": {
+              "$ref":"#/definitions/UserCustomField"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": ""
+          },
+		  {
+            "name": "fieldId",
+            "in": "path",
+            "required": true,
+            "type":"integer",
+			"format":"int64"
+          }
+        ],
+        "responses": {
+            "400":{  
+			  "description":"Bad Request"
+			},
+			"401":{  
+			  "description":"Unauthorized - Invalid API key or secret key"
+			},
+			"404":{  
+			  "description":"Not Found - Requested user custom field not exist"
+			},
+			"502":{  
+			  "description":"Bad Gateway - Database operational error"
+			}
+        }
+      },
+	  "delete": {
+        "operationId": "DELETE_team4-cip-api-metadata-users-custom_fields-2",
+        "summary": "Admin - Delete user custom field (Milestone - 1)",
+		"tags":[  
+               "User"
+            ],
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": ""
+          },
+		  {
+            "name": "fieldId",
+            "in": "path",
+            "required": true,
+            "type":"integer",
+			"format":"int64"
+          }
+        ],
+        "responses": {
+            "400":{  
+			  "description":"Bad Request"
+			},
+			"401":{  
+			  "description":"Unauthorized - Invalid API key or secret key"
+			},
+			"404":{  
+			  "description":"Not Found - Requested user custom field not exist"
+			},
+			"502":{  
+			  "description":"Bad Gateway - Database operational error"
+			}
+        }
+      }
+    },
+	"/app/login": {
+      "post": {
+        "operationId": "POST_team4-cip-api-login",
+        "summary": "App - User login (Milestone - 1)",
+		"tags":[  
+               "User"
+            ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+			"required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "email": {
+                  "type": "string",
+				  "example":"krishna.dhanani@tatvasoft.com"
+				},
+                "password": {
+                  "type": "string",
+				  "example":"12345678"
+				}
+              }
+            }
+          }
+        ],
+        "responses": {
+		   "400":{  
+			  "description":"Bad Request"
+		   },
+           "422":{  
+			  "description":"Invalid input"
+			}
+        }
+      }
+    },
+	"/app/request-password-reset": {
+      "post": {
+        "operationId": "POST_team4-cip-api-request-password-reset",
+        "summary": "App - Forgot password (Request reset password link) (Milestone - 1)",
+		"tags":[  
+               "User"
+            ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+			"required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "email": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+			"400":{  
+			  "description":"Bad Request"
+		    },
+			"403":{  
+			  "description":"Forbidden - Email address does not exist in the system"
+			},
+            "422":{  
+			  "description":"Invalid input"
+			},
+			"502":{  
+			  "description":"Bad Gateway - Database operational error"
+			}
+        }
+      }
+    },
+	"/app/password-reset": {
+      "put": {
+        "operationId": "PUT_team4-cip-api-password-reset",
+        "summary": "App - Reset password (Milestone - 1)",
+		"tags":[  
+               "User"
+            ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+			"required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "reset_password_token": {
+                  "type": "string"
+                },
+                "email": {
+                  "type": "string"
+                },
+                "password": {
+                  "type": "string"
+                },
+                "password_confirmation": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+			"400":{  
+			  "description":"Bad Request"
+		    },
+			"422":{  
+			  "description":"Invalid input"
+			},
+			"502":{  
+			  "description":"Bad Gateway - Database operational error"
+			}
+        }
+      }
+    },
+	"/app/user?search={searchText}":{
+		"get": {
+        "operationId": "GET_team4-cip-api-app-search-user",
+        "summary": "App - Search users by first name, last name and email (Autocomplete) (Milestone - 2)",
+		"tags":[  
+               "User"
+            ],
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": ""
+          },
+		  {  
+			  "name":"searchText",
+			  "in":"path",
+			  "description":"Search term",
+			  "required":false,
+			  "type":"string",
+			  "default":""
+		  }
+        ],
+        "responses": {
+           "400":{  
+			  "description":"Bad Request"
+			},
+			"401":{  
+			  "description":"Unauthorized - Invalid token"
+			}
+        }
+      }
+	},
+	"/app/change-password":{
+	  "patch": {
+        "operationId": "PUT_team4-cip-api-change-password",
+        "summary": "App - Change password (Milestone - 3)",
+		"description": "User can change password from user profile edit page from platform",
+		"tags":[  
+               "User"
+            ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+		  {
+            "name": "token",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": ""
+          },
+          {
+            "name": "body",
+            "in": "body",
+			"required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "old_password": {
+                  "type": "string"
+                },
+                "password": {
+                  "type": "string"
+                },
+                "confirm_password": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+			"400":{  
+			  "description":"Bad Request"
+		    },
+			"401":{  
+			  "description":"Unauthorized - Invalid token"
+			},
+			"422":{  
+			  "description":"Invalid input"
+			},
+			"502":{  
+			  "description":"Bad Gateway - Database operational error"
+			}
+        }
+      }
+	},
+	"/app/user/upload-profile-image":{
+	  "patch": {
+        "operationId": "PUT_team4-cip-api-change-profile-image",
+        "summary": "App - Change profile image (Milestone - 3)",
+		"description": "User can change profile image from user profile edit page from platform. Allowed image types are png, jpeg and jpg. Image should be base64 encoded.",
+		"tags":[  
+               "User"
+            ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+		  {
+            "name": "token",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": ""
+          },
+          {
+            "name": "body",
+            "in": "body",
+			"required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "avatar": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+			"400":{  
+			  "description":"Bad Request"
+		    },
+			"401":{  
+			  "description":"Unauthorized - Invalid token"
+			},
+			"422":{  
+			  "description":"Invalid input"
+			},
+			"502":{  
+			  "description":"Bad Gateway - Database operational error"
+			}
+        }
+      }
+	},
+    "/app/user-detail": {
+		"get": {
+			"operationId": "GET_team4-cip-api-get-user-detail",
+			"summary": "App - Fetch user's detail for edit profile page (Milestone - 3)",
+			"tags":[  
+				   "User"
+				],
+			"consumes": [
+			  "multipart/form-data"
+			],
+			"parameters": [
+			  {
+				"name": "token",
+				"in": "header",
+				"required": true,
+				"type": "string",
+				"default": ""
+			  }
+			],
+			"responses": {
+				"400":{  
+				  "description":"Bad Request"
+				},
+				 "401":{  
+				  "description":"Unauthorized - Invalid token"
+				}
+			}
+		  }
+	},
+	"/app/user": {
+		"patch": {
+			"operationId": "GET_team4-cip-api-update-user-detail",
+			"summary": "App - Edit user's profile detail (Milestone - 3)",
+			"description": "This API will update user's detail from edit profile page",
+			"tags":[  
+				   "User"
+				],
+			"consumes": [
+			  "application/json"
+			],
+			"parameters": [
+			  {
+				"name": "token",
+				"in": "header",
+				"required": true,
+				"type": "string",
+				"default": ""
+			  },
+			  {
+				"name": "body",
+				"in": "body",
+				"required":true,
+				"schema": {
+				  "$ref":"#/definitions/AppUser"
+				}
+			  }
+			],
+			"responses": {
+				"400":{  
+				  "description":"Bad Request"
+				},
+				 "401":{  
+				  "description":"Unauthorized - Invalid token"
+				}
+			}
+		  }
+	},
+    "/user/skills/{userId}": {
+      "get": {
+        "operationId": "GET_team4-cip-api-entities-skills-1",
+        "summary": "Admin - List skills of a user (Milestone - 1)",
+		"tags":[  
+               "User skills"
+            ],
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": ""
+          },
+		  {  
+			  "name":"userId",
+			  "in":"path",
+			  "description":"User id",
+			  "required":true,
+			  "type":"integer",
+			  "format":"int64"
+		  }
+        ],
+        "responses": {
+           "400":{  
+			  "description":"Bad Request"
+			},
+			"401":{  
+			  "description":"Unauthorized - Invalid API key or secret key"
+			}
+        }
+      },
+	  "post": {
+        "operationId": "POST_team4-cip-api-entities-skills",
+        "summary": "Admin - Link skills to a user (Milestone - 1)",
+		"tags":[  
+               "User skills"
+            ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+			"required": false,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "skills": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "skill_id": {
+                        "type":"integer",
+						"format":"int64"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": ""
+          },
+		  {  
+			  "name":"userId",
+			  "in":"path",
+			  "description":"User id",
+			  "required":true,
+			  "type":"integer",
+			  "format":"int64"
+		  }
+        ],
+        "responses": {
+           "400":{  
+			  "description":"Bad Request"
+			},
+			"401":{  
+			  "description":"Unauthorized - Invalid API key or secret key"
+			},
+			"502":{  
+			  "description":"Bad Gateway - Database operational error"
+			}
+        }
+      },
+	  "delete": {
+        "operationId": "DELETE_team4-cip-api-skills",
+        "summary": "Admin - Unlink skills from a user (Milestone - 1)",
+		"tags":[  
+               "User skills"
+            ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+			"required": false,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "skills": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "skill_id": {
+                        "type":"integer",
+						"format":"int64"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": ""
+          },
+		  {  
+			  "name":"userId",
+			  "in":"path",
+			  "description":"User id",
+			  "required":true,
+			  "type":"integer",
+			  "format":"int64"
+		  }
+        ],
+        "responses": {
+            "400":{  
+			  "description":"Bad Request"
+			},
+			"401":{  
+			  "description":"Unauthorized - Invalid API key or secret key"
+			},
+			"502":{  
+			  "description":"Bad Gateway - Database operational error"
+			}
+        }
+      }
+    },
+	"/app/user/skills":{
+	  "post": {
+        "operationId": "POST_team4-cip-api-save-remove-user-skills",
+        "summary": "App - Store user skills (Milestone - 3)",
+		"tags":[  
+               "User skills"
+            ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+		  {
+            "name": "Token",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": ""
+          },
+          {
+            "name": "body",
+            "in": "body",
+			"required": false,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "skills": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "skill_id": {
+                        "type":"integer",
+						"format":"int64"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+           "400":{  
+			  "description":"Bad Request"
+			},
+			"401":{  
+			  "description":"Unauthorized - Invalid token"
+			},
+			"422":{  
+			  "description":"Invalid input data"
+			},
+			"502":{  
+			  "description":"Bad Gateway - Database operational error"
+			}
+        }
+      },
+	},
+    "/slider": {
+	  "get": {
+        "operationId": "POST_team4-cip-api-get-all-slider-images",
+        "summary": "Admin - Get slider images and text (Milestone - 1)",
+		"tags":[  
+               "Tenant - Admin"
+            ],
+        "consumes":[  
+		   "multipart/form-data"
+		],
+        "parameters": [
+		  {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": ""
+          }
+        ],
+        "responses": {
+            "400":{  
+			  "description":"Bad Request"
+			},
+			"401":{  
+			  "description":"Unauthorized - Invalid API key or secret key"
+			}
+        }
+      },
+      "post": {
+        "operationId": "POST_team4-cip-api-store-slider",
+        "summary": "Admin - Add slider images and text (Milestone - 1)",
+		"description": "Tenant admin will add slider image and text which is visible on login screen of front end",
+		"tags":[  
+               "Tenant - Admin"
+            ],
+        "consumes":[  
+		   "application/json"
+		],
+        "parameters": [
+		  {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": ""
+          },
+		  {
+            "name": "body",
+            "in": "body",
+			"required": false,
+            "schema": {
+			  "type": "object",
+			  "properties": {
+				"url": {
+				  "type": "string"
+				},
+				"translations": {
+				  "type": "array",
+				  "items": {
+					"type": "object",
+					"properties": {
+					  "lang": {
+						"type": "string",
+						"description":"Language code.(i.e. en, fr etc)",
+					  },
+					  "slider_title": {
+						"type": "string"
+					  },
+					  "slider_description": {
+						"type": "string"
+					  }
+					}
+				  }
+				},
+				 "sort_order": {
+							"type":"integer",
+							"format":"int32"
+						  }
+			  }
+            }
+          }
+        ],
+        "responses": {
+            "400":{  
+			  "description":"Bad Request"
+			},
+			"401":{  
+			  "description":"Unauthorized - Invalid API key or secret key"
+			},
+			"502":{  
+			  "description":"Bad Gateway - Database operational error"
+			}
+        }
+      }
+    },
+	"/slider/{sliderId}": {
+	 "patch": {
+        "operationId": "POST_team4-cip-api-update-slider",
+        "summary": "Admin - Update slider images and text (Milestone - 1)",
+		"description": "Tenant admin can update slider image and text which is visible on login screen of front end",
+		"tags":[  
+               "Tenant - Admin"
+            ],
+        "consumes":[  
+		   "application/json"
+		],
+        "parameters": [
+		  {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": ""
+          },
+		  {  
+			  "name":"sliderId",
+			  "in":"path",
+			  "description":"Slider id",
+			  "required":true,
+			  "type":"integer",
+			  "format":"int64"
+		  },
+		  {
+            "name": "body",
+            "in": "body",
+			"required": false,
+            "schema": {
+			  "type": "object",
+			  "properties": {
+				"url": {
+				  "type": "string"
+				},
+				"translations": {
+				  "type": "array",
+				  "items": {
+					"type": "object",
+					"properties": {
+					  "lang": {
+						"type": "string",
+						"description":"Language code.(i.e. en, fr etc)",
+					  },
+					  "slider_title": {
+						"type": "string"
+					  },
+					  "slider_description": {
+						"type": "string"
+					  }
+					}
+				  }
+				},
+				"sort_order": {
+							"type":"integer",
+							"format":"int32"
+						  }
+			  }
+            }
+          }
+        ],
+        "responses": {
+            "400":{  
+			  "description":"Bad Request"
+			},
+			"401":{  
+			  "description":"Unauthorized - Invalid API key or secret key"
+			},
+			"404":{  
+			  "description":"Slider not found"
+			},
+			"502":{  
+			  "description":"Bad Gateway - Database operational error"
+			}
+        }
+      },
+	  "delete": {
+        "operationId": "POST_team4-cip-api-delete-slider-images",
+        "summary": "Admin - Delete slider images and text (Milestone - 1)",
+		"tags":[  
+               "Tenant - Admin"
+            ],
+        "consumes":[  
+		   "multipart/form-data"
+		],
+        "parameters": [
+		  {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": ""
+          },
+		  {  
+			  "name":"sliderId",
+			  "in":"path",
+			  "description":"Slider id",
+			  "required":true,
+			  "type":"integer",
+			  "format":"int64"
+		  }
+        ],
+        "responses": {
+            "400":{  
+			  "description":"Bad Request"
+			},
+			"401":{  
+			  "description":"Unauthorized - Invalid API key or secret key"
+			},
+			"404":{  
+			  "description":"Slider not found"
+			}
+        }
+      }
+	},
+	"/style/download-style": {
+      "get": {
+        "operationId": "POST_team4-cip-api-download-style",
+        "summary": "Admin - Listing of images and scss file to download from AWS S3 (Milestone - 1)",
+		"description": "Its for custom styling - Tenant admin can download images and scss files used in platform, so admin can make changes in it and re-upload",
+		"tags":[  
+               "Tenant - Admin"
+            ],
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": ""
+          }
+        ],
+        "responses": {
+            "400":{  
+			  "description":"Bad Request"
+			},
+			"401":{  
+			  "description":"Unauthorized - Invalid API key or secret key"
+			},
+			"404":{  
+			  "description":"No files found on S3 assets folder for this tenant"
+			}
+        }
+      }
+    },
+	"/style/update-image": {
+      "post": {
+        "operationId": "POST_team4-cip-api-update-image",
+        "summary": "Admin - Update icons/images (Milestone - 1)",
+		"description": "Its for custom styling - Tenant admin can change icons/images used in platform(front end) and upload it from here.",
+		"tags":[  
+               "Tenant - Admin"
+            ],
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": ""
+          },
+		  {
+            "name": "image_file",
+            "in": "formData",
+            "type": "file"
+          },
+		  {
+            "name": "image_name",
+            "in": "formData",
+			"required": true,
+            "type": "string",
+          },
+		  {
+            "name": "_method",
+            "in": "formData",
+			"required": true,
+            "type": "string",
+			"default": "patch"
+          }
+        ],
+        "responses": {
+            "400":{  
+			  "description":"Bad Request"
+			},
+			"401":{  
+			  "description":"Unauthorized - Invalid API key or secret key"
+			},
+			"404":{  
+			  "description":"No files found on S3 assets folder for this tenant"
+			}
+        }
+      }
+    },
+    "/style/update-style": {
+      "post": {
+        "operationId": "POST_team4-cip-api-style-update-style",
+        "summary": "Admin - Update custom styling(Change primary color and upload customized scss) (Milestone - 1)",
+		"description": "Its for custom styling - Tenant admin can make changes in raw css(scss) files and re-upload it from here. These raw css files can be downloaded using this endpoint(/style/download-style) described above",
+		"tags":[  
+               "Tenant - Admin"
+            ],
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": ""
+          },
+		  {
+            "name": "primary_color",
+            "in": "formData",
+            "type": "string",
+            "default": ""
+          },
+		  {
+            "name": "custom_scss_file",
+            "in": "formData",
+            "type": "file"
+          },
+		  {
+            "name": "custom_scss_file_name",
+            "in": "formData",
+            "type": "string",
+          }
+        ],
+        "responses": {
+            "400":{  
+			  "description":"Bad Request"
+			},
+			"401":{  
+			  "description":"Unauthorized - Invalid API key or secret key"
+			},
+			"502":{  
+			  "description":"Bad Gateway - Database operational error"
+			}
+        }
+      }
+    },
+	"/style/reset-style": {
+      "get": {
+        "operationId": "GET_team4-cip-api-style-reset-style",
+        "summary": "Admin - Reset to default theme(Custom styling) (Milestone - 1)",
+		"description": "Its for custom styling - Tenant admin can reset/revert css changes to default theme",
+		"tags":[  
+               "Tenant - Admin"
+            ],
+        "consumes": [
+          "multipart/form-data"
+        ],
+		"parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": ""
+          }
+        ],
+        "responses": {
+          "400":{  
+			  "description":"Bad Request"
+			},
+			"401":{  
+			  "description":"Unauthorized - Invalid API key or secret key"
+			}
+        }
+      }
+    },
+	"/tenant-option": {
+      "post": {
+        "operationId": "GET_team4-cip-api-save-tenant-option",
+        "summary": "Admin - Store tenant options (Milestone - 2)",
+		"description": "Tenant admin can save tenant options like no_mission_custom_text(Custom text if no mission on platform landing page), custom_logo etc.",
+		"tags":[  
+               "Tenant - Admin"
+            ],
+        "consumes": [
+          "application/json"
+        ],
+		"parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": ""
+          },
+		  {  
+			  "name":"value",
+			  "in":"body",
+			  "description":"Value",
+			  "required":true,
+			  "schema": {
+			  "type": "object",
+              "properties": {
+				"option_name": {
+                  "type": "string"
+                },
+				"option_value":{
+					"type": "object",
+					"properties": {
+						"translations": {
+						"type": "array",
+							"items": {
+								"type": "object",
+								"properties": {
+								"lang": {
+									"type": "string",
+									"description":"Language code",
+								},
+								"message": {
+									"type": "string"
+								}
+								}
+							}
+						}
+					 }
+				  }
+			  }
+			}
+		  }
+        ],
+        "responses": {
+          "400":{  
+			  "description":"Bad Request"
+			},
+			"401":{  
+			  "description":"Unauthorized - Invalid API key or secret key"
+			},
+			"422":{  
+			  "description":"Invalid input data"
+			}
+        }
+      },
+	  "patch": {
+        "operationId": "GET_team4-cip-api-update-tenant-option",
+        "summary": "Admin - Update tenant options (Milestone - 2)",
+		"description": "Tenant admin can update tenant options, option_name and option_value should be passed in json body. If option_value contains language data(e.g. when updating no_mission_custom_text) then translations object should be passed. ",
+		"tags":[  
+               "Tenant - Admin"
+            ],
+        "consumes": [
+          "application/json"
+        ],
+		"parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": ""
+          },
+		  {  
+			  "name":"value",
+			  "in":"body",
+			  "description":"Value",
+			  "required":true,
+			  "schema": {
+			  "type": "object",
+              "properties": {
+				"option_name": {
+                  "type": "string"
+                },
+				"option_value":{
+					"type": "object",
+					"properties": {
+						"translations": {
+						"type": "array",
+							"items": {
+								"type": "object",
+								"properties": {
+								"lang": {
+									"type": "string",
+									"description":"Language code",
+								},
+								"message": {
+									"type": "string"
+								}
+								}
+							}
+						}
+					 }
+				  }
+			  }
+			}
+		  }
+        ],
+        "responses": {
+          "400":{  
+			  "description":"Bad Request"
+			},
+			"401":{  
+			  "description":"Unauthorized - Invalid API key or secret key"
+			},
+			"422":{  
+			  "description":"Invalid input data"
+			}
+        }
+      }
+    },
+	"/tenant-settings": {
+	  "get": {
+        "operationId": "GET_team4-cip-api-get-settings",
+        "summary": "Admin - Get tenant settings (Milestone - 3)",
+		"description": "Tenant settings like show Sorting missions, Quick access Filters in front end",
+		"tags":[  
+               "Tenant - Admin"
+            ],
+        "consumes": [
+          "multipart/form-data"
+        ],
+		"parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": ""
+          }
+        ],
+        "responses": {
+          "400":{  
+			  "description":"Bad Request"
+			},
+			"401":{  
+			  "description":"Unauthorized - Invalid API key or secret key"
+			}
+        }
+      },
+      "post": {
+        "operationId": "GET_team4-cip-api-update-settings",
+        "summary": "Admin - Update tenant settings (Milestone - 3)",
+		"description": "Tenant admin can switch on/off tenant setting",
+		"tags":[  
+               "Tenant - Admin"
+            ],
+        "consumes": [
+          "application/json"
+        ],
+		"parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": ""
+          },
+		  {  
+			  "name":"value",
+			  "in":"body",
+			  "description":"Value",
+			  "required":true,
+			  "schema": {
+				  "type": "object",
+				  "properties": {
+					"settings": {
+					  "type": "array",
+					  "items": {
+						"type": "object",
+						"properties": {
+						  "tenant_setting_id": {
+							"type":"integer",
+							"format":"int32"
+						  },
+						  "value": {
+							"type": "integer",
+							"description": "If enable, value should be passed 1 and for disable value should be passed 0",
+							"enum":[  
+								"1",
+								"0"
+							]
+						  }
+						}
+					  }
+					}
+				  }
+				}
+		  }
+        ],
+        "responses": {
+          "400":{  
+			  "description":"Bad Request"
+			},
+			"401":{  
+			  "description":"Unauthorized - Invalid API key or secret key"
+			},
+			"422":{  
+				  "description":"Invalid input data"
+			}
+        }
+      }
+    },
+	"/language/{lang}": {
+      "get": {
+        "operationId": "GET_team4-cip-api-skill",
+        "summary": "App - Fetch language json(translations) data (Milestone - 1)",
+		"description": "Fetch language translations(label, placeholders, messages etc.) for front end",
+		"tags":[  
+               "Tenant - App"
+            ],
+        "consumes": [
+          "multipart/form-data"
+        ],
+		"parameters": [
+		  {  
+			  "name":"lang",
+			  "in":"path",
+			  "description":"Language code",
+			  "required":true,
+			  "type":"string"
+		  }
+        ],
+		"responses": {
+          
+        }
+      }
+    },
+	"/app/custom-css": {
+      "get": {
+        "operationId": "GET_team4-cip-api-custom-css",
+        "summary": "App - Get custom styling(css) file (Milestone - 1)",
+		"description": "This API will fetch custom styling css file which could be modified by tenant admin. So front end can reflect those css changes.",
+		"tags":[  
+               "Tenant - App"
+            ],
+        "consumes": [
+          "multipart/form-data"
+        ],
+		"responses": {
+          
+        }
+      }
+    },
+	"/app/connect": {
+      "get": {
+        "operationId": "GET_team4-cip-api-get-tenant-detail",
+        "summary": "App - Fetch tenant details(e.g. logo, css, slider etc.) when front end loads (Milestone - 1)",
+		"description": "When front end loads, this API will fetch some data like slider details, logo etc.",
+		"tags":[  
+               "Tenant - App"
+            ],
+        "consumes": [
+          "multipart/form-data"
+        ],
+		"responses": {
+          
+        }
+      }
+    },
+	"/app/explore-mission": {
+      "get": {
+        "operationId": "GET_team4-cip-api-explore-mission",
+        "summary": "App - Explore mission from top menu in front end (Milestone - 2)",
+		"description": "In front end platform landing page - It will render drop-down values in Explore menu",
+		"tags":[  
+               "Tenant - App"
+            ],
+        "consumes": [
+          "multipart/form-data"
+        ],
+		"parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": ""
+          }
+        ],
+		"responses": {
+            "400":{  
+			  "description":"Bad request"
+			},
+			"401":{  
+			  "description":"Unauthorized - Invalid token"
+			}
+        }
+      }
+    },
+	"/app/filter-data": {
+      "get": {
+        "operationId": "GET_team4-cip-api-filter-data",
+        "summary": "App - Filter missions by country, city, theme, skill (Milestone - 2)",
+		"description": "In front end platform landing page - filter missions by country, city, theme and skills drop-down",
+		"tags":[  
+               "Tenant - App"
+            ],
+        "consumes": [
+          "multipart/form-data"
+        ],
+		"parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": ""
+          }
+        ],
+		"responses": {
+            "400":{  
+			  "description":"Bad request"
+			},
+			"401":{  
+			  "description":"Unauthorized - Invalid token"
+			}
+        }
+      }
+    },
+	"/app/tenant-option": {
+      "post": {
+        "operationId": "GET_team4-cip-api-get-tenant-option",
+        "summary": "App - Get tenant option value by option name (Milestone - 2)",
+		"description": "In front end - It will fetch particular option value by its name which is set by tenant adnin. Example: it will fetch option_value (Custom text set by admin) for option_name(no_mission_custom_text)",
+		"tags":[  
+               "Tenant - App"
+            ],
+        "consumes": [
+          "application/json"
+        ],
+		"parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": ""
+          },
+		  {
+            "name": "body",
+            "in": "body",
+            "required": true,
+			"schema": {
+			  "type": "object",
+              "properties": {
+				"option_name": {
+                  "type": "string"
+                }
+              }
+			}
+          }
+        ],
+		"responses": {
+            "400":{  
+			  "description":"Bad request"
+			},
+			"401":{  
+			  "description":"Unauthorized - Invalid token"
+			},
+			"404":{  
+			  "description":"Option name not found in system"
+			},
+			"422":{  
+			  "description":"The option name field is required"
+			}
+        }
+      }
+    },
+	"/app/tenant-settings": {
+      "get": {
+        "operationId": "GET_team4-cip-api-get-tenant-setting",
+        "summary": "App - Get tenant settings (Milestone - 3)",
+		"description": "In front end - It will fetch tenant settings set by tenant admin. Example: tenant admin has disabled 'sorting missions' then sorting block will not display in front end.",
+		"tags":[  
+               "Tenant - App"
+            ],
+        "consumes": [
+          "multipart/form-data"
+        ],
+		"responses": {
+            "400":{  
+			  "description":"Bad request"
+			},
+			"401":{  
+			  "description":"Unauthorized - Invalid token"
+			}
+        }
+      }
+    },
+	"/entities/themes": {
+      "post": {
+        "operationId": "GET_team4-cip-api-add-theme",
+        "summary": "Admin - add theme (Milestone - 2)",
+		"tags":[  
+               "Theme management"
+            ],
+        "consumes": [
+          "application/json"
+        ],
+		"parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": ""
+          },
+		  {
+            "name": "theme_detail",
+            "in": "body",
+            "required": true,
+			"schema": {
+			  "type": "object",
+              "properties": {
+				"theme_name": {
+                  "type": "string"
+                },
+				"translations": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "lang": {
+                        "type": "string",
+						"description":"Language code",
+                      },
+                      "title": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+			}
+          },
+        ],
+        "responses": {
+          "400":{  
+			  "description":"Bad Request"
+			},
+			"401":{  
+			  "description":"Unauthorized - Invalid API key or secret key"
+			},
+			"422":{  
+			  "description":"Unprocessable entity - Invalid input"
+			}
+        }
+      },
+	  "get": {
+        "operationId": "GET_team4-cip-api-get-themes",
+        "summary": "Admin - List themes (Milestone - 2)",
+		"tags":[  
+               "Theme management"
+            ],
+        "consumes": [
+          "multipart/form-data"
+        ],
+		"parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": ""
+          }
+        ],
+        "responses": {
+          "400":{  
+			  "description":"Bad Request"
+			},
+			"401":{  
+			  "description":"Unauthorized - Invalid API key or secret key"
+			}
+        }
+      }
+    },
+	"/entities/themes/{themeId}": {
+      "get": {
+        "operationId": "GET_team4-cip-api-get-a-theme",
+        "summary": "Admin - Get a theme detail (Milestone - 2)",
+		"tags":[  
+               "Theme management"
+            ],
+        "consumes": [
+          "multipart/form-data"
+        ],
+		"parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": ""
+          },
+		  {  
+			  "name":"themeId",
+			  "in":"path",
+			  "description":"Theme id",
+			  "required":true,
+			  "type":"integer",
+			  "format":"int64"
+		  }
+        ],
+        "responses": {
+          "400":{  
+			  "description":"Bad Request"
+			},
+			"401":{  
+			  "description":"Unauthorized - Invalid API key or secret key"
+			},
+			"404":{  
+			  "description":"Mission Theme does not found in system"
+			}
+        }
+      },
+	  "patch": {
+        "operationId": "GET_team4-cip-api-update-theme",
+        "summary": "Admin - Update theme (Milestone - 2)",
+		"tags":[  
+               "Theme management"
+            ],
+        "consumes": [
+          "application/json"
+        ],
+		"parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": ""
+          },
+		  {  
+			  "name":"themeId",
+			  "in":"path",
+			  "description":"Theme id",
+			  "required":true,
+			  "type":"integer",
+			  "format":"int64"
+		  },
+		  {
+            "name": "theme_detail",
+            "in": "body",
+            "required": true,
+			"schema": {
+			  "type": "object",
+              "properties": {
+				"theme_name": {
+                  "type": "string"
+                },
+				"translations": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "lang": {
+                        "type": "string",
+						"description":"Language code",
+                      },
+                      "title": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+			}
+          }
+        ],
+        "responses": {
+           "400":{  
+			  "description":"Bad Request"
+			},
+			"401":{  
+			  "description":"Unauthorized - Invalid API key or secret key"
+			},
+			"404":{  
+			  "description":"Mission Theme does not found in system"
+			}
+        }
+      },
+	  "delete": {
+        "operationId": "GET_team4-cip-api-delete-theme",
+        "summary": "Admin - Delete theme (Milestone - 2)",
+		"tags":[  
+               "Theme management"
+            ],
+        "consumes": [
+          "multipart/form-data"
+        ],
+		"parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": ""
+          },
+		  {  
+			  "name":"themeId",
+			  "in":"path",
+			  "description":"Theme id",
+			  "required":true,
+			  "type":"integer",
+			  "format":"int64"
+		  }
+        ],
+        "responses": {
+           "400":{  
+			  "description":"Bad Request"
+			},
+			"401":{  
+			  "description":"Unauthorized - Invalid API key or secret key"
+			},
+			"404":{  
+			  "description":"Mission Theme does not found in system"
+			}
+        }
+      }
+    },
+	"/entities/skills": {
+      "post": {
+        "operationId": "GET_team4-cip-api-add-skill",
+        "summary": "Admin - add skill (Milestone - 2)",
+		"tags":[  
+               "Skill management"
+            ],
+        "consumes": [
+          "application/json"
+        ],
+		"parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": ""
+          },
+		  {
+            "name": "skill_detail",
+            "in": "body",
+            "required": true,
+			"schema": {
+			  "type": "object",
+              "properties": {
+				"skill_name": {
+                  "type": "string"
+                },
+				"parent_skill": {
+                  "type": "integer",
+				  "format":"int64"
+                },
+				"translations": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "lang": {
+                        "type": "string",
+						"description":"Language code",
+                      },
+                      "title": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+			}
+          },
+        ],
+        "responses": {
+          "400":{  
+			  "description":"Bad Request"
+			},
+			"401":{  
+			  "description":"Unauthorized - Invalid API key or secret key"
+			},
+			"422":{  
+			  "description":"Unprocessable entity - Invalid input"
+			}
+        }
+      },
+	  "get": {
+        "operationId": "GET_team4-cip-api-get-skills",
+        "summary": "Admin - List skills (Milestone - 2)",
+		"tags":[  
+               "Skill management"
+            ],
+        "consumes": [
+          "multipart/form-data"
+        ],
+		"parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": ""
+          }
+        ],
+        "responses": {
+          "400":{  
+			  "description":"Bad Request"
+			},
+			"401":{  
+			  "description":"Unauthorized - Invalid API key or secret key"
+			}
+        }
+      }
+    },
+	"/entities/skills/{skillId}": {
+      "get": {
+        "operationId": "GET_team4-cip-api-get-skill-by-id",
+        "summary": "Admin - Get a skill detail (Milestone - 2)",
+		"tags":[  
+               "Skill management"
+            ],
+        "consumes": [
+          "multipart/form-data"
+        ],
+		"parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": ""
+          },
+		  {  
+			  "name":"skillId",
+			  "in":"path",
+			  "description":"Skill id",
+			  "required":true,
+			  "type":"integer",
+			  "format":"int64"
+		  }
+        ],
+        "responses": {
+          "400":{  
+			  "description":"Bad Request"
+			},
+			"401":{  
+			  "description":"Unauthorized - Invalid API key or secret key"
+			},
+			"404":{  
+			  "description":"Skill does not found in system"
+			}
+        }
+      },
+	  "patch": {
+        "operationId": "GET_team4-cip-api-update-skill",
+        "summary": "Admin - Update skill (Milestone - 2)",
+		"tags":[  
+               "Skill management"
+            ],
+        "consumes": [
+          "application/json"
+        ],
+		"parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": ""
+          },
+		  {  
+			  "name":"skillId",
+			  "in":"path",
+			  "description":"Skill id",
+			  "required":true,
+			  "type":"integer",
+			  "format":"int64"
+		  },
+		  {
+            "name": "skill_detail",
+            "in": "body",
+            "required": true,
+			"schema": {
+			  "type": "object",
+              "properties": {
+				"skill_name": {
+                  "type": "string"
+                },
+				"parent_skill": {
+                  "type": "integer",
+				  "format":"int64"
+                },
+				"translations": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "lang": {
+                        "type": "string",
+						"description":"Language code",
+                      },
+                      "title": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+			}
+          }
+        ],
+        "responses": {
+           "400":{  
+			  "description":"Bad Request"
+			},
+			"401":{  
+			  "description":"Unauthorized - Invalid API key or secret key"
+			},
+			"404":{  
+			  "description":"Skill does not found in system"
+			}
+        }
+      },
+	  "delete": {
+        "operationId": "GET_team4-cip-api-delete-skill",
+        "summary": "Admin - Delete skill (Milestone - 2)",
+		"tags":[  
+               "Skill management"
+            ],
+        "consumes": [
+          "multipart/form-data"
+        ],
+		"parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": ""
+          },
+		  {  
+			  "name":"skillId",
+			  "in":"path",
+			  "description":"Skill id",
+			  "required":true,
+			  "type":"integer",
+			  "format":"int64"
+		  }
+        ],
+        "responses": {
+           "400":{  
+			  "description":"Bad Request"
+			},
+			"401":{  
+			  "description":"Unauthorized - Invalid API key or secret key"
+			},
+			"404":{  
+			  "description":"Skill does not found in system"
+			}
+        }
+      }
+    },
+	"/timesheet/{userId}": {
+      "get": {
+        "operationId": "GET_team4-cip-api-fetch-timesheet-data-admin",
+        "summary": "Admin - Fetch user's timesheet data (Milestone - 3)",
+		"description": "Fetch approved mission applications to show on volunteering timesheet page",
+		"tags":[  
+               "Volunteering Timesheet"
+            ],
+        "consumes": [
+          "application/json"
+        ],
+		"parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": ""
+          },
+		  {  
+			  "name":"userId",
+			  "in":"path",
+			  "description":"User id",
+			  "required":true,
+			  "type":"integer",
+			  "format":"int64"
+		  }
+		],
+        "responses": {
+          "400":{  
+			  "description":"Bad Request"
+			},
+			"401":{  
+			  "description":"Unauthorized - Invalid API key or secret key"
+			},
+			"404":{  
+			  "description":"User not found in system"
+			}
+        }
+      },
+    },
+	"/timesheet/{timesheetId}": {
+      "patch": {
+        "operationId": "GET_team4-cip-api-approve-decline-timesheet-data",
+        "summary": "Admin - Approve/decline user's timesheet entry(Milestone - 3)",
+		"description": "Admin can approve/decline user's submitted timesheet entry",
+		"tags":[  
+               "Volunteering Timesheet"
+            ],
+        "consumes": [
+          "application/json"
+        ],
+		"parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": ""
+          },
+		  {  
+			  "name":"timesheetId",
+			  "in":"path",
+			  "description":"Timesheet id",
+			  "required":true,
+			  "type":"integer",
+			  "format":"int64"
+		  },
+		  {
+            "name": "body",
+            "in": "body",
+            "required": true,
+			"description": "2 => APPROVED, 3 => DECLINED",
+			"schema": {
+			  "type": "object",
+              "properties": {
+				"status_id": {
+                  "type": "integer",
+				  "format": "int32",
+				  "enum": ["2","3"],
+				  "example": 2
+                },
+			  }
+			}
+          },
+		],
+        "responses": {
+          "400":{  
+			  "description":"Bad Request"
+			},
+			"401":{  
+			  "description":"Unauthorized - Invalid API key or secret key"
+			},
+			"404":{  
+			  "description":"Timesheet not found in system"
+			}
+        }
+      },
+    },
+	"/app/timesheet": {
+	  "post": {
+        "operationId": "GET_team4-cip-api-add-edit-timesheet-entry",
+        "summary": "App - Add/update timesheet entry (Milestone - 3)",
+		"description": "From front end user will add/edit timesheet entry for a day",
+		"tags":[  
+               "Volunteering Timesheet"
+            ],
+        "consumes": [
+          "multipart/form-data"
+        ],
+		"parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": ""
+          },
+		  {
+            "name": "mission_id",
+            "in": "formData",
+            "required": true,
+            "type":"integer",
+			"format":"int32"
+          },
+		  {
+            "name": "date_volunteered",
+            "in": "formData",
+			"description": "yyyy-mm-dd",
+            "required": true,
+            "type": "string",
+			"format":"date-time",
+            "default": ""
+          },
+		  {
+            "name": "day_volunteered",
+            "in": "formData",
+            "required": true,
+            "type": "string",
+            "enum":["WORKDAY", "HOLIDAY", "WEEKEND"]
+          },
+		  {
+            "name": "notes",
+            "in": "formData",
+            "required": true,
+            "type": "string",
+			"multiLine": true,
+            "default": ""
+          },
+		  {
+            "name": "action",
+            "in": "formData",
+			"description": "Add action for Goal mission",
+            "required": false,
+            "type":"integer",
+			"format":"int32"
+          },
+		  {
+            "name": "hours",
+            "in": "formData",
+			"description": "Add hours between 0-23 for Time mission",
+            "required": false,
+            "type": "int32",
+            "default": ""
+          },
+		  {
+            "name": "minutes",
+            "in": "formData",
+			"description": "Add minutes between 0-59 for Time mission",
+            "required": false,
+            "type":"integer",
+			"format":"int32"
+          },
+		  {
+            "name": "documents[]",
+            "in": "formData",
+			"description": "Valid document types are doc, xls, xlsx, csv, pdf, png, jpg, jpeg",
+            "required": false,
+            "type": "file",
+            "default": ""
+          }
+		],
+        "responses": {
+          "400":{  
+			  "description":"Bad Request"
+			},
+			"401":{  
+			  "description":"Unauthorized - Invalid token"
+			},
+			"404":{  
+			  "description":"Timesheet not found"
+			},
+			"422":{  
+			  "description":"Invalid input"
+			}
+        }
+      },
+      "get": {
+        "operationId": "GET_team4-cip-api-fetch-timesheet-data",
+        "summary": "App - Fetch timesheet data (Milestone - 3)",
+		"description": "Fetch approved mission applications to show on volunteering timesheet page",
+		"tags":[  
+               "Volunteering Timesheet"
+            ],
+        "consumes": [
+          "application/json"
+        ],
+		"parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": ""
+          }
+		],
+        "responses": {
+          "400":{  
+			  "description":"Bad Request"
+			},
+			"401":{  
+			  "description":"Unauthorized - Invalid token"
+			},
+			"404":{  
+			  "description":"Timesheet not found"
+			}
+        }
+      },
+    },
+	"/app/timesheet/{timesheetId}": {
+		"get": {
+			"operationId": "GET_team4-cip-api-fetch-timesheet-details",
+			"summary": "App - Fetch timesheet entry details (Milestone - 3)",
+			"description": "Fetch timesheet entry details",
+			"tags":[  
+				   "Volunteering Timesheet"
+				],
+			"consumes": [
+			  "multipart/form-data"
+			],
+			"parameters": [
+			  {
+				"name": "token",
+				"in": "header",
+				"required": true,
+				"type": "string",
+				"default": ""
+			  },
+			  {
+				"name": "timesheetId",
+				"in": "path",
+				"required": true,
+				"type":"integer",
+				"format":"int32"
+			  }
+			],
+			"responses": {
+			  "400":{  
+				  "description":"Bad Request"
+				},
+				"401":{  
+				  "description":"Unauthorized - Invalid token"
+				},
+				"404":{  
+				  "description":"Timesheet not found"
+				}
+			}
+		  },
+	},
+	"/app/timesheet/{timesheetId}/document/{documentId}": {
+		"delete": {
+			"operationId": "GET_team4-cip-api-delete-timesheet-document",
+			"summary": "App - Delete timesheet document (Milestone - 3)",
+			"tags":[  
+				   "Volunteering Timesheet"
+				],
+			"consumes": [
+			  "multipart/form-data"
+			],
+			"parameters": [
+			  {
+				"name": "token",
+				"in": "header",
+				"required": true,
+				"type": "string",
+				"default": ""
+			  },
+			  {
+				"name": "timesheetId",
+				"in": "path",
+				"required": true,
+				"type":"integer",
+				"format":"int32"
+			  },
+			  {
+				"name": "documentId",
+				"in": "path",
+				"required": true,
+				"type":"integer",
+				"format":"int32"
+			  }
+			],
+			"responses": {
+			  "400":{  
+				  "description":"Bad Request"
+				},
+				"401":{  
+				  "description":"Unauthorized - Invalid token"
+				},
+				"404":{  
+				  "description":"Timesheet not found"
+				}
+			}
+		  },
+	},
+	"/app/timesheet/submit": {
+      "post": {
+        "operationId": "GET_team4-cip-api-submit-timesheet",
+        "summary": "App - Submit timesheet for approval (Milestone - 3)",
+		"description": "Submits timesheet for approval",
+		"tags":[  
+               "Volunteering Timesheet"
+            ],
+        "consumes": [
+          "application/json"
+        ],
+		"parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": ""
+          },
+		  {
+            "name": "body",
+            "in": "body",
+            "required": true,
+			"schema": {
+			  "type": "object",
+			  "properties": {
+				"timesheet_entries": {
+				  "type": "array",
+				  "items": {
+					"type": "object",
+					"properties": {
+					  "timesheet_id": {
+						"type":"integer",
+						"format":"int32"
+					  }
+					}
+				  }
+				}
+			  }
+			}
+          }
+		],
+        "responses": {
+          "400":{  
+			  "description":"Bad Request"
+			},
+			"401":{  
+			  "description":"Unauthorized - Invalid token"
+			},
+			"422":{  
+			  "description":"Invalid input"
+			}
+        }
+      },
+    },
+	"/app/timesheet/goal-requests": {
+      "get": {
+        "operationId": "GET_team4-cip-api-fetch-pending-goal-requests",
+        "summary": "App - Fetch Pending goal requests (Milestone - 3)",
+		"description": "Fetch pending goal requests to show on volunteering timesheet page",
+		"tags":[  
+               "Volunteering Timesheet"
+            ],
+        "consumes": [
+          "application/json"
+        ],
+		"parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": ""
+          }
+		],
+        "responses": {
+          "400":{  
+			  "description":"Bad Request"
+			},
+			"401":{  
+			  "description":"Unauthorized - Invalid token"
+			}
+        }
+      },
+    },
+	"/app/timesheet/time-requests": {
+      "get": {
+        "operationId": "GET_team4-cip-api-fetch-pending-time-requests",
+        "summary": "App - Fetch Pending time requests (Milestone - 3)",
+		"description": "Fetch pending time requests to show on volunteering timesheet page",
+		"tags":[  
+               "Volunteering Timesheet"
+            ],
+        "consumes": [
+          "application/json"
+        ],
+		"parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": ""
+          }
+		],
+        "responses": {
+          "400":{  
+			  "description":"Bad Request"
+			},
+			"401":{  
+			  "description":"Unauthorized - Invalid token"
+			}
+        }
+      },
+    },
+	"/app/timesheet/goal-requests/export": {
+      "get": {
+        "operationId": "GET_team4-cip-api-pending-goal-missions-timesheet-export",
+        "summary": "App - Export pending timesheet for goal mission (Milestone - 3)",
+		"tags":[  
+               "Volunteering Timesheet"
+            ],
+        "consumes": [
+          "multipart/form-data"
+        ],
+		"parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": ""
+          }
+		],
+        "responses": {
+          "400":{  
+			  "description":"Bad Request"
+			},
+			"401":{  
+			  "description":"Unauthorized - Invalid token"
+			}
+        }
+      },
+    },
+	"/app/timesheet/time-requests/export": {
+      "get": {
+        "operationId": "GET_team4-cip-api-pending-time-missions-timesheet-export",
+        "summary": "App - Export pending timesheet for time mission (Milestone - 3)",
+		"tags":[  
+               "Volunteering Timesheet"
+            ],
+        "consumes": [
+          "multipart/form-data"
+        ],
+		"parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": ""
+          }
+		],
+        "responses": {
+          "400":{  
+			  "description":"Bad Request"
+			},
+			"401":{  
+			  "description":"Unauthorized - Invalid token"
+			}
+        }
+      },
+    },
+	"/app/volunteer/history/theme": {
+      "get": {
+        "operationId": "GET_team4-cip-api-fetch-hours-per-theme",
+        "summary": "App - Get volunteers hours per theme (Milestone - 3)",
+		"tags":[  
+               "Volunteering History"
+            ],
+        "consumes": [
+          "multipart/form-data"
+        ],
+		"parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": ""
+          }
+		],
+        "responses": {
+          "400":{  
+			  "description":"Bad Request"
+			},
+			"401":{  
+			  "description":"Unauthorized - Invalid token"
+			}
+        }
+      },
+    },
+	"/app/volunteer/history/skill": {
+      "get": {
+        "operationId": "GET_team4-cip-api-fetch-hours-per-skill",
+        "summary": "App - Get volunteers hours per skill (Milestone - 3)",
+		"tags":[  
+               "Volunteering History"
+            ],
+        "consumes": [
+          "multipart/form-data"
+        ],
+		"parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": ""
+          }
+		],
+        "responses": {
+          "400":{  
+			  "description":"Bad Request"
+			},
+			"401":{  
+			  "description":"Unauthorized - Invalid token"
+			}
+        }
+      },
+    },
+	"/app/volunteer/history/goal-mission": {
+      "get": {
+        "operationId": "GET_team4-cip-api-fetch-approved-goal-missions-timesheet",
+        "summary": "App - Fetch approved timesheet for goal mission (Milestone - 3)",
+		"tags":[  
+               "Volunteering History"
+            ],
+        "consumes": [
+          "multipart/form-data"
+        ],
+		"parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": ""
+          }
+		],
+        "responses": {
+          "400":{  
+			  "description":"Bad Request"
+			},
+			"401":{  
+			  "description":"Unauthorized - Invalid token"
+			}
+        }
+      },
+    },
+	"/app/volunteer/history/time-mission": {
+      "get": {
+        "operationId": "GET_team4-cip-api-fetch-approved-time-missions-timesheet",
+        "summary": "App - Fetch approved timesheet for time mission (Milestone - 3)",
+		"tags":[  
+               "Volunteering History"
+            ],
+        "consumes": [
+          "multipart/form-data"
+        ],
+		"parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": ""
+          }
+		],
+        "responses": {
+          "400":{  
+			  "description":"Bad Request"
+			},
+			"401":{  
+			  "description":"Unauthorized - Invalid token"
+			}
+        }
+      },
+    },
+	"/app/volunteer/history/time-mission/export": {
+      "get": {
+        "operationId": "GET_team4-cip-api-approved-time-missions-timesheet-export",
+        "summary": "App - Export approved timesheet for time mission (Milestone - 3)",
+		"tags":[  
+               "Volunteering History"
+            ],
+        "consumes": [
+          "multipart/form-data"
+        ],
+		"parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": ""
+          }
+		],
+        "responses": {
+          "400":{  
+			  "description":"Bad Request"
+			},
+			"401":{  
+			  "description":"Unauthorized - Invalid token"
+			}
+        }
+      },
+    },
+	"/app/volunteer/history/goal-mission/export": {
+      "get": {
+        "operationId": "GET_team4-cip-api-approved-goal-missions-timesheet-export",
+        "summary": "App - Export approved timesheet for goal mission (Milestone - 3)",
+		"tags":[  
+               "Volunteering History"
+            ],
+        "consumes": [
+          "multipart/form-data"
+        ],
+		"parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": ""
+          }
+		],
+        "responses": {
+          "400":{  
+			  "description":"Bad Request"
+			},
+			"401":{  
+			  "description":"Unauthorized - Invalid token"
+			}
+        }
+      },
+    },
+  },
+  "definitions": {
+	"Mission":{
+	"type": "object",
+              "properties": {
+                "organisation": {
+                  "type": "object",
+                  "properties": {
+                    "organisation_id": {
+                      "type": "string"
+                    },
+                    "organisation_name": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "location": {
+                  "type": "object",
+                  "properties": {
+                    "city_id": {
+                      "type": "string"
+                    },
+                    "country_code": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "mission_detail": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "lang": {
+                        "type": "string"
+                      },
+                      "title": {
+                        "type": "string"
+                      },
+                      "short_description": {
+                        "type": "string"
+                      },
+                      "objective": {
+                        "type": "string"
+                      },
+                      "section": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "title": {
+                              "type": "string"
+                            },
+                            "description": {
+                              "type": "string"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "documents": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+					  "document_id": {
+                        "type":"integer",
+						"description": "If adding new document then leave it blank",
+						"format":"int64"
+                      },
+                      "document_path": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                },
+                "media_images": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+					  "media_id": {
+                        "type":"integer",
+						"description": "If adding new media then leave it blank",
+						"format":"int64"
+                      },
+                      "media_path": {
+                        "type": "string"
+                      },
+                      "default": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                },
+                "media_videos": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+					 "media_id": {
+                        "type":"integer",
+						"description": "If adding new media then leave it blank",
+						"format":"int64"
+                      },
+                      "media_name": {
+                        "type": "string"
+                      },
+                      "media_path": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                },
+				 "skills": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "skill_id": {
+                        "type":"integer",
+						"format":"int64"
+                      }
+                    }
+                  }
+                },
+                "start_date": {
+                  "type": "string",
+				  "format":"date-time",
+				  "description":"dd-mm-yyyy h:i:s",
+                },
+                "end_date": {
+                  "type": "string",
+				  "description":"dd-mm-yyyy h:i:s",
+				  "format":"date-time"
+                },
+                "mission_type": {
+                  "type": "string",
+				  "enum":[  
+					"TIME",
+					"GOAL"
+				  ]
+                },
+                "goal_objective": {
+                   "type":"integer",
+				   "format":"int64"
+                },
+                "total_seats": {
+                  "type":"integer",
+				  "format":"int64"
+                },
+                "application_deadline": {
+                  "type": "string",
+				  "format":"date-time",
+				  "description":"dd-mm-yyyy h:i:s",
+                },
+				"application_start_date": {
+                  "type": "string",
+				  "format":"date-time",
+				  "description":"dd-mm-yyyy h:i:s",
+                },
+				"application_start_time": {
+                  "type": "string",
+				  "format":"date-time",
+				  "description":"dd-mm-yyyy h:i:s",
+                },
+				"application_end_date": {
+                  "type": "string",
+				  "format":"date-time",
+				  "description":"dd-mm-yyyy h:i:s",
+                },
+				"application_end_time": {
+                  "type": "string",
+				  "format":"date-time",
+				  "description":"dd-mm-yyyy h:i:s",
+                },
+                "publication_status": {
+                  "type": "string",
+				  "enum":[  
+					"DRAFT",
+					"PENDING_APPROVAL",
+					"APPROVED",
+					"PUBLISHED_FOR_VOTING",
+					"PUBLISHED_FOR_APPLYING",
+					"UNPUBLISHED"
+				  ]
+                },
+                "theme_id": {
+                  "type":"integer",
+				  "format":"int64"
+                },
+				"availability_id": {
+                  "type":"integer",
+				  "format":"int64"
+                }
+              }
+		  },
+		  "FooterPage": {
+			"type": "object",
+              "properties": {
+                "page_details": {
+                  "type": "object",
+                  "properties": {
+                    "slug": {
+                      "type": "string"
+                    },
+                    "translations": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "lang": {
+                            "type": "string",
+							"description":"Language code.(i.e. en, fr etc)",
+                          },
+                          "title": {
+                            "type": "string"
+                          },
+                          "sections": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "title": {
+                                  "type": "string"
+                                },
+                                "description": {
+                                  "type": "string"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+          },
+		  "PolicyPage": {
+			"type": "object",
+              "properties": {
+                "page_details": {
+                  "type": "object",
+                  "properties": {
+                    "slug": {
+                      "type": "string"
+                    },
+                    "translations": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "lang": {
+                            "type": "string",
+							"description":"Language code.(i.e. en, fr etc)",
+                          },
+                          "title": {
+                            "type": "string"
+                          },
+                          "sections": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "title": {
+                                  "type": "string"
+                                },
+                                "description": {
+                                  "type": "string"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+          },
+		  "User":{
+			"type": "object",
+              "properties": {
+                "first_name": {
+                  "type": "string"
+                },
+                "last_name": {
+                  "type": "string"
+                },
+                "email": {
+                  "type": "string"
+                },
+                "password": {
+                  "type": "string"
+                },
+                "timezone_id": {
+                  "type":"integer",
+				  "format":"int32"
+                },
+                "language_id": {
+                  "type":"integer",
+                  "format":"int32"
+                },
+                "availability_id": {
+                  "type":"integer",
+                  "format":"int32"
+                },
+                "why_i_volunteer": {
+                  "type": "string"
+                },
+                "employee_id": {
+                  "type": "string"
+                },
+                "department": {
+                  "type": "string"
+                },
+                "manager_name": {
+                  "type": "string"
+                },
+                "city_id": {
+                  "type":"integer",
+                  "format":"int32"
+                },
+                "country_id": {
+                  "type":"integer",
+                  "format":"int32"
+                },
+                "profile_text": {
+                  "type": "string"
+                },
+                "linked_in_url": {
+                  "type": "string"
+                }
+              }
+		  },
+		  "AppUser":{
+			"type": "object",
+              "properties": {
+                "first_name": {
+                  "type": "string"
+                },
+                "last_name": {
+                  "type": "string"
+                },
+                "email": {
+                  "type": "string"
+                },
+                "timezone_id": {
+                  "type":"integer",
+				  "format":"int32"
+                },
+                "language_id": {
+                  "type":"integer",
+                  "format":"int32"
+                },
+                "availability_id": {
+                  "type":"integer",
+                  "format":"int32"
+                },
+                "why_i_volunteer": {
+                  "type": "string"
+                },
+                "employee_id": {
+                  "type": "string"
+                },
+                "department": {
+                  "type": "string"
+                },
+                "manager_name": {
+                  "type": "string"
+                },
+                "city_id": {
+                  "type":"integer",
+                  "format":"int32"
+                },
+                "country_id": {
+                  "type":"integer",
+                  "format":"int32"
+                },
+                "profile_text": {
+                  "type": "string"
+                },
+                "linked_in_url": {
+                  "type": "string"
+                },
+				"custom_fields":{
+					"type": "array",
+					"items": {
+						"type": "object",
+						"properties": {
+						  "field_id": {
+							"type":"integer",
+							"format":"int32"
+						  },
+						  "value": {
+							"type": "string"
+						  }
+						}
+                  }
+				}
+              }
+		  },
+		  "UserCustomField": {
+			"type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string",
+				  "enum":[  
+                    "text",
+                    "email",
+                    "drop-down",
+                    "radio"
+                  ]
+                },
+                "is_mandatory": {
+                  "type":"boolean"
+			    },
+                "translations": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "lang": {
+                        "type": "string",
+						"description":"Language code",
+                      },
+                      "name": {
+                        "type": "string"
+                      },
+                      "values": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+		  },
+		  "Slider":{
+			"type": "object",
+              "properties": {
+                "translations": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "lang": {
+                        "type": "string",
+						"description":"Language code",
+                      },
+                      "slider_title": {
+                        "type": "string"
+                      },
+                      "slider_description": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+		  }
+     }
+}
