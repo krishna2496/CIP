@@ -216,16 +216,15 @@
                 duplicateYoutubeUrlError: false,
                 config: {
                     toolbar: [
-						['Source', 'Maximize','Preview','Print','Templates','Paste','PasteAsPlainText','PasteFromWord'],
-						['Find','Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript'],
-						['Replace'],
-                        ['Bold', 'Italic', 'Strike', 'Underline'],
-                        ['BulletedList', 'NumberedList', 'Blockquote'],
-                        ['JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'],
-                        ['Link', 'Unlink'],
-                        ['FontSize', 'TextColor'],
-                        ['Image'],
-                        ['Undo', 'Redo']
+                        ['Source','Iframe','Image','ShowBlocks','Table','-','Link','Unlink','Flash','Smiley','TextColor','BGColor','Maximize','Preview','Print','Templates','PasteAsPlainText','PasteFromWord'],
+                        ['Replace','SelectAll','SpellChecker','Subscript','Superscript','CopyFormatting','RemoveFormat','Insert/RemoveNumberedList'],
+                        '/',
+                        ['Bold','Italic','Underline','Strike','StrikeThrough','-','Undo','Redo','-','Cut','Copy','Paste','Find','Replace','-','Outdent','Indent','-','Print'],
+                        ['DecreaseIndent','IncreaseIndent','CreateDivContainer','TextDirectionDFromLeftToRight','TextDirectionFromRightToLeft','SetLanguage','Anchor'],
+                        '/',
+                        ['NumberedList','BulletedList','-','JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock','Blockquote'],
+                        '/',
+                        ['Styles','Format','Font','FontSize','BackgroundColor','Maximize','TextColor'],
                     ]
                 }
             }
