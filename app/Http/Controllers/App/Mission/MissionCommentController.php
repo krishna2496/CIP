@@ -143,7 +143,7 @@ class MissionCommentController extends Controller
             get_class($this),
             $request->toArray(),
             $request->auth->user_id,
-            $request->mission_id
+            $missionComment->comment_id
         ));
 
         return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);

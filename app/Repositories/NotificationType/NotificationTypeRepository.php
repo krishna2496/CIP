@@ -60,17 +60,25 @@ class NotificationTypeRepository implements NotificationTypeInterface
      *
      * @param array $data
      * @param int $userId
-     * @return bool
+     * @return array
      */
-    public function storeOrUpdateUserNotification(array $data, int $userId): bool
+    public function storeOrUpdateUserNotification(array $data, int $userId): array
     {
+        $notificationSettings = [];
         foreach ($data['settings'] as $value) {
             if ($value['value'] == 1) {
                 $this->userNotification->enableUserNotification($userId, $value['notification_type_id']);
             } else {
                 $this->userNotification->disableUserNotification($userId, $value['notification_type_id']);
             }
+            array_push(
+                $notificationSettings,
+                [
+                    'notification_type_id' => $value['notification_type_id'],
+                    'value' => $value['value']
+                ]
+            );
         }
-        return true;
+        return $notificationSettings;
     }
 }

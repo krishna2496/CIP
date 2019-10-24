@@ -546,6 +546,8 @@ return [
         'MISSION_COMMENTS' => 'MISSION_COMMENTS',
         'STORY_IMAGE' => 'STORY_IMAGE',
         'STORY_VISITOR' => 'STORY_VISITOR',
+        'NOTIFICATION_SETTING' => 'NOTIFICATION_SETTING',
+        'NOTIFICATION' => 'NOTIFICATION'
     ],
 
     'activity_log_actions' => [
@@ -574,6 +576,10 @@ return [
         'EXPORT' => 'EXPORT',
         'COPIED' => 'COPIED',
         'COUNTED' => 'COUNTED',
+        'READ' => 'READ',
+        'ACTIVATED' => 'ACTIVATED',
+        'DEACTIVATED' => 'DEACTIVATED',
+        'CLEAR_ALL' => 'CLEAR_ALL'
     ],
 
     'activity_log_user_types' => [
