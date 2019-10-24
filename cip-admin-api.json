@@ -1,0 +1,708 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "",
+    "title": "CI Platform Admin",
+    "description": ""
+  },
+  "host":"web8.anasource.com",
+  "basePath":"/team4/cip-admin-api",
+  "tags":[  
+      {  
+         "name":"Tenant (Milestone - 1)"
+      },
+	  {  
+         "name":"API user (Milestone - 2)"
+      },
+	  {  
+         "name":"Tenant settings (Milestone - 3)"
+      },
+	  {  
+         "name":"Language management (Milestone - 4)"
+      }
+   ],
+  "paths": {
+    "/tenants": {
+      "post": {
+        "operationId": "POST_team4-cip-admin-api-tenants",
+        "summary": "Create tenent",
+		"tags":[  
+               "Tenant (Milestone - 1)"
+            ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+			"required": true,
+            "schema": {
+              "$ref":"#/definitions/Tenant"
+            }
+          }
+        ],
+        "responses": {
+            "400":{  
+			  "description":"Bad request"
+			},
+			"422":{  
+			  "description":"Unprocessable entity - Invalid input"
+			}
+        }
+      },
+      "get": {
+        "operationId": "GET_team4-cip-admin-api-tenants",
+        "summary": "Listing Tenant",
+        "tags":[  
+               "Tenant (Milestone - 1)"
+            ],
+        "consumes": [
+          "application/json"
+        ],
+        "responses": {
+            "400":{  
+			  "description":"Bad request"
+			}
+        }
+      }
+    },
+    "/tenants/{tenantId}/": {
+      "get": {
+        "operationId": "GET_team4-cip-admin-api-tenants-1",
+        "summary": "Get tenant detail by id ",
+        "tags":[  
+               "Tenant (Milestone - 1)"
+            ],
+        "consumes": [
+          "application/json"
+        ],
+		"parameters": [
+          {  
+			  "name":"tenantId",
+			  "in":"path",
+			  "description":"Tenant id to get details",
+			  "required":true,
+			  "type":"integer",
+			  "format":"int64"
+		  }
+        ],
+        "responses": {
+            "400":{  
+			  "description":"Bad request"
+			},
+			"404":{  
+			  "description":"Tenant not found in the system"
+			}
+        }
+      },
+      "patch": {
+        "operationId": "PATCH_team4-cip-admin-api-tenants-1",
+        "summary": "Update tenant details",
+        "tags":[  
+               "Tenant (Milestone - 1)"
+            ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+			"required": true,
+            "schema": {
+              "$ref":"#/definitions/Tenant"
+            }
+          },
+		  {  
+			  "name":"tenantId",
+			  "in":"path",
+			  "description":"Tenant id to update",
+			  "required":true,
+			  "type":"integer",
+			  "format":"int64"
+		  }
+        ],
+        "responses": {
+            "400":{  
+			  "description":"Bad request"
+			},
+			"422":{  
+			  "description":"Unprocessable entity - Invalid input"
+			},
+			"404":{  
+			  "description":"Tenant not found in the system"
+			}
+        }
+      },
+	  "delete": {
+        "operationId": "DELETE_team4-cip-admin-api-tenants-2",
+        "summary": "Delete tenant",
+		"tags":[  
+               "Tenant (Milestone - 1)"
+            ],
+        "consumes": [
+          "multipart/form-data"
+        ],
+		"parameters": [
+          {  
+			  "name":"tenantId",
+			  "in":"path",
+			  "description":"Tenant id to delete",
+			  "required":true,
+			  "type":"integer",
+			  "format":"int64"
+		  }
+        ],
+        "responses": {
+           "400":{  
+			  "description":"Bad request"
+			},
+			"404":{  
+			  "description":"Tenant not found in the system"
+			}
+        }
+      }
+	},
+    "/tenants/{tenantId}/api_users/": {
+      "post": {
+        "operationId": "POST_team4-cip-admin-api-tenants-create-api-user",
+        "summary": "Create API User",
+		"tags":[  
+               "API user (Milestone - 2)"
+            ],
+        "consumes": [
+          "multipart/form-data"
+        ],
+		"parameters": [
+          {  
+			  "name":"tenantId",
+			  "in":"path",
+			  "description":"Tenant id",
+			  "required":true,
+			  "type":"integer",
+			  "format":"int64"
+		  }
+        ],
+        "responses": {
+            "400":{  
+			  "description":"Bad request"
+			},
+			"404":{  
+			  "description":"Tenant not found in the system"
+			}
+        }
+      },
+      "get": {
+        "operationId": "POST_team4-cip-admin-api-tenants-list-api-user",
+        "summary": "Listing API users of a tenant",
+        "tags":[  
+               "API user (Milestone - 2)"
+            ],
+        "consumes": [
+          "multipart/form-data"
+        ],
+		"parameters": [
+          {  
+			  "name":"tenantId",
+			  "in":"path",
+			  "description":"Tenant id",
+			  "required":true,
+			  "type":"integer",
+			  "format":"int64"
+		  }
+        ],
+        "responses": {
+            "400":{  
+			  "description":"Bad request"
+			},
+			"404":{  
+			  "description":"Tenant not found in the system"
+			}
+        }
+      }
+    },
+	"/tenants/{tenantId}/api_users/{api_user_id}/": {
+      "get": {
+        "operationId": "POST_team4-cip-admin-api-tenants-api-user-detail",
+        "summary": "Get API User detail",
+		"tags":[  
+               "API user (Milestone - 2)"
+            ],
+        "consumes": [
+          "multipart/form-data"
+        ],
+		"parameters": [
+          {  
+			  "name":"tenantId",
+			  "in":"path",
+			  "description":"Tenant id",
+			  "required":true,
+			  "type":"integer",
+			  "format":"int64"
+		  },
+		  {  
+			  "name":"api_user_id",
+			  "in":"path",
+			  "description":"API user id",
+			  "required":true,
+			  "type":"integer",
+			  "format":"int64"
+		  }
+        ],
+        "responses": {
+            "400":{  
+			  "description":"Bad request"
+			},
+			"404":{  
+			  "description":"API user not found in the system"
+			}
+        }
+      },
+      "patch": {
+        "operationId": "POST_team4-cip-admin-api-tenants-api-user-update",
+        "summary": "Renew API user's secret key",
+		"tags":[  
+               "API user (Milestone - 2)"
+            ],
+        "consumes": [
+          "multipart/form-data"
+        ],
+		"parameters": [
+          {  
+			  "name":"tenantId",
+			  "in":"path",
+			  "description":"Tenant id",
+			  "required":true,
+			  "type":"integer",
+			  "format":"int64"
+		  },
+		  {  
+			  "name":"api_user_id",
+			  "in":"path",
+			  "description":"API user id",
+			  "required":true,
+			  "type":"integer",
+			  "format":"int64"
+		  }
+        ],
+        "responses": {
+            "400":{  
+			  "description":"Bad request"
+			},
+			"404":{  
+			  "description":"API user not found in the system"
+			}
+        }
+      },
+	  "delete": {
+        "operationId": "POST_team4-cip-admin-api-tenants-api-user-delete",
+        "summary": "Delete API user",
+		"tags":[  
+               "API user (Milestone - 2)"
+            ],
+        "consumes": [
+          "multipart/form-data"
+        ],
+		"parameters": [
+          {  
+			  "name":"tenantId",
+			  "in":"path",
+			  "description":"Tenant id",
+			  "required":true,
+			  "type":"integer",
+			  "format":"int64"
+		  },
+		  {  
+			  "name":"api_user_id",
+			  "in":"path",
+			  "description":"API user id",
+			  "required":true,
+			  "type":"integer",
+			  "format":"int64"
+		  }
+        ],
+        "responses": {
+            "400":{  
+			  "description":"Bad request"
+			},
+			"404":{  
+			  "description":"API user not found in the system"
+			}
+        }
+      }
+    },
+	"/tenants/{tenantId}/settings": {
+		"get": {
+			"operationId": "POST_team4-cip-admin-api-get-tenant-settings",
+			"summary": "List tenant settings",
+			"description": "It will show all available tenant options/settings. Example: skills, themes, news etc.",
+			"tags":[  
+				   "Tenant settings (Milestone - 3)"
+				],
+			"consumes": [
+			  "multipart/form-data"
+			],
+			"parameters": [
+			  {  
+				  "name":"tenantId",
+				  "in":"path",
+				  "description":"Tenant id",
+				  "required":true,
+				  "type":"integer",
+				  "format":"int64"
+			  }
+			],
+			"responses": {
+				"400":{  
+				  "description":"Bad request"
+				},
+				"404":{  
+				  "description":"Tenant not found in the system"
+				}
+			}
+		},
+	},
+	"/tenants/{tenantId}/settings/": {
+		"post": {
+			"operationId": "POST_team4-cip-admin-api-store-tenant-settings",
+			"summary": "Enable/disable tenant settings",
+			"description": "Super admin(Optimy) will enable/disable tenant options/settings.",
+			"tags":[  
+				   "Tenant settings (Milestone - 3)"
+				],
+			"consumes": [
+			  "application/json"
+			],
+			"parameters": [
+			  {  
+				  "name":"tenantId",
+				  "in":"path",
+				  "description":"Tenant id",
+				  "required":true,
+				  "type":"integer",
+				  "format":"int64"
+			  },
+			  {
+				"name": "body",
+				"in": "body",
+				"required": true,
+				"schema": {
+				  "type": "object",
+				  "properties": {
+					"settings": {
+					  "type": "array",
+					  "items": {
+						"type": "object",
+						"properties": {
+						  "tenant_setting_id": {
+							"type":"integer",
+							"format":"int32"
+						  },
+						  "value": {
+							"type": "integer",
+							"description": "If enable, value should be passed 1 and for disable value should be passed 0",
+							"enum":[  
+								"1",
+								"0"
+							]
+						  }
+						}
+					  }
+					}
+				  }
+				}
+             }
+			],
+			"responses": {
+				"400":{  
+				  "description":"Bad request"
+				},
+				"404":{  
+				  "description":"Tenant not found in the system"
+				},
+				"422":{  
+				  "description":"Invalid input data"
+				}
+			}
+		},
+	},
+	"/tenants/language/": {
+      "post": {
+        "operationId": "POST_team4-cip-admin-api-add-language",
+        "summary": "Add language",
+		"tags":[  
+               "Language management (Milestone - 4)"
+            ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+			"required": true,
+            "schema": {
+              "$ref":"#/definitions/Language"
+            }
+          }
+        ],
+        "responses": {
+            "400":{  
+			  "description":"Bad request"
+			},
+			"422":{  
+			  "description":"Unprocessable entity - Invalid input"
+			}
+        }
+      },
+      "get": {
+        "operationId": "GET_team4-cip-admin-api-get-languages",
+        "summary": "Listing languages",
+		"description": "To fetch only active languages, append status=true in endpoint. e.g. /tenants/language?status=true",
+        "tags":[  
+               "Language management (Milestone - 4)"
+            ],
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "responses": {
+            "400":{  
+			  "description":"Bad request"
+			}
+        }
+      }
+    },
+	"/tenants/language/{languageId}/": {
+		"patch": {
+			"operationId": "POST_team4-cip-admin-api-update-language",
+			"summary": "Edit language details",
+			"tags":[  
+				   "Language management (Milestone - 4)"
+				],
+			"consumes": [
+			  "application/json"
+			],
+			"parameters": [
+			  {
+				"description":"language id to get details",
+				"required":true,
+				"type":"integer",
+				"format":"int64"
+			  },
+			  {
+				"name": "body",
+				"in": "body",
+				"required": true,
+				"schema": {
+				  "$ref":"#/definitions/Language"
+				}
+			  }
+			],
+			"responses": {
+				"400":{  
+				  "description":"Bad request"
+				},
+				"404":{  
+				  "description":"Language not found in the system"
+				},
+				"422":{  
+				  "description":"Unprocessable entity - Invalid input"
+				}
+			}
+      },
+	  "get": {
+			"operationId": "POST_team4-cip-admin-api-get-language-detail",
+			"summary": "Get language details",
+			"tags":[  
+				   "Language management (Milestone - 4)"
+				],
+			"consumes": [
+			  "multipart/form-data"
+			],
+			"parameters": [
+			  {
+				"description":"language id to get details",
+				"required":true,
+				"type":"integer",
+				"format":"int64"
+			  }
+			],
+			"responses": {
+				"400":{  
+				  "description":"Bad request"
+				},
+				"404":{  
+				  "description":"Language not found in the system"
+				}
+			}
+      },
+	  "delete": {
+			"operationId": "POST_team4-cip-admin-api-delete-language-detail",
+			"summary": "Delete language",
+			"tags":[  
+				   "Language management (Milestone - 4)"
+				],
+			"consumes": [
+			  "multipart/form-data"
+			],
+			"parameters": [
+			  {
+				"description":"language id to delete",
+				"required":true,
+				"type":"integer",
+				"format":"int64"
+			  }
+			],
+			"responses": {
+				"400":{  
+				  "description":"Bad request"
+				},
+				"404":{  
+				  "description":"Language not found in the system"
+				}
+			}
+      }
+	},
+	"/tenants/tenant-language/": {
+		"post": {
+			"operationId": "POST_team4-cip-admin-api-add-edit-tenant-language",
+			"summary": "Add/edit tenant language",
+			"description": "Admin can also set default language for a tenant",
+			"tags":[  
+				   "Language management (Milestone - 4)"
+				],
+			"consumes": [
+			  "application/json"
+			],
+			"parameters": [
+			  {
+				"description":"language id to get details",
+				"required":true,
+				"type":"integer",
+				"format":"int64"
+			  },
+			  {
+				"name": "body",
+				"in": "body",
+				"required": true,
+				"schema": {
+				  "$ref":"#/definitions/TenantLanguage"
+				}
+			  }
+			],
+			"responses": {
+				"500":{  
+				  "description":"Internal server error"
+				},
+				"422":{  
+				  "description":"Unprocessable entity - Invalid input"
+				}
+			}
+      },
+	},
+	"/tenants/tenant-language/{tenantId}": {
+		"get": {
+			"operationId": "POST_team4-cip-admin-api-list-tenant-language",
+			"summary": "List tenant languages",
+			"tags":[  
+				   "Language management (Milestone - 4)"
+				],
+			"consumes": [
+			  "multipart/form-data"
+			],
+			"responses": {
+				"500":{  
+				  "description":"Internal server error"
+				},
+				"404":{  
+				  "description":"Tenant not found in system"
+				}
+			}
+      },
+	},
+	"/tenants/tenant-language/{tenantLanguageId}/": {
+		"post": {
+			"operationId": "POST_team4-cip-admin-api-add-edit-tenant-language",
+			"summary": "Remove tenant language",
+			"tags":[  
+				   "Language management (Milestone - 4)"
+				],
+			"consumes": [
+			  "multipart/form-data"
+			],
+			"parameters": [
+			  {
+			    "name": "tenantLanguageId",
+				"description":"Tenant language id to delete",
+				"required":true,
+				"type":"integer",
+				"format":"int64",
+				"in": "path"
+			  }
+			],
+			"responses": {
+				"500":{  
+				  "description":"Internal server error"
+				},
+				"404":{  
+				  "description":"Tenant language not found in the system"
+				}
+			}
+      },
+	}
+  },
+  "definitions": {
+	"Tenant":{
+		"type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "sponsor_id": {
+                  "type":"integer",
+                  "format":"int64"
+                }
+              }
+        },
+	"Language":{
+		"type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "code": {
+                  "type":"string",
+                  "description":"Language code.(i.e. en, fr etc)",
+                },
+				"status": {
+                  "type":"integer",
+                  "description":"1 => Active, 0 => Inactive",
+				  "enum":[  
+						"1",
+						"0"
+			      ]
+                }
+              }
+        },
+	"TenantLanguage":{
+		"type": "object",
+              "properties": {
+                "tenant_id": {
+                  "type": "integer"
+                },
+                "language_id": {
+                  "type":"integer"
+				},
+				"default": {
+                  "type":"integer",
+                  "description":"Set default language of the platform",
+				  "enum":[  
+						"1",
+						"0"
+			      ]
+                }
+              }
+        }
+  }
+}
