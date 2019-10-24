@@ -110,6 +110,7 @@ trait MissionTransformable
             $mission['description'] = $missionLanguage->description ?? '';
         }
         $mission['objective'] = $missionLanguage->objective ?? '';
+        $mission['custom_information'] = $missionLanguage->custom_information ?? null;
         unset($mission['missionLanguage']);
 
         // Check for apply in mission validity

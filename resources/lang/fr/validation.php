@@ -175,6 +175,9 @@ return [
         'timesheet_entries.*.timesheet_id' => 'timesheet id',
 		'translations.*.title' => 'title',
         'settings.*.notification_type_id' => 'notification type id',
+        'mission_detail.*.custom_information' => 'custom information',
+        'mission_detail.*.custom_information.*.title' => 'title',
+        'mission_detail.*.custom_information.*.description' => 'description',
         ],
 
 ];
