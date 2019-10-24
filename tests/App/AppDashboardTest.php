@@ -1,7 +1,7 @@
 <?php
 use App\Helpers\Helpers;
 
-class AppDashoardTest extends TestCase
+class AppDashboardTest extends TestCase
 {
     /**
      * @test
@@ -117,6 +117,8 @@ class AppDashoardTest extends TestCase
 
         $timesheet = App\Models\Timesheet::where("mission_id", $mission[0]['mission_id'])->first();
         $timesheet->update(['status_id' => config("constants.timesheet_status_id")["APPROVED"]]);
+
+        DB::setDefaultConnection('mysql');
 
         $this->get('app/dashboard?mission_id='.$mission[0]['mission_id'], ['token' => $token])
           ->seeStatusCode(200)

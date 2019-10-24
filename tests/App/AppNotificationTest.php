@@ -516,7 +516,6 @@ class AppNotificationTest extends TestCase
         ->seeStatusCode(201);
         
         $timeMissionId = json_decode($this->response->getContent())->data->mission_id;
-        // $timeMission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
        
         $params = [
                 'mission_id' => $timeMissionId,
@@ -525,7 +524,7 @@ class AppNotificationTest extends TestCase
             ];
         DB::setDefaultConnection('mysql');
         $this->post('app/mission/application', $params, ['token' => $token])
-          ->seeStatusCode(201);
+        ->seeStatusCode(201);
                 
         $missionApplication = App\Models\MissionApplication::orderBy("mission_application_id", "DESC")->take(1)->get();
         
@@ -541,8 +540,7 @@ class AppNotificationTest extends TestCase
             'minutes' => rand(1, 59),
             'documents[]' =>[]
         ];
-        DB::setDefaultConnection('mysql');
-        
+        DB::setDefaultConnection('mysql');        
         $this->post('app/timesheet', $params, ['token' => $token])
         ->seeStatusCode(201);
 

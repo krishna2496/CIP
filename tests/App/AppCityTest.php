@@ -20,6 +20,7 @@ class AppCityTest extends TestCase
         DB::setDefaultConnection('tenant');
         $countryId = App\Models\Country::get()->random()->country_id;
 
+        DB::setDefaultConnection('mysql');
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->get('/app/city/'.$countryId, ['token' => $token])
         ->seeStatusCode(200)
@@ -108,6 +109,7 @@ class AppCityTest extends TestCase
         $city->country_id = $countryId;
         $city->save();
 
+        DB::setDefaultConnection('mysql');
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->get('/app/city/'.$countryId, ['token' => $token])
         ->seeStatusCode(200)

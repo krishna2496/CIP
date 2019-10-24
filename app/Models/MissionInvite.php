@@ -55,7 +55,8 @@ class MissionInvite extends Model
      */
     public function getDetails(int $inviteId): MissionInvite
     {
-        return $this->with(['toUser', 'fromUser', 'mission', 'mission.missionLanguage'])->first();
+        return $this->with(['toUser', 'fromUser', 'mission', 'mission.missionLanguage'])
+        ->where('mission_invite_id', $inviteId)->first();
     }
 
     /**
