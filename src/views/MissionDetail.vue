@@ -464,6 +464,7 @@
 											class="tab-content comment-block">
 											<b-form class="comment-form">
 												<b-form-textarea id="" :placeholder="languageData.placeholder.comment"
+													maxLength="600"
 													v-model="comment" :class="{ 'is-invalid': $v.comment.$error }"
 													rows="4" size="lg" no-resize>
 												</b-form-textarea>
@@ -800,7 +801,7 @@
 		validations: {
 			comment: {
 				required,
-				maxLength: maxLength(280)
+				maxLength: maxLength(600)
 			},
 		},
 		methods: {
