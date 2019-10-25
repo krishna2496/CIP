@@ -787,6 +787,7 @@ class AppUserTest extends TestCase
     public function it_should_show_error_if_jwt_token_is_blank()
     {
         $token = '';
+        DB::setDefaultConnection('mysql');
         $this->patch('app/change-password', [], ['token' => $token])
         ->seeStatusCode(401)
         ->seeJsonStructure([
