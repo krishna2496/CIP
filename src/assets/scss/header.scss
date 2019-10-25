@@ -645,7 +645,7 @@ header {
                 flex-direction: column;
                 .list-group-item {
                     position: relative;
-                    padding: 20px 40px 20px 56px;
+                    padding: 20px 50px 20px 56px;
                     display: flex;
                     align-items: center;
                     border-bottom: 1px solid $border-color;
@@ -653,7 +653,7 @@ header {
                     border-left: 3px solid transparent;
                     cursor: pointer;
                     @include sm-max {
-                        padding: 15px 35px 15px 45px;
+                        padding: 15px 45px 15px 45px;
                     }
                     &:hover,
                     &:focus {
@@ -673,11 +673,11 @@ header {
                             width: 25px;
                             height: 25px;
                             left: 10px;
-						}
-						&.message-profile-icon{
-							border-radius: 100%;
-							overflow: hidden;
-						}
+                        }
+                        &.message-profile-icon {
+                            border-radius: 100%;
+                            overflow: hidden;
+                        }
                     }
                     p {
                         margin: 0;
