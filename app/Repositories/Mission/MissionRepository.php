@@ -1084,7 +1084,7 @@ class MissionRepository implements MissionInterface
         $userId = $request->auth->user_id;
         $missionLists = array();
 
-        $missionData = $this->mission->select('mission.mission_id', 'city_id')
+        $missionData = $this->modelsService->mission->select('mission.mission_id', 'city_id')
         ->whereHas('missionApplication', function ($query) use ($userId) {
             $query->where('user_id', $userId)
             ->whereIn('approval_status', [config("constants.application_status")["AUTOMATICALLY_APPROVED"]]);
@@ -1111,13 +1111,13 @@ class MissionRepository implements MissionInterface
      */
     public function getMissionTitle(int $missionId, int $languageId, int $defaultTenantLanguageId): string
     {
-        $languageData = $this->missionLanguage->select('title')
+        $languageData = $this->modelsService->exploreMissionmissionLanguage->select('title')
         ->where(['mission_id' => $missionId, 'language_id' => $languageId])
         ->get();
         if ($languageData->count() > 0) {
             return $languageData[0]->title;
         } else {
-            $defaultTenantLanguageData = $this->missionLanguage
+            $defaultTenantLanguageData = $this->modelsService->missionLanguage
                 ->select('title')
                 ->where(['mission_id' => $missionId, 'language_id' => $defaultTenantLanguageId])
                 ->get();
@@ -1133,7 +1133,7 @@ class MissionRepository implements MissionInterface
      */
     public function checkIsMissionRelatedToUser(int $missionId, int $userId): int
     {
-        return $this->mission
+        return $this->modelsService->mission
             ->where('mission_id', $missionId)
             ->where(function ($query) use ($userId) {
                 $query->whereHas('missionSkill.skilledUsers', function ($query) use ($userId) {
