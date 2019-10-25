@@ -132,6 +132,7 @@ class NotificationService
         // Create message
         $response['icon'] = (is_null($inviteDetails->fromUser->avatar) || ($inviteDetails->fromUser->avatar === ""))
         ? $this->helpers->getUserDefaultProfileImage($tenantName) : $inviteDetails->fromUser->avatar;
+        $response['is_avatar'] = 1;
         $response['notification_string'] = $inviteDetails->fromUser->first_name.
         " ".$inviteDetails->fromUser->last_name." - "
         .trans('general.notification.RECOMMENDS_THIS_MISSION')." - ".$missionName;
@@ -163,6 +164,7 @@ class NotificationService
         // Create message
         $response['icon'] = (is_null($inviteDetails->fromUser->avatar) || ($inviteDetails->fromUser->avatar === ""))
         ? $this->helpers->getUserDefaultProfileImage($tenantName) : $inviteDetails->fromUser->avatar;
+        $response['is_avatar'] = 1;
         $response['notification_string'] = $inviteDetails->fromUser->first_name.
         " ".$inviteDetails->fromUser->last_name." - "
         .trans('general.notification.RECOMMENDS_THIS_STORY')." - ".$storyTitle;
