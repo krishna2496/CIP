@@ -27,7 +27,6 @@ class CreateUserTable extends Migration
             $table->text('why_i_volunteer');
             $table->string('employee_id',16)->nullable(); 
             $table->string('department',16)->nullable();
-            $table->string('manager_name',16)->nullable(); 
             $table->unsignedBigInteger('city_id'); // FK cities id
             $table->unsignedBigInteger('country_id');//FK countries id
             $table->text('profile_text');
