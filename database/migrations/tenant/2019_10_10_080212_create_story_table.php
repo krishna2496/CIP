@@ -21,7 +21,7 @@ class CreateStoryTable extends Migration
             $table->string('title', 255)->nullable();
             $table->text('description')->nullable();
             $table->enum('status', ['DRAFT', 'PENDING','PUBLISHED','DECLINED'])->default('DRAFT');
-            $table->dateTime('published_at')->default(DB::raw('CURRENT_TIMESTAMP'))->nullable();
+            $table->dateTime('published_at')->default(\DB::raw('CURRENT_TIMESTAMP'))->nullable();
             $table->timestamps();
             $table->softDeletes();
             $table->foreign('mission_id')->references('mission_id')->on('mission')->onDelete('CASCADE')->onUpdate('CASCADE');
