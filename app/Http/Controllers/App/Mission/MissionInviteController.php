@@ -152,6 +152,13 @@ class MissionInviteController extends Controller
 
         $emailNotificationInviteColleague = config('constants.tenant_settings.EMAIL_NOTIFICATION_INVITE_COLLEAGUE');
 
+        $notificationTypeId = $this->notificationRepository
+        ->getNotificationTypeID(config('constants.notification_type_keys.RECOMMENDED_MISSIONS'));
+
+        // Check if to_user_id (colleague) has enabled notification for Recommended missions
+        $notifyColleague = $this->notificationRepository
+        ->userNotificationSetting($request->to_user_id, $notificationTypeId);
+
         // Make activity log
         event(new UserActivityLogEvent(
             config('constants.activity_log_types.MISSION'),
@@ -163,17 +170,20 @@ class MissionInviteController extends Controller
             $request->auth->user_id,
             $request->mission_id
         ));
+
+        if ($notifyColleague) {
+            // Send notification to user
+            $notificationType = config('constants.notification_type_keys.RECOMMENDED_MISSIONS');
+            $entityId = $inviteMission->mission_invite_id;
+            $action = config('constants.notification_actions.INVITE');
+            $userId = $request->to_user_id;
+            event(new UserNotificationEvent($notificationType, $entityId, $action, $userId));
+        }
+
         if (!in_array($emailNotificationInviteColleague, $getActivatedTenantSettings)) {
             return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
         }
-        
-        $notificationTypeId = $this->notificationRepository
-        ->getNotificationTypeID(config('constants.notification_type_keys.RECOMMENDED_MISSIONS'));
-        
-        // Check if to_user_id (colleague) has enabled notification for Recommended missions
-        $notifyColleague = $this->notificationRepository
-        ->userNotificationSetting($request->to_user_id, $notificationTypeId);
-
+                
         if ($notifyColleague) {
             $colleague = $this->userRepository->find($request->to_user_id);
             $colleagueEmail = $colleague->email;
@@ -186,14 +196,6 @@ class MissionInviteController extends Controller
                 $request->mission_id,
                 $colleague->language_id
             );
-                
-            // Send notification to user
-            $notificationType = config('constants.notification_type_keys.RECOMMENDED_MISSIONS');
-            $entityId = $inviteMission->mission_invite_id;
-            $action = config('constants.notification_actions.INVITE');
-            $userId = $request->to_user_id;
-            
-            event(new UserNotificationEvent($notificationType, $entityId, $action, $userId));
             
             $data = array(
                 'missionName'=> $missionName,
