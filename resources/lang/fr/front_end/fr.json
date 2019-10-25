@@ -263,7 +263,11 @@
         "upload_pictures" : "Télécharger des photos",
         "no_messages": "Pas de messages",
 		"yesterday": "Hier",
-        "older": "Plus âgée"
+        "older": "Plus âgée",
+		"mission_application": "Application de la mission",
+        "new_news": "Nouvelles informations",
+        "mark_as_read": "Marquer comme lu",
+        "mark_as_un_read": "marquer comme non lu"
     },
 
     "placeholder": {
