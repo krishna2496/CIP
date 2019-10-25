@@ -581,7 +581,8 @@ return [
         'READ' => 'READ',
         'ACTIVATED' => 'ACTIVATED',
         'DEACTIVATED' => 'DEACTIVATED',
-        'CLEAR_ALL' => 'CLEAR_ALL'
+        'CLEAR_ALL' => 'CLEAR_ALL',
+        'PASSWORD_UPDATED' => 'PASSWORD_UPDATED',
     ],
 
     'activity_log_user_types' => [

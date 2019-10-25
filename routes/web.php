@@ -184,7 +184,7 @@ $router->patch('/app/user', [
 
 /* Password change routing */
 $router->patch('/app/change-password', ['as' => 'password.change',
-    'middleware' => 'tenant.connection|localization|jwt.auth',
+    'middleware' => 'localization|tenant.connection|jwt.auth',
     'uses' => 'App\Auth\AuthController@changePassword']);
 
 /* Create user skill */
