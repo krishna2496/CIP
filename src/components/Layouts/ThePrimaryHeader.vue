@@ -165,19 +165,23 @@
                             <div class="notification-details" data-simplebar>
                                 <b-list-group>
                                     <b-list-group-item v-if="notificationListing.today.length > 0"
-                                        v-on:click="readItem($event,item.is_read, item.notification_id,item.link)"
                                         v-bind:class="{
                                         'read-item':item.is_read == 1 ,
                                         'unread-item' : item.is_read == 0
                                     }" v-for="(item,index) in notificationListing.today" :key=index>
+                                    <div  v-on:click="readItem($event,item.is_read, item.notification_id,item.link)">
                                         <i v-bind:class="{'message-profile-icon' : item.is_avatar && item.is_avatar ==1}">
                                             <img :src="item.icon" alt />
                                         </i>
                                         <p>
                                             {{item.notification_string}}
                                         </p>
-                                        <span v-b-tooltip.hover :title="getTooltipTitle(item.is_read)" class="status"
-                                            v-on:click="readUnreadItem($event, item.is_read, item.notification_id)"></span>
+                                      
+                                    </div>
+                                    <span v-b-tooltip.hover :title="getTooltipTitle(item.is_read)" class="status"
+                                            v-on:click="readUnreadItem($event, item.is_read, item.notification_id)">
+                                    </span>
+                                        
                                     </b-list-group-item>
                                 </b-list-group>
                                 <div class="slot-title" v-show="notificationListing.yesterday.length">
@@ -185,18 +189,18 @@
                                 </div>
                                 <b-list-group v-show="notificationListing.yesterday.length > 0">
                                     <b-list-group-item
-                                        v-on:click="readItem($event,item.is_read, item.notification_id,item.link)"
                                         v-bind:class="{
                                         'read-item':item.is_read == 1 ,
                                         'unread-item' : item.is_read == 0
                                     }" v-for="(item,index) in notificationListing.yesterday" :key=index>
-
+                                        <div  v-on:click="readItem($event,item.is_read, item.notification_id,item.link)">
                                         <i v-bind:class="{'message-profile-icon' : item.is_avatar && item.is_avatar ==1}">
                                             <img :src="item.icon" alt />
                                         </i>
                                         <p>
                                             {{item.notification_string}}
                                         </p>
+                                        </div>
                                         <span class="status" v-b-tooltip.hover :title="getTooltipTitle(item.is_read)"
                                             v-on:click="readUnreadItem($event,item.is_read, item.notification_id)"></span>
                                     </b-list-group-item>
@@ -206,18 +210,18 @@
                                 </div>
                                 <b-list-group v-show="notificationListing.older">
                                     <b-list-group-item
-                                        v-on:click="readItem($event,item.is_read, item.notification_id,item.link)"
                                         v-bind:class="{
                                         'read-item':item.is_read == 1 ,
                                         'unread-item' : item.is_read == 0
                                     }" v-for="(item,index) in notificationListing.older" :key=index>
-
+                                    <div v-on:click="readItem($event,item.is_read, item.notification_id,item.link)">
                                         <i  v-bind:class="{'message-profile-icon' : item.is_avatar && item.is_avatar ==1}">
                                             <img :src="item.icon" alt />
                                         </i>
                                         <p>
                                             {{item.notification_string}}
                                         </p>
+                                    </div>
                                         <span class="status" v-b-tooltip.hover :title="getTooltipTitle(item.is_read)"
                                             v-on:click="readUnreadItem($event,item.is_read, item.notification_id)"></span>
                                     </b-list-group-item>
