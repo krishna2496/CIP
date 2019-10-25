@@ -250,23 +250,23 @@ export default new Vuex.Store({
             state.newsBanner = data
         },
         newsBannerText(state, data) {
-            localStorage.setItem('newsBannerText', JSON.stringify(data.translations))
-            state.newsBannerText = JSON.stringify(data.translations)
+            localStorage.setItem('newsBannerText', JSON.stringify(data))
+            state.newsBannerText = JSON.stringify(data)
         },
         storyBanner(state, data) {
             localStorage.setItem('storyBanner', data)
             state.storyBanner = data
         },
         storyBannerText(state, data) {
-            localStorage.setItem('storyBannerText', JSON.stringify(data.translations))
-            state.storyBannerText = JSON.stringify(data.translations)
+            localStorage.setItem('storyBannerText', JSON.stringify(data))
+            state.storyBannerText = JSON.stringify(data)
         },
         clearFilterClick(state, data) {
             state.clearFilterSet = data
         },
         storyDashboardText(state, data) {
-            localStorage.setItem('storyDashboardText', JSON.stringify(data.translations))
-            state.storyDashboardText = JSON.stringify(data.translations)
+            localStorage.setItem('storyDashboardText', JSON.stringify(data))
+            state.storyDashboardText = JSON.stringify(data)
         },
         slideInterval(state, data) {
             localStorage.setItem('slideInterval', data)
@@ -281,8 +281,8 @@ export default new Vuex.Store({
             state.cookieAgreementDate = 1;
         },
         cookiePolicyText(state, data) {
-            localStorage.setItem('cookiePolicyText', JSON.stringify(data.translations))
-            state.cookiePolicyText = JSON.stringify(data.translations)
+            localStorage.setItem('cookiePolicyText', JSON.stringify(data))
+            state.cookiePolicyText = JSON.stringify(data)
         }
     },
     getters: {},

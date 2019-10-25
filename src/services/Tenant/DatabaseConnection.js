@@ -100,7 +100,7 @@ export default async(langList, defautLang) => {
                 store.commit('newsBanner', '');
             }
             if (response.data.data.news_banner_text && response.data.data.news_banner_text.translations) {
-                store.commit('newsBannerText', response.data.data.news_banner_text);
+                store.commit('newsBannerText', response.data.data.news_banner_text.translations);
             } else {
                 store.commit('newsBannerText', '');
             }
@@ -110,13 +110,13 @@ export default async(langList, defautLang) => {
             } else {
                 store.commit('storyBanner', '');
             }
-            if (response.data.data.story_banner_text) {
-                store.commit('storyBannerText', response.data.data.story_banner_text);
+            if (response.data.data.story_banner_text && response.data.data.story_banner_text.translations) {
+                store.commit('storyBannerText', response.data.data.story_banner_text.translations);
             } else {
                 store.commit('storyBannerText', '');
             }
-            if (response.data.data.story_dashboard_text) {
-                store.commit('storyDashboardText', response.data.data.story_dashboard_text);
+            if (response.data.data.story_dashboard_text && response.data.data.story_dashboard_text.translations) {
+                store.commit('storyDashboardText', response.data.data.story_dashboard_text.translations);
             } else {
                 store.commit('storyDashboardText', '');
             }
@@ -131,8 +131,8 @@ export default async(langList, defautLang) => {
                 store.commit('slideEffect', '');
             }
 
-            if (response.data.data.cookie_policy_text) {
-                store.commit('cookiePolicyText', response.data.data.cookie_policy_text);
+            if (response.data.data.cookie_policy_text && response.data.data.cookie_policy_text.translations) {
+                store.commit('cookiePolicyText', response.data.data.cookie_policy_text.translations);
             } else {
                 store.commit('cookiePolicyText', '');
             }
