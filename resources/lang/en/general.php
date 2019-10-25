@@ -27,6 +27,7 @@ return [
         'STORY_STATUS' => 'Story status',
         'MISSION_TITLE' => 'Mission title',
         'PUBLISHED_DATE' => 'Published date',
+        'CREATED_DATE' => 'Created date',
     ],
 
     /**

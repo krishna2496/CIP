@@ -25,8 +25,9 @@ return [
         'STORY_TITLE' => 'Titre de l\'histoire',
         'STORY_DESCRIPTION' => 'Description de l\'histoire',
         'STORY_STATUS' => 'Statut de l\'histoire',
-        'MISSION' => 'Mission',
+        'MISSION_TITLE' => 'Titre de la mission',
         'PUBLISHED_DATE' => 'date de publication',
+        'CREATED_DATE' => 'Date de création',
     ],
     
     /**
