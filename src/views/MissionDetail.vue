@@ -405,7 +405,7 @@
 												v-if="missionDetail.description && missionDetail.description.length > 0">
 												<div v-for="(section, index) in missionDetail.description" :key=index>
 													<h2>{{section.title}}</h2>
-													<p>{{section.description}}</p>
+													<p v-html="section.description"></p>
 												</div>
 											</div>
 											<div
