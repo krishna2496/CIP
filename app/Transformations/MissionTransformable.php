@@ -40,7 +40,6 @@ trait MissionTransformable
                 config('constants.TIMEZONE')
             )->setTimezone($timezone)->toDateTimeString();
         }
-
         if (isset($mission['timeMission'])) {
             $mission['application_deadline'] = isset($mission['timeMission']['application_deadline']) ? Carbon::parse(
                 $mission['timeMission']['application_deadline'],
@@ -62,13 +61,13 @@ trait MissionTransformable
                 Carbon::parse(
                     $mission['timeMission']['application_start_time'],
                     config('constants.TIMEZONE')
-                )->setTimezone($timezone)->toTimeString() : null;
+                )->setTimezone($timezone)->toDateTimeString() : null;
             
             $mission['application_end_time'] = isset($mission['timeMission']['application_end_time']) ?
                 Carbon::parse(
                     $mission['timeMission']['application_end_time'],
                     config('constants.TIMEZONE')
-                )->setTimezone($timezone)->toTimeString() : null;
+                )->setTimezone($timezone)->toDateTimeString() : null;
         }
         unset($mission['goalMission']);
         unset($mission['timeMission']);
