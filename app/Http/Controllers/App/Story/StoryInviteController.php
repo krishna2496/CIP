@@ -138,6 +138,13 @@ class StoryInviteController extends Controller
             $request->auth->user_id
         );
 
+        $notificationTypeId = $this->notificationRepository
+        ->getNotificationTypeID(config('constants.notification_type_keys.RECOMMENDED_STORY'));
+        
+        // Check if to_user_id (colleague) has enabled notification for Recommended story
+        $notifyColleague = $this->notificationRepository
+        ->userNotificationSetting($request->to_user_id, $notificationTypeId);
+
         // Set response data
         $apiStatus = Response::HTTP_CREATED;
         $apiMessage = trans('messages.success.MESSAGE_INVITED_FOR_STORY');
@@ -155,6 +162,16 @@ class StoryInviteController extends Controller
             $inviteStory->story_invite_id
         ));
 
+        if ($notifyColleague) {
+            // Send notification to user
+            $notificationType = config('constants.notification_type_keys.RECOMMENDED_STORY');
+            $entityId = $inviteStory->story_invite_id;
+            $action = config('constants.notification_actions.INVITE');
+            $userId = $request->to_user_id;
+            
+            event(new UserNotificationEvent($notificationType, $entityId, $action, $userId));
+        }
+
         $getActivatedTenantSettings = $this->tenantActivatedSettingRepository
         ->getAllTenantActivatedSetting($request);
 
@@ -162,13 +179,6 @@ class StoryInviteController extends Controller
         if (!in_array($emailNotificationInviteColleague, $getActivatedTenantSettings)) {
             return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
         }
-        
-        $notificationTypeId = $this->notificationRepository
-        ->getNotificationTypeID(config('constants.notification_type_keys.RECOMMENDED_STORY'));
-        
-        // Check if to_user_id (colleague) has enabled notification for Recommended story
-        $notifyColleague = $this->notificationRepository
-        ->userNotificationSetting($request->to_user_id, $notificationTypeId);
         
         if ($notifyColleague) {
             $colleague = $this->userRepository->find($request->to_user_id);
@@ -179,14 +189,6 @@ class StoryInviteController extends Controller
             $colleagueLanguage = $language->code;
             $fromUserName = $this->userRepository->getUserName($request->auth->user_id);
             $storyName = $this->storyInviteRepository->getStoryName($request->story_id);
-            
-            // Send notification to user
-            $notificationType = config('constants.notification_type_keys.RECOMMENDED_STORY');
-            $entityId = $inviteStory->story_invite_id;
-            $action = config('constants.notification_actions.INVITE');
-            $userId = $request->to_user_id;
-            
-            event(new UserNotificationEvent($notificationType, $entityId, $action, $userId));
             
             $data = array(
                 'storyName'=> $storyName,
