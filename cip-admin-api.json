@@ -26,6 +26,7 @@
       "post": {
         "operationId": "POST_team4-cip-admin-api-tenants",
         "summary": "Create tenent",
+		"description": "This endpoint will create new tenant. When tenant is created, background processes will run using cron job. Theses processes are run database migations and seeders, create asset folder in s3 and compile scss file. Cron job is set to run at every minute. ",
 		"tags":[  
                "Tenant (Milestone - 1)"
             ],
@@ -54,6 +55,7 @@
       "get": {
         "operationId": "GET_team4-cip-admin-api-tenants",
         "summary": "Listing Tenant",
+		"description": "This endpoint will list all tenants.",
         "tags":[  
                "Tenant (Milestone - 1)"
             ],
@@ -71,6 +73,7 @@
       "get": {
         "operationId": "GET_team4-cip-admin-api-tenants-1",
         "summary": "Get tenant detail by id ",
+		"description": "Fetch tenant detail by its id",
         "tags":[  
                "Tenant (Milestone - 1)"
             ],
@@ -168,6 +171,7 @@
       "post": {
         "operationId": "POST_team4-cip-admin-api-tenants-create-api-user",
         "summary": "Create API User",
+		"description": "This endpoint will create API user. It will generate API key and API secrete, which will be used for tenant admin API Authorization.",
 		"tags":[  
                "API user (Milestone - 2)"
             ],
@@ -196,6 +200,7 @@
       "get": {
         "operationId": "POST_team4-cip-admin-api-tenants-list-api-user",
         "summary": "Listing API users of a tenant",
+		"description": "This endpoint will list all API users",
         "tags":[  
                "API user (Milestone - 2)"
             ],
@@ -367,7 +372,7 @@
 		"post": {
 			"operationId": "POST_team4-cip-admin-api-store-tenant-settings",
 			"summary": "Enable/disable tenant settings",
-			"description": "Super admin(Optimy) will enable/disable tenant options/settings.",
+			"description": "Super admin(Optimy) will enable/disable tenant options/settings for a tenant.",
 			"tags":[  
 				   "Tenant settings (Milestone - 3)"
 				],
@@ -431,6 +436,7 @@
       "post": {
         "operationId": "POST_team4-cip-admin-api-add-language",
         "summary": "Add language",
+		"description": "This is for master database of languages. This endpoint will add language in system",
 		"tags":[  
                "Language management (Milestone - 4)"
             ],
@@ -568,7 +574,7 @@
 		"post": {
 			"operationId": "POST_team4-cip-admin-api-add-edit-tenant-language",
 			"summary": "Add/edit tenant language",
-			"description": "Admin can also set default language for a tenant",
+			"description": "Using this endpoint, super admin can add language to a tenant. Admin can also set default language for a tenant",
 			"tags":[  
 				   "Language management (Milestone - 4)"
 				],
@@ -605,6 +611,7 @@
 		"get": {
 			"operationId": "POST_team4-cip-admin-api-list-tenant-language",
 			"summary": "List tenant languages",
+			"description": "This endpoint will list all languages for a tenant",
 			"tags":[  
 				   "Language management (Milestone - 4)"
 				],
@@ -625,6 +632,7 @@
 		"post": {
 			"operationId": "POST_team4-cip-admin-api-add-edit-tenant-language",
 			"summary": "Remove tenant language",
+			"description": "This endpoint will remove language from a tenant",
 			"tags":[  
 				   "Language management (Milestone - 4)"
 				],
@@ -657,7 +665,8 @@
 		"type": "object",
               "properties": {
                 "name": {
-                  "type": "string"
+                  "type": "string",
+				  "description": "Tenant FQDN"
                 },
                 "sponsor_id": {
                   "type":"integer",
