@@ -134,6 +134,7 @@
 							:input-props="{
 								id:'autosuggest__input', 
 								placeholder:autoSuggestPlaceholder,
+								ref:'inputAutoSuggest'
 	                        }">
 							<div slot-scope="{suggestion}">
 								<img :src="suggestion.item.avatar" />
@@ -356,6 +357,16 @@
 					this.message = null;
 					this.$refs.userDetailModal.show();
 					this.currentStory = 1;
+					setTimeout(() => {
+					this.$refs.autosuggest.$refs.inputAutoSuggest.focus();
+					var input = document.getElementById("autosuggest__input");
+					input.addEventListener("keyup", (event) => {
+						if (event.keyCode === 13 && !this.submitDisable) {
+							event.preventDefault();
+							this.inviteColleaguesStory()
+						}
+					});
+				}, 100);
 				});
 			},
 			onInputChange() {
@@ -363,9 +374,11 @@
 			},
 			// For selected user id.
 			onSelected(item) {
-				this.selected = item.item;
-				this.submitDisable = false;
-				this.invitedUserId = item.item.user_id;
+				if(item) {
+					this.selected = item.item;
+					this.submitDisable = false;
+					this.invitedUserId = item.item.user_id;
+				}
 			},
 			//This is what the <input/> value is set to when you are selecting a suggestion.
 			getSuggestionValue(suggestion) {
