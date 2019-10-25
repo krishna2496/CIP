@@ -2,6 +2,8 @@
 namespace App\Providers;
 
 use Laravel\Lumen\Providers\EventServiceProvider as ServiceProvider;
+use App\Events\ActivityLogEvent;
+use App\Listeners\ActivityLog\ActivityLogListner;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -11,8 +13,19 @@ class EventServiceProvider extends ServiceProvider
      * @var array
      */
     protected $listen = [
-        'App\Events\ExampleEvent' => [
-            'App\Listeners\ExampleListener',
-        ],
+        ActivityLogEvent::class => [
+            ActivityLogListner::class
+        ]
     ];
+
+    /**
+     * Register any other events for your application.
+     *
+     * @param  \Illuminate\Contracts\Events\Dispatcher  $events
+     * @return void
+     */
+    public function boot()
+    {
+        parent::boot();
+    }
 }
