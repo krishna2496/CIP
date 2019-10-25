@@ -619,11 +619,11 @@ header {
             }
             .notification-clear {
                 display: flex;
-                min-height: 340px;
+                height: 340px;
                 max-height: 100%;
                 @include md-max {
                     @media (orientation: landscape) {
-                        min-height: 200px;
+                        height: 200px;
                     }
                 }
             }
@@ -673,7 +673,11 @@ header {
                             width: 25px;
                             height: 25px;
                             left: 10px;
-                        }
+						}
+						&.message-profile-icon{
+							border-radius: 100%;
+							overflow: hidden;
+						}
                     }
                     p {
                         margin: 0;

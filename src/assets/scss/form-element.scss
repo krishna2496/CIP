@@ -387,7 +387,10 @@ label {
   &.is-invalid {
     span {
       border-color: $error;
-    }
+	}
+	.option-list-wrap{
+		border-top-color: $error;
+	}
     ~ .invalid-feedback {
       display: block;
     }
@@ -1380,6 +1383,9 @@ label {
 
 .tooltip {
   z-index: 1039;
+  &.notify-tooltip {
+        z-index: 99999;
+    }
 }
 
 span {
@@ -1537,4 +1543,12 @@ span {
       display: block;
     }
   }
+}
+
+
+.is-invalid{
+	&:not(.custom-dropdown){
+		border:1px solid $error !important;
+		border-radius: 3px;
+	}
 }
