@@ -79,7 +79,7 @@ class MessageController extends Controller
         
         // Store message data
         $messageId = $this->messageRepository->store($request, config('constants.message.send_message_from.user'));
-        // dd($messageId);
+        
         // Set response data
         $apiStatus = Response::HTTP_CREATED;
         $apiMessage = trans('messages.success.MESSAGE_USER_MESSAGE_SEND_SUCCESSFULLY');
