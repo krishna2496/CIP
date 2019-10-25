@@ -278,18 +278,17 @@ class AppUserTest extends TestCase
             'confirm_password' => "12345678"
         ];
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
-        $this->patch('app/change-password', $params, ['token' => $token]);
-        dd($this->response->getContent());
-        // ->seeStatusCode(200)
-        // ->seeJsonStructure(
-        //     [
-        //     "status",
-        //     "data" =>[
-        //         "token"
-        //     ],
-        //     "message"
-        //     ]
-        // );
+        $this->patch('app/change-password', $params, ['token' => $token])
+        ->seeStatusCode(200)
+        ->seeJsonStructure(
+            [
+            "status",
+            "data" =>[
+                "token"
+            ],
+            "message"
+            ]
+        );
         $user->delete();
     }
 
@@ -788,6 +787,7 @@ class AppUserTest extends TestCase
     public function it_should_show_error_if_jwt_token_is_blank()
     {
         $token = '';
+        DB::setDefaultConnection('mysql');
         $this->patch('app/change-password', [], ['token' => $token])
         ->seeStatusCode(401)
         ->seeJsonStructure([

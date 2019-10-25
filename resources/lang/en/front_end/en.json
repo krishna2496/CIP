@@ -267,7 +267,11 @@
         "upload_pictures" : "Upload pictures",
         "no_messages": "No messages",
 		"yesterday": "Yesterday",
-        "older": "Older"
+        "older": "Older",
+		"mission_application": "Mission application",
+        "new_news": "New news",
+        "mark_as_read": "Mark as read",
+        "mark_as_un_read": "Mark as unread"
     },
 
     "placeholder": {
@@ -310,7 +314,7 @@
         "invalid_password": "Password length should be minimum 8 character",
         "identical_password": "Passwords must be identical.",
         "comment_required": "Comment is required",
-        "comment_max_length": "The comment may not be greater than 280 characters",
+        "comment_max_length": "The comment may not be greater than 600 characters",
         "name_required": "Name is required",
         "last_name_required": "Surname is required",
         "my_profile_max_length": "Introduction text may not be greater than 255 characters",
@@ -355,7 +359,7 @@
         "message_required": "Please enter message",
         "invalid_image_type": "Invalid file type: valid file types are png, jpg, jpeg",
         "max_image_upload": "Maximum 20 images can be added",
-        "max_video_upload": "Maximum 20 images can be added",
+        "max_video_upload": "Maximum 20 videos can be added",
         "duplicate_video_url": "Duplicate video url are not allowed"
     },
 
