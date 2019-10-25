@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import axios from "axios";
 import router from './router'
 Vue.use(Vuex)
 
@@ -38,7 +37,10 @@ export default new Vuex.Store({
         isFacebookDisplay: false,
         missionId: localStorage.getItem('missionId'),
         missionType: localStorage.getItem('missionType'),
-        defaultCountryId: localStorage.getItem('defaultCountryId')
+        defaultCountryId: localStorage.getItem('defaultCountryId'),
+        newsBanner: localStorage.getItem('newsBanner'),
+        newsBannerText: localStorage.getItem('newsBannerText'),
+        clearFilterSet: ''
     },
     mutations: {
         // Set login data in state and local storage       
@@ -171,7 +173,7 @@ export default new Vuex.Store({
             state.avatar = data.avatar;
         },
         changeUserDetail(state, data) {
-            var langaugeCode = data.languageCode;
+            let langaugeCode = data.languageCode;
             localStorage.setItem('firstName', data.firstName)
             localStorage.setItem('lastName', data.lastName)
             localStorage.setItem('defaultLanguage', langaugeCode.toUpperCase())
@@ -227,8 +229,19 @@ export default new Vuex.Store({
             localStorage.removeItem('missionType');
             state.missionId = null
             state.missionType = null
+        },
+        newsBanner(state, data) {
+            localStorage.setItem('newsBanner', data)
+            state.newsBanner = data
+        },
+        newsBannerText(state, data) {
+            localStorage.setItem('newsBannerText', JSON.stringify(data.translations))
+            state.newsBannerText = JSON.stringify(data.translations)
+        },
+        clearFilterClick(state, data) {
+            state.clearFilterSet = data
         }
     },
     getters: {},
     actions: {}
-});
+})

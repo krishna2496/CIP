@@ -1,16 +1,16 @@
 <template>
-    <div class="row custom-field" v-if="customFieldList != null && customFieldList.length > 0">
-        <b-col :md="getColumn(item.type)" v-for="(item,key) in optionList">
+    <div class="row custom-field" v-if="CustomFieldList != null && CustomFieldList.length > 0">
+        <b-col :md="getColumn(item.type)" v-for="(item,key) in optionList" :key=key>
             <b-form-group v-if="item.type == 'drop-down'">
                 <label>{{item.translations.name}}
                     <span v-if="item.is_mandatory == 1">*</span>
                 </label>
-                <AppCustomFeildDropdown v-model="customFeildData[item.field_id]"
+                <AppCustomFieldDropdown v-model="customFeildData[item.field_id]"
                     :defaultText="defaultValue[item.field_id]" :optionList="getArrayValue(item.translations.values)"
                     :errorClass="getErrorClass(item.field_id)" :validstate="getErrorState(item.field_id)"
                     :fieldId="item.field_id" translationEnable="false" @updateCall="updateCustomDropDown" />
                 <div v-if="getErrorClass(item.field_id)" class="invalid-feedback">
-                    {{item.translations.name}} {{ langauageData.errors.field_required }}
+                    {{item.translations.name}} {{ languageData.errors.field_required }}
                 </div>
             </b-form-group>
             <b-form-group v-if="item.type == 'radio'">
@@ -41,7 +41,7 @@
                     :validstate="getErrorState(item.field_id)" :fieldId="item.field_id"
                     @updateCall="changeMultiSelect" />
                 <div v-if="getErrorClass(item.field_id)" class="invalid-feedback">
-                    {{item.translations.name}} {{ langauageData.errors.field_required }}
+                    {{item.translations.name}} {{ languageData.errors.field_required }}
                 </div>
             </b-form-group>
             <b-form-group v-if="item.type == 'textarea'">
@@ -52,7 +52,7 @@
                     @change="updateChanges" max-rows="6">
                 </b-form-textarea>
                 <div v-if="getErrorClass(item.field_id)" class="invalid-feedback">
-                    {{item.translations.name}} {{ langauageData.errors.field_required }}
+                    {{item.translations.name}} {{ languageData.errors.field_required }}
                 </div>
             </b-form-group>
             <b-form-group v-if="item.type == 'text'">
@@ -62,7 +62,7 @@
                     :class="{ 'is-invalid': getErrorClass(item.field_id) }" :validstate="getErrorState(item.field_id)"
                     :placeholder='`Enter ${item.translations.name}`'></b-form-input>
                 <div v-if="getErrorClass(item.field_id)" class="invalid-feedback">
-                    {{item.translations.name}} {{ langauageData.errors.field_required }}
+                    {{item.translations.name}} {{ languageData.errors.field_required }}
                 </div>
             </b-form-group>
 
@@ -74,9 +74,9 @@
                     :placeholder='`Enter ${item.translations.name}`'></b-form-input>
                 <div v-if="getErrorClass(item.field_id)" class="invalid-feedback">
                     <span v-if="!$v.customFeildData[item.field_id].required">{{item.translations.name}}
-                        {{ langauageData.errors.field_required }}</span>
+                        {{ languageData.errors.field_required }}</span>
                     <span
-                        v-if="!$v.customFeildData[item.field_id].email">{{ langauageData.errors.invalid_email }}</span>
+                        v-if="!$v.customFeildData[item.field_id].email">{{ languageData.errors.invalid_email }}</span>
                 </div>
             </b-form-group>
         </b-col>
@@ -86,7 +86,7 @@
 </template>
 <script>
     import store from "../store";
-    import AppCustomFeildDropdown from "../components/AppCustomFeildDropdown";
+    import AppCustomFieldDropdown from "../components/AppCustomFieldDropdown";
     import MultiSelect from "../components/MultiSelect";
     import AppCustomCheckboxDropdown from "../components/AppCustomCheckboxDropdown";
     import {
@@ -101,11 +101,11 @@
     } from 'vuelidate/lib/validators';
     export default {
         components: {
-            AppCustomFeildDropdown,
+            AppCustomFieldDropdown,
             MultiSelect,
             AppCustomCheckboxDropdown
         },
-        name: "customField",
+        name: "CustomField",
         props: {
             optionList: Array,
             optionListValue: Array,
@@ -113,24 +113,24 @@
         },
         data() {
             return {
-                customFieldList: this.optionList,
-                customField: [],
+                CustomFieldList: this.optionList,
+                CustomField: [],
                 list: [],
-                customFieldValidation: {},
+                CustomFieldValidation: {},
                 defaultText: "",
                 customFeildData: {},
                 submit: false,
                 defaultValue: {},
-                langauageData: []
+                languageData: []
             };
         },
         validations() {
             const validations = {
                 customFeildData: {}
             };
-            var _this = this;
+            let _this = this;
 
-            _.each(this.customFieldList, wrr => {
+            _.each(this.CustomFieldList, wrr => {
                 if (wrr.is_mandatory == 1) {
                     validations.customFeildData[wrr.field_id] = {
                         required
@@ -290,8 +290,8 @@
         },
         updated() {},
         created() {
-            this.langauageData = JSON.parse(store.state.languageLabel);
-            this.defaultText = this.langauageData.label.please_select
+            this.languageData = JSON.parse(store.state.languageLabel);
+            this.defaultText = this.languageData.label.please_select
         }
     };
 </script>

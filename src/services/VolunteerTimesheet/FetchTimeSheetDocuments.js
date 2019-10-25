@@ -1,16 +1,14 @@
 import axios from 'axios'
 import store from '../../store'
-import moment from 'moment';
 
 export default async(timeSheetId) => {
     let responseData = [];
-    let timeDataArray = []
-    let goalDataArray = []
-    var defaultLanguage = '';
+
+    let defaultLanguage = '';
     if (store.state.defaultLanguage !== null) {
         defaultLanguage = (store.state.defaultLanguage).toLowerCase();
     }
-    var url = process.env.VUE_APP_API_ENDPOINT + "app/timesheet/" + timeSheetId;
+    let url = process.env.VUE_APP_API_ENDPOINT + "app/timesheet/" + timeSheetId;
 
     await axios({
             url: url,
@@ -21,11 +19,10 @@ export default async(timeSheetId) => {
             }
         })
         .then((response) => {
-            let settingArray = [];
             if (response.data.data) {
                 responseData = response.data.data
             }
         })
-        .catch(function(error) {});
+        .catch(function() {});
     return responseData;
 }

@@ -8,86 +8,94 @@
                 v-if="isShownComponent"></TheSecondaryHeader>
         </header>
         <main>
-
-            <b-container class="home-content-wrapper">
-                <div v-if="missionList.length > 0 && isQuickAccessDisplay">
-                    <div class="chip-container" v-if="tags != ''">
-                        <span v-for="(item , i) in tags.country" v-if="isCountrySelectionSet">
-                            <AppCustomChip :textVal="item" :tagId="i" type="country" @updateCall="changeTag" />
-                        </span>
-                        <span v-for="(item , i) in tags.city">
-                            <AppCustomChip :textVal="item" :tagId="i" type="city" @updateCall="changeTag" />
-                        </span>
-                        <span v-for="(item , i) in tags.theme" v-if="isThemeDisplay">
-                            <AppCustomChip :textVal="item" :tagId="i" type="theme" @updateCall="changeTag" />
-                        </span>
-                        <span v-for="(item , i) in tags.skill" v-if="isSkillDisplay">
-                            <AppCustomChip :textVal="item" :tagId="i" type="skill" @updateCall="changeTag" />
-                        </span>
-                        <b-button class="clear-btn"
-                            v-if="isCountrySelectionSet || tags.city || (tags.theme && isThemeDisplay) || (tags.skill && isSkillDisplay)"
-                            @click="clearMissionFilter">{{langauageData.label.clear_all}}</b-button>
+                <div v-bind:class="{ 'content-loader-wrap': true, 'loader-active': isAjaxCall ,'fixed-loader' : true}">
+                    <div class="content-loader"></div>
+                </div>
+                <b-container class="home-content-wrapper">
+                    <div v-if="missionList.length > 0 && isQuickAccessDisplay">
+                        <div class="chip-container" v-if="tags != ''">
+                            <span v-for="(item , i) in tags.country" v-if="isCountrySelectionSet" :key=i>
+                                <AppCustomChip :textVal="item" :tagId="i" type="country" @updateCall="changeTag" />
+                            </span>
+                            <span v-for="(item , i) in tags.city" :key=i>
+                                <AppCustomChip :textVal="item" :tagId="i" type="city" @updateCall="changeTag" />
+                            </span>
+                            <span v-for="(item , i) in tags.theme" v-if="isThemeDisplay" :key=i>
+                                <AppCustomChip :textVal="item" :tagId="i" type="theme" @updateCall="changeTag" />
+                            </span>
+                            <span v-for="(item , i) in tags.skill" v-if="isSkillDisplay" :key=i>
+                                <AppCustomChip :textVal="item" :tagId="i" type="skill" @updateCall="changeTag" />
+                            </span>
+                            <b-button class="clear-btn"
+                                v-if="isCountrySelectionSet || tags.city || (tags.theme && isThemeDisplay) || (tags.skill && isSkillDisplay)"
+                                @click="clearMissionFilterData">{{languageData.label.clear_all}}</b-button>
+                        </div>
                     </div>
-                </div>
-                <div class="heading-section" v-if="missionList.length > 0">
-                    <h2 v-if="isTotalMissionDisplay">
-                        <template v-if="rows > 0">{{ langauageData.label.explore}}
-                            <strong>{{rows}}</strong>
-                            <strong v-if="rows > 1" class="ml-1">{{ langauageData.label.missions}}</strong>
-                            <strong v-else class="ml-1">{{ langauageData.label.mission}}</strong>
-                        </template>
-                    </h2>
-                    <div class="right-section" v-if="sortByFilterSet">
-                        <AppCustomDropdown :optionList="sortByOptions" :defaultText="sortByDefault"
-                            translationEnable="true" @updateCall="updateSortTitle" />
+                    <div v-bind:class="{ 'heading-section': true, 
+                        'justify-content-end' : !isTotalMissionDisplay
+                                            }" v-if="missionList.length > 0">
+                        <h2 v-if="isTotalMissionDisplay">
+                            <template v-if="rows > 0">{{ languageData.label.explore}}
+                                <strong>{{rows}}</strong>
+                                <strong v-if="rows > 1" class="ml-1">{{ languageData.label.missions}}</strong>
+                                <strong v-else class="ml-1">{{ languageData.label.mission}}</strong>
+                            </template>
+                        </h2>
+                        <div class="right-section" v-if="sortByFilterSet">
+                            <AppCustomDropdown :optionList="sortByOptions" :defaultText="sortByDefault"
+                                translationEnable="true" @updateCall="updateSortTitle" />
+                        </div>
                     </div>
-                </div>
-                <!-- Tabing grid view and list view start -->
-                <b-tabs class="view-tab">
-                    <!-- grid view -->
-                    <b-tab class="grid-tab-content">
-                        <template slot="title">
-                            <i class="grid icon-wrap" @click="activeView = 'gridView'" v-b-tooltip.hover.bottom
-                                :title="langauageData.label.grid_view" v-if="missionList.length > 0">
-                                <img class="img-normal" :src="$store.state.imagePath+'/assets/images/grid.svg'"
-                                    alt="Down Arrow" />
-                                <img class="img-rollover" :src="$store.state.imagePath+'/assets/images/grid-h.svg'"
-                                    alt="Down Arrow" />
-                            </i>
-                        </template>
-                        <GridView id="gridView" :items="missionList" :p:per-page="perPage" :current-page="currentPage"
-                            v-if="isShownComponent" :userList="userList" @getMissions="getMissions" small />
-                    </b-tab>
-                    <!-- list view -->
-                    <b-tab class="list-tab-content">
-                        <template slot="title">
-                            <i class="list icon-wrap" @click="activeView = 'listView'" v-b-tooltip.hover.bottom
-                                :title="langauageData.label.list_view" v-if="missionList.length > 0">
-                                <img class="img-normal" :src="$store.state.imagePath+'/assets/images/list.svg'"
-                                    alt="Down Arrow" />
-                                <img class="img-rollover" :src="$store.state.imagePath+'/assets/images/list-h.svg'"
-                                    alt="Down Arrow" />
-                            </i>
-                        </template>
-                        <ListView id="listView" :items="missionList" :p:per-page="perPage" :current-page="currentPage"
-                            v-if="isShownComponent" :userList="userList" @getMissions="getMissions" small />
-                    </b-tab>
+                    <!-- Tabing grid view and list view start -->
+                    
+                    <b-tabs class="view-tab">
+                    
+                        <!-- grid view -->
+                        <b-tab class="grid-tab-content">
+                            <template slot="title">
+                                <i class="grid icon-wrap" @click="activeView = 'gridView'" v-b-tooltip.hover.bottom
+                                    :title="languageData.label.grid_view" v-if="missionList.length > 0">
+                                    <img class="img-normal" :src="$store.state.imagePath+'/assets/images/grid.svg'"
+                                        alt="Down Arrow" />
+                                    <img class="img-rollover" :src="$store.state.imagePath+'/assets/images/grid-h.svg'"
+                                        alt="Down Arrow" />
+                                </i>
+                            </template>
+                            <GridView id="gridView" :items="missionList" :p:per-page="perPage" :current-page="currentPage"
+                                :relatedMission=relatedMission
+                                v-if="isShownComponent" :userList="userList" @getMissions="getMissions" small />
+                        </b-tab>
+                        <!-- list view -->
+                        <b-tab class="list-tab-content">
+                            <template slot="title">
+                                <i class="list icon-wrap" @click="activeView = 'listView'" v-b-tooltip.hover.bottom
+                                    :title="languageData.label.list_view" v-if="missionList.length > 0">
+                                    <img class="img-normal" :src="$store.state.imagePath+'/assets/images/list.svg'"
+                                        alt="Down Arrow" />
+                                    <img class="img-rollover" :src="$store.state.imagePath+'/assets/images/list-h.svg'"
+                                        alt="Down Arrow" />
+                                </i>
+                            </template>
+                            <ListView id="listView" :items="missionList" :per-page="perPage" :current-page="currentPage"
+                                v-if="isShownComponent" :userList="userList" @getMissions="getMissions" small />
+                        </b-tab>
 
-                </b-tabs>
-                <!-- Tabing grid view and list view end -->
-                <!-- Pagination start -->
-                <div class="pagination-block" v-if="rows > 0 && totalPages > 1">
-                    <b-pagination v-model="currentPage" :total-rows="rows" :per-page="perPage" align="center"
-                        :simple="false" :aria-controls="activeView" @change="pageChange">
-                    </b-pagination>
-                </div>
-                <!-- Pagination end -->
-            </b-container>
+                    </b-tabs>
+                    
+                    <!-- Tabing grid view and list view end -->
+                    <!-- Pagination start -->
+                    <div class="pagination-block" v-if="rows > 0 && totalPages > 1">
+                        <b-pagination v-model="currentPage" :total-rows="rows" :per-page="perPage" align="center"
+                            :simple="false" :aria-controls="activeView" @change="pageChange">
+                        </b-pagination>
+                    </div>
+                    <!-- Pagination end -->
+                </b-container>
         </main>
         <footer>
             <TheSecondaryFooter></TheSecondaryFooter>
         </footer>
-        <back-to-top bottom="68px" right="40px" :title="langauageData.label.back_to_top">
+        <back-to-top bottom="34px" right="40px" :title="languageData.label.back_to_top">
             <i class="icon-wrap">
                 <img class="img-normal" :src="$store.state.imagePath+'/assets/images/down-arrow.svg'"
                     alt="Down Arrow" />
@@ -114,6 +122,7 @@
         searchUser
     } from '../services/service';
     import constants from '../constant';
+import { setTimeout } from 'timers';
 
     export default {
         components: {
@@ -131,6 +140,7 @@
         data() {
             return {
                 rows: 0,
+                relatedMission: false,
                 perPage: 10,
                 currentPage: 1,
                 sortByOptions: [
@@ -166,14 +176,15 @@
                 tags: "",
                 sortByFilterSet: true,
                 userList: [],
-                langauageData: [],
+                languageData: [],
                 isTotalMissionDisplay: true,
                 isQuickAccessDisplay: true,
                 isThemeDisplay: true,
                 isSkillDisplay: true,
                 isCountrySelectionSet: false,
                 totalPages: 0,
-                defaultCountry: 0
+                defaultCountry: 0,
+                isAjaxCall :true
             };
         },
 
@@ -182,10 +193,10 @@
                 this.search = searchString
             },
             handleScroll() {
-                var body = document.querySelector("body");
-                var bheader = document.querySelector("header");
-                var bheader_top = bheader.offsetHeight;
-                if (window.scrollY > bheader_top) {
+                let body = document.querySelector("body");
+                let bheader = document.querySelector("header");
+                let bheaderTop = bheader.offsetHeight;
+                if (window.scrollY > bheaderTop) {
                     body.classList.add("small-header");
                 } else {
                     body.classList.remove("small-header");
@@ -199,7 +210,9 @@
             },
             //Mission listing
             async getMissions(parmas = "") {
-
+                if (store.state.clearFilterSet == "") {
+                    this.isAjaxCall = true
+                }
                 let filter = {};
                 filter.page = this.currentPage
                 filter.search = store.state.search
@@ -231,6 +244,7 @@
                     }
 
                     this.isShownComponent = true;
+                    this.isAjaxCall = false
                     if (store.state.search != null) {
                         this.search = store.state.search;
                     }
@@ -238,12 +252,12 @@
                         this.tags = JSON.parse(store.state.tags);
                     }
                     if (store.state.sortBy != null && store.state.sortBy != '') {
-                        var sortBy = store.state.sortBy;
-                        var _this = this;
-                        setTimeout(function () {
-                            var labelString = 'label.'
-                            var sortByValue = labelString.concat(sortBy);
-                            _this.sortByDefault = _this.langauageData.label[sortBy];
+                        let sortBy = store.state.sortBy;
+                        
+                        setTimeout(() => {
+                            let labelString = 'label.'
+                            let sortByValue = labelString.concat(sortBy);
+                            this.sortByDefault = this.languageData.label[sortBy];
                         }, 200);
                     }
 
@@ -311,7 +325,7 @@
                 this.filterData.skillId = '';
                 this.filterData.tags = '';
                 this.filterData.sortBy = '';
-                this.sortByDefault = this.langauageData.label.sort_by;
+                this.sortByDefault = this.languageData.label.sort_by;
                 if (filters.parmasType) {
                     filteExplore.exploreMissionType = filters.parmasType;
                 }
@@ -331,10 +345,17 @@
             },
             clearMissionFilter() {
                 this.$refs.secondaryHeader.clearAllFilter();
+            },
+            clearMissionFilterData() {
+                document.body.classList.add("loader-enable");
+                store.commit('clearFilterClick', 'true');
+                this.$refs.secondaryHeader.clearAllFilter();
+                document.body.classList.remove("loader-enable");
+                store.commit('clearFilterClick', '');
             }
         },
         created() {
-            this.langauageData = JSON.parse(store.state.languageLabel);
+            this.languageData = JSON.parse(store.state.languageLabel);
             this.sortByFilterSet = this.settingEnabled(constants.SORTING_MISSIONS)
             if (this.$route.params.searchParamsType) {
                 let filteExplore = {};
@@ -355,7 +376,7 @@
                 // Mission listing
                 this.missionFilter();
             }
-            var _this = this;
+            
             this.isTotalMissionDisplay = this.settingEnabled(constants.Total_MISSIONS_IN_PLATEFORM)
             this.isQuickAccessDisplay = this.settingEnabled(constants.QUICK_ACCESS_FILTERS)
             this.isThemeDisplay = this.settingEnabled(constants.THEMES_ENABLED);
@@ -366,8 +387,8 @@
                 this.userList = response;
             });
 
-            setTimeout(function () {
-                _this.sortByDefault = _this.langauageData.label.sort_by;
+            setTimeout(() => {
+                this.sortByDefault = this.languageData.label.sort_by;
             }, 200);
             window.addEventListener("scroll", this.handleScroll);
         },

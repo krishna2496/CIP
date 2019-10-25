@@ -4,13 +4,13 @@
             <b-row>
                 <b-col md="6" class="footer-menu">
                     <b-list-group v-if="isDynamicFooterItemsSet">
-                        <b-list-group-item v-for="item in footerItems" :to="{ path: '/'+item.slug}"
+                        <b-list-group-item v-for="(item, key) in footerItems" v-bind:key=key :to="{ path: '/'+item.slug}"
                             :title="getTitle(item)" @click.native="clickHandler">{{getTitle(item)}}
                         </b-list-group-item>
                     </b-list-group>
                 </b-col>
                 <b-col md="6" class="copyright-text">
-                    <p>© {{year}} Optimy.com. {{ langauageData.label.all_rights_reserved }}.</p>
+                    <p>© {{year}} Optimy.com. {{ languageData.label.all_rights_reserved }}.</p>
                 </b-col>
             </b-row>
         </b-container>
@@ -34,16 +34,17 @@
                 footerItems: [],
                 isDynamicFooterItemsSet: false,
                 year: new Date().getFullYear(),
-                langauageData: [],
+                languageData: [],
             };
         },
         created() {
 
-            this.langauageData = JSON.parse(store.state.languageLabel);
+            this.languageData = JSON.parse(store.state.languageLabel);
             // Fetching footer CMS pages
             this.getPageListing();
             // loadLocaleMessages(store.state.defaultLanguage);
             this.footerAdj();
+            window.addEventListener("resize", this.footerAdj);
         },
         methods: {
             async getPageListing() {
@@ -57,7 +58,7 @@
                 //Get title according to language
                 items = items.pages;
                 if (items) {
-                    var filteredObj = items.filter(function (item, i) {
+                    let filteredObj = items.filter((item, i) => {
                         if (item.language_id == store.state.defaultLanguageId) {
                             return item;
                         }
@@ -77,9 +78,10 @@
             clickHandler($event) {
                 this.$emit('cmsListing', this.$route.params.slug);
             },
+            
             footerAdj() {
                 if (document.querySelector("footer") != null) {
-                    var footerH = document.querySelector("footer").offsetHeight;
+                    let footerH = document.querySelector("footer").offsetHeight;
                     document.querySelector("footer").style.marginTop = -footerH + "px";
                     document.querySelector(".inner-pages").style.paddingBottom =
                         footerH + "px";
@@ -88,7 +90,6 @@
         },
         updated() {
             this.footerAdj();
-            window.addEventListener("resize", this.footerAdj);
         }
     };
 </script>

@@ -211,10 +211,10 @@
 			};
 		},
 		mounted() {
-			var lineChartRefs = this.$refs.lineChartRefs;
-			var lineContent = lineChartRefs.getContext("2d");
+			let lineChartRefs = this.$refs.lineChartRefs;
+			let lineContent = lineChartRefs.getContext("2d");
 			lineChartRefs.height = 350;
-			var lineChart = new Chart(lineContent, {
+			let lineChart = new Chart(lineContent, {
 				type: "line",
 				data: {
 					labels: [

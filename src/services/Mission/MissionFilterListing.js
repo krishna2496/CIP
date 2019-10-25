@@ -1,15 +1,18 @@
 import store from '../../store'
 import axios from 'axios'
 
-export default async(data) => {
+export default async() => {
     let responseData;
-    var defaultLanguage = '';
-
+    let defaultLanguage = '';
+    if (store.state.defaultLanguage !== null) {
+        defaultLanguage = (store.state.defaultLanguage).toLowerCase();
+    }
     await axios({
             url: process.env.VUE_APP_API_ENDPOINT + "app/user-filter",
             method: 'get',
             headers: {
                 'token': store.state.token,
+                'X-localization': defaultLanguage,
             }
         })
         .then((response) => {
@@ -35,6 +38,5 @@ export default async(data) => {
                 store.commit('userFilter', filterData)
             }
         })
-        .catch(function(error) {});
     return responseData;
 }

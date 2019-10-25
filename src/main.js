@@ -17,10 +17,7 @@ import AOS from "aos";
 import "aos/dist/aos.css";
 import BackToTop from "vue-backtotop";
 import moment from 'moment'
-import constants from './constant';
-import {
-    messages
-} from 'vue-bootstrap-calendar';
+import customCss from './services/CustomCss'
 
 Vue.use(Vuelidate, VueAxios, axios);
 Vue.config.devtools = true
@@ -40,8 +37,18 @@ export const eventBus = new Vue();
 // call vue axios interceptors
 interceptorsSetup();
 let entryUrl = null;
+
+
+
 // check requirment of authentication for path
-router.beforeEach((to, from, next) => {
+router.beforeEach(async(to, from, next) => {
+    // if from path is (/) then we need to call custom css call and wait for its reponse    
+    if ((from.path == '/' && to.path == '/') || from.path == '/') {
+        document.body.classList.add("loader-enable");
+        await customCss().then(() => {
+            document.body.classList.remove("loader-enable");
+        });
+    }
     if (store.state.isLoggedIn) {
         if (entryUrl) {
             const url = entryUrl;
@@ -69,6 +76,18 @@ router.beforeEach((to, from, next) => {
 Vue.filter('formatDate', function(value) {
     if (value) {
         return moment(String(value)).format('DD/MM/YYYY')
+    }
+})
+
+Vue.filter('filterGoal', function(value) {
+    return parseInt(value)
+})
+
+Vue.filter('formatTime', function(value) {
+    if (value) {
+        let splitArray = value.split(":");
+
+        return splitArray[0] + ':' + splitArray[1]
     }
 })
 

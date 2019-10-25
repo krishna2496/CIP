@@ -1,7 +1,5 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Home from './views/Home.vue'
-import TermsofUse from './views/Cms.vue'
 
 Vue.use(Router)
 
@@ -15,12 +13,21 @@ let routes = [{
         component: () =>
             import ('./views/404.vue')
     },
-
     {
         path: '/',
         name: 'login',
         component: () =>
             import ('./views/Auth/Login.vue')
+    },
+
+    {
+        path: '/home',
+        name: 'home',
+        meta: {
+            requiresAuth: true
+        },
+        component: () =>
+            import ('./views/Home.vue')
     },
     {
         path: '/volunteering-timesheet',
@@ -49,15 +56,7 @@ let routes = [{
         component: () =>
             import ('./views/Dashboard.vue')
     },
-    {
-        path: '/home',
-        name: 'home',
-        meta: {
-            requiresAuth: true
-        },
-        component: () =>
-            import ('./views/Home.vue')
-    },
+
     {
         path: '/home/:searchParamsType/:searchParams',
         name: 'exploreMission',

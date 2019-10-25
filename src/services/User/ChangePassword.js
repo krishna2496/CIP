@@ -4,11 +4,11 @@ import store from '../../store'
 export default async(data) => {
 
     let responseData = {};
-    var defaultLanguage = '';
+    let defaultLanguage = '';
     if (store.state.defaultLanguage !== null) {
         defaultLanguage = (store.state.defaultLanguage).toLowerCase();
     }
-    var url = process.env.VUE_APP_API_ENDPOINT + "app/change-password";
+    let url = process.env.VUE_APP_API_ENDPOINT + "app/change-password";
 
     await axios({
             url: url,

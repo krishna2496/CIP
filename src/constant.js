@@ -15,7 +15,6 @@ export default Object.freeze({
     AUTOMATICALLY_APPROVED: "AUTOMATICALLY_APPROVED",
     PENDING: "PENDING",
     REFUSED: "REFUSED",
-
     TOTAL_VOTES: "total_votes",
     SKILLS_ENABLED: "skills_enabled",
     STORIES_ENABLED: "stories_enabled",
@@ -43,5 +42,9 @@ export default Object.freeze({
     IS_STORY_AUTO_APPROVED: "is_story_auto_approved",
     IS_COUNTRY_SELECTION: "country_selection",
     RELATED_MISSIONS: "related_missions",
-    TIMESHEET_DOCUMENT_UPLOAD: "timesheet_document_upload"
+    TIMESHEET_DOCUMENT_UPLOAD: "timesheet_document_upload",
+    FILE_MAX_SIZE_BYTE: 4000000,
+    FILE_ALLOWED_FILE_TYPES: ['doc', 'xls', 'xlsx', 'csv', 'pdf', 'png', 'jpg', 'jpeg'],
+    RECENT_VOLUNTEERES_PER_PAGE: 12,
+    MISSION_DEFAULT_PLACEHOLDER: "placeholder-img.jpg"
 })

@@ -3,8 +3,8 @@
 
         <b-modal ref="goalActionModal" :modal-class="'goal-modal table-modal'" hide-footer @hidden="hideModal">
             <template slot="modal-header" slot-scope="{ close }">
-                <i class="close" @click="close()" v-b-tooltip.hover :title="langauageData.label.close"></i>
-                <h5 class="modal-title">{{langauageData.label.goal_entry_modal_title}}</h5>
+                <i class="close" @click="close()" v-b-tooltip.hover :title="languageData.label.close"></i>
+                <h5 class="modal-title">{{languageData.label.goal_entry_modal_title}}</h5>
             </template>
             <b-alert show :variant="classVariant" dismissible v-model="showErrorDiv">
                 {{ message }}
@@ -18,7 +18,7 @@
                         <b-row>
                             <b-col sm="12">
                                 <b-form-group>
-                                    <label for>{{langauageData.label.mission}}</label>
+                                    <label for>{{languageData.label.mission}}</label>
                                     <b-form-input id type="text" v-model.trim="timeEntryDefaultData.missionName"
                                         class="disabled"></b-form-input>
                                 </b-form-group>
@@ -28,25 +28,23 @@
                                     <b-row>
                                         <b-col sm="12">
                                             <b-form-group>
-                                                <label for>{{langauageData.label.actions}}*</label>
+                                                <label for>{{languageData.label.actions}}*</label>
                                                 <b-form-input v-model.trim="timeEntryDefaultData.action"
                                                     :class="{ 'is-invalid': submitted && $v.timeEntryDefaultData.action.$error }"
-                                                    type="text" :placeholder="langauageData.placeholder.action">
+                                                    type="text" :placeholder="languageData.placeholder.action">
                                                 </b-form-input>
                                                 <div v-if="submitted && !$v.timeEntryDefaultData.dateVolunteered.required"
                                                     class="invalid-feedback">
-                                                    {{ langauageData.errors.action_required }}
+                                                    {{ languageData.errors.action_required }}
                                                 </div>
-
                                                 <div v-if="submitted && !$v.timeEntryDefaultData.dateVolunteered.minValue"
                                                     class="invalid-feedback">
-                                                    {{ langauageData.errors.minimum_action }}
+                                                    {{ languageData.errors.minimum_action }}
                                                 </div>
                                             </b-form-group>
                                         </b-col>
                                     </b-row>
                                 </b-form-group>
-
                             </b-col>
                         </b-row>
                     </b-form-group>
@@ -54,30 +52,29 @@
                         <b-row>
                             <b-col sm="6" class="date-col">
                                 <b-form-group>
-                                    <label for>{{langauageData.label.date_volunteered}}*</label>
+                                    <label for>{{languageData.label.date_volunteered}}*</label>
                                     <date-picker v-model="timeEntryDefaultData.dateVolunteered"
                                         :notAfter="timeEntryDefaultData.disabledFutureDates"
                                         :notBefore="timeEntryDefaultData.disabledPastDates" :disabledDays="disableDates"
                                         @change="dateChange()"
                                         :class="{ 'is-invalid': submitted && $v.timeEntryDefaultData.dateVolunteered.$error }"
                                         :lang="lang">
-
                                     </date-picker>
                                     <div v-if="submitted && !$v.timeEntryDefaultData.dateVolunteered.required"
                                         class="invalid-feedback">
-                                        {{ langauageData.errors.date_volunteer_is_required }}</div>
+                                        {{ languageData.errors.date_volunteer_is_required }}</div>
                                 </b-form-group>
                             </b-col>
                             <b-col sm="6" class="date-col">
                                 <b-form-group>
-                                    <label for>{{langauageData.label.day_volunteered}}*</label>
+                                    <label for>{{languageData.label.day_volunteered}}*</label>
                                     <AppCustomDropdown v-model="timeEntryDefaultData.workDay" :optionList="workDayList"
                                         :errorClass="submitted && $v.timeEntryDefaultData.workDay.$error"
                                         :defaultText="defaultWorkday" @updateCall="updateWorkday"
                                         translationEnable="true" />
                                     <div v-if="submitted && !$v.timeEntryDefaultData.workDay.required"
                                         class="invalid-feedback">
-                                        {{ langauageData.errors.work_day }}</div>
+                                        {{ languageData.errors.work_day }}</div>
                                 </b-form-group>
 
                             </b-col>
@@ -87,14 +84,14 @@
                         <b-row>
                             <b-col sm="12">
                                 <b-form-group>
-                                    <label for>{{langauageData.label.notes}}*</label>
+                                    <label for>{{languageData.label.notes}}*</label>
                                     <b-form-textarea id v-model="timeEntryDefaultData.notes"
                                         :class="{ 'is-invalid': submitted && $v.timeEntryDefaultData.notes.$error }"
-                                        :placeholder="langauageData.placeholder.notes" size="lg" rows="5">
+                                        :placeholder="languageData.placeholder.notes" size="lg" rows="5">
                                     </b-form-textarea>
                                     <div v-if="submitted && !$v.timeEntryDefaultData.notes.required"
                                         class="invalid-feedback">
-                                        {{ langauageData.errors.notes }}</div>
+                                        {{ languageData.errors.notes }}</div>
                                 </b-form-group>
 
                             </b-col>
@@ -103,8 +100,8 @@
                     <b-form-group v-if="isFileUploadDisplay">
                         <b-row>
                             <b-col sm="12"><span class="error-message" v-if="fileError">{{fileError}}</span></b-col>
-                            <b-col sm="6" class="date-col">
-                                <label for>{{langauageData.label.file_upload}}</label>
+                            <b-col md="6" class="date-col">
+                                <label for>{{languageData.label.file_upload}}</label>
                                 <div class="file-upload-wrap">
                                     <div class="btn-wrapper"
                                         v-bind:class="{'has-error' : fileError != '' ? true : false}">
@@ -113,29 +110,30 @@
                                         application/docx,application/xls,application/xlsx,application/csv,application/pdf" :multiple="true"
                                             :drop="true" :drop-directory="true" @input="inputUpdate"
                                             :size="1024 * 1024 *10" v-model="fileArray" ref="upload">
-                                            {{langauageData.label.browse}}
+                                            {{languageData.label.browse}}
                                         </file-upload>
-                                        <span>{{langauageData.label.drop_files}}</span>
+                                        <span>{{languageData.label.drop_files}}</span>
                                     </div>
                                     <div class="uploaded-file-wrap">
                                         <div class="uploaded-file-details"
+                                            v-bind:key=index
                                             v-for="(file, index) in timeEntryDefaultData.documents">
 
                                             <a class="filename" :href="file.document_path"
                                                 target="_blank">{{file.document_name}}</a>
                                             <b-button class="remove-item"
                                                 @click.prevent="deleteFile(file.timesheet_id,file.timesheet_document_id)"
-                                                :title="langauageData.label.delete">
+                                                :title="languageData.label.delete">
                                                 <img :src="$store.state.imagePath+'/assets/images/delete-ic.svg'"
                                                     alt="delete-ic" />
                                             </b-button>
 
                                         </div>
-                                        <div class="uploaded-file-details" v-for="(file, index) in fileArray"
+                                        <div class="uploaded-file-details" v-for="file in fileArray"
                                             :key="file.id">
                                             <p class="filename">{{file.name}}</p>
                                             <b-button class="remove-item" @click.prevent="$refs.upload.remove(file)"
-                                                :title="langauageData.label.delete">
+                                                :title="languageData.label.delete">
                                                 <img :src="$store.state.imagePath+'/assets/images/delete-ic.svg'"
                                                     alt="delete-ic" />
                                             </b-button>
@@ -148,10 +146,10 @@
                 </form>
                 <div class="btn-wrap">
                     <b-button class="btn-borderprimary" @click="$refs.goalActionModal.hide()">
-                        {{langauageData.label.cancel}}</b-button>
+                        {{languageData.label.cancel}}</b-button>
                     <b-button class="btn-bordersecondary" v-bind:class="{
                             disabled:isAjaxCall
-                        }" @click="saveAction()">{{langauageData.label.submit}}
+                        }" @click="saveAction()">{{languageData.label.submit}}
                     </b-button>
                 </div>
             </div>
@@ -202,7 +200,7 @@
         data: function () {
             return {
                 lang: '',
-                langauageData: [],
+                languageData: [],
                 submitted: false,
                 disabledFutureDates: new Date(),
                 fileArray: this.files,
@@ -211,95 +209,6 @@
                 message: null,
                 classVariant: "success",
                 fileError: "",
-                hourList: [
-                    ["00", "00"],
-                    ["01", "01"],
-                    ["02", "02"],
-                    ["03", "03"],
-                    ["04", "04"],
-                    ["05", "05"],
-                    ["06", "06"],
-                    ["07", "07"],
-                    ["08", "08"],
-                    ["09", "09"],
-                    ["10", "10"],
-                    ["11", "11"],
-                    ["12", "12"],
-                    ["13", "13"],
-                    ["14", "14"],
-                    ["15", "15"],
-                    ["16", "16"],
-                    ["17", "17"],
-                    ["18", "18"],
-                    ["19", "19"],
-                    ["20", "20"],
-                    ["21", "21"],
-                    ["22", "22"],
-                    ["23", "23"]
-                ],
-                minuteList: [
-                    ["00", "00"],
-                    ["01", "01"],
-                    ["02", "02"],
-                    ["03", "03"],
-                    ["04", "04"],
-                    ["05", "05"],
-                    ["06", "06"],
-                    ["07", "07"],
-                    ["08", "08"],
-                    ["09", "09"],
-                    ["10", "10"],
-                    ["11", "11"],
-                    ["12", "12"],
-                    ["13", "13"],
-                    ["14", "14"],
-                    ["15", "15"],
-                    ["16", "16"],
-                    ["17", "17"],
-                    ["18", "18"],
-                    ["19", "19"],
-                    ["20", "20"],
-                    ["21", "21"],
-                    ["22", "22"],
-                    ["23", "23"],
-                    ["24", "20"],
-                    ["25", "2"],
-                    ["26", "22"],
-                    ["27", "27"],
-                    ["28", "28"],
-                    ["29", "29"],
-                    ["30", "30"],
-                    ["31", "31"],
-                    ["32", "32"],
-                    ["33", "33"],
-                    ["34", "34"],
-                    ["35", "35"],
-                    ["36", "36"],
-                    ["37", "37"],
-                    ["38", "38"],
-                    ["39", "39"],
-                    ["40", "40"],
-                    ["41", "41"],
-                    ["42", "42"],
-                    ["43", "43"],
-                    ["44", "44"],
-                    ["45", "45"],
-                    ["46", "46"],
-                    ["47", "47"],
-                    ["48", "48"],
-                    ["49", "49"],
-                    ["50", "50"],
-                    ["51", "51"],
-                    ["52", "52"],
-                    ["53", "53"],
-                    ["54", "50"],
-                    ["55", "51"],
-                    ["56", "52"],
-                    ["57", "57"],
-                    ["58", "58"],
-                    ["59", "59"]
-
-                ],
                 saveVolunteerHours: {
                     mission_id: "",
                     date_volunteered: "",
@@ -335,37 +244,46 @@
                 this.$emit('changeDocument', this.timeEntryDefaultData.dateVolunteered)
             },
             inputUpdate(files) {
-                var _this = this
-                let allowedFileTypes = ['doc', 'xls', 'xlsx', 'csv', 'pdf', 'png', 'jpg', 'jpeg']
-                _this.fileError = '';
+                let allowedFileTypes = constants.FILE_ALLOWED_FILE_TYPES 
+                this.fileError = '';
+                let error = false
+                let duplicateUpload = false
                 let latestUpload = files[files.length - 1];
+                let latestUploadIndex = files.length - 1;
                 let latestUploadName = latestUpload.name
                 let latestUploadSize = latestUpload.size
                 let latestUploadType = latestUpload.type
 
-                files.filter(function (data, index) {
+                files.filter((data, index) => {
                     let fileName = data.name.split('.');
                     if (!allowedFileTypes.includes(fileName[fileName.length - 1])) {
-                        _this.fileError = _this.langauageData.errors.invalid_file_type
-                        files.splice(index, 1)
+                        this.fileError = this.languageData.errors.invalid_file_type
+                        error = true
                     } else {
-                        if (data.size > 4000000) {
-                            _this.fileError = _this.langauageData.errors.file_max_size
-                            files.splice(index, 1)
+                        if (data.size > constants.FILE_MAX_SIZE_BYTE) {
+                            this.fileError = this.languageData.errors.file_max_size
+                            error = true
                         }
                     }
                     if (index != files.length - 1) {
                         if (data.name == latestUploadName && data.size == latestUploadSize && data.type ==
                             latestUploadType) {
-
-                            _this.fileError = _this.langauageData.errors.file_already_uploaded
-                            files.splice(files.length - 1, 1)
+                            this.fileError = this.languageData.errors.file_already_uploaded
+                            error = true
+                            duplicateUpload = true;
+                        }
+                    }
+                    if(error == true) {
+                        if(duplicateUpload == true) {
+                            files.splice(latestUploadIndex, 1)
+                        } else {
+                            files.splice(index, 1)
                         }
                     }
                 });
             },
             updateWorkday(value) {
-                var selectedData = {
+                let selectedData = {
                     'selectedVal': '',
                     'fieldId': ''
                 }
@@ -375,7 +293,7 @@
                 this.$emit("updateCall", selectedData)
             },
             updateHours(value) {
-                var selectedData = {
+                let selectedData = {
                     'selectedVal': '',
                     'fieldId': ''
                 }
@@ -385,7 +303,7 @@
                 this.$emit("updateCall", selectedData)
             },
             updateMinutes(value) {
-                var selectedData = {
+                let selectedData = {
                     'selectedVal': '',
                     'fieldId': ''
                 }
@@ -395,7 +313,6 @@
                 this.$emit("updateCall", selectedData)
             },
             saveAction() {
-                var _this = this;
                 this.submitted = true;
                 this.$v.$touch();
 
@@ -408,7 +325,7 @@
                 let fileData = []
                 let file = this.fileArray;
                 if (file) {
-                    file.filter(function (fileItem, fileIndex) {
+                    file.filter((fileItem, fileIndex) => {
                         fileData.push(fileItem.file);
                         formData.append('documents[]', fileItem.file);
                     })
@@ -437,18 +354,18 @@
                         this.message = response.message
                         this.submitted = false;
                         this.$emit("getTimeSheetData");
-                        setTimeout(function () {
-                            _this.$refs.goalActionModal.hide();
-                            _this.hideModal();
+                        this.$emit("changeTimeSheetView",volunteeredDate);
+                        setTimeout(() => {
+                            this.$refs.goalActionModal.hide();
+                            this.hideModal();
                         }, 700)
-
+                       
                     }
                     this.isAjaxCall = false;
                 })
 
             },
             deleteFile(timeSheetId, documentId) {
-                var _this = this
                 let deletFile = {
                     'timesheet_id': timeSheetId,
                     'document_id': documentId
@@ -461,10 +378,10 @@
                         this.showErrorDiv = true
                         this.classVariant = 'success'
                         this.message = response
-                        this.timeEntryDefaultData.documents.filter(function (document, index) {
+                        this.timeEntryDefaultData.documents.filter((document, index) => {
                             if (document.timesheet_document_id == documentId && document.timesheet_id ==
                                 timeSheetId) {
-                                _this.timeEntryDefaultData.documents.splice(index, 1);
+                                this.timeEntryDefaultData.documents.splice(index, 1);
                             }
                         });
                     } else {
@@ -483,10 +400,9 @@
                 this.$emit("resetModal");
                 document.querySelector('html').classList.remove('modal-open');
             }
-
         },
         created() {
-            this.langauageData = JSON.parse(store.state.languageLabel)
+            this.languageData = JSON.parse(store.state.languageLabel)
             this.isFileUploadDisplay = this.settingEnabled(constants.TIMESHEET_DOCUMENT_UPLOAD)
             this.lang = (store.state.defaultLanguage).toLowerCase();
         }

@@ -2,14 +2,14 @@
 	<div class="signin-footer">
 		<div class="footer-menu" v-if="isDynamicFooterItemsSet">
 			<b-list-group>
-				<b-list-group-item v-for="item in footerItems" :to="'/'+item.slug" :title="getTitle(item)">
+				<b-list-group-item v-for="(item,key) in footerItems" v-bind:key=key :to="'/'+item.slug" :title="getTitle(item)">
 					{{getTitle(item)}}
 				</b-list-group-item>
 			</b-list-group>
 		</div>
 		<div class="copyright-text">
 			<p>
-				{{ langauageData.label.powered_by }}
+				{{ languageData.label.powered_by }}
 				<b-link title="Optimy" href="https://www.optimy.com/">
 					Optimy</b-link>
 			</p>
@@ -32,12 +32,12 @@
 			return {
 				footerItems: [],
 				isDynamicFooterItemsSet: false,
-				langauageData: [],
+				languageData: [],
 			};
 		},
 		mounted() {},
 		created() {
-			this.langauageData = JSON.parse(store.state.languageLabel);
+			this.languageData = JSON.parse(store.state.languageLabel);
 			// Fetching footer CMS pages
 			this.getPageListing();
 		},
@@ -53,7 +53,7 @@
 				//Get title according to language
 				items = items.pages;
 				if (items) {
-					var filteredObj = items.filter(function (item, i) {
+					let filteredObj = items.filter((item, i) => {
 						if (item.language_id == store.state.defaultLanguageId) {
 							return item;
 						}
