@@ -2147,7 +2147,7 @@
               "properties": {
                 "email": {
                   "type": "string",
-				  "example":"krishna.dhanani@tatvasoft.com"
+				  "example":"john.smith@optimy.com"
 				},
                 "password": {
                   "type": "string",
@@ -5509,13 +5509,6 @@
 				"required": true,
 				"type": "string",
 				"default": ""
-			  },
-			  {
-				"name": "storyId",
-				"in": "path",
-				"required": true,
-				"type": "integer",
-				"format": "int32"
 			  }
 			],
 			"responses": {
@@ -6170,7 +6163,7 @@
 			}
 		}
 	},
-	"/app/messages/{messageId}": {
+	"/app/message/{messageId}": {
 		"delete": {
 			"operationId": "POST_team4-cip-api-delete-message",
 			"summary": "App - Delete message (Milestone - 4)",
