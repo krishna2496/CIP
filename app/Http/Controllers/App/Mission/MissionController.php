@@ -22,6 +22,8 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Validator;
 use App\Models\UserFilter;
 use App\Transformations\MissionTransformable;
+use App\Events\User\UserActivityLogEvent;
+use App\Repositories\User\UserRepository;
 
 class MissionController extends Controller
 {
@@ -72,6 +74,11 @@ class MissionController extends Controller
     private $cityRepository;
 
     /**
+     * @var App\Repositories\User\UserRepository
+     */
+    private $userRepository;
+
+    /**
      * Create a new Mission controller instance
      *
      * @param App\Repositories\Mission\MissionRepository $missionRepository
@@ -83,6 +90,7 @@ class MissionController extends Controller
      * @param App\Repositories\Skill\SkillRepository $skillRepository
      * @param App\Repositories\Country\CountryRepository $countryRepository
      * @param App\Repositories\City\CityRepository $cityRepository
+     * @param  App\Repositories\User\UserRepository $userRepository
      * @return void
      */
     public function __construct(
@@ -94,7 +102,8 @@ class MissionController extends Controller
         MissionThemeRepository $themeRepository,
         SkillRepository $skillRepository,
         CountryRepository $countryRepository,
-        CityRepository $cityRepository
+        CityRepository $cityRepository,
+        UserRepository $userRepository
     ) {
         $this->missionRepository = $missionRepository;
         $this->responseHelper = $responseHelper;
@@ -105,6 +114,7 @@ class MissionController extends Controller
         $this->skillRepository = $skillRepository;
         $this->countryRepository = $countryRepository;
         $this->cityRepository = $cityRepository;
+        $this->userRepository = $userRepository;
     }
 
     /**
@@ -161,11 +171,11 @@ class MissionController extends Controller
         $missionList = $this->missionRepository->getMissions($request, $userFilterData);
         $defaultTenantLanguage = $this->languageHelper->getDefaultTenantLanguage($request);
         $defaultTenantLanguageId = $defaultTenantLanguage->language_id;
-        
+        $timezone = $this->userRepository->getUserTimezone($request->auth->user_id);
         $missionsTransformed = $missionList
             ->getCollection()
-            ->map(function ($item) use ($languageCode, $languageId, $defaultTenantLanguageId) {
-                return $this->transformMission($item, $languageCode, $languageId, $defaultTenantLanguageId);
+            ->map(function ($item) use ($languageCode, $languageId, $defaultTenantLanguageId, $timezone) {
+                return $this->transformMission($item, $languageCode, $languageId, $defaultTenantLanguageId, $timezone);
             })->toArray();
             
         $requestString = $request->except(['page','perPage']);
@@ -401,6 +411,22 @@ class MissionController extends Controller
             $apiMessage = ($missionFavourite !== null) ?
             trans('messages.success.MESSAGE_MISSION_ADDED_TO_FAVOURITE') :
             trans('messages.success.MESSAGE_MISSION_DELETED_FROM_FAVOURITE');
+            
+            // Make activity log
+            $favouriteStatus = ($missionFavourite != null) ?
+            config('constants.activity_log_actions.ADD_TO_FAVOURITE'):
+            config('constants.activity_log_actions.REMOVE_FROM_FAVOURITE');
+            
+            event(new UserActivityLogEvent(
+                config('constants.activity_log_types.MISSION'),
+                $favouriteStatus,
+                config('constants.activity_log_user_types.REGULAR'),
+                $request->auth->email,
+                get_class($this),
+                $request->toArray(),
+                $request->auth->user_id,
+                $request->mission_id
+            ));
             return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
@@ -487,13 +513,14 @@ class MissionController extends Controller
         try {
             $language = $this->languageHelper->getLanguageDetails($request);
             $languageId = $language->language_id;
-            $languageCode = $language->code;
 
             $defaultTenantLanguage = $this->languageHelper->getDefaultTenantLanguage($request);
             $defaultTenantLanguageId = $defaultTenantLanguage->language_id;
             $missionData = $this->missionRepository->getRelatedMissions($request, $missionId);
-            $mission = $missionData->map(function (Mission $mission) use ($languageId, $defaultTenantLanguageId) {
-                return $this->transformMission($mission, '', $languageId, $defaultTenantLanguageId);
+            $timezone = $this->userRepository->getUserTimezone($request->auth->user_id);
+            $mission = $missionData->map(function (Mission $mission)
+ use ($languageId, $defaultTenantLanguageId, $timezone) {
+                return $this->transformMission($mission, '', $languageId, $defaultTenantLanguageId, $timezone);
             })->all();
 
             $apiData = $mission;
@@ -531,10 +558,18 @@ class MissionController extends Controller
             $missionData = $this->missionRepository->getMissionDetail($request, $missionId);
             $defaultTenantLanguage = $this->languageHelper->getDefaultTenantLanguage($request);
             $defaultTenantLanguageId = $defaultTenantLanguage->language_id;
+            $timezone = $this->userRepository->getUserTimezone($request->auth->user_id);
+
             $mission = $missionData->map(
-                function (Mission $mission) use ($languageCode, $languageId, $defaultTenantLanguageId
+                function (Mission $mission) use ($languageCode, $languageId, $defaultTenantLanguageId, $timezone
                 ) {
-                    return $this->transformMission($mission, $languageCode, $languageId, $defaultTenantLanguageId);
+                    return $this->transformMission(
+                        $mission,
+                        $languageCode,
+                        $languageId,
+                        $defaultTenantLanguageId,
+                        $timezone
+                    );
                 }
             )->all();
 
@@ -548,6 +583,34 @@ class MissionController extends Controller
                 config('constants.error_codes.ERROR_MISSION_NOT_FOUND'),
                 trans('messages.custom_error_message.ERROR_MISSION_NOT_FOUND')
             );
+        }
+    }
+
+    /**
+     * Get user mission lists
+     *
+     * @param Illuminate\Http\Request $request
+     * @return Illuminate\Http\JsonResponse
+     */
+    public function getUserMissions(Request $request): JsonResponse
+    {
+        try {
+            $missionLists = $this->missionRepository->getUserMissions($request);
+   
+            // Set response data
+            $apiStatus = Response::HTTP_OK;
+            $apiData = $missionLists;
+            $apiMessage = (empty($apiData)) ? trans('messages.custom_error_message.ERROR_USER_MISSIONS_NOT_FOUND')
+            : trans('messages.success.MESSAGE_MISSION_LISTING');
+
+            return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
+        } catch (InvalidArgumentException $e) {
+            return $this->invalidArgument(
+                config('constants.error_codes.ERROR_INVALID_ARGUMENT'),
+                trans('messages.custom_error_message.ERROR_INVALID_ARGUMENT')
+            );
+        } catch (\Exception $e) {
+            return $this->badRequest(trans('messages.custom_error_message.ERROR_OCCURRED'));
         }
     }
 }

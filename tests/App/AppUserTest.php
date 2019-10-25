@@ -119,6 +119,12 @@ class AppUserTest extends TestCase
         $userCustomField->save();
         $fieldId = $userCustomField->field_id;
 
+        $skill = factory(\App\Models\Skill::class)->make();
+        $skill->setConnection($connection);
+        $skill->save();
+
+        $skillsArray[] = ["skill_id" => $skill->skill_id];
+
         $params = [
             'first_name' => str_random(10),
             'last_name' => str_random(10),
@@ -128,13 +134,14 @@ class AppUserTest extends TestCase
             'why_i_volunteer' => str_random(50),
             'employee_id' => str_random(3),
             'department' => str_random(5),
-            'manager_name' => str_random(5),
             'custom_fields' => [
                 [
                     "field_id" => $fieldId,
                     "value" => "1"
                 ]
-            ]
+            ],
+            'skills' => $skillsArray
+
         ];
     
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
@@ -186,7 +193,6 @@ class AppUserTest extends TestCase
             'why_i_volunteer' => str_random(50),
             'employee_id' => str_random(3),
             'department' => str_random(5),
-            'manager_name' => str_random(5),
             'custom_fields' => [
                 [
                     "field_id" => $fieldId,
@@ -272,17 +278,18 @@ class AppUserTest extends TestCase
             'confirm_password' => "12345678"
         ];
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
-        $this->patch('app/change-password', $params, ['token' => $token])
-        ->seeStatusCode(200)
-        ->seeJsonStructure(
-            [
-            "status",
-            "data" =>[
-                "token"
-            ],
-            "message"
-            ]
-        );
+        $this->patch('app/change-password', $params, ['token' => $token]);
+        dd($this->response->getContent());
+        // ->seeStatusCode(200)
+        // ->seeJsonStructure(
+        //     [
+        //     "status",
+        //     "data" =>[
+        //         "token"
+        //     ],
+        //     "message"
+        //     ]
+        // );
         $user->delete();
     }
 
@@ -508,7 +515,6 @@ class AppUserTest extends TestCase
                 "why_i_volunteer",
                 "employee_id",
                 "department",
-                "manager_name",
                 "city_id",
                 "country_id",
                 "profile_text",
@@ -744,7 +750,6 @@ class AppUserTest extends TestCase
             'why_i_volunteer' => str_random(50),
             'employee_id' => str_random(3),
             'department' => str_random(5),
-            'manager_name' => str_random(5),
             'custom_fields' => [
                 [
                     "field_id" => $fieldId,

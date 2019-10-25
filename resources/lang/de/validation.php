@@ -112,6 +112,18 @@ return [
         'date_volunteered' => [
             'before' => 'You cannot add time entry for future dates',
         ],
+        'story_images.*' => [
+            'valid_story_image_type' => 'Please select valid image type',
+            'max' => 'Image size must be ' .
+            (config('constants.STORY_IMAGE_SIZE_LIMIT') / 1024) . 'mb or below',
+        ],
+        'story_videos' => [
+            'valid_story_video_url' => 'Please enter valid video url',
+            'max_video_url' => 'Maximum '.config('constants.STORY_MAX_VIDEO_LIMIT').' video url can be added',
+        ],
+        'story_images' => [
+            'max' => 'Maximum '.config('constants.STORY_MAX_IMAGE_LIMIT').' images can be added',
+        ],
     ],
 
     /*
@@ -159,5 +171,8 @@ return [
         'option_value.translations.*.lang' => 'language code',
         'timesheet_entries.*.timesheet_id' => 'timesheet id',
 		'mission_detail.*.short_description' => 'short descreption',
+        'mission_detail.*.custom_information' => 'custom information',
+        'mission_detail.*.custom_information.*.title' => 'title',
+        'mission_detail.*.custom_information.*.description' => 'description',
     ],
 ];
