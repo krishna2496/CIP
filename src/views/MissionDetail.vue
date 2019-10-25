@@ -595,11 +595,12 @@
 							:input-props="{
 								id:'autosuggest__input', 
 								placeholder:autoSuggestPlaceholder,
+								ref:'inputAutoSuggest'
 	                        }">
 							<div slot-scope="{suggestion}">
 								<img :src="suggestion.item.avatar" />
 								<div>
-									{{suggestion.item.first_name}} {{suggestion.item.last_name}} <span>({{suggestion.item.email}})</span>
+									{{suggestion.item.first_name}} {{suggestion.item.last_name}}
 								</div>
 							</div>
 						</VueAutosuggest>
@@ -873,9 +874,11 @@
 			},
 			// For selected user id.
 			onSelected(item) {
-				this.selected = item.item;
-				this.submitDisable = false;
-				this.invitedUserId = item.item.user_id;
+				if(item) {
+					this.selected = item.item;
+					this.submitDisable = false;
+					this.invitedUserId = item.item.user_id;
+				}
 			},
 			//This is what the <input/> value is set to when you are selecting a suggestion.
 			getSuggestionValue(suggestion) {
@@ -890,6 +893,16 @@
 				this.message = null;
 				this.$refs.userDetailModal.show();
 				this.currentMission = missionId;
+				setTimeout(() => {
+					this.$refs.autosuggest.$refs.inputAutoSuggest.focus();
+					var input = document.getElementById("autosuggest__input");
+					input.addEventListener("keyup", (event) => {
+						if (event.keyCode === 13 && !this.submitDisable) {
+							event.preventDefault();
+							this.inviteColleagues()
+						}
+					});
+				}, 100);
 			},
 
 			defaultMediaPathDetail(defaultImage) {
@@ -1179,14 +1192,14 @@
 				this.relatedMissionlLoader = true
 				this.isShownMediaComponent = false
 				this.max = 100,
-					this.value = 70,
-					this.missionListing = [],
-					this.missionComment = [],
-					this.submitted = false,
-					this.nextUrl = null,
-					this.postComment = false,
-					this.loadMoreComment = false,
-					this.languageData = JSON.parse(store.state.languageLabel);
+				this.value = 70,
+				this.missionListing = [],
+				this.missionComment = [],
+				this.submitted = false,
+				this.nextUrl = null,
+				this.postComment = false,
+				this.loadMoreComment = false,
+				this.languageData = JSON.parse(store.state.languageLabel);
 				this.applyButton = this.languageData.label.apply_now;
 				this.page = 1;
 				this.isFacebookSharingDisplay = false
