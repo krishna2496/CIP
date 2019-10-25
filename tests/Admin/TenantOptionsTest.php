@@ -494,7 +494,7 @@ class TenantOptionsTest extends TestCase
         DB::table('tenant_language')->insert([
             'tenant_id' => $tenantId,
             'language_id' => 1,
-            'default' => 1
+            'default' => '1'
         ]);
 
         $this->get('style/download-style', ['Authorization' => 'Basic '.base64_encode($apiKey.':'.$apiSecret), 'X-localization' => 'en'])
@@ -673,6 +673,13 @@ class TenantOptionsTest extends TestCase
             'name' => str_random('5'),
             'sponsor_id' => rand(1, 100000)
         ]);
+            
+        DB::table('tenant_language')->insert([
+            'tenant_id' => $tenantId,
+            'language_id' => 1,
+            'default' => '1'
+        ]);
+
 
         $apiKey = str_random(16);
         $apiSecret = str_random(16);
@@ -720,6 +727,12 @@ class TenantOptionsTest extends TestCase
         $apiUserId = DB::table('api_user')->insertGetId($apiKeys);
 
         DB::statement("CREATE DATABASE IF NOT EXISTS `ci_tenant_{$tenantId}`");
+
+        DB::table('tenant_language')->insert([
+            'tenant_id' => $tenantId,
+            'language_id' => 1,
+            'default' => '1'
+        ]);
 
         $fileName = 'back-arrow-black.svg';
         $path  = storage_path("unitTestFiles/$fileName");
@@ -775,6 +788,11 @@ class TenantOptionsTest extends TestCase
         $apiUserId = DB::table('api_user')->insertGetId($apiKeys);
 
         DB::statement("CREATE DATABASE IF NOT EXISTS `ci_tenant_{$tenantId}`");
+        DB::table('tenant_language')->insert([
+            'tenant_id' => $tenantId,
+            'language_id' => 1,
+            'default' => '1'
+        ]);
 
         Storage::disk('s3')->put(
             $tenant->name.'/assets/css/style.css',
