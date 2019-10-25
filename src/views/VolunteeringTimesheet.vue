@@ -1082,9 +1082,9 @@
                 })
 
             },
-            makeToast(letiant = null, message) {
+            makeToast(variant = null, message) {
                 this.$bvToast.toast(message, {
-                    letiant: letiant,
+                    variant: variant,
                     solid: true,
                     autoHideDelay: 1000
                 })

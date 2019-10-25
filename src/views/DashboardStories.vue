@@ -166,6 +166,12 @@
         },
         methods: {
             pageChange(page){
+               setTimeout(() => {
+					window.scrollTo({
+						'behavior': 'smooth',
+						'top': 0
+					}, 0);
+				});
 				this.getMyStory(page);
 			},
             getMyStory(page) {
@@ -186,6 +192,9 @@
                             this.pagination.total = 0,
                             this.pagination.perPage = 1,
                             this.pagination.totalPages = 0
+                            if(page != 1) {
+                                this.getMyStory(this.pagination.currentPage)
+                            }
                         }
                     }
                 })
@@ -203,6 +212,7 @@
             getMediaPath(data) {
 			    if(data.storyMedia && data.storyMedia.path != '') {
                     let media = data.storyMedia;
+                    
                     if (media.type == 'video') {
                         let videoPath = media.path;
                         let videoId = '';
@@ -261,6 +271,7 @@
                         this.isLoaderActive = false
 					} else {
                         this.makeToast('success',this.languageData.label.story_deleted)
+                        // this.pagination.currentPage = 1
                         this.getMyStory(this.pagination.currentPage);
 					}
                 })

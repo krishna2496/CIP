@@ -9,7 +9,7 @@
                     <i class="close" @click="close()" v-b-tooltip.hover :title="languageData.label.close"></i>
                     <h5 class="modal-title">{{languageData.label.add_your_skills}}</h5>
                 </template>
-                <b-alert show letiant="danger" dismissible v-model="showErrorDiv">
+                <b-alert show variant="danger" dismissible v-model="showErrorDiv">
                     {{ message }}
                 </b-alert>
                 <div class="multiselect-options">

@@ -18,7 +18,7 @@ export default async(exportUrl, fileName) => {
             window.navigator.msSaveBlob(blob, fileName);
         } else {
 
-            var link = document.createElementNS('http://www.w3.org/1999/xhtml', 'a');
+            let link = document.createElementNS('http://www.w3.org/1999/xhtml', 'a');
             // Add the element to the DOM
             link.setAttribute("type", "hidden"); // make it hidden if needed
             link.download = fileName;

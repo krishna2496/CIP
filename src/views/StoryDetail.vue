@@ -39,7 +39,7 @@
 								</b-col>
 								<b-col xl="2" class="right-col" >
 									<slick ref="slick" :options="slickOptions" class="gallery-thumbs">
-										<!-- <div v-for="(media , v) in storyDetailList.storyMedia" :key="v">	 -->
+										
 											<div 
 											 v-for="(media , v) in storyDetailList.storyMedia" :key="v"
 												v-bind:class="{
@@ -53,7 +53,7 @@
 												/>
 												<i v-if="media.type == 'video'" class="btn-play"></i>
 											</div>		
-										<!-- </div>	 -->
+										
 									</slick>
 								</b-col>
 							</b-row>
@@ -138,7 +138,7 @@
 							<div slot-scope="{suggestion}">
 								<img :src="suggestion.item.avatar" />
 								<div>
-									{{suggestion.item.first_name}} {{suggestion.item.last_name}} <span>({{suggestion.item.email}})</span>
+									{{suggestion.item.first_name}} {{suggestion.item.last_name}} 
 								</div>
 							</div>
 						</VueAutosuggest>
@@ -225,7 +225,7 @@
 							}
 						}
 					]
-					// Any other options that can be got from plugin documentation
+					
 				},
 				storyDetailList: null,
 				userList:[]
@@ -257,18 +257,18 @@
 			},
 			handleSliderClick(event) {
 				event.stopPropagation();
-				var hideVideo = document.querySelector(".video-wrap");
-				var galleryImg = document.querySelector(".gallery-top .img-wrap");
-				var galleryImgSrc = document.querySelector(".gallery-top .img-wrap img");
-				var videoSrc = document.querySelector(".video-wrap iframe");
-				var dataSrc = event.target.getAttribute("data-src");
+				let hideVideo = document.querySelector(".video-wrap");
+				let galleryImg = document.querySelector(".gallery-top .img-wrap");
+				let galleryImgSrc = document.querySelector(".gallery-top .img-wrap img");
+				let videoSrc = document.querySelector(".video-wrap iframe");
+				let dataSrc = event.target.getAttribute("data-src");
 				if (event.target.classList.contains("video-item")) {
 					videoSrc.src = dataSrc;
 					hideVideo.style.display = "block";
 					galleryImg.style.display = "none";
 				} else if (event.target.classList.contains("btn-play")) {
-					var parentBtn = event.target.parentNode;
-					var siblingBtn = parentBtn.childNodes;
+					let parentBtn = event.target.parentNode;
+					let siblingBtn = parentBtn.childNodes;
 					hideVideo.style.display = "block";
 					galleryImg.style.display = "none";
 					videoSrc.src = siblingBtn[0].getAttribute("data-src");
@@ -317,8 +317,29 @@
 			getStoryDetail() {
 				storyDetail(this.storyId).then(response => {
 					if(response.error == false) {
+						let mediaType = []
 						this.storyDetailList = response.data
+						let newMediaType = response.data.storyMedia
+						if(newMediaType) {
+							newMediaType.filter((data,index) => {
+								if(data.type == 'video') {
+									let path = data.path.split(',')
+									path.filter((pathData) => {
+										mediaType.push({
+											'path' : pathData,
+											'story_id' : data.story_id,
+											'story_media_id' : data.story_media_id,
+											'type' : data.type
+										})
+									})
+								} else {
+									mediaType.push(data)
+								}
+							})
+						}
+						this.storyDetailList.storyMedia  = mediaType
 						this.isContentLoaded = true
+						
 						setTimeout(() => {
 							this.sliderToShow = true
 						},200)
@@ -392,7 +413,7 @@
 			}
 			this.getStoryDetail();
 			setTimeout(() => {
-				var thumbImg = document.querySelectorAll(
+				let thumbImg = document.querySelectorAll(
 					".gallery-thumbs .slick-slide img, .gallery-thumbs .slick-slide .btn-play"
 				);
 				thumbImg.forEach((itemEvent) => {
@@ -402,7 +423,7 @@
 			},3000);
 			window.addEventListener("resize", () => {
 				setTimeout(() => {
-					var thumbImg = document.querySelectorAll(
+					let thumbImg = document.querySelectorAll(
 						".gallery-thumbs .slick-slide img, .gallery-thumbs .slick-slide .btn-play"
 					);
 					thumbImg.forEach((itemEvent) => {

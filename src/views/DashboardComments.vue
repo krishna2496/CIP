@@ -55,7 +55,7 @@
 									<b-table :items="commentItems" responsive :fields="commentfields"
 										class="history-table">
 										<template :slot="languageData.label.mission" slot-scope="data">
-											<b-link :to="`/mission-detail/${data.item.mission_id}`" class="table-link">
+											<b-link :to="`/mission-detail/${data.item.mission_id}`" target="_blank" class="table-link">
 												{{ data.item[languageData.label.mission] }}</b-link>
 										</template>
 										<template :slot="languageData.label.date" slot-scope="data">
@@ -68,11 +68,11 @@
 											{{data.item[languageData.label.status] }}
 										</template>
 										<template :slot="languageData.label.action" slot-scope="data">
-											<b-button class="btn-action btn-expand">
+											<!-- <b-button class="btn-action btn-expand"  v-b-tooltip.hover :title="languageData.label.expand">
 												<img :src="$store.state.imagePath+'/assets/images/expand-ic.svg'"
 													alt="Expand" />
-											</b-button>
-											<b-button class="btn-action" @click="deleteComments(data.item.comment_id)">
+											</b-button> -->
+											<b-button class="btn-action"  v-b-tooltip.hover :title="languageData.label.delete" @click="deleteComments(data.item.comment_id)">
 												<img :src="$store.state.imagePath+'/assets/images/gray-delete-ic.svg'"
 													alt="Delete" />
 											</b-button>
@@ -132,7 +132,7 @@
 					},
 					{
 						key: "",
-						class: "expand-col",
+						class: "expand-col remove-truncate",
 						label: ""
 					},
 					{
@@ -188,6 +188,11 @@
 								this.statsField.pending = response.data.stats[0].pending;
 								this.statsField.declined = response.data.stats[0].declined;
 							}
+						} else {
+							this.commentItems = []
+							this.statsField.published = 0;
+							this.statsField.pending = 0;
+							this.statsField.declined = 0;
 						}
 					} else {
 						this.message = response.message
@@ -228,29 +233,29 @@
 		},
 		created() {
 			this.languageData = JSON.parse(store.state.languageLabel);
-			setTimeout(() => {
-				var buttonExpand = document.querySelectorAll(".btn-expand");
-				buttonExpand.forEach(function (event) {
-					event.addEventListener("click", function () {
-						var getcommentCell = this.parentNode.parentNode.childNodes[2];
-						var getcommenthtml = getcommentCell.innerHTML;
-						var strlenght = getcommenthtml.length;
-						var rowParent = this.parentNode.parentNode.parentNode;
-						var rowSibling = rowParent.childNodes;
-						if (strlenght > 30) {
-							getcommentCell.classList.toggle("remove-truncate");
-						}
-						for (var i = 0; i < rowSibling.length; i++) {
-							var siblingChild = rowSibling[i].childNodes;
-							for (var j = 0; j < siblingChild.length; j++) {
-								if (siblingChild[j] != getcommentCell) {
-									siblingChild[j].classList.remove("remove-truncate");
-								}
-							}
-						}
-					});
-				});
-			}, 2000);
+			// setTimeout(() => {
+			// 	let buttonExpand = document.querySelectorAll(".btn-expand");
+			// 	buttonExpand.forEach( (event) => {
+			// 		event.addEventListener("click", function () {
+			// 			let getcommentCell = this.parentNode.parentNode.childNodes[2];
+			// 			let getcommenthtml = getcommentCell.innerHTML;
+			// 			let strlenght = getcommenthtml.length;
+			// 			let rowParent = this.parentNode.parentNode.parentNode;
+			// 			let rowSibling = rowParent.childNodes;
+			// 			if (strlenght > 30) {
+			// 				getcommentCell.classList.toggle("remove-truncate");
+			// 			}
+			// 			for (let i = 0; i < rowSibling.length; i++) {
+			// 				let siblingChild = rowSibling[i].childNodes;
+			// 				for (let j = 0; j < siblingChild.length; j++) {
+			// 					if (siblingChild[j] != getcommentCell) {
+			// 						siblingChild[j].classList.remove("remove-truncate");
+			// 					}
+			// 				}
+			// 			}
+			// 		});
+			// 	});
+			// }, 2000);
 			this.commentfields[0].label = this.languageData.label.mission
 			this.commentfields[1].label = this.languageData.label.date
 			this.commentfields[2].label = this.languageData.label.comment

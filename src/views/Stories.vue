@@ -36,7 +36,7 @@
 		<footer>
 			<TheSecondaryFooter></TheSecondaryFooter>
 		</footer>
-		<back-to-top bottom="34px" right="40px" title="back to top">
+		<back-to-top bottom="50px" right="40px" :title="languageData.label.back_to_top">
 			<i class="icon-wrap">
 				<img class="img-normal" :src="$store.state.imagePath+'/assets/images/down-arrow.svg'"
 					alt="Down Arrow" />
@@ -84,6 +84,12 @@
 
 		methods: {
 			pageChange(page){
+				setTimeout(() => {
+					window.scrollTo({
+						'behavior': 'smooth',
+						'top': 0
+					}, 0);
+				});
 				this.getStoryListing(page);
 			},
 			getStoryListing(currentPage) {

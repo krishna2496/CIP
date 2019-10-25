@@ -5,7 +5,7 @@
                 <i class="close" @click="close()" v-b-tooltip.hover :title="languageData.label.close"></i>
                 <h5 class="modal-title">{{languageData.label.hour_entry_modal_title}}</h5>
             </template>
-            <b-alert show :letiant="classVariant" dismissible v-model="showErrorDiv">
+            <b-alert show :variant="classVariant" dismissible v-model="showErrorDiv">
                 {{ message }}
             </b-alert>
             <div class="table-wrapper-outer">
@@ -313,7 +313,8 @@
 
                 files.filter((data, index) => {
                     let fileName = data.name.split('.');
-                    if (!allowedFileTypes.includes(fileName[fileName.length - 1])) {
+                    fileName = fileName[fileName.length - 1].toLowerCase()
+                    if (!allowedFileTypes.includes(fileName)) {
                         this.fileError = this.languageData.errors.invalid_file_type
                         error = true
                     } else {

@@ -29,6 +29,10 @@
                 </b-col>
                 <b-col md="6" class="copyright-text">
                     <p>© {{year}} Optimy.com. {{ languageData.label.all_rights_reserved }}.</p>
+                    <div class="lang-drodown-wrap">
+                            <AppCustomDropdown :optionList="langList" :defaultText="defautLang"
+                                translationEnable="false" @updateCall="setLanguage" />
+                    </div>
                 </b-col>
 
             </b-row>
@@ -99,9 +103,11 @@
     import {
         cmsPages,
         cookieAgreement,
-        contactUs
+        contactUs,
+        loadLocaleMessages,
     } from "../../services/service";
     import constants from '../../constant';
+    import AppCustomDropdown from '../../components/AppCustomDropdown';
     import {
         required,
         email,
@@ -109,7 +115,9 @@
         minLength
     } from 'vuelidate/lib/validators';
     export default {
-        components: {},
+        components: {
+            AppCustomDropdown
+        },
         name: "TheSecondaryFooter",
         data() {
             return {
@@ -130,7 +138,9 @@
                 classVariant : '',
                 showDismissibleAlert : false,
                 contactUsDisplay:true,
-                isAjaxCall : false
+                isAjaxCall : false,
+                langList: [],
+                defautLang: '',
             };
         },
         validations: {
@@ -155,11 +165,12 @@
             if (store.state.cookieAgreementDate == '' || store.state.cookieAgreementDate == null) {
                 this.isCookieHidden = false;
             }
-            
+            this.langList = JSON.parse(store.state.listOfLanguage)
+            this.defautLang = store.state.defaultLanguage
             setTimeout(() => {
-                var closeCookies = document.querySelector('.cookies-block .close');
-                var agreeBtn = document.querySelector('.cookies-block .btn');
-                var cookiesBlock = document.querySelector('.cookies-block');
+                let closeCookies = document.querySelector('.cookies-block .close');
+                let agreeBtn = document.querySelector('.cookies-block .btn');
+                let cookiesBlock = document.querySelector('.cookies-block');
 
                 agreeBtn.addEventListener('click', () => {
                     cookiesBlock.classList.add('hidden')
@@ -228,7 +239,13 @@
                         footerH + "px";
                 }
             },
-
+            async setLanguage(language) {
+                    this.defautLang = language.selectedVal;
+                    store.commit('setDefaultLanguage', language);
+                    this.$i18n.locale = language.selectedVal.toLowerCase()
+                    await loadLocaleMessages(this.$i18n.locale);
+                    location.reload();
+            },
             agreeCookie() {
                 let data = {
                     "agreement": true
