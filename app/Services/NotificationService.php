@@ -130,9 +130,8 @@ class NotificationService
         );
         
         // Create message
-        $response['icon'] = empty($inviteDetails->fromUser->avatar)
-        ? $this->helpers->getUserDefaultProfileImage($tenantName)
-        : $inviteDetails->fromUser->avatar;
+        $response['icon'] = (is_null($inviteDetails->fromUser->avatar) || ($inviteDetails->fromUser->avatar === ""))
+        ? $this->helpers->getUserDefaultProfileImage($tenantName) : $inviteDetails->fromUser->avatar;
         $response['notification_string'] = $inviteDetails->fromUser->first_name.
         " ".$inviteDetails->fromUser->last_name." - "
         .trans('general.notification.RECOMMENDS_THIS_MISSION')." - ".$missionName;
@@ -160,11 +159,10 @@ class NotificationService
         $inviteDetails = $this->storyInviteRepository->getDetails($notification->entity_id);
 
         $storyTitle = $inviteDetails->story->title;
-       
+
         // Create message
-        $response['icon'] = empty($inviteDetails->fromUser->avatar)
-        ? $this->helpers->getUserDefaultProfileImage($tenantName)
-        : $inviteDetails->fromUser->avatar;
+        $response['icon'] = (is_null($inviteDetails->fromUser->avatar) || ($inviteDetails->fromUser->avatar === ""))
+        ? $this->helpers->getUserDefaultProfileImage($tenantName) : $inviteDetails->fromUser->avatar;
         $response['notification_string'] = $inviteDetails->fromUser->first_name.
         " ".$inviteDetails->fromUser->last_name." - "
         .trans('general.notification.RECOMMENDS_THIS_STORY')." - ".$storyTitle;
@@ -279,9 +277,9 @@ class NotificationService
         $response['notification_string'] = trans('general.notification.STORY')." "
         .trans('general.notification.IS')." ".$status." - ".$storyDetails[0]['title'];
         $response['is_read'] = $notification->is_read;
-        $response['link'] = ($storyDetails[0]['title'] !==
+        $response['link'] = ($notification->action !==
         config('constants.story_status.DECLINED'))
-        ? '/story-detail/'.$notification->entity_id : '/story-detail/';
+        ? '/story-detail/'.$notification->entity_id : '/my-stories';
         return $response;
     }
 

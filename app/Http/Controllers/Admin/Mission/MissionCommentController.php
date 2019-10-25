@@ -182,14 +182,14 @@ class MissionCommentController extends Controller
 
             // Make activity log
             event(new UserActivityLogEvent(
-                config('constants.activity_log_types.MISSION'),
+                config('constants.activity_log_types.MISSION_COMMENTS'),
                 config('constants.activity_log_actions.COMMENT_UPDATED'),
                 config('constants.activity_log_user_types.API'),
                 $this->userApiKey,
                 get_class($this),
                 $request->toArray(),
                 null,
-                $missionId
+                $commentId
             ));
             return $this->responseHelper->success($apiStatus, $apiMessage, $apiData->toArray());
         } catch (ModelNotFoundException $e) {
@@ -241,6 +241,18 @@ class MissionCommentController extends Controller
         $userId = $commentDetails->user->user_id;
 
         event(new UserNotificationEvent($notificationType, $entityId, $action, $userId));
+
+        // Make activity log
+        event(new UserActivityLogEvent(
+            config('constants.activity_log_types.MISSION_COMMENTS'),
+            config('constants.activity_log_actions.DELETED'),
+            config('constants.activity_log_user_types.API'),
+            $this->userApiKey,
+            get_class($this),
+            null,
+            null,
+            $commentId
+        ));
 
         return $this->responseHelper->success($apiStatus, $apiMessage);
     }

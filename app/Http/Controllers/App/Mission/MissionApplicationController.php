@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Traits\RestExceptionHandlerTrait;
 use Validator;
 use App\Events\User\UserActivityLogEvent;
+use App\Helpers\Helpers;
 
 class MissionApplicationController extends Controller
 {
@@ -31,6 +32,11 @@ class MissionApplicationController extends Controller
      * @var App\Helpers\ResponseHelper
      */
     private $responseHelper;
+    
+    /**
+     * @var App\Helpers\Helpers
+     */
+    private $helpers;
 
     /**
      * Create a new mission application controller instance.
@@ -38,16 +44,19 @@ class MissionApplicationController extends Controller
      * @param App\Repositories\MissionApplication\MissionApplicationRepository $missionApplicationRepository
      * @param App\Repositories\Mission\MissionRepository $missionRepository
      * @param Illuminate\Http\ResponseHelper $responseHelper
+     * @param App\Helpers\Helpers $helpers
      * @return void
      */
     public function __construct(
         MissionApplicationRepository $missionApplicationRepository,
         MissionRepository $missionRepository,
-        ResponseHelper $responseHelper
+        ResponseHelper $responseHelper,
+        Helpers $helpers
     ) {
         $this->missionApplicationRepository = $missionApplicationRepository;
         $this->missionRepository = $missionRepository;
         $this->responseHelper = $responseHelper;
+        $this->helpers = $helpers;
     }
 
     /**
@@ -59,11 +68,12 @@ class MissionApplicationController extends Controller
     public function missionApplication(Request $request): JsonResponse
     {
         // Server side validataions
+        $status = config("constants.publication_status")["APPROVED"];
         $validator = Validator::make(
             $request->all(),
             [
-                "mission_id" => "integer|required|exists:mission,mission_id,deleted_at,NULL,
-                    publication_status,".config("constants.publication_status")["APPROVED"],
+                "mission_id" =>
+                "integer|required|exists:mission,mission_id,deleted_at,NULL,publication_status,".$status,
                 "availability_id" => "integer|exists:availability,availability_id,deleted_at,NULL"
             ]
         );
@@ -130,7 +140,7 @@ class MissionApplicationController extends Controller
             get_class($this),
             $request->toArray(),
             $request->auth->user_id,
-            $request->mission_id
+            $missionApplication->mission_application_id
         ));
         return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
     }
@@ -145,7 +155,17 @@ class MissionApplicationController extends Controller
     public function getVolunteers(Request $request, int $missionId): JsonResponse
     {
         try {
-            $missionVolunteers = $this->missionApplicationRepository->missionVolunteerDetail($request, $missionId);
+            $missionVolunteers = $this->missionApplicationRepository->missionVolunteerDetail($request, $missionId); 
+            
+            // Get default user avatar
+            $tenantName = $this->helpers->getSubDomainFromRequest($request);
+            $defaultAvatar = $this->helpers->getUserDefaultProfileImage($tenantName);
+            
+            foreach ($missionVolunteers as $volunteers) {
+                if (!isset($volunteers->avatar)) {
+                    $volunteers->avatar = $defaultAvatar;
+                }
+            }
 
             // Set response data
             $apiData = $missionVolunteers;

@@ -402,20 +402,25 @@ $router->group(['middleware' => 'localization'], function ($router) {
         'middleware' => 'localization|tenant.connection|jwt.auth',
           'uses' => 'App\Notification\NotificationTypeController@index']);
 
+    /* Store or update user notification settings */
+    $router->post('/app/user-notification-settings/update', ['as' => 'app.user-notification-settings.update',
+        'middleware' => 'localization|tenant.connection|jwt.auth|JsonApiMiddleware',
+        'uses' => 'App\Notification\NotificationTypeController@storeOrUpdate']);
+
     /* Read Unread User notification */
     $router->post('/app/notification/read-unread/{notificationId}', ['as' => 'app.user-notification.read-unread',
         'middleware' => 'localization|tenant.connection|jwt.auth',
         'uses' => 'App\Notification\NotificationController@readUnreadNotification']);
 
     /* Clear User notification */
-    $router->delete('/app/notification/clear', ['as' => 'app.user-notification.clear',
+    $router->delete('/app/notifications/clear', ['as' => 'app.user-notifications.clear',
         'middleware' => 'localization|tenant.connection|jwt.auth',
         'uses' => 'App\Notification\NotificationController@clearAllNotifications']);
         
     /* Fetch notification settings */
-    $router->get('/app/notification', ['as' => 'app.notification',
+    $router->get('/app/notifications', ['as' => 'app.notifications',
         'middleware' => 'localization|tenant.connection|jwt.auth',
-          'uses' => 'App\Notification\NotificationController@index']);
+        'uses' => 'App\Notification\NotificationController@index']);
 
     /* Read message send by admin */
     $router->post('/app/message/read/{messageId}', ['as' => 'app.message.read',
@@ -502,7 +507,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
 
     /* Set mission data for tenant specific */
     $router->group(
-        ['prefix' => 'missions', 'middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware'],
+        ['prefix' => 'missions', 'middleware' => 'auth.tenant.admin|JsonApiMiddleware|localization'],
         function ($router) {
             $router->get('', ['as' => 'missions', 'middleware' => ['PaginationMiddleware'],
                 'uses' => 'Admin\Mission\MissionController@index']);
@@ -559,7 +564,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
 
     /* Set mission theme data for tenant specific */
     $router->group(
-        ['prefix' => '/entities/themes', 'middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware'],
+        ['prefix' => '/entities/themes', 'middleware' => 'auth.tenant.admin|localization|JsonApiMiddleware'],
         function ($router) {
             $router->get('/', ['middleware' => ['PaginationMiddleware'],
                 'uses' => 'Admin\MissionTheme\MissionThemeController@index']);
@@ -725,6 +730,16 @@ $router->group(['middleware' => 'localization'], function ($router) {
 
             $router->post('/read/{messageId}', ['as' => 'message.read',
                 'uses' => 'Admin\Message\MessageController@readMessage']);
+        }
+    );
+
+    /* Get Activity Logs */
+    $router->group(
+        ['middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware'],
+        function ($router) {
+            /* Get user activity logs */
+            $router->get('/logs', ['middleware' => ['PaginationMiddleware'],
+                'uses' => 'Admin\ActivityLog\ActivityLogController@index']);
         }
     );
 /*

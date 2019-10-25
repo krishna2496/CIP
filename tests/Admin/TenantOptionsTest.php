@@ -587,8 +587,13 @@ class TenantOptionsTest extends TestCase
         $apiSecret = $randomString;
 
         DB::statement("CREATE DATABASE IF NOT EXISTS `ci_tenant_{$tenantId}`");
+        DB::table('tenant_language')->insert([
+            'tenant_id' => $tenantId,
+            'language_id' => 1,
+            'default' => 1
+        ]);
 
-        $this->get('style/download-style', ['Authorization' => 'Basic '.base64_encode($apiKey.':'.$apiSecret)])
+        $this->get('style/download-style', ['Authorization' => 'Basic '.base64_encode($apiKey.':'.$apiSecret), 'X-localization' => 'en'])
         ->seeStatusCode(404);
 
         DB::setDefaultConnection('mysql');

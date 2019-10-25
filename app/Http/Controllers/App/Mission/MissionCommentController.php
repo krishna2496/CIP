@@ -5,6 +5,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Repositories\MissionComment\MissionCommentRepository;
+use App\Repositories\User\UserRepository;
 use App\Helpers\ResponseHelper;
 use Illuminate\Http\JsonResponse;
 use App\Traits\RestExceptionHandlerTrait;
@@ -15,6 +16,7 @@ use App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository;
 use App\Helpers\LanguageHelper;
 use App\Helpers\ExportCSV;
 use App\Events\User\UserActivityLogEvent;
+use Carbon\Carbon;
 
 class MissionCommentController extends Controller
 {
@@ -39,11 +41,17 @@ class MissionCommentController extends Controller
      * @var App\Helpers\LanguageHelper
      */
     private $languageHelper;
+
+    /**
+     * @var App\Repositories\User\UserRepository
+     */
+    private $userRepository;
     
     /**
      * Create a new comment controller instance
      *
      * @param App\Repositories\Mission\MissionCommentRepository $missionCommentRepository
+     * @param App\Repositories\User\UserRepository $userRepository
      * @param Illuminate\Http\ResponseHelper $responseHelper
      * @param App\Helpers\Helpers
      * @param App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository
@@ -52,12 +60,14 @@ class MissionCommentController extends Controller
      */
     public function __construct(
         MissionCommentRepository $missionCommentRepository,
+        UserRepository $userRepository,
         ResponseHelper $responseHelper,
         Helpers $helpers,
         TenantActivatedSettingRepository $tenantActivatedSettingRepository,
         LanguageHelper $languageHelper
     ) {
         $this->missionCommentRepository = $missionCommentRepository;
+        $this->userRepository = $userRepository;
         $this->responseHelper = $responseHelper;
         $this->helpers = $helpers;
         $this->tenantActivatedSettingRepository = $tenantActivatedSettingRepository;
@@ -67,13 +77,21 @@ class MissionCommentController extends Controller
     /**
      * Get mission comments
      *
+     * @param \Illuminate\Http\Request $request
      * @param int $missionId
      * @return Illuminate\Http\JsonResponse
      */
-    public function getComments(int $missionId): JsonResponse
+    public function getComments(Request $request, int $missionId): JsonResponse
     {
         try {
             $comments = $this->missionCommentRepository->getComments($missionId);
+            
+            foreach ($comments as $comment) {
+                $timezone = $this->userRepository->getUserTimezone($request->auth->user_id);
+                $comment->created_at =  Carbon::parse($comment->created_at, config('constants.TIMEZONE'))
+                ->setTimezone($timezone)->toDateTimeString();
+            }
+
             $apiData = $comments;
             $apiStatus = Response::HTTP_OK;
             $apiMessage = ($apiData->count() > 0) ? trans('messages.success.MESSAGE_MISSION_COMMENT_LISTING')
@@ -143,7 +161,7 @@ class MissionCommentController extends Controller
             get_class($this),
             $request->toArray(),
             $request->auth->user_id,
-            $request->mission_id
+            $missionComment->comment_id
         ));
 
         return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
@@ -190,6 +208,18 @@ class MissionCommentController extends Controller
             $apiStatus = Response::HTTP_NO_CONTENT;
             $apiMessage = trans('messages.success.MESSAGE_COMMENT_DELETED');
             
+            //Make activity log
+            event(new UserActivityLogEvent(
+                config('constants.activity_log_types.MISSION_COMMENTS'),
+                config('constants.activity_log_actions.DELETED'),
+                config('constants.activity_log_user_types.REGULAR'),
+                $request->auth->email,
+                get_class($this),
+                [],
+                $request->auth->user_id,
+                $commentId
+            ));
+
             return $this->responseHelper->success($apiStatus, $apiMessage);
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
@@ -242,6 +272,18 @@ class MissionCommentController extends Controller
         }
     
         $tenantName = $this->helpers->getSubDomainFromRequest($request);
+
+        // Make activity log
+        event(new UserActivityLogEvent(
+            config('constants.activity_log_types.MISSION_COMMENTS'),
+            config('constants.activity_log_actions.EXPORT'),
+            config('constants.activity_log_user_types.REGULAR'),
+            $request->auth->email,
+            get_class($this),
+            $userMissionComments['comments']->toArray(),
+            null,
+            $request->auth->user_id
+        ));
         $path = $excel->export('app/'.$tenantName.'/MissionComments/'.$request->auth->user_id.'/exports');
         return response()->download($path, $fileName);
     }

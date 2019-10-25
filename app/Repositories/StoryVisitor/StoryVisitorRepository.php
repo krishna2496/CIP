@@ -45,4 +45,16 @@ class StoryVisitorRepository implements StoryVisitorInterface
         }
         return $storyViewCount = $this->storyVisitor->where('story_id', $story['story_id'])->count();
     }
+
+    /**
+     * Get story visitor data
+     *
+     * @param int $storyId
+     * @param int $userId
+     * @return App\Models\StoryVisitor
+     */
+    public function getStoryVisitorData(int $storyId, int $userId): StoryVisitor
+    {
+        return $this->storyVisitor->where('story_id', $storyId)->where('user_id', $userId)->first();
+    }
 }

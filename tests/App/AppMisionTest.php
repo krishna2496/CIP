@@ -354,6 +354,7 @@ class AppMissionTest extends TestCase
         ->seeStatusCode(201);
         $mission = App\Models\Mission::orderBy("mission_id", "DESC")->take(1)->first();
 
+        DB::setDefaultConnection('mysql');
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->get('app/mission/'.$mission->mission_id, ['token' => $token])
           ->seeStatusCode(200)
@@ -535,6 +536,7 @@ class AppMissionTest extends TestCase
         $user->setConnection($connection);
         $user->save();
 
+        DB::setDefaultConnection('mysql');
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->get('/app/related-missions/'.$mission->mission_id, ['token' => $token])
           ->seeStatusCode(200)
@@ -2382,6 +2384,7 @@ class AppMissionTest extends TestCase
         $user->setConnection($connection);
         $user->save();
 
+        DB::setDefaultConnection('mysql');
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->get('/app/related-missions/'.$mission->mission_id, ['token' => $token])
           ->seeStatusCode(200)
@@ -2630,6 +2633,7 @@ class AppMissionTest extends TestCase
             "message"
         ]);
 
+        DB::setDefaultConnection('mysql');
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->get('app/user-filter', ['token' => $token])
           ->seeStatusCode(200);
@@ -2734,6 +2738,7 @@ class AppMissionTest extends TestCase
             "message"
         ]);
 
+        DB::setDefaultConnection('mysql');
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->get('app/user-filter', ['token' => $token])
           ->seeStatusCode(200);
@@ -2936,6 +2941,7 @@ class AppMissionTest extends TestCase
             "message"
         ]);
 
+        DB::setDefaultConnection('mysql');
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->get('app/user-filter', ['token' => $token])
           ->seeStatusCode(200);
@@ -3047,6 +3053,7 @@ class AppMissionTest extends TestCase
         $user->setConnection($connection);
         $user->save();
 
+        DB::setDefaultConnection('mysql');
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->get('/app/related-missions/'.$mission->mission_id, ['token' => $token])
           ->seeStatusCode(200)

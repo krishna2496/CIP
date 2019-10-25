@@ -210,6 +210,7 @@ class TenantOptionsController extends Controller
         // Dispatch job, that will store in master database
 
         dispatch(new UpdateStyleSettingsJob($tenantName, $options, $fileName));
+        $this->helpers->switchDatabaseConnection('tenant', $request);
 
         if (!empty($fileName)) {
             $requestArray = $request->toArray();

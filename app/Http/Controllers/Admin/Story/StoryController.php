@@ -17,6 +17,7 @@ use Illuminate\Validation\Rule;
 use Validator;
 use App\Helpers\Helpers;
 use App\Events\User\UserNotificationEvent;
+use App\Events\User\UserActivityLogEvent;
 
 class StoryController extends Controller
 {
@@ -54,6 +55,7 @@ class StoryController extends Controller
      * @param App\Repositories\Story\StoryRepository $storyRepository
      * @param App\Helpers\ResponseHelper $responseHelper
      * @param App\Helpers\LanguageHelper $languageHelper
+     * @param \Illuminate\Http\Request $request
      * @return void
      */
     public function __construct(
@@ -167,6 +169,22 @@ class StoryController extends Controller
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_STORY_STATUS_UPDATED');
             $apiData = ['story_id' => $storyId];
+
+            // Make activity log
+            $activityLogStatus = $request->status == 'PUBLISHED'
+                ? config('constants.activity_log_actions.APPROVED')
+                : config('constants.activity_log_actions.DECLINED');
+
+            event(new UserActivityLogEvent(
+                config('constants.activity_log_types.STORY'),
+                $activityLogStatus,
+                config('constants.activity_log_user_types.API'),
+                $request->header('php-auth-user'),
+                get_class($this),
+                $request->toArray(),
+                null,
+                $storyId
+            ));
             
             // Send notification to user
             $notificationType = config('constants.notification_type_keys.MY_STORIES');

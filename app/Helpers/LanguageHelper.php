@@ -191,7 +191,7 @@ class LanguageHelper
      */
     public function checkTenantLanguage(Request $request): Object
     {
-        // Get tenant name from front user's request        
+        // Get tenant name from front user's request
         if (is_null($request->header('php-auth-user')) || $request->header('php-auth-user') === '') {
             $tenantName = $this->helpers->getSubDomainFromRequest($request);
         } else { // Get tenant name from front admin's request

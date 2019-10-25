@@ -47,7 +47,7 @@ class UserSkill extends Model
      */
     public function linkUserSkill(int $userId, int $skillId): self
     {
-        return static::firstOrNew(array('user_id' => $userId, 'skill_id' => $skillId, 'deleted_at' => null));
+        return static::firstOrCreate(array('user_id' => $userId, 'skill_id' => $skillId, 'deleted_at' => null));
     }
 
     /**

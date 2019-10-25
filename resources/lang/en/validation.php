@@ -188,7 +188,10 @@ return [
         'news_content.translations.*.description' => 'description',
         'translations.*.title' => 'title',
         'settings.*.notification_type_id' => 'notification type id',
-		'user_ids.*' => 'user id'
+        'user_ids.*' => 'user id',
+        'mission_detail.*.custom_information' => 'custom information',
+        'mission_detail.*.custom_information.*.title' => 'title',
+        'mission_detail.*.custom_information.*.description' => 'description',
 		],
 
 ];

@@ -47,11 +47,11 @@ trait MissionTransformable
                 config('constants.TIMEZONE')
             )->setTimezone($timezone)->toDateString() : null;
         
-            $mission['application_start_date'] = 
+            $mission['application_start_date'] =
                 isset($mission['timeMission']['application_start_date']) ? Carbon::parse(
-                $mission['timeMission']['application_start_date'],
-                config('constants.TIMEZONE')
-            )->setTimezone($timezone)->toDateString() : null;
+                    $mission['timeMission']['application_start_date'],
+                    config('constants.TIMEZONE')
+                )->setTimezone($timezone)->toDateString() : null;
 
             $mission['application_end_date'] = isset($mission['timeMission']['application_end_date']) ? Carbon::parse(
                 $mission['timeMission']['application_end_date'],
@@ -110,6 +110,7 @@ trait MissionTransformable
             $mission['description'] = $missionLanguage->description ?? '';
         }
         $mission['objective'] = $missionLanguage->objective ?? '';
+        $mission['custom_information'] = $missionLanguage->custom_information ?? null;
         unset($mission['missionLanguage']);
 
         // Check for apply in mission validity

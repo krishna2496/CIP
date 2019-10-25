@@ -206,7 +206,8 @@ class MissionRepository implements MissionInterface
                     'title' => $value['title'],
                     'short_description' => (isset($value['short_description'])) ? $value['short_description'] : null,
                     'description' => (array_key_exists('section', $value)) ? $value['section'] : '',
-                    'objective' => $value['objective']
+                    'objective' => $value['objective'],
+                    'custom_information' => (array_key_exists('custom_information', $value)) ? $value['custom_information'] : null
                 );
 
             $this->missionLanguage->create($missionLanguage);
@@ -351,7 +352,11 @@ class MissionRepository implements MissionInterface
                                         'short_description' => (isset($value['short_description'])) ?
                                         $value['short_description'] : null,
                                         'description' => ($value['section']),
-                                        'objective' => $value['objective']);
+                                        'objective' => $value['objective']
+                                        );
+                if (array_key_exists('custom_information', $value)) {
+                    $missionLanguage['custom_information'] = $value['custom_information'];
+                }
 
                 $this->missionLanguage->createOrUpdateLanguage(['mission_id' => $id,
                 'language_id' => $language->language_id], $missionLanguage);
@@ -539,7 +544,8 @@ class MissionRepository implements MissionInterface
                     'language_id',
                     'title',
                     'short_description',
-                    'objective'
+                    'objective',
+                    'custom_information'
                 );
             }])
             ->withCount(['missionApplication as user_application_count' => function ($query) use ($request) {
@@ -1041,7 +1047,8 @@ class MissionRepository implements MissionInterface
                     'title',
                     'short_description',
                     'objective',
-                    'description'
+                    'description',
+                    'custom_information'
                 );
             }])
             ->withCount(['missionApplication as user_application_count' => function ($query) use ($request) {

@@ -17,6 +17,7 @@ use InvalidArgumentException;
 use App\Exceptions\TenantDomainNotFoundException;
 use App\Events\User\UserNotificationEvent;
 use App\Events\User\UserActivityLogEvent;
+use App\Helpers\LanguageHelper;
 
 class MissionController extends Controller
 {
@@ -37,18 +38,25 @@ class MissionController extends Controller
     private $userApiKey;
 
     /**
+     * @var App\Helpers\LanguageHelper
+     */
+    private $languageHelper;
+
+    /**
      * Create a new controller instance.
      *
      * @param  App\Repositories\Mission\MissionRepository $missionRepository
      * @param  App\Helpers\ResponseHelper $responseHelper
      * @param Illuminate\Http\Request $request
+     * @param App\Helpers\LanguageHelper $languageHelper
      * @return void
      */
-    public function __construct(MissionRepository $missionRepository, ResponseHelper $responseHelper, Request $request)
+    public function __construct(MissionRepository $missionRepository, ResponseHelper $responseHelper, Request $request, LanguageHelper $languageHelper)
     {
         $this->missionRepository = $missionRepository;
         $this->responseHelper = $responseHelper;
         $this->userApiKey = $request->header('php-auth-user');
+        $this->languageHelper = $languageHelper;
     }
 
     /**
@@ -110,6 +118,9 @@ class MissionController extends Controller
                 "total_seats" => "integer|min:1",
                 "goal_objective" => "required_if:mission_type,GOAL|integer|min:1",
                 "skills.*.skill_id" => "integer|exists:skill,skill_id,deleted_at,NULL",
+                "mission_detail.*.custom_information" =>"sometimes|required",
+                "mission_detail.*.custom_information.*.title" => "required_with:mission_detail.*.custom_information",
+                "mission_detail.*.custom_information.*.description" => "required_with:mission_detail.*.custom_information",
             ]
         );
         
@@ -130,12 +141,17 @@ class MissionController extends Controller
         $apiMessage = trans('messages.success.MESSAGE_MISSION_ADDED');
         $apiData = ['mission_id' => $mission->mission_id];
 
-        // Send notification to all users
-        $notificationType = config('constants.notification_type_keys.NEW_MISSIONS');
-        $entityId = $mission->mission_id;
-        $action = config('constants.notification_actions.CREATED');
-        
-        event(new UserNotificationEvent($notificationType, $entityId, $action));
+        // Send notification to user if mission publication status is PUBLISHED
+        if (
+            $mission->publication_status === config('constants.publication_status.APPROVED') ||
+            $mission->publication_status === config('constants.publication_status.PUBLISHED_FOR_APPLYING')
+        ) {
+            // Send notification to all users
+            $notificationType = config('constants.notification_type_keys.NEW_MISSIONS');
+            $entityId = $mission->mission_id;
+            $action = config('constants.notification_actions.CREATED');
+            event(new UserNotificationEvent($notificationType, $entityId, $action));
+        }
 
         // Make activity log
         event(new UserActivityLogEvent(
@@ -148,6 +164,7 @@ class MissionController extends Controller
             null,
             $mission->mission_id
         ));
+
         return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
     }
 
@@ -200,7 +217,10 @@ class MissionController extends Controller
                 "availability_id" => "sometimes|required|integer|exists:availability,availability_id,deleted_at,NULL",
                 "skills.*.skill_id" => "integer|exists:skill,skill_id,deleted_at,NULL",
                 "theme_id" => "sometimes|required|integer|exists:mission_theme,mission_theme_id,deleted_at,NULL",
-                "application_deadline" => "date"
+                "application_deadline" => "date",
+                "mission_detail.*.custom_information" =>"sometimes|required",
+                "mission_detail.*.custom_information.*.title" => "required_with:mission_detail.*.custom_information",
+                "mission_detail.*.custom_information.*.description" => "required_with:mission_detail.*.custom_information",
             ]
         );
         
@@ -215,7 +235,11 @@ class MissionController extends Controller
         }
         
         try {
+            $language = $this->languageHelper->getDefaultTenantLanguage($request);
+            $missionDetails = $this->missionRepository->getMissionDetailsFromId($id, $language->language_id);
+
             $this->missionRepository->update($request, $id);
+            
             // Set response data
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_MISSION_UPDATED');
@@ -231,6 +255,22 @@ class MissionController extends Controller
                 null,
                 $id
             ));
+
+            // Send notification to user if mission publication status is PUBLISHED
+            if (($request->publication_status !== $missionDetails->publication_status)
+                &&
+                (
+                    $request->publication_status === config('constants.publication_status.APPROVED') ||
+                    $request->publication_status === config('constants.publication_status.PUBLISHED_FOR_APPLYING')
+                )
+            ) {
+                // Send notification to all users
+                $notificationType = config('constants.notification_type_keys.NEW_MISSIONS');
+                $entityId = $id;
+                $action = config('constants.notification_actions.'.$request->publication_status);
+
+                event(new UserNotificationEvent($notificationType, $entityId, $action));
+            }
             
             return $this->responseHelper->success($apiStatus, $apiMessage);
         } catch (ModelNotFoundException $e) {

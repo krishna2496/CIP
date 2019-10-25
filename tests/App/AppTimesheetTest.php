@@ -97,7 +97,7 @@ class AppTimesheetTest extends TestCase
             'message',
         ]);
 
-        $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
+        DB::setDefaultConnection('mysql');
         $this->get('/app/timesheet', ['token' => $token])
         ->seeJsonStructure([
             "status",
@@ -635,11 +635,12 @@ class AppTimesheetTest extends TestCase
             'minutes' => rand(1, 59),
             'documents[]' =>[]
         ];
-        DB::setDefaultConnection('mysql');
-        
+
+        DB::setDefaultConnection('mysql');        
         $this->post('app/timesheet', $params, ['token' => $token])
           ->seeStatusCode(201);
 
+        DB::setDefaultConnection('mysql');
         $this->post('app/timesheet/', $params, ['token' => $token])
           ->seeStatusCode(200)
           ->seeJsonStructure([
@@ -750,6 +751,7 @@ class AppTimesheetTest extends TestCase
             'documents[]' =>[]
         ];
 
+        DB::setDefaultConnection('mysql');
         $this->post('app/timesheet/', $params, ['token' => $token])
         ->seeStatusCode(422)
         ->seeJsonStructure([
@@ -865,6 +867,7 @@ class AppTimesheetTest extends TestCase
             'documents[]' =>[]
         ];
 
+        DB::setDefaultConnection('mysql');
         $this->post('app/timesheet/', $params, ['token' => $token])
         ->seeStatusCode(422)
         ->seeJsonStructure([
@@ -979,7 +982,7 @@ class AppTimesheetTest extends TestCase
             'minutes' => rand(1, 59),
             'documents[]' =>[]
         ];
-
+        DB::setDefaultConnection('mysql');
         $this->post('app/timesheet/', $params, ['token' => $token])
         ->seeStatusCode(422)
         ->seeJsonStructure([
@@ -1093,7 +1096,7 @@ class AppTimesheetTest extends TestCase
         ]);
 
         $timesheet = App\Models\Timesheet::where("mission_id", $mission[0]['mission_id'])->get();
-
+        DB::setDefaultConnection('mysql');
         $token = Helpers::getJwtToken($user->user_id, env('DEFAULT_TENANT'));
         $this->get('/app/timesheet/'.$timesheet[0]['timesheet_id'], ['token' => $token])
         ->seeStatusCode(200)
@@ -1514,7 +1517,7 @@ class AppTimesheetTest extends TestCase
                 ]
             ]
         ];
-        
+        DB::setDefaultConnection('mysql');
         $this->post("app/timesheet/submit", $params, ['token' => $token])
         ->seeStatusCode(200)
         ->seeJsonStructure([
@@ -1631,6 +1634,8 @@ class AppTimesheetTest extends TestCase
             ]
         ];
         
+        DB::setDefaultConnection('mysql');
+
         $this->post("app/timesheet/submit", $params, ['token' => $token])
         ->seeStatusCode(200)
         ->seeJsonStructure([
@@ -1788,6 +1793,7 @@ class AppTimesheetTest extends TestCase
             ]
         ];
         
+        DB::setDefaultConnection('mysql');
         $this->post("app/timesheet/submit", $params, ['token' => $token])
         ->seeStatusCode(404)
         ->seeJsonStructure([
@@ -2036,6 +2042,7 @@ class AppTimesheetTest extends TestCase
         App\Models\Timesheet::where("mission_id", $mission[0]['mission_id'])
         ->update(['status_id' => config("constants.timesheet_status_id")["SUBMIT_FOR_APPROVAL"]]);
         
+        DB::setDefaultConnection('mysql');
         $this->get('/app/timesheet/goal-requests', ['token' => $token])
         ->seeJsonStructure([
             "status",
@@ -2291,6 +2298,7 @@ class AppTimesheetTest extends TestCase
         App\Models\Timesheet::where("mission_id", $mission[0]['mission_id'])
         ->update(['status_id' => config("constants.timesheet_status_id")["SUBMIT_FOR_APPROVAL"]]);
         
+        DB::setDefaultConnection('mysql');
         $this->get('/app/timesheet/goal-requests/export', ['token' => $token])
         ->seeStatusCode(200);
         $user->delete();
@@ -2397,8 +2405,8 @@ class AppTimesheetTest extends TestCase
             'action' => rand(1, 5),
             'documents[]' =>[]
         ];
-        DB::setDefaultConnection('mysql');
-        
+
+        DB::setDefaultConnection('mysql');        
         $this->post('app/timesheet', $params, ['token' => $token])
           ->seeStatusCode(201)
           ->seeJsonStructure([
@@ -2411,6 +2419,7 @@ class AppTimesheetTest extends TestCase
         App\Models\Timesheet::where("mission_id", $mission[0]['mission_id'])
         ->update(['status_id' => config("constants.timesheet_status_id")["AUTOMATICALLY_APPROVED"]]);
         
+        DB::setDefaultConnection('mysql');
         $this->post('app/timesheet', $params, ['token' => $token])
         ->seeStatusCode(422)
         ->seeJsonStructure([
@@ -2523,6 +2532,7 @@ class AppTimesheetTest extends TestCase
         App\Models\Timesheet::where("mission_id", $mission[0]['mission_id'])
         ->update(['status_id' => config("constants.timesheet_status_id")["APPROVED"]]);
         
+        DB::setDefaultConnection('mysql');
         $this->post('app/timesheet', $params, ['token' => $token])
         ->seeStatusCode(422)
         ->seeJsonStructure([
