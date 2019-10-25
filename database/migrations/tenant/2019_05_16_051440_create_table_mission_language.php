@@ -18,10 +18,11 @@ class CreateTableMissionLanguage extends Migration
             $table->bigIncrements('mission_language_id')->unsigned();
             $table->unsignedBigInteger('mission_id');
             $table->integer('language_id')->length(1)->default(1);
-            $table->string('title');
-            $table->string('short_description')->nullable();
+            $table->string('title', 191);
+            $table->string('short_description', 191)->nullable();
             $table->text('description'); 
             $table->text('objective')->nullable();
+            $table->text('custom_information')->nullable();
             $table->timestamps();
             $table->softDeletes();
             $table->foreign('mission_id')->references('mission_id')->on('mission')->onDelete('CASCADE')->onUpdate('CASCADE');

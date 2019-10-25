@@ -17,7 +17,7 @@ class CreateNewsLanguageTable extends Migration
             $table->bigIncrements('news_language_id')->unsigned();
             $table->unsignedBigInteger('news_id');
             $table->unsignedBigInteger('language_id');
-            $table->string('title',255);
+            $table->string('title', 255);
             $table->text('description');
             $table->timestamps();
             $table->softDeletes();

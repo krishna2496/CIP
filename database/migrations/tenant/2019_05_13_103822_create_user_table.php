@@ -16,22 +16,25 @@ class CreateUserTable extends Migration
             
         Schema::create('user', function (Blueprint $table) {
             $table->bigIncrements('user_id')->unsigned();
-            $table->string('first_name',16);
-            $table->string('last_name',16);
-            $table->string('email',128);
-            $table->string('password',255);
-            $table->string('avatar',128)->nullable(); 
+            $table->string('first_name', 16);
+            $table->string('last_name', 16);
+            $table->string('email', 128);
+            $table->string('password', 255);
+            $table->string('avatar', 128)->nullable(); 
             $table->unsignedBigInteger('timezone_id');
             $table->unsignedInteger('language_id'); //FK 
             $table->unsignedBigInteger('availability_id');
             $table->text('why_i_volunteer');
-            $table->string('employee_id',16)->nullable(); 
-            $table->string('department',16)->nullable();
+            $table->string('employee_id', 16); 
+            $table->string('department', 16)->nullable();
             $table->unsignedBigInteger('city_id'); // FK cities id
             $table->unsignedBigInteger('country_id');//FK countries id
             $table->text('profile_text');
-            $table->string('linked_in_url',255)->nullable();
+            $table->string('linked_in_url', 255)->nullable();
+            $table->string('title', 255)->nullable();
             $table->enum('status', ['0', '1'])->default(1);
+            $table->integer('hours_goal', 11)->nullable();
+            $table->timestamp('cookie_agreement_date')->nullable();
             $table->timestamps();
             $table->softDeletes();
             

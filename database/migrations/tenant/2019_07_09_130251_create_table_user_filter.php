@@ -14,7 +14,7 @@ class CreateTableUserFilter extends Migration
     public function up()
     {
         Schema::create('user_filter', function (Blueprint $table) {
-            $table->bigIncrements('id');
+            $table->bigIncrements('user_filter_id');
             $table->unsignedBigInteger('user_id');
             $table->text('filters');            
             $table->timestamps();

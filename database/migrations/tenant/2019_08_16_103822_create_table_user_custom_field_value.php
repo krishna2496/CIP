@@ -15,7 +15,7 @@ class CreateTableUserCustomFieldValue extends Migration
     {
             
         Schema::create('user_custom_field_value', function (Blueprint $table) {
-            $table->bigIncrements('field_value_id')->unsigned();
+            $table->bigIncrements('user_custom_field_value_id')->unsigned();
             $table->unsignedBigInteger('field_id'); // FK user custom fields id
             $table->unsignedBigInteger('user_id'); // FK users id
             $table->text('value');

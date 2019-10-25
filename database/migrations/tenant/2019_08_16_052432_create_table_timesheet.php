@@ -17,13 +17,19 @@ class CreateTableTimesheet extends Migration
         Schema::create('timesheet', function (Blueprint $table) {
             $table->bigIncrements('timesheet_id')->unsigned();
             $table->unsignedBigInteger('user_id'); // FK users id
-            $table->year('year');
-            $table->integer('month')->length(2);
-            $table->enum('status', ['PENDING','APPROVED']);
+            $table->unsignedBigInteger('mission_id');
+            $table->time('time')->nullable();
+            $table->int('action');                        
+            $table->date('date_volunteered');
+            $table->enum('day_volunteered', ['WORKDAY','HOLIDAY','WEEKEND']);
+            $table->text('note')->nullable();
+            $table->unsignedBigInteger('status_id')->default(1);
             $table->timestamps();
             $table->softDeletes();
             
             $table->foreign('user_id')->references('user_id')->on('user')->onDelete('CASCADE')->onUpdate('CASCADE');
+            $table->foreign('mission_id')->references('mission_id')->on('mission')->onDelete('CASCADE')->onUpdate('CASCADE');
+            $table->foreign('status_id')->references('timesheet_status_id')->on('timesheet_status')->onDelete('CASCADE')->onUpdate('CASCADE');
 
         });
     }
