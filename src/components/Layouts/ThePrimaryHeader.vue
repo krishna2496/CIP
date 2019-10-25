@@ -170,7 +170,7 @@
                                         'read-item':item.is_read == 1 ,
                                         'unread-item' : item.is_read == 0
                                     }" v-for="(item,index) in notificationListing.today" :key=index>
-                                        <i>
+                                        <i v-bind:class="{'message-profile-icon' : item.is_avatar && item.is_avatar ==1}">
                                             <img :src="item.icon" alt />
                                         </i>
                                         <p>
@@ -191,7 +191,7 @@
                                         'unread-item' : item.is_read == 0
                                     }" v-for="(item,index) in notificationListing.yesterday" :key=index>
 
-                                        <i>
+                                        <i v-bind:class="{'message-profile-icon' : item.is_avatar && item.is_avatar ==1}">
                                             <img :src="item.icon" alt />
                                         </i>
                                         <p>
@@ -212,7 +212,7 @@
                                         'unread-item' : item.is_read == 0
                                     }" v-for="(item,index) in notificationListing.older" :key=index>
 
-                                        <i>
+                                        <i  v-bind:class="{'message-profile-icon' : item.is_avatar && item.is_avatar ==1}">
                                             <img :src="item.icon" alt />
                                         </i>
                                         <p>
