@@ -31,4 +31,20 @@ interface NotificationInterface
      * @return null|App\Models\UserNotification
      */
     public function userNotificationSetting(int $userId, int $notificationTypeId): ?UserNotification;
+
+    /**
+     * Read Unread notification by notification id
+     *
+     * @param int $notificationId
+     * @param int $userId
+     * @return int $updatedNotificationId
+     */
+    public function readUnreadNotificationById(int $notificationId, int $userId): int;
+
+    /**
+     * Delete user's all notifications
+     * @param int $userId
+     * @return bool
+     */
+    public function deleteAllNotifications($userId): bool;
 }

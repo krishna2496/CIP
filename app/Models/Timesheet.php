@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\User;
 
 class Timesheet extends Model
 {
@@ -44,7 +45,8 @@ class Timesheet extends Model
      * @var array
      */
     protected $visible = ['timesheet_id', 'user_id', 'mission_id', 'time', 'action', 'date_volunteered',
-        'day_volunteered', 'notes', 'timesheetDocument', 'timesheetStatus', 'mission'];
+        'day_volunteered', 'notes', 'timesheetDocument', 'timesheetStatus', 'mission', 'month', 'total_hours',
+        'total_minutes'];
     
     /**
      * Get date volunteered attribute on the model.
@@ -108,5 +110,25 @@ class Timesheet extends Model
     public function setNotesAttribute(string $value)
     {
         $this->attributes['notes'] = trim($value);
+    }
+
+    /**
+     * Get the timesheet mission
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function mission(): HasOne
+    {
+        return $this->hasOne(Mission::class, 'mission_id', 'mission_id');
+    }
+
+    /**
+     * Get the timesheet user
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function user(): HasOne
+    {
+        return $this->hasOne(User::class, 'user_id', 'user_id');
     }
 }
